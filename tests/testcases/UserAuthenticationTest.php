@@ -44,21 +44,23 @@ class UserAuthenticationTest extends TestCase
     public function getLoginData()
     {        
         return array(          
-            array('wrong@dummyid.com', 'wrong@123', $_SERVER['REMOTE_ADDR'], true, false, 0, false), // User With Incorrect Information
+            array('wrong@dummyid.com', 'Cindy@123', $_SERVER['REMOTE_ADDR'], true, false, 0, false), // User With Wrong Email
+            array('Cindy@dummyid.com', 'invalidpass', $_SERVER['REMOTE_ADDR'], true, false, 0, false), // User With Wrong Password
+            array('wrong@dummyid.com', 'Wrong@123', $_SERVER['REMOTE_ADDR'], true, false, 0, false), // User With Wrong Email & Password
             array('demo@gmail.com', 'Demo@123', $_SERVER['REMOTE_ADDR'], true, false, 0, false), // User With Unverified account
             array('kanwar@dummyid.com', 'Kanwar@123', $_SERVER['REMOTE_ADDR'], true, false, 0, false), // User account deleted
             array('testshop@dummyid.com', 'Test@123', $_SERVER['REMOTE_ADDR'], true, false, 0, false), // User With deactivated account
-            array('Cindy@dummyid.com', 'Cindy@123', $_SERVER['REMOTE_ADDR'], true, false, 0, true), // User With Correct Information
+            array('Cindy@dummyid.com', 'Cindy@123', $_SERVER['REMOTE_ADDR'], true, false, 0, true), // User With Valid Information
         ); 
     }
     
     /**
      * @dataProvider getUserData
      */
-    public function testGetUserByEmailOrUserName( $username, $isActive, $isVerfied, $addDeletedCheck, $expected )
+    public function testGetUserByEmailOrUserName( $username, $expected )
     {
         $userAuth = new UserAuthentication();
-        $result = $userAuth->getUserByEmailOrUserName( $username, $isActive, $isVerfied, $addDeletedCheck );
+        $result = $userAuth->getUserByEmailOrUserName( $username);
         if(is_array($expected)){
             $this->assertIsArray($result);
         }else{
@@ -69,8 +71,10 @@ class UserAuthenticationTest extends TestCase
     public function getUserData()
     {        
         return array(          
-            array('wrong@dummyid.com', true, true, true, false), // User With Incorrect Information
-            array('Cindy@dummyid.com', true, true, true, array()), // User With Correct Information
+            array('wrong@dummyid.com', false), // User With Invalid Email
+            array('wrong', false), // User With Invalid UserName
+            array('Cindy@dummyid.com', array()), // User With Valid Email 
+            array('Cindy', array()), // User With Valid UserName
         ); 
     }
     
@@ -87,11 +91,11 @@ class UserAuthenticationTest extends TestCase
     public function userPwdResetRequest()
     {        
         return array(                      
-            array(4, true), // User already request for reset password
-            array(999999999, false), // User do not make any request for reset password                        
+            array(1, true), // User already request for reset password 
+            array(999999999, false), // User do not request for reset password                     
         );
     }
-    
+
     /**
      * @dataProvider addPwdRequest
      */
@@ -106,10 +110,19 @@ class UserAuthenticationTest extends TestCase
     {        
         $token = UserAuthentication::encryptPassword(FatUtility::getRandomString(20));   
         return array(                      
-            array(array('user_id' => 'test', 'token' => $token), false), // User with invalid data
-            array(array('user_id' => 1, 'token' => $token), false), // User already exist
+            array(array('user_id' => 'test', 'token' => $token), false), // User with invalid userid
+            array(array('user_id' => 1, 'token' => 'token545'), false), // User with invalid token
+            array(array('user_id' => 'test', 'token' => 'token545'), false), // User with invalid userid and token
+            array(array('user_id' => 1, 'token' => $token), false), // User already have reset password request
             array(array('user_id' => 2, 'token' => $token), true), // User with valid data
         );
+    }
+    
+    public function testDeleteOldPasswordResetRequest()
+    {
+        $userAuth = new UserAuthentication();
+        $result = $userAuth->deleteOldPasswordResetRequest( );
+        $this->assertEquals(true, $result);
     }
  
     
