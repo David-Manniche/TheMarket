@@ -90,7 +90,8 @@ class UserAuthenticationTest extends TestCase
     
     public function userPwdResetRequest()
     {        
-        return array(                      
+        return array(
+            array('wrong', false), // User with wrong userid 
             array(1, true), // User already request for reset password 
             array(999999999, false), // User do not request for reset password                     
         );
