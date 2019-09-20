@@ -3,7 +3,7 @@ class CommonHelper extends FatUtility
 {
     private static $_ip;
     private static $_user_agent;
-    private static $_lang_id;
+    private static $_lang_id = 1;
     private static $_layout_direction;
     private static $_currency_id;
     private static $_currency_symbol_left;
