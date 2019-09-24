@@ -27,9 +27,23 @@ class UserAuthenticationTest extends TestCase
             array('dev@dummyid.com', 'Dev', $_SERVER['REMOTE_ADDR'], false), // Existing User
             array('dev101@dummyid.com', 'Dev101', $_SERVER['REMOTE_ADDR'], true), // Existing Unverified User
             array('dev102@dummyid.com', 'Dev102', $_SERVER['REMOTE_ADDR'], true), // New User
+            array('nonemail95021@gmail.com', 'kh', $_SERVER['REMOTE_ADDR'], false), // Existing User With Seller Account
         ); 
     }
     
+    public function testLogFailedAttempt()
+    {
+        $userAuth = new UserAuthentication();
+        $result = $userAuth->logFailedAttempt( $_SERVER['REMOTE_ADDR'], 'developer@dummyid.com' );
+        $this->assertTrue(true);
+    }
+    
+    public function testClearFailedAttempt()
+    {
+        $userAuth = new UserAuthentication();
+        $result = $userAuth->clearFailedAttempt( $_SERVER['REMOTE_ADDR'], 'developer@dummyid.com' );
+        $this->assertTrue(true);
+    }
     
     /**
      * @dataProvider getLoginData
@@ -53,6 +67,27 @@ class UserAuthenticationTest extends TestCase
             array('Cindy@dummyid.com', 'Cindy@123', $_SERVER['REMOTE_ADDR'], true, false, 0, true), // User With Valid Information
         ); 
     }
+    
+    /**
+     * @dataProvider chkBruteForceAttempt
+     */
+    public function testBruteForceAttempt( $ip, $username, $expected )
+    {
+        $userAuth = new UserAuthentication();
+        $result = $userAuth->isBruteForceAttempt( $ip, $username );
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function chkBruteForceAttempt()
+    {        
+        return array(          
+            array($_SERVER['REMOTE_ADDR'], 'kanwar@dummyid.com', true), // User with existing ip and username
+            array('192.168.0.25', 'dev101@dummyid.com', false), // User ip does not exist and username exist
+            array($_SERVER['REMOTE_ADDR'], 'notexist@dummyid.com', true), // User ip exist and username does not exist
+            array('192.168.0.25', 'notexist@dummyid.com', false), // User ip and username does not exist
+        );
+    }
+    
     
     /**
      * @dataProvider getUserData
@@ -93,7 +128,7 @@ class UserAuthenticationTest extends TestCase
         return array(
             array('wrong', false), // User with wrong userid 
             array(1, true), // User already request for reset password 
-            array(999999999, false), // User do not request for reset password                     
+            array(999999999, false), // User do not have previous request for reset password                     
         );
     }
 
@@ -124,6 +159,45 @@ class UserAuthenticationTest extends TestCase
         $userAuth = new UserAuthentication();
         $result = $userAuth->deleteOldPasswordResetRequest( );
         $this->assertEquals(true, $result);
+    }
+    
+    /**
+     * @dataProvider chkResetLink
+     */
+    public function testCheckResetLink($userId, $token, $expected)
+    {
+        $userAuth = new UserAuthentication();
+        $result = $userAuth->checkResetLink($userId, $token);
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function chkResetLink()
+    {   
+         return array(                      
+            array('test', '91c561f2b259e093f870675c5a011ee3', false), // User with invalid userid
+            array(1, 'token545', false), // User with invalid token less than 20 characters
+            array('test', 'token545', false), // User with invalid userid and token
+            array(2, '91c561f2b259e093f870675c5a011ee3', false), // User do not request for reset password earlier
+            array(1, '91c561f2b259e093f870675c5a011ee3', true), // User with valid data
+        );
+    }
+    
+    /**
+     * @dataProvider resetUserPassword
+     */
+    public function testResetUserPassword($userId, $password, $expected)
+    {
+        $userAuth = new UserAuthentication();
+        $result = $userAuth->resetUserPassword($userId, $password);
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function resetUserPassword()
+    {
+         return array(                      
+            array('test', 'Login@123', false), // User with invalid userid
+            array(4, 'Login@123', true), // User with valid userid
+        );
     }
  
     
