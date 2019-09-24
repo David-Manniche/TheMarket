@@ -65,6 +65,25 @@ class UserTest extends TestCase
         ); 
     }
     
+    /**
+     * @dataProvider loginPasswordData
+     */
+    public function testSetLoginPassword( $userId, $password, $expected )
+    {
+        $user = new User();
+        $user->setMainTableRecordId($userId);
+        $result = $user->setLoginPassword( $password );
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function loginPasswordData()
+    {
+        return array(
+            array('test', 'www@123', false), // Invalid user id
+            array('70003', 'www@123', true), // User id exist
+        );
+    }
+    
     
     
 }
