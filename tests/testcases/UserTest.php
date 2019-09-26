@@ -84,6 +84,50 @@ class UserTest extends TestCase
         );
     }
     
+    /**
+     * @dataProvider updateBankInfoData
+     */
+    public function testUpdateBankInfo( $userId, $data, $expected )
+    {
+        $user = new User();
+        $user->setMainTableRecordId($userId);
+        $result = $user->updateBankInfo( $data );
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function updateBankInfoData()
+    {       
+        return array(
+            array(5, array('ub_bank_name' =>'PNB', 'ub_account_holder_name' =>'Sammy', 'ub_account_number' => '789789789'
+            , 'ub_ifsc_swift_code' => 'PNB789', 'ub_bank_address' => 'mohali, punjab, india'), true), //Existing user id 
+            array('test', array('ub_bank_name' =>'PNB', 'ub_account_holder_name' =>'dev', 'ub_account_number' => '147147147'
+            , 'ub_ifsc_swift_code' => 'SBI147', 'ub_bank_address' => 'chandigarh, india'), false), //Invalid user id 
+            array(999999, array('ub_bank_name' =>'KOTAK', 'ub_account_holder_name' =>'Tester', 'ub_account_number' => '321321321'
+            , 'ub_ifsc_swift_code' => 'KBK321', 'ub_bank_address' => 'panchkula, haryana, india'), true), //User id does not exist
+        ); 
+    }
+    
+    /**
+     * @dataProvider updateUserReturnAddressData
+     */
+    public function testUpdateUserReturnAddress( $userId, $data, $expected )
+    {
+        $user = new User();
+        $user->setMainTableRecordId($userId);
+        $result = $user->updateUserReturnAddress( $data );
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function updateUserReturnAddressData()
+    {       
+        return array(
+            array(4, array('ura_state_id' =>'1250', 'ura_country_id' =>'50', 'ura_zip' => '1234', 'ura_phone' => '9879879870'), true), //Existing user id 
+            array('test', array('ura_state_id' =>'1250', 'ura_country_id' =>'50', 'ura_zip' => '1234', 'ura_phone' => '9879879870'), false), //Invalid user id 
+            array(999999, array('ura_state_id' =>'1180', 'ura_country_id' =>'80', 'ura_zip' => '8520'
+            , 'ura_phone' => '3213213210'), true), //User id does not exist 
+        ); 
+    }
+    
     
     
 }
