@@ -27,6 +27,7 @@ class UserTest extends TestCase
             array('70004', 'dev70004', 'dev70003@dummyid.com', 'Test@123', 1, 1, true), // User with existing email id
             array('70000', 'test', 'test@dummyid.com', 'Test@123', null, null, true),//User with existing user id
             array('wrong', 'wrong', 'wrong@dummyid.com', 'Test@123', null, null, false),//User with invalid user id
+            array('99999', 'testpassword', 'testpassword@dummyid.com', 'test', null, null, false),//User password less than 8 characters
         ); 
     }
     
@@ -128,6 +129,48 @@ class UserTest extends TestCase
         ); 
     }
     
+     /**
+     * @dataProvider addSupplierRequest
+     */
+    public function testAddSupplierRequestData( $data, $langId, $expected )
+    {
+        $user = new User();
+        $result = $user->addSupplierRequestData( $data, $langId );
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function addSupplierRequest()
+    {    
+        $reference_number = '79-'.time();
+        return array(
+            array(array('user_id' =>'test', 'reference' =>$reference_number, 'fieldIdsArr' => array('3','1','2')), 1, false), //Invalid user id
+            array(array('user_id' =>'79', 'reference' =>$reference_number, 'fieldIdsArr' => array('3','1','2')), 1, true), 
+        );
+    }
+    
+    /**
+     * @dataProvider activateSupplierData
+     */
+    public function testActivateSupplier( $userId, $isSupplier, $activateAdveracc, $expected )
+    {
+        $user = new User();
+        $user->setMainTableRecordId($userId);
+        $result = $user->activateSupplier( $isSupplier, $activateAdveracc );
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function activateSupplierData()
+    {    
+        return array(
+            array('test', 1, 0, false), //Invalid user id
+            array(79, 1, 0, true), // check with is_supplier to 1 and is_advertiser to 0
+            array(79, 1, 1, true), // check with is_supplier to 1 and is_advertiser to 1
+            array(79, 0, 0, true), // check with is_supplier to 0 and is_advertiser to 0
+            array(79, 0, 1, true), // check with is_supplier to 0 and is_advertiser to 1                        
+            array(79, 'test', 0, false), //Invalid is_supplier
+            array(79, 1, 'test', false), //Invalid is_advertiser
+        );
+    }
     
     
 }

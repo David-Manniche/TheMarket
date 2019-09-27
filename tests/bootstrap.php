@@ -1,6 +1,7 @@
 <?php 
-/* ./vendor/phpunit/phpunit/phpunit --bootstrap ./tests/bootstrap.php ./tests/ */
 /* ./vendor/phpunit/phpunit/phpunit --filter testLogin --bootstrap ./tests/bootstrap.php ./tests/testcases/UserAuthenticationTest */
+/* ./vendor/bin/phpunit --filter testLogin --bootstrap ./tests/bootstrap.php ./tests/testcases/UserAuthenticationTest */
+
 $_SERVER['REDIRECT_REDIRECT_STATUS'] = '200';
 $_SERVER['REDIRECT_STATUS'] = '200';
 $_SERVER['HTTP_HOST'] = 'yokart.local.4livedemo.com';
