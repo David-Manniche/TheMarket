@@ -7,6 +7,7 @@ if (1 > $opId) {
 $orderDetail['charges'] = !empty($orderDetail['charges']) ? $orderDetail['charges'] : (object)array();
 $orderDetail['billingAddress'] = !empty($orderDetail['billingAddress']) ? $orderDetail['billingAddress'] : (object)array();
 $orderDetail['shippingAddress'] = !empty($orderDetail['shippingAddress']) ? $orderDetail['shippingAddress'] : (object)array();
+$orderDetail['order_net_amount'] = !empty($orderDetail['order_net_amount']) ? CommonHelper::displayMoneyFormat($orderDetail['order_net_amount'], false, false, false) : 0;
 
 if (!empty($orderDetail['charges'])) {
     $charges = array();
@@ -25,16 +26,32 @@ if ($primaryOrder) {
 }
 $cartTotal = 0;
 $shippingCharges = 0;
+
+$defaultOrderStatus = FatApp::getConfig('CONF_DEFAULT_REVIEW_STATUS', FatUtility::VAR_INT, 0);
+$reviewAllowed = FatApp::getConfig('CONF_ALLOW_REVIEWS', FatUtility::VAR_INT, 0);
+
+$canCancelOrder = true;
+$canReturnRefund = true;
+
 foreach ($childArr as $index => $childOrder) {
+    $rating = isset($childArr[$index]['prod_rating']) ? $childArr[$index]['prod_rating'] : 0;
+    $childArr[$index]['prod_rating'] =  (1 == $defaultOrderStatus || (isset($childArr[$index]['spreview_status']) && $childArr[$index]['spreview_status'] == 1 )) ? $rating : 0;
+    $childArr[$index]['reviewsAllowed'] =  $reviewAllowed;
     $childArr[$index]['product_image_url'] = CommonHelper::generateFullUrl('image', 'product', array($childOrder['selprod_product_id'], "THUMB", $childOrder['op_selprod_id'], 0, $siteLangId));
 
     if ($childOrder['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
-        $childArr[$index]['canCancelOrder'] = (in_array($childOrder["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses(true))) ? 1 : 0;
-        $childArr[$index]['canReturnOrder'] = (in_array($childOrder["op_status_id"], (array)Orders::getBuyerAllowedOrderReturnStatuses(true))) ? 1 : 0;
+        $canCancelOrder = (in_array($childOrder["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses(true))) ? 1 : 0;
+        $canReturnRefund = (in_array($childOrder["op_status_id"], (array)Orders::getBuyerAllowedOrderReturnStatuses(true))) ? 1 : 0;
     } else {
-        $childArr[$index]['canCancelOrder'] = (in_array($childOrder["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses())) ? 1 : 0;
-        $childArr[$index]['canReturnOrder'] = (in_array($childOrder["op_status_id"], (array)Orders::getBuyerAllowedOrderReturnStatuses())) ? 1 : 0;
+        $canCancelOrder = (in_array($childOrder["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses())) ? 1 : 0;
+        $canReturnRefund = (in_array($childOrder["op_status_id"], (array)Orders::getBuyerAllowedOrderReturnStatuses())) ? 1 : 0;
     }
+
+    $childArr[$index]['canCancelOrder'] = ($canCancelOrder && false === OrderCancelRequest::getCancelRequestById($childOrder['op_id']) ? 1 : 0);
+
+    $childArr[$index]['canReturnOrder'] = ($canReturnRefund && $childOrder['return_request'] == 0 && $childOrder['cancel_request'] == 0 ? 1 : 0);
+
+
 
     $canSubmitFeedback = Orders::canSubmitFeedback($childOrder['order_user_id'], $childOrder['order_id'], $childOrder['op_selprod_id']);
     $isValidForReview = in_array($childOrder["op_status_id"], SelProdReview::getBuyerAllowedOrderReviewStatuses());
@@ -49,7 +66,7 @@ foreach ($childArr as $index => $childOrder) {
 
     $childArr[$index]['priceDetail'] = array(
         array(
-            'key' => Labels::getLabel('LBL_Quantity', $siteLangId),
+            'key' => Labels::getLabel('LBL_Ordered_Quantity', $siteLangId),
             'value' => $childOrder['op_qty'],
         ),
         array(

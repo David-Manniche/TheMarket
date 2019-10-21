@@ -54,12 +54,19 @@ class CustomRouter
         if (defined('SYSTEM_FRONT') && SYSTEM_FRONT === true && !FatUtility::isAjaxCall()) {
             $url = $_SERVER['REQUEST_URI'];
 
+            if (strpos($url, "?") !== false) {
+                $url = str_replace('?', '/?', $url);
+            }
+
             /* [ Check url rewritten by the system and "/" discarded in url rewrite*/
             $customUrl = substr($url, strlen(CONF_WEBROOT_URL));
             $customUrl = rtrim($customUrl, '/');
             $customUrl = explode('/', $customUrl);
 
             $srch = UrlRewrite::getSearchObject();
+            $srch->doNotCalculateRecords();
+            $srch->addMultipleFields(array('urlrewrite_custom','urlrewrite_original'));
+            $srch->setPageSize(1);
             $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'custom', '=', $customUrl[0]);
             $rs = $srch->getResultSet();
             if (!$row = FatApp::getDb()->fetch($rs)) {
@@ -91,7 +98,7 @@ class CustomRouter
             if ($controller == '') {
                 $controller = 'Content';
             }
-
+            
             if ($action == '') {
                 $action = 'error404';
             }

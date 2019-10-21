@@ -289,7 +289,7 @@ class User extends MyAppModel
     {
         $langId = FatUtility::int($langId);
         if ($langId == 0) {
-            trigger_error(Labels::getLabel('ERR_Language_Id_not_specified.', $this->commonLangId), E_USER_ERROR);
+            trigger_error(Labels::getLabel('ERR_Language_Id_not_specified.', $langId), E_USER_ERROR);
         }
         $arr=array(
         static::USER_FIELD_TYPE_TEXT => Labels::getLabel('LBL_Textbox', $langId),
@@ -307,7 +307,7 @@ class User extends MyAppModel
     {
         $langId = FatUtility::int($langId);
         if ($langId == 0) {
-            trigger_error(Labels::getLabel('ERR_Language_Id_not_specified.', $this->commonLangId), E_USER_ERROR);
+            trigger_error(Labels::getLabel('ERR_Language_Id_not_specified.', $langId), E_USER_ERROR);
         }
         $arr=array(
         static::USER_BUYER_DASHBOARD => Labels::getLabel('LBL_Buyer', $langId),
@@ -341,7 +341,7 @@ class User extends MyAppModel
     {
         $langId = FatUtility::int($langId);
         if ($langId == 0) {
-            trigger_error(Labels::getLabel('ERR_Language_Id_not_specified.', $this->commonLangId), E_USER_ERROR);
+            trigger_error(Labels::getLabel('ERR_Language_Id_not_specified.', $langId), E_USER_ERROR);
         }
         $arr=array(
         static::SUPPLIER_REQUEST_PENDING => Labels::getLabel('LBL_Pending', $langId),
@@ -364,7 +364,7 @@ class User extends MyAppModel
     {
         $langId = FatUtility::int($langId);
         if ($langId == 0) {
-            trigger_error(Labels::getLabel('ERR_Language_Id_not_specified.', $this->commonLangId), E_USER_ERROR);
+            trigger_error(Labels::getLabel('ERR_Language_Id_not_specified.', $langId), E_USER_ERROR);
         }
         $arr=array(
         static::CATALOG_REQUEST_PENDING => Labels::getLabel('LBL_Pending', $langId),
@@ -1326,12 +1326,17 @@ class User extends MyAppModel
     }
 
     public function setLoginCredentials($username, $email, $password, $active = null, $verified = null)
-    {
+    {   
         if (! ($this->mainTableRecordId > 0)) {
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
             return false;
         }
 
+        if(!preg_match('/'.ValidateElement::PASSWORD_REGEX.'/',$password)){
+            $this->error = Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->commonLangId);
+            return false;
+        }
+        
         $record = new TableRecord(static::DB_TBL_CRED);
         $arrFlds = array(
         static::DB_TBL_CRED_PREFIX.'username' => $username,
@@ -2064,7 +2069,7 @@ class User extends MyAppModel
         $srch = new SearchBase(static::DB_TBL_USR_MOBILE_TEMP_TOKEN);
         $srch->addCondition('uttr_user_id', '=', $this->mainTableRecordId);
         $srch->addCondition('uttr_token', '=', $token);
-        $srch->addCondition('uttr_expiry', '>', date('Y-m-d H:i:s'));
+        $srch->addCondition('uttr_expiry', '>=', date('Y-m-d H:i:s'));
         $srch->addMultipleFields(array('uttr_user_id', 'uttr_token'));
         $srch->doNotCalculateRecords();
         $srch->setPagesize(1);
@@ -2158,5 +2163,12 @@ class User extends MyAppModel
         $srch->addCondition('user_affiliate_referrer_user_id', '=', $affilateUserId);
 
         return $srch;
+    }
+
+    public static function setImageUpdatedOn($userId, $date = '')
+    {
+        $date = empty($date) ? date('Y-m-d  H:i:s') : $date;
+        $where = array('smt'=>'user_id = ?', 'vals'=>array($userId));
+        FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_img_updated_on'=>date('Y-m-d  H:i:s')), $where);
     }
 }

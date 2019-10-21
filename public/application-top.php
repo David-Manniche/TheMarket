@@ -31,8 +31,8 @@ FatApp::getDb()->query("SET time_zone = '".$offset."'");
 ini_set('session.cookie_httponly', true);
 ini_set('session.cookie_path', CONF_WEBROOT_FRONT_URL);
 session_start();
-
-/* FatApp::getDb()->query("SET NAMES utf8mb4");  */
+FatApp::getDb()->query("SET NAMES utf8mb4");
+/*FatApp::getDb()->logQueries(true,CONF_UPLOADS_PATH.'logQuery.txt');*/
 
 /* --- Redirect SSL --- */
 $protocol = (FatApp::getConfig('CONF_USE_SSL', FatUtility::VAR_INT, 0)==1)?'https://':'http://';
@@ -52,4 +52,4 @@ $_SESSION['WYSIWYGFileManagerRequirements'] = CONF_INSTALLATION_PATH . 'public/W
 
 
 define('SYSTEM_INIT', true);
-define('CONF_WEB_APP_VERSION', 'TV-9.0.1.20190903');
+define('CONF_WEB_APP_VERSION', 'TV-9.0.1.20191018');

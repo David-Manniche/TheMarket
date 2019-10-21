@@ -19,7 +19,7 @@
                         $frmSearch->setFormTagAttribute('id', 'frmLabelsSearch');
                         $frmSearch->setFormTagAttribute('class', 'web_form');
                         $frmSearch->developerTags['colClassPrefix'] = 'col-md-';
-                        $frmSearch->developerTags['fld_default_col'] = 6;
+                        $frmSearch->developerTags['fld_default_col'] = 4;
 
                         $btn = $frmSearch->getField('btn_clear');
                         $btn->setFieldTagAttribute('onClick', 'clearSearch()');
@@ -47,7 +47,9 @@
                         }
 
                         $innerLiImport=$innerUl->appendElement('li');
-                        $innerLiImport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Update_Labels_File', $adminLangId),"onclick"=>"updateFile()"), Labels::getLabel('LBL_Update_Labels_File', $adminLangId), true);
+                        $innerLiImport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_UPDATE_WEB_LABEL_FILE', $adminLangId),"onclick"=>"updateFile()"), Labels::getLabel('LBL_UPDATE_WEB_LABEL_FILE', $adminLangId), true);
+                        $innerLiImport=$innerUl->appendElement('li');
+                        $innerLiImport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_UPDATE_APP_LABEL_FILE', $adminLangId),"onclick"=>"updateFile(".Labels::TYPE_APP.")"), Labels::getLabel('LBL_UPDATE_APP_LABEL_FILE', $adminLangId), true);
 
                         echo $ul->getHtml(); ?>
                     </div>

@@ -63,10 +63,49 @@ class AttachedFile extends MyAppModel
     const FILETYPE_BLOG_POST_IMAGE_PATH = 'blog-post/';
     const FILETYPE_BULK_IMAGES_PATH = 'bulk-images/';
 
+    const APP_IMAGE_WIDTH = 640;
+    const APP_IMAGE_HEIGHT = 480;
+
     public function __construct($fileId = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $fileId);
         $this->objMainTableRecord->setSensitiveFields(array());
+        ini_set('post_max_size', '64M');
+        ini_set('upload_max_filesize', '64M');
+    }
+
+    public static function returnBytes($val)
+    {
+        $val = trim($val);
+        $last = strtolower($val[strlen($val)-1]);
+        $size = Fatutility::int($val);
+        switch ($last) {
+            case 'g':
+                $size *= (1024 * 1024 * 1024);
+                break;
+            case 'm':
+                $size *= (1024 * 1024);
+                break;
+            case 'k':
+                $size *= 1024;
+                break;
+            default:
+                $size = 1024;
+                break;
+        }
+        return $size;
+    }
+
+    public static function maxFileUploadInBytes()
+    {
+        //select maximum upload size
+        $maxUpload = static::returnBytes(ini_get('upload_max_filesize'));
+        //select post limit
+        $maxPost = static::returnBytes(ini_get('post_max_size'));
+        //select memory limit
+        $memoryLimit = static::returnBytes(ini_get('memory_limit'));
+        // return the smallest of them, this defines the real limit
+        return min($maxUpload, $maxPost, $memoryLimit);
     }
 
     public static function getSearchObject()
@@ -88,11 +127,30 @@ class AttachedFile extends MyAppModel
         return $arr;
     }
 
+    // $compareSize in KiloByte
+    public function isUploadedFile($fileTmpName, $compareSize = 0)
+    {
+        $compareSize = FatUtility::int($compareSize);
+        if (1 > $compareSize || static::maxFileUploadInBytes() < $compareSize) {
+            $compareSize = static::maxFileUploadInBytes();
+        }
+        if (filesize($fileTmpName) > $compareSize) {
+            $this->error = Labels::getLabel('MSG_INVALID_SIZE', CommonHelper::getLangId());
+            return false;
+        }
+
+        if (!is_uploaded_file($fileTmpName)) {
+            $this->error = Labels::getLabel('MSG_Unable_To_Upload_File', CommonHelper::getLangId());
+            return false;
+        }
+
+        return true;
+    }
+
     public static function checkSize($file, $compareSize)
     {
         $compareSize = FatUtility::convertToType($compareSize, FatUtility::VAR_FLOAT);
         if (filesize($file) > $compareSize) {
-            $this->error = Labels::getLabel('MSG_INVALID_SIZE', CommonHelper::getLangId());
             return false;
         }
         return true;
@@ -106,6 +164,7 @@ class AttachedFile extends MyAppModel
         $langId = FatUtility::int($langId);
 
         $srch = new SearchBase(static::DB_TBL);
+        $srch->doNotCalculateRecords();
         $srch->addCondition('afile_type', '=', $fileType);
         $srch->addCondition('afile_record_id', '=', $recordId);
 
@@ -285,6 +344,7 @@ class AttachedFile extends MyAppModel
         }
 
         $this->setFldValue('afile_display_order', $displayOrder);
+        $this->setFldValue('afile_updated_at', date("Y-m-d H:i:s"));
 
         if (!$this->save()) {
             $this->error = Labels::getLabel('MSG_COULD_NOT_SAVE_FILE', $defaultLangIdForErrors);
@@ -300,7 +360,6 @@ class AttachedFile extends MyAppModel
                 )
             );
         }
-
         return $fileLoc;
     }
 
@@ -332,7 +391,6 @@ class AttachedFile extends MyAppModel
             $this->error = Labels::getLabel('MSG_UNRECOGNISED_IMAGE_FILE', $this->commonLangId);
             return false;
         }
-
         return $this->saveAttachment($fl, $fileType, $recordId, $recordSubid, $name, $displayOrder, $uniqueRecord, $lang_id, $screen);
     }
 
@@ -358,6 +416,7 @@ class AttachedFile extends MyAppModel
         }
 
         $originalImageName = $image_name;
+
         if (trim($uploadedFilePath)!='') {
             $uploadedFilePath = CONF_UPLOADS_PATH.$uploadedFilePath;
         } else {
@@ -365,59 +424,49 @@ class AttachedFile extends MyAppModel
         }
 
         $fileMimeType = '';
-        $cacheFileName = '';
+        $imagePath = $uploadedFilePath . $image_name;
+
+        if (empty($image_name) || !file_exists($uploadedFilePath . $image_name)) {
+            $imagePath = $no_image;
+        }
+
+        $fileMimeType = mime_content_type($imagePath);
+        if (strpos($_SERVER['REQUEST_URI'], '?t=') === false) {
+            $filemtime = filemtime($imagePath);
+            $_SERVER['REQUEST_URI'] = rtrim($_SERVER['REQUEST_URI'], '/').'/?t='.$filemtime;
+        }
+
+        static::setHeaders();
+
         $w = FatUtility::int($w);
         $h = FatUtility::int($h);
 
-        if (!empty($image_name) && file_exists($uploadedFilePath . $image_name)) {
-            $filemtime = filemtime($uploadedFilePath . $image_name);
-            $_SERVER['REQUEST_URI'] = rtrim($_SERVER['REQUEST_URI'],'/').'/?t='.$filemtime;
+        static::checkModifiedHeader($imagePath);
 
-            $fileMimeType = mime_content_type($uploadedFilePath . $image_name);
-            $image_name = $cacheFileName = $uploadedFilePath . $image_name;
-            $headers = FatApp::getApacheRequestHeaders();
-            if (isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == filemtime($image_name))) {
-                header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($image_name)).' GMT', true, 304);
-                exit;
+        if (CONF_USE_FAT_CACHE && $cache) {
+            ob_get_clean();
+            ob_start();
+            static::setContentType($fileMimeType);
+            $fileContent = FatCache::get($_SERVER['REQUEST_URI'], null, '.jpg');
+            if ($fileContent) {
+                static::loadImage($fileContent, $imagePath);
             }
-
-            if (CONF_USE_FAT_CACHE && $cache) {
-                ob_get_clean();
-                ob_start();
-                if ($fileMimeType != '') {
-                    header("content-type: ".$fileMimeType);
-                } else {
-                    header("content-type: image/jpeg");
-                }
-                $fileContent = FatCache::get($_SERVER['REQUEST_URI'], null, '.jpg');
-                if ($fileContent) {
-                    static::loadImage($fileContent, $image_name);
-                }
-            }
-
-            try {
-                $img = new ImageResize($image_name);
-                header('Cache-Control: public');
-                header("Pragma: public");
-                header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($image_name)).' GMT', true, 200);
-                header("Expires: " . date('r', strtotime("+30 Day")));
-            } catch (Exception $e) {
-                try {
-                    $img = static::getDefaultImage($no_image, $w, $h);
-                    $img->setExtraSpaceColor(204, 204, 204);
-                } catch (Exception $e) {
-                    $img = static::getDefaultImage($no_image, $w, $h);
-                    $img->setExtraSpaceColor(204, 204, 204);
-                }
-            }
-        } else {
-            $cacheFileName = CONF_INSTALLATION_PATH.'public/'.$no_image;
-            $img = static::getDefaultImage($no_image, $w, $h);
-            $img->setExtraSpaceColor(204, 204, 204);
         }
 
-        /* $w = max(1, FatUtility::int($w));
-        $h = max(1, FatUtility::int($h)); */
+        try {
+
+            static::setLastModified($imagePath);
+            static::setContentType($fileMimeType);
+            $img = new ImageResize($imagePath);
+        } catch (Exception $e) {
+            try {
+                $img = static::getDefaultImage($imagePath, $w, $h);
+                $img->setExtraSpaceColor(204, 204, 204);
+            } catch (Exception $e) {
+                $img = static::getDefaultImage($imagePath, $w, $h);
+                $img->setExtraSpaceColor(204, 204, 204);
+            }
+        }
 
         $img->setResizeMethod($resizeType);
         //$img->setResizeMethod(ImageResize::IMG_RESIZE_RESET_DIMENSIONS);
@@ -425,35 +474,28 @@ class AttachedFile extends MyAppModel
             $img->setMaxDimensions($w, $h);
         }
 
-        if ($apply_watermark && !empty($image_name)) {
+        if ($apply_watermark && !empty($imagePath)) {
             $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_WATERMARK_IMAGE, 0, 0, CommonHelper::getLangId());
             $wtrmrk_file = isset($file_row['afile_physical_path']) ?  $file_row['afile_physical_path'] : '';
             if (!empty($wtrmrk_file)) {
                 $wtrmrk_file = $uploadedFilePath.$wtrmrk_file;
-                //$wtrmrkFileMimeType = mime_content_type($uploadedFilePath . $image_name);
                 $ext_watermark = substr($wtrmrk_file, -3);
                 $imageInfo = getimagesize($wtrmrk_file);
-                $OriginalImageInfo = getimagesize($image_name);
-                /* var_dump($OriginalImageInfo); die; */
+                $OriginalImageInfo = getimagesize($imagePath);
                 $img_w = $w;
                 $img_h = $h;
                 $wtrmrk_w = $imageInfo[0];
                 $wtrmrk_h = $imageInfo[1];
-                /* echo $img_h-$wtrmrk_h-20; die; 422,651 */
                 $img->setWaterMark($wtrmrk_file, $img_w-$wtrmrk_w-20, $img_h-$wtrmrk_h-20);
                 $fileMimeType = 'image/png';
             }
         }
 
-        if ($fileMimeType != '') {
-            header("content-type: ".$fileMimeType);
-        } else {
-            header("content-type: image/jpeg");
-        }
 
         if (CONF_USE_FAT_CACHE && $cache) {
             ob_end_clean();
             ob_start();
+            static::setContentType($fileMimeType);
             if ($imageCompression) {
                 $img->displayImage(80, false);
             } else {
@@ -461,8 +503,10 @@ class AttachedFile extends MyAppModel
             }
             $imgData = ob_get_clean();
             FatCache::set($_SERVER['REQUEST_URI'], $imgData, '.jpg');
-            static::loadImage($imgData, $cacheFileName);
+            static::loadImage($imgData, $imagePath);
         }
+
+        static::setContentType($fileMimeType);
 
         if ($imageCompression) {
             $img->displayImage(80, false);
@@ -471,12 +515,42 @@ class AttachedFile extends MyAppModel
         }
     }
 
-    public static function loadImage($imgData, $image_name){
-        header('Cache-Control: public');
+    public static function loadImage($imgData, $image_name)
+    {
+        static::setHeaders();
+        static::setLastModified($image_name);
+        echo $imgData;
+        exit;
+    }
+
+    public static function setHeaders()
+    {
+        header('Cache-Control: public, max-age=2592000, stale-while-revalidate=604800');
         header("Pragma: public");
-        header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($image_name)).' GMT', true, 200);
-        header("Expires: " . date('r', strtotime("+30 Day")));
-        echo $imgData; exit;
+        header("Expires: " . date('r', strtotime("+30 days")));
+    }
+
+    public static function setContentType($fileMimeType)
+    {
+        if ($fileMimeType != '') {
+            header("content-type: ".$fileMimeType);
+        } else {
+            header("content-type: image/jpeg");
+        }
+    }
+
+    public static function setLastModified($image_name)
+    {
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($image_name)) . ' GMT', true, 200);
+    }
+
+    public static function checkModifiedHeader($image_name)
+    {
+        $headers = FatApp::getApacheRequestHeaders();
+        if (isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == filemtime($image_name))) {
+            header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($image_name)) . ' GMT', true, 304);
+            exit;
+        }
     }
 
     public static function getDefaultImage($image_name, $width, $height, $useCache = false)
@@ -484,12 +558,7 @@ class AttachedFile extends MyAppModel
         $file_extension = substr($image_name, strlen($image_name)-3, strlen($image_name));
         if ($file_extension=="svg") {
             header("Content-type: image/svg+xml");
-            if ($useCache) {
-                header('Cache-Control: public');
-                header("Pragma: public");
-                header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($image_name)).' GMT', true, 200);
-                header("Expires: " . date('r', strtotime("+30 Day")));
-            }
+            static::setLastModified($image_name);
             // $image_name = static::setDimensions($image_name, $width, $height);
             echo file_get_contents($image_name);
             exit;
@@ -497,7 +566,7 @@ class AttachedFile extends MyAppModel
         return $img = new ImageResize($image_name);
     }
 
-    public static function displayOriginalImage($image_name, $no_image = '', $uploadedFilePath = '', $cache = true)
+    public static function displayOriginalImage($image_name, $no_image = '', $uploadedFilePath = '', $cache = false)
     {
         ob_end_clean();
         if ($no_image == '') {
@@ -513,58 +582,53 @@ class AttachedFile extends MyAppModel
         }
 
         $fileMimeType = '';
-        if (file_exists($uploadedFilePath . $image_name)) {
-            $fileMimeType = mime_content_type($uploadedFilePath . $image_name);
+
+        $imagePath = $uploadedFilePath . $image_name;
+
+        if (empty($image_name) || !file_exists($uploadedFilePath . $image_name)) {
+            $imagePath = $no_image;
         }
 
-        if ($fileMimeType != '') {
-            header("content-type: ".$fileMimeType);
-        } else {
-            header("content-type: image/jpeg");
+        $fileMimeType = mime_content_type($imagePath);
+        if (strpos($_SERVER['REQUEST_URI'], '?t=') === false) {
+            $filemtime = filemtime($imagePath);
+            $_SERVER['REQUEST_URI'] = rtrim($_SERVER['REQUEST_URI'], '/').'/?t='.$filemtime;
         }
-        $cacheFileName = '';
-        if (!empty($image_name) && file_exists($uploadedFilePath . $image_name)) {
-            $image_name = $cacheFileName = $uploadedFilePath . $image_name;
-            $filemtime = filemtime( $image_name);
-            $_SERVER['REQUEST_URI'] = rtrim($_SERVER['REQUEST_URI'],'/').'/?t='.$filemtime;
 
-            $headers = FatApp::getApacheRequestHeaders();
-            if (isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == filemtime($image_name))) {
-                header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($image_name)).' GMT', true, 304);
-                exit;
+        static::setHeaders();
+
+        static::checkModifiedHeader($imagePath);
+
+        if (CONF_USE_FAT_CACHE && $cache) {
+            ob_get_clean();
+            ob_start();
+            static::setContentType($fileMimeType);
+            $fileContent = FatCache::get($_SERVER['REQUEST_URI'], null, '.jpg');
+            if ($fileContent) {
+                static::loadImage($fileContent, $imagePath);
             }
+        }
 
+        try {
+
+            static::setLastModified($imagePath);
+            static::setContentType($fileMimeType);
+            $fileContent =  file_get_contents($imagePath);
             if (CONF_USE_FAT_CACHE && $cache) {
-                $fileContent = FatCache::get($_SERVER['REQUEST_URI'], null, '.jpg');
-                if ($fileContent) {
-                    static::loadImage($fileContent, $image_name);
-                }
+                FatCache::set($_SERVER['REQUEST_URI'], $fileContent, '.jpg');
+                static::loadImage($fileContent, $imagePath);
             }
-
-            try {
-                header('Cache-Control: public');
-                header("Pragma: public");
-                header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($image_name)).' GMT', true, 200);
-                header("Expires: " . date('r', strtotime("+30 Day")));
-                $fileContent =  file_get_contents($image_name);
-                if (CONF_USE_FAT_CACHE && $cache) {
-                    FatCache::set($_SERVER['REQUEST_URI'], $fileContent, '.jpg');
-                    static::loadImage($fileContent, $image_name);
-                }
-            } catch (Exception $e) {
-                $fileContent = file_get_contents($no_image);
-            }
-        } else {
-            $cacheFileName = CONF_INSTALLATION_PATH.'public/'.$no_image;
-            $fileContent = file_get_contents($no_image);
+        } catch (Exception $e) {
+            static::setLastModified($imagePath);
+            static::setContentType($fileMimeType);
+            $fileContent = file_get_contents($imagePath);
         }
 
         if (CONF_USE_FAT_CACHE && $cache) {
             FatCache::set($_SERVER['REQUEST_URI'], $fileContent, '.jpg');
-            static::loadImage($fileContent, $cacheFileName);
+            static::loadImage($fileContent, $imagePath);
         }
         echo $fileContent;
-
     }
 
     public static function updateDownloadCount($aFileId = 0)
@@ -688,7 +752,8 @@ class AttachedFile extends MyAppModel
         'afile_lang_id'=>$langId,
         'afile_screen'=>$arr['afile_screen'],
         'afile_display_order'=>$arr['afile_display_order'],
-        'afile_name'=>$name
+        'afile_name'=>$name,
+        'afile_updated_at'=>date('Y-m-d H:i:s'),
         );
 
         $db = FatApp::getDb();
@@ -789,5 +854,11 @@ class AttachedFile extends MyAppModel
         } else {
             return false;
         }
+    }
+
+    public static function setTimeParam($dateTime)
+    {
+        $time = strtotime($dateTime);
+        return ($time > 0) ? '?t='.$time : '' ;
     }
 }

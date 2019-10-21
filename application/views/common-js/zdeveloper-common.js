@@ -1,17 +1,4 @@
 $(document).ready(function() {
-    /*if('' == getCookie('openSidebar') || 1 == getCookie('openSidebar')){
-    	document.cookie = "openSidebar=1";
-    	$('.js-hamburger.hamburger-toggle').addClass('is-opened');
-    	$('body.is-dashboard').removeClass('sidebar-is-reduced').addClass('sidebar-is-expanded');
-    }else{
-    	$('.js-hamburger.hamburger-toggle').removeClass('is-opened');
-    	$('body.is-dashboard').removeClass('sidebar-is-expanded').addClass('sidebar-is-reduced');
-    }*/
-
-    $(document).on('click', '.js-hamburger', function() {
-        fcom.ajax(fcom.makeUrl('Home', 'setupSidebarVisibility'), '', function(res) {});
-    });
-
     setTimeout(function() {
         $('body').addClass('loaded');
     }, 1000);
@@ -29,7 +16,7 @@ $(document).ready(function() {
     	$('.js-widget-scroll').slick(getSlickSliderSettings(3, 1, langLbl.layoutDirection, false,{1199: 3,1023: 2,767: 1,480: 1}));
 	}
 
-    $(document).on('change', 'input.phone-js', function(e) {
+    /*$(document).on('change', 'input.phone-js', function(e) {
         $(this).keydown()
     });
     $(document).on('keydown', 'input.phone-js', function(e) {
@@ -73,14 +60,23 @@ $(document).ready(function() {
         if ($phone.val() === '(') {
             $phone.val('');
         }
-    });
+    });*/
 
     $(document).on('click', '.accordianheader', function () {
       $(this).next('.accordianbody').slideToggle();
       $(this).parent().parent().siblings().children().children().next().slideUp();
       return false;
     });
+
+    if ('rtl' == langLbl.layoutDirection && 0 < $("[data-simplebar]").length  && 1 > $("[data-simplebar-direction='rtl']").length) {
+        $("[data-simplebar]").attr('data-simplebar-direction', 'rtl');
+    }
 });
+
+function setCurrDateFordatePicker() {
+    $('.start_date_js').datepicker('option', {minDate: new Date()});
+	$('.end_date_js').datepicker('option', {minDate: new Date()});
+}
 
 function showFormActionsBtns() {
     if (typeof $(".selectItem--js:checked").val() === 'undefined') {
@@ -135,7 +131,7 @@ function recentlyViewedProducts(selprodId) {
 
     fcom.ajax(fcom.makeUrl('Products', 'recentlyViewedProducts', [selprodId]), '', function(ans) {
         $("#recentlyViewedProductsDiv").html(ans);
-        $('.js-collection-corner:not(.slick-initialized)').slick(getSlickSliderSettings(6, 1, langLbl.layoutDirection, true));
+        $('.js-collection-corner:not(.slick-initialized)').slick(getSlickSliderSettings(5, 1, langLbl.layoutDirection, true));
     });
 }
 
@@ -194,7 +190,7 @@ function getCardType(number) {
     return "";
 }
 
-viewWishList = function(selprod_id, dv, event) {
+viewWishList = function(selprod_id, dv, event, excludeWishList = 0) {
     event.stopPropagation();
     /*var dv = "#listDisplayDiv_" + selprod_id; */
 
@@ -210,7 +206,7 @@ viewWishList = function(selprod_id, dv, event) {
     }
 
     $.facebox(function() {
-        fcom.ajax(fcom.makeUrl('Account', 'viewWishList', [selprod_id]), '', function(ans) {
+        fcom.ajax(fcom.makeUrl('Account', 'viewWishList', [selprod_id, excludeWishList]), '', function(ans) {
             fcom.updateFaceboxContent(ans, 'faceboxWidth collection-ui-popup small-fb-width');
             //$(dv).next().html(ans);
             $("input[name=uwlist_title]").bind('focus', function(e) {
@@ -841,7 +837,7 @@ $(document).ready(function() {
         if(page == 'product-view'){
             return false;
         }
-        cart.update(key, page); 
+        cart.update(key, page);
     });
 
     $(document).on("change", '.productQty-js', function() {
@@ -874,7 +870,7 @@ $(document).ready(function() {
         }
         var key = $(this).parent().parent('div').find('input').attr('data-key');
         var page = $(this).parent().parent('div').find('input').attr('data-page');
-        
+
         val = parseInt(rval) - 1;
         if (val <= 1) {
             val = 1;
@@ -1201,4 +1197,21 @@ $(document).ready(function() {
 });
 $(document).ajaxComplete(function() {
     new ScrollHint('.table');
+
+    //Remove scrolling on table with hand icon
+    if (0 < $('div.block--empty').length && 0 < $('div.scroll-hint-icon-wrap').length && 1 > $('div.block--empty').closest('.cart')){
+        $('div.scroll-hint-icon-wrap').remove();
+    }
+
+    //Remove Scrolling When Facebox Popup opened
+    if (0 < $("#facebox").length) {
+        if ($("#facebox").is(":visible")) {
+            $('html').addClass('pop-on');
+        } else {
+            $('html').removeClass('pop-on');
+        }
+        $("#facebox .close.close--white").on("click", function(){
+            $("html").removeClass('pop-on');
+        });
+    }
 });

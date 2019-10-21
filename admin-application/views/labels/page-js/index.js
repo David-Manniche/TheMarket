@@ -32,9 +32,9 @@ $(document).ready(function(){
 		});
 	};
 
-	labelsForm = function(labelId){
+	labelsForm = function(labelId, type){
 		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('Labels', 'form', [labelId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('Labels', 'form', [labelId, type]), '', function(t) {
 				$.facebox(t,'faceboxWidth');
 			});
 		});
@@ -111,8 +111,8 @@ $(document).ready(function(){
 		});
 	};
 
-	updateFile = function(){
-		fcom.updateWithAjax(fcom.makeUrl('Labels', 'updateJsonFile'), '', function(t) {
+	updateFile = function(labelType = 1){
+		fcom.updateWithAjax(fcom.makeUrl('Labels', 'updateJsonFile', [labelType]), '', function(t) {
 			var ans = $.parseJSON(t);
 			if( ans.status == 1 ){
 				fcom.displaySuccessMessage(ans.msg);

@@ -27,7 +27,7 @@ class AddressesController extends LoggedUserController
         $post = $frm->getFormDataFromArray($post);
         if (false === $post) {
             if (true ===  MOBILE_APP_API_CALL) {
-                FatUtility::dieJsonError(strip_tags(current($frm->getValidationErrors())));
+                LibHelper::dieJsonError(current($frm->getValidationErrors()));
             }
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
@@ -45,7 +45,7 @@ class AddressesController extends LoggedUserController
         $addressObj->assignValues($data_to_be_save, true);
         if (!$addressObj->save()) {
             if (true ===  MOBILE_APP_API_CALL) {
-                FatUtility::dieJsonError(strip_tags($addressObj->getError()));
+                LibHelper::dieJsonError($addressObj->getError());
             }
             Message::addErrorMessage($addressObj->getError());
             FatUtility::dieWithError(Message::getHtml());
@@ -58,12 +58,13 @@ class AddressesController extends LoggedUserController
             $this->markAsDefault($ua_id);
         }
 
-        $this->set('ua_id', $ua_id);
 
+        $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->siteLangId));
         if (true ===  MOBILE_APP_API_CALL) {
+            $this->set('data', array('ua_id' => $ua_id));
             $this->_template->render();
         }
-        $this->set('msg', Labels::getLabel('LBL_Setup_Successful', $this->siteLangId));
+        $this->set('ua_id', $ua_id);
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -132,7 +133,7 @@ class AddressesController extends LoggedUserController
         $addressObj->assignValues($data, true);
         if (!$addressObj->save()) {
             if (true ===  MOBILE_APP_API_CALL) {
-                FatUtility::dieJsonError(strip_tags($addressObj->getError()));
+                LibHelper::dieJsonError($addressObj->getError());
             }
             Message::addErrorMessage($addressObj->getError());
             FatUtility::dieWithError(Message::getHtml());
@@ -160,9 +161,9 @@ class AddressesController extends LoggedUserController
 
         $db = FatApp::getDb();
         if (!$db->deleteRecords(UserAddress::DB_TBL, array('smt' => 'ua_user_id = ? AND ua_id = ?', 'vals' => array($userId, $ua_id)))) {
-            FatUtility::dieJsonError(strip_tags($db->getError()));
+            LibHelper::dieJsonError($db->getError());
         }
-        $msg = Labels::getLabel('MSG_Deleted_successfully', $this->siteLangId);
+        $msg = Labels::getLabel('MSG_Removed_Successfully', $this->siteLangId);
         if (true ===  MOBILE_APP_API_CALL) {
             $this->set('msg', $msg);
             $this->_template->render();

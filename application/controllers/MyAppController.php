@@ -5,7 +5,7 @@ class MyAppController extends FatController
     public $appToken = '';
 
     public function __construct($action)
-    {
+    {            
         parent::__construct($action);
         $this->action = $action;
 
@@ -18,6 +18,7 @@ class MyAppController extends FatController
 
         CommonHelper::initCommonVariables();
         $this->initCommonVariables();
+        $this->tempTokenLogin();
     }
 
     public function initCommonVariables()
@@ -48,7 +49,7 @@ class MyAppController extends FatController
         $controllerName = ucfirst(FatUtility::dashed2Camel($urlController));
 
         /* to keep track of temporary hold the product stock, update time in each row of tbl_product_stock_hold against current user[ */
-        $cartObj = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId);
+        $cartObj = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id']);
         $cartProducts = $cartObj->getProducts($this->siteLangId);
         if ($cartProducts) {
             foreach ($cartProducts as $product) {
@@ -56,6 +57,11 @@ class MyAppController extends FatController
             }
         }
         /* ] */
+
+        if (true ===  MOBILE_APP_API_CALL) {
+            $this->cartItemsCount = $cartObj->countProducts();
+            $this->set('cartItemsCount', $this->cartItemsCount);
+        }
 
         $jsVariables = array(
         'confirmRemove' =>Labels::getLabel('LBL_Do_you_want_to_remove', $this->siteLangId),
@@ -142,17 +148,19 @@ class MyAppController extends FatController
 
     private function setApiVariables()
     {
-
         $this->db = FatApp::getDb();
         $post = FatApp::getPostedData();
 
         $this->appToken = CommonHelper::getAppToken();
-        if (('1.0' == MOBILE_APP_API_VERSION || $this->action == 'send_to_web' || empty($this->appToken)) && array_key_exists('_token', $post)) {
-            $this->appToken = ($post['_token']!='')?$post['_token']:'';
-        }
 
+        $this->app_user['temp_user_id'] = 0;
         if (!empty($_SERVER['HTTP_X_TEMP_USER_ID'])) {
             $this->app_user['temp_user_id'] = $_SERVER['HTTP_X_TEMP_USER_ID'];
+        }
+
+        $forTempTokenBasedActions = array('send_to_web');
+        if (('1.0' == MOBILE_APP_API_VERSION || in_array($this->action, $forTempTokenBasedActions) || empty($this->appToken)) && array_key_exists('_token', $post)) {
+            $this->appToken = ($post['_token']!='')?$post['_token']:'';
         }
 
         if ($this->appToken) {
@@ -182,6 +190,7 @@ class MyAppController extends FatController
         }
 
         $currencyRow = Currency::getAttributesById($this->siteCurrencyId);
+
         $this->currencySymbol = !empty($currencyRow['currency_symbol_left'])?$currencyRow['currency_symbol_left']:$currencyRow['currency_symbol_right'];
         $this->set('currencySymbol', $this->currencySymbol);
 
@@ -191,9 +200,9 @@ class MyAppController extends FatController
         $srch->addMultipleFields(array('u.*'));
         $rs = $srch->getResultSet();
         $this->user_details = $this->db->fetch($rs, 'user_id');
-        $cObj = new Cart($user_id, 0, $this->app_user['temp_user_id']);
+        /*$cObj = new Cart($user_id, 0, $this->app_user['temp_user_id']);
         $this->cartItemsCount = $cObj->countProducts();
-        $this->set('cartItemsCount', $this->cartItemsCount);
+        $this->set('cartItemsCount', $this->cartItemsCount);*/
 
         $this->totalFavouriteItems = UserFavorite::getUserFavouriteItemCount($user_id);
         $this->set('totalFavouriteItems', $this->totalFavouriteItems);
@@ -400,7 +409,7 @@ class MyAppController extends FatController
         $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
         $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId));
 
-        $phnFld = $frm->addRequiredField(Labels::getLabel('LBL_Phone', $siteLangId), 'ua_phone', '', array('class'=>'phone-js ltr-right', 'placeholder' => '(XXX) XXX-XXXX', 'maxlength' => 14));
+        $phnFld = $frm->addRequiredField(Labels::getLabel('LBL_Phone', $siteLangId), 'ua_phone', '', array('class'=>'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
         $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
         // $phnFld->htmlAfterField='<small class="text--small">'.Labels::getLabel('LBL_e.g.', $this->siteLangId).': '.implode(', ', ValidateElement::PHONE_FORMATS).'</small>';
         $phnFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
@@ -414,7 +423,17 @@ class MyAppController extends FatController
 
     protected function getProductSearchForm($addKeywordRelvancy = false)
     {
-        $sortByArr = array( 'price_asc' => Labels::getLabel('LBL_Price_(Low_to_High)', $this->siteLangId), 'price_desc' => Labels::getLabel('LBL_Price_(High_to_Low)', $this->siteLangId), 'popularity_desc' => Labels::getLabel('LBL_Sort_by_Popularity', $this->siteLangId), 'rating_desc' => Labels::getLabel('LBL_Sort_by_Rating', $this->siteLangId) );
+        $sortByArr = array(
+            'price_asc' => Labels::getLabel('LBL_Price_(Low_to_High)', $this->siteLangId),
+            'price_desc' => Labels::getLabel('LBL_Price_(High_to_Low)', $this->siteLangId),
+            'popularity_desc' => Labels::getLabel('LBL_Sort_by_Popularity', $this->siteLangId),
+            'discounted' => Labels::getLabel('LBL_Most_discounted', $this->siteLangId),
+        );
+
+        if (0 < FatApp::getConfig("CONF_ALLOW_REVIEWS", FatUtility::VAR_INT, 0)) {
+            $sortByArr['rating_desc'] = Labels::getLabel('LBL_Sort_by_Rating', $this->siteLangId);
+        }
+
         $sortBy = 'popularity_desc';
         if ($addKeywordRelvancy) {
             $sortByArr = array('keyword_relevancy' => Labels::getLabel('LBL_Keyword_Relevancy', $this->siteLangId)) + $sortByArr;
@@ -574,5 +593,43 @@ class MyAppController extends FatController
 
         $generatedTempId = substr(md5(rand(1, 99999) . microtime()), 0, UserAuthentication::TOKEN_LENGTH);
         return $this->app_user['temp_user_id'] = $generatedTempId;
+    }
+
+    public function tempTokenLogin()
+    {
+        $forTempTokenBasedGetActions = array('downloadDigitalFile');
+        if (!in_array($this->action, $forTempTokenBasedGetActions)) {
+            return;
+        }
+
+        $get = FatApp::getQueryStringData();
+        if (empty($get) || !array_key_exists('ttk', $get)) {
+            return;
+        }
+      
+        $ttk = ($get['ttk']!='') ? $get['ttk'] : '';
+
+        if (strlen($ttk) != UserAuthentication::TOKEN_LENGTH) {
+            FatUtility::dieJSONError(Labels::getLabel('LBL_Invalid_Temp_Token', CommonHelper::getLangId()));
+        }
+
+        $userId = 0;
+        if (!empty($get) && array_key_exists('user_id', $get)) {
+            $userId = FatUtility::int($get['user_id']);
+        }
+
+        $uObj = new User($userId);
+        if (!$user_temp_token_data = $uObj->validateAPITempToken($ttk)) {
+            FatUtility::dieJSONError(Labels::getLabel('LBL_Invalid_Token_Data', CommonHelper::getLangId()));
+        }
+
+        if (!$user = $uObj->getUserInfo(array('credential_username','credential_password','user_id'), true, true)) {
+            FatUtility::dieJSONError(Labels::getLabel('LBL_Invalid_Request', CommonHelper::getLangId()));
+        }
+
+        $authentication = new UserAuthentication();
+        if ($authentication->login($user['credential_username'], $user['credential_password'], $_SERVER['REMOTE_ADDR'], false)) {
+            $uObj->deleteUserAPITempToken() ;
+        }
     }
 }

@@ -22,7 +22,7 @@
         if (false === $post) {
             $message = $frm->getValidationErrors();
             if (true ===  MOBILE_APP_API_CALL) {
-                FatUtility::dieJsonError(strip_tags(current($message)));
+                LibHelper::dieJsonError(current($message));
             }
             Message::addErrorMessage($message);
             FatApp::redirectUser(CommonHelper::generateUrl('Custom', 'ContactUs'));
@@ -58,6 +58,7 @@
             }
 
             if (true ===  MOBILE_APP_API_CALL) {
+                $this->set('msg', Labels::getLabel('MSG_your_message_sent_successfully', $this->siteLangId));
                 $this->_template->render();
             }
 
@@ -467,6 +468,9 @@
         if (!$orderId) {
             FatUtility::exitWithErrorCode(404);
         }
+        $cartObj = new Cart(UserAuthentication::getLoggedUserId(), $this->siteLangId, $this->app_user['temp_user_id']);
+        $cartObj->clear();
+        $cartObj->updateUserCart();
 
         $orderObj = new Orders();
         $orderInfo = $orderObj->getOrderById($orderId, $this->siteLangId);
@@ -663,7 +667,7 @@
         $frm->addRequiredField(Labels::getLabel('LBL_Your_Name', $this->siteLangId), 'name', '');
         $frm->addEmailField(Labels::getLabel('LBL_Your_Email', $this->siteLangId), 'email', '');
 
-        $fld_phn = $frm->addRequiredField(Labels::getLabel('LBL_Your_Phone', $this->siteLangId), 'phone', '', array('class'=>'phone-js ltr-right', 'placeholder' => '(XXX) XXX-XXXX', 'maxlength' => 14));
+        $fld_phn = $frm->addRequiredField(Labels::getLabel('LBL_Your_Phone', $this->siteLangId), 'phone', '', array('class'=>'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
         $fld_phn->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
         // $fld_phn->htmlAfterField='<small class="text--small">'.Labels::getLabel('LBL_e.g.', $this->siteLangId).': '.implode(', ', ValidateElement::PHONE_FORMATS).'</small>';
         $fld_phn->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
@@ -739,5 +743,29 @@
         $obj = new UploadBulkImages();
         $msg = $obj->deleteBulkUploadSubDirs($hoursBefore);
         FatUtility::dieJsonSuccess($msg);
+    }
+
+    public function signupAgreementUrls()
+    {
+        $privacyPolicyLink = FatApp::getConfig('CONF_PRIVACY_POLICY_PAGE', FatUtility::VAR_STRING, '');
+        $termsAndConditionsLink = FatApp::getConfig('CONF_TERMS_AND_CONDITIONS_PAGE', FatUtility::VAR_STRING, '');
+        $data = array(
+            'privacyPolicyLink' => CommonHelper::generateFullUrl('cms', 'view', array($privacyPolicyLink)),
+            'faqLink' => CommonHelper::generateFullUrl('custom', 'faq'),
+            'termsAndConditionsLink' => CommonHelper::generateFullUrl('cms', 'view', array($termsAndConditionsLink)),
+        );
+        $this->set('data', $data);
+        $this->_template->render();
+    }
+
+    public function setupSidebarVisibility($openSidebar = 1)
+    {
+        setcookie('openSidebar', $openSidebar, 0, CONF_WEBROOT_URL);
+    }
+
+    public function updateScreenResolution($width, $height)
+    {
+        setcookie('screenWidth', $width, 0, CONF_WEBROOT_URL);
+        setcookie('screenHeight', $height, 0, CONF_WEBROOT_URL);
     }
 }

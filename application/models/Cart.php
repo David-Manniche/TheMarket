@@ -23,13 +23,8 @@ class Cart extends FatModel
         }
 
         if (empty($tempCartUserId)) {
-            $tempCartUserId = session_id();
-            if (true ===  MOBILE_APP_API_CALL) {
-                $tempCartUserId = $user_id;
-                if (1 > $user_id) {
-                    $user_id = $tempCartUserId = UserAuthentication::getLoggedUserId(true);
-                }
-            }
+            $user_id = (0 < $user_id) ? $user_id : UserAuthentication::getLoggedUserId(true);
+            $tempCartUserId = (0 < $user_id) ? $user_id : session_id();
         }
 
         $this->cart_user_id = $tempCartUserId;
@@ -54,7 +49,7 @@ class Cart extends FatModel
             }
 
             $this->SYSTEM_ARR['cart'] = unserialize($row["usercart_details"]);
-            //CommonHelper::printArray($this->SYSTEM_ARR['cart']); exit;
+            // CommonHelper::printArray($this->SYSTEM_ARR['cart'], true);
             if (isset($this->SYSTEM_ARR['cart']['shopping_cart'])) {
                 $this->SYSTEM_ARR['shopping_cart'] = $this->SYSTEM_ARR['cart']['shopping_cart'];
                 unset($this->SYSTEM_ARR['cart']['shopping_cart']);
@@ -252,6 +247,13 @@ class Cart extends FatModel
                 if (strpos($keyDecoded, static::CART_KEY_PREFIX_PRODUCT) !== false) {
                     $selprod_id = FatUtility::int(str_replace(static::CART_KEY_PREFIX_PRODUCT, '', $keyDecoded));
                 }
+
+                //To rid of from invalid product detail in listing.
+                if (1 > $selprod_id) {
+                    unset($this->SYSTEM_ARR['cart'][$key]);
+                    continue;
+                }
+
                 /* CommonHelper::printArray($keyDecoded); die; */
                 // if( strpos($keyDecoded, static::CART_KEY_PREFIX_BATCH ) !== FALSE ){
                 // $prodgroup_id = FatUtility::int(str_replace( static::CART_KEY_PREFIX_BATCH, '', $keyDecoded ));
@@ -314,7 +316,7 @@ class Cart extends FatModel
                         $this->products[$key]['shipping_cost'] = $shippingCost;
                     }
                     /*]*/
-
+                    //CommonHelper::printArray($sellerProductRow);exit;
                     /*[ Product Tax */
                     $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
                     $taxObj = new Tax();
@@ -537,7 +539,7 @@ class Cart extends FatModel
         }
         $this->updateUserCart();
         if (false === $found) {
-            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->cart_lang_id);
+            $this->error = Labels::getLabel('ERR_Invalid_Product', $this->cart_lang_id);
         }
         return $found;
     }
@@ -837,7 +839,7 @@ class Cart extends FatModel
         $orderPaymentGatewayCharges = 0;
         $cartTaxTotal = 0;
         $cartDiscounts = self::getCouponDiscounts();
-
+        
         $totalSiteCommission = 0;
         $orderNetAmount = 0;
         $cartRewardPoints = self::getCartRewardPoint();
@@ -860,8 +862,15 @@ class Cart extends FatModel
                     //$cartTotalNonBatch += $product['total'];
                     $cartTotal += !empty($product['total']) ? $product['total'] : 0;
                 }
+
                 $cartVolumeDiscount += $product['volume_discount_total'];
-                $cartTaxTotal += $product['tax'];
+                
+                /* $taxableProdPrice = $product['theprice'] - $product['volume_discount'] - ($cartDiscounts['discountedSelProdIds'][$product['selprod_id']])/$product['quantity'];
+                $taxObj = new Tax();
+                $tax = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity']);
+                $cartTaxTotal += $tax; */
+                $cartTaxTotal +=  $product['tax'];
+                
                 $originalShipping += $product['shipping_cost'];
                 $totalSiteCommission += $product['commission'];
 
@@ -925,7 +934,7 @@ class Cart extends FatModel
         }
 
         $orderId = isset($_SESSION['order_id'])?$_SESSION['order_id']:'';
-        $couponInfo = $couponObj->getValidCoupons($this->cart_user_id, $this->cart_lang_id, self::getCartDiscountCoupon(),$orderId);
+        $couponInfo = $couponObj->getValidCoupons($this->cart_user_id, $this->cart_lang_id, self::getCartDiscountCoupon(), $orderId);
         //$couponInfo = $couponObj->getCoupon( self::getCartDiscountCoupon(), $this->cart_lang_id );
         //CommonHelper::printArray($couponInfo); die();
         $cartSubTotal = self::getSubTotal();
@@ -1030,9 +1039,9 @@ class Cart extends FatModel
                         } */
                     } else {
                         if ($couponInfo['coupon_discount_in_percent'] == applicationConstants::FLAT) {
-                            $discount = $couponInfo['coupon_discount_value'] * ($cartProduct['total'] / $subTotal);
+                            $discount = $couponInfo['coupon_discount_value'] * (($cartProduct['total'] - $cartProduct['volume_discount_total']) / $subTotal);
                         } else {
-                            $discount = ($cartProduct['total'] / 100) * $couponInfo['coupon_discount_value'];
+                            $discount = (($cartProduct['total'] - $cartProduct['volume_discount_total']) / 100) * $couponInfo['coupon_discount_value'];
                         }
                     }
                 }
@@ -1056,7 +1065,7 @@ class Cart extends FatModel
                         $selProdDiscountTotal += $totalSelProdDiscount;
                         $discountedProdGroupIds[$cartProduct['prodgroup_id']] = round($totalSelProdDiscount,2); */
                     } else {
-                        $totalSelProdDiscount = round(($discountTotal*$cartProduct['total'])/$subTotal, 2);
+                        $totalSelProdDiscount = round(($discountTotal*($cartProduct['total'] - $cartProduct['volume_discount_total']))/($subTotal-$cartVolumeDiscount), 2);
                         $selProdDiscountTotal += $totalSelProdDiscount;
                         $discountedSelProdIds[$cartProduct['selprod_id']] = round($totalSelProdDiscount, 2);
                     }
@@ -1071,7 +1080,7 @@ class Cart extends FatModel
                         } */
                     } else {
                         if (in_array($cartProduct['product_id'], $couponInfo['grouped_coupon_products'])) {
-                            $totalSelProdDiscount = round(($discountTotal*$cartProduct['total'])/$subTotal, 2);
+                            $totalSelProdDiscount = round(($discountTotal*($cartProduct['total'] - $cartProduct['volume_discount_total']))/($subTotal-$cartVolumeDiscount), 2);
                             $selProdDiscountTotal += $totalSelProdDiscount;
                             $discountedSelProdIds[$cartProduct['selprod_id']] = round($totalSelProdDiscount, 2);
                         }
@@ -1079,7 +1088,7 @@ class Cart extends FatModel
                 }
             }
             /*]*/
-            $selProdDiscountTotal = $selProdDiscountTotal - $cartVolumeDiscount;
+            $selProdDiscountTotal = $selProdDiscountTotal /*- $cartVolumeDiscount*/;
             $labelArr = array(
                 'coupon_label'=>$couponInfo["coupon_title"],
                 'coupon_id'=>$couponInfo["coupon_id"],
@@ -1101,7 +1110,7 @@ class Cart extends FatModel
                 'coupon_discount_type'       => $couponInfo["coupon_type"],
                 'coupon_code' => $couponInfo["coupon_code"],
                 'coupon_discount_value'      =>$couponInfo["coupon_discount_value"],
-                'coupon_discount_total'      => $selProdDiscountTotal,
+                'coupon_discount_total'      => ($selProdDiscountTotal < 0)?0:$selProdDiscountTotal,
                 'coupon_info'      => json_encode($labelArr),
                 'discountedSelProdIds'=>$discountedSelProdIds,
                 'discountedProdGroupIds'=>$discountedProdGroupIds,

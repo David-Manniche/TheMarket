@@ -12,7 +12,7 @@ class CommonHelper extends FatUtility
     private static $_currency_value;
     private static $_default_currency_symbol_left;
     private static $_default_currency_symbol_right;
-    private static $appToken;
+    private static $_appToken;
 
     public static function initCommonVariables($isAdmin = false)
     {
@@ -22,22 +22,32 @@ class CommonHelper extends FatUtility
         self::$_currency_id = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
 
         if (!$isAdmin) {
-            if (isset($_COOKIE['defaultSiteLang'])) {
-                $languages = Language::getAllNames();
-                if (array_key_exists($_COOKIE['defaultSiteLang'], $languages)) {
-                    self::$_lang_id = FatUtility::int(trim($_COOKIE['defaultSiteLang']));
+            if (true ===  MOBILE_APP_API_CALL) {
+                if (!empty($_SERVER['HTTP_X_LANGUAGE_ID'])) {
+                    self::$_lang_id = FatUtility::int($_SERVER['HTTP_X_LANGUAGE_ID']);
                 }
-            }
 
-            if (isset($_COOKIE['defaultSiteCurrency'])) {
-                $currencies = Currency::getCurrencyAssoc(self::$_lang_id);
-                if (array_key_exists($_COOKIE['defaultSiteCurrency'], $currencies)) {
-                    self::$_currency_id = FatUtility::int(trim($_COOKIE['defaultSiteCurrency']));
+                if (!empty($_SERVER['HTTP_X_CURRENCY_ID'])) {
+                    self::$_currency_id = FatUtility::int($_SERVER['HTTP_X_CURRENCY_ID']);
+                }
+            } else {
+                if (isset($_COOKIE['defaultSiteLang'])) {
+                    $languages = Language::getAllNames();
+                    if (array_key_exists($_COOKIE['defaultSiteLang'], $languages)) {
+                        self::$_lang_id = FatUtility::int(trim($_COOKIE['defaultSiteLang']));
+                    }
+                }
+
+                if (isset($_COOKIE['defaultSiteCurrency'])) {
+                    $currencies = Currency::getCurrencyAssoc(self::$_lang_id);
+                    if (array_key_exists($_COOKIE['defaultSiteCurrency'], $currencies)) {
+                        self::$_currency_id = FatUtility::int(trim($_COOKIE['defaultSiteCurrency']));
+                    }
                 }
             }
 
             if (true ===  MOBILE_APP_API_CALL && array_key_exists('HTTP_X_TOKEN', $_SERVER) && !empty($_SERVER['HTTP_X_TOKEN'])) {
-                self::$appToken = ($_SERVER['HTTP_X_TOKEN'] != '')?$_SERVER['HTTP_X_TOKEN']:'';
+                self::$_appToken = ($_SERVER['HTTP_X_TOKEN'] != '')?$_SERVER['HTTP_X_TOKEN']:'';
             }
         } else {
             if (isset($_COOKIE['defaultAdminSiteLang'])) {
@@ -64,7 +74,7 @@ class CommonHelper extends FatUtility
 
     public static function getAppToken()
     {
-        return self::$appToken;
+        return self::$_appToken;
     }
 
     public static function getLangId()
@@ -181,6 +191,9 @@ class CommonHelper extends FatUtility
         $urlString = trim($urlString,'/'); */
         $urlString = trim(ltrim($url, CONF_WEBROOT_FRONTEND), '/');
         $srch = UrlRewrite::getSearchObject();
+        $srch->addMultipleFields(array('urlrewrite_custom'));
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
         $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'original', 'LIKE', $urlString);
         $rs = $srch->getResultSet();
         if ($row = FatApp::getDb()->fetch($rs)) {
@@ -600,9 +613,11 @@ class CommonHelper extends FatUtility
             $sign = '-';
         }
 
-
         if ($numberFormat && !$stringFormat) {
             $val = number_format($val, 2);
+        } else {
+            $afterDecimal = $val - floor($val);
+            $val = (0 < $afterDecimal ? number_format($val, 2, '.', '') : $val);
         }
 
         if ($stringFormat) {
@@ -616,7 +631,7 @@ class CommonHelper extends FatUtility
             $val =  $sign.$val;
         }
 
-        return $val;
+        return trim($val);
         /* if($displaySymbol){
             if($val < 0){
 
@@ -645,7 +660,6 @@ class CommonHelper extends FatUtility
 
             }
         } */
-        return $val;
     }
     public static function convertCurrencyToRewardPoint($currencyValue)
     {
@@ -708,7 +722,7 @@ class CommonHelper extends FatUtility
 
 
 
-    public static function convertToCsv($input_array, $output_file_name, $delimiter)
+    public static function convertToCsv($input_array, $output_file_name, $delimiter = ',')
     {
         /** open raw memory as file, no need for temp files */
         $temp_memory = fopen('php://memory', 'w');
@@ -1821,21 +1835,20 @@ class CommonHelper extends FatUtility
     }
 
     public static function demoUrl()
-    {
+    {  
         if (strpos($_SERVER ['SERVER_NAME'], 'demo.yo-kart.com') !== false) {
             return true;
         }
         return false;
     }
 
-    public static function jsonEncodeUnicode($data, $convertToType = true)
+    public static function jsonEncodeUnicode($data, $convertToType = false)
     {
-        if (false === $convertToType) {
-            die(json_encode($data));
+        if (true === $convertToType) {
+            $data = static::cleanArray($data);
         }
 
-        $data = static::cleanArray($data);
-        die(FatUtility::convertToJson($data, 0));
+        die(LibHelper::convertToJson($data, JSON_UNESCAPED_UNICODE));
     }
 
     public static function cleanArray($obj)
@@ -1878,5 +1891,91 @@ class CommonHelper extends FatUtility
             return $maxValue.'+';
         }
         return $totalCount;
+    }
+
+    public static function replaceStringData($str, $replacements = array(), $replaceTags = false)
+    {
+        foreach ($replacements as $key => $val) {
+            if ($replaceTags) {
+                $val = strip_tags($val);
+            }
+            $str = str_replace($key, $val, $str);
+            $str = str_replace(strtolower($key), $val, $str);
+            $str = str_replace(strtoupper($key), $val, $str);
+        }
+        return $str;
+    }
+
+    public static function getUrlTypeData($url)
+    {
+        if (strpos($url, "?") !== false) {
+            $url = str_replace('?', '/?', $url);
+        }
+
+        $originalUrl = $url;
+        $url = preg_replace('/https:/', 'http:', $url, 1);
+        /* [ Check url rewritten by the system and "/" discarded in url rewrite*/
+        $systemUrl = CommonHelper::generateFullUrl();       
+        $systemUrl = preg_replace('/https:/', 'http:', $systemUrl, 1);
+        $customUrl = substr($url, strlen($systemUrl));
+        $customUrl = rtrim($customUrl, '/');
+        $customUrl = explode('/', $customUrl);
+        $srch = UrlRewrite::getSearchObject();
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1); 
+        $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'custom', '=', $customUrl[0]);
+        $rs = $srch->getResultSet();
+
+        if (!$row = FatApp::getDb()->fetch($rs)) { 
+            return array(
+                'url' => $originalUrl,
+                'urlType'=> applicationConstants::URL_TYPE_EXTERNAL
+            );
+        }
+
+        $url = $row['urlrewrite_original'];
+        $arr = explode('/', $url);
+
+        $controller = (isset($arr[0]))?$arr[0]:'';
+        array_shift($arr);
+
+        $action = (isset($arr[0]))?$arr[0]:'';
+        array_shift($arr);
+
+        $queryString = $arr;
+
+        if ($controller != '' && $action == '') {
+            $action = 'index';
+        }
+
+        if ($controller == '') {
+            $controller = 'Content';
+        }
+
+        $recordId = $queryString[0];
+        switch ($controller.'/'.$action) {
+            case 'category/view':
+                $urlType = applicationConstants::URL_TYPE_CATEGORY;
+                break;
+            case 'brands/view':
+                $urlType = applicationConstants::URL_TYPE_BRAND;
+                break;
+            case 'shops/view':
+                $urlType = applicationConstants::URL_TYPE_SHOP;
+                break;
+            case 'products/view':
+                $urlType = applicationConstants::URL_TYPE_PRODUCT;
+                break;
+            default:
+                $recordId = applicationConstants::NO;
+                $urlType = applicationConstants::URL_TYPE_EXTERNAL;
+                break;
+        }
+
+        return array(
+            'url' => $url,
+            'recordId'=> $recordId,
+            'urlType'=> $urlType
+        );
     }
 }

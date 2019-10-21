@@ -197,9 +197,8 @@ class UserAuthentication extends FatModel
             $rowUser['user_ip'] = $ip;
             $rowUser['user_is_guest'] = true;
             $rowUser['user_email'] = $row['credential_email'];
-            $this->setSession($rowUser);
-
             Cart::setCartAttributes($row['user_id']);
+            $this->setSession($rowUser);
             return true;
         }
 
@@ -265,16 +264,15 @@ class UserAuthentication extends FatModel
         $rowUser['user_ip'] = $ip;
         $rowUser['user_is_guest'] = true;
         $rowUser['user_email'] = $row['credential_email'];
-        $this->setSession($rowUser);
-
         Cart::setCartAttributes($row['credential_user_id']);
+        $this->setSession($rowUser);
 
         $this->clearFailedAttempt($ip, $useremail);
 
         return true;
     }
 
-    public function login($username, $password, $ip, $encryptPassword = true, $isAdmin = false, $tempUserId = 0)
+    public function login($username, $password, $ip, $encryptPassword = true, $isAdmin = false, $tempUserId = 0, $userType = 0)
     {
         $db = FatApp::getDb();
         if ($this->isBruteForceAttempt($ip, $username)) {
@@ -299,6 +297,25 @@ class UserAuthentication extends FatModel
         $condition=$srch->addCondition('credential_username', '=', $username);
         $condition->attachCondition('credential_email', '=', $username, 'OR');
         $srch->addCondition('credential_password', '=', $password);
+        if (0 < $userType) {
+            switch ($userType) {
+                case User::USER_TYPE_BUYER:
+                    $srch->addCondition('user_is_buyer', '=', applicationConstants::YES);
+                    break;
+                case User::USER_TYPE_SELLER:
+                    $srch->addCondition('user_is_supplier', '=', applicationConstants::YES);
+                    break;
+                case User::USER_TYPE_ADVERTISER:
+                    $srch->addCondition('user_is_advertiser', '=', applicationConstants::YES);
+                    break;
+                case User::USER_TYPE_AFFILIATE:
+                    $srch->addCondition('user_is_affiliate', '=', applicationConstants::YES);
+                    break;
+                default:
+                    $srch->addCondition('user_registered_initially_for', '=', $userType);
+                    break;
+            }
+        }
         $rs = $srch->getResultSet();
 
 
@@ -352,13 +369,13 @@ class UserAuthentication extends FatModel
 
         $rowUser['user_ip'] = $ip;
         $rowUser['user_email'] = $row['credential_email'];
+        Cart::setCartAttributes($row['credential_user_id'], $tempUserId);
         $this->setSession($rowUser);
         /* $_SESSION[static::SESSION_ELEMENT_NAME] = array(
         'user_id'=>$rowUser['user_id'],
         'user_name'=>$rowUser['user_name'],
         'user_ip'=>$ip
         ); */
-        Cart::setCartAttributes($row['credential_user_id'], $tempUserId);
 
         /* clear failed login attempt for the user [ */
         $this->clearFailedAttempt($ip, $username);
@@ -545,7 +562,11 @@ class UserAuthentication extends FatModel
             if ($returnNullIfNotLogged) {
                 return null;
             }
-            Message::addErrorMessage(Labels::getLabel('MSG_USER_NOT_LOGGED', CommonHelper::getLangId()));
+            $message = Labels::getLabel('MSG_USER_NOT_LOGGED', CommonHelper::getLangId());
+            if (true ===  MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
             FatUtility::dieWithError(Message::getHtml());
         }
 
