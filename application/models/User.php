@@ -1326,12 +1326,17 @@ class User extends MyAppModel
     }
 
     public function setLoginCredentials($username, $email, $password, $active = null, $verified = null)
-    {
+    {   
         if (! ($this->mainTableRecordId > 0)) {
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
             return false;
         }
 
+        if(!preg_match('/'.ValidateElement::PASSWORD_REGEX.'/',$password)){
+            $this->error = Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->commonLangId);
+            return false;
+        }
+        
         $record = new TableRecord(static::DB_TBL_CRED);
         $arrFlds = array(
         static::DB_TBL_CRED_PREFIX.'username' => $username,
