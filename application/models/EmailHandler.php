@@ -308,18 +308,20 @@ class EmailHandler extends FatModel
     }
 
     public function sendNewRegistrationNotification($langId, $d)
-    {
+    { 
         $tpl = 'new_registration_admin';
 
         if (isset($d['user_is_affiliate']) && $d['user_is_affiliate']) {
             $tpl = 'new_affiliate_registration_admin';
         }
+        
+        $userType = !empty($d['user_type']) ? User::getUserTypesArr($langId)[$d['user_type']] : '';
         $vars = array(
-        '{name}' => $d['user_name'],
-        '{email}' => $d['user_email'],
-        '{username}' => $d['user_username'],
-                    '{user_type}' => User::getUserTypesArr($langId)[$d['user_type']]
-        );
+                    '{name}' => $d['user_name'],
+                    '{email}' => $d['user_email'],
+                    '{username}' => $d['user_username'],
+                    '{user_type}' => $userType
+                );
 
         return $this->sendMailToAdminAndAdditionalEmails($tpl, $vars, static::NO_ADDITIONAL_ALERT, static::NOT_ONLY_SUPER_ADMIN, $langId);
     }
