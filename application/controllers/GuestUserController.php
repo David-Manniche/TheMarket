@@ -732,7 +732,6 @@ class GuestUserController extends MyAppController
         if ($post == false) {
             $message = Labels::getLabel(current($frm->getValidationErrors()), $this->siteLangId);            
             LibHelper::exitWithError($message, false, true);
-            Message::addErrorMessage($message);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
         }
         
@@ -740,7 +739,6 @@ class GuestUserController extends MyAppController
         if(!$userObj->validateUserForRegistration($post['user_username'], $post['user_email'])){
             $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
             LibHelper::exitWithError($message, false, true);
-            Message::addErrorMessage($message);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
         }
         
@@ -751,7 +749,6 @@ class GuestUserController extends MyAppController
             $db->rollbackTransaction();
             $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
             LibHelper::exitWithError($message, false, true);
-            Message::addErrorMessage($message);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
         }
 
@@ -761,7 +758,6 @@ class GuestUserController extends MyAppController
             $db->rollbackTransaction();
             $message = Labels::getLabel("MSG_LOGIN_CREDENTIALS_COULD_NOT_BE_SET", $this->siteLangId) . $userObj->getError();
             LibHelper::exitWithError($message, false, true);
-            Message::addErrorMessage($message);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
         }
 
@@ -772,7 +768,6 @@ class GuestUserController extends MyAppController
                 $db->rollbackTransaction();
                 $message = Labels::getLabel("LBL_Newsletter_is_not_configured_yet,_Please_contact_admin", $this->siteLangId);
                 LibHelper::exitWithError($message, false, true);
-                Message::addErrorMessage($message);
                 FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
             }
         }
@@ -782,7 +777,6 @@ class GuestUserController extends MyAppController
                 $db->rollbackTransaction();
                 $message = Labels::getLabel("MSG_NOTIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId);
                 LibHelper::exitWithError($message, false, true);
-                Message::addErrorMessage($message);
                 FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
             }
         }
@@ -791,7 +785,6 @@ class GuestUserController extends MyAppController
             $db->rollbackTransaction();
             $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
             LibHelper::exitWithError($message, false, true);
-            Message::addErrorMessage($message);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
         }
 
@@ -800,7 +793,6 @@ class GuestUserController extends MyAppController
                 $db->rollbackTransaction();
                 $message = Labels::getLabel("MSG_VERIFICATION_EMAIL_COULD_NOT_BE_SENT",$this->siteLangId);                
                 LibHelper::exitWithError($message, false, true);
-                Message::addErrorMessage($message);
                 FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
             }
         } else {
@@ -810,7 +802,6 @@ class GuestUserController extends MyAppController
                     $db->rollbackTransaction();
                     $message = Labels::getLabel("MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT",$this->siteLangId);                    
                     LibHelper::exitWithError($message, false, true);
-                    Message::addErrorMessage($message);
                     FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
                 }
             }
@@ -824,7 +815,6 @@ class GuestUserController extends MyAppController
                 if (!$authentication->login(FatApp::getPostedData('user_username'), FatApp::getPostedData('user_password'), $_SERVER['REMOTE_ADDR'])) {
                     $message = Labels::getLabel($authentication->getError(), $this->siteLangId);                    
                     LibHelper::exitWithError($message, false, true);
-                    Message::addErrorMessage($message);
                     FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
                 }
 

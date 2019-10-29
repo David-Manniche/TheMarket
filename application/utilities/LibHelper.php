@@ -27,7 +27,12 @@ class LibHelper extends FatUtility
        
         if(FatUtility::isAjaxCall() ||  $redirect === false) {
             FatUtility::dieWithError($message);
-        }          
+        }
+        
+        if(true === $redirect){
+            Message::addErrorMessage($message);
+        }
+        
    }
    
 }
