@@ -1251,7 +1251,7 @@ class AccountController extends LoggedUserController
         'user_new_email' => $post['new_email']
         );
 
-        if (!$this->userEmailVerification($userObj, $arr)) {
+        if (!$this->userEmailVerifications($userObj, $arr)) {
             $message = Labels::getLabel('MSG_ERROR_IN_SENDING_VERFICATION_EMAIL', $this->siteLangId);
             FatUtility::dieJsonError($message);
         }
@@ -2587,11 +2587,6 @@ class AccountController extends LoggedUserController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Add', $this->siteLangId));
         $frm->setJsErrorDisplay('afterfield');
         return $frm;
-    }
-
-    private function userEmailVerification($userObj, $data)
-    {
-        return $this->userEmailVerifications($userObj, $data);
     }
 
     private function getProfileInfoForm()

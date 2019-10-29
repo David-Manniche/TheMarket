@@ -1326,13 +1326,13 @@ class User extends MyAppModel
     }
 
     public function setLoginCredentials($username, $email, $password, $active = null, $verified = null)
-    {   
+    {  
         if (! ($this->mainTableRecordId > 0)) {
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
             return false;
         }
 
-        if(!preg_match('/'.ValidateElement::PASSWORD_REGEX.'/',$password)){
+        if (!ValidateElement::password($password)) {
             $this->error = Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->commonLangId);
             return false;
         }
@@ -1612,15 +1612,14 @@ class User extends MyAppModel
 
     public function notifyAdminRegistration($data, $langId)
     {
-        $user_type = $data['user_registered_initially_for'];
+        $userType = isset($data['user_registered_initially_for']) ? $data['user_registered_initially_for'] : '';
         $data = array(
-            'user_name' => $data['user_name'],
-            'user_username' => $data['user_username'],
-        'user_email' => $data['user_email'],
-        'user_type' => $user_type,
-        );
+                    'user_name' => $data['user_name'],
+                    'user_username' => $data['user_username'],
+                    'user_email' => $data['user_email'],
+                    'user_type' => $userType,
+                );
         $email = new EmailHandler();
-
         if (!$email->sendNewRegistrationNotification($langId, $data)) {
             Message::addMessage(Labels::getLabel("ERR_ERROR_IN_SENDING_NOTIFICATION_EMAIL_TO_ADMIN", $langId));
             return false;
@@ -1628,25 +1627,21 @@ class User extends MyAppModel
         return true;
     }
 
-    public function userEmailVerification($userObj, $data, $langId)
+    public function userEmailVerification($data, $langId)
     {
-        $verificationCode = $userObj->prepareUserVerificationCode();
-
+        $verificationCode = $this->prepareUserVerificationCode();
         $link = CommonHelper::generateFullUrl('GuestUser', 'userCheckEmailVerification', array('verify'=>$verificationCode));
         $data = array(
-            'user_name' => $data['user_name'],
-            'link' => $link,
-        'user_email' => $data['user_email'],
-        );
-
+                    'user_name' => $data['user_name'],
+                    'link' => $link,
+                    'user_email' => $data['user_email'],
+                );
         $email = new EmailHandler();
-
         if (!$email->sendSignupVerificationLink($langId, $data)) {
             Message::addMessage(Labels::getLabel("ERR_ERROR_IN_SENDING_VERFICATION_EMAIL", $langId));
             return false;
         }
-
-        return true;
+        return true;  
     }
 
     public function guestUserWelcomeEmail($data, $langId)
@@ -1669,25 +1664,21 @@ class User extends MyAppModel
         return true;
     }
 
-    public function userWelcomeEmailRegistration($userObj, $data, $langId)
-    {
-        $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
-
+    public function userWelcomeEmailRegistration($data, $link, $langId)
+    {        
         $data = array(
-            'user_name' => $data['user_name'],
-        'user_email' => $data['user_email'],
-        'link' => $link,
-        );
-
+                    'user_name' => $data['user_name'],
+                    'user_email' => $data['user_email'],
+                    'link' => $link,
+                );
+                
         $email = new EmailHandler();
-
         if (!$email->sendWelcomeEmail($langId, $data)) {
             Message::addMessage(Labels::getLabel("ERR_ERROR_IN_SENDING_WELCOME_EMAIL", $langId));
             return false;
         }
-
-        return true;
-    }
+        return true;          
+    }    
 
     public function notifyAdminSupplierApproval($userObj, $data, $approval_request = 1, $langId)
     {
@@ -2170,5 +2161,120 @@ class User extends MyAppModel
         $date = empty($date) ? date('Y-m-d  H:i:s') : $date;
         $where = array('smt'=>'user_id = ?', 'vals'=>array($userId));
         FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_img_updated_on'=>date('Y-m-d  H:i:s')), $where);
+    }    
+      
+    public function saveUserData( $postedData)
+    {
+        $db = FatApp::getDb();
+        $db->startTransaction();
+        
+        if(!$this->validateUserForRegistration($postedData['user_username'], $postedData['user_email'])){
+            $this->error = $db->getError();
+            return false;
+        }
+        
+        $postedData['user_is_buyer'] = 1;
+        $postedData['user_preferred_dashboard'] = User::USER_BUYER_DASHBOARD;
+        $postedData['user_registered_initially_for'] = User::USER_TYPE_BUYER;
+        $postedData['user_is_supplier'] = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1))  ? 0 : 1;
+        $postedData['user_is_advertiser'] = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0 : 1;
+        $this->assignValues($postedData);
+        if (!$this->save()) {
+            $db->rollbackTransaction();
+            $this->error = $db->getError();
+            return false;
+        }
+        
+        $active = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1) ? 0: 1;
+        $verify = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
+        if (!$this->setLoginCredentials($postedData['user_username'], $postedData['user_email'], $postedData['user_password'], $active, $verify)) {
+            $db->rollbackTransaction();
+            $this->error = $db->getError();
+            return false;
+        }
+
+        $this->setUpRewardEntry($this->getMainTableRecordId(), $this->commonLangId);
+        
+        if ($postedData['user_newsletter_signup']) {
+            if(!MailchimpHelper::saveSubscriber($postedData['user_email'])){
+                $db->rollbackTransaction();
+                $this->error = Labels::getLabel("LBL_Newsletter_is_not_configured_yet,_Please_contact_admin", $this->commonLangId);
+                return false;
+            }
+        }
+        
+        if (FatApp::getConfig('CONF_NOTIFY_ADMIN_REGISTRATION', FatUtility::VAR_INT, 1)) {
+            if (!$this->notifyAdminRegistration($postedData, $this->commonLangId)) {
+                $db->rollbackTransaction();
+                $this->error = Labels::getLabel("ERR_ERROR_IN_SENDING_NOTIFICATION_EMAIL_TO_ADMIN", $this->commonLangId);
+                return false;
+            }
+        }
+        
+        if (!$this->saveUserNotifications()) {
+            $db->rollbackTransaction();
+            $this->error = $db->getError();
+            return false;
+        }
+          
+        if (FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1)) {
+            if (!$this->userEmailVerification($postedData, $this->commonLangId)) {
+                $db->rollbackTransaction();
+                $this->error = Labels::getLabel("ERR_ERROR_IN_SENDING_VERFICATION_EMAIL",$this->commonLangId);
+                return false;
+            }
+        }else{
+            if (FatApp::getConfig('CONF_WELCOME_EMAIL_REGISTRATION', FatUtility::VAR_INT, 1)) {
+                $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
+                if (!$this->userWelcomeEmailRegistration($postedData, $link, $this->commonLangId)) {
+                    $db->rollbackTransaction();
+                    $message = Labels::getLabel("ERR_ERROR_IN_SENDING_WELCOME_EMAIL",$this->siteLangId);                    
+                    return false;
+                }
+            }
+        }
+        
+        $db->commitTransaction();
+        return true;
     }
+    
+    public function validateUserForRegistration( $userName, $userEmail )
+    {       
+        $row = $this->checkUserByEmailOrUserName( $userName, $userEmail );        
+        if ($row['credential_username']==$userName) {
+            $this->error = Labels::getLabel('MSG_DUPLICATE_USERNAME', $this->commonLangId);
+            return false;
+        }        
+        if ($row['credential_email']==$userEmail) { 
+            $this->error = Labels::getLabel('MSG_DUPLICATE_EMAIL', $this->commonLangId);
+            return false;
+        }        
+        return true;        
+    }
+    
+    public function checkUserByEmailOrUserName( $userName, $userEmail )
+    {        
+        $srch = $this->getUserSearchObj(array('user_id','credential_email','credential_username'));
+        $condition=$srch->addCondition('credential_username', '=', $userName);
+        $condition->attachCondition('credential_email', '=', $userEmail, 'OR');
+        $rs = $srch->getResultSet();
+        return FatApp::getDb()->fetch($rs);
+    }
+    
+    public function saveUserNotifications()
+    {
+        $notificationData = array(
+        'notification_record_type' => Notification::TYPE_USER,
+        'notification_record_id' => $this->getMainTableRecordId(),
+        'notification_user_id' => $this->getMainTableRecordId(),
+        'notification_label_key' => Notification::NEW_USER_REGISTERATION_NOTIFICATION,
+        'notification_added_on' => date('Y-m-d H:i:s'),
+        );
+        if (!Notification::saveNotifications($notificationData)) {
+            $this->error = FatApp::getDb()->getError();
+            return false;
+        } 
+        return true;
+    }
+
 }

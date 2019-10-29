@@ -383,8 +383,7 @@ class GuestUserController extends MyAppController
             if (true ===  MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
-            Message::addErrorMessage($message);
-            // CommonHelper::redirectUserReferer();
+            Message::addErrorMessage($message);            
         }
 
         $authentication = new UserAuthentication();
@@ -657,7 +656,7 @@ class GuestUserController extends MyAppController
         $userData['user_username'] = $username;
         $userData['user_email'] = $userEmail;
         if (FatApp::getConfig('CONF_NOTIFY_ADMIN_REGISTRATION', FatUtility::VAR_INT, 1)) {
-            if (!$this->notifyAdminRegistration($userObj, $userData)) {
+            if (!$userObj->notifyAdminRegistration($userData, $this->siteLangId)) {    
                 $message = Labels::getLabel("MSG_NOTIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId);
                 Message::addErrorMessage($message);
                 $db->rollbackTransaction();
@@ -675,9 +674,9 @@ class GuestUserController extends MyAppController
             $data['user_name'] = $username;
 
             //ToDO::Change login link to contact us link
-            $data['link'] = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
+            $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
             $userEmailObj = new User($userId);
-            if (!$this->userWelcomeEmailRegistration($userEmailObj, $data)) {
+            if (!$userEmailObj->userWelcomeEmailRegistration($data, $link, $this->siteLangId)) {           
                 $message = Labels::getLabel("MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId);
                 Message::addErrorMessage($message);
                 $db->rollbackTransaction();
@@ -728,245 +727,39 @@ class GuestUserController extends MyAppController
     public function register()
     {
         $frm = $this->getRegistrationForm();
-        $post = FatApp::getPostedData();
-
-        $cartObj = new Cart();
-        $isCheckOutPage = (isset($post['isCheckOutPage']) && $cartObj->hasProducts()) ? FatUtility::int($post['isCheckOutPage']) : 0;
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
         if ($post == false) {
-            $message = Labels::getLabel(current($frm->getValidationErrors()), $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
-                FatUtility::dieJsonError($message);
-            }
-            Message::addErrorMessage($message);
-
-            if (FatUtility::isAjaxCall()) {
-                FatUtility::dieWithError(Message::getHtml());
-            }
+            $message = Labels::getLabel(current($frm->getValidationErrors()), $this->siteLangId);            
+            LibHelper::exitWithError($message, false, true);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
         }
-
-        $userObj = new User();
-        $db = FatApp::getDb();
-        $srch = $userObj->getUserSearchObj(array('user_id','credential_email','credential_username'));
-        $condition=$srch->addCondition('credential_username', '=', $post['user_username']);
-        $condition->attachCondition('credential_email', '=', $post['user_email'], 'OR');
-        //die($srch->getquery());
-        $rs = $srch->getResultSet();
-        $row = $db->fetch($rs);
-
-        if ($row) {
-            if ($row['credential_username']==$post['user_username']) {
-                $message = Labels::getLabel('MSG_DUPLICATE_USERNAME', $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
-                    FatUtility::dieJsonError($message);
-                }
-                Message::addErrorMessage($message);
-                if (FatUtility::isAjaxCall()) {
-                    FatUtility::dieWithError(Message::getHtml());
-                }
-            } elseif ($row['credential_email']==$post['user_email']) {
-                $message = Labels::getLabel('MSG_DUPLICATE_EMAIL', $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
-                    FatUtility::dieJsonError($message);
-                }
-                Message::addErrorMessage($message);
-                if (FatUtility::isAjaxCall()) {
-                    FatUtility::dieWithError(Message::getHtml());
-                }
-            }
+        
+        $userObj = new User(); 
+        if (!$userObj->saveUserData($post)) {
+            $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
+            LibHelper::exitWithError($message, false, true);
+            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
         }
-        $db->startTransaction();
-
-        $post['user_is_buyer'] = 1;
-        $post['user_is_supplier'] = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1))  ? 0 : 1;
-        $post['user_is_advertiser'] = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0 : 1;
-        //$post['user_is_supplier'] = 0;
-        $post['user_preferred_dashboard'] = User::USER_BUYER_DASHBOARD;
-        $post['user_registered_initially_for'] = User::USER_TYPE_BUYER;
-
-        $userObj->assignValues($post);
-        if (!$userObj->save()) {
-            $db->rollbackTransaction();
-
-            $message = Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->siteLangId) . $userObj->getError();
-            if (true ===  MOBILE_APP_API_CALL) {
-                FatUtility::dieJsonError($message);
-            }
-            Message::addErrorMessage($message);
-            if (FatUtility::isAjaxCall()) {
-                FatUtility::dieWithError(Message::getHtml());
-            }
-            $this->registrationForm();
-            return;
-        }
-
-        $active = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1) ? 0: 1;
-        $verify = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
-
-        /* from checkout, buyer will be bydeafult acitve and email will be verified[ */
-        /* $active = ( $isCheckOutPage == 1 ) ? 1 : $active;
-        $verify = ( $isCheckOutPage == 1 ) ? 1 : $verify; */
-        /* ] */
-
-        if (!$userObj->setLoginCredentials($post['user_username'], $post['user_email'], $post['user_password'], $active, $verify)) {
-            $message = Labels::getLabel("MSG_LOGIN_CREDENTIALS_COULD_NOT_BE_SET", $this->siteLangId) . $userObj->getError();
-
-            Message::addErrorMessage($message);
-            $db->rollbackTransaction();
-
-            if (true ===  MOBILE_APP_API_CALL) {
-                FatUtility::dieJsonError($message);
-            }
-            if (FatUtility::isAjaxCall()) {
-                FatUtility::dieWithError(Message::getHtml());
-            }
-            $this->registrationForm();
-            return ;
-        }
-
-        $userObj->setUpRewardEntry($userObj->getMainTableRecordId(), $this->siteLangId);
-
-        //$userObj->setUpAffiliateRewarding( $userObj->getMainTableRecordId() );
-
-        if (FatApp::getPostedData('user_newsletter_signup')) {
-            include_once CONF_INSTALLATION_PATH . 'library/Mailchimp.php';
-            $api_key = FatApp::getConfig("CONF_MAILCHIMP_KEY");
-            $list_id = FatApp::getConfig("CONF_MAILCHIMP_LIST_ID");
-            if ($api_key == '' || $list_id == '') {
-                $message = Labels::getLabel("LBL_Newsletter_is_not_configured_yet,_Please_contact_admin", $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
-                    FatUtility::dieJsonError($message);
-                }
-                Message::addErrorMessage($message);
-                if (FatUtility::isAjaxCall()) {
-                    FatUtility::dieWithError(Message::getHtml());
-                }
-                $this->registrationForm();
-                return ;
-            }
-
-            $MailchimpObj = new Mailchimp($api_key);
-            $Mailchimp_ListsObj = new Mailchimp_Lists($MailchimpObj);
-            try {
-                $subscriber = $Mailchimp_ListsObj->subscribe($list_id, array( 'email' => htmlentities($post['user_email'])));
-                /* if ( empty( $subscriber['leid'] ) ) {
-                Message::addErrorMessage( Labels::getLabel('MSG_Newsletter_subscription_valid_email', $siteLangId) );
-                FatUtility::dieWithError( Message::getHtml() );
-                } */
-            } catch (Mailchimp_Error $e) {
-                /* Message::addErrorMessage( $e->getMessage() );
-                FatUtility::dieWithError( Message::getHtml() ); */
-            }
-        }
-
-        if (FatApp::getConfig('CONF_NOTIFY_ADMIN_REGISTRATION', FatUtility::VAR_INT, 1)) {
-            if (!$this->notifyAdminRegistration($userObj, $post)) {
-                $message = Labels::getLabel("MSG_NOTIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId);
-
-                Message::addErrorMessage($message);
-                $db->rollbackTransaction();
-
-                if (true ===  MOBILE_APP_API_CALL) {
-                    FatUtility::dieJsonError($message);
-                }
-
-                if (FatUtility::isAjaxCall()) {
-                    FatUtility::dieWithError(Message::getHtml());
-                }
-                $this->registrationForm();
-                return;
-            }
-        }
-
-        //Send notification to admin
-        $notificationData = array(
-        'notification_record_type' => Notification::TYPE_USER,
-        'notification_record_id' => $userObj->getMainTableRecordId(),
-        'notification_user_id' => $userObj->getMainTableRecordId(),
-        'notification_label_key' => Notification::NEW_USER_REGISTERATION_NOTIFICATION,
-        'notification_added_on' => date('Y-m-d H:i:s'),
-        );
-
-        if (!Notification::saveNotifications($notificationData)) {
-            $message = Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->siteLangId);
-
-            Message::addErrorMessage($message);
-            $db->rollbackTransaction();
-
-            if (true ===  MOBILE_APP_API_CALL) {
-                FatUtility::dieJsonError($message);
-            }
-
-            if (FatUtility::isAjaxCall()) {
-                FatUtility::dieWithError(Message::getHtml());
-            }
-            $this->registrationForm();
-            return;
-        }
-
-        if (FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1)) {
-            if (!$this->userEmailVerification($userObj, $post)) {
-                $message = Labels::getLabel("MSG_VERIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId);
-                Message::addErrorMessage($message);
-                $db->rollbackTransaction();
-
-                if (true ===  MOBILE_APP_API_CALL) {
-                    FatUtility::dieJsonError($message);
-                }
-
-                if (FatUtility::isAjaxCall()) {
-                    FatUtility::dieWithError(Message::getHtml());
-                }
-                $this->registrationForm();
-                return;
-            }
-        } else {
-            if (FatApp::getConfig('CONF_WELCOME_EMAIL_REGISTRATION', FatUtility::VAR_INT, 1)) {
-                if (!$this->userWelcomeEmailRegistration($userObj, $post)) {
-                    $message = Labels::getLabel("MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId);
-                    Message::addErrorMessage($message);
-                    $db->rollbackTransaction();
-
-                    if (true ===  MOBILE_APP_API_CALL) {
-                        FatUtility::dieJsonError($message);
-                    }
-
-                    if (FatUtility::isAjaxCall()) {
-                        FatUtility::dieWithError(Message::getHtml());
-                    }
-                    $this->registrationForm();
-                    return;
-                }
-            }
-
-            $confAutoLoginRegisteration = FatApp::getConfig('CONF_AUTO_LOGIN_REGISTRATION', FatUtility::VAR_INT, 1);
-            $confAutoLoginRegisteration = ($isCheckOutPage) ? 1 : $confAutoLoginRegisteration;
-
+        
+        
+        if (!FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1)) {
+            $cartObj = new Cart();
+            $isCheckOutPage = (isset($post['isCheckOutPage']) && $cartObj->hasProducts()) ? FatUtility::int($post['isCheckOutPage']) : 0; 
+            $confAutoLoginRegisteration = ($isCheckOutPage) ? 1 : FatApp::getConfig('CONF_AUTO_LOGIN_REGISTRATION', FatUtility::VAR_INT, 1);
             if ($confAutoLoginRegisteration && !(FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1))) {
-                $db->commitTransaction();
                 $authentication = new UserAuthentication();
                 if (!$authentication->login(FatApp::getPostedData('user_username'), FatApp::getPostedData('user_password'), $_SERVER['REMOTE_ADDR'])) {
-                    $message = Labels::getLabel($authentication->getError(), $this->siteLangId);
-
-                    if (true ===  MOBILE_APP_API_CALL) {
-                        FatUtility::dieJsonError($message);
-                    }
-                    Message::addErrorMessage($message);
-                    if (FatUtility::isAjaxCall()) {
-                        FatUtility::dieWithError(Message::getHtml());
-                    }
-
+                    $message = Labels::getLabel($authentication->getError(), $this->siteLangId);                    
+                    LibHelper::exitWithError($message, false, true);
                     FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
                 }
 
                 if (false ===  MOBILE_APP_API_CALL) {
+                    $redirectUrl = CommonHelper::generateUrl('Account');
                     if ($isCheckOutPage) {
                         $this->set('needLogin', 1);
                         $redirectUrl = CommonHelper::generateUrl('Checkout');
-                    } else {
-                        $redirectUrl = CommonHelper::generateUrl('Account');
                     }
                     if (FatUtility::isAjaxCall()) {
                         $this->set('msg', Labels::getLabel('LBL_Registeration_Successfull', $this->siteLangId));
@@ -976,10 +769,8 @@ class GuestUserController extends MyAppController
                     }
                     FatApp::redirectUser($redirectUrl);
                 }
-            }
+            }            
         }
-
-        $db->commitTransaction();
 
         if (true ===  MOBILE_APP_API_CALL) {
             $this->set('msg', Labels::getLabel('LBL_Registeration_Successfull', $this->siteLangId));
@@ -993,54 +784,7 @@ class GuestUserController extends MyAppController
             $this->_template->render(false, false, 'json-success.php');
             exit;
         }
-
         FatApp::redirectUser($redirectUrl);
-    }
-
-    private function userEmailVerification($userObj, $data)
-    {
-        $verificationCode = $userObj->prepareUserVerificationCode();
-
-        $link = CommonHelper::generateFullUrl('GuestUser', 'userCheckEmailVerification', array('verify'=>$verificationCode));
-        $data = array(
-            'user_name' => $data['user_name'],
-            'link' => $link,
-        'user_email' => $data['user_email'],
-        );
-
-        $email = new EmailHandler();
-
-        if (!$email->sendSignupVerificationLink($this->siteLangId, $data)) {
-            Message::addMessage(Labels::getLabel("MSG_ERROR_IN_SENDING_VERFICATION_EMAIL", $this->siteLangId));
-            return false;
-        }
-
-        return true;
-    }
-
-    private function notifyAdminRegistration($userObj, $data)
-    {
-        return $userObj->notifyAdminRegistration($data, $this->siteLangId);
-    }
-
-    private function userWelcomeEmailRegistration($userObj, $data)
-    {
-        $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
-
-        $data = array(
-            'user_name' => $data['user_name'],
-        'user_email' => $data['user_email'],
-        'link' => $link,
-        );
-
-        $email = new EmailHandler();
-
-        if (!$email->sendWelcomeEmail($this->siteLangId, $data)) {
-            Message::addMessage(Labels::getLabel("MSG_ERROR_IN_SENDING_WELCOME_EMAIL", $this->siteLangId));
-            return false;
-        }
-
-        return true;
     }
 
     public function userCheckEmailVerification($code)
@@ -1103,9 +847,8 @@ class GuestUserController extends MyAppController
             $data['user_name'] = $userdata['user_name'];
 
             //ToDO::Change login link to contact us link
-            $data['link'] = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
-
-            if (!$this->userWelcomeEmailRegistration($userObj, $data)) {
+            $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
+            if (!$userObj->userWelcomeEmailRegistration($data, $link, $this->siteLangId)) {
                 Message::addErrorMessage(Labels::getLabel("MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId));
                 $db->rollbackTransaction();
                 FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
@@ -1308,7 +1051,7 @@ class GuestUserController extends MyAppController
 
         $userObj = new User($row['user_id']);
         if ($checkVerificationRow['credential_verified'] != applicationConstants::YES) {
-            if (!$this->userEmailVerification($userObj, $row, $this->siteLangId)) {
+            if (!$userObj->userEmailVerification($row, $this->siteLangId)) {
                 $message = Labels::getLabel("MSG_VERIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId);
                 if (true ===  MOBILE_APP_API_CALL) {
                     FatUtility::dieJsonError($message);
@@ -1362,7 +1105,7 @@ class GuestUserController extends MyAppController
 
         $userObj = new User($row['user_id']);
         if ($checkVerificationRow['credential_verified'] != 1) {
-            if (!$this->userEmailVerification($userObj, $row, $this->siteLangId)) {
+            if (!$userObj->userEmailVerification($row, $this->siteLangId)) {
                 FatUtility::dieJsonError(Labels::getLabel("MSG_VERIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId));
             } else {
                 $message = Labels::getLabel("MSG_VERIFICATION_EMAIL_HAS_BEEN_SENT_AGAIN", $this->siteLangId);
