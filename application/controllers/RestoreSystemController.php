@@ -26,7 +26,7 @@ class RestoreSystemController extends MyAppController
         $restoreTime = FatApp::getConfig('CONF_RESTORE_SCHEDULE_TIME', FatUtility::VAR_STRING, $dateTime);
 
         if (strtotime($restoreTime) >= strtotime(date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s').' +1 min')))) {
-            $this->resetRestoreTime(CONF_DB_NAME);
+            // $this->resetRestoreTime(CONF_DB_NAME);
             Message::addErrorMessage('Auto restore scheduled on '.$restoreTime);
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -118,7 +118,7 @@ class RestoreSystemController extends MyAppController
         $mysqli = new mysqli(CONF_DB_SERVER, CONF_DB_USER, CONF_DB_PASS, $databasename);
         $date = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s').' +'.static::RESTORE_TIME_INTERVAL_HOURS.' hours'));
         $sql = "UPDATE `tbl_configurations` set `conf_val` = '".$date."' where `conf_name` = 'CONF_RESTORE_SCHEDULE_TIME'";
-        $mysqli->query($sql);
+        $mysqli->query($sql);        
     }
 
     private function restoreDatabase($databasename)
