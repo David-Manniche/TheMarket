@@ -736,81 +736,18 @@ class GuestUserController extends MyAppController
         }
         
         $userObj = new User(); 
-        if(!$userObj->validateUserForRegistration($post['user_username'], $post['user_email'])){
+        if (!$userObj->saveUserData($post)) {
             $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
             LibHelper::exitWithError($message, false, true);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
         }
         
-        $db = FatApp::getDb();
-        $db->startTransaction();
         
-        if (!$userObj->saveUser($post)) {
-            $db->rollbackTransaction();
-            $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
-            LibHelper::exitWithError($message, false, true);
-            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
-        }
-
-        $active = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1) ? 0: 1;
-        $verify = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
-        if (!$userObj->setLoginCredentials($post['user_username'], $post['user_email'], $post['user_password'], $active, $verify)) {
-            $db->rollbackTransaction();
-            $message = Labels::getLabel("MSG_LOGIN_CREDENTIALS_COULD_NOT_BE_SET", $this->siteLangId) . $userObj->getError();
-            LibHelper::exitWithError($message, false, true);
-            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
-        }
-
-        $userObj->setUpRewardEntry($userObj->getMainTableRecordId(), $this->siteLangId);
-
-        if (FatApp::getPostedData('user_newsletter_signup')) {
-            if(!MailchimpHelper::saveSubscriber($post['user_email'])){
-                $db->rollbackTransaction();
-                $message = Labels::getLabel("LBL_Newsletter_is_not_configured_yet,_Please_contact_admin", $this->siteLangId);
-                LibHelper::exitWithError($message, false, true);
-                FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
-            }
-        }
-  
-        if (FatApp::getConfig('CONF_NOTIFY_ADMIN_REGISTRATION', FatUtility::VAR_INT, 1)) {
-            if (!$userObj->notifyAdminRegistration($post, $this->siteLangId)) {
-                $db->rollbackTransaction();
-                $message = Labels::getLabel("MSG_NOTIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId);
-                LibHelper::exitWithError($message, false, true);
-                FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
-            }
-        }
-        
-        if (!$userObj->saveUserNotifications()) {
-            $db->rollbackTransaction();
-            $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
-            LibHelper::exitWithError($message, false, true);
-            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
-        }
-
-        if (FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1)) {
-            if (!$userObj->userEmailVerification($post, $this->siteLangId)) {
-                $db->rollbackTransaction();
-                $message = Labels::getLabel("MSG_VERIFICATION_EMAIL_COULD_NOT_BE_SENT",$this->siteLangId);                
-                LibHelper::exitWithError($message, false, true);
-                FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
-            }
-        } else {
-            if (FatApp::getConfig('CONF_WELCOME_EMAIL_REGISTRATION', FatUtility::VAR_INT, 1)) {
-                $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
-                if (!$userObj->userWelcomeEmailRegistration($post, $link, $this->siteLangId)) {
-                    $db->rollbackTransaction();
-                    $message = Labels::getLabel("MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT",$this->siteLangId);                    
-                    LibHelper::exitWithError($message, false, true);
-                    FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
-                }
-            }
-            
+        if (!FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1)) {
             $cartObj = new Cart();
             $isCheckOutPage = (isset($post['isCheckOutPage']) && $cartObj->hasProducts()) ? FatUtility::int($post['isCheckOutPage']) : 0; 
             $confAutoLoginRegisteration = ($isCheckOutPage) ? 1 : FatApp::getConfig('CONF_AUTO_LOGIN_REGISTRATION', FatUtility::VAR_INT, 1);
             if ($confAutoLoginRegisteration && !(FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1))) {
-                $db->commitTransaction();
                 $authentication = new UserAuthentication();
                 if (!$authentication->login(FatApp::getPostedData('user_username'), FatApp::getPostedData('user_password'), $_SERVER['REMOTE_ADDR'])) {
                     $message = Labels::getLabel($authentication->getError(), $this->siteLangId);                    
@@ -832,10 +769,8 @@ class GuestUserController extends MyAppController
                     }
                     FatApp::redirectUser($redirectUrl);
                 }
-            }
+            }            
         }
-
-        $db->commitTransaction();
 
         if (true ===  MOBILE_APP_API_CALL) {
             $this->set('msg', Labels::getLabel('LBL_Registeration_Successfull', $this->siteLangId));
@@ -849,7 +784,6 @@ class GuestUserController extends MyAppController
             $this->_template->render(false, false, 'json-success.php');
             exit;
         }
-
         FatApp::redirectUser($redirectUrl);
     }
 
