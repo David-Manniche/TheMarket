@@ -583,7 +583,7 @@ class UserAuthentication extends FatModel
         return FatUtility::int(static::getLoggedUserAttribute('user_id', $returnZeroIfNotLogged));
     }
 
-    public function getUserByEmail($email, $isActive = true, $isVerfied = true)
+    public function getUserByEmail($email, $isActive = true, $isVerfied = true, $attr = null)
     {
         $db = FatApp::getDb();
         $srch = new SearchBase(User::DB_TBL);
@@ -601,15 +601,19 @@ class UserAuthentication extends FatModel
             $srch->addFld(User::DB_TBL_CRED_PREFIX . 'verified');
         }
 
-        $srch->addMultipleFields(
-            array(
-            User::tblFld('id'),
-            User::tblFld('name'),
-            User::DB_TBL_CRED_PREFIX . 'email',
-            User::DB_TBL_CRED_PREFIX . 'password'
-            )
-        );
-
+        if($attr == null){
+            $srch->addMultipleFields(
+                array(
+                User::tblFld('id'),
+                User::tblFld('name'),
+                User::DB_TBL_CRED_PREFIX . 'email',
+                User::DB_TBL_CRED_PREFIX . 'password'
+                )
+            );
+        }else{
+            $srch->addMultipleFields($attr);
+        }
+        
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();

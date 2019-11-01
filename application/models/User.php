@@ -2163,7 +2163,7 @@ class User extends MyAppModel
         FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_img_updated_on'=>date('Y-m-d  H:i:s')), $where);
     }    
       
-    public function saveUserData( $postedData)
+    public function saveUserData( $postedData, $socialUser = false)
     {
         $db = FatApp::getDb();
         $db->startTransaction();
@@ -2172,12 +2172,7 @@ class User extends MyAppModel
             $this->error = $db->getError();
             return false;
         }
-        
-        $postedData['user_is_buyer'] = 1;
-        $postedData['user_preferred_dashboard'] = User::USER_BUYER_DASHBOARD;
-        $postedData['user_registered_initially_for'] = User::USER_TYPE_BUYER;
-        $postedData['user_is_supplier'] = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1))  ? 0 : 1;
-        $postedData['user_is_advertiser'] = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0 : 1;
+                
         $this->assignValues($postedData);
         if (!$this->save()) {
             $db->rollbackTransaction();
@@ -2185,17 +2180,13 @@ class User extends MyAppModel
             return false;
         }
         
-        $active = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1) ? 0: 1;
-        $verify = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
-        if (!$this->setLoginCredentials($postedData['user_username'], $postedData['user_email'], $postedData['user_password'], $active, $verify)) {
+        if (!$this->setLoginCredentials($postedData['user_username'], $postedData['user_email'], $postedData['user_password'], $postedData['user_active'], $postedData['user_verify'])) {
             $db->rollbackTransaction();
             $this->error = $db->getError();
             return false;
         }
 
-        $this->setUpRewardEntry($this->getMainTableRecordId(), $this->commonLangId);
-        
-        if ($postedData['user_newsletter_signup']) {
+        if (isset($postedData['user_newsletter_signup'])) {
             if(!MailchimpHelper::saveSubscriber($postedData['user_email'])){
                 $db->rollbackTransaction();
                 $this->error = Labels::getLabel("LBL_Newsletter_is_not_configured_yet,_Please_contact_admin", $this->commonLangId);
@@ -2211,13 +2202,15 @@ class User extends MyAppModel
             }
         }
         
-        if (!$this->saveUserNotifications()) {
-            $db->rollbackTransaction();
-            $this->error = $db->getError();
-            return false;
+        if($socialUser == false){
+            if (!$this->saveUserNotifications()) {
+                $db->rollbackTransaction();
+                $this->error = $db->getError();
+                return false;
+            }
         }
           
-        if (FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1)) {
+        if (FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) && $socialUser == false) {
             if (!$this->userEmailVerification($postedData, $this->commonLangId)) {
                 $db->rollbackTransaction();
                 $this->error = Labels::getLabel("ERR_ERROR_IN_SENDING_VERFICATION_EMAIL",$this->commonLangId);
@@ -2235,6 +2228,7 @@ class User extends MyAppModel
         }
         
         $db->commitTransaction();
+        $this->setUpRewardEntry($this->getMainTableRecordId(), $this->commonLangId);
         return true;
     }
     
