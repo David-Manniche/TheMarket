@@ -10,7 +10,7 @@ class MailchimpHelper
             return false;
         }
 
-        $MailchimpObj = new Mailchimp(apiKey);
+        $MailchimpObj = new Mailchimp($apiKey);
         $Mailchimp_ListsObj = new Mailchimp_Lists($MailchimpObj);
         try {
             $subscriber = $Mailchimp_ListsObj->subscribe($listId, array( 'email' => htmlentities($email)));   
