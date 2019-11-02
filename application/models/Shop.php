@@ -87,7 +87,11 @@ class Shop extends MyAppModel
     {
         $shopId = FatUtility::int($shopId);
         $userId = FatUtility::int($userId);
-
+        
+        if($userId < 1 && $shopId < 1){
+            return false;
+        }
+        
         $shopDetails = self::getAttributesByUserId($userId, array('shop_active','shop_id'), false);
 
         if (!false == $shopDetails && $shopDetails['shop_active'] != applicationConstants::ACTIVE) {
