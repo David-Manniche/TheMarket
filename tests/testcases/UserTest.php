@@ -172,5 +172,32 @@ class UserTest extends TestCase
         );
     }
     
+    /**
+    * @dataProvider dataSaveUser
+    */
+    public function testSaveUserData( $data, $expected )
+    {
+        $user = new User();
+        $result = $user->saveUserData( $data );
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function dataSaveUser()
+    {
+        $isSupplier = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1))  ? 0 : 1;
+        $isAdvertiser = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0 : 1;
+        $userActive = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1) ? 0: 1;
+        $userVerify = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
+                
+        return array(            
+            array(array('user_name' => 'pok101', 'user_username' => 'pok101', 'user_email' => 'pok101@dummyid.com', 'user_password' => 'Test@123','user_newsletter_signup' => 0, 'user_is_buyer' => User::USER_TYPE_BUYER, 'user_preferred_dashboard' => User::USER_BUYER_DASHBOARD, 'user_registered_initially_for' => User::USER_TYPE_BUYER, 'user_is_supplier' => $isSupplier,'user_is_advertiser' => $isAdvertiser, 'user_active' => $userActive, 'user_verify' => $userVerify), true),
+
+            array(array('user_name' => 'pok102', 'user_username' => 'pok102', 'user_email' => 'pok102@dummyid.com', 'user_password' => 'Test@123','user_newsletter_signup' => 1, 'user_is_buyer' => User::USER_TYPE_BUYER, 'user_preferred_dashboard' => User::USER_BUYER_DASHBOARD, 'user_registered_initially_for' => User::USER_TYPE_BUYER, 'user_is_supplier' => $isSupplier,'user_is_advertiser' => $isAdvertiser, 'user_active' => $userActive, 'user_verify' => $userVerify), true),
+        
+            
+            
+        );
+    }
+    
     
 }
