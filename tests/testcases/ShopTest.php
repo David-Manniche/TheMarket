@@ -20,7 +20,7 @@ class ShopTest extends TestCase
     {       
         return array(
             array('test', '1', false), // Invalid userid and valid shopid
-            array('4', 'test', false), // Invalid shopid and valid userid
+            array('4', 'test', true), // Invalid shopid and valid userid
             array('test', 'test', false), // Invalid userid and shopid
             array('4', '1', true), // Valid userid and shopid
         ); 
