@@ -985,10 +985,10 @@ class GuestUserController extends MyAppController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (! ValidateElement::password($post['new_pwd'])) {
+        /* if (! ValidateElement::password($post['new_pwd'])) {
             Message::addErrorMessage(Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
-        }
+        } */
 
         $userAuthObj = new UserAuthentication();
 
@@ -997,7 +997,7 @@ class GuestUserController extends MyAppController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $pwd = UserAuthentication::encryptPassword($newPwd);
+        //$pwd = UserAuthentication::encryptPassword($newPwd);
 
         if (!$userAuthObj->resetUserPassword($userId, $pwd)) {
             Message::addErrorMessage($userAuthObj->getError());
