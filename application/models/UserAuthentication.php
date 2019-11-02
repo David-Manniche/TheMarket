@@ -759,9 +759,16 @@ class UserAuthentication extends FatModel
         $userId = FatUtility::convertToType($userId, FatUtility::VAR_INT);
         if ($userId < 1) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
-            ;
             return false;
         }
+        
+        if (! ValidateElement::password($pwd)) {
+            $this->error = Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->commonLangId)
+            return false;
+        }
+        
+        $pwd = UserAuthentication::encryptPassword($pwd);
+        
         if (!empty($pwd)) {
             $user = new User($userId);
             if (!$user->resetPassword($pwd)) {
