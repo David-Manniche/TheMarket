@@ -3,9 +3,6 @@ class FacebookHelper
 {   
     public static function getUserFacebookInfo($accessToken, $langId)
     {     
-        $message = Labels::getLabel('MSG_Invalid_Token', $langId);
-            LibHelper::dieJsonError($message);
-            
         include_once CONF_INSTALLATION_PATH . 'library/facebook/facebook.php';
         $facebook = new Facebook(
             array(
