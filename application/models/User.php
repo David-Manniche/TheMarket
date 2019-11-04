@@ -2167,7 +2167,12 @@ class User extends MyAppModel
     {
         $db = FatApp::getDb();
         $db->startTransaction();
-        
+
+        if (!filter_var($postedData['user_email'], FILTER_VALIDATE_EMAIL)) {
+            $this->error = Labels::getLabel("LBL_Invalid_email_address", $this->commonLangId);
+            return false;
+        }
+
         if(!$this->validateUserForRegistration($postedData['user_username'], $postedData['user_email'])){
             $this->error = $db->getError();
             return false;
