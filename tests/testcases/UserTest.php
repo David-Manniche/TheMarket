@@ -197,9 +197,14 @@ class UserTest extends TestCase
             array(array('user_name' => 'Cindy', 'user_username' => 'testdevtest', 'user_email' => 'Cindy@dummyid.com', 'user_password' => 'Test@123', 'user_newsletter_signup' => 0, 'user_is_buyer' => User::USER_TYPE_BUYER, 'user_preferred_dashboard' => User::USER_BUYER_DASHBOARD, 'user_registered_initially_for' => User::USER_TYPE_BUYER, 'user_is_supplier' => $isSupplier,'user_is_advertiser' => $isAdvertiser, 'user_active' => $userActive, 'user_verify' => $userVerify), false), 
             //user email already exist
             
-             array(array('user_name' => 'pok'.$random, 'user_username' => 'pok'.$random, 'user_email' => 'pok'.$random.'@dummyid.com', 'user_password' => 'wrong','user_newsletter_signup' => 0, 'user_is_buyer' => User::USER_TYPE_BUYER, 'user_preferred_dashboard' => User::USER_BUYER_DASHBOARD, 'user_registered_initially_for' => User::USER_TYPE_BUYER, 'user_is_supplier' => $isSupplier,'user_is_advertiser' => $isAdvertiser, 'user_active' => $userActive, 'user_verify' => $userVerify), false), //New user with invalid password
+            array(array('user_name' => 'pok'.$random, 'user_username' => 'pok'.$random, 'user_email' => 'pok'.$random.'@dummyid.com', 'user_password' => 'wrong','user_newsletter_signup' => 0, 'user_is_buyer' => User::USER_TYPE_BUYER, 'user_preferred_dashboard' => User::USER_BUYER_DASHBOARD, 'user_registered_initially_for' => User::USER_TYPE_BUYER, 'user_is_supplier' => $isSupplier,'user_is_advertiser' => $isAdvertiser, 'user_active' => $userActive, 'user_verify' => $userVerify), false), 
+            //New user with invalid password
+             
+            array(array('user_name' => 'pok'.$random, 'user_username' => 'pok'.$random, 'user_email' => 'pok'.$random, 'user_password' => 'Test@123','user_newsletter_signup' => 0, 'user_is_buyer' => User::USER_TYPE_BUYER, 'user_preferred_dashboard' => User::USER_BUYER_DASHBOARD, 'user_registered_initially_for' => User::USER_TYPE_BUYER, 'user_is_supplier' => $isSupplier,'user_is_advertiser' => $isAdvertiser, 'user_active' => $userActive, 'user_verify' => $userVerify), false), 
+            //New user with invalid email
 
-            array(array('user_name' => 'pok'.$random, 'user_username' => 'pok'.$random, 'user_email' => 'pok'.$random.'@dummyid.com', 'user_password' => 'Test@123','user_newsletter_signup' => 0, 'user_is_buyer' => User::USER_TYPE_BUYER, 'user_preferred_dashboard' => User::USER_BUYER_DASHBOARD, 'user_registered_initially_for' => User::USER_TYPE_BUYER, 'user_is_supplier' => $isSupplier,'user_is_advertiser' => $isAdvertiser, 'user_active' => $userActive, 'user_verify' => $userVerify), true), //New User with valid data
+            array(array('user_name' => 'pok'.$random, 'user_username' => 'pok'.$random, 'user_email' => 'pok'.$random.'@dummyid.com', 'user_password' => 'Test@123','user_newsletter_signup' => 0, 'user_is_buyer' => User::USER_TYPE_BUYER, 'user_preferred_dashboard' => User::USER_BUYER_DASHBOARD, 'user_registered_initially_for' => User::USER_TYPE_BUYER, 'user_is_supplier' => $isSupplier,'user_is_advertiser' => $isAdvertiser, 'user_active' => $userActive, 'user_verify' => $userVerify), true), 
+            //New User with valid data
         );
     }
     
