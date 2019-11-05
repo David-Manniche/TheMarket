@@ -164,23 +164,29 @@ class ConfigurationsController extends AdminBaseController
         $record = new Configurations();
 
         if (isset($post["CONF_SEND_SMTP_EMAIL"]) && $post["CONF_SEND_EMAIL"] && $post["CONF_SEND_SMTP_EMAIL"] && (($post["CONF_SEND_SMTP_EMAIL"] != FatApp::getConfig("CONF_SEND_SMTP_EMAIL")) || ($post["CONF_SMTP_HOST"] != FatApp::getConfig("CONF_SMTP_HOST")) || ($post["CONF_SMTP_PORT"] != FatApp::getConfig("CONF_SMTP_PORT")) || ($post["CONF_SMTP_USERNAME"] != FatApp::getConfig("CONF_SMTP_USERNAME")) || ($post["CONF_SMTP_SECURE"] != FatApp::getConfig("CONF_SMTP_SECURE")) || ($post["CONF_SMTP_PASSWORD"] != FatApp::getConfig("CONF_SMTP_PASSWORD")))) {
-            $smtp_arr=array("host"=>$post["CONF_SMTP_HOST"],"port"=>$post["CONF_SMTP_PORT"],"username"=>$post["CONF_SMTP_USERNAME"],"password"=>$post["CONF_SMTP_PASSWORD"],"secure"=>$post["CONF_SMTP_SECURE"]);
+            $smtp_arr = array(
+                    "host" => $post["CONF_SMTP_HOST"],
+                    "port" => $post["CONF_SMTP_PORT"],
+                    "username" => $post["CONF_SMTP_USERNAME"],
+                    "password" => $post["CONF_SMTP_PASSWORD"],
+                    "secure" => $post["CONF_SMTP_SECURE"]
+                );
 
             if (EmailHandler::sendSmtpTestEmail($this->adminLangId, $smtp_arr)) {
-                Message::addMessage(Labels::getLabel('LBL_We_have_sent_a_test_email_to_administrator_account'.FatApp::getConfig("CONF_SITE_OWNER_EMAIL"), $this->adminLangId));
+                Message::addMessage(Labels::getLabel('LBL_We_have_sent_a_test_email_to_administrator_account' . FatApp::getConfig("CONF_SITE_OWNER_EMAIL"), $this->adminLangId));
             } else {
                 Message::addErrorMessage(Labels::getLabel("LBL_SMTP_settings_provided_is_invalid_or_unable_to_send_email_so_we_have_not_saved_SMTP_settings", $this->adminLangId));
                 unset($post["CONF_SEND_SMTP_EMAIL"]);
                 foreach ($smtp_arr as $skey => $sval) {
-                    unset($post['CONF_SMTP_'.strtoupper($skey)]);
+                    unset($post['CONF_SMTP_' . strtoupper($skey)]);
                 }
                 FatUtility::dieJsonError(Message::getHtml());
             }
         }
 
-        if (isset($post['CONF_USE_SSL']) && $post['CONF_USE_SSL']==1) {
-            if (!$this->is_ssl_enabled()) {
-                if ($post['CONF_USE_SSL']!= FatApp::getConfig('CONF_USE_SSL')) {
+        if (isset($post['CONF_USE_SSL']) && $post['CONF_USE_SSL'] == 1) {
+            if (!$this->isSslEnabled()) {
+                if ($post['CONF_USE_SSL'] != FatApp::getConfig('CONF_USE_SSL')) {
                     Message::addErrorMessage(Labels::getLabel('MSG_SSL_NOT_INSTALLED_FOR_WEBSITE_Try_to_Save_data_without_Enabling_ssl', $this->adminLangId));
 
                     FatUtility::dieJsonError(Message::getHtml());
@@ -191,7 +197,7 @@ class ConfigurationsController extends AdminBaseController
         }
 
         if (isset($post['CONF_SITE_ROBOTS_TXT'])) {
-            $filePath = CONF_INSTALLATION_PATH.'public/robots.txt';
+            $filePath = CONF_INSTALLATION_PATH . 'public/robots.txt';
             $robotfile = fopen($filePath, "w");
             fwrite($robotfile, $post['CONF_SITE_ROBOTS_TXT']);
             fclose($robotfile);
@@ -208,11 +214,11 @@ class ConfigurationsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function is_ssl_enabled()
+    private function isSslEnabled()
     {
 
         // url connection
-        $url = "https://".$_SERVER["HTTP_HOST"];
+        $url = "https://" . $_SERVER["HTTP_HOST"];
 
         // Initiate connection
         $ch = curl_init();
@@ -315,7 +321,7 @@ class ConfigurationsController extends AdminBaseController
 
         $this->set('file', $_FILES['file']['name']);
         $this->set('frmType', Configurations::FORM_GENERAL);
-        $this->set('msg', $_FILES['file']['name']. Labels::getLabel('MSG_Uploaded_Successfully', $this->adminLangId));
+        $this->set('msg', $_FILES['file']['name'] . Labels::getLabel('MSG_Uploaded_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -336,11 +342,11 @@ class ConfigurationsController extends AdminBaseController
             Message::addErrorMessage($e->getMessage());
         }
 
-        if (isset($get['code']) && isset($get['code'])!='') {
+        if (isset($get['code']) && isset($get['code']) != '') {
             $code = $get['code'];
             $auth = $analytics->getAccessToken($code);
-            if ($auth['refreshToken']!='') {
-                $arr = array('CONF_ANALYTICS_ACCESS_TOKEN'=>$auth['refreshToken']);
+            if ($auth['refreshToken'] != '') {
+                $arr = array('CONF_ANALYTICS_ACCESS_TOKEN' => $auth['refreshToken']);
                 $record = new Configurations();
                 if (!$record->update($arr)) {
                     Message::addErrorMessage($record->getError());
@@ -522,7 +528,7 @@ class ConfigurationsController extends AdminBaseController
         switch ($type) {
             case Configurations::FORM_GENERAL:
                 $frm->addEmailField(Labels::getLabel('LBL_Store_Owner_Email', $this->adminLangId), 'CONF_SITE_OWNER_EMAIL');
-                $phnFld = $frm->addTextBox(Labels::getLabel('LBL_Telephone', $this->adminLangId), 'CONF_SITE_PHONE', '', array('class'=>'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
+                $phnFld = $frm->addTextBox(Labels::getLabel('LBL_Telephone', $this->adminLangId), 'CONF_SITE_PHONE', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
                 $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
                 // $phnFld->htmlAfterField='<small class="text--small">'.Labels::getLabel('LBL_e.g.', $this->adminLangId).': '.implode(', ', ValidateElement::PHONE_FORMATS).'</small>';
                 $phnFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_format.', $this->adminLangId));
@@ -538,6 +544,10 @@ class ConfigurationsController extends AdminBaseController
                 $frm->addSelectBox(Labels::getLabel('LBL_Privacy_Policy_Page', $this->adminLangId), 'CONF_PRIVACY_POLICY_PAGE', $cpagesArr);
                 $frm->addSelectBox(Labels::getLabel('LBL_Terms_and_Conditions_Page', $this->adminLangId), 'CONF_TERMS_AND_CONDITIONS_PAGE', $cpagesArr);
                 $frm->addSelectBox(Labels::getLabel('LBL_GDPR_policy_page', $this->adminLangId), 'CONF_GDPR_POLICY_PAGE', $cpagesArr);
+
+                $taxStructureArr =  TaxStructure::getAllAssoc($this->adminLangId);                
+                $frm->addSelectBox(Labels::getLabel('LBL_TAX_STRUCTURE', $this->adminLangId), 'CONF_TAX_STRUCTURE', $taxStructureArr, array(), array(), '');
+
                 $frm->addSelectBox(Labels::getLabel('LBL_Cookies_Policies_Page', $this->adminLangId), 'CONF_COOKIES_BUTTON_LINK', $cpagesArr);
                 $fld1 = $frm->addCheckBox(Labels::getLabel('LBL_Cookies_Policies', $this->adminLangId), 'CONF_ENABLE_COOKIES', 1, array(), false, 0);
                 $fld1->htmlAfterField = "<br><small>".Labels::getLabel("LBL_cookies_policies_section_will_be_shown_on_frontend", $this->adminLangId)."</small>";

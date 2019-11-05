@@ -216,6 +216,11 @@ class TaxController extends AdminBaseController
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
+
+            if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == Tax::STRUCTURE_GST) {
+                $taxValues = Tax::getCombinedValues($data['taxval_value']);
+                $data = array_merge($data, $taxValues);
+            }
             $frm->fill($data);
         }
 
@@ -232,7 +237,7 @@ class TaxController extends AdminBaseController
         $taxcat_id = FatUtility::int($taxcat_id);
         $lang_id = FatUtility::int($lang_id);
 
-        if ($taxcat_id==0 || $lang_id==0) {
+        if ($taxcat_id == 0 || $lang_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
 
@@ -399,14 +404,28 @@ class TaxController extends AdminBaseController
         $typeArr = applicationConstants::getYesNoArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Percentage', $this->adminLangId), 'taxval_is_percent', $typeArr, '', array(), '');
 
-        $fld = $frm->addFloatField(Labels::getLabel('LBL_Value', $this->adminLangId), 'taxval_value');
+        $fld = $frm->addFloatField(Labels::getLabel('LBL_Total_Value', $this->adminLangId), 'taxval_value');
         $fld->requirements()->setFloatPositive(true);
         $fld->requirements()->setRange('0', '100');
+
+        if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == Tax::STRUCTURE_GST) {
+            $frm->addTextBox(Labels::getLabel('LBL_CGST', $this->adminLangId), 'cgst', '');
+            $frm->addTextBox(Labels::getLabel('LBL_SGST', $this->adminLangId), 'sgst', '');
+            $frm->addTextBox(Labels::getLabel('LBL_IGST', $this->adminLangId), 'igst', '');
+        }
         
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
 
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'taxcat_active', $activeInactiveArr, '', array(), '');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
+    }
+
+
+    public function getCombinedValues($value)
+    {
+        $this->objPrivilege->canViewTax();
+        $tax =  Tax::getCombinedValues($value);
+        FatUtility::dieJsonSuccess($tax);
     }
 }

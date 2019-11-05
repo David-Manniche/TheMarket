@@ -45,7 +45,7 @@ class MyAppModel extends FatModel
 
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-
+        
         if ($assoc) {
             return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
         } else {

@@ -93,6 +93,15 @@ $(document).ready(function() {
         searchTax(document.frmTaxSearch);
     };
 
+    splitValues = function(tax){
+        fcom.ajax(fcom.makeUrl('Tax', 'getCombinedValues',[tax]), '', function(res) {
+           var ans = $.parseJSON(res);           
+           $('#cgst').val(ans.cgst);
+           $('#sgst').val(ans.sgst);
+           $('#igst').val(ans.igst);
+        })    
+    };
+
     toggleStatus = function(obj) {
         if (!confirm(langLbl.confirmUpdateStatus)) {
             return;

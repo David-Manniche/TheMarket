@@ -247,3 +247,117 @@ INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_type`, `l
 INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_type`, `label_caption`) VALUES ('APP_VIEW_MORE_SELLERS','2', 2,'شاهد المزيد من البائعين');
 INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_type`, `label_caption`) VALUES ('APP_ASK_QUESTIONS','2', 2,'اسال اسئلة');
 INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_type`, `label_caption`) VALUES ('APP_NO_DATA_FOUND','2', 2,'لاتوجد بيانات');
+
+CREATE TABLE `tbl_tax_structure` (
+  `taxstr_id` int(11) NOT NULL,
+  `taxstr_identifier` varchar(150) NOT NULL,
+  `taxstr_type` int(4) NOT NULL,
+  `taxstr_state_dependent` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_tax_structure`
+--
+
+INSERT INTO `tbl_tax_structure` (`taxstr_id`, `taxstr_identifier`, `taxstr_type`, `taxstr_state_dependent`) VALUES
+(1, 'Vat/Single Tax Structure', 1, 0),
+(2, 'GST', 2, 1),
+(3, 'Combined Tax structure', 3, 0);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_tax_structure`
+--
+ALTER TABLE `tbl_tax_structure`
+  ADD PRIMARY KEY (`taxstr_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `tbl_tax_structure`
+--
+ALTER TABLE `tbl_tax_structure`
+  MODIFY `taxstr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+ CREATE TABLE `tbl_tax_structure_lang` (
+  `taxstrlang_taxstr_id` int(11) NOT NULL,
+  `taxstrlang_lang_id` int(11) NOT NULL,
+  `taxstr_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_tax_structure_lang`
+--
+
+INSERT INTO `tbl_tax_structure_lang` (`taxstrlang_taxstr_id`, `taxstrlang_lang_id`, `taxstr_name`) VALUES
+(1, 1, 'Tax'),
+(1, 2, 'Tax'),
+(2, 1, 'GST'),
+(2, 2, 'GST'),
+(3, 1, 'Total Tax'),
+(3, 2, 'Total Tax');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_tax_structure_lang`
+--
+ALTER TABLE `tbl_tax_structure_lang`
+  ADD PRIMARY KEY (`taxstrlang_taxstr_id`,`taxstrlang_lang_id`); 
+CREATE TABLE `tbl_tax_structure_options` (
+  `taxstro_id` int(11) NOT NULL,
+  `taxstro_taxstr_id` int(11) NOT NULL,
+  `taxstro_interstate` tinyint(1) NOT NULL,
+  `taxstro_identifier` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_tax_structure_options`
+--
+
+INSERT INTO `tbl_tax_structure_options` (`taxstro_id`, `taxstro_taxstr_id`, `taxstro_interstate`, `taxstro_identifier`) VALUES
+(1, 2, 0, 'CGST'),
+(2, 2, 0, 'SGST'),
+(3, 2, 1, 'IGST');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_tax_structure_options`
+--
+ALTER TABLE `tbl_tax_structure_options`
+  ADD PRIMARY KEY (`taxstro_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `tbl_tax_structure_options`
+--
+ALTER TABLE `tbl_tax_structure_options`
+  MODIFY `taxstro_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+CREATE TABLE `tbl_tax_structure_options_lang` (
+  `taxstrolang_taxstro_id` int(11) NOT NULL,
+  `taxstrolang_lang_id` int(11) NOT NULL,
+  `taxstro_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_tax_structure_options_lang`
+--
+ALTER TABLE `tbl_tax_structure_options_lang`
+  ADD PRIMARY KEY (`taxstrolang_taxstro_id`,`taxstrolang_lang_id`);  

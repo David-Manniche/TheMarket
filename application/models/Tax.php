@@ -18,6 +18,10 @@ class Tax extends MyAppModel
     const TYPE_PERCENTAGE = 1;
     const TYPE_FIXED = 0;
 
+    const STRUCTURE_VAT = 0;
+    const STRUCTURE_GST = 1;
+    const STRUCTURE_COMBINED = 2;
+    
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
@@ -33,6 +37,20 @@ class Tax extends MyAppModel
         $arr = array(
         static::TYPE_PERCENTAGE => Labels::getLabel('LBL_PERCENTAGE', $langId),
         static::TYPE_FIXED => Labels::getLabel('LBL_FIXED', $langId),
+        );
+        return $arr;
+    }
+
+    public static function getStructureArr($langId)
+    {
+        $langId = FatUtility::int($langId);
+        if ($langId == 0) {
+            trigger_error(Labels::getLabel('MSG_Language_Id_not_specified.', $langId), E_USER_ERROR);
+        }
+        $arr = array(
+        static::STRUCTURE_VAT => Labels::getLabel('LBL_VAT/SINGLE_TAX_SYSTEM', $langId),
+        static::STRUCTURE_GST => Labels::getLabel('LBL_GST', $langId),
+        static::STRUCTURE_COMBINED => Labels::getLabel('LBL_COMBINED', $langId),
         );
         return $arr;
     }
@@ -242,7 +260,7 @@ class Tax extends MyAppModel
             return $tax;
         }
         
-        if ($res['taxval_is_percent'] == static::TYPE_PERCENTAGE) { 
+        if ($res['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
             $tax = round((($prodPrice * $qty) * $res['taxval_value'])/100, 2);
         } else {
             $tax = $res['taxval_value']*$qty;
@@ -267,6 +285,29 @@ class Tax extends MyAppModel
 
     public function removeTaxSetByAdmin($productId = 0)
     {
-        FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_TAX, array('smt'=>'ptt_seller_user_id = ? and ptt_product_id = ?', 'vals'=>array(0, $productId)));
+        FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_TAX, array('smt' => 'ptt_seller_user_id = ? and ptt_product_id = ?', 'vals' => array(0, $productId)));
+    }
+
+    public static function getCombinedValues($value)
+    {
+        $arr = [];
+        $value = FatUtility::convertToType($value, FatUtility::VAR_FLOAT);
+        if (0 == $value) {
+            return $arr;
+        }
+        
+        $taxStructure = FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0);
+        
+        switch ($taxStructure) {
+            case TAX::STRUCTURE_GST:
+                $tax = number_format((float)$value / 2, 2, '.', '');
+                $arr = [
+                    'cgst' =>  $tax,
+                    'sgst' =>  $tax,
+                    'igst' =>  number_format((float)$value, 2, '.', ''),
+                ];
+            break;
+        }
+        return $arr;
     }
 }
