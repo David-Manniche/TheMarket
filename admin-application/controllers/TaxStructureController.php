@@ -39,7 +39,7 @@ class TaxStructureController extends AdminBaseController
         $taxStrId = FatUtility::int($taxStrId);
         $frm = $this->getForm($taxStrId);
 
-        $type = 0;                
+        $type = 0;
         if (0 < $taxStrId) {
             $srch = TaxStructure::getSearchObject($this->adminLangId);
             $srch->addCondition('taxstr_id', '=', $taxStrId);
@@ -67,17 +67,53 @@ class TaxStructureController extends AdminBaseController
             FatUtility::dieWithError($this->str_invalid_request);
         }
 
-        $taxStructure = new TaxStructure($taxStrId);
-        $options =  $taxStructure->getOptions($this->adminLangId);
-        
-        $this->set('listing', $options);
         $this->set('taxStrId', $taxStrId);
         $this->set('languages', Language::getAllNames());
-       
+        $this->_template->render(false, false);
+    }
+
+    public function searchOptions($taxStrId)
+    {
+        $taxStructure = new TaxStructure($taxStrId);
+        $options =  $taxStructure->getOptions($this->adminLangId);
+
+        $this->set('listing', $options);
+
         $this->canView = $this->objPrivilege->canViewTax($this->admin_id, true);
         $this->canEdit = $this->objPrivilege->canEditTax($this->admin_id, true);
         $this->set("canView", $this->canView);
         $this->set("canEdit", $this->canEdit);
+        $this->_template->render(false, false);
+    }
+
+    public function addTaxstrOptionForm($taxstrOptionId = 0)
+    {
+        $this->objPrivilege->canEditTax();
+
+        $taxstrOptionId = FatUtility::int($taxstrOptionId);
+        $frm = $this->getTaxstrOptionForm($taxstrOptionId);
+
+        if (0 < $taxstrOptionId) {
+            $srch = TaxStructure::getSearchObject();
+            $srch->joinTable(
+                TaxStructure::DB_TBL_OPTIONS,
+                'INNER JOIN',
+                'tso.' . TaxStructure::DB_TBL_OPTIONS_PREFIX . 'taxstr_id = ts.' . TaxStructure::tblFld('id'),
+                'tso'
+            );
+            $srch->addCondition('taxstro_id', '=', $taxstrOptionId);
+            $rs = $srch->getResultSet();
+            $data = FatApp::getDb()->fetch($rs);
+
+            if ($data === false) {
+                FatUtility::dieWithError($this->str_invalid_request);
+            }
+            $frm->fill($data);
+        }
+
+        $this->set('languages', Language::getAllNames());
+        $this->set('taxStrId', $taxstrOptionId);
+        $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
 
@@ -92,7 +128,7 @@ class TaxStructureController extends AdminBaseController
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $taxStrId = $post['taxstr_id'];
         unset($post['taxstr_id']);
 
@@ -211,6 +247,20 @@ class TaxStructureController extends AdminBaseController
         $frm->addRequiredField(Labels::getLabel('LBL_Tax_Structure_Identifier', $this->adminLangId), 'taxstr_identifier');
         $typeArr = applicationConstants::getYesNoArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_State_Dependent', $this->adminLangId), 'taxstr_state_dependent', $typeArr, '', array(), '');
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
+        return $frm;
+    }
+
+    private function getTaxstrOptionForm($taxstrOptionId = 0)
+    {
+        $this->objPrivilege->canEditTax();
+        $taxstrOptionId = FatUtility::int($taxstrOptionId);
+
+        $frm = new Form('frmTaxStructure');
+        $frm->addHiddenField('', 'taxstrOptionId', $taxstrOptionId);
+        $frm->addRequiredField(Labels::getLabel('LBL_Tax_Option_Identifier', $this->adminLangId), 'taxstro_identifier');
+        $typeArr = applicationConstants::getYesNoArr($this->adminLangId);
+        $frm->addSelectBox(Labels::getLabel('LBL_Interstate', $this->adminLangId), 'taxstro_interstate', $typeArr, '', array(), '');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }

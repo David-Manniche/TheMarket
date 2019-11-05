@@ -4,7 +4,7 @@ $(document).ready(function() {
 (function() {
     var dv = '#taxStrListing';
     searchTaxStructure = function() {
-        var data = '';       
+        var data = '';
         $(dv).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('TaxStructure', 'search'), '', function(res) {
             $(dv).html(res);
@@ -64,7 +64,23 @@ $(document).ready(function() {
     options = function(taxStrId){
         fcom.displayProcessing();
         fcom.ajax(fcom.makeUrl('TaxStructure', 'options', [taxStrId]), '', function(t) {
+            searchOptions(taxStrId);
             fcom.updateFaceboxContent(t);
+        });
+    };
+
+    searchOptions = function(taxStrId) {
+        $("#optionListing").html('Loading....');
+        fcom.ajax(fcom.makeUrl('TaxStructure', 'searchOptions', [taxStrId]), '', function(res) {
+            $("#optionListing").html(res);
+        });
+    };
+
+    addOptionForm = function(taxstrOptionId) {
+        $("#optionListing").html('Loading....');
+        fcom.ajax(fcom.makeUrl('TaxStructure', 'addTaxstrOptionForm', [taxstrOptionId]), '', function(t) {
+            $("#optionListing").html(t);
+            fcom.resetFaceboxHeight();
         });
     };
 

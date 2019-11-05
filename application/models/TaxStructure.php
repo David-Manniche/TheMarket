@@ -12,7 +12,7 @@ class TaxStructure extends MyAppModel
 
     const DB_TBL_OPTIONS_LANG = 'tbl_tax_structure_options_lang';
     const DB_TBL_OPTIONS_LANG_PREFIX = 'taxstrolang_';
-    
+
     const TYPE_SINGLE_VAT = 1;
     const TYPE_GST = 2;
     const TYPE_COMBINED = 3;
@@ -30,7 +30,7 @@ class TaxStructure extends MyAppModel
     {
         $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 'ts');
-      
+
         if ($langId > 0) {
             $srch->joinTable(
                 static::DB_TBL_LANG,
@@ -45,7 +45,7 @@ class TaxStructure extends MyAppModel
 
     public static function getAllAssoc($langId)
     {
-        $langId = FatUtility::int($langId);        
+        $langId = FatUtility::int($langId);
         $srch = static::getSearchObject($langId);
         $srch->addMultipleFields(array('taxstr_id', 'IFNULL(taxstr_name, taxstr_identifier) as taxstr_name'));
         $srch->doNotCalculateRecords();
@@ -80,12 +80,12 @@ class TaxStructure extends MyAppModel
     public function getOptions($langId = 0)
     {
         $langId = FatUtility::int($langId);
-        
+
         if (1 > $this->mainTableRecordId || $langId == 0) {
             trigger_error(Labels::getLabel('MSG_Invalid_access.', CommonHelper::getLangId()), E_USER_ERROR);
         }
 
-        
+
         $srch = static::getSearchObject($langId);
         $srch->joinTable(
             static::DB_TBL_OPTIONS,
