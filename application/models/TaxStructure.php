@@ -13,9 +13,8 @@ class TaxStructure extends MyAppModel
     const DB_TBL_OPTIONS_LANG = 'tbl_tax_structure_options_lang';
     const DB_TBL_OPTIONS_LANG_PREFIX = 'taxstrolang_';
 
-    const TYPE_SINGLE_VAT = 1;
-    const TYPE_GST = 2;
-    const TYPE_COMBINED = 3;
+    const TYPE_SINGLE = 1;
+    const TYPE_COMBINED = 2;
 
     private $db;
 
@@ -93,14 +92,41 @@ class TaxStructure extends MyAppModel
             'tso.' . static::DB_TBL_OPTIONS_PREFIX . 'taxstr_id = ts.' . static::tblFld('id'),
             'tso'
         );
-        $srch->joinTable(
-            static::DB_TBL_OPTIONS_LANG,
-            'LEFT OUTER JOIN',
-            'tso_l.' . static::DB_TBL_OPTIONS_LANG_PREFIX . 'taxstro_id = tso.' . static::DB_TBL_OPTIONS_PREFIX . 'taxstr_id',
-            'tso_l'
-        );
+        if (0 < $langId) {
+            $srch->joinTable(
+                static::DB_TBL_OPTIONS_LANG,
+                'LEFT OUTER JOIN',
+                'tso_l.' . static::DB_TBL_OPTIONS_LANG_PREFIX . 'taxstro_id = tso.' . static::DB_TBL_OPTIONS_PREFIX . 'taxstr_id AND tso_l.' . static::DB_TBL_OPTIONS_LANG_PREFIX . 'lang_id = ' . $langId,
+                'tso_l'
+            );
+        }
         $srch->addCondition('taxstro_taxstr_id', '=', $this->mainTableRecordId);
+
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetchAll($rs);
+    }
+
+    public function getOptionData($taxstrOptionId)
+    {
+        $srch = static::getSearchObject();
+        $srch->joinTable(
+            static::DB_TBL_OPTIONS,
+            'INNER JOIN',
+            'tso.' . static::DB_TBL_OPTIONS_PREFIX . 'taxstr_id = ts.' . static::tblFld('id'),
+            'tso'
+        );
+        $srch->addCondition('taxstro_id', '=', $taxstrOptionId);
+        $rs = $srch->getResultSet();
+        $record = FatApp::getDb()->fetch($rs);
+        if ($record) {
+            $lang_record = CommonHelper::getLangFields(
+                $taxstrOptionId,
+                'taxstrolang_taxstro_id',
+                'taxstrolang_lang_id',
+                array('taxstro_name'),
+                static::DB_TBL_OPTIONS.'_lang'
+            );
+            return array_merge($record, $lang_record);
+        }
     }
 }

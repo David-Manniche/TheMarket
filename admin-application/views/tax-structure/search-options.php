@@ -45,8 +45,10 @@ foreach ($listing as $sn => $row) {
                     $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
                     $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
 
-                    $innerLi=$innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addOptionForm(".$row['taxstro_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
+                    $innerLiAdd=$innerUl->appendElement('li');
+                    $innerLiAdd->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addOptionForm(".$row['taxstr_id'].",".$row['taxstro_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
+                    $innerLiDelete=$innerUl->appendElement('li');
+                    $innerLiDelete->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_DELETE', $adminLangId),"onclick"=>"deleteOptionRecord(".$row['taxstr_id'].",".$row['taxstro_id'].")"), Labels::getLabel('LBL_DELETE', $adminLangId), true);
                 }
                 break;
             default:

@@ -76,11 +76,30 @@ $(document).ready(function() {
         });
     };
 
-    addOptionForm = function(taxstrOptionId) {
-        $("#optionListing").html('Loading....');
-        fcom.ajax(fcom.makeUrl('TaxStructure', 'addTaxstrOptionForm', [taxstrOptionId]), '', function(t) {
-            $("#optionListing").html(t);
+    addOptionForm = function(taxstrId, taxstrOptionId) {
+        $("#optionForm").html('Loading....');
+        fcom.ajax(fcom.makeUrl('TaxStructure', 'addOptionForm', [taxstrId, taxstrOptionId]), '', function(t) {
+            $("#optionForm").html(t);
             fcom.resetFaceboxHeight();
+        });
+    };
+
+    optionSetup = function(frm) {
+        if (!$(frm).validate()) return;
+        var data = fcom.frmData(frm);
+        fcom.updateWithAjax(fcom.makeUrl('TaxStructure', 'optionSetup'), data, function(t) {
+            options(t.taxstrId);
+            fcom.resetFaceboxHeight();
+        });
+    };
+
+    deleteOptionRecord = function(taxstrId, taxstrOptionId) {
+        if (!confirm(langLbl.confirmDelete)) {
+            return;
+        }
+        data = 'id=' + taxstrOptionId;
+        fcom.updateWithAjax(fcom.makeUrl('TaxStructure', 'deleteOption'), data, function(t) {
+            searchOptions(taxstrId);
         });
     };
 

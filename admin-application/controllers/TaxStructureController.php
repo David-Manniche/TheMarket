@@ -86,25 +86,16 @@ class TaxStructureController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function addTaxstrOptionForm($taxstrOptionId = 0)
+    public function addOptionForm($taxstrId, $taxstrOptionId = 0)
     {
         $this->objPrivilege->canEditTax();
 
         $taxstrOptionId = FatUtility::int($taxstrOptionId);
-        $frm = $this->getTaxstrOptionForm($taxstrOptionId);
+        $frm = $this->getOptionForm($taxstrId, $taxstrOptionId);
 
         if (0 < $taxstrOptionId) {
-            $srch = TaxStructure::getSearchObject();
-            $srch->joinTable(
-                TaxStructure::DB_TBL_OPTIONS,
-                'INNER JOIN',
-                'tso.' . TaxStructure::DB_TBL_OPTIONS_PREFIX . 'taxstr_id = ts.' . TaxStructure::tblFld('id'),
-                'tso'
-            );
-            $srch->addCondition('taxstro_id', '=', $taxstrOptionId);
-            $rs = $srch->getResultSet();
-            $data = FatApp::getDb()->fetch($rs);
-
+            $taxStructure = new TaxStructure($taxstrId);
+            $data =  $taxStructure->getOptionData($taxstrOptionId);
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
@@ -112,9 +103,28 @@ class TaxStructureController extends AdminBaseController
         }
 
         $this->set('languages', Language::getAllNames());
-        $this->set('taxStrId', $taxstrOptionId);
+        $this->set('taxstrOptionId', $taxstrOptionId);
+        $this->set('taxstrId', $taxstrId);
         $this->set('frm', $frm);
         $this->_template->render(false, false);
+    }
+
+    public function deleteOption()
+    {
+        $this->objPrivilege->canEditTax();
+
+        $taxstrOptionId = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
+        if ($taxstrOptionId < 1) {
+            Message::addErrorMessage(
+                Labels::getLabel('MSG_INVALID_REQUEST_ID', $this->adminLangId)
+            );
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        FatApp::getDb()->deleteRecords(TaxStructure::DB_TBL_OPTIONS, array( 'smt' => 'taxstro_id = ?', 'vals' => array( $taxstrOptionId )));
+        FatApp::getDb()->deleteRecords(TaxStructure::DB_TBL_OPTIONS_LANG, array( 'smt' => 'taxstrolang_taxstro_id = ?', 'vals' => array( $taxstrOptionId )));
+        $this->set('msg', Labels::getLabel('MSG_RECORD_DELETED_SUCCESSFULLY', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
     }
 
     public function setup()
@@ -245,24 +255,88 @@ class TaxStructureController extends AdminBaseController
         $frm = new Form('frmTaxStructure');
         $frm->addHiddenField('', 'taxstr_id', $taxStrId);
         $frm->addRequiredField(Labels::getLabel('LBL_Tax_Structure_Identifier', $this->adminLangId), 'taxstr_identifier');
-        $typeArr = applicationConstants::getYesNoArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_State_Dependent', $this->adminLangId), 'taxstr_state_dependent', $typeArr, '', array(), '');
+        $row = TaxStructure::getAttributesById($taxStrId);
+        if ($row['taxstr_type'] != TaxStructure::TYPE_SINGLE) {
+            $typeArr = applicationConstants::getYesNoArr($this->adminLangId);
+            $frm->addSelectBox(Labels::getLabel('LBL_State_Dependent', $this->adminLangId), 'taxstr_state_dependent', $typeArr, '', array(), '');
+        }
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
 
-    private function getTaxstrOptionForm($taxstrOptionId = 0)
+    private function getOptionForm($taxstrId, $taxstrOptionId = 0)
     {
         $this->objPrivilege->canEditTax();
         $taxstrOptionId = FatUtility::int($taxstrOptionId);
 
         $frm = new Form('frmTaxStructure');
-        $frm->addHiddenField('', 'taxstrOptionId', $taxstrOptionId);
+        $frm->addHiddenField('', 'taxstro_id', $taxstrOptionId);
+        $frm->addHiddenField('', 'taxstro_taxstr_id', $taxstrId);
         $frm->addRequiredField(Labels::getLabel('LBL_Tax_Option_Identifier', $this->adminLangId), 'taxstro_identifier');
+        $languages = Language::getAllNames();
+        foreach ($languages as $langId => $langName) {
+            $fld = $frm->addRequiredField(
+                Labels::getLabel('LBL_Tax_Option_Name',  $this->adminLangId).' '.$langName,
+                'taxstro_name'.$langId
+            );
+            $fld->setWrapperAttribute('class', 'layout--'.Language::getLayoutDirection($langId));
+        }
         $typeArr = applicationConstants::getYesNoArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Interstate', $this->adminLangId), 'taxstro_interstate', $typeArr, '', array(), '');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
+    }
+
+    public function optionSetup()
+    {
+        $this->objPrivilege->canEditOptions();
+        $post = FatApp::getPostedData();
+        $frm = $this->getOptionForm($post['taxstro_taxstr_id'], $post['taxstro_id']);
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+
+        if (false === $post) {
+            Message::addErrorMessage(current($frm->getValidationErrors()));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $taxstro_id = FatUtility::int($post['taxstro_id']);
+        // unset($post['taxstro_id']);
+        $assignValues = array(
+        'taxstro_id' => $post['taxstro_id'],
+        'taxstro_taxstr_id' => $post['taxstro_taxstr_id'],
+        'taxstro_interstate' => $post['taxstro_interstate'],
+        'taxstro_identifier' => $post['taxstro_identifier']
+        );
+        $db = FatApp::getDb();
+        if (!$db->insertFromArray(TaxStructure::DB_TBL_OPTIONS, $assignValues, false, array(), $assignValues)) {
+            Message::addErrorMessage($db->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $taxstro_id = ($taxstro_id > 0)?$taxstro_id:FatApp::getDb()->getInsertId();
+
+        $languages = Language::getAllNames();
+        foreach ($languages as $langId => $langName) {
+            $data = array(
+            'taxstrolang_taxstro_id' => $taxstro_id,
+            'taxstrolang_lang_id' => $langId,
+            'taxstro_name' => $post['taxstro_name'.$langId],
+            );
+
+            if (!$db->insertFromArray(TaxStructure::DB_TBL_OPTIONS_LANG, $data, false, array(), $data)) {
+                Message::addErrorMessage($db->getError());
+                FatUtility::dieJsonError(Message::getHtml());
+            }
+        }
+        if ($taxstro_id > 0) {
+            $msg = Labels::getLabel('MSG_UPDATED_SUCCESSFULLY', $this->adminLangId);
+        } else {
+            $msg = Labels::getLabel('MSG_SET_UP_SUCCESSFULLY', $this->adminLangId);
+        }
+        $this->set('msg', $msg);
+        $this->set('taxstroId', $taxstro_id);
+        $this->set('taxstrId', $post['taxstro_taxstr_id']);
+        $this->_template->render(false, false, 'json-success.php');
     }
 
     private function getLangForm($taxStrId = 0, $langId = 0)

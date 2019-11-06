@@ -18,7 +18,7 @@ $langFrm->developerTags['fld_default_col'] = 12;
 					foreach($languages as $langId => $langName){?>
 						<li><a class="<?php echo ($taxStrLangId == $langId)?'active':''?>" href="javascript:void(0);" onclick="addLangForm(<?php echo $taxStrId ?>, <?php echo $langId;?>);"><?php echo $langName;?></a></li>
 					<?php } ?>
-                    <?php if($type != TaxStructure::TYPE_SINGLE_VAT) {?>
+                    <?php if($type != TaxStructure::TYPE_SINGLE) {?>
                     <li><a href="javascript:void(0);" onclick="options(<?php echo $taxStrId ?>);"><?php echo Labels::getLabel('LBL_Tax_Options',$adminLangId); ?></a></li>
                     <?php }
                     }
