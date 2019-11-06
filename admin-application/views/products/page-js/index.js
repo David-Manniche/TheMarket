@@ -120,11 +120,11 @@ $(document).on('change','.language-js',function(){
         });
     };
 
-    productLangForm = function(product_id, lang_id) {
+    productLangForm = function(product_id, lang_id, autoFillLangData = 0) {
         fcom.displayProcessing();
         fcom.resetEditorInstance();
     //    $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Products', 'langForm', [product_id, lang_id]), '', function(t) {
+            fcom.ajax(fcom.makeUrl('Products', 'langForm', [product_id, lang_id, autoFillLangData]), '', function(t) {
                 fcom.updateFaceboxContent(t);
             //    $.facebox(t);
                 fcom.setEditorLayout(lang_id);
@@ -763,5 +763,4 @@ $(document).on('change','.language-js',function(){
         }
         $("#frmProdListing").attr("action",fcom.makeUrl('Products','deleteSelected')).submit();
     };
-
 })();

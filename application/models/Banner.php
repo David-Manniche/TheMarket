@@ -3,7 +3,7 @@ class Banner extends MyAppModel
 {
     const DB_TBL = 'tbl_banners';
     const DB_TBL_PREFIX = 'banner_';
-    const DB_LANG_TBL = 'tbl_banners_lang';
+    const DB_TBL_LANG = 'tbl_banners_lang';
 
     const DB_TBL_CLICKS = 'tbl_banners_clicks';
     const DB_TBL_CLICKS_PREFIX = 'bclick_';
@@ -12,7 +12,7 @@ class Banner extends MyAppModel
     const DB_TBL_LOGS_PREFIX = 'lbanner_';
 
     const DB_TBL_LOCATIONS = 'tbl_banner_locations';
-    const DB_LANG_TBL_LOCATIONS = 'tbl_banner_locations_lang';
+    const DB_TBL_LANG_LOCATIONS = 'tbl_banner_locations_lang';
     const DB_TBL_LOCATIONS_PREFIX = 'blocation_';
 
     const TYPE_BANNER = 1;
@@ -44,7 +44,7 @@ class Banner extends MyAppModel
 
         if ($langId > 0) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'bannerlang_banner_id = banner_id
 			AND bannerlang_lang_id = ' . $langId

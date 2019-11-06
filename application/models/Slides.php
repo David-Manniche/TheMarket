@@ -3,7 +3,7 @@ class Slides extends MyAppModel
 {
     const DB_TBL = 'tbl_slides';
     const DB_TBL_PREFIX = 'slide_';
-    const DB_LANG_TBL ='tbl_slides_lang';
+    const DB_TBL_LANG ='tbl_slides_lang';
 
     const TYPE_SLIDE = 1;
     const TYPE_PPC = 2;
@@ -31,7 +31,7 @@ class Slides extends MyAppModel
 
         if ($langId > 0) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'slidelang_slide_id = slide_id
 			AND slidelang_lang_id = ' . $langId
@@ -56,7 +56,7 @@ class Slides extends MyAppModel
         );
         if ($langId) {
             $srch->joinTable(
-                Promotion::DB_LANG_TBL,
+                Promotion::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'pr_l.promotionlang_promotion_id = pr.promotion_id
 			AND pr_l.promotionlang_lang_id = ' . $langId,

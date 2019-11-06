@@ -23,7 +23,7 @@ class BlogComment extends MyAppModel
         if ($joinBlogPost) {
             $srch->joinTable(BlogPost::DB_TBL, 'left outer join', static::DB_TBL_PREFIX.'post_id = '.BlogPost::DB_TBL_PREFIX.'id');
             if ($langId) {
-                $srch->joinTable(BlogPost::DB_LANG_TBL, 'left outer join', BlogPost::DB_TBL_PREFIX.'id = '.BlogPost::DB_LANG_TBL_PREFIX.'post_id and '.BlogPost::DB_LANG_TBL_PREFIX.'lang_id = '.$langId);
+                $srch->joinTable(BlogPost::DB_TBL_LANG, 'left outer join', BlogPost::DB_TBL_PREFIX.'id = '.BlogPost::DB_TBL_LANG_PREFIX.'post_id and '.BlogPost::DB_TBL_LANG_PREFIX.'lang_id = '.$langId);
             }
         }
 

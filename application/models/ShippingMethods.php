@@ -2,9 +2,9 @@
 class ShippingMethods extends MyAppModel
 {
     const DB_TBL = 'tbl_shipping_apis';
-    const DB_LANG_TBL = 'tbl_shipping_apis_lang';
+    const DB_TBL_LANG = 'tbl_shipping_apis_lang';
     const DB_TBL_PREFIX = 'shippingapi_';
-    const DB_LANG_TBL_PREFIX = 'shippingapilang_';
+    const DB_TBL_LANG_PREFIX = 'shippingapilang_';
     const DB_SETTING_TBL = 'tbl_shippingapi_settings';
     const DB_SETTING_TBL_PREFIX = 'shippingapi_';
 
@@ -30,7 +30,7 @@ class ShippingMethods extends MyAppModel
 
         if ($langId > 0) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'sm_l.shippingapilang_'.static::DB_TBL_PREFIX.'id = sm.'.static::DB_TBL_PREFIX.'id and sm_l.shippingapilang_lang_id = '.$langId,
                 'sm_l'

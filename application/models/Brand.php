@@ -2,7 +2,7 @@
 class Brand extends MyAppModel
 {
     const DB_TBL = 'tbl_brands';
-    const DB_LANG_TBL = 'tbl_brands_lang';
+    const DB_TBL_LANG = 'tbl_brands_lang';
     const DB_TBL_PREFIX = 'brand_';
     const DB_TBL_LANG_PREFIX = 'brandlang_';
 
@@ -32,7 +32,7 @@ class Brand extends MyAppModel
 
         if ($langId > 0) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'b_l.'.static::DB_TBL_LANG_PREFIX.'brand_id = b.'.static::tblFld('id').' and
 			b_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,

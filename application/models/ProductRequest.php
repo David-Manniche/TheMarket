@@ -171,7 +171,7 @@ class ProductRequest extends MyAppModel
                     $lang_id,
                     array('ifNull('.ShippingCompanies::DB_TBL_PREFIX.'name',ShippingCompanies::DB_TBL_PREFIX.'identifier) as '.ShippingCompanies::DB_TBL_PREFIX.'name',
                                         ShippingCompanies::DB_TBL_PREFIX.'id',
-                                        ShippingCompanies::DB_LANG_TBL_PREFIX.'scompany_id')
+                                        ShippingCompanies::DB_TBL_LANG_PREFIX.'scompany_id')
                 );
                 $shipCompSrch->addCondition(ShippingCompanies::DB_TBL_PREFIX.'id', '=', $val['company_id']);
                 $rs = $shipCompSrch->getResultSet();

@@ -72,7 +72,7 @@ class ProductsReportController extends AdminBaseController
 
         $srch = new ProductSearch($this->adminLangId, '', '', false, false, false);
         $srch->joinTable(SellerProduct::DB_TBL, 'LEFT OUTER JOIN', 'p.product_id = selprod.selprod_product_id', 'selprod');
-        $srch->joinTable(SellerProduct::DB_LANG_TBL, 'LEFT OUTER JOIN', 'selprod.selprod_id = sprod_l.selprodlang_selprod_id AND sprod_l.selprodlang_lang_id = '.$this->adminLangId, 'sprod_l');
+        $srch->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'selprod.selprod_id = sprod_l.selprodlang_selprod_id AND sprod_l.selprodlang_lang_id = '.$this->adminLangId, 'sprod_l');
         $srch->joinSellers();
         $srch->joinBrands($this->adminLangId, false, true);
         //$srch->addCondition('brand_id', '!=', 'NULL');

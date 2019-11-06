@@ -2,7 +2,7 @@
 class Faq extends MyAppModel
 {
     const DB_TBL = 'tbl_faqs';
-    const DB_LANG_TBL = 'tbl_faqs_lang';
+    const DB_TBL_LANG = 'tbl_faqs_lang';
     const DB_TBL_PREFIX = 'faq_';
     const DB_TBL_LANG_PREFIX = 'faqlang_';
     private $db;
@@ -23,7 +23,7 @@ class Faq extends MyAppModel
 
         if ($langId > 0) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'f_l.'.static::DB_TBL_LANG_PREFIX.'faq_id = f.'.static::tblFld('id').' and
 			f_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,

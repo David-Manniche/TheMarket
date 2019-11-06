@@ -2,7 +2,7 @@
 class Option extends MyAppModel
 {
     const DB_TBL = 'tbl_options';
-    const DB_LANG_TBL ='tbl_options_lang';
+    const DB_TBL_LANG ='tbl_options_lang';
     const DB_TBL_PREFIX = 'option_';
 
     const OPTION_TYPE_SELECT = 1;

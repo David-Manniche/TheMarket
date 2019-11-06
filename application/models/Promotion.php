@@ -4,7 +4,7 @@ class Promotion extends MyAppModel
     const DB_TBL = 'tbl_promotions';
     const DB_TBL_PREFIX = 'promotion_';
 
-    const DB_LANG_TBL ='tbl_promotions_lang';
+    const DB_TBL_LANG ='tbl_promotions_lang';
 
     const DB_TBL_CLICKS = 'tbl_promotions_clicks';
     const DB_TBL_CLICKS_PREFIX = 'pclick_';
@@ -47,7 +47,7 @@ class Promotion extends MyAppModel
 
         if ($langId > 0) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'pr_l.promotionlang_promotion_id = pr.promotion_id
 			AND pr_l.promotionlang_lang_id = ' . $langId,

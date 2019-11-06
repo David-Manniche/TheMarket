@@ -654,4 +654,10 @@ class DummyController extends MyAppController
             }
         }
     }
+
+    public function langData()
+    {
+        $obj = new UpdateLangData(Product::DB_TBL_LANG);
+        $obj->index(1, 1, 2);
+    }
 }

@@ -37,7 +37,7 @@ class ProductGroupProductSearch extends SearchBase
         $this->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', 'ptg.'.ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'selprod_id = sp.selprod_id', 'sp');
 
         if ($langId) {
-            $this->joinTable(SellerProduct::DB_LANG_TBL, 'LEFT OUTER JOIN', 'sp.selprod_id = sp_l.selprodlang_selprod_id AND sp_l.selprodlang_lang_id = '.$langId, 'sp_l');
+            $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp.selprod_id = sp_l.selprodlang_selprod_id AND sp_l.selprodlang_lang_id = '.$langId, 'sp_l');
         }
         $this->sellerProductsJoined = true;
     }
@@ -55,7 +55,7 @@ class ProductGroupProductSearch extends SearchBase
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'sp.selprod_product_id = p.product_id', 'p');
 
         if ($langId) {
-            $srch->joinTable(Product::DB_LANG_TBL, 'LEFT OUTER JOIN', 'p.product_id = pl.productlang_product_id AND productlang_lang_id = '.$langId, 'p_l');
+            $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = pl.productlang_product_id AND productlang_lang_id = '.$langId, 'p_l');
         }
 
         $this->productsJoined = true;

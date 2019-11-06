@@ -2,7 +2,7 @@
 class PaymentMethods extends MyAppModel
 {
     const DB_TBL = 'tbl_payment_methods';
-    const DB_LANG_TBL = 'tbl_payment_methods_lang';
+    const DB_TBL_LANG = 'tbl_payment_methods_lang';
     const DB_TBL_PREFIX = 'pmethod_';
 
     private $db;
@@ -29,7 +29,7 @@ class PaymentMethods extends MyAppModel
 
         if ($langId > 0) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'pm_l.pmethodlang_'.static::DB_TBL_PREFIX.'id = pm.'.static::DB_TBL_PREFIX.'id and pm_l.pmethodlang_lang_id = '.$langId,
                 'pm_l'

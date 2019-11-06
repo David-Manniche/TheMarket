@@ -271,7 +271,7 @@ class BrandsController extends AdminBaseController
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
         /* Check if same brand name already exists [ */
-        $tblRecord = new TableRecord(Brand::DB_LANG_TBL);
+        $tblRecord = new TableRecord(Brand::DB_TBL_LANG);
         if ($tblRecord->loadFromDb(array('smt' => 'brand_name = ?', 'vals' => array($post['brand_name'])))) {
             $brandRow = $tblRecord->getFlds();
             if ($brandRow['brandlang_brand_id'] != $brand_id) {
@@ -1125,7 +1125,7 @@ class BrandsController extends AdminBaseController
                         'brand_name'=> $name,
                         'brand_short_description'=> $description,
                     );
-                    $db->insertFromArray(Brand::DB_LANG_TBL, $langData, false, array(), $langData);
+                    $db->insertFromArray(Brand::DB_TBL_LANG, $langData, false, array(), $langData);
                     /* ]*/
 
                     /* Url rewriting [*/

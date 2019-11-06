@@ -4,7 +4,7 @@ class BannerLocation extends MyAppModel
     const DB_TBL = 'tbl_banner_locations';
     const DB_TBL_PREFIX = 'blocation_';
 
-    const DB_LANG_TBL = 'tbl_banner_locations_lang';
+    const DB_TBL_LANG = 'tbl_banner_locations_lang';
 
     const DB_DIMENSIONS_TBL = 'tbl_banner_location_dimensions';
     const DB_DIMENSIONS_TBL_PREFIX = 'bldimensions_';
@@ -27,7 +27,7 @@ class BannerLocation extends MyAppModel
 
         if ($langId > 0) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'blocationlang_blocation_id = blocation_id
 			AND blocationlang_lang_id = ' . $langId,

@@ -3,7 +3,7 @@ class ThemeColor extends MyAppModel
 {
     const DB_TBL = 'tbl_theme_colors';
     const DB_TBL_PREFIX = 'tcolor_';
-    const DB_LANG_TBL = 'tbl_theme_colors_lang';
+    const DB_TBL_LANG = 'tbl_theme_colors_lang';
 
     public function __construct($id = 0)
     {
@@ -16,7 +16,7 @@ class ThemeColor extends MyAppModel
 
         if ($langId > 0) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'tcolorlang_tcolor_id = tcolor_id
 			AND tcolorlang_lang_id = ' . $langId,
