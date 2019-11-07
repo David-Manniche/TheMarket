@@ -8,7 +8,7 @@ $valueFld = $frmTax->getField('taxval_value');
 $valueFld->setFieldTagAttribute('id', 'taxval_value');
 $valueFld->setFieldTagAttribute('onKeyup', 'splitValues(this.value)');
 
-if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == Tax::STRUCTURE_GST) {
+/* if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == Tax::STRUCTURE_GST) {
 	$cgstFld = $frmTax->getField('cgst');
 	$cgstFld->setFieldTagAttribute('id', 'cgst');
 	$cgstFld->setFieldTagAttribute('readonly', 'true');
@@ -18,7 +18,7 @@ if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == Tax::ST
 	$igstFld = $frmTax->getField('igst');
 	$igstFld->setFieldTagAttribute('id', 'igst');
 	$igstFld->setFieldTagAttribute('readonly', 'true');
-}	
+} */	
 ?>
 <section class="section">
 	<div class="sectionhead">

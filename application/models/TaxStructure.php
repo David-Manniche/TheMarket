@@ -16,6 +16,7 @@ class TaxStructure extends MyAppModel
     const TYPE_SINGLE = 1;
     const TYPE_COMBINED = 2;
 
+
     private $db;
 
     public function __construct($id = 0)
@@ -96,12 +97,12 @@ class TaxStructure extends MyAppModel
             $srch->joinTable(
                 static::DB_TBL_OPTIONS_LANG,
                 'LEFT OUTER JOIN',
-                'tso_l.' . static::DB_TBL_OPTIONS_LANG_PREFIX . 'taxstro_id = tso.' . static::DB_TBL_OPTIONS_PREFIX . 'taxstr_id AND tso_l.' . static::DB_TBL_OPTIONS_LANG_PREFIX . 'lang_id = ' . $langId,
+                'tso_l.' . static::DB_TBL_OPTIONS_LANG_PREFIX . 'taxstro_id = tso.' . static::DB_TBL_OPTIONS_PREFIX . 'id AND tso_l.' . static::DB_TBL_OPTIONS_LANG_PREFIX . 'lang_id = ' . $langId,
                 'tso_l'
             );
         }
         $srch->addCondition('taxstro_taxstr_id', '=', $this->mainTableRecordId);
-
+        $srch->addMultipleFields(array('taxstro_id','taxstro_taxstr_id', 'taxstro_interstate', 'taxstr_identifier','ifnull(taxstro_name, taxstro_name) as taxstro_name'));
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetchAll($rs);
     }

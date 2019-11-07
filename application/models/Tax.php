@@ -17,10 +17,6 @@ class Tax extends MyAppModel
 
     const TYPE_PERCENTAGE = 1;
     const TYPE_FIXED = 0;
-
-    const STRUCTURE_VAT = 0;
-    const STRUCTURE_GST = 1;
-    const STRUCTURE_COMBINED = 2;
     
     public function __construct($id = 0)
     {
@@ -288,7 +284,7 @@ class Tax extends MyAppModel
         FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_TAX, array('smt' => 'ptt_seller_user_id = ? and ptt_product_id = ?', 'vals' => array(0, $productId)));
     }
 
-    public static function getCombinedValues($value)
+    /* public static function getCombinedValues($value)
     {
         $arr = [];
         $value = FatUtility::convertToType($value, FatUtility::VAR_FLOAT);
@@ -309,5 +305,5 @@ class Tax extends MyAppModel
             break;
         }
         return $arr;
-    }
+    } */
 }
