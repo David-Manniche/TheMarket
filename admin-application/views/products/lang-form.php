@@ -1,14 +1,14 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $productLangFrm->setFormTagAttribute('class', 'web_form layout--' . $formLayout);
-$productLangFrm->setFormTagAttribute('onsubmit', 'setupProductLang(this); return(false);');
+$productLangFrm->setFormTagAttribute('onsubmit', 'setupProductLang(document.frmProductLang); return(false);');
     
 $productLangFrm->developerTags['colClassPrefix'] = 'col-md-';
 $productLangFrm->developerTags['fld_default_col'] = 12;
 /* $product_short_description_fld = $productLangFrm->getField('product_short_description');
 $product_short_description_fld->htmlAfterField = 'Enter Data Separated By New Line. Shown on Products Listing Page.'; */
 
-$langFld = $productLangFrm->getField('lang_ids');
+$langFld = $productLangFrm->getField('lang_id');
 $langFld->setfieldTagAttribute('onChange', "productLangForm(" . $product_id . ", this.value);");
 
 ?>
@@ -27,23 +27,28 @@ $langFld->setfieldTagAttribute('onChange', "productLangForm(" . $product_id . ",
                                 <?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
                         </li>
                         <li class="<?php echo (!$product_id) ? 'fat-inactive' : ''; ?>">
-                            <a class="active" href="javascript:void(0);" <?php echo ($product_id) ? "onclick='productLangForm(" . $product_id . "," . $adminLangId . ");'" : ""; ?>>
+                            <a class="active" href="javascript:void(0);">
                                 <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                             </a>
                         </li>
                         <?php /* foreach ($languages as $langId => $langName) { ?>
                                 <li class="<?php echo (!$product_id) ? 'fat-inactive' : ''; ?>">
                                     <a class="<?php echo ($product_lang_id == $langId) ? ' active' : ''; ?>" href="javascript:void(0);" <?php echo ($product_id) ? "onclick='productLangForm( " . $product_id . "," . $langId . " );'" : ""; ?>>
-                                    <?php echo Labels::getLabel('LBL_' . $langName, $adminLangId); ?></a>
+                                    <?php echo Labels::getLabel('LBL_' . $langName, $adminLangId); ?>
+                                    </a>
                                 </li>
                         <?php } */ ?>
                     </ul>
                     <div class="tabs_panel_wrap">
                         <?php if ($product_lang_id != $adminLangId) { ?> 
-                            <input class="btn btn-primary" 
-                                    type="button" 
-                                    value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>" 
-                                    onClick="productLangForm(<?php echo $product_id; ?>, <?php echo $product_lang_id; ?>, 1)">
+                            <div class="row justify-content-end"> 
+                                <div class="col-auto mb-4">
+                                    <input class="btn btn-primary" 
+                                        type="button" 
+                                        value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>" 
+                                        onClick="productLangForm(<?php echo $product_id; ?>, <?php echo $product_lang_id; ?>, 1)">
+                                </div>
+                            </div>
                         <?php } ?> 
                         <div class="tabs_panel">
                             <?php

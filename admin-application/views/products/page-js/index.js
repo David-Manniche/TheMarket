@@ -174,7 +174,8 @@ $(document).on('change','.language-js',function(){
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('Products', 'langSetup'), data, function(t) {
             reloadList();
-            if (t.lang_id>0) {
+            console.log(t);
+            if (t.lang_id > 0) {
                 productLangForm(t.product_id, t.lang_id);
                 return ;
             }

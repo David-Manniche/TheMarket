@@ -5,7 +5,7 @@ class Product extends MyAppModel
     public const DB_TBL_LANG ='tbl_products_lang';
     public const DB_TBL_PREFIX = 'product_';
     public const DB_TBL_LANG_PREFIX = 'productlang_';
-    
+
     public const DB_NUMERIC_ATTRIBUTES_TBL = 'tbl_product_numeric_attributes';
     public const DB_NUMERIC_ATTRIBUTES_PREFIX = 'prodnumattr_';
 
@@ -57,11 +57,6 @@ class Product extends MyAppModel
     public const PRODUCT_VIEW_ORGINAL_URL ='products/view/';
     public const PRODUCT_REVIEWS_ORGINAL_URL ='reviews/product/';
     public const PRODUCT_MORE_SELLERS_ORGINAL_URL ='products/sellers/';
-
-    public const LANG_FIELDS = [
-        'recordIdCol' => 'productlang_product_id',
-        'langPrefix' => self::DB_TBL_LANG_PREFIX,
-    ];
 
     public function __construct($id = 0)
     {

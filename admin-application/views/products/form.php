@@ -89,8 +89,9 @@ if ($product_added_by_admin == 1 && $totalProducts >0) {
                 <div class="tabs_nav_container responsive flat">
                     <ul class="tabs_nav">
                         <li>
-                            <a class="active" <?php echo ($product_id) ? "onclick='productForm( " . $product_id . ", 0 );'" : ""; ?>
-                                href="javascript:void(0);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
+                            <a class="active" href="javascript:void(0);">
+                                <?php echo Labels::getLabel('LBL_General', $adminLangId); ?>
+                            </a>
                         </li>
                         <li class="<?php echo (!$product_id) ? 'fat-inactive' : ''; ?>">
                             <a href="javascript:void(0);" <?php echo ($product_id) ? "onclick='productLangForm(" . $product_id . "," . $adminLangId . ");'" : ""; ?>>

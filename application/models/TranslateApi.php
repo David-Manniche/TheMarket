@@ -1,5 +1,5 @@
 <?php
-class Translate
+class TranslateApi
 {
     private $subscriptionKey;
     private $host;
@@ -14,29 +14,21 @@ class Translate
         $this->fromLang = $fromLang;
     }
 
-    public function getTranslatedData($to, $text)
+    public function getTranslatedData($to, $requestBody)
     {
         //Remove This line
-        return $text;
+        return $requestBody;
         // ^^^^^^^^^^
         
-        if (empty($to) || empty($text)) {
+        if (empty($to) || empty($requestBody)) {
             trigger_error(Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId()), E_USER_ERROR);
         }
 
-        if (!is_string($text) || empty($text)) {
-            return $text;
-        }
         // if (empty($this->subscriptionKey)) {
         //     trigger_error(Labels::getLabel('MSG_INVALID_SUBSCRIPTION_KEY', CommonHelper::getLangId()), E_USER_ERROR);
         // }
-        
-        $requestBody = [
-            [
-                'Text' => $text,
-            ],
-        ];
-        $content = json_encode($requestBody);
+
+        $content = LibHelper::convertToJson($requestBody, JSON_UNESCAPED_UNICODE);
 
         $curl_headers = array(
             'Content-type: application/json',
@@ -62,12 +54,8 @@ class Translate
         curl_close($ch);
 
         $reponse = json_decode($result, true);
-        if (!empty($reponse['error'])) {
-            $this->error = $reponse['error']['message'];
-            return false;
-        }
         
-        return $reponse['translations']['text'];
+        return $reponse;
         // Note: We convert result, which is JSON, to and from an object so we can pretty-print it.
         // We want to avoid escaping any Unicode characters that result contains. See:
         // http://php.net/manual/en/function.json-encode.php
