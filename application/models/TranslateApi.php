@@ -39,7 +39,7 @@ class TranslateApi
         $url = $this->host . $this->translatePath;
 
         //Language Translate From, Translate To
-        $url .= "&to=" . $to . "&from=" . $this->fromLang;
+        $url .= "&to=" . $to . "&from=" . $this->fromLang . "&textType=html";
 
         $ch = curl_init();
         $curl_content = ['content' => $content];

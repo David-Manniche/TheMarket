@@ -12,8 +12,8 @@ class TranslateLangData
             trigger_error(Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId()), E_USER_ERROR);
         }
         $this->tbl = $tbl;
-        $this->langTranslateFields = static::getLangTranslateFields();
-        $this->langTablePrimaryFields = static::getLangTablePrimaryFields();
+        $this->langTranslateFields = $this->getLangTranslateFields();
+        $this->langTablePrimaryFields = $this->getLangTablePrimaryFields();
     }
 
     public function getTranslatedData($recordId, $toLangId = 0, $fromLangId = 0)
@@ -24,16 +24,17 @@ class TranslateLangData
         $translateObj = new TranslateApi($translateFromlang);
 
         if (0 < $toLangId) {
-            $allLangs = [Language::getAttributesById($toLangId, array('language_id','language_code'))];
+            $languages = [Language::getAttributesById($toLangId, array('language_id','language_code'))];
         } else {
-            $allLangs = Language::getAllNames(false);
-            unset($allLangs[$this->fromLangId]);
+            $languages = Language::getAllNames(false);
+            unset($languages[$this->fromLangId]);
         }
 
         $recordData = $this->getRecordData($recordId);
         $dataToUpdate = $this->getDataToTranslate($recordData);
+        // CommonHelper::printArray($dataToUpdate);
         $translatedDataToUpdate = [];
-        foreach ($allLangs as $lang) {
+        foreach ($languages as $lang) {
             $toLang = strtolower($lang['language_code']);
             $toLangId = $lang['language_id'];
 
@@ -56,16 +57,24 @@ class TranslateLangData
             //Remove This line
             $translatedDataToUpdate[$toLangId] = array_column($response, 'Text');
             // ^^^^^^^^^^
+            
+            foreach ($translatedDataToUpdate[$toLangId] as &$value) {
+                if (0 < strpos($value, 'notranslate')) {
+                    preg_match_all('|[^>]class=["\']notranslate[\'"]*>(.*?)<\/|', $value, $matches, PREG_PATTERN_ORDER);
+                    $value = $matches[1][0];
+                }
+            }
 
             $translatedDataToUpdate[$toLangId] = array_combine(array_keys($recordData), $translatedDataToUpdate[$toLangId]);
             $translatedDataToUpdate[$toLangId] = array_merge($langRecordData, $translatedDataToUpdate[$toLangId]);
         }
+        // CommonHelper::printArray($translatedDataToUpdate, true);
         return $translatedDataToUpdate;
     }
 
     public function updateTranslatedData($recordId, $fromLangId = 0, $toLangId = 0)
     {
-        $data = $this->getTranslatedData($recordId, $fromLangId, $toLangId);
+        $data = $this->getTranslatedData($recordId, $toLangId, $fromLangId);
         if (!empty($data) && 0 < count($data)) {
             foreach ($data as $translatedData) {
                 if (!FatApp::getDB()->insertFromArray($this->tbl, $translatedData, false, array(), $translatedData)) {
@@ -79,6 +88,9 @@ class TranslateLangData
     {
         $inputData = [];
         foreach ($dataToUpdate as $value) {
+            if (false !== filter_var($value, FILTER_VALIDATE_URL)) {
+                $value = '<div class="notranslate">' . $value . '</>';
+            }
             $inputData[] = ['Text' => $value];
         }
         return $inputData;
