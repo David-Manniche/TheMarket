@@ -1,10 +1,15 @@
 <?php
+/* 
+    Microsoft Translator Text API 3.0
+*/
+ 
 class TranslateApi
 {
     private $subscriptionKey;
     private $host;
     private $translatePath;
     private $fromLang;
+    private $error;
 
     public function __construct($fromLang)
     {
@@ -14,19 +19,17 @@ class TranslateApi
         $this->fromLang = $fromLang;
     }
 
-    public function getTranslatedData($to, $requestBody)
+    public function translateData($to, $requestBody)
     {
-        //Remove This line
-        return $requestBody;
-        // ^^^^^^^^^^
-        
         if (empty($to) || empty($requestBody)) {
-            trigger_error(Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId()), E_USER_ERROR);
+            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId());
+            return false;
         }
 
-        // if (empty($this->subscriptionKey)) {
-        //     trigger_error(Labels::getLabel('MSG_INVALID_SUBSCRIPTION_KEY', CommonHelper::getLangId()), E_USER_ERROR);
-        // }
+        if (empty($this->subscriptionKey)) {
+            $this->error = Labels::getLabel('MSG_INVALID_SUBSCRIPTION_KEY', CommonHelper::getLangId());
+            return false;
+        }
 
         $content = LibHelper::convertToJson($requestBody, JSON_UNESCAPED_UNICODE);
 
@@ -39,7 +42,7 @@ class TranslateApi
         $url = $this->host . $this->translatePath;
 
         //Language Translate From, Translate To
-        $url .= "&to=" . $to . "&from=" . $this->fromLang . "&textType=html";
+        $url .= $to . "&from=" . $this->fromLang . "&textType=html";
 
         $ch = curl_init();
         $curl_content = ['content' => $content];
@@ -53,13 +56,8 @@ class TranslateApi
         $result = curl_exec($ch);
         curl_close($ch);
 
-        $reponse = json_decode($result, true);
-        
-        return $reponse;
-        // Note: We convert result, which is JSON, to and from an object so we can pretty-print it.
-        // We want to avoid escaping any Unicode characters that result contains. See:
-        // http://php.net/manual/en/function.json-encode.php
-        // return $json = json_encode(json_decode($result), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        $result = str_replace('\"', '', htmlspecialchars_decode($result));
+        return json_decode($result, true);
     }
 
     private function comCreateGuid()
@@ -75,5 +73,10 @@ class TranslateApi
             mt_rand(0, 0xffff),
             mt_rand(0, 0xffff)
         );
+    }
+
+    public function getError()
+    {
+        return $this->error;
     }
 }

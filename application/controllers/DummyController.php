@@ -658,6 +658,6 @@ class DummyController extends MyAppController
     public function langData()
     {
         $obj = new TranslateLangData(Product::DB_TBL_LANG);
-        $obj->getTranslatedData(889, 2);
+        $obj->getTranslatedData(889);
     }
 }

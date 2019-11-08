@@ -31,13 +31,6 @@ $langFld->setfieldTagAttribute('onChange', "productLangForm(" . $product_id . ",
                                 <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                             </a>
                         </li>
-                        <?php /* foreach ($languages as $langId => $langName) { ?>
-                                <li class="<?php echo (!$product_id) ? 'fat-inactive' : ''; ?>">
-                                    <a class="<?php echo ($product_lang_id == $langId) ? ' active' : ''; ?>" href="javascript:void(0);" <?php echo ($product_id) ? "onclick='productLangForm( " . $product_id . "," . $langId . " );'" : ""; ?>>
-                                    <?php echo Labels::getLabel('LBL_' . $langName, $adminLangId); ?>
-                                    </a>
-                                </li>
-                        <?php } */ ?>
                     </ul>
                     <div class="tabs_panel_wrap">
                         <?php if ($product_lang_id != $adminLangId) { ?> 

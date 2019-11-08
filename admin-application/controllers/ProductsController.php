@@ -359,7 +359,12 @@ class ProductsController extends AdminBaseController
         $productLangFrm = $this->getLangForm($product_id, $lang_id);
         if (0 < $autoFillLangData) {
             $updateLangDataobj = new TranslateLangData(Product::DB_TBL_LANG);
-            $productLangData = current($updateLangDataobj->getTranslatedData($product_id, $lang_id));
+            $translatedData = $updateLangDataobj->getTranslatedData($product_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $productLangData = current($translatedData);
         } else {
             $prodObj = new Product($product_id);
             $productLangData = $prodObj->getAttributesByLangId($lang_id, $product_id);
@@ -382,7 +387,7 @@ class ProductsController extends AdminBaseController
         $this->objPrivilege->canEditProducts();
         $post = FatApp::getPostedData();
         $product_id = FatUtility::int($post['product_id']);
-        $lang_id = $post['lang_id'];
+        $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
 
         if ($product_id == 0 || $lang_id == 0) {
             Message::addErrorMessage($this->str_invalid_request);
@@ -409,10 +414,13 @@ class ProductsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $autofillOtherLangsData = FatApp::getPostedData('autoupdate_other_langs_data', FatUtility::VAR_INT, 0);
-        if (0 < $autofillOtherLangsData) {
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
             $updateLangDataobj = new TranslateLangData(Product::DB_TBL_LANG);
-            $updateLangDataobj->updateTranslatedData($product_id);
+            if (false === $updateLangDataobj->updateTranslatedData($product_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         /* save attributes data[ */
@@ -1053,7 +1061,7 @@ class ProductsController extends AdminBaseController
         $frm->addHiddenField('', 'product_id', $product_id);
         // $frm->addHiddenField('', 'lang_id', $lang_id);
 
-        $frm->addSelectBox('Language', 'lang_id', Language::getAllNames(), $lang_id, array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         
         $frm->addRequiredField(Labels::getLabel('LBL_Product_Name', $this->adminLangId), 'product_name');
         /* $frm->addTextArea(Labels::getLabel('LBL_Short_Description',$this->adminLangId),'product_short_description'); */
@@ -1089,7 +1097,7 @@ class ProductsController extends AdminBaseController
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
 
         if ($lang_id === $siteLangId) {
-            $frm->addCheckBox(Labels::getLabel('LBL_AUTO_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'autoupdate_other_langs_data', 1, array(), false, 0);
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));

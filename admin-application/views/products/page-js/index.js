@@ -104,7 +104,6 @@ $(document).on('change','.language-js',function(){
 
         fcom.ajax(fcom.makeUrl('Products', 'form', [ id, attrgrp_id]), '', function(t) {
             fcom.updateFaceboxContent(t,'faceboxWidth product-setup-width');
-
             if(CONF_PRODUCT_DIMENSIONS_ENABLE == 0)
             {
                 addShippingTab(id,PRODUCT_TYPE_DIGITAL);

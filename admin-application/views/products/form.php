@@ -98,17 +98,6 @@ if ($product_added_by_admin == 1 && $totalProducts >0) {
                                 <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                             </a>
                         </li>
-                        <?php
-                        /* foreach ($languages as $langId => $langName) {
-                            ?>
-                                <li class="<?php echo (!$product_id) ? 'fat-inactive' : ''; ?>">
-                                    <a href="javascript:void(0);" <?php echo ($product_id) ? "onclick='productLangForm( " . $product_id . "," . $langId." );'" : ""; ?>>
-                                        <?php echo Labels::getLabel('LBL_' . $langName, $adminLangId); ?>
-                                    </a>
-                                </li>
-                                <?php
-                        } */
-                        ?>
                     </ul>
                     <div class="tabs_panel_wrap">
                         <div class="tabs_panel">
