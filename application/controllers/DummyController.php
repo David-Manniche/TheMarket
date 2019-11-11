@@ -657,7 +657,12 @@ class DummyController extends MyAppController
 
     public function langData()
     {
-        $obj = new TranslateLangData(Product::DB_TBL_LANG);
-        $obj->getTranslatedData(889);
+        $languages1 = Language::getAllNames();
+        CommonHelper::printArray($languages1);
+
+        $languages2 = Language::getAllNames(false);
+        CommonHelper::printArray($languages2);
+        // $obj = new TranslateLangData(Product::DB_TBL_LANG);
+        // $obj->getTranslatedData(889);
     }
 }

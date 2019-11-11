@@ -14,17 +14,18 @@ class Language extends MyAppModel
         $srch = new SearchBase(static::DB_TBL, 'l');
 
         if ($isActive == true) {
-            $srch->addCondition('l.' . static::DB_TBL_PREFIX.'active', '=', applicationConstants::ACTIVE);
+            $srch->addCondition('l.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
         }
         return $srch;
     }
 
     public static function getAllNames($assoc = true, $recordId = 0, $active = true, $deleted = false)
     {
+        $siteDefaultLang = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $srch = new SearchBase(static::DB_TBL);
         $srch->addOrder(static::tblFld('id'));
         if ($active === true) {
-            $srch->addCondition(static::DB_TBL_PREFIX.'active', '=', applicationConstants::ACTIVE);
+            $srch->addCondition(static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
         }
 
         if ($recordId > 0) {
@@ -36,10 +37,15 @@ class Language extends MyAppModel
 
         if ($assoc) {
             $srch->addMultipleFields(array(static::tblFld('id'), static::tblFld('name')));
-            return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
+            $langData = FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
         } else {
-            return FatApp::getDb()->fetchAll($srch->getResultSet(), static::tblFld('id'));
+            $langData = FatApp::getDb()->fetchAll($srch->getResultSet(), static::tblFld('id'));
         }
+        $defaultLangData = $langData[$siteDefaultLang];
+        unset($langData[$siteDefaultLang]);
+        $langData = [$siteDefaultLang => $defaultLangData] + $langData;
+
+        return $langData;
     }
 
     public static function getAllCodesAssoc($withDefaultValue = false, $recordId = 0, $active = true, $deleted = false)
