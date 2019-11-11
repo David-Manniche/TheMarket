@@ -258,7 +258,7 @@ class ProductsController extends AdminBaseController
         }
         $data_to_be_save = $post;
         $userId = $post['product_seller_id'];
-        if ($post['ps_free']=='') {
+        if ($post['ps_free'] == '') {
             $data_to_be_save['ps_free'] = 0;
         }
 
@@ -289,7 +289,7 @@ class ProductsController extends AdminBaseController
         /* save Group attributes data[ */
         $num_data_update_arr['prodnumattr_product_id'] = $product_id;
         for ($i = 1; $i <= AttrGroupAttribute::MAX_NUMERIC_ATTRIBUTE_ROWS; $i++) {
-            $num_data_update_arr['prodnumattr_num_'.$i] = isset($post['prodnumattr_num_'.$i]) ? $post['prodnumattr_num_'.$i] : '';
+            $num_data_update_arr['prodnumattr_num_' . $i] = isset($post['prodnumattr_num_' . $i]) ? $post['prodnumattr_num_' . $i] : '';
         }
 
         if (!$prodObj->addUpdateNumericAttributes($num_data_update_arr)) {
@@ -302,10 +302,10 @@ class ProductsController extends AdminBaseController
         /*Save Prodcut tax category [*/
 
         $prodTaxData = array(
-        'ptt_product_id'=>$product_id,
-        'ptt_taxcat_id'=>$post['ptt_taxcat_id'],
+            'ptt_product_id' => $product_id,
+            'ptt_taxcat_id' => $post['ptt_taxcat_id'],
         );
-        $prodTaxData['ptt_seller_user_id']= $userId;
+        $prodTaxData['ptt_seller_user_id'] = $userId;
 
         $taxObj = new Tax();
         if ($userId) {
@@ -340,7 +340,7 @@ class ProductsController extends AdminBaseController
         Product::updateMinPrices($product_id);
         $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->adminLangId));
         $this->set('product_id', $product_id);
-        $this->set('lang_id', $this->adminLangId);
+        $this->set('lang_id', FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -1095,8 +1095,9 @@ class ProductsController extends AdminBaseController
         }
         /* ] */
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
-        if ($lang_id === $siteLangId) {
+        if (!empty($translatorSubscriptionKey) && $lang_id === $siteLangId) {
             $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
 
