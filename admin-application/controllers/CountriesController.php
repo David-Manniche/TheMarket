@@ -139,7 +139,7 @@ class CountriesController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function langForm($countryId = 0, $lang_id = 0)
+    public function langForm($countryId = 0, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canViewCountries();
 
@@ -151,8 +151,17 @@ class CountriesController extends AdminBaseController
         }
 
         $langFrm = $this->getLangForm($countryId, $lang_id);
-
-        $langData = Countries::getAttributesByLangId($lang_id, $countryId);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(Countries::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($countryId, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = Countries::getAttributesByLangId($lang_id, $countryId);
+        }
 
         if ($langData) {
             $langFrm->fill($langData);
@@ -195,6 +204,15 @@ class CountriesController extends AdminBaseController
         if (!$countryObj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($countryObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
+        }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(Countries::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($countryId)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId = 0;
@@ -239,8 +257,15 @@ class CountriesController extends AdminBaseController
         $this->objPrivilege->canViewCountries();
         $frm = new Form('frmCountryLang');
         $frm->addHiddenField('', 'country_id', $countryId);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Country_Name', $this->adminLangId), 'country_name');
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id === $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }

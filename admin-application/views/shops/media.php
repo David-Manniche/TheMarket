@@ -7,7 +7,7 @@ $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
 $langFld = $shopLogoFrm->getField('lang_id');
 $langFld->addFieldTagAttribute('class', 'logo-language-js');
 
-$preferredDimensionsStr = '<span class="gap"></span><small class="text--small">'. sprintf(Labels::getLabel('MSG_Upload_shop_logo_text', $adminLangId), '150*150'). '</small>';
+$preferredDimensionsStr = '<span class="gap"></span><small class="text--small">' . sprintf(Labels::getLabel('MSG_Upload_shop_logo_text', $adminLangId), '150*150'). '</small>';
 
 $htmlAfterField = $preferredDimensionsStr;
 $htmlAfterField .= '<div id="logo-image-listing"></div>';
@@ -23,7 +23,7 @@ $langFld->addFieldTagAttribute('class', 'banner-language-js');
 $screenFld = $shopBannerFrm->getField('slide_screen');
 $screenFld->addFieldTagAttribute('class', 'prefDimensions-js');
 
-$htmlAfterField = '<div style="margin-top:15px;" class="preferredDimensions-js">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s',$adminLangId),'2000 x 500').'</div>';
+$htmlAfterField = '<div style="margin-top:15px;" class="preferredDimensions-js">' . sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s',$adminLangId),'2000 x 500') . '</div>';
 $htmlAfterField .= '<div id="banner-image-listing"></div>';
 $fld1->htmlAfterField = $htmlAfterField;
 /*$bannerSize = applicationConstants::getShopBannerSize();
@@ -58,13 +58,11 @@ $fld1->htmlAfterField = $htmlAfterField; */ ?>
                                 <?php echo Labels::getLabel('LBL_General', $adminLangId); ?>
                             </a>
                         </li>
-                        <?php $inactive=($shop_id==0)?'fat-inactive':'';
-                        foreach ($languages as $langId => $langName) { ?>
-                            <li class="<?php echo $inactive;?>"><a href="javascript:void(0);"
-                            <?php if ($shop_id > 0) { ?>
-                                onclick="addShopLangForm(<?php echo $shop_id ?>, <?php echo $langId;?>);"
-                            <?php }?>><?php echo Labels::getLabel('LBL_'.$langName, $adminLangId);?></a></li>
-                        <?php } ?>
+                        <li class="<?php echo (empty($shop_id)) ? 'fat-inactive' : ''; ?>">
+                            <a href="javascript:void(0);" <?php echo ($shop_id) ? "onclick='addShopLangForm(" . $shop_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                                <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
+                            </a>
+                        </li>
                         <?php /* <li><a href="javascript:void(0);"
                             <?php if ($shop_id > 0) { ?>
                                 onclick="shopTemplates(<?php echo $shop_id ?>);"

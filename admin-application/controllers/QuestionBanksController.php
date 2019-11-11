@@ -156,6 +156,15 @@ class QuestionBanksController extends AdminBaseController
             Message::addErrorMessage($obj->getError());
             FatUtility::dieWithError(Message::getHtml());                
         }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(QuestionBanks::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($qbank_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        }
 
         $newTabLangId = 0;    
         $languages = Language::getAllNames();    
@@ -172,7 +181,7 @@ class QuestionBanksController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
     
-    public function langForm($qbank_id = 0, $lang_id = 0)
+    public function langForm($qbank_id = 0, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canViewQuestionBanks();
         
@@ -184,7 +193,17 @@ class QuestionBanksController extends AdminBaseController
         }
         
         $langFrm = $this->getLangForm($qbank_id, $lang_id);
-        $langData = QuestionBanks::getAttributesByLangId($lang_id, $qbank_id);        
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(QuestionBanks::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($qbank_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = QuestionBanks::getAttributesByLangId($lang_id, $qbank_id);        
+        }
         
         if($langData ) {
             $langFrm->fill($langData);            
@@ -253,8 +272,16 @@ class QuestionBanksController extends AdminBaseController
     {            
         $frm = new Form('frmQuestionBankLang');        
         $frm->addHiddenField('', 'qbank_id', $qbank_id);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
-        $frm->addRequiredField(Labels::getLabel('LBL_Question_Bank_Name', $this->adminLangId), 'qbank_name');        
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
+        $frm->addRequiredField(Labels::getLabel('LBL_Question_Bank_Name', $this->adminLangId), 'qbank_name');     
+
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id === $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+                
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;
     }

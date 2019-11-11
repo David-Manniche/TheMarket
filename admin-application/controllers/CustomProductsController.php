@@ -364,7 +364,7 @@ class CustomProductsController extends AdminBaseController
     /* ] */
 
 
-    public function langForm($preq_id = 0, $lang_id = 0)
+    public function langForm($preq_id = 0, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canViewCustomProductRequests();
 
@@ -377,8 +377,19 @@ class CustomProductsController extends AdminBaseController
         }
 
         $customProductLangFrm = $this->getLangForm($preq_id, $lang_id);
-        $prodObj = new ProductRequest($preq_id);
-        $customProductLangData = $prodObj->getAttributesByLangId($lang_id, $preq_id);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(ProductRequest::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($preq_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $customProductLangData = current($translatedData);
+        } else {
+            $prodObj = new ProductRequest($preq_id);
+            $customProductLangData = $prodObj->getAttributesByLangId($lang_id, $preq_id);
+        }
+        
         if ($customProductLangData) {
             $customProductLangData['preq_id'] = $preq_id;
             $productData = json_decode($customProductLangData['preq_lang_data'], true);
@@ -435,6 +446,15 @@ class CustomProductsController extends AdminBaseController
         if (!$prodObj->updateLangData($lang_id, $data_to_update)) {
             Message::addErrorMessage($prodObj->getError());
             FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(ProductRequest::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($preq_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId = 0;
@@ -1198,12 +1218,20 @@ class CustomProductsController extends AdminBaseController
     {
         $frm = new Form('frmCustomProductLang');
         $frm->addHiddenField('', 'preq_id', $preqId);
-        $frm->addHiddenField('', 'lang_id', $langId);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Product_Name', $this->adminLangId), 'product_name');
         $frm->addRequiredField(Labels::getLabel('LBL_Seller_Product_Title', $this->adminLangId), 'selprod_title');
         $frm->addTextBox(Labels::getLabel('LBL_Any_extra_comment_for_buyer', $this->adminLangId), 'selprod_comments');
         $frm->addHtmlEditor(Labels::getLabel('LBL_Description', $this->adminLangId), 'product_description');
         $frm->addTextBox(Labels::getLabel('LBL_YouTube_Video', $this->adminLangId), 'product_youtube_video');
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id === $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+        
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }

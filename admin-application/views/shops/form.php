@@ -7,16 +7,16 @@ $frmShop->developerTags['colClassPrefix'] = 'col-md-';
 $frmShop->developerTags['fld_default_col'] = 12;
 $countryFld = $frmShop->getField('shop_country_id');
 $countryFld->setFieldTagAttribute('id', 'shop_country_id');
-$countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,'.$stateId.',\'#shop_state\')');
+$countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,' . $stateId . ',\'#shop_state\')');
 
 $stateFld = $frmShop->getField('shop_state');
 $stateFld->setFieldTagAttribute('id', 'shop_state');
 
 $fld = $frmShop->getField('shop_featured');
-$fld->htmlAfterField = '<small><br>'.Labels::getLabel('LBL_Featured_Shops_will_be_listed_on_Featured_Shops_Page._Featured_Shops_will_get_priority,', $adminLangId).'</small>';
+$fld->htmlAfterField = '<small><br>' . Labels::getLabel('LBL_Featured_Shops_will_be_listed_on_Featured_Shops_Page._Featured_Shops_will_get_priority,', $adminLangId) . '</small>';
 $urlFld = $frmShop->getField('urlrewrite_custom');
 $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
-$urlFld->htmlAfterField = "<br><small class='text--small'>" . CommonHelper::generateFullUrl('shops', 'View', array($shop_id), CONF_WEBROOT_FRONT_URL).'</small>';
+$urlFld->htmlAfterField = "<br><small class='text--small'>" . CommonHelper::generateFullUrl('shops', 'View', array($shop_id), CONF_WEBROOT_FRONT_URL) . '</small>';
 $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value,'')");
 ?>
     <section class="section">
@@ -31,13 +31,20 @@ $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value,'')");
                             <?php echo Labels::getLabel('LBL_General', $adminLangId); ?>
                         </a>
                     </li>
-                    <?php $inactive= ($shop_id==0) ? 'fat-inactive':'';
+                    <li class="<?php echo (empty($shop_id)) ? 'fat-inactive' : ''; ?>">
+                        <a href="javascript:void(0);" <?php echo ($shop_id) ? "onclick='addShopLangForm(" . $shop_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                            <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
+                        </a>
+                    </li>
+
+                    <?php /*  $inactive = ($shop_id == 0) ? 'fat-inactive' : '';
                     foreach ($languages as $langId => $langName) {?>
                     <li class="<?php echo $inactive;?>"><a href="javascript:void(0);"
                         <?php if ($shop_id > 0) { ?>
                             onclick="addShopLangForm(<?php echo $shop_id ?>, <?php echo $langId;?>);"
-                        <?php } ?>><?php echo Labels::getLabel("LBL_".$langName, $adminLangId);?></a></li>
-                    <?php } ?>
+                        <?php } ?>><?php echo Labels::getLabel("LBL_" . $langName, $adminLangId);?></a></li>
+                    <?php }  */ ?>
+
                         <?php /* <li><a href="javascript:void(0);"
                         <?php if ($shop_id > 0) { ?>
                             onclick="shopTemplates(<?php echo $shop_id ?>);"

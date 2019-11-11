@@ -33,7 +33,7 @@ $langFld->setfieldTagAttribute('onChange', "productLangForm(" . $product_id . ",
                         </li>
                     </ul>
                     <div class="tabs_panel_wrap">
-                        <?php 
+                        <?php
                         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
                         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
                         if (!empty($translatorSubscriptionKey) && $product_lang_id != $siteDefaultLangId) { ?> 

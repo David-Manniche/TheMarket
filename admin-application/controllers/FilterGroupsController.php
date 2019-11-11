@@ -155,6 +155,15 @@ class FilterGroupsController extends AdminBaseController
             Message::addErrorMessage($filterGroupObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(FilterGroup::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($filtergroup_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        }
 
         $newTabLangId=0;    
         $languages=Language::getAllNames();    
@@ -211,7 +220,7 @@ class FilterGroupsController extends AdminBaseController
         return $frm;
     }
     
-    public function langForm($filtergroup_id=0,$lang_id=0)
+    public function langForm($filtergroup_id=0,$lang_id=0, $autoFillLangData = 0)
     {        
         $this->objPrivilege->canEditFilterGroups();
         
@@ -223,7 +232,17 @@ class FilterGroupsController extends AdminBaseController
         }
         
         $filterGroupLangFrm = $this->getLangForm($filtergroup_id, $lang_id);
-        $langData = FilterGroup::getAttributesByLangId($lang_id, $filtergroup_id);        
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(FilterGroup::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($filtergroup_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = FilterGroup::getAttributesByLangId($lang_id, $filtergroup_id);        
+        }
         
         if($langData) {
             $filterGroupLangFrm->fill($langData);            
@@ -240,8 +259,16 @@ class FilterGroupsController extends AdminBaseController
     {            
         $frm = new Form('frmFilterGroupLang', array('id'=>'frmFilterGroupLang'));        
         $frm->addHiddenField('', 'filtergroup_id', $filtergroup_id);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
-        $frm->addRequiredField(Labels::getLabel('LBL_Brand_Name', $this->adminLangId), 'filtergroup_name');        
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
+        $frm->addRequiredField(Labels::getLabel('LBL_Brand_Name', $this->adminLangId), 'filtergroup_name');   
+
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id === $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+                
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;
     }

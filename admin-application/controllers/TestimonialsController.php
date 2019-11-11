@@ -113,7 +113,7 @@ class TestimonialsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function langForm($testimonialId = 0, $lang_id = 0)
+    public function langForm($testimonialId = 0, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canViewTestimonial();
         $testimonialId = FatUtility::int($testimonialId);
@@ -124,7 +124,17 @@ class TestimonialsController extends AdminBaseController
         }
 
         $langFrm = $this->getLangForm($testimonialId, $lang_id);
-        $langData = Testimonial::getAttributesByLangId($lang_id, $testimonialId);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(Testimonial::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($testimonialId, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = Testimonial::getAttributesByLangId($lang_id, $testimonialId);
+        }
 
         if ($langData) {
             $langFrm->fill($langData);
@@ -168,6 +178,15 @@ class TestimonialsController extends AdminBaseController
         if (!$obj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($obj->getError());
             FatUtility::dieJsonError(Message::getHtml());
+        }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(Testimonial::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($testimonialId)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId = 0;
@@ -420,10 +439,18 @@ class TestimonialsController extends AdminBaseController
         $this->objPrivilege->canViewTestimonial();
         $frm = new Form('frmTestimonialLang');
         $frm->addHiddenField('', 'testimonial_id', $testimonialId);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Testimonial_Title', $this->adminLangId), 'testimonial_title');
         $fld = $frm->addTextarea(Labels::getLabel('LBL_Testimonial_Text', $this->adminLangId), 'testimonial_text');
         $fld->requirements()->setRequired();
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id === $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+        
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }

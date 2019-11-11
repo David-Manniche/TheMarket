@@ -209,7 +209,7 @@ class CollectionsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function langForm($collectionId = 0, $lang_id = 0)
+    public function langForm($collectionId = 0, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canViewCollections();
         $collectionId = FatUtility::int($collectionId);
@@ -220,7 +220,17 @@ class CollectionsController extends AdminBaseController
         }
 
         $langFrm = $this->getLangForm($collectionId, $lang_id);
-        $langData = Collections::getAttributesByLangId($lang_id, $collectionId);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(Collections::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($collectionId, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = Collections::getAttributesByLangId($lang_id, $collectionId);
+        }
 
         if ($langData) {
             $langFrm->fill($langData);
@@ -269,6 +279,15 @@ class CollectionsController extends AdminBaseController
         if (!$collectionObj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($collectionObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
+        }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(Collections::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($collectionId)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId = 0;
@@ -383,10 +402,19 @@ class CollectionsController extends AdminBaseController
         $this->objPrivilege->canViewCollections();
         $frm = new Form('frmCollectionLang');
         $frm->addHiddenField('', 'collection_id', $collectionId);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Collection_Name', $this->adminLangId), 'collection_name');
         /* $frm->addTextBox( Labels::getLabel('LBL_Link_Caption(If_Any)',$this->adminLangId), 'collection_link_caption' );
         $frm->addTextArea(Labels::getLabel('LBL_Small_Description',$this->adminLangId), 'collection_description');*/
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id === $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+
+        
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }

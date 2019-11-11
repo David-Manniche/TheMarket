@@ -187,7 +187,7 @@ class MetaTagsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function langForm($metaId = 0,$lang_id = 0 , $metaType='default')
+    public function langForm($metaId = 0,$lang_id = 0 , $metaType='default', $autoFillLangData = 0)
     {
         $this->objPrivilege->canViewMetaTags();
 
@@ -199,14 +199,24 @@ class MetaTagsController extends AdminBaseController
         }
 
         $langFrm = $this->getLangForm($metaId, $lang_id);
-
+    
         if(!$data = MetaTag::getAttributesById($metaId)) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
 
         $recordId = FatUtility::int($data['meta_record_id']);
-
-        $langData = MetaTag::getAttributesByLangId($lang_id, $metaId);
+        
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(MetaTag::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($metaId, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = MetaTag::getAttributesByLangId($lang_id, $metaId);
+        }
 
         if($langData) {
             $langFrm->fill($langData);
@@ -260,6 +270,15 @@ class MetaTagsController extends AdminBaseController
         if(!$metaObj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($metaObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
+        }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(MetaTag::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($metaId)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId = 0;
@@ -391,12 +410,20 @@ class MetaTagsController extends AdminBaseController
         $this->objPrivilege->canViewMetaTags();
         $frm = new Form('frmMetaTagLang');
         $frm->addHiddenField('', 'meta_id', $metaId);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Meta_Title', $this->adminLangId), 'meta_title');
         $frm->addTextarea(Labels::getLabel('LBL_Meta_Keywords', $this->adminLangId), 'meta_keywords')->requirements()->setRequired(true);
         $frm->addTextarea(Labels::getLabel('LBL_Meta_Description', $this->adminLangId), 'meta_description')->requirements()->setRequired(true);
         $fld = $frm->addTextarea(Labels::getLabel('LBL_Other_Meta_Tags', $this->adminLangId), 'meta_other_meta_tags');
         $fld->htmlAfterField = '<small>'.Labels::getLabel('LBL_For_Example:', $this->adminLangId).' '.htmlspecialchars('<meta name="copyright" content="text">').'</small>';
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id === $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+        
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }

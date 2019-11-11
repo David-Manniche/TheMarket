@@ -80,9 +80,9 @@ $(document).on('change','.collection-language-js',function(){
 		});
 	};
 
-	addShopLangForm = function(shopId, langId) {
+	addShopLangForm = function(shopId, langId, autoFillLangData = 0) {
 			fcom.displayProcessing();
-			fcom.ajax(fcom.makeUrl('Shops', 'langForm', [shopId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('Shops', 'langForm', [shopId, langId, autoFillLangData]), '', function(t) {
 				fcom.updateFaceboxContent(t);
 			});
 

@@ -337,10 +337,23 @@ class ProductsController extends AdminBaseController
             }
         }
         /*]*/
+
+        $newTabLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        if ($product_id > 0) {
+            $languages = Language::getAllNames();
+            foreach ($languages as $langId => $langName) {
+                if (!$row = Product::getAttributesByLangId($langId, $product_id)) {
+                    $newTabLangId = $langId;
+                    break;
+                }
+            }
+        }
+
+
         Product::updateMinPrices($product_id);
         $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->adminLangId));
         $this->set('product_id', $product_id);
-        $this->set('lang_id', FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
+        $this->set('lang_id', $newTabLangId);
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -1059,7 +1072,6 @@ class ProductsController extends AdminBaseController
         $lang_id = ($lang_id == 0) ? $this->adminLangId : $lang_id;
         $frm = new Form('frmProductLang', array('id' => 'frmProductLang'));
         $frm->addHiddenField('', 'product_id', $product_id);
-        // $frm->addHiddenField('', 'lang_id', $lang_id);
 
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         

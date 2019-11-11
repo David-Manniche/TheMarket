@@ -29,16 +29,21 @@ $frm->developerTags['fld_default_col'] = 12;
                         <li><a class="active" href="javascript:void(0)" onclick="editCollectionForm(<?php echo $collection_id ?>);">
                             <?php echo Labels::getLabel('LBL_General', $adminLangId);?></a>
                         </li>
+                        <li class="<?php echo (!$collection_id) ? 'fat-inactive' : ''; ?>">
+                            <a href="javascript:void(0);" <?php echo ($collection_id) ? "onclick='editCollectionLangForm(" . $collection_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                                <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
+                            </a>
+                        </li>
                         <?php
                         $inactive = ($collection_id == 0) ? 'fat-inactive' : '';
-                        foreach ($languages as $langId => $langName) { ?>
+                        /* foreach ($languages as $langId => $langName) { ?>
                             <li class="<?php echo $inactive; ?>"><a href="javascript:void(0);"
                                 <?php if ($collection_id > 0) { ?>
                                 onclick="editCollectionLangForm(<?php echo $collection_id ?>, <?php echo $langId; ?>);"
                                 <?php } ?>>
                             <?php echo Labels::getLabel('LBL_'.$langName, $adminLangId); ?></a>
                             </li>
-                        <?php } ?>
+                        <?php } */ ?>
                         <?php if (!in_array($collection_type, Collections::COLLECTION_WITHOUT_MEDIA)) { ?>
                             <li>
                                 <a class="<?php  echo $inactive; ?>" href="javascript:void(0)"

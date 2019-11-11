@@ -59,8 +59,13 @@
 									</a>
 								</li>
                         <?php } ?>
+                        <li class="<?php echo (!$epage_id) ? 'fat-inactive' : ''; ?>">
+                            <a href="javascript:void(0);" <?php echo ($epage_id) ? "onclick='addBlockLangForm(" . $epage_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                                <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
+                            </a>
+                        </li>
                         <?php
-                            if ($epage_id > 0) {
+                            /* if ($epage_id > 0) {
                                 foreach ($languages as $langId => $langName) { ?>
                         			<li>
 										<a class="<?php echo ($epage_lang_id == $langId)?'active':''?>" href="javascript:void(0);" onclick="addBlockLangForm(<?php echo $epage_id ?>, <?php echo $langId;?>);">
@@ -68,7 +73,7 @@
 										</a>
 									</li>
                         <?php 	}
-                            }
+                            } */
                             ?>
                     </ul>
                     <div class="tabs_panel_wrap">

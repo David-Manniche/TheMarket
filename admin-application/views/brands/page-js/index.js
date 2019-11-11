@@ -68,9 +68,9 @@ $(document).on('change','.prefDimensions-js',function(){
 		});
 	};
 
-	brandLangForm = function(brandId, langId) {
+	brandLangForm = function(brandId, langId, autoFillLangData = 0) {
 		fcom.displayProcessing();
-		fcom.ajax(fcom.makeUrl('brands', 'langForm', [brandId, langId]), '', function(t) {
+		fcom.ajax(fcom.makeUrl('brands', 'langForm', [brandId, langId, autoFillLangData]), '', function(t) {
 			fcom.updateFaceboxContent(t);
 		});
 	};

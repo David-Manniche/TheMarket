@@ -132,7 +132,7 @@ class ProductCategoriesController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function langForm($catId = 0, $lang_id = 0)
+    public function langForm($catId = 0, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canEditProductCategories();
 
@@ -144,7 +144,17 @@ class ProductCategoriesController extends AdminBaseController
         }
 
         $prodCatLangFrm = $this->getLangForm($prodcat_id, $lang_id);
-        $langData = ProductCategory::getAttributesByLangId($lang_id, $prodcat_id);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(ProductCategory::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($prodcat_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = ProductCategory::getAttributesByLangId($lang_id, $prodcat_id);
+        }
 
         if ($langData) {
             $prodCatLangFrm->fill($langData);
@@ -367,7 +377,7 @@ class ProductCategoriesController extends AdminBaseController
         $row = FatApp::getDb()->fetch($rs);
         $frm = new Form('frmProdCatLang', array('id'=>'frmProdCatLang'));
         $frm->addHiddenField('', 'prodcat_id', $prodcat_id);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Category_Name', $this->adminLangId), 'prodcat_name');
         /*$fld = $frm->addHtmlEditor(Labels::getLabel('LBL_Description', $this->adminLangId), 'prodcat_description');
         // $fld->requirements()->setLength(0,250);
@@ -382,7 +392,14 @@ class ProductCategoriesController extends AdminBaseController
         $frm->addButton('Icon','cat_icon','Upload file',array('class'=>'catFile-Js','id'=>'cat_icon','data-file_type'=>AttachedFile::FILETYPE_CATEGORY_ICON,'data-prodcat_id'=>$prodcat_id));
 
         $frm->addButton('Banner','cat_banner','Upload file',array('class'=>'catFile-Js','id'=>'cat_banner','data-file_type'=>AttachedFile::FILETYPE_CATEGORY_BANNER,'data-prodcat_id'=>$prodcat_id)); */
+    
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
+        if (!empty($translatorSubscriptionKey) && $lang_id === $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+        
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;
     }
@@ -640,6 +657,15 @@ class ProductCategoriesController extends AdminBaseController
         if (!$prodCatObj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
+        }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(ProductCategory::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($prodcat_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId=0;
