@@ -1,15 +1,15 @@
 <?php
 class ProductRequest extends MyAppModel
 {
-    const DB_TBL = 'tbl_product_requests';
-    const DB_TBL_LANG ='tbl_product_requests_lang';
+    public const DB_TBL = 'tbl_product_requests';
+    public const DB_TBL_LANG = 'tbl_product_requests_lang';
 
-    const DB_TBL_PREFIX = 'preq_';
-    const DB_TBL_LANG_PREFIX = 'preqlang_';
+    public const DB_TBL_PREFIX = 'preq_';
+    public const DB_TBL_LANG_PREFIX = 'preqlang_';
 
-    const STATUS_PENDING = 0;
-    const STATUS_APPROVED = 1;
-    const STATUS_CANCELLED = 2;
+    public const STATUS_PENDING = 0;
+    public const STATUS_APPROVED = 1;
+    public const STATUS_CANCELLED = 2;
 
     private $db;
 

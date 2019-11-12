@@ -620,7 +620,7 @@ class BrandsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function requestLangForm($brand_id = 0, $lang_id = 0)
+    public function requestLangForm($brand_id = 0, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canEditBrands();
 
@@ -632,7 +632,17 @@ class BrandsController extends AdminBaseController
         }
 
         $prodBrandLangFrm = $this->getLangForm($brand_id, $lang_id);
-        $langData = Brand::getAttributesByLangId($lang_id, $brand_id);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(Brand::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($brand_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = Brand::getAttributesByLangId($lang_id, $brand_id);
+        }
         /* CommonHelper::printArray($langData); die; */
         if ($langData) {
             $prodBrandLangFrm->fill($langData);

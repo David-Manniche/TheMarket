@@ -70,9 +70,9 @@ $(document).delegate('.image-language-js','change',function(){
 		});
 	};
 
-	brandRequestLangForm = function(brandId, langId) {
+	brandRequestLangForm = function(brandId, langId, autoFillLangData = 0) {
 	fcom.displayProcessing();
-			fcom.ajax(fcom.makeUrl('brands', 'requestLangForm', [brandId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('brands', 'requestLangForm', [brandId, langId, autoFillLangData]), '', function(t) {
 				fcom.updateFaceboxContent(t);
 			});
 			};

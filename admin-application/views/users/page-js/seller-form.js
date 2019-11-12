@@ -38,9 +38,9 @@ $(document).ready(function(){
 		});
 	};	
 	
-	addLangFormFields = function(sformfieldId, langId) {	
+	addLangFormFields = function(sformfieldId, langId, autoFillLangData = 0) {	
 		fcom.displayProcessing();	
-		fcom.ajax(fcom.makeUrl('Users', 'langSellerApprovalForm', [sformfieldId, langId]), '', function(t) {
+		fcom.ajax(fcom.makeUrl('Users', 'langSellerApprovalForm', [sformfieldId, langId, autoFillLangData]), '', function(t) {
 			fcom.updateFaceboxContent(t);
 		});
 	};

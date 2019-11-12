@@ -157,7 +157,7 @@ class ContentPagesController extends AdminBaseController
         $cpage_id = FatUtility::int($cpage_id);
         $lang_id = FatUtility::int($lang_id);
 
-        if ($cpage_id==0 || $lang_id==0) {
+        if ($cpage_id == 0 || $lang_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
 
@@ -180,12 +180,25 @@ class ContentPagesController extends AdminBaseController
             $srch->doNotLimitRecords();
             $srch->addMultipleFields(array("cpblocklang_text", 'cpblocklang_block_id'));
             $srch->addCondition('cpblocklang_cpage_id', '=', $cpage_id);
-            $srch->addCondition('cpblocklang_lang_id', '=', $lang_id);
+            
+            if (0 < $autoFillLangData) {
+                $srch->addCondition('cpblocklang_lang_id', '=', FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
+            } else {
+                $srch->addCondition('cpblocklang_lang_id', '=', $lang_id);
+            }
+
             $srchRs = $srch->getResultSet();
             $blockData = FatApp::getDb()->fetchAll($srchRs, 'cpblocklang_block_id');
-
             foreach ($blockData as $blockKey => $blockContent) {
-                $langData['cpblock_content_block_'.$blockKey] = $blockContent['cpblocklang_text'];
+                if (0 < $autoFillLangData) {
+                    $blockContent = $updateLangDataobj->directTranslate(['cpblocklang_text' => $blockContent['cpblocklang_text']], $lang_id);
+                    if (false === $blockContent) {
+                        Message::addErrorMessage($updateLangDataobj->getError());
+                        FatUtility::dieWithError(Message::getHtml());
+                    }
+                    $blockContent = current($blockContent);
+                }
+                $langData['cpblock_content_block_' . $blockKey] = $blockContent['cpblocklang_text'];
             }
             $blockLangFrm->fill($langData);
         }
@@ -205,13 +218,13 @@ class ContentPagesController extends AdminBaseController
     public function langSetup()
     {
         $this->objPrivilege->canEditContentPages();
-        $post=FatApp::getPostedData();
+        $post = FatApp::getPostedData();
         /* CommonHelper::printArray($post); die; */
         $cpage_id = $post['cpage_id'];
         $lang_id = $post['lang_id'];
         $cpage_layout = $post['cpage_layout'];
 
-        if ($cpage_id==0 || $lang_id==0) {
+        if ($cpage_id == 0 || $lang_id == 0) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -222,17 +235,17 @@ class ContentPagesController extends AdminBaseController
         unset($post['cpage_id']);
         unset($post['lang_id']);
         $data = array(
-        'cpagelang_lang_id'=>$lang_id,
-        'cpagelang_cpage_id'=>$cpage_id,
-        'cpage_title'=>$post['cpage_title'],
+        'cpagelang_lang_id' => $lang_id,
+        'cpagelang_cpage_id' => $cpage_id,
+        'cpage_title' => $post['cpage_title'],
 
         );
 
         if ($cpage_layout == ContentPage::CONTENT_PAGE_LAYOUT1_TYPE) {
-            $data['cpage_image_title']=$post['cpage_image_title'];
-            $data['cpage_image_content']=$post['cpage_image_content'];
+            $data['cpage_image_title'] = $post['cpage_image_title'];
+            $data['cpage_image_content'] = $post['cpage_image_content'];
         } else {
-            $data['cpage_content']=$post['cpage_content'];
+            $data['cpage_content'] = $post['cpage_content'];
         }
 
         $pageObj = new ContentPage($cpage_id);
@@ -247,8 +260,8 @@ class ContentPagesController extends AdminBaseController
         $pageObj = new ContentPage($cpage_id);
         if ($cpage_layout == ContentPage::CONTENT_PAGE_LAYOUT1_TYPE) {
             for ($i=1; $i<= ContentPage::CONTENT_PAGE_LAYOUT1_BLOCK_COUNT; $i++) {
-                $data['cpblocklang_text']= $post['cpblock_content_block_'.$i];
-                $data['cpblocklang_block_id']= $i;
+                $data['cpblocklang_text'] = $post['cpblock_content_block_' . $i];
+                $data['cpblocklang_block_id'] = $i;
                 if (!$pageObj->addUpdateContentPageBlocks($lang_id, $cpage_id, $data)) {
                     Message::addErrorMessage($pageObj->getError());
                     FatUtility::dieWithError(Message::getHtml());

@@ -18,19 +18,6 @@ $sformfield_identifier->setUnique('tbl_user_supplier_form_fields', 'sformfield_i
                         <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                     </a>
                 </li>
-                <?php
-                /* $inactive = ($sformfield_id==0)?'fat-inactive':'';
-                foreach ($languages as $langId => $langName) {
-                    ?>
-                    <li class="<?php echo $inactive; ?>">
-                        <a href="javascript:void(0);"
-                            <?php if ($sformfield_id>0) { ?>
-                                onclick="addLangFormFields(<?php echo $sformfield_id ?>, <?php echo $langId; ?>);"
-                            <?php } ?> >
-                        <?php echo $langName; ?>
-                        </a>
-                </li> <?php
-                } */ ?>
             </ul>
             <div class="tabs_panel_wrap">
                 <div class="tabs_panel"> <?php echo $frm->getFormHtml(); ?> </div>

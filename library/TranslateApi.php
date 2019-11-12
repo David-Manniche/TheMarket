@@ -14,6 +14,10 @@ class TranslateApi
     public function __construct($fromLang)
     {
         $this->subscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+        if (empty($this->subscriptionKey)) {
+            $this->error = Labels::getLabel('MSG_INVALID_SUBSCRIPTION_KEY', CommonHelper::getLangId());
+            return false;
+        }
         $this->host = 'https://api.cognitive.microsofttranslator.com';
         $this->translatePath = '/translate?api-version=3.0';
         $this->fromLang = $fromLang;
@@ -23,11 +27,6 @@ class TranslateApi
     {
         if (empty($to) || empty($requestBody)) {
             $this->error = Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId());
-            return false;
-        }
-
-        if (empty($this->subscriptionKey)) {
-            $this->error = Labels::getLabel('MSG_INVALID_SUBSCRIPTION_KEY', CommonHelper::getLangId());
             return false;
         }
 
