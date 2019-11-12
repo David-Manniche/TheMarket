@@ -1,14 +1,14 @@
 <?php
 class Option extends MyAppModel
 {
-    const DB_TBL = 'tbl_options';
-    const DB_TBL_LANG ='tbl_options_lang';
-    const DB_TBL_PREFIX = 'option_';
+    public const DB_TBL = 'tbl_options';
+    public const DB_TBL_LANG = 'tbl_options_lang';
+    public const DB_TBL_PREFIX = 'option_';
 
-    const OPTION_TYPE_SELECT = 1;
-    const OPTION_TYPE_CHECKBOX = 2;
-    const OPTION_TYPE_TEXT = 3;
-    const OPTION_TYPE_TEXTAREA = 4;
+    public const OPTION_TYPE_SELECT = 1;
+    public const OPTION_TYPE_CHECKBOX = 2;
+    public const OPTION_TYPE_TEXT = 3;
+    public const OPTION_TYPE_TEXTAREA = 4;
 
     private $db;
 

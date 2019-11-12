@@ -35,9 +35,9 @@ $(document).ready(function() {
         });
     };
 
-    addOptionForm = function(optionId) {
+    addOptionForm = function(optionId, autoFillLangData = 0) {
         var dv = $('#loadForm');
-        fcom.ajax(fcom.makeUrl('Options', 'addForm', [optionId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Options', 'addForm', [optionId, autoFillLangData]), '', function(t) {
             dv.html(t);
             fcom.resetFaceboxHeight();
         });
