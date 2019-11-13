@@ -95,13 +95,13 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
                             </a>
                         </li>
                         <li>
-                            <a <?php echo ($preqId) ? "onclick='customCatalogSpecifications( " . $preqId . " );'" : ""; ?>
+                            <a <?php echo (0 < $preqId) ? "onclick='customCatalogSpecifications( " . $preqId . " );'" : ""; ?>
                                 href="javascript:void(0);">
                                 <?php echo Labels::getLabel('LBL_Specifications', $adminLangId);?>
                             </a>
                         </li>
-                        <li class="<?php echo (!$preqId) ? 'fat-inactive' : ''; ?>">
-                            <a href="javascript:void(0);" <?php echo ($preqId) ? "onclick='productLangForm(" . $preqId . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                        <li class="<?php echo (0 == $preqId) ? 'fat-inactive' : ''; ?>">
+                            <a href="javascript:void(0);" <?php echo (0 < $preqId) ? "onclick='productLangForm(" . $preqId . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
                                 <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                             </a>
                         </li>

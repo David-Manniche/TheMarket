@@ -21,8 +21,8 @@ $frm->developerTags['fld_default_col'] = 12;
                         <li><a class="active" href="javascript:void(0)"
                                 onclick="addForm(<?php echo $splatform_id ?>);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
                         </li>
-                        <li class="<?php echo (!$splatform_id) ? 'fat-inactive' : ''; ?>">
-                            <a href="javascript:void(0);" <?php echo ($splatform_id) ? "onclick='addLangForm(" . $splatform_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                        <li class="<?php echo (0 == $splatform_id) ? 'fat-inactive' : ''; ?>">
+                            <a href="javascript:void(0);" <?php echo (0 < $splatform_id) ? "onclick='addLangForm(" . $splatform_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
                                 <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                             </a>
                         </li>

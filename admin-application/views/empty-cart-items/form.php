@@ -21,7 +21,7 @@ $emptyCartItemFrm->developerTags['fld_default_col'] = 12;
                         <li><a class="active" href="javascript:void(0)"
                                 onclick="emptyCartItemForm(<?php echo $emptycartitem_id ?>);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
                         </li>
-                        <li class="<?php echo (!$emptycartitem_id) ? 'fat-inactive' : ''; ?>">
+                        <li class="<?php echo ($emptycartitem_id == 0) ? 'fat-inactive' : ''; ?>">
                             <a href="javascript:void(0);" <?php echo ($emptycartitem_id) ? "onclick='emptyCartItemLangForm(" . $emptycartitem_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
                                 <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                             </a>

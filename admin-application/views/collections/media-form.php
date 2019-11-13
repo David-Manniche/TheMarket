@@ -112,8 +112,8 @@ $collectionMediaFrm->developerTags['fld_default_col'] = 12;
     <div class="tabs_nav_container responsive flat">
         <ul class="tabs_nav">
             <li><a href="javascript:void(0)" onclick="editCollectionForm(<?php echo $collection_id ?>);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a></li>
-            <li class="<?php echo (!$collection_id) ? 'fat-inactive' : ''; ?>">
-                <a href="javascript:void(0);" <?php echo ($collection_id) ? "onclick='editCollectionLangForm(" . $collection_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+            <li class="<?php echo (0 == $collection_id) ? 'fat-inactive' : ''; ?>">
+                <a href="javascript:void(0);" <?php echo (0 < $collection_id) ? "onclick='editCollectionLangForm(" . $collection_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
                     <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                 </a>
             </li>

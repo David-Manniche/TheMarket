@@ -24,8 +24,8 @@ $langFld->setfieldTagAttribute('onChange', "editCountryLangForm(" . $countryId .
                         <li><a href="javascript:void(0);"
                                 onclick="editCountryForm(<?php echo $countryId ?>);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
                         </li>
-                        <li class="<?php echo (!$countryId) ? 'fat-inactive' : ''; ?>">
-                            <a class="active" href="javascript:void(0);" <?php echo ($countryId) ? "onclick='editCountryLangForm(" . $countryId . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                        <li class="<?php echo (0 == $countryId) ? 'fat-inactive' : ''; ?>">
+                            <a class="active" href="javascript:void(0);" <?php echo (0 < $countryId) ? "onclick='editCountryLangForm(" . $countryId . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
                                 <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                             </a>
                         </li>

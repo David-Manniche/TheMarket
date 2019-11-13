@@ -28,10 +28,10 @@ $(document).ready(function(){
 		$.facebox(function() { addBlockForm(id,langId); });
 
 	};
-	addBlockForm = function(id, langId) {
+	addBlockForm = function(id, langId, autoFillLangData = 0) {
 		fcom.displayProcessing();
 		var frm = document.frmBlockSearch;
-			fcom.ajax(fcom.makeUrl('ContentBlock', 'langForm', [id, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('ContentBlock', 'langForm', [id, langId, autoFillLangData]), '', function(t) {
 				fcom.updateFaceboxContent(t);
 		});
 	};

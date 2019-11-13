@@ -13,7 +13,7 @@ $langFld->setfieldTagAttribute('onChange', "editShopCollectionLangForm(" . $shop
             <?php echo Labels::getLabel('TXT_GENERAL', $adminLangId);?>
         </a>
     </li>
-    <li class="<?php echo (!$scollection_id) ? 'fat-inactive' : ''; ?>">
+    <li class="<?php echo (0 == $scollection_id) ? 'fat-inactive' : ''; ?>">
         <a class="active" href="javascript:void(0);">
             <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
         </a>

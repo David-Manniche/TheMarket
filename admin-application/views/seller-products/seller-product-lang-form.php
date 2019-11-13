@@ -20,7 +20,7 @@ $langFld->setfieldTagAttribute('onChange', "sellerProductLangForm(" . $selprod_i
                             <li><a href="javascript:void(0)"
                                     onClick="sellerProductForm(<?php echo $product_id;?>,<?php echo $selprod_id;?>)"><?php echo Labels::getLabel('LBL_Basic', $adminLangId); ?></a>
                             </li>
-                            <li class="<?php echo (!$selprod_id) ? 'fat-inactive' : ''; ?>">
+                            <li class="<?php echo (0 == $selprod_id) ? 'fat-inactive' : ''; ?>">
                                 <a class="active" href="javascript:void(0);">
                                     <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                                 </a>

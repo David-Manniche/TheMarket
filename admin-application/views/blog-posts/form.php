@@ -25,9 +25,11 @@ $frm->developerTags['fld_default_col'] = 12;
 					<?php $inactive=($post_id==0)?'fat-inactive':''; ?>
 						<li><a class="active" href="javascript:void(0);" onclick="blogPostForm(<?php echo $post_id ?>);"><?php echo Labels::getLabel('LBL_General',$adminLangId); ?></a></li>
 						<li class="<?php echo $inactive;?>"><a href="javascript:void(0);" <?php if($post_id>0){?> onclick="linksForm(<?php echo $post_id ?>);" <?php }?>><?php echo Labels::getLabel('LBL_Link_Category',$adminLangId); ?></a></li>
-						<?php foreach($languages as $langId=>$langName){ ?>
-						<li class="<?php echo $inactive;?>"><a href="javascript:void(0);" <?php if($post_id>0){?> onclick="langForm(<?php echo $post_id ?>, <?php echo $langId;?>);" <?php }?>><?php echo Labels::getLabel('LBL_'.$langName,$adminLangId);?></a></li>
-						<?php } ?>
+                        <li class="<?php echo (0 == $post_id) ? 'fat-inactive' : ''; ?>">
+                            <a href="javascript:void(0);" <?php echo (0 < $post_id) ? "onclick='langForm(" . $post_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                                <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
+                            </a>
+                        </li>
 						<li class="<?php echo $inactive;?>"><a href="javascript:void(0);" <?php if($post_id>0){?> onclick="postImages(<?php echo $post_id ?>);" <?php }?>><?php echo Labels::getLabel('LBL_Post_Images',$adminLangId); ?></a></li>
 					</ul>
 					<div class="tabs_panel_wrap">

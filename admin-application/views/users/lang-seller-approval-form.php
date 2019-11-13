@@ -19,8 +19,8 @@ $langFld->setfieldTagAttribute('onChange', "addLangFormFields(" . $sformfield_id
                 <li><a href="javascript:void(0)"
                         onclick="formFileds(<?php echo $sformfield_id ?>);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
                 </li>
-                <li class="<?php echo (!$sformfield_id) ? 'fat-inactive' : ''; ?>">
-                    <a class="active" href="javascript:void(0);" <?php echo ($sformfield_id) ? "onclick='addLangFormFields(" . $sformfield_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                <li class="<?php echo (0 == $sformfield_id) ? 'fat-inactive' : ''; ?>">
+                    <a class="active" href="javascript:void(0);" <?php echo (0 < $sformfield_id) ? "onclick='addLangFormFields(" . $sformfield_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
                         <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                     </a>
                 </li>

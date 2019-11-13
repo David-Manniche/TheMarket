@@ -77,10 +77,10 @@ $(document).ready(function() {
         });
     }
 
-    editReasonLangForm = function(reasonId, langId) {
+    editReasonLangForm = function(reasonId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
         //	$.facebox(function() {
-        fcom.ajax(fcom.makeUrl('OrderReturnReasons', 'langForm', [reasonId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('OrderReturnReasons', 'langForm', [reasonId, langId, autoFillLangData]), '', function(t) {
             //$.facebox(t,'faceboxWidth');
             fcom.updateFaceboxContent(t);
         });

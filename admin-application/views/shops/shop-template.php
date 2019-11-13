@@ -13,8 +13,8 @@
                                     <?php echo Labels::getLabel('LBL_General', $adminLangId); ?>
                                 </a>
                             </li>
-                            <li class="<?php echo (!$shop_id) ? 'fat-inactive' : ''; ?>">
-                                <a href="javascript:void(0);" <?php echo ($shop_id) ? "onclick='addShopLangForm(" . $shop_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                            <li class="<?php echo (0 == $shop_id) ? 'fat-inactive' : ''; ?>">
+                                <a href="javascript:void(0);" <?php echo (0 < $shop_id) ? "onclick='addShopLangForm(" . $shop_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
                                     <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                                 </a>
                             </li>

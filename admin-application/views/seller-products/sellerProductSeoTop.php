@@ -7,9 +7,9 @@
                     <?php echo Labels::getLabel('LBL_Basic', $adminLangId);?>
                 </a>
             </li>
-            <li class="<?php echo (!$metaId) ? 'fat-inactive' : ''; ?>">
+            <li class="<?php echo (0 == $metaId) ? 'fat-inactive' : ''; ?>">
                 <a href="javascript:void(0);" class="<?php echo ($seoActiveTab != 'GENERAL') ? 'active' : ''; ?>"
-                    <?php if ($metaId) { ?>
+                    <?php if (0 < $metaId) { ?>
                         onclick='editProductMetaTagLangForm(<?php echo $metaId ?>,<?php echo FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) ?>);'
                     <?php } ?>>
                     <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>

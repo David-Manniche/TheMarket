@@ -7,23 +7,23 @@
     <div class="sectionbody space">
         <div class="tabs_nav_container responsive flat">
             <ul class="tabs_nav">
-                <li><a <?php echo ($preqId) ? "onclick='productForm( ".$preqId.", 0 );'" : ""; ?>
+                <li><a <?php echo (0 < $preqId) ? "onclick='productForm( ".$preqId.", 0 );'" : ""; ?>
                         href="javascript:void(0);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
                 </li>
-                <li><a <?php echo ($preqId) ? "onclick='sellerProductForm( ".$preqId.");'" : ""; ?>
+                <li><a <?php echo (0 < $preqId) ? "onclick='sellerProductForm( ".$preqId.");'" : ""; ?>
                         href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Inventory/Info', $adminLangId); ?></a>
                 </li>
-                <li><a <?php echo ($preqId) ? "onclick='customCatalogSpecifications( ".$preqId." );'" : ""; ?>
+                <li><a <?php echo (0 < $preqId) ? "onclick='customCatalogSpecifications( ".$preqId." );'" : ""; ?>
                         href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Specifications', $adminLangId);?></a>
                 </li>
-                <li class="<?php echo (!$preqId) ? 'fat-inactive' : ''; ?>">
-                    <a href="javascript:void(0);" <?php echo ($preqId) ? "onclick='productLangForm(" . $preqId . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                <li class="<?php echo 0 == $preqId) ? 'fat-inactive' : ''; ?>">
+                    <a href="javascript:void(0);" <?php echo (0 < $preqId) ? "onclick='productLangForm(" . $preqId . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
                         <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                     </a>
                 </li>
                 <?php if (!empty($productOptions) && count($productOptions)>0) {
                         ?>
-                <li><a <?php echo ($preqId) ? "onClick='customEanUpcForm( ".$preqId.");'" : ""; ?>
+                <li><a <?php echo (0 < $preqId) ? "onClick='customEanUpcForm( ".$preqId.");'" : ""; ?>
                         href="javascript:void(0);"><?php echo Labels::getLabel('LBL_EAN/UPC_setup', $adminLangId); ?></a>
                 </li>
                 <?php

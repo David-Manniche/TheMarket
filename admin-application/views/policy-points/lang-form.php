@@ -24,8 +24,8 @@ $langFld->setfieldTagAttribute('onChange', "editPolicyPointLangForm(" . $ppointI
                         <li><a href="javascript:void(0);"
                                 onclick="editPolicyPointForm(<?php echo $ppointId ?>);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
                         </li>
-                        <li class="<?php echo (!$ppointId) ? 'fat-inactive' : ''; ?>">
-                            <a class="active" href="javascript:void(0);" <?php echo ($ppointId) ? "onclick='editPolicyPointLangForm(" . $ppointId . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                        <li class="<?php echo (0 == $ppointId) ? 'fat-inactive' : ''; ?>">
+                            <a class="active" href="javascript:void(0);" <?php echo (0 < $ppointId) ? "onclick='editPolicyPointLangForm(" . $ppointId . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
                                 <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                             </a>
                         </li>

@@ -312,7 +312,7 @@ class BannersController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function bannerLocLangForm($blocationId, $lang_id = 0)
+    public function bannerLocLangForm($blocationId, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canViewBanners();
 
@@ -329,9 +329,18 @@ class BannersController extends AdminBaseController
         }
 
         $bannerLocLangFrm = $this->getBannerLocLangForm($blocationId, $lang_id);
-
-        $langData = BannerLocation::getAttributesByLangId($lang_id, $blocationId);
-
+        
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(BannerLocation::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($blocationId, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = BannerLocation::getAttributesByLangId($lang_id, $blocationId);
+        }
         if ($langData) {
             $bannerLocLangFrm->fill($langData);
         }
@@ -412,9 +421,9 @@ class BannersController extends AdminBaseController
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
         $data = array(
-        'blocationlang_blocation_id'=>$blocation_id,
-        'blocationlang_lang_id'=>$lang_id,
-        'blocation_name'=>$post['blocation_name'],
+        'blocationlang_blocation_id' => $blocation_id,
+        'blocationlang_lang_id' => $lang_id,
+        'blocation_name' => $post['blocation_name'],
         );
 
         $bannerObj = new BannerLocation($blocation_id);
@@ -423,9 +432,18 @@ class BannersController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(BannerLocation::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($blocation_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        }
+
         $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach ($languages as $langId =>$langName) {
+        foreach ($languages as $langId => $langName) {
             if (!$row = BannerLocation::getAttributesByLangId($langId, $blocation_id)) {
                 $newTabLangId = $langId;
                 break;
@@ -714,8 +732,15 @@ class BannersController extends AdminBaseController
         $frm = new Form('frmBannerLocLang');
 
         $frm->addHiddenField('', 'blocation_id', $blocation_id);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Banner_Location_Title', $this->adminLangId), 'blocation_name');
+
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;
     }

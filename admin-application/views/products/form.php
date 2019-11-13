@@ -93,8 +93,8 @@ if ($product_added_by_admin == 1 && $totalProducts >0) {
                                 <?php echo Labels::getLabel('LBL_General', $adminLangId); ?>
                             </a>
                         </li>
-                        <li class="<?php echo (!$product_id) ? 'fat-inactive' : ''; ?>">
-                            <a href="javascript:void(0);" <?php echo ($product_id) ? "onclick='productLangForm(" . $product_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                        <li class="<?php echo (0 == $product_id) ? 'fat-inactive' : ''; ?>">
+                            <a href="javascript:void(0);" <?php echo (0 < $product_id) ? "onclick='productLangForm(" . $product_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
                                 <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                             </a>
                         </li>

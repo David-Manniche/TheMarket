@@ -21,7 +21,7 @@ $langFld->setfieldTagAttribute('onChange', "brandLangForm(" . $brand_id . ", thi
                         <li><a href="javascript:void(0);"
                                 onclick="brandForm(<?php echo $brand_id ?>);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
                         </li>
-                        <li class="<?php echo (!$brand_id) ? 'fat-inactive' : ''; ?>">
+                        <li class="<?php echo (0 == $brand_id) ? 'fat-inactive' : ''; ?>">
                             <a class="active" href="javascript:void(0);">
                                 <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                             </a>

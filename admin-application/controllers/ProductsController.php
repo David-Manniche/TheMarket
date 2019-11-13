@@ -1252,7 +1252,7 @@ class ProductsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function prodSpecForm($productId = 0, $autoFillLangData = 0)
+    public function prodSpecForm($productId = 0)
     {
         $this->objPrivilege->canEditProducts();
         $post = FatApp::getPostedData();

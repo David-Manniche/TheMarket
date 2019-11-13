@@ -40,7 +40,7 @@ $langFld->setfieldTagAttribute('onChange', "addShopLangForm(" . $shop_id . ", th
                                 <?php echo Labels::getLabel('LBL_General', $adminLangId); ?>
                             </a>
                         </li>
-                        <li class="<?php echo (!$shop_id) ? 'fat-inactive' : ''; ?>">
+                        <li class="<?php echo (0 == $shop_id) ? 'fat-inactive' : ''; ?>">
                             <a class="active" href="javascript:void(0);">
                                 <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                             </a>

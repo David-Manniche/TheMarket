@@ -29,25 +29,13 @@ $urlFld->setFieldTagAttribute('onKeyup', "getSlugUrl(this,this.value)");
                         <li><a class="active" href="javascript:void(0)"
                                 onclick="brandForm(<?php echo $brand_id ?>);"><?php echo Labels::getLabel('LBL_General', $adminLangId);?></a>
                         </li>
-                        <li class="<?php echo (!$brand_id) ? 'fat-inactive' : ''; ?>">
-                            <a href="javascript:void(0);" <?php echo ($brand_id) ? "onclick='brandLangForm(" . $brand_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                        <li class="<?php echo (0 == $brand_id) ? 'fat-inactive' : ''; ?>">
+                            <a href="javascript:void(0);" <?php echo (0 < $brand_id) ? "onclick='brandLangForm(" . $brand_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
                                 <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                             </a>
                         </li>
                         <?php
-                        $inactive = ($brand_id == 0) ? 'fat-inactive' : '';
-                        /* foreach ($languages as $langId => $langName) {  ?>
-                            <li class="<?php echo $inactive; ?>">
-                                <a href="javascript:void(0);"
-                                    <?php if ($brand_id > 0) { ?>
-                                    onclick="brandLangForm(<?php echo $brand_id ?>, <?php echo $langId; ?>);"
-                                    <?php } ?>>
-                                    <?php //$title = str_replace(' ', '_',$langName);
-                                            echo Labels::getLabel("LBL_" . $langName, $adminLangId);
-                                        //echo $langName; ?>
-                                </a>
-                            </li>
-                        <?php } */ ?>
+                        $inactive = ($brand_id == 0) ? 'fat-inactive' : '';?>
                         <li class="<?php echo $inactive;?>">
                             <a href="javascript:void(0);" 
                                 <?php if ($brand_id > 0) { ?>

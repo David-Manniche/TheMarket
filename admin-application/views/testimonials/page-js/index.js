@@ -80,10 +80,10 @@ $(document).ready(function() {
         });
     }
 
-    editTestimonialLangForm = function(testimonialId, langId) {
+    editTestimonialLangForm = function(testimonialId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
         //	$.facebox(function() {
-        fcom.ajax(fcom.makeUrl('Testimonials', 'langForm', [testimonialId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Testimonials', 'langForm', [testimonialId, langId, autoFillLangData]), '', function(t) {
             //$.facebox(t,'faceboxWidth');
             fcom.updateFaceboxContent(t);
         });

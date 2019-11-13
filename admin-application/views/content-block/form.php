@@ -31,8 +31,8 @@ $urlFld->setFieldTagAttribute('onKeyup', "getSlugUrl(this,this.value)");
                         <li><a class="active" href="javascript:void(0)"
                                 onclick="addBlockForm(<?php echo $epage_id ?>);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
                         </li>
-                        <li class="<?php echo (!$epage_id) ? 'fat-inactive' : ''; ?>">
-                            <a href="javascript:void(0);" <?php echo ($epage_id) ? "onclick='addBlockLangForm(" . $epage_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                        <li class="<?php echo (0 == $epage_id) ? 'fat-inactive' : ''; ?>">
+                            <a href="javascript:void(0);" <?php echo (0 < $epage_id) ? "onclick='addBlockLangForm(" . $epage_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
                                 <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                             </a>
                         </li>

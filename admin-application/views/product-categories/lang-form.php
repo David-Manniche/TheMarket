@@ -58,24 +58,11 @@ $langFld->setfieldTagAttribute('onChange', "categoryLangForm(" . $prodcat_id . "
                         <li><a href="javascript:void(0);"
                                 onclick="categoryForm(<?php echo $prodcat_id ?>);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
                         </li>
-                        <li class="<?php echo (!$prodcat_id) ? 'fat-inactive' : ''; ?>">
+                        <li class="<?php echo (0 == $prodcat_id) ? 'fat-inactive' : ''; ?>">
                             <a class="active" href="javascript:void(0);">
                                 <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                             </a>
                         </li>
-                        <?php
-                        /* if ($prodcat_id > 0) {
-                            foreach ($languages as $langId => $langName) {
-                                ?>
-                                    <li><a class="<?php echo ($prodcat_lang_id==$langId) ? 'active' : ''?>"
-                                            href="javascript:void(0);"
-                                            onclick="categoryLangForm(<?php echo $prodcat_id ?>, <?php echo $langId; ?>);"><?php echo Labels::getLabel('LBL_'.$langName, $adminLangId); ?></a>
-                                    </li>
-                                    <?php
-                            }
-                        } */
-                        
-                        ?>
                         <li class="<?php echo (!$prodcat_id) ? 'fat-inactive' : ''; ?>">
                             <a href="javascript:void(0);" <?php if ($prodcat_id > 0) { ?>
                                 onclick="categoryMediaForm(<?php echo $prodcat_id ?>);" <?php }?>>

@@ -57,11 +57,17 @@ else{
         <li><a class="<?php echo ($lang_id == 0) ? 'active' : ''; ?>" href="javascript:void(0)" onClick="getForm(<?php echo $frmType;?>,'<?php echo $tbid;?>')">Basic</a></li>
     <?php } ?>
     <?php
-    if( $dispLangTab ){
-        foreach( $languages as $langId => $langName ){ ?>
+    if( $dispLangTab ){ ?>
+        <li>
+            <a href="javascript:void(0);" onClick="getLangForm(<?php echo $frmType;?>, <?php echo FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);?>, '<?php echo $tbid; ?>')">
+                <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
+            </a>
+        </li>
+        <?php 
+        /* foreach( $languages as $langId => $langName ){ ?>
             <li><a href="javascript:void(0);" class="<?php echo ($lang_id == $langId) ? 'active' : '' ; ?>" onClick="getLangForm(<?php echo $frmType;?>,<?php echo $langId;?>,'<?php echo $tbid; ?>')"><?php echo $langName; ?></a></li>
-        <?php }
-    } ?>
+        <?php } */ ?>
+    <?php } ?>
 </ul>
 <div class="tabs_panel_wrap">
     <?php echo $frm->getFormHtml();?>

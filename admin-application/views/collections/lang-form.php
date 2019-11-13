@@ -18,8 +18,8 @@ $langFld->setfieldTagAttribute('onChange', "editCollectionLangForm(" . $collecti
                         <li>
                             <a href="javascript:void(0);" onclick="editCollectionForm(<?php echo $collectionId ?>);"> <?php echo Labels::getLabel('LBL_General', $adminLangId);?></a>
                         </li> 
-                        <li class="<?php echo (!$collectionId) ? 'fat-inactive' : ''; ?>">
-                            <a class="active" href="javascript:void(0);" <?php echo ($collectionId) ? "onclick='editCollectionLangForm(" . $collectionId . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                        <li class="<?php echo (0 == $collectionId) ? 'fat-inactive' : ''; ?>">
+                            <a class="active" href="javascript:void(0);" <?php echo (0 < $collectionId) ? "onclick='editCollectionLangForm(" . $collectionId . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
                                 <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                             </a>
                         </li>

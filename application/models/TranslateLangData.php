@@ -19,7 +19,6 @@ class TranslateLangData
         if (empty($tbl)) {
             trigger_error(Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId()), E_USER_ERROR);
         }
-
         $this->tbl = $tbl;
         $this->langTranslateFields = $this->getLangTranslateFields();
         $this->langTablePrimaryFields = $this->getLangTablePrimaryFields();
@@ -79,10 +78,13 @@ class TranslateLangData
 
         $translatedDataToUpdate = [];
         foreach ($convertedLangsData as $lang => $langData) {
-            $langRecordData = [
-                $this->langTablePrimaryFields['langIdCol'] => $langArr[$lang],
-            ];
             $dataToupdate = array_combine(array_keys($data), $langData);
+            $langRecordData = [];
+            if (array_key_exists('langIdCol', $this->langTablePrimaryFields)) {
+                $langRecordData = [
+                    $this->langTablePrimaryFields['langIdCol'] => $langArr[$lang],
+                ];
+            }
             $translatedDataToUpdate[$langArr[$lang]] = array_merge($langRecordData, $dataToupdate);
         }
         return $translatedDataToUpdate;
@@ -91,8 +93,10 @@ class TranslateLangData
     public function getTranslatedData($recordId, $toLangId = 0, $fromLangId = 0)
     {
         $langArr = $this->getLangToCovert($toLangId, $fromLangId);
-        $recordData = $this->getRecordData($recordId);
-
+        if (!$recordData = $this->getRecordData($recordId)) {
+            return false;
+        }
+        
         if (empty($recordData)) {
             $this->error = Labels::getLabel('MSG_PLEASE_PROVIDE_DATA_TO_TRANSLATE', CommonHelper::getLangId());
             return false;
@@ -168,7 +172,15 @@ class TranslateLangData
         $srch->addCondition('tld.' . $this->langTablePrimaryFields['recordIdCol'], '=', $recordId);
         $srch->setPageSize(1);
         $rs = $srch->getResultSet();
-        return array_filter(FatApp::getDb()->fetch($rs));
+        if (false === $rs) {
+            $this->error = Labels::getLabel('MSG_INVALID_RESULT_SET', CommonHelper::getLangId());
+            return false;
+        }
+        if (!$data = FatApp::getDb()->fetch($rs)) {
+            $this->error = Labels::getLabel('MSG_NO_DATA', CommonHelper::getLangId());
+            return false;
+        }
+        return array_filter($data);
     }
 
 

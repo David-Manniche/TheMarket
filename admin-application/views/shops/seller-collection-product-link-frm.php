@@ -10,8 +10,8 @@ if (isset($scollection_id) && $scollection_id >0) {
             <?php echo Labels::getLabel('TXT_GENERAL', $adminLangId);?>
         </a>
     </li>
-    <li class="<?php echo (!$scollection_id) ? 'fat-inactive' : ''; ?>">
-        <a href="javascript:void(0);" <?php echo ($scollection_id) ? "onclick='editShopCollectionLangForm(" . $shop_id . "," . $scollection_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+    <li class="<?php echo (0 == $scollection_id) ? 'fat-inactive' : ''; ?>">
+        <a href="javascript:void(0);" <?php echo (0 < $scollection_id) ? "onclick='editShopCollectionLangForm(" . $shop_id . "," . $scollection_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
             <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
         </a>
     </li>

@@ -37,14 +37,6 @@ $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value,'')");
                         </a>
                     </li>
 
-                    <?php /*  $inactive = ($shop_id == 0) ? 'fat-inactive' : '';
-                    foreach ($languages as $langId => $langName) {?>
-                    <li class="<?php echo $inactive;?>"><a href="javascript:void(0);"
-                        <?php if ($shop_id > 0) { ?>
-                            onclick="addShopLangForm(<?php echo $shop_id ?>, <?php echo $langId;?>);"
-                        <?php } ?>><?php echo Labels::getLabel("LBL_" . $langName, $adminLangId);?></a></li>
-                    <?php }  */ ?>
-
                         <?php /* <li><a href="javascript:void(0);"
                         <?php if ($shop_id > 0) { ?>
                             onclick="shopTemplates(<?php echo $shop_id ?>);"
