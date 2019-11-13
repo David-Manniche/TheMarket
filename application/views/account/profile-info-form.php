@@ -50,14 +50,14 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
                 <div class="row align-items-center" id="profileImageFrmBlock">
                     <div class="col-6">
                         <div class="avtar avtar--large">
-                            <?php 
+                            <?php
                                 $userId = UserAuthentication::getLoggedUserId();
                                 $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
                                 $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
 
                                 $profileImg = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'user', array($userId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                             ?>
-                            <img src="<?php echo $profileImg;?>" alt="<?php echo Labels::getLabel('LBL_Profile_Image', $siteLangId);?>">
+                            <img onClick="popupOrgImage(this)" src="<?php echo $profileImg;?>" alt="<?php echo Labels::getLabel('LBL_Profile_Image', $siteLangId);?>">
                             <!--img src="<?php /* echo CommonHelper::generateUrl('Account', 'userProfileImage', array(UserAuthentication::getLoggedUserId(), 'croped', true)).'?t='.time(); ?>"
                                 alt="<?php echo Labels::getLabel('LBL_Profile_Image', $siteLangId); */?>"-->
                         </div>
@@ -74,6 +74,7 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
                             echo $imgFrm->getFieldHtml('remove_profile_img');
                             echo $imgFrm->getFieldHtml('action');
                             echo $imgFrm->getFieldHtml('img_data');
+                            echo $imgFrm->getFieldHtml('org_img');
                             ?>
                             <?php if ($mode == 'Edit') { ?>
                             <a class="btn btn--primary-border btn--sm mt-1" href="javascript:void(0)" onClick="removeProfileImage()"><?php echo Labels::getLabel('LBL_Remove', $siteLangId);?></a>

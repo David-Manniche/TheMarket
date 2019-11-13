@@ -134,34 +134,85 @@ $(document).ready(function(){
       }
     });
 
-	var $image ;
+	function getRoundedCanvas(sourceCanvas) {
+      var canvas = document.createElement('canvas');
+      var context = canvas.getContext('2d');
+      var width = sourceCanvas.width;
+      var height = sourceCanvas.height;
+
+      canvas.width = width;
+      canvas.height = height;
+      context.imageSmoothingEnabled = true;
+      context.drawImage(sourceCanvas, 0, 0, width, height);
+      context.globalCompositeOperation = 'destination-in';
+      context.beginPath();
+      context.arc(width / 2, height / 2, Math.min(width, height) / 2, 0, 2 * Math.PI, true);
+      context.fill();
+      return canvas;
+    }
+
 	cropImage = function(obj){
-		$image = obj;
-		$image.cropper({
-			aspectRatio: 1,
-			autoCropArea: 0.4545,
-			// strict: true,
-			guides: false,
-			highlight: false,
-			dragCrop: false,
-			cropBoxMovable: false,
-			cropBoxResizable: false,
-			rotatable:true,
-			responsive: true,
-			crop: function (e) {
-				var json = [
-					'{"x":' + e.x,
-					'"y":' + e.y,
-					'"height":' + e.height,
-					'"width":' + e.width,
-					'"rotate":' + e.rotate + '}'
+	  // var image = document.getElementById('new-img');
+	  var image = obj;
+      var button = document.getElementById('updateBtn-js');
+      // var result = document.getElementById('result');
+      var croppable = false;
+      var cropper = new Cropper(image, {
+        aspectRatio: 1,
+        viewMode: 1,
+        ready: function () {
+          croppable = true;
+        },
+      });
+
+      button.onclick = function () {
+        /*var croppedCanvas;
+        var roundedCanvas;
+        var roundedImage;
+
+        if (!croppable) {
+          return;
+        }
+
+        // Crop
+        croppedCanvas = cropper.getCroppedCanvas();
+
+        // Round
+        roundedCanvas = getRoundedCanvas(croppedCanvas);
+
+        // Show
+        roundedImage = document.createElement('img');
+        roundedImage.src = roundedCanvas.toDataURL();*/
+		var json = [
+					'{"x":' + cropper.getData().x,
+					'"y":' + cropper.getData().y,
+					'"height":' + cropper.getData().height,
+					'"width":' + cropper.getData().width + '}'
 					].join();
 				$("#img_data").val(json);
-			  },
-			built: function () {
-			$(this).cropper("zoom", 0.5);
-		  },
-		})
+		/*result.innerHTML = '';
+        result.appendChild(roundedImage);*/
+		sumbmitProfileImage()
+      };
+	};
+
+	popupOrgImage = function(input){
+		$.facebox('<div class="popup__body"><div id="loader" class="loader">'+fcom.getLoader()+'</div></div>','faceboxWidth fbminwidth');
+
+		wid = $(window).width();
+		if(wid > 767){
+			wid = 500;
+		}else{
+			wid = 280;
+		}
+		$("#avatar-action").val("avatar");
+		var fn = "sumbmitProfileImage();";
+
+		$.facebox('<div class="popup__body"><div class="img-container "><img alt="Picture" src="" class="img_responsive" id="new-img" /></div><span class="gap"></span><div class="align--center rotator-actions"><a id="updateBtn-js" onclick='+fn+' href="javascript:void(0)" class="btn btn--primary btn--sm">'+$("#update_profile_img").val()+'</a><div id="result"></div></div></div>','faceboxWidth');
+		orgImg = $("#org-img").val();
+		$('#new-img').attr('src', orgImg);
+		$('#new-img').width(wid);
+		cropImage(document.getElementById('new-img'));
 	};
 
 	popupImage = function(input){
@@ -184,10 +235,10 @@ $(document).ready(function(){
 					$("#avatar-action").val("avatar");
 					var fn = "sumbmitProfileImage();";
 
-					$.facebox('<div class="popup__body"><div class="img-container "><img alt="Picture" src="" class="img_responsive" id="new-img" /></div><span class="gap"></span><div class="align--center rotator-actions"><a href="javascript:void(0)" class="btn btn--primary btn--sm" title="'+$("#rotate_left").val()+'" data-option="-90" data-method="rotate">'+$("#rotate_left").val()+'</a>&nbsp;<a onclick='+fn+' href="javascript:void(0)" class="btn btn--primary btn--sm">'+$("#update_profile_img").val()+'</a>&nbsp;<a href="javascript:void(0)" class="btn btn--primary btn--sm" title="'+$("#rotate_right").val()+'" data-option="90" data-method="rotate">'+$("#rotate_right").val()+'</a></div></div>','faceboxWidth');
+					$.facebox('<div class="popup__body"><div class="img-container "><img alt="Picture" src="" class="img_responsive" id="new-img" /></div><span class="gap"></span><div class="align--center rotator-actions"><a id="updateBtn-js" onclick='+fn+' href="javascript:void(0)" class="btn btn--primary btn--sm">'+$("#update_profile_img").val()+'</a><div id="result"></div></div></div>','faceboxWidth');
 					$('#new-img').attr('src', json.file);
 					$('#new-img').width(wid);
-					cropImage($('#new-img'));
+					cropImage(document.getElementById('new-img'));
 				}else{
 					$.facebox('<div class="popup__body"><div class="img-container marginTop20">'+json.msg+'</div></div>');
 				}

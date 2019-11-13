@@ -24,20 +24,20 @@ class AccountController extends LoggedUserController
         if (UserAuthentication::isGuestUserLogged()) {
             FatApp::redirectUser(CommonHelper::generateUrl('home'));
         }
-        
+
         switch ($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab']) {
             case 'B':
                 FatApp::redirectUser(CommonHelper::generateUrl('buyer'));
-                break;            
+                break;
             case 'S':
                 FatApp::redirectUser(CommonHelper::generateUrl('seller'));
-                break;            
+                break;
             case 'Ad':
                 FatApp::redirectUser(CommonHelper::generateUrl('advertiser'));
-                break;            
+                break;
             case 'AFFILIATE':
                 FatApp::redirectUser(CommonHelper::generateUrl('affiliate'));
-                break;                        
+                break;
             default:
                 FatApp::redirectUser(CommonHelper::generateUrl(''));
                 break;
@@ -928,7 +928,6 @@ class AccountController extends LoggedUserController
         if ($file_row != false) {
             $mode = 'Edit';
         }
-
         $this->set('data', $data);
         $this->set('frm', $frm);
         $this->set('imgFrm', $imgFrm);
@@ -986,20 +985,27 @@ class AccountController extends LoggedUserController
         }
 
         if ($post['action'] == "avatar") {
-            if (!$fileHandlerObj->isUploadedFile($_FILES['user_profile_image']['tmp_name'])) {
-                FatUtility::dieJsonError($fileHandlerObj->getError());
+            if (isset($_FILES['user_profile_image']['tmp_name'])) {
+                if (!$fileHandlerObj->isUploadedFile($_FILES['user_profile_image']['tmp_name'])) {
+                    FatUtility::dieJsonError($fileHandlerObj->getError());
+                }
+
+                if (!$res = $fileHandlerObj->saveImage($_FILES['user_profile_image']['tmp_name'], AttachedFile::FILETYPE_USER_PROFILE_CROPED_IMAGE, $userId, 0, $_FILES['user_profile_image']['name'], -1, true)
+                ) {
+                    $message = Labels::getLabel($fileHandlerObj->getError(), $this->siteLangId);
+                    FatUtility::dieJsonError($message);
+                }
+                $location = CONF_UPLOADS_PATH .$res;
+                $destination = '';
+            } else {
+                $croppedImage = AttachedFile::getAttachment(AttachedFile::FILETYPE_USER_PROFILE_CROPED_IMAGE, $userId);
+                $orgImage = AttachedFile::getAttachment(AttachedFile::FILETYPE_USER_PROFILE_IMAGE, $userId);
+                $location = CONF_UPLOADS_PATH .$orgImage['afile_physical_path'];
+                $destination = CONF_UPLOADS_PATH .$croppedImage['afile_physical_path'];
             }
-
-
-            if (!$res = $fileHandlerObj->saveImage($_FILES['user_profile_image']['tmp_name'], AttachedFile::FILETYPE_USER_PROFILE_CROPED_IMAGE, $userId, 0, $_FILES['user_profile_image']['name'], -1, true)
-            ) {
-                $message = Labels::getLabel($fileHandlerObj->getError(), $this->siteLangId);
-                FatUtility::dieJsonError($message);
-            }
-
             if (isset($post['img_data'])) {
                 $data = json_decode(stripslashes($post['img_data']));
-                CommonHelper::crop($data, CONF_UPLOADS_PATH .$res, $this->siteLangId);
+                CommonHelper::crop($data, $location, $this->siteLangId, $destination);
             }
 
             if (false ===  MOBILE_APP_API_CALL) {
@@ -1356,7 +1362,7 @@ class AccountController extends LoggedUserController
                 $msg = Labels::getLabel('LBL_Error_while_assigning_product_under_selected_list.');
 
                 if (true ===  MOBILE_APP_API_CALL) {
-                   LibHelper::dieJsonError($msg);
+                    LibHelper::dieJsonError($msg);
                 }
                 Message::addErrorMessage($msg);
                 FatUtility::dieWithError(Message::getHtml());
@@ -2650,6 +2656,11 @@ class AccountController extends LoggedUserController
         $frm->addHiddenField('', 'rotate_right', Labels::getLabel('LBL_Rotate_Right', $this->siteLangId), array('id'=>'rotate_right'));
         $frm->addHiddenField('', 'remove_profile_img', 0, array('id'=>'remove_profile_img'));
         $frm->addHiddenField('', 'action', 'avatar', array('id'=>'avatar-action'));
+        $userId = UserAuthentication::getLoggedUserId();
+        $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
+        $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
+        $orgImg = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'user', array($userId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+        $frm->addHiddenField('', 'org_img', $orgImg, array('id'=>'org-img'));
         $frm->addHiddenField('', 'img_data', '', array('id'=>'img_data'));
         return $frm;
     }

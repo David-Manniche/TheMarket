@@ -1119,7 +1119,7 @@ class CommonHelper extends FatUtility
         return $arr_url_params;
     }
 
-    public static function crop($data, $src, $langId)
+    public static function crop($data, $src, $langId, $dst = '')
     {
         if (empty($data)) {
             return;
@@ -1132,7 +1132,7 @@ class CommonHelper extends FatUtility
         $src_img_w = $size_w;
         $src_img_h = $size_h;
 
-        $degrees = $data -> rotate;
+        $degrees = isset($data->rotate) ? $data->rotate : 0;
 
         switch ($size['mime']) {
             case "image/gif":
@@ -1214,7 +1214,8 @@ class CommonHelper extends FatUtility
         $result = imagecopyresampled($dst_img, $src_img, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h);
 
         if ($result) {
-            if (!imagepng($dst_img, $src)) {
+            $dst = ($dst != '') ? $dst : $src;
+            if (!imagepng($dst_img, $dst)) {
                 return Labels::getLabel('MSG_Failed_to_save_cropped_file', $langId);
             }
         } else {
@@ -1836,7 +1837,7 @@ class CommonHelper extends FatUtility
     }
 
     public static function demoUrl()
-	{ 
+	{
         if (strpos($_SERVER ['SERVER_NAME'], 'demo.yo-kart.com') !== false) {
             return true;
         }
