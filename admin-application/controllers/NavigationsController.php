@@ -112,7 +112,7 @@ class NavigationsController extends AdminBaseController
         $nav_id = FatUtility::int($nav_id);
         $lang_id = FatUtility::int($lang_id);
 
-        if ($nav_id==0 || $lang_id==0) {
+        if ($nav_id == 0 || $lang_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
 
@@ -159,9 +159,9 @@ class NavigationsController extends AdminBaseController
         unset($post['nav_id']);
         unset($post['lang_id']);
         $data = array(
-        'navlang_nav_id'=>$nav_id,
-        'navlang_lang_id'=>$lang_id,
-        'nav_name'=>$post['nav_name']
+        'navlang_nav_id' => $nav_id,
+        'navlang_lang_id' => $lang_id,
+        'nav_name' => $post['nav_name']
         );
 
         $obj = new Navigations($nav_id);
@@ -312,7 +312,7 @@ class NavigationsController extends AdminBaseController
         $newTabLangId = 0;
         if ($nlink_id > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = Navigations::getAttributesByLangId($langId, $nlink_id)) {
                     $newTabLangId = $langId;
                     break;
@@ -320,7 +320,7 @@ class NavigationsController extends AdminBaseController
             }
         } else {
             $nlink_id = $navLinkObj->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
         $this->set('langId', $newTabLangId);
         $this->set('nlinkId', $nlink_id);
@@ -406,9 +406,9 @@ class NavigationsController extends AdminBaseController
         unset($post['lang_id']);
 
         $data=array(
-        'nlinklang_nlink_id'=>$nlink_id,
-        'nlinklang_lang_id'=>$lang_id,
-        'nlink_caption'=>$post['nlink_caption'],
+        'nlinklang_nlink_id' => $nlink_id,
+        'nlinklang_lang_id' => $lang_id,
+        'nlink_caption' => $post['nlink_caption'],
         );
 
         $navLinkObj = new NavigationLinks($nlink_id);

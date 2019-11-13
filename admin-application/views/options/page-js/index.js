@@ -37,9 +37,11 @@ $(document).ready(function() {
 
     addOptionForm = function(optionId, autoFillLangData = 0) {
         var dv = $('#loadForm');
+        $.systemMessage(langLbl.processing, 'alert--process');
         fcom.ajax(fcom.makeUrl('Options', 'addForm', [optionId, autoFillLangData]), '', function(t) {
             dv.html(t);
             fcom.resetFaceboxHeight();
+            $.systemMessage.close();
         });
     };
 

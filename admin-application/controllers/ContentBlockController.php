@@ -1,7 +1,7 @@
 <?php
 class ContentBlockController extends AdminBaseController
 {
-    const IMPORT_INSTRUCTIONS = 1;
+    public const IMPORT_INSTRUCTIONS = 1;
 
     private $canView;
     private $canEdit;
@@ -175,7 +175,7 @@ class ContentBlockController extends AdminBaseController
         $epage_id = FatUtility::int($epage_id);
         $lang_id = FatUtility::int($lang_id);
 
-        if ($epage_id==0 || $lang_id==0) {
+        if ($epage_id == 0 || $lang_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
 
@@ -197,9 +197,9 @@ class ContentBlockController extends AdminBaseController
             $blockLangFrm->fill($langData);
         }
 
-        if ($epage_id==Extrapage::SELLER_BANNER_SLOGAN) {
+        if ($epage_id == Extrapage::SELLER_BANNER_SLOGAN) {
             $fileType = AttachedFile::FILETYPE_SELLER_PAGE_SLOGAN_BG_IMAGE;
-        } elseif ($epage_id==Extrapage::ADVERTISER_BANNER_SLOGAN) {
+        } elseif ($epage_id == Extrapage::ADVERTISER_BANNER_SLOGAN) {
             $fileType = AttachedFile::FILETYPE_ADVERTISER_PAGE_SLOGAN_BG_IMAGE;
         } else {
             $fileType = AttachedFile::FILETYPE_AFFILIATE_PAGE_SLOGAN_BG_IMAGE;
@@ -222,10 +222,10 @@ class ContentBlockController extends AdminBaseController
     public function langSetup()
     {
         $this->objPrivilege->canEditContentBlocks();
-        $post=FatApp::getPostedData();
+        $post = FatApp::getPostedData();
         $epage_id = FatUtility::int($post['epage_id']);
         $lang_id = FatUtility::int($post['lang_id']);
-        if ($epage_id==0 || $lang_id==0) {
+        if ($epage_id == 0 || $lang_id == 0) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -238,11 +238,11 @@ class ContentBlockController extends AdminBaseController
 
         unset($post['epage_id']);
         unset($post['lang_id']);
-        $data=array(
-        'epagelang_lang_id'=>$lang_id,
-        'epagelang_epage_id'=>$epage_id,
-        'epage_label'=>$post['epage_label'],
-        'epage_content'=>$post['epage_content'],
+        $data = array(
+        'epagelang_lang_id' => $lang_id,
+        'epagelang_epage_id' => $epage_id,
+        'epage_label' => $post['epage_label'],
+        'epage_content' => $post['epage_content'],
         );
 
         $epageObj = new Extrapage($epage_id);

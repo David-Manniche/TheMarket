@@ -50,11 +50,11 @@ $(document).ready(function(){
 		});
 	};
 
-	addBlockLangForm = function(epageId, langId){
+	addBlockLangForm = function(epageId, langId, autoFillLangData = 0){
 		fcom.displayProcessing();
 		fcom.resetEditorInstance();
 //		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('ContentBlock', 'langForm', [epageId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('ContentBlock', 'langForm', [epageId, langId, autoFillLangData]), '', function(t) {
 				//$.facebox(t);
 				fcom.updateFaceboxContent(t);
 				fcom.resetFaceboxHeight();

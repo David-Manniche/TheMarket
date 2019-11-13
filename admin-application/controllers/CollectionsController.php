@@ -267,9 +267,9 @@ class CollectionsController extends AdminBaseController
         unset($post['lang_id']);
 
         $data = array(
-        'collectionlang_lang_id'=>$lang_id,
-        'collectionlang_collection_id'=>$collectionId,
-        'collection_name'=>$post['collection_name'],
+        'collectionlang_lang_id' => $lang_id,
+        'collectionlang_collection_id' => $collectionId,
+        'collection_name' => $post['collection_name'],
         /* 'collection_link_caption'=>$post['collection_link_caption'], */
         /* 'collection_description'=>$post['collection_description'], */
         );
@@ -292,7 +292,7 @@ class CollectionsController extends AdminBaseController
 
         $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach ($languages as $langId =>$langName) {
+        foreach ($languages as $langId => $langName) {
             if (!$row = Collections::getAttributesByLangId($langId, $collectionId)) {
                 $newTabLangId = $langId;
                 break;

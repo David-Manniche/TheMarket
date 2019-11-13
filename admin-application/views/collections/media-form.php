@@ -117,17 +117,6 @@ $collectionMediaFrm->developerTags['fld_default_col'] = 12;
                     <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                 </a>
             </li>
-            <?php
-            /* $inactive=($collection_id==0)?'fat-inactive':'';
-            foreach ($languages as $langId => $langName) { ?>
-                <li class="<?php echo $inactive; ?>">
-                    <a href="javascript:void(0);"
-                    <?php if ($collection_id>0) { ?>
-                        onclick="editCollectionLangForm(<?php echo $collection_id ?>, <?php echo $langId; ?>);"
-                    <?php } ?>>
-                    <?php echo $langName; ?></a>
-            </li>
-            <?php } */ ?>
             <li><a class="active" href="javascript:void(0)" onclick="collectionMediaForm(<?php echo $collection_id ?>);"><?php echo Labels::getLabel('LBL_Media', $adminLangId); ?></a></li>
         </ul>
         <div class="tabs_panel_wrap">

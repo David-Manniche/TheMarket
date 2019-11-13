@@ -165,7 +165,7 @@ class OptionsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function addForm($option_id = 0, $autoFillLangData = 0)
+    public function addForm($option_id = 0)
     {
         $this->objPrivilege->canEditOptions();
 
@@ -176,24 +176,6 @@ class OptionsController extends AdminBaseController
         if (0 < $option_id) {
             $optionObj = new Option();
             $data = $optionObj->getOption($option_id);
-
-            if (0 < $autoFillLangData) {
-                $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
-                $updateLangDataobj = new TranslateLangData(Option::DB_TBL_LANG);
-                $languages = Language::getAllNames();
-                unset($languages[$siteLangId]);
-                foreach ($languages as $langId => $langName) {
-                    $translatedData = $updateLangDataobj->directTranslate(['option_name' => $data['option_name'][$siteLangId]], $langId);
-                    if (false === $translatedData) {
-                        Message::addErrorMessage($updateLangDataobj->getError());
-                        FatUtility::dieWithError(Message::getHtml());
-                    }
-                    $translatedData = current($translatedData);
-                    $data['option_name'][$langId] = $translatedData['option_name'];
-                    $data['option_name' . $langId] = $translatedData['option_name'];
-                }
-            }
-
             if ($data === false) {
                 FatUtility::dieWithError(
                     Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId)

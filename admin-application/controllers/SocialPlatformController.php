@@ -110,7 +110,7 @@ class SocialPlatformController extends AdminBaseController
         $splatform_id = FatUtility::int($splatform_id);
         $lang_id = FatUtility::int($lang_id);
 
-        if ($splatform_id==0 || $lang_id==0) {
+        if ($splatform_id == 0 || $lang_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
 

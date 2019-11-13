@@ -47,10 +47,10 @@ $(document).ready(function(){
 		});
 	};
 
-	addLangForm = function(navId, langId){
+	addLangForm = function(navId, langId, autoFillLangData = 0){
 		fcom.displayProcessing();
 		//$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('Navigations', 'langForm', [navId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('Navigations', 'langForm', [navId, langId, autoFillLangData]), '', function(t) {
 			//	$.facebox(t);
 				fcom.updateFaceboxContent(t);
 

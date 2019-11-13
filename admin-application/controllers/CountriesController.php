@@ -119,10 +119,10 @@ class CountriesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $newTabLangId=0;
-        if ($countryId>0) {
+        $newTabLangId = 0;
+        if ($countryId > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = Countries::getAttributesByLangId($langId, $countryId)) {
                     $newTabLangId = $langId;
                     break;
@@ -130,7 +130,7 @@ class CountriesController extends AdminBaseController
             }
         } else {
             $countryId = $record->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
         Product::updateMinPrices();
         $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->adminLangId));
@@ -194,9 +194,9 @@ class CountriesController extends AdminBaseController
         unset($post['lang_id']);
 
         $data = array(
-        'countrylang_lang_id'=>$lang_id,
-        'countrylang_country_id'=>$countryId,
-        'country_name'=>$post['country_name']
+        'countrylang_lang_id' => $lang_id,
+        'countrylang_country_id' => $countryId,
+        'country_name' => $post['country_name']
         );
 
         $countryObj = new Countries($countryId);
@@ -217,7 +217,7 @@ class CountriesController extends AdminBaseController
 
         $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach ($languages as $langId =>$langName) {
+        foreach ($languages as $langId => $langName) {
             if (!$row = Countries::getAttributesByLangId($langId, $countryId)) {
                 $newTabLangId = $langId;
                 break;

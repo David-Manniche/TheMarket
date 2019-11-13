@@ -106,7 +106,7 @@ class EmptyCartItemsController extends AdminBaseController
         $newTabLangId = 0;
         if ($emptycartitem_id > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = EmptyCartItems::getAttributesByLangId($langId, $emptycartitem_id)) {
                     $newTabLangId = $langId;
                     break;
@@ -176,9 +176,9 @@ class EmptyCartItemsController extends AdminBaseController
         unset($post['emptycartitem_id']);
         unset($post['lang_id']);
         $data = array(
-        'emptycartitemlang_emptycartitem_id'=>$emptycartitem_id,
-        'emptycartitemlang_lang_id'=>$lang_id,
-        'emptycartitem_title'=>$post['emptycartitem_title']
+        'emptycartitemlang_emptycartitem_id' => $emptycartitem_id,
+        'emptycartitemlang_lang_id' => $lang_id,
+        'emptycartitem_title' => $post['emptycartitem_title']
         );
 
         $emptyCartItemObj = new EmptyCartItems($emptycartitem_id);

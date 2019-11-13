@@ -1252,31 +1252,31 @@ class ProductsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function prodSpecForm($productId = 0)
+    public function prodSpecForm($productId = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canEditProducts();
         $post = FatApp::getPostedData();
         $prodSpecId = FatUtility :: int($post['prodSpecId']);
         $data  = array();
         $languages = Language::getAllNames();
-        if ($prodSpecId>0) {
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        if ($prodSpecId > 0) {
             $prodSpecObj = new ProdSpecification();
             $specResult = $prodSpecObj->getProdSpecification($prodSpecId, $productId);
-
             foreach ($specResult as $key => $value) {
                 foreach ($languages as $langId => $langName) {
-                    if ($value['prodspeclang_lang_id']!=$langId) {
+                    if ($value['prodspeclang_lang_id'] != $langId) {
                         continue;
                     }
-                    $data['prod_spec_name['.$langId.']'] = $value['prodspec_name'];
-                    $data['prod_spec_value['.$langId.']'] = $value['prodspec_value'];
+                    $data['prod_spec_name[' . $langId . ']'] = $value['prodspec_name'];
+                    $data['prod_spec_value[' . $langId . ']'] = $value['prodspec_value'];
                 }
             }
         }
-
+        
         $this->set('languages', $languages);
         $specFrm =  $this->getProductSpecForm();
-
+        
         $data['product_id'] = $productId;
         $data['prodspec_id'] = $prodSpecId;
         $specFrm->fill($data);

@@ -212,9 +212,9 @@ class StatesController extends AdminBaseController
         unset($post['lang_id']);
 
         $data = array(
-        'statelang_lang_id'=>$lang_id,
-        'statelang_state_id'=>$stateId,
-        'state_name'=>$post['state_name']
+        'statelang_lang_id' => $lang_id,
+        'statelang_state_id' => $stateId,
+        'state_name' => $post['state_name']
         );
 
         $stateObj = new States($stateId);
