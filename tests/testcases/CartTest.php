@@ -94,7 +94,7 @@ class CartTest extends TestCase
      * @dataProvider userCartData
     */
     public function testGetCartData($userId, $expected){
-        $result = Cart::getCartData($userId); 
+        $result = Cart::getCartData($userId);
         $this->$expected($result);
         //$this->assertEquals($expected, $result);
     }
