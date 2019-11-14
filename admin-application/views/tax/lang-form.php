@@ -4,7 +4,7 @@ $taxLangFrm->setFormTagAttribute('onsubmit', 'setupTaxLang(this); return(false);
 $taxLangFrm->developerTags['colClassPrefix'] = 'col-md-';
 $taxLangFrm->developerTags['fld_default_col'] = 12;
 
-$langFld = $langFrm->getField('lang_id');
+$langFld = $taxLangFrm->getField('lang_id');
 $langFld->setfieldTagAttribute('onChange', "addTaxLangForm(" . $taxcat_id . ", this.value);");
 ?>
 

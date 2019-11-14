@@ -1,33 +1,33 @@
 <?php
 class Configurations extends FatModel
 {
-    const DB_TBL = 'tbl_configurations';
-    const DB_TBL_PREFIX = 'conf_';
     private $db;
+    public const DB_TBL = 'tbl_configurations';
+    public const DB_TBL_PREFIX = 'conf_';
 
-    const FORM_GENERAL = 1;
-    const FORM_LOCAL = 2;
-    const FORM_SEO = 3;
-    const FORM_PRODUCT = 4;
-    const FORM_AFFILIATE = 5;
-    const FORM_REWARD_POINTS = 6;
-    const FORM_REVIEWS = 7;
-    const FORM_LIVE_CHAT = 8;
-    const FORM_THIRD_PARTY_API = 9;
-    const FORM_EMAIL = 10;
-    const FORM_SERVER = 11;
-    const FORM_SHARING = 12;
-    const FORM_REFERAL = 13;
-    const FORM_MEDIA = 14;
-    const FORM_DISCOUNT = 15;
-    const FORM_SUBSCRIPTION = 16;
-    const FORM_SYSTEM = 17;
-    const FORM_PPC = 18;
-    const FORM_IMPORT_EXPORT = 19;
-    const FORM_CHECKOUT_PROCESS = 20;
-    const FORM_USER_ACCOUNT = 21;
-    const FORM_CART_WISHLIST = 22;
-    const FORM_COMMISSION = 23;
+    public const FORM_GENERAL = 1;
+    public const FORM_LOCAL = 2;
+    public const FORM_SEO = 3;
+    public const FORM_PRODUCT = 4;
+    public const FORM_AFFILIATE = 5;
+    public const FORM_REWARD_POINTS = 6;
+    public const FORM_REVIEWS = 7;
+    public const FORM_LIVE_CHAT = 8;
+    public const FORM_THIRD_PARTY_API = 9;
+    public const FORM_EMAIL = 10;
+    public const FORM_SERVER = 11;
+    public const FORM_SHARING = 12;
+    public const FORM_REFERAL = 13;
+    public const FORM_MEDIA = 14;
+    public const FORM_DISCOUNT = 15;
+    public const FORM_SUBSCRIPTION = 16;
+    public const FORM_SYSTEM = 17;
+    public const FORM_PPC = 18;
+    public const FORM_IMPORT_EXPORT = 19;
+    public const FORM_CHECKOUT_PROCESS = 20;
+    public const FORM_USER_ACCOUNT = 21;
+    public const FORM_CART_WISHLIST = 22;
+    public const FORM_COMMISSION = 23;
 
     public function __construct()
     {

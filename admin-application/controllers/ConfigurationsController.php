@@ -105,7 +105,6 @@ class ConfigurationsController extends AdminBaseController
         $langId = FatUtility::int($langId);
 
         $frm = $this->getLangForm($frmType, $langId);
-
         $dispLangTab = false;
         if (in_array($frmType, Configurations::getLangTypeFormArr())) {
             $dispLangTab = true;
@@ -113,6 +112,7 @@ class ConfigurationsController extends AdminBaseController
         }
 
         $record = Configurations::getConfigurations();
+
         $frm->fill($record);
         if ($tabId) {
             $this->set('tabId', $tabId);
@@ -1514,6 +1514,7 @@ class ConfigurationsController extends AdminBaseController
     private function getLangForm($type, $langId)
     {
         $frm = new Form('frmConfiguration');
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $langId, array(), '');
 
         switch ($type) {
             case Configurations::FORM_GENERAL:
@@ -1671,7 +1672,6 @@ class ConfigurationsController extends AdminBaseController
                 break;
         }
 
-        $frm->addHiddenField('', 'lang_id', $langId);
         $frm->addHiddenField('', 'form_type', $type);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel("LBL_Save_Changes", $this->adminLangId));
         return $frm;

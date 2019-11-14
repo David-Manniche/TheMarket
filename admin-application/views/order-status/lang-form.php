@@ -4,7 +4,7 @@ $langFrm->developerTags['colClassPrefix'] = 'col-md-';
 $langFrm->developerTags['fld_default_col'] = 12;
 $langFrm->setFormTagAttribute('onsubmit', 'setupLangOrderStatus(this); return(false);');
 
-$langFld = $langFrm->getField('lang_id');
+$langFld = $langFrm->getField('orderstatuslang_lang_id');
 $langFld->setfieldTagAttribute('onChange', "editOrderStatusLangForm(" . $orderStatusId . ", this.value);");
 ?>
 <section class="section">

@@ -5,7 +5,7 @@ $langFrm->developerTags['colClassPrefix'] = 'col-md-';
 $langFrm->developerTags['fld_default_col'] = 12;
 
 $langFld = $langFrm->getField('lang_id');
-$langFld->setfieldTagAttribute('onChange', "editMetaTagLangForm(" . $metaId . ", this.value);");
+$langFld->setfieldTagAttribute('onChange', "editMetaTagLangForm(" . $metaId . ", this.value, '" . $metaType . "');");
 ?>
 <section class="section">
 	<div class="sectionhead">
@@ -35,7 +35,7 @@ $langFld->setfieldTagAttribute('onChange', "editMetaTagLangForm(" . $metaId . ",
                         <input class="btn btn-primary" 
                             type="button" 
                             value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>" 
-                            onClick="editMetaTagLangForm(<?php echo $metaId; ?>, <?php echo $lang_id; ?>, 1)">
+                            onClick="editMetaTagLangForm(<?php echo $metaId; ?>, <?php echo $lang_id; ?>, '<?php echo $metaType; ?>', 1)">
                     </div>
                 </div>
             <?php } ?> 

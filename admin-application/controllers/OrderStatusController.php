@@ -268,7 +268,6 @@ class OrderStatusController extends AdminBaseController
         $this->objPrivilege->canViewOrderStatus();
         $frm = new Form('frmorderstatuslang');
         $frm->addHiddenField('', 'orderstatus_id', $orderStatusId);
-        // $frm->addHiddenField('', 'orderstatuslang_lang_id', $lang_id);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'orderstatuslang_lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_orderstatus_Name', $this->adminLangId), 'orderstatus_name');
         

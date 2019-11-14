@@ -15,7 +15,7 @@ $langFld->setfieldTagAttribute('onChange', "editLangForm('" . $etplCode . "', th
 	<div class="sectionbody space">      
 		<div class="tabs_nav_container responsive flat">
 		  <ul class="tabs_nav">
-          <li class="<?php echo (0 == $etplCode) ? 'fat-inactive' : ''; ?>">
+          <li class="<?php echo (empty($etplCode)) ? 'fat-inactive' : ''; ?>">
                             <a class="active" href="javascript:void(0);">
                                 <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                             </a>

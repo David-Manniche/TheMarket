@@ -179,7 +179,7 @@ class FaqCategoriesController extends AdminBaseController
             FatUtility::dieWithError($this->str_invalid_request);
         }
 
-        $faqCatLangFrm = $this->getLangForm();
+        $faqCatLangFrm = $this->getLangForm($lang_id);
         if (0 < $autoFillLangData) {
             $updateLangDataobj = new TranslateLangData(FaqCategory::DB_TBL_LANG);
             $translatedData = $updateLangDataobj->getTranslatedData($faqcat_id, $lang_id);
@@ -220,14 +220,14 @@ class FaqCategoriesController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $frm = $this->getLangForm($faqcat_id, $lang_id);
+        $frm = $this->getLangForm($lang_id);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         unset($post['faqcat_id']);
         unset($post['lang_id']);
         $data = array(
-        'faqcatlang_lang_id'=>$lang_id,
-        'faqcatlang_faqcat_id'=>$faqcat_id,
-        'faqcat_name'=>$post['faqcat_name'],
+        'faqcatlang_lang_id' => $lang_id,
+        'faqcatlang_faqcat_id' => $faqcat_id,
+        'faqcat_name' => $post['faqcat_name'],
         );
 
         $faqcatObj = new FaqCategory($faqcat_id);
@@ -452,14 +452,16 @@ class FaqCategoriesController extends AdminBaseController
         return $frm;
     }
 
-    private function getLangForm()
+    private function getLangForm($lang_id = 0)
     {
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $lang_id = 1 > $lang_id ? $siteLangId : $lang_id;
+        
         $frm = new Form('frmFaqCatLang');
         $frm->addHiddenField('', 'faqcat_id');
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Category_Name', $this->adminLangId), 'faqcat_name');
                 
-        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
         if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {

@@ -32,7 +32,7 @@ class EmailTemplatesController extends AdminBaseController
         $this->objPrivilege->canViewEmailTemplates();
         $frm = new Form('frmEtplsSearch');
         $f1 = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '');
-        $fld_submit=$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;
@@ -100,11 +100,11 @@ class EmailTemplatesController extends AdminBaseController
         $languages = Language::getAllNames();
 
         $data = array(
-        'etpl_lang_id'=>$lang_id,
-        'etpl_code'=>$etplCode,
-        'etpl_name'=>$post['etpl_name'],
-        'etpl_subject'=>$post['etpl_subject'],
-        'etpl_body'=>$post['etpl_body'],
+        'etpl_lang_id' => $lang_id,
+        'etpl_code' => $etplCode,
+        'etpl_name' => $post['etpl_name'],
+        'etpl_subject' => $post['etpl_subject'],
+        'etpl_body' => $post['etpl_body'],
         );
 
         if (!$etplObj->addUpdateData($data)) {
@@ -114,7 +114,7 @@ class EmailTemplatesController extends AdminBaseController
         
         $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
         if (0 < $autoUpdateOtherLangsData) {
-            $updateLangDataobj = new TranslateLangData(EmailTemplates::DB_TBL_LANG);
+            $updateLangDataobj = new TranslateLangData(EmailTemplates::DB_TBL);
             if (false === $updateLangDataobj->updateTranslatedData($etplCode)) {
                 Message::addErrorMessage($updateLangDataobj->getError());
                 FatUtility::dieWithError(Message::getHtml());
@@ -161,7 +161,7 @@ class EmailTemplatesController extends AdminBaseController
 
         $langFrm = $this->getLangForm($etplCode, $lang_id);
         if (0 < $autoFillLangData) {
-            $updateLangDataobj = new TranslateLangData(EmailTemplates::DB_TBL_LANG);
+            $updateLangDataobj = new TranslateLangData(EmailTemplates::DB_TBL);
             $translatedData = $updateLangDataobj->getTranslatedData($etplCode, $lang_id);
             if (false === $translatedData) {
                 Message::addErrorMessage($updateLangDataobj->getError());
