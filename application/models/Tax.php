@@ -214,19 +214,8 @@ class Tax extends MyAppModel
 
         $taxRates = array();
         $taxObj = self::getTaxCatObjByProductId($productId, $langId);
-        $taxObj->addMultipleFields(array('IFNULL(taxcat_name,taxcat_identifier) as taxcat_name','ptt_seller_user_id','ptt_taxcat_id','ptt_product_id','taxval_is_percent','taxval_value'));
+        $taxObj->addMultipleFields(array('IFNULL(taxcat_name,taxcat_identifier) as taxcat_name','ptt_seller_user_id','ptt_taxcat_id','ptt_product_id','taxval_is_percent','taxval_value','taxval_options'));
         $taxObj->doNotCalculateRecords();
-
-        /* if(FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER',FatUtility::VAR_INT,0)){
-        $cnd = $taxObj->addCondition('ptt_seller_user_id','=',0);
-        $cnd->attachCondition('ptt_seller_user_id','=',$userId,'OR');
-
-        $cnd = $taxObj->addCondition('taxval_seller_user_id','=',0);
-        $cnd->attachCondition('taxval_seller_user_id','=',$userId,'OR');
-        }else{
-        $cnd = $taxObj->addCondition('ptt_seller_user_id','=',0);
-        $cnd = $taxObj->addCondition('taxval_seller_user_id','=',0);
-        } */
 
         $cnd = $taxObj->addCondition('ptt_seller_user_id', '=', 0);
         $cnd->attachCondition('ptt_seller_user_id', '=', $userId, 'OR');
@@ -247,21 +236,54 @@ class Tax extends MyAppModel
         return FatApp::getDb()->fetch($rs);
     }
 
-    public function calculateTaxRates($productId, $prodPrice, $sellerId, $langId, $qty = 1, $extraDiscounts = array())
+    public function calculateTaxRates($productId, $prodPrice, $sellerId, $langId, $qty = 1, $extraDiscounts = array(), $shipFromStateId = 0, $shipToStateId = 0)
     {
         $tax = 0 ;
         $res = $this->getTaxRates($productId, $sellerId, $langId);
-
         if (empty($res)) {
             return $tax;
         }
-        
+                
         if ($res['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
-            $tax = round((($prodPrice * $qty) * $res['taxval_value'])/100, 2);
+            $tax = round((($prodPrice * $qty) * $res['taxval_value']) / 100, 2);
         } else {
-            $tax = $res['taxval_value']*$qty;
+            $tax = $res['taxval_value'] * $qty;
         }
-        return $tax;
+        $data = [
+            'tax' => $tax
+        ];
+  
+        if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
+            $shipFromStateId = FatUtility::int($shipFromStateId);
+            $shipToStateId = FatUtility::int($shipToStateId);
+
+            $shipFromStateId = (1 > $shipFromStateId) ? FatApp::getConfig('CONF_STATE', FatUtility::VAR_INT, 0): $shipFromStateId;
+
+            $taxOptions = json_decode($res['taxval_options'], true);
+            $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
+            $options =  $taxStructure->getOptions($langId);
+            foreach ($options as $optionVal) {                
+                if ($shipFromStateId != $shipToStateId && $optionVal['taxstro_interstate'] == applicationConstants::YES) {
+                    $data['options'][$optionVal['taxstro_id']]['name'] = $optionVal['taxstro_name'];
+                    if ($res['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
+                        $data['options'][$optionVal['taxstro_id']]['value'] = round((($prodPrice * $qty) * $taxOptions[$optionVal['taxstro_id']]) / 100, 2);
+                    } else {
+                        $data['options'][$optionVal['taxstro_id']][$optionVal['taxstro_name']] = $taxOptions[$optionVal['taxstro_id']] * $qty;
+                    }
+                } elseif ($shipFromStateId == $shipToStateId && $optionVal['taxstro_interstate'] == applicationConstants::NO) {                  
+                    $data['options'][$optionVal['taxstro_id']]['name'] = $optionVal['taxstro_name'];
+                    if ($res['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
+                        $data['options'][$optionVal['taxstro_id']]['value'] = round((($prodPrice * $qty) * $taxOptions[$optionVal['taxstro_id']]) / 100, 2);
+                    } else {
+                        $data['options'][$optionVal['taxstro_id']]['value'] = $taxOptions[$optionVal['taxstro_id']] * $qty;
+                    }
+                }
+            }
+        } else {
+            $data['options'][0][Labels::getLabel('LBL_Tax', $langId)] = $tax;
+        }
+        
+        return $data;
     }
 
     public static function getTaxCatByProductId($productId = 0, $userId = 0, $langId = 0, $fields = array())
@@ -291,9 +313,9 @@ class Tax extends MyAppModel
         if (0 == $value) {
             return $arr;
         }
-        
+
         $taxStructure = FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0);
-        
+
         switch ($taxStructure) {
             case TAX::STRUCTURE_GST:
                 $tax = number_format((float)$value / 2, 2, '.', '');

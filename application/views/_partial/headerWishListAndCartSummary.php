@@ -75,18 +75,22 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
                 <tr>
                     <td class=""><?php echo Labels::getLabel('LBL_Sub_Total', $siteLangId); ?></td>
                     <td class=""><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTotal']); ?></td>
-                </tr>
-                <tr>
-                    <td class=""><?php echo Labels::getLabel('LBL_Tax', $siteLangId); ?></td>
-                    <td class=""><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTaxTotal']); ?></td>
-                </tr>
+                </tr>                
                 <?php if (0 < $cartSummary['cartVolumeDiscount']) { ?>
                     <tr>
                         <td class="text-left"><?php echo Labels::getLabel('LBL_Volume_Discount', $siteLangId); ?></td>
                         <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartVolumeDiscount']); ?></td>
                     </tr>
-                <?php }
-                $netChargeAmt = $cartSummary['cartTotal']+$cartSummary['cartTaxTotal'] - ((0 < $cartSummary['cartVolumeDiscount'])?$cartSummary['cartVolumeDiscount']:0); ?>
+                <?php } ?>
+                <?php if ($cartSummary['taxOptions']){ 
+                        foreach($cartSummary['taxOptions'] as $taxName => $taxVal){ ?>
+                        <tr>
+                            <td class="text-left"><?php echo $taxName; ?></td>
+                            <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($taxVal); ?></td>
+                        </tr>
+                      <?php   }
+                     }?> 
+                <?php $netChargeAmt = $cartSummary['cartTotal']+$cartSummary['cartTaxTotal'] - ((0 < $cartSummary['cartVolumeDiscount'])?$cartSummary['cartVolumeDiscount']:0); ?>
                 <tr>
                     <td class="hightlighted"><?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?></td>
                     <td class="hightlighted"><?php echo CommonHelper::displayMoneyFormat($netChargeAmt); ?></td>

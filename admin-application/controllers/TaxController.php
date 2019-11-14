@@ -133,7 +133,7 @@ class TaxController extends AdminBaseController
         );
 
         $obj = new Tax();
-        if (!$obj->addUpdateTaxValues($data, array('taxval_is_percent' => $post['taxval_is_percent'],'taxval_value' => $post['taxval_value']))) {
+        if (!$obj->addUpdateTaxValues($data, $data)) {
             Message::addErrorMessage($obj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -221,7 +221,7 @@ class TaxController extends AdminBaseController
                 'tv'
             );
             $srch->addCondition('taxcat_id', '=', $taxcat_id);
-            $srch->addMultipleFields(array("t.*","t_l.taxcat_name","tv.taxval_is_percent,tv.taxval_value"));
+            $srch->addMultipleFields(array("t.*","t_l.taxcat_name","tv.taxval_is_percent,tv.taxval_value,tv.taxval_options"));
 
             $rs =  $srch->getResultSet();
             $data = FatApp::getDb()->fetch($rs);
@@ -230,6 +230,12 @@ class TaxController extends AdminBaseController
                 FatUtility::dieWithError($this->str_invalid_request);
             }
 
+            $taxOptions = json_decode($data['taxval_options'], true);               
+            $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
+            $options =  $taxStructure->getOptions($this->adminLangId);
+            foreach ($options as $optionVal) {
+                $data[$optionVal['taxstro_id']] = $taxOptions[$optionVal['taxstro_id']];              
+            }    
             /* if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == Tax::STRUCTURE_GST) {
                 $taxValues = Tax::getCombinedValues($data['taxval_value']);
                 $data = array_merge($data, $taxValues);

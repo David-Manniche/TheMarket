@@ -309,3 +309,4 @@ ALTER TABLE `tbl_tax_structure`
   MODIFY `taxstr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 ALTER TABLE `tbl_tax_structure_options`
   MODIFY `taxstro_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `tbl_order_products_lang` ADD `op_product_tax_options` VARCHAR(255) NOT NULL AFTER `op_product_weight_unit_name`;

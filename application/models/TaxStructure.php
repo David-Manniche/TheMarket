@@ -109,6 +109,10 @@ class TaxStructure extends MyAppModel
 
     public function getOptionData($taxstrOptionId)
     {
+        if (1 > $this->mainTableRecordId) {
+            trigger_error(Labels::getLabel('MSG_Invalid_access.', CommonHelper::getLangId()), E_USER_ERROR);
+        }
+
         $srch = static::getSearchObject();
         $srch->joinTable(
             static::DB_TBL_OPTIONS,
@@ -117,8 +121,9 @@ class TaxStructure extends MyAppModel
             'tso'
         );
         $srch->addCondition('taxstro_id', '=', $taxstrOptionId);
+        $srch->addCondition('taxstro_taxstr_id', '=', $this->mainTableRecordId);
         $rs = $srch->getResultSet();
-        $record = FatApp::getDb()->fetch($rs);
+        $record = FatApp::getDb()->fetch($rs);                
         if ($record) {
             $lang_record = CommonHelper::getLangFields(
                 $taxstrOptionId,

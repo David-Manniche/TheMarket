@@ -327,8 +327,10 @@ class DummyController extends MyAppController
 
     public function index()
     {
-       $res = CommonHelper::getUrlTypeData('http://support.apple.com/downloads/safari'); 
-      
+        $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
+        $taxLangData =  $taxStructure->getOptionData(1);
+
+      CommonHelper::printArray($taxLangData);
        exit;
 
     }

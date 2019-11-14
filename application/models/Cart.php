@@ -209,11 +209,63 @@ class Cart extends FatModel
         return $isPhysical;
     }
 
+    /* public function getBasketProducts($siteLangId = 0)
+    {
+        if (!$this->products) {
+            $db = FatApp::getDb();
+
+            $loggedUserId = 0;
+            if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
+                $loggedUserId = UserAuthentication::getLoggedUserId();
+            }
+
+            foreach ($this->SYSTEM_ARR['cart'] as $key => $quantity) {
+                $selprod_id = 0;
+
+                $keyDecoded = unserialize(base64_decode($key));
+                if (strpos($keyDecoded, static::CART_KEY_PREFIX_PRODUCT) !== false) {
+                    $selprod_id = FatUtility::int(str_replace(static::CART_KEY_PREFIX_PRODUCT, '', $keyDecoded));
+                }
+
+                if (1 > $selprod_id) {
+                    unset($this->SYSTEM_ARR['cart'][$key]);
+                    continue;
+                }
+
+                $sellerProductRow = $this->getSellerProductData($selprod_id, $quantity, $siteLangId, $loggedUserId);
+                if (!$sellerProductRow) {
+                    $this->removeCartKey($key);
+                    continue;
+                }
+
+                $this->products[$key] = [
+                    'key' => $key,
+                    'is_batch' => 0,
+                    'shipping_cost' => 0,
+                    'sduration_id' => 0,
+                    'commission_percentage' => '',
+                    'commission' => 0,
+                    'tax' => 0,
+                    'taxOptions' =>  [],
+                    'reward_point' => 0,
+                    'volume_discount' => 0,
+                    'volume_discount_total' => 0,
+                    'is_shipping_selected' => false,
+                    'volume_discount_total' => 0,
+                    'has_physical_product' => 0,
+                    'has_digital_product' => 0,
+                    'quantity' => $quantity,
+                    'selprod_id' => $selprod_id,
+                ];
+
+                $this->products[$key] = $sellerProductRow;
+            }
+        }
+        return $this->products;
+    } */
+
     public function getProducts($siteLangId = 0)
     {
-        /* if( !$siteLangId ){
-            trigger_error("Language Id not specified.", E_USER_ERROR);
-        } */
         if (!$this->products) {
             $productSelectedShippingMethodsArr = $this->getProductShippingMethod();
             $maxConfiguredCommissionVal = FatApp::getConfig("CONF_MAX_COMMISSION", FatUtility::VAR_INT, 0);
@@ -266,10 +318,11 @@ class Cart extends FatModel
 
 
                 $this->products[$key]['tax'] = 0;
+                $this->products[$key]['taxOptions'] = [];
                 $this->products[$key]['reward_point'] = 0;
                 $this->products[$key]['volume_discount'] = 0;
                 $this->products[$key]['volume_discount_total'] = 0;
-
+                $this->products[$key]['is_shipping_selected'] = false;
                 $selProdCost = $shopId = '';
                 /* seller products[ */
                 if ($selprod_id > 0) {
@@ -284,7 +337,9 @@ class Cart extends FatModel
 
                     /*[COD available*/
                     $codEnabled = false;
-                    if ($is_cod_enabled && Product::isProductShippedBySeller($sellerProductRow['product_id'], $sellerProductRow['product_seller_id'], $sellerProductRow['selprod_user_id'])) {
+                    $isProductShippedBySeller = Product::isProductShippedBySeller($sellerProductRow['product_id'], $sellerProductRow['product_seller_id'], $sellerProductRow['selprod_user_id']);
+
+                    if ($is_cod_enabled && $isProductShippedBySeller) {
                         $walletBalance = User::getUserBalance($sellerProductRow['selprod_user_id']);
                         if ($sellerProductRow['selprod_cod_enabled']) {
                             $codEnabled = true;
@@ -315,13 +370,36 @@ class Cart extends FatModel
                         $shippingCost = ROUND(($shippingDurationRow['mshipapi_cost']), 2);
                         $this->products[$key]['shipping_cost'] = $shippingCost;
                     }
+
+                    if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
+                        $this->products[$key]['shipping_address'] =  UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $siteLangId, 0, $this->getCartShippingAddress());
+                    }
                     /*]*/
-                    //CommonHelper::printArray($sellerProductRow);exit;
+                    
                     /*[ Product Tax */
+                    $shipFromStateId = 0;
+                    $shipToStateId = 0;
+                    if (isset($this->products[$key]['shipping_address']['ua_state_id'])) {
+                        $shipToStateId = $this->products[$key]['shipping_address']['ua_state_id'];
+                    }
+
+                    if ($isProductShippedBySeller) {
+                        $shipFromStateId = Shop::getAttributesByUserId($sellerProductRow['selprod_user_id'], 'shop_state_id');
+                    }
+                   
                     $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
                     $taxObj = new Tax();
-                    $tax = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity);
+                    $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, array(), $shipFromStateId, $shipToStateId);
+                   
+                    $taxOptions = [];
+                    foreach ($taxData['options'] as $optionId => $optionval) {
+                        $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']])? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
+                    }
+                       
+                    $tax = $taxData['tax'];
+                    
                     $this->products[$key]['tax'] = $tax;
+                    $this->products[$key]['taxOptions'] = $taxOptions;
                     /*]*/
 
                     /*[ Product Commission */
@@ -355,9 +433,12 @@ class Cart extends FatModel
                     $shopId = $sellerProductRow['shop_id'];
                 } else {
                     $is_cod_enabled = false;
+                    if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
+                        $this->products[$key]['shipping_address'] =  UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $siteLangId, 0, $this->getCartShippingAddress());
+                    }
                 }
                 /* ] */
-
+                 
                 $this->products[$key]['key'] = $key;
                 $this->products[$key]['is_batch'] = 0;
                 $this->products[$key]['is_cod_enabled'] = $is_cod_enabled;
@@ -367,12 +448,10 @@ class Cart extends FatModel
                 $this->products[$key]['has_digital_product'] = 0;
                 /* $this->products[$key]['product_ship_free'] = $sellerProductRow['product_ship_free']; */
                 $this->products[$key]['selprod_cost'] = $selProdCost;
-                $this->products[$key]['is_shipping_selected'] = false;
                 $this->products[$key]['affiliate_commission_percentage'] = $affiliateCommissionPercentage;
                 $this->products[$key]['affiliate_commission'] = $affiliateCommission;
                 $this->products[$key]['affiliate_user_id'] = $associatedAffiliateUserId;
                 if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
-                    $this->products[$key]['shipping_address'] =  UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $siteLangId, 0, $this->getCartShippingAddress());
                     $this->products[$key]['seller_address'] =  Shop::getShopAddress($shopId, true, $siteLangId);
                 }
             }
@@ -486,8 +565,8 @@ class Cart extends FatModel
         $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
 
         $taxObj = new Tax();
-        $tax = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity);
-
+        $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity);
+        $tax = $taxData['tax'];
         $sellerProductRow['tax'] = $tax;
         /* ] */
 
@@ -846,7 +925,8 @@ class Cart extends FatModel
         $cartVolumeDiscount = 0;
 
         $isCodEnabled = true;
-
+        $taxOptions = [];
+        $prodTaxOptions = [];
         if (is_array($products) && count($products)) {
             foreach ($products as $product) {
                 $codEnabled = false;
@@ -865,12 +945,33 @@ class Cart extends FatModel
 
                 $cartVolumeDiscount += $product['volume_discount_total'];
                 
-                /* $taxableProdPrice = $product['theprice'] - $product['volume_discount'] - ($cartDiscounts['discountedSelProdIds'][$product['selprod_id']])/$product['quantity'];
-                $taxObj = new Tax();
-                $tax = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity']);
-                $cartTaxTotal += $tax; */
-                $cartTaxTotal +=  $product['tax'];
-                
+                if (FatApp::getConfig('CONF_TAX_AFTER_DISOCUNT', FatUtility::VAR_INT, 0)) {
+                    $taxableProdPrice = $product['theprice'] - $product['volume_discount'];
+                    if (isset($cartDiscounts['discountedSelProdIds']) && array_key_exists($product['selprod_id'], $cartDiscounts['discountedSelProdIds'])) {
+                        $taxableProdPrice = $taxableProdPrice - ($cartDiscounts['discountedSelProdIds'][$product['selprod_id']]) / $product['quantity'];
+                    }
+
+                    $shipFromStateId = 0;
+                    $shipToStateId = 0;
+                   
+                    if (Product::isProductShippedBySeller($product['product_id'], $product['product_seller_id'], $product['selprod_user_id'])) {
+                        $shipFromStateId = Shop::getAttributesByUserId($product['selprod_user_id'], 'shop_state_id');
+                    }
+                    
+                    $taxObj = new Tax();
+                    $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], array(), $shipFromStateId, $product['shipping_address']['ua_state_id']);
+
+                    foreach ($taxData['options'] as $optionId => $optionval) {
+                        $prodTaxOptions[$product['selprod_id']][$optionId] = $optionval;
+                        $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']])? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
+                    }
+
+                    $tax = $taxData['tax'];
+                    $cartTaxTotal += $tax;
+                } else {
+                    $cartTaxTotal +=  $product['tax'];
+                }
+                                
                 $originalShipping += $product['shipping_cost'];
                 $totalSiteCommission += $product['commission'];
 
@@ -920,9 +1021,10 @@ class Cart extends FatModel
             'isCodValidForNetAmt' => $isCodValidForNetAmt,
             'orderPaymentGatewayCharges' => $orderPaymentGatewayCharges,
             'netChargeAmount' => $netChargeAmt,
+            'taxOptions' => $taxOptions,
+            'prodTaxOptions' => $prodTaxOptions,
         );
-
-        //CommonHelper::printArray($cartSummary); die();
+            
         return $cartSummary;
     }
 
@@ -935,15 +1037,8 @@ class Cart extends FatModel
 
         $orderId = isset($_SESSION['order_id'])?$_SESSION['order_id']:'';
         $couponInfo = $couponObj->getValidCoupons($this->cart_user_id, $this->cart_lang_id, self::getCartDiscountCoupon(), $orderId);
-        //$couponInfo = $couponObj->getCoupon( self::getCartDiscountCoupon(), $this->cart_lang_id );
-        //CommonHelper::printArray($couponInfo); die();
         $cartSubTotal = self::getSubTotal();
-
-        /* $var = false;
-        if(count($var>0)){
-            echo 'its false';
-        } else { echo 'not false'; }
-        die(); */
+        
         $couponData = array();
 
         if ($couponInfo) {
@@ -1116,131 +1211,6 @@ class Cart extends FatModel
                 'discountedProdGroupIds'=>$discountedProdGroupIds,
             );
         }
-
-        /* Existing old functionality[ */
-        // if( $couponInfo ){
-        // $discountTotal = 0;
-
-        // if (empty($couponInfo['products']) && empty($couponInfo['groups'])) {
-        // $subTotal = $cartSubTotal;
-        // }else{
-        // $subTotal = 0;
-        // foreach ($this->getProducts($this->cart_lang_id) as $product) {
-        // if($product['is_batch']){
-        // if (in_array($product['prodgroup_id'], $couponInfo['groups'])){
-        // $subTotal += $product['prodgroup_total'];
-        // }
-        // }else{
-        // if (in_array($product['product_id'], $couponInfo['products'])){
-        // $subTotal += $product['total'];
-        // }
-        // }
-        // }
-        // }
-
-        // if ( !$couponInfo['coupon_discount_in_percent'] ) {
-        // $couponInfo['coupon_discount_value'] = min($couponInfo['coupon_discount_value'], $subTotal);
-        // }
-
-        // foreach ($this->getProducts($this->cart_lang_id) as $product) {
-        // $discount = 0;
-
-        // if (empty($couponInfo['products']) && empty($couponInfo['groups'])) {
-        // $status = true;
-        // }else{
-        // if($product['is_batch']){
-        // if (in_array($product['prodgroup_id'], $couponInfo['groups'])) {
-        // $status = true;
-        // } else {
-        // $status = false;
-        // }
-        // }else{
-        // if (in_array($product['product_id'], $couponInfo['products'])) {
-        // $status = true;
-        // } else {
-        // $status = false;
-        // }
-        // }
-        // }
-
-
-        // if ($status) {
-        // if($product['is_batch']){
-        // if (!$couponInfo['coupon_discount_in_percent']) {
-        // $discount = $couponInfo['coupon_discount_value'] * ($product['prodgroup_total'] / $subTotal);
-        // }else{
-        // $discount = ( $product['prodgroup_total'] / 100 ) * $couponInfo['coupon_discount_value'];
-        // }
-        // }else{
-        // if (!$couponInfo['coupon_discount_in_percent']) {
-        // $discount = $couponInfo['coupon_discount_value'] * ($product['total'] / $subTotal);
-        // }else{
-        // $discount = ( $product['total'] / 100 ) * $couponInfo['coupon_discount_value'];
-        // }
-        // }
-        // }
-        // $discountTotal += $discount;
-        // }
-
-        // // If discount greater than total
-        // if ($discountTotal > $couponInfo['coupon_max_discount_value']) {
-        // $discountTotal = $couponInfo['coupon_max_discount_value'];
-        // }
-
-        // $selProdDiscountTotal = 0;
-        // $discountTypeArr = DiscountCoupons::getTypeArr($this->cart_lang_id);
-
-        // /*[ Calculate discounts for each Seller Products*/
-        // $discountedSelProdIds = array();
-        // $discountedProdGroupIds = array();
-        // if (empty($couponInfo['products'])&& empty($couponInfo['groups'])) {
-        // foreach ($this->getProducts($this->cart_lang_id) as $product) {
-        // if($product['is_batch']){
-        // $totalSelProdDiscount = round(($discountTotal*$product['prodgroup_total'])/$subTotal,2);
-        // $selProdDiscountTotal += $totalSelProdDiscount;
-        // $discountedProdGroupIds[$product['prodgroup_id']] = round($totalSelProdDiscount,2);
-        // }else{
-        // $totalSelProdDiscount = round(($discountTotal*$product['total'])/$subTotal,2);
-        // $selProdDiscountTotal += $totalSelProdDiscount;
-        // $discountedSelProdIds[$product['selprod_id']] = round($totalSelProdDiscount,2);
-        // }
-        // }
-        // }else{
-        // foreach ($this->getProducts($this->cart_lang_id) as $product) {
-        // if($product['is_batch']){
-        // if (in_array($product['prodgroup_id'], $couponInfo['groups'])) {
-        // $totalSelProdDiscount = round(($discountTotal*$product['prodgroup_total'])/$subTotal,2);
-        // $selProdDiscountTotal += $totalSelProdDiscount;
-        // $discountedProdGroupIds[$product['prodgroup_id']] = round($totalSelProdDiscount,2);
-        // }
-        // }else{
-        // if (in_array($product['product_id'], $couponInfo['products'])) {
-        // $totalSelProdDiscount = round(($discountTotal*$product['total'])/$subTotal,2);
-        // $selProdDiscountTotal += $totalSelProdDiscount;
-        // $discountedSelProdIds[$product['selprod_id']] = round($totalSelProdDiscount,2);
-        // }
-        // }
-        // }
-        // }
-        // /*]*/
-
-        // $labelArr = array(
-        // 'coupon_label'=>$couponInfo["coupon_title"],
-        // 'coupon_discount_in_percent'=>$couponInfo["coupon_discount_in_percent"],
-        // 'max_discount_value' =>$couponInfo["coupon_max_discount_value"]
-        // );
-
-        // $couponData = array(
-        // 'coupon_discount_type'       => $couponInfo["coupon_type"],
-        // 'coupon_code' => $couponInfo["coupon_code"],
-        // 'coupon_discount_value'      =>$couponInfo["coupon_discount_value"],
-        // 'coupon_discount_total'      => $selProdDiscountTotal,
-        // 'coupon_info'      => json_encode($labelArr),
-        // 'discountedSelProdIds'=>$discountedSelProdIds,
-        // 'discountedProdGroupIds'=>$discountedProdGroupIds,
-        // );
-        // }
-        /* ] */
 
         if (empty($couponData)) {
             return false;

@@ -76,7 +76,6 @@ class TaxStructureController extends AdminBaseController
     {
         $taxStructure = new TaxStructure($taxStrId);
         $options =  $taxStructure->getOptions($this->adminLangId);
-
         $this->set('listing', $options);
 
         $this->canView = $this->objPrivilege->canViewTax($this->admin_id, true);

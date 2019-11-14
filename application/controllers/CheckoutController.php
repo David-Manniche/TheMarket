@@ -1153,6 +1153,13 @@ class CheckoutController extends MyAppController
                     $op_products_dimension_unit_name = ($productInfo['product_dimension_unit']) ? $lengthUnitsArr[$productInfo['product_dimension_unit']] : '';
                     $op_product_weight_unit_name = ($productInfo['product_weight_unit']) ? $weightUnitsArr[$productInfo['product_weight_unit']] : '';
 
+                    $productTaxOption = $cartSummary["prodTaxOptions"][$productInfo['selprod_id']];
+                    foreach ($productTaxOption as $taxStroId => $taxStroName) {
+                        $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
+                        $taxLangData =  $taxStructure->getOptionData($taxStroId);                        
+                        $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]] = $taxStroName['value'];
+                    }
+
                     $productsLangData[$lang_id] = array(
                     'oplang_lang_id'    =>    $lang_id,
                     'op_product_name'    =>    $langSpecificProductInfo['product_name'],
@@ -1164,6 +1171,7 @@ class CheckoutController extends MyAppController
                     'op_shipping_durations'    =>    $shippingDurationTitle,
                     'op_products_dimension_unit_name'    =>    $op_products_dimension_unit_name,
                     'op_product_weight_unit_name'        =>    $op_product_weight_unit_name,
+                    'op_product_tax_options'        =>    json_encode($op_product_tax_options),
                     );
                 }
 
