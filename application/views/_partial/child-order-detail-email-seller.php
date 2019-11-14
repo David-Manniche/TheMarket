@@ -111,6 +111,10 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
         </tr>';
     } */
 
+if ($orderProducts['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
+    $str .= '</table>';
+    echo $str;
+} else {
     $str.= '<tr>
     <td colspan="'.$colCount.'" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right"><strong>'.Labels::getLabel('LBL_ORDER_TOTAL', $siteLangId).'</strong></td>
     <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right"><strong>'.CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderProducts, 'NETAMOUNT', false, $userType)).'</strong></td></tr>';
@@ -168,4 +172,5 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
     }
 
     $str.='<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">'.$shippingInfo.'</td></tr></table>';
-echo $str;
+    echo $str;
+}
