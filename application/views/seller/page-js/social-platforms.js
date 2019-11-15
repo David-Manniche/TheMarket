@@ -42,8 +42,8 @@ $(document).ready(function(){
 		});
 	};
 
-	addLangForm = function( splatformId, langId ){
-		fcom.ajax(fcom.makeUrl('Seller', 'socialPlatformLangForm', [splatformId, langId]), '', function(t) {
+	addLangForm = function( splatformId, langId, autoFillLangData = 0 ){
+		fcom.ajax(fcom.makeUrl('Seller', 'socialPlatformLangForm', [splatformId, langId, autoFillLangData]), '', function(t) {
 			$(dv).html(t);
 		});
 	};

@@ -80,9 +80,9 @@ $(document).on('change','.display-js',function(){
 		});
 	};
 
-	bannerLangForm = function(blocationId,bannerId,langId){
+	bannerLangForm = function(blocationId,bannerId,langId, autoFillLangData = 0){
 		fcom.displayProcessing();
-			fcom.ajax(fcom.makeUrl('Banners', 'bannerLangForm', [blocationId,bannerId,langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('Banners', 'bannerLangForm', [blocationId,bannerId,langId, autoFillLangData]), '', function(t) {
 				fcom.updateFaceboxContent(t);
 			});
 	};

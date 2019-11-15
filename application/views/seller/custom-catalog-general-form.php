@@ -21,15 +21,15 @@
                     if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
                         $lengthFld = $customProductFrm->getField('product_length');
                         $lengthFld->setWrapperAttribute('class', 'product_length_fld');
-                        //$lengthFld->htmlAfterField = Labels::getLabel('LBL_Note:_Used_for_Shipping_Calculation.',$adminLangId);
+                        //$lengthFld->htmlAfterField = Labels::getLabel('LBL_Note:_Used_for_Shipping_Calculation.',$siteLangId);
 
                         $widthFld = $customProductFrm->getField('product_width');
                         $widthFld->setWrapperAttribute('class', 'product_width_fld');
-                        //$widthFld->htmlAfterField = Labels::getLabel('LBL_Note:_Used_for_Shipping_Calculation.',$adminLangId) ;
+                        //$widthFld->htmlAfterField = Labels::getLabel('LBL_Note:_Used_for_Shipping_Calculation.',$siteLangId) ;
 
                         $heightFld = $customProductFrm->getField('product_height');
                         $heightFld->setWrapperAttribute('class', 'product_height_fld');
-                        //$heightFld->htmlAfterField = Labels::getLabel('LBL_Note:_Used_for_Shipping_Calculation.',$adminLangId);
+                        //$heightFld->htmlAfterField = Labels::getLabel('LBL_Note:_Used_for_Shipping_Calculation.',$siteLangId);
 
                         $dimensionUnitFld = $customProductFrm->getField('product_dimension_unit');
                         $dimensionUnitFld->setWrapperAttribute('class', 'product_dimension_unit_fld');

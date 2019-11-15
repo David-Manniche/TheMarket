@@ -70,8 +70,8 @@ $(document).on('change',"select[name='banner_blocation_id']",function(){
 		});
 	};
 
-	promotionLangForm = function(promotionId,langId){
-		fcom.ajax(fcom.makeUrl('Advertiser', 'promotionLangForm', [ promotionId, langId ]), '', function(t) {
+	promotionLangForm = function(promotionId,langId, autoFillLangData = 0){
+		fcom.ajax(fcom.makeUrl('Advertiser', 'promotionLangForm', [ promotionId, langId, autoFillLangData]), '', function(t) {
 			$(dv).html(t);
 		});
 	};

@@ -1,20 +1,20 @@
 <?php
 class ShopCollection extends MyAppModel
 {
-    const DB_TBL = 'tbl_shop_collections';
-    const DB_TBL_PREFIX = 'scollection_';
+    public const DB_TBL = 'tbl_shop_collections';
+    public const DB_TBL_PREFIX = 'scollection_';
 
-    const DB_TBL_LANG = 'tbl_shop_collections_lang';
-    const DB_TBL_LANG_PREFIX = 'scollectionlang_';
+    public const DB_TBL_LANG = 'tbl_shop_collections_lang';
+    public const DB_TBL_LANG_PREFIX = 'scollectionlang_';
 
-    const DB_TBL_SHOP_COLLECTION_PRODUCTS = 'tbl_shop_collection_products';
-    const DB_TBL_SHOP_COLLECTION_PRODUCTS_PREFIX = 'scp_';
+    public const DB_TBL_SHOP_COLLECTION_PRODUCTS = 'tbl_shop_collection_products';
+    public const DB_TBL_SHOP_COLLECTION_PRODUCTS_PREFIX = 'scp_';
 
-    const DB_SELLER_PRODUCTS = 'tbl_seller_products';
-    const DB_SELLER_PRODUCTS_PREFIX = 'selprod_';
+    public const DB_SELLER_PRODUCTS = 'tbl_seller_products';
+    public const DB_SELLER_PRODUCTS_PREFIX = 'selprod_';
 
-    const DB_SELLER_PRODUCTS_LANG_TBL = 'tbl_seller_products_lang';
-    const DB_SELLER_PRODUCTS_LANG_TBL_PREFIX = 'selprodlang_';
+    public const DB_SELLER_PRODUCTS_LANG_TBL = 'tbl_seller_products_lang';
+    public const DB_SELLER_PRODUCTS_LANG_TBL_PREFIX = 'selprodlang_';
 
     public function __construct($scollectionId = 0)
     {

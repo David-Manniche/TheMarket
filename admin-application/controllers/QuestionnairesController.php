@@ -154,10 +154,10 @@ class QuestionnairesController extends AdminBaseController
         unset($post['questionnaire_id']);
         unset($post['lang_id']);
         $data = array(
-        'questionnairelang_lang_id'=>$lang_id,
-        'questionnairelang_questionnaire_id'=>$questionnaire_id,
-        'questionnaire_name'=>$post['questionnaire_name'],
-        'questionnaire_description'=>$post['questionnaire_description'],
+        'questionnairelang_lang_id' => $lang_id,
+        'questionnairelang_questionnaire_id' => $questionnaire_id,
+        'questionnaire_name' => $post['questionnaire_name'],
+        'questionnaire_description' => $post['questionnaire_description'],
         );
         
         $obj = new Questionnaires($questionnaire_id);

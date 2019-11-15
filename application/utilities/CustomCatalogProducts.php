@@ -521,7 +521,7 @@ trait CustomCatalogProducts
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function customCatalogProductLangForm($preqId = 0, $lang_id = 0)
+    public function customCatalogProductLangForm($preqId = 0, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->canAddCustomCatalogProduct();
 
@@ -555,6 +555,17 @@ trait CustomCatalogProducts
             $customProductLangData['preq_id'] = $preqId;
             $productData = json_decode($customProductLangData['preq_lang_data'], true);
             unset($customProductLangData['preq_lang_data']);
+
+            if (0 < $autoFillLangData) {
+                $updateLangDataobj = new TranslateLangData(ProductRequest::DB_TBL_LANG);
+                $translatedData = $updateLangDataobj->directTranslate($productData, $lang_id);
+                if (false === $translatedData) {
+                    Message::addErrorMessage($updateLangDataobj->getError());
+                    FatUtility::dieWithError(Message::getHtml());
+                }
+                $productData = current($translatedData);
+            }
+
             if (!empty($productData)) {
                 $customProductLangData = array_merge($customProductLangData, $productData);
             }
@@ -633,7 +644,7 @@ trait CustomCatalogProducts
         $siteLangId = $this->siteLangId;
         $frm = new Form('frmCustomProductLang');
         $frm->addHiddenField('', 'preq_id', $preqId);
-        $frm->addHiddenField('', 'lang_id', $langId);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'lang_id', Language::getAllNames(), $langId, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Product_Name', $this->siteLangId), 'product_name');
         $fld = $frm->addRequiredField(Labels::getLabel('LBL_Seller_Product_Title', $this->siteLangId), 'selprod_title');
         $fld->htmlAfterField = "<small class='text--small'>".Labels::getLabel('LBL_This_product_title_will_be_displayed_on_the_site', $this->siteLangId).'</small>';
@@ -641,6 +652,13 @@ trait CustomCatalogProducts
         $frm->addTextBox(Labels::getLabel('LBL_YouTube_Video', $this->siteLangId), 'product_youtube_video');
         //$frm->addHtmlEditor(Labels::getLabel('LBL_Description',$this->siteLangId),'product_description');
         $frm->addTextarea(Labels::getLabel('LBL_Description', $this->siteLangId), 'product_description');
+
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $langId == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->siteLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $siteLangId));
         return $frm;

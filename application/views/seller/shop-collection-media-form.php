@@ -20,11 +20,11 @@
         <div class="tabs tabs-sm tabs--scroll clearfix">
             <ul>
                 <li ><a onclick="getShopCollectionGeneralForm(<?php echo $scollection_id; ?>);" href="javascript:void(0)"><?php echo Labels::getLabel('TXT_Basic', $siteLangId);?></a></li>
-                <?php
-                foreach ($language as $lang_id => $langName) {?>
-                <li class=""><a href="javascript:void(0)" onClick="editShopCollectionLangForm(<?php echo $scollection_id ?>, <?php echo $lang_id;?>)">
-                    <?php echo $langName;?></a></li>
-                <?php } ?>
+                <li class="<?php echo (0 == $scollection_id) ? 'fat-inactive' : ''; ?>">
+                    <a href="javascript:void(0);" <?php echo (0 < $scollection_id) ? "onclick='editShopCollectionLangForm(" . $scollection_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                        <?php echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
+                    </a>
+                </li>
                 <li>
                     <a onclick="sellerCollectionProducts(<?php echo $scollection_id ?>)" href="javascript:void(0);"> <?php echo Labels::getLabel('TXT_LINK', $siteLangId);?> </a>
                 </li>

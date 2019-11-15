@@ -526,6 +526,7 @@ trait SellerProducts
         $formLangId = FatUtility::int($formLangId);
 
         $frm = new Form('frmSellerProductLang');
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $formLangId), 'lang_id', Language::getAllNames(), $formLangId, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Product_Display_Title', $formLangId), 'selprod_title');
         /* $frm->addTextArea( Labels::getLabel( 'LBL_Features', $formLangId), 'selprod_features');
         $frm->addTextArea( Labels::getLabel( 'LBL_Warranty', $formLangId), 'selprod_warranty');
@@ -534,7 +535,13 @@ trait SellerProducts
         $frm->addTextArea(Labels::getLabel('LBL_Any_Extra_Comment_for_buyer', $formLangId), 'selprod_comments');
         $frm->addHiddenField('', 'selprod_product_id');
         $frm->addHiddenField('', 'selprod_id', $selprod_id);
-        $frm->addHiddenField('', 'lang_id', $formLangId);
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $formLangId == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $formLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
 
         $fld1 = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $formLangId));
         $fld2 = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $formLangId), array('onClick' => 'cancelForm(this)'));
@@ -1278,7 +1285,7 @@ trait SellerProducts
         return $frm;
     }
 
-    public function productSeoLangForm($metaId, $langId)
+    public function productSeoLangForm($metaId, $langId, $autoFillLangData = 0)
     {
         $metaId = Fatutility::int($metaId);
         $metaData = MetaTag::getAttributesById($metaId);
@@ -1292,9 +1299,22 @@ trait SellerProducts
         $this->set('activeTab', 'SEO');
         $metaType = MetaTag::META_GROUP_PRODUCT_DETAIL;
         $this->set('metaType', $metaType);
-        $metaData= MetaTag::getAttributesByLangId($langId, $metaId);
+
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(MetaTag::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($metaId, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $metaData = current($translatedData);
+        } else {
+            $metaData = MetaTag::getAttributesByLangId($langId, $metaId);
+        }
+
         $prodSeoLangFrm = $this->getSeoLangForm($metaId, $langId);
-        $prodSeoLangFrm ->fill($metaData);
+        $prodSeoLangFrm->fill($metaData);
+
         $productRow = Product::getAttributesById($sellerProductRow['selprod_product_id'], array('product_type'));
 
         $this->set('languages', Language::getAllNames());
@@ -1315,11 +1335,19 @@ trait SellerProducts
     {
         $frm = new Form('frmMetaTagLang');
         $frm->addHiddenField('', 'meta_id', $metaId);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel("LBL_Meta_Title", $this->siteLangId), 'meta_title');
         $frm->addTextarea(Labels::getLabel("LBL_Meta_Keywords", $this->siteLangId), 'meta_keywords')->requirements()->setRequired(true);
         $frm->addTextarea(Labels::getLabel("LBL_Meta_Description", $this->siteLangId), 'meta_description')->requirements()->setRequired(true);
         $frm->addTextarea(Labels::getLabel("LBL_Other_Meta_Tags", $this->siteLangId), 'meta_other_meta_tags');
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->siteLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel("LBL_Save_Changes", $this->siteLangId));
         return $frm;
     }
@@ -1414,12 +1442,12 @@ trait SellerProducts
         unset($post['lang_id']);
 
         $data = array(
-        'metalang_lang_id'=>$lang_id,
-        'metalang_meta_id'=>$metaId,
-        'meta_title'=>strip_tags($post['meta_title']),
-        'meta_keywords'=>strip_tags($post['meta_keywords']),
-        'meta_description'=>strip_tags($post['meta_description']),
-        'meta_other_meta_tags'=>$post['meta_other_meta_tags'],
+        'metalang_lang_id' => $lang_id,
+        'metalang_meta_id' => $metaId,
+        'meta_title' => strip_tags($post['meta_title']),
+        'meta_keywords' => strip_tags($post['meta_keywords']),
+        'meta_description' => strip_tags($post['meta_description']),
+        'meta_other_meta_tags' => $post['meta_other_meta_tags'],
         );
 
         $metaObj = new MetaTag($metaId);
@@ -1429,9 +1457,18 @@ trait SellerProducts
             FatUtility::dieJsonError(Message::getHtml());
         }
 
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(MetaTag::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($metaId)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        }
+
         $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach ($languages as $langId =>$langName) {
+        foreach ($languages as $langId => $langName) {
             if (!$row = MetaTag::getAttributesByLangId($langId, $metaId)) {
                 $newTabLangId = $langId;
                 break;

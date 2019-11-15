@@ -14,14 +14,12 @@ $identifierFld->setFieldTagAttribute('id', Brand::DB_TBL_PREFIX.'id');
     <div class="tabs tabs--small tabs--scroll">
         <ul>
             <li class="is-active"><a href="javascript:void(0)" onclick="addBrandReqForm(<?php echo $brandReqId; ?>);"><?php echo Labels::getLabel('LBL_Basic', $siteLangId);?></a></li>
-            <?php $inactive=($brandReqId==0)?'fat-inactive':'';
-            foreach ($languages as $langId => $langName) {?>
-            <li class="<?php echo $inactive;?>"><a href="javascript:void(0);"
-                <?php if ($brandReqId > 0) { ?>
-                    onclick="addBrandReqLangForm(<?php echo $brandReqId ?>, <?php echo $langId;?>);"
-                <?php }?>><?php echo $langName;?></a>
+            <li class="<?php echo (0 == $brandReqId) ? 'fat-inactive' : ''; ?>">
+                <a href="javascript:void(0);" <?php echo (0 < $brandReqId) ? "onclick='addBrandReqLangForm(" . $brandReqId . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                    <?php echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
+                </a>
             </li>
-            <?php } ?>
+            <?php $inactive=($brandReqId==0)?'fat-inactive':''; ?>
             <li class="<?php echo $inactive;?>"><a href="javascript:void(0)"
                 <?php if ($brandReqId > 0) { ?>
                     onclick="brandMediaForm(<?php echo $brandReqId ?>);"

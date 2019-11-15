@@ -106,10 +106,10 @@ $(document).ready(function(){
 		});
 	}
 
-	navigationLinkLangForm = function( nav_id, nlink_id, lang_id ){
+	navigationLinkLangForm = function( nav_id, nlink_id, lang_id, autoFillLangData = 0 ){
 		fcom.displayProcessing();
 		var data = 'nav_id=' + nav_id + '&nlink_id=' + nlink_id + '&lang_id=' + lang_id;
-			fcom.ajax(fcom.makeUrl('Navigations', 'navigationLinkLangForm'), data, function(t) {
+			fcom.ajax(fcom.makeUrl('Navigations', 'navigationLinkLangForm', [autoFillLangData]), data, function(t) {
 				//$.facebox(t);
 				fcom.updateFaceboxContent(t);
 			});
