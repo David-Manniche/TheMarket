@@ -1,36 +1,36 @@
 <?php
 class Promotion extends MyAppModel
 {
-    const DB_TBL = 'tbl_promotions';
-    const DB_TBL_PREFIX = 'promotion_';
+    public const DB_TBL = 'tbl_promotions';
+    public const DB_TBL_PREFIX = 'promotion_';
 
-    const DB_TBL_LANG ='tbl_promotions_lang';
+    public const DB_TBL_LANG ='tbl_promotions_lang';
 
-    const DB_TBL_CLICKS = 'tbl_promotions_clicks';
-    const DB_TBL_CLICKS_PREFIX = 'pclick_';
+    public const DB_TBL_CLICKS = 'tbl_promotions_clicks';
+    public const DB_TBL_CLICKS_PREFIX = 'pclick_';
 
-    const DB_TBL_CHARGES = 'tbl_promotions_charges';
-    const DB_TBL_CHARGES_PREFIX = 'pcharge_';
+    public const DB_TBL_CHARGES = 'tbl_promotions_charges';
+    public const DB_TBL_CHARGES_PREFIX = 'pcharge_';
 
-    const DB_TBL_ITEM_CHARGES = 'tbl_promotion_item_charges';
-    const DB_TBL_ITEM_CHARGES_PREFIX = 'picharge_';
+    public const DB_TBL_ITEM_CHARGES = 'tbl_promotion_item_charges';
+    public const DB_TBL_ITEM_CHARGES_PREFIX = 'picharge_';
 
-    const DB_TBL_LOGS = 'tbl_promotions_logs';
-    const DB_TBL_LOGS_PREFIX = 'plog_';
+    public const DB_TBL_LOGS = 'tbl_promotions_logs';
+    public const DB_TBL_LOGS_PREFIX = 'plog_';
 
-    const TYPE_SHOP = 1;
-    const TYPE_PRODUCT = 2;
-    const TYPE_BANNER = 3;
-    const TYPE_SLIDES = 4;
+    public const TYPE_SHOP = 1;
+    public const TYPE_PRODUCT = 2;
+    public const TYPE_BANNER = 3;
+    public const TYPE_SLIDES = 4;
 
-    const DAILY = 0;
-    const WEEKLY = 1;
-    const MONTHLY = 2;
-    const DURATION_NOT_AVAILABALE = 4;
+    public const DAILY = 0;
+    public const WEEKLY = 1;
+    public const MONTHLY = 2;
+    public const DURATION_NOT_AVAILABALE = 4;
 
-    const REDIRECT_SHOP = 1;
-    const REDIRECT_PRODUCT = 2;
-    const REDIRECT_CATEGORY = 3;
+    public const REDIRECT_SHOP = 1;
+    public const REDIRECT_PRODUCT = 2;
+    public const REDIRECT_CATEGORY = 3;
 
     public function __construct($id = 0)
     {

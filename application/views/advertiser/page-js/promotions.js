@@ -71,6 +71,7 @@ $(document).on('change',"select[name='banner_blocation_id']",function(){
 	};
 
 	promotionLangForm = function(promotionId,langId, autoFillLangData = 0){
+        $(dv).html(fcom.getLoader());
 		fcom.ajax(fcom.makeUrl('Advertiser', 'promotionLangForm', [ promotionId, langId, autoFillLangData]), '', function(t) {
 			$(dv).html(t);
 		});

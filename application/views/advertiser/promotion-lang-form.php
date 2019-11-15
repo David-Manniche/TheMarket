@@ -5,13 +5,13 @@ $langFrm->setFormTagAttribute('onsubmit', 'setupPromotionLang(this); return(fals
 $langFrm->developerTags['colClassPrefix'] = 'col-md-';
 $langFrm->developerTags['fld_default_col'] = 12;
 
-$langFld = $promotionLangFrm->getField('lang_id');
+$langFld = $langFrm->getField('lang_id');
 $langFld->setfieldTagAttribute('onChange', "promotionLangForm(" . $promotionId . ", this.value);");
 ?>
 <div class="tabs tabs--small   tabs--scroll clearfix setactive-js rtl">
     <ul>
         <li><a href="javascript:void(0);" onClick="promotionForm(<?php echo $promotionId;?>)"><?php echo Labels::getLabel('LBL_General', $siteLangId);?></a></li>
-        <li class="<?php echo (0 < $promotion_lang_id) ? 'is-active' : ''; echo $inactive; ?>">
+        <li class="is-active">
             <a href="javascript:void(0);">
                 <?php echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
             </a>
@@ -32,20 +32,18 @@ $langFld->setfieldTagAttribute('onChange', "promotionLangForm(" . $promotionId .
 </div>
 <div class="tabs__content">
     <div class="row">
-        <?php
+        <div class="col-md-6">
+            <?php
                 $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
                 $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
                 if (!empty($translatorSubscriptionKey) && $promotion_lang_id != $siteDefaultLangId) { ?> 
-                    <div class="row justify-content-end"> 
                         <div class="col-auto mb-4">
                             <input class="btn btn-primary" 
                                 type="button" 
                                 value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $siteLangId); ?>" 
                                 onClick="promotionLangForm(<?php echo $promotionId; ?>, <?php echo $promotion_lang_id; ?>, 1)">
                         </div>
-                    </div>
                 <?php } ?>
-        <div class="col-md-6">
             <?php echo $langFrm->getFormHtml(); ?>
         </div>
     </div>

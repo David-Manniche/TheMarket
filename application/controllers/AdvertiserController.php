@@ -828,7 +828,7 @@ class AdvertiserController extends AdvertiserBaseController
         $langFrm  = $this->getPromotionLangForm($promotionId, $langId);
         if (0 < $autoFillLangData) {
             $updateLangDataobj = new TranslateLangData(Promotion::DB_TBL_LANG);
-            $translatedData = $updateLangDataobj->getTranslatedData($promotionId, $lang_id);
+            $translatedData = $updateLangDataobj->getTranslatedData($promotionId, $langId);
             if (false === $translatedData) {
                 Message::addErrorMessage($updateLangDataobj->getError());
                 FatUtility::dieWithError(Message::getHtml());

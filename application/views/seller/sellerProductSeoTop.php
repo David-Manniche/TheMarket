@@ -10,11 +10,10 @@
             </li>
             <?php $inactive = ($metaId == 0) ? 'fat-inactive' : ''; ?>
             <li class="<?php echo (0 < $selprod_lang_id) ? 'is-active' : ''; echo $inactive; ?>">
-                <a href="javascript:void(0);" <?php if ($metaId > 0) {
-                    ?>
-                    onclick="editProductMetaTagLangForm(<?php echo $metaId ?>, <?php echo FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1),'<?php echo $metaType ?>' ?>);"
-                    <?php
-                } ?>>
+                <a href="javascript:void(0);" 
+                    <?php if ($metaId > 0) { ?>
+                    onclick='editProductMetaTagLangForm(<?php echo $metaId ?>, <?php echo FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) ?>, "<?php echo $metaType; ?>");'
+                    <?php } ?>>
                     <?php echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
                 </a>
             </li>

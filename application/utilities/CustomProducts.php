@@ -346,7 +346,7 @@ trait CustomProducts
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function customProductLangForm($product_id, $lang_id)
+    public function customProductLangForm($product_id, $lang_id, $autoFillLangData = 0)
     {
         if (!User::canAddCustomProduct()) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
@@ -378,8 +378,19 @@ trait CustomProducts
         }
 
         $customProductLangFrm = $this->getCustomProductLangForm($lang_id);
-        $prodObj = new Product($product_id);
-        $customProductLangData = $prodObj->getAttributesByLangId($lang_id, $product_id);
+        
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(Product::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($product_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $customProductLangData = current($translatedData);
+        } else {
+            $prodObj = new Product($product_id);
+            $customProductLangData = $prodObj->getAttributesByLangId($lang_id, $product_id);
+        }
         $customProductLangData['product_id'] = $product_id;
         if ($customProductLangData) {
             $customProductLangFrm->fill($customProductLangData);
@@ -441,10 +452,19 @@ trait CustomProducts
             FatUtility::dieWithError(Message::getHtml());
         }
 
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(Product::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($product_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        }
+
         $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach ($languages as $langId =>$langName) {
-            if (!$row=Product::getAttributesByLangId($langId, $product_id)) {
+        foreach ($languages as $langId => $langName) {
+            if (!$row = Product::getAttributesByLangId($langId, $product_id)) {
                 $newTabLangId = $langId;
                 break;
             }
@@ -1904,7 +1924,7 @@ trait CustomProducts
     {
         $frm = new Form('frmBrandReqLang', array('id' => 'frmBrandReqLang'));
         $frm->addHiddenField('', 'brand_id', $brandReqId);
-        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Brand_Name', $this->siteLangId), 'brand_name');
         
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);

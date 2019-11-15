@@ -445,6 +445,9 @@ class CustomProductsController extends AdminBaseController
         unset($post['preq_id']);
         unset($post['lang_id']);
         unset($post['btn_submit']);
+		if (array_key_exists('auto_update_other_langs_data', $post)) {
+			unset($post['auto_update_other_langs_data']);
+		}
         $data_to_update = array(
         'preqlang_preq_id'    =>    $preq_id,
         'preqlang_lang_id'    =>    $lang_id,

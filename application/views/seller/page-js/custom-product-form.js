@@ -131,6 +131,7 @@
 	};
 
 	customProductLangForm = function(productId, lang_id, autoFillLangData = 0){
+        $(dv).html( fcom.getLoader() );
 		fcom.resetEditorInstance();
 			fcom.ajax(fcom.makeUrl('Seller', 'customProductLangForm', [productId, lang_id, autoFillLangData]), '', function(t) {
 				$(dv).html(t);

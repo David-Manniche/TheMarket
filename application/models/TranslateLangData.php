@@ -17,7 +17,7 @@ class TranslateLangData
     public function __construct($tbl)
     {
         if (empty($tbl)) {
-            trigger_error(Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId()), E_USER_ERROR);
+            trigger_error(Labels::getLabel('MSG_SOMETHING_WENT_WRONG._PLEASE_TRY_AGAIN', CommonHelper::getLangId()), E_USER_ERROR);
         }
         $this->tbl = $tbl;
         $this->langTranslateFields = $this->getLangTranslateFields();
@@ -41,7 +41,7 @@ class TranslateLangData
         $this->toLangQueryString = strtolower("&to=" . implode("&to=", array_column($languages, 'language_code')));
         $langArr = array_change_key_case(array_flip(array_column($languages, 'language_code', 'language_id')));
         if (empty($langArr)) {
-            $this->error = Labels::getLabel('MSG_NO_TARGET_LANGUAGE_PROVIDED', CommonHelper::getLangId());
+            $this->error = Labels::getLabel('MSG_NO_SECONDARY_LANGUAGE(S)_DEFINED', CommonHelper::getLangId());
             return false;
         }
         return $langArr;
@@ -63,6 +63,11 @@ class TranslateLangData
 
     public function directTranslate($data, $toLangId = 0, $fromLangId = 0)
     {
+        if (empty($data) || 1 > count($data)) {
+            $this->error = Labels::getLabel('MSG_PLEASE_PROVIDE_DATA_IN_DEFAULT_LANGUAGE_TO_TRANSLATE', CommonHelper::getLangId());
+            return false;
+        }
+
         $langArr = $this->getLangToCovert($toLangId, $fromLangId);
         $dataToUpdate = $this->getDataToTranslate($data);
         if (false === $dataToUpdate) {
@@ -98,7 +103,7 @@ class TranslateLangData
         }
         
         if (empty($recordData)) {
-            $this->error = Labels::getLabel('MSG_PLEASE_PROVIDE_DATA_TO_TRANSLATE', CommonHelper::getLangId());
+            $this->error = Labels::getLabel('MSG_PLEASE_PROVIDE_DATA_IN_DEFAULT_LANGUAGE_TO_TRANSLATE', CommonHelper::getLangId());
             return false;
         }
 
@@ -157,7 +162,7 @@ class TranslateLangData
             }
         }
         if (empty($inputData)) {
-            $this->error = Labels::getLabel('MSG_INVALID_DATA_TO_TRANSLATE', CommonHelper::getLangId());
+            $this->error = Labels::getLabel('MSG_INVALID_DATA_FORMAT', CommonHelper::getLangId());
             return false;
         }
         return $inputData;
@@ -173,11 +178,11 @@ class TranslateLangData
         $srch->setPageSize(1);
         $rs = $srch->getResultSet();
         if (false === $rs) {
-            $this->error = Labels::getLabel('MSG_INVALID_RESULT_SET', CommonHelper::getLangId());
+            $this->error = Labels::getLabel('MSG_SOMETHING_WENT_WRONG._PLEASE_TRY_AGAIN', CommonHelper::getLangId());
             return false;
         }
         if (!$data = FatApp::getDb()->fetch($rs)) {
-            $this->error = Labels::getLabel('MSG_NO_DATA', CommonHelper::getLangId());
+            $this->error = Labels::getLabel('MSG_COULD_NOT_FETCH_RESULTS', CommonHelper::getLangId());
             return false;
         }
         return array_filter($data);

@@ -549,7 +549,7 @@ trait SellerProducts
         return $frm;
     }
 
-    public function sellerProductLangForm($langId, $selprod_id)
+    public function sellerProductLangForm($langId, $selprod_id, $autoFillLangData = 0)
     {
         $langId = FatUtility::int($langId);
         $selprod_id = FatUtility::int($selprod_id);
@@ -571,7 +571,17 @@ trait SellerProducts
         }
 
         $frmSellerProdLangFrm = $this->getSellerProductLangForm($langId, $selprod_id);
-        $langData = SellerProduct::getAttributesByLangId($langId, $selprod_id);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(SellerProduct::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($selprod_id, $langId);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = SellerProduct::getAttributesByLangId($langId, $selprod_id);
+        }
         $langData['selprod_product_id'] = $sellerProductRow['selprod_product_id'];
 
         $productRow = Product::getAttributesById($sellerProductRow['selprod_product_id'], array('product_type'));
@@ -618,18 +628,27 @@ trait SellerProducts
         }
 
         $data=array(
-        'selprodlang_selprod_id'=>$selprod_id,
-        'selprodlang_lang_id'=>$lang_id,
-        'selprod_title'=>$post['selprod_title'],
-        /* 'selprod_warranty'=>$post['selprod_warranty'],
-        'selprod_return_policy'=>$post['selprod_return_policy'], */
-        'selprod_comments'=>$post['selprod_comments'],
+        'selprodlang_selprod_id' => $selprod_id,
+        'selprodlang_lang_id' => $lang_id,
+        'selprod_title' => $post['selprod_title'],
+        /* 'selprod_warranty' => $post['selprod_warranty'],
+        'selprod_return_policy' => $post['selprod_return_policy'], */
+        'selprod_comments' => $post['selprod_comments'],
         );
 
         $obj = new SellerProduct($selprod_id);
         if (!$obj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage(Labels::getLabel($obj->getError(), $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(SellerProduct::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($selprod_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId = 0;
@@ -1335,7 +1354,7 @@ trait SellerProducts
     {
         $frm = new Form('frmMetaTagLang');
         $frm->addHiddenField('', 'meta_id', $metaId);
-        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel("LBL_Meta_Title", $this->siteLangId), 'meta_title');
         $frm->addTextarea(Labels::getLabel("LBL_Meta_Keywords", $this->siteLangId), 'meta_keywords')->requirements()->setRequired(true);
         $frm->addTextarea(Labels::getLabel("LBL_Meta_Description", $this->siteLangId), 'meta_description')->requirements()->setRequired(true);

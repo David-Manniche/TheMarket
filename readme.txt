@@ -8,3 +8,4 @@ Bugs
 
 Enhancements
     => Updated new labels for IOS APP.
+    => Enhancement of existing multilingual functionality. Added MSN language translator API to language fields. 

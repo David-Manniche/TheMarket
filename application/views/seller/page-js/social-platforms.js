@@ -43,6 +43,7 @@ $(document).ready(function(){
 	};
 
 	addLangForm = function( splatformId, langId, autoFillLangData = 0 ){
+        $(dv).html(fcom.getLoader());
 		fcom.ajax(fcom.makeUrl('Seller', 'socialPlatformLangForm', [splatformId, langId, autoFillLangData]), '', function(t) {
 			$(dv).html(t);
 		});

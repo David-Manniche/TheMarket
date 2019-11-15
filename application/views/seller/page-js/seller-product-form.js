@@ -59,9 +59,6 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 	};
 
 	sellerProductLangForm = function( langId, selprod_id, autoFillLangData = 0){
-		/* alert('hi'); */
-
-		$(dv).html(fcom.getLoader());
 		fcom.ajax(fcom.makeUrl('Seller', 'sellerProductLangForm', [ langId, selprod_id, autoFillLangData]), '', function(t) {
 			$(dv).html(t);
 			fcom.setEditorLayout(langId);
