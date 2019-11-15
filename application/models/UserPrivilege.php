@@ -168,7 +168,8 @@ class UserPrivilege
     public static function canSellerUpgradeOrDowngradePlan($userId, $spPlanId = 0, $langId = 0)
     {
         $userId = FatUtility::int($userId);
-        if (1 > $userId) {
+        $spPlanId = FatUtility::int($spPlanId);
+        if (1 > $userId || $spPlanId < 1) {
             return false;
         }
         $currentActivePlanId = OrderSubscription:: getUserCurrentActivePlanDetails($langId, $userId, array(OrderSubscription::DB_TBL_PREFIX.'id'));
