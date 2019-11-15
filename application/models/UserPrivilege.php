@@ -206,14 +206,6 @@ class UserPrivilege
         return true;
     }
 
-    public static function canSellerBuyFreePlan($userId = 0, $sPackageId = 0, $langId = 0)
-    {
-        if (!OrderSubscription::canUserBuyFreeSubscription) {
-            return false;
-        }
-        return true;
-    }
-
     public static function canEditSellerCollection($userId = 0)
     {
         //Pending
