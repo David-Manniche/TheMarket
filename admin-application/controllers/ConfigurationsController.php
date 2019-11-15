@@ -130,8 +130,10 @@ class ConfigurationsController extends AdminBaseController
         $this->objPrivilege->canEditGeneralSettings();
 
         $post = FatApp::getPostedData();
-        $user_state_id = FatUtility::int($post['CONF_STATE']);
-
+        $user_state_id = 0;
+        if (isset($post['CONF_STATE'])) {
+            $user_state_id = FatUtility::int($post['CONF_STATE']);
+        }
 
         $frmType = FatUtility::int($post['form_type']);
 
@@ -142,7 +144,9 @@ class ConfigurationsController extends AdminBaseController
 
         $frm = $this->getForm($frmType);
         $post = $frm->getFormDataFromArray($post);
-        $post['CONF_STATE'] = $user_state_id;
+        if ($user_state_id > 0) {
+            $post['CONF_STATE'] = $user_state_id;
+        }
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
