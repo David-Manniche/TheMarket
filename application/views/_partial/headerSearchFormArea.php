@@ -25,9 +25,10 @@
 				<div class="dropdown__target dropdown__target-js">
 					<div class="dropdown__target-space"> <span class="expand-heading"><?php echo Labels::getLabel('LBL_Search_Items',$siteLangId); ?></span>
 						<ul class="list-vertical list-vertical--tick" data-simplebar>
-							<?php foreach($categoriesArr as $catkey => $catval) { ?>
-								<li><a id="category--js-<?php echo $catkey; ?>" href="javascript:void(0);" onclick="setSelectedCatValue('<?php echo $catkey; ?>')"><?php echo $catval; ?></a></li>
-							<?php } ?>
+                            <li><a id="category--js-0" href="javascript:void(0);" onclick="setSelectedCatValue(0)"><?php echo Labels::getLabel('LBL_All',$siteLangId); ?></a></li>
+                            <?php foreach($categoriesArr as $catkey => $catval) { ?>
+                            <li><a id="category--js-<?php echo $catkey; ?>" href="javascript:void(0);" onclick="setSelectedCatValue('<?php echo $catkey; ?>')"><?php echo $catval; ?></a></li>
+                            <?php } ?>
 						</ul>
 					</div>
 				</div>

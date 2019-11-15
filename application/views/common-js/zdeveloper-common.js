@@ -349,7 +349,7 @@ function submitSiteSearch(frm) {
 		//url_arr.push('category');
 		url_arr.push('category-'+$(frm).find('select[name="category"]').val());
 	} */
-	if (qryParam.indexOf("category") > -1) {
+	if (qryParam.indexOf("category") > -1 && $(frm).find('input[name="category"]').val() > 0) {
 		//url_arr.push('category');
 		url_arr.push('category-' + $(frm).find('input[name="category"]').val());
 	}
