@@ -1171,13 +1171,16 @@ class Cart extends FatModel
 
                 $shipFromStateId = 0;
                 $shipToStateId = 0;
+                if (isset($product['shipping_address']['ua_state_id'])) {
+                    $shipToStateId = $product['shipping_address']['ua_state_id'];
+                }
                 
                 if (Product::isProductShippedBySeller($product['product_id'], $product['product_seller_id'], $product['selprod_user_id'])) {
                     $shipFromStateId = Shop::getAttributesByUserId($product['selprod_user_id'], 'shop_state_id');
                 }
                 
                 $taxObj = new Tax();
-                $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], array(), $shipFromStateId, $product['shipping_address']['ua_state_id']);
+                $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], array(), $shipFromStateId, $shipToStateId);
                 
                 foreach ($taxData['options'] as $optionId => $optionval) {
                     $prodTaxOptions[$product['selprod_id']][$optionId] = $optionval;
