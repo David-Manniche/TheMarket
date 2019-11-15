@@ -17,7 +17,7 @@ class Tax extends MyAppModel
 
     const TYPE_PERCENTAGE = 1;
     const TYPE_FIXED = 0;
-    
+
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
@@ -243,7 +243,7 @@ class Tax extends MyAppModel
         if (empty($res)) {
             return $tax;
         }
-                
+
         if ($res['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
             $tax = round((($prodPrice * $qty) * $res['taxval_value']) / 100, 2);
         } else {
@@ -252,7 +252,7 @@ class Tax extends MyAppModel
         $data = [
             'tax' => $tax
         ];
-        
+
         if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
             $shipFromStateId = FatUtility::int($shipFromStateId);
             $shipToStateId = FatUtility::int($shipToStateId);
@@ -260,7 +260,7 @@ class Tax extends MyAppModel
             $shipFromStateId = (1 > $shipFromStateId) ? FatApp::getConfig('CONF_STATE', FatUtility::VAR_INT, 0): $shipFromStateId;
 
             $taxOptions = json_decode($res['taxval_options'], true);
-            $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));            
+            $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
             $options =  $taxStructure->getOptions($langId);
             foreach ($options as $optionVal) {
                 if ($shipFromStateId != $shipToStateId && $optionVal['taxstro_interstate'] == applicationConstants::YES) {
@@ -310,5 +310,41 @@ class Tax extends MyAppModel
     {
         FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_TAX, array('smt' => 'ptt_seller_user_id = ? and ptt_product_id = ?', 'vals' => array(0, $productId)));
     }
-    
+
+    public static function validatePostOptions($langId)
+    {
+        if (!FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
+            return true;
+        }
+
+        $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
+        $options =  $taxStructure->getOptions($langId);
+        $post = FatApp::getPostedData();
+
+        $sameStateSum = 0;
+        $interStateSum = 0;
+
+        $havingSameStateValue = false;
+        $havingInterStateValue = false;
+
+        foreach ($options as $optionVal) {
+            if ($optionVal['taxstro_interstate'] == applicationConstants::YES) {
+                $interStateSum += $post[$optionVal['taxstro_id']];
+                $havingInterStateValue = true;
+            } else {
+                $sameStateSum += $post[$optionVal['taxstro_id']];
+                $havingSameStateValue = true;
+            }
+        }
+
+        if ($havingSameStateValue == true && $sameStateSum != $post['taxval_value']) {
+            return false;
+        }
+
+        if ($havingInterStateValue == true && $interStateSum != $post['taxval_value']) {
+            return false;
+        }
+
+        return true;
+    }
 }

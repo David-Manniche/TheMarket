@@ -206,8 +206,12 @@ class BuyerController extends BuyerBaseController
         $rs = $srch->getResultSet();
 
         $childOrderDetail = FatApp::getDb()->fetchAll($rs, 'op_id');
+
         foreach ($childOrderDetail as $opID => $val) {
             $childOrderDetail[$opID]['charges'] = $orderDetail['charges'][$opID];
+
+            $taxOptions = json_decode($val['op_product_tax_options'], true);
+            $childOrderDetail[$opID]['taxOptions'] = $taxOptions;
         }
 
         if ($opId > 0) {

@@ -1349,6 +1349,11 @@ class SellerController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
+        if (Tax::validatePostOptions($this->siteLangId) == false) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Tax_Option_Rate', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
         $taxcat_id = $post['taxcat_id'];
         if (1 > $taxcat_id) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access'));

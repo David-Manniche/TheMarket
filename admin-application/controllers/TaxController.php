@@ -99,7 +99,7 @@ class TaxController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if ($this->validatePostOptions() == false) {
+        if (Tax::validatePostOptions($this->adminLangId) == false) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Tax_Option_Rate', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -404,43 +404,6 @@ class TaxController extends AdminBaseController
         $frm->addRequiredField(Labels::getLabel('LBL_Tax_Category_Name', $this->adminLangId), 'taxcat_name');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;
-    }
-
-    private function validatePostOptions()
-    {
-        if (!FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
-            return true;
-        }
-
-        $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
-        $options =  $taxStructure->getOptions($this->adminLangId);
-        $post = FatApp::getPostedData();
-
-        $sameStateSum = 0;
-        $interStateSum = 0;
-
-        $havingSameStateValue = false;
-        $havingInterStateValue = false;
-
-        foreach ($options as $optionVal) {
-            if ($optionVal['taxstro_interstate'] == applicationConstants::YES) {
-                $interStateSum += $post[$optionVal['taxstro_id']];
-                $havingInterStateValue = true;
-            } else {
-                $sameStateSum += $post[$optionVal['taxstro_id']];
-                $havingSameStateValue = true;
-            }
-        }
-
-        if ($havingSameStateValue == true && $sameStateSum != $post['taxval_value']) {
-            return false;
-        }
-
-        if ($havingInterStateValue == true && $interStateSum != $post['taxval_value']) {
-            return false;
-        }
-
-        return true;
     }
 
     private function getForm($taxcat_id = 0)
