@@ -809,6 +809,9 @@ class ConfigurationsController extends AdminBaseController
                 $fld = $frm->addCheckBox(Labels::getLabel("LBL_Tax_Collected_By_Seller", $this->adminLangId), 'CONF_TAX_COLLECTED_BY_SELLER', 1, array(), false, 0);
                 $fld->htmlAfterField = '<br><small>'.Labels::getLabel("LBL_On_enabling_this_feature,_seller_will_be_able_to_collect_tax", $this->adminLangId).'</small>';
 
+                $fld = $frm->addCheckBox(Labels::getLabel("LBL_TAX_AFTER_DISCOUNTS", $this->adminLangId), 'CONF_TAX_AFTER_DISOCUNT', 1, array(), false, 0);
+                $fld->htmlAfterField = '<br><small>'.Labels::getLabel("LBL_On_enabling_this_feature,_tax_will_be_applicable_after_discounts", $this->adminLangId).'</small>';
+
                 $fld = $frm->addCheckBox(Labels::getLabel("LBL_Return_Shipping_Charges_to_Customer", $this->adminLangId), 'CONF_RETURN_SHIPPING_CHARGES_TO_CUSTOMER', 1, array(), false, 0);
                 $fld->htmlAfterField = '<br><small>'.Labels::getLabel("LBL_On_enabling_return_shipping_charges_to_customer,", $this->adminLangId).'</small>';
 

@@ -427,7 +427,7 @@ AND couponlang_lang_id = ' . $langId,
         $interval = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s').' - 15 minute'));
 
         $cartObj = new Cart($userId);
-        $cartProducts = $cartObj->getProducts($langId);
+        $cartProducts = $cartObj->getBasketProducts($langId);
         $cartSubTotal = $cartObj->getSubTotal($langId);
 
         /* coupon history[ */

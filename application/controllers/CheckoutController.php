@@ -1156,8 +1156,17 @@ class CheckoutController extends MyAppController
                     $productTaxOption = $cartSummary["prodTaxOptions"][$productInfo['selprod_id']];
                     foreach ($productTaxOption as $taxStroId => $taxStroName) {
                         $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
-                        $taxLangData =  $taxStructure->getOptionData($taxStroId);                        
-                        $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]] = $taxStroName['value'];
+                        if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
+                            $taxLangData =  $taxStructure->getOptionData($taxStroId);
+                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]] = $taxStroName['value'];
+                        } else {
+                            $structureName =  $taxStructure->getName($lang_id);
+                            $label = Labels::getLabel('LBL_Tax', $lang_id);
+                            if (array_key_exists('taxstr_name', $structureName) && $structureName['taxstr_name'] != '') {
+                                $label  = $structureName['taxstr_name'];
+                            }
+                            $op_product_tax_options[$label] = $taxStroName['value'];
+                        }
                     }
 
                     $productsLangData[$lang_id] = array(

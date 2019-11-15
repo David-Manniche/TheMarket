@@ -123,7 +123,7 @@ class TaxStructure extends MyAppModel
         $srch->addCondition('taxstro_id', '=', $taxstrOptionId);
         $srch->addCondition('taxstro_taxstr_id', '=', $this->mainTableRecordId);
         $rs = $srch->getResultSet();
-        $record = FatApp::getDb()->fetch($rs);                
+        $record = FatApp::getDb()->fetch($rs);
         if ($record) {
             $lang_record = CommonHelper::getLangFields(
                 $taxstrOptionId,
@@ -134,5 +134,18 @@ class TaxStructure extends MyAppModel
             );
             return array_merge($record, $lang_record);
         }
+    }
+
+    public function getName($langId)
+    {
+        if (1 > $this->mainTableRecordId) {
+            trigger_error(Labels::getLabel('MSG_Invalid_access.', CommonHelper::getLangId()), E_USER_ERROR);
+        }
+
+        $langId = FatUtility::int($langId);
+        $srch = static::getSearchObject($langId);
+        $srch->addCondition('taxstr_id', '=', $this->mainTableRecordId);
+        $rs = $srch->getResultSet();
+        return $record = FatApp::getDb()->fetch($rs);
     }
 }
