@@ -1331,12 +1331,12 @@ class User extends MyAppModel
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
             return false;
         }
-
         if (!ValidateElement::password($password)) {
             $this->error = Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->commonLangId);
             return false;
         }
-        
+
+        $email = (empty($email)) ? NULL : $email;
         $record = new TableRecord(static::DB_TBL_CRED);
         $arrFlds = array(
         static::DB_TBL_CRED_PREFIX.'username' => $username,

@@ -521,6 +521,7 @@ class CommonHelper extends FatUtility
 
     public static function getDefaultCurrencyValue($val, $format = true, $displaySymbol = true)
     {
+        //$currency_id = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
         $currencyValue = self::getCurrencyValue();
         $defaultCurrencyValue = $val / $currencyValue;
         return static::displayMoneyFormat($defaultCurrencyValue, $format, true, $displaySymbol);
@@ -1628,7 +1629,7 @@ class CommonHelper extends FatUtility
 
         $file = fopen($fName, 'w');
         if (!fwrite($file, $data)) {
-            $response = Labels::getLabel('MSG_Could_not_save_file.');
+            $response = Labels::getLabel('MSG_Could_not_save_file.', CommonHelper::getLangId());
             return false;
         }
         fclose($file);
@@ -1835,7 +1836,7 @@ class CommonHelper extends FatUtility
     }
 
     public static function demoUrl()
-    {
+	{ 
         if (strpos($_SERVER ['SERVER_NAME'], 'demo.yo-kart.com') !== false) {
             return true;
         }
