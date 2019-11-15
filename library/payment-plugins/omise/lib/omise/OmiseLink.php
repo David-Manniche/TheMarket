@@ -1,17 +1,17 @@
 <?php
 
-class OmiseDispute extends OmiseApiResource
+class OmiseLink extends OmiseApiResource
 {
-    const ENDPOINT = 'disputes';
+    const ENDPOINT = 'links';
 
     /**
-     * Retrieves a dispute.
+     * Retrieves a link.
      *
      * @param  string $id
      * @param  string $publickey
      * @param  string $secretkey
      *
-     * @return OmiseDispute
+     * @return OmiseLink
      */
     public static function retrieve($id = '', $publickey = null, $secretkey = null)
     {
@@ -19,7 +19,7 @@ class OmiseDispute extends OmiseApiResource
     }
 
     /**
-     * Search for disputes.
+     * Search for links.
      *
      * @param  string $query
      * @param  string $publickey
@@ -29,7 +29,7 @@ class OmiseDispute extends OmiseApiResource
      */
     public static function search($query = '', $publickey = null, $secretkey = null)
     {
-        return OmiseSearch::scope('dispute', $publickey, $secretkey)->query($query);
+        return OmiseSearch::scope('link', $publickey, $secretkey)->query($query);
     }
 
     /**
@@ -39,7 +39,7 @@ class OmiseDispute extends OmiseApiResource
      */
     public function reload()
     {
-        if ($this['object'] === 'dispute') {
+        if ($this['object'] === 'link') {
             parent::g_reload(self::getUrl($this['id']));
         } else {
             parent::g_reload(self::getUrl());
@@ -47,18 +47,20 @@ class OmiseDispute extends OmiseApiResource
     }
 
     /**
-     * (non-PHPdoc)
+     * Creates a new link.
      *
-     * @see OmiseApiResource::g_update()
+     * @param  array  $params
+     * @param  string $publickey
+     * @param  string $secretkey
+     *
+     * @return OmiseLink
      */
-    public function update($params)
+    public static function create($params, $publickey = null, $secretkey = null)
     {
-        parent::g_update(self::getUrl($this['id']), $params);
+        return parent::g_create(get_class(), self::getUrl(), $params, $publickey, $secretkey);
     }
 
     /**
-     * Generate request url.
-     *
      * @param  string $id
      *
      * @return string

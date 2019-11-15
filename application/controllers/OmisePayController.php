@@ -71,7 +71,7 @@ class OmisePayController extends PaymentController
                 $token = OmiseToken::create(
                     array(
                     'card' => array(
-                    'name'                 => FatUtility::decodeHtmlEntities($orderInfo['customer_name'], ENT_QUOTES, 'UTF-8'),
+                    'name'                 => $post['cc_owner'],
                     'number'            => str_replace(' ', '', $post['cc_number']),
                     'expiration_month'  => $post['cc_expire_date_month'],
                     'expiration_year'   => $post['cc_expire_date_year'],
@@ -99,14 +99,15 @@ class OmisePayController extends PaymentController
                     'ip'          => $_SERVER['REMOTE_ADDR'],
                     'customer'    => $customer->offsetGet('id'),
                     // 'card'        => $token_ref,
-                    'livemode'      => $livemode
+                    'livemode'      => $livemode,
+                    'return_uri'      => CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId))
                     )
                 );
                 if (!$response) {
                     throw new Exception(Labels::getLabel('MSG_EMPTY_GATEWAY_RESPONSE', $this->siteLangId));
                 }
                 if (strtolower($response->offsetGet('status'))!='successful' || strtolower($response->offsetGet('paid')) != true) {
-                    throw new Excetpion($response->offsetGet('failure_message'));
+                    throw new Exception($response->offsetGet('failure_message'));
                 }
                 $trans = OmiseTransaction::retrieve($response->offsetGet('transaction'));
                 $omise_fee = round($orderActualPaid*('.0365'), 0);
