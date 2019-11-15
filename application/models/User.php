@@ -874,7 +874,7 @@ class User extends MyAppModel
 
         /* user update user_is_supplier */
         $userObj = new User($user_id);
-        $userObj->activateSupplier(applicationConstants::ACTIVE, $status);
+        $userObj->activateSupplier($status);
 
         if (!$db->deleteRecords('tbl_user_supplier_request_values', array('smt' => 'sfreqvalue_request_id = ?', 'vals' => array($supplier_request_id)))) {
             $this->error = $db->getError();
@@ -1480,21 +1480,17 @@ class User extends MyAppModel
         return true;
     }
 
-    public function activateSupplier($v = 1, $activateAdveracc = 0)
+    public function activateSupplier($activateAdveracc = 0)
     {
-        if (!($this->mainTableRecordId > 0)) {
+        if ($this->mainTableRecordId < 1) {
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
             return false;
         }
-        $supplierArr = array(
-        static::DB_TBL_PREFIX. 'is_supplier' => $v
-        );
-        $arrToUpdate = $supplierArr;
-        if ($v==1 && $activateAdveracc ==1) {
-            $advertiserArr = array(static::DB_TBL_PREFIX. 'is_advertiser' => $v);
-            $arrToUpdate = array_merge($supplierArr, $advertiserArr);
+        
+        $arrToUpdate[static::DB_TBL_PREFIX. 'is_supplier'] = applicationConstants::ACTIVE;        
+        if ($activateAdveracc == 1) {
+            $arrToUpdate[static::DB_TBL_PREFIX. 'is_advertiser'] = applicationConstants::ACTIVE;            
         }
-
 
         $db = FatApp::getDb();
         if (! $db->updateFromArray(
