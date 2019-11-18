@@ -410,6 +410,9 @@ class SellerController extends SellerBaseController
 
         $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("op_id"=>$op_id,'seller_id'=>$userId));
 
+        $taxOptions = json_decode($orderDetail['op_product_tax_options'], true);
+        $orderDetail['taxOptions'] = $taxOptions;
+
         $data = array('op_id'=>$op_id , 'op_status_id' => $orderDetail['op_status_id']);
         $frm = $this->getOrderCommentsForm($orderDetail, $processingStatuses);
         $frm->fill($data);
@@ -428,7 +431,7 @@ class SellerController extends SellerBaseController
         if ($orderDetail['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
             $digitalDownloadLinks = Orders::getOrderProductDigitalDownloadLinks($op_id);
         }
-
+        
         $this->set('orderDetail', $orderDetail);
         $this->set('orderStatuses', $orderStatuses);
         $this->set('shippedBySeller', $shippedBySeller);

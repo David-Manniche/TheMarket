@@ -63,16 +63,21 @@ if (!$print) {
                                 if ('' != $orderDetail['pmethod_name'] && 'CashOnDelivery' == $orderDetail['pmethod_code']) {
                                     echo ' ('.$orderDetail['pmethod_name'].' )';
                                 } ?>
-                                <?php /*echo $orderStatuses[$orderDetail['op_status_id']];*/ ?></p>
+                                </p>
                                 <p><strong><?php echo Labels::getLabel('LBL_Cart_Total', $siteLangId);?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'CART_TOTAL'));?></p>
 
                                 <?php if ($shippedBySeller) {?>
                                 <p><strong><?php echo Labels::getLabel('LBL_Delivery', $siteLangId);?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'SHIPPING'));?></p>
                                 <?php }?>
 
-                                <?php if ($orderDetail['op_tax_collected_by_seller']) {?>
+                                <?php if ($orderDetail['op_tax_collected_by_seller']) { ?>
+                                <?php if (empty($orderDetail['taxOptions'])) { ?>
                                 <p><strong><?php echo Labels::getLabel('LBL_Tax', $siteLangId);?>:</strong> <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'TAX'));?></p>
-                                <?php }?>
+                                <?php } ?>
+                                <?php foreach ($orderDetail['taxOptions'] as $key => $val) { ?>
+                                    <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
+                                <?php } ?>
+                                <?php } ?>
                                 <?php /*
                         <p><strong><?php echo Labels::getLabel('LBL_Discount',$siteLangId);?>:</strong> <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail,'DISCOUNT'));?></p> */?>
                                 <?php $volumeDiscount = CommonHelper::orderProductAmount($orderDetail, 'VOLUME_DISCOUNT');

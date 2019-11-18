@@ -91,7 +91,9 @@ if (true == $primaryOrder) {
                                 <?php /*echo $orderStatuses[$childOrderDetail['op_status_id']];*/ ?></p>
                                 <p><strong><?php echo Labels::getLabel('LBL_Cart_Total', $siteLangId); ?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail, 'CART_TOTAL')); ?></p>
                                 <p><strong><?php echo Labels::getLabel('LBL_Delivery', $siteLangId); ?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail, 'SHIPPING')); ?></p>
+                                <?php if (empty($childOrderDetail['taxOptions'])) { ?>
                                 <p><strong><?php echo Labels::getLabel('LBL_Tax', $siteLangId); ?>:</strong> <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail, 'TAX')); ?></p>
+                                <?php } ?>
                                 <?php foreach ($childOrderDetail['taxOptions'] as $key => $val) { ?>
                                     <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
                                 <?php } ?>
