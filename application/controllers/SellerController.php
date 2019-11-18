@@ -3345,8 +3345,9 @@ class SellerController extends SellerBaseController
         $packagesArr = SellerPackages::getSellerVisiblePackages($this->siteLangId, $includeFreeSubscription);
 
         $currentActivePlanId = 0;
-        $currentActivePlanId = OrderSubscription::getUserCurrentActivePlanDetails($this->siteLangId, UserAuthentication::getLoggedUserId(), array(OrderSubscription::DB_TBL_PREFIX.'plan_id'));
-
+        $currentPlanData = OrderSubscription::getUserCurrentActivePlanDetails($this->siteLangId, UserAuthentication::getLoggedUserId(), array(OrderSubscription::DB_TBL_PREFIX.'plan_id'));
+        $currentActivePlanId  = $currentPlanData[OrderSubscription::DB_TBL_PREFIX.'plan_id'];
+        
         foreach ($packagesArr as $key => $package) {
             $packagesArr[$key]['plans'] =  SellerPackagePlans::getSellerVisiblePackagePlans($package[SellerPackages::DB_TBL_PREFIX.'id']);
             $packagesArr[$key]['cheapPlan'] = SellerPackagePlans::getCheapestPlanByPackageId($package[SellerPackages::DB_TBL_PREFIX.'id']);

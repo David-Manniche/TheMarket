@@ -2062,7 +2062,8 @@ class EmailHandler extends FatModel
         $userInfo = $userObj->getUserInfo(array('user_name','credential_email'));
 
 
-        $spackage_name =  OrderSubscription:: getUserCurrentActivePlanDetails($langId, $user_id, array('ossubs_subscription_name'));
+        $currentPlanData =  OrderSubscription:: getUserCurrentActivePlanDetails($langId, $user_id, array('ossubs_subscription_name'));
+        $spackage_name = $currentPlanData['ossubs_subscription_name'];
         $vars = array(
         '{user_full_name}' => $userInfo['user_name'],
         '{spackage_name}'=>$spackage_name

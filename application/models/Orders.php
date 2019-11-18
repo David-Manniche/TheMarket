@@ -1110,7 +1110,8 @@ class Orders extends MyAppModel
         $db = FatApp::getDb();
         $emailNotificationObj = new EmailHandler();
 
-        $currentActiveSubscrId = OrderSubscription:: getUserCurrentActivePlanDetails($langId, $childOrderInfo['order_user_id'], array(OrderSubscription::DB_TBL_PREFIX.'id' ));
+        $currentPlanData = OrderSubscription:: getUserCurrentActivePlanDetails($langId, $childOrderInfo['order_user_id'], array(OrderSubscription::DB_TBL_PREFIX.'id' ));
+        $currentActiveSubscrId = $currentPlanData[OrderSubscription::DB_TBL_PREFIX.'id'];
         if ($currentActiveSubscrId) {
             $this->cancelCurrentActivePlan($orderId, $currentActiveSubscrId, $childOrderInfo['order_user_id'], $notify);
         }

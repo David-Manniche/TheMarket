@@ -793,7 +793,8 @@ trait CustomProducts
         $subscription = false;
         $allowed_images =-1;
         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0)) {
-            $allowed_images = OrderSubscription::getUserCurrentActivePlanDetails($this->siteLangId, $sellerId, array('ossubs_images_allowed'));
+            $currentPlanData = OrderSubscription::getUserCurrentActivePlanDetails($this->siteLangId, $sellerId, array('ossubs_images_allowed'));
+            $allowed_images = $currentPlanData['ossubs_images_allowed'];
             $subscription = true;
         }
 
