@@ -22,6 +22,25 @@ class OmisePayController extends PaymentController
         }
     }
 
+    private function getPaymentForm($orderId)
+    {
+        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm','action' => CommonHelper::generateUrl('OmisePay', 'send', array($orderId)), 'class' => "form form--normal"));
+        $frm->addRequiredField(Labels::getLabel('LBL_ENTER_CREDIT_CARD_NUMBER', $this->siteLangId), 'cc_number');
+        $frm->addRequiredField(Labels::getLabel('LBL_CARD_HOLDER_NAME', $this->siteLangId), 'cc_owner');
+        $data['months'] = applicationConstants::getMonthsArr($this->siteLangId);
+        $today = getdate();
+        $data['year_expire'] = array();
+        for ($i = $today['year']; $i < $today['year'] + 11; $i++) {
+            $data['year_expire'][strftime('%Y', mktime(0, 0, 0, 1, 1, $i))] = strftime('%Y', mktime(0, 0, 0, 1, 1, $i));
+        }
+        $frm->addSelectBox(Labels::getLabel('LBL_EXPIRY_MONTH', $this->siteLangId), 'cc_expire_date_month', $data['months'], '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_EXPIRY_YEAR', $this->siteLangId), 'cc_expire_date_year', $data['year_expire'], '', array(), '');
+        $frm->addPasswordField(Labels::getLabel('LBL_CVV_SECURITY_CODE', $this->siteLangId), 'cc_cvv')->requirements()->setRequired(true);
+        /* $frm->addCheckBox(Labels::getLabel('LBL_SAVE_THIS_CARD_FOR_FASTER_CHECKOUT',$this->siteLangId), 'cc_save_card','1'); */
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Pay_Now', $this->siteLangId), array('id' => 'button-confirm'));
+        return $frm;
+    }
+
     public function charge($orderId = '')
     {
         if (empty(trim($orderId))) {
@@ -53,6 +72,7 @@ class OmisePayController extends PaymentController
         $this->_template->addCss('css/payment.css');
         $this->_template->render(true, false);
     }
+
     public function send($orderId)
     {
         $post = FatApp::getPostedData();
@@ -60,14 +80,15 @@ class OmisePayController extends PaymentController
         $orderPaymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
 
         if ($orderPaymentAmount > 0) {
-            $orderInfo=$orderPaymentObj->getOrderPrimaryinfo();
-            $orderActualPaid = ceil($orderPaymentAmount)*100; /* payment accepted in satang. i.e. to charge ฿20.00, you should set amount=2000 (฿20.00). */
+            $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
+            $orderActualPaid = ceil($orderPaymentAmount) * 100; /* payment accepted in satang. i.e. to charge ฿20.00, you should set amount=2000 (฿20.00). */
             $livemode = true;
             if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == false) {
                 $livemode = false;
             }
             $json = array();
             try {
+                unset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['omiseChargeId']);
                 $token = OmiseToken::create(
                     array(
                     'card' => array(
@@ -86,7 +107,7 @@ class OmisePayController extends PaymentController
                 $customer = OmiseCustomer::create(
                     array(
                     'email'         => $orderInfo['customer_email'],
-                    'description' => $orderInfo['customer_name']. ' (id: '.$orderInfo['customer_id'].')',
+                    'description' => $orderInfo['customer_name'] . ' (id: ' . $orderInfo['customer_id'] . ')',
                     'card'         => $token_ref,
                     'livemode'    => $livemode
                     )
@@ -95,30 +116,41 @@ class OmisePayController extends PaymentController
                     array(
                     'amount'      => $orderActualPaid,
                     'currency'    => 'thb', /* $orderInfo["order_currency_code"], */
-                    'description' => 'Order-'.$orderId,
+                    'description' => 'Order-' . $orderId,
                     'ip'          => $_SERVER['REMOTE_ADDR'],
                     'customer'    => $customer->offsetGet('id'),
                     // 'card'        => $token_ref,
                     'livemode'      => $livemode,
-                    'return_uri'      => CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId))
+                    'return_uri'      => CommonHelper::generateFullUrl('OmisePay', 'success', array($orderId))
                     )
                 );
                 if (!$response) {
                     throw new Exception(Labels::getLabel('MSG_EMPTY_GATEWAY_RESPONSE', $this->siteLangId));
                 }
-                if (strtolower($response->offsetGet('status'))!='successful' || strtolower($response->offsetGet('paid')) != true) {
+
+                /*--IN CASE OF 3D SECURE ENABLED IN MERCHANT ACCOUNT--*/
+                if (strtolower($response->offsetGet('status')) == 'pending') {
+                    $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['omiseChargeId'][$orderId] = $response->offsetGet('id');
+                    $json['redirect'] = $response->offsetGet('authorize_uri');
+                    echo json_encode($json);
+                    die;
+                }
+                /* ^^^^^^^^^^ */
+
+                if (strtolower($response->offsetGet('status')) != 'successful' || strtolower($response->offsetGet('paid')) != true) {
                     throw new Exception($response->offsetGet('failure_message'));
                 }
+
                 $trans = OmiseTransaction::retrieve($response->offsetGet('transaction'));
-                $omise_fee = round($orderActualPaid*('.0365'), 0);
-                $vat = round($omise_fee*('.07'), 0);
+                $omise_fee = round($orderActualPaid * ('.0365'), 0);
+                $vat = round($omise_fee * ('.07'), 0);
                 $trans_fee = intval($omise_fee + $vat);
-                if ($trans->offsetGet('amount') != $orderActualPaid-$trans_fee) {
+                if ($trans->offsetGet('amount') != $orderActualPaid - $trans_fee) {
                     throw new Exception(Labels::getLabel('MSG_INVALID_TRANSACTION_AMOUNT', $this->siteLangId));
                 }
                 /* Recording Payment in DB */
                 if (!$orderPaymentObj->addOrderPayment($this->paymentSettings["pmethod_name"], $response->offsetGet('transaction'), $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), json_encode((array)$response))) {
-                    $json['error'] = "Invalid Action";
+                    $error = Labels::getLabel('LBL_INVALID_ACTION', $this->siteLangId);
                 } else {
                     $json['redirect'] = CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
                 }
@@ -134,22 +166,42 @@ class OmisePayController extends PaymentController
         echo json_encode($json);
     }
 
-    private function getPaymentForm($orderId)
+    /*--IN CASE OF 3D SECURE ENABLED IN MERCHANT ACCOUNT--*/
+    public function success($orderId)
     {
-        $frm = new Form('frmPaymentForm', array('id'=>'frmPaymentForm','action'=>CommonHelper::generateUrl('OmisePay', 'send', array($orderId)), 'class' =>"form form--normal"));
-        $frm->addRequiredField(Labels::getLabel('LBL_ENTER_CREDIT_CARD_NUMBER', $this->siteLangId), 'cc_number');
-        $frm->addRequiredField(Labels::getLabel('LBL_CARD_HOLDER_NAME', $this->siteLangId), 'cc_owner');
-        $data['months'] = applicationConstants::getMonthsArr($this->siteLangId);
-        $today = getdate();
-        $data['year_expire'] = array();
-        for ($i = $today['year']; $i < $today['year'] + 11; $i++) {
-            $data['year_expire'][strftime('%Y', mktime(0, 0, 0, 1, 1, $i))] = strftime('%Y', mktime(0, 0, 0, 1, 1, $i));
+        $error = Labels::getLabel('LBL_PAYMENT_FAILED', $this->siteLangId);
+        try {
+            $charge = OmiseCharge::retrieve($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['omiseChargeId'][$orderId]);
+            if (strtolower($charge->offsetGet('status')) != 'successful' || strtolower($charge->offsetGet('paid')) != true) {
+                throw new Exception($charge->offsetGet('failure_message'));
+            }
+
+            $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
+            $orderPaymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
+
+            $orderActualPaid = ceil($orderPaymentAmount) * 100; /* payment accepted in satang. i.e. to charge ฿20.00, you should set amount=2000 (฿20.00). */
+
+            $omise_fee = round($orderActualPaid * ('.0365'), 0);
+            $vat = round($omise_fee * ('.07'), 0);
+            $trans_fee = intval($omise_fee + $vat);
+            if ($charge->offsetGet('net') != ($orderActualPaid - $trans_fee)) {
+                throw new Exception(Labels::getLabel('MSG_INVALID_TRANSACTION_AMOUNT', $this->siteLangId));
+            }
+
+            /* Recording Payment in DB */
+            if (!$orderPaymentObj->addOrderPayment($this->paymentSettings["pmethod_name"], $charge->offsetGet('transaction'), $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), json_encode((array)$charge))) {
+                $error = Labels::getLabel('LBL_INVALID_ACTION', $this->siteLangId);
+            } else {
+                FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
+            }
+            /* End Recording Payment in DB */
+        } catch (OmiseNotFoundException $e) {
+            $error = 'ERROR: ' . $e->getMessage();
+        } catch (exception $e) {
+            $error = 'ERROR: ' . $e->getMessage();
         }
-        $frm->addSelectBox(Labels::getLabel('LBL_EXPIRY_MONTH', $this->siteLangId), 'cc_expire_date_month', $data['months'], '', array(), '');
-        $frm->addSelectBox(Labels::getLabel('LBL_EXPIRY_YEAR', $this->siteLangId), 'cc_expire_date_year', $data['year_expire'], '', array(), '');
-        $frm->addPasswordField(Labels::getLabel('LBL_CVV_SECURITY_CODE', $this->siteLangId), 'cc_cvv')->requirements()->setRequired(true);
-        /* $frm->addCheckBox(Labels::getLabel('LBL_SAVE_THIS_CARD_FOR_FASTER_CHECKOUT',$this->siteLangId), 'cc_save_card','1'); */
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Pay_Now', $this->siteLangId), array('id'=> 'button-confirm'));
-        return $frm;
+
+        Message::addErrorMessage($error);
+        FatApp::redirectUser(CommonHelper::getPaymentFailurePageUrl());
     }
 }
