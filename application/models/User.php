@@ -1083,7 +1083,7 @@ class User extends MyAppModel
 
 
     /* this function is called for newly signup/registered user, will manage the crediting of referral reward points if any upon new sign up and handle the affilaite user rewarding.*/
-    public function setUpRewardEntry($referredUserId, $langId)
+    public function setUpRewardEntry($referredUserId, $langId, $referrerCodeSignup = '', $affiliateReferrerCodeSignup = '')
     {
         $referredUserId = FatUtility::int($referredUserId);
         $langId = FatUtility::int($langId);
@@ -1095,18 +1095,18 @@ class User extends MyAppModel
         $isAffiliateCookieSet = false;
         $isReferrerCookieSet = false;
 
-        if (isset($_COOKIE['affiliate_referrer_code_signup']) && $_COOKIE['affiliate_referrer_code_signup'] != '') {
+        if (!empty($affiliateReferrerCodeSignup)) {
             $isAffiliateCookieSet = true;
         }
 
-        if (isset($_COOKIE['referrer_code_signup']) && $_COOKIE['referrer_code_signup'] != '') {
+        if (!empty($referrerCodeSignup)) {
             $isReferrerCookieSet = true;
         }
 
         /* prioritize only when, both cookies are set, then credit on the basis of latest cookie set. [ */
         if ($isAffiliateCookieSet && $isReferrerCookieSet) {
-            $affiliateReferrerCookieArr = unserialize($_COOKIE['affiliate_referrer_code_signup']);
-            $referrerCookieArr = unserialize($_COOKIE['referrer_code_signup']);
+            $affiliateReferrerCookieArr = unserialize($affiliateReferrerCodeSignup);
+            $referrerCookieArr = unserialize($referrerCodeSignup);
             if ($affiliateReferrerCookieArr['creation_time'] > $referrerCookieArr['creation_time']) {
                 $isReferrerCookieSet = false;
             } else {
