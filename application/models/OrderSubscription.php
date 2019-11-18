@@ -34,6 +34,11 @@ class OrderSubscription extends MyAppModel
 
     public static function canUserBuyFreeSubscription($langId = 0, $userId = 0)
     {
+        $userId = FatUtility::int($userId);
+        if($userId < 1){
+            trigger_error(Labels::getLabel('MSG_Invalid_request', $this->commonLangId), E_USER_ERROR);
+        }
+         
         $srch = new  OrderSearch($langId);
         $srch->joinTableOrderSellerSubscription();
         $srch ->addCondition(Orders::DB_TBL_PREFIX.'type', '=', Orders::ORDER_SUBSCRIPTION);
