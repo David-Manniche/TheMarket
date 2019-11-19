@@ -1,15 +1,15 @@
 <?php
 class OrderCancelRequest extends MyAppModel
 {
-    const DB_TBL = 'tbl_order_cancel_requests';
-    const DB_TBL_PREFIX = 'ocrequest_';
+    public const DB_TBL = 'tbl_order_cancel_requests';
+    public const DB_TBL_PREFIX = 'ocrequest_';
 
-    const CANCELLATION_REQUEST_STATUS_PENDING = 0;
-    const CANCELLATION_REQUEST_STATUS_APPROVED = 1;
-    const CANCELLATION_REQUEST_STATUS_DECLINED = 2;
-    const CLASS_PENDING = 'warning';
-    const CLASS_COMPLETED = 'success';
-    const CLASS_CANCELLED = 'danger';
+    public const CANCELLATION_REQUEST_STATUS_PENDING = 0;
+    public const CANCELLATION_REQUEST_STATUS_APPROVED = 1;
+    public const CANCELLATION_REQUEST_STATUS_DECLINED = 2;
+    public const CLASS_PENDING = 'warning';
+    public const CLASS_COMPLETED = 'success';
+    public const CLASS_CANCELLED = 'danger';
 
 
     public function __construct($id = 0)

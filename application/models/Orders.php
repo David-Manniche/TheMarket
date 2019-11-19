@@ -1,56 +1,56 @@
 <?php
 class Orders extends MyAppModel
 {
-    const DB_TBL = 'tbl_orders';
-    const DB_TBL_LANG ='tbl_orders_lang';
-    const DB_TBL_PREFIX = 'order_';
+    public const DB_TBL = 'tbl_orders';
+    public const DB_TBL_LANG = 'tbl_orders_lang';
+    public const DB_TBL_PREFIX = 'order_';
 
-    const DB_TBL_ORDER_PRODUCTS = 'tbl_order_products';
-    const DB_TBL_ORDER_PRODUCTS_LANG = 'tbl_order_products_lang';
+    public const DB_TBL_ORDER_PRODUCTS = 'tbl_order_products';
+    public const DB_TBL_ORDER_PRODUCTS_LANG = 'tbl_order_products_lang';
 
-    const DB_TBL_ORDER_SELLER_SUBSCRIPTIONS = 'tbl_order_seller_subscriptions';
-    const DB_TBL_ORDER_SELLER_SUBSCRIPTIONS_LANG = 'tbl_order_seller_subscriptions_lang';
-    const DB_TBL_ORDER_SELLER_SUBSCRIPTIONS_PREFIX = 'ossubs_';
-    const DB_TBL_ORDER_SELLER_SUBSCRIPTIONS_LANG_PREFIX = 'ossubslang_';
+    public const DB_TBL_ORDER_SELLER_SUBSCRIPTIONS = 'tbl_order_seller_subscriptions';
+    public const DB_TBL_ORDER_SELLER_SUBSCRIPTIONS_LANG = 'tbl_order_seller_subscriptions_lang';
+    public const DB_TBL_ORDER_SELLER_SUBSCRIPTIONS_PREFIX = 'ossubs_';
+    public const DB_TBL_ORDER_SELLER_SUBSCRIPTIONS_LANG_PREFIX = 'ossubslang_';
 
-    const DB_TBL_ORDERS_STATUS = 'tbl_orders_status';
-    const DB_TBL_ORDERS_STATUS_LANG = 'tbl_orders_status_lang';
-    const DB_TBL_ORDER_STATUS_HISTORY = 'tbl_orders_status_history';
+    public const DB_TBL_ORDERS_STATUS = 'tbl_orders_status';
+    public const DB_TBL_ORDERS_STATUS_LANG = 'tbl_orders_status_lang';
+    public const DB_TBL_ORDER_STATUS_HISTORY = 'tbl_orders_status_history';
 
-    const DB_TBL_ORDER_USER_ADDRESS = 'tbl_order_user_address';
-    const DB_TBL_ORDER_EXTRAS = 'tbl_order_extras';
-    const DB_TBL_ORDER_PAYMENTS = 'tbl_order_payments';
+    public const DB_TBL_ORDER_USER_ADDRESS = 'tbl_order_user_address';
+    public const DB_TBL_ORDER_EXTRAS = 'tbl_order_extras';
+    public const DB_TBL_ORDER_PAYMENTS = 'tbl_order_payments';
 
 
-    const DB_TBL_ORDER_PRODUCTS_SHIPPING = 'tbl_order_product_shipping';
-    const DB_TBL_ORDER_PRODUCTS_SHIPPING_LANG = 'tbl_order_product_shipping_lang';
+    public const DB_TBL_ORDER_PRODUCTS_SHIPPING = 'tbl_order_product_shipping';
+    public const DB_TBL_ORDER_PRODUCTS_SHIPPING_LANG = 'tbl_order_product_shipping_lang';
 
-    const DB_TBL_CHARGES = 'tbl_order_product_charges';
-    const DB_TBL_CHARGES_PREFIX=     'opcharge_';
+    public const DB_TBL_CHARGES = 'tbl_order_product_charges';
+    public const DB_TBL_CHARGES_PREFIX = 'opcharge_';
 
-    const BILLING_ADDRESS_TYPE = 1;
-    const SHIPPING_ADDRESS_TYPE = 2;
+    public const BILLING_ADDRESS_TYPE = 1;
+    public const SHIPPING_ADDRESS_TYPE = 2;
 
-    const ORDER_IS_CANCELLED = -1;
-    const ORDER_IS_PENDING = 0;
-    const ORDER_IS_PAID = 1;
+    public const ORDER_IS_CANCELLED = -1;
+    public const ORDER_IS_PENDING = 0;
+    public const ORDER_IS_PAID = 1;
 
-    const PAYMENT_GATEWAY_STATUS_PENDING = 0;
-    const PAYMENT_GATEWAY_STATUS_PAID = 1;
-    const PAYMENT_GATEWAY_STATUS_CANCELLED = 2;
+    public const PAYMENT_GATEWAY_STATUS_PENDING = 0;
+    public const PAYMENT_GATEWAY_STATUS_PAID = 1;
+    public const PAYMENT_GATEWAY_STATUS_CANCELLED = 2;
 
-    const ORDER_PRODUCT = 1;
-    const ORDER_SUBSCRIPTION = 2;
-    const ORDER_WALLET_RECHARGE = 3;
+    public const ORDER_PRODUCT = 1;
+    public const ORDER_SUBSCRIPTION = 2;
+    public const ORDER_WALLET_RECHARGE = 3;
 
-    const REPLACE_ORDER_USER_ADDRESS ='XXX';
+    public const REPLACE_ORDER_USER_ADDRESS ='XXX';
 
-    //const DEFAULT_CHILD_ORDER_STATUS_ID = 1;
+    //public const DEFAULT_CHILD_ORDER_STATUS_ID = 1;
 
-    /* const DB_TBL_ORDER_CANCEL_REQUEST = 'tbl_order_cancel_requests';
-    const CANCELLATION_REQUEST_STATUS_PENDING = 0;
-    const CANCELLATION_REQUEST_STATUS_APPROVED = 1;
-    const CANCELLATION_REQUEST_STATUS_DECLINED = 2; */
+    /* public const DB_TBL_ORDER_CANCEL_REQUEST = 'tbl_order_cancel_requests';
+    public const CANCELLATION_REQUEST_STATUS_PENDING = 0;
+    public const CANCELLATION_REQUEST_STATUS_APPROVED = 1;
+    public const CANCELLATION_REQUEST_STATUS_DECLINED = 2; */
 
 
     private $order_id;
@@ -2291,5 +2291,56 @@ class Orders extends MyAppModel
             return false;
         }
         return true;
+    }
+
+    
+
+    // Used For CRON to update order status
+    public function changeOrderStatus()
+    {
+        $completedOrderStatus = FatApp::getConfig("CONF_DEFAULT_COMPLETED_ORDER_STATUS");
+        if (empty($completedOrderStatus)) {
+            return;
+        }
+        $siteDefaultLangId = FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1);
+
+        $orderRetReqObj = OrderReturnRequest::getSearchObject();
+        $orderRetReqObj->addMultipleFields(['orr.orrequest_id', 'orr.orrequest_op_id']);
+        $orderRetReqObj->doNotCalculateRecords();
+        $orderRetReqObj->doNotLimitRecords();
+        $orderRetReqRs = $orderRetReqObj->getResultSet();
+        $retReqsArr = FatApp::getDb()->fetchAllAssoc($orderRetReqRs);
+
+        $oCancelReqObj = new OrderCancelRequestSearch();
+        $oCancelReqObj->addMultipleFields(['ocrequest_id', 'ocrequest_op_id']);
+        $oCancelReqObj->doNotCalculateRecords();
+        $oCancelReqObj->doNotLimitRecords();
+        $oCancelReqRs = $oCancelReqObj->getResultSet();
+        $cancelReqArr = FatApp::getDb()->fetchAllAssoc($oCancelReqRs);
+
+        $srch = new OrderProductSearch($siteDefaultLangId, true);
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->addMultipleFields(['op.op_id', 'sp.selprod_id','op.op_order_id', 'op.op_status_id', 'o.order_date_added', 'o.order_language_id']);
+        $srch->joinSellerProducts();
+        $srch->addCondition('op.op_status_id', '=', FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
+
+        $srch->addCondition('op.op_id', 'NOT IN', $retReqsArr);
+        $srch->addCondition('op.op_id', 'NOT IN', $cancelReqArr);
+        
+        $rs = $srch->getResultSet();
+        $ordersDetail = FatApp::getDb()->fetchAll($rs, 'op_id');
+
+        $comments = Labels::getLabel("MSG_MARKED_AS_COMPLETED_THROUGH_CRON.", $siteDefaultLangId);
+
+        foreach ($ordersDetail as $data) {
+            $returnAge = strtotime("+7 day", strtotime($data['order_date_added']));
+            $cancelAge = strtotime("+7 day", strtotime($data['order_date_added']));
+            $today = time();
+            $op_id = $data['op_id'];
+            if ($returnAge < $today && $cancelAge < $today) {
+                $this->addChildProductOrderHistory($op_id, $data["order_language_id"], $completedOrderStatus, $comments, 1);
+            }
+        }
     }
 }

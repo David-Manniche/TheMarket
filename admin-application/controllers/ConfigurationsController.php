@@ -874,7 +874,17 @@ class ConfigurationsController extends AdminBaseController
 
                 $fld = $frm->addSelectBox(Labels::getLabel("LBL_Cash_on_Delivery_Order_Status", $this->adminLangId), 'CONF_COD_ORDER_STATUS', $orderStatusArr, false, array(), '');
                 $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_Set_the_Cash_on_delivery_order_status.", $this->adminLangId)."</small>";
-
+	
+				$fld =$frm->addSelectBox(
+                    Labels::getLabel("LBL_DEFAULT_COMPLETED_ORDER_STATUS", $this->adminLangId),
+                    'CONF_DEFAULT_COMPLETED_ORDER_STATUS',
+                    $orderStatusArr,
+                    false,
+                    array(),
+                    ''
+                );
+                $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_SET_THE_DEFAULT_CHILD_ORDER_STATUS_WHEN_AN_ORDER_IS_MARKED_COMPLETED.", $this->adminLangId)."</small>";
+				
                 $vendorOrderSelected = (!empty($arrValues['CONF_VENDOR_ORDER_STATUS']))?$arrValues['CONF_VENDOR_ORDER_STATUS']:0;
 
                 $fld = $frm->addCheckBoxes(Labels::getLabel("LBL_Seller_Order_Statuses", $this->adminLangId), 'CONF_VENDOR_ORDER_STATUS', $orderStatusArr, $vendorOrderSelected, array('class'=>'list-inline'));
