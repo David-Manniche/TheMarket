@@ -1290,10 +1290,25 @@ class ProductsController extends AdminBaseController
         $this->objPrivilege->canEditProducts();
         $frm = new Form('frmProductSpec');
         $languages = Language::getAllNames();
-
+        $defaultLang = true;
         foreach ($languages as $langId => $langName) {
-            $frm->addRequiredField(Labels::getLabel('LBL_Specification_Name', $this->adminLangId), 'prod_spec_name['.$langId.']');
-            $frm->addRequiredField(Labels::getLabel('LBL_Specification_Value', $this->adminLangId), 'prod_spec_value['.$langId.']');
+            $attr['class'] = 'langField_' . $langId;
+            if (true === $defaultLang) {
+                $attr['class'] .= ' defaultLang';
+                $defaultLang = false;
+            }
+            $frm->addRequiredField(
+                Labels::getLabel('LBL_Specification_Name', $this->adminLangId),
+                'prod_spec_name[' . $langId . ']',
+                '',
+                $attr
+            );
+            $frm->addRequiredField(
+                Labels::getLabel('LBL_Specification_Value', $this->adminLangId),
+                'prod_spec_value[' . $langId . ']',
+                '',
+                $attr
+            );
         }
         $frm->addHiddenField('', 'product_id');
         $frm->addHiddenField('', 'prodspec_id');
@@ -1649,5 +1664,24 @@ class ProductsController extends AdminBaseController
         $sellers = FatApp::getDb()->fetchAll($rs, 'credential_user_id');
 
         die(json_encode($sellers));
+    }
+
+    public function getTranslatedSpecData()
+    {
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $prodSpecName = FatApp::getPostedData('prod_spec_name');
+        $prodSpecValue = FatApp::getPostedData('prod_spec_value');
+        
+        if (empty($prodSpecName) || empty($prodSpecValue)) {
+            FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
+        }
+
+        $translatedText = $this->translateLangFields(ProdSpecification::DB_TBL_LANG, ['prod_spec_name' => $prodSpecName[$siteDefaultLangId], 'prod_spec_value' => $prodSpecValue[$siteDefaultLangId]]);
+        $data = [];
+        foreach ($translatedText as $langId => $value) {
+            $data[$langId]['prod_spec_name[' . $langId . ']'] = $value['prod_spec_name'];
+            $data[$langId]['prod_spec_value[' . $langId . ']'] = $value['prod_spec_value'];
+        }
+        CommonHelper::jsonEncodeUnicode($data, true);
     }
 }

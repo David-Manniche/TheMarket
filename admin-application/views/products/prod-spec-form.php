@@ -4,10 +4,22 @@
     $prodSpecFrm->setFormTagAttribute('onsubmit', 'return submitSpecificationForm(this); return(false);');
     $prodSpecFrm->developerTags['fld_default_col'] = 12;
 
-?>
-<?php echo $prodSpecFrm->getFormTag();?>
+    $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
-<?php 
+if (!empty($translatorSubscriptionKey)) { ?> 
+    <div class="row justify-content-end"> 
+        <div class="col-auto mb-4">
+            <input class="btn btn-primary" 
+                type="button" 
+                value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>" 
+                onClick="autofillLangData($(this), $('form#frm_fat_id_frmProductSpec'))"
+                data-action="<?php echo CommonHelper::generateUrl('Products', 'getTranslatedSpecData'); ?>">
+        </div>
+    </div>
+<?php }
+
+echo $prodSpecFrm->getFormTag();
+
 foreach ($languages as $langId => $langName) { ?>
     <div class="row align-items-center mb-4">
         <div class="col-md-2">

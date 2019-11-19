@@ -9,7 +9,8 @@ $frm->developerTags['fld_default_col'] = 6;
     </div>
     <div class="sectionbody space">
         <div class="border-box border-box--space">
-            <div id="loadForm"><?php echo Labels::getLabel('LBL_LOADING', $langId);?>
+            <div id="loadForm">
+                <?php echo Labels::getLabel('LBL_LOADING', $langId);?>
             </div>
         </div>
         <span class="-gap"></span><span class="-gap"></span>
@@ -19,8 +20,11 @@ $frm->developerTags['fld_default_col'] = 6;
                 <div class="sectionhead" style=" padding-bottom:20px">
                     <h4><?php echo Labels::getLabel('LBL_OPTION_VALUE_LISTING', $langId); ?>
                     </h4>
-                    <!--<a href="javascript:void(0)" class="link--underlined -float-right" 
-                    onClick="optionValueForm(<?php echo $option_id; ?>,0)";><?php echo Labels::getLabel('LBL_ADD_NEW', $langId); ?></a>-->
+                    <?php 
+                    /* <a href="javascript:void(0)" class="link--underlined -float-right" onClick="optionValueForm(<?php echo $option_id; ?>,0)";>
+                    <?php echo Labels::getLabel('LBL_ADD_NEW', $langId); ?>
+                    </a>  */
+                    ?>
                     <?php
                     $ul = new HtmlElement("ul", array("class" => "actions actions--centered"));
                     $li = $ul->appendElement("li", array('class' =>'droplink'));

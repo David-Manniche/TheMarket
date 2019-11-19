@@ -973,7 +973,7 @@ trait CustomProducts
         $prodSpecId = FatUtility :: int($post['prodSpecId']);
         $data  = array();
         $languages = Language::getAllNames();
-        if ($prodSpecId>0) {
+        if ($prodSpecId > 0) {
             if (!UserPrivilege::canEditSellerProductSpecification($post['prodSpecId'], $productId)) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
                 FatUtility::dieWithError(Message::getHtml());
@@ -981,13 +981,13 @@ trait CustomProducts
             $prodSpecObj = new ProdSpecification();
             $specResult = $prodSpecObj->getProdSpecification($prodSpecId, $productId);
 
-            foreach ($specResult as $key=>$value) {
-                foreach ($languages as $langId=>$langName) {
-                    if ($value['prodspeclang_lang_id']!=$langId) {
+            foreach ($specResult as $key => $value) {
+                foreach ($languages as $langId => $langName) {
+                    if ($value['prodspeclang_lang_id'] != $langId) {
                         continue;
                     }
-                    $data['prod_spec_name['.$langId.']'] = $value['prodspec_name'];
-                    $data['prod_spec_value['.$langId.']'] = $value['prodspec_value'];
+                    $data['prod_spec_name[' . $langId . ']'] = $value['prodspec_name'];
+                    $data['prod_spec_value[' . $langId . ']'] = $value['prodspec_value'];
                 }
             }
         }
@@ -2006,9 +2006,25 @@ trait CustomProducts
     {
         $frm = new Form('frmProductSpec');
         $languages = Language::getAllNames();
-        foreach ($languages as $langId=>$langName) {
-            $frm->addRequiredField(Labels::getLabel('LBL_Specification_Name', $this->siteLangId), 'prod_spec_name['.$langId.']');
-            $frm->addRequiredField(Labels::getLabel('LBL_Specification_Value', $this->siteLangId), 'prod_spec_value['.$langId.']');
+        $defaultLang = true;
+        foreach ($languages as $langId => $langName) {
+            $attr['class'] = 'langField_' . $langId;
+            if (true === $defaultLang) {
+                $attr['class'] .= ' defaultLang';
+                $defaultLang = false;
+            }
+            $frm->addRequiredField(
+                Labels::getLabel('LBL_Specification_Name', $this->siteLangId),
+                'prod_spec_name[' . $langId . ']',
+                '',
+                $attr
+            );
+            $frm->addRequiredField(
+                Labels::getLabel('LBL_Specification_Value', $this->siteLangId),
+                'prod_spec_value[' . $langId . ']',
+                '',
+                $attr
+            );
         }
         $frm->addHiddenField('', 'product_id');
         $frm->addHiddenField('', 'prodspec_id');
@@ -2097,5 +2113,24 @@ trait CustomProducts
             $this->set('alertToShow', $alertToShow);
         }
         return $alertToShow;
+    }
+
+    public function getTranslatedSpecData()
+    {
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $prodSpecName = FatApp::getPostedData('prod_spec_name');
+        $prodSpecValue = FatApp::getPostedData('prod_spec_value');
+        
+        if (empty($prodSpecName) || empty($prodSpecValue)) {
+            FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+        }
+
+        $translatedText = $this->translateLangFields(ProdSpecification::DB_TBL_LANG, ['prod_spec_name' => $prodSpecName[$siteDefaultLangId], 'prod_spec_value' => $prodSpecValue[$siteDefaultLangId]]);
+        $data = [];
+        foreach ($translatedText as $langId => $value) {
+            $data[$langId]['prod_spec_name[' . $langId . ']'] = $value['prod_spec_name'];
+            $data[$langId]['prod_spec_value[' . $langId . ']'] = $value['prod_spec_value'];
+        }
+        CommonHelper::jsonEncodeUnicode($data, true);
     }
 }

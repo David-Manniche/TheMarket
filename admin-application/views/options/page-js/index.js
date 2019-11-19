@@ -177,5 +177,4 @@ $(document).ready(function() {
         document.frmOptionSearch.reset();
         searchOptions(document.frmOptionSearch);
     };
-
 })();

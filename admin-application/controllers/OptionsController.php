@@ -172,7 +172,6 @@ class OptionsController extends AdminBaseController
         $option_id = FatUtility::int($option_id);
         $frmOptions = $this->getForm($option_id);
 
-
         if (0 < $option_id) {
             $optionObj = new Option();
             $data = $optionObj->getOption($option_id);
@@ -181,7 +180,6 @@ class OptionsController extends AdminBaseController
                     Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId)
                 );
             }
-
             $frmOptions->fill($data);
         }
 
@@ -214,10 +212,18 @@ class OptionsController extends AdminBaseController
 
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
         $languages = Language::getAllNames();
+        $defaultLang = true;
         foreach ($languages as $langId => $langName) {
+            $attr['class'] = 'langField_' . $langId;
+            if (true === $defaultLang) {
+                $attr['class'] .= ' defaultLang';
+                $defaultLang = false;
+            }
             $fld = $frm->addRequiredField(
                 Labels::getLabel('LBL_OPTION_NAME', $adminLangId) . ' ' . $langName,
-                'option_name' . $langId
+                'option_name' . $langId,
+                '',
+                $attr
             );
             $fld->setWrapperAttribute('class', 'layout--' . Language::getLayoutDirection($langId));
         }
@@ -352,5 +358,19 @@ class OptionsController extends AdminBaseController
             );
         }
         die(json_encode($json));
+    }
+
+    public function getTranslatedData()
+    {
+        $dataToTranslate = FatApp::getPostedData('option_name1', FatUtility::VAR_STRING, '');
+        if (!empty($dataToTranslate)) {
+            $translatedText = $this->translateLangFields(Option::DB_TBL_LANG, ['option_name' => $dataToTranslate]);
+            $data = [];
+            foreach ($translatedText as $langId => $value) {
+                $data[$langId]['option_name' . $langId] = $value['option_name'];
+            }
+            CommonHelper::jsonEncodeUnicode($data, true);
+        }
+        FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
     }
 }
