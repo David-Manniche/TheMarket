@@ -1120,7 +1120,7 @@ class User extends MyAppModel
         }
 
         if ($isAffiliateCookieSet) {
-            $this->setUpAffiliateRewarding($referredUserId, $langId);
+            $this->setUpAffiliateRewarding($referredUserId, $langId, $affiliateReferrerCodeSignup);
         }
     }
 
@@ -1158,7 +1158,7 @@ class User extends MyAppModel
         /* add Rewards points, upon signing up, referral will get rewarded[ */
         $CONF_REGISTRATION_REFERRAL_REWARD_POINTS = FatApp::getConfig("CONF_REGISTRATION_REFERRAL_REWARD_POINTS", FatUtility::VAR_INT, 0);
         if (($referrerUserId > 0) && FatApp::getConfig("CONF_ENABLE_REFERRER_MODULE") && $CONF_REGISTRATION_REFERRAL_REWARD_POINTS > 0) {
-            $this->addReferralRewardPoints($referredUserId, $referrerUserId);
+            $this->addReferralRewardPoints($referredUserId, $referrerUserId, $referrerUserName);
         }
         /* ] */
 
@@ -1171,7 +1171,7 @@ class User extends MyAppModel
     }
 
 
-    private function setUpAffiliateRewarding($referredUserId, $langId)
+    private function setUpAffiliateRewarding($referredUserId, $langId, $affiliateReferrerCodeSignup)
     {
         $referredUserId = FatUtility::int($referredUserId);
         $langId = FatUtility::int($langId);
@@ -1179,21 +1179,12 @@ class User extends MyAppModel
             trigger_error("Parameters are not passed", E_USER_ERROR);
         }
 
-        $broken = false;
         $affiliateReferrerUserId = 0;
-
         /* binding user to its referrer affiliate user[ */
-        if (isset($_COOKIE['affiliate_referrer_code_signup']) && $_COOKIE['affiliate_referrer_code_signup'] != '') {
-            $cookieDataArr = unserialize($_COOKIE['affiliate_referrer_code_signup']);
-            $affiliateReferrerCode = $cookieDataArr['data'];
-
-            $userSrchObj = User::getSearchObject();
-            $userSrchObj->doNotCalculateRecords();
-            $userSrchObj->doNotLimitRecords();
-            $userSrchObj->addCondition('user_referral_code', '=', $affiliateReferrerCode);
-            $userSrchObj->addMultipleFields(array('user_id', 'user_referral_code', 'user_name' ));
-            $rs = $userSrchObj->getResultSet();
-            $affiliateReferrerUserRow = FatApp::getDb()->fetch($rs);
+        if (!empty($affiliateReferrerCodeSignup)) {
+            $cookieDataArr = unserialize($affiliateReferrerCodeSignup);
+            $affiliateReferrerCode = $cookieDataArr['data'];            
+            $affiliateReferrerUserRow = $this->getUserByReferrerCode($affiliateReferrerCode);            
             if ($affiliateReferrerUserRow && $affiliateReferrerUserRow['user_referral_code'] == $affiliateReferrerCode && $affiliateReferrerCode != '' && $affiliateReferrerUserRow['user_referral_code'] != '') {
                 $affiliateReferrerUserId = $affiliateReferrerUserRow['user_id'];
                 $referrerUserName = $affiliateReferrerUserRow['user_name'];
@@ -2216,7 +2207,7 @@ class User extends MyAppModel
         $userSrchObj->addCondition('user_referral_code', '=', $userReferrerCode);
         $userSrchObj->addMultipleFields(array('user_id', 'user_referral_code', 'user_name' ));
         $rs = $userSrchObj->getResultSet();
-        return FatApp::getDb()->fetch($rs);
+        return FatApp::getDb()->fetch($rs);        
     }
     
     public function addReferrerRewardPoints($referrerUserId, $referredUserId)
@@ -2251,7 +2242,7 @@ class User extends MyAppModel
         }
     }
     
-    public function addReferralRewardPoints($referredUserId, $referrerUserId)
+    public function addReferralRewardPoints($referredUserId, $referrerUserId, $referrerUserName)
     {
         $rewardReferralExpiryDate = '0000-00-00';
         $CONF_REGISTRATION_REFERRAL_REWARD_POINTS_VALIDITY = FatApp::getConfig("CONF_REGISTRATION_REFERRAL_REWARD_POINTS_VALIDITY", FatUtility::VAR_INT, 0);        
@@ -2261,7 +2252,6 @@ class User extends MyAppModel
         $CONF_REGISTRATION_REFERRAL_REWARD_POINTS = FatApp::getConfig("CONF_REGISTRATION_REFERRAL_REWARD_POINTS", FatUtility::VAR_INT, 0);
         
         $rewardsRecord = new UserRewards();
-        $referrerUserName = User::getAttributesById($referrerUserId, "user_name");
         $urpComments = Labels::getLabel("LBL_Signup_Reward_Points._Registered_through_referral_link_of_your_friend_{referrerusername}.", $langId);
         $urpComments = str_replace("{referrerusername}", $referrerUserName, $urpComments);
         $rewardsRecord->assignValues(
