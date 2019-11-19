@@ -286,7 +286,7 @@ class CustomProductsController extends AdminBaseController
             $productRow = ProductRequest::getAttributesById($preqId, array('preq_user_id','preq_prodcat_id','preq_content','preq_specifications'));
             $preqCatId = $productRow['preq_prodcat_id'];
             $productReqData = json_decode($productRow['preq_content'], true);
-            $productOptions = $productReqData['product_option'];
+            $productOptions = !empty($productReqData['product_option']) ? $productReqData['product_option'] : array();
         }
 
         $productSpecData = json_decode($productRow['preq_specifications'], true);
