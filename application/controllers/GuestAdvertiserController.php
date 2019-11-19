@@ -137,7 +137,16 @@ class GuestAdvertiserController extends MyAppController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $userObj->setUpRewardEntry($userObj->getMainTableRecordId(), $this->siteLangId);
+        $referrerCodeSignup = '';
+        if (isset($_COOKIE['referrer_code_signup']) && $_COOKIE['referrer_code_signup'] != '') {
+            $referrerCodeSignup = $_COOKIE['referrer_code_signup'];
+        }
+        $affiliateReferrerCodeSignup = '';
+        if (isset($_COOKIE['affiliate_referrer_code_signup']) && $_COOKIE['affiliate_referrer_code_signup'] != '') {
+            $affiliateReferrerCodeSignup = $_COOKIE['affiliate_referrer_code_signup'];
+        }
+        
+        $userObj->setUpRewardEntry($userObj->getMainTableRecordId(), $this->siteLangId, $referrerCodeSignup, $affiliateReferrerCodeSignup);
 
 
 
