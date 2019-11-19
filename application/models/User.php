@@ -1116,46 +1116,29 @@ class User extends MyAppModel
         /* ] */
 
         if ($isReferrerCookieSet) {
-            $this->setUpReferrarRewarding($referredUserId, $langId);
+            $this->setUpReferrarRewarding($referredUserId, $langId, $referrerCodeSignup);
         }
 
         if ($isAffiliateCookieSet) {
             $this->setUpAffiliateRewarding($referredUserId, $langId);
         }
-
-        /* if( $broken === false  ){
-        //FatApp::getDb()->commitTransaction();
-        return true;
-        }
-
-        //FatApp::getDb()->rollbackTransaction();
-        return false; */
     }
 
-    private function setUpReferrarRewarding($referredUserId, $langId)
+    private function setUpReferrarRewarding($referredUserId, $langId, $referrerCodeSignup)
     {
-        $broken = false;
         $referredUserId = FatUtility::int($referredUserId);
         $langId = FatUtility::int($langId);
         if ($referredUserId <=0 || $langId <= 0) {
             trigger_error("Parameters are not passed", E_USER_ERROR);
         }
+        
         /* store refferer details, if any[ */
-        $isReferrerRewarded = false;
-        $isReferralRewarded = false;
         $referrerUserId = 0;
         $referrerUserName = '';
-        if (isset($_COOKIE['referrer_code_signup']) && !empty($_COOKIE['referrer_code_signup'])) {
-            $cookieDataArr = unserialize($_COOKIE['referrer_code_signup']);
+        if (!empty($referrerCodeSignup)) {
+            $cookieDataArr = unserialize($referrerCodeSignup);
             $userReferrerCode = $cookieDataArr['data'];
-            $userSrchObj = User::getSearchObject();
-            $userSrchObj->doNotCalculateRecords();
-            $userSrchObj->doNotLimitRecords();
-            $userSrchObj->addCondition('user_referral_code', '=', $userReferrerCode);
-            $userSrchObj->addMultipleFields(array('user_id', 'user_referral_code', 'user_name' ));
-            $rs = $userSrchObj->getResultSet();
-            $referrerUserRow = FatApp::getDb()->fetch($rs);
-
+            $referrerUserRow = $this->getUserByReferrerCode($userReferrerCode);                        
             if ($referrerUserRow && $referrerUserRow['user_referral_code'] == $userReferrerCode && $userReferrerCode != '' && $referrerUserRow['user_referral_code'] != '') {
                 $referrerUserId = $referrerUserRow['user_id'];
                 $referrerUserName = $referrerUserRow['user_name'];
@@ -1164,40 +1147,10 @@ class User extends MyAppModel
         }
         /* ] */
 
-        //FatApp::getDb()->startTransaction();
-
         /* add Rewards points, upon signing up, referrer will get rewarded[ */
         $CONF_REGISTRATION_REFERRER_REWARD_POINTS = FatApp::getConfig("CONF_REGISTRATION_REFERRER_REWARD_POINTS", FatUtility::VAR_INT, 0);
         if (($referrerUserId > 0) && FatApp::getConfig("CONF_ENABLE_REFERRER_MODULE") && $CONF_REGISTRATION_REFERRER_REWARD_POINTS > 0) {
-            $rewardExpiryDate = '0000-00-00';
-            $CONF_REGISTRATION_REFERRER_REWARD_POINTS_VALIDITY = FatApp::getConfig("CONF_REGISTRATION_REFERRER_REWARD_POINTS_VALIDITY", FatUtility::VAR_INT, 0);
-            if ($CONF_REGISTRATION_REFERRER_REWARD_POINTS_VALIDITY > 0) {
-                $rewardExpiryDate = date('Y-m-d', strtotime('+'. $CONF_REGISTRATION_REFERRER_REWARD_POINTS_VALIDITY .' days'));
-            }
-
-            $rewardsRecord = new UserRewards();
-            $referralUserName = User::getAttributesById($referredUserId, "user_name");
-            $urpComments = Labels::getLabel("LBL_Signup_Reward_Points._Your_Referral_{username}_registered.", $langId);
-            $urpComments = str_replace("{username}", $referralUserName, $urpComments);
-            $rewardsRecord->assignValues(
-                array(
-                'urp_user_id'            => $referrerUserId,
-                'urp_referral_user_id'    =>    $referredUserId,
-                'urp_points'    =>    $CONF_REGISTRATION_REFERRER_REWARD_POINTS,
-                'urp_comments'    =>    $urpComments,
-                'urp_used'        =>    0,
-                'urp_date_expiry'    =>    $rewardExpiryDate
-                )
-            );
-            if ($rewardsRecord->save()) {
-                $isReferrerRewarded = true;
-                $urpId = $rewardsRecord->getMainTableRecordId();
-                $emailObj = new EmailHandler();
-                $emailObj->sendRewardPointsNotification(CommonHelper::getLangId(), $urpId);
-            } else {
-                $this->error = $rewardsRecord->getError();
-                $broken = true;
-            }
+            $this->addReferrerRewardPoints($referrerUserId, $referredUserId);            
         }
         /* ] */
 
@@ -1205,34 +1158,7 @@ class User extends MyAppModel
         /* add Rewards points, upon signing up, referral will get rewarded[ */
         $CONF_REGISTRATION_REFERRAL_REWARD_POINTS = FatApp::getConfig("CONF_REGISTRATION_REFERRAL_REWARD_POINTS", FatUtility::VAR_INT, 0);
         if (($referrerUserId > 0) && FatApp::getConfig("CONF_ENABLE_REFERRER_MODULE") && $CONF_REGISTRATION_REFERRAL_REWARD_POINTS > 0) {
-            $CONF_REGISTRATION_REFERRAL_REWARD_POINTS_VALIDITY = FatApp::getConfig("CONF_REGISTRATION_REFERRAL_REWARD_POINTS_VALIDITY", FatUtility::VAR_INT, 0);
-            $rewardReferralExpiryDate = '0000-00-00';
-            if ($CONF_REGISTRATION_REFERRAL_REWARD_POINTS_VALIDITY > 0) {
-                $rewardReferralExpiryDate = date('Y-m-d', strtotime('+'. $CONF_REGISTRATION_REFERRAL_REWARD_POINTS_VALIDITY .' days'));
-            }
-
-            $rewardsRecord2 = new UserRewards();
-            $urpComments = Labels::getLabel("LBL_Signup_Reward_Points._Registered_through_referral_link_of_your_friend_{referrerusername}.", $langId);
-            $urpComments = str_replace("{referrerusername}", $referrerUserName, $urpComments);
-            $rewardsRecord2->assignValues(
-                array(
-                'urp_user_id'            => $referredUserId,
-                'urp_referral_user_id'    =>    $referrerUserId,
-                'urp_points'    =>    $CONF_REGISTRATION_REFERRAL_REWARD_POINTS,
-                'urp_comments'    =>    $urpComments,
-                'urp_used'        =>    0,
-                'urp_date_expiry'    =>    $rewardReferralExpiryDate
-                )
-            );
-            if ($rewardsRecord2->save()) {
-                $isReferralRewarded = true;
-                $urpId = $rewardsRecord2->getMainTableRecordId();
-                $emailObj = new EmailHandler();
-                $emailObj->sendRewardPointsNotification(CommonHelper::getLangId(), $urpId);
-            } else {
-                $this->error = $rewardsRecord2->getError();
-                $broken = true;
-            }
+            $this->addReferralRewardPoints($referredUserId, $referrerUserId);
         }
         /* ] */
 
@@ -2280,6 +2206,81 @@ class User extends MyAppModel
             return false;
         } 
         return true;
+    }
+    
+    public function getUserByReferrerCode($userReferrerCode)
+    {
+        $userSrchObj = User::getSearchObject();
+        $userSrchObj->doNotCalculateRecords();
+        $userSrchObj->doNotLimitRecords();
+        $userSrchObj->addCondition('user_referral_code', '=', $userReferrerCode);
+        $userSrchObj->addMultipleFields(array('user_id', 'user_referral_code', 'user_name' ));
+        $rs = $userSrchObj->getResultSet();
+        return FatApp::getDb()->fetch($rs);
+    }
+    
+    public function addReferrerRewardPoints($referrerUserId, $referredUserId)
+    {
+        $rewardExpiryDate = '0000-00-00';
+        $CONF_REGISTRATION_REFERRER_REWARD_POINTS_VALIDITY = FatApp::getConfig("CONF_REGISTRATION_REFERRER_REWARD_POINTS_VALIDITY", FatUtility::VAR_INT, 0);
+        if ($CONF_REGISTRATION_REFERRER_REWARD_POINTS_VALIDITY > 0) {
+            $rewardExpiryDate = date('Y-m-d', strtotime('+'. $CONF_REGISTRATION_REFERRER_REWARD_POINTS_VALIDITY .' days'));
+        }
+        $CONF_REGISTRATION_REFERRER_REWARD_POINTS = FatApp::getConfig("CONF_REGISTRATION_REFERRER_REWARD_POINTS", FatUtility::VAR_INT, 0);
+
+        $rewardsRecord = new UserRewards();
+        $referralUserName = User::getAttributesById($referredUserId, "user_name");
+        $urpComments = Labels::getLabel("LBL_Signup_Reward_Points._Your_Referral_{username}_registered.", $langId);
+        $urpComments = str_replace("{username}", $referralUserName, $urpComments);        
+        $rewardsRecord->assignValues(
+            array(
+            'urp_user_id'            => $referrerUserId,
+            'urp_referral_user_id'    => $referredUserId,
+            'urp_points'    =>    $CONF_REGISTRATION_REFERRER_REWARD_POINTS,
+            'urp_comments'    =>    $urpComments,
+            'urp_used'        =>    0,
+            'urp_date_expiry'    =>    $rewardExpiryDate
+            )
+        );
+        if ($rewardsRecord->save()) {
+            $urpId = $rewardsRecord->getMainTableRecordId();
+            $emailObj = new EmailHandler();
+            $emailObj->sendRewardPointsNotification(CommonHelper::getLangId(), $urpId);
+        } else {
+            $this->error = $rewardsRecord->getError();
+        }
+    }
+    
+    public function addReferralRewardPoints($referredUserId, $referrerUserId)
+    {
+        $rewardReferralExpiryDate = '0000-00-00';
+        $CONF_REGISTRATION_REFERRAL_REWARD_POINTS_VALIDITY = FatApp::getConfig("CONF_REGISTRATION_REFERRAL_REWARD_POINTS_VALIDITY", FatUtility::VAR_INT, 0);        
+        if ($CONF_REGISTRATION_REFERRAL_REWARD_POINTS_VALIDITY > 0) {
+            $rewardReferralExpiryDate = date('Y-m-d', strtotime('+'. $CONF_REGISTRATION_REFERRAL_REWARD_POINTS_VALIDITY .' days'));
+        }
+        $CONF_REGISTRATION_REFERRAL_REWARD_POINTS = FatApp::getConfig("CONF_REGISTRATION_REFERRAL_REWARD_POINTS", FatUtility::VAR_INT, 0);
+        
+        $rewardsRecord = new UserRewards();
+        $referrerUserName = User::getAttributesById($referrerUserId, "user_name");
+        $urpComments = Labels::getLabel("LBL_Signup_Reward_Points._Registered_through_referral_link_of_your_friend_{referrerusername}.", $langId);
+        $urpComments = str_replace("{referrerusername}", $referrerUserName, $urpComments);
+        $rewardsRecord->assignValues(
+            array(
+            'urp_user_id'            => $referredUserId,
+            'urp_referral_user_id'   => $referrerUserId,
+            'urp_points'    =>    $CONF_REGISTRATION_REFERRAL_REWARD_POINTS,
+            'urp_comments'    =>    $urpComments,
+            'urp_used'        =>    0,
+            'urp_date_expiry'    =>    $rewardReferralExpiryDate
+            )
+        );
+        if ($rewardsRecord->save()) {
+            $urpId = $rewardsRecord->getMainTableRecordId();
+            $emailObj = new EmailHandler();
+            $emailObj->sendRewardPointsNotification(CommonHelper::getLangId(), $urpId);
+        } else {
+            $this->error = $rewardsRecord->getError();
+        }
     }
 
 }
