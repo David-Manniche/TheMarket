@@ -4228,7 +4228,7 @@ class MobileAppApiController extends MyAppController
         'user_new_email' => $new_email
         );
 
-        if (!$this->userEmailVerification($userObj, $arr)) {
+        if (!$this->userEmailVerifications($userObj, $arr)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_ERROR_IN_SENDING_VERFICATION_EMAIL', $this->siteLangId));
         }
 
