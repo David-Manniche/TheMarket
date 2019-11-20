@@ -1357,7 +1357,6 @@ class Cart extends FatModel
             return;
         }
 
-        //$record = new TableRecord('tbl_product_stock_hold');
         $dataArrToSave = array(
             'pshold_selprod_id' => $selprod_id,
             'pshold_user_id' => $this->cart_user_id,
@@ -1365,23 +1364,13 @@ class Cart extends FatModel
             'pshold_selprod_stock' => $quantity,
             'pshold_added_on' => date('Y-m-d H:i:s')
         );
-
-        //$qty = isset($this->SYSTEM_ARR['cart'][$selprod_id]) ? FatUtility::int($this->SYSTEM_ARR['cart'][$selprod_id]) : 0;
-        $dataUpdateOnDuplicate = array_merge($dataArrToSave, array( 'pshold_selprod_stock' => $quantity));
-        if (!$db->insertFromArray('tbl_product_stock_hold', $dataArrToSave, true, array(), $dataUpdateOnDuplicate)) {
+        if (!$db->insertFromArray('tbl_product_stock_hold', $dataArrToSave, true, array(), $dataArrToSave)) {
             Message::addErrorMessage($db->getError());
             throw new Exception('');
         }
-        /* $record->assignValues( $dataArrToSave );
-        if( !$record->addNew( array(), $dataUpdateOnDuplicate ) ){
-            Message::addErrorMessage( $record->getError() );
-            throw new Exception('');
-        } */
 
         /* delete old records[ */
-        $intervalInMinutes = FatApp::getConfig('cart_stock_hold_minutes', FatUtility::VAR_INT, 15);
-        $deleteQuery = "DELETE FROM tbl_product_stock_hold WHERE pshold_added_on < DATE_SUB(NOW(), INTERVAL ". $intervalInMinutes ." MINUTE)";
-        $db->query($deleteQuery);
+        $this->deleteProductStockHold();        
         /* ] */
     }
     /* ] */
@@ -1667,4 +1656,13 @@ class Cart extends FatModel
             return $selprod_id;
         }
     }
+    
+    public function deleteProductStockHold()
+    {
+        $intervalInMinutes = FatApp::getConfig('cart_stock_hold_minutes', FatUtility::VAR_INT, 15);
+        $deleteQuery = "DELETE FROM tbl_product_stock_hold WHERE pshold_added_on < DATE_SUB(NOW(), INTERVAL ". $intervalInMinutes ." MINUTE)";
+        FatApp::getDb()->query($deleteQuery);
+        return true;
+    }
+    
 }
