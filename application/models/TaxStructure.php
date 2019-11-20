@@ -1,20 +1,20 @@
 <?php
 class TaxStructure extends MyAppModel
 {
-    const DB_TBL = 'tbl_tax_structure';
-    const DB_TBL_PREFIX = 'taxstr_';
+    public const DB_TBL = 'tbl_tax_structure';
+    public const DB_TBL_PREFIX = 'taxstr_';
 
-    const DB_TBL_LANG = 'tbl_tax_structure_lang';
-    const DB_TBL_LANG_PREFIX = 'taxstrlang_';
+    public const DB_TBL_LANG = 'tbl_tax_structure_lang';
+    public const DB_TBL_LANG_PREFIX = 'taxstrlang_';
 
-    const DB_TBL_OPTIONS = 'tbl_tax_structure_options';
-    const DB_TBL_OPTIONS_PREFIX = 'taxstro_';
+    public const DB_TBL_OPTIONS = 'tbl_tax_structure_options';
+    public const DB_TBL_OPTIONS_PREFIX = 'taxstro_';
 
-    const DB_TBL_OPTIONS_LANG = 'tbl_tax_structure_options_lang';
-    const DB_TBL_OPTIONS_LANG_PREFIX = 'taxstrolang_';
+    public const DB_TBL_OPTIONS_LANG = 'tbl_tax_structure_options_lang';
+    public const DB_TBL_OPTIONS_LANG_PREFIX = 'taxstrolang_';
 
-    const TYPE_SINGLE = 1;
-    const TYPE_COMBINED = 2;
+    public const TYPE_SINGLE = 1;
+    public const TYPE_COMBINED = 2;
 
 
     private $db;
@@ -130,7 +130,7 @@ class TaxStructure extends MyAppModel
                 'taxstrolang_taxstro_id',
                 'taxstrolang_lang_id',
                 array('taxstro_name'),
-                static::DB_TBL_OPTIONS.'_lang'
+                static::DB_TBL_OPTIONS . '_lang'
             );
             return array_merge($record, $lang_record);
         }

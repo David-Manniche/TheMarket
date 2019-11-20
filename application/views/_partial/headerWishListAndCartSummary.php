@@ -82,7 +82,7 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
                         <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartVolumeDiscount']); ?></td>
                     </tr>
                 <?php } ?>
-                <?php if ($cartSummary['taxOptions']){ 
+                <?php if (isset($cartSummary['taxOptions'])){ 
                         foreach($cartSummary['taxOptions'] as $taxName => $taxVal){ ?>
                         <tr>
                             <td class="text-left"><?php echo $taxName; ?></td>

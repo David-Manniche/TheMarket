@@ -71,12 +71,13 @@ if (!$print) {
                                 <?php }?>
 
                                 <?php if ($orderDetail['op_tax_collected_by_seller']) { ?>
-                                <?php if (empty($orderDetail['taxOptions'])) { ?>
-                                <p><strong><?php echo Labels::getLabel('LBL_Tax', $siteLangId);?>:</strong> <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'TAX'));?></p>
-                                <?php } ?>
-                                <?php foreach ($orderDetail['taxOptions'] as $key => $val) { ?>
-                                    <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
-                                <?php } ?>
+                                    <?php if (empty($orderDetail['taxOptions'])) { ?>
+                                    <p><strong><?php echo Labels::getLabel('LBL_Tax', $siteLangId);?>:</strong> <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'TAX'));?></p>
+                                    <?php } else {
+                                        foreach ($orderDetail['taxOptions'] as $key => $val) { ?>
+                                            <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
+                                        <?php } 
+                                    }?>
                                 <?php } ?>
                                 <?php /*
                         <p><strong><?php echo Labels::getLabel('LBL_Discount',$siteLangId);?>:</strong> <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail,'DISCOUNT'));?></p> */?>
@@ -175,7 +176,16 @@ if (!$print) {
                                 <?php } ?>
 
                                 <?php if ($orderDetail['op_tax_collected_by_seller']) {?>
-                                <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'tax')); ?></td>
+                                    <td>
+                                        <?php
+                                        if (empty($orderDetail['taxOptions'])) {
+                                            echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'TAX'));
+                                        } else {
+                                            foreach ($orderDetail['taxOptions'] as $key => $val) { ?>
+                                                <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
+                                            <?php }
+                                        } ?>
+                                    </td>
                                 <?php }?>
 
                                 <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'netamount', false, USER::USER_TYPE_SELLER));?></td>

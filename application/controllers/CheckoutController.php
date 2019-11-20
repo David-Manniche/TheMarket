@@ -1158,6 +1158,7 @@ class CheckoutController extends MyAppController
                         $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
                         if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
                             $taxLangData =  $taxStructure->getOptionData($taxStroId);
+                            // CommonHelper::printArray($taxLangData, true);
                             $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]] = $taxStroName['value'];
                         } else {
                             $structureName =  $taxStructure->getName($lang_id);
