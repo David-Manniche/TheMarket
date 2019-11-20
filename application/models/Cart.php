@@ -521,19 +521,13 @@ class Cart extends FatModel
         $found = false;
         if (is_array($cartProducts)) {
             foreach ($cartProducts as $cartKey => $product) {
-                if ($key == 'all') {
+                if ($key == 'all' || (md5($product['key']) == $key && !$product['is_batch'])) {
                     $found = true;
-                    unset($this->SYSTEM_ARR['cart'][$cartKey]);
-                    /* to keep track of temporary hold the product stock[ */
+                    unset($this->SYSTEM_ARR['cart'][$cartKey]);                    
                     $this->updateTempStockHold($product['selprod_id'], 0, 0);
-                /* ] */
-                } elseif (md5($product['key']) == $key && !$product['is_batch']) {
-                    $found = true;
-                    unset($this->SYSTEM_ARR['cart'][$cartKey]);
-                    /* to keep track of temporary hold the product stock[ */
-                    $this->updateTempStockHold($product['selprod_id'], 0, 0);
-                    /* ] */
-                    break;
+                    if (md5($product['key']) == $key && !$product['is_batch']) {
+                        break;
+                    }
                 }
             }
         }

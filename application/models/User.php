@@ -823,7 +823,7 @@ class User extends MyAppModel
     {
         $user_id = FatUtility::int($data['user_id']);
         unset($data['user_id']);
-        if (($user_id < 1)) {
+        if ($user_id < 1) {
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST', $langId);
             return false;
         }
@@ -836,17 +836,6 @@ class User extends MyAppModel
         $assign_fields['usuprequest_reference'] = $data["reference"];
         $assign_fields['usuprequest_date'] = date('Y-m-d H:i:s');
         $assign_fields['usuprequest_attempts'] = 1;
-        /*
-        if(FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM",FatUtility::VAR_INT,1)){
-        $status = 1;
-        }else{
-        $status = 0;
-        }
-
-        if(FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION",FatUtility::VAR_INT,1)){
-        $status = 0;
-        }
-        */
         $status = 0;
         if (!FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1)) {
             $status = 1;
