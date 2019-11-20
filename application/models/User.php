@@ -1187,7 +1187,6 @@ class User extends MyAppModel
             $affiliateReferrerUserRow = $this->getUserByReferrerCode($affiliateReferrerCode);            
             if ($affiliateReferrerUserRow && $affiliateReferrerUserRow['user_referral_code'] == $affiliateReferrerCode && $affiliateReferrerCode != '' && $affiliateReferrerUserRow['user_referral_code'] != '') {
                 $affiliateReferrerUserId = $affiliateReferrerUserRow['user_id'];
-                $referrerUserName = $affiliateReferrerUserRow['user_name'];
                 $this->setUserInfo(array( 'user_affiliate_referrer_user_id' => $affiliateReferrerUserId ));
             }
         }
@@ -1201,22 +1200,6 @@ class User extends MyAppModel
             $utxn_comments = Labels::getLabel('LBL_Signup_Commission_Received.{username}_Registered.', $langId);
             $utxn_comments = str_replace('{username}', $referredUserName, $utxn_comments);
             $transObj = new Transactions();
-
-            /* $txnArray["utxn_user_id"] = $affiliateReferrerUserId;
-            $txnArray["utxn_credit"] = $CONF_AFFILIATE_SIGNUP_COMMISSION;
-            $txnArray["utxn_status"] = Transactions::STATUS_COMPLETED;
-            $txnArray["utxn_comments"] = $utxn_comments;
-            $txnArray["utxn_date"] = date('Y-m-d H:i:s');
-            $txnArray["utxn_type"] = Transactions::TYPE_AFFILIATE_REFERRAL_SIGN_UP;
-
-            if( $txnId = $transObj->addTransaction( $txnArray ) ){
-            $emailNotificationObj = new EmailHandler();
-            $emailNotificationObj->sendTxnNotification( $txnId, $langId );
-            }else{
-            $this->error = $transObj->getError();
-            $broken = true;
-            } */
-
             $txnDataArr = array(
             'utxn_user_id'    =>    $affiliateReferrerUserId,
             'utxn_credit'    =>    $CONF_AFFILIATE_SIGNUP_COMMISSION,
@@ -1225,8 +1208,7 @@ class User extends MyAppModel
             'utxn_type'        =>    Transactions::TYPE_AFFILIATE_REFERRAL_SIGN_UP
             );
             if (!$txnId = $transObj->addTransaction($txnDataArr)) {
-                $this->error = $transObj->getError();
-                $broken = true;
+                $this->error = $transObj->getError();                
             }
             /* Send email to User[ */
             $emailNotificationObj = new EmailHandler();
@@ -1235,10 +1217,7 @@ class User extends MyAppModel
         }
         /* ] */
 
-        /* if( $affiliateReferrerUserId > 0 && $broken === false ){ */
-        /* removing cookie */
         CommonHelper::setCookie('affiliate_referrer_code_signup', '', time() - 3600);
-        /* } */
         return true;
     }
 
