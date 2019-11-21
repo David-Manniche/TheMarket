@@ -347,18 +347,4 @@ trait Options
         }
         die(json_encode($json));
     }
-
-    public function getTranslatedData()
-    {
-        $dataToTranslate = FatApp::getPostedData('option_name1', FatUtility::VAR_STRING, '');
-        if (!empty($dataToTranslate)) {
-            $translatedText = $this->translateLangFields(Option::DB_TBL_LANG, ['option_name' => $dataToTranslate]);
-            $data = [];
-            foreach ($translatedText as $langId => $value) {
-                $data[$langId]['option_name' . $langId] = $value['option_name'];
-            }
-            CommonHelper::jsonEncodeUnicode($data, true);
-        }
-        FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
-    }
 }

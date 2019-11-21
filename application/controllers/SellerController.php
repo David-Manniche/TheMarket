@@ -4519,6 +4519,21 @@ class SellerController extends SellerBaseController
         FatUtility::dieJsonSuccess(array());
     }
 
+    	
+	public function getTranslatedOptionData()
+    {
+        $dataToTranslate = FatApp::getPostedData('option_name1', FatUtility::VAR_STRING, '');
+        if (!empty($dataToTranslate)) {
+            $translatedText = $this->translateLangFields(Option::DB_TBL_LANG, ['option_name' => $dataToTranslate]);
+            $data = [];
+            foreach ($translatedText as $langId => $value) {
+                $data[$langId]['option_name' . $langId] = $value['option_name'];
+            }
+            CommonHelper::jsonEncodeUnicode($data, true);
+        }
+        FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+    }
+
     public function getTranslatedData()
     {
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
@@ -4550,6 +4565,6 @@ class SellerController extends SellerBaseController
             
             CommonHelper::jsonEncodeUnicode($data, true);
         }
-        FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
+        FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
     }
 }
