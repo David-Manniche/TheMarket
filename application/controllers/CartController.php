@@ -188,6 +188,16 @@ class CartController extends MyAppController
 
     private function addProductToCart($productsToAdd, $selprod_id)
     {
+        $selprod_id = FatUtility::int($selprod_id);
+        if($selprod_id < 1){
+            $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
+            if (true ===  MOBILE_APP_API_CALL) {
+                FatUtility::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        
         $ProductAdded = false;
         foreach ($productsToAdd as $productId => $quantity) {
             if ($productId <= 0) {
@@ -207,10 +217,7 @@ class CartController extends MyAppController
             $srch->joinProductToCategory();
             $srch->addCondition('pricetbl.selprod_id', '=', $productId);
             $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
-            $srch->addMultipleFields(
-                array(
-                'selprod_id','selprod_code', 'selprod_min_order_qty', 'selprod_stock', 'product_name' )
-            );
+            $srch->addMultipleFields(array('selprod_id','selprod_code', 'selprod_min_order_qty', 'selprod_stock', 'product_name' ));
             $rs = $srch->getResultSet();
             $db = FatApp::getDb();
             $sellerProductRow = $db->fetch($rs);
@@ -223,28 +230,19 @@ class CartController extends MyAppController
                 FatUtility::dieWithError(Message::getHtml());
             }
             $productId = $sellerProductRow['selprod_id'];
-            $selprod_code = $sellerProductRow['selprod_code'];
             $productAdd = true;
             /* cannot add, out of stock products in cart[ */
             if ($sellerProductRow['selprod_stock'] <= 0) {
+                $message = Labels::getLabel('LBL_Out_of_Stock_Products_cannot_be_added_to_cart_%s', $this->siteLangId);
+                $message = sprintf($message, FatUtility::decodeHtmlEntities($sellerProductRow['product_name']));
+                if (true ===  MOBILE_APP_API_CALL) {
+                    FatUtility::dieJsonError($message);
+                }
                 if ($productId!=$selprod_id) {
-                    $message = Labels::getLabel('LBL_Out_of_Stock_Products_cannot_be_added_to_cart_%s', $this->siteLangId);
-                    $message = sprintf($message, FatUtility::decodeHtmlEntities($sellerProductRow['product_name']));
-                    if (true ===  MOBILE_APP_API_CALL) {
-                        FatUtility::dieJsonError($message);
-                    }
                     $productErr['addon'][$productId] = $message;
                 } else {
-                    $message = Labels::getLabel('LBL_Out_of_Stock_Products_cannot_be_added_to_cart_%s', $this->siteLangId);
-                    $message = sprintf($message, FatUtility::decodeHtmlEntities($sellerProductRow['product_name']));
-                    if (true ===  MOBILE_APP_API_CALL) {
-                        FatUtility::dieJsonError($message);
-                    }
                     $productErr['product'] = $message;
                 }
-
-                /* Message::addErrorMessage(Labels::getLabel("LBL_Out_of_Stock_Products_cannot_be_added_to_cart",$this->siteLangId));
-                $productErr (Message::getHtml()); */
             }
             /* ] */
 
@@ -252,19 +250,14 @@ class CartController extends MyAppController
             $minimum_quantity = ($sellerProductRow['selprod_min_order_qty']) ? $sellerProductRow['selprod_min_order_qty'] : 1;
             if ($quantity < $minimum_quantity) {
                 $productAdd = false;
+                $str = Labels::getLabel('LBL_Please_add_minimum_{minimumquantity}', $this->siteLangId);
+                $str = str_replace("{minimumquantity}", $minimum_quantity, $str);
+                if (true ===  MOBILE_APP_API_CALL) {
+                    LibHelper::dieJsonError($str);
+                }  
                 if ($productId!=$selprod_id) {
-                    $str = Labels::getLabel('LBL_Please_add_minimum_{minimumquantity}', $this->siteLangId);
-                    $str = str_replace("{minimumquantity}", $minimum_quantity, $str);
-                    if (true ===  MOBILE_APP_API_CALL) {
-                        LibHelper::dieJsonError($str);
-                    }
                     $productErr['addon'][$productId] = $str." ".FatUtility::decodeHtmlEntities($sellerProductRow['product_name']);
                 } else {
-                    $str = Labels::getLabel('LBL_Please_add_minimum_{minimumquantity}', $this->siteLangId);
-                    $str = str_replace("{minimumquantity}", $minimum_quantity, $str);
-                    if (true ===  MOBILE_APP_API_CALL) {
-                        LibHelper::dieJsonError($str);
-                    }
                     $productErr['product'] = $str." ".FatUtility::decodeHtmlEntities($sellerProductRow['product_name']);
                 }
             }
@@ -277,17 +270,13 @@ class CartController extends MyAppController
             /* cannot add quantity more than stock of the product[ */
             $selprod_stock = $sellerProductRow['selprod_stock'] - Product::tempHoldStockCount($productId);
             if ($quantity > $selprod_stock) {
+                $message = Labels::getLabel('MSG_Requested_quantity_more_than_stock_available', $this->siteLangId);
+                if (true ===  MOBILE_APP_API_CALL) {
+                    FatUtility::dieJsonError($message);
+                }                    
                 if ($productId != $selprod_id) {
-                    $message = Labels::getLabel('MSG_Requested_quantity_more_than_stock_available', $this->siteLangId);
-                    if (true ===  MOBILE_APP_API_CALL) {
-                        FatUtility::dieJsonError($message);
-                    }
                     $productErr['addon'][$productId]=Message::addInfo($message." ". $selprod_stock." " .strip_tags($sellerProductRow['product_name']));
-                } else {
-                    $message = Labels::getLabel('MSG_Requested_quantity_more_than_stock_available', $this->siteLangId);
-                    if (true ===  MOBILE_APP_API_CALL) {
-                        FatUtility::dieJsonError($message);
-                    }
+                } else {                    
                     $productErr['product']=$message." ". $selprod_stock." " .strip_tags($sellerProductRow['product_name']);
                 }
             }
@@ -301,8 +290,7 @@ class CartController extends MyAppController
                 $ProductAdded = true;
             }
         }
-        $strProduct = '<a href="'.CommonHelper::generateUrl('Products', 'view', array($selprod_id)).'">'.strip_tags(html_entity_decode($sellerProductRow['product_name'], ENT_QUOTES, 'UTF-8')).'</a>';
-        $strCart = '<a href="'.CommonHelper::generateUrl('Cart').'">'.Labels::getLabel('Lbl_Shopping_Cart', $this->siteLangId).'</a>';
+        
         if (isset($productErr)) {
             Message::addInfo($productErr);
             $this->set('msg', CommonHelper::renderHtml(Message::getHtml($productErr)));
@@ -315,6 +303,8 @@ class CartController extends MyAppController
             }
             $this->set('alertType', 'alert--info');
         } else {
+            $strProduct = '<a href="'.CommonHelper::generateUrl('Products', 'view', array($selprod_id)).'">'.strip_tags(html_entity_decode($sellerProductRow['product_name'], ENT_QUOTES, 'UTF-8')).'</a>';
+            $strCart = '<a href="'.CommonHelper::generateUrl('Cart').'">'.Labels::getLabel('Lbl_Shopping_Cart', $this->siteLangId).'</a>';
             Message::addMessage(sprintf(Labels::getLabel('MSG_Success_cart_add', $this->siteLangId), $strProduct, $strCart));
             $this->set('msg', Labels::getLabel("MSG_Added_to_cart", $this->siteLangId));
         }
