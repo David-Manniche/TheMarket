@@ -1,5 +1,6 @@
-Bugs
-    => #031665 - Google login is not working when user tries to login after successfull signup through google.
-
-Enhancements
-    => Updated new labels for IOS APP.
+Bugs:
+    => Added shipping information in vendor order email.
+    => While searching categories > added 'all' option in drop down.
+    => Displayed order id as invoice number for subscription orders.
+    => Added space in bottom for dashboard pages.
+    => 031611-Wrong Email Received while change email request sent through Seller APP API

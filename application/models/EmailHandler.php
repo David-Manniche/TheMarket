@@ -839,6 +839,19 @@ class EmailHandler extends FatModel
             $langId = $orderDetail['order_language_id'];
         }
         if ($orderDetail) {
+            $addresses = $orderObj->getOrderAddresses($orderId);
+
+            $billingArr = array();
+            if (!empty($addresses[Orders::BILLING_ADDRESS_TYPE])) {
+                $billingArr = $addresses[Orders::BILLING_ADDRESS_TYPE];
+            }
+
+            $shippingArr = array();
+            if (!empty($addresses[Orders::SHIPPING_ADDRESS_TYPE])) {
+                $shippingArr = $addresses[Orders::SHIPPING_ADDRESS_TYPE];
+            } else {
+                $shippingArr = $billingArr;
+            }
             $orderVendors = $orderObj->getChildOrders(array("order"=>$orderId), $orderDetail['order_type'], $orderDetail['order_language_id']);
             foreach ($orderVendors as $key => $val) :
                 $shippingHanldedBySeller =     CommonHelper::canAvailShippingChargesBySeller($val['op_selprod_user_id'], $val['opshipping_by_seller_user_id']);
@@ -848,6 +861,8 @@ class EmailHandler extends FatModel
                 $tpl->set('siteLangId', $langId);
                 $tpl->set('userType', User::USER_TYPE_SELLER);
                 $tpl->set('shippingHanldedBySeller', $shippingHanldedBySeller);
+                $tpl->set('billingAddress', $billingArr);
+                $tpl->set('shippingAddress', $shippingArr);
                 $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/child-order-detail-email-seller.php', true);
                 $userObj = new User($orderDetail["order_user_id"]);
                 $userInfo = $userObj->getUserInfo(array('user_name','credential_email','user_phone'));
@@ -2062,7 +2077,8 @@ class EmailHandler extends FatModel
         $userInfo = $userObj->getUserInfo(array('user_name','credential_email'));
 
 
-        $spackage_name =  OrderSubscription:: getUserCurrentActivePlanDetails($langId, $user_id, array('ossubs_subscription_name'));
+        $currentPlanData =  OrderSubscription:: getUserCurrentActivePlanDetails($langId, $user_id, array('ossubs_subscription_name'));
+        $spackage_name = $currentPlanData['ossubs_subscription_name'];
         $vars = array(
         '{user_full_name}' => $userInfo['user_name'],
         '{spackage_name}'=>$spackage_name

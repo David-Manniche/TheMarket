@@ -34,6 +34,11 @@ class OrderSubscription extends MyAppModel
 
     public static function canUserBuyFreeSubscription($langId = 0, $userId = 0)
     {
+        $userId = FatUtility::int($userId);
+        if($userId < 1){
+            trigger_error(Labels::getLabel('MSG_Invalid_request', $this->commonLangId), E_USER_ERROR);
+        }
+         
         $srch = new  OrderSearch($langId);
         $srch->joinTableOrderSellerSubscription();
         $srch ->addCondition(Orders::DB_TBL_PREFIX.'type', '=', Orders::ORDER_SUBSCRIPTION);
@@ -51,7 +56,7 @@ class OrderSubscription extends MyAppModel
         return false;
     }
     public static function getUserCurrentActivePlanDetails($langId = 0, $userId = 0, $flds = array(OrderSubscription::DB_TBL_PREFIX.'id'))
-    {
+    {   
         $srch = new  OrderSearch($langId);
         $srch->joinTableOrderSellerSubscription($langId);
         $srch->joinTableSubscriptionPlan();
@@ -67,8 +72,7 @@ class OrderSubscription extends MyAppModel
         $srch->doNotCalculateRecords(true);
         $srch->addOrder(Orders::DB_TBL_PREFIX.'id', 'desc');
         $rs = $srch->getResultSet();
-        $row = FatApp::getDb()->fetch($rs, $flds);
-
+        /*$row = FatApp::getDb()->fetch($rs, $flds);
         if ($row==false) {
             return '';
         }
@@ -76,7 +80,8 @@ class OrderSubscription extends MyAppModel
             return $row[$flds[0]];
         } else {
             return $row;
-        }
+        } */         
+        return FatApp::getDb()->fetch($rs);
     }
 
     public static function getOSSubIdArrByOrderId($orderId)

@@ -3341,15 +3341,16 @@ class SellerController extends SellerBaseController
             FatApp::redirectUser(CommonHelper::generateUrl());
         }
         $this->_template->addCss(array('css/packages.css'), false);
-        $includeFreeSubscription = OrderSubscription:: canUserBuyFreeSubscription($this->siteLangId, UserAuthentication::getLoggedUserId());
+        $includeFreeSubscription = OrderSubscription::canUserBuyFreeSubscription($this->siteLangId, UserAuthentication::getLoggedUserId());
         $packagesArr = SellerPackages::getSellerVisiblePackages($this->siteLangId, $includeFreeSubscription);
 
         $currentActivePlanId = 0;
-        $currentActivePlanId = OrderSubscription:: getUserCurrentActivePlanDetails($this->siteLangId, UserAuthentication::getLoggedUserId(), array(OrderSubscription::DB_TBL_PREFIX.'plan_id'));
-
+        $currentPlanData = OrderSubscription::getUserCurrentActivePlanDetails($this->siteLangId, UserAuthentication::getLoggedUserId(), array(OrderSubscription::DB_TBL_PREFIX.'plan_id'));
+        $currentActivePlanId  = $currentPlanData[OrderSubscription::DB_TBL_PREFIX.'plan_id'];
+        
         foreach ($packagesArr as $key => $package) {
             $packagesArr[$key]['plans'] =  SellerPackagePlans::getSellerVisiblePackagePlans($package[SellerPackages::DB_TBL_PREFIX.'id']);
-            $packagesArr[$key]['cheapPlan'] = SellerPackagePlans:: getCheapestPlanByPackageId($package[SellerPackages::DB_TBL_PREFIX.'id']);
+            $packagesArr[$key]['cheapPlan'] = SellerPackagePlans::getCheapestPlanByPackageId($package[SellerPackages::DB_TBL_PREFIX.'id']);
         }
         $obj = new Extrapage();
         $pageData = $obj->getContentByPageType(Extrapage::SUBSCRIPTION_PAGE_BLOCK, $this->siteLangId);
