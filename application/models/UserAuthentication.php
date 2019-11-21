@@ -225,7 +225,7 @@ class UserAuthentication extends FatModel
         $active = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1) ? 0: 1;
         $verify = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
 
-        $pass =  CommonHelper::getRandomPassword(5);
+        $pass =  CommonHelper::getRandomPassword(8);
         if (!$userObj->setLoginCredentials($useremail, $useremail, $pass, $active, $verify)) {
             $this->error =Labels::getLabel("MSG_LOGIN_CREDENTIALS_COULD_NOT_BE_SET", $this->commonLangId) . $userObj->getError();
             $db->rollbackTransaction();
