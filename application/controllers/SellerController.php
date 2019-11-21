@@ -1375,7 +1375,6 @@ class SellerController extends SellerBaseController
     {
         $userId = UserAuthentication::getLoggedUserId();
         $shopDetails = Shop::getAttributesByUserId($userId, null, false);
-
         if (!false == $shopDetails && $shopDetails['shop_active'] != applicationConstants::ACTIVE) {
             Message::addErrorMessage(Labels::getLabel('MSG_Your_shop_deactivated_contact_admin', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
@@ -1388,7 +1387,7 @@ class SellerController extends SellerBaseController
             $shop_id =  $shopDetails['shop_id'];
             $stateId = $shopDetails['shop_state_id'];
         }
-
+        
         $shopLayoutTemplateId =  $shopDetails['shop_ltemplate_id'];
         if ($shopLayoutTemplateId == 0) {
             $shopLayoutTemplateId = 10001;
@@ -1772,6 +1771,17 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage($shopObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
+        
+        $post['ss_shop_id'] = $shop_id;
+
+        $shopSpecificsObj = new ShopSpecifics($shop_id);
+        $shopSpecificsObj->assignValues($post);
+        $data = $shopSpecificsObj->getFlds();
+        if (!$shopSpecificsObj->addNew(array(), $data)) {
+            Message::addErrorMessage($shopSpecificsObj->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
         $shop_id = $shopObj->getMainTableRecordId();
 
         /* $userObj = new User( $userId );
@@ -3135,6 +3145,14 @@ class SellerController extends SellerBaseController
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Free_Shipping_On', $this->siteLangId), 'shop_free_ship_upto');
         $fld->requirements()->setInt();
         $fld->requirements()->setPositive();
+        
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_ORDER_RETURN_AGE', $this->siteLangId), 'shop_return_age');
+        $fld->requirements()->setInt();
+        $fld->requirements()->setPositive();
+        
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_ORDER_CANCELLATION_AGE', $this->siteLangId), 'shop_cancellation_age');
+        $fld->requirements()->setInt();
+        $fld->requirements()->setPositive();
 
 
 
@@ -3604,6 +3622,7 @@ class SellerController extends SellerBaseController
 
         $fld = $frm->addFloatField(Labels::getLabel('LBL_Minimum_Selling_Price', $this->siteLangId).' ['.CommonHelper::getCurrencySymbol(true).']', 'product_min_selling_price', '');
         $fld->requirements()->setPositive();
+
         $taxCategories =  Tax::getSaleTaxCatArr($langId);
         $frm->addSelectBox(Labels::getLabel('LBL_Tax_Category', $this->siteLangId), 'ptt_taxcat_id', $taxCategories, '', array(), Labels::getLabel('Lbl_Select', $this->siteLangId))->requirements()->setRequired(true);
 
@@ -3712,7 +3731,7 @@ class SellerController extends SellerBaseController
             $codFld->addFieldTagAttribute('disabled', 'disabled');
             $codFld->htmlAfterField = '<small class="text--small">'.Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $langId).'</small>';
         }
-        $fld=$frm->addCheckBox(Labels::getLabel('LBL_Free_Shipping', $langId), 'ps_free', 1);
+        $fld = $frm->addCheckBox(Labels::getLabel('LBL_Free_Shipping', $langId), 'ps_free', 1);
 
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Shipping_country', $langId), 'shipping_country');
 
@@ -3723,6 +3742,23 @@ class SellerController extends SellerBaseController
             $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Add_Tag', $this->siteLangId), 'tag_name');
             $fld1->htmlAfterField= '<div class=""><small><a href="javascript:void(0);" onClick="addTagForm(0);">'.Labels::getLabel('LBL_Tag_Not_Found?_Click_here_to_', $this->siteLangId).' '.Labels::getLabel('LBL_Add_New_Tag', $this->siteLangId).'</a></small></div><div class="col-md-12"><ul class="list--vertical" id="product-tag-js"></ul></div>';
         }
+
+        $frm->addHtml('', 'productPolicyInfo', '<div class="heading4 not-digital-js">'.Labels::getLabel('LBL_PRODUCT_POLICY_INFO', $langId).'</div><div class="divider not-digital-js"></div>');
+
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_PRODUCT_WARRANTY', $this->siteLangId), 'product_warranty');
+        $fld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $this->siteLangId) . ' </small>';
+
+        $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_SEPARATELY', $langId), 'policy_update_separately', 1);
+
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_ORDER_RETURN_AGE', $this->siteLangId), 'shop_return_age');
+        $fld->requirements()->setInt();
+        $fld->requirements()->setPositive();
+        $fld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $this->siteLangId) . ' </small>';
+        
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_ORDER_CANCELLATION_AGE', $this->siteLangId), 'shop_cancellation_age');
+        $fld->requirements()->setInt();
+        $fld->requirements()->setPositive();
+        $fld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $this->siteLangId) . ' </small>';
 
         $frm->addHiddenField('', 'ps_from_country_id');
         $frm->addHiddenField('', 'product_id');

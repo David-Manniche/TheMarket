@@ -1,31 +1,31 @@
 <?php
 class Shop extends MyAppModel
 {
-    const DB_TBL = 'tbl_shops';
-    const DB_TBL_PREFIX = 'shop_';
+    public const DB_TBL = 'tbl_shops';
+    public const DB_TBL_PREFIX = 'shop_';
 
-    const DB_TBL_LANG = 'tbl_shops_lang';
-    const DB_TBL_LANG_PREFIX = 'shoplang_';
+    public const DB_TBL_LANG = 'tbl_shops_lang';
+    public const DB_TBL_LANG_PREFIX = 'shoplang_';
 
-    const DB_TBL_SHOP_FAVORITE = 'tbl_user_favourite_shops';
-    const DB_TBL_SHOP_THEME_COLOR = 'tbl_shops_to_theme';
+    public const DB_TBL_SHOP_FAVORITE = 'tbl_user_favourite_shops';
+    public const DB_TBL_SHOP_THEME_COLOR = 'tbl_shops_to_theme';
 
-    const FILETYPE_SHOP_LOGO = 1;
-    const FILETYPE_SHOP_BANNER = 2;
-    const TEMPLATE_ONE = 10001;
-    const TEMPLATE_TWO = 10002;
-    const TEMPLATE_THREE = 10003;
-    const TEMPLATE_FOUR = 10004;
-    const TEMPLATE_FIVE = 10005;
+    public const FILETYPE_SHOP_LOGO = 1;
+    public const FILETYPE_SHOP_BANNER = 2;
+    public const TEMPLATE_ONE = 10001;
+    public const TEMPLATE_TWO = 10002;
+    public const TEMPLATE_THREE = 10003;
+    public const TEMPLATE_FOUR = 10004;
+    public const TEMPLATE_FIVE = 10005;
 
-    const SHOP_VIEW_ORGINAL_URL ='shops/view/';
-    const SHOP_REVIEWS_ORGINAL_URL ='reviews/shop/';
-    const SHOP_POLICY_ORGINAL_URL ='shops/policy/';
-    const SHOP_SEND_MESSAGE_ORGINAL_URL ='shops/send-message/';
-    const SHOP_TOP_PRODUCTS_ORGINAL_URL ='shops/top-products/';
-    const SHOP_COLLECTION_ORGINAL_URL ='shops/collection/';
+    public const SHOP_VIEW_ORGINAL_URL ='shops/view/';
+    public const SHOP_REVIEWS_ORGINAL_URL ='reviews/shop/';
+    public const SHOP_POLICY_ORGINAL_URL ='shops/policy/';
+    public const SHOP_SEND_MESSAGE_ORGINAL_URL ='shops/send-message/';
+    public const SHOP_TOP_PRODUCTS_ORGINAL_URL ='shops/top-products/';
+    public const SHOP_COLLECTION_ORGINAL_URL ='shops/collection/';
 
-    const SHOP_PRODUCTS_COUNT_AT_HOMEPAGE = 2;
+    public const SHOP_PRODUCTS_COUNT_AT_HOMEPAGE = 2;
 
     public function __construct($shopId = 0)
     {
@@ -33,7 +33,7 @@ class Shop extends MyAppModel
         $this->objMainTableRecord->setSensitiveFields(array());
     }
 
-    public static function getSearchObject($isActive = true, $langId = 0)
+    public static function getSearchObject($isActive = true, $langId = 0, $joinSpecifics = false)
     {
         $langId = FatUtility::int($langId);
 
@@ -47,11 +47,21 @@ class Shop extends MyAppModel
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                's_l.'.static::DB_TBL_LANG_PREFIX.'shop_id = s.'.static::tblFld('id').' and
-			s_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
+                's_l.' . static::DB_TBL_LANG_PREFIX . 'shop_id = s.' . static::tblFld('id') . ' and
+                s_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 's_l'
             );
         }
+
+        if (true === $joinSpecifics) {
+            $srch->joinTable(
+                ShopSpecifics::DB_TBL,
+                'LEFT OUTER JOIN',
+                'spec.' . ShopSpecifics::DB_TBL_PREFIX . 'shop_id = s.' . static::tblFld('id'),
+                'spec'
+            );
+        }
+
         return $srch;
     }
 
@@ -61,7 +71,7 @@ class Shop extends MyAppModel
         $userId = FatUtility::int($userId);
 
         $db = FatApp::getDb();
-        $srch = static::getSearchObject($isActive, $langId);
+        $srch = static::getSearchObject($isActive, $langId, true);
         $srch->addCondition(static::tblFld('user_id'), '=', $userId);
 
         if (null != $attr) {
@@ -71,7 +81,6 @@ class Shop extends MyAppModel
                 $srch->addFld($attr);
             }
         }
-
         $rs = $srch->getResultSet();
         $row = $db->fetch($rs);
         if (!is_array($row)) {

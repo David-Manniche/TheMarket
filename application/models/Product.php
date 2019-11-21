@@ -1,68 +1,68 @@
 <?php
 class Product extends MyAppModel
 {
-    const DB_TBL = 'tbl_products';
-    const DB_LANG_TBL ='tbl_products_lang';
-    const DB_TBL_PREFIX = 'product_';
+    public const DB_TBL = 'tbl_products';
+    public const DB_LANG_TBL = 'tbl_products_lang';
+    public const DB_TBL_PREFIX = 'product_';
 
-    const DB_NUMERIC_ATTRIBUTES_TBL = 'tbl_product_numeric_attributes';
-    const DB_NUMERIC_ATTRIBUTES_PREFIX = 'prodnumattr_';
+    public const DB_NUMERIC_ATTRIBUTES_TBL = 'tbl_product_numeric_attributes';
+    public const DB_NUMERIC_ATTRIBUTES_PREFIX = 'prodnumattr_';
 
-    const DB_TEXT_ATTRIBUTES_TBL = 'tbl_product_text_attributes';
-    const DB_TEXT_ATTRIBUTES_PREFIX = 'prodtxtattr_';
+    public const DB_TEXT_ATTRIBUTES_TBL = 'tbl_product_text_attributes';
+    public const DB_TEXT_ATTRIBUTES_PREFIX = 'prodtxtattr_';
 
-    const DB_TBL_PRODUCT_TO_CATEGORY = 'tbl_product_to_category';
-    const DB_TBL_PRODUCT_TO_CATEGORY_PREFIX = 'ptc_';
+    public const DB_TBL_PRODUCT_TO_CATEGORY = 'tbl_product_to_category';
+    public const DB_TBL_PRODUCT_TO_CATEGORY_PREFIX = 'ptc_';
 
-    const DB_PRODUCT_TO_OPTION = 'tbl_product_to_options';
-    const DB_PRODUCT_TO_OPTION_PREFIX = 'prodoption_';
+    public const DB_PRODUCT_TO_OPTION = 'tbl_product_to_options';
+    public const DB_PRODUCT_TO_OPTION_PREFIX = 'prodoption_';
 
-    const DB_PRODUCT_TO_SHIP = 'tbl_product_shipping_rates';
-    const DB_PRODUCT_TO_SHIP_PREFIX = 'pship_';
+    public const DB_PRODUCT_TO_SHIP = 'tbl_product_shipping_rates';
+    public const DB_PRODUCT_TO_SHIP_PREFIX = 'pship_';
 
-    const DB_PRODUCT_TO_TAG = 'tbl_product_to_tags';
-    const DB_PRODUCT_TO_TAG_PREFIX = 'ptt_';
+    public const DB_PRODUCT_TO_TAG = 'tbl_product_to_tags';
+    public const DB_PRODUCT_TO_TAG_PREFIX = 'ptt_';
 
-    const DB_TBL_PRODUCT_FAVORITE = 'tbl_user_favourite_products';
+    public const DB_TBL_PRODUCT_FAVORITE = 'tbl_user_favourite_products';
 
-    const DB_PRODUCT_SPECIFICATION = 'tbl_product_specifications';
-    const DB_PRODUCT_SPECIFICATION_PREFIX = 'prodspec_';
+    public const DB_PRODUCT_SPECIFICATION = 'tbl_product_specifications';
+    public const DB_PRODUCT_SPECIFICATION_PREFIX = 'prodspec_';
 
-    const DB_PRODUCT_LANG_SPECIFICATION = 'tbl_product_specifications_lang';
-    const DB_PRODUCT_LANG_SPECIFICATION_PREFIX = 'prodspeclang_';
+    public const DB_PRODUCT_LANG_SPECIFICATION = 'tbl_product_specifications_lang';
+    public const DB_PRODUCT_LANG_SPECIFICATION_PREFIX = 'prodspeclang_';
 
-    const DB_TBL_PRODUCT_SHIPPING = 'tbl_products_shipping';
-    const DB_TBL_PRODUCT_SHIPPING_PREFIX = 'ps_';
+    public const DB_TBL_PRODUCT_SHIPPING = 'tbl_products_shipping';
+    public const DB_TBL_PRODUCT_SHIPPING_PREFIX = 'ps_';
 
-    const DB_PRODUCT_SHIPPED_BY_SELLER = 'tbl_products_shipped_by_seller';
-    const DB_PRODUCT_SHIPPED_BY_SELLER_PREFIX = 'psbs_';
+    public const DB_PRODUCT_SHIPPED_BY_SELLER = 'tbl_products_shipped_by_seller';
+    public const DB_PRODUCT_SHIPPED_BY_SELLER_PREFIX = 'psbs_';
 
-    const DB_PRODUCT_MIN_PRICE = 'tbl_products_min_price';
-    const DB_PRODUCT_MIN_PRICE_PREFIX = 'pmp_';
+    public const DB_PRODUCT_MIN_PRICE = 'tbl_products_min_price';
+    public const DB_PRODUCT_MIN_PRICE_PREFIX = 'pmp_';
 
-    const PRODUCT_TYPE_PHYSICAL = 1;
-    const PRODUCT_TYPE_DIGITAL = 2;
+    public const PRODUCT_TYPE_PHYSICAL = 1;
+    public const PRODUCT_TYPE_DIGITAL = 2;
 
-    const APPROVED = 1;
-    const UNAPPROVED = 0;
+    public const APPROVED = 1;
+    public const UNAPPROVED = 0;
 
-    const INVENTORY_TRACK = 1;
-    const INVENTORY_NOT_TRACK = 0;
+    public const INVENTORY_TRACK = 1;
+    public const INVENTORY_NOT_TRACK = 0;
 
-    const CONDITION_NEW = 1;
-    const CONDITION_USED = 2;
-    const CONDITION_REFURBISH = 3;
+    public const CONDITION_NEW = 1;
+    public const CONDITION_USED = 2;
+    public const CONDITION_REFURBISH = 3;
 
-    const PRODUCT_VIEW_ORGINAL_URL ='products/view/';
-    const PRODUCT_REVIEWS_ORGINAL_URL ='reviews/product/';
-    const PRODUCT_MORE_SELLERS_ORGINAL_URL ='products/sellers/';
+    public const PRODUCT_VIEW_ORGINAL_URL ='products/view/';
+    public const PRODUCT_REVIEWS_ORGINAL_URL ='reviews/product/';
+    public const PRODUCT_MORE_SELLERS_ORGINAL_URL ='products/sellers/';
 
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
     }
 
-    public static function getSearchObject($langId = 0, $isDeleted = true)
+    public static function getSearchObject($langId = 0, $isDeleted = true, $joinSpecifics = false)
     {
         $srch = new SearchBase(static::DB_TBL, 'tp');
 
@@ -77,6 +77,15 @@ class Product extends MyAppModel
 
         if ($isDeleted) {
             $srch->addCondition(static::DB_TBL_PREFIX . 'deleted', '=', applicationConstants::NO);
+        }
+
+        if (true === $joinSpecifics) {
+            $srch->joinTable(
+                ProductSpecifics::DB_TBL,
+                'LEFT OUTER JOIN',
+                'ps.' . ProductSpecifics::DB_TBL_PREFIX . 'product_id = tp.' . static::tblFld('id'),
+                'ps'
+            );
         }
 
         $srch->addOrder(static::DB_TBL_PREFIX . 'active', 'DESC');
@@ -236,9 +245,53 @@ class Product extends MyAppModel
         );
     }
 
-    public static function getAttributesById($recordId, $attr = null)
+    // public static function getAttributesById($recordId, $attr = null)
+    // {
+    //     $row = parent::getAttributesById($recordId, $attr);
+
+    //     /* get Numeric attributes data[ */
+    //     if (!$attr) {
+    //         $num_attr_row = static::getProductNumericAttributes($recordId);
+    //         if (!empty($num_attr_row)) {
+    //             $row = array_merge($row, $num_attr_row);
+    //         }
+    //     }
+    //     /* ] */
+    //     return $row;
+    // }
+
+    public static function getAttributesById($recordId, $attr = null, $joinSpecifics = false)
     {
-        $row = parent::getAttributesById($recordId, $attr);
+        $recordId = FatUtility::int($recordId);
+
+        $db = FatApp::getDb();
+
+        $srch = new SearchBase(static::DB_TBL, 'p');
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addCondition(static::tblFld('id'), '=', $recordId);
+
+        if (true === $joinSpecifics) {
+            $srch->joinTable(
+                ProductSpecifics::DB_TBL,
+                'LEFT OUTER JOIN',
+                'ps.' . ProductSpecifics::DB_TBL_PREFIX . 'product_id = p.' . static::tblFld('id'),
+                'ps'
+            );
+        }
+
+        if (null != $attr) {
+            if (is_array($attr)) {
+                $srch->addMultipleFields($attr);
+            } elseif (is_string($attr)) {
+                $srch->addFld($attr);
+            }
+        }
+        $rs = $srch->getResultSet();
+        $row = $db->fetch($rs);
+        if (!is_array($row)) {
+            return false;
+        }
 
         /* get Numeric attributes data[ */
         if (!$attr) {
@@ -248,6 +301,10 @@ class Product extends MyAppModel
             }
         }
         /* ] */
+
+        if (is_string($attr)) {
+            return $row[$attr];
+        }
         return $row;
     }
 
