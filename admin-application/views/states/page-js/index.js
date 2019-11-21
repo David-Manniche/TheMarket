@@ -81,10 +81,10 @@ $(document).ready(function() {
         });
     }
 
-    editStateLangForm = function(stateId, langId) {
+    editStateLangForm = function(stateId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
         //$.facebox(function() {
-        fcom.ajax(fcom.makeUrl('States', 'langForm', [stateId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('States', 'langForm', [stateId, langId, autoFillLangData]), '', function(t) {
             //$.facebox(t,'faceboxWidth');
             fcom.updateFaceboxContent(t);
         });

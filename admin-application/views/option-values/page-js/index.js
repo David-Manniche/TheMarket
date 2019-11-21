@@ -41,9 +41,9 @@ $(document).ready(function(){
 		});
 	};
 
-	optionValueLangForm = function(optionValueId, langId) {		
+	optionValueLangForm = function(optionValueId, langId, autoFillLangData = 0) {		
 		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('OptionValues', 'langForm', [optionValueId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('OptionValues', 'langForm', [optionValueId, langId], autoFillLangData), '', function(t) {
 				$.facebox(t);
 			});
 		});

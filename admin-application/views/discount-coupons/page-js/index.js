@@ -56,10 +56,10 @@ $(document).on('change','.language-js',function(){
 		});
 	};
 
-	addCouponLangForm = function(couponId, langId) {	
+	addCouponLangForm = function(couponId, langId, autoFillLangData = 0) {	
 		fcom.displayProcessing();	
 		//$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('DiscountCoupons', 'langForm', [couponId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('DiscountCoupons', 'langForm', [couponId, langId, autoFillLangData]), '', function(t) {
 				//$.facebox(t,'faceboxWidth');
 				fcom.updateFaceboxContent(t);
 			});

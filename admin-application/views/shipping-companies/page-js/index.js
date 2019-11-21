@@ -59,9 +59,9 @@ $(document).ready(function() {
         });
     }
 
-    editLangForm = function(sCompanyId, langId) {
+    editLangForm = function(sCompanyId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('ShippingCompanies', 'langForm', [sCompanyId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('ShippingCompanies', 'langForm', [sCompanyId, langId, autoFillLangData]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
     };

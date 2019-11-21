@@ -73,10 +73,10 @@ blogPostForm = function(id) {
         });
     };
 
-    langForm = function(postId, langId) {
+    langForm = function(postId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
         fcom.resetEditorInstance();
-        fcom.ajax(fcom.makeUrl('BlogPosts', 'langForm', [postId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('BlogPosts', 'langForm', [postId, langId, autoFillLangData]), '', function(t) {
             fcom.updateFaceboxContent(t);
             fcom.setEditorLayout(langId);
             var frm = $('#facebox form')[0];

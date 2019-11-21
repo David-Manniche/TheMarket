@@ -74,7 +74,7 @@ class Navigation
         $selProdSrchObj = SellerProduct::getSearchObject($langId);
         
         $selProdSrchObj->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
-        $selProdSrchObj->joinTable(Product::DB_LANG_TBL, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.CommonHelper::getLangId(), 'p_l');
+        $selProdSrchObj->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.CommonHelper::getLangId(), 'p_l');
         $selProdSrchObj->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'cred.credential_user_id = selprod_user_id', 'cred');
         $selProdSrchObj->joinTable('tbl_email_archives', 'LEFT OUTER JOIN', 'arch.emailarchive_to_email = cred.credential_email', 'arch');        
         $selProdSrchObj->addDirectCondition('selprod_stock <= selprod_threshold_stock_level');

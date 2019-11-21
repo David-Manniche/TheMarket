@@ -810,7 +810,45 @@ $(document).ready(function () {
 			$.mbsmessage(ans.msg, true, 'alert--danger');
 		});
 		return false;
-	};
+    };
+    
+    autofillLangData = function (autoFillBtn, frm) {
+        var actionUrl = autoFillBtn.data('action');
+        
+        var defaultLangField = $('input.defaultLang', frm);
+        if (1 > defaultLangField.length) {
+            $.systemMessage(langLbl.unknownPrimaryLanguageField, 'alert--danger');
+            return false;
+        }
+        var proceed = true;
+        var stringToTranslate =  '';
+        defaultLangField.each(function(index) {
+            if ('' != $(this).val()) {
+                if (0 < index) {
+                    stringToTranslate += "&";
+                }
+                stringToTranslate +=  $(this).attr('name') + "=" + $(this).val();
+            } else {
+                $(this).focus();
+                $.systemMessage(langLbl.primaryLanguageField, 'alert--danger');
+                proceed = false;
+                return false;
+            }
+        });
+
+        if (true == proceed) {
+            $.mbsmessage(langLbl.processing, true, 'alert--process alert');
+            fcom.ajax(actionUrl, stringToTranslate, function(t) {
+                var res = $.parseJSON(t);
+                $.each(res, function(langId, values) {
+                    $.each(values, function(selector, value) {
+                        $("input.langField_" + langId + "[name='" + selector + "']").val(value);
+                    });
+                }); 
+                $(document).trigger('close.mbsmessage');
+            });
+        }
+    }
 
 	$(".sign-in-popup-js").click(function () {
 		openSignInForm();

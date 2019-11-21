@@ -1186,7 +1186,7 @@ class UsersController extends AdminBaseController
     {
         $this->objPrivilege->canEditSellerApprovalForm();
 
-        $sformfield_id=FatUtility::int($sformfield_id);
+        $sformfield_id = FatUtility::int($sformfield_id);
 
         $frm = $this->getSupplierApprovalForm();
 
@@ -1224,16 +1224,25 @@ class UsersController extends AdminBaseController
         unset($post['sformfield_id']);
         unset($post['lang_id']);
         $data = array(
-        'sformfieldlang_lang_id'=>$lang_id,
-        'sformfieldlang_sformfield_id'=>$sformfield_id,
-        'sformfield_caption'=>$post['sformfield_caption'],
-        'sformfield_comment'=>$post['sformfield_comment'],
+        'sformfieldlang_lang_id' => $lang_id,
+        'sformfieldlang_sformfield_id' => $sformfield_id,
+        'sformfield_caption' => $post['sformfield_caption'],
+        'sformfield_comment' => $post['sformfield_comment'],
         );
 
         $obj = new SupplierFormFields($sformfield_id);
         if (!$obj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($obj->getError());
             FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(SupplierFormFields::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($sformfield_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId = 0;
@@ -1251,21 +1260,29 @@ class UsersController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function langSellerApprovalForm($sformfield_id = 0, $lang_id = 0)
+    public function langSellerApprovalForm($sformfield_id = 0, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canEditSellerApprovalForm();
 
         $sformfield_id = FatUtility::int($sformfield_id);
         $lang_id = FatUtility::int($lang_id);
 
-        if ($sformfield_id==0 || $lang_id==0) {
+        if ($sformfield_id == 0 || $lang_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
 
         $langFrm = $this->getSupplierApprovalLangForm($sformfield_id, $lang_id);
-
-        $langData = SupplierFormFields::getAttributesByLangId($lang_id, $sformfield_id);
-
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(SupplierFormFields::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($sformfield_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = SupplierFormFields::getAttributesByLangId($lang_id, $sformfield_id);
+        }
         if ($langData) {
             $langFrm->fill($langData);
         }
@@ -1865,10 +1882,18 @@ class UsersController extends AdminBaseController
 
         $frm = new Form('frmSuppilerLang');
         $frm->addHiddenField('', 'sformfield_id', $sformfield_id);
-        $frm->addHiddenField('', 'sformfieldlang_lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'sformfieldlang_lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField('Caption', 'sformfield_caption');
 
         $frm->addTextarea(Labels::getLabel('LBL_Comments', $this->adminLangId), 'sformfield_comment');
+
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+
         $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }

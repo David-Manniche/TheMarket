@@ -34,11 +34,11 @@ $(document).ready(function() {
         });
     };
 
-    getLangForm = function(frmType, langId) {
+    getLangForm = function(frmType, langId, autoFillLangData = 0) {
         fcom.resetEditorInstance();
         $(dv).html(fcom.getLoader());
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('Configurations', 'langForm', [frmType, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Configurations', 'langForm', [frmType, langId, autoFillLangData]), '', function(t) {
             $(dv).html(t);
             fcom.setEditorLayout(langId);
             if (frmType == FORM_MEDIA) {

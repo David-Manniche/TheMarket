@@ -84,10 +84,10 @@ $(document).ready(function(){
 		});
 	}
 	
-	editMetaTagLangForm = function(metaId,langId, metaType){
+	editMetaTagLangForm = function(metaId,langId, metaType, autoFillLangData = 0){
 		fcom.displayProcessing();
 	//	$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('MetaTags', 'langForm', [metaId,langId,metaType]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('MetaTags', 'langForm', [metaId,langId,metaType, autoFillLangData]), '', function(t) {
 				//$.facebox(t,'faceboxWidth');
 				fcom.updateFaceboxContent(t);
 			});

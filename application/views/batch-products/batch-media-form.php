@@ -5,12 +5,11 @@ $mediaFrm->setFormTagAttribute("class","form form--horizontal");
 	<h2><?php echo Labels::getLabel('LBL_Manage_Batch_Products_Media', $siteLangId); ?></h2>
 	<ul class="tabs tabs--small    -js clearfix setactive-js">
 		<li ><a href="javascript:void(0)" onclick="batchForm()"><?php echo Labels::getLabel( 'LBL_General', $siteLangId ); ?></a></li>
-		<?php
-		$inactive = ($prodgroup_id == 0) ? 'fat-inactive' : '';
-		foreach($language as $lang_id => $lang_name ){ ?>
-		<li class="<?php echo $inactive;?>"><a href="javascript:void(0)" <?php if( $prodgroup_id >0){ ?>onclick="batchLangForm(<?php echo $prodgroup_id; ?>, <?php echo $lang_id; ?>)" <?php } ?>><?php echo $lang_name; ?></a></li>
-		<?php } ?>
-
+        <li class="<?php echo (0 == $prodgroup_id) ? 'fat-inactive' : ''; ?>">
+            <a href="javascript:void(0);" <?php echo (0 < $prodgroup_id) ? "onclick='productLangForm(" . $prodgroup_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                <?php echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
+            </a>
+        </li>
 		<li class="is-active"><a href="javascript:void(0)" <?php if( $prodgroup_id >0){ ?> onClick="batchMediaForm(<?php echo $prodgroup_id; ?>)" <?php } ?>><?php echo Labels::getLabel('LBL_Media',$siteLangId); ?></a></li>
 	</ul>
 

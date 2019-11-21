@@ -104,9 +104,9 @@ $(document).ready(function() {
         });
     }
 
-    editCollectionLangForm = function(collectionId, langId) {
+    editCollectionLangForm = function(collectionId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('Collections', 'langForm', [collectionId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Collections', 'langForm', [collectionId, langId, autoFillLangData]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
     };

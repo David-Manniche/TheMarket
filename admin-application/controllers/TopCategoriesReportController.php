@@ -51,7 +51,7 @@ class TopCategoriesReportController extends AdminBaseController
         //$srch->joinTable( '(' . $uWsrch->getQuery() . ')', 'LEFT OUTER JOIN', 'tquwl.uwlp_selprod_id = op.op_selprod_id', 'tquwl' );
         $srch->joinTable( Product::DB_TBL_PRODUCT_TO_CATEGORY, 'LEFT OUTER JOIN', 'SUBSTRING( op_selprod_code, 1, (LOCATE( "_", op_selprod_code ) - 1 ) ) = ptc.ptc_product_id', 'ptc' );
         $srch->joinTable( ProductCategory::DB_TBL, 'LEFT OUTER JOIN', 'ptc.ptc_prodcat_id = pc.prodcat_id', 'pc' );
-        $srch->joinTable( ProductCategory::DB_LANG_TBL, 'LEFT OUTER JOIN', 'pc.prodcat_id = pc_l.prodcatlang_prodcat_id AND pc_l.prodcatlang_lang_id = '. $this->adminLangId, 'pc_l' );
+        $srch->joinTable( ProductCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pc.prodcat_id = pc_l.prodcatlang_prodcat_id AND pc_l.prodcatlang_lang_id = '. $this->adminLangId, 'pc_l' );
         $srch->joinTable( 'tbl_seller_products', 'LEFT OUTER JOIN', 'op_selprod_id = sp.selprod_id', 'sp' );
         $srch->addCondition( 'op_is_batch', '=', '0' );
         $srch->addStatusCondition( unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")) );

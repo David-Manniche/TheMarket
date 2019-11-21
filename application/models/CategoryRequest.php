@@ -2,7 +2,7 @@
 class CategoryRequest extends MyAppModel
 {
     const DB_TBL = 'tbl_seller_category_requests';
-    const DB_LANG_TBL = 'tbl_seller_category_requests_lang';
+    const DB_TBL_LANG = 'tbl_seller_category_requests_lang';
     const DB_TBL_PREFIX = 'scategoryreq_';
     const DB_TBL_LANG_PREFIX = 'scategoryreqlang_';
     const CATEGORY_REQUEST_PENDING = 0;
@@ -22,7 +22,7 @@ class CategoryRequest extends MyAppModel
 
         if ($langId > 0) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'cat_l.'.static::DB_TBL_LANG_PREFIX.'scategoryreq_id = cat.'.static::tblFld('id').' and
 			cat_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,

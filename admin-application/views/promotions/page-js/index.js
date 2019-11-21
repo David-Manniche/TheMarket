@@ -106,9 +106,9 @@ $(document).on('change', "select[name='banner_blocation_id']", function() {
         });
     };
 
-    promotionLangForm = function(promotionId, langId) {
+    promotionLangForm = function(promotionId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('Promotions', 'promotionLangForm', [promotionId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Promotions', 'promotionLangForm', [promotionId, langId, autoFillLangData]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
     };

@@ -157,7 +157,7 @@ class ManualShippingApiController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
     
-    public function langForm($mshipapi_id = 0,$lang_id = 0)
+    public function langForm($mshipapi_id = 0,$lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canViewManualShippingApi();
         
@@ -169,8 +169,17 @@ class ManualShippingApiController extends AdminBaseController
         }
         
         $langFrm = $this->getLangForm($mshipapi_id, $lang_id);
-            
-        $langData = ManualShippingApi::getAttributesByLangId($lang_id, $mshipapi_id);        
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(ManualShippingApi::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($mshipapi_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else { 
+            $langData = ManualShippingApi::getAttributesByLangId($lang_id, $mshipapi_id);        
+        }
         
         if($langData) {
             $langFrm->fill($langData);            
@@ -210,6 +219,15 @@ class ManualShippingApiController extends AdminBaseController
         if(!$obj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($obj->getError());
             FatUtility::dieJsonError(Message::getHtml());                    
+        }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(ManualShippingApi::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($mshipapi_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId=0;    
@@ -292,7 +310,7 @@ class ManualShippingApiController extends AdminBaseController
         
         $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'mshipapi_state_id', array());
         $frm->addTextbox(Labels::getLabel('LBL_Postal_Code', $this->adminLangId), 'mshipapi_zip');
-        
+                
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));        
         return $frm;
     }
@@ -306,8 +324,16 @@ class ManualShippingApiController extends AdminBaseController
         
         $frm = new Form('frmManualShippingLang');    
         $frm->addHiddenField('', 'mshipapi_id', $mshipapi_id);        
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addTextarea(Labels::getLabel('LBL_Comments', $this->adminLangId), 'mshipapi_comment');
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+        
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));        
         return $frm;
     }

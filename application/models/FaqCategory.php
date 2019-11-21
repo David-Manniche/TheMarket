@@ -2,7 +2,7 @@
 class FaqCategory extends MyAppModel
 {
     const DB_TBL = 'tbl_faq_categories';
-    const DB_LANG_TBL = 'tbl_faq_categories_lang';
+    const DB_TBL_LANG = 'tbl_faq_categories_lang';
     const DB_TBL_PREFIX = 'faqcat_';
     const DB_TBL_LANG_PREFIX = 'faqcatlang_';
 
@@ -27,7 +27,7 @@ class FaqCategory extends MyAppModel
 
         if ($langId > 0) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'fc_l.'.static::DB_TBL_LANG_PREFIX.'faqcat_id = fc.'.static::tblFld('id').' and
 			fc_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,

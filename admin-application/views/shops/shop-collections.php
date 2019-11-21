@@ -7,14 +7,11 @@
         <div class=" tabs_nav_container  flat">
             <ul class="tabs_nav">
                 <li><a href="javascript:void(0)" onclick="shopForm(<?php echo $shop_id ?>);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a></li>
-                <?php
-                $inactive=($shop_id==0)?'fat-inactive':'';
-                foreach ($languages as $langId => $langName) { ?>
-                    <li class="<?php echo $inactive;?>"><a href="javascript:void(0);"
-                        <?php if ($shop_id > 0) {?>
-                            onclick="addShopLangForm(<?php echo $shop_id ?>, <?php echo $langId;?>);"
-                        <?php }?>><?php echo Labels::getLabel('LBL_'.$langName, $adminLangId);?></a></li>
-                <?php } ?>
+                <li class="<?php echo (empty($shop_id)) ? 'fat-inactive' : ''; ?>">
+                    <a href="javascript:void(0);" <?php echo ($shop_id) ? "onclick='addShopLangForm(" . $shop_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                        <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
+                    </a>
+                </li>
                 <?php /* <li><a href="javascript:void(0);"
                 <?php if ($shop_id > 0) {?>
                     onclick="shopTemplates(<?php echo $shop_id ?>);"

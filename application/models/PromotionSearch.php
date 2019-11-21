@@ -12,7 +12,7 @@ class PromotionSearch extends SearchBase
 
         if ($langId > 0) {
             $this->joinTable(
-                Promotion::DB_LANG_TBL,
+                Promotion::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'pr_l.promotionlang_promotion_id = pr.promotion_id
 			AND pr_l.promotionlang_lang_id = ' . $langId,
@@ -61,7 +61,7 @@ class PromotionSearch extends SearchBase
 
         if ($langId > 0) {
             $this->joinTable(
-                Banner::DB_LANG_TBL,
+                Banner::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 $alias.'_l.bannerlang_banner_id = '.$alias.'.banner_id and '.$alias.'_l.bannerlang_lang_id = '.$langId,
                 $alias.'_l'
@@ -85,7 +85,7 @@ class PromotionSearch extends SearchBase
 
         if ($langId > 0) {
             $this->joinTable(
-                BannerLocation::DB_LANG_TBL,
+                BannerLocation::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 $alias.'bl_l.blocationlang_blocation_id = '.$alias.'bl.blocation_id and '.$alias.'bl_l.blocationlang_lang_id = '.$langId,
                 $alias.'bl_l'
@@ -171,15 +171,15 @@ class PromotionSearch extends SearchBase
 
         if ($langId) {
             $this->joinTable(
-                SellerProduct::DB_LANG_TBL,
+                SellerProduct::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'sp_l.'.SellerProduct::DB_LANG_TBL_PREFIX.'selprod_id = sp.'.SellerProduct::tblFld('id').' and
-			sp_l.'.SellerProduct::DB_LANG_TBL_PREFIX.'lang_id = '.$langId,
+                'sp_l.'.SellerProduct::DB_TBL_LANG_PREFIX.'selprod_id = sp.'.SellerProduct::tblFld('id').' and
+			sp_l.'.SellerProduct::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
                 'sp_l'
             );
 
             $this->joinTable(
-                Product::DB_LANG_TBL,
+                Product::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'productlang_product_id = tp.product_id
 			AND productlang_lang_id = ' . $langId,

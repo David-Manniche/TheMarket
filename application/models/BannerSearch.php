@@ -12,7 +12,7 @@ class BannerSearch extends SearchBase
 
         if ($langId > 0) {
             $this->joinTable(
-                Banner::DB_LANG_TBL,
+                Banner::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'b_l.bannerlang_banner_id = b.banner_id
 			AND b_l.bannerlang_lang_id = ' . $langId,
@@ -37,7 +37,7 @@ class BannerSearch extends SearchBase
 
         $this->joinTable(Banner::DB_TBL_LOCATIONS, 'LEFT OUTER JOIN', 'bl.blocation_id = b.banner_blocation_id', 'bl');
         if ($langId > 0) {
-            $this->joinTable(Banner::DB_LANG_TBL_LOCATIONS, 'LEFT OUTER JOIN', 'bl_l.blocationlang_blocation_id = bl.blocation_id AND bl_l.blocationlang_lang_id = ' . $langId, 'bl_l');
+            $this->joinTable(Banner::DB_TBL_LANG_LOCATIONS, 'LEFT OUTER JOIN', 'bl_l.blocationlang_blocation_id = bl.blocation_id AND bl_l.blocationlang_lang_id = ' . $langId, 'bl_l');
         }
     }
 
@@ -77,7 +77,7 @@ class BannerSearch extends SearchBase
 
         $this->joinTable(Promotion::DB_TBL, 'LEFT OUTER JOIN', 'pr.promotion_id = b.banner_record_id and b.banner_type = '.Banner::TYPE_PPC, 'pr');
         if ($langId > 0) {
-            $this->joinTable(Promotion::DB_LANG_TBL, 'LEFT OUTER JOIN', 'pr_l.promotionlang_promotion_id = pr.promotion_id AND pr_l.promotionlang_lang_id = ' . $langId, 'pr_l');
+            $this->joinTable(Promotion::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pr_l.promotionlang_promotion_id = pr.promotion_id AND pr_l.promotionlang_lang_id = ' . $langId, 'pr_l');
         }
     }
 

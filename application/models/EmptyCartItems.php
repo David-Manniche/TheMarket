@@ -2,7 +2,7 @@
 class EmptyCartItems extends MyAppModel
 {
     const DB_TBL = 'tbl_empty_cart_items';
-    const DB_LANG_TBL ='tbl_empty_cart_items_lang';
+    const DB_TBL_LANG ='tbl_empty_cart_items_lang';
     const DB_TBL_PREFIX = 'emptycartitem_';
 
     public function __construct($id = 0)
@@ -16,7 +16,7 @@ class EmptyCartItems extends MyAppModel
 
         if ($langId > 0) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'emptycartitemlang_emptycartitem_id = emptycartitem_id
 			AND emptycartitemlang_lang_id = ' . $langId

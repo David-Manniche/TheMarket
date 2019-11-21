@@ -64,9 +64,9 @@ $(document).ready(function() {
         });
     }
 
-    editOrderStatusLangForm = function(orderStatusId, langId) {
+    editOrderStatusLangForm = function(orderStatusId, langId, autoFillLangData = 0) {
         $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('OrderStatus', 'langForm', [orderStatusId, langId]), '', function(t) {
+            fcom.ajax(fcom.makeUrl('OrderStatus', 'langForm', [orderStatusId, langId, autoFillLangData]), '', function(t) {
                 $.facebox(t, 'faceboxWidth');
             });
         });

@@ -225,7 +225,7 @@ class ShopsController extends AdminBaseController
         $newTabLangId = 0;
         if ($shop_id > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = Shop::getAttributesByLangId($langId, $shop_id)) {
                     $newTabLangId = $langId;
                     break;
@@ -243,7 +243,7 @@ class ShopsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function langForm($shop_id = 0, $lang_id = 0)
+    public function langForm($shop_id = 0, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canEditShops();
 
@@ -255,7 +255,17 @@ class ShopsController extends AdminBaseController
         }
 
         $shopLangFrm = $this->getLangForm($shop_id, $lang_id);
-        $langData = Shop::getAttributesByLangId($lang_id, $shop_id);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(Shop::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($shop_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = Shop::getAttributesByLangId($lang_id, $shop_id);
+        }
 
         if ($langData) {
             $shopLangFrm->fill($langData);
@@ -273,12 +283,12 @@ class ShopsController extends AdminBaseController
     public function langSetup()
     {
         $this->objPrivilege->canEditShops();
-        $post=FatApp::getPostedData();
+        $post = FatApp::getPostedData();
 
         $shop_id = $post['shop_id'];
         $lang_id = $post['lang_id'];
 
-        if ($shop_id==0 || $lang_id == 0) {
+        if ($shop_id == 0 || $lang_id == 0) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -288,17 +298,17 @@ class ShopsController extends AdminBaseController
         unset($post['shop_id']);
         unset($post['lang_id']);
         $data = array(
-        'shoplang_lang_id'=>$lang_id,
-        'shoplang_shop_id'=>$shop_id,
-        'shop_name'=>$post['shop_name'],
-        'shop_city'=>$post['shop_city'],
-        'shop_contact_person'=>$post['shop_contact_person'],
-        'shop_description'=>$post['shop_description'],
-        'shop_payment_policy'=>$post['shop_payment_policy'],
-        'shop_delivery_policy'=>$post['shop_delivery_policy'],
-        'shop_refund_policy'=>$post['shop_refund_policy'],
-        'shop_additional_info'=>$post['shop_additional_info'],
-        'shop_seller_info'=>$post['shop_seller_info'],
+            'shoplang_lang_id' => $lang_id,
+            'shoplang_shop_id' => $shop_id,
+            'shop_name' => $post['shop_name'],
+            'shop_city' => $post['shop_city'],
+            'shop_contact_person' => $post['shop_contact_person'],
+            'shop_description' => $post['shop_description'],
+            'shop_payment_policy' => $post['shop_payment_policy'],
+            'shop_delivery_policy' => $post['shop_delivery_policy'],
+            'shop_refund_policy' => $post['shop_refund_policy'],
+            'shop_additional_info' => $post['shop_additional_info'],
+            'shop_seller_info' => $post['shop_seller_info'],
         );
 
         $shopObj = new Shop($shop_id);
@@ -307,9 +317,19 @@ class ShopsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $newTabLangId=0;
-        $languages=Language::getAllNames();
-        foreach ($languages as $langId =>$langName) {
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(Shop::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($shop_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        }
+
+
+        $newTabLangId = 0;
+        $languages = Language::getAllNames();
+        foreach ($languages as $langId => $langName) {
             if (!$row = Shop::getAttributesByLangId($langId, $shop_id)) {
                 $newTabLangId = $langId;
                 break;
@@ -522,7 +542,7 @@ class ShopsController extends AdminBaseController
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Shop_SEO_Friendly_URL', $this->adminLangId), 'urlrewrite_custom');
         $fld->requirements()->setRequired();
         $frm->addTextBox(Labels::getLabel('LBL_Postal_Code', $this->adminLangId), 'shop_postalcode');
-        $phnFld = $frm->addTextBox(Labels::getLabel('LBL_Phone', $this->adminLangId), 'shop_phone', '', array('class'=>'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
+        $phnFld = $frm->addTextBox(Labels::getLabel('LBL_Phone', $this->adminLangId), 'shop_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
         $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
         $countryObj = new Countries();
         $countriesArr = $countryObj->getCountriesArr($this->adminLangId);
@@ -537,7 +557,7 @@ class ShopsController extends AdminBaseController
         $fld->requirements()->setInt();
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Minimum_Wallet_Balance', $this->adminLangId), 'shop_cod_min_wallet_balance');
         $fld->requirements()->setFloat();
-        $fld->htmlAfterField = "<br><small>".Labels::getLabel("LBL_Seller_needs_to_maintain_to_accept_COD_orders._Default_is_-1", $this->adminLangId)."</small>";
+        $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_Seller_needs_to_maintain_to_accept_COD_orders._Default_is_-1", $this->adminLangId) . "</small>";
         $frm->addCheckBox(Labels::getLabel('LBL_Featured', $this->adminLangId), 'shop_featured', 1, array(), false, 0);
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
@@ -548,7 +568,7 @@ class ShopsController extends AdminBaseController
     {
         $frm = new Form('frmShopLang');
         $frm->addHiddenField('', 'shop_id', $shop_id);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Shop_Name', $this->adminLangId), 'shop_name');
         $frm->addTextBox(Labels::getLabel('LBL_Shop_City', $this->adminLangId), 'shop_city');
         $frm->addTextBox(Labels::getLabel('LBL_Contact_person', $this->adminLangId), 'shop_contact_person');
@@ -569,6 +589,13 @@ class ShopsController extends AdminBaseController
         $fld1->htmlAfterField='<span id="input-field'.AttachedFile::FILETYPE_SHOP_BANNER.'"></span>
         <span class="uploadimage--info">Preferred Dimension: Width = 1000px, Height = 250px </span>
         <div class="uploaded--image"><img src="'.CommonHelper::generateUrl('Image','shopBanner',array($shop_id,$lang_id,'THUMB'),CONF_WEBROOT_FRONT_URL).'"></div>'; */
+
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
@@ -755,7 +782,7 @@ class ShopsController extends AdminBaseController
     {
         $post = FatApp::getPostedData();
         $scollection_id = FatUtility::int($scollection_id);
-        $shop_id=$this->commonShopCollection($shop_id);
+        $shop_id = $this->commonShopCollection($shop_id);
         $colectionForm = $this->getCollectionGeneralForm($shop_id);
         $shopcolDetails = ShopCollection::getCollectionGeneralDetail($shop_id, $scollection_id);
         if (!empty($shopcolDetails)) {
@@ -767,12 +794,12 @@ class ShopsController extends AdminBaseController
             $urlSrch->addFld('urlrewrite_custom');
 
 
-            $urlSrch->addCondition('urlrewrite_original', '=', Shop::SHOP_COLLECTION_ORGINAL_URL.$shop_id);
+            $urlSrch->addCondition('urlrewrite_original', '=', Shop::SHOP_COLLECTION_ORGINAL_URL . $shop_id);
             $rs = $urlSrch->getResultSet();
             $urlRow = FatApp::getDb()->fetch($rs);
             if ($urlRow) {
                 $shopUrl = Shop::getShopUrl($shop_id, 'urlrewrite_custom');
-                $shopcolDetails['urlrewrite_custom'] = str_replace('-'.$shopUrl, '', $urlRow['urlrewrite_custom']);
+                $shopcolDetails['urlrewrite_custom'] = str_replace('-' . $shopUrl, '', $urlRow['urlrewrite_custom']);
             }
             /* ] */
             $scollection_id = (array_key_exists('scollection_id', $shopcolDetails)) ? $shopcolDetails['scollection_id'] : 0;
@@ -976,10 +1003,10 @@ class ShopsController extends AdminBaseController
 
 
         /* ] */
-        $newTabLangId=0;
-        if ($collection_id>0) {
+        $newTabLangId = 0;
+        if ($collection_id > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = ShopCollection::getAttributesByLangId($langId, $shop_id)) {
                     $newTabLangId = $langId;
                     break;
@@ -987,7 +1014,7 @@ class ShopsController extends AdminBaseController
             }
         } else {
             $collection_id = $record->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
 
         $this->set('msg', Labels::getLabel('MSG_Setup_Successful', $this->adminLangId));
@@ -997,7 +1024,7 @@ class ShopsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function shopCollectionLangForm($shop_id, $scollection_id, $langId)
+    public function shopCollectionLangForm($shop_id, $scollection_id, $langId, $autoFillLangData = 0)
     {
         $scollection_id = Fatutility::int($scollection_id);
         if (!$scollection_id) {
@@ -1007,13 +1034,23 @@ class ShopsController extends AdminBaseController
         $post = FatApp::getPostedData();
         $shopDetails = Shop::getAttributesById($shop_id, null, false);
         $shopColLangFrm = $this->getCollectionLangForm($scollection_id, $shop_id, $langId);
-        if ($row = ShopCollection::getAttributesByLangId($langId, $scollection_id)) {
-            $data['scollection_id']=$row['scollectionlang_scollection_id'];
-            $data['lang_id']=$row['scollectionlang_lang_id'];
-            $data['name']=$row['scollection_name'];
-
-            $shopColLangFrm ->fill($data);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(ShopCollection::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($scollection_id, $langId);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $row = current($translatedData);
+        } else {
+            $row = ShopCollection::getAttributesByLangId($langId, $scollection_id);
         }
+        
+        $data = [];
+        $data['scollection_id'] = $scollection_id;
+        $data['lang_id'] =  $langId;
+        $data['name'] =  isset($row['scollection_name']) ? $row['scollection_name'] : '';
+        $shopColLangFrm ->fill($data);
 
         $this->set('languages', Language::getAllNames());
         $this->set('shopColLangFrm', $shopColLangFrm);
@@ -1029,9 +1066,16 @@ class ShopsController extends AdminBaseController
     {
         $frm = new Form('frmMetaTagLang');
         $frm->addHiddenField('', 'scollection_id', $scollection_id);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addHiddenField('', 'shop_id', $shop_id);
         $frm->addRequiredField('Collection Name', 'name');
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
@@ -1057,11 +1101,21 @@ class ShopsController extends AdminBaseController
             Message::addErrorMessage($record->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
+
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(ShopCollection::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($scollection_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        }
+
         //	$this->commonShopCollection();
-        $newTabLangId=0;
-        if ($scollection_id>0) {
+        $newTabLangId = 0;
+        if ($scollection_id > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 //	print_r(ShopCollection::getAttributesByLangId($langId,$scollection_id));
                 if (!$row = ShopCollection::getAttributesByLangId($langId, $scollection_id)) {
                     $newTabLangId = $langId;
@@ -1070,7 +1124,7 @@ class ShopsController extends AdminBaseController
             }
         } else {
             $collection_id = $record->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
 
         $this->set('msg', Labels::getLabel('MSG_Setup_Successful', $this->adminLangId));
@@ -1084,7 +1138,7 @@ class ShopsController extends AdminBaseController
     {
         $post = FatApp::getPostedData();
         $scollection_id = FatUtility::int($scollection_id);
-        $shop_id=$this->commonShopCollection($shop_id);
+        $shop_id = $this->commonShopCollection($shop_id);
         if (!UserPrivilege::canEditSellerCollection($scollection_id)) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -1150,7 +1204,7 @@ class ShopsController extends AdminBaseController
         $shopDetails = Shop::getAttributesById($post['shopId'], array('shop_user_id'));
         $srch = SellerProduct::getSearchObject($this->adminLangId);
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
-        $srch->joinTable(Product::DB_LANG_TBL, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$this->adminLangId, 'p_l');
+        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$this->adminLangId, 'p_l');
         $srch->addOrder('product_name');
         if (!empty($post['keyword'])) {
             $cnd = $srch->addCondition('product_name', 'LIKE', '%' . $post['keyword'] . '%');

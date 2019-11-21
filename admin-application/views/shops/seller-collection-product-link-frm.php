@@ -7,16 +7,14 @@ if (isset($scollection_id) && $scollection_id >0) {
 <ul class="tabs_nav tabs_nav--internal">
     <li>
         <a onclick="getShopCollectionGeneralForm(<?php echo $shop_id; ?>, <?php echo $scollection_id; ?>);" href="javascript:void(0)">
-            <?php echo Labels::getLabel('TXT_GENERAL_link', $adminLangId);?>
+            <?php echo Labels::getLabel('TXT_GENERAL', $adminLangId);?>
         </a>
     </li>
-    <?php foreach ($language as $lang_id => $langName) { ?>
-    <li class="">
-        <a href="javascript:void(0)" onClick="editShopCollectionLangForm(<?php echo $shop_id;?>, <?php echo $scollection_id ?>, <?php echo $lang_id;?>)">
-            <?php echo Labels::getLabel('LBL_'.$langName, $adminLangId);?>
+    <li class="<?php echo (0 == $scollection_id) ? 'fat-inactive' : ''; ?>">
+        <a href="javascript:void(0);" <?php echo (0 < $scollection_id) ? "onclick='editShopCollectionLangForm(" . $shop_id . "," . $scollection_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+            <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
         </a>
     </li>
-    <?php } ?>
     <li>
         <a class="active" onclick="sellerCollectionProducts(<?php echo $scollection_id; ?>,<?php echo $shop_id; ?>);" href="javascript:void(0);">
             <?php echo Labels::getLabel('TXT_LINK', $adminLangId);?>

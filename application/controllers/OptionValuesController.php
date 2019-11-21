@@ -50,14 +50,14 @@ class OptionValuesController extends LoggedUserController
         }
 
         $option_id = FatUtility::int($post['optionvalue_option_id']);
-        if ($option_id>0) {
+        if ($option_id > 0) {
             UserPrivilege::canSellerEditOption($option_id, $this->siteLangId);
         }
         $optionvalue_id = FatUtility::int($post['optionvalue_id']);
         unset($post['optionvalue_id']);
 
         if (0 < $optionvalue_id) {
-            $optionValueObj= new OptionValue();
+            $optionValueObj = new OptionValue();
             $data = $optionValueObj->getAtttibutesByIdAndOptionId($option_id, $optionvalue_id, array('optionvalue_id'));
 
             if ($data === false) {
@@ -76,12 +76,12 @@ class OptionValuesController extends LoggedUserController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $languages=Language::getAllNames();
-        foreach ($languages as $langId=>$langName) {
-            $data=array(
-            'optionvaluelang_optionvalue_id'=>$optionvalue_id,
-            'optionvaluelang_lang_id'=>$langId,
-            'optionvalue_name'=>$post['optionvalue_name'.$langId],
+        $languages = Language::getAllNames();
+        foreach ($languages as $langId => $langName) {
+            $data = array(
+            'optionvaluelang_optionvalue_id' => $optionvalue_id,
+            'optionvaluelang_lang_id' => $langId,
+            'optionvalue_name' => $post['optionvalue_name' . $langId],
             );
             if (!$optionValueObj->updateLangData($langId, $data)) {
                 Message::addErrorMessage($optionValueObj->getError());
@@ -113,7 +113,7 @@ class OptionValuesController extends LoggedUserController
 
 
         if (0 < $optionvalue_id) {
-            $optionValueObj= new OptionValue($optionvalue_id);
+            $optionValueObj = new OptionValue($optionvalue_id);
             $data = $optionValueObj->getOptionValue($option_id);
 
             if ($data === false) {
@@ -129,21 +129,32 @@ class OptionValuesController extends LoggedUserController
         $this->_template->render(false, false);
     }
 
-    private function getForm($option_id=0, $optionvalue_id=0)
+    private function getForm($option_id = 0, $optionvalue_id = 0)
     {
         $option_id = FatUtility::int($option_id);
         $optionvalue_id = FatUtility::int($optionvalue_id);
 
         $lang_id = $this->siteLangId;
 
-        $frm = new Form('frmOptionValues', array('id'=>'frmOptionValues'));
+        $frm = new Form('frmOptionValues', array('id' => 'frmOptionValues'));
         $frm->addHiddenField('', 'optionvalue_id', $optionvalue_id);
         $frm->addHiddenField('', 'optionvalue_option_id', $option_id);
         $frm->addRequiredField(Labels::getLabel('LBL_OPTION_VALUE_IDENTIFIER', $lang_id), 'optionvalue_identifier');
 
         $languages = Language::getAllNames();
-        foreach ($languages as $langId=>$langName) {
-            $frm->addRequiredField(Labels::getLabel('LBL_OPTION_VALUE_NAME', $lang_id).' '.$langName, 'optionvalue_name'.$langId);
+        $defaultLang = true;
+        foreach ($languages as $langId => $langName) {
+            $attr['class'] = 'langField_' . $langId;
+            if (true === $defaultLang) {
+                $attr['class'] .= ' defaultLang';
+                $defaultLang = false;
+            }
+            $frm->addRequiredField(
+                Labels::getLabel('LBL_OPTION_VALUE_NAME', $lang_id) . ' ' . $langName,
+                'optionvalue_name' . $langId,
+                '',
+                $attr
+            );
         }
 
         $optionRow = Option::getAttributesById($option_id);
@@ -157,7 +168,7 @@ class OptionValuesController extends LoggedUserController
             "",
             "btn_clear",
             Labels::getLabel('LBL_CANCEL', $lang_id),
-            array('onclick'=>'optionForm('.$option_id.');')
+            array('onclick' => 'optionForm(' . $option_id . ');')
         );
 
         $fld->attachField($fld_cancel);
@@ -204,7 +215,7 @@ class OptionValuesController extends LoggedUserController
 
     public function setOptionsOrder()
     {
-        $post=FatApp::getPostedData();
+        $post = FatApp::getPostedData();
         if (!empty($post)) {
             $obj = new OptionValue();
             if (!$obj->updateOrder($post['optionvalues'])) {
@@ -217,5 +228,19 @@ class OptionValuesController extends LoggedUserController
             $this->set('msg', Labels::getLabel('LBL_Order_Updated_Successfully', $this->siteLangId));
             $this->_template->render(false, false, 'json-success.php');
         }
+    }
+    
+    public function getTranslatedData()
+    {
+        $dataToTranslate = FatApp::getPostedData('optionvalue_name1', FatUtility::VAR_STRING, '');
+        if (!empty($dataToTranslate)) {
+            $translatedText = $this->translateLangFields(OptionValue::DB_TBL_LANG, ['optionvalue_name' => $dataToTranslate]);
+            $data = [];
+            foreach ($translatedText as $langId => $value) {
+                $data[$langId]['optionvalue_name' . $langId] = $value['optionvalue_name'];
+            }
+            CommonHelper::jsonEncodeUnicode($data, true);
+        }
+        FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
     }
 }

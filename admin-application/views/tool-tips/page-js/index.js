@@ -66,9 +66,9 @@ $(document).ready(function(){
 		});
 	};
 
-	tooltipLangForm = function(tooltipId, langId,action = 'add') {	
+	tooltipLangForm = function(tooltipId, langId,action = 'add', autoFillLangData = 0) {	
 		fcom.displayProcessing();	
-		fcom.ajax(fcom.makeUrl('ToolTips', 'langForm', [tooltipId, langId,action]), '', function(t) {
+		fcom.ajax(fcom.makeUrl('ToolTips', 'langForm', [tooltipId, langId,action, autoFillLangData]), '', function(t) {
 			fcom.updateFaceboxContent(t);
 		});
 	};

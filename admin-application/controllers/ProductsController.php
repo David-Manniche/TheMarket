@@ -105,12 +105,12 @@ class ProductsController extends AdminBaseController
 
         $date_from = FatApp::getPostedData('date_from', FatUtility::VAR_DATE, '');
         if (!empty($date_from)) {
-            $srch->addCondition('tp.product_added_on', '>=', $date_from. ' 00:00:00');
+            $srch->addCondition('tp.product_added_on', '>=', $date_from . ' 00:00:00');
         }
 
         $date_to = FatApp::getPostedData('date_to', FatUtility::VAR_DATE, '');
         if (!empty($date_to)) {
-            $srch->addCondition('tp.product_added_on', '<=', $date_to. ' 23:59:59');
+            $srch->addCondition('tp.product_added_on', '<=', $date_to . ' 23:59:59');
         }
 
         $product_id = FatApp::getPostedData('product_id', FatUtility::VAR_INT, '');
@@ -172,14 +172,14 @@ class ProductsController extends AdminBaseController
             }
         }
         $product_added_by_admin = 1;
-        $totalProducts= 0;
+        $totalProducts = 0;
         $productFrm = $this->getForm($attrgrp_id);
         if ($product_id > 0) {
             $row_data = Product::getAttributesById($product_id);
 
             $taxData = array();
             $taxObj = Tax::getTaxCatObjByProductId($product_id, $this->adminLangId);
-            if ($row_data['product_seller_id']>0) {
+            if ($row_data['product_seller_id'] > 0) {
                 $taxObj->addCondition('ptt_seller_user_id', '=', $row_data['product_seller_id']);
             } else {
                 $taxObj->addCondition('ptt_seller_user_id', '=', 0);
@@ -258,7 +258,7 @@ class ProductsController extends AdminBaseController
         }
         $data_to_be_save = $post;
         $userId = $post['product_seller_id'];
-        if ($post['ps_free']=='') {
+        if ($post['ps_free'] == '') {
             $data_to_be_save['ps_free'] = 0;
         }
 
@@ -289,7 +289,7 @@ class ProductsController extends AdminBaseController
         /* save Group attributes data[ */
         $num_data_update_arr['prodnumattr_product_id'] = $product_id;
         for ($i = 1; $i <= AttrGroupAttribute::MAX_NUMERIC_ATTRIBUTE_ROWS; $i++) {
-            $num_data_update_arr['prodnumattr_num_'.$i] = isset($post['prodnumattr_num_'.$i]) ? $post['prodnumattr_num_'.$i] : '';
+            $num_data_update_arr['prodnumattr_num_' . $i] = isset($post['prodnumattr_num_' . $i]) ? $post['prodnumattr_num_' . $i] : '';
         }
 
         if (!$prodObj->addUpdateNumericAttributes($num_data_update_arr)) {
@@ -302,10 +302,10 @@ class ProductsController extends AdminBaseController
         /*Save Prodcut tax category [*/
 
         $prodTaxData = array(
-        'ptt_product_id'=>$product_id,
-        'ptt_taxcat_id'=>$post['ptt_taxcat_id'],
+            'ptt_product_id' => $product_id,
+            'ptt_taxcat_id' => $post['ptt_taxcat_id'],
         );
-        $prodTaxData['ptt_seller_user_id']= $userId;
+        $prodTaxData['ptt_seller_user_id'] = $userId;
 
         $taxObj = new Tax();
         if ($userId) {
@@ -337,14 +337,27 @@ class ProductsController extends AdminBaseController
             }
         }
         /*]*/
+
+        $newTabLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        if ($product_id > 0) {
+            $languages = Language::getAllNames();
+            foreach ($languages as $langId => $langName) {
+                if (!$row = Product::getAttributesByLangId($langId, $product_id)) {
+                    $newTabLangId = $langId;
+                    break;
+                }
+            }
+        }
+
+
         Product::updateMinPrices($product_id);
         $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->adminLangId));
         $this->set('product_id', $product_id);
-        $this->set('lang_id', $this->adminLangId);
+        $this->set('lang_id', $newTabLangId);
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function langForm($product_id = 0, $lang_id = 0)
+    public function langForm($product_id, $lang_id, $autoFillLangData = 0)
     {
         $this->objPrivilege->canEditProducts();
 
@@ -357,11 +370,20 @@ class ProductsController extends AdminBaseController
         }
 
         $productLangFrm = $this->getLangForm($product_id, $lang_id);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(Product::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($product_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $productLangData = current($translatedData);
+        } else {
+            $prodObj = new Product($product_id);
+            $productLangData = $prodObj->getAttributesByLangId($lang_id, $product_id);
+        }
 
-        $prodObj = new Product($product_id);
-        $productLangData = $prodObj->getAttributesByLangId($lang_id, $product_id);
-
-        if ($productLangData) {
+        if (!empty($productLangData)) {
             $productLangFrm->fill($productLangData);
         }
 
@@ -378,7 +400,7 @@ class ProductsController extends AdminBaseController
         $this->objPrivilege->canEditProducts();
         $post = FatApp::getPostedData();
         $product_id = FatUtility::int($post['product_id']);
-        $lang_id = $post['lang_id'];
+        $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
 
         if ($product_id == 0 || $lang_id == 0) {
             Message::addErrorMessage($this->str_invalid_request);
@@ -389,6 +411,7 @@ class ProductsController extends AdminBaseController
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         unset($post['product_id']);
         unset($post['lang_id']);
+
         $data_to_update = array(
         'productlang_product_id'    =>    $product_id,
         'productlang_lang_id'        =>    $lang_id,
@@ -402,6 +425,15 @@ class ProductsController extends AdminBaseController
         if (!$prodObj->updateLangData($lang_id, $data_to_update)) {
             Message::addErrorMessage($prodObj->getError());
             FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(Product::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($product_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         /* save attributes data[ */
@@ -420,7 +452,7 @@ class ProductsController extends AdminBaseController
         $newTabLangId = 0;
         $languages = Language::getAllNames();
         foreach ($languages as $langId => $langName) {
-            if (!$row=Product::getAttributesByLangId($langId, $product_id)) {
+            if (!$row = Product::getAttributesByLangId($langId, $product_id)) {
                 $newTabLangId = $langId;
                 break;
             }
@@ -553,7 +585,7 @@ class ProductsController extends AdminBaseController
 
         $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'tp.product_brand_id = brand.brand_id', 'brand');
 
-        $srch->joinTable(Brand::DB_LANG_TBL, 'LEFT OUTER JOIN', 'brandlang_brand_id = brand.brand_id AND brandlang_lang_id = ' . $this->adminLangId);
+        $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'brandlang_brand_id = brand.brand_id AND brandlang_lang_id = ' . $this->adminLangId);
 
         $srch->addMultipleFields(array('product_id', 'product_brand_id', 'IFNULL(product_name,product_identifier) as product_name', 'IFNULL(brand_name,brand_identifier) as brand_name','IFNULL(brand.brand_active,1) AS brand_active','IFNULL(brand.brand_deleted,0) AS brand_deleted'));
         $srch->addCondition('product_id', '=', $product_id);
@@ -954,7 +986,7 @@ class ProductsController extends AdminBaseController
         $userId = 0;
         if ($product_id) {
             $product = Product::getAttributesById($product_id);
-            if ($product['product_seller_id']>0) {
+            if ($product['product_seller_id'] > 0) {
                 $userId  = $product['product_seller_id'];
             }
         }
@@ -978,7 +1010,7 @@ class ProductsController extends AdminBaseController
         $srch->addMultipleFields(array('shippingapi_id, shippingapi_name'));
 
         if (!empty($post['keyword'])) {
-            $cnd = $srch->addCondition('shippingapi_name', 'LIKE', '%' . $post['keyword']. '%');
+            $cnd = $srch->addCondition('shippingapi_name', 'LIKE', '%' . $post['keyword'] . '%');
         }
 
         $srch->setPageSize($pagesize);
@@ -1038,9 +1070,11 @@ class ProductsController extends AdminBaseController
     {
         $this->objPrivilege->canViewProducts();
         $lang_id = ($lang_id == 0) ? $this->adminLangId : $lang_id;
-        $frm = new Form('frmProductLang', array('id'=>'frmProductLang'));
+        $frm = new Form('frmProductLang', array('id' => 'frmProductLang'));
         $frm->addHiddenField('', 'product_id', $product_id);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
+        
         $frm->addRequiredField(Labels::getLabel('LBL_Product_Name', $this->adminLangId), 'product_name');
         /* $frm->addTextArea(Labels::getLabel('LBL_Short_Description',$this->adminLangId),'product_short_description'); */
         $frm->addHtmlEditor(Labels::getLabel('LBL_Description', $this->adminLangId), 'product_description');
@@ -1054,10 +1088,10 @@ class ProductsController extends AdminBaseController
                 $db = FatApp::getDb();
                 $attrGrpAttrObj = new AttrGroupAttribute();
                 $srch = $attrGrpAttrObj->getSearchObject();
-                $srch->joinTable(AttrGroupAttribute::DB_TBL.'_lang', 'LEFT JOIN', 'lang.attrlang_attr_id = '. AttrGroupAttribute::DB_TBL_PREFIX.'id AND attrlang_lang_id = '.$lang_id, 'lang');
-                $srch->addCondition(AttrGroupAttribute::DB_TBL_PREFIX.'attrgrp_id', '=', $product_row['product_attrgrp_id']);
-                $srch->addCondition(AttrGroupAttribute::DB_TBL_PREFIX.'type', '=', AttrGroupAttribute::ATTRTYPE_TEXT);
-                $srch->addOrder(AttrGroupAttribute::DB_TBL_PREFIX.'display_order');
+                $srch->joinTable(AttrGroupAttribute::DB_TBL . '_lang', 'LEFT JOIN', 'lang.attrlang_attr_id = ' . AttrGroupAttribute::DB_TBL_PREFIX . 'id AND attrlang_lang_id = ' . $lang_id, 'lang');
+                $srch->addCondition(AttrGroupAttribute::DB_TBL_PREFIX . 'attrgrp_id', '=', $product_row['product_attrgrp_id']);
+                $srch->addCondition(AttrGroupAttribute::DB_TBL_PREFIX . 'type', '=', AttrGroupAttribute::ATTRTYPE_TEXT);
+                $srch->addOrder(AttrGroupAttribute::DB_TBL_PREFIX . 'display_order');
                 $srch->addMultipleFields(array('attr_identifier', 'attr_type', 'attr_fld_name', 'attr_name','attr_options','attr_prefix','attr_postfix'));
                 $rs = $srch->getResultSet();
                 $attributes = $db->fetchAll($rs);
@@ -1072,6 +1106,13 @@ class ProductsController extends AdminBaseController
             }
         }
         /* ] */
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
@@ -1218,24 +1259,24 @@ class ProductsController extends AdminBaseController
         $prodSpecId = FatUtility :: int($post['prodSpecId']);
         $data  = array();
         $languages = Language::getAllNames();
-        if ($prodSpecId>0) {
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        if ($prodSpecId > 0) {
             $prodSpecObj = new ProdSpecification();
             $specResult = $prodSpecObj->getProdSpecification($prodSpecId, $productId);
-
             foreach ($specResult as $key => $value) {
                 foreach ($languages as $langId => $langName) {
-                    if ($value['prodspeclang_lang_id']!=$langId) {
+                    if ($value['prodspeclang_lang_id'] != $langId) {
                         continue;
                     }
-                    $data['prod_spec_name['.$langId.']'] = $value['prodspec_name'];
-                    $data['prod_spec_value['.$langId.']'] = $value['prodspec_value'];
+                    $data['prod_spec_name[' . $langId . ']'] = $value['prodspec_name'];
+                    $data['prod_spec_value[' . $langId . ']'] = $value['prodspec_value'];
                 }
             }
         }
-
+        
         $this->set('languages', $languages);
         $specFrm =  $this->getProductSpecForm();
-
+        
         $data['product_id'] = $productId;
         $data['prodspec_id'] = $prodSpecId;
         $specFrm->fill($data);
@@ -1249,10 +1290,25 @@ class ProductsController extends AdminBaseController
         $this->objPrivilege->canEditProducts();
         $frm = new Form('frmProductSpec');
         $languages = Language::getAllNames();
-
+        $defaultLang = true;
         foreach ($languages as $langId => $langName) {
-            $frm->addRequiredField(Labels::getLabel('LBL_Specification_Name', $this->adminLangId), 'prod_spec_name['.$langId.']');
-            $frm->addRequiredField(Labels::getLabel('LBL_Specification_Value', $this->adminLangId), 'prod_spec_value['.$langId.']');
+            $attr['class'] = 'langField_' . $langId;
+            if (true === $defaultLang) {
+                $attr['class'] .= ' defaultLang';
+                $defaultLang = false;
+            }
+            $frm->addRequiredField(
+                Labels::getLabel('LBL_Specification_Name', $this->adminLangId),
+                'prod_spec_name[' . $langId . ']',
+                '',
+                $attr
+            );
+            $frm->addRequiredField(
+                Labels::getLabel('LBL_Specification_Value', $this->adminLangId),
+                'prod_spec_value[' . $langId . ']',
+                '',
+                $attr
+            );
         }
         $frm->addHiddenField('', 'product_id');
         $frm->addHiddenField('', 'prodspec_id');
@@ -1608,5 +1664,24 @@ class ProductsController extends AdminBaseController
         $sellers = FatApp::getDb()->fetchAll($rs, 'credential_user_id');
 
         die(json_encode($sellers));
+    }
+
+    public function getTranslatedSpecData()
+    {
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $prodSpecName = FatApp::getPostedData('prod_spec_name');
+        $prodSpecValue = FatApp::getPostedData('prod_spec_value');
+        
+        if (empty($prodSpecName) || empty($prodSpecValue)) {
+            FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
+        }
+
+        $translatedText = $this->translateLangFields(ProdSpecification::DB_TBL_LANG, ['prod_spec_name' => $prodSpecName[$siteDefaultLangId], 'prod_spec_value' => $prodSpecValue[$siteDefaultLangId]]);
+        $data = [];
+        foreach ($translatedText as $langId => $value) {
+            $data[$langId]['prod_spec_name[' . $langId . ']'] = $value['prod_spec_name'];
+            $data[$langId]['prod_spec_value[' . $langId . ']'] = $value['prod_spec_value'];
+        }
+        CommonHelper::jsonEncodeUnicode($data, true);
     }
 }

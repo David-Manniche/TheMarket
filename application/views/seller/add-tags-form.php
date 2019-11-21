@@ -12,11 +12,11 @@ $frmTag->setFormTagAttribute('onsubmit', 'setupTag(this); return(false);');
   <div class="tabs tabs--small tabs--scroll clearfix">
     <ul>
       <li class="is-active"><a  href="javascript:void(0)" onclick="addTagForm(<?php echo $tag_id ?>);"><?php echo Labels::getLabel('LBL_Basic', $siteLangId);?></a></li>
-      <?php
-			$inactive=($tag_id==0)?'fat-inactive':'';
-			foreach($languages as $langId=>$langName){?>
-      <li class="<?php echo $inactive;?>"><a href="javascript:void(0);" <?php if($tag_id>0){?> onclick="addTagLangForm(<?php echo $tag_id ?>, <?php echo $langId;?>);" <?php }?>><?php echo $langName;?></a></li>
-      <?php } ?>
+        <li class="<?php echo (0 == $tag_id) ? 'fat-inactive' : ''; ?>">
+            <a href="javascript:void(0);" <?php echo (0 < $tag_id) ? "onclick='addTagLangForm(" . $tag_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                <?php echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
+            </a>
+        </li>
     </ul>
   </div>
   <div class="tabs__content form">

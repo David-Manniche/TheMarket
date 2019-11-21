@@ -163,9 +163,9 @@ class ReportsController extends LoggedUserController
 
         $srch = SellerProduct::getSearchObject($this->siteLangId);
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
-        $srch->joinTable(Product::DB_LANG_TBL, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$this->siteLangId, 'p_l');
+        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$this->siteLangId, 'p_l');
         $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'p.product_brand_id = b.brand_id', 'b');
-        $srch->joinTable(Brand::DB_LANG_TBL, 'LEFT OUTER JOIN', 'b.brand_id = b_l.brandlang_brand_id AND b_l.brandlang_lang_id = '. $this->siteLangId, 'b_l');
+        $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'b.brand_id = b_l.brandlang_brand_id AND b_l.brandlang_lang_id = '. $this->siteLangId, 'b_l');
         $srch->joinTable('(' . $uWsrch->getQuery() . ')', 'LEFT OUTER JOIN', 'tquwl.uwlp_selprod_id = sp.selprod_id', 'tquwl');
         $srch->addCondition('selprod_user_id', '=', $userId);
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
@@ -237,9 +237,9 @@ class ReportsController extends LoggedUserController
         $loggedUserId = UserAuthentication::getLoggedUserId();
         $srch = SellerProduct::getSearchObject($this->siteLangId);
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
-        $srch->joinTable(Product::DB_LANG_TBL, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->siteLangId, 'p_l');
+        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->siteLangId, 'p_l');
         $srch->joinTable(Brand::DB_TBL, 'INNER JOIN', 'p.product_brand_id = b.brand_id', 'b');
-        $srch->joinTable(Brand::DB_LANG_TBL, 'LEFT OUTER JOIN', 'b.brand_id = b_l.brandlang_brand_id  AND brandlang_lang_id = '.$this->siteLangId, 'b_l');
+        $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'b.brand_id = b_l.brandlang_brand_id  AND brandlang_lang_id = '.$this->siteLangId, 'b_l');
         $srch->addCondition('selprod_user_id', '=', $loggedUserId);
         $srch->addCondition('selprod_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
@@ -331,9 +331,9 @@ class ReportsController extends LoggedUserController
         $srch = SellerProduct::getSearchObject($this->siteLangId);
         $srch->joinTable('('. $orderProductSrch->getQuery() .')', 'INNER JOIN', 'sp.selprod_id = qryop.op_selprod_id', 'qryop');
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
-        $srch->joinTable(Product::DB_LANG_TBL, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->siteLangId, 'p_l');
+        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->siteLangId, 'p_l');
         $srch->joinTable(Brand::DB_TBL, 'INNER JOIN', 'p.product_brand_id = b.brand_id', 'b');
-        $srch->joinTable(Brand::DB_LANG_TBL, 'LEFT OUTER JOIN', 'b.brand_id = b_l.brandlang_brand_id  AND brandlang_lang_id = '.$this->siteLangId, 'b_l');
+        $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'b.brand_id = b_l.brandlang_brand_id  AND brandlang_lang_id = '.$this->siteLangId, 'b_l');
         $srch->addCondition('selprod_user_id', '=', $loggedUserId);
         $srch->addOrder('selprod_active', 'DESC');
         $srch->addOrder('product_name');

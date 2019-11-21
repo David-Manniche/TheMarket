@@ -36,7 +36,7 @@ class OrderSearch extends SearchBase
         $this->joinTable(PaymentMethods::DB_TBL, 'LEFT OUTER JOIN', 'o.order_pmethod_id = pm.pmethod_id', 'pm');
 
         if ($langId) {
-            $this->joinTable(PaymentMethods::DB_LANG_TBL, 'LEFT OUTER JOIN', 'pm.pmethod_id = pm_l.pmethodlang_pmethod_id AND pm_l.pmethodlang_lang_id = '. $langId, 'pm_l');
+            $this->joinTable(PaymentMethods::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pm.pmethod_id = pm_l.pmethodlang_pmethod_id AND pm_l.pmethodlang_lang_id = '. $langId, 'pm_l');
         }
     }
 

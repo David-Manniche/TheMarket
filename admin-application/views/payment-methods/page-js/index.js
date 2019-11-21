@@ -50,9 +50,9 @@ $(document).ready(function() {
 		});
 	}
 
-	editGatewayLangForm = function(pMethodId,langId){
+	editGatewayLangForm = function(pMethodId,langId, autoFillLangData = 0){
 		fcom.displayProcessing();
-		fcom.ajax(fcom.makeUrl('PaymentMethods', 'langForm', [pMethodId,langId]), '', function(t) {
+		fcom.ajax(fcom.makeUrl('PaymentMethods', 'langForm', [pMethodId,langId, autoFillLangData]), '', function(t) {
 			fcom.updateFaceboxContent(t);
 		});
 	};

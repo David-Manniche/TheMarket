@@ -96,12 +96,12 @@ $(document).on('change','.prefDimensions-js',function(){
 		});
 	};
 
-	categoryLangForm = function(catId, langId) {
+	categoryLangForm = function(catId, langId, autoFillLangData = 0) {
 
 		fcom.resetEditorInstance();
 		//$.facebox(function() {
 			fcom.displayProcessing();
-			fcom.ajax(fcom.makeUrl('ProductCategories', 'langForm', [catId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('ProductCategories', 'langForm', [catId, langId, autoFillLangData]), '', function(t) {
 				//fcom.updateFaceboxContent(t);
 				//$.facebox(t);
 				fcom.updateFaceboxContent(t);

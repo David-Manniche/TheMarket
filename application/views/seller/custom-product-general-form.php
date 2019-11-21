@@ -9,11 +9,11 @@
                     <div class="tabs tabs-sm tabs--scroll clearfix">
                         <ul>
                             <li class="is-active"><a <?php echo ($product_id) ? "onclick='customProductForm( ".$product_id." );'" : ""; ?> href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Basic', $siteLangId);?></a></li>
-
-                            <?php foreach ($languages as $langId => $langName) {?>
-                            <li class="<?php echo (!$product_id) ? 'fat-inactive' : ''; ?>"><a href="javascript:void(0);" <?php echo ($product_id) ? "onclick='customProductLangForm( ".$product_id.",".$langId." );'" : ""; ?>><?php echo $langName;?></a>
+                            <li class="<?php echo (0 == $product_id) ? 'fat-inactive' : ''; ?>">
+                                <a href="javascript:void(0);" <?php echo (0 < $product_id) ? "onclick='customProductLangForm(" . $product_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                                    <?php echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
+                                </a>
                             </li>
-                            <?php } ?>
                         </ul>
                     </div>
                     <div class="form__subcontent">
@@ -32,15 +32,15 @@
                         if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
                             $lengthFld = $customProductFrm->getField('product_length');
                             $lengthFld->setWrapperAttribute('class', 'product_length_fld');
-                            //$lengthFld->htmlAfterField = Labels::getLabel('LBL_Note:_Used_for_Shipping_Calculation.',$adminLangId);
+                            //$lengthFld->htmlAfterField = Labels::getLabel('LBL_Note:_Used_for_Shipping_Calculation.',$siteLangId);
 
                             $widthFld = $customProductFrm->getField('product_width');
                             $widthFld->setWrapperAttribute('class', 'product_width_fld');
-                            //$widthFld->htmlAfterField = Labels::getLabel('LBL_Note:_Used_for_Shipping_Calculation.',$adminLangId) ;
+                            //$widthFld->htmlAfterField = Labels::getLabel('LBL_Note:_Used_for_Shipping_Calculation.',$siteLangId) ;
 
                             $heightFld = $customProductFrm->getField('product_height');
                             $heightFld->setWrapperAttribute('class', 'product_height_fld');
-                            //$heightFld->htmlAfterField = Labels::getLabel('LBL_Note:_Used_for_Shipping_Calculation.',$adminLangId);
+                            //$heightFld->htmlAfterField = Labels::getLabel('LBL_Note:_Used_for_Shipping_Calculation.',$siteLangId);
 
                             $dimensionUnitFld = $customProductFrm->getField('product_dimension_unit');
                             $dimensionUnitFld->setWrapperAttribute('class', 'product_dimension_unit_fld');

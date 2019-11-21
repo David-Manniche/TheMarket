@@ -105,7 +105,6 @@ class ConfigurationsController extends AdminBaseController
         $langId = FatUtility::int($langId);
 
         $frm = $this->getLangForm($frmType, $langId);
-
         $dispLangTab = false;
         if (in_array($frmType, Configurations::getLangTypeFormArr())) {
             $dispLangTab = true;
@@ -113,6 +112,7 @@ class ConfigurationsController extends AdminBaseController
         }
 
         $record = Configurations::getConfigurations();
+
         $frm->fill($record);
         if ($tabId) {
             $this->set('tabId', $tabId);
@@ -565,7 +565,7 @@ class ConfigurationsController extends AdminBaseController
                 );
 
                 $fld = $frm->addSelectBox(Labels::getLabel('LBL_Timezone', $this->adminLangId), 'CONF_TIMEZONE', Configurations::dateTimeZoneArr(), false, array(), '');
-                $fld->htmlAfterField = '<small>'.Labels::getLabel("LBL_Current", $this->adminLangId).' <span id="currentDate">'. CommonHelper::currentDateTime(null, true).'</span></small>';
+                $fld->htmlAfterField = '<small>' . Labels::getLabel("LBL_Current", $this->adminLangId) . ' <span id="currentDate">' . CommonHelper::currentDateTime(null, true) . '</span></small>';
                 $countryObj = new Countries();
                 $countriesArr = $countryObj->getCountriesArr($this->adminLangId);
                 $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'CONF_COUNTRY', $countriesArr);
@@ -1271,6 +1271,10 @@ class ConfigurationsController extends AdminBaseController
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Shipstation_Api_Secret_key",$this->adminLangId),'CONF_SHIPSTATION_API_SECRET_KEY');
                 $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_Please_enter_your_shipstation_api_Secret_Key_here.",$this->adminLangId)."</small>"; */
 
+                $frm->addHtml('', 'Microsoft Translator Text API', '<h3>'.Labels::getLabel("LBL_Microsoft_Translator_Text_API", $this->adminLangId).'</h3>');
+                $fld = $frm->addTextBox(Labels::getLabel("LBL_SUBSCRIPTION_KEY", $this->adminLangId), 'CONF_TRANSLATOR_SUBSCRIPTION_KEY');
+                $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_MICROSOFT_TRANSLATOR_TEXT_API_3.0_SUBSCRIPTION_KEY.", $this->adminLangId)."</small>";
+
                 break;
             case Configurations::FORM_REFERAL:
                 $fld = $frm->addRadioButtons(
@@ -1514,6 +1518,7 @@ class ConfigurationsController extends AdminBaseController
     private function getLangForm($type, $langId)
     {
         $frm = new Form('frmConfiguration');
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $langId, array(), '');
 
         switch ($type) {
             case Configurations::FORM_GENERAL:
@@ -1671,7 +1676,6 @@ class ConfigurationsController extends AdminBaseController
                 break;
         }
 
-        $frm->addHiddenField('', 'lang_id', $langId);
         $frm->addHiddenField('', 'form_type', $type);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel("LBL_Save_Changes", $this->adminLangId));
         return $frm;

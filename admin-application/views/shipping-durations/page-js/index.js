@@ -57,9 +57,9 @@ $(document).ready(function() {
         });
     };
 
-    shippingDurationLangForm = function(sdurationId, langId) {
+    shippingDurationLangForm = function(sdurationId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('ShippingDurations', 'langForm', [sdurationId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('ShippingDurations', 'langForm', [sdurationId, langId, autoFillLangData]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
     };

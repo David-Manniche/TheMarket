@@ -57,9 +57,9 @@ $(document).ready(function(){
 		});
 	};
 	
-	storiesLangForm = function(sstoryId, langId) {		
+	storiesLangForm = function(sstoryId, langId, autoFillLangData = 0) {		
 		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('SuccessStories', 'langForm', [sstoryId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('SuccessStories', 'langForm', [sstoryId, langId, autoFillLangData]), '', function(t) {
 				$.facebox(t);
 			});
 		});

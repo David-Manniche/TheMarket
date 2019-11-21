@@ -1,9 +1,11 @@
 <?php
 class ProdSpecification extends MyAppModel
 {
-    const DB_TBL = 'tbl_product_specifications';
-    const DB_TBL_PREFIX = 'prodspec_';
+    public const DB_TBL = 'tbl_product_specifications';
+    public const DB_TBL_PREFIX = 'prodspec_';
 
+    public const DB_TBL_LANG = 'tbl_product_specifications_lang';
+    public const DB_TBL_LANG_PREFIX = 'prodspeclang_';
 
     private $db;
 

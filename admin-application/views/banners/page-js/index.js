@@ -62,9 +62,9 @@ $(document).ready(function() {
             fcom.updateFaceboxContent(t);
         });
     };
-    bannerLocationLangForm = function(blocationId, langId) {
+    bannerLocationLangForm = function(blocationId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('Banners', 'bannerLocLangForm', [blocationId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Banners', 'bannerLocLangForm', [blocationId, langId, autoFillLangData]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
     };

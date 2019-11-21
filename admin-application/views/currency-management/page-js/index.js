@@ -49,9 +49,9 @@ $(document).ready(function() {
         });
     }
 
-    editCurrencyLangForm = function(currencyId, langId) {
+    editCurrencyLangForm = function(currencyId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('CurrencyManagement', 'langForm', [currencyId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('CurrencyManagement', 'langForm', [currencyId, langId, autoFillLangData]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
     };

@@ -58,9 +58,9 @@ $(document).ready(function() {
         });
     };
 
-    addTaxLangForm = function(taxcatId, langId) {
+    addTaxLangForm = function(taxcatId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('Tax', 'langForm', [taxcatId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Tax', 'langForm', [taxcatId, langId, autoFillLangData]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
     };
