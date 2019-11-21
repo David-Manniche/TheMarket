@@ -7,7 +7,7 @@ class OptionValuesController extends AdminBaseController
     public function __construct($action)
     {
         $ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup');
-        if(!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
+        if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }
         parent::__construct($action);
@@ -23,8 +23,8 @@ class OptionValuesController extends AdminBaseController
         $this->objPrivilege->canViewOptions();
 
         $post = FatApp::getPostedData();
-        $option_id=FatUtility::int($post['option_id']);
-        if($option_id <= 0) {
+        $option_id = FatUtility::int($post['option_id']);
+        if ($option_id <= 0) {
             FatUtility::dieWithError($this->str_invalid_request_id);
         }
 
@@ -34,8 +34,10 @@ class OptionValuesController extends AdminBaseController
 
         $srch->joinTable(
             OptionValue::DB_TBL . '_lang',
-            'LEFT OUTER JOIN', 'ovl.optionvaluelang_optionvalue_id = ov.optionvalue_id
-		AND ovl.optionvaluelang_lang_id = ' . $this->adminLangId, 'ovl'
+            'LEFT OUTER JOIN',
+            'ovl.optionvaluelang_optionvalue_id = ov.optionvalue_id
+		    AND ovl.optionvaluelang_lang_id = ' . $this->adminLangId,
+            'ovl'
         );
         $srch->addMultipleFields(array("ovl.optionvalue_name"));
         $srch->addOrder('ov.optionvalue_id', 'ASC');
@@ -63,8 +65,8 @@ class OptionValuesController extends AdminBaseController
         $optionvalue_id = FatUtility::int($post['optionvalue_id']);
         unset($post['optionvalue_id']);
 
-        if (0 < $optionvalue_id ) {
-            $optionValueObj= new OptionValue();
+        if (0 < $optionvalue_id) {
+            $optionValueObj = new OptionValue();
             $data = $optionValueObj->getAtttibutesByIdAndOptionId($option_id, $optionvalue_id, array('optionvalue_id'));
 
             if ($data === false) {
@@ -83,14 +85,14 @@ class OptionValuesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $languages=Language::getAllNames();
-        foreach($languages as $langId=>$langName){
-            $data=array(
-            'optionvaluelang_optionvalue_id'=>$optionvalue_id,
-            'optionvaluelang_lang_id'=>$langId,
-            'optionvalue_name'=>$post['optionvalue_name'.$langId],
+        $languages = Language::getAllNames();
+        foreach ($languages as $langId => $langName) {
+            $data = array(
+            'optionvaluelang_optionvalue_id' => $optionvalue_id,
+            'optionvaluelang_lang_id' => $langId,
+            'optionvalue_name' => $post['optionvalue_name' . $langId],
             );
-            if(!$optionValueObj->updateLangData($langId, $data)) {
+            if (!$optionValueObj->updateLangData($langId, $data)) {
                 Message::addErrorMessage($optionValueObj->getError());
                 FatUtility::dieWithError(Message::getHtml());
             }
@@ -102,23 +104,23 @@ class OptionValuesController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function form($option_id,$optionvalue_id=0)
+    public function form($option_id, $optionvalue_id = 0)
     {
         $this->objPrivilege->canEditOptions();
 
-        $option_id=FatUtility::int($option_id);
-        if($option_id <= 0) {
+        $option_id = FatUtility::int($option_id);
+        if ($option_id <= 0) {
             FatUtility::dieWithError(
                 Labels::getLabel('MSG_INVALID_REQUEST_ID', $this->adminLangId)
             );
         }
 
-        $optionvalue_id=FatUtility::int($optionvalue_id);
+        $optionvalue_id = FatUtility::int($optionvalue_id);
         $optionValueFrm = $this->getForm($option_id, $optionvalue_id);
 
 
-        if (0 < $optionvalue_id ) {
-            $optionValueObj= new OptionValue($optionvalue_id);
+        if (0 < $optionvalue_id) {
+            $optionValueObj = new OptionValue($optionvalue_id);
             $data = $optionValueObj->getOptionValue($option_id);
 
             if ($data === false) {
@@ -133,32 +135,45 @@ class OptionValuesController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    private function getForm($option_id = 0,$optionvalue_id = 0)
+    private function getForm($option_id = 0, $optionvalue_id = 0)
     {
         $this->objPrivilege->canEditOptions();
         $option_id = FatUtility::int($option_id);
         $optionvalue_id = FatUtility::int($optionvalue_id);
 
-        $frm = new Form('frmOptionValues', array('id'=>'frmOptionValues'));
+        $frm = new Form('frmOptionValues', array('id' => 'frmOptionValues'));
         $frm->addHiddenField('', 'optionvalue_id', $optionvalue_id);
         $frm->addHiddenField('', 'optionvalue_option_id', $option_id);
         $frm->addRequiredField(Labels::getLabel('LBL_OPTION_VALUE_IDENTIFIER', $this->adminLangId), 'optionvalue_identifier');
 
         $languages = Language::getAllNames();
-        foreach($languages as $langId=>$langName){
-            $frm->addRequiredField(Labels::getLabel('LBL_OPTION_VALUE_NAME', $this->adminLangId).' '.$langName, 'optionvalue_name'.$langId);
+        $defaultLang = true;
+        foreach ($languages as $langId => $langName) {
+            $attr['class'] = 'langField_' . $langId;
+            if (true === $defaultLang) {
+                $attr['class'] .= ' defaultLang';
+                $defaultLang = false;
+            }
+            $frm->addRequiredField(
+                Labels::getLabel('LBL_OPTION_VALUE_NAME', $this->adminLangId) . ' ' . $langName,
+                'optionvalue_name' . $langId,
+                '',
+                $attr
+            );
         }
 
         $optionRow = Option::getAttributesById($option_id);
-        if($optionRow && $optionRow['option_is_color'] ) {
+        if ($optionRow && $optionRow['option_is_color']) {
             $fld = $frm->addTextBox(Labels::getLabel('LBL_Option_Value_Color', $this->adminLangId), 'optionvalue_color_code');
             $fld->addFieldTagAttribute('class', 'jscolor');
         }
 
         $fld = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $this->adminLangId));
         $fld_cancel = $frm->addButton(
-            "", "btn_clear", Labels::getLabel('LBL_CANCEL', $this->adminLangId),
-            array('onclick'=>'optionForm('.$option_id.');')
+            "",
+            "btn_clear",
+            Labels::getLabel('LBL_CANCEL', $this->adminLangId),
+            array('onclick' => 'optionForm(' . $option_id . ');')
         );
 
         $fld->attachField($fld_cancel);
@@ -172,7 +187,7 @@ class OptionValuesController extends AdminBaseController
         $optionvalue_id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
         $option_id = FatApp::getPostedData('option_id', FatUtility::VAR_INT, 0);
 
-        if($optionvalue_id < 1 || $option_id < 1) {
+        if ($optionvalue_id < 1 || $option_id < 1) {
             Message::addErrorMessage(
                 Labels::getLabel('MSG_INVALID_REQUEST_ID', $this->adminLangId)
             );
@@ -180,7 +195,7 @@ class OptionValuesController extends AdminBaseController
         }
 
         $optionValueObj = new OptionValue($optionvalue_id);
-        if(!$optionValueObj->canEditRecord($option_id)) {
+        if (!$optionValueObj->canEditRecord($option_id)) {
             Message::addErrorMessage(
                 Labels::getLabel('MSG_INVALID_REQUEST_ID', $this->adminLangId)
             );
@@ -194,7 +209,7 @@ class OptionValuesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if(!$optionValueObj->deleteRecord()) {
+        if (!$optionValueObj->deleteRecord()) {
             Message::addErrorMessage($optionValueObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -207,18 +222,30 @@ class OptionValuesController extends AdminBaseController
     public function setOptionsOrder()
     {
         $this->objPrivilege->canEditOrderStatus();
-        $post=FatApp::getPostedData();
+        $post = FatApp::getPostedData();
         if (!empty($post)) {
             $obj = new OptionValue();
-            if(!$obj->updateOrder($post['optionvalues'])) {
+            if (!$obj->updateOrder($post['optionvalues'])) {
                 Message::addErrorMessage($obj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
             }
 
             $this->set('msg', Labels::getLabel('LBL_Order_Updated_Successfully', $this->adminLangId));
             $this->_template->render(false, false, 'json-success.php');
-
         }
     }
 
+    public function getTranslatedData()
+    {
+        $dataToTranslate = FatApp::getPostedData('optionvalue_name1', FatUtility::VAR_STRING, '');
+        if (!empty($dataToTranslate)) {
+            $translatedText = $this->translateLangFields(OptionValue::DB_TBL_LANG, ['optionvalue_name' => $dataToTranslate]);
+            $data = [];
+            foreach ($translatedText as $langId => $value) {
+                $data[$langId]['optionvalue_name' . $langId] = $value['optionvalue_name'];
+            }
+            CommonHelper::jsonEncodeUnicode($data, true);
+        }
+        FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
+    }
 }

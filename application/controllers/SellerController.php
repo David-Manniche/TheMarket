@@ -4518,4 +4518,38 @@ class SellerController extends SellerBaseController
         }
         FatUtility::dieJsonSuccess(array());
     }
+
+    public function getTranslatedData()
+    {
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $prodSpecName = FatApp::getPostedData('prod_spec_name', FatUtility::VAR_STRING, '');
+        $prodSpecValue = FatApp::getPostedData('prod_spec_value', FatUtility::VAR_STRING, '');
+
+        if (!empty($prodSpecName) && !empty($prodSpecValue)) {
+            $data = [];
+            
+            $translatedText = $this->translateLangFields(ProductRequest::DB_TBL_LANG, $prodSpecName[$siteDefaultLangId]);
+            foreach ($translatedText as $langId => $textArr) {
+                foreach ($textArr as $index => $value) {
+                    if ('preqlang_lang_id' === $index) {
+                        continue;
+                    }
+                    $data[$langId]['prod_spec_name[' . $langId . '][' . $index . ']'] = $value; 
+                }
+            }
+
+            $translatedText = $this->translateLangFields(ProductRequest::DB_TBL_LANG, $prodSpecValue[$siteDefaultLangId]);
+            foreach ($translatedText as $langId => $textArr) {
+                foreach ($textArr as $index => $value) {
+                    if ('preqlang_lang_id' === $index) {
+                        continue;
+                    }
+                    $data[$langId]['prod_spec_value[' . $langId . '][' . $index . ']'] = $value; 
+                }
+            }
+            
+            CommonHelper::jsonEncodeUnicode($data, true);
+        }
+        FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
+    }
 }

@@ -1269,13 +1269,48 @@ class CustomProductsController extends AdminBaseController
         $frm = new Form('frmCustomProdReqSrch');
         $frm->addTextBox('Keyword', 'keyword', '');
 
-        $statusArr = array('-1'=>Labels::getLabel('LBL_All', $this->adminLangId))+ProductRequest::getStatusArr($this->adminLangId);
+        $statusArr = array('-1' => Labels::getLabel('LBL_All', $this->adminLangId)) + ProductRequest::getStatusArr($this->adminLangId);
         $frm->addSelectBox('Status', 'status', $statusArr, '', array(), '');
-        $frm->addDateField('Date From', 'date_from', '', array( 'readonly'=>'readonly', 'class'=>'field--calender' ));
-        $frm->addDateField('Date To', 'date_to', '', array( 'readonly'=>'readonly', 'class'=>'field--calender' ));
-        $fld_submit=$frm->addSubmitButton('', 'btn_submit', 'Search');
-        $fld_cancel = $frm->addButton("", "btn_clear", "Clear Search", array('onclick'=>'clearSearch();'));
+        $frm->addDateField('Date From', 'date_from', '', array( 'readonly' => 'readonly', 'class' => 'field--calender' ));
+        $frm->addDateField('Date To', 'date_to', '', array( 'readonly' => 'readonly', 'class' => 'field--calender' ));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', 'Search');
+        $fld_cancel = $frm->addButton("", "btn_clear", "Clear Search", array('onclick' => 'clearSearch();'));
         $fld_submit->attachField($fld_cancel);
         return $frm;
+    }
+
+    
+    public function getTranslatedData()
+    {
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $prodSpecName = FatApp::getPostedData('prod_spec_name', FatUtility::VAR_STRING, '');
+        $prodSpecValue = FatApp::getPostedData('prod_spec_value', FatUtility::VAR_STRING, '');
+
+        if (!empty($prodSpecName) && !empty($prodSpecValue)) {
+            $data = [];
+            
+            $translatedText = $this->translateLangFields(ProductRequest::DB_TBL_LANG, $prodSpecName[$siteDefaultLangId]);
+            foreach ($translatedText as $langId => $textArr) {
+                foreach ($textArr as $index => $value) {
+                    if ('preqlang_lang_id' === $index) {
+                        continue;
+                    }
+                    $data[$langId]['prod_spec_name[' . $langId . '][' . $index . ']'] = $value; 
+                }
+            }
+
+            $translatedText = $this->translateLangFields(ProductRequest::DB_TBL_LANG, $prodSpecValue[$siteDefaultLangId]);
+            foreach ($translatedText as $langId => $textArr) {
+                foreach ($textArr as $index => $value) {
+                    if ('preqlang_lang_id' === $index) {
+                        continue;
+                    }
+                    $data[$langId]['prod_spec_value[' . $langId . '][' . $index . ']'] = $value; 
+                }
+            }
+            
+            CommonHelper::jsonEncodeUnicode($data, true);
+        }
+        FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
     }
 }

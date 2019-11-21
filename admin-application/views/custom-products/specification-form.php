@@ -38,7 +38,20 @@
                             <form name="frmProductSpec" method="post" id="frm_fat_id_frmProductSpec"
                                 class="form web_form"
                                 onsubmit="setupCustomCatalogSpecification(this,<?php echo $preqId; ?>); return(false);">
-                                <?php
+                                <?php 
+                                $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+                                if (!empty($translatorSubscriptionKey)) { ?> 
+                                    <div class="row justify-content-end"> 
+                                        <div class="col-auto mb-4">
+                                            <input class="btn btn-primary" 
+                                                type="button" 
+                                                value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>" 
+                                                onClick="autofillLangData($(this), $('form#frm_fat_id_frmProductSpec'))"
+                                                data-action="<?php echo CommonHelper::generateUrl('CustomProducts', 'getTranslatedData'); ?>">
+                                        </div>
+                                    </div>
+                                <?php }
+
                                 $totalSpec = 0;
                                 $count = 0;
                                 if ($specCount > 0) {
@@ -50,7 +63,15 @@
                                                 <div class="divider"></div>
                                                 <div class="gap"></div>
                                             <?php } ?>
-                                            <?php foreach ($languages as $langId => $langName) { ?>
+                                            <?php 
+                                            $defaultLang = true;
+                                            foreach ($languages as $langId => $langName) {
+                                                $class = 'langField_' . $langId;
+                                                if (true === $defaultLang) {
+                                                    $class .= ' defaultLang';
+                                                    $defaultLang = false;
+                                                }
+                                                ?>
                                                 <div class="row align-items-center mb-4">
                                                     <div class="col-md-2">
                                                         <div class="h5 mb-0">
@@ -65,7 +86,7 @@
                                                                         ? $productSpecifications['prod_spec_value'][$langId][$specKey] : '';
                                                         ?>
                                                         <input
-                                                            class="psec-name-js <?php echo 'layout--' . Language::getLayoutDirection($langId); ?>"
+                                                            class="psec-name-js <?php echo 'layout--' . Language::getLayoutDirection($langId); ?> <?php echo $class; ?>"
                                                             title="<?php echo Labels::getLabel('LBL_Specification_Name', $adminLangId)?>"
                                                             value="<?php echo $specName; ?>"
                                                             placeholder="<?php echo Labels::getLabel('LBL_Specification_Name', $adminLangId)?>"
@@ -74,7 +95,7 @@
                                                     </div>
                                                     <div class="col-md-5">
                                                         <input
-                                                            class="<?php echo 'layout--' . Language::getLayoutDirection($langId); ?>"
+                                                            class="<?php echo 'layout--' . Language::getLayoutDirection($langId); ?> <?php echo $class; ?>"
                                                             title="<?php echo Labels::getLabel('LBL_Specification_Value', $adminLangId)?>"
                                                             type="text"
                                                             value="<?php echo $specValue; ?>"
@@ -100,7 +121,15 @@
                                     }
                                 } else { ?>
                                 <div class="form__cover nopadding--bottom specification" id="specification0">
-                                    <?php foreach ($languages as $langId => $langName) { ?>
+                                    <?php 
+                                    $defaultLang = true;
+                                    foreach ($languages as $langId => $langName) { 
+                                        $class = 'langField_' . $langId;
+                                        if (true === $defaultLang) {
+                                            $class .= ' defaultLang';
+                                            $defaultLang = false;
+                                        }
+                                        ?>
                                         <div class="row align-items-center mb-4">
                                             <div class="col-md-2">
                                                 <div class="h5 mb-0">
@@ -109,7 +138,7 @@
                                             </div>
                                             <div class="col-md-5">
                                                 <input
-                                                    class="<?php echo 'layout--' . Language::getLayoutDirection($langId); ?> psec-name-js"
+                                                    class="<?php echo 'layout--' . Language::getLayoutDirection($langId); ?> psec-name-js <?php echo $class; ?>"
                                                     title="<?php echo Labels::getLabel('LBL_Specification_Name', $adminLangId)?>"
                                                     placeholder="<?php echo Labels::getLabel('LBL_Specification_Name', $adminLangId)?>"
                                                     type="text"
@@ -117,7 +146,7 @@
                                             </div>
                                             <div class="col-md-5">
                                                 <input
-                                                    class="<?php echo 'layout--' . Language::getLayoutDirection($langId); ?>"
+                                                    class="<?php echo 'layout--' . Language::getLayoutDirection($langId); ?> <?php echo $class; ?>"
                                                     title="<?php echo Labels::getLabel('LBL_Specification_Value', $adminLangId)?>"
                                                     placeholder="<?php echo Labels::getLabel('LBL_Specification_Value', $adminLangId)?>"
                                                     type="text"
