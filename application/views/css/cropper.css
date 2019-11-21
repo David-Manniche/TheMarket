@@ -8,6 +8,8 @@
  * Date: 2019-10-04T04:33:44.164Z
  */
 
+.img-container { max-height: 350px;}
+
 .cropper-container {
   direction: ltr;
   font-size: 0;
