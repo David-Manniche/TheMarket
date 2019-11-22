@@ -18,11 +18,11 @@ class OrderSubscriptionTest extends TestCase
     public function setDataFreeSubscription()
     {
         return array(
-            array('test', 'test', true), // Invalid langid and userid
             array('test', 80, false), // Invalid langid and userid having subscription already
             array('test', 79, true), // Invalid langid and userid do not have subscription
             array(1, 80, false), // Valid langid and userid having subscription already
             array(1, 79, true), // Valid langid and userid do not have subscription
+            array('test', 'test', false) // Invalid langid and userid
         ); 
     }    
 
