@@ -36,6 +36,7 @@ class OrderSubscription extends MyAppModel
     {
         $userId = FatUtility::int($userId);
         if($userId < 1){
+            trigger_error(Labels::getLabel('ERR_User_Id_Not_Specified', CommonHelper::getLangId()), E_USER_ERROR);
             return false;
         }
          
