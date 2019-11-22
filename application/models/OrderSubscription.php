@@ -36,7 +36,7 @@ class OrderSubscription extends MyAppModel
     {
         $userId = FatUtility::int($userId);
         if($userId < 1){
-            trigger_error(Labels::getLabel('MSG_Invalid_request', $langId), E_USER_ERROR);
+            return false;
         }
          
         $srch = new  OrderSearch($langId);
