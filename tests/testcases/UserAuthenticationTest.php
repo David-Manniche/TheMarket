@@ -23,11 +23,13 @@ class UserAuthenticationTest extends TestCase
     
     public function getGuestLoginData()
     {        
-        return array(
-            array('dev@dummyid.com', 'Dev', $_SERVER['REMOTE_ADDR'], false), // Existing User
-            array('dev101@dummyid.com', 'Dev101', $_SERVER['REMOTE_ADDR'], true), // Existing Unverified User
-            array('dev102@dummyid.com', 'Dev102', $_SERVER['REMOTE_ADDR'], true), // New User
+        return array( 
+            array('dev@dummyid.com', 'Dev', $_SERVER['REMOTE_ADDR'], false), // Existing user with verified and active account
             array('nonemail95021@gmail.com', 'kh', $_SERVER['REMOTE_ADDR'], false), // Existing User With Seller Account
+            array('kanwar@dummyid.com', 'kanwar', $_SERVER['REMOTE_ADDR'], false), // Deleted User
+            array('dev101@dummyid.com', 'Dev101', $_SERVER['REMOTE_ADDR'], true), // Existing user with unverified account
+            array('johnn@dummyid.com', 'johnn', $_SERVER['REMOTE_ADDR'], true), // Existing user with inactive account
+            array('newuser'.rand().'@dummyid.com', 'newuser'.rand(), $_SERVER['REMOTE_ADDR'], true), // New User
         ); 
     }
     

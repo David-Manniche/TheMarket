@@ -144,31 +144,28 @@ class UserTest extends TestCase
         $reference_number = '79-'.time();
         return array(
             array(array('user_id' =>'test', 'reference' =>$reference_number, 'fieldIdsArr' => array('3','1','2')), 1, false), //Invalid user id
-            array(array('user_id' =>'79', 'reference' =>$reference_number, 'fieldIdsArr' => array('3','1','2')), 1, true), 
+            array(array('user_id' =>'79', 'reference' =>$reference_number, 'fieldIdsArr' => array('3','1','2')), 1, true), //Valid user id
         );
     }
     
     /**
      * @dataProvider activateSupplierData
      */
-    public function testActivateSupplier( $userId, $isSupplier, $activateAdveracc, $expected )
+    public function testActivateSupplier( $userId, $activateAdveracc, $expected )
     {
         $user = new User();
         $user->setMainTableRecordId($userId);
-        $result = $user->activateSupplier( $isSupplier, $activateAdveracc );
+        $result = $user->activateSupplier( $activateAdveracc );
         $this->assertEquals($expected, $result);
     }
     
     public function activateSupplierData()
     {    
         return array(
-            array('test', 1, 0, false), //Invalid user id
-            array(79, 1, 0, true), // check with is_supplier to 1 and is_advertiser to 0
-            array(79, 1, 1, true), // check with is_supplier to 1 and is_advertiser to 1
-            array(79, 0, 0, true), // check with is_supplier to 0 and is_advertiser to 0
-            array(79, 0, 1, true), // check with is_supplier to 0 and is_advertiser to 1                        
-            array(79, 'test', 0, false), //Invalid is_supplier
-            array(79, 1, 'test', false), //Invalid is_advertiser
+            array('test', 0, false), //Invalid user id
+            array(79, 'test', true), //Invalid is_advertiser
+            array(79, 0, true), //Valid user id with is_advertiser to 0
+            array(79, 1, true), //Valid user id with is_advertiser to 1                                    
         );
     }
     
