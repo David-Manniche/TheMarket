@@ -245,21 +245,6 @@ class Product extends MyAppModel
         );
     }
 
-    // public static function getAttributesById($recordId, $attr = null)
-    // {
-    //     $row = parent::getAttributesById($recordId, $attr);
-
-    //     /* get Numeric attributes data[ */
-    //     if (!$attr) {
-    //         $num_attr_row = static::getProductNumericAttributes($recordId);
-    //         if (!empty($num_attr_row)) {
-    //             $row = array_merge($row, $num_attr_row);
-    //         }
-    //     }
-    //     /* ] */
-    //     return $row;
-    // }
-
     public static function getAttributesById($recordId, $attr = null, $joinSpecifics = false)
     {
         $recordId = FatUtility::int($recordId);

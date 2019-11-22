@@ -183,23 +183,34 @@ class SellerProductsController extends AdminBaseController
         }
         $productLangRow = Product::getProductDataById(FatApp::getConfig('CONF_DEFAULT_SITE_LANG'), $product_id, array('IFNULL(product_name,product_identifier) as product_url_keyword'));
         $frmSellerProduct = $this->getSellerProductForm($product_id);
+        $sellerProductRow = [];
         if ($selprod_id) {
-            $sellerProductRow = SellerProduct::getAttributesById($selprod_id);
+            $sellerProductRow = SellerProduct::getAttributesById($selprod_id, null, true, true);
             if (!$sellerProductRow) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
             }
         } else {
-            $sellerProductRow['selprod_url_keyword']= strtolower(CommonHelper::createSlug($productLangRow['product_url_keyword']));
+            $sellerProductRow['selprod_url_keyword'] = strtolower(CommonHelper::createSlug($productLangRow['product_url_keyword']));
         }
         $user_shop_name = User::getUserShopName($sellerProductRow['selprod_user_id']);
-        $sellerProductRow['selprod_user_shop_name']=$user_shop_name['user_name'].' - '.$user_shop_name['shop_identifier'];
-        // commonHelper::printArray($sellerProductRow);
+        $sellerProductRow['selprod_user_shop_name'] = $user_shop_name['user_name'] . ' - ' . $user_shop_name['shop_identifier'];
+        
+        $productWarranty = Product::getAttributesById($product_id, 'product_warranty', true);
+        $sellerProductRow['product_warranty'] = FatUtility::int($productWarranty);
+
+        $returnAge = isset($sellerProductRow['selprod_return_age']) ? FatUtility::int($sellerProductRow['selprod_return_age']) : '';
+        $cancellationAge = isset($sellerProductRow['selprod_cancellation_age']) ? FatUtility::int($sellerProductRow['selprod_cancellation_age']) : '';
+
+        if ('' === $returnAge || '' === $cancellationAge) {
+            $sellerProductRow['use_shop_policy'] = 1;
+        }
+
         $frmSellerProduct->fill($sellerProductRow);
 
-        $product_added_by_admin_arr=Product::getAttributesById($product_id, array('product_added_by_admin_id,product_type','product_seller_id'));
+        $product_added_by_admin_arr = Product::getAttributesById($product_id, array('product_added_by_admin_id,product_type','product_seller_id'));
         $product_added_by_admin = $product_added_by_admin_arr['product_added_by_admin_id'];
-        $product_type=$product_added_by_admin_arr['product_type'];
-        $product_seller_id=$product_added_by_admin_arr['product_seller_id'];
+        $product_type = $product_added_by_admin_arr['product_type'];
+        $product_seller_id = $product_added_by_admin_arr['product_seller_id'];
 
         $shippedBySeller = 0;
         if (Product::isProductShippedBySeller($product_id, $product_seller_id, $sellerProductRow['selprod_user_id'])) {
@@ -231,6 +242,7 @@ class SellerProductsController extends AdminBaseController
         $selprod_stock = Fatutility::int($post['selprod_stock']);
         $selprod_min_order_qty = Fatutility::int($post['selprod_min_order_qty']);
         $selprod_threshold_stock_level = Fatutility::int($post['selprod_threshold_stock_level']);
+        $useShopPolicy = FatApp::getPostedData('use_shop_policy', FatUtility::VAR_INT, 0);
 
         // commonHelper::printArray($post); die;
         if (!$selprod_product_id) {
@@ -258,6 +270,7 @@ class SellerProductsController extends AdminBaseController
         }
 
         $frm = $this->getSellerProductForm($selprod_product_id);
+        $post['use_shop_policy'] = $useShopPolicy;
         $post = $frm->getFormDataFromArray($post);
 
         if (false === $post) {
@@ -297,6 +310,21 @@ class SellerProductsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
         $selprod_id = $sellerProdObj->getMainTableRecordId();
+
+        $selProdSpecificsObj = new SellerProductSpecifics($selprod_id);
+        if (0 < $useShopPolicy) {
+            if (!$selProdSpecificsObj->deleteRecord()) {
+                FatUtility::dieJsonError($selProdSpecificsObj->getError());
+            }
+        } else {
+            $post['sps_selprod_id'] = $selprod_id;
+            $selProdSpecificsObj->assignValues($post);
+            $data = $selProdSpecificsObj->getFlds();
+            if (!$selProdSpecificsObj->addNew(array(), $data)) {
+                FatUtility::dieJsonError($selProdSpecificsObj->getError());
+            }
+        }
+
 
         /* Add Url rewriting  [  ---- */
         $sellerProdObj->rewriteUrlProduct($post['selprod_url_keyword']);

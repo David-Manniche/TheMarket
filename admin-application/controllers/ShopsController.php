@@ -147,16 +147,16 @@ class ShopsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function form($shop_id=0)
+    public function form($shop_id = 0)
     {
         $this->objPrivilege->canEditShops();
 
-        $shop_id=FatUtility::int($shop_id);
+        $shop_id = FatUtility::int($shop_id);
         $frm = $this->getForm($shop_id);
 
         $stateId = 0;
         if (0 < $shop_id) {
-            $data = Shop::getAttributesById($shop_id);
+            $data = Shop::getAttributesById($shop_id, null, true);
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
@@ -165,7 +165,7 @@ class ShopsController extends AdminBaseController
             $urlSrch->doNotCalculateRecords();
             $urlSrch->doNotLimitRecords();
             $urlSrch->addFld('urlrewrite_custom');
-            $urlSrch->addCondition('urlrewrite_original', '=', 'shops/view/'.$shop_id);
+            $urlSrch->addCondition('urlrewrite_original', '=', 'shops/view/' . $shop_id);
             $rs = $urlSrch->getResultSet();
             $urlRow = FatApp::getDb()->fetch($rs);
             if ($urlRow) {
@@ -207,6 +207,16 @@ class ShopsController extends AdminBaseController
 
         if (!$shop->save()) {
             Message::addErrorMessage($shop->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $post['ss_shop_id'] = $shop_id;
+
+        $shopSpecificsObj = new ShopSpecifics($shop_id);
+        $shopSpecificsObj->assignValues($post);
+        $data = $shopSpecificsObj->getFlds();
+        if (!$shopSpecificsObj->addNew(array(), $data)) {
+            Message::addErrorMessage($shopSpecificsObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
         /* url data[ */
@@ -537,8 +547,16 @@ class ShopsController extends AdminBaseController
         $fld->requirements()->setInt();
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Minimum_Wallet_Balance', $this->adminLangId), 'shop_cod_min_wallet_balance');
         $fld->requirements()->setFloat();
-        $fld->htmlAfterField = "<br><small>".Labels::getLabel("LBL_Seller_needs_to_maintain_to_accept_COD_orders._Default_is_-1", $this->adminLangId)."</small>";
+        $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_Seller_needs_to_maintain_to_accept_COD_orders._Default_is_-1", $this->adminLangId) . "</small>";
         $frm->addCheckBox(Labels::getLabel('LBL_Featured', $this->adminLangId), 'shop_featured', 1, array(), false, 0);
+
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_ORDER_RETURN_AGE', $this->adminLangId), 'shop_return_age');
+        $fld->requirements()->setInt();
+        $fld->requirements()->setPositive();
+        
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_ORDER_CANCELLATION_AGE', $this->adminLangId), 'shop_cancellation_age');
+        $fld->requirements()->setInt();
+        $fld->requirements()->setPositive();
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;

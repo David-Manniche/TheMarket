@@ -2304,43 +2304,42 @@ class Orders extends MyAppModel
         }
         $siteDefaultLangId = FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1);
 
-        $orderRetReqObj = OrderReturnRequest::getSearchObject();
-        $orderRetReqObj->addMultipleFields(['orr.orrequest_id', 'orr.orrequest_op_id']);
-        $orderRetReqObj->doNotCalculateRecords();
-        $orderRetReqObj->doNotLimitRecords();
-        $orderRetReqRs = $orderRetReqObj->getResultSet();
-        $retReqsArr = FatApp::getDb()->fetchAllAssoc($orderRetReqRs);
-
-        $oCancelReqObj = new OrderCancelRequestSearch();
-        $oCancelReqObj->addMultipleFields(['ocrequest_id', 'ocrequest_op_id']);
-        $oCancelReqObj->doNotCalculateRecords();
-        $oCancelReqObj->doNotLimitRecords();
-        $oCancelReqRs = $oCancelReqObj->getResultSet();
-        $cancelReqArr = FatApp::getDb()->fetchAllAssoc($oCancelReqRs);
-
         $srch = new OrderProductSearch($siteDefaultLangId, true);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(['op.op_id', 'sp.selprod_id','op.op_order_id', 'op.op_status_id', 'o.order_date_added', 'o.order_language_id']);
+        $srch->addMultipleFields(
+            [
+                'op.op_id',
+                'sp.selprod_id',
+                'op.op_order_id',
+                'op.op_status_id',
+                'o.order_date_added',
+                'o.order_language_id',
+                'op_shop_id',
+                'IFNULL(selprod_return_age, shop_return_age) as return_age',
+                'IFNULL(selprod_cancellation_age, shop_cancellation_age) as cancellation_age'
+            ]
+        );
         $srch->joinSellerProducts();
+        $srch->joinSellerProductSpecifics();
+        $srch->joinShopSpecifics();
         $srch->addCondition('op.op_status_id', '=', FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
 
-        $srch->addCondition('op.op_id', 'NOT IN', $retReqsArr);
-        $srch->addCondition('op.op_id', 'NOT IN', $cancelReqArr);
-        
         $rs = $srch->getResultSet();
         $ordersDetail = FatApp::getDb()->fetchAll($rs, 'op_id');
-
         $comments = Labels::getLabel("MSG_MARKED_AS_COMPLETED_THROUGH_CRON.", $siteDefaultLangId);
 
         foreach ($ordersDetail as $data) {
-            $returnAge = strtotime("+7 day", strtotime($data['order_date_added']));
-            $cancelAge = strtotime("+7 day", strtotime($data['order_date_added']));
+            $prodReturnAge = FatUtility::int($data['return_age']);
+
+            $returnAge = strtotime("+" . $prodReturnAge . " day", strtotime($data['order_date_added']));
             $today = time();
             $op_id = $data['op_id'];
-            if ($returnAge < $today && $cancelAge < $today) {
+
+            if ($returnAge < $today || 1 > $prodReturnAge) {
                 $this->addChildProductOrderHistory($op_id, $data["order_language_id"], $completedOrderStatus, $comments, 1);
             }
         }
+        echo 'DONE!!';
     }
 }

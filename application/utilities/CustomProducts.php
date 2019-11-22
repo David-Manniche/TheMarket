@@ -151,10 +151,11 @@ trait CustomProducts
     public function customProductGeneralForm($product_id = 0, $prodcat_id = 0)
     {
         $product_id = FatUtility::int($product_id);
+        $userId = UserAuthentication::getLoggedUserId();
         /* Validate product belongs to current logged seller[ */
         if ($product_id) {
-            $productRow = Product::getAttributesById($product_id, array('product_seller_id'));
-            if ($productRow['product_seller_id'] != UserAuthentication::getLoggedUserId()) {
+            $productRow = Product::getAttributesById($product_id, ['product_seller_id']);
+            if ($productRow['product_seller_id'] != $userId) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             }
         }
@@ -194,12 +195,12 @@ trait CustomProducts
             $rs = $srch->getResultSet();
             $row_data = FatApp::getDb()->fetch($rs);
 
-            $taxData = Tax::getTaxCatByProductId($product_id, UserAuthentication::getLoggedUserId(), $this->siteLangId, array('ptt_taxcat_id'));
+            $taxData = Tax::getTaxCatByProductId($product_id, $userId, $this->siteLangId, array('ptt_taxcat_id'));
             /* CommonHelper::printArray($row_data); die; */
             if (!empty($taxData)) {
                 $row_data = array_merge($row_data, $taxData);
             }
-            $shippingDetails = Product::getProductShippingDetails($product_id, $this->siteLangId, UserAuthentication::getLoggedUserId());
+            $shippingDetails = Product::getProductShippingDetails($product_id, $this->siteLangId, $userId);
 
             if (isset($shippingDetails['ps_from_country_id']) && $shippingDetails['ps_from_country_id']) {
                 $row_data['shipping_country'] = Countries::getCountryById($shippingDetails['ps_from_country_id'], $this->siteLangId, 'country_name');
@@ -285,6 +286,15 @@ trait CustomProducts
 
         if (!$prodObj->save()) {
             FatUtility::dieWithError($prodObj->getError());
+        }
+
+        $post['ps_product_id'] = $product_id;
+        $productSpecificsObj = new ProductSpecifics($product_id);
+        $productSpecificsObj->assignValues($post);
+        $data = $productSpecificsObj->getFlds();
+        if (!$productSpecificsObj->addNew(array(), $data)) {
+            Message::addErrorMessage($productSpecificsObj->getError());
+            FatUtility::dieJsonError(Message::getHtml());
         }
 
         $languages = Language::getAllNames();

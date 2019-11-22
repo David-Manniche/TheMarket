@@ -2,25 +2,25 @@
 /* created this class to access direct functions of getAttributesById and save function for below mentioned DB table. */
 class SellerProduct extends MyAppModel
 {
-    const DB_TBL = 'tbl_seller_products';
-    const DB_TBL_PREFIX = 'selprod_';
+    public const DB_TBL = 'tbl_seller_products';
+    public const DB_TBL_PREFIX = 'selprod_';
 
-    const DB_PROD_TBL = 'tbl_products';
-    const DB_PROD_TBL_PREFIX = 'product_';
+    public const DB_PROD_TBL = 'tbl_products';
+    public const DB_PROD_TBL_PREFIX = 'product_';
 
-    const DB_LANG_TBL = 'tbl_seller_products_lang';
-    const DB_LANG_TBL_PREFIX = 'selprodlang_';
+    public const DB_LANG_TBL = 'tbl_seller_products_lang';
+    public const DB_LANG_TBL_PREFIX = 'selprodlang_';
 
-    const DB_TBL_SELLER_PROD_OPTIONS = 'tbl_seller_product_options';
-    const DB_TBL_SELLER_PROD_OPTIONS_PREFIX = 'selprodoption_';
+    public const DB_TBL_SELLER_PROD_OPTIONS = 'tbl_seller_product_options';
+    public const DB_TBL_SELLER_PROD_OPTIONS_PREFIX = 'selprodoption_';
 
-    const DB_TBL_SELLER_PROD_SPCL_PRICE = 'tbl_product_special_prices';
-    const DB_TBL_SELLER_PROD_POLICY = 'tbl_seller_product_policies';
+    public const DB_TBL_SELLER_PROD_SPCL_PRICE = 'tbl_product_special_prices';
+    public const DB_TBL_SELLER_PROD_POLICY = 'tbl_seller_product_policies';
 
-    const DB_TBL_UPSELL_PRODUCTS = 'tbl_upsell_products';
-    const DB_TBL_UPSELL_PRODUCTS_PREFIX = 'upsell_';
-    const DB_TBL_RELATED_PRODUCTS = 'tbl_related_products';
-    const DB_TBL_RELATED_PRODUCTS_PREFIX = 'related_';
+    public const DB_TBL_UPSELL_PRODUCTS = 'tbl_upsell_products';
+    public const DB_TBL_UPSELL_PRODUCTS_PREFIX = 'upsell_';
+    public const DB_TBL_RELATED_PRODUCTS = 'tbl_related_products';
+    public const DB_TBL_RELATED_PRODUCTS_PREFIX = 'related_';
 
     public function __construct($id = 0)
     {
@@ -343,9 +343,39 @@ class SellerProduct extends MyAppModel
         return $data;
     }
 
-    public static function getAttributesById($recordId, $attr = null, $fetchOptions = true)
+    public static function getAttributesById($recordId, $attr = null, $fetchOptions = true, $joinSpecifics = false)
     {
-        $row = parent::getAttributesById($recordId, $attr);
+        $recordId = FatUtility::int($recordId);
+
+        $db = FatApp::getDb();
+
+        $srch = new SearchBase(static::DB_TBL, 'sp');
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addCondition(static::tblFld('id'), '=', $recordId);
+
+        if (true === $joinSpecifics) {
+            $srch->joinTable(
+                SellerProductSpecifics::DB_TBL,
+                'LEFT OUTER JOIN',
+                'ps.' . SellerProductSpecifics::DB_TBL_PREFIX . 'selprod_id = sp.' . static::tblFld('id'),
+                'ps'
+            );
+        }
+
+        if (null != $attr) {
+            if (is_array($attr)) {
+                $srch->addMultipleFields($attr);
+            } elseif (is_string($attr)) {
+                $srch->addFld($attr);
+            }
+        }
+        $rs = $srch->getResultSet();
+        $row = $db->fetch($rs);
+        if (!is_array($row)) {
+            return false;
+        }
+
         /* get seller product options[ */
         if ($fetchOptions) {
             $op = static::getSellerProductOptions($recordId, false);
@@ -357,6 +387,9 @@ class SellerProduct extends MyAppModel
         }
         /* ] */
 
+        if (is_string($attr)) {
+            return $row[$attr];
+        }
         return $row;
     }
 

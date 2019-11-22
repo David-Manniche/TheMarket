@@ -18,12 +18,14 @@ class Shop extends MyAppModel
     public const TEMPLATE_FOUR = 10004;
     public const TEMPLATE_FIVE = 10005;
 
-    public const SHOP_VIEW_ORGINAL_URL ='shops/view/';
-    public const SHOP_REVIEWS_ORGINAL_URL ='reviews/shop/';
-    public const SHOP_POLICY_ORGINAL_URL ='shops/policy/';
-    public const SHOP_SEND_MESSAGE_ORGINAL_URL ='shops/send-message/';
-    public const SHOP_TOP_PRODUCTS_ORGINAL_URL ='shops/top-products/';
-    public const SHOP_COLLECTION_ORGINAL_URL ='shops/collection/';
+    public const SHOP_VIEW_ORGINAL_URL = 'shops/view/';
+    public const SHOP_REVIEWS_ORGINAL_URL = 'reviews/shop/';
+    public const SHOP_POLICY_ORGINAL_URL = 'shops/policy/';
+    public const SHOP_SEND_MESSAGE_ORGINAL_URL = 'shops/send-message/';
+    public const SHOP_TOP_PRODUCTS_ORGINAL_URL = 'shops/top-products/';
+    public const SHOP_COLLECTION_ORGINAL_URL = 'shops/collection/';
+    
+    public const USE_SHOP_POLICY = 1;
 
     public const SHOP_PRODUCTS_COUNT_AT_HOMEPAGE = 2;
 
@@ -86,6 +88,44 @@ class Shop extends MyAppModel
         if (!is_array($row)) {
             return false;
         }
+        if (is_string($attr)) {
+            return $row[$attr];
+        }
+        return $row;
+    }
+
+    public static function getAttributesById($recordId, $attr = null, $joinSpecifics = false)
+    {
+        $recordId = FatUtility::int($recordId);
+        $db = FatApp::getDb();
+
+        $srch = new SearchBase(static::DB_TBL, 'ts');
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addCondition(static::tblFld('id'), '=', $recordId);
+
+        if (true === $joinSpecifics) {
+            $srch->joinTable(
+                ShopSpecifics::DB_TBL,
+                'LEFT OUTER JOIN',
+                'ss.' . ShopSpecifics::DB_TBL_PREFIX . 'shop_id = ts.' . static::tblFld('id'),
+                'ss'
+            );
+        }
+
+        if (null != $attr) {
+            if (is_array($attr)) {
+                $srch->addMultipleFields($attr);
+            } elseif (is_string($attr)) {
+                $srch->addFld($attr);
+            }
+        }
+        $rs = $srch->getResultSet();
+        $row = $db->fetch($rs);
+        if (!is_array($row)) {
+            return false;
+        }
+
         if (is_string($attr)) {
             return $row[$attr];
         }

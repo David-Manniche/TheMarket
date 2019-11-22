@@ -1,24 +1,24 @@
 <?php
 class OrderProduct extends MyAppModel
 {
-    const DB_TBL = 'tbl_order_products';
-    const DB_TBL_PREFIX = 'op_';
+    public const DB_TBL = 'tbl_order_products';
+    public const DB_TBL_PREFIX = 'op_';
 
-    const DB_TBL_LANG = 'tbl_order_products_lang';
-    const DB_TBL_CHARGES = 'tbl_order_product_charges';
-    const DB_TBL_CHARGES_PREFIX=     'opcharge_';
-    const DB_TBL_OP_TO_SHIPPING_USERS = 'tbl_order_product_to_shipping_users';
+    public const DB_TBL_LANG = 'tbl_order_products_lang';
+    public const DB_TBL_CHARGES = 'tbl_order_product_charges';
+    public const DB_TBL_CHARGES_PREFIX = 'opcharge_';
+    public const DB_TBL_OP_TO_SHIPPING_USERS = 'tbl_order_product_to_shipping_users';
 
-    const DB_TBL_SETTINGS =     'tbl_order_product_settings';
-    const DB_TBL_SETTINGS_PREFIX = 'opsetting_';
+    public const DB_TBL_SETTINGS =     'tbl_order_product_settings';
+    public const DB_TBL_SETTINGS_PREFIX = 'opsetting_';
 
-    const CHARGE_TYPE_TAX = 1;
-    const CHARGE_TYPE_DISCOUNT = 2;
-    const CHARGE_TYPE_SHIPPING = 3;
-    /* const CHARGE_TYPE_BATCH_DISCOUNT = 4; */
-    const CHARGE_TYPE_REWARD_POINT_DISCOUNT = 5;
-    const CHARGE_TYPE_VOLUME_DISCOUNT = 6;
-    const CHARGE_TYPE_ADJUST_SUBSCRIPTION_PRICE = 7;
+    public const CHARGE_TYPE_TAX = 1;
+    public const CHARGE_TYPE_DISCOUNT = 2;
+    public const CHARGE_TYPE_SHIPPING = 3;
+    /* public const CHARGE_TYPE_BATCH_DISCOUNT = 4; */
+    public const CHARGE_TYPE_REWARD_POINT_DISCOUNT = 5;
+    public const CHARGE_TYPE_VOLUME_DISCOUNT = 6;
+    public const CHARGE_TYPE_ADJUST_SUBSCRIPTION_PRICE = 7;
 
     public function __construct($id = 0)
     {

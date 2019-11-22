@@ -21,15 +21,15 @@ $submitBtnFld->developerTags['col'] = 12;
     <?php if ($selprod_id > 0) {
         ?> onClick="sellerProductForm(<?php echo $product_id, ',', $selprod_id ?>)" <?php
     }?>><?php echo Labels::getLabel('LBL_Basic', $siteLangId); ?></a></li>
-    <?php $inactive = ($selprod_id==0)?'fat-inactive':'';
+    <?php $inactive = ($selprod_id == 0) ? 'fat-inactive' : '';
     foreach ($language as $langId => $langName) { ?>
     <li class="<?php echo $inactive ; ?>"><a href="javascript:void(0)" <?php if ($selprod_id > 0) {
         ?> onClick="sellerProductLangForm (<?php echo $langId; ?>, <?php echo $selprod_id; ?>)" <?php
                } ?>>
     <?php echo $langName;?></a></li>
     <?php } ?>
-    <li class="<?php echo $inactive ; ?>"><a href="javascript:void(0)" <?php if($selprod_id>0){?> onClick="linkPoliciesForm(<?php echo $product_id,',',$selprod_id,',',PolicyPoint::PPOINT_TYPE_WARRANTY ; ?>)" <?php }?>><?php echo Labels::getLabel('LBL_Link_Warranty_Policies', $siteLangId); ?></a></li>
-    <li class="<?php echo $inactive ; ?>"><a href="javascript:void(0)" <?php if($selprod_id>0){?> onClick="linkPoliciesForm(<?php echo $product_id,',',$selprod_id,',',PolicyPoint::PPOINT_TYPE_RETURN ; ?>)" <?php }?>><?php echo Labels::getLabel('LBL_Link_Return_Policies', $siteLangId); ?></a></li>
+    <li class="<?php echo $inactive ; ?>"><a href="javascript:void(0)" <?php if ($selprod_id > 0) {?> onClick="linkPoliciesForm(<?php echo $product_id,',',$selprod_id,',',PolicyPoint::PPOINT_TYPE_WARRANTY ; ?>)" <?php }?>><?php echo Labels::getLabel('LBL_Link_Warranty_Policies', $siteLangId); ?></a></li>
+    <li class="<?php echo $inactive ; ?>"><a href="javascript:void(0)" <?php if ($selprod_id > 0) {?> onClick="linkPoliciesForm(<?php echo $product_id,',',$selprod_id,',',PolicyPoint::PPOINT_TYPE_RETURN ; ?>)" <?php }?>><?php echo Labels::getLabel('LBL_Link_Return_Policies', $siteLangId); ?></a></li>
 
     </ul>
     </div>
@@ -39,7 +39,21 @@ $submitBtnFld->developerTags['col'] = 12;
     $frmSellerProduct->setFormTagAttribute('onsubmit', 'setUpSellerProduct(this); return(false);');
     $frmSellerProduct->setFormTagAttribute('class', 'form form--horizontal');
     $frmSellerProduct->developerTags['colClassPrefix'] = 'col-lg-4 col-md-';
-        $frmSellerProduct->developerTags['fld_default_col'] = 4;
+    $frmSellerProduct->developerTags['fld_default_col'] = 4;
+
+    $productWarranty = $frmSellerProduct->getField('product_warranty');
+    $productWarranty->setFieldTagAttribute('disabled', 'disabled');
+
+    $returnAgeFld = $frmSellerProduct->getField('selprod_return_age');
+    $cancellationAgeFld = $frmSellerProduct->getField('selprod_cancellation_age');
+    $returnAge = FatUtility::int($returnAgeFld->value);
+    $hidden = '';
+    if ('' === $returnAgeFld->value || '' === $cancellationAgeFld->value) {
+        $hidden = 'hidden';
+    }
+    $returnAgeFld->setWrapperAttribute('class', 'use-shop-policy ' . $hidden);
+    $cancellationAgeFld->setWrapperAttribute('class', 'use-shop-policy ' . $hidden);
+
     /* $optionSectionHeading = $frmSellerProduct->getField('optionSectionHeading');
     $optionSectionHeading->value = '<h2>Set Up Options</h2>'; //TODO:: Make, final word from language labels. */
     /* $submitBtn = $frmSellerProduct->getField('btn_submit');
@@ -96,5 +110,13 @@ $("document").ready(function(){
     });
 
     $("select[name='selprod_track_inventory']").trigger('change');
+
+    $("#use_shop_policy").change(function(){
+        if ($(this).is(":checked")) {
+            $('.use-shop-policy').addClass('hidden');
+        } else {
+            $('.use-shop-policy').removeClass('hidden');
+        }
+    });
 });
 </script>

@@ -654,4 +654,9 @@ class DummyController extends MyAppController
             }
         }
     }
+
+    public function changeOrderStatus() {
+        $orderObj = new Orders();
+        $orderObj->changeOrderStatus();
+    }
 }
