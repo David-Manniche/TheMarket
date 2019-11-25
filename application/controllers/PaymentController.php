@@ -4,8 +4,8 @@ abstract class PaymentController extends MyAppController
     abstract protected function allowedCurrenciesArr();
     abstract public function charge($orderId);
     
-    protected $systemCurrencyCode = '';
-    protected $systemCurrencyId = '';
+    protected $systemCurrencyCode;
+    protected $systemCurrencyId;
 
     public function __construct($action)
     {

@@ -180,7 +180,7 @@ class ConfigurationsController extends AdminBaseController
 
         if (isset($post['CONF_USE_SSL']) && $post['CONF_USE_SSL']==1) {
             if (!$this->is_ssl_enabled()) {
-                if ($post['CONF_USE_SSL']!= FatApp::getConfig('CONF_USE_SSL')) {
+                if ($post['CONF_USE_SSL'] != FatApp::getConfig('CONF_USE_SSL')) {
                     Message::addErrorMessage(Labels::getLabel('MSG_SSL_NOT_INSTALLED_FOR_WEBSITE_Try_to_Save_data_without_Enabling_ssl', $this->adminLangId));
 
                     FatUtility::dieJsonError(Message::getHtml());
@@ -191,19 +191,19 @@ class ConfigurationsController extends AdminBaseController
         }
 
         if (isset($post['CONF_SITE_ROBOTS_TXT'])) {
-            $filePath = CONF_INSTALLATION_PATH.'public/robots.txt';
+            $filePath = CONF_INSTALLATION_PATH . 'public/robots.txt';
             $robotfile = fopen($filePath, "w");
             fwrite($robotfile, $post['CONF_SITE_ROBOTS_TXT']);
             fclose($robotfile);
         }
 
-        /* if (array_key_exists('CONF_CURRENCY', $post)) {
+        if (array_key_exists('CONF_CURRENCY', $post)) {
             $data = Currency::getAttributesById($post['CONF_CURRENCY']);
             if (empty($data) || ($data['currency_value'] * 1) != 1) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Please_set_default_currency_value_to_1', $this->adminLangId));
                 FatUtility::dieJsonError(Message::getHtml());
             }
-        } */
+        }
 
         if (!$record->update($post)) {
             Message::addErrorMessage($record->getError());

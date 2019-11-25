@@ -54,14 +54,16 @@ class CurrencyManagementController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieJsonError(Message::getHtml());
         }
+		$defaultCurrencyId = FatApp::getConfig("CONF_CURRENCY", FatUtility::VAR_INT, 1);
+		
         $defaultCurrency = 0;
         if ($currencyId > 0) {
-            $data = Currency::getAttributesById($currencyId, array('currency_id','currency_code','currency_active','currency_symbol_left','currency_symbol_right','currency_value','currency_is_default'));
+            $data = Currency::getAttributesById($currencyId, array('currency_id','currency_code','currency_active','currency_symbol_left','currency_symbol_right','currency_value'));
 
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
-            $defaultCurrency = $data['currency_is_default'];
+            $defaultCurrency = ($data['currency_id'] == $defaultCurrencyId) ? 1 : 0;
             $frm->fill($data);
         }
 
@@ -88,12 +90,8 @@ class CurrencyManagementController extends AdminBaseController
         $currencyId = FatUtility::int($post['currency_id']);
         unset($post['currency_id']);
         if ($currencyId > 0) {
-            $data = Currency::getAttributesById($currencyId, array('currency_id','currency_is_default'));
-            if ($data === false) {
-                FatUtility::dieWithError($this->str_invalid_request);
-            }
-
-            if ($data['currency_is_default'] == 1) {
+			$defaultCurrencyId = FatApp::getConfig("CONF_CURRENCY", FatUtility::VAR_INT, 1);
+            if ($currencyId == $defaultCurrencyId) {
                 unset($post['currency_value']);
             }
         }

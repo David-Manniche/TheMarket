@@ -2,10 +2,17 @@
 require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/PayWithAmazon/Client.php';
 class AmazonPayController extends PaymentController
 {
-    private $key_name="Amazon";
+    private $key_name = "Amazon";
     private $error = false;
     private $paymentSettings = false;
-    private $currencyCode = 'usd';
+    private $currencyCode;
+
+    protected function allowedCurrenciesArr()
+    {
+        return [
+            'AUD', 'GBP', 'DKK', 'EUR', 'HKD', 'JPY', 'NZD', 'NOK', 'ZAR', 'SEK', 'CHF', 'USD'
+        ];
+    }
 
     public function charge($orderId)
     {
@@ -42,7 +49,7 @@ class AmazonPayController extends PaymentController
         $this->set('exculdeMainHeaderDiv', true);
         $this->_template->addCss('css/payment.css');
 
-        $queryStr = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '?')+1);
+        $queryStr = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '?') + 1);
         $queryStrArr = explode('&', $queryStr);
 
         foreach ($queryStrArr as $elm) {
@@ -97,7 +104,7 @@ class AmazonPayController extends PaymentController
             $requestParameters = array();
             $requestParameters['amount']            = $paymentAmount;
             $requestParameters['currencyCode']     = strtoupper($this->currencyCode);
-            $requestParameters['seller_order_id']   = 'order-'.$orderId;
+            $requestParameters['seller_order_id']   = 'order-' . $orderId;
             $requestParameters['seller_Id']         = null;
             $requestParameters['platform_id']       = null;
             $requestParameters['mws_auth_token']    = null;
@@ -134,10 +141,10 @@ class AmazonPayController extends PaymentController
         if (!(strlen($config['merchant_id']) > 0 && strlen($config['access_key']) > 0 && strlen($config['secret_key']) > 0 && strlen($config['client_id']) > 0)) {
             FatUtility::dieJsonError(Labels::getLabel('AMAZON_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId));
         }
-        $orderPaymentObj=new OrderPayment($orderId, $this->siteLangId);
-        $paymentAmount=$orderPaymentObj->getOrderPaymentGatewayAmount();
+        $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
+        $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $payableAmount = $this->formatPayableAmount($paymentAmount);
-        $orderInfo=$orderPaymentObj->getOrderPrimaryinfo();
+        $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
         if ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
             $this->currencyCode = strtolower($orderInfo["order_currency_code"]);
             $config['region']        = 'us';
@@ -164,7 +171,7 @@ class AmazonPayController extends PaymentController
                     $requestParameters['amazon_reference_id'] = uniqid('P01_');
                     $requestParameters['amazon_authorization_id'] = $res->AuthorizeResult->AuthorizationDetails->AmazonAuthorizationId;
                     $requestParameters['capture_reference_id'] = uniqid('A01_');
-                    $requestParameters['capture_amount']= $paymentAmount;
+                    $requestParameters['capture_amount'] = $paymentAmount;
                     $response = $client->capture($requestParameters);
                     $responsearray['capture'] = json_decode($response->toJson());
                     if ($client->success) {
@@ -197,13 +204,13 @@ class AmazonPayController extends PaymentController
             return false;
         }
         $amount = number_format($amount, 2, '.', '');
-        return $amount*100;
+        return $amount * 100;
     }
 
     private function getPaymentSettings()
     {
-        $pmObj=new PaymentSettings($this->key_name);
-        $paymentSettings=$pmObj->getPaymentSettings();
+        $pmObj = new PaymentSettings($this->key_name);
+        $paymentSettings = $pmObj->getPaymentSettings();
         return $paymentSettings;
     }
 }

@@ -6,12 +6,11 @@ class PayFortPayController extends PaymentController
     private $testEnvironmentUrl = 'https://sbcheckout.payfort.com/FortAPI/paymentPage';
     private $liveEnvironmentUrl = 'https://checkout.payfort.com/FortAPI/paymentPage';
     private $error = false;
-    private $currency = $this->systemCurrencyCode;
                                            
     protected function allowedCurrenciesArr()
     {
         return [
-            'AED', 'USD', 'JOD', 'KWD', 'OMR', 'TND', 'BHD', 'LYD', 'IQD', 'SAR',
+            'AED', 'USD', 'JOD', 'KWD', 'OMR', 'TND', 'BHD', 'LYD', 'IQD', 'SAR'
         ];
     }
 
@@ -89,7 +88,7 @@ class PayFortPayController extends PaymentController
 
         $returnSignature = $payfortIntegration->calculateSignature($arrData, $paymentSettings['sha_response_phrase'], $paymentSettings['sha_type']);
 
-        if ($returnSignature == $_REQUEST['signature'] && substr($_REQUEST['response_code'], 2) == '000' && $_REQUEST['amount'] == $paymentGatewayCharge && $_REQUEST['currency'] == $this->currency) && $_REQUEST['merchant_reference'] == $orderInfo['id']) {
+        if ($returnSignature == $_REQUEST['signature'] && substr($_REQUEST['response_code'], 2) == '000' && $_REQUEST['amount'] == $paymentGatewayCharge && $_REQUEST['currency'] == $this->systemCurrencyCode) && $_REQUEST['merchant_reference'] == $orderInfo['id']) {
             $message = array();
 
             foreach ($_REQUEST as $key => $value) {
@@ -143,7 +142,7 @@ class PayFortPayController extends PaymentController
                                     'access_code' => $paymentSettings['access_code'],
                                     'amount' => $paymentGatewayCharge,
                                     'command' => 'PURCHASE',
-                                    'currency' => strtoupper($this->currency),
+                                    'currency' => strtoupper($this->systemCurrencyCode),
                                     'customer_email' => $orderInfo['customer_email'],
                                     'language' => strtolower($orderInfo['order_language']),
                                     'merchant_identifier' => $paymentSettings['merchant_id'],
