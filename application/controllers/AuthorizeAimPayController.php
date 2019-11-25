@@ -53,7 +53,7 @@ class AuthorizeAimPayController extends PaymentController
             $this->set('error', Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId));
         }
 
-        if (count($this->currenciesAccepted) && !in_array($orderInfo["order_currency_code"], $this->currenciesAccepted)) {
+        if (count($this->currenciesAccepted) && !in_array($this->systemCurrencyCode, $this->currenciesAccepted)) {
             Message::addErrorMessage(Labels::getLabel('MSG_INVALID_ORDER_CURRENCY_PASSED_TO_GATEWAY', $this->siteLangId));
             CommonHelper::redirectUserReferer();
         }

@@ -22,10 +22,10 @@ class MyAppController extends FatController
     }
 
     public function initCommonVariables()
-    {
+    {        
         $this->siteLangId = CommonHelper::getLangId();
         $this->siteCurrencyId = CommonHelper::getCurrencyId();
-
+        
         $this->app_user['temp_user_id'] = 0;
         if (true ===  MOBILE_APP_API_CALL) {
             $this->setApiVariables();

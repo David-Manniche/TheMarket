@@ -164,7 +164,7 @@ class BraintreePayController extends PaymentController
         $payableAmount = $this->formatPayableAmount($paymentAmount);
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
-        if (!in_array(strtoupper($orderInfo["order_currency_code"]), $this->currenciesAccepted)) {
+        if (!in_array(strtoupper($this->systemCurrencyCode), $this->currenciesAccepted)) {
             Message::addErrorMessage(Labels::getLabel('MSG_INVALID_ORDER_CURRENCY_PASSED_TO_GATEWAY', $this->siteLangId));
             CommonHelper::redirectUserReferer();
         }

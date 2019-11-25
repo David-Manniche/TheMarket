@@ -97,4 +97,13 @@ class Currency extends MyAppModel
         }
         return $row;
     }
+
+    public static function getDefault(){
+        $srch = static::getSearchObject();
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addCondition('currency_is_default', '=', 1);
+        $rs = $srch->getResultSet();
+        return FatApp::getDb()->fetch($rs);
+    }
 }

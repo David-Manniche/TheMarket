@@ -3,13 +3,20 @@
 require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/stripe/init.php';
 class StripePayController extends PaymentController
 {
-    private $keyName="Stripe";
+    private $keyName = "Stripe";
 
     private $error = false;
 
     private $paymentSettings = false;
 
-    private $currencyCode = 'usd';
+    private $currencyCode = $this->systemCurrencyCode;
+    
+    protected function allowedCurrenciesArr()
+    {
+        return [
+            'USD', 'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD', 'BDT', 'BGN', 'BIF', 'BMD', 'BND', 'BOB', 'BRL', 'BSD', 'BWP', 'BZD', 'CAD', 'CDF', 'CHF', 'CLP', 'CNY', 'COP', 'CRC', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ETB', 'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK', 'HTG', 'HUF', 'IDR', 'ILS', 'INR', 'ISK', 'JMD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KRW', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 'MOP', 'MRO', 'MUR', 'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SEK', 'SGD', 'SHP', 'SLL', 'SOS', 'SRD', 'STD', 'SZL', 'THB', 'TJS', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'UYU', 'UZS', 'VND', 'VUV', 'WST', 'XAF', 'XCD', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMW'
+        ];
+    }
 
     public function charge($orderId)
     {
@@ -53,8 +60,7 @@ class StripePayController extends PaymentController
                 FatUtility::dieJsonError($message);
             }
             FatUtility::exitWithErrorCode(404);
-        } elseif ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
-            $this->currencyCode = strtolower($orderInfo["order_currency_code"]);
+        } elseif ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {            
             $checkPayment = $this->doPayment($payableAmount, $orderInfo);
             $frm = $this->getPaymentForm($orderId);
             $this->set('frm', $frm);

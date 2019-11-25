@@ -197,11 +197,19 @@ class ConfigurationsController extends AdminBaseController
             fclose($robotfile);
         }
 
+        /* if (array_key_exists('CONF_CURRENCY', $post)) {
+            $data = Currency::getAttributesById($post['CONF_CURRENCY']);
+            if (empty($data) || ($data['currency_value'] * 1) != 1) {
+                Message::addErrorMessage(Labels::getLabel('MSG_Please_set_default_currency_value_to_1', $this->adminLangId));
+                FatUtility::dieJsonError(Message::getHtml());
+            }
+        } */
+
         if (!$record->update($post)) {
             Message::addErrorMessage($record->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-
+        
         $this->set('msg', Labels::getLabel('MSG_Setup_Successful', $this->adminLangId));
         $this->set('frmType', $frmType);
         $this->set('langId', 0);
@@ -573,7 +581,7 @@ class ConfigurationsController extends AdminBaseController
                 $frm->addSelectBox(Labels::getLabel('LBL_date_Format', $this->adminLangId), 'CONF_DATE_FORMAT', Configurations::dateFormatPhpArr(), false, array(), '');
 
                 $currencyArr = Currency::getCurrencyNameWithCode($this->adminLangId);
-                $frm->addSelectBox(Labels::getLabel('LBL_Default_Site_Currency', $this->adminLangId), 'CONF_CURRENCY', $currencyArr, false, array(), '');
+                $frm->addSelectBox(Labels::getLabel('LBL_Default_System_Currency', $this->adminLangId), 'CONF_CURRENCY', $currencyArr, false, array(), '');
 
                 $faqCategoriesArr = FaqCategory::getFaqPageCategories();
                 $sellerCategoriesArr = FaqCategory::getSellerPageCategories();
