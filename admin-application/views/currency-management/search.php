@@ -64,9 +64,10 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'currency_code':
                 if ($row['currency_name'] != '') {
+                    $default = ($row['currency_id'] == $defaultCurrencyId) ? '<span class="badge badge-success">Default</span>' : '';
                     $td->appendElement('plaintext', array(), $row['currency_name'], true);
                     $td->appendElement('br', array());
-                    $td->appendElement('plaintext', array(), '(' . $row[$key] . ')', true);
+                    $td->appendElement('plaintext', array(), '(' . $row[$key] . ') ' . $default, true);
                 } else {
                     $td->appendElement('plaintext', array(), $row[$key], true);
                 }

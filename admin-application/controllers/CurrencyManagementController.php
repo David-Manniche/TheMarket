@@ -34,9 +34,10 @@ class CurrencyManagementController extends AdminBaseController
         if ($rs) {
             $records = FatApp::getDb()->fetchAll($rs);
         }
-
+        $defaultCurrencyId = FatApp::getConfig("CONF_CURRENCY", FatUtility::VAR_INT, 1);
         $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->adminLangId));
         $this->set("arr_listing", $records);
+        $this->set("defaultCurrencyId", $defaultCurrencyId);
         $this->_template->render(false, false);
     }
 
