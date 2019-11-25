@@ -179,11 +179,11 @@ $(document).on('change', '.language-js',function(){
 		});	
 	};
 	
-	productLangForm = function(preq_id, lang_id) {
+	productLangForm = function(preq_id, lang_id, autoFillLangData = 0) {
 		fcom.displayProcessing();		
 		fcom.resetEditorInstance();
 		/* $.facebox(function() { */
-			fcom.ajax(fcom.makeUrl('CustomProducts', 'langForm', [preq_id, lang_id]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('CustomProducts', 'langForm', [preq_id, lang_id, autoFillLangData]), '', function(t) {
 				fcom.updateFaceboxContent(t);
 				fcom.setEditorLayout(lang_id);					
 				var frm = $('#facebox form')[0];

@@ -20,15 +20,11 @@ $fld_tooltip_key->setFieldTagAttribute('disabled','disabled');
 		<ul class="tabs_nav">
 			<li><a class="active" href="javascript:void(0)" onclick="tooltipForm(<?php echo $tooltipId ?>);"><?php echo Labels::getLabel('LBL_General',$adminLangId);?></a>
 			</li>
-			<?php 
-			$inactive=($tooltipId==0)?'fat-inactive':'';	
-			foreach($languages as $langId=>$langName){?>
-				<li class="<?php echo $inactive;?>"><a href="javascript:void(0);" 
-				<?php if($tooltipId>0){?> onclick="tooltipLangForm(<?php echo $tooltipId ?>, <?php echo $langId;?>,'add');" <?php }?>>
-				<?php 
-					echo Labels::getLabel("LBL_".$langName,$adminLangId);
-				?></a></li>
-			<?php } ?>
+            <li class="<?php echo (0 == $tooltipId) ? 'fat-inactive' : ''; ?>">
+                <a href="javascript:void(0);" onclick='tooltipLangForm(<?php echo $tooltipId; ?> , <?php echo FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1); ?>, "add")'>
+                    <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
+                </a>
+            </li>
 		</ul>
 		<div class="tabs_panel_wrap">
 			<div class="tabs_panel">

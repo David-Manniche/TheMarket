@@ -130,9 +130,10 @@
 		});
 	};
 
-	customProductLangForm = function(productId, lang_id){
+	customProductLangForm = function(productId, lang_id, autoFillLangData = 0){
+        $(dv).html( fcom.getLoader() );
 		fcom.resetEditorInstance();
-			fcom.ajax(fcom.makeUrl('Seller', 'customProductLangForm', [productId, lang_id]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('Seller', 'customProductLangForm', [productId, lang_id, autoFillLangData]), '', function(t) {
 				$(dv).html(t);
 				fcom.setEditorLayout(lang_id);
 
@@ -586,9 +587,9 @@
 		});
 	};
 
-	addTagLangForm = function(tagId, langId) {
+	addTagLangForm = function(tagId, langId, autoFillLangData = 0) {
 		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('seller', 'tagsLangForm', [tagId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('seller', 'tagsLangForm', [tagId, langId, autoFillLangData]), '', function(t) {
 				$.facebox(t);
 			});
 		});
@@ -629,9 +630,9 @@
 		});
 	};
 
-	addBrandReqLangForm = function(brandReqId, langId) {
+	addBrandReqLangForm = function(brandReqId, langId, autoFillLangData = 0) {
 		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('seller', 'brandReqLangForm', [brandReqId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('seller', 'brandReqLangForm', [brandReqId, langId, autoFillLangData]), '', function(t) {
 				$.facebox(t);
 			});
 		});

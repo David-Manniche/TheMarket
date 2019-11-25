@@ -10,7 +10,7 @@ class ProductCategorySearch extends SearchBase
 
         if ($this->langId > 0) {
             $this->joinTable(
-                ProductCategory::DB_LANG_TBL,
+                ProductCategory::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'prodcatlang_prodcat_id = c.prodcat_id
 			AND prodcatlang_lang_id = ' . $langId,

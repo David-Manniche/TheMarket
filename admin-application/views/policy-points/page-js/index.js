@@ -76,10 +76,10 @@ $(document).ready(function() {
         });
     }
 
-    editPolicyPointLangForm = function(ppointId, langId) {
+    editPolicyPointLangForm = function(ppointId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
         //$.facebox(function() {
-        fcom.ajax(fcom.makeUrl('PolicyPoints', 'langForm', [ppointId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('PolicyPoints', 'langForm', [ppointId, langId, autoFillLangData]), '', function(t) {
             //$.facebox(t,'faceboxWidth');
             fcom.updateFaceboxContent(t);
         });

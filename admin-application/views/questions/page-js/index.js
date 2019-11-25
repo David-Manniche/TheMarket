@@ -41,9 +41,9 @@ $(document).ready(function(){
 		});
 	};
 	
-	questionLangForm =  function(questionId,langId){
+	questionLangForm =  function(questionId,langId, autoFillLangData = 0){
 		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('Questions', 'langForm', [questionId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('Questions', 'langForm', [questionId, langId, autoFillLangData]), '', function(t) {
 				$.facebox(t);
 			});
 		});

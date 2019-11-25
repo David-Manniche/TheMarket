@@ -1,25 +1,25 @@
 <?php
 class ContentPage extends MyAppModel
 {
-    const DB_TBL = 'tbl_content_pages';
-    const DB_TBL_PREFIX = 'cpage_';
+    public const DB_TBL = 'tbl_content_pages';
+    public const DB_TBL_PREFIX = 'cpage_';
 
-    const DB_TBL_LANG = 'tbl_content_pages_lang';
-    const DB_TBL_LANG_PREFIX = 'cpagelang_';
+    public const DB_TBL_LANG = 'tbl_content_pages_lang';
+    public const DB_TBL_LANG_PREFIX = 'cpagelang_';
 
-    const DB_TBL_CONTENT_PAGES_BLOCK_LANG = 'tbl_content_pages_block_lang';
-    const DB_TBL_CONTENT_PAGES_BLOCK_LANG_PREFIX = 'cpblocklang_';
+    public const DB_TBL_CONTENT_PAGES_BLOCK_LANG = 'tbl_content_pages_block_lang';
+    public const DB_TBL_CONTENT_PAGES_BLOCK_LANG_PREFIX = 'cpblocklang_';
 
-    const CONTENT_PAGE_LAYOUT1_TYPE = 1;
-    const CONTENT_PAGE_LAYOUT2_TYPE = 2;
-    const CONTENT_PAGE_LAYOUT1_BLOCK_COUNT = 5;
-    const CONTENT_PAGE_LAYOUT1_BLOCK_1 = 1 ;
-    const CONTENT_PAGE_LAYOUT1_BLOCK_2 = 2 ;
-    const CONTENT_PAGE_LAYOUT1_BLOCK_3 = 3 ;
-    const CONTENT_PAGE_LAYOUT1_BLOCK_4 = 4 ;
-    const CONTENT_PAGE_LAYOUT1_BLOCK_5 = 5 ;
+    public const CONTENT_PAGE_LAYOUT1_TYPE = 1;
+    public const CONTENT_PAGE_LAYOUT2_TYPE = 2;
+    public const CONTENT_PAGE_LAYOUT1_BLOCK_COUNT = 5;
+    public const CONTENT_PAGE_LAYOUT1_BLOCK_1 = 1 ;
+    public const CONTENT_PAGE_LAYOUT1_BLOCK_2 = 2 ;
+    public const CONTENT_PAGE_LAYOUT1_BLOCK_3 = 3 ;
+    public const CONTENT_PAGE_LAYOUT1_BLOCK_4 = 4 ;
+    public const CONTENT_PAGE_LAYOUT1_BLOCK_5 = 5 ;
 
-    const REWRITE_URL_PREFIX = 'cms/view/';
+    public const REWRITE_URL_PREFIX = 'cms/view/';
 
 
     public function __construct($epageId = 0)

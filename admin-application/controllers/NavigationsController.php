@@ -105,19 +105,29 @@ class NavigationsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function langForm($nav_id = 0, $lang_id = 0)
+    public function langForm($nav_id = 0, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canViewNavigationManagement();
 
         $nav_id = FatUtility::int($nav_id);
         $lang_id = FatUtility::int($lang_id);
 
-        if ($nav_id==0 || $lang_id==0) {
+        if ($nav_id == 0 || $lang_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
 
         $langFrm = $this->getLangForm($nav_id, $lang_id);
-        $langData = Navigations::getAttributesByLangId($lang_id, $nav_id);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(Navigations::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($nav_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = Navigations::getAttributesByLangId($lang_id, $nav_id);
+        }
 
         if ($langData) {
             $langFrm->fill($langData);
@@ -149,15 +159,24 @@ class NavigationsController extends AdminBaseController
         unset($post['nav_id']);
         unset($post['lang_id']);
         $data = array(
-        'navlang_nav_id'=>$nav_id,
-        'navlang_lang_id'=>$lang_id,
-        'nav_name'=>$post['nav_name']
+        'navlang_nav_id' => $nav_id,
+        'navlang_lang_id' => $lang_id,
+        'nav_name' => $post['nav_name']
         );
 
         $obj = new Navigations($nav_id);
         if (!$obj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($obj->getError());
             FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(Navigations::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($nav_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId = 0;
@@ -293,7 +312,7 @@ class NavigationsController extends AdminBaseController
         $newTabLangId = 0;
         if ($nlink_id > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = Navigations::getAttributesByLangId($langId, $nlink_id)) {
                     $newTabLangId = $langId;
                     break;
@@ -301,7 +320,7 @@ class NavigationsController extends AdminBaseController
             }
         } else {
             $nlink_id = $navLinkObj->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
         $this->set('langId', $newTabLangId);
         $this->set('nlinkId', $nlink_id);
@@ -334,7 +353,7 @@ class NavigationsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php'); */
     }
 
-    public function navigationLinkLangForm()
+    public function navigationLinkLangForm($autoFillLangData = 0)
     {
         $post = FatApp::getPostedData();
         $nav_id = FatUtility::int($post['nav_id']);
@@ -346,7 +365,18 @@ class NavigationsController extends AdminBaseController
         }
 
         $langFrm = $this->getNavigationLinksLangForm($lang_id);
-        $langData = NavigationLinks::getAttributesByLangId($lang_id, $nlink_id);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(NavigationLinks::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($nlink_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = NavigationLinks::getAttributesByLangId($lang_id, $nlink_id);
+        }
+        
         if ($langData) {
             $langData['nlink_id'] = $langData['nlinklang_nlink_id'];
             $langData['nav_id'] = $nav_id;
@@ -386,10 +416,10 @@ class NavigationsController extends AdminBaseController
         unset($post['nlink_id']);
         unset($post['lang_id']);
 
-        $data=array(
-        'nlinklang_nlink_id'=>$nlink_id,
-        'nlinklang_lang_id'=>$lang_id,
-        'nlink_caption'=>$post['nlink_caption'],
+        $data = array(
+        'nlinklang_nlink_id' => $nlink_id,
+        'nlinklang_lang_id' => $lang_id,
+        'nlink_caption' => $post['nlink_caption'],
         );
 
         $navLinkObj = new NavigationLinks($nlink_id);
@@ -397,10 +427,20 @@ class NavigationsController extends AdminBaseController
             Message::addErrorMessage($navLinkObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
+
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(NavigationLinks::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($nlink_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        }
+
         $newTabLangId = 0;
-        if ($nlink_id>0) {
+        if ($nlink_id > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = NavigationLinks::getAttributesByLangId($langId, $nlink_id)) {
                     $newTabLangId = $langId;
                     break;
@@ -408,7 +448,7 @@ class NavigationsController extends AdminBaseController
             }
         } else {
             $nlink_id = $navLinkObj->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
         $this->set('langId', $newTabLangId);
         $this->set('nlinkId', $nlink_id);
@@ -543,8 +583,15 @@ class NavigationsController extends AdminBaseController
         $frm = new Form('frmNavigationLink');
         $frm->addHiddenField('', 'nav_id');
         $frm->addHiddenField('', 'nlink_id');
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Caption', $this->adminLangId), 'nlink_caption');
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
@@ -569,8 +616,16 @@ class NavigationsController extends AdminBaseController
     {
         $frm = new Form('frmNavigationLang');
         $frm->addHiddenField('', 'nav_id', $nav_id);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Title', $this->adminLangId), 'nav_name');
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+        
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;
     }

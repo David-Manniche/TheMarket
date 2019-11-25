@@ -43,11 +43,11 @@ $(document).ready(function() {
     };
 
 
-    editLangForm = function(etplCode, langId) {
+    editLangForm = function(etplCode, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
         fcom.resetEditorInstance();
 
-        fcom.ajax(fcom.makeUrl('EmailTemplates', 'langForm', [etplCode, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('EmailTemplates', 'langForm', [etplCode, langId, autoFillLangData]), '', function(t) {
             fcom.updateFaceboxContent(t);
             fcom.setEditorLayout(langId);
             fcom.resetFaceboxHeight();

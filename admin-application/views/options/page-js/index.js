@@ -35,11 +35,13 @@ $(document).ready(function() {
         });
     };
 
-    addOptionForm = function(optionId) {
+    addOptionForm = function(optionId, autoFillLangData = 0) {
         var dv = $('#loadForm');
-        fcom.ajax(fcom.makeUrl('Options', 'addForm', [optionId]), '', function(t) {
+        $.systemMessage(langLbl.processing, 'alert--process');
+        fcom.ajax(fcom.makeUrl('Options', 'addForm', [optionId, autoFillLangData]), '', function(t) {
             dv.html(t);
             fcom.resetFaceboxHeight();
+            $.systemMessage.close();
         });
     };
 
@@ -175,5 +177,4 @@ $(document).ready(function() {
         document.frmOptionSearch.reset();
         searchOptions(document.frmOptionSearch);
     };
-
 })();

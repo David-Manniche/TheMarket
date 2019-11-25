@@ -150,19 +150,29 @@ class ContentPagesController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function langForm($cpage_id = 0, $lang_id = 0, $cpage_layout = 0)
+    public function langForm($cpage_id = 0, $lang_id = 0, $cpage_layout = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canViewContentPages();
 
         $cpage_id = FatUtility::int($cpage_id);
         $lang_id = FatUtility::int($lang_id);
 
-        if ($cpage_id==0 || $lang_id==0) {
+        if ($cpage_id == 0 || $lang_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
 
         $blockLangFrm = $this->getLangForm($cpage_id, $lang_id, $cpage_layout);
-        $langData = ContentPage::getAttributesByLangId($lang_id, $cpage_id);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(ContentPage::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($cpage_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = ContentPage::getAttributesByLangId($lang_id, $cpage_id);
+        }
 
         if ($langData) {
             $srch = new searchBase(ContentPage::DB_TBL_CONTENT_PAGES_BLOCK_LANG);
@@ -170,12 +180,25 @@ class ContentPagesController extends AdminBaseController
             $srch->doNotLimitRecords();
             $srch->addMultipleFields(array("cpblocklang_text", 'cpblocklang_block_id'));
             $srch->addCondition('cpblocklang_cpage_id', '=', $cpage_id);
-            $srch->addCondition('cpblocklang_lang_id', '=', $lang_id);
+            
+            if (0 < $autoFillLangData) {
+                $srch->addCondition('cpblocklang_lang_id', '=', FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
+            } else {
+                $srch->addCondition('cpblocklang_lang_id', '=', $lang_id);
+            }
+
             $srchRs = $srch->getResultSet();
             $blockData = FatApp::getDb()->fetchAll($srchRs, 'cpblocklang_block_id');
-
             foreach ($blockData as $blockKey => $blockContent) {
-                $langData['cpblock_content_block_'.$blockKey] = $blockContent['cpblocklang_text'];
+                if (0 < $autoFillLangData) {
+                    $blockContent = $updateLangDataobj->directTranslate(['cpblocklang_text' => $blockContent['cpblocklang_text']], $lang_id);
+                    if (false === $blockContent) {
+                        Message::addErrorMessage($updateLangDataobj->getError());
+                        FatUtility::dieWithError(Message::getHtml());
+                    }
+                    $blockContent = current($blockContent);
+                }
+                $langData['cpblock_content_block_' . $blockKey] = $blockContent['cpblocklang_text'];
             }
             $blockLangFrm->fill($langData);
         }
@@ -195,13 +218,13 @@ class ContentPagesController extends AdminBaseController
     public function langSetup()
     {
         $this->objPrivilege->canEditContentPages();
-        $post=FatApp::getPostedData();
+        $post = FatApp::getPostedData();
         /* CommonHelper::printArray($post); die; */
         $cpage_id = $post['cpage_id'];
         $lang_id = $post['lang_id'];
         $cpage_layout = $post['cpage_layout'];
 
-        if ($cpage_id==0 || $lang_id==0) {
+        if ($cpage_id == 0 || $lang_id == 0) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -212,17 +235,17 @@ class ContentPagesController extends AdminBaseController
         unset($post['cpage_id']);
         unset($post['lang_id']);
         $data = array(
-        'cpagelang_lang_id'=>$lang_id,
-        'cpagelang_cpage_id'=>$cpage_id,
-        'cpage_title'=>$post['cpage_title'],
+        'cpagelang_lang_id' => $lang_id,
+        'cpagelang_cpage_id' => $cpage_id,
+        'cpage_title' => $post['cpage_title'],
 
         );
 
         if ($cpage_layout == ContentPage::CONTENT_PAGE_LAYOUT1_TYPE) {
-            $data['cpage_image_title']=$post['cpage_image_title'];
-            $data['cpage_image_content']=$post['cpage_image_content'];
+            $data['cpage_image_title'] = $post['cpage_image_title'];
+            $data['cpage_image_content'] = $post['cpage_image_content'];
         } else {
-            $data['cpage_content']=$post['cpage_content'];
+            $data['cpage_content'] = $post['cpage_content'];
         }
 
         $pageObj = new ContentPage($cpage_id);
@@ -237,14 +260,24 @@ class ContentPagesController extends AdminBaseController
         $pageObj = new ContentPage($cpage_id);
         if ($cpage_layout == ContentPage::CONTENT_PAGE_LAYOUT1_TYPE) {
             for ($i=1; $i<= ContentPage::CONTENT_PAGE_LAYOUT1_BLOCK_COUNT; $i++) {
-                $data['cpblocklang_text']= $post['cpblock_content_block_'.$i];
-                $data['cpblocklang_block_id']= $i;
+                $data['cpblocklang_text'] = $post['cpblock_content_block_' . $i];
+                $data['cpblocklang_block_id'] = $i;
                 if (!$pageObj->addUpdateContentPageBlocks($lang_id, $cpage_id, $data)) {
                     Message::addErrorMessage($pageObj->getError());
                     FatUtility::dieWithError(Message::getHtml());
                 }
             }
         }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(ContentPage::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($cpage_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        }
+        
         $newTabLangId = 0;
         $languages = Language::getAllNames();
         foreach ($languages as $langId => $langName) {
@@ -384,7 +417,7 @@ class ContentPagesController extends AdminBaseController
     {
         $frm = new Form('frmBlockLang');
         $frm->addHiddenField('', 'cpage_id', $cpage_id);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addHiddenField('', 'cpage_layout', $cpage_layout);
         $frm->addRequiredField(Labels::getLabel('LBL_Page_Title', $this->adminLangId), 'cpage_title');
         if ($cpage_layout == ContentPage::CONTENT_PAGE_LAYOUT1_TYPE) {
@@ -402,6 +435,13 @@ class ContentPagesController extends AdminBaseController
             }
         } else {
             $frm->addHtmlEditor(Labels::getLabel('LBL_Page_Content', $this->adminLangId), 'cpage_content');
+        }
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;

@@ -25,7 +25,7 @@ class ProductTempImageSearch extends SearchBase
         );
 
         $this->joinTable(
-            Product::DB_LANG_TBL, 'LEFT JOIN',
+            Product::DB_TBL_LANG, 'LEFT JOIN',
             'afile_record_id = productlang_product_id
 		AND productlang_lang_id = ' . $this->langId, 'tp_l'
         );

@@ -234,9 +234,9 @@ $(document).ready(function() {
         });
     };
 
-    addLangForm = function(userId, langId) {
+    addLangForm = function(userId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('Users', 'langForm', [userId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Users', 'langForm', [userId, langId, autoFillLangData]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
     };

@@ -106,7 +106,7 @@ class EmptyCartItemsController extends AdminBaseController
         $newTabLangId = 0;
         if ($emptycartitem_id > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = EmptyCartItems::getAttributesByLangId($langId, $emptycartitem_id)) {
                     $newTabLangId = $langId;
                     break;
@@ -123,7 +123,7 @@ class EmptyCartItemsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function langForm($emptycartitem_id = 0, $lang_id = 0)
+    public function langForm($emptycartitem_id = 0, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canViewEmptyCartItems();
 
@@ -135,8 +135,17 @@ class EmptyCartItemsController extends AdminBaseController
         }
 
         $emptyCartItemLangFrm = $this->getLangForm($lang_id);
-        $langData = EmptyCartItems::getAttributesByLangId($lang_id, $emptycartitem_id);
-
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(EmptyCartItems::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($emptycartitem_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = EmptyCartItems::getAttributesByLangId($lang_id, $emptycartitem_id);
+        }
 
         $langData['emptycartitem_id'] = $emptycartitem_id;
         $emptyCartItemLangFrm->fill($langData);
@@ -167,15 +176,24 @@ class EmptyCartItemsController extends AdminBaseController
         unset($post['emptycartitem_id']);
         unset($post['lang_id']);
         $data = array(
-        'emptycartitemlang_emptycartitem_id'=>$emptycartitem_id,
-        'emptycartitemlang_lang_id'=>$lang_id,
-        'emptycartitem_title'=>$post['emptycartitem_title']
+        'emptycartitemlang_emptycartitem_id' => $emptycartitem_id,
+        'emptycartitemlang_lang_id' => $lang_id,
+        'emptycartitem_title' => $post['emptycartitem_title']
         );
 
         $emptyCartItemObj = new EmptyCartItems($emptycartitem_id);
         if (!$emptyCartItemObj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($emptyCartItemObj->getError());
             FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(EmptyCartItems::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($emptycartitem_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId = 0;
@@ -330,9 +348,17 @@ class EmptyCartItemsController extends AdminBaseController
     {
         $frm = new Form('frmEmptyCartItemLang');
         $frm->addHiddenField('', 'emptycartitem_id');
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Empty_Cart_Item_Title', $this->adminLangId), 'emptycartitem_title');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+        
         return $frm;
     }
 

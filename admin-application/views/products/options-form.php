@@ -13,7 +13,7 @@ $frmOptions->developerTags['fld_default_col'] = 12;
 	<div class="tabs_nav_container responsive flat">
 		<ul class="tabs_nav">
 			<li><a class="active"  <?php echo ($product_id) ? "onclick='productOptionsForm( ".$product_id.", 0 );'" : ""; ?> href="javascript:void(0);"><?php echo Labels::getLabel('LBL_General',$adminLangId);?></a></li>	
-			<li class="<?php echo (!$product_id) ? 'fat-inactive' : ''; ?>"><a <?php echo ($product_id) ? "onclick='upcForm( ".$product_id.");'" : ""; ?> href="javascript:void(0);"><?php echo Labels::getLabel('LBL_EAN/UPC_Setup',$adminLangId);?></a></li>			
+			<li class="<?php echo (0 == $product_id) ? 'fat-inactive' : ''; ?>"><a <?php echo (0 < $product_id) ? "onclick='upcForm( ".$product_id.");'" : ""; ?> href="javascript:void(0);"><?php echo Labels::getLabel('LBL_EAN/UPC_Setup',$adminLangId);?></a></li>			
 		</ul>
 		<div class="tabs_panel_wrap" style="min-height: 500px;">
 			<div class="tabs_panel">

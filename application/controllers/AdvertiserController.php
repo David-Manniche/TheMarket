@@ -377,7 +377,7 @@ class AdvertiserController extends AdvertiserBaseController
         }
 
         $promotionData = Promotion::getAttributesById($promotionId, array('promotion_user_id'));
-        if (!$promotionData || ($promotionData && $promotionData['promotion_user_id']!=$userId)) {
+        if (!$promotionData || ($promotionData && $promotionData['promotion_user_id'] != $userId)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -396,6 +396,15 @@ class AdvertiserController extends AdvertiserBaseController
         if (!$obj->updateLangData($langId, $data)) {
             Message::addErrorMessage($obj->getError());
             FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(Promotion::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($promotionId)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $promotionType = Promotion::getAttributesById($promotionId, array('promotion_type'));
@@ -807,7 +816,7 @@ class AdvertiserController extends AdvertiserBaseController
         $this->_template->render(false, false);
     }
 
-    public function promotionLangForm($promotionId = 0, $langId = 0)
+    public function promotionLangForm($promotionId = 0, $langId = 0, $autoFillLangData = 0)
     {
         $promotionId = FatUtility::int($promotionId);
         $langId      = FatUtility::int($langId);
@@ -817,7 +826,17 @@ class AdvertiserController extends AdvertiserBaseController
         }
 
         $langFrm  = $this->getPromotionLangForm($promotionId, $langId);
-        $langData = Promotion::getAttributesByLangId($langId, $promotionId);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(Promotion::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($promotionId, $langId);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = Promotion::getAttributesByLangId($langId, $promotionId);
+        }
 
         if ($langData) {
             $langFrm->fill($langData);
@@ -1400,8 +1419,15 @@ class AdvertiserController extends AdvertiserBaseController
     {
         $frm = new Form('frmPromotionLang');
         $frm->addHiddenField('', 'promotion_id', $promotionId);
-        $frm->addHiddenField('', 'lang_id', $langId);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'lang_id', Language::getAllNames(), $langId, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_promotion_name', $langId), 'promotion_name');
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $langId == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->siteLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
         return $frm;
     }

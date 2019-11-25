@@ -52,10 +52,10 @@ $(document).ready(function() {
         });
     };
 
-    addLangForm = function(splatformId, langId) {
+    addLangForm = function(splatformId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
         //$.facebox(function() {
-        fcom.ajax(fcom.makeUrl('SocialPlatform', 'langForm', [splatformId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('SocialPlatform', 'langForm', [splatformId, langId, autoFillLangData]), '', function(t) {
             //$.facebox(t);
             fcom.updateFaceboxContent(t);
         });

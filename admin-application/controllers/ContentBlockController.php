@@ -1,7 +1,7 @@
 <?php
 class ContentBlockController extends AdminBaseController
 {
-    const IMPORT_INSTRUCTIONS = 1;
+    public const IMPORT_INSTRUCTIONS = 1;
 
     private $canView;
     private $canEdit;
@@ -168,28 +168,38 @@ class ContentBlockController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function langForm($epage_id = 0, $lang_id = 0)
+    public function langForm($epage_id = 0, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canViewContentBlocks();
 
         $epage_id = FatUtility::int($epage_id);
         $lang_id = FatUtility::int($lang_id);
 
-        if ($epage_id==0 || $lang_id==0) {
+        if ($epage_id == 0 || $lang_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
 
         $epageData = Extrapage::getAttributesById($epage_id);
         $blockLangFrm = $this->getLangForm($epage_id, $lang_id);
-        $langData = Extrapage::getAttributesByLangId($lang_id, $epage_id);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(Extrapage::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($epage_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = Extrapage::getAttributesByLangId($lang_id, $epage_id);
+        }
 
         if ($langData) {
             $blockLangFrm->fill($langData);
         }
 
-        if ($epage_id==Extrapage::SELLER_BANNER_SLOGAN) {
+        if ($epage_id == Extrapage::SELLER_BANNER_SLOGAN) {
             $fileType = AttachedFile::FILETYPE_SELLER_PAGE_SLOGAN_BG_IMAGE;
-        } elseif ($epage_id==Extrapage::ADVERTISER_BANNER_SLOGAN) {
+        } elseif ($epage_id == Extrapage::ADVERTISER_BANNER_SLOGAN) {
             $fileType = AttachedFile::FILETYPE_ADVERTISER_PAGE_SLOGAN_BG_IMAGE;
         } else {
             $fileType = AttachedFile::FILETYPE_AFFILIATE_PAGE_SLOGAN_BG_IMAGE;
@@ -212,10 +222,10 @@ class ContentBlockController extends AdminBaseController
     public function langSetup()
     {
         $this->objPrivilege->canEditContentBlocks();
-        $post=FatApp::getPostedData();
+        $post = FatApp::getPostedData();
         $epage_id = FatUtility::int($post['epage_id']);
         $lang_id = FatUtility::int($post['lang_id']);
-        if ($epage_id==0 || $lang_id==0) {
+        if ($epage_id == 0 || $lang_id == 0) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -228,17 +238,26 @@ class ContentBlockController extends AdminBaseController
 
         unset($post['epage_id']);
         unset($post['lang_id']);
-        $data=array(
-        'epagelang_lang_id'=>$lang_id,
-        'epagelang_epage_id'=>$epage_id,
-        'epage_label'=>$post['epage_label'],
-        'epage_content'=>$post['epage_content'],
+        $data = array(
+        'epagelang_lang_id' => $lang_id,
+        'epagelang_epage_id' => $epage_id,
+        'epage_label' => $post['epage_label'],
+        'epage_content' => $post['epage_content'],
         );
 
         $epageObj = new Extrapage($epage_id);
         if (!$epageObj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($epageObj->getError());
             FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(Extrapage::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($epage_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId = 0;
@@ -411,7 +430,7 @@ class ContentBlockController extends AdminBaseController
     {
         $frm = new Form('frmBlockLang');
         $frm->addHiddenField('', 'epage_id', $epage_id);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Page_Title', $this->adminLangId), 'epage_label');
 
         if (array_key_exists($epage_id, Extrapage::getContentBlockArrWithBg($this->adminLangId))) {
@@ -431,6 +450,14 @@ class ContentBlockController extends AdminBaseController
         }
 
         $frm->addHtmlEditor(Labels::getLabel('LBL_Page_Content', $this->adminLangId), 'epage_content');
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+        
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;
     }

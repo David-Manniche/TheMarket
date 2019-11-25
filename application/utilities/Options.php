@@ -143,7 +143,7 @@ trait Options
         $this->_template->render(false, false);
     }
 
-    public function addOptionForm($option_id=0)
+    public function addOptionForm($option_id = 0)
     {
         $option_id = FatUtility::int($option_id);
         $frmOptions = $this->getForm($option_id);
@@ -151,7 +151,7 @@ trait Options
 
         if (0 < $option_id) {
             $optionObj = new Option();
-            if ($option_id>0) {
+            if ($option_id > 0) {
                 UserPrivilege::canSellerEditOption($option_id, $this->siteLangId);
             }
             $data = $optionObj->getOption($option_id);
@@ -169,22 +169,22 @@ trait Options
         $this->_template->render(false, false);
     }
 
-    private function getForm($option_id=0)
+    private function getForm($option_id = 0)
     {
 
         /*Used when option created from product form */
         $post = FatApp::getPostedData();
-        if (isset($post['product_id']) && $post['product_id']!='') {
+        if (isset($post['product_id']) && $post['product_id'] != '') {
             $product_id = FatUtility::int($post['product_id']);
         }
 
         $option_id = FatUtility::int($option_id);
-        if ($option_id>0) {
+        if ($option_id > 0) {
             UserPrivilege::canSellerEditOption($option_id, $this->siteLangId);
         }
 
         $optionObj = new Option();
-        $frm = new Form('frmOptions', array('id'=>'frmOptions'));
+        $frm = new Form('frmOptions', array('id' => 'frmOptions'));
         $frm->addHiddenField('', 'option_id', $option_id);
         $frm->developerTags['colClassPrefix'] = 'col-md-';
         $frm->developerTags['fld_default_col'] = 6;
@@ -194,12 +194,20 @@ trait Options
         );
 
         $languages = Language::getAllNames();
-        foreach ($languages as $langId=>$langName) {
+        $defaultLang = true;
+        foreach ($languages as $langId => $langName) {
+            $attr['class'] = 'langField_' . $langId;
+            if (true === $defaultLang) {
+                $attr['class'] .= ' defaultLang';
+                $defaultLang = false;
+            }
             $fld = $frm->addRequiredField(
-                Labels::getLabel('LBL_OPTION_NAME', $this->siteLangId).' '.$langName,
-                'option_name'.$langId
+                Labels::getLabel('LBL_OPTION_NAME', $this->siteLangId) . ' ' . $langName,
+                'option_name' . $langId,
+                '',
+                $attr
             );
-            $fld->setWrapperAttribute('class', 'layout--'.Language::getLayoutDirection($langId));
+            $fld->setWrapperAttribute('class', 'layout--' . Language::getLayoutDirection($langId));
         }
 
         /* $optionTypeArr = Option::getOptionTypes($this->siteLangId );

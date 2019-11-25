@@ -23,9 +23,11 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
                     <div class="tabs tabs-sm tabs--scroll clearfix">
                         <ul class="setactive-js">
                             <li class="is-active"><a href="javascript:void(0)" onClick="returnAddressForm()"><?php echo Labels::getLabel('LBL_General', $siteLangId); ?></a></li>
-                            <?php foreach ($languages as $langId => $langName) {?>
-                            <li><a href="javascript:void(0);" onclick="returnAddressLangForm(<?php echo $langId;?>);"><?php echo $langName;?></a></li>
-                            <?php } ?>
+                            <li>
+                                <a href="javascript:void(0);" onclick="returnAddressLangForm(<?php echo FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);?>);">
+                                    <?php echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                     <?php echo $frm->getFormHtml();?>
