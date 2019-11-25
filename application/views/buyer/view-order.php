@@ -149,6 +149,7 @@ if (true == $primaryOrder) {
                             } else {
                                 $arr = $childOrderDetail;
                             }
+                            $taxOptionsTotal = array();
                             foreach ($arr as $childOrder) {
                                 $cartTotal = $cartTotal + CommonHelper::orderProductAmount($childOrder, 'cart_total');
                                 $shippingCharges = $shippingCharges + CommonHelper::orderProductAmount($childOrder, 'shipping');
@@ -206,7 +207,8 @@ if (true == $primaryOrder) {
                                         } else {
                                             foreach ($childOrder['taxOptions'] as $key => $val) { ?>
                                                 <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
-                                            <?php }
+                                                <?php $taxOptionsTotal[$key] += $val;
+                                            }
                                         } ?>
                                     </td>
                                     <!-- <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'tax')); ?></td> -->
@@ -214,8 +216,7 @@ if (true == $primaryOrder) {
                                     <td><?php echo CommonHelper::displayMoneyFormat($rewardPointDiscount); ?></td>
                                     <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder)); ?></td>
                                 </tr>
-                            <?php
-                            }
+                            <?php }
                             if (!$primaryOrder) { ?>
                                 <tr>
                                     <td colspan="8"><?php echo Labels::getLabel('Lbl_Cart_Total', $siteLangId)?></td>
@@ -231,14 +232,13 @@ if (true == $primaryOrder) {
                                     </td>
                                     <td>
                                     <?php
-                                    if (empty($childOrder['taxOptions'])) {
-                                        echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'TAX'));
+                                    if (empty($taxOptionsTotal)) {
+                                        echo CommonHelper::displayMoneyFormat($orderDetail['order_tax_charged']);
                                     } else {
-                                        foreach ($childOrder['taxOptions'] as $key => $val) { ?>
-                                            <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
+                                        foreach ($taxOptionsTotal as $key => $val) { ?>
+                                          <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
                                         <?php }
                                     } ?>
-                                    <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_tax_charged']); ?>
                                     </td>
                                 </tr>
                                 <?php if ($orderDetail['order_discount_total']) { ?>
@@ -386,7 +386,7 @@ if (true == $primaryOrder) {
                                     <th><?php echo Labels::getLabel('LBL_Downloaded_count', $siteLangId); ?></th>
                                     <th><?php echo Labels::getLabel('LBL_Expired_on', $siteLangId); ?></th>
                                     <th><?php echo Labels::getLabel('LBL_Action', $siteLangId); ?></th>
-                                </tr> 
+                                </tr>
                                 <?php $sr_no = 1;
                                 foreach ($digitalDownloads as $key => $row) {
                                         $lang_name = Labels::getLabel('LBL_All', $siteLangId);
@@ -409,7 +409,7 @@ if (true == $primaryOrder) {
                                     $downloadableCount = Labels::getLabel('LBL_N/A', $siteLangId) ;
                                     if ($row['downloadable_count'] != -1) {
                                         $downloadableCount = $row['downloadable_count'];
-                                    } ?> 
+                                    } ?>
                                 <tr>
                                     <td><?php echo $sr_no; ?></td>
                                     <td><?php echo $fileName; ?></td>
