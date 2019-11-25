@@ -97,7 +97,7 @@ trait SellerCollections
 
         if (empty($scollectionIdsArr)) {
             FatUtility::dieWithError(
-                Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId)
+                Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId)
             );
         }
 
@@ -121,7 +121,7 @@ trait SellerCollections
     {
         $shopcolDetails = ShopCollection::getCollectionGeneralDetail($shop_id, $scollection_id);
         if (empty($shopcolDetails)) {
-            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
+            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
         $collection = new ShopCollection();
@@ -251,7 +251,7 @@ trait SellerCollections
         }
     }
 
-    public function shopCollectionLangForm($scollection_id, $langId)
+    public function shopCollectionLangForm($scollection_id, $langId, $autoFillLangData = 0)
     {
         $scollection_id = Fatutility::int($scollection_id);
         if (!$scollection_id) {
@@ -260,10 +260,22 @@ trait SellerCollections
         }
 
         $shopColLangFrm = $this->getCollectionLangForm($scollection_id, $langId);
-        if ($row = ShopCollection::getAttributesByLangId($langId, $scollection_id)) {
-            $data['scollection_id']=$row['scollectionlang_scollection_id'];
-            $data['lang_id']=$row['scollectionlang_lang_id'];
-            $data['name']=$row['scollection_name'];
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(ShopCollection::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($scollection_id, $langId);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $row = current($translatedData);
+        } else {
+            $row = ShopCollection::getAttributesByLangId($langId, $scollection_id);
+        }
+
+        if (!empty($row) && 0 < count($row)) {
+            $data['scollection_id'] = $row['scollectionlang_scollection_id'];
+            $data['lang_id'] = $row['scollectionlang_lang_id'];
+            $data['name'] = $row['scollection_name'];
             $shopColLangFrm ->fill($data);
         }
 
@@ -281,8 +293,16 @@ trait SellerCollections
     {
         $frm = new Form('frmMetaTagLang');
         $frm->addHiddenField('', 'scollection_id', $scollection_id);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Collection_Name', $this->siteLangId), 'name');
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->siteLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         return $frm;
     }
@@ -308,8 +328,18 @@ trait SellerCollections
             Message::addErrorMessage($record->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        $newTabLangId=0;
-        if ($scollection_id>0) {
+
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(ShopCollection::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($scollection_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        }
+
+        $newTabLangId = 0;
+        if ($scollection_id > 0) {
             $languages = Language::getAllNames();
             foreach ($languages as $langId => $langName) {
                 if (!$row = ShopCollection::getAttributesByLangId($langId, $scollection_id)) {
@@ -319,7 +349,7 @@ trait SellerCollections
             }
         } else {
             $collection_id = $record->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
 
         if ($newTabLangId == 0 && !$this->isCollectionLinkFormFilled($scollection_id)) {
@@ -348,7 +378,7 @@ trait SellerCollections
     {
         $post = FatApp::getPostedData();
         $scollection_id = FatUtility::int($scollection_id);
-        $shop_id=$this->commonShopCollection();
+        $shop_id = $this->commonShopCollection();
         if (!UserPrivilege::canEditSellerCollection($scollection_id)) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());

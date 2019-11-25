@@ -8,10 +8,10 @@ class MetaTagSearch extends SearchBase
 
         if ($langId > 0) {
             $this->joinTable(
-                MetaTag::DB_LANG_TBL,
+                MetaTag::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'mt_l.'.MetaTag::DB_LANG_TBL_PREFIX.'meta_id = mt.meta_id
-			AND mt_l.'.MetaTag::DB_LANG_TBL_PREFIX.'lang_id = '.$langId,
+                'mt_l.'.MetaTag::DB_TBL_LANG_PREFIX.'meta_id = mt.meta_id
+			AND mt_l.'.MetaTag::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
                 'mt_l'
             );
         }

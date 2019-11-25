@@ -1,15 +1,17 @@
 <?php
 class SupplierFormFields extends MyAppModel
 {
-    const DB_TBL = 'tbl_user_supplier_form_fields';
-    const DB_TBL_PREFIX = 'sformfield_';
+    public const DB_TBL = 'tbl_user_supplier_form_fields';
+    public const DB_TBL_PREFIX = 'sformfield_';
+    
+    public const DB_TBL_LANG = 'tbl_user_supplier_form_fields_lang';
 
     private $db;
 
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
-        $this->db=FatApp::getDb();
+        $this->db = FatApp::getDb();
     }
 
     public static function getSearchObject()

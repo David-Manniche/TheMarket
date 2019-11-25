@@ -41,9 +41,9 @@ $(document).ready(function(){
 		});
 	};
 
-	extraAttributeGroupLangForm = function( eattrgroup_id, lang_id ) {		
+	extraAttributeGroupLangForm = function( eattrgroup_id, lang_id, autoFillLangData = 0 ) {		
 		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('extraAttributeGroups', 'langForm', [eattrgroup_id, lang_id]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('extraAttributeGroups', 'langForm', [eattrgroup_id, lang_id, autoFillLangData]), '', function(t) {
 				$.facebox(t);
 			});
 		});

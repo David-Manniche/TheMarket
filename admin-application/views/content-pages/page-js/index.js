@@ -70,11 +70,11 @@ $(document).ready(function() {
         });
     };
 
-    addLangForm = function(pageId, langId, cpage_layout) {
+    addLangForm = function(pageId, langId, cpage_layout, autoFillLangData = 0) {
         fcom.displayProcessing();
         fcom.resetEditorInstance();
         //    $.facebox(function() {
-        fcom.ajax(fcom.makeUrl('ContentPages', 'langForm', [pageId, langId, cpage_layout]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('ContentPages', 'langForm', [pageId, langId, cpage_layout, autoFillLangData]), '', function(t) {
             //    $.facebox(t);
             fcom.updateFaceboxContent(t);
             fcom.setEditorLayout(langId);

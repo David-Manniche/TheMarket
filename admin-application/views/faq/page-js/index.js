@@ -66,10 +66,10 @@ $(document).ready(function(){
 		});
 	};
 	
-	faqLangForm = function(faqcatId, faqId, langId) {		
+	faqLangForm = function(faqcatId, faqId, langId, autoFillLangData = 0) {		
 		//$.facebox(function() {
 			fcom.displayProcessing();
-			fcom.ajax(fcom.makeUrl('Faq', 'langForm', [faqcatId, faqId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('Faq', 'langForm', [faqcatId, faqId, langId, autoFillLangData]), '', function(t) {
 				//$.facebox(t);
 				fcom.updateFaceboxContent(t);
 

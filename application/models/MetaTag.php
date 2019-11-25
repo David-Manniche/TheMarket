@@ -4,8 +4,8 @@ class MetaTag extends MyAppModel
     const DB_TBL = 'tbl_meta_tags';
     const DB_TBL_PREFIX = 'meta_';
 
-    const DB_LANG_TBL ='tbl_meta_tags_lang';
-    const DB_LANG_TBL_PREFIX ='metalang_';
+    const DB_TBL_LANG ='tbl_meta_tags_lang';
+    const DB_TBL_LANG_PREFIX ='metalang_';
 
     const META_GROUP_ALL_PRODUCTS = 'all_product' ;
     const META_GROUP_PRODUCT_DETAIL = 'product_view' ;

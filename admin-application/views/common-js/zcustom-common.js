@@ -313,6 +313,44 @@ $(document).ready(function () {
     /* $(document).click(function(event) {
     	$('ul.dropdown-menu').hide();
     }); */
+    
+    autofillLangData = function (autoFillBtn, frm) {
+        var actionUrl = autoFillBtn.data('action');
+        
+        var defaultLangField = $('input.defaultLang', frm);
+        if (1 > defaultLangField.length) {
+            $.systemMessage(langLbl.unknownPrimaryLanguageField, 'alert--danger');
+            return false;
+        }
+        var proceed = true;
+        var stringToTranslate =  '';
+        defaultLangField.each(function(index) {
+            if ('' != $(this).val()) {
+                if (0 < index) {
+                    stringToTranslate += "&";
+                }
+                stringToTranslate +=  $(this).attr('name') + "=" + $(this).val();
+            } else {
+                $(this).focus();
+                $.systemMessage(langLbl.primaryLanguageField, 'alert--danger');
+                proceed = false;
+                return false;
+            }
+        });
+
+        if (true == proceed) {
+            fcom.displayProcessing();
+            fcom.ajax(actionUrl, stringToTranslate, function(t) {
+                var res = $.parseJSON(t);
+                $.each(res, function(langId, values) {
+                    $.each(values, function(selector, value) {
+                        $("input.langField_" + langId + "[name='" + selector + "']").val(value);
+                    });
+                }); 
+                $.systemMessage.close();
+            });
+        }
+    }
 })(jQuery);
 
 function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection) {

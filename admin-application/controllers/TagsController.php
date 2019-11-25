@@ -29,10 +29,10 @@ class TagsController extends AdminBaseController
 
     private function getSearchForm()
     {
-        $frm = new Form('frmTagSearch', array('id'=>'frmTagSearch'));
-        $f1 = $frm->addTextBox(Labels::getLabel('LBL_Tag_Identifier', $this->adminLangId), 'tag_identifier', '', array('class'=>'search-input'));
-        $fld_submit=$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
-        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick'=>'clearTagSearch();'));
+        $frm = new Form('frmTagSearch', array('id' => 'frmTagSearch'));
+        $f1 = $frm->addTextBox(Labels::getLabel('LBL_Tag_Identifier', $this->adminLangId), 'tag_identifier', '', array('class' => 'search-input'));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick' => 'clearTagSearch();'));
         $fld_submit->attachField($fld_cancel);
         return $frm;
     }
@@ -41,10 +41,10 @@ class TagsController extends AdminBaseController
     {
         $this->objPrivilege->canViewTags();
 
-        $pagesize=FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
+        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
         /* $tagObj = new Tag(); */
@@ -52,10 +52,10 @@ class TagsController extends AdminBaseController
         $srch->addFld('t.*');
 
         if (!empty($post['tag_identifier'])) {
-            $srch->addCondition('t.tag_identifier', 'like', '%'.$post['tag_identifier'].'%');
+            $srch->addCondition('t.tag_identifier', 'like', '%' . $post['tag_identifier'] . '%');
         }
 
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -69,7 +69,7 @@ class TagsController extends AdminBaseController
         $srch->addMultipleFields(array("tl.tag_name"));
         $srch->addOrder('tag_id', 'DESC');
         $rs = $srch->getResultSet();
-        $records =array();
+        $records = array();
         if ($rs) {
             $records = FatApp::getDb()->fetchAll($rs);
         }
@@ -109,7 +109,7 @@ class TagsController extends AdminBaseController
         $newTabLangId = 0;
         if ($tag_id > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = Tag::getAttributesByLangId($langId, $tag_id)) {
                     $newTabLangId = $langId;
                     break;
@@ -133,7 +133,7 @@ class TagsController extends AdminBaseController
     public function langSetup()
     {
         $this->objPrivilege->canEditTags();
-        $post=FatApp::getPostedData();
+        $post = FatApp::getPostedData();
 
         $tag_id = $post['tag_id'];
         $lang_id = $post['lang_id'];
@@ -148,21 +148,30 @@ class TagsController extends AdminBaseController
         unset($post['tag_id']);
         unset($post['lang_id']);
         $data = array(
-        'taglang_lang_id'=>$lang_id,
-        'taglang_tag_id'=>$tag_id,
-        'tag_name'=>$post['tag_name'],
+        'taglang_lang_id' => $lang_id,
+        'taglang_tag_id' => $tag_id,
+        'tag_name' => $post['tag_name'],
         );
 
-        $tagObj=new Tag($tag_id);
+        $tagObj = new Tag($tag_id);
         if (!$tagObj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($tagObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(Tag::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($tag_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        }
 
-        $newTabLangId=0;
-        $languages=Language::getAllNames();
-        foreach ($languages as $langId =>$langName) {
-            if (!$row=Tag::getAttributesByLangId($langId, $tag_id)) {
+        $newTabLangId = 0;
+        $languages = Language::getAllNames();
+        foreach ($languages as $langId => $langName) {
+            if (!$row = Tag::getAttributesByLangId($langId, $tag_id)) {
                 $newTabLangId = $langId;
                 break;
             }
@@ -178,11 +187,11 @@ class TagsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function form($tag_id=0)
+    public function form($tag_id = 0)
     {
         $this->objPrivilege->canEditTags();
 
-        $tag_id=FatUtility::int($tag_id);
+        $tag_id = FatUtility::int($tag_id);
         $frm = $this->getForm($tag_id);
 
         if (0 < $tag_id) {
@@ -199,32 +208,41 @@ class TagsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    private function getForm($tag_id=0)
+    private function getForm($tag_id = 0)
     {
         $this->objPrivilege->canEditTags();
-        $tag_id=FatUtility::int($tag_id);
+        $tag_id = FatUtility::int($tag_id);
 
-        $frm = new Form('frmTag', array('id'=>'frmTag'));
+        $frm = new Form('frmTag', array('id' => 'frmTag'));
         $frm->addHiddenField('', 'tag_id', $tag_id);
         $frm->addRequiredField(Labels::getLabel('LBL_Tag_Identifier', $this->adminLangId), 'tag_identifier');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
 
-    public function langForm($tag_id=0, $lang_id=0)
+    public function langForm($tag_id = 0, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canEditTags();
 
         $tag_id = FatUtility::int($tag_id);
         $lang_id = FatUtility::int($lang_id);
 
-        if ($tag_id==0 || $lang_id==0) {
+        if ($tag_id == 0 || $lang_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
 
         $tagLangFrm = $this->getLangForm($tag_id, $lang_id);
-
-        $langData = Tag::getAttributesByLangId($lang_id, $tag_id);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(Tag::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($tag_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = Tag::getAttributesByLangId($lang_id, $tag_id);
+        }
 
         if ($langData) {
             $tagLangFrm->fill($langData);
@@ -238,12 +256,20 @@ class TagsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    private function getLangForm($tag_id=0, $lang_id=0)
+    private function getLangForm($tag_id = 0, $lang_id = 0)
     {
-        $frm = new Form('frmTagLang', array('id'=>'frmTagLang'));
+        $frm = new Form('frmTagLang', array('id' => 'frmTagLang'));
         $frm->addHiddenField('', 'tag_id', $tag_id);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Tag_Name', $this->adminLangId), 'tag_name');
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+        
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;
     }

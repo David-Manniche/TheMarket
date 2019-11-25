@@ -748,7 +748,7 @@ class Importexport extends ImportexportCommon
                     );
                     $langData = array_merge($langData, $prodCatlangDataArr);
 
-                    $this->db->insertFromArray(ProductCategory::DB_LANG_TBL, $langData, false, array(), $langData);
+                    $this->db->insertFromArray(ProductCategory::DB_TBL_LANG, $langData, false, array(), $langData);
 
                     /* ]*/
 
@@ -1036,7 +1036,7 @@ class Importexport extends ImportexportCommon
                     );
                     $langData = array_merge($langData, $brandlangDataArr);
 
-                    $this->db->insertFromArray(Brand::DB_LANG_TBL, $langData, false, array(), $langData);
+                    $this->db->insertFromArray(Brand::DB_TBL_LANG, $langData, false, array(), $langData);
                     /* ]*/
 
                     /* Url rewriting [*/
@@ -1716,7 +1716,7 @@ class Importexport extends ImportexportCommon
 
                     $langData = array_merge($langData, $prodlangDataArr);
 
-                    $this->db->insertFromArray(Product::DB_LANG_TBL, $langData, false, array(), $langData);
+                    $this->db->insertFromArray(Product::DB_TBL_LANG, $langData, false, array(), $langData);
                     /* ]*/
 
                     if ($this->isDefaultSheetData($langId)) {
@@ -3065,7 +3065,7 @@ class Importexport extends ImportexportCommon
                     'selprodlang_lang_id'=> $langId,
                     );
                     $langData = array_merge($langData, $selProdGenLangArr);
-                    $this->db->insertFromArray(SellerProduct::DB_LANG_TBL, $langData, false, array(), $langData);
+                    $this->db->insertFromArray(SellerProduct::DB_TBL_LANG, $langData, false, array(), $langData);
                     /*]*/
 
                     /* Url rewriting [*/
@@ -3315,7 +3315,7 @@ class Importexport extends ImportexportCommon
 
         $srch = SellerProduct::getSearchObject($langId);
         $srch->joinTable(MetaTag::DB_TBL, 'LEFT OUTER JOIN', 'sp.selprod_id = m.meta_record_id', 'm');
-        $srch->joinTable(MetaTag::DB_LANG_TBL, 'LEFT OUTER JOIN', 'm_l.metalang_meta_id = m.meta_id and m_l.metalang_lang_id = '.$langId, 'm_l');
+        $srch->joinTable(MetaTag::DB_TBL_LANG, 'LEFT OUTER JOIN', 'm_l.metalang_meta_id = m.meta_id and m_l.metalang_lang_id = '.$langId, 'm_l');
         $srch->addCondition('meta_identifier', '!=', '');
         $srch->addCondition('meta_controller', '=', $metaTabArr[MetaTag::META_GROUP_PRODUCT_DETAIL]['controller']);
         $srch->addCondition('meta_action', '=', $metaTabArr[MetaTag::META_GROUP_PRODUCT_DETAIL]['action']);
@@ -3436,7 +3436,7 @@ class Importexport extends ImportexportCommon
                     'metalang_lang_id'=> $langId,
                     );
                     $langData = array_merge($langData, $selProdSeoLangArr);
-                    $this->db->insertFromArray(MetaTag::DB_LANG_TBL, $langData, false, array(), $langData);
+                    $this->db->insertFromArray(MetaTag::DB_TBL_LANG, $langData, false, array(), $langData);
                     /* ]*/
                 }
             } else {
@@ -4259,7 +4259,7 @@ class Importexport extends ImportexportCommon
                     'optionlang_lang_id'=> $langId,
                     );
                     $langData = array_merge($langData, $optionsLangArr);
-                    $this->db->insertFromArray(Option::DB_LANG_TBL, $langData, false, array(), $langData);
+                    $this->db->insertFromArray(Option::DB_TBL_LANG, $langData, false, array(), $langData);
                     /* ]*/
                 }
             } else {
@@ -4576,7 +4576,7 @@ class Importexport extends ImportexportCommon
                     );
                     $langData = array_merge($langData, $tagsLangArr);
 
-                    $this->db->insertFromArray(Tag::DB_LANG_TBL, $langData, false, array(), $langData);
+                    $this->db->insertFromArray(Tag::DB_TBL_LANG, $langData, false, array(), $langData);
                     /* ]*/
 
                     /* update product tags association and tag string in products lang table[ */

@@ -21,13 +21,12 @@ $submitBtnFld->developerTags['col'] = 12;
     <?php if ($selprod_id > 0) {
         ?> onClick="sellerProductForm(<?php echo $product_id, ',', $selprod_id ?>)" <?php
     }?>><?php echo Labels::getLabel('LBL_Basic', $siteLangId); ?></a></li>
-    <?php $inactive = ($selprod_id==0)?'fat-inactive':'';
-    foreach ($language as $langId => $langName) { ?>
-    <li class="<?php echo $inactive ; ?>"><a href="javascript:void(0)" <?php if ($selprod_id > 0) {
-        ?> onClick="sellerProductLangForm (<?php echo $langId; ?>, <?php echo $selprod_id; ?>)" <?php
-               } ?>>
-    <?php echo $langName;?></a></li>
-    <?php } ?>
+    <li class="<?php echo (0 == $selprod_id) ? 'fat-inactive' : ''; ?>">
+        <a href="javascript:void(0);" <?php echo (0 < $selprod_id) ? "onclick='sellerProductLangForm(" . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ", " . $selprod_id . ");'" : ""; ?>>
+            <?php echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
+        </a>
+    </li>
+    <?php $inactive = ($selprod_id==0)?'fat-inactive':'';?>
     <li class="<?php echo $inactive ; ?>"><a href="javascript:void(0)" <?php if($selprod_id>0){?> onClick="linkPoliciesForm(<?php echo $product_id,',',$selprod_id,',',PolicyPoint::PPOINT_TYPE_WARRANTY ; ?>)" <?php }?>><?php echo Labels::getLabel('LBL_Link_Warranty_Policies', $siteLangId); ?></a></li>
     <li class="<?php echo $inactive ; ?>"><a href="javascript:void(0)" <?php if($selprod_id>0){?> onClick="linkPoliciesForm(<?php echo $product_id,',',$selprod_id,',',PolicyPoint::PPOINT_TYPE_RETURN ; ?>)" <?php }?>><?php echo Labels::getLabel('LBL_Link_Return_Policies', $siteLangId); ?></a></li>
 

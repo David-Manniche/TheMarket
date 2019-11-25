@@ -1,4 +1,17 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
+
+$translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+if (!empty($translatorSubscriptionKey)) { ?> 
+    <div class="row justify-content-end"> 
+        <div class="col-auto mb-4">
+            <input class="btn btn-primary" 
+                type="button" 
+                value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $siteLangId); ?>" 
+                onClick="autofillLangData($(this), $('form#frmOptions'))"
+                data-action="<?php echo CommonHelper::generateUrl('Seller', 'getTranslatedOptionData'); ?>">
+        </div>
+    </div>
+<?php }
 $frmOptions->setFormTagAttribute('class', 'form form_horizontal');
 $frmOptions->developerTags['colClassPrefix'] = 'col-md-';
 $frmOptions->developerTags['fld_default_col'] = 6;

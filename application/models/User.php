@@ -1,81 +1,81 @@
 <?php
 class User extends MyAppModel
 {
-    const ADMIN_SESSION_ELEMENT_NAME = 'yokartAdmin';
-    const DB_TBL = 'tbl_users';
-    const DB_TBL_PREFIX = 'user_';
+    public const ADMIN_SESSION_ELEMENT_NAME = 'yokartAdmin';
+    public const DB_TBL = 'tbl_users';
+    public const DB_TBL_PREFIX = 'user_';
 
-    const DB_TBL_CRED = 'tbl_user_credentials';
-    const DB_TBL_CRED_PREFIX = 'credential_';
+    public const DB_TBL_CRED = 'tbl_user_credentials';
+    public const DB_TBL_CRED_PREFIX = 'credential_';
 
-    const DB_TBL_USER_EMAIL_VER = 'tbl_user_email_verification';
-    const DB_TBL_UEMV_PREFIX = 'uev_';
+    public const DB_TBL_USER_EMAIL_VER = 'tbl_user_email_verification';
+    public const DB_TBL_UEMV_PREFIX = 'uev_';
 
-    const DB_TBL_USR_SUPP_REQ = 'tbl_user_supplier_requests';
-    const DB_TBL_USR_SUPP_REQ_PREFIX = 'usuprequest_';
+    public const DB_TBL_USR_SUPP_REQ = 'tbl_user_supplier_requests';
+    public const DB_TBL_USR_SUPP_REQ_PREFIX = 'usuprequest_';
 
-    const DB_TBL_USR_BANK_INFO = 'tbl_user_bank_details';
-    const DB_TBL_USR_BANK_INFO_PREFIX = 'ub_';
+    public const DB_TBL_USR_BANK_INFO = 'tbl_user_bank_details';
+    public const DB_TBL_USR_BANK_INFO_PREFIX = 'ub_';
 
-    const DB_TBL_USR_RETURN_ADDR = 'tbl_user_return_address';
-    const DB_TBL_USR_RETURN_ADDR_PREFIX = 'ura_';
+    public const DB_TBL_USR_RETURN_ADDR = 'tbl_user_return_address';
+    public const DB_TBL_USR_RETURN_ADDR_PREFIX = 'ura_';
 
-    const DB_TBL_USR_RETURN_ADDR_LANG = 'tbl_user_return_address_lang';
-    const DB_TBL_USR_RETURN_ADDR_LANG_PREFIX = 'uralang_';
+    public const DB_TBL_USR_RETURN_ADDR_LANG = 'tbl_user_return_address_lang';
+    public const DB_TBL_USR_RETURN_ADDR_LANG_PREFIX = 'uralang_';
 
-    const DB_TBL_USR_CATALOG_REQ = 'tbl_seller_catalog_requests';
-    const DB_TBL_USR_CATALOG_REQ_PREFIX = 'scatrequest_';
+    public const DB_TBL_USR_CATALOG_REQ = 'tbl_seller_catalog_requests';
+    public const DB_TBL_USR_CATALOG_REQ_PREFIX = 'scatrequest_';
 
-    const DB_TBL_USR_CATALOG_REQ_MSG = 'tbl_catalog_request_messages';
-    const DB_TBL_USR_CATALOG_REQ_ERR_PREFIX = 'scatrequestERR_';
+    public const DB_TBL_USR_CATALOG_REQ_MSG = 'tbl_catalog_request_messages';
+    public const DB_TBL_USR_CATALOG_REQ_ERR_PREFIX = 'scatrequestERR_';
 
-    const DB_TBL_USR_WITHDRAWAL_REQ = 'tbl_user_withdrawal_requests';
-    const DB_TBL_USR_WITHDRAWAL_REQ_PREFIX = 'withdrawal_';
+    public const DB_TBL_USR_WITHDRAWAL_REQ = 'tbl_user_withdrawal_requests';
+    public const DB_TBL_USR_WITHDRAWAL_REQ_PREFIX = 'withdrawal_';
 
-    const DB_TBL_USR_EXTRAS = 'tbl_user_extras';
-    const DB_TBL_USR_EXTRAS_PREFIX = 'uextra_';
+    public const DB_TBL_USR_EXTRAS = 'tbl_user_extras';
+    public const DB_TBL_USR_EXTRAS_PREFIX = 'uextra_';
 
-    const DB_TBL_USR_MOBILE_TEMP_TOKEN = 'tbl_user_temp_token_requests';
-    const DB_TBL_USR_MOBILE_TEMP_TOKEN_PREFIX = 'uttr_';
+    public const DB_TBL_USR_MOBILE_TEMP_TOKEN = 'tbl_user_temp_token_requests';
+    public const DB_TBL_USR_MOBILE_TEMP_TOKEN_PREFIX = 'uttr_';
 
-    const USER_FIELD_TYPE_TEXT = 1;
-    const USER_FIELD_TYPE_TEXTAREA = 2;
-    const USER_FIELD_TYPE_FILE = 3;
-    const USER_FIELD_TYPE_DATE = 4;
-    const USER_FIELD_TYPE_DATETIME = 5;
-    const USER_FIELD_TYPE_TIME = 6;
-    const USER_FIELD_TYPE_PHONE = 7;
+    public const USER_FIELD_TYPE_TEXT = 1;
+    public const USER_FIELD_TYPE_TEXTAREA = 2;
+    public const USER_FIELD_TYPE_FILE = 3;
+    public const USER_FIELD_TYPE_DATE = 4;
+    public const USER_FIELD_TYPE_DATETIME = 5;
+    public const USER_FIELD_TYPE_TIME = 6;
+    public const USER_FIELD_TYPE_PHONE = 7;
 
-    const SUPPLIER_REQUEST_PENDING = 0;
-    const SUPPLIER_REQUEST_APPROVED = 1;
-    const SUPPLIER_REQUEST_CANCELLED = 2;
+    public const SUPPLIER_REQUEST_PENDING = 0;
+    public const SUPPLIER_REQUEST_APPROVED = 1;
+    public const SUPPLIER_REQUEST_CANCELLED = 2;
 
-    const USER_BUYER_DASHBOARD = 1;
-    const USER_SELLER_DASHBOARD = 2;
-    const USER_AFFILIATE_DASHBOARD = 3;
-    const USER_ADVERTISER_DASHBOARD = 4;
+    public const USER_BUYER_DASHBOARD = 1;
+    public const USER_SELLER_DASHBOARD = 2;
+    public const USER_AFFILIATE_DASHBOARD = 3;
+    public const USER_ADVERTISER_DASHBOARD = 4;
 
-    const USER_TYPE_BUYER = 1;
-    const USER_TYPE_SELLER = 2;
-    const USER_TYPE_AFFILIATE = 3;
-    const USER_TYPE_ADVERTISER = 4;
-    const USER_TYPE_SHIPPING_COMPANY = 5;
-    const USER_TYPE_BUYER_SELLER = 6;
+    public const USER_TYPE_BUYER = 1;
+    public const USER_TYPE_SELLER = 2;
+    public const USER_TYPE_AFFILIATE = 3;
+    public const USER_TYPE_ADVERTISER = 4;
+    public const USER_TYPE_SHIPPING_COMPANY = 5;
+    public const USER_TYPE_BUYER_SELLER = 6;
 
-    const CATALOG_REQUEST_PENDING = 0;
-    const CATALOG_REQUEST_APPROVED = 1;
-    const CATALOG_REQUEST_CANCELLED = 2;
+    public const CATALOG_REQUEST_PENDING = 0;
+    public const CATALOG_REQUEST_APPROVED = 1;
+    public const CATALOG_REQUEST_CANCELLED = 2;
 
-    const AFFILIATE_PAYMENT_METHOD_CHEQUE = 1;
-    const AFFILIATE_PAYMENT_METHOD_BANK = 2;
-    const AFFILIATE_PAYMENT_METHOD_PAYPAL = 3;
+    public const AFFILIATE_PAYMENT_METHOD_CHEQUE = 1;
+    public const AFFILIATE_PAYMENT_METHOD_BANK = 2;
+    public const AFFILIATE_PAYMENT_METHOD_PAYPAL = 3;
 
-    const RETURN_ADDRESS_ACCOUNT_TAB = 'return-address';
-    const RETURN_ADDRESS_TAB_1 =1;
+    public const RETURN_ADDRESS_ACCOUNT_TAB = 'return-address';
+    public const RETURN_ADDRESS_TAB_1 =1;
 
-    const CLASS_PENDING = 'warning';
-    const CLASS_APPROVED = 'success';
-    const CLASS_CANCELLED = 'danger';
+    public const CLASS_PENDING = 'warning';
+    public const CLASS_APPROVED = 'success';
+    public const CLASS_CANCELLED = 'danger';
 
     public function __construct($userId = 0)
     {

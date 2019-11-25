@@ -180,10 +180,18 @@ class BatchProductsController extends LoggedUserController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(ProductGroup::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($prodgroup_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        }
 
         $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach ($languages as $langId =>$langName) {
+        foreach ($languages as $langId => $langName) {
             if (!$row = ProductGroup::getAttributesByLangId($langId, $prodgroup_id)) {
                 $newTabLangId = $langId;
                 break;
@@ -219,7 +227,19 @@ class BatchProductsController extends LoggedUserController
         /* ] */
 
         $frm = $this->getBatchLangForm($prodgroup_id, $lang_id);
-        $data = ProductGroup::getAttributesByLangId($lang_id, $prodgroup_id);
+        
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(ProductGroup::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($prodgroup_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $data = current($translatedData);
+        } else {
+            $data = ProductGroup::getAttributesByLangId($lang_id, $prodgroup_id);
+        }
+
         $frm->fill($data);
         $this->set('frm', $frm);
         $this->set('prodgroup_id', $prodgroup_id);
@@ -518,8 +538,16 @@ class BatchProductsController extends LoggedUserController
     {
         $frm = new Form('frmBatchLang');
         $frm->addHiddenField('', 'prodgroup_id', $prodgroup_id);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $lang_id), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addTextBox(Labels::getLabel('LBL_Name', $lang_id), 'prodgroup_name')->requirements()->setRequired();
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $lang_id), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Submit', $lang_id));
         return $frm;
     }

@@ -1,25 +1,25 @@
 <?php
 class Banner extends MyAppModel
 {
-    const DB_TBL = 'tbl_banners';
-    const DB_TBL_PREFIX = 'banner_';
-    const DB_LANG_TBL = 'tbl_banners_lang';
+    public const DB_TBL = 'tbl_banners';
+    public const DB_TBL_PREFIX = 'banner_';
+    public const DB_TBL_LANG = 'tbl_banners_lang';
 
-    const DB_TBL_CLICKS = 'tbl_banners_clicks';
-    const DB_TBL_CLICKS_PREFIX = 'bclick_';
+    public const DB_TBL_CLICKS = 'tbl_banners_clicks';
+    public const DB_TBL_CLICKS_PREFIX = 'bclick_';
 
-    const DB_TBL_LOGS = 'tbl_banners_logs';
-    const DB_TBL_LOGS_PREFIX = 'lbanner_';
+    public const DB_TBL_LOGS = 'tbl_banners_logs';
+    public const DB_TBL_LOGS_PREFIX = 'lbanner_';
 
-    const DB_TBL_LOCATIONS = 'tbl_banner_locations';
-    const DB_LANG_TBL_LOCATIONS = 'tbl_banner_locations_lang';
-    const DB_TBL_LOCATIONS_PREFIX = 'blocation_';
+    public const DB_TBL_LOCATIONS = 'tbl_banner_locations';
+    public const DB_TBL_LANG_LOCATIONS = 'tbl_banner_locations_lang';
+    public const DB_TBL_LOCATIONS_PREFIX = 'blocation_';
 
-    const TYPE_BANNER = 1;
-    const TYPE_PPC = 2;
-    const BANNER_HOME_PAGE_LAYOUT_1 = 1;
-    const BANNER_HOME_PAGE_LAYOUT_2 = 2;
-    const BANNER_PRODUCT_PAGE_LAYOUT_1 = 3;
+    public const TYPE_BANNER = 1;
+    public const TYPE_PPC = 2;
+    public const BANNER_HOME_PAGE_LAYOUT_1 = 1;
+    public const BANNER_HOME_PAGE_LAYOUT_2 = 2;
+    public const BANNER_PRODUCT_PAGE_LAYOUT_1 = 3;
 
     public function __construct($id = 0)
     {
@@ -44,7 +44,7 @@ class Banner extends MyAppModel
 
         if ($langId > 0) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'bannerlang_banner_id = banner_id
 			AND bannerlang_lang_id = ' . $langId

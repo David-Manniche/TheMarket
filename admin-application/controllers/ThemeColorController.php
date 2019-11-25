@@ -5,19 +5,19 @@ class ThemeColorController extends AdminBaseController
     private $canEdit;
     
     public function __construct($action)
-    { 
+    {
         parent::__construct($action);
         $this->admin_id = AdminAuthentication::getLoggedAdminId();
         $this->canView = $this->objPrivilege->canViewThemeColor($this->admin_id, true);
         $this->canEdit = $this->objPrivilege->canEditThemeColor($this->admin_id, true);
         $this->set("canView", $this->canView);
-        $this->set("canEdit", $this->canEdit);        
+        $this->set("canEdit", $this->canEdit);
     }
     
-    public function index() 
+    public function index()
     {
         $this->_template->addJs('js/jscolor.js');
-        $this->objPrivilege->canViewThemeColor();    
+        $this->objPrivilege->canViewThemeColor();
         $search = $this->getSearchForm();
         $this->set("search", $search);
         $this->_template->render();
@@ -26,7 +26,7 @@ class ThemeColorController extends AdminBaseController
     public function search()
     {
         $this->objPrivilege->canViewThemeColor();
-        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);    
+        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
@@ -35,8 +35,7 @@ class ThemeColorController extends AdminBaseController
         
         $srch = ThemeColor::getSearchObject(CommonHelper::getLangId(), false);
         $srch->addMultipleFields(array('t.tcolor_id , IFNULL(t_l.tcolor_name, t.tcolor_identifier) as tcolor_name','t.tcolor_first_color','t.tcolor_added_by'));
-        if(!empty($post['keyword'])) {
-            
+        if (!empty($post['keyword'])) {
             $srchCondition= $srch->addCondition('t_l.tcolor_name', 'like', '%'.$post['keyword'].'%');
             $srchCondition->attachCondition('t.tcolor_identifier', 'like', '%'.$post['keyword'].'%', 'OR');
         }
@@ -54,17 +53,17 @@ class ThemeColorController extends AdminBaseController
         $this->set('recordCount', $srch->recordCount());
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
-        $this->set('postedData', $post);                                    
-        $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->adminLangId));                        
-        $this->_template->render(false, false);    
+        $this->set('postedData', $post);
+        $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->adminLangId));
+        $this->_template->render(false, false);
     }
         
     public function listing($tColorId)
     {
         $tColorId = FatUtility::int($tColorId);
-        if(1 > $tColorId) {
-            FatUtility::dieJsonError($this->str_invalid_request);    
-        }        
+        if (1 > $tColorId) {
+            FatUtility::dieJsonError($this->str_invalid_request);
+        }
         
         $frmSearch = $this->getSearchForm();
         $frmSearch->fill(array('tcolor_id'=>$tColorId));
@@ -80,7 +79,7 @@ class ThemeColorController extends AdminBaseController
     public function listingSearch()
     {
         $this->objPrivilege->canViewThemeColor();
-        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);                
+        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
         $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
@@ -90,8 +89,7 @@ class ThemeColorController extends AdminBaseController
         
         $srch->addFld('t.* , IFNULL(t_l.tcolor_name, t.tcolor_identifier) as tcolor_name');
         
-        if(!empty($post['keyword'])) {
-            
+        if (!empty($post['keyword'])) {
             $condition->attachCondition('t_l.tcolor_name', 'like', '%'.$post['keyword'].'%');
             $condition->attachCondition('t.tcolor_identifier', 'like', '%'.$post['keyword'].'%', 'OR');
         }
@@ -103,23 +101,23 @@ class ThemeColorController extends AdminBaseController
         
         $rs = $srch->getResultSet();
         $records = array();
-        if($rs) {
-            $records = FatApp::getDb()->fetchAll($rs);            
+        if ($rs) {
+            $records = FatApp::getDb()->fetchAll($rs);
         }
         
         $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->adminLangId));
-        $this->set("arr_listing", $records);        
+        $this->set("arr_listing", $records);
         $this->set('pageCount', $srch->pages());
         $this->set('recordCount', $srch->recordCount());
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
-        $this->set('postedData', $post);                
-        $this->_template->render(false, false);    
+        $this->set('postedData', $post);
+        $this->_template->render(false, false);
     }
     
     private function getSearchForm()
     {
-        $frm = new Form('frmSearch');        
+        $frm = new Form('frmSearch');
         $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
         $fld_submit=$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
@@ -129,13 +127,12 @@ class ThemeColorController extends AdminBaseController
     
     public function form($tColorId)
     {
-        
         $this->objPrivilege->canEditThemeColor();
         $tColorId =  FatUtility::int($tColorId);
         
         $frm = $this->getForm($tColorId);
         
-        if (0 < $tColorId ) {
+        if (0 < $tColorId) {
             $data = ThemeColor::getAttributesById($tColorId);
         
             if ($data === false) {
@@ -147,18 +144,17 @@ class ThemeColorController extends AdminBaseController
         $this->set('languages', Language::getAllNames());
         $this->set('tcolor_id', $tColorId);
         $this->set('frm', $frm);
-        $this->_template->render(false, false);    
+        $this->_template->render(false, false);
     }
     
     public function cloneForm($tColorId = 0)
     {
-        
         $this->objPrivilege->canEditThemeColor();
         $tColorId =  FatUtility::int($tColorId);
         
         $frm = $this->getForm($tColorId);
         
-        if (0 < $tColorId ) {
+        if (0 < $tColorId) {
             $data = ThemeColor::getAttributesById($tColorId);
         
             if ($data === false) {
@@ -170,9 +166,9 @@ class ThemeColorController extends AdminBaseController
         }
         
         $this->set('languages', Language::getAllNames());
-        $this->set('tcolor_id', 0);
+        $this->set('tcolor_id', $tColorId);
         $this->set('frm', $frm);
-        $this->_template->render(false, false);    
+        $this->_template->render(false, false);
     }
     
     public function setup()
@@ -182,62 +178,70 @@ class ThemeColorController extends AdminBaseController
         $frm = $this->getForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         
-        if (false === $post) {            
+        if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());    
+            FatUtility::dieJsonError(Message::getHtml());
         }
 
         $tColorId = $post['tcolor_id'];
         unset($post['tcolor_id']);
         $data = $post;
         $data['tcolor_added_by'] = $this->admin_id;
-        $record = new ThemeColor($tColorId);    
+        $record = new ThemeColor($tColorId);
         $record->assignValues($data);
         
-        if (!$record->save()) {     
+        if (!$record->save()) {
             Message::addErrorMessage($record->getError());
-            FatUtility::dieJsonError(Message::getHtml());            
-        } 
+            FatUtility::dieJsonError(Message::getHtml());
+        }
         
-        $newTabLangId=0;    
-        if($tColorId>0) {            
-            $languages = Language::getAllNames();    
-            foreach($languages as $langId =>$langName ){            
-                if(!$row = ThemeColor::getAttributesByLangId($langId, $tColorId)) {
+        $newTabLangId=0;
+        if ($tColorId>0) {
+            $languages = Language::getAllNames();
+            foreach ($languages as $langId =>$langName) {
+                if (!$row = ThemeColor::getAttributesByLangId($langId, $tColorId)) {
                     $newTabLangId = $langId;
                     break;
-                }            
-            }    
-            $this->set('msg', Labels::getLabel($this->str_update_record, $this->adminLangId));    
-            
-        }else{
+                }
+            }
+            $this->set('msg', Labels::getLabel($this->str_update_record, $this->adminLangId));
+        } else {
             $tColorId = $record->getMainTableRecordId();
             $this->set('msg', Labels::getLabel($this->str_setup_successful, $this->adminLangId));
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);    
+            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
         
         $this->set('tColorId', $tColorId);
-        $this->set('langId', $newTabLangId); 
+        $this->set('langId', $newTabLangId);
         $this->_template->render(false, false, 'json-success.php');
     }
     
-    public function langForm($tColorId = 0,$lang_id = 0)
+    public function langForm($tColorId = 0, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canViewThemeColor();
         
         $tColorId = FatUtility::int($tColorId);
         $lang_id = FatUtility::int($lang_id);
         
-        if($tColorId == 0 || $lang_id == 0) {
+        if ($tColorId == 0 || $lang_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
         
         $langFrm = $this->getLangForm($tColorId, $lang_id);
-            
-        $langData = ThemeColor::getAttributesByLangId($lang_id, $tColorId);        
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(ThemeColor::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($tColorId, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = ThemeColor::getAttributesByLangId($lang_id, $tColorId);
+        }
         
-        if($langData) {
-            $langFrm->fill($langData);            
+        if ($langData) {
+            $langFrm->fill($langData);
         }
         
         $this->set('languages', Language::getAllNames());
@@ -256,7 +260,7 @@ class ThemeColorController extends AdminBaseController
         $tColorId = $post['tcolor_id'];
         $lang_id = $post['lang_id'];
         
-        if($tColorId == 0 || $lang_id == 0) {
+        if ($tColorId == 0 || $lang_id == 0) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -269,24 +273,33 @@ class ThemeColorController extends AdminBaseController
         $data = array(
         'tcolorlang_lang_id'=>$lang_id,
         'tcolorlang_tcolor_id'=>$tColorId,
-        'tcolor_name'=>$post['tcolor_name']            
+        'tcolor_name'=>$post['tcolor_name']
         );
         
         $themeColorObj = new ThemeColor($tColorId);
         
-        if(!$themeColorObj->updateLangData($lang_id, $data)) {
+        if (!$themeColorObj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($themeColorObj->getError());
-            FatUtility::dieJsonError(Message::getHtml());                    
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(ThemeColor::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($tColorId)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
-        $newTabLangId = 0;    
-        $languages = Language::getAllNames();    
-        foreach($languages as $langId =>$langName ){            
-            if(!$row = ThemeColor::getAttributesByLangId($langId, $tColorId)) {
+        $newTabLangId = 0;
+        $languages = Language::getAllNames();
+        foreach ($languages as $langId =>$langName) {
+            if (!$row = ThemeColor::getAttributesByLangId($langId, $tColorId)) {
                 $newTabLangId = $langId;
                 break;
-            }            
-        }    
+            }
+        }
     
         $this->set('msg', $this->str_setup_successful);
         $this->set('tColorId', $tColorId);
@@ -299,7 +312,7 @@ class ThemeColorController extends AdminBaseController
         $this->objPrivilege->canViewThemeColor();
         $tColorId =  FatUtility::int($tColorId);
         
-        $frm = new Form('frmThemeColor');        
+        $frm = new Form('frmThemeColor');
         $frm->addHiddenField('', 'tcolor_id', $tColorId);
         
         $frm->addRequiredField(Labels::getLabel('LBL_Identifier', $this->adminLangId), 'tcolor_identifier');
@@ -320,64 +333,71 @@ class ThemeColorController extends AdminBaseController
         //$frm->addTextBox(Labels::getLabel('LBL_Second_Button_Color',$this->adminLangId), 'tcolor_second_btn_color')->addFieldTagAttribute('class', 'jscolor');
         //$frm->addRequiredField(Labels::getLabel('LBL_Display_Order',$this->adminLangId), 'tcolor_display_order');
             
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));        
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
     
-    private function getLangForm($tColorId = 0,$lang_id = 0)
+    private function getLangForm($tColorId = 0, $lang_id = 0)
     {
         $this->objPrivilege->canViewThemeColor();
-        $frm = new Form('frmThemeColorLang');        
+        $frm = new Form('frmThemeColorLang');
         $frm->addHiddenField('', 'tcolor_id', $tColorId);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
-        $frm->addRequiredField(Labels::getLabel('LBL_tcolor_name', $this->adminLangId), 'tcolor_name');                
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
+        $frm->addRequiredField(Labels::getLabel('LBL_tcolor_name', $this->adminLangId), 'tcolor_name');
+
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+                
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
         
     public function activateThemeColor($tColorId = 0)
     {
-        /* if(CONF_DEVELOPMENT_MODE){	
+        /* if(CONF_DEVELOPMENT_MODE){
         Message::addErrorMessage('We will activate this functionality when all css work done, Dont do it now');
         if(FatUtility::isAjaxCall()){
         FatUtility::dieWithError(Message::getHtml());
         }else{
         FatApp::redirectUser(CommonHelper::generateUrl('ThemeColor',''));
         }
-        } */  
+        } */
         $this->objPrivilege->canEditThemeColor();
-        if(FatUtility::isAjaxCall()) {                
-            $tColorId = FatApp::getPostedData('tColorId', FatUtility::VAR_INT, 0);    
+        if (FatUtility::isAjaxCall()) {
+            $tColorId = FatApp::getPostedData('tColorId', FatUtility::VAR_INT, 0);
         }
     
-        if(0 >= $tColorId) {
+        if (0 >= $tColorId) {
             Message::addErrorMessage($this->str_invalid_request_id);
-            FatUtility::dieWithError(Message::getHtml());    
+            FatUtility::dieWithError(Message::getHtml());
         }
         
         
-        $data = ThemeColor::getAttributesById($tColorId, array('tcolor_id'));        
+        $data = ThemeColor::getAttributesById($tColorId, array('tcolor_id'));
         
-        if($data==false) {
+        if ($data==false) {
             Message::addErrorMessage($this->str_invalid_request);
-            FatUtility::dieWithError(Message::getHtml());    
+            FatUtility::dieWithError(Message::getHtml());
         }
         
         $configurationObj=new Configurations();
-        if(!$configurationObj->update(array('CONF_FRONT_THEME'=>$tColorId))) {
-
+        if (!$configurationObj->update(array('CONF_FRONT_THEME'=>$tColorId))) {
             Message::addErrorMessage($configurationObj->getError());
-            if(FatUtility::isAjaxCall()) {    
-                FatUtility::dieJsonError(Message::getHtml());        
-            }else{
+            if (FatUtility::isAjaxCall()) {
+                FatUtility::dieJsonError(Message::getHtml());
+            } else {
                 FatApp::redirectUser(CommonHelper::generateUrl('ThemeColor', ''));
             }
         }
         /* $this->updateCssFiles(); */
-        if(FatUtility::isAjaxCall()) {
+        if (FatUtility::isAjaxCall()) {
             $this->set('msg', Labels::getLabel('Msg_Theme_Activated_Successfully', CommonHelper::getLangId()));
-            $this->_template->render(false, false, 'json-success.php');        
-        }else{
+            $this->_template->render(false, false, 'json-success.php');
+        } else {
             Message::addMessage(Labels::getLabel('Msg_Theme_Activated_Successfully', CommonHelper::getLangId()));
             FatApp::redirectUser(CommonHelper::generateUrl('ThemeColor', ''));
         }
@@ -386,29 +406,29 @@ class ThemeColorController extends AdminBaseController
     public function deleteTheme()
     {
         $this->objPrivilege->canEditThemeColor();
-        $tColorId = FatApp::getPostedData('tColorId', FatUtility::VAR_INT, 0);    
+        $tColorId = FatApp::getPostedData('tColorId', FatUtility::VAR_INT, 0);
         
-        if(0 >= $tColorId) {
+        if (0 >= $tColorId) {
             Message::addErrorMessage($this->str_invalid_request_id);
-            FatUtility::dieWithError(Message::getHtml());    
+            FatUtility::dieWithError(Message::getHtml());
         }
         
         
-        $data = ThemeColor::getAttributesById($tColorId, array('tcolor_id'));        
+        $data = ThemeColor::getAttributesById($tColorId, array('tcolor_id'));
         
-        if($data==false) {
+        if ($data==false) {
             Message::addErrorMessage($this->str_invalid_request);
-            FatUtility::dieWithError(Message::getHtml());    
+            FatUtility::dieWithError(Message::getHtml());
         }
         
         $this->set('msg', Labels::getLabel('Msg_Theme_Settings_Deleted_Successfully', CommonHelper::getLangId()));
         $themeObj = new ThemeColor($tColorId);
-        if(!$themeObj->deleteRecord(true)) {
+        if (!$themeObj->deleteRecord(true)) {
             Message::addErrorMessage($themeObj->getError());
-            FatUtility::dieJsonError(Message::getHtml());    
+            FatUtility::dieJsonError(Message::getHtml());
         }
         
-        $this->_template->render(false, false, 'json-success.php');                
+        $this->_template->render(false, false, 'json-success.php');
     }
     
     public function updateCssFiles()
@@ -416,7 +436,7 @@ class ThemeColorController extends AdminBaseController
         $theme_detail = ThemeColor::getAttributesById(FatApp::getConfig('CONF_FRONT_THEME'));
         
         
-        if(!$theme_detail) {
+        if (!$theme_detail) {
             $selected_theme = 1;
         }
         
@@ -428,12 +448,14 @@ class ThemeColorController extends AdminBaseController
         );
         $i=1;
         
-        foreach ($filesArr as $fileKey=>$fileName){
+        foreach ($filesArr as $fileKey=>$fileName) {
             $str='';
-            if (substr($fileName, '-4') != '.css') { continue; 
+            if (substr($fileName, '-4') != '.css') {
+                continue;
             }
             $oldFile = CONF_FRONT_END_THEME_PATH . $fileName;
-            if (file_exists($oldFile)) { $str .= file_get_contents($oldFile); 
+            if (file_exists($oldFile)) {
+                $str .= file_get_contents($oldFile);
             }
             $newFileName = CONF_FRONT_END_THEME_PATH.$fileKey;
             $newFile = fopen($newFileName, 'w');
@@ -466,23 +488,23 @@ class ThemeColorController extends AdminBaseController
         }
     }
     
-    public function preview($tColorId) 
+    public function preview($tColorId)
     {
         $tColorId = FatUtility::int($tColorId);
-        if(0 >= $tColorId) {
+        if (0 >= $tColorId) {
             Message::addErrorMessage($this->str_invalid_request_id);
-            FatApp::redirectUser(CommonHelper::generateUrl('ThemeColor'));    
+            FatApp::redirectUser(CommonHelper::generateUrl('ThemeColor'));
         }
         
         /* $tObj = new ThemeColor();
        	$theme = $tObj->getAttributesById($tColorId); */
         if (!$tColorId) {
             Message::addErrorMessage($this->str_invalid_request_id);
-            FatApp::redirectUser(CommonHelper::generateUrl('ThemeColor'));    
+            FatApp::redirectUser(CommonHelper::generateUrl('ThemeColor'));
         }
         $_SESSION['preview_theme']= $tColorId;
         
         $this->set('theme', $tColorId);
         $this->_template->render(false, false);
     }
-}    
+}

@@ -95,7 +95,7 @@ class PaymentMethodsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function langForm($pMethodId = 0,$lang_id = 0)
+    public function langForm($pMethodId = 0,$lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canViewPaymentMethods();
 
@@ -107,7 +107,17 @@ class PaymentMethodsController extends AdminBaseController
         }
 
         $langFrm = $this->getLangForm($pMethodId, $lang_id);
-        $langData = PaymentMethods::getAttributesByLangId($lang_id, $pMethodId);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(PaymentMethods::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($pMethodId, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = PaymentMethods::getAttributesByLangId($lang_id, $pMethodId);
+        }
         if($langData ) {
             $langFrm->fill($langData);
         }
@@ -150,6 +160,15 @@ class PaymentMethodsController extends AdminBaseController
         if(!$pMethodObj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($pMethodObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
+        }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(PaymentMethods::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($pMethodId)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId=0;
@@ -275,9 +294,17 @@ class PaymentMethodsController extends AdminBaseController
         $this->objPrivilege->canViewPaymentMethods();
         $frm = new Form('frmGatewayLang');
         $frm->addHiddenField('', 'pmethod_id', $pMethodId);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Gateway_Name', $this->adminLangId), 'pmethod_name');
         $frm->addTextarea(Labels::getLabel('LBL_Details', $this->adminLangId), 'pmethod_description');
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+        
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }

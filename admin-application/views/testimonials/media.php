@@ -33,11 +33,11 @@ $fld2->htmlAfterField = $htmlAfterField;
 	<div class="tabs_nav_container responsive flat">
 		<ul class="tabs_nav">
 			<li><a href="javascript:void(0)" onclick="editTestimonialForm(<?php echo $testimonialId ?>);"><?php echo Labels::getLabel('LBL_General',$adminLangId); ?></a></li>
-			<?php
-			$inactive = ( $testimonialId == 0 ) ? 'fat-inactive' : '';
-			foreach($languages as $langId=>$langName){?>
-				<li class="<?php echo $inactive;?>"><a href="javascript:void(0);" <?php if($testimonialId>0){?> onclick="editTestimonialLangForm(<?php echo $testimonialId ?>, <?php echo $langId;?>);" <?php }?>><?php echo Labels::getLabel('LBL_'.$langName,$adminLangId);?></a></li>
-			<?php } ?>
+            <li class="<?php echo (0 == $testimonialId) ? 'fat-inactive' : ''; ?>">
+                <a href="javascript:void(0);" <?php echo (0 < $testimonialId) ? "onclick='editTestimonialLangForm(" . $testimonialId . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                    <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
+                </a>
+            </li>
 			<li><a class="active" href="javascript:void(0)" onclick="testimonialMediaForm(<?php echo $testimonialId ?>);"><?php echo Labels::getLabel('LBL_Media',$adminLangId); ?></a></li>
 		</ul>
 		<div class="tabs_panel_wrap">

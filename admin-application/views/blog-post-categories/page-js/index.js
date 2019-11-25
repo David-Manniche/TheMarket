@@ -50,9 +50,9 @@ $(document).ready(function() {
         });
     };
 
-    categoryLangForm = function(catId, langId) {
+    categoryLangForm = function(catId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('BlogPostCategories', 'langForm', [catId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('BlogPostCategories', 'langForm', [catId, langId, autoFillLangData]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
     };

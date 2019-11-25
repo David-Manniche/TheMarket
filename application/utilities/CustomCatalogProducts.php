@@ -521,7 +521,7 @@ trait CustomCatalogProducts
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function customCatalogProductLangForm($preqId = 0, $lang_id = 0)
+    public function customCatalogProductLangForm($preqId = 0, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->canAddCustomCatalogProduct();
 
@@ -549,12 +549,27 @@ trait CustomCatalogProducts
 
         $customProductLangFrm = $this->getCustomCatalogProductLangForm($preqId, $lang_id);
         $prodObj = new ProductRequest($preqId);
-        $customProductLangData = $prodObj->getAttributesByLangId($lang_id, $preqId);
-
+        if (0 < $autoFillLangData) {
+            $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+            $customProductLangData = $prodObj->getAttributesByLangId($siteDefaultLangId, $preqId);
+        } else {
+            $customProductLangData = $prodObj->getAttributesByLangId($lang_id, $preqId);
+        }
+        
         if ($customProductLangData) {
             $customProductLangData['preq_id'] = $preqId;
             $productData = json_decode($customProductLangData['preq_lang_data'], true);
             unset($customProductLangData['preq_lang_data']);
+            if (0 < $autoFillLangData) {
+                $updateLangDataobj = new TranslateLangData(ProductRequest::DB_TBL_LANG);
+                $translatedData = $updateLangDataobj->directTranslate($productData, $lang_id);
+                if (false === $translatedData) {
+                    Message::addErrorMessage($updateLangDataobj->getError());
+                    FatUtility::dieWithError(Message::getHtml());
+                }
+                $productData = current($translatedData);
+            }
+
             if (!empty($productData)) {
                 $customProductLangData = array_merge($customProductLangData, $productData);
             }
@@ -600,6 +615,11 @@ trait CustomCatalogProducts
         unset($post['preq_id']);
         unset($post['lang_id']);
         unset($post['btn_submit']);
+        
+        if (array_key_exists('auto_update_other_langs_data', $post)) {
+            unset($post['auto_update_other_langs_data']);
+        }
+        
         $data_to_update = array(
         'preqlang_preq_id'    =>    $preq_id,
         'preqlang_lang_id'    =>    $lang_id,
@@ -633,7 +653,7 @@ trait CustomCatalogProducts
         $siteLangId = $this->siteLangId;
         $frm = new Form('frmCustomProductLang');
         $frm->addHiddenField('', 'preq_id', $preqId);
-        $frm->addHiddenField('', 'lang_id', $langId);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'lang_id', Language::getAllNames(), $langId, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Product_Name', $this->siteLangId), 'product_name');
         $fld = $frm->addRequiredField(Labels::getLabel('LBL_Seller_Product_Title', $this->siteLangId), 'selprod_title');
         $fld->htmlAfterField = "<small class='text--small'>".Labels::getLabel('LBL_This_product_title_will_be_displayed_on_the_site', $this->siteLangId).'</small>';
@@ -894,8 +914,8 @@ trait CustomCatalogProducts
         $rootCategories = ProductCategory::getTreeArr($this->siteLangId, 0, false, false, false, $keyword);
         /*$rootCategories = $prodCatObj->getProdRootCategoriesWithKeyword($this->siteLangId, $keyword, false, false, true);
         */
-       $childCountArr = array();
-       $this->getSubCatRecordCount($rootCategories, $childCountArr, $keyword);
+        $childCountArr = array();
+        $this->getSubCatRecordCount($rootCategories, $childCountArr, $keyword);
 
         $childCategories = array();
 

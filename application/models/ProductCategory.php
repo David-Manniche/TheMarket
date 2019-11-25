@@ -3,8 +3,8 @@ class ProductCategory extends MyAppModel
 {
     const DB_TBL = 'tbl_product_categories';
     const DB_TBL_PREFIX = 'prodcat_';
-    const DB_LANG_TBL ='tbl_product_categories_lang';
-    const DB_LANG_TBL_PREFIX ='prodcatlang_';
+    const DB_TBL_LANG ='tbl_product_categories_lang';
+    const DB_TBL_LANG_PREFIX ='prodcatlang_';
     const REWRITE_URL_PREFIX = 'category/view/';
     private $db;
     private $categoryTreeArr = array();
@@ -34,10 +34,10 @@ class ProductCategory extends MyAppModel
 
         if ($langId > 0) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'pc_l.'.static::DB_LANG_TBL_PREFIX.'prodcat_id = m.'.static::tblFld('id').' and
-			pc_l.'.static::DB_LANG_TBL_PREFIX.'lang_id = '.$langId,
+                'pc_l.'.static::DB_TBL_LANG_PREFIX.'prodcat_id = m.'.static::tblFld('id').' and
+			pc_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
                 'pc_l'
             );
         }
@@ -289,7 +289,7 @@ class ProductCategory extends MyAppModel
         $srch->addOrder('m.prodcat_identifier', 'asc');
 
         if ($langId > 0) {
-            $srch->joinTable(static::DB_LANG_TBL, 'LEFT OUTER JOIN', static::DB_LANG_TBL_PREFIX.'prodcat_id = '.static::tblFld('id').' and '.static::DB_LANG_TBL_PREFIX.'lang_id = '.$langId);
+            $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', static::DB_TBL_LANG_PREFIX.'prodcat_id = '.static::tblFld('id').' and '.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId);
             $srch->addFld(array('COALESCE(prodcat_name,prodcat_identifier) as prodcat_name'));
         } else {
             $srch->addFld(array('prodcat_identifier as prodcat_name'));
@@ -309,7 +309,7 @@ class ProductCategory extends MyAppModel
         $srch =$this->getSearchObject();
         $srch->addCondition('m.prodcat_id','=',$prodcat_id);
         if($lang_id>0){
-            $srch->joinTable(static::DB_LANG_TBL, 'LEFT JOIN', 'plang.prodcatlang_prodcat_id = m.prodcat_id', 'plang');
+            $srch->joinTable(static::DB_TBL_LANG, 'LEFT JOIN', 'plang.prodcatlang_prodcat_id = m.prodcat_id', 'plang');
             $srch->addFld('plang.*');
         }
         $srch->addFld('m.*');
@@ -322,7 +322,7 @@ class ProductCategory extends MyAppModel
 
     public function addUpdateProdCatLang($data, $lang_id, $prodcat_id)
     {
-        $tbl = new TableRecord(static::DB_LANG_TBL);
+        $tbl = new TableRecord(static::DB_TBL_LANG);
         $data['prodcatlang_prodcat_id']=FatUtility::int($prodcat_id);
         $tbl->assignValues($data);
         if ($this->isExistProdCatLang($lang_id, $prodcat_id)) {
@@ -341,7 +341,7 @@ class ProductCategory extends MyAppModel
 
     public function isExistProdCatLang($lang_id, $prodcat_id)
     {
-        $srch = new SearchBase(static::DB_LANG_TBL);
+        $srch = new SearchBase(static::DB_TBL_LANG);
         $srch->addCondition('prodcatlang_prodcat_id', '=', $prodcat_id);
         $srch->addCondition('prodcatlang_lang_id', '=', $lang_id);
         $row = FatApp::getDb()->fetch($srch->getResultSet());
@@ -473,7 +473,7 @@ class ProductCategory extends MyAppModel
     {
         /* $srch = new SearchBase(static::DB_TBL); */
         $srch = static::getSearchObject();
-        $srch->joinTable(static::DB_LANG_TBL, 'LEFT OUTER JOIN', 'prodcatlang_prodcat_id = prodcat_id
+        $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', 'prodcatlang_prodcat_id = prodcat_id
 			AND prodcatlang_lang_id = ' . $langId);
         $srch->addCondition(static::DB_TBL_PREFIX.'deleted', '=', 0);
         $srch->addMultipleFields(array('prodcat_id',
