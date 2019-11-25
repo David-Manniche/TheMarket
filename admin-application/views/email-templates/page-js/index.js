@@ -83,6 +83,19 @@ $(document).ready(function() {
         });
     };
 
+    sendTestEmail = function(frm) {
+        var data = fcom.frmData(frm);
+        fcom.updateWithAjax(fcom.makeUrl('EmailTemplates', 'testEmailTemplate'), data, function(res) {
+            var ans = $.parseJSON(res);
+            if (ans.status == 1) {
+                fcom.displaySuccessMessage(ans.msg);
+            } else {
+                fcom.displayErrorMessage(ans.msg);
+            }
+            $(document).trigger('close.facebox');
+        });
+    };
+
     toggleStatus = function(obj) {
         if (!confirm(langLbl.confirmUpdateStatus)) {
             return;
