@@ -431,7 +431,7 @@ class SellerController extends SellerBaseController
         if ($orderDetail['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
             $digitalDownloadLinks = Orders::getOrderProductDigitalDownloadLinks($op_id);
         }
-        
+
         $this->set('orderDetail', $orderDetail);
         $this->set('orderStatuses', $orderStatuses);
         $this->set('shippedBySeller', $shippedBySeller);
@@ -644,6 +644,8 @@ class SellerController extends SellerBaseController
             $notEligible = true;
             Message::addErrorMessage(sprintf(Labels::getLabel('LBL_this_order_already', $this->siteLangId), $orderStatuses[$orderDetail["op_status_id"]]));
         }
+        $taxOptions = json_decode($orderDetail['op_product_tax_options'], true);
+        $orderDetail['taxOptions'] = $taxOptions;
 
         $frm = $this->getOrderCancelForm($this->siteLangId);
         $frm->fill(array('op_id'=>$op_id));

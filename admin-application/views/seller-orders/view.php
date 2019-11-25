@@ -72,12 +72,17 @@ if ($order['order_reward_point_used'] > 0) {
                                 </td>
                             </tr>
                             <tr>
-                                <td><strong>
-                                    <?php if ($order['op_tax_collected_by_seller']) {
-                                        echo Labels::getLabel('LBL_Tax', $adminLangId); ?>:
-                                                </strong><?php  echo '+'.CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'TAX'), true, true);
-                                    }?>
-                                </td>
+                                <?php if ($order['op_tax_collected_by_seller']) { ?>
+                                    <td><?php
+                                    if (empty($order['taxOptions'])) { ?>
+                                        <strong><?php echo Labels::getLabel('LBL_Tax', $adminLangId); ?>:</strong>
+                                        <?php  echo '+'.CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'TAX'), true, true);
+                                    } else {
+                                        foreach ($order['taxOptions'] as $key => $val) { ?>
+                                            <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
+                                        <?php }
+                                    } ?></td>
+                                <?php } ?>
                                 <td><strong><?php echo Labels::getLabel('LBL_Volume_Discount', $adminLangId); ?></strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'VOLUME_DISCOUNT'), true, true);?> </td>
                                 <td><strong><?php echo Labels::getLabel('LBL_Total_Paid', $adminLangId); ?>:</strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, USER::USER_TYPE_SELLER), true, true);?>
                                 </td>
@@ -231,9 +236,16 @@ if ($order['order_reward_point_used'] > 0) {
                                 <?php if ($shippingHanldedBySeller) {
                                     ?> <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'SHIPPING'), true, true); ?></td>
                                 <?php } ?>
-                                <?php if ($order['op_tax_collected_by_seller']) {
-                                    ?> <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'TAX'), true, true); ?></td> <?php
-                                }?> <td>
+                                <?php if ($order['op_tax_collected_by_seller']) { ?>
+                                    <td><?php
+                                    if (empty($order['taxOptions'])) {
+                                        echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'TAX'), true, true);
+                                    } else {
+                                        foreach ($order['taxOptions'] as $key => $val) { ?>
+                                            <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
+                                        <?php }
+                                    } ?></td>
+                                    <?php }?> <td>
                                     <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'VOLUME_DISCOUNT'), true, true);?></td>
                                 <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, USER::USER_TYPE_SELLER), true, true);?></td>
                             </tr>

@@ -229,21 +229,24 @@ if (true == $primaryOrder) {
                                     <td colspan="8"><?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId)?></td>
                                     <td><?php echo CommonHelper::displayMoneyFormat($shippingCharges); ?></td>
                                 </tr>
+                                <?php
+                                if (empty($taxOptionsTotal)) { ?>
                                 <tr>
                                     <td colspan="8">
                                         <?php echo Labels::getLabel('LBL_Tax_Charges', $siteLangId)?>
                                     </td>
                                     <td>
-                                    <?php
-                                    if (empty($taxOptionsTotal)) {
-                                        echo CommonHelper::displayMoneyFormat($orderDetail['order_tax_charged']);
-                                    } else {
-                                        foreach ($taxOptionsTotal as $key => $val) { ?>
-                                          <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
-                                        <?php }
-                                    } ?>
+                                        <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_tax_charged']); ?>
                                     </td>
                                 </tr>
+                                <?php } else {
+                                    foreach ($taxOptionsTotal as $key => $val) { ?>
+                                        <tr>
+                                            <td colspan="8"><?php echo $key ?></td>
+                                            <td><?php echo CommonHelper::displayMoneyFormat($val); ?></td>
+                                        </tr>
+                                    <?php }
+                                } ?>
                                 <?php if ($orderDetail['order_discount_total']) { ?>
                                 <tr>
                                     <td colspan="8"><?php echo Labels::getLabel('LBL_Discount', $siteLangId)?></td>
