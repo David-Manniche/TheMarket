@@ -6,8 +6,7 @@ class PaytmPayController extends PaymentController
     private $testEnvironmentUrl = 'https://securegw-stage.paytm.in/order';
     private $liveEnvironmentUrl = 'https://securegw.paytm.in/order';
     private $error = false;
-    private $currency = $this->systemCurrencyCode;
-
+   
     protected function allowedCurrenciesArr()
     {
         return [

@@ -3,6 +3,9 @@ abstract class PaymentController extends MyAppController
 {
     abstract protected function allowedCurrenciesArr();
     abstract public function charge($orderId);
+    
+    protected $systemCurrencyCode = '';
+    protected $systemCurrencyId = '';
 
     public function __construct($action)
     {
@@ -14,7 +17,7 @@ abstract class PaymentController extends MyAppController
         }
 
         $this->systemCurrencyId = $currency['currency_id'];
-        $this->systemCurrencyCode = $currency['currency_code'];
+        $this->systemCurrencyCode = strtoupper($currency['currency_code']);
 
         if (!is_array($this->allowedCurrenciesArr())) {
             trigger_error('Invalid currency format', E_USER_ERROR);

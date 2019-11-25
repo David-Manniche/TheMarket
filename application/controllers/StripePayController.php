@@ -8,9 +8,7 @@ class StripePayController extends PaymentController
     private $error = false;
 
     private $paymentSettings = false;
-
-    private $currencyCode = $this->systemCurrencyCode;
-    
+   
     protected function allowedCurrenciesArr()
     {
         return [
@@ -60,7 +58,7 @@ class StripePayController extends PaymentController
                 FatUtility::dieJsonError($message);
             }
             FatUtility::exitWithErrorCode(404);
-        } elseif ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {            
+        } elseif ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
             $checkPayment = $this->doPayment($payableAmount, $orderInfo);
             $frm = $this->getPaymentForm($orderId);
             $this->set('frm', $frm);
@@ -177,7 +175,7 @@ class StripePayController extends PaymentController
                         array(
                         "customer" => $customer->id,
                         'amount'   => $payment_amount,
-                        'currency' => $this->currencyCode,
+                        'currency' => $this->systemCurrencyCode,
                         )
                     );
                     $charge = $charge->__toArray();
