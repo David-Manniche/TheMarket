@@ -164,21 +164,27 @@ class ConfigurationsController extends AdminBaseController
         $record = new Configurations();
 
         if (isset($post["CONF_SEND_SMTP_EMAIL"]) && $post["CONF_SEND_EMAIL"] && $post["CONF_SEND_SMTP_EMAIL"] && (($post["CONF_SEND_SMTP_EMAIL"] != FatApp::getConfig("CONF_SEND_SMTP_EMAIL")) || ($post["CONF_SMTP_HOST"] != FatApp::getConfig("CONF_SMTP_HOST")) || ($post["CONF_SMTP_PORT"] != FatApp::getConfig("CONF_SMTP_PORT")) || ($post["CONF_SMTP_USERNAME"] != FatApp::getConfig("CONF_SMTP_USERNAME")) || ($post["CONF_SMTP_SECURE"] != FatApp::getConfig("CONF_SMTP_SECURE")) || ($post["CONF_SMTP_PASSWORD"] != FatApp::getConfig("CONF_SMTP_PASSWORD")))) {
-            $smtp_arr=array("host"=>$post["CONF_SMTP_HOST"],"port"=>$post["CONF_SMTP_PORT"],"username"=>$post["CONF_SMTP_USERNAME"],"password"=>$post["CONF_SMTP_PASSWORD"],"secure"=>$post["CONF_SMTP_SECURE"]);
+            $smtp_arr = [
+                "host" => $post["CONF_SMTP_HOST"],
+                "port" => $post["CONF_SMTP_PORT"],
+                "username" => $post["CONF_SMTP_USERNAME"],
+                "password" => $post["CONF_SMTP_PASSWORD"],
+                "secure" => $post["CONF_SMTP_SECURE"]
+            ];
 
             if (EmailHandler::sendSmtpTestEmail($this->adminLangId, $smtp_arr)) {
-                Message::addMessage(Labels::getLabel('LBL_We_have_sent_a_test_email_to_administrator_account'.FatApp::getConfig("CONF_SITE_OWNER_EMAIL"), $this->adminLangId));
+                Message::addMessage(Labels::getLabel('LBL_We_have_sent_a_test_email_to_administrator_account' . FatApp::getConfig("CONF_SITE_OWNER_EMAIL"), $this->adminLangId));
             } else {
                 Message::addErrorMessage(Labels::getLabel("LBL_SMTP_settings_provided_is_invalid_or_unable_to_send_email_so_we_have_not_saved_SMTP_settings", $this->adminLangId));
                 unset($post["CONF_SEND_SMTP_EMAIL"]);
                 foreach ($smtp_arr as $skey => $sval) {
-                    unset($post['CONF_SMTP_'.strtoupper($skey)]);
+                    unset($post['CONF_SMTP_' . strtoupper($skey)]);
                 }
                 FatUtility::dieJsonError(Message::getHtml());
             }
         }
 
-        if (isset($post['CONF_USE_SSL']) && $post['CONF_USE_SSL']==1) {
+        if (isset($post['CONF_USE_SSL']) && $post['CONF_USE_SSL'] == 1) {
             if (!$this->is_ssl_enabled()) {
                 if ($post['CONF_USE_SSL'] != FatApp::getConfig('CONF_USE_SSL')) {
                     Message::addErrorMessage(Labels::getLabel('MSG_SSL_NOT_INSTALLED_FOR_WEBSITE_Try_to_Save_data_without_Enabling_ssl', $this->adminLangId));
