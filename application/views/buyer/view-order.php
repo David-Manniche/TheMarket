@@ -207,7 +207,10 @@ if (true == $primaryOrder) {
                                         } else {
                                             foreach ($childOrder['taxOptions'] as $key => $val) { ?>
                                                 <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
-                                                <?php $taxOptionsTotal[$key] += $val;
+                                                <?php if (!isset($taxOptionsTotal[$key])) {
+                                                    $taxOptionsTotal[$key] = 0;
+                                                }
+                                                $taxOptionsTotal[$key] += $val;
                                             }
                                         } ?>
                                     </td>
