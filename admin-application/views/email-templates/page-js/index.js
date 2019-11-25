@@ -83,9 +83,10 @@ $(document).ready(function() {
         });
     };
 
-    sendTestEmail = function(frm) {
+    sendTestEmail = function(frm, tpl) {
         var data = fcom.frmData(frm);
-        fcom.updateWithAjax(fcom.makeUrl('EmailTemplates', 'testEmailTemplate'), data, function(res) {
+        $.systemMessage(langLbl.processing, 'alert--process', false);
+        fcom.ajax(fcom.makeUrl('EmailTemplates', 'testEmailTemplate', [tpl]), data, function(res) {
             var ans = $.parseJSON(res);
             if (ans.status == 1) {
                 fcom.displaySuccessMessage(ans.msg);

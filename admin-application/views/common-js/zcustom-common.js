@@ -176,11 +176,9 @@ $(document).ready(function () {
         $('html').css('overflow', '')
     });
 
-    $.systemMessage = function(data, cls, autoClose) {
+    $.systemMessage = function(data, cls, autoClose = true) {
         if (typeof autoClose == 'undefined' || autoClose == 'undefined') {
             autoClose = false;
-        } else {
-            autoClose = true;
         }
         initialize();
         $.systemMessage.loading();
@@ -201,10 +199,10 @@ $(document).ready(function () {
             if (cls) $('.system_message').addClass(cls);
             $('.system_message .content').html(data);
             $('.system_message').fadeIn();
-
-            if (!autoClose && CONF_AUTO_CLOSE_SYSTEM_MESSAGES == 1) {
+            if (autoClose && CONF_AUTO_CLOSE_SYSTEM_MESSAGES == 1) {
                 var time = CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES * 1000;
                 setTimeout(function() {
+					console.log('Done!');
                     $.systemMessage.close();
                 }, time);
             }
