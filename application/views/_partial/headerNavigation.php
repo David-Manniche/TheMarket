@@ -157,8 +157,8 @@
                                             }
                                         } ?>
                                     </ul>
-                                    <a data-org-url="<?php echo CommonHelper::generateUrl('category', '', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo CommonHelper::generateUrl('category');?>"
-                                        class="btn view-all"><?php Labels::getLabel('LBL_View_All_Categories', $siteLangId);?></a>
+                                    <?php /* <a data-org-url="<?php echo CommonHelper::generateUrl('category', '', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo CommonHelper::generateUrl('category');?>"
+                                        class="btn btn--sm btn--secondary ripplelink "><?php Labels::getLabel('LBL_View_All_Categories', $siteLangId);?></a> */ ?>
                                 </div>
                             </div>
                         </div>
