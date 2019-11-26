@@ -2295,51 +2295,39 @@ class Orders extends MyAppModel
 
     
 
-    // Used For CRON to update order status
     public function changeOrderStatus()
     {
-        $completedOrderStatus = FatApp::getConfig("CONF_DEFAULT_COMPLETED_ORDER_STATUS");
+        $completedOrderStatus = FatApp::getConfig("CONF_DEFAULT_COMPLETED_ORDER_STATUS", FatUtility::VAR_INT, 0);
         if (empty($completedOrderStatus)) {
-            return;
+            return false;
         }
         $siteDefaultLangId = FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1);
+        $defaultReturnAge = FatApp::getConfig("CONF_DEFAULT_RETURN_AGE", FatUtility::VAR_INT, 7);
 
-        $srch = new OrderProductSearch($siteDefaultLangId, true);
+        $srch = new OrderProductSearch(0, true);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addMultipleFields(
             [
                 'op.op_id',
-                'sp.selprod_id',
-                'op.op_order_id',
-                'op.op_status_id',
                 'o.order_date_added',
                 'o.order_language_id',
-                'op_shop_id',
-                'IFNULL(selprod_return_age, shop_return_age) as return_age',
-                'IFNULL(selprod_cancellation_age, shop_cancellation_age) as cancellation_age'
+                'IFNULL(op_selprod_return_age, ' . $defaultReturnAge . ') as return_age',
+                "DATEDIFF(CURDATE(), o.order_date_added) as daysSpent"
             ]
         );
-        $srch->joinSellerProducts();
-        $srch->joinSellerProductSpecifics();
-        $srch->joinShopSpecifics();
-        $srch->addCondition('op.op_status_id', '=', FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
+        $srch->joinOrderProductSpecifics();
+        $srch->joinTable(OrderCancelRequest::DB_TBL, 'LEFT OUTER JOIN', 'ocr.ocrequest_op_id = op.op_id and ocr.ocrequest_id IS NULL', 'ocr');
+        $srch->addCondition('op.op_status_id', '=', FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS", FatUtility::VAR_INT, 0));
+        $srch->addHaving('daysSpent', '>=', 'mysql_func_return_age', 'AND', true);
 
         $rs = $srch->getResultSet();
         $ordersDetail = FatApp::getDb()->fetchAll($rs, 'op_id');
-        $comments = Labels::getLabel("MSG_MARKED_AS_COMPLETED_THROUGH_CRON.", $siteDefaultLangId);
+        $comments = Labels::getLabel("MSG_AUTOMATICALLY_MARKED_AS_COMPLETED_BY_SYSTEM.", $siteDefaultLangId);
 
         foreach ($ordersDetail as $data) {
-            $prodReturnAge = FatUtility::int($data['return_age']);
-
-            $returnAge = strtotime("+" . $prodReturnAge . " day", strtotime($data['order_date_added']));
-            $today = time();
-            $op_id = $data['op_id'];
-
-            if ($returnAge < $today || 1 > $prodReturnAge) {
-                $this->addChildProductOrderHistory($op_id, $data["order_language_id"], $completedOrderStatus, $comments, 1);
-            }
+            $this->addChildProductOrderHistory($op_id, $data["order_language_id"], $completedOrderStatus, $comments, 1);
         }
-        echo 'DONE!!';
+        return true;
     }
 }

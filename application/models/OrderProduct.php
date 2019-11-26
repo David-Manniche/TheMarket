@@ -78,7 +78,7 @@ class OrderProduct extends MyAppModel
         $opSrch->addCondition('op_order_id', '=', $orderId);
 
         if ($checkNotCancelled) {
-            $opSrch->joinTable(OrderCancelRequest::DB_TBL, 'LEFT OUTER JOIN', 'ocr.'.OrderCancelRequest::DB_TBL_PREFIX.'op_id = op.op_id', 'ocr');
+            $opSrch->joinTable(OrderCancelRequest::DB_TBL, 'LEFT OUTER JOIN', 'ocr.' . OrderCancelRequest::DB_TBL_PREFIX . 'op_id = op.op_id', 'ocr');
             $cnd = $opSrch->addCondition(OrderCancelRequest::DB_TBL_PREFIX . 'status', '!=', OrderCancelRequest::CANCELLATION_REQUEST_STATUS_APPROVED);
             $cnd->attachCondition(OrderCancelRequest::DB_TBL_PREFIX . 'status', 'IS', 'mysql_func_null', 'OR', true);
         }
@@ -93,10 +93,10 @@ class OrderProduct extends MyAppModel
         }
 
         $data = array(
-        'opsetting_op_id'=>$this->mainTableRecordId,
-        'op_tax_collected_by_seller'=>FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER', FatUtility::VAR_INT, 0),
-        'op_commission_include_tax'=>FatApp::getConfig('CONF_COMMISSION_INCLUDING_SHIPPING', FatUtility::VAR_INT, 0),
-        'op_commission_include_shipping'=>FatApp::getConfig('CONF_COMMISSION_INCLUDING_TAX', FatUtility::VAR_INT, 0)
+        'opsetting_op_id' => $this->mainTableRecordId,
+        'op_tax_collected_by_seller' => FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER', FatUtility::VAR_INT, 0),
+        'op_commission_include_tax' => FatApp::getConfig('CONF_COMMISSION_INCLUDING_SHIPPING', FatUtility::VAR_INT, 0),
+        'op_commission_include_shipping' => FatApp::getConfig('CONF_COMMISSION_INCLUDING_TAX', FatUtility::VAR_INT, 0)
         );
 
         if (FatApp::getDb()->insertFromArray(static::DB_TBL_SETTINGS, $data, false, array(), $data)) {

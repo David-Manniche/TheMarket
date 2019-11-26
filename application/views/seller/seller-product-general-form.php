@@ -41,9 +41,6 @@ $submitBtnFld->developerTags['col'] = 12;
     $frmSellerProduct->developerTags['colClassPrefix'] = 'col-lg-4 col-md-';
     $frmSellerProduct->developerTags['fld_default_col'] = 4;
 
-    $productWarranty = $frmSellerProduct->getField('product_warranty');
-    $productWarranty->setFieldTagAttribute('disabled', 'disabled');
-
     $returnAgeFld = $frmSellerProduct->getField('selprod_return_age');
     $cancellationAgeFld = $frmSellerProduct->getField('selprod_cancellation_age');
     $returnAge = FatUtility::int($returnAgeFld->value);
