@@ -6,7 +6,7 @@ $langFrm->developerTags['colClassPrefix'] = 'col-md-';
 $langFrm->developerTags['fld_default_col'] = 12;
 
 $testEmailTemplate = $langFrm->getField('test_email');
-$testEmailTemplate->setfieldTagAttribute('onClick', "sendTestEmail(document.getElementById('frm_fat_id_frmEtplLang'), '" . $etplCode . "');");
+$testEmailTemplate->setfieldTagAttribute('onClick', "sendTestEmail();");
 
 $langFld = $langFrm->getField('lang_id');
 $langFld->setfieldTagAttribute('onChange', "editLangForm('" . $etplCode . "', this.value);");

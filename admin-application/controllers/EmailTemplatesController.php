@@ -75,6 +75,24 @@ class EmailTemplatesController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
+    public function sendTestMail()
+    {
+        $to = FatApp::getConfig("CONF_SITE_OWNER_EMAIL");
+        $langId = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 1);
+        $tpl = FatApp::getPostedData('etpl_code', FatUtility::VAR_STRING, '');
+        
+        if (empty($tpl)) {
+            FatUtility::dieJsonError(Labels::getLabel('LBL_INVALID_TEMPLATE', $this->adminLangId));
+        }
+
+        if (!EmailHandler::sendMailTpl($to, $tpl, $langId)) {
+            FatUtility::dieJsonError(Labels::getLabel('LBL_MAIL_NOT_SENT', $this->adminLangId));
+        }
+
+        $this->set('msg', Labels::getLabel('LBL_Mail_Sent_Successfully', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
     public function testEmailTemplate($tpl)
     {
         $to = FatApp::getConfig("CONF_SITE_OWNER_EMAIL");
@@ -213,7 +231,7 @@ class EmailTemplatesController extends AdminBaseController
         $etplObj = new EmailTemplates($etplCode);
         $records =  $etplObj->getEtpl($etplCode);
 
-        if ($records==false) {
+        if ($records == false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }

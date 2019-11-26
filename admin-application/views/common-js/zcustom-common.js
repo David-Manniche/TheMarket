@@ -200,9 +200,8 @@ $(document).ready(function () {
             $('.system_message .content').html(data);
             $('.system_message').fadeIn();
             if (autoClose && CONF_AUTO_CLOSE_SYSTEM_MESSAGES == 1) {
-                var time = CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES * 1000;
+                var time = CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES * 2000;
                 setTimeout(function() {
-					console.log('Done!');
                     $.systemMessage.close();
                 }, time);
             }
