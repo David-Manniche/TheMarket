@@ -625,6 +625,11 @@ class EmailHandler extends FatModel
                 $shippingArr = $billingArr;
             }
 
+            foreach ($orderProducts as $opID => $val) {
+                $taxOptions = json_decode($val['op_product_tax_options'], true);
+                $orderProducts[$opID]['taxOptions'] = $taxOptions;
+            }
+
             $tpl = new FatTemplate('', '');
             $tpl->set('orderInfo', $orderInfo);
             $tpl->set('orderProducts', $orderProducts);
@@ -696,6 +701,9 @@ class EmailHandler extends FatModel
         $orderObj = new Orders();
         $OrderInfo = $orderObj->getOrderById($orderId, $langId);
         $childOrderInfo = $orderObj->getOrderProductsByOpId($opId, $langId);
+
+        $taxOptions = json_decode($childOrderInfo['op_product_tax_options'], true);
+        $childOrderInfo['taxOptions'] = $taxOptions;
 
         if ($childOrderInfo) {
             $userObj = new User($OrderInfo["order_user_id"]);
@@ -840,6 +848,10 @@ class EmailHandler extends FatModel
             $orderVendors = $orderObj->getChildOrders(array("order"=>$orderId), $orderDetail['order_type'], $orderDetail['order_language_id']);
             foreach ($orderVendors as $key => $val) :
                 $shippingHanldedBySeller =     CommonHelper::canAvailShippingChargesBySeller($val['op_selprod_user_id'], $val['opshipping_by_seller_user_id']);
+
+                $taxOptions = json_decode($val['op_product_tax_options'], true);
+                $val['taxOptions'] = $taxOptions;
+
                 $tpl = new FatTemplate('', '');
                 //$tpl->set('orderInfo', $orderDetail);
                 $tpl->set('orderProducts', $val);
@@ -907,14 +919,14 @@ class EmailHandler extends FatModel
             $charges = $orderObj->getOrderProductChargesArr($orderComment['op_id']);
             $orderComment['charges'] = $charges;
 
+            $taxOptions = json_decode($orderComment['op_product_tax_options'], true);
+            $orderComment['taxOptions'] = $taxOptions;
+
             $tpl = new FatTemplate('', '');
             $tpl->set('orderProducts', $orderComment);
             $tpl->set('siteLangId', $langId);
             $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/child-order-detail-email.php', true);
             $statuesArr = Orders::getOrderProductStatusArr($orderComment["order_language_id"]);
-
-
-//
 
             $arrReplacements = array(
             '{user_full_name}' => trim($orderComment["buyer_name"]),
@@ -980,6 +992,9 @@ class EmailHandler extends FatModel
 
             $charges = $orderObj->getOrderProductChargesArr($orderComment['op_id']);
             $orderComment['charges'] = $charges;
+
+            $taxOptions = json_decode($orderComment['op_product_tax_options'], true);
+            $orderComment['taxOptions'] = $taxOptions;
 
             $shippingHanldedBySeller =     CommonHelper::canAvailShippingChargesBySeller($orderComment['op_selprod_user_id'], $orderComment['opshipping_by_seller_user_id']);
 
@@ -1824,6 +1839,9 @@ class EmailHandler extends FatModel
         }
         $orderObj = new Orders();
         $orderProduct = $orderObj->getOrderProductsByOpId($opId, $langId);
+
+        $taxOptions = json_decode($orderProduct['op_product_tax_options'], true);
+        $orderProduct['taxOptions'] = $taxOptions;
 
         if ($orderProduct) {
             $tpl = new FatTemplate('', '');
