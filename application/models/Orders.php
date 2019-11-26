@@ -286,8 +286,9 @@ class Orders extends MyAppModel
     private function addUpdateProductOrder($data = array(), $langId = 1)
     {
         $db  = FatApp::getDb();
-
+        
         $ordersLangData = $data['orderLangData'];
+        
         unset($data['orderLangData']);
 
         $discountInfo = array();
@@ -306,7 +307,7 @@ class Orders extends MyAppModel
 
         $prodCharges = $data['prodCharges'];
         unset($data['prodCharges']);
-
+        
         if (!$data['order_id']) {
             $order_id = $this->generateOrderId();
             $data['order_id'] = $order_id;
@@ -365,14 +366,18 @@ class Orders extends MyAppModel
 
         if (!empty($row)) {
             foreach ($row as $opId => $val) {
-                $db->deleteRecords(OrderProduct::DB_TBL_CHARGES, array('smt' => OrderProduct::DB_TBL_CHARGES_PREFIX.'op_id = ?', 'vals' => array( $opId ) ));
+                $db->deleteRecords(OrderProduct::DB_TBL_CHARGES, array('smt' => OrderProduct::DB_TBL_CHARGES_PREFIX . 'op_id = ?', 'vals' => array( $opId ) ));
                 $db->deleteRecords(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, array('smt' =>'opshipping_op_id = ?', 'vals' => array( $opId ) ));
                 $db->deleteRecords(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING_LANG, array('smt' => 'opshippinglang_op_id = ?', 'vals' => array( $opId ) ));
             }
         }
 
-        $db->deleteRecords(static::DB_TBL_ORDER_PRODUCTS, array('smt' => 'op_order_id = ?', 'vals' => array( $this->getOrderId() ) ));
-        $db->deleteRecords(static::DB_TBL_ORDER_PRODUCTS_LANG, array('smt' => 'oplang_order_id = ?', 'vals' => array( $this->getOrderId() ) ));
+        $opArr = OrderProduct::getOpIdArrByOrderId($this->getOrderId());
+        $opArr = current($opArr);
+
+        $db->deleteRecords(static::DB_TBL_ORDER_PRODUCTS, array('smt' => 'op_id = ?', 'vals' => $opArr));
+        $db->deleteRecords(static::DB_TBL_ORDER_PRODUCTS_LANG, array('smt' => 'oplang_op_id = ?', 'vals' => $opArr));
+        $db->deleteRecords(OrderProductSpecifics::DB_TBL, array('smt' => 'ops_op_id = ?', 'vals' => $opArr));
 
         if (!empty($products)) {
             $opRecordObj = new TableRecord(static::DB_TBL_ORDER_PRODUCTS);
@@ -382,7 +387,7 @@ class Orders extends MyAppModel
 
             $counter = 1;
             foreach ($products as $selprodId => $product) {
-                $op_invoice_number = $this->getOrderId().'-S'.str_pad($counter, 4, '0', STR_PAD_LEFT);
+                $op_invoice_number = $this->getOrderId() . '-S' . str_pad($counter, 4, '0', STR_PAD_LEFT);
                 $product['op_order_id'] = $this->getOrderId();
                 $product['op_invoice_number'] = $op_invoice_number;
                 $opRecordObj->assignValues($product);
@@ -509,10 +514,10 @@ class Orders extends MyAppModel
                         }
 
                         $assignValues = array(
-                        OrderProduct::DB_TBL_CHARGES_PREFIX.'op_id' => $op_id,
-                        OrderProduct::DB_TBL_CHARGES_PREFIX.'order_type' => ORDERS::ORDER_PRODUCT,
-                        OrderProduct::DB_TBL_CHARGES_PREFIX.'type' => $chargeType,
-                        OrderProduct::DB_TBL_CHARGES_PREFIX.'amount' => $prodCharges[$selprodId][$chargeType]['amount'],
+                            OrderProduct::DB_TBL_CHARGES_PREFIX . 'op_id' => $op_id,
+                            OrderProduct::DB_TBL_CHARGES_PREFIX . 'order_type' => ORDERS::ORDER_PRODUCT,
+                            OrderProduct::DB_TBL_CHARGES_PREFIX . 'type' => $chargeType,
+                            OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount' => $prodCharges[$selprodId][$chargeType]['amount'],
                         );
 
                         $oChargesRecordObj->assignValues($assignValues);
@@ -524,6 +529,16 @@ class Orders extends MyAppModel
                     }
                 }
                 /* ] */
+                
+                $orderProdSpecificsObj = new OrderProductSpecifics($op_id);
+                $orderProdSpecificsObj->assignValues($product['productSpecifics']);
+                $orderProdSpecificsObj->setFldValue('ops_op_id', $op_id);
+                $data = $orderProdSpecificsObj->getFlds();
+                
+                if (!$orderProdSpecificsObj->addNew(array(), $data)) {
+                    $this->error = $orderProdSpecificsObj->getError();
+                    return false;
+                }
 
                 $counter++;
             }
@@ -2265,9 +2280,10 @@ class Orders extends MyAppModel
         foreach ($orderInfo as $order) {
             if (!FatApp::getDb()->updateFromArray(
                 Orders::DB_TBL_ORDER_USER_ADDRESS,
-                array('oua_address1' => static::REPLACE_ORDER_USER_ADDRESS,'oua_address2' => static::REPLACE_ORDER_USER_ADDRESS,'oua_city' => static::REPLACE_ORDER_USER_ADDRESS,'oua_state' => static::REPLACE_ORDER_USER_ADDRESS,'oua_country' => static::REPLACE_ORDER_USER_ADDRESS,'oua_country_code' => static::REPLACE_ORDER_USER_ADDRESS,'oua_phone' => static::REPLACE_ORDER_USER_ADDRESS,'oua_zip' => static::REPLACE_ORDER_USER_ADDRESS),
-                array('smt' => 'oua_order_id = ? ', 'vals' => array($order['order_id']))
-            )) {
+                ['oua_address1' => static::REPLACE_ORDER_USER_ADDRESS,'oua_address2' => static::REPLACE_ORDER_USER_ADDRESS,'oua_city' => static::REPLACE_ORDER_USER_ADDRESS,'oua_state' => static::REPLACE_ORDER_USER_ADDRESS,'oua_country' => static::REPLACE_ORDER_USER_ADDRESS,'oua_country_code' => static::REPLACE_ORDER_USER_ADDRESS,'oua_phone' => static::REPLACE_ORDER_USER_ADDRESS,'oua_zip' => static::REPLACE_ORDER_USER_ADDRESS],
+                ['smt' => 'oua_order_id = ? ', 'vals' => [$order['order_id']]]
+                )
+            ) {
                 $this->error = FatApp::getDb()->getError();
                 return false;
             }
@@ -2276,7 +2292,8 @@ class Orders extends MyAppModel
         return true;
     }
 
-    public static function canSubmitFeedback($userId, $op_order_id, $selprod_id){
+    public static function canSubmitFeedback($userId, $op_order_id, $selprod_id)
+    {
         if (!FatApp::getConfig('CONF_ALLOW_REVIEWS', FatUtility::VAR_INT, 0)) {
             return false;
         }
@@ -2292,8 +2309,6 @@ class Orders extends MyAppModel
         }
         return true;
     }
-
-    
 
     public function changeOrderStatus()
     {

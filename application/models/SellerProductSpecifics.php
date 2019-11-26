@@ -15,7 +15,7 @@ class SellerProductSpecifics extends MyAppModel
         return new SearchBase(static::DB_TBL, 'sps');
     }
 
-    public function joinShop()
+    public function joinSellerProduct()
     {
         $this->joinTable(SellerProduct::DB_TBL, 'LEFT JOIN', 'sps.' . static::DB_TBL_PREFIX . 'selprod_id = sp.selprod_id', 'sp');
     }

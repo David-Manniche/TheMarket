@@ -768,6 +768,9 @@ class CheckoutController extends MyAppController
         $selprod_id = FatUtility::int($selprod_id);
         $prodSrch = new ProductSearch($this->siteLangId);
         $prodSrch->setDefinedCriteria();
+        $prodSrch->joinShopSpecifics();
+        $prodSrch->joinSellerProductSpecifics();
+        $prodSrch->joinProductSpecifics();
         $prodSrch->joinBrands();
         $prodSrch->joinSellerSubscription();
         $prodSrch->addSubscriptionValidCondition();
@@ -782,7 +785,7 @@ class CheckoutController extends MyAppController
         'selprod_condition', 'selprod_code',
         'special_price_found', 'theprice', 'shop_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title','IFNULL(brand_name, brand_identifier) as brand_name','shop_name',
         'seller_user.user_name as shop_onwer_name', 'seller_user_cred.credential_username as shop_owner_username',
-        'seller_user.user_phone as shop_owner_phone','seller_user_cred.credential_email as shop_owner_email','selprod_download_validity_in_days','selprod_max_download_times' );
+        'seller_user.user_phone as shop_owner_phone','seller_user_cred.credential_email as shop_owner_email','selprod_download_validity_in_days','selprod_max_download_times', 'ps.product_warranty', 'COALESCE(sps.selprod_return_age, ss.shop_return_age) as return_age', 'COALESCE(sps.selprod_cancellation_age, ss.shop_cancellation_age) as cancellation_age');
         $prodSrch->addMultipleFields($fields);
         $rs = $prodSrch->getResultSet();
         return $productInfo = FatApp::getDb()->fetch($rs);
@@ -1172,47 +1175,52 @@ class CheckoutController extends MyAppController
                 if(FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER',FatUtility::VAR_INT,0)){
                 $taxCollectedBySeller = applicationConstants::YES;
                 } */
-
+                
                 $orderData['products'][CART::CART_KEY_PREFIX_PRODUCT.$productInfo['selprod_id']] = array(
-                'op_selprod_id'        =>    $productInfo['selprod_id'],
-                'op_is_batch'        =>    0,
-                'op_selprod_user_id'=>    $productInfo['selprod_user_id'],
-                'op_selprod_code'    =>    $productInfo['selprod_code'],
-                'op_qty'            =>    $cartProduct['quantity'],
-                'op_unit_price'        =>    $cartProduct['theprice'],
-                'op_unit_cost'        =>    $cartProduct['selprod_cost'],
-                'op_selprod_sku'    =>    $productInfo['selprod_sku'],
-                'op_selprod_condition'    =>    $productInfo['selprod_condition'],
-                'op_product_model'    =>    $productInfo['product_model'],
-                'op_product_type'    =>    $productInfo['product_type'],
-                'op_product_length'    =>    $productInfo['product_length'],
-                'op_product_width'    =>    $productInfo['product_width'],
-                'op_product_height'    =>    $productInfo['product_height'],
-                'op_product_dimension_unit'    =>    $productInfo['product_dimension_unit'],
-                'op_product_weight'    =>    $productInfo['product_weight'],
-                'op_product_weight_unit'    =>    $productInfo['product_weight_unit'],
-                'op_shop_id'        =>    $productInfo['shop_id'],
-                'op_shop_owner_username'=>    $productInfo['shop_owner_username'],
-                'op_shop_owner_name'=>    $productInfo['shop_onwer_name'],
-                'op_shop_owner_email'    =>    $productInfo['shop_owner_email'],
-                'op_shop_owner_phone'    =>    $productInfo['shop_owner_phone'],
-                'op_selprod_max_download_times' => ($productInfo['selprod_max_download_times']!='-1')?$cartProduct['quantity']*$productInfo['selprod_max_download_times']:$productInfo['selprod_max_download_times'],
-                'op_selprod_download_validity_in_days' => $productInfo['selprod_download_validity_in_days'],
-                'op_sduration_id'            =>    $cartProduct['sduration_id'],
-                //'op_discount_total'    =>    0, //todo:: after coupon discount integration
-                //'op_tax_total'    =>    $cartProduct['tax'],
-                'op_commission_charged' => $cartProduct['commission'],
-                'op_commission_percentage'    => $cartProduct['commission_percentage'],
-                'op_affiliate_commission_percentage' => $cartProduct['affiliate_commission_percentage'],
-                'op_affiliate_commission_charged' => $cartProduct['affiliate_commission'],
-                'op_status_id'        =>    FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS"),
-                // 'op_volume_discount_percentage'    =>    $cartProduct['volume_discount_percentage'],
-                'productsLangData'    =>    $productsLangData,
-                'productShippingData'    =>    $productShippingData,
-                'productShippingLangData'    =>    $productShippingLangData,
-                /* 'op_tax_collected_by_seller'    =>    $taxCollectedBySeller, */
-                'op_free_ship_upto'    =>    $cartProduct['shop_free_ship_upto'],
-                'op_actual_shipping_charges'    =>    $cartProduct['shipping_cost'],
+                    'op_selprod_id'        =>    $productInfo['selprod_id'],
+                    'op_is_batch'        =>    0,
+                    'op_selprod_user_id'=>    $productInfo['selprod_user_id'],
+                    'op_selprod_code'    =>    $productInfo['selprod_code'],
+                    'op_qty'            =>    $cartProduct['quantity'],
+                    'op_unit_price'        =>    $cartProduct['theprice'],
+                    'op_unit_cost'        =>    $cartProduct['selprod_cost'],
+                    'op_selprod_sku'    =>    $productInfo['selprod_sku'],
+                    'op_selprod_condition'    =>    $productInfo['selprod_condition'],
+                    'op_product_model'    =>    $productInfo['product_model'],
+                    'op_product_type'    =>    $productInfo['product_type'],
+                    'op_product_length'    =>    $productInfo['product_length'],
+                    'op_product_width'    =>    $productInfo['product_width'],
+                    'op_product_height'    =>    $productInfo['product_height'],
+                    'op_product_dimension_unit'    =>    $productInfo['product_dimension_unit'],
+                    'op_product_weight'    =>    $productInfo['product_weight'],
+                    'op_product_weight_unit'    =>    $productInfo['product_weight_unit'],
+                    'op_shop_id'        =>    $productInfo['shop_id'],
+                    'op_shop_owner_username'=>    $productInfo['shop_owner_username'],
+                    'op_shop_owner_name'=>    $productInfo['shop_onwer_name'],
+                    'op_shop_owner_email'    =>    $productInfo['shop_owner_email'],
+                    'op_shop_owner_phone'    =>    $productInfo['shop_owner_phone'],
+                    'op_selprod_max_download_times' => ($productInfo['selprod_max_download_times']!='-1')?$cartProduct['quantity']*$productInfo['selprod_max_download_times']:$productInfo['selprod_max_download_times'],
+                    'op_selprod_download_validity_in_days' => $productInfo['selprod_download_validity_in_days'],
+                    'op_sduration_id'            =>    $cartProduct['sduration_id'],
+                    //'op_discount_total'    =>    0, //todo:: after coupon discount integration
+                    //'op_tax_total'    =>    $cartProduct['tax'],
+                    'op_commission_charged' => $cartProduct['commission'],
+                    'op_commission_percentage'    => $cartProduct['commission_percentage'],
+                    'op_affiliate_commission_percentage' => $cartProduct['affiliate_commission_percentage'],
+                    'op_affiliate_commission_charged' => $cartProduct['affiliate_commission'],
+                    'op_status_id'        =>    FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS"),
+                    // 'op_volume_discount_percentage'    =>    $cartProduct['volume_discount_percentage'],
+                    'productsLangData'    =>    $productsLangData,
+                    'productShippingData'    =>    $productShippingData,
+                    'productShippingLangData'    =>    $productShippingLangData,
+                    /* 'op_tax_collected_by_seller'    =>    $taxCollectedBySeller, */
+                    'op_free_ship_upto'    =>    $cartProduct['shop_free_ship_upto'],
+                    'op_actual_shipping_charges'    =>    $cartProduct['shipping_cost'],
+                    'productSpecifics' => [
+                        'op_selprod_return_age' => $productInfo['return_age'],
+                        'op_selprod_cancellation_age' => $productInfo['cancellation_age'],
+                        'op_product_warranty' => $productInfo['product_warranty']
+                    ]
                 );
 
                 $order_affiliate_user_id = isset($cartProduct['affiliate_user_id'])?$cartProduct['affiliate_user_id']:'';
