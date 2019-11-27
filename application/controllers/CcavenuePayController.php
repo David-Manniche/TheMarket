@@ -2,7 +2,12 @@
 require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/ccavenue/Crypto.php';
 class CcavenuePayController extends PaymentController
 {
-    private $keyName="Ccavenue";
+    private $keyName = "Ccavenue";
+
+    protected function allowedCurrenciesArr()
+    {
+        return ['INR'];
+    }
 
     public function charge($orderId = '')
     {
@@ -37,8 +42,8 @@ class CcavenuePayController extends PaymentController
 
     public function iframe($orderId)
     {
-        $orderPaymentObj=new OrderPayment($orderId, $this->siteLangId);
-        $payment_gateway_charge=$orderPaymentObj->getOrderPaymentGatewayAmount();
+        $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
+        $payment_gateway_charge = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
         if (!$orderInfo['id']) {
@@ -53,17 +58,17 @@ class CcavenuePayController extends PaymentController
         $post = FatApp::getPostedData();
 
         foreach ($post as $key => $value) {
-            $merchant_data.=$key.'='.$value.'&';
+            $merchant_data .= $key . '=' . $value . '&';
         }
         //$merchant_data= str_replace("#~#","&",$merchant_data);
-        $merchant_data.="currency=INR";
-        $encrypted_data=encrypt($merchant_data, $working_key); // Method for encrypting the data.
+        $merchant_data .= "currency=INR";
+        $encrypted_data = encrypt($merchant_data, $working_key); // Method for encrypting the data.
         if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) {
             $iframe_url = 'https://secure.ccavenue.com';
         } else {
             $iframe_url = 'https://test.ccavenue.com';
         }
-        $iframe_url.='/transaction/transaction.do?command=initiateTransaction&encRequest='.$encrypted_data.'&access_code='.$access_code;
+        $iframe_url .= '/transaction/transaction.do?command=initiateTransaction&encRequest=' . $encrypted_data . '&access_code=' . $access_code;
         $this->set('url', $iframe_url);
         if (CommonHelper::isAppUser()) {
             $this->set('exculdeMainHeaderDiv', true);
@@ -100,12 +105,12 @@ class CcavenuePayController extends PaymentController
         }
         $orderPaymentObj = new OrderPayment($orderId);
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
-        if ($paymentGatewayCharge>0) {
+        if ($paymentGatewayCharge > 0) {
             $total_paid_match = ((float)$paid_amount == $paymentGatewayCharge);
             if (!$total_paid_match) {
                 $request .= "\n\n CCAvenue :: TOTAL PAID MISMATCH! " . strtolower($paid_amount) . "\n\n";
             }
-            if ($order_status=="Success" && $total_paid_match) {
+            if ($order_status == "Success" && $total_paid_match) {
                 $orderPaymentObj->addOrderPayment($paymentSettings["pmethod_name"], $tracking_id, $paymentGatewayCharge, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $request);
                 FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
             } else {
@@ -123,9 +128,9 @@ class CcavenuePayController extends PaymentController
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
-        $frm = new Form('frm-ccavenue', array('id'=>'frm-ccavenue','action'=>CommonHelper::generateFullUrl('CcavenuePay', 'iframe', array($orderId)), 'class' =>"form form--normal"));
+        $frm = new Form('frm-ccavenue', array('id' => 'frm-ccavenue', 'action' => CommonHelper::generateFullUrl('CcavenuePay', 'iframe', array($orderId)), 'class' => "form form--normal"));
 
-        $frm->addHiddenField('', 'tid', "", array("id"=>"tid"));
+        $frm->addHiddenField('', 'tid', "", array("id" => "tid"));
         $frm->addHiddenField('', 'merchant_id', $paymentSettings["merchant_id"]);
         $frm->addHiddenField('', 'order_id', $orderInfo['invoice']);
         $frm->addHiddenField('', 'amount', $paymentGatewayCharge);
@@ -136,7 +141,7 @@ class CcavenuePayController extends PaymentController
         $frm->addHiddenField('', 'cancel_url', CommonHelper::getPaymentCancelPageUrl());
         //$frm->addHiddenField('', 'item_name_1', $order_payment_gateway_description);
         $frm->addHiddenField('', 'billing_name', $orderInfo["customer_billing_name"]);
-        $frm->addHiddenField('', 'billing_address', $orderInfo["customer_billing_address_1"].', '.$orderInfo["customer_billing_address_2"]);
+        $frm->addHiddenField('', 'billing_address', $orderInfo["customer_billing_address_1"] . ', ' . $orderInfo["customer_billing_address_2"]);
         $frm->addHiddenField('', 'billing_city', $orderInfo["customer_billing_city"]);
         $frm->addHiddenField('', 'billing_state', $orderInfo["customer_billing_state"]);
         $frm->addHiddenField('', 'billing_zip', $orderInfo["customer_billing_postcode"]);
@@ -144,7 +149,7 @@ class CcavenuePayController extends PaymentController
         $frm->addHiddenField('', 'billing_tel', $orderInfo['customer_billing_phone']);
         $frm->addHiddenField('', 'billing_email', $orderInfo['customer_email']);
         $frm->addHiddenField('', 'delivery_name', $orderInfo["customer_shipping_name"]);
-        $frm->addHiddenField('', 'delivery_address', $orderInfo["customer_shipping_address_1"].', '.$orderInfo["customer_shipping_address_2"]);
+        $frm->addHiddenField('', 'delivery_address', $orderInfo["customer_shipping_address_1"] . ', ' . $orderInfo["customer_shipping_address_2"]);
         $frm->addHiddenField('', 'delivery_city', $orderInfo["customer_shipping_city"]);
         $frm->addHiddenField('', 'delivery_state', $orderInfo["customer_shipping_state"]);
         $frm->addHiddenField('', 'delivery_zip', $orderInfo["customer_shipping_postcode"]);

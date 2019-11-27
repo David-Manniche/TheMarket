@@ -25,10 +25,8 @@ class CurrencyManagementController extends AdminBaseController
         $this->objPrivilege->canViewCurrencyManagement();
 
         $srch = Currency::getSearchObject($this->adminLangId, false);
-
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addFld('*');
         $srch->addOrder('currency_display_order', 'ASC');
 
         $rs = $srch->getResultSet();
@@ -36,9 +34,10 @@ class CurrencyManagementController extends AdminBaseController
         if ($rs) {
             $records = FatApp::getDb()->fetchAll($rs);
         }
-
+        $defaultCurrencyId = FatApp::getConfig("CONF_CURRENCY", FatUtility::VAR_INT, 1);
         $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->adminLangId));
         $this->set("arr_listing", $records);
+        $this->set("defaultCurrencyId", $defaultCurrencyId);
         $this->_template->render(false, false);
     }
 
@@ -54,17 +53,18 @@ class CurrencyManagementController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieJsonError(Message::getHtml());
         }
+        $defaultCurrencyId = FatApp::getConfig("CONF_CURRENCY", FatUtility::VAR_INT, 1);
+        
         $defaultCurrency = 0;
         if ($currencyId > 0) {
-            $data = Currency::getAttributesById($currencyId, array('currency_id','currency_code','currency_active','currency_symbol_left','currency_symbol_right','currency_value','currency_is_default'));
+            $data = Currency::getAttributesById($currencyId, array('currency_id','currency_code','currency_active','currency_symbol_left','currency_symbol_right','currency_value'));
 
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
-            $defaultCurrency = $data['currency_is_default'];
+            $defaultCurrency = ($data['currency_id'] == $defaultCurrencyId) ? 1 : 0;
             $frm->fill($data);
         }
-
 
         $this->set('languages', Language::getAllNames());
         $this->set('currency_id', $currencyId);
@@ -88,12 +88,8 @@ class CurrencyManagementController extends AdminBaseController
         $currencyId = FatUtility::int($post['currency_id']);
         unset($post['currency_id']);
         if ($currencyId > 0) {
-            $data = Currency::getAttributesById($currencyId, array('currency_id','currency_is_default'));
-            if ($data === false) {
-                FatUtility::dieWithError($this->str_invalid_request);
-            }
-
-            if ($data['currency_is_default'] == 1) {
+            $defaultCurrencyId = FatApp::getConfig("CONF_CURRENCY", FatUtility::VAR_INT, 1);
+            if ($currencyId == $defaultCurrencyId) {
                 unset($post['currency_value']);
             }
         }
@@ -106,10 +102,10 @@ class CurrencyManagementController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $newTabLangId=0;
-        if ($currencyId>0) {
+        $newTabLangId = 0;
+        if ($currencyId > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = Currency::getAttributesByLangId($langId, $currencyId)) {
                     $newTabLangId = $langId;
                     break;
@@ -117,7 +113,7 @@ class CurrencyManagementController extends AdminBaseController
             }
         } else {
             $currencyId = $record->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
         $this->set('msg', $this->str_setup_successful);
         $this->set('currencyId', $currencyId);
@@ -179,9 +175,9 @@ class CurrencyManagementController extends AdminBaseController
         unset($post['lang_id']);
 
         $data = array(
-        'currencylang_lang_id'=>$lang_id,
-        'currencylang_currency_id'=>$currencyId,
-        'currency_name'=>$post['currency_name']
+        'currencylang_lang_id' => $lang_id,
+        'currencylang_currency_id' => $currencyId,
+        'currency_name' => $post['currency_name']
         );
 
         $currencyObj = new Currency($currencyId);
@@ -202,7 +198,7 @@ class CurrencyManagementController extends AdminBaseController
 
         $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach ($languages as $langId =>$langName) {
+        foreach ($languages as $langId => $langName) {
             if (!$row = Currency::getAttributesByLangId($langId, $currencyId)) {
                 $newTabLangId = $langId;
                 break;

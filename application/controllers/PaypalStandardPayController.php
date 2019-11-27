@@ -4,31 +4,13 @@ class PaypalStandardPayController extends PaymentController
     private $keyName = "PaypalStandard";
     private $testEnvironmentUrl = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
     private $liveEnvironmentUrl = 'https://www.paypal.com/cgi-bin/webscr';
-    private $currenciesAccepted = array(
-                                        'Australian Dollar' => 'AUD',
-                                        'Brazilian Real' => 'BRL',
-                                        'Canadian Dollar' => 'CAD',
-                                        'Czech Koruna' => 'CZK',
-                                        'Danish Krone' => 'DKK',
-                                        'Euro' => 'EUR',
-                                        'Hong Kong Dollar' => 'HKD',
-                                        'Hungarian Forint' => 'HUF',
-                                        'Israeli New Sheqel' => 'ILS',
-                                        'Malaysian Ringgit' => 'MYR',
-                                        'Mexican Peso' => 'MXN',
-                                        'Norwegian Krone' => 'NOK',
-                                        'New Zealand Dollar' => 'NZD',
-                                        'Philippine Peso' => 'PHP',
-                                        'Polish Zloty' => 'PLN',
-                                        'Pound Sterling' => 'GBP',
-                                        'Russian Ruble' => 'RUB',
-                                        'Singapore Dollar' => 'SGD',
-                                        'Swedish Krona' => 'SEK',
-                                        'Swiss Franc' => 'CHF',
-                                        'Taiwan New Dollar' => 'TWD',
-                                        'Thai Baht' => 'THB',
-                                        'U.S. Dollar' => 'USD',
-                                    );
+
+    protected function allowedCurrenciesArr()
+    {
+        return [
+            'AUD', 'BRL', 'CAD', 'CZK', 'DKK', 'EUR', 'HKD', 'HUF', 'ILS', 'MYR', 'MXN', 'NOK', 'NZD', 'PHP', 'PLN', 'GBP', 'RUB', 'SGD', 'SEK', 'CHF', 'TWD', 'THB', 'USD'
+        ];
+    }
 
     private function getPaymentForm($orderId)
     {
@@ -38,9 +20,9 @@ class PaypalStandardPayController extends PaymentController
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-        $actionUrl = (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true)?$this->liveEnvironmentUrl:$this->testEnvironmentUrl;
+        $actionUrl = (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) ? $this->liveEnvironmentUrl : $this->testEnvironmentUrl;
 
-        $frm = new Form('frmPayPalStandard', array('id'=>'frmPayPalStandard','action'=>$actionUrl));
+        $frm = new Form('frmPayPalStandard', array('id' => 'frmPayPalStandard', 'action' => $actionUrl));
         $frm->addHiddenField('', 'cmd', "_cart");
         $frm->addHiddenField('', 'upload', "1");
         $frm->addHiddenField('', 'business', $paymentSettings["merchant_email"]);
@@ -91,15 +73,6 @@ class PaypalStandardPayController extends PaymentController
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
-        /* To check for valid currencies accepted by paypal gateway [ */
-
-        if (count($this->currenciesAccepted) && !in_array($orderInfo["order_currency_code"], $this->currenciesAccepted)) {
-            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_ORDER_CURRENCY_PASSED_TO_GATEWAY', $this->siteLangId));
-            CommonHelper::redirectUserReferer();
-        }
-
-        /* ] */
-
         if ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
             $frm = $this->getPaymentForm($orderId);
             $this->set('frm', $frm);
@@ -138,7 +111,7 @@ class PaypalStandardPayController extends PaymentController
 
         $post = FatApp::getPostedData();
 
-        $orderId = (isset($post['custom']))?$post['custom']:0;
+        $orderId = (isset($post['custom'])) ? $post['custom'] : 0;
 
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
@@ -150,7 +123,7 @@ class PaypalStandardPayController extends PaymentController
                 $request .= '&' . $key . '=' . urlencode(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
             }
 
-            $actionUrl = (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true)?$this->liveEnvironmentUrl:$this->testEnvironmentUrl;
+            $actionUrl = (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) ? $this->liveEnvironmentUrl : $this->testEnvironmentUrl;
 
             $curl = curl_init($actionUrl);
             curl_setopt($curl, CURLOPT_POST, true);
@@ -191,7 +164,7 @@ class PaypalStandardPayController extends PaymentController
                 }
 
                 if ($orderPaymentStatus == Orders::ORDER_IS_PAID && $receiverMatch && $totalPaidMatch) {
-                    $orderPaymentObj->addOrderPayment($paymentSettings["pmethod_code"], $post["txn_id"], $paymentGatewayCharge, Labels::getLabel('MSG_Payment_Received', $this->siteLangId), $request."#".$response);
+                    $orderPaymentObj->addOrderPayment($paymentSettings["pmethod_code"], $post["txn_id"], $paymentGatewayCharge, Labels::getLabel('MSG_Payment_Received', $this->siteLangId), $request . "#" . $response);
                 } else {
                     $orderPaymentObj->addOrderPaymentComments($request);
                 }

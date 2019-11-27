@@ -1,21 +1,16 @@
 <?php
 class Currency extends MyAppModel
 {
-    const DB_TBL = 'tbl_currency';
-    const DB_TBL_PREFIX = 'currency_';
+    public const DB_TBL = 'tbl_currency';
+    public const DB_TBL_PREFIX = 'currency_';
 
-    const DB_TBL_LANG = 'tbl_currency_lang';
-    const DB_TBL_LANG_PREFIX = 'currencylang_';
+    public const DB_TBL_LANG = 'tbl_currency_lang';
+    public const DB_TBL_LANG_PREFIX = 'currencylang_';
 
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
         $this->db = FatApp::getDb();
-        $this->objMainTableRecord->setSensitiveFields(
-            array(
-            'currency_is_default'
-            )
-        );
     }
 
     public static function getSearchObject($langId = 0, $isActive = true)
@@ -27,8 +22,8 @@ class Currency extends MyAppModel
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'curr_l.'.static::DB_TBL_LANG_PREFIX.'currency_id = curr.'.static::tblFld('id').' and
-			curr_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
+                'curr_l.' . static::DB_TBL_LANG_PREFIX . 'currency_id = curr.' . static::tblFld('id') . ' and
+			curr_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 'curr_l'
             );
         }
@@ -96,5 +91,11 @@ class Currency extends MyAppModel
             return false;
         }
         return $row;
+    }
+
+    public static function getDefault()
+    {
+        $defaultCurrencyId = FatApp::getConfig("CONF_CURRENCY", FatUtility::VAR_INT, 1);
+        return Currency::getAttributesById($defaultCurrencyId);
     }
 }
