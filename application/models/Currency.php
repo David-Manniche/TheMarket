@@ -93,9 +93,32 @@ class Currency extends MyAppModel
         return $row;
     }
 
-    public static function getDefault()
+    public static function getDefault($otherCurrencyId = 0)
     {
-        $defaultCurrencyId = FatApp::getConfig("CONF_CURRENCY", FatUtility::VAR_INT, 1);
+        $defaultCurrencyId = 0 < FatUtility::int($otherCurrencyId) ? $otherCurrencyId : FatApp::getConfig("CONF_CURRENCY", FatUtility::VAR_INT, 1);
         return Currency::getAttributesById($defaultCurrencyId);
+    }
+
+    public function updatePricingRates($langId)
+    {
+        $currency_id = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
+        $currencies = static::getCurrencyAssoc($langId);
+        unset($currencies[$currency_id]);
+
+        $obj = new CurrencyApi();
+        $currenciesData = $obj->getConversionRate($currencies);
+
+        $currencyObj = new TableRecord(static::DB_TBL);
+        foreach ($currenciesData as $currencyCode => $rate) {
+            $data['currency_date_modified'] = date('Y-m-d H:i:s');
+            $data['currency_value'] = $rate;
+
+            $currencyObj->assignValues($data);
+            if (!$currencyObj->update(['smt' => 'currency_code=?', 'vals' => [$currencyCode]])) {
+                $this->error = $currencyObj->getError();
+                return false;
+            }
+        }
+        return true;
     }
 }

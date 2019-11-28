@@ -103,7 +103,8 @@ class AdminPrivilege
     const SECTION_IMPORT_INSTRUCTIONS = 99;
     const SECTION_UPLOAD_BULK_IMAGES = 100;
     const SECTION_SITEMAP = 101;
-
+	const SECTION_ADDONS = 102;
+	
     const PRIVILEGE_NONE = 0;
     const PRIVILEGE_READ = 1;
     const PRIVILEGE_WRITE = 2;
@@ -237,7 +238,7 @@ class AdminPrivilege
         static::SECTION_PRODUCT_TEMP_IMAGES => Labels::getLabel('MSG_Products_Temp_Images', CommonHelper::getLangId()),
         static::SECTION_IMPORT_INSTRUCTIONS => Labels::getLabel('MSG_Import_Instructions', CommonHelper::getLangId()),
         static::SECTION_UPLOAD_BULK_IMAGES => Labels::getLabel('MSG_Bulk_Upload', CommonHelper::getLangId()),
-
+		static::SECTION_ADDONS => Labels::getLabel('MSG_Addons', CommonHelper::getLangId()),
         /* static::SECTION_Languages => Labels::getLabel('MSG_Languages',CommonHelper::getLangId()),
         static::SECTION_Languages => Labels::getLabel('MSG_Order_Status',CommonHelper::getLangId()), */
 
@@ -1377,5 +1378,14 @@ class AdminPrivilege
     {
         return $this->checkPermission($adminId, static::SECTION_SITEMAP, static::PRIVILEGE_WRITE, $returnResult);
     }
+	
+	public function canViewAddons($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_ADDONS, static::PRIVILEGE_READ, $returnResult);
+    }
 
+    public function canEditAddons($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_ADDONS, static::PRIVILEGE_WRITE, $returnResult);
+    }
 }

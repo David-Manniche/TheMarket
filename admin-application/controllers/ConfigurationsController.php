@@ -588,14 +588,17 @@ class ConfigurationsController extends AdminBaseController
 
                 $currencyArr = Currency::getCurrencyNameWithCode($this->adminLangId);
                 $frm->addSelectBox(Labels::getLabel('LBL_Default_System_Currency', $this->adminLangId), 'CONF_CURRENCY', $currencyArr, false, array(), '');
+				
+				$currencyAddons = Addons::getAddonsNamesArrOfType(Addons::TYPE_CURRENCY_API, $this->adminLangId);
+				$fld = $frm->addSelectBox(Labels::getLabel("LBL_DEFAULT_CURRENCY_CONVERTER_API", $this->adminLangId), 'CONF_DEFAULT_CURRENCY_CONVERTER_API', $currencyAddons, false, array(), '');
+                $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_SET_DEFAULT_CURRENCY_CONVERTER_API.", $this->adminLangId)."</small>";
 
                 $faqCategoriesArr = FaqCategory::getFaqPageCategories();
                 $sellerCategoriesArr = FaqCategory::getSellerPageCategories();
 
                 $frm->addSelectBox(Labels::getLabel('LBL_Faq_Page_Main_Category', $this->adminLangId), 'CONF_FAQ_PAGE_MAIN_CATEGORY', $faqCategoriesArr);
                 $frm->addSelectBox(Labels::getLabel('LBL_Seller_Page_Main_Faq_Category', $this->adminLangId), 'CONF_SELLER_PAGE_MAIN_CATEGORY', $sellerCategoriesArr);
-
-
+				
                 break;
 
             case Configurations::FORM_SEO:
@@ -888,7 +891,7 @@ class ConfigurationsController extends AdminBaseController
 
                 $fld = $frm->addSelectBox(Labels::getLabel("LBL_Cash_on_Delivery_Order_Status", $this->adminLangId), 'CONF_COD_ORDER_STATUS', $orderStatusArr, false, array(), '');
                 $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_Set_the_Cash_on_delivery_order_status.", $this->adminLangId)."</small>";
-
+				
                 $vendorOrderSelected = (!empty($arrValues['CONF_VENDOR_ORDER_STATUS']))?$arrValues['CONF_VENDOR_ORDER_STATUS']:0;
 
                 $fld = $frm->addCheckBoxes(Labels::getLabel("LBL_Seller_Order_Statuses", $this->adminLangId), 'CONF_VENDOR_ORDER_STATUS', $orderStatusArr, $vendorOrderSelected, array('class'=>'list-inline'));
@@ -1288,7 +1291,7 @@ class ConfigurationsController extends AdminBaseController
                 $frm->addHtml('', 'Microsoft Translator Text API', '<h3>'.Labels::getLabel("LBL_Microsoft_Translator_Text_API", $this->adminLangId).'</h3>');
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_SUBSCRIPTION_KEY", $this->adminLangId), 'CONF_TRANSLATOR_SUBSCRIPTION_KEY');
                 $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_MICROSOFT_TRANSLATOR_TEXT_API_3.0_SUBSCRIPTION_KEY.", $this->adminLangId)."</small>";
-
+				
                 break;
             case Configurations::FORM_REFERAL:
                 $fld = $frm->addRadioButtons(

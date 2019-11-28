@@ -109,7 +109,14 @@ $(document).ready(function() {
 				fcom.displayErrorMessage(ans.msg);
 			}
 		});
-	};
+    };
+    toggleBulkStatues = function(status){
+        if(!confirm(langLbl.confirmUpdateStatus)){
+            return false;
+        }
+        $("#frmPayMethodListing input[name='status']").val(status);
+        $("#frmPayMethodListing").submit();
+    };
 
 })();
 

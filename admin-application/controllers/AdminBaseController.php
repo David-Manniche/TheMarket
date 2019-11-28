@@ -138,6 +138,7 @@ class AdminBaseController extends FatController
         'confirmTruncateUserData' =>Labels::getLabel('LBL_Do_you_want_to_truncate_User_Data', $this->adminLangId),
         'atleastOneRecord' =>Labels::getLabel('LBL_Please_select_atleast_one_record.', $this->adminLangId),
         'primaryLanguageField' =>Labels::getLabel('LBL_PRIMARY_LANGUAGE_DATA_NEEDS_TO_BE_FILLED_FOR_SYSTEM_TO_TRANSLATE_TO_OTHER_LANGUAGES.', $this->adminLangId),
+        'updateCurrencyRates' =>Labels::getLabel('LBL_WANT_TO_UPDATE_CURRENCY_RATES?.', $this->adminLangId),
         );
 
         $languages = Language::getAllNames(false);

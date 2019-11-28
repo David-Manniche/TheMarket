@@ -101,4 +101,20 @@ $(document).ready(function() {
         $("#frmCurrencyListing").submit();
     };
 
+	updateCurrencyRates = function(){
+        if(!confirm(langLbl.updateCurrencyRates)){
+            return false;
+        }
+        fcom.displayProcessing();
+        fcom.ajax(fcom.makeUrl('CurrencyManagement', 'updateCurrencyRates'), '', function(res) {
+            var ans = $.parseJSON(res);
+            if( ans.status == 1 ){
+				$.mbsmessage(ans.msg, true, 'alert--success');
+			} else {
+				$.mbsmessage(ans.msg, true, 'alert--danger');
+			}
+            reloadList();
+        });
+    };
+
 })();

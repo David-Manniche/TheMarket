@@ -328,4 +328,13 @@ class CurrencyManagementController extends AdminBaseController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
+
+    public function updateCurrencyRates()
+    {
+        $obj = new Currency();
+        if (!$obj->updatePricingRates($this->adminLangId)) {
+            FatUtility::dieJsonError($obj->getError());
+        }
+        FatUtility::dieJsonSuccess(Labels::getLabel('MSG_Updated_Successfully', $this->adminLangId));
+    }
 }
