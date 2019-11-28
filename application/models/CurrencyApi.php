@@ -36,6 +36,11 @@ class CurrencyApi
         
         return $data;
     }
+    
+    public function getError()
+    {
+        return $this->error;
+    }
 
     public function getConversionRate($toCurrencies = [])
     {
@@ -46,10 +51,5 @@ class CurrencyApi
     public function getAllCurrencies()
     {
         return $this->getData(__FUNCTION__);
-    }
-
-    public function getError()
-    {
-        return $this->error;
     }
 }

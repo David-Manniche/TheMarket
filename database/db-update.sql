@@ -299,3 +299,103 @@ INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_type`, `l
 INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_type`, `label_caption`) VALUES ("APP_AND","2", 2,"و");
 
 ALTER TABLE `tbl_currency` DROP `currency_is_default`;
+
+
+CREATE TABLE `tbl_addons` (
+  `addon_id` int(11) NOT NULL,
+  `addon_identifier` varchar(50) NOT NULL,
+  `addon_type` int(11) NOT NULL,
+  `addon_code` varchar(100) NOT NULL,
+  `addon_active` tinyint(1) NOT NULL,
+  `addon_display_order` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_addons`
+--
+
+INSERT INTO `tbl_addons` (`addon_id`, `addon_identifier`, `addon_type`, `addon_code`, `addon_active`, `addon_display_order`) VALUES
+(1, 'Fixer Currency Converter API', 1, 'FixerCurrencyApi', 1, 1),
+(2, 'Currency Converter API', 1, 'CurrencyConverterApi', 1, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_addons_lang`
+--
+
+CREATE TABLE `tbl_addons_lang` (
+  `addonlang_addon_id` int(11) NOT NULL,
+  `addonlang_lang_id` int(11) NOT NULL,
+  `addon_name` varchar(200) NOT NULL,
+  `addon_description` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_addons_lang`
+--
+
+INSERT INTO `tbl_addons_lang` (`addonlang_addon_id`, `addonlang_lang_id`, `addon_name`, `addon_description`) VALUES
+(1, 1, 'Fixer Currency Converted API', 'Brown Fox'),
+(1, 2, 'مثبت العملة API المحولة', 'براون فوكس'),
+(2, 1, 'Currency Converter API', 'Reference : https://www.currencyconverterapi.com/'),
+(2, 2, 'محول العملات API', 'المرجع: https://www.currencyconverterapi.com/');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_addon_settings`
+--
+
+CREATE TABLE `tbl_addon_settings` (
+  `addonsetting_addon_id` int(11) NOT NULL,
+  `addonsetting_key` varchar(100) NOT NULL,
+  `addonsetting_value` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_addon_settings`
+--
+
+INSERT INTO `tbl_addon_settings` (`addonsetting_addon_id`, `addonsetting_key`, `addonsetting_value`) VALUES
+(1, 'addon_id', '1'),
+(1, 'apiKey', ''),
+(1, 'keyName', 'FixerCurrencyApi'),
+(2, 'addon_id', '2'),
+(2, 'apiKey', ''),
+(2, 'keyName', 'CurrencyConverterApi');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_addons`
+--
+ALTER TABLE `tbl_addons`
+  ADD PRIMARY KEY (`addon_id`),
+  ADD UNIQUE KEY `addon_identifier` (`addon_identifier`),
+  ADD UNIQUE KEY `addon_code` (`addon_code`);
+
+--
+-- Indexes for table `tbl_addons_lang`
+--
+ALTER TABLE `tbl_addons_lang`
+  ADD PRIMARY KEY (`addonlang_addon_id`,`addonlang_lang_id`);
+
+--
+-- Indexes for table `tbl_addon_settings`
+--
+ALTER TABLE `tbl_addon_settings`
+  ADD PRIMARY KEY (`addonsetting_addon_id`,`addonsetting_key`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `tbl_addons`
+--
+ALTER TABLE `tbl_addons`
+  MODIFY `addon_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+COMMIT;

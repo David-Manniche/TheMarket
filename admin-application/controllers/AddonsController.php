@@ -5,7 +5,7 @@ class AddonsController extends AdminBaseController
     {
         parent::__construct($action);
         $this->admin_id = AdminAuthentication::getLoggedAdminId();
-        $this->canView = $this->objPrivilege->canViewAddons($this->admin_id, true);
+        $this->objPrivilege->canViewAddons($this->admin_id);
     }
 
     public function index()
@@ -17,7 +17,7 @@ class AddonsController extends AdminBaseController
 
     public function search()
     {
-        $srch = Addons::getSearchObject($this->adminLangId, false);
+        $srch = Addon::getSearchObject($this->adminLangId, false);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
@@ -34,7 +34,7 @@ class AddonsController extends AdminBaseController
         $addonId =  FatUtility::int($addonId);
         $frm = $this->getForm($addonId);
         if (0 < $addonId) {
-            $data = Addons::getAttributesById($addonId, ['addon_id','addon_identifier','addon_active']);
+            $data = Addon::getAttributesById($addonId, ['addon_id','addon_identifier','addon_active']);
             if ($data === false) {
                 FatUtility::dieJsonError($this->str_invalid_request);
             }
@@ -64,13 +64,13 @@ class AddonsController extends AdminBaseController
         }
 
         if (0 < $addonId) {
-            $addonId = Addons::getAttributesById($addonId, 'addon_id');
+            $addonId = Addon::getAttributesById($addonId, 'addon_id');
             if ($addonId === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
         }
 
-        $record = new Addons($addonId);
+        $record = new Addon($addonId);
         $record->assignValues($post);
         if (!$record->save()) {
             Message::addErrorMessage($record->getError());
@@ -81,7 +81,7 @@ class AddonsController extends AdminBaseController
         if ($addonId > 0) {
             $languages = Language::getAllNames();
             foreach ($languages as $langId => $langName) {
-                if (!$row = Addons::getAttributesByLangId($langId, $addonId)) {
+                if (!$row = Addon::getAttributesByLangId($langId, $addonId)) {
                     $newTabLangId = $langId;
                     break;
                 }
@@ -107,7 +107,7 @@ class AddonsController extends AdminBaseController
 
         $langFrm = $this->getLangForm($addonId, $lang_id);
         if (0 < $autoFillLangData) {
-            $updateLangDataobj = new TranslateLangData(Addons::DB_TBL_LANG);
+            $updateLangDataobj = new TranslateLangData(Addon::DB_TBL_LANG);
             $translatedData = $updateLangDataobj->getTranslatedData($addonId, $lang_id);
             if (false === $translatedData) {
                 Message::addErrorMessage($updateLangDataobj->getError());
@@ -115,7 +115,7 @@ class AddonsController extends AdminBaseController
             }
             $langData = current($translatedData);
         } else {
-            $langData = Addons::getAttributesByLangId($lang_id, $addonId);
+            $langData = Addon::getAttributesByLangId($lang_id, $addonId);
         }
         if ($langData) {
             $langFrm->fill($langData);
@@ -154,7 +154,7 @@ class AddonsController extends AdminBaseController
         'addon_description' => $post['addon_description'],
         );
 
-        $addonObj = new Addons($addonId);
+        $addonObj = new Addon($addonId);
 
         if (!$addonObj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($addonObj->getError());
@@ -163,7 +163,7 @@ class AddonsController extends AdminBaseController
 
         $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
         if (0 < $autoUpdateOtherLangsData) {
-            $updateLangDataobj = new TranslateLangData(Addons::DB_TBL_LANG);
+            $updateLangDataobj = new TranslateLangData(Addon::DB_TBL_LANG);
             if (false === $updateLangDataobj->updateTranslatedData($addonId)) {
                 Message::addErrorMessage($updateLangDataobj->getError());
                 FatUtility::dieWithError(Message::getHtml());
@@ -173,7 +173,7 @@ class AddonsController extends AdminBaseController
         $newTabLangId = 0;
         $languages = Language::getAllNames();
         foreach ($languages as $langId => $langName) {
-            if (!$row = Addons::getAttributesByLangId($langId, $addonId)) {
+            if (!$row = Addon::getAttributesByLangId($langId, $addonId)) {
                 $newTabLangId = $langId;
                 break;
             }
@@ -232,7 +232,7 @@ class AddonsController extends AdminBaseController
         $post = FatApp::getPostedData();
 
         if (!empty($post)) {
-            $addonObj = new Addons();
+            $addonObj = new Addon();
             if (!$addonObj->updateOrder($post['addon'])) {
                 Message::addErrorMessage($addonObj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
@@ -252,7 +252,7 @@ class AddonsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $data = Addons::getAttributesById($addonId, array('addon_id', 'addon_active'));
+        $data = Addon::getAttributesById($addonId, array('addon_id', 'addon_active'));
 
         if ($data == false) {
             Message::addErrorMessage($this->str_invalid_request);
@@ -320,7 +320,7 @@ class AddonsController extends AdminBaseController
             );
         }
 
-        $obj = new Addons($addonId);
+        $obj = new Addon($addonId);
         if (!$obj->changeStatus($status)) {
             Message::addErrorMessage($obj->getError());
             FatUtility::dieWithError(Message::getHtml());

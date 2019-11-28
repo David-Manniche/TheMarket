@@ -1,7 +1,10 @@
 <?php
-class FixerCurrencyApi
+/* 
+    Reference : https://www.currencyconverterapi.com/
+*/
+class CurrencyConverterApi
 {
-    private const HOST = 'http://data.fixer.io/api/';
+    private const HOST = 'https://api.currconv.com/api/v7/';
     
     public function __construct($baseCurrency = '')
     {
@@ -17,7 +20,7 @@ class FixerCurrencyApi
             $this->error = Labels::getLabel('MSG_YOU_HAVE_NOT_ENTERED_A_VALID_API_KEY', CommonHelper::getLangId());
             return false;
         }
-        return '?access_key=' . $accessKey;
+        return '?apiKey=' . $accessKey;
     }
 
     private function getData($apiUrl)
@@ -44,13 +47,9 @@ class FixerCurrencyApi
             return false;
         }
         
-        $getAllCurrenciesUrl = static::HOST . 'symbols' . $accessKey;
-        $data = $this->getData($getAllCurrenciesUrl);
-        if (false === $data['success'] && !empty($data['error'])) {
-            $this->error = 'Error : ' . $data['error']['code'] . '-' . $data['error']['type'];
-            return false;
-        }
-        return $data['symbols'];
+        $getAllCurrenciesUrl = static::HOST . 'currencies' . $accessKey;
+        // $data = $this->getData($getAllCurrenciesUrl);
+        return [];
     }
 
     public function getConversionRate($toCurrencies = [])
@@ -69,13 +68,9 @@ class FixerCurrencyApi
             $toCurrenciesQuery = '&symbols=' . implode(',', $toCurrencies);
         }
         
-        $getConversionRates = static::HOST . 'latest' . $accessKey . '&base=' . $this->baseCurrency . $toCurrenciesQuery;
-        $data = $this->getData($getConversionRates);
-        if (false === $data['success'] && !empty($data['error'])) {
-            $this->error = 'Error : ' . $data['error']['code'] . ' - ' . $data['error']['type'];
-            return false;
-        }
-        return $data['rates'];
+        $getConversionRates = static::HOST . 'convert' . $accessKey . '&compact=ultra&q=';
+        // $data = $this->getData($getConversionRates);
+        return [];
     }
 
     public function getSettingsForm()

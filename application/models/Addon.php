@@ -1,5 +1,5 @@
 <?php
-class Addons extends MyAppModel
+class Addon extends MyAppModel
 {
     public const DB_TBL = 'tbl_addons';
     public const DB_TBL_LANG = 'tbl_addons_lang';
@@ -16,6 +16,31 @@ class Addons extends MyAppModel
         $this->objMainTableRecord->setSensitiveFields(
             array('addon_code')
         );
+    }
+
+    public static function getAttributesByCode($code, $attr = null)
+    {
+        $srch = new SearchBase(static::DB_TBL, 'ad');
+        $srch->addCondition('ad.' . static::DB_TBL_PREFIX . 'code', '=', $code);
+        
+        if (null != $attr) {
+            if (is_array($attr)) {
+                $srch->addMultipleFields($attr);
+            } elseif (is_string($attr)) {
+                $srch->addFld($attr);
+            }
+        }
+
+        $rs = $srch->getResultSet();
+        $row = FatApp::getDb()->fetch($rs);
+        if (empty($row) || !is_array($row)) {
+            return false;
+        }
+
+        if (is_string($attr)) {
+            return $row[$attr];
+        }
+        return $row;
     }
 
     public static function getSearchObject($langId = 0, $isActive = true)
@@ -38,14 +63,14 @@ class Addons extends MyAppModel
         return $srch;
     }
 
-    public static function getAddonsArr($langId)
+    public static function getListArr($langId)
     {
         return [
             static::TYPE_CURRENCY_API => Labels::getLabel('LBL_CURRENCY_API', $langId)
         ];
     }
 
-    public static function getAddonsArrOfType($typeId, $langId = 0)
+    public static function typeData($typeId, $langId = 0)
     {
         $typeId = FatUtility::int($typeId);
         if (1 > $typeId) {
@@ -67,19 +92,19 @@ class Addons extends MyAppModel
         return FatApp::getDb()->fetchAll($rs, static::DB_TBL_PREFIX . 'id');
     }
 
-    public static function getAddonsNamesArrOfType($typeId, $langId)
+    public static function getNamesOfType($typeId, $langId)
     {
         $typeId = FatUtility::int($typeId);
         $langId = FatUtility::int($langId);
         if (1 > $typeId && 1 > $langId) {
             return false;
         }
-        $addonsArr = static::getAddonsArrOfType($typeId, $langId);
-        if (empty($addonsArr)) {
+        $addonsTypeArr = static::typeData($typeId, $langId);
+        if (empty($addonsTypeArr)) {
             return false;
         }
-        $addonIds = array_keys($addonsArr);
-        $addonNames = array_column($addonsArr, 'addonName');
+        $addonIds = array_keys($addonsTypeArr);
+        $addonNames = array_column($addonsTypeArr, 'addonName');
         return array_combine($addonIds, $addonNames);
     }
 }

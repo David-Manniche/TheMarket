@@ -72,7 +72,7 @@ $(document).ready(function() {
 	editSettingForm = function (code){
         fcom.displayProcessing();
         var data = 'keyName=' + code;
-		fcom.ajax(fcom.makeUrl('AddonSettings'), data, function(t) {
+		fcom.ajax(fcom.makeUrl('AddonSetting'), data, function(t) {
             var res = isJson(t);
             if (res && res.status == 0) {
                 fcom.displayErrorMessage(res.msg);
@@ -87,7 +87,7 @@ $(document).ready(function() {
 	setupAddonsSettings = function (frm){
 		if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);
-		fcom.updateWithAjax(fcom.makeUrl('AddonSettings', 'setUpSettings'), data, function(t) {
+		fcom.updateWithAjax(fcom.makeUrl('AddonSetting', 'setup'), data, function(t) {
 			$(document).trigger('close.facebox');
 		});
 	};
