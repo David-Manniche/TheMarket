@@ -90,6 +90,23 @@ class CartTest extends TestCase
         );
     }
     
+    /**
+     * @dataProvider providerGetSellerProductData
+    */
+    public function testGetSellerProductData( $userId, $selprod_id, &$quantity, $siteLangId, $loggedUserId = 0)
+    {  
+        $cart = new Cart($userId);
+        $result = $cart->update($key, $quantity);
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function providerGetSellerProductData()
+    {
+        return array(
+            array(6, 'test', 'test', false), // Invalid key and quantity
+        );
+    }
+    
 
     
 
