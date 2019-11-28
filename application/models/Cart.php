@@ -105,6 +105,10 @@ class Cart extends FatModel
         $this->products = array();
         $selprod_id = FatUtility::int($selprod_id);
         $prodgroup_id = FatUtility::int($prodgroup_id);
+        $qty = FatUtility::int($qty);
+        if($selprod_id < 1 || $qty < 1){
+            return false;
+        }
 
         if ($qty > 0) {
             $key = static::CART_KEY_PREFIX_PRODUCT . $selprod_id;
