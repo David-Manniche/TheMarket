@@ -90,21 +90,7 @@ class CartTest extends TestCase
         );
     }
     
-    /**
-     * @dataProvider userCartData
-    */
-    public function testGetCartData($userId, $expected){
-        $result = Cart::getCartData($userId);
-        $this->$expected($result);
-    }
-    
-    public function userCartData()
-    {
-        return array(
-            array(10, 'assertEmpty'),
-            array(6, 'assertNotEmpty'),
-        );
-    }
+
     
 
 }
