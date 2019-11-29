@@ -63,14 +63,14 @@ class Addon extends MyAppModel
         return $srch;
     }
 
-    public static function getListArr($langId)
+    public static function getTypeArr($langId)
     {
         return [
             static::TYPE_CURRENCY_API => Labels::getLabel('LBL_CURRENCY_API', $langId)
         ];
     }
 
-    public static function typeData($typeId, $langId = 0)
+    public static function getDataByType($typeId, $langId = 0, $assoc = false)
     {
         $typeId = FatUtility::int($typeId);
         if (1 > $typeId) {
@@ -78,33 +78,32 @@ class Addon extends MyAppModel
         }
         $srch = static::getSearchObject($langId);
         
-        if (0 < $langId) {
+        if (true == $assoc) {
             $srch->addMultipleFields(
                 [
                     'ad.' . static::DB_TBL_PREFIX . 'id',
-                    'COALESCE(ad_l.' . static::DB_TBL_PREFIX . 'name, ad.' . static::DB_TBL_PREFIX . 'identifier) as addonName'
+                    'COALESCE(ad_l.' . static::DB_TBL_PREFIX . 'name, ad.' . static::DB_TBL_PREFIX . 'identifier) as addon_name'
                 ]
             );
+        } else {
+            $srch->addFld('COALESCE(ad_l.' . static::DB_TBL_PREFIX . 'name, ad.' . static::DB_TBL_PREFIX . 'identifier) as addon_name');
         }
 
         $srch->addCondition('ad.' . static::DB_TBL_PREFIX . 'type', '=', $typeId);
         $rs = $srch->getResultSet();
+        if (true == $assoc) {
+            return FatApp::getDb()->fetchAllAssoc($rs);
+        }
         return FatApp::getDb()->fetchAll($rs, static::DB_TBL_PREFIX . 'id');
     }
 
-    public static function getNamesOfType($typeId, $langId)
+    public static function getNamesByType($typeId, $langId)
     {
         $typeId = FatUtility::int($typeId);
         $langId = FatUtility::int($langId);
         if (1 > $typeId && 1 > $langId) {
             return false;
         }
-        $addonsTypeArr = static::typeData($typeId, $langId);
-        if (empty($addonsTypeArr)) {
-            return false;
-        }
-        $addonIds = array_keys($addonsTypeArr);
-        $addonNames = array_column($addonsTypeArr, 'addonName');
-        return array_combine($addonIds, $addonNames);
+        return $addonsTypeArr = static::getDataByType($typeId, $langId, true);
     }
 }
