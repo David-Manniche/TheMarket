@@ -93,22 +93,27 @@ class CartTest extends TestCase
     /**
      * @dataProvider providerGetSellerProductData
     */
-    public function testGetSellerProductData( $userId, $selprod_id, &$quantity, $siteLangId, $loggedUserId = 0)
+    public function testGetSellerProductData( $userId, $selProdId, $quantity, $siteLangId, $loggedUserId, $expected)
     {  
         $cart = new Cart($userId);
-        $result = $cart->update($key, $quantity);
-        $this->assertEquals($expected, $result);
+        $result = $cart->getSellerProductData($selProdId, $quantity, $siteLangId, $loggedUserId);                
+        $this->$expected($result);
     }
     
     public function providerGetSellerProductData()
     {
         return array(
-            array(6, 'test', 'test', false), // Invalid key and quantity
+            array(6, 14, 1, 1, 0, 'assertIsArray'), //Valid product id and quantity
+            array(6, 'test', 1, 1, 0, 'assertFalse'), //Invalid product id with valid quantity            
+            array(6, 'test', 'test', 1, 0, 'assertFalse'), //Invalid product id and quantity            
+            array(6, 115, 1, 1, 0, 'assertFalse'), // Deleted seller product
+            array(6, 13, 1, 1, 0, 'assertFalse'), // Deleted product catalog
+            array(6, 19, 1, 1, 0, 'assertFalse'), // Deactivate seller product
+            array(6, 62, 1, 1, 0, 'assertFalse'), // Deactivate product catalog
+            array(6, 109, 1, 1, 0, 'assertFalse'), // Product out of stock                        
+            array(6, 14, 'test', 1, 0, 'assertIsArray'), //Valid product id with invalid quantity
         );
     }
     
-
-    
-
 }
 
