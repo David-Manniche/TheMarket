@@ -4,6 +4,7 @@ $arr_flds = array(
         'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
         'listserial' => Labels::getLabel('LBL_Sr._No', $adminLangId),
         'addon_identifier' => Labels::getLabel('LBL_ADDON', $adminLangId),
+        'addon_type' => Labels::getLabel('LBL_Type', $adminLangId),
         'addon_active' => Labels::getLabel('LBL_Status', $adminLangId),
         'action' => Labels::getLabel('LBL_Action', $adminLangId),
     );
@@ -39,6 +40,18 @@ foreach ($arr_listing as $sn => $row) {
             case 'listserial':
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
+            case 'addon_identifier':
+                if ($row['addon_name'] != '') {
+                    $td->appendElement('plaintext', array(), $row['addon_name'], true);
+                    $td->appendElement('br', array());
+                    $td->appendElement('plaintext', array(), '(' . $row[$key] . ')', true);
+                } else {
+                    $td->appendElement('plaintext', array(), $row[$key], true);
+                }
+                break;
+            case 'addon_type':
+                $td->appendElement('plaintext', array(), $addonTypes[$row[$key]], true);
+                break;
             case 'addon_active':
                 $active = "active";
                 if (!$row['addon_active']) {
@@ -50,15 +63,6 @@ foreach ($arr_listing as $sn => $row) {
                 <span class="switch-handles"></span>
                 </label>';
                 $td->appendElement('plaintext', array(), $str, true);
-                break;
-            case 'addon_identifier':
-                if ($row['addon_name'] != '') {
-                    $td->appendElement('plaintext', array(), $row['addon_name'], true);
-                    $td->appendElement('br', array());
-                    $td->appendElement('plaintext', array(), '(' . $row[$key] . ')', true);
-                } else {
-                    $td->appendElement('plaintext', array(), $row[$key], true);
-                }
                 break;
             case 'action':
                 $ul = $td->appendElement("ul", array("class" => "actions actions--centered"));

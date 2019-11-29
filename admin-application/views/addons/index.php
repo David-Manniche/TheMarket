@@ -13,6 +13,20 @@
                         </div>
                     </div>
                 </div>
+                <section class="section searchform_filter">
+                    <div class="sectionhead">
+                        <h4> <?php echo Labels::getLabel('LBL_Search...', $adminLangId); ?> </h4>
+                    </div>
+                    <div class="sectionbody space togglewrap" style="display:none;">
+                        <?php
+                            $srchFrm->setFormTagAttribute('onsubmit', 'searchAddon(this); return(false);');
+                            $srchFrm->setFormTagAttribute('class', 'web_form');
+                            $srchFrm->developerTags['colClassPrefix'] = 'col-md-';
+                            $srchFrm->developerTags['fld_default_col'] = 6;
+                            echo  $srchFrm->getFormHtml();
+                        ?>
+                    </div>
+                </section>
                 <section class="section">
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_ADDONS_LIST', $adminLangId); ?> </h4>

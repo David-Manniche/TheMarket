@@ -11,22 +11,53 @@ class AddonsController extends AdminBaseController
     public function index()
     {
         $this->canEdit = $this->objPrivilege->canEditAddons($this->admin_id, true);
+        $srchFrm = $this->getSearchForm();
+        $this->set("srchFrm", $srchFrm);
         $this->set("canEdit", $this->canEdit);
         $this->_template->render();
     }
 
     public function search()
     {
+        $srchFrm = $this->getSearchForm();
+        $post = $srchFrm->getFormDataFromArray(FatApp::getPostedData());
+
         $srch = Addon::getSearchObject($this->adminLangId, false);
+        
+        if (!empty($post['addon_type']) && 0 < $post['addon_type']) {
+            $srch->addCondition('addon_type', '=', $post['addon_type']);
+        }
+
+        if (!empty($post['keyword'])) {
+            $srch->addCondition('addon_identifier', 'LIKE', '%' . $post['keyword'] . '%');
+        }
+
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
         $this->canEdit = $this->objPrivilege->canEditAddons($this->admin_id, true);
+        $addonTypes = Addon::getTypeArr($this->adminLangId);
+        
         $this->set("canEdit", $this->canEdit);
+        $this->set("addonTypes", $addonTypes);
         $this->set("arr_listing", $records);
         $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->adminLangId));
         $this->_template->render(false, false);
+    }
+
+    private function getSearchForm()
+    {
+        $frm = new Form('frmAddonSearch', ['id' => 'frmAddonSearch']);
+        $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
+        
+        $addonTypes = Addon::getTypeArr($this->adminLangId);
+        $frm->addSelectBox(Labels::getLabel('LBL_Type', $this->adminLangId), 'addon_type', [-1 => Labels::getLabel('LBL_Does_not_Matter', $this->adminLangId)] + $addonTypes, '', array(), '');
+
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick'=>'clearSearch();'));
+        $fld_submit->attachField($fld_cancel);
+        return $frm;
     }
 
     public function form($addonId)

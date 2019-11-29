@@ -8,7 +8,12 @@ $(document).ready(function() {
 	reloadList = function() {
 		var frm = document.frmAddonSearch;
 		searchAddon(frm);
-	};
+    };
+    
+    clearSearch = function() {
+        document.frmAddonSearch.reset();
+        searchAddon(document.frmAddonSearch);
+    };
 
 	searchAddon = function(form){
 		var data = '';
