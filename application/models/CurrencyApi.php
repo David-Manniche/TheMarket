@@ -18,7 +18,7 @@ class CurrencyApi
             return false;
         }
         
-        $className = Addons::getAttributesById($defaultCurrConvAPI, 'addon_code');
+        $className = Addon::getAttributesById($defaultCurrConvAPI, 'addon_code');
         $this->addonClassObj = new $className($this->baseCurrency);
     }
 
