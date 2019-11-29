@@ -10,8 +10,8 @@ class FixerCurrencyApi
 
     private function accessKey()
     {
-        $obj = new AddonSettings(get_class($this));
-        $settings = $obj->getSettings();
+        $obj = new AddonSetting(get_class($this));
+        $settings = $obj->get();
         $accessKey = $settings['apiKey'];
         if (empty($accessKey)) {
             $this->error = Labels::getLabel('MSG_YOU_HAVE_NOT_ENTERED_A_VALID_API_KEY', CommonHelper::getLangId());
