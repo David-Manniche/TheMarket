@@ -1,9 +1,6 @@
 <?php
 class CurrencyApi
 {
-    private $baseCurrency;
-    private $addonClassObj;
-
     public function __construct($baseCurrency = 0)
     {
         $baseCurrency = Currency::getDefault($baseCurrency);
@@ -11,23 +8,23 @@ class CurrencyApi
             trigger_error("Invalid Base Currency", E_USER_ERROR);
         }
         $this->baseCurrency = strtoupper($baseCurrency['currency_code']);
-
-        $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_CURRENCY_CONVERTER_API', FatUtility::VAR_INT, 0);
-        if (empty($defaultCurrConvAPI)) {
-            $this->error = Labels::getLabel('MSG_CURRENCY_CONVERTER_NOT_DEFINED', CommonHelper::getLangId());
-            return false;
-        }
-        
-        $className = Addon::getAttributesById($defaultCurrConvAPI, 'addon_code');
-        $this->addonClassObj = new $className($this->baseCurrency);
     }
 
     private function getData($functionName, $extraParam = [])
     {
+        $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_CURRENCY_CONVERTER_API', FatUtility::VAR_INT, 0);
+        if (empty($defaultCurrConvAPI)) {
+            $this->error = Labels::getLabel('MSG_DEFAULT_CURRENCY_CONVERTER_NOT_DEFINED', CommonHelper::getLangId());
+            return false;
+        }
+        
+        $className = Addon::getAttributesById($defaultCurrConvAPI, 'addon_code');
+        
         try {
-            $data = $this->addonClassObj->$functionName($extraParam);
+            $classObj = new $className($this->baseCurrency);
+            $data = $classObj->$functionName($extraParam);
             if (!$data) {
-                throw new Exception($this->addonClassObj->getError());
+                throw new Exception($classObj->getError());
             }
         } catch (Exception $e) {
             $this->error = $e->getMessage();

@@ -18,6 +18,27 @@ class Addon extends MyAppModel
         );
     }
 
+    public static function getSearchObject($langId = 0, $isActive = true)
+    {
+        $langId = FatUtility::int($langId);
+        $srch = new SearchBase(static::DB_TBL, 'ad');
+        if ($isActive == true) {
+            $srch->addCondition('ad.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
+        }
+        if ($langId > 0) {
+            $srch->joinTable(
+                static::DB_TBL_LANG,
+                'LEFT OUTER JOIN',
+                'ad_l.addonlang_' . static::DB_TBL_PREFIX . 'id = ad.' . static::DB_TBL_PREFIX . 'id and ad_l.addonlang_lang_id = ' . $langId,
+                'ad_l'
+            );
+        }
+        $srch->addOrder('ad.' . static::DB_TBL_PREFIX . 'active', 'DESC');
+        $srch->addOrder('ad.' . static::DB_TBL_PREFIX . 'display_order', 'ASC');
+        return $srch;
+    }
+
+
     public static function getAttributesByCode($code, $attr = null)
     {
         $srch = new SearchBase(static::DB_TBL, 'ad');
@@ -41,26 +62,6 @@ class Addon extends MyAppModel
             return $row[$attr];
         }
         return $row;
-    }
-
-    public static function getSearchObject($langId = 0, $isActive = true)
-    {
-        $langId = FatUtility::int($langId);
-        $srch = new SearchBase(static::DB_TBL, 'ad');
-        if ($isActive == true) {
-            $srch->addCondition('ad.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
-        }
-        if ($langId > 0) {
-            $srch->joinTable(
-                static::DB_TBL_LANG,
-                'LEFT OUTER JOIN',
-                'ad_l.addonlang_' . static::DB_TBL_PREFIX . 'id = ad.' . static::DB_TBL_PREFIX . 'id and ad_l.addonlang_lang_id = ' . $langId,
-                'ad_l'
-            );
-        }
-        $srch->addOrder('ad.' . static::DB_TBL_PREFIX . 'active', 'DESC');
-        $srch->addOrder('ad.' . static::DB_TBL_PREFIX . 'display_order', 'ASC');
-        return $srch;
     }
 
     public static function getTypeArr($langId)
@@ -91,10 +92,12 @@ class Addon extends MyAppModel
 
         $srch->addCondition('ad.' . static::DB_TBL_PREFIX . 'type', '=', $typeId);
         $rs = $srch->getResultSet();
+        
+        $db = FatApp::getDb();
         if (true == $assoc) {
-            return FatApp::getDb()->fetchAllAssoc($rs);
+            return $db->fetchAllAssoc($rs);
         }
-        return FatApp::getDb()->fetchAll($rs, static::DB_TBL_PREFIX . 'id');
+        return $db->fetchAll($rs, static::DB_TBL_PREFIX . 'id');
     }
 
     public static function getNamesByType($typeId, $langId)
