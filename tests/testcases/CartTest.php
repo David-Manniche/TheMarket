@@ -115,5 +115,22 @@ class CartTest extends TestCase
         );
     }
     
+    /**
+     * @dataProvider providerSetCartAttributes
+    */
+    public function testSetCartAttributes( $userId, $tempUserId, $expected)
+    {  
+        $result = Cart::setCartAttributes($userId, $tempUserId);
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function providerSetCartAttributes()
+    {
+        return array(
+            array(0, 0, false),
+            array(6, 'o0fr148c0e8qb99kfdmcmdplnr', true),
+        );
+    }
+    
 }
 
