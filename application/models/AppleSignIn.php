@@ -1,6 +1,11 @@
 <?php
 class AppleSignIn extends AddonSetting
 {
+    public function __construct()
+    {
+        parent::__construct(get_class($this));
+    }
+
     public function getSettingsForm()
     {
         $frm = new Form('frmAddons');

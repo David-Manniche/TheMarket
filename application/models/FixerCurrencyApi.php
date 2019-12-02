@@ -5,6 +5,7 @@ class FixerCurrencyApi extends AddonSetting
     
     public function __construct($baseCurrencyCode = '')
     {
+        parent::__construct(get_class($this));
         $this->baseCurrencyCode = $baseCurrencyCode;
     }
 
