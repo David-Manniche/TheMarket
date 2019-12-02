@@ -12,3 +12,4 @@ Enhancements:
 
 New Features:
     => 68725 - Implemented Fixer currency conversion API
+    => 68804 - Apple Sign In

@@ -1,20 +1,19 @@
 <?php
-/* 
+/*
     Reference : https://www.currencyconverterapi.com/
 */
-class CurrencyConverterApi extends CurrencyAddons
+class CurrencyConverterApi extends AddonSetting
 {
     private const PRODUCTION = 'https://free.currconv.com/api/v7/';
 
     public function __construct($baseCurrencyCode = '')
     {
-        parent::__construct($baseCurrencyCode);
+        $this->baseCurrencyCode = $baseCurrencyCode;
     }
 
     private function accessKey()
     {
-        $obj = new AddonSetting(get_class($this));
-        $settings = $obj->get();
+        $settings = static::getSettings();
         $accessKey = $settings['apiKey'];
         if (empty($accessKey)) {
             $this->error = Labels::getLabel('MSG_YOU_HAVE_NOT_ENTERED_A_VALID_API_KEY', CommonHelper::getLangId());
@@ -31,7 +30,7 @@ class CurrencyConverterApi extends CurrencyAddons
         }
         
         $getAllCurrenciesUrl = static::PRODUCTION . 'currencies' . $accessKey;
-        $data = $this->getData($getAllCurrenciesUrl);
+        $data = $this->getExternalApiData($getAllCurrenciesUrl);
         if (!empty($data['error'])) {
             $this->error = $data['error'];
             return false;
@@ -59,7 +58,7 @@ class CurrencyConverterApi extends CurrencyAddons
         }
         
         $getConversionRatesUrl = static::PRODUCTION . 'convert' . $accessKey . '&compact=ultra&q=' . rtrim($toCurrenciesQuery, ',');
-        $response = $this->getData($getConversionRatesUrl);
+        $response = $this->getExternalApiData($getConversionRatesUrl);
         $data = [];
         foreach ($response as $key => $rate) {
             $data[str_replace($this->baseCurrencyCode . '_', '', $key)] = $rate;

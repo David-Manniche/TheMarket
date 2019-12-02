@@ -1,17 +1,16 @@
 <?php
-class FixerCurrencyApi extends CurrencyAddons
+class FixerCurrencyApi extends AddonSetting
 {
-    private const PRODUCTION = 'http://data.fixer.io/api/';
+    private const PRODUCTION = 'http://data.fixer.io/api/'; 
     
     public function __construct($baseCurrencyCode = '')
     {
-        parent::__construct($baseCurrencyCode);
+        $this->baseCurrencyCode = $baseCurrencyCode;
     }
 
     private function accessKey()
     {
-        $obj = new AddonSetting(get_class($this));
-        $settings = $obj->get();
+        $settings = static::getSettings();
         $accessKey = $settings['apiKey'];
         if (empty($accessKey)) {
             $this->error = Labels::getLabel('MSG_YOU_HAVE_NOT_ENTERED_A_VALID_API_KEY', CommonHelper::getLangId());
@@ -28,7 +27,7 @@ class FixerCurrencyApi extends CurrencyAddons
         }
         
         $getAllCurrenciesUrl = static::PRODUCTION . 'symbols' . $accessKey;
-        $data = $this->getData($getAllCurrenciesUrl);
+        $data = $this->getExternalApiData($getAllCurrenciesUrl);
         if (false === $data['success'] && !empty($data['error'])) {
             $this->error = 'Error : ' . $data['error']['code'] . '-' . $data['error']['type'];
             return false;
@@ -53,7 +52,7 @@ class FixerCurrencyApi extends CurrencyAddons
         }
         
         $getConversionRates = static::PRODUCTION . 'latest' . $accessKey . '&base=' . $this->baseCurrencyCode . $toCurrenciesQuery;
-        $data = $this->getData($getConversionRates);
+        $data = $this->getExternalApiData($getConversionRates);
         if (false === $data['success'] && !empty($data['error'])) {
             $this->error = 'Error : ' . $data['error']['code'] . ' - ' . $data['error']['type'];
             return false;

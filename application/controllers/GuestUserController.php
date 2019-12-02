@@ -140,7 +140,7 @@ class GuestUserController extends MyAppController
             FatUtility::dieJSONError(Labels::getLabel('Msg_Invalid_Request', $this->siteLangId));
         }
         $userId = UserAuthentication::getLoggedUserId();
-        $uObj= new User($userId);
+        $uObj = new User($userId);
         if (!$uObj->setPushNotificationToken($this->appToken, $fcmDeviceId)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
@@ -222,9 +222,9 @@ class GuestUserController extends MyAppController
         $includeGuestLogin = FatApp::getPostedData('includeGuestLogin', FatUtility::VAR_STRING, false);
         $frm = $this->getLoginForm($includeGuestLogin);
         $data = array(
-        'loginFrm'             => $frm,
-        'siteLangId'    => $this->siteLangId,
-        'includeGuestLogin'    => $includeGuestLogin,
+            'loginFrm' => $frm,
+            'siteLangId' => $this->siteLangId,
+            'includeGuestLogin' => $includeGuestLogin,
         );
         $this->set('data', $data);
         $this->_template->render(false, false);

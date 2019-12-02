@@ -1,74 +1,118 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?> <?php
-    $showSignUpLink = isset($showSignUpLink) ? $showSignUpLink : true;
-    $onSubmitFunctionName = isset($onSubmitFunctionName) ? $onSubmitFunctionName : 'defaultSetUpLogin';
-?> <?php
-    //$frm->setRequiredStarPosition(Form::FORM_REQUIRED_STAR_POSITION_NONE);
-    $loginFrm->setFormTagAttribute('class', 'form');
-    $loginFrm->setValidatorJsObjectName('loginValObj');
-    $loginFrm->setFormTagAttribute('action', CommonHelper::generateUrl('GuestUser', 'login'));
-    $loginFrm->setFormTagAttribute('onsubmit', $onSubmitFunctionName . '(this, loginValObj); return(false);');
-    $loginFrm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
-    $loginFrm->developerTags['fld_default_col'] = 12;
-    $fldforgot = $loginFrm->getField('forgot');
-    $fldforgot->value='<a href="'.CommonHelper::generateUrl('GuestUser', 'forgotPasswordForm').'"
-        class="link">'.Labels::getLabel('LBL_Forgot_Password?',$siteLangId).'</a>';
-    $fldSubmit = $loginFrm->getField('btn_submit');
-    $fldSubmit->addFieldTagAttribute('class','btn--block'); ?> <?php echo $loginFrm->getFormTag();    ?> <div class="row">
-    <div class="col-md-12">
-        <div class="field-set">
-            <div class="field-wraper">
-                <div class="field_cover"><?php echo $loginFrm->getFieldHtml('username'); ?></div>
+$showSignUpLink = isset($showSignUpLink) ? $showSignUpLink : true;
+$onSubmitFunctionName = isset($onSubmitFunctionName) ? $onSubmitFunctionName : 'defaultSetUpLogin';
+//$frm->setRequiredStarPosition(Form::FORM_REQUIRED_STAR_POSITION_NONE);
+$loginFrm->setFormTagAttribute('class', 'form');
+$loginFrm->setValidatorJsObjectName('loginValObj');
+$loginFrm->setFormTagAttribute('action', CommonHelper::generateUrl('GuestUser', 'login'));
+$loginFrm->setFormTagAttribute('onsubmit', $onSubmitFunctionName . '(this, loginValObj); return(false);');
+$loginFrm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
+$loginFrm->developerTags['fld_default_col'] = 12;
+$fldforgot = $loginFrm->getField('forgot');
+$fldforgot->value = '<a href="' . CommonHelper::generateUrl('GuestUser', 'forgotPasswordForm') . '"
+    class="link">' . Labels::getLabel('LBL_Forgot_Password?', $siteLangId) . '</a>';
+$fldSubmit = $loginFrm->getField('btn_submit');
+$fldSubmit->addFieldTagAttribute('class', 'btn--block'); ?> 
+<?php echo $loginFrm->getFormTag(); ?> 
+    <div class="row">
+        <div class="col-md-12">
+            <div class="field-set">
+                <div class="field-wraper">
+                    <div class="field_cover"><?php echo $loginFrm->getFieldHtml('username'); ?></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <div class="field-set">
-            <div class="field-wraper">
-                <div class="field_cover"><?php echo $loginFrm->getFieldHtml('password'); ?></div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="field-set">
+                <div class="field-wraper">
+                    <div class="field_cover"><?php echo $loginFrm->getFieldHtml('password'); ?></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="row align-items-center">
-    <div class="col-md-6 col-6">
-        <div class="field-set">
-            <div class="field-wraper">
-                <div class="field_cover">
-                    <label class="checkbox"> <?php
-                                $fld = $loginFrm->getFieldHTML('remember_me');
-                                $fld = str_replace("<label >","",$fld);
-                                $fld = str_replace("</label>","",$fld);
-                                echo $fld;
-                            ?> <i class="input-helper"></i>
-                    </label> <?php if($loginFrm->getField('remember_me')); ?></div>
+    <div class="row align-items-center">
+        <div class="col-md-6 col-6">
+            <div class="field-set">
+                <div class="field-wraper">
+                    <div class="field_cover">
+                        <label class="checkbox"> <?php
+                                    $fld = $loginFrm->getFieldHTML('remember_me');
+                                    $fld = str_replace("<label >", "", $fld);
+                                    $fld = str_replace("</label>", "", $fld);
+                                    echo $fld;
+                                ?> <i class="input-helper"></i>
+                        </label> <?php if($loginFrm->getField('remember_me')); ?></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-6">
+            <div class="field-set">
+                <div class="forgot"><?php echo $loginFrm->getFieldHtml('forgot'); ?></div>
             </div>
         </div>
     </div>
-    <div class="col-md-6 col-6">
-        <div class="field-set">
-            <div class="forgot"><?php echo $loginFrm->getFieldHtml('forgot'); ?></div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <div class="field-set">
-            <div class="field-wraper">
-                <div class="field_cover"><?php echo $loginFrm->getFieldHtml('btn_submit'); ?></div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="field-set">
+                <div class="field-wraper">
+                    <div class="field_cover"><?php echo $loginFrm->getFieldHtml('btn_submit'); ?></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-</form> <?php echo $loginFrm->getExternalJS();?> <?php $facebookLogin  = (FatApp::getConfig('CONF_ENABLE_FACEBOOK_LOGIN', FatUtility::VAR_INT , 0) && FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING , ''))?true:false ;
-    $googleLogin  =(FatApp::getConfig('CONF_ENABLE_GOOGLE_LOGIN', FatUtility::VAR_INT , 0)&& FatApp::getConfig('CONF_GOOGLEPLUS_CLIENT_ID', FatUtility::VAR_STRING , ''))?true:false ;
-    if ($facebookLogin || $googleLogin ){?> <div class="or-divider"><span class="or"><?php echo Labels::getLabel('LBL_Or', $siteLangId); ?></span></div>
-<div class="buttons-list">
-    <ul> <?php if ($facebookLogin) { ?> <li><a href="javascript:void(0)" onclick="dofacebookInLoginForBuyerpopup()" class="btn btn--social btn--fb"><i class="icn"><img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/facebook.svg"></i></a></li>
-        <?php } if ($googleLogin ) { ?> <li><a href="<?php echo CommonHelper::generateUrl('GuestUser', 'socialMediaLogin',array('google')); ?>" class="btn btn--social btn--gp"><i class="icn"><img
-                        src="<?php echo CONF_WEBROOT_URL; ?>images/retina/google-plus.svg"></i></a></li> <?php }?> </ul>
-</div> <?php } ?> <script>
+</form> 
+<?php
+echo $loginFrm->getExternalJS();
+
+$facebookLogin  = (FatApp::getConfig('CONF_ENABLE_FACEBOOK_LOGIN', FatUtility::VAR_INT, 0) && FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, '')) ? true : false ;
+$googleLogin = (FatApp::getConfig('CONF_ENABLE_GOOGLE_LOGIN', FatUtility::VAR_INT, 0) && FatApp::getConfig('CONF_GOOGLEPLUS_CLIENT_ID', FatUtility::VAR_STRING, '')) ? true : false;
+
+$enableAppleLogin = FatApp::getConfig('CONF_ENABLE_APPLE_LOGIN', FatUtility::VAR_INT, 0);
+$settings = AppleSignIn::getSettings();
+$clientId = $settings['clientId'];
+$privateKey = $settings['privateKey'];
+$appleLogin = false;
+if ($enableAppleLogin && !empty($clientId) && !empty($privateKey)) {
+    $appleLogin = true;
+}
+
+
+if ($facebookLogin || $googleLogin || $appleLogin) { ?>
+    <div class="or-divider">
+        <span class="or">
+            <?php echo Labels::getLabel('LBL_Or', $siteLangId); ?>
+        </span>
+    </div>
+    <div class="buttons-list">
+        <ul> 
+            <?php if ($facebookLogin) { ?> 
+                <li>
+                    <a href="javascript:void(0)" onclick="dofacebookInLoginForBuyerpopup()" class="btn btn--social btn--fb">
+                        <i class="icn">
+                            <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/facebook.svg">
+                        </i>
+                    </a>
+                </li>
+            <?php } if ($googleLogin ) { ?> 
+                <li>
+                    <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'socialMediaLogin', array('google')); ?>" class="btn btn--social btn--gp">
+                        <i class="icn">
+                            <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/google-plus.svg">
+                        </i>
+                    </a>
+                </li>
+            <?php } if ($appleLogin ) { ?> 
+                <li>
+                    <div id="appleid-signin" data-color="black" data-border="true" data-type="sign in"></div>
+                    <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
+                </li>
+            <?php } ?> 
+        </ul>
+    </div> 
+<?php } ?> 
+<script>
     /*Facebook Login API JS SDK*/
     function dofacebookInLoginForBuyerpopup() {
         FB.getLoginStatus(function(response) {
@@ -104,7 +148,7 @@
     window.fbAsyncInit = function() {
         //SDK loaded, initialize it
         FB.init({
-            appId: '<?php echo FatApp::getConfig('CONF_FACEBOOK_APP_ID',FatUtility::VAR_STRING,'') ?>',
+            appId: '<?php echo FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, '') ?>',
             xfbml: true,
             version: 'v2.2'
         });
@@ -122,3 +166,12 @@
     }(document, 'script', 'facebook-jssdk'));
     /*Facebook Login API JS SDK*/
 </script>
+
+<?php if ($appleLogin) { ?> 
+    <script type="text/javascript">
+        AppleID.auth.init({
+            clientId : "<?php echo $clientId; ?>",
+            redirectURI: "<?php echo CommonHelper::generateFullUrl('GuestUser', 'loginApple', array(), '', false); ?>"
+        });
+    </script>
+<?php } ?>

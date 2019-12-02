@@ -6,6 +6,7 @@ class Addon extends MyAppModel
     public const DB_TBL_PREFIX = 'addon_';
 
     public const TYPE_CURRENCY_API = 1;
+    public const TYPE_SOCIAL_LOGIN_API = 2;
 
     private $db;
     
@@ -18,7 +19,7 @@ class Addon extends MyAppModel
         );
     }
 
-    public static function getSearchObject($langId = 0, $isActive = true)
+    public static function getSearchObject($langId = 0, $isActive = true, $joinSettings = false)
     {
         $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 'ad');
@@ -31,6 +32,15 @@ class Addon extends MyAppModel
                 'LEFT OUTER JOIN',
                 'ad_l.addonlang_' . static::DB_TBL_PREFIX . 'id = ad.' . static::DB_TBL_PREFIX . 'id and ad_l.addonlang_lang_id = ' . $langId,
                 'ad_l'
+            );
+        }
+
+        if (true === $joinSettings) {
+            $srch->joinTable(
+                AddonSetting::DB_TBL,
+                'LEFT OUTER JOIN',
+                'ads.' . AddonSetting::DB_TBL_PREFIX . static::DB_TBL_PREFIX . 'id = ad.' . static::DB_TBL_PREFIX . 'id',
+                'ads'
             );
         }
         $srch->addOrder('ad.' . static::DB_TBL_PREFIX . 'active', 'DESC');
@@ -67,7 +77,8 @@ class Addon extends MyAppModel
     public static function getTypeArr($langId)
     {
         return [
-            static::TYPE_CURRENCY_API => Labels::getLabel('LBL_CURRENCY_API', $langId)
+            static::TYPE_CURRENCY_API => Labels::getLabel('LBL_CURRENCY_API', $langId),
+            static::TYPE_SOCIAL_LOGIN_API => Labels::getLabel('LBL_SOCIAL_LOGIN_API', $langId),
         ];
     }
 

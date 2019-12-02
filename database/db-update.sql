@@ -399,3 +399,5 @@ ALTER TABLE `tbl_addon_settings`
 ALTER TABLE `tbl_addons`
   MODIFY `addon_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Google_Plus_Login';
