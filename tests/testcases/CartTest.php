@@ -135,20 +135,24 @@ class CartTest extends TestCase
     /**
      * @dataProvider providerGetProducts
     */
-    public function testGetProducts( $userId, $siteLangId)
+    public function testGetProducts( $userId, $siteLangId, $expected)
     {  
         $cart = new Cart($userId);
-        $result = $cart->getProducts($siteLangId);  
-        echo "<pre>"; print_R($result);die;
-        $this->assertIsArray($result);
+        $result = $cart->getProducts($siteLangId);        
+        $this->assertEquals($expected, count($result));        
     }
     
     public function providerGetProducts()
     {
         return array(
-            array(0, 0), 
-            array(44545, 1), 
-            array(6, 1), 
+            array(0, 0, 0), //Invalid userId and langId
+            array('test', 1, 0), //Invalid userId with valid langId
+            array(6, 1, 1), //Valid userId and langId having product in cart
+            array(6, 1, 0), // Deleted seller product of cart
+            array(6, 1, 0), // Deleted product catalog of cart
+            array(6, 1, 0), // Deactived seller product of cart
+            array(6, 1, 0), // Deactived product catlog of cart
+            array(6, 1, 0), // Made product out of stock of cart        
         );
     }
     
