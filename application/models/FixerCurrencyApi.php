@@ -1,15 +1,19 @@
 <?php
-class FixerCurrencyApi extends AddonSetting
+class FixerCurrencyApi extends CurrencyAddon
 {
-    private const PRODUCTION = 'http://data.fixer.io/api/';
+    private const PRODUCTION_URL = 'http://data.fixer.io/api/';
     
     public function __construct($baseCurrencyCode = '')
     {
-        parent::__construct(get_class($this));
         $this->baseCurrencyCode = $baseCurrencyCode;
     }
 
-    private function accessKey()
+    private function formatAccessKey($accessKey)
+    {
+        return '?access_key=' . $accessKey;
+    }
+
+    private function accessKey($formatAccessKey = true)
     {
         $settings = static::getSettings();
         $accessKey = $settings['apiKey'];
@@ -17,7 +21,10 @@ class FixerCurrencyApi extends AddonSetting
             $this->error = Labels::getLabel('MSG_YOU_HAVE_NOT_ENTERED_A_VALID_API_KEY', CommonHelper::getLangId());
             return false;
         }
-        return '?access_key=' . $accessKey;
+        if (true === $formatAccessKey) {
+            return $this->formatAccessKey($accessKey);
+        }
+        return $accessKey;
     }
 
     public function getAllCurrencies()
@@ -27,7 +34,7 @@ class FixerCurrencyApi extends AddonSetting
             return false;
         }
         
-        $getAllCurrenciesUrl = static::PRODUCTION . 'symbols' . $accessKey;
+        $getAllCurrenciesUrl = static::PRODUCTION_URL . 'symbols' . $accessKey;
         $data = $this->getExternalApiData($getAllCurrenciesUrl);
         if (false === $data['success'] && !empty($data['error'])) {
             $this->error = 'Error : ' . $data['error']['code'] . '-' . $data['error']['type'];
@@ -52,7 +59,7 @@ class FixerCurrencyApi extends AddonSetting
             $toCurrenciesQuery = '&symbols=' . implode(',', $toCurrencies);
         }
         
-        $getConversionRates = static::PRODUCTION . 'latest' . $accessKey . '&base=' . $this->baseCurrencyCode . $toCurrenciesQuery;
+        $getConversionRates = static::PRODUCTION_URL . 'latest' . $accessKey . '&base=' . $this->baseCurrencyCode . $toCurrenciesQuery;
         $data = $this->getExternalApiData($getConversionRates);
         if (false === $data['success'] && !empty($data['error'])) {
             $this->error = 'Error : ' . $data['error']['code'] . ' - ' . $data['error']['type'];

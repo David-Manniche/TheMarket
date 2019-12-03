@@ -1,25 +1,18 @@
 <?php
-class AppleSignIn extends AddonSetting
+class AppleSignIn extends LoginAddon
 {
-    private const PRODUCTION = 'https://appleid.apple.com/auth/';
-    private $settings;
-    private $redirectUri;
-
-    public function __construct()
-    {
-        parent::__construct(get_class($this));
-        $this->settings = self::getSettings();
-        $this->redirectUri = CommonHelper::generateFullUrl('GuestUser', 'loginApple', array(), '', false);
-    }
-
+    private const PRODUCTION_URL = 'https://appleid.apple.com/auth/';
+    
     public function getRequestUri()
     {
+        $settings = static::getSettings();
+        $redirectUri = CommonHelper::generateFullUrl('GuestUser', 'loginApple', array(), '', false);
         $_SESSION['appleSignIn']['state'] = bin2hex(random_bytes(5));
-        return static::PRODUCTION . 'authorize?' . http_build_query([
+        return static::PRODUCTION_URL . 'authorize?' . http_build_query([
             'response_type' => 'code id_token',
             'response_mode' => 'form_post',
-            'client_id' => $this->settings['clientId'],
-            'redirect_uri' => $this->redirectUri,
+            'client_id' => $settings['clientId'],
+            'redirect_uri' => $redirectUri,
             'state' => $_SESSION['appleSignIn']['state'],
             'scope' => 'name email',
         ]);

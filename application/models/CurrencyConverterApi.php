@@ -2,17 +2,21 @@
 /*
     Reference : https://www.currencyconverterapi.com/
 */
-class CurrencyConverterApi extends AddonSetting
+class CurrencyConverterApi extends CurrencyAddon
 {
-    private const PRODUCTION = 'https://free.currconv.com/api/v7/';
+    private const PRODUCTION_URL = 'https://free.currconv.com/api/v7/';
 
     public function __construct($baseCurrencyCode = '')
     {
-        parent::__construct(get_class($this));
         $this->baseCurrencyCode = $baseCurrencyCode;
     }
 
-    private function accessKey()
+    private function formatAccessKey($accessKey)
+    {
+        return '?apiKey=' . $accessKey;
+    }
+
+    private function accessKey($formatAccessKey = true)
     {
         $settings = static::getSettings();
         $accessKey = $settings['apiKey'];
@@ -20,7 +24,10 @@ class CurrencyConverterApi extends AddonSetting
             $this->error = Labels::getLabel('MSG_YOU_HAVE_NOT_ENTERED_A_VALID_API_KEY', CommonHelper::getLangId());
             return false;
         }
-        return '?apiKey=' . $accessKey;
+        if (true === $formatAccessKey) {
+            return $this->formatAccessKey($accessKey);
+        }
+        return $accessKey;
     }
 
     public function getAllCurrencies()
@@ -30,7 +37,7 @@ class CurrencyConverterApi extends AddonSetting
             return false;
         }
         
-        $getAllCurrenciesUrl = static::PRODUCTION . 'currencies' . $accessKey;
+        $getAllCurrenciesUrl = static::PRODUCTION_URL . 'currencies' . $accessKey;
         $data = $this->getExternalApiData($getAllCurrenciesUrl);
         if (!empty($data['error'])) {
             $this->error = $data['error'];
@@ -58,7 +65,7 @@ class CurrencyConverterApi extends AddonSetting
             }
         }
         
-        $getConversionRatesUrl = static::PRODUCTION . 'convert' . $accessKey . '&compact=ultra&q=' . rtrim($toCurrenciesQuery, ',');
+        $getConversionRatesUrl = static::PRODUCTION_URL . 'convert' . $accessKey . '&compact=ultra&q=' . rtrim($toCurrenciesQuery, ',');
         $response = $this->getExternalApiData($getConversionRatesUrl);
         $data = [];
         foreach ($response as $key => $rate) {

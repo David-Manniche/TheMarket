@@ -1,13 +1,16 @@
 <?php
 class CurrencyApi
 {
-    public function __construct($baseCurrency = 0)
+    public function __construct($baseCurrencyCode = '')
     {
-        $baseCurrency = Currency::getDefault($baseCurrency);
-        if (empty($baseCurrency)) {
-            trigger_error("Invalid Base Currency", E_USER_ERROR);
+        $this->baseCurrencyCode = strtoupper($baseCurrencyCode);
+        if (empty($this->baseCurrencyCode)) {
+            $baseCurrency = Currency::getDefault();
+            if (empty($baseCurrency)) {
+                trigger_error("Invalid Base Currency", E_USER_ERROR);
+            }
+            $this->baseCurrencyCode = strtoupper($baseCurrency['currency_code']);
         }
-        $this->baseCurrency = strtoupper($baseCurrency['currency_code']);
     }
 
     private function getData($functionName, $extraParam = [])
@@ -21,7 +24,7 @@ class CurrencyApi
         $className = Addon::getAttributesById($defaultCurrConvAPI, 'addon_code');
         
         try {
-            $classObj = new $className($this->baseCurrency);
+            $classObj = new $className($this->baseCurrencyCode);
             $data = $classObj->$functionName($extraParam);
             if (!$data) {
                 throw new Exception($classObj->getError());
