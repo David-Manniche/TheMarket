@@ -270,42 +270,58 @@
                 $objPrivilege->canViewOrderStatus(AdminAuthentication::getLoggedAdminId(), true)  ||
                 $objPrivilege->canViewSellerPackages(AdminAuthentication::getLoggedAdminId(), true)
                 ) { ?>
-            <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Settings', $adminLangId);?></a>
-                <ul>
+                <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Settings', $adminLangId);?></a>
+                    <ul>
 
-                    <?php if ($objPrivilege->canViewGeneralSettings(AdminAuthentication::getLoggedAdminId(), true)) {?>
-                        <li><a href="<?php echo CommonHelper::generateUrl('configurations'); ?>"><?php echo Labels::getLabel('LBL_General_Settings', $adminLangId);?></a></li>
-                    <?php }?>
-                    <?php if ($objPrivilege->canViewPaymentMethods(AdminAuthentication::getLoggedAdminId(), true)) {?>
-                        <li><a href="<?php echo CommonHelper::generateUrl('PaymentMethods'); ?>"><?php echo Labels::getLabel('LBL_Payment_Methods', $adminLangId);?></a></li>
-                    <?php }?>
-                    <?php if ($objPrivilege->canViewCurrencyManagement(AdminAuthentication::getLoggedAdminId(), true)) {?>
-                        <li><a href="<?php echo CommonHelper::generateUrl('CurrencyManagement'); ?>"><?php echo Labels::getLabel('LBL_Currency_Management', $adminLangId);?></a></li>
-                    <?php }?>
-                    <?php if ($objPrivilege->canViewTax(AdminAuthentication::getLoggedAdminId(), true)) {?>
-                        <li><a href="<?php echo CommonHelper::generateUrl('Tax'); ?>"><?php echo Labels::getLabel('LBL_Sales_Tax', $adminLangId);?></a></li>
-                    <?php }?>
-                    <?php if ($objPrivilege->canViewCommissionSettings(AdminAuthentication::getLoggedAdminId(), true)) {?>
-                        <li><a href="<?php echo CommonHelper::generateUrl('Commission'); ?>"><?php echo Labels::getLabel('LBL_Commission_Settings', $adminLangId);?></a></li>
-                    <?php } ?>
-                    <?php if ($objPrivilege->canViewAffiliateCommissionSettings(AdminAuthentication::getLoggedAdminId(), true)) { ?>
-                        <li><a href="<?php echo CommonHelper::generateUrl('AffiliateCommission'); ?>"><?php echo Labels::getLabel('LBL_Affiliate_Commission_Settings', $adminLangId);?></a></li>
-                    <?php } ?>
+                        <?php if ($objPrivilege->canViewGeneralSettings(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                            <li><a href="<?php echo CommonHelper::generateUrl('configurations'); ?>"><?php echo Labels::getLabel('LBL_General_Settings', $adminLangId);?></a></li>
+                        <?php }?>
+                        <?php if ($objPrivilege->canViewPaymentMethods(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                            <li><a href="<?php echo CommonHelper::generateUrl('PaymentMethods'); ?>"><?php echo Labels::getLabel('LBL_Payment_Methods', $adminLangId);?></a></li>
+                        <?php }?>
+                        <?php if ($objPrivilege->canViewCurrencyManagement(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                            <li><a href="<?php echo CommonHelper::generateUrl('CurrencyManagement'); ?>"><?php echo Labels::getLabel('LBL_Currency_Management', $adminLangId);?></a></li>
+                        <?php }?>
+                        <?php if ($objPrivilege->canViewTax(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                            <li><a href="<?php echo CommonHelper::generateUrl('Tax'); ?>"><?php echo Labels::getLabel('LBL_Sales_Tax', $adminLangId);?></a></li>
+                        <?php }?>
+                        <?php if ($objPrivilege->canViewCommissionSettings(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                            <li><a href="<?php echo CommonHelper::generateUrl('Commission'); ?>"><?php echo Labels::getLabel('LBL_Commission_Settings', $adminLangId);?></a></li>
+                        <?php } ?>
+                        <?php if ($objPrivilege->canViewAffiliateCommissionSettings(AdminAuthentication::getLoggedAdminId(), true)) { ?>
+                            <li><a href="<?php echo CommonHelper::generateUrl('AffiliateCommission'); ?>"><?php echo Labels::getLabel('LBL_Affiliate_Commission_Settings', $adminLangId);?></a></li>
+                        <?php } ?>
 
-                    <?php if ($objPrivilege->canViewEmailTemplates(AdminAuthentication::getLoggedAdminId(), true)) {?>
-                        <li><a href="<?php echo CommonHelper::generateUrl('EmailTemplates'); ?>"><?php echo Labels::getLabel('LBL_Email_Templates_Management', $adminLangId);?></a></li>
-                    <?php }?>
-                    <?php if ($objPrivilege->canViewOrderStatus(AdminAuthentication::getLoggedAdminId(), true)) {?>
-                        <li><a href="<?php echo CommonHelper::generateUrl('OrderStatus'); ?>"><?php echo Labels::getLabel('LBL_Order_Status_Management', $adminLangId);?></a></li>
-                    <?php }?>
-                    <?php if ($objPrivilege->canViewSellerPackages(AdminAuthentication::getLoggedAdminId(), true)) {?>
-                        <li><a href="<?php echo CommonHelper::generateUrl('SellerPackages'); ?>"><?php echo Labels::getLabel('LBL_Seller_Packages_Management', $adminLangId);?></a></li>
-                    <?php }?>
-                    <?php if ($objPrivilege->canViewRewardsOnPurchase(AdminAuthentication::getLoggedAdminId(), true)) {?>
-                        <li><a href="<?php echo CommonHelper::generateUrl('RewardsOnPurchase'); ?>"><?php echo Labels::getLabel('LBL_Rewards_on_every_purchase', $adminLangId);?></a></li>
-                    <?php }?>
-                </ul>
-            </li>    <?php }?>
+                        <?php if ($objPrivilege->canViewEmailTemplates(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                            <li><a href="<?php echo CommonHelper::generateUrl('EmailTemplates'); ?>"><?php echo Labels::getLabel('LBL_Email_Templates_Management', $adminLangId);?></a></li>
+                        <?php }?>
+                        <?php if ($objPrivilege->canViewOrderStatus(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                            <li><a href="<?php echo CommonHelper::generateUrl('OrderStatus'); ?>"><?php echo Labels::getLabel('LBL_Order_Status_Management', $adminLangId);?></a></li>
+                        <?php }?>
+                        <?php if ($objPrivilege->canViewSellerPackages(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                            <li><a href="<?php echo CommonHelper::generateUrl('SellerPackages'); ?>"><?php echo Labels::getLabel('LBL_Seller_Packages_Management', $adminLangId);?></a></li>
+                        <?php }?>
+                        <?php if ($objPrivilege->canViewRewardsOnPurchase(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                            <li><a href="<?php echo CommonHelper::generateUrl('RewardsOnPurchase'); ?>"><?php echo Labels::getLabel('LBL_Rewards_on_every_purchase', $adminLangId);?></a></li>
+                        <?php }?>
+                    </ul>
+                </li>
+            <?php } ?>
+
+            <!--Mobile Application-->
+            <?php if (
+                $objPrivilege->canViewCustomPushNotification(AdminAuthentication::getLoggedAdminId(), true)
+                ) { ?>
+                <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_MOBILE_APPLICATION', $adminLangId);?></a>
+                    <ul>
+
+                        <?php if ($objPrivilege->canViewCustomPushNotification(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                            <li><a href="<?php echo CommonHelper::generateUrl('MobileApp', 'pushNotification'); ?>"><?php echo Labels::getLabel('LBL_CUSTOM_PUSH_NOTIFICATION', $adminLangId);?></a></li>
+                        <?php }?>
+                    </ul>
+                </li>
+            <?php } ?>
+
             <!--Orders-->
             <?php if (
                 $objPrivilege->canViewOrders(AdminAuthentication::getLoggedAdminId(), true) ||
@@ -518,14 +534,14 @@
             <?php }?>
 
             <?php if ($objPrivilege->canViewSitemap(AdminAuthentication::getLoggedAdminId(), true)) { ?>
-				<li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Sitemap',$adminLangId);?></a>
-					<ul>
-						<li><a href="<?php echo CommonHelper::generateUrl('sitemap', 'generate'); ?>"><?php echo Labels::getLabel('LBL_Update_Sitemap',$adminLangId);?></a></li>
-						<li><a href="<?php echo CommonHelper::generateFullUrl('custom', 'sitemap', array(), CONF_WEBROOT_FRONT_URL); ?>" target="_blank"><?php echo Labels::getLabel('LBL_View_HTML',$adminLangId);?></a></li>
-						<li><a href="<?php echo CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL).'/sitemap.xml'; ?>" target="_blank"><?php echo Labels::getLabel('LBL_View_XML',$adminLangId);?></a></li>
-					</ul>
-				</li>
-			<?php }?>
+                <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Sitemap',$adminLangId);?></a>
+                    <ul>
+                        <li><a href="<?php echo CommonHelper::generateUrl('sitemap', 'generate'); ?>"><?php echo Labels::getLabel('LBL_Update_Sitemap',$adminLangId);?></a></li>
+                        <li><a href="<?php echo CommonHelper::generateFullUrl('custom', 'sitemap', array(), CONF_WEBROOT_FRONT_URL); ?>" target="_blank"><?php echo Labels::getLabel('LBL_View_HTML',$adminLangId);?></a></li>
+                        <li><a href="<?php echo CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL).'/sitemap.xml'; ?>" target="_blank"><?php echo Labels::getLabel('LBL_View_XML',$adminLangId);?></a></li>
+                    </ul>
+                </li>
+            <?php }?>
 
             <?php /*<li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Support_Link', $adminLangId);?></a>
                 <ul>
