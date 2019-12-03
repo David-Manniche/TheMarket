@@ -68,13 +68,13 @@ class FixerCurrencyApi extends CurrencyAddon
         return $data['rates'];
     }
 
-    public static function getSettingsForm()
+    public static function getSettingsForm($langId)
     {
         $frm = new Form('frmAddons');
         $frm->addHiddenField('', 'keyName', __CLASS__);
         $frm->addHiddenField('', 'addon_id');
-        $frm->addRequiredField(Labels::getLabel('LBL_API_KEY', CommonHelper::getLangId()), 'apiKey');
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', CommonHelper::getLangId()));
+        $frm->addRequiredField(Labels::getLabel('LBL_API_KEY', $langId), 'apiKey');
+        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
         return $frm;
     }
 }
