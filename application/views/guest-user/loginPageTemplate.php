@@ -105,7 +105,9 @@ if ($facebookLogin || $googleLogin || $appleLogin) { ?>
             <?php } if ($appleLogin ) { ?> 
                 <li>
                     <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'socialMediaLogin', array('apple')); ?>" class="btn btn--social btn--apple">
-                        A
+                        <i class="icn">
+                            <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/apple-logo.svg">
+                        </i>
                     </a>
                 </li>
             <?php } ?> 
