@@ -477,6 +477,8 @@ class GuestUserController extends MyAppController
             $this->setLoginErrorMessage($message, $redirect);
         }
         if (true ===  MOBILE_APP_API_CALL) {
+            $userId = $userInfo['user_id'];
+            $userObj = new User($userId);
             if (!$token = $userObj->setMobileAppToken()) {
                 FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
             }
