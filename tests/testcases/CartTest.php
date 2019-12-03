@@ -127,8 +127,28 @@ class CartTest extends TestCase
     public function providerSetCartAttributes()
     {
         return array(
-            array(0, 0, false),
-            array(6, 'o0fr148c0e8qb99kfdmcmdplnr', true),
+            array(0, 0, false), // Invalid userid and tempUserId
+            array(6, 'cjeh8i175mjbjitimfdheifdno', true), // Valid userid and tempUserId 
+        );
+    }
+    
+    /**
+     * @dataProvider providerGetProducts
+    */
+    public function testGetProducts( $userId, $siteLangId)
+    {  
+        $cart = new Cart($userId);
+        $result = $cart->getProducts($siteLangId);  
+        echo "<pre>"; print_R($result);die;
+        $this->assertIsArray($result);
+    }
+    
+    public function providerGetProducts()
+    {
+        return array(
+            array(0, 0), 
+            array(44545, 1), 
+            array(6, 1), 
         );
     }
     
