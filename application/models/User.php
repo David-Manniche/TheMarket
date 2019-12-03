@@ -325,7 +325,6 @@ class User extends MyAppModel
                 return CommonHelper::generateFullUrl('buyer');
              break;
             case User::USER_SELLER_DASHBOARD:
-            die('here');
                 return CommonHelper::generateFullUrl('seller');
              break;
             case User::USER_ADVERTISER_DASHBOARD:

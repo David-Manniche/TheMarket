@@ -466,6 +466,27 @@ class GuestUserController extends MyAppController
         return $userId;
     }
 
+    private function doLogin($userInfo, $redirect = true)
+    {
+        $authentication = new UserAuthentication();
+        $userName = $userInfo['credential_username'];
+        $password = $userInfo['credential_password'];
+        $remoteAddress = $_SERVER['REMOTE_ADDR'];
+        if (!$authentication->login($userName, $password, $remoteAddress, false)) {
+            $message = Labels::getLabel($authentication->getError(), $this->siteLangId);
+            $this->setLoginErrorMessage($message, $redirect);
+        }
+        if (true ===  MOBILE_APP_API_CALL) {
+            if (!$token = $userObj->setMobileAppToken()) {
+                FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+            }
+            unset($userInfo['credential_password']);
+            $this->set('token', $token);
+            $this->set('userInfo', $userInfo);
+            $this->_template->render(true, true, 'guest-user/login.php');
+        }
+    }
+
     public function loginFacebook()
     {
         $userType = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
@@ -542,25 +563,11 @@ class GuestUserController extends MyAppController
             $this->setLoginErrorMessage($message, false);
         }
 
-        $authentication = new UserAuthentication();
-        if (!$authentication->login($userInfo['credential_username'], $userInfo['credential_password'], $_SERVER['REMOTE_ADDR'], false)) {
-            $message = Labels::getLabel($authentication->getError(), $this->siteLangId);
-            $this->setLoginErrorMessage($message, false);
-        }
-
+        $this->doLogin($userInfo, false);
         unset($_SESSION['fb_' . FatApp::getConfig("CONF_FACEBOOK_APP_ID") . '_code']);
         unset($_SESSION['fb_' . FatApp::getConfig("CONF_FACEBOOK_APP_ID") . '_access_token']);
         unset($_SESSION['fb_' . FatApp::getConfig("CONF_FACEBOOK_APP_ID") . '_user_id']);
 
-        if (true ===  MOBILE_APP_API_CALL) {
-            if (!$token = $userObj->setMobileAppToken()) {
-                $this->setLoginErrorMessage($message, false);
-            }
-            $userInfo = $userObj->getUserInfo(array('user_name', 'user_id', 'user_phone', 'credential_email'), true, true, true);
-            $this->set('token', $token);
-            $this->set('userInfo', $userInfo);
-            $this->_template->render(true, true, 'guest-user/login.php');
-        }
         $this->redirectUser($userInfo['user_preferred_dashboard'], false);
     }
 
@@ -639,22 +646,7 @@ class GuestUserController extends MyAppController
                 $message = Labels::getLabel("MSG_USER_SOCIAL_CREDENTIALS_NOT_MATCHED", $this->siteLangId);
                 $this->setLoginErrorMessage($message);
             }
-
-            $authentication = new UserAuthentication();
-            if (!$authentication->login($userInfo['credential_username'], $userInfo['credential_password'], $_SERVER['REMOTE_ADDR'], false)) {
-                $message = Labels::getLabel($authentication->getError(), $this->siteLangId);
-                $this->setLoginErrorMessage($message);
-            }
-
-            if (true ===  MOBILE_APP_API_CALL) {
-                if (!$token = $userObj->setMobileAppToken()) {
-                    FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
-                }
-                $userInfo = $userObj->getUserInfo(array('user_name', 'user_id', 'user_phone', 'credential_email'), true, true, true);
-                $this->set('token', $token);
-                $this->set('userInfo', $userInfo);
-                $this->_template->render(true, true, 'guest-user/login.php');
-            }
+            $this->doLogin($userInfo);
             $this->redirectUser($userInfo['user_preferred_dashboard']);
         }
 
@@ -710,20 +702,7 @@ class GuestUserController extends MyAppController
                 }
             }
 
-            $authentication = new UserAuthentication();
-            if (!$authentication->login($userInfo['credential_username'], $userInfo['credential_password'], $_SERVER['REMOTE_ADDR'], false)) {
-                $message = Labels::getLabel($authentication->getError(), $this->siteLangId);
-                $this->setLoginErrorMessage($message);
-            }
-            if (true ===  MOBILE_APP_API_CALL) {
-                if (!$token = $userObj->setMobileAppToken()) {
-                    FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
-                }
-                unset($userInfo['credential_password']);
-                $this->set('token', $token);
-                $this->set('userInfo', $userInfo);
-                $this->_template->render(true, true, 'guest-user/login.php');
-            }
+            $this->doLogin($userInfo);
             $this->redirectUser($userInfo['user_preferred_dashboard']);
         }
         
