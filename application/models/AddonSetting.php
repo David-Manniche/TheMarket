@@ -12,7 +12,7 @@ class AddonSetting
         $this->db = FatApp::getDb();
         $this->keyName = $addonCode;
         if (empty($this->keyName)) {
-            $this->error = Labels::getLabel('LBL_INVALID_KEY_NAME', $this->commonLangId);
+            $this->error = Labels::getLabel('LBL_INVALID_KEY_NAME', CommonHelper::getLangId());
             return false;
         }
     }
@@ -26,7 +26,7 @@ class AddonSetting
     {
         $addOnId = FatUtility::int($addOnId);
         if (1 > $addOnId) {
-            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->commonLangId);
+            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId());
             return false;
         }
         $srch = new SearchBase(static::DB_TBL, 'tads');
@@ -35,13 +35,31 @@ class AddonSetting
         return $this->db->fetchAll($rs);
     }
 
+    public function get()
+    {
+        $settingsData = Addon::getAttributesByCode($this->keyName);
+        if (!$settingsData) {
+            return false;
+        }
+
+        $addonSettings = $this->fetchData($settingsData["addon_id"]);
+
+        $addonSettingArr = [];
+
+        foreach ($addonSettings as $val) {
+            $addonSettingArr[$val[ static::DB_TBL_PREFIX . "key"]] = $val[ static::DB_TBL_PREFIX . "value"];
+        }
+        $addonSettingArr['addon_name'] = $settingsData['addon_identifier'] ;
+        return array_merge($addonSettingArr, $settingsData);
+    }
+
     public function save($data)
     {
         if (empty($data)) {
-            $this->error = Labels::getLabel('MSG_PLEASE_PROVIDE_DATA_TO_SAVE_SETTINGS', $this->commonLangId);
+            $this->error = Labels::getLabel('MSG_PLEASE_PROVIDE_DATA_TO_SAVE_SETTINGS', CommonHelper::getLangId());
             return false;
         }
-        $frm = $this->keyName::getSettingsForm($this->commonLangId);
+        $frm = $this->keyName::getSettingsForm(CommonHelper::getLangId());
         $data = $frm->getFormDataFromArray(FatApp::getPostedData());
         unset($data['btn_submit']);
 
@@ -70,7 +88,7 @@ class AddonSetting
     {
         $addOnId = FatUtility::int($addOnId);
         if (1 > $addOnId) {
-            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->commonLangId);
+            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId());
             return false;
         }
         $statement = [
@@ -84,24 +102,6 @@ class AddonSetting
             return false;
         }
         return true;
-    }
-
-    public function get()
-    {
-        $settingsData = Addon::getAttributesByCode($this->keyName);
-        if (!$settingsData) {
-            return false;
-        }
-
-        $addonSettings = $this->fetchData($settingsData["addon_id"]);
-
-        $addonSettingArr = [];
-
-        foreach ($addonSettings as $val) {
-            $addonSettingArr[$val[ static::DB_TBL_PREFIX . "key"]] = $val[ static::DB_TBL_PREFIX . "value"];
-        }
-        $addonSettingArr['addon_name'] = $settingsData['addon_identifier'] ;
-        return array_merge($addonSettingArr, $settingsData);
     }
 
     public static function getSettings()
