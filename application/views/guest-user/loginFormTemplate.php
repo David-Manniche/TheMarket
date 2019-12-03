@@ -94,9 +94,16 @@
             </div>
             <?php } ?>
             <?php
-            $facebookLogin  = (FatApp::getConfig('CONF_ENABLE_FACEBOOK_LOGIN', FatUtility::VAR_INT, 0) && FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, ''))?true:false ;
-            $googleLogin  = (FatApp::getConfig('CONF_ENABLE_GOOGLE_LOGIN', FatUtility::VAR_INT, 0)&& FatApp::getConfig('CONF_GOOGLEPLUS_CLIENT_ID', FatUtility::VAR_STRING, ''))?true:false ;
-            if ($facebookLogin || $googleLogin) {?>
+            $facebookLogin  = (FatApp::getConfig('CONF_ENABLE_FACEBOOK_LOGIN', FatUtility::VAR_INT, 0) && FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, '')) ? true : false;
+            $googleLogin  = (FatApp::getConfig('CONF_ENABLE_GOOGLE_LOGIN', FatUtility::VAR_INT, 0)&& FatApp::getConfig('CONF_GOOGLEPLUS_CLIENT_ID', FatUtility::VAR_STRING, '')) ? true : false;
+            $enableAppleLogin = FatApp::getConfig('CONF_ENABLE_APPLE_LOGIN', FatUtility::VAR_INT, 0);
+            $settings = AppleSignIn::getSettings();
+            $clientId = $settings['clientId'];
+            $appleLogin = false;
+            if ($enableAppleLogin && !empty($clientId)) {
+                $appleLogin = true;
+            }
+            if ($facebookLogin || $googleLogin || $appleLogin) {?>
             <div class="other-option">
                 <div class="section-head section--head--center">
                     <div class="section__heading">
@@ -106,12 +113,30 @@
                 <div class="buttons-list">
                     <ul>
                         <?php if ($facebookLogin) { ?>
-                        <li><a href="javascript:void(0)" onclick="dofacebookInLoginForBuyerpopup()" class="btn btn--social btn--fb"><i class="icn"><img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/facebook.svg"></i></a></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="dofacebookInLoginForBuyerpopup()" class="btn btn--social btn--fb">
+                                    <i class="icn">
+                                        <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/facebook.svg">
+                                    </i>
+                                </a>
+                            </li>
                         <?php }
                         if ($googleLogin) { ?>
-                        <li><a href="<?php echo CommonHelper::generateUrl('GuestUser', 'socialMediaLogin',array('google')); ?>" class="btn btn--social btn--gp"><i class="icn"><img
-                                        src="<?php echo CONF_WEBROOT_URL; ?>images/retina/google-plus.svg"></i></a></li>
-                        <?php }?>
+                            <li>
+                                <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'socialMediaLogin',array('google')); ?>" class="btn btn--social btn--gp">
+                                    <i class="icn">
+                                        <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/google-plus.svg">
+                                    </i>
+                                </a>
+                            </li>
+                        <?php }
+                        if ($appleLogin) { ?> 
+                            <li>
+                                <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'socialMediaLogin', array('apple')); ?>" class="btn btn--social btn--apple">
+                                    A
+                                </a>
+                            </li>
+                        <?php } ?> 
                     </ul>
                 </div>
             </div>

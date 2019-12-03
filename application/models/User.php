@@ -71,7 +71,7 @@ class User extends MyAppModel
     public const AFFILIATE_PAYMENT_METHOD_PAYPAL = 3;
 
     public const RETURN_ADDRESS_ACCOUNT_TAB = 'return-address';
-    public const RETURN_ADDRESS_TAB_1 =1;
+    public const RETURN_ADDRESS_TAB_1 = 1;
 
     public const CLASS_PENDING = 'warning';
     public const CLASS_APPROVED = 'success';
@@ -123,7 +123,7 @@ class User extends MyAppModel
         }
 
         if ($joinUserCredentials) {
-            $srch->joinTable(static::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.'.static::DB_TBL_CRED_PREFIX.'user_id = u.user_id', 'uc');
+            $srch->joinTable(static::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.' . static::DB_TBL_CRED_PREFIX . 'user_id = u.user_id', 'uc');
         }
         return $srch;
     }
@@ -291,14 +291,14 @@ class User extends MyAppModel
         if ($langId == 0) {
             trigger_error(Labels::getLabel('ERR_Language_Id_not_specified.', $langId), E_USER_ERROR);
         }
-        $arr=array(
-        static::USER_FIELD_TYPE_TEXT => Labels::getLabel('LBL_Textbox', $langId),
-        static::USER_FIELD_TYPE_TEXTAREA => Labels::getLabel('LBL_Textarea', $langId),
-        static::USER_FIELD_TYPE_FILE => Labels::getLabel('LBL_File', $langId),
-        static::USER_FIELD_TYPE_DATE => Labels::getLabel('LBL_Date', $langId),
-        static::USER_FIELD_TYPE_DATETIME => Labels::getLabel('LBL_Datetime', $langId),
-        static::USER_FIELD_TYPE_TIME => Labels::getLabel('LBL_Time', $langId),
-        static::USER_FIELD_TYPE_PHONE => Labels::getLabel('LBL_Phone', $langId),
+        $arr = array(
+            static::USER_FIELD_TYPE_TEXT => Labels::getLabel('LBL_Textbox', $langId),
+            static::USER_FIELD_TYPE_TEXTAREA => Labels::getLabel('LBL_Textarea', $langId),
+            static::USER_FIELD_TYPE_FILE => Labels::getLabel('LBL_File', $langId),
+            static::USER_FIELD_TYPE_DATE => Labels::getLabel('LBL_Date', $langId),
+            static::USER_FIELD_TYPE_DATETIME => Labels::getLabel('LBL_Datetime', $langId),
+            static::USER_FIELD_TYPE_TIME => Labels::getLabel('LBL_Time', $langId),
+            static::USER_FIELD_TYPE_PHONE => Labels::getLabel('LBL_Phone', $langId),
         );
         return $arr;
     }
@@ -309,11 +309,11 @@ class User extends MyAppModel
         if ($langId == 0) {
             trigger_error(Labels::getLabel('ERR_Language_Id_not_specified.', $langId), E_USER_ERROR);
         }
-        $arr=array(
-        static::USER_BUYER_DASHBOARD => Labels::getLabel('LBL_Buyer', $langId),
-        static::USER_SELLER_DASHBOARD => Labels::getLabel('LBL_Seller', $langId),
-        static::USER_ADVERTISER_DASHBOARD => Labels::getLabel('LBL_Advertiser', $langId),
-        static::USER_AFFILIATE_DASHBOARD => Labels::getLabel('LBL_Affiliate', $langId),
+        $arr = array(
+            static::USER_BUYER_DASHBOARD => Labels::getLabel('LBL_Buyer', $langId),
+            static::USER_SELLER_DASHBOARD => Labels::getLabel('LBL_Seller', $langId),
+            static::USER_ADVERTISER_DASHBOARD => Labels::getLabel('LBL_Advertiser', $langId),
+            static::USER_AFFILIATE_DASHBOARD => Labels::getLabel('LBL_Affiliate', $langId),
         );
         return $arr;
     }
@@ -325,6 +325,7 @@ class User extends MyAppModel
                 return CommonHelper::generateFullUrl('buyer');
              break;
             case User::USER_SELLER_DASHBOARD:
+            die('here');
                 return CommonHelper::generateFullUrl('seller');
              break;
             case User::USER_ADVERTISER_DASHBOARD:
@@ -366,10 +367,10 @@ class User extends MyAppModel
         if ($langId == 0) {
             trigger_error(Labels::getLabel('ERR_Language_Id_not_specified.', $langId), E_USER_ERROR);
         }
-        $arr=array(
-        static::CATALOG_REQUEST_PENDING => Labels::getLabel('LBL_Pending', $langId),
-        static::CATALOG_REQUEST_APPROVED => Labels::getLabel('LBL_Approved', $langId),
-        static::CATALOG_REQUEST_CANCELLED => Labels::getLabel('LBL_Cancelled', $langId)
+        $arr = array(
+            static::CATALOG_REQUEST_PENDING => Labels::getLabel('LBL_Pending', $langId),
+            static::CATALOG_REQUEST_APPROVED => Labels::getLabel('LBL_Approved', $langId),
+            static::CATALOG_REQUEST_CANCELLED => Labels::getLabel('LBL_Cancelled', $langId)
         );
         return $arr;
     }
@@ -378,8 +379,8 @@ class User extends MyAppModel
     {
         $srch = static::getSearchObject($joinUserCredentials, $skipDeleted);
 
-        if ($this->mainTableRecordId>0) {
-            $srch->addCondition('u.'.static::DB_TBL_PREFIX.'id', '=', $this->mainTableRecordId);
+        if ($this->mainTableRecordId > 0) {
+            $srch->addCondition('u.' . static::DB_TBL_PREFIX . 'id', '=', $this->mainTableRecordId);
         }
 
         if (null != $attr) {
@@ -391,17 +392,17 @@ class User extends MyAppModel
         } else {
             $srch->addMultipleFields(
                 array(
-                'u.'.static::DB_TBL_PREFIX.'id',
-                'u.'.static::DB_TBL_PREFIX.'name',
-                'u.'.static::DB_TBL_PREFIX.'phone',
-                'u.'.static::DB_TBL_PREFIX.'profile_info',
-                'u.'.static::DB_TBL_PREFIX.'regdate',
-                'u.'.static::DB_TBL_PREFIX.'preferred_dashboard',
-                'u.'.static::DB_TBL_PREFIX.'registered_initially_for',
-                'uc.'.static::DB_TBL_CRED_PREFIX.'username',
-                'uc.'.static::DB_TBL_CRED_PREFIX.'email',
-                'uc.'.static::DB_TBL_CRED_PREFIX.'active',
-                'uc.'.static::DB_TBL_CRED_PREFIX.'verified'
+                'u.' . static::DB_TBL_PREFIX . 'id',
+                'u.' . static::DB_TBL_PREFIX . 'name',
+                'u.' . static::DB_TBL_PREFIX . 'phone',
+                'u.' . static::DB_TBL_PREFIX . 'profile_info',
+                'u.' . static::DB_TBL_PREFIX . 'regdate',
+                'u.' . static::DB_TBL_PREFIX . 'preferred_dashboard',
+                'u.' . static::DB_TBL_PREFIX . 'registered_initially_for',
+                'uc.' . static::DB_TBL_CRED_PREFIX . 'username',
+                'uc.' . static::DB_TBL_CRED_PREFIX . 'email',
+                'uc.' . static::DB_TBL_CRED_PREFIX . 'active',
+                'uc.' . static::DB_TBL_CRED_PREFIX . 'verified'
                 )
             );
         }
@@ -416,15 +417,15 @@ class User extends MyAppModel
         }
         $srch = $this->getUserSearchObj($attr);
         if ($isActive) {
-            $srch->addCondition('uc.'.static::DB_TBL_CRED_PREFIX.'active', '=', 1);
+            $srch->addCondition('uc.' . static::DB_TBL_CRED_PREFIX . 'active', '=', 1);
         }
 
         if ($isVerified) {
-            $srch->addCondition('uc.'.static::DB_TBL_CRED_PREFIX.'verified', '=', 1);
+            $srch->addCondition('uc.' . static::DB_TBL_CRED_PREFIX . 'verified', '=', 1);
         }
 
         if ($joinUserCredentials) {
-            $srch->joinTable(static::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.'.static::DB_TBL_CRED_PREFIX.'user_id = u.user_id', 'uc');
+            $srch->joinTable(static::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.' . static::DB_TBL_CRED_PREFIX . 'user_id = u.user_id', 'uc');
         }
 
         $rs = $srch->getResultSet();
@@ -2005,7 +2006,7 @@ class User extends MyAppModel
     public static function isCatalogRequestSubmittedForApproval($preqId)
     {
         $row = ProductRequest::getAttributesById($preqId, array('preq_submitted_for_approval'));
-        if (!empty($row)&& $row['preq_submitted_for_approval'] ==  applicationConstants::YES) {
+        if (!empty($row) && $row['preq_submitted_for_approval'] ==  applicationConstants::YES) {
             return true;
         }
         return false;
@@ -2022,12 +2023,12 @@ class User extends MyAppModel
 
         $expiry = strtotime("+7 DAYS");
         $values = array(
-        'uauth_user_id'=>$this->mainTableRecordId,
-        'uauth_token'=>$generatedToken,
-        'uauth_expiry'=>date('Y-m-d H:i:s', $expiry),
-        'uauth_browser'=>CommonHelper::userAgent(),
-        'uauth_last_access'=>date('Y-m-d H:i:s'),
-        'uauth_last_ip'=>CommonHelper::getClientIp(),
+            'uauth_user_id' => $this->mainTableRecordId,
+            'uauth_token' => $generatedToken,
+            'uauth_expiry' => date('Y-m-d H:i:s', $expiry),
+            'uauth_browser' => CommonHelper::userAgent(),
+            'uauth_last_access' => date('Y-m-d H:i:s'),
+            'uauth_last_ip' => CommonHelper::getClientIp(),
         );
         if (! UserAuthentication::saveLoginToken($values)) {
             return false;

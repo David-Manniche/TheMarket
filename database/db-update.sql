@@ -401,3 +401,5 @@ ALTER TABLE `tbl_addons`
 COMMIT;
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Google_Plus_Login';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_LoggedIn_SUCCESSFULLY';
+INSERT INTO `tbl_addons` (`addon_id`, `addon_identifier`, `addon_type`, `addon_code`, `addon_active`, `addon_display_order`) VALUES (NULL, 'Apple Sign In', '2', 'AppleSignIn', '1', '3');

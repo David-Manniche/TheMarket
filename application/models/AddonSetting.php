@@ -41,8 +41,7 @@ class AddonSetting
             $this->error = Labels::getLabel('MSG_PLEASE_PROVIDE_DATA_TO_SAVE_SETTINGS', $this->commonLangId);
             return false;
         }
-        $obj = new $this->keyName();
-        $frm = $obj->getSettingsForm();
+        $frm = $this->keyName::getSettingsForm();
         $data = $frm->getFormDataFromArray(FatApp::getPostedData());
         unset($data['btn_submit']);
 

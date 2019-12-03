@@ -67,10 +67,10 @@ class CurrencyConverterApi extends AddonSetting
         return $data;
     }
 
-    public function getSettingsForm()
+    public static function getSettingsForm()
     {
         $frm = new Form('frmAddons');
-        $frm->addHiddenField('', 'keyName', get_class($this));
+        $frm->addHiddenField('', 'keyName', __CLASS__);
         $frm->addHiddenField('', 'addon_id');
         $frm->addRequiredField(Labels::getLabel('LBL_API_KEY', CommonHelper::getLangId()), 'apiKey');
         $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', CommonHelper::getLangId()));

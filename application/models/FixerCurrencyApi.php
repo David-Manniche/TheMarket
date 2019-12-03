@@ -1,7 +1,7 @@
 <?php
 class FixerCurrencyApi extends AddonSetting
 {
-    private const PRODUCTION = 'http://data.fixer.io/api/'; 
+    private const PRODUCTION = 'http://data.fixer.io/api/';
     
     public function __construct($baseCurrencyCode = '')
     {
@@ -61,10 +61,10 @@ class FixerCurrencyApi extends AddonSetting
         return $data['rates'];
     }
 
-    public function getSettingsForm()
+    public static function getSettingsForm()
     {
         $frm = new Form('frmAddons');
-        $frm->addHiddenField('', 'keyName', get_class($this));
+        $frm->addHiddenField('', 'keyName', __CLASS__);
         $frm->addHiddenField('', 'addon_id');
         $frm->addRequiredField(Labels::getLabel('LBL_API_KEY', CommonHelper::getLangId()), 'apiKey');
         $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', CommonHelper::getLangId()));

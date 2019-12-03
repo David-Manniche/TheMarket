@@ -1,24 +1,24 @@
 <?php
 class UserAuthentication extends FatModel
 {
-    const SESSION_ELEMENT_NAME = 'yokartUserSession';
-    const AFFILIATE_SESSION_ELEMENT_NAME = 'yokartAffiliateSession';
-    const YOKARTUSER_COOKIE_NAME = '_uyokart';
+    public const SESSION_ELEMENT_NAME = 'yokartUserSession';
+    public const AFFILIATE_SESSION_ELEMENT_NAME = 'yokartAffiliateSession';
+    public const YOKARTUSER_COOKIE_NAME = '_uyokart';
 
-    const DB_TBL_USER_PRR = 'tbl_user_password_reset_requests';
-    const DB_TBL_UPR_PREFIX = 'uprr_';
+    public const DB_TBL_USER_PRR = 'tbl_user_password_reset_requests';
+    public const DB_TBL_UPR_PREFIX = 'uprr_';
 
-    const DB_TBL_USER_AUTH = 'tbl_user_auth_token';
-    const DB_TBL_UAUTH_PREFIX = 'uauth_';
+    public const DB_TBL_USER_AUTH = 'tbl_user_auth_token';
+    public const DB_TBL_UAUTH_PREFIX = 'uauth_';
 
-    const TOKEN_LENGTH = 32;
+    public const TOKEN_LENGTH = 32;
 
     private $commonLangId;
 
-    const AFFILIATE_REG_STEP1 = 1;
-    const AFFILIATE_REG_STEP2 = 2;
-    const AFFILIATE_REG_STEP3 = 3;
-    const AFFILIATE_REG_STEP4 = 4;
+    public const AFFILIATE_REG_STEP1 = 1;
+    public const AFFILIATE_REG_STEP2 = 2;
+    public const AFFILIATE_REG_STEP3 = 3;
+    public const AFFILIATE_REG_STEP4 = 4;
 
     public function __construct()
     {

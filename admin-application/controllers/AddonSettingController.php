@@ -16,8 +16,7 @@ class AddonSettingController extends AdminBaseController
             FatUtility::dieJsonError(Labels::getLabel('LBL_INVALID_KEY_NAME', $this->adminLangId));
         }
         try {
-            $obj = new $this->keyName();
-            $this->frmObj = $obj->getSettingsForm();
+            $this->frmObj = $this->keyName::getSettingsForm();
         } catch (\Error $e) {
             FatUtility::dieJsonError($e->getMessage());
         }
@@ -50,7 +49,6 @@ class AddonSettingController extends AdminBaseController
             Message::addErrorMessage($addon->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-
         $this->set('msg', $this->str_setup_successful);
         $this->_template->render(false, false, 'json-success.php');
     }

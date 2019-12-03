@@ -72,9 +72,8 @@ $googleLogin = (FatApp::getConfig('CONF_ENABLE_GOOGLE_LOGIN', FatUtility::VAR_IN
 $enableAppleLogin = FatApp::getConfig('CONF_ENABLE_APPLE_LOGIN', FatUtility::VAR_INT, 0);
 $settings = AppleSignIn::getSettings();
 $clientId = $settings['clientId'];
-$privateKey = $settings['privateKey'];
 $appleLogin = false;
-if ($enableAppleLogin && !empty($clientId) && !empty($privateKey)) {
+if ($enableAppleLogin && !empty($clientId)) {
     $appleLogin = true;
 }
 
@@ -105,8 +104,9 @@ if ($facebookLogin || $googleLogin || $appleLogin) { ?>
                 </li>
             <?php } if ($appleLogin ) { ?> 
                 <li>
-                    <div id="appleid-signin" data-color="black" data-border="true" data-type="sign in"></div>
-                    <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
+                    <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'socialMediaLogin', array('apple')); ?>" class="btn btn--social btn--apple">
+                        A
+                    </a>
                 </li>
             <?php } ?> 
         </ul>
@@ -166,12 +166,3 @@ if ($facebookLogin || $googleLogin || $appleLogin) { ?>
     }(document, 'script', 'facebook-jssdk'));
     /*Facebook Login API JS SDK*/
 </script>
-
-<?php if ($appleLogin) { ?> 
-    <script type="text/javascript">
-        AppleID.auth.init({
-            clientId : "<?php echo $clientId; ?>",
-            redirectURI: "<?php echo CommonHelper::generateFullUrl('GuestUser', 'loginApple', array(), '', false); ?>"
-        });
-    </script>
-<?php } ?>
