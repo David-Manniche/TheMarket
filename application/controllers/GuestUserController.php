@@ -1,6 +1,10 @@
 <?php
 class GuestUserController extends MyAppController
 {
+    private const FB_LOGIN = 1;
+    private const GOOGLE_LOGIN = 2;
+    private const APPLE_LOGIN = 3;
+    
     public function loginForm($isRegisterForm = 0)
     {
         /* if(UserAuthentication::doCookieLogin()){
@@ -276,7 +280,7 @@ class GuestUserController extends MyAppController
         }
     }
 
-    private function getUserInfo($email, $userType, $fbLogin = false)
+    private function getUserInfo($recordIdentifier, $userType, $loginType)
     {
         $db = FatApp::getDb();
         $userObj = new User();
@@ -294,16 +298,29 @@ class GuestUserController extends MyAppController
             'user_is_affiliate',
             'user_googleplus_id',
             'user_facebook_id',
+            'user_apple_id',
             'credential_active',
             'credential_username',
             'credential_password',
         ];
         $srch = $userObj->getUserSearchObj($attr);
-        if (true === $fbLogin) {
-            $cnd = $srch->addCondition('credential_email', '=', $email, 'OR');
-            $cnd->attachCondition('user_facebook_id', '=', $email);
-        } else {
-            $srch->addCondition('credential_email', '=', $email);
+        
+        $cnd = $srch->addCondition('credential_email', '=', $recordIdentifier);
+
+        switch ($loginType) {
+            case static::FB_LOGIN:
+                $cnd->attachCondition('user_facebook_id', '=', $recordIdentifier);
+                break;
+            case static::GOOGLE_LOGIN:
+                $cnd->attachCondition('user_googleplus_id', '=', $recordIdentifier);
+                break;
+            case static::APPLE_LOGIN:
+                $cnd->attachCondition('user_apple_id', '=', $recordIdentifier);
+                break;
+            default:
+                $message = Labels::getLabel('MSG_INVALID_SOCIAL_LOGIN_TYPE', $this->siteLangId);
+                $this->setLoginErrorMessage($message);
+                break;
         }
         $rs = $srch->getResultSet();
         if (!$rs) {
@@ -374,7 +391,7 @@ class GuestUserController extends MyAppController
         FatApp::redirectUser($redirectUrl);
     }
 
-    private function setupUser($user_type, $userName, $userGoogleId, $userFacebookId, $userEmail)
+    private function setupUser($user_type, $userName, $loginType, $socialLoginId, $userEmail)
     {
         $userObj = new User();
         $db = FatApp::getDb();
@@ -392,6 +409,18 @@ class GuestUserController extends MyAppController
 
         $db->startTransaction();
 
+        switch ($loginType) {
+            case static::FB_LOGIN:
+                $userFacebookId = $socialLoginId;
+                break;
+            case static::GOOGLE_LOGIN:
+                $userGoogleId = $socialLoginId;
+                break;
+            case static::APPLE_LOGIN:
+                $userAppleId = $socialLoginId;
+                break;
+        }
+
         $userData = array(
             'user_name' => $userName,
             'user_is_buyer' => (isset($user_type) && $user_type == User::USER_TYPE_BUYER) ? 1 : 0,
@@ -399,6 +428,7 @@ class GuestUserController extends MyAppController
             'user_is_advertiser' => $user_is_advertiser,
             'user_googleplus_id' => !empty($userGoogleId) ? $userGoogleId : '',
             'user_facebook_id' => !empty($userFacebookId) ? $userFacebookId : '',
+            'user_apple_id' => !empty($userAppleId) ? $userAppleId : '',
             'user_preferred_dashboard' => $userPreferredDashboard,
             'user_registered_initially_for' => $user_registered_initially_for
         );
@@ -541,7 +571,7 @@ class GuestUserController extends MyAppController
 
 
         $email = empty($facebookEmail) ? $userFacebookId : $facebookEmail;
-        $userInfo = $this->getUserInfo($email, $userType, true);
+        $userInfo = $this->getUserInfo($email, $userType, static::FB_LOGIN);
         if (!empty($userInfo)) {
             $userId = $userInfo['user_id'];
             $userObj = new User($userId);
@@ -553,7 +583,7 @@ class GuestUserController extends MyAppController
             }
         } else {
             $userType = (0 < $userType ? $userType : User::USER_TYPE_BUYER);
-            $userId = $this->setupUser($userType, $facebookName, 0, $userFacebookId, $facebookEmail);
+            $userId = $this->setupUser($userType, $facebookName, static::FB_LOGIN, $userFacebookId, $facebookEmail);
             $userObj = new User($userId);
             if (!$userInfo = $userObj->getUserInfo(['user_name', 'user_id', 'user_phone', 'user_facebook_id', 'credential_email', 'user_preferred_dashboard', 'credential_username', 'credential_password'])) {
                 $message = Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->siteLangId);
@@ -624,7 +654,7 @@ class GuestUserController extends MyAppController
         }
         
         if (isset($userGoogleEmail) && (!empty($userGoogleEmail))) {
-            $userInfo = $this->getUserInfo($userGoogleEmail, $userType);
+            $userInfo = $this->getUserInfo($userGoogleEmail, $userType, static::GOOGLE_LOGIN);
             if (!empty($userInfo)) {
                 $userId = $userInfo['user_id'];
                 $userObj = new User($userId);
@@ -636,7 +666,7 @@ class GuestUserController extends MyAppController
                 }
             } else {
                 $userType = (0 < $userType ? $userType : User::USER_TYPE_BUYER);
-                $userId = $this->setupUser($userType, $userGoogleName, $userGoogleId, 0, $userGoogleEmail);
+                $userId = $this->setupUser($userType, $userGoogleName, static::GOOGLE_LOGIN, $userGoogleId, $userGoogleEmail);
                 $userObj = new User($userId);
                 if (!$userInfo = $userObj->getUserInfo(['user_name', 'user_id', 'user_phone', 'credential_email', 'user_googleplus_id', 'user_preferred_dashboard', 'credential_username', 'credential_password'])) {
                     $message = Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->siteLangId);
@@ -672,6 +702,14 @@ class GuestUserController extends MyAppController
             $claims = explode('.', $appleResponse['id_token'])[1];
             $claims = json_decode(base64_decode($claims), true);
             $appleUserInfo = isset($appleResponse['user']) ? json_decode($appleResponse['user'], true) : false;
+            
+            $isPrivateEmailId = false;
+            if (isset($claims['is_private_email']) && $claims['is_private_email'] == true ) {
+                $isPrivateEmailId = true;
+            }
+
+            $userAppleId = isset($claims['sub']) ? $claims['sub'] : '';
+
             if (false === $appleUserInfo) {
                 if (!isset($claims['email'])) {
                     $message = Labels::getLabel('MSG_UNABLE_TO_FETCH_USER_INFO', $this->siteLangId);
@@ -688,7 +726,12 @@ class GuestUserController extends MyAppController
                 $message = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
                 $this->setLoginErrorMessage($message, false);
             }
-            $userInfo = $this->getUserInfo($appleEmailId, $userType);
+
+            if (true === $isPrivateEmailId && !empty($userAppleId)) {
+                $userInfo = $this->getUserInfo($userAppleId, $userType, static::APPLE_LOGIN);
+            } else {
+                $userInfo = $this->getUserInfo($appleEmailId, $userType, static::APPLE_LOGIN);
+            }
             if (!empty($userInfo)) {
                 $userId = $userInfo['user_id'];
                 $userObj = new User($userId);
@@ -696,12 +739,17 @@ class GuestUserController extends MyAppController
                 $userType = (0 < $userType ? $userType : User::USER_TYPE_BUYER);
                 $exp = explode("@", $appleEmailId);
                 $appleUserName = substr($exp[0], 0, 80) . rand();
-                $userId = $this->setupUser($userType, $appleUserName, 0, 0, $appleEmailId);
+                $userId = $this->setupUser($userType, $appleUserName, static::APPLE_LOGIN, $userAppleId, $appleEmailId);
                 $userObj = new User($userId);
-                if (!$userInfo = $userObj->getUserInfo(['user_name', 'user_id', 'user_phone', 'credential_email', 'user_preferred_dashboard', 'credential_username', 'credential_password'])) {
+                if (!$userInfo = $userObj->getUserInfo(['user_name', 'user_id', 'user_phone', 'user_apple_id','credential_email', 'user_preferred_dashboard', 'credential_username', 'credential_password'])) {
                     $message = Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->siteLangId);
                     $this->setLoginErrorMessage($message);
                 }
+            }
+
+            if (!empty($userAppleId) && $userInfo['user_apple_id'] != $userAppleId) {
+                $message = Labels::getLabel("MSG_USER_SOCIAL_CREDENTIALS_NOT_MATCHED", $this->siteLangId);
+                $this->setLoginErrorMessage($message, false);
             }
 
             $this->doLogin($userInfo);
