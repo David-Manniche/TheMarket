@@ -69,7 +69,7 @@ echo $loginFrm->getExternalJS();
 $facebookLogin  = (FatApp::getConfig('CONF_ENABLE_FACEBOOK_LOGIN', FatUtility::VAR_INT, 0) && FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, '')) ? true : false ;
 $googleLogin = (FatApp::getConfig('CONF_ENABLE_GOOGLE_LOGIN', FatUtility::VAR_INT, 0) && FatApp::getConfig('CONF_GOOGLEPLUS_CLIENT_ID', FatUtility::VAR_STRING, '')) ? true : false;
 
-$enableAppleLogin = FatApp::getConfig('CONF_ENABLE_APPLE_LOGIN', FatUtility::VAR_INT, 0);
+$enableAppleLogin = AppleSignIn::getStatus();
 $settings = AppleSignIn::getSettings();
 $clientId = $settings['clientId'];
 $appleLogin = false;

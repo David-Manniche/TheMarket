@@ -7,22 +7,19 @@ class AddonSetting
     public const DB_TBL = 'tbl_addon_settings';
     public const DB_TBL_PREFIX = 'addonsetting_';
 
-    public function __construct($addonCode)
+    public function __construct($addonCode = '')
     {
-        $this->db = FatApp::getDb();
-        $this->keyName = $addonCode;
-        if (empty($this->keyName)) {
+        $addonCode = empty($addonCode) ? get_called_class() : $addonCode;
+        if ($addonCode == __CLASS__) {
             $this->error = Labels::getLabel('LBL_INVALID_KEY_NAME', CommonHelper::getLangId());
             return false;
         }
+
+        $this->keyName = $addonCode;
+        $this->db = FatApp::getDb();
     }
 
-    public function getError()
-    {
-        return $this->error;
-    }
-
-    public function fetchData($addOnId)
+    private function fetchData($addOnId)
     {
         $addOnId = FatUtility::int($addOnId);
         if (1 > $addOnId) {
@@ -33,6 +30,26 @@ class AddonSetting
         $srch->addCondition('tads.' . static::DB_TBL_PREFIX . 'addon_id', '=', (int) $addOnId);
         $rs = $srch->getResultSet();
         return $this->db->fetchAll($rs);
+    }
+
+    private function delete($addOnId)
+    {
+        $addOnId = FatUtility::int($addOnId);
+        if (1 > $addOnId) {
+            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId());
+            return false;
+        }
+        $statement = [
+            'smt' => static::DB_TBL_PREFIX . 'addon_id = ?',
+            'vals' => [
+                    $addOnId
+                ]
+        ];
+        if (!$this->db->deleteRecords(static::DB_TBL, $statement)) {
+            $this->error = $this->db->getError();
+            return false;
+        }
+        return true;
     }
 
     public function get()
@@ -84,32 +101,19 @@ class AddonSetting
         return true;
     }
 
-    public function delete($addOnId)
-    {
-        $addOnId = FatUtility::int($addOnId);
-        if (1 > $addOnId) {
-            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId());
-            return false;
-        }
-        $statement = [
-            'smt' => static::DB_TBL_PREFIX . 'addon_id = ?',
-            'vals' => [
-                    $addOnId
-                ]
-        ];
-        if (!$this->db->deleteRecords(static::DB_TBL, $statement)) {
-            $this->error = $this->db->getError();
-            return false;
-        }
-        return true;
-    }
-
     public static function getSettings()
     {
-        if (get_called_class() == __CLASS__) {
-            return false;
-        }
         $obj = new AddonSetting(get_called_class());
         return $obj->get();
+    }
+
+    public static function getStatus()
+    {
+        return Addon::getAttributesByCode(get_called_class(), 'addon_active');
+    }
+
+    public function getError()
+    {
+        return $this->error;
     }
 }

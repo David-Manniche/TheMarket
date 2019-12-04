@@ -779,16 +779,6 @@ class ConfigurationsController extends AdminBaseController
                 );
                 $fld11->htmlAfterField = "<br><small>".Labels::getLabel("LBL_On_enabling_this_feature,users_will_be_able_to_login_using_google_account._Please_define_settings_for_google_plus_login_if_enabled_under_\"Third_Party_APIs\"_Tab", $this->adminLangId)."</small>";
 				
-				$fld11 = $frm->addCheckBox(
-                    Labels::getLabel("LBL_APPLE_LOGIN", $this->adminLangId),
-                    'CONF_ENABLE_APPLE_LOGIN',
-                    1,
-                    array(),
-                    false,
-                    0
-                );
-                $fld11->htmlAfterField = "<br><small>".Labels::getLabel("LBL_ON_ENABLING_THIS_FEATURE,USERS_NEEDS_TO_ADD_APPLE_ACCOUNT_REQUIRED_API_CREDENTIALS_IN_SETTINGS>_ADDONS>_APPLE_SIGN_IN", $this->adminLangId)."</small>";
-
                 $fld = $frm->addIntegerField(Labels::getLabel("LBL_Max_Seller_Request_Attempts", $this->adminLangId), 'CONF_MAX_SUPPLIER_REQUEST_ATTEMPT', '');
                 $fld->htmlAfterField = "<br><small>".Labels::getLabel("LBL_Maximum_seller_request_attempts_allowed", $this->adminLangId)."</small>";
 

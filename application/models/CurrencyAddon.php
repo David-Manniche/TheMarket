@@ -1,11 +1,6 @@
 <?php
 class CurrencyAddon extends AddonSetting
 {
-    public function __construct()
-    {
-        parent::__construct(get_called_class());
-    }
-    
     protected function getExternalApiData($apiUrl)
     {
         if (empty($apiUrl)) {
