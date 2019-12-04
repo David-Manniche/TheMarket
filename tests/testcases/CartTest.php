@@ -156,5 +156,61 @@ class CartTest extends TestCase
         );
     }
     
+    
+    /**
+     * @dataProvider providerGetSubTotal
+    */
+    public function testGetSubTotal( $userId, $expected )
+    {  
+        $cart = new Cart($userId);
+        $result = $cart->getSubTotal();        
+        $this->assertEquals($expected, $result);        
+    }
+    
+    public function providerGetSubTotal()
+    {
+        return array(
+            array(6, 2300), //Valid user id
+            array(0, 0), //Invalid user id            
+        );
+    }
+    
+    /**
+     * @dataProvider providerGetCartFinancialSummary
+    */
+    public function testGetCartFinancialSummary( $userId, $siteLangId )
+    {  
+        $cart = new Cart($userId);
+        $result = $cart->getCartFinancialSummary($siteLangId);
+        $this->assertIsArray($result);        
+    }
+    
+    public function providerGetCartFinancialSummary()
+    {
+        return array(            
+            array(6, 1), //Valid user id and lang id
+            array(0, 1), //Invalid user id and valid lang id
+            array(0, 0), //Invalid user id and lang id
+        );
+    }
+    
+    /**
+     * @dataProvider providerGetCouponDiscounts
+    */
+    public function testGetCouponDiscounts( $userId, $expected )
+    {  
+        $cart = new Cart($userId);
+        $result = $cart->getCouponDiscounts();        
+        $this->$expected($result);      
+    }
+    
+    public function providerGetCouponDiscounts()
+    {
+        return array(            
+            array(6, 'assertFalse'), //Cart without discount coupon
+            array(6, 'assertIsArray'), //Cart with discount coupon
+        );
+    }
+    
 }
 
