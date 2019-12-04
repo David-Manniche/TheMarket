@@ -21,11 +21,11 @@ class AppleSignIn extends LoginPluginBase
     public static function requirements($langId)
     {
         return [
-                /* 'clientId' => [
+                'clientId' => [
                     'type' => static::TYPE_STRING,
                     'required' => true,
                     'label' => Labels::getLabel('LBL_CLIENT_ID/SERVICE_ID', $langId),
-                ] */
+                ]
             ];
     }
 }
