@@ -1,11 +1,11 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $langFrm->setFormTagAttribute('class', 'web_form form_horizontal layout--' . $formLayout);
-$langFrm->setFormTagAttribute('onsubmit', 'setupLangAddon(this); return(false);');
+$langFrm->setFormTagAttribute('onsubmit', 'setupLangPlugin(this); return(false);');
 $langFrm->developerTags['colClassPrefix'] = 'col-md-';
 $langFrm->developerTags['fld_default_col'] = 12;
 
 $langFld = $langFrm->getField('lang_id');
-$langFld->setfieldTagAttribute('onChange', "editAddonLangForm(" . $addonId . ", this.value);");
+$langFld->setfieldTagAttribute('onChange', "editPluginLangForm(" . $pluginId . ", this.value);");
 ?>
 <section class="section">
     <div class="sectionhead">
@@ -16,10 +16,10 @@ $langFld->setfieldTagAttribute('onChange', "editAddonLangForm(" . $addonId . ", 
         <div class="tabs_nav_container responsive flat">
             <ul class="tabs_nav">
                 <li><a href="javascript:void(0);"
-                        onclick="addonForm(<?php echo $addonId ?>);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
+                        onclick="pluginForm(<?php echo $pluginId ?>);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
                 </li>
                 <li
-                    class="<?php echo (0 == $addonId) ? 'fat-inactive' : ''; ?>">
+                    class="<?php echo (0 == $pluginId) ? 'fat-inactive' : ''; ?>">
                     <a class="active" href="javascript:void(0);">
                         <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                     </a>
@@ -35,7 +35,7 @@ $langFld->setfieldTagAttribute('onChange', "editAddonLangForm(" . $addonId . ", 
                                 <div class="col-auto mb-4">
                                     <input class="btn btn-primary" type="button"
                                         value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>"
-                                        onClick="editAddonLangForm(<?php echo $addonId; ?>, <?php echo $lang_id; ?>, 1)">
+                                        onClick="editPluginLangForm(<?php echo $pluginId; ?>, <?php echo $lang_id; ?>, 1)">
                                 </div>
                             </div>
                             <?php

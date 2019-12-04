@@ -1,40 +1,44 @@
 <?php
-class AddonSettingController extends AdminBaseController
+class PluginSettingController extends AdminBaseController
 {
     protected $keyName;
     protected $frmObj;
-    protected $addonSettingObj;
+    protected $pluginSettingObj;
 
     public function __construct($action)
     {
         parent::__construct($action);
         $this->admin_id = AdminAuthentication::getLoggedAdminId();
-        $this->objPrivilege->canEditAddons($this->admin_id);
+        $this->objPrivilege->canEditPlugins($this->admin_id);
 
         $this->keyName = FatApp::getPostedData('keyName', FatUtility::VAR_STRING, '');
         if (empty($this->keyName)) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_INVALID_KEY_NAME', $this->adminLangId));
         }
         try {
-            $this->frmObj = $this->keyName::getSettingsForm($this->adminLangId);
+            if (!$this->frmObj = $this->keyName::getSettingsForm($this->adminLangId)) {
+                throw new Exception(Labels::getLabel('LBL_REQUIREMENT_SETTINGS_ARE_NOT_DEFINED', $this->adminLangId));
+            }
         } catch (\Error $e) {
+            FatUtility::dieJsonError($e->getMessage());
+        } catch (\Exception $e) {
             FatUtility::dieJsonError($e->getMessage());
         }
 
-        $this->addonSettingObj = new AddonSetting($this->keyName);
+        $this->pluginSettingObj = new PluginSetting($this->keyName);
     }
 
     public function index()
     {
-        $addonSetting = $this->addonSettingObj->get();
-        if (!$addonSetting) {
-            Message::addErrorMessage($this->addonSettingObj->getError());
+        $pluginSetting = $this->pluginSettingObj->get();
+        if (!$pluginSetting) {
+            Message::addErrorMessage($this->pluginSettingObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $this->frmObj->fill($addonSetting);
+        $this->frmObj->fill($pluginSetting);
         $this->set('frm', $this->frmObj);
-        $this->_template->render(false, false, 'addons/settings.php');
+        $this->_template->render(false, false, 'plugins/settings.php');
     }
 
     public function setup()
@@ -45,8 +49,8 @@ class AddonSettingController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (!$this->addonSettingObj->save($post)) {
-            Message::addErrorMessage($addon->getError());
+        if (!$this->pluginSettingObj->save($post)) {
+            Message::addErrorMessage($plugin->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
         $this->set('msg', $this->str_setup_successful);

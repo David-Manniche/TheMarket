@@ -1,9 +1,9 @@
 <?php
-class Addon extends MyAppModel
+class Plugin extends MyAppModel
 {
-    public const DB_TBL = 'tbl_addons';
-    public const DB_TBL_LANG = 'tbl_addons_lang';
-    public const DB_TBL_PREFIX = 'addon_';
+    public const DB_TBL = 'tbl_plugins';
+    public const DB_TBL_LANG = 'tbl_plugins_lang';
+    public const DB_TBL_PREFIX = 'plugin_';
 
     public const TYPE_CURRENCY_API = 1;
     public const TYPE_SOCIAL_LOGIN_API = 2;
@@ -15,7 +15,7 @@ class Addon extends MyAppModel
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
         $this->db = FatApp::getDb();
         $this->objMainTableRecord->setSensitiveFields(
-            array('addon_code')
+            array('plugin_code')
         );
     }
 
@@ -30,16 +30,16 @@ class Addon extends MyAppModel
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'ad_l.addonlang_' . static::DB_TBL_PREFIX . 'id = ad.' . static::DB_TBL_PREFIX . 'id and ad_l.addonlang_lang_id = ' . $langId,
+                'ad_l.pluginlang_' . static::DB_TBL_PREFIX . 'id = ad.' . static::DB_TBL_PREFIX . 'id and ad_l.pluginlang_lang_id = ' . $langId,
                 'ad_l'
             );
         }
 
         if (true === $joinSettings) {
             $srch->joinTable(
-                AddonSetting::DB_TBL,
+                PluginSetting::DB_TBL,
                 'LEFT OUTER JOIN',
-                'ads.' . AddonSetting::DB_TBL_PREFIX . static::DB_TBL_PREFIX . 'id = ad.' . static::DB_TBL_PREFIX . 'id',
+                'ads.' . PluginSetting::DB_TBL_PREFIX . static::DB_TBL_PREFIX . 'id = ad.' . static::DB_TBL_PREFIX . 'id',
                 'ads'
             );
         }
@@ -94,11 +94,11 @@ class Addon extends MyAppModel
             $srch->addMultipleFields(
                 [
                     'ad.' . static::DB_TBL_PREFIX . 'id',
-                    'COALESCE(ad_l.' . static::DB_TBL_PREFIX . 'name, ad.' . static::DB_TBL_PREFIX . 'identifier) as addon_name'
+                    'COALESCE(ad_l.' . static::DB_TBL_PREFIX . 'name, ad.' . static::DB_TBL_PREFIX . 'identifier) as plugin_name'
                 ]
             );
         } else {
-            $srch->addFld('COALESCE(ad_l.' . static::DB_TBL_PREFIX . 'name, ad.' . static::DB_TBL_PREFIX . 'identifier) as addon_name');
+            $srch->addFld('COALESCE(ad_l.' . static::DB_TBL_PREFIX . 'name, ad.' . static::DB_TBL_PREFIX . 'identifier) as plugin_name');
         }
 
         $srch->addCondition('ad.' . static::DB_TBL_PREFIX . 'type', '=', $typeId);
@@ -118,6 +118,6 @@ class Addon extends MyAppModel
         if (1 > $typeId && 1 > $langId) {
             return false;
         }
-        return $addonsTypeArr = static::getDataByType($typeId, $langId, true);
+        return $pluginsTypeArr = static::getDataByType($typeId, $langId, true);
     }
 }

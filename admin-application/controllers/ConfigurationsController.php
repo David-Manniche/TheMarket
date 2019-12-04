@@ -589,8 +589,8 @@ class ConfigurationsController extends AdminBaseController
                 $currencyArr = Currency::getCurrencyNameWithCode($this->adminLangId);
                 $frm->addSelectBox(Labels::getLabel('LBL_Default_System_Currency', $this->adminLangId), 'CONF_CURRENCY', $currencyArr, false, array(), '');
 				
-				$currencyAddons = Addon::getNamesByType(Addon::TYPE_CURRENCY_API, $this->adminLangId);
-				$fld = $frm->addSelectBox(Labels::getLabel("LBL_DEFAULT_CURRENCY_CONVERTER_API", $this->adminLangId), 'CONF_DEFAULT_CURRENCY_CONVERTER_API', $currencyAddons, false, array(), '');
+				$currencyPlugins = Plugin::getNamesByType(Plugin::TYPE_CURRENCY_API, $this->adminLangId);
+				$fld = $frm->addSelectBox(Labels::getLabel("LBL_DEFAULT_CURRENCY_CONVERTER_API", $this->adminLangId), 'CONF_DEFAULT_CURRENCY_CONVERTER_API', $currencyPlugins, false, array(), '');
                 $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_SET_DEFAULT_CURRENCY_CONVERTER_API.", $this->adminLangId)."</small>";
 
                 $faqCategoriesArr = FaqCategory::getFaqPageCategories();

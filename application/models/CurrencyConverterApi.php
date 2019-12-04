@@ -2,7 +2,7 @@
 /*
     Reference : https://www.currencyconverterapi.com/
 */
-class CurrencyConverterApi extends CurrencyAddon
+class CurrencyConverterApi extends CurrencyPluginBase
 {
     private const PRODUCTION_URL = 'https://free.currconv.com/api/v7/';
 
@@ -74,13 +74,14 @@ class CurrencyConverterApi extends CurrencyAddon
         return $data;
     }
 
-    public static function getSettingsForm($langId)
+    public static function requirements($langId)
     {
-        $frm = new Form('frmAddons');
-        $frm->addHiddenField('', 'keyName', __CLASS__);
-        $frm->addHiddenField('', 'addon_id');
-        $frm->addRequiredField(Labels::getLabel('LBL_API_KEY', $langId), 'apiKey');
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
-        return $frm;
+        return [
+                'apiKey' => [
+                    'type' => static::TYPE_STRING,
+                    'required' => true,
+                    'label' => Labels::getLabel('LBL_API_KEY', $langId),
+                ]
+            ];
     }
 }

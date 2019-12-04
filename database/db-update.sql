@@ -300,42 +300,56 @@ INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_type`, `l
 
 ALTER TABLE `tbl_currency` DROP `currency_is_default`;
 
-
-CREATE TABLE `tbl_addons` (
-  `addon_id` int(11) NOT NULL,
-  `addon_identifier` varchar(50) NOT NULL,
-  `addon_type` int(11) NOT NULL,
-  `addon_code` varchar(100) NOT NULL,
-  `addon_active` tinyint(1) NOT NULL,
-  `addon_display_order` int(11) NOT NULL
+CREATE TABLE `tbl_plugins` (
+  `plugin_id` int(11) NOT NULL,
+  `plugin_identifier` varchar(50) NOT NULL,
+  `plugin_type` int(11) NOT NULL,
+  `plugin_code` varchar(100) NOT NULL,
+  `plugin_active` tinyint(1) NOT NULL,
+  `plugin_display_order` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Indexes for table `tbl_plugins`
 --
--- Dumping data for table `tbl_addons`
+ALTER TABLE `tbl_plugins`
+  ADD PRIMARY KEY (`plugin_id`),
+  ADD UNIQUE KEY `plugin_identifier` (`plugin_identifier`),
+  ADD UNIQUE KEY `plugin_code` (`plugin_code`);
+
+
+--
+-- Dumping data for table `tbl_plugins`
 --
 
-INSERT INTO `tbl_addons` (`addon_id`, `addon_identifier`, `addon_type`, `addon_code`, `addon_active`, `addon_display_order`) VALUES
+INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES
 (1, 'Fixer Currency Converter API', 1, 'FixerCurrencyApi', 1, 1),
-(2, 'Currency Converter API', 1, 'CurrencyConverterApi', 1, 2);
+(2, 'Currency Converter API', 1, 'CurrencyConverterApi', 1, 2),
+(3, 'Apple Sign In', 2, 'AppleSignIn', 1, 3);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_addons_lang`
+-- Table structure for table `tbl_plugins_lang`
 --
 
-CREATE TABLE `tbl_addons_lang` (
-  `addonlang_addon_id` int(11) NOT NULL,
-  `addonlang_lang_id` int(11) NOT NULL,
-  `addon_name` varchar(200) NOT NULL,
-  `addon_description` text NOT NULL
+CREATE TABLE `tbl_plugins_lang` (
+  `pluginlang_plugin_id` int(11) NOT NULL,
+  `pluginlang_lang_id` int(11) NOT NULL,
+  `plugin_name` varchar(200) NOT NULL,
+  `plugin_description` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `tbl_addons_lang`
+-- Indexes for table `tbl_plugins_lang`
+--
+ALTER TABLE `tbl_plugins_lang`
+  ADD PRIMARY KEY (`pluginlang_plugin_id`,`pluginlang_lang_id`);
+
+--
+-- Dumping data for table `tbl_plugins_lang`
 --
 
-INSERT INTO `tbl_addons_lang` (`addonlang_addon_id`, `addonlang_lang_id`, `addon_name`, `addon_description`) VALUES
+INSERT INTO `tbl_plugins_lang` (`pluginlang_plugin_id`, `pluginlang_lang_id`, `plugin_name`, `plugin_description`) VALUES
 (1, 1, 'Fixer Currency Converted API', 'Brown Fox'),
 (1, 2, 'مثبت العملة API المحولة', 'براون فوكس'),
 (2, 1, 'Currency Converter API', 'Reference : https://www.currencyconverterapi.com/'),
@@ -344,64 +358,36 @@ INSERT INTO `tbl_addons_lang` (`addonlang_addon_id`, `addonlang_lang_id`, `addon
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_addon_settings`
+-- Table structure for table `tbl_plugin_settings`
 --
 
-CREATE TABLE `tbl_addon_settings` (
-  `addonsetting_addon_id` int(11) NOT NULL,
-  `addonsetting_key` varchar(100) NOT NULL,
-  `addonsetting_value` text NOT NULL
+CREATE TABLE `tbl_plugin_settings` (
+  `pluginsetting_plugin_id` int(11) NOT NULL,
+  `pluginsetting_key` varchar(100) NOT NULL,
+  `pluginsetting_value` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
 --
--- Dumping data for table `tbl_addon_settings`
+-- Indexes for table `tbl_plugin_settings`
+--
+ALTER TABLE `tbl_plugin_settings`
+  ADD PRIMARY KEY (`pluginsetting_plugin_id`,`pluginsetting_key`);
+
+--
+-- Dumping data for table `tbl_plugin_settings`
 --
 
-INSERT INTO `tbl_addon_settings` (`addonsetting_addon_id`, `addonsetting_key`, `addonsetting_value`) VALUES
-(1, 'addon_id', '1'),
+INSERT INTO `tbl_plugin_settings` (`pluginsetting_plugin_id`, `pluginsetting_key`, `pluginsetting_value`) VALUES
+(1, 'plugin_id', '1'),
 (1, 'apiKey', ''),
 (1, 'keyName', 'FixerCurrencyApi'),
-(2, 'addon_id', '2'),
+(2, 'plugin_id', '2'),
 (2, 'apiKey', ''),
 (2, 'keyName', 'CurrencyConverterApi');
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `tbl_addons`
---
-ALTER TABLE `tbl_addons`
-  ADD PRIMARY KEY (`addon_id`),
-  ADD UNIQUE KEY `addon_identifier` (`addon_identifier`),
-  ADD UNIQUE KEY `addon_code` (`addon_code`);
-
---
--- Indexes for table `tbl_addons_lang`
---
-ALTER TABLE `tbl_addons_lang`
-  ADD PRIMARY KEY (`addonlang_addon_id`,`addonlang_lang_id`);
-
---
--- Indexes for table `tbl_addon_settings`
---
-ALTER TABLE `tbl_addon_settings`
-  ADD PRIMARY KEY (`addonsetting_addon_id`,`addonsetting_key`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `tbl_addons`
---
-ALTER TABLE `tbl_addons`
-  MODIFY `addon_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-COMMIT;
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Google_Plus_Login';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_LoggedIn_SUCCESSFULLY';
-INSERT INTO `tbl_addons` (`addon_id`, `addon_identifier`, `addon_type`, `addon_code`, `addon_active`, `addon_display_order`) VALUES (NULL, 'Apple Sign In', '2', 'AppleSignIn', '1', '3');
 
 ALTER TABLE `tbl_users` ADD `user_apple_id` VARCHAR(255) NOT NULL AFTER `user_googleplus_id`;

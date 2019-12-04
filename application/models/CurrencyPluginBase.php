@@ -1,5 +1,5 @@
 <?php
-class CurrencyAddon extends AddonSetting
+class CurrencyPluginBase extends PluginSetting
 {
     protected function getExternalApiData($apiUrl)
     {

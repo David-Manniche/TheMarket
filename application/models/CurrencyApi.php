@@ -1,40 +1,23 @@
 <?php
 class CurrencyApi
 {
-    public function __construct($baseCurrencyCode = '')
+    private $className;
+
+    public function __construct()
     {
-        $this->baseCurrencyCode = strtoupper($baseCurrencyCode);
-        if (empty($this->baseCurrencyCode)) {
-            $baseCurrency = Currency::getDefault();
-            if (empty($baseCurrency)) {
-                trigger_error("Invalid Base Currency", E_USER_ERROR);
-            }
-            $this->baseCurrencyCode = strtoupper($baseCurrency['currency_code']);
+        if (!$this->className = static::getDefaultCurrencyApiClass()) {
+            $this->error = Labels::getLabel('MSG_DEFAULT_CURRENCY_CONVERTER_NOT_DEFINED', CommonHelper::getLangId());
         }
     }
 
-    private function getData($functionName, $extraParam = [])
+    public static function getDefaultCurrencyApiClass()
     {
         $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_CURRENCY_CONVERTER_API', FatUtility::VAR_INT, 0);
         if (empty($defaultCurrConvAPI)) {
-            $this->error = Labels::getLabel('MSG_DEFAULT_CURRENCY_CONVERTER_NOT_DEFINED', CommonHelper::getLangId());
             return false;
         }
         
-        $className = Addon::getAttributesById($defaultCurrConvAPI, 'addon_code');
-        
-        try {
-            $classObj = new $className($this->baseCurrencyCode);
-            $data = $classObj->$functionName($extraParam);
-            if (!$data) {
-                throw new Exception($classObj->getError());
-            }
-        } catch (Exception $e) {
-            $this->error = $e->getMessage();
-            return false;
-        }
-        
-        return $data;
+        return Plugin::getAttributesById($defaultCurrConvAPI, 'plugin_code');
     }
     
     public function getError()
@@ -44,12 +27,23 @@ class CurrencyApi
 
     public function getConversionRate($toCurrencies = [])
     {
-        $toCurrencies = !is_array($toCurrencies) ? [] : $toCurrencies;
-        return $this->getData(__FUNCTION__, $toCurrencies);
-    }
+        $baseCurrencyCode = Currency::getDefaultCurrencyCode();
+        if (!$baseCurrencyCode) {
+            trigger_error("Invalid Base Currency", E_USER_ERROR);
+        }
 
-    public function getAllCurrencies()
-    {
-        return $this->getData(__FUNCTION__);
+        $toCurrencies = !is_array($toCurrencies) ? [] : $toCurrencies;
+        try {
+            $obj = new $this->className($baseCurrencyCode);
+            $data = $obj->getConversionRate($toCurrencies);
+            if (!$data) {
+                throw new Exception($obj->getError());
+            }
+        } catch (Exception $e) {
+            $this->error = $e->getMessage();
+            return false;
+        }
+        
+        return $data;
     }
 }

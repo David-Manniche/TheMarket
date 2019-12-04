@@ -98,6 +98,15 @@ class Currency extends MyAppModel
         return Currency::getAttributesById(FatApp::getConfig("CONF_CURRENCY", FatUtility::VAR_INT, 1));
     }
 
+    public static function getDefaultCurrencyCode()
+    {
+        $baseCurrency = static::getDefault();
+        if (empty($baseCurrency)) {
+            return false;
+        }
+        return strtoupper($baseCurrency['currency_code']);
+    }
+
     public function updatePricingRates($langId)
     {
         $baseCurrencyId = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);

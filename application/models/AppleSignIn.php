@@ -1,5 +1,5 @@
 <?php
-class AppleSignIn extends LoginAddon
+class AppleSignIn extends LoginPluginBase
 {
     private const PRODUCTION_URL = 'https://appleid.apple.com/auth/';
     
@@ -18,13 +18,14 @@ class AppleSignIn extends LoginAddon
         ]);
     }
 
-    public static function getSettingsForm($langId)
+    public static function requirements($langId)
     {
-        $frm = new Form('frmAddons');
-        $frm->addHiddenField('', 'keyName', __CLASS__);
-        $frm->addHiddenField('', 'addon_id');
-        $frm->addRequiredField(Labels::getLabel('LBL_CLIENT_ID', $langId), 'clientId');
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
-        return $frm;
+        return [
+                /* 'clientId' => [
+                    'type' => static::TYPE_STRING,
+                    'required' => true,
+                    'label' => Labels::getLabel('LBL_CLIENT_ID/SERVICE_ID', $langId),
+                ] */
+            ];
     }
 }

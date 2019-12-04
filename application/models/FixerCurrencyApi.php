@@ -1,8 +1,8 @@
 <?php
-class FixerCurrencyApi extends CurrencyAddon
+class FixerCurrencyApi extends CurrencyPluginBase
 {
     private const PRODUCTION_URL = 'http://data.fixer.io/api/';
-    
+
     public function __construct($baseCurrencyCode = '')
     {
         $this->baseCurrencyCode = $baseCurrencyCode;
@@ -68,13 +68,14 @@ class FixerCurrencyApi extends CurrencyAddon
         return $data['rates'];
     }
 
-    public static function getSettingsForm($langId)
+    public static function requirements($langId)
     {
-        $frm = new Form('frmAddons');
-        $frm->addHiddenField('', 'keyName', __CLASS__);
-        $frm->addHiddenField('', 'addon_id');
-        $frm->addRequiredField(Labels::getLabel('LBL_API_KEY', $langId), 'apiKey');
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
-        return $frm;
+        return [
+                'apiKey' => [
+                    'type' => static::TYPE_STRING,
+                    'required' => true,
+                    'label' => Labels::getLabel('LBL_API_KEY', $langId),
+                ]
+            ];
     }
 }
