@@ -195,20 +195,89 @@ class CartTest extends TestCase
     }
     
     /**
+     * @dataProvider providerUpdateCartDiscountCoupon
+    */
+    public function testUpdateCartDiscountCoupon( $userId, $couponCode, $expected )
+    {  
+        $cart = new Cart($userId);
+        $result = $cart->updateCartDiscountCoupon($couponCode);      
+        $this->assertEquals($expected, $result);      
+    }
+    
+    public function providerUpdateCartDiscountCoupon()
+    {
+        return array(                        
+            array(6, 'WRONG10', false), //Invalid coupon code    
+            array(6, 'NEW10', true), //Valid coupon code        
+        );
+    }
+    
+    /**
+     * @dataProvider providerRemoveCartDiscountCoupon
+    */
+    public function testRemoveCartDiscountCoupon( $userId, $expected )
+    {  
+        $cart = new Cart($userId);
+        $result = $cart->removeCartDiscountCoupon();      
+        $this->assertEquals($expected, $result);      
+    }
+    
+    public function providerRemoveCartDiscountCoupon()
+    {
+        return array(                        
+            array(6, true), //Valid user id
+            array(0, false), //Invalid user id
+        );
+    }
+    
+    /**
      * @dataProvider providerGetCouponDiscounts
     */
     public function testGetCouponDiscounts( $userId, $expected )
     {  
         $cart = new Cart($userId);
-        $result = $cart->getCouponDiscounts();        
-        $this->$expected($result);      
+        $result = $cart->getCouponDiscounts();      
+        $this->assertEquals($expected, $result['coupon_discount_total']);      
     }
     
     public function providerGetCouponDiscounts()
     {
-        return array(            
-            array(6, 'assertFalse'), //Cart without discount coupon
-            array(6, 'assertIsArray'), //Cart with discount coupon
+        return array(                        
+            array(6, 50), //Cart with discount coupon code
+        );
+    }
+    
+    /**
+     * @dataProvider providerUpdateCartUseRewardPoints
+    */
+    public function testUpdateCartUseRewardPoints( $userId, $rewardPoints, $expected )
+    {  
+        $cart = new Cart($userId);
+        $result = $cart->updateCartUseRewardPoints($rewardPoints);      
+        $this->assertEquals($expected, $result);   
+    }
+    
+    public function providerUpdateCartUseRewardPoints()
+    {
+        return array(                          
+            array(6, 200, true), //Cart with reward points
+        );
+    }
+    
+    /**
+     * @dataProvider providerRemoveUsedRewardPoints
+    */
+    public function testRemoveUsedRewardPoints( $userId, $expected )
+    {  
+        $cart = new Cart($userId);
+        $result = $cart->removeUsedRewardPoints();      
+        $this->assertEquals($expected, $result);     
+    }
+    
+    public function providerRemoveUsedRewardPoints()
+    {
+        return array(                        
+            array(6, true), //Valid user id
         );
     }
     
