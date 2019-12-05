@@ -104,7 +104,7 @@ class AdminPrivilege
     public const SECTION_UPLOAD_BULK_IMAGES = 100;
     public const SECTION_SITEMAP = 101;
     
-    public const SECTION_CUSTOM_PUSH_NOTIFICATION = 103;
+    public const SECTION_CUSTOM_NOTIFICATION = 103;
 
     public const PRIVILEGE_NONE = 0;
     public const PRIVILEGE_READ = 1;
@@ -240,7 +240,7 @@ class AdminPrivilege
         static::SECTION_IMPORT_INSTRUCTIONS => Labels::getLabel('MSG_Import_Instructions', CommonHelper::getLangId()),
         static::SECTION_UPLOAD_BULK_IMAGES => Labels::getLabel('MSG_Bulk_Upload', CommonHelper::getLangId()),
         static::SECTION_SITEMAP => Labels::getLabel('MSG_SITEMAP', CommonHelper::getLangId()),
-        static::SECTION_CUSTOM_PUSH_NOTIFICATION => Labels::getLabel('MSG_CUSTOM_PUSH_NOTIFICATION', CommonHelper::getLangId()),
+        static::SECTION_CUSTOM_NOTIFICATION => Labels::getLabel('MSG_CUSTOM_PUSH_NOTIFICATION', CommonHelper::getLangId()),
 
         /* static::SECTION_Languages => Labels::getLabel('MSG_Languages',CommonHelper::getLangId()),
         static::SECTION_Languages => Labels::getLabel('MSG_Order_Status',CommonHelper::getLangId()), */
@@ -1382,13 +1382,13 @@ class AdminPrivilege
         return $this->checkPermission($adminId, static::SECTION_SITEMAP, static::PRIVILEGE_WRITE, $returnResult);
     }
 
-    public function canViewCustomPushNotification($adminId = 0, $returnResult = false)
+    public function canViewCustomNotification($adminId = 0, $returnResult = false)
     {
-        return $this->checkPermission($adminId, static::SECTION_CUSTOM_PUSH_NOTIFICATION, static::PRIVILEGE_READ, $returnResult);
+        return $this->checkPermission($adminId, static::SECTION_CUSTOM_NOTIFICATION, static::PRIVILEGE_READ, $returnResult);
     }
 
-    public function canEditCustomPushNotification($adminId = 0, $returnResult = false)
+    public function canEditCustomNotification($adminId = 0, $returnResult = false)
     {
-        return $this->checkPermission($adminId, static::SECTION_CUSTOM_PUSH_NOTIFICATION, static::PRIVILEGE_WRITE, $returnResult);
+        return $this->checkPermission($adminId, static::SECTION_CUSTOM_NOTIFICATION, static::PRIVILEGE_WRITE, $returnResult);
     }
 }

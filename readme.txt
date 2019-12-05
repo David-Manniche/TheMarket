@@ -10,3 +10,6 @@ Enhancements
     => 68474 - Library and code updated to handle 3-D secure payments through Omise Payment Gateway.
     => Updated new labels for IOS APP.
     => Enhancement of existing multilingual functionality. Added MSN language translator API to language fields. 
+
+New Feature
+    => 68898 - Custom push notification management.
