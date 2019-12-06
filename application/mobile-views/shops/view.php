@@ -9,19 +9,19 @@ if (array_key_exists('products', $data)) {
     }
 }
 if (!empty($data['shop'])) {
-    if (!empty(array_filter((array)$data['shop']['shop_payment_policy']))) {
+    if (isset($data['shop']['shop_payment_policy']) && !empty(array_filter((array)$data['shop']['shop_payment_policy']))) {
         $data['shop']['policies'][] = $data['shop']['shop_payment_policy'];
     }
-    if (!empty(array_filter((array)$data['shop']['shop_delivery_policy']))) {
+    if (isset($data['shop']['shop_delivery_policy']) && !empty(array_filter((array)$data['shop']['shop_delivery_policy']))) {
         $data['shop']['policies'][] = $data['shop']['shop_delivery_policy'];
     }
-    if (!empty(array_filter((array)$data['shop']['shop_refund_policy']))) {
+    if (isset($data['shop']['shop_refund_policy']) && !empty(array_filter((array)$data['shop']['shop_refund_policy']))) {
         $data['shop']['policies'][] = $data['shop']['shop_refund_policy'];
     }
-    if (!empty(array_filter((array)$data['shop']['shop_additional_info']))) {
+    if (isset($data['shop']['shop_additional_info']) && !empty(array_filter((array)$data['shop']['shop_additional_info']))) {
         $data['shop']['policies'][] = $data['shop']['shop_additional_info'];
     }
-    if (!empty(array_filter((array)$data['shop']['shop_seller_info']))) {
+    if (isset($data['shop']['shop_seller_info']) && !empty(array_filter((array)$data['shop']['shop_seller_info']))) {
         $data['shop']['policies'][] = $data['shop']['shop_seller_info'];
     }
 

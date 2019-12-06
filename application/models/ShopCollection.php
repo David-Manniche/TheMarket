@@ -131,7 +131,7 @@ class ShopCollection extends MyAppModel
     public static function getCollectionDetail($shop_id, $lang_id)
     {
         $srch = self::getSearchObject();
-        $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', static::DB_TBL_LANG_PREFIX.'scollection_id = '.static::DB_TBL_PREFIX.'id');
+        $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', static::DB_TBL_LANG_PREFIX . 'scollection_id = ' . static::DB_TBL_PREFIX . 'id');
         $srch->addCondition(static::DB_TBL_PREFIX . "shop_id", "=", $shop_id);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
@@ -142,7 +142,7 @@ class ShopCollection extends MyAppModel
     public static function getShopCollectionsDetail($shop_id, $lang_id)
     {
         $srch = self::getSearchObject();
-        $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', static::DB_TBL_LANG_PREFIX.'scollection_id = '.static::DB_TBL_PREFIX.'id');
+        $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', static::DB_TBL_LANG_PREFIX . 'scollection_id = ' . static::DB_TBL_PREFIX . 'id');
         $srch->addMultipleFields(array( 'scollection_id', 'IFNULL(scollection_name, scollection_identifier) as scollection_name', 'scollection_shop_id'));
         $srch->addCondition(static::DB_TBL_PREFIX . "shop_id", "=", $shop_id);
         $srch->addCondition(static::DB_TBL_PREFIX . "active", "=", applicationConstants::YES);
