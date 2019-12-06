@@ -15,3 +15,4 @@ CREATE TABLE `tbl_custom_notification_to_users` ( `cntu_cnotification_id` INT NO
 ALTER TABLE  `tbl_custom_notification_to_users` ADD PRIMARY KEY (`cntu_cnotification_id`, `cntu_user_id`);
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_Title';
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_S.No';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_Does_not_Matter';

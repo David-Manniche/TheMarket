@@ -23,26 +23,46 @@ class CustomNotificationsController extends AdminBaseController
 
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
 
-        $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
+        
+        $srchFrm = $this->getSearchForm();
+        $post = $srchFrm->getFormDataFromArray(FatApp::getPostedData());
+        
+        $page = $post['page'];
         if ($page < 2) {
             $page = 1;
         }
-
+        
         $srch = CustomNotification::getSearchObject();
 
-        $keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
+        $keyword = $post['keyword'];
         if (!empty($keyword)) {
             $srch->addCondition('cnotification_title', 'LIKE', '%' . $keyword . '%');
         }
 
-        $cnotificationType = FatApp::getPostedData('cnotification_type', FatUtility::VAR_INT, 0);
+        $cnotificationType = $post['cnotification_type'];
         if (0 < $cnotificationType) {
             $srch->addCondition('cnotification_type', '=', $cnotificationType);
         }
 
-        $status = FatApp::getPostedData('cnotification_active', FatUtility::VAR_INT, 0);
+        $status = $post['cnotification_active'];
         if (-1 < $status) {
             $srch->addCondition('cnotification_active', '=', $status);
+        }
+
+        $notifyTo = $post['notify_to'];
+        if (0 < $notifyTo) {
+            switch ($notifyTo) {
+                case 1:
+                    $srch->addCondition('cnotification_for_buyer', '=', 1);
+                    break;
+                case 2:
+                    $srch->addCondition('cnotification_for_seller', '=', 1);
+                    break;
+                case 3:
+                    $srch->addCondition('cnotification_for_buyer', '=', 1);
+                    $srch->addCondition('cnotification_for_seller', '=', 1);
+                    break;
+            }
         }
         
         $srch->addOrder('cn.cnotification_added_on', 'DESC');
@@ -72,11 +92,20 @@ class CustomNotificationsController extends AdminBaseController
         $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
 
         $typeArr = CustomNotification::getTypeArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_TYPE', $this->adminLangId), 'cnotification_type', array( -1 => Labels::getLabel('LBL_Does_not_Matter', $this->adminLangId) ) + $typeArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_TYPE', $this->adminLangId), 'cnotification_type', array( -1 => Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId) ) + $typeArr, '', array(), '');
         
         $statusArr = CustomNotification::getStatusArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_STATUS', $this->adminLangId), 'cnotification_active', array( -1 => Labels::getLabel('LBL_Does_not_Matter', $this->adminLangId) ) + $statusArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_STATUS', $this->adminLangId), 'cnotification_active', array( -1 => Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId) ) + $statusArr, '', array(), '');
+        
+        $notifyToArr = [
+            Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId),
+            Labels::getLabel('LBL_BUYERS', $this->adminLangId),
+            Labels::getLabel('LBL_SELLERS', $this->adminLangId),
+            Labels::getLabel('LBL_BOTH', $this->adminLangId),
+        ];
 
+        $frm->addSelectBox(Labels::getLabel('LBL_NOTIFY_TO', $this->adminLangId), 'notify_to', $notifyToArr, '', array(), '');
+        
         $frm->addHiddenField('', 'page');
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), ['onclick' => 'clearSearch();']);
@@ -196,4 +225,12 @@ class CustomNotificationsController extends AdminBaseController
             FatUtility::dieJsonError($db->getError());
         }
     }
+
+    /* public function sendNotification()
+    {
+        $srch = CustomNotification::getSearchObject(true);
+        $rs = $srch->getResultSet();
+        $records = FatApp::getDb()->fetchAll($rs);
+        CommonHelper::printArray($records, true);
+    } */
 }
