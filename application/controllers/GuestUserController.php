@@ -755,9 +755,7 @@ class GuestUserController extends MyAppController
             $this->doLogin($userInfo);
             $this->redirectUser($userInfo['user_preferred_dashboard']);
         }
-        
-        $_SESSION['appleSignIn']['state'] = bin2hex(random_bytes(5));
-        
+                
         FatApp::redirectUser($obj->getRequestUri());
     }
 
