@@ -75,7 +75,7 @@ class OrderPayment extends Orders
         "order_type" => $orderInfo['order_type'],
         "order_is_paid" => $orderInfo["order_is_paid"],
         "order_language" => $orderInfo["order_language_code"],
-        "site_system_name" => FatApp::getConfig("CONF_WEBSITE_NAME_".$orderInfo["order_language_id"]),
+        "site_system_name" => FatApp::getConfig("CONF_WEBSITE_NAME_" . $orderInfo["order_language_id"]),
         "site_system_admin_email" => FatApp::getConfig("CONF_SITE_OWNER_EMAIL", FatUtility::VAR_STRING, ''),
         "order_wallet_amount_charge"     =>     $orderInfo['order_wallet_amount_charge'],
         "paypal_bn" => "FATbit_SP",
@@ -220,7 +220,7 @@ class OrderPayment extends Orders
 
             /* Credit money to user's wallet, if order_type = Orders::ORDER_WALLET_RECHARGE, i.e loading money to wallet[ */
             if ($orderDetails['order_type'] ==  Orders::ORDER_WALLET_RECHARGE) {
-                $formattedOrderValue = "#".$orderDetails["order_id"];
+                $formattedOrderValue = "#" . $orderDetails["order_id"];
                 $transObj = new Transactions();
 
                 /* $txnArray["utxn_user_id"]= $orderDetails["order_user_id"];
@@ -279,7 +279,7 @@ class OrderPayment extends Orders
             $rs = $srch->getResultSet();
             $row = FatApp::getDb()->fetch($rs);
             if (!empty($row)) {
-                if (!FatApp::getDb()->insertFromArray(CouponHistory::DB_TBL, array('couponhistory_coupon_id' => $row['coupon_id'], 'couponhistory_order_id' => $orderDetails['order_id'],'couponhistory_user_id'=>$orderDetails['order_user_id'],'couponhistory_amount'=>$orderDetails['order_discount_total'],'couponhistory_added_on' => date('Y-m-d H:i:s')))) {
+                if (!FatApp::getDb()->insertFromArray(CouponHistory::DB_TBL, array('couponhistory_coupon_id' => $row['coupon_id'], 'couponhistory_order_id' => $orderDetails['order_id'],'couponhistory_user_id' => $orderDetails['order_user_id'],'couponhistory_amount' =>  $orderDetails['order_discount_total'],'couponhistory_added_on' => date('Y-m-d H:i:s')))) {
                     $this->error = FatApp::getDb()->getError();
                     return false;
                 }
@@ -313,7 +313,7 @@ class OrderPayment extends Orders
             return false;
         }
 
-        $formattedOrderValue = "#".$orderInfo["order_id"];
+        $formattedOrderValue = "#" . $orderInfo["order_id"];
         $transObj = new Transactions();
 
         /* $txnArray["utxn_user_id"] = $orderInfo["order_user_id"];
@@ -345,12 +345,12 @@ class OrderPayment extends Orders
 
         // Update Order table user wallet charge amount
         $orderWalletAmountCharge = $orderInfo['order_wallet_amount_charge'] - $amountToBeCharge;
-        if (!FatApp::getDb()->updateFromArray(Orders::DB_TBL, array('order_wallet_amount_charge' => $orderWalletAmountCharge), array('smt'=>'order_id = ?', 'vals'=>array($orderInfo["order_id"])))) {
+        if (!FatApp::getDb()->updateFromArray(Orders::DB_TBL, array('order_wallet_amount_charge' => $orderWalletAmountCharge), array('smt' => 'order_id = ?', 'vals' => array($orderInfo["order_id"])))) {
             $this->error = FatApp::getDb()->getError();
             return false;
         }
 
-        $this->addOrderPayment(Labels::getLabel('LBL_User_Wallet', $defaultSiteLangId), 'W-'.time(), $amountToBeCharge, Labels::getLabel("LBL_Received_Payment", $defaultSiteLangId), Labels::getLabel('LBL_Payment_From_User_Wallet', $defaultSiteLangId), true);
+        $this->addOrderPayment(Labels::getLabel('LBL_User_Wallet', $defaultSiteLangId), 'W-' . time(), $amountToBeCharge, Labels::getLabel("LBL_Received_Payment", $defaultSiteLangId), Labels::getLabel('LBL_Payment_From_User_Wallet', $defaultSiteLangId), true);
         return true;
     }
 
@@ -365,7 +365,7 @@ class OrderPayment extends Orders
         }
 
         $transObj = new Transactions();
-        $formattedOrderValue = "#".$orderInfo["order_id"];
+        $formattedOrderValue = "#" . $orderInfo["order_id"];
         /*
         $txnArray["utxn_user_id"]= $orderInfo["order_user_id"];
         $txnArray["utxn_debit"]= $amountToBeCharge;
@@ -397,7 +397,14 @@ class OrderPayment extends Orders
         $emailNotificationObj->sendTxnNotification( $txnId, $defaultSiteLangId ); */
         /* ] */
 
-        $this->addOrderPayment(Labels::getLabel('LBL_User_Wallet', $defaultSiteLangId), 'W-'.time(), $amountToBeCharge, Labels::getLabel("LBL_Received_Payment", $defaultSiteLangId), Labels::getLabel('LBL_Payment_From_User_Wallet', $defaultSiteLangId), true);
+        $this->addOrderPayment(Labels::getLabel('LBL_User_Wallet', $defaultSiteLangId), 'W-' . time(), $amountToBeCharge, Labels::getLabel("LBL_Received_Payment", $defaultSiteLangId), Labels::getLabel('LBL_Payment_From_User_Wallet', $defaultSiteLangId), true);
         return true;
+    }
+
+    public function getPaymentGatewayResponse($orderId)
+    {
+        $orderPaymentInfo = $this->getOrderPayments(['order_id' => $orderId]);
+        $data = current($orderPaymentInfo);
+        return json_decode($data['opayment_gateway_response'], true);
     }
 }

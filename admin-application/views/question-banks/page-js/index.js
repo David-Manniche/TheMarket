@@ -41,9 +41,9 @@ $(document).ready(function(){
 		});
 	};
 	
-	questionBankLangForm =  function(qbankId,langId){
+	questionBankLangForm =  function(qbankId,langId, autoFillLangData = 0){
 		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('QuestionBanks', 'langForm', [qbankId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('QuestionBanks', 'langForm', [qbankId, langId, autoFillLangData]), '', function(t) {
 				$.facebox(t);
 			});
 		});

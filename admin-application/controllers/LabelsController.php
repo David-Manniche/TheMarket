@@ -70,7 +70,7 @@ class LabelsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function form($label_id, $labelType = Labels::TYPE_WEB)
+    public function form($label_id, $labelType = Labels::TYPE_WEB, $autoFillLangData = 0)
     {
         $this->objPrivilege->canViewLanguageLabels();
 
@@ -97,6 +97,9 @@ class LabelsController extends AdminBaseController
 
         $srch = Labels::getSearchObject();
         $srch->addCondition('lbl.label_key', '=', $labelKey);
+        if (0 < $autoFillLangData) {
+            $srch->addCondition('lbl.label_lang_id', '=', FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
+        }
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
@@ -111,15 +114,35 @@ class LabelsController extends AdminBaseController
         }
 
         $arr = array();
+        
+        if (0 < $autoFillLangData) {
+            $languages = Language::getAllNames();
+            $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+            unset($languages[$siteDefaultLangId]);
+            foreach (array_keys($languages) as $langId) {
+                $updateLangDataobj = new TranslateLangData(Labels::DB_TBL);
+                $translatedData = $updateLangDataobj->directTranslate(['label_caption' => $record[$siteDefaultLangId]['label_caption']], $langId);
+                if (false === $translatedData) {
+                    Message::addErrorMessage($updateLangDataobj->getError());
+                    FatUtility::dieWithError(Message::getHtml());
+                }
+                $data = $record[$siteDefaultLangId];
+                $data['label_lang_id'] = $langId;
+                $data['label_caption'] = $translatedData[$langId]['label_caption'];
+                $record[$langId] = $data;
+            }
+        }
 
         foreach ($record as $k => $v) {
             $arr['label_key'] = $v['label_key'];
-            $arr['label_caption'.$k] = $v['label_caption'];
+            $arr['label_caption' . $k] = $v['label_caption'];
         }
 
         $arr['label_type'] = $labelType;
         $frm->fill($arr);
 
+        $this->set('label_id', $label_id);
+        $this->set('labelType', $labelType);
         $this->set('labelKey', $labelKey);
         $this->set('frm', $frm);
         $this->set('languages', Language::getAllNames());

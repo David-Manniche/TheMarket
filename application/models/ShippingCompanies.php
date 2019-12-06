@@ -2,9 +2,9 @@
 class ShippingCompanies extends MyAppModel
 {
     const DB_TBL = 'tbl_shipping_company';
-    const DB_LANG_TBL = 'tbl_shipping_company_lang';
+    const DB_TBL_LANG = 'tbl_shipping_company_lang';
     const DB_TBL_PREFIX = 'scompany_';
-    const DB_LANG_TBL_PREFIX = 'scompanylang_';
+    const DB_TBL_LANG_PREFIX = 'scompanylang_';
 
 
     const MANUAL_SHIPPING =1;
@@ -29,7 +29,7 @@ class ShippingCompanies extends MyAppModel
 
         if ($langId > 0) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'sc_l.scompanylang_'.static::DB_TBL_PREFIX.'id = sc.'.static::DB_TBL_PREFIX.'id and sc_l.scompanylang_lang_id = '.$langId,
                 'sc_l'

@@ -22,11 +22,11 @@ $fld1->htmlAfterField = $htmlAfterField;
 <div class="tabs tabs--small   tabs--scroll clearfix setactive-js">
 	<ul>
 		<li><a href="javascript:void(0);" onClick="promotionForm(<?php echo $promotionId;?>)"><?php echo Labels::getLabel('LBL_General',$siteLangId);?></a></li>
-		<?php $inactive = ($promotionId==0)?'fat-inactive':'';
-		foreach($languages as $langId => $langName){?>
-			<li class="<?php echo $inactive ; ?>"><a href="javascript:void(0)" <?php if($promotionId>0){ ?> onClick="promotionLangForm(<?php echo $promotionId;?>,<?php echo $langId;?>)" <?php }?>>
-		<?php echo $langName;?></a></li>
-		<?php } ?>
+        <li class="<?php echo (0 == $promotionId) ? 'fat-inactive' : ''; ?>">
+            <a href="javascript:void(0);" <?php echo (0 < $promotionId) ? "onclick='promotionLangForm(" . $promotionId . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                <?php echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
+            </a>
+        </li>
 		<?php if($promotionType == Promotion::TYPE_BANNER || $promotionType == Promotion::TYPE_SLIDES){?>
 		<li class="is-active"><a href="javascript:void(0)" <?php if($promotionId>0){ ?> onClick="promotionMediaForm(<?php echo $promotionId;?>)" <?php }?>><?php echo Labels::getLabel('LBL_Media',$siteLangId); ?></a></li>
 		<?php }?>

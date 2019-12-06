@@ -83,7 +83,7 @@ class Polling extends MyAppModel
         $srch->joinTable(self::DB_TBL_POLLING_TO_CATEGORY, 'inner join', 'ptc_polling_id = polling_id');
         $srch->joinTable(ProductCategory::DB_TBL, 'inner join', 'ptc_prodcat_id = prodcat_id');
         if (!empty($langId)) {
-            $srch->joinTable(ProductCategory::DB_LANG_TBL, 'left outer join', 'prodcatlang_prodcat_id = prodcat_id and prodcatlang_lang_id = '.$langId);
+            $srch->joinTable(ProductCategory::DB_TBL_LANG, 'left outer join', 'prodcatlang_prodcat_id = prodcat_id and prodcatlang_lang_id = '.$langId);
         }
         $srch->addCondition('polling_id', '=', $pollingId);
         $srch->addMultipleFields(array('prodcat_id' , 'prodcat_identifier','prodcat_name'));
@@ -96,7 +96,7 @@ class Polling extends MyAppModel
         $srch->joinTable(self::DB_TBL_POLLING_TO_PRODUCTS, 'inner join', 'ptp_polling_id = polling_id');
         $srch->joinTable(Product::DB_TBL, 'inner join', 'ptp_product_id = product_id');
         if (!empty($langId)) {
-            $srch->joinTable(Product::DB_LANG_TBL, 'left outer join', 'productlang_product_id = product_id and productlang_lang_id = '.$langId);
+            $srch->joinTable(Product::DB_TBL_LANG, 'left outer join', 'productlang_product_id = product_id and productlang_lang_id = '.$langId);
         }
         $srch->addCondition('polling_id', '=', $pollingId);
         $srch->addMultipleFields(array('product_id' , 'IFNULL(product_name,product_identifier) as product_name'));

@@ -832,7 +832,7 @@ class AccountController extends LoggedUserController
 
             $bankInfo = $this->bankInfo();
             $personalInfo = $this->personalInfo();
-            $personalInfo['userImage'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'user', array($userId,'mini',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+            $personalInfo['userImage'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'user', array($userId, 'SMALL', true)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
             $this->set('personalInfo', empty($personalInfo) ? (object)array() : $personalInfo);
             $this->set('bankInfo', empty($bankInfo) ? (object)array() : $bankInfo);
             $this->set('privacyPolicyLink', FatApp::getConfig('CONF_PRIVACY_POLICY_PAGE', FatUtility::VAR_STRING, ''));

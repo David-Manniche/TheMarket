@@ -62,9 +62,9 @@ $(document).ready(function() {
         });
     };
 
-    emptyCartItemLangForm = function(emptycartitemId, langId) {
+    emptyCartItemLangForm = function(emptycartitemId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('EmptyCartItems', 'langForm', [emptycartitemId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('EmptyCartItems', 'langForm', [emptycartitemId, langId, autoFillLangData]), '', function(t) {
             //$.facebox(t);
             fcom.updateFaceboxContent(t);
         });

@@ -1,11 +1,25 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $prodSpecFrm->setFormTagAttribute('class', 'form form_horizontal');
 $prodSpecFrm->setFormTagAttribute('onsubmit', 'return submitSpecificationForm(this); return(false);');
-$prodSpecFrm->developerTags['fld_default_col']=6;
+$prodSpecFrm->developerTags['fld_default_col'] = 6;
 
 //echo $prodSpecFrm->getFormHtml();
-?>
-<?php echo $prodSpecFrm->getFormTag();?>
+
+$translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+if (!empty($translatorSubscriptionKey)) { ?> 
+    <div class="row justify-content-end"> 
+        <div class="col-auto mb-4">
+            <input class="btn btn-primary" 
+                type="button" 
+                value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $siteLangId); ?>" 
+                onClick="autofillLangData($(this), $('form#frm_fat_id_frmProductSpec'))"
+                data-action="<?php echo CommonHelper::generateUrl('Seller', 'getTranslatedSpecData'); ?>">
+        </div>
+    </div>
+<?php }
+
+echo $prodSpecFrm->getFormTag();?>
 
 <?php foreach ($languages as $langId => $langName) { ?>
 <div class="row">
@@ -24,34 +38,34 @@ $prodSpecFrm->developerTags['fld_default_col']=6;
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xm-12">
         <div class="row">
-         <div class="col-lg-6 col-md-12 <?php echo 'layout--'.Language::getLayoutDirection($langId); ?>">
+         <div class="col-lg-6 col-md-12 <?php echo 'layout--' . Language::getLayoutDirection($langId); ?>">
            <div class="field-set">
              <div class="caption-wraper">
-               <label class="field_label"><?php  $fld = $prodSpecFrm->getField('prod_spec_name['.$langId.']');
+               <label class="field_label"><?php  $fld = $prodSpecFrm->getField('prod_spec_name[' . $langId . ']');
                 echo $fld->getCaption();?><span class="mandatory">*</span></label>
              </div>
              <div class="field-wraper">
                <div class="field_cover">
-                <?php if (isset($data['prod_spec_name['.$langId.']'])) {
-                    $fld->value= $data['prod_spec_name['.$langId.']'];
+                <?php if (isset($data['prod_spec_name[' . $langId . ']'])) {
+                    $fld->value = $data['prod_spec_name[' . $langId . ']'];
                 } ?>
-                <?php echo $prodSpecFrm->getFieldHtml('prod_spec_name['.$langId.']');?>
+                <?php echo $prodSpecFrm->getFieldHtml('prod_spec_name[' . $langId . ']');?>
                </div>
              </div>
            </div>
          </div>
-         <div class="col-lg-6 col-md-12 <?php echo 'layout--'.Language::getLayoutDirection($langId); ?>">
+         <div class="col-lg-6 col-md-12 <?php echo 'layout--' . Language::getLayoutDirection($langId); ?>">
            <div class="field-set">
              <div class="caption-wraper">
-               <label class="field_label"><?php $fld = $prodSpecFrm->getField('prod_spec_value['.$langId.']');
+               <label class="field_label"><?php $fld = $prodSpecFrm->getField('prod_spec_value[' . $langId . ']');
                 echo $fld->getCaption(); ?><span class="mandatory">*</span></label>
              </div>
              <div class="field-wraper">
                <div class="field_cover">
-                <?php if (isset($data['prod_spec_value['.$langId.']'])) {
-                    $fld->value= $data['prod_spec_value['.$langId.']'];
+                <?php if (isset($data['prod_spec_value[' . $langId . ']'])) {
+                    $fld->value = $data['prod_spec_value[' . $langId . ']'];
                 }
-                echo $prodSpecFrm->getFieldHtml('prod_spec_value['.$langId.']');?>
+                echo $prodSpecFrm->getFieldHtml('prod_spec_value[' . $langId . ']');?>
                </div>
              </div>
            </div>

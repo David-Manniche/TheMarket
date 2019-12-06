@@ -522,7 +522,7 @@ class ShopsController extends MyAppController
             $frmData['product_id'] = $selprod_id;
             $srch = SellerProduct::getSearchObject($this->siteLangId);
             $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
-            $srch->joinTable(Product::DB_LANG_TBL, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$this->siteLangId, 'p_l');
+            $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$this->siteLangId, 'p_l');
             $srch->addMultipleFields(array('IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title'));
             $srch->addCondition('selprod_id', '=', $selprod_id);
             $db = FatApp::getDb();

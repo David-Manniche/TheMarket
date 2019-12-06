@@ -136,7 +136,8 @@ class AdminBaseController extends FatController
         'confirmRestoreBackup' =>Labels::getLabel('LBL_Do_you_want_to_restore_database_to_this_record', $this->adminLangId),
         'confirmChangeRequestStatus' =>Labels::getLabel('LBL_Do_you_want_to_change_request_status', $this->adminLangId),
         'confirmTruncateUserData' =>Labels::getLabel('LBL_Do_you_want_to_truncate_User_Data', $this->adminLangId),
-        'atleastOneRecord' =>Labels::getLabel('LBL_Please_select_atleast_one_record.', $this->adminLangId)
+        'atleastOneRecord' =>Labels::getLabel('LBL_Please_select_atleast_one_record.', $this->adminLangId),
+        'primaryLanguageField' =>Labels::getLabel('LBL_PRIMARY_LANGUAGE_DATA_NEEDS_TO_BE_FILLED_FOR_SYSTEM_TO_TRANSLATE_TO_OTHER_LANGUAGES.', $this->adminLangId),
         );
 
         $languages = Language::getAllNames(false);
@@ -170,7 +171,7 @@ class AdminBaseController extends FatController
         if ($this->layoutDirection == 'rtl') {
             $this->_template->addCss('css/style--arabic.css');
         }
-        if (CommonHelper::demoUrl() == true) { 
+        if (CommonHelper::demoUrl() == true) {
             $this->_template->addCss('css/demo.css');
         }
     }
@@ -655,5 +656,18 @@ class AdminBaseController extends FatController
     {
         $this->_template->addCss(array('css/1jquery-ui-timepicker-addon.css'), false);
         $this->_template->addJs(array('js/1jquery-ui-timepicker-addon.js'), false);
+    }
+
+    public function translateLangFields($tbl, $data)
+    {
+        if (!empty($tbl) && !empty($data)) {
+            $updateLangDataobj = new TranslateLangData($tbl);
+            $translatedText = $updateLangDataobj->directTranslate($data);
+            if (false === $translatedText) {
+                FatUtility::dieJsonError($updateLangDataobj->getError());
+            }
+            return $translatedText;
+        }
+        FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
     }
 }

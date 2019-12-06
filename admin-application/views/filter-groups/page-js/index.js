@@ -41,9 +41,9 @@ $(document).ready(function(){
 		});
 	};
 
-	filterGroupLangForm = function(filterGroupId, langId) {		
+	filterGroupLangForm = function(filterGroupId, langId, autoFillLangData = 0) {		
 		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('filterGroups', 'langForm', [filterGroupId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('filterGroups', 'langForm', [filterGroupId, langId, autoFillLangData]), '', function(t) {
 				$.facebox(t);
 			});
 		});

@@ -1,23 +1,44 @@
 <div class="tabs tabs--small tabs--scroll clearfix align-items-center">
-    <?php require_once(CONF_THEME_PATH.'_partial/seller/customCatalogProductNavigationLinks.php'); ?>
+    <?php require_once(CONF_THEME_PATH . '_partial/seller/customCatalogProductNavigationLinks.php'); ?>
 </div>
 <div class="cards">
     <div class="cards-content pt-3 pl-4 pr-4 ">
         <div class="row">
             <div class="col-md-12">
                 <div class="form__subcontent">
-                    <?php  $specCount= 0;
+                    <?php  $specCount = 0;
                     if (!empty($productSpecifications) && array_key_exists('prod_spec_name', $productSpecifications)) {
-                        $specCount=                   count($productSpecifications['prod_spec_name'][CommonHelper::getLangId()]);
+                        $specCount = count($productSpecifications['prod_spec_name'][CommonHelper::getLangId()]);
                     } ?>
                     <form name="frmProductSpec" method="post" id="frm_fat_id_frmProductSpec" class="form form--horizontal" onsubmit="setupCustomCatalogSpecification(this,<?php echo $preqId; ?>); return(false);">
-                        <?php $totalSpec = 0;
+                        <?php 
+                        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+                        if (!empty($translatorSubscriptionKey)) { ?> 
+                            <div class="row justify-content-end"> 
+                                <div class="col-auto mb-4">
+                                    <input class="btn btn-primary" 
+                                        type="button" 
+                                        value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $siteLangId); ?>" 
+                                        onClick="autofillLangData($(this), $('form#frm_fat_id_frmProductSpec'))"
+                                        data-action="<?php echo CommonHelper::generateUrl('seller', 'getTranslatedData'); ?>">
+                                </div>
+                            </div>
+                        <?php }
+                        $totalSpec = 0;
                         $count = 0;
-                        if ($specCount>0) {
+                        if ($specCount > 0) {
                             foreach ($productSpecifications['prod_spec_name'][CommonHelper::getLangId()] as $specKey => $specval) {
                                 $totalSpec = $specKey; ?>
                         <div class="replaced specification" id="specification<?php echo $specKey; ?>">
-                            <?php foreach ($languages as $langId=>$langName) { ?>
+                            <?php 
+                            $defaultLang = true;
+                            foreach ($languages as $langId => $langName) {
+                                $class = 'langField_' . $langId;
+                                if (true === $defaultLang) {
+                                    $class .= ' defaultLang';
+                                    $defaultLang = false;
+                                }
+                                ?>
                             <div class="row align-items-center">
                                 <div class="col-md-4">
                                     <div class="row">
@@ -40,8 +61,11 @@
                                         </div>
                                         <div class="field-wraper">
                                             <div class="field_cover">
-                                                <input class="psec-name-js <?php echo 'layout--'.Language::getLayoutDirection($langId); ?>" title="<?php echo Labels::getLabel('LBL_Specification_Name', $siteLangId)?>"
-                                                    value="<?php echo $productSpecifications['prod_spec_name'][$langId][$specKey];?>" type="text" name="prod_spec_name[<?php echo $langId ?>][<?php echo $specKey;?>]">
+                                                <?php 
+                                                    $specValue = isset($productSpecifications['prod_spec_name'][$langId][$specKey]) ? $productSpecifications['prod_spec_name'][$langId][$specKey] : '';
+                                                ?>
+                                                <input class="psec-name-js <?php echo 'layout--' . Language::getLayoutDirection($langId); ?> <?php echo $class; ?>" title="<?php echo Labels::getLabel('LBL_Specification_Name', $siteLangId)?>"
+                                                    value="<?php echo $specValue;?>" type="text" name="prod_spec_name[<?php echo $langId ?>][<?php echo $specKey;?>]">
                                             </div>
                                         </div>
                                     </div>
@@ -53,8 +77,11 @@
                                         </div>
                                         <div class="field-wraper">
                                             <div class="field_cover">
-                                                <input class="<?php echo 'layout--'.Language::getLayoutDirection($langId); ?>" title="<?php echo Labels::getLabel('LBL_Specification_Value', $siteLangId)?>" type="text"
-                                                    value="<?php echo $productSpecifications['prod_spec_value'][$langId][$specKey];?>" name="prod_spec_value[<?php echo $langId ?>][<?php echo $specKey;?>]">
+                                                <?php 
+                                                    $specValue = isset($productSpecifications['prod_spec_value'][$langId][$specKey]) ? $productSpecifications['prod_spec_value'][$langId][$specKey] : '';
+                                                ?>
+                                                <input class="<?php echo 'layout--' . Language::getLayoutDirection($langId); ?> <?php echo $class; ?>" title="<?php echo Labels::getLabel('LBL_Specification_Value', $siteLangId)?>" type="text"
+                                                    value="<?php echo $specValue;?>" name="prod_spec_value[<?php echo $langId ?>][<?php echo $specKey;?>]">
                                             </div>
                                         </div>
                                     </div>

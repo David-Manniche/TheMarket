@@ -944,7 +944,7 @@ class Orders extends MyAppModel
         $srch->joinTable(OrderProduct::DB_TBL_OP_TO_SHIPPING_USERS, 'LEFT OUTER JOIN', 'optosu.optsu_op_id = torp.op_id', 'optosu');
         $srch->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, 'LEFT OUTER JOIN', 'ops.opshipping_op_id = torp.op_id', 'ops');
         $srch->joinTable(ShippingCompanies::DB_TBL, 'LEFT OUTER JOIN', 'ops.opshipping_company_id = opsc.scompany_id', 'opsc');
-        $srch->joinTable(ShippingCompanies::DB_LANG_TBL, 'LEFT OUTER JOIN', 'opscl.scompanylang_scompany_id = opsc.scompany_id', 'opscl');
+        $srch->joinTable(ShippingCompanies::DB_TBL_LANG, 'LEFT OUTER JOIN', 'opscl.scompanylang_scompany_id = opsc.scompany_id', 'opscl');
         $srch->addMultipleFields(array('opshipping_by_seller_user_id,opshipping_company_id','IFNULL(scompany_name, scompany_identifier) as scompany_name'));
 
         if (isset($criteria['seller_id'])) {

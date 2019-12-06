@@ -123,7 +123,7 @@ class SlidesController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function langForm($slide_id = 0, $lang_id = 0)
+    public function langForm($slide_id = 0, $lang_id = 0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canViewSlides();
 
@@ -135,7 +135,17 @@ class SlidesController extends AdminBaseController
         }
 
         $slideLangFrm = $this->getLangForm($lang_id);
-        $langData = Slides::getAttributesByLangId($lang_id, $slide_id);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(Slides::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($slide_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = Slides::getAttributesByLangId($lang_id, $slide_id);
+        }
 
         $langData['slide_id'] = $slide_id;
         $slideLangFrm->fill($langData);
@@ -178,6 +188,15 @@ class SlidesController extends AdminBaseController
         if (!$slideObj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($slideObj->getError());
             FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(Slides::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($slide_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId = 0;
@@ -487,9 +506,17 @@ class SlidesController extends AdminBaseController
     {
         $frm = new Form('frmSlideLang');
         $frm->addHiddenField('', 'slide_id');
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Slide_Title', $this->adminLangId), 'slide_title');
         // $fld =  $frm->addButton(Labels::getLabel('LBL_Slide_slide_Image',$this->adminLangId),'slide_image',Labels::getLabel('LBL_Upload_File',$this->adminLangId),array('class'=>'slideFile-Js','id'=>'slide_image','data-slide_id'=>''));
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+        
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;
     }

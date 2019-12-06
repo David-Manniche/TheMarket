@@ -44,10 +44,10 @@ $(document).ready(function(){
 		});
 	};
 
-	addTagLangForm = function(tagId, langId) {
+	addTagLangForm = function(tagId, langId, autoFillLangData = 0) {
 		fcom.displayProcessing();
 //		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('Tags', 'langForm', [tagId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('Tags', 'langForm', [tagId, langId, autoFillLangData]), '', function(t) {
 				//$.facebox(t);
 				fcom.updateFaceboxContent(t);
 			});

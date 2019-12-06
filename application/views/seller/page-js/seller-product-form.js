@@ -58,11 +58,8 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 		});
 	};
 
-	sellerProductLangForm = function( langId, selprod_id){
-		/* alert('hi'); */
-
-		$(dv).html(fcom.getLoader());
-		fcom.ajax(fcom.makeUrl('Seller', 'sellerProductLangForm', [ langId, selprod_id ]), '', function(t) {
+	sellerProductLangForm = function( langId, selprod_id, autoFillLangData = 0){
+		fcom.ajax(fcom.makeUrl('Seller', 'sellerProductLangForm', [ langId, selprod_id, autoFillLangData]), '', function(t) {
 			$(dv).html(t);
 			fcom.setEditorLayout(langId);
 			fcom.setEditorLayout(langId);
@@ -224,8 +221,8 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 
 	}
 
-	editProductMetaTagLangForm = function(metaId,langId, metaType){
-			fcom.ajax(fcom.makeUrl('seller', 'productSeoLangForm', [metaId,langId,metaType]), '', function(t) {
+	editProductMetaTagLangForm = function(metaId,langId, metaType, autoFillLangData = 0){
+			fcom.ajax(fcom.makeUrl('seller', 'productSeoLangForm', [metaId,langId,metaType, autoFillLangData]), '', function(t) {
 				$(dv).html(t);
 			});
 

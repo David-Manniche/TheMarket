@@ -3,8 +3,8 @@ class BlogPost extends MyAppModel
 {
     const DB_TBL = 'tbl_blog_post';
     const DB_TBL_PREFIX = 'post_';
-    const DB_LANG_TBL ='tbl_blog_post_lang';
-    const DB_LANG_TBL_PREFIX ='postlang_';
+    const DB_TBL_LANG ='tbl_blog_post_lang';
+    const DB_TBL_LANG_PREFIX ='postlang_';
     const DB_POST_TO_CAT_TBL ='tbl_blog_post_to_category';
     const DB_POST_TO_CAT_TBL_PREFIX ='ptc_';
     const REWRITE_URL_PREFIX = 'blog/post-detail/';
@@ -25,10 +25,10 @@ class BlogPost extends MyAppModel
 
         if ($langId > 0) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'bp_l.'.static::DB_LANG_TBL_PREFIX.'post_id = bp.'.static::tblFld('id').' and
-			bp_l.'.static::DB_LANG_TBL_PREFIX.'lang_id = '.$langId,
+                'bp_l.'.static::DB_TBL_LANG_PREFIX.'post_id = bp.'.static::tblFld('id').' and
+			bp_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
                 'bp_l'
             );
         }
@@ -51,7 +51,7 @@ class BlogPost extends MyAppModel
                 $srch->joinTable(
                     BlogPostCategory::DB_TBL_LANG,
                     'LEFT OUTER JOIN',
-                    'bpc_l.'.BlogPostCategory::DB_LANG_TBL_PREFIX.'bpcategory_id = bpc.'.BlogPostCategory::tblFld('id').' and bpc_l.'.BlogPostCategory::DB_LANG_TBL_PREFIX.'lang_id = '.$langId,
+                    'bpc_l.'.BlogPostCategory::DB_TBL_LANG_PREFIX.'bpcategory_id = bpc.'.BlogPostCategory::tblFld('id').' and bpc_l.'.BlogPostCategory::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
                     'bpc_l'
                 );
             }

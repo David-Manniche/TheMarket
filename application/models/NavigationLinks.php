@@ -1,23 +1,23 @@
 <?php
 class NavigationLinks extends MyAppModel
 {
-    const DB_TBL = 'tbl_navigation_links';
-    const DB_TBL_PREFIX = 'nlink_';
+    public const DB_TBL = 'tbl_navigation_links';
+    public const DB_TBL_PREFIX = 'nlink_';
 
-    const DB_TBL_LANG = 'tbl_navigation_links_lang';
-    const DB_TBL_LANG_PREFIX = 'nlinkslang_';
+    public const DB_TBL_LANG = 'tbl_navigation_links_lang';
+    public const DB_TBL_LANG_PREFIX = 'nlinkslang_';
 
-    const NAVLINK_TYPE_CMS = 0;
-    //const NAVLINK_TYPE_CUSTOM_HTML = 1;
-    const NAVLINK_TYPE_EXTERNAL_PAGE = 2;
-    const NAVLINK_TYPE_CATEGORY_PAGE = 3;
+    public const NAVLINK_TYPE_CMS = 0;
+    //public const NAVLINK_TYPE_CUSTOM_HTML = 1;
+    public const NAVLINK_TYPE_EXTERNAL_PAGE = 2;
+    public const NAVLINK_TYPE_CATEGORY_PAGE = 3;
 
-    const NAVLINK_TARGET_CURRENT_WINDOW = "_self";
-    const NAVLINK_TARGET_BLANK_WINDOW = "_blank";
+    public const NAVLINK_TARGET_CURRENT_WINDOW = "_self";
+    public const NAVLINK_TARGET_BLANK_WINDOW = "_blank";
 
-    const NAVLINK_LOGIN_BOTH = 0;
-    const NAVLINK_LOGIN_YES = 1;
-    const NAVLINK_LOGIN_NO = 2;
+    public const NAVLINK_LOGIN_BOTH = 0;
+    public const NAVLINK_LOGIN_YES = 1;
+    public const NAVLINK_LOGIN_NO = 2;
 
     public function __construct($id = 0)
     {

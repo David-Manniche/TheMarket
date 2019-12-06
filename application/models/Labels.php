@@ -1,12 +1,12 @@
 <?php
 class Labels extends MyAppModel
 {
-    const DB_TBL = 'tbl_language_labels';
-    const DB_TBL_PREFIX = 'label_';
-    const JSON_FILE_DIR_NAME = 'language-labels';
+    public const DB_TBL = 'tbl_language_labels';
+    public const DB_TBL_PREFIX = 'label_';
+    public const JSON_FILE_DIR_NAME = 'language-labels';
 
-    const TYPE_WEB = 1;
-    const TYPE_APP = 2;
+    public const TYPE_WEB = 1;
+    public const TYPE_APP = 2;
 
     public function __construct($labelId = 0)
     {

@@ -12,7 +12,7 @@ class SlideSearch extends SearchBase
 
         if ($langId > 0) {
             $this->joinTable(
-                Slides::DB_LANG_TBL,
+                Slides::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'sl_l.slidelang_slide_id = sl.slide_id
 			AND sl_l.slidelang_lang_id = ' . $langId,
@@ -54,7 +54,7 @@ class SlideSearch extends SearchBase
 
         $this->joinTable(Promotion::DB_TBL, 'LEFT OUTER JOIN', 'pr.promotion_id = sl.slide_record_id and sl.slide_type = '.Slides::TYPE_PPC, 'pr');
         if ($langId > 0) {
-            $this->joinTable(Promotion::DB_LANG_TBL, 'LEFT OUTER JOIN', 'pr_l.promotionlang_promotion_id = pr.promotion_id AND pr_l.promotionlang_lang_id = ' . $langId, 'pr_l');
+            $this->joinTable(Promotion::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pr_l.promotionlang_promotion_id = pr.promotion_id AND pr_l.promotionlang_lang_id = ' . $langId, 'pr_l');
         }
     }
 
