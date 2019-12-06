@@ -28,16 +28,16 @@ class AccountController extends LoggedUserController
         switch ($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab']) {
             case 'B':
                 FatApp::redirectUser(CommonHelper::generateUrl('buyer'));
-                break;            
+                break;
             case 'S':
                 FatApp::redirectUser(CommonHelper::generateUrl('seller'));
-                break;            
+                break;
             case 'Ad':
                 FatApp::redirectUser(CommonHelper::generateUrl('advertiser'));
-                break;            
+                break;
             case 'AFFILIATE':
                 FatApp::redirectUser(CommonHelper::generateUrl('affiliate'));
-                break;                        
+                break;
             default:
                 FatApp::redirectUser(CommonHelper::generateUrl(''));
                 break;
@@ -830,12 +830,25 @@ class AccountController extends LoggedUserController
             $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
             $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
 
+            $hasDigitalProducts = 0;
+            
+            $srch = Product::getSearchObject();
+            $srch->addMultipleFields(['product_id']);
+            $srch->addCondition('product_type', '=', Product::PRODUCT_TYPE_DIGITAL);
+            $srch->setPageSize(1);
+            $rs = $srch->getResultSet();
+            $row = $this->db->fetch($rs);
+            if (!empty($row) && 0 < count($row)) {
+                $hasDigitalProducts = 1;
+            }
+
             $bankInfo = $this->bankInfo();
             $personalInfo = $this->personalInfo();
             $personalInfo['userImage'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'user', array($userId, 'SMALL', true)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
             $this->set('personalInfo', empty($personalInfo) ? (object)array() : $personalInfo);
             $this->set('bankInfo', empty($bankInfo) ? (object)array() : $bankInfo);
             $this->set('privacyPolicyLink', FatApp::getConfig('CONF_PRIVACY_POLICY_PAGE', FatUtility::VAR_STRING, ''));
+            $this->set('hasDigitalProducts', $hasDigitalProducts);
             $this->_template->render();
         }
 
@@ -1356,7 +1369,7 @@ class AccountController extends LoggedUserController
                 $msg = Labels::getLabel('LBL_Error_while_assigning_product_under_selected_list.');
 
                 if (true ===  MOBILE_APP_API_CALL) {
-                   LibHelper::dieJsonError($msg);
+                    LibHelper::dieJsonError($msg);
                 }
                 Message::addErrorMessage($msg);
                 FatUtility::dieWithError(Message::getHtml());
