@@ -1,4 +1,12 @@
     </td></tr>
+            <tr style="background:#fff;padding:0 30px; text-align:center; color:#999;vertical-align:top;">
+                <td style="padding:30px 0;">Get in touch in you have any questions regarding our Services.<br />
+                    Feel free to contact us 24/7. We are here to help.<br />
+                    <br />
+                    All the best,<br />
+                    The {website_name} Team<br />
+                    </td>
+            </tr>
             <tr>
             <td>
                 <!--
