@@ -862,17 +862,19 @@ class HomeController extends MyAppController
         $this->set('image_url', $image_url);
         $this->_template->render();
     }
+     
     public function countries()
     {
         $countryObj = new Countries();
         $countriesArr = $countryObj->getCountriesArr($this->siteLangId);
         $arr_country = array();
         foreach ($countriesArr as $key => $val) {
-            $arr_country[] = array("id"=>$key,'name'=>$val);
+            $arr_country[] = array("id" => $key, 'name' => $val);
         }
         $this->set('countries', $arr_country);
         $this->_template->render();
     }
+
     public function states($countryId)
     {
         $countryId = FatUtility::int($countryId);
@@ -883,9 +885,20 @@ class HomeController extends MyAppController
         $statesArr = $this->getStates($countryId, 0, true);
         $states = array();
         foreach ($statesArr as $key => $val) {
-            $states[]=array("id"=>$key,'name'=>$val);
+            $states[] = array("id" => $key, 'name' => $val);
         }
         $this->set('states', $states);
+        $this->_template->render();
+    }
+
+    public function getUrlSegmentsDetail()
+    {
+        $url = FatApp::getPostedData('url', FatUtility::VAR_STRING, '');
+        if (empty($url)) {
+            LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+        }
+        $detail = CommonHelper::getUrlTypeData($url);
+        $this->set('data', ['urlSegmentsDetail' => $detail]);
         $this->_template->render();
     }
 }
