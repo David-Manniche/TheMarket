@@ -1,4 +1,5 @@
-    </td></tr>
+    <table>
+        <tbody>
             <tr style="background:#fff;padding:0 30px; text-align:center; color:#999;vertical-align:top;">
                 <td style="padding:30px 0;">Get in touch in you have any questions regarding our Services.<br />
                     Feel free to contact us 24/7. We are here to help.<br />
@@ -54,4 +55,4 @@
                    </td>
         </tr>
     </tbody>
-</table></div>
+</table>

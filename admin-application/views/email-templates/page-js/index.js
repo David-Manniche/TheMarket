@@ -118,4 +118,54 @@ $(document).ready(function() {
         $("#frmEmailTempListing input[name='status']").val(status);
         $("#frmEmailTempListing").submit();
     };
+
+    settingsForm = function(langId) {
+        fcom.resetEditorInstance();
+        $.facebox(function() {
+            editSettingsForm(langId);
+        });
+    };
+
+
+    editSettingsForm = function(langId, autoFillLangData = 0) {
+        fcom.displayProcessing();
+        fcom.resetEditorInstance();
+
+        fcom.ajax(fcom.makeUrl('EmailTemplates', 'settingsForm', [langId, autoFillLangData]), '', function(t) {
+            fcom.updateFaceboxContent(t);
+            jscolor.installByClassName('jscolor');
+            fcom.setEditorLayout(langId);
+            fcom.resetFaceboxHeight();
+            var frm = $('#facebox form')[0];
+            var validator = $(frm).validation({
+                errordisplay: 3
+            });
+            $(frm).submit(function(e) {
+                e.preventDefault();
+                validator.validate();
+                if (!validator.isValid()) return;
+                var data = fcom.frmData(frm);
+                fcom.updateWithAjax(fcom.makeUrl('EmailTemplates', 'setupSettings'), data, function(t) {
+                    fcom.resetEditorInstance();
+                    reloadList();
+                    if (t.lang_id > 0) {
+                        editSettingsForm(t.lang_id);
+                        return;
+                    }
+                    $(document).trigger('close.facebox');
+                });
+            });
+
+        });
+    };
+
+    setupSettings = function(frm) {
+        if (!$(frm).validate()) return;
+        var data = fcom.frmData(frm);
+        fcom.updateWithAjax(fcom.makeUrl('EmailTemplates', 'setupSettings'), data, function(t) {
+            reloadList();
+            $(document).trigger('close.facebox');
+        });
+    };
+
 })()
