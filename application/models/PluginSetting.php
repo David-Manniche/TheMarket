@@ -21,6 +21,11 @@ class PluginSetting
         $this->keyName = $pluginCode;
         $this->db = FatApp::getDb();
     }
+    
+    public function getError()
+    {
+        return $this->error;
+    }
 
     private function fetchData($pluginId)
     {
@@ -154,8 +159,12 @@ class PluginSetting
         return $frm;
     }
 
-    public function getError()
+    /*
+        - This function is used for overriding functionality in derived class
+        - It is being used when no requirements are defined in derived class
+    */
+    public static function requirements($langId)
     {
-        return $this->error;
+        return [];
     }
 }
