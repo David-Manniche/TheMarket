@@ -7,7 +7,26 @@ $settingFrm->developerTags['fld_default_col'] = 12;
 
 $langFld = $settingFrm->getField('lang_id');
 $langFld->setfieldTagAttribute('onChange', "editSettingsForm(this.value);");
+
+$edFld = $settingFrm->getField('CONF_EMAIL_TEMPLATE_FOOTER_HTML'.$adminLangId);
+$edFld->htmlBeforeField = '<br/><a class="themebtn btn-primary" onClick="resetToDefaultContent();" href="javascript:void(0)">Reset Editor Content to default</a>';
+
+$fld = $settingFrm->getField('email_logo');
+$fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+
+$htmlAfterField = '';
+if (!empty($logoImage)) {
+    $htmlAfterField .= '<ul class="image-listing grids--onethird">';
+    $htmlAfterField .= '<li><div class="uploaded--image"><img src="' . CommonHelper::generateFullUrl('image', 'emailLogo', array($logoImage['afile_lang_id']), CONF_WEBROOT_FRONT_URL) . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeEmailLogo('.$logoImage['afile_lang_id'].')" ><i class="ion-close-round"></i></a></div>';
+    $htmlAfterField .= '</li></ul>';
+} else {
+    $htmlAfterField .= '<div class="temp-hide"><ul class="image-listing grids--onethird"><li><div class="uploaded--image"></div></li></ul></div>';
+}
+$fld->htmlAfterField = $htmlAfterField;
 ?>
+<div id="editor_default_content" style="display:none;">
+    <?php $this->includeTemplate('_partial/emails/email-footer.php'); ?>
+</div>
 <section class="section">
     <div class="sectionhead">
         <h4><?php echo Labels::getLabel('LBL_Email_Template_Setup', $adminLangId); ?></h4>

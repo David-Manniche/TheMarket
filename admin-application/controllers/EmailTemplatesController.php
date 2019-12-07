@@ -262,7 +262,8 @@ class EmailTemplatesController extends AdminBaseController
         }
 
         $settingFrm = $this->getSettingsForm($lang_id);
-
+        $emailLogo = AttachedFile::getAttachment(AttachedFile::FILETYPE_EMAIL_LOGO, 0, 0, $lang_id);
+        $this->set('logoImage', $emailLogo);
         $this->set('languages', Language::getAllNames());
         $this->set('lang_id', $lang_id);
         $this->set('settingFrm', $settingFrm);
@@ -295,14 +296,73 @@ class EmailTemplatesController extends AdminBaseController
     private function getSettingsForm($lang_id = 0)
     {
         $this->objPrivilege->canViewEmailTemplates();
+
         $frm = new Form('frmEtplSettingsForm');
+
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
+
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Header_BG_color', $this->adminLangId), 'CONF_EMAIL_TEMPLATE_COLOR_CODE'.$lang_id, FatApp::getConfig('CONF_EMAIL_TEMPLATE_COLOR_CODE'.$lang_id, FatUtility::VAR_STRING, ''));
         $fld->addFieldTagAttribute('class', 'jscolor');
+
+        $fld = $frm->addButton(
+            Labels::getLabel('LBL_Logo', $this->adminLangId),
+            'email_logo',
+            Labels::getLabel('LBL_Upload_Logo', $this->adminLangId),
+            array('class'=>'logoFile-Js btn-xs','id'=>'email_logo','data-file_type'=>AttachedFile::FILETYPE_EMAIL_LOGO,'data-frm'=>'frmEtplSettingsForm')
+        );
+
         $fld = $frm->addHtmlEditor(Labels::getLabel('LBL_Footer_HTML', $this->adminLangId), 'CONF_EMAIL_TEMPLATE_FOOTER_HTML'.$lang_id, FatApp::getConfig('CONF_EMAIL_TEMPLATE_FOOTER_HTML'.$lang_id, FatUtility::VAR_STRING, ''));
         $fld->requirements()->setRequired(true);
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
+    }
+
+    public function uploadLogo()
+    {
+        $this->objPrivilege->canEditShops();
+        $post = FatApp::getPostedData();
+        $file_type = FatApp::getPostedData('file_type', FatUtility::VAR_INT, 0);
+        $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
+
+        if (!$file_type) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $allowedFileTypeArr = array(AttachedFile::FILETYPE_EMAIL_LOGO);
+
+        if (!in_array($file_type, $allowedFileTypeArr)) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Please_Select_A_File', $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $fileHandlerObj = new AttachedFile();
+        if (!$res = $fileHandlerObj->saveImage($_FILES['file']['tmp_name'], $file_type, 0, 0, $_FILES['file']['name'], -1, true, $lang_id)) {
+            Message::addErrorMessage($fileHandlerObj->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $this->set('lang_id', $lang_id);
+        $this->set('msg', Labels::getLabel('LBL_File_Uploaded_Successfully', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function removeEmailLogo($lang_id = 0)
+    {
+        $lang_id = FatUtility::int($lang_id);
+        $fileHandlerObj = new AttachedFile();
+        if (!$fileHandlerObj->deleteFile(AttachedFile::FILETYPE_EMAIL_LOGO, 0, 0, 0, $lang_id)) {
+            Message::addErrorMessage($fileHandlerObj->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $this->set('msg', Labels::getLabel('MSG_Deleted_Successfully', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
     }
 }

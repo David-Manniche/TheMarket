@@ -168,4 +168,76 @@ $(document).ready(function() {
         });
     };
 
-})()
+    resetToDefaultContent =  function(){
+		var agree  = confirm(langLbl.confirmReplaceCurrentToDefault);
+		if( !agree ){ return false; }
+		oUtil.obj.insertHTML($("#editor_default_content").html());
+		//oUtil.obj.putHTML( $("#editor_default_content").html() );
+	};
+
+    removeEmailLogo = function(lang_id) {
+        if (!confirm(langLbl.confirmDeleteImage)) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('EmailTemplates', 'removeEmailLogo', [lang_id]), '', function(t) {
+            settingsForm(lang_id);
+        });
+    };
+
+})();
+
+$(document).on('click', '.logoFile-Js', function() {
+    var node = this;
+    $('#form-upload').remove();
+    var formName = $(node).attr('data-frm');
+
+    var lang_id = document.frmEtplSettingsForm.lang_id.value;
+
+    var fileType = $(node).attr('data-file_type');
+
+    var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
+    frm = frm.concat('<input type="file" name="file" />');
+    frm = frm.concat('<input type="hidden" name="file_type" value="' + fileType + '">');
+    frm = frm.concat('<input type="hidden" name="lang_id" value="' + lang_id + '">');
+    frm = frm.concat('</form>');
+    $('body').prepend(frm);
+    $('#form-upload input[name=\'file\']').trigger('click');
+    if (typeof timer != 'undefined') {
+        clearInterval(timer);
+    }
+    timer = setInterval(function() {
+        if ($('#form-upload input[name=\'file\']').val() != '') {
+            clearInterval(timer);
+            $val = $(node).val();
+            $.ajax({
+                url: fcom.makeUrl('EmailTemplates', 'uploadLogo'),
+                type: 'post',
+                dataType: 'json',
+                data: new FormData($('#form-upload')[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $(node).val('Loading');
+                },
+                complete: function() {
+                    $(node).val($val);
+                },
+                success: function(ans) {
+                    if (!ans.status) {
+                        $.systemMessage(ans.msg, 'alert--danger');
+                        return;
+                    }
+                    $(".temp-hide").show();
+                    var dt = new Date();
+                    var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+                    $(".uploaded--image").html('<img src="' + fcom.makeUrl('image', 'emailLogo', [ans.lang_id], SITE_ROOT_URL) + '?' + time + '">');
+                    $.systemMessage(ans.msg, 'alert--success');
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                }
+            });
+        }
+    }, 500);
+});
