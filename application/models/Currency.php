@@ -116,6 +116,10 @@ class Currency extends MyAppModel
 
         $obj = new CurrencyApi($baseCurrencyCode);
         $currenciesData = $obj->getConversionRate($currencies);
+        if (!$currenciesData) {
+            $this->error = $obj->getError();
+            return false;
+        }
 
         $currencyObj = new TableRecord(static::DB_TBL);
         foreach ($currenciesData as $currencyCode => $rate) {

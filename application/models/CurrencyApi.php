@@ -1,19 +1,12 @@
 <?php
 class CurrencyApi
 {
-    private $className;
-
-    public function __construct()
-    {
-        if (!$this->className = static::getDefaultCurrencyApiClass()) {
-            $this->error = Labels::getLabel('MSG_DEFAULT_CURRENCY_CONVERTER_NOT_DEFINED', CommonHelper::getLangId());
-        }
-    }
-
     public static function getDefaultCurrencyApiClass()
     {
         $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_CURRENCY_CONVERTER_API', FatUtility::VAR_INT, 0);
         if (empty($defaultCurrConvAPI)) {
+            return false;
+        } elseif (1 > Plugin::getAttributesById($defaultCurrConvAPI, 'plugin_active')) {
             return false;
         }
         
@@ -27,6 +20,11 @@ class CurrencyApi
 
     public function getConversionRate($toCurrencies = [])
     {
+        if (!$className = static::getDefaultCurrencyApiClass()) {
+            $this->error = Labels::getLabel('MSG_DEFAULT_CURRENCY_CONVERTER_NOT_DEFINED', CommonHelper::getLangId());
+            return false;
+        }
+
         $baseCurrencyCode = Currency::getDefaultCurrencyCode();
         if (!$baseCurrencyCode) {
             trigger_error("Invalid Base Currency", E_USER_ERROR);
@@ -34,12 +32,15 @@ class CurrencyApi
 
         $toCurrencies = !is_array($toCurrencies) ? [] : $toCurrencies;
         try {
-            $obj = new $this->className($baseCurrencyCode);
+            $obj = new $className($baseCurrencyCode);
             $data = $obj->getConversionRate($toCurrencies);
             if (!$data) {
                 throw new Exception($obj->getError());
             }
-        } catch (Exception $e) {
+        } catch (\Error $e) {
+            $this->error = $e->getMessage();
+            return false;
+        } catch (\Exception $e) {
             $this->error = $e->getMessage();
             return false;
         }

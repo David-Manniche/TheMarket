@@ -22,16 +22,16 @@ class Plugin extends MyAppModel
     public static function getSearchObject($langId = 0, $isActive = true, $joinSettings = false)
     {
         $langId = FatUtility::int($langId);
-        $srch = new SearchBase(static::DB_TBL, 'ad');
+        $srch = new SearchBase(static::DB_TBL, 'plg');
         if ($isActive == true) {
-            $srch->addCondition('ad.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
+            $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
         }
         if ($langId > 0) {
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'ad_l.pluginlang_' . static::DB_TBL_PREFIX . 'id = ad.' . static::DB_TBL_PREFIX . 'id and ad_l.pluginlang_lang_id = ' . $langId,
-                'ad_l'
+                'plg_l.pluginlang_' . static::DB_TBL_PREFIX . 'id = plg.' . static::DB_TBL_PREFIX . 'id and plg_l.pluginlang_lang_id = ' . $langId,
+                'plg_l'
             );
         }
 
@@ -39,20 +39,20 @@ class Plugin extends MyAppModel
             $srch->joinTable(
                 PluginSetting::DB_TBL,
                 'LEFT OUTER JOIN',
-                'ads.' . PluginSetting::DB_TBL_PREFIX . static::DB_TBL_PREFIX . 'id = ad.' . static::DB_TBL_PREFIX . 'id',
-                'ads'
+                'plgs.' . PluginSetting::DB_TBL_PREFIX . static::DB_TBL_PREFIX . 'id = plg.' . static::DB_TBL_PREFIX . 'id',
+                'plgs'
             );
         }
-        $srch->addOrder('ad.' . static::DB_TBL_PREFIX . 'active', 'DESC');
-        $srch->addOrder('ad.' . static::DB_TBL_PREFIX . 'display_order', 'ASC');
+        $srch->addOrder('plg.' . static::DB_TBL_PREFIX . 'active', 'DESC');
+        $srch->addOrder('plg.' . static::DB_TBL_PREFIX . 'display_order', 'ASC');
         return $srch;
     }
 
 
     public static function getAttributesByCode($code, $attr = null)
     {
-        $srch = new SearchBase(static::DB_TBL, 'ad');
-        $srch->addCondition('ad.' . static::DB_TBL_PREFIX . 'code', '=', $code);
+        $srch = new SearchBase(static::DB_TBL, 'plg');
+        $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'code', '=', $code);
         
         if (null != $attr) {
             if (is_array($attr)) {
@@ -82,7 +82,7 @@ class Plugin extends MyAppModel
         ];
     }
 
-    public static function getDataByType($typeId, $langId = 0, $assoc = false)
+    public static function getDataByType($typeId, $langId = 0, $assoc = false, $active = true)
     {
         $typeId = FatUtility::int($typeId);
         if (1 > $typeId) {
@@ -93,16 +93,24 @@ class Plugin extends MyAppModel
         if (true == $assoc) {
             $srch->addMultipleFields(
                 [
-                    'ad.' . static::DB_TBL_PREFIX . 'id',
-                    'COALESCE(ad_l.' . static::DB_TBL_PREFIX . 'name, ad.' . static::DB_TBL_PREFIX . 'identifier) as plugin_name'
+                    'plg.' . static::DB_TBL_PREFIX . 'id',
+                    'COALESCE(plg_l.' . static::DB_TBL_PREFIX . 'name, plg.' . static::DB_TBL_PREFIX . 'identifier) as plugin_name'
                 ]
             );
         } else {
-            $srch->addFld('COALESCE(ad_l.' . static::DB_TBL_PREFIX . 'name, ad.' . static::DB_TBL_PREFIX . 'identifier) as plugin_name');
+            $srch->addFld('COALESCE(plg_l.' . static::DB_TBL_PREFIX . 'name, plg.' . static::DB_TBL_PREFIX . 'identifier) as plugin_name');
         }
 
-        $srch->addCondition('ad.' . static::DB_TBL_PREFIX . 'type', '=', $typeId);
+        if (true === $active) {
+            $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::YES);
+        }
+
+        $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'type', '=', $typeId);
         $rs = $srch->getResultSet();
+        if (!$rs) {
+            echo $srch->getError();
+            return false;
+        }
         
         $db = FatApp::getDb();
         if (true == $assoc) {

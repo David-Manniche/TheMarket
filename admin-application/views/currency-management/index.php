@@ -33,9 +33,12 @@
 
                             $innerLi = $innerUl->appendElement('li');
                             $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green','title' => Labels::getLabel('LBL_Add_Currency', $adminLangId), "onclick" => "editCurrencyForm(0)"), Labels::getLabel('LBL_Add_Currency', $adminLangId), true);
-                            
-                            $innerLi = $innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green','title' => Labels::getLabel('LBL_Update_Currency', $adminLangId), "onclick" => "updateCurrencyRates()"), Labels::getLabel('LBL_Update_Currency', $adminLangId), true);
+							
+							$currencyPlugins = Plugin::getNamesByType(Plugin::TYPE_CURRENCY_API, $adminLangId);
+							if (!empty($currencyPlugins) && 0 < count($currencyPlugins)) {
+								$innerLi = $innerUl->appendElement('li');
+								$innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green','title' => Labels::getLabel('LBL_Update_Currency', $adminLangId), "onclick" => "updateCurrencyRates()"), Labels::getLabel('LBL_Update_Currency', $adminLangId), true);
+							}
                         }
                             echo $ul->getHtml();
                         ?>

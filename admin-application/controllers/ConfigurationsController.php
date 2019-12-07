@@ -590,8 +590,10 @@ class ConfigurationsController extends AdminBaseController
                 $frm->addSelectBox(Labels::getLabel('LBL_Default_System_Currency', $this->adminLangId), 'CONF_CURRENCY', $currencyArr, false, array(), '');
 				
 				$currencyPlugins = Plugin::getNamesByType(Plugin::TYPE_CURRENCY_API, $this->adminLangId);
-				$fld = $frm->addSelectBox(Labels::getLabel("LBL_DEFAULT_CURRENCY_CONVERTER_API", $this->adminLangId), 'CONF_DEFAULT_CURRENCY_CONVERTER_API', $currencyPlugins, false, array(), '');
-                $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_SET_DEFAULT_CURRENCY_CONVERTER_API.", $this->adminLangId)."</small>";
+				if (!empty($currencyPlugins) && 0 < count($currencyPlugins)) {
+					$fld = $frm->addSelectBox(Labels::getLabel("LBL_DEFAULT_CURRENCY_CONVERTER_API", $this->adminLangId), 'CONF_DEFAULT_CURRENCY_CONVERTER_API', [-1 => Labels::getLabel("LBL_PLEASE_SELECT", $this->adminLangId)] + $currencyPlugins, false, array(), '');
+					$fld->htmlAfterField = "<small>".Labels::getLabel("LBL_SET_DEFAULT_CURRENCY_CONVERTER_API.", $this->adminLangId)."</small>";
+				}
 
                 $faqCategoriesArr = FaqCategory::getFaqPageCategories();
                 $sellerCategoriesArr = FaqCategory::getSellerPageCategories();
