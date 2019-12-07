@@ -688,7 +688,6 @@ class GuestUserController extends MyAppController
     public function loginApple()
     {
         $appleResponse = FatApp::getPostedData();
-        $redirecUri = CommonHelper::generateFullUrl('GuestUser', 'loginApple', array(), '', false);
         if (isset($appleResponse['id_token'])) {
             if (false ===  MOBILE_APP_API_CALL && $_SESSION['appleSignIn']['state'] != $appleResponse['state']) {
                 $message = 'Authorization server returned an invalid state parameter';
