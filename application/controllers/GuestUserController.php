@@ -687,7 +687,6 @@ class GuestUserController extends MyAppController
 
     public function loginApple()
     {
-        $obj = new AppleSignIn();
         $appleResponse = FatApp::getPostedData();
         $redirecUri = CommonHelper::generateFullUrl('GuestUser', 'loginApple', array(), '', false);
         if (isset($appleResponse['id_token'])) {
@@ -764,7 +763,8 @@ class GuestUserController extends MyAppController
             $this->doLogin($userInfo);
             $this->redirectUser($userInfo['user_preferred_dashboard']);
         }
-                
+        
+        $obj = new AppleSignIn();        
         FatApp::redirectUser($obj->getRequestUri());
     }
 
