@@ -577,9 +577,9 @@ class User extends MyAppModel
     public function updateInfo($data = array(), $userId)
     {
         $assignValues = array(
-        'user_company'=>$data['user_company'],
-        'user_profile_info'=>$data['user_profile_info'],
-        'user_products_services'=>$data['user_products_services'],
+        'user_company' => $data['user_company'],
+        'user_profile_info' => $data['user_profile_info'],
+        'user_products_services' => $data['user_products_services'],
         );
         if (!FatApp::getDb()->updateFromArray(static::DB_TBL, $assignValues, array('smt' => static::DB_TBL_PREFIX . 'id = ? ', 'vals' => array((int)$userId)))) {
             $this->error = FatApp::getDb()->getError();
@@ -1057,14 +1057,8 @@ class User extends MyAppModel
             return false;
         }
 
-        $assignValues = array(
-        'scatrequest_deleted'=> 1
-        );
-        if (!FatApp::getDb()->updateFromArray(
-            static::DB_TBL_USR_CATALOG_REQ,
-            $assignValues,
-            array('smt' => 'scatrequest_id = ? ', 'vals' => array((int)$scatrequest_id))
-        )) {
+        $assignValues = ['scatrequest_deleted' => 1];
+        if (!FatApp::getDb()->updateFromArray(static::DB_TBL_USR_CATALOG_REQ, $assignValues, ['smt' => 'scatrequest_id = ? ', 'vals' => array((int)$scatrequest_id)])) {
             $this->error = $this->db->getError();
             return false;
         }
@@ -1087,7 +1081,7 @@ class User extends MyAppModel
     {
         $referredUserId = FatUtility::int($referredUserId);
         $langId = FatUtility::int($langId);
-        if ($referredUserId <=0 || $langId <= 0) {
+        if ($referredUserId <= 0 || $langId <= 0) {
             trigger_error("Parameters are not passed", E_USER_ERROR);
         }
         $broken = false;
@@ -1331,7 +1325,7 @@ class User extends MyAppModel
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
             return false;
         }
-        $email = (empty($email)) ? NULL : $email;
+        $email = (empty($email)) ? null : $email;
         $record = new TableRecord(static::DB_TBL_CRED);
         $arrFlds = array(
         static::DB_TBL_CRED_PREFIX.'username' => $username,

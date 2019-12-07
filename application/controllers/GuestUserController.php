@@ -747,9 +747,18 @@ class GuestUserController extends MyAppController
                 }
             }
 
-            if (!empty($userAppleId) && $userInfo['user_apple_id'] != $userAppleId) {
+            if (!empty($userAppleId) && !empty($userInfo['user_apple_id']) && $userInfo['user_apple_id'] != $userAppleId) {
                 $message = Labels::getLabel("MSG_USER_SOCIAL_CREDENTIALS_NOT_MATCHED", $this->siteLangId);
                 $this->setLoginErrorMessage($message, true);
+            }
+
+            if (empty($userInfo['user_apple_id']) && !empty($userAppleId)) {
+                $updateVals = ['user_apple_id' => $userAppleId];
+                $db = FatApp::getDb();
+                if (!$db->updateFromArray(User::DB_TBL, $updateVals, ['smt' => 'user_id = ? ', 'vals' => [$userId]])) {
+                    $this->error = $db->getError();
+                    return false;
+                }
             }
 
             $this->doLogin($userInfo);
