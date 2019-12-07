@@ -693,11 +693,11 @@ class GuestUserController extends MyAppController
         if (isset($appleResponse['id_token'])) {
             if (false ===  MOBILE_APP_API_CALL && $_SESSION['appleSignIn']['state'] != $appleResponse['state']) {
                 $message = 'Authorization server returned an invalid state parameter';
-                $this->setLoginErrorMessage($message);
+                $this->setLoginErrorMessage($message, true);
             }
             if (isset($_REQUEST['error'])) {
                 $message = 'Authorization server returned an error: ' . htmlspecialchars($_REQUEST['error']);
-                $this->setLoginErrorMessage($message);
+                $this->setLoginErrorMessage($message, true);
             }
             $claims = explode('.', $appleResponse['id_token'])[1];
             $claims = json_decode(base64_decode($claims), true);
@@ -724,7 +724,7 @@ class GuestUserController extends MyAppController
             $userType = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
             if (true ===  MOBILE_APP_API_CALL && 1 > $userType) {
                 $message = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
-                $this->setLoginErrorMessage($message, false);
+                $this->setLoginErrorMessage($message);
             }
 
             if (true === $isPrivateEmailId && !empty($userAppleId)) {
@@ -743,13 +743,13 @@ class GuestUserController extends MyAppController
                 $userObj = new User($userId);
                 if (!$userInfo = $userObj->getUserInfo(['user_name', 'user_id', 'user_phone', 'user_apple_id','credential_email', 'user_preferred_dashboard', 'credential_username', 'credential_password'])) {
                     $message = Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->siteLangId);
-                    $this->setLoginErrorMessage($message);
+                    $this->setLoginErrorMessage($message, true);
                 }
             }
 
             if (!empty($userAppleId) && $userInfo['user_apple_id'] != $userAppleId) {
                 $message = Labels::getLabel("MSG_USER_SOCIAL_CREDENTIALS_NOT_MATCHED", $this->siteLangId);
-                $this->setLoginErrorMessage($message, false);
+                $this->setLoginErrorMessage($message, true);
             }
 
             $this->doLogin($userInfo);
