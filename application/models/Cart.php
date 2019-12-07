@@ -136,7 +136,11 @@ class Cart extends FatModel
         }
 
         $this->updateUserCart();
-
+        
+        if($this->cart_user_id > 0){
+            CartHistory::saveCartHistory($this->cart_user_id, $selprod_id, $this->SYSTEM_ARR['cart'][$key], CartHistory::ACTION_ADDED);
+        }
+        
         if ($returnUserId) {
             return $this->cart_user_id;
         }
@@ -520,7 +524,7 @@ class Cart extends FatModel
         $cartProducts = $this->getProducts($this->cart_lang_id);
         $found = false;
         if (is_array($cartProducts)) {
-            foreach ($cartProducts as $cartKey => $product) {
+            foreach ($cartProducts as $cartKey => $product) { 
                 if ($key == 'all') {
                     $found = true;
                     unset($this->SYSTEM_ARR['cart'][$cartKey]);
@@ -532,7 +536,10 @@ class Cart extends FatModel
                     unset($this->SYSTEM_ARR['cart'][$cartKey]);
                     /* to keep track of temporary hold the product stock[ */
                     $this->updateTempStockHold($product['selprod_id'], 0, 0);
-                    /* ] */
+                    /* ] */                        
+                    if($this->cart_user_id > 0){
+                        CartHistory::saveCartHistory($this->cart_user_id, $product['selprod_id'], $product['quantity'], CartHistory::ACTION_DELETED);
+                    }
                     break;
                 }
             }
@@ -611,6 +618,9 @@ class Cart extends FatModel
                             /* to keep track of temporary hold the product stock[ */
                             $this->updateTempStockHold($product['selprod_id'], $quantity);
                             /* ] */
+                            if($this->cart_user_id > 0){
+                                CartHistory::saveCartHistory($this->cart_user_id, $product['selprod_id'], $quantity, CartHistory::ACTION_ADDED);
+                            }
                             break;
                         } else {
                             $this->remove($key);
