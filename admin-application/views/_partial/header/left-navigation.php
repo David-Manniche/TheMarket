@@ -310,6 +310,7 @@
             <?php if (
                 $objPrivilege->canViewOrders(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewSellerOrders(AdminAuthentication::getLoggedAdminId(), true) ||
+                $objPrivilege->canViewAbandonedCart(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewSubscriptionOrders(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewWithdrawRequests(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewOrderCancellationRequests(AdminAuthentication::getLoggedAdminId(), true) ||
@@ -324,6 +325,9 @@
                     <?php if ($objPrivilege->canViewSellerOrders(AdminAuthentication::getLoggedAdminId(), true)) {?>
                         <li><a href="<?php echo CommonHelper::generateUrl('SellerOrders'); ?>"><?php echo Labels::getLabel('LBL_Seller_Orders', $adminLangId);?> <?php if (!empty($sellerOrderCount)) { ?><span class='badge'>(<?php echo $sellerOrderCount; ?>)</span><?php } ?></a></li>
                     <?php }?>
+                    <?php if($objPrivilege->canViewAbandonedCart(AdminAuthentication::getLoggedAdminId(), true)){ ?>
+						<li><a href="<?php echo CommonHelper::generateUrl('AbandonedCart'); ?>"><?php echo Labels::getLabel('LBL_Abandoned_Cart',$adminLangId);?> </a></li>
+					<?php }?>
                     <?php if ($objPrivilege->canViewSubscriptionOrders(AdminAuthentication::getLoggedAdminId(), true)) {?>
                         <li><a href="<?php echo CommonHelper::generateUrl('SubscriptionOrders'); ?>"><?php echo Labels::getLabel('LBL_Subscription_Orders', $adminLangId);?> </a></li>
                     <?php }?>
