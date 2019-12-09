@@ -131,7 +131,7 @@ class ShopsController extends MyAppController
             $allShops[$val['shop_id']]['totalProducts'] = $productShopSrchTempObj->recordCount();
             $allShops[$val['shop_id']]['shopRating'] = SelProdRating::getSellerRating($val['shop_user_id']);
             $allShops[$val['shop_id']]['shopTotalReviews'] = SelProdReview::getSellerTotalReviews($val['shop_user_id']);
-            $allShops[$val['shop_id']]['shopLogo'] = CommonHelper::generateFullUrl('image', 'shopLogo', [$val['shop_id'], $this->siteLangId, 'SMALL']);
+            $allShops[$val['shop_id']]['shop_logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', [$val['shop_id'], $this->siteLangId, 'SMALL']);
         }
         /* CommonHelper::printArray($allShops[4]['products']); */
         $this->set('allShops', $allShops);
