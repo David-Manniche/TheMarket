@@ -98,7 +98,14 @@ class Plugin extends MyAppModel
                 ]
             );
         } else {
-            $srch->addFld('COALESCE(plg_l.' . static::DB_TBL_PREFIX . 'name, plg.' . static::DB_TBL_PREFIX . 'identifier) as plugin_name');
+            $srch->addMultipleFields(
+                [
+                    static::DB_TBL_PREFIX . 'id',
+                    static::DB_TBL_PREFIX . 'code',
+                    static::DB_TBL_PREFIX . 'description',
+                    'COALESCE(plg_l.' . static::DB_TBL_PREFIX . 'name, plg.' . static::DB_TBL_PREFIX . 'identifier) as plugin_name'
+                ]
+            );
         }
 
         if (true === $active) {

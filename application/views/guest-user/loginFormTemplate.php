@@ -96,14 +96,8 @@
             <?php
             $facebookLogin  = (FatApp::getConfig('CONF_ENABLE_FACEBOOK_LOGIN', FatUtility::VAR_INT, 0) && FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, '')) ? true : false;
             $googleLogin  = (FatApp::getConfig('CONF_ENABLE_GOOGLE_LOGIN', FatUtility::VAR_INT, 0)&& FatApp::getConfig('CONF_GOOGLEPLUS_CLIENT_ID', FatUtility::VAR_STRING, '')) ? true : false;
-            $enableAppleLogin = Apple::getStatus();
-            $settings = Apple::getSettings();
-            $clientId = $settings['clientId'];
-            $appleLogin = false;
-            if ($enableAppleLogin && !empty($clientId)) {
-                $appleLogin = true;
-            }
-            if ($facebookLogin || $googleLogin || $appleLogin) {?>
+            
+            if ($facebookLogin || $googleLogin) {?>
             <div class="other-option">
                 <div class="section-head section--head--center">
                     <div class="section__heading">
@@ -130,15 +124,17 @@
                                 </a>
                             </li>
                         <?php }
-                        if ($appleLogin) { ?> 
-                            <li>
-                                <a href="<?php echo CommonHelper::generateUrl('Apple'); ?>" class="btn btn--social btn--apple">
-                                <i class="icn">
-                                    <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/apple-logo.svg">
-                                </i>
-                                </a>
-                            </li>
-                        <?php } ?> 
+                        if (!empty($socialLoginApis) && 0 < count($socialLoginApis)) {
+                            foreach ($socialLoginApis as $plugin) { ?>
+                                <li>
+                                    <a href="<?php echo CommonHelper::generateUrl('SocialLogin', 'index', [$plugin['plugin_code']]); ?>" class="btn btn--social btn--apple">
+                                        <i class="icn">
+                                            <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/<?php echo $plugin['plugin_code']; ?>.svg">
+                                        </i>
+                                    </a>
+                                </li>
+                            <?php }
+                        } ?>  
                     </ul>
                 </div>
             </div>

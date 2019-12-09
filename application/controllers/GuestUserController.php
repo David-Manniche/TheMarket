@@ -17,10 +17,14 @@ class GuestUserController extends MyAppController
         if (UserAuthentication::isUserLogged()) {
             FatApp::redirectUser(CommonHelper::generateUrl('account'));
         }
+
+        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN_API, $this->siteLangId);
+
         $loginFrm = $this->getLoginForm();
         $loginData = array(
-        'loginFrm'             => $loginFrm,
-        'siteLangId'    => $this->siteLangId
+        'loginFrm' => $loginFrm,
+        'socialLoginApis' => $socialLoginApis,
+        'siteLangId' => $this->siteLangId,
         );
 
         $registerFrm = $this->getRegistrationForm();
@@ -225,9 +229,11 @@ class GuestUserController extends MyAppController
     {
         $includeGuestLogin = FatApp::getPostedData('includeGuestLogin', FatUtility::VAR_STRING, false);
         $frm = $this->getLoginForm($includeGuestLogin);
+        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN_API, $this->siteLangId);
         $data = array(
             'loginFrm' => $frm,
             'siteLangId' => $this->siteLangId,
+            'socialLoginApis' => $socialLoginApis,
             'includeGuestLogin' => $includeGuestLogin,
         );
         $this->set('data', $data);
@@ -258,8 +264,6 @@ class GuestUserController extends MyAppController
                 FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginGoogle'));
             } elseif ($oauthProvider == 'facebook') {
                 FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginFacebook'));
-            } elseif ($oauthProvider == 'apple') {
-                FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginApple'));
             } else {
                 Message::addErrorMessage(Labels::getLabel('MSG_ERROR_INVALID_REQUEST', $this->siteLangid));
             }

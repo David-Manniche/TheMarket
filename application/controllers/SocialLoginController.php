@@ -1,9 +1,9 @@
 <?php
 class SocialLoginController extends PluginBaseController
 {
-    private const FB_LOGIN = 1;
-    private const GOOGLE_LOGIN = 2;
-    private const APPLE_LOGIN = 3;
+    protected const FB_LOGIN = 1;
+    protected const GOOGLE_LOGIN = 2;
+    protected const APPLE_LOGIN = 3;
 
     protected const USER_INFO_ATTR = [
         'user_id',
@@ -37,7 +37,7 @@ class SocialLoginController extends PluginBaseController
         }
         if (true === $errRedirection) {
             Message::addErrorMessage($message);
-            CommonHelper::redirectUserReferer();
+            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
         } else {
             FatUtility::dieJsonError($message);
         }
@@ -271,5 +271,23 @@ class SocialLoginController extends PluginBaseController
             $this->setLoginErrorMessage($message, $errRedirection);
         }
         FatApp::redirectUser($url);
+    }
+
+    public function index($keyName)
+    {
+        if (empty($keyName)) {
+            $message = Labels::getLabel("MSG_INVALID_REQUEST", $this->siteLangId);
+            $this->setLoginErrorMessage($message, $errRedirection);
+        }
+        $keyName = ucfirst($keyName) . 'Controller';
+        $appleResponse = FatApp::getPostedData();
+        try {
+            $obj = new $keyName($appleResponse);
+            $obj->index();
+        } catch (\Error $e) {
+            $this->setLoginErrorMessage($e->getMessage());
+        } catch (\Exception $e) {
+            $this->setLoginErrorMessage($e->getMessage());
+        }
     }
 }

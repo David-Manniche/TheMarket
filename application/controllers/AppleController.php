@@ -17,7 +17,7 @@ class AppleController extends SocialLoginController
         }
     }
 
-    private function validateResponse($response)
+    private function validateResponse($appleResponse)
     {
         if (false ===  MOBILE_APP_API_CALL && $_SESSION['appleSignIn']['state'] != $appleResponse['state']) {
             $message = 'Authorization server returned an invalid state parameter';
@@ -30,7 +30,6 @@ class AppleController extends SocialLoginController
         $claims = explode('.', $appleResponse['id_token'])[1];
         $claims = json_decode(base64_decode($claims), true);
         $appleUserInfo = isset($appleResponse['user']) ? json_decode($appleResponse['user'], true) : false;
-        
         $this->isPrivateEmailId = false;
         if (isset($claims['is_private_email']) && $claims['is_private_email'] == true ) {
             $this->isPrivateEmailId = true;
@@ -50,11 +49,11 @@ class AppleController extends SocialLoginController
         }
     }
 
-    public function index()
+    public function index($appleResponse = [])
     {
         $appleResponse = FatApp::getPostedData();
         if (isset($appleResponse['id_token'])) {
-            $this->validateResponse();
+            $this->validateResponse($appleResponse);
                     
             if (true === $this->isPrivateEmailId && !empty($this->appleId)) {
                 $userInfo = $this->getUserInfo($this->appleId, $this->userType, static::APPLE_LOGIN);

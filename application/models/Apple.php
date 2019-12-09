@@ -6,7 +6,7 @@ class Apple extends LoginPluginBase
     public static function getRequestUri()
     {
         $settings = static::getSettings();
-        $redirectUri = CommonHelper::generateFullUrl('Apple', 'index', array(), '', false);
+        $redirectUri = CommonHelper::generateFullUrl('SocialLogin', 'index', ['Apple'], '', false);
         $_SESSION['appleSignIn']['state'] = bin2hex(random_bytes(5));
         return static::PRODUCTION_URL . 'authorize?' . http_build_query([
             'response_type' => 'code id_token',
