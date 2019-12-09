@@ -1,11 +1,11 @@
 $(document).ready(function(){
 	searchAbandonedCart(document.frmAbandonedCartSearch);
 	
-	$('input[name=\'buyer\']').autocomplete({
+	$('input[name=\'user_name\']').autocomplete({
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('Users', 'autoCompleteJson'),
-				data: {keyword: request, user_is_buyer: 1, fIsAjax:1},
+				data: {keyword: request, fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
@@ -16,56 +16,79 @@ $(document).ready(function(){
 			});
 		},
 		'select': function(item) {
-			$("input[name='user_id']").val( item['value'] );
-			$("input[name='buyer']").val( item['label'] );
+			$("input[name='carthistory_user_id']").val( item['value'] );
+			$("input[name='user_name']").val( item['label'] );
 		}
 	});
 	
-	$('input[name=\'buyer\']').keyup(function(){
+	$('input[name=\'user_name\']').keyup(function(){
 		if( $(this).val() == "" ){
-			$("input[name='user_id']").val( "" );
+			$("input[name='carthistory_user_id']").val( "" );
+		}
+	});
+    
+    $('input[name=\'seller_product\']').autocomplete({
+		'source': function(request, response) {
+			$.ajax({
+				url: fcom.makeUrl('sellerProducts', 'autoComplete'),
+				data: {keyword: request, fIsAjax:1},
+				dataType: 'json',
+				type: 'post',
+				success: function(json) {
+					response($.map(json, function(item) {
+						return { label: item['name'] ,	value: item['id']	};
+					}));
+				},
+			});
+		},
+		'select': function(item) {
+			$("input[name='carthistory_selprod_id']").val( item['value'] );
+			$("input[name='seller_product']").val( item['label'] );
 		}
 	});
 	
-	$(document).on('click','ul.linksvertical li a.redirect--js',function(event){
-		event.stopPropagation();
-	});	
-
+	$('input[name=\'seller_product\']').keyup(function(){
+		if( $(this).val() == "" ){
+			$("input[name='carthistory_selprod_id']").val( "" );
+		}
+	});
+    
 });
+
+
 (function() {
 	var currentPage = 1;
-	goToSearchPage = function(page) {
-		if(typeof page==undefined || page == null){
-			page = 1;
-		}		
-		var frm = document.frmOrderSearchPaging;		
-		$(frm.page).val(page);
-		searchOrders(frm);
-	}
 	
-	frmAbandonedCartSearch = function(form,page){
+	searchAbandonedCart = function(form,page){
 		if (!page) {
 			page = currentPage;
 		}
 		currentPage = page;	
-		var dv = $('#ordersListing');		
+		var dv = $('#abandonedCartListing');		
 		var data = '';
 		if (form) {
 			data = fcom.frmData(form);
 		}
 		dv.html(fcom.getLoader());
-		fcom.ajax(fcom.makeUrl('Orders','search'),data,function(res){
+		fcom.ajax(fcom.makeUrl('AbandonedCart','search'),data,function(res){
 			dv.html(res);
 		});
 	};
-		
-	reloadOrderList = function() {
-		searchOrders(document.frmOrderSearchPaging, currentPage);
+        
+    goToSearchPage = function(page) {
+		if(typeof page==undefined || page == null){
+			page = 1;
+		}		
+		var frm = document.frmAbandonedCartSearch;		
+		$(frm.page).val(page);
+		searchAbandonedCart(frm);
+	}    
+    
+	clearAbandonedCartSearch = function(){
+        document.frmAbandonedCartSearch.carthistory_user_id.value = '';
+		document.frmAbandonedCartSearch.carthistory_selprod_id.value = '';
+        document.frmAbandonedCartSearch.reset();
+		searchAbandonedCart(document.frmAbandonedCartSearch);
 	};
-	
-	clearOrderSearch = function(){
-		document.frmAbandonedCartSearch.user_id.value = '';
-		document.frmAbandonedCartSearch.reset();
-		searchOrders(document.frmAbandonedCartSearch);
-	};
+    
 })();

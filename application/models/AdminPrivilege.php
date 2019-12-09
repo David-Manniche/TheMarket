@@ -1383,10 +1383,5 @@ class AdminPrivilege
     {
         return $this->checkPermission($adminId, static::SECTION_ABANDONED_CART, static::PRIVILEGE_READ, $returnResult);
     }
-    
-    public function canEditAbandonedCart($adminId = 0, $returnResult = false)
-    {
-        return $this->checkPermission($adminId, static::SECTION_ABANDONED_CART, static::PRIVILEGE_WRITE, $returnResult);
-    }
 
 }

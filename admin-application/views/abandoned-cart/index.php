@@ -25,13 +25,13 @@
 								$frmSearch->developerTags['colClassPrefix'] = 'col-md-';							
 								$frmSearch->developerTags['fld_default_col'] = 12;
 
-								$buyerFld = $frmSearch->getField('buyer');
+								$buyerFld = $frmSearch->getField('user_name');
 								$buyerFld->developerTags['col'] = 4;
                                 
-                                $sellerProductFld = $frmSearch->getField('seller_products');
+                                $sellerProductFld = $frmSearch->getField('seller_product');
 								$sellerProductFld->developerTags['col'] = 4;
                                 
-                                $actionFld = $frmSearch->getField('carthistory_type');
+                                $actionFld = $frmSearch->getField('carthistory_action');
 								$actionFld->developerTags['col'] = 4;
 									
 								$submitBtnFld = $frmSearch->getField('btn_submit');
@@ -40,7 +40,8 @@
 
 								$btn_clear = $frmSearch->getField('btn_clear');
 								$btn_clear->addFieldTagAttribute('onclick', 'clearAbandonedCartSearch()');
-								echo  $frmSearch->getFormHtml();
+								
+                                echo  $frmSearch->getFormHtml();
 							?>
 						</div>
 					</section>
