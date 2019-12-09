@@ -324,7 +324,7 @@ ALTER TABLE `tbl_plugins`
 INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES
 (1, 'Fixer Currency Converter API', 1, 'FixerCurrencyApi', 1, 1),
 (2, 'Currency Converter API', 1, 'CurrencyConverterApi', 1, 2),
-(3, 'Apple Sign In', 2, 'AppleSignIn', 1, 3);
+(3, 'Apple Sign In', 2, 'Apple', 1, 3);
 
 -- --------------------------------------------------------
 
