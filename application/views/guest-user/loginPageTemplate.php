@@ -69,8 +69,8 @@ echo $loginFrm->getExternalJS();
 $facebookLogin  = (FatApp::getConfig('CONF_ENABLE_FACEBOOK_LOGIN', FatUtility::VAR_INT, 0) && FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, '')) ? true : false ;
 $googleLogin = (FatApp::getConfig('CONF_ENABLE_GOOGLE_LOGIN', FatUtility::VAR_INT, 0) && FatApp::getConfig('CONF_GOOGLEPLUS_CLIENT_ID', FatUtility::VAR_STRING, '')) ? true : false;
 
-$enableAppleLogin = AppleSignIn::getStatus();
-$settings = AppleSignIn::getSettings();
+$enableAppleLogin = Apple::getStatus();
+$settings = Apple::getSettings();
 $clientId = $settings['clientId'];
 $appleLogin = false;
 if ($enableAppleLogin && !empty($clientId)) {
@@ -104,7 +104,7 @@ if ($facebookLogin || $googleLogin || $appleLogin) { ?>
                 </li>
             <?php } if ($appleLogin ) { ?> 
                 <li>
-                    <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'socialMediaLogin', array('apple')); ?>" class="btn btn--social btn--apple">
+                    <a href="<?php echo CommonHelper::generateUrl('Apple'); ?>" class="btn btn--social btn--apple">
                         <i class="icn">
                             <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/apple-logo.svg">
                         </i>

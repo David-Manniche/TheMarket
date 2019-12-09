@@ -1,12 +1,12 @@
 <?php
-class AppleSignIn extends LoginPluginBase
+class Apple extends LoginPluginBase
 {
     private const PRODUCTION_URL = 'https://appleid.apple.com/auth/';
     
-    public function getRequestUri()
+    public static function getRequestUri()
     {
         $settings = static::getSettings();
-        $redirectUri = CommonHelper::generateFullUrl('GuestUser', 'loginApple', array(), '', false);
+        $redirectUri = CommonHelper::generateFullUrl('Apple', 'index', array(), '', false);
         $_SESSION['appleSignIn']['state'] = bin2hex(random_bytes(5));
         return static::PRODUCTION_URL . 'authorize?' . http_build_query([
             'response_type' => 'code id_token',
