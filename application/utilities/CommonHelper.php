@@ -178,6 +178,10 @@ class CommonHelper extends FatUtility
         }
         $url = FatUtility::generateUrl($controller, $action, $queryData, $use_root_url, $url_rewriting);
 
+        if (rtrim($use_root_url, '/') === $url) {
+            $url = $use_root_url;
+        }
+
         if ($getOriginalUrl) {
             return $url;
         }
@@ -1836,7 +1840,7 @@ class CommonHelper extends FatUtility
     }
 
     public static function demoUrl()
-	{ 
+	{
         if (strpos($_SERVER ['SERVER_NAME'], 'demo.yo-kart.com') !== false) {
             return true;
         }
