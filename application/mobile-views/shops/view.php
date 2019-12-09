@@ -1,5 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 
+
 if (array_key_exists('products', $data)) {
     foreach ($data['products'] as $index => $product) {
         $uploadedTime = AttachedFile::setTimeParam($product['product_image_updated_on']);
@@ -27,6 +28,7 @@ if (!empty($data['shop'])) {
 
     $data['shop']['policies'] = !empty($data['shop']['policies']) ? $data['shop']['policies'] : [];
 
+    $data['shop']['socialPlatforms'] = !empty($socialPlatforms) ? $socialPlatforms : [];
     unset($data['shop']['shop_payment_policy'], $data['shop']['shop_delivery_policy'], $data['shop']['shop_refund_policy'], $data['shop']['shop_additional_info'], $data['shop']['shop_seller_info']);
 }
 
