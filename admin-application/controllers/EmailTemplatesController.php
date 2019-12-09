@@ -304,15 +304,17 @@ class EmailTemplatesController extends AdminBaseController
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Header_BG_color', $this->adminLangId), 'CONF_EMAIL_TEMPLATE_COLOR_CODE'.$lang_id, FatApp::getConfig('CONF_EMAIL_TEMPLATE_COLOR_CODE'.$lang_id, FatUtility::VAR_STRING, ''));
         $fld->addFieldTagAttribute('class', 'jscolor');
 
+        $frm->addSelectBox(Labels::getLabel('LBL_Logo_Ratio', $this->adminLangId), 'CONF_EMAIL_TEMPLATE_LOGO_RATIO', EmailTemplates::getLogoRatioArr(), FatApp::getConfig('CONF_EMAIL_TEMPLATE_LOGO_RATIO', FatUtility::VAR_STRING, ''), array(), '');
+
         $fld = $frm->addButton(
             Labels::getLabel('LBL_Logo', $this->adminLangId),
             'email_logo',
             Labels::getLabel('LBL_Upload_Logo', $this->adminLangId),
             array('class'=>'logoFile-Js btn-xs','id'=>'email_logo','data-file_type'=>AttachedFile::FILETYPE_EMAIL_LOGO,'data-frm'=>'frmEtplSettingsForm')
         );
-
         $fld = $frm->addHtmlEditor(Labels::getLabel('LBL_Footer_HTML', $this->adminLangId), 'CONF_EMAIL_TEMPLATE_FOOTER_HTML'.$lang_id, FatApp::getConfig('CONF_EMAIL_TEMPLATE_FOOTER_HTML'.$lang_id, FatUtility::VAR_STRING, ''));
         $fld->requirements()->setRequired(true);
+
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
