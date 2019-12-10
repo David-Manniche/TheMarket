@@ -60,8 +60,7 @@ class AbandonedCartController extends AdminBaseController
         $postedData = FatApp::getPostedData();                
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);     
         $carHistory = new CartHistory();
-        $records = $carHistory->getAbandonedCartProducts($this->adminLangId, $page);
-        
+        $records = $carHistory->getAbandonedCartProducts($this->adminLangId, $page);        
         $this->set("records", $records);
         $this->set('page', $page);
         $this->set('pageSize', $carHistory->getPageSize());
@@ -71,6 +70,23 @@ class AbandonedCartController extends AdminBaseController
         $this->_template->render(false, false);
     }
     
+    public function sendDiscountNotification()
+    { 
+        $userId = FatApp::getPostedData('userId', FatUtility::VAR_INT, 6); 
+        $actionType = FatApp::getPostedData('actionType', FatUtility::VAR_INT, 1); 
+        $couponId = FatApp::getPostedData('couponId', FatUtility::VAR_INT, 11); 
+        $selProdId = FatApp::getPostedData('selProdId', FatUtility::VAR_INT, 149); 
+        if($userId < 1 || $actionType < 1 || $couponId < 1 || $selProdId < 1){
+            return false;
+        }
+        
+        $carHistory = new CartHistory();
+        if(!$carHistory->sendDiscountEmail($this->adminLangId, $userId, $actionType, $couponId, $selProdId)){
+            return false;
+        }
+        return true;        
+    }
+        
     
 
 }

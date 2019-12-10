@@ -64,6 +64,8 @@ $(document).ready(function(){
 	var currentPage = 1;
 	var userId = 0;
     var productId = 0;
+    var selProdId = 0;
+    var actionType = 0;
     
 	searchAbandonedCart = function(form,page){
 		if (!page) {
@@ -98,10 +100,12 @@ $(document).ready(function(){
 	};
     
     
-    sendDiscountNotification = function(user_id, product_id){
+    discountNotification = function(user_id, action_type, product_id, selprod_id){
         addCouponForm(0);
         userId = user_id;
+        actionType = action_type
         productId = product_id;
+        selProdId = selprod_id;
     }
     
     
@@ -140,7 +144,7 @@ $(document).ready(function(){
 		fcom.updateWithAjax(fcom.makeUrl('DiscountCoupons', 'setup'), data, function(t) {  
             updateCouponUser(t.couponId, userId);
             updateCouponProduct(t.couponId, productId);
-			sendDiscountNotification(userId, t.couponId);
+			sendDiscountNotification(t.couponId, actionType, userId, selProdId);
             if (t.langId>0) {
 				addCouponLangForm(t.couponId, t.langId);
 				return ;
@@ -208,12 +212,12 @@ $(document).ready(function(){
 		fcom.updateWithAjax(fcom.makeUrl('DiscountCoupons', 'updateCouponProduct'), data, function(t) {		
 		});
 	};
-    
-    sendDiscountNotification = function(userId,couponId){
-        var data = 'userId='+userId+'&couponId='+couponId;
+
+    sendDiscountNotification = function(couponId, actionType, userId, selProdId){
+        var data = 'couponId='+couponId+'&actionType='+actionType+'&userId='+userId+'&selProdId='+selProdId;
         fcom.updateWithAjax(fcom.makeUrl('AbandonedCart', 'sendDiscountNotification'), data, function(t) {		
 		});
-    }
+    } 
 
 })();
 

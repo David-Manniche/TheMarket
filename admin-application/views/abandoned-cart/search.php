@@ -34,16 +34,17 @@ foreach ($records as $sn=>$row){
                 $td->appendElement('plaintext',array(),FatDate::format($row[$key],true,true,FatApp::getConfig('CONF_TIMEZONE', FatUtility::VAR_STRING, date_default_timezone_get())));
 			break;
 			case 'action':
-                $ul = $td->appendElement("ul",array("class"=>"actions actions--centered"));
+                if($row['carthistory_action'] < CartHistory::ACTION_PURCHASED){
+                    $ul = $td->appendElement("ul",array("class"=>"actions actions--centered"));
 
-				$li = $ul->appendElement("li",array('class'=>'droplink'));
-				$li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit',$adminLangId)),'<i class="ion-android-more-horizontal icon"></i>', true);
-				$innerDiv=$li->appendElement('div',array('class'=>'dropwrap'));
-				$innerUl=$innerDiv->appendElement('ul',array('class'=>'linksvertical'));
+                    $li = $ul->appendElement("li",array('class'=>'droplink'));
+                    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit',$adminLangId)),'<i class="ion-android-more-horizontal icon"></i>', true);
+                    $innerDiv=$li->appendElement('div',array('class'=>'dropwrap'));
+                    $innerUl=$innerDiv->appendElement('ul',array('class'=>'linksvertical'));
 
-				$innerLi=$innerUl->appendElement('li');
-				$innerLi->appendElement('a', array('href'=>'javascript:void(0);', 'onclick'=>'sendDiscountNotification('.$row['carthistory_user_id'].','.$row['selprod_product_id'].')', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Send_Discount_Notification',$adminLangId)),Labels::getLabel('LBL_Send_Discount_Notification',$adminLangId), true);
-
+                    $innerLi=$innerUl->appendElement('li');
+                    $innerLi->appendElement('a', array('href'=>'javascript:void(0);', 'onclick'=>'discountNotification('.$row['carthistory_user_id'].','.$row['carthistory_action'].','.$row['selprod_product_id'].','.$row['carthistory_selprod_id'].')', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Send_Discount_Notification',$adminLangId)),Labels::getLabel('LBL_Send_Discount_Notification',$adminLangId), true);
+                }
 			break; 
 			default:
 				$td->appendElement('plaintext', array(), $row[$key], true);
