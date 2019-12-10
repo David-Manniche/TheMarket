@@ -77,6 +77,28 @@ class User extends MyAppModel
     public const CLASS_APPROVED = 'success';
     public const CLASS_CANCELLED = 'danger';
 
+    public const FB_LOGIN = 1;
+    public const GOOGLE_LOGIN = 2;
+    public const APPLE_LOGIN = 3;
+
+    public const USER_INFO_ATTR = [
+        'user_id',
+        'user_name',
+        'user_phone',
+        'credential_email as user_email',
+        'user_registered_initially_for',
+        'user_preferred_dashboard',
+        'user_deleted',
+        'user_is_buyer',
+        'user_is_supplier',
+        'user_is_advertiser',
+        'user_is_affiliate',
+        'user_googleplus_id',
+        'user_facebook_id',
+        'user_apple_id',
+        'credential_active as user_active',
+    ];
+
     public function __construct($userId = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $userId);
@@ -1605,13 +1627,13 @@ class User extends MyAppModel
         $data = array(
             'user_name' => $data['user_name'],
             'user_username' => $data['user_username'],
-        'user_email' => $data['user_email'],
-        'user_type' => $user_type,
+            'user_email' => $data['user_email'],
+            'user_type' => $user_type,
         );
         $email = new EmailHandler();
 
         if (!$email->sendNewRegistrationNotification($langId, $data)) {
-            Message::addMessage(Labels::getLabel("ERR_ERROR_IN_SENDING_NOTIFICATION_EMAIL_TO_ADMIN", $langId));
+            $this->error = Labels::getLabel("ERR_ERROR_IN_SENDING_NOTIFICATION_EMAIL_TO_ADMIN", $langId);
             return false;
         }
         return true;
@@ -2159,6 +2181,153 @@ class User extends MyAppModel
         $date = empty($date) ? date('Y-m-d  H:i:s') : $date;
         $where = array('smt' => 'user_id = ?', 'vals' => array($userId));
         FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_img_updated_on' => date('Y-m-d  H:i:s')), $where);
+    }
+
+    public function validateUser($recordIdentifier, $userType, $loginType)
+    {
+        $db = FatApp::getDb();
+        $srch = $this->getUserSearchObj(static::USER_INFO_ATTR);
+        
+        $cnd = $srch->addCondition('credential_email', '=', $recordIdentifier);
+
+        switch ($loginType) {
+            case static::FB_LOGIN:
+                $cnd->attachCondition('user_facebook_id', '=', $recordIdentifier);
+                break;
+            case static::GOOGLE_LOGIN:
+                $cnd->attachCondition('user_googleplus_id', '=', $recordIdentifier);
+                break;
+            case static::APPLE_LOGIN:
+                $cnd->attachCondition('user_apple_id', '=', $recordIdentifier);
+                break;
+            default:
+                $this->error = Labels::getLabel('MSG_INVALID_SOCIAL_LOGIN_TYPE', $this->commonLangId);
+                return false;
+                break;
+        }
+        $rs = $srch->getResultSet();
+        if (!$rs) {
+            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->commonLangId);
+            return false;
+        }
+        $row = $db->fetch($rs);
+        if (empty($row)) {
+            return [];
+        }
+
+        if ($row['user_active'] != applicationConstants::ACTIVE) {
+            $this->error = Labels::getLabel('ERR_YOUR_ACCOUNT_HAS_BEEN_DEACTIVATED', $this->commonLangId);
+            return false;
+        }
+
+        if ($row['user_deleted'] == applicationConstants::YES) {
+            $this->error = Labels::getLabel("ERR_USER_INACTIVE_OR_DELETED", $this->commonLangId);
+            return false;
+        }
+        if (0 < $userType) {
+            $userTypeArr = [
+                static::USER_TYPE_BUYER => 'user_is_buyer',
+                static::USER_TYPE_SELLER => 'user_is_supplier',
+                static::USER_TYPE_ADVERTISER => 'user_is_advertiser',
+                static::USER_TYPE_AFFILIATE => 'user_is_affiliate',
+            ];
+
+            $invalidUser = false;
+            if (in_array($userType, array_keys($userTypeArr)) && $row[$userTypeArr[$userType]] == applicationConstants::NO) {
+                $invalidUser = true;
+            } elseif (!in_array($userType, array_keys($userTypeArr)) && $row['user_registered_initially_for'] != $userType) {
+                $invalidUser = true;
+            }
+
+            if ($invalidUser) {
+                $this->error = Labels::getLabel('MSG_Invalid_User', $this->commonLangId);
+                return false;
+            }
+        }
+
+        return $row;
+    }
+
+    public function setupUser($user_type, $username, $loginType, $socialLoginId, $userEmail)
+    {
+        $db = FatApp::getDb();
+        $user_is_supplier = (FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0 : 1;
+        $user_is_advertiser = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0 : 1;
+
+        if (isset($user_type) && $user_type == static::USER_TYPE_BUYER) {
+            $userPreferredDashboard = static::USER_BUYER_DASHBOARD;
+            $user_registered_initially_for = static::USER_TYPE_BUYER;
+        }
+        if (isset($user_type) && $user_type == static::USER_TYPE_SELLER) {
+            $userPreferredDashboard = static::USER_SELLER_DASHBOARD;
+            $user_registered_initially_for = static::USER_TYPE_SELLER;
+        }
+
+        $db->startTransaction();
+
+        switch ($loginType) {
+            case static::FB_LOGIN:
+                $userFacebookId = $socialLoginId;
+                break;
+            case static::GOOGLE_LOGIN:
+                $userGoogleId = $socialLoginId;
+                break;
+            case static::APPLE_LOGIN:
+                $userAppleId = $socialLoginId;
+                break;
+        }
+
+        $userData = [
+            'user_name' => $username,
+            'user_is_buyer' => (isset($user_type) && $user_type == static::USER_TYPE_BUYER) ? 1 : 0,
+            'user_is_supplier' => (isset($user_type) && $user_type == static::USER_TYPE_SELLER) ? 1 : 0,
+            'user_is_advertiser' => $user_is_advertiser,
+            'user_googleplus_id' => !empty($userGoogleId) ? $userGoogleId : '',
+            'user_facebook_id' => !empty($userFacebookId) ? $userFacebookId : '',
+            'user_apple_id' => !empty($userAppleId) ? $userAppleId : '',
+            'user_preferred_dashboard' => $userPreferredDashboard,
+            'user_registered_initially_for' => $user_registered_initially_for
+        ];
+        
+        $this->assignValues($userData);
+        if (!$this->save()) {
+            $this->error = Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->commonLangId) . $this->getError();
+            return false;
+        }
+        $userId = $this->getMainTableRecordId();
+        if (!$this->setLoginCredentials($username, $userEmail, uniqid(), 1, 1)) {
+            $this->error = Labels::getLabel("MSG_LOGIN_CREDENTIALS_COULD_NOT_BE_SET", $this->commonLangId) . $this->getError();
+            $db->rollbackTransaction();
+            return false;
+        }
+
+        $userData['user_username'] = $username;
+        $userData['user_email'] = $userEmail;
+        if (FatApp::getConfig('CONF_NOTIFY_ADMIN_REGISTRATION', FatUtility::VAR_INT, 1)) {
+            if (!$this->notifyAdminRegistration($userData, $this->commonLangId)) {
+                $this->error = Labels::getLabel("MSG_NOTIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->commonLangId);
+                $db->rollbackTransaction();
+                return false;
+            }
+        }
+
+        if (FatApp::getConfig('CONF_WELCOME_EMAIL_REGISTRATION', FatUtility::VAR_INT, 1) && $userEmail) {
+            $data['user_email'] = $userEmail;
+            $data['user_name'] = $username;
+
+            //ToDO::Change login link to contact us link
+            $data['link'] = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
+            $userEmailObj = new User($userId);
+            if (!$this->userWelcomeEmailRegistration($userEmailObj, $data, $this->commonLangId)) {
+                $this->error = Labels::getLabel("MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT", $this->commonLangId);
+                $db->rollbackTransaction();
+                return false;
+            }
+        }
+
+        $db->commitTransaction();
+        $this->setUpRewardEntry($userId, $this->commonLangId);
+        return $userId;
     }
 
     public function doLogin()

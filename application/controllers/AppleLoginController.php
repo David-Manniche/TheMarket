@@ -48,6 +48,7 @@ class AppleLoginController extends SocialMediaController
         }
         $claims = explode('.', $appleResponse['id_token'])[1];
         $claims = json_decode(base64_decode($claims), true);
+        
         $appleUserInfo = isset($appleResponse['user']) ? json_decode($appleResponse['user'], true) : false;
         $this->isPrivateEmailId = false;
         if (isset($claims['is_private_email']) && $claims['is_private_email'] == true ) {
@@ -75,14 +76,15 @@ class AppleLoginController extends SocialMediaController
             $this->validateResponse($appleResponse);
                     
             if (true === $this->isPrivateEmailId && !empty($this->appleId)) {
-                $userInfo = $this->getUserInfo($this->appleId, $this->userType, static::APPLE_LOGIN);
+                $userInfo = $this->getUserInfo($this->appleId, $this->userType, User::APPLE_LOGIN);
             } else {
-                $userInfo = $this->getUserInfo($this->email, $this->userType, static::APPLE_LOGIN);
+                $userInfo = $this->getUserInfo($this->email, $this->userType, User::APPLE_LOGIN);
             }
+            
             if (!empty($userInfo)) {
                 $userId = $userInfo['user_id'];
                 $userObj = new User($userId);
-                $arr = array('user_apple_id' => $this->appleId);
+                $arr = ['user_apple_id' => $this->appleId];
                 if (!$userObj->setUserInfo($arr)) {
                     $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
                     $this->setErrorMessage($message);
@@ -91,9 +93,9 @@ class AppleLoginController extends SocialMediaController
                 $this->userType = (0 < $this->userType ? $this->userType : User::USER_TYPE_BUYER);
                 $exp = explode("@", $this->email);
                 $appleUserName = substr($exp[0], 0, 80) . rand();
-                $userId = $this->setupUser($this->userType, $appleUserName, static::APPLE_LOGIN, $this->appleId, $this->email);
+                $userId = $this->setupUser($this->userType, $appleUserName, User::APPLE_LOGIN, $this->appleId, $this->email);
                 $userObj = new User($userId);
-                if (!$userInfo = $userObj->getUserInfo(static::USER_INFO_ATTR)) {
+                if (!$userInfo = $userObj->getUserInfo(User::USER_INFO_ATTR)) {
                     $message = Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->siteLangId);
                     $this->setErrorMessage($message);
                 }
