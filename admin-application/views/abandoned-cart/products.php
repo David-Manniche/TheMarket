@@ -14,41 +14,9 @@
                             </div>
 						</div>
 					</div>
-					<section class="section searchform_filter">
-						<div class="sectionhead">
-							<h4> <?php echo Labels::getLabel('LBL_Search...',$adminLangId); ?></h4>
-						</div>
-						<div class="sectionbody space togglewrap" style="display:none;">
-							<?php 
-								$frmSearch->setFormTagAttribute ( 'onsubmit', 'searchAbandonedCart(this,1); return(false);');
-								$frmSearch->setFormTagAttribute ( 'class', 'web_form' );					
-								$frmSearch->developerTags['colClassPrefix'] = 'col-md-';							
-								$frmSearch->developerTags['fld_default_col'] = 12;
-
-								$buyerFld = $frmSearch->getField('user_name');
-								$buyerFld->developerTags['col'] = 4;
-                                
-                                $sellerProductFld = $frmSearch->getField('seller_product');
-								$sellerProductFld->developerTags['col'] = 4;
-                                
-                                $actionFld = $frmSearch->getField('carthistory_action');
-								$actionFld->developerTags['col'] = 4;
-									
-								$submitBtnFld = $frmSearch->getField('btn_submit');
-								$submitBtnFld->setFieldTagAttribute('class','btn--block');
-								$submitBtnFld->developerTags['col'] = 4;
-
-								$btn_clear = $frmSearch->getField('btn_clear');
-								$btn_clear->addFieldTagAttribute('onclick', 'clearAbandonedCartSearch()');
-								
-                                echo  $frmSearch->getFormHtml();
-							?>
-						</div>
-					</section>
-                   
                     <section class="section">
 						<div class="sectionhead">
-							<h4><?php echo Labels::getLabel('LBL_Abandoned_Cart_List',$adminLangId); ?> </h4>
+							<h4><?php echo Labels::getLabel('LBL_Abandoned_Cart_Products',$adminLangId); ?> </h4>
                             <?php
                                 $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
                                 $li = $ul->appendElement("li", array('class'=>'droplink'));
@@ -58,14 +26,14 @@
                                 $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
 
                                 $innerLi=$innerUl->appendElement('li');
-                                $innerLi->appendElement('a', array('href'=> commonHelper::generateUrl('AbandonedCart', 'products') ,'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_View_By_Product', $adminLangId)), Labels::getLabel('LBL_View_By_Product', $adminLangId), true);
+                                $innerLi->appendElement('a', array('href'=> commonHelper::generateUrl('AbandonedCart') ,'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_View_By_Product', $adminLangId)), Labels::getLabel('LBL_Abandoned_Cart_List', $adminLangId), true);
                            
                                 echo $ul->getHtml();
                             ?>
 						</div>
 						<div class="sectionbody">
 							<div class="tablewrap">
-								<div id="abandonedCartListing">
+								<div id="abandonedCartProducts">
 									<?php echo Labels::getLabel('LBL_Processing...',$adminLangId); ?>
 								</div>
 							</div>

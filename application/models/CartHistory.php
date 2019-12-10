@@ -70,26 +70,51 @@ class CartHistory extends FatModel
         $srch->addEmailCountCondition();
         $srch->addDiscountNotificationCondition();
         $srch->addMultipleFields(array('ch.*', 'user_name', 'selprod_title')); 
+        
         $srch->setPageNumber($page);
-        $pageSize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
-        $srch->setPageSize($pageSize);
+        $srch->setPageSize($this->setPageSize());
         $rs = $srch->getResultSet();  
         $this->totalRecords = $srch->recordCount();
         $this->totalPages = $srch->pages();
-        $this->pageSize = $pageSize;
+        $this->pageSize = $this->setPageSize();
         return FatApp::getDb()->fetchAll($rs);        
     }
     
-    public function recordCount(){ 
+    public function getAbandonedCartProducts($langId, $page = 1)
+    {
+        $srch = new CartHistorySearch();
+        $srch->joinSellerProducts($langId);
+        $srch->addActionCondition();
+        $srch->addMultipleFields(array('carthistory_selprod_id', 'selprod_title', 'count(carthistory_selprod_id) as product_count')); 
+        $srch->addGroupBySellerProduct();
+        
+        $srch->setPageNumber($page);        
+        $srch->setPageSize($this->setPageSize());        
+        $rs = $srch->getResultSet();                  
+        $this->totalRecords = $srch->recordCount();
+        $this->totalPages = $srch->pages();
+        $this->pageSize = $this->setPageSize();
+        return FatApp::getDb()->fetchAll($rs);        
+    }
+    
+    public function recordCount()
+    { 
         return $this->totalRecords;
     }
     
-    public function pages(){
+    public function pages()
+    {
         return $this->totalPages;
     }
     
-    public function pageSize(){
+    public function getPageSize()
+    {
         return $this->pageSize;
+    }
+    
+    public function setPageSize()
+    {
+        return FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
     }
     
     

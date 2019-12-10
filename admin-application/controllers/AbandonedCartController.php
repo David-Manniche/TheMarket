@@ -41,10 +41,30 @@ class AbandonedCartController extends AdminBaseController
         
         $carHistory = new CartHistory();
         $records = $carHistory->getAbandonedCartList($this->adminLangId, $userId, $selProdId, $action, $page);
+        $this->set("records", $records);
+        $this->set('page', $page);
+        $this->set('pageSize', $carHistory->getPageSize());
+        $this->set('recordCount', $carHistory->recordCount());        
+        $this->set('pageCount', $carHistory->pages());
+        $this->set('postedData', $postedData);
+        $this->_template->render(false, false);
+    }
+    
+    public function products()
+    {     
+        $this->_template->render();
+    }
+    
+    public function getProducts()
+    {   
+        $postedData = FatApp::getPostedData();                
+        $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);     
+        $carHistory = new CartHistory();
+        $records = $carHistory->getAbandonedCartProducts($this->adminLangId, $page);
         
         $this->set("records", $records);
         $this->set('page', $page);
-        $this->set('pageSize', $carHistory->pageSize());
+        $this->set('pageSize', $carHistory->getPageSize());
         $this->set('recordCount', $carHistory->recordCount());        
         $this->set('pageCount', $carHistory->pages());
         $this->set('postedData', $postedData);

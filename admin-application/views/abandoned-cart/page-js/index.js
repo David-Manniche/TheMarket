@@ -53,6 +53,10 @@ $(document).ready(function(){
 		}
 	});
     
+    $(document).on('click','ul.linksvertical li a.redirect--js',function(event){
+		event.stopPropagation();
+	});
+    
 });
 
 
@@ -90,5 +94,6 @@ $(document).ready(function(){
         document.frmAbandonedCartSearch.reset();
 		searchAbandonedCart(document.frmAbandonedCartSearch);
 	};
+    
     
 })();

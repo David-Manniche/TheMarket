@@ -30,7 +30,7 @@ class CartHistorySearch extends SearchBase
         $this->addCondition(CartHistory::DB_TBL_PREFIX.'selprod_id', '=', $selProdId);
     }
     
-    public function addActionCondition($action)
+    public function addActionCondition($action = 0)
     { 
         if($action > 0 && $action <= CartHistory::ACTION_PURCHASED){
             $this->addCondition(CartHistory::DB_TBL_PREFIX.'action', '=', $action);
@@ -49,6 +49,10 @@ class CartHistorySearch extends SearchBase
         $this->addCondition(CartHistory::DB_TBL_PREFIX.'discount_notification', '=', 0);
     }
     
+    public function addGroupBySellerProduct()
+    { 
+        $this->addGroupBy(CartHistory::DB_TBL_PREFIX.'selprod_id');
+    }
 
 }
 
