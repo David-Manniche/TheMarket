@@ -2157,7 +2157,26 @@ class User extends MyAppModel
     public static function setImageUpdatedOn($userId, $date = '')
     {
         $date = empty($date) ? date('Y-m-d  H:i:s') : $date;
-        $where = array('smt'=>'user_id = ?', 'vals'=>array($userId));
-        FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_img_updated_on'=>date('Y-m-d  H:i:s')), $where);
+        $where = array('smt' => 'user_id = ?', 'vals' => array($userId));
+        FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_img_updated_on' => date('Y-m-d  H:i:s')), $where);
+    }
+
+    public function doLogin()
+    {
+        $attr = ['credential_username', 'credential_email'];
+        $userData = $this->getUserInfo($attr, true, true, true);
+        if (!$userData) {
+            $this->error = Labels::getLabel('LBL_INVALID_USER', $this->commonLangId);
+            return false;
+        }
+        $authentication = new UserAuthentication();
+        $userName = $userData['credential_username'];
+        $password = $userData['credential_password'];
+        $remoteAddress = $_SERVER['REMOTE_ADDR'];
+        if (!$authentication->login($userName, $password, $remoteAddress, false)) {
+            $this->error = Labels::getLabel($authentication->getError(), $this->commonLangId);
+            return false;
+        }
+        return true;
     }
 }

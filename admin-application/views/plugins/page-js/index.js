@@ -74,10 +74,10 @@ $(document).ready(function() {
 		});
 	};
 
-	editSettingForm = function (code){
+	editSettingForm = function (keyName){
         fcom.displayProcessing();
-        var data = 'keyName=' + code;
-		fcom.ajax(fcom.makeUrl('PluginSetting'), data, function(t) {
+        var data = 'keyName=' + keyName;
+		fcom.ajax(fcom.makeUrl(keyName + 'Setting'), data, function(t) {
             var res = isJson(t);
             if (res && res.status == 0) {
                 fcom.displayErrorMessage(res.msg);
@@ -91,8 +91,9 @@ $(document).ready(function() {
 
 	setupPluginsSettings = function (frm){
 		if (!$(frm).validate()) return;
-		var data = fcom.frmData(frm);
-		fcom.updateWithAjax(fcom.makeUrl('PluginSetting', 'setup'), data, function(t) {
+        var data = fcom.frmData(frm);
+        var keyName = frm.keyName.value;
+		fcom.updateWithAjax(fcom.makeUrl(keyName + 'Setting', 'setup'), data, function(t) {
 			$(document).trigger('close.facebox');
 		});
 	};

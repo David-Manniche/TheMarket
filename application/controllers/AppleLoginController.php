@@ -1,6 +1,9 @@
 <?php
-class AppleController extends SocialLoginController
+class AppleLoginController extends SocialMediaController
 {
+    private const PRODUCTION_URL = 'https://appleid.apple.com/auth/';
+    private const KEY_NAME = 'Apple';
+
     private $email;
     private $isPrivateEmailId;
     private $appleId;
@@ -13,19 +16,35 @@ class AppleController extends SocialLoginController
         $this->userType = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
         if (true ===  MOBILE_APP_API_CALL && 1 > $this->userType) {
             $message = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
-            $this->setLoginErrorMessage($message);
+            $this->setErrorMessage($message);
         }
+    }
+
+    
+    private function getRequestUri()
+    {
+        $settings = static::getSettings(static::KEY_NAME);
+        $redirectUri = CommonHelper::generateFullUrl('AppleLogin');
+        $_SESSION['appleSignIn']['state'] = bin2hex(random_bytes(5));
+        return static::PRODUCTION_URL . 'authorize?' . http_build_query([
+            'response_type' => 'code id_token',
+            'response_mode' => 'form_post',
+            'client_id' => $settings['client_id'],
+            'redirect_uri' => $redirectUri,
+            'state' => $_SESSION['appleSignIn']['state'],
+            'scope' => 'name email',
+        ]);
     }
 
     private function validateResponse($appleResponse)
     {
         if (false ===  MOBILE_APP_API_CALL && $_SESSION['appleSignIn']['state'] != $appleResponse['state']) {
             $message = 'Authorization server returned an invalid state parameter';
-            $this->setLoginErrorMessage($message);
+            $this->setErrorMessage($message);
         }
         if (isset($_REQUEST['error'])) {
             $message = 'Authorization server returned an error: ' . htmlspecialchars($_REQUEST['error']);
-            $this->setLoginErrorMessage($message);
+            $this->setErrorMessage($message);
         }
         $claims = explode('.', $appleResponse['id_token'])[1];
         $claims = json_decode(base64_decode($claims), true);
@@ -49,7 +68,7 @@ class AppleController extends SocialLoginController
         }
     }
 
-    public function index($appleResponse = [])
+    public function index()
     {
         $appleResponse = FatApp::getPostedData();
         if (isset($appleResponse['id_token'])) {
@@ -66,7 +85,7 @@ class AppleController extends SocialLoginController
                 $arr = array('user_apple_id' => $this->appleId);
                 if (!$userObj->setUserInfo($arr)) {
                     $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
-                    $this->setLoginErrorMessage($message);
+                    $this->setErrorMessage($message);
                 }
             } else {
                 $this->userType = (0 < $this->userType ? $this->userType : User::USER_TYPE_BUYER);
@@ -76,18 +95,18 @@ class AppleController extends SocialLoginController
                 $userObj = new User($userId);
                 if (!$userInfo = $userObj->getUserInfo(static::USER_INFO_ATTR)) {
                     $message = Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->siteLangId);
-                    $this->setLoginErrorMessage($message);
+                    $this->setErrorMessage($message);
                 }
             }
 
             if (!empty($this->appleId) && !empty($userInfo['user_apple_id']) && $userInfo['user_apple_id'] != $this->appleId) {
                 $message = Labels::getLabel("MSG_USER_SOCIAL_CREDENTIALS_NOT_MATCHED", $this->siteLangId);
-                $this->setLoginErrorMessage($message);
+                $this->setErrorMessage($message);
             }
 
             $this->doLogin($userInfo);
         }
 
-        $this->redirectAndAuthenticateUser(Apple::getRequestUri());
+        $this->redirectAndAuthenticateUser(static::getRequestUri());
     }
 }

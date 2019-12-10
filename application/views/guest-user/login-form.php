@@ -34,7 +34,7 @@
                 </div>
             </div>
         </div>
-        <div class="container-form <?php echo ($isRegisterForm==1) ? 'sign-up' : '' ;?>">
+        <div class="container-form <?php echo ($isRegisterForm == 1) ? 'sign-up' : '' ;?>">
             <div id="sign-in" class="form-item sign-in">
                 <div class="form-side-inner">
                     <div class="section-head">
@@ -45,7 +45,7 @@
                     <?php $this->includeTemplate('guest-user/loginPageTemplate.php', $loginData, false); ?>
                 </div>
             </div>
-            <div id="sign-up" class="form-item sign-up <?php echo ($isRegisterForm==1) ? 'is-opened' : '' ;?>">
+            <div id="sign-up" class="form-item sign-up <?php echo ($isRegisterForm == 1) ? 'is-opened' : '' ;?>">
                 <div class="form-side-inner">
                     <div class="section-head">
                         <div class="section__heading">

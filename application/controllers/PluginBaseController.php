@@ -5,4 +5,9 @@ class PluginBaseController extends MyAppController
     {
         parent::__construct($action);
     }
+
+    public static function getSettings($keyName)
+    {
+        return PluginSetting::getConfDataByCode($keyName);
+    }
 }

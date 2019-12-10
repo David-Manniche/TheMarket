@@ -1,5 +1,5 @@
 <?php
-class SocialLoginController extends PluginBaseController
+class SocialMediaController extends PluginBaseController
 {
     protected const FB_LOGIN = 1;
     protected const GOOGLE_LOGIN = 2;
@@ -9,7 +9,7 @@ class SocialLoginController extends PluginBaseController
         'user_id',
         'user_name',
         'user_phone',
-        'credential_email',
+        'credential_email as user_email',
         'user_registered_initially_for',
         'user_preferred_dashboard',
         'user_deleted',
@@ -20,27 +20,23 @@ class SocialLoginController extends PluginBaseController
         'user_googleplus_id',
         'user_facebook_id',
         'user_apple_id',
-        'credential_active',
-        'credential_username',
-        'credential_password',
+        'credential_active as user_active',
     ];
+
 
     public function __construct($action)
     {
         parent::__construct($action);
     }
 
-    protected function setLoginErrorMessage($message, $errRedirection = true)
+    protected function setErrorMessage($message, $errRedirection = true)
     {
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (false === $errRedirection || true ===  MOBILE_APP_API_CALL) {
             LibHelper::dieJsonError($message);
         }
-        if (true === $errRedirection) {
-            Message::addErrorMessage($message);
-            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
-        } else {
-            FatUtility::dieJsonError($message);
-        }
+
+        Message::addErrorMessage($message);
+        FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
     }
 
     protected function getUserInfo($recordIdentifier, $userType, $loginType)
@@ -63,13 +59,13 @@ class SocialLoginController extends PluginBaseController
                 break;
             default:
                 $message = Labels::getLabel('MSG_INVALID_SOCIAL_LOGIN_TYPE', $this->siteLangId);
-                $this->setLoginErrorMessage($message);
+                $this->setErrorMessage($message);
                 break;
         }
         $rs = $srch->getResultSet();
         if (!$rs) {
             $message = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
-            $this->setLoginErrorMessage($message);
+            $this->setErrorMessage($message);
         }
         $row = $db->fetch($rs);
         if (empty($row)) {
@@ -78,12 +74,12 @@ class SocialLoginController extends PluginBaseController
 
         if ($row['credential_active'] != applicationConstants::ACTIVE) {
             $message = Labels::getLabel('ERR_YOUR_ACCOUNT_HAS_BEEN_DEACTIVATED', $this->siteLangId);
-            $this->setLoginErrorMessage($message);
+            $this->setErrorMessage($message);
         }
 
         if ($row['user_deleted'] == applicationConstants::YES) {
             $message = Labels::getLabel("ERR_USER_INACTIVE_OR_DELETED", $this->siteLangId);
-            $this->setLoginErrorMessage($message);
+            $this->setErrorMessage($message);
         }
         if (0 < $userType) {
             $userTypeArr = [
@@ -102,7 +98,7 @@ class SocialLoginController extends PluginBaseController
 
             if ($invalidUser) {
                 $message = Labels::getLabel('MSG_Invalid_User', $this->siteLangId);
-                $this->setLoginErrorMessage($message);
+                $this->setErrorMessage($message);
             }
         }
 
@@ -242,21 +238,24 @@ class SocialLoginController extends PluginBaseController
 
     protected function doLogin($userInfo, $referredRedirection = true)
     {
-        $authentication = new UserAuthentication();
-        $userName = $userInfo['credential_username'];
-        $password = $userInfo['credential_password'];
-        $remoteAddress = $_SERVER['REMOTE_ADDR'];
-        if (!$authentication->login($userName, $password, $remoteAddress, false)) {
-            $message = Labels::getLabel($authentication->getError(), $this->siteLangId);
-            $this->setLoginErrorMessage($message, $referredRedirection);
+        $userId = FatUtility::int($userInfo['user_id']);
+        
+        if (1 > $userId) {
+            $message = Labels::getLabel("LBL_INVALID_REQUEST", $this->siteLangId);
+            $this->setErrorMessage($message, $referredRedirection);
         }
+
+        $userObj = new User($userId);
+        
+        if (!$obj->doLogin()) {
+            $message = Labels::getLabel($obj->getError(), $this->siteLangId);
+            $this->setErrorMessage($message, $referredRedirection);
+        }
+
         if (true ===  MOBILE_APP_API_CALL) {
-            $userId = $userInfo['user_id'];
-            $userObj = new User($userId);
             if (!$token = $userObj->setMobileAppToken()) {
                 FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
             }
-            unset($userInfo['credential_password']);
             $this->set('token', $token);
             $this->set('userInfo', $userInfo);
             $this->_template->render(true, true, 'guest-user/login.php');
@@ -268,26 +267,8 @@ class SocialLoginController extends PluginBaseController
     {
         if (empty($url)) {
             $message = Labels::getLabel("MSG_INVALID_AUTH_URI", $this->siteLangId);
-            $this->setLoginErrorMessage($message, $errRedirection);
+            $this->setErrorMessage($message, $errRedirection);
         }
         FatApp::redirectUser($url);
-    }
-
-    public function index($keyName)
-    {
-        if (empty($keyName)) {
-            $message = Labels::getLabel("MSG_INVALID_REQUEST", $this->siteLangId);
-            $this->setLoginErrorMessage($message, $errRedirection);
-        }
-        $keyName = ucfirst($keyName) . 'Controller';
-        $appleResponse = FatApp::getPostedData();
-        try {
-            $obj = new $keyName($appleResponse);
-            $obj->index();
-        } catch (\Error $e) {
-            $this->setLoginErrorMessage($e->getMessage());
-        } catch (\Exception $e) {
-            $this->setLoginErrorMessage($e->getMessage());
-        }
     }
 }
