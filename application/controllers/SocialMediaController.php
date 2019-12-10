@@ -72,7 +72,7 @@ class SocialMediaController extends PluginBaseController
             return [];
         }
 
-        if ($row['credential_active'] != applicationConstants::ACTIVE) {
+        if ($row['user_active'] != applicationConstants::ACTIVE) {
             $message = Labels::getLabel('ERR_YOUR_ACCOUNT_HAS_BEEN_DEACTIVATED', $this->siteLangId);
             $this->setErrorMessage($message);
         }
@@ -247,8 +247,8 @@ class SocialMediaController extends PluginBaseController
 
         $userObj = new User($userId);
         
-        if (!$obj->doLogin()) {
-            $message = Labels::getLabel($obj->getError(), $this->siteLangId);
+        if (!$userObj->doLogin()) {
+            $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
             $this->setErrorMessage($message, $referredRedirection);
         }
 

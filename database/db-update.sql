@@ -381,10 +381,8 @@ ALTER TABLE `tbl_plugin_settings`
 INSERT INTO `tbl_plugin_settings` (`pluginsetting_plugin_id`, `pluginsetting_key`, `pluginsetting_value`) VALUES
 (1, 'plugin_id', '1'),
 (1, 'apiKey', ''),
-(1, 'keyName', 'FixerCurrencyApi'),
 (2, 'plugin_id', '2'),
-(2, 'apiKey', ''),
-(2, 'keyName', 'CurrencyConverterApi');
+(2, 'apiKey', '');
 
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Google_Plus_Login';

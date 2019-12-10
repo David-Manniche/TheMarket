@@ -2163,7 +2163,7 @@ class User extends MyAppModel
 
     public function doLogin()
     {
-        $attr = ['credential_username', 'credential_email'];
+        $attr = ['credential_username', 'credential_password'];
         $userData = $this->getUserInfo($attr, true, true, true);
         if (!$userData) {
             $this->error = Labels::getLabel('LBL_INVALID_USER', $this->commonLangId);
