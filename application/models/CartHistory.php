@@ -69,7 +69,7 @@ class CartHistory extends FatModel
         $srch->addActionCondition($action);
         $srch->addEmailCountCondition();
         $srch->addDiscountNotificationCondition();
-        $srch->addMultipleFields(array('ch.*', 'user_name', 'selprod_title')); 
+        $srch->addMultipleFields(array('ch.*', 'user_name', 'selprod_product_id', 'selprod_title')); 
         
         $srch->setPageNumber($page);
         $srch->setPageSize($this->setPageSize());
