@@ -324,7 +324,7 @@ ALTER TABLE `tbl_plugins`
 INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES
 (1, 'Fixer Currency Converter API', 1, 'FixerCurrencyApi', 1, 1),
 (2, 'Currency Converter API', 1, 'CurrencyConverterApi', 1, 2),
-(3, 'Apple Sign In', 2, 'Apple', 1, 3);
+(3, 'Apple Sign In', 2, 'AppleLogin', 1, 3);
 
 -- --------------------------------------------------------
 
@@ -389,3 +389,6 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Google_Plus_Login'
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_LoggedIn_SUCCESSFULLY';
 
 ALTER TABLE `tbl_users` ADD `user_apple_id` VARCHAR(255) NOT NULL AFTER `user_googleplus_id`;
+
+CREATE TABLE `yokart`.`tbl_user_meta` ( `usermeta_user_id` INT NOT NULL , `usermeta_key` VARCHAR(255) NOT NULL , `usermeta_value` VARCHAR(255) NOT NULL ) ENGINE = InnoDB;
+ALTER TABLE tbl_user_meta ADD PRIMARY KEY (usermeta_user_id, usermeta_key);

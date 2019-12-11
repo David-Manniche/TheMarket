@@ -75,19 +75,8 @@ foreach ($arr_listing as $sn => $row) {
                     $innerLi = $innerUl->appendElement('li');
                     $innerLi->appendElement('a', array('href' => 'javascript:void(0)','class' => 'button small green','title' => Labels::getLabel('LBL_Edit', $adminLangId),"onclick" => "editPluginForm(" . $row['plugin_id'] . ")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
                     
-                    try {
-                        $requirements = $row['plugin_code']::requirements($adminLangId);
-                        if (!empty($requirements)) {
-                            $innerLi = $innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href' => 'javascript:void(0)','class' => 'button small green','title' => Labels::getLabel('LBL_Settings', $adminLangId),"onclick" => "editSettingForm('" . $row['plugin_code'] . "')"), Labels::getLabel('LBL_Settings', $adminLangId), true);
-                        }
-                    } catch (\Error $e) {
-                        $innerLi = $innerUl->appendElement('li');
-                        $innerLi->appendElement('a', array('href' => 'javascript:void(0)','class' => 'button small green','title' => Labels::getLabel('LBL_Settings', $adminLangId)), 'ERR - ' . $e->getMessage(), true);
-                    } catch (\Exception $e) {
-                        $innerLi = $innerUl->appendElement('li');
-                        $innerLi->appendElement('a', array('href' => 'javascript:void(0)','class' => 'button small green','title' => Labels::getLabel('LBL_Settings', $adminLangId)), 'ERR - ' . $e->getMessage(), true);
-                    }
+                    $innerLi = $innerUl->appendElement('li');
+                    $innerLi->appendElement('a', array('href' => 'javascript:void(0)','class' => 'button small green','title' => Labels::getLabel('LBL_Settings', $adminLangId),"onclick" => "editSettingForm('" . $row['plugin_code'] . "')"), Labels::getLabel('LBL_Settings', $adminLangId), true);
                 }
                 break;
             default:

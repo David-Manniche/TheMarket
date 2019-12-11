@@ -14,6 +14,39 @@ class PluginSetting
         return $this->error;
     }
 
+    private function delete($pluginId)
+    {
+        $pluginId = FatUtility::int($pluginId);
+        if (1 > $pluginId) {
+            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId());
+            return false;
+        }
+        $statement = [
+            'smt' => static::DB_TBL_PREFIX . 'plugin_id = ?',
+            'vals' => [
+                    $pluginId
+                ]
+        ];
+        if (!FatApp::getDb()->deleteRecords(static::DB_TBL, $statement)) {
+            $this->error = FatApp::getDb()->getError();
+            return false;
+        }
+        return true;
+    }
+
+    private static function getFieldType($type)
+    {
+        $type = strtolower($type);
+        switch ($type) {
+            case 'int':
+                return static::TYPE_INT;
+                break;
+            default:
+                return static::TYPE_STRING;
+                break;
+        }
+    }
+
     public static function getConfDataById($pluginId)
     {
         $pluginId = FatUtility::int($pluginId);
@@ -71,23 +104,31 @@ class PluginSetting
         return true;
     }
 
-    private function delete($pluginId)
+    public static function getForm($requirements, $langId)
     {
-        $pluginId = FatUtility::int($pluginId);
-        if (1 > $pluginId) {
-            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId());
-            return false;
+        $frm = new Form('frmPlugins');
+        $frm->addHiddenField('', 'keyName');
+        $frm->addHiddenField('', 'plugin_id');
+
+        foreach ($requirements as $fieldName => $attributes) {
+            $label = 'LBL_' . str_replace(' ', '_', strtoupper($attributes['label']));
+            $label = Labels::getLabel($label, $langId);
+            $fieldType = static::getFieldType($attributes['type']);
+
+            switch ($fieldType) {
+                case static::TYPE_INT:
+                    $fld = $frm->addIntegerField($label, $fieldName);
+                    break;
+                default:
+                    $fld = $frm->addTextBox($label, $fieldName);
+                    break;
+            }
+            if (true == $attributes['required']) {
+                $fld->requirements()->setRequired(true);
+            }
         }
-        $statement = [
-            'smt' => static::DB_TBL_PREFIX . 'plugin_id = ?',
-            'vals' => [
-                    $pluginId
-                ]
-        ];
-        if (!FatApp::getDb()->deleteRecords(static::DB_TBL, $statement)) {
-            $this->error = FatApp::getDb()->getError();
-            return false;
-        }
-        return true;
+
+        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
+        return $frm;
     }
 }

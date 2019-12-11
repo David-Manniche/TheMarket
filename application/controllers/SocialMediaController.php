@@ -15,17 +15,7 @@ class SocialMediaController extends PluginBaseController
         Message::addErrorMessage($message);
         FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
     }
-
-    protected function getUserInfo($recordIdentifier, $userType, $loginType)
-    {
-        $userObj = new User();
-        $row = $userObj->validateUser($recordIdentifier, $userType, $loginType);
-        if (false === $row) {
-            $this->setErrorMessage($userObj->getError());
-        }
-        return $row;
-    }
-    
+      
     private function goToDashboard($preferredDashboard = 0, $referredRedirection = true)
     {
         $referredUrl = User::getPreferedDashbordRedirectUrl($preferredDashboard);
@@ -52,43 +42,6 @@ class SocialMediaController extends PluginBaseController
         FatApp::redirectUser($referredUrl);
     }
     
-    protected function setupUser($user_type, $userName, $loginType, $socialLoginId, $userEmail)
-    {
-        $userObj = new User();
-        $userId = $userObj->setupUser($user_type, $userName, $loginType, $socialLoginId, $userEmail);
-        if (false === $userId) {
-            $this->setErrorMessage($userObj->getError());
-        }
-        return $userId;
-    }
-
-    protected function doLogin($userInfo, $referredRedirection = true)
-    {
-        $userId = FatUtility::int($userInfo['user_id']);
-        
-        if (1 > $userId) {
-            $message = Labels::getLabel("LBL_INVALID_REQUEST", $this->siteLangId);
-            $this->setErrorMessage($message, $referredRedirection);
-        }
-
-        $userObj = new User($userId);
-        
-        if (!$userObj->doLogin()) {
-            $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
-            $this->setErrorMessage($message, $referredRedirection);
-        }
-
-        if (true ===  MOBILE_APP_API_CALL) {
-            if (!$token = $userObj->setMobileAppToken()) {
-                FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
-            }
-            $this->set('token', $token);
-            $this->set('userInfo', $userInfo);
-            $this->_template->render(true, true, 'guest-user/login.php');
-        }
-        $this->goToDashboard($userInfo['user_preferred_dashboard'], $referredRedirection);
-    }
-
     protected function redirectAndAuthenticateUser($url, $errRedirection = true)
     {
         if (empty($url)) {
@@ -96,5 +49,31 @@ class SocialMediaController extends PluginBaseController
             $this->setErrorMessage($message, $errRedirection);
         }
         FatApp::redirectUser($url);
+    }
+
+    protected function doLogin($email, $socialAccountID, $userType)
+    {
+        try {
+            $keyName = get_called_class()::KEY_NAME;
+        } catch (\Error $e) {
+            FatUtility::dieJsonError('ERR - ' . $e->getMessage());
+        }
+
+        $userObj = new User();
+        $userInfo = $userObj->validateUser($email, $socialAccountID, $keyName, $userType);
+        if (false === $row) {
+            $this->setErrorMessage($userObj->getError());
+        }
+
+        if (true ===  MOBILE_APP_API_CALL) {
+            $userId = $userInfo['user_id'];
+            $userObj = new User($userId);
+            if (!$token = $userObj->setMobileAppToken()) {
+                FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+            }
+            $this->set('token', $token);
+            $this->set('userInfo', $userInfo);
+            $this->_template->render(true, true, 'guest-user/login.php');
+        }
     }
 }

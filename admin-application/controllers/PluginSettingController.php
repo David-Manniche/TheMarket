@@ -5,9 +5,6 @@ class PluginSettingController extends AdminBaseController
     protected $frmObj;
     protected $pluginSettingObj;
 
-    public const TYPE_STRING = 1;
-    public const TYPE_INT = 2;
-
     public function __construct($action)
     {
         parent::__construct($action);
@@ -23,14 +20,9 @@ class PluginSettingController extends AdminBaseController
             FatUtility::dieJsonError(Labels::getLabel('LBL_INVALID_KEY_NAME', $this->adminLangId));
         }
         
-        try {
-            if (!$this->frmObj = $this->getSettingsForm($this->adminLangId)) {
-                throw new Exception(Labels::getLabel('LBL_REQUIREMENT_SETTINGS_ARE_NOT_DEFINED', $this->adminLangId));
-            }
-        } catch (\Error $e) {
-            FatUtility::dieJsonError($e->getMessage());
-        } catch (\Exception $e) {
-            FatUtility::dieJsonError($e->getMessage());
+        $this->frmObj = $this->getForm();
+        if (false === $this->frmObj) {
+            FatUtility::dieJsonError($Labels::getLabel('LBL_REQUIREMENT_SETTINGS_ARE_NOT_DEFINED', $this->adminLangId));
         }
     }
 
@@ -64,37 +56,19 @@ class PluginSettingController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function getSettingsForm()
+    public function getForm()
     {
-        $requirements = get_called_class()::requirements();
+        try {
+            $requirements = get_called_class()::getConfigurationKeys();
+        } catch (\Error $e) {
+            FatUtility::dieJsonError('ERR - ' . $e->getMessage());
+        }
+        
         if (empty($requirements) || !is_array($requirements)) {
             return false;
         }
-        $frm = new Form('frmPlugins');
-        $frm->addHiddenField('', 'keyName', $this->keyName);
-        $frm->addHiddenField('', 'plugin_id');
-
-        foreach ($requirements as $fieldName => $attributes) {
-            $label = 'LBL_' . str_replace(' ', '_', strtoupper($attributes['label']));
-            $label = Labels::getLabel($label, $this->adminLangId);
-
-            switch ($attributes['type']) {
-                case static::TYPE_STRING:
-                    $fld = $frm->addTextBox($label, $fieldName);
-                    break;
-                case static::TYPE_INT:
-                    $fld = $frm->addIntegerField($label, $fieldName);
-                    break;
-                default:
-                    $fld = $frm->addTextBox($label, $fieldName);
-                    break;
-            }
-            if (true == $attributes['required']) {
-                $fld->requirements()->setRequired(true);
-            }
-        }
-
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
+        $frm = PluginSetting::getForm($requirements, $this->adminLangId);
+        $frm->fill(['keyName' => $this->keyName]);
         return $frm;
     }
 }

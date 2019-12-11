@@ -5,6 +5,9 @@ class User extends MyAppModel
     public const DB_TBL = 'tbl_users';
     public const DB_TBL_PREFIX = 'user_';
 
+    public const DB_TBL_META = 'tbl_user_meta';
+    public const DB_TBL_META_PREFIX = 'usermeta_';
+
     public const DB_TBL_CRED = 'tbl_user_credentials';
     public const DB_TBL_CRED_PREFIX = 'credential_';
 
@@ -93,9 +96,6 @@ class User extends MyAppModel
         'user_is_supplier',
         'user_is_advertiser',
         'user_is_affiliate',
-        'user_googleplus_id',
-        'user_facebook_id',
-        'user_apple_id',
         'credential_active as user_active',
     ];
 
@@ -193,6 +193,53 @@ class User extends MyAppModel
     public static function isSigningUpAffiliate()
     {
         return (static::USER_TYPE_AFFILIATE == UserAuthentication::getLoggedUserAttribute('user_registered_initially_for'));
+    }
+
+    public static function getUserMeta($userId, $key = '')
+    {
+        $userId = FatUtility::int($userId);
+        if (1 > $userId) {
+            return false;
+        }
+
+        $srch = new SearchBase(static::DB_TBL_META, 't_um');
+        $srch->addMultipleFields(['usermeta_key', 'usermeta_value']);
+        $srch->addCondition('t_um.' . static::DB_TBL_META_PREFIX . 'user_id', '=', $userId);
+        if (!empty($key)) {
+            $srch->addCondition('t_um.' . static::DB_TBL_META_PREFIX . 'key', '=', $key);
+        }
+        $rs = $srch->getResultSet();
+        $result = FatApp::getDb()->fetchAll($rs);
+
+        $userMetaData = [];
+        foreach ($result as $val) {
+            $userMetaData[$val[ static::DB_TBL_META_PREFIX . "key"]] = $val[ static::DB_TBL_META_PREFIX . "value"];
+        }
+        if (!empty($key)) {
+            return $userMetaData[$key];
+        }
+        return $userMetaData;
+    }
+
+    public function updateUserMeta($key, $value)
+    {
+        if (1 > $this->mainTableRecordId) {
+            $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
+            return false;
+        }
+
+        $updateData = [
+            static::DB_TBL_META_PREFIX . 'user_id' => $this->mainTableRecordId,
+            static::DB_TBL_META_PREFIX . 'key' => $key,
+            static::DB_TBL_META_PREFIX . 'lue' => is_array($value) ? serialize($value) : $value,
+        ];
+
+        $db = FatApp::getDb();
+        if (!$db->insertFromArray(static::DB_TBL_META, $updateData, false, ['IGNORE'])) {
+            $this->error = $db->getError();
+            return false;
+        }
+        return $this->mainTableRecordId;
     }
 
     public static function canAccessSupplierDashboard()
@@ -2182,48 +2229,36 @@ class User extends MyAppModel
         $where = array('smt' => 'user_id = ?', 'vals' => array($userId));
         FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_img_updated_on' => date('Y-m-d  H:i:s')), $where);
     }
-
-    public function validateUser($recordIdentifier, $userType, $loginType)
+    
+    public function validateUser($email, $socialAccountID, $keyName, $userType)
     {
         $db = FatApp::getDb();
-        $srch = $this->getUserSearchObj(static::USER_INFO_ATTR);
+        $socialIdColumn = strtolower($keyName) . '_account_id';
         
-        $cnd = $srch->addCondition('credential_email', '=', $recordIdentifier);
+        $attr = static::USER_INFO_ATTR;
+        $attr[] = $socialIdColumn;
 
-        switch ($loginType) {
-            case static::FB_LOGIN:
-                $cnd->attachCondition('user_facebook_id', '=', $recordIdentifier);
-                break;
-            case static::GOOGLE_LOGIN:
-                $cnd->attachCondition('user_googleplus_id', '=', $recordIdentifier);
-                break;
-            case static::APPLE_LOGIN:
-                $cnd->attachCondition('user_apple_id', '=', $recordIdentifier);
-                break;
-            default:
-                $this->error = Labels::getLabel('MSG_INVALID_SOCIAL_LOGIN_TYPE', $this->commonLangId);
-                return false;
-                break;
-        }
+        $srch = $this->getUserSearchObj($attr);
+        $srch->joinTable(static::DB_TBL_META, 'LEFT OUTER JOIN', 't_um.' . static::DB_TBL_META_PREFIX . 'user_id = u.user_id', 't_um');
+        $cnd = $srch->addCondition('credential_email', '=', $email);
+
+        $cnd->attachCondition('usermeta_key', '=', strtolower($keyName) . '_account_id', 'AND');
+        $cnd->attachCondition('usermeta_value', '=', $socialAccountID);
+
         $rs = $srch->getResultSet();
-        if (!$rs) {
-            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->commonLangId);
-            return false;
-        }
+      
         $row = $db->fetch($rs);
-        if (empty($row)) {
-            return [];
-        }
-
-        if ($row['user_active'] != applicationConstants::ACTIVE) {
+        
+        if (isset($row['user_active']) && $row['user_active'] != applicationConstants::ACTIVE) {
             $this->error = Labels::getLabel('ERR_YOUR_ACCOUNT_HAS_BEEN_DEACTIVATED', $this->commonLangId);
             return false;
         }
 
-        if ($row['user_deleted'] == applicationConstants::YES) {
+        if (isset($row['user_active']) && $row['user_deleted'] == applicationConstants::YES) {
             $this->error = Labels::getLabel("ERR_USER_INACTIVE_OR_DELETED", $this->commonLangId);
             return false;
         }
+
         if (0 < $userType) {
             $userTypeArr = [
                 static::USER_TYPE_BUYER => 'user_is_buyer',
@@ -2245,46 +2280,59 @@ class User extends MyAppModel
             }
         }
 
+        if (!empty($row)) {
+            if (empty($row[$socialIdColumn])) {
+                $userObj = new User($row['user_id']);
+                $userObj->updateUserMeta($socialIdColumn, $socialAccountID);
+            }
+        } else {
+            $userId = $this->setupUser($username, $keyName, $socialLoginId, $userEmail, $user_type);
+            if (false === $userId) {
+                $this->error = $userObj->getError();
+                return false;
+            }
+
+            if (!$row = $this->getUserInfo($attr)) {
+                $this->error = Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->siteLangId);
+                return false;
+            }
+        }
         return $row;
     }
 
-    public function setupUser($user_type, $username, $loginType, $socialLoginId, $userEmail)
+    public function setupUser($email, $socialAccountID, $keyName, $user_type)
     {
         $db = FatApp::getDb();
-        $user_is_supplier = (FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0 : 1;
-        $user_is_advertiser = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0 : 1;
+        $socialIdColumn = strtolower($keyName) . '_account_id';
+
+        $isApprovedForSupplier = FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1);
+        $isActivateSeparateSignUp = FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1);
+
+        $user_is_advertiser = (0 < $isApprovedForSupplier || 0 < $isActivateSeparateSignUp) ? 0 : 1;
+        $user_is_buyer = 0;
+        $user_is_supplier = 0;
 
         if (isset($user_type) && $user_type == static::USER_TYPE_BUYER) {
             $userPreferredDashboard = static::USER_BUYER_DASHBOARD;
             $user_registered_initially_for = static::USER_TYPE_BUYER;
+            $user_is_buyer = 1;
         }
         if (isset($user_type) && $user_type == static::USER_TYPE_SELLER) {
             $userPreferredDashboard = static::USER_SELLER_DASHBOARD;
             $user_registered_initially_for = static::USER_TYPE_SELLER;
+            $user_is_supplier = 1;
         }
 
         $db->startTransaction();
 
-        switch ($loginType) {
-            case static::FB_LOGIN:
-                $userFacebookId = $socialLoginId;
-                break;
-            case static::GOOGLE_LOGIN:
-                $userGoogleId = $socialLoginId;
-                break;
-            case static::APPLE_LOGIN:
-                $userAppleId = $socialLoginId;
-                break;
-        }
+        $exp = explode("@", $email);
+        $username = substr($exp[0], 0, 80) . rand();
 
         $userData = [
             'user_name' => $username,
-            'user_is_buyer' => (isset($user_type) && $user_type == static::USER_TYPE_BUYER) ? 1 : 0,
-            'user_is_supplier' => (isset($user_type) && $user_type == static::USER_TYPE_SELLER) ? 1 : 0,
+            'user_is_buyer' => $user_is_buyer,
+            'user_is_supplier' => $user_is_supplier,
             'user_is_advertiser' => $user_is_advertiser,
-            'user_googleplus_id' => !empty($userGoogleId) ? $userGoogleId : '',
-            'user_facebook_id' => !empty($userFacebookId) ? $userFacebookId : '',
-            'user_apple_id' => !empty($userAppleId) ? $userAppleId : '',
             'user_preferred_dashboard' => $userPreferredDashboard,
             'user_registered_initially_for' => $user_registered_initially_for
         ];
@@ -2295,14 +2343,16 @@ class User extends MyAppModel
             return false;
         }
         $userId = $this->getMainTableRecordId();
-        if (!$this->setLoginCredentials($username, $userEmail, uniqid(), 1, 1)) {
+        $this->updateUserMeta($socialIdColumn, $socialAccountID);
+        $password = uniqid();
+        if (!$this->setLoginCredentials($username, $email, $password, 1, 1)) {
             $this->error = Labels::getLabel("MSG_LOGIN_CREDENTIALS_COULD_NOT_BE_SET", $this->commonLangId) . $this->getError();
             $db->rollbackTransaction();
             return false;
         }
 
         $userData['user_username'] = $username;
-        $userData['user_email'] = $userEmail;
+        $userData['user_email'] = $email;
         if (FatApp::getConfig('CONF_NOTIFY_ADMIN_REGISTRATION', FatUtility::VAR_INT, 1)) {
             if (!$this->notifyAdminRegistration($userData, $this->commonLangId)) {
                 $this->error = Labels::getLabel("MSG_NOTIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->commonLangId);
@@ -2311,8 +2361,8 @@ class User extends MyAppModel
             }
         }
 
-        if (FatApp::getConfig('CONF_WELCOME_EMAIL_REGISTRATION', FatUtility::VAR_INT, 1) && $userEmail) {
-            $data['user_email'] = $userEmail;
+        if (FatApp::getConfig('CONF_WELCOME_EMAIL_REGISTRATION', FatUtility::VAR_INT, 1) && $email) {
+            $data['user_email'] = $email;
             $data['user_name'] = $username;
 
             //ToDO::Change login link to contact us link
@@ -2330,17 +2380,9 @@ class User extends MyAppModel
         return $userId;
     }
 
-    public function doLogin()
+    public function doLogin($userName, $password)
     {
-        $attr = ['credential_username', 'credential_password'];
-        $userData = $this->getUserInfo($attr, true, true, true);
-        if (!$userData) {
-            $this->error = Labels::getLabel('LBL_INVALID_USER', $this->commonLangId);
-            return false;
-        }
         $authentication = new UserAuthentication();
-        $userName = $userData['credential_username'];
-        $password = $userData['credential_password'];
         $remoteAddress = $_SERVER['REMOTE_ADDR'];
         if (!$authentication->login($userName, $password, $remoteAddress, false)) {
             $this->error = Labels::getLabel($authentication->getError(), $this->commonLangId);
