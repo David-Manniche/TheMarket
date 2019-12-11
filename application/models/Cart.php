@@ -137,7 +137,7 @@ class Cart extends FatModel
 
         $this->updateUserCart();
         
-        if($this->cart_user_id > 0){
+        if(is_numeric($this->cart_user_id) && $this->cart_user_id > 0){
             CartHistory::saveCartHistory($this->cart_user_id, $selprod_id, $this->SYSTEM_ARR['cart'][$key], CartHistory::ACTION_ADDED);
         }
         
@@ -537,7 +537,7 @@ class Cart extends FatModel
                     /* to keep track of temporary hold the product stock[ */
                     $this->updateTempStockHold($product['selprod_id'], 0, 0);
                     /* ] */                        
-                    if($this->cart_user_id > 0){
+                    if(is_numeric($this->cart_user_id) && $this->cart_user_id > 0){
                         CartHistory::saveCartHistory($this->cart_user_id, $product['selprod_id'], $product['quantity'], CartHistory::ACTION_DELETED);
                     }
                     break;
@@ -618,7 +618,7 @@ class Cart extends FatModel
                             /* to keep track of temporary hold the product stock[ */
                             $this->updateTempStockHold($product['selprod_id'], $quantity);
                             /* ] */
-                            if($this->cart_user_id > 0){
+                            if(is_numeric($this->cart_user_id) && $this->cart_user_id > 0){
                                 CartHistory::saveCartHistory($this->cart_user_id, $product['selprod_id'], $quantity, CartHistory::ACTION_ADDED);
                             }
                             break;

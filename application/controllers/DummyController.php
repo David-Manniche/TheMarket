@@ -665,4 +665,12 @@ class DummyController extends MyAppController
         // $obj = new TranslateLangData(Product::DB_TBL_LANG);
         // $obj->getTranslatedData(889);
     }
+    
+    
+    public function testData()
+    {
+        //$str = "yeggfuhk";
+        $str = '48xyz20yghgf';
+        echo FatUtility::int($str);
+    }
 }

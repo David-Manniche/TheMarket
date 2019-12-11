@@ -70,21 +70,25 @@ class AbandonedCartController extends AdminBaseController
         $this->_template->render(false, false);
     }
     
-    public function sendDiscountNotification()
-    { 
-        $userId = FatApp::getPostedData('userId', FatUtility::VAR_INT, 6); 
-        $actionType = FatApp::getPostedData('actionType', FatUtility::VAR_INT, 1); 
-        $couponId = FatApp::getPostedData('couponId', FatUtility::VAR_INT, 11); 
-        $selProdId = FatApp::getPostedData('selProdId', FatUtility::VAR_INT, 149); 
-        if($userId < 1 || $actionType < 1 || $couponId < 1 || $selProdId < 1){
-            return false;
+    public function discountNotification()
+    {
+        $userId = FatApp::getPostedData('userId', FatUtility::VAR_INT, 0); 
+        $action = FatApp::getPostedData('action', FatUtility::VAR_INT, 0); 
+        $couponId = FatApp::getPostedData('couponId', FatUtility::VAR_INT, 0); 
+        $selProdId = FatApp::getPostedData('selProdId', FatUtility::VAR_INT, 0); 
+        if($userId < 1 || $action < 1 || $couponId < 1 || $selProdId < 1){
+            Message::addErrorMessage(Labels::getLabel('MSG_Email_Not_Sent_Invalid_Parameters', $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
         }
         
-        $carHistory = new CartHistory();
-        if(!$carHistory->sendDiscountEmail($this->adminLangId, $userId, $actionType, $couponId, $selProdId)){
-            return false;
-        }
-        return true;        
+        $cartHistory = new CartHistory();
+        if(!$cartHistory->sendDiscountEmail($this->adminLangId, $userId, $action, $couponId, $selProdId)){
+            Message::addErrorMessage(Labels::getLabel('MSG_Email_Not_Sent', $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }           
+        $cartHistory->updateDiscountNotification($userId, $selProdId);
+        $this->set('msg', Labels::getLabel('MSG_Email_Sent_Successful', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
     }
         
     

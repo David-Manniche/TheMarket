@@ -65,7 +65,7 @@ $(document).ready(function(){
 	var userId = 0;
     var productId = 0;
     var selProdId = 0;
-    var actionType = 0;
+    var action = 0;
     
 	searchAbandonedCart = function(form,page){
 		if (!page) {
@@ -103,7 +103,7 @@ $(document).ready(function(){
     discountNotification = function(user_id, action_type, product_id, selprod_id){
         addCouponForm(0);
         userId = user_id;
-        actionType = action_type
+        action = action_type
         productId = product_id;
         selProdId = selprod_id;
     }
@@ -144,63 +144,11 @@ $(document).ready(function(){
 		fcom.updateWithAjax(fcom.makeUrl('DiscountCoupons', 'setup'), data, function(t) {  
             updateCouponUser(t.couponId, userId);
             updateCouponProduct(t.couponId, productId);
-			sendDiscountNotification(t.couponId, actionType, userId, selProdId);
-            if (t.langId>0) {
-				addCouponLangForm(t.couponId, t.langId);
-				return ;
-			}
-			$(document).trigger('close.facebox');
+			sendDiscountNotification(t.couponId, action, userId, selProdId);
+            $(document).trigger('close.facebox');
 		});
 	};
-    
-    
-    addCouponLangForm = function(couponId, langId, autoFillLangData = 0) {	
-		fcom.displayProcessing();	
-			fcom.ajax(fcom.makeUrl('DiscountCoupons', 'langForm', [couponId, langId, autoFillLangData]), '', function(t) {
-				fcom.updateFaceboxContent(t);
-			});
-	};
-    
-    setupCouponLang = function(frm){ 
-		if (!$(frm).validate()) return;
-		var data = fcom.frmData(frm);		
-		fcom.updateWithAjax(fcom.makeUrl('DiscountCoupons', 'langSetup'), data, function(t) {		
-			if (t.langId>0) {
-				addCouponLangForm(t.couponId, t.langId);
-				return ;
-			}
-			if(t.openMediaForm)
-			{
-				couponMediaForm(t.couponId);
-				return;
-			}
-			$(document).trigger('close.facebox');
-		});
-	};
-    
-    couponMediaForm = function(couponId){
-		fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('DiscountCoupons', 'media', [couponId]), '', function(t) {
-            couponImages(couponId);
-            fcom.updateFaceboxContent(t);
-        });
-	};
-    
-    couponImages = function(couponId,lang_id){
-		fcom.ajax(fcom.makeUrl('DiscountCoupons', 'images', [couponId,lang_id]), '', function(t) {
-			$('#image-listing').html(t);
-			fcom.resetFaceboxHeight();
-		});
-	};
-    
-    deleteImage = function(couponId, langId){
-		var agree = confirm(langLbl.confirmDeleteImage);
-		if(!agree){ return false; }
-		fcom.updateWithAjax(fcom.makeUrl('DiscountCoupons', 'removeCouponImage'), 'coupon_id='+couponId+'&lang_id='+langId, function(t) {
-			couponImages(couponId,langId);
-		});
-	};
-    
+
     updateCouponUser = function(couponId,userId){
 		var data = 'coupon_id='+couponId+'&user_id='+userId;
 		fcom.updateWithAjax(fcom.makeUrl('DiscountCoupons', 'updateCouponUser'), data, function(t) {		
@@ -213,66 +161,12 @@ $(document).ready(function(){
 		});
 	};
 
-    sendDiscountNotification = function(couponId, actionType, userId, selProdId){
-        var data = 'couponId='+couponId+'&actionType='+actionType+'&userId='+userId+'&selProdId='+selProdId;
-        fcom.updateWithAjax(fcom.makeUrl('AbandonedCart', 'sendDiscountNotification'), data, function(t) {		
-		});
+    sendDiscountNotification = function(couponId, action, userId, selProdId){
+        var data = 'couponId='+couponId+'&action='+action+'&userId='+userId+'&selProdId='+selProdId;
+        fcom.updateWithAjax(fcom.makeUrl('AbandonedCart', 'discountNotification'), data, function(t) {            
+            searchAbandonedCart(document.frmAbandonedCartSearch);
+        });
     } 
 
 })();
 
-$(document).on('change','.language-js',function(){
-/* $(document).delegate('.language-js','change',function(){ */
-	var lang_id = $(this).val();
-	var coupon_id = $("input[name='coupon_id']").val();
-	couponImages(coupon_id,lang_id);
-});
-
-$(document).on('click','.couponFile-Js',function(){
-	var node = this;
-	$('#form-upload').remove();	
-	var coupon_id = document.frmCouponMedia.coupon_id.value;
-	var lang_id = document.frmCouponMedia.lang_id.value;
-	var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-	frm = frm.concat('<input type="file" name="file" />'); 
-	$('body').prepend(frm);
-	$('#form-upload input[name=\'file\']').trigger('click');
-	if (typeof timer != 'undefined') {
-		clearInterval(timer);
-	}	
-	timer = setInterval(function() {
-		if ($('#form-upload input[name=\'file\']').val() != '') {
-			clearInterval(timer);
-			$val = $(node).val();			
-			$.ajax({
-				url: fcom.makeUrl('DiscountCoupons', 'uploadImage',[coupon_id, lang_id]),
-				type: 'post',
-				dataType: 'json',
-				data: new FormData($('#form-upload')[0]),
-				cache: false,
-				contentType: false,
-				processData: false,
-				beforeSend: function() {
-					$(node).val('Loading..');
-				},
-				complete: function() {
-					$(node).val($val);
-				},
-				success: function( ans ) {
-					if( !ans.status ){
-						fcom.displayErrorMessage(ans.msg);
-						//$.systemMessage( ans.msg, 'alert--danger' );
-						return;
-					}
-					fcom.displaySuccessMessage(ans.msg);
-					//$.systemMessage( ans.msg, 'alert--success' );
-					$('#form-upload').remove();
-					couponImages( ans.coupon_id, lang_id );
-				},
-				error: function(xhr, ajaxOptions, thrownError) {
-					alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-				}
-			});			
-		}
-	}, 500);
-});
