@@ -388,7 +388,5 @@ INSERT INTO `tbl_plugin_settings` (`pluginsetting_plugin_id`, `pluginsetting_key
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Google_Plus_Login';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_LoggedIn_SUCCESSFULLY';
 
-ALTER TABLE `tbl_users` ADD `user_apple_id` VARCHAR(255) NOT NULL AFTER `user_googleplus_id`;
-
-CREATE TABLE `yokart`.`tbl_user_meta` ( `usermeta_user_id` INT NOT NULL , `usermeta_key` VARCHAR(255) NOT NULL , `usermeta_value` VARCHAR(255) NOT NULL ) ENGINE = InnoDB;
+CREATE TABLE `tbl_user_meta` ( `usermeta_user_id` INT NOT NULL , `usermeta_key` VARCHAR(255) NOT NULL , `usermeta_value` VARCHAR(255) NOT NULL ) ENGINE = InnoDB;
 ALTER TABLE tbl_user_meta ADD PRIMARY KEY (usermeta_user_id, usermeta_key);
