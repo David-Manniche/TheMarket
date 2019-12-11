@@ -23,6 +23,8 @@
         <?php echo $imgFrm->getFieldHtml('update_profile_img');
         echo $imgFrm->getFieldHtml('rotate_left');
         echo $imgFrm->getFieldHtml('rotate_right');
+        echo $imgFrm->getFieldHtml('flip_horizontal');
+        echo $imgFrm->getFieldHtml('flip_vertical');
         echo $imgFrm->getFieldHtml('remove_profile_img');
         echo $imgFrm->getFieldHtml('action');
         echo $imgFrm->getFieldHtml('img_data');

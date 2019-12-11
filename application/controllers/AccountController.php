@@ -2654,6 +2654,8 @@ class AccountController extends LoggedUserController
         $frm->addHiddenField('', 'update_profile_img', Labels::getLabel('LBL_Update', $this->siteLangId), array('id'=>'update_profile_img'));
         $frm->addHiddenField('', 'rotate_left', Labels::getLabel('LBL_Rotate_Left', $this->siteLangId), array('id'=>'rotate_left'));
         $frm->addHiddenField('', 'rotate_right', Labels::getLabel('LBL_Rotate_Right', $this->siteLangId), array('id'=>'rotate_right'));
+        $frm->addHiddenField('', 'flip_horizontal', Labels::getLabel('LBL_Flip_Horizontal', $this->siteLangId), array('id'=>'flip_horizontal'));
+        $frm->addHiddenField('', 'flip_vertical', Labels::getLabel('LBL_Flip_Vertical', $this->siteLangId), array('id'=>'flip_vertical'));
         $frm->addHiddenField('', 'remove_profile_img', 0, array('id'=>'remove_profile_img'));
         $frm->addHiddenField('', 'action', 'avatar', array('id'=>'avatar-action'));
         $userId = UserAuthentication::getLoggedUserId();

@@ -155,18 +155,40 @@ $(document).ready(function(){
 	  // var image = document.getElementById('new-img');
 	  var image = obj;
       var button = document.getElementById('updateBtn-js');
-      // var result = document.getElementById('result');
-      var croppable = false;
+	  var dataX = document.getElementById('dataX');
+	  var dataY = document.getElementById('dataY');
+	  var dataHeight = document.getElementById('dataHeight');
+	  var dataWidth = document.getElementById('dataWidth');
+	  var dataRotate = document.getElementById('dataRotate');
+	  var dataScaleX = document.getElementById('dataScaleX');
+	  var dataScaleY = document.getElementById('dataScaleY');
+
       var cropper = new Cropper(image, {
-        aspectRatio: 1,
+        aspectRatio: 16 / 9,
         viewMode: 1,
         ready: function () {
           croppable = true;
         },
       });
+	  var options = {
+	    aspectRatio: 16 / 9,
+	    crop: function (e) {
+	      var data = e.detail;
+	      console.log(e.type);
+	      dataX.value = Math.round(data.x);
+	      dataY.value = Math.round(data.y);
+	      dataHeight.value = Math.round(data.height);
+	      dataWidth.value = Math.round(data.width);
+	      dataRotate.value = typeof data.rotate !== 'undefined' ? data.rotate : '';
+	      dataScaleX.value = typeof data.scaleX !== 'undefined' ? data.scaleX : '';
+	      dataScaleY.value = typeof data.scaleY !== 'undefined' ? data.scaleY : '';
+	    }
+  	  };
+
+	  var cropper = new Cropper(image, options);
 
       button.onclick = function () {
-        /*var croppedCanvas;
+        var croppedCanvas;
         var roundedCanvas;
         var roundedImage;
 
@@ -182,17 +204,20 @@ $(document).ready(function(){
 
         // Show
         roundedImage = document.createElement('img');
-        roundedImage.src = roundedCanvas.toDataURL();*/
-		var json = [
+        roundedImage.src = roundedCanvas.toDataURL();
+
+
+		/*var json = [
 					'{"x":' + cropper.getData().x,
 					'"y":' + cropper.getData().y,
 					'"height":' + cropper.getData().height,
-					'"width":' + cropper.getData().width + '}'
+					'"width":' + e.width,
+					'"rotate":' + e.rotate + '}'
 					].join();
-				$("#img_data").val(json);
+				$("#img_data").val(json);*/
 		/*result.innerHTML = '';
         result.appendChild(roundedImage);*/
-		sumbmitProfileImage()
+		// sumbmitProfileImage()
       };
 	};
 
@@ -208,7 +233,7 @@ $(document).ready(function(){
 		$("#avatar-action").val("avatar");
 		var fn = "sumbmitProfileImage();";
 
-		$.facebox('<div class="popup__body"><div class="img-container "><img alt="Picture" src="" class="img_responsive" id="new-img" /></div><span class="gap"></span><div class="align--center rotator-actions"><a id="updateBtn-js" onclick='+fn+' href="javascript:void(0)" class="btn btn--primary btn--sm">'+$("#update_profile_img").val()+'</a><div id="result"></div></div></div>','faceboxWidth');
+		$.facebox('<div class="popup__body"><div class="img-container "><img alt="Picture" src="" class="img_responsive" id="new-img" /></div><span class="gap"></span><div class="align--center rotator-actions"><a href="javascript:void(0)" class="btn btn--primary btn--sm" title="'+$("#rotate_left").val()+'" data-option="-90" data-method="rotate">'+$("#rotate_left").val()+'</a>&nbsp;<a onclick='+fn+' href="javascript:void(0)" class="btn btn--primary btn--sm">'+$("#update_profile_img").val()+'</a>&nbsp;<a href="javascript:void(0)" class="btn btn--primary btn--sm" title="'+$("#rotate_right").val()+'" data-option="90" data-method="rotate">'+$("#rotate_right").val()+'</a></div></div>','faceboxWidth');
 		orgImg = $("#org-img").val();
 		$('#new-img').attr('src', orgImg);
 		$('#new-img').width(wid);
@@ -235,7 +260,7 @@ $(document).ready(function(){
 					$("#avatar-action").val("avatar");
 					var fn = "sumbmitProfileImage();";
 
-					$.facebox('<div class="popup__body"><div class="img-container "><img alt="Picture" src="" class="img_responsive" id="new-img" /></div><span class="gap"></span><div class="align--center rotator-actions"><a id="updateBtn-js" onclick='+fn+' href="javascript:void(0)" class="btn btn--primary btn--sm">'+$("#update_profile_img").val()+'</a><div id="result"></div></div></div>','faceboxWidth');
+					$.facebox('<div class="popup__body"><div class="img-container "><img alt="Picture" src="" class="img_responsive" id="new-img" /></div><span class="gap"></span><div class="align--center rotator-actions"><a href="javascript:void(0)" class="btn btn--primary btn--sm" title="'+$("#rotate_left").val()+'" data-option="-90" data-method="rotate"><span class="fa fa-undo-alt"></span></a>&nbsp;<a href="javascript:void(0)" class="btn btn--primary btn--sm" title="'+$("#rotate_right").val()+'" data-option="90" data-method="rotate"><span class="fa fa-redo-alt"></span></a>&nbsp;<a id="updateBtn-js" onclick='+fn+' href="javascript:void(0)" class="btn btn--primary btn--sm">'+$("#update_profile_img").val()+'</a>&nbsp;<a href="javascript:void(0)" class="btn btn--primary btn--sm" title="'+$("#flip_horizontal").val()+'" data-option="-1" data-method="scaleX"><span class="fa fa-arrows-alt-h"></a>&nbsp;<a href="javascript:void(0)" class="btn btn--primary btn--sm" title="'+$("#flip_vertical").val()+'" data-option="-1" data-method="scaleY"><span class="fa fa-arrows-alt-v"></span></a></div></div>','faceboxWidth');
 					$('#new-img').attr('src', json.file);
 					$('#new-img').width(wid);
 					cropImage(document.getElementById('new-img'));
