@@ -2,7 +2,7 @@
 class AppleLoginController extends SocialMediaController
 {
     private const PRODUCTION_URL = 'https://appleid.apple.com/auth/';
-    private const KEY_NAME = 'AppleLogin';
+    public const KEY_NAME = 'AppleLogin';
 
     private $email;
     private $isPrivateEmailId;

@@ -97,6 +97,8 @@ class User extends MyAppModel
         'user_is_advertiser',
         'user_is_affiliate',
         'credential_active as user_active',
+        'credential_username',
+        'credential_password',
     ];
 
     public function __construct($userId = 0)
@@ -231,11 +233,11 @@ class User extends MyAppModel
         $updateData = [
             static::DB_TBL_META_PREFIX . 'user_id' => $this->mainTableRecordId,
             static::DB_TBL_META_PREFIX . 'key' => $key,
-            static::DB_TBL_META_PREFIX . 'lue' => is_array($value) ? serialize($value) : $value,
+            static::DB_TBL_META_PREFIX . 'value' => is_array($value) ? serialize($value) : $value,
         ];
 
         $db = FatApp::getDb();
-        if (!$db->insertFromArray(static::DB_TBL_META, $updateData, false, ['IGNORE'])) {
+        if (!$db->insertFromArray(static::DB_TBL_META, $updateData, false, array(), $updateData)) {
             $this->error = $db->getError();
             return false;
         }
@@ -2236,17 +2238,18 @@ class User extends MyAppModel
         $socialIdColumn = strtolower($keyName) . '_account_id';
         
         $attr = static::USER_INFO_ATTR;
-        $attr[] = $socialIdColumn;
+        $attr[] = 'usermeta_value as ' . $socialIdColumn;
 
         $srch = $this->getUserSearchObj($attr);
         $srch->joinTable(static::DB_TBL_META, 'LEFT OUTER JOIN', 't_um.' . static::DB_TBL_META_PREFIX . 'user_id = u.user_id', 't_um');
-        $cnd = $srch->addCondition('credential_email', '=', $email);
 
-        $cnd->attachCondition('usermeta_key', '=', strtolower($keyName) . '_account_id', 'AND');
-        $cnd->attachCondition('usermeta_value', '=', $socialAccountID);
+        $srch->addCondition('credential_email', '=', $email);
+        $cnd = $srch->addCondition('usermeta_key', '=', strtolower($keyName) . '_account_id', 'OR');
+        $cnd->attachCondition('usermeta_value', '=', $socialAccountID, 'AND');
 
+        $srch->setPageSize(1);
         $rs = $srch->getResultSet();
-      
+        
         $row = $db->fetch($rs);
         
         if (isset($row['user_active']) && $row['user_active'] != applicationConstants::ACTIVE) {
@@ -2259,37 +2262,44 @@ class User extends MyAppModel
             return false;
         }
 
-        if (0 < $userType) {
-            $userTypeArr = [
-                static::USER_TYPE_BUYER => 'user_is_buyer',
-                static::USER_TYPE_SELLER => 'user_is_supplier',
-                static::USER_TYPE_ADVERTISER => 'user_is_advertiser',
-                static::USER_TYPE_AFFILIATE => 'user_is_affiliate',
-            ];
-
-            $invalidUser = false;
-            if (in_array($userType, array_keys($userTypeArr)) && $row[$userTypeArr[$userType]] == applicationConstants::NO) {
-                $invalidUser = true;
-            } elseif (!in_array($userType, array_keys($userTypeArr)) && $row['user_registered_initially_for'] != $userType) {
-                $invalidUser = true;
-            }
-
-            if ($invalidUser) {
-                $this->error = Labels::getLabel('MSG_Invalid_User', $this->commonLangId);
-                return false;
-            }
-        }
-
         if (!empty($row)) {
-            if (empty($row[$socialIdColumn])) {
-                $userObj = new User($row['user_id']);
-                $userObj->updateUserMeta($socialIdColumn, $socialAccountID);
+            if (0 < $userType) {
+                $userTypeArr = [
+                    static::USER_TYPE_BUYER => 'user_is_buyer',
+                    static::USER_TYPE_SELLER => 'user_is_supplier',
+                    static::USER_TYPE_ADVERTISER => 'user_is_advertiser',
+                    static::USER_TYPE_AFFILIATE => 'user_is_affiliate',
+                ];
+    
+                $invalidUser = false;
+                if (in_array($userType, array_keys($userTypeArr)) && $row[$userTypeArr[$userType]] == applicationConstants::NO) {
+                    $invalidUser = true;
+                } elseif (!in_array($userType, array_keys($userTypeArr)) && $row['user_registered_initially_for'] != $userType) {
+                    $invalidUser = true;
+                }
+    
+                if ($invalidUser) {
+                    $this->error = Labels::getLabel('MSG_Invalid_User', $this->commonLangId);
+                    return false;
+                }
             }
+
+            $userObj = new User($row['user_id']);
+            if (empty($row[$socialIdColumn])) {
+                if (false === $userObj->updateUserMeta($socialIdColumn, $socialAccountID)) {
+                    return false;
+                }
+            }
+            unset($row[$socialIdColumn]);
         } else {
-            $userId = $this->setupUser($username, $keyName, $socialLoginId, $userEmail, $user_type);
+            $userId = $this->setupUser($email, $socialAccountID, $keyName, $userType);
             if (false === $userId) {
                 $this->error = $userObj->getError();
                 return false;
+            }
+            
+            if (($key = array_search('usermeta_value as ' . $socialIdColumn, $attr)) !== false) {
+                unset($attr[$key]);
             }
 
             if (!$row = $this->getUserInfo($attr)) {
@@ -2297,10 +2307,12 @@ class User extends MyAppModel
                 return false;
             }
         }
+        $this->doLogin($row['credential_username'], $row['credential_password']);
+        unset($row['credential_password']);
         return $row;
     }
 
-    public function setupUser($email, $socialAccountID, $keyName, $user_type)
+    public function setupUser($email, $socialAccountID, $keyName, $userType)
     {
         $db = FatApp::getDb();
         $socialIdColumn = strtolower($keyName) . '_account_id';
@@ -2312,12 +2324,12 @@ class User extends MyAppModel
         $user_is_buyer = 0;
         $user_is_supplier = 0;
 
-        if (isset($user_type) && $user_type == static::USER_TYPE_BUYER) {
+        if (isset($userType) && $userType == static::USER_TYPE_BUYER) {
             $userPreferredDashboard = static::USER_BUYER_DASHBOARD;
             $user_registered_initially_for = static::USER_TYPE_BUYER;
             $user_is_buyer = 1;
         }
-        if (isset($user_type) && $user_type == static::USER_TYPE_SELLER) {
+        if (isset($userType) && $userType == static::USER_TYPE_SELLER) {
             $userPreferredDashboard = static::USER_SELLER_DASHBOARD;
             $user_registered_initially_for = static::USER_TYPE_SELLER;
             $user_is_supplier = 1;
@@ -2344,8 +2356,7 @@ class User extends MyAppModel
         }
         $userId = $this->getMainTableRecordId();
         $this->updateUserMeta($socialIdColumn, $socialAccountID);
-        $password = uniqid();
-        if (!$this->setLoginCredentials($username, $email, $password, 1, 1)) {
+        if (!$this->setLoginCredentials($username, $email, uniqid(), 1, 1)) {
             $this->error = Labels::getLabel("MSG_LOGIN_CREDENTIALS_COULD_NOT_BE_SET", $this->commonLangId) . $this->getError();
             $db->rollbackTransaction();
             return false;
@@ -2380,7 +2391,7 @@ class User extends MyAppModel
         return $userId;
     }
 
-    public function doLogin($userName, $password)
+    private function doLogin($userName, $password)
     {
         $authentication = new UserAuthentication();
         $remoteAddress = $_SERVER['REMOTE_ADDR'];

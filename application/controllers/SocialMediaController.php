@@ -51,17 +51,17 @@ class SocialMediaController extends PluginBaseController
         FatApp::redirectUser($url);
     }
 
-    protected function doLogin($email, $socialAccountID, $userType)
+    protected function doLogin($email, $socialAccountID, $userType, $referredRedirection = true)
     {
         try {
             $keyName = get_called_class()::KEY_NAME;
         } catch (\Error $e) {
-            FatUtility::dieJsonError('ERR - ' . $e->getMessage());
+            $this->setErrorMessage('ERR - ' . $e->getMessage());
         }
 
         $userObj = new User();
         $userInfo = $userObj->validateUser($email, $socialAccountID, $keyName, $userType);
-        if (false === $row) {
+        if (false === $userInfo) {
             $this->setErrorMessage($userObj->getError());
         }
 
@@ -75,5 +75,6 @@ class SocialMediaController extends PluginBaseController
             $this->set('userInfo', $userInfo);
             $this->_template->render(true, true, 'guest-user/login.php');
         }
+        $this->goToDashboard($userInfo['user_preferred_dashboard'], $referredRedirection);
     }
 }
