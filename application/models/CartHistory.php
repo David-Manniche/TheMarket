@@ -110,22 +110,20 @@ class CartHistory extends FatModel
         $userData = $user->getUserInfo(array('user_name', 'credential_email'), false, false, true);
         $couponData = DiscountCoupons::getAttributesById($couponId);
         $selProdData = SellerProduct::getSelProdDataById($selProdId, $langId);
-                
+             
         $discount = ($couponData['coupon_discount_in_percent'] == applicationConstants::PERCENTAGE) ? $couponData['coupon_discount_value'].'%' : CommonHelper::displayMoneyFormat($couponData['coupon_discount_value']);        
         $arrReplacements = array(
             '{user_full_name}' => trim($userData['user_name']),
-            '{checkout_now}' => CommonHelper::generateFullUrl('GuestUser', 'redirectAbandonedCartUser', array($userId, $selProdId)),
+            '{checkout_now}' => CommonHelper::generateFullUrl('GuestUser', 'redirectAbandonedCartUser', array($userId, $selProdId), CONF_WEBROOT_FRONTEND),
             '{coupon_code}' => $couponData['coupon_code'],
             '{discount}' => $discount,
             '{product_name}' => trim($selProdData['selprod_title'])
         );
         
         $tpl = "";
-        if($action == static::ACTION_ADDED){            
-            $productImages = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_PRODUCT_IMAGE, $selProdData['selprod_product_id'], 0, 0, false, 0, 0, true);
-            $productImages = reset($productImages);             
-            $prodImg = CommonHelper::generateFullUrl('image','product', array($productImages['afile_record_id'], "THUMB",$productImages['afile_id']),CONF_WEBROOT_FRONTEND);
-            $arrReplacements['{product_image}'] = $prodImg;
+        if($action == static::ACTION_ADDED){                    
+            $prodImage = CommonHelper::generateFullUrl('image', 'product', array($selProdData['selprod_product_id'], "THUMB", $selProdId, 0, $langId),CONF_WEBROOT_FRONTEND);
+            $arrReplacements['{product_image}'] = $prodImage;
             $arrReplacements['{product_price}'] = CommonHelper::displayMoneyFormat($selProdData['selprod_price']);
             $tpl = "abandoned_cart_discount_notification";
         }        
