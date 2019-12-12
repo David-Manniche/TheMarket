@@ -6,9 +6,12 @@ class CartHistorySearch extends SearchBase
         parent::__construct(CartHistory::DB_TBL, 'ch');
     }
 
-    public function joinUsers()
+    public function joinUsers($joinCredentials = false)
     { 
         $this->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', CartHistory::DB_TBL_PREFIX.'user_id = user.user_id', 'user');
+        if($joinCredentials == true){ 
+            $this->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'user.user_id = user_cred.credential_user_id', 'user_cred');
+        }
     }
     
     public function joinSellerProducts($langId)
@@ -52,6 +55,11 @@ class CartHistorySearch extends SearchBase
     public function addGroupBySellerProduct()
     { 
         $this->addGroupBy(CartHistory::DB_TBL_PREFIX.'selprod_id');
+    }
+    
+    public function addGroupByUser()
+    { 
+        $this->addGroupBy(CartHistory::DB_TBL_PREFIX.'user_id');
     }
 
 }

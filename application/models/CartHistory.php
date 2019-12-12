@@ -151,6 +151,56 @@ class CartHistory extends FatModel
         return true;
     }
     
+    public static function sendReminderAbandonedCart()
+    { 
+        $langId = FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1);
+        $srch = new CartHistorySearch();
+        $srch->joinUsers(true);
+        $srch->joinSellerProducts($langId);
+        $srch->addActionCondition(static::ACTION_ADDED);
+        $srch->addEmailCountCondition();
+        $srch->addDiscountNotificationCondition(); 
+        $srch->addMultipleFields(array('user_id', 'user_name', 'credential_email', 'selprod_id', 'selprod_product_id', 'selprod_title', 'selprod_price')); 
+        $rs = $srch->getResultSet();  
+        $records = FatApp::getDb()->fetchAll($rs);        
+        
+        $prevUserId = 0 ;         
+        $productDetailTable = "";
+        foreach($records as $key=>$data){ 
+            if($prevUserId == 0 || $prevUserId == $data['user_id'] ){
+                $prevUserId = $data['user_id'];
+            }else{
+                self::sendAbandonedCartEmail($records[$key-1]['user_id'], $records[$key-1]['user_name'], $records[$key-1]['credential_email'], $productDetailTable);
+                $productDetailTable = "";
+                $prevUserId = $data['user_id'];
+            }
+            
+            $prodImage = CommonHelper::generateFullUrl('image', 'product', array($data['selprod_product_id'], "THUMB", $data['selprod_id'], 0, $langId),CONF_WEBROOT_FRONTEND);
+            $productDetailTable .= '<tr><td style="padding-right: 25px;"><img style="border: solid 1px #ececec; padding: 10px; border-radius: 4px;" src="'.$prodImage.'"></td><td><span style="font-size: 20px; font-weight:normal; color:#999999;">'.$data['selprod_title'].'</span><span style="font-size: 14px; font-weight: bold; color:#000000; display: block; padding: 20px 0;">'.CommonHelper::displayMoneyFormat($data['selprod_price']).'</span></td></tr>';  
+            
+            if(($key+1) == count($records)){
+                self::sendAbandonedCartEmail($data['user_id'], $data['user_name'], $data['credential_email'], $productDetailTable); 
+            }    
+        }    
+        return true;
+    }
+    
+    public static function sendAbandonedCartEmail($userId, $userEmail, $userName, $productDetailTable)
+    {   
+        $checkout = CommonHelper::generateFullUrl('GuestUser', 'redirectAbandonedCartUser', array($userId,0, true), CONF_WEBROOT_FRONTEND);
+        $productDetailTable .= '<tr><td style="padding-right: 25px;"></td><td><a href="'.$checkout.'" style="background: #ff3a59;border:none; border-radius: 4px; color: #fff; cursor: pointer;margin: 0;   width: auto; font-weight: normal; padding: 10px 20px; text-align:left;">Complete Checkout </a></td></tr>';
+        $arrReplacements = array(
+            '{user_full_name}' => $userName,
+            '{product_detail_table}' => $productDetailTable
+        );
+        $tpl = "abandoned_cart_email";
+        $langId = FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1);
+        if(!EmailHandler::sendMailTpl($userEmail, $tpl, $langId, $arrReplacements)) {
+            return false;              
+        }
+        return true;
+    }     
+    
     public function recordCount()
     { 
         return $this->totalRecords;
