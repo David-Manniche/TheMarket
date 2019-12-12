@@ -18,7 +18,7 @@ class AppleLoginController extends SocialMediaController
         return static::PRODUCTION_URL . 'authorize?' . http_build_query([
             'response_type' => 'code id_token',
             'response_mode' => 'form_post',
-            'client_id' => $settings['client_id'],
+            'client_id' => $settings[static::KEY_NAME . '_client_id'],
             'redirect_uri' => $redirectUri,
             'state' => $_SESSION['appleSignIn']['state'],
             'scope' => 'name email',
@@ -55,8 +55,11 @@ class AppleLoginController extends SocialMediaController
             } else {
                 $email = $appleUserInfo['email'];
             }
+            
+            $exp = explode("@", $email);
+            $username = substr($exp[0], 0, 80) . rand();
 
-            $userInfo = $this->doLogin($email, $appleId, $userType);
+            $userInfo = $this->doLogin($email, $username, $appleId, $userType);
             $this->redirectToDashboard($userInfo['user_preferred_dashboard']);
         }
         FatApp::redirectUser($this->getRequestUri());

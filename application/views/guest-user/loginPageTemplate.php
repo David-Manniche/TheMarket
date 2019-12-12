@@ -99,7 +99,7 @@ if ($facebookLogin || $googleLogin) { ?>
                     <li>
                         <a href="<?php echo CommonHelper::generateUrl($plugin['plugin_code']); ?>" class="btn btn--social btn--apple">
                             <i class="icn">
-                                <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/<?php echo $plugin['plugin_code']; ?>.svg">
+                                <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/social-icons/<?php echo $plugin['plugin_code']; ?>.svg">
                             </i>
                         </a>
                     </li>

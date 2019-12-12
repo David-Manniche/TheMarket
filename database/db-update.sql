@@ -316,7 +316,7 @@ ALTER TABLE `tbl_plugins`
   ADD UNIQUE KEY `plugin_identifier` (`plugin_identifier`),
   ADD UNIQUE KEY `plugin_code` (`plugin_code`);
 
-
+ALTER TABLE `tbl_plugins` CHANGE `plugin_id` `plugin_id` INT(11) NULL AUTO_INCREMENT;
 --
 -- Dumping data for table `tbl_plugins`
 --
@@ -390,3 +390,5 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_LoggedIn_SUCCESSFU
 
 CREATE TABLE `tbl_user_meta` ( `usermeta_user_id` INT NOT NULL , `usermeta_key` VARCHAR(255) NOT NULL , `usermeta_value` VARCHAR(255) NOT NULL ) ENGINE = InnoDB;
 ALTER TABLE tbl_user_meta ADD PRIMARY KEY (usermeta_user_id, usermeta_key);
+
+INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Facebook Login', '2', 'FacebookLogin', '1', '4');

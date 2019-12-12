@@ -2232,7 +2232,7 @@ class User extends MyAppModel
         FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_img_updated_on' => date('Y-m-d  H:i:s')), $where);
     }
     
-    public function validateUser($email, $socialAccountID, $keyName, $userType)
+    public function validateUser($email, $userName, $socialAccountID, $keyName, $userType)
     {
         $db = FatApp::getDb();
         $socialIdColumn = strtolower($keyName) . '_account_id';
@@ -2292,7 +2292,7 @@ class User extends MyAppModel
             }
             unset($row[$socialIdColumn]);
         } else {
-            $userId = $this->setupUser($email, $socialAccountID, $keyName, $userType);
+            $userId = $this->setupUser($email, $userName, $socialAccountID, $keyName, $userType);
             if (false === $userId) {
                 $this->error = $userObj->getError();
                 return false;
@@ -2312,7 +2312,7 @@ class User extends MyAppModel
         return $row;
     }
 
-    public function setupUser($email, $socialAccountID, $keyName, $userType)
+    public function setupUser($email, $userName, $socialAccountID, $keyName, $userType)
     {
         $db = FatApp::getDb();
         $socialIdColumn = strtolower($keyName) . '_account_id';
@@ -2336,9 +2336,6 @@ class User extends MyAppModel
         }
 
         $db->startTransaction();
-
-        $exp = explode("@", $email);
-        $username = substr($exp[0], 0, 80) . rand();
 
         $userData = [
             'user_name' => $username,
