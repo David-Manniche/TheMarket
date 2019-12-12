@@ -2990,9 +2990,10 @@ class AccountController extends LoggedUserController
         }
 
         include_once CONF_INSTALLATION_PATH.'library/Fbapi.php';
+		$fbSettings = PluginSetting::getConfDataByCode('FacebookLogin');
         $config = array(
-        'app_id' => FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, ''),
-        'app_secret' => FatApp::getConfig('CONF_FACEBOOK_APP_SECRET', FatUtility::VAR_STRING, ''),
+        'app_id' => $fbSettings['app_id'],
+        'app_secret' => $fbSettings['app_secret'],
         );
         $fb = new Fbapi($config);
         $fbObj = $fb->getInstance();
@@ -3046,9 +3047,10 @@ class AccountController extends LoggedUserController
 
         /*FB API to share [*/
         include_once CONF_INSTALLATION_PATH.'library/Fbapi.php';
+		$fbSettings = PluginSetting::getConfDataByCode('FacebookLogin');
         $config = array(
-        'app_id' => FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, ''),
-        'app_secret' => FatApp::getConfig('CONF_FACEBOOK_APP_SECRET', FatUtility::VAR_STRING, ''),
+        'app_id' => $fbSettings['app_id'],
+        'app_secret' => $fbSettings['app_secret'],
         );
         $fb = new Fbapi($config);
 

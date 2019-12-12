@@ -66,10 +66,7 @@ $fldSubmit->addFieldTagAttribute('class', 'btn--block'); ?>
 <?php
 echo $loginFrm->getExternalJS();
 
-$facebookLogin  = (FatApp::getConfig('CONF_ENABLE_FACEBOOK_LOGIN', FatUtility::VAR_INT, 0) && FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, '')) ? true : false ;
-$googleLogin = (FatApp::getConfig('CONF_ENABLE_GOOGLE_LOGIN', FatUtility::VAR_INT, 0) && FatApp::getConfig('CONF_GOOGLEPLUS_CLIENT_ID', FatUtility::VAR_STRING, '')) ? true : false;
-
-if ($facebookLogin || $googleLogin) { ?>
+if (!empty($socialLoginApis) && 0 < count($socialLoginApis)) { ?>
     <div class="or-divider">
         <span class="or">
             <?php echo Labels::getLabel('LBL_Or', $siteLangId); ?>
@@ -77,88 +74,15 @@ if ($facebookLogin || $googleLogin) { ?>
     </div>
     <div class="buttons-list">
         <ul> 
-            <?php if ($facebookLogin) { ?> 
+            <?php  foreach ($socialLoginApis as $plugin) { ?>
                 <li>
-                    <a href="javascript:void(0)" onclick="dofacebookInLoginForBuyerpopup()" class="btn btn--social btn--fb">
+                    <a href="<?php echo CommonHelper::generateUrl($plugin['plugin_code']); ?>" class="btn btn--social btn--<?php echo $plugin['plugin_code'];?>">
                         <i class="icn">
-                            <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/facebook.svg">
+                            <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/social-icons/<?php echo $plugin['plugin_code']; ?>.svg">
                         </i>
                     </a>
                 </li>
-            <?php } if ($googleLogin ) { ?> 
-                <li>
-                    <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'socialMediaLogin', array('google')); ?>" class="btn btn--social btn--gp">
-                        <i class="icn">
-                            <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/google-plus.svg">
-                        </i>
-                    </a>
-                </li>
-            <?php }
-            if (!empty($socialLoginApis) && 0 < count($socialLoginApis)) {
-                foreach ($socialLoginApis as $plugin) { ?>
-                    <li>
-                        <a href="<?php echo CommonHelper::generateUrl($plugin['plugin_code']); ?>" class="btn btn--social btn--apple">
-                            <i class="icn">
-                                <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/social-icons/<?php echo $plugin['plugin_code']; ?>.svg">
-                            </i>
-                        </a>
-                    </li>
-                <?php }
-            } ?> 
+            <?php } ?> 
         </ul>
     </div> 
 <?php } ?> 
-<script>
-    /*Facebook Login API JS SDK*/
-    function dofacebookInLoginForBuyerpopup() {
-        FB.getLoginStatus(function(response) {
-            if (response.status === 'connected') {
-                //user is authorized
-                // getUserData();
-            } else {
-                //user is not authorized
-            }
-        });
-        FB.login(function(response) {
-            if (response.authResponse) {
-                //user just authorized your app
-                getUserData();
-            }
-        }, {
-            scope: 'email,public_profile',
-            return_scopes: true
-        });
-    }
-
-    function getUserData() {
-        FB.api('/me?fields=id,name,email, first_name, last_name', function(response) {
-            response['type'] = <?php echo User::USER_TYPE_BUYER; ?>;
-            fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'loginFacebook'), response, function(t) {
-                // console.log(response);
-                location.href = t.url;
-            });
-        }, {
-            scope: 'public_profile,email'
-        });
-    }
-    window.fbAsyncInit = function() {
-        //SDK loaded, initialize it
-        FB.init({
-            appId: '<?php echo FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, '') ?>',
-            xfbml: true,
-            version: 'v2.2'
-        });
-    };
-    //load the JavaScript SDK
-    (function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {
-            return;
-        }
-        js = d.createElement(s);
-        js.id = id;
-        js.src = "https://connect.facebook.net/en_US/sdk.js";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-    /*Facebook Login API JS SDK*/
-</script>

@@ -1,6 +1,7 @@
 <?php
 	$showSignUpLink = isset($showSignUpLink) ? $showSignUpLink : true;
 	$onSubmitFunctionName = isset($onSubmitFunctionName) ? $onSubmitFunctionName : 'defaultSetUpLogin';
+	$fbSettings = PluginSetting::getConfDataByCode('FacebookLogin');
 ?>
 <section>
 	<h3><?php echo Labels::getLabel('LBL_Login',$siteLangId);?></h3>
@@ -54,18 +55,26 @@
 			echo $guestLoginFrm->getFormHtml(); ?>
 		</div>
 		<?php
-		$facebookLogin  = (FatApp::getConfig('CONF_ENABLE_FACEBOOK_LOGIN', FatUtility::VAR_INT , 0) && FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING , ''))?true:false ;
 		$googleLogin  =(FatApp::getConfig('CONF_ENABLE_GOOGLE_LOGIN', FatUtility::VAR_INT , 0)&& FatApp::getConfig('CONF_GOOGLEPLUS_CLIENT_ID', FatUtility::VAR_STRING , ''))?true:false ; if ($facebookLogin || $googleLogin ){?>
 		<div class="row justify-content-center">
 			<div class="col-lg-12 ">
 				<div class=""><span class="or"><?php echo Labels::getLabel('LBL_Or', $siteLangId); ?></span></div>
 				<div class="buttons-list buttons-list-checkout">
 					<ul>
-					<?php if ($facebookLogin) { ?>
-						<li><a href="javascript:void(0)" onclick="dofacebookInLoginForBuyerpopup()" class="btn btn--social btn--fb"><i class="icn"><img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/facebook.svg"></i><?php echo Labels::getLabel('LBL_Login_With_Facebook',$siteLangId);?></a></li>
-					<?php } if ($googleLogin ) { ?>
+					<?php if ($googleLogin ) { ?>
 						<li><a href="<?php echo CommonHelper::generateUrl('GuestUser', 'socialMediaLogin',array('google')); ?>" class="btn btn--social btn--gp"><i class="icn"><img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/google-plus.svg"></i><?php echo Labels::getLabel('LBL_Login_With_Google',$siteLangId);?></a></li>
-					<?php }?>
+					<?php }
+						if (!empty($socialLoginApis) && 0 < count($socialLoginApis)) {
+                            foreach ($socialLoginApis as $plugin) { ?>
+                                <li>
+                                    <a href="<?php echo CommonHelper::generateUrl($plugin['plugin_code']); ?>" class="btn btn--social btn--<?php echo $plugin['plugin_code'];?>">
+                                        <i class="icn">
+                                            <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/social-icons/<?php echo $plugin['plugin_code']; ?>.svg">
+                                        </i>
+                                    </a>
+                                </li>
+                            <?php }
+                        } ?>
 					</ul>
 				</div>
 			</div>
@@ -115,7 +124,7 @@
 	window.fbAsyncInit = function() {
 		//SDK loaded, initialize it
 		FB.init({
-			appId      : '<?php echo FatApp::getConfig('CONF_FACEBOOK_APP_ID',FatUtility::VAR_STRING,'') ?>',
+			appId      : '<?php echo $fbSettings['app_id'] ?>',
 			xfbml      : true,
 			version    : 'v2.2'
 		});

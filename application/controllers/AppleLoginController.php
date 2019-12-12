@@ -18,7 +18,7 @@ class AppleLoginController extends SocialMediaController
         return static::PRODUCTION_URL . 'authorize?' . http_build_query([
             'response_type' => 'code id_token',
             'response_mode' => 'form_post',
-            'client_id' => $settings[static::KEY_NAME . '_client_id'],
+            'client_id' => $settings['client_id'],
             'redirect_uri' => $redirectUri,
             'state' => $_SESSION['appleSignIn']['state'],
             'scope' => 'name email',
@@ -36,7 +36,8 @@ class AppleLoginController extends SocialMediaController
                 $this->setErrorAndRedirect($message, true);
             }
             if (isset($post['error'])) {
-                $message = Labels::getLabel('MSG_AUTHORIZATION_SERVER_RETURNED_AN_ERROR: ' . htmlspecialchars($_REQUEST['error']), $this->siteLangId);
+                $message = Labels::getLabel('MSG_AUTHORIZATION_SERVER_RETURNED_AN_ERROR: ', $this->siteLangId);
+                $message .= htmlspecialchars($post['error']);
                 $this->setErrorAndRedirect($message, true);
             }
             $claims = explode('.', $post['id_token'])[1];

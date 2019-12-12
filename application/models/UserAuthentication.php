@@ -502,19 +502,20 @@ class UserAuthentication extends FatModel
         }
 
         include_once CONF_INSTALLATION_PATH . 'library/facebook/facebook.php';
+		$fbSettings = PluginSetting::getConfDataByCode('FacebookLogin');
         $facebook = new Facebook(
             array(
-            'appId' => FatApp::getConfig("CONF_FACEBOOK_APP_ID"),
-            'secret' => FatApp::getConfig("CONF_FACEBOOK_APP_SECRET"),
+            'appId' => $fbSettings['app_id'],
+            'secret' => $fbSettings['app_secret'],
             )
         );
 
         $user = $facebook->getUser();
 
         if ($user) {
-            unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_code']);
-            unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_access_token']);
-            unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_user_id']);
+            unset($_SESSION['fb_'.$fbSettings['app_id'].'_code']);
+            unset($_SESSION['fb_'.$fbSettings['app_id'].'_access_token']);
+            unset($_SESSION['fb_'.$fbSettings['app_id'].'_user_id']);
         }
 
         unset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]);

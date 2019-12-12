@@ -394,16 +394,16 @@ class User extends MyAppModel
         switch ($preferredDashboard) {
             case User::USER_BUYER_DASHBOARD:
                 return CommonHelper::generateFullUrl('buyer');
-             break;
+            break;
             case User::USER_SELLER_DASHBOARD:
                 return CommonHelper::generateFullUrl('seller');
-             break;
+            break;
             case User::USER_ADVERTISER_DASHBOARD:
                 return CommonHelper::generateFullUrl('advertiser');
-             break;
+            break;
             case User::USER_AFFILIATE_DASHBOARD:
                 return CommonHelper::generateFullUrl('affiliate');
-             break;
+            break;
         }
         return CommonHelper::generateFullUrl('account');
     }

@@ -2410,9 +2410,10 @@ class BuyerController extends BuyerBaseController
 
         include_once CONF_INSTALLATION_PATH.'library/Fbapi.php';
 
+        $fbSettings = PluginSetting::getConfDataByCode('FacebookLogin');
         $config = array(
-        'app_id' => FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, ''),
-        'app_secret' => FatApp::getConfig('CONF_FACEBOOK_APP_SECRET', FatUtility::VAR_STRING, ''),
+        'app_id' => $fbSettings['app_id'],
+        'app_secret' => $fbSettings['app_secret'],
         );
         $fb = new Fbapi($config);
         $fbObj = $fb->getInstance();
@@ -2450,9 +2451,11 @@ class BuyerController extends BuyerBaseController
             }
 
             $fbAccessToken = $accessToken->getValue();
-            unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_code']);
-            unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_access_token']);
-            unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_user_id']);
+			$fbSettings = PluginSetting::getConfDataByCode('FacebookLogin');
+			
+            unset($_SESSION['fb_'.$fbSettings['app_id'].'_code']);
+            unset($_SESSION['fb_'.$fbSettings['app_id'].'_access_token']);
+            unset($_SESSION['fb_'.$fbSettings['app_id'].'_user_id']);
 
             $userObj = new User($userId);
             $userData = array('user_fb_access_token'=>$fbAccessToken);

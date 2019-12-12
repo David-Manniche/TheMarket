@@ -760,16 +760,6 @@ class ConfigurationsController extends AdminBaseController
                     0
                 );
                 $fld11->htmlAfterField = "<br><small>".Labels::getLabel("LBL_On_enabling_this_feature,_buyers_will_be_able_to_see_Seller_tab", $this->adminLangId)."</small>";
-
-                $fld11 = $frm->addCheckBox(
-                    Labels::getLabel("LBL_Enable_facebook_Login", $this->adminLangId),
-                    'CONF_ENABLE_FACEBOOK_LOGIN',
-                    1,
-                    array(),
-                    false,
-                    0
-                );
-                $fld11->htmlAfterField = "<br><small>".Labels::getLabel("LBL_On_enabling_this_feature,users_will_be_able_to_login_using_facebook_account._Please_define_settings_for_facebook_login_if_enabled_under_\"Third_Party_APIs\"_Tab", $this->adminLangId)."</small>";
                 
 				$fld11 = $frm->addCheckBox(
                     Labels::getLabel("LBL_GOOGLE_LOGIN", $this->adminLangId),
@@ -1185,12 +1175,6 @@ class ConfigurationsController extends AdminBaseController
                 break;
 
             case Configurations::FORM_THIRD_PARTY_API:
-                $fld = $frm->addTextBox(Labels::getLabel("LBL_Facebook_APP_ID", $this->adminLangId), 'CONF_FACEBOOK_APP_ID');
-                $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_This_is_the_application_ID_used_in_login_and_post.", $this->adminLangId)."</small>";
-
-                $fld = $frm->addTextBox(Labels::getLabel("LBL_Facebook_App_Secret", $this->adminLangId), 'CONF_FACEBOOK_APP_SECRET');
-                $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_This_is_the_Facebook_secret_key_used_for_authentication_and_other_Facebook_related_plugins_support.", $this->adminLangId)."</small>";
-
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Twitter_APP_KEY", $this->adminLangId), 'CONF_TWITTER_API_KEY');
                 $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_This_is_the_application_ID_used_in_post.", $this->adminLangId)."</small>";
 

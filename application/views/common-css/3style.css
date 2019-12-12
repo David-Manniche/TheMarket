@@ -11012,11 +11012,11 @@ html.quick-view--open {
 	height: auto;
 }
 
-.btn--fb {
+.btn--fb, .btn--FacebookLogin {
 	background: #3b5a99;
 }
 
-.btn--gp {
+.btn--gp, .btn--GoogleLogin {
 	background: #da4a42;
 }
 
@@ -11024,7 +11024,7 @@ html.quick-view--open {
 	background: #333333;
 }
 
-.btn--apple {
+.btn--AppleLogin {
 	background: #000000;
 }
 
