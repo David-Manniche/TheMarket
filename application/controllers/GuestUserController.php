@@ -1564,7 +1564,7 @@ class GuestUserController extends MyAppController
         $userId = FatUtility::int($userId);
         $selProdId = FatUtility::int($selProdId);
         if(!UserAuthentication::isUserLogged()) {
-            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(1)));
+            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
         }        
         $cart = new Cart($userId);
         if(!$cart->hasProducts()) {
