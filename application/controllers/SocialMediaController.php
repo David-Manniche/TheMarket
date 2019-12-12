@@ -16,7 +16,7 @@ class SocialMediaController extends PluginBaseController
         FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
     }
       
-    private function goToDashboard($preferredDashboard = 0, $referredRedirection = true)
+    protected function redirectToDashboard($preferredDashboard = 0, $referredRedirection = true)
     {
         $referredUrl = User::getPreferedDashbordRedirectUrl($preferredDashboard);
         $cartObj = new Cart();

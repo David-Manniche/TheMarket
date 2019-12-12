@@ -12,7 +12,7 @@ class AppleLoginController extends SocialMediaController
     
     private function getRequestUri()
     {
-        $settings = static::getSettings(static::KEY_NAME);
+        $settings = $this->getSettings();
         $redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME);
         $_SESSION['appleSignIn']['state'] = bin2hex(random_bytes(5));
         return static::PRODUCTION_URL . 'authorize?' . http_build_query([
@@ -32,11 +32,11 @@ class AppleLoginController extends SocialMediaController
 
         if (isset($post['id_token'])) {
             if (false ===  MOBILE_APP_API_CALL && $_SESSION['appleSignIn']['state'] != $post['state']) {
-                $message = 'Authorization server returned an invalid state parameter';
+                $message = Labels::getLabel('MSG_AUTHORIZATION_SERVER_RETURNED_AN_INVALID_STATE_PARAMETER', $this->siteLangId);
                 $this->setErrorAndRedirect($message, true);
             }
-            if (isset($_REQUEST['error'])) {
-                $message = 'Authorization server returned an error: ' . htmlspecialchars($_REQUEST['error']);
+            if (isset($post['error'])) {
+                $message = Labels::getLabel('MSG_AUTHORIZATION_SERVER_RETURNED_AN_ERROR: ' . htmlspecialchars($_REQUEST['error']), $this->siteLangId);
                 $this->setErrorAndRedirect($message, true);
             }
             $claims = explode('.', $post['id_token'])[1];
@@ -59,7 +59,6 @@ class AppleLoginController extends SocialMediaController
             $userInfo = $this->doLogin($email, $appleId, $userType);
             $this->redirectToDashboard($userInfo['user_preferred_dashboard']);
         }
-
         FatApp::redirectUser($this->getRequestUri());
     }
 }
