@@ -6,7 +6,7 @@ class SocialMediaController extends PluginBaseController
         parent::__construct($action);
     }
 
-    protected function setErrorMessage($message, $errRedirection = true)
+    protected function setErrorAndRedirect($message, $errRedirection = false)
     {
         if (false === $errRedirection || true ===  MOBILE_APP_API_CALL) {
             LibHelper::dieJsonError($message);
@@ -41,16 +41,7 @@ class SocialMediaController extends PluginBaseController
         }
         FatApp::redirectUser($referredUrl);
     }
-    
-    protected function redirectAndAuthenticateUser($url, $errRedirection = true)
-    {
-        if (empty($url)) {
-            $message = Labels::getLabel("MSG_INVALID_AUTH_URI", $this->siteLangId);
-            $this->setErrorMessage($message, $errRedirection);
-        }
-        FatApp::redirectUser($url);
-    }
-
+   
     protected function doLogin($email, $socialAccountID, $userType, $referredRedirection = true)
     {
         try {
@@ -75,6 +66,6 @@ class SocialMediaController extends PluginBaseController
             $this->set('userInfo', $userInfo);
             $this->_template->render(true, true, 'guest-user/login.php');
         }
-        $this->goToDashboard($userInfo['user_preferred_dashboard'], $referredRedirection);
+        return $userInfo;
     }
 }

@@ -13,7 +13,7 @@ class AppleLoginController extends SocialMediaController
     private function getRequestUri()
     {
         $settings = static::getSettings(static::KEY_NAME);
-        $redirectUri = CommonHelper::generateFullUrl('AppleLogin');
+        $redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME);
         $_SESSION['appleSignIn']['state'] = bin2hex(random_bytes(5));
         return static::PRODUCTION_URL . 'authorize?' . http_build_query([
             'response_type' => 'code id_token',
@@ -33,11 +33,11 @@ class AppleLoginController extends SocialMediaController
         if (isset($post['id_token'])) {
             if (false ===  MOBILE_APP_API_CALL && $_SESSION['appleSignIn']['state'] != $post['state']) {
                 $message = 'Authorization server returned an invalid state parameter';
-                $this->setErrorMessage($message);
+                $this->setErrorAndRedirect($message, true);
             }
             if (isset($_REQUEST['error'])) {
                 $message = 'Authorization server returned an error: ' . htmlspecialchars($_REQUEST['error']);
-                $this->setErrorMessage($message);
+                $this->setErrorAndRedirect($message, true);
             }
             $claims = explode('.', $post['id_token'])[1];
             $claims = json_decode(base64_decode($claims), true);
@@ -49,16 +49,17 @@ class AppleLoginController extends SocialMediaController
             if (false === $appleUserInfo) {
                 if (!isset($claims['email'])) {
                     $message = Labels::getLabel('MSG_UNABLE_TO_FETCH_USER_INFO', $this->siteLangId);
-                    $this->setErrorMessage($message);
+                    $this->setErrorAndRedirect($message, true);
                 }
                 $email = $claims['email'];
             } else {
                 $email = $appleUserInfo['email'];
             }
 
-            $this->doLogin($email, $appleId, $userType);
+            $userInfo = $this->doLogin($email, $appleId, $userType);
+            $this->redirectToDashboard($userInfo['user_preferred_dashboard']);
         }
 
-        $this->redirectAndAuthenticateUser(static::getRequestUri());
+        FatApp::redirectUser($this->getRequestUri());
     }
 }
