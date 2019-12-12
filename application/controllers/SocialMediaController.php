@@ -42,7 +42,7 @@ class SocialMediaController extends PluginBaseController
         FatApp::redirectUser($referredUrl);
     }
    
-    protected function doLogin($email, $socialAccountID, $userType, $referredRedirection = true)
+    protected function doLogin($email, $userName, $socialAccountID, $userType)
     {
         try {
             $keyName = get_called_class()::KEY_NAME;
@@ -51,7 +51,7 @@ class SocialMediaController extends PluginBaseController
         }
 
         $userObj = new User();
-        $userInfo = $userObj->validateUser($email, $socialAccountID, $keyName, $userType);
+        $userInfo = $userObj->validateUser($email, $userName, $socialAccountID, $keyName, $userType);
         if (false === $userInfo) {
             $this->setErrorMessage($userObj->getError());
         }

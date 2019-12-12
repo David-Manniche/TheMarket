@@ -2232,7 +2232,7 @@ class User extends MyAppModel
         FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_img_updated_on' => date('Y-m-d  H:i:s')), $where);
     }
     
-    public function validateUser($email, $userName, $socialAccountID, $keyName, $userType)
+    public function validateUser($email, $userName, $socialAccountId, $keyName, $userType)
     {
         $db = FatApp::getDb();
         $socialIdColumn = strtolower($keyName) . '_account_id';
@@ -2245,7 +2245,7 @@ class User extends MyAppModel
 
         $srch->addCondition('credential_email', '=', $email);
         $cnd = $srch->addCondition('usermeta_key', '=', strtolower($keyName) . '_account_id', 'OR');
-        $cnd->attachCondition('usermeta_value', '=', $socialAccountID, 'AND');
+        $cnd->attachCondition('usermeta_value', '=', $socialAccountId, 'AND');
 
         $srch->setPageSize(1);
         $rs = $srch->getResultSet();
@@ -2285,14 +2285,12 @@ class User extends MyAppModel
             }
 
             $userObj = new User($row['user_id']);
-            if (empty($row[$socialIdColumn])) {
-                if (false === $userObj->updateUserMeta($socialIdColumn, $socialAccountID)) {
-                    return false;
-                }
+            if (false === $userObj->updateUserMeta($socialIdColumn, $socialAccountId)) {
+                return false;
             }
             unset($row[$socialIdColumn]);
         } else {
-            $userId = $this->setupUser($email, $userName, $socialAccountID, $keyName, $userType);
+            $userId = $this->setupUser($email, $userName, $socialAccountId, $keyName, $userType);
             if (false === $userId) {
                 $this->error = $userObj->getError();
                 return false;
@@ -2312,7 +2310,7 @@ class User extends MyAppModel
         return $row;
     }
 
-    public function setupUser($email, $userName, $socialAccountID, $keyName, $userType)
+    public function setupUser($email, $userName, $socialAccountId, $keyName, $userType)
     {
         $db = FatApp::getDb();
         $socialIdColumn = strtolower($keyName) . '_account_id';
@@ -2352,7 +2350,7 @@ class User extends MyAppModel
             return false;
         }
         $userId = $this->getMainTableRecordId();
-        $this->updateUserMeta($socialIdColumn, $socialAccountID);
+        $this->updateUserMeta($socialIdColumn, $socialAccountId);
         if (!$this->setLoginCredentials($username, $email, uniqid(), 1, 1)) {
             $this->error = Labels::getLabel("MSG_LOGIN_CREDENTIALS_COULD_NOT_BE_SET", $this->commonLangId) . $this->getError();
             $db->rollbackTransaction();
