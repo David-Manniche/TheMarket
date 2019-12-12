@@ -114,7 +114,7 @@ class CartHistory extends FatModel
         $discount = ($couponData['coupon_discount_in_percent'] == applicationConstants::PERCENTAGE) ? $couponData['coupon_discount_value'].'%' : CommonHelper::displayMoneyFormat($couponData['coupon_discount_value']);        
         $arrReplacements = array(
             '{user_full_name}' => trim($userData['user_name']),
-            '{checkout_now}' => CommonHelper::generateFullUrl('GuestUser', 'redirectUser', array($userId, $selProdId)),
+            '{checkout_now}' => CommonHelper::generateFullUrl('GuestUser', 'redirectAbandonedCartUser', array($userId, $selProdId)),
             '{coupon_code}' => $couponData['coupon_code'],
             '{discount}' => $discount,
             '{product_name}' => trim($selProdData['selprod_title'])

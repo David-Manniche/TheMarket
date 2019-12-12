@@ -1558,4 +1558,32 @@ class GuestUserController extends MyAppController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_RESET_PASSWORD', $siteLangId));
         return $frm;
     }
+    
+    public function redirectAbandonedCartUser($userId, $selProdId)
+    {
+        $userId = FatUtility::int($userId);
+        $selProdId = FatUtility::int($selProdId);
+        if(!UserAuthentication::isUserLogged()) {
+            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(1)));
+        }        
+        $cart = new Cart($userId);
+        if(!$cart->hasProducts()) {
+            FatApp::redirectUser(CommonHelper::generateUrl('Products', 'view', array($selProdId)));            
+        }        
+        $cartProducts = $cart->getProducts($this->siteLangId);
+        $found = false;
+        foreach($cartProducts as $key=>$data){
+            if($data['selprod_id'] == $selProdId){
+                $found = true;
+                break;
+            }
+        }
+        if($found == true){
+            FatApp::redirectUser(CommonHelper::generateUrl('Cart'));
+        }else{
+            FatApp::redirectUser(CommonHelper::generateUrl('Products', 'view', array($selProdId)));
+        }
+
+    }
+    
 }
