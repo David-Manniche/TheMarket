@@ -44,7 +44,7 @@ class GoogleLoginController extends SocialMediaAuthController
     {
         $get = FatApp::getQueryStringData();
         $userType = FatApp::getPostedData('type', FatUtility::VAR_INT, User::USER_TYPE_BUYER);
-        $accessToken = FatApp::getPostedData('accessToken', FatUtility::VAR_INT, '');
+        $accessToken = FatApp::getPostedData('accessToken', FatUtility::VAR_STRING, '');
         
         if (true ===  MOBILE_APP_API_CALL && empty($accessToken)) {
             $message = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
