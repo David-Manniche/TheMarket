@@ -1,7 +1,7 @@
 <?php
 include_once CONF_INSTALLATION_PATH . 'library/GoogleAPI/vendor/autoload.php';
 
-class GoogleLoginController extends SocialMediaController
+class GoogleLoginController extends SocialMediaAuthController
 {
     public const KEY_NAME = 'GoogleLogin';
 

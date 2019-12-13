@@ -3,7 +3,6 @@ $sharingFrm->addFormTagAttribute('class', 'form');
 $sharingFrm->addFormTagAttribute('onsubmit', 'sendMailShareEarn(this);return false;');
 $sharingFrm->developerTags['colClassPrefix'] = 'col-xs-12 col-md-';
 $sharingFrm->developerTags['fld_default_col'] = 12;
-$fbSettings = PluginSetting::getConfDataByCode('FacebookLogin');
 
 $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
@@ -27,7 +26,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                         </div>
                     </div>
                 </div>
-                <?php if (!empty($fbSettings['app_id']) && !empty($fbSettings['app_secret'])) { ?>
+                <?php if (!empty(FatApp::getConfig("CONF_FACEBOOK_APP_ID")) && !empty(FatApp::getConfig("CONF_FACEBOOK_APP_SECRET"))) { ?>
                 <div class="widget widget-stats">
                     <a id="facebook_btn" href="javascript:void(0);" class="box--share box--share-fb"> <i class="fa fa-facebook"></i>
                         <h5><?php echo Labels::getLabel('L_Share_on', $siteLangId)?></h5>
@@ -74,7 +73,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
         if (d.getElementById(id)) return;
         js = d.createElement(s);
         js.id = id;
-        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=<?php echo $fbSettings['app_id']; ?>";
+        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=<?php echo FatApp::getConfig("CONF_FACEBOOK_APP_ID", FatUtility::VAR_STRING, ''); ?>";
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 

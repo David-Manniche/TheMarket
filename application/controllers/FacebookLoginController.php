@@ -6,7 +6,7 @@ use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
 
-class FacebookLoginController extends SocialMediaController
+class FacebookLoginController extends SocialMediaAuthController
 {
     public const KEY_NAME = 'FacebookLogin';
 

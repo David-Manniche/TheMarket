@@ -32,12 +32,12 @@ class AffiliateController extends AffiliateBaseController
 
         $fbAccessToken = '';
         $fbLoginUrl = '';
-		$fbSettings = PluginSetting::getConfDataByCode('FacebookLogin');
-        
-        if (!empty($fbSettings['app_id']) && !empty($fbSettings['app_secret'])) {
+        $appId = FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, '');
+        $appSecret = FatApp::getConfig('CONF_FACEBOOK_APP_SECRET', FatUtility::VAR_STRING, '');
+        if (!empty($appId) && !empty($appSecret)) {
             $config = array(
-			'app_id' => $fbSettings['app_id'],
-			'app_secret' => $fbSettings['app_secret'],
+			'app_id' => $appId,
+			'app_secret' => $appSecret,
 			);
             $fb = new Fbapi($config);
 
@@ -190,10 +190,9 @@ class AffiliateController extends AffiliateBaseController
 
         include_once CONF_INSTALLATION_PATH.'library/Fbapi.php';
 
-        $fbSettings = PluginSetting::getConfDataByCode('FacebookLogin');
         $config = array(
-        'app_id' => $fbSettings['app_id'],
-        'app_secret' => $fbSettings['app_secret'],
+        'app_id' => FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, ''),
+        'app_secret' => FatApp::getConfig('CONF_FACEBOOK_APP_SECRET', FatUtility::VAR_STRING, ''),
         );
         $fb = new Fbapi($config);
         $fbObj = $fb->getInstance();
@@ -231,9 +230,9 @@ class AffiliateController extends AffiliateBaseController
             }
 
             $fbAccessToken = $accessToken->getValue();
-            unset($_SESSION['fb_'.$fbSettings['app_id'].'_code']);
-            unset($_SESSION['fb_'.$fbSettings['app_id'].'_access_token']);
-            unset($_SESSION['fb_'.$fbSettings['app_id'].'_user_id']);
+            unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_code']);
+            unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_access_token']);
+            unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_user_id']);
 
             $userObj = new User($userId);
             $userData = array('user_fb_access_token'=>$fbAccessToken);
@@ -325,10 +324,9 @@ class AffiliateController extends AffiliateBaseController
         include_once CONF_INSTALLATION_PATH . 'library/APIs/twitter/twitteroauth.php';
         $loggedUserId = UserAuthentication::getLoggedUserId();
         $userInfo = User::getAttributesById($loggedUserId, array('user_fb_access_token', 'user_referral_code'));
-        $fbSettings = PluginSetting::getConfDataByCode('FacebookLogin');
         $config = array(
-        'app_id' => $fbSettings['app_id'],
-        'app_secret' => $fbSettings['app_secret'],
+        'app_id' => FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, ''),
+        'app_secret' => FatApp::getConfig('CONF_FACEBOOK_APP_SECRET', FatUtility::VAR_STRING, ''),
         );
         $fb = new Fbapi($config);
 

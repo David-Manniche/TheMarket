@@ -4,7 +4,6 @@ $sharingFrm->addFormTagAttribute('class','form');
 $sharingFrm->addFormTagAttribute('onsubmit','setUpMailAffiliateSharing(this);return false;');
 $sharingFrm->developerTags['colClassPrefix'] = 'col-xs-12 col-md-';
 $sharingFrm->developerTags['fld_default_col'] = 12;
-$fbSettings = PluginSetting::getConfDataByCode('FacebookLogin');
 
 $this->includeTemplate('_partial/affiliate/affiliateDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
@@ -30,7 +29,7 @@ $this->includeTemplate('_partial/affiliate/affiliateDashboardNavigation.php'); ?
 					
 					<div class="cards-content pl-4 pr-4 ">
 						<ul class="grid--onethird grid--onethird-large">
-						  <?php if (!empty($fbSettings['app_id']) && !empty($fbSettings['app_secret'])){?>
+						  <?php if (!empty(FatApp::getConfig("CONF_FACEBOOK_APP_ID")) && !empty(FatApp::getConfig("CONF_FACEBOOK_APP_SECRET"))){ ?>
 						  <li> <a id="facebook_btn" href="javascript:void(0);" class="box--share box--share-fb"> <i class="fa fa-facebook"></i>
 							<h5><?php echo Labels::getLabel('L_Share_on',$siteLangId)?></h5>
 							<h2><?php echo Labels::getLabel('L_Facebook',$siteLangId)?></h2>
@@ -74,7 +73,7 @@ $this->includeTemplate('_partial/affiliate/affiliateDashboardNavigation.php'); ?
 	var js, fjs = d.getElementsByTagName(s)[0];
 	if (d.getElementById(id)) return;
 		js = d.createElement(s); js.id = id;
-		js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=<?php echo $fbSettings['app_id']; ?>";
+		js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=<?php echo FatApp::getConfig("CONF_FACEBOOK_APP_ID",FatUtility::VAR_STRING,''); ?>";
 		fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
 

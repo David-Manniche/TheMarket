@@ -1,5 +1,5 @@
 <?php
-class SocialMediaController extends PluginBaseController
+class SocialMediaAuthController extends PluginBaseController
 {
     public function __construct($action)
     {
@@ -67,5 +67,19 @@ class SocialMediaController extends PluginBaseController
             $this->_template->render(true, true, 'guest-user/login.php');
         }
         return $userInfo;
+    }
+
+    public function getListing()
+    {
+        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN_API, $this->siteLangId);
+        $this->set('data', ['socialLoginApis' => array_values($socialLoginApis)]);
+        $this->_template->render();
+    }
+
+    public function getStatus()
+    {
+        $socialLoginApis = Plugin::getSocialLoginPluginsStatus($this->siteLangId);
+        $this->set('data', ['status' => $socialLoginApis]);
+        $this->_template->render();
     }
 }

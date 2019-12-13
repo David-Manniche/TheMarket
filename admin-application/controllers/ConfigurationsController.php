@@ -588,19 +588,19 @@ class ConfigurationsController extends AdminBaseController
 
                 $currencyArr = Currency::getCurrencyNameWithCode($this->adminLangId);
                 $frm->addSelectBox(Labels::getLabel('LBL_Default_System_Currency', $this->adminLangId), 'CONF_CURRENCY', $currencyArr, false, array(), '');
-				
-				$currencyPlugins = Plugin::getNamesByType(Plugin::TYPE_CURRENCY_API, $this->adminLangId);
-				if (!empty($currencyPlugins) && 0 < count($currencyPlugins)) {
-					$fld = $frm->addSelectBox(Labels::getLabel("LBL_DEFAULT_CURRENCY_CONVERTER_API", $this->adminLangId), 'CONF_DEFAULT_CURRENCY_CONVERTER_API', [-1 => Labels::getLabel("LBL_PLEASE_SELECT", $this->adminLangId)] + $currencyPlugins, false, array(), '');
-					$fld->htmlAfterField = "<small>".Labels::getLabel("LBL_SET_DEFAULT_CURRENCY_CONVERTER_API.", $this->adminLangId)."</small>";
-				}
+                
+                $currencyPlugins = Plugin::getNamesByType(Plugin::TYPE_CURRENCY_API, $this->adminLangId);
+                if (!empty($currencyPlugins) && 0 < count($currencyPlugins)) {
+                    $fld = $frm->addSelectBox(Labels::getLabel("LBL_DEFAULT_CURRENCY_CONVERTER_API", $this->adminLangId), 'CONF_DEFAULT_CURRENCY_CONVERTER_API', [-1 => Labels::getLabel("LBL_PLEASE_SELECT", $this->adminLangId)] + $currencyPlugins, false, array(), '');
+                    $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_SET_DEFAULT_CURRENCY_CONVERTER_API.", $this->adminLangId)."</small>";
+                }
 
                 $faqCategoriesArr = FaqCategory::getFaqPageCategories();
                 $sellerCategoriesArr = FaqCategory::getSellerPageCategories();
 
                 $frm->addSelectBox(Labels::getLabel('LBL_Faq_Page_Main_Category', $this->adminLangId), 'CONF_FAQ_PAGE_MAIN_CATEGORY', $faqCategoriesArr);
                 $frm->addSelectBox(Labels::getLabel('LBL_Seller_Page_Main_Faq_Category', $this->adminLangId), 'CONF_SELLER_PAGE_MAIN_CATEGORY', $sellerCategoriesArr);
-				
+                
                 break;
 
             case Configurations::FORM_SEO:
@@ -760,8 +760,18 @@ class ConfigurationsController extends AdminBaseController
                     0
                 );
                 $fld11->htmlAfterField = "<br><small>".Labels::getLabel("LBL_On_enabling_this_feature,_buyers_will_be_able_to_see_Seller_tab", $this->adminLangId)."</small>";
+
+                $fld11 = $frm->addCheckBox(
+                    Labels::getLabel("LBL_Enable_facebook_Login", $this->adminLangId),
+                    'CONF_ENABLE_FACEBOOK_LOGIN',
+                    1,
+                    array(),
+                    false,
+                    0
+                );
+                $fld11->htmlAfterField = "<br><small>".Labels::getLabel("LBL_On_enabling_this_feature,users_will_be_able_to_login_using_facebook_account._Please_define_settings_for_facebook_login_if_enabled_under_\"Third_Party_APIs\"_Tab", $this->adminLangId)."</small>";
                 
-				$fld11 = $frm->addCheckBox(
+                $fld11 = $frm->addCheckBox(
                     Labels::getLabel("LBL_GOOGLE_LOGIN", $this->adminLangId),
                     'CONF_ENABLE_GOOGLE_LOGIN',
                     1,
@@ -770,7 +780,7 @@ class ConfigurationsController extends AdminBaseController
                     0
                 );
                 $fld11->htmlAfterField = "<br><small>".Labels::getLabel("LBL_On_enabling_this_feature,users_will_be_able_to_login_using_google_account._Please_define_settings_for_google_plus_login_if_enabled_under_\"Third_Party_APIs\"_Tab", $this->adminLangId)."</small>";
-				
+                
                 $fld = $frm->addIntegerField(Labels::getLabel("LBL_Max_Seller_Request_Attempts", $this->adminLangId), 'CONF_MAX_SUPPLIER_REQUEST_ATTEMPT', '');
                 $fld->htmlAfterField = "<br><small>".Labels::getLabel("LBL_Maximum_seller_request_attempts_allowed", $this->adminLangId)."</small>";
 
@@ -884,7 +894,7 @@ class ConfigurationsController extends AdminBaseController
 
                 $fld = $frm->addSelectBox(Labels::getLabel("LBL_Cash_on_Delivery_Order_Status", $this->adminLangId), 'CONF_COD_ORDER_STATUS', $orderStatusArr, false, array(), '');
                 $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_Set_the_Cash_on_delivery_order_status.", $this->adminLangId)."</small>";
-				
+                
                 $vendorOrderSelected = (!empty($arrValues['CONF_VENDOR_ORDER_STATUS']))?$arrValues['CONF_VENDOR_ORDER_STATUS']:0;
 
                 $fld = $frm->addCheckBoxes(Labels::getLabel("LBL_Seller_Order_Statuses", $this->adminLangId), 'CONF_VENDOR_ORDER_STATUS', $orderStatusArr, $vendorOrderSelected, array('class'=>'list-inline'));
@@ -1175,6 +1185,11 @@ class ConfigurationsController extends AdminBaseController
                 break;
 
             case Configurations::FORM_THIRD_PARTY_API:
+                $fld = $frm->addTextBox(Labels::getLabel("LBL_Facebook_APP_ID", $this->adminLangId), 'CONF_FACEBOOK_APP_ID');
+                $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_This_is_the_application_ID_used_in_login_and_post.", $this->adminLangId)."</small>";
+
+                $fld = $frm->addTextBox(Labels::getLabel("LBL_Facebook_App_Secret", $this->adminLangId), 'CONF_FACEBOOK_APP_SECRET');
+                $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_This_is_the_Facebook_secret_key_used_for_authentication_and_other_Facebook_related_plugins_support.", $this->adminLangId)."</small>";
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Twitter_APP_KEY", $this->adminLangId), 'CONF_TWITTER_API_KEY');
                 $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_This_is_the_application_ID_used_in_post.", $this->adminLangId)."</small>";
 
@@ -1278,7 +1293,7 @@ class ConfigurationsController extends AdminBaseController
                 $frm->addHtml('', 'Microsoft Translator Text API', '<h3>'.Labels::getLabel("LBL_Microsoft_Translator_Text_API", $this->adminLangId).'</h3>');
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_SUBSCRIPTION_KEY", $this->adminLangId), 'CONF_TRANSLATOR_SUBSCRIPTION_KEY');
                 $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_MICROSOFT_TRANSLATOR_TEXT_API_3.0_SUBSCRIPTION_KEY.", $this->adminLangId)."</small>";
-				
+                
                 break;
             case Configurations::FORM_REFERAL:
                 $fld = $frm->addRadioButtons(

@@ -2239,11 +2239,10 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
         include_once CONF_INSTALLATION_PATH . 'library/facebook/facebook.php';
-		$fbSettings = PluginSetting::getConfDataByCode('FacebookLogin');
         $facebook = new Facebook(
             array(
-            'appId' => $fbSettings['app_id'],
-            'secret' => $fbSettings['app_secret'],
+            'appId' => FatApp::getConfig("CONF_FACEBOOK_APP_ID", FatUtility::VAR_STRING, ''),
+            'secret' => FatApp::getConfig("CONF_FACEBOOK_APP_SECRET", FatUtility::VAR_STRING, ''),
             )
         );
         $facebook->setAccessToken($post['fb_token']);

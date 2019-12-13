@@ -82,14 +82,34 @@ class Plugin extends MyAppModel
         ];
     }
 
+    private static function pluginTypeSrchObj($typeId, $langId, $assoc = true, $active = false)
+    {
+        $srch = static::getSearchObject($langId, $active);
+        if (false === $assoc) {
+            $srch->addMultipleFields(
+                [
+                    static::DB_TBL_PREFIX . 'id',
+                    static::DB_TBL_PREFIX . 'code',
+                    static::DB_TBL_PREFIX . 'description',
+                    'COALESCE(plg_l.' . static::DB_TBL_PREFIX . 'name, plg.' . static::DB_TBL_PREFIX . 'identifier) as plugin_name',
+                    static::DB_TBL_PREFIX . 'active',
+                ]
+            );
+        }
+
+        $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'type', '=', $typeId);
+        return $srch;
+    }
+
     public static function getDataByType($typeId, $langId = 0, $assoc = false, $active = true)
     {
         $typeId = FatUtility::int($typeId);
         if (1 > $typeId) {
             return false;
         }
-        $srch = static::getSearchObject($langId);
-        
+
+        $srch = static::pluginTypeSrchObj($typeId, $langId, $assoc, $active);
+
         if (true == $assoc) {
             $srch->addMultipleFields(
                 [
@@ -97,32 +117,15 @@ class Plugin extends MyAppModel
                     'COALESCE(plg_l.' . static::DB_TBL_PREFIX . 'name, plg.' . static::DB_TBL_PREFIX . 'identifier) as plugin_name'
                 ]
             );
-        } else {
-            $srch->addMultipleFields(
-                [
-                    static::DB_TBL_PREFIX . 'id',
-                    static::DB_TBL_PREFIX . 'code',
-                    static::DB_TBL_PREFIX . 'description',
-                    'COALESCE(plg_l.' . static::DB_TBL_PREFIX . 'name, plg.' . static::DB_TBL_PREFIX . 'identifier) as plugin_name'
-                ]
-            );
         }
 
-        if (true === $active) {
-            $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::YES);
-        }
-
-        $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'type', '=', $typeId);
         $rs = $srch->getResultSet();
-        if (!$rs) {
-            echo $srch->getError();
-            return false;
-        }
         
         $db = FatApp::getDb();
         if (true == $assoc) {
             return $db->fetchAllAssoc($rs);
         }
+
         return $db->fetchAll($rs, static::DB_TBL_PREFIX . 'id');
     }
 
@@ -134,5 +137,19 @@ class Plugin extends MyAppModel
             return false;
         }
         return $pluginsTypeArr = static::getDataByType($typeId, $langId, true);
+    }
+
+    public static function getSocialLoginPluginsStatus($langId)
+    {
+        $srch = static::pluginTypeSrchObj(static::TYPE_SOCIAL_LOGIN_API, $langId);
+        $srch->addMultipleFields(
+            [
+                'plg.' . static::DB_TBL_PREFIX . 'code',
+                'plg.' . static::DB_TBL_PREFIX . 'active'
+            ]
+        );
+        $rs = $srch->getResultSet();
+        
+        return FatApp::getDb()->fetchAllAssoc($rs);
     }
 }
