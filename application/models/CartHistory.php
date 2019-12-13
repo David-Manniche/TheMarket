@@ -165,33 +165,40 @@ class CartHistory extends FatModel
         $records = FatApp::getDb()->fetchAll($rs);        
         
         $prevUserId = 0 ;         
-        $productDetailTable = "";
+        $productHtml = "";
+        $selProdIds = array();
         foreach($records as $key=>$data){ 
             if($prevUserId == 0 || $prevUserId == $data['user_id'] ){
                 $prevUserId = $data['user_id'];
-            }else{
-                self::sendAbandonedCartEmail($records[$key-1]['user_id'], $records[$key-1]['user_name'], $records[$key-1]['credential_email'], $productDetailTable);
-                $productDetailTable = "";
+            }else{ 
+                if(self::sendAbandonedCartEmail($records[$key-1]['user_id'], $records[$key-1]['user_name'], $records[$key-1]['credential_email'], $productHtml)){
+                    self::updateReminderCount($records[$key-1]['user_id'], $selProdIds);
+                }                    
                 $prevUserId = $data['user_id'];
+                $productHtml = "";
+                $selProdIds = array();
             }
-            
+
+            $selProdIds[] = $data['selprod_id'];
             $prodImage = CommonHelper::generateFullUrl('image', 'product', array($data['selprod_product_id'], "THUMB", $data['selprod_id'], 0, $langId),CONF_WEBROOT_FRONTEND);
-            $productDetailTable .= '<tr><td style="padding-right: 25px;"><img style="border: solid 1px #ececec; padding: 10px; border-radius: 4px;" src="'.$prodImage.'"></td><td><span style="font-size: 20px; font-weight:normal; color:#999999;">'.$data['selprod_title'].'</span><span style="font-size: 14px; font-weight: bold; color:#000000; display: block; padding: 20px 0;">'.CommonHelper::displayMoneyFormat($data['selprod_price']).'</span></td></tr>';  
+            $productHtml .= '<tr><td style="padding-right: 25px;"><img style="border: solid 1px #ececec; padding: 10px; border-radius: 4px;" src="'.$prodImage.'"></td><td><span style="font-size: 20px; font-weight:normal; color:#999999;">'.$data['selprod_title'].'</span><span style="font-size: 14px; font-weight: bold; color:#000000; display: block; padding: 20px 0;">'.CommonHelper::displayMoneyFormat($data['selprod_price']).'</span></td></tr>';  
             
             if(($key+1) == count($records)){
-                self::sendAbandonedCartEmail($data['user_id'], $data['user_name'], $data['credential_email'], $productDetailTable); 
+                if(self::sendAbandonedCartEmail($data['user_id'], $data['user_name'], $data['credential_email'], $productHtml)){
+                    self::updateReminderCount($data['user_id'], $selProdIds);
+                }                    
             }    
         }    
         return true;
     }
     
-    public static function sendAbandonedCartEmail($userId, $userEmail, $userName, $productDetailTable)
+    public static function sendAbandonedCartEmail($userId, $userEmail, $userName, $productHtml)
     {   
-        $checkout = CommonHelper::generateFullUrl('GuestUser', 'redirectAbandonedCartUser', array($userId,0, true), CONF_WEBROOT_FRONTEND);
-        $productDetailTable .= '<tr><td style="padding-right: 25px;"></td><td><a href="'.$checkout.'" style="background: #ff3a59;border:none; border-radius: 4px; color: #fff; cursor: pointer;margin: 0;   width: auto; font-weight: normal; padding: 10px 20px; text-align:left;">Complete Checkout </a></td></tr>';
+        $url = CommonHelper::generateFullUrl('GuestUser', 'redirectAbandonedCartUser', array($userId,0, true), CONF_WEBROOT_FRONTEND);
+        $productHtml .= '<tr><td style="padding-right: 25px;"></td><td><a href="'.$url.'" style="background: #ff3a59;border:none; border-radius: 4px; color: #fff; cursor: pointer;margin: 0;   width: auto; font-weight: normal; padding: 10px 20px; text-align:left;">Complete Checkout </a></td></tr>';
         $arrReplacements = array(
             '{user_full_name}' => $userName,
-            '{product_detail_table}' => $productDetailTable
+            '{product_detail_table}' => $productHtml
         );
         $tpl = "abandoned_cart_email";
         $langId = FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1);
@@ -199,7 +206,23 @@ class CartHistory extends FatModel
             return false;              
         }
         return true;
-    }     
+    }
+
+    public static function updateReminderCount($userId, $selProdIds)
+    {
+        $userId = FatUtility::int($userId);
+        if($userId < 1){ 
+            return false;
+        }
+        foreach($selProdIds as $selProdId){
+            $where = array('smt' => static::DB_TBL_PREFIX.'user_id = ? AND '.static::DB_TBL_PREFIX.'selprod_id = ?', 'vals' => array($userId, $selProdId));
+            $data = array(static::DB_TBL_PREFIX.'email_count' => 'mysql_func_'.static::DB_TBL_PREFIX.'email_count + 1');
+            if (!FatApp::getDb()->updateFromArray(static::DB_TBL, $data, $where, true)) {
+                return false;
+            }
+        }
+        return true;
+    }
     
     public function recordCount()
     { 

@@ -11,3 +11,5 @@ CREATE TABLE `tbl_cart_history` (
 
 ALTER TABLE `tbl_cart_history`
   ADD PRIMARY KEY (`carthistory_user_id`,`carthistory_selprod_id`);
+  
+INSERT INTO `tbl_cron_schedules` (`cron_id`, `cron_name`, `cron_command`, `cron_duration`, `cron_active`) VALUES (NULL, 'Abandoned Cart Reminder Email', 'CartHistory/sendReminderAbandonedCart', '600', '1');

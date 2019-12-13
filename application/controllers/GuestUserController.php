@@ -1559,13 +1559,17 @@ class GuestUserController extends MyAppController
         return $frm;
     }
     
-    public function redirectAbandonedCartUser($userId, $selProdId)
+    public function redirectAbandonedCartUser($userId, $selProdId, $reminderEmail = false)
     {
         $userId = FatUtility::int($userId);
         $selProdId = FatUtility::int($selProdId);
         if(!UserAuthentication::isUserLogged()) {
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
         }        
+        if($reminderEmail == true){
+            FatApp::redirectUser(CommonHelper::generateUrl('Cart'));
+        }
+        
         $cart = new Cart($userId);
         if(!$cart->hasProducts()) {
             FatApp::redirectUser(CommonHelper::generateUrl('Products', 'view', array($selProdId)));            
