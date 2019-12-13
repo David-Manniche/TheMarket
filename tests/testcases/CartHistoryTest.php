@@ -137,14 +137,7 @@ class CartHistoryTest extends TestCase
             array(1, 10, 1, 11, 47, true), //Valid parameters
         );
     }
-    
 
-    public function testSendDiscountEmail()
-    {
-        $result = CartHistory::sendReminderAbandonedCart();
-        $this->assertEquals($expected, $result);
-    }
-    
     
     
     
