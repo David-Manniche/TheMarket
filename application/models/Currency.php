@@ -107,20 +107,22 @@ class Currency extends MyAppModel
         return strtoupper($baseCurrency['currency_code']);
     }
 
-    public function updatePricingRates($langId)
+    public function getCurrencyConverterApi()
     {
-        $baseCurrencyId = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
-        $currencies = static::getCurrencyAssoc($langId);
-        $baseCurrencyCode = $currencies[$baseCurrencyId];
-        unset($currencies[$baseCurrencyId]);
-
-        $obj = new CurrencyApi($baseCurrencyCode);
-        $currenciesData = $obj->getConversionRate($currencies);
-        if (!$currenciesData) {
-            $this->error = $obj->getError();
+        $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_CURRENCY_CONVERTER_API', FatUtility::VAR_INT, 0);
+        if (empty($defaultCurrConvAPI)) {
+            $this->error = Labels::getLabel('MSG_DEFAULT_CURRENCY_CONVERTER_NOT_DEFINED', $this->siteLangId);
+            return false;
+        } elseif (1 > Plugin::getAttributesById($defaultCurrConvAPI, 'plugin_active')) {
+            $this->error = Labels::getLabel('MSG_DEFAULT_CURRENCY_CONVERTER_API_ACTIVE', $this->siteLangId);
             return false;
         }
+        
+        return Plugin::getAttributesById($defaultCurrConvAPI, 'plugin_code');
+    }
 
+    public function updatePricingRates($currenciesData)
+    {
         $currencyObj = new TableRecord(static::DB_TBL);
         foreach ($currenciesData as $currencyCode => $rate) {
             $data['currency_date_modified'] = date('Y-m-d H:i:s');

@@ -12,22 +12,34 @@ class PluginSettingController extends AdminBaseController
         $this->objPrivilege->canEditPlugins($this->admin_id);
 
         if (get_called_class() == __CLASS__) {
-            FatUtility::dieJsonError(Labels::getLabel('LBL_INVALID_KEY_NAME', $this->adminLangId));
+            LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_ACCESS', $this->adminLangId));
         }
 
         $this->keyName = FatApp::getPostedData('keyName', FatUtility::VAR_STRING, '');
         if (empty($this->keyName)) {
-            FatUtility::dieJsonError(Labels::getLabel('LBL_INVALID_KEY_NAME', $this->adminLangId));
+            try {
+                $this->keyName = get_called_class()::KEY_NAME;
+            } catch (\Error $e) {
+                $message = 'ERR - ' . $e->getMessage();
+                LibHelper::dieJsonError($message);
+            }
+            if (empty($this->keyName)) {
+                LibHelper::dieJsonError(Labels::getLabel('LBL_INVALID_KEY_NAME', $this->adminLangId));
+            }
         }
-        
+    }
+
+    private function setFormObj()
+    {
         $this->frmObj = $this->getForm();
         if (false === $this->frmObj) {
-            FatUtility::dieJsonError($Labels::getLabel('LBL_REQUIREMENT_SETTINGS_ARE_NOT_DEFINED', $this->adminLangId));
+            LibHelper::dieJsonError($Labels::getLabel('LBL_REQUIREMENT_SETTINGS_ARE_NOT_DEFINED', $this->adminLangId));
         }
     }
 
     public function index()
     {
+        $this->setFormObj();
         $pluginSetting = PluginSetting::getConfDataByCode($this->keyName);
         if (false === $pluginSetting) {
             Message::addErrorMessage(Labels::getLabel('LBL_SETTINGS_NOT_AVALIABLE_FOR_THIS_PLUGIN', $this->adminLangId));
@@ -41,6 +53,7 @@ class PluginSettingController extends AdminBaseController
 
     public function setup()
     {
+        $this->setFormObj();
         $post = $this->frmObj->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
             Message::addErrorMessage(current($this->frmObj->getValidationErrors()));
@@ -70,5 +83,19 @@ class PluginSettingController extends AdminBaseController
         $frm = PluginSetting::getForm($requirements, $this->adminLangId);
         $frm->fill(['keyName' => $this->keyName]);
         return $frm;
+    }
+
+    public function getSettings()
+    {
+        try {
+            $keyName = get_called_class()::KEY_NAME;
+        } catch (\Error $e) {
+            $message = 'ERR - ' . $e->getMessage();
+            LibHelper::dieJsonError($message);
+        }
+        if (empty($keyName)) {
+            LibHelper::dieJsonError(Labels::getLabel('LBL_INVALID_KEY_NAME', $this->adminLangId));
+        }
+        return PluginSetting::getConfDataByCode($keyName);
     }
 }

@@ -88,7 +88,7 @@ class User extends MyAppModel
         'user_id',
         'user_name',
         'user_phone',
-        'credential_email as user_email',
+        'credential_email',
         'user_registered_initially_for',
         'user_preferred_dashboard',
         'user_deleted',

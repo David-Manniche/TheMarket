@@ -37,7 +37,7 @@ class GoogleLoginController extends SocialMediaAuthController
         $this->client->setScopes(['email']);
         $this->client->setClientId($this->clientId);
         $this->client->setClientSecret($this->clientSecret);
-        $this->client->setRedirectUri(CommonHelper::generateFullUrl(static::KEY_NAME));
+        $this->client->setRedirectUri($redirectUri);
         $this->client->setDeveloperKey($this->developerKey);
     }
 

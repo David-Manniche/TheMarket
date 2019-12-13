@@ -25,7 +25,7 @@ class AppleLoginController extends SocialMediaAuthController
     private function getRequestUri()
     {
         $this->validateSettings();
-        $redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME);
+        $redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME, 'index', array(), '', false);
         $_SESSION['appleSignIn']['state'] = bin2hex(random_bytes(5));
         return static::PRODUCTION_URL . 'authorize?' . http_build_query([
             'response_type' => 'code id_token',
