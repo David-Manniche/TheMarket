@@ -40,11 +40,11 @@ class CartHistoryTest extends TestCase
     public function dataGetAbandonedCartList()
     {       
         return array(
-            array(1, 0, 0, 0, 1, 12), // Get all records
-            array(1, 'test', 'test', 'test', 'test', 12), // Get all records            
+            array(1, 0, 0, 0, 1, 13), // Get all records
+            array(1, 'test', 'test', 'test', 'test', 13), // Get all records            
             array(1, 10, 0, 0, 1, 2), // Get records of userId = 10
             array(1, 0, 149, 0, 1, 2), // Get records of selProdId = 149
-            array(1, 0, 0, 1, 1, 7), // Get records of action added
+            array(1, 0, 0, 1, 1, 8), // Get records of action added
             array(1, 0, 0, 2, 1, 5), // Get records of action deleted
             array(1, 0, 0, 3, 1, 2), // Get records of action Purchased
             array(1, 10, 149, 0, 1, 0), // Get records of userId = 10 and selProdId = 149
@@ -71,8 +71,8 @@ class CartHistoryTest extends TestCase
     public function dataGetAbandonedCartProducts()
     {       
         return array(
-            array(1, 1, 10), // Get all records
-            array(1, 'test', 10), // Get all records
+            array(1, 1, 11), // Get all records
+            array(1, 'test', 11), // Get all records
             array(1, '2test', 0), // Get all records
         ); 
     }
