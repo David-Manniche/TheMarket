@@ -18,7 +18,12 @@ class CartHistoryTest extends TestCase
     public function dataSaveCartHistory()
     {       
         return array(
-            array(125, 188, 1, 1, true), // Valid parameters
+            array(125, 188, 4, 1, true), // Add data with valid parameters
+            array(125, 188, 2, 2, true), // Update qty and action field with valid parameters
+            array('test', 188, 4, 1, false), // Invalid userId
+            array(125, 'test', 4, 1, false), // Invalid selProdId
+            array(125, 188, 'test', 1, false), // Invalid quantity
+            array(125, 188, 4, 'test', false), // Invalid action
         ); 
     }
     
