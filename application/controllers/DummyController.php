@@ -667,10 +667,9 @@ class DummyController extends MyAppController
     }
     
     
-    public function testData()
+    public function testEmail()
     {
-        //$str = "yeggfuhk";
-        $str = '48xyz20yghgf';
-        echo FatUtility::int($str);
+        CartHistory::sendReminderAbandonedCart();
+        
     }
 }

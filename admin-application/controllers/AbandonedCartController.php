@@ -1,5 +1,5 @@
 <?php
-class AbandonedCartAbandonedCartController extends AdminBaseController
+class AbandonedCartController extends AdminBaseController
 {
    
     public function __construct($action)
@@ -89,7 +89,5 @@ class AbandonedCartAbandonedCartController extends AdminBaseController
         $cartHistory->updateDiscountNotification($userId, $selProdId);
         $this->set('msg', Labels::getLabel('MSG_Email_Sent_Successful', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
-    }    
-    
-
+    }
 }
