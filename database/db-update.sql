@@ -393,3 +393,4 @@ ALTER TABLE tbl_user_meta ADD PRIMARY KEY (usermeta_user_id, usermeta_key);
 
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Facebook Login', '2', 'FacebookLogin', '1', '4');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Google Login', '2', 'GoogleLogin', '1', '5');
+INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Instagram Login', '2', 'InstagramLogin', '1', '6');

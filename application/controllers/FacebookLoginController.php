@@ -20,12 +20,20 @@ class FacebookLoginController extends SocialMediaAuthController
     public function __construct($action)
     {
         parent::__construct($action);
-        
-        $this->settings = $this->getSettings();
+        $this->validateSettings();
+    }
+
+    private function validateSettings()
+    {
+        $settings = $this->getSettings();
+        if (!isset($settings['app_id']) || !isset($settings['app_secret'])) {
+            $message = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->siteLangId);
+            $this->setErrorAndRedirect($message, true);
+        }
         $this->fbAuthObj = new Facebook(
             [
-            'app_id' => $this->settings['app_id'],
-            'app_secret' => $this->settings['app_secret'],
+            'app_id' => $settings['app_id'],
+            'app_secret' => $settings['app_secret'],
             'default_graph_version' => 'v3.2',
             ]
         );

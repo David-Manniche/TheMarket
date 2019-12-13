@@ -2232,7 +2232,7 @@ class User extends MyAppModel
         FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_img_updated_on' => date('Y-m-d  H:i:s')), $where);
     }
     
-    public function validateUser($email, $userName, $socialAccountId, $keyName, $userType)
+    public function validateUser($email, $username, $socialAccountId, $keyName, $userType)
     {
         $db = FatApp::getDb();
         $socialIdColumn = strtolower($keyName) . '_account_id';
@@ -2290,9 +2290,8 @@ class User extends MyAppModel
             }
             unset($row[$socialIdColumn]);
         } else {
-            $userId = $this->setupUser($email, $userName, $socialAccountId, $keyName, $userType);
+            $userId = $this->setupUser($email, $username, $socialAccountId, $keyName, $userType);
             if (false === $userId) {
-                $this->error = $userObj->getError();
                 return false;
             }
             
@@ -2310,7 +2309,7 @@ class User extends MyAppModel
         return $row;
     }
 
-    public function setupUser($email, $userName, $socialAccountId, $keyName, $userType)
+    public function setupUser($email, $username, $socialAccountId, $keyName, $userType)
     {
         $db = FatApp::getDb();
         $socialIdColumn = strtolower($keyName) . '_account_id';
@@ -2386,11 +2385,11 @@ class User extends MyAppModel
         return $userId;
     }
 
-    private function doLogin($userName, $password)
+    private function doLogin($username, $password)
     {
         $authentication = new UserAuthentication();
         $remoteAddress = $_SERVER['REMOTE_ADDR'];
-        if (!$authentication->login($userName, $password, $remoteAddress, false)) {
+        if (!$authentication->login($username, $password, $remoteAddress, false)) {
             $this->error = Labels::getLabel($authentication->getError(), $this->commonLangId);
             return false;
         }
