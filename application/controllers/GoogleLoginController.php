@@ -8,6 +8,7 @@ class GoogleLoginController extends SocialMediaAuthController
     private $client;
     private $clientId;
     private $clientSecret;
+    private $developerKey;
 
     public function __construct($action)
     {
@@ -17,12 +18,13 @@ class GoogleLoginController extends SocialMediaAuthController
     private function validateSettings()
     {
         $settings = $this->getSettings();
-        if (!isset($settings['client_id']) || !isset($settings['client_secret'])) {
+        if (!isset($settings['client_id']) || !isset($settings['client_secret']) || !isset($settings['developer_key'])) {
             $message = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->siteLangId);
             $this->setErrorAndRedirect($message, true);
         }
         $this->clientId = $settings['client_id'];
         $this->clientSecret = $settings['client_secret'];
+        $this->developerKey = $settings['developer_key'];
     }
 
     private function setupConfiguration()
@@ -36,7 +38,7 @@ class GoogleLoginController extends SocialMediaAuthController
         $this->client->setClientId($this->clientId);
         $this->client->setClientSecret($this->clientSecret);
         $this->client->setRedirectUri(CommonHelper::generateFullUrl(static::KEY_NAME));
-        $this->client->setDeveloperKey($settings['developer_key']);
+        $this->client->setDeveloperKey($this->developerKey);
     }
 
 
