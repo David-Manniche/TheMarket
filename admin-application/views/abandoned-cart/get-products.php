@@ -3,7 +3,7 @@
 $arr_flds = array(
 	'listserial'	=>	'',
 	'selprod_title'=>Labels::getLabel('LBL_Seller_product',$adminLangId),
-    'product_count'=>Labels::getLabel('LBL_Count',$adminLangId),
+    'product_count'=>Labels::getLabel('LBL_User_Count',$adminLangId),
 );
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');

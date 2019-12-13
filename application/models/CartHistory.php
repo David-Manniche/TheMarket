@@ -57,6 +57,8 @@ class CartHistory extends FatModel
 
     public function getAbandonedCartList($langId, $userId = 0, $selProdId = 0, $action = 0, $page = 1)
     {   
+        FatUtility::int($page);
+        $page = ($page > 0) ? $page : 1;
         $srch = new CartHistorySearch();
         $srch->joinUsers();
         $srch->joinSellerProducts($langId);   
@@ -81,6 +83,8 @@ class CartHistory extends FatModel
     
     public function getAbandonedCartProducts($langId, $page = 1)
     {
+        FatUtility::int($page);
+        $page = ($page > 0) ? $page : 1; 
         $srch = new CartHistorySearch();
         $srch->joinSellerProducts($langId);
         $srch->addActionCondition();
@@ -102,7 +106,7 @@ class CartHistory extends FatModel
         $action = FatUtility::int($action);
         $couponId = FatUtility::int($couponId);
         $selProdId = FatUtility::int($selProdId);
-        if($langId < 1 || $userId < 1 || $action < 1 || $couponId < 1 || $selProdId < 1){ 
+        if($langId < 1 || $userId < 1 || $couponId < 1 || $selProdId < 1 || !in_array($action, array_keys(static::getActionArr()))){ 
             return false;
         }
         
@@ -130,7 +134,7 @@ class CartHistory extends FatModel
         if($action == static::ACTION_DELETED){
             $tpl = "abandoned_cart_deleted_discount_notification";
         }         
-        if(!EmailHandler::sendMailTpl($userData['credential_email'], $tpl, $langId, $arrReplacements)) {
+        if(!EmailHandler::sendMailTpl($userData['credential_email'], $tpl, $langId, $arrReplacements)) {            
             return false;
         }
         return true;        
@@ -161,6 +165,8 @@ class CartHistory extends FatModel
         $srch->addEmailCountCondition();
         $srch->addDiscountNotificationCondition(); 
         $srch->addMultipleFields(array('user_id', 'user_name', 'credential_email', 'selprod_id', 'selprod_product_id', 'selprod_title', 'selprod_price')); 
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();  
         $records = FatApp::getDb()->fetchAll($rs);        
         
@@ -214,9 +220,9 @@ class CartHistory extends FatModel
     public static function updateReminderCount($userId, $selProdIds)
     {
         $userId = FatUtility::int($userId);
-        if($userId < 1){ 
+        if($userId < 1 || !is_array($selProdIds)){ 
             return false;
-        }
+        }       
         foreach($selProdIds as $selProdId){
             $where = array('smt' => static::DB_TBL_PREFIX.'user_id = ? AND '.static::DB_TBL_PREFIX.'selprod_id = ?', 'vals' => array($userId, $selProdId));
             $data = array(static::DB_TBL_PREFIX.'email_count' => 'mysql_func_'.static::DB_TBL_PREFIX.'email_count + 1');
