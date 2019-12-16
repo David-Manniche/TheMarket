@@ -1,13 +1,13 @@
-$(document).ready(function() {
+$(document).ready(function () {
     searchEtpls(document.frmEtplsSearch);
 });
 
-(function() {
+(function () {
     var currentPage = 1;
     var runningAjaxReq = false;
     var dv = '#listing';
 
-    goToSearchPage = function(page) {
+    goToSearchPage = function (page) {
         if (typeof page == undefined || page == null) {
             page = 1;
         }
@@ -16,12 +16,12 @@ $(document).ready(function() {
         searchEtpls(frm);
     };
 
-    reloadList = function() {
+    reloadList = function () {
         var frm = document.frmEtplsSrchPaging;
         searchEtpls(frm);
     };
 
-    searchEtpls = function(form) {
+    searchEtpls = function (form) {
         /*[ this block should be written before overriding html of 'form's parent div/element, otherwise it will through exception in ie due to form being removed from div */
         var data = '';
         if (form) {
@@ -30,24 +30,24 @@ $(document).ready(function() {
         /*]*/
         $(dv).html(fcom.getLoader());
 
-        fcom.ajax(fcom.makeUrl('EmailTemplates', 'search'), data, function(res) {
+        fcom.ajax(fcom.makeUrl('EmailTemplates', 'search'), data, function (res) {
             $(dv).html(res);
         });
     };
 
-    editEtplLangForm = function(etplCode, langId) {
+    editEtplLangForm = function (etplCode, langId) {
         fcom.resetEditorInstance();
-        $.facebox(function() {
+        $.facebox(function () {
             editLangForm(etplCode, langId);
         });
     };
 
 
-    editLangForm = function(etplCode, langId, autoFillLangData = 0) {
+    editLangForm = function (etplCode, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
         fcom.resetEditorInstance();
 
-        fcom.ajax(fcom.makeUrl('EmailTemplates', 'langForm', [etplCode, langId, autoFillLangData]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('EmailTemplates', 'langForm', [etplCode, langId, autoFillLangData]), '', function (t) {
             fcom.updateFaceboxContent(t);
             fcom.setEditorLayout(langId);
             fcom.resetFaceboxHeight();
@@ -55,12 +55,12 @@ $(document).ready(function() {
             var validator = $(frm).validation({
                 errordisplay: 3
             });
-            $(frm).submit(function(e) {
+            $(frm).submit(function (e) {
                 e.preventDefault();
                 validator.validate();
                 if (!validator.isValid()) return;
                 var data = fcom.frmData(frm);
-                fcom.updateWithAjax(fcom.makeUrl('EmailTemplates', 'langSetup'), data, function(t) {
+                fcom.updateWithAjax(fcom.makeUrl('EmailTemplates', 'langSetup'), data, function (t) {
                     fcom.resetEditorInstance();
                     reloadList();
                     if (t.lang_id > 0) {
@@ -74,16 +74,30 @@ $(document).ready(function() {
         });
     };
 
-    setupEtplLang = function(frm) {
+    setupEtplLang = function (frm) {
         if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
-        fcom.updateWithAjax(fcom.makeUrl('EmailTemplates', 'langSetup'), data, function(t) {
+        fcom.updateWithAjax(fcom.makeUrl('EmailTemplates', 'langSetup'), data, function (t) {
             reloadList();
             $(document).trigger('close.facebox');
         });
     };
 
-    toggleStatus = function(obj) {
+    sendTestEmail = function () {
+        var data = fcom.frmData(document.frmEtplLang);
+        $.systemMessage(langLbl.processing, 'alert--process', false);
+        fcom.ajax(fcom.makeUrl('EmailTemplates', 'sendTestMail'), data, function (res) {
+            var ans = $.parseJSON(res);
+            if (ans.status == 1) {
+                fcom.displaySuccessMessage(ans.msg);
+            } else {
+                fcom.displayErrorMessage(ans.msg);
+            }
+            $(document).trigger('close.facebox');
+        });
+    };
+
+    toggleStatus = function (obj) {
         if (!confirm(langLbl.confirmUpdateStatus)) {
             return;
         }
@@ -94,7 +108,7 @@ $(document).ready(function() {
         }
         data = 'etplCode=' + etplCode;
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('EmailTemplates', 'changeStatus'), data, function(res) {
+        fcom.ajax(fcom.makeUrl('EmailTemplates', 'changeStatus'), data, function (res) {
             var ans = $.parseJSON(res);
             if (ans.status == 1) {
                 $(obj).toggleClass("active");
@@ -106,13 +120,13 @@ $(document).ready(function() {
         $.systemMessage.close();
     };
 
-    clearSearch = function() {
+    clearSearch = function () {
         document.frmEtplsSearch.reset();
         searchEtpls(document.frmEtplsSearch);
     };
 
-	toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
+    toggleBulkStatues = function (status) {
+        if (!confirm(langLbl.confirmUpdateStatus)) {
             return false;
         }
         $("#frmEmailTempListing input[name='status']").val(status);

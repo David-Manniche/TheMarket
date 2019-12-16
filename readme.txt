@@ -17,3 +17,4 @@ New Features:
     => 68725 - Implemented Fixer currency converter API plugin.
     => 68725 - Implemented Free currency converter API plugin.
     => 68804 - Apple Sign In   
+    => 68656 - Test email template button added to test the design.
