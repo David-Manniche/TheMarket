@@ -2,6 +2,8 @@
 class CurrencyConverterBaseController extends PluginSettingController
 {
     protected $baseCurrencyId;
+    protected $baseCurrencyCode;
+
     public function __construct($action)
     {
         parent::__construct($action);
@@ -43,6 +45,15 @@ class CurrencyConverterBaseController extends PluginSettingController
     protected function getBaseCurrencyCode()
     {
         return $this->getCurrencyCode($this->baseCurrencyId);
+    }
+
+    protected function setBaseCurrency()
+    {
+        $this->baseCurrencyCode = $this->getBaseCurrencyCode();
+        if (empty($this->baseCurrencyCode)) {
+            $message = Labels::getLabel('MSG_BASE_CURRENCY_NOT_INITIALIZED', $this->adminLangId);
+            LibHelper::dieJsonError($message);
+        }
     }
 
     public function update()

@@ -1,6 +1,6 @@
 <?php
 /*
-    Reference : https://www.currencyconverterapi.com/
+    Reference : https://www.currencyconverterapi.com
 */
 class CurrencyConverterController extends CurrencyConverterBaseController
 {
@@ -8,7 +8,6 @@ class CurrencyConverterController extends CurrencyConverterBaseController
     private const PRODUCTION_URL = 'https://free.currconv.com/api/v7/';
 
     private $apiKey;
-    private $baseCurrencyCode;
 
     public function __construct($action)
     {
@@ -25,15 +24,6 @@ class CurrencyConverterController extends CurrencyConverterBaseController
             LibHelper::dieJsonError($message);
         }
         $this->apiKey = $settings['api_key'];
-    }
-
-    private function setBaseCurrency()
-    {
-        $this->baseCurrencyCode = $this->getBaseCurrencyCode();
-        if (empty($this->baseCurrencyCode)) {
-            $message = Labels::getLabel('MSG_BASE_CURRENCY_NOT_INITIALIZED', $this->adminLangId);
-            LibHelper::dieJsonError($message);
-        }
     }
 
     private function accessKey()
