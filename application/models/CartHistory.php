@@ -57,7 +57,7 @@ class CartHistory extends FatModel
 
     public function getAbandonedCartList($langId, $userId = 0, $selProdId = 0, $action = 0, $page = 1)
     {   
-        FatUtility::int($page);
+        $page = FatUtility::int($page);
         $page = ($page > 0) ? $page : 1;
         $srch = new CartHistorySearch();
         $srch->joinUsers();
@@ -83,7 +83,7 @@ class CartHistory extends FatModel
     
     public function getAbandonedCartProducts($langId, $page = 1)
     {
-        FatUtility::int($page);
+        $page = FatUtility::int($page);
         $page = ($page > 0) ? $page : 1; 
         $srch = new CartHistorySearch();
         $srch->joinSellerProducts($langId);
