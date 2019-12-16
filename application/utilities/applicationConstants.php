@@ -1,83 +1,83 @@
 <?php
 class applicationConstants
 {
-    const YES = 1;
-    const NO = 0;
+    public const YES = 1;
+    public const NO = 0;
 
-    const DAILY = 0;
-    const WEEKLY = 1;
-    const MONTHLY = 2;
+    public const DAILY = 0;
+    public const WEEKLY = 1;
+    public const MONTHLY = 2;
 
-    const ON = 1;
-    const OFF = 0;
+    public const ON = 1;
+    public const OFF = 0;
 
-    const ACTIVE = 1;
-    const INACTIVE = 0;
+    public const ACTIVE = 1;
+    public const INACTIVE = 0;
 
-    const WEIGHT_GRAM = 1;
-    const WEIGHT_KILOGRAM = 2;
-    const WEIGHT_POUND = 3;
+    public const WEIGHT_GRAM = 1;
+    public const WEIGHT_KILOGRAM = 2;
+    public const WEIGHT_POUND = 3;
 
-    const LENGTH_CENTIMETER = 1;
-    const LENGTH_METER = 2;
-    const LENGTH_INCH = 3;
+    public const LENGTH_CENTIMETER = 1;
+    public const LENGTH_METER = 2;
+    public const LENGTH_INCH = 3;
 
-    const NEWS_LETTER_SYSTEM_MAILCHIMP = 1;
-    const NEWS_LETTER_SYSTEM_AWEBER = 2;
+    public const NEWS_LETTER_SYSTEM_MAILCHIMP = 1;
+    public const NEWS_LETTER_SYSTEM_AWEBER = 2;
 
-    const LINK_TARGET_CURRENT_WINDOW = "_self";
-    const LINK_TARGET_BLANK_WINDOW = "_blank";
+    public const LINK_TARGET_CURRENT_WINDOW = "_self";
+    public const LINK_TARGET_BLANK_WINDOW = "_blank";
 
-    const PERCENTAGE = 1;
-    const FLAT = 2;
+    public const PERCENTAGE = 1;
+    public const FLAT = 2;
 
-    const PUBLISHED = 1;
-    const DRAFT = 0;
+    public const PUBLISHED = 1;
+    public const DRAFT = 0;
 
-    const BLOG_CONTRIBUTION_PENDING = 0;
-    const BLOG_CONTRIBUTION_APPROVED = 1;
-    const BLOG_CONTRIBUTION_POSTED = 2;
-    const BLOG_CONTRIBUTION_REJECTED = 3;
+    public const BLOG_CONTRIBUTION_PENDING = 0;
+    public const BLOG_CONTRIBUTION_APPROVED = 1;
+    public const BLOG_CONTRIBUTION_POSTED = 2;
+    public const BLOG_CONTRIBUTION_REJECTED = 3;
 
-    const GENDER_MALE = 1;
-    const GENDER_FEMALE = 2;
-    const GENDER_OTHER = 3;
+    public const GENDER_MALE = 1;
+    public const GENDER_FEMALE = 2;
+    public const GENDER_OTHER = 3;
 
-    const DISCOUNT_COUPON = 1;
-    const DISCOUNT_REWARD_POINTS = 2;
+    public const DISCOUNT_COUPON = 1;
+    public const DISCOUNT_REWARD_POINTS = 2;
 
-    const SCREEN_DESKTOP = 1;
-    const SCREEN_IPAD = 2;
-    const SCREEN_MOBILE = 3;
+    public const SCREEN_DESKTOP = 1;
+    public const SCREEN_IPAD = 2;
+    public const SCREEN_MOBILE = 3;
 
-    const CHECKOUT_PRODUCT = 1;
-    const CHECKOUT_SUBSCRIPTION = 2;
-    const CHECKOUT_PPC = 3;
-    const CHECKOUT_ADD_MONEY_TO_WALLET = 4;
+    public const CHECKOUT_PRODUCT = 1;
+    public const CHECKOUT_SUBSCRIPTION = 2;
+    public const CHECKOUT_PPC = 3;
+    public const CHECKOUT_ADD_MONEY_TO_WALLET = 4;
 
-    const SMTP_TLS = 'tls';
-    const SMTP_SSL = 'ssl';
+    public const SMTP_TLS = 'tls';
+    public const SMTP_SSL = 'ssl';
 
-    const LAYOUT_LTR = 'ltr';
-    const LAYOUT_RTL = 'rtl';
+    public const LAYOUT_LTR = 'ltr';
+    public const LAYOUT_RTL = 'rtl';
 
-    const SYSTEM_CATALOG = 0;
-    const CUSTOM_CATALOG = 1;
+    public const SYSTEM_CATALOG = 0;
+    public const CUSTOM_CATALOG = 1;
 
-    const DIGITAL_DOWNLOAD_FILE = 0;
-    const DIGITAL_DOWNLOAD_LINK = 1;
-    const DASHBOARD_PAGE_SIZE = 3;
-    const PAGE_SIZE = 20;
+    public const DIGITAL_DOWNLOAD_FILE = 0;
+    public const DIGITAL_DOWNLOAD_LINK = 1;
+    public const DASHBOARD_PAGE_SIZE = 3;
+    public const PAGE_SIZE = 20;
 
-    const ALLOWED_HTML_TAGS_FOR_APP = '<b><strong><i><u><small><br><p><h1><h2><h3><h4><h5><h6><div><a>';
+    public const ALLOWED_HTML_TAGS_FOR_APP = '<b><strong><i><u><small><br><p><h1><h2><h3><h4><h5><h6><div><a>';
 
-    const MOBILE_SCREEN_WIDTH = 768;
+    public const MOBILE_SCREEN_WIDTH = 768;
 
-    const URL_TYPE_EXTERNAL = 1;
-    const URL_TYPE_SHOP = 2;
-    const URL_TYPE_PRODUCT = 3;
-    const URL_TYPE_CATEGORY = 4;
-    const URL_TYPE_BRAND = 5;
+    public const URL_TYPE_EXTERNAL = 1;
+    public const URL_TYPE_SHOP = 2;
+    public const URL_TYPE_PRODUCT = 3;
+    public const URL_TYPE_CATEGORY = 4;
+    public const URL_TYPE_BRAND = 5;
 
     public static function getWeightUnitsArr($langId)
     {

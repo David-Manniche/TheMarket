@@ -299,7 +299,7 @@ class MyAppModel extends FatModel
 
     public function setMainTableRecordId($id)
     {
-        $id =FatUtility::int($id);
+        $id = FatUtility::int($id);
         $this->mainTableRecordId = $id;
     }
 

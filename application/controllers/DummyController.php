@@ -650,19 +650,8 @@ class DummyController extends MyAppController
         foreach ($urlRows as $row) {
             $url = str_replace("/", "-", $row['urlrewrite_custom']);
             if ($db->updateFromArray(UrlRewrite::DB_TBL, array('urlrewrite_custom' => $url), array('smt' => 'urlrewrite_id = ?', 'vals' => array($row['urlrewrite_id'])))) {
-                echo $row['urlrewrite_id']."<br>";
+                echo $row['urlrewrite_id'] . "<br>";
             }
         }
-    }
-
-    public function langData()
-    {
-        $languages1 = Language::getAllNames();
-        CommonHelper::printArray($languages1);
-
-        $languages2 = Language::getAllNames(false);
-        CommonHelper::printArray($languages2);
-        // $obj = new TranslateLangData(Product::DB_TBL_LANG);
-        // $obj->getTranslatedData(889);
     }
 }

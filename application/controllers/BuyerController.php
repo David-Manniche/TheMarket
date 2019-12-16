@@ -2450,6 +2450,7 @@ class BuyerController extends BuyerBaseController
             }
 
             $fbAccessToken = $accessToken->getValue();
+			
             unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_code']);
             unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_access_token']);
             unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_user_id']);

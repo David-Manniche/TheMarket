@@ -351,6 +351,7 @@ $(document).ready(function () {
             });
         }
     }
+    
 })(jQuery);
 
 function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection) {
@@ -500,3 +501,12 @@ function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection) {
     }
 
 })();
+
+function isJson(str) {
+    try {
+        var json = JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return json;
+}

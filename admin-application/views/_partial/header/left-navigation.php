@@ -279,6 +279,9 @@
                     <?php if ($objPrivilege->canViewPaymentMethods(AdminAuthentication::getLoggedAdminId(), true)) {?>
                         <li><a href="<?php echo CommonHelper::generateUrl('PaymentMethods'); ?>"><?php echo Labels::getLabel('LBL_Payment_Methods', $adminLangId);?></a></li>
                     <?php }?>
+					<?php if($objPrivilege->canViewPlugins(AdminAuthentication::getLoggedAdminId(), true)){?>
+						<li><a href="<?php echo CommonHelper::generateUrl('Plugins'); ?>"><?php echo Labels::getLabel('LBL_PLUGINS',$adminLangId);?></a></li>
+					<?php }?>
                     <?php if ($objPrivilege->canViewCurrencyManagement(AdminAuthentication::getLoggedAdminId(), true)) {?>
                         <li><a href="<?php echo CommonHelper::generateUrl('CurrencyManagement'); ?>"><?php echo Labels::getLabel('LBL_Currency_Management', $adminLangId);?></a></li>
                     <?php }?>

@@ -1,6 +1,10 @@
 <?php
 class GuestUserController extends MyAppController
 {
+    private const FB_LOGIN = 1;
+    private const GOOGLE_LOGIN = 2;
+    private const APPLE_LOGIN = 3;
+    
     public function loginForm($isRegisterForm = 0)
     {
         /* if(UserAuthentication::doCookieLogin()){
@@ -13,10 +17,14 @@ class GuestUserController extends MyAppController
         if (UserAuthentication::isUserLogged()) {
             FatApp::redirectUser(CommonHelper::generateUrl('account'));
         }
+
+        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN_API, $this->siteLangId);
+
         $loginFrm = $this->getLoginForm();
         $loginData = array(
-        'loginFrm'             => $loginFrm,
-        'siteLangId'    => $this->siteLangId
+        'loginFrm' => $loginFrm,
+        'socialLoginApis' => $socialLoginApis,
+        'siteLangId' => $this->siteLangId,
         );
 
         $registerFrm = $this->getRegistrationForm();
@@ -140,7 +148,7 @@ class GuestUserController extends MyAppController
             FatUtility::dieJSONError(Labels::getLabel('Msg_Invalid_Request', $this->siteLangId));
         }
         $userId = UserAuthentication::getLoggedUserId();
-        $uObj= new User($userId);
+        $uObj = new User($userId);
         if (!$uObj->setPushNotificationToken($this->appToken, $fcmDeviceId)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
@@ -196,12 +204,12 @@ class GuestUserController extends MyAppController
         $expiry = strtotime("+7 DAYS");
 
         $values = array(
-        'uauth_user_id'=>$userId,
-        'uauth_token'=>$token,
-        'uauth_expiry'=>date('Y-m-d H:i:s', $expiry),
-        'uauth_browser'=>CommonHelper::userAgent(),
-        'uauth_last_access'=>date('Y-m-d H:i:s'),
-        'uauth_last_ip'=>CommonHelper::getClientIp(),
+        'uauth_user_id' => $userId,
+        'uauth_token' => $token,
+        'uauth_expiry' => date('Y-m-d H:i:s', $expiry),
+        'uauth_browser' => CommonHelper::userAgent(),
+        'uauth_last_access' => date('Y-m-d H:i:s'),
+        'uauth_last_ip' => CommonHelper::getClientIp(),
         );
 
         if (UserAuthentication::saveLoginToken($values)) {
@@ -221,10 +229,12 @@ class GuestUserController extends MyAppController
     {
         $includeGuestLogin = FatApp::getPostedData('includeGuestLogin', FatUtility::VAR_STRING, false);
         $frm = $this->getLoginForm($includeGuestLogin);
+        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN_API, $this->siteLangId);
         $data = array(
-        'loginFrm'             => $frm,
-        'siteLangId'    => $this->siteLangId,
-        'includeGuestLogin'    => $includeGuestLogin,
+            'loginFrm' => $frm,
+            'siteLangId' => $this->siteLangId,
+            'socialLoginApis' => $socialLoginApis,
+            'includeGuestLogin' => $includeGuestLogin,
         );
         $this->set('data', $data);
         $this->_template->render(false, false);
@@ -245,450 +255,6 @@ class GuestUserController extends MyAppController
             $json['isUserLogged'] = FatUtility::int(UserAuthentication::isGuestUserLogged());
         }
         die(json_encode($json));
-    }
-
-    public function socialMediaLogin($oauthProvider)
-    {
-        if (isset($oauthProvider)) {
-            if ($oauthProvider == 'google') {
-                FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginGoogle'));
-            } elseif ($oauthProvider == 'facebook') {
-                FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginFacebook'));
-            } else {
-                Message::addErrorMessage(Labels::getLabel('MSG_ERROR_INVALID_REQUEST', $this->siteLangid));
-            }
-        }
-        CommonHelper::redirectUserReferer();
-    }
-
-    public function loginFacebook()
-    {
-        $userType = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
-        if (true ===  MOBILE_APP_API_CALL) {
-            $accessToken = FatApp::getPostedData('accessToken', FatUtility::VAR_STRING, '');
-            if (empty($accessToken) || 1 > $userType) {
-                FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
-            }
-            include_once CONF_INSTALLATION_PATH . 'library/facebook/facebook.php';
-            $facebook = new Facebook(
-                array(
-                'appId' => FatApp::getConfig("CONF_FACEBOOK_APP_ID", FatUtility::VAR_STRING, ''),
-                'secret' => FatApp::getConfig("CONF_FACEBOOK_APP_SECRET", FatUtility::VAR_STRING, ''),
-                )
-            );
-            $facebook->setAccessToken($accessToken);
-            $user = $facebook->getUser();
-            if (!$user) {
-                $message = Labels::getLabel('MSG_Invalid_Token', $this->siteLangId);
-                LibHelper::dieJsonError($message);
-            }
-
-            try {
-                // Proceed knowing you have a logged in user who's authenticated.
-                $userProfile = $facebook->api('/me?fields=id,name,email');
-            } catch (FacebookApiException $e) {
-                FatUtility::dieJsonError($e->getMessage());
-            }
-
-            if (empty($userProfile)) {
-                FatUtility::dieJsonError(Labels::getLabel('MSG_ERROR_INVALID_REQUEST', $this->siteLangId));
-            }
-
-            // User info ok? Let's print it (Here we will be adding the login and registering routines)
-            $facebookName = $userProfile['name'];
-            $userFacebookId = $userProfile['id'];
-            $facebookEmail = !empty($userProfile['email']) ? $userProfile['email'] : '';
-        } else {
-            $facebookEmail = FatApp::getPostedData('email', FatUtility::VAR_STRING, '');
-            $userFacebookId = FatApp::getPostedData('id', FatUtility::VAR_STRING, '');
-            $firstName = FatApp::getPostedData('first_name', FatUtility::VAR_STRING, '');
-            $facebookName = trim($firstName.' '.FatApp::getPostedData('last_name', FatUtility::VAR_STRING, ''));
-        }
-        if ((empty($facebookEmail) && empty($userFacebookId)) || empty($facebookName)) {
-            FatUtility::dieJsonError(Labels::getLabel("MSG_INVALID_REQUEST", $this->siteLangId));
-        }
-
-        // User info ok? Let's print it (Here we will be adding the login and registering routines)
-        $db = FatApp::getDb();
-        $userObj = new User();
-        $srch = $userObj->getUserSearchObj(array('user_id','user_facebook_id','credential_email','credential_active','user_deleted', 'user_is_buyer', 'user_is_supplier', 'user_is_advertiser', 'user_is_affiliate', 'user_registered_initially_for'), true, false);
-
-        if (!empty($facebookEmail)) {
-            $srch->addCondition('credential_email', '=', $facebookEmail);
-        } else {
-            $srch->addCondition('user_facebook_id', '=', $userFacebookId);
-        }
-
-        $rs = $srch->getResultSet();
-        $row = $db->fetch($rs);
-        // CommonHelper::printArray($row, true);
-        if ($row) {
-            if ($row['credential_active'] != applicationConstants::ACTIVE) {
-                $message = Labels::getLabel("ERR_YOUR_ACCOUNT_HAS_BEEN_DEACTIVATED", $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
-                    FatUtility::dieJsonError($message);
-                }
-                Message::addErrorMessage($message);
-                // CommonHelper::redirectUserReferer();
-            }
-            if ($row['user_deleted'] == applicationConstants::YES) {
-                $message = Labels::getLabel("ERR_USER_INACTIVE_OR_DELETED", $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
-                    FatUtility::dieJsonError($message);
-                }
-                Message::addErrorMessage(Labels::getLabel("ERR_USER_INACTIVE_OR_DELETED", $this->siteLangId));
-                // CommonHelper::redirectUserReferer();
-            }
-
-            if (0 < $userType) {
-                $userTypeArr = [
-                    User::USER_TYPE_BUYER => 'user_is_buyer',
-                    User::USER_TYPE_SELLER => 'user_is_supplier',
-                    User::USER_TYPE_ADVERTISER => 'user_is_advertiser',
-                    User::USER_TYPE_AFFILIATE => 'user_is_affiliate',
-                ];
-
-                $invalidUser = false;
-                if (in_array($userType, array_keys($userTypeArr)) && $row[$userTypeArr[$userType]] == applicationConstants::NO) {
-                    $invalidUser = true;
-                } elseif (!in_array($userType, array_keys($userTypeArr)) && $row['user_registered_initially_for'] != $userType) {
-                    $invalidUser = true;
-                }
-
-                if ($invalidUser) {
-                    FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_User', $this->siteLangId));
-                }
-            }
-            $userId = $row['user_id'];
-            $userObj->setMainTableRecordId($row['user_id']);
-
-            $arr = array('user_facebook_id' => $userFacebookId);
-
-            if (!$userObj->setUserInfo($arr)) {
-                $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
-                    FatUtility::dieJsonError($message);
-                }
-                Message::addErrorMessage($message);
-                // CommonHelper::redirectUserReferer();
-            }
-        } else {
-            $userType = (0 < $userType ? $userType : User::USER_TYPE_BUYER);
-            $userId = $this->setupUser($userType, $facebookName, 0, $userFacebookId, $facebookEmail);
-        }
-        $userObj = new User($userId);
-        $userInfo = $userObj->getUserInfo(array('user_facebook_id','user_preferred_dashboard','credential_username','credential_password'));
-        if (!$userInfo || ($userInfo && $userInfo['user_facebook_id']!= $userFacebookId)) {
-            $message = Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
-                FatUtility::dieJsonError($message);
-            }
-            Message::addErrorMessage($message);
-            // CommonHelper::redirectUserReferer();
-        }
-
-        $authentication = new UserAuthentication();
-        if (!$authentication->login($userInfo['credential_username'], $userInfo['credential_password'], $_SERVER['REMOTE_ADDR'], false)) {
-            $message = Labels::getLabel($authentication->getError(), $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
-                FatUtility::dieJsonError($message);
-            }
-            Message::addErrorMessage($message);
-            FatUtility::dieWithError(Message::getHtml());
-        }
-
-        unset($_SESSION['fb_' . FatApp::getConfig("CONF_FACEBOOK_APP_ID") . '_code']);
-        unset($_SESSION['fb_' . FatApp::getConfig("CONF_FACEBOOK_APP_ID") . '_access_token']);
-        unset($_SESSION['fb_' . FatApp::getConfig("CONF_FACEBOOK_APP_ID") . '_user_id']);
-
-        $cartObj = new Cart();
-        if ($cartObj->hasProducts() && false ===  MOBILE_APP_API_CALL) {
-            $url = CommonHelper::generateFullUrl('cart');
-            $this->set('url', $url);
-            $this->set('msg', Labels::getLabel('MSG_LoggedIn_SUCCESSFULLY', $this->siteLangId));
-            $this->_template->render(false, false, 'json-success.php');
-        }
-
-        $preferredDashboard = 0;
-        if ($userInfo != false) {
-            $preferredDashboard = $userInfo['user_preferred_dashboard'];
-            $redirectUrl = $userObj->getPreferedDashbordRedirectUrl($preferredDashboard);
-        }
-        if (isset($_SESSION['referer_page_url'])) {
-            $redirectUrl = $_SESSION['referer_page_url'];
-        }
-        $this->set('url', $redirectUrl);
-        $this->set('msg', Labels::getLabel('MSG_LoggedIn_SUCCESSFULLY', $this->siteLangId));
-        if (true ===  MOBILE_APP_API_CALL) {
-            if (!$token = $userObj->setMobileAppToken()) {
-                FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
-            }
-            $userInfo = $userObj->getUserInfo(array('user_name', 'user_id', 'user_phone', 'credential_email'), true, true, true);
-            $this->set('token', $token);
-            $this->set('userInfo', $userInfo);
-            $this->_template->render(true, true, 'guest-user/login.php');
-        }
-        $this->_template->render(false, false, 'json-success.php');
-    }
-
-    public function loginGoogle()
-    {
-        $userType = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
-
-        if (true ===  MOBILE_APP_API_CALL && 1 > $userType) {
-            FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
-        }
-
-        include_once CONF_INSTALLATION_PATH . 'library/GoogleAPI/vendor/autoload.php'; // include the required calss files for google login
-
-        $client = new Google_Client();
-        $client->setApplicationName(FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->siteLangId)); // Set your applicatio name
-        $client->setScopes(['email']); // set scope during user login
-        $client->setClientId(FatApp::getConfig("CONF_GOOGLEPLUS_CLIENT_ID")); // paste the client id which you get from google API Console
-        $client->setClientSecret(FatApp::getConfig("CONF_GOOGLEPLUS_CLIENT_SECRET")); // set the client secret
-
-        $currentPageUri = CommonHelper::generateFullUrl('GuestUser', 'loginGoogle', array(), '', false);
-        $client->setRedirectUri($currentPageUri);
-        $client->setDeveloperKey(FatApp::getConfig("CONF_GOOGLEPLUS_DEVELOPER_KEY")); // Developer key
-
-        $oauth2 = new Google_Service_Oauth2($client); // Call the OAuth2 class for get email address
-
-        if (false ===  MOBILE_APP_API_CALL) {
-            $get = FatApp::getQueryStringData();
-            $accessToken = false;
-            if (isset($get['code'])) {
-                $client->authenticate($get['code']); // Authenticate
-                $accessToken = $client->getAccessToken();
-            }
-
-            if (false === $accessToken) {
-                $authUrl = $client->createAuthUrl();
-                FatApp::redirectUser($authUrl);
-            }
-        } else {
-            $accessToken = FatApp::getPostedData('accessToken');
-        }
-
-        $client->setAccessToken($accessToken);
-        $user = $oauth2->userinfo->get();
-
-        $userGoogleEmail = filter_var($user['email'], FILTER_SANITIZE_EMAIL);
-        $userGoogleId = $user['id'];
-        $userGoogleName = $user['name'];
-
-        if ($user['name'] == '') {
-            $exp = explode("@", $user['email']);
-            $userGoogleName = substr($exp[0], 0, 80);
-        }
-        
-        if (isset($userGoogleEmail) && (!empty($userGoogleEmail))) {
-            $db = FatApp::getDb();
-            $userObj = new User();
-            $srch = $userObj->getUserSearchObj(array('user_id','credential_email','credential_active', 'user_deleted', 'user_is_buyer', 'user_is_supplier', 'user_is_advertiser', 'user_is_affiliate', 'user_registered_initially_for'));
-            $srch->addCondition('credential_email', '=', $userGoogleEmail);
-            $rs = $srch->getResultSet();
-            $row = $db->fetch($rs);
-            if ($row) {
-                if ($row['credential_active'] != applicationConstants::ACTIVE) {
-                    $message = Labels::getLabel('ERR_YOUR_ACCOUNT_HAS_BEEN_DEACTIVATED', $this->siteLangId);
-                    if (true ===  MOBILE_APP_API_CALL) {
-                        LibHelper::dieJsonError($message);
-                    }
-                    Message::addErrorMessage($message);
-                    CommonHelper::redirectUserReferer();
-                }
-
-                if ($row['user_deleted'] == applicationConstants::YES) {
-                    $message = Labels::getLabel("ERR_USER_INACTIVE_OR_DELETED", $this->siteLangId);
-                    if (true ===  MOBILE_APP_API_CALL) {
-                        FatUtility::dieJsonError($message);
-                    }
-                    Message::addErrorMessage(Labels::getLabel("ERR_USER_INACTIVE_OR_DELETED", $this->siteLangId));
-                    CommonHelper::redirectUserReferer();
-                }
-
-                if (0 < $userType) {
-                    $userTypeArr = [
-                        User::USER_TYPE_BUYER => 'user_is_buyer',
-                        User::USER_TYPE_SELLER => 'user_is_supplier',
-                        User::USER_TYPE_ADVERTISER => 'user_is_advertiser',
-                        User::USER_TYPE_AFFILIATE => 'user_is_affiliate',
-                    ];
-
-                    $invalidUser = false;
-                    if (in_array($userType, array_keys($userTypeArr)) && $row[$userTypeArr[$userType]] == applicationConstants::NO) {
-                        $invalidUser = true;
-                    } elseif (!in_array($userType, array_keys($userTypeArr)) && $row['user_registered_initially_for'] != $userType) {
-                        $invalidUser = true;
-                    }
-
-                    if ($invalidUser) {
-                        FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_User', $this->siteLangId));
-                    }
-                }
-                $userId = $row['user_id'];
-                $userObj->setMainTableRecordId($userId);
-
-                $arr = array('user_googleplus_id' => $userGoogleId);
-
-                if (!$userObj->setUserInfo($arr)) {
-                    $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
-                    if (true ===  MOBILE_APP_API_CALL) {
-                        LibHelper::dieJsonError($message);
-                    }
-                    Message::addErrorMessage($message);
-                    CommonHelper::redirectUserReferer();
-                }
-            } else {
-                $userType = (0 < $userType ? $userType : User::USER_TYPE_BUYER);
-                $userId = $this->setupUser($userType, $userGoogleName, $userGoogleId, 0, $userGoogleEmail);
-            }
-
-            $userObj = new User($userId);
-
-            $userInfo = $userObj->getUserInfo(array('user_googleplus_id','user_preferred_dashboard','credential_username','credential_password'));
-
-
-            if (!$userInfo || ($userInfo && $userInfo['user_googleplus_id'] != $userGoogleId)) {
-                $message = Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
-                    LibHelper::dieJsonError($message);
-                }
-                Message::addErrorMessage($message);
-                CommonHelper::redirectUserReferer();
-            }
-
-            $authentication = new UserAuthentication();
-            if (!$authentication->login($userInfo['credential_username'], $userInfo['credential_password'], $_SERVER['REMOTE_ADDR'], false)) {
-                $message = Labels::getLabel($authentication->getError(), $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
-                    LibHelper::dieJsonError($message);
-                }
-                Message::addErrorMessage($message);
-                CommonHelper::redirectUserReferer();
-            }
-
-            if (true ===  MOBILE_APP_API_CALL) {
-                if (!$token = $userObj->setMobileAppToken()) {
-                    FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
-                }
-                $userInfo = $userObj->getUserInfo(array('user_name', 'user_id', 'user_phone', 'credential_email'), true, true, true);
-                $this->set('token', $token);
-                $this->set('userInfo', $userInfo);
-                $this->_template->render(true, true, 'guest-user/login.php');
-            }
-
-            $cartObj = new Cart();
-            if ($cartObj->hasProducts()) {
-                FatApp::redirectUser(CommonHelper::generateFullUrl('cart'));
-            }
-
-
-            $preferredDashboard = 0;
-            if ($userInfo != false) {
-                $preferredDashboard = $userInfo['user_preferred_dashboard'];
-            }
-            if (isset($_SESSION['referer_page_url'])) {
-                $redirectUrl = $_SESSION['referer_page_url'];
-                unset($_SESSION['referer_page_url']);
-                FatApp::redirectUser($redirectUrl);
-            }
-            FatApp::redirectUser(User::getPreferedDashbordRedirectUrl($preferredDashboard));
-        }
-
-        CommonHelper::redirectUserReferer();
-    }
-
-    private function setupUser($user_type, $userName, $userGoogleId, $userFacebookId, $userEmail)
-    {
-        $userObj = new User();
-        $db = FatApp::getDb();
-        $user_is_supplier = (FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0: 1;
-        $user_is_advertiser = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0: 1;
-
-        if (isset($user_type) && $user_type == User::USER_TYPE_BUYER) {
-            $userPreferredDashboard = User::USER_BUYER_DASHBOARD;
-            $user_registered_initially_for = User::USER_TYPE_BUYER;
-        }
-        if (isset($user_type) && $user_type == User::USER_TYPE_SELLER) {
-            $userPreferredDashboard = User::USER_SELLER_DASHBOARD;
-            $user_registered_initially_for = User::USER_TYPE_SELLER;
-        }
-
-        $db->startTransaction();
-
-        $userData = array(
-            'user_name' => $userName,
-            'user_is_buyer' => (isset($user_type) && $user_type == User::USER_TYPE_BUYER) ? 1 : 0,
-            'user_is_supplier' => (isset($user_type) && $user_type == User::USER_TYPE_SELLER) ? 1 : 0,
-            'user_is_advertiser' => $user_is_advertiser,
-            'user_googleplus_id' => !empty($userGoogleId) ? $userGoogleId : '',
-            'user_facebook_id' => !empty($userFacebookId) ? $userFacebookId : '',
-            'user_preferred_dashboard' => $userPreferredDashboard,
-            'user_registered_initially_for' => $user_registered_initially_for
-        );
-        $userObj->assignValues($userData);
-        if (!$userObj->save()) {
-            $message = Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->siteLangId) . $userObj->getError();
-            Message::addErrorMessage($message);
-            $db->rollbackTransaction();
-            if (true ===  MOBILE_APP_API_CALL) {
-                LibHelper::dieJsonError($message);
-            }
-            CommonHelper::redirectUserReferer();
-        }
-        $userId = $userObj->getMainTableRecordId();
-
-        $socialUid = !empty($userGoogleId) ? $userGoogleId : $userFacebookId;
-        $username = str_replace(" ", "", $userName).$socialUid;
-
-        if (!$userObj->setLoginCredentials($username, $userEmail, uniqid(), 1, 1)) {
-            $message = Labels::getLabel("MSG_LOGIN_CREDENTIALS_COULD_NOT_BE_SET", $this->siteLangId) . $userObj->getError();
-            Message::addErrorMessage($message);
-            $db->rollbackTransaction();
-            if (true ===  MOBILE_APP_API_CALL) {
-                LibHelper::dieJsonError($message);
-            }
-            CommonHelper::redirectUserReferer();
-        }
-
-        $userData['user_username'] = $username;
-        $userData['user_email'] = $userEmail;
-        if (FatApp::getConfig('CONF_NOTIFY_ADMIN_REGISTRATION', FatUtility::VAR_INT, 1)) {
-            if (!$this->notifyAdminRegistration($userObj, $userData)) {
-                $message = Labels::getLabel("MSG_NOTIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId);
-                Message::addErrorMessage($message);
-                $db->rollbackTransaction();
-                if (true ===  MOBILE_APP_API_CALL) {
-                    LibHelper::dieJsonError($message);
-                }
-                if (FatUtility::isAjaxCall()) {
-                    FatUtility::dieWithError(Message::getHtml());
-                }
-            }
-        }
-
-        if (FatApp::getConfig('CONF_WELCOME_EMAIL_REGISTRATION', FatUtility::VAR_INT, 1) && $userEmail) {
-            $data['user_email'] = $userEmail;
-            $data['user_name'] = $username;
-
-            //ToDO::Change login link to contact us link
-            $data['link'] = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
-            $userEmailObj = new User($userId);
-            if (!$this->userWelcomeEmailRegistration($userEmailObj, $data)) {
-                $message = Labels::getLabel("MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId);
-                Message::addErrorMessage($message);
-                $db->rollbackTransaction();
-                if (true ===  MOBILE_APP_API_CALL) {
-                    LibHelper::dieJsonError($message);
-                }
-                CommonHelper::redirectUserReferer();
-            }
-        }
-
-        $db->commitTransaction();
-        $userObj->setUpRewardEntry($userId, $this->siteLangId);
-        return $userId;
     }
 
     public function registrationForm()

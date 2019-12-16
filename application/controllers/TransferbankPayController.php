@@ -1,7 +1,12 @@
 <?php
 class TransferbankPayController extends PaymentController
 {
-    private $keyName="TransferBank";
+    private $keyName = "TransferBank";
+
+    protected function allowedCurrenciesArr()
+    {
+        return [$this->systemCurrencyCode];
+    }
 
     public function charge($orderId)
     {
@@ -35,7 +40,7 @@ class TransferbankPayController extends PaymentController
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
         if ($orderInfo) {
-            $cartObj=new Cart();
+            $cartObj = new Cart();
             $cartObj->clear();
             $cartObj->updateUserCart();
             $comment  = Labels::getLabel('MSG_PAYMENT_INSTRUCTIONS', $this->siteLangId) . "\n\n";
@@ -51,13 +56,13 @@ class TransferbankPayController extends PaymentController
 
     private function getPaymentForm($orderId)
     {
-        $frm = new Form('frmPaymentForm', array('id'=>'frmPaymentForm','action'=> CommonHelper::generateUrl('TransferbankPay', 'send', array($orderId)), 'class' =>"form form--normal"));
+        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => CommonHelper::generateUrl('TransferbankPay', 'send', array($orderId)), 'class' => "form form--normal"));
 
         $pmObj = new PaymentSettings($this->keyName);
         $paymentSettings = $pmObj->getPaymentSettings();
         $frm->addHtml('', 'htmlNote', Labels::getLabel('MSG_Bank_Transfer_Note', $this->siteLangId));
-        $frm->addHtml('', 'htmlNote', '<div class="bank--details">'.nl2br($paymentSettings["bank_details"]).'</div>');
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Confirm_Order', $this->siteLangId), array('id'=>'button-confirm'));
+        $frm->addHtml('', 'htmlNote', '<div class="bank--details">' . nl2br($paymentSettings["bank_details"]) . '</div>');
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Confirm_Order', $this->siteLangId), array('id' => 'button-confirm'));
         return $frm;
     }
 

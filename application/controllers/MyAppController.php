@@ -5,7 +5,7 @@ class MyAppController extends FatController
     public $appToken = '';
 
     public function __construct($action)
-    {            
+    {
         parent::__construct($action);
         $this->action = $action;
 
@@ -25,7 +25,7 @@ class MyAppController extends FatController
     {
         $this->siteLangId = CommonHelper::getLangId();
         $this->siteCurrencyId = CommonHelper::getCurrencyId();
-
+        
         $this->app_user['temp_user_id'] = 0;
         if (true ===  MOBILE_APP_API_CALL) {
             $this->setApiVariables();

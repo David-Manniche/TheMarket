@@ -164,23 +164,29 @@ class ConfigurationsController extends AdminBaseController
         $record = new Configurations();
 
         if (isset($post["CONF_SEND_SMTP_EMAIL"]) && $post["CONF_SEND_EMAIL"] && $post["CONF_SEND_SMTP_EMAIL"] && (($post["CONF_SEND_SMTP_EMAIL"] != FatApp::getConfig("CONF_SEND_SMTP_EMAIL")) || ($post["CONF_SMTP_HOST"] != FatApp::getConfig("CONF_SMTP_HOST")) || ($post["CONF_SMTP_PORT"] != FatApp::getConfig("CONF_SMTP_PORT")) || ($post["CONF_SMTP_USERNAME"] != FatApp::getConfig("CONF_SMTP_USERNAME")) || ($post["CONF_SMTP_SECURE"] != FatApp::getConfig("CONF_SMTP_SECURE")) || ($post["CONF_SMTP_PASSWORD"] != FatApp::getConfig("CONF_SMTP_PASSWORD")))) {
-            $smtp_arr=array("host"=>$post["CONF_SMTP_HOST"],"port"=>$post["CONF_SMTP_PORT"],"username"=>$post["CONF_SMTP_USERNAME"],"password"=>$post["CONF_SMTP_PASSWORD"],"secure"=>$post["CONF_SMTP_SECURE"]);
+            $smtp_arr = [
+                "host" => $post["CONF_SMTP_HOST"],
+                "port" => $post["CONF_SMTP_PORT"],
+                "username" => $post["CONF_SMTP_USERNAME"],
+                "password" => $post["CONF_SMTP_PASSWORD"],
+                "secure" => $post["CONF_SMTP_SECURE"]
+            ];
 
             if (EmailHandler::sendSmtpTestEmail($this->adminLangId, $smtp_arr)) {
-                Message::addMessage(Labels::getLabel('LBL_We_have_sent_a_test_email_to_administrator_account'.FatApp::getConfig("CONF_SITE_OWNER_EMAIL"), $this->adminLangId));
+                Message::addMessage(Labels::getLabel('LBL_We_have_sent_a_test_email_to_administrator_account' . FatApp::getConfig("CONF_SITE_OWNER_EMAIL"), $this->adminLangId));
             } else {
                 Message::addErrorMessage(Labels::getLabel("LBL_SMTP_settings_provided_is_invalid_or_unable_to_send_email_so_we_have_not_saved_SMTP_settings", $this->adminLangId));
                 unset($post["CONF_SEND_SMTP_EMAIL"]);
                 foreach ($smtp_arr as $skey => $sval) {
-                    unset($post['CONF_SMTP_'.strtoupper($skey)]);
+                    unset($post['CONF_SMTP_' . strtoupper($skey)]);
                 }
                 FatUtility::dieJsonError(Message::getHtml());
             }
         }
 
-        if (isset($post['CONF_USE_SSL']) && $post['CONF_USE_SSL']==1) {
+        if (isset($post['CONF_USE_SSL']) && $post['CONF_USE_SSL'] == 1) {
             if (!$this->is_ssl_enabled()) {
-                if ($post['CONF_USE_SSL']!= FatApp::getConfig('CONF_USE_SSL')) {
+                if ($post['CONF_USE_SSL'] != FatApp::getConfig('CONF_USE_SSL')) {
                     Message::addErrorMessage(Labels::getLabel('MSG_SSL_NOT_INSTALLED_FOR_WEBSITE_Try_to_Save_data_without_Enabling_ssl', $this->adminLangId));
 
                     FatUtility::dieJsonError(Message::getHtml());
@@ -191,17 +197,25 @@ class ConfigurationsController extends AdminBaseController
         }
 
         if (isset($post['CONF_SITE_ROBOTS_TXT'])) {
-            $filePath = CONF_INSTALLATION_PATH.'public/robots.txt';
+            $filePath = CONF_INSTALLATION_PATH . 'public/robots.txt';
             $robotfile = fopen($filePath, "w");
             fwrite($robotfile, $post['CONF_SITE_ROBOTS_TXT']);
             fclose($robotfile);
+        }
+
+        if (array_key_exists('CONF_CURRENCY', $post)) {
+            $data = Currency::getAttributesById($post['CONF_CURRENCY']);
+            if (empty($data) || ($data['currency_value'] * 1) != 1) {
+                Message::addErrorMessage(Labels::getLabel('MSG_Please_set_default_currency_value_to_1', $this->adminLangId));
+                FatUtility::dieJsonError(Message::getHtml());
+            }
         }
 
         if (!$record->update($post)) {
             Message::addErrorMessage($record->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-
+        
         $this->set('msg', Labels::getLabel('MSG_Setup_Successful', $this->adminLangId));
         $this->set('frmType', $frmType);
         $this->set('langId', 0);
@@ -573,15 +587,14 @@ class ConfigurationsController extends AdminBaseController
                 $frm->addSelectBox(Labels::getLabel('LBL_date_Format', $this->adminLangId), 'CONF_DATE_FORMAT', Configurations::dateFormatPhpArr(), false, array(), '');
 
                 $currencyArr = Currency::getCurrencyNameWithCode($this->adminLangId);
-                $frm->addSelectBox(Labels::getLabel('LBL_Default_Site_Currency', $this->adminLangId), 'CONF_CURRENCY', $currencyArr, false, array(), '');
-
+                $frm->addSelectBox(Labels::getLabel('LBL_Default_System_Currency', $this->adminLangId), 'CONF_CURRENCY', $currencyArr, false, array(), '');
+                
                 $faqCategoriesArr = FaqCategory::getFaqPageCategories();
                 $sellerCategoriesArr = FaqCategory::getSellerPageCategories();
 
                 $frm->addSelectBox(Labels::getLabel('LBL_Faq_Page_Main_Category', $this->adminLangId), 'CONF_FAQ_PAGE_MAIN_CATEGORY', $faqCategoriesArr);
                 $frm->addSelectBox(Labels::getLabel('LBL_Seller_Page_Main_Faq_Category', $this->adminLangId), 'CONF_SELLER_PAGE_MAIN_CATEGORY', $sellerCategoriesArr);
-
-
+                
                 break;
 
             case Configurations::FORM_SEO:
@@ -751,16 +764,17 @@ class ConfigurationsController extends AdminBaseController
                     0
                 );
                 $fld11->htmlAfterField = "<br><small>".Labels::getLabel("LBL_On_enabling_this_feature,users_will_be_able_to_login_using_facebook_account._Please_define_settings_for_facebook_login_if_enabled_under_\"Third_Party_APIs\"_Tab", $this->adminLangId)."</small>";
+                
                 $fld11 = $frm->addCheckBox(
-                    Labels::getLabel("LBL_Google_Plus_Login", $this->adminLangId),
+                    Labels::getLabel("LBL_GOOGLE_LOGIN", $this->adminLangId),
                     'CONF_ENABLE_GOOGLE_LOGIN',
                     1,
                     array(),
                     false,
                     0
                 );
-                $fld11->htmlAfterField = "<br><small>".Labels::getLabel("LBL_On_enabling_this_feature,users_will_be_able_to_login_using_google_plus_account._Please_define_settings_for_google_plus_login_if_enabled_under_\"Third_Party_APIs\"_Tab", $this->adminLangId)."</small>";
-
+                $fld11->htmlAfterField = "<br><small>".Labels::getLabel("LBL_On_enabling_this_feature,users_will_be_able_to_login_using_google_account._Please_define_settings_for_google_plus_login_if_enabled_under_\"Third_Party_APIs\"_Tab", $this->adminLangId)."</small>";
+                
                 $fld = $frm->addIntegerField(Labels::getLabel("LBL_Max_Seller_Request_Attempts", $this->adminLangId), 'CONF_MAX_SUPPLIER_REQUEST_ATTEMPT', '');
                 $fld->htmlAfterField = "<br><small>".Labels::getLabel("LBL_Maximum_seller_request_attempts_allowed", $this->adminLangId)."</small>";
 
@@ -874,7 +888,7 @@ class ConfigurationsController extends AdminBaseController
 
                 $fld = $frm->addSelectBox(Labels::getLabel("LBL_Cash_on_Delivery_Order_Status", $this->adminLangId), 'CONF_COD_ORDER_STATUS', $orderStatusArr, false, array(), '');
                 $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_Set_the_Cash_on_delivery_order_status.", $this->adminLangId)."</small>";
-
+                
                 $vendorOrderSelected = (!empty($arrValues['CONF_VENDOR_ORDER_STATUS']))?$arrValues['CONF_VENDOR_ORDER_STATUS']:0;
 
                 $fld = $frm->addCheckBoxes(Labels::getLabel("LBL_Seller_Order_Statuses", $this->adminLangId), 'CONF_VENDOR_ORDER_STATUS', $orderStatusArr, $vendorOrderSelected, array('class'=>'list-inline'));
@@ -1170,7 +1184,6 @@ class ConfigurationsController extends AdminBaseController
 
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Facebook_App_Secret", $this->adminLangId), 'CONF_FACEBOOK_APP_SECRET');
                 $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_This_is_the_Facebook_secret_key_used_for_authentication_and_other_Facebook_related_plugins_support.", $this->adminLangId)."</small>";
-
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Twitter_APP_KEY", $this->adminLangId), 'CONF_TWITTER_API_KEY');
                 $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_This_is_the_application_ID_used_in_post.", $this->adminLangId)."</small>";
 
@@ -1274,7 +1287,7 @@ class ConfigurationsController extends AdminBaseController
                 $frm->addHtml('', 'Microsoft Translator Text API', '<h3>'.Labels::getLabel("LBL_Microsoft_Translator_Text_API", $this->adminLangId).'</h3>');
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_SUBSCRIPTION_KEY", $this->adminLangId), 'CONF_TRANSLATOR_SUBSCRIPTION_KEY');
                 $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_MICROSOFT_TRANSLATOR_TEXT_API_3.0_SUBSCRIPTION_KEY.", $this->adminLangId)."</small>";
-
+                
                 break;
             case Configurations::FORM_REFERAL:
                 $fld = $frm->addRadioButtons(
