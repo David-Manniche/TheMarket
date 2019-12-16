@@ -40,6 +40,7 @@ $(document).ready(function() {
         fcom.displayProcessing();
         fcom.ajax(fcom.makeUrl('Configurations', 'langForm', [frmType, langId, autoFillLangData]), '', function(t) {
             $(dv).html(t);
+            jscolor.installByClassName('jscolor');
             fcom.setEditorLayout(langId);
             if (frmType == FORM_MEDIA) {
                 $('input[name=btn_submit]').hide();
@@ -228,7 +229,22 @@ $(document).ready(function() {
             $(dv).html(t);
         });
     };
-
+    removeAppMainScreenImage = function(lang_id) {
+        if (!confirm(langLbl.confirmDeleteImage)) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('Configurations', 'removeAppMainScreenImage', [lang_id]), '', function(t) {
+            getLangForm(document.frmConfiguration.form_type.value, lang_id);
+        });
+    };
+    removeAppLogo = function(lang_id) {
+        if (!confirm(langLbl.confirmDeleteImage)) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('Configurations', 'removeAppLogo', [lang_id]), '', function(t) {
+            getLangForm(document.frmConfiguration.form_type.value, lang_id);
+        });
+    };
 })();
 
 

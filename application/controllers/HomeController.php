@@ -868,7 +868,7 @@ class HomeController extends MyAppController
         $countriesArr = $countryObj->getCountriesArr($this->siteLangId);
         $arr_country = array();
         foreach ($countriesArr as $key => $val) {
-            $arr_country[] = array("id"=>$key,'name'=>$val);
+            $arr_country[] = array("id"=>$key, 'name'=>$val);
         }
         $this->set('countries', $arr_country);
         $this->_template->render();
@@ -889,12 +889,25 @@ class HomeController extends MyAppController
         $this->_template->render();
     }
 
-    public function getThemeDetail()
+    public function splashScreenData()
     {
-        if (empty($this->themeDetail) || 1 > count($this->themeDetail)) {
-            LibHelper::dieJsonError(Labels::getLabel('MSG_THEME_NOT_APPLIED', $this->siteLangId));
-        }
-        $this->set('data', ['themeDetail' => $this->themeDetail]);
+        $langCode = Language::getAttributesById($this->siteLangId, 'language_code', false);
+
+        $data['languageLabels'] = array(
+           'languageCode' => $langCode,
+           'downloadUrl' => CommonHelper::generateFullUrl('Home', 'languageLabels', array(1, $this->siteLangId)),
+           'langLabelUpdatedAt' => FatApp::getConfig('CONF_LANG_LABELS_UPDATED_AT', FatUtility::VAR_INT, time())
+        );
+
+        $data['appThemeSetting'] = array(
+           'themeColor' => FatApp::getConfig('CONF_APP_THEME_COLOR_' . $this->siteLangId, FatUtility::VAR_STRING, ''),
+           'fontColor' => FatApp::getConfig('CONF_APP_FONT_COLOR_' . $this->siteLangId, FatUtility::VAR_STRING, ''),
+           'buttonColor' => FatApp::getConfig('CONF_APP_BUTTON_COLOR_' . $this->siteLangId, FatUtility::VAR_STRING, ''),
+           'mainScreenImage' => CommonHelper::generateFullUrl('Image', 'appMainScreenImage', [$this->siteLangId]),
+           'logo' => CommonHelper::generateFullUrl('Image', 'appLoginScreenImage', [$this->siteLangId]),
+        );
+
+        $this->set('data', $data);
         $this->_template->render();
     }
 }

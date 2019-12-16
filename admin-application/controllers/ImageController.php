@@ -1,20 +1,20 @@
 <?php
 class ImageController extends FatController
 {
-    function default_action()
+    public function default_action()
     {
         exit(Labels::getLabel('LBL_Invalid_Request!!', CommonHelper::getLangId()));
     }
 
-    function product( $recordId, $size_type = '', $afile_id = 0 )
+    public function product($recordId, $size_type = '', $afile_id = 0)
     {
         $default_image = 'product_default_image.jpg';
         $recordId = FatUtility::int($recordId);
         $afile_id = FatUtility::int($afile_id);
 
-        if($afile_id > 0 ) {
+        if ($afile_id > 0) {
             $res = AttachedFile::getAttributesById($afile_id);
-            if(!false == $res && $res['afile_type'] == AttachedFile::FILETYPE_PRODUCT_IMAGE) {
+            if (!false == $res && $res['afile_type'] == AttachedFile::FILETYPE_PRODUCT_IMAGE) {
                 $file_row = $res;
             }
         } else {
@@ -22,26 +22,26 @@ class ImageController extends FatController
         }
         $image_name = isset($file_row['afile_physical_path']) ? AttachedFile::FILETYPE_PRODUCT_IMAGE_PATH . $file_row['afile_physical_path'] : '';
 
-        switch( strtoupper($size_type) ){
-        case 'THUMB':
-            $w = 100;
-            $h = 100;
-            AttachedFile::displayImage($image_name, $w, $h, $default_image);
-            break;
-        case 'SMALL':
-            $w = 200;
-            $h = 200;
-            AttachedFile::displayImage($image_name, $w, $h, $default_image);
-            break;
-        default:
-            $h = 400;
-            $w = 400;
-            AttachedFile::displayImage($image_name, $w, $h, $default_image);
-            break;
+        switch (strtoupper($size_type)) {
+            case 'THUMB':
+                $w = 100;
+                $h = 100;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+            case 'SMALL':
+                $w = 200;
+                $h = 200;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+            default:
+                $h = 400;
+                $w = 400;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
         }
     }
 
-    function siteAdminLogo( $lang_id = 0, $sizeType = '' )
+    public function siteAdminLogo($lang_id = 0, $sizeType = '')
     {
         $lang_id = FatUtility::int($lang_id);
         $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_ADMIN_LOGO, 0, 0, $lang_id);
@@ -67,33 +67,72 @@ class ImageController extends FatController
         } */
     }
 
-    public function profileImage($adminId, $sizeType = '' ,$cropedImage = false)
+    public function profileImage($adminId, $sizeType = '', $cropedImage = false)
     {
         $default_image = 'user_deafult_image.jpg';
         $recordId = FatUtility::int($adminId);
 
-        if($cropedImage == true) {
+        if ($cropedImage == true) {
             $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_ADMIN_PROFILE_CROPED_IMAGE, $recordId);
-        }else{
+        } else {
             $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_ADMIN_PROFILE_IMAGE, $recordId);
         }
 
         $image_name = isset($file_row['afile_physical_path']) ? $file_row['afile_physical_path'] : '';
 
-        switch( strtoupper($sizeType) ){
-        case 'THUMB':
-            $w = 100;
-            $h = 100;
-            AttachedFile::displayImage($image_name, $w, $h, $default_image);
-            break;
-        case 'CROPED':
-            $w = 230;
-            $h = 230;
-            AttachedFile::displayImage($image_name, $w, $h, $default_image);
-            break;
-        default:
-            AttachedFile::displayOriginalImage($image_name, $default_image);
-            break;
+        switch (strtoupper($sizeType)) {
+            case 'THUMB':
+                $w = 100;
+                $h = 100;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+            case 'CROPED':
+                $w = 230;
+                $h = 230;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+            default:
+                AttachedFile::displayOriginalImage($image_name, $default_image);
+                break;
         }
     }
+
+    public function appMainScreenImage($lang_id = 0, $sizeType = 'APP')
+    {
+        $lang_id = FatUtility::int($lang_id);
+        $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_APP_MAIN_SCREEN_IMAGE, 0, 0, $lang_id);
+        $image_name = isset($file_row['afile_physical_path']) ?  $file_row['afile_physical_path'] : '';
+        $default_image = '';
+        switch (strtoupper($sizeType)) {
+            case 'APP':
+                $w = 1280;
+                $h = 750;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+            default:
+                AttachedFile::displayOriginalImage($image_name, $default_image);
+                break;
+        }
+    }
+
+    public function appLogo($lang_id = 0, $sizeType = 'APP')
+    {
+        $lang_id = FatUtility::int($lang_id);
+        $recordId = 0;
+        $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, $recordId, 0, $lang_id, false);
+        $image_name = isset($file_row['afile_physical_path']) ?  $file_row['afile_physical_path'] : '';
+        $default_image = '';
+
+        switch (strtoupper($sizeType)) {
+            case 'APP':
+                $w = 290;
+                $h = 90;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+            default:
+                AttachedFile::displayOriginalImage($image_name, $default_image);
+                break;
+        }
+    }
+
 }

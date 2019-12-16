@@ -63,6 +63,8 @@ class AttachedFile extends MyAppModel
     public const FILETYPE_PRODUCT_IMAGE_PATH = 'product/';
     public const FILETYPE_BLOG_POST_IMAGE_PATH = 'blog-post/';
     public const FILETYPE_BULK_IMAGES_PATH = 'bulk-images/';
+    public const FILETYPE_APP_MAIN_SCREEN_IMAGE = 55;
+    public const FILETYPE_APP_LOGO = 56;
 
     public const APP_IMAGE_WIDTH = 640;
     public const APP_IMAGE_HEIGHT = 480;
@@ -395,7 +397,8 @@ class AttachedFile extends MyAppModel
         return $this->saveAttachment($fl, $fileType, $recordId, $recordSubid, $name, $displayOrder, $uniqueRecord, $lang_id, $screen);
     }
 
-    /* public function checkExtension($file , $allowedExt = array()) {
+    /* public function checkExtension($file,
+    $allowedExt = array()) {
 
     $fileExt = pathinfo($file, PATHINFO_EXTENSION);
 
@@ -455,7 +458,6 @@ class AttachedFile extends MyAppModel
         }
 
         try {
-
             static::setLastModified($imagePath);
             static::setContentType($fileMimeType);
             $img = new ImageResize($imagePath);
@@ -611,7 +613,6 @@ class AttachedFile extends MyAppModel
         }
 
         try {
-
             static::setLastModified($imagePath);
             static::setContentType($fileMimeType);
             $fileContent =  file_get_contents($imagePath);
@@ -805,8 +806,23 @@ class AttachedFile extends MyAppModel
         $fileId = FatUtility::int($fileId);
         $record_subid = FatUtility::int($record_subid);
         $langId = FatUtility::int($langId);
-
-        if (!in_array($fileType, array(AttachedFile::FILETYPE_ADMIN_LOGO , AttachedFile::FILETYPE_FRONT_LOGO , AttachedFile::FILETYPE_EMAIL_LOGO , AttachedFile::FILETYPE_FAVICON ,  AttachedFile::FILETYPE_SOCIAL_FEED_IMAGE,  AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO,  AttachedFile::FILETYPE_WATERMARK_IMAGE,  AttachedFile::FILETYPE_APPLE_TOUCH_ICON,  AttachedFile::FILETYPE_MOBILE_LOGO,  AttachedFile::FILETYPE_CATEGORY_COLLECTION_BG_IMAGE,  AttachedFile::FILETYPE_BRAND_COLLECTION_BG_IMAGE, AttachedFile::FILETYPE_INVOICE_LOGO )) && (!$fileType || !$recordId)) {
+        $allowedFileTypes = [
+            AttachedFile::FILETYPE_ADMIN_LOGO,
+            AttachedFile::FILETYPE_FRONT_LOGO,
+            AttachedFile::FILETYPE_EMAIL_LOGO,
+            AttachedFile::FILETYPE_FAVICON,
+            AttachedFile::FILETYPE_SOCIAL_FEED_IMAGE,
+            AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO,
+            AttachedFile::FILETYPE_WATERMARK_IMAGE,
+            AttachedFile::FILETYPE_APPLE_TOUCH_ICON,
+            AttachedFile::FILETYPE_MOBILE_LOGO,
+            AttachedFile::FILETYPE_CATEGORY_COLLECTION_BG_IMAGE,
+            AttachedFile::FILETYPE_BRAND_COLLECTION_BG_IMAGE,
+            AttachedFile::FILETYPE_INVOICE_LOGO,
+            AttachedFile::FILETYPE_APP_MAIN_SCREEN_IMAGE,
+            AttachedFile::FILETYPE_APP_LOGO,
+        ];
+        if (!in_array($fileType, $allowedFileTypes) && (!$fileType || !$recordId)) {
             $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->commonLangId);
             return false;
         }

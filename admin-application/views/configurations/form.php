@@ -50,7 +50,7 @@ switch ($frmType) {
 }
 
 ?>
-<ul class="tabs_nav innerul abc">
+<ul class="tabs_nav innerul">
     <?php if ($frmType == Configurations::FORM_IMPORT_EXPORT) {
     ?>
     <li><a href="javascript:void(0);"
@@ -58,7 +58,7 @@ switch ($frmType) {
     </li>
     <?php
 } ?>
-    <?php if ($frmType != Configurations::FORM_MEDIA && $frmType != Configurations::FORM_SHARING) {
+    <?php if ($frmType != Configurations::FORM_MEDIA && $frmType != Configurations::FORM_SHARING && $frmType != Configurations::FORM_APPLICATION_THEME_SETTING) {
         ?>
     <li><a class="<?php echo ($lang_id == 0) ? 'active' : ''; ?>"
             href="javascript:void(0)"
