@@ -67,14 +67,24 @@ class PluginsController extends AdminBaseController
     public function form($pluginId)
     {
         $pluginId =  FatUtility::int($pluginId);
-        $frm = $this->getForm($pluginId);
+        $pluginType = Plugin::getAttributesById($pluginId, 'plugin_type');
+        $frm = $this->getForm($pluginId, $pluginType);
         if (0 < $pluginId) {
             $data = Plugin::getAttributesById($pluginId, ['plugin_id','plugin_identifier','plugin_active']);
             if ($data === false) {
                 FatUtility::dieJsonError($this->str_invalid_request);
             }
+
+            if (Plugin::TYPE_CURRENCY_API == $pluginType) {
+                $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_CURRENCY_CONVERTER_API', FatUtility::VAR_INT, 0);
+                if (!empty($defaultCurrConvAPI)) {
+                    $data['CONF_DEFAULT_CURRENCY_CONVERTER_API'] = $defaultCurrConvAPI;
+                }
+            }
+
             $frm->fill($data);
         }
+
 
         $this->set('languages', Language::getAllNames());
         $this->set('pluginId', $pluginId);
@@ -85,13 +95,15 @@ class PluginsController extends AdminBaseController
     public function setup()
     {
         $this->objPrivilege->canEditPlugins();
-        $frm = $this->getForm();
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        $post = FatApp::getPostedData();
+        $pluginId = $post['plugin_id'];
+        $pluginType = Plugin::getAttributesById($pluginId, 'plugin_type');
+        $frm = $this->getForm($pluginId, $pluginType);
+        $post = $frm->getFormDataFromArray($post);
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        $pluginId = $post['plugin_id'];
         unset($post['plugin_id']);
         
         if (1 > $pluginId) {
@@ -110,6 +122,15 @@ class PluginsController extends AdminBaseController
         if (!$record->save()) {
             Message::addErrorMessage($record->getError());
             FatUtility::dieJsonError(Message::getHtml());
+        }
+        
+        if (isset($post['CONF_DEFAULT_CURRENCY_CONVERTER_API'])) {
+            $confVal = $post['CONF_DEFAULT_CURRENCY_CONVERTER_API'];
+            $confRecord = new Configurations();
+            if (!$confRecord->update(['CONF_DEFAULT_CURRENCY_CONVERTER_API' => $confVal])) {
+                Message::addErrorMessage($confRecord->getError());
+                FatUtility::dieJsonError(Message::getHtml());
+            }
         }
 
         $newTabLangId = 0;
@@ -302,7 +323,7 @@ class PluginsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    private function getForm($pluginId = 0)
+    private function getForm($pluginId = 0, $pluginType = 0)
     {
         $pluginId =  FatUtility::int($pluginId);
 
@@ -312,6 +333,10 @@ class PluginsController extends AdminBaseController
 
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'plugin_active', $activeInactiveArr, '', array(), '');
+        
+        if (Plugin::TYPE_CURRENCY_API == $pluginType) {
+            $frm->addCheckBox(Labels::getLabel('LBL_MARK_AS_DEFAULT', $this->adminLangId), 'CONF_DEFAULT_CURRENCY_CONVERTER_API', $pluginId, array(), false, 0);
+        }
 
         /*$fld = $frm->addButton(
             'Icon',

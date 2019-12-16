@@ -13,7 +13,6 @@ class CurrencyConverterController extends CurrencyConverterBaseController
     {
         parent::__construct($action);
         $this->validateSettings();
-        $this->setBaseCurrency();
     }
 
     private function validateSettings()
@@ -31,23 +30,39 @@ class CurrencyConverterController extends CurrencyConverterBaseController
         return '?apiKey=' . $this->apiKey;
     }
 
+    private function getData($apiUrl)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $apiUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    
+        $result = curl_exec($ch);
+    
+        curl_close($ch);
+        return json_decode($result, true);
+    }
+
     public function getRates($toCurrencies = [])
     {
         $accessKey = $this->accessKey();
+        $baseCurrencyCode = $this->getBaseCurrencyCode();
 
         $toCurrenciesQuery = '';
         if (is_array($toCurrencies) && !empty(array_filter($toCurrencies))) {
             foreach ($toCurrencies as $currencyCode) {
-                $toCurrenciesQuery .= $this->baseCurrencyCode . '_' . $currencyCode . ',';
+                $toCurrenciesQuery .= $baseCurrencyCode . '_' . $currencyCode . ',';
             }
         }
         
         $getConversionRatesUrl = static::PRODUCTION_URL . 'convert' . $accessKey . '&compact=ultra&q=' . rtrim($toCurrenciesQuery, ',');
-        $response = $this->getExternalApiData($getConversionRatesUrl);
+        $response = $this->getData($getConversionRatesUrl);
         $data = [];
         foreach ($response as $key => $rate) {
-            $data[str_replace($this->baseCurrencyCode . '_', '', $key)] = $rate;
+            $data[str_replace($baseCurrencyCode . '_', '', $key)] = $rate;
         }
-        return $data;
+        return [
+            'status' => true,
+            'data' => $data
+        ];
     }
 }

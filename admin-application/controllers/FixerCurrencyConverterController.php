@@ -13,7 +13,6 @@ class FixerCurrencyConverterController extends CurrencyConverterBaseController
     {
         parent::__construct($action);
         $this->validateSettings();
-        $this->setBaseCurrency();
     }
 
     private function validateSettings()
@@ -31,21 +30,40 @@ class FixerCurrencyConverterController extends CurrencyConverterBaseController
         return '?access_key=' . $this->accessKey;
     }
 
+    private function getData($apiUrl)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $apiUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    
+        $result = curl_exec($ch);
+    
+        curl_close($ch);
+        return json_decode($result, true);
+    }
+
     public function getRates($toCurrencies = [])
     {
         $accessKey = $this->accessKey();
-
+        $baseCurrencyCode = $this->getBaseCurrencyCode();
         $toCurrenciesQuery = '';
         if (is_array($toCurrencies) && !empty(array_filter($toCurrencies))) {
             $toCurrenciesQuery = '&symbols=' . implode(',', $toCurrencies);
         }
         
-        $getConversionRates = static::PRODUCTION_URL . 'latest' . $accessKey . '&base=' . $this->baseCurrencyCode . $toCurrenciesQuery;
-        $data = $this->getExternalApiData($getConversionRates);
+        $getConversionRates = static::PRODUCTION_URL . 'latest' . $accessKey . '&base=' . $baseCurrencyCode . $toCurrenciesQuery;
+        $data = $this->getData($getConversionRates);
+        
+        $status = true;
+        $message = '';
         if (false === $data['success'] && !empty($data['error'])) {
-            $message = 'Err - ' . $data['error']['code'] . ' - ' . $data['error']['type'];
-            LibHelper::dieJsonError($message);
+            $status = false;
+            $message = 'Error - ' . $data['error']['code'] . ' - ' . $data['error']['type'];
         }
-        return $data['rates'];
+        return [
+            'status' => $status,
+            'msg' => $message,
+            'data' => $data['rates']
+        ];
     }
 }

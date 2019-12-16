@@ -45,9 +45,10 @@ class PluginSettingController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('LBL_SETTINGS_NOT_AVALIABLE_FOR_THIS_PLUGIN', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-
         $this->frmObj->fill($pluginSetting);
+        $identifier = isset($pluginSetting['plugin_identifier']) ? $pluginSetting['plugin_identifier'] : '';
         $this->set('frm', $this->frmObj);
+        $this->set('identifier', $identifier);
         $this->_template->render(false, false, 'plugins/settings.php');
     }
 

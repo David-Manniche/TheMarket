@@ -2,29 +2,11 @@
 class CurrencyConverterBaseController extends PluginSettingController
 {
     protected $baseCurrencyId;
-    protected $baseCurrencyCode;
 
     public function __construct($action)
     {
         parent::__construct($action);
         $this->baseCurrencyId = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
-    }
-    
-    protected function getExternalApiData($apiUrl)
-    {
-        if (empty($apiUrl)) {
-            $message = Labels::getLabel('MSG_INVALID_REQUEST_URL', $this->adminLangId);
-            LibHelper::dieJsonError($message);
-        }
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $apiUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    
-        $result = curl_exec($ch);
-    
-        curl_close($ch);
-        return json_decode($result, true);
     }
 
     protected function getAllCurrencies($exceptDefault = false)
@@ -44,16 +26,12 @@ class CurrencyConverterBaseController extends PluginSettingController
 
     protected function getBaseCurrencyCode()
     {
-        return $this->getCurrencyCode($this->baseCurrencyId);
-    }
-
-    protected function setBaseCurrency()
-    {
-        $this->baseCurrencyCode = $this->getBaseCurrencyCode();
-        if (empty($this->baseCurrencyCode)) {
+        $baseCurrencyCode = $this->getCurrencyCode($this->baseCurrencyId);
+        if (empty($baseCurrencyCode)) {
             $message = Labels::getLabel('MSG_BASE_CURRENCY_NOT_INITIALIZED', $this->adminLangId);
             LibHelper::dieJsonError($message);
         }
+        return $baseCurrencyCode;
     }
 
     public function update()
@@ -66,8 +44,12 @@ class CurrencyConverterBaseController extends PluginSettingController
         $currencies = $this->getAllCurrencies(true);
         $obj = new $defaultConverter(__FUNCTION__);
         $currenciesData = $obj->getRates($currencies);
+        if (empty($currenciesData) || false === $currenciesData['status'] || !isset($currenciesData['data']) || empty($currenciesData['data'])) {
+            $message = !empty($currenciesData['msg']) ? $currenciesData['msg'] : Labels::getLabel('MSG_UNABLE_TO_UPDATE', $this->adminLangId);
+            LibHelper::dieJsonError($message);
+        }
         $currObj = new Currency();
-        if (false === $currObj->updatePricingRates($currenciesData)) {
+        if (false === $currObj->updatePricingRates($currenciesData['data'])) {
             LibHelper::dieJsonError($currObj->getError());
         }
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_Updated_Successfully', $this->adminLangId));
