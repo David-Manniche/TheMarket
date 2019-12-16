@@ -4,9 +4,9 @@ $arr_flds = array(
 	'listserial'	=>	'',
 	'user_name'=>Labels::getLabel('LBL_User',$adminLangId),
 	'selprod_title'=>Labels::getLabel('LBL_Seller_product',$adminLangId),
-    'carthistory_qty'=>Labels::getLabel('LBL_Qty',$adminLangId),
-    'carthistory_action'=>Labels::getLabel('LBL_Status',$adminLangId),
-	'carthistory_added_on'=>Labels::getLabel('LBL_Date',$adminLangId),
+    'abandonedcart_qty'=>Labels::getLabel('LBL_Qty',$adminLangId),
+    'abandonedcart_action'=>Labels::getLabel('LBL_Status',$adminLangId),
+	'abandonedcart_added_on'=>Labels::getLabel('LBL_Date',$adminLangId),
 	'action' => Labels::getLabel('LBL_Action',$adminLangId),
 );
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered table-responsive'));
@@ -26,15 +26,19 @@ foreach ($records as $sn=>$row){
 			case 'listserial':
 				$td->appendElement('plaintext', array(), $sr_no);
 			break;
-			case 'carthistory_action': 
-                $actionArr = CartHistory::getActionArr($adminLangId);
-                $td->appendElement('plaintext', array(), $actionArr[$row[$key]]);
+			case 'abandonedcart_action': 
+                if($row[AbandonedCart::DB_TBL_PREFIX.'discount_notification'] == 1 && $row[$key] != AbandonedCart::ACTION_PURCHASED){
+                    $td->appendElement('plaintext', array(), Labels::getLabel('LBL_Discount_Coupon_Already_Sent',$adminLangId));
+                }else{
+                    $actionArr = AbandonedCart::getActionArr($adminLangId);
+                    $td->appendElement('plaintext', array(), $actionArr[$row[$key]]);
+                }
 			break;
-			case 'carthistory_added_on': 
+			case 'abandonedcart_added_on': 
                 $td->appendElement('plaintext',array(),FatDate::format($row[$key],true,true,FatApp::getConfig('CONF_TIMEZONE', FatUtility::VAR_STRING, date_default_timezone_get())));
 			break;
 			case 'action':
-                if($row['carthistory_action'] < CartHistory::ACTION_PURCHASED){
+                if($row['abandonedcart_action'] < AbandonedCart::ACTION_PURCHASED && $row[AbandonedCart::DB_TBL_PREFIX.'discount_notification'] == 0){
                     $ul = $td->appendElement("ul",array("class"=>"actions actions--centered"));
 
                     $li = $ul->appendElement("li",array('class'=>'droplink'));
@@ -43,7 +47,7 @@ foreach ($records as $sn=>$row){
                     $innerUl=$innerDiv->appendElement('ul',array('class'=>'linksvertical'));
 
                     $innerLi=$innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href'=>'javascript:void(0);', 'onclick'=>'discountNotification('.$row['carthistory_user_id'].','.$row['carthistory_action'].','.$row['selprod_product_id'].','.$row['carthistory_selprod_id'].')', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Send_Discount_Notification',$adminLangId)),Labels::getLabel('LBL_Send_Discount_Notification',$adminLangId), true);
+                    $innerLi->appendElement('a', array('href'=>'javascript:void(0);', 'onclick'=>'discountNotification('.$row['abandonedcart_user_id'].','.$row['abandonedcart_action'].','.$row['selprod_product_id'].','.$row['abandonedcart_selprod_id'].')', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Send_Discount_Notification',$adminLangId)),Labels::getLabel('LBL_Send_Discount_Notification',$adminLangId), true);
                 }
 			break; 
 			default:

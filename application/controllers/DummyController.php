@@ -669,7 +669,7 @@ class DummyController extends MyAppController
     
     public function testEmail()
     {
-        CartHistory::sendReminderAbandonedCart();
+        AbandonedCart::sendReminderAbandonedCart();
         
     }
 }

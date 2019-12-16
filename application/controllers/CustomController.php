@@ -476,9 +476,10 @@
         $orderInfo = $orderObj->getOrderById($orderId, $this->siteLangId);
         
         if($orderInfo['order_user_id'] > 0){
-            $orderProdData = OrderProduct::getOpArrByOrderId($orderId);
+            $orderProdData = OrderProduct::getOpArrByOrderId($orderId);            
             foreach($orderProdData as $data){
-                CartHistory::saveCartHistory($orderInfo['order_user_id'], $data['op_selprod_id'], $data['op_qty'], CartHistory::ACTION_PURCHASED);
+                $amount = $data['op_unit_price'] * $data['op_qty'];
+                AbandonedCart::save($orderInfo['order_user_id'], $data['op_selprod_id'], $data['op_qty'], AbandonedCart::ACTION_PURCHASED, $amount);
             }
         }
         

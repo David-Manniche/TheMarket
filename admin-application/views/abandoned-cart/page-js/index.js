@@ -16,14 +16,14 @@ $(document).ready(function(){
 			});
 		},
 		'select': function(item) {
-			$("input[name='carthistory_user_id']").val( item['value'] );
+			$("input[name='abandonedcart_user_id']").val( item['value'] );
 			$("input[name='user_name']").val( item['label'] );
 		}
 	});
 	
 	$('input[name=\'user_name\']').keyup(function(){
 		if( $(this).val() == "" ){
-			$("input[name='carthistory_user_id']").val( "" );
+			$("input[name='abandonedcart_user_id']").val( "" );
 		}
 	});
     
@@ -42,14 +42,14 @@ $(document).ready(function(){
 			});
 		},
 		'select': function(item) {
-			$("input[name='carthistory_selprod_id']").val( item['value'] );
+			$("input[name='abandonedcart_selprod_id']").val( item['value'] );
 			$("input[name='seller_product']").val( item['label'] );
 		}
 	});
 	
 	$('input[name=\'seller_product\']').keyup(function(){
 		if( $(this).val() == "" ){
-			$("input[name='carthistory_selprod_id']").val( "" );
+			$("input[name='abandonedcart_selprod_id']").val( "" );
 		}
 	});
     
@@ -93,8 +93,8 @@ $(document).ready(function(){
 	}    
     
 	clearAbandonedCartSearch = function(){
-        document.frmAbandonedCartSearch.carthistory_user_id.value = '';
-		document.frmAbandonedCartSearch.carthistory_selprod_id.value = '';
+        document.frmAbandonedCartSearch.abandonedcart_user_id.value = '';
+		document.frmAbandonedCartSearch.abandonedcart_selprod_id.value = '';
         document.frmAbandonedCartSearch.reset();
 		searchAbandonedCart(document.frmAbandonedCartSearch);
 	};

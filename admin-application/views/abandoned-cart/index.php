@@ -31,7 +31,7 @@
                                 $sellerProductFld = $frmSearch->getField('seller_product');
 								$sellerProductFld->developerTags['col'] = 4;
                                 
-                                $actionFld = $frmSearch->getField('carthistory_action');
+                                $actionFld = $frmSearch->getField('abandonedcart_action');
 								$actionFld->developerTags['col'] = 4;
 									
 								$submitBtnFld = $frmSearch->getField('btn_submit');

@@ -3,19 +3,19 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-class CartHistoryTest extends TestCase
+class AbandonedCartTest extends TestCase
 {   
    
     /**
-     * @dataProvider dataSaveCartHistory
+     * @dataProvider dataSave
      */
-    public function testSaveCartHistory( $userId, $selProdId, $qty, $action, $expected )
+    public function testSave( $userId, $selProdId, $qty, $action, $expected )
     {
-        $result = CartHistory::saveCartHistory( $userId, $selProdId, $qty, $action );
+        $result = AbandonedCart::save( $userId, $selProdId, $qty, $action );
         $this->assertEquals($expected, $result);
     }
     
-    public function dataSaveCartHistory()
+    public function dataSave()
     {       
         return array(
             array(1, 50, 4, 1, true), // Add data with valid parameters
@@ -32,8 +32,8 @@ class CartHistoryTest extends TestCase
      */
     public function testGetAbandonedCartList( $langId, $userId, $selProdId, $action, $page, $expected )
     {
-        $cartHistory = new CartHistory();
-        $result = $cartHistory->getAbandonedCartList($langId, $userId, $selProdId, $action, $page);
+        $abandonedCart = new AbandonedCart();
+        $result = $abandonedCart->getAbandonedCartList($langId, $userId, $selProdId, $action, $page);
         $this->assertEquals($expected, count($result));
     }
     
@@ -63,8 +63,8 @@ class CartHistoryTest extends TestCase
      */
     public function testGetAbandonedCartProducts( $langId, $page, $expected )
     {
-        $cartHistory = new CartHistory();
-        $result = $cartHistory->getAbandonedCartProducts($langId, $page);
+        $abandonedCart = new AbandonedCart();
+        $result = $abandonedCart->getAbandonedCartProducts($langId, $page);
         $this->assertEquals($expected, count($result));
     }
     
@@ -82,8 +82,8 @@ class CartHistoryTest extends TestCase
      */
     public function testUpdateDiscountNotification( $userId, $selProdId, $expected )
     {
-        $cartHistory = new CartHistory();
-        $result = $cartHistory->updateDiscountNotification($userId, $selProdId);
+        $abandonedCart = new AbandonedCart();
+        $result = $abandonedCart->updateDiscountNotification($userId, $selProdId);
         $this->assertEquals($expected, $result);
     }
     
@@ -102,8 +102,8 @@ class CartHistoryTest extends TestCase
     */
     public function testUpdateReminderCount( $userId, $selProdIds, $expected )
     {
-        $cartHistory = new CartHistory();
-        $result = $cartHistory->updateReminderCount($userId, $selProdIds);
+        $abandonedCart = new AbandonedCart();
+        $result = $abandonedCart->updateReminderCount($userId, $selProdIds);
         $this->assertEquals($expected, $result);
     }
     
@@ -121,8 +121,8 @@ class CartHistoryTest extends TestCase
      */
     public function testSendDiscountEmail( $langId, $userId, $action, $couponId, $selProdId, $expected )
     {
-        $cartHistory = new CartHistory();
-        $result = $cartHistory->sendDiscountEmail($langId, $userId, $action, $couponId, $selProdId);
+        $abandonedCart = new AbandonedCart();
+        $result = $abandonedCart->sendDiscountEmail($langId, $userId, $action, $couponId, $selProdId);
         $this->assertEquals($expected, $result);
     }
     
