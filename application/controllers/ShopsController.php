@@ -131,6 +131,7 @@ class ShopsController extends MyAppController
             $allShops[$val['shop_id']]['totalProducts'] = $productShopSrchTempObj->recordCount();
             $allShops[$val['shop_id']]['shopRating'] = SelProdRating::getSellerRating($val['shop_user_id']);
             $allShops[$val['shop_id']]['shopTotalReviews'] = SelProdReview::getSellerTotalReviews($val['shop_user_id']);
+            $allShops[$val['shop_id']]['shop_logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', [$val['shop_id'], $this->siteLangId, 'SMALL']);
         }
         /* CommonHelper::printArray($allShops[4]['products']); */
         $this->set('allShops', $allShops);
@@ -142,7 +143,7 @@ class ShopsController extends MyAppController
         $this->set('pageSize', $pagesize);
         $this->set('postedData', $post);
 
-        $startRecord = ($page-1) * $pagesize + 1 ;
+        $startRecord = ($page - 1) * $pagesize + 1 ;
         $endRecord = $pagesize;
         $totalRecords = $srch->recordCount();
         if ($totalRecords < $endRecord) {

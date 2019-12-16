@@ -883,9 +883,18 @@ class HomeController extends MyAppController
         $statesArr = $this->getStates($countryId, 0, true);
         $states = array();
         foreach ($statesArr as $key => $val) {
-            $states[]=array("id"=>$key,'name'=>$val);
+            $states[] = array("id" => $key, 'name' => $val);
         }
         $this->set('states', $states);
+        $this->_template->render();
+    }
+
+    public function getThemeDetail()
+    {
+        if (empty($this->themeDetail) || 1 > count($this->themeDetail)) {
+            LibHelper::dieJsonError(Labels::getLabel('MSG_THEME_NOT_APPLIED', $this->siteLangId));
+        }
+        $this->set('data', ['themeDetail' => $this->themeDetail]);
         $this->_template->render();
     }
 }
