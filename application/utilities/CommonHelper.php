@@ -1918,24 +1918,23 @@ class CommonHelper extends FatUtility
         /* [ Check url rewritten by the system and "/" discarded in url rewrite*/
         $systemUrl = CommonHelper::generateFullUrl();
         $systemUrl = preg_replace('/https:/', 'http:', $systemUrl, 1);
-        $customUrl = substr($url, strlen($systemUrl));
-        $customUrl = rtrim($customUrl, '/');
-        $customUrl = array_filter(explode('/', $customUrl));
+        $systemUrl = substr($url, strlen($systemUrl));
+        $systemUrl = rtrim($systemUrl, '/');
+        $customUrl = array_filter(explode('/', $systemUrl));
         $customUrl = array_values($customUrl);
         $srch = UrlRewrite::getSearchObject();
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
-        $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'custom', '=', $customUrl[0]);
+        $cond = $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'custom', '=', $customUrl[0]);
+        $cond->attachCondition(UrlRewrite::DB_TBL_PREFIX . 'original', '=', $systemUrl);
+       
         $rs = $srch->getResultSet();
-
         if (!$row = FatApp::getDb()->fetch($rs)) {
-            return array(
-                'url' => $originalUrl,
-                'urlType' => applicationConstants::URL_TYPE_EXTERNAL
-            );
+            $url = $systemUrl;
+        } else {
+            $url = $row['urlrewrite_original'];
         }
-
-        $url = $row['urlrewrite_original'];
+        
         $arr = explode('/', $url);
 
         $controller = (isset($arr[0])) ? $arr[0] : '';
@@ -1954,7 +1953,7 @@ class CommonHelper extends FatUtility
             $controller = 'Content';
         }
 
-        $recordId = $queryString[0];
+        $recordId = isset($queryString[0]) ? $queryString[0] :0;
         switch ($controller . '/' . $action) {
             case 'category/view':
                 $urlType = applicationConstants::URL_TYPE_CATEGORY;

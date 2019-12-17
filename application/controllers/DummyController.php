@@ -327,8 +327,8 @@ class DummyController extends MyAppController
 
     public function index()
     {
-       $res = CommonHelper::getUrlTypeData('http://support.apple.com/downloads/safari'); 
-      
+       $res = CommonHelper::getUrlTypeData('http://yokartv8.local.4livedemo.com/blog'); 
+      var_dump($res);
        exit;
 
     }
