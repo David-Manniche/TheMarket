@@ -6,7 +6,8 @@ Bugs:
     => 031611-Wrong Email Received while change email request sent through Seller APP API
     => 032501-User default image is blurred.
     => 033061 - Getting error on login with Apple
-    
+    => 033089 - Social Account not getting logged in if email is not updated in db
+
 Enhancements:
     => 68474 - Library and code updated to handle 3-D secure payments through Omise Payment Gateway.
     => Updated new labels for IOS APP.

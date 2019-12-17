@@ -2288,6 +2288,18 @@ class User extends MyAppModel
             if (false === $userObj->updateUserMeta($socialIdColumn, $socialAccountId)) {
                 return false;
             }
+
+            if (empty($row['credential_email'])) {
+                $assignValues = [
+                    static::DB_TBL_CRED_PREFIX . 'user_id' => $row['user_id'],
+                    static::DB_TBL_CRED_PREFIX . 'email' => $email,
+                ];
+                if (!FatApp::getDb()->insertFromArray(static::DB_TBL_CRED, $assignValues, false, array(), $assignValues)) {
+                    $this->error = FatApp::getDb()->getError();
+                    return false;
+                }
+            }
+
             unset($row[$socialIdColumn]);
         } else {
             $userId = $this->setupUser($email, $username, $socialAccountId, $keyName, $userType);
