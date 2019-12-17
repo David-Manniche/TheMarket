@@ -5,6 +5,7 @@ Bugs:
     => Added space in bottom for dashboard pages.
     => 031611-Wrong Email Received while change email request sent through Seller APP API
     => 032501-User default image is blurred.
+    => 033061 - Getting error on login with Apple
     
 Enhancements:
     => 68474 - Library and code updated to handle 3-D secure payments through Omise Payment Gateway.

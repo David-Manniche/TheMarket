@@ -2300,7 +2300,7 @@ class User extends MyAppModel
             }
 
             if (!$row = $this->getUserInfo($attr)) {
-                $this->error = Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->siteLangId);
+                $this->error = Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->commonLangId);
                 return false;
             }
         }
