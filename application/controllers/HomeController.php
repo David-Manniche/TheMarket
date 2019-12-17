@@ -903,6 +903,7 @@ class HomeController extends MyAppController
 
         $data['appThemeSetting'] = array(
            'themeColor' => FatApp::getConfig('CONF_APP_THEME_COLOR', FatUtility::VAR_STRING, ''),
+           'headerFontColor' => FatApp::getConfig('CONF_APP_HEADER_FONT_COLOR', FatUtility::VAR_STRING, ''),
            'buttonFontColor' => FatApp::getConfig('CONF_APP_BUTTON_FONT_COLOR', FatUtility::VAR_STRING, ''),
            'buttonBackgroundColor' => FatApp::getConfig('CONF_APP_BUTTON_BACKGROUND_COLOR', FatUtility::VAR_STRING, ''),
            'mainScreenImage' => CommonHelper::generateFullUrl('Image', 'appMainScreenImage', [$this->siteLangId]),

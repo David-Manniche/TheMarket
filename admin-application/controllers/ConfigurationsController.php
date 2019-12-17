@@ -1464,6 +1464,7 @@ class ConfigurationsController extends AdminBaseController
                 break;
             case Configurations::FORM_APPLICATION_THEME_SETTING:
                 $frm->addRequiredField(Labels::getLabel('LBL_THEME_COLOR', $this->adminLangId), 'CONF_APP_THEME_COLOR')->addFieldTagAttribute('class', 'jscolor');
+                $frm->addRequiredField(Labels::getLabel('LBL_HEADER_FONT_COLOR', $this->adminLangId), 'CONF_APP_HEADER_FONT_COLOR')->addFieldTagAttribute('class', 'jscolor');
                 $fontColors = [
                     '000000' => Labels::getLabel('LBL_BLACK', $this->adminLangId),
                     'FFFFFF' => Labels::getLabel('LBL_WHITE', $this->adminLangId),
