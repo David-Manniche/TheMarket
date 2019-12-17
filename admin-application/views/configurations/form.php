@@ -58,7 +58,7 @@ switch ($frmType) {
     </li>
     <?php
 } ?>
-    <?php if ($frmType != Configurations::FORM_MEDIA && $frmType != Configurations::FORM_SHARING && $frmType != Configurations::FORM_APPLICATION_THEME_SETTING) {
+    <?php if ($frmType != Configurations::FORM_MEDIA && $frmType != Configurations::FORM_SHARING) {
         ?>
     <li><a class="<?php echo ($lang_id == 0) ? 'active' : ''; ?>"
             href="javascript:void(0)"

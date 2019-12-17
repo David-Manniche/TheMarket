@@ -96,43 +96,4 @@ class ImageController extends FatController
                 break;
         }
     }
-
-    public function appMainScreenImage($lang_id = 0, $sizeType = 'APP')
-    {
-        $lang_id = FatUtility::int($lang_id);
-        $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_APP_MAIN_SCREEN_IMAGE, 0, 0, $lang_id);
-        $image_name = isset($file_row['afile_physical_path']) ?  $file_row['afile_physical_path'] : '';
-        $default_image = '';
-        switch (strtoupper($sizeType)) {
-            case 'APP':
-                $w = 1280;
-                $h = 750;
-                AttachedFile::displayImage($image_name, $w, $h, $default_image);
-                break;
-            default:
-                AttachedFile::displayOriginalImage($image_name, $default_image);
-                break;
-        }
-    }
-
-    public function appLogo($lang_id = 0, $sizeType = 'APP')
-    {
-        $lang_id = FatUtility::int($lang_id);
-        $recordId = 0;
-        $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, $recordId, 0, $lang_id, false);
-        $image_name = isset($file_row['afile_physical_path']) ?  $file_row['afile_physical_path'] : '';
-        $default_image = '';
-
-        switch (strtoupper($sizeType)) {
-            case 'APP':
-                $w = 290;
-                $h = 90;
-                AttachedFile::displayImage($image_name, $w, $h, $default_image);
-                break;
-            default:
-                AttachedFile::displayOriginalImage($image_name, $default_image);
-                break;
-        }
-    }
-
 }

@@ -31,6 +31,7 @@ $(document).ready(function() {
         $(dv).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('Configurations', 'form', [frmType]), '', function(t) {
             $(dv).html(t);
+            jscolor.installByClassName('jscolor');
         });
     };
 
@@ -40,7 +41,6 @@ $(document).ready(function() {
         fcom.displayProcessing();
         fcom.ajax(fcom.makeUrl('Configurations', 'langForm', [frmType, langId, autoFillLangData]), '', function(t) {
             $(dv).html(t);
-            jscolor.installByClassName('jscolor');
             fcom.setEditorLayout(langId);
             if (frmType == FORM_MEDIA) {
                 $('input[name=btn_submit]').hide();

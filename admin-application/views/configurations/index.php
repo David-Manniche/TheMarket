@@ -17,7 +17,7 @@
                     <ul class="tabs_nav outerul"> <?php $count = 1;
                     foreach ($tabs as $formType => $tabName) {
                         $tabsId = 'tabs_' . $count; ?>
-                        <?php if ($formType == Configurations::FORM_MEDIA || $formType == Configurations::FORM_SHARING || $formType == Configurations::FORM_APPLICATION_THEME_SETTING) { ?>
+                        <?php if ($formType == Configurations::FORM_MEDIA || $formType == Configurations::FORM_SHARING) { ?>
                             <li>
                                 <a class="<?php echo ($activeTab == $formType) ? 'active' : ''?>"
                                     rel=<?php echo $tabsId; ?>

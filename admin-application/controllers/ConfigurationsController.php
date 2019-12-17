@@ -118,6 +118,17 @@ class ConfigurationsController extends AdminBaseController
         if ($tabId) {
             $this->set('tabId', $tabId);
         }
+
+        $mediaTabsArr = [
+            Configurations::FORM_MEDIA,
+            Configurations::FORM_APPLICATION_THEME_SETTING,
+        ];
+
+        if (in_array($frmType, $mediaTabsArr)) {
+            $submitBtn = $frm->getField('btn_submit');
+            $submitBtn->setfieldTagAttribute('class', "hide");
+        }
+
         $this->set('languages', Language::getAllNames());
         $this->set('frm', $frm);
         $this->set('dispLangTab', $dispLangTab);
@@ -1451,6 +1462,15 @@ class ConfigurationsController extends AdminBaseController
                 $fld->htmlAfterField = '<small>'.Labels::getLabel("LBL_NOTE:_Enable_Maintenance_Mode_Text", $this->adminLangId).'.</small>';
 
                 break;
+            case Configurations::FORM_APPLICATION_THEME_SETTING:
+                $frm->addRequiredField(Labels::getLabel('LBL_THEME_COLOR', $this->adminLangId), 'CONF_APP_THEME_COLOR')->addFieldTagAttribute('class', 'jscolor');
+                $fontColors = [
+                    '000000' => Labels::getLabel('LBL_BLACK', $this->adminLangId),
+                    'FFFFFF' => Labels::getLabel('LBL_WHITE', $this->adminLangId),
+                ];
+                $frm->addRadioButtons(Labels::getLabel('LBL_BUTTON_FONT_COLOR', $this->adminLangId), 'CONF_APP_BUTTON_FONT_COLOR', $fontColors, 0, ['class' => 'list-inline']);
+                $frm->addRequiredField(Labels::getLabel('LBL_BUTTON_BACKGROUND_COLOR', $this->adminLangId), 'CONF_APP_BUTTON_BACKGROUND_COLOR')->addFieldTagAttribute('class', 'jscolor');
+                break;
         }
         $frm->addHiddenField('', 'form_type', $type);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel("LBL_Save_Changes", $this->adminLangId));
@@ -1617,19 +1637,12 @@ class ConfigurationsController extends AdminBaseController
                 $fld->requirements()->setRequired(true);
                 break;
             case Configurations::FORM_APPLICATION_THEME_SETTING:
-                $frm->addRequiredField(Labels::getLabel('LBL_THEME_COLOR', $langId), 'CONF_APP_THEME_COLOR_'.$langId)->addFieldTagAttribute('class', 'jscolor');
-                $fontColors = [
-                    '000000' => Labels::getLabel('LBL_BLACK', $langId),
-                    'FFFFFF' => Labels::getLabel('LBL_WHITE', $langId),
-                ];
-                $frm->addRadioButtons(Labels::getLabel('LBL_FONT_COLOR', $langId), 'CONF_APP_FONT_COLOR_'.$langId, $fontColors, 0, ['class' => 'list-inline']);
-
                 $ul = $frm->addHtml('', 'MediaGrids', '<ul class="grids--onethird">');
 
                 $ul->htmlAfterField .= '<li>'.Labels::getLabel('LBL_MAIN_SCREEN_IMAGE', $langId).'<div class="logoWrap"><div class="uploaded--image">';
 
                 if (AttachedFile::getAttachment(AttachedFile::FILETYPE_APP_MAIN_SCREEN_IMAGE, 0, 0, $langId)) {
-                    $ul->htmlAfterField .= '<img src="'.CommonHelper::generateFullUrl('Image', 'appMainScreenImage', [$langId]).'"> <a  class="remove--img" href="javascript:void(0);" onclick="removeAppMainScreenImage('.$langId.')" ><i class="ion-close-round"></i></a>';
+                    $ul->htmlAfterField .= '<img src="'.CommonHelper::generateFullUrl('Image', 'appMainScreenImage', [$langId], CONF_WEBROOT_FRONT_URL).'"> <a  class="remove--img" href="javascript:void(0);" onclick="removeAppMainScreenImage('.$langId.')" ><i class="ion-close-round"></i></a>';
                 }
 
                 $ul->htmlAfterField .= ' </div></div><input type="button" name="app_main_screen_image" class="logoFiles-Js btn-xs" id="app_main_screen_image" data-file_type='.AttachedFile::FILETYPE_APP_MAIN_SCREEN_IMAGE.' value="Upload file"><small>Dimensions 1280*750</small></li>';
@@ -1638,12 +1651,10 @@ class ConfigurationsController extends AdminBaseController
 
 
                 if (AttachedFile::getAttachment(AttachedFile::FILETYPE_APP_LOGO, 0, 0, $langId)) {
-                    $ul->htmlAfterField .= '<img src="'.CommonHelper::generateFullUrl('Image', 'appLogo', [$langId]).'"> <a  class="remove--img" href="javascript:void(0);" onclick="removeAppLogo('.$langId.')" ><i class="ion-close-round"></i></a>';
+                    $ul->htmlAfterField .= '<img src="'.CommonHelper::generateFullUrl('Image', 'appLogo', [$langId], CONF_WEBROOT_FRONT_URL).'"> <a  class="remove--img" href="javascript:void(0);" onclick="removeAppLogo('.$langId.')" ><i class="ion-close-round"></i></a>';
                 }
 
                 $ul->htmlAfterField .= ' </div></div><input type="button" name="app_logo" class="logoFiles-Js btn-xs" id="app_logo" data-file_type='.AttachedFile::FILETYPE_APP_LOGO.' value="Upload file"><small>Dimensions 290*90</small></li>';
-
-                $frm->addRequiredField(Labels::getLabel('LBL_BUTTON_COLOR', $langId), 'CONF_APP_BUTTON_COLOR_'.$langId)->addFieldTagAttribute('class', 'jscolor');
                 break;
         }
 
