@@ -198,9 +198,9 @@ class CommonHelper extends FatUtility
         $rs = $srch->getResultSet();
         if ($row = FatApp::getDb()->fetch($rs)) {
             if ($encodeUrl) {
-                $url = $use_root_url.urlencode($row['urlrewrite_custom']);
+                $url = $use_root_url . urlencode($row['urlrewrite_custom']);
             } else {
-                $url = $use_root_url.$row['urlrewrite_custom'];
+                $url = $use_root_url . $row['urlrewrite_custom'];
             }
         }
         return $url;
@@ -209,7 +209,7 @@ class CommonHelper extends FatUtility
     public static function generateFullUrl($controller = '', $action = '', $queryData = array(), $use_root_url = '', $url_rewriting = null, $encodeUrl = false)
     {
         $url = static::generateUrl($controller, $action, $queryData, $use_root_url, $url_rewriting);
-        $protocol = (FatApp::getConfig('CONF_USE_SSL')==1)?'https://':'http://';
+        $protocol = (FatApp::getConfig('CONF_USE_SSL') == 1) ? 'https://' : 'http://';
         if ($encodeUrl) {
             $url = urlencode($url);
         }
@@ -220,7 +220,7 @@ class CommonHelper extends FatUtility
     {
         $url = CommonHelper::generateUrl($model, $action, $queryData, $use_root_url, false);
         $url = str_replace('index.php?', 'index_noauth.php?', $url);
-        $protocol = (FatApp::getConfig('CONF_USE_SSL')==1)?'https://':'http://';
+        $protocol = (FatApp::getConfig('CONF_USE_SSL') == 1) ? 'https://' : 'http://';
         return $protocol . $_SERVER['SERVER_NAME'] . $url;
     }
 
@@ -1836,7 +1836,7 @@ class CommonHelper extends FatUtility
     }
 
     public static function demoUrl()
-	{ 
+    {
         if (strpos($_SERVER ['SERVER_NAME'], 'demo.yo-kart.com') !== false) {
             return true;
         }
@@ -1918,29 +1918,29 @@ class CommonHelper extends FatUtility
         /* [ Check url rewritten by the system and "/" discarded in url rewrite*/
         $systemUrl = CommonHelper::generateFullUrl();
         $systemUrl = preg_replace('/https:/', 'http:', $systemUrl, 1);
-        $customUrl = substr($url, strlen($systemUrl));
-        $customUrl = rtrim($customUrl, '/');
-        $customUrl = explode('/', $customUrl);
+        $systemUrl = substr($url, strlen($systemUrl));
+        $systemUrl = rtrim($systemUrl, '/');
+        $customUrl = array_filter(explode('/', $systemUrl));
+        $customUrl = array_values($customUrl);
         $srch = UrlRewrite::getSearchObject();
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
-        $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'custom', '=', $customUrl[0]);
+        $cond = $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'custom', '=', $customUrl[0]);
+        $cond->attachCondition(UrlRewrite::DB_TBL_PREFIX . 'original', '=', $systemUrl);
+       
         $rs = $srch->getResultSet();
-
         if (!$row = FatApp::getDb()->fetch($rs)) {
-            return array(
-                'url' => $originalUrl,
-                'urlType'=> applicationConstants::URL_TYPE_EXTERNAL
-            );
+            $url = $systemUrl;
+        } else {
+            $url = $row['urlrewrite_original'];
         }
-
-        $url = $row['urlrewrite_original'];
+        
         $arr = explode('/', $url);
 
-        $controller = (isset($arr[0]))?$arr[0]:'';
+        $controller = (isset($arr[0])) ? $arr[0] : '';
         array_shift($arr);
 
-        $action = (isset($arr[0]))?$arr[0]:'';
+        $action = (isset($arr[0])) ? $arr[0] : '';
         array_shift($arr);
 
         $queryString = $arr;
@@ -1953,8 +1953,8 @@ class CommonHelper extends FatUtility
             $controller = 'Content';
         }
 
-        $recordId = $queryString[0];
-        switch ($controller.'/'.$action) {
+        $recordId = isset($queryString[0]) ? $queryString[0] :0;
+        switch ($controller . '/' . $action) {
             case 'category/view':
                 $urlType = applicationConstants::URL_TYPE_CATEGORY;
                 break;
@@ -1967,6 +1967,18 @@ class CommonHelper extends FatUtility
             case 'products/view':
                 $urlType = applicationConstants::URL_TYPE_PRODUCT;
                 break;
+            case 'collections/view':
+                $urlType = applicationConstants::URL_TYPE_COLLECTION;
+                break;
+            case 'guest-user/login-form':
+                    $urlType = !empty($recordId) ?  applicationConstants::URL_TYPE_REGISTER : applicationConstants::URL_TYPE_SIGN_IN;
+                break;
+            case 'cms/view':
+                $urlType = applicationConstants::URL_TYPE_CMS;
+                break;
+            case 'contact-us/index':
+                $urlType = applicationConstants::URL_TYPE_CONTACT_US;
+                break;
             default:
                 $recordId = applicationConstants::NO;
                 $urlType = applicationConstants::URL_TYPE_EXTERNAL;
@@ -1975,8 +1987,8 @@ class CommonHelper extends FatUtility
 
         return array(
             'url' => $url,
-            'recordId'=> $recordId,
-            'urlType'=> $urlType
+            'recordId' => $recordId,
+            'urlType' => $urlType
         );
     }
 }

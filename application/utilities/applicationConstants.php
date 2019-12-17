@@ -78,6 +78,11 @@ class applicationConstants
     public const URL_TYPE_PRODUCT = 3;
     public const URL_TYPE_CATEGORY = 4;
     public const URL_TYPE_BRAND = 5;
+    public const URL_TYPE_COLLECTION = 6;
+    public const URL_TYPE_CONTACT_US = 7;
+    public const URL_TYPE_SIGN_IN = 8;
+    public const URL_TYPE_REGISTER = 9;
+    public const URL_TYPE_CMS = 10;
 
     public static function getWeightUnitsArr($langId)
     {
