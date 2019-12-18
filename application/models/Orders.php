@@ -2337,10 +2337,10 @@ class Orders extends MyAppModel
 
         $rs = $srch->getResultSet();
         $ordersDetail = FatApp::getDb()->fetchAll($rs, 'op_id');
-        $comments = Labels::getLabel("MSG_AUTOMATICALLY_MARKED_AS_COMPLETED_BY_SYSTEM.", $this->commonLangId);
+        $comment = Labels::getLabel("MSG_AUTOMATICALLY_MARKED_AS_COMPLETED_BY_SYSTEM.", FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1));
 
         foreach ($ordersDetail as $data) {
-            $this->addChildProductOrderHistory($op_id, $data["order_language_id"], $completedOrderStatus, $comments, 1);
+            $this->addChildProductOrderHistory($data['op_id'], $data["order_language_id"], $completedOrderStatus, $comment, 1);
         }
         return true;
     }
