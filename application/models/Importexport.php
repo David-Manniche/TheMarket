@@ -3014,7 +3014,9 @@ class Importexport extends ImportexportCommon
                         if (in_array($columnKey, array( 'selprod_title', 'selprod_comments' ))) {
                             $selProdGenLangArr[$columnKey] = $colValue;
                         } elseif (in_array($columnKey, array( 'selprod_return_age', 'selprod_cancellation_age' ))) {
-                            $selProdSepc[$columnKey] = $colValue;
+                            if ('' != $colValue) {
+                                $selProdSepc[$columnKey] = $colValue;
+                            }
                         } else {
                             $selProdGenArr[$columnKey] = $colValue;
                         }
@@ -3087,11 +3089,15 @@ class Importexport extends ImportexportCommon
                 }
 
                 if ($selprodId) {
-                    $selProdSpecificsObj = new SellerProductSpecifics($selprodId);
-                    $selProdSepc['sps_selprod_id'] = $selprodId;
-                    $selProdSpecificsObj->assignValues($selProdSepc);
-                    if (!$selProdSpecificsObj->addNew(array(), $selProdSepc)) {
-                        FatUtility::dieJsonError($selProdSpecificsObj->getError());
+                    if (!empty($selProdSepc)) {
+                        $selProdSpecificsObj = new SellerProductSpecifics($selprodId);
+                        $selProdSepc['sps_selprod_id'] = $selprodId;
+                        $selProdSpecificsObj->assignValues($selProdSepc);
+                        if (!$selProdSpecificsObj->addNew(array(), $selProdSepc)) {
+                            $errMsg = Labels::getLabel($selProdSpecificsObj->getError());
+                            CommonHelper::writeToCSVFile($this->CSVfileObj, array( $rowIndex, ($colIndex + 1), $errMsg ));
+                            continue;
+                        }
                     }
 
                     /* Lang Data [ */
