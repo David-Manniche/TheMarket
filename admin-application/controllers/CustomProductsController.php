@@ -594,6 +594,19 @@ class CustomProductsController extends AdminBaseController
             }
 
             $product_id = $prodObj->getMainTableRecordId();
+            
+            $prodSepc = [
+                'ps_product_id' => $product_id,
+                'product_warranty' => $data['product_warranty']
+            ];
+
+            $productSpecificsObj = new ProductSpecifics($product_id);
+            $productSpecificsObj->assignValues($prodSepc);
+            if (!$productSpecificsObj->addNew(array(), $prodSepcData)) {
+                Message::addErrorMessage($productSpecificsObj->getError());
+                $db->rollbackTransaction();
+                FatUtility::dieWithError(Message::getHtml());
+            }
 
             /* saving of product categories[ */
             $product_categories = array($data['preq_prodcat_id']);
@@ -805,6 +818,21 @@ class CustomProductsController extends AdminBaseController
                     FatUtility::dieWithError(Message::getHtml());
                 }
                 $selprod_id = $sellerProdObj->getMainTableRecordId();
+
+                if (!empty($selprod_id)) {
+                    $selProdSpecificsObj = new SellerProductSpecifics($selprod_id);
+                    $selProdSepc = [
+                        'sps_selprod_id' => $selprod_id,
+                        'selprod_return_age' => $selProdData['selprod_return_age'],
+                        'selprod_cancellation_age' => $selProdData['selprod_cancellation_age'],
+                    ];
+                    $selProdSpecificsObj->assignValues($selProdSepc);
+                    if (!$selProdSpecificsObj->addNew(array(), $selProdSepc)) {
+                        Message::addErrorMessage($selProdSpecificsObj->getError());
+                        $db->rollbackTransaction();
+                        FatUtility::dieWithError(Message::getHtml());
+                    }
+                }
 
                 /* Save url keyword [ */
                 $urlKeyword = strtolower(CommonHelper::createSlug($selProdData['selprod_url_keyword']));
