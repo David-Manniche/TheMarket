@@ -373,6 +373,8 @@ trait SellerProducts
             }
         }
 
+        $selprod_id = $sellerProdObj->getMainTableRecordId();
+
         $selProdSpecificsObj = new SellerProductSpecifics($selprod_id);
         if (0 < $useShopPolicy) {
             if (!$selProdSpecificsObj->deleteRecord()) {
@@ -386,8 +388,6 @@ trait SellerProducts
                 FatUtility::dieJsonError($selProdSpecificsObj->getError());
             }
         }
-
-        $selprod_id = $sellerProdObj->getMainTableRecordId();
 
         $sellerProdObj->rewriteUrlProduct($post['selprod_url_keyword']);
         $sellerProdObj->rewriteUrlReviews($post['selprod_url_keyword']);
