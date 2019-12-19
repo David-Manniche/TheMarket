@@ -101,7 +101,7 @@ $(document).ready(function(){
 		});
 	}
 
-	$(document).on('click', '[data-method]', function () {
+	/*$(document).on('click', '[data-method]', function () {
 		var data = $(this).data(),
           $target,
           result;
@@ -132,7 +132,7 @@ $(document).ready(function(){
         }
 
       }
-    });
+    });*/
 
 	function getRoundedCanvas(sourceCanvas) {
       var canvas = document.createElement('canvas');
@@ -151,77 +151,7 @@ $(document).ready(function(){
       return canvas;
     }
 
-	cropImage = function(obj){
-	  // var image = document.getElementById('new-img');
-	  var image = obj;
-      var button = document.getElementById('updateBtn-js');
-	  var dataX = document.getElementById('dataX');
-	  var dataY = document.getElementById('dataY');
-	  var dataHeight = document.getElementById('dataHeight');
-	  var dataWidth = document.getElementById('dataWidth');
-	  var dataRotate = document.getElementById('dataRotate');
-	  var dataScaleX = document.getElementById('dataScaleX');
-	  var dataScaleY = document.getElementById('dataScaleY');
-
-      var cropper = new Cropper(image, {
-        aspectRatio: 16 / 9,
-        viewMode: 1,
-        ready: function () {
-          croppable = true;
-        },
-      });
-	  var options = {
-	    aspectRatio: 16 / 9,
-	    crop: function (e) {
-	      var data = e.detail;
-	      console.log(e.type);
-	      dataX.value = Math.round(data.x);
-	      dataY.value = Math.round(data.y);
-	      dataHeight.value = Math.round(data.height);
-	      dataWidth.value = Math.round(data.width);
-	      dataRotate.value = typeof data.rotate !== 'undefined' ? data.rotate : '';
-	      dataScaleX.value = typeof data.scaleX !== 'undefined' ? data.scaleX : '';
-	      dataScaleY.value = typeof data.scaleY !== 'undefined' ? data.scaleY : '';
-	    }
-  	  };
-
-	  var cropper = new Cropper(image, options);
-
-      button.onclick = function () {
-        var croppedCanvas;
-        var roundedCanvas;
-        var roundedImage;
-
-        if (!croppable) {
-          return;
-        }
-
-        // Crop
-        croppedCanvas = cropper.getCroppedCanvas();
-
-        // Round
-        roundedCanvas = getRoundedCanvas(croppedCanvas);
-
-        // Show
-        roundedImage = document.createElement('img');
-        roundedImage.src = roundedCanvas.toDataURL();
-
-
-		/*var json = [
-					'{"x":' + cropper.getData().x,
-					'"y":' + cropper.getData().y,
-					'"height":' + cropper.getData().height,
-					'"width":' + e.width,
-					'"rotate":' + e.rotate + '}'
-					].join();
-				$("#img_data").val(json);*/
-		/*result.innerHTML = '';
-        result.appendChild(roundedImage);*/
-		// sumbmitProfileImage()
-      };
-	};
-
-	popupOrgImage = function(input){
+	/*popupOrgImage = function(input){
 		$.facebox('<div class="popup__body"><div id="loader" class="loader">'+fcom.getLoader()+'</div></div>','faceboxWidth fbminwidth');
 
 		wid = $(window).width();
@@ -238,11 +168,35 @@ $(document).ready(function(){
 		$('#new-img').attr('src', orgImg);
 		$('#new-img').width(wid);
 		cropImage(document.getElementById('new-img'));
-	};
+	};*/
 
 	popupImage = function(input){
-		$.facebox('<div class="popup__body"><div id="loader" class="loader">'+fcom.getLoader()+'</div></div>','faceboxWidth fbminwidth');
+		fcom.ajax(fcom.makeUrl('Cropper', 'index'), '', function(t) {
+			$.facebox(t,'faceboxWidth fbminwidth');
+			var container = document.querySelector('.img-container');
+			var image = container.getElementsByTagName('img').item(0);
+			var dataX = document.getElementById('dataX');
+		  	var dataY = document.getElementById('dataY');
+		  	var dataScaleX = document.getElementById('dataScaleX');
+		  	var dataScaleY = document.getElementById('dataScaleY');
+			var dataRotate = document.getElementById('dataRotate');
+			var options = {
+		    aspectRatio: 1 / 1,
+		    preview: '.img-preview',
+		    crop: function (e) {
+		      var data = e.detail;
+		      console.log(e.type);
+		      dataX.value = Math.round(data.x);
+		      dataY.value = Math.round(data.y);
+		      dataRotate.value = typeof data.rotate !== 'undefined' ? data.rotate : '';
+		      dataScaleX.value = typeof data.scaleX !== 'undefined' ? data.scaleX : '';
+		      dataScaleY.value = typeof data.scaleY !== 'undefined' ? data.scaleY : '';
+		    }
+		  };
+		  var cropper = new Cropper(image, options);
+		});
 
+		/*$.facebox('<div class="popup__body"><div id="loader" class="loader">'+fcom.getLoader()+'</div></div>','faceboxWidth fbminwidth');
 		wid = $(window).width();
 		if(wid > 767){
 			wid = 500;
@@ -268,7 +222,7 @@ $(document).ready(function(){
 					$.facebox('<div class="popup__body"><div class="img-container marginTop20">'+json.msg+'</div></div>');
 				}
 			}
-		});
+		});*/
 	};
 
 	truncateDataRequestPopup = function(){

@@ -841,6 +841,7 @@ class AccountController extends LoggedUserController
 
         $this->_template->addJs('js/jquery.form.js');
         $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
         $this->_template->addCss('css/cropper.css');
         $this->includeDateTimeFiles();
 

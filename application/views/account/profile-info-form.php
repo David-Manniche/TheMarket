@@ -65,9 +65,13 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
                     <div class="col-6">
                         <div class="btngroup--fix">
                             <?php echo $imgFrm->getFormTag();    ?>
-                            <span class="btn btn--primary btn--sm btn--fileupload mt-1">
+                            <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="popupImage()"><?php echo Labels::getLabel('LBL_Change', $siteLangId);?></a>
+                            <?php if ($mode == 'Edit') { ?>
+
+                            <?php } ?>
+                            <?php /*<span class="btn btn--primary btn--sm btn--fileupload mt-1">
                                 <?php echo $imgFrm->getFieldHtml('user_profile_image'); ?><?php echo ($mode == 'Edit') ? Labels::getLabel('LBL_Change', $siteLangId): Labels::getLabel('LBL_Upload', $siteLangId) ;?>
-                            </span>
+                            </span> */ ;?>
                             <?php echo $imgFrm->getFieldHtml('update_profile_img');
                             echo $imgFrm->getFieldHtml('rotate_left');
                             echo $imgFrm->getFieldHtml('rotate_right');
