@@ -1608,10 +1608,6 @@ class Importexport extends ImportexportCommon
                             $colValue = FatUtility::int($colValue);
                             if (0 > $colValue) {
                                 $invalid = true;
-                            } else {
-                                $prodSepc = [
-                                    $columnKey => $colValue
-                                ];
                             }
                             break;
                     }
@@ -1626,6 +1622,10 @@ class Importexport extends ImportexportCommon
                             $prodlangDataArr[$columnKey] = $colValue;
                         } elseif (in_array($columnKey, array( 'ps_from_country_id', 'ps_free' ))) {
                             $prodShippingArr[$columnKey] = $colValue;
+                        } elseif ('product_warranty' == $columnKey) {
+                            $prodSepc = [
+                                $columnKey => $colValue
+                            ];
                         } else {
                             if (in_array($columnKey, array( 'tax_category_id', 'tax_category_identifier' ))) {
                                 continue;
@@ -2995,8 +2995,6 @@ class Importexport extends ImportexportCommon
                             $colValue = FatUtility::int($colValue);
                             if (0 > $colValue) {
                                 $invalid = true;
-                            } else {
-                                $selProdSepc[$columnKey] = $colValue;
                             }
                             break;
                     }
@@ -3015,6 +3013,8 @@ class Importexport extends ImportexportCommon
                     } else {
                         if (in_array($columnKey, array( 'selprod_title', 'selprod_comments' ))) {
                             $selProdGenLangArr[$columnKey] = $colValue;
+                        } elseif (in_array($columnKey, array( 'selprod_return_age', 'selprod_cancellation_age' ))) {
+                            $selProdSepc[$columnKey] = $colValue;
                         } else {
                             $selProdGenArr[$columnKey] = $colValue;
                         }
