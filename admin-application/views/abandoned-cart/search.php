@@ -11,12 +11,21 @@ $arr_flds = array(
 );
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
-foreach ($arr_flds as $val) {
+/* foreach ($arr_flds as $val) {
 	$e = $th->appendElement('th', array(), $val);
-}
+} */
 $sr_no = $page==1?0:$pageSize*($page-1);
 
-foreach ($records as $sn=>$row){
+foreach ($records as $sn=>$row){  
+    if($sn == 0){
+        if($row['abandonedcart_action'] == AbandonedCart::ACTION_PURCHASED){
+            $arr_flds['action'] = Labels::getLabel('LBL_Amount',$adminLangId);
+        }
+        foreach ($arr_flds as $val) {  
+            $e = $th->appendElement('th', array(), $val);
+        }
+    }
+    
 	$sr_no++;
 	$tr = $tbl->appendElement('tr');
 
@@ -28,7 +37,7 @@ foreach ($records as $sn=>$row){
 			break;
 			case 'abandonedcart_action': 
                 if($row[AbandonedCart::DB_TBL_PREFIX.'discount_notification'] == 1 && $row[$key] != AbandonedCart::ACTION_PURCHASED){
-                    $td->appendElement('plaintext', array(), Labels::getLabel('LBL_Discount_Coupon_Already_Sent',$adminLangId));
+                    $td->appendElement('plaintext', array(), Labels::getLabel('LBL_Discount_Coupon_Sent',$adminLangId));
                 }else{
                     $actionArr = AbandonedCart::getActionArr($adminLangId);
                     $td->appendElement('plaintext', array(), $actionArr[$row[$key]]);
@@ -47,7 +56,11 @@ foreach ($records as $sn=>$row){
                     $innerUl=$innerDiv->appendElement('ul',array('class'=>'linksvertical'));
 
                     $innerLi=$innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href'=>'javascript:void(0);', 'onclick'=>'discountNotification('.$row['abandonedcart_user_id'].','.$row['abandonedcart_action'].','.$row['selprod_product_id'].','.$row['abandonedcart_selprod_id'].')', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Send_Discount_Notification',$adminLangId)),Labels::getLabel('LBL_Send_Discount_Notification',$adminLangId), true);
+                    $innerLi->appendElement('a', array('href'=>'javascript:void(0);', 'onclick'=>'discountNotification('.$row['abandonedcart_id'].','.$row['abandonedcart_user_id'].','.$row['selprod_product_id'].')', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Send_Discount_Notification',$adminLangId)),Labels::getLabel('LBL_Send_Discount_Notification',$adminLangId), true);
+                }
+                
+                if($row['abandonedcart_action'] == AbandonedCart::ACTION_PURCHASED){
+                    $td->appendElement('plaintext', array(), CommonHelper::displayMoneyFormat($row['abandonedcart_amount']));
                 }
 			break; 
 			default:

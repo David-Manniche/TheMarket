@@ -1,5 +1,5 @@
 <?php
-class AbandonedCart extends FatModel
+class AbandonedCart extends MyAppModel
 {
     const DB_TBL = 'tbl_abandoned_cart';
     const DB_TBL_PREFIX = 'abandonedcart_';
@@ -12,43 +12,65 @@ class AbandonedCart extends FatModel
     
     const MAX_EMAIL_COUNT = 2;
     const MAX_DISCOUNT_NOTIFICATION = 1;
+    const DELETE_OLD_RECORD_MONTH = 3;
     
     private $totalRecords;
     private $totalPages;
     private $pageSize;
     
-    public static function save($userId, $selProdId, $qty, $action, $amount = 0)
+    public function __construct($id = 0)
+    {
+        parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
+    }
+    
+    public static function saveAbandonedCart($userId, $selProdId, $qty, $action, $amount = 0)
     { 
         $userId = FatUtility::int($userId);
         $selProdId = FatUtility::int($selProdId);
         $qty = FatUtility::int($qty);
         $action = FatUtility::int($action);
+        $amount = FatUtility::int($amount);
         if( $userId < 1 || $selProdId < 1 || $qty < 1 || !in_array($action, array_keys(static::getActionArr()))){
             return false;
         }
         
+        self::deleteOldRecords();        
         $data = array(
             static::DB_TBL_PREFIX.'user_id' => $userId,
             static::DB_TBL_PREFIX.'selprod_id' => $selProdId,
             static::DB_TBL_PREFIX.'type' => static::TYPE_PRODUCT,
             static::DB_TBL_PREFIX.'qty' => $qty,
+            static::DB_TBL_PREFIX.'amount' => $amount,
             static::DB_TBL_PREFIX.'action' => $action,
             static::DB_TBL_PREFIX.'added_on' => date('Y-m-d H:i:s'),
         );
+        
         if($action == static::ACTION_PURCHASED){
-            $data[static::DB_TBL_PREFIX.'email_count'] = 0;
-            $data[static::DB_TBL_PREFIX.'discount_notification'] = 0;
+            $srch = new AbandonedCartSearch();
+            $srch->addActionCondition();
+            $srch->addCondition(static::DB_TBL_PREFIX.'user_id', '=', $userId);
+            $srch->addCondition(static::DB_TBL_PREFIX.'selprod_id', '=', $selProdId);
+            $srch->addOrder(static::DB_TBL_PREFIX.'added_on', 'DESC');
+            $srch->addMultipleFields(array(static::DB_TBL_PREFIX.'email_count', static::DB_TBL_PREFIX.'discount_notification')); 
+            $srch->setPageSize(1);
+            $rs = $srch->getResultSet();  
+            $record = FatApp::getDb()->fetch($rs);
+            
+            $data[static::DB_TBL_PREFIX.'email_count'] = $record[static::DB_TBL_PREFIX.'email_count'];
+            $data[static::DB_TBL_PREFIX.'discount_notification'] = $record[static::DB_TBL_PREFIX.'discount_notification'];
         }
+        
         $record = new TableRecord(static::DB_TBL);
         $record->assignValues($data);
         if (!$record->addNew(array(), $data)) {
             return false;
         }
-        
-        $amount = FatUtility::int($amount);
-        CartHistory::saveLog($userId, $selProdId, $qty, $action, $amount);
-        
         return true;
+    }
+    
+    public static function deleteOldRecords()
+    { 
+        FatApp::getDb()->deleteRecords(static::DB_TBL, array('smt'=> static::DB_TBL_PREFIX.'added_on < ?','vals' => array(date('Y-m-d H:i:s', strtotime('-'.static::DELETE_OLD_RECORD_MONTH.' months')))));
     }
     
     public static function getActionArr($langId = 0)
@@ -64,41 +86,56 @@ class AbandonedCart extends FatModel
         );
     }
 
-    public function getAbandonedCartList($langId, $userId = 0, $selProdId = 0, $action = 0, $page = 1)
-    {   
+    public function getAbandonedCartList($userId = 0, $selProdId = 0, $action = 0, $dateFrom = '', $dateTo = '', $page = 1)
+    {       
         $page = FatUtility::int($page);
         $page = ($page > 0) ? $page : 1;
         $srch = new AbandonedCartSearch();
         $srch->joinUsers();
-        $srch->joinSellerProducts($langId);   
-        if($userId > 1){
-            $srch->addUserCondition($userId);
-        }
-        if($selProdId > 1){
-            $srch->addSellerProductCondition($selProdId);
-        }
+        $srch->joinSellerProducts($this->commonLangId);  
         $srch->addActionCondition($action);
-        $srch->addEmailCountCondition();
-        $srch->addDiscountNotificationCondition(static::MAX_DISCOUNT_NOTIFICATION);
+        if($userId > 0){
+            $srch->addCondition(static::DB_TBL_PREFIX.'user_id', '=', $userId);
+        }
+        if($selProdId > 0){
+            $srch->addCondition(static::DB_TBL_PREFIX.'selprod_id', '=', $selProdId);
+        }
+        if(!empty($dateFrom)) {
+            $srch->addCondition(static::DB_TBL_PREFIX.'added_on', '>=', $dateFrom. ' 00:00:00');
+        }
+        if(!empty($dateTo)) {
+            $srch->addCondition(static::DB_TBL_PREFIX.'added_on', '<=', $dateTo. ' 23:59:59');
+        }
+        if($action != static::ACTION_PURCHASED){
+            $srch->addSubQueryCondition();
+            $srch->addCondition(static::DB_TBL_PREFIX.'email_count', '<', static::MAX_EMAIL_COUNT);
+            $srch->addCondition(static::DB_TBL_PREFIX.'discount_notification', '<=', static::MAX_DISCOUNT_NOTIFICATION);
+        }
+        if($action == static::ACTION_PURCHASED){   
+            $cnd = $srch->addCondition(static::DB_TBL_PREFIX.'email_count', '>', 0);
+            $cnd->attachCondition(static::DB_TBL_PREFIX.'discount_notification', '>', 0);
+        } 
         $srch->addMultipleFields(array('ch.*', 'user_name', 'selprod_product_id', 'selprod_title')); 
+        $srch->addOrder(static::DB_TBL_PREFIX.'added_on', 'DESC');
         $srch->setPageNumber($page);
         $srch->setPageSize($this->setPageSize());
-        $rs = $srch->getResultSet();  
+        $rs = $srch->getResultSet();   
         $this->totalRecords = $srch->recordCount();
         $this->totalPages = $srch->pages();
         $this->pageSize = $this->setPageSize();
         return FatApp::getDb()->fetchAll($rs);        
     }
     
-    public function getAbandonedCartProducts($langId, $page = 1)
+    public function getAbandonedCartProducts($page = 1)
     {
         $page = FatUtility::int($page);
         $page = ($page > 0) ? $page : 1; 
         $srch = new AbandonedCartSearch();
-        $srch->joinSellerProducts($langId);
+        $srch->joinSellerProducts($this->commonLangId);
+        $srch->addSubQueryCondition();
         $srch->addActionCondition();
         $srch->addMultipleFields(array(static::DB_TBL_PREFIX.'selprod_id', 'selprod_title', 'count('.static::DB_TBL_PREFIX.'selprod_id'.') as product_count')); 
-        $srch->addGroupBySellerProduct();
+        $srch->addGroupBy(static::DB_TBL_PREFIX.'selprod_id');
         $srch->setPageNumber($page);        
         $srch->setPageSize($this->setPageSize());        
         $rs = $srch->getResultSet();                  
@@ -108,57 +145,50 @@ class AbandonedCart extends FatModel
         return FatApp::getDb()->fetchAll($rs);        
     }
     
-    public function sendDiscountEmail($langId, $userId, $action, $couponId, $selProdId)
-    { 
-        $langId = FatUtility::int($langId);
-        $userId = FatUtility::int($userId);
-        $action = FatUtility::int($action);
+    public function sendDiscountEmail($couponId)
+    {
         $couponId = FatUtility::int($couponId);
-        $selProdId = FatUtility::int($selProdId);
-        if($langId < 1 || $userId < 1 || $couponId < 1 || $selProdId < 1 || !in_array($action, array_keys(static::getActionArr()))){ 
+        if($couponId < 1 ){ 
             return false;
         }
         
-        $user = new User($userId);
-        $userData = $user->getUserInfo(array('user_name', 'credential_email'), false, false, true);
         $couponData = DiscountCoupons::getAttributesById($couponId);
-        $selProdData = SellerProduct::getSelProdDataById($selProdId, $langId);
-             
+        $srch = new AbandonedCartSearch();
+        $srch->joinUsers(true);
+        $srch->joinSellerProducts($this->commonLangId);
+        $srch->addCondition(static::DB_TBL_PREFIX.'id', '=', $this->mainTableRecordId);
+        $srch->addMultipleFields(array('abandonedcart_action', 'user_id', 'user_name', 'credential_email', 'selprod_id', 'selprod_product_id', 'selprod_title', 'selprod_price')); 
+        $rs = $srch->getResultSet();  
+        $abandonedData = FatApp::getDb()->fetch($rs);  
+   
         $discount = ($couponData['coupon_discount_in_percent'] == applicationConstants::PERCENTAGE) ? $couponData['coupon_discount_value'].'%' : CommonHelper::displayMoneyFormat($couponData['coupon_discount_value']);        
         $arrReplacements = array(
-            '{user_full_name}' => trim($userData['user_name']),
-            '{checkout_now}' => CommonHelper::generateFullUrl('GuestUser', 'redirectAbandonedCartUser', array($userId, $selProdId), CONF_WEBROOT_FRONTEND),
+            '{user_full_name}' => trim($abandonedData['user_name']),
+            '{checkout_now}' => CommonHelper::generateFullUrl('GuestUser', 'redirectAbandonedCartUser', array($abandonedData['user_id'], $abandonedData['selprod_id']), CONF_WEBROOT_FRONTEND),
             '{coupon_code}' => $couponData['coupon_code'],
             '{discount}' => $discount,
-            '{product_name}' => trim($selProdData['selprod_title'])
+            '{product_name}' => trim($abandonedData['selprod_title'])
         );
         
         $tpl = "";
-        if($action == static::ACTION_ADDED){                    
-            $prodImage = CommonHelper::generateFullUrl('image', 'product', array($selProdData['selprod_product_id'], "THUMB", $selProdId, 0, $langId),CONF_WEBROOT_FRONTEND);
+        if($abandonedData['abandonedcart_action'] == static::ACTION_ADDED){                    
+            $prodImage = CommonHelper::generateFullUrl('image', 'product', array($abandonedData['selprod_product_id'], "THUMB", $abandonedData['selprod_id'], 0, $this->commonLangId),CONF_WEBROOT_FRONTEND);
             $arrReplacements['{product_image}'] = $prodImage;
-            $arrReplacements['{product_price}'] = CommonHelper::displayMoneyFormat($selProdData['selprod_price']);
+            $arrReplacements['{product_price}'] = CommonHelper::displayMoneyFormat($abandonedData['selprod_price']);
             $tpl = "abandoned_cart_discount_notification";
         }        
-        if($action == static::ACTION_DELETED){
+        if($abandonedData['abandonedcart_action'] == static::ACTION_DELETED){
             $tpl = "abandoned_cart_deleted_discount_notification";
         }         
-        if(!EmailHandler::sendMailTpl($userData['credential_email'], $tpl, $langId, $arrReplacements)) {            
+        if(!EmailHandler::sendMailTpl($abandonedData['credential_email'], $tpl, $this->commonLangId, $arrReplacements)) {            
             return false;
         }
         return true;        
     }
     
-    public function updateDiscountNotification($userId, $selProdId)
+    public function updateDiscountNotification()
     {
-        $userId = FatUtility::int($userId);
-        $selProdId = FatUtility::int($selProdId);
-        if($userId < 1 || $selProdId < 1){ 
-            return false;
-        }
-        
-        $where = array('smt' => static::DB_TBL_PREFIX.'user_id = ? AND '.static::DB_TBL_PREFIX.'selprod_id = ?', 'vals' => array($userId, $selProdId));
-        if (!FatApp::getDb()->updateFromArray(static::DB_TBL, array(static::DB_TBL_PREFIX.'discount_notification' => 1), $where)) {
+        if (!FatApp::getDb()->updateFromArray(static::DB_TBL, array(static::DB_TBL_PREFIX.'discount_notification' => 1), array('smt' => static::DB_TBL_PREFIX.'id = ?', 'vals' => array($this->mainTableRecordId)))) {
             return false;
         }
         return true;
@@ -170,31 +200,33 @@ class AbandonedCart extends FatModel
         $srch = new AbandonedCartSearch();
         $srch->joinUsers(true);
         $srch->joinSellerProducts($langId);
+        $srch->addSubQueryCondition();
         $srch->addActionCondition(static::ACTION_ADDED);
-        $srch->addEmailCountCondition();
-        $srch->addDiscountNotificationCondition(); 
-        $srch->addMultipleFields(array('user_id', 'user_name', 'credential_email', 'selprod_id', 'selprod_product_id', 'selprod_title', 'selprod_price')); 
+        $srch->addCondition(static::DB_TBL_PREFIX.'email_count', '<', static::MAX_EMAIL_COUNT);
+        $srch->addCondition(static::DB_TBL_PREFIX.'discount_notification', '=', 0);
+        $srch->addMultipleFields(array(static::DB_TBL_PREFIX.'id', 'user_id', 'user_name', 'credential_email', 'selprod_id', 'selprod_product_id', 'selprod_title', 'selprod_price')); 
+        $srch->addOrder(static::DB_TBL_PREFIX.'user_id');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();  
-        $records = FatApp::getDb()->fetchAll($rs);        
-        
+        $records = FatApp::getDb()->fetchAll($rs);   
+     
         $prevUserId = 0 ;         
         $productHtml = "";
-        $selProdIds = array();
+        $abandonedCartIds = array();
         foreach($records as $key=>$data){ 
             if($prevUserId == 0 || $prevUserId == $data['user_id'] ){
                 $prevUserId = $data['user_id'];
             }else{ 
                 if(self::sendReminderEmail($records[$key-1]['user_id'], $records[$key-1]['user_name'], $records[$key-1]['credential_email'], $productHtml)){
-                    self::updateReminderCount($records[$key-1]['user_id'], $selProdIds);
+                    self::updateReminderCount($abandonedCartIds);
                 }                    
                 $prevUserId = $data['user_id'];
                 $productHtml = "";
-                $selProdIds = array();
+                $abandonedCartIds = array();
             }
 
-            $selProdIds[] = $data['selprod_id'];
+            $abandonedCartIds[] = $data[static::DB_TBL_PREFIX.'id'];
             $tpl = new FatTemplate('', '');
             $tpl->set('data', $data);
             $tpl->set('langId', $langId);
@@ -202,7 +234,7 @@ class AbandonedCart extends FatModel
             
             if(($key+1) == count($records)){
                 if(self::sendReminderEmail($data['user_id'], $data['user_name'], $data['credential_email'], $productHtml)){
-                    self::updateReminderCount($data['user_id'], $selProdIds);
+                    self::updateReminderCount($abandonedCartIds);
                 }                    
             }    
         }    
@@ -226,14 +258,13 @@ class AbandonedCart extends FatModel
         return true;
     }
 
-    public static function updateReminderCount($userId, $selProdIds)
+    public static function updateReminderCount($abandonedCartIds)
     {
-        $userId = FatUtility::int($userId);
-        if($userId < 1 || !is_array($selProdIds)){ 
+        if(!is_array($abandonedCartIds)){ 
             return false;
         }       
-        foreach($selProdIds as $selProdId){
-            $where = array('smt' => static::DB_TBL_PREFIX.'user_id = ? AND '.static::DB_TBL_PREFIX.'selprod_id = ?', 'vals' => array($userId, $selProdId));
+        foreach($abandonedCartIds as $id){
+            $where = array('smt' => static::DB_TBL_PREFIX.'id = ?', 'vals' => array($id));
             $data = array(static::DB_TBL_PREFIX.'email_count' => 'mysql_func_'.static::DB_TBL_PREFIX.'email_count + 1');
             if (!FatApp::getDb()->updateFromArray(static::DB_TBL, $data, $where, true)) {
                 return false;

@@ -62,10 +62,9 @@ $(document).ready(function(){
 
 (function() {
 	var currentPage = 1;
+    var abandonedcartId = 0; 
 	var userId = 0;
     var productId = 0;
-    var selProdId = 0;
-    var action = 0;
     
 	searchAbandonedCart = function(form,page){
 		if (!page) {
@@ -82,6 +81,11 @@ $(document).ready(function(){
 			dv.html(res);
 		});
 	};
+    
+    submitForm = function(action){
+        $("input[name='abandonedcart_action']").val( action );
+        searchAbandonedCart(document.frmAbandonedCartSearch);
+    }
         
     goToSearchPage = function(page) {
 		if(typeof page==undefined || page == null){
@@ -100,12 +104,11 @@ $(document).ready(function(){
 	};
     
     
-    discountNotification = function(user_id, action_type, product_id, selprod_id){
+    discountNotification = function(abandonedcart_id, user_id, product_id){
         addCouponForm(0);
+        abandonedcartId = abandonedcart_id;
         userId = user_id;
-        action = action_type
         productId = product_id;
-        selProdId = selprod_id;
     }
     
     
@@ -144,7 +147,7 @@ $(document).ready(function(){
 		fcom.updateWithAjax(fcom.makeUrl('DiscountCoupons', 'setup'), data, function(t) {  
             updateCouponUser(t.couponId, userId);
             updateCouponProduct(t.couponId, productId);
-			sendDiscountNotification(t.couponId, action, userId, selProdId);
+			sendDiscountNotification(abandonedcartId, t.couponId);
             $(document).trigger('close.facebox');
 		});
 	};
@@ -161,8 +164,8 @@ $(document).ready(function(){
 		});
 	};
 
-    sendDiscountNotification = function(couponId, action, userId, selProdId){
-        var data = 'couponId='+couponId+'&action='+action+'&userId='+userId+'&selProdId='+selProdId;
+    sendDiscountNotification = function(abandonedcartId, couponId){
+        var data = 'abandonedcartId='+abandonedcartId+'&couponId='+couponId;
         fcom.updateWithAjax(fcom.makeUrl('AbandonedCart', 'discountNotification'), data, function(t) {            
             searchAbandonedCart(document.frmAbandonedCartSearch);
         });

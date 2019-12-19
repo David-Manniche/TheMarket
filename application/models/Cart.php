@@ -138,7 +138,7 @@ class Cart extends FatModel
         $this->updateUserCart();
         
         if(is_numeric($this->cart_user_id) && $this->cart_user_id > 0){
-            AbandonedCart::save($this->cart_user_id, $selprod_id, $this->SYSTEM_ARR['cart'][$key], AbandonedCart::ACTION_ADDED);
+            AbandonedCart::saveAbandonedCart($this->cart_user_id, $selprod_id, $this->SYSTEM_ARR['cart'][$key], AbandonedCart::ACTION_ADDED);
         }
         
         if ($returnUserId) {
@@ -538,7 +538,7 @@ class Cart extends FatModel
                     $this->updateTempStockHold($product['selprod_id'], 0, 0);
                     /* ] */                        
                     if(is_numeric($this->cart_user_id) && $this->cart_user_id > 0){
-                        AbandonedCart::save($this->cart_user_id, $product['selprod_id'], $product['quantity'], AbandonedCart::ACTION_DELETED);
+                        AbandonedCart::saveAbandonedCart($this->cart_user_id, $product['selprod_id'], $product['quantity'], AbandonedCart::ACTION_DELETED);
                     }
                     break;
                 }
@@ -619,7 +619,7 @@ class Cart extends FatModel
                             $this->updateTempStockHold($product['selprod_id'], $quantity);
                             /* ] */
                             if(is_numeric($this->cart_user_id) && $this->cart_user_id > 0){
-                                AbandonedCart::save($this->cart_user_id, $product['selprod_id'], $quantity, AbandonedCart::ACTION_ADDED);
+                                AbandonedCart::saveAbandonedCart($this->cart_user_id, $product['selprod_id'], $quantity, AbandonedCart::ACTION_ADDED);
                             }
                             break;
                         } else {

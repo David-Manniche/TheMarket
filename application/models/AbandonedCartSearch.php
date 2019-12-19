@@ -22,16 +22,6 @@ class AbandonedCartSearch extends SearchBase
             $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp_l.selprodlang_selprod_id = sp.selprod_id AND sp_l.selprodlang_lang_id = '.$langId, 'sp_l');
         }
     }
-
-    public function addUserCondition($userId)
-    { 
-        $this->addCondition(AbandonedCart::DB_TBL_PREFIX.'user_id', '=', $userId);
-    }
-    
-    public function addSellerProductCondition($selProdId)
-    { 
-        $this->addCondition(AbandonedCart::DB_TBL_PREFIX.'selprod_id', '=', $selProdId);
-    }
     
     public function addActionCondition($action = 0)
     { 
@@ -42,24 +32,9 @@ class AbandonedCartSearch extends SearchBase
         }      
     }
     
-    public function addEmailCountCondition()
+    public function addSubQueryCondition()
     { 
-        $this->addCondition(AbandonedCart::DB_TBL_PREFIX.'email_count', '<', AbandonedCart::MAX_EMAIL_COUNT);
-    }
-    
-    public function addDiscountNotificationCondition($discountNotification = 0)
-    {   
-        $this->addCondition(AbandonedCart::DB_TBL_PREFIX.'discount_notification', '<=', $discountNotification);
-    }
-    
-    public function addGroupBySellerProduct()
-    { 
-        $this->addGroupBy(AbandonedCart::DB_TBL_PREFIX.'selprod_id');
-    }
-    
-    public function addGroupByUser()
-    { 
-        $this->addGroupBy(AbandonedCart::DB_TBL_PREFIX.'user_id');
+        $this->addDirectCondition(AbandonedCart::DB_TBL_PREFIX.'id IN(select max('.AbandonedCart::DB_TBL_PREFIX.'id) from '.AbandonedCart::DB_TBL.' GROUP BY '.AbandonedCart::DB_TBL_PREFIX.'user_id, '.AbandonedCart::DB_TBL_PREFIX.'selprod_id)');
     }
 
 }

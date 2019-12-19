@@ -31,9 +31,17 @@
                                 $sellerProductFld = $frmSearch->getField('seller_product');
 								$sellerProductFld->developerTags['col'] = 4;
                                 
-                                $actionFld = $frmSearch->getField('abandonedcart_action');
-								$actionFld->developerTags['col'] = 4;
-									
+                                //$actionFld = $frmSearch->getField('abandonedcart_action');
+								//$actionFld->developerTags['col'] = 4;
+                                
+                                $dateFromFld = $frmSearch->getField('date_from');
+								$dateFromFld->setFieldTagAttribute('class','field--calender');
+								$dateFromFld->developerTags['col'] = 4;
+
+								$dateToFld = $frmSearch->getField('date_to');
+								$dateToFld->setFieldTagAttribute('class','field--calender');
+								$dateToFld->developerTags['col'] = 4;
+   
 								$submitBtnFld = $frmSearch->getField('btn_submit');
 								$submitBtnFld->setFieldTagAttribute('class','btn--block');
 								$submitBtnFld->developerTags['col'] = 4;
@@ -65,6 +73,32 @@
 						</div>
 						<div class="sectionbody">
 							<div class="tablewrap">
+                                    
+                                    <div class="tabs_nav_container responsive flat">
+                                        <ul class="tabs_nav">
+                                            <li>
+                                                <a href="javascript:void(0);" onclick="submitForm(1);">
+                                                    <?php echo Labels::getLabel('LBL_In_Cart', $adminLangId); ?>                            
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="javascript:void(0);" onclick="submitForm(2);">
+                                                    <?php echo Labels::getLabel('LBL_Removed_From_Cart', $adminLangId); ?>                               
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="javascript:void(0);" onclick="submitForm(3);">
+                                                    <?php echo Labels::getLabel('LBL_Cart_Recoverd', $adminLangId); ?>                                
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div class="tabs_panel_wrap">
+                                            <div class="tabs_panel">
+                                                
+                                           </div>
+                                        </div>
+                                    </div>
+                                    
 								<div id="abandonedCartListing">
 									<?php echo Labels::getLabel('LBL_Processing...',$adminLangId); ?>
 								</div>
