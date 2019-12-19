@@ -1,10 +1,10 @@
 <?php
 class OrdersController extends AdminBaseController
 {
-    public function __construct($action) 
+    public function __construct($action)
     {
         $ajaxCallArray = array();
-        if(!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
+        if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }
         parent::__construct($action);
@@ -15,12 +15,12 @@ class OrdersController extends AdminBaseController
         $this->set("canEdit", $this->canEdit);
     }
 
-    public function index() 
+    public function index()
     {
         $this->objPrivilege->canViewOrders();
         $frmSearch = $this->getOrderSearchForm($this->adminLangId);
         $data = FatApp::getPostedData();
-        if($data) {
+        if ($data) {
             $data['keyword'] = $data['id'];
             unset($data['id']);
             $frmSearch->fill($data);
@@ -53,37 +53,37 @@ class OrdersController extends AdminBaseController
         $srch->addMultipleFields(array('order_id','order_date_added', 'order_is_paid', 'order_status', 'buyer.user_id', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'order_net_amount', 'order_wallet_amount_charge', 'order_pmethod_id', 'IFNULL(pmethod_name, pmethod_identifier) as pmethod_name','pmethod_code', 'order_is_wallet_selected'));
 
         $keyword = FatApp::getPostedData('keyword', null, '');
-        if(!empty($keyword) ) {
+        if (!empty($keyword)) {
             $srch->addKeywordSearch($keyword);
         }
 
         $user_id = FatApp::getPostedData('user_id', FatUtility::VAR_INT, -1);
-        if($user_id ) {
+        if ($user_id) {
             $srch->addCondition('buyer.user_id', '=', $user_id);
         }
 
-        if(isset($post['order_is_paid']) && $post['order_is_paid'] != '' ) {
+        if (isset($post['order_is_paid']) && $post['order_is_paid'] != '') {
             $order_is_paid = FatUtility::int($post['order_is_paid']);
             $srch->addCondition('order_is_paid', '=', $order_is_paid);
         }
 
         $dateFrom = FatApp::getPostedData('date_from', null, '');
-        if(!empty($dateFrom) ) {
+        if (!empty($dateFrom)) {
             $srch->addDateFromCondition($dateFrom);
         }
 
         $dateTo = FatApp::getPostedData('date_to', null, '');
-        if(!empty($dateTo) ) {
+        if (!empty($dateTo)) {
             $srch->addDateToCondition($dateTo);
         }
 
         $priceFrom = FatApp::getPostedData('price_from', null, '');
-        if(!empty($priceFrom) ) {
+        if (!empty($priceFrom)) {
             $srch->addMinPriceCondition($priceFrom);
         }
 
         $priceTo = FatApp::getPostedData('price_to', null, '');
-        if(!empty($priceTo) ) {
+        if (!empty($priceTo)) {
             $srch->addMaxPriceCondition($priceTo);
         }
 
@@ -103,7 +103,7 @@ class OrdersController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function View( $order_id )
+    public function View($order_id)
     {
         $this->objPrivilege->canViewOrders();
 
@@ -120,7 +120,7 @@ class OrdersController extends AdminBaseController
         $srch->addCondition('order_type', '=', Orders::ORDER_PRODUCT);
         $rs = $srch->getResultSet();
         $order = FatApp::getDb()->fetch($rs);
-        if(!$order ) {
+        if (!$order) {
             Message::addErrorMessage(Labels::getLabel('MSG_Order_Data_Not_Found', $this->adminLangId));
             FatApp::redirectUser(CommonHelper::generateUrl("Orders"));
         }
@@ -147,7 +147,7 @@ class OrdersController extends AdminBaseController
 
         $charges = $orderObj->getOrderProductChargesByOrderId($order['order_id']);
 
-        foreach($order['products'] as $opId=>$opVal){
+        foreach ($order['products'] as $opId => $opVal) {
             $order['products'][$opId]['charges'] = $charges[$opId];
         }
 
@@ -155,8 +155,8 @@ class OrdersController extends AdminBaseController
         $order['billingAddress'] = $addresses[Orders::BILLING_ADDRESS_TYPE];
         $order['shippingAddress'] = (!empty($addresses[Orders::SHIPPING_ADDRESS_TYPE])) ? $addresses[Orders::SHIPPING_ADDRESS_TYPE] : array();
 
-        $order['comments'] = $orderObj->getOrderComments($this->adminLangId, array("order_id"=>$order['order_id']));
-        $order['payments'] = $orderObj->getOrderPayments(array("order_id"=>$order['order_id']));
+        $order['comments'] = $orderObj->getOrderComments($this->adminLangId, array("order_id" => $order['order_id']));
+        $order['payments'] = $orderObj->getOrderPayments(array("order_id" => $order['order_id']));
 
         $frm = $this->getPaymentForm($this->adminLangId, $order['order_id']);
         $this->set('frm', $frm);
@@ -166,12 +166,12 @@ class OrdersController extends AdminBaseController
         $this->_template->render();
     }
 
-    public function listChildOrderStatusLog( $op_id )
+    public function listChildOrderStatusLog($op_id)
     {
         $this->objPrivilege->canViewOrders();
         $op_id = FatUtility::int($op_id);
         $orderObj = new Orders();
-        $comments = $orderObj->getOrderComments($this->adminLangId, array("op_id"=>$op_id));
+        $comments = $orderObj->getOrderComments($this->adminLangId, array("op_id" => $op_id));
         //CommonHelper::printArray( $comments );
         $this->set('comments', $comments);
         $this->_template->render(false, false);
@@ -190,7 +190,7 @@ class OrdersController extends AdminBaseController
 
         $orderId = $post['opayment_order_id'];
         
-        if($orderId == '' || $orderId == null) {
+        if ($orderId == '' || $orderId == null) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -201,14 +201,14 @@ class OrdersController extends AdminBaseController
         $srch->addCondition('order_id', '=', $orderId);
         $srch->addCondition('order_type', '=', Orders::ORDER_PRODUCT);
         $rs = $srch->getResultSet();
-        $order = FatApp::getDb()->fetch($rs);        
-        if(!empty($order) && array_key_exists('pmethod_code', $order) && 'CashOnDelivery' == $order['pmethod_code']) {
+        $order = FatApp::getDb()->fetch($rs);
+        if (!empty($order) && array_key_exists('pmethod_code', $order) && 'CashOnDelivery' == $order['pmethod_code']) {
             Message::addErrorMessage(Labels::getLabel('LBL_COD_orders_are_not_eligible_for_payment_status_update', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
-        }        
+        }
 
         $orderPaymentObj = new OrderPayment($orderId, $this->adminLangId);
-        if(!$orderPaymentObj->addOrderPayment($post["opayment_method"], $post['opayment_gateway_txn_id'], $post["opayment_amount"], $post["opayment_comments"])) {
+        if (!$orderPaymentObj->addOrderPayment($post["opayment_method"], $post['opayment_gateway_txn_id'], $post["opayment_amount"], $post["opayment_comments"])) {
             Message::addErrorMessage($orderPaymentObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -224,18 +224,18 @@ class OrdersController extends AdminBaseController
         $orderObj =  new Orders();
         $order = $orderObj->getOrderById($order_id);
 
-        if($order==false) {
+        if ($order == false) {
             Message::addErrorMessage(Labels::getLabel('LBL_Error:_Please_perform_this_action_on_valid_record.', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if ($order["order_is_paid"] ) {
-            if(!$orderObj->addOrderPaymentHistory($order_id, Orders::ORDER_IS_CANCELLED, Labels::getLabel('MSG_Order_Cancelled', $order['order_language_id']), 1)) {
+        if ($order["order_is_paid"]) {
+            if (!$orderObj->addOrderPaymentHistory($order_id, Orders::ORDER_IS_CANCELLED, Labels::getLabel('MSG_Order_Cancelled', $order['order_language_id']), 1)) {
                 Message::addErrorMessage($orderObj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
             }
 
-            if(!$orderObj->refundOrderPaidAmount($order_id, $order['order_language_id'])) {
+            if (!$orderObj->refundOrderPaidAmount($order_id, $order['order_language_id'])) {
                 Message::addErrorMessage($orderObj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
             }
@@ -260,11 +260,11 @@ class OrdersController extends AdminBaseController
     private function getOrderSearchForm($langId)
     {
         $currency_id = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
-        $currencyData = Currency::getAttributesById($currency_id,    array('currency_code','currency_symbol_left','currency_symbol_right'));
+        $currencyData = Currency::getAttributesById($currency_id, array('currency_code','currency_symbol_left','currency_symbol_right'));
         $currencySymbol = ($currencyData['currency_symbol_left'] != '') ? $currencyData['currency_symbol_left'] : $currencyData['currency_symbol_right'];
 
         $frm = new Form('frmOrderSearch');
-        $keyword = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '', array('id'=>'keyword','autocomplete'=>'off'));
+        $keyword = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '', array('id'=>'keyword', 'autocomplete'=>'off'));
 
         $frm->addTextBox(Labels::getLabel('LBL_Buyer', $this->adminLangId), 'buyer', '');
 
@@ -272,12 +272,12 @@ class OrdersController extends AdminBaseController
 
         $frm->addDateField('', 'date_from', '', array('placeholder' => 'Date From', 'readonly' => 'readonly' ));
         $frm->addDateField('', 'date_to', '', array('placeholder' => 'Date To', 'readonly' => 'readonly' ));
-        $frm->addTextBox('', 'price_from', '', array('placeholder' => 'Order From'.' ['.$currencySymbol.']' ));
-        $frm->addTextBox('', 'price_to', '', array('placeholder' => 'Order To ['.$currencySymbol.']' ));
+        $frm->addTextBox('', 'price_from', '', array('placeholder' => 'Order From'.' [' . $currencySymbol . ']' ));
+        $frm->addTextBox('', 'price_to', '', array('placeholder' => 'Order To [' . $currencySymbol . ']' ));
 
         $frm->addHiddenField('', 'page');
         $frm->addHiddenField('', 'user_id');
-        $fld_submit=$frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_submit = $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;

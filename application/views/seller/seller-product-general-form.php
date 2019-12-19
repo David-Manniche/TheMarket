@@ -38,7 +38,18 @@ $submitBtnFld->developerTags['col'] = 12;
     $frmSellerProduct->setFormTagAttribute('onsubmit', 'setUpSellerProduct(this); return(false);');
     $frmSellerProduct->setFormTagAttribute('class', 'form form--horizontal');
     $frmSellerProduct->developerTags['colClassPrefix'] = 'col-lg-4 col-md-';
-        $frmSellerProduct->developerTags['fld_default_col'] = 4;
+    $frmSellerProduct->developerTags['fld_default_col'] = 4;
+
+    $returnAgeFld = $frmSellerProduct->getField('selprod_return_age');
+    $cancellationAgeFld = $frmSellerProduct->getField('selprod_cancellation_age');
+    $returnAge = FatUtility::int($returnAgeFld->value);
+    $hidden = '';
+    if ('' === $returnAgeFld->value || '' === $cancellationAgeFld->value) {
+        $hidden = 'hidden';
+    }
+    $returnAgeFld->setWrapperAttribute('class', 'use-shop-policy ' . $hidden);
+    $cancellationAgeFld->setWrapperAttribute('class', 'use-shop-policy ' . $hidden);
+
     /* $optionSectionHeading = $frmSellerProduct->getField('optionSectionHeading');
     $optionSectionHeading->value = '<h2>Set Up Options</h2>'; //TODO:: Make, final word from language labels. */
     /* $submitBtn = $frmSellerProduct->getField('btn_submit');
@@ -95,5 +106,13 @@ $("document").ready(function(){
     });
 
     $("select[name='selprod_track_inventory']").trigger('change');
+
+    $("#use_shop_policy").change(function(){
+        if ($(this).is(":checked")) {
+            $('.use-shop-policy').addClass('hidden');
+        } else {
+            $('.use-shop-policy').removeClass('hidden');
+        }
+    });
 });
 </script>

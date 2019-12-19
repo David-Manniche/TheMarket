@@ -349,4 +349,19 @@ class OrderProductSearch extends SearchBase
             $this->addCondition('op.op_status_id', '=', $op_status_id);
         }
     }
+
+    public function joinShopSpecifics()
+    {
+        $this->joinTable(ShopSpecifics::DB_TBL, 'LEFT OUTER JOIN', 'ss.ss_shop_id = op.op_shop_id', 'ss');
+    }
+
+    public function joinSellerProductSpecifics()
+    {
+        $this->joinTable(SellerProductSpecifics::DB_TBL, 'LEFT OUTER JOIN', 'sps.sps_selprod_id = op.op_selprod_id', 'sps');
+    }
+
+    public function joinOrderProductSpecifics()
+    {
+        $this->joinTable(OrderProductSpecifics::DB_TBL, 'LEFT JOIN', 'ops.ops_op_id = op.op_id', 'ops');
+    }
 }
