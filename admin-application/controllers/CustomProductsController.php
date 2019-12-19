@@ -240,9 +240,12 @@ class CustomProductsController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
+        $post = FatApp::getPostedData();
+        $useShopPolicy = FatApp::getPostedData('use_shop_policy', FatUtility::VAR_INT, 0);
+        $post['use_shop_policy'] = $useShopPolicy;
 
         $frm = $this->getSellerProductForm($preqId, 'REQUESTED_CATALOG_PRODUCT');
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        $post = $frm->getFormDataFromArray($post);
 
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
