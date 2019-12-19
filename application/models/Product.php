@@ -83,8 +83,8 @@ class Product extends MyAppModel
             $srch->joinTable(
                 ProductSpecifics::DB_TBL,
                 'LEFT OUTER JOIN',
-                'ps.' . ProductSpecifics::DB_TBL_PREFIX . 'product_id = tp.' . static::tblFld('id'),
-                'ps'
+                'psp.' . ProductSpecifics::DB_TBL_PREFIX . 'product_id = tp.' . static::tblFld('id'),
+                'psp'
             );
         }
 

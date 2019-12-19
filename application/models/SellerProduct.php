@@ -27,7 +27,7 @@ class SellerProduct extends MyAppModel
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
     }
 
-    public static function getSearchObject($langId = 0)
+    public static function getSearchObject($langId = 0, $joinSpecifics = false)
     {
         $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 'sp');
@@ -41,6 +41,16 @@ class SellerProduct extends MyAppModel
                 'sp_l'
             );
         }
+        
+        if (true === $joinSpecifics) {
+            $srch->joinTable(
+                SellerProductSpecifics::DB_TBL,
+                'LEFT OUTER JOIN',
+                'sps.' . SellerProductSpecifics::DB_TBL_PREFIX . 'selprod_id = sp.' . static::tblFld('id'),
+                'sps'
+            );
+        }
+
         return $srch;
     }
 

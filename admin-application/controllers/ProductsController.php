@@ -284,6 +284,8 @@ class ProductsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
+        $product_id = $prodObj->getMainTableRecordId();
+
         $post['ps_product_id'] = $product_id;
 
         $productSpecificsObj = new ProductSpecifics($product_id);
@@ -293,8 +295,6 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage($productSpecificsObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-
-        $product_id = $prodObj->getMainTableRecordId();
 
         /* save Group attributes data[ */
         $num_data_update_arr['prodnumattr_product_id'] = $product_id;

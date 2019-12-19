@@ -370,14 +370,11 @@ class Orders extends MyAppModel
                 $db->deleteRecords(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, array('smt' =>'opshipping_op_id = ?', 'vals' => array( $opId ) ));
                 $db->deleteRecords(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING_LANG, array('smt' => 'opshippinglang_op_id = ?', 'vals' => array( $opId ) ));
             }
+            $opArr = current($row);
+            $db->deleteRecords(static::DB_TBL_ORDER_PRODUCTS, array('smt' => 'op_id = ?', 'vals' => $opArr));
+            $db->deleteRecords(static::DB_TBL_ORDER_PRODUCTS_LANG, array('smt' => 'oplang_op_id = ?', 'vals' => $opArr));
+            $db->deleteRecords(OrderProductSpecifics::DB_TBL, array('smt' => 'ops_op_id = ?', 'vals' => $opArr));
         }
-
-        $opArr = OrderProduct::getOpIdArrByOrderId($this->getOrderId());
-        $opArr = current($opArr);
-
-        $db->deleteRecords(static::DB_TBL_ORDER_PRODUCTS, array('smt' => 'op_id = ?', 'vals' => $opArr));
-        $db->deleteRecords(static::DB_TBL_ORDER_PRODUCTS_LANG, array('smt' => 'oplang_op_id = ?', 'vals' => $opArr));
-        $db->deleteRecords(OrderProductSpecifics::DB_TBL, array('smt' => 'ops_op_id = ?', 'vals' => $opArr));
 
         if (!empty($products)) {
             $opRecordObj = new TableRecord(static::DB_TBL_ORDER_PRODUCTS);
