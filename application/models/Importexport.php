@@ -3094,7 +3094,7 @@ class Importexport extends ImportexportCommon
                         $selProdSepc['sps_selprod_id'] = $selprodId;
                         $selProdSpecificsObj->assignValues($selProdSepc);
                         if (!$selProdSpecificsObj->addNew(array(), $selProdSepc)) {
-                            $errMsg = Labels::getLabel($selProdSpecificsObj->getError());
+                            $errMsg = $selProdSpecificsObj->getError();
                             CommonHelper::writeToCSVFile($this->CSVfileObj, array( $rowIndex, ($colIndex + 1), $errMsg ));
                             continue;
                         }

@@ -1953,15 +1953,21 @@ trait SellerProducts
         $product_id = FatUtility::int($product_id);
         $userId = UserAuthentication::getLoggedUserId();
 
-        $sellerProductRow = SellerProduct::getAttributesById($selprod_id, array('selprod_user_id', 'selprod_id', 'selprod_product_id', 'selprod_url_keyword', 'selprod_cost', 'selprod_price', 'selprod_stock'), false);
+        $sellerProductRow = SellerProduct::getAttributesById($selprod_id, array('selprod_user_id', 'selprod_id', 'selprod_product_id', 'selprod_url_keyword', 'selprod_cost', 'selprod_price', 'selprod_stock', 'selprod_return_age', 'selprod_cancellation_age'), false, true);
 
         if ($sellerProductRow['selprod_user_id'] != UserAuthentication::getLoggedUserId()) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-
         $sellerProductRow['selprod_available_from'] = date('Y-m-d');
         $frm = $this->getSellerProductCloneForm($product_id, $selprod_id);
+        
+        $returnAge = isset($sellerProductRow['selprod_return_age']) ? FatUtility::int($sellerProductRow['selprod_return_age']) : '';
+        $cancellationAge = isset($sellerProductRow['selprod_cancellation_age']) ? FatUtility::int($sellerProductRow['selprod_cancellation_age']) : '';
+        
+        if ('' === $returnAge || '' === $cancellationAge) {
+            $sellerProductRow['use_shop_policy'] = 1;
+        }
         $frm->fill($sellerProductRow);
 
         $this->set('frm', $frm);
@@ -1999,6 +2005,39 @@ trait SellerProducts
         }
         $frm->addIntegerField(Labels::getLabel('LBL_Quantity', $this->siteLangId), 'selprod_stock');
         $frm->addDateField(Labels::getLabel('LBL_Date_Available', $this->siteLangId), 'selprod_available_from', '', array('readonly' => 'readonly'))->requirements()->setRequired();
+
+        $useShopPolicy = $frm->addCheckBox(Labels::getLabel('LBL_USE_SHOP_RETURN_AND_CANCELLATION_AGE_POLICY', $this->siteLangId), 'use_shop_policy', 1, ['id' => 'use_shop_policy'], false, 0);
+
+        $fld = $frm->addIntegerField(Labels::getLabel('LBL_ORDER_RETURN_AGE', $this->siteLangId), 'selprod_return_age');
+
+        $orderReturnAgeReqFld = new FormFieldRequirement('selprod_return_age', Labels::getLabel('LBL_ORDER_RETURN_AGE', $this->siteLangId));
+        $orderReturnAgeReqFld->setRequired(true);
+        $orderReturnAgeReqFld->setPositive();
+        $orderReturnAgeReqFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $this->siteLangId) . ' </small>';
+
+        $orderReturnAgeUnReqFld = new FormFieldRequirement('selprod_return_age', Labels::getLabel('LBL_ORDER_RETURN_AGE', $this->siteLangId));
+        $orderReturnAgeUnReqFld->setRequired(false);
+        $orderReturnAgeUnReqFld->setPositive();
+        $orderReturnAgeUnReqFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $this->siteLangId) . ' </small>';
+
+        $fld = $frm->addIntegerField(Labels::getLabel('LBL_ORDER_CANCELLATION_AGE', $this->siteLangId), 'selprod_cancellation_age');
+
+        $orderCancellationAgeReqFld = new FormFieldRequirement('selprod_cancellation_age', Labels::getLabel('LBL_ORDER_CANCELLATION_AGE', $this->siteLangId));
+        $orderCancellationAgeReqFld->setRequired(true);
+        $orderCancellationAgeReqFld->setPositive();
+        $orderCancellationAgeReqFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $this->siteLangId) . ' </small>';
+        
+        $orderCancellationAgeUnReqFld = new FormFieldRequirement('selprod_cancellation_age', Labels::getLabel('LBL_ORDER_CANCELLATION_AGE', $this->siteLangId));
+        $orderCancellationAgeUnReqFld->setRequired(false);
+        $orderCancellationAgeUnReqFld->setPositive();
+        $orderCancellationAgeUnReqFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $this->siteLangId) . ' </small>';
+
+        $useShopPolicy->requirements()->addOnChangerequirementUpdate(Shop::USE_SHOP_POLICY, 'eq', 'selprod_return_age', $orderReturnAgeUnReqFld);
+        $useShopPolicy->requirements()->addOnChangerequirementUpdate(Shop::USE_SHOP_POLICY, 'ne', 'selprod_return_age', $orderReturnAgeReqFld);
+
+        $useShopPolicy->requirements()->addOnChangerequirementUpdate(Shop::USE_SHOP_POLICY, 'eq', 'selprod_cancellation_age', $orderCancellationAgeUnReqFld);
+        $useShopPolicy->requirements()->addOnChangerequirementUpdate(Shop::USE_SHOP_POLICY, 'ne', 'selprod_cancellation_age', $orderCancellationAgeReqFld);
+
         $frm->addHiddenField('', 'selprod_product_id', $product_id);
         $frm->addHiddenField('', 'selprod_id', $selprod_id);
         $fld1 = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
@@ -2008,7 +2047,7 @@ trait SellerProducts
     public function setUpSellerProductClone()
     {
         $post = FatApp::getPostedData();
-
+        $useShopPolicy = FatApp::getPostedData('use_shop_policy', FatUtility::VAR_INT, 0);
         $selprod_id = Fatutility::int($post['selprod_id']);
 
         $selprod_product_id = Fatutility::int($post['selprod_product_id']);
@@ -2032,6 +2071,7 @@ trait SellerProducts
             FatApp::redirectUser($_SESSION['referer_page_url']);
         }
         $frm = $this->getSellerProductCloneForm($selprod_product_id, $selprod_id);
+        $post['use_shop_policy'] = $useShopPolicy;
         $post = $frm->getFormDataFromArray($post);
 
         if (false === $post) {
@@ -2041,14 +2081,14 @@ trait SellerProducts
 
         /* Validate product belongs to current logged seller[ */
         if ($selprod_id) {
-            $sellerProductRow = SellerProduct::getAttributesById($selprod_id);
+            $sellerProductRow = SellerProduct::getAttributesById($selprod_id, null, true, true);
             if ($sellerProductRow['selprod_user_id'] != UserAuthentication::getLoggedUserId()) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
                 FatUtility::dieWithError(Message::getHtml());
             }
         }
         /* ] */
-        $post['selprod_url_keyword']= strtolower(CommonHelper::createSlug($post['selprod_url_keyword']));
+        $post['selprod_url_keyword'] = strtolower(CommonHelper::createSlug($post['selprod_url_keyword']));
 
         $options = array();
         if (isset($post['selprodoption_optionvalue_id']) && count($post['selprodoption_optionvalue_id'])) {
@@ -2094,6 +2134,24 @@ trait SellerProducts
         }
 
         $selprod_id = $sellerProdObj->getMainTableRecordId();
+
+        if (!empty($selprod_id)) {
+            $selProdSpecificsObj = new SellerProductSpecifics($selprod_id);
+            if (0 < $useShopPolicy) {
+                if (!$selProdSpecificsObj->deleteRecord()) {
+                    FatUtility::dieJsonError($selProdSpecificsObj->getError());
+                }
+            } else {
+                $post['sps_selprod_id'] = $selprod_id;
+                $selProdSpecificsObj->assignValues($post);
+                $selProdSepc = $selProdSpecificsObj->getFlds();
+                if (!$selProdSpecificsObj->addNew(array(), $selProdSepc)) {
+                    Message::addErrorMessage($selProdSpecificsObj->getError());
+                    FatUtility::dieWithError(Message::getHtml());
+                }
+            }
+        }
+
         $sellerProdObj->rewriteUrlProduct($post['selprod_url_keyword']);
         $sellerProdObj->rewriteUrlReviews($post['selprod_url_keyword']);
         $sellerProdObj->rewriteUrlMoreSellers($post['selprod_url_keyword']);
