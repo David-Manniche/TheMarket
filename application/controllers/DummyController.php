@@ -674,4 +674,10 @@ class DummyController extends MyAppController
         
     }
 
+    public function notify()
+    {
+        $obj = new PushNotification(1);
+        $obj->send();
+    }
+
 }

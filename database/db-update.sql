@@ -158,8 +158,10 @@ CREATE TABLE `tbl_push_notifications`(
     PRIMARY KEY(`pnotification_id`)
 ) ENGINE = InnoDB;
 
-CREATE TABLE `tbl_push_notification_to_users` ( `cntu_pnotification_id` INT NOT NULL ,  `cntu_user_id` INT NOT NULL ) ENGINE = InnoDB;
-ALTER TABLE  `tbl_push_notification_to_users` ADD PRIMARY KEY (`cntu_pnotification_id`, `cntu_user_id`);
+CREATE TABLE `tbl_push_notification_to_users` ( `pntu_pnotification_id` INT NOT NULL ,  `pntu_user_id` INT NOT NULL ) ENGINE = InnoDB;
+ALTER TABLE  `tbl_push_notification_to_users` ADD PRIMARY KEY (`pntu_pnotification_id`, `pntu_user_id`);
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_Title';
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_S.No';
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_Does_not_Matter';
+
+INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('FCM Push Notification', '3', 'FcmPushNotification', '1', '7')

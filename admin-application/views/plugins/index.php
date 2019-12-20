@@ -8,53 +8,31 @@
                         <div class="col--first col-lg-6">
                             <span class="page__icon">
                                 <i class="ion-android-star"></i></span>
-                            <h5><?php echo Labels::getLabel('LBL_PLUGINS', $adminLangId); ?> </h5>
-                            <?php $this->includeTemplate('_partial/header/header-breadcrumb.php'); ?>
+                            <h5><?php echo Labels::getLabel('LBL_PLUGINS', $adminLangId); ?>
+                            </h5> <?php $this->includeTemplate('_partial/header/header-breadcrumb.php'); ?>
                         </div>
                     </div>
                 </div>
-                <section class="section searchform_filter">
-                    <div class="sectionhead">
-                        <h4> <?php echo Labels::getLabel('LBL_Search...', $adminLangId); ?> </h4>
+                <div class="tabs_nav_container vertical">
+                    <ul class="tabs_nav outerul"> <?php $count = 1;
+                    foreach ($plugins as $formType => $tabName) {
+                        $tabsId = 'tabs_' . $count; ?>
+                            <li>
+                                <a class="<?php echo ($activeTab == $formType) ? 'active' : ''?>"
+                                    rel=<?php echo $tabsId; ?>
+                                    href="javascript:void(0)"
+                                    onClick="searchPlugin(<?php echo $formType; ?>);"
+                                    data-formtype="<?php echo $formType; ?>">
+                                <?php echo $tabName; ?>
+                                </a>
+                            </li> 
+                        <?php $count++;
+                    } ?>
+                    </ul>
+                    <div id="pluginsListing" class="tabs_panel_wrap">
+                        <div class="tabs_panel"><?php echo Labels::getLabel('LBL_Processing...', $adminLangId); ?></div>
                     </div>
-                    <div class="sectionbody space togglewrap" style="display:none;">
-                        <?php
-                            $srchFrm->setFormTagAttribute('onsubmit', 'searchPlugin(this); return(false);');
-                            $srchFrm->setFormTagAttribute('class', 'web_form');
-                            $srchFrm->developerTags['colClassPrefix'] = 'col-md-';
-                            $srchFrm->developerTags['fld_default_col'] = 6;
-                            echo  $srchFrm->getFormHtml();
-                        ?>
-                    </div>
-                </section>
-                <section class="section">
-                    <div class="sectionhead">
-                        <h4><?php echo Labels::getLabel('LBL_PLUGINS_LIST', $adminLangId); ?> </h4>
-                        <?php
-                        if ($canEdit) {
-                            $ul = new HtmlElement("ul", array("class" => "actions actions--centered"));
-                            $li = $ul->appendElement("li", array('class' => 'droplink'));
-
-                            $li->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                            $innerDiv = $li->appendElement('div', array('class' => 'dropwrap'));
-                            $innerUl = $innerDiv->appendElement('ul', array('class' => 'linksvertical'));
-                            
-                            $innerLi = $innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Activate', $adminLangId), "onclick" => "toggleBulkStatues(1)"), Labels::getLabel('LBL_Activate', $adminLangId), true);
-
-                            $innerLi = $innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Deactivate', $adminLangId), "onclick" => "toggleBulkStatues(0)"), Labels::getLabel('LBL_Deactivate', $adminLangId), true);
-
-                            echo $ul->getHtml();
-                        }
-                        ?>
-                    </div>
-                    <div class="sectionbody">
-                        <div class="tablewrap">
-                            <div id="pluginsListing"> <?php echo Labels::getLabel('LBL_Processing...', $adminLangId); ?> </div>
-                        </div>
-                    </div>
-                </section>
+                </div>
             </div>
         </div>
     </div>

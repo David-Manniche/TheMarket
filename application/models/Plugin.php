@@ -7,6 +7,12 @@ class Plugin extends MyAppModel
 
     public const TYPE_CURRENCY_API = 1;
     public const TYPE_SOCIAL_LOGIN_API = 2;
+    public const TYPE_PUSH_NOTIFICATION_API = 3;
+
+    public const HAVING_KINGPIN = [
+        self::TYPE_CURRENCY_API,
+        self::TYPE_PUSH_NOTIFICATION_API
+    ];
 
     private $db;
     
@@ -79,6 +85,7 @@ class Plugin extends MyAppModel
         return [
             static::TYPE_CURRENCY_API => Labels::getLabel('LBL_CURRENCY_API', $langId),
             static::TYPE_SOCIAL_LOGIN_API => Labels::getLabel('LBL_SOCIAL_LOGIN_API', $langId),
+            static::TYPE_PUSH_NOTIFICATION_API => Labels::getLabel('LBL_PUSH_NOTIFICATION_API', $langId),
         ];
     }
 

@@ -12,7 +12,7 @@ class PushNotification extends MyAppModel
     public const STATUS_PENDING = 0;
     public const STATUS_SENT = 1;
 
-    public const DEVICE_TOKENS_LIMIT = 1000;
+    public const DEVICE_TOKENS_LIMIT = 3000;
 
     public function __construct($pushNotificationId = 0)
     {
@@ -21,10 +21,10 @@ class PushNotification extends MyAppModel
 
     public static function getSearchObject($joinNotificationUsers = false)
     {
-        $srch = new SearchBase(static::DB_TBL, 'cn');
+        $srch = new SearchBase(static::DB_TBL, 'pn');
 
         if (true === $joinNotificationUsers) {
-            $srch->joinTable(static::DB_TBL_NOTIFICATION_TO_USER, 'LEFT OUTER JOIN', 'cnu.cntu_pnotification_id = cn.' . static::DB_TBL_PREFIX . 'id', 'cnu');
+            $srch->joinTable(static::DB_TBL_NOTIFICATION_TO_USER, 'LEFT OUTER JOIN', 'pnu.pntu_pnotification_id = pn.' . static::DB_TBL_PREFIX . 'id', 'pnu');
         }
         return $srch;
     }
@@ -45,7 +45,7 @@ class PushNotification extends MyAppModel
         ];
     }
 
-    public static function getNotifyToArr($langId)
+    public static function getUserTypeArr($langId)
     {
         return [
             Labels::getLabel('LBL_BUYERS', $langId),
@@ -53,63 +53,95 @@ class PushNotification extends MyAppModel
         ];
     }
 
-    public function notify($deviceTokens, $title, $message)
+    private function joinUsers($obj, $buyers, $sellers)
     {
-        $google_push_notification_api_key = FatApp::getConfig("CONF_GOOGLE_PUSH_NOTIFICATION_API_KEY", FatUtility::VAR_STRING, '');
-        if (empty($google_push_notification_api_key)) {
-            $this->error = Labels::getLabel('LBL_NO_SERVER_KEY_DEFINED_FOR_PUSH_NOTIFICATION', CommonHelper::getLangId());
+        $buyers = FatUtility::int($buyers);
+        $sellers = FatUtility::int($sellers);
+
+        if (1 > $buyers && 1 > $sellers) {
             return false;
         }
-
-        if (!is_array($deviceTokens) || empty($deviceTokens) || 1000 < count($deviceTokens)) {
-            $this->error = Labels::getLabel('LBL_ARRAY_MUST_CONTAIN_AT_LEAST_1_AND_AT_MOST_1000_REGISTRATION_TOKENS', CommonHelper::getLangId());
-            return false;
+        
+        $obj->joinTable(UserAuthentication::DB_TBL_USER_AUTH, 'LEFT OUTER JOIN', 'uauth.uauth_user_id = u.user_id', 'uauth');
+        $obj->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'active', '=', 1);
+        $obj->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'verified', '=', 1);
+        if (0 < $buyers) {
+            $obj->addCondition('u.' . User::DB_TBL_PREFIX . 'is_buyer', '=', 1);
+        }
+        
+        if (0 < $sellers) {
+            $obj->addCondition('u.' . User::DB_TBL_PREFIX . 'is_supplier', '=', 1);
         }
 
-        if (empty($title) || empty($message)) {
-            $this->error = Labels::getLabel('LBL_INVALID_REQUEST_PARAMETERS', CommonHelper::getLangId());
-            return false;
-        }
-
-        $msg = [
-            'title' => $title,
-            'message' => $message
-        ];
-        $fields = [
-            'registration_ids' => $deviceTokens,
-            'data' => $msg
-        ];
-
-        $headers = [
-            'Authorization: key=' . $google_push_notification_api_key,
-            'Content-Type: application/json'
-        ];
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'fcm.googleapis.com/fcm/send');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-        $result = curl_exec($ch);
-        curl_close($ch);
-        return $result;
+        $obj->addCondition('uauth_fcm_id', '!=', '');
+        $obj->addCondition('uauth_last_access', '>=', date('Y-m-d H:i:s', strtotime("-7 DAYS")));
+        $obj->addMultipleFields(['uauth_user_id', 'uauth_fcm_id']);
+        return $obj;
     }
 
-    public static function getDeviceTokens($limit = 0)
+    private function getDeviceTokens($buyers, $sellers, $limit)
     {
-        $limit = FatUtility::int($limit);
-        $limit = 1 > $limit ? static::DEVICE_TOKENS_LIMIT : $limit;
         $srch = User::getSearchObject(true, true);
-        $srch->joinTable(UserAuthentication::DB_TBL_USER_AUTH, 'LEFT OUTER JOIN', 'uauth.uauth_user_id = u.user_id', 'uauth');
-        $srch->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'active', '=', 1);
-        $srch->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'verified', '=', 1);
-        $srch->addCondition('uauth_fcm_id', '!=', '');
-        $srch->addCondition('uauth_last_access', '>=', date('Y-m-d H:i:s', strtotime("-7 DAYS")));
-        $srch->addMultipleFields(['uauth_user_id', 'uauth_fcm_id']);
+        $srch = $this->joinUsers($srch, $buyers, $sellers);
         $srch->setPageSize($limit);
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetchAllAssoc($rs);
+    }
+
+    public function send()
+    {
+        $defaultPushNotiAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . PLUGIN::TYPE_PUSH_NOTIFICATION_API, FatUtility::VAR_INT, 0);
+        if (empty($defaultPushNotiAPI)) {
+            $this->error = Labels::getLabel('MSG_DEFAULT_PUSH_NOTIFICATION_API_NOT_SET', $this->siteLangId);
+            return false;
+        }
+
+        $keyName = Plugin::getAttributesById($defaultPushNotiAPI, 'plugin_code');
+        $limit = $keyName::LIMIT;
+
+        $attr = [
+            'pnotification_type',
+            'pnotification_title',
+            'pnotification_description',
+            'pnotification_notified_on',
+            'pnotification_for_buyer',
+            'pnotification_for_seller'
+        ];
+        $notificationDetail = static::getAttributesById($this->mainTableRecordId, $attr);
+        $buyers = $notificationDetail['pnotification_for_buyer'];
+        $sellers = $notificationDetail['pnotification_for_seller'];
+
+        $notifyObj = static::getSearchObject(true);
+        $notifyObj->addCondition(static::DB_TBL_PREFIX . 'id', '=', $this->mainTableRecordId);
+        $notifyObj->joinTable(User::DB_TBL, 'INNER JOIN', 'pnu.pntu_user_id = u.user_id', 'u');
+        $notifyObj->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.' . User::DB_TBL_CRED_PREFIX . 'user_id = u.user_id', 'uc');
+        $notifyObj = $this->joinUsers($notifyObj, $buyers, $sellers);
+        echo $notifyObj->getQuery();
+        $rs = $notifyObj->getResultSet();
+        if (false === $rs) {
+            echo $notifyObj->getError();
+        }
+        $deviceTokens = FatApp::getDb()->fetchAllAssoc($rs);
+        CommonHelper::printArray($deviceTokens, true);
+        if (empty($deviceTokens)) {
+            $deviceTokens = $this->getDeviceTokens($buyers, $sellers, $limit);
+        }
+
+        if (false === $deviceTokens || empty($deviceTokens) || 1 > count($deviceTokens)) {
+            $this->error = Labels::getLabel('MSG_NO_DEVICE_TOKEN_FOUND', $this->siteLangId);
+            return false;
+        }
+
+        try {
+            $obj = new $keyName();
+            if (false === $obj->send($deviceTokens, $notificationDetail['pnotification_title'], $notificationDetail['pnotification_description'])) {
+                $this->error = $obj->getError();
+                return false;
+            }
+        } catch (\Error $e) {
+            $this->error = 'ERR - ' . $e->getMessage();
+            return false;
+        }
+        return true;
     }
 }
