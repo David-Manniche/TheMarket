@@ -1042,4 +1042,13 @@ class SellerProduct extends MyAppModel
         $srch->addOrder('voldiscount_id', 'DESC');
         return $srch;
     }
+    
+    public static function getSelProdDataById($selProdId, $langId = 0)
+    { 
+        $srch = static::getSearchObject($langId);
+        $srch->addCondition('selprod_id', '=', $selProdId);
+        $rs = $srch->getResultSet();
+        return FatApp::getDb()->fetch($rs);
+    }
+    
 }

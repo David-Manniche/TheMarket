@@ -104,6 +104,7 @@ class AdminPrivilege
     public const SECTION_UPLOAD_BULK_IMAGES = 100;
     public const SECTION_SITEMAP = 101;
 	public const SECTION_PLUGINS = 102;
+    public const SECTION_ABANDONED_CART = 103;
 	
     public const PRIVILEGE_NONE = 0;
     public const PRIVILEGE_READ = 1;
@@ -1378,14 +1379,21 @@ class AdminPrivilege
     {
         return $this->checkPermission($adminId, static::SECTION_SITEMAP, static::PRIVILEGE_WRITE, $returnResult);
     }
+
 	
 	public function canViewPlugins($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_PLUGINS, static::PRIVILEGE_READ, $returnResult);
     }
-
+    
     public function canEditPlugins($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_PLUGINS, static::PRIVILEGE_WRITE, $returnResult);
+    }
+    
+    public function canViewAbandonedCart($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_ABANDONED_CART, static::PRIVILEGE_READ, $returnResult);
+
     }
 }
