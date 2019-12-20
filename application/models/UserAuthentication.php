@@ -1,24 +1,24 @@
 <?php
 class UserAuthentication extends FatModel
 {
-    const SESSION_ELEMENT_NAME = 'yokartUserSession';
-    const AFFILIATE_SESSION_ELEMENT_NAME = 'yokartAffiliateSession';
-    const YOKARTUSER_COOKIE_NAME = '_uyokart';
+    public const SESSION_ELEMENT_NAME = 'yokartUserSession';
+    public const AFFILIATE_SESSION_ELEMENT_NAME = 'yokartAffiliateSession';
+    public const YOKARTUSER_COOKIE_NAME = '_uyokart';
 
-    const DB_TBL_USER_PRR = 'tbl_user_password_reset_requests';
-    const DB_TBL_UPR_PREFIX = 'uprr_';
+    public const DB_TBL_USER_PRR = 'tbl_user_password_reset_requests';
+    public const DB_TBL_UPR_PREFIX = 'uprr_';
 
-    const DB_TBL_USER_AUTH = 'tbl_user_auth_token';
-    const DB_TBL_UAUTH_PREFIX = 'uauth_';
+    public const DB_TBL_USER_AUTH = 'tbl_user_auth_token';
+    public const DB_TBL_UAUTH_PREFIX = 'uauth_';
 
-    const TOKEN_LENGTH = 32;
+    public const TOKEN_LENGTH = 32;
 
     private $commonLangId;
 
-    const AFFILIATE_REG_STEP1 = 1;
-    const AFFILIATE_REG_STEP2 = 2;
-    const AFFILIATE_REG_STEP3 = 3;
-    const AFFILIATE_REG_STEP4 = 4;
+    public const AFFILIATE_REG_STEP1 = 1;
+    public const AFFILIATE_REG_STEP2 = 2;
+    public const AFFILIATE_REG_STEP3 = 3;
+    public const AFFILIATE_REG_STEP4 = 4;
 
     public function __construct()
     {
@@ -57,11 +57,11 @@ class UserAuthentication extends FatModel
 
         $db->insertFromArray(
             'tbl_failed_login_attempts',
-            array(
-            'attempt_username'=>$username,
-            'attempt_ip'=>$ip,
-            'attempt_time'=>date('Y-m-d H:i:s')
-            )
+            [
+            'attempt_username' => $username,
+            'attempt_ip' => $ip,
+            'attempt_time' => date('Y-m-d H:i:s')
+            ]
         );
 
         // For improvement, we can send an email about the failed attempt here.
@@ -294,7 +294,7 @@ class UserAuthentication extends FatModel
         }
 
         $srch = User::getSearchObject(true, false);
-        $condition=$srch->addCondition('credential_username', '=', $username);
+        $condition = $srch->addCondition('credential_username', '=', $username);
         $condition->attachCondition('credential_email', '=', $username, 'OR');
         $srch->addCondition('credential_password', '=', $password);
         if (0 < $userType) {
@@ -344,7 +344,7 @@ class UserAuthentication extends FatModel
         }
         if (!$isAdmin) {
             if ($row['credential_verified'] != applicationConstants::YES) {
-                $this->error = str_replace("{clickhere}", '<a href="javascript:void(0)" onclick="resendVerificationLink('."'".$username."'".')">'.Labels::getLabel('LBL_Click_Here', $this->commonLangId).'</a>', Labels::getLabel('MSG_Your_Account_verification_is_pending_{clickhere}', $this->commonLangId));
+                $this->error = str_replace("{clickhere}", '<a href="javascript:void(0)" onclick="resendVerificationLink(' . "'" . $username . "'" . ')">' . Labels::getLabel('LBL_Click_Here', $this->commonLangId) . '</a>', Labels::getLabel('MSG_Your_Account_verification_is_pending_{clickhere}', $this->commonLangId));
 
                 if (true ===  MOBILE_APP_API_CALL) {
                     $this->error = Labels::getLabel('MSG_Your_Account_verification_is_pending', $this->commonLangId);

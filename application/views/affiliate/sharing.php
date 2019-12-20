@@ -4,8 +4,8 @@ $sharingFrm->addFormTagAttribute('class','form');
 $sharingFrm->addFormTagAttribute('onsubmit','setUpMailAffiliateSharing(this);return false;');
 $sharingFrm->developerTags['colClassPrefix'] = 'col-xs-12 col-md-';
 $sharingFrm->developerTags['fld_default_col'] = 12;
-?>
-<?php $this->includeTemplate('_partial/affiliate/affiliateDashboardNavigation.php'); ?>
+
+$this->includeTemplate('_partial/affiliate/affiliateDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
   <div class="content-wrapper content-space">
 	<div class="content-header justify-content-between row mb-4">
@@ -29,7 +29,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
 					
 					<div class="cards-content pl-4 pr-4 ">
 						<ul class="grid--onethird grid--onethird-large">
-						  <?php if (!empty(FatApp::getConfig("CONF_FACEBOOK_APP_ID")) && !empty(FatApp::getConfig("CONF_FACEBOOK_APP_SECRET"))){?>
+						  <?php if (!empty(FatApp::getConfig("CONF_FACEBOOK_APP_ID")) && !empty(FatApp::getConfig("CONF_FACEBOOK_APP_SECRET"))){ ?>
 						  <li> <a id="facebook_btn" href="javascript:void(0);" class="box--share box--share-fb"> <i class="fa fa-facebook"></i>
 							<h5><?php echo Labels::getLabel('L_Share_on',$siteLangId)?></h5>
 							<h2><?php echo Labels::getLabel('L_Facebook',$siteLangId)?></h2>

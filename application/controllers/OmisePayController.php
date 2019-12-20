@@ -6,6 +6,11 @@ class OmisePayController extends PaymentController
     private $keyName = "omise";
     private $paymentSettings = "omise";
 
+    protected function allowedCurrenciesArr()
+    {
+        return ['THB'];
+    }
+
     public function __construct($action)
     {
         parent::__construct($action);
@@ -145,7 +150,7 @@ class OmisePayController extends PaymentController
                 $omise_fee = round($orderActualPaid * ('.0365'), 0);
                 $vat = round($omise_fee * ('.07'), 0);
                 $trans_fee = intval($omise_fee + $vat);
-                if ($trans->offsetGet('amount') != $orderActualPaid - $trans_fee) {
+                if ($trans->offsetGet('amount') != ($orderActualPaid - $trans_fee)) {
                     throw new Exception(Labels::getLabel('MSG_INVALID_TRANSACTION_AMOUNT', $this->siteLangId));
                 }
                 /* Recording Payment in DB */

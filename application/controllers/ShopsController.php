@@ -57,7 +57,7 @@ class ShopsController extends MyAppController
         $srch->joinShopCountry();
         $srch->joinShopState();
         $srch->joinSellerSubscription();
-        $srch->joinTable('('. $prodShopSrch->getQuery() . ')', 'INNER JOIN', 'temp.shop_id = s.shop_id', 'temp');
+        $srch->joinTable('(' . $prodShopSrch->getQuery() . ')', 'INNER JOIN', 'temp.shop_id = s.shop_id', 'temp');
         /* if($shopMainRootArr){
         $srch->addCondition('shop_id', 'in', $shopMainRootArr);
         } */
@@ -72,7 +72,7 @@ class ShopsController extends MyAppController
         $favSrchObj->doNotLimitRecords();
         $favSrchObj->addMultipleFields(array('ufs_shop_id','ufs_id'));
         $favSrchObj->addCondition('ufs_user_id', '=', $loggedUserId);
-        $srch->joinTable('('. $favSrchObj->getQuery() . ')', 'LEFT OUTER JOIN', 'ufs_shop_id = s.shop_id', 'ufs');
+        $srch->joinTable('(' . $favSrchObj->getQuery() . ')', 'LEFT OUTER JOIN', 'ufs_shop_id = s.shop_id', 'ufs');
         /* ] */
 
         $srch->addMultipleFields(
@@ -86,7 +86,7 @@ class ShopsController extends MyAppController
             $srch->addCondition('shop_featured', '=', $featured);
         }
 
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -131,6 +131,7 @@ class ShopsController extends MyAppController
             $allShops[$val['shop_id']]['totalProducts'] = $productShopSrchTempObj->recordCount();
             $allShops[$val['shop_id']]['shopRating'] = SelProdRating::getSellerRating($val['shop_user_id']);
             $allShops[$val['shop_id']]['shopTotalReviews'] = SelProdReview::getSellerTotalReviews($val['shop_user_id']);
+            $allShops[$val['shop_id']]['shop_logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', [$val['shop_id'], $this->siteLangId, 'SMALL']);
         }
         /* CommonHelper::printArray($allShops[4]['products']); */
         $this->set('allShops', $allShops);
@@ -142,7 +143,7 @@ class ShopsController extends MyAppController
         $this->set('pageSize', $pagesize);
         $this->set('postedData', $post);
 
-        $startRecord = ($page-1)* $pagesize + 1 ;
+        $startRecord = ($page - 1) * $pagesize + 1 ;
         $endRecord = $pagesize;
         $totalRecords = $srch->recordCount();
         if ($totalRecords < $endRecord) {
@@ -192,7 +193,7 @@ class ShopsController extends MyAppController
         if (array_key_exists('sort', $get)) {
             $get['sortOrder'] = $get['sort'];
         }
-
+        
         $includeShopData = true;
         if (array_key_exists('includeShopData', $get) && 1 > FatUtility::int($get['includeShopData'])) {
             $includeShopData = false;
@@ -201,17 +202,16 @@ class ShopsController extends MyAppController
         $get['shop_id'] = $shop_id;
 
         $data = $this->getListingData($get, $includeShopData);
-
         if (false ===  MOBILE_APP_API_CALL) {
             $frm = $this->getProductSearchForm();
             $frm->fill($get);
 
             $arr = array(
-                'frmProductSearch'=>$frm,
-                'canonicalUrl'=>CommonHelper::generateFullUrl('Shops', 'view', array($shop_id)),
-                'productSearchPageType'=>SavedSearchProduct::PAGE_SHOP,
-                'recordId'=>$shop_id,
-                'bannerListigUrl'=>CommonHelper::generateFullUrl('Banner', 'categories'),
+                'frmProductSearch' => $frm,
+                'canonicalUrl' => CommonHelper::generateFullUrl('Shops', 'view', array($shop_id)),
+                'productSearchPageType' => SavedSearchProduct::PAGE_SHOP,
+                'recordId' => $shop_id,
+                'bannerListigUrl' => CommonHelper::generateFullUrl('Banner', 'categories'),
             );
             $data = array_merge($data, $arr);
 
@@ -233,7 +233,7 @@ class ShopsController extends MyAppController
         }
 
         $this->set('data', $data);
-
+        
         if (false === MOBILE_APP_API_CALL) {
             $this->includeProductPageJsCss();
             $this->_template->addJs(array('js/slick.min.js', 'js/responsive-img.min.js', 'js/shop-nav.js', 'js/jquery.colourbrightness.min.js'));
@@ -288,7 +288,7 @@ class ShopsController extends MyAppController
         $favSrchObj->addMultipleFields(array('ufs_shop_id','ufs_id'));
         $favSrchObj->addCondition('ufs_user_id', '=', $loggedUserId);
         $favSrchObj->addCondition('ufs_shop_id', '=', $shop_id);
-        $srch->joinTable('('. $favSrchObj->getQuery() . ')', 'LEFT OUTER JOIN', 'ufs_shop_id = shop_id', 'ufs');
+        $srch->joinTable('(' . $favSrchObj->getQuery() . ')', 'LEFT OUTER JOIN', 'ufs_shop_id = shop_id', 'ufs');
         /* ] */
 
         $srch->addMultipleFields(
@@ -323,19 +323,19 @@ class ShopsController extends MyAppController
                 $this->_template->addCss('shops/templates/page-css/'.SHOP::TEMPLATE_ONE.'.css');
             break;
         } */
-        $this->_template->addCss('shops/templates/page-css/'.SHOP::TEMPLATE_ONE.'.css');
+        $this->_template->addCss('shops/templates/page-css/' . SHOP::TEMPLATE_ONE . '.css');
         $this->set('shop', $this->shopPoliciesData($shop));
         $this->set('shopRating', SelProdRating::getSellerRating($shop['shop_user_id']));
         $this->set('shopTotalReviews', SelProdReview::getSellerTotalReviews($shop['shop_user_id']));
 
         $description = trim(CommonHelper::subStringByWords(strip_tags(CommonHelper::renderHtml($shop['shop_description'], true)), 500));
-        $description .= ' - '.Labels::getLabel('LBL_See_more_at', $this->siteLangId).": ".CommonHelper::getCurrUrl();
+        $description .= ' - ' . Labels::getLabel('LBL_See_more_at', $this->siteLangId) . ": " . CommonHelper::getCurrUrl();
 
         if ($shop) {
             $socialShareContent = array(
-            'title'=>$shop['shop_name'],
-            'description'=>$description,
-            'image'=>CommonHelper::generateUrl('image', 'shopBanner', array($shop['shop_id'], $this->siteLangId, 'wide')),
+            'title' => $shop['shop_name'],
+            'description' => $description,
+            'image' => CommonHelper::generateUrl('image', 'shopBanner', array($shop['shop_id'], $this->siteLangId, 'wide')),
             );
             $this->set('socialShareContent', $socialShareContent);
         }
@@ -353,8 +353,8 @@ class ShopsController extends MyAppController
             $socialPlatforms = $db->fetchAll($rs);
             $this->set('socialPlatforms', $socialPlatforms);
         }
-
-        $collection_data= ShopCollection::getShopCollectionsDetail($shop_id, $this->siteLangId);
+        
+        $collection_data = ShopCollection::getShopCollectionsDetail($shop_id, $this->siteLangId);
         $this->set('collectionData', $collection_data);
         $this->set('layoutTemplate', 'shop');
         // $this->set('template_id', ($shop['shop_ltemplate_id']==0)?SHOP::TEMPLATE_ONE:$shop['shop_ltemplate_id']);
@@ -362,6 +362,23 @@ class ShopsController extends MyAppController
         $this->set('layoutRecordId', $shop['shop_id']);
         $showBgImage = $this->showBackgroundImage($shop_id, $this->siteLangId, SHOP::TEMPLATE_ONE);
         $this->set('showBgImage', $showBgImage);
+    }
+
+    public function getShopCollectionListing($shop_id)
+    {
+        $shop_id = FatUtility::int($shop_id);
+        if (1 > $shop_id) {
+            LibHelper::dieJsonError(Labels::getLabel('LBL_INVALID_SHOP', $this->siteLangId));
+        }
+        $collectionData = ShopCollection::getShopCollectionsDetail($shop_id, $this->siteLangId);
+        if (!empty($collectionData)) {
+            foreach ($collectionData as $key => $collection) {
+                $collectionData[$key]['shopCollectionImage'] = CommonHelper::generateFullUrl('Image', 'shopCollectionImage', array($collection['scollection_id'], $this->siteLangId,'SHOP'));
+            }
+        }
+        
+        $this->set('data', ['shopCollectionDetail' => $collectionData]);
+        $this->_template->render();
     }
 
     public function getAllowedShowBg($templateId = '')
@@ -452,6 +469,9 @@ class ShopsController extends MyAppController
         $shop_id = FatUtility::int($shop_id);
         $scollectionId = FatUtility::int($scollectionId);
         if (1 > $scollectionId) {
+            if (true ===  MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError(Labels::getLabel('LBL_INVALID_REQUEST', $this->siteLangId));
+            }
             FatApp::redirectUser(CommonHelper::generateUrl(''));
         }
         $this->shopDetail($shop_id);
@@ -474,28 +494,33 @@ class ShopsController extends MyAppController
         $get['collection_id'] = $scollectionId;
 
         $fld = $frm->getField('sortBy');
-        $fld->value='popularity_desc';
+        $fld->value = 'popularity_desc';
         $fld->fldType ='hidden';
         $frm->fill($get);
 
         $data = $this->getListingData($get);
 
         $arr = array(
-            'frmProductSearch'=>$frm,
-            'canonicalUrl'=>CommonHelper::generateFullUrl('Shops', 'collection', array($shop_id, $scollectionId)),
-            'productSearchPageType'=>SavedSearchProduct::PAGE_SHOP,
-            'recordId'=>$shop_id,
-            'bannerListigUrl'=>CommonHelper::generateFullUrl('Banner', 'categories'),
+            'canonicalUrl' => CommonHelper::generateFullUrl('Shops', 'collection', array($shop_id, $scollectionId)),
+            'productSearchPageType' => SavedSearchProduct::PAGE_SHOP,
+            'recordId' => $shop_id,
+            'bannerListigUrl' => CommonHelper::generateFullUrl('Banner', 'categories'),
         );
+
+        if (false ===  MOBILE_APP_API_CALL) {
+            $arr['frmProductSearch'] = $frm;
+        }
 
         $data = array_merge($data, $arr);
         $this->set('data', $data);
-
-        $this->includeProductPageJsCss();
-        $this->_template->addJs('js/slick.min.js');
-        $this->_template->addCss(array('css/slick.css','css/product-detail.css'));
-        $this->_template->addJs('js/shop-nav.js');
-        $this->_template->addJs('js/jquery.colourbrightness.min.js');
+        
+        if (false ===  MOBILE_APP_API_CALL) {
+            $this->includeProductPageJsCss();
+            $this->_template->addJs('js/slick.min.js');
+            $this->_template->addCss(array('css/slick.css','css/product-detail.css'));
+            $this->_template->addJs('js/shop-nav.js');
+            $this->_template->addJs('js/jquery.colourbrightness.min.js');
+        }
         $this->_template->render(true, true, 'shops/view.php');
     }
 

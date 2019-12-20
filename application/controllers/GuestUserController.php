@@ -1,6 +1,10 @@
 <?php
 class GuestUserController extends MyAppController
 {
+    private const FB_LOGIN = 1;
+    private const GOOGLE_LOGIN = 2;
+    private const APPLE_LOGIN = 3;
+    
     public function loginForm($isRegisterForm = 0)
     {
         /* if(UserAuthentication::doCookieLogin()){
@@ -13,10 +17,14 @@ class GuestUserController extends MyAppController
         if (UserAuthentication::isUserLogged()) {
             FatApp::redirectUser(CommonHelper::generateUrl('account'));
         }
+
+        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN_API, $this->siteLangId);
+
         $loginFrm = $this->getLoginForm();
         $loginData = array(
-        'loginFrm'             => $loginFrm,
-        'siteLangId'    => $this->siteLangId
+        'loginFrm' => $loginFrm,
+        'socialLoginApis' => $socialLoginApis,
+        'siteLangId' => $this->siteLangId,
         );
 
         $registerFrm = $this->getRegistrationForm();
@@ -140,7 +148,7 @@ class GuestUserController extends MyAppController
             FatUtility::dieJSONError(Labels::getLabel('Msg_Invalid_Request', $this->siteLangId));
         }
         $userId = UserAuthentication::getLoggedUserId();
-        $uObj= new User($userId);
+        $uObj = new User($userId);
         if (!$uObj->setPushNotificationToken($this->appToken, $fcmDeviceId)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
@@ -196,12 +204,12 @@ class GuestUserController extends MyAppController
         $expiry = strtotime("+7 DAYS");
 
         $values = array(
-        'uauth_user_id'=>$userId,
-        'uauth_token'=>$token,
-        'uauth_expiry'=>date('Y-m-d H:i:s', $expiry),
-        'uauth_browser'=>CommonHelper::userAgent(),
-        'uauth_last_access'=>date('Y-m-d H:i:s'),
-        'uauth_last_ip'=>CommonHelper::getClientIp(),
+        'uauth_user_id' => $userId,
+        'uauth_token' => $token,
+        'uauth_expiry' => date('Y-m-d H:i:s', $expiry),
+        'uauth_browser' => CommonHelper::userAgent(),
+        'uauth_last_access' => date('Y-m-d H:i:s'),
+        'uauth_last_ip' => CommonHelper::getClientIp(),
         );
 
         if (UserAuthentication::saveLoginToken($values)) {
@@ -221,10 +229,12 @@ class GuestUserController extends MyAppController
     {
         $includeGuestLogin = FatApp::getPostedData('includeGuestLogin', FatUtility::VAR_STRING, false);
         $frm = $this->getLoginForm($includeGuestLogin);
+        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN_API, $this->siteLangId);
         $data = array(
-        'loginFrm'             => $frm,
-        'siteLangId'    => $this->siteLangId,
-        'includeGuestLogin'    => $includeGuestLogin,
+            'loginFrm' => $frm,
+            'siteLangId' => $this->siteLangId,
+            'socialLoginApis' => $socialLoginApis,
+            'includeGuestLogin' => $includeGuestLogin,
         );
         $this->set('data', $data);
         $this->_template->render(false, false);
@@ -1126,6 +1136,7 @@ class GuestUserController extends MyAppController
         return $frm;
     }
     
+
     private function validateUserType($row, $userType)
     {
         $userTypeArr = [
@@ -1145,6 +1156,36 @@ class GuestUserController extends MyAppController
         if ($invalidUser) { 
             FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_User', $this->siteLangId));
         }
+
+    public function redirectAbandonedCartUser($userId, $selProdId, $reminderEmail = false)
+    {
+        $userId = FatUtility::int($userId);
+        $selProdId = FatUtility::int($selProdId);
+        if(!UserAuthentication::isUserLogged()) {
+            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
+        }        
+        if($reminderEmail == true){
+            FatApp::redirectUser(CommonHelper::generateUrl('Cart'));
+        }
+        
+        $cart = new Cart($userId);
+        if(!$cart->hasProducts()) {
+            FatApp::redirectUser(CommonHelper::generateUrl('Products', 'view', array($selProdId)));            
+        }        
+        $cartProducts = $cart->getProducts($this->siteLangId);
+        $found = false;
+        foreach($cartProducts as $key=>$data){
+            if($data['selprod_id'] == $selProdId){
+                $found = true;
+                break;
+            }
+        }
+        if($found == true){
+            FatApp::redirectUser(CommonHelper::generateUrl('Cart'));
+        }else{
+            FatApp::redirectUser(CommonHelper::generateUrl('Products', 'view', array($selProdId)));
+        }
+
     }
     
 }

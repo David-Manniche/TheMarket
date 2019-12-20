@@ -55,14 +55,14 @@ $(document).on('change','.collection-language-js',function(){
 
 	addShopForm = function(id) {
 		$.facebox(function() {
-			shopForm(id);
+            shopForm(id);
 		});
 	};
 	shopForm = function(id) {
 		fcom.displayProcessing();
 		var frm = document.frmShopSearchPaging;
 		fcom.ajax(fcom.makeUrl('Shops', 'form', [id]), '', function(t) {
-			fcom.updateFaceboxContent(t);
+            fcom.updateFaceboxContent(t);
 		});
 	};
 

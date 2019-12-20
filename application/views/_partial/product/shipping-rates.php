@@ -2,7 +2,7 @@
 <section class="section certified-bar">
 
         <div class="row justify-content-around">
-            <?php if (!empty($product['selprod_warranty_policies'])) { ?>
+            <?php if (!empty($product['product_warranty'])) { ?>
                 <div class="col-auto">
                     <div class="certified-box">
                         <i class="icn">
@@ -10,11 +10,17 @@
                                 <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#yearswarranty" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#yearswarranty"></use>
                             </svg>
                         </i>
-                        <p><?php echo $product['selprod_warranty_policies']['ppoint_title']; ?></p>
+                        <?php /* <p><?php echo $product['selprod_warranty_policies']['ppoint_title']; ?></p> */ ?>
+						<p>
+							<?php 
+								$lbl = Labels::getLabel('LBL_{DAYS}_DAYS_WARRANTY', $siteLangId);
+								echo CommonHelper::replaceStringData($lbl, ['{DAYS}' => $product['product_warranty']]);
+							?>
+						</p>
                     </div>
                 </div>
             <?php } ?>
-            <?php if (!empty($product['selprod_return_policies'])) { ?>
+            <?php if (!empty($product['selprod_return_age'])) { ?>
                 <div class="col-auto">
                     <div class="certified-box">
                         <i class="icn">
@@ -22,7 +28,34 @@
                                 <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#easyreturns" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#easyreturns"></use>
                             </svg>
                         </i>
-                        <p><?php echo $product['selprod_return_policies']['ppoint_title']; ?></p>
+                        <?php /* <p><?php echo $product['selprod_return_policies']['ppoint_title']; ?></p> */ ?>
+						<p>
+							<?php 
+								$lbl = Labels::getLabel('LBL_{DAYS}_DAYS_RETURN_BACK_POLICY', $siteLangId);
+								$returnAge = !empty($product['selprod_return_age']) ? $product['selprod_return_age'] : $product['shop_return_age'];
+								$returnAge = !empty($returnAge) ? $returnAge : 0;
+								echo CommonHelper::replaceStringData($lbl, ['{DAYS}' => $returnAge]);
+							?>
+						</p>
+                    </div>
+                </div>
+            <?php } ?>
+			<?php if (!empty($product['selprod_cancellation_age'])) { ?>
+                <div class="col-auto">
+                    <div class="certified-box">
+                        <i class="icn">
+                            <svg class="svg">
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#easyreturns" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#easyreturns"></use>
+                            </svg>
+                        </i>
+						<p>
+							<?php 
+								$lbl = Labels::getLabel('LBL_{DAYS}_DAYS_CANCELLATION_POLICY', $siteLangId);
+								$cancellationAge = !empty($product['selprod_cancellation_age']) ? $product['selprod_cancellation_age'] : $product['shop_cancellation_age'];
+								$cancellationAge = !empty($cancellationAge) ? $cancellationAge : 0;
+								echo CommonHelper::replaceStringData($lbl, ['{DAYS}' => $cancellationAge]);
+							?>
+						</p>
                     </div>
                 </div>
             <?php } ?>

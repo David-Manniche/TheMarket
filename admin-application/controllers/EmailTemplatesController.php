@@ -61,7 +61,7 @@ class EmailTemplatesController extends AdminBaseController
         }
 
         $rs = $srch->getResultSet();
-        $records =array();
+        $records = array();
         if ($rs) {
             $records = FatApp::getDb()->fetchAll($rs);
         }
@@ -73,6 +73,36 @@ class EmailTemplatesController extends AdminBaseController
         $this->set('postedData', $post);
         $this->set('langId', $this->adminLangId);
         $this->_template->render(false, false);
+    }
+
+    public function sendTestMail()
+    {
+        $to = FatApp::getConfig("CONF_SITE_OWNER_EMAIL");
+        $langId = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 1);
+        $tpl = FatApp::getPostedData('etpl_code', FatUtility::VAR_STRING, '');
+        
+        if (empty($tpl)) {
+            FatUtility::dieJsonError(Labels::getLabel('LBL_INVALID_TEMPLATE', $this->adminLangId));
+        }
+
+        if (!EmailHandler::sendMailTpl($to, $tpl, $langId)) {
+            FatUtility::dieJsonError(Labels::getLabel('LBL_MAIL_NOT_SENT', $this->adminLangId));
+        }
+
+        $this->set('msg', Labels::getLabel('LBL_Mail_Sent_Successfully', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function testEmailTemplate($tpl)
+    {
+        $to = FatApp::getConfig("CONF_SITE_OWNER_EMAIL");
+        $langId = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 1);
+        if (!EmailHandler::sendMailTpl($to, $tpl, $langId)) {
+            FatUtility::dieJsonError(Labels::getLabel('LBL_MAIL_NOT_SENT', $this->adminLangId));
+        }
+
+        $this->set('msg', Labels::getLabel('LBL_MAIL_SENT', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
     }
 
     public function langSetup()
@@ -89,23 +119,22 @@ class EmailTemplatesController extends AdminBaseController
 
         $etplCode = $post['etpl_code'];
 
+        $data = [
+            'etpl_lang_id' => $lang_id,
+            'etpl_code' => $etplCode,
+            'etpl_name' => $post['etpl_name'],
+            'etpl_subject' => $post['etpl_subject'],
+            'etpl_body' => $post['etpl_body'],
+        ];
+
+        $etplCode = $data['etpl_code'];
         $etplObj = new EmailTemplates($etplCode);
+        /*
         $record =  $etplObj->getEtpl($etplCode, $lang_id);
-
-        /* if($record == false){
-        Message::addErrorMessage($this->str_invalid_request);
-        FatUtility::dieJsonError( Message::getHtml() );
+        if($record == false){
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError( Message::getHtml() );
         } */
-
-        $languages = Language::getAllNames();
-
-        $data = array(
-        'etpl_lang_id' => $lang_id,
-        'etpl_code' => $etplCode,
-        'etpl_name' => $post['etpl_name'],
-        'etpl_subject' => $post['etpl_subject'],
-        'etpl_body' => $post['etpl_body'],
-        );
 
         if (!$etplObj->addUpdateData($data)) {
             Message::addErrorMessage($etplObj->getError());
@@ -135,7 +164,7 @@ class EmailTemplatesController extends AdminBaseController
         $frm->addRequiredField(Labels::getLabel('LBL_Subject', $this->adminLangId), 'etpl_subject');
         $fld = $frm->addHtmlEditor(Labels::getLabel('LBL_Body', $this->adminLangId), 'etpl_body');
         $fld->requirements()->setRequired(true);
-        $frm->addHtml(Labels::getLabel('LBL_Replacement_Caption', $this->adminLangId), 'replacement_caption', '<h3>'.Labels::getLabel('LBL_Replacement_Vars', $this->adminLangId).'</h3>');
+        $frm->addHtml(Labels::getLabel('LBL_Replacement_Caption', $this->adminLangId), 'replacement_caption', '<h3>' . Labels::getLabel('LBL_Replacement_Vars', $this->adminLangId) . '</h3>');
         $frm->addHtml(Labels::getLabel('LBL_Replacement_Vars', $this->adminLangId), 'etpl_replacements', '');
         
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
@@ -145,7 +174,9 @@ class EmailTemplatesController extends AdminBaseController
             $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
         
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
+        $fldTestEmail = $frm->addButton("", "test_email", Labels::getLabel('LBL_SEND_TEST_EMAIL', $this->adminLangId));
+        $fld_submit->attachField($fldTestEmail);
         return $frm;
     }
 
@@ -200,7 +231,7 @@ class EmailTemplatesController extends AdminBaseController
         $etplObj = new EmailTemplates($etplCode);
         $records =  $etplObj->getEtpl($etplCode);
 
-        if ($records==false) {
+        if ($records == false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }

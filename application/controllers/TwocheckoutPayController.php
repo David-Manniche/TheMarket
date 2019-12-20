@@ -15,6 +15,13 @@ class TwocheckoutPayController extends PaymentController
     private $keyName        =    "Twocheckout";
     private $paymentType    =     ""; //holds two values HOSTED or API
 
+    protected function allowedCurrenciesArr()
+    {
+        return [
+            'USD', 'EUR', 'GBP', 'JPY', 'CAD', 'RON', 'CZK', 'HUF', 'TRY', 'ZAR', 'EGP', 'MXN', 'PEN'
+        ];
+    }
+
     public function charge($orderId)
     {
         $paymentSettings = $this->getPaymentSettings();
@@ -74,16 +81,16 @@ class TwocheckoutPayController extends PaymentController
         $hashSid = $paymentSettings['sellerId']; //2Checkout account number
         $hashOrder = $post['order_number']; //2Checkout Order Number
         $hashTotal = $orderPaymentAmount; //Sale total to validate against
-        $StringToHash = strtoupper(md5($hashSecretWord.$hashSid.$hashOrder.$hashTotal));
+        $StringToHash = strtoupper(md5($hashSecretWord . $hashSid . $hashOrder . $hashTotal));
 
         if ($StringToHash == $post['key']) {
-            if ($post['credit_card_processed']=='Y') {
-                $message .= '2Checkout Order Number: '.$post['order_number']. "\n";
-                $message .= '2Checkout Invoice Id: '.$post['invoice_id']. "\n";
-                $message .= 'Merchant Order Id: '.$post['merchant_order_id']. "\n";
-                $message .= 'Pay Method: '.$post['pay_method']. "\n";
-                $message .= 'Description: '.$post['li_0_name']. "\n";
-                $message .= 'Hash Match: '.'Keys matched'. "\n";
+            if ($post['credit_card_processed'] == 'Y') {
+                $message .= '2Checkout Order Number: ' . $post['order_number'] . "\n";
+                $message .= '2Checkout Invoice Id: ' . $post['invoice_id'] . "\n";
+                $message .= 'Merchant Order Id: ' . $post['merchant_order_id'] . "\n";
+                $message .= 'Pay Method: ' . $post['pay_method'] . "\n";
+                $message .= 'Description: ' . $post['li_0_name'] . "\n";
+                $message .= 'Hash Match: ' . 'Keys matched' .  "\n";
                 /* Recording Payment in DB */
                 $orderPaymentObj->addOrderPayment($paymentSettings["pmethod_name"], $post['invoice_id'], $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $message);
                 /* End Recording Payment in DB */
@@ -104,7 +111,7 @@ class TwocheckoutPayController extends PaymentController
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         /* Retrieve Payment to charge corresponding to your order */
         $orderPaymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
-        if ($orderPaymentAmount>0) {
+        if ($orderPaymentAmount > 0) {
             /* Retrieve Primary Info corresponding to your order */
             $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
             $order_actual_paid = number_format(round($orderPaymentAmount, 2), 2, ".", "");

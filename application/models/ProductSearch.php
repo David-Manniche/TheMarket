@@ -16,6 +16,7 @@ class ProductSearch extends SearchBase
 
     private $sellerProductsJoined = false;
     private $sellerUserJoined = false;
+    private $shopsJoined = false;
     private $commonLangId;
     private $sellerSubscriptionOrderJoined = false;
 
@@ -29,7 +30,7 @@ class ProductSearch extends SearchBase
         } else {
             /* Same productsearch class used to fetch products under any batch/group, do not call setDefinedCriteria, call setBatchProductsCriteria().[ */
             parent::__construct($otherTbl, 'temp');
-            $this->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', 'temp.'.ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX.'selprod_id = sp.selprod_id', 'sp');
+            $this->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', 'temp.' . ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'selprod_id = sp.selprod_id', 'sp');
             if ($this->langId > 0) {
                 $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp.selprod_id = sp_l.selprodlang_selprod_id AND selprodlang_lang_id = '.$this->langId, 'sp_l');
             }
@@ -396,10 +397,21 @@ class ProductSearch extends SearchBase
         }   
 
         $this->joinTable(Shop::DB_TBL, 'INNER JOIN', 'seller_user.user_id = shop.shop_user_id '.$shopCondition, 'shop');
+        $this->shopsJoined = true;
 
         if ($langId) {
             $this->joinShopsLang($langId);
         }
+    }
+
+
+
+    public function joinShopSpecifics()
+    {
+        if (!$this->shopsJoined) {
+            trigger_error('Shops are not joined', E_USER_ERROR);
+        }
+        $this->joinTable(ShopSpecifics::DB_TBL, 'LEFT OUTER JOIN', 'shop.shop_id = ss.ss_shop_id', 'ss');
     }
 
     public function joinShopsLang($langId)
@@ -907,4 +919,14 @@ class ProductSearch extends SearchBase
     $this->joinTable( Option::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'spo.option_id = spo_lang.optionlang_option_id AND spo_lang.optionlang_lang_id = '.$langId, 'spo_lang' );
     }
     } */
+
+    public function joinSellerProductSpecifics()
+    {
+        $this->joinTable(SellerProductSpecifics::DB_TBL, 'LEFT JOIN', 'sps.sps_selprod_id = selprod_id', 'sps');
+    }
+
+    public function joinProductSpecifics()
+    {
+        $this->joinTable(ProductSpecifics::DB_TBL, 'LEFT JOIN', 'ps.ps_product_id = p.product_id', 'ps');
+    }
 }

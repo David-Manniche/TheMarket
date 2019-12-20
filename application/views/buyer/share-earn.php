@@ -2,8 +2,9 @@
 $sharingFrm->addFormTagAttribute('class', 'form');
 $sharingFrm->addFormTagAttribute('onsubmit', 'sendMailShareEarn(this);return false;');
 $sharingFrm->developerTags['colClassPrefix'] = 'col-xs-12 col-md-';
-$sharingFrm->developerTags['fld_default_col'] = 12; ?>
-<?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
+$sharingFrm->developerTags['fld_default_col'] = 12;
+
+$this->includeTemplate('_partial/dashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
         <div class="content-header row justify-content-between mb-3">

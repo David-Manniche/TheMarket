@@ -11012,16 +11012,24 @@ html.quick-view--open {
 	height: auto;
 }
 
-.btn--fb {
+.btn--fb, .btn--FacebookLogin {
 	background: #3b5a99;
 }
 
-.btn--gp {
+.btn--gp, .btn--GoogleLogin {
 	background: #da4a42;
 }
 
 .btn--gm {
 	background: #333333;
+}
+
+.btn--AppleLogin {
+	background: #000000;
+}
+
+.btn--InstagramLogin {
+    background: #3f729b;
 }
 
 .cart-head {}

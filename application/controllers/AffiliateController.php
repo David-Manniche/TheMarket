@@ -32,12 +32,13 @@ class AffiliateController extends AffiliateBaseController
 
         $fbAccessToken = '';
         $fbLoginUrl = '';
-
-        if (!empty(FatApp::getConfig("CONF_FACEBOOK_APP_ID")) && !empty(FatApp::getConfig("CONF_FACEBOOK_APP_SECRET"))) {
+        $appId = FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, '');
+        $appSecret = FatApp::getConfig('CONF_FACEBOOK_APP_SECRET', FatUtility::VAR_STRING, '');
+        if (!empty($appId) && !empty($appSecret)) {
             $config = array(
-            'app_id' => FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, ''),
-            'app_secret' => FatApp::getConfig('CONF_FACEBOOK_APP_SECRET', FatUtility::VAR_STRING, ''),
-            );
+			'app_id' => $appId,
+			'app_secret' => $appSecret,
+			);
             $fb = new Fbapi($config);
 
             $redirectUrl = CommonHelper::generateFullUrl('Affiliate', 'getFbToken', array(), '', false);

@@ -18,6 +18,10 @@ class TranslateApi
             $this->error = Labels::getLabel('MSG_YOU_HAVE_NOT_ENTERED_A_VALID_SUBSCRIPTION_KEY', CommonHelper::getLangId());
             return false;
         }
+        if (empty($fromLang)) {
+            $this->error = Labels::getLabel('MSG_INVALID_SOURCE_LANGUAGE', CommonHelper::getLangId());
+            return false;
+        }
         $this->host = 'https://api.cognitive.microsofttranslator.com';
         $this->translatePath = '/translate?api-version=3.0';
         $this->fromLang = $fromLang;

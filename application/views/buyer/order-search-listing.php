@@ -88,6 +88,11 @@ foreach ($orders as $sn => $order) {
                 $ul = $td->appendElement("ul", array("class"=>"actions"), '', true);
 
                 $opCancelUrl = CommonHelper::generateUrl('Buyer', 'orderCancellationRequest', array($order['op_id']));
+                $now = time(); // or your date as well
+                $orderDate = strtotime($order['order_date_added']);
+                $datediff = $now - $orderDate;
+                $daysSpent = round($datediff / (60 * 60 * 24));
+                $returnAge = !empty($order['return_age']) ? $order['return_age'] : FatApp::getConfig("CONF_DEFAULT_RETURN_AGE", FatUtility::VAR_INT, 7);
 
                 $li = $ul->appendElement("li");
                 $li->appendElement(
@@ -98,7 +103,7 @@ foreach ($orders as $sn => $order) {
                     true
                 );
 
-                if ($canCancelOrder && false === OrderCancelRequest::getCancelRequestById($order['op_id'])) {
+                if ($canCancelOrder && false === OrderCancelRequest::getCancelRequestById($order['op_id']) && $order['cancellation_age'] >= $daysSpent) {
                     $li = $ul->appendElement("li");
                     $li->appendElement(
                         'a',
@@ -121,7 +126,7 @@ foreach ($orders as $sn => $order) {
                     );
                 }
 
-                if ($canReturnRefund && ($order['return_request'] == 0 && $order['cancel_request'] == 0)) {
+                if ($canReturnRefund && ($order['return_request'] == 0 && $order['cancel_request'] == 0) && $returnAge >= $daysSpent) {
                     $opRefundRequestUrl = CommonHelper::generateUrl('Buyer', 'orderReturnRequest', array($order['op_id']));
                     $li = $ul->appendElement("li");
                     $li->appendElement(

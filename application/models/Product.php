@@ -63,7 +63,7 @@ class Product extends MyAppModel
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
     }
 
-    public static function getSearchObject($langId = 0, $isDeleted = true)
+    public static function getSearchObject($langId = 0, $isDeleted = true, $joinSpecifics = false)
     {
         $srch = new SearchBase(static::DB_TBL, 'tp');
 
@@ -78,6 +78,15 @@ class Product extends MyAppModel
 
         if ($isDeleted) {
             $srch->addCondition(static::DB_TBL_PREFIX . 'deleted', '=', applicationConstants::NO);
+        }
+
+        if (true === $joinSpecifics) {
+            $srch->joinTable(
+                ProductSpecifics::DB_TBL,
+                'LEFT OUTER JOIN',
+                'psp.' . ProductSpecifics::DB_TBL_PREFIX . 'product_id = tp.' . static::tblFld('id'),
+                'psp'
+            );
         }
 
         $srch->addOrder(static::DB_TBL_PREFIX . 'active', 'DESC');
@@ -237,9 +246,38 @@ class Product extends MyAppModel
         );
     }
 
-    public static function getAttributesById($recordId, $attr = null)
+    public static function getAttributesById($recordId, $attr = null, $joinSpecifics = false)
     {
-        $row = parent::getAttributesById($recordId, $attr);
+        $recordId = FatUtility::int($recordId);
+
+        $db = FatApp::getDb();
+
+        $srch = new SearchBase(static::DB_TBL, 'p');
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addCondition(static::tblFld('id'), '=', $recordId);
+
+        if (true === $joinSpecifics) {
+            $srch->joinTable(
+                ProductSpecifics::DB_TBL,
+                'LEFT OUTER JOIN',
+                'ps.' . ProductSpecifics::DB_TBL_PREFIX . 'product_id = p.' . static::tblFld('id'),
+                'ps'
+            );
+        }
+
+        if (null != $attr) {
+            if (is_array($attr)) {
+                $srch->addMultipleFields($attr);
+            } elseif (is_string($attr)) {
+                $srch->addFld($attr);
+            }
+        }
+        $rs = $srch->getResultSet();
+        $row = $db->fetch($rs);
+        if (!is_array($row)) {
+            return false;
+        }
 
         /* get Numeric attributes data[ */
         if (!$attr) {
@@ -249,6 +287,10 @@ class Product extends MyAppModel
             }
         }
         /* ] */
+
+        if (is_string($attr)) {
+            return $row[$attr];
+        }
         return $row;
     }
 
@@ -1228,9 +1270,9 @@ class Product extends MyAppModel
             $criteria['optionvalue'] = !empty($criteria['optionvalue']) ? json_decode($criteria['optionvalue'], true) : '';
         }
 
-        $shop_id = 0;   
+        $shop_id = 0;
         if (array_key_exists('shop_id', $criteria)) {
-            $shop_id =  FatUtility::int($criteria['shop_id']);           
+            $shop_id =  FatUtility::int($criteria['shop_id']);
         }
 
         //$srch->setDefinedCriteria($join_price, 0, $criteria, true);
@@ -1378,7 +1420,7 @@ END,   special_price_found ) as special_price_found'
         }
         //currency_id
         if (!empty($minPriceRange)) {
-            $min_price_range_default_currency = CommonHelper::convertExistingToOtherCurrency($criteria['currency_id'], $minPriceRange, FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1), false);            
+            $min_price_range_default_currency = CommonHelper::convertExistingToOtherCurrency($criteria['currency_id'], $minPriceRange, FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1), false);
             //$min_price_range_default_currency =  CommonHelper::getDefaultCurrencyValue($minPriceRange, false, false);
             $srch->addHaving('theprice', '>=', $min_price_range_default_currency);
         }

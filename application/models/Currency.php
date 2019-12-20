@@ -1,21 +1,16 @@
 <?php
 class Currency extends MyAppModel
 {
-    const DB_TBL = 'tbl_currency';
-    const DB_TBL_PREFIX = 'currency_';
+    public const DB_TBL = 'tbl_currency';
+    public const DB_TBL_PREFIX = 'currency_';
 
-    const DB_TBL_LANG = 'tbl_currency_lang';
-    const DB_TBL_LANG_PREFIX = 'currencylang_';
+    public const DB_TBL_LANG = 'tbl_currency_lang';
+    public const DB_TBL_LANG_PREFIX = 'currencylang_';
 
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
         $this->db = FatApp::getDb();
-        $this->objMainTableRecord->setSensitiveFields(
-            array(
-            'currency_is_default'
-            )
-        );
     }
 
     public static function getSearchObject($langId = 0, $isActive = true)
@@ -27,8 +22,8 @@ class Currency extends MyAppModel
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'curr_l.'.static::DB_TBL_LANG_PREFIX.'currency_id = curr.'.static::tblFld('id').' and
-			curr_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
+                'curr_l.' . static::DB_TBL_LANG_PREFIX . 'currency_id = curr.' . static::tblFld('id') . ' and
+			curr_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 'curr_l'
             );
         }
@@ -96,5 +91,49 @@ class Currency extends MyAppModel
             return false;
         }
         return $row;
+    }
+
+    public static function getDefault()
+    {
+        return Currency::getAttributesById(FatApp::getConfig("CONF_CURRENCY", FatUtility::VAR_INT, 1));
+    }
+
+    public static function getDefaultCurrencyCode()
+    {
+        $baseCurrency = static::getDefault();
+        if (empty($baseCurrency)) {
+            return false;
+        }
+        return strtoupper($baseCurrency['currency_code']);
+    }
+
+    public function getCurrencyConverterApi()
+    {
+        $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_CURRENCY_CONVERTER_API', FatUtility::VAR_INT, 0);
+        if (empty($defaultCurrConvAPI)) {
+            $this->error = Labels::getLabel('MSG_DEFAULT_CURRENCY_CONVERTER_NOT_DEFINED', $this->siteLangId);
+            return false;
+        } elseif (1 > Plugin::getAttributesById($defaultCurrConvAPI, 'plugin_active')) {
+            $this->error = Labels::getLabel('MSG_DEFAULT_CURRENCY_CONVERTER_API_ACTIVE', $this->siteLangId);
+            return false;
+        }
+        
+        return Plugin::getAttributesById($defaultCurrConvAPI, 'plugin_code');
+    }
+
+    public function updatePricingRates($currenciesData)
+    {
+        $currencyObj = new TableRecord(static::DB_TBL);
+        foreach ($currenciesData as $currencyCode => $rate) {
+            $data['currency_date_modified'] = date('Y-m-d H:i:s');
+            $data['currency_value'] = $rate;
+
+            $currencyObj->assignValues($data);
+            if (!$currencyObj->update(['smt' => 'currency_code=?', 'vals' => [$currencyCode]])) {
+                $this->error = $currencyObj->getError();
+                return false;
+            }
+        }
+        return true;
     }
 }

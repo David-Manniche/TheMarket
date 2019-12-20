@@ -1,112 +1,114 @@
 <?php
 class AdminPrivilege
 {
-    const SECTION_PRODUCT_CATEGORIES = 1;
-    const SECTION_PRODUCTS = 2;
-    const SECTION_BRANDS = 3;
-    const SECTION_FILTER_GROUPS = 4;
-    const SECTION_FILTERS = 5;
-    const SECTION_ATTRIBUTES = 6;
-    const SECTION_TAGS = 7;
-    const SECTION_OPTIONS = 8;
-    const SECTION_EXTRA_ATTRIBUTES = 9;
-    const SECTION_GENERAL_SETTINGS = 10;
-    const SECTION_USERS = 11;
-    const SECTION_SUPPLIER_APPROVAL_FORM = 12;
-    const SECTION_SUPPLIER_APPROVAL_REQUESTS = 13;
-    const SECTION_SHOPS = 14;
-    const SECTION_PAYMENT_METHODS = 15;
-    const SECTION_CONTENT_BLOCKS = 16;
-    const SECTION_SHIPPING_DURATIONS = 17;
-    const SECTION_MANUAL_SHIPPING_API = 18;
-    const SECTION_LANGUAGE_LABELS = 19;
-    const SECTION_CURRENCY_MANAGEMENT = 20;
-    const SECTION_CONTENT_PAGES = 21;
-    const SECTION_EMPTY_CART_ITEMS_MANAGEMENT = 22;
-    const SECTION_NAVIGATION_MANAGEMENT = 23;
-    const SECTION_CATALOG_REQUESTS = 24;
-    const SECTION_SHIPPING_APIS = 25;
-    const SECTION_COMMISSION = 26;
-    const SECTION_ORDERS = 27;
-    const SECTION_VENDOR_ORDERS = 28;
-    const SECTION_WITHDRAW_REQUESTS = 29;
-    const SECTION_ORDER_CANCELLATION_REQUESTS = 30;
-    const SECTION_ORDER_RETURN_REQUESTS = 31;
-    const SECTION_TAX = 32;
-    const SECTION_SLIDES = 33;
-    const SECTION_COUNTRIES = 34;
-    const SECTION_ZONES = 35;
-    const SECTION_STATES = 36;
-    const SECTION_EMAIL_TEMPLATES = 37;
-    const SECTION_ADMIN_USERS = 38;
-    const SECTION_BANNERS = 39;
-    const SECTION_SOCIALPLATFORM = 40;
-    const SECTION_COLLECTIONS = 41;
-    const SECTION_HOME_PAGE_ELEMENTS = 42;
-    const SECTION_SHOP_REPORT_REASONS = 43;
-    const SECTION_SHOP_REPORTS = 44;
-    const SECTION_ORDER_CANCEL_REASONS = 45;
-    const SECTION_ORDER_RETURN_REASONS = 46;
-    const SECTION_META_TAGS = 47;
-    const SECTION_ADMIN_DASHBOARD = 48;
-    const SECTION_FAQ_CATEGORY = 49;
-    const SECTION_FAQ = 50;
-    const SECTION_URL_REWRITE = 51;
-    const SECTION_TESTIMONIAL = 52;
-    const SECTION_SUCCESS_STORIES = 53;
-    const SMART_RECOMENDED_WEIGHTAGES = 54;
-    const SMART_PRODUCT_TAG_PRODUCTS = 55;
-    const SECTION_ADMIN_PERMISSIONS = 56;
-    const SECTION_BLOG_POST_CATEGORIES = 57;
-    const SECTION_BLOG_POSTS = 58;
-    const SECTION_DISCOUNT_COUPONS = 59;
-    const SECTION_BLOG_CONTRIBUTIONS = 60;
-    const SECTION_BLOG_COMMENTS = 61;
-    const SECTION_SELLER_PRODUCTS = 62;
-    const SECTION_PRODUCT_REVIEWS = 63;
-    const SECTION_ABUSIVE_WORDS = 64;
-    const SECTION_QUESTION_BANKS = 65;
-    const SECTION_MESSAGES = 66;
-    const SECTION_POLLING = 67;
-    const SECTION_QUESTIONS = 68;
-    const SECTION_QUESTIONNAIRES = 69;
-    const SECTION_SALES_REPORT = 70;
-    const SECTION_USERS_REPORT = 71;
-    const SECTION_PRODUCTS_REPORT = 72;
-    const SECTION_SHOPS_REPORT = 73;
-    const SECTION_TAX_REPORT = 74;
-    const SECTION_COMMISSION_REPORT = 75;
-    const SECTION_CATALOG_REPORT = 76;
-    const SECTION_PERFORMANCE_REPORT = 77;
-    const SECTION_POLICY_POINTS = 78;
-    const SECTION_SELLER_PACKAGES = 79;
-    const SECTION_SELLER_DISCOUNT_COUPONS = 80;
-    const SECTION_TOOLS = 81;
-    const SECTION_THEME_COLOR = 82;
-    const SECTION_SUBSCRIPTION_ORDERS = 83;
-    const SECTION_AFFILIATE_COMMISSION = 84;
-    const SECTION_PROMOTIONS = 85;
-    const SECTION_AFFILIATES_REPORT = 86;
-    const SECTION_ADVERTISERS_REPORT = 87;
-    const SECTION_BRAND_REQUESTS = 88;
-    const SECTION_SHIPPING_COMPANY_USERS = 89;
-    const SECTION_REWARDS_ON_PURCHASE = 90;
-    const SECTION_LANGUAGE = 91;
-    const SECTION_ORDER_STATUS = 92;
-    const SECTION_NOTIFICATION = 93;
-    const SECTION_TOOLTIP = 94;
-    const SECTION_CUSTOM_PRODUCT_REQUESTS = 95;
-    const SECTION_CUSTOM_CATALOG_PRODUCT_REQUESTS = 96;
-    const SECTION_DATABASE_BACKUP = 96;
-    const SECTION_USER_REQUESTS = 97;
-    const SECTION_PRODUCT_TEMP_IMAGES = 98;
-    const SECTION_IMPORT_INSTRUCTIONS = 99;
-    const SECTION_UPLOAD_BULK_IMAGES = 100;
-    const SECTION_SITEMAP = 101;
-
-    const PRIVILEGE_NONE = 0;
-    const PRIVILEGE_READ = 1;
-    const PRIVILEGE_WRITE = 2;
+    public const SECTION_PRODUCT_CATEGORIES = 1;
+    public const SECTION_PRODUCTS = 2;
+    public const SECTION_BRANDS = 3;
+    public const SECTION_FILTER_GROUPS = 4;
+    public const SECTION_FILTERS = 5;
+    public const SECTION_ATTRIBUTES = 6;
+    public const SECTION_TAGS = 7;
+    public const SECTION_OPTIONS = 8;
+    public const SECTION_EXTRA_ATTRIBUTES = 9;
+    public const SECTION_GENERAL_SETTINGS = 10;
+    public const SECTION_USERS = 11;
+    public const SECTION_SUPPLIER_APPROVAL_FORM = 12;
+    public const SECTION_SUPPLIER_APPROVAL_REQUESTS = 13;
+    public const SECTION_SHOPS = 14;
+    public const SECTION_PAYMENT_METHODS = 15;
+    public const SECTION_CONTENT_BLOCKS = 16;
+    public const SECTION_SHIPPING_DURATIONS = 17;
+    public const SECTION_MANUAL_SHIPPING_API = 18;
+    public const SECTION_LANGUAGE_LABELS = 19;
+    public const SECTION_CURRENCY_MANAGEMENT = 20;
+    public const SECTION_CONTENT_PAGES = 21;
+    public const SECTION_EMPTY_CART_ITEMS_MANAGEMENT = 22;
+    public const SECTION_NAVIGATION_MANAGEMENT = 23;
+    public const SECTION_CATALOG_REQUESTS = 24;
+    public const SECTION_SHIPPING_APIS = 25;
+    public const SECTION_COMMISSION = 26;
+    public const SECTION_ORDERS = 27;
+    public const SECTION_VENDOR_ORDERS = 28;
+    public const SECTION_WITHDRAW_REQUESTS = 29;
+    public const SECTION_ORDER_CANCELLATION_REQUESTS = 30;
+    public const SECTION_ORDER_RETURN_REQUESTS = 31;
+    public const SECTION_TAX = 32;
+    public const SECTION_SLIDES = 33;
+    public const SECTION_COUNTRIES = 34;
+    public const SECTION_ZONES = 35;
+    public const SECTION_STATES = 36;
+    public const SECTION_EMAIL_TEMPLATES = 37;
+    public const SECTION_ADMIN_USERS = 38;
+    public const SECTION_BANNERS = 39;
+    public const SECTION_SOCIALPLATFORM = 40;
+    public const SECTION_COLLECTIONS = 41;
+    public const SECTION_HOME_PAGE_ELEMENTS = 42;
+    public const SECTION_SHOP_REPORT_REASONS = 43;
+    public const SECTION_SHOP_REPORTS = 44;
+    public const SECTION_ORDER_CANCEL_REASONS = 45;
+    public const SECTION_ORDER_RETURN_REASONS = 46;
+    public const SECTION_META_TAGS = 47;
+    public const SECTION_ADMIN_DASHBOARD = 48;
+    public const SECTION_FAQ_CATEGORY = 49;
+    public const SECTION_FAQ = 50;
+    public const SECTION_URL_REWRITE = 51;
+    public const SECTION_TESTIMONIAL = 52;
+    public const SECTION_SUCCESS_STORIES = 53;
+    public const SMART_RECOMENDED_WEIGHTAGES = 54;
+    public const SMART_PRODUCT_TAG_PRODUCTS = 55;
+    public const SECTION_ADMIN_PERMISSIONS = 56;
+    public const SECTION_BLOG_POST_CATEGORIES = 57;
+    public const SECTION_BLOG_POSTS = 58;
+    public const SECTION_DISCOUNT_COUPONS = 59;
+    public const SECTION_BLOG_CONTRIBUTIONS = 60;
+    public const SECTION_BLOG_COMMENTS = 61;
+    public const SECTION_SELLER_PRODUCTS = 62;
+    public const SECTION_PRODUCT_REVIEWS = 63;
+    public const SECTION_ABUSIVE_WORDS = 64;
+    public const SECTION_QUESTION_BANKS = 65;
+    public const SECTION_MESSAGES = 66;
+    public const SECTION_POLLING = 67;
+    public const SECTION_QUESTIONS = 68;
+    public const SECTION_QUESTIONNAIRES = 69;
+    public const SECTION_SALES_REPORT = 70;
+    public const SECTION_USERS_REPORT = 71;
+    public const SECTION_PRODUCTS_REPORT = 72;
+    public const SECTION_SHOPS_REPORT = 73;
+    public const SECTION_TAX_REPORT = 74;
+    public const SECTION_COMMISSION_REPORT = 75;
+    public const SECTION_CATALOG_REPORT = 76;
+    public const SECTION_PERFORMANCE_REPORT = 77;
+    public const SECTION_POLICY_POINTS = 78;
+    public const SECTION_SELLER_PACKAGES = 79;
+    public const SECTION_SELLER_DISCOUNT_COUPONS = 80;
+    public const SECTION_TOOLS = 81;
+    public const SECTION_THEME_COLOR = 82;
+    public const SECTION_SUBSCRIPTION_ORDERS = 83;
+    public const SECTION_AFFILIATE_COMMISSION = 84;
+    public const SECTION_PROMOTIONS = 85;
+    public const SECTION_AFFILIATES_REPORT = 86;
+    public const SECTION_ADVERTISERS_REPORT = 87;
+    public const SECTION_BRAND_REQUESTS = 88;
+    public const SECTION_SHIPPING_COMPANY_USERS = 89;
+    public const SECTION_REWARDS_ON_PURCHASE = 90;
+    public const SECTION_LANGUAGE = 91;
+    public const SECTION_ORDER_STATUS = 92;
+    public const SECTION_NOTIFICATION = 93;
+    public const SECTION_TOOLTIP = 94;
+    public const SECTION_CUSTOM_PRODUCT_REQUESTS = 95;
+    public const SECTION_CUSTOM_CATALOG_PRODUCT_REQUESTS = 96;
+    public const SECTION_DATABASE_BACKUP = 96;
+    public const SECTION_USER_REQUESTS = 97;
+    public const SECTION_PRODUCT_TEMP_IMAGES = 98;
+    public const SECTION_IMPORT_INSTRUCTIONS = 99;
+    public const SECTION_UPLOAD_BULK_IMAGES = 100;
+    public const SECTION_SITEMAP = 101;
+	public const SECTION_PLUGINS = 102;
+    public const SECTION_ABANDONED_CART = 103;
+	
+    public const PRIVILEGE_NONE = 0;
+    public const PRIVILEGE_READ = 1;
+    public const PRIVILEGE_WRITE = 2;
 
     private static $instance = null ;
     private $loadedPermissions = array();
@@ -237,7 +239,7 @@ class AdminPrivilege
         static::SECTION_PRODUCT_TEMP_IMAGES => Labels::getLabel('MSG_Products_Temp_Images', CommonHelper::getLangId()),
         static::SECTION_IMPORT_INSTRUCTIONS => Labels::getLabel('MSG_Import_Instructions', CommonHelper::getLangId()),
         static::SECTION_UPLOAD_BULK_IMAGES => Labels::getLabel('MSG_Bulk_Upload', CommonHelper::getLangId()),
-
+		static::SECTION_PLUGINS => Labels::getLabel('MSG_Plugins', CommonHelper::getLangId()),
         /* static::SECTION_Languages => Labels::getLabel('MSG_Languages',CommonHelper::getLangId()),
         static::SECTION_Languages => Labels::getLabel('MSG_Order_Status',CommonHelper::getLangId()), */
 
@@ -1378,4 +1380,20 @@ class AdminPrivilege
         return $this->checkPermission($adminId, static::SECTION_SITEMAP, static::PRIVILEGE_WRITE, $returnResult);
     }
 
+	
+	public function canViewPlugins($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_PLUGINS, static::PRIVILEGE_READ, $returnResult);
+    }
+    
+    public function canEditPlugins($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_PLUGINS, static::PRIVILEGE_WRITE, $returnResult);
+    }
+    
+    public function canViewAbandonedCart($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_ABANDONED_CART, static::PRIVILEGE_READ, $returnResult);
+
+    }
 }

@@ -1,25 +1,25 @@
 <?php
 class OrderReturnRequest extends MyAppModel
 {
-    const DB_TBL = 'tbl_order_return_requests';
-    const DB_TBL_PREFIX = 'orrequest_';
+    public const DB_TBL = 'tbl_order_return_requests';
+    public const DB_TBL_PREFIX = 'orrequest_';
 
-    const DB_TBL_RETURN_REQUEST_MESSAGE = 'tbl_order_return_request_messages';
+    public const DB_TBL_RETURN_REQUEST_MESSAGE = 'tbl_order_return_request_messages';
 
-    const RETURN_REQUEST_TYPE_REPLACE = 1;
-    const RETURN_REQUEST_TYPE_REFUND = 2;
+    public const RETURN_REQUEST_TYPE_REPLACE = 1;
+    public const RETURN_REQUEST_TYPE_REFUND = 2;
 
-    const RETURN_REQUEST_STATUS_PENDING = 0;
-    const RETURN_REQUEST_STATUS_ESCALATED = 1;
-    const RETURN_REQUEST_STATUS_REFUNDED = 2;
-    const RETURN_REQUEST_STATUS_WITHDRAWN = 3;
-    const RETURN_REQUEST_STATUS_CANCELLED = 4;
+    public const RETURN_REQUEST_STATUS_PENDING = 0;
+    public const RETURN_REQUEST_STATUS_ESCALATED = 1;
+    public const RETURN_REQUEST_STATUS_REFUNDED = 2;
+    public const RETURN_REQUEST_STATUS_WITHDRAWN = 3;
+    public const RETURN_REQUEST_STATUS_CANCELLED = 4;
 
-    const CLASS_REQUEST_STATUS_PENDING = 'warning';
-    const CLASS_REQUEST_STATUS_ESCALATED = 'info';
-    const CLASS_REQUEST_STATUS_REFUNDED = 'green';
-    const CLASS_REQUEST_STATUS_WITHDRAWN = 'purple';
-    const CLASS_REQUEST_STATUS_CANCELLED = 'danger';
+    public const CLASS_REQUEST_STATUS_PENDING = 'warning';
+    public const CLASS_REQUEST_STATUS_ESCALATED = 'info';
+    public const CLASS_REQUEST_STATUS_REFUNDED = 'green';
+    public const CLASS_REQUEST_STATUS_WITHDRAWN = 'purple';
+    public const CLASS_REQUEST_STATUS_CANCELLED = 'danger';
 
     public function __construct($id = 0)
     {

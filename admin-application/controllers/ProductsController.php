@@ -175,7 +175,7 @@ class ProductsController extends AdminBaseController
         $totalProducts = 0;
         $productFrm = $this->getForm($attrgrp_id);
         if ($product_id > 0) {
-            $row_data = Product::getAttributesById($product_id);
+            $row_data = Product::getAttributesById($product_id, null, true);
 
             $taxData = array();
             $taxObj = Tax::getTaxCatObjByProductId($product_id, $this->adminLangId);
@@ -196,10 +196,10 @@ class ProductsController extends AdminBaseController
                 $row_data = array_merge($row_data, $taxData);
             }
 
-            if ($row_data['product_seller_id']>0) {
-                $user_shop_name=User::getUserShopName($row_data['product_seller_id']);
+            if ($row_data['product_seller_id'] > 0) {
+                $user_shop_name = User::getUserShopName($row_data['product_seller_id']);
 
-                $row_data['selprod_user_shop_name']=$user_shop_name['user_name'].' - '.$user_shop_name['shop_identifier'];
+                $row_data['selprod_user_shop_name'] = $user_shop_name['user_name'] . ' - ' . $user_shop_name['shop_identifier'];
             } else {
                 $row_data['selprod_user_shop_name'] = 'Admin';
             }
@@ -212,8 +212,8 @@ class ProductsController extends AdminBaseController
             }
             //var_dump($row_data);
             $productFrm->fill($row_data);
-            $product_added_by_admin_arr=Product::getAttributesById($product_id, array('product_added_by_admin_id'));
-            $product_added_by_admin=$product_added_by_admin_arr['product_added_by_admin_id'];
+            $product_added_by_admin_arr = Product::getAttributesById($product_id, array('product_added_by_admin_id'));
+            $product_added_by_admin = $product_added_by_admin_arr['product_added_by_admin_id'];
 
 
             //Get productCount  in catalog
@@ -285,6 +285,16 @@ class ProductsController extends AdminBaseController
         }
 
         $product_id = $prodObj->getMainTableRecordId();
+
+        $post['ps_product_id'] = $product_id;
+
+        $productSpecificsObj = new ProductSpecifics($product_id);
+        $productSpecificsObj->assignValues($post);
+        $data = $productSpecificsObj->getFlds();
+        if (!$productSpecificsObj->addNew(array(), $data)) {
+            Message::addErrorMessage($productSpecificsObj->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
 
         /* save Group attributes data[ */
         $num_data_update_arr['prodnumattr_product_id'] = $product_id;

@@ -151,10 +151,11 @@ trait CustomProducts
     public function customProductGeneralForm($product_id = 0, $prodcat_id = 0)
     {
         $product_id = FatUtility::int($product_id);
+        $userId = UserAuthentication::getLoggedUserId();
         /* Validate product belongs to current logged seller[ */
         if ($product_id) {
-            $productRow = Product::getAttributesById($product_id, array('product_seller_id'));
-            if ($productRow['product_seller_id'] != UserAuthentication::getLoggedUserId()) {
+            $productRow = Product::getAttributesById($product_id, ['product_seller_id']);
+            if ($productRow['product_seller_id'] != $userId) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             }
         }
@@ -186,20 +187,20 @@ trait CustomProducts
             $row_data = Product::getAttributesById($product_id, $productAttrToGet); */
 
 
-            $srch = Product::getSearchObject($this->siteLangId);
+            $srch = Product::getSearchObject($this->siteLangId, true, true);
             $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'tp.product_brand_id = brand.brand_id', 'brand');
-            $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'brandlang_brand_id = brand.brand_id AND brandlang_lang_id = ' . $this->siteLangId);
-            $srch->addMultipleFields(array('product_id', 'product_identifier', 'product_type', 'product_model', 'product_min_selling_price', 'product_active', 'product_approved', 'product_featured', 'product_length','product_width', 'product_height', 'product_dimension_unit', 'product_weight', 'product_weight_unit', 'product_ship_country', 'product_ship_free', 'product_cod_enabled', 'product_upc', 'product_brand_id', 'IFNULL(brand_name,brand_identifier) as brand_name'));
+            $srch->joinTable(Brand::DB_LANG_TBL, 'LEFT OUTER JOIN', 'brandlang_brand_id = brand.brand_id AND brandlang_lang_id = ' . $this->siteLangId);
+            $srch->addMultipleFields(array('product_id', 'product_identifier', 'product_type', 'product_model', 'product_min_selling_price', 'product_active', 'product_approved', 'product_featured', 'product_length','product_width', 'product_height', 'product_dimension_unit', 'product_weight', 'product_weight_unit', 'product_ship_country', 'product_ship_free', 'product_cod_enabled', 'product_upc', 'product_brand_id', 'IFNULL(brand_name,brand_identifier) as brand_name', 'product_warranty'));
             $srch->addCondition('product_id', '=', $product_id);
             $rs = $srch->getResultSet();
             $row_data = FatApp::getDb()->fetch($rs);
 
-            $taxData = Tax::getTaxCatByProductId($product_id, UserAuthentication::getLoggedUserId(), $this->siteLangId, array('ptt_taxcat_id'));
+            $taxData = Tax::getTaxCatByProductId($product_id, $userId, $this->siteLangId, array('ptt_taxcat_id'));
             /* CommonHelper::printArray($row_data); die; */
             if (!empty($taxData)) {
                 $row_data = array_merge($row_data, $taxData);
             }
-            $shippingDetails = Product::getProductShippingDetails($product_id, $this->siteLangId, UserAuthentication::getLoggedUserId());
+            $shippingDetails = Product::getProductShippingDetails($product_id, $this->siteLangId, $userId);
 
             if (isset($shippingDetails['ps_from_country_id']) && $shippingDetails['ps_from_country_id']) {
                 $row_data['shipping_country'] = Countries::getCountryById($shippingDetails['ps_from_country_id'], $this->siteLangId, 'country_name');
@@ -285,6 +286,15 @@ trait CustomProducts
 
         if (!$prodObj->save()) {
             FatUtility::dieWithError($prodObj->getError());
+        }
+
+        $post['ps_product_id'] = $product_id;
+        $productSpecificsObj = new ProductSpecifics($product_id);
+        $productSpecificsObj->assignValues($post);
+        $data = $productSpecificsObj->getFlds();
+        if (!$productSpecificsObj->addNew(array(), $data)) {
+            Message::addErrorMessage($productSpecificsObj->getError());
+            FatUtility::dieJsonError(Message::getHtml());
         }
 
         $languages = Language::getAllNames();
