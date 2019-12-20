@@ -199,7 +199,7 @@ $(document).ready(function(){
 		  }
 
 		  result = cropper[data.method](data.option, data.secondOption);
-
+		  // orgResult = cropper.clear().('getCroppedCanvas');
 		  switch (data.method) {
 			case 'rotate':
 			  if (cropped && options.viewMode > 0) {
@@ -215,13 +215,40 @@ $(document).ready(function(){
 
 			case 'getCroppedCanvas':
 			  if (result) {
-				// Bootstrap's Modal
-				$('#getCroppedCanvasModal').modal().find('.modal-body').html(result);
-
-				if (!download.disabled) {
-				  download.download = uploadedImageName;
-				  download.href = result.toDataURL(uploadedImageType);
-				}
+				var formData = new FormData();
+				/* cropper.clear();
+				orgResult = cropper[data.method]('', '');
+				orgResult.toBlob(function (blob) {
+					formData.append('user_profile_org_image', blob, '_org.png');
+				}); */
+				console.log(formData);
+				console.log('nisha');
+				var node = this;
+				result.toBlob(function (blob) {
+					formData.append('user_profile_image', blob, '_crop.png');
+					formData.append('user_profile_org_image', blob, '_org.png');
+					formData.append("action", "avatar");
+					$.ajax({
+						url: fcom.makeUrl('Account', 'uploadProfileImage'),
+						type: 'post',
+						dataType: 'json',
+						data: formData,
+						cache: false,
+						contentType: false,
+						processData: false,
+						beforeSend: function() {
+							$(node).val('Loading');
+						},
+						success: function(ans) {
+								$('#dispMessage').html(ans.msg);
+								profileInfoForm();
+								$(document).trigger('close.facebox');
+							},
+							error: function(xhr, ajaxOptions, thrownError) {
+								alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+							}
+					});
+				});
 			  }
 
 			  break;
@@ -324,43 +351,3 @@ $(document).ready(function(){
 
 
 })();
-
-/* $(document).on('click','.userFile-Js',function(){
-	var node = this;
-	$('#form-upload').remove();
-	var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-	frm = frm.concat('<input type="file" name="file" />');
-	$('body').prepend(frm);
-	$('#form-upload input[name=\'file\']').trigger('click');
-	if (typeof timer != 'undefined') {
-		clearInterval(timer);
-	}
-	timer = setInterval(function() {
-		if ($('#form-upload input[name=\'file\']').val() != '') {
-			clearInterval(timer);
-			$val = $(node).val();
-			$.ajax({
-				url: fcom.makeUrl('Account', 'uploadProfileImage'),
-				type: 'post',
-				dataType: 'json',
-				data: new FormData($('#form-upload')[0]),
-				cache: false,
-				contentType: false,
-				processData: false,
-				beforeSend: function() {
-					$(node).val('Loading');
-				},
-				complete: function() {
-					$(node).val($val);
-				},
-				success: function(ans) {
-						$('#dispMessage').html(ans.msg);
-						profileInfoForm();
-					},
-					error: function(xhr, ajaxOptions, thrownError) {
-						alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-					}
-				});
-		}
-	}, 500);
-}); */
