@@ -31,6 +31,7 @@ $(document).ready(function() {
         $(dv).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('Configurations', 'form', [frmType]), '', function(t) {
             $(dv).html(t);
+            jscolor.installByClassName('jscolor');
         });
     };
 
@@ -228,7 +229,22 @@ $(document).ready(function() {
             $(dv).html(t);
         });
     };
-
+    removeAppMainScreenImage = function(lang_id) {
+        if (!confirm(langLbl.confirmDeleteImage)) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('Configurations', 'removeAppMainScreenImage', [lang_id]), '', function(t) {
+            getLangForm(document.frmConfiguration.form_type.value, lang_id);
+        });
+    };
+    removeAppLogo = function(lang_id) {
+        if (!confirm(langLbl.confirmDeleteImage)) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('Configurations', 'removeAppLogo', [lang_id]), '', function(t) {
+            getLangForm(document.frmConfiguration.form_type.value, lang_id);
+        });
+    };
 })();
 
 

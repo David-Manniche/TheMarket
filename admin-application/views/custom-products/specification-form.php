@@ -176,22 +176,13 @@
                                             </div>
                                             <div class="field-wraper">
                                                 <div class="field_cover">
-<<<<<<< HEAD
                                                     <input title="" type="submit" name="btn_submit" value="<?php echo Labels::getLabel('LBL_Save_Changes', $adminLangId)?>">
-=======
-                                                    <input title="" type="submit" name="btn_submit"
-                                                        value="<?php echo Labels::getLabel('LBL_Save_Changes', $adminLangId)?>">
->>>>>>> language_translation_management_67925
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-<<<<<<< HEAD
                                 <input title="" type="hidden" name="product_id" value="<?php echo $preqId; ?>">
-=======
-                                <input type="hidden" name="product_id" value="<?php echo $preqId; ?>">
->>>>>>> language_translation_management_67925
                                 <input title="" type="hidden" name="prodspec_id" value="0">
                             </form>
                         </div>
@@ -203,10 +194,5 @@
 </section>
 
 <script>
-<<<<<<< HEAD
     var buttonClick = <?php echo $totalSpec; ?>;
 </script>
-=======
-    var buttonClick = <?php echo $totalSpec; ?> ;
-</script>
->>>>>>> language_translation_management_67925

@@ -16,7 +16,7 @@
                 <li><a <?php echo (0 < $preqId) ? "onclick='customCatalogSpecifications( ".$preqId." );'" : ""; ?>
                         href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Specifications', $adminLangId);?></a>
                 </li>
-                <li class="<?php echo 0 == $preqId) ? 'fat-inactive' : ''; ?>">
+                <li class="<?php echo (0 == $preqId) ? 'fat-inactive' : ''; ?>">
                     <a href="javascript:void(0);" <?php echo (0 < $preqId) ? "onclick='productLangForm(" . $preqId . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
                         <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                     </a>
@@ -35,7 +35,7 @@
             <div class="tabs_panel_wrap">
                 <?php
                     $frm->setFormTagAttribute('onsubmit', 'updateStatus(this); return(false);');
-                    $frm->setFormTagAttribute('class', 'web_form form_horizontal layout--'.$formLayout);;
+                    $frm->setFormTagAttribute('class', 'web_form form_horizontal layout--'.$formLayout);
                     $frm->developerTags['colClassPrefix'] = 'col-md-';
                     $frm->developerTags['fld_default_col'] = 12;
                     echo $frm->getFormHtml(); ?>

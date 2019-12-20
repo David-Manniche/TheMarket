@@ -12,3 +12,8 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?url=$1 [PT,L,QSA]
 
 </IfModule>
+
+#These three lines are added to verify domain for universal linking
+<Files "apple-app-site-association">
+ForceType 'application/json'
+</Files>

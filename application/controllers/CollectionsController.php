@@ -74,7 +74,7 @@ class CollectionsController extends MyAppController
         $favSrchObj->doNotLimitRecords();
         $favSrchObj->addMultipleFields(array('ufs_shop_id','ufs_id'));
         $favSrchObj->addCondition('ufs_user_id', '=', $loggedUserId);
-        $shopSearchObj->joinTable('('. $favSrchObj->getQuery() . ')', 'LEFT OUTER JOIN', 'ufs_shop_id = shop_id', 'ufs');
+        $shopSearchObj->joinTable('(' . $favSrchObj->getQuery() . ')', 'LEFT OUTER JOIN', 'ufs_shop_id = shop_id', 'ufs');
         /* ] */
 
         $productSrchObj = new ProductSearch($this->siteLangId);
