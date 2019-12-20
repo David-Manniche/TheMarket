@@ -1,16 +1,16 @@
 <?php
-class CustomNotificationsController extends AdminBaseController
+class PushNotificationsController extends AdminBaseController
 {
     public function __construct($action)
     {
         parent::__construct($action);
-        $this->objPrivilege->canViewCustomNotification();
+        $this->objPrivilege->canViewPushNotification();
         $this->admin_id = AdminAuthentication::getLoggedAdminId();
     }
 
     public function index()
     {
-        $this->canEdit = $this->objPrivilege->canEditCustomNotification($this->admin_id, true);
+        $this->canEdit = $this->objPrivilege->canEditPushNotification($this->admin_id, true);
         $frmSearch = $this->getSearchForm();
         $this->set("canEdit", $this->canEdit);
         $this->set("frmSearch", $frmSearch);
@@ -19,7 +19,7 @@ class CustomNotificationsController extends AdminBaseController
 
     public function search()
     {
-        $this->canEdit = $this->objPrivilege->canEditCustomNotification($this->admin_id, true);
+        $this->canEdit = $this->objPrivilege->canEditPushNotification($this->admin_id, true);
 
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
 
@@ -32,47 +32,43 @@ class CustomNotificationsController extends AdminBaseController
             $page = 1;
         }
         
-        $srch = CustomNotification::getSearchObject();
+        $srch = PushNotification::getSearchObject();
 
         $keyword = $post['keyword'];
         if (!empty($keyword)) {
-            $srch->addCondition('cnotification_title', 'LIKE', '%' . $keyword . '%');
+            $srch->addCondition('pnotification_title', 'LIKE', '%' . $keyword . '%');
         }
 
-        $cnotificationType = $post['cnotification_type'];
+        $cnotificationType = $post['pnotification_type'];
         if (0 < $cnotificationType) {
-            $srch->addCondition('cnotification_type', '=', $cnotificationType);
+            $srch->addCondition('pnotification_type', '=', $cnotificationType);
         }
 
-        $status = $post['cnotification_active'];
+        $status = $post['pnotification_active'];
         if (-1 < $status) {
-            $srch->addCondition('cnotification_active', '=', $status);
+            $srch->addCondition('pnotification_active', '=', $status);
         }
 
         $notifyTo = $post['notify_to'];
         if (0 < $notifyTo) {
             switch ($notifyTo) {
                 case 1:
-                    $srch->addCondition('cnotification_for_buyer', '=', 1);
+                    $srch->addCondition('pnotification_for_buyer', '=', 1);
                     break;
                 case 2:
-                    $srch->addCondition('cnotification_for_seller', '=', 1);
-                    break;
-                case 3:
-                    $srch->addCondition('cnotification_for_buyer', '=', 1);
-                    $srch->addCondition('cnotification_for_seller', '=', 1);
+                    $srch->addCondition('pnotification_for_seller', '=', 1);
                     break;
             }
         }
         
-        $srch->addOrder('cn.cnotification_added_on', 'DESC');
+        $srch->addOrder('cn.pnotification_added_on', 'DESC');
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
         
-        $typeArr = CustomNotification::getTypeArr($this->adminLangId);
-        $statusArr = CustomNotification::getStatusArr($this->adminLangId);
+        $typeArr = PushNotification::getTypeArr($this->adminLangId);
+        $statusArr = PushNotification::getStatusArr($this->adminLangId);
 
         $this->set('arr_listing', $records);
         $this->set('pageCount', $srch->pages());
@@ -91,19 +87,13 @@ class CustomNotificationsController extends AdminBaseController
         $frm->setRequiredStarWith('caption');
         $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
 
-        $typeArr = CustomNotification::getTypeArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_TYPE', $this->adminLangId), 'cnotification_type', array( -1 => Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId) ) + $typeArr, '', array(), '');
+        $typeArr = [-1 => Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId)] + PushNotification::getTypeArr($this->adminLangId);
+        $frm->addSelectBox(Labels::getLabel('LBL_TYPE', $this->adminLangId), 'pnotification_type', $typeArr, '', array(), '');
         
-        $statusArr = CustomNotification::getStatusArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_STATUS', $this->adminLangId), 'cnotification_active', array( -1 => Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId) ) + $statusArr, '', array(), '');
+        $statusArr = [-1 => Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId)] + PushNotification::getStatusArr($this->adminLangId);
+        $frm->addSelectBox(Labels::getLabel('LBL_STATUS', $this->adminLangId), 'pnotification_active', $statusArr, '', array(), '');
         
-        $notifyToArr = [
-            Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId),
-            Labels::getLabel('LBL_BUYERS', $this->adminLangId),
-            Labels::getLabel('LBL_SELLERS', $this->adminLangId),
-            Labels::getLabel('LBL_BOTH', $this->adminLangId),
-        ];
-
+        $notifyToArr = array_merge([Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId)], PushNotification::getNotifyToArr($this->adminLangId));
         $frm->addSelectBox(Labels::getLabel('LBL_NOTIFY_TO', $this->adminLangId), 'notify_to', $notifyToArr, '', array(), '');
         
         $frm->addHiddenField('', 'page');
@@ -115,19 +105,19 @@ class CustomNotificationsController extends AdminBaseController
 
     public function form()
     {
-        $frm = new Form('customNotificationForm', array('id' => 'customNotificationForm'));
-        $frm->addHiddenField('', 'cnotification_id');
-        $frm->addRequiredField(Labels::getLabel('LBL_TITLE', $this->adminLangId), 'cnotification_title');
-        $fld = $frm->addTextArea(Labels::getLabel('LBL_BODY', $this->adminLangId), 'cnotification_description');
+        $frm = new Form('PushNotificationForm', array('id' => 'PushNotificationForm'));
+        $frm->addHiddenField('', 'pnotification_id');
+        $frm->addRequiredField(Labels::getLabel('LBL_TITLE', $this->adminLangId), 'pnotification_title');
+        $fld = $frm->addTextArea(Labels::getLabel('LBL_BODY', $this->adminLangId), 'pnotification_description');
         $fld->requirements()->setRequired(true);
 
-        $typeArr = CustomNotification::getTypeArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_TYPE', $this->adminLangId), 'cnotification_type', $typeArr, '', array(), '');
+        $typeArr = PushNotification::getTypeArr($this->adminLangId);
+        $frm->addSelectBox(Labels::getLabel('LBL_TYPE', $this->adminLangId), 'pnotification_type', $typeArr, '', array(), '');
         
-        $frm->addDateField(Labels::getLabel('LBL_SCHEDULE_DATE', $this->adminLangId), 'cnotification_notified_on', date('Y-m-d'), ['readonly' => 'readonly','class' => 'small dateTimeFld field--calender date_js']);
+        $frm->addDateField(Labels::getLabel('LBL_SCHEDULE_DATE', $this->adminLangId), 'pnotification_notified_on', date('Y-m-d'), ['readonly' => 'readonly','class' => 'small dateTimeFld field--calender date_js']);
                 
-        $frm->addCheckBox(Labels::getLabel('LBL_NOTIFY_TO_BUYERS', $this->adminLangId), 'cnotification_for_buyer', 1, [], false, 0);
-        $frm->addCheckBox(Labels::getLabel('LBL_NOTIFY_TO_SELLER', $this->adminLangId), 'cnotification_for_seller', 1, [], false, 0);
+        $frm->addCheckBox(Labels::getLabel('LBL_NOTIFY_TO_BUYERS', $this->adminLangId), 'pnotification_for_buyer', 1, [], false, 0);
+        $frm->addCheckBox(Labels::getLabel('LBL_NOTIFY_TO_SELLER', $this->adminLangId), 'pnotification_for_seller', 1, [], false, 0);
         
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->adminLangId));
         return $frm;
@@ -135,8 +125,8 @@ class CustomNotificationsController extends AdminBaseController
 
     public function selectedUsersform()
     {
-        $frm = new Form('customNotificationForm', array('id' => 'customNotificationForm'));
-        $frm->addHiddenField('', 'cnotification_id');
+        $frm = new Form('PushNotificationForm', array('id' => 'PushNotificationForm'));
+        $frm->addHiddenField('', 'pnotification_id');
         
         $userFld = $frm->addTextBox(Labels::getLabel('LBL_SELECT_USER', $this->adminLangId), 'users', '', ['placeholder' => Labels::getLabel('LBL_Search...', $this->adminLangId)]);
         $userFld->htmlAfterField = '<small>' . Labels::getLabel('LBL_SELECTED_USER_LIST_WILL_BE_DISPLAYED_HERE', $this->adminLangId) . '</small><div class="box--scroller"><ul class="columlist list--vertical" id="selectedUsersList-js"></ul></div>';
@@ -148,7 +138,7 @@ class CustomNotificationsController extends AdminBaseController
         $frm = $this->form();
         $cNotificationId = FatUtility::int($cNotificationId);
         if (0 < $cNotificationId) {
-            $data = CustomNotification::getAttributesById($cNotificationId);
+            $data = PushNotification::getAttributesById($cNotificationId);
             $frm->fill($data);
         }
         $this->set('cNotificationId', $cNotificationId);
@@ -165,12 +155,12 @@ class CustomNotificationsController extends AdminBaseController
         }
         unset($post['btn_submit']);
         $db = FatApp::getDb();
-        if (!$db->insertFromArray(CustomNotification::DB_TBL, $post, true, array(), $post)) {
+        if (!$db->insertFromArray(PushNotification::DB_TBL, $post, true, array(), $post)) {
             FatUtility::dieJsonError($db->getError());
         }
         $json['msg'] = Labels::getLabel("LBL_SETUP_SUCCESSFULLY", $this->adminLangId);
         $json['status'] = true;
-        $json['recordId'] = !empty($post['cnotification_id']) ? $post['cnotification_id'] : $db->getInsertId();
+        $json['recordId'] = !empty($post['pnotification_id']) ? $post['pnotification_id'] : $db->getInsertId();
         FatUtility::dieJsonSuccess($json);
     }
 
@@ -181,16 +171,18 @@ class CustomNotificationsController extends AdminBaseController
             FatUtility::dieJsonError(Labels::getLabel("LBL_INVALID_REQUEST", $this->adminLangId));
         }
         $frm = $this->selectedUsersform();
-        $frm->fill(['cnotification_id' => $cNotificationId]);
-        $srch = CustomNotification::getSearchObject(true);
-        $srch->addMultipleFields(['cnotification_id', 'cntu_user_id', 'user_name', 'credential_username']);
+        $frm->fill(['pnotification_id' => $cNotificationId]);
+        $srch = PushNotification::getSearchObject(true);
+        $srch->addMultipleFields(['pnotification_id', 'cntu_user_id', 'user_name', 'credential_username']);
         $srch->joinTable('tbl_users', 'INNER JOIN', 'cntu_user_id = tu.user_id', 'tu');
         $srch->joinTable('tbl_user_credentials', 'INNER JOIN', 'tu.user_id = tuc.credential_user_id', 'tuc');
+        $srch->addCondition('pnotification_id', "=", $cNotificationId);
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
         if (!empty($records) && 0 < count($records)) {
             $this->set('data', $records);
         }
+        $this->set('notifyTo', PushNotification::getAttributesById($cNotificationId, ['pnotification_for_buyer', 'pnotification_for_seller']));
         $this->set('cNotificationId', $cNotificationId);
         $this->set('frm', $frm);
         $this->_template->render(false, false);
@@ -203,12 +195,12 @@ class CustomNotificationsController extends AdminBaseController
         if (1 > $cNotificationId || 1 > $userId) {
             FatUtility::dieJsonError(Labels::getLabel("LBL_INVALID_REQUEST", $this->adminLangId));
         }
-        $customNotificationData = [
-            'cntu_cnotification_id' => $cNotificationId,
+        $PushNotificationData = [
+            'cntu_pnotification_id' => $cNotificationId,
             'cntu_user_id' =>  $userId
         ];
         $db = FatApp::getDb();
-        if ($db->insertFromArray(CustomNotification::DB_TBL_NOTIFICATION_TO_USER, $customNotificationData, true, array(), $customNotificationData)) {
+        if ($db->insertFromArray(PushNotification::DB_TBL_NOTIFICATION_TO_USER, $PushNotificationData, true, array(), $PushNotificationData)) {
             FatUtility::dieJsonError($db->getError());
         }
     }
@@ -221,14 +213,14 @@ class CustomNotificationsController extends AdminBaseController
             FatUtility::dieJsonError(Labels::getLabel("LBL_INVALID_REQUEST", $this->adminLangId));
         }
         $db = FatApp::getDb();
-        if ($db->deleteRecords(CustomNotification::DB_TBL_NOTIFICATION_TO_USER, ['smt' => 'cntu_cnotification_id = ? AND cntu_user_id = ?', 'vals' => [$cNotificationId, $userId]])) {
+        if ($db->deleteRecords(PushNotification::DB_TBL_NOTIFICATION_TO_USER, ['smt' => 'cntu_pnotification_id = ? AND cntu_user_id = ?', 'vals' => [$cNotificationId, $userId]])) {
             FatUtility::dieJsonError($db->getError());
         }
     }
 
     /* public function sendNotification()
     {
-        $srch = CustomNotification::getSearchObject(true);
+        $srch = PushNotification::getSearchObject(true);
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
         CommonHelper::printArray($records, true);

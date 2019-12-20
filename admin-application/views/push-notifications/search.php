@@ -2,13 +2,11 @@
 
 $arr_flds = array(
     'listserial' => Labels::getLabel('LBL_S.No.', $adminLangId),
-    'cnotification_type' => Labels::getLabel('LBL_TYPE', $adminLangId),
-    'cnotification_title' => Labels::getLabel('LBL_TITLE', $adminLangId),
-    'cnotification_description' => Labels::getLabel('LBL_BODY', $adminLangId),
-    'cnotification_notified_on' => Labels::getLabel('LBL_SCHEDULED_FOR', $adminLangId),
-    'cnotification_for_buyer' => Labels::getLabel('LBL_FOR_BUYERS', $adminLangId),
-    'cnotification_for_seller' => Labels::getLabel('LBL_FOR_SELLERS', $adminLangId),
-    'cnotification_active' => Labels::getLabel('LBL_STATUS', $adminLangId),
+    'pnotification_type' => Labels::getLabel('LBL_TYPE', $adminLangId),
+    'notification_detail' => Labels::getLabel('LBL_DETAIL', $adminLangId),
+    'pnotification_notified_on' => Labels::getLabel('LBL_SCHEDULED_FOR', $adminLangId),
+    'notify_to' => Labels::getLabel('LBL_NOTIFY_TO', $adminLangId),
+    'pnotification_active' => Labels::getLabel('LBL_STATUS', $adminLangId),
     'action' => Labels::getLabel('LBL_Action', $adminLangId),
 );
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table-responsive'));
@@ -29,16 +27,15 @@ foreach ($arr_listing as $sn => $row) {
             case 'listserial':
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
-            case 'cnotification_type':
+            case 'pnotification_type':
                 $td->appendElement('plaintext', array(), $typeArr[$row[$key]], true);
                 break;
-            case 'cnotification_title':
-                $td->appendElement('plaintext', array(), $row[$key], true);
+            case 'notification_detail':
+                $htm =  '<b>' . Labels::getLabel('LBL_TITLE', $adminLangId) . ':</b> ' . $row['pnotification_title'] . '<br>';
+                $htm .= '<b>' . Labels::getLabel('LBL_BODY', $adminLangId) . ':</b> ' . $row['pnotification_description'];
+                $td->appendElement('plaintext', array(), $htm, true);
                 break;
-            case 'cnotification_description':
-                $td->appendElement('plaintext', array(), $row[$key], true);
-                break;
-            case 'cnotification_notified_on':
+            case 'pnotification_notified_on':
                 $td->appendElement('plaintext', array(), FatDate::format(
                     $row[$key],
                     true,
@@ -46,11 +43,18 @@ foreach ($arr_listing as $sn => $row) {
                     FatApp::getConfig('CONF_TIMEZONE', FatUtility::VAR_STRING, date_default_timezone_get())
                 ));
                 break;
-            case 'cnotification_for_buyer':
-            case 'cnotification_for_seller':
-                $td->appendElement('plaintext', array(), $row[$key], true);
+            case 'notify_to':
+                $buyerHtm = $sellerHtm = '';
+                if (0 < $row['pnotification_for_buyer']) {
+                    $buyerHtm = '<span class="badge badge-success">' . Labels::getLabel('LBL_BUYERS', $adminLangId) . '</span>';
+                }
+
+                if (0 < $row['pnotification_for_seller']) {
+                    $sellerHtm = '<span class="badge badge-info">' . Labels::getLabel('LBL_SELLERS', $adminLangId) . '</span>';
+                }
+                $td->appendElement('plaintext', array(), $buyerHtm . ' ' . $sellerHtm, true);
                 break;
-            case 'cnotification_active':
+            case 'pnotification_active':
                 $td->appendElement('plaintext', array(), $statusArr[$row[$key]], true);
                 break;
             case 'action':
@@ -62,7 +66,7 @@ foreach ($arr_listing as $sn => $row) {
                     $innerUl = $innerDiv->appendElement('ul', ['class' => 'linksvertical']);
 
                     $innerLi = $innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "addNotificationForm(" . $row['cnotification_id'] . ")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
+                    $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "addNotificationForm(" . $row['pnotification_id'] . ")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
                 }
                 break;
         }

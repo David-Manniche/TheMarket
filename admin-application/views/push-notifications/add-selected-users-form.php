@@ -6,6 +6,9 @@ $frm->setFormTagAttribute('onsubmit', 'setupNotificationToUsers(this); return(fa
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
 
+$usersFld = $frm->getField('users');
+$usersFld->addFieldTagAttribute('data-buyers', $notifyTo['pnotification_for_buyer']);
+$usersFld->addFieldTagAttribute('data-sellers', $notifyTo['pnotification_for_seller']);
 ?>
 <section class="section">
     <div class="sectionhead">

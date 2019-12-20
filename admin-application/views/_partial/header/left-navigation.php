@@ -310,13 +310,13 @@
 
             <!--Mobile Application-->
             <?php if (
-                $objPrivilege->canViewCustomNotification(AdminAuthentication::getLoggedAdminId(), true)
+                $objPrivilege->canViewPushNotification(AdminAuthentication::getLoggedAdminId(), true)
                 ) { ?>
                 <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_NOTIFICATION', $adminLangId);?></a>
                     <ul>
 
-                        <?php if ($objPrivilege->canViewCustomNotification(AdminAuthentication::getLoggedAdminId(), true)) {?>
-                            <li><a href="<?php echo CommonHelper::generateUrl('CustomNotifications'); ?>"><?php echo Labels::getLabel('LBL_CUSTOM_NOTIFICATION', $adminLangId);?></a></li>
+                        <?php if ($objPrivilege->canViewPushNotification(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                            <li><a href="<?php echo CommonHelper::generateUrl('PushNotifications'); ?>"><?php echo Labels::getLabel('LBL_PUSH_NOTIFICATION', $adminLangId);?></a></li>
                         <?php }?>
                     </ul>
                 </li>

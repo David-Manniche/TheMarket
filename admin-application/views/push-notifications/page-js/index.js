@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    listCustomNotification(document.frmSearch);	
+    listPushNotification(document.frmSearch);	
 });
 
 $(document).on("click", "ul#selectedUsersList-js .ion-close-round", function(){
@@ -16,15 +16,15 @@ $(document).on("click", "ul#selectedUsersList-js .ion-close-round", function(){
 		}		
 		var frm = document.frmSearchPaging;		
 		$(frm.page).val(page);
-		listCustomNotification(frm);
+		listPushNotification(frm);
     };	
 
     clearSearch = function(){
         document.frmSearch.reset();
-        listCustomNotification(document.frmSearch);
+        listPushNotification(document.frmSearch);
     };
 	
-	listCustomNotification = function(form, page){
+	listPushNotification = function(form, page){
 		if (!page) {
 			page = currentPage;
 		}
@@ -37,15 +37,15 @@ $(document).on("click", "ul#selectedUsersList-js .ion-close-round", function(){
 			
 		$("#listing").html(fcom.getLoader());
 		
-		fcom.ajax(fcom.makeUrl('CustomNotifications','search'),data,function(res){
+		fcom.ajax(fcom.makeUrl('PushNotifications','search'),data,function(res){
 			$("#listing").html(res);
 		});
 		$('.check-all').prop('checked', false);
     };
     
-    addNotificationForm = function(cNotificationId){
+    addNotificationForm = function(pNotificationId){
         $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('CustomNotifications', 'addNotificationForm', [cNotificationId]), '', function(t) {
+            fcom.ajax(fcom.makeUrl('PushNotifications', 'addNotificationForm', [pNotificationId]), '', function(t) {
                 $.facebox(t,'faceboxWidth');
                 $('.date_js').datepicker('option', {minDate: new Date()});
             });
@@ -54,13 +54,17 @@ $(document).on("click", "ul#selectedUsersList-js .ion-close-round", function(){
 
     usersAutoComplete = function(){
         var userSelector = "input[name='users']";
+        var buyers = $(userSelector).data("buyers");
+        var sellers = $(userSelector).data("sellers");
         $(userSelector).autocomplete({
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('Users', 'autoCompleteJson'),
                     data: {
                         keyword: request,
-                        fIsAjax: 1
+                        fIsAjax: 1,
+                        user_is_buyer : buyers,
+                        user_is_supplier : sellers,
                     },
                     dataType: 'json',
                     type: 'post',
@@ -88,10 +92,10 @@ $(document).on("click", "ul#selectedUsersList-js .ion-close-round", function(){
     setup = function(frm) {
         if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
-        fcom.updateWithAjax(fcom.makeUrl('CustomNotifications', 'setup'), data, function(t) {
+        fcom.updateWithAjax(fcom.makeUrl('PushNotifications', 'setup'), data, function(t) {
             if(t.status) {
                 $.systemMessage(t.msg,'alert--success',true);
-                listCustomNotification(document.frmSearch);
+                listPushNotification(document.frmSearch);
                 addNotificationForm(t.recordId);
             } else {
                 $.systemMessage(t.msg,'alert--danger',true);
@@ -100,9 +104,9 @@ $(document).on("click", "ul#selectedUsersList-js .ion-close-round", function(){
         });
     };
 
-    addSelectedUsersForm = function(cNotificationId){
+    addSelectedUsersForm = function(pNotificationId){
         $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('CustomNotifications', 'addSelectedUsersForm', [cNotificationId]), '', function(t) {
+            fcom.ajax(fcom.makeUrl('PushNotifications', 'addSelectedUsersForm', [pNotificationId]), '', function(t) {
                 $.facebox(t,'faceboxWidth');
                 usersAutoComplete();
             });
@@ -110,19 +114,19 @@ $(document).on("click", "ul#selectedUsersList-js .ion-close-round", function(){
     };
 
     setupNotificationToUsers = function(userId) {
-        var cNotificationId = $("input[name='cnotification_id']").val();
-        if (cNotificationId == '' || 1 > cNotificationId) {
+        var pNotificationId = $("input[name='pnotification_id']").val();
+        if (pNotificationId == '' || 1 > pNotificationId) {
             $.systemMessage(langLbl.invalidRequest,'alert--danger',true);
             return false;
         }
-        fcom.ajax(fcom.makeUrl('CustomNotifications', 'setupNotificationToUsers', [cNotificationId, userId]), '', function(res) {});
+        fcom.ajax(fcom.makeUrl('PushNotifications', 'setupNotificationToUsers', [pNotificationId, userId]), '', function(res) {});
     };
     removeFromNotificationUsers = function(userId) {
-        var cNotificationId = $("input[name='cnotification_id']").val();
-        if (cNotificationId == '' || 1 > cNotificationId) {
+        var pNotificationId = $("input[name='pnotification_id']").val();
+        if (pNotificationId == '' || 1 > pNotificationId) {
             $.systemMessage(langLbl.invalidRequest,'alert--danger',true);
             return false;
         }
-        fcom.ajax(fcom.makeUrl('CustomNotifications', 'removeFromNotificationUsers', [cNotificationId, userId]), '', function(res) {});
+        fcom.ajax(fcom.makeUrl('PushNotifications', 'removeFromNotificationUsers', [pNotificationId, userId]), '', function(res) {});
     };
 })();

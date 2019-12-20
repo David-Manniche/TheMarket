@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frmSearch->setFormTagAttribute('class', 'web_form last_td_nowrap');
-$frmSearch->setFormTagAttribute('onsubmit', 'listCustomNotification(this); return(false);');
+$frmSearch->setFormTagAttribute('onsubmit', 'listPushNotification(this); return(false);');
 $frmSearch->developerTags['colClassPrefix'] = 'col-md-';
 $frmSearch->developerTags['fld_default_col'] = 4;
 ?>
@@ -15,7 +15,7 @@ $frmSearch->developerTags['fld_default_col'] = 4;
                                 <i class="ion-android-star"></i>
                             </span>
                             <h5>
-                                <?php echo Labels::getLabel('LBL_CUSTOM_NOTIFICATIONS', $adminLangId); ?>
+                                <?php echo Labels::getLabel('LBL_PUSH_NOTIFICATIONS', $adminLangId); ?>
                             </h5>
                             <?php $this->includeTemplate('_partial/header/header-breadcrumb.php'); ?>
                         </div>
@@ -31,7 +31,7 @@ $frmSearch->developerTags['fld_default_col'] = 4;
                 </section>
                 <section class="section">
                     <div class="sectionhead">
-                        <h4><?php echo Labels::getLabel('LBL_CUSTOM_NOTIFICATION_LIST', $adminLangId); ?> </h4>
+                        <h4><?php echo Labels::getLabel('LBL_PUSH_NOTIFICATION_LIST', $adminLangId); ?> </h4>
                         <?php
                             $ul = new HtmlElement("ul", array("class" => "actions actions--centered"));
                             $li = $ul->appendElement("li", array('class' => 'droplink'));
