@@ -1156,6 +1156,8 @@ class GuestUserController extends MyAppController
         if ($invalidUser) { 
             FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_User', $this->siteLangId));
         }
+        
+    }
 
     public function redirectAbandonedCartUser($userId, $selProdId, $reminderEmail = false)
     {
