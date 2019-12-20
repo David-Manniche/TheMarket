@@ -1009,7 +1009,7 @@ class GuestUserController extends MyAppController
 
         //$pwd = UserAuthentication::encryptPassword($newPwd);
 
-        if (!$userAuthObj->resetUserPassword($userId, $pwd)) {
+        if (!$userAuthObj->resetUserPassword($userId, $newPwd)) {
             Message::addErrorMessage($userAuthObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
