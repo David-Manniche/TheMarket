@@ -90,10 +90,10 @@ $(document).ready(function(){
 		});
 	}
 	
-	editThemeColorLangForm = function(tColorId,langId){
+	editThemeColorLangForm = function(tColorId,langId, autoFillLangData = 0){
 		fcom.displayProcessing();
 		//$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('ThemeColor', 'langForm', [tColorId,langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('ThemeColor', 'langForm', [tColorId,langId, autoFillLangData]), '', function(t) {
 				//$.facebox(t,'faceboxWidth');
 				fcom.updateFaceboxContent(t);
 			});

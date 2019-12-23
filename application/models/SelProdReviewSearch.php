@@ -55,7 +55,7 @@ class SelProdReviewSearch extends SearchBase
         $this->joinTable(Product::DB_TBL, 'LEFT OUTER JOIN', 'p.product_id = spr. 	spreview_product_id', 'p');
 
         if ($langId > 0) {
-            $this->joinTable(Product::DB_LANG_TBL, 'LEFT OUTER JOIN', 'p_l.productlang_product_id = p.product_id and p_l.productlang_lang_id = '.$langId, 'p_l');
+            $this->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p_l.productlang_product_id = p.product_id and p_l.productlang_lang_id = '.$langId, 'p_l');
         }
 
         if ($isProductActive) {
@@ -80,7 +80,7 @@ class SelProdReviewSearch extends SearchBase
 
         $this->joinTable(SellerProduct::DB_TBL, 'LEFT OUTER JOIN', 'sp.selprod_code = spr.spreview_selprod_code and sp.selprod_user_id = spr.spreview_seller_user_id', 'sp');
         if ($langId > 0) {
-            $this->joinTable(SellerProduct::DB_LANG_TBL, 'LEFT OUTER JOIN', 'sp_l.selprodlang_selprod_id = sp.selprod_id and sp_l.selprodlang_lang_id = '.$langId, 'sp_l');
+            $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp_l.selprodlang_selprod_id = sp.selprod_id and sp_l.selprodlang_lang_id = '.$langId, 'sp_l');
         }
         if ($active == true) {
             $this->addCondition('sp.selprod_active', '=', applicationConstants::YES);

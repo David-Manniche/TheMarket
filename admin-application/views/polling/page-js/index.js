@@ -54,9 +54,9 @@ $(document).ready(function(){
 		});
 	};
 	
-	pollingLangForm = function( polling_id, lang_id ){
+	pollingLangForm = function( polling_id, lang_id, autoFillLangData = 0 ){
 		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('Polling', 'langForm', [polling_id, lang_id]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('Polling', 'langForm', [polling_id, lang_id, autoFillLangData]), '', function(t) {
 				$.facebox(t);
 			});
 		});

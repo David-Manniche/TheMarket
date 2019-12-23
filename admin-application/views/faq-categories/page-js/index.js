@@ -81,10 +81,10 @@ $(document).ready(function(){
 		});
 	};
 
-	faqCatLangForm = function(faqcatId, langId) {
+	faqCatLangForm = function(faqcatId, langId, autoFillLangData = 0) {
 		//$.facebox(function() {
 			fcom.displayProcessing();
-			fcom.ajax(fcom.makeUrl('FaqCategories', 'langForm', [faqcatId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('FaqCategories', 'langForm', [faqcatId, langId, autoFillLangData]), '', function(t) {
 				//$.facebox(t);
 				fcom.updateFaceboxContent(t);
 			});

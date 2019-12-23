@@ -49,9 +49,9 @@ $(document).ready(function() {
         });
     }
 
-    editCurrencyLangForm = function(currencyId, langId) {
+    editCurrencyLangForm = function(currencyId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('CurrencyManagement', 'langForm', [currencyId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('CurrencyManagement', 'langForm', [currencyId, langId, autoFillLangData]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
     };
@@ -99,6 +99,22 @@ $(document).ready(function() {
         }
         $("#frmCurrencyListing input[name='status']").val(status);
         $("#frmCurrencyListing").submit();
+    };
+
+	updateCurrencyRates = function(converterClass){
+        if(!confirm(langLbl.updateCurrencyRates)){
+            return false;
+        }
+        fcom.displayProcessing();
+        fcom.ajax(fcom.makeUrl(converterClass, 'update'), '', function(res) {
+            var ans = $.parseJSON(res);
+            if( ans.status == 1 ){
+				$.mbsmessage(ans.msg, true, 'alert--success');
+			} else {
+				$.mbsmessage(ans.msg, true, 'alert--danger');
+			}
+            reloadList();
+        });
     };
 
 })();

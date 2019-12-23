@@ -7,25 +7,19 @@ use net\authorize\api\controller as AnetController;
 
 class AuthorizeAimPayController extends PaymentController
 {
-    const SANDBOX = "https://apitest.authorize.net";
-    const PRODUCTION = "https://api2.authorize.net";
+    public const SANDBOX = "https://apitest.authorize.net";
+    public const PRODUCTION = "https://api2.authorize.net";
 
-    const VERSION = "2.0.0";
+    public const VERSION = "2.0.0";
 
     private $keyName = "AuthorizeAim";
-    private $currenciesAccepted = array(
-                                            'Australian Dollar' => 'AUD',
-                                            'Canadian Dollar' => 'CAD',
-                                            'Danish Krone' => 'DKK',
-                                            'Euro' => 'EUR',
-                                            'Norwegian Krone' => 'NOK',
-                                            'New Zealand Dollar' => 'NZD',
-                                            'Polish Zloty' => 'PLN',
-                                            'Pound Sterling' => 'GBP',
-                                            'Swedish Krona' => 'SEK',
-                                            'Swiss Franc' => 'CHF',
-                                            'U.S. Dollar' => 'USD',
-                                    );
+
+    protected function allowedCurrenciesArr()
+    {
+        return [
+            'AUD', 'CAD', 'DKK', 'EUR', 'NOK', 'NZD', 'PLN', 'GBP', 'SEK', 'CHF', 'USD'
+        ];
+    }
 
     public function charge($orderId = '')
     {
@@ -51,11 +45,6 @@ class AuthorizeAimPayController extends PaymentController
             $this->set('paymentAmount', $paymentAmount);
         } else {
             $this->set('error', Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId));
-        }
-
-        if (count($this->currenciesAccepted) && !in_array($orderInfo["order_currency_code"], $this->currenciesAccepted)) {
-            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_ORDER_CURRENCY_PASSED_TO_GATEWAY', $this->siteLangId));
-            CommonHelper::redirectUserReferer();
         }
 
         $cancelBtnUrl = CommonHelper::getPaymentCancelPageUrl();

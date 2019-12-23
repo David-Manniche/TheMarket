@@ -50,9 +50,9 @@ $(document).ready(function() {
 		});
 	}
 
-	editGatewayLangForm = function(pMethodId,langId){
+	editGatewayLangForm = function(pMethodId,langId, autoFillLangData = 0){
 		fcom.displayProcessing();
-		fcom.ajax(fcom.makeUrl('PaymentMethods', 'langForm', [pMethodId,langId]), '', function(t) {
+		fcom.ajax(fcom.makeUrl('PaymentMethods', 'langForm', [pMethodId,langId, autoFillLangData]), '', function(t) {
 			fcom.updateFaceboxContent(t);
 		});
 	};
@@ -109,7 +109,14 @@ $(document).ready(function() {
 				fcom.displayErrorMessage(ans.msg);
 			}
 		});
-	};
+    };
+    toggleBulkStatues = function(status){
+        if(!confirm(langLbl.confirmUpdateStatus)){
+            return false;
+        }
+        $("#frmPayMethodListing input[name='status']").val(status);
+        $("#frmPayMethodListing").submit();
+    };
 
 })();
 

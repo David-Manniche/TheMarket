@@ -1,18 +1,17 @@
 <?php
-
 class PaymentSettings
 {
-    const DB_PAYMENT_METHODS_TBL = 'tbl_payment_methods';
-    const DB_PAYMENT_METHODS_TBL_PREFIX = 'pmethod_';
-    const DB_PAYMENT_METHOD_SETTINGS_TBL = 'tbl_payment_method_settings';
-    const DB_PAYMENT_METHOD_SETTINGS_TBL_PREFIX = 'paysetting_';
+    public const DB_PAYMENT_METHODS_TBL = 'tbl_payment_methods';
+    public const DB_PAYMENT_METHODS_TBL_PREFIX = 'pmethod_';
+    public const DB_PAYMENT_METHOD_SETTINGS_TBL = 'tbl_payment_method_settings';
+    public const DB_PAYMENT_METHOD_SETTINGS_TBL_PREFIX = 'paysetting_';
 
     private $db;
     private $error;
     private $paymentMethodKey = null;
     private $commonLangId;
 
-    const CASH_ON_DELIVERY = 4;
+    public const CASH_ON_DELIVERY = 4;
 
     public function __construct($methodIdentifier)
     {

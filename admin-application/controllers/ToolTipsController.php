@@ -87,7 +87,7 @@ class ToolTipsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function langForm( $tooltipId = 0, $lang_id = 0,$action = 'add')
+    public function langForm( $tooltipId = 0, $lang_id = 0,$action = 'add', $autoFillLangData = 0)
     {
 
         $this->objPrivilege->canEditTooltip();
@@ -108,7 +108,17 @@ class ToolTipsController extends AdminBaseController
         }
 
         $tooltipLangFrm = $this->getLangForm($tooltipId, $lang_id, $defaultValue);
-        $langData = Tooltip::getAttributesByLangId($lang_id, $tooltipId);        
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(Tooltip::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($tooltipId, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = Tooltip::getAttributesByLangId($lang_id, $tooltipId);        
+        }
 
         if($langData ) {
             $tooltipLangFrm->fill($langData);            
@@ -203,13 +213,20 @@ class ToolTipsController extends AdminBaseController
     
         $frm = new Form('frmTooltipLang', array('id'=>'frmTooltipLang'));        
         $frm->addHiddenField('', 'tooltip_id', $tooltipId);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         
         if($default_val) {
             $frm->addTextBox(Labels::getLabel('LBL_Tooltip_Default', $this->adminLangId), 'tooltip_default_value_new', $default_val);
         }
 
         $fld = $frm->addTextarea(Labels::getLabel('LBL_Tooltip_Text', $this->adminLangId), 'tooltip_text');        
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
         
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;
@@ -242,6 +259,15 @@ class ToolTipsController extends AdminBaseController
         if(!$tooltipObj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($tooltipObj->getError());
             FatUtility::dieWithError(Message::getHtml());                
+        }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(Tooltip::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($tooltip_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId=0;    

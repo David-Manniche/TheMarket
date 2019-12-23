@@ -55,9 +55,9 @@ foreach ($optionRows as $key => $option) {
 }
 
 $arr_flds = array(
-    'country_name'=> Labels::getLabel('LBL_Ship_to', $siteLangId),
-    'pship_charges'=> Labels::getLabel('LBL_Cost', $siteLangId),
-    'pship_additional_charges'=> Labels::getLabel('LBL_With_Another_item', $siteLangId),
+    'country_name' => Labels::getLabel('LBL_Ship_to', $siteLangId),
+    'pship_charges' => Labels::getLabel('LBL_Cost', $siteLangId),
+    'pship_additional_charges' => Labels::getLabel('LBL_With_Another_item', $siteLangId),
 );
 $shippingRatesDetail = [];
 foreach ($shippingRates as $sn => $row) {
@@ -79,27 +79,43 @@ foreach ($shippingRates as $sn => $row) {
 if (!empty($product)) {
     $product['selprod_price'] = CommonHelper::displayMoneyFormat($product['selprod_price'], false, false, false);
     $product['theprice'] = CommonHelper::displayMoneyFormat($product['theprice'], false, false, false);
-    if (!empty($product['selprod_return_policies'])) {
+    if (!empty($product['selprod_return_age'])) {
+        $lbl = Labels::getLabel('LBL_{DAYS}_DAYS_RETURN_BACK_POLICY', $siteLangId);
+        $returnAge = !empty($product['selprod_return_age']) ? $product['selprod_return_age'] : $product['shop_return_age'];
+        $returnAge = !empty($returnAge) ? $returnAge : 0;
+        $returnAge = CommonHelper::replaceStringData($lbl, ['{DAYS}' => $returnAge]);
         $product['productPolicies'][] = array(
-            'title' => $product['selprod_return_policies']['ppoint_title'],
-            'icon' => CONF_WEBROOT_URL.'images/easyreturns.png'
+            'title' => $returnAge,
+            'icon' => CONF_WEBROOT_URL . 'images/easyreturns.png'
         );
     }
-    if (!empty($product['selprod_warranty_policies'])) {
+    if (!empty($product['selprod_cancellation_age'])) {
+        $lbl = Labels::getLabel('LBL_{DAYS}_DAYS_CANCELLATION_POLICY', $siteLangId);
+        $cancellationAge = !empty($product['selprod_cancellation_age']) ? $product['selprod_cancellation_age'] : $product['shop_cancellation_age'];
+        $cancellationAge = !empty($cancellationAge) ? $cancellationAge : 0;
+        $cancellationAge = CommonHelper::replaceStringData($lbl, ['{DAYS}' => $cancellationAge]);
         $product['productPolicies'][] = array(
-            'title' => $product['selprod_warranty_policies']['ppoint_title'],
-            'icon' => CONF_WEBROOT_URL.'images/yearswarranty.png'
+            'title' => $cancellationAge,
+            'icon' => CONF_WEBROOT_URL . 'images/easyreturns.png'
+        );
+    }
+    if (!empty($product['product_warranty'])) {
+        $lbl = Labels::getLabel('LBL_{DAYS}_DAYS_WARRANTY', $siteLangId);
+        $warranty = CommonHelper::replaceStringData($lbl, ['{DAYS}' => $product['product_warranty']]);
+        $product['productPolicies'][] = array(
+            'title' => $warranty,
+            'icon' => CONF_WEBROOT_URL . 'images/yearswarranty.png'
         );
     }
     if (isset($shippingDetails['ps_free']) && $shippingDetails['ps_free'] == applicationConstants::YES) {
         $product['productPolicies'][] = array(
             'title' => Labels::getLabel('LBL_Free_Shipping_on_this_Order', $siteLangId),
-            'icon' => CONF_WEBROOT_URL.'images/freeshipping.png'
+            'icon' => CONF_WEBROOT_URL . 'images/freeshipping.png'
         );
-    } else if (count($shippingRates) > 0) {
+    } elseif (count($shippingRates) > 0) {
         $product['productPolicies'][] = array(
             'title' => Labels::getLabel('LBL_Shipping_Rates', $siteLangId),
-            'icon' => CONF_WEBROOT_URL.'images/shipping-policies.png',
+            'icon' => CONF_WEBROOT_URL . 'images/shipping-policies.png',
             'shippingRatesDetail' => $shippingRatesDetail,
         );
     }

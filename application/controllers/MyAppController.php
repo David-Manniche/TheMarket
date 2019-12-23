@@ -4,8 +4,10 @@ class MyAppController extends FatController
     public $app_user = array();
     public $appToken = '';
 
+	protected $themeDetail;
+	
     public function __construct($action)
-    {            
+    {
         parent::__construct($action);
         $this->action = $action;
 
@@ -25,7 +27,7 @@ class MyAppController extends FatController
     {
         $this->siteLangId = CommonHelper::getLangId();
         $this->siteCurrencyId = CommonHelper::getCurrencyId();
-
+        
         $this->app_user['temp_user_id'] = 0;
         if (true ===  MOBILE_APP_API_CALL) {
             $this->setApiVariables();
@@ -64,63 +66,65 @@ class MyAppController extends FatController
         }
 
         $jsVariables = array(
-        'confirmRemove' =>Labels::getLabel('LBL_Do_you_want_to_remove', $this->siteLangId),
-        'confirmReset' =>Labels::getLabel('LBL_Do_you_want_to_reset_settings', $this->siteLangId),
-        'confirmDelete' =>Labels::getLabel('LBL_Do_you_want_to_delete', $this->siteLangId),
-        'confirmUpdateStatus' =>Labels::getLabel('LBL_Do_you_want_to_update_the_status', $this->siteLangId),
-        'confirmDeleteOption' =>Labels::getLabel('LBL_Do_you_want_to_delete_this_option', $this->siteLangId),
-        'confirmDefault' =>Labels::getLabel('LBL_Do_you_want_to_set_default', $this->siteLangId),
+        'confirmRemove' => Labels::getLabel('LBL_Do_you_want_to_remove', $this->siteLangId),
+        'confirmReset' => Labels::getLabel('LBL_Do_you_want_to_reset_settings', $this->siteLangId),
+        'confirmDelete' => Labels::getLabel('LBL_Do_you_want_to_delete', $this->siteLangId),
+        'confirmUpdateStatus' => Labels::getLabel('LBL_Do_you_want_to_update_the_status', $this->siteLangId),
+        'confirmDeleteOption' => Labels::getLabel('LBL_Do_you_want_to_delete_this_option', $this->siteLangId),
+        'confirmDefault' => Labels::getLabel('LBL_Do_you_want_to_set_default', $this->siteLangId),
         'setMainProduct' => Labels::getLabel('LBL_Set_as_main_product', $this->siteLangId),
-        'layoutDirection'=>CommonHelper::getLayoutDirection(),
-        'selectPlan' =>Labels::getLabel('LBL_Please_Select_any_Plan_From_The_Above_Plans', $this->siteLangId),
-        'alreadyHaveThisPlan' =>str_replace("{clickhere}", '<a href="'.CommonHelper::generateUrl('seller', 'subscriptions').'">'.Labels::getLabel('LBL_Click_Here', $this->siteLangId).'</a>', Labels::getLabel('LBL_You_have_already_Bought_this_plan._Please_choose_some_other_Plan_or_renew_it_from_{clickhere}', $this->siteLangId)),
-        'processing' =>Labels::getLabel('LBL_Processing...', $this->siteLangId),
-        'requestProcessing' =>Labels::getLabel('LBL_Request_Processing...', $this->siteLangId),
-        'selectLocation' =>Labels::getLabel('LBL_Select_Location_to_view_Wireframe', $this->siteLangId),
-        'favoriteToShop' =>Labels::getLabel('LBL_Favorite_To_Shop', $this->siteLangId),
-        'unfavoriteToShop' =>Labels::getLabel('LBL_Unfavorite_To_Shop', $this->siteLangId),
-        'userNotLogged' =>Labels::getLabel('MSG_User_Not_Logged', $this->siteLangId),
-        'selectFile' =>Labels::getLabel('MSG_File_not_uploaded', $this->siteLangId),
-        'thanksForSharing' =>Labels::getLabel('MSG_Thanks_For_Sharing', $this->siteLangId),
-        'isMandatory' =>Labels::getLabel('VLBL_is_mandatory', $this->siteLangId),
-        'pleaseEnterValidEmailId' =>Labels::getLabel('VLBL_Please_enter_valid_email_ID_for', $this->siteLangId),
-        'charactersSupportedFor' =>Labels::getLabel('VLBL_Only_characters_are_supported_for', $this->siteLangId),
-        'pleaseEnterIntegerValue' =>Labels::getLabel('VLBL_Please_enter_integer_value_for', $this->siteLangId),
-        'pleaseEnterNumericValue' =>Labels::getLabel('VLBL_Please_enter_numeric_value_for', $this->siteLangId),
-        'startWithLetterOnlyAlphanumeric' =>Labels::getLabel('VLBL_must_start_with_a_letter_and_can_contain_only_alphanumeric_characters._Length_must_be_between_4_to_20_characters', $this->siteLangId),
-        'mustBeBetweenCharacters' =>Labels::getLabel('VLBL_Length_Must_be_between_6_to_20_characters', $this->siteLangId),
-        'invalidValues' =>Labels::getLabel('VLBL_Length_Invalid_value_for', $this->siteLangId),
-        'shouldNotBeSameAs' =>Labels::getLabel('VLBL_should_not_be_same_as', $this->siteLangId),
-        'mustBeSameAs' =>Labels::getLabel('VLBL_must_be_same_as', $this->siteLangId),
-        'mustBeGreaterOrEqual' =>Labels::getLabel('VLBL_must_be_greater_than_or_equal_to', $this->siteLangId),
-        'mustBeGreaterThan' =>Labels::getLabel('VLBL_must_be_greater_than', $this->siteLangId),
-        'mustBeLessOrEqual' =>Labels::getLabel('VLBL_must_be_less_than_or_equal_to', $this->siteLangId),
-        'mustBeLessThan' =>Labels::getLabel('VLBL_must_be_less_than', $this->siteLangId),
-        'lengthOf' =>Labels::getLabel('VLBL_Length_of', $this->siteLangId),
-        'valueOf' =>Labels::getLabel('VLBL_Value_of', $this->siteLangId),
-        'mustBeBetween' =>Labels::getLabel('VLBL_must_be_between', $this->siteLangId),
-        'mustBeBetween' =>Labels::getLabel('VLBL_must_be_between', $this->siteLangId),
-        'and' =>Labels::getLabel('VLBL_and', $this->siteLangId),
-        'pleaseSelect' =>Labels::getLabel('VLBL_Please_select', $this->siteLangId),
-        'to' =>Labels::getLabel('VLBL_to', $this->siteLangId),
-        'options' =>Labels::getLabel('VLBL_options', $this->siteLangId),
-        'isNotAvailable' =>Labels::getLabel('VLBL_is_not_available', $this->siteLangId),
-        'RemoveProductFromFavourite' =>Labels::getLabel('LBL_Remove_product_from_favourite_list', $this->siteLangId),
-        'AddProductToFavourite' =>Labels::getLabel('LBL_Add_Product_To_favourite_list', $this->siteLangId),
-        'MovedSuccessfully' =>Labels::getLabel('LBL_Moved_Successfully', $this->siteLangId),
-        'RemovedSuccessfully' =>Labels::getLabel('LBL_Removed_Successfully', $this->siteLangId),
-        'siteCurrencyId' =>$this->siteCurrencyId,
-        'controllerName' =>$controllerName,
-        'confirmDeletePersonalInformation' =>Labels::getLabel('LBL_Do_you_really_want_to_remove_all_your_personal_information', $this->siteLangId),
-        'preferredDimensions' =>Labels::getLabel('LBL_Preferred_Dimensions_%s', $this->siteLangId),
-        'invalidCredentials' =>Labels::getLabel('LBL_Invalid_Credentials', $this->siteLangId),
-        'searchString' =>Labels::getLabel('LBL_Search_string_must_be_atleast_3_characters_long.', $this->siteLangId),
-        'atleastOneRecord' =>Labels::getLabel('LBL_Please_select_atleast_one_record.', $this->siteLangId)
+        'layoutDirection'=> CommonHelper::getLayoutDirection(),
+        'selectPlan' => Labels::getLabel('LBL_Please_Select_any_Plan_From_The_Above_Plans', $this->siteLangId),
+        'alreadyHaveThisPlan' => str_replace("{clickhere}", '<a href="' . CommonHelper::generateUrl('seller', 'subscriptions') . '">' . Labels::getLabel('LBL_Click_Here', $this->siteLangId) . '</a>', Labels::getLabel('LBL_You_have_already_Bought_this_plan._Please_choose_some_other_Plan_or_renew_it_from_{clickhere}', $this->siteLangId)),
+        'processing' => Labels::getLabel('LBL_Processing...', $this->siteLangId),
+        'requestProcessing' => Labels::getLabel('LBL_Request_Processing...', $this->siteLangId),
+        'selectLocation' => Labels::getLabel('LBL_Select_Location_to_view_Wireframe', $this->siteLangId),
+        'favoriteToShop' => Labels::getLabel('LBL_Favorite_To_Shop', $this->siteLangId),
+        'unfavoriteToShop' => Labels::getLabel('LBL_Unfavorite_To_Shop', $this->siteLangId),
+        'userNotLogged' => Labels::getLabel('MSG_User_Not_Logged', $this->siteLangId),
+        'selectFile' => Labels::getLabel('MSG_File_not_uploaded', $this->siteLangId),
+        'thanksForSharing' => Labels::getLabel('MSG_Thanks_For_Sharing', $this->siteLangId),
+        'isMandatory' => Labels::getLabel('VLBL_is_mandatory', $this->siteLangId),
+        'pleaseEnterValidEmailId' => Labels::getLabel('VLBL_Please_enter_valid_email_ID_for', $this->siteLangId),
+        'charactersSupportedFor' => Labels::getLabel('VLBL_Only_characters_are_supported_for', $this->siteLangId),
+        'pleaseEnterIntegerValue' => Labels::getLabel('VLBL_Please_enter_integer_value_for', $this->siteLangId),
+        'pleaseEnterNumericValue' => Labels::getLabel('VLBL_Please_enter_numeric_value_for', $this->siteLangId),
+        'startWithLetterOnlyAlphanumeric' => Labels::getLabel('VLBL_must_start_with_a_letter_and_can_contain_only_alphanumeric_characters._Length_must_be_between_4_to_20_characters', $this->siteLangId),
+        'mustBeBetweenCharacters' => Labels::getLabel('VLBL_Length_Must_be_between_6_to_20_characters', $this->siteLangId),
+        'invalidValues' => Labels::getLabel('VLBL_Length_Invalid_value_for', $this->siteLangId),
+        'shouldNotBeSameAs' => Labels::getLabel('VLBL_should_not_be_same_as', $this->siteLangId),
+        'mustBeSameAs' => Labels::getLabel('VLBL_must_be_same_as', $this->siteLangId),
+        'mustBeGreaterOrEqual' => Labels::getLabel('VLBL_must_be_greater_than_or_equal_to', $this->siteLangId),
+        'mustBeGreaterThan' => Labels::getLabel('VLBL_must_be_greater_than', $this->siteLangId),
+        'mustBeLessOrEqual' => Labels::getLabel('VLBL_must_be_less_than_or_equal_to', $this->siteLangId),
+        'mustBeLessThan' => Labels::getLabel('VLBL_must_be_less_than', $this->siteLangId),
+        'lengthOf' => Labels::getLabel('VLBL_Length_of', $this->siteLangId),
+        'valueOf' => Labels::getLabel('VLBL_Value_of', $this->siteLangId),
+        'mustBeBetween' => Labels::getLabel('VLBL_must_be_between', $this->siteLangId),
+        'mustBeBetween' => Labels::getLabel('VLBL_must_be_between', $this->siteLangId),
+        'and' => Labels::getLabel('VLBL_and', $this->siteLangId),
+        'pleaseSelect' => Labels::getLabel('VLBL_Please_select', $this->siteLangId),
+        'to' => Labels::getLabel('VLBL_to', $this->siteLangId),
+        'options' => Labels::getLabel('VLBL_options', $this->siteLangId),
+        'isNotAvailable' => Labels::getLabel('VLBL_is_not_available', $this->siteLangId),
+        'RemoveProductFromFavourite' => Labels::getLabel('LBL_Remove_product_from_favourite_list', $this->siteLangId),
+        'AddProductToFavourite' => Labels::getLabel('LBL_Add_Product_To_favourite_list', $this->siteLangId),
+        'MovedSuccessfully' => Labels::getLabel('LBL_Moved_Successfully', $this->siteLangId),
+        'RemovedSuccessfully' => Labels::getLabel('LBL_Removed_Successfully', $this->siteLangId),
+        'siteCurrencyId' => $this->siteCurrencyId,
+        'controllerName' => $controllerName,
+        'confirmDeletePersonalInformation' => Labels::getLabel('LBL_Do_you_really_want_to_remove_all_your_personal_information', $this->siteLangId),
+        'preferredDimensions' => Labels::getLabel('LBL_Preferred_Dimensions_%s', $this->siteLangId),
+        'invalidCredentials' => Labels::getLabel('LBL_Invalid_Credentials', $this->siteLangId),
+        'searchString' => Labels::getLabel('LBL_Search_string_must_be_atleast_3_characters_long.', $this->siteLangId),
+        'atleastOneRecord' => Labels::getLabel('LBL_Please_select_atleast_one_record.', $this->siteLangId),
+        'primaryLanguageField' => Labels::getLabel('LBL_PRIMARY_LANGUAGE_DATA_NEEDS_TO_BE_FILLED_FOR_SYSTEM_TO_TRANSLATE_TO_OTHER_LANGUAGES.', $this->siteLangId),
+        'unknownPrimaryLanguageField' => Labels::getLabel('LBL_PRIMARY_LANGUAGE_FIELD_IS_NOT_SET.', $this->siteLangId),
         );
 
         $languages = Language::getAllNames(false);
         foreach ($languages as $val) {
-            $jsVariables['language'.$val['language_id']] = $val['language_layout_direction'];
+            $jsVariables['language' . $val['language_id']] = $val['language_layout_direction'];
         }
 
         if (CommonHelper::getLayoutDirection() == 'rtl') {
@@ -132,7 +136,7 @@ class MyAppController extends FatController
         if (CommonHelper::isThemePreview() && isset($_SESSION['preview_theme'])) {
             $themeId = $_SESSION['preview_theme'];
         }
-        $themeDetail = ThemeColor::getAttributesById($themeId);
+        $this->themeDetail = ThemeColor::getAttributesById($themeId);
         $currencySymbolLeft = CommonHelper::getCurrencySymbolLeft();
         $currencySymbolRight = CommonHelper::getCurrencySymbolRight();
 
@@ -143,7 +147,7 @@ class MyAppController extends FatController
         $this->set('isUserDashboard', false);
         $this->set('currencySymbolLeft', $currencySymbolLeft);
         $this->set('currencySymbolRight', $currencySymbolRight);
-        $this->set('themeDetail', $themeDetail);
+        $this->set('themeDetail', $this->themeDetail);
         $this->set('jsVariables', $jsVariables);
         $this->set('controllerName', $controllerName);
         $this->set('isAppUser', commonhelper::isAppUser());
@@ -169,14 +173,14 @@ class MyAppController extends FatController
 
         if ($this->appToken) {
             if (!UserAuthentication::isUserLogged('', $this->appToken)) {
-                $arr = array('status'=>-1,'msg'=>Labels::getLabel('L_Invalid_Token', $this->siteLangId));
+                $arr = array('status'=>-1,'msg'=> Labels::getLabel('L_Invalid_Token', $this->siteLangId));
                 die(json_encode($arr));
             }
 
             $userId = UserAuthentication::getLoggedUserId();
             $userObj = new User($userId);
             if (!$row = $userObj->getProfileData()) {
-                $arr = array('status'=>-1,'msg'=>Labels::getLabel('L_Invalid_Token', $this->siteLangId));
+                $arr = array('status'=>-1,'msg'=> Labels::getLabel('L_Invalid_Token', $this->siteLangId));
                 die(json_encode($arr));
             }
             $this->app_user = $row;
@@ -252,10 +256,10 @@ class MyAppController extends FatController
         $className = ucwords(implode(' ', $arr));
 
         if ($action == 'index') {
-            $nodes[] = array('title'=>Labels::getLabel('LBL_'.ucwords($className), $this->siteLangId));
+            $nodes[] = array('title'=> Labels::getLabel('LBL_'.ucwords($className), $this->siteLangId));
         } else {
             $nodes[] = array('title'=>ucwords($className), 'href'=>CommonHelper::generateUrl($urlController));
-            $nodes[] = array('title'=>Labels::getLabel('LBL_'.ucwords($action), $this->siteLangId));
+            $nodes[] = array('title'=> Labels::getLabel('LBL_'.ucwords($action), $this->siteLangId));
         }
         return $nodes;
     }
@@ -309,8 +313,8 @@ class MyAppController extends FatController
     {
         $siteLangId = FatUtility::int($langId);
         $frm = new Form('frmGuestLogin');
-        $frm->addTextBox(Labels::getLabel('LBL_Name', $siteLangId), 'user_name', '', array('placeholder'=>Labels::getLabel('LBL_Name', $siteLangId)));
-        $fld = $frm->addRequiredField(Labels::getLabel('LBL_Email', $siteLangId), 'user_email', '', array('placeholder'=>Labels::getLabel('LBL_EMAIL_ADDRESS', $siteLangId)));
+        $frm->addTextBox(Labels::getLabel('LBL_Name', $siteLangId), 'user_name', '', array('placeholder'=> Labels::getLabel('LBL_Name', $siteLangId)));
+        $fld = $frm->addRequiredField(Labels::getLabel('LBL_Email', $siteLangId), 'user_email', '', array('placeholder'=> Labels::getLabel('LBL_EMAIL_ADDRESS', $siteLangId)));
         $frm->addHtml('', 'space', '');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Guest_Sign_in', $siteLangId));
         return $frm;
@@ -326,8 +330,8 @@ class MyAppController extends FatController
             $userName = 'login@dummyid.com';
             $pass = 'kanwar@123';
         }
-        $fld = $frm->addRequiredField(Labels::getLabel('LBL_Username_Or_Email', $siteLangId), 'username', $userName, array('placeholder'=>Labels::getLabel('LBL_Username_Or_Email', $siteLangId)));
-        $pwd = $frm->addPasswordField(Labels::getLabel('LBL_Password', $siteLangId), 'password', $pass, array('placeholder'=>Labels::getLabel('LBL_Password', $siteLangId)));
+        $fld = $frm->addRequiredField(Labels::getLabel('LBL_Username_Or_Email', $siteLangId), 'username', $userName, array('placeholder'=> Labels::getLabel('LBL_Username_Or_Email', $siteLangId)));
+        $pwd = $frm->addPasswordField(Labels::getLabel('LBL_Password', $siteLangId), 'password', $pass, array('placeholder'=> Labels::getLabel('LBL_Password', $siteLangId)));
         $pwd->requirements()->setRequired();
         $frm->addCheckbox(Labels::getLabel('LBL_Remember_Me', $siteLangId), 'remember_me', 1, array(), '', 0);
         $frm->addHtml('', 'forgot', '');
@@ -341,24 +345,24 @@ class MyAppController extends FatController
 
         $frm = new Form('frmRegister');
         $frm->addHiddenField('', 'user_id', 0, array('id'=>'user_id'));
-        $frm->addRequiredField(Labels::getLabel('LBL_NAME', $siteLangId), 'user_name', '', array('placeholder'=>Labels::getLabel('LBL_NAME', $siteLangId)));
-        $fld = $frm->addTextBox(Labels::getLabel('LBL_USERNAME', $siteLangId), 'user_username', '', array('placeholder'=>Labels::getLabel('LBL_USERNAME', $siteLangId)));
+        $frm->addRequiredField(Labels::getLabel('LBL_NAME', $siteLangId), 'user_name', '', array('placeholder'=> Labels::getLabel('LBL_NAME', $siteLangId)));
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_USERNAME', $siteLangId), 'user_username', '', array('placeholder'=> Labels::getLabel('LBL_USERNAME', $siteLangId)));
         if (false ===  MOBILE_APP_API_CALL) {
             $fld->setUnique('tbl_user_credentials', 'credential_username', 'credential_user_id', 'user_id', 'user_id');
         }
         $fld->requirements()->setRequired();
         $fld->requirements()->setUsername();
 
-        $fld = $frm->addEmailField(Labels::getLabel('LBL_EMAIL', $siteLangId), 'user_email', '', array('placeholder'=>Labels::getLabel('LBL_EMAIL', $siteLangId)));
+        $fld = $frm->addEmailField(Labels::getLabel('LBL_EMAIL', $siteLangId), 'user_email', '', array('placeholder'=> Labels::getLabel('LBL_EMAIL', $siteLangId)));
         if (false ===  MOBILE_APP_API_CALL) {
             $fld->setUnique('tbl_user_credentials', 'credential_email', 'credential_user_id', 'user_id', 'user_id');
         }
-        $fld = $frm->addPasswordField(Labels::getLabel('LBL_PASSWORD', $siteLangId), 'user_password', '', array('placeholder'=>Labels::getLabel('LBL_PASSWORD', $siteLangId)));
+        $fld = $frm->addPasswordField(Labels::getLabel('LBL_PASSWORD', $siteLangId), 'user_password', '', array('placeholder'=> Labels::getLabel('LBL_PASSWORD', $siteLangId)));
         $fld->requirements()->setRequired();
         $fld->requirements()->setRegularExpressionToValidate(ValidateElement::PASSWORD_REGEX);
         $fld->requirements()->setCustomErrorMessage(Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $siteLangId));
 
-        $fld1 = $frm->addPasswordField(Labels::getLabel('LBL_CONFIRM_PASSWORD', $siteLangId), 'password1', '', array('placeholder'=>Labels::getLabel('LBL_CONFIRM_PASSWORD', $siteLangId)));
+        $fld1 = $frm->addPasswordField(Labels::getLabel('LBL_CONFIRM_PASSWORD', $siteLangId), 'password1', '', array('placeholder'=> Labels::getLabel('LBL_CONFIRM_PASSWORD', $siteLangId)));
         $fld1->requirements()->setRequired();
         $fld1->requirements()->setCompareWith('user_password', 'eq', Labels::getLabel('LBL_PASSWORD', $siteLangId));
 
@@ -635,5 +639,18 @@ class MyAppController extends FatController
         if ($authentication->login($user['credential_username'], $user['credential_password'], $_SERVER['REMOTE_ADDR'], false)) {
             $uObj->deleteUserAPITempToken() ;
         }
+    }
+
+    public function translateLangFields($tbl, $data)
+    {
+        if (!empty($tbl) && !empty($data)) {
+            $updateLangDataobj = new TranslateLangData($tbl);
+            $translatedText = $updateLangDataobj->directTranslate($data);
+            if (false === $translatedText) {
+                FatUtility::dieJsonError($updateLangDataobj->getError());
+            }
+            return $translatedText;
+        }
+        FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
     }
 }

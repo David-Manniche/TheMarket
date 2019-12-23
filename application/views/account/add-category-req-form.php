@@ -14,11 +14,11 @@ $identifierFld->setFieldTagAttribute('id',CategoryRequest::DB_TBL_PREFIX.'id');
   <div class="tabs tabs--small clearfix">
     <ul>
       <li class="is-active" ><a href="javascript:void(0)" onclick="addCategoryReqForm(<?php echo $categoryReqId; ?>);"><?php echo Labels::getLabel('LBL_Basic', $siteLangId);?></a></li>
-      <?php 
-			$inactive=($categoryReqId==0)?'fat-inactive':'';	
-			foreach($languages as $langId=>$langName){?>
-      <li class="<?php echo $inactive;?>"><a href="javascript:void(0);" <?php if($categoryReqId>0){?> onclick="addCategoryReqLangForm(<?php echo $categoryReqId ?>, <?php echo $langId;?>);" <?php }?>><?php echo $langName;?></a></li>
-      <?php } ?>
+        <li class="<?php echo (0 == $categoryReqId) ? 'fat-inactive' : ''; ?>">
+            <a href="javascript:void(0);" <?php echo (0 < $categoryReqId) ? "onclick='addCategoryReqLangForm(" . $categoryReqId . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
+                <?php echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
+            </a>
+        </li>
     </ul>
   </div>
  

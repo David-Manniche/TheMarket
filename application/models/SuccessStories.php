@@ -2,7 +2,7 @@
 class SuccessStories extends MyAppModel
 {
     const DB_TBL = 'tbl_success_stories';
-    const DB_LANG_TBL = 'tbl_success_stories_lang';
+    const DB_TBL_LANG = 'tbl_success_stories_lang';
     const DB_TBL_PREFIX = 'sstory_';
     const DB_TBL_LANG_PREFIX = 'sstorylang_';
     private $db;
@@ -24,7 +24,7 @@ class SuccessStories extends MyAppModel
 
         if ($langId > 0) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
                 'ss_l.'.static::DB_TBL_LANG_PREFIX.'sstory_id = ss.'.static::tblFld('id').' and
 			ss_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,

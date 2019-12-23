@@ -1239,7 +1239,7 @@ main.main {
 .content-wrapper {}
 
 .content-wrapper.content-space {
-	margin: 50px;
+	padding: 50px;
 	min-height: 700px;
 }
 
@@ -4354,7 +4354,7 @@ input.sp-input {
 }
 
 @media only screen and (max-width:767px) {
-	
+
 
 	/*.sidebar-is-expanded .sidebar {
 		width: 0;
@@ -4495,7 +4495,7 @@ input.sp-input {
 	.credits-number ul li:first-child {
 		margin-top: 0;
 	}
-	
+
 	.avtar.avtar--large{width: 5.125rem;
     height: 5.125rem;}
 }

@@ -2,7 +2,12 @@
 require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/khipu/init.php';
 class KhipuPayController extends PaymentController
 {
-    private $keyName="khipu";
+    private $keyName = "khipu";
+
+    protected function allowedCurrenciesArr()
+    {
+        return ['CLP'];
+    }
 
     public function charge($orderId)
     {
@@ -25,7 +30,7 @@ class KhipuPayController extends PaymentController
             $notify_url = CommonHelper::generateNoAuthUrl('KhipuPay', 'send');
             $cancel_url = CommonHelper::getPaymentCancelPageUrl();
             $custom = $orderId;
-            $transaction_id = 'Order-'.$orderId;
+            $transaction_id = 'Order-' . $orderId;
             $picture_url = '';
             $payer_email = $orderInfo['customer_email'];
             $secret = $paymentSettings['secret_key'];
@@ -39,7 +44,7 @@ class KhipuPayController extends PaymentController
             $payments = new PaymentsApi($client);
             try {
                 $response = $payments->paymentsPost(
-                    FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId), // Reason for purchase
+                    FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId), // Reason for purchase
                     "CLP", // Currency
                     ceil($payment_amount), // Amount
                     $transaction_id, // transaction ID in trade
@@ -71,8 +76,8 @@ class KhipuPayController extends PaymentController
     }
     public function send()
     {
-        $pmObj=new PaymentSettings($this->keyName);
-        $paymentSettings=$pmObj->getPaymentSettings();
+        $pmObj = new PaymentSettings($this->keyName);
+        $paymentSettings = $pmObj->getPaymentSettings();
         $post = FatApp::getPostedData();
         $api_version = $post['api_version'];
         $notification_token = $post['notification_token'];
@@ -85,13 +90,13 @@ class KhipuPayController extends PaymentController
                 $payments = new PaymentsApi($client);
                 $response = $payments->paymentsGet($notification_token);
                 $orderId = $response->getCustom();
-                $orderPaymentObj=new OrderPayment($orderId, $this->siteLangId);
+                $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
                 /* Retrieve Payment to charge corresponding to your order */
-                $order_payment_amount=$orderPaymentObj->getOrderPaymentGatewayAmount();
+                $order_payment_amount = $orderPaymentObj->getOrderPaymentGatewayAmount();
 
-                if ($order_payment_amount>0) {
+                if ($order_payment_amount > 0) {
                     /* Retrieve Primary Info corresponding to your order */
-                    $orderInfo=$orderPaymentObj->getOrderPrimaryinfo();
+                    $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
                     $order_actual_paid = ceil($order_payment_amount);
                     $json = array();
                     if (!$response) {
@@ -104,12 +109,12 @@ class KhipuPayController extends PaymentController
                                 if (!$orderPaymentObj->addOrderPayment($paymentSettings["pmethod_name"], $response->getTransactionId(), $response->getAmount(), Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $response->__toString())) {
                                 }
                             } else {
-                                $request = $response->__toString()."\n\n KHIPU :: TOTAL PAID MISMATCH! " . $response-> getAmount() . "\n\n";
+                                $request = $response->__toString() . "\n\n KHIPU :: TOTAL PAID MISMATCH! " . $response-> getAmount() . "\n\n";
                                 $orderPaymentObj->addOrderPaymentComments($request);
                             }
                         }
                     } else {
-                        $request = $response->__toString()."\n\n KHIPU :: RECEIVER MISMATCH! " . $response-> getReceiverId() . "\n\n";
+                        $request = $response->__toString() . "\n\n KHIPU :: RECEIVER MISMATCH! " . $response-> getReceiverId() . "\n\n";
                         $orderPaymentObj->addOrderPaymentComments($request);
                     }
                 } else {

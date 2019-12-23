@@ -77,10 +77,10 @@ $(document).ready(function() {
         });
     };
 
-    editCountryLangForm = function(countryId, langId) {
+    editCountryLangForm = function(countryId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
         //$.facebox(function() {
-        fcom.ajax(fcom.makeUrl('Countries', 'langForm', [countryId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Countries', 'langForm', [countryId, langId, autoFillLangData]), '', function(t) {
             //$.facebox(t,'faceboxWidth');
             fcom.updateFaceboxContent(t);
         });

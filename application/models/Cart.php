@@ -105,6 +105,10 @@ class Cart extends FatModel
         $this->products = array();
         $selprod_id = FatUtility::int($selprod_id);
         $prodgroup_id = FatUtility::int($prodgroup_id);
+        $qty = FatUtility::int($qty);
+        if($selprod_id < 1 || $qty < 1){
+            return false;
+        }
 
         if ($qty > 0) {
             $key = static::CART_KEY_PREFIX_PRODUCT . $selprod_id;
@@ -136,7 +140,11 @@ class Cart extends FatModel
         }
 
         $this->updateUserCart();
-
+        
+        if(is_numeric($this->cart_user_id) && $this->cart_user_id > 0){
+            AbandonedCart::saveAbandonedCart($this->cart_user_id, $selprod_id, $this->SYSTEM_ARR['cart'][$key], AbandonedCart::ACTION_ADDED);
+        }
+        
         if ($returnUserId) {
             return $this->cart_user_id;
         }
@@ -521,19 +529,16 @@ class Cart extends FatModel
         $found = false;
         if (is_array($cartProducts)) {
             foreach ($cartProducts as $cartKey => $product) {
-                if ($key == 'all') {
+                if ($key == 'all' || (md5($product['key']) == $key && !$product['is_batch'])) {
                     $found = true;
-                    unset($this->SYSTEM_ARR['cart'][$cartKey]);
-                    /* to keep track of temporary hold the product stock[ */
+                    unset($this->SYSTEM_ARR['cart'][$cartKey]);                    
                     $this->updateTempStockHold($product['selprod_id'], 0, 0);
-                /* ] */
-                } elseif (md5($product['key']) == $key && !$product['is_batch']) {
-                    $found = true;
-                    unset($this->SYSTEM_ARR['cart'][$cartKey]);
-                    /* to keep track of temporary hold the product stock[ */
-                    $this->updateTempStockHold($product['selprod_id'], 0, 0);
-                    /* ] */
-                    break;
+                    if (md5($product['key']) == $key && !$product['is_batch']) {
+                        if(is_numeric($this->cart_user_id) && $this->cart_user_id > 0){
+                            AbandonedCart::saveAbandonedCart($this->cart_user_id, $product['selprod_id'], $product['quantity'], AbandonedCart::ACTION_DELETED);
+                        }
+                        break;
+                    }
                 }
             }
         }
@@ -611,6 +616,9 @@ class Cart extends FatModel
                             /* to keep track of temporary hold the product stock[ */
                             $this->updateTempStockHold($product['selprod_id'], $quantity);
                             /* ] */
+                            if(is_numeric($this->cart_user_id) && $this->cart_user_id > 0){
+                                AbandonedCart::saveAbandonedCart($this->cart_user_id, $product['selprod_id'], $quantity, AbandonedCart::ACTION_ADDED);
+                            }
                             break;
                         } else {
                             $this->remove($key);
@@ -1363,7 +1371,6 @@ class Cart extends FatModel
             return;
         }
 
-        //$record = new TableRecord('tbl_product_stock_hold');
         $dataArrToSave = array(
             'pshold_selprod_id' => $selprod_id,
             'pshold_user_id' => $this->cart_user_id,
@@ -1371,23 +1378,13 @@ class Cart extends FatModel
             'pshold_selprod_stock' => $quantity,
             'pshold_added_on' => date('Y-m-d H:i:s')
         );
-
-        //$qty = isset($this->SYSTEM_ARR['cart'][$selprod_id]) ? FatUtility::int($this->SYSTEM_ARR['cart'][$selprod_id]) : 0;
-        $dataUpdateOnDuplicate = array_merge($dataArrToSave, array( 'pshold_selprod_stock' => $quantity));
-        if (!$db->insertFromArray('tbl_product_stock_hold', $dataArrToSave, true, array(), $dataUpdateOnDuplicate)) {
+        if (!$db->insertFromArray('tbl_product_stock_hold', $dataArrToSave, true, array(), $dataArrToSave)) {
             Message::addErrorMessage($db->getError());
             throw new Exception('');
         }
-        /* $record->assignValues( $dataArrToSave );
-        if( !$record->addNew( array(), $dataUpdateOnDuplicate ) ){
-            Message::addErrorMessage( $record->getError() );
-            throw new Exception('');
-        } */
 
         /* delete old records[ */
-        $intervalInMinutes = FatApp::getConfig('cart_stock_hold_minutes', FatUtility::VAR_INT, 15);
-        $deleteQuery = "DELETE FROM tbl_product_stock_hold WHERE pshold_added_on < DATE_SUB(NOW(), INTERVAL ". $intervalInMinutes ." MINUTE)";
-        $db->query($deleteQuery);
+        $this->deleteProductStockHold();        
         /* ] */
     }
     /* ] */
@@ -1673,4 +1670,13 @@ class Cart extends FatModel
             return $selprod_id;
         }
     }
+    
+    public function deleteProductStockHold()
+    {
+        $intervalInMinutes = FatApp::getConfig('cart_stock_hold_minutes', FatUtility::VAR_INT, 15);
+        $deleteQuery = "DELETE FROM tbl_product_stock_hold WHERE pshold_added_on < DATE_SUB(NOW(), INTERVAL ". $intervalInMinutes ." MINUTE)";
+        FatApp::getDb()->query($deleteQuery);
+        return true;
+    }
+    
 }

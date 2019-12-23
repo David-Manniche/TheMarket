@@ -20,9 +20,9 @@ $(document).ready(function(){
 		});
 	}
 	
-	batchLangForm =  function( prodgroup_id, lang_id ){
+	batchLangForm =  function( prodgroup_id, lang_id, autoFillLangData = 0 ){
 		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('BatchProducts', 'langForm', [prodgroup_id, lang_id]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('BatchProducts', 'langForm', [prodgroup_id, lang_id, autoFillLangData]), '', function(t) {
 				$.facebox( t,'faceboxWidth');
 			});
 		});

@@ -64,10 +64,10 @@ $(document).on('change','.prefDimensions-js',function(){
 		});
 	};
 
-	slideLangForm = function( slideId, langId ){
+	slideLangForm = function( slideId, langId, autoFillLangData = 0){
 		fcom.displayProcessing();
 		//$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('Slides', 'langForm', [slideId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('Slides', 'langForm', [slideId, langId, autoFillLangData]), '', function(t) {
 				//$.facebox(t);
 				fcom.updateFaceboxContent(t);
 			});

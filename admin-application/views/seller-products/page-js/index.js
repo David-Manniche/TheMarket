@@ -71,10 +71,10 @@ $(document).ready(function(){
 		});
 	};
 
-	sellerProductLangForm = function( selprod_id, lang_id ){
+	sellerProductLangForm = function( selprod_id, lang_id, autoFillLangData = 0){
 		fcom.resetEditorInstance();
 		fcom.displayProcessing();
-			fcom.ajax(fcom.makeUrl('SellerProducts', 'sellerProductLangForm', [ selprod_id, lang_id ]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('SellerProducts', 'sellerProductLangForm', [ selprod_id, lang_id, autoFillLangData]), '', function(t) {
 				fcom.updateFaceboxContent(t);
 				fcom.setEditorLayout(lang_id);
 			});
@@ -235,9 +235,9 @@ $(document).ready(function(){
 
 	}
 
-	editProductMetaTagLangForm = function(metaId,langId, metaType){
+	editProductMetaTagLangForm = function(metaId,langId, autoFillLangData = 0){
 		fcom.displayProcessing();
-			fcom.ajax(fcom.makeUrl('SellerProducts', 'productSeoLangForm', [metaId,langId,metaType]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('SellerProducts', 'productSeoLangForm', [metaId, langId, autoFillLangData]), '', function(t) {
 				fcom.updateFaceboxContent(t);
 			});
 	};

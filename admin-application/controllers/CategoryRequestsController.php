@@ -240,7 +240,7 @@ class CategoryRequestsController extends AdminBaseController
     $this->_template->render(false, false, 'json-success.php');
     } */
     
-    private function getLangForm($categoryReqId=0,$lang_id=0)
+    private function getLangForm($categoryReqId = 0,$lang_id = 0)
     {
         $frm = new Form('frmCategoryReqLang', array('id'=>'frmCategoryReqLang'));        
         $frm->addHiddenField('', 'scategoryreq_id', $categoryReqId);

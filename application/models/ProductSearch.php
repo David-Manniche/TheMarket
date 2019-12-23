@@ -16,6 +16,7 @@ class ProductSearch extends SearchBase
 
     private $sellerProductsJoined = false;
     private $sellerUserJoined = false;
+    private $shopsJoined = false;
     private $commonLangId;
     private $sellerSubscriptionOrderJoined = false;
 
@@ -29,9 +30,9 @@ class ProductSearch extends SearchBase
         } else {
             /* Same productsearch class used to fetch products under any batch/group, do not call setDefinedCriteria, call setBatchProductsCriteria().[ */
             parent::__construct($otherTbl, 'temp');
-            $this->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', 'temp.'.ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX.'selprod_id = sp.selprod_id', 'sp');
+            $this->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', 'temp.' . ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'selprod_id = sp.selprod_id', 'sp');
             if ($this->langId > 0) {
-                $this->joinTable(SellerProduct::DB_LANG_TBL, 'LEFT OUTER JOIN', 'sp.selprod_id = sp_l.selprodlang_selprod_id AND selprodlang_lang_id = '.$this->langId, 'sp_l');
+                $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp.selprod_id = sp_l.selprodlang_selprod_id AND selprodlang_lang_id = '.$this->langId, 'sp_l');
             }
             $this->joinTable(Product::DB_TBL, 'INNER JOIN', 'sp.selprod_product_id = p.product_id', 'p');
             /* ] */
@@ -58,7 +59,7 @@ class ProductSearch extends SearchBase
 
     public function joinProductsLang($langId)
     {
-        $this->joinTable(Product::DB_LANG_TBL, 'LEFT OUTER JOIN', 'productlang_product_id = p.product_id AND productlang_lang_id = ' . $langId, 'tp_l');
+        $this->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'productlang_product_id = p.product_id AND productlang_lang_id = ' . $langId, 'tp_l');
     }
 
     public function setDefaultLangForJoins($langId)
@@ -137,7 +138,7 @@ class ProductSearch extends SearchBase
         }
 
         if ($this->langId) {
-            $this->joinTable(SellerProduct::DB_LANG_TBL, 'LEFT OUTER JOIN', 'msellprod.selprod_id = sprods_l.selprodlang_selprod_id AND sprods_l.selprodlang_lang_id = '.$this->langId, 'sprods_l');
+            $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'msellprod.selprod_id = sprods_l.selprodlang_selprod_id AND sprods_l.selprodlang_lang_id = '.$this->langId, 'sprods_l');
             $fields2 = array('selprod_title','selprod_warranty','selprod_return_policy','sprods_l.selprod_comments as selprodComments');
         }
 
@@ -231,10 +232,10 @@ class ProductSearch extends SearchBase
         }
 
         if (!empty($criteria['keyword']) && $this->langId) {
-            $srch->joinTable(Product::DB_LANG_TBL, 'LEFT OUTER JOIN', 'productlang_product_id = tp.product_id	AND productlang_lang_id = ' . $this->langId, 'tp_l');
-            $srch->joinTable(SellerProduct::DB_LANG_TBL, 'LEFT OUTER JOIN', 'selprodlang_selprod_id = sprods.selprod_id	AND selprodlang_lang_id = ' . $this->langId, 'sp_l');
-            $srch->joinTable(Brand::DB_LANG_TBL, 'LEFT OUTER JOIN', 'brandlang_brand_id = tb.brand_id	AND brandlang_lang_id = ' . $this->langId, 'tb_l');
-            $srch->joinTable(ProductCategory::DB_LANG_TBL, 'LEFT OUTER JOIN', 'prodcatlang_prodcat_id = tc.prodcat_id AND prodcatlang_lang_id = ' . $this->langId, 'tc_l');
+            $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'productlang_product_id = tp.product_id	AND productlang_lang_id = ' . $this->langId, 'tp_l');
+            $srch->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'selprodlang_selprod_id = sprods.selprod_id	AND selprodlang_lang_id = ' . $this->langId, 'sp_l');
+            $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'brandlang_brand_id = tb.brand_id	AND brandlang_lang_id = ' . $this->langId, 'tb_l');
+            $srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'prodcatlang_prodcat_id = tc.prodcat_id AND prodcatlang_lang_id = ' . $this->langId, 'tc_l');
             $this->addKeywordSearch($criteria['keyword'], $srch, false);
         }
 
@@ -284,7 +285,7 @@ class ProductSearch extends SearchBase
 
             $fields2 = array();
             if ($this->langId) {
-                $srch->joinTable(SellerProduct::DB_LANG_TBL, 'LEFT OUTER JOIN', 'sprods.selprod_id = sprods_l.selprodlang_selprod_id AND sprods_l.selprodlang_lang_id = '.$this->langId, 'sprods_l');
+                $srch->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sprods.selprod_id = sprods_l.selprodlang_selprod_id AND sprods_l.selprodlang_lang_id = '.$this->langId, 'sprods_l');
                 $fields2 = array('selprod_title','selprod_warranty','selprod_return_policy','sprods_l.selprod_comments as selprodComments');
             }
 
@@ -322,7 +323,7 @@ class ProductSearch extends SearchBase
         } else {
             $this->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', 'p.product_id = sprods.selprod_product_id and selprod_active = '.applicationConstants::ACTIVE .' and selprod_deleted = '.applicationConstants::NO, 'sprods');
             if ($this->langId) {
-                $this->joinTable(SellerProduct::DB_LANG_TBL, 'LEFT OUTER JOIN', 'sprods.selprod_id = sprods_l.selprodlang_selprod_id AND sprods_l.selprodlang_lang_id = '.$this->langId, 'sprods_l');
+                $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sprods.selprod_id = sprods_l.selprodlang_selprod_id AND sprods_l.selprodlang_lang_id = '.$this->langId, 'sprods_l');
             }
         }
         if (0 < $bySeller) {
@@ -396,10 +397,21 @@ class ProductSearch extends SearchBase
         }   
 
         $this->joinTable(Shop::DB_TBL, 'INNER JOIN', 'seller_user.user_id = shop.shop_user_id '.$shopCondition, 'shop');
+        $this->shopsJoined = true;
 
         if ($langId) {
             $this->joinShopsLang($langId);
         }
+    }
+
+
+
+    public function joinShopSpecifics()
+    {
+        if (!$this->shopsJoined) {
+            trigger_error('Shops are not joined', E_USER_ERROR);
+        }
+        $this->joinTable(ShopSpecifics::DB_TBL, 'LEFT OUTER JOIN', 'shop.shop_id = ss.ss_shop_id', 'ss');
     }
 
     public function joinShopsLang($langId)
@@ -482,7 +494,7 @@ class ProductSearch extends SearchBase
 
     public function joinBrandsLang($langId)
     {
-        $this->joinTable(Brand::DB_LANG_TBL, 'LEFT OUTER JOIN', 'brand.brand_id = tb_l.brandlang_brand_id AND brandlang_lang_id = '.$langId, 'tb_l');
+        $this->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'brand.brand_id = tb_l.brandlang_brand_id AND brandlang_lang_id = '.$langId, 'tb_l');
     }
 
     public function joinProductToCategory($langId = 0, $isActive = true, $isDeleted = true, $useInnerJoin = true)
@@ -515,7 +527,7 @@ class ProductSearch extends SearchBase
 
     public function joinProductToCategoryLang($langId)
     {
-        $this->joinTable(ProductCategory::DB_LANG_TBL, 'LEFT OUTER JOIN', 'c_l.prodcatlang_prodcat_id = c.prodcat_id AND prodcatlang_lang_id = '.$langId, 'c_l');
+        $this->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'c_l.prodcatlang_prodcat_id = c.prodcat_id AND prodcatlang_lang_id = '.$langId, 'c_l');
     }
 
     public function joinFavouriteProducts($user_id)
@@ -907,4 +919,14 @@ class ProductSearch extends SearchBase
     $this->joinTable( Option::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'spo.option_id = spo_lang.optionlang_option_id AND spo_lang.optionlang_lang_id = '.$langId, 'spo_lang' );
     }
     } */
+
+    public function joinSellerProductSpecifics()
+    {
+        $this->joinTable(SellerProductSpecifics::DB_TBL, 'LEFT JOIN', 'sps.sps_selprod_id = selprod_id', 'sps');
+    }
+
+    public function joinProductSpecifics()
+    {
+        $this->joinTable(ProductSpecifics::DB_TBL, 'LEFT JOIN', 'ps.ps_product_id = p.product_id', 'ps');
+    }
 }

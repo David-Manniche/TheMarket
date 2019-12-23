@@ -371,6 +371,7 @@ class ImportexportCommon extends FatModel
             } else {
                 $arr['product_weight_unit_identifier'] = Labels::getLabel('LBL_Weight_unit_identifier', $langId);
             }
+            $arr['product_warranty'] = Labels::getLabel('LBL_PRODUCT_WARRANTY_(DAYS)', $langId);
             $arr['product_upc'] = Labels::getLabel('LBL_EAN/UPC_code', $langId);
             if ($this->settings['CONF_USE_COUNTRY_ID']) {
                 $arr['ps_from_country_id'] = Labels::getLabel('LBL_Shipping_Country_Id', $langId);
@@ -567,6 +568,8 @@ class ImportexportCommon extends FatModel
 
         $arr['selprod_title'] = Labels::getLabel('LBL_Title', $langId);
         $arr['selprod_comments'] = Labels::getLabel('LBL_Comments', $langId);
+        $arr['selprod_return_age'] = Labels::getLabel('LBL_RETURN_AGE', $langId);
+        $arr['selprod_cancellation_age'] = Labels::getLabel('LBL_CANCELLATION_AGE', $langId);
 
         if ($this->isDefaultSheetData($langId)) {
             $arr['selprod_url_keyword'] = Labels::getLabel('LBL_Url_keyword', $langId);

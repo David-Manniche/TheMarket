@@ -1,12 +1,19 @@
 <?php
 class RazorpayPayController extends PaymentController
 {
-    private $keyName="Razorpay";
+    private $keyName = "Razorpay";
+
+    protected function allowedCurrenciesArr()
+    {
+        return [
+            'AED', 'ALL', 'AMD', 'ARS', 'AUD', 'AWG', 'BBD', 'BDT', 'BMD', 'BND', 'BOB', 'BSD', 'BWP', 'BZD', 'CAD', 'CHF', 'CNY', 'COP', 'CRC', 'CUP', 'CZK', 'DKK', 'DOP', 'DZD', 'EGP', 'ETB', 'EUR', 'FJD', 'GBP', 'GIP', 'GMD', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK', 'HTG', 'HUF', 'IDR', 'ILS', 'INR', 'JMD', 'KES', 'KGS', 'KHR', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'MAD', 'MDL', 'MKD', 'MMK', 'MNT', 'MOP', 'MUR', 'MVR', 'MWK', 'MXN', 'MYR', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD', 'PEN', 'PGK', 'PHP', 'PKR', 'QAR', 'RUB', 'SAR', 'SCR', 'SEK', 'SGD', 'SLL', 'SOS', 'SSP', 'SVC', 'SZL', 'THB', 'TTD', 'TZS', 'USD', 'UYU', 'UZS', 'YER', 'ZAR'
+        ];
+    }
 
     public function charge($orderId)
     {
-        $pmObj=new PaymentSettings($this->keyName);
-        if (!$paymentSettings=$pmObj->getPaymentSettings()) {
+        $pmObj = new PaymentSettings($this->keyName);
+        if (!$paymentSettings = $pmObj->getPaymentSettings()) {
             Message::addErrorMessage($pmObj->getError());
             CommonHelper::redirectUserReferer();
         }
@@ -46,16 +53,16 @@ class RazorpayPayController extends PaymentController
             $request .= '&' . $key . '=' . urlencode(FatUtility::decodeHtmlEntities($value, ENT_QUOTES, 'UTF-8'));
         }
         $razorpay_payment_id = $post['razorpay_payment_id'];
-        $merchant_order_id = (isset($post['merchant_order_id']))?$post['merchant_order_id']:0;
+        $merchant_order_id = (isset($post['merchant_order_id'])) ? $post['merchant_order_id'] : 0;
         $orderPaymentObj = new OrderPayment($merchant_order_id, $this->siteLangId);
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
-        $payment_gateway_charge_in_paisa = $paymentGatewayCharge*100;
-        if ($paymentGatewayCharge>0) {
+        $payment_gateway_charge_in_paisa = $paymentGatewayCharge * 100;
+        if ($paymentGatewayCharge > 0) {
             $success = false;
             $error = "";
             try {
-                $url = 'https://api.razorpay.com/v1/payments/'.$razorpay_payment_id.'/capture';
-                $fields_string="amount=$payment_gateway_charge_in_paisa";
+                $url = 'https://api.razorpay.com/v1/payments/' . $razorpay_payment_id . '/capture';
+                $fields_string = "amount=$payment_gateway_charge_in_paisa";
                 //cURL Request
                 $ch = curl_init();
                 //set the url, number of POST vars, POST data
@@ -79,9 +86,9 @@ class RazorpayPayController extends PaymentController
                     } else {
                         $success = false;
                         if (!empty($response_array['error']['code'])) {
-                            $error = $response_array['error']['code'].":".$response_array['error']['description'];
+                            $error = $response_array['error']['code'] . ":" . $response_array['error']['description'];
                         } else {
-                            $error = "RAZORPAY_ERROR:Invalid Response <br/>".$result;
+                            $error = "RAZORPAY_ERROR:Invalid Response <br/>" . $result;
                         }
                     }
                 }
@@ -89,13 +96,13 @@ class RazorpayPayController extends PaymentController
                 curl_close($ch);
             } catch (Exception $e) {
                 $success = false;
-                $error ="ERROR:Request to Razorpay Failed";
+                $error = "ERROR:Request to Razorpay Failed";
             }
             if ($success === true) {
                 $orderPaymentObj->addOrderPayment($paymentSettings["pmethod_name"], $razorpay_payment_id, $paymentGatewayCharge, Labels::getLabel("L_Received_Payment", $this->siteLangId), 'Payment Successful. Razorpay Payment Id:'.$razorpay_payment_id);
                 FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($merchant_order_id)));
             } else {
-                $orderPaymentObj->addOrderPaymentComments($error.' Payment Failed! Check Razorpay dashboard for details of Payment Id:'.$razorpay_payment_id);
+                $orderPaymentObj->addOrderPaymentComments($error . ' Payment Failed! Check Razorpay dashboard for details of Payment Id:' . $razorpay_payment_id);
                 FatApp::redirectUser(CommonHelper::getPaymentFailurePageUrl());
             }
         } else {
@@ -107,7 +114,7 @@ class RazorpayPayController extends PaymentController
     {
         $pmObj = new PaymentSettings($this->keyName);
         $paymentSettings = $pmObj->getPaymentSettings();
-        $frm = new Form('razorpay-form', array('id'=>'razorpay-form','action'=>CommonHelper::generateFullUrl('RazorpayPay', 'callback'), 'class' =>"form form--normal"));
+        $frm = new Form('razorpay-form', array('id' => 'razorpay-form', 'action' => CommonHelper::generateFullUrl('RazorpayPay', 'callback'), 'class' => "form form--normal"));
 
         $frm->addHiddenField('', 'razorpay_payment_id', '', array('id' =>'razorpay_payment_id'));
         $frm->addHiddenField('', 'merchant_order_id', $orderId, array('id' =>'merchant_order_id'));

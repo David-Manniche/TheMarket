@@ -55,14 +55,14 @@ $(document).on('change','.collection-language-js',function(){
 
 	addShopForm = function(id) {
 		$.facebox(function() {
-			shopForm(id);
+            shopForm(id);
 		});
 	};
 	shopForm = function(id) {
 		fcom.displayProcessing();
 		var frm = document.frmShopSearchPaging;
 		fcom.ajax(fcom.makeUrl('Shops', 'form', [id]), '', function(t) {
-			fcom.updateFaceboxContent(t);
+            fcom.updateFaceboxContent(t);
 		});
 	};
 
@@ -80,9 +80,9 @@ $(document).on('change','.collection-language-js',function(){
 		});
 	};
 
-	addShopLangForm = function(shopId, langId) {
+	addShopLangForm = function(shopId, langId, autoFillLangData = 0) {
 			fcom.displayProcessing();
-			fcom.ajax(fcom.makeUrl('Shops', 'langForm', [shopId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('Shops', 'langForm', [shopId, langId, autoFillLangData]), '', function(t) {
 				fcom.updateFaceboxContent(t);
 			});
 
@@ -236,7 +236,7 @@ $(document).on('change','.collection-language-js',function(){
 
 	}
 
-	editShopCollectionLangForm = function(shop_id,scollection_id,langId){
+	editShopCollectionLangForm = function(shop_id, scollection_id, langId, autoFillLangData = 0){
 		if (typeof(scollection_id) == "undefined" || scollection_id<0){
 			return false;
 		}
@@ -247,7 +247,7 @@ $(document).on('change','.collection-language-js',function(){
 
 			return false;
 		}
-		fcom.ajax(fcom.makeUrl('shops', 'shopCollectionLangForm', [shop_id,scollection_id,langId]), '', function(t) {
+		fcom.ajax(fcom.makeUrl('shops', 'shopCollectionLangForm', [shop_id, scollection_id, langId, autoFillLangData]), '', function(t) {
 			$(dvt).html(t);
 		});
 	};
@@ -267,7 +267,7 @@ $(document).on('change','.collection-language-js',function(){
 	};
 
 	collectionMediaForm = function (shop_id, scollection_id){
-		$(dvt).html(fcom.getLoader());
+		// $(dvt).html(fcom.getLoader());
 		fcom.ajax(fcom.makeUrl('shops', 'shopCollectionMediaForm', [shop_id, scollection_id]), '', function(t) {
 			$(dvt).html(t);
 			shopCollectionImages(shop_id, scollection_id);

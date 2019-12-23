@@ -31,7 +31,7 @@ class UserFavoriteProductSearch extends SearchBase
         $this->joinTable(Product::DB_TBL, 'INNER JOIN', 'sp.selprod_product_id = p.product_id', 'p');
 
         if ($langId) {
-            $this->joinTable(Product::DB_LANG_TBL, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$langId, 'p_l');
+            $this->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$langId, 'p_l');
         }
         if ($isProductActive) {
             $this->addCondition('product_active', '=', applicationConstants::ACTIVE);
@@ -104,10 +104,10 @@ class UserFavoriteProductSearch extends SearchBase
 
         if ($langId) {
             $this->joinTable(
-                SellerProduct::DB_LANG_TBL,
+                SellerProduct::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'sp_l.'.SellerProduct::DB_LANG_TBL_PREFIX.'selprod_id = sp.'.SellerProduct::tblFld('id').' and
-			sp_l.'.SellerProduct::DB_LANG_TBL_PREFIX.'lang_id = '.$langId,
+                'sp_l.'.SellerProduct::DB_TBL_LANG_PREFIX.'selprod_id = sp.'.SellerProduct::tblFld('id').' and
+			sp_l.'.SellerProduct::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
                 'sp_l'
             );
         }
@@ -163,7 +163,7 @@ class UserFavoriteProductSearch extends SearchBase
         }
 
         if ($langId) {
-            $this->joinTable(Brand::DB_LANG_TBL, 'LEFT OUTER JOIN', 'brand.brand_id = tb_l.brandlang_brand_id AND brandlang_lang_id = '.$langId, 'tb_l');
+            $this->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'brand.brand_id = tb_l.brandlang_brand_id AND brandlang_lang_id = '.$langId, 'tb_l');
         }
     }
 
@@ -181,7 +181,7 @@ class UserFavoriteProductSearch extends SearchBase
 
 
         if ($langId) {
-            $this->joinTable(ProductCategory::DB_LANG_TBL, 'LEFT OUTER JOIN', 'c_l.prodcatlang_prodcat_id = c.prodcat_id AND prodcatlang_lang_id = '.$langId, 'c_l');
+            $this->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'c_l.prodcatlang_prodcat_id = c.prodcat_id AND prodcatlang_lang_id = '.$langId, 'c_l');
         } else {
             //$this->addOrder('c.');
         }

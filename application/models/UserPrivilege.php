@@ -134,8 +134,9 @@ class UserPrivilege
         }
         } */
         $products = new Product();
-        $productsAllowed = OrderSubscription::getUserCurrentActivePlanDetails(CommonHelper::getLangId(), $userId, array('ossubs_products_allowed'));
-
+        $currentPlanData = OrderSubscription::getUserCurrentActivePlanDetails(CommonHelper::getLangId(), $userId, array('ossubs_products_allowed'));
+        $productsAllowed = $currentPlanData['ossubs_products_allowed'];
+        
         $totalProducts  =  $products->getTotalProductsAddedByUser($userId);
         if ($totalProducts >= $productsAllowed) {
             return false;
@@ -168,10 +169,13 @@ class UserPrivilege
     public static function canSellerUpgradeOrDowngradePlan($userId, $spPlanId = 0, $langId = 0)
     {
         $userId = FatUtility::int($userId);
-        if (1 > $userId) {
+        $spPlanId = FatUtility::int($spPlanId);
+        if (1 > $userId || $spPlanId < 1) {
             return false;
         }
-        $currentActivePlanId = OrderSubscription:: getUserCurrentActivePlanDetails($langId, $userId, array(OrderSubscription::DB_TBL_PREFIX.'id'));
+        $currentPlanData = OrderSubscription:: getUserCurrentActivePlanDetails($langId, $userId, array(OrderSubscription::DB_TBL_PREFIX.'id'));
+        $currentActivePlanId = $currentPlanData[OrderSubscription::DB_TBL_PREFIX.'id'];
+        
         if (!$currentActivePlanId) {
             return true;
         } else {
@@ -201,14 +205,6 @@ class UserPrivilege
             /* ] */
             /* $totalProductsAdded  =
             $totalImagesAdded  = */
-        }
-        return true;
-    }
-
-    public static function canSellerBuyFreePlan($userId = 0, $sPackageId = 0, $langId = 0)
-    {
-        if (!OrderSubscription::canUserBuyFreeSubscription) {
-            return false;
         }
         return true;
     }

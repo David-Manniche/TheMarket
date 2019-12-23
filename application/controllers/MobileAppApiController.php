@@ -1217,7 +1217,8 @@ class MobileAppApiController extends MyAppController
         $subscription = false;
         $allowed_images =-1;
         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) {
-            $allowed_images = OrderSubscription::getUserCurrentActivePlanDetails($this->siteLangId, $product['selprod_user_id'], array('ossubs_images_allowed'));
+            $currentPlanData = OrderSubscription::getUserCurrentActivePlanDetails($this->siteLangId, $product['selprod_user_id'], array('ossubs_images_allowed'));
+            $allowed_images = $currentPlanData['ossubs_images_allowed'];
             $subscription = true;
         }
 
@@ -2124,13 +2125,14 @@ class MobileAppApiController extends MyAppController
         $userId = $userObj->getMainTableRecordId();
         $emailNotArr = array_merge($post, array("user_id"=>$userId));
         if (FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) /* && !$isCheckOutPage */) {
-            if (!$this->userEmailVerification($userObj, $emailNotArr)) {
+            if (!$userObj->userEmailVerification($emailNotArr, $this->siteLangId)) {
                 $db->rollbackTransaction();
                 FatUtility::dieJsonError(Labels::getLabel('MSG_VERIFICATION_EMAIL_COULD_NOT_BE_SENT', $this->siteLangId));
             }
         } else {
             if (FatApp::getConfig('CONF_WELCOME_EMAIL_REGISTRATION', FatUtility::VAR_INT, 1)) {
-                if (!$this->userWelcomeEmailRegistration($userObj, $emailNotArr)) {
+                $link = FatUtility::generateFullUrl('GuestUser', 'loginForm');
+                if (!$userObj->userWelcomeEmailRegistration($emailNotArr, $link, $this->siteLangId)) {
                     $db->rollbackTransaction();
                     FatUtility::dieJsonError(Labels::getLabel('MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT', $this->siteLangId));
                 }
@@ -2318,9 +2320,9 @@ class MobileAppApiController extends MyAppController
                 $data['user_id'] = $userId;
 
                 //ToDO::Change login link to contact us link
-                $data['link'] = FatUtility::generateFullUrl('GuestUser', 'loginForm');
+                $link = FatUtility::generateFullUrl('GuestUser', 'loginForm');
                 $userEmailObj = new User($userId);
-                if (!$this->userWelcomeEmailRegistration($userEmailObj, $data)) {
+                if (!$userEmailObj->userWelcomeEmailRegistration($data, $link, $this->siteLangId)) {
                     $db->rollbackTransaction();
                     FatUtility::dieJsonError(Labels::getLabel("MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId));
                 }
@@ -4228,7 +4230,7 @@ class MobileAppApiController extends MyAppController
         'user_new_email' => $new_email
         );
 
-        if (!$this->userEmailVerification($userObj, $arr)) {
+        if (!$userObj->userEmailVerification($arr, $this->siteLangId)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_ERROR_IN_SENDING_VERFICATION_EMAIL', $this->siteLangId));
         }
 
@@ -6150,7 +6152,7 @@ class MobileAppApiController extends MyAppController
         $srch = SellerProduct::getSearchObject($this->siteLangId);
         $srch->doNotCalculateRecords();
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
-        $srch->joinTable(Product::DB_LANG_TBL, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$this->siteLangId, 'p_l');
+        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$this->siteLangId, 'p_l');
         $srch->addCondition('selprod_user_id', '=', $userId);
         $srch->addCondition('sp.selprod_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('p.product_active', '=', applicationConstants::ACTIVE);
@@ -7107,38 +7109,6 @@ class MobileAppApiController extends MyAppController
         $srch->addCondition('shop_id', '=', $shop_id);
         $shopRs = $srch->getResultSet();
         return $shop = $db->fetch($shopRs);
-    }
-
-    private function userEmailVerification($userObj, $data)
-    {
-        $verificationCode = $userObj->prepareUserVerificationCode();
-        $link = FatUtility::generateFullUrl('GuestUser', 'userCheckEmailVerification', array('verify'=>$verificationCode));
-        $data = array(
-            'user_name' => $data['user_name'],
-            'link' => $link,
-        'user_email' => $data['user_email'],
-        'user_id' => $data['user_id'],
-        );
-        $email = new EmailHandler();
-        if (!$email->sendSignupVerificationLink($this->siteLangId, $data)) {
-            return false;
-        }
-        return true;
-    }
-
-    private function userWelcomeEmailRegistration($userObj, $data)
-    {
-        $link = FatUtility::generateFullUrl('GuestUser', 'loginForm');
-        $data = array(
-            'user_name' => $data['user_name'],
-        'user_email' => $data['user_email'],
-        'link' => $link,
-        );
-        $email = new EmailHandler();
-        if (!$email->sendWelcomeEmail($this->siteLangId, $data)) {
-            return false;
-        }
-        return true;
     }
 
     private function getAppLoggedUserId()

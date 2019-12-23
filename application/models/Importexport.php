@@ -1,45 +1,45 @@
 <?php
 class Importexport extends ImportexportCommon
 {
-    const DB_TBL_SETTINGS = 'tbl_import_export_settings';
-    const DB_TBL_TEMP_SELPROD_IDS = 'tbl_seller_products_temp_ids';
-    const DB_TBL_TEMP_PRODUCT_IDS = 'tbl_products_temp_ids';
+    public const DB_TBL_SETTINGS = 'tbl_import_export_settings';
+    public const DB_TBL_TEMP_SELPROD_IDS = 'tbl_seller_products_temp_ids';
+    public const DB_TBL_TEMP_PRODUCT_IDS = 'tbl_products_temp_ids';
 
-    const TYPE_CATEGORIES = 1;
-    const TYPE_BRANDS = 2;
-    const TYPE_PRODUCTS = 3;
-    const TYPE_SELLER_PRODUCTS = 4;
-    const TYPE_OPTIONS = 5;
-    const TYPE_OPTION_VALUES = 6;
-    const TYPE_TAG = 7;
-    const TYPE_COUNTRY = 8;
-    const TYPE_STATE = 9;
-    const TYPE_POLICY_POINTS = 10;
-    const TYPE_USERS = 11;
-    const TYPE_TAX_CATEGORY = 12;
+    public const TYPE_CATEGORIES = 1;
+    public const TYPE_BRANDS = 2;
+    public const TYPE_PRODUCTS = 3;
+    public const TYPE_SELLER_PRODUCTS = 4;
+    public const TYPE_OPTIONS = 5;
+    public const TYPE_OPTION_VALUES = 6;
+    public const TYPE_TAG = 7;
+    public const TYPE_COUNTRY = 8;
+    public const TYPE_STATE = 9;
+    public const TYPE_POLICY_POINTS = 10;
+    public const TYPE_USERS = 11;
+    public const TYPE_TAX_CATEGORY = 12;
 
-    const MAX_LIMIT = 1000;
+    public const MAX_LIMIT = 1000;
 
-    const PRODUCT_CATALOG = 1;
-    const PRODUCT_OPTION = 2;
-    const PRODUCT_TAG = 3;
-    const PRODUCT_SPECIFICATION = 4;
-    const PRODUCT_SHIPPING = 5;
+    public const PRODUCT_CATALOG = 1;
+    public const PRODUCT_OPTION = 2;
+    public const PRODUCT_TAG = 3;
+    public const PRODUCT_SPECIFICATION = 4;
+    public const PRODUCT_SHIPPING = 5;
 
-    const LABEL_OPTIONS = 1;
-    const LABEL_OPTIONS_VALUES = 2;
+    public const LABEL_OPTIONS = 1;
+    public const LABEL_OPTIONS_VALUES = 2;
 
-    const SELLER_PROD_GENERAL_DATA = 6;
-    const SELLER_PROD_OPTION = 7;
-    const SELLER_PROD_SEO = 8;
-    const SELLER_PROD_SPECIAL_PRICE = 9;
-    const SELLER_PROD_VOLUME_DISCOUNT = 10;
-    const SELLER_PROD_BUY_TOGTHER = 11;
-    const SELLER_PROD_RELATED_PRODUCT = 12;
-    const SELLER_PROD_POLICY = 13;
+    public const SELLER_PROD_GENERAL_DATA = 6;
+    public const SELLER_PROD_OPTION = 7;
+    public const SELLER_PROD_SEO = 8;
+    public const SELLER_PROD_SPECIAL_PRICE = 9;
+    public const SELLER_PROD_VOLUME_DISCOUNT = 10;
+    public const SELLER_PROD_BUY_TOGTHER = 11;
+    public const SELLER_PROD_RELATED_PRODUCT = 12;
+    public const SELLER_PROD_POLICY = 13;
 
-    const BY_ID_RANGE = 1;
-    const BY_BATCHES = 2;
+    public const BY_ID_RANGE = 1;
+    public const BY_BATCHES = 2;
 
     private $headingIndexArr = array();
     private $CSVfileObj;
@@ -748,7 +748,7 @@ class Importexport extends ImportexportCommon
                     );
                     $langData = array_merge($langData, $prodCatlangDataArr);
 
-                    $this->db->insertFromArray(ProductCategory::DB_LANG_TBL, $langData, false, array(), $langData);
+                    $this->db->insertFromArray(ProductCategory::DB_TBL_LANG, $langData, false, array(), $langData);
 
                     /* ]*/
 
@@ -944,7 +944,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                switch ($columnKey){
+                switch ($columnKey) {
                     case 'brand_featured':
                     case 'brand_active':
                     case 'brand_deleted':
@@ -1036,7 +1036,7 @@ class Importexport extends ImportexportCommon
                     );
                     $langData = array_merge($langData, $brandlangDataArr);
 
-                    $this->db->insertFromArray(Brand::DB_LANG_TBL, $langData, false, array(), $langData);
+                    $this->db->insertFromArray(Brand::DB_TBL_LANG, $langData, false, array(), $langData);
                     /* ]*/
 
                     /* Url rewriting [*/
@@ -1103,7 +1103,7 @@ class Importexport extends ImportexportCommon
 
                     case 'afile_type':
                         $colValue = 'logo';
-                        if ($row['afile_type'] == AttachedFile::FILETYPE_BRAND_IMAGE){
+                        if ($row['afile_type'] == AttachedFile::FILETYPE_BRAND_IMAGE) {
                             $colValue = 'image';
                         }
                         break;
@@ -1265,7 +1265,7 @@ class Importexport extends ImportexportCommon
             $weightUnitsArr = applicationConstants::getWeightUnitsArr($langId);
         }
 
-        $srch = Product::getSearchObject($langId, false);
+        $srch = Product::getSearchObject($langId, false, true);
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = tp.product_seller_id', 'u');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.credential_user_id = tp.product_seller_id', 'uc');
         $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'b.brand_id = tp.product_brand_id', 'b');
@@ -1277,7 +1277,7 @@ class Importexport extends ImportexportCommon
         $srch->joinTable(Countries::DB_TBL, 'LEFT OUTER JOIN', 'c.country_id = ps.ps_from_country_id', 'c');
         //$srch->joinTable(Countries::DB_TBL,'LEFT OUTER JOIN','c.country_id = tp.product_ship_country','c');
         $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(array('tp.*','tp_l.*','ps.ps_from_country_id','ps.ps_free','user_id','credential_username','brand_id','brand_identifier','country_id','country_code'));
+        $srch->addMultipleFields(['tp.*','tp_l.*','ps.ps_from_country_id','ps.ps_free','user_id','credential_username','brand_id','brand_identifier','country_id','country_code', 'product_warranty']);
         if ($userId) {
             $cnd = $srch->addCondition('tp.product_seller_id', '=', $userId, 'OR');
             $cnd->attachCondition('tp.product_seller_id', '=', 0);
@@ -1604,6 +1604,12 @@ class Importexport extends ImportexportCommon
                             }
                             $colValue = isset($countryArr[$colValue]) ? $countryArr[$colValue] : 0;
                             break;
+                        case 'product_warranty':
+                            $colValue = FatUtility::int($colValue);
+                            if (0 > $colValue) {
+                                $invalid = true;
+                            }
+                            break;
                     }
 
 
@@ -1616,6 +1622,10 @@ class Importexport extends ImportexportCommon
                             $prodlangDataArr[$columnKey] = $colValue;
                         } elseif (in_array($columnKey, array( 'ps_from_country_id', 'ps_free' ))) {
                             $prodShippingArr[$columnKey] = $colValue;
+                        } elseif ('product_warranty' == $columnKey) {
+                            $prodSepc = [
+                                $columnKey => $colValue
+                            ];
                         } else {
                             if (in_array($columnKey, array( 'tax_category_id', 'tax_category_identifier' ))) {
                                 continue;
@@ -1698,6 +1708,15 @@ class Importexport extends ImportexportCommon
                 }
 
                 if (!empty($productId)) {
+                    $prodSepc['ps_product_id'] = $productId;
+
+                    $productSpecificsObj = new ProductSpecifics($productId);
+                    $productSpecificsObj->assignValues($prodSepc);
+                    $prodSepcData = $productSpecificsObj->getFlds();
+                    if (!$productSpecificsObj->addNew(array(), $prodSepcData)) {
+                        FatUtility::dieJsonError($productSpecificsObj->getError());
+                    }
+
                     if ($this->isDefaultSheetData($langId)) {
                         $productSellerShiping = array(
                         'ps_product_id'=>$productId,
@@ -1716,7 +1735,7 @@ class Importexport extends ImportexportCommon
 
                     $langData = array_merge($langData, $prodlangDataArr);
 
-                    $this->db->insertFromArray(Product::DB_LANG_TBL, $langData, false, array(), $langData);
+                    $this->db->insertFromArray(Product::DB_TBL_LANG, $langData, false, array(), $langData);
                     /* ]*/
 
                     if ($this->isDefaultSheetData($langId)) {
@@ -2816,7 +2835,7 @@ class Importexport extends ImportexportCommon
     {
         $userId = FatUtility::int($userId);
 
-        $srch = SellerProduct::getSearchObject($langId);
+        $srch = SellerProduct::getSearchObject($langId, true);
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = sp.selprod_user_id', 'u');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.credential_user_id = u.user_id', 'uc');
@@ -2825,7 +2844,7 @@ class Importexport extends ImportexportCommon
             /*$srch->addCondition('selprod_deleted', '=', applicationConstants::NO);*/
         }
         $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(array('sp.*','sp_l.*','user_id','credential_username','product_id','product_identifier'));
+        $srch->addMultipleFields(array('sp.*','sp_l.*','user_id','credential_username','product_id','product_identifier', 'selprod_return_age', 'selprod_cancellation_age'));
         if (isset($offset) && isset($noOfRows)) {
             $srch->setPageNumber($offset);
             $srch->setPageSize($noOfRows);
@@ -2899,7 +2918,7 @@ class Importexport extends ImportexportCommon
             $errorInRow = false;
 
             //if(array_key_exists($row['selprod_product_id'], $prodTypeArr))
-
+            $selProdSepc = [];
             foreach ($coloumArr as $columnKey => $columnTitle) {
                 $colIndex = $this->headingIndexArr[$columnTitle];
                 $colValue = $this->getCell($row, $colIndex, '');
@@ -2971,6 +2990,13 @@ class Importexport extends ImportexportCommon
                                 $colValue = (strtoupper($colValue) == 'YES') ? applicationConstants::YES : applicationConstants::NO;
                             }
                             break;
+                        case 'selprod_return_age':
+                        case 'selprod_cancellation_age':
+                            $colValue = FatUtility::int($colValue);
+                            if (0 > $colValue) {
+                                $invalid = true;
+                            }
+                            break;
                     }
 
                     if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && 0 < $userId) {
@@ -2987,6 +3013,10 @@ class Importexport extends ImportexportCommon
                     } else {
                         if (in_array($columnKey, array( 'selprod_title', 'selprod_comments' ))) {
                             $selProdGenLangArr[$columnKey] = $colValue;
+                        } elseif (in_array($columnKey, array( 'selprod_return_age', 'selprod_cancellation_age' ))) {
+                            if ('' != $colValue) {
+                                $selProdSepc[$columnKey] = $colValue;
+                            }
                         } else {
                             $selProdGenArr[$columnKey] = $colValue;
                         }
@@ -3059,13 +3089,24 @@ class Importexport extends ImportexportCommon
                 }
 
                 if ($selprodId) {
+                    if (!empty($selProdSepc)) {
+                        $selProdSpecificsObj = new SellerProductSpecifics($selprodId);
+                        $selProdSepc['sps_selprod_id'] = $selprodId;
+                        $selProdSpecificsObj->assignValues($selProdSepc);
+                        if (!$selProdSpecificsObj->addNew(array(), $selProdSepc)) {
+                            $errMsg = $selProdSpecificsObj->getError();
+                            CommonHelper::writeToCSVFile($this->CSVfileObj, array( $rowIndex, ($colIndex + 1), $errMsg ));
+                            continue;
+                        }
+                    }
+
                     /* Lang Data [ */
                     $langData = array(
                     'selprodlang_selprod_id'=> $selprodId,
                     'selprodlang_lang_id'=> $langId,
                     );
                     $langData = array_merge($langData, $selProdGenLangArr);
-                    $this->db->insertFromArray(SellerProduct::DB_LANG_TBL, $langData, false, array(), $langData);
+                    $this->db->insertFromArray(SellerProduct::DB_TBL_LANG, $langData, false, array(), $langData);
                     /*]*/
 
                     /* Url rewriting [*/
@@ -3315,7 +3356,7 @@ class Importexport extends ImportexportCommon
 
         $srch = SellerProduct::getSearchObject($langId);
         $srch->joinTable(MetaTag::DB_TBL, 'LEFT OUTER JOIN', 'sp.selprod_id = m.meta_record_id', 'm');
-        $srch->joinTable(MetaTag::DB_LANG_TBL, 'LEFT OUTER JOIN', 'm_l.metalang_meta_id = m.meta_id and m_l.metalang_lang_id = '.$langId, 'm_l');
+        $srch->joinTable(MetaTag::DB_TBL_LANG, 'LEFT OUTER JOIN', 'm_l.metalang_meta_id = m.meta_id and m_l.metalang_lang_id = '.$langId, 'm_l');
         $srch->addCondition('meta_identifier', '!=', '');
         $srch->addCondition('meta_controller', '=', $metaTabArr[MetaTag::META_GROUP_PRODUCT_DETAIL]['controller']);
         $srch->addCondition('meta_action', '=', $metaTabArr[MetaTag::META_GROUP_PRODUCT_DETAIL]['action']);
@@ -3436,7 +3477,7 @@ class Importexport extends ImportexportCommon
                     'metalang_lang_id'=> $langId,
                     );
                     $langData = array_merge($langData, $selProdSeoLangArr);
-                    $this->db->insertFromArray(MetaTag::DB_LANG_TBL, $langData, false, array(), $langData);
+                    $this->db->insertFromArray(MetaTag::DB_TBL_LANG, $langData, false, array(), $langData);
                     /* ]*/
                 }
             } else {
@@ -4259,7 +4300,7 @@ class Importexport extends ImportexportCommon
                     'optionlang_lang_id'=> $langId,
                     );
                     $langData = array_merge($langData, $optionsLangArr);
-                    $this->db->insertFromArray(Option::DB_LANG_TBL, $langData, false, array(), $langData);
+                    $this->db->insertFromArray(Option::DB_TBL_LANG, $langData, false, array(), $langData);
                     /* ]*/
                 }
             } else {
@@ -4576,7 +4617,7 @@ class Importexport extends ImportexportCommon
                     );
                     $langData = array_merge($langData, $tagsLangArr);
 
-                    $this->db->insertFromArray(Tag::DB_LANG_TBL, $langData, false, array(), $langData);
+                    $this->db->insertFromArray(Tag::DB_TBL_LANG, $langData, false, array(), $langData);
                     /* ]*/
 
                     /* update product tags association and tag string in products lang table[ */

@@ -4,7 +4,7 @@ class Tag extends MyAppModel
     const DB_TBL = 'tbl_tags';
     const DB_TBL_PREFIX = 'tag_';
 
-    const DB_LANG_TBL  = 'tbl_tags_lang';
+    const DB_TBL_LANG  = 'tbl_tags_lang';
     private $db;
 
     public function __construct($id = 0)
@@ -18,7 +18,7 @@ class Tag extends MyAppModel
         $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 't');
         if ($langId) {
-            $srch->joinTable(static::DB_LANG_TBL, 'LEFT OUTER JOIN', 't.tag_id = t_l.taglang_tag_id AND t_l.taglang_lang_id = '.$langId, 't_l');
+            $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', 't.tag_id = t_l.taglang_tag_id AND t_l.taglang_lang_id = '.$langId, 't_l');
         }
         return $srch;
     }

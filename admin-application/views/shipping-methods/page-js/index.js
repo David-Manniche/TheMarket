@@ -49,9 +49,9 @@ $(document).ready(function() {
         });
     }
 
-    editLangForm = function(sMethodId, langId) {
+    editLangForm = function(sMethodId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('ShippingMethods', 'langForm', [sMethodId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('ShippingMethods', 'langForm', [sMethodId, langId, autoFillLangData]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
     };

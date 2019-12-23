@@ -144,7 +144,7 @@ class SuccessStoriesController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
     
-    public function langForm($sstory_id = 0, $lang_id = 0)
+    public function langForm($sstory_id = 0, $lang_id = 0, $autoFillLangData = 0)
     {        
         $this->objPrivilege->canViewSuccessStories();
         
@@ -155,8 +155,18 @@ class SuccessStoriesController extends AdminBaseController
             FatUtility::dieWithError($this->str_invalid_request);
         }
         
-        $langFrm = $this->getLangForm();        
-        $langData = SuccessStories::getAttributesByLangId($lang_id, $sstory_id);        
+        $langFrm = $this->getLangForm();    
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(SuccessStories::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($sstory_id, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {        
+            $langData = SuccessStories::getAttributesByLangId($lang_id, $sstory_id);        
+        }
         
         $langData['sstory_id'] = $sstory_id;        
         $langData['lang_id'] = $lang_id;
@@ -202,6 +212,15 @@ class SuccessStoriesController extends AdminBaseController
         if(!$obj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($obj->getError());
             FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(SuccessStories::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($sstory_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId = 0;
@@ -287,10 +306,18 @@ class SuccessStoriesController extends AdminBaseController
     {        
         $frm = new Form('frmStories');        
         $frm->addHiddenField('', 'sstory_id');
-        $frm->addHiddenField('', 'lang_id');
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Title', $this->adminLangId), 'sstory_title');
         $frm->addTextBox(Labels::getLabel('LBL_Name', $this->adminLangId), 'sstory_name');
         $frm->addTextArea(Labels::getLabel('LBL_Content', $this->adminLangId), 'sstory_content');
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+        
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;
     }

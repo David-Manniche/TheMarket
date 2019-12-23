@@ -136,7 +136,9 @@ class AdminBaseController extends FatController
         'confirmRestoreBackup' =>Labels::getLabel('LBL_Do_you_want_to_restore_database_to_this_record', $this->adminLangId),
         'confirmChangeRequestStatus' =>Labels::getLabel('LBL_Do_you_want_to_change_request_status', $this->adminLangId),
         'confirmTruncateUserData' =>Labels::getLabel('LBL_Do_you_want_to_truncate_User_Data', $this->adminLangId),
-        'atleastOneRecord' =>Labels::getLabel('LBL_Please_select_atleast_one_record.', $this->adminLangId)
+        'atleastOneRecord' =>Labels::getLabel('LBL_Please_select_atleast_one_record.', $this->adminLangId),
+        'primaryLanguageField' =>Labels::getLabel('LBL_PRIMARY_LANGUAGE_DATA_NEEDS_TO_BE_FILLED_FOR_SYSTEM_TO_TRANSLATE_TO_OTHER_LANGUAGES.', $this->adminLangId),
+        'updateCurrencyRates' =>Labels::getLabel('LBL_WANT_TO_UPDATE_CURRENCY_RATES?.', $this->adminLangId),
         );
 
         $languages = Language::getAllNames(false);
@@ -170,7 +172,7 @@ class AdminBaseController extends FatController
         if ($this->layoutDirection == 'rtl') {
             $this->_template->addCss('css/style--arabic.css');
         }
-        if (CommonHelper::demoUrl() == true) { 
+        if (CommonHelper::demoUrl() == true) {
             $this->_template->addCss('css/demo.css');
         }
     }
@@ -343,6 +345,12 @@ class AdminBaseController extends FatController
 
         $fld = $frm->addFloatField(Labels::getLabel('LBL_Minimum_Selling_Price', $langId).' ['.CommonHelper::getCurrencySymbol(true).']', 'product_min_selling_price', '');
         $fld->requirements()->setPositive();
+
+        $fld = $frm->addRequiredField(Labels::getLabel('LBL_PRODUCT_WARRANTY', $this->adminLangId), 'product_warranty');
+        $fld->requirements()->setInt();
+        $fld->requirements()->setPositive();
+        $fld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $this->adminLangId) . ' </small>';
+
         $taxCategories =  Tax::getSaleTaxCatArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Tax_Category', $this->adminLangId), 'ptt_taxcat_id', $taxCategories, '', array(), 'Select')->requirements()->setRequired(true);
 
@@ -529,7 +537,7 @@ class AdminBaseController extends FatController
         if ($type == 'REQUESTED_CATALOG_PRODUCT') {
             $reqData = ProductRequest::getAttributesById($product_id, array('preq_content'));
             $productData = array_merge($reqData, json_decode($reqData['preq_content'], true));
-            $optionArr = isset($productData['product_option'])?$productData['product_option']:array();
+            $optionArr = isset($productData['product_option']) ? $productData['product_option'] : array();
             if (!empty($optionArr)) {
                 $frm->addHtml('', 'optionSectionHeading', '');
             }
@@ -546,7 +554,7 @@ class AdminBaseController extends FatController
                 }
                 $optionValues = Product::getOptionValues($option['option_id'], $this->adminLangId);
                 $option_name = ($option['option_name'] != '') ? $option['option_name'] : $option['option_identifier'];
-                $fld = $frm->addSelectBox($option_name, 'selprodoption_optionvalue_id['.$option['option_id'].']', $optionValues, '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
+                $fld = $frm->addSelectBox($option_name, 'selprodoption_optionvalue_id[' . $option['option_id'] . ']', $optionValues, '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
                 $fld->requirements()->setRequired();
             }
         } else {
@@ -560,7 +568,7 @@ class AdminBaseController extends FatController
                 $frm->addHtml('', 'optionSectionHeading', '');
                 foreach ($productOptions as $option) {
                     $option_name = ($option['option_name'] != '') ? $option['option_name'] : $option['option_identifier'];
-                    $fld = $frm->addSelectBox($option_name, 'selprodoption_optionvalue_id['.$option['option_id'].']', $option['optionValues'], '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
+                    $fld = $frm->addSelectBox($option_name, 'selprodoption_optionvalue_id[' . $option['option_id'] . ']', $option['optionValues'], '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
                     $fld->requirements()->setRequired();
                 }
             }
@@ -570,10 +578,10 @@ class AdminBaseController extends FatController
         $frm->addHiddenField('', 'selprod_user_id');
         $frm->addTextBox(Labels::getLabel('LBL_Url_Keyword', $this->adminLangId), 'selprod_url_keyword')->requirements()->setRequired();
 
-        $costPrice = $frm->addFloatField(Labels::getLabel('LBL_Cost_Price', $this->adminLangId).' ['.CommonHelper::getCurrencySymbol(true).']', 'selprod_cost');
+        $costPrice = $frm->addFloatField(Labels::getLabel('LBL_Cost_Price', $this->adminLangId) . ' [' . CommonHelper::getCurrencySymbol(true) . ']', 'selprod_cost');
         $costPrice->requirements()->setPositive();
 
-        $fld = $frm->addFloatField(Labels::getLabel('LBL_Price', $this->adminLangId).' ['.CommonHelper::getCurrencySymbol(true).']', 'selprod_price');
+        $fld = $frm->addFloatField(Labels::getLabel('LBL_Price', $this->adminLangId) . ' [' .  CommonHelper::getCurrencySymbol(true) . ']', 'selprod_price');
         $fld->requirements()->setPositive();
         if (isset($productData['product_min_selling_price'])) {
             $fld->requirements()->setRange($productData['product_min_selling_price'], 9999999999);
@@ -623,6 +631,38 @@ class AdminBaseController extends FatController
 
         /* 	$frm->addTextArea( Labels::getLabel( 'LBL_Any_Extra_Comment_for_buyer', $this->adminLangId), 'selprod_comments'); */
 
+        $useShopPolicy = $frm->addCheckBox(Labels::getLabel('LBL_USE_SHOP_RETURN_AND_CANCELLATION_AGE_POLICY', $this->adminLangId), 'use_shop_policy', 1, ['id' => 'use_shop_policy'], false, 0);
+
+        $fld = $frm->addIntegerField(Labels::getLabel('LBL_ORDER_RETURN_AGE', $this->adminLangId), 'selprod_return_age');
+
+        $orderReturnAgeReqFld = new FormFieldRequirement('selprod_return_age', Labels::getLabel('LBL_ORDER_RETURN_AGE', $this->adminLangId));
+        $orderReturnAgeReqFld->setRequired(true);
+        $orderReturnAgeReqFld->setPositive();
+        $orderReturnAgeReqFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $this->adminLangId) . ' </small>';
+
+        $orderReturnAgeUnReqFld = new FormFieldRequirement('selprod_return_age', Labels::getLabel('LBL_ORDER_RETURN_AGE', $this->adminLangId));
+        $orderReturnAgeUnReqFld->setRequired(false);
+        $orderReturnAgeUnReqFld->setPositive();
+        $orderReturnAgeUnReqFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $this->adminLangId) . ' </small>';
+
+        $fld = $frm->addIntegerField(Labels::getLabel('LBL_ORDER_CANCELLATION_AGE', $this->adminLangId), 'selprod_cancellation_age');
+
+        $orderCancellationAgeReqFld = new FormFieldRequirement('selprod_cancellation_age', Labels::getLabel('LBL_ORDER_CANCELLATION_AGE', $this->adminLangId));
+        $orderCancellationAgeReqFld->setRequired(true);
+        $orderCancellationAgeReqFld->setPositive();
+        $orderCancellationAgeReqFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $this->adminLangId) . ' </small>';
+        
+        $orderCancellationAgeUnReqFld = new FormFieldRequirement('selprod_cancellation_age', Labels::getLabel('LBL_ORDER_CANCELLATION_AGE', $this->adminLangId));
+        $orderCancellationAgeUnReqFld->setRequired(false);
+        $orderCancellationAgeUnReqFld->setPositive();
+        $orderCancellationAgeUnReqFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $this->adminLangId) . ' </small>';
+
+        $useShopPolicy->requirements()->addOnChangerequirementUpdate(Shop::USE_SHOP_POLICY, 'eq', 'selprod_return_age', $orderReturnAgeUnReqFld);
+        $useShopPolicy->requirements()->addOnChangerequirementUpdate(Shop::USE_SHOP_POLICY, 'ne', 'selprod_return_age', $orderReturnAgeReqFld);
+
+        $useShopPolicy->requirements()->addOnChangerequirementUpdate(Shop::USE_SHOP_POLICY, 'eq', 'selprod_cancellation_age', $orderCancellationAgeUnReqFld);
+        $useShopPolicy->requirements()->addOnChangerequirementUpdate(Shop::USE_SHOP_POLICY, 'ne', 'selprod_cancellation_age', $orderCancellationAgeReqFld);
+
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'selprod_active', applicationConstants::getActiveInactiveArr($this->adminLangId), applicationConstants::ACTIVE, array(), '');
 
         $yesNoArr = applicationConstants::getYesNoArr($this->adminLangId);
@@ -655,5 +695,18 @@ class AdminBaseController extends FatController
     {
         $this->_template->addCss(array('css/1jquery-ui-timepicker-addon.css'), false);
         $this->_template->addJs(array('js/1jquery-ui-timepicker-addon.js'), false);
+    }
+
+    public function translateLangFields($tbl, $data)
+    {
+        if (!empty($tbl) && !empty($data)) {
+            $updateLangDataobj = new TranslateLangData($tbl);
+            $translatedText = $updateLangDataobj->directTranslate($data);
+            if (false === $translatedText) {
+                FatUtility::dieJsonError($updateLangDataobj->getError());
+            }
+            return $translatedText;
+        }
+        FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
     }
 }

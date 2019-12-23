@@ -104,7 +104,6 @@ $(document).on('change','.language-js',function(){
 
         fcom.ajax(fcom.makeUrl('Products', 'form', [ id, attrgrp_id]), '', function(t) {
             fcom.updateFaceboxContent(t,'faceboxWidth product-setup-width');
-
             if(CONF_PRODUCT_DIMENSIONS_ENABLE == 0)
             {
                 addShippingTab(id,PRODUCT_TYPE_DIGITAL);
@@ -120,11 +119,11 @@ $(document).on('change','.language-js',function(){
         });
     };
 
-    productLangForm = function(product_id, lang_id) {
+    productLangForm = function(product_id, lang_id, autoFillLangData = 0) {
         fcom.displayProcessing();
         fcom.resetEditorInstance();
     //    $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Products', 'langForm', [product_id, lang_id]), '', function(t) {
+            fcom.ajax(fcom.makeUrl('Products', 'langForm', [product_id, lang_id, autoFillLangData]), '', function(t) {
                 fcom.updateFaceboxContent(t);
             //    $.facebox(t);
                 fcom.setEditorLayout(lang_id);
@@ -174,7 +173,8 @@ $(document).on('change','.language-js',function(){
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('Products', 'langSetup'), data, function(t) {
             reloadList();
-            if (t.lang_id>0) {
+            console.log(t);
+            if (t.lang_id > 0) {
                 productLangForm(t.product_id, t.lang_id);
                 return ;
             }
@@ -763,5 +763,4 @@ $(document).on('change','.language-js',function(){
         }
         $("#frmProdListing").attr("action",fcom.makeUrl('Products','deleteSelected')).submit();
     };
-
 })();

@@ -2,45 +2,55 @@
 /* created this class to access direct functions of getAttributesById and save function for below mentioned DB table. */
 class SellerProduct extends MyAppModel
 {
-    const DB_TBL = 'tbl_seller_products';
-    const DB_TBL_PREFIX = 'selprod_';
+    public const DB_TBL = 'tbl_seller_products';
+    public const DB_TBL_PREFIX = 'selprod_';
 
-    const DB_PROD_TBL = 'tbl_products';
-    const DB_PROD_TBL_PREFIX = 'product_';
+    public const DB_PROD_TBL = 'tbl_products';
+    public const DB_PROD_TBL_PREFIX = 'product_';
 
-    const DB_LANG_TBL = 'tbl_seller_products_lang';
-    const DB_LANG_TBL_PREFIX = 'selprodlang_';
+    public const DB_TBL_LANG = 'tbl_seller_products_lang';
+    public const DB_TBL_LANG_PREFIX = 'selprodlang_';
 
-    const DB_TBL_SELLER_PROD_OPTIONS = 'tbl_seller_product_options';
-    const DB_TBL_SELLER_PROD_OPTIONS_PREFIX = 'selprodoption_';
+    public const DB_TBL_SELLER_PROD_OPTIONS = 'tbl_seller_product_options';
+    public const DB_TBL_SELLER_PROD_OPTIONS_PREFIX = 'selprodoption_';
 
-    const DB_TBL_SELLER_PROD_SPCL_PRICE = 'tbl_product_special_prices';
-    const DB_TBL_SELLER_PROD_POLICY = 'tbl_seller_product_policies';
+    public const DB_TBL_SELLER_PROD_SPCL_PRICE = 'tbl_product_special_prices';
+    public const DB_TBL_SELLER_PROD_POLICY = 'tbl_seller_product_policies';
 
-    const DB_TBL_UPSELL_PRODUCTS = 'tbl_upsell_products';
-    const DB_TBL_UPSELL_PRODUCTS_PREFIX = 'upsell_';
-    const DB_TBL_RELATED_PRODUCTS = 'tbl_related_products';
-    const DB_TBL_RELATED_PRODUCTS_PREFIX = 'related_';
+    public const DB_TBL_UPSELL_PRODUCTS = 'tbl_upsell_products';
+    public const DB_TBL_UPSELL_PRODUCTS_PREFIX = 'upsell_';
+    public const DB_TBL_RELATED_PRODUCTS = 'tbl_related_products';
+    public const DB_TBL_RELATED_PRODUCTS_PREFIX = 'related_';
 
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
     }
 
-    public static function getSearchObject($langId = 0)
+    public static function getSearchObject($langId = 0, $joinSpecifics = false)
     {
         $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 'sp');
 
         if ($langId) {
             $srch->joinTable(
-                static::DB_LANG_TBL,
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'sp_l.'.static::DB_LANG_TBL_PREFIX.'selprod_id = sp.'.static::tblFld('id').' and
-			sp_l.'.static::DB_LANG_TBL_PREFIX.'lang_id = '.$langId,
+                'sp_l.'.static::DB_TBL_LANG_PREFIX.'selprod_id = sp.'.static::tblFld('id').' and
+			sp_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
                 'sp_l'
             );
         }
+        
+        if (true === $joinSpecifics) {
+            $srch->joinTable(
+                SellerProductSpecifics::DB_TBL,
+                'LEFT OUTER JOIN',
+                'sps.' . SellerProductSpecifics::DB_TBL_PREFIX . 'selprod_id = sp.' . static::tblFld('id'),
+                'sps'
+            );
+        }
+
         return $srch;
     }
 
@@ -286,9 +296,9 @@ class SellerProduct extends MyAppModel
 
         $srch->addCondition(static::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'sellerproduct_id', '=', $sellProdId);
         $srch->joinTable(static::DB_TBL, 'INNER JOIN', static::DB_TBL_PREFIX.'id = '.static::DB_TBL_UPSELL_PRODUCTS_PREFIX.'recommend_sellerproduct_id');
-        $srch->joinTable(static::DB_TBL.'_lang', 'LEFT JOIN', 'slang.'.static::DB_LANG_TBL_PREFIX.'selprod_id = '.static::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'recommend_sellerproduct_id AND '.static::DB_LANG_TBL_PREFIX.'lang_id = '.$lang_id, 'slang');
+        $srch->joinTable(static::DB_TBL.'_lang', 'LEFT JOIN', 'slang.'.static::DB_TBL_LANG_PREFIX.'selprod_id = '.static::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'recommend_sellerproduct_id AND '.static::DB_TBL_LANG_PREFIX.'lang_id = '.$lang_id, 'slang');
         $srch->joinTable(Product::DB_TBL, 'LEFT JOIN', Product::DB_TBL_PREFIX.'id = '.static::DB_TBL_PREFIX.'product_id');
-        $srch->joinTable(Product::DB_TBL.'_lang', 'LEFT JOIN', 'lang.productlang_product_id = '.static::DB_LANG_TBL_PREFIX . 'selprod_id AND productlang_lang_id = '.$lang_id, 'lang');
+        $srch->joinTable(Product::DB_TBL.'_lang', 'LEFT JOIN', 'lang.productlang_product_id = '.static::DB_TBL_LANG_PREFIX . 'selprod_id AND productlang_lang_id = '.$lang_id, 'lang');
         $srch->joinTable(
             SellerProduct::DB_TBL_SELLER_PROD_SPCL_PRICE,
             'LEFT OUTER JOIN',
@@ -343,9 +353,39 @@ class SellerProduct extends MyAppModel
         return $data;
     }
 
-    public static function getAttributesById($recordId, $attr = null, $fetchOptions = true)
+    public static function getAttributesById($recordId, $attr = null, $fetchOptions = true, $joinSpecifics = false)
     {
-        $row = parent::getAttributesById($recordId, $attr);
+        $recordId = FatUtility::int($recordId);
+
+        $db = FatApp::getDb();
+
+        $srch = new SearchBase(static::DB_TBL, 'sp');
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addCondition(static::tblFld('id'), '=', $recordId);
+
+        if (true === $joinSpecifics) {
+            $srch->joinTable(
+                SellerProductSpecifics::DB_TBL,
+                'LEFT OUTER JOIN',
+                'ps.' . SellerProductSpecifics::DB_TBL_PREFIX . 'selprod_id = sp.' . static::tblFld('id'),
+                'ps'
+            );
+        }
+
+        if (null != $attr) {
+            if (is_array($attr)) {
+                $srch->addMultipleFields($attr);
+            } elseif (is_string($attr)) {
+                $srch->addFld($attr);
+            }
+        }
+        $rs = $srch->getResultSet();
+        $row = $db->fetch($rs);
+        if (!is_array($row)) {
+            return false;
+        }
+
         /* get seller product options[ */
         if ($fetchOptions) {
             $op = static::getSellerProductOptions($recordId, false);
@@ -357,6 +397,9 @@ class SellerProduct extends MyAppModel
         }
         /* ] */
 
+        if (is_string($attr)) {
+            return $row[$attr];
+        }
         return $row;
     }
 
@@ -608,10 +651,10 @@ class SellerProduct extends MyAppModel
         $srch->addCondition('sp.selprod_available_from', '<=', $now);
 
         if ($lang_id > 0) {
-            $srch->joinTable(static::DB_LANG_TBL, 'LEFT OUTER JOIN', 'sp.selprod_id = sp_l.selprodlang_selprod_id AND selprodlang_lang_id = '.$lang_id, 'sp_l');
+            $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp.selprod_id = sp_l.selprodlang_selprod_id AND selprodlang_lang_id = '.$lang_id, 'sp_l');
             $srch->addFld('selprod_title');
 
-            $srch->joinTable(Product::DB_LANG_TBL, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND productlang_lang_id = '.$lang_id, 'p_l');
+            $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND productlang_lang_id = '.$lang_id, 'p_l');
             $srch->addFld('IFNULL(product_name, product_identifier) as product_name');
         }
 
@@ -685,9 +728,9 @@ class SellerProduct extends MyAppModel
         $srch = new SearchBase(static::DB_TBL_RELATED_PRODUCTS);
         $srch->addCondition(static::DB_TBL_RELATED_PRODUCTS_PREFIX . 'sellerproduct_id', '=', $sellProdId);
         $srch->joinTable(static::DB_TBL, 'INNER JOIN', static::DB_TBL_PREFIX.'id = '.static::DB_TBL_RELATED_PRODUCTS_PREFIX.'recommend_sellerproduct_id');
-        $srch->joinTable(static::DB_TBL.'_lang', 'LEFT JOIN', 'slang.'.static::DB_LANG_TBL_PREFIX.'selprod_id = '.static::DB_TBL_RELATED_PRODUCTS_PREFIX . 'recommend_sellerproduct_id AND '.static::DB_LANG_TBL_PREFIX.'lang_id = '.$lang_id, 'slang');
+        $srch->joinTable(static::DB_TBL.'_lang', 'LEFT JOIN', 'slang.'.static::DB_TBL_LANG_PREFIX.'selprod_id = '.static::DB_TBL_RELATED_PRODUCTS_PREFIX . 'recommend_sellerproduct_id AND '.static::DB_TBL_LANG_PREFIX.'lang_id = '.$lang_id, 'slang');
         $srch->joinTable(Product::DB_TBL, 'LEFT JOIN', Product::DB_TBL_PREFIX.'id = '.static::DB_TBL_PREFIX.'product_id');
-        $srch->joinTable(Product::DB_TBL.'_lang', 'LEFT JOIN', 'lang.productlang_product_id = '.static::DB_LANG_TBL_PREFIX . 'selprod_id AND productlang_lang_id = '.$lang_id, 'lang');
+        $srch->joinTable(Product::DB_TBL.'_lang', 'LEFT JOIN', 'lang.productlang_product_id = '.static::DB_TBL_LANG_PREFIX . 'selprod_id AND productlang_lang_id = '.$lang_id, 'lang');
         if ($criteria) {
             $srch->addMultipleFields(array($criteria));
         } else {
@@ -938,7 +981,7 @@ class SellerProduct extends MyAppModel
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tuc.credential_user_id = sp.selprod_user_id', 'tuc');
         $srch->joinTable(static::DB_TBL_SELLER_PROD_SPCL_PRICE, 'INNER JOIN', 'spp.splprice_selprod_id = sp.selprod_id', 'spp');
-        $srch->joinTable(Product::DB_LANG_TBL, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$langId, 'p_l');
+        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$langId, 'p_l');
 
         $srch->addMultipleFields(
             array(
@@ -973,7 +1016,7 @@ class SellerProduct extends MyAppModel
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tuc.credential_user_id = sp.selprod_user_id', 'tuc');
         $srch->joinTable(SellerProductVolumeDiscount::DB_TBL, 'INNER JOIN', 'vd.voldiscount_selprod_id = sp.selprod_id', 'vd');
-        $srch->joinTable(Product::DB_LANG_TBL, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$langId, 'p_l');
+        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$langId, 'p_l');
         $srch->addMultipleFields(
             array(
             'selprod_id', 'credential_username', 'voldiscount_min_qty', 'voldiscount_percentage', 'IFNULL(product_name, product_identifier) as product_name', 'selprod_title', 'voldiscount_id')
@@ -999,4 +1042,13 @@ class SellerProduct extends MyAppModel
         $srch->addOrder('voldiscount_id', 'DESC');
         return $srch;
     }
+    
+    public static function getSelProdDataById($selProdId, $langId = 0)
+    { 
+        $srch = static::getSearchObject($langId);
+        $srch->addCondition('selprod_id', '=', $selProdId);
+        $rs = $srch->getResultSet();
+        return FatApp::getDb()->fetch($rs);
+    }
+    
 }

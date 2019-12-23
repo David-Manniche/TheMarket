@@ -40,9 +40,9 @@ $(document).ready(function(){
 		});
 	};
 
-	addCategoryReqLangForm = function(sCategoryReqId, langId) {		
+	addCategoryReqLangForm = function(sCategoryReqId, langId, autoFillLangData = 0) {		
 		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('CategoryRequests', 'langForm', [sCategoryReqId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('CategoryRequests', 'langForm', [sCategoryReqId, langId, autoFillLangData]), '', function(t) {
 				$.facebox(t);
 			});
 		});

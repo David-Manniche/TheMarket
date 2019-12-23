@@ -89,7 +89,7 @@ class OrderProductSearch extends SearchBase
         }
         $this->joinTable(SellerProduct::DB_TBL, 'LEFT OUTER JOIN', 'sp.selprod_id = op.op_selprod_id and op.op_is_batch = 0', 'sp');
         if ($langId) {
-            $this->joinTable(SellerProduct::DB_LANG_TBL, 'LEFT OUTER JOIN', 'sp_l.selprodlang_selprod_id = sp.selprod_id AND sp_l.selprodlang_lang_id = '.$langId, 'sp_l');
+            $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp_l.selprodlang_selprod_id = sp.selprod_id AND sp_l.selprodlang_lang_id = '.$langId, 'sp_l');
         }
     }
 
@@ -117,7 +117,7 @@ class OrderProductSearch extends SearchBase
         }
         $this->joinTable(PaymentMethods::DB_TBL, 'LEFT OUTER JOIN', 'o.order_pmethod_id = pm.pmethod_id', 'pm');
         if ($langId) {
-            $this->joinTable(PaymentMethods::DB_LANG_TBL, 'LEFT OUTER JOIN', 'pm.pmethod_id = pm_l.pmethodlang_pmethod_id AND pm_l.pmethodlang_lang_id = '.$langId, 'pm_l');
+            $this->joinTable(PaymentMethods::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pm.pmethod_id = pm_l.pmethodlang_pmethod_id AND pm_l.pmethodlang_lang_id = '.$langId, 'pm_l');
         }
     }
 
@@ -348,5 +348,20 @@ class OrderProductSearch extends SearchBase
             $op_status_id = FatUtility::int($op_status);
             $this->addCondition('op.op_status_id', '=', $op_status_id);
         }
+    }
+
+    public function joinShopSpecifics()
+    {
+        $this->joinTable(ShopSpecifics::DB_TBL, 'LEFT OUTER JOIN', 'ss.ss_shop_id = op.op_shop_id', 'ss');
+    }
+
+    public function joinSellerProductSpecifics()
+    {
+        $this->joinTable(SellerProductSpecifics::DB_TBL, 'LEFT OUTER JOIN', 'sps.sps_selprod_id = op.op_selprod_id', 'sps');
+    }
+
+    public function joinOrderProductSpecifics()
+    {
+        $this->joinTable(OrderProductSpecifics::DB_TBL, 'LEFT JOIN', 'ops.ops_op_id = op.op_id', 'ops');
     }
 }

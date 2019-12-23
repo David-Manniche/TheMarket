@@ -1,18 +1,23 @@
 <?php
 class CitrusPayController extends PaymentController
 {
-    private $keyName="Citrus";
+    private $keyName = "Citrus";
+    
+    protected function allowedCurrenciesArr()
+    {
+        return ['INR'];
+    }
 
     public function charge($orderId)
     {
-        $pmObj=new PaymentSettings($this->keyName);
-        if (!$paymentSettings=$pmObj->getPaymentSettings()) {
+        $pmObj = new PaymentSettings($this->keyName);
+        if (!$paymentSettings = $pmObj->getPaymentSettings()) {
             Message::addErrorMessage($pmObj->getError());
             CommonHelper::redirectUserReferer();
         }
-        $orderPaymentObj=new OrderPayment($orderId, $this->siteLangId);
-        $paymentAmount=$orderPaymentObj->getOrderPaymentGatewayAmount();
-        $orderInfo=$orderPaymentObj->getOrderPrimaryinfo();
+        $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
+        $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
+        $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
         if (!$orderInfo['id']) {
             FatUtility::exitWIthErrorCode(404);
         } elseif ($orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
@@ -33,17 +38,17 @@ class CitrusPayController extends PaymentController
         $pmObj = new PaymentSettings($this->keyName);
         $paymentSettings = $pmObj->getPaymentSettings();
         $post = FatApp::getPostedData();
-        $orderId = (isset($post['TxId']))?$post['TxId']:0;
+        $orderId = (isset($post['TxId'])) ? $post['TxId'] : 0;
         $orderPaymentObj = new OrderPayment($orderId);
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
         foreach ($post as $key => $value) {
             $request .= '&' . $key . '=' . urlencode(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
         }
-        if ($paymentGatewayCharge>0) {
+        if ($paymentGatewayCharge > 0) {
             if (strtoupper($post['TxStatus']) == 'SUCCESS') {
                 //resp signature validation
-                $str=$post['TxId'].$post['TxStatus'].$post['amount'].$post['pgTxnNo'].$post['issuerRefNo'].$post['authIdCode'].$post['firstName'].$post['lastName'].$post['pgRespCode'].$post['addressZip'];
-                $respSig=$post['signature'];
+                $str = $post['TxId'] . $post['TxStatus'] . $post['amount'] . $post['pgTxnNo'] . $post['issuerRefNo'] . $post['authIdCode'] . $post['firstName'] . $post['lastName'] . $post['pgRespCode'] . $post['addressZip'];
+                $respSig = $post['signature'];
                 if (hash_hmac('sha1', $str, $paymentSettings['merchant_secret_key']) == $respSig) {
                     $orderPaymentObj->addOrderPayment($paymentSettings["pmethod_name"], $post['pgTxnNo'], $paymentGatewayCharge, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $request);
                     FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
@@ -54,7 +59,7 @@ class CitrusPayController extends PaymentController
                 }
             } else {
                 $orderPaymentObj->addOrderPaymentComments($request);
-                if ($post['pgRespCode']==3) {
+                if ($post['pgRespCode'] == 3) {
                     FatApp::redirectUser(CommonHelper::getPaymentCancelPageUrl());
                 }
 
@@ -74,7 +79,7 @@ class CitrusPayController extends PaymentController
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
         $vanityUrl = $paymentSettings['merchant_vanity_url'];
-        $currency ='INR';
+        $currency = 'INR';
         $merchantTxnId = $orderId;
         $orderAmount = $paymentGatewayCharge;
         $tmpdata = "$vanityUrl$orderAmount$merchantTxnId$currency";
@@ -84,9 +89,9 @@ class CitrusPayController extends PaymentController
         } elseif (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == false) {
             $actionUrl = 'https://sandbox.citruspay.com/sslperf/';
         }
-        $actionUrl = $actionUrl."$vanityUrl";
+        $actionUrl = $actionUrl . "$vanityUrl";
 
-        $frm = new Form('frm-citrus-payment', array('id'=>'frm-citrus-payment','action'=>$actionUrl, 'class' =>"form form--normal"));
+        $frm = new Form('frm-citrus-payment', array('id' => 'frm-citrus-payment', 'action' => $actionUrl, 'class' => "form form--normal"));
 
         $frm->addHiddenField('', 'merchantTxnId', $orderId);
         $frm->addHiddenField('', 'orderAmount', $paymentGatewayCharge);
@@ -102,8 +107,8 @@ class CitrusPayController extends PaymentController
         $frm->addHiddenField('', 'addressCountry', $orderInfo["customer_billing_country"]);
         $frm->addHiddenField('', 'addressZip', $orderInfo["customer_billing_postcode"]);
         $custName = explode(" ", $orderInfo["customer_name"]);
-        $firstName = $lastName = !empty($custName[0])?$custName[0]:'';
-        $lastName = !empty($custName[1])?$custName[1]:'';
+        $firstName = $lastName = !empty($custName[0]) ? $custName[0] : '';
+        $lastName = !empty($custName[1]) ? $custName[1] : '';
         $frm->addHiddenField('', 'firstName', $firstName);
         $frm->addHiddenField('', 'lastName', $lastName);
         return $frm;

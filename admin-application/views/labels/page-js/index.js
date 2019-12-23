@@ -32,10 +32,12 @@ $(document).ready(function(){
 		});
 	};
 
-	labelsForm = function(labelId, type){
+	labelsForm = function(labelId, type, autoFillLangData = 0){
+        $.systemMessage(langLbl.processing,'alert--process');
 		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('Labels', 'form', [labelId, type]), '', function(t) {
-				$.facebox(t,'faceboxWidth');
+			fcom.ajax(fcom.makeUrl('Labels', 'form', [labelId, type, autoFillLangData]), '', function(t) {
+                $.facebox(t,'faceboxWidth');
+                $.systemMessage.close();
 			});
 		});
 	};

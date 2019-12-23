@@ -38,9 +38,9 @@ $(document).ready(function() {
     };
 
 
-    editPackageLangForm = function(spackageId, langId) {
+    editPackageLangForm = function(spackageId, langId, autoFillLangData = 0) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('SellerPackages', 'langForm', [spackageId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('SellerPackages', 'langForm', [spackageId, langId, autoFillLangData]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
     };

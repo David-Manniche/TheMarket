@@ -1,10 +1,10 @@
 <?php
 class EmailHandler extends FatModel
 {
-    const ADD_ADDITIONAL_ALERTS = 1;
-    const NO_ADDITIONAL_ALERT = 0;
-    const ONLY_SUPER_ADMIN = 1;
-    const NOT_ONLY_SUPER_ADMIN = 0;
+    public const ADD_ADDITIONAL_ALERTS = 1;
+    public const NO_ADDITIONAL_ALERT = 0;
+    public const ONLY_SUPER_ADMIN = 1;
+    public const NOT_ONLY_SUPER_ADMIN = 0;
 
     private $commonLangId;
     public function __construct()
@@ -101,17 +101,17 @@ class EmailHandler extends FatModel
     public static function sendMailTpl($to, $tpl, $langId, $vars = array(), $extra_headers = '', $smtp = 0, $smtp_arr = array(), $bcc = array())
     {
         $langId = FatUtility::int($langId);
-        if (!$row =static::getMailTpl($tpl, $langId)) {
+        if (!$row = static::getMailTpl($tpl, $langId)) {
             $langId = FatApp::getConfig('conf_default_site_lang');
-            if (!$row =static::getMailTpl($tpl, $langId)) {
-                if (!$row =static::getMailTpl($tpl, 0)) {
+            if (!$row = static::getMailTpl($tpl, $langId)) {
+                if (!$row = static::getMailTpl($tpl, 0)) {
                     trigger_error(Labels::getLabel('ERR_Email_Template_Not_Found', CommonHelper::getLangId()), E_USER_ERROR);
                     return false;
                 }
             }
         }
 
-        if ($row['etpl_status']!= applicationConstants::ACTIVE) {
+        if ($row['etpl_status'] != applicationConstants::ACTIVE) {
             return false;
         }
 
@@ -140,12 +140,14 @@ class EmailHandler extends FatModel
         }
     }
 
-    public static function sendSmtpEmail($toAdress, $Subject, $body, $extra_headers = '', $tpl_name = '', $langId, $attachment = "", $smtp_arr = array(), $bcc = array())
+    public static function sendSmtpEmail($toAdress, $Subject, $body, $extra_headers = '', $tpl_name = '', $langId = '', $attachment = "", $smtp_arr = array(), $bcc = array())
     {
+        $langId = empty($langId) ? CommonHelper::getLangId(): $langId;
+
         $headers  = 'MIME-Version: 1.0' . "\r\n";
         $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
 
-        $headers .= 'From: ' . FatApp::getConfig("CONF_FROM_NAME_".$langId, FatUtility::VAR_STRING, '') ."<".FatApp::getConfig("CONF_FROM_EMAIL").">";
+        $headers .= 'From: ' . FatApp::getConfig("CONF_FROM_NAME_" . $langId, FatUtility::VAR_STRING, '') . "<" . FatApp::getConfig("CONF_FROM_EMAIL") . ">";
 
         if ($extra_headers != '') {
             $headers .= $extra_headers;
@@ -157,12 +159,12 @@ class EmailHandler extends FatModel
         if (!FatApp::getDb()->insertFromArray(
             'tbl_email_archives',
             array(
-            'emailarchive_to_email'=>$toAdress,
-            'emailarchive_tpl_name'=>$tpl_name,
-            'emailarchive_subject'=>$Subject,
-            'emailarchive_body'=>$body,
-            'emailarchive_headers'=>FatApp::getDb()->quoteVariable($headers),
-            'emailarchive_sent_on'=>date('Y-m-d H:i:s')
+            'emailarchive_to_email' => $toAdress,
+            'emailarchive_tpl_name' => $tpl_name,
+            'emailarchive_subject' => $Subject,
+            'emailarchive_body' => $body,
+            'emailarchive_headers' => FatApp::getDb()->quoteVariable($headers),
+            'emailarchive_sent_on' => date('Y-m-d H:i:s')
             )
         )) {
             return false;
@@ -185,9 +187,9 @@ class EmailHandler extends FatModel
         $mail->SMTPSecure = $secure;
         $mail->SMTPDebug = false;
         $mail->SetFrom(FatApp::getConfig('CONF_FROM_EMAIL'));
-        $mail->FromName = FatApp::getConfig("CONF_FROM_NAME_".$langId);
+        $mail->FromName = FatApp::getConfig("CONF_FROM_NAME_" . $langId);
         $mail->addAddress($toAdress);
-        $mail->Subject = '=?UTF-8?B?'.base64_encode($Subject).'?=';
+        $mail->Subject = '=?UTF-8?B?' . base64_encode($Subject) . '?=';
         $mail->MsgHTML($body);
 
         if (!$mail->send()) {
@@ -202,30 +204,31 @@ class EmailHandler extends FatModel
         $headers  = 'MIME-Version: 1.0' . "\r\n";
         $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
 
-        $headers .= 'From: ' . FatApp::getConfig("CONF_FROM_NAME_".$langId) ."<".FatApp::getConfig("CONF_FROM_EMAIL").">";
+        $headers .= 'From: ' . FatApp::getConfig("CONF_FROM_NAME_" . $langId) . "<" . FatApp::getConfig("CONF_FROM_EMAIL") . ">";
 
         if ($extra_headers != '') {
             $headers .= $extra_headers;
         }
 
-        $headers .= "\r\nReply-to: ".FatApp::getConfig("CONF_REPLY_TO_EMAIL");
+        $headers .= "\r\nReply-to: " . FatApp::getConfig("CONF_REPLY_TO_EMAIL");
 
         if (!$db->insertFromArray(
             'tbl_email_archives',
             array(
-            'emailarchive_to_email'=>$to,
-            'emailarchive_tpl_name'=>$tpl_name,
-            'emailarchive_subject'=>$subject,
-            'emailarchive_body'=>$body,
-            'emailarchive_headers'=>$db->quoteVariable($headers),
-            'emailarchive_sent_on'=>date('Y-m-d H:i:s')
+                    'emailarchive_to_email' => $to,
+                    'emailarchive_tpl_name' => $tpl_name,
+                    'emailarchive_subject' => $subject,
+                    'emailarchive_body' => $body,
+                    'emailarchive_headers' => $db->quoteVariable($headers),
+                    'emailarchive_sent_on' => date('Y-m-d H:i:s')
+                )
             )
-        )) {
+        ) {
             return false;
         }
 
         if (FatApp::getConfig("CONF_SEND_EMAIL")) {
-            $subject = '=?UTF-8?B?'.base64_encode($subject).'?=';
+            $subject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
             if (!mail($to, $subject, $body, $headers)) {
                 return false;
             }
@@ -308,18 +311,20 @@ class EmailHandler extends FatModel
     }
 
     public function sendNewRegistrationNotification($langId, $d)
-    {
+    { 
         $tpl = 'new_registration_admin';
 
         if (isset($d['user_is_affiliate']) && $d['user_is_affiliate']) {
             $tpl = 'new_affiliate_registration_admin';
         }
+        
+        $userType = !empty($d['user_type']) ? User::getUserTypesArr($langId)[$d['user_type']] : '';
         $vars = array(
-        '{name}' => $d['user_name'],
-        '{email}' => $d['user_email'],
-        '{username}' => $d['user_username'],
-                    '{user_type}' => User::getUserTypesArr($langId)[$d['user_type']]
-        );
+                    '{name}' => $d['user_name'],
+                    '{email}' => $d['user_email'],
+                    '{username}' => $d['user_username'],
+                    '{user_type}' => $userType
+                );
 
         return $this->sendMailToAdminAndAdditionalEmails($tpl, $vars, static::NO_ADDITIONAL_ALERT, static::NOT_ONLY_SUPER_ADMIN, $langId);
     }
@@ -837,49 +842,64 @@ class EmailHandler extends FatModel
             $langId = $orderDetail['order_language_id'];
         }
         if ($orderDetail) {
+            $addresses = $orderObj->getOrderAddresses($orderId);
+
+            $billingArr = array();
+            if (!empty($addresses[Orders::BILLING_ADDRESS_TYPE])) {
+                $billingArr = $addresses[Orders::BILLING_ADDRESS_TYPE];
+            }
+
+            $shippingArr = array();
+            if (!empty($addresses[Orders::SHIPPING_ADDRESS_TYPE])) {
+                $shippingArr = $addresses[Orders::SHIPPING_ADDRESS_TYPE];
+            } else {
+                $shippingArr = $billingArr;
+            }
             $orderVendors = $orderObj->getChildOrders(array("order"=>$orderId), $orderDetail['order_type'], $orderDetail['order_language_id']);
             foreach ($orderVendors as $key => $val) :
                 $shippingHanldedBySeller =     CommonHelper::canAvailShippingChargesBySeller($val['op_selprod_user_id'], $val['opshipping_by_seller_user_id']);
-                $tpl = new FatTemplate('', '');
-                //$tpl->set('orderInfo', $orderDetail);
-                $tpl->set('orderProducts', $val);
-                $tpl->set('siteLangId', $langId);
-                $tpl->set('userType', User::USER_TYPE_SELLER);
-                $tpl->set('shippingHanldedBySeller', $shippingHanldedBySeller);
-                $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/child-order-detail-email-seller.php', true);
-                $userObj = new User($orderDetail["order_user_id"]);
-                $userInfo = $userObj->getUserInfo(array('user_name','credential_email','user_phone'));
-                $arrReplacements = array(
+            $tpl = new FatTemplate('', '');
+            //$tpl->set('orderInfo', $orderDetail);
+            $tpl->set('orderProducts', $val);
+            $tpl->set('siteLangId', $langId);
+            $tpl->set('userType', User::USER_TYPE_SELLER);
+            $tpl->set('shippingHanldedBySeller', $shippingHanldedBySeller);
+            $tpl->set('billingAddress', $billingArr);
+            $tpl->set('shippingAddress', $shippingArr);
+            $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/child-order-detail-email-seller.php', true);
+            $userObj = new User($orderDetail["order_user_id"]);
+            $userInfo = $userObj->getUserInfo(array('user_name','credential_email','user_phone'));
+            $arrReplacements = array(
                         '{vendor_name}' => trim($val['op_shop_owner_name']),
                         '{order_items_table_format}' => $orderItemsTableFormatHtml,
                         '{order_shipping_information}' => '',
                         '{order_user_email}' => $userInfo['credential_email'],
                         );
 
-                if ($val['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
-                    self::sendMailTpl($val["op_shop_owner_email"], "vendor_digital_order_email", $langId, $arrReplacements);
-                } else {
-                    self::sendMailTpl($val["op_shop_owner_email"], "vendor_order_email", $langId, $arrReplacements);
-                }
+            if ($val['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
+                self::sendMailTpl($val["op_shop_owner_email"], "vendor_digital_order_email", $langId, $arrReplacements);
+            } else {
+                self::sendMailTpl($val["op_shop_owner_email"], "vendor_order_email", $langId, $arrReplacements);
+            }
 
-                $notiArrReplacements = array(
+            $notiArrReplacements = array(
                     '{PRODUCT}' => $val["op_product_name"],
                     '{ORDERID}' => $orderDetail['order_id']
                 );
 
-                $appNotification = CommonHelper::replaceStringData(Labels::getLabel('SAPP_{PRODUCT}_ORDER_{ORDERID}_HAS_BEEN_PLACED', $langId), $notiArrReplacements);
+            $appNotification = CommonHelper::replaceStringData(Labels::getLabel('SAPP_{PRODUCT}_ORDER_{ORDERID}_HAS_BEEN_PLACED', $langId), $notiArrReplacements);
 
-                $notificationObj = new Notifications();
-                $notificationDataArr = array(
+            $notificationObj = new Notifications();
+            $notificationDataArr = array(
                         'unotification_user_id'    =>$val["op_selprod_user_id"],
                         'unotification_body'=>$appNotification,
                         'unotification_type'=>'SELLER_ORDER',
                         'unotification_data'=>json_encode(array('orderId' => $orderDetail['order_id'], 'productName' => $val["op_product_name"])),
                         );
-                if (!$notificationObj->addNotification($notificationDataArr)) {
-                    $this->error = $notificationObj->getError();
-                    return false;
-                }
+            if (!$notificationObj->addNotification($notificationDataArr)) {
+                $this->error = $notificationObj->getError();
+                return false;
+            }
             endforeach;
         }
         return true;
@@ -2060,7 +2080,8 @@ class EmailHandler extends FatModel
         $userInfo = $userObj->getUserInfo(array('user_name','credential_email'));
 
 
-        $spackage_name =  OrderSubscription:: getUserCurrentActivePlanDetails($langId, $user_id, array('ossubs_subscription_name'));
+        $currentPlanData =  OrderSubscription:: getUserCurrentActivePlanDetails($langId, $user_id, array('ossubs_subscription_name'));
+        $spackage_name = $currentPlanData['ossubs_subscription_name'];
         $vars = array(
         '{user_full_name}' => $userInfo['user_name'],
         '{spackage_name}'=>$spackage_name

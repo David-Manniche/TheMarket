@@ -72,8 +72,8 @@ class MessageSearch extends SearchBase
         $this->joinTable(SellerProduct::DB_TBL, 'LEFT OUTER JOIN', 'tsp.selprod_id = tth.thread_record_id and tth.thread_type = '.Thread::THREAD_TYPE_PRODUCT, 'tsp');
         $this->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = tsp.selprod_product_id', 'p');
         if ($langId > 0) {
-            $this->joinTable(SellerProduct::DB_LANG_TBL, 'LEFT OUTER JOIN', 'tsp.selprod_id = tsp_l.selprodlang_selprod_id AND tsp_l.selprodlang_lang_id = '.$langId, 'tsp_l');
-            $this->joinTable(Product::DB_LANG_TBL, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$langId, 'p_l');
+            $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'tsp.selprod_id = tsp_l.selprodlang_selprod_id AND tsp_l.selprodlang_lang_id = '.$langId, 'tsp_l');
+            $this->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$langId, 'p_l');
             $this->addMultipleFields(array('IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title, selprod_price'));
         } else {
             $this->addMultipleFields(array('IFNULL(selprod_title, product_identifier) as selprod_title', 'selprod_price'));

@@ -56,9 +56,9 @@ $(document).ready(function(){
 		});
 	};
 	
-	manualShippingLangForm = function(mshipapiId, langId){
+	manualShippingLangForm = function(mshipapiId, langId, autoFillLangData = 0){
 		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('ManualShippingApi', 'langForm', [mshipapiId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('ManualShippingApi', 'langForm', [mshipapiId, langId, autoFillLangData]), '', function(t) {
 				$.facebox(t,'faceboxWidth');
 			});
 		});

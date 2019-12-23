@@ -1,10 +1,10 @@
 <?php
 class SellerOrdersController extends AdminBaseController
 {
-    public function __construct( $action )
+    public function __construct($action)
     {
         $ajaxCallArray = array();
-        if(!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
+        if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }
         parent::__construct($action);
@@ -15,7 +15,7 @@ class SellerOrdersController extends AdminBaseController
         $this->set("canEdit", $this->canEdit);
     }
 
-    public function index( $order_id = '' )
+    public function index($order_id = '')
     {
         $this->objPrivilege->canViewSellerOrders();
         $frm = $this->getOrderSearchForm($this->adminLangId);
@@ -53,13 +53,13 @@ class SellerOrdersController extends AdminBaseController
         $srch->addOrder('op_id', 'DESC');
 
         $srch->addMultipleFields(array('op_id', 'order_id', 'op_order_id', 'op_invoice_number', 'order_net_amount', 'order_date_added', 'ou.user_id', 'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op.op_shop_owner_email', 'op.op_shop_owner_phone', 'op_shop_name','op_other_charges','op.op_qty','op.op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name','op_tax_collected_by_seller','op_selprod_user_id','opshipping_by_seller_user_id'));
-        if(isset($post['order_id']) && $post['order_id'] != '' ) {
+        if (isset($post['order_id']) && $post['order_id'] != '') {
             $srch->addCondition('op_order_id', '=', $post['order_id']);
         }
 
         $keyword = FatApp::getPostedData('keyword', null, '');
 
-        if(!empty($keyword) ) {
+        if (!empty($keyword)) {
             $cnd = $srch->addCondition('op.op_order_id', 'like', '%' . $keyword . '%');
             $srch->addKeywordSearch($keyword, $cnd);
             $cnd->attachCondition('op.op_shop_owner_name', 'like', '%' . $keyword . '%', 'OR');
@@ -68,11 +68,11 @@ class SellerOrdersController extends AdminBaseController
         }
 
         $user_id = FatApp::getPostedData('user_id', '', -1);
-        if($user_id > 0) {
+        if ($user_id > 0) {
             $srch->addCondition('user_id', '=', $user_id);
-        }else{
+        } else {
             $customer_name = FatApp::getPostedData('buyer', null, '');
-            if(!empty($customer_name) ) {
+            if (!empty($customer_name)) {
                 $cnd = $srch->addCondition('ou.user_name', 'like', '%' . $customer_name . '%');
                 $cnd->attachCondition('ou.user_phone', 'like', '%' . $customer_name . '%', 'OR');
                 $cnd->attachCondition('ouc.credential_email', 'like', '%' . $customer_name . '%', 'OR');
@@ -80,18 +80,18 @@ class SellerOrdersController extends AdminBaseController
         }
 
         $shipping_company_user_id = FatApp::getPostedData('shipping_company_user_id', FatUtility::VAR_INT, 0);
-        if($shipping_company_user_id > 0 ) {
+        if ($shipping_company_user_id > 0) {
             $srch->joinShippingUsers();
             $srch->addCondition('optsu_user_id', '=', $shipping_company_user_id);
         }
 
-        if(isset($post['op_status_id']) && $post['op_status_id'] != '' ) {
+        if (isset($post['op_status_id']) && $post['op_status_id'] != '') {
             $op_status_id = FatUtility::int($post['op_status_id']);
             $srch->addStatusCondition($op_status_id);
         }
 
         $shop_name = FatApp::getPostedData('shop_name', null, '');
-        if(!empty($shop_name) ) {
+        if (!empty($shop_name)) {
             $cnd =     $srch->addCondition('op_l.op_shop_name', 'like', '%' . $shop_name . '%');
             $cnd->attachCondition('op.op_shop_owner_name', 'like', '%' . $shop_name . '%', 'OR');
             $cnd->attachCondition('op.op_shop_owner_username', 'like', '%' . $shop_name . '%', 'OR');
@@ -100,22 +100,22 @@ class SellerOrdersController extends AdminBaseController
         }
 
         $dateFrom = FatApp::getPostedData('date_from', null, '');
-        if(!empty($dateFrom) ) {
+        if (!empty($dateFrom)) {
             $srch->addDateFromCondition($dateFrom);
         }
 
         $dateTo = FatApp::getPostedData('date_to', null, '');
-        if(!empty($dateTo) ) {
+        if (!empty($dateTo)) {
             $srch->addDateToCondition($dateTo);
         }
 
         $priceFrom = FatApp::getPostedData('price_from', null, '');
-        if(!empty($priceFrom) ) {
+        if (!empty($priceFrom)) {
             $srch->addMinPriceCondition($priceFrom);
         }
 
         $priceTo = FatApp::getPostedData('price_to', null, '');
-        if(!empty($priceTo) ) {
+        if (!empty($priceTo)) {
             $srch->addMaxPriceCondition($priceTo);
         }
 
@@ -123,7 +123,7 @@ class SellerOrdersController extends AdminBaseController
         $vendorOrdersList = FatApp::getDb()->fetchAll($rs);
 
         $oObj = new Orders();
-        foreach($vendorOrdersList as &$order){
+        foreach ($vendorOrdersList as &$order) {
             $charges = $oObj->getOrderProductChargesArr($order['op_id']);
             $order['charges'] = $charges;
         }
@@ -138,9 +138,8 @@ class SellerOrdersController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function view( $op_id, $print = false )
+    public function view($op_id, $print = false)
     {
-
         $this->objPrivilege->canViewSellerOrders();
 
         $op_id = FatUtility::int($op_id);
@@ -163,7 +162,7 @@ class SellerOrdersController extends AdminBaseController
         $opRs = $srch->getResultSet();
         $opRow = FatApp::getDb()->fetch($opRs);
 
-        if($opRow == false) {
+        if ($opRow == false) {
             Message::addErrorMessage($this->str_invalid_request);
             CommonHelper::redirectUserReferer();
         }
@@ -177,9 +176,9 @@ class SellerOrdersController extends AdminBaseController
         $opRow['shippingAddress'] = (!empty($addresses[Orders::SHIPPING_ADDRESS_TYPE])) ? $addresses[Orders::SHIPPING_ADDRESS_TYPE] : array();
         $opRow['comments'] = $orderObj->getOrderComments($this->adminLangId, array("op_id"=>$op_id));
 
-        if($opRow['pmethod_code'] == 'CashOnDelivery') {
+        if ($opRow['pmethod_code'] == 'CashOnDelivery') {
             $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses(true);
-        }else{
+        } else {
             $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses(false, $opRow['op_product_type']);
         }
 
@@ -194,7 +193,7 @@ class SellerOrdersController extends AdminBaseController
         $allowedShippingUserStatuses = $orderObj->getAdminAllowedUpdateShippingUser();
         $displayShippingUserForm = false;
         /* CommonHelper::printArray($opRow); die; */
-        if(((strtolower($opRow['pmethod_code']) == 'cashondelivery') || (in_array($opRow['op_status_id'], $allowedShippingUserStatuses))) && $this->canEdit && !$shippingHanldedBySeller && ($opRow['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL)) {
+        if (((strtolower($opRow['pmethod_code']) == 'cashondelivery') || (in_array($opRow['op_status_id'], $allowedShippingUserStatuses))) && $this->canEdit && !$shippingHanldedBySeller && ($opRow['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL)) {
             $displayShippingUserForm = true;
             $shippingUserFrm = $this->getShippingCompanyUserForm($displayShippingUserForm);
             $shippingUserdata = array('op_id'=>$op_id , 'optsu_user_id' => $opRow['optsu_user_id'] );
@@ -203,12 +202,12 @@ class SellerOrdersController extends AdminBaseController
         }
 
         $digitalDownloads = array();
-        if($opRow['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
+        if ($opRow['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
             $digitalDownloads = Orders::getOrderProductDigitalDownloads($op_id);
         }
 
         $digitalDownloadLinks = array();
-        if($opRow['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL ) {
+        if ($opRow['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
             $digitalDownloadLinks = Orders::getOrderProductDigitalDownloadLinks($op_id);
         }
 
@@ -223,7 +222,7 @@ class SellerOrdersController extends AdminBaseController
         $this->set('displayForm', (in_array($opRow['op_status_id'], $processingStatuses) && $this->canEdit));
         $this->set('displayShippingUserForm', $displayShippingUserForm);
 
-        if($print) {
+        if ($print) {
             $print = true;
         }
         $this->set('print', $print);
@@ -238,7 +237,7 @@ class SellerOrdersController extends AdminBaseController
         $this->objPrivilege->canEditSellerOrders();
         $post = FatApp::getPostedData();
         $op_id = FatApp::getPostedData('op_id', FatUtility::VAR_INT, 0);
-        if(1 > $op_id ) {
+        if (1 > $op_id) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -260,7 +259,7 @@ class SellerOrdersController extends AdminBaseController
         $rs = $srch->getResultSet();
         $orderDetail = FatApp::getDb()->fetch($rs);
 
-        if (!$orderDetail ) {
+        if (!$orderDetail) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -271,7 +270,7 @@ class SellerOrdersController extends AdminBaseController
         $srch->addCondition('optosu.optsu_op_id', '=', $orderDetail['op_id']);
         $rs = $srch->getResultSet();
         $shippingUserRow = FatApp::getDb()->fetch($rs);
-        if($shippingUserRow) {
+        if ($shippingUserRow) {
             Message::addErrorMessage('Already Assigned to shipping company user');
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -288,13 +287,13 @@ class SellerOrdersController extends AdminBaseController
         $db->startTransaction();
 
         $data = array('optsu_op_id' => $op_id, 'optsu_user_id' => $post['optsu_user_id']);
-        if($orderDetail['optsu_user_id'] == null) {
+        if ($orderDetail['optsu_user_id'] == null) {
             $row = $db->insertFromArray(OrderProduct::DB_TBL_OP_TO_SHIPPING_USERS, $data);
-        }else{
+        } else {
             $row = $db->updateFromArray(OrderProduct::DB_TBL_OP_TO_SHIPPING_USERS, $data, array('smt'=>'optsu_op_id = ?', 'vals'=>array($op_id)));
         }
 
-        if(!$row) {
+        if (!$row) {
             Message::addErrorMessage($db->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -319,7 +318,7 @@ class SellerOrdersController extends AdminBaseController
         $srch->addCondition('optosu.optsu_op_id', '=', $orderDetail['op_id']);
         $rs = $srch->getResultSet();
         $shippingUserRow = FatApp::getDb()->fetch($rs);
-        if($shippingUserRow && $orderDetail['pmethod_code'] == "CashOnDelivery") {
+        if ($shippingUserRow && $orderDetail['pmethod_code'] == "CashOnDelivery") {
             $comments = Labels::getLabel('Msg_Cash_will_collect_against_COD_order', $this->adminLangId).' '.$orderDetail['op_invoice_number'];
             $amt = CommonHelper::orderProductAmount($orderDetail);
             $txnObj = new Transactions();
@@ -330,7 +329,7 @@ class SellerOrdersController extends AdminBaseController
             'utxn_debit'    => $amt,
             'utxn_op_id'    => $orderDetail['op_id'],
             );
-            if(!$txnObj->addTransaction($txnDataArr) ) {
+            if (!$txnObj->addTransaction($txnDataArr)) {
                 $db->rollbackTransaction();
                 Message::addErrorMessage($txnObj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
@@ -339,7 +338,7 @@ class SellerOrdersController extends AdminBaseController
 
         $db->commitTransaction();
 
-        $this->set('msg',  Labels::getLabel('LBL_Updated_Successfully', $this->adminLangId));
+        $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -353,7 +352,7 @@ class SellerOrdersController extends AdminBaseController
         }
 
         $op_id = FatUtility::int($post['op_id']);
-        if(1 > $op_id ) {
+        if (1 > $op_id) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -364,7 +363,7 @@ class SellerOrdersController extends AdminBaseController
         $oCancelRequestSrch->addCondition('ocrequest_op_id', '=', $op_id);
         $oCancelRequestSrch->addCondition('ocrequest_status', '!=', OrderCancelRequest::CANCELLATION_REQUEST_STATUS_DECLINED);
         $oCancelRequestRs = $oCancelRequestSrch->getResultSet();
-        if(FatApp::getDb()->fetch($oCancelRequestRs) ) {
+        if (FatApp::getDb()->fetch($oCancelRequestRs)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Cancel_request_is_submitted_for_this_order', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -379,7 +378,7 @@ class SellerOrdersController extends AdminBaseController
         $srch->addCondition('op_id', '=', $op_id);
         $rs = $srch->getResultSet();
         $orderDetail = array();
-        if($rs) {
+        if ($rs) {
             $orderDetail = FatApp::getDb()->fetch($rs);
         }
 
@@ -389,9 +388,9 @@ class SellerOrdersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if($orderDetail['pmethod_code'] == 'CashOnDelivery') {
+        if ($orderDetail['pmethod_code'] == 'CashOnDelivery') {
             $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses(true);
-        }else{
+        } else {
             $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses(false, $orderDetail['op_product_type']);
         }
 
@@ -408,18 +407,18 @@ class SellerOrdersController extends AdminBaseController
             (array)FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"),
             (array)FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")
         );
-        if(/* strtolower($orderDetail['pmethod_code']) == 'cashondelivery' &&  */!$orderDetail['optsu_user_id'] && in_array($post["op_status_id"], $restrictOrderStatusChange) && $orderDetail['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
+        if (/* strtolower($orderDetail['pmethod_code']) == 'cashondelivery' &&  */!$orderDetail['optsu_user_id'] && in_array($post["op_status_id"], $restrictOrderStatusChange) && $orderDetail['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_assign_shipping_user', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
 
 
         if (in_array($orderDetail["op_status_id"], $processingStatuses) && in_array($post["op_status_id"], $processingStatuses)) {
-            if(!$orderObj->addChildProductOrderHistory($op_id, $orderDetail["order_language_id"], $post["op_status_id"], $post["comments"], $post["customer_notified"], $post["tracking_number"])) {
+            if (!$orderObj->addChildProductOrderHistory($op_id, $orderDetail["order_language_id"], $post["op_status_id"], $post["comments"], $post["customer_notified"], $post["tracking_number"])) {
                 Message::addErrorMessage($this->str_invalid_request);
                 FatUtility::dieJsonError(Message::getHtml());
             }
-        }else{
+        } else {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -429,24 +428,24 @@ class SellerOrdersController extends AdminBaseController
     }
 
     // exists in MyAppController
-    public function digitalDownloads($aFileId,$recordId = 0)
+    public function digitalDownloads($aFileId, $recordId = 0)
     {
         $aFileId = FatUtility::int($aFileId);
         $recordId = FatUtility::int($recordId);
 
-        if(1 > $aFileId || 1 > $recordId) {
+        if (1 > $aFileId || 1 > $recordId) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->adminLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('SellerOrders'));
         }
 
         $file_row = AttachedFile::getAttributesById($aFileId);
 
-        if($file_row == false || ($file_row['afile_record_id'] != $recordId)) {
+        if ($file_row == false || ($file_row['afile_record_id'] != $recordId)) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->adminLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('SellerOrders'));
         }
 
-        if(!file_exists(CONF_UPLOADS_PATH.$file_row['afile_physical_path']) ) {
+        if (!file_exists(CONF_UPLOADS_PATH.$file_row['afile_physical_path'])) {
             Message::addErrorMessage(Labels::getLabel('LBL_File_not_found', $this->adminLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('SellerOrders'));
         }
@@ -459,7 +458,7 @@ class SellerOrdersController extends AdminBaseController
     {
         $json = array();
         $post = FatApp::getPostedData();
-        if(isset($post["val"])) {
+        if (isset($post["val"])) {
             if ($post["val"] == FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS")) {
                 $json["shipping"] = 1;
             }
@@ -467,12 +466,12 @@ class SellerOrdersController extends AdminBaseController
         echo json_encode($json);
     }
 
-    public function CancelOrder( $op_id )
+    public function CancelOrder($op_id)
     {
         $this->objPrivilege->canEditSellerOrders();
         $op_id = FatUtility::int($op_id);
 
-        if(false !== OrderCancelRequest::getCancelRequestById($op_id)) {
+        if (false !== OrderCancelRequest::getCancelRequestById($op_id)) {
             Message::addErrorMessage(Labels::getLabel('MSG_User_have_already_sent_the_cancellation_request_for_this_order', $this->adminLangId));
             CommonHelper::redirectUserReferer();
         }
@@ -490,7 +489,7 @@ class SellerOrdersController extends AdminBaseController
         $srch->addCondition('op_id', '=', $op_id);
         $opRs = $srch->getResultSet();
         $opRow = FatApp::getDb()->fetch($opRs);
-        if(!$opRow ) {
+        if (!$opRow) {
             Message::addErrorMessage($this->str_invalid_request);
             CommonHelper::redirectUserReferer();
         }
@@ -527,7 +526,6 @@ class SellerOrdersController extends AdminBaseController
 
     public function cancelReason()
     {
-
         $frm = $this->getOrderCancelForm($this->adminLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
@@ -537,12 +535,12 @@ class SellerOrdersController extends AdminBaseController
         }
 
         $op_id = FatUtility::int($post['op_id']);
-        if(1 > $op_id ) {
+        if (1 > $op_id) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_access', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if(false !== OrderCancelRequest::getCancelRequestById($op_id)) {
+        if (false !== OrderCancelRequest::getCancelRequestById($op_id)) {
             Message::addErrorMessage(Labels::getLabel('MSG_User_have_already_sent_the_cancellation_request_for_this_order', $this->adminLangId));
             CommonHelper::redirectUserReferer();
         }
@@ -555,7 +553,7 @@ class SellerOrdersController extends AdminBaseController
         $srch->addCondition('op_id', '=', $op_id);
         $rs = $srch->getResultSet();
         $orderDetail = array();
-        if($rs) {
+        if ($rs) {
             $orderDetail = FatApp::getDb()->fetch($rs);
         }
 
@@ -572,7 +570,7 @@ class SellerOrdersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if(!$orderObj->addChildProductOrderHistory($op_id, $this->adminLangId, FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS"), $post["comments"], true)) {
+        if (!$orderObj->addChildProductOrderHistory($op_id, $this->adminLangId, FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS"), $post["comments"], true)) {
             Message::addErrorMessage(Labels::getLabel('MSG_ERROR_INVALID_REQUEST', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -595,13 +593,13 @@ class SellerOrdersController extends AdminBaseController
 
         $frm->addSelectBox('Shipping User', 'optsu_user_id', $records)->requirements()->setRequired();
         $frm->addHiddenField('', 'op_id', 0);
-        if($displayShippingUserForm) {
+        if ($displayShippingUserForm) {
             $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         }
         return $frm;
     }
 
-    private function getOrderCommentsForm($orderData = array(),$processingOrderStatus)
+    private function getOrderCommentsForm($orderData = array(), $processingOrderStatus)
     {
         $frm = new Form('frmOrderComments');
         $frm->addTextArea(Labels::getLabel('LBL_Your_Comments', $this->adminLangId), 'comments');
@@ -639,10 +637,10 @@ class SellerOrdersController extends AdminBaseController
         return $frm;
     }
 
-    private function getOrderSearchForm( $langId )
+    private function getOrderSearchForm($langId)
     {
         $currency_id = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
-        $currencyData = Currency::getAttributesById($currency_id,    array('currency_code','currency_symbol_left','currency_symbol_right'));
+        $currencyData = Currency::getAttributesById($currency_id, array('currency_code','currency_symbol_left','currency_symbol_right'));
         $currencySymbol = ($currencyData['currency_symbol_left'] != '') ? $currencyData['currency_symbol_left'] : $currencyData['currency_symbol_right'];
 
         $frm = new Form('frmVendorOrderSearch');

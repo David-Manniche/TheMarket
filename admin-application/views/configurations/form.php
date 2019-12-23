@@ -1,16 +1,18 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$frm->setFormTagAttribute('class', 'web_form form_horizontal layout--'.$formLayout);
+$frm->setFormTagAttribute('class', 'web_form form_horizontal layout--' . $formLayout);
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = '12';
 
-if($lang_id > 0){
+$tbid = isset($tabId) ? $tabId : 'tabs_' . $frmType;
+
+if ($lang_id > 0) {
     $frm->setFormTagAttribute('onsubmit', 'setupLang(this); return(false);');
-}
-else{
+    $langFld = $frm->getField('lang_id');
+    $langFld->setfieldTagAttribute('onChange', "getLangForm(" . $frmType . ", this.value, '" . $tbid . "');");
+} else {
     $frm->setFormTagAttribute('onsubmit', 'setup(this); return(false);');
 }
-    $tbid = isset($tabId)?$tabId:'tabs_'.$frmType;
-    switch ($frmType){
+switch ($frmType) {
     case Configurations::FORM_GENERAL:
         /* if( $lang_id == 0 ){
             $adminLogoFld = $frm->getField('admin_logo');
@@ -37,30 +39,48 @@ else{
                 $faviconFld->htmlAfterField = '<div class="uploaded--image"><img src="'.CommonHelper::generateFullUrl('Image','favicon',array(''), CONF_WEBROOT_FRONT_URL).'"> <a  class="remove--img" href="javascript:void(0);" onclick="removeFavicon()" ><i class="ion-close-round"></i></a></div>';
             }
         } */
-    break;
+        break;
     case Configurations::FORM_MEDIA:
-
-    break;
+        break;
 
     case Configurations::FORM_DISCOUNT:
-    $discountValue = $frm->getField('CONF_FIRST_TIME_BUYER_COUPON_DISCOUNT_VALUE');
-    $discountValue->requirements()->setRange(0, $record['CONF_FIRST_TIME_BUYER_COUPON_MIN_ORDER_VALUE']);
-    break;
+        $discountValue = $frm->getField('CONF_FIRST_TIME_BUYER_COUPON_DISCOUNT_VALUE');
+        $discountValue->requirements()->setRange(0, $record['CONF_FIRST_TIME_BUYER_COUPON_MIN_ORDER_VALUE']);
+        break;
 }
 
 ?>
-<ul class="tabs_nav innerul abc">
-    <?php if( $frmType == Configurations::FORM_IMPORT_EXPORT){ ?>
-        <li><a href="javascript:void(0);" onclick="generalInstructions(<?php echo $frmType;?>);"><?php echo Labels::getLabel('LBL_Instructions',$adminLangId); ?></a></li>
-    <?php } ?>
-    <?php if( $frmType != Configurations::FORM_MEDIA && $frmType != Configurations::FORM_SHARING ){ ?>
-        <li><a class="<?php echo ($lang_id == 0) ? 'active' : ''; ?>" href="javascript:void(0)" onClick="getForm(<?php echo $frmType;?>,'<?php echo $tbid;?>')">Basic</a></li>
-    <?php } ?>
+<ul class="tabs_nav innerul">
+    <?php if ($frmType == Configurations::FORM_IMPORT_EXPORT) {
+    ?>
+    <li><a href="javascript:void(0);"
+            onclick="generalInstructions(<?php echo $frmType; ?>);"><?php echo Labels::getLabel('LBL_Instructions', $adminLangId); ?></a>
+    </li>
     <?php
-    if( $dispLangTab ){
-        foreach( $languages as $langId => $langName ){ ?>
+} ?>
+    <?php if ($frmType != Configurations::FORM_MEDIA && $frmType != Configurations::FORM_SHARING) {
+        ?>
+    <li><a class="<?php echo ($lang_id == 0) ? 'active' : ''; ?>"
+            href="javascript:void(0)"
+            onClick="getForm(<?php echo $frmType; ?>,'<?php echo $tbid; ?>')">Basic</a>
+    </li>
+    <?php
+    } ?>
+    <?php
+    if ($dispLangTab) {
+        ?>
+    <li>
+        <a class="<?php echo(0 < $lang_id ? 'active' : '') ?>"
+            href="javascript:void(0);"
+            onClick="getLangForm(<?php echo $frmType; ?>, <?php echo FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1); ?>, '<?php echo $tbid; ?>')">
+            <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
+        </a>
+    </li>
+    <?php
+        /* foreach( $languages as $langId => $langName ){ ?>
             <li><a href="javascript:void(0);" class="<?php echo ($lang_id == $langId) ? 'active' : '' ; ?>" onClick="getLangForm(<?php echo $frmType;?>,<?php echo $langId;?>,'<?php echo $tbid; ?>')"><?php echo $langName; ?></a></li>
-        <?php }
+        <?php } */ ?>
+    <?php
     } ?>
 </ul>
 <div class="tabs_panel_wrap">

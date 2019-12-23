@@ -176,11 +176,9 @@ $(document).ready(function () {
         $('html').css('overflow', '')
     });
 
-    $.systemMessage = function(data, cls, autoClose) {
+    $.systemMessage = function(data, cls, autoClose = true) {
         if (typeof autoClose == 'undefined' || autoClose == 'undefined') {
             autoClose = false;
-        } else {
-            autoClose = true;
         }
         initialize();
         $.systemMessage.loading();
@@ -201,9 +199,8 @@ $(document).ready(function () {
             if (cls) $('.system_message').addClass(cls);
             $('.system_message .content').html(data);
             $('.system_message').fadeIn();
-
-            if (!autoClose && CONF_AUTO_CLOSE_SYSTEM_MESSAGES == 1) {
-                var time = CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES * 1000;
+            if (autoClose && CONF_AUTO_CLOSE_SYSTEM_MESSAGES == 1) {
+                var time = CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES * 2000;
                 setTimeout(function() {
                     $.systemMessage.close();
                 }, time);
@@ -313,6 +310,45 @@ $(document).ready(function () {
     /* $(document).click(function(event) {
     	$('ul.dropdown-menu').hide();
     }); */
+    
+    autofillLangData = function (autoFillBtn, frm) {
+        var actionUrl = autoFillBtn.data('action');
+        
+        var defaultLangField = $('input.defaultLang', frm);
+        if (1 > defaultLangField.length) {
+            $.systemMessage(langLbl.unknownPrimaryLanguageField, 'alert--danger');
+            return false;
+        }
+        var proceed = true;
+        var stringToTranslate =  '';
+        defaultLangField.each(function(index) {
+            if ('' != $(this).val()) {
+                if (0 < index) {
+                    stringToTranslate += "&";
+                }
+                stringToTranslate +=  $(this).attr('name') + "=" + $(this).val();
+            } else {
+                $(this).focus();
+                $.systemMessage(langLbl.primaryLanguageField, 'alert--danger');
+                proceed = false;
+                return false;
+            }
+        });
+
+        if (true == proceed) {
+            fcom.displayProcessing();
+            fcom.ajax(actionUrl, stringToTranslate, function(t) {
+                var res = $.parseJSON(t);
+                $.each(res, function(langId, values) {
+                    $.each(values, function(selector, value) {
+                        $("input.langField_" + langId + "[name='" + selector + "']").val(value);
+                    });
+                }); 
+                $.systemMessage.close();
+            });
+        }
+    }
+    
 })(jQuery);
 
 function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection) {
@@ -462,3 +498,12 @@ function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection) {
     }
 
 })();
+
+function isJson(str) {
+    try {
+        var json = JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return json;
+}

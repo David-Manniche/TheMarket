@@ -1,33 +1,34 @@
 <?php
 class Configurations extends FatModel
 {
-    const DB_TBL = 'tbl_configurations';
-    const DB_TBL_PREFIX = 'conf_';
     private $db;
+    public const DB_TBL = 'tbl_configurations';
+    public const DB_TBL_PREFIX = 'conf_';
 
-    const FORM_GENERAL = 1;
-    const FORM_LOCAL = 2;
-    const FORM_SEO = 3;
-    const FORM_PRODUCT = 4;
-    const FORM_AFFILIATE = 5;
-    const FORM_REWARD_POINTS = 6;
-    const FORM_REVIEWS = 7;
-    const FORM_LIVE_CHAT = 8;
-    const FORM_THIRD_PARTY_API = 9;
-    const FORM_EMAIL = 10;
-    const FORM_SERVER = 11;
-    const FORM_SHARING = 12;
-    const FORM_REFERAL = 13;
-    const FORM_MEDIA = 14;
-    const FORM_DISCOUNT = 15;
-    const FORM_SUBSCRIPTION = 16;
-    const FORM_SYSTEM = 17;
-    const FORM_PPC = 18;
-    const FORM_IMPORT_EXPORT = 19;
-    const FORM_CHECKOUT_PROCESS = 20;
-    const FORM_USER_ACCOUNT = 21;
-    const FORM_CART_WISHLIST = 22;
-    const FORM_COMMISSION = 23;
+    public const FORM_GENERAL = 1;
+    public const FORM_LOCAL = 2;
+    public const FORM_SEO = 3;
+    public const FORM_PRODUCT = 4;
+    public const FORM_AFFILIATE = 5;
+    public const FORM_REWARD_POINTS = 6;
+    public const FORM_REVIEWS = 7;
+    public const FORM_LIVE_CHAT = 8;
+    public const FORM_THIRD_PARTY_API = 9;
+    public const FORM_EMAIL = 10;
+    public const FORM_SERVER = 11;
+    public const FORM_SHARING = 12;
+    public const FORM_REFERAL = 13;
+    public const FORM_MEDIA = 14;
+    public const FORM_DISCOUNT = 15;
+    public const FORM_SUBSCRIPTION = 16;
+    public const FORM_SYSTEM = 17;
+    public const FORM_PPC = 18;
+    public const FORM_IMPORT_EXPORT = 19;
+    public const FORM_CHECKOUT_PROCESS = 20;
+    public const FORM_USER_ACCOUNT = 21;
+    public const FORM_CART_WISHLIST = 22;
+    public const FORM_COMMISSION = 23;
+    public const FORM_APPLICATION_THEME_SETTING = 24;
 
     public function __construct()
     {
@@ -37,12 +38,13 @@ class Configurations extends FatModel
     public static function getLangTypeFormArr()
     {
         return  array(
-        Configurations::FORM_GENERAL,
-        Configurations::FORM_EMAIL,
-        Configurations::FORM_SHARING,
-        Configurations::FORM_MEDIA,
-        Configurations::FORM_PPC,
-        Configurations::FORM_SERVER,
+            Configurations::FORM_GENERAL,
+            Configurations::FORM_EMAIL,
+            Configurations::FORM_SHARING,
+            Configurations::FORM_MEDIA,
+            Configurations::FORM_PPC,
+            Configurations::FORM_SERVER,
+            Configurations::FORM_APPLICATION_THEME_SETTING,
         );
     }
 
@@ -54,30 +56,31 @@ class Configurations extends FatModel
             $additionalArr = array(Configurations::FORM_IMPORT_EXPORT => Labels::getLabel('MSG_IMPORT_EXPORT', $adminLangId),);
         }
         $configurationArr =  array(
-        Configurations::FORM_GENERAL =>Labels::getLabel('MSG_General', $adminLangId),
-        Configurations::FORM_LOCAL =>Labels::getLabel('MSG_Local', $adminLangId),
-        Configurations::FORM_SEO =>Labels::getLabel('MSG_Seo', $adminLangId),
-        Configurations::FORM_USER_ACCOUNT =>Labels::getLabel('MSG_Account', $adminLangId),
-        Configurations::FORM_PRODUCT =>Labels::getLabel('MSG_Product', $adminLangId),
-        Configurations::FORM_CART_WISHLIST =>Labels::getLabel('MSG_Cart/Wishlist', $adminLangId),
-        Configurations::FORM_CHECKOUT_PROCESS =>Labels::getLabel('MSG_Checkout', $adminLangId),
-        Configurations::FORM_COMMISSION =>Labels::getLabel('MSG_Commission', $adminLangId),
-        Configurations::FORM_DISCOUNT => Labels::getLabel('MSG_Discount', $adminLangId),
-        Configurations::FORM_REWARD_POINTS => Labels::getLabel('MSG_REWARD_POINTS', $adminLangId),
-        Configurations::FORM_AFFILIATE => Labels::getLabel('MSG_AFFILIATE', $adminLangId),
-        Configurations::FORM_REVIEWS => Labels::getLabel('MSG_REVIEWS', $adminLangId),
-        Configurations::FORM_THIRD_PARTY_API =>Labels::getLabel('MSG_Third_Party_API', $adminLangId),
-        Configurations::FORM_EMAIL =>Labels::getLabel('MSG_Email', $adminLangId),
-        Configurations::FORM_MEDIA => Labels::getLabel('MSG_Media', $adminLangId),
-        Configurations::FORM_SUBSCRIPTION => Labels::getLabel('MSG_Subscription', $adminLangId),
-        Configurations::FORM_REFERAL =>Labels::getLabel('MSG_Referal', $adminLangId),
-        Configurations::FORM_SHARING =>Labels::getLabel('MSG_Sharing', $adminLangId),
-        Configurations::FORM_SYSTEM => Labels::getLabel('MSG_System', $adminLangId),
-        Configurations::FORM_LIVE_CHAT =>Labels::getLabel('MSG_Live_Chat', $adminLangId),
-        Configurations::FORM_PPC => Labels::getLabel('MSG_PPC_Management', $adminLangId),
-        Configurations::FORM_SERVER => Labels::getLabel('MSG_SERVER', $adminLangId),
+            Configurations::FORM_GENERAL => Labels::getLabel('MSG_General', $adminLangId),
+            Configurations::FORM_LOCAL => Labels::getLabel('MSG_Local', $adminLangId),
+            Configurations::FORM_SEO => Labels::getLabel('MSG_Seo', $adminLangId),
+            Configurations::FORM_USER_ACCOUNT => Labels::getLabel('MSG_Account', $adminLangId),
+            Configurations::FORM_PRODUCT => Labels::getLabel('MSG_Product', $adminLangId),
+            Configurations::FORM_CART_WISHLIST => Labels::getLabel('MSG_Cart/Wishlist', $adminLangId),
+            Configurations::FORM_CHECKOUT_PROCESS => Labels::getLabel('MSG_Checkout', $adminLangId),
+            Configurations::FORM_COMMISSION => Labels::getLabel('MSG_Commission', $adminLangId),
+            Configurations::FORM_DISCOUNT => Labels::getLabel('MSG_Discount', $adminLangId),
+            Configurations::FORM_REWARD_POINTS => Labels::getLabel('MSG_REWARD_POINTS', $adminLangId),
+            Configurations::FORM_AFFILIATE => Labels::getLabel('MSG_AFFILIATE', $adminLangId),
+            Configurations::FORM_REVIEWS => Labels::getLabel('MSG_REVIEWS', $adminLangId),
+            Configurations::FORM_THIRD_PARTY_API => Labels::getLabel('MSG_Third_Party_API', $adminLangId),
+            Configurations::FORM_EMAIL => Labels::getLabel('MSG_Email', $adminLangId),
+            Configurations::FORM_MEDIA => Labels::getLabel('MSG_Media', $adminLangId),
+            Configurations::FORM_SUBSCRIPTION => Labels::getLabel('MSG_Subscription', $adminLangId),
+            Configurations::FORM_REFERAL => Labels::getLabel('MSG_Referal', $adminLangId),
+            Configurations::FORM_SHARING => Labels::getLabel('MSG_Sharing', $adminLangId),
+            Configurations::FORM_SYSTEM => Labels::getLabel('MSG_System', $adminLangId),
+            Configurations::FORM_LIVE_CHAT => Labels::getLabel('MSG_Live_Chat', $adminLangId),
+            Configurations::FORM_PPC => Labels::getLabel('MSG_PPC_Management', $adminLangId),
+            Configurations::FORM_SERVER => Labels::getLabel('MSG_SERVER', $adminLangId),
+            Configurations::FORM_APPLICATION_THEME_SETTING => Labels::getLabel('MSG_APPLICATION_THEME_SETTING', $adminLangId),
         );
-        return $configurationArr+$additionalArr;
+        return $configurationArr + $additionalArr;
     }
 
 

@@ -85,7 +85,7 @@ class AffiliateCommission extends MyAppModel
         $srch = self::getHistorySearchObject();
 
         $srch->joinTable(ProductCategory::DB_TBL, 'LEFT OUTER JOIN', 'tpc.prodcat_id = tacsh.acsh_afcommsetting_prodcat_id', 'tpc');
-        $srch->joinTable(ProductCategory::DB_LANG_TBL, 'LEFT OUTER JOIN', 'tpc_l.prodcatlang_prodcat_id = tpc.prodcat_id and tpc_l.prodcatlang_lang_id ='.$langId, 'tpc_l');
+        $srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'tpc_l.prodcatlang_prodcat_id = tpc.prodcat_id and tpc_l.prodcatlang_lang_id ='.$langId, 'tpc_l');
 
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'tacsh.acsh_afcommsetting_user_id = tu.user_id', 'tu');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tuc.credential_user_id = tu.user_id', 'tuc');

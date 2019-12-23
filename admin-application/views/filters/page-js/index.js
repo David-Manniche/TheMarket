@@ -41,9 +41,9 @@ $(document).ready(function(){
 		});
 	};
 
-	langForm = function(filterId, langId) {		
+	langForm = function(filterId, langId, autoFillLangData = 0) {		
 		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('filters', 'langForm', [filterId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('filters', 'langForm', [filterId, langId, autoFillLangData]), '', function(t) {
 				$.facebox(t);
 			});
 		});

@@ -173,8 +173,17 @@ class SupplierController extends MyAppController
             $db->rollbackTransaction();
             FatUtility::dieJsonError(Message::getHtml());
         }
-
-        $userObj->setUpRewardEntry($userObj->getMainTableRecordId(), $this->siteLangId);
+        
+        $referrerCodeSignup = '';
+        if (isset($_COOKIE['referrer_code_signup']) && $_COOKIE['referrer_code_signup'] != '') {
+            $referrerCodeSignup = $_COOKIE['referrer_code_signup'];
+        }
+        $affiliateReferrerCodeSignup = '';
+        if (isset($_COOKIE['affiliate_referrer_code_signup']) && $_COOKIE['affiliate_referrer_code_signup'] != '') {
+            $affiliateReferrerCodeSignup = $_COOKIE['affiliate_referrer_code_signup'];
+        }
+        
+        $userObj->setUpRewardEntry($userObj->getMainTableRecordId(), $this->siteLangId, $referrerCodeSignup, $affiliateReferrerCodeSignup);
 
         if (FatApp::getPostedData('user_newsletter_signup')) {
             include_once CONF_INSTALLATION_PATH . 'library/Mailchimp.php';
@@ -223,14 +232,15 @@ class SupplierController extends MyAppController
         }
 
         if (FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1)) {
-            if (!$userObj->userEmailVerification($userObj, $post, $this->siteLangId)) {
+            if (!$userObj->userEmailVerification($post, $this->siteLangId)) {
                 Message::addErrorMessage(Labels::getLabel("MSG_VERIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId));
                 $db->rollbackTransaction();
                 FatUtility::dieJsonError(Message::getHtml());
             }
         } else {
             if (FatApp::getConfig('CONF_WELCOME_EMAIL_REGISTRATION', FatUtility::VAR_INT, 1)) {
-                if (!$userObj->userWelcomeEmailRegistration($userObj, $post, $this->siteLangId)) {
+                $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
+                if (!$userObj->userWelcomeEmailRegistration($post, $link, $this->siteLangId)) {
                     Message::addErrorMessage(Labels::getLabel("MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId));
                     $db->rollbackTransaction();
                     FatUtility::dieJsonError(Message::getHtml());

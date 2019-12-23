@@ -108,7 +108,7 @@ class BlogPostsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function langForm($postId=0, $lang_id=0)
+    public function langForm($postId=0, $lang_id=0, $autoFillLangData = 0)
     {
         $this->objPrivilege->canEditBlogPosts();
 
@@ -119,7 +119,17 @@ class BlogPostsController extends AdminBaseController
         }
 
         $langFrm = $this->getLangForm($postId, $lang_id);
-        $langData = BlogPost::getAttributesByLangId($lang_id, $postId);
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(BlogPost::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($postId, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = BlogPost::getAttributesByLangId($lang_id, $postId);
+        }
 
         if ($langData) {
             $langFrm->fill($langData);
@@ -230,6 +240,15 @@ class BlogPostsController extends AdminBaseController
         if (!$bpCatObj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($bpCatObj->getError());
             FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(BlogPost::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($post_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId=0;
@@ -514,14 +533,21 @@ class BlogPostsController extends AdminBaseController
         $row = FatApp::getDb()->fetch($rs);
         $frm = new Form('frmBlogPostCatLang', array('id'=>'frmBlogPostCatLang'));
         $frm->addHiddenField('', 'post_id', $postId);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Title', $this->adminLangId), 'post_title');
         $frm->addRequiredField(Labels::getLabel('LBL_Post_Author_Name', $this->adminLangId), 'post_author_name');
         $fld = $frm->addTextarea(Labels::getLabel('LBL_Short_Description', $this->adminLangId), 'post_short_description');
         $fld->requirements()->setRequired(true);
         $fld->htmlAfterField = '<small>'.Labels::getLabel("LBL_only_250_characters_will_be_shown_on_frontend", $this->adminLangId).'</small>';
         $frm->addHtmlEditor(Labels::getLabel('LBL_Description', $this->adminLangId), 'post_description')->requirements()->setRequired(true);
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+        
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;
     }

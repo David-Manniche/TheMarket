@@ -118,10 +118,10 @@ $(document).on('change', '.collection-language-js', function() {
         });
     };
 
-    shopLangForm = function(shopId, langId) {
+    shopLangForm = function(shopId, langId, autoFillLangData = 0) {
         $(dv).html(fcom.getLoader());
 
-        fcom.ajax(fcom.makeUrl('Seller', 'shopLangForm', [shopId, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Seller', 'shopLangForm', [shopId, langId, autoFillLangData]), '', function(t) {
             $(dv).html(t);
             fcom.setEditorLayout(langId);
             var frm = $(dv + ' form')[0];
@@ -275,6 +275,7 @@ $(document).on('change', '.collection-language-js', function() {
     };
 
     getShopCollectionGeneralForm = function(scollection_id) {
+        $(dvt).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('Seller', 'shopCollectionGeneralForm', [scollection_id]), '', function(t) {
             $(dvt).html(t);
         });
@@ -309,14 +310,15 @@ $(document).on('change', '.collection-language-js', function() {
 
     };
 
-    editShopCollectionLangForm = function(scollection_id, langId) {
+    editShopCollectionLangForm = function(scollection_id, langId, autoFillLangData = 0) {
         if (typeof(scollection_id) == "undefined" || scollection_id < 0) {
             return false;
         }
         if (typeof(langId) == "undefined" || langId < 0) {
             return false;
         }
-        fcom.ajax(fcom.makeUrl('seller', 'shopCollectionLangForm', [scollection_id, langId]), '', function(t) {
+        $(dvt).html(fcom.getLoader());
+        fcom.ajax(fcom.makeUrl('seller', 'shopCollectionLangForm', [scollection_id, langId, autoFillLangData]), '', function(t) {
             $(dvt).html(t);
         });
     };
@@ -363,9 +365,9 @@ $(document).on('change', '.collection-language-js', function() {
         });
     };
 
-    returnAddressLangForm = function(langId) {
+    returnAddressLangForm = function(langId, autoFillLangData = 0) {
         $(dv).html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Seller', 'returnAddressLangForm', [langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Seller', 'returnAddressLangForm', [langId, autoFillLangData]), '', function(t) {
             $(dv).html(t);
         });
     };

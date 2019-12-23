@@ -41,9 +41,9 @@ $(document).ready(function(){
 		});
 	};
 	
-	questionnaireLangForm =  function(questionnaireId,langId){
+	questionnaireLangForm =  function(questionnaireId,langId, autoFillLangData = 0){
 		$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('Questionnaires', 'langForm', [questionnaireId, langId]), '', function(t) {
+			fcom.ajax(fcom.makeUrl('Questionnaires', 'langForm', [questionnaireId, langId, autoFillLangData]), '', function(t) {
 				$.facebox(t);
 			});
 		});

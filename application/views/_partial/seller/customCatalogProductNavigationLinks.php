@@ -15,13 +15,12 @@
             <?php echo Labels::getLabel('LBL_Specifications', $siteLangId);?>
         </a>
     </li>
-    <?php foreach ($languages as $langId => $langName) { ?>
-        <li class="<?php echo ($activeTab == 'PRODUCTLANGFORM' && $product_lang_id == $langId) ? 'is-active' : $inactive; ?>">
-            <a href="javascript:void(0);" <?php echo ($preqId) ? " onclick='customCatalogProductLangForm( ".$preqId.",".$langId." );'" : ""; ?>>
-                <?php echo $langName; ?>
-            </a>
-        </li>
-    <?php }
+    <li class="<?php echo ($activeTab == 'PRODUCTLANGFORM' && 0 < $product_lang_id) ? 'is-active' : $inactive; ?>">
+        <a href="javascript:void(0);" <?php echo ($preqId) ? " onclick='customCatalogProductLangForm( ".$preqId.",".FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1)." );'" : ""; ?>>
+            <?php echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
+        </a>
+    </li>
+    <?php
     if (!empty($productOptions)) { ?>
         <li class="<?php echo ($activeTab == 'CUSTOMEANUPC') ? 'is-active' : $inactive; ?>">
             <a <?php echo ($preqId) ? "onclick='customEanUpcForm( ".$preqId." );'" : ""; ?> href="javascript:void(0);">
