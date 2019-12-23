@@ -1953,7 +1953,7 @@ class CommonHelper extends FatUtility
             $controller = 'Content';
         }
 
-        $recordId = isset($queryString[0]) ? $queryString[0] :0;
+        $recordId = isset($queryString[0]) ? $queryString[0] : 0;
         switch ($controller . '/' . $action) {
             case 'category/view':
                 $urlType = applicationConstants::URL_TYPE_CATEGORY;

@@ -148,8 +148,6 @@ INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `et
 CREATE TABLE `tbl_push_notifications`(
     `pnotification_id` INT NOT NULL AUTO_INCREMENT,
     `pnotification_type` TINYINT(1) NOT NULL,
-    `pnotification_title` VARCHAR(200) NOT NULL,
-    `pnotification_description` VARCHAR(255) NOT NULL,
     `pnotification_notified_on` DATETIME NOT NULL,
     `pnotification_for_buyer` TINYINT(1) NOT NULL,
     `pnotification_for_seller` TINYINT(1) NOT NULL,
@@ -165,3 +163,7 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_S.No';
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_Does_not_Matter';
 
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('FCM Push Notification', '3', 'FcmPushNotification', '1', '7')
+
+CREATE TABLE `yokart`.`tbl_push_notifications_lang` ( `pnotificationlang_pnotification_id` INT NOT NULL ,  `pnotificationlang_lang_id` INT NOT NULL ,  `pnotification_title` VARCHAR(200) NOT NULL ,  `pnotification_description` VARCHAR(255) NOT NULL ,  `pnotification_url` VARCHAR(255) NOT NULL ) ENGINE = InnoDB;
+ALTER TABLE `tbl_push_notifications_lang`
+  ADD PRIMARY KEY (`pnotificationlang_pnotification_id`,`pnotificationlang_lang_id`);

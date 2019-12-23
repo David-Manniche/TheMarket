@@ -5,6 +5,11 @@ class FcmPushNotification extends PushNotificationBase
     public const KEY_NAME = 'FcmPushNotification';
     public const LIMIT = 1000;
 
+    public function __construct()
+    {
+        $this->validateSettings();
+    }
+
     private function validateSettings()
     {
         $settings = $this->getSettings();
@@ -15,27 +20,35 @@ class FcmPushNotification extends PushNotificationBase
         $this->serverApiKey = $settings['server_api_key'];
     }
     
-    public function notify($deviceTokens, $title, $message)
+    public function notify($deviceTokens, $data)
     {
         if (!is_array($deviceTokens) || empty($deviceTokens) || 1000 < count($deviceTokens)) {
             $this->error = Labels::getLabel('LBL_ARRAY_MUST_CONTAIN_AT_LEAST_1_AND_AT_MOST_1000_REGISTRATION_TOKENS', CommonHelper::getLangId());
             return false;
         }
 
-        if (empty($title) || empty($message)) {
-            $this->error = Labels::getLabel('LBL_INVALID_REQUEST_PARAMETERS', CommonHelper::getLangId());
+        if (empty($data)) {
+            $this->error = Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId());
             return false;
         }
 
         $msg = [
-            'title' => $title,
-            'message' => $message
-        ];
-        $fields = [
-            'registration_ids' => $deviceTokens,
-            'data' => $msg
+            'title' => $data['title'],
+            'body' => $data['message'],
+            'image' => $data['image']
         ];
 
+        $otherData = [
+            'urlDetail' => $data['urlDetail'],
+        ];
+
+        $fields = [
+            'registration_ids' => $deviceTokens,
+            'notification' => $msg,
+            'data' => $otherData,
+            'priority' => 'high'
+        ];
+        CommonHelper::printArray($fields);
         $headers = [
             'Authorization: key=' . $this->serverApiKey,
             'Content-Type: application/json'
@@ -50,6 +63,6 @@ class FcmPushNotification extends PushNotificationBase
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
         $result = curl_exec($ch);
         curl_close($ch);
-        return $result;
+        return json_decode($result, true);
     }
 }
