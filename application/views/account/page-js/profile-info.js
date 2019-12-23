@@ -101,220 +101,31 @@ $(document).ready(function(){
 		});
 	}
 
-	popupImage = function(input){
-		fcom.ajax(fcom.makeUrl('Cropper', 'index'), '', function(t) {
-			$.facebox(t,'faceboxWidth fbminwidth');
-			var container = document.querySelector('.img-container');
-			var image = container.getElementsByTagName('img').item(0);
-			cropImage(image);
-		});
+	popupImage = function(){
+		systemImgCropper('1 / 1', 'saveImage');
 	};
 
-	cropImage = function(image){
-		var actions = document.getElementById('actions');
-		var options = {
-		aspectRatio: 1 / 1,
-		preview: '.img-preview',
-		crop: function (e) {
-		  var data = e.detail;
-		  console.log(e.type);
-		}
-	  };
-	  var cropper = new Cropper(image, options);
-	  var originalImageURL = image.src;
-	  var uploadedImageType = 'image/jpeg';
-	  var uploadedImageName = 'cropped.jpg';
-	  var uploadedImageURL;
-
-	  actions.querySelector('.docs-buttons').onclick = function (event) {
-		var e = event || window.event;
-		var target = e.target || e.srcElement;
-		var cropped;
-		var result;
-		var input;
-		var data;
-		var orgCanvas;
-
-		if (!cropper) {
-		  return;
-		}
-
-		while (target !== this) {
-		  if (target.getAttribute('data-method')) {
-			break;
-		  }
-
-		  target = target.parentNode;
-		}
-
-		if (target === this || target.disabled || target.className.indexOf('disabled') > -1) {
-		  return;
-		}
-
-		data = {
-		  method: target.getAttribute('data-method'),
-		  target: target.getAttribute('data-target'),
-		  option: target.getAttribute('data-option') || undefined,
-		  secondOption: target.getAttribute('data-second-option') || undefined
-		};
-
-		cropped = cropper.cropped;
-
-		if (data.method) {
-		  if (typeof data.target !== 'undefined') {
-			input = document.querySelector(data.target);
-
-			if (!target.hasAttribute('data-option') && data.target && input) {
-			  try {
-				data.option = JSON.parse(input.value);
-			  } catch (e) {
-				console.log(e.message);
-			  }
-			}
-		  }
-
-		  switch (data.method) {
-			case 'rotate':
-			  if (cropped && options.viewMode > 0) {
-				cropper.clear();
-			  }
-
-			  break;
-
-			case 'getCroppedCanvas':
-			  try {
-				data.option = JSON.parse(data.option);
-			  } catch (e) {
-				console.log(e.message);
-			  }
-
-			  if (uploadedImageType === 'image/jpeg') {
-				if (!data.option) {
-				  data.option = {};
+	saveImage = function(formData){
+		$.ajax({
+			url: fcom.makeUrl('Account', 'uploadProfileImage'),
+			type: 'post',
+			dataType: 'json',
+			data: formData,
+			cache: false,
+			contentType: false,
+			processData: false,
+			beforeSend: function() {
+				// $(node).val('Loading');
+			},
+			success: function(ans) {
+					$('#dispMessage').html(ans.msg);
+					profileInfoForm();
+					$(document).trigger('close.facebox');
+				},
+				error: function(xhr, ajaxOptions, thrownError) {
+					alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
 				}
-
-				data.option.fillColor = '#fff';
-			  }
-
-			  break;
-		  }
-
-			result = cropper[data.method](data.option, data.secondOption);
-
-			/* canvas = cropper.getCroppedCanvas({
-            width: 160,
-            height: 160,
-          }); */
-
-		  switch (data.method) {
-			case 'rotate':
-			  if (cropped && options.viewMode > 0) {
-				cropper.crop();
-			  }
-
-			  break;
-
-			case 'scaleX':
-			case 'scaleY':
-			  target.setAttribute('data-option', -data.option);
-			  break;
-
-			case 'getCroppedCanvas':
-			  if (result) {
-
-				canvas = cropper.clear().getCroppedCanvas();
-				var orgImageBlob;
-				canvas.toBlob(function (blob) {
-					orgImageBlob = blob;
-				});
-
-
-				var node = this;
-				result.toBlob(function (blob) {
-					var formData = new FormData();
-					formData.append('user_profile_image', blob, '_crop.png');
-					formData.append('user_profile_org_image', orgImageBlob, '_org.png');
-					formData.append("action", "avatar");
-					$.ajax({
-						url: fcom.makeUrl('Account', 'uploadProfileImage'),
-						type: 'post',
-						dataType: 'json',
-						data: formData,
-						cache: false,
-						contentType: false,
-						processData: false,
-						beforeSend: function() {
-							$(node).val('Loading');
-						},
-						success: function(ans) {
-								$('#dispMessage').html(ans.msg);
-								profileInfoForm();
-								$(document).trigger('close.facebox');
-							},
-							error: function(xhr, ajaxOptions, thrownError) {
-								alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-							}
-					});
-				});
-			  }
-
-			  break;
-
-			case 'destroy':
-			  cropper = null;
-
-			  if (uploadedImageURL) {
-				URL.revokeObjectURL(uploadedImageURL);
-				uploadedImageURL = '';
-				image.src = originalImageURL;
-			  }
-
-			  break;
-		  }
-
-		  if (typeof result === 'object' && result !== cropper && input) {
-			try {
-			  input.value = JSON.stringify(result);
-			} catch (e) {
-			  console.log(e.message);
-			}
-		  }
-		}
-		};
-
-		// Import image
-		  var inputImage = document.getElementById('inputImage');
-
-		  if (URL) {
-		    inputImage.onchange = function () {
-		      var files = this.files;
-		      var file;
-
-		      if (cropper && files && files.length) {
-		        file = files[0];
-
-		        if (/^image\/\w+/.test(file.type)) {
-		          uploadedImageType = file.type;
-		          uploadedImageName = file.name;
-
-		          if (uploadedImageURL) {
-		            URL.revokeObjectURL(uploadedImageURL);
-		          }
-
-		          image.src = uploadedImageURL = URL.createObjectURL(file);
-		          cropper.destroy();
-		          cropper = new Cropper(image, options);
-		          inputImage.value = null;
-		        } else {
-		          window.alert('Please choose an image file.');
-		        }
-		      }
-		    };
-		  } else {
-		    inputImage.disabled = true;
-		    inputImage.parentNode.className += ' disabled';
-		  }
-
+		});
 	}
 
 	truncateDataRequestPopup = function(){

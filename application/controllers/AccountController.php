@@ -841,7 +841,7 @@ class AccountController extends LoggedUserController
 
         $this->_template->addJs('js/jquery.form.js');
         $this->_template->addJs('js/cropper.js');
-        // $this->_template->addJs('js/cropper-main.js');
+        $this->_template->addJs('js/cropper-main.js');
         $this->_template->addCss('css/cropper.css');
         $this->includeDateTimeFiles();
 
@@ -2633,19 +2633,8 @@ class AccountController extends LoggedUserController
         return $frm; */
         $frm = new Form('frmProfile', array('id'=>'frmProfile'));
         $frm->addFileUpload(Labels::getLabel('LBL_Profile_Picture', $this->siteLangId), 'user_profile_image', array('id'=>'user_profile_image','onchange'=>'popupImage(this)','accept'=>'image/*'));
-        $frm->addHiddenField('', 'update_profile_img', Labels::getLabel('LBL_Update', $this->siteLangId), array('id'=>'update_profile_img'));
-        $frm->addHiddenField('', 'rotate_left', Labels::getLabel('LBL_Rotate_Left', $this->siteLangId), array('id'=>'rotate_left'));
-        $frm->addHiddenField('', 'rotate_right', Labels::getLabel('LBL_Rotate_Right', $this->siteLangId), array('id'=>'rotate_right'));
-        $frm->addHiddenField('', 'flip_horizontal', Labels::getLabel('LBL_Flip_Horizontal', $this->siteLangId), array('id'=>'flip_horizontal'));
-        $frm->addHiddenField('', 'flip_vertical', Labels::getLabel('LBL_Flip_Vertical', $this->siteLangId), array('id'=>'flip_vertical'));
-        $frm->addHiddenField('', 'remove_profile_img', 0, array('id'=>'remove_profile_img'));
-        $frm->addHiddenField('', 'action', 'avatar', array('id'=>'avatar-action'));
-        $userId = UserAuthentication::getLoggedUserId();
-        $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
-        $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
-        $orgImg = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'user', array($userId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
-        $frm->addHiddenField('', 'org_img', $orgImg, array('id'=>'org-img'));
-        $frm->addHiddenField('', 'img_data', '', array('id'=>'img_data'));
+
+        
         return $frm;
     }
 

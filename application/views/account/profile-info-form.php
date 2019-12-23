@@ -72,16 +72,6 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
                             <?php /*<span class="btn btn--primary btn--sm btn--fileupload mt-1">
                                 <?php echo $imgFrm->getFieldHtml('user_profile_image'); ?><?php echo ($mode == 'Edit') ? Labels::getLabel('LBL_Change', $siteLangId): Labels::getLabel('LBL_Upload', $siteLangId) ;?>
                             </span> */ ;?>
-                            <?php echo $imgFrm->getFieldHtml('update_profile_img');
-                            echo $imgFrm->getFieldHtml('rotate_left');
-                            echo $imgFrm->getFieldHtml('rotate_right');
-                            echo $imgFrm->getFieldHtml('flip_horizontal');
-                            echo $imgFrm->getFieldHtml('flip_vertical');
-                            echo $imgFrm->getFieldHtml('remove_profile_img');
-                            echo $imgFrm->getFieldHtml('action');
-                            echo $imgFrm->getFieldHtml('img_data');
-                            echo $imgFrm->getFieldHtml('org_img');
-                            ?>
                             <?php if ($mode == 'Edit') { ?>
                             <a class="btn btn--primary-border btn--sm mt-1" href="javascript:void(0)" onClick="removeProfileImage()"><?php echo Labels::getLabel('LBL_Remove', $siteLangId);?></a>
                             <?php }?>
