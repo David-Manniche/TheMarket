@@ -133,6 +133,7 @@ $(document).ready(function(){
 		var result;
 		var input;
 		var data;
+		var orgCanvas;
 
 		if (!cropper) {
 		  return;
@@ -198,8 +199,13 @@ $(document).ready(function(){
 			  break;
 		  }
 
-		  result = cropper[data.method](data.option, data.secondOption);
-		  // orgResult = cropper.clear().('getCroppedCanvas');
+			result = cropper[data.method](data.option, data.secondOption);
+
+			/* canvas = cropper.getCroppedCanvas({
+            width: 160,
+            height: 160,
+          }); */
+
 		  switch (data.method) {
 			case 'rotate':
 			  if (cropped && options.viewMode > 0) {
@@ -215,18 +221,19 @@ $(document).ready(function(){
 
 			case 'getCroppedCanvas':
 			  if (result) {
-				var formData = new FormData();
-				/* cropper.clear();
-				orgResult = cropper[data.method]('', '');
-				orgResult.toBlob(function (blob) {
-					formData.append('user_profile_org_image', blob, '_org.png');
-				}); */
-				console.log(formData);
-				console.log('nisha');
+
+				canvas = cropper.clear().getCroppedCanvas();
+				var orgImageBlob;
+				canvas.toBlob(function (blob) {
+					orgImageBlob = blob;
+				});
+
+
 				var node = this;
 				result.toBlob(function (blob) {
+					var formData = new FormData();
 					formData.append('user_profile_image', blob, '_crop.png');
-					formData.append('user_profile_org_image', blob, '_org.png');
+					formData.append('user_profile_org_image', orgImageBlob, '_org.png');
 					formData.append("action", "avatar");
 					$.ajax({
 						url: fcom.makeUrl('Account', 'uploadProfileImage'),
