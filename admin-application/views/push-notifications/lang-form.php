@@ -1,14 +1,10 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$frm->setFormTagAttribute('class', 'web_form form_horizontal');
-$frm->setFormTagAttribute('id', 'setupNotificationToUserfrm');
-$frm->setFormTagAttribute('onsubmit', 'setupNotificationToUsers(this); return(false);');
-
+$frm->setFormTagAttribute('class', 'web_form form_horizontal layout--' . $formLayout);
+$frm->setFormTagAttribute('onsubmit', 'setupLang(this); return(false);');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
-
-$usersFld = $frm->getField('users');
-$usersFld->addFieldTagAttribute('data-buyers', $notifyTo['pnotification_for_buyer']);
-$usersFld->addFieldTagAttribute('data-sellers', $notifyTo['pnotification_for_seller']);
+$langFld = $frm->getField('lang_id');
+$langFld->setfieldTagAttribute('onChange', "getLangForm(this.value, " . $pNotificationId . ");");
 ?>
 <section class="section">
     <div class="sectionhead">
@@ -16,7 +12,7 @@ $usersFld->addFieldTagAttribute('data-sellers', $notifyTo['pnotification_for_sel
     </div>
     <div class="sectionbody space">
         <div class=" tabs_nav_container  flat">
-        <ul class="tabs_nav">
+            <ul class="tabs_nav">
                 <li>
                     <a href="javascript:void(0)"
                         onClick="addNotificationForm(<?php echo $pNotificationId; ?>)">
@@ -24,7 +20,7 @@ $usersFld->addFieldTagAttribute('data-sellers', $notifyTo['pnotification_for_sel
                     </a>
                 </li>
                 <li class="<?php echo 1 > $pNotificationId ? 'fat-inactive' : ''; ?>">
-                    <a href="javascript:void(0);" onClick="getLangForm(<?php echo $adminLangId ?>, <?php echo $pNotificationId; ?>)">
+                    <a class="active" href="javascript:void(0);">
                         <?php echo Labels::getLabel('LBL_LANGUAGE_DATA', $adminLangId); ?>
                     </a>
                 </li>
@@ -35,7 +31,7 @@ $usersFld->addFieldTagAttribute('data-sellers', $notifyTo['pnotification_for_sel
                     </a>
                 </li>
                 <li class="<?php echo 1 > $pNotificationId ? 'fat-inactive' : ''; ?>">
-                    <a class="active" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_SELECTED_USERS', $adminLangId); ?></a>
+                    <a href="javascript:void(0)" <?php echo 0 < $pNotificationId ? 'onclick="addSelectedUsersForm(' . $pNotificationId . ');' : ''; ?>"><?php echo Labels::getLabel('LBL_SELECTED_USERS', $adminLangId); ?></a>
                 </li>   
             </ul>
             <div class="tabs_panel_wrap">
@@ -46,14 +42,3 @@ $usersFld->addFieldTagAttribute('data-sellers', $notifyTo['pnotification_for_sel
         </div>
     </div>
 </section>
-<?php
-$htm = '';
-if (isset($data) && !empty($data)) {
-    foreach ($data as $val) {
-        $name = $val['user_name'] . '(' . $val['credential_username'] . ')';
-        $htm .= '<li id="selectedUser-js-' . $val['pntu_user_id'] . '"><i class=" icon ion-close-round"></i> ' . $name . '<input type="hidden" name="pntu_user_id[]" class="userId" value="' . $val['pntu_user_id'] . '" /></li>';
-    }
-}?>
-<script type="text/javascript">
-    $("ul#selectedUsersList-js").append('<?php echo $htm; ?>');
-</script>

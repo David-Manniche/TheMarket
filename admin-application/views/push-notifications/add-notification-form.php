@@ -1,6 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->setFormTagAttribute('class', 'web_form form_horizontal');
-$frm->setFormTagAttribute('id', 'customNotificationfrm');
 $frm->setFormTagAttribute('onsubmit', 'setup(this); return(false);');
 
 $frm->developerTags['colClassPrefix'] = 'col-md-';
@@ -14,10 +13,22 @@ $frm->developerTags['fld_default_col'] = 12;
         <div class=" tabs_nav_container  flat">
             <ul class="tabs_nav">
                 <li>
-                    <a class="active" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_SETUP_NOTIFICATION', $adminLangId); ?></a>
+                    <a class="active" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_GENERAL', $adminLangId); ?></a>
                 </li>
-                <li class="<?php echo 1 > $cNotificationId ? 'fat-inactive' : ''; ?>">
-                    <a href="javascript:void(0)" <?php echo 0 < $cNotificationId ? 'onclick="addSelectedUsersForm(' . $cNotificationId . ');' : ''; ?>"><?php echo Labels::getLabel('LBL_SELECTED_USERS', $adminLangId); ?></a>
+                <li class="<?php echo 1 > $pNotificationId ? 'fat-inactive' : ''; ?>">
+                    <a href="javascript:void(0);"
+                        onClick="getLangForm(<?php echo $adminLangId ?>, <?php echo $pNotificationId; ?>)">
+                        <?php echo Labels::getLabel('LBL_LANGUAGE_DATA', $adminLangId); ?>
+                    </a>
+                </li>
+                <li class="<?php echo 1 > $pNotificationId ? 'fat-inactive' : ''; ?>">
+                    <a href="javascript:void(0);"
+                        onClick="getMediaForm(<?php echo $adminLangId ?>, <?php echo $pNotificationId; ?>)">
+                        <?php echo Labels::getLabel('LBL_MEDIA', $adminLangId); ?>
+                    </a>
+                </li>
+                <li class="<?php echo 1 > $pNotificationId ? 'fat-inactive' : ''; ?>">
+                    <a href="javascript:void(0)" onclick="addSelectedUsersForm(<?php echo $pNotificationId ?>);"><?php echo Labels::getLabel('LBL_SELECTED_USERS', $adminLangId); ?></a>
                 </li>   
             </ul>
             <div class="tabs_panel_wrap">
