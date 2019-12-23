@@ -102,10 +102,10 @@ $(document).ready(function(){
 	}
 
 	popupImage = function(){
-		systemImgCropper('1 / 1', 'saveImage');
+		systemImgCropper(fcom.makeUrl('Account', 'imgCropper'), '1', 'saveProfileImage');
 	};
 
-	saveImage = function(formData){
+	saveProfileImage = function(formData){
 		$.ajax({
 			url: fcom.makeUrl('Account', 'uploadProfileImage'),
 			type: 'post',

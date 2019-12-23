@@ -1,6 +1,6 @@
 (function() {
-systemImgCropper = function(aspectRatio, callback){
-	fcom.ajax(fcom.makeUrl('Cropper', 'index'), '', function(t) {
+systemImgCropper = function(url, aspectRatio, callback){
+	fcom.ajax(url, '', function(t) {
 		$.facebox(t,'faceboxWidth fbminwidth');
 		var container = document.querySelector('.img-container');
 		var image = container.getElementsByTagName('img').item(0);

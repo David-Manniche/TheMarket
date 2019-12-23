@@ -938,6 +938,17 @@ class AccountController extends LoggedUserController
         $this->_template->render(false, false);
     }
 
+    public function imgCropper()
+    {
+        $userId = UserAuthentication::getLoggedUserId(true);
+        $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
+        $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
+        $userImage = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'user', array($userId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+
+        $this->set('image', $userImage);
+        $this->_template->render(false, false, 'cropper/index.php');
+    }
+
     public function profileImageForm()
     {
         $userId = UserAuthentication::getLoggedUserId();
@@ -2632,9 +2643,9 @@ class AccountController extends LoggedUserController
         $fld1 =  $frm->addButton('','user_profile_image',Labels::getLabel('LBL_Change',$this->siteLangId),array('class'=>'userFile-Js','id'=>'user_profile_image'));
         return $frm; */
         $frm = new Form('frmProfile', array('id'=>'frmProfile'));
-        $frm->addFileUpload(Labels::getLabel('LBL_Profile_Picture', $this->siteLangId), 'user_profile_image', array('id'=>'user_profile_image','onchange'=>'popupImage(this)','accept'=>'image/*'));
+        $frm->addFileUpload(Labels::getLabel('LBL_Profile_Picture', $this->siteLangId), 'user_profile_image', array('id'=>'user_profile_image','onClick'=>'popupImage()','accept'=>'image/*'));
 
-        
+
         return $frm;
     }
 

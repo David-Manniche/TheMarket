@@ -64,14 +64,15 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
                     </div>
                     <div class="col-6">
                         <div class="btngroup--fix">
-                            <?php echo $imgFrm->getFormTag();    ?>
-                            <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="popupImage()"><?php echo Labels::getLabel('LBL_Change', $siteLangId);?></a>
+                            <?php echo $imgFrm->getFormTag(); ?>
                             <?php if ($mode == 'Edit') { ?>
-
+                                <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="popupImage()"><?php echo Labels::getLabel('LBL_Change', $siteLangId);?></a>
+                            <?php } else { ?>
+                                <label class="btn btn-primary btn--sm" for="inputImage" title="Upload image file">
+                                  <input type="file" class="sr-only" id="inputImage" name="file" accept="image/*" onClick="popupImage()">
+                                  <?php echo Labels::getLabel('LBL_Upload', $siteLangId); ?>
+                                </label>
                             <?php } ?>
-                            <?php /*<span class="btn btn--primary btn--sm btn--fileupload mt-1">
-                                <?php echo $imgFrm->getFieldHtml('user_profile_image'); ?><?php echo ($mode == 'Edit') ? Labels::getLabel('LBL_Change', $siteLangId): Labels::getLabel('LBL_Upload', $siteLangId) ;?>
-                            </span> */ ;?>
                             <?php if ($mode == 'Edit') { ?>
                             <a class="btn btn--primary-border btn--sm mt-1" href="javascript:void(0)" onClick="removeProfileImage()"><?php echo Labels::getLabel('LBL_Remove', $siteLangId);?></a>
                             <?php }?>
