@@ -1,6 +1,6 @@
 <div class="popup__body">
     <div class="img-container">
-      <img src="<?php echo $userImage; ?>" alt="Picture" id="new-img" class="img_responsive cropper-hidden">
+      <img src="<?php echo (isset($image)) ? $image : ''; ?>" alt="Picture" id="new-img" class="img_responsive cropper-hidden">
     </div>
     <span class="gap"></span>
     <div class="align--center rotator-actions" id="actions" >

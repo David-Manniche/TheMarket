@@ -1363,12 +1363,30 @@ class SellerController extends SellerBaseController
         if (!false == $shopDetails) {
             $shop_id = $shopDetails['shop_id'];
         }
+
+        $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
+        $this->_template->addCss('css/cropper.css');
+
         $this->set('tab', $tab);
         $this->set('subTab', $subTab);
         $this->set('shop_id', $shop_id);
         $this->set('language', Language::getAllNames());
         $this->set('siteLangId', $this->siteLangId);
         $this->_template->render(true, true);
+    }
+
+    public function imgCropper($shop_id, $lang_id, $imageType, $slide_screen)
+    {
+        if ($imageType==AttachedFile::FILETYPE_SHOP_LOGO) {
+            $attachment = AttachedFile::getAttachment(AttachedFile::FILETYPE_SHOP_LOGO, $shop_id, 0, $lang_id, false);
+            $imageFunction = 'shopLogo';
+        } else {
+            $attachment = AttachedFile::getAttachment(AttachedFile::FILETYPE_SHOP_BANNER, $shop_id, 0, $lang_id, false, $slide_screen);
+            $imageFunction = 'shopBanner';
+        }
+        $this->set('image', CommonHelper::generateUrl('Image', $imageFunction, array($attachment['afile_record_id'], $attachment['afile_lang_id'], '', $attachment['afile_id'])));
+        $this->_template->render(false, false, 'cropper/index.php');
     }
 
     public function shopForm()
@@ -3196,12 +3214,12 @@ class SellerController extends SellerBaseController
             Labels::getLabel('Lbl_Banner', $this->siteLangId),
             'shop_banner',
             Labels::getLabel('LBL_Upload_Banner', $this->siteLangId),
-            array('class'=>'shopFile-Js','id'=>'shop_banner','data-file_type'=>AttachedFile::FILETYPE_SHOP_BANNER,'data-frm'=>'frmShopBanner')
+            array('class'=>'shopFile-Js', 'id'=>'shop_banner', 'data-file_type'=>AttachedFile::FILETYPE_SHOP_BANNER, 'data-frm'=>'frmShopBanner')
         );
         return $frm;
     }
 
-    private function getShopLangInfoForm($shop_id =0, $lang_id = 0)
+    private function getShopLangInfoForm($shop_id = 0, $lang_id = 0)
     {
         $frm = new Form('frmShopLang');
         $frm->addHiddenField('', 'shop_id', $shop_id);

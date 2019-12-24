@@ -975,26 +975,26 @@ class AccountController extends LoggedUserController
         $updatedAt = date('Y-m-d H:i:s');
         $uploadedTime = AttachedFile::setTimeParam($updatedAt);
 
-        if (isset($_FILES['user_profile_org_image']['tmp_name'])) {
+        if (isset($_FILES['org_image']['tmp_name'])) {
             $fileHandlerObj = new AttachedFile();
-            if (!$fileHandlerObj->isUploadedFile($_FILES['user_profile_org_image']['tmp_name'])) {
+            if (!$fileHandlerObj->isUploadedFile($_FILES['org_image']['tmp_name'])) {
                 FatUtility::dieJsonError($fileHandlerObj->getError());
             }
 
-            if (!$res = $fileHandlerObj->saveImage($_FILES['user_profile_org_image']['tmp_name'], AttachedFile::FILETYPE_USER_PROFILE_IMAGE, $userId, 0, $_FILES['user_profile_org_image']['name'], -1, true)
+            if (!$res = $fileHandlerObj->saveImage($_FILES['org_image']['tmp_name'], AttachedFile::FILETYPE_USER_PROFILE_IMAGE, $userId, 0, $_FILES['org_image']['name'], -1, true)
             ) {
                 $message = Labels::getLabel($fileHandlerObj->getError(), $this->siteLangId);
                 FatUtility::dieJsonError($message);
             }
         }
 
-        if (isset($_FILES['user_profile_image']['tmp_name'])) {
+        if (isset($_FILES['cropped_image']['tmp_name'])) {
             $fileHandlerObj = new AttachedFile();
-            if (!$fileHandlerObj->isUploadedFile($_FILES['user_profile_image']['tmp_name'])) {
+            if (!$fileHandlerObj->isUploadedFile($_FILES['cropped_image']['tmp_name'])) {
                 FatUtility::dieJsonError($fileHandlerObj->getError());
             }
 
-            if (!$res = $fileHandlerObj->saveImage($_FILES['user_profile_image']['tmp_name'], AttachedFile::FILETYPE_USER_PROFILE_CROPED_IMAGE, $userId, 0, $_FILES['user_profile_image']['name'], -1, true)
+            if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], AttachedFile::FILETYPE_USER_PROFILE_CROPED_IMAGE, $userId, 0, $_FILES['cropped_image']['name'], -1, true)
             ) {
                 $message = Labels::getLabel($fileHandlerObj->getError(), $this->siteLangId);
                 FatUtility::dieJsonError($message);
@@ -2644,8 +2644,6 @@ class AccountController extends LoggedUserController
         return $frm; */
         $frm = new Form('frmProfile', array('id'=>'frmProfile'));
         $frm->addFileUpload(Labels::getLabel('LBL_Profile_Picture', $this->siteLangId), 'user_profile_image', array('id'=>'user_profile_image','onClick'=>'popupImage()','accept'=>'image/*'));
-
-
         return $frm;
     }
 

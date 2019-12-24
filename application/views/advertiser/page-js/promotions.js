@@ -151,9 +151,57 @@ $(document).on('change',"select[name='banner_blocation_id']",function(){
 			alert(langLbl.selectLocation);
 		}
 	};
+ 
+    popupImage = function(){
+		systemImgCropper(fcom.makeUrl('Advertiser', 'imgCropper'), '16 / 9', 'promotionUpload');
+	};
+    
+    promotionUpload = function(formData){
+        var node = this;
+        var promotionId = document.frmPromotionMedia.promotion_id.value;
+        var promotionType = document.frmPromotionMedia.promotion_type.value;
+        var langId = document.frmPromotionMedia.lang_id.value;
+        var banner_screen = document.frmPromotionMedia.banner_screen.value;
+        formData.append('promotion_id', promotionId);
+        formData.append('promotion_type', promotionType);
+        formData.append('lang_id', langId);
+        formData.append("banner_screen", banner_screen);
+        /* $val = $(node).val(); */
+        $.ajax({
+            url: fcom.makeUrl('Advertiser', 'promotionUpload',[promotionId]),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $(node).val('Loading');
+            },
+            complete: function() {
+                /* $(node).val($val); */
+            },
+            success: function(ans) {
+                $.mbsmessage.close();
+                if(ans.status == true){
+                    $.mbsmessage( ans.msg, '', 'alert--success');
+                }else{
+                    $.mbsmessage( ans.msg, '', 'alert--danger');
+                }
+                $('#form-upload').remove();
+                images(promotionId,langId,banner_screen);
+                $(document).trigger('close.facebox');
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+        });
+	}
+    
 })();
 
-$(document).on('click','.bannerFile-Js',function(){
+/* $(document).on('click','.bannerFile-Js',function(){
+    popupImage();
 	var node = this;
 	$('#form-upload').remove();
 	var promotionId = document.frmPromotionMedia.promotion_id.value;
@@ -208,3 +256,4 @@ $(document).on('click','.bannerFile-Js',function(){
 		}
 	}, 500);
 });
+ */

@@ -443,7 +443,7 @@ class AdvertiserController extends AdvertiserBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_Select_A_File', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -480,7 +480,7 @@ class AdvertiserController extends AdvertiserBaseController
         $db->startTransaction();
         $fileHandlerObj = new AttachedFile();
 
-        if (!$res = $fileHandlerObj->saveImage($_FILES['file']['tmp_name'], $attachedFileType, $recordId, 0, $_FILES['file']['name'], -1, true, $langId, '', $bannerScreen)) {
+        if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], $attachedFileType, $recordId, 0, $_FILES['cropped_image']['name'], -1, true, $langId, '', $bannerScreen)) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -516,13 +516,13 @@ class AdvertiserController extends AdvertiserBaseController
         /* } */
         $db->commitTransaction();
 
-        $fileName = $_FILES['file']['name'];
+        $fileName = $_FILES['cropped_image']['name'];
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
         $fileName = strlen($fileName) > 10 ? substr($fileName, 0, 10).'.'.$ext : $fileName;
         Message::addMessage($fileName . " " . Labels::getLabel('MSG_File_uploaded_successfully_and_send_it_for_admin_approval', $this->siteLangId));
 
         $this->set('promotionId', $promotionId);
-        $this->set('file', $_FILES['file']['name']);
+        $this->set('file', $_FILES['cropped_image']['name']);
         FatUtility::dieJsonSuccess(Message::getHtml());
     }
 
@@ -697,6 +697,10 @@ class AdvertiserController extends AdvertiserBaseController
 
         $this->_template->addJs(array('js/jquery.datetimepicker.js'), false);
         $this->_template->addCss(array('css/jquery.datetimepicker.css'), false);
+        
+        $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
+        $this->_template->addCss('css/cropper.css');
 
         $this->set("frmSearchPromotions", $frmSearchPromotions);
         $this->set("records", $records);
@@ -1405,6 +1409,11 @@ class AdvertiserController extends AdvertiserBaseController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
         return $frm;
     }
+    
+    public function imgCropper()
+    {
+        $this->_template->render(false, false, 'cropper/index.php');
+    }
 
     private function getPromotionMediaForm($promotionId = 0, $promotionType = 0)
     {
@@ -1418,10 +1427,9 @@ class AdvertiserController extends AdvertiserBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->siteLangId), 'lang_id', $bannerTypeArr, '', array(), '');
         $screenArr = applicationConstants::getDisplaysArr($this->siteLangId);
         $frm->addSelectBox(Labels::getLabel("LBL_Display_For", $this->siteLangId), 'banner_screen', $screenArr, '', array(), '');
-        $fld = $frm->addButton(Labels::getLabel('LBL_Banner_Image', $this->siteLangId), 'banner_image', Labels::getLabel('LBL_Upload_File', $this->siteLangId), array(
-            'class' => 'bannerFile-Js',
-            'id' => 'banner_image'
-        ));
+        /* $frm->addFileUpload(Labels::getLabel('LBL_Banner_Image', $this->siteLangId), 'banner_image', Labels::getLabel('LBL_Upload_File', $this->siteLangId), array(
+            'class' => 'bannerFile-Js'
+        )); */
 
         return $frm;
     }

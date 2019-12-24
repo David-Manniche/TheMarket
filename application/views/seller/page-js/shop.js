@@ -443,6 +443,91 @@ $(document).on('change', '.collection-language-js', function() {
         $("#frmCollectionsListing").attr("action", fcom.makeUrl('Seller', 'deleteSelectedCollections')).submit();
     };
 
+    bannerPopupImage = function(shopId){
+        var node = this;
+        var slide_screen = '';
+        $('#form-upload').remove();
+        var frmName = $(node).attr('data-frm');
+        var fileType = $(node).attr('data-file_type');
+        if ('frmShopLogo' == frmName) {
+            var lang_id = document.frmShopLogo.lang_id.value;
+        } else {
+            var lang_id = document.frmShopBanner.lang_id.value;
+            var slide_screen = document.frmShopBanner.slide_screen.value;
+        }
+		systemImgCropper(fcom.makeUrl('Seller', 'imgCropper', [shopId, lang_id, fileType, slide_screen]), '16 / 9', 'setupBannerImage');
+	};
+
+	setupBannerImage = function(formData){
+        alert(formData);
+        var node = document.getElementsByClassName('shopFile-Js');
+        $('#form-upload').remove();
+        var frmName = $(node).attr('data-frm');
+        var fileType = $(node).attr('data-file_type');
+        if ('frmShopLogo' == frmName) {
+            var lang_id = document.frmShopLogo.lang_id.value;
+            var imageType = 'logo';
+        } else if ('frmShopBanner' == frmName) {
+            var lang_id = document.frmShopBanner.lang_id.value;
+            var slide_screen = document.frmShopBanner.slide_screen.value;
+            var imageType = 'banner';
+        } else {
+            var lang_id = document.frmBackgroundImage.lang_id.value;
+            var imageType = 'bg';
+        }
+        var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
+        frm = frm.concat('<input type="file" name="file" value="'+formData.user_profile_image+'"/>');
+        frm = frm.concat('<input type="hidden" name="lang_id" value="' + lang_id + '">');
+        frm = frm.concat('<input type="hidden" name="slide_screen" value="' + slide_screen + '">');
+        frm = frm.concat('<input type="hidden" name="file_type" value="' + fileType + '"></form>');
+        $('body').prepend(frm);
+        // $('#form-upload input[name=\'file\']').trigger('click');
+        if (typeof timer != 'undefined') {
+            clearInterval(timer);
+        }
+        timer = setInterval(function() {
+            if ($('#form-upload input[name=\'file\']').val() != '') {
+                clearInterval(timer);
+                $val = $(node).val();
+                $.ajax({
+                    url: fcom.makeUrl('Seller', 'uploadShopImages'),
+                    type: 'post',
+                    dataType: 'json',
+                    data: new FormData($('#form-upload')[0]),
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function() {
+                        $(node).val('Loading');
+                    },
+                    complete: function() {
+                        $(node).val($val);
+                    },
+                    success: function(ans) {
+                        $.mbsmessage.close();
+                        $.systemMessage.close();
+                        $('.text-danger').remove();
+                        $('#input-field' + fileType).html(ans.msg);
+                        if (ans.status == true) {
+                            $.mbsmessage(ans.msg, true, 'alert--success');
+                            $('#input-field' + fileType).removeClass('text-danger');
+                            $('#input-field' + fileType).addClass('text-success');
+                            $('#form-upload').remove();
+                            shopImages(imageType, slide_screen, lang_id);
+                        } else {
+                            $.mbsmessage(ans.msg, true, 'alert--danger');
+                            $('#input-field' + fileType).removeClass('text-success');
+                            $('#input-field' + fileType).addClass('text-danger');
+                        }
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    }
+                });
+            }
+        }, 500);
+	}
+
 })();
 
 function bindAutoComplete() {
@@ -475,7 +560,7 @@ function bindAutoComplete() {
         }
     });
 }
-$(document).on('click', '.shopFile-Js', function() {
+/*$(document).on('click', '.shopFile-Js', function() {
     var node = this;
     $('#form-upload').remove();
     var frmName = $(node).attr('data-frm');
@@ -542,7 +627,7 @@ $(document).on('click', '.shopFile-Js', function() {
             });
         }
     }, 500);
-});
+});*/
 
 $(document).on('click', '.catFile-Js', function() {
     var node = this;

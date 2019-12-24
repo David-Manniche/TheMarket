@@ -98,11 +98,6 @@ cropImage = function(image, options, callback){
 
 		result = cropper[data.method](data.option, data.secondOption);
 
-		/* canvas = cropper.getCroppedCanvas({
-        width: 160,
-        height: 160,
-      }); */
-
 	  switch (data.method) {
 		case 'rotate':
 		  if (cropped && options.viewMode > 0) {
@@ -118,17 +113,14 @@ cropImage = function(image, options, callback){
 
 		case 'getCroppedCanvas':
 		  if (result) {
-			canvas = cropper.clear().getCroppedCanvas();
-			canvas.toBlob(function (blob) {
-				orgImageBlob = blob;
-			});
-
-			var node = this;
 			result.toBlob(function (blob) {
-				var formData = new FormData();
-				formData.append('user_profile_image', blob, '_crop.png');
-				formData.append('user_profile_org_image', orgImageBlob, '_org.png');
-				formData.append("action", "avatar");
+                var formData = new FormData();
+                formData.append('cropped_image', blob, '_crop.png');
+                canvas = cropper.clear().getCroppedCanvas();
+                canvas.toBlob(function (blob) {
+                    formData.append('org_image', blob, '_org.png');
+                });
+                formData.append("action", "avatar");
 				window[callback](formData);
 			});
 		  }
@@ -159,9 +151,9 @@ cropImage = function(image, options, callback){
 
 	// Import image
 	  var inputImage = document.getElementById('inputImage');
-
 	  if (URL) {
-	    inputImage.onchange = function () {
+		  console.log(inputImage);
+          inputImage.onchange = function () {
 	      var files = this.files;
 	      var file;
 
