@@ -5,9 +5,10 @@ class ProductCategoriesController extends AdminBaseController
     private $canEdit;
 
     public function __construct($action)
-    {
-        $ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup','updateOrder');
-        if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
+    { 
+        //$ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup','updateOrder');
+        $ajaxCallArray = array('deleteRecord', 'langForm','search','setup','langSetup','updateOrder');
+        if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) { 
             die($this->str_invalid_Action);
         }
         parent::__construct($action);
@@ -90,15 +91,19 @@ class ProductCategoriesController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function form($prodcat_id = 0, $prodcat_parent = 0)
+    public function form($categoryId = 0, $parentCatId = 0)
     {
         $this->objPrivilege->canEditProductCategories();
-        $prodcat_id = FatUtility::int($prodcat_id);
-        $prodcat_parent = FatUtility::int($prodcat_parent);
-        $prodCatFrm = $this->getForm($prodcat_id);
+        $categoryId = FatUtility::int($categoryId);
+        $parentCatId = FatUtility::int($parentCatId);
+        $prodCatFrm = $this->getForm($categoryId);
         $parentUrl ='';
-        if (0 < $prodcat_id) {
-            $data = ProductCategory::getAttributesById($prodcat_id);
+        if(0 == $categoryId && 0 < $parentCatId){
+            $parentRewrite = UrlRewrite::getDataByOriginalUrl($this->rewriteUrl.$parentCatId);
+            $parentUrl = $parentRewrite['urlrewrite_custom'];            
+        }        
+        if (0 < $categoryId) {
+            $data = ProductCategory::getAttributesById($categoryId);
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
@@ -107,29 +112,22 @@ class ProductCategoriesController extends AdminBaseController
             $urlSrch->doNotCalculateRecords();
             $urlSrch->doNotLimitRecords();
             $urlSrch->addFld('urlrewrite_custom');
-            $urlSrch->addCondition('urlrewrite_original', '=', $this->rewriteUrl.$prodcat_id);
+            $urlSrch->addCondition('urlrewrite_original', '=', $this->rewriteUrl.$categoryId);
             $rs = $urlSrch->getResultSet();
             $urlRow = FatApp::getDb()->fetch($rs);
             if ($urlRow) {
                 $data['urlrewrite_custom'] = $urlRow['urlrewrite_custom'];
             }
             /* ] */
-        } else {
-            $data=array('prodcat_parent'=>$prodcat_parent);
-            if ($prodcat_parent) {
-                $parentRewrite = UrlRewrite::getDataByOriginalUrl($this->rewriteUrl.$prodcat_parent);
-                $parentUrl = $parentRewrite['urlrewrite_custom'];
-            }
-        }
-
-
+        }         
+        $data = array('parentCatId'=>$parentCatId);
         $prodCatFrm->fill($data);
         $this->set('languages', Language::getAllNames());
-        $this->set('prodcat_id', $prodcat_id);
+        $this->set('categoryId', $categoryId);
         $this->set('parentUrl', $parentUrl);
-        $this->set('prodcat_parent_id', $prodcat_parent);
+        $this->set('parentCatId', $parentCatId);
         $this->set('prodCatFrm', $prodCatFrm);
-        $this->_template->render(false, false);
+        $this->_template->render();
     }
 
     public function langForm($catId = 0, $lang_id = 0, $autoFillLangData = 0)
@@ -349,16 +347,15 @@ class ProductCategoriesController extends AdminBaseController
         $categories = $prodCatObj->makeAssociativeArray($arrCategories);
 
         $frm = new Form('frmProdCategory', array( 'id' => 'frmProdCategory'));
-        $frm->addHiddenField('', 'prodcat_id', 0);
+        $frm->addHiddenField('', 'parentCatId', 0);
         $frm->addRequiredField(Labels::getLabel('LBL_Category_Identifier', $this->adminLangId), 'prodcat_identifier');
+        $frm->addSelectBox(Labels::getLabel('LBL_Category_Parent', $this->adminLangId), 'prodcat_parent', array( 0 => Labels::getLabel('LBL_Root_Category', $this->adminLangId) ) + $categories, '', array(), '');
+        $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
+        //$frm->addSelectBox(Labels::getLabel('LBL_Category_Status', $this->adminLangId), 'prodcat_active', $activeInactiveArr, '', array(), '');
+        $frm->addRadioButtons(Labels::getLabel('LBL_Category_Status',$this->adminLangId), 'prodcat_active', $activeInactiveArr, '', array('class' => 'list-inline'));   
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Category_SEO_Friendly_URL', $this->adminLangId), 'urlrewrite_custom');
         $fld->requirements()->setRequired();
-
-        $frm->addSelectBox(Labels::getLabel('LBL_Category_Parent', $this->adminLangId), 'prodcat_parent', array( 0 => Labels::getLabel('LBL_Root_Category', $this->adminLangId) ) + $categories, '', array(), '');
-
-        $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
-
-        $frm->addSelectBox(Labels::getLabel('LBL_Category_Status', $this->adminLangId), 'prodcat_active', $activeInactiveArr, '', array(), '');
+        
         /* $frm->addCheckBox(Labels::getLabel('LBL_Featured',$this->adminLangId), 'prodcat_featured', 1, array(),false,0); */
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
 
@@ -958,5 +955,10 @@ class ProductCategoriesController extends AdminBaseController
     {
         $screenTypesArr = applicationConstants::getDisplaysArr($this->adminLangId);
         return array( 0 => '' ) + $screenTypesArr;
+    }
+    
+    public function demoSetup()
+    {
+        $this->_template->render();
     }
 }
