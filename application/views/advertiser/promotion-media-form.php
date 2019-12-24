@@ -35,18 +35,16 @@ $htmlAfterField.='<div id="image-listing-js"></div>';
 	</ul>
 </div>
 <div class="tabs__content">
-	<div class="row">
-        <div class="row">
-			<div class="col-md-8">
-			<?php echo $mediaFrm->getFormHtml(); ?>
-            <label class="btn btn-primary btn--sm" for="inputImage" title="Upload image file">
-              <input type="file" class="sr-only" id="inputImage" name="file" accept="image/*" onClick="popupImage()">
-              <?php echo Labels::getLabel('LBL_Upload', $siteLangId); ?>
-            </label>
-            <?php echo $htmlAfterField; ?>
-			</div>
+    <div class="row">
+        <div class="col-md-8">
+        <?php echo $mediaFrm->getFormHtml(); ?>
+        <label class="btn btn-primary btn--sm" for="inputImage" title="Upload image file">
+          <input type="file" class="sr-only" id="inputImage" name="file" accept="image/*" onClick="popupImage()">
+          <?php echo Labels::getLabel('LBL_Upload', $siteLangId); ?>
+        </label>
+        <?php echo $htmlAfterField; ?>
         </div>
-	</div>
+    </div>
 </div>
 
 <script>
