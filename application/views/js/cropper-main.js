@@ -115,10 +115,10 @@ cropImage = function(image, options, callback, inputImage){
 			var canvas;
 			canvas = cropper.clear().getCroppedCanvas();
 			canvas.toBlob(function (blob) {
-				formData.append('org_image', blob, '_org.png');
+				formData.append('org_image', blob, 'org'+uploadedImageName);
 			});
 			result.toBlob(function (blob) {
-                formData.append('cropped_image', blob, '_crop.png');
+                formData.append('cropped_image', blob, uploadedImageName);
                 formData.append("action", "avatar");
 				if(inputImage){
 					var frmName = $(inputImage).attr('data-frm')
