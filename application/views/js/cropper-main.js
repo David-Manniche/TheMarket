@@ -1,5 +1,5 @@
 (function() {
-systemImgCropper = function(url, aspectRatio, callback){
+systemImgCropper = function(url, aspectRatio, callback, inputImage){
 	fcom.ajax(url, '', function(t) {
 		$.facebox(t,'faceboxWidth fbminwidth');
 		var container = document.querySelector('.img-container');
@@ -11,11 +11,11 @@ systemImgCropper = function(url, aspectRatio, callback){
 		  var data = e.detail;
 		}
 	  };
-	  return cropImage(image, options, callback);
+	  return cropImage(image, options, callback, inputImage);
 	});
 };
 
-cropImage = function(image, options, callback){
+cropImage = function(image, options, callback, inputImage){
   var actions = document.getElementById('actions');
   var cropper = new Cropper(image, options);
   var originalImageURL = image.src;
@@ -121,6 +121,10 @@ cropImage = function(image, options, callback){
                     formData.append('org_image', blob, '_org.png');
                 });
                 formData.append("action", "avatar");
+				if(inputImage){
+					var frmName = $(inputImage).attr('data-frm')
+					formData.append("frmName", frmName);
+				}
 				window[callback](formData);
 			});
 		  }
@@ -150,9 +154,10 @@ cropImage = function(image, options, callback){
 	};
 
 	// Import image
-	  var inputImage = document.getElementById('inputImage');
+	  if(inputImage === undefined){
+		var inputImage = document.getElementById('inputImage');
+	  }
 	  if (URL) {
-		  console.log(inputImage);
           inputImage.onchange = function () {
 	      var files = this.files;
 	      var file;

@@ -1376,16 +1376,16 @@ class SellerController extends SellerBaseController
         $this->_template->render(true, true);
     }
 
-    public function imgCropper($shop_id, $lang_id, $imageType, $slide_screen)
+    public function imgCropper()
     {
-        if ($imageType==AttachedFile::FILETYPE_SHOP_LOGO) {
+        /*if ($imageType==AttachedFile::FILETYPE_SHOP_LOGO) {
             $attachment = AttachedFile::getAttachment(AttachedFile::FILETYPE_SHOP_LOGO, $shop_id, 0, $lang_id, false);
             $imageFunction = 'shopLogo';
         } else {
             $attachment = AttachedFile::getAttachment(AttachedFile::FILETYPE_SHOP_BANNER, $shop_id, 0, $lang_id, false, $slide_screen);
             $imageFunction = 'shopBanner';
         }
-        $this->set('image', CommonHelper::generateUrl('Image', $imageFunction, array($attachment['afile_record_id'], $attachment['afile_lang_id'], '', $attachment['afile_id'])));
+        $this->set('image', CommonHelper::generateUrl('Image', $imageFunction, array($attachment['afile_record_id'], $attachment['afile_lang_id'], '', $attachment['afile_id'])));*/
         $this->_template->render(false, false, 'cropper/index.php');
     }
 
@@ -1980,7 +1980,7 @@ class SellerController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_select_a_file', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -1991,11 +1991,11 @@ class SellerController extends SellerBaseController
 
         $fileHandlerObj = new AttachedFile();
         if (!$res = $fileHandlerObj->saveAttachment(
-            $_FILES['file']['tmp_name'],
+            $_FILES['cropped_image']['tmp_name'],
             $file_type,
             $shop_id,
             0,
-            $_FILES['file']['name'],
+            $_FILES['cropped_image']['name'],
             -1,
             $unique_record,
             $lang_id,
@@ -2006,7 +2006,7 @@ class SellerController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $this->set('file', $_FILES['file']['name']);
+        $this->set('file', $_FILES['cropped_image']['name']);
         $this->set('shopId', $shop_id);
         /* Message::addMessage(  Labels::getLabel('MSG_File_uploaded_successfully' ,$this->siteLangId) );
         FatUtility::dieJsonSuccess(Message::getHtml()); */
@@ -3178,12 +3178,8 @@ class SellerController extends SellerBaseController
         $frm->addHiddenField('', 'shop_id', $shop_id);
         $bannerTypeArr = applicationConstants::bannerTypeArr();
         $frm->addSelectBox(Labels::getLabel('Lbl_Language', $langId), 'lang_id', $bannerTypeArr, '', array('class'=>'logo-language-js'), '');
-        $fld = $frm->addButton(
-            Labels::getLabel('Lbl_Logo', $langId),
-            'shop_logo',
-            Labels::getLabel('LBL_Upload_Logo', $this->siteLangId),
-            array('class'=>'shopFile-Js','id'=>'shop_logo','data-file_type'=>AttachedFile::FILETYPE_SHOP_LOGO,'data-frm'=>'frmShopLogo')
-        );
+        $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_SHOP_LOGO);
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->siteLangId), 'shop_logo', array('accept'=>'image/*', 'data-frm'=>'frmShopLogo'));
         return $frm;
     }
 
@@ -3210,12 +3206,8 @@ class SellerController extends SellerBaseController
         $frm->addSelectBox(Labels::getLabel('Lbl_Language', $langId), 'lang_id', $bannerTypeArr, '', array('class'=>'banner-language-js'), '');
         $screenArr = applicationConstants::getDisplaysArr($this->siteLangId);
         $frm->addSelectBox(Labels::getLabel("LBL_Display_For", $this->siteLangId), 'slide_screen', $screenArr, '', array(), '');
-        $fld1 =  $frm->addButton(
-            Labels::getLabel('Lbl_Banner', $this->siteLangId),
-            'shop_banner',
-            Labels::getLabel('LBL_Upload_Banner', $this->siteLangId),
-            array('class'=>'shopFile-Js', 'id'=>'shop_banner', 'data-file_type'=>AttachedFile::FILETYPE_SHOP_BANNER, 'data-frm'=>'frmShopBanner')
-        );
+        $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_SHOP_BANNER);
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->siteLangId), 'shop_banner', array('accept'=>'image/*', 'data-frm'=>'frmShopBanner'));
         return $frm;
     }
 

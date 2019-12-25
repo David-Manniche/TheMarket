@@ -1427,9 +1427,7 @@ class AdvertiserController extends AdvertiserBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->siteLangId), 'lang_id', $bannerTypeArr, '', array(), '');
         $screenArr = applicationConstants::getDisplaysArr($this->siteLangId);
         $frm->addSelectBox(Labels::getLabel("LBL_Display_For", $this->siteLangId), 'banner_screen', $screenArr, '', array(), '');
-        /* $frm->addFileUpload(Labels::getLabel('LBL_Banner_Image', $this->siteLangId), 'banner_image', Labels::getLabel('LBL_Upload_File', $this->siteLangId), array(
-            'class' => 'bannerFile-Js'
-        )); */
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->siteLangId), 'banner_image', array('accept'=>'image/*'));
 
         return $frm;
     }

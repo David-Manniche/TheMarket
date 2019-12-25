@@ -443,89 +443,116 @@ $(document).on('change', '.collection-language-js', function() {
         $("#frmCollectionsListing").attr("action", fcom.makeUrl('Seller', 'deleteSelectedCollections')).submit();
     };
 
-    bannerPopupImage = function(shopId){
-        var node = this;
-        var slide_screen = '';
-        $('#form-upload').remove();
-        var frmName = $(node).attr('data-frm');
-        var fileType = $(node).attr('data-file_type');
-        if ('frmShopLogo' == frmName) {
-            var lang_id = document.frmShopLogo.lang_id.value;
-        } else {
-            var lang_id = document.frmShopBanner.lang_id.value;
-            var slide_screen = document.frmShopBanner.slide_screen.value;
-        }
-		systemImgCropper(fcom.makeUrl('Seller', 'imgCropper', [shopId, lang_id, fileType, slide_screen]), '16 / 9', 'setupBannerImage');
+    popupImage = function(inputBtn){
+		systemImgCropper(fcom.makeUrl('Seller', 'imgCropper'), '16/9', 'uploadShopImages', inputBtn);
 	};
 
-	setupBannerImage = function(formData){
-        alert(formData);
-        var node = document.getElementsByClassName('shopFile-Js');
+	uploadShopImages = function(formData){
+        var node = this;
         $('#form-upload').remove();
-        var frmName = $(node).attr('data-frm');
-        var fileType = $(node).attr('data-file_type');
+        var frmName = formData.get("frmName");
         if ('frmShopLogo' == frmName) {
-            var lang_id = document.frmShopLogo.lang_id.value;
+            var langId = document.frmShopLogo.lang_id.value;
+            var fileType = document.frmShopLogo.file_type.value;
             var imageType = 'logo';
-        } else if ('frmShopBanner' == frmName) {
-            var lang_id = document.frmShopBanner.lang_id.value;
-            var slide_screen = document.frmShopBanner.slide_screen.value;
-            var imageType = 'banner';
         } else {
-            var lang_id = document.frmBackgroundImage.lang_id.value;
-            var imageType = 'bg';
+            var langId = document.frmShopBanner.lang_id.value;
+            var slideScreen = document.frmShopBanner.slide_screen.value;
+            var fileType = document.frmShopBanner.file_type.value;
+            var imageType = 'banner';
         }
-        var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-        frm = frm.concat('<input type="file" name="file" value="'+formData.user_profile_image+'"/>');
-        frm = frm.concat('<input type="hidden" name="lang_id" value="' + lang_id + '">');
-        frm = frm.concat('<input type="hidden" name="slide_screen" value="' + slide_screen + '">');
-        frm = frm.concat('<input type="hidden" name="file_type" value="' + fileType + '"></form>');
-        $('body').prepend(frm);
-        // $('#form-upload input[name=\'file\']').trigger('click');
-        if (typeof timer != 'undefined') {
-            clearInterval(timer);
-        }
-        timer = setInterval(function() {
-            if ($('#form-upload input[name=\'file\']').val() != '') {
-                clearInterval(timer);
-                $val = $(node).val();
-                $.ajax({
-                    url: fcom.makeUrl('Seller', 'uploadShopImages'),
-                    type: 'post',
-                    dataType: 'json',
-                    data: new FormData($('#form-upload')[0]),
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    beforeSend: function() {
-                        $(node).val('Loading');
-                    },
-                    complete: function() {
-                        $(node).val($val);
-                    },
-                    success: function(ans) {
-                        $.mbsmessage.close();
-                        $.systemMessage.close();
-                        $('.text-danger').remove();
-                        $('#input-field' + fileType).html(ans.msg);
-                        if (ans.status == true) {
-                            $.mbsmessage(ans.msg, true, 'alert--success');
-                            $('#input-field' + fileType).removeClass('text-danger');
-                            $('#input-field' + fileType).addClass('text-success');
-                            $('#form-upload').remove();
-                            shopImages(imageType, slide_screen, lang_id);
-                        } else {
-                            $.mbsmessage(ans.msg, true, 'alert--danger');
-                            $('#input-field' + fileType).removeClass('text-success');
-                            $('#input-field' + fileType).addClass('text-danger');
-                        }
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-                    }
-                });
+
+        formData.append('slide_screen', slideScreen);
+        formData.append('lang_id', langId);
+        formData.append('file_type', fileType);
+        /* $val = $(node).val(); */
+        $.ajax({
+            url: fcom.makeUrl('Seller', 'uploadShopImages'),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $(node).val('Loading');
+            },
+            complete: function() {
+                /* $(node).val($val); */
+            },
+            success: function(ans) {
+                $.mbsmessage.close();
+                $.systemMessage.close();
+                $('.text-danger').remove();
+                $('#input-field' + fileType).html(ans.msg);
+                if (ans.status == true) {
+                    $.mbsmessage(ans.msg, true, 'alert--success');
+                    $('#input-field' + fileType).removeClass('text-danger');
+                    $('#input-field' + fileType).addClass('text-success');
+                    $('#form-upload').remove();
+                    shopImages(imageType, slideScreen, langId);
+                } else {
+                    $.mbsmessage(ans.msg, true, 'alert--danger');
+                    $('#input-field' + fileType).removeClass('text-success');
+                    $('#input-field' + fileType).addClass('text-danger');
+                }
+                $(document).trigger('close.facebox');
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
             }
-        }, 500);
+        });
+	}
+
+    collectionPopupImage = function(){
+		systemImgCropper(fcom.makeUrl('Seller', 'imgCropper'), '16/9', 'uploadCollectionImage');
+	};
+
+    uploadCollectionImage = function(formData){
+        var node = this;
+        $('#form-upload').remove();
+
+        var scollection_id = document.frmCollectionMedia.scollection_id.value;
+        var lang_id = document.frmCollectionMedia.lang_id.value;
+
+        formData.append('scollection_id', scollection_id);
+        formData.append('lang_id', lang_id);
+        /* $val = $(node).val(); */
+        $.ajax({
+            url: fcom.makeUrl('Seller', 'uploadCollectionImage'),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $(node).val('Loading');
+            },
+            complete: function() {
+                /* $(node).val($val); */
+            },
+            success: function(ans) {
+                $.mbsmessage.close();
+                $.systemMessage.close();
+                var dv = '#mediaResponse';
+                $('.text-danger').remove();
+                if (ans.status == true) {
+                    $.systemMessage(ans.msg, 'alert--success');
+                    $(dv).removeClass('text-danger');
+                    $(dv).addClass('text-success');
+                    shopCollectionImages(scollection_id, lang_id);
+                } else {
+                    $.systemMessage(ans.msg, 'alert--danger');
+                    $(dv).removeClass('text-success');
+                    $(dv).addClass('text-danger');
+                }
+                $(document).trigger('close.facebox');
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+        });
 	}
 
 })();
@@ -560,74 +587,6 @@ function bindAutoComplete() {
         }
     });
 }
-/*$(document).on('click', '.shopFile-Js', function() {
-    var node = this;
-    $('#form-upload').remove();
-    var frmName = $(node).attr('data-frm');
-    var fileType = $(node).attr('data-file_type');
-    if ('frmShopLogo' == frmName) {
-        var lang_id = document.frmShopLogo.lang_id.value;
-        var imageType = 'logo';
-    } else if ('frmShopBanner' == frmName) {
-        var lang_id = document.frmShopBanner.lang_id.value;
-        var slide_screen = document.frmShopBanner.slide_screen.value;
-        var imageType = 'banner';
-    } else {
-        var lang_id = document.frmBackgroundImage.lang_id.value;
-        var imageType = 'bg';
-    }
-    var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-    frm = frm.concat('<input type="file" name="file" />');
-    frm = frm.concat('<input type="hidden" name="lang_id" value="' + lang_id + '">');
-    frm = frm.concat('<input type="hidden" name="slide_screen" value="' + slide_screen + '">');
-    frm = frm.concat('<input type="hidden" name="file_type" value="' + fileType + '"></form>');
-    $('body').prepend(frm);
-    $('#form-upload input[name=\'file\']').trigger('click');
-    if (typeof timer != 'undefined') {
-        clearInterval(timer);
-    }
-    timer = setInterval(function() {
-        if ($('#form-upload input[name=\'file\']').val() != '') {
-            clearInterval(timer);
-            $val = $(node).val();
-            $.ajax({
-                url: fcom.makeUrl('Seller', 'uploadShopImages'),
-                type: 'post',
-                dataType: 'json',
-                data: new FormData($('#form-upload')[0]),
-                cache: false,
-                contentType: false,
-                processData: false,
-                beforeSend: function() {
-                    $(node).val('Loading');
-                },
-                complete: function() {
-                    $(node).val($val);
-                },
-                success: function(ans) {
-                    $.mbsmessage.close();
-                    $.systemMessage.close();
-                    $('.text-danger').remove();
-                    $('#input-field' + fileType).html(ans.msg);
-                    if (ans.status == true) {
-                        $.mbsmessage(ans.msg, true, 'alert--success');
-                        $('#input-field' + fileType).removeClass('text-danger');
-                        $('#input-field' + fileType).addClass('text-success');
-                        $('#form-upload').remove();
-                        shopImages(imageType, slide_screen, lang_id);
-                    } else {
-                        $.mbsmessage(ans.msg, true, 'alert--danger');
-                        $('#input-field' + fileType).removeClass('text-success');
-                        $('#input-field' + fileType).addClass('text-danger');
-                    }
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-                }
-            });
-        }
-    }, 500);
-});*/
 
 $(document).on('click', '.catFile-Js', function() {
     var node = this;
@@ -674,65 +633,6 @@ $(document).on('click', '.catFile-Js', function() {
                         $(dv).addClass('text-success');
                         reloadCategoryBannerList();
                         addCategoryBanner(prodcat_id);
-                    } else {
-                        $.systemMessage(ans.msg, 'alert--danger');
-                        $(dv).removeClass('text-success');
-                        $(dv).addClass('text-danger');
-                    }
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-                }
-            });
-        }
-    }, 500);
-
-});
-
-$(document).on('click', '.shopCollection-Js', function() {
-    var node = this;
-    $('#form-upload').remove();
-    var scollection_id = document.frmCollectionMedia.scollection_id.value;
-    var lang_id = document.frmCollectionMedia.lang_id.value;
-    var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-    frm = frm.concat('<input type="file" name="file" />');
-    frm = frm.concat('<input type="hidden" name="scollection_id" value="' + scollection_id + '">');
-    frm = frm.concat('<input type="hidden" name="lang_id" value="' + lang_id + '">');
-    frm = frm.concat('</form>');
-    $('body').prepend(frm);
-    $('#form-upload input[name=\'file\']').trigger('click');
-    if (typeof timer != 'undefined') {
-        clearInterval(timer);
-    }
-    timer = setInterval(function() {
-        if ($('#form-upload input[name=\'file\']').val() != '') {
-            clearInterval(timer);
-            $val = $(node).val();
-            $.ajax({
-                url: fcom.makeUrl('Seller', 'uploadCollectionImage'),
-                type: 'post',
-                dataType: 'json',
-                data: new FormData($('#form-upload')[0]),
-                cache: false,
-                contentType: false,
-                processData: false,
-                beforeSend: function() {
-                    $(node).val('loading..');
-                },
-                complete: function() {
-                    $(node).val($val);
-                },
-                success: function(ans) {
-                    $.mbsmessage.close();
-                    $.systemMessage.close();
-                    //$.mbsmessage(ans.msg, true, 'alert--success');
-                    var dv = '#mediaResponse';
-                    $('.text-danger').remove();
-                    if (ans.status == true) {
-                        $.systemMessage(ans.msg, 'alert--success');
-                        $(dv).removeClass('text-danger');
-                        $(dv).addClass('text-success');
-                        shopCollectionImages(scollection_id, lang_id);
                     } else {
                         $.systemMessage(ans.msg, 'alert--danger');
                         $(dv).removeClass('text-success');
