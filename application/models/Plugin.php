@@ -7,6 +7,8 @@ class Plugin extends MyAppModel
 
     public const TYPE_CURRENCY_API = 1;
     public const TYPE_SOCIAL_LOGIN_API = 2;
+    
+    public const TYPE_PAYOUTS = 4;
 
     private $db;
     
@@ -79,6 +81,7 @@ class Plugin extends MyAppModel
         return [
             static::TYPE_CURRENCY_API => Labels::getLabel('LBL_CURRENCY_API', $langId),
             static::TYPE_SOCIAL_LOGIN_API => Labels::getLabel('LBL_SOCIAL_LOGIN_API', $langId),
+            static::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT_API', $langId),
         ];
     }
 
@@ -137,6 +140,21 @@ class Plugin extends MyAppModel
             return false;
         }
         return $pluginsTypeArr = static::getDataByType($typeId, $langId, true);
+    }
+
+    public static function getNamesWithCode($typeId, $langId)
+    {
+        $typeId = FatUtility::int($typeId);
+        $langId = FatUtility::int($langId);
+        if (1 > $typeId && 1 > $langId) {
+            return false;
+        }
+        $arr = [];
+        $pluginsTypeArr = static::getDataByType($typeId, $langId);
+        array_walk($pluginsTypeArr, function (&$value, &$key) use (&$arr) {
+            $arr[$value['plugin_code']] = $value['plugin_name'];
+        });
+        return $arr;
     }
 
     public static function getSocialLoginPluginsStatus($langId)

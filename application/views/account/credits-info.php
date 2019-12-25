@@ -63,7 +63,13 @@ if ($userTotalWalletBalance != $userWalletBalance || ($promotionWalletToBeCharge
                 <?php if (CommonHelper::getCurrencyId() != FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1)) { ?>
                     <small class="d-block"><?php echo Labels::getLabel('LBL_Approx.', $siteLangId); ?> <?php echo CommonHelper::displayMoneyFormat($userWalletBalance, true, true); ?></small>
                 <?php } ?>
-
+                <select name='payout_type' class='payout_type'>
+                    <?php
+                    foreach ($payouts as $type => $name) { ?>
+                        <option value='<?php echo $type; ?>'><?php echo $name; ?></option>
+                    <?php }
+                    ?>
+                </select>
                 <a href="javascript:void(0)" onClick="withdrawalReqForm()" class="btn btn--secondary btn--sm"><?php echo Labels::getLabel('LBL_Request_Withdrawal', $siteLangId); ?></a>
         </div>
     </div>

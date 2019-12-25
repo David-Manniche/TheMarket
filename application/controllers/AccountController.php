@@ -401,6 +401,10 @@ class AccountController extends LoggedUserController
 
     public function creditsInfo()
     {
+        $payoutPlugins = Plugin::getNamesWithCode(Plugin::TYPE_PAYOUTS, $this->siteLangId);
+        $payouts = [-1 => Labels::getLabel("LBL_BANK_PAYOUT", $this->siteLangId)] + $payoutPlugins;
+
+        $this->set('payouts', $payouts);
         $this->set('userWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId()));
         $this->set('userTotalWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId(), false, false));
         $this->set('promotionWalletToBeCharged', Promotion::getPromotionWalleToBeCharged(UserAuthentication::getLoggedUserId()));
@@ -428,7 +432,7 @@ class AccountController extends LoggedUserController
         }
         $orderData = array();
         $order_id = isset($_SESSION['wallet_recharge_cart']["order_id"]) ? $_SESSION['wallet_recharge_cart']["order_id"] : false;
-        $orderData['order_type']= Orders::ORDER_WALLET_RECHARGE;
+        $orderData['order_type'] = Orders::ORDER_WALLET_RECHARGE;
 
         $orderData['userAddresses'] = array(); //No Need of it
         $orderData['order_id'] = $order_id;
@@ -3377,5 +3381,110 @@ class AccountController extends LoggedUserController
         }
         $this->set('msg', Labels::getLabel('Msg_Successfully_Updated', $this->siteLangId));
         $this->_template->render();
+    }
+
+    private function validateWithdrawalRequest()
+    {
+        $userId = UserAuthentication::getLoggedUserId();
+
+        $balance = User::getUserBalance($userId);
+        $lastWithdrawal = User::getUserLastWithdrawalRequest($userId);
+
+        if ($lastWithdrawal && (strtotime($lastWithdrawal["withdrawal_request_date"] . "+" . FatApp::getConfig("CONF_MIN_INTERVAL_WITHDRAW_REQUESTS", FatUtility::VAR_INT, 0) . " days") - time()) > 0) {
+            $nextWithdrawalDate = date('d M,Y', strtotime($lastWithdrawal["withdrawal_request_date"] . "+" . FatApp::getConfig("CONF_MIN_INTERVAL_WITHDRAW_REQUESTS") . " days"));
+
+            $message = sprintf(Labels::getLabel('MSG_Withdrawal_Request_Date', $this->siteLangId), FatDate::format($lastWithdrawal["withdrawal_request_date"]), FatDate::format($nextWithdrawalDate), FatApp::getConfig("CONF_MIN_INTERVAL_WITHDRAW_REQUESTS"));
+            FatUtility::dieJsonError($message);
+        }
+
+        $minimumWithdrawLimit = FatApp::getConfig("CONF_MIN_WITHDRAW_LIMIT", FatUtility::VAR_INT, 0);
+        if ($balance < $minimumWithdrawLimit) {
+            $message = sprintf(Labels::getLabel('MSG_Withdrawal_Request_Minimum_Balance_Less', $this->siteLangId), CommonHelper::displayMoneyFormat($minimumWithdrawLimit));
+            FatUtility::dieJsonError($message);
+        }
+
+        if (($minimumWithdrawLimit > $post["withdrawal_amount"])) {
+            $message = sprintf(Labels::getLabel('MSG_Your_withdrawal_request_amount_is_less_than_the_minimum_allowed_amount_of_%s', $this->siteLangId), CommonHelper::displayMoneyFormat($minimumWithdrawLimit));
+            FatUtility::dieJsonError($message);
+        }
+
+        $maximumWithdrawLimit = FatApp::getConfig("CONF_MAX_WITHDRAW_LIMIT", FatUtility::VAR_INT, 0);
+        if (($maximumWithdrawLimit < $post["withdrawal_amount"])) {
+            $message = sprintf(Labels::getLabel('MSG_Your_withdrawal_request_amount_is_greater_than_the_maximum_allowed_amount_of_%s', $this->siteLangId), CommonHelper::displayMoneyFormat($maximumWithdrawLimit));
+            FatUtility::dieJsonError($message);
+        }
+
+        if (($post["withdrawal_amount"] > $balance)) {
+            $message = Labels::getLabel('MSG_Withdrawal_Request_Greater', $this->siteLangId);
+            FatUtility::dieJsonError($message);
+        }
+    }
+
+    public function setupPaypalRequestWithdrawal()
+    {
+        try {
+            $keyName = FatApp::getPostedData('keyName');
+            $particulars = $keyName::particulars();
+            $frm = PluginSetting::getForm($particulars, $this->siteLangId);
+        } catch (\Error $e) {
+            FatUtility::dieJsonError('ERR - ' . $e->getMessage());
+        }
+
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+
+        if (false === $post) {
+            LibHelper::dieJsonError(current($frm->getValidationErrors()));
+        }
+
+        $userId = UserAuthentication::getLoggedUserId();
+        $userObj = new User($userId);
+        $withdrawal_payment_method = FatApp::getPostedData('plugin_id', FatUtility::VAR_INT, 0);
+
+        // $withdrawal_payment_method = ($withdrawal_payment_method > 0 && array_key_exists($withdrawal_payment_method, User::getAffiliatePaymentMethodArr($this->siteLangId))) ? $withdrawal_payment_method  : User::AFFILIATE_PAYMENT_METHOD_BANK;
+
+
+        $post['withdrawal_payment_method'] = $withdrawal_payment_method;
+
+        if (!$withdrawRequestId = $userObj->addWithdrawalRequest(array_merge($post, array("ub_user_id" => $userId)), $this->siteLangId)) {
+            $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
+            FatUtility::dieJsonError($message);
+        }
+
+        $datatoUpdate = [
+            User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC_PREFIX . 'withdrawal_id' => $withdrawRequestId,
+            User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC_PREFIX . 'key' => 'paypal_id',
+            User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC_PREFIX . 'value' => $post['paypal_id'],
+        ];
+        if (!FatApp::getDb()->insertFromArray(User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC, $datatoUpdate, true, array(), $datatoUpdate)) {
+            $message = Labels::getLabel('LBL_ACTION_TRYING_PERFORM_NOT_VALID', $this->siteLangId);
+            FatUtility::dieJsonError($message);
+        }
+
+        $emailNotificationObj = new EmailHandler();
+        if (!$emailNotificationObj->sendWithdrawRequestNotification($withdrawRequestId, $this->siteLangId, "A")) {
+            $message = Labels::getLabel($emailNotificationObj->getError(), $this->siteLangId);
+            FatUtility::dieJsonError($message);
+        }
+
+        //send notification to admin
+        $notificationData = array(
+            'notification_record_type' => Notification::TYPE_WITHDRAWAL_REQUEST,
+            'notification_record_id' => $withdrawRequestId,
+            'notification_user_id' => UserAuthentication::getLoggedUserId(),
+            'notification_label_key' => Notification::WITHDRAWL_REQUEST_NOTIFICATION,
+            'notification_added_on' => date('Y-m-d H:i:s'),
+        );
+
+        if (!Notification::saveNotifications($notificationData)) {
+            $message = Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->siteLangId);
+            FatUtility::dieJsonError($message);
+        }
+
+        $this->set('msg', Labels::getLabel('MSG_Withdraw_request_placed_successfully', $this->siteLangId));
+
+        if (true ===  MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
+        $this->_template->render(false, false, 'json-success.php');
     }
 }

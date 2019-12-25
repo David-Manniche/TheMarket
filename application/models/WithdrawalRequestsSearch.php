@@ -39,4 +39,29 @@ class WithdrawalRequestsSearch extends SearchBase
 
         $this->joinTable('('.$qryUserBalance.')', 'LEFT OUTER JOIN', 'tu.user_id = tqub.userId', 'tqub');
     }
+
+    
+    public static function getWithDrawalSpecifics($recordId)
+    {
+        $recordId = FatUtility::int($recordId);
+        if (1 > $recordId) {
+            return false;
+        }
+        $srch = new SearchBase(User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC, User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC_PREFIX);
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->addCondition(User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC_PREFIX . 'withdrawal_id', '=', $recordId);
+        $srch->addMultipleFields(
+            array('uwrs_key', 'uwrs_value')
+        );
+        $rs = $srch->getResultSet();
+        $records = FatApp::getDb()->fetchAll($rs);
+        $withdrawalSpecifics = [];
+        if (!empty($records)) {
+            foreach ($records as $val) {
+                $withdrawalSpecifics[$val["uwrs_key"]] = $val["uwrs_value"];
+            }
+        }
+        return $withdrawalSpecifics;
+    }
 }

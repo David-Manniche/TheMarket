@@ -1,22 +1,22 @@
 <?php
 class ValidateElement extends FatUtility
 {
-    // const PHONE_REGEX = '^(\+\d{1,2}\s)?\(?\d{3}\)?[\s#-]\d{3}[\s#-]\d{4}$';
-    const PHONE_NO_FORMAT = '';
-    const PHONE_NO_LENGTH = 14;
-    const PHONE_REGEX = '^(?!0+$)[0-9]{1,14}$';
-    const ZIP_REGEX = '^[a-zA-Z0-9]+$';
-    const CITY_NAME_REGEX = '^([^0-9]*)$';
-    const PASSWORD_REGEX = '^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%-_]{8,15}$';
-    const USERNAME_REGEX = '^[a-zA-Z0-9]{3,30}$';
-    const VISA_REGEX = '^4';
-    const MASTER_REGEX = '^5[1-5]';
-    const AMEX_REGEX = '^3[47]';
-    const DINERS_CLUB_REGEX = '^3(?:0[0-5]|[68])';
-    const DISCOVER_REGEX = '^6(?:011|5)';
-    const JCB_REGEX = '^(?:2131|1800|35\d{3})';
-    const TIME_REGEX = '^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$';
-    /*const PHONE_FORMATS = [
+    // public const PHONE_REGEX = '^(\+\d{1,2}\s)?\(?\d{3}\)?[\s#-]\d{3}[\s#-]\d{4}$';
+    public const PHONE_NO_FORMAT = '';
+    public const PHONE_NO_LENGTH = 14;
+    public const PHONE_REGEX = '^(?!0+$)[0-9]{1,14}$';
+    public const ZIP_REGEX = '^[a-zA-Z0-9]+$';
+    public const CITY_NAME_REGEX = '^([^0-9]*)$';
+    public const PASSWORD_REGEX = '^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%-_]{8,15}$';
+    public const USERNAME_REGEX = '^[a-zA-Z0-9]{3,30}$';
+    public const VISA_REGEX = '^4';
+    public const MASTER_REGEX = '^5[1-5]';
+    public const AMEX_REGEX = '^3[47]';
+    public const DINERS_CLUB_REGEX = '^3(?:0[0-5]|[68])';
+    public const DISCOVER_REGEX = '^6(?:011|5)';
+    public const JCB_REGEX = '^(?:2131|1800|35\d{3})';
+    public const TIME_REGEX = '^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$';
+    /*public const PHONE_FORMATS = [
         '123-456-7890',
         '(123) 456-7890',
         '123 456 7890',

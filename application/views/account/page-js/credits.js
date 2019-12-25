@@ -40,10 +40,17 @@ $(document).ready(function(){
 	};
 
 	withdrawalReqForm = function(){
-		$(dvForm).html( fcom.getLoader() );
-		fcom.ajax(fcom.makeUrl('Account','requestWithdrawal'), '', function(res){
-			$(dvForm).html(res);
-		});
+        $(dvForm).html( fcom.getLoader() );
+        $payoutType = $(".payout_type").val();
+        if ('-1' == $payoutType) {
+            fcom.ajax(fcom.makeUrl('Account','requestWithdrawal'), '', function(res){
+                $(dvForm).html(res);
+            });
+        } else {
+            fcom.ajax(fcom.makeUrl('PluginBase', 'getParticularsForm', [$payoutType]), '', function(res){
+                $(dvForm).html(res);
+            });
+        }
 	};
 
 	setupWithdrawalReq = function(frm){
@@ -69,4 +76,13 @@ $(document).ready(function(){
 			}
 		});
 	}
+    setupPluginsParticulars = function(frm){
+		if (!$(frm).validate()) return;
+		var data = fcom.frmData(frm);
+		fcom.updateWithAjax(fcom.makeUrl('Account', 'setupPaypalRequestWithdrawal'), data, function(t) {
+			$(dvForm).html('');
+			creditsInfo();
+			searchCredits(document.frmCreditSrch);
+		});
+	};
 })();

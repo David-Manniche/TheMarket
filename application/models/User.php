@@ -34,6 +34,9 @@ class User extends MyAppModel
 
     public const DB_TBL_USR_WITHDRAWAL_REQ = 'tbl_user_withdrawal_requests';
     public const DB_TBL_USR_WITHDRAWAL_REQ_PREFIX = 'withdrawal_';
+    
+    public const DB_TBL_USR_WITHDRAWAL_REQ_SPEC = 'tbl_user_withdrawal_requests_specifics';
+    public const DB_TBL_USR_WITHDRAWAL_REQ_SPEC_PREFIX = 'uwrs_';
 
     public const DB_TBL_USR_EXTRAS = 'tbl_user_extras';
     public const DB_TBL_USR_EXTRAS_PREFIX = 'uextra_';
@@ -1192,7 +1195,7 @@ class User extends MyAppModel
         if (!empty($referrerCodeSignup)) {
             $cookieDataArr = unserialize($referrerCodeSignup);
             $userReferrerCode = $cookieDataArr['data'];
-            $referrerUserRow = $this->getUserByReferrerCode($userReferrerCode);                        
+            $referrerUserRow = $this->getUserByReferrerCode($userReferrerCode);
             if ($referrerUserRow && $referrerUserRow['user_referral_code'] == $userReferrerCode && $userReferrerCode != '' && $referrerUserRow['user_referral_code'] != '') {
                 $referrerUserId = $referrerUserRow['user_id'];
                 $referrerUserName = $referrerUserRow['user_name'];
@@ -1204,7 +1207,7 @@ class User extends MyAppModel
         /* add Rewards points, upon signing up, referrer will get rewarded[ */
         $CONF_REGISTRATION_REFERRER_REWARD_POINTS = FatApp::getConfig("CONF_REGISTRATION_REFERRER_REWARD_POINTS", FatUtility::VAR_INT, 0);
         if (($referrerUserId > 0) && FatApp::getConfig("CONF_ENABLE_REFERRER_MODULE") && $CONF_REGISTRATION_REFERRER_REWARD_POINTS > 0) {
-            $this->addReferrerRewardPoints($referrerUserId, $referredUserId);            
+            $this->addReferrerRewardPoints($referrerUserId, $referredUserId);
         }
         /* ] */
 
@@ -1237,8 +1240,8 @@ class User extends MyAppModel
         /* binding user to its referrer affiliate user[ */
         if (!empty($affiliateReferrerCodeSignup)) {
             $cookieDataArr = unserialize($affiliateReferrerCodeSignup);
-            $affiliateReferrerCode = $cookieDataArr['data'];            
-            $affiliateReferrerUserRow = $this->getUserByReferrerCode($affiliateReferrerCode);            
+            $affiliateReferrerCode = $cookieDataArr['data'];
+            $affiliateReferrerUserRow = $this->getUserByReferrerCode($affiliateReferrerCode);
             if ($affiliateReferrerUserRow && $affiliateReferrerUserRow['user_referral_code'] == $affiliateReferrerCode && $affiliateReferrerCode != '' && $affiliateReferrerUserRow['user_referral_code'] != '') {
                 $affiliateReferrerUserId = $affiliateReferrerUserRow['user_id'];
                 $this->setUserInfo(array( 'user_affiliate_referrer_user_id' => $affiliateReferrerUserId ));
@@ -1262,7 +1265,7 @@ class User extends MyAppModel
             'utxn_type'        =>    Transactions::TYPE_AFFILIATE_REFERRAL_SIGN_UP
             );
             if (!$txnId = $transObj->addTransaction($txnDataArr)) {
-                $this->error = $transObj->getError();                
+                $this->error = $transObj->getError();
             }
             /* Send email to User[ */
             $emailNotificationObj = new EmailHandler();
@@ -1276,7 +1279,7 @@ class User extends MyAppModel
     }
 
     public function setLoginCredentials($username, $email, $password, $active = null, $verified = null)
-    {  
+    {
         if (! ($this->mainTableRecordId > 0)) {
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
             return false;
@@ -1287,7 +1290,7 @@ class User extends MyAppModel
             return false;
         }
 
-        $email = (empty($email)) ? NULL : $email;
+        $email = (empty($email)) ? null : $email;
         $record = new TableRecord(static::DB_TBL_CRED);
         $arrFlds = array(
         static::DB_TBL_CRED_PREFIX.'username' => $username,
@@ -1438,9 +1441,9 @@ class User extends MyAppModel
             return false;
         }
         
-        $arrToUpdate[static::DB_TBL_PREFIX. 'is_supplier'] = applicationConstants::ACTIVE;        
+        $arrToUpdate[static::DB_TBL_PREFIX. 'is_supplier'] = applicationConstants::ACTIVE;
         if ($activateAdveracc == 1) {
-            $arrToUpdate[static::DB_TBL_PREFIX. 'is_advertiser'] = applicationConstants::ACTIVE;            
+            $arrToUpdate[static::DB_TBL_PREFIX. 'is_advertiser'] = applicationConstants::ACTIVE;
         }
 
         $db = FatApp::getDb();
@@ -1588,7 +1591,7 @@ class User extends MyAppModel
             Message::addMessage(Labels::getLabel("ERR_ERROR_IN_SENDING_VERFICATION_EMAIL", $langId));
             return false;
         }
-        return true;  
+        return true;
     }
 
     public function guestUserWelcomeEmail($data, $langId)
@@ -1612,7 +1615,7 @@ class User extends MyAppModel
     }
 
     public function userWelcomeEmailRegistration($data, $link, $langId)
-    {        
+    {
         $data = array(
                     'user_name' => $data['user_name'],
                     'user_email' => $data['user_email'],
@@ -1624,8 +1627,8 @@ class User extends MyAppModel
             Message::addMessage(Labels::getLabel("ERR_ERROR_IN_SENDING_WELCOME_EMAIL", $langId));
             return false;
         }
-        return true;          
-    }    
+        return true;
+    }
 
     public function notifyAdminSupplierApproval($userObj, $data, $approval_request = 1, $langId)
     {
@@ -1776,21 +1779,19 @@ class User extends MyAppModel
         'withdrawal_user_id'=>$userId,
         ); */
         $assignFields = array(
-        'withdrawal_user_id'=>$userId,
-        'withdrawal_payment_method'    =>    $data['withdrawal_payment_method'],
-        'withdrawal_amount'=>$data['withdrawal_amount'],
-
-        'withdrawal_bank'=>$data['ub_bank_name'],
-        'withdrawal_account_holder_name'=>$data['ub_account_holder_name'],
-        'withdrawal_account_number'=>$data['ub_account_number'],
-        'withdrawal_ifc_swift_code'=>$data['ub_ifsc_swift_code'],
-        'withdrawal_bank_address'=>$data['ub_bank_address'],
-
-        'withdrawal_comments'=>$data['withdrawal_comments'],
-        'withdrawal_status'=>0,
-        'withdrawal_request_date'=>date('Y-m-d H:i:s'),
-        'withdrawal_cheque_payee_name'    => $data['withdrawal_cheque_payee_name'],
-        'withdrawal_paypal_email_id'    =>    $data['withdrawal_paypal_email_id']
+            'withdrawal_user_id' => $userId,
+            'withdrawal_payment_method' => isset($data['withdrawal_payment_method']) ? $data['withdrawal_payment_method'] : '',
+            'withdrawal_amount' => isset($data['withdrawal_amount']) ? $data['withdrawal_amount'] : '',
+            'withdrawal_bank' => isset($data['ub_bank_name']) ? $data['ub_bank_name'] : '',
+            'withdrawal_account_holder_name' => isset($data['ub_account_holder_name']) ? $data['ub_account_holder_name'] : '',
+            'withdrawal_account_number' => isset($data['ub_account_number']) ? $data['ub_account_number'] : '',
+            'withdrawal_ifc_swift_code' => isset($data['ub_ifsc_swift_code']) ? $data['ub_ifsc_swift_code'] : '',
+            'withdrawal_bank_address' => isset($data['ub_bank_address']) ? $data['ub_bank_address'] : '',
+            'withdrawal_comments' => isset($data['withdrawal_comments']) ? $data['withdrawal_comments'] : '',
+            'withdrawal_status' => 0,
+            'withdrawal_request_date' => date('Y-m-d H:i:s'),
+            'withdrawal_cheque_payee_name' => isset($data['withdrawal_cheque_payee_name']) ? $data['withdrawal_cheque_payee_name'] : '',
+            'withdrawal_paypal_email_id' => isset($data['withdrawal_paypal_email_id']) ? $data['withdrawal_paypal_email_id'] : ''
         );
 
         $broken = false;
@@ -1798,7 +1799,7 @@ class User extends MyAppModel
         if (FatApp::getDb()->startTransaction() && FatApp::getDb()->insertFromArray(static::DB_TBL_USR_WITHDRAWAL_REQ, $assignFields)) {
             $withdrawRequestId = FatApp::getDb()->getInsertId();
 
-            $formattedRequestValue = '#'.str_pad($withdrawRequestId, 6, '0', STR_PAD_LEFT);
+            $formattedRequestValue = '#' . str_pad($withdrawRequestId, 6, '0', STR_PAD_LEFT);
 
             $txnArray["utxn_user_id"] = $userId;
             $txnArray["utxn_debit"] = $data["withdrawal_amount"];
@@ -2108,9 +2109,9 @@ class User extends MyAppModel
         $date = empty($date) ? date('Y-m-d  H:i:s') : $date;
         $where = array('smt'=>'user_id = ?', 'vals'=>array($userId));
         FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_img_updated_on'=>date('Y-m-d  H:i:s')), $where);
-    }    
+    }
       
-    public function saveUserData( $postedData, $socialUser = false)
+    public function saveUserData($postedData, $socialUser = false)
     {
         $db = FatApp::getDb();
         $db->startTransaction();
@@ -2120,7 +2121,7 @@ class User extends MyAppModel
             return false;
         }
 
-        if(!$this->validateUserForRegistration($postedData['user_username'], $postedData['user_email'])){
+        if (!$this->validateUserForRegistration($postedData['user_username'], $postedData['user_email'])) {
             $this->error = $db->getError();
             return false;
         }
@@ -2138,8 +2139,8 @@ class User extends MyAppModel
             return false;
         }
 
-        if (isset($postedData['user_newsletter_signup']) && $postedData['user_newsletter_signup'] == 1 ) {
-            if(!MailchimpHelper::saveSubscriber($postedData['user_email'])){
+        if (isset($postedData['user_newsletter_signup']) && $postedData['user_newsletter_signup'] == 1) {
+            if (!MailchimpHelper::saveSubscriber($postedData['user_email'])) {
                 $db->rollbackTransaction();
                 $this->error = Labels::getLabel("LBL_Newsletter_is_not_configured_yet,_Please_contact_admin", $this->commonLangId);
                 return false;
@@ -2154,7 +2155,7 @@ class User extends MyAppModel
             }
         }
         
-        if($socialUser == false){
+        if ($socialUser == false) {
             if (!$this->saveUserNotifications()) {
                 $db->rollbackTransaction();
                 $this->error = $db->getError();
@@ -2165,15 +2166,15 @@ class User extends MyAppModel
         if (FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) && $socialUser == false) {
             if (!$this->userEmailVerification($postedData, $this->commonLangId)) {
                 $db->rollbackTransaction();
-                $this->error = Labels::getLabel("ERR_ERROR_IN_SENDING_VERFICATION_EMAIL",$this->commonLangId);
+                $this->error = Labels::getLabel("ERR_ERROR_IN_SENDING_VERFICATION_EMAIL", $this->commonLangId);
                 return false;
             }
-        }else{
+        } else {
             if (FatApp::getConfig('CONF_WELCOME_EMAIL_REGISTRATION', FatUtility::VAR_INT, 1)) {
                 $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
                 if (!$this->userWelcomeEmailRegistration($postedData, $link, $this->commonLangId)) {
                     $db->rollbackTransaction();
-                    $message = Labels::getLabel("ERR_ERROR_IN_SENDING_WELCOME_EMAIL",$this->siteLangId);                    
+                    $message = Labels::getLabel("ERR_ERROR_IN_SENDING_WELCOME_EMAIL", $this->siteLangId);
                     return false;
                 }
             }
@@ -2194,22 +2195,22 @@ class User extends MyAppModel
         return true;
     }
     
-    public function validateUserForRegistration( $userName, $userEmail )
-    {       
-        $row = $this->checkUserByEmailOrUserName( $userName, $userEmail );        
+    public function validateUserForRegistration($userName, $userEmail)
+    {
+        $row = $this->checkUserByEmailOrUserName($userName, $userEmail);
         if ($row['credential_username']==$userName) {
             $this->error = Labels::getLabel('MSG_DUPLICATE_USERNAME', $this->commonLangId);
             return false;
-        }        
-        if ($row['credential_email']==$userEmail) { 
+        }
+        if ($row['credential_email']==$userEmail) {
             $this->error = Labels::getLabel('MSG_DUPLICATE_EMAIL', $this->commonLangId);
             return false;
-        }        
-        return true;        
+        }
+        return true;
     }
     
-    public function checkUserByEmailOrUserName( $userName, $userEmail )
-    {        
+    public function checkUserByEmailOrUserName($userName, $userEmail)
+    {
         $srch = $this->getUserSearchObj(array('user_id','credential_email','credential_username'));
         $condition=$srch->addCondition('credential_username', '=', $userName);
         $condition->attachCondition('credential_email', '=', $userEmail, 'OR');
@@ -2229,7 +2230,7 @@ class User extends MyAppModel
         if (!Notification::saveNotifications($notificationData)) {
             $this->error = FatApp::getDb()->getError();
             return false;
-        } 
+        }
         return true;
     }
     
@@ -2241,7 +2242,7 @@ class User extends MyAppModel
         $userSrchObj->addCondition('user_referral_code', '=', $userReferrerCode);
         $userSrchObj->addMultipleFields(array('user_id', 'user_referral_code', 'user_name' ));
         $rs = $userSrchObj->getResultSet();
-        return FatApp::getDb()->fetch($rs);        
+        return FatApp::getDb()->fetch($rs);
     }
     
     public function addReferrerRewardPoints($referrerUserId, $referredUserId)
@@ -2256,7 +2257,7 @@ class User extends MyAppModel
         $rewardsRecord = new UserRewards();
         $referralUserName = User::getAttributesById($referredUserId, "user_name");
         $urpComments = Labels::getLabel("LBL_Signup_Reward_Points._Your_Referral_{username}_registered.", $langId);
-        $urpComments = str_replace("{username}", $referralUserName, $urpComments);        
+        $urpComments = str_replace("{username}", $referralUserName, $urpComments);
         $rewardsRecord->assignValues(
             array(
             'urp_user_id'            => $referrerUserId,
@@ -2457,7 +2458,7 @@ class User extends MyAppModel
     public function addReferralRewardPoints($referredUserId, $referrerUserId, $referrerUserName)
     {
         $rewardReferralExpiryDate = '0000-00-00';
-        $CONF_REGISTRATION_REFERRAL_REWARD_POINTS_VALIDITY = FatApp::getConfig("CONF_REGISTRATION_REFERRAL_REWARD_POINTS_VALIDITY", FatUtility::VAR_INT, 0);        
+        $CONF_REGISTRATION_REFERRAL_REWARD_POINTS_VALIDITY = FatApp::getConfig("CONF_REGISTRATION_REFERRAL_REWARD_POINTS_VALIDITY", FatUtility::VAR_INT, 0);
         if ($CONF_REGISTRATION_REFERRAL_REWARD_POINTS_VALIDITY > 0) {
             $rewardReferralExpiryDate = date('Y-m-d', strtotime('+'. $CONF_REGISTRATION_REFERRAL_REWARD_POINTS_VALIDITY .' days'));
         }
@@ -2484,5 +2485,4 @@ class User extends MyAppModel
             $this->error = $rewardsRecord->getError();
         }
     }
-
 }
