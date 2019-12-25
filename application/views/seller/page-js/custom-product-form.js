@@ -689,6 +689,52 @@
 		});
 	}
 
+	brandPopupImage = function(){
+		systemImgCropper(fcom.makeUrl('Seller', 'imgCropper'), '16/9', 'uploadBrandLogo');
+	};
+
+    uploadBrandLogo = function(formData){
+        var node = this;
+		var brandId = $(node).attr( 'data-brand_id' );
+		var langId = document.frmBrandMedia.brand_lang_id.value;
+
+        formData.append('brand_id', brandId);
+        formData.append('lang_id', langId);
+        /* $val = $(node).val(); */
+        $.ajax({
+            url: fcom.makeUrl('Seller', 'uploadLogo'),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $(node).val('Loading');
+            },
+            complete: function() {
+                /* $(node).val($val); */
+            },
+            success: function(ans) {
+				$('.text-danger').remove();
+				$('#input-field').html(ans.msg);
+				if( ans.status == true ){
+					$('#input-field').removeClass('text-danger');
+					$('#input-field').addClass('text-success');
+					brandMediaForm(ans.brandId);
+				}else{
+					$('#input-field').removeClass('text-success');
+					$('#input-field').addClass('text-danger');
+				}
+				// reloadList();
+                $(document).trigger('close.facebox');
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+        });
+	}
+
 })();
 
 $(document).on('click','.uploadFile-Js',function(){
