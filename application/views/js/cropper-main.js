@@ -30,7 +30,6 @@ cropImage = function(image, options, callback, inputImage){
 	var result;
 	var input;
 	var data;
-	var orgCanvas;
 	var orgImageBlob;
 	if (!cropper) {
 	  return;
@@ -97,7 +96,6 @@ cropImage = function(image, options, callback, inputImage){
 	  }
 
 		result = cropper[data.method](data.option, data.secondOption);
-
 	  switch (data.method) {
 		case 'rotate':
 		  if (cropped && options.viewMode > 0) {
@@ -113,13 +111,14 @@ cropImage = function(image, options, callback, inputImage){
 
 		case 'getCroppedCanvas':
 		  if (result) {
+			var formData = new FormData();
+			var canvas;
+			canvas = cropper.clear().getCroppedCanvas();
+			canvas.toBlob(function (blob) {
+				formData.append('org_image', blob, '_org.png');
+			});
 			result.toBlob(function (blob) {
-                var formData = new FormData();
                 formData.append('cropped_image', blob, '_crop.png');
-                canvas = cropper.clear().getCroppedCanvas();
-                canvas.toBlob(function (blob) {
-                    formData.append('org_image', blob, '_org.png');
-                });
                 formData.append("action", "avatar");
 				if(inputImage){
 					var frmName = $(inputImage).attr('data-frm')
