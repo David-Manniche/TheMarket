@@ -91,44 +91,83 @@ class ProductCategoriesController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function form($categoryId = 0, $parentCatId = 0)
+    public function form($prodCatId = 0, $parentCatId = 0)
     {
         $this->objPrivilege->canEditProductCategories();
-        $categoryId = FatUtility::int($categoryId);
+        $this->set("includeEditor", true);
+        $prodCatId = FatUtility::int($prodCatId);
         $parentCatId = FatUtility::int($parentCatId);
-        $prodCatFrm = $this->getForm($categoryId);
+        $prodCatFrm = $this->getCatgoryForm($prodCatId);
         $parentUrl ='';
-        if(0 == $categoryId && 0 < $parentCatId){
+        if(0 == $prodCatId && 0 < $parentCatId){
             $parentRewrite = UrlRewrite::getDataByOriginalUrl($this->rewriteUrl.$parentCatId);
             $parentUrl = $parentRewrite['urlrewrite_custom'];            
         }        
-        if (0 < $categoryId) {
-            $data = ProductCategory::getAttributesById($categoryId);
+        if (0 < $prodCatId) {
+            $data = ProductCategory::getAttributesById($prodCatId);
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
-            /* url data[ */
             $urlSrch = UrlRewrite::getSearchObject();
             $urlSrch->doNotCalculateRecords();
             $urlSrch->doNotLimitRecords();
             $urlSrch->addFld('urlrewrite_custom');
-            $urlSrch->addCondition('urlrewrite_original', '=', $this->rewriteUrl.$categoryId);
+            $urlSrch->addCondition('urlrewrite_original', '=', $this->rewriteUrl.$prodCatId);
             $rs = $urlSrch->getResultSet();
             $urlRow = FatApp::getDb()->fetch($rs);
             if ($urlRow) {
                 $data['urlrewrite_custom'] = $urlRow['urlrewrite_custom'];
             }
-            /* ] */
         }         
-        $data = array('parentCatId'=>$parentCatId);
+        
+        $data['parentCatId'] = $parentCatId;
         $prodCatFrm->fill($data);
-        $this->set('languages', Language::getAllNames());
-        $this->set('categoryId', $categoryId);
-        $this->set('parentUrl', $parentUrl);
-        $this->set('parentCatId', $parentCatId);
         $this->set('prodCatFrm', $prodCatFrm);
+        //$this->set('languages', Language::getAllNames());
+        $this->set('prodCatId', $prodCatId);
+        $this->set('parentUrl', $parentUrl);
         $this->_template->render();
     }
+    
+    private function getCatgoryForm( $prodCatId )
+    {
+        $prodCatId = FatUtility::int($prodCatId);
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+        $bannerTypeArr = applicationConstants::bannerTypeArr();
+        $screenArr = applicationConstants::getDisplaysArr($this->adminLangId);
+        $prodCat = new ProductCategory();
+        $categoriesArr = $prodCat->getCategoriesForSelectBox($this->adminLangId, $prodCatId);
+        $categories = array(0 => Labels::getLabel('LBL_Root_Category', $this->adminLangId)) + $prodCat->makeAssociativeArray($categoriesArr);
+        
+        $frm = new Form('frmProdCategory');
+        $frm->addHiddenField('', 'parentCatId', 0);
+        $frm->addHiddenField('', 'prodCatId', $prodCatId);
+        $frm->addRequiredField(Labels::getLabel('LBL_Category_Identifier', $this->adminLangId), 'prodcat_identifier');
+        $frm->addSelectBox(Labels::getLabel('LBL_Category_Parent', $this->adminLangId), 'prodcat_parent', $categories, '', array(), '');
+        $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);        
+        $frm->addSelectBox(Labels::getLabel('LBL_Category_Status', $this->adminLangId), 'prodcat_active', $activeInactiveArr, '', array(), '');
+        $frm->addRequiredField(Labels::getLabel('LBL_Category_SEO_Friendly_URL', $this->adminLangId), 'urlrewrite_custom');
+        
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $this->adminLangId, array(), '');
+        $frm->addRequiredField(Labels::getLabel('LBL_Category_Name', $this->adminLangId), 'prodcat_name');
+        $frm->addHtmlEditor(Labels::getLabel('LBL_Description', $this->adminLangId), 'prodcat_description');
+
+        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'icon_lang_id', $bannerTypeArr, '', array(), '');
+        $frm->addButton(Labels::getLabel('LBL_Icon', $this->adminLangId), 'cat_icon', Labels::getLabel('LBL_Upload', $this->adminLangId),array('class'=>'catFile-Js', 'data-file_type'=>AttachedFile::FILETYPE_CATEGORY_ICON, 'data-frm'=>'frmProdCategory'));
+        if (!empty($translatorSubscriptionKey) && $siteLangId == $this->adminLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+        
+        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'banner_lang_id', $bannerTypeArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel("LBL_Display_For", $this->adminLangId), 'slide_screen', $screenArr, '', array(), '');
+        $frm->addButton(Labels::getLabel('LBL_Banner', $this->adminLangId),'cat_banner', Labels::getLabel('LBL_Upload', $this->adminLangId), array('class'=>'catFile-Js', 'data-file_type'=>AttachedFile::FILETYPE_CATEGORY_BANNER,'data-frm'=> 'frmProdCategory')
+        );
+        
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Create', $this->adminLangId));
+        return $frm;
+    }
+    
 
     public function langForm($catId = 0, $lang_id = 0, $autoFillLangData = 0)
     {
