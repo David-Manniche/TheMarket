@@ -1,6 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $prodCatFrm->setFormTagAttribute('class', 'web_form');
-$prodCatFrm->setFormTagAttribute('onsubmit', 'setupCategory(this); return(false);');
+$prodCatFrm->setFormTagAttribute('id', 'frmProdCategory');
+$prodCatFrm->setFormTagAttribute('onsubmit', 'setupCategory(); return(false);');
         
 $identifierFld = $prodCatFrm->getField('prodcat_identifier');
 $identifierFld->setFieldTagAttribute('onkeyup', "Slugify(this.value,'urlrewrite_custom','parentCatId');getSlugUrl($(\"#urlrewrite_custom\"),$(\"#urlrewrite_custom\").val(),'" . $parentUrl . "','pre',true)");
@@ -62,6 +63,8 @@ $btn->setFieldTagAttribute('class', "themebtn btn-primary");
                                                 <div class="field-wraper">
                                                     <div class="field_cover">
                                                     <?php echo $prodCatFrm->getFieldHtml('prodcat_identifier'); ?>
+                                                    <?php echo $prodCatFrm->getFieldHtml('parentCatId'); ?>
+                                                    <?php echo $prodCatFrm->getFieldHtml('prodCatId'); ?>
                                                     </div>
                                                 </div>
                                             </div>
@@ -164,6 +167,20 @@ $btn->setFieldTagAttribute('class', "themebtn btn-primary");
                                         <div class="col-md-12">
                                             <div class="field-set">
                                                 <div class="caption-wraper">
+                                                    <label class="field_label"></label>
+                                                </div>
+                                                <div class="field-wraper">
+                                                    <div class="field_cover">
+                                                    <?php echo $prodCatFrm->getFieldHtml('auto_update_other_langs_data'); ?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="field-set">
+                                                <div class="caption-wraper">
                                                     <label class="field_label">
                                                     <?php  $fld = $prodCatFrm->getField('prodcat_description');
                                                         echo $fld->getCaption();
@@ -178,7 +195,6 @@ $btn->setFieldTagAttribute('class', "themebtn btn-primary");
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
 
@@ -218,6 +234,7 @@ $btn->setFieldTagAttribute('class', "themebtn btn-primary");
                                                         <div class="field-wraper">
                                                             <div class="field_cover">
                                                                 <?php echo $prodCatFrm->getFieldHtml('cat_icon'); ?>
+                                                                <?php echo $prodCatFrm->getFieldHtml('cat_icon_image_id'); ?>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -269,6 +286,7 @@ $btn->setFieldTagAttribute('class', "themebtn btn-primary");
                                                         <div class="field-wraper">
                                                             <div class="field_cover">
                                                                 <?php echo $prodCatFrm->getFieldHtml('cat_banner'); ?>
+                                                                <?php echo $prodCatFrm->getFieldHtml('cat_banner_image_id'); ?>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -280,8 +298,8 @@ $btn->setFieldTagAttribute('class', "themebtn btn-primary");
                             </div>
                         </div>
                     </div>
-                <?php echo $prodCatFrm->getExternalJS(); ?>
                 </form>
+                <?php echo $prodCatFrm->getExternalJS(); ?>
             </div>
         </div>
     </div>

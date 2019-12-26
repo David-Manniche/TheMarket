@@ -1004,4 +1004,72 @@ class ProductCategory extends MyAppModel
         $where = array('smt'=>'prodcat_id = ?', 'vals'=>array($userId));
         FatApp::getDb()->updateFromArray(static::DB_TBL, array('prodcat_img_updated_on'=>date('Y-m-d  H:i:s')), $where);
     }
+    
+    public function saveCategoryData($post)
+    {
+        $parentCatId = FatUtility::int($post['parentCatId']);
+        if ($this->mainTableRecordId == 0) {
+            $post['prodcat_display_order'] = $this->getMaxOrder($parentCatId);
+        }
+        $this->assignValues($post);
+        if ( $this->save() ) {
+            $this->updateCatCode();
+            $this->rewriteUrl($post['urlrewrite_custom'], true, $parentCatId);
+            Product::updateMinPrices(); 
+            $this->saveLangData($post['lang_id'], $post['prodcat_name'], $post['prodcat_description'], $post['auto_update_other_langs_data']);
+            
+            //$fileObj = AttachedFile($post['cat_icon_image_id']);
+            
+            
+            
+            return true;
+        }
+
+        $prodCatId = self::getDeletedProductCategoryByIdentifier($post['prodcat_identifier']);        
+        if(!$prodCatId){      
+            $this->error = $this->getError();
+            return false;
+        }
+
+        $record = new ProductCategory($prodCatId);
+        $data = $post;
+        $data['prodcat_deleted'] = applicationConstants::NO;
+        $record->assignValues($data);
+        if (!$record->save()) {
+            $this->error = $record->getError();
+            return false;
+        }
+        $this->mainTableRecordId = $record->getMainTableRecordId();
+        $this->saveLangData($data['lang_id'], $data['prodcat_name'], $data['prodcat_description'], $data['auto_update_other_langs_data']);
+        return true;
+    }
+    
+    public function saveLangData($langId, $prodCatName, $prodCatDesc, $autoUpdateOtherLangsData)
+    {
+        $langId = FatUtility::int($langId);
+        $autoUpdateOtherLangsData = FatUtility::int($autoUpdateOtherLangsData);
+        if($this->mainTableRecordId == 0 || $langId == 0){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+        }
+
+        $data = array(
+            'prodcatlang_prodcat_id'=>$this->mainTableRecordId,
+            'prodcatlang_lang_id'=>$langId,
+            'prodcat_name'=> $prodCatName,
+            'prodcat_description'=>$prodCatDesc,
+        );
+        if (!$this->updateLangData($langId, $data)) {
+            $this->error = $this->getError();
+            return false;
+        }
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(static::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($this->mainTableRecordId)) {
+                $this->error = $updateLangDataobj->getError();
+                return false;
+            }
+        }        
+        return true;
+    }
+    
 }
