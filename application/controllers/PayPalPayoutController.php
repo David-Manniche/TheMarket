@@ -11,7 +11,7 @@ class PayPalPayoutController extends PayoutBaseController
         $webhookData = json_decode($post, true);
         $event_type = $webhookData['event_type'];
         $requestData = $webhookData['resource'];
-        $senderBatchIdArr = explode('_', $sender_batch_id);
+        $senderBatchIdArr = explode('_', $requestData['sender_batch_id']);
         $recordId = end($senderBatchIdArr);
         $recordId = FatUtility::int($recordId);
 
