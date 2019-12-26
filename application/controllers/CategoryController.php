@@ -26,6 +26,7 @@ class CategoryController extends MyAppController
         } else {
             $get = Product::convertArrToSrchFiltersAssocArr(FatApp::getParameters());
         }
+        
         $get['category'] = $categoryId;
         $get['join_price'] = 1;
         $frm->fill($get);

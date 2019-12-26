@@ -338,30 +338,24 @@ function submitSiteSearch(frm) {
 	//var data = fcom.frmData(frm);
 	var qryParam = ($(frm).serialize_without_blank());
 
-	var url_arr = [];
-	if (qryParam.indexOf("keyword") > -1) {
-		//url_arr.push('keyword');
-
-		var protomatch = /^(https?|ftp):\/\//;
-		url_arr.push('keyword-' + encodeURIComponent(keyword.replace(protomatch, '').replace(/\//g, '-')));
+	var urlString = '';
+	if (qryParam.indexOf("keyword") > -1) {		
+		var protomatch = /^(https?|ftp):\/\//; 
+		urlString = urlString + setQueryParamSeperator(urlString)+'keyword-' + encodeURIComponent(keyword.replace(protomatch, '').replace(/\//g, '-'));			
 	}
-	/* if( qryParam.indexOf("category") > -1 ){
-		//url_arr.push('category');
-		url_arr.push('category-'+$(frm).find('select[name="category"]').val());
-	} */
-	if (qryParam.indexOf("category") > -1 && $(frm).find('input[name="category"]').val() > 0) {
-		//url_arr.push('category');
-		url_arr.push('category-' + $(frm).find('input[name="category"]').val());
+	
+	if (qryParam.indexOf("category") > -1 && $(frm).find('input[name="category"]').val() > 0) {				
+		urlString = urlString + setQueryParamSeperator(urlString)+'category-' + $(frm).find('input[name="category"]').val();
 	}
 
 	/* url_arr = []; */
 
 	if (themeActive == true) {
-		url = fcom.makeUrl('Products', 'search', url_arr) + '?theme-preview';
+		url = fcom.makeUrl('Products', 'search', []) + urlString +'&theme-preview';
 		document.location.href = url;
 		return;
 	}
-	url = fcom.makeUrl('Products', 'search', url_arr);
+	url = fcom.makeUrl('Products', 'search', [])+ urlString;
 	document.location.href = url;
 }
 

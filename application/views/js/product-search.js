@@ -306,52 +306,62 @@ function removeFromSearchQueryString(key){
 	delete searchArr[key];
 }
 
+function setQueryParamSeperator(url){
+	if(url.indexOf("?") > -1){
+		return '&';
+	}
+	return '?';
+}
+
 function getSearchQueryUrl(includeBaseUrl){
 	url = '';
-	if(typeof includeBaseUrl != 'undefined' || includeBaseUrl != null){
-		url = $currentPageUrl;
-	}
+	itemSeperator = '&';
+	valueSeperator = '-';
 
+	if(typeof includeBaseUrl != 'undefined' || includeBaseUrl != null){
+		url = $currentPageUrl;		
+	}
+	
 	var keyword = $("input[id=keyword]").val();
 	if(keyword !=''){
 		delete searchArr['keyword'];
-		url = url +'/'+'keyword-'+keyword.replace(/_/g,'-');
+		url = url +setQueryParamSeperator(url)+'keyword'+valueSeperator+keyword.replace(/_/g,'-');
 	}
 
 	var category = parseInt($("input[id=searched_category]").val());
 	if(category > 0){
 		delete searchArr['category'];
-		url = url +'/'+'category-'+category;
+		url = url +setQueryParamSeperator(url)+'category'+valueSeperator+category;
 	}
 
 	for (var key in searchArr) {
-		url = url +'/'+ key.replace(/_/g,'-') + '-'+ searchArr[key];
+		url = url +setQueryParamSeperator(url)+ key.replace(/_/g,'-') + valueSeperator+ searchArr[key];
 	}
 
 	/* var currency = parseInt($("input[name=currency_id]").val());
 	if(currency > 0){
 		delete searchArr['currency'];
-		url = url +'/'+'currency-'+currency;
+		url = url +setQueryParamSeperator(url)+'currency'+valueSeperator+currency;
 	} */
 
 	var featured = parseInt($("input[name=featured]").val());
 	if(featured > 0){
-		url = url +'/'+'featured-'+featured;
+		url = url +setQueryParamSeperator(url)+'featured'+valueSeperator+featured;
 	}
 
 	var collection_id = parseInt($("input[name=collection_id]").val());
 	if(collection_id > 0){
-		url = url +'/'+'collection-'+collection_id;
+		url = url +setQueryParamSeperator(url)+'collection'+valueSeperator+collection_id;
 	}
 
 	var shop_id = parseInt($("input[name=shop_id]").val());
 	if(shop_id > 0){
-		url = url +'/'+'shop-'+shop_id;
+		url = url +setQueryParamSeperator(url)+'shop'+valueSeperator+shop_id;
 	}
 
 	/* var page = parseInt($("input[name=page]").val());
 	if(page > 1){
-		url = url +'/'+'page-'+page;
+		url = url +setQueryParamSeperator(url)+'page-'+page;
 	} */
 
 	var e = document.getElementById("sortBy");
@@ -362,13 +372,13 @@ function getSearchQueryUrl(includeBaseUrl){
 	}
 
 	if(sortBy){
-		url = url +'/'+'sort-'+sortBy.replace(/_/g,'-');
+		url = url +setQueryParamSeperator(url)+'sort'+valueSeperator+sortBy.replace(/_/g,'-');
 	}
 
 	var e = document.getElementById("pageSize");
 	var pageSize = parseInt(e.options[e.selectedIndex].value);
 	if(pageSize > 0){
-		url = url +'/'+'pagesize-'+pageSize;
+		url = url +setQueryParamSeperator(url)+'pagesize'+valueSeperator+pageSize;
 	}
 
 	return encodeURI(url);
@@ -451,7 +461,7 @@ function updatePriceFilter(minPrice,maxPrice,addPriceFilter){
 
 	reloadProductListing = function(frm){
 		getSetSelectedOptionsUrl(frm);
-		window.location.href = getSearchQueryUrl(true)+'/';
+		window.location.href = getSearchQueryUrl(true);
 	};
 
 	searchProducts = function(frm){

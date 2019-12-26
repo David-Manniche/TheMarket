@@ -155,7 +155,7 @@ class ProductsController extends MyAppController
         $get = FatApp::getParameters();
         $headerFormParamsAssocArr = Product::convertArrToSrchFiltersAssocArr($get);
         $headerFormParamsAssocArr = array_merge($headerFormParamsAssocArr, $post);
-
+       
         $langId = 0;
         if (array_key_exists('keyword', $headerFormParamsAssocArr) && !empty($headerFormParamsAssocArr['keyword'])) {
             $langId = $this->siteLangId;
@@ -247,8 +247,7 @@ class ProductsController extends MyAppController
             $brandSrch->addCondition('brand_id', '=', $brandId);
             $brandsCheckedArr =  array($brandId);
         }
-        //var_dump($brandsCheckedArr);
-
+        
         if (!empty($brandsCheckedArr)) {
             $brandSrch->addFld('IF(FIND_IN_SET(brand.brand_id, "'.implode(',', $brandsCheckedArr).'"), 1, 0) as priority');
             $brandSrch->addOrder('priority', 'desc');

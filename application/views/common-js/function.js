@@ -423,6 +423,13 @@ $(document).ready(function(){
 		}
 	}
 
+	function setQueryParamSeperator(urlstr){
+		if(urlstr.indexOf("?") > -1){ 
+			return '&';
+		}		
+		return '?yk-f&';
+	}
+
    function animation(obj){
 		if( $(obj).val().length > 0 ){
 			if(!$('.submit--js').hasClass('is--active'))
