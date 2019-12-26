@@ -21,3 +21,4 @@ New Features:
     => 68804 - Apple Sign In   
     => 68656 - Test email template button added to test the design.
     => Automating the order completion process based on order date.
+    => 69191 PayPal Payout.
