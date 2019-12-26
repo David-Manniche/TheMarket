@@ -1926,6 +1926,9 @@ class CommonHelper extends FatUtility
         $systemUrl = rtrim($systemUrl, '/');
         $customUrl = array_filter(explode('/', $systemUrl));
         $customUrl = array_values($customUrl);
+        if (empty($customUrl)) {
+            return false;
+        }
         $srch = UrlRewrite::getSearchObject();
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
