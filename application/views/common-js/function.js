@@ -174,14 +174,14 @@ $("document").ready(function(){
 	});
 
 	/* for fixed header */
-	$(window).scroll(function(){
+	/*$(window).scroll(function(){
 		body_height = $("#body").position();
 		scroll_position = $(window).scrollTop();
 		if( typeof body_height !== typeof undefined && body_height.top < scroll_position)
 			$("body").addClass("fixed");
 		else
 			$("body").removeClass("fixed");
-	});
+	});*/
 
 	/* for footer */
 	if( $(window).width() < 767 ){
