@@ -11,6 +11,33 @@ class PayPalPayoutController extends PayoutBaseController
     private const MODE_SANDBOX = 0;
     private const MODE_LIVE = 1;
 
+    private const COMMISSION = [
+        'AUD' => 0.30,
+        'NZD' => 0.45,
+        'BRL' => 0.60,
+        'NOK' => 2.80,
+        'CAD' => 0.30,
+        'PHP' => 15.00,
+        'CZK' => 10.00,
+        'PLN' => 1.35,
+        'DKK' => 2.60,
+        'RUB' => 10,
+        'EUR' => 0.35,
+        'SGD' => 0.50,
+        'HKD' => 2.35,
+        'SEK' => 3.25,
+        'HUF' => 90,
+        'CHF' => 0.55,
+        'ILS' => 1.20,
+        'TWD' => 10.00,
+        'JPY' => 40,
+        'THB' => 11.00,
+        'MYR' => 2.00,
+        'GBP' => 0.20,
+        'MXN' => 4.00,
+        'USD' => 0.30
+    ];
+
     public function __construct($action)
     {
         parent::__construct($action);
