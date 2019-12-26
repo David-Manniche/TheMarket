@@ -1909,6 +1909,10 @@ class CommonHelper extends FatUtility
 
     public static function getUrlTypeData($url)
     {
+        if (empty($url)) {
+            return false;
+        }
+
         if (strpos($url, "?") !== false) {
             $url = str_replace('?', '/?', $url);
         }
