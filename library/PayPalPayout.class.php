@@ -4,16 +4,21 @@ class PayPalPayout
     public static function particulars()
     {
         return [
-                'withdrawal_amount' => [
+                'amount' => [
                     'type' => 'float',
                     'required' => true,
-                    'label' => "Withdrawan Amount",
+                    'label' => "Amount",
+                ],
+                'email' => [
+                    'type' => 'string',
+                    'required' => false,
+                    'label' => "Email Id",
                 ],
                 'paypal_id' => [
                     'type' => 'string',
-                    'required' => true,
+                    'required' => false,
                     'label' => "PayPal Id",
-                ]
+                ],
             ];
     }
 }

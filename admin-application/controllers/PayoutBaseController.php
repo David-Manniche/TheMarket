@@ -13,28 +13,32 @@ class PayoutBaseController extends PluginSettingController
     {
         $recordId = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
         if (1 > $recordId) {
-            $message = Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId());
+            $message = Labels::getLabel('LBL_INVALID_REQUEST', $this->adminLangId);
             LibHelper::dieJsonError($message);
         }
-        
-        $srch = new WithdrawalRequestsSearch();
-        $srch->joinUsers(true);
-        $srch->joinForUserBalance();
-        $srch->joinTable(User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC, 'LEFT JOIN', User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC_PREFIX . 'withdrawal_id = tuwr.withdrawal_id');
-        $srch->addMultipleFields(['withdrawal_amount' ,'credential_email']);
-        $srch->addCondition('tuwr.withdrawal_id', '=', $recordId);
-        $rs = $srch->getResultSet();
-        
-        $record = FatApp::getDb()->fetch($rs);
+
         $specifics = WithdrawalRequestsSearch::getWithDrawalSpecifics($recordId);
         try {
             $calledClass = get_called_class();
             $obj = new $calledClass(__FUNCTION__);
-            $response = $obj->release($recordId, $record['credential_email'], $record['withdrawal_amount'], $specifics);
+            $response = $obj->release($recordId, $specifics);
         } catch (\Error $e) {
             $message = 'ERR - ' . $e->getMessage();
             LibHelper::dieJsonError($message);
         }
-        CommonHelper::printArray($response, true);
+
+        if (true !== $response['status']) {
+            $message = Labels::getLabel('LBL_UNABLE_TO_PROCEED!_PLEASE_TRY_AGAIN', $this->adminLangId);
+            LibHelper::dieJsonError($message);
+        }
+
+        $assignFields = array('withdrawal_status' => Transactions::WITHDRAWL_STATUS_PROCESSED);
+        if (!FatApp::getDb()->updateFromArray(User::DB_TBL_USR_WITHDRAWAL_REQ, $assignFields, array('smt' => 'withdrawal_id=?','vals' => array($recordId)))) {
+            Message::addErrorMessage(FatApp::getDb()->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $this->set('msg', Labels::getLabel('LBL_PAYOUT_REQUEST_SENT_SUCCESSFULLY', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
     }
 }

@@ -11,33 +11,6 @@ class PayPalPayoutController extends PayoutBaseController
     private const MODE_SANDBOX = 0;
     private const MODE_LIVE = 1;
 
-    private const COMMISSION = [
-            'AUD' => 0.30,
-            'NZD' => 0.45,
-            'BRL' => 0.60,
-            'NOK' => 2.80,
-            'CAD' => 0.30,
-            'PHP' => 15.00,
-            'CZK' => 10.00,
-            'PLN' => 1.35,
-            'DKK' => 2.60,
-            'RUB' => 10,
-            'EUR' => 0.35,
-            'SGD' => 0.50,
-            'HKD' => 2.35,
-            'SEK' => 3.25,
-            'HUF' => 90,
-            'CHF' => 0.55,
-            'ILS' => 1.20,
-            'TWD' => 10.00,
-            'JPY' => 40,
-            'THB' => 11.00,
-            'MYR' => 2.00,
-            'GBP' => 0.20,
-            'MXN' => 4.00,
-            'USD' => 0.30
-    ];
-
     public function __construct($action)
     {
         parent::__construct($action);
@@ -129,24 +102,25 @@ class PayPalPayoutController extends PayoutBaseController
         ];
     }
 
-    public function release($requestId, $email, $amount, $specifics = '')
+    public function release($requestId, $specifics = '')
     {
-        if (empty($requestId) || empty($email) || empty($amount)) {
+        if (empty($requestId) || empty($specifics) || (empty($specifics['paypal_id']) && empty($specifics['email']))) {
             $message = Labels::getLabel('LBL_INVALID_REQUEST_PARAMETERS', CommonHelper::getLangId());
             LibHelper::dieJsonError($message);
         }
 
         $recipientType = empty($specifics['paypal_id']) ? 'EMAIL' : 'PAYPAL_ID';
-        $receiverAddress = empty($specifics['paypal_id']) ? $email : $specifics['paypal_id'];
+        $receiverAddress = empty($specifics['paypal_id']) ? $specifics['email'] : $specifics['paypal_id'];
 
-        $dataToRequest = $this->formatData($requestId, $amount, $receiverAddress, $recipientType);
-        
+        $dataToRequest = $this->formatData($requestId, $specifics['amount'], $receiverAddress, $recipientType);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->getPayoutUrl());
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($dataToRequest));
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         
         $headers = array();
@@ -156,11 +130,11 @@ class PayPalPayoutController extends PayoutBaseController
         
         $response = curl_exec($ch);
         if (curl_errno($ch)) {
-            $message = 'Error:' . curl_error($ch);
+            $message = 'Error : ' . curl_error($ch);
             LibHelper::dieJsonError($message);
         }
         curl_close($ch);
-        if ($response) {
+        if (!$response) {
             $message = Labels::getLabel('LBL_INVALID_RESPONSE', CommonHelper::getLangId());
             LibHelper::dieJsonError($message);
         }
@@ -168,12 +142,18 @@ class PayPalPayoutController extends PayoutBaseController
         
         if (!array_key_exists('batch_header', $response)) {
             if (array_key_exists('message', $response)) {
-                $message = $response['name'] . ' : ' . $response['message'];
-            } else {
-                $message = $response['details'][0]['issue'];
+                Message::addErrorMessage($response['name'] . ' : ' . $response['message']);
             }
-            LibHelper::dieJsonError($message);
+            if (array_key_exists('details', $response)) {
+                foreach ($response['details'] as $value) {
+                    Message::addErrorMessage($value['issue']);
+                }
+            }
+            LibHelper::dieJsonError(Message::getHtml());
         }
-        return $response;
+        return [
+            'status' => true,
+            'data' => $response
+        ];
     }
 }

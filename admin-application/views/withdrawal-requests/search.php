@@ -96,7 +96,9 @@ foreach ($arr_listing as $sn => $row) {
                     }
                 }
 
-                $txt .= '<br><strong>' . Labels::getLabel('LBL_Comments', $adminLangId) . ': </strong>' . $row["withdrawal_comments"];
+                if (!empty($row["withdrawal_comments"])) {
+                    $txt .= '<br><strong>' . Labels::getLabel('LBL_Comments', $adminLangId) . ': </strong>' . $row["withdrawal_comments"];
+                }
                 
                 $td->appendElement('plaintext', array(), $txt, true);
                 break;

@@ -3420,6 +3420,31 @@ class AccountController extends LoggedUserController
         }
     }
 
+    public function saveWithdrawalSpecifics($withdrawalId, $data, $elements)
+    {
+        if (empty($withdrawalId) || empty($data) || empty($elements)) {
+            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId());
+            return false;
+        }
+
+        foreach ($data as $key => $val) {
+            if (!in_array($key, $elements)) {
+                continue;
+            }
+            $updateData = [
+                'uwrs_withdrawal_id' => $withdrawalId,
+                'uwrs_key' => $key,
+                'uwrs_value' => is_array($val) ? serialize($val) : $val,
+            ];
+
+            if (!FatApp::getDb()->insertFromArray(User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC, $updateData, true, array(), $updateData)) {
+                $message = Labels::getLabel('LBL_ACTION_TRYING_PERFORM_NOT_VALID', $this->siteLangId);
+                FatUtility::dieJsonError($message);
+            }
+        }
+        return true;
+    }
+
     public function setupPaypalRequestWithdrawal()
     {
         try {
@@ -3431,9 +3456,17 @@ class AccountController extends LoggedUserController
         }
 
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        $post['withdrawal_amount'] = $post['amount'];
 
         if (false === $post) {
             LibHelper::dieJsonError(current($frm->getValidationErrors()));
+        }
+
+        foreach ($post as $key => $value) {
+            if (in_array($key, $particulars) && true === $particulars[$key]['required'] && empty($value)) {
+                $message = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
+                FatUtility::dieJsonError($message);
+            }
         }
 
         $userId = UserAuthentication::getLoggedUserId();
@@ -3450,15 +3483,7 @@ class AccountController extends LoggedUserController
             FatUtility::dieJsonError($message);
         }
 
-        $datatoUpdate = [
-            User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC_PREFIX . 'withdrawal_id' => $withdrawRequestId,
-            User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC_PREFIX . 'key' => 'paypal_id',
-            User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC_PREFIX . 'value' => $post['paypal_id'],
-        ];
-        if (!FatApp::getDb()->insertFromArray(User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC, $datatoUpdate, true, array(), $datatoUpdate)) {
-            $message = Labels::getLabel('LBL_ACTION_TRYING_PERFORM_NOT_VALID', $this->siteLangId);
-            FatUtility::dieJsonError($message);
-        }
+        $this->saveWithdrawalSpecifics($withdrawRequestId, $post, array_keys($particulars));
 
         $emailNotificationObj = new EmailHandler();
         if (!$emailNotificationObj->sendWithdrawRequestNotification($withdrawRequestId, $this->siteLangId, "A")) {
