@@ -30,7 +30,6 @@ cropImage = function(image, options, callback, inputImage){
 	var result;
 	var input;
 	var data;
-	var orgImageBlob;
 	if (!cropper) {
 	  return;
 	}

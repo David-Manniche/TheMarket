@@ -689,15 +689,28 @@
 		});
 	}
 
-	brandPopupImage = function(){
-		systemImgCropper(fcom.makeUrl('Seller', 'imgCropper'), '16/9', 'uploadBrandLogo');
+	brandPopupImage = function(inputImage){
+		fcom.ajax(fcom.makeUrl('Seller', 'imgCropper'), '', function(t) {
+			// $.facebox(t,'faceboxWidth fbminwidth');
+			$('#cropperBox-js').html(t);
+			$("#brandMediaForm-js").css("display", "none");
+			var container = document.querySelector('.img-container');
+			var image = container.getElementsByTagName('img').item(0);
+			var options = {
+			aspectRatio: 1 / 1,
+			preview: '.img-preview',
+			crop: function (e) {
+			  var data = e.detail;
+			}
+		  };
+		  return cropImage(image, options, 'uploadBrandLogo', inputImage);
+		});
 	};
 
     uploadBrandLogo = function(formData){
         var node = this;
-		var brandId = $(node).attr( 'data-brand_id' );
+		var brandId = document.frmBrandMedia.brand_id.value;
 		var langId = document.frmBrandMedia.brand_lang_id.value;
-
         formData.append('brand_id', brandId);
         formData.append('lang_id', langId);
         /* $val = $(node).val(); */
@@ -727,7 +740,7 @@
 					$('#input-field').addClass('text-danger');
 				}
 				// reloadList();
-                $(document).trigger('close.facebox');
+                // $(document).trigger('close.facebox');
             },
             error: function(xhr, ajaxOptions, thrownError) {
                 alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
@@ -736,63 +749,3 @@
 	}
 
 })();
-
-$(document).on('click','.uploadFile-Js',function(){
-	var node = this;
-	$('#form-upload').remove();
-	/* var brandId = document.frmProdBrandLang.brand_id.value;
-	var langId = document.frmProdBrandLang.lang_id.value; */
-
-	var brandId = $(node).attr( 'data-brand_id' );
-	var langId = document.frmBrandMedia.brand_lang_id.value;
-
-	var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-	frm = frm.concat('<input type="file" name="file" />');
-	frm = frm.concat('<input type="hidden" name="brand_id" value="' + brandId + '"/>');
-	frm = frm.concat('<input type="hidden" name="lang_id" value="' + langId + '"/>');
-	frm = frm.concat('</form>');
-	$( 'body' ).prepend( frm );
-	$('#form-upload input[name=\'file\']').trigger('click');
-	if ( typeof timer != 'undefined' ) {
-		clearInterval(timer);
-	}
-	timer = setInterval(function() {
-		if ($('#form-upload input[name=\'file\']').val() != '') {
-			clearInterval(timer);
-			$val = $(node).val();
-			$.ajax({
-				url: fcom.makeUrl('Seller', 'uploadLogo'),
-				type: 'post',
-				dataType: 'json',
-				data: new FormData($('#form-upload')[0]),
-				cache: false,
-				contentType: false,
-				processData: false,
-				beforeSend: function() {
-					$(node).val('Loading');
-				},
-				complete: function() {
-					$(node).val($val);
-				},
-				success: function(ans) {
-						//$.mbsmessage(ans.msg);
-						$('.text-danger').remove();
-						$('#input-field').html(ans.msg);
-						if( ans.status == true ){
-							$('#input-field').removeClass('text-danger');
-							$('#input-field').addClass('text-success');
-							//brandLangForm( brandId, langId );
-							brandMediaForm(ans.brandId);
-						}else{
-							$('#input-field').removeClass('text-success');
-							$('#input-field').addClass('text-danger');
-						}
-						reloadList();
-					},
-					error: function(xhr, ajaxOptions, thrownError) {
-						alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-					}
-				});
-		}
-	}, 500);
-});
