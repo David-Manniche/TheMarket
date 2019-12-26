@@ -230,15 +230,15 @@ class HomeController extends MyAppController
             if (!Labels::updateDataToFile($langId, $langCode, Labels::TYPE_APP)) {
                 FatUtility::dieJsonError(Labels::getLabel('MSG_Unable_to_update_file', $langId));
             }
-            $fileName = $langCode.'.json';
-            $filePath = Labels::JSON_FILE_DIR_NAME.'/'.Labels::TYPE_APP.'/'.$fileName;
+            $fileName = $langCode . '.json';
+            $filePath = Labels::JSON_FILE_DIR_NAME . '/' . Labels::TYPE_APP . '/' . $fileName;
 
             AttachedFile::downloadAttachment($filePath, $fileName);
             exit;
         }
 
         $data = array(
-           'languageCode'=>$langCode,
+           'languageCode' => $langCode,
            'downloadUrl' => CommonHelper::generateFullUrl('Home', 'languageLabels', array(1, $langId)),
            'langLabelUpdatedAt' => FatApp::getConfig('CONF_LANG_LABELS_UPDATED_AT', FatUtility::VAR_INT, time())
         );

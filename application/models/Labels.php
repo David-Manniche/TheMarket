@@ -212,16 +212,17 @@ class Labels extends MyAppModel
         
         $lastLabelsUpdatedAt = FatApp::getConfig('CONF_LANG_LABELS_UPDATED_AT', FatUtility::VAR_INT, time());
 
-        $path = CONF_UPLOADS_PATH.static::JSON_FILE_DIR_NAME.'/'.$type.'/';
+        $path = CONF_UPLOADS_PATH . static::JSON_FILE_DIR_NAME . '/' . $type . '/';
         if (!file_exists($path)) {
             if (!mkdir($path, 0777, true)) {
                 return false;
             }
         }
 
-        $langFile = $path . $langCode.'.json';
+        $langFile = $path . $langCode . '.json';
         if (!file_exists($langFile) || (filemtime($langFile) < $lastLabelsUpdatedAt) || 1 > filesize($langFile) || $updateForceFully == true) {
             $records = static::fetchAllAssoc($langId, array('label_key','label_caption'), $type);
+            $records = empty($records) ? (object)array() : $records;
             if (!FatUtility::convertToJson($records, JSON_UNESCAPED_UNICODE)) {
                 return false;
             }
