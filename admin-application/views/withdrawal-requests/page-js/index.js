@@ -47,8 +47,7 @@ $(document).ready(function(){
 		data = 'id='+id+'&status='+status;
 		if(confirm(langLbl.DoYouWantTo+' '+statusName+' '+langLbl.theRequest)){
 			fcom.updateWithAjax(fcom.makeUrl(object), data, function(t) {
-                updateStatus(id,status,statusName);
-				// reloadList();
+				reloadList();
 			});
 		}
 	};
