@@ -28,7 +28,7 @@
                                         <div class="col-md-6">
                                             <div class="field-set">
                                                 <div class="caption-wraper">
-                                                    <label class="field_label">Category Identifier: <span class="spn_must_field">*</span></label>
+                                                    <label class="field_label">Category Name: <span class="spn_must_field">*</span></label>
                                                 </div>
                                                 <div class="field-wraper">
                                                     <div class="field_cover"><input type="text"></div>
@@ -53,14 +53,14 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <div class="field-set">
-                                                <div class="caption-wraper">
+                                            <div class="field-set d-flex align-items-center">
+                                                <div class="caption-wraper w-auto pr-4">
                                                     <label class="field_label">Status: <span class="spn_must_field">*</span></label>
                                                 </div>
-                                                <div class="field-wraper">
+                                                <div class="field-wraper w-auto">
                                                     <div class="field_cover">
 
-                                                        <ul class="list-inline">
+                                                        <ul class="list-inline-checkboxes">
                                                             <li>
                                                                 <label>
                                                                     <span class="radio"><input value="1" name="1" type="radio"><i class="input-helper"></i></span>Active
@@ -71,6 +71,10 @@
                                                                 <label>
                                                                     <span class="radio"><input name="1" type="radio"><i class="input-helper"></i></span>Disabled
                                                                 </label>
+                                                                
+                                                                
+
+                                                                
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -79,42 +83,37 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="field-set">
-                                                <div class="caption-wraper">
-                                                    <label class="field_label">SEO friendly URL: <span class="spn_must_field">*</span></label>
-                                                </div>
-                                                <div class="field-wraper">
-                                                    <div class="field_cover"><input type="text"></div>
-                                                </div>
+                                                <label><span class="checkbox"><input value="1" name="1" type="checkbox"><i class="input-helper"></i> Translate For Other Languages</span></label>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-
-                            </div>
-                        </div>
-
-
-                        <div class="section">
-                            <div class="sectionhead">
-                                <h4>Language Data</h4>
-                            </div>
-                            <div class="sectionbody space">
-
-                                <div class="row">
+                                     <div class="row">
                                     <div class="col-md-12">
                                         <div class="field-set">
                                             <div class="caption-wraper">
-                                                <label class="field_label">Language: <span class="spn_must_field">*</span></label>
+                                                <label class="field_label">Description: <span class="spn_must_field">*</span></label>
                                             </div>
                                             <div class="field-wraper">
-                                                <div class="field_cover"><select>
-                                                        <option>English</option>
-                                                        <option>Arabic</option>
-                                                    </select></div>
+                                                <div class="field_cover">
+                                                    <img src="https://documentation.thoughtfarmer.com/imagethumb/223316470000/13627/0x0/False/RTE.png" alt="">
+                                                </div>
                                             </div>
                                         </div>
+                                      
+                                         
+                                        
+                                        
                                     </div>
-                                </div>
+                                </div>     
+                               
+                                </form>
+                            </div>
+                        </div>
+                        <div class="section" id="accordion-language">
+                            <div class="sectionhead" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <h4 class="accordion-head">Language Data For {Arabic}</h4>
+                            </div>
+                            <div class="sectionbody space collapse show"  id="collapseOne" aria-labelledby="headingOne" data-parent="#accordion-language">                            
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="field-set">
@@ -140,7 +139,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> 
+                              
 
                             </div>
                         </div>
@@ -174,7 +174,7 @@
                                                     <div class="field-set">
                                                         <div class="caption-wraper"><label class="field_label">Icon</label></div>
                                                         <div class="field-wraper">
-                                                            <div class="field_cover"><input class="catFile-Js btn btn--primary btn--sm" id="shop_logo" data-file_type="11" data-frm="frmCategoryIcon" data-field-caption="Icon" data-fatreq="{&quot;required&quot;:false}" type="button" name="cat_icon" value="Upload"><small class="text--small">This Will Be Displayed In 60*60 On Your Store</small>
+                                                            <div class="field_cover"><input class="catFile-Js btn btn--primary btn--sm" id="shop_logo" data-file_type="11" data-frm="frmCategoryIcon" data-field-caption="Icon" data-fatreq="{&quot;required&quot;:false}" type="button" name="cat_icon" value="Upload"><small class="form-text text-muted">This Will Be Displayed In 60*60 On Your Store</small>
                                                                 <div id="icon-image-listing">
                                                                     <ul class="grids--onethird" id="sortable">
                                                                         <li id="1850">
@@ -273,10 +273,10 @@
                                             <tr>
                                                 <th width="5%"><label><span class="checkbox"><input value="1" name="1" type="checkbox"><i class="input-helper"></i></span></label></th>
                                                 <th width="10%">Pos</th>
-                                                <th width="45%">Name</th>
-                                                <th width="10%">Products</th>
+                                                <th width="35%">Name</th>
+                                                <th width="15%">Products</th>
+                                                <th width="15%">Status</th>
                                                 <th width="10%"></th>
-                                                <th width="10%">Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -289,6 +289,16 @@
                                                 <td>
                                                     <a href="#" class="badge badge-secondary badge-pill">0</a></td>
                                                 <td>
+                                                    <div class="btn-group">
+                                                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Active</button>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item" href="#">Active</a>
+                                                            <a class="dropdown-item" href="#">Disabled</a>
+                                                        </div>
+                                                    </div>
+
+                                                </td>
+                                                <td>
                                                     <div class="hidden-tools">
                                                         <div class="btn-group">
                                                             <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -302,18 +312,12 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group">
-                                                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Active</button>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="#">Active</a>
-                                                            <a class="dropdown-item" href="#">Disabled</a>
-                                                            <a class="dropdown-item" href="#">Hidden</a>
-                                                        </div>
-                                                    </div>
+
+
                                                 </td>
                                             </tr>
+
+
                                             <tr>
                                                 <td><label><span class="checkbox"><input value="1" name="1" type="checkbox"><i class="input-helper"></i></span></label></td>
                                                 <td>
@@ -323,6 +327,16 @@
                                                 <td>
                                                     <a href="#" class="badge badge-secondary badge-pill">0</a></td>
                                                 <td>
+                                                    <div class="btn-group">
+                                                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Active</button>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item" href="#">Active</a>
+                                                            <a class="dropdown-item" href="#">Disabled</a>
+                                                        </div>
+                                                    </div>
+
+                                                </td>
+                                                <td>
                                                     <div class="hidden-tools">
                                                         <div class="btn-group">
                                                             <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -336,18 +350,11 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group">
-                                                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Active</button>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="#">Active</a>
-                                                            <a class="dropdown-item" href="#">Disabled</a>
-                                                            <a class="dropdown-item" href="#">Hidden</a>
-                                                        </div>
-                                                    </div>
+
+
                                                 </td>
                                             </tr>
+
                                             <tr>
                                                 <td><label><span class="checkbox"><input value="1" name="1" type="checkbox"><i class="input-helper"></i></span></label></td>
                                                 <td>
@@ -357,6 +364,16 @@
                                                 <td>
                                                     <a href="#" class="badge badge-secondary badge-pill">0</a></td>
                                                 <td>
+                                                    <div class="btn-group">
+                                                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Active</button>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item" href="#">Active</a>
+                                                            <a class="dropdown-item" href="#">Disabled</a>
+                                                        </div>
+                                                    </div>
+
+                                                </td>
+                                                <td>
                                                     <div class="hidden-tools">
                                                         <div class="btn-group">
                                                             <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -370,16 +387,8 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group">
-                                                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Active</button>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="#">Active</a>
-                                                            <a class="dropdown-item" href="#">Disabled</a>
-                                                            <a class="dropdown-item" href="#">Hidden</a>
-                                                        </div>
-                                                    </div>
+
+
                                                 </td>
                                             </tr>
 
@@ -396,12 +405,11 @@
                                 <h4>Total</h4>
                             </div>
                             <div class="sectionbody">
-                                <ul class="list list--vertical theme--txtcolor theme--hovercolor">
-                                    <li>Categories <span>23</span></li>
-                                    <li>Products <span>4139</span></li>
-                                    <li>Active categories <span>23</span></li>
-                                    <li>Hidden categories <span>05</span></li>
-                                    <li>Disabled categories <span>0</span></li>
+                                <ul class=" list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">Categories <span class="badge badge-secondary badge-pill">23</span></li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">Products <span class="badge badge-secondary badge-pill">4139</span></li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">Active categories <span class="badge badge-secondary badge-pill">23</span></li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">Disabled categories <span class="badge badge-secondary badge-pill">0</span></li>
                                 </ul>
                             </div>
                         </section>
@@ -919,7 +927,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="field-set">
@@ -933,7 +940,6 @@
                                     </form>
                                 </div>
                             </div>
-
                         </div>
                         <div id="tabs_002" class="tabs_panel">
                             <div class="row justify-content-center">
@@ -1132,7 +1138,7 @@
                                                     <div class="caption-wraper">Is This Product Eligible For Free Shipping?</div>
                                                     <div class="field-wraper">
                                                         <div class="field_cover">
-                                                            <ul class="list-inline">
+                                                            <ul class="list-inline-checkboxes">
                                                                 <li>
                                                                     <label>
                                                                         <span class="radio"><input value="1" name="1" type="radio"><i class="input-helper"></i></span>Yes
@@ -1195,7 +1201,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                             <div class="col-md-6">
+                                            <div class="col-md-6">
                                                 <div class="field-set">
                                                     <div class="caption-wraper"><label class="field_label">Length<span class="spn_must_field">*</span></label></div>
                                                     <div class="field-wraper">
@@ -1205,7 +1211,7 @@
                                             </div>
                                         </div>
 
-                                       
+
 
                                         <div class="row">
                                             <div class="col-md-6">
@@ -1215,7 +1221,8 @@
                                                         <div class="field_cover"><input type="text" name="product_width" value="0.00"><small>Note: Used For Shipping Calculation.</small></div>
                                                     </div>
                                                 </div>
-                                            </div><div class="col-md-6">
+                                            </div>
+                                            <div class="col-md-6">
                                                 <div class="field-set">
                                                     <div class="caption-wraper"><label class="field_label">Height<span class="spn_must_field">*</span></label></div>
                                                     <div class="field-wraper">
@@ -1224,7 +1231,7 @@
                                                 </div>
                                             </div>
                                         </div>
- 
+
 
                                         <div class="row">
                                             <div class="col-md-6">
@@ -1239,7 +1246,8 @@
                                                             </select></div>
                                                     </div>
                                                 </div>
-                                            </div>  <div class="col-md-6">
+                                            </div>
+                                            <div class="col-md-6">
                                                 <div class="field-set">
                                                     <div class="caption-wraper"><label class="field_label">Weight<span class="spn_must_field">*</span></label></div>
                                                     <div class="field-wraper">
@@ -1249,7 +1257,7 @@
                                             </div>
                                         </div>
 
-                                
+
 
                                         <div class="row">
                                             <div class="col-md-12">
@@ -1281,19 +1289,19 @@
                                                             </thead>
                                                             <tbody>
                                                                 <tr id="shipping-row0">
-                                                                    <td ><input type="text" name="product_shipping[0][country_name]" value="" placeholder="Ships To" autocomplete="off">
+                                                                    <td><input type="text" name="product_shipping[0][country_name]" value="" placeholder="Ships To" autocomplete="off">
                                                                         <ul class="dropdown-menu" style="width: 91px; top: 60px; left: 20px; display: none;">
                                                                             <li data-value="-1"><a href="#">Everywhere Else</a></li>
                                                                         </ul><input type="hidden" name="product_shipping[0][country_id]" value="-1">
                                                                     </td>
-                                                                    <td ><input type="text" name="product_shipping[0][company_name]" value="" placeholder="Shipping Company" autocomplete="off">
+                                                                    <td><input type="text" name="product_shipping[0][company_name]" value="" placeholder="Shipping Company" autocomplete="off">
                                                                         <ul class="dropdown-menu" style="width: 95px; top: 60px; left: 20px; display: none;">
                                                                             <li data-value="3"><a href="#">DHL</a></li>
                                                                             <li data-value="1"><a href="#">Fedex</a></li>
                                                                             <li data-value="2"><a href="#">UPS</a></li>
                                                                         </ul><input type="hidden" name="product_shipping[0][company_id]" value="3">
                                                                     </td>
-                                                                    <td ><input type="text" name="product_shipping[0][processing_time]" value="" placeholder="Processing Time" autocomplete="off">
+                                                                    <td><input type="text" name="product_shipping[0][processing_time]" value="" placeholder="Processing Time" autocomplete="off">
                                                                         <ul class="dropdown-menu" style="width: 97px; top: 60px; left: 20px; display: none;">
                                                                             <li data-value="1"><a href="#">Gold Shipping[1 to 6 Business Days]</a></li>
                                                                             <li data-value="2"><a href="#">Silver Shipping[1 to 9 Business Days]</a></li>
@@ -1304,7 +1312,7 @@
                                                                     <td><button type="button" class="btn btn--secondary ripplelink" title="Remove" onclick="removeShippingRow(0)"><i class="ion-minus-round"></i></button></td>
                                                                 </tr>
                                                                 <tr id="shipping-row1">
-                                                                    <td ><input type="text" name="product_shipping[1][country_name]" value="" placeholder="Ships To" autocomplete="off">
+                                                                    <td><input type="text" name="product_shipping[1][country_name]" value="" placeholder="Ships To" autocomplete="off">
                                                                         <ul class="dropdown-menu" style="width: 91px; top: 60px; left: 20px; display: none;">
                                                                             <li data-value="244"><a href="#">Aaland Islands</a></li>
                                                                             <li data-value="1"><a href="#">Afghanistan</a></li>
@@ -1319,14 +1327,14 @@
                                                                             <li data-value="-1"><a href="#">Everywhere Else</a></li>
                                                                         </ul><input type="hidden" name="product_shipping[1][country_id]" value="2">
                                                                     </td>
-                                                                    <td ><input type="text" name="product_shipping[1][company_name]" value="" placeholder="Shipping Company" autocomplete="off">
+                                                                    <td><input type="text" name="product_shipping[1][company_name]" value="" placeholder="Shipping Company" autocomplete="off">
                                                                         <ul class="dropdown-menu" style="width: 95px; top: 60px; left: 20px; display: none;">
                                                                             <li data-value="3"><a href="#">DHL</a></li>
                                                                             <li data-value="1"><a href="#">Fedex</a></li>
                                                                             <li data-value="2"><a href="#">UPS</a></li>
                                                                         </ul><input type="hidden" name="product_shipping[1][company_id]" value="1">
                                                                     </td>
-                                                                    <td ><input type="text" name="product_shipping[1][processing_time]" value="" placeholder="Processing Time" autocomplete="off">
+                                                                    <td><input type="text" name="product_shipping[1][processing_time]" value="" placeholder="Processing Time" autocomplete="off">
                                                                         <ul class="dropdown-menu" style="width: 97px; top: 60px; left: 20px; display: none;">
                                                                             <li data-value="1"><a href="#">Gold Shipping[1 to 6 Business Days]</a></li>
                                                                             <li data-value="2"><a href="#">Silver Shipping[1 to 9 Business Days]</a></li>
@@ -1354,65 +1362,282 @@
 
                         </div>
                         <div id="tabs_005" class="tabs_panel">
-                           <div class="row justify-content-center">
-                               <div class="col-md-9"> <form id="imageFrm" name="imageFrm" method="post" enctype="multipart/form-data" class="web_form mt-5">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="field-set">
-                                            <div class="caption-wraper"><label class="field_label">Image File Type</label></div>
-                                            <div class="field-wraper">
-                                                <div class="field_cover"><select class="option-js" data-field-caption="Image File Type" data-fatreq="{&quot;required&quot;:false}" name="option_id">
-                                                        <option value="0" selected="selected">For All Options</option>
-                                                        <option value="133">7</option>
-                                                        <option value="134">8</option>
-                                                        <option value="135">9</option>
-                                                    </select></div>
+                            <div class="row justify-content-center">
+                                <div class="col-md-9">
+                                    <form id="imageFrm" name="imageFrm" method="post" enctype="multipart/form-data" class="web_form mt-5">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="field-set">
+                                                    <div class="caption-wraper"><label class="field_label">Image File Type</label></div>
+                                                    <div class="field-wraper">
+                                                        <div class="field_cover"><select class="option-js" data-field-caption="Image File Type" data-fatreq="{&quot;required&quot;:false}" name="option_id">
+                                                                <option value="0" selected="selected">For All Options</option>
+                                                                <option value="133">7</option>
+                                                                <option value="134">8</option>
+                                                                <option value="135">9</option>
+                                                            </select></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="field-set">
+                                                    <div class="caption-wraper"><label class="field_label">Language</label></div>
+                                                    <div class="field-wraper">
+                                                        <div class="field_cover"><select class="language-js" data-field-caption="Language" data-fatreq="{&quot;required&quot;:false}" name="lang_id">
+                                                                <option value="0">All Languages</option>
+                                                                <option value="1">English</option>
+                                                                <option value="2">Arabic</option>
+                                                            </select></div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div> <div class="col-md-6">
-                                        <div class="field-set">
-                                            <div class="caption-wraper"><label class="field_label">Language</label></div>
-                                            <div class="field-wraper">
-                                                <div class="field_cover"><select class="language-js" data-field-caption="Language" data-fatreq="{&quot;required&quot;:false}" name="lang_id">
-                                                        <option value="0">All Languages</option>
-                                                        <option value="1">English</option>
-                                                        <option value="2">Arabic</option>
-                                                    </select></div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="field-set">
+                                                    <div class="caption-wraper"><label class="field_label">Photo(s):</label></div>
+                                                    <div class="field-wraper">
+                                                        <div class="field_cover"><span class="filename"></span><input id="prod_image" multiple="multiple" onchange="submitImageUploadForm(); return false;" data-field-caption="Photo(s):" data-fatreq="{&quot;required&quot;:false}" type="file" name="prod_image" value=""><br><small>Please Keep Image Dimensions Greater Than 500 X 500. You Can Upload Multiple Photos From Here.</small></div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+                                    </form>
+                                    <div id="imageupload_div" class="">
+                                        <ul class="grids--onefifth ui-sortable" id="sortable">
+                                            <li id="2361" class="ui-sortable-handle">
+                                                <div class="logoWrap">
+                                                    <div class="logothumb"> <img src="/admin/image/product/73/THUMB/2361" title="0.png" alt="0.png"> <small><strong>Default Image</strong></small> <a class="deleteLink white" href="javascript:void(0);" title="Delete 0.png" onclick="deleteImage(73, 2361);"><i class="ion-close-round"></i></a>
+                                                    </div>
+                                                    <small class=""><strong>Type: </strong> For All Options</small><br> <small class=""><strong> Language:</strong> All</small>
+                                                </div>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
-                            
-                                <div class="row">
-                                   <div class="col-md-12">
-                                        <div class="field-set">
-                                            <div class="caption-wraper"><label class="field_label">Photo(s):</label></div>
-                                            <div class="field-wraper">
-                                                <div class="field_cover"><span class="filename"></span><input id="prod_image" multiple="multiple" onchange="submitImageUploadForm(); return false;" data-field-caption="Photo(s):" data-fatreq="{&quot;required&quot;:false}" type="file" name="prod_image" value=""><br><small>Please Keep Image Dimensions Greater Than 500 X 500. You Can Upload Multiple Photos From Here.</small></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> 
-                            </form>
-                            <div id="imageupload_div" class="">
-                                <ul class="grids--onefifth ui-sortable" id="sortable">
-                                    <li id="2361" class="ui-sortable-handle">
-                                        <div class="logoWrap">
-                                            <div class="logothumb"> <img src="/admin/image/product/73/THUMB/2361" title="0.png" alt="0.png"> <small><strong>Default Image</strong></small> <a class="deleteLink white" href="javascript:void(0);" title="Delete 0.png" onclick="deleteImage(73, 2361);"><i class="ion-close-round"></i></a>
-                                            </div>
-                                            <small class=""><strong>Type: </strong> For All Options</small><br> <small class=""><strong> Language:</strong> All</small>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div></div>
-                           </div>
-                           
+                            </div>
+
+
+
+
+
+
+
+
 
                         </div>
 
                     </div>
 
                 </div>
+
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+
+
+                <div class="row justify-content-center">
+                    <div class="col-md-12">
+                        <div class="section">
+                            <div class="sectionhead">
+                                <h4>Inventory Setup</h4>
+                            </div>
+                            <div class="sectionbody space">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-10">
+
+                                        <form name="frmSellerProduct" method="post" id="frm_fat_id_frmSellerProduct" onsubmit="setUpSellerProduct(this); return(false);" class="web_form">
+
+                                            <div class="row">
+
+                                                <div class="col-md-6">
+                                                    <div class="field-set">
+                                                        <div class="caption-wraper"><label class="field_label">Title<span class="spn_must_field">*</span></label></div>
+                                                        <div class="field-wraper">
+                                                            <div class="field_cover"><input type="text" value="" placeholder="Apple Iphone "></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-md-6">
+                                                    <div class="field-set">
+                                                        <div class="caption-wraper"><label class="field_label">Seller Name</label></div>
+                                                        <div class="field-wraper">
+                                                            <div class="field_cover"><input readonly type="text" value="" placeholder="Micheal Shop"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="field-set d-flex align-items-center">
+                                                        <div class="caption-wraper">
+                                                            <div class="field_label">Do You Want to Maintain Stock Levels?</div>
+                                                        </div>
+                                                        <div class="field-wraper">
+                                                            <div class="field_cover">
+                                                                <ul class="list-inline">
+                                                                    <li>
+                                                                        <label>
+                                                                            <span class="radio"><input value="1" name="1" type="radio"><i class="input-helper"></i></span>Yes
+                                                                        </label>
+                                                                    </li>
+                                                                    <li>
+                                                                        <label>
+                                                                            <span class="radio"><input name="1" type="radio"><i class="input-helper"></i></span>No
+                                                                        </label>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="field-set d-flex align-items-center">
+                                                        <div class="caption-wraper">Do You Want to Track Product Inventory?</div>
+                                                        <div class="field-wraper">
+                                                            <div class="field_cover">
+                                                                <ul class="list-inline">
+                                                                    <li>
+                                                                        <label>
+                                                                            <span class="radio"><input value="1" name="1" type="radio"><i class="input-helper"></i></span>Yes
+                                                                        </label>
+                                                                    </li>
+                                                                    <li>
+                                                                        <label>
+                                                                            <span class="radio"><input name="1" type="radio"><i class="input-helper"></i></span>No
+                                                                        </label>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="selprod_threshold_stock_level_fld col-md-6">
+                                                    <div class="field-set">
+                                                        <div class="caption-wraper"><label class="field_label">Quantity At Which Stock Level Alerts Are Sent:</label></div>
+                                                        <div class="field-wraper">
+                                                            <div class="field_cover"><input data-field-caption="Quantity At Which Stock Level Alerts Are Sent:" data-fatreq="{&quot;required&quot;:false,&quot;integer&quot;:true}" type="text" name="selprod_threshold_stock_level" value="0" disabled="disabled"><small class="form-text text-muted">An email notification will be sent out when 'Available Quantity' is below or equal to the 'Quantity At Which Stock Level Alerts Are Sent' quantity. 'Track Product Inventory' should be set to 'Track'.</small></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="field-set">
+                                                        <div class="caption-wraper"><label class="field_label">Minimum Purchase Quantity<span class="spn_must_field">*</span></label></div>
+                                                        <div class="field-wraper">
+                                                            <div class="field_cover"><input data-field-caption="Minimum Purchase Quantity" data-fatreq="{&quot;required&quot;:true,&quot;integer&quot;:true,&quot;range&quot;:{&quot;minval&quot;:0,&quot;maxval&quot;:9999999999,&quot;numeric&quot;:true}}" type="text" name="selprod_min_order_qty" value="1"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="field-set">
+                                                        <div class="caption-wraper"><label class="field_label">Product Condition<span class="spn_must_field">*</span></label></div>
+                                                        <div class="field-wraper">
+                                                            <div class="field_cover"><select data-field-caption="Product Condition" data-fatreq="{&quot;required&quot;:true}" name="selprod_condition">
+                                                                    <option value="">Select Condition</option>
+                                                                    <option value="1" selected="selected">New</option>
+                                                                    <option value="2">Used</option>
+                                                                    <option value="3">Refurbished</option>
+                                                                </select></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="field-set">
+                                                        <div class="caption-wraper"><label class="field_label">Date Available from<span class="spn_must_field">*</span></label></div>
+                                                        <div class="field-wraper">
+                                                            <div class="field_cover"><input readonly="readonly" data-field-caption="Date Available from" id="selprod_available_from_1577173973_47" data-fatdateformat="yy-mm-dd" data-fatreq="{&quot;required&quot;:true}" type="text" name="selprod_available_from" value="2019-12-24" class="fld-date hasDatepicker">
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="field-set">
+                                                        <div class="caption-wraper"><label class="field_label">Status</label></div>
+                                                        <div class="field-wraper">
+                                                            <div class="field_cover"><select data-field-caption="Status" data-fatreq="{&quot;required&quot;:false}" name="selprod_active">
+                                                                    <option value="1" selected="selected">Active</option>
+                                                                    <option value="0">In-active</option>
+                                                                </select></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="selprod_cod_enabled_fld col-md-6">
+                                                    <div class="field-set">
+                                                        <div class="caption-wraper"><label class="field_label">Available for Cash on Delivery (COD)</label></div>
+                                                        <div class="field-wraper">
+                                                            <div class="field_cover"><select data-field-caption="Available for Cash on Delivery (COD)" data-fatreq="{&quot;required&quot;:false}" name="selprod_cod_enabled">
+                                                                    <option value="1">Yes</option>
+                                                                    <option value="0" selected="selected">No</option>
+                                                                </select></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="field-set">
+                                                        <div class="caption-wraper"><label class="field_label">Additional Comments For The Buyer</label></div>
+                                                        <div class="field-wraper">
+                                                            <div class="field_cover"><textarea data-field-caption="Additional Comments For The Buyer" data-fatreq="{&quot;required&quot;:false}" name="selprod_comments"></textarea></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="field-set">
+                                                        <div class="caption-wraper"><label class="field_label"></label></div>
+                                                        <div class="field-wraper">
+                                                            <div class="field_cover"><input data-field-caption="" data-fatreq="{&quot;required&quot;:false}" type="submit" name="btn_submit" value="Save Changes"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </form>
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+
 
             </div>
         </div>

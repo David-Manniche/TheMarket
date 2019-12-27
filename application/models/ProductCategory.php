@@ -1006,48 +1006,55 @@ class ProductCategory extends MyAppModel
     }
     
     public function saveCategoryData($post)
-    {
+    { 
         $parentCatId = FatUtility::int($post['parentCatId']);
+        $autoUpdateOtherLangsData = FatUtility::int($post['auto_update_other_langs_data']);
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $post['prodcat_identifier'] = $post['prodcat_name'][$siteDefaultLangId];
         if ($this->mainTableRecordId == 0) {
             $post['prodcat_display_order'] = $this->getMaxOrder($parentCatId);
         }
         $this->assignValues($post);
         if ( $this->save() ) {
             $this->updateCatCode();
-            $this->rewriteUrl($post['urlrewrite_custom'], true, $parentCatId);
-            Product::updateMinPrices(); 
-            $this->saveLangData($post['lang_id'], $post['prodcat_name'], $post['prodcat_description'], $post['auto_update_other_langs_data']);
-            
-            //$fileObj = AttachedFile($post['cat_icon_image_id']);
-            
-            
-            
-            return true;
-        }
+            $this->rewriteUrl($post['prodcat_identifier'], true, $parentCatId);
+            Product::updateMinPrices();
+        }else{
+            $prodCatId = self::getDeletedProductCategoryByIdentifier($post['prodcat_identifier']);        
+            if(!$prodCatId){      
+                $this->error = $this->getError();
+                return false;
+            }
 
-        $prodCatId = self::getDeletedProductCategoryByIdentifier($post['prodcat_identifier']);        
-        if(!$prodCatId){      
-            $this->error = $this->getError();
-            return false;
+            $record = new ProductCategory($prodCatId);
+            $data = $post;
+            $data['prodcat_deleted'] = applicationConstants::NO;
+            $record->assignValues($data);
+            if (!$record->save()) {
+                $this->error = $record->getError();
+                return false;
+            }
+            $this->mainTableRecordId = $record->getMainTableRecordId();
         }
-
-        $record = new ProductCategory($prodCatId);
-        $data = $post;
-        $data['prodcat_deleted'] = applicationConstants::NO;
-        $record->assignValues($data);
-        if (!$record->save()) {
-            $this->error = $record->getError();
-            return false;
-        }
-        $this->mainTableRecordId = $record->getMainTableRecordId();
-        $this->saveLangData($data['lang_id'], $data['prodcat_name'], $data['prodcat_description'], $data['auto_update_other_langs_data']);
+        
+        $this->saveLangData($siteDefaultLangId, $post['prodcat_name'][$siteDefaultLangId]); // For site default language
+        $catNameArr = $post['prodcat_name'];
+        unset($catNameArr[$siteDefaultLangId]);
+        foreach($catNameArr as $langId=>$catName){
+            if(empty($catName) && $autoUpdateOtherLangsData > 0){
+                $this->saveTranslatedLangData($langId);
+            }else if(!empty($catName)){
+                $this->saveLangData($langId, $catName);
+            }
+        }        
+        $this->updateCatIcon($post['cat_icon_image_id']);
+        $this->updateCatBanner($post['cat_banner_image_id']);
         return true;
     }
     
-    public function saveLangData($langId, $prodCatName, $prodCatDesc, $autoUpdateOtherLangsData)
+    public function saveLangData($langId, $prodCatName)
     {
         $langId = FatUtility::int($langId);
-        $autoUpdateOtherLangsData = FatUtility::int($autoUpdateOtherLangsData);
         if($this->mainTableRecordId == 0 || $langId == 0){
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
         }
@@ -1056,20 +1063,44 @@ class ProductCategory extends MyAppModel
             'prodcatlang_prodcat_id'=>$this->mainTableRecordId,
             'prodcatlang_lang_id'=>$langId,
             'prodcat_name'=> $prodCatName,
-            'prodcat_description'=>$prodCatDesc,
         );
         if (!$this->updateLangData($langId, $data)) {
             $this->error = $this->getError();
             return false;
-        }
-        if (0 < $autoUpdateOtherLangsData) {
-            $updateLangDataobj = new TranslateLangData(static::DB_TBL_LANG);
-            if (false === $updateLangDataobj->updateTranslatedData($this->mainTableRecordId)) {
-                $this->error = $updateLangDataobj->getError();
-                return false;
-            }
-        }        
+        }       
         return true;
     }
+    
+    public function saveTranslatedLangData($langId)
+    {
+        $langId = FatUtility::int($langId);
+        if($this->mainTableRecordId == 0 || $langId == 0){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+        }
+        
+        $updateLangDataobj = new TranslateLangData(static::DB_TBL_LANG);
+        if (false === $updateLangDataobj->updateTranslatedData($this->mainTableRecordId, 0, $langId)) {
+            $this->error = $updateLangDataobj->getError();
+            return false;
+        }
+        return true;
+    }
+    
+    public function updateCatIcon($iconImageId)
+    {
+        $data = array('afile_record_id' => $this->mainTableRecordId);
+        $where = array('smt'=>'afile_id = ?', 'vals'=>array($iconImageId));
+        FatApp::getDb()->updateFromArray(AttachedFile::DB_TBL, $data, $where);
+        return true;
+    }
+    
+    public function updateCatBanner($bannerImageId)
+    {
+        $data = array('afile_record_id' => $this->mainTableRecordId);
+        $where = array('smt'=>'afile_id = ?', 'vals'=>array($bannerImageId));
+        FatApp::getDb()->updateFromArray(AttachedFile::DB_TBL, $data, $where);
+        return true;
+    }
+    
     
 }

@@ -591,7 +591,9 @@
     opacity: 0.5;
 }
 
-.wizard-tabs-vertical .tabs_nav li a.active{ opacity: 1;}
+.wizard-tabs-vertical .tabs_nav li a.active {
+    opacity: 1;
+}
 
 .wizard-tabs-vertical > .tabs_nav .tabs-icon {
     -webkit-box-flex: 0;
@@ -612,7 +614,7 @@
     color: inherit;
     display: block;
     font-size: 0.9rem;
-  
+
 }
 
 
@@ -633,4 +635,36 @@ table.table-bordered td {
 
 table.table-bordered tr:nth-child(odd) td {
     background: none;
+}
+
+/**/
+.accordion-head {
+    
+}
+
+.accordion-head:after {
+    font-family: 'Font Awesome 5 Free';
+    content: "\f078";
+    position: absolute;
+    right: 1rem;
+     -webkit-transition: all 0.5s ease;
+     transition: all 0.5s ease;
+}
+
+.collapsed .accordion-head:after {content: "\f054"; }
+
+
+.list-inline-checkboxes {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    list-style: none;
+}
+
+.list-inline-checkboxes li {
+    margin-right: 10px;
+}
+
+.list-inline-checkboxes li:last-child {
+    margin-right: 0;
 }

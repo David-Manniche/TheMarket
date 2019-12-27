@@ -1,21 +1,8 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
+$siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
 $prodCatFrm->setFormTagAttribute('class', 'web_form');
 $prodCatFrm->setFormTagAttribute('id', 'frmProdCategory');
 $prodCatFrm->setFormTagAttribute('onsubmit', 'setupCategory(); return(false);');
-        
-$identifierFld = $prodCatFrm->getField('prodcat_identifier');
-$identifierFld->setFieldTagAttribute('onkeyup', "Slugify(this.value,'urlrewrite_custom','parentCatId');getSlugUrl($(\"#urlrewrite_custom\"),$(\"#urlrewrite_custom\").val(),'" . $parentUrl . "','pre',true)");
-
-$parentCatFld = $prodCatFrm->getField('parentCatId');
-$parentCatFld->setFieldTagAttribute('id', "parentCatId");
-
-$urlFld = $prodCatFrm->getField('urlrewrite_custom');
-$urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
-$urlFld->htmlAfterField = "<small class='text--small'>" . CommonHelper::generateFullUrl('Category', 'View', array($prodCatId), CONF_WEBROOT_FRONT_URL) . '</small>';
-$urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value)");
-
-$descFld = $prodCatFrm->getField('prodcat_description');
-$descFld->htmlAfterField = '<small>'.Labels::getLabel('LBL_First_100_characters_will_be_shown_in_home_page_collections.', $adminLangId).'</small>';
 
 $iconFld = $prodCatFrm->getField('cat_icon');
 $iconFld->htmlAfterField = '<small class="text--small">'.sprintf(Labels::getLabel('LBL_This_will_be_displayed_in_%s_on_your_store', $adminLangId), '60*60').'</small><div id="icon-image-listing"></div>';
@@ -25,6 +12,7 @@ $bannerFld->htmlAfterField = '<div style="margin-top:15px;" class="preferredDime
 
 $btn = $prodCatFrm->getField('btn_submit');
 $btn->setFieldTagAttribute('class', "themebtn btn-primary");
+
 ?>
 <div class='page'>
     <div class='container container-fluid'>
@@ -55,16 +43,17 @@ $btn->setFieldTagAttribute('class', "themebtn btn-primary");
                                             <div class="field-set">
                                                 <div class="caption-wraper">
                                                     <label class="field_label">
-                                                    <?php  $fld = $prodCatFrm->getField('prodcat_identifier');
+                                                    <?php
+                                                        $fld = $prodCatFrm->getField('prodcat_name['.$siteDefaultLangId.']');
                                                         echo $fld->getCaption();
                                                     ?>
                                                     <span class="spn_must_field">*</span></label>
                                                 </div>
                                                 <div class="field-wraper">
                                                     <div class="field_cover">
-                                                    <?php echo $prodCatFrm->getFieldHtml('prodcat_identifier'); ?>
+                                                    <?php echo $prodCatFrm->getFieldHtml('prodcat_name['.$siteDefaultLangId.']'); ?>
                                                     <?php echo $prodCatFrm->getFieldHtml('parentCatId'); ?>
-                                                    <?php echo $prodCatFrm->getFieldHtml('prodCatId'); ?>
+                                                    <?php echo $prodCatFrm->getFieldHtml('prodcat_id'); ?>
                                                     </div>
                                                 </div>
                                             </div>
@@ -75,8 +64,7 @@ $btn->setFieldTagAttribute('class', "themebtn btn-primary");
                                                     <label class="field_label">
                                                     <?php  $fld = $prodCatFrm->getField('prodcat_parent');
                                                         echo $fld->getCaption();
-                                                    ?>
-                                                    <span class="spn_must_field">*</span></label>
+                                                    ?></label>
                                                 </div>
                                                 <div class="field-wraper">
                                                     <div class="field_cover">
@@ -88,116 +76,62 @@ $btn->setFieldTagAttribute('class', "themebtn btn-primary");
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <div class="field-set">
-                                                <div class="caption-wraper">
+                                            <div class="field-set d-flex align-items-center">
+                                                <div class="caption-wraper w-auto pr-4">
                                                     <label class="field_label">
                                                     <?php  $fld = $prodCatFrm->getField('prodcat_active');
                                                         echo $fld->getCaption();
-                                                    ?>
-                                                    <span class="spn_must_field">*</span></label>
+                                                    ?></label>
                                                 </div>
-                                                <div class="field-wraper">
+                                                <div class="field-wraper w-auto">
                                                     <div class="field_cover">
-                                                    <?php echo $prodCatFrm->getFieldHtml('prodcat_active'); ?>
+                                                        <?php echo $prodCatFrm->getFieldHtml('prodcat_active'); ?>
+                                                        <i class="input-helper"></i>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="field-set">
-                                                <div class="caption-wraper">
-                                                    <label class="field_label">
-                                                    <?php  $fld = $prodCatFrm->getField('urlrewrite_custom');
-                                                        echo $fld->getCaption();
-                                                    ?>
-                                                    <span class="spn_must_field">*</span></label>
-                                                </div>
-                                                <div class="field-wraper">
-                                                    <?php echo $prodCatFrm->getFieldHtml('urlrewrite_custom'); ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div class="section">
-                                <div class="sectionhead">
-                                    <h4><?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?></h4>
-                                </div>
-                                <div class="sectionbody space">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="field-set">
-                                                <div class="caption-wraper">
-                                                    <label class="field_label">
-                                                    <?php  $fld = $prodCatFrm->getField('lang_id');
-                                                        echo $fld->getCaption();
-                                                    ?>
-                                                    <span class="spn_must_field">*</span></label>
-                                                </div>
-                                                <div class="field-wraper">
-                                                    <div class="field_cover">
-                                                    <?php echo $prodCatFrm->getFieldHtml('lang_id'); ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="field-set">
-                                                <div class="caption-wraper">
-                                                    <label class="field_label">
-                                                    <?php  $fld = $prodCatFrm->getField('prodcat_name');
-                                                        echo $fld->getCaption();
-                                                    ?>
-                                                    <span class="spn_must_field">*</span></label>
-                                                </div>
-                                                <div class="field-wraper">
-                                                    <div class="field_cover">
-                                                    <?php echo $prodCatFrm->getFieldHtml('prodcat_name'); ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="field-set">
-                                                <div class="caption-wraper">
-                                                    <label class="field_label"></label>
-                                                </div>
-                                                <div class="field-wraper">
-                                                    <div class="field_cover">
+                                        <?php 
+                                            $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+                                            if(!empty($translatorSubscriptionKey) && count($otherLangData) > 0){
+                                        ?>
+                                            <div class="col-md-6">
+                                                <div class="field-set">
                                                     <?php echo $prodCatFrm->getFieldHtml('auto_update_other_langs_data'); ?>
-                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        <?php } ?>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="field-set">
-                                                <div class="caption-wraper">
-                                                    <label class="field_label">
-                                                    <?php  $fld = $prodCatFrm->getField('prodcat_description');
-                                                        echo $fld->getCaption();
-                                                    ?>
-                                                    <span class="spn_must_field">*</span></label>
-                                                </div>
-                                                <div class="field-wraper">
-                                                    <div class="field_cover">
-                                                        <?php echo $prodCatFrm->getFieldHtml('prodcat_description'); ?>
+                                </div>
+                            </div>
+                            
+                            <?php foreach($otherLangData as $langId=>$data) { ?>
+                                <div class="section" id="accordion-language_<?php echo $langId; ?>">
+                                    <div class="sectionhead" data-toggle="collapse" data-target="#collapse_<?php echo $langId; ?>" aria-expanded="true" aria-controls="collapse_<?php echo $langId; ?>">
+                                        <h4 class="accordion-head">
+                                        <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?></h4>
+                                    </div>
+                                    <div class="sectionbody space collapse"  id="collapse_<?php echo $langId; ?>" aria-labelledby="headingOne" data-parent="#accordion-language_<?php echo $langId; ?>"> 
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="field-set">
+                                                    <div class="caption-wraper">
+                                                        <label class="field_label">
+                                                        <?php  $fld = $prodCatFrm->getField('prodcat_name['.$langId.']');
+                                                            echo $fld->getCaption();
+                                                        ?></label>
+                                                    </div>
+                                                    <div class="field-wraper">
+                                                        <div class="field_cover">
+                                                        <?php echo $prodCatFrm->getFieldHtml('prodcat_name['.$langId.']'); ?>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
+                            <?php } ?>
 
                             <div class="section">
                                 <div class="sectionhead">
