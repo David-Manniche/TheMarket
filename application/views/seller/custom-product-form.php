@@ -23,6 +23,8 @@ var  productCatId  =  <?php echo $prodCatId ;?>;
     </div>
 </main>
 <script>
+var ratioTypeSquare = <?php echo AttachedFile::RATIO_TYPE_SQUARE; ?>;
+var ratioTypeRectangular = <?php echo AttachedFile::RATIO_TYPE_RECTANGULAR; ?>;
 $(document).ready(function(){
     <?php if ($prodId) {?>
     customProductForm(<?php echo $prodId;?>,<?php echo $prodCatId;?>);

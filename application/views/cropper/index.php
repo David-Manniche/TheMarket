@@ -13,7 +13,7 @@
                 <label class="btn btn-primary btn--sm" for="inputImage" title="Upload image file">
                   <input type="file" class="sr-only" id="inputImage" name="file" accept="image/*"> <?php echo Labels::getLabel('LBL_Upload_New_Image', $siteLangId); ?>
                 </label>
-                <a href="javascript:void(0)" class="btn btn--primary btn--sm" data-method="getCroppedCanvas">Update</a>
+                <a href="javascript:void(0)" class="btn btn--primary btn--sm" data-method="getCroppedCanvas"><?php echo Labels::getLabel('LBL_Update', $siteLangId); ?></a>
             </div>
         </div>
     </div>

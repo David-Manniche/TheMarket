@@ -153,7 +153,24 @@ $(document).on('change',"select[name='banner_blocation_id']",function(){
 	};
  
     popupImage = function(){
-		systemImgCropper(fcom.makeUrl('Advertiser', 'imgCropper'), '16 / 9', 'promotionUpload');
+        fcom.ajax(fcom.makeUrl('Advertiser', 'imgCropper'), '', function(t) {
+    		$.facebox(t,'faceboxWidth fbminwidth');
+    		var container = document.querySelector('.img-container');
+    		var image = container.getElementsByTagName('img').item(0);
+            var minWidth = document.frmPromotionMedia.banner_min_width.value;
+            var minHeight = document.frmPromotionMedia.banner_min_height.value;
+    		var options = {
+                aspectRatio: aspectRatio,
+                data: {
+                    width: minWidth,
+                    height: minHeight,
+                },
+                minCropBoxWidth: minWidth,
+                minCropBoxHeight: minHeight,
+                toggleDragModeOnDblclick: false,
+	        };
+    	  return cropImage(image, options, 'promotionUpload');
+    	});
 	};
     
     promotionUpload = function(formData){

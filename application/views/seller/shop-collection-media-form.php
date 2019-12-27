@@ -46,3 +46,7 @@
         </div>
     </div>
 </div>
+<script>
+    var collectionMediaWidth = '610';
+    var collectionMediaHeight = '343';
+</script>

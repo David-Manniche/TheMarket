@@ -3178,7 +3178,11 @@ class SellerController extends SellerBaseController
         $frm->addHiddenField('', 'shop_id', $shop_id);
         $bannerTypeArr = applicationConstants::bannerTypeArr();
         $frm->addSelectBox(Labels::getLabel('Lbl_Language', $langId), 'lang_id', $bannerTypeArr, '', array('class'=>'logo-language-js'), '');
+        $ratioArr = AttachedFile::getRatioTypeArray($this->siteLangId);
+        $frm->addRadioButtons(Labels::getLabel('LBL_Ratio', $this->siteLangId), 'ratio_type', $ratioArr, AttachedFile::RATIO_TYPE_SQUARE);
         $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_SHOP_LOGO);
+        $frm->addHiddenField('', 'logo_min_width');
+        $frm->addHiddenField('', 'logo_min_height');
         $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->siteLangId), 'shop_logo', array('accept'=>'image/*', 'data-frm'=>'frmShopLogo'));
         return $frm;
     }
@@ -3207,6 +3211,8 @@ class SellerController extends SellerBaseController
         $screenArr = applicationConstants::getDisplaysArr($this->siteLangId);
         $frm->addSelectBox(Labels::getLabel("LBL_Display_For", $this->siteLangId), 'slide_screen', $screenArr, '', array(), '');
         $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_SHOP_BANNER);
+        $frm->addHiddenField('', 'banner_min_width');
+        $frm->addHiddenField('', 'banner_min_height');
         $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->siteLangId), 'shop_banner', array('accept'=>'image/*', 'data-frm'=>'frmShopBanner'));
         return $frm;
     }

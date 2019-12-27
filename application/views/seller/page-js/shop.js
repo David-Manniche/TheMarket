@@ -443,8 +443,51 @@ $(document).on('change', '.collection-language-js', function() {
         $("#frmCollectionsListing").attr("action", fcom.makeUrl('Seller', 'deleteSelectedCollections')).submit();
     };
 
-    popupImage = function(inputBtn){
-		systemImgCropper(fcom.makeUrl('Seller', 'imgCropper'), '16/9', 'uploadShopImages', inputBtn);
+    bannerPopupImage = function(inputBtn){
+        fcom.ajax(fcom.makeUrl('Seller', 'imgCropper'), '', function(t) {
+    		$.facebox(t,'faceboxWidth fbminwidth');
+    		var container = document.querySelector('.img-container');
+    		var image = container.getElementsByTagName('img').item(0);
+            var minWidth = document.frmShopBanner.banner_min_width.value;
+            var minHeight = document.frmShopBanner.banner_min_height.value;
+    		var options = {
+                aspectRatio: aspectRatio,
+                data: {
+                    width: minWidth,
+                    height: minHeight,
+                },
+                minCropBoxWidth: minWidth,
+                minCropBoxHeight: minHeight,
+                toggleDragModeOnDblclick: false,
+	        };
+    	  return cropImage(image, options, 'uploadShopImages', inputBtn);
+    	});
+	};
+
+    logoPopupImage = function(inputBtn){
+        fcom.ajax(fcom.makeUrl('Seller', 'imgCropper'), '', function(t) {
+    		$.facebox(t,'faceboxWidth fbminwidth');
+    		var container = document.querySelector('.img-container');
+    		var image = container.getElementsByTagName('img').item(0);
+            var minWidth = document.frmShopLogo.logo_min_width.value;
+            var minHeight = document.frmShopLogo.logo_min_height.value;
+			if(minWidth == minHeight){
+				var aspectRatio = 1 / 1
+			} else {
+                var aspectRatio = 16 / 9;
+            }
+    		var options = {
+                aspectRatio: aspectRatio,
+                data: {
+                    width: minWidth,
+                    height: minHeight,
+                },
+                minCropBoxWidth: minWidth,
+                minCropBoxHeight: minHeight,
+                toggleDragModeOnDblclick: false,
+	        };
+    	  return cropImage(image, options, 'uploadShopImages', inputBtn);
+    	});
 	};
 
 	uploadShopImages = function(formData){
@@ -505,7 +548,22 @@ $(document).on('change', '.collection-language-js', function() {
 	}
 
     collectionPopupImage = function(){
-		systemImgCropper(fcom.makeUrl('Seller', 'imgCropper'), '16/9', 'uploadCollectionImage');
+        fcom.ajax(fcom.makeUrl('Seller', 'imgCropper'), '', function(t) {
+    		$.facebox(t,'faceboxWidth fbminwidth');
+    		var container = document.querySelector('.img-container');
+    		var image = container.getElementsByTagName('img').item(0);
+    		var options = {
+                aspectRatio: 16 / 9,
+                data: {
+                    width: collectionMediaWidth,
+                    height: collectionMediaHeight,
+                },
+                minCropBoxWidth: collectionMediaWidth,
+                minCropBoxHeight: collectionMediaHeight,
+                toggleDragModeOnDblclick: false,
+	        };
+    	  return cropImage(image, options, 'uploadCollectionImage');
+    	});
 	};
 
     uploadCollectionImage = function(formData){
