@@ -17,18 +17,12 @@ $frm->developerTags['fld_default_col'] = 12;
                 </li>
                 <li class="<?php echo 1 > $pNotificationId ? 'fat-inactive' : ''; ?>">
                     <a href="javascript:void(0);"
-                        onClick="getLangForm(<?php echo $adminLangId ?>, <?php echo $pNotificationId; ?>)">
-                        <?php echo Labels::getLabel('LBL_LANGUAGE_DATA', $adminLangId); ?>
-                    </a>
-                </li>
-                <li class="<?php echo 1 > $pNotificationId ? 'fat-inactive' : ''; ?>">
-                    <a href="javascript:void(0);"
-                        onClick="getMediaForm(<?php echo $adminLangId ?>, <?php echo $pNotificationId; ?>)">
+                        onClick="<?php echo 0 < $pNotificationId ? 'getMediaForm(' . $pNotificationId . ')' : ''; ?>">
                         <?php echo Labels::getLabel('LBL_MEDIA', $adminLangId); ?>
                     </a>
                 </li>
                 <li class="<?php echo 1 > $pNotificationId ? 'fat-inactive' : ''; ?>">
-                    <a href="javascript:void(0)" onclick="addSelectedUsersForm(<?php echo $pNotificationId ?>);"><?php echo Labels::getLabel('LBL_SELECTED_USERS', $adminLangId); ?></a>
+                    <a href="javascript:void(0)" onclick="<?php echo 0 < $pNotificationId ? 'addSelectedUsersForm(' . $pNotificationId . ')' : ''; ?>"><?php echo Labels::getLabel('LBL_SELECTED_USERS', $adminLangId); ?></a>
                 </li>   
             </ul>
             <div class="tabs_panel_wrap">

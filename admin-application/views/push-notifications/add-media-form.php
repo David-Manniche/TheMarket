@@ -3,8 +3,6 @@ $frm->setFormTagAttribute('class', 'web_form form_horizontal layout--' . $formLa
 $frm->setFormTagAttribute('onsubmit', 'setup(this); return(false);');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
-$langFld = $frm->getField('lang_id');
-$langFld->setfieldTagAttribute('onChange', "getMediaForm(this.value, " . $pNotificationId . ");");
 ?>
 <section class="section">
     <div class="sectionhead">
@@ -17,11 +15,6 @@ $langFld->setfieldTagAttribute('onChange', "getMediaForm(this.value, " . $pNotif
                     <a href="javascript:void(0)"
                         onClick="addNotificationForm(<?php echo $pNotificationId; ?>)">
                         <?php echo Labels::getLabel('LBL_GENERAL', $adminLangId); ?>
-                    </a>
-                </li>
-                <li class="<?php echo 1 > $pNotificationId ? 'fat-inactive' : ''; ?>">
-                    <a href="javascript:void(0);" onClick="getLangForm(<?php echo $adminLangId ?>, <?php echo $pNotificationId; ?>)">
-                        <?php echo Labels::getLabel('LBL_LANGUAGE_DATA', $adminLangId); ?>
                     </a>
                 </li>
                 <li class="<?php echo 1 > $pNotificationId ? 'fat-inactive' : ''; ?>">

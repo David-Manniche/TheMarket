@@ -24,13 +24,8 @@ $usersFld->addFieldTagAttribute('data-sellers', $notifyTo['pnotification_for_sel
                     </a>
                 </li>
                 <li class="<?php echo 1 > $pNotificationId ? 'fat-inactive' : ''; ?>">
-                    <a href="javascript:void(0);" onClick="getLangForm(<?php echo $adminLangId ?>, <?php echo $pNotificationId; ?>)">
-                        <?php echo Labels::getLabel('LBL_LANGUAGE_DATA', $adminLangId); ?>
-                    </a>
-                </li>
-                <li class="<?php echo 1 > $pNotificationId ? 'fat-inactive' : ''; ?>">
                     <a href="javascript:void(0);"
-                        onClick="getMediaForm(<?php echo $adminLangId ?>, <?php echo $pNotificationId; ?>)">
+                        onClick="getMediaForm(<?php echo $pNotificationId; ?>)">
                         <?php echo Labels::getLabel('LBL_MEDIA', $adminLangId); ?>
                     </a>
                 </li>

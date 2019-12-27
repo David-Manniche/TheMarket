@@ -1233,10 +1233,9 @@ class ImageController extends FatController
         }
     }
 
-    public function pushNotificationImage($lang_id, $pNotificationId)
+    public function pushNotificationImage($pNotificationId)
     {
-        $lang_id = FatUtility::int($lang_id);
-        $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_PUSH_NOTIFICATION_IMAGE, $pNotificationId, 0, $lang_id);
+        $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_PUSH_NOTIFICATION_IMAGE, $pNotificationId);
         $image_name = isset($file_row['afile_physical_path']) ?  $file_row['afile_physical_path'] : '';
         AttachedFile::displayOriginalImage($image_name);
     }

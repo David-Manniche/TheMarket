@@ -11,14 +11,12 @@ $(document).on('click','.uploadFile-Js',function(){
 	var node = this;
 	$('#form-upload').remove();
 
-    var langId = document.frmPushNotificationMedia.lang_id.value;
     var fileType = $(node).attr('data-file_type');
     var pNotificationId = $(node).attr('data-pnotification_id');
 
 	var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
 	frm = frm.concat('<input type="file" name="file" />');
 	frm = frm.concat('<input type="hidden" name="pnotification_id" value="' + pNotificationId + '"/>');
-	frm = frm.concat('<input type="hidden" name="lang_id" value="' + langId + '"/>');
     frm = frm.concat('<input type="hidden" name="file_type" value="' + fileType + '">');
 	frm = frm.concat('</form>');
 	$( 'body' ).prepend( frm );
@@ -51,7 +49,7 @@ $(document).on('click','.uploadFile-Js',function(){
 							$('#input-field').removeClass('text-danger');
 							$('#input-field').addClass('text-success');
 							$('#form-upload').remove();
-                            getMediaForm(langId, pNotificationId);
+                            getMediaForm(pNotificationId);
 						}else{
 							$('#input-field').removeClass('text-success');
                             $('#input-field').addClass('text-danger');
@@ -120,14 +118,8 @@ $(document).on('click','.uploadFile-Js',function(){
         });
     };
     
-    getLangForm = function(langId, pNotificationId){
-        fcom.ajax(fcom.makeUrl('PushNotifications', 'langForm', [langId, pNotificationId]), '', function(t) {
-            fcom.updateFaceboxContent(t);
-        });
-    };
-    
-    getMediaForm = function(langId, pNotificationId){
-        fcom.ajax(fcom.makeUrl('PushNotifications', 'addMediaForm', [langId, pNotificationId]), '', function(t) {
+    getMediaForm = function(pNotificationId){
+        fcom.ajax(fcom.makeUrl('PushNotifications', 'addMediaForm', [pNotificationId]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
     };
@@ -183,29 +175,13 @@ $(document).on('click','.uploadFile-Js',function(){
             if(t.status) {
                 $.systemMessage(t.msg,'alert--success',true);
                 listPushNotification(document.frmSearch);
-                getLangForm(t.langId, t.recordId);
+                addNotificationForm(t.recordId);
             } else {
                 $.systemMessage(t.msg,'alert--danger',true);
                 $(document).trigger('close.facebox');
             }
         });
     };
-
-    setupLang=function(frm){
-		if (!$(frm).validate()) return;
-		var data = fcom.frmData(frm);
-		fcom.updateWithAjax(fcom.makeUrl('PushNotifications', 'langSetup'), data, function(t) {
-            listPushNotification(document.frmSearch);
-			if (t.langId > 0) {
-				getLangForm(t.langId, t.pNotificationId);
-				return ;
-            }
-			if (t.openMediaForm){
-				getMediaForm(t.tabLangId, t.pNotificationId);
-				return;
-			}
-		});
-	};
 
     setupNotificationToUsers = function(userId) {
         var pNotificationId = $("input[name='pnotification_id']").val();
@@ -224,12 +200,12 @@ $(document).on('click','.uploadFile-Js',function(){
         fcom.ajax(fcom.makeUrl('PushNotifications', 'removeFromNotificationUsers', [pNotificationId, userId]), '', function(res) {});
     };
     
-    removePushNotificationImage = function(lang_id, pNotificationId) {
+    removePushNotificationImage = function(pNotificationId) {
         if (!confirm(langLbl.confirmDeleteImage)) {
             return;
         }
-        fcom.updateWithAjax(fcom.makeUrl('PushNotifications', 'removePushNotificationImage', [lang_id]), '', function(t) {
-            getMediaForm(lang_id, pNotificationId);
+        fcom.updateWithAjax(fcom.makeUrl('PushNotifications', 'removePushNotificationImage', [pNotificationId]), '', function(t) {
+            getMediaForm(pNotificationId);
         });
     };
 })();

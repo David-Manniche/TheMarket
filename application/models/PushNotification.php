@@ -3,8 +3,6 @@ class PushNotification extends MyAppModel
 {
     public const DB_TBL = 'tbl_push_notifications';
     public const DB_TBL_PREFIX = 'pnotification_';
-    public const DB_TBL_LANG = 'tbl_push_notifications_lang';
-    public const DB_TBL_LANG_PREFIX = 'pnotificationlang_';
     public const DB_TBL_NOTIFICATION_TO_USER = 'tbl_push_notification_to_users';
 
     public const TYPE_APP = 1;
@@ -21,16 +19,12 @@ class PushNotification extends MyAppModel
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $pushNotificationId);
     }
 
-    public static function getSearchObject($langId = 0, $joinNotificationUsers = false)
+    public static function getSearchObject($joinNotificationUsers = false)
     {
         $srch = new SearchBase(static::DB_TBL, 'pn');
 
         if (true === $joinNotificationUsers) {
             $srch->joinTable(static::DB_TBL_NOTIFICATION_TO_USER, 'LEFT OUTER JOIN', 'pnu.pntu_pnotification_id = pn.' . static::DB_TBL_PREFIX . 'id', 'pnu');
-        }
-        
-        if (0 < $langId) {
-            $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pnl.' . static::DB_TBL_LANG_PREFIX . 'pnotification_id = pn.' . static::DB_TBL_PREFIX . 'id AND pnl.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'pnl');
         }
 
         return $srch;
@@ -110,12 +104,12 @@ class PushNotification extends MyAppModel
         $keyName = Plugin::getAttributesById($defaultPushNotiAPI, 'plugin_code');
         $limit = $keyName::LIMIT;
 
-        $attr = [
-            'pnotification_notified_on',
-            'pnotification_for_buyer',
-            'pnotification_for_seller'
-        ];
-        $notificationDetail = static::getAttributesById($this->mainTableRecordId, $attr);
+        $notificationDetail = static::getAttributesById($this->mainTableRecordId);
+        
+        if (static::STATUS_SENT == $notificationDetail['pnotification_active']) {
+            $this->error = Labels::getLabel('MSG_ALREADY_SENT', CommonHelper::getLangId());
+            return false;
+        }
 
         if (strtotime($notificationDetail['pnotification_notified_on']) > time()) {
             $this->error = Labels::getLabel('MSG_SCHEDULE_DATE_TIME_NOT_MATCHED', CommonHelper::getLangId());
@@ -125,13 +119,11 @@ class PushNotification extends MyAppModel
         $buyers = $notificationDetail['pnotification_for_buyer'];
         $sellers = $notificationDetail['pnotification_for_seller'];
 
-        $langData = PushNotification::getAttributesByLangId(CommonHelper::getLangId(), $this->mainTableRecordId);
-        $notifyObj = static::getSearchObject(CommonHelper::getLangId(), true);
-        $notifyObj->addCondition(static::DB_TBL_PREFIX . 'id', '=', $this->mainTableRecordId);
+        $notifyObj = static::getSearchObject(true);
         $notifyObj->joinTable(User::DB_TBL, 'INNER JOIN', 'pnu.pntu_user_id = u.user_id', 'u');
         $notifyObj->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.' . User::DB_TBL_CRED_PREFIX . 'user_id = u.user_id', 'uc');
+        $notifyObj->addCondition(static::DB_TBL_PREFIX . 'id', '=', $this->mainTableRecordId);
         $notifyObj = $this->joinNotifyUsers($notifyObj, $buyers, $sellers);
-        
         $rs = $notifyObj->getResultSet();
         if (false === $rs) {
             $this->error = $notifyObj->getError();
@@ -150,10 +142,13 @@ class PushNotification extends MyAppModel
         try {
             $obj = new $keyName();
             $data = [
-                'title' => $langData['pnotification_title'],
-                'message' => $langData['pnotification_description'],
+                'title' => $notificationDetail['pnotification_title'],
+                'message' => $notificationDetail['pnotification_description'],
                 'image' => CommonHelper::generateFullUrl('Image', 'pushNotificationImage', [CommonHelper::getLangId(), $this->mainTableRecordId], CONF_WEBROOT_FRONT_URL),
-                'urlDetail' => !empty($langData['pnotification_url']) ? CommonHelper::getUrlTypeData($langData['pnotification_url']) : []
+                'extra' => [
+                    'lang_id' => $notificationDetail['pnotification_lang_id'],
+                    'urlDetail' => !empty($notificationDetail['pnotification_url']) ? CommonHelper::getUrlTypeData($notificationDetail['pnotification_url']) : [],
+                ]
             ];
             $response = $obj->notify(array_values($deviceTokens), $data);
             if (false === $response) {
