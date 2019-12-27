@@ -82,8 +82,8 @@ class UrlRewritingController extends AdminBaseController
                 FatUtility::dieWithError($this->str_invalid_request);
             }
             $urlRewriteData =  UrlRewrite::getAttributesById($urlrewrite_id);
-            $customUrl  = explode("/", $urlRewriteData['urlrewrite_custom']);
-            $data['urlrewrite_custom'] = $customUrl[0];
+           // $customUrl  = explode("/", $urlRewriteData['urlrewrite_custom']);
+            $data['urlrewrite_custom'] = $urlRewriteData['urlrewrite_custom'];
             $frm->fill($data);
         }
 
@@ -108,21 +108,21 @@ class UrlRewritingController extends AdminBaseController
         $urlrewrite_id = FatUtility::int($post['urlrewrite_id']);
         unset($post['urlrewrite_id']);
 
-        $url = FatApp::getPostedData('urlrewrite_custom', FatUtility::VAR_STRING);
+        $url = ltrim(FatApp::getPostedData('urlrewrite_custom', FatUtility::VAR_STRING), '/');
         $post['urlrewrite_custom'] = CommonHelper::seoUrl($url);
 
         $url = FatApp::getPostedData('urlrewrite_original', FatUtility::VAR_STRING);
         $post['urlrewrite_original'] = trim($url, '/\\');
 
-        if ($urlrewrite_id>0) {
+        /* if ($urlrewrite_id>0) {
             $urlRewriteData =  UrlRewrite::getAttributesById($urlrewrite_id);
             $customUrl  = explode("/", $urlRewriteData['urlrewrite_custom']);
             $attachId = isset($customUrl[1])? $customUrl[1] : '';
             if ($attachId) {
                 $post['urlrewrite_custom'].='/'.$attachId;
             }
-        }
-
+        } */
+        
         $record = new UrlRewrite($urlrewrite_id);
         $record->assignValues($post);
 

@@ -326,7 +326,7 @@ removeFromCart = function (key) {
 	});
 };
 
-function submitSiteSearch(frm) {
+function submitSiteSearch(frm, page) {
 
 	var keyword = $.trim($(frm).find('input[name="keyword"]').val());
 
@@ -341,7 +341,7 @@ function submitSiteSearch(frm) {
 	var urlString = '';
 	if (qryParam.indexOf("keyword") > -1) {		
 		var protomatch = /^(https?|ftp):\/\//; 
-		urlString = urlString + setQueryParamSeperator(urlString)+'keyword-' + encodeURIComponent(keyword.replace(protomatch, '').replace(/\//g, '-'));			
+		urlString = urlString + setQueryParamSeperator(urlString)+'keyword-' + encodeURIComponent(keyword.replace(protomatch, '').replace(/\//g, '-'))+'&pagesize='+page;			
 	}
 	
 	if (qryParam.indexOf("category") > -1 && $(frm).find('input[name="category"]').val() > 0) {				

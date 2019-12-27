@@ -1440,11 +1440,11 @@ class CommonHelper extends FatUtility
     {
 
         //Lower case everything
-        $string = strtolower($string);
+        $string = ltrim(strtolower($string), '/');
         //Make alphanumeric (removes all other characters)
         //$string = preg_replace("/[^a-z0-9,&_\s-\/]/", "", $string);
         //covert / to -
-        $string = preg_replace("/[\s,&\/]/", "-", $string);
+        $string = preg_replace("/[\s,&]/", "-", $string);
         //Clean up multiple dashes or whitespaces
         $string = preg_replace("/[\s-]+/", " ", $string);
         //Convert whitespaces and underscore to dash
@@ -1538,7 +1538,7 @@ class CommonHelper extends FatUtility
 
     public static function createSlug($string)
     {
-        $slug=preg_replace('/[^A-Za-z0-9-]+/', '-', $string);
+        $slug = preg_replace('/[^A-Za-z0-9-\/]+/', '-', ltrim($string, '/'));
         return $slug;
     }
 

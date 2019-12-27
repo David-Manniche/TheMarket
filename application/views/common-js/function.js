@@ -427,7 +427,7 @@ $(document).ready(function(){
 		if(urlstr.indexOf("?") > -1){ 
 			return '&';
 		}		
-		return '?yk-f&';
+		return '?';
 	}
 
    function animation(obj){

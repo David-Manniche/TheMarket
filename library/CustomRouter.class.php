@@ -53,10 +53,18 @@ class CustomRouter
 
         if (defined('SYSTEM_FRONT') && SYSTEM_FRONT === true/*  && !FatUtility::isAjaxCall() */) {
             $url = $_SERVER['REQUEST_URI'];
-                                   
+            
+            if (strpos($url, "index.php?url=") !== false) {
+                return ;
+            }
+
+            if (strpos($url, "?") !== false && strpos($url, "/?") === false) {
+                $url = str_replace('?', '/?', $url);
+            }
+
             $customUrl = substr($url, strlen(CONF_WEBROOT_URL));
             $customUrl = rtrim($customUrl, '/');
-            $customUrl = explode('?yk-f', $customUrl);
+            $customUrl = explode('/?', $customUrl);
      
             /* [ Check url rewritten by the system or system url with query parameter*/
             $srch = UrlRewrite::getSearchObject();
@@ -66,7 +74,7 @@ class CustomRouter
             $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'custom', '=', $customUrl[0]);
             $rs = $srch->getResultSet();
             $row = FatApp::getDb()->fetch($rs);            
-            if (!$row && (!isset($customUrl[1]) || (isset($customUrl[1]) && strpos($customUrl[1], 'yk-f') === false))) {
+            if (!$row && (!isset($customUrl[1]) || (isset($customUrl[1]) && strpos($customUrl[1], 'pagesize') === false))) {
                 return;
             }
             /*]*/
