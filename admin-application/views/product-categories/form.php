@@ -4,11 +4,20 @@ $prodCatFrm->setFormTagAttribute('class', 'web_form');
 $prodCatFrm->setFormTagAttribute('id', 'frmProdCategory');
 $prodCatFrm->setFormTagAttribute('onsubmit', 'setupCategory(); return(false);');
 
+$iconLangFld = $prodCatFrm->getField('icon_lang_id');
+$iconLangFld->addFieldTagAttribute('class', 'icon-language-js');
+
 $iconFld = $prodCatFrm->getField('cat_icon');
 $iconFld->htmlAfterField = '<small class="text--small">'.sprintf(Labels::getLabel('LBL_This_will_be_displayed_in_%s_on_your_store', $adminLangId), '60*60').'</small><div id="icon-image-listing"></div>';
 
 $bannerFld = $prodCatFrm->getField('cat_banner');
 $bannerFld->htmlAfterField = '<div style="margin-top:15px;" class="preferredDimensions-js">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s',$adminLangId),'2000 x 500').'</div><div id="banner-image-listing"></div>';
+
+$bannerLangFld = $prodCatFrm->getField('banner_lang_id');
+$bannerLangFld->addFieldTagAttribute('class', 'banner-language-js');
+
+$screenFld = $prodCatFrm->getField('slide_screen');
+$screenFld->addFieldTagAttribute('class', 'prefDimensions-js');
 
 $btn = $prodCatFrm->getField('btn_submit');
 $btn->setFieldTagAttribute('class', "themebtn btn-primary");
@@ -106,7 +115,7 @@ $btn->setFieldTagAttribute('class', "themebtn btn-primary");
                             </div>
                             
                             <?php foreach($otherLangData as $langId=>$data) { ?>
-                                <div class="section" id="accordion-language_<?php echo $langId; ?>">
+                                <div class="section" defaultLang= "<?php echo $siteDefaultLangId; ?>" language="<?php echo $langId; ?>" id="accordion-language_<?php echo $langId; ?>" onClick="translateData(this)">
                                     <div class="sectionhead" data-toggle="collapse" data-target="#collapse_<?php echo $langId; ?>" aria-expanded="true" aria-controls="collapse_<?php echo $langId; ?>">
                                         <h4 class="accordion-head">
                                         <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?></h4>
@@ -168,7 +177,11 @@ $btn->setFieldTagAttribute('class', "themebtn btn-primary");
                                                         <div class="field-wraper">
                                                             <div class="field_cover">
                                                                 <?php echo $prodCatFrm->getFieldHtml('cat_icon'); ?>
-                                                                <?php echo $prodCatFrm->getFieldHtml('cat_icon_image_id'); ?>
+                                                                <?php 
+                                                                foreach($mediaLanguages as $key=>$data){
+                                                                    echo $prodCatFrm->getFieldHtml('cat_icon_image_id['.$key.']'); 
+                                                                }
+                                                                ?>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -220,7 +233,13 @@ $btn->setFieldTagAttribute('class', "themebtn btn-primary");
                                                         <div class="field-wraper">
                                                             <div class="field_cover">
                                                                 <?php echo $prodCatFrm->getFieldHtml('cat_banner'); ?>
-                                                                <?php echo $prodCatFrm->getFieldHtml('cat_banner_image_id'); ?>
+                                                                <?php 
+                                                                foreach($mediaLanguages as $key=>$data){
+                                                                    foreach($screenArr as $key1=>$screen){
+                                                                        echo $prodCatFrm->getFieldHtml('cat_banner_image_id['.$key.'_'.$key1.']');
+                                                                    }
+                                                                } 
+                                                                ?>
                                                             </div>
                                                         </div>
                                                     </div>

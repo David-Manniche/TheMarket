@@ -88,8 +88,12 @@
                         $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
                         $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
                         $innerLiEdit=$innerUl->appendElement('li');
-
-                        $innerLiEdit->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addCategoryForm(".$row['prodcat_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
+                        
+                        $url = commonHelper::generateUrl('ProductCategories', 'form', array($row['prodcat_id']));
+                        if($row['prodcat_parent'] > 0){
+                            $url = commonHelper::generateUrl('ProductCategories', 'form', array($row['prodcat_id'], $row['prodcat_parent']));
+                        }
+                        $innerLiEdit->appendElement('a', array('href'=>$url, 'class'=>'button small green redirect--js', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId)), Labels::getLabel('LBL_Edit', $adminLangId), true);
 
                         if ($row['child_count'] > 0) {
                             /* $li = $ul->appendElement("li");
