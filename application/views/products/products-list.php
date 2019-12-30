@@ -37,7 +37,7 @@ if ($products) {
                     href="<?php echo CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])); ?>"><?php echo (mb_strlen($product['selprod_title']) > 50) ? mb_substr($product['selprod_title'], 0, 50)."..." : $product['selprod_title']; ?>
                 </a></div> <?php $this->includeTemplate('_partial/collection-product-price.php', array('product'=>$product,'siteLangId'=>$siteLangId), false); ?>
         </div>
-    </div>
+    </div>    
     <!--/product tile-->
 </div> <?php
     }
@@ -48,9 +48,12 @@ if ($products) {
     }
 
     $postedData['page'] = (isset($page)) ? $page:1;
+    $postedData['recordDisplayCount'] = $recordCount;
     echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmProductSearchPaging','id' => 'frmProductSearchPaging'));
     $pagingArr = array('pageCount'=>$pageCount,'page'=>$postedData['page'],'recordCount'=>$recordCount, 'callBackJsFunc' => $searchFunction);
     $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
 } else {
+    $arr['recordDisplayCount'] = $recordCount;
+    echo FatUtility::createHiddenFormFromData($arr, array('name' => 'frmProductSearchPaging','id' => 'frmProductSearchPaging'));
     echo Labels::getLabel('LBL_No_record_found!', $siteLangId);
 }
