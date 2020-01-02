@@ -170,3 +170,4 @@ ALTER TABLE `tbl_push_notifications`
   ADD PRIMARY KEY (`pnotification_id`);
 ALTER TABLE `tbl_push_notifications`
   MODIFY `pnotification_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `tbl_push_notifications` ADD `pnotification_till_user_id` INT NOT NULL AFTER `pnotification_for_seller`;

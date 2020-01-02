@@ -198,9 +198,12 @@ class PushNotificationsController extends AdminBaseController
         if (!$db->insertFromArray(PushNotification::DB_TBL, $post, true, array(), $post)) {
             FatUtility::dieJsonError($db->getError());
         }
+
+        $recordId = !empty($post['pnotification_id']) ? $post['pnotification_id'] : $db->getInsertId();
+
         $json['msg'] = Labels::getLabel("LBL_SETUP_SUCCESSFULLY", $this->adminLangId);
         $json['status'] = true;
-        $json['recordId'] = !empty($post['pnotification_id']) ? $post['pnotification_id'] : $db->getInsertId();
+        $json['recordId'] = $recordId;
         FatUtility::dieJsonSuccess($json);
     }
 
@@ -219,7 +222,6 @@ class PushNotificationsController extends AdminBaseController
         $srch->joinTable('tbl_user_credentials', 'INNER JOIN', 'tu.user_id = tuc.credential_user_id', 'tuc');
         $srch->addCondition('pnotification_id', "=", $pNotificationId);
         $rs = $srch->getResultSet();
-        echo $srch->getError();
         $records = FatApp::getDb()->fetchAll($rs);
         if (!empty($records) && 0 < count($records)) {
             $this->set('data', $records);

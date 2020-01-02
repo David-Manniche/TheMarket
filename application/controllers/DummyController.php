@@ -660,4 +660,12 @@ class DummyController extends MyAppController
         AbandonedCart::sendReminderAbandonedCart();
         
     }
+
+    public function notify()
+    {
+        $obj = new PushNotification(1);
+        $response = $obj->send();
+        echo 'Done!!';
+        CommonHelper::printArray($response);
+    }
 }

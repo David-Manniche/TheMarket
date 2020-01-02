@@ -1081,7 +1081,7 @@ class AccountController extends LoggedUserController
             $dataToUpdateOnDuplicate = $dataToSave;
             unset($dataToUpdateOnDuplicate['uextra_user_id']);
             if (!FatApp::getDb()->insertFromArray(User::DB_TBL_USR_EXTRAS, $dataToSave, false, array(), $dataToUpdateOnDuplicate)) {
-                $message = Labels::getLabel(Labels::getLabel("LBL_Details_could_not_be_saved!", $this->siteLangId), $this->siteLangId);
+                $message = Labels::getLabel("LBL_Details_could_not_be_saved!", $this->siteLangId);
                 if (true ===  MOBILE_APP_API_CALL) {
                     FatUtility::dieJsonError($message);
                 }
