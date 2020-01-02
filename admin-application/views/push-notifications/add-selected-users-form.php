@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->setFormTagAttribute('class', 'web_form form_horizontal');
 $frm->setFormTagAttribute('id', 'setupNotificationToUserfrm');
-$frm->setFormTagAttribute('onsubmit', 'setupNotificationToUsers(this); return(false);');
+$frm->setFormTagAttribute('onsubmit', 'bindUser(this); return(false);');
 
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;

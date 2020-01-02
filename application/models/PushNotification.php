@@ -14,6 +14,9 @@ class PushNotification extends MyAppModel
 
     public const DEVICE_TOKENS_LIMIT = 3000;
 
+    public const NOTIFY_TO_BUYER = 1;
+    public const NOTIFY_TO_SELLER = 2;
+
     public function __construct($pushNotificationId = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $pushNotificationId);
@@ -49,8 +52,8 @@ class PushNotification extends MyAppModel
     public static function getUserTypeArr($langId)
     {
         return [
-            Labels::getLabel('LBL_BUYERS', $langId),
-            Labels::getLabel('LBL_SELLERS', $langId),
+            static::NOTIFY_TO_BUYER  => Labels::getLabel('LBL_BUYERS', $langId),
+            static::NOTIFY_TO_SELLER  => Labels::getLabel('LBL_SELLERS', $langId),
         ];
     }
 
@@ -64,17 +67,17 @@ class PushNotification extends MyAppModel
         }
         
         $obj->joinTable(UserAuthentication::DB_TBL_USER_AUTH, 'LEFT OUTER JOIN', 'uauth.uauth_user_id = u.user_id', 'uauth');
-        $obj->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'active', '=', 1);
-        $obj->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'verified', '=', 1);
+        $obj->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'active', '=', applicationConstants::YES);
+        $obj->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'verified', '=', applicationConstants::YES);
         if (0 < $buyers) {
-            $cnd = $obj->addCondition('u.' . User::DB_TBL_PREFIX . 'is_buyer', '=', 1);
+            $cnd = $obj->addCondition('u.' . User::DB_TBL_PREFIX . 'is_buyer', '=', applicationConstants::YES);
         }
         
         if (0 < $sellers) {
             if (0 < $buyers) {
-                $cnd->attachCondition('u.' . User::DB_TBL_PREFIX . 'is_supplier', '=', 1);
+                $cnd->attachCondition('u.' . User::DB_TBL_PREFIX . 'is_supplier', '=', applicationConstants::YES);
             } else {
-                $obj->addCondition('u.' . User::DB_TBL_PREFIX . 'is_supplier', '=', 1);
+                $obj->addCondition('u.' . User::DB_TBL_PREFIX . 'is_supplier', '=', applicationConstants::YES);
             }
         }
 
@@ -125,10 +128,6 @@ class PushNotification extends MyAppModel
         $notifyObj->addCondition(static::DB_TBL_PREFIX . 'id', '=', $this->mainTableRecordId);
         $notifyObj = $this->joinNotifyUsers($notifyObj, $buyers, $sellers);
         $rs = $notifyObj->getResultSet();
-        if (false === $rs) {
-            $this->error = $notifyObj->getError();
-            return false;
-        }
         $deviceTokens = FatApp::getDb()->fetchAllAssoc($rs);
         if (empty($deviceTokens)) {
             $deviceTokens = $this->getDeviceTokens($buyers, $sellers, $limit);

@@ -4,7 +4,7 @@ $(document).ready(function(){
 
 $(document).on("click", "ul#selectedUsersList-js .ion-close-round", function(){
     $(this).parent().remove();
-    removeFromNotificationUsers($(this).siblings('.userId').val());
+    unlinkUser($(this).siblings('.userId').val());
 });
 
 $(document).on('click','.uploadFile-Js',function(){
@@ -163,7 +163,7 @@ $(document).on('click','.uploadFile-Js',function(){
                 var listSelector = 'ul#selectedUsersList-js';
                 $(listSelector + ' #selectedUser-js-' + item['value']).remove();
                 $(listSelector).append('<li id="selectedUser-js-' + item['value'] + '"><i class=" icon ion-close-round"></i> ' + item['label'] + '<input type="hidden" name="pntu_user_id[]" class="userId" value="' + item['value'] + '" /></li>');
-                setupNotificationToUsers(item['value']);
+                bindUser(item['value']);
             }
         });
     }
@@ -183,28 +183,28 @@ $(document).on('click','.uploadFile-Js',function(){
         });
     };
 
-    setupNotificationToUsers = function(userId) {
+    bindUser = function(userId) {
         var pNotificationId = $("input[name='pnotification_id']").val();
         if (pNotificationId == '' || 1 > pNotificationId) {
             $.systemMessage(langLbl.invalidRequest,'alert--danger',true);
             return false;
         }
-        fcom.ajax(fcom.makeUrl('PushNotifications', 'setupNotificationToUsers', [pNotificationId, userId]), '', function(res) {});
+        fcom.ajax(fcom.makeUrl('PushNotifications', 'bindUser', [pNotificationId, userId]), '', function(res) {});
     };
-    removeFromNotificationUsers = function(userId) {
+    unlinkUser = function(userId) {
         var pNotificationId = $("input[name='pnotification_id']").val();
         if (pNotificationId == '' || 1 > pNotificationId) {
             $.systemMessage(langLbl.invalidRequest,'alert--danger',true);
             return false;
         }
-        fcom.ajax(fcom.makeUrl('PushNotifications', 'removeFromNotificationUsers', [pNotificationId, userId]), '', function(res) {});
+        fcom.ajax(fcom.makeUrl('PushNotifications', 'unlinkUser', [pNotificationId, userId]), '', function(res) {});
     };
     
-    removePushNotificationImage = function(pNotificationId) {
+    removeImage = function(pNotificationId) {
         if (!confirm(langLbl.confirmDeleteImage)) {
             return;
         }
-        fcom.updateWithAjax(fcom.makeUrl('PushNotifications', 'removePushNotificationImage', [pNotificationId]), '', function(t) {
+        fcom.updateWithAjax(fcom.makeUrl('PushNotifications', 'removeImage', [pNotificationId]), '', function(t) {
             getMediaForm(pNotificationId);
         });
     };

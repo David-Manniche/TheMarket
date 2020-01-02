@@ -165,3 +165,8 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_S.No';
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_Does_not_Matter';
 
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('FCM Push Notification', '3', 'FcmPushNotification', '1', '7');
+
+ALTER TABLE `tbl_push_notifications`
+  ADD PRIMARY KEY (`pnotification_id`);
+ALTER TABLE `tbl_push_notifications`
+  MODIFY `pnotification_id` int(11) NOT NULL AUTO_INCREMENT;

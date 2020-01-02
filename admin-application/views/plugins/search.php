@@ -1,15 +1,16 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = array(
-        'dragdrop' => '',
-        'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
-        'listserial' => Labels::getLabel('LBL_Sr._No', $adminLangId),
-        'plugin_identifier' => Labels::getLabel('LBL_PLUGIN', $adminLangId),
-        // 'plugin_type' => Labels::getLabel('LBL_Type', $adminLangId),
-        'plugin_active' => Labels::getLabel('LBL_Status', $adminLangId),
-        'action' => Labels::getLabel('LBL_Action', $adminLangId),
-    );
-// if (!$canEdit || true === $hideDragHandle) {
-if (!$canEdit) {
+$arr_flds = [
+    'dragdrop' => '',
+    'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
+    'listserial' => Labels::getLabel('LBL_Sr._No', $adminLangId),
+    'plugin_identifier' => Labels::getLabel('LBL_PLUGIN', $adminLangId),
+    // 'plugin_type' => Labels::getLabel('LBL_Type', $adminLangId),
+    'plugin_active' => Labels::getLabel('LBL_Status', $adminLangId),
+    'action' => Labels::getLabel('LBL_Action', $adminLangId),
+];
+$allPlugins = $arr_listing;
+$pluginType = (array_shift($allPlugins))['plugin_type'];
+if (!$canEdit || 2 > count($arr_listing) || in_array($pluginType, Plugin::HAVING_KINGPIN)) {
     unset($arr_flds['dragdrop']);
 }
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--hovered table-responsive','id' => 'plugin'));
@@ -42,12 +43,17 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
             case 'plugin_identifier':
+                $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . $row['plugin_type'], FatUtility::VAR_INT, 0);
+                $htm = '';
+                if (!empty($defaultCurrConvAPI) && $row['plugin_id'] == $defaultCurrConvAPI) {
+                    $htm = ' <span class="badge badge-info">'  . Labels::getLabel('LBL_DEFAULT', $adminLangId) . '</span>';
+                }
                 if ($row['plugin_name'] != '') {
-                    $td->appendElement('plaintext', array(), $row['plugin_name'], true);
+                    $td->appendElement('plaintext', array(), $row['plugin_name'] . $htm, true);
                     $td->appendElement('br', array());
                     $td->appendElement('plaintext', array(), '(' . $row[$key] . ')', true);
                 } else {
-                    $td->appendElement('plaintext', array(), $row[$key], true);
+                    $td->appendElement('plaintext', array(), $row[$key] . $htm, true);
                 }
                 break;
             /* case 'plugin_type':

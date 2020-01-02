@@ -54,11 +54,11 @@ class PushNotificationsController extends AdminBaseController
         $notifyTo = $post['notify_to'];
         if (0 < $notifyTo) {
             switch ($notifyTo) {
-                case 1:
-                    $srch->addCondition('pnotification_for_buyer', '=', 1);
+                case PushNotification::NOTIFY_TO_BUYER:
+                    $srch->addCondition('pnotification_for_buyer', '=', applicationConstants::YES);
                     break;
-                case 2:
-                    $srch->addCondition('pnotification_for_seller', '=', 1);
+                case PushNotification::NOTIFY_TO_SELLER:
+                    $srch->addCondition('pnotification_for_seller', '=', applicationConstants::YES);
                     break;
             }
         }
@@ -139,7 +139,7 @@ class PushNotificationsController extends AdminBaseController
 
         if ($imgData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PUSH_NOTIFICATION_IMAGE, $pNotificationId)) {
             $uploadedTime = AttachedFile::setTimeParam($imgData['afile_updated_at']);
-            $ul->htmlAfterField .= '<img src="' . FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'pushNotificationImage', [$pNotificationId], CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg') . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removePushNotificationImage(' . $pNotificationId . ')" ><i class="ion-close-round"></i></a>';
+            $ul->htmlAfterField .= '<img src="' . FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'pushNotificationImage', [$pNotificationId], CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg') . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeImage(' . $pNotificationId . ')" ><i class="ion-close-round"></i></a>';
         }
 
         $ul->htmlAfterField .= ' </div></div><input type="button" name="app_push_notification_image" class="uploadFile-Js btn-xs" id="app_push_notification_image" data-file_type=' . AttachedFile::FILETYPE_PUSH_NOTIFICATION_IMAGE . ' data-pnotification_id = ' . $pNotificationId . ' value="Upload file"><small>' . Labels::getLabel('LBL_SIZE_MUST_BE_LESS_THAN_300KB', $this->adminLangId) . '</small></li>';
@@ -230,7 +230,7 @@ class PushNotificationsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function setupNotificationToUsers($pNotificationId, $userId)
+    public function bindUser($pNotificationId, $userId)
     {
         $this->objPrivilege->canEditPushNotification();
         $pNotificationId = FatUtility::int($pNotificationId);
@@ -248,7 +248,7 @@ class PushNotificationsController extends AdminBaseController
         }
     }
 
-    public function removeFromNotificationUsers($pNotificationId, $userId)
+    public function unlinkUser($pNotificationId, $userId)
     {
         $this->objPrivilege->canEditPushNotification();
         $pNotificationId = FatUtility::int($pNotificationId);
@@ -262,7 +262,7 @@ class PushNotificationsController extends AdminBaseController
         }
     }
 
-    public function removePushNotificationImage($pNotificationId)
+    public function removeImage($pNotificationId)
     {
         $this->objPrivilege->canEditPushNotification();
 
