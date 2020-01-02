@@ -11,7 +11,7 @@
                 <a href="javascript:void(0)" class="btn btn--primary btn--sm" data-option="-1" data-method="scaleX"><?php echo Labels::getLabel('LBL_Flip_Horizontal', $siteLangId); ?></a>
                 <a href="javascript:void(0)" class="btn btn--primary btn--sm" data-option="-1" data-method="scaleY"><?php echo Labels::getLabel('LBL_Flip_Vertical', $siteLangId); ?></a>
                 <label class="btn btn-primary btn--sm" for="inputImage" title="Upload image file">
-                  <input type="file" class="sr-only" id="inputImage" name="file" accept="image/*"> <?php echo Labels::getLabel('LBL_Upload_New_Image', $siteLangId); ?>
+                  <input type="file" class="sr-only" id="inputImage" onchange="testing()" name="file" accept="image/*"> <?php echo Labels::getLabel('LBL_Upload_New_Image', $siteLangId); ?>
                 </label>
                 <a href="javascript:void(0)" class="btn btn--primary btn--sm" data-method="getCroppedCanvas"><?php echo Labels::getLabel('LBL_Update', $siteLangId); ?></a>
             </div>

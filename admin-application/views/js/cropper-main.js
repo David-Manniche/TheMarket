@@ -1,33 +1,4 @@
-$(document).ready(function(){
-	$('#inputImage').onChange = function () { console.log('aaaa');
-	var files = this.files;
-	var file;
-
-	if (cropper && files && files.length) {
-	  file = files[0];
-
-	  if (/^image\/\w+/.test(file.type)) {
-		uploadedImageType = file.type;
-		uploadedImageName = file.name;
-
-		if (uploadedImageURL) {
-		  URL.revokeObjectURL(uploadedImageURL);
-		}
-
-		image.src = uploadedImageURL = URL.createObjectURL(file);
-		cropper.destroy();
-		cropper = new Cropper(image, options);
-		inputImage.value = null;
-	  } else {
-		window.alert('Please choose an image file.');
-	  }
-	}
-	}
-});
 (function() {
-testing = function(){
-	delete inputImage;
-}
 systemImgCropper = function(url, aspectRatio, callback, inputImage){
 	fcom.ajax(url, '', function(t) {
 		$.facebox(t,'faceboxWidth fbminwidth');
@@ -184,7 +155,7 @@ cropImage = function(image, options, callback, inputImage){
 	  if(inputImage === undefined){
 		var inputImage = document.getElementById('inputImage');
 	  }
-	  if (URL ) {
+	  if (URL) {
           inputImage.onchange = function () {
 	      var files = this.files;
 	      var file;
@@ -213,6 +184,5 @@ cropImage = function(image, options, callback, inputImage){
 	    inputImage.disabled = true;
 	    inputImage.parentNode.className += ' disabled';
 	  }
-
 }
 })();

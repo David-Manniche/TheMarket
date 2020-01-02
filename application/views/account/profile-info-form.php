@@ -57,7 +57,7 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
 
                                 $profileImg = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'user', array($userId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                             ?>
-                            <img onClick="popupOrgImage(this)" src="<?php echo $profileImg;?>" alt="<?php echo Labels::getLabel('LBL_Profile_Image', $siteLangId);?>">
+                            <img src="<?php echo $profileImg;?>" alt="<?php echo Labels::getLabel('LBL_Profile_Image', $siteLangId);?>">
                             <!--img src="<?php /* echo CommonHelper::generateUrl('Account', 'userProfileImage', array(UserAuthentication::getLoggedUserId(), 'croped', true)).'?t='.time(); ?>"
                                 alt="<?php echo Labels::getLabel('LBL_Profile_Image', $siteLangId); */?>"-->
                         </div>

@@ -25,7 +25,18 @@ class ProfileController extends AdminBaseController
         $this->set('imgFrm', $imgFrm);
         $this->_template->render(false, false);
     }
+    
+    public function imgCropper()
+    {
+        $userId = UserAuthentication::getLoggedUserId(true);
+        $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
+        $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
+        $userImage = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'user', array($userId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
 
+        $this->set('image', $userImage);
+        $this->_template->render(false, false, 'cropper/index.php');
+    }
+    
     public function profileInfoForm()
     {
         $imgFrm = $this->getImageForm();
