@@ -97,10 +97,11 @@ class PushNotification extends MyAppModel
         $obj->addCondition('uauth_last_access', '>=', date('Y-m-d H:i:s', strtotime("-7 DAYS")));
         $obj->addCondition('uauth_user_id', '>', 'mysql_func_pnotification_till_user_id', 'AND', true);
 
-        $obj->addMultipleFields(['uauth_user_id', 'uauth_fcm_id']);
+        $obj->addMultipleFields(['uauth_fcm_id']);
         $obj->addOrder('uauth_user_id', 'ASC');
         $rs = $obj->getResultSet();
-        return FatApp::getDb()->fetchAllAssoc($rs);
+        $data = FatApp::getDb()->fetchAll($rs);
+        return array_column($data, 'uauth_fcm_id');
     }
 
     private static function updateDetail($recordId, $status, $lastExecutedUserId)
@@ -177,7 +178,7 @@ class PushNotification extends MyAppModel
                         'urlDetail' => !empty($notificationDetail['pnotification_url']) ? CommonHelper::getUrlTypeData($notificationDetail['pnotification_url']) : [],
                     ]
                 ];
-                $response = $obj->notify(array_values($deviceTokens), $data);
+                $response = $obj->notify($deviceTokens, $data);
                 if (false === $response) {
                     /* $this->error =  $obj->getError(); */
                 }
