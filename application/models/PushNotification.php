@@ -128,6 +128,11 @@ class PushNotification extends MyAppModel
         }
 
         $keyName = Plugin::getAttributesById($defaultPushNotiAPI, 'plugin_code');
+        if (1 > Plugin::isActive($keyName)) {
+            $this->error = Labels::getLabel('MSG_PLUGIN_IS_NOT_ACTIVE', CommonHelper::getLangId());
+            return false;
+        }
+
         $limit = $keyName::LIMIT;
 
         $srchU = new SearchBase(static::DB_TBL_NOTIFICATION_TO_USER, 'pnu');
