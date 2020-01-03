@@ -49,7 +49,7 @@ class PushNotification extends MyAppModel
         ];
     }
 
-    public function getDeviceTokens($recordId, $buyers, $sellers, $joinNotificationUsers = true)
+    private static function getDeviceTokens($recordId, $buyers, $sellers, $joinNotificationUsers = true)
     {
         $buyers = FatUtility::int($buyers);
         $sellers = FatUtility::int($sellers);
@@ -103,7 +103,7 @@ class PushNotification extends MyAppModel
         return FatApp::getDb()->fetchAllAssoc($rs);
     }
 
-    private function updateDetail($recordId, $status, $lastExecutedUserId)
+    private static function updateDetail($recordId, $status, $lastExecutedUserId)
     {
         $dataToSave = [
             'pnotification_id' => $recordId,
@@ -114,22 +114,22 @@ class PushNotification extends MyAppModel
         $dataToUpdateOnDuplicate = $dataToSave;
         unset($dataToUpdateOnDuplicate['pnotification_id']);
         if (!FatApp::getDb()->insertFromArray(static::DB_TBL, $dataToSave, false, array(), $dataToUpdateOnDuplicate)) {
-            $this->error = Labels::getLabel("MSG_UNABLE_TO_UPDATE!", CommonHelper::getLangId());
+            // $this->error = Labels::getLabel("MSG_UNABLE_TO_UPDATE!", CommonHelper::getLangId());
             return false;
         }
     }
 
-    public function send()
+    public static function send()
     {
         $defaultPushNotiAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_PUSH_NOTIFICATION_API, FatUtility::VAR_INT, 0);
         if (empty($defaultPushNotiAPI)) {
-            $this->error = Labels::getLabel('MSG_DEFAULT_PUSH_NOTIFICATION_API_NOT_SET', CommonHelper::getLangId());
+            // $this->error =  Labels::getLabel('MSG_DEFAULT_PUSH_NOTIFICATION_API_NOT_SET', CommonHelper::getLangId());
             return false;
         }
 
         $keyName = Plugin::getAttributesById($defaultPushNotiAPI, 'plugin_code');
         if (1 > Plugin::isActive($keyName)) {
-            $this->error = Labels::getLabel('MSG_PLUGIN_IS_NOT_ACTIVE', CommonHelper::getLangId());
+            // $this->error =  Labels::getLabel('MSG_PLUGIN_IS_NOT_ACTIVE', CommonHelper::getLangId());
             return false;
         }
 
@@ -151,7 +151,7 @@ class PushNotification extends MyAppModel
         $rs = $srch->getResultSet();
         $notificationList = FatApp::getDb()->fetchAll($rs);
         if (1 > count($notificationList)) {
-            $this->error = Labels::getLabel('MSG_NO_RECORD_FOUND', CommonHelper::getLangId());
+            // $this->error = Labels::getLabel('MSG_NO_RECORD_FOUND', CommonHelper::getLangId());
             return false;
         }
         foreach ($notificationList as $notificationDetail) {
@@ -160,11 +160,10 @@ class PushNotification extends MyAppModel
             $sellers = $notificationDetail['pnotification_for_seller'];
 
             $joinNotificationUsers = (0 < $notificationDetail['pnotification_user_linked']) ? true : false;
-            $deviceTokens = $this->getDeviceTokens($recordId, $buyers, $sellers, $joinNotificationUsers);
+            $deviceTokens = static::getDeviceTokens($recordId, $buyers, $sellers, $joinNotificationUsers);
             if (empty($deviceTokens) || 1 > count($deviceTokens)) {
-                $this->updateDetail($recordId, static::STATUS_COMPLETED, -1);
+                static::updateDetail($recordId, static::STATUS_COMPLETED, -1);
                 continue;
-                // return true;
             }
 
             try {
@@ -180,17 +179,15 @@ class PushNotification extends MyAppModel
                 ];
                 $response = $obj->notify(array_values($deviceTokens), $data);
                 if (false === $response) {
-                    /* $this->error = $obj->getError();
-                    return false; */
+                    /* $this->error =  $obj->getError(); */
                 }
             } catch (\Error $e) {
-                /* $this->error = 'ERR - ' . $e->getMessage();
-                return false; */
+                /* $this->error =  'ERR - ' . $e->getMessage(); */
             }
 
             end($deviceTokens); // move the internal pointer to the end of the array
             $lastExecutedUserId = key($deviceTokens);
-            $this->updateDetail($recordId, static::STATUS_PROCESSING, $lastExecutedUserId);
+            static::updateDetail($recordId, static::STATUS_PROCESSING, $lastExecutedUserId);
             // return $response;
         }
     }

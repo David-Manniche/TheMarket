@@ -1909,10 +1909,12 @@ class CommonHelper extends FatUtility
 
     public static function getUrlTypeData($url)
     {
+        if (empty($url)) {
+            return false;
+        }
         if (strpos($url, "?") !== false) {
             $url = str_replace('?', '/?', $url);
         }
-
         $originalUrl = $url;
         $url = preg_replace('/https:/', 'http:', $url, 1);
         /* [ Check url rewritten by the system and "/" discarded in url rewrite*/
@@ -1922,6 +1924,9 @@ class CommonHelper extends FatUtility
         $systemUrl = rtrim($systemUrl, '/');
         $customUrl = array_filter(explode('/', $systemUrl));
         $customUrl = array_values($customUrl);
+        if (empty($customUrl)) {
+            return false;
+        }
         $srch = UrlRewrite::getSearchObject();
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
@@ -1936,24 +1941,18 @@ class CommonHelper extends FatUtility
         }
         
         $arr = explode('/', $url);
-
         $controller = (isset($arr[0])) ? $arr[0] : '';
         array_shift($arr);
-
         $action = (isset($arr[0])) ? $arr[0] : '';
         array_shift($arr);
-
         $queryString = $arr;
-
         if ($controller != '' && $action == '') {
             $action = 'index';
         }
-
         if ($controller == '') {
             $controller = 'Content';
         }
-
-        $recordId = isset($queryString[0]) ? $queryString[0] : 0;
+        $recordId = isset($queryString[0]) ? $queryString[0] :0;
         switch ($controller . '/' . $action) {
             case 'category/view':
                 $urlType = applicationConstants::URL_TYPE_CATEGORY;
@@ -1984,7 +1983,6 @@ class CommonHelper extends FatUtility
                 $urlType = applicationConstants::URL_TYPE_EXTERNAL;
                 break;
         }
-
         return array(
             'url' => $url,
             'recordId' => $recordId,
