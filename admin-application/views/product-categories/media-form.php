@@ -4,6 +4,8 @@ $prodCatIconFrm->developerTags['colClassPrefix'] = 'col-md-';
 $prodCatIconFrm->developerTags['fld_default_col'] = 12;
 $fld = $prodCatIconFrm->getField('cat_icon');
 $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+$fld->addFieldTagAttribute('id', 'inputCategoryIconImage');
+$fld->addFieldTagAttribute('onClick', 'iconPopupImage(this)');
 $langFld = $prodCatIconFrm->getField('lang_id');
 $langFld->addFieldTagAttribute('class', 'icon-language-js');
 
@@ -18,6 +20,8 @@ $prodCatBannerFrm->developerTags['colClassPrefix'] = 'col-md-';
 $prodCatBannerFrm->developerTags['fld_default_col'] = 12;
 $fld2 = $prodCatBannerFrm->getField('cat_banner');
 $fld2->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+$fld2->addFieldTagAttribute('id', 'inputCategoryBannerImage');
+$fld2->addFieldTagAttribute('onClick', 'bannerPopupImage(this)');
 $langFld = $prodCatBannerFrm->getField('lang_id');
 $langFld->addFieldTagAttribute('class', 'banner-language-js');
 $screenFld = $prodCatBannerFrm->getField('slide_screen');
@@ -32,8 +36,8 @@ $htmlAfterField = $preferredDimensionsStr;
 $catBannerImages ='';
 $htmlAfterField .= '<div id="banner-image-listing"></div>';
 $fld2->htmlAfterField = $htmlAfterField;*/ ?>
-
-<section class="section">
+<div id="cropperBox-js"></div>
+<section class="section" id="mediaForm-js">
     <div class="sectionhead">
         <h4><?php echo Labels::getLabel('LBL_Product_Category_Media_Setup', $adminLangId); ?></h4>
     </div>
@@ -70,20 +74,34 @@ $fld2->htmlAfterField = $htmlAfterField;*/ ?>
     </div>
 </section>
 <script>
-    $(document).on('change','.prefDimensions-js',function(){
-        var screenDesktop = <?php echo applicationConstants::SCREEN_DESKTOP ?>;
-        var screenIpad = <?php echo applicationConstants::SCREEN_IPAD ?>;
+$('input[name=banner_min_width]').val(2000);
+$('input[name=banner_min_height]').val(500);
+$('input[name=logo_min_width]').val(150);
+$('input[name=logo_min_height]').val(150);
+var aspectRatio = 4 / 1;
+$(document).on('change','.prefDimensions-js',function(){
+    var screenDesktop = <?php echo applicationConstants::SCREEN_DESKTOP ?>;
+    var screenIpad = <?php echo applicationConstants::SCREEN_IPAD ?>;
 
-        if($(this).val() == screenDesktop)
-        {
-            $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '2000 x 500'));
-        }
-        else if($(this).val() == screenIpad)
-        {
-            $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '1024 x 360'));
-        }
-        else{
-            $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '640 x 360'));
-        }
-    });
+    if($(this).val() == screenDesktop)
+    {
+        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '2000 x 500'));
+        $('input[name=banner_min_width]').val(2000);
+        $('input[name=banner_min_height]').val(500);
+        aspectRatio = 4 / 1;
+    }
+    else if($(this).val() == screenIpad)
+    {
+        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '1024 x 360'));
+        $('input[name=banner_min_width]').val(1024);
+        $('input[name=banner_min_height]').val(360);
+        aspectRatio = 128 / 45;
+    }
+    else{
+        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '640 x 360'));
+        $('input[name=banner_min_width]').val(640);
+        $('input[name=banner_min_height]').val(360);
+        aspectRatio = 16 / 9;
+    }
+});
 </script>

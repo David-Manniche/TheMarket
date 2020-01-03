@@ -237,74 +237,100 @@ $(document).on('change','.prefDimensions-js',function(){
 		searchProductCategories(document.frmSearch);
 	};
 
-})();
+	bannerPopupImage = function(inputBtn){
+        fcom.ajax(fcom.makeUrl('Shops', 'imgCropper'), '', function(t) {
+			$('#cropperBox-js').html(t);
+			$("#mediaForm-js").css("display", "none");
+    		var container = document.querySelector('.img-container');
+    		var image = container.getElementsByTagName('img').item(0);
+            var minWidth = document.frmCategoryBanner.banner_min_width.value;
+            var minHeight = document.frmCategoryBanner.banner_min_height.value;
+    		var options = {
+                aspectRatio: aspectRatio,
+                data: {
+                    width: minWidth,
+                    height: minHeight,
+                },
+                minCropBoxWidth: minWidth,
+                minCropBoxHeight: minHeight,
+                toggleDragModeOnDblclick: false,
+	        };
+    	  return cropImage(image, options, 'uploadCatImages', inputBtn);
+    	});
+	};
 
-$(document).on('click','.catFile-Js',function(){
-	var node = this;
-	$('#form-upload').remove();
-	var formName = $(node).attr('data-frm');
-	var slide_screen = 0;
-	if(formName == 'frmCategoryImage'){
-		var lang_id = document.frmCategoryImage.lang_id.value;
-		var prodcat_id = document.frmCategoryImage.prodcat_id.value;
-	}else if(formName == 'frmCategoryIcon'){
-		var lang_id = document.frmCategoryIcon.lang_id.value;
-		var prodcat_id = document.frmCategoryIcon.prodcat_id.value;
-		var imageType = 'icon';
-	}else{
-		var lang_id = document.frmCategoryBanner.lang_id.value;
-		var prodcat_id = document.frmCategoryBanner.prodcat_id.value;
-		slide_screen = document.frmCategoryBanner.slide_screen.value;
-		var imageType = 'banner';
-	}
+    iconPopupImage = function(inputBtn){
+        fcom.ajax(fcom.makeUrl('Shops', 'imgCropper'), '', function(t) {
+			$('#cropperBox-js').html(t);
+			$("#mediaForm-js").css("display", "none");
+    		var container = document.querySelector('.img-container');
+    		var image = container.getElementsByTagName('img').item(0);
+            var minWidth = document.frmCategoryIcon.logo_min_width.value;
+            var minHeight = document.frmCategoryIcon.logo_min_height.value;
+    		var options = {
+                aspectRatio: 1 / 1,
+                data: {
+                    width: minWidth,
+                    height: minHeight,
+                },
+                minCropBoxWidth: minWidth,
+                minCropBoxHeight: minHeight,
+                toggleDragModeOnDblclick: false,
+	        };
+    	  return cropImage(image, options, 'uploadCatImages', inputBtn);
+    	});
+	};
 
-	var fileType = $(node).attr('data-file_type');
-
-	var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-	frm = frm.concat('<input type="file" name="file" />');
-	frm = frm.concat('<input type="hidden" name="file_type" value="' + fileType + '">');
-	frm = frm.concat('<input type="hidden" name="prodcat_id" value="' + prodcat_id + '">');
-	frm = frm.concat('<input type="hidden" name="lang_id" value="' + lang_id + '">');
-	frm = frm.concat('<input type="hidden" name="slide_screen" value="' + slide_screen + '">');
-	frm = frm.concat('</form>');
-	$('body').prepend(frm);
-	$('#form-upload input[name=\'file\']').trigger('click');
-	if (typeof timer != 'undefined') {
-		clearInterval(timer);
-	}
-	timer = setInterval(function() {
-		if ($('#form-upload input[name=\'file\']').val() != '') {
-			clearInterval(timer);
-			$val = $(node).val();
-			$.ajax({
-				url: fcom.makeUrl('ProductCategories', 'setUpCatImages'),
-				type: 'post',
-				dataType: 'json',
-				data: new FormData($('#form-upload')[0]),
-				cache: false,
-				contentType: false,
-				processData: false,
-				beforeSend: function() {
-					$(node).val('Loading');
-				},
-				complete: function() {
-					$(node).val($val);
-					fcom.resetFaceboxHeight();
-
-				},
-				success: function(ans) {
-						if(ans.status == 1){
-							fcom.displaySuccessMessage(ans.msg);
-							$('#form-upload').remove();
-							categoryImages(prodcat_id,imageType,slide_screen,lang_id);
-						}else{
-							fcom.displayErrorMessage(ans.msg);
-						}
-					},
-					error: function(xhr, ajaxOptions, thrownError) {
-						alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-					}
-				});
+	uploadCatImages = function(formData){
+        var node = this;
+        $('#form-upload').remove();
+        var frmName = formData.get("frmName");
+		var slideScreen = 0;
+		if(frmName == 'frmCategoryIcon'){
+			var langId = document.frmCategoryIcon.lang_id.value;
+			var prodcatId = document.frmCategoryIcon.prodcat_id.value;
+			var fileType = document.frmCategoryIcon.file_type.value;
+			var imageType = 'icon';
+		} else {
+			var langId = document.frmCategoryBanner.lang_id.value;
+			var prodcatId = document.frmCategoryBanner.prodcat_id.value;
+			var fileType = document.frmCategoryBanner.file_type.value;
+			slideScreen = document.frmCategoryBanner.slide_screen.value;
+			var imageType = 'banner';
 		}
-	}, 500);
-});
+		formData.append('prodcat_id', prodcatId);
+        formData.append('slide_screen', slideScreen);
+        formData.append('lang_id', langId);
+        formData.append('file_type', fileType);
+        /* $val = $(node).val(); */
+        $.ajax({
+            url: fcom.makeUrl('ProductCategories', 'setUpCatImages'),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $(node).val('Loading');
+            },
+            complete: function() {
+                /* $(node).val($val); */
+            },
+			success: function(ans) {
+				if(ans.status == 1){
+					fcom.displaySuccessMessage(ans.msg);
+					$('#form-upload').remove();
+					categoryMediaForm(prodcatId);
+					categoryImages(prodcatId, imageType, slideScreen, langId);
+				}else{
+					fcom.displayErrorMessage(ans.msg);
+				}
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+        });
+	}
+
+})();

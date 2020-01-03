@@ -485,7 +485,7 @@ $(document).on('change','.collection-language-js',function(){
         });
 	}
 
-    collectionPopupImage = function(){
+    collectionPopupImage = function(inputBtn){
         fcom.ajax(fcom.makeUrl('Shops', 'imgCropper'), '', function(t) {
 			$('#cropperBox-js').html(t);
 			$("#mediaForm-js").css("display", "none");
@@ -501,7 +501,7 @@ $(document).on('change','.collection-language-js',function(){
                 minCropBoxHeight: collectionMediaHeight,
                 toggleDragModeOnDblclick: false,
 	        };
-    	  return cropImage(image, options, 'uploadCollectionImage');
+    	  return cropImage(image, options, 'uploadCollectionImage', inputBtn);
     	});
 	};
 
@@ -539,8 +539,8 @@ $(document).on('change','.collection-language-js',function(){
 					$.systemMessage( ans.msg,'alert--success');
 					$(dv).removeClass('text-danger');
 					$(dv).addClass('text-success');
-					// shopCollectionImages(shop_id, scollection_id, lang_id);
 					collectionMediaForm(shop_id, scollection_id);
+					// shopCollectionImages(shop_id, scollection_id, lang_id);
 				} else {
 					$.systemMessage(ans.msg,'alert--danger');
 					$(dv).removeClass('text-success');

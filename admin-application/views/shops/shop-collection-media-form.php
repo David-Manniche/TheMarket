@@ -4,8 +4,8 @@
     $frm->developerTags['fld_default_col'] = 6;
     $fld = $frm->getField('collection_image');
     $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
-    $fld->addFieldTagAttribute('id', 'inputImage');
-    $fld->addFieldTagAttribute('onClick', 'collectionPopupImage()');
+    $fld->addFieldTagAttribute('id', 'collectionInputImage');
+    $fld->addFieldTagAttribute('onClick', 'collectionPopupImage(this)');
     if (isset($scollection_id) && $scollection_id > 0) {
         $scollection_id = $scollection_id;
     } else {
