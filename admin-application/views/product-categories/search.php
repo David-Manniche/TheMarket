@@ -1,30 +1,30 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');  ?>
 <?php
     $arr_flds = array(
-            'dragdrop'=>'',
             'select_all'=>Labels::getLabel('LBL_Select_all', $adminLangId),
-            'listserial'=>Labels::getLabel('LBL_Sr._No', $adminLangId),
+            'prodcat_display_order'=>Labels::getLabel('LBL_POS', $adminLangId),
             'prodcat_identifier'=>Labels::getLabel('LBL_Category_Name', $adminLangId),
-            'child_count' => Labels::getLabel('LBL_Subcategories', $adminLangId),
-            'prodcat_active' => Labels::getLabel('LBL_Status', $adminLangId),
-            'action' => Labels::getLabel('LBL_Action', $adminLangId),
+            'category_products' => Labels::getLabel('LBL_Products', $adminLangId),
+            'prodcat_active' => Labels::getLabel('LBL_Publish', $adminLangId),
+            'action' => Labels::getLabel('', $adminLangId),
         );
-    if (!$canEdit) {
-        unset($arr_flds['dragdrop']);
-    }
-    $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered','id'=>'prodcat'));
+    $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered   table-category-accordion','id'=>'prodcat'));
     $th = $tbl->appendElement('thead')->appendElement('tr');
     foreach ($arr_flds as $key => $val) {
         if ('select_all' == $key) {
-            $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input title="'.$val.'" type="checkbox" onclick="selectAll( $(this) )" class="selectAll-js"><i class="input-helper"></i></label>', true);
+            $th->appendElement('th', array('width'=>'5%'))->appendElement('plaintext', array(), '<label class="checkbox"><input title="'.$val.'" type="checkbox" onclick="selectAll( $(this) )" class="selectAll-js"><i class="input-helper"></i></label>', true);
+        } else if('prodcat_display_order' == $key || 'action' == $key){
+            $e = $th->appendElement('th', array('width'=>'10%'), $val);
+        } else if('category_products' == $key || 'prodcat_active' == $key){
+            $e = $th->appendElement('th', array('width'=>'15%'), $val);
+        } else if('prodcat_identifier' == $key){
+            $e = $th->appendElement('th', array('width'=>'35%'), $val);
         } else {
             $e = $th->appendElement('th', array(), $val);
         }
     }
 
-    $sr_no = $page==1?0:$pageSize*($page-1);
     foreach ($arr_listing as $sn => $row) {
-        $sr_no++;
         $tr = $tbl->appendElement('tr');
         if ($row['prodcat_active'] == applicationConstants::ACTIVE) {
             $tr->setAttribute("id", $row['prodcat_id']);
@@ -32,30 +32,20 @@
 
         if ($row['prodcat_active'] != applicationConstants::ACTIVE) {
             $tr->setAttribute("class", "nodrag nodrop");
-        }
-        foreach ($arr_flds as $key => $val) {
+        }   
+        foreach ($arr_flds as $key => $val) { 
             $td = $tr->appendElement('td');
             switch ($key) {
                 case 'select_all':
-                    $td->appendElement('plaintext', array(), '<label class="checkbox"><input class="selectItem--js" type="checkbox" name="prodcat_ids[]" value='.$row['prodcat_id'].'><i class="input-helper"></i></label>', true);
+                    $td->appendElement('plaintext', array(), '<label><span class="checkbox"><input class="selectItem--js" type="checkbox" name="prodcat_ids[]" value='.$row['prodcat_id'].'><i class="input-helper"></i></span></label>', true);
                     break;
-                case 'dragdrop':
-                    if ($row['prodcat_active'] == applicationConstants::ACTIVE) {
-                        $td->appendElement('i', array('class'=>'ion-arrow-move icon'));
-                        $td->setAttribute("class", 'dragHandle');
-                    }
+                case 'prodcat_display_order':
+                    $td->appendElement('plaintext', array(), '', true);                    break;
+                case 'prodcat_identifier':                    
+                    $td->appendElement('plaintext', array(), '<a href="javascript:void(0);" onClick="displaySubCategories('.$row['prodcat_id'].', this)">'.$row[$key].' <i class="ion-chevron-right"></i></a>', true);
                     break;
-                case 'listserial':
-                    $td->appendElement('plaintext', array(), $sr_no);
-                    break;
-                case 'prodcat_identifier':
-                    if ($row['prodcat_name']!='') {
-                        $td->appendElement('plaintext', array(), $row['prodcat_name'], true);
-                        $td->appendElement('br', array());
-                        $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
-                    } else {
-                        $td->appendElement('plaintext', array(), $row[$key], true);
-                    }
+                case 'category_products':
+                    $td->appendElement('plaintext', array(), '<a href="javascript:void(0);" class="badge badge-secondary badge-pill">'.$row[$key].'</a>', true);
                     break;
                 case 'prodcat_active':
                     $active = "";
@@ -69,39 +59,22 @@
                     <i class="switch-handles '.$statusClass.'"></i></label>';
                     $td->appendElement('plaintext', array(), $str, true);
                     break;
-                case 'child_count':
-                    if ($row[$key]==0) {
-                        $td->appendElement('plaintext', array(), $row[$key], true);
-                    } else {
-                        $td->appendElement('a', array('href'=>CommonHelper::generateUrl('ProductCategories', 'index', array($row['prodcat_id'])),'title'=>Labels::getLabel('LBL_View_Categories', $adminLangId)), $row[$key]);
-                        //$td->appendElement('a', array('href'=>'javascript:void(0)',"onclick"=>"subcat_list(".$row['prodcat_id'].")",'title'=>Labels::getLabel('LBL_View_Categories',$adminLangId)),$row[$key] );
-                    }
-                    break;
-
                 case 'action':
-                    $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
+           
                     if ($canEdit) {
-                        $li = $ul->appendElement("li", array('class'=>'droplink'));
-
-
-                        $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                        $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                        $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                        $innerLiEdit=$innerUl->appendElement('li');
+                        $div = $td->appendElement("div", array("class"=>"hidden-tools"));
+                        $innerDiv = $div->appendElement("div", array('class'=>'btn-group'));
+                        $innerDiv->appendElement('button', array('class'=>'btn btn-secondary btn-sm dropdown-toggle', 'type'=>'button', 'data-toggle'=>'dropdown', 'aria-haspopup'=>'true', 'aria-expanded'=>'false'), '<i class="ion ion-ios-settings"></i>', true);
                         
+                        $dropDownDiv = $innerDiv->appendElement("div", array('class'=>'dropdown-menu'));
+                        $dropDownDiv->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'dropdown-item', 'title'=>Labels::getLabel('LBL_Add_Product', $adminLangId)), Labels::getLabel('LBL_Add_Product', $adminLangId), true);
+                        $dropDownDiv->appendElement("div", array('class'=>'dropdown-divider'));
                         $url = commonHelper::generateUrl('ProductCategories', 'form', array($row['prodcat_id']));
                         if($row['prodcat_parent'] > 0){
                             $url = commonHelper::generateUrl('ProductCategories', 'form', array($row['prodcat_id'], $row['prodcat_parent']));
                         }
-                        $innerLiEdit->appendElement('a', array('href'=>$url, 'class'=>'button small green redirect--js', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId)), Labels::getLabel('LBL_Edit', $adminLangId), true);
-
-                        if ($row['child_count'] > 0) {
-                            /* $li = $ul->appendElement("li");
-    						$li->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Content_Block',$adminLangId),"onclick"=>"contentBlock(".$row['prodcat_id'].")"),'<i class="ion-grid icon"></i>', true); */
-                        }
-
-                        $innerLiDelete = $innerUl->appendElement("li");
-                        $innerLiDelete->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['prodcat_id'].")"), Labels::getLabel('LBL_Delete', $adminLangId), true);
+                        $dropDownDiv->appendElement('a', array('href'=>$url, 'class'=>'dropdown-item', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId)), Labels::getLabel('LBL_Edit', $adminLangId), true);
+                        $dropDownDiv->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'dropdown-item', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId), "onclick"=>"deleteRecord(".$row['prodcat_id'].")"), Labels::getLabel('LBL_Delete', $adminLangId), true);
                     }
                     break;
                 default:

@@ -1112,7 +1112,7 @@ class ProductCategory extends MyAppModel
         if(count($bannerImageIds) == 0){
             return false;
         }
-        foreach($iconImageIds as $imageId){
+        foreach($bannerImageIds as $imageId){
             $data = array('afile_record_id' => $this->mainTableRecordId);
             $where = array('smt'=>'afile_id = ?', 'vals'=>array($imageId));
             FatApp::getDb()->updateFromArray(AttachedFile::DB_TBL, $data, $where);
@@ -1135,6 +1135,24 @@ class ProductCategory extends MyAppModel
             return false;
         }
         return $translatedData;
+    }
+    
+    public function getProdSubCategories($prodCatParent)
+    {
+        $prodCatParent = FatUtility::int($prodCatParent); 
+        if($prodCatParent < 1){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        $srch = static::getSearchObject(false, $this->commonLangId, false);
+        $srch->addCondition(static::DB_TBL_PREFIX.'parent', '=', $prodCatParent);
+        $srch->addCondition(static::DB_TBL_PREFIX.'deleted', '=', 0);
+        $srch->addOrder(static::DB_TBL_PREFIX.'display_order', 'asc');
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->addMultipleFields(array('m.*', 'prodcat_name', '0 as category_products'));
+        $rs = $srch->getResultSet();
+        return FatApp::getDb()->fetchAll($rs);
     }
     
     

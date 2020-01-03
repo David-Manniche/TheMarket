@@ -47,47 +47,40 @@ class ProductCategoriesController extends AdminBaseController
     public function search()
     {
         $searchForm = $this->getSearchForm();
-        $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
-        $page = (empty($page) || $page <= 0) ? 1: FatUtility::int($page);
-        //$pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
-        $pagesize = 500;
-
-        $post = $searchForm->getFormDataFromArray($data);
-        $parent = FatApp::getPostedData('prodcat_parent', FatUtility::VAR_INT, 0);
-
-        $srch = ProductCategory::getSearchObject(true, $this->adminLangId, false);
-        $srch->addCondition('m.prodcat_parent', '=', $parent);
+        $post = $searchForm->getFormDataFromArray(FatApp::getPostedData());
+        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
+        $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);     
+        $prodCatParent = FatApp::getPostedData('prodcat_parent', FatUtility::VAR_INT, 0);
+        
+        $srch = ProductCategory::getSearchObject(false, $this->adminLangId, false);
+        $srch->addCondition('m.prodcat_parent', '=', $prodCatParent);
         $srch->addCondition('m.prodcat_deleted', '=', 0);
         $srch->addOrder('m.prodcat_display_order', 'asc');
-        $srch->addFld('m.*');
-
+        $srch->addMultipleFields(array('m.*', '0 as category_products'));
         if (!empty($post['prodcat_identifier'])) {
             $srch->addCondition('m.prodcat_identifier', 'like', '%'.$post['prodcat_identifier'].'%');
         }
-
         $srch->setPageNumber($page);
-        $srch->setPageSize($pagesize);
-        /* $srch->doNotCalculateRecords();
-        $srch->doNotLimitRecords(); */
-
-        /* $srch->joinTable(ProductCategory::DB_TBL . '_lang', 'LEFT OUTER JOIN',
-        'prodcatlang_prodcat_id = m.prodcat_id AND prodcatlang_lang_id = ' . $this->adminLangId); */
-
+        $srch->setPageSize($pagesize);        
         $srch->addMultipleFields(array("prodcat_name"));
         $rs = $srch->getResultSet();
-        $pageCount = $srch->pages();
         $records = FatApp::getDb()->fetchAll($rs);
-
-        $parentCatData = ProductCategory::getAttributesById($parent);
+        
         $this->set("arr_listing", $records);
-        $this->set('pageCount', $pageCount);
+        $this->set('pageCount', $srch->pages());
         $this->set('page', $page);
-        $this->set('parentData', $parentCatData);
         $this->set('pageSize', $pagesize);
         $this->set('postedData', $post);
         $this->set('recordCount', $srch->recordCount());
-        //$this->set('category_structure', $category_structure);
+        $this->_template->render(false, false);
+    }
+    
+    public function prodSubCategories()
+    {
+        $prodCatParent = FatApp::getPostedData('prodCatParent', FatUtility::VAR_INT, 0); 
+        $prodCat = new ProductCategory();
+        $childCategories = $prodCat->getProdSubCategories($prodCatParent);
+        $this->set("childCategories", $childCategories);
         $this->_template->render(false, false);
     }
 
@@ -103,19 +96,24 @@ class ProductCategoriesController extends AdminBaseController
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
-            
+            $langData = ProductCategory::getLangDataArr($prodCatId, array(ProductCategory::DB_TBL_LANG_PREFIX.'lang_id', ProductCategory::DB_TBL_PREFIX.'name'));            
+            $catNameArr = array();
+            foreach($langData as $value){
+                $catNameArr[ProductCategory::DB_TBL_PREFIX.'name'][$value[ProductCategory::DB_TBL_LANG_PREFIX.'lang_id']] = $value[ProductCategory::DB_TBL_PREFIX.'name'];                              
+            }
+            $data = array_merge($data, $catNameArr); 
         }         
         $data['parentCatId'] = $parentCatId;
         $prodCatFrm->fill($data);
-        $langData = Language::getAllNames();
-        unset($langData[$siteDefaultLangId]);
         $mediaLanguages = applicationConstants::bannerTypeArr();
         $screenArr = applicationConstants::getDisplaysArr($this->adminLangId);
+        $langData = Language::getAllNames();
+        unset($langData[$siteDefaultLangId]);
         $this->set("includeEditor", true);
         $this->set('prodCatFrm', $prodCatFrm);
-        $this->set('otherLangData', $langData);
         $this->set('mediaLanguages', $mediaLanguages);
         $this->set('screenArr', $screenArr);
+        $this->set('otherLangData', $langData);
         $this->_template->render();
     }
     
@@ -172,7 +170,7 @@ class ProductCategoriesController extends AdminBaseController
     {
         $this->objPrivilege->canEditProductCategories();
         $frm = $this->getCategoryForm();
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData()); echo "<pre>"; print_R($post);die;
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData()); 
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
@@ -821,7 +819,6 @@ class ProductCategoriesController extends AdminBaseController
             }
             ProductCategory::updateCatOrderCode();
             $this->set('msg', Labels::getLabel('LBL_Order_Updated_Successfully', $this->adminLangId));
-            //FatUtility::dieJsonSuccess(Labels::getLabel('LBL_Order_Updated_Successfully',$this->adminLangId));
             $this->_template->render(false, false, 'json-success.php');
         }
     }
