@@ -113,7 +113,7 @@ $(document).on('click','.uploadFile-Js',function(){
             // $('.date_js').datepicker('option', {minDate: new Date()});
             $('.date_js').datetimepicker({
                 minDate: new Date(),
-                format: 'Y-m-d H:m'
+                format: 'Y-m-d H:00'
            });
         });
     };

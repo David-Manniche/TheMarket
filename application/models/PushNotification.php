@@ -6,12 +6,10 @@ class PushNotification extends MyAppModel
     public const DB_TBL_NOTIFICATION_TO_USER = 'tbl_push_notification_to_users';
 
     public const TYPE_APP = 1;
-    public const TYPE_WEB = 2;
-    public const TYPE_BOTH = 3;
 
     public const STATUS_PENDING = 0;
     public const STATUS_PROCESSING = 1;
-    public const STATUS_SENT = 2;
+    public const STATUS_COMPLETED = 2;
 
     public const DEVICE_TOKENS_LIMIT = 3000;
 
@@ -34,20 +32,12 @@ class PushNotification extends MyAppModel
         return $srch;
     }
 
-    public static function getTypeArr($langId)
-    {
-        return [
-            static::TYPE_APP => Labels::getLabel('LBL_APP', $langId),
-            static::TYPE_WEB => Labels::getLabel('LBL_WEB', $langId),
-        ];
-    }
-
     public static function getStatusArr($langId)
     {
         return [
             static::STATUS_PENDING => Labels::getLabel('LBL_PENDING', $langId),
             static::STATUS_PROCESSING => Labels::getLabel('LBL_PROCESSING', $langId),
-            static::STATUS_SENT => Labels::getLabel('LBL_SENT', $langId)
+            static::STATUS_COMPLETED => Labels::getLabel('LBL_COMPLETED', $langId)
         ];
     }
 
@@ -59,7 +49,7 @@ class PushNotification extends MyAppModel
         ];
     }
 
-    public function joinNotifyUsers($obj, $buyers, $sellers)
+    public function getDeviceTokens($recordId, $buyers, $sellers, $joinNotificationUsers = true)
     {
         $buyers = FatUtility::int($buyers);
         $sellers = FatUtility::int($sellers);
@@ -67,10 +57,30 @@ class PushNotification extends MyAppModel
         if (1 > $buyers && 1 > $sellers) {
             return false;
         }
+        $obj = static::getSearchObject($joinNotificationUsers);
         
-        $obj->joinTable(UserAuthentication::DB_TBL_USER_AUTH, 'LEFT OUTER JOIN', 'uauth.uauth_user_id = u.user_id', 'uauth');
+        if (true === $joinNotificationUsers) {
+            $joinUsers = 'pnu.pntu_user_id = u.user_id';
+        } else {
+            $joinBuyers = 'pn.pnotification_for_buyer = u.user_is_buyer AND pn.pnotification_for_buyer = 1';
+            $joinSellers = 'pn.pnotification_for_seller = u.user_is_supplier and pn.pnotification_for_seller = 1';
+            if (0 < $buyers && 0 < $sellers) {
+                $joinUsers =  '((' . $joinBuyers . ') OR (' . $joinSellers . '))';
+            } elseif (0 < $sellers) {
+                $joinUsers = $joinSellers;
+            } elseif (0 < $buyers) {
+                $joinUsers = $joinBuyers;
+            }
+        }
+
+        $obj->joinTable(User::DB_TBL, 'INNER JOIN', $joinUsers, 'u');
+        $obj->joinTable(User::DB_TBL_CRED, 'INNER JOIN', 'uc.' . User::DB_TBL_CRED_PREFIX . 'user_id = u.user_id', 'uc');
+        $obj->joinTable(UserAuthentication::DB_TBL_USER_AUTH, 'INNER JOIN', 'uauth.uauth_user_id = u.user_id', 'uauth');
+
+        $obj->addCondition(static::DB_TBL_PREFIX . 'id', '=', $recordId);
         $obj->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'active', '=', applicationConstants::YES);
         $obj->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'verified', '=', applicationConstants::YES);
+        
         if (0 < $buyers) {
             $cnd = $obj->addCondition('u.' . User::DB_TBL_PREFIX . 'is_buyer', '=', applicationConstants::YES);
         }
@@ -85,24 +95,11 @@ class PushNotification extends MyAppModel
 
         $obj->addCondition('uauth_fcm_id', '!=', '');
         $obj->addCondition('uauth_last_access', '>=', date('Y-m-d H:i:s', strtotime("-7 DAYS")));
-        
-        $cond = $obj->addCondition('pnotification_till_user_id', 'is', 'mysql_func_NULL', 'AND', true);
-        $cond = $cond->attachCondition('uauth_user_id', '>', 'mysql_func_pnotification_till_user_id', 'OR', true);
-        $cond->attachCondition('pnotification_till_user_id', '!=', -1, 'AND');
+        $obj->addCondition('uauth_user_id', '>', 'mysql_func_pnotification_till_user_id', 'AND', true);
 
         $obj->addMultipleFields(['uauth_user_id', 'uauth_fcm_id']);
         $obj->addOrder('uauth_user_id', 'ASC');
-        return $obj;
-    }
-
-    public function getDeviceTokens($buyers, $sellers, $limit)
-    {
-        $srch = User::getSearchObject(true, true);
-        $srch->joinTable(static::DB_TBL, 'LEFT JOIN', 'pn.pnotification_till_user_id = u.user_id', 'pn');
-        $srch = $this->joinNotifyUsers($srch, $buyers, $sellers);
-        $srch->setPageSize($limit);
-        $rs = $srch->getResultSet();
-        echo $srch->getQuery();
+        $rs = $obj->getResultSet();
         return FatApp::getDb()->fetchAllAssoc($rs);
     }
 
@@ -110,7 +107,7 @@ class PushNotification extends MyAppModel
     {
         $dataToSave = [
             'pnotification_id' => $recordId,
-            'pnotification_active' => $status,
+            'pnotification_status' => $status,
             'pnotification_till_user_id' => $lastExecutedUserId
         ];
 
@@ -133,9 +130,17 @@ class PushNotification extends MyAppModel
         $keyName = Plugin::getAttributesById($defaultPushNotiAPI, 'plugin_code');
         $limit = $keyName::LIMIT;
 
+        $srchU = new SearchBase(static::DB_TBL_NOTIFICATION_TO_USER, 'pnu');
+        $srchU->doNotCalculateRecords();
+        $srchU->addFld('pntu_pnotification_id');
+        $srchU->addCondition('pntu_pnotification_id', '=', 'mysql_func_pnotification_id', 'AND', true);
+        $srchU->setPageSize(1);
+
         $srch = static::getSearchObject();
-        $srch->addCondition(static::DB_TBL_PREFIX . 'active', '!=', static::STATUS_SENT);
+        $srch->addMultipleFields(['*', '(CASE WHEN (' . $srchU->getQuery() . ') > 0 THEN 1 ELSE 0 END) AS pnotification_user_linked']);
+        $srch->addCondition(static::DB_TBL_PREFIX . 'status', '!=', static::STATUS_COMPLETED);
         $srch->addCondition(static::DB_TBL_PREFIX . 'till_user_id', '!=', -1);
+        $srch->addCondition('pnotification_notified_on', '<', 'mysql_func_NOW()', 'AND', true);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
@@ -145,27 +150,14 @@ class PushNotification extends MyAppModel
             return false;
         }
         foreach ($notificationList as $notificationDetail) {
-            /* if (strtotime($notificationDetail['pnotification_notified_on']) > time()) {
-                $this->error = Labels::getLabel('MSG_SCHEDULE_DATE_TIME_NOT_MATCHED', CommonHelper::getLangId());
-                return false;
-            } */
+            $recordId = $notificationDetail[static::DB_TBL_PREFIX . 'id'];
             $buyers = $notificationDetail['pnotification_for_buyer'];
             $sellers = $notificationDetail['pnotification_for_seller'];
 
-            $notifyObj = static::getSearchObject(true);
-            $notifyObj->joinTable(User::DB_TBL, 'INNER JOIN', 'pnu.pntu_user_id = u.user_id', 'u');
-            $notifyObj->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.' . User::DB_TBL_CRED_PREFIX . 'user_id = u.user_id', 'uc');
-            $notifyObj->addCondition(static::DB_TBL_PREFIX . 'id', '=', $notificationDetail[static::DB_TBL_PREFIX . 'id']);
-            $notifyObj = $this->joinNotifyUsers($notifyObj, $buyers, $sellers);
-            $rs = $notifyObj->getResultSet();
-            $deviceTokens = FatApp::getDb()->fetchAllAssoc($rs);
-            if (empty($deviceTokens)) {
-                $deviceTokens = $this->getDeviceTokens($buyers, $sellers, $limit);
-            }
-            CommonHelper::printArray($deviceTokens);
-
+            $joinNotificationUsers = (0 < $notificationDetail['pnotification_user_linked']) ? true : false;
+            $deviceTokens = $this->getDeviceTokens($recordId, $buyers, $sellers, $joinNotificationUsers);
             if (empty($deviceTokens) || 1 > count($deviceTokens)) {
-                $this->updateDetail($notificationDetail[static::DB_TBL_PREFIX . 'id'], static::STATUS_SENT, -1);
+                $this->updateDetail($recordId, static::STATUS_COMPLETED, -1);
                 continue;
                 // return true;
             }
@@ -175,7 +167,7 @@ class PushNotification extends MyAppModel
                 $data = [
                     'title' => $notificationDetail['pnotification_title'],
                     'message' => $notificationDetail['pnotification_description'],
-                    'image' => CommonHelper::generateFullUrl('Image', 'pushNotificationImage', [CommonHelper::getLangId(), $notificationDetail[static::DB_TBL_PREFIX . 'id']], CONF_WEBROOT_FRONT_URL),
+                    'image' => CommonHelper::generateFullUrl('Image', 'pushNotificationImage', [CommonHelper::getLangId(), $recordId], CONF_WEBROOT_FRONT_URL),
                     'extra' => [
                         'lang_id' => $notificationDetail['pnotification_lang_id'],
                         'urlDetail' => !empty($notificationDetail['pnotification_url']) ? CommonHelper::getUrlTypeData($notificationDetail['pnotification_url']) : [],
@@ -191,11 +183,9 @@ class PushNotification extends MyAppModel
                 return false; */
             }
 
-            if (1 > $notificationDetail['pnotification_till_user_id']) {
-                end($deviceTokens); // move the internal pointer to the end of the array
-                $lastExecutedUserId = key($deviceTokens);
-                $this->updateDetail($notificationDetail[static::DB_TBL_PREFIX . 'id'], static::STATUS_PROCESSING, $lastExecutedUserId);
-            }
+            end($deviceTokens); // move the internal pointer to the end of the array
+            $lastExecutedUserId = key($deviceTokens);
+            $this->updateDetail($recordId, static::STATUS_PROCESSING, $lastExecutedUserId);
             // return $response;
         }
     }

@@ -154,7 +154,8 @@ CREATE TABLE `tbl_push_notifications` (
   `pnotification_notified_on` datetime NOT NULL,
   `pnotification_for_buyer` tinyint(1) NOT NULL,
   `pnotification_for_seller` tinyint(1) NOT NULL,
-  `pnotification_active` tinyint(1) NOT NULL,
+  `pnotification_till_user_id` int(11) NOT NULL,
+  `pnotification_status` tinyint(1) NOT NULL,
   `pnotification_added_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -170,4 +171,5 @@ ALTER TABLE `tbl_push_notifications`
   ADD PRIMARY KEY (`pnotification_id`);
 ALTER TABLE `tbl_push_notifications`
   MODIFY `pnotification_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `tbl_push_notifications` ADD `pnotification_till_user_id` INT NOT NULL AFTER `pnotification_for_seller`;
+
+INSERT INTO `tbl_cron_schedules` (`cron_id`, `cron_name`, `cron_command`, `cron_duration`, `cron_active`) VALUES (NULL, 'Send FCM Push Notifications', 'PushNotification/send', '15', '1');

@@ -18,8 +18,8 @@ function fatAutoLoader($className)
         require_once CONF_APPLICATION_PATH . 'controllers/' . $className . '.php';
     } elseif (file_exists(CONF_APPLICATION_PATH . 'models/' . $className . '.php')) {
         require_once CONF_APPLICATION_PATH . 'models/' . $className . '.php';
-    } elseif (file_exists(CONF_APPLICATION_PATH . 'utilities/' . $className . '.php')) {
-        require_once CONF_APPLICATION_PATH . 'utilities/' . $className . '.php';
+    } elseif (file_exists(CONF_INSTALLATION_PATH . 'library/plugins/' . $className . '.php')) {
+        require_once CONF_INSTALLATION_PATH . 'library/plugins/' . $className . '.php';
     } else {
         /*
          * if current application path is not the application folder at installtion path

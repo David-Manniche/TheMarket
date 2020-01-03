@@ -41,14 +41,9 @@ class PushNotificationsController extends AdminBaseController
             $srch->addCondition('pnotification_title', 'LIKE', '%' . $keyword . '%');
         }
 
-        $pNotificationType = $post['pnotification_type'];
-        if (0 < $pNotificationType) {
-            $srch->addCondition('pnotification_type', '=', $pNotificationType);
-        }
-
-        $status = $post['pnotification_active'];
+        $status = $post['pnotification_status'];
         if (-1 < $status) {
-            $srch->addCondition('pnotification_active', '=', $status);
+            $srch->addCondition('pnotification_status', '=', $status);
         }
 
         $notifyTo = $post['notify_to'];
@@ -69,7 +64,6 @@ class PushNotificationsController extends AdminBaseController
         $rs = $srch->getResultSet();
         // echo $srch->getError();
         $records = FatApp::getDb()->fetchAll($rs);
-        $typeArr = PushNotification::getTypeArr($this->adminLangId);
         $statusArr = PushNotification::getStatusArr($this->adminLangId);
 
         $this->set('arr_listing', $records);
@@ -78,7 +72,6 @@ class PushNotificationsController extends AdminBaseController
         $this->set('pageSize', $pagesize);
         $this->set('recordCount', $srch->recordCount());
         $this->set("canEdit", $this->canEdit);
-        $this->set("typeArr", $typeArr);
         $this->set("statusArr", $statusArr);
         $this->_template->render(false, false);
     }
@@ -88,12 +81,9 @@ class PushNotificationsController extends AdminBaseController
         $frm = new Form('frmSearch', array('id' => 'frmSearch'));
         $frm->setRequiredStarWith('caption');
         $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
-
-        $typeArr = [-1 => Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId)] + PushNotification::getTypeArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_TYPE', $this->adminLangId), 'pnotification_type', $typeArr, '', array(), '');
         
         $statusArr = [-1 => Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId)] + PushNotification::getStatusArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_STATUS', $this->adminLangId), 'pnotification_active', $statusArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_STATUS', $this->adminLangId), 'pnotification_status', $statusArr, '', array(), '');
         
         $notifyToArr = array_merge([Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId)], PushNotification::getUserTypeArr($this->adminLangId));
         $frm->addSelectBox(Labels::getLabel('LBL_NOTIFY_TO', $this->adminLangId), 'notify_to', $notifyToArr, '', array(), '');
@@ -109,8 +99,7 @@ class PushNotificationsController extends AdminBaseController
     {
         $frm = new Form('PushNotificationForm', array('id' => 'PushNotificationForm'));
         $frm->addHiddenField('', 'pnotification_id');
-        $typeArr = PushNotification::getTypeArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_TYPE', $this->adminLangId), 'pnotification_type', $typeArr, '', array(), '');
+
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'pnotification_lang_id', Language::getAllNames(), $this->adminLangId, array(), '');
         
         $frm->addRequiredField(Labels::getLabel('LBL_TITLE', $this->adminLangId), 'pnotification_title');
@@ -119,7 +108,7 @@ class PushNotificationsController extends AdminBaseController
 
         $frm->addTextBox(Labels::getLabel('LBL_URL', $this->adminLangId), 'pnotification_url');
 
-        $dateFld = $frm->addDateTimeField(Labels::getLabel('LBL_SCHEDULE_DATE', $this->adminLangId), 'pnotification_notified_on', date('Y-m-d H:i'), ['readonly' => 'readonly','class' => 'small dateTimeFld field--calender date_js']);
+        $dateFld = $frm->addDateTimeField(Labels::getLabel('LBL_SCHEDULE_DATE', $this->adminLangId), 'pnotification_notified_on', date('Y-m-d H:00'), ['readonly' => 'readonly','class' => 'small dateTimeFld field--calender date_js']);
         $dateFld->requirements()->setRequired(true);
                 
         $frm->addCheckBox(Labels::getLabel('LBL_NOTIFY_TO_BUYERS', $this->adminLangId), 'pnotification_for_buyer', 1, [], false, 0);
@@ -194,6 +183,19 @@ class PushNotificationsController extends AdminBaseController
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
         unset($post['btn_submit']);
+        
+        $post['pnotification_type'] = PushNotification::TYPE_APP;
+
+        if (!empty($post['pnotification_id'])) {
+            $recordDetail = PushNotification::getAttributesById($post['pnotification_id'], ['pnotification_for_buyer', 'pnotification_for_seller']);
+            if ($post['pnotification_for_buyer'] != $recordDetail['pnotification_for_buyer'] || $post['pnotification_for_seller'] != $recordDetail['pnotification_for_seller']) {
+                $db = FatApp::getDb();
+                if (!$db->deleteRecords(PushNotification::DB_TBL_NOTIFICATION_TO_USER, ['smt' => 'pntu_pnotification_id = ?', 'vals' => [$post['pnotification_id']]])) {
+                    FatUtility::dieJsonError($db->getError());
+                }
+            }
+        }
+
         $db = FatApp::getDb();
         if (!$db->insertFromArray(PushNotification::DB_TBL, $post, true, array(), $post)) {
             FatUtility::dieJsonError($db->getError());
@@ -245,7 +247,7 @@ class PushNotificationsController extends AdminBaseController
             'pntu_user_id' =>  $userId
         ];
         $db = FatApp::getDb();
-        if ($db->insertFromArray(PushNotification::DB_TBL_NOTIFICATION_TO_USER, $PushNotificationData, true, array(), $PushNotificationData)) {
+        if (!$db->insertFromArray(PushNotification::DB_TBL_NOTIFICATION_TO_USER, $PushNotificationData, true, array(), $PushNotificationData)) {
             FatUtility::dieJsonError($db->getError());
         }
     }
@@ -259,7 +261,7 @@ class PushNotificationsController extends AdminBaseController
             FatUtility::dieJsonError(Labels::getLabel("LBL_INVALID_REQUEST", $this->adminLangId));
         }
         $db = FatApp::getDb();
-        if ($db->deleteRecords(PushNotification::DB_TBL_NOTIFICATION_TO_USER, ['smt' => 'pntu_pnotification_id = ? AND pntu_user_id = ?', 'vals' => [$pNotificationId, $userId]])) {
+        if (!$db->deleteRecords(PushNotification::DB_TBL_NOTIFICATION_TO_USER, ['smt' => 'pntu_pnotification_id = ? AND pntu_user_id = ?', 'vals' => [$pNotificationId, $userId]])) {
             FatUtility::dieJsonError($db->getError());
         }
     }

@@ -2,11 +2,11 @@
 
 $arr_flds = array(
     'listserial' => Labels::getLabel('LBL_S.No.', $adminLangId),
-    'pnotification_type' => Labels::getLabel('LBL_TYPE', $adminLangId),
+    // 'pnotification_type' => Labels::getLabel('LBL_TYPE', $adminLangId),
     'notification_detail' => Labels::getLabel('LBL_DETAIL', $adminLangId),
     'pnotification_notified_on' => Labels::getLabel('LBL_SCHEDULED_FOR', $adminLangId),
     'notify_to' => Labels::getLabel('LBL_NOTIFY_TO', $adminLangId),
-    'pnotification_active' => Labels::getLabel('LBL_STATUS', $adminLangId),
+    'pnotification_status' => Labels::getLabel('LBL_STATUS', $adminLangId),
     'action' => Labels::getLabel('LBL_Action', $adminLangId),
 );
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table-responsive'));
@@ -27,9 +27,9 @@ foreach ($arr_listing as $sn => $row) {
             case 'listserial':
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
-            case 'pnotification_type':
+            /* case 'pnotification_type':
                 $td->appendElement('plaintext', array(), $typeArr[$row[$key]], true);
-                break;
+                break; */
             case 'notification_detail':
                 $htm =  '<b>' . Labels::getLabel('LBL_TITLE', $adminLangId) . ':</b> ' . $row['pnotification_title'] . '<br>';
                 $htm .= '<b>' . Labels::getLabel('LBL_BODY', $adminLangId) . ':</b> ' . $row['pnotification_description'];
@@ -54,19 +54,23 @@ foreach ($arr_listing as $sn => $row) {
                 }
                 $td->appendElement('plaintext', array(), $buyerHtm . ' ' . $sellerHtm, true);
                 break;
-            case 'pnotification_active':
+            case 'pnotification_status':
                 $td->appendElement('plaintext', array(), $statusArr[$row[$key]], true);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", ["class" => "actions actions--centered"]);
-                if ($canEdit) {
-                    $li = $ul->appendElement("li", ['class' => 'droplink']);
-                    $li->appendElement('a', ['href' => 'javascript:void(0)', 'class' => 'button small green', 'title '=> Labels::getLabel('LBL_Edit', $adminLangId)], '<i class="ion-android-more-horizontal icon"></i>', true);
-                    $innerDiv = $li->appendElement('div', ['class' => 'dropwrap']);
-                    $innerUl = $innerDiv->appendElement('ul', ['class' => 'linksvertical']);
+                if (PushNotification::STATUS_PENDING == $row['pnotification_status']) {
+                    $ul = $td->appendElement("ul", ["class" => "actions actions--centered"]);
+                    if ($canEdit) {
+                        $li = $ul->appendElement("li", ['class' => 'droplink']);
+                        $li->appendElement('a', ['href' => 'javascript:void(0)', 'class' => 'button small green', 'title '=> Labels::getLabel('LBL_Edit', $adminLangId)], '<i class="ion-android-more-horizontal icon"></i>', true);
+                        $innerDiv = $li->appendElement('div', ['class' => 'dropwrap']);
+                        $innerUl = $innerDiv->appendElement('ul', ['class' => 'linksvertical']);
 
-                    $innerLi = $innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "addNotificationForm(" . $row['pnotification_id'] . ")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
+                        $innerLi = $innerUl->appendElement('li');
+                        $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "addNotificationForm(" . $row['pnotification_id'] . ")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
+                    }
+                } else {
+                    $td->appendElement('plaintext', array(), Labels::getLabel('LBL_N/A', $adminLangId), true);
                 }
                 break;
         }
