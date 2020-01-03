@@ -54,6 +54,11 @@ class Plugin extends MyAppModel
         return $srch;
     }
 
+    public static function isActive($code)
+    {
+        return static::getAttributesByCode($code, 'plugin_active');
+    }
+
 
     public static function getAttributesByCode($code, $attr = null)
     {
