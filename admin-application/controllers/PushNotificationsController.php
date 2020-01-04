@@ -182,6 +182,11 @@ class PushNotificationsController extends AdminBaseController
         if (false === $post) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
+
+        if (empty($recordDetail['pnotification_for_buyer']) && empty($post['pnotification_for_seller'])) {
+            FatUtility::dieJsonError(Labels::getLabel("LBL_MUST_SELECT_EITHER_BUYER_OR_SELLER", $this->adminLangId));
+        }
+
         unset($post['btn_submit']);
         
         $post['pnotification_type'] = PushNotification::TYPE_APP;
