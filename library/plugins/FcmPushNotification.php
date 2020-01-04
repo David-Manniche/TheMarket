@@ -5,9 +5,18 @@ class FcmPushNotification extends PushNotificationBase
     public const KEY_NAME = 'FcmPushNotification';
     public const LIMIT = 1000;
 
-    public function __construct()
+    private $deviceTokens;
+
+    public function __construct($deviceTokens)
     {
         $this->validateSettings();
+        
+        if (!is_array($deviceTokens) || empty($deviceTokens) || 1000 < count($deviceTokens)) {
+            $this->error = Labels::getLabel('LBL_ARRAY_MUST_CONTAIN_AT_LEAST_1_AND_AT_MOST_1000_REGISTRATION_TOKENS', CommonHelper::getLangId());
+            return false;
+        }
+
+        $this->deviceTokens = $deviceTokens;
     }
 
     private function validateSettings()
@@ -20,15 +29,10 @@ class FcmPushNotification extends PushNotificationBase
         $this->serverApiKey = $settings['server_api_key'];
     }
     
-    public function notify($title, $message, $deviceTokens, $data = [])
+    public function notify($title, $message, $data = [])
     {
         if (empty($title) || empty($message)) {
             $this->error = Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId());
-            return false;
-        }
-
-        if (!is_array($deviceTokens) || empty($deviceTokens) || 1000 < count($deviceTokens)) {
-            $this->error = Labels::getLabel('LBL_ARRAY_MUST_CONTAIN_AT_LEAST_1_AND_AT_MOST_1000_REGISTRATION_TOKENS', CommonHelper::getLangId());
             return false;
         }
 
@@ -39,7 +43,7 @@ class FcmPushNotification extends PushNotificationBase
         ];
 
         $fields = [
-            'registration_ids' => $deviceTokens,
+            'registration_ids' => $this->deviceTokens,
             'notification' => $msg,
             'data' => $data['customData'],
             'priority' => 'high'

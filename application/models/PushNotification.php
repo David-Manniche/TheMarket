@@ -174,7 +174,7 @@ class PushNotification extends MyAppModel
                     $imageUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'pushNotificationImage', [$recordId], CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 }
                 
-                $obj = new $keyName();
+                $obj = new $keyName($deviceTokens);
                 $data = [
                     'image' => $imageUrl,
                     'customData' => [
@@ -182,7 +182,7 @@ class PushNotification extends MyAppModel
                         'urlDetail' => !empty($notificationDetail['pnotification_url']) ? CommonHelper::getUrlTypeData($notificationDetail['pnotification_url']) : [],
                     ]
                 ];
-                $response = $obj->notify($notificationDetail['pnotification_title'], $notificationDetail['pnotification_description'], $deviceTokens, $data);
+                $response = $obj->notify($notificationDetail['pnotification_title'], $notificationDetail['pnotification_description'], $data);
                 if (false === $response) {
                     /* $this->error =  $obj->getError(); */
                 }
