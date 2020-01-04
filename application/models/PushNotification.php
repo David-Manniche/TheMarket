@@ -176,15 +176,13 @@ class PushNotification extends MyAppModel
                 
                 $obj = new $keyName();
                 $data = [
-                    'title' => $notificationDetail['pnotification_title'],
-                    'message' => $notificationDetail['pnotification_description'],
                     'image' => $imageUrl,
                     'customData' => [
                         'lang_id' => $notificationDetail['pnotification_lang_id'],
                         'urlDetail' => !empty($notificationDetail['pnotification_url']) ? CommonHelper::getUrlTypeData($notificationDetail['pnotification_url']) : [],
                     ]
                 ];
-                $response = $obj->notify($deviceTokens, $data);
+                $response = $obj->notify($notificationDetail['pnotification_title'], $notificationDetail['pnotification_description'], $deviceTokens, $data);
                 if (false === $response) {
                     /* $this->error =  $obj->getError(); */
                 }

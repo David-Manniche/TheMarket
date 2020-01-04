@@ -20,22 +20,22 @@ class FcmPushNotification extends PushNotificationBase
         $this->serverApiKey = $settings['server_api_key'];
     }
     
-    public function notify($deviceTokens, $data)
+    public function notify($title, $message, $deviceTokens, $data = [])
     {
+        if (empty($title) || empty($message)) {
+            $this->error = Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId());
+            return false;
+        }
+
         if (!is_array($deviceTokens) || empty($deviceTokens) || 1000 < count($deviceTokens)) {
             $this->error = Labels::getLabel('LBL_ARRAY_MUST_CONTAIN_AT_LEAST_1_AND_AT_MOST_1000_REGISTRATION_TOKENS', CommonHelper::getLangId());
             return false;
         }
 
-        if (empty($data)) {
-            $this->error = Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId());
-            return false;
-        }
-
         $msg = [
-            'title' => $data['title'],
-            'body' => $data['message'],
-            'image' => $data['image']
+            'title' => $title,
+            'body' => $message,
+            'image' => isset($data['image']) ? $data['image'] : ''
         ];
 
         $fields = [
