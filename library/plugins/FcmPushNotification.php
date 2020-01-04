@@ -38,12 +38,10 @@ class FcmPushNotification extends PushNotificationBase
             'image' => $data['image']
         ];
 
-        $otherData = $data['extra'];
-
         $fields = [
             'registration_ids' => $deviceTokens,
             'notification' => $msg,
-            'data' => $otherData,
+            'data' => $data['customData'],
             'priority' => 'high'
         ];
         
