@@ -111,6 +111,67 @@ $(document).ready(function() {
 		});
 	};
 
+    popupImage = function(inputBtn){
+        fcom.ajax(fcom.makeUrl('PaymentMethods', 'imgCropper'), '', function(t) {
+			$('#cropperBox-js').html(t);
+			$("#mediaForm-js").css("display", "none");
+    		var container = document.querySelector('.img-container');
+    		var image = container.getElementsByTagName('img').item(0);
+            var minWidth = document.frmGateway.min_width.value;
+            var minHeight = document.frmGateway.min_height.value;
+    		var options = {
+                aspectRatio: aspectRatio,
+                data: {
+                    width: minWidth,
+                    height: minHeight,
+                },
+                minCropBoxWidth: minWidth,
+                minCropBoxHeight: minHeight,
+                toggleDragModeOnDblclick: false,
+	        };
+    	  return cropImage(image, options, 'uploadImages', inputBtn);
+    	});
+	};
+
+	uploadImages = function(formData){
+        var node = this;
+        $('#form-upload').remove();
+        var pmethod_id = document.frmGateway.pmethod_id.value;
+        formData.append('pmethod_id', pmethod_id);
+        /* $val = $(node).val(); */
+        $.ajax({
+            url: fcom.makeUrl('PaymentMethods', 'uploadIcon',[pmethod_id]),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $(node).val('Loading');
+            },
+            complete: function() {
+                /* $(node).val($val); */
+            },
+            success: function(ans) {
+                $('.text-danger').remove();
+                $('#gateway_icon').html(ans.msg);
+                if(ans.status == true){
+                    $('#gateway_icon').removeClass('text-danger');
+                    $('#gateway_icon').addClass('text-success');
+                    gatewayForm(pmethod_id);
+                    //editGatewayForm(ans.pmethodId);
+                }else{
+                    $('#gateway_icon').removeClass('text-success');
+                    $('#gateway_icon').addClass('text-danger');
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+        });
+	}
+
 })();
 
 $(document).on('click','.uploadFile-Js',function(){
