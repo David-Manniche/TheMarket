@@ -3,8 +3,7 @@ $(document).ready(function(){
 });
 
 $(document).on("click", "ul#selectedUsersList-js .ion-close-round", function(){
-    $(this).parent().remove();
-    unlinkUser($(this).siblings('.userId').val());
+    unlinkUser($(this).siblings('.userId').val(), this);
 });
 
 $(document).on('click','.uploadFile-Js',function(){
@@ -106,11 +105,23 @@ $(document).on('click','.uploadFile-Js',function(){
         fcom.ajax(fcom.makeUrl('brands', 'form', [id]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
-	};
+    };
+    
     addNotificationForm = function(pNotificationId){
         fcom.ajax(fcom.makeUrl('PushNotifications', 'addNotificationForm', [pNotificationId]), '', function(t) {
             fcom.updateFaceboxContent(t);
             // $('.date_js').datepicker('option', {minDate: new Date()});
+            $('.date_js').datetimepicker({
+                minDate: new Date(),
+                format: 'Y-m-d H:00'
+           });
+        });
+    };
+    
+    clone = function(pNotificationId){
+        fcom.ajax(fcom.makeUrl('PushNotifications', 'clone', [pNotificationId]), '', function(t) {
+            listPushNotification(document.frmSearch);
+            fcom.updateFaceboxContent(t);
             $('.date_js').datetimepicker({
                 minDate: new Date(),
                 format: 'Y-m-d H:00'
@@ -191,13 +202,20 @@ $(document).on('click','.uploadFile-Js',function(){
         }
         fcom.ajax(fcom.makeUrl('PushNotifications', 'bindUser', [pNotificationId, userId]), '', function(res) {});
     };
-    unlinkUser = function(userId) {
+    unlinkUser = function(userId, obj = '') {
         var pNotificationId = $("input[name='pnotification_id']").val();
         if (pNotificationId == '' || 1 > pNotificationId) {
             $.systemMessage(langLbl.invalidRequest,'alert--danger',true);
             return false;
         }
-        fcom.ajax(fcom.makeUrl('PushNotifications', 'unlinkUser', [pNotificationId, userId]), '', function(res) {});
+        fcom.ajax(fcom.makeUrl('PushNotifications', 'unlinkUser', [pNotificationId, userId]), '', function(res) {
+            res = $.parseJSON(res);
+            if (0 == res.status) {
+                $.systemMessage(res.msg,'alert--danger',true);
+                return false;
+            }
+            $(obj).parent().remove();
+        });
     };
     
     removeImage = function(pNotificationId) {

@@ -8,6 +8,15 @@ class PushNotificationsController extends AdminBaseController
         $this->admin_id = AdminAuthentication::getLoggedAdminId();
     }
 
+    private function validateRequest($pNotificationId)
+    {
+        $pNotificationId = FatUtility::int($pNotificationId);
+        $status = PushNotification::getAttributesById($pNotificationId, 'pnotification_status');
+        if (0 != $status) {
+            FatUtility::dieJsonError(Labels::getLabel("LBL_NOT_ALLOWED", $this->adminLangId));
+        }
+    }
+
     public function index()
     {
         $this->canEdit = $this->objPrivilege->canEditPushNotification($this->admin_id, true);
@@ -95,7 +104,7 @@ class PushNotificationsController extends AdminBaseController
         return $frm;
     }
     
-    public function form($pNotificationId = 0)
+    public function form($status = 0)
     {
         $frm = new Form('PushNotificationForm', array('id' => 'PushNotificationForm'));
         $frm->addHiddenField('', 'pnotification_id');
@@ -114,11 +123,13 @@ class PushNotificationsController extends AdminBaseController
         $frm->addCheckBox(Labels::getLabel('LBL_NOTIFY_TO_BUYERS', $this->adminLangId), 'pnotification_for_buyer', 1, [], false, 0);
         $frm->addCheckBox(Labels::getLabel('LBL_NOTIFY_TO_SELLER', $this->adminLangId), 'pnotification_for_seller', 1, [], false, 0);
         
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->adminLangId));
+        if (0 == $status) {
+            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->adminLangId));
+        }
         return $frm;
     }
 
-    public function getMediaForm($pNotificationId)
+    public function getMediaForm($pNotificationId, $status = 0)
     {
         $frm = new Form('frmPushNotificationMedia');
         $frm->addHiddenField('', 'pnotification_id', $pNotificationId);
@@ -128,19 +139,29 @@ class PushNotificationsController extends AdminBaseController
 
         if ($imgData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PUSH_NOTIFICATION_IMAGE, $pNotificationId)) {
             $uploadedTime = AttachedFile::setTimeParam($imgData['afile_updated_at']);
-            $ul->htmlAfterField .= '<img src="' . FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'pushNotificationImage', [$pNotificationId], CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg') . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeImage(' . $pNotificationId . ')" ><i class="ion-close-round"></i></a>';
+            $ul->htmlAfterField .= '<img src="' . FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'pushNotificationImage', [$pNotificationId], CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg') . '">';
+            if (0 == $status) {
+                $ul->htmlAfterField .= '<a  class="remove--img" href="javascript:void(0);" onclick="removeImage(' . $pNotificationId . ')" ><i class="ion-close-round"></i></a>';
+            }
         }
 
-        $ul->htmlAfterField .= ' </div></div><input type="button" name="app_push_notification_image" class="uploadFile-Js btn-xs" id="app_push_notification_image" data-file_type=' . AttachedFile::FILETYPE_PUSH_NOTIFICATION_IMAGE . ' data-pnotification_id = ' . $pNotificationId . ' value="Upload file"><small>' . Labels::getLabel('LBL_SIZE_MUST_BE_LESS_THAN_300KB', $this->adminLangId) . '</small></li>';
+        if (0 == $status) {
+            $ul->htmlAfterField .= ' </div></div><input type="button" name="app_push_notification_image" class="uploadFile-Js btn-xs" id="app_push_notification_image" data-file_type=' . AttachedFile::FILETYPE_PUSH_NOTIFICATION_IMAGE . ' data-pnotification_id = ' . $pNotificationId . ' value="Upload file"><small>' . Labels::getLabel('LBL_SIZE_MUST_BE_LESS_THAN_300KB', $this->adminLangId) . '</small></li>';
+        }
         return $frm;
     }
         
-    public function selectedUsersform()
+    public function selectedUsersform($status = 0)
     {
         $frm = new Form('PushNotificationForm', array('id' => 'PushNotificationForm'));
         $frm->addHiddenField('', 'pnotification_id');
         
-        $userFld = $frm->addTextBox(Labels::getLabel('LBL_SELECT_USER', $this->adminLangId), 'users', '', ['placeholder' => Labels::getLabel('LBL_Search...', $this->adminLangId)]);
+        $attributes = ['placeholder' => Labels::getLabel('LBL_Search...', $this->adminLangId)];
+        if (0 != $status) {
+            $attributes['class'] = 'd-none';
+        }
+
+        $userFld = $frm->addTextBox(Labels::getLabel('LBL_SELECT_USER', $this->adminLangId), 'users', '', $attributes);
         $userFld->htmlAfterField = '<small>' . Labels::getLabel('LBL_SELECTED_USER_LIST_WILL_BE_DISPLAYED_HERE', $this->adminLangId) . '</small><div class="box--scroller"><ul class="columlist list--vertical" id="selectedUsersList-js"></ul></div>';
         return $frm;
     }
@@ -149,10 +170,14 @@ class PushNotificationsController extends AdminBaseController
     {
         $frm = $this->form();
         $pNotificationId = FatUtility::int($pNotificationId);
+        $status = 0;
         if (0 < $pNotificationId) {
             $data = PushNotification::getAttributesById($pNotificationId);
+            $status = $data['pnotification_status'];
+            $frm = $this->form($data['pnotification_status']);
             $frm->fill($data);
         }
+        $this->set('status', $status);
         $this->set('pNotificationId', $pNotificationId);
         $this->set('frm', $frm);
         $this->_template->render(false, false);
@@ -165,9 +190,10 @@ class PushNotificationsController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
+        $status = PushNotification::getAttributesById($pNotificationId, 'pnotification_status');
 
         $this->objPrivilege->canEditPushNotification();
-        $mediaFrm = $this->getMediaForm($pNotificationId);
+        $mediaFrm = $this->getMediaForm($pNotificationId, $status);
         $this->set('languages', Language::getAllNames());
         $this->set('pNotificationId', $pNotificationId);
         $this->set('formLayout', Language::getLayoutDirection($this->adminLangId));
@@ -192,6 +218,7 @@ class PushNotificationsController extends AdminBaseController
         $post['pnotification_type'] = PushNotification::TYPE_APP;
 
         if (!empty($post['pnotification_id'])) {
+            $this->validateRequest($post['pnotification_id']);
             $recordDetail = PushNotification::getAttributesById($post['pnotification_id'], ['pnotification_for_buyer', 'pnotification_for_seller']);
             if ($post['pnotification_for_buyer'] != $recordDetail['pnotification_for_buyer'] || $post['pnotification_for_seller'] != $recordDetail['pnotification_for_seller']) {
                 $db = FatApp::getDb();
@@ -214,6 +241,31 @@ class PushNotificationsController extends AdminBaseController
         FatUtility::dieJsonSuccess($json);
     }
 
+    public function clone($pNotificationId)
+    {
+        $pNotificationId = FatUtility::int($pNotificationId);
+        if (1 > $pNotificationId) {
+            FatUtility::dieJsonError(Labels::getLabel("LBL_INVALID_REQUEST", $this->adminLangId));
+        }
+        $data = PushNotification::getAttributesById($pNotificationId);
+        unset($data['pnotification_id'], $data['pnotification_status'], $data['pnotification_till_user_id']);
+        $db = FatApp::getDb();
+        if (!$db->insertFromArray(PushNotification::DB_TBL, $data, true, array(), $data)) {
+            FatUtility::dieJsonError($db->getError());
+        }
+
+        $recordId = $db->getInsertId();
+        $data['pnotification_id'] = $recordId;
+        
+        $frm = $this->form();
+        $frm->fill($data);
+
+        $this->set('pNotificationId', $recordId);
+        $this->set('frm', $frm);
+        $this->set('status', 0);
+        $this->_template->render(false, false, 'push-notifications/add-notification-form.php');
+    }
+
     public function addSelectedUsersForm($pNotificationId)
     {
         $this->objPrivilege->canEditPushNotification();
@@ -221,7 +273,8 @@ class PushNotificationsController extends AdminBaseController
         if (1 > $pNotificationId) {
             FatUtility::dieJsonError(Labels::getLabel("LBL_INVALID_REQUEST", $this->adminLangId));
         }
-        $frm = $this->selectedUsersform();
+        $status = PushNotification::getAttributesById($pNotificationId, 'pnotification_status');
+        $frm = $this->selectedUsersform($status);
         $frm->fill(['pnotification_id' => $pNotificationId]);
         $srch = PushNotification::getSearchObject(true);
         $srch->addMultipleFields(['pnotification_id', 'pntu_user_id', 'user_name', 'credential_username']);
@@ -243,6 +296,7 @@ class PushNotificationsController extends AdminBaseController
     {
         $this->objPrivilege->canEditPushNotification();
         $pNotificationId = FatUtility::int($pNotificationId);
+        $this->validateRequest($pNotificationId);
         $userId = FatUtility::int($userId);
         if (1 > $pNotificationId || 1 > $userId) {
             FatUtility::dieJsonError(Labels::getLabel("LBL_INVALID_REQUEST", $this->adminLangId));
@@ -261,6 +315,7 @@ class PushNotificationsController extends AdminBaseController
     {
         $this->objPrivilege->canEditPushNotification();
         $pNotificationId = FatUtility::int($pNotificationId);
+        $this->validateRequest($pNotificationId);
         $userId = FatUtility::int($userId);
         if (1 > $pNotificationId || 1 > $userId) {
             FatUtility::dieJsonError(Labels::getLabel("LBL_INVALID_REQUEST", $this->adminLangId));
@@ -269,20 +324,20 @@ class PushNotificationsController extends AdminBaseController
         if (!$db->deleteRecords(PushNotification::DB_TBL_NOTIFICATION_TO_USER, ['smt' => 'pntu_pnotification_id = ? AND pntu_user_id = ?', 'vals' => [$pNotificationId, $userId]])) {
             FatUtility::dieJsonError($db->getError());
         }
+        FatUtility::dieJsonSuccess(Labels::getLabel("LBL_SUCCESS", $this->adminLangId));
     }
 
     public function removeImage($pNotificationId)
     {
         $this->objPrivilege->canEditPushNotification();
-
+        $pNotificationId = FatUtility::int($pNotificationId);
+        $this->validateRequest($pNotificationId);
         $fileHandlerObj = new AttachedFile();
         if (!$fileHandlerObj->deleteFile(AttachedFile::FILETYPE_PUSH_NOTIFICATION_IMAGE, $pNotificationId)) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-
-        $this->set('msg', Labels::getLabel('MSG_Deleted_Successfully', $this->adminLangId));
-        $this->_template->render(false, false, 'json-success.php');
+        FatUtility::dieJsonSuccess(Labels::getLabel("LBL_SUCCESS", $this->adminLangId));
     }
 
     public function uploadMedia()
@@ -294,6 +349,7 @@ class PushNotificationsController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request_Or_File_not_supported', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
+        $this->validateRequest($post['pnotification_id']);
         $file_type = FatApp::getPostedData('file_type', FatUtility::VAR_INT, 0);
 
         if (!$file_type) {
