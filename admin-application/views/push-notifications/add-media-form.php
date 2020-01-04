@@ -6,7 +6,13 @@ $frm->developerTags['fld_default_col'] = 12;
 ?>
 <section class="section">
     <div class="sectionhead">
-        <h4><?php echo Labels::getLabel('LBL_ADD_NEW_CUSTOM_NOTIFICATION', $adminLangId); ?></h4>
+        <h4>
+            <?php if (0 == $status) {
+                echo Labels::getLabel('LBL_ADD_NEW_CUSTOM_NOTIFICATION', $adminLangId); 
+            } else {
+                echo Labels::getLabel('LBL_NOTIFICATION_DETAIL', $adminLangId); 
+            } ?>
+        </h4>
     </div>
     <div class="sectionbody space">
         <div class=" tabs_nav_container  flat">

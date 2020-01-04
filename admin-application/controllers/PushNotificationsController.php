@@ -194,6 +194,7 @@ class PushNotificationsController extends AdminBaseController
 
         $this->objPrivilege->canEditPushNotification();
         $mediaFrm = $this->getMediaForm($pNotificationId, $status);
+        $this->set('status', $status);
         $this->set('languages', Language::getAllNames());
         $this->set('pNotificationId', $pNotificationId);
         $this->set('formLayout', Language::getLayoutDirection($this->adminLangId));
@@ -288,6 +289,7 @@ class PushNotificationsController extends AdminBaseController
         }
         $this->set('notifyTo', PushNotification::getAttributesById($pNotificationId, ['pnotification_for_buyer', 'pnotification_for_seller']));
         $this->set('pNotificationId', $pNotificationId);
+        $this->set('status', $status);
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
