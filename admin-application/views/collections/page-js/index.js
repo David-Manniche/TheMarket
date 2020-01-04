@@ -369,7 +369,7 @@ $(document).ready(function() {
     };
 
     popupImage = function(inputBtn){
-        fcom.ajax(fcom.makeUrl('Shops', 'imgCropper'), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Collections', 'imgCropper'), '', function(t) {
 			$('#cropperBox-js').html(t);
 			$("#mediaForm-js").css("display", "none");
     		var container = document.querySelector('.img-container');

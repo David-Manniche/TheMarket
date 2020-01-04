@@ -181,6 +181,70 @@ blogPostForm = function(id) {
         $("#frmBlogPostListing").attr("action",fcom.makeUrl('BlogPosts','deleteSelected')).submit();
     };
 
+    popupImage = function(inputBtn){
+        fcom.ajax(fcom.makeUrl('Collections', 'imgCropper'), '', function(t) {
+			$('#cropperBox-js').html(t);
+			$("#mediaForm-js").css("display", "none");
+    		var container = document.querySelector('.img-container');
+    		var image = container.getElementsByTagName('img').item(0);
+            var minWidth = document.frmBlogPostImage.min_width.value;
+            var minHeight = document.frmBlogPostImage.min_height.value;
+    		var options = {
+                aspectRatio: aspectRatio,
+                data: {
+                    width: minWidth,
+                    height: minHeight,
+                },
+                minCropBoxWidth: minWidth,
+                minCropBoxHeight: minHeight,
+                toggleDragModeOnDblclick: false,
+	        };
+    	  return cropImage(image, options, 'uploadImages', inputBtn);
+    	});
+	};
+
+	uploadImages = function(formData){
+        var node = this;
+        $('#form-upload').remove();
+
+        var langId = document.frmBlogPostImage.lang_id.value;
+        var postId = document.frmBlogPostImage.post_id.value;
+        var fileType = document.frmBlogPostImage.file_type.value;
+
+        formData.append('post_id', postId);
+        formData.append('file_type', fileType);
+        formData.append('lang_id', langId);
+        /* $val = $(node).val(); */
+        $.ajax({
+            url: fcom.makeUrl('BlogPosts', 'uploadBlogPostImages', [postId, langId]),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $(node).val('Loading');
+            },
+            complete: function() {
+                /* $(node).val($val); */
+            },
+            success: function(t) {
+                if (t.status == 1) {
+                    fcom.displaySuccessMessage(t.msg);
+                } else {
+                    fcom.displayErrorMessage(t.msg);
+                }
+                $('#form-upload').remove();
+                postImages(postId);
+                images(postId, langId);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert("Error Occured.");
+            }
+        });
+	}
+
 })();
 
 $(document).on('click', '.blogFile-Js', function() {

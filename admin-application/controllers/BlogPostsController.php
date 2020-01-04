@@ -20,7 +20,9 @@ class BlogPostsController extends AdminBaseController
     public function index()
     {
         $this->objPrivilege->canViewBlogPosts();
-
+        $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
+        $this->_template->addCss('css/cropper.css');
         $search = $this->getSearchForm();
         $this->set("search", $search);
         $this->set('includeEditor', true);
@@ -433,7 +435,7 @@ class BlogPostsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('LBL_Please_Select_A_File', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -441,11 +443,11 @@ class BlogPostsController extends AdminBaseController
         $fileHandlerObj = new AttachedFile();
 
         if (!$res = $fileHandlerObj->saveAttachment(
-            $_FILES['file']['tmp_name'],
+            $_FILES['cropped_image']['tmp_name'],
             $file_type,
             $post_id,
             0,
-            $_FILES['file']['name'],
+            $_FILES['cropped_image']['name'],
             -1,
             false,
             $lang_id
@@ -483,7 +485,10 @@ class BlogPostsController extends AdminBaseController
         $frm = new Form('frmBlogPostImage', array('id' => 'imageFrm'));
         $frm->addHiddenField('', 'post_id', $post_id);
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', $bannerTypeArr, '', array(), '');
-        $fld = $frm->addButton(Labels::getLabel('LBL_Photo(s)', $this->adminLangId), 'post_image', Labels::getLabel('LBL_Upload_Image', $this->adminLangId), array('class'=>'blogFile-Js','id'=>'post_image','data-file_type'=>AttachedFile::FILETYPE_BLOG_POST_IMAGE,'data-frm'=>'frmBlogPostImage'));
+        $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_BLOG_POST_IMAGE);
+        $frm->addHiddenField('', 'min_width');
+        $frm->addHiddenField('', 'min_height');
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'post_image', array('accept'=>'image/*', 'data-frm'=>'frmBlogPostImage'));
         return $frm;
     }
 
