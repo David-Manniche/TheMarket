@@ -57,8 +57,13 @@ class FcmPushNotification extends PushNotificationBase
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-        $result = curl_exec($ch);
+        $response = curl_exec($ch);
         curl_close($ch);
-        return json_decode($result, true);
+        $result = json_decode($response, true);
+        return [
+            'success' => isset($result['success']) ? $result['success'] : 0,
+            'failure' => isset($result['failure']) ? $result['failure'] : 0,
+            'data' => $response
+        ];
     }
 }
