@@ -170,7 +170,7 @@ class AdminBaseController extends FatController
         if ($this->layoutDirection == 'rtl') {
             $this->_template->addCss('css/style--arabic.css');
         }
-        if (CommonHelper::demoUrl() == true) { 
+        if (CommonHelper::demoUrl() == true) {
             $this->_template->addCss('css/demo.css');
         }
     }
@@ -655,5 +655,11 @@ class AdminBaseController extends FatController
     {
         $this->_template->addCss(array('css/1jquery-ui-timepicker-addon.css'), false);
         $this->_template->addJs(array('js/1jquery-ui-timepicker-addon.js'), false);
+    }
+
+    public function imgCropper()
+    {
+        $this->set("siteLangId", $this->adminLangId);
+        $this->_template->render(false, false, 'cropper/index.php');
     }
 }

@@ -21,6 +21,9 @@ class DiscountCouponsController extends AdminBaseController
     public function index()
     {
         $this->objPrivilege->canViewDiscountCoupons();
+        $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
+        $this->_template->addCss('css/cropper.css');
         $frmSearch = $this->getSearchForm();
         $this->set("frmSearch", $frmSearch);
         $this->_template->render();
@@ -680,22 +683,22 @@ class DiscountCouponsController extends AdminBaseController
 
         $post = FatApp::getPostedData();
 
-        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_select_a_file.', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
 
         $fileHandlerObj = new AttachedFile();
         $fileHandlerObj->deleteFile(AttachedFile::FILETYPE_DISCOUNT_COUPON_IMAGE, $coupon_id, 0, 0, $lang_id);
-        if (!$res = $fileHandlerObj->saveImage($_FILES['file']['tmp_name'], AttachedFile::FILETYPE_DISCOUNT_COUPON_IMAGE, $coupon_id, 0, $_FILES['file']['name'], -1, true, $lang_id)
+        if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], AttachedFile::FILETYPE_DISCOUNT_COUPON_IMAGE, $coupon_id, 0, $_FILES['cropped_image']['name'], -1, true, $lang_id)
         ) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $this->set('file', $_FILES['file']['name']);
+        $this->set('file', $_FILES['cropped_image']['name']);
         $this->set('coupon_id', $coupon_id);
-        $this->set('msg', $_FILES['file']['name'].' '.Labels::getLabel('MSG_Uploaded_Successfully.', $this->adminLangId));
+        $this->set('msg', $_FILES['cropped_image']['name'].' '.Labels::getLabel('MSG_Uploaded_Successfully.', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -896,7 +899,9 @@ class DiscountCouponsController extends AdminBaseController
         $frm->addHiddenField('', 'coupon_id', $coupon_id);
         $bannerTypeArr = applicationConstants::bannerTypeArr();
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', $bannerTypeArr, '', array(), '');
-        $fld =  $frm->addButton('Image', 'coupon_image', Labels::getLabel('LBL_Upload_file', $this->adminLangId), array('class'=>'couponFile-Js','id'=>'coupon_image'));
+        $frm->addHiddenField('', 'min_width');
+        $frm->addHiddenField('', 'min_height');
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'coupon_image', array('accept'=>'image/*', 'data-frm'=>'frmCouponMedia'));
         return $frm;
     }
 

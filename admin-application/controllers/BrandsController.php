@@ -39,12 +39,6 @@ class BrandsController extends AdminBaseController
         $this->_template->render();
     }
 
-    public function imgCropper()
-    {
-        $this->set("siteLangId", $this->adminLangId);
-        $this->_template->render(false, false, 'cropper/index.php');
-    }
-
     private function getSearchForm($request = false)
     {
         $frm = new Form('frmSearch', array('id'=>'frmSearch'));
