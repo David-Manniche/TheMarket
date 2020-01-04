@@ -1137,23 +1137,37 @@ class ProductCategory extends MyAppModel
         return $translatedData;
     }
     
-    public function getProdSubCategories($prodCatParent)
+    public function getCategories($includeProductCount = true)
     {
-        $prodCatParent = FatUtility::int($prodCatParent); 
-        if($prodCatParent < 1){
-            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
-            return false;
-        }
         $srch = static::getSearchObject(false, $this->commonLangId, false);
-        $srch->addCondition(static::DB_TBL_PREFIX.'parent', '=', $prodCatParent);
-        $srch->addCondition(static::DB_TBL_PREFIX.'deleted', '=', 0);
+        $srch->addCondition(static::DB_TBL_PREFIX.'deleted', '=', 0);        
+        $srch->addCondition(static::DB_TBL_PREFIX.'parent', '=', $this->mainTableRecordId);
+        if($includeProductCount === true){
+            $srch->joinTable(Product::DB_TBL_PRODUCT_TO_CATEGORY, 'LEFT JOIN', static::DB_TBL_PREFIX.'id = '.Product::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'prodcat_id', 'ptc');
+            $srch->joinTable(Product::DB_TBL, 'LEFT JOIN', Product::DB_TBL_PREFIX.'id = '.Product::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'product_id', 'p');
+            $cnd = $srch->addDirectCondition(Product::DB_TBL_PREFIX.'deleted IS NULL');
+            $cnd->attachCondition(Product::DB_TBL_PREFIX.'deleted', '=', 0);
+            $srch->addMultipleFields(array('COUNT('.Product::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'product_id) as category_products'));
+            $srch->addGroupBy(static::DB_TBL_PREFIX.'id');
+        }
         $srch->addOrder(static::DB_TBL_PREFIX.'display_order', 'asc');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('m.*', 'prodcat_name', '0 as category_products'));
-        $rs = $srch->getResultSet();
+        $srch->addMultipleFields(array('m.*', 'prodcat_name'));
+        $rs = $srch->getResultSet(); 
         return FatApp::getDb()->fetchAll($rs);
     }
     
+    public static function getActiveInactiveCategoriesCount($active)
+    {
+        $srch = static::getSearchObject(false, 0, false);
+        $srch->addCondition(static::DB_TBL_PREFIX.'deleted', '=', 0);
+        $srch->addCondition(static::DB_TBL_PREFIX.'active', '=', $active);           
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->addFld('COUNT('.static::DB_TBL_PREFIX.'id) as categories_count');
+        $rs = $srch->getResultSet(); 
+        return FatApp::getDb()->fetch($rs);
+    }
     
 }

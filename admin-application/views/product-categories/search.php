@@ -1,12 +1,11 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');  ?>
-<?php
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');  
     $arr_flds = array(
             'select_all'=>Labels::getLabel('LBL_Select_all', $adminLangId),
             'prodcat_display_order'=>Labels::getLabel('LBL_POS', $adminLangId),
             'prodcat_identifier'=>Labels::getLabel('LBL_Category_Name', $adminLangId),
             'category_products' => Labels::getLabel('LBL_Products', $adminLangId),
             'prodcat_active' => Labels::getLabel('LBL_Publish', $adminLangId),
-            'action' => Labels::getLabel('', $adminLangId),
+            'action' => '',
         );
     $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered   table-category-accordion','id'=>'prodcat'));
     $th = $tbl->appendElement('thead')->appendElement('tr');
@@ -29,10 +28,6 @@
         if ($row['prodcat_active'] == applicationConstants::ACTIVE) {
             $tr->setAttribute("id", $row['prodcat_id']);
         }
-
-        if ($row['prodcat_active'] != applicationConstants::ACTIVE) {
-            $tr->setAttribute("class", "nodrag nodrop");
-        }   
         foreach ($arr_flds as $key => $val) { 
             $td = $tr->appendElement('td');
             switch ($key) {
@@ -42,7 +37,7 @@
                 case 'prodcat_display_order':
                     $td->appendElement('plaintext', array(), '', true);                    break;
                 case 'prodcat_identifier':                    
-                    $td->appendElement('plaintext', array(), '<a href="javascript:void(0);" onClick="displaySubCategories('.$row['prodcat_id'].', this)">'.$row[$key].' <i class="ion-chevron-right"></i></a>', true);
+                    $td->appendElement('plaintext', array(), '<a href="javascript:void(0);" onClick="displaySubCategories(this, 1)">'.$row[$key].' <i class="ion-chevron-right"></i></a>', true);
                     break;
                 case 'category_products':
                     $td->appendElement('plaintext', array(), '<a href="javascript:void(0);" class="badge badge-secondary badge-pill">'.$row[$key].'</a>', true);
@@ -83,6 +78,7 @@
             }
         }
     }
+    
     if (count($arr_listing) == 0) {
         $tbl->appendElement('tr')->appendElement('td', array('colspan'=>count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
     }
@@ -92,39 +88,9 @@
     $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
     $frm->setFormTagAttribute('action', CommonHelper::generateUrl('ProductCategories', 'toggleBulkStatuses'));
     $frm->addHiddenField('', 'status');
-
     echo $frm->getFormTag();
     echo $frm->getFieldHtml('status');
-	?>
-	    <?php echo $tbl->getHtml(); ?>
+	echo $tbl->getHtml(); 
+?>
 	</form>
-	<?php $postedData['page'] = $page;
-    echo FatUtility::createHiddenFormFromData($postedData, array(
-            'name' => 'frmCatSearchPaging'
-    ));
-    $pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'pageSize'=>$pageSize,'recordCount'=>$recordCount,'adminLangId'=>$adminLangId);
-    $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
-    ?>
-<script>
-    $(document).ready(function(){
 
-    	var pcat_id=$('#prodcat_parent').val();
-    	$('#prodcat').tableDnD({
-    		onDrop: function (table, row) {
-    			fcom.displayProcessing();
-    			var order = $.tableDnD.serialize('id');
-    			order += '&pcat_id=' + pcat_id;
-    			fcom.ajax(fcom.makeUrl('productCategories', 'updateOrder'), order, function (res) {
-    				var ans =$.parseJSON(res);
-    				if(ans.status==1)
-    				{
-    					fcom.displaySuccessMessage(ans.msg);
-    				}else{
-    					fcom.displayErrorMessage(ans.msg);
-    				}
-    			});
-    		},
-    		dragHandle: ".dragHandle",
-    	});
-    });
-</script>

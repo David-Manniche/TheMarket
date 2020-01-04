@@ -23,9 +23,8 @@
                                     $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
                                     $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
                                     $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                                    //$innerLi=$innerUl->appendElement('li');
 
-                                    if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canView) {
+                                    if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canEdit) {
                                         $innerLiExport=$innerUl->appendElement('li');
                                         $innerLiExport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Export', $adminLangId),"onclick"=>"addExportForm(".Importexport::TYPE_CATEGORIES.")"), Labels::getLabel('LBL_Export', $adminLangId), true);
                                     }
@@ -58,14 +57,14 @@
                     <div class="col-md-3">
                         <section class="section">
                             <div class="sectionhead">
-                                <h4>Total</h4>
+                                <h4><?php echo Labels::getLabel('LBL_Total_', $adminLangId); ?></h4>
                             </div>
                             <div class="sectionbody">
                                 <ul class=" list-group list-group-flush">
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">Categories <span class="badge badge-secondary badge-pill">23</span></li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">Products <span class="badge badge-secondary badge-pill">4139</span></li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">Active categories <span class="badge badge-secondary badge-pill">23</span></li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">Disabled categories <span class="badge badge-secondary badge-pill">0</span></li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center"><?php echo Labels::getLabel('LBL_Categories', $adminLangId); ?> <span class="badge badge-secondary badge-pill"><?php echo $activeCategories['categories_count'] + $inactiveCategories['categories_count'] ; ?></span></li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center"><?php echo Labels::getLabel('LBL_Products', $adminLangId); ?> <span class="badge badge-secondary badge-pill">4139</span></li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center"><?php echo Labels::getLabel('LBL_Active_Categories', $adminLangId); ?> <span class="badge badge-secondary badge-pill"><?php echo $activeCategories['categories_count']; ?></span></li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center"><?php echo Labels::getLabel('LBL_Disabled_Categories', $adminLangId); ?> <span class="badge badge-secondary badge-pill"><?php echo $inactiveCategories['categories_count']; ?></span></li>
                                 </ul>
                             </div>
                         </section>
@@ -75,4 +74,3 @@
         </div>
     </div>
 </div>
-<?php echo FatUtility::createHiddenFormFromData(array('prodcat_parent'=>$prodcat_parent), array('name' => 'frmSearch'));?>

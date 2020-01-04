@@ -105,22 +105,45 @@ $(document).ready(function(){
 		searchProductCategories(document.frmSearch);
 	};
     
-    displaySubCategories = function(prodCatParent, anchorTag){
-        if($("."+prodCatParent+"-subcategory").length){
-            $("."+prodCatParent+"-subcategory").remove();
+    displaySubCategories = function(anchorTag, level){
+        var prodCatId = $(anchorTag).parent().parent().attr('id');
+        if($(anchorTag).children().hasClass('ion-chevron-down')){
+            $("."+prodCatId).remove();
             $(anchorTag).children().removeClass('ion-chevron-down');
             $(anchorTag).children().addClass('ion-chevron-right');
             return false;
         }
-        var data = 'prodCatParent='+prodCatParent;		
-        fcom.ajax(fcom.makeUrl('productCategories','prodSubCategories'),data,function(res){
-            $("."+prodCatParent+"-subcategory").remove();
-            $("#"+prodCatParent).after(res);
+        var data = 'prodCatId='+prodCatId+'&level='+level;		
+        fcom.ajax(fcom.makeUrl('productCategories','getSubCategories'),data,function(res){
+            $("."+prodCatId).remove();
+            $("#"+prodCatId).after(res);
             $(anchorTag).children().removeClass('ion-chevron-right');
             $(anchorTag).children().addClass('ion-chevron-down');
         });
     }
-
+    
+    updateDisplayOrder = function(input, level){        
+        var prodCatId = $(input).parent().parent().attr('id'); 
+        var prodCatparent = $(input).parent().parent().attr('class');
+        var displayOrder = $(input).val();
+        var data = 'prodCatId='+prodCatId+'&displayOrder='+displayOrder;		        
+        fcom.updateWithAjax(fcom.makeUrl('ProductCategories', 'updateDisplayOrder'), data, function(t) {
+            if(t.status == 1){
+                var postedData = 'prodCatId='+prodCatparent+'&level='+level;		
+                fcom.ajax(fcom.makeUrl('productCategories','getSubCategories'),postedData,function(res){
+                    $("."+prodCatparent).remove();
+                    $("#"+prodCatparent).after(res);
+                });
+            }
+        });            
+    }
+    
 })();
+
+$(document).on('keypress', "[name='prodcat_display_order']", function(e){
+    if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+        return false;
+    } 
+});
 
 

@@ -13,12 +13,8 @@ if(count($childCategories) > 0){
         $tr = new HtmlElement('tr', array());
         if ($row['prodcat_active'] == applicationConstants::ACTIVE) {
             $tr->setAttribute("id", $row['prodcat_id']);
-            $tr->setAttribute("class", $row['prodcat_parent'].'-subcategory');
         }
-
-        if ($row['prodcat_active'] != applicationConstants::ACTIVE) {
-            $tr->setAttribute("class", "nodrag nodrop");
-        }   
+        $tr->setAttribute("class", $row['prodcat_parent']); 
         foreach ($arr_flds as $key => $val) { 
             $td = $tr->appendElement('td');
             switch ($key) {
@@ -26,10 +22,10 @@ if(count($childCategories) > 0){
                     $td->appendElement('plaintext', array(), '<label><span class="checkbox"><input class="selectItem--js" type="checkbox" name="prodcat_ids[]" value='.$row['prodcat_id'].'><i class="input-helper"></i></span></label>', true);
                     break;
                 case 'prodcat_display_order':
-                    $td->appendElement('plaintext', array(), '<input class="form-control form-control-sm form-control-position" type="text" value="'.$row[$key].'" name="prodcat_display_order">', true);    
+                    $td->appendElement('plaintext', array(), '<input class="form-control form-control-sm form-control-position" type="text" value="'.$row[$key].'" onblur="updateDisplayOrder(this,'.$level.')" name="prodcat_display_order">', true);    
                     break;
                 case 'prodcat_identifier':                    
-                    $td->appendElement('plaintext', array(), '<a href="javascript:void(0);" onClick="displaySubCategories('.$row['prodcat_id'].')">'.$row[$key].' <i class="ion-chevron-right"></i></a>', true);
+                    $td->appendElement('plaintext', array(), '<a href="javascript:void(0);" class="prodcat-level-'.$level.'" onClick="displaySubCategories(this,'.($level+1).')">'.$row[$key].' <i class="ion-chevron-right"></i></a>', true);
                     break;
                 case 'category_products':
                     $td->appendElement('plaintext', array(), '<a href="javascript:void(0);" class="badge badge-secondary badge-pill">'.$row[$key].'</a>', true);
@@ -47,7 +43,6 @@ if(count($childCategories) > 0){
                     $td->appendElement('plaintext', array(), $str, true);
                     break;
                 case 'action':
-           
                     if ($canEdit) {
                         $div = $td->appendElement("div", array("class"=>"hidden-tools"));
                         $innerDiv = $div->appendElement("div", array('class'=>'btn-group'));
@@ -72,6 +67,7 @@ if(count($childCategories) > 0){
         echo $tr->getHtml();
     }
 }
+?>
 
 
     
