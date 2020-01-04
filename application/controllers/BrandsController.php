@@ -197,10 +197,10 @@ class BrandsController extends MyAppController
         $brandName = $post['brandName'];
         $brandId =  FatUtility::int($post['brandId']);
         if (1>$langId) {
-            trigger_error(Labels::getLabel('LBL_Lang_Id_not_Specified', CommonHelper::getLangId()));
+            trigger_error(Labels::getLabel('LBL_Lang_Id_not_Specified', CommonHelper::getLangId()), E_USER_ERROR);
         }
         if (1>$brandId) {
-            trigger_error(Labels::getLabel('LBL_Brand_Id_not_Specified', CommonHelper::getLangId()));
+            trigger_error(Labels::getLabel('LBL_Brand_Id_not_Specified', CommonHelper::getLangId()), E_USER_ERROR);
         }
         $srch = Brand::getSearchObject($langId);
         $srch->addCondition('brand_name', '=', $brandName);

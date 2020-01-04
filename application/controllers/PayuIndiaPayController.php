@@ -1,7 +1,12 @@
 <?php
 class PayuIndiaPayController extends PaymentController
 {
-    private $keyName="PayuIndia";
+    private $keyName = "PayuIndia";
+    
+    protected function allowedCurrenciesArr()
+    {
+        return ['INR'];
+    }
 
     public function charge($orderId)
     {

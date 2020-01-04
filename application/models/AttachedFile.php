@@ -1,70 +1,73 @@
 <?php
 class AttachedFile extends MyAppModel
 {
-    const DB_TBL = 'tbl_attached_files';
-    const DB_TBL_TEMP = 'tbl_attached_files_temp';
-    const DB_TBL_PREFIX = 'afile_';
+    public const DB_TBL = 'tbl_attached_files';
+    public const DB_TBL_TEMP = 'tbl_attached_files_temp';
+    public const DB_TBL_PREFIX = 'afile_';
 
-    const FILETYPE_PRODCAT_IMAGE = 1;
-    const FILETYPE_PRODUCT_IMAGE = 2;
-    const FILETYPE_SELLER_APPROVAL_FILE = 3;
-    const FILETYPE_SHOP_LOGO = 4;
-    const FILETYPE_SHOP_BANNER = 5;
-    const FILETYPE_PAYMENT_METHOD = 6;
-    const FILETYPE_USER_IMAGE = 7;
-    const FILETYPE_BRAND_LOGO = 8;
-    const FILETYPE_USER_PROFILE_IMAGE = 9; /*User profile original image*/
-    const FILETYPE_USER_PROFILE_CROPED_IMAGE = 10;    /*User profile croped image*/
-    const FILETYPE_CATEGORY_ICON = 11; /*Used for mobile and shop templates*/
-    const FILETYPE_CATEGORY_BANNER = 12; /* Used in category detail page */
-    const FILETYPE_CATEGORY_BANNER_SELLER = 13; /* Used in seller shop template page */
-    const FILETYPE_SHOP_BACKGROUND_IMAGE = 14; /* Used in seller shop template page */
-    const FILETYPE_FRONT_LOGO = 15;
-    const FILETYPE_HOME_PAGE_BANNER = 16;
-    const FILETYPE_SOCIAL_PLATFORM_IMAGE = 17;
-    const FILETYPE_BANNER = 18;
-    const FILETYPE_ADMIN_LOGO = 19;
-    const FILETYPE_EMAIL_LOGO = 20;
-    const FILETYPE_FAVICON = 21;
-    const FILETYPE_COLLECTION_IMAGE = 22;
-    const FILETYPE_COLLECTION_BG_IMAGE = 23;
-    const FILETYPE_CATEGORY_IMAGE = 24;
-    const FILETYPE_BUYER_RETURN_PRODUCT = 25;
-    const FILETYPE_SELLER_CATALOG_REQUEST = 26;
-    const FILETYPE_DISCOUNT_COUPON_IMAGE = 27;
-    const FILETYPE_BLOG_CONTRIBUTION = 28;
-    const FILETYPE_BLOG_POST_IMAGE = 29;
-    const FILETYPE_BATCH_IMAGE = 30;
-    const FILETYPE_SOCIAL_FEED_IMAGE = 31;
-    const FILETYPE_TESTIMONIAL_IMAGE = 32;
-    const FILETYPE_PROMOTION_MEDIA = 33;
-    const FILETYPE_PAYMENT_PAGE_LOGO = 34;
-    const FILETYPE_ADMIN_PROFILE_IMAGE = 35;
-    const FILETYPE_ADMIN_PROFILE_CROPED_IMAGE = 36;
-    const FILETYPE_WATERMARK_IMAGE = 37;
-    const FILETYPE_APPLE_TOUCH_ICON = 38;
-    const FILETYPE_MOBILE_LOGO = 39;
-    const FILETYPE_CPAGE_BACKGROUND_IMAGE = 40;
-    const FILETYPE_PROMOTION_BANNER = 41;
-    const FILETYPE_SELLER_PRODUCT_DIGITAL_DOWNLOAD = 42;
-    const FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD = 43;
-    const FILETYPE_CATEGORY_COLLECTION_BG_IMAGE = 44;
-    const FILETYPE_SELLER_PAGE_SLOGAN_BG_IMAGE = 45;
-    const FILETYPE_ADVERTISER_PAGE_SLOGAN_BG_IMAGE = 46;
-    const FILETYPE_AFFILIATE_PAGE_SLOGAN_BG_IMAGE = 47;
-    const FILETYPE_CUSTOM_PRODUCT_IMAGE = 48;
-    const FILETYPE_INVOICE_LOGO = 49;
-    const FILETYPE_BRAND_COLLECTION_BG_IMAGE = 50;
-    const FILETYPE_BULK_IMAGES = 51;
-    const FILETYPE_BRAND_IMAGE = 52;
-    const FILETYPE_SHOP_COLLECTION_IMAGE = 53;
-    const FILETYPE_PRODCAT_IMAGE_PATH = 'category/';
-    const FILETYPE_PRODUCT_IMAGE_PATH = 'product/';
-    const FILETYPE_BLOG_POST_IMAGE_PATH = 'blog-post/';
-    const FILETYPE_BULK_IMAGES_PATH = 'bulk-images/';
+    public const FILETYPE_PRODCAT_IMAGE = 1;
+    public const FILETYPE_PRODUCT_IMAGE = 2;
+    public const FILETYPE_SELLER_APPROVAL_FILE = 3;
+    public const FILETYPE_SHOP_LOGO = 4;
+    public const FILETYPE_SHOP_BANNER = 5;
+    public const FILETYPE_PAYMENT_METHOD = 6;
+    public const FILETYPE_USER_IMAGE = 7;
+    public const FILETYPE_BRAND_LOGO = 8;
+    public const FILETYPE_USER_PROFILE_IMAGE = 9; /*User profile original image*/
+    public const FILETYPE_USER_PROFILE_CROPED_IMAGE = 10;    /*User profile croped image*/
+    public const FILETYPE_CATEGORY_ICON = 11; /*Used for mobile and shop templates*/
+    public const FILETYPE_CATEGORY_BANNER = 12; /* Used in category detail page */
+    public const FILETYPE_CATEGORY_BANNER_SELLER = 13; /* Used in seller shop template page */
+    public const FILETYPE_SHOP_BACKGROUND_IMAGE = 14; /* Used in seller shop template page */
+    public const FILETYPE_FRONT_LOGO = 15;
+    public const FILETYPE_HOME_PAGE_BANNER = 16;
+    public const FILETYPE_SOCIAL_PLATFORM_IMAGE = 17;
+    public const FILETYPE_BANNER = 18;
+    public const FILETYPE_ADMIN_LOGO = 19;
+    public const FILETYPE_EMAIL_LOGO = 20;
+    public const FILETYPE_FAVICON = 21;
+    public const FILETYPE_COLLECTION_IMAGE = 22;
+    public const FILETYPE_COLLECTION_BG_IMAGE = 23;
+    public const FILETYPE_CATEGORY_IMAGE = 24;
+    public const FILETYPE_BUYER_RETURN_PRODUCT = 25;
+    public const FILETYPE_SELLER_CATALOG_REQUEST = 26;
+    public const FILETYPE_DISCOUNT_COUPON_IMAGE = 27;
+    public const FILETYPE_BLOG_CONTRIBUTION = 28;
+    public const FILETYPE_BLOG_POST_IMAGE = 29;
+    public const FILETYPE_BATCH_IMAGE = 30;
+    public const FILETYPE_SOCIAL_FEED_IMAGE = 31;
+    public const FILETYPE_TESTIMONIAL_IMAGE = 32;
+    public const FILETYPE_PROMOTION_MEDIA = 33;
+    public const FILETYPE_PAYMENT_PAGE_LOGO = 34;
+    public const FILETYPE_ADMIN_PROFILE_IMAGE = 35;
+    public const FILETYPE_ADMIN_PROFILE_CROPED_IMAGE = 36;
+    public const FILETYPE_WATERMARK_IMAGE = 37;
+    public const FILETYPE_APPLE_TOUCH_ICON = 38;
+    public const FILETYPE_MOBILE_LOGO = 39;
+    public const FILETYPE_CPAGE_BACKGROUND_IMAGE = 40;
+    public const FILETYPE_PROMOTION_BANNER = 41;
+    public const FILETYPE_SELLER_PRODUCT_DIGITAL_DOWNLOAD = 42;
+    public const FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD = 43;
+    public const FILETYPE_CATEGORY_COLLECTION_BG_IMAGE = 44;
+    public const FILETYPE_SELLER_PAGE_SLOGAN_BG_IMAGE = 45;
+    public const FILETYPE_ADVERTISER_PAGE_SLOGAN_BG_IMAGE = 46;
+    public const FILETYPE_AFFILIATE_PAGE_SLOGAN_BG_IMAGE = 47;
+    public const FILETYPE_CUSTOM_PRODUCT_IMAGE = 48;
+    public const FILETYPE_INVOICE_LOGO = 49;
+    public const FILETYPE_BRAND_COLLECTION_BG_IMAGE = 50;
+    public const FILETYPE_BULK_IMAGES = 51;
+    public const FILETYPE_BRAND_IMAGE = 52;
+    public const FILETYPE_SHOP_COLLECTION_IMAGE = 53;
+    public const FILETYPE_PLUGIN_LOGO = 54;
+    public const FILETYPE_PRODCAT_IMAGE_PATH = 'category/';
+    public const FILETYPE_PRODUCT_IMAGE_PATH = 'product/';
+    public const FILETYPE_BLOG_POST_IMAGE_PATH = 'blog-post/';
+    public const FILETYPE_BULK_IMAGES_PATH = 'bulk-images/';
+    public const FILETYPE_APP_MAIN_SCREEN_IMAGE = 55;
+    public const FILETYPE_APP_LOGO = 56;
 
-    const APP_IMAGE_WIDTH = 640;
-    const APP_IMAGE_HEIGHT = 480;
+    public const APP_IMAGE_WIDTH = 640;
+    public const APP_IMAGE_HEIGHT = 480;
 
     public function __construct($fileId = 0)
     {
@@ -394,7 +397,8 @@ class AttachedFile extends MyAppModel
         return $this->saveAttachment($fl, $fileType, $recordId, $recordSubid, $name, $displayOrder, $uniqueRecord, $lang_id, $screen);
     }
 
-    /* public function checkExtension($file , $allowedExt = array()) {
+    /* public function checkExtension($file,
+    $allowedExt = array()) {
 
     $fileExt = pathinfo($file, PATHINFO_EXTENSION);
 
@@ -412,13 +416,13 @@ class AttachedFile extends MyAppModel
         if ($no_image == '') {
             $no_image = 'images/defaults/no_image.jpg';
         } else {
-            $no_image = 'images/defaults/'. $no_image;
+            $no_image = 'images/defaults/' . $no_image;
         }
 
         $originalImageName = $image_name;
 
-        if (trim($uploadedFilePath)!='') {
-            $uploadedFilePath = CONF_UPLOADS_PATH.$uploadedFilePath;
+        if (trim($uploadedFilePath) != '') {
+            $uploadedFilePath = CONF_UPLOADS_PATH . $uploadedFilePath;
         } else {
             $uploadedFilePath = CONF_UPLOADS_PATH;
         }
@@ -454,7 +458,6 @@ class AttachedFile extends MyAppModel
         }
 
         try {
-
             static::setLastModified($imagePath);
             static::setContentType($fileMimeType);
             $img = new ImageResize($imagePath);
@@ -610,7 +613,6 @@ class AttachedFile extends MyAppModel
         }
 
         try {
-
             static::setLastModified($imagePath);
             static::setContentType($fileMimeType);
             $fileContent =  file_get_contents($imagePath);
@@ -804,8 +806,23 @@ class AttachedFile extends MyAppModel
         $fileId = FatUtility::int($fileId);
         $record_subid = FatUtility::int($record_subid);
         $langId = FatUtility::int($langId);
-
-        if (!in_array($fileType, array(AttachedFile::FILETYPE_ADMIN_LOGO , AttachedFile::FILETYPE_FRONT_LOGO , AttachedFile::FILETYPE_EMAIL_LOGO , AttachedFile::FILETYPE_FAVICON ,  AttachedFile::FILETYPE_SOCIAL_FEED_IMAGE,  AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO,  AttachedFile::FILETYPE_WATERMARK_IMAGE,  AttachedFile::FILETYPE_APPLE_TOUCH_ICON,  AttachedFile::FILETYPE_MOBILE_LOGO,  AttachedFile::FILETYPE_CATEGORY_COLLECTION_BG_IMAGE,  AttachedFile::FILETYPE_BRAND_COLLECTION_BG_IMAGE, AttachedFile::FILETYPE_INVOICE_LOGO )) && (!$fileType || !$recordId)) {
+        $allowedFileTypes = [
+            AttachedFile::FILETYPE_ADMIN_LOGO,
+            AttachedFile::FILETYPE_FRONT_LOGO,
+            AttachedFile::FILETYPE_EMAIL_LOGO,
+            AttachedFile::FILETYPE_FAVICON,
+            AttachedFile::FILETYPE_SOCIAL_FEED_IMAGE,
+            AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO,
+            AttachedFile::FILETYPE_WATERMARK_IMAGE,
+            AttachedFile::FILETYPE_APPLE_TOUCH_ICON,
+            AttachedFile::FILETYPE_MOBILE_LOGO,
+            AttachedFile::FILETYPE_CATEGORY_COLLECTION_BG_IMAGE,
+            AttachedFile::FILETYPE_BRAND_COLLECTION_BG_IMAGE,
+            AttachedFile::FILETYPE_INVOICE_LOGO,
+            AttachedFile::FILETYPE_APP_MAIN_SCREEN_IMAGE,
+            AttachedFile::FILETYPE_APP_LOGO,
+        ];
+        if (!in_array($fileType, $allowedFileTypes) && (!$fileType || !$recordId)) {
             $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->commonLangId);
             return false;
         }

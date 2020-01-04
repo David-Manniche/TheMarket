@@ -21,11 +21,12 @@ class SubscriptionCart extends FatModel
         }
 
         $this->scart_user_id = session_id();
-        if (UserAuthentication::isUserLogged() || ($user_id > 0)) {
-            $this->scart_user_id = UserAuthentication::getLoggedUserId();
+        if (UserAuthentication::isUserLogged() || ($user_id > 0)) {            
             if ($user_id > 0) {
                 $this->scart_user_id = $user_id;
-            }
+            }else{
+                $this->scart_user_id = UserAuthentication::getLoggedUserId();
+            }                
         }
 
         $srch = new SearchBase('tbl_user_cart');

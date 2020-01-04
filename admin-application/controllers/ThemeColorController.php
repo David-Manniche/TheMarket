@@ -379,13 +379,13 @@ class ThemeColorController extends AdminBaseController
         
         $data = ThemeColor::getAttributesById($tColorId, array('tcolor_id'));
         
-        if ($data==false) {
+        if ($data == false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
         
-        $configurationObj=new Configurations();
-        if (!$configurationObj->update(array('CONF_FRONT_THEME'=>$tColorId))) {
+        $configurationObj = new Configurations();
+        if (!$configurationObj->update(array('CONF_FRONT_THEME' => $tColorId))) {
             Message::addErrorMessage($configurationObj->getError());
             if (FatUtility::isAjaxCall()) {
                 FatUtility::dieJsonError(Message::getHtml());

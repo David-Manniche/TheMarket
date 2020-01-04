@@ -2,11 +2,18 @@
 require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/paytm/PaytmKit/lib/encdec_paytm.php';
 class PaytmPayController extends PaymentController
 {
-    private $keyName="Paytm";
-    private $currenciesAccepted = array(
-                                        'India' => 'INR',
-                                    );
-
+    private $keyName = "Paytm";
+    private $testEnvironmentUrl = 'https://securegw-stage.paytm.in/order';
+    private $liveEnvironmentUrl = 'https://securegw.paytm.in/order';
+    private $error = false;
+   
+    protected function allowedCurrenciesArr()
+    {
+        return [
+            'INR'
+        ];
+    }
+                         
     public function charge($orderId)
     {
         if (empty(trim($orderId))) {
@@ -23,18 +30,11 @@ class PaytmPayController extends PaymentController
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-
-        /* To check for valid currencies accepted by paypal gateway [ */
-
-        if (count($this->currenciesAccepted) && !in_array($orderInfo["order_currency_code"], $this->currenciesAccepted)) {
-            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_ORDER_CURRENCY_PASSED_TO_GATEWAY', $this->siteLangId));
-            CommonHelper::redirectUserReferer();
-        }
-
+        
         if (!$orderInfo['id']) {
             FatUtility::exitWIthErrorCode(404);
         } elseif ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
-            $frm=$this->getPaymentForm($orderId);
+            $frm = $this->getPaymentForm($orderId);
             $this->set('frm', $frm);
             $this->set('paymentAmount', $paymentAmount);
         } else {
@@ -61,13 +61,13 @@ class PaytmPayController extends PaymentController
         $isValidChecksum = false;
         $paytmChecksum = isset($post["CHECKSUMHASH"]) ? $post["CHECKSUMHASH"] : ""; //Sent by Paytm pg
         $isValidChecksum = verifychecksum_e($post, $paymentSettings['merchant_key'], $paytmChecksum); //will return TRUE or FALSE string.
-        $arrOrder= explode("_", $post['ORDERID']);
-        $orderId = (!empty($arrOrder[1]))?$arrOrder[1]:0;
+        $arrOrder = explode("_", $post['ORDERID']);
+        $orderId = (!empty($arrOrder[1])) ? $arrOrder[1] : 0;
         $txnInfo = $this->PaytmTransactionStatus($post['ORDERID']);
 
         $orderPaymentObj = new OrderPayment($orderId);
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
-        if ($paymentGatewayCharge>0) {
+        if ($paymentGatewayCharge > 0) {
             if ($isValidChecksum) {
                 $paid_amount = (float)$txnInfo['TXNAMOUNT'];
                 $totalPaidMatch = ($paid_amount == $paymentGatewayCharge);
@@ -103,21 +103,21 @@ class PaytmPayController extends PaymentController
         $paymentSettings = $pmObj->getPaymentSettings();
         $checkSum = "";
         $data = array(
-        "MID"=>$paymentSettings["merchant_id"],
-        "ORDER_ID"=>$orderId,
+            "MID" => $paymentSettings["merchant_id"],
+            "ORDER_ID" => $orderId,
         );
 
         $key = $paymentSettings['merchant_key'];
-        $checkSum =getChecksumFromArray($data, $key);
+        $checkSum = getChecksumFromArray($data, $key);
 
-        $request=array("MID"=>$paymentSettings["merchant_id"],"ORDERID"=>$orderId,"CHECKSUMHASH"=>$checkSum);
+        $request = array("MID" => $paymentSettings["merchant_id"], "ORDERID" => $orderId, "CHECKSUMHASH" => $checkSum);
 
-        $JsonData =json_encode($request);
-        $postData = 'JsonData='.urlencode($JsonData);
+        $JsonData = json_encode($request);
+        $postData = 'JsonData=' . urlencode($JsonData);
         if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) {
-            $url = "https://securegw.paytm.in/order/status";
+            $url = $this->liveEnvironmentUrl . '/status';
         } else {
-            $url = "https://securegw-stage.paytm.in/order/status";
+            $url = $this->testEnvironmentUrl . '/status';
         }
         $HEADER[] = "Content-Type: application/json";
         $HEADER[] = "Accept: application/json";
@@ -143,17 +143,17 @@ class PaytmPayController extends PaymentController
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
         if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) {
-            $action_url = "https://securegw.paytm.in/order/process";
+            $action_url = $this->liveEnvironmentUrl . "/process";
         } else {
-            $action_url = "https://securegw-stage.paytm.in/order/process";
+            $action_url = $this->testEnvironmentUrl . "/process";
         }
         $orderPaymentGatewayDescription = sprintf(Labels::getLabel('MSG_Order_Payment_Gateway_Description', $this->siteLangId), $orderInfo["site_system_name"], $orderInfo['invoice']);
 
-        $frm = new Form('frmPaytm', array('id'=>'frmPaytm','action'=>$action_url, 'class' =>"form form--normal"));
+        $frm = new Form('frmPaytm', array('id' => 'frmPaytm', 'action' => $action_url, 'class' => "form form--normal"));
 
         $parameters = array(
         "MID" => $paymentSettings["merchant_id"],
-        "ORDER_ID"  => date("ymdhis")."_".$orderId,
+        "ORDER_ID"  => date("ymdhis") . "_" . $orderId,
         "CUST_ID" => $orderInfo['customer_id'],
         "TXN_AMOUNT" => $paymentGatewayCharge,
         "CHANNEL_ID" => $paymentSettings['merchant_channel_id'],

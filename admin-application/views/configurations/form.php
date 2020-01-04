@@ -50,7 +50,7 @@ switch ($frmType) {
 }
 
 ?>
-<ul class="tabs_nav innerul abc">
+<ul class="tabs_nav innerul">
     <?php if ($frmType == Configurations::FORM_IMPORT_EXPORT) {
     ?>
     <li><a href="javascript:void(0);"

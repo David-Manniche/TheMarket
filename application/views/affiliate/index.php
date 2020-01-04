@@ -83,7 +83,8 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                             </div>
                         </div>
                     </div>
-                </div> <?php if (!empty(FatApp::getConfig("CONF_FACEBOOK_APP_ID")) && !empty(FatApp::getConfig("CONF_FACEBOOK_APP_SECRET"))) {
+                </div> <?php 
+				if (!empty(FatApp::getConfig("CONF_FACEBOOK_APP_ID")) && !empty(FatApp::getConfig("CONF_FACEBOOK_APP_SECRET"))) {
     ?> <div class="widget widget-stats">
                     <a id="facebook_btn" href="javascript:void(0);" class="box--share box--share-fb"> <i class="fa fa-facebook"></i>
                         <h5><?php echo Labels::getLabel('L_Share_on', $siteLangId)?></h5>

@@ -1,24 +1,24 @@
 <?php
 class orderStatus extends MyAppModel
 {
-    const DB_TBL = 'tbl_orders_status';
-    const DB_TBL_PREFIX = 'orderstatus_';
+    public const DB_TBL = 'tbl_orders_status';
+    public const DB_TBL_PREFIX = 'orderstatus_';
 
-    const DB_TBL_LANG = 'tbl_orders_status_lang';
-    const DB_TBL_LANG_PREFIX = 'orderstatuslang_';
+    public const DB_TBL_LANG = 'tbl_orders_status_lang';
+    public const DB_TBL_LANG_PREFIX = 'orderstatuslang_';
 
-    const ORDER_SHIPPED = 4;
-    const ORDER_DELIVERED = 5;
-    const ORDER_RETURN_REQUESTED = 6;
-    const ORDER_COMPLETED = 7;
-    const ORDER_CANCELLED = 8;
-    const ORDER_REFUNDED = 9;
+    public const ORDER_SHIPPED = 4;
+    public const ORDER_DELIVERED = 5;
+    public const ORDER_RETURN_REQUESTED = 6;
+    public const ORDER_COMPLETED = 7;
+    public const ORDER_CANCELLED = 8;
+    public const ORDER_REFUNDED = 9;
 
 
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
-        $this->db=FatApp::getDb();
+        $this->db = FatApp::getDb();
     }
 
     public static function getSearchObject($isActive = true, $langId = 0)

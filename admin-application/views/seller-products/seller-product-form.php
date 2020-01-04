@@ -39,6 +39,17 @@
                     $frmSellerProduct->setFormTagAttribute('class', 'web_form form_horizontal');
                     $frmSellerProduct->developerTags['colClassPrefix'] = 'col-md-';
                     $frmSellerProduct->developerTags['fld_default_col'] = 12;
+
+                    $returnAgeFld = $frmSellerProduct->getField('selprod_return_age');
+                    $cancellationAgeFld = $frmSellerProduct->getField('selprod_cancellation_age');
+                    $returnAge = FatUtility::int($returnAgeFld->value);
+                    $hidden = '';
+                    if ('' === $returnAgeFld->value || '' === $cancellationAgeFld->value) {
+                        $hidden = 'hide';
+                    }
+                    $returnAgeFld->setWrapperAttribute('class', 'use-shop-policy ' . $hidden);
+                    $cancellationAgeFld->setWrapperAttribute('class', 'use-shop-policy ' . $hidden);
+
                     $selprod_threshold_stock_levelFld = $frmSellerProduct->getField('selprod_threshold_stock_level');
                     $selprod_threshold_stock_levelFld->htmlAfterField = '<small class="text--small">'.Labels::getLabel('LBL_Alert_stock_level_hint_info', $adminLangId). '</small>';
                     $selprod_threshold_stock_levelFld->setWrapperAttribute('class', 'selprod_threshold_stock_level_fld');
@@ -106,5 +117,13 @@
         });
 
         $("select[name='selprod_track_inventory']").trigger('change');
+
+        $("#use_shop_policy").change(function(){
+            if ($(this).is(":checked")) {
+                $('.use-shop-policy').addClass('hide');
+            } else {
+                $('.use-shop-policy').removeClass('hide');
+            }
+        });
     });
 </script>

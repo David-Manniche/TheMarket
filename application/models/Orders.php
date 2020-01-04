@@ -1,56 +1,56 @@
 <?php
 class Orders extends MyAppModel
 {
-    const DB_TBL = 'tbl_orders';
-    const DB_TBL_LANG ='tbl_orders_lang';
-    const DB_TBL_PREFIX = 'order_';
+    public const DB_TBL = 'tbl_orders';
+    public const DB_TBL_LANG = 'tbl_orders_lang';
+    public const DB_TBL_PREFIX = 'order_';
 
-    const DB_TBL_ORDER_PRODUCTS = 'tbl_order_products';
-    const DB_TBL_ORDER_PRODUCTS_LANG = 'tbl_order_products_lang';
+    public const DB_TBL_ORDER_PRODUCTS = 'tbl_order_products';
+    public const DB_TBL_ORDER_PRODUCTS_LANG = 'tbl_order_products_lang';
 
-    const DB_TBL_ORDER_SELLER_SUBSCRIPTIONS = 'tbl_order_seller_subscriptions';
-    const DB_TBL_ORDER_SELLER_SUBSCRIPTIONS_LANG = 'tbl_order_seller_subscriptions_lang';
-    const DB_TBL_ORDER_SELLER_SUBSCRIPTIONS_PREFIX = 'ossubs_';
-    const DB_TBL_ORDER_SELLER_SUBSCRIPTIONS_LANG_PREFIX = 'ossubslang_';
+    public const DB_TBL_ORDER_SELLER_SUBSCRIPTIONS = 'tbl_order_seller_subscriptions';
+    public const DB_TBL_ORDER_SELLER_SUBSCRIPTIONS_LANG = 'tbl_order_seller_subscriptions_lang';
+    public const DB_TBL_ORDER_SELLER_SUBSCRIPTIONS_PREFIX = 'ossubs_';
+    public const DB_TBL_ORDER_SELLER_SUBSCRIPTIONS_LANG_PREFIX = 'ossubslang_';
 
-    const DB_TBL_ORDERS_STATUS = 'tbl_orders_status';
-    const DB_TBL_ORDERS_STATUS_LANG = 'tbl_orders_status_lang';
-    const DB_TBL_ORDER_STATUS_HISTORY = 'tbl_orders_status_history';
+    public const DB_TBL_ORDERS_STATUS = 'tbl_orders_status';
+    public const DB_TBL_ORDERS_STATUS_LANG = 'tbl_orders_status_lang';
+    public const DB_TBL_ORDER_STATUS_HISTORY = 'tbl_orders_status_history';
 
-    const DB_TBL_ORDER_USER_ADDRESS = 'tbl_order_user_address';
-    const DB_TBL_ORDER_EXTRAS = 'tbl_order_extras';
-    const DB_TBL_ORDER_PAYMENTS = 'tbl_order_payments';
+    public const DB_TBL_ORDER_USER_ADDRESS = 'tbl_order_user_address';
+    public const DB_TBL_ORDER_EXTRAS = 'tbl_order_extras';
+    public const DB_TBL_ORDER_PAYMENTS = 'tbl_order_payments';
 
 
-    const DB_TBL_ORDER_PRODUCTS_SHIPPING = 'tbl_order_product_shipping';
-    const DB_TBL_ORDER_PRODUCTS_SHIPPING_LANG = 'tbl_order_product_shipping_lang';
+    public const DB_TBL_ORDER_PRODUCTS_SHIPPING = 'tbl_order_product_shipping';
+    public const DB_TBL_ORDER_PRODUCTS_SHIPPING_LANG = 'tbl_order_product_shipping_lang';
 
-    const DB_TBL_CHARGES = 'tbl_order_product_charges';
-    const DB_TBL_CHARGES_PREFIX=     'opcharge_';
+    public const DB_TBL_CHARGES = 'tbl_order_product_charges';
+    public const DB_TBL_CHARGES_PREFIX = 'opcharge_';
 
-    const BILLING_ADDRESS_TYPE = 1;
-    const SHIPPING_ADDRESS_TYPE = 2;
+    public const BILLING_ADDRESS_TYPE = 1;
+    public const SHIPPING_ADDRESS_TYPE = 2;
 
-    const ORDER_IS_CANCELLED = -1;
-    const ORDER_IS_PENDING = 0;
-    const ORDER_IS_PAID = 1;
+    public const ORDER_IS_CANCELLED = -1;
+    public const ORDER_IS_PENDING = 0;
+    public const ORDER_IS_PAID = 1;
 
-    const PAYMENT_GATEWAY_STATUS_PENDING = 0;
-    const PAYMENT_GATEWAY_STATUS_PAID = 1;
-    const PAYMENT_GATEWAY_STATUS_CANCELLED = 2;
+    public const PAYMENT_GATEWAY_STATUS_PENDING = 0;
+    public const PAYMENT_GATEWAY_STATUS_PAID = 1;
+    public const PAYMENT_GATEWAY_STATUS_CANCELLED = 2;
 
-    const ORDER_PRODUCT = 1;
-    const ORDER_SUBSCRIPTION = 2;
-    const ORDER_WALLET_RECHARGE = 3;
+    public const ORDER_PRODUCT = 1;
+    public const ORDER_SUBSCRIPTION = 2;
+    public const ORDER_WALLET_RECHARGE = 3;
 
-    const REPLACE_ORDER_USER_ADDRESS ='XXX';
+    public const REPLACE_ORDER_USER_ADDRESS ='XXX';
 
-    //const DEFAULT_CHILD_ORDER_STATUS_ID = 1;
+    //public const DEFAULT_CHILD_ORDER_STATUS_ID = 1;
 
-    /* const DB_TBL_ORDER_CANCEL_REQUEST = 'tbl_order_cancel_requests';
-    const CANCELLATION_REQUEST_STATUS_PENDING = 0;
-    const CANCELLATION_REQUEST_STATUS_APPROVED = 1;
-    const CANCELLATION_REQUEST_STATUS_DECLINED = 2; */
+    /* public const DB_TBL_ORDER_CANCEL_REQUEST = 'tbl_order_cancel_requests';
+    public const CANCELLATION_REQUEST_STATUS_PENDING = 0;
+    public const CANCELLATION_REQUEST_STATUS_APPROVED = 1;
+    public const CANCELLATION_REQUEST_STATUS_DECLINED = 2; */
 
 
     private $order_id;
@@ -286,8 +286,9 @@ class Orders extends MyAppModel
     private function addUpdateProductOrder($data = array(), $langId = 1)
     {
         $db  = FatApp::getDb();
-
+        
         $ordersLangData = $data['orderLangData'];
+        
         unset($data['orderLangData']);
 
         $discountInfo = array();
@@ -306,7 +307,7 @@ class Orders extends MyAppModel
 
         $prodCharges = $data['prodCharges'];
         unset($data['prodCharges']);
-
+        
         if (!$data['order_id']) {
             $order_id = $this->generateOrderId();
             $data['order_id'] = $order_id;
@@ -365,14 +366,15 @@ class Orders extends MyAppModel
 
         if (!empty($row)) {
             foreach ($row as $opId => $val) {
-                $db->deleteRecords(OrderProduct::DB_TBL_CHARGES, array('smt' => OrderProduct::DB_TBL_CHARGES_PREFIX.'op_id = ?', 'vals' => array( $opId ) ));
+                $db->deleteRecords(OrderProduct::DB_TBL_CHARGES, array('smt' => OrderProduct::DB_TBL_CHARGES_PREFIX . 'op_id = ?', 'vals' => array( $opId ) ));
                 $db->deleteRecords(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, array('smt' =>'opshipping_op_id = ?', 'vals' => array( $opId ) ));
                 $db->deleteRecords(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING_LANG, array('smt' => 'opshippinglang_op_id = ?', 'vals' => array( $opId ) ));
             }
+            $opArr = current($row);
+            $db->deleteRecords(static::DB_TBL_ORDER_PRODUCTS, array('smt' => 'op_id = ?', 'vals' => $opArr));
+            $db->deleteRecords(static::DB_TBL_ORDER_PRODUCTS_LANG, array('smt' => 'oplang_op_id = ?', 'vals' => $opArr));
+            $db->deleteRecords(OrderProductSpecifics::DB_TBL, array('smt' => 'ops_op_id = ?', 'vals' => $opArr));
         }
-
-        $db->deleteRecords(static::DB_TBL_ORDER_PRODUCTS, array('smt' => 'op_order_id = ?', 'vals' => array( $this->getOrderId() ) ));
-        $db->deleteRecords(static::DB_TBL_ORDER_PRODUCTS_LANG, array('smt' => 'oplang_order_id = ?', 'vals' => array( $this->getOrderId() ) ));
 
         if (!empty($products)) {
             $opRecordObj = new TableRecord(static::DB_TBL_ORDER_PRODUCTS);
@@ -382,7 +384,7 @@ class Orders extends MyAppModel
 
             $counter = 1;
             foreach ($products as $selprodId => $product) {
-                $op_invoice_number = $this->getOrderId().'-S'.str_pad($counter, 4, '0', STR_PAD_LEFT);
+                $op_invoice_number = $this->getOrderId() . '-S' . str_pad($counter, 4, '0', STR_PAD_LEFT);
                 $product['op_order_id'] = $this->getOrderId();
                 $product['op_invoice_number'] = $op_invoice_number;
                 $opRecordObj->assignValues($product);
@@ -509,10 +511,10 @@ class Orders extends MyAppModel
                         }
 
                         $assignValues = array(
-                        OrderProduct::DB_TBL_CHARGES_PREFIX.'op_id' => $op_id,
-                        OrderProduct::DB_TBL_CHARGES_PREFIX.'order_type' => ORDERS::ORDER_PRODUCT,
-                        OrderProduct::DB_TBL_CHARGES_PREFIX.'type' => $chargeType,
-                        OrderProduct::DB_TBL_CHARGES_PREFIX.'amount' => $prodCharges[$selprodId][$chargeType]['amount'],
+                            OrderProduct::DB_TBL_CHARGES_PREFIX . 'op_id' => $op_id,
+                            OrderProduct::DB_TBL_CHARGES_PREFIX . 'order_type' => ORDERS::ORDER_PRODUCT,
+                            OrderProduct::DB_TBL_CHARGES_PREFIX . 'type' => $chargeType,
+                            OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount' => $prodCharges[$selprodId][$chargeType]['amount'],
                         );
 
                         $oChargesRecordObj->assignValues($assignValues);
@@ -524,6 +526,16 @@ class Orders extends MyAppModel
                     }
                 }
                 /* ] */
+                
+                $orderProdSpecificsObj = new OrderProductSpecifics($op_id);
+                $orderProdSpecificsObj->assignValues($product['productSpecifics']);
+                $orderProdSpecificsObj->setFldValue('ops_op_id', $op_id);
+                $data = $orderProdSpecificsObj->getFlds();
+                
+                if (!$orderProdSpecificsObj->addNew(array(), $data)) {
+                    $this->error = $orderProdSpecificsObj->getError();
+                    return false;
+                }
 
                 $counter++;
             }
@@ -1110,7 +1122,8 @@ class Orders extends MyAppModel
         $db = FatApp::getDb();
         $emailNotificationObj = new EmailHandler();
 
-        $currentActiveSubscrId = OrderSubscription:: getUserCurrentActivePlanDetails($langId, $childOrderInfo['order_user_id'], array(OrderSubscription::DB_TBL_PREFIX.'id' ));
+        $currentPlanData = OrderSubscription:: getUserCurrentActivePlanDetails($langId, $childOrderInfo['order_user_id'], array(OrderSubscription::DB_TBL_PREFIX.'id' ));
+        $currentActiveSubscrId = $currentPlanData[OrderSubscription::DB_TBL_PREFIX.'id'];
         if ($currentActiveSubscrId) {
             $this->cancelCurrentActivePlan($orderId, $currentActiveSubscrId, $childOrderInfo['order_user_id'], $notify);
         }
@@ -2265,9 +2278,10 @@ class Orders extends MyAppModel
         foreach ($orderInfo as $order) {
             if (!FatApp::getDb()->updateFromArray(
                 Orders::DB_TBL_ORDER_USER_ADDRESS,
-                array('oua_address1' => static::REPLACE_ORDER_USER_ADDRESS,'oua_address2' => static::REPLACE_ORDER_USER_ADDRESS,'oua_city' => static::REPLACE_ORDER_USER_ADDRESS,'oua_state' => static::REPLACE_ORDER_USER_ADDRESS,'oua_country' => static::REPLACE_ORDER_USER_ADDRESS,'oua_country_code' => static::REPLACE_ORDER_USER_ADDRESS,'oua_phone' => static::REPLACE_ORDER_USER_ADDRESS,'oua_zip' => static::REPLACE_ORDER_USER_ADDRESS),
-                array('smt' => 'oua_order_id = ? ', 'vals' => array($order['order_id']))
-            )) {
+                ['oua_address1' => static::REPLACE_ORDER_USER_ADDRESS,'oua_address2' => static::REPLACE_ORDER_USER_ADDRESS,'oua_city' => static::REPLACE_ORDER_USER_ADDRESS,'oua_state' => static::REPLACE_ORDER_USER_ADDRESS,'oua_country' => static::REPLACE_ORDER_USER_ADDRESS,'oua_country_code' => static::REPLACE_ORDER_USER_ADDRESS,'oua_phone' => static::REPLACE_ORDER_USER_ADDRESS,'oua_zip' => static::REPLACE_ORDER_USER_ADDRESS],
+                ['smt' => 'oua_order_id = ? ', 'vals' => [$order['order_id']]]
+                )
+            ) {
                 $this->error = FatApp::getDb()->getError();
                 return false;
             }
@@ -2276,7 +2290,8 @@ class Orders extends MyAppModel
         return true;
     }
 
-    public static function canSubmitFeedback($userId, $op_order_id, $selprod_id){
+    public static function canSubmitFeedback($userId, $op_order_id, $selprod_id)
+    {
         if (!FatApp::getConfig('CONF_ALLOW_REVIEWS', FatUtility::VAR_INT, 0)) {
             return false;
         }
@@ -2289,6 +2304,41 @@ class Orders extends MyAppModel
         $oFeedbackRs = $oFeedbackSrch->getResultSet();
         if (!empty(FatApp::getDb()->fetch($oFeedbackRs))) {
             return false;
+        }
+        return true;
+    }
+
+    public function changeOrderStatus()
+    {
+        $completedOrderStatus = FatApp::getConfig("CONF_DEFAULT_COMPLETED_ORDER_STATUS", FatUtility::VAR_INT, 0);
+        if (empty($completedOrderStatus)) {
+            return false;
+        }
+        $defaultReturnAge = FatApp::getConfig("CONF_DEFAULT_RETURN_AGE", FatUtility::VAR_INT, 7);
+
+        $srch = new OrderProductSearch(0, true);
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->addMultipleFields(
+            [
+                'op.op_id',
+                'o.order_date_added',
+                'o.order_language_id',
+                'IFNULL(op_selprod_return_age, ' . $defaultReturnAge . ') as return_age',
+                "DATEDIFF(CURDATE(), o.order_date_added) as daysSpent"
+            ]
+        );
+        $srch->joinOrderProductSpecifics();
+        $srch->joinTable(OrderCancelRequest::DB_TBL, 'LEFT OUTER JOIN', 'ocr.ocrequest_op_id = op.op_id and ocr.ocrequest_id IS NULL', 'ocr');
+        $srch->addCondition('op.op_status_id', '=', FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS", FatUtility::VAR_INT, 0));
+        $srch->addHaving('daysSpent', '>=', 'mysql_func_return_age', 'AND', true);
+
+        $rs = $srch->getResultSet();
+        $ordersDetail = FatApp::getDb()->fetchAll($rs, 'op_id');
+        $comment = Labels::getLabel("MSG_AUTOMATICALLY_MARKED_AS_COMPLETED_BY_SYSTEM.", FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1));
+
+        foreach ($ordersDetail as $data) {
+            $this->addChildProductOrderHistory($data['op_id'], $data["order_language_id"], $completedOrderStatus, $comment, 1);
         }
         return true;
     }

@@ -250,18 +250,14 @@ class PaymentMethodsController extends AdminBaseController
 
         $data = PaymentMethods::getAttributesById($pmethodId, array('pmethod_id', 'pmethod_active'));
 
-        if($data == false ) {
+        if ($data == false ) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
 
         $status = ( $data['pmethod_active'] == applicationConstants::ACTIVE ) ? applicationConstants::INACTIVE : applicationConstants::ACTIVE;
 
-        $obj = new PaymentMethods($pmethodId);
-        if (!$obj->changeStatus($status) ) {
-            Message::addErrorMessage($obj->getError());
-            FatUtility::dieWithError(Message::getHtml());
-        }
+        $this->updatePaymentMethodStatus($pmethodId, $status);
 
         $this->set('msg', $this->str_update_record);
         $this->_template->render(false, false, 'json-success.php');
@@ -307,5 +303,45 @@ class PaymentMethodsController extends AdminBaseController
         
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
+    }
+
+    private function updatePaymentMethodStatus($pMethodId, $status)
+    {
+        $status = FatUtility::int($status);
+        $pMethodId = FatUtility::int($pMethodId);
+        if (1 > $pMethodId || -1 == $status) {
+            FatUtility::dieWithError(
+                Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId)
+            );
+        }
+
+        $obj = new PaymentMethods($pMethodId);
+        if (!$obj->changeStatus($status)) {
+            Message::addErrorMessage($obj->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+    }
+
+    public function toggleBulkStatuses()
+    {
+        $this->objPrivilege->canEditPaymentMethods();
+
+        $status = FatApp::getPostedData('status', FatUtility::VAR_INT, -1);
+        $pMethodIdsArr = FatUtility::int(FatApp::getPostedData('pmethod_ids'));
+        if (empty($pMethodIdsArr) || -1 == $status) {
+            FatUtility::dieWithError(
+                Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId)
+            );
+        }
+
+        foreach ($pMethodIdsArr as $pMethodId) {
+            if (1 > $pMethodId) {
+                continue;
+            }
+
+            $this->updatePaymentMethodStatus($pMethodId, $status);
+        }
+        $this->set('msg', $this->str_update_record);
+        $this->_template->render(false, false, 'json-success.php');
     }
 }

@@ -3,13 +3,18 @@
 require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/stripe/init.php';
 class StripePayController extends PaymentController
 {
-    private $keyName="Stripe";
+    private $keyName = "Stripe";
 
     private $error = false;
 
     private $paymentSettings = false;
-
-    private $currencyCode = 'usd';
+   
+    protected function allowedCurrenciesArr()
+    {
+        return [
+            'USD', 'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD', 'BDT', 'BGN', 'BIF', 'BMD', 'BND', 'BOB', 'BRL', 'BSD', 'BWP', 'BZD', 'CAD', 'CDF', 'CHF', 'CLP', 'CNY', 'COP', 'CRC', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ETB', 'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK', 'HTG', 'HUF', 'IDR', 'ILS', 'INR', 'ISK', 'JMD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KRW', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 'MOP', 'MRO', 'MUR', 'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SEK', 'SGD', 'SHP', 'SLL', 'SOS', 'SRD', 'STD', 'SZL', 'THB', 'TJS', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'UYU', 'UZS', 'VND', 'VUV', 'WST', 'XAF', 'XCD', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMW'
+        ];
+    }
 
     public function charge($orderId)
     {
@@ -54,7 +59,6 @@ class StripePayController extends PaymentController
             }
             FatUtility::exitWithErrorCode(404);
         } elseif ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
-            $this->currencyCode = strtolower($orderInfo["order_currency_code"]);
             $checkPayment = $this->doPayment($payableAmount, $orderInfo);
             $frm = $this->getPaymentForm($orderId);
             $this->set('frm', $frm);
@@ -95,7 +99,7 @@ class StripePayController extends PaymentController
     public function checkCardType()
     {
         $post = FatApp::getPostedData();
-        $res=ValidateElement::ccNumber($post['cc']);
+        $res = ValidateElement::ccNumber($post['cc']);
         echo json_encode($res);
         exit;
     }
@@ -106,18 +110,18 @@ class StripePayController extends PaymentController
             return false;
         }
         $amount = number_format($amount, 2, '.', '');
-        return $amount*100;
+        return $amount * 100;
     }
 
     private function getPaymentSettings()
     {
-        $pmObj=new PaymentSettings($this->keyName);
+        $pmObj = new PaymentSettings($this->keyName);
         return $pmObj->getPaymentSettings();
     }
 
     private function getPaymentForm($orderId)
     {
-        $frm = new Form('frmPaymentForm', array('id'=>'frmPaymentForm','action'=>CommonHelper::generateUrl('StripePay', 'charge', array($orderId)), 'class' =>"form form--normal"));
+        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action'=>CommonHelper::generateUrl('StripePay', 'charge', array($orderId)), 'class' =>"form form--normal"));
         $frm->addRequiredField(Labels::getLabel('LBL_ENTER_CREDIT_CARD_NUMBER', $this->siteLangId), 'cc_number');
         $frm->addRequiredField(Labels::getLabel('LBL_CARD_HOLDER_NAME', $this->siteLangId), 'cc_owner');
         $data['months'] = applicationConstants::getMonthsArr($this->siteLangId);
@@ -137,7 +141,7 @@ class StripePayController extends PaymentController
 
     private function doPayment($payment_amount, $orderInfo)
     {
-        $this->paymentSettings=$this->getPaymentSettings();
+        $this->paymentSettings = $this->getPaymentSettings();
         if ($payment_amount == null || !$this->paymentSettings || $orderInfo['id'] == null) {
             return false;
         }
@@ -171,7 +175,7 @@ class StripePayController extends PaymentController
                         array(
                         "customer" => $customer->id,
                         'amount'   => $payment_amount,
-                        'currency' => $this->currencyCode,
+                        'currency' => $this->systemCurrencyCode,
                         )
                     );
                     $charge = $charge->__toArray();
@@ -179,33 +183,33 @@ class StripePayController extends PaymentController
                     if (isset($charge['status'])) {
                         if (strtolower($charge['status']) == 'succeeded') {
                             $message = '';
-                            $message .= 'Id: '.(string)$charge['id']. "&";
-                            $message .= 'Object: '.(string)$charge['object']. "&";
-                            $message .= 'Amount: '.(string)$charge['amount']. "&";
-                            $message .= 'Amount Refunded: '.(string)$charge['amount_refunded']. "&";
-                            $message .= 'Application Fee: '.(string)$charge['application_fee']. "&";
-                            $message .= 'Balance Transaction: '.(string)$charge['balance_transaction']. "&";
-                            $message .= 'Captured: '.(string)$charge['captured']. "&";
-                            $message .= 'Created: '.(string)$charge['created']. "&";
-                            $message .= 'Currency: '.(string)$charge['currency']. "&";
-                            $message .= 'Customer: '.(string)$charge['customer']. "&";
-                            $message .= 'Description: '.(string)$charge['description']. "&";
-                            $message .= 'Destination: '.(string)$charge['destination']. "&";
-                            $message .= 'Dispute: '.(string)$charge['dispute']. "&";
-                            $message .= 'Failure Code: '.(string)$charge['failure_code']. "&";
-                            $message .= 'Failure Message: '.(string)$charge['failure_message']. "&";
-                            $message .= 'Invoice: '.(string)$charge['invoice']. "&";
-                            $message .= 'Livemode: '.(string)$charge['livemode']. "&";
-                            $message .= 'Paid: '.(string)$charge['paid']. "&";
-                            $message .= 'Receipt Email: '.(string)$charge['receipt_email']. "&";
-                            $message .= 'Receipt Number: '.(string)$charge['receipt_number']. "&";
-                            $message .= 'Refunded: '.(string)$charge['refunded']. "&";
-                            $message .= 'Shipping: '.(string)$charge['shipping']. "&";
-                            $message .= 'Statement Descriptor: '.(string)$charge['statement_descriptor']. "&";
-                            $message .= 'Status: '.(string)$charge['status']. "&";
+                            $message .= 'Id: ' . (string)$charge['id'] . "&";
+                            $message .= 'Object: ' . (string)$charge['object'] . "&";
+                            $message .= 'Amount: ' . (string)$charge['amount'] . "&";
+                            $message .= 'Amount Refunded: ' . (string)$charge['amount_refunded'] . "&";
+                            $message .= 'Application Fee: ' . (string)$charge['application_fee'] . "&";
+                            $message .= 'Balance Transaction: ' . (string)$charge['balance_transaction'] . "&";
+                            $message .= 'Captured: ' . (string)$charge['captured'] . "&";
+                            $message .= 'Created: ' . (string)$charge['created'] . "&";
+                            $message .= 'Currency: ' . (string)$charge['currency'] . "&";
+                            $message .= 'Customer: ' . (string)$charge['customer'] . "&";
+                            $message .= 'Description: ' . (string)$charge['description'] . "&";
+                            $message .= 'Destination: ' . (string)$charge['destination'] . "&";
+                            $message .= 'Dispute: ' . (string)$charge['dispute'] . "&";
+                            $message .= 'Failure Code: ' . (string)$charge['failure_code'] . "&";
+                            $message .= 'Failure Message: ' . (string)$charge['failure_message'] . "&";
+                            $message .= 'Invoice: ' . (string)$charge['invoice'] . "&";
+                            $message .= 'Livemode: ' . (string)$charge['livemode'] . "&";
+                            $message .= 'Paid: ' . (string)$charge['paid'] . "&";
+                            $message .= 'Receipt Email: ' . (string)$charge['receipt_email'] . "&";
+                            $message .= 'Receipt Number: ' . (string)$charge['receipt_number'] . "&";
+                            $message .= 'Refunded: ' . (string)$charge['refunded'] . "&";
+                            $message .= 'Shipping: ' . (string)$charge['shipping'] . "&";
+                            $message .= 'Statement Descriptor: ' . (string)$charge['statement_descriptor'] . "&";
+                            $message .= 'Status: ' . (string)$charge['status'] . "&";
                             /* Recording Payment in DB */
-                            $orderPaymentObj=new OrderPayment($orderInfo['id']);
-                            $orderPaymentObj->addOrderPayment($this->paymentSettings["pmethod_name"], $charge['id'], ($payment_amount/100), Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
+                            $orderPaymentObj = new OrderPayment($orderInfo['id']);
+                            $orderPaymentObj->addOrderPayment($this->paymentSettings["pmethod_name"], $charge['id'], ($payment_amount / 100), Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
                             /* End Recording Payment in DB */
                             $checkPayment = true;
 

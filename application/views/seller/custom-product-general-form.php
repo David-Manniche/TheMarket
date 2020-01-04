@@ -22,7 +22,7 @@
                         $customProductFrm->developerTags['colClassPrefix'] = 'col-lg-4 col-md-';
                         $customProductFrm->developerTags['fld_default_col'] = 4;
                         $customProductFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(false);');
-
+                        
                         $shippingCountryFld = $customProductFrm->getField('shipping_country');
                         $shippingCountryFld->setWrapperAttribute('class', 'not-digital-js');
 
@@ -54,7 +54,7 @@
 
                         $productCodEnabledFld = $customProductFrm->getField('product_cod_enabled');
                         $productCodEnabledFld->setWrapperAttribute('class', 'product_cod_enabled_fld');
-
+                        
                         $shippingInfoFld = $customProductFrm->getField('shipping_info_html');
                         $shippingInfoFld->setWrapperAttribute('class', 'col-lg-12');
                         $shippingInfoFld->developerTags['col'] = 12;
@@ -203,6 +203,5 @@
         $('input[name=\'brand_name\']').keyup(function() {
             $('input[name=\'product_brand_id\']').val('');
         });
-
     });
 </script>

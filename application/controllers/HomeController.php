@@ -862,17 +862,19 @@ class HomeController extends MyAppController
         $this->set('image_url', $image_url);
         $this->_template->render();
     }
+     
     public function countries()
     {
         $countryObj = new Countries();
         $countriesArr = $countryObj->getCountriesArr($this->siteLangId);
         $arr_country = array();
         foreach ($countriesArr as $key => $val) {
-            $arr_country[] = array("id"=>$key,'name'=>$val);
+            $arr_country[] = array("id" => $key, 'name' => $val);
         }
         $this->set('countries', $arr_country);
         $this->_template->render();
     }
+
     public function states($countryId)
     {
         $countryId = FatUtility::int($countryId);
@@ -883,9 +885,43 @@ class HomeController extends MyAppController
         $statesArr = $this->getStates($countryId, 0, true);
         $states = array();
         foreach ($statesArr as $key => $val) {
-            $states[]=array("id"=>$key,'name'=>$val);
+            $states[] = array("id" => $key, 'name' => $val);
         }
         $this->set('states', $states);
+        $this->_template->render();
+    }
+
+    public function splashScreenData()
+    {
+        $langCode = Language::getAttributesById($this->siteLangId, 'language_code', false);
+
+        $data['languageLabels'] = array(
+           'languageCode' => $langCode,
+           'downloadUrl' => CommonHelper::generateFullUrl('Home', 'languageLabels', array(1, $this->siteLangId)),
+           'langLabelUpdatedAt' => FatApp::getConfig('CONF_LANG_LABELS_UPDATED_AT', FatUtility::VAR_INT, time())
+        );
+
+        $data['appThemeSetting'] = array(
+           'themeColor' => FatApp::getConfig('CONF_APP_THEME_COLOR', FatUtility::VAR_STRING, ''),
+           'headerFontColor' => FatApp::getConfig('CONF_APP_HEADER_FONT_COLOR', FatUtility::VAR_STRING, ''),
+           'buttonFontColor' => FatApp::getConfig('CONF_APP_BUTTON_FONT_COLOR', FatUtility::VAR_STRING, ''),
+           'buttonBackgroundColor' => FatApp::getConfig('CONF_APP_BUTTON_BACKGROUND_COLOR', FatUtility::VAR_STRING, ''),
+           'mainScreenImage' => CommonHelper::generateFullUrl('Image', 'appMainScreenImage', [$this->siteLangId]),
+           'logo' => CommonHelper::generateFullUrl('Image', 'appLoginScreenImage', [$this->siteLangId]),
+        );
+
+        $this->set('data', $data);
+        $this->_template->render();
+    }
+
+    public function getUrlSegmentsDetail()
+    {
+        $url = FatApp::getPostedData('url', FatUtility::VAR_STRING, '');
+        if (empty($url)) {
+            LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+        }
+        $detail = CommonHelper::getUrlTypeData($url);
+        $this->set('data', ['urlSegmentsDetail' => $detail]);
         $this->_template->render();
     }
 }

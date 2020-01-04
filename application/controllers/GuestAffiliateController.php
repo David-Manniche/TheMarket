@@ -97,7 +97,7 @@ class GuestAffiliateController extends MyAppController
             }
 
             if (FatApp::getConfig('CONF_NOTIFY_ADMIN_AFFILIATE_REGISTRATION', FatUtility::VAR_INT, 1) == 1) {
-                if (!$this->notifyAdminRegistration($userObj, $post)) {
+                if(!$userObj->notifyAdminRegistration($post, $this->siteLangId)){
                     Message::addErrorMessage(Labels::getLabel("MSG_NOTIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId));
                     $db->rollbackTransaction();
                     if (FatUtility::isAjaxCall()) {
@@ -108,7 +108,7 @@ class GuestAffiliateController extends MyAppController
             }
 
             if (FatApp::getConfig('CONF_EMAIL_VERIFICATION_AFFILIATE_REGISTRATION', FatUtility::VAR_INT, 1)) {
-                if (!$this->userEmailVerification($userObj, $post)) {
+                if (!$userObj->userEmailVerification($post, $this->siteLangId)) {
                     Message::addErrorMessage(Labels::getLabel("MSG_VERIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId));
                     $db->rollbackTransaction();
                     if (FatUtility::isAjaxCall()) {
@@ -118,7 +118,8 @@ class GuestAffiliateController extends MyAppController
                 }
             } else {
                 if (FatApp::getConfig('CONF_WELCOME_EMAIL_AFFILIATE_REGISTRATION', FatUtility::VAR_INT, 1) == 1) {
-                    if (!$this->userWelcomeEmailRegistration($userObj, $post)) {
+                    $link = CommonHelper::generateFullUrl('GuestAffiliate');
+                    if (!$userObj->userWelcomeEmailRegistration($post, $link, $this->siteLangId)) {
                         Message::addErrorMessage(Labels::getLabel("MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId));
                         $db->rollbackTransaction();
                         if (FatUtility::isAjaxCall()) {
@@ -312,27 +313,6 @@ class GuestAffiliateController extends MyAppController
         $this->_template->render(false, false);
     }
 
-    private function notifyAdminRegistration($userObj, $data)
-    {
-        return $userObj->notifyAdminRegistration($data, $this->siteLangId);
-    }
-
-    private function userWelcomeEmailRegistration($userObj, $data)
-    {
-        $link = CommonHelper::generateFullUrl('GuestAffiliate');
-        $data = array(
-            'user_name' => $data['user_name'],
-        'user_email' => $data['user_email'],
-        'link' => $link,
-        );
-        $email = new EmailHandler();
-        if (!$email->sendWelcomeEmail($this->siteLangId, $data)) {
-            Message::addMessage(Labels::getLabel("MSG_ERROR_IN_SENDING_WELCOME_EMAIL", $this->siteLangId));
-            return false;
-        }
-        return true;
-    }
-
     private function getAffiliateRegistrationForm($registeration_step_number = UserAuthentication::AFFILIATE_REG_STEP1)
     {
         $siteLangId = $this->siteLangId;
@@ -423,27 +403,6 @@ class GuestAffiliateController extends MyAppController
             break;
         }
         return $frm;
-    }
-
-    private function userEmailVerification($userObj, $data)
-    {
-        $verificationCode = $userObj->prepareUserVerificationCode();
-
-        $link = CommonHelper::generateFullUrl('GuestUser', 'userCheckEmailVerification', array('verify'=>$verificationCode));
-        $data = array(
-            'user_name' => $data['user_name'],
-            'link' => $link,
-        'user_email' => $data['user_email'],
-        );
-
-        $email = new EmailHandler();
-
-        if (!$email->sendSignupVerificationLink($this->siteLangId, $data)) {
-            Message::addMessage(Labels::getLabel("MSG_ERROR_IN_SENDING_VERFICATION_EMAIL", $this->siteLangId));
-            return false;
-        }
-
-        return true;
     }
 
     private function clearAffiliateSession()

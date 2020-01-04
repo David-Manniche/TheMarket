@@ -911,7 +911,7 @@ class UsersController extends AdminBaseController
 
         if ($post['status'] == User::SUPPLIER_REQUEST_APPROVED && $supplierRequest['usuprequest_status'] != User::SUPPLIER_REQUEST_APPROVED) {
             $userObj->setMainTableRecordId($supplierRequest['usuprequest_user_id']);
-            if (!$userObj->activateSupplier(applicationConstants::ACTIVE, applicationConstants::ACTIVE)) {
+            if (!$userObj->activateSupplier(applicationConstants::ACTIVE)) {
                 $db->rollbackTransaction();
                 Message::addErrorMessage($userObj->getError());
                 FatUtility::dieWithError(Message::getHtml());

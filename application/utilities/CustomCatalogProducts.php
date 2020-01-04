@@ -478,9 +478,11 @@ trait CustomCatalogProducts
         if (!$preqId) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
         }
-
+        $post = FatApp::getPostedData();
+        $useShopPolicy = FatApp::getPostedData('use_shop_policy', FatUtility::VAR_INT, 0);
+        $post['use_shop_policy'] = $useShopPolicy;
         $frm = $this->getSellerProductForm($preqId, 'CUSTOM_CATALOG');
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        $post = $frm->getFormDataFromArray($post);
         if (false === $post) {
             FatUtility::dieWithError(current($frm->getValidationErrors()));
         }
