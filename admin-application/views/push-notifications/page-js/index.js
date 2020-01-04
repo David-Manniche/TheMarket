@@ -119,9 +119,13 @@ $(document).on('click','.uploadFile-Js',function(){
     };
     
     clone = function(pNotificationId){
+        if(!confirm(langLbl.cloneNotification)){
+            return false;
+        }
         fcom.ajax(fcom.makeUrl('PushNotifications', 'clone', [pNotificationId]), '', function(t) {
             listPushNotification(document.frmSearch);
             fcom.updateFaceboxContent(t);
+            $.systemMessage(langLbl.clonedNotification,'alert--success',true);
             $('.date_js').datetimepicker({
                 minDate: new Date(),
                 format: 'Y-m-d H:00'
