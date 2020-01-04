@@ -133,6 +133,7 @@ class PushNotification extends MyAppModel
             // $this->error =  Labels::getLabel('MSG_PLUGIN_IS_NOT_ACTIVE', CommonHelper::getLangId());
             return false;
         }
+        require_once CONF_PLUGIN_DIR . '/push-notification/' . $keyName . '.php';
 
         $limit = $keyName::LIMIT;
 
