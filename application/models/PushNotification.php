@@ -168,11 +168,17 @@ class PushNotification extends MyAppModel
             }
 
             try {
+                $imageUrl = '';
+                if ($imgData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PUSH_NOTIFICATION_IMAGE, $recordId)) {
+                    $uploadedTime = AttachedFile::setTimeParam($imgData['afile_updated_at']);
+                    $imageUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'pushNotificationImage', [$recordId], CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                }
+                
                 $obj = new $keyName();
                 $data = [
                     'title' => $notificationDetail['pnotification_title'],
                     'message' => $notificationDetail['pnotification_description'],
-                    'image' => CommonHelper::generateFullUrl('Image', 'pushNotificationImage', [CommonHelper::getLangId(), $recordId], CONF_WEBROOT_FRONT_URL),
+                    'image' => $imageUrl,
                     'extra' => [
                         'lang_id' => $notificationDetail['pnotification_lang_id'],
                         'urlDetail' => !empty($notificationDetail['pnotification_url']) ? CommonHelper::getUrlTypeData($notificationDetail['pnotification_url']) : [],
@@ -188,7 +194,11 @@ class PushNotification extends MyAppModel
 
             end($deviceTokens); // move the internal pointer to the end of the array
             $lastExecutedUserId = key($deviceTokens);
-            static::updateDetail($recordId, static::STATUS_PROCESSING, $lastExecutedUserId);
+            if (true === $joinNotificationUsers) {
+                static::updateDetail($recordId, static::STATUS_COMPLETED, -1);
+            } else {
+                static::updateDetail($recordId, static::STATUS_PROCESSING, $lastExecutedUserId);
+            }
             // return $response;
         }
     }
