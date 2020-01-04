@@ -17,8 +17,9 @@ class SlidesController extends AdminBaseController
     public function index()
     {
         $this->objPrivilege->canViewSlides();
-        /* $frmSearch = $this->getSearchForm();
-        $this->set('frmSearch',$frmSearch); */
+        $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
+        $this->_template->addCss('css/cropper.css');
         $this->_template->render();
     }
 
@@ -298,7 +299,7 @@ class SlidesController extends AdminBaseController
         $post = FatApp::getPostedData();
         $lang_id = FatUtility::int($post['lang_id']);
         $slide_screen = FatUtility::int($post['slide_screen']);
-        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_Select_A_File', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -306,11 +307,11 @@ class SlidesController extends AdminBaseController
         $fileHandlerObj = new AttachedFile();
 
         if (!$res = $fileHandlerObj->saveAttachment(
-            $_FILES['file']['tmp_name'],
+            $_FILES['cropped_image']['tmp_name'],
             AttachedFile::FILETYPE_HOME_PAGE_BANNER,
             $slide_id,
             0,
-            $_FILES['file']['name'],
+            $_FILES['cropped_image']['name'],
             -1,
             true,
             $lang_id,
@@ -322,7 +323,7 @@ class SlidesController extends AdminBaseController
         }
         Slides::setLastModified($slide_id);
         $this->set('slideId', $slide_id);
-        $fileName = $_FILES['file']['name'];
+        $fileName = $_FILES['cropped_image']['name'];
         $this->set('file', $fileName);
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
         $fileName = strlen($fileName) > 10 ? substr($fileName, 0, 10).'.'.$ext : $fileName;
@@ -472,7 +473,7 @@ class SlidesController extends AdminBaseController
         $frm->addHiddenField('', 'slide_id');
         $frm->addHiddenField('', 'slide_type', Slides::TYPE_SLIDE);
         $frm->addRequiredField(Labels::getLabel('LBL_Slide_Identifier', $this->adminLangId), 'slide_identifier');
-        
+
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Slide_URL', $this->adminLangId), 'slide_url');
         $fld->setFieldTagAttribute('placeholder', 'http://');
 
@@ -502,7 +503,9 @@ class SlidesController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', $bannerTypeArr, '', array(), '');
         $screenArr = applicationConstants::getDisplaysArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel("LBL_Display_For", $this->adminLangId), 'slide_screen', $screenArr, '', array(), '');
-        $fld =  $frm->addButton(Labels::getLabel("LBL_Slide_Banner_Image", $this->adminLangId), 'slide_image', Labels::getLabel("LBL_Upload_File", $this->adminLangId), array('class'=>'slideFile-Js','id'=>'slide_image','data-slide_id'=>$slide_id));
+        $frm->addHiddenField('', 'banner_min_width');
+        $frm->addHiddenField('', 'banner_min_height');
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'slide_image', array('accept'=>'image/*', 'data-frm'=>'frmSlideMedia'));
         return $frm;
     }
 

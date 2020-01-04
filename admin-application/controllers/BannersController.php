@@ -17,8 +17,6 @@ class BannersController extends AdminBaseController
     public function index()
     {
         $this->objPrivilege->canViewBanners();
-        /* $frmSearch = $this->getSearchForm();
-        $this->set('frmSearch',$frmSearch);     */
         $this->_template->render();
     }
 
@@ -144,6 +142,9 @@ class BannersController extends AdminBaseController
         if($rs){
         $data = FatApp::getDb()->fetch($rs);
         } */
+        $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
+        $this->_template->addCss('css/cropper.css');
         $this->_template->addJs('js/responsive-img.min.js');
         $this->set('data', $data);
         $this->set('bLocationId', $bLocationId);
@@ -537,18 +538,18 @@ class BannersController extends AdminBaseController
         FatUtility::dieJsonError( Message::getHtml() );
         } */
 
-        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_Please_Select_A_File', $this->adminLangId));
         }
 
         $fileHandlerObj = new AttachedFile();
 
         if (!$res = $fileHandlerObj->saveImage(
-            $_FILES['file']['tmp_name'],
+            $_FILES['cropped_image']['tmp_name'],
             AttachedFile::FILETYPE_BANNER,
             $banner_id,
             0,
-            $_FILES['file']['name'],
+            $_FILES['cropped_image']['name'],
             -1,
             true,
             $lang_id,
@@ -563,7 +564,7 @@ class BannersController extends AdminBaseController
 
         $this->set('bannerId', $banner_id);
         $this->set('blocationId', $blocation_id);
-        $fileName = $_FILES['file']['name'];
+        $fileName = $_FILES['cropped_image']['name'];
         $this->set('file', $fileName);
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
         $fileName = strlen($fileName) > 10 ? substr($fileName, 0, 10).'.'.$ext : $fileName;
@@ -819,7 +820,9 @@ class BannersController extends AdminBaseController
         $screenArr = applicationConstants::getDisplaysArr($this->adminLangId);
         $displayFor = ($blocation_id == BannerLocation::HOME_PAGE_MIDDLE_BANNER) ? applicationConstants::SCREEN_MOBILE : '';
         $frm->addSelectBox(Labels::getLabel("LBL_Display_For", $this->adminLangId), 'banner_screen', $screenArr, $displayFor, array(), '');
-        $fld =  $frm->addButton(Labels::getLabel('LBL_Banner_Image', $this->adminLangId), 'banner_image', Labels::getLabel('LBL_Upload_File', $this->adminLangId), array('class'=>'bannerFile-Js','id'=>'banner_image','data-banner_id'=>$banner_id,'data-blocation_id'=>$blocation_id));
+        $frm->addHiddenField('', 'banner_min_width');
+        $frm->addHiddenField('', 'banner_min_height');
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'banner_image', array('accept'=>'image/*', 'data-frm'=>'frmBannerMedia'));
         return $frm;
     }
 
@@ -835,7 +838,7 @@ class BannersController extends AdminBaseController
     }
 
     public function getBannerLocationDimensions($bannerLocationId, $deviceType)
-    {            
+    {
         $bannerDimensions = BannerLocation::getDimensions($bannerLocationId, $deviceType);
         $this->set('bannerWidth', $bannerDimensions['blocation_banner_width']);
         $this->set('bannerHeight', $bannerDimensions['blocation_banner_height']);
