@@ -49,7 +49,7 @@ class PushNotification extends MyAppModel
         ];
     }
 
-    private static function getDeviceTokens($recordId, $buyers, $sellers, $joinNotificationUsers = true)
+    private static function getDeviceTokensData($recordId, $buyers, $sellers, $joinNotificationUsers = true)
     {
         $buyers = FatUtility::int($buyers);
         $sellers = FatUtility::int($sellers);
@@ -58,7 +58,7 @@ class PushNotification extends MyAppModel
             return false;
         }
         $obj = static::getSearchObject($joinNotificationUsers);
-        
+        $obj->doNotCalculateRecords();
         if (true === $joinNotificationUsers) {
             $joinUsers = 'pnu.pntu_user_id = u.user_id';
         } else {
@@ -97,11 +97,18 @@ class PushNotification extends MyAppModel
         $obj->addCondition('uauth_last_access', '>=', date('Y-m-d H:i:s', strtotime("-7 DAYS")));
         $obj->addCondition('uauth_user_id', '>', 'mysql_func_pnotification_till_user_id', 'AND', true);
 
-        $obj->addMultipleFields(['uauth_fcm_id']);
+        $obj->addMultipleFields(['uauth_user_id', 'uauth_fcm_id']);
         $obj->addOrder('uauth_user_id', 'ASC');
         $rs = $obj->getResultSet();
         $data = FatApp::getDb()->fetchAll($rs);
-        return array_column($data, 'uauth_fcm_id');
+        
+        $lastToken   = end($data);
+        $lastUserId = $lastToken['uauth_user_id'];
+
+        return [
+            'lastUserId' => $lastUserId,
+            'deviceTokens' => array_column($data, 'uauth_fcm_id')
+        ];
     }
 
     private static function updateDetail($recordId, $status, $lastExecutedUserId)
@@ -162,7 +169,11 @@ class PushNotification extends MyAppModel
             $sellers = $notificationDetail['pnotification_for_seller'];
 
             $joinNotificationUsers = (0 < $notificationDetail['pnotification_user_linked']) ? true : false;
-            $deviceTokens = static::getDeviceTokens($recordId, $buyers, $sellers, $joinNotificationUsers);
+            
+            $data = static::getDeviceTokensData($recordId, $buyers, $sellers, $joinNotificationUsers);
+            $deviceTokens = $data['deviceTokens'];
+            $lastUserId = $data['lastUserId'];
+            
             if (empty($deviceTokens) || 1 > count($deviceTokens)) {
                 static::updateDetail($recordId, static::STATUS_COMPLETED, -1);
                 continue;
@@ -191,12 +202,10 @@ class PushNotification extends MyAppModel
                 /* $this->error =  'ERR - ' . $e->getMessage(); */
             }
 
-            end($deviceTokens); // move the internal pointer to the end of the array
-            $lastExecutedUserId = key($deviceTokens);
             if (true === $joinNotificationUsers) {
                 static::updateDetail($recordId, static::STATUS_COMPLETED, -1);
             } else {
-                static::updateDetail($recordId, static::STATUS_PROCESSING, $lastExecutedUserId);
+                static::updateDetail($recordId, static::STATUS_PROCESSING, $lastUserId);
             }
             // return $response;
         }
