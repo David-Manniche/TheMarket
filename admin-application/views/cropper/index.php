@@ -3,7 +3,7 @@
       <img src="<?php echo (isset($image)) ? $image : ''; ?>" alt="Picture" id="new-img" class="img_responsive cropper-hidden">
     </div>
     <span class="gap"></span>
-    <div class="align--center rotator-actions" id="actions" >
+    <div class="text-center rotator-actions" id="actions" >
         <div class="docs-buttons">
             <div class="btn-group">
               <button type="button" class="btn btn-primary" data-method="rotate" data-option="-90" title="<?php echo Labels::getLabel('LBL_Rotate_Left', $adminLangId); ?>">
