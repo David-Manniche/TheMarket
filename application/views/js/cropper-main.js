@@ -1,34 +1,5 @@
-$(document).ready(function(){
-	$('#inputImage').onChange = function () { console.log('aaaa');
-	var files = this.files;
-	var file;
-
-	if (cropper && files && files.length) {
-	  file = files[0];
-
-	  if (/^image\/\w+/.test(file.type)) {
-		uploadedImageType = file.type;
-		uploadedImageName = file.name;
-
-		if (uploadedImageURL) {
-		  URL.revokeObjectURL(uploadedImageURL);
-		}
-
-		image.src = uploadedImageURL = URL.createObjectURL(file);
-		cropper.destroy();
-		cropper = new Cropper(image, options);
-		inputImage.value = null;
-	  } else {
-		window.alert('Please choose an image file.');
-	  }
-	}
-	}
-});
 (function() {
-testing = function(){
-	delete inputImage;
-}
-systemImgCropper = function(url, aspectRatio, callback, inputImage){
+systemImgCropper = function(url, aspectRatio, callback, inputBtn){
 	fcom.ajax(url, '', function(t) {
 		$.facebox(t,'faceboxWidth fbminwidth');
 		var container = document.querySelector('.img-container');
@@ -40,11 +11,11 @@ systemImgCropper = function(url, aspectRatio, callback, inputImage){
 		  var data = e.detail;
 		}
 	  };
-	  return cropImage(image, options, callback, inputImage);
+	  return cropImage(image, options, callback, inputBtn);
 	});
 };
 
-cropImage = function(image, options, callback, inputImage){
+cropImage = function(image, options, callback, inputBtn){
   var actions = document.getElementById('actions');
   var cropper = new Cropper(image, options);
   var originalImageURL = image.src;
@@ -148,8 +119,8 @@ cropImage = function(image, options, callback, inputImage){
 			result.toBlob(function (blob) {
                 formData.append('cropped_image', blob, uploadedImageName);
                 formData.append("action", "avatar");
-				if(inputImage){
-					var frmName = $(inputImage).attr('data-frm')
+				if(inputBtn){
+					var frmName = $(inputBtn).attr('data-frm')
 					formData.append("frmName", frmName);
 				}
 				window[callback](formData);
@@ -181,9 +152,7 @@ cropImage = function(image, options, callback, inputImage){
 	};
 
 	// Import image
-	  if(inputImage === undefined){
-		var inputImage = document.getElementById('inputImage');
-	  }
+	  var inputImage = document.getElementById('inputImage');
 	  if (URL ) {
           inputImage.onchange = function () {
 	      var files = this.files;
@@ -213,6 +182,5 @@ cropImage = function(image, options, callback, inputImage){
 	    inputImage.disabled = true;
 	    inputImage.parentNode.className += ' disabled';
 	  }
-
 }
 })();

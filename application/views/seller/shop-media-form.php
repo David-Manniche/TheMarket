@@ -7,8 +7,7 @@
     $ratioFld->addFieldTagAttribute('class', 'prefRatio-js');
     $fld = $shopLogoFrm->getField('shop_logo');
     $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
-    $fld->addFieldTagAttribute('id', 'inputShopLogoImage');
-    $fld->addFieldTagAttribute('onClick', 'logoPopupImage(this)');
+    $fld->addFieldTagAttribute('onChange', 'logoPopupImage(this)');
 
     $shopBannerFrm->setFormTagAttribute('onsubmit', 'setupShopMedia(this); return(false);');
     $shopBannerFrm->setFormTagAttribute('class', 'form');
@@ -18,8 +17,7 @@
     $screenFld->addFieldTagAttribute('class', 'prefDimensions-js');
     $fld = $shopBannerFrm->getField('shop_banner');
     $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
-    $fld->addFieldTagAttribute('id', 'inputShopBannerImage');
-    $fld->addFieldTagAttribute('onClick', 'bannerPopupImage(this)');
+    $fld->addFieldTagAttribute('onChange', 'bannerPopupImage(this)');
 
     $shopBackgroundImageFrm->setFormTagAttribute('onsubmit', 'setupShopMedia(this); return(false);');
     $shopBackgroundImageFrm->developerTags['colClassPrefix'] = 'col-md-';

@@ -1,5 +1,5 @@
 (function() {
-systemImgCropper = function(url, aspectRatio, callback, inputImage){
+systemImgCropper = function(url, aspectRatio, callback, inputBtn){
 	fcom.ajax(url, '', function(t) {
 		$.facebox(t,'faceboxWidth fbminwidth');
 		var container = document.querySelector('.img-container');
@@ -11,11 +11,11 @@ systemImgCropper = function(url, aspectRatio, callback, inputImage){
 		  var data = e.detail;
 		}
 	  };
-	  return cropImage(image, options, callback, inputImage);
+	  return cropImage(image, options, callback, inputBtn);
 	});
 };
 
-cropImage = function(image, options, callback, inputImage){
+cropImage = function(image, options, callback, inputBtn){
   var actions = document.getElementById('actions');
   var cropper = new Cropper(image, options);
   var originalImageURL = image.src;
@@ -119,8 +119,8 @@ cropImage = function(image, options, callback, inputImage){
 			result.toBlob(function (blob) {
                 formData.append('cropped_image', blob, uploadedImageName);
                 formData.append("action", "avatar");
-				if(inputImage){
-					var frmName = $(inputImage).attr('data-frm')
+				if(inputBtn){
+					var frmName = $(inputBtn).attr('data-frm')
 					formData.append("frmName", frmName);
 				}
 				window[callback](formData);
@@ -152,10 +152,8 @@ cropImage = function(image, options, callback, inputImage){
 	};
 
 	// Import image
-	  if(inputImage === undefined){
-		var inputImage = document.getElementById('inputImage');
-	  }
-	  if (URL) {
+	  var inputImage = document.getElementById('inputImage');
+	  if (URL ) {
           inputImage.onchange = function () {
 	      var files = this.files;
 	      var file;

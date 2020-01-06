@@ -1,12 +1,12 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
     $frm->setFormTagAttribute('onsubmit', 'uploadCollectionImage(this); return(false);');
+    $frm->setFormTagAttribute('class', 'form');
     $frm->developerTags['colClassPrefix'] = 'col-md-';
     $frm->developerTags['fld_default_col'] = 12;
 
     $fld = $frm->getField('collection_image');
     $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
-    $fld->addFieldTagAttribute('id', 'inputImage');
-    $fld->addFieldTagAttribute('onClick', 'collectionPopupImage()');
+    $fld->addFieldTagAttribute('onChange', 'collectionPopupImage(this)');
 ?>
 <div class="col-lg-12 col-md-12">
     <div class="content-header justify-content-between row mb-4">

@@ -424,7 +424,7 @@ trait SellerCollections
         $frm->addHiddenField('', 'scollection_id', $scollection_id);
         $bannerTypeArr = applicationConstants::bannerTypeArr();
         $frm->addSelectBox(Labels::getLabel('Lbl_Language', $this->siteLangId), 'lang_id', $bannerTypeArr, '', array('class'=>'collection-language-js'), '');
-        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->siteLangId), 'collection_image', array('accept'=>'image/*'));
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->siteLangId), 'collection_image', array('accept'=>'image/*', 'data-frm'=>'frmCollectionMedia'));
         return $frm;
     }
 
