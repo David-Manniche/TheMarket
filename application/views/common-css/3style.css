@@ -2344,7 +2344,7 @@ table.cart-tbl-addons .item__title {
     line-height: 1;
 }
 
-.dropdown__target .list-vertical {
+.dropdown__target .scroll-y {
     max-height: 350px;
     /*  overflow-y: auto;*/
 }

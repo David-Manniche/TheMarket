@@ -34,6 +34,7 @@ class MyAppController extends FatController
         }
 
         $this->set('siteLangId', $this->siteLangId);
+        $this->set('siteLangCode', $this->siteLangCode);
         $this->set('siteCurrencyId', $this->siteCurrencyId);
         $loginData = array(
         'loginFrm' => $this->getLoginForm(),

@@ -54,11 +54,11 @@
                         <ul class="contact-info">
                             <?php $site_conatct = FatApp::getConfig('CONF_SITE_PHONE', FatUtility::VAR_STRING, '');
                                 if ($site_conatct) { ?>
-                            <li><i class="icn"><img src="<?php echo CONF_WEBROOT_URL; ?>images/icn-mobile.png"></i><?php echo $site_conatct;?></li>
+                            <li><i class="icn"><img src="<?php echo CONF_WEBROOT_URL; ?>images/icn-mobile.png" alt="<?php echo Labels::getLabel('LBL_Phone', $siteLangId); ?>"></i><?php echo $site_conatct;?></li>
                             <?php } ?>
                             <?php $email_id = FatApp::getConfig('CONF_CONTACT_EMAIL', FatUtility::VAR_STRING, '');
                                 if ($email_id) { ?>
-                            <li><i class="icn"><img src="<?php echo CONF_WEBROOT_URL; ?>images/icn-email.png"></i> <a href="mailto:<?php echo $email_id; ?>"><?php echo $email_id;?></a> </li>
+                            <li><i class="icn"><img src="<?php echo CONF_WEBROOT_URL; ?>images/icn-email.png" alt="<?php echo Labels::getLabel('LBL_Email', $siteLangId); ?>"></i> <a href="mailto:<?php echo $email_id; ?>"><?php echo $email_id;?></a> </li>
                             <?php } ?>
                         </ul>
                     </div>
@@ -82,8 +82,8 @@
                     <?php 
                     $replacements = array(
                         '{YEAR}'=> '&copy; '.date("Y"),
-                        '{PRODUCT}'=>'<a target="_blank" href="https://yo-kart.com">Yo!Kart</a>',
-                        '{OWNER}'=> '<a target="_blank" href="https://www.fatbit.com">FATbit Technologies</a>',
+                        '{PRODUCT}'=>'<a target="_blank" href="https://yo-kart.com" rel="noopener">Yo!Kart</a>',
+                        '{OWNER}'=> '<a target="_blank" href="https://www.fatbit.com" rel="noopener">FATbit Technologies</a>',
                     );
                     echo CommonHelper::replaceStringData(Labels::getLabel('LBL_COPYRIGHT_TEXT', $siteLangId), $replacements);   
                 ?>

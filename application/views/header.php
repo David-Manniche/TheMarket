@@ -18,6 +18,7 @@ array_walk($jsVariables, function (&$item1, $key) {
 });
 $commonHead1Data = array(
     'siteLangId' => $siteLangId,
+    'siteLangCode' => $siteLangCode,
     'controllerName' => $controllerName,
     'jsVariables' => $jsVariables,
     'extendEditorJs' => $extendEditorJs,
