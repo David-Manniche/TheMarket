@@ -175,3 +175,5 @@ ALTER TABLE `tbl_push_notifications`
 INSERT INTO `tbl_cron_schedules` (`cron_id`, `cron_name`, `cron_command`, `cron_duration`, `cron_active`) VALUES (NULL, 'Send FCM Push Notifications', 'PushNotification/send', '15', '1');
 DELETE FROM `tbl_attached_files` WHERE `afile_type` = 12 and `afile_screen` = 0;
 DELETE FROM `tbl_attached_files` WHERE `afile_type` = 52 and `afile_screen` = 0;
+
+INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Google Shopping Feed', '5', 'GoogleShoppingFeed', '1', '1');

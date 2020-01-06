@@ -22,3 +22,4 @@ New Features:
     => Automating the order completion process based on order date.
     => 69147 - Enhanced social login with plugin.
     => 68898 - Custom push notification management.
+    => 69217 - Google Shopping Feed Integration
