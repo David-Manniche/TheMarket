@@ -220,7 +220,7 @@ class PushNotificationsController extends AdminBaseController
         $post['pnotification_type'] = PushNotification::TYPE_APP;
         $post['pnotification_for_buyer'] = applicationConstants::YES;
 
-        if (!empty($post['pnotification_id'])) {
+        /* if (!empty($post['pnotification_id'])) {
             $this->validateRequest($post['pnotification_id']);
             $recordDetail = PushNotification::getAttributesById($post['pnotification_id'], ['pnotification_for_buyer', 'pnotification_for_seller']);
             if ($post['pnotification_for_buyer'] != $recordDetail['pnotification_for_buyer'] || $post['pnotification_for_seller'] != $recordDetail['pnotification_for_seller']) {
@@ -229,7 +229,7 @@ class PushNotificationsController extends AdminBaseController
                     FatUtility::dieJsonError($db->getError());
                 }
             }
-        }
+        } */
 
         $db = FatApp::getDb();
         if (!$db->insertFromArray(PushNotification::DB_TBL, $post, true, array(), $post)) {

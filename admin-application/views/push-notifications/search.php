@@ -1,19 +1,54 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 
-$arr_flds = array(
-    'listserial' => Labels::getLabel('LBL_S.No.', $adminLangId),
-    // 'pnotification_type' => Labels::getLabel('LBL_TYPE', $adminLangId),
-    'notification_detail' => Labels::getLabel('LBL_DETAIL', $adminLangId),
-    'pnotification_notified_on' => Labels::getLabel('LBL_SCHEDULED_FOR', $adminLangId),
-    // 'notify_to' => Labels::getLabel('LBL_NOTIFY_TO', $adminLangId),
-    'pnotification_status' => Labels::getLabel('LBL_STATUS', $adminLangId),
-    'action' => Labels::getLabel('LBL_Action', $adminLangId),
-);
+$arr_flds = [
+    'listserial' => [
+        'title' => Labels::getLabel('LBL_S.No.', $adminLangId),
+        'attributes' => [
+            'width' => '7%'
+        ],
+    ],
+    // 'pnotification_type' => [
+    //     'title' => Labels::getLabel('LBL_TYPE', $adminLangId),
+    //         'attributes' => [
+    //             'width' => '20%'
+    //         ]
+    // ],
+    'notification_detail' => [
+        'title' => Labels::getLabel('LBL_DETAIL', $adminLangId),
+        'attributes' => [
+            'width' => '63%'
+        ]
+    ],
+    'pnotification_notified_on' => [
+        'title' => Labels::getLabel('LBL_SCHEDULED_FOR', $adminLangId),
+        'attributes' => [
+            'width' => '15%'
+        ]
+    ],
+    // 'notify_to' => [
+    //     'title' => Labels::getLabel('LBL_NOTIFY_TO', $adminLangId),
+    //     'attributes' => [
+    //         'width' => '20%'
+    //     ]
+    // ],
+    'pnotification_status' => [
+        'title' => Labels::getLabel('LBL_STATUS', $adminLangId),
+        'attributes' => [
+            'width' => '10%'
+        ]
+    ],
+    'action' => [
+        'title' => Labels::getLabel('LBL_Action', $adminLangId),
+        'attributes' => [
+            'width' => '5%'
+        ]
+    ]
+];
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 
 foreach ($arr_flds as $key => $val) {
-    $th->appendElement('th', array(), $val);
+    $th->appendElement('th', $val['attributes'], $val['title']);
 }
 
 $sr_no = $page == 1 ? 0 : $pageSize * ($page - 1);
@@ -31,8 +66,9 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $typeArr[$row[$key]], true);
                 break; */
             case 'notification_detail':
-                $htm =  '<b>' . Labels::getLabel('LBL_TITLE', $adminLangId) . ':</b> ' . $row['pnotification_title'] . '<br>';
-                $htm .= '<b>' . Labels::getLabel('LBL_BODY', $adminLangId) . ':</b> ' . $row['pnotification_description'];
+                $body = $row['pnotification_description'];
+                $htm =  '<strong>' . $row['pnotification_title'] . '</strong><br>';
+                $htm .= strlen($body) > 100 ? substr($body, 0, 100) . "..." : $body;
                 $td->appendElement('plaintext', array(), $htm, true);
                 break;
             case 'pnotification_notified_on':
@@ -55,7 +91,22 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $buyerHtm . ' ' . $sellerHtm, true);
                 break; */
             case 'pnotification_status':
-                $td->appendElement('plaintext', array(), $statusArr[$row[$key]], true);
+                switch ($row[$key]) {
+                    case PushNotification::STATUS_PENDING:
+                        $class = 'label--purple';
+                        break;
+                    case PushNotification::STATUS_PROCESSING:
+                        $class = 'label--warning';
+                        break;
+                    case PushNotification::STATUS_COMPLETED:
+                        $class = 'label--success';
+                        break;
+                    default:
+                        $class = 'label-primary';
+                        break;
+                }
+                $htm = '<label class="label ' . $class . '">'  . $statusArr[$row[$key]] . '</label>';
+                $td->appendElement('plaintext', array(), $htm, true);
                 break;
             case 'action':
                 if ($canEdit) {
