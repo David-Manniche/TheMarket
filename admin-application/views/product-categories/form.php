@@ -4,6 +4,9 @@ $prodCatFrm->setFormTagAttribute('class', 'web_form');
 $prodCatFrm->setFormTagAttribute('id', 'frmProdCategory');
 $prodCatFrm->setFormTagAttribute('onsubmit', 'setupCategory(); return(false);');
 
+$statusFld = $prodCatFrm->getField('prodcat_active');
+$statusFld->setOptionListTagAttribute('class', 'list-inline-checkboxes'); 
+
 $iconLangFld = $prodCatFrm->getField('icon_lang_id');
 $iconLangFld->addFieldTagAttribute('class', 'icon-language-js');
 
@@ -23,6 +26,7 @@ $btn = $prodCatFrm->getField('btn_submit');
 $btn->setFieldTagAttribute('class', "themebtn btn-primary");
 
 ?>
+
 <div class='page'>
     <div class='container container-fluid'>
         <div class="row">
@@ -88,14 +92,13 @@ $btn->setFieldTagAttribute('class', "themebtn btn-primary");
                                             <div class="field-set d-flex align-items-center">
                                                 <div class="caption-wraper w-auto pr-4">
                                                     <label class="field_label">
-                                                    <?php  $fld = $prodCatFrm->getField('prodcat_active');
+                                                    <?php $fld = $prodCatFrm->getField('prodcat_active');
                                                         echo $fld->getCaption();
                                                     ?></label>
                                                 </div>
                                                 <div class="field-wraper w-auto">
                                                     <div class="field_cover">
                                                         <?php echo $prodCatFrm->getFieldHtml('prodcat_active'); ?>
-                                                        <i class="input-helper"></i>
                                                     </div>
                                                 </div>
                                             </div>

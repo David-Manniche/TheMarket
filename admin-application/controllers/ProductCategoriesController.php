@@ -9,9 +9,11 @@ class ProductCategoriesController extends AdminBaseController
 
     public function index()
     {
-        $canEdit = $this->objPrivilege->canEditProductCategories(0, true);        
+        $canEdit = $this->objPrivilege->canEditProductCategories(0, true); 
+        $totProds = Product::getProductsCount();
         $activeCategories = ProductCategory::getActiveInactiveCategoriesCount(applicationConstants::ACTIVE);
         $inactiveCategories = ProductCategory::getActiveInactiveCategoriesCount(applicationConstants::INACTIVE);
+        $this->set("totProds", $totProds);
         $this->set("activeCategories", $activeCategories);
         $this->set("inactiveCategories", $inactiveCategories);
         $this->set("canEdit", $canEdit);
@@ -110,7 +112,7 @@ class ProductCategoriesController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Category_Parent', $this->adminLangId), 'prodcat_parent', $categories, '', array(), '');
         
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);        
-        $frm->addRadioButtons(Labels::getLabel('LBL_Status', $this->adminLangId), 'prodcat_active', $activeInactiveArr, '', array('class' => 'list-inline-checkboxes'));
+        $frm->addRadioButtons(Labels::getLabel('LBL_Status', $this->adminLangId), 'prodcat_active', $activeInactiveArr, '', array());
         
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
         $langData = Language::getAllNames();
@@ -186,15 +188,15 @@ class ProductCategoriesController extends AdminBaseController
         $lang_id = FatUtility::int($lang_id);
         $catIcons = $catBanners = array();
         if ($imageType=='icon') {
-            $catIcons = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_CATEGORY_ICON, $prodcat_id, 0, $lang_id, false);
+            $catIcons = AttachedFile::getAttachment(AttachedFile::FILETYPE_CATEGORY_ICON, $prodcat_id, 0, $lang_id, false);
             $this->set('images', $catIcons);
             $this->set('imageFunction', 'icon');
         } elseif ($imageType=='banner') {
-            $catBanners = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_CATEGORY_BANNER, $prodcat_id, 0, $lang_id, false, $slide_screen);
+            $catBanners = AttachedFile::getAttachment(AttachedFile::FILETYPE_CATEGORY_BANNER, $prodcat_id, 0, $lang_id, false, $slide_screen);
             $this->set('images', $catBanners);
             $this->set('screenTypeArr', $this->getDisplayScreenName());
             $this->set('imageFunction', 'banner');
-        }
+        } 
         $this->set('imageType', $imageType);
         $this->set('languages', Language::getAllNames());
         $this->set('canEdit', $canEdit);
@@ -207,6 +209,7 @@ class ProductCategoriesController extends AdminBaseController
         $prodcat_id = FatApp::getPostedData('prodcat_id', FatUtility::VAR_INT, 0);
         $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
         $slide_screen = FatApp::getPostedData('slide_screen', FatUtility::VAR_INT, 0);
+        $afileId = FatApp::getPostedData('afile_id', FatUtility::VAR_INT, 0);
         if (!$file_type) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
@@ -223,8 +226,10 @@ class ProductCategoriesController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('LBL_Please_Select_A_File', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-
-        $fileHandlerObj = new AttachedFile();
+        
+        ProductCategory:: deleteImagesWithOutCategoryId($file_type);
+        
+        $fileHandlerObj = new AttachedFile($afileId);
         if (!$res = $fileHandlerObj->saveImage(
             $_FILES['file']['tmp_name'],
             $file_type,
@@ -232,7 +237,7 @@ class ProductCategoriesController extends AdminBaseController
             0,
             $_FILES['file']['name'],
             -1,
-            $unique_record = true,
+            $unique_record = false,
             $lang_id,
             $_FILES['file']['type'],
             $slide_screen
@@ -434,31 +439,10 @@ class ProductCategoriesController extends AdminBaseController
     public function getBreadcrumbNodes($action)
     {
         $nodes = array();
-        $parameters = FatApp::getParameters();
         switch ($action) {
             case 'index':
-                $nodes[] = array('title'=>Labels::getLabel('LBL_Root_Categories', $this->adminLangId), 'href'=>CommonHelper::generateUrl('ProductCategories'));
-                if (isset($parameters[0]) && $parameters[0] > 0) {
-                    $parent=FatUtility::int($parameters[0]);
-                    if ($parent>0) {
-                        $cntInc=1;
-                        $prodCateObj = new ProductCategory();
-                        $category_structure = $prodCateObj->getCategoryStructure($parent);
-                        $category_structure = array_reverse($category_structure);
-                        foreach ($category_structure as $catKey => $catVal) {
-                            if ($cntInc<count($category_structure)) {
-                                $nodes[] = array('title'=>$catVal["prodcat_identifier"], 'href'=>CommonHelper::generateUrl('ProductCategories', 'index', array($catVal['prodcat_id'])));
-                            } else {
-                                $nodes[] = array('title'=>$catVal["prodcat_identifier"]);
-                            }
-                            $cntInc++;
-                        }
-                    }
-                }
-                break;
-
             case 'form':
-                break;
+                $nodes[] = array('title'=>Labels::getLabel('LBL_Categories', $this->adminLangId), 'href'=>CommonHelper::generateUrl('ProductCategories'));
         }
         return $nodes;
     }

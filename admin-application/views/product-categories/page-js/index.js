@@ -108,6 +108,10 @@ $(document).ready(function(){
     displaySubCategories = function(anchorTag, level){
         var prodCatId = $(anchorTag).parent().parent().attr('id');
         if($(anchorTag).children().hasClass('ion-chevron-down')){
+            $("."+prodCatId).each(function(){
+                var rootCat = $(this).attr('id');
+                $("."+rootCat).remove();
+            });
             $("."+prodCatId).remove();
             $(anchorTag).children().removeClass('ion-chevron-down');
             $(anchorTag).children().addClass('ion-chevron-right');

@@ -2,7 +2,7 @@
     $arr_flds = array(
             'select_all'=>Labels::getLabel('LBL_Select_all', $adminLangId),
             'prodcat_display_order'=>Labels::getLabel('LBL_POS', $adminLangId),
-            'prodcat_identifier'=>Labels::getLabel('LBL_Category_Name', $adminLangId),
+            'prodcat_identifier'=>Labels::getLabel('LBL_Name', $adminLangId),
             'category_products' => Labels::getLabel('LBL_Products', $adminLangId),
             'prodcat_active' => Labels::getLabel('LBL_Publish', $adminLangId),
             'action' => '',
