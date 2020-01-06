@@ -136,7 +136,7 @@ if (count($arr_listing) == 0) {
 echo $tbl->getHtml();
 
 $postedData['page'] = $page;
-echo FatUtility::createHiddenFormFromData($postedData, ['name' => 'frmUserSearchPaging']);
+echo FatUtility::createHiddenFormFromData($postedData, ['name' => 'frmSearchPaging']);
 $pagingArr = [
     'pageCount' => $pageCount,
     'page' => $page,

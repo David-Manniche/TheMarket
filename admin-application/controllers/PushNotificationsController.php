@@ -68,7 +68,7 @@ class PushNotificationsController extends AdminBaseController
             }
         } */
         
-        $srch->addOrder('pn.pnotification_added_on', 'DESC');
+        $srch->addOrder('pn.pnotification_id', 'DESC');
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
         $rs = $srch->getResultSet();
@@ -154,7 +154,7 @@ class PushNotificationsController extends AdminBaseController
         
     public function selectedUsersform($status = 0)
     {
-        $frm = new Form('PushNotificationForm', array('id' => 'PushNotificationForm'));
+        $frm = new Form('PushNotificationUserForm', array('id' => 'PushNotificationUserForm'));
         $frm->addHiddenField('', 'pnotification_id');
         
         $attributes = ['placeholder' => Labels::getLabel('LBL_Search...', $this->adminLangId)];
