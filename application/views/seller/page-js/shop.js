@@ -446,7 +446,7 @@ $(document).on('change', '.collection-language-js', function() {
     bannerPopupImage = function(inputBtn){
         if (inputBtn.files && inputBtn.files[0]) {
             fcom.ajax(fcom.makeUrl('Seller', 'imgCropper'), '', function(t) {
-        		$.facebox(t,'faceboxWidth fbminwidth');
+        		$.facebox(t,'faceboxWidth medium-fb-width');
                 var container = document.querySelector('.img-container');
                 var file = inputBtn.files[0];
                 $('#new-img').attr('src', URL.createObjectURL(file));
@@ -472,7 +472,7 @@ $(document).on('change', '.collection-language-js', function() {
     logoPopupImage = function(inputBtn){
         if (inputBtn.files && inputBtn.files[0]) {
             fcom.ajax(fcom.makeUrl('Seller', 'imgCropper'), '', function(t) {
-        		$.facebox(t,'faceboxWidth fbminwidth');
+        		$.facebox(t,'faceboxWidth medium-fb-width');
                 var container = document.querySelector('.img-container');
                 var file = inputBtn.files[0];
                 $('#new-img').attr('src', URL.createObjectURL(file));
@@ -560,7 +560,7 @@ $(document).on('change', '.collection-language-js', function() {
     collectionPopupImage = function(inputBtn){
         if (inputBtn.files && inputBtn.files[0]) {
             fcom.ajax(fcom.makeUrl('Seller', 'imgCropper'), '', function(t) {
-        		$.facebox(t,'faceboxWidth fbminwidth');
+        		$.facebox(t,'faceboxWidth medium-fb-width');
                 var container = document.querySelector('.img-container');
                 var file = inputBtn.files[0];
                 $('#new-img').attr('src', URL.createObjectURL(file));
