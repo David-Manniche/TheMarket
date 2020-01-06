@@ -51,11 +51,10 @@ class PushNotificationsController extends AdminBaseController
         }
 
         $status = $post['pnotification_status'];
-        if (-1 < $status) {
+        if ('' != $status && -1 < $status) {
             $srch->addCondition('pnotification_status', '=', $status);
         }
 
-        $srch->addCondition('pnotification_for_buyer', '=', applicationConstants::YES);
         /* $notifyTo = $post['notify_to'];
         if (0 < $notifyTo) {
             switch ($notifyTo) {
@@ -72,7 +71,6 @@ class PushNotificationsController extends AdminBaseController
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
         $rs = $srch->getResultSet();
-        // echo $srch->getError();
         $records = FatApp::getDb()->fetchAll($rs);
         $statusArr = PushNotification::getStatusArr($this->adminLangId);
 
