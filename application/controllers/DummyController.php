@@ -327,7 +327,7 @@ class DummyController extends MyAppController
 
     public function index()
     {
-       $res = CommonHelper::getUrlTypeData('http://support.apple.com/downloads/safari'); 
+       echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'favicon', array($this->siteLangId)), CONF_IMG_CACHE_TIME, '.png'); 
       
        exit;
 
