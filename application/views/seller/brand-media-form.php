@@ -5,8 +5,7 @@ $brandReqMediaFrm->developerTags['fld_default_col'] = 12;
 
 $fld = $brandReqMediaFrm->getField('logo');
 $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
-$fld->addFieldTagAttribute('id', 'brandInputImage');
-$fld->addFieldTagAttribute('onClick', 'brandPopupImage(this)');
+$fld->addFieldTagAttribute('onChange', 'brandPopupImage(this)');
 
 $preferredDimensionsStr = ' <small class="text--small">'. sprintf(Labels::getLabel('LBL_Preferred_Dimensions', $siteLangId), '500*500').'</small>';
 

@@ -1,18 +1,23 @@
 (function() {
 systemImgCropper = function(url, aspectRatio, callback, inputBtn){
-	fcom.ajax(url, '', function(t) {
-		$.facebox(t,'faceboxWidth fbminwidth');
-		var container = document.querySelector('.img-container');
-		var image = container.getElementsByTagName('img').item(0);
-		var options = {
-		aspectRatio: aspectRatio,
-		preview: '.img-preview',
-		crop: function (e) {
-		  var data = e.detail;
-		}
-	  };
-	  return cropImage(image, options, callback, inputBtn);
-	});
+	if (inputBtn.files && inputBtn.files[0]) {
+		fcom.ajax(url, '', function(t) {
+			$.facebox(t,'faceboxWidth fbminwidth');
+			var container = document.querySelector('.img-container');
+			var file = inputBtn.files[0];
+			$('#new-img').attr('src', URL.createObjectURL(file));
+			var image = container.getElementsByTagName('img').item(0);
+			var options = {
+			aspectRatio: aspectRatio,
+			preview: '.img-preview',
+			crop: function (e) {
+			  var data = e.detail;
+			}
+		  };
+		  $(inputBtn).val('');
+		  return cropImage(image, options, callback, inputBtn);
+		});
+	}
 };
 
 cropImage = function(image, options, callback, inputBtn){

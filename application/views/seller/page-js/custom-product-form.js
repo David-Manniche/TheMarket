@@ -689,27 +689,31 @@
 		});
 	}
 
-	brandPopupImage = function(inputImage){
-		fcom.ajax(fcom.makeUrl('Seller', 'imgCropper'), '', function(t) {
-			$('#cropperBox-js').html(t);
-			$("#brandMediaForm-js").css("display", "none");
-			var ratioType = document.frmBrandMedia.ratio_type.value;
-			var aspectRatio = 1 / 1;
-			if(ratioType == ratioTypeRectangular){
-				aspectRatio = 16 / 5
-			}
-			var options = {
-				aspectRatio: aspectRatio,
-				preview: '.img-preview',
-				crop: function (e) {
-				  var data = e.detail;
+	brandPopupImage = function(inputBtn){
+		if (inputBtn.files && inputBtn.files[0]) {
+			fcom.ajax(fcom.makeUrl('Seller', 'imgCropper'), '', function(t) {
+				$('#cropperBox-js').html(t);
+				$("#brandMediaForm-js").css("display", "none");
+				var ratioType = document.frmBrandMedia.ratio_type.value;
+				var aspectRatio = 1 / 1;
+				if(ratioType == ratioTypeRectangular){
+					aspectRatio = 16 / 5
 				}
-		  	};
-			var container = document.querySelector('.img-container');
-			var image = container.getElementsByTagName('img').item(0);
-
-		  return cropImage(image, options, 'uploadBrandLogo', inputImage);
-		});
+				var options = {
+					aspectRatio: aspectRatio,
+					preview: '.img-preview',
+					crop: function (e) {
+					  var data = e.detail;
+					}
+			  	};
+				var container = document.querySelector('.img-container');
+                var file = inputBtn.files[0];
+                $('#new-img').attr('src', URL.createObjectURL(file));
+				var image = container.getElementsByTagName('img').item(0);
+				$(inputBtn).val('');
+			  return cropImage(image, options, 'uploadBrandLogo', inputBtn);
+			});
+		}
 	};
 
     uploadBrandLogo = function(formData){

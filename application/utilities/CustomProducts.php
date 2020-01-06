@@ -1813,7 +1813,7 @@ trait CustomProducts
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->siteLangId), 'brand_lang_id', array( 0 => Labels::getLabel('LBL_Universal', $this->siteLangId) ) + $languagesAssocArr, '', array(), '');
         $ratioArr = AttachedFile::getRatioTypeArray($this->siteLangId);
         $frm->addRadioButtons(Labels::getLabel('LBL_Ratio', $this->siteLangId), 'ratio_type', $ratioArr, AttachedFile::RATIO_TYPE_SQUARE);
-        $frm->addFileUpload(Labels::getLabel('Lbl_Logo', $this->siteLangId), 'logo', array('accept'=>'image/*'));
+        $frm->addFileUpload(Labels::getLabel('Lbl_Logo', $this->siteLangId), 'logo', array('accept'=>'image/*', 'data-frm'=>'frmBrandMedia'));
 
         $frm->addHtml('', 'brand_logo_display_div', '');
 

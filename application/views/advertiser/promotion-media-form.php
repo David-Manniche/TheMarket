@@ -6,16 +6,15 @@ $mediaFrm->setFormTagAttribute('onsubmit', 'setupPromotionMedia(this); return(fa
 
 $uploadfld = $mediaFrm->getField('banner_image');
 $uploadfld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
-$uploadfld->addFieldTagAttribute('id', 'inputImage');
-$uploadfld->addFieldTagAttribute('onClick', 'popupImage(this)');
+$uploadfld->addFieldTagAttribute('onChange', 'popupImage(this)');
 
 $langFld = $mediaFrm->getField('lang_id');
-$langFld->addFieldTagAttribute('class','banner-language-js');
+$langFld->addFieldTagAttribute('class', 'banner-language-js');
 
 $screenFld = $mediaFrm->getField('banner_screen');
-$screenFld->addFieldTagAttribute('class','banner-screen-js');
+$screenFld->addFieldTagAttribute('class', 'banner-screen-js');
 
-$preferredDimensionsStr = '<span class="uploadimage--info" > '.sprintf(Labels::getLabel('LBL_Preferred_Dimensions',$siteLangId),$bannerWidth . ' * ' . $bannerHeight).'</span>';
+$preferredDimensionsStr = '<span class="uploadimage--info" > '.sprintf(Labels::getLabel('LBL_Preferred_Dimensions', $siteLangId), $bannerWidth . ' * ' . $bannerHeight).'</span>';
 
 $htmlAfterField = $preferredDimensionsStr;
 $htmlAfterField.='<div id="image-listing-js"></div>';
@@ -23,17 +22,22 @@ $htmlAfterField.='<div id="image-listing-js"></div>';
 
 ?>
 <div class="tabs tabs--small   tabs--scroll clearfix setactive-js">
-	<ul>
-		<li><a href="javascript:void(0);" onClick="promotionForm(<?php echo $promotionId;?>)"><?php echo Labels::getLabel('LBL_General',$siteLangId);?></a></li>
-		<?php $inactive = ($promotionId==0)?'fat-inactive':'';
-		foreach($languages as $langId => $langName){?>
-			<li class="<?php echo $inactive ; ?>"><a href="javascript:void(0)" <?php if($promotionId>0){ ?> onClick="promotionLangForm(<?php echo $promotionId;?>,<?php echo $langId;?>)" <?php }?>>
-		<?php echo $langName;?></a></li>
-		<?php } ?>
-		<?php if($promotionType == Promotion::TYPE_BANNER || $promotionType == Promotion::TYPE_SLIDES){?>
-		<li class="is-active"><a href="javascript:void(0)" <?php if($promotionId>0){ ?> onClick="promotionMediaForm(<?php echo $promotionId;?>)" <?php }?>><?php echo Labels::getLabel('LBL_Media',$siteLangId); ?></a></li>
-		<?php }?>
-	</ul>
+    <ul>
+        <li><a href="javascript:void(0);" onClick="promotionForm(<?php echo $promotionId;?>)"><?php echo Labels::getLabel('LBL_General', $siteLangId);?></a></li>
+        <?php $inactive = ($promotionId==0)?'fat-inactive':'';
+        foreach ($languages as $langId => $langName) {?>
+            <li class="<?php echo $inactive ; ?>"><a href="javascript:void(0)"
+            <?php if ($promotionId>0) { ?>
+                onClick="promotionLangForm(<?php echo $promotionId;?>,<?php echo $langId;?>)"
+            <?php }?>><?php echo $langName;?></a></li>
+        <?php } ?>
+        <?php if ($promotionType == Promotion::TYPE_BANNER || $promotionType == Promotion::TYPE_SLIDES) {?>
+        <li class="is-active"><a href="javascript:void(0)"
+            <?php if ($promotionId>0) { ?>
+                onClick="promotionMediaForm(<?php echo $promotionId;?>)"
+            <?php }?>><?php echo Labels::getLabel('LBL_Media', $siteLangId); ?></a></li>
+        <?php }?>
+    </ul>
 </div>
 <div class="tabs__content">
     <div class="row">

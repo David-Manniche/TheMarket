@@ -68,8 +68,8 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
                             <?php if ($mode == 'Edit') { ?>
                                 <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="popupImage()"><?php echo Labels::getLabel('LBL_Change', $siteLangId);?></a>
                             <?php } else { ?>
-                                <label class="btn btn-primary btn--sm" for="inputImage" title="Upload image file">
-                                  <input type="file" class="sr-only" id="inputImage" name="file" accept="image/*" onClick="popupImage()">
+                                <label class="btn btn-primary btn--sm" title="Upload image file">
+                                  <input type="file" class="sr-only" id="profileInputImage" name="file" accept="image/*" onChange="popupImage(this)">
                                   <?php echo Labels::getLabel('LBL_Upload', $siteLangId); ?>
                                 </label>
                             <?php } ?>

@@ -2639,11 +2639,8 @@ class AccountController extends LoggedUserController
 
     private function getProfileImageForm()
     {
-        /* $frm = new Form('frmProfileImage');
-        $fld1 =  $frm->addButton('','user_profile_image',Labels::getLabel('LBL_Change',$this->siteLangId),array('class'=>'userFile-Js','id'=>'user_profile_image'));
-        return $frm; */
         $frm = new Form('frmProfile', array('id'=>'frmProfile'));
-        $frm->addFileUpload(Labels::getLabel('LBL_Profile_Picture', $this->siteLangId), 'user_profile_image', array('id'=>'user_profile_image','onClick'=>'popupImage()','accept'=>'image/*'));
+        $frm->addFileUpload(Labels::getLabel('LBL_Profile_Picture', $this->siteLangId), 'user_profile_image', array('id'=>'user_profile_image', 'onClick'=>'popupImage(this)', 'accept'=>'image/*', 'data-frm'=>'frmProfile'));
         return $frm;
     }
 
