@@ -12,7 +12,6 @@ Enhancements:
     => 68474 - Library and code updated to handle 3-D secure payments through Omise Payment Gateway.
     => Updated new labels for IOS APP.
     => Enhancement of existing multilingual functionality. Added MSN language translator API to language fields. 
-    => 69147 - Enhanced social login with plugin.
 
 New Features:
     => Introduced Plugins for third party api's implementation.
@@ -21,3 +20,5 @@ New Features:
     => 68804 - Apple Sign In   
     => 68656 - Test email template button added to test the design.
     => Automating the order completion process based on order date.
+    => 69147 - Enhanced social login with plugin.
+    => 68898 - Custom push notification management.

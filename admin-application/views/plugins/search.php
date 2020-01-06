@@ -1,14 +1,16 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = array(
-        'dragdrop' => '',
-        'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
-        'listserial' => Labels::getLabel('LBL_Sr._No', $adminLangId),
-        'plugin_identifier' => Labels::getLabel('LBL_PLUGIN', $adminLangId),
-        'plugin_type' => Labels::getLabel('LBL_Type', $adminLangId),
-        'plugin_active' => Labels::getLabel('LBL_Status', $adminLangId),
-        'action' => Labels::getLabel('LBL_Action', $adminLangId),
-    );
-if (!$canEdit || true === $hideDragHandle) {
+$arr_flds = [
+    'dragdrop' => '',
+    'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
+    'listserial' => Labels::getLabel('LBL_Sr._No', $adminLangId),
+    'plugin_identifier' => Labels::getLabel('LBL_PLUGIN', $adminLangId),
+    // 'plugin_type' => Labels::getLabel('LBL_Type', $adminLangId),
+    'plugin_active' => Labels::getLabel('LBL_Status', $adminLangId),
+    'action' => Labels::getLabel('LBL_Action', $adminLangId),
+];
+$allPlugins = $arr_listing;
+$pluginType = (array_shift($allPlugins))['plugin_type'];
+if (!$canEdit || 2 > count($arr_listing) || in_array($pluginType, Plugin::HAVING_KINGPIN)) {
     unset($arr_flds['dragdrop']);
 }
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--hovered table-responsive','id' => 'plugin'));
@@ -41,17 +43,22 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
             case 'plugin_identifier':
+                $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . $row['plugin_type'], FatUtility::VAR_INT, 0);
+                $htm = '';
+                if (!empty($defaultCurrConvAPI) && $row['plugin_id'] == $defaultCurrConvAPI) {
+                    $htm = ' <span class="badge badge-info">'  . Labels::getLabel('LBL_DEFAULT', $adminLangId) . '</span>';
+                }
                 if ($row['plugin_name'] != '') {
-                    $td->appendElement('plaintext', array(), $row['plugin_name'], true);
+                    $td->appendElement('plaintext', array(), $row['plugin_name'] . $htm, true);
                     $td->appendElement('br', array());
                     $td->appendElement('plaintext', array(), '(' . $row[$key] . ')', true);
                 } else {
-                    $td->appendElement('plaintext', array(), $row[$key], true);
+                    $td->appendElement('plaintext', array(), $row[$key] . $htm, true);
                 }
                 break;
-            case 'plugin_type':
+            /* case 'plugin_type':
                 $td->appendElement('plaintext', array(), $pluginTypes[$row[$key]], true);
-                break;
+                break; */
             case 'plugin_active':
                 $active = "active";
                 if (!$row['plugin_active']) {
@@ -73,7 +80,7 @@ foreach ($arr_listing as $sn => $row) {
                     $innerUl = $innerDiv->appendElement('ul', array('class' => 'linksvertical'));
 
                     $innerLi = $innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href' => 'javascript:void(0)','class' => 'button small green','title' => Labels::getLabel('LBL_Edit', $adminLangId),"onclick" => "editPluginForm(" . $row['plugin_id'] . ")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
+                    $innerLi->appendElement('a', array('href' => 'javascript:void(0)','class' => 'button small green','title' => Labels::getLabel('LBL_Edit', $adminLangId),"onclick" => "editPluginForm(" . $type . ", " . $row['plugin_id'] . ")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
                     
                     $innerLi = $innerUl->appendElement('li');
                     $innerLi->appendElement('a', array('href' => 'javascript:void(0)','class' => 'button small green','title' => Labels::getLabel('LBL_Settings', $adminLangId),"onclick" => "editSettingForm('" . $row['plugin_code'] . "')"), Labels::getLabel('LBL_Settings', $adminLangId), true);
@@ -93,12 +100,40 @@ $frm = new Form('frmPluginListing', array('id' => 'frmPluginListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('plugins', 'toggleBulkStatuses'));
-$frm->addHiddenField('', 'status');
+$frm->addHiddenField('', 'status');?>
+<section class="section">
+    <div class="sectionhead">
+        <h4><?php echo CommonHelper::replaceStringData(Labels::getLabel('LBL_{PLUGINNAME}_PLUGINS', $adminLangId), ['{PLUGINNAME}' =>  $pluginTypes[$type]]); ?> </h4>
+        <?php
+        if ($canEdit) {
+            $ul = new HtmlElement("ul", array("class" => "actions actions--centered"));
+            $li = $ul->appendElement("li", array('class' => 'droplink'));
 
-echo $frm->getFormTag();
-echo $frm->getFieldHtml('status');
-echo $tbl->getHtml(); ?>
-</form>
+            $li->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
+            $innerDiv = $li->appendElement('div', array('class' => 'dropwrap'));
+            $innerUl = $innerDiv->appendElement('ul', array('class' => 'linksvertical'));
+            
+            $innerLi = $innerUl->appendElement('li');
+            $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Activate', $adminLangId), "onclick" => "toggleBulkStatues(1)"), Labels::getLabel('LBL_Activate', $adminLangId), true);
+
+            $innerLi = $innerUl->appendElement('li');
+            $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Deactivate', $adminLangId), "onclick" => "toggleBulkStatues(0)"), Labels::getLabel('LBL_Deactivate', $adminLangId), true);
+
+            echo $ul->getHtml();
+        }
+        ?>
+    </div>
+    <div class="sectionbody">
+        <div class="tablewrap">
+            <?php
+            echo $frm->getFormTag();
+            echo $frm->getFieldHtml('status');
+            echo $tbl->getHtml(); ?>
+            </form>
+        </div>
+    </div>
+</section>
+
 <script>
     $(document).ready(function() {
         $('#plugin').tableDnD({

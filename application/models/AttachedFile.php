@@ -65,6 +65,7 @@ class AttachedFile extends MyAppModel
     public const FILETYPE_BULK_IMAGES_PATH = 'bulk-images/';
     public const FILETYPE_APP_MAIN_SCREEN_IMAGE = 55;
     public const FILETYPE_APP_LOGO = 56;
+    public const FILETYPE_PUSH_NOTIFICATION_IMAGE = 57;
 
     public const APP_IMAGE_WIDTH = 640;
     public const APP_IMAGE_HEIGHT = 480;
@@ -821,6 +822,7 @@ class AttachedFile extends MyAppModel
             AttachedFile::FILETYPE_INVOICE_LOGO,
             AttachedFile::FILETYPE_APP_MAIN_SCREEN_IMAGE,
             AttachedFile::FILETYPE_APP_LOGO,
+            AttachedFile::FILETYPE_PUSH_NOTIFICATION_IMAGE,
         ];
         if (!in_array($fileType, $allowedFileTypes) && (!$fileType || !$recordId)) {
             $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->commonLangId);

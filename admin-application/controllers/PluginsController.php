@@ -11,30 +11,17 @@ class PluginsController extends AdminBaseController
     public function index()
     {
         $this->canEdit = $this->objPrivilege->canEditPlugins($this->admin_id, true);
-        $srchFrm = $this->getSearchForm();
-        $this->set("srchFrm", $srchFrm);
         $this->set("canEdit", $this->canEdit);
+        $this->set("plugins", Plugin::getTypeArr($this->adminLangId));
+        $this->set('activeTab', Plugin::TYPE_CURRENCY_API);
         $this->_template->render();
     }
 
-    public function search()
+    public function search($type)
     {
-        $srchFrm = $this->getSearchForm();
-        $post = $srchFrm->getFormDataFromArray(FatApp::getPostedData());
-
+        $post = FatApp::getPostedData();
         $srch = Plugin::getSearchObject($this->adminLangId, false);
-        
-        $hideDragHandle = false;
-        if (!empty($post['plugin_type']) && 0 < $post['plugin_type']) {
-            $hideDragHandle = true;
-            $srch->addCondition('plugin_type', '=', $post['plugin_type']);
-        }
-
-        if (!empty($post['keyword'])) {
-            $hideDragHandle = true;
-            $srch->addCondition('plugin_identifier', 'LIKE', '%' . $post['keyword'] . '%');
-        }
-
+        $srch->addCondition('plugin_type', '=', $type);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
@@ -43,49 +30,35 @@ class PluginsController extends AdminBaseController
         $pluginTypes = Plugin::getTypeArr($this->adminLangId);
         
         $this->set("canEdit", $this->canEdit);
+        $this->set("type", $type);
         $this->set("pluginTypes", $pluginTypes);
         $this->set("arr_listing", $records);
-        $this->set("hideDragHandle", $hideDragHandle);
         $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->adminLangId));
         $this->_template->render(false, false);
     }
 
-    private function getSearchForm()
-    {
-        $frm = new Form('frmPluginSearch', ['id' => 'frmPluginSearch']);
-        $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
-        
-        $pluginTypes = Plugin::getTypeArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Type', $this->adminLangId), 'plugin_type', [-1 => Labels::getLabel('LBL_Does_not_Matter', $this->adminLangId)] + $pluginTypes, '', array(), '');
-
-        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
-        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick'=>'clearSearch();'));
-        $fld_submit->attachField($fld_cancel);
-        return $frm;
-    }
-
-    public function form($pluginId)
+    public function form($pluginType, $pluginId)
     {
         $pluginId =  FatUtility::int($pluginId);
-        $pluginType = Plugin::getAttributesById($pluginId, 'plugin_type');
-        $frm = $this->getForm($pluginId, $pluginType);
+        $frm = $this->getForm($pluginType, $pluginId);
+        $identifier = '';
         if (0 < $pluginId) {
-            $data = Plugin::getAttributesById($pluginId, ['plugin_id','plugin_identifier','plugin_active']);
+            $data = Plugin::getAttributesById($pluginId, ['plugin_id', 'plugin_identifier', 'plugin_active']);
             if ($data === false) {
                 FatUtility::dieJsonError($this->str_invalid_request);
             }
 
-            if (Plugin::TYPE_CURRENCY_API == $pluginType) {
-                $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_CURRENCY_CONVERTER_API', FatUtility::VAR_INT, 0);
+            if (in_array($pluginType, Plugin::HAVING_KINGPIN)) {
+                $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . $pluginType, FatUtility::VAR_INT, 0);
                 if (!empty($defaultCurrConvAPI)) {
-                    $data['CONF_DEFAULT_CURRENCY_CONVERTER_API'] = $defaultCurrConvAPI;
+                    $data['CONF_DEFAULT_PLUGIN_' . $pluginType] = $defaultCurrConvAPI;
                 }
             }
-
+            $identifier = $data['plugin_identifier'];
             $frm->fill($data);
         }
 
-
+        $this->set('identifier', $identifier);
         $this->set('languages', Language::getAllNames());
         $this->set('pluginId', $pluginId);
         $this->set('frm', $frm);
@@ -97,14 +70,14 @@ class PluginsController extends AdminBaseController
         $this->objPrivilege->canEditPlugins();
         $post = FatApp::getPostedData();
         $pluginId = $post['plugin_id'];
-        $pluginType = Plugin::getAttributesById($pluginId, 'plugin_type');
-        $frm = $this->getForm($pluginId, $pluginType);
+        $pluginType = $post['plugin_type'];
+        $frm = $this->getForm($pluginType, $pluginId);
         $post = $frm->getFormDataFromArray($post);
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        unset($post['plugin_id']);
+        unset($post['plugin_id'], $post['plugin_type']);
         
         if (1 > $pluginId) {
             FatUtility::dieWithError($this->str_invalid_request);
@@ -124,10 +97,10 @@ class PluginsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         
-        if (isset($post['CONF_DEFAULT_CURRENCY_CONVERTER_API'])) {
-            $confVal = $post['CONF_DEFAULT_CURRENCY_CONVERTER_API'];
+        if (isset($post['CONF_DEFAULT_PLUGIN_' . $pluginType])) {
+            $confVal = $post['CONF_DEFAULT_PLUGIN_' . $pluginType];
             $confRecord = new Configurations();
-            if (!$confRecord->update(['CONF_DEFAULT_CURRENCY_CONVERTER_API' => $confVal])) {
+            if (!$confRecord->update(['CONF_DEFAULT_PLUGIN_' . $pluginType => $confVal])) {
                 Message::addErrorMessage($confRecord->getError());
                 FatUtility::dieJsonError(Message::getHtml());
             }
@@ -260,17 +233,8 @@ class PluginsController extends AdminBaseController
         }
 
         $fileHandlerObj = new AttachedFile();
-
-        if (!$res = $fileHandlerObj->saveAttachment(
-            $_FILES['file']['tmp_name'],
-            AttachedFile::FILETYPE_PLUGIN_LOGO,
-            $plugin_id,
-            0,
-            $_FILES['file']['name'],
-            -1,
-            $unique_record = true
-        )
-        ) {
+        $res = $fileHandlerObj->saveAttachment($_FILES['file']['tmp_name'], AttachedFile::FILETYPE_PLUGIN_LOGO, $plugin_id, 0, $_FILES['file']['name'], -1, $unique_record = true);
+        if (!$res) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -323,19 +287,20 @@ class PluginsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    private function getForm($pluginId = 0, $pluginType = 0)
+    private function getForm($pluginType, $pluginId = 0)
     {
         $pluginId =  FatUtility::int($pluginId);
 
         $frm = new Form('frmPlugin');
         $frm->addHiddenField('', 'plugin_id', $pluginId);
+        $frm->addHiddenField('', 'plugin_type', $pluginType);
         $frm->addRequiredField(Labels::getLabel('LBL_Plugin_Identifier', $this->adminLangId), 'plugin_identifier');
 
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'plugin_active', $activeInactiveArr, '', array(), '');
         
-        if (Plugin::TYPE_CURRENCY_API == $pluginType) {
-            $frm->addCheckBox(Labels::getLabel('LBL_MARK_AS_DEFAULT', $this->adminLangId), 'CONF_DEFAULT_CURRENCY_CONVERTER_API', $pluginId, array(), false, 0);
+        if (in_array($pluginType, Plugin::HAVING_KINGPIN)) {
+            $frm->addCheckBox(Labels::getLabel('LBL_MARK_AS_DEFAULT', $this->adminLangId), 'CONF_DEFAULT_PLUGIN_' . $pluginType, $pluginId, array(), false, 0);
         }
 
         /*$fld = $frm->addButton(

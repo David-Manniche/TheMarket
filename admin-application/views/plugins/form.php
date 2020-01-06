@@ -6,7 +6,7 @@ $frm->developerTags['fld_default_col'] = 12;
 ?>
 <section class="section">
     <div class="sectionhead">
-        <h4><?php echo Labels::getLabel('LBL_PLUGIN_SETUP', $adminLangId); ?></h4>
+        <h4><?php echo $identifier ?> <?php echo Labels::getLabel('LBL_PLUGIN_SETUP', $adminLangId); ?></h4>
     </div>
     <div class="sectionbody space">
         <div class="tabs_nav_container responsive flat">

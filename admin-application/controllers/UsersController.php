@@ -1595,14 +1595,18 @@ class UsersController extends AdminBaseController
             $cond->attachCondition('u.user_name', 'like', '%'. $keyword .'%');
         }
 
-        if (isset($post['user_is_buyer'])) {
+        if (!empty($post['user_is_buyer'])) {
             $user_is_buyer = FatUtility::int($post['user_is_buyer']);
-            $srch->addCondition('u.user_is_buyer', '=', $user_is_buyer);
+            $cnd = $srch->addCondition('u.user_is_buyer', '=', $user_is_buyer);
         }
 
-        if (isset($post['user_is_supplier'])) {
+        if (!empty($post['user_is_supplier'])) {
             $user_is_supplier = FatUtility::int($post['user_is_supplier']);
-            $srch->addCondition('u.user_is_supplier', '=', $user_is_supplier);
+            if (!empty($post['user_is_buyer'])) {
+                $cnd->attachCondition('u.' . User::DB_TBL_PREFIX . 'is_supplier', '=', $user_is_supplier);
+            } else {
+                $srch->addCondition('u.' . User::DB_TBL_PREFIX . 'is_supplier', '=', $user_is_supplier);
+            }
         }
 
         if (isset($post['user_is_affiliate'])) {
