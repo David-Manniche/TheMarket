@@ -4,6 +4,13 @@ $frm->setFormTagAttribute('onsubmit', 'setup(this); return(false);');
 
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
+
+if (0 != $status) {
+    $formFields = $frm->getAllFields();
+    foreach ($formFields as $formField) {
+        $formField->setFieldTagAttribute('disabled', 'disabled');
+    }
+}
 ?>
 <section class="section">
     <div class="sectionhead">
