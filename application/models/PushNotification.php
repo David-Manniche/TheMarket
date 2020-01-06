@@ -190,6 +190,7 @@ class PushNotification extends MyAppModel
                 $data = [
                     'image' => $imageUrl,
                     'customData' => [
+                        'isCustomPushNotification' => 1,
                         'lang_id' => $notificationDetail['pnotification_lang_id'],
                         'urlDetail' => !empty($notificationDetail['pnotification_url']) ? CommonHelper::getUrlTypeData($notificationDetail['pnotification_url']) : (object)array(),
                     ]
