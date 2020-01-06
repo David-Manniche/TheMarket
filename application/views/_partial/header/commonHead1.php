@@ -54,7 +54,7 @@ $additionalAttributes = (CommonHelper::getLayoutDirection() == 'rtl') ? 'directi
     <link rel="apple-touch-icon" sizes="180x180"
         href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '180-180')); ?>">        
     <link rel="icon" type="image/png" sizes="192x192" href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '192-192')); ?>">
-    <link rel="icon" type="image/png" sizes="32x32" href=<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '32-32')); ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '32-32')); ?>">
     <link rel="icon" type="image/png" sizes="96x96" href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '96-96')); ?>">
     <link rel="icon" type="image/png" sizes="16x16" href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '16-16')); ?>">
     <link rel="manifest" href="<?php echo CommonHelper::generateUrl('Home', 'pwaManifest'); ?>">

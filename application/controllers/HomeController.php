@@ -891,25 +891,42 @@ class HomeController extends MyAppController
 
     public function pwaManifest()
     {
-        $manifestFile = CONF_UPLOADS_PATH.'/manifest-'.$this->siteLangId.'.json';
+        $manifestFile = CONF_UPLOADS_PATH . '/manifest-' . $this->siteLangId . '.json';
         if (!file_exists($manifestFile)) {
             $iconsArr = [36,48,57,60,70,72,76,96,114,120,144,192,152,180,150,310,512 ];
-            //$iconsArr = [36,48,72,96,144,192,57,60,72,76,114,120,144,152,180,70,144,150,310,512 ];
-            $websiteName = FatApp::getConfig('CONF_WEBSITE_NAME_'.$this->siteLangId, FatUtility::VAR_STRING, '');
+            $websiteName = FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->siteLangId, FatUtility::VAR_STRING, '');
+
+            $srch = new MetaTagSearch($this->siteLangId);
+            $cond = $srch->addCondition('meta_controller', '=', 'Home');
+            $cond->attachCondition('meta_controller', '=', '', 'OR');
+            
+            $cond1 = $srch->addCondition('meta_action', '=', 'index');
+            $cond1->attachCondition('meta_action', '=', '', 'OR');
+            
+            $srch->addOrder('meta_default', 'asc');
+            $srch->doNotCalculateRecords();
+            $srch->setPageSize(1);
+            $srch->addMultipleFields(array(
+                'IFNULL(meta_title, meta_identifier) as meta_title',
+                'meta_keywords', 'meta_description', 'meta_other_meta_tags' ));
+            
+            $rs = $srch->getResultSet();
+            $metas = FatApp::getDb()->fetch($rs) ;
             $arr = array(
-                "name"=> $websiteName,
-                "short_name"=> $websiteName,
-                "description"=> $websiteName,
-                "lang"=> $this->siteLangCode,
-                "start_url"=> CONF_WEBROOT_URL,
-                "display"=> "standalone",
-                "background_color"=> '#'.$this->themeDetail['tcolor_first_color'],
-                "theme_color"=> '#'.$this->themeDetail['tcolor_first_color'],
+                "name" => $websiteName,
+                "short_name" => $websiteName,
+                "description" => isset($metas['meta_description']) ? $metas['meta_description'] : $websiteName,
+                "lang" => $this->siteLangCode,
+                "start_url" => CONF_WEBROOT_URL,
+                "display" => "standalone",
+                "background_color" => '#' . $this->themeDetail['tcolor_first_color'],
+                "theme_color" => '#' . $this->themeDetail['tcolor_first_color'],
             );
             foreach ($iconsArr as $key => $val) {
+                $iconUrl = CommonHelper::generateUrl('Image', 'appleTouchIcon', array($this->siteLangId, $val . '-' . $val));
                 $icons = [
-                    'src' => CommonHelper::generateUrl('Image', 'appleTouchIcon', array($this->siteLangId, $val.'-'.$val)),
-                    'sizes' => $val.'*'.$val,
+                    'src' => $iconUrl,
+                    'sizes' => $val . 'x' . $val,
                     'type' =>   'image/png'
                 ]       ;
                 $arr['icons'][] = $icons;
