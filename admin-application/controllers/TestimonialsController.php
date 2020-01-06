@@ -333,8 +333,6 @@ class TestimonialsController extends AdminBaseController
         $frm = new Form('frmTestimonialMedia');
         $frm->addHiddenField('', 'testimonial_id', $testimonialId);
         $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_TESTIMONIAL_IMAGE);
-        $frm->addHiddenField('', 'min_width');
-        $frm->addHiddenField('', 'min_height');
         $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'testimonial_image', array('accept'=>'image/*', 'data-frm'=>'frmTestimonialMedia'));
         $frm->addHtml('', 'testimonial_image_display_div', '');
 

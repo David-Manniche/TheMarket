@@ -899,8 +899,6 @@ class DiscountCouponsController extends AdminBaseController
         $frm->addHiddenField('', 'coupon_id', $coupon_id);
         $bannerTypeArr = applicationConstants::bannerTypeArr();
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', $bannerTypeArr, '', array(), '');
-        $frm->addHiddenField('', 'min_width');
-        $frm->addHiddenField('', 'min_height');
         $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'coupon_image', array('accept'=>'image/*', 'data-frm'=>'frmCouponMedia'));
         return $frm;
     }

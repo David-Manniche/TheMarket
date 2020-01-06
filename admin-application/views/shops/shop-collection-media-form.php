@@ -1,23 +1,22 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-    $frm->setFormTagAttribute('onsubmit', 'uploadCollectionImage(this); return(false);');
-    $frm->developerTags['colClassPrefix'] = 'col-md-';
-    $frm->developerTags['fld_default_col'] = 6;
-    $fld = $frm->getField('collection_image');
-    $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
-    $fld->addFieldTagAttribute('id', 'collectionInputImage');
-    $fld->addFieldTagAttribute('onClick', 'collectionPopupImage(this)');
-    if (isset($scollection_id) && $scollection_id > 0) {
-        $scollection_id = $scollection_id;
-    } else {
-        $scollection_id = 0;
-    } ?>
+$frm->setFormTagAttribute('onsubmit', 'uploadCollectionImage(this); return(false);');
+$frm->developerTags['colClassPrefix'] = 'col-md-';
+$frm->developerTags['fld_default_col'] = 6;
+$fld = $frm->getField('collection_image');
+$fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+$fld->addFieldTagAttribute('onChange', 'collectionPopupImage(this)');
+if (isset($scollection_id) && $scollection_id > 0) {
+    $scollection_id = $scollection_id;
+} else {
+    $scollection_id = 0;
+} ?>
 <div id="cropperBox-js"></div>
 <div id="mediaForm-js">
     <ul class="tabs_nav tabs_nav--internal">
         <li><a onclick="getShopCollectionGeneralForm(<?php echo $shop_id; ?>, <?php echo $scollection_id; ?>);" href="javascript:void(0)"><?php echo Labels::getLabel('TXT_GENERAL_media', $adminLangId);?></a></li>
         <?php foreach ($language as $lang_id => $langName) { ?>
         <li><a href="javascript:void(0)" onClick="editShopCollectionLangForm(<?php echo $shop_id;?>, <?php echo $scollection_id ?>, <?php echo $lang_id;?>)">
-            <?php echo Labels::getLabel('LBL_'.$langName, $adminLangId);?></a></li>
+                <?php echo Labels::getLabel('LBL_'.$langName, $adminLangId);?></a></li>
         <?php } ?>
 
         <li><a onclick="sellerCollectionProducts(<?php echo $scollection_id; ?>,<?php echo $shop_id; ?>);" href="javascript:void(0);"><?php echo Labels::getLabel('TXT_LINK', $adminLangId);?></a></li>
@@ -30,7 +29,7 @@
             <div class="preview" id="shopFormBlock">
                 <small class="text--small"><?php echo sprintf(Labels::getLabel('MSG_Upload_shop_collection_image_text', $adminLangId), '610*343')?></small>
                 <?php echo $frm->getFormHtml();?>
-                   <div id="imageListing" class="row" ></div>
+                <div id="imageListing" class="row"></div>
             </div>
         </div>
     </div>

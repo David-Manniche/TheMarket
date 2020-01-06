@@ -4,8 +4,7 @@ $couponMediaFrm->developerTags['colClassPrefix'] = 'col-md-';
 $couponMediaFrm->developerTags['fld_default_col'] = 12;
 $fld = $couponMediaFrm->getField('coupon_image');
 $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
-$fld->addFieldTagAttribute('id', 'inputImage');
-$fld->addFieldTagAttribute('onClick', 'popupImage(this)');
+$fld->addFieldTagAttribute('onChange', 'popupImage(this)');
 $langFld = $couponMediaFrm->getField('lang_id');
 $langFld->addFieldTagAttribute('class', 'language-js');
 
@@ -49,7 +48,3 @@ $fld->htmlAfterField = $htmlAfterField;
         </div>
     </div>
 </section>
-<script>
-$('input[name=min_width]').val(60);
-$('input[name=min_height]').val(60);
-</script>

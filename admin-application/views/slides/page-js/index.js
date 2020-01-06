@@ -171,25 +171,30 @@ $(document).on('change','.prefDimensions-js',function(){
     };
 
 	popupImage = function(inputBtn){
-        fcom.ajax(fcom.makeUrl('Shops', 'imgCropper'), '', function(t) {
-			$('#cropperBox-js').html(t);
-			$("#mediaForm-js").css("display", "none");
-    		var container = document.querySelector('.img-container');
-    		var image = container.getElementsByTagName('img').item(0);
-            var minWidth = document.frmSlideMedia.banner_min_width.value;
-            var minHeight = document.frmSlideMedia.banner_min_height.value;
-    		var options = {
-                aspectRatio: aspectRatio,
-                data: {
-                    width: minWidth,
-                    height: minHeight,
-                },
-                minCropBoxWidth: minWidth,
-                minCropBoxHeight: minHeight,
-                toggleDragModeOnDblclick: false,
-	        };
-    	  return cropImage(image, options, 'uploadImages', inputBtn);
-    	});
+		if (inputBtn.files && inputBtn.files[0]) {
+	        fcom.ajax(fcom.makeUrl('Shops', 'imgCropper'), '', function(t) {
+				$('#cropperBox-js').html(t);
+				$("#mediaForm-js").css("display", "none");
+				var container = document.querySelector('.img-container');
+                var file = inputBtn.files[0];
+                $('#new-img').attr('src', URL.createObjectURL(file));
+	    		var image = container.getElementsByTagName('img').item(0);
+	            var minWidth = document.frmSlideMedia.banner_min_width.value;
+	            var minHeight = document.frmSlideMedia.banner_min_height.value;
+	    		var options = {
+	                aspectRatio: aspectRatio,
+	                data: {
+	                    width: minWidth,
+	                    height: minHeight,
+	                },
+	                minCropBoxWidth: minWidth,
+	                minCropBoxHeight: minHeight,
+	                toggleDragModeOnDblclick: false,
+		        };
+				$(inputBtn).val('');
+				return cropImage(image, options, 'uploadImages', inputBtn);
+	    	});
+		}
 	};
 
 	uploadImages = function(formData){

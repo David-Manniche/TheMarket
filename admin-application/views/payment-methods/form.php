@@ -1,9 +1,10 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->setFormTagAttribute('class', 'web_form form_horizontal');
 $frm->setFormTagAttribute('onsubmit', 'setupGateway(this); return(false);');
+$ratioFld = $frm->getField('ratio_type');
+$ratioFld->addFieldTagAttribute('class', 'prefRatio-js');
 $fld = $frm->getField('pmethod_icon');
-$fld->addFieldTagAttribute('id', 'inputImage');
-$fld->addFieldTagAttribute('onClick', 'popupImage(this)');
+$fld->addFieldTagAttribute('onChange', 'popupImage(this)');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
 ?>
@@ -34,7 +35,17 @@ $frm->developerTags['fld_default_col'] = 12;
     </div>
 </section>
 <script type="text/javascript">
-$('input[name=min_width]').val(40);
-$('input[name=min_height]').val(40);
-var aspectRatio = 1 / 1;
+$('input[name=min_width]').val(150);
+$('input[name=min_height]').val(150);
+var ratioTypeSquare = <?php echo AttachedFile::RATIO_TYPE_SQUARE; ?>;
+$(document).on('change','.prefRatio-js',function(){
+    if($(this).val() == ratioTypeSquare)
+    {
+        $('input[name=min_width]').val(150);
+        $('input[name=min_height]').val(150);
+    } else {
+        $('input[name=min_width]').val(150);
+        $('input[name=min_height]').val(85);
+    }
+});
 </script>

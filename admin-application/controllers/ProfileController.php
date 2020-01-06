@@ -128,7 +128,7 @@ class ProfileController extends AdminBaseController
     private function getImageForm()
     {
         $frm = new Form('frmProfile', array('id'=>'frmProfile'));
-        $frm->addFileUpload(Labels::getLabel('LBL_Profile_Picture', $this->adminLangId), 'user_profile_image', array('id'=>'inputImage','onClick'=>'popupImage(this)','accept'=>'image/*'));
+        $frm->addFileUpload(Labels::getLabel('LBL_Profile_Picture', $this->adminLangId), 'user_profile_image', array('onChange'=>'popupImage(this)','accept'=>'image/*'));
         $frm->addHiddenField('', 'update_profile_img', Labels::getLabel('LBL_Update_Profile_Picture', $this->adminLangId), array('id'=>'update_profile_img'));
         $frm->addHiddenField('', 'rotate_left', Labels::getLabel('LBL_Rotate_Left', $this->adminLangId), array('id'=>'rotate_left'));
         $frm->addHiddenField('', 'rotate_right', Labels::getLabel('LBL_Rotate_Right', $this->adminLangId), array('id'=>'rotate_right'));

@@ -5,8 +5,7 @@ $slideMediaFrm->developerTags['fld_default_col'] = 12;
 
 $fld1 = $slideMediaFrm->getField('slide_image');
 $fld1->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
-$fld1->addFieldTagAttribute('id', 'inputImage');
-$fld1->addFieldTagAttribute('onClick', 'popupImage(this)');
+$fld1->addFieldTagAttribute('onChange', 'popupImage(this)');
 $screenFld = $slideMediaFrm->getField('slide_screen');
 $screenFld->addFieldTagAttribute('class', 'prefDimensions-js');
 $langFld = $slideMediaFrm->getField('lang_id');

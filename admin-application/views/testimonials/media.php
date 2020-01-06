@@ -5,8 +5,7 @@ $testimonialMediaFrm->developerTags['colClassPrefix'] = 'col-md-';
 $testimonialMediaFrm->developerTags['fld_default_col'] = 12;
 $fld2 = $testimonialMediaFrm->getField('testimonial_image');
 $fld2->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
-$fld2->addFieldTagAttribute('id', 'inputImage');
-$fld2->addFieldTagAttribute('onClick', 'popupImage(this)');
+$fld2->addFieldTagAttribute('onChange', 'popupImage(this)');
 $preferredDimensionsStr = '<small class="text--small">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions', $adminLangId), '80*80').'</small>';
 $htmlAfterField = $preferredDimensionsStr;
 if (!empty($testimonialImages)) {
@@ -51,7 +50,3 @@ $fld2->htmlAfterField = $htmlAfterField;
         </div>
     </div>
 </section>
-<script>
-$('input[name=min_width]').val(80);
-$('input[name=min_height]').val(80);
-</script>

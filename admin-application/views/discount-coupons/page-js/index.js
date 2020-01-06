@@ -337,25 +337,28 @@ $(document).on('change','.language-js',function(){
 	};
 
 	popupImage = function(inputBtn){
-        fcom.ajax(fcom.makeUrl('DiscountCoupons', 'imgCropper'), '', function(t) {
-			$('#cropperBox-js').html(t);
-			$("#mediaForm-js").css("display", "none");
-    		var container = document.querySelector('.img-container');
-    		var image = container.getElementsByTagName('img').item(0);
-            var minWidth = document.frmCouponMedia.min_width.value;
-            var minHeight = document.frmCouponMedia.min_height.value;
-    		var options = {
-                aspectRatio:  1 / 1,
-                data: {
-                    width: minWidth,
-                    height: minHeight,
-                },
-                minCropBoxWidth: minWidth,
-                minCropBoxHeight: minHeight,
-                toggleDragModeOnDblclick: false,
-	        };
-    	  return cropImage(image, options, 'uploadImage', inputBtn);
-    	});
+		if (inputBtn.files && inputBtn.files[0]) {
+	        fcom.ajax(fcom.makeUrl('DiscountCoupons', 'imgCropper'), '', function(t) {
+				$('#cropperBox-js').html(t);
+				$("#mediaForm-js").css("display", "none");
+				var container = document.querySelector('.img-container');
+                var file = inputBtn.files[0];
+                $('#new-img').attr('src', URL.createObjectURL(file));
+	    		var image = container.getElementsByTagName('img').item(0);
+	    		var options = {
+	                aspectRatio:  1 / 1,
+	                data: {
+	                    width: 60,
+	                    height: 60,
+	                },
+	                minCropBoxWidth: 60,
+	                minCropBoxHeight: 60,
+	                toggleDragModeOnDblclick: false,
+		        };
+				$(inputBtn).val('');
+				return cropImage(image, options, 'uploadImage', inputBtn);
+	    	});
+		}
 	};
 
 	uploadImage = function(formData){

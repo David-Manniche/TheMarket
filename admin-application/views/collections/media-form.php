@@ -23,8 +23,7 @@ if (0 < $displayMediaOnly) {
 
 $fld = $collectionMediaFrm->getField('collection_image');
 $fld->setFieldTagAttribute('data-collection_id', $collection_id);
-$fld->addFieldTagAttribute('id', 'inputImage');
-$fld->addFieldTagAttribute('onClick', 'popupImage(this)');
+$fld->addFieldTagAttribute('onChange', 'popupImage(this)');
 $preferredDimensionsStr = '<small class="text--small">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $adminLangId), '640*480').'</small>';
 $fld->htmlAfterField = $preferredDimensionsStr;
 
