@@ -131,7 +131,7 @@
 .navigations .more i.icn svg {
 	width: 28px;
 	height: auto;
-	fill: #fff;
+	fill: var(--first-color);
 }
 
 .navigations > li .link__mobilenav {

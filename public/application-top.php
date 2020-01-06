@@ -12,7 +12,11 @@ error_reporting((CONF_DEVELOPMENT_MODE)?E_ALL:E_ALL & ~E_NOTICE & ~E_WARNING);
 require_once CONF_INSTALLATION_PATH . 'library/autoloader.php';
 
 /* We must set it before initiating db connection. So that connection timezone is in sync with php */
-date_default_timezone_set('America/New_York');
+if (CommonHelper::demoUrl()) {
+    date_default_timezone_set('Asia/Kolkata');
+} else {
+    date_default_timezone_set('America/New_York');
+}
 
 $timeZone = FatApp::getConfig('CONF_TIMEZONE', FatUtility::VAR_STRING, date_default_timezone_get());
 date_default_timezone_set($timeZone);

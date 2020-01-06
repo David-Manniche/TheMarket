@@ -21,7 +21,11 @@
     var x = setInterval(function() {
 
         // Get today's date and time
-        var now = new Date().getTime();
+        //var now = new Date().getTime();
+        var currentTime = new Date();
+        var currentOffset = currentTime.getTimezoneOffset();
+        var ISTOffset = 330; // IST offset UTC +5:30
+        var now = new Date(currentTime.getTime() + (ISTOffset + currentOffset)*60000);
 
         // Find the distance between now and the count down date
         var distance = countDownDate - now;
