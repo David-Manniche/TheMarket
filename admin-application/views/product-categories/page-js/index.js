@@ -126,7 +126,7 @@ $(document).ready(function(){
         });
     }
     
-    updateDisplayOrder = function(input, level){        
+    /* updateDisplayOrder = function(input, level){        
         var prodCatId = $(input).parent().parent().attr('id'); 
         var prodCatparent = $(input).parent().parent().attr('class');
         var displayOrder = $(input).val();
@@ -140,8 +140,8 @@ $(document).ready(function(){
                 });
             }
         });            
-    }
-    
+    } */
+
 })();
 
 $(document).on('keypress', "[name='prodcat_display_order']", function(e){
@@ -149,5 +149,14 @@ $(document).on('keypress', "[name='prodcat_display_order']", function(e){
         return false;
     } 
 });
+
+$(document).on('click', 'input[type="checkbox"]', function(){
+    if($(this).prop("checked") == true){
+        $('.display-link-js').removeClass('d-none');
+    }else{
+        $('.display-link-js').addClass('d-none');
+    } 
+});
+
 
 

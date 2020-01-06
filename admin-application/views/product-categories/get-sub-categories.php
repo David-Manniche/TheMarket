@@ -2,7 +2,7 @@
 if(count($childCategories) > 0){
     $arr_flds = array(
             'select_all'=>Labels::getLabel('LBL_Select_all', $adminLangId),
-            'prodcat_display_order'=>Labels::getLabel('LBL_POS', $adminLangId),
+            //'prodcat_display_order'=>Labels::getLabel('LBL_POS', $adminLangId),
             'prodcat_identifier'=>Labels::getLabel('LBL_Category_Name', $adminLangId),
             'category_products' => Labels::getLabel('LBL_Products', $adminLangId),
             'prodcat_active' => Labels::getLabel('LBL_Publish', $adminLangId),
@@ -21,9 +21,9 @@ if(count($childCategories) > 0){
                 case 'select_all':
                     $td->appendElement('plaintext', array(), '<label><span class="checkbox"><input class="selectItem--js" type="checkbox" name="prodcat_ids[]" value='.$row['prodcat_id'].'><i class="input-helper"></i></span></label>', true);
                     break;
-                case 'prodcat_display_order':
+                /* case 'prodcat_display_order':
                     $td->appendElement('plaintext', array(), '<input class="form-control form-control-sm form-control-position" type="text" value="'.$row[$key].'" onblur="updateDisplayOrder(this,'.$level.')" name="prodcat_display_order">', true);    
-                    break;
+                    break; */
                 case 'prodcat_identifier':                    
                     $td->appendElement('plaintext', array(), '<a href="javascript:void(0);" class="prodcat-level-'.$level.'" onClick="displaySubCategories(this,'.($level+1).')">'.$row[$key].' <i class="ion-chevron-right"></i></a>', true);
                     break;

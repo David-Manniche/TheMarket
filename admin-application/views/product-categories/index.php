@@ -37,13 +37,13 @@
                                         $innerLiAddCat->appendElement('a', array('href'=>commonHelper::generateUrl('ProductCategories', 'form'), 'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Add_Category', $adminLangId)), Labels::getLabel('LBL_Add_Category', $adminLangId), true);
 
                                         $innerLi=$innerUl->appendElement('li');
-                                        $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Activate', $adminLangId),"onclick"=>"toggleBulkStatues(1)"), Labels::getLabel('LBL_Activate', $adminLangId), true);
+                                        $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green d-none display-link-js','title'=>Labels::getLabel('LBL_Activate', $adminLangId),"onclick"=>"toggleBulkStatues(1)"), Labels::getLabel('LBL_Activate', $adminLangId), true);
 
                                         $innerLi=$innerUl->appendElement('li');
-                                        $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Deactivate', $adminLangId),"onclick"=>"toggleBulkStatues(0)"), Labels::getLabel('LBL_Deactivate', $adminLangId), true);
+                                        $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green d-none display-link-js','title'=>Labels::getLabel('LBL_Deactivate', $adminLangId),"onclick"=>"toggleBulkStatues(0)"), Labels::getLabel('LBL_Deactivate', $adminLangId), true);
 
                                         $innerLi=$innerUl->appendElement('li');
-                                        $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteSelected()"), Labels::getLabel('LBL_Delete', $adminLangId), true);
+                                        $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green d-none display-link-js','title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteSelected()"), Labels::getLabel('LBL_Delete', $adminLangId), true);
                                     }
                                      echo $ul->getHtml();?>
                             </div>
