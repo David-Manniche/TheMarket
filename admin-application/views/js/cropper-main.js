@@ -125,8 +125,14 @@ cropImage = function(image, options, callback, inputBtn){
                 formData.append('cropped_image', blob, uploadedImageName);
                 formData.append("action", "avatar");
 				if(inputBtn){
-					var frmName = $(inputBtn).attr('data-frm')
-					formData.append("frmName", frmName);
+					var frmName = $(inputBtn).attr('data-frm');
+					if (typeof frmName !== typeof undefined && frmName !== false) {
+						formData.append("frmName", frmName);
+					}
+					var fileType = $(inputBtn).attr('data-file_type');
+					if (typeof fileType !== typeof undefined && fileType !== false) {
+						formData.append("file_type", fileType);
+					}
 				}
 				window[callback](formData);
 			});
