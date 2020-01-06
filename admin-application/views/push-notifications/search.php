@@ -5,7 +5,7 @@ $arr_flds = array(
     // 'pnotification_type' => Labels::getLabel('LBL_TYPE', $adminLangId),
     'notification_detail' => Labels::getLabel('LBL_DETAIL', $adminLangId),
     'pnotification_notified_on' => Labels::getLabel('LBL_SCHEDULED_FOR', $adminLangId),
-    'notify_to' => Labels::getLabel('LBL_NOTIFY_TO', $adminLangId),
+    // 'notify_to' => Labels::getLabel('LBL_NOTIFY_TO', $adminLangId),
     'pnotification_status' => Labels::getLabel('LBL_STATUS', $adminLangId),
     'action' => Labels::getLabel('LBL_Action', $adminLangId),
 );
@@ -43,7 +43,7 @@ foreach ($arr_listing as $sn => $row) {
                     FatApp::getConfig('CONF_TIMEZONE', FatUtility::VAR_STRING, date_default_timezone_get())
                 ));
                 break;
-            case 'notify_to':
+            /* case 'notify_to':
                 $buyerHtm = $sellerHtm = '';
                 if (0 < $row['pnotification_for_buyer']) {
                     $buyerHtm = '<span class="badge badge-success">' . Labels::getLabel('LBL_BUYERS', $adminLangId) . '</span>';
@@ -53,7 +53,7 @@ foreach ($arr_listing as $sn => $row) {
                     $sellerHtm = '<span class="badge badge-info">' . Labels::getLabel('LBL_SELLERS', $adminLangId) . '</span>';
                 }
                 $td->appendElement('plaintext', array(), $buyerHtm . ' ' . $sellerHtm, true);
-                break;
+                break; */
             case 'pnotification_status':
                 $td->appendElement('plaintext', array(), $statusArr[$row[$key]], true);
                 break;

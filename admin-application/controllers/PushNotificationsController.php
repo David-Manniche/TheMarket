@@ -55,7 +55,8 @@ class PushNotificationsController extends AdminBaseController
             $srch->addCondition('pnotification_status', '=', $status);
         }
 
-        $notifyTo = $post['notify_to'];
+        $srch->addCondition('pnotification_for_buyer', '=', applicationConstants::YES);
+        /* $notifyTo = $post['notify_to'];
         if (0 < $notifyTo) {
             switch ($notifyTo) {
                 case PushNotification::NOTIFY_TO_BUYER:
@@ -65,7 +66,7 @@ class PushNotificationsController extends AdminBaseController
                     $srch->addCondition('pnotification_for_seller', '=', applicationConstants::YES);
                     break;
             }
-        }
+        } */
         
         $srch->addOrder('pn.pnotification_added_on', 'DESC');
         $srch->setPageNumber($page);
@@ -94,8 +95,8 @@ class PushNotificationsController extends AdminBaseController
         $statusArr = [-1 => Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId)] + PushNotification::getStatusArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_STATUS', $this->adminLangId), 'pnotification_status', $statusArr, '', array(), '');
         
-        $notifyToArr = array_merge([Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId)], PushNotification::getUserTypeArr($this->adminLangId));
-        $frm->addSelectBox(Labels::getLabel('LBL_NOTIFY_TO', $this->adminLangId), 'notify_to', $notifyToArr, '', array(), '');
+        // $notifyToArr = array_merge([Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId)], PushNotification::getUserTypeArr($this->adminLangId));
+        // $frm->addSelectBox(Labels::getLabel('LBL_NOTIFY_TO', $this->adminLangId), 'notify_to', $notifyToArr, '', array(), '');
         
         $frm->addHiddenField('', 'page');
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
@@ -120,8 +121,8 @@ class PushNotificationsController extends AdminBaseController
         $dateFld = $frm->addDateTimeField(Labels::getLabel('LBL_SCHEDULE_DATE', $this->adminLangId), 'pnotification_notified_on', date('Y-m-d H:00'), ['readonly' => 'readonly','class' => 'small dateTimeFld field--calender date_js']);
         $dateFld->requirements()->setRequired(true);
                 
-        $frm->addCheckBox(Labels::getLabel('LBL_NOTIFY_TO_BUYERS', $this->adminLangId), 'pnotification_for_buyer', 1, [], false, 0);
-        $frm->addCheckBox(Labels::getLabel('LBL_NOTIFY_TO_SELLER', $this->adminLangId), 'pnotification_for_seller', 1, [], false, 0);
+        // $frm->addCheckBox(Labels::getLabel('LBL_NOTIFY_TO_BUYERS', $this->adminLangId), 'pnotification_for_buyer', 1, [], false, 0);
+        // $frm->addCheckBox(Labels::getLabel('LBL_NOTIFY_TO_SELLER', $this->adminLangId), 'pnotification_for_seller', 1, [], false, 0);
         
         if (0 == $status) {
             $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->adminLangId));
@@ -210,13 +211,14 @@ class PushNotificationsController extends AdminBaseController
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
 
-        if (empty($post['pnotification_for_buyer']) && empty($post['pnotification_for_seller'])) {
+        /* if (empty($post['pnotification_for_buyer']) && empty($post['pnotification_for_seller'])) {
             FatUtility::dieJsonError(Labels::getLabel("LBL_MUST_SELECT_EITHER_BUYER_OR_SELLER", $this->adminLangId));
-        }
+        } */
 
         unset($post['btn_submit']);
         
         $post['pnotification_type'] = PushNotification::TYPE_APP;
+        $post['pnotification_for_buyer'] = applicationConstants::YES;
 
         if (!empty($post['pnotification_id'])) {
             $this->validateRequest($post['pnotification_id']);
