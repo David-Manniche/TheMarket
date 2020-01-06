@@ -1225,4 +1225,3 @@ $(document).ajaxComplete(function() {
         });
     }
 });
- 

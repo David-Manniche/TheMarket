@@ -23,17 +23,41 @@ $additionalAttributes = (CommonHelper::getLayoutDirection() == 'rtl') ? 'directi
     <meta name="robots" content="noindex" />
     <?php }?>
     <!-- favicon ================================================== -->
-
-    <!--<link rel="shortcut icon" href="">-->
+    <meta name="theme-color" content="#<?php echo $themeDetail['tcolor_first_color']; ?>">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '144-144')); ?>">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">    
+    <meta name="msapplication-navbutton-color" content="#<?php echo $themeDetail['tcolor_first_color']; ?>">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="msapplication-starturl" content="/">     
     <link rel="shortcut icon"
         href="<?php echo CommonHelper::generateUrl('Image', 'favicon', array($siteLangId)); ?>">
     <link rel="apple-touch-icon"
         href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId)); ?>">
+    <link rel="apple-touch-icon" sizes="57x57"
+        href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '57-57')); ?>">
+    <link rel="apple-touch-icon" sizes="60x60"
+        href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '60-60')); ?>">
     <link rel="apple-touch-icon" sizes="72x72"
-        href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId,'MINI')); ?>">
+        href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '72-72')); ?>">
+    <link rel="apple-touch-icon" sizes="76x76"
+        href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '76-76')); ?>">
     <link rel="apple-touch-icon" sizes="114x114"
-        href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId,'SMALL')); ?>">
-
+        href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '114-114')); ?>">
+    <link rel="apple-touch-icon" sizes="120x120"
+        href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '120-120')); ?>">
+    <link rel="apple-touch-icon" sizes="144x144"
+        href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '144-144')); ?>">
+    <link rel="apple-touch-icon" sizes="152x152"
+        href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '152-152')); ?>">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '180-180')); ?>">        
+    <link rel="icon" type="image/png" sizes="192x192" href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '192-192')); ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href=<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '32-32')); ?>">
+    <link rel="icon" type="image/png" sizes="96x96" href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '96-96')); ?>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '16-16')); ?>">
+    <link rel="manifest" href="<?php echo CommonHelper::generateUrl('Home', 'pwaManifest'); ?>">
     <?php
     if ($canonicalUrl == '') {
         $canonicalUrl = CommonHelper::generateFullUrl($controllerName, FatApp::getAction(), !empty(FatApp::getParameters())?FatApp::getParameters():array());

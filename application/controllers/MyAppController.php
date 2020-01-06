@@ -3,6 +3,7 @@ class MyAppController extends FatController
 {
     public $app_user = array();
     public $appToken = '';
+    public $themeDetail = '';
 
     public function __construct($action)
     {            
@@ -24,6 +25,7 @@ class MyAppController extends FatController
     public function initCommonVariables()
     {
         $this->siteLangId = CommonHelper::getLangId();
+        $this->siteLangCode = CommonHelper::getLangCode();
         $this->siteCurrencyId = CommonHelper::getCurrencyId();
 
         $this->app_user['temp_user_id'] = 0;
@@ -132,7 +134,7 @@ class MyAppController extends FatController
         if (CommonHelper::isThemePreview() && isset($_SESSION['preview_theme'])) {
             $themeId = $_SESSION['preview_theme'];
         }
-        $themeDetail = ThemeColor::getAttributesById($themeId);
+        $this->themeDetail = ThemeColor::getAttributesById($themeId);
         $currencySymbolLeft = CommonHelper::getCurrencySymbolLeft();
         $currencySymbolRight = CommonHelper::getCurrencySymbolRight();
 
@@ -143,7 +145,7 @@ class MyAppController extends FatController
         $this->set('isUserDashboard', false);
         $this->set('currencySymbolLeft', $currencySymbolLeft);
         $this->set('currencySymbolRight', $currencySymbolRight);
-        $this->set('themeDetail', $themeDetail);
+        $this->set('themeDetail', $this->themeDetail);
         $this->set('jsVariables', $jsVariables);
         $this->set('controllerName', $controllerName);
         $this->set('isAppUser', commonhelper::isAppUser());

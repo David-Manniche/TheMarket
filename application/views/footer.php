@@ -176,6 +176,16 @@ echo FatUtility::generateUrl('JsCss', 'js', array(), '', false). '&f=' . rawurle
         $this->includeTemplate('restore-system/page-content.php');
     }
 }?>
+<script>
+   $(document).ready(function(){
+    if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+    navigator.serviceWorker.register('<?php echo CONF_WEBROOT_URL;?>sw.js').then(function(registration) {   
+    });
+    });
+    }
+});
+</script>
 </div>
 </div>
 </body>
