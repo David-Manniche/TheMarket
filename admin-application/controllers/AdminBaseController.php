@@ -659,7 +659,6 @@ class AdminBaseController extends FatController
 
     public function imgCropper()
     {
-        $this->set("siteLangId", $this->adminLangId);
         $this->_template->render(false, false, 'cropper/index.php');
     }
 }

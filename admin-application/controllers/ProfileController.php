@@ -30,7 +30,6 @@ class ProfileController extends AdminBaseController
     public function imgCropper()
     {
         $this->set('image', CommonHelper::generateFullUrl('Image', 'profileImage', array($this->_adminId)));
-        $this->set('siteLangId', $this->adminLangId);
         $this->_template->render(false, false, 'cropper/index.php');
     }
 

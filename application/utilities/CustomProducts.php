@@ -1561,7 +1561,6 @@ trait CustomProducts
 
     public function addBrandReqForm($brandReqId = 0)
     {
-        $brandReqId = 134;
         $frm = $this->getBrandForm();
         $this->set('languages', Language::getAllNames());
         if (0 < $brandReqId) {

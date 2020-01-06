@@ -45,13 +45,7 @@ class ProductCategoriesController extends AdminBaseController
         $this->_template->addJs('js/import-export.js');
         $this->_template->render();
     }
-
-    public function imgCropper()
-    {
-        $this->set("siteLangId", $this->adminLangId);
-        $this->_template->render(false, false, 'cropper/index.php');
-    }
-
+    
     public function search()
     {
         $searchForm = $this->getSearchForm();
