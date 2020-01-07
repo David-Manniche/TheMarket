@@ -8,13 +8,10 @@ if(count($childCategories) > 0){
             'action' => Labels::getLabel('', $adminLangId),
         );
      
-    //$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered   table-category-accordion childProdCat'));
     foreach ($childCategories as $sn => $row) {
         $tr = new HtmlElement('tr', array());
-        //$tr = $tbl->appendElement('tr');
         $tr->setAttribute("id", $row['prodcat_id']);
         $tr->setAttribute("class", $row['prodcat_parent']); 
-        //$tr->setAttribute("dragable", "dragable"); 
         foreach ($arr_flds as $key => $val) { 
             if ('select_all' == $key) {
                 $td = $tr->appendElement('td', array('width'=>'5%'));
@@ -71,9 +68,7 @@ if(count($childCategories) > 0){
             }
         }
         echo $tr->getHtml();
-    }
-    //echo $tbl->getHtml();
-    
+    }  
 }
 ?>
 
