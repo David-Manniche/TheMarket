@@ -6,80 +6,83 @@ class AdvertisementFeedBaseController extends PluginBaseController
         parent::__construct($action);
     }
 
-    protected function setErrorAndRedirect($message, $errRedirection = false)
+    protected function redirectBack()
     {
-        if (false === $errRedirection || true ===  MOBILE_APP_API_CALL) {
-            LibHelper::dieJsonError($message);
+        FatApp::redirectUser(CommonHelper::generateUrl('Advertisement'));
+    }
+
+    protected function doRequest($url, $method, $data)
+    {
+        if (empty($url) || empty($method)) {
+            LibHelper::dieJsonError(Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId()));
         }
 
-        Message::addErrorMessage($message);
-        FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    
+        switch ($method) {
+            case "GET":
+                curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "GET");
+                break;
+            case "POST":
+                curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+                break;
+            case "DELETE":
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE"); 
+                curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+                break;
+        }
+        $response = curl_exec($curl);
+    
+        /* Check for 404 (file not found). */
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        // Check the HTTP Status code
+        switch ($httpCode) {
+            case 200:
+                return $response;
+                break;
+            case 404:
+                $errorMsg = Labels::getLabel("MSG_404:_API_NOT_FOUND", CommonHelper::getLangId());
+                break;
+            case 500:
+                $errorMsg = Labels::getLabel("MSG_500:_SERVERS_REPLIED_WITH_AN_ERROR.", CommonHelper::getLangId());
+                break;
+            case 502:
+                $errorMsg = Labels::getLabel("MSG_502:_SERVERS_MAY_BE_DOWN_OR_BEING_UPGRADED._HOPEFULLY_THEY'LL_BE_OK_SOON!", CommonHelper::getLangId());
+                break;
+            case 503:
+                $errorMsg = Labels::getLabel("MSG_503:_SERVICE_UNAVAILABLE._HOPEFULLY_THEY'LL_BE_OK_SOON!", CommonHelper::getLangId());
+                break;
+            default:
+                $replacements = ['httpCode' => $httpCode, 'error' => curl_error($curl)];
+                $message = Labels::getLabel("MSG_UNDOCUMENTED_ERROR:_{httpCode}_:_{error}", CommonHelper::getLangId());
+                $errorMsg = CommonHelper::replaceStringData($str, $replacements);
+                break;
+        }
+        curl_close($curl);
+        LibHelper::dieJsonError($errorMsg);
     }
-      
-    protected function redirectToDashboard($preferredDashboard = 0, $referredRedirection = true)
+
+    protected function updateMerchantAccountDetail($detail = [])
     {
-        $referredUrl = User::getPreferedDashbordRedirectUrl($preferredDashboard);
-        $cartObj = new Cart();
-        if ($cartObj->hasProducts()) {
-            $referredUrl = CommonHelper::generateFullUrl('cart');
-            if (true === $referredRedirection) {
-                FatApp::redirectUser($referredUrl);
+        if (!is_array($detail)) {
+            FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+        }
+        $obj = new User(UserAuthentication::getLoggedUserId());
+        foreach ($detail as $key => $value) {
+            if (false === $obj->updateUserMeta($key, $value)) {
+                Message::addErrorMessage($obj->getError());
+                $this->redirectBack();
             }
         }
-        if (isset($_SESSION['referer_page_url'])) {
-            $referredUrl = $_SESSION['referer_page_url'];
-            unset($_SESSION['referer_page_url']);
-            if (true === $referredRedirection) {
-                FatApp::redirectUser($referredUrl);
-            }
-        }
-        if (false === $referredRedirection) {
-            $message = Labels::getLabel('MSG_LOGGEDIN_SUCCESSFULLY', $this->siteLangId);
-            $this->set('url', $referredUrl);
-            $this->set('msg', $message);
-            $this->_template->render(false, false, 'json-success.php');
-        }
-        FatApp::redirectUser($referredUrl);
-    }
-   
-    protected function doLogin($email, $userName, $socialAccountID, $userType)
-    {
-        try {
-            $keyName = get_called_class()::KEY_NAME;
-        } catch (\Error $e) {
-            $this->setErrorMessage('ERR - ' . $e->getMessage());
-        }
-
-        $userObj = new User();
-        $userInfo = $userObj->validateUser($email, $userName, $socialAccountID, $keyName, $userType);
-        if (false === $userInfo) {
-            $this->setErrorMessage($userObj->getError());
-        }
-
-        if (true ===  MOBILE_APP_API_CALL) {
-            $userId = $userInfo['user_id'];
-            $userObj = new User($userId);
-            if (!$token = $userObj->setMobileAppToken()) {
-                FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
-            }
-            $this->set('token', $token);
-            $this->set('userInfo', $userInfo);
-            $this->_template->render(true, true, 'guest-user/login.php');
-        }
-        return $userInfo;
+        Message::addMessage(Labels::getLabel("MSG_SUCCESSFULLY_UPDATED", $this->siteLangId));
+        $this->redirectBack();
     }
 
-    public function getListing()
+    protected function getMerchantAccountDetail($key = '')
     {
-        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN_API, $this->siteLangId);
-        $this->set('data', ['socialLoginApis' => array_values($socialLoginApis)]);
-        $this->_template->render();
-    }
-
-    public function getStatus()
-    {
-        $socialLoginApis = Plugin::getSocialLoginPluginsStatus($this->siteLangId);
-        $this->set('data', ['status' => $socialLoginApis]);
-        $this->_template->render();
+        return User::getUserMeta(UserAuthentication::getLoggedUserId(), $key);
     }
 }

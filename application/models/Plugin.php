@@ -12,7 +12,8 @@ class Plugin extends MyAppModel
 
     public const HAVING_KINGPIN = [
         self::TYPE_CURRENCY_API,
-        self::TYPE_PUSH_NOTIFICATION_API
+        self::TYPE_PUSH_NOTIFICATION_API,
+        self::TYPE_ADVERTISEMENT_FEED_API,
     ];
 
     private $db;
@@ -165,5 +166,19 @@ class Plugin extends MyAppModel
         $rs = $srch->getResultSet();
         
         return FatApp::getDb()->fetchAllAssoc($rs);
+    }
+
+    public function getDefaultPluginKeyName($pluginType)
+    {
+        if (!in_array($pluginType, self::HAVING_KINGPIN)) {
+            $this->error = Labels::getLabel('MSG_INVALID_PLUGIN_TYPE', CommonHelper::getLangId());
+            return false;
+        }
+        $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . $pluginType, FatUtility::VAR_INT, 0);
+        if (1 > $defaultCurrConvAPI) {
+            Message::addMessage(Labels::getLabel('MSG_ADVERTISEMENT_PLUGIN_NOT_FOUND', $this->siteLangId));
+            FatApp::redirectUser(CommonHelper::generateUrl('Advertisement'));
+        }
+        return Plugin::getAttributesById($defaultCurrConvAPI, 'plugin_code');
     }
 }
