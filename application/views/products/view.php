@@ -489,17 +489,17 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                         </div>
                         <div class="cms bg-gray p-4 mb-4">
                             <?php if ($shop['shop_payment_policy'] != '') { ?>
-                            <h6><?php echo Labels::getLabel('LBL_Payment', $siteLangId)?></h6>
+                            <h6><?php echo Labels::getLabel('LBL_Payment_Policy', $siteLangId)?></h6>
                             <p><?php echo nl2br($shop['shop_payment_policy']); ?></p>
                             <br>
                             <?php } ?>
                             <?php if ($shop['shop_delivery_policy'] != '') { ?>
-                            <h6><?php echo Labels::getLabel('LBL_Shipping', $siteLangId)?></h6>
+                            <h6><?php echo Labels::getLabel('LBL_Delivery_Policy', $siteLangId)?></h6>
                             <p><?php echo nl2br($shop['shop_delivery_policy']); ?></p>
                             <br>
                             <?php }?>
                             <?php if ($shop['shop_refund_policy'] != '') { ?>
-                            <h6><?php echo Labels::getLabel('LBL_Shipping', $siteLangId)?></h6>
+                            <h6><?php echo Labels::getLabel('LBL_Refund_Policy', $siteLangId)?></h6>
                             <p><?php echo nl2br($shop['shop_refund_policy']); ?></p>
                             <?php }?>
                         </div>
