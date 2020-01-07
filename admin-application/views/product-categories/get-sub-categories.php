@@ -2,28 +2,34 @@
 if(count($childCategories) > 0){
     $arr_flds = array(
             'select_all'=>Labels::getLabel('LBL_Select_all', $adminLangId),
-            //'prodcat_display_order'=>Labels::getLabel('LBL_POS', $adminLangId),
             'prodcat_identifier'=>Labels::getLabel('LBL_Category_Name', $adminLangId),
             'category_products' => Labels::getLabel('LBL_Products', $adminLangId),
             'prodcat_active' => Labels::getLabel('LBL_Publish', $adminLangId),
             'action' => Labels::getLabel('', $adminLangId),
         );
-        
+     
+    //$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered   table-category-accordion childProdCat'));
     foreach ($childCategories as $sn => $row) {
         $tr = new HtmlElement('tr', array());
-        if ($row['prodcat_active'] == applicationConstants::ACTIVE) {
-            $tr->setAttribute("id", $row['prodcat_id']);
-        }
+        //$tr = $tbl->appendElement('tr');
+        $tr->setAttribute("id", $row['prodcat_id']);
         $tr->setAttribute("class", $row['prodcat_parent']); 
+        //$tr->setAttribute("dragable", "dragable"); 
         foreach ($arr_flds as $key => $val) { 
-            $td = $tr->appendElement('td');
+            if ('select_all' == $key) {
+                $td = $tr->appendElement('td', array('width'=>'5%'));
+            }else if('category_products' == $key || 'prodcat_active' == $key){
+                $td = $tr->appendElement('td', array('width'=>'15%'));
+            } else if('prodcat_identifier' == $key){
+                $td = $tr->appendElement('td', array('width'=>'50%'));
+            } else if('action' == $key){
+                $td = $tr->appendElement('td', array('width'=>'10%'));
+            }
+            
             switch ($key) {
                 case 'select_all':
                     $td->appendElement('plaintext', array(), '<label><span class="checkbox"><input class="selectItem--js" type="checkbox" name="prodcat_ids[]" value='.$row['prodcat_id'].'><i class="input-helper"></i></span></label>', true);
                     break;
-                /* case 'prodcat_display_order':
-                    $td->appendElement('plaintext', array(), '<input class="form-control form-control-sm form-control-position" type="text" value="'.$row[$key].'" onblur="updateDisplayOrder(this,'.$level.')" name="prodcat_display_order">', true);    
-                    break; */
                 case 'prodcat_identifier':                    
                     $td->appendElement('plaintext', array(), '<a href="javascript:void(0);" class="prodcat-level-'.$level.'" onClick="displaySubCategories(this,'.($level+1).')">'.$row[$key].' <i class="ion-chevron-right"></i></a>', true);
                     break;
@@ -66,9 +72,41 @@ if(count($childCategories) > 0){
         }
         echo $tr->getHtml();
     }
+    //echo $tbl->getHtml();
+    
 }
 ?>
 
+<style>
+td:hover{ cursor:move;}
+</style>
+
+<script>
+$(document).ready(function(){
+    var fixHelperModified = function(e, tr) {
+		var $originals = tr.children();
+		var $helper = tr.clone();
+		$helper.children().each(function(index) {
+			$(this).width($originals.eq(index).width())
+		});
+		return $helper;
+	}, 
+    
+    updateIndex = function(e, ui) {  
+        var ids = [];        
+         $("tr", ui.item.parent()).each(function (i) {  
+            ids[i+1] = $(this).attr('id');
+        });
+        console.log(ids);
+    };
+
+	$("#prodcat tbody").sortable({
+		helper: fixHelperModified,
+		stop: updateIndex
+	}).disableSelection();	
+    
+});
+</script>
 
     
 

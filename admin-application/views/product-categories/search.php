@@ -1,7 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');  
     $arr_flds = array(
-            'select_all'=>Labels::getLabel('LBL_Select_all', $adminLangId),
-            //'prodcat_display_order'=>Labels::getLabel('LBL_POS', $adminLangId),
+            'select_all'=>Labels::getLabel('LBL_Select_all', $adminLangId),            
             'prodcat_identifier'=>Labels::getLabel('LBL_Name', $adminLangId),
             'category_products' => Labels::getLabel('LBL_Products', $adminLangId),
             'prodcat_active' => Labels::getLabel('LBL_Publish', $adminLangId),
@@ -12,14 +11,12 @@
     foreach ($arr_flds as $key => $val) {
         if ('select_all' == $key) {
             $th->appendElement('th', array('width'=>'5%'))->appendElement('plaintext', array(), '<label class="checkbox"><input title="'.$val.'" type="checkbox" onclick="selectAll( $(this) )" class="selectAll-js"><i class="input-helper"></i></label>', true);
-        } /*else if('prodcat_display_order' == $key || 'action' == $key){
-            $e = $th->appendElement('th', array('width'=>'10%'), $val);
-        } */ else if('category_products' == $key || 'prodcat_active' == $key){
-            $e = $th->appendElement('th', array('width'=>'15%'), $val);
+        }else if('category_products' == $key || 'prodcat_active' == $key){
+            $th->appendElement('th', array('width'=>'15%'), $val);
         } else if('prodcat_identifier' == $key){
-            $e = $th->appendElement('th', array('width'=>'50%'), $val);
-        } else {
-            $e = $th->appendElement('th', array(), $val);
+            $th->appendElement('th', array('width'=>'50%'), $val);
+        } else if('action' == $key){
+            $th->appendElement('th', array('width'=>'10%'), $val);
         }
     }
 
@@ -34,9 +31,6 @@
                 case 'select_all':
                     $td->appendElement('plaintext', array(), '<label><span class="checkbox"><input class="selectItem--js" type="checkbox" name="prodcat_ids[]" value='.$row['prodcat_id'].'><i class="input-helper"></i></span></label>', true);
                     break;
-                /* case 'prodcat_display_order':
-                    $td->appendElement('plaintext', array(), '', true);                    
-                    break; */
                 case 'prodcat_identifier':                    
                     $td->appendElement('plaintext', array(), '<a href="javascript:void(0);" onClick="displaySubCategories(this, 1)">'.$row[$key].' <i class="ion-chevron-right"></i></a>', true);
                     break;
@@ -94,4 +88,6 @@
 	echo $tbl->getHtml(); 
 ?>
 	</form>
+    
+
 
