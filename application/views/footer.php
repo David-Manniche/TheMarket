@@ -177,13 +177,13 @@ echo FatUtility::generateUrl('JsCss', 'js', array(), '', false). '&f=' . rawurle
     }
 }?>
 <script>
-   $(document).ready(function(){
-    if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-    navigator.serviceWorker.register('<?php echo CONF_WEBROOT_URL;?>sw.js').then(function(registration) {   
-    });
-    });
-    }
+$(document).ready(function(){
+ if ('serviceWorker' in navigator) {
+ window.addEventListener('load', function() {
+ navigator.serviceWorker.register('<?php echo CONF_WEBROOT_URL;?>sw.js?t=<?php echo filemtime(CONF_INSTALLATION_PATH . 'public/sw.js');?>&f').then(function(registration) {
+ });
+ });
+ }
 });
 </script>
 </div>

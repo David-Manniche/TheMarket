@@ -2,7 +2,7 @@
 class AdminGuestController extends FatController
 {
     public function __construct($action)
-    {
+    { 
         parent::__construct($action);
         CommonHelper::initCommonVariables(true);
         //$this->adminLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
