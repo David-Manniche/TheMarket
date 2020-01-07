@@ -168,7 +168,8 @@ class BrandsController extends MyAppController
         $srch->addMultipleFields(array('brand_id, IFNULL(brand_name, brand_identifier) as brand_name'));
 
         if (!empty($post['keyword'])) {
-            $srch->addCondition('brand_name', 'LIKE', '%' . $post['keyword'] . '%');
+            $cond = $srch->addCondition('brand_name', 'LIKE', '%' . $post['keyword'] . '%');
+            $cond->attachCondition('brand_identifier', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
         }
         $srch->addCondition('brand_status', '=', Brand::BRAND_REQUEST_APPROVED);
 
