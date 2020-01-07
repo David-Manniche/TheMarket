@@ -1010,7 +1010,10 @@ class ProductCategory extends MyAppModel
     { 
         $prodCatId = $this->mainTableRecordId;
         $parentCatId = FatUtility::int($post['parentCatId']);
-        $autoUpdateOtherLangsData = FatUtility::int($post['auto_update_other_langs_data']);
+        $autoUpdateOtherLangsData = 0; 
+        if(isset($post['auto_update_other_langs_data'])){
+            $autoUpdateOtherLangsData = FatUtility::int($post['auto_update_other_langs_data']);
+        }        
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $post['prodcat_identifier'] = $post['prodcat_name'][$siteDefaultLangId];
         if ($this->mainTableRecordId == 0) {
@@ -1138,11 +1141,14 @@ class ProductCategory extends MyAppModel
         return $translatedData;
     }
     
-    public function getCategories($includeProductCount = true)
+    public function getCategories($includeProductCount = true, $keyword = '')
     {
         $srch = static::getSearchObject(false, $this->commonLangId, false);
         $srch->addCondition(static::DB_TBL_PREFIX.'deleted', '=', 0);        
         $srch->addCondition(static::DB_TBL_PREFIX.'parent', '=', $this->mainTableRecordId);
+        if(!empty($keyword)){
+            $srch->addCondition(static::DB_TBL_PREFIX.'identifier',  'like', '%' . $keyword . '%');   
+        }
         if($includeProductCount === true){
             $srch->joinTable(Product::DB_TBL_PRODUCT_TO_CATEGORY, 'LEFT JOIN', static::DB_TBL_PREFIX.'id = '.Product::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'prodcat_id', 'ptc');
             $srch->joinTable(Product::DB_TBL, 'LEFT JOIN', Product::DB_TBL_PREFIX.'id = '.Product::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'product_id', 'p');

@@ -9,10 +9,12 @@ class ProductCategoriesController extends AdminBaseController
 
     public function index()
     {
-        $canEdit = $this->objPrivilege->canEditProductCategories(0, true); 
+        $frmSearch = $this->getSearchForm();
         $totProds = Product::getProductsCount();
         $activeCategories = ProductCategory::getActiveInactiveCategoriesCount(applicationConstants::ACTIVE);
         $inactiveCategories = ProductCategory::getActiveInactiveCategoriesCount(applicationConstants::INACTIVE);
+        $canEdit = $this->objPrivilege->canEditProductCategories(0, true); 
+        $this->set("frmSearch", $frmSearch);
         $this->set("totProds", $totProds);
         $this->set("activeCategories", $activeCategories);
         $this->set("inactiveCategories", $inactiveCategories);
@@ -20,13 +22,24 @@ class ProductCategoriesController extends AdminBaseController
         $this->_template->addJs('js/import-export.js');
         $this->_template->render();
     }
+    
+    private function getSearchForm()
+    {
+        $frm = new Form('frmSearch');
+        $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'prodcat_identifier');
+        $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fldCancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->adminLangId));
+        $fldSubmit->attachField($fldCancel);
+        return $frm;
+    }
 
     public function search()
     {
-        $canEdit = $this->objPrivilege->canEditProductCategories(0, true);
         $records = array();
+        $keyword = FatApp::getPostedData('prodcat_identifier', null, '');
         $prodCat = new ProductCategory();
-        $records = $prodCat->getCategories();
+        $records = $prodCat->getCategories(true, $keyword);
+        $canEdit = $this->objPrivilege->canEditProductCategories(0, true);
         $this->set("arr_listing", $records);
         $this->set("canEdit", $canEdit);
         $this->_template->render(false, false);
@@ -734,16 +747,6 @@ class ProductCategoriesController extends AdminBaseController
             Labels::getLabel('LBL_Upload', $this->adminLangId),
             array('class'=>'catFile-Js','id'=>'shop_logo','data-file_type'=>AttachedFile::FILETYPE_CATEGORY_BANNER,'data-frm'=>'frmCategoryBanner')
         );
-        return $frm;
-    } */
-
-    /* private function getSearchForm()
-    {
-        $frm = new Form('frmSearch', array('id'=>'frmSearch'));
-        $frm->addHiddenField('', 'prodcat_parent', 0, array('id'=>'prodcat_parent'));
-        $f1 = $frm->addTextBox(Labels::getLabel('LBL_Category_Identifier', $this->adminLangId), 'prodcat_identifier', '', array('class'=>'search-input'));
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
-        $frm->getField("btn_submit")->htmlAfterField='&nbsp;&nbsp;<a href="javascript:;" class="clear_btn" onClick="clearSearch()">'.Labels::getLabel('LBL_Clear_Search', $this->adminLangId).'</a>';
         return $frm;
     } */
 

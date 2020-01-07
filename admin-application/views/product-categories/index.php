@@ -1,4 +1,12 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
+$frmSearch->setFormTagAttribute('class', 'web_form');
+$frmSearch->setFormTagAttribute('onsubmit', 'searchProductCategories(this); return(false);');
+$frmSearch->developerTags['colClassPrefix'] = 'col-md-';
+$frmSearch->developerTags['fld_default_col'] = 6;
+
+$fldCancel = $frmSearch->getField('btn_clear');
+$fldCancel->setFieldTagAttribute('onClick', 'clearSearch();');
+?>
 <div class='page'>
     <div class='container container-fluid'>
         <div class="row">
@@ -14,6 +22,14 @@
                 </div>
                 <div class="row">
                     <div class="col-md-9">
+                         <div class="section searchform_filter">
+                            <div class="sectionhead">
+                                <h4> <?php echo Labels::getLabel('LBL_Search...', $adminLangId); ?></h4>
+                            </div>
+                            <div class="sectionbody space togglewrap" style="display:none;">
+                                <?php echo $frmSearch->getFormHtml(); ?>
+                            </div>
+                        </div>
                         <section class="section">
                             <div class="sectionhead">
                                 <h4></h4>

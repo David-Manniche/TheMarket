@@ -6,19 +6,25 @@ $(document).ready(function(){
 	var currentPage = 1;
 	var runningAjaxReq = false;
 
-	goToSearchPage = function(page) {
+	/* goToSearchPage = function(page) {
 		if(typeof page==undefined || page == null){
 			page =1;
 		}
 		var frm = document.frmCatSearchPaging;
 		$(frm.page).val(page);
 		searchProductCategories(frm);
-	}
+	} */
 
-	reloadList = function() {
+	/* reloadList = function() {
 		var frm = document.frmCatSearchPaging;
 		searchProductCategories(frm);
-	}
+	} */
+    
+    /* subcat_list=function(parent){
+		var frm = document.frmCatSearchPaging;
+		$(frm.prodcat_parent).val(parent);
+		reloadList();
+	}; */
     
 	searchProductCategories = function(form){
 		var data = '';
@@ -32,12 +38,6 @@ $(document).ready(function(){
 		});
 	};
 
-	subcat_list=function(parent){
-		var frm = document.frmCatSearchPaging;
-		$(frm.prodcat_parent).val(parent);
-		reloadList();
-	};
-
 	deleteRecord = function(id){
 		if(!confirm(langLbl.confirmDelete)){return;}
 		data='id='+id;
@@ -45,7 +45,7 @@ $(document).ready(function(){
 			var ans = $.parseJSON(res);
 			if( ans.status == 1 ){
 				fcom.displaySuccessMessage(ans.msg);
-				reloadList();
+				searchProductCategories(document.frmSearch);
 			} else {
 				fcom.displayErrorMessage(ans.msg);
 			}
@@ -72,13 +72,9 @@ $(document).ready(function(){
 		var ans = $.parseJSON(res);
 			if( ans.status == 1 ){
 				$(obj).toggleClass("active");
-
 				fcom.displaySuccessMessage(ans.msg);
-				/* setTimeout(function(){
-					reloadList();
-				}, 1000); */
+                searchProductCategories(document.frmSearch);
 			} else {
-				alert("Danger");
 				fcom.displa(ans.msg);
 			}
 		});
@@ -144,11 +140,11 @@ $(document).ready(function(){
 
 })();
 
-$(document).on('keypress', "[name='prodcat_display_order']", function(e){
+/* $(document).on('keypress', "[name='prodcat_display_order']", function(e){
     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
         return false;
     } 
-});
+}); */
 
 $(document).on('click', 'input[type="checkbox"]', function(){
     if($(this).prop("checked") == true){
