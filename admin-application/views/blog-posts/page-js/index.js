@@ -209,9 +209,6 @@ blogPostForm = function(id) {
 	};
 
 	uploadImages = function(formData){
-        var node = this;
-        $('#form-upload').remove();
-
         var langId = document.frmBlogPostImage.lang_id.value;
         var postId = document.frmBlogPostImage.post_id.value;
         var fileType = document.frmBlogPostImage.file_type.value;
@@ -219,7 +216,6 @@ blogPostForm = function(id) {
         formData.append('post_id', postId);
         formData.append('file_type', fileType);
         formData.append('lang_id', langId);
-        /* $val = $(node).val(); */
         $.ajax({
             url: fcom.makeUrl('BlogPosts', 'uploadBlogPostImages', [postId, langId]),
             type: 'post',
@@ -229,10 +225,10 @@ blogPostForm = function(id) {
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $(node).val('Loading');
+                $('.img-container').html(fcom.getLoader());
             },
             complete: function() {
-                /* $(node).val($val); */
+                $('.img-container').html(fcom.getLoader());
             },
             success: function(t) {
                 if (t.status == 1) {
@@ -251,57 +247,3 @@ blogPostForm = function(id) {
 	}
 
 })();
-
-$(document).on('click', '.blogFile-Js', function() {
-    var node = this;
-    $('#form-upload').remove();
-    var frmName = $(node).attr('data-frm');
-    if ('frmBlogPostImage' == frmName) {
-        var langId = document.frmBlogPostImage.lang_id.value;
-        var postId = document.frmBlogPostImage.post_id.value;
-    }
-    var fileType = $(node).attr('data-file_type');
-
-    var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-    frm = frm.concat('<input type="file" name="file" />');
-    frm = frm.concat('<input type="hidden" name="post_id" value="' + postId + '"/>');
-    frm = frm.concat('<input type="hidden" name="file_type" value="' + fileType + '"></form>');
-    $('body').prepend(frm);
-    $('#form-upload input[name=\'file\']').trigger('click');
-    if (typeof timer != 'undefined') {
-        clearInterval(timer);
-    }
-    timer = setInterval(function() {
-        if ($('#form-upload input[name=\'file\']').val() != '') {
-            clearInterval(timer);
-            $val = $(node).val();
-            $.ajax({
-                url: fcom.makeUrl('BlogPosts', 'uploadBlogPostImages', [postId, langId]),
-                type: 'post',
-                dataType: 'json',
-                data: new FormData($('#form-upload')[0]),
-                cache: false,
-                contentType: false,
-                processData: false,
-                beforeSend: function() {
-                    $(node).val('Loading');
-                },
-                complete: function() {
-                    $(node).val($val);
-                },
-                success: function(t) {
-                    if (t.status == 1) {
-                        fcom.displaySuccessMessage(t.msg);
-                    } else {
-                        fcom.displayErrorMessage(t.msg);
-                    }
-                    $('#form-upload').remove();
-                    images(postId, langId);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    alert("Error Occured.");
-                }
-            });
-        }
-    }, 500);
-});

@@ -30,15 +30,20 @@
               </button>
             </div>
             <div class="btn-group">
+              <button type="button" class="btn btn-primary" data-method="reset" title="<?php echo Labels::getLabel('LBL_Upload_image_file', $adminLangId); ?>">
+                 <span class="docs-tooltip" data-toggle="tooltip">
+                   <span class="fa fa-sync-alt"></span> <?php echo Labels::getLabel('LBL_Reset', $adminLangId); ?>
+                 </span>
+              </button>
               <label class="btn btn-primary btn-upload" for="inputImage" title="<?php echo Labels::getLabel('LBL_Upload_image_file', $adminLangId); ?>">
                 <input type="file" class="sr-only" id="inputImage" name="file" accept="image/*">
                 <span class="docs-tooltip" data-toggle="tooltip">
-                  <span class="fa fa-upload"></span> <?php echo Labels::getLabel('LBL_Upload', $adminLangId); ?>
+                  <span class="fa fa-upload"></span> <?php echo Labels::getLabel('LBL_Browse', $adminLangId); ?>
                 </span>
               </label>
               <button type="button" class="btn btn-primary" data-method="getCroppedCanvas" title="<?php echo Labels::getLabel('LBL_Update', $adminLangId); ?>">
                 <span class="docs-tooltip" data-toggle="tooltip">
-                  <span class="fa fa-crop-alt"></span> <?php echo Labels::getLabel('LBL_Update', $adminLangId); ?>
+                  <span class="fa fa-crop-alt"></span> <?php echo Labels::getLabel('LBL_Crop', $adminLangId); ?>
                 </span>
               </button>
             </div>

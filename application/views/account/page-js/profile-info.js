@@ -148,7 +148,7 @@ $(document).ready(function(){
 			contentType: false,
 			processData: false,
 			beforeSend: function() {
-				// $(node).val('Loading');
+				$('.img-container').html(fcom.getLoader());
 			},
 			success: function(ans) {
 					$('#dispMessage').html(ans.msg);

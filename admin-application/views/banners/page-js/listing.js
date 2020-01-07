@@ -190,8 +190,6 @@ $(document).on('change','.display-js',function(){
 	};
 
 	uploadImages = function(formData){
-        var node = this;
-        $('#form-upload').remove();
 		var bannerId = document.frmBannerMedia.banner_id.value;
 		var blocationId = document.frmBannerMedia.blocation_id.value;
 		var langId = document.frmBannerMedia.lang_id.value;
@@ -200,7 +198,6 @@ $(document).on('change','.display-js',function(){
 		formData.append('blocation_id', blocationId);
         formData.append('banner_screen', bannerScreen);
         formData.append('lang_id', langId);
-        /* $val = $(node).val(); */
         $.ajax({
             url: fcom.makeUrl('Banners', 'upload',[bannerId]),
             type: 'post',
@@ -210,10 +207,7 @@ $(document).on('change','.display-js',function(){
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $(node).val('Loading');
-            },
-            complete: function() {
-                /* $(node).val($val); */
+                $('.img-container').html(fcom.getLoader());
             },
 			success: function(ans) {
 				if(ans.status==1)
