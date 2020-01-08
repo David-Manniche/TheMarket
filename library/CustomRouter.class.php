@@ -52,7 +52,7 @@ class CustomRouter
         define('MOBILE_APP_USER_TYPE', $userType);
 
         if (defined('SYSTEM_FRONT') && SYSTEM_FRONT === true/*  && !FatUtility::isAjaxCall() */) {
-            $url = $_SERVER['REQUEST_URI'];
+            $url = urldecode($_SERVER['REQUEST_URI']);
             
             if (strpos($url, "index.php?url=") !== false) {
                 return ;

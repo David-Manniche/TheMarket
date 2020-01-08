@@ -32,7 +32,7 @@ class OrderProductSearch extends SearchBase
             $this->joinOrderProductStatus($this->langId);
         }
 
-        if (!$deletedOrders) {
+        if ($joinOrders && false == $deletedOrders) {
             $this->addCondition('order_deleted', '=', applicationConstants::NO);
         }
 
