@@ -1,36 +1,4 @@
-<?php if (isset($layoutTemplate) && $layoutTemplate != '') { ?>
-<link rel="stylesheet"
-    href="<?php echo CommonHelper::generateUrl('ThemeColor', $layoutTemplate, array($layoutRecordId));?>">
-<?php }
-if (isset($socialShareContent) && !empty($socialShareContent)) { ?>
-<!-- OG Product Facebook Meta [ -->
-<meta property="og:type" content="product" />
-<meta property="og:title"
-    content="<?php echo $socialShareContent['title']; ?>" />
-<meta property="og:site_name"
-    content="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId, FatUtility::VAR_STRING, ''); ?>" />
-<meta property="og:image"
-    content="<?php echo $socialShareContent['image']; ?>" />
-<meta property="og:url"
-    content="<?php echo CommonHelper::getCurrUrl(); ?>" />
-<meta property="og:description"
-    content="<?php echo $socialShareContent['description']; ?>" />
-<!-- ]   -->
-
-<!--Here is the Twitter Card code for this product  -->
-<?php if (!empty(FatApp::getConfig("CONF_TWITTER_USERNAME", FatUtility::VAR_STRING, ''))) { ?>
-<meta name="twitter:card" content="product">
-<meta name="twitter:site"
-    content="@<?php echo FatApp::getConfig("CONF_TWITTER_USERNAME", FatUtility::VAR_STRING, ''); ?>">
-<meta name="twitter:title"
-    content="<?php echo $socialShareContent['title']; ?>">
-<meta name="twitter:description"
-    content="<?php echo $socialShareContent['description']; ?>">
-<meta name="twitter:image:src"
-    content="<?php echo $socialShareContent['image']; ?>">
-<?php } ?>
-<!-- End Here is the Twitter Card code for this product  -->
-<?php }
+<?php 
 if (isset($includeEditor) && $includeEditor) { ?>
 <script language="javascript" type="text/javascript"
     src="<?php echo CONF_WEBROOT_URL; ?>innovas/scripts/innovaeditor.js">
@@ -40,7 +8,7 @@ if (isset($includeEditor) && $includeEditor) { ?>
 <?php  }  ?>
 </head>
 <?php
-$bodyClass = ($controllerName=='Home') ? 'home' : 'inner' ;
+$bodyClass = ($controllerName == 'Home') ? 'home' : 'inner' ;
 if ($controllerName == 'Blog') {
     $bodyClass = 'is--blog';
 }
@@ -68,9 +36,7 @@ if (isset($isUserDashboard) && $isUserDashboard) {
 if (CommonHelper::demoUrl()) {
     $bodyClass.= ' have-fixed-btn';
 }
-
 ?>
-
 <body class="<?php echo $bodyClass; ?> ">
     <?php
         $alertClass = '';
@@ -87,7 +53,6 @@ if (CommonHelper::demoUrl()) {
         echo FatApp::getConfig("CONF_GOOGLE_TAG_MANAGER_BODY_SCRIPT", FatUtility::VAR_STRING, '');
     }
     ?>
-
     <div class="system_message alert alert--positioned-top-full <?php echo $alertClass; ?>"
         style="display:none">
         <div class="close"></div>
@@ -100,16 +65,4 @@ if (CommonHelper::demoUrl()) {
             } ?>
         </div>
     </div>
-    <div id="quick-view-section" class="quick-view"></div>
-    <?php if ($haveMsg) { ?>
-    <script type="text/javascript">
-        $("document").ready(function() {
-            if (CONF_AUTO_CLOSE_SYSTEM_MESSAGES == 1) {
-                var time = CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES * 1000;
-                setTimeout(function() {
-                    $.systemMessage.close();
-                }, time);
-            }
-        });
-    </script>
-    <?php }
+    <div id="quick-view-section" class="quick-view"></div>    

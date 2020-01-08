@@ -16,48 +16,45 @@ if (CommonHelper::isThemePreview() && isset($_SESSION['preview_theme'])) {
 array_walk($jsVariables, function (&$item1, $key) {
     $item1 = html_entity_decode($item1, ENT_QUOTES, 'UTF-8');
 });
-$commonHead1Data = array(
+$commonHeadData = array(
     'siteLangId' => $siteLangId,
     'siteLangCode' => $siteLangCode,
     'controllerName' => $controllerName,
+    'action' => $action,
     'jsVariables' => $jsVariables,
     'extendEditorJs' => $extendEditorJs,
     'themeDetail' => $themeDetail,
     'themeActive' => $themeActive,
     'currencySymbolLeft' => $currencySymbolLeft,
     'currencySymbolRight' => $currencySymbolRight,
+    'isUserDashboard' => $isUserDashboard,
     'canonicalUrl' => isset($canonicalUrl) ? $canonicalUrl: '',
 );
+if (isset($layoutTemplate) && $layoutTemplate != '') {
+    $commonHeadData['layoutTemplate'] = $layoutTemplate;
+    $commonHeadData['layoutRecordId'] = $layoutRecordId;
+}
+if (isset($socialShareContent) && $socialShareContent != '') {
+    $commonHeadData['socialShareContent'] = $socialShareContent;
+}
+if (isset($includeEditor) && $includeEditor == true) {
+    $commonHeadData['includeEditor'] = $includeEditor;
+}
 
-$this->includeTemplate('_partial/header/commonHead1.php', $commonHead1Data, false);
+$this->includeTemplate('_partial/header/commonHeadTop.php', $commonHeadData, false);
 /* This is not included in common head, because, commonhead file not able to access the $this->Controller and $this->action[ */
 echo $this->writeMetaTags();
 /* ] */
+$this->includeTemplate('_partial/header/commonHeadMiddle.php', $commonHeadData, false);
 
 /* This is not included in common head, because, if we are adding any css/js from any controller then that file is not included[ */
 echo $this->getJsCssIncludeHtml(!CONF_DEVELOPMENT_MODE);
 /* ] */
 
-$commonHead2Data = array(
-    'siteLangId' => $siteLangId,
-    'controllerName' => $controllerName,
-    'action' => $action,
-    'isUserDashboard' => $isUserDashboard,
-);
-if (isset($layoutTemplate) && $layoutTemplate != '') {
-    $commonHead2Data['layoutTemplate'] = $layoutTemplate;
-    $commonHead2Data['layoutRecordId'] = $layoutRecordId;
-}
-if (isset($socialShareContent) && $socialShareContent != '') {
-    $commonHead2Data['socialShareContent'] = $socialShareContent;
-}
-if (isset($includeEditor) && $includeEditor == true) {
-    $commonHead2Data['includeEditor'] = $includeEditor;
-}
-$this->includeTemplate('_partial/header/commonHead2.php', $commonHead2Data, false);
+$this->includeTemplate('_partial/header/commonHeadBottom.php', $commonHeadData, false);
 
 if (isset($isUserDashboard) && $isUserDashboard) {
-    $this->includeTemplate('_partial/topHeaderDashboard.php', $commonHead2Data, false);
+    $this->includeTemplate('_partial/topHeaderDashboard.php', $commonHeadData, false);
     $exculdeMainHeaderDiv = true;
 }
 
