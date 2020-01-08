@@ -2040,11 +2040,11 @@ class User extends MyAppModel
         $values = array(
         /* 'uauth_user_id'=>$this->mainTableRecordId,
         'uauth_token'=>$appToken, */
-        'uauth_expiry'=>date('Y-m-d H:i:s', $expiry),
-        'uauth_browser'=>CommonHelper::userAgent(),
-        'uauth_fcm_id'=>$fcmDeviceId,
-        'uauth_last_access'=>date('Y-m-d H:i:s'),
-        'uauth_last_ip'=>CommonHelper::getClientIp(),
+        'uauth_expiry' => date('Y-m-d H:i:s', $expiry),
+        'uauth_browser' => CommonHelper::userAgent(),
+        'uauth_fcm_id' => $fcmDeviceId,
+        'uauth_last_access' => date('Y-m-d H:i:s'),
+        'uauth_last_ip' => CommonHelper::getClientIp(),
         );
 
         FatApp::getDb()->deleteRecords(
@@ -2078,8 +2078,8 @@ class User extends MyAppModel
         $srch = self::getSearchObject(true, true);
         $srch->joinTable(UserAuthentication::DB_TBL_USER_AUTH, 'LEFT OUTER JOIN', 'uauth.uauth_user_id = u.user_id', 'uauth');
         $srch->addCondition('user_id', '=', $this->mainTableRecordId);
-        $srch->addCondition('uc.'.static::DB_TBL_CRED_PREFIX.'active', '=', 1);
-        $srch->addCondition('uc.'.static::DB_TBL_CRED_PREFIX.'verified', '=', 1);
+        $srch->addCondition('uc.' . static::DB_TBL_CRED_PREFIX . 'active', '=', 1);
+        $srch->addCondition('uc.' . static::DB_TBL_CRED_PREFIX . 'verified', '=', 1);
         $srch->addCondition('uauth_fcm_id', '!=', '');
         $srch->addCondition('uauth_last_access', '>=', date('Y-m-d H:i:s', strtotime("-7 DAYS")));
         $srch->addFld('uauth_fcm_id');

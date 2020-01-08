@@ -286,9 +286,9 @@ class Orders extends MyAppModel
     private function addUpdateProductOrder($data = array(), $langId = 1)
     {
         $db  = FatApp::getDb();
-        
+
         $ordersLangData = $data['orderLangData'];
-        
+
         unset($data['orderLangData']);
 
         $discountInfo = array();
@@ -307,7 +307,7 @@ class Orders extends MyAppModel
 
         $prodCharges = $data['prodCharges'];
         unset($data['prodCharges']);
-        
+
         if (!$data['order_id']) {
             $order_id = $this->generateOrderId();
             $data['order_id'] = $order_id;
@@ -526,12 +526,12 @@ class Orders extends MyAppModel
                     }
                 }
                 /* ] */
-                
+
                 $orderProdSpecificsObj = new OrderProductSpecifics($op_id);
                 $orderProdSpecificsObj->assignValues($product['productSpecifics']);
                 $orderProdSpecificsObj->setFldValue('ops_op_id', $op_id);
                 $data = $orderProdSpecificsObj->getFlds();
-                
+
                 if (!$orderProdSpecificsObj->addNew(array(), $data)) {
                     $this->error = $orderProdSpecificsObj->getError();
                     return false;

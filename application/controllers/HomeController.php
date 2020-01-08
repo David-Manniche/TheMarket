@@ -56,7 +56,7 @@ class HomeController extends MyAppController
                     $tpl = new FatTemplate('', '');
                     $tpl->set('siteLangId', $this->siteLangId);
                     $tpl->set('collections', $collections[Collections::TYPE_PRODUCT_LAYOUT1]);
-                    $homePageProdLayout1 = $this->_template->render(false, false, '_partial/collection/product-layout-1.php', true, true);
+                    $homePageProdLayout1 = $tpl->render(false, false, '_partial/collection/product-layout-1.php', true, true);
                 }
 
                 $homePageCatLayout1 = '';
@@ -862,7 +862,7 @@ class HomeController extends MyAppController
         $this->set('image_url', $image_url);
         $this->_template->render();
     }
-     
+
     public function countries()
     {
         $countryObj = new Countries();

@@ -1212,7 +1212,7 @@ class ImageController extends FatController
                 break;
         }
     }
-
+    
     public function appLogo($lang_id = 0, $sizeType = 'APP')
     {
         $lang_id = FatUtility::int($lang_id);
@@ -1220,16 +1220,23 @@ class ImageController extends FatController
         $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, $recordId, 0, $lang_id, false);
         $image_name = isset($file_row['afile_physical_path']) ?  $file_row['afile_physical_path'] : '';
         $default_image = '';
-
+        
         switch (strtoupper($sizeType)) {
             case 'APP':
-                $w = 290;
-                $h = 90;
-                AttachedFile::displayImage($image_name, $w, $h, $default_image);
-                break;
+            $w = 290;
+            $h = 90;
+            AttachedFile::displayImage($image_name, $w, $h, $default_image);
+            break;
             default:
-                AttachedFile::displayOriginalImage($image_name, $default_image);
-                break;
+            AttachedFile::displayOriginalImage($image_name, $default_image);
+            break;
         }
+    }
+
+    public function pushNotificationImage($pNotificationId)
+    {
+        $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_PUSH_NOTIFICATION_IMAGE, $pNotificationId);
+        $image_name = isset($file_row['afile_physical_path']) ?  $file_row['afile_physical_path'] : '';
+        AttachedFile::displayOriginalImage($image_name);
     }
 }

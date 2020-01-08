@@ -59,13 +59,6 @@ $(document).ready(function(){
 		});
 	};
 
-	cancelOrder = function (id){
-		if(!confirm(langLbl.confirmCancelOrder)){return;}
-		fcom.updateWithAjax(fcom.makeUrl('Orders','cancel',[id]),'',function(res){
-			reloadOrderList();
-		});
-	};
-
 	reloadOrderList = function() {
 		searchOrders(document.frmOrderSearchPaging, currentPage);
 	};
@@ -76,15 +69,8 @@ $(document).ready(function(){
 		searchOrders(document.frmOrderSearch);
 	};
 
-	deletedOrders = function() {
-        document.location.href = fcom.makeUrl('Orders', 'deletedOrders');
+	backToOrders = function() {
+        document.location.href = fcom.makeUrl('Orders');
     };
-
-	deleteOrder = function (id){
-		if(!confirm(langLbl.confirmCancelOrder)){return;}
-		fcom.updateWithAjax(fcom.makeUrl('Orders','delete',[id]),'',function(res){
-			reloadOrderList();
-		});
-	};
 
 })();

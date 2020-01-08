@@ -91,9 +91,9 @@ class applicationConstants
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
         return array(
-        static::WEIGHT_GRAM        =>    Labels::getLabel('LBL_Gram', $langId),
-        static::WEIGHT_KILOGRAM    =>    Labels::getLabel('LBL_Kilogram', $langId),
-        static::WEIGHT_POUND    =>    Labels::getLabel('LBL_Pound', $langId),
+            static::WEIGHT_GRAM => Labels::getLabel('LBL_Gram', $langId),
+            static::WEIGHT_KILOGRAM => Labels::getLabel('LBL_Kilogram', $langId),
+            static::WEIGHT_POUND => Labels::getLabel('LBL_Pound', $langId),
         );
     }
 
@@ -110,8 +110,8 @@ class applicationConstants
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
         return array(
-        static::DIGITAL_DOWNLOAD_FILE    =>    Labels::getLabel('LBL_Digital_download_file', $langId),
-        static::DIGITAL_DOWNLOAD_LINK    =>    Labels::getLabel('LBL_Digital_download_link', $langId),
+            static::DIGITAL_DOWNLOAD_FILE => Labels::getLabel('LBL_Digital_download_file', $langId),
+            static::DIGITAL_DOWNLOAD_LINK => Labels::getLabel('LBL_Digital_download_link', $langId),
         );
     }
 
@@ -122,9 +122,9 @@ class applicationConstants
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
         return array(
-        static::LENGTH_CENTIMETER    =>    Labels::getLabel('LBL_CentiMeter', $langId),
-        static::LENGTH_METER        =>    Labels::getLabel('LBL_Meter', $langId),
-        static::LENGTH_INCH            =>    Labels::getLabel('LBL_Inch', $langId),
+            static::LENGTH_CENTIMETER => Labels::getLabel('LBL_CentiMeter', $langId),
+            static::LENGTH_METER => Labels::getLabel('LBL_Meter', $langId),
+            static::LENGTH_INCH => Labels::getLabel('LBL_Inch', $langId),
         );
     }
 
@@ -136,8 +136,8 @@ class applicationConstants
         }
 
         return array(
-        static::YES => Labels::getLabel('LBL_Yes', $langId),
-        static::NO => Labels::getLabel('LBL_No', $langId)
+            static::YES => Labels::getLabel('LBL_Yes', $langId),
+            static::NO => Labels::getLabel('LBL_No', $langId)
         );
     }
 
@@ -149,8 +149,8 @@ class applicationConstants
         }
 
         return array(
-        static::ACTIVE => Labels::getLabel('LBL_Active', $langId),
-        static::INACTIVE => Labels::getLabel('LBL_In-active', $langId)
+            static::ACTIVE => Labels::getLabel('LBL_Active', $langId),
+            static::INACTIVE => Labels::getLabel('LBL_In-active', $langId)
         );
     }
 
@@ -162,8 +162,8 @@ class applicationConstants
         }
 
         return array(
-        1=>Labels::getLabel('LBL_True', $langId),
-        0=>Labels::getLabel('LBL_False', $langId)
+            1 => Labels::getLabel('LBL_True', $langId),
+            0 => Labels::getLabel('LBL_False', $langId)
         );
     }
 
@@ -175,8 +175,8 @@ class applicationConstants
         }
 
         return array(
-        static::ON => Labels::getLabel('LBL_On', $langId),
-        static::OFF => Labels::getLabel('LBL_Off', $langId)
+            static::ON => Labels::getLabel('LBL_On', $langId),
+            static::OFF => Labels::getLabel('LBL_Off', $langId)
         );
     }
 
@@ -188,8 +188,8 @@ class applicationConstants
         }
 
         return array(
-        static::NEWS_LETTER_SYSTEM_MAILCHIMP => Labels::getLabel('LBL_Mailchimp', $langId),
-        static::NEWS_LETTER_SYSTEM_AWEBER => Labels::getLabel('LBL_Aweber', $langId),
+            static::NEWS_LETTER_SYSTEM_MAILCHIMP => Labels::getLabel('LBL_Mailchimp', $langId),
+            static::NEWS_LETTER_SYSTEM_AWEBER => Labels::getLabel('LBL_Aweber', $langId),
         );
     }
 
@@ -200,8 +200,8 @@ class applicationConstants
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
         return array(
-        static::LINK_TARGET_CURRENT_WINDOW        =>    Labels::getLabel('LBL_Same_Window', $langId),
-        static::LINK_TARGET_BLANK_WINDOW    =>    Labels::getLabel('LBL_New_Window', $langId)
+            static::LINK_TARGET_CURRENT_WINDOW => Labels::getLabel('LBL_Same_Window', $langId),
+            static::LINK_TARGET_BLANK_WINDOW => Labels::getLabel('LBL_New_Window', $langId)
         );
     }
 
@@ -223,8 +223,8 @@ class applicationConstants
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
         return array(
-        static::PERCENTAGE    =>    Labels::getLabel('LBL_Percentage', $langId),
-        static::FLAT    =>    Labels::getLabel('LBL_Flat', $langId)
+            static::PERCENTAGE => Labels::getLabel('LBL_Percentage', $langId),
+            static::FLAT => Labels::getLabel('LBL_Flat', $langId)
         );
     }
 
@@ -259,10 +259,10 @@ class applicationConstants
         }
 
         return array(
-        static::BLOG_CONTRIBUTION_PENDING    => Labels::getLabel('LBL_Pending', $langId),
-        static::BLOG_CONTRIBUTION_APPROVED     => Labels::getLabel('LBL_Approved', $langId),
-        static::BLOG_CONTRIBUTION_POSTED     => Labels::getLabel('LBL_Posted', $langId),
-        static::BLOG_CONTRIBUTION_REJECTED     => Labels::getLabel('LBL_Rejected', $langId),
+            static::BLOG_CONTRIBUTION_PENDING    => Labels::getLabel('LBL_Pending', $langId),
+            static::BLOG_CONTRIBUTION_APPROVED     => Labels::getLabel('LBL_Approved', $langId),
+            static::BLOG_CONTRIBUTION_POSTED     => Labels::getLabel('LBL_Posted', $langId),
+            static::BLOG_CONTRIBUTION_REJECTED     => Labels::getLabel('LBL_Rejected', $langId),
         );
     }
 
@@ -274,7 +274,7 @@ class applicationConstants
         }
 
         return array(
-        static::INACTIVE=> Labels::getLabel('LBL_Pending', $langId),
+        static::INACTIVE => Labels::getLabel('LBL_Pending', $langId),
         static::ACTIVE    => Labels::getLabel('LBL_Approved', $langId)
         );
     }
@@ -286,9 +286,9 @@ class applicationConstants
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
         return array(
-        static::GENDER_MALE        =>    Labels::getLabel('LBL_Male', $langId),
-        static::GENDER_FEMALE    =>    Labels::getLabel('LBL_Female', $langId),
-        static::GENDER_OTHER    =>    Labels::getLabel('LBL_Other', $langId),
+        static::GENDER_MALE =>    Labels::getLabel('LBL_Male', $langId),
+        static::GENDER_FEMALE =>    Labels::getLabel('LBL_Female', $langId),
+        static::GENDER_OTHER =>    Labels::getLabel('LBL_Other', $langId),
         );
     }
 

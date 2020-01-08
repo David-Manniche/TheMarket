@@ -44,10 +44,9 @@ $(document).on('change','.prefDimensions-js',function(){
 	brandForm = function(id) {
 		fcom.displayProcessing();
 		var frm = document.frmBrandSearchPaging;
-			fcom.ajax(fcom.makeUrl('brands', 'form', [id]), '', function(t) {
-			fcom.updateFaceboxContent(t);
-
-			});
+        fcom.ajax(fcom.makeUrl('brands', 'form', [id]), '', function(t) {
+            fcom.updateFaceboxContent(t);
+        });
 	};
 
 	setupBrand = function(frm) {

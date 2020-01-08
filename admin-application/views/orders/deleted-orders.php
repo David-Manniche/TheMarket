@@ -60,10 +60,9 @@
                             ?>
                     </div>
                 </section>
-
                 <section class="section">
                     <div class="sectionhead">
-                        <h4><?php echo Labels::getLabel('LBL_Customers_Orders_List', $adminLangId); ?> </h4>
+                        <h4><?php echo Labels::getLabel('LBL_Deleted_Orders_List', $adminLangId); ?> </h4>
                         <?php
                             $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
                             $li = $ul->appendElement("li", array('class'=>'droplink'));
@@ -73,7 +72,7 @@
                             $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
 
                             $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Deleted_Orders', $adminLangId), "onclick"=>"deletedOrders()"), Labels::getLabel('LBL_Deleted_Orders', $adminLangId), true);
+                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Back_to_Orders', $adminLangId), "onclick"=>"backToOrders()"), Labels::getLabel('LBL_Back_to_Orders', $adminLangId), true);
 
                             echo $ul->getHtml();
                         ?>

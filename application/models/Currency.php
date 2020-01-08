@@ -109,7 +109,7 @@ class Currency extends MyAppModel
 
     public function getCurrencyConverterApi()
     {
-        $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_CURRENCY_CONVERTER_API', FatUtility::VAR_INT, 0);
+        $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . PLUGIN::TYPE_CURRENCY_API, FatUtility::VAR_INT, 0);
         if (empty($defaultCurrConvAPI)) {
             $this->error = Labels::getLabel('MSG_DEFAULT_CURRENCY_CONVERTER_NOT_DEFINED', $this->siteLangId);
             return false;

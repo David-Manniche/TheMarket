@@ -12,6 +12,7 @@ define('PASSWORD_SALT', 'ewoiruqojfklajreajflfdsaf');
 define('CONF_INSTALLATION_PATH', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
 define('CONF_UPLOADS_PATH', CONF_INSTALLATION_PATH . 'user-uploads' . DIRECTORY_SEPARATOR);
 define('CONF_FRONT_END_APPLICATION_DIR', 'application/');
+define('CONF_PLUGIN_DIR', CONF_INSTALLATION_PATH . 'library/plugins/');
 
 if (strpos($_SERVER ['SERVER_NAME'], '.4demo.biz') !== false) {
     define('CONF_CORE_LIB_PATH', '/etc/fatlib/');

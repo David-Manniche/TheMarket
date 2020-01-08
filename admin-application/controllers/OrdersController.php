@@ -29,6 +29,20 @@ class OrdersController extends AdminBaseController
         $this->_template->render();
     }
 
+    public function deletedOrders()
+    {
+        $this->objPrivilege->canViewOrders();
+        $frmSearch = $this->getOrderSearchForm($this->adminLangId, true);
+        $data = FatApp::getPostedData();
+        if ($data) {
+            $data['keyword'] = $data['id'];
+            unset($data['id']);
+            $frmSearch->fill($data);
+        }
+        $this->set('frmSearch', $frmSearch);
+        $this->_template->render();
+    }
+
     public function search()
     {
         $this->objPrivilege->canViewOrders();
@@ -50,7 +64,7 @@ class OrdersController extends AdminBaseController
         $srch->setPageNumber($page);
         $srch->setPageSize($pageSize);
 
-        $srch->addMultipleFields(array('order_id','order_date_added', 'order_is_paid', 'order_status', 'buyer.user_id', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'order_net_amount', 'order_wallet_amount_charge', 'order_pmethod_id', 'IFNULL(pmethod_name, pmethod_identifier) as pmethod_name','pmethod_code', 'order_is_wallet_selected'));
+        $srch->addMultipleFields(array('order_id','order_date_added', 'order_is_paid', 'order_status', 'buyer.user_id', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'order_net_amount', 'order_wallet_amount_charge', 'order_pmethod_id', 'IFNULL(pmethod_name, pmethod_identifier) as pmethod_name','pmethod_code', 'order_is_wallet_selected', 'order_deleted'));
 
         $keyword = FatApp::getPostedData('keyword', null, '');
         if (!empty($keyword)) {
@@ -85,6 +99,15 @@ class OrdersController extends AdminBaseController
         $priceTo = FatApp::getPostedData('price_to', null, '');
         if (!empty($priceTo)) {
             $srch->addMaxPriceCondition($priceTo);
+        }
+
+        $isDeleted = FatApp::getPostedData('is_deleted', FatUtility::VAR_INT, 0);
+        if (!empty($isDeleted)) {
+            $srch->addCondition('order_deleted', '=', applicationConstants::YES);
+            $this->set("deletedOrders", true);
+        } else {
+            $srch->addCondition('order_deleted', '=', applicationConstants::NO);
+            $this->set("deletedOrders", false);
         }
 
         $rs = $srch->getResultSet();
@@ -126,7 +149,7 @@ class OrdersController extends AdminBaseController
         }
 
 
-        $opSrch = new OrderProductSearch($this->adminLangId, false, true);
+        $opSrch = new OrderProductSearch($this->adminLangId, false, true, true);
         $opSrch->addCountsOfOrderedProducts();
         $opSrch->addOrderProductCharges();
         $opSrch->doNotCalculateRecords();
@@ -189,12 +212,12 @@ class OrdersController extends AdminBaseController
         }
 
         $orderId = $post['opayment_order_id'];
-        
+
         if ($orderId == '' || $orderId == null) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $srch = new OrderSearch($this->adminLangId);
         $srch->joinOrderPaymentMethod();
         $srch->addMultipleFields(array('pmethod_code'));
@@ -245,6 +268,32 @@ class OrdersController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
+    public function delete($order_id)
+    {
+        $this->objPrivilege->canEditOrders();
+
+        $orderObj =  new Orders();
+        $order = $orderObj->getOrderById($order_id);
+
+        if ($order == false) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Error:_Please_perform_this_action_on_valid_record.', $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        if (!$order["order_is_paid"]) {
+            $updateArray = array( 'order_deleted' => applicationConstants::YES );
+            $whr = array('smt'=>'order_id = ?', 'vals'=> array($order_id));
+
+            if (!FatApp::getDb()->updateFromArray(Orders::DB_TBL, $updateArray, $whr)) {
+                Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->adminLangId));
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        }
+
+        $this->set('msg', Labels::getLabel('LBL_Order_Deleted_Successfully', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
     private function getPaymentForm($langId, $orderId = '')
     {
         $frm = new Form('frmPayment');
@@ -257,7 +306,7 @@ class OrdersController extends AdminBaseController
         return $frm;
     }
 
-    private function getOrderSearchForm($langId)
+    private function getOrderSearchForm($langId, $deletedOrders = false)
     {
         $currency_id = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
         $currencyData = Currency::getAttributesById($currency_id, array('currency_code','currency_symbol_left','currency_symbol_right'));
@@ -277,6 +326,8 @@ class OrdersController extends AdminBaseController
 
         $frm->addHiddenField('', 'page');
         $frm->addHiddenField('', 'user_id');
+        $deleted = ($deletedOrders) ? 1 : 0;
+        $frm->addHiddenField('', 'is_deleted', $deleted);
         $fld_submit = $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
