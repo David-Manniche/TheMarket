@@ -14,7 +14,7 @@ class ProductsController extends AdminBaseController
         $this->set("canEdit", $this->canEdit);
     }
 
-    public function index()
+    public function index($prodCatId = 0)
     {
         $data = FatApp::getPostedData();
         $srchFrm = $this->getSearchForm();
@@ -23,6 +23,11 @@ class ProductsController extends AdminBaseController
             unset($data['id']);
             $srchFrm->fill($data);
         }
+        $prodCatId = FatUtility::int($prodCatId);
+        if($prodCatId > 0){
+            $srchFrm->fill(array('prodcat_id' => $prodCatId));
+        }
+        
         $this->objPrivilege->canViewProducts();
         $this->set("frmSearch", $srchFrm);
         $this->set("includeEditor", true);

@@ -36,9 +36,9 @@ class ProductCategoriesController extends AdminBaseController
     public function search()
     {
         $records = array();
-        $keyword = FatApp::getPostedData('prodcat_identifier', null, '');
+        $keyword = FatApp::getPostedData('prodcat_identifier', FatUtility::VAR_STRING, '');
         $prodCat = new ProductCategory();
-        $records = $prodCat->getCategories(true, $keyword);
+        $records = $prodCat->getCategories(true, true, $keyword);
         $canEdit = $this->objPrivilege->canEditProductCategories(0, true);
         $this->set("arr_listing", $records);
         $this->set("canEdit", $canEdit);
@@ -58,7 +58,7 @@ class ProductCategoriesController extends AdminBaseController
         $this->_template->render(false, false);
     }
     
-    public function updateDisplayOrder()
+  /*   public function updateDisplayOrder()
     {
         $this->objPrivilege->canEditProductCategories();
         $prodCatId = FatApp::getPostedData('prodCatId', FatUtility::VAR_INT, 0); 
@@ -76,7 +76,7 @@ class ProductCategoriesController extends AdminBaseController
         ProductCategory::updateCatOrderCode($prodCatId);
         $this->set('msg', Labels::getLabel('LBL_Order_Updated_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
-    }
+    } */
 
     public function form($prodCatId = 0, $parentCatId = 0)
     {
@@ -218,6 +218,7 @@ class ProductCategoriesController extends AdminBaseController
 
     public function setUpCatImages()
     {
+        $this->objPrivilege->canEditProductCategories();
         $file_type = FatApp::getPostedData('file_type', FatUtility::VAR_INT, 0);
         $prodcat_id = FatApp::getPostedData('prodcat_id', FatUtility::VAR_INT, 0);
         $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
@@ -267,6 +268,7 @@ class ProductCategoriesController extends AdminBaseController
 
     public function removeImage($afileId, $prodCatId, $imageType = '', $langId = 0, $slide_screen = 0)
     {
+        $this->objPrivilege->canEditProductCategories();
         $afileId = FatUtility::int($afileId);
         $prodCatId = FatUtility::int($prodCatId);
         $langId = FatUtility::int($langId);
@@ -353,7 +355,6 @@ class ProductCategoriesController extends AdminBaseController
     public function deleteRecord()
     {
         $this->objPrivilege->canEditProductCategories();
-
         $prodcat_id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
         if ($prodcat_id < 1) {
             Message::addErrorMessage($this->str_invalid_request_id);

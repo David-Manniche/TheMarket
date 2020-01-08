@@ -6,25 +6,9 @@ $(document).ready(function(){
 	var currentPage = 1;
 	var runningAjaxReq = false;
 
-	/* goToSearchPage = function(page) {
-		if(typeof page==undefined || page == null){
-			page =1;
-		}
-		var frm = document.frmCatSearchPaging;
-		$(frm.page).val(page);
-		searchProductCategories(frm);
-	} */
-
-	/* reloadList = function() {
-		var frm = document.frmCatSearchPaging;
-		searchProductCategories(frm);
-	} */
-    
-    /* subcat_list=function(parent){
-		var frm = document.frmCatSearchPaging;
-		$(frm.prodcat_parent).val(parent);
-		reloadList();
-	}; */
+	reloadList = function() {
+		searchProductCategories(document.frmSearch);
+	}
     
 	searchProductCategories = function(form){
 		var data = '';
@@ -45,7 +29,6 @@ $(document).ready(function(){
 			var ans = $.parseJSON(res);
 			if( ans.status == 1 ){
 				fcom.displaySuccessMessage(ans.msg);
-				searchProductCategories(document.frmSearch);
 			} else {
 				fcom.displayErrorMessage(ans.msg);
 			}
@@ -73,7 +56,6 @@ $(document).ready(function(){
 			if( ans.status == 1 ){
 				$(obj).toggleClass("active");
 				fcom.displaySuccessMessage(ans.msg);
-                searchProductCategories(document.frmSearch);
 			} else {
 				fcom.displa(ans.msg);
 			}
@@ -98,7 +80,7 @@ $(document).ready(function(){
 
 	clearSearch = function(){
 		document.frmSearch.reset();
-		searchProductCategories(document.frmSearch);
+		reloadList();
 	};
     
     displaySubCategories = function(anchorTag, level){
@@ -121,30 +103,8 @@ $(document).ready(function(){
             $(anchorTag).children().addClass('ion-chevron-down');
         });
     }
-    
-    /* updateDisplayOrder = function(input, level){        
-        var prodCatId = $(input).parent().parent().attr('id'); 
-        var prodCatparent = $(input).parent().parent().attr('class');
-        var displayOrder = $(input).val();
-        var data = 'prodCatId='+prodCatId+'&displayOrder='+displayOrder;		        
-        fcom.updateWithAjax(fcom.makeUrl('ProductCategories', 'updateDisplayOrder'), data, function(t) {
-            if(t.status == 1){
-                var postedData = 'prodCatId='+prodCatparent+'&level='+level;		
-                fcom.ajax(fcom.makeUrl('productCategories','getSubCategories'),postedData,function(res){
-                    $("."+prodCatparent).remove();
-                    $("#"+prodCatparent).after(res);
-                });
-            }
-        });            
-    } */
 
 })();
-
-/* $(document).on('keypress', "[name='prodcat_display_order']", function(e){
-    if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
-        return false;
-    } 
-}); */
 
 $(document).on('click', 'input[type="checkbox"]', function(){
     if($(this).prop("checked") == true){

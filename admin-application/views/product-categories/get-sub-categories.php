@@ -27,11 +27,15 @@ if(count($childCategories) > 0){
                 case 'select_all':
                     $td->appendElement('plaintext', array(), '<label><span class="checkbox"><input class="selectItem--js" type="checkbox" name="prodcat_ids[]" value='.$row['prodcat_id'].'><i class="input-helper"></i></span></label>', true);
                     break;
-                case 'prodcat_identifier':                    
-                    $td->appendElement('plaintext', array(), '<a href="javascript:void(0);" class="prodcat-level-'.$level.'" onClick="displaySubCategories(this,'.($level+1).')">'.$row[$key].' <i class="ion-chevron-right"></i></a>', true);
+                case 'prodcat_identifier':
+                    if($row['subcategory_count'] > 0){
+                        $td->appendElement('plaintext', array(), '<a href="javascript:void(0);" class="prodcat-level-'.$level.'" onClick="displaySubCategories(this,'.($level+1).')">'.$row[$key].' <i class="ion-chevron-right"></i></a>', true);
+                    }else{
+                        $td->appendElement('plaintext', array(), '<a href="javascript:void(0);" class="prodcat-level-'.$level.'">'.$row[$key].'</a>', true);
+                    }
                     break;
                 case 'category_products':
-                    $td->appendElement('plaintext', array(), '<a href="javascript:void(0);" class="badge badge-secondary badge-pill">'.$row[$key].'</a>', true);
+                    $td->appendElement('plaintext', array(), '<a href="'.commonHelper::generateUrl('Products', 'index', array($row['prodcat_id'])).'" class="badge badge-secondary badge-pill">'.$row[$key].'</a>', true);
                     break;
                 case 'prodcat_active':
                     $active = "";

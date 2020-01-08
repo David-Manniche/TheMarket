@@ -56,7 +56,7 @@ $btn->setFieldTagAttribute('class', "themebtn btn-primary");
                                             <div class="field-set">
                                                 <div class="caption-wraper">
                                                     <label class="field_label">
-                                                    <?php
+                                                    <?php 
                                                         $fld = $prodCatFrm->getField('prodcat_name['.$siteDefaultLangId.']');
                                                         echo $fld->getCaption();
                                                     ?>

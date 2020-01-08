@@ -1063,7 +1063,7 @@ class ProductCategory extends MyAppModel
     public function saveLangData($langId, $prodCatName)
     {
         $langId = FatUtility::int($langId);
-        if($this->mainTableRecordId == 0 || $langId == 0){
+        if($this->mainTableRecordId < 1 || $langId < 1){
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
@@ -1083,7 +1083,7 @@ class ProductCategory extends MyAppModel
     public function saveTranslatedLangData($langId)
     {
         $langId = FatUtility::int($langId);
-        if($this->mainTableRecordId == 0 || $langId == 0){
+        if($this->mainTableRecordId < 1 || $langId < 1){
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
@@ -1105,7 +1105,7 @@ class ProductCategory extends MyAppModel
             if($imageId > 0 ){
                 $data = array('afile_record_id' => $this->mainTableRecordId);
                 $where = array('smt'=>'afile_id = ?', 'vals'=>array($imageId));
-                    FatApp::getDb()->updateFromArray(AttachedFile::DB_TBL, $data, $where);
+                FatApp::getDb()->updateFromArray(AttachedFile::DB_TBL, $data, $where);
             }
         }
         return true;
@@ -1117,23 +1117,25 @@ class ProductCategory extends MyAppModel
             return false;
         }
         foreach($bannerImageIds as $imageId){
-            $data = array('afile_record_id' => $this->mainTableRecordId);
-            $where = array('smt'=>'afile_id = ?', 'vals'=>array($imageId));
-            FatApp::getDb()->updateFromArray(AttachedFile::DB_TBL, $data, $where);
+            if($imageId > 0 ){
+                $data = array('afile_record_id' => $this->mainTableRecordId);
+                $where = array('smt'=>'afile_id = ?', 'vals'=>array($imageId));
+                FatApp::getDb()->updateFromArray(AttachedFile::DB_TBL, $data, $where);
+            }
         }
         return true;
     }
     
-    public function getTranslatedCategoryData($data, $selectLangId)
+    public function getTranslatedCategoryData($data, $selectedLangId)
     {
-        $selectLangId = FatUtility::int($selectLangId);
-        if(empty($data) || $selectLangId < 1){
+        $selectedLangId = FatUtility::int($selectedLangId);
+        if(empty($data) || $selectedLangId < 1){
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
         
         $translateLangobj = new TranslateLangData(static::DB_TBL_LANG);        
-        $translatedData = $translateLangobj->directTranslate($data, $selectLangId);
+        $translatedData = $translateLangobj->directTranslate($data, $selectedLangId);
         if (false === $translatedData) {
             $this->error = $translateLangobj->getError();
             return false;
@@ -1141,7 +1143,7 @@ class ProductCategory extends MyAppModel
         return $translatedData;
     }
     
-    public function getCategories($includeProductCount = true, $keyword = '')
+    public function getCategories($includeProductCount = true, $includeSubCategoriesCount = true, $keyword = '')
     {
         $srch = static::getSearchObject(false, $this->commonLangId, false);
         $srch->addCondition(static::DB_TBL_PREFIX.'deleted', '=', 0);        
@@ -1162,7 +1164,26 @@ class ProductCategory extends MyAppModel
         $srch->doNotLimitRecords();
         $srch->addMultipleFields(array('m.*', 'prodcat_name'));
         $rs = $srch->getResultSet(); 
-        return FatApp::getDb()->fetchAll($rs);
+        $records =FatApp::getDb()->fetchAll($rs);
+        
+        if($includeSubCategoriesCount === true){
+            foreach($records as $key=>$data){
+                $records[$key]['subcategory_count'] = $this->getSubCategoriesCount($data[static::DB_TBL_PREFIX.'id']);
+            } 
+        }
+        return $records;
+    }
+    
+    public function getSubCategoriesCount($prodCatId)
+    {
+        $prodCatId = FatUtility::int($prodCatId);
+        $srch = static::getSearchObject(false, 0, false);
+        $srch->addCondition(static::DB_TBL_PREFIX.'deleted', '=', 0);        
+        $srch->addCondition(static::DB_TBL_PREFIX.'parent', '=', $prodCatId);
+        $srch->addMultipleFields(array('COUNT('.static::DB_TBL_PREFIX.'id) as subcategory_count'));
+        $rs = $srch->getResultSet(); 
+        $record =FatApp::getDb()->fetch($rs);
+        return $record['subcategory_count'] ;
     }
     
     public static function getActiveInactiveCategoriesCount($active)
@@ -1185,9 +1206,9 @@ class ProductCategory extends MyAppModel
         }
         
         $currentDate = date('Y-m-d  H:i:s');
-        $prevdate = strtotime ( '-'.static::REMOVED_IMAGE_TIME.' hour' , strtotime ( $currentDate ) ) ;
-        $prevdate = date ( 'Y-m-d  H:i:s' , $prevdate );
-        $where = array('smt'=>'afile_type = ? AND afile_record_id = ? AND afile_updated_at <= ?', 'vals'=>array($fileType, 0, $prevdate));
+        $prevDate = strtotime ( '-'.static::REMOVED_IMAGE_TIME.' hour' , strtotime ( $currentDate ) ) ;
+        $prevDate = date ( 'Y-m-d  H:i:s' , $prevDate );
+        $where = array('smt'=>'afile_type = ? AND afile_record_id = ? AND afile_updated_at <= ?', 'vals'=>array($fileType, 0, $prevDate));
         if (!FatApp::getDb()->deleteRecords(AttachedFile::DB_TBL, $where)) {
             return false;
         }
