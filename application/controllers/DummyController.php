@@ -327,8 +327,13 @@ class DummyController extends MyAppController
 
     public function index()
     {
+<<<<<<< HEAD
        $res = CommonHelper::getUrlTypeData('http://yokartv8.local.4livedemo.com/blog'); 
       var_dump($res);
+=======
+       echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'favicon', array($this->siteLangId)), CONF_IMG_CACHE_TIME, '.png'); 
+      
+>>>>>>> BR-RV-9.1.2
        exit;
 
     }

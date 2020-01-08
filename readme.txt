@@ -8,6 +8,7 @@ Bugs:
     => 033061 - Getting error on login with Apple
     => 033089 - Social Account not getting logged in if email is not updated in db
     => 033084 - Payment pending orders cannot be cancelled or removed from the system.
+    => Safari Browser layout issue.
 
 Enhancements:
     => 68474 - Library and code updated to handle 3-D secure payments through Omise Payment Gateway.
@@ -23,3 +24,4 @@ New Features:
     => Automating the order completion process based on order date.
     => 69147 - Enhanced social login with plugin.
     => 68898 - Custom push notification management.
+    => PWA compliance.

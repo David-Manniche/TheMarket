@@ -3,7 +3,8 @@ class CommonHelper extends FatUtility
 {
     private static $_ip;
     private static $_user_agent;
-    private static $_lang_id = 1;
+    private static $_lang_id;
+    private static $_lang_code;
     private static $_layout_direction;
     private static $_currency_id;
     private static $_currency_symbol_left;
@@ -64,6 +65,11 @@ class CommonHelper extends FatUtility
             self::$_currency_id,
             array('currency_code','currency_symbol_left','currency_symbol_right','currency_value')
         );
+        
+        self::$_lang_code = Language::getAttributesById(
+            self::$_lang_id,
+            'language_code'
+        );
 
         self::$_currency_symbol_left = $currencyData['currency_symbol_left'];
         self::$_currency_symbol_right = $currencyData['currency_symbol_right'];
@@ -80,6 +86,11 @@ class CommonHelper extends FatUtility
     public static function getLangId()
     {
         return self::$_lang_id;
+    }
+
+    public static function getLangCode()
+    {
+        return self::$_lang_code;
     }
 
     public static function getLayoutDirection()

@@ -710,8 +710,14 @@ class ImageController extends FatController
                 $h = 114;
                 AttachedFile::displayImage($image_name, $w, $h, $default_image);
                 break;
-            default:
-                AttachedFile::displayOriginalImage($image_name, $default_image);
+            default: 
+                $arr = explode('-', $sizeType);
+                if (count($arr) > 0) { 
+                    list($w, $h) = $arr;
+                    AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                } else {
+                    AttachedFile::displayOriginalImage($image_name, $default_image);
+                }                
                 break;
         }
     }

@@ -1263,4 +1263,3 @@ $(document).ajaxComplete(function() {
         });
     }
 });
- 

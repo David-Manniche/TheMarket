@@ -3,6 +3,7 @@ class MyAppController extends FatController
 {
     public $app_user = array();
     public $appToken = '';
+    public $themeDetail = '';
 
 	protected $themeDetail;
 	
@@ -26,6 +27,7 @@ class MyAppController extends FatController
     public function initCommonVariables()
     {
         $this->siteLangId = CommonHelper::getLangId();
+        $this->siteLangCode = CommonHelper::getLangCode();
         $this->siteCurrencyId = CommonHelper::getCurrencyId();
         
         $this->app_user['temp_user_id'] = 0;
@@ -34,6 +36,7 @@ class MyAppController extends FatController
         }
 
         $this->set('siteLangId', $this->siteLangId);
+        $this->set('siteLangCode', $this->siteLangCode);
         $this->set('siteCurrencyId', $this->siteCurrencyId);
         $loginData = array(
         'loginFrm' => $this->getLoginForm(),
