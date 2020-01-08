@@ -362,15 +362,11 @@ $(document).on('change','.language-js',function(){
 	};
 
 	uploadImage = function(formData){
-        var node = this;
-        $('#form-upload').remove();
-
 		var coupon_id = document.frmCouponMedia.coupon_id.value;
 		var lang_id = document.frmCouponMedia.lang_id.value;
 
 		formData.append('testimonial_id', coupon_id);
         formData.append('lang_id', lang_id);
-        /* $val = $(node).val(); */
         $.ajax({
             url: fcom.makeUrl('DiscountCoupons', 'uploadImage',[coupon_id, lang_id]),
             type: 'post',
@@ -380,10 +376,10 @@ $(document).on('change','.language-js',function(){
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $(node).val('Loading');
+                $('#loader-js').html(fcom.getLoader());
             },
             complete: function() {
-                /* $(node).val($val); */
+                $('#loader-js').html(fcom.getLoader());
             },
 			success: function( ans ) {
 				if( !ans.status ){

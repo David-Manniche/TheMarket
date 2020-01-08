@@ -717,12 +717,10 @@
 	};
 
     uploadBrandLogo = function(formData){
-        var node = this;
 		var brandId = document.frmBrandMedia.brand_id.value;
 		var langId = document.frmBrandMedia.brand_lang_id.value;
         formData.append('brand_id', brandId);
         formData.append('lang_id', langId);
-        /* $val = $(node).val(); */
         $.ajax({
             url: fcom.makeUrl('Seller', 'uploadLogo'),
             type: 'post',
@@ -732,10 +730,10 @@
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $(node).val('Loading');
+                $('#loader-js').html(fcom.getLoader());
             },
             complete: function() {
-                /* $(node).val($val); */
+                $('#loader-js').html(fcom.getLoader());
             },
             success: function(ans) {
 				$('.text-danger').remove();
@@ -748,8 +746,6 @@
 					$('#input-field').removeClass('text-success');
 					$('#input-field').addClass('text-danger');
 				}
-				// reloadList();
-                // $(document).trigger('close.facebox');
             },
             error: function(xhr, ajaxOptions, thrownError) {
                 alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);

@@ -198,8 +198,6 @@ $(document).on('change','.prefDimensions-js',function(){
 	};
 
 	uploadImages = function(formData){
-        var node = this;
-        $('#form-upload').remove();
         var frmName = formData.get("frmName");
 		var slideId = document.frmSlideMedia.slide_id.value;
 		var langId = document.frmSlideMedia.lang_id.value;
@@ -207,7 +205,6 @@ $(document).on('change','.prefDimensions-js',function(){
 		formData.append('slide_id', slideId);
         formData.append('slide_screen', slideScreen);
         formData.append('lang_id', langId);
-        /* $val = $(node).val(); */
         $.ajax({
             url: fcom.makeUrl('Slides', 'setUpImage',[slideId]),
             type: 'post',
@@ -217,10 +214,10 @@ $(document).on('change','.prefDimensions-js',function(){
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $(node).val('Loading');
+                $('#loader-js').html(fcom.getLoader());
             },
             complete: function() {
-                /* $(node).val($val); */
+                $('#loader-js').html(fcom.getLoader());
             },
 			success: function(ans) {
 				reloadList();

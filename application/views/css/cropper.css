@@ -8,7 +8,7 @@
  * Date: 2019-10-04T04:33:44.164Z
  */
 
-.img-container { max-height: 350px;}
+.img-container { max-height: 350px; position: relative;}
 
 .cropper-container {
   direction: ltr;

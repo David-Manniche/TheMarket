@@ -6100,6 +6100,9 @@ body.switchtoggled .color_pallete .pallete_control {
 	animation: rotate 2s linear infinite;
 }
 
+.loader-positon{ position: absolute; left:50%; top:50%; transform: translate(-50%, -50%);}
+
+
 @-webkit-keyframes rotate {
 	from {
 		-webkit-transform: rotate(0deg);

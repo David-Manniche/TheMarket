@@ -95,8 +95,11 @@ $(document).ready(function(){
 			contentType: false,
 			processData: false,
 			beforeSend: function() {
-				// $(node).val('Loading');
+				$('#loader-js').html(fcom.getLoader());
 			},
+			complete: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
 			success: function(ans) {
 					$('#dispMessage').html(ans.msg);
 					profileInfoForm();

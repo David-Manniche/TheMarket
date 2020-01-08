@@ -501,8 +501,6 @@ $(document).on('change', '.collection-language-js', function() {
 	};
 
 	uploadShopImages = function(formData){
-        var node = this;
-        $('#form-upload').remove();
         var frmName = formData.get("frmName");
         if ('frmShopLogo' == frmName) {
             var langId = document.frmShopLogo.lang_id.value;
@@ -518,7 +516,6 @@ $(document).on('change', '.collection-language-js', function() {
         formData.append('slide_screen', slideScreen);
         formData.append('lang_id', langId);
         formData.append('file_type', fileType);
-        /* $val = $(node).val(); */
         $.ajax({
             url: fcom.makeUrl('Seller', 'uploadShopImages'),
             type: 'post',
@@ -528,10 +525,10 @@ $(document).on('change', '.collection-language-js', function() {
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $(node).val('Loading');
+                $('#loader-js').html(fcom.getLoader());
             },
             complete: function() {
-                /* $(node).val($val); */
+                $('#loader-js').html(fcom.getLoader());
             },
             success: function(ans) {
                 $.mbsmessage.close();
@@ -582,15 +579,11 @@ $(document).on('change', '.collection-language-js', function() {
 	};
 
     uploadCollectionImage = function(formData){
-        var node = this;
-        $('#form-upload').remove();
-
         var scollection_id = document.frmCollectionMedia.scollection_id.value;
         var lang_id = document.frmCollectionMedia.lang_id.value;
 
         formData.append('scollection_id', scollection_id);
         formData.append('lang_id', lang_id);
-        /* $val = $(node).val(); */
         $.ajax({
             url: fcom.makeUrl('Seller', 'uploadCollectionImage'),
             type: 'post',
@@ -600,10 +593,10 @@ $(document).on('change', '.collection-language-js', function() {
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $(node).val('Loading');
+                $('#loader-js').html(fcom.getLoader());
             },
             complete: function() {
-                /* $(node).val($val); */
+                $('#loader-js').html(fcom.getLoader());
             },
             success: function(ans) {
                 $.mbsmessage.close();

@@ -1,3 +1,5 @@
+.loader-positon{ position: absolute; left:50%; top:50%; transform: translate(-50%, -50%);}
+
 .loader-yk {
 	display: block;
 	width: 30px;
@@ -14257,7 +14259,7 @@ div.faqanswer p {
 /**/
 
 .social-profiles {
-	 
+
 }
 
 .social-icons {
@@ -14321,5 +14323,3 @@ div.faqanswer p {
 	-webkit-transition: all 265ms ease-in;
 	transition: all 265ms ease-in;
 }
-
-    

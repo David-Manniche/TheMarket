@@ -235,8 +235,6 @@ $(document).on('change','.prefDimensions-js',function(){
 	};
 
 	uploadBrandImages = function(formData){
-        var node = this;
-        $('#form-upload').remove();
         var frmName = formData.get("frmName");
         if ('frmBrandLogo' == frmName) {
 			var brandId = document.frmBrandLogo.brand_id.value;
@@ -255,7 +253,6 @@ $(document).on('change','.prefDimensions-js',function(){
         formData.append('slide_screen', slideScreen);
         formData.append('lang_id', langId);
         formData.append('file_type', fileType);
-        /* $val = $(node).val(); */
         $.ajax({
             url: fcom.makeUrl('Brands', 'uploadMedia'),
             type: 'post',
@@ -265,10 +262,10 @@ $(document).on('change','.prefDimensions-js',function(){
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $(node).val('Loading');
+                 $('#loader-js').html(fcom.getLoader());
             },
             complete: function() {
-                /* $(node).val($val); */
+                 $('#loader-js').html(fcom.getLoader());
             },
 			success: function(ans) {
 				$('.text-danger').remove();

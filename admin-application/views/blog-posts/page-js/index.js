@@ -225,10 +225,10 @@ blogPostForm = function(id) {
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $('.img-container').html(fcom.getLoader());
+                $('#loader-js').html(fcom.getLoader());
             },
             complete: function() {
-                $('.img-container').html(fcom.getLoader());
+                $('#loader-js').html(fcom.getLoader());
             },
             success: function(t) {
                 if (t.status == 1) {

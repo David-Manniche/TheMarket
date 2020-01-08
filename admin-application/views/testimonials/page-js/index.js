@@ -211,15 +211,11 @@ $(document).ready(function() {
 	};
 
 	uploadTestimonialImage = function(formData){
-        var node = this;
-        $('#form-upload').remove();
-
 		var testimonialId = document.frmTestimonialMedia.testimonial_id.value;
         var langId = 0;
 
 		formData.append('testimonial_id', testimonialId);
         formData.append('lang_id', langId);
-        /* $val = $(node).val(); */
         $.ajax({
             url: fcom.makeUrl('Testimonials', 'uploadTestimonialMedia'),
             type: 'post',
@@ -229,10 +225,10 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $(node).val('Loading');
+                $('#loader-js').html(fcom.getLoader());
             },
             complete: function() {
-                /* $(node).val($val); */
+                $('#loader-js').html(fcom.getLoader());
             },
             success: function(ans) {
                 $('.text-danger').remove();

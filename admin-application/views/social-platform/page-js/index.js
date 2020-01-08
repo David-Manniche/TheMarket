@@ -168,7 +168,6 @@ $(document).ready(function() {
 	};
 
 	uploadImage = function(formData){
-        var node = this;
         var frmName = formData.get("frmName");
         var splatform_id = document.frmSocialPlatformMedia.splatform_id.value;
         formData.append('splatform_id', splatform_id);
@@ -181,10 +180,10 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $(node).val('Loading');
+                $('#loader-js').html(fcom.getLoader());
             },
             complete: function() {
-                /* $(node).val($val); */
+                $('#loader-js').html(fcom.getLoader());
             },
             success: function(ans) {
                 if (ans.status == 1) {

@@ -179,7 +179,6 @@ $(document).on('change',"select[name='banner_blocation_id']",function(){
 	};
 
     promotionUpload = function(formData){
-        var node = this;
         var promotionId = document.frmPromotionMedia.promotion_id.value;
         var promotionType = document.frmPromotionMedia.promotion_type.value;
         var langId = document.frmPromotionMedia.lang_id.value;
@@ -188,7 +187,6 @@ $(document).on('change',"select[name='banner_blocation_id']",function(){
         formData.append('promotion_type', promotionType);
         formData.append('lang_id', langId);
         formData.append("banner_screen", banner_screen);
-        /* $val = $(node).val(); */
         $.ajax({
             url: fcom.makeUrl('Advertiser', 'promotionUpload',[promotionId]),
             type: 'post',
@@ -198,10 +196,10 @@ $(document).on('change',"select[name='banner_blocation_id']",function(){
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $(node).val('Loading');
+                $('#loader-js').html(fcom.getLoader());
             },
             complete: function() {
-                /* $(node).val($val); */
+                $('#loader-js').html(fcom.getLoader());
             },
             success: function(ans) {
                 $.mbsmessage.close();

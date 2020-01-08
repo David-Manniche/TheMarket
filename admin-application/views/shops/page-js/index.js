@@ -438,8 +438,6 @@ $(document).on('change','.collection-language-js',function(){
 	};
 
 	uploadShopImages = function(formData){
-        var node = this;
-        $('#form-upload').remove();
         var frmName = formData.get("frmName");
         if ('frmShopLogo' == frmName) {
 			var shopId = document.frmShopLogo.shop_id.value;
@@ -457,7 +455,6 @@ $(document).on('change','.collection-language-js',function(){
         formData.append('slide_screen', slideScreen);
         formData.append('lang_id', langId);
         formData.append('file_type', fileType);
-        /* $val = $(node).val(); */
         $.ajax({
             url: fcom.makeUrl('Shops', 'uploadShopImages', [shopId, langId]),
             type: 'post',
@@ -467,10 +464,10 @@ $(document).on('change','.collection-language-js',function(){
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $(node).val('Loading');
+                $('#loader-js').html(fcom.getLoader());
             },
             complete: function() {
-                /* $(node).val($val); */
+                $('#loader-js').html(fcom.getLoader());
             },
 			success: function(ans) {
 				$('.text-danger').remove();

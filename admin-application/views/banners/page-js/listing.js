@@ -207,7 +207,10 @@ $(document).on('change','.display-js',function(){
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $('.img-container').html(fcom.getLoader());
+                $('#loader-js').html(fcom.getLoader());
+            },
+            complete: function() {
+                $('#loader-js').html(fcom.getLoader());
             },
 			success: function(ans) {
 				if(ans.status==1)

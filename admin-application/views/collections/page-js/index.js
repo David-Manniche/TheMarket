@@ -396,9 +396,6 @@ $(document).ready(function() {
 	};
 
 	uploadImages = function(formData){
-        var node = this;
-        $('#form-upload').remove();
-
         var collection_id = document.frmCollectionMedia.collection_id.value;
         var langId = document.frmCollectionMedia.image_lang_id.value;
         var fileType = document.frmCollectionMedia.file_type.value;
@@ -406,7 +403,6 @@ $(document).ready(function() {
         formData.append('collection_id', collection_id);
         formData.append('file_type', fileType);
         formData.append('lang_id', langId);
-        /* $val = $(node).val(); */
         $.ajax({
             url: fcom.makeUrl('Collections', 'uploadImage'),
             type: 'post',
@@ -416,10 +412,10 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $(node).val('Loading');
+                 $('#loader-js').html(fcom.getLoader());
             },
             complete: function() {
-                /* $(node).val($val); */
+                 $('#loader-js').html(fcom.getLoader());
             },
             success: function(ans) {
                 if(0 == ans.status){

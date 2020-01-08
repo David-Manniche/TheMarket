@@ -292,8 +292,6 @@ $(document).on('change','.prefDimensions-js',function(){
 	};
 
 	uploadCatImages = function(formData){
-        var node = this;
-        $('#form-upload').remove();
         var frmName = formData.get("frmName");
 		var slideScreen = 0;
 		if(frmName == 'frmCategoryIcon'){
@@ -312,7 +310,6 @@ $(document).on('change','.prefDimensions-js',function(){
         formData.append('slide_screen', slideScreen);
         formData.append('lang_id', langId);
         formData.append('file_type', fileType);
-        /* $val = $(node).val(); */
         $.ajax({
             url: fcom.makeUrl('ProductCategories', 'setUpCatImages'),
             type: 'post',
@@ -322,10 +319,10 @@ $(document).on('change','.prefDimensions-js',function(){
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $(node).val('Loading');
+                $('#loader-js').html(fcom.getLoader());
             },
             complete: function() {
-                /* $(node).val($val); */
+                $('#loader-js').html(fcom.getLoader());
             },
 			success: function(ans) {
 				if(ans.status == 1){

@@ -261,14 +261,11 @@ $(document).ready(function() {
 	};
 
 	uploadConfImages = function(formData){
-        var node = this;
-
         var langId = document.frmConfiguration.lang_id.value;
         var formType = document.frmConfiguration.form_type.value;
 
         formData.append('lang_id', langId);
         formData.append('form_type', formType);
-        /* $val = $(node).val(); */
         $.ajax({
             url: fcom.makeUrl('Configurations', 'uploadMedia'),
             type: 'post',
@@ -278,10 +275,10 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $(node).val('Loading');
+                $('#loader-js').html(fcom.getLoader());
             },
             complete: function() {
-                /* $(node).val($val); */
+                $('#loader-js').html(fcom.getLoader());
             },
             success: function(ans) {
                 if (!ans.status) {

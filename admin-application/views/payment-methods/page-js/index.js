@@ -144,11 +144,8 @@ $(document).ready(function() {
 	};
 
 	uploadImages = function(formData){
-        var node = this;
-        $('#form-upload').remove();
         var pmethod_id = document.frmGateway.pmethod_id.value;
         formData.append('pmethod_id', pmethod_id);
-        /* $val = $(node).val(); */
         $.ajax({
             url: fcom.makeUrl('PaymentMethods', 'uploadIcon',[pmethod_id]),
             type: 'post',
@@ -158,10 +155,10 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $(node).val('Loading');
+                 $('#loader-js').html(fcom.getLoader());
             },
             complete: function() {
-                /* $(node).val($val); */
+                 $('#loader-js').html(fcom.getLoader());
             },
             success: function(ans) {
                 $('.text-danger').remove();
