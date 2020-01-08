@@ -215,6 +215,17 @@ class ShopsController extends MyAppController
             );
             $data = array_merge($data, $arr);
 
+            if (FatUtility::isAjaxCall()) {
+                $this->set('products', $data['products']);
+                $this->set('page', $data['page']);
+                $this->set('pageCount', $data['pageCount']);
+                $this->set('postedData', $get);
+                $this->set('recordCount', $data['recordCount']);
+                $this->set('siteLangId', $this->siteLangId);
+                echo $this->_template->render(false, false, 'products/products-list.php', true);
+                exit;
+            }  
+
             $this->includeProductPageJsCss();
             $this->_template->addJs('js/slick.min.js');
             $this->_template->addCss(array('css/slick.css','css/product-detail.css'));

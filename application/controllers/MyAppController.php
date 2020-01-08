@@ -4,8 +4,6 @@ class MyAppController extends FatController
     public $app_user = array();
     public $appToken = '';
     public $themeDetail = '';
-
-	protected $themeDetail;
 	
     public function __construct($action)
     {

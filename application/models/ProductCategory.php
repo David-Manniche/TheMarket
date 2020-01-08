@@ -975,13 +975,13 @@ class ProductCategory extends MyAppModel
         }
 
         $parentId =  FatUtility::int($parentId);
-        $parentUrl = '';
+        /* $parentUrl = '';
         if (0 < $parentId) {
             $parentUrlRewriteData = UrlRewrite::getDataByOriginalUrl(ProductCategory::REWRITE_URL_PREFIX.$parentId);
             if (!empty($parentUrlRewriteData)) {
                 $parentUrl = preg_replace('/-'.$parentId.'$/', '', $parentUrlRewriteData['urlrewrite_custom']);
             }
-        }
+        } */
 
         $originalUrl = ProductCategory::REWRITE_URL_PREFIX.$this->mainTableRecordId;
 
@@ -991,8 +991,8 @@ class ProductCategory extends MyAppModel
             $seoUrl =  $seoUrl.'-'.$this->mainTableRecordId;
         }
 
-        $seoUrl = str_replace($parentUrl, '', $seoUrl);
-        $seoUrl = $parentUrl.'-'.$seoUrl;
+        /* $seoUrl = str_replace($parentUrl, '', $seoUrl);
+        $seoUrl = $parentUrl.'-'.$seoUrl; */
 
         $customUrl = UrlRewrite::getValidSeoUrl($seoUrl, $originalUrl, $this->mainTableRecordId);
         return UrlRewrite::update($originalUrl, $customUrl);

@@ -859,7 +859,7 @@ class SellerProduct extends MyAppModel
         if ($this->mainTableRecordId < 1) {
             return false;
         }
-
+        
         $keyword = preg_replace('/-'.$this->mainTableRecordId.'$/', '', $keyword);
         $seoUrl = CommonHelper::seoUrl($keyword);
 

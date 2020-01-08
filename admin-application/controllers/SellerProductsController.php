@@ -185,7 +185,7 @@ class SellerProductsController extends AdminBaseController
         $frmSellerProduct = $this->getSellerProductForm($product_id);
         $sellerProductRow = [];
         if ($selprod_id) {
-            $sellerProductRow = SellerProduct::getAttributesById($selprod_id, null, true, true);
+            $sellerProductRow = SellerProduct::getAttributesById($selprod_id, null, true, true);            
             if (!$sellerProductRow) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
             }

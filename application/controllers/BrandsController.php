@@ -150,6 +150,17 @@ class BrandsController extends MyAppController
             'showBreadcrumb'=> true,
         );
 
+        if (FatUtility::isAjaxCall()) {
+            $this->set('products', $products);
+            $this->set('page', $page);
+            $this->set('pageCount', $srch->pages());
+            $this->set('postedData', $get);
+            $this->set('recordCount', $srch->recordCount());
+            $this->set('siteLangId', $this->siteLangId);
+            echo $this->_template->render(false, false, 'products/products-list.php', true);
+            exit;
+        }
+
         $this->set('data', $data);
         $this->includeProductPageJsCss();
         $this->_template->addJs(array('js/slick.min.js', 'js/responsive-img.min.js'));

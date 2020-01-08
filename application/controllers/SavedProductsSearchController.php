@@ -30,7 +30,7 @@ class SavedProductsSearchController extends LoggedUserController
             $searchedArr = SearchItem::convertUrlStringToArr($val['pssearch_url']);
             $searchItems = SearchItem::convertArrToSrchFiltersAssocArr($searchedArr);
             $arrListing[$key]['search_items'] = SavedSearchProduct::getSearhResultFormat($searchItems, $this->siteLangId);
-            $arrListing[$key]['search_url'] =  SavedSearchProduct::getSearchPageFullUrl($val['pssearch_type'], $val['pssearch_record_id']).'/'.$val['pssearch_url'];
+            $arrListing[$key]['search_url'] =  SavedSearchProduct::getSearchPageFullUrl($val['pssearch_type'], $val['pssearch_record_id']).'?'.$val['pssearch_url'];
             $arrListing[$key]['totalRecords'] = 0;
             $arrListing[$key]['newRecords'] = 0;
         }
@@ -70,7 +70,7 @@ class SavedProductsSearchController extends LoggedUserController
         $post['pssearch_user_id'] = UserAuthentication::getLoggedUserId();
         $post['pssearch_added_on'] = date('Y-m-d H:i:s');
         $post['pssearch_updated_on'] = date('Y-m-d H:i:s');
-        $post['pssearch_url'] = ltrim($searchedUrlString, '/');
+        $post['pssearch_url'] = ltrim(ltrim($searchedUrlString, '/'), '?');
 
         $savedSearchProduct = new SavedSearchProduct();
         $savedSearchProduct->assignValues($post);

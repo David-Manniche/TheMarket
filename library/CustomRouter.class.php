@@ -51,30 +51,39 @@ class CustomRouter
         }
         define('MOBILE_APP_USER_TYPE', $userType);
 
-        if (defined('SYSTEM_FRONT') && SYSTEM_FRONT === true && !FatUtility::isAjaxCall()) {
+        if (defined('SYSTEM_FRONT') && SYSTEM_FRONT === true/*  && !FatUtility::isAjaxCall() */) {
             $url = $_SERVER['REQUEST_URI'];
+            
+            if (strpos($url, "index.php?url=") !== false) {
+                return ;
+            }
 
-            if (strpos($url, "?") !== false) {
+            if (strpos($url, "?") !== false && strpos($url, "/?") === false) {
                 $url = str_replace('?', '/?', $url);
             }
 
-            /* [ Check url rewritten by the system and "/" discarded in url rewrite*/
             $customUrl = substr($url, strlen(CONF_WEBROOT_URL));
             $customUrl = rtrim($customUrl, '/');
-            $customUrl = explode('/', $customUrl);
-
+            $customUrl = explode('/?', $customUrl);
+     
+            /* [ Check url rewritten by the system or system url with query parameter*/
             $srch = UrlRewrite::getSearchObject();
             $srch->doNotCalculateRecords();
             $srch->addMultipleFields(array('urlrewrite_custom','urlrewrite_original'));
             $srch->setPageSize(1);
             $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'custom', '=', $customUrl[0]);
             $rs = $srch->getResultSet();
-            if (!$row = FatApp::getDb()->fetch($rs)) {
+            $row = FatApp::getDb()->fetch($rs);            
+            if (!$row && (!isset($customUrl[1]) || (isset($customUrl[1]) && strpos($customUrl[1], 'pagesize') === false))) {
                 return;
             }
             /*]*/
 
             $url = $row['urlrewrite_original'];
+            if (!$row && isset($customUrl[1])) {
+                $url = $customUrl[0];
+            }
+           
             $arr = explode('/', $url);
 
             $controller = (isset($arr[0]))?$arr[0]:'';
@@ -85,10 +94,12 @@ class CustomRouter
 
             $queryString = $arr;
             /* [ used in case of filters when passed through url*/
-            array_shift($customUrl);
-            if (!empty($customUrl)) {
+            //array_shift($customUrl);
+            if (isset($customUrl[1]) && !empty($customUrl[1])) {
+                $customUrl = explode('&', $customUrl[1]);
                 $queryString = array_merge($queryString, $customUrl);
             }
+            
             /* ]*/
 
             if ($controller != '' && $action == '') {

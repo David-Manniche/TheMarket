@@ -80,8 +80,19 @@ class ProductsController extends MyAppController
         );
 
         $data = array_merge($data, $common, $arr);
+        
+        if (FatUtility::isAjaxCall()) {
+            $this->set('products', $data['products']);
+            $this->set('page', $data['page']);
+            $this->set('pageCount', $data['pageCount']);
+            $this->set('postedData', $get);
+            $this->set('recordCount', $data['recordCount']);
+            $this->set('siteLangId', $this->siteLangId);
+            echo $this->_template->render(false, false, 'products/products-list.php', true);
+            exit;
+        }   
         $this->set('data', $data);
-
+                
         $this->includeProductPageJsCss();
         $this->_template->addJs('js/slick.min.js');
         $this->_template->addCss(array('css/slick.css', 'css/product-detail.css'));
@@ -155,7 +166,7 @@ class ProductsController extends MyAppController
         $get = FatApp::getParameters();
         $headerFormParamsAssocArr = Product::convertArrToSrchFiltersAssocArr($get);
         $headerFormParamsAssocArr = array_merge($headerFormParamsAssocArr, $post);
-
+       
         $langId = 0;
         if (array_key_exists('keyword', $headerFormParamsAssocArr) && !empty($headerFormParamsAssocArr['keyword'])) {
             $langId = $this->siteLangId;
@@ -247,8 +258,7 @@ class ProductsController extends MyAppController
             $brandSrch->addCondition('brand_id', '=', $brandId);
             $brandsCheckedArr =  array($brandId);
         }
-        //var_dump($brandsCheckedArr);
-
+        
         if (!empty($brandsCheckedArr)) {
             $brandSrch->addFld('IF(FIND_IN_SET(brand.brand_id, "'.implode(',', $brandsCheckedArr).'"), 1, 0) as priority');
             $brandSrch->addOrder('priority', 'desc');
@@ -346,8 +356,8 @@ class ProductsController extends MyAppController
         $priceSrch->addMultipleFields(array('MIN(theprice) as minPrice', 'MAX(theprice) as maxPrice'));
         $qry = $priceSrch->getQuery();
         $qry .= ' having minPrice IS NOT NULL AND maxPrice IS NOT NULL';
-        //$priceRs = $priceSrch->getResultSet();
-            
+        //echo $priceSrch->getQuery();
+        //$priceRs = $priceSrch->getResultSet();          
         $priceRs = $db->query($qry);
         $priceArr = $db->fetch($priceRs);
 
