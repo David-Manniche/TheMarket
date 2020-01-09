@@ -2,8 +2,8 @@
 $controller = strtolower($controller);
 $action = strtolower($action);
 ?> <div class="sidebar no-print">
-    <div class="logo-wrapper"> <?php
-        if (CommonHelper::isThemePreview() && isset($_SESSION['preview_theme'])) {
+    <div class="logo-wrapper">
+        <?php if (CommonHelper::isThemePreview() && isset($_SESSION['preview_theme'])) {
             $logoUrl = CommonHelper::generateUrl('home', 'index');
         } else {
             $logoUrl = CommonHelper::generateUrl();
@@ -11,11 +11,10 @@ $action = strtolower($action);
         ?> <div class="logo-dashboard"><a href="<?php echo $logoUrl; ?>"><img src="<?php echo CommonHelper::generateFullUrl('Image', 'siteLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>"
                     alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>"></a></div>
 
-        <?php
-            $isOpened = '';
-            if (array_key_exists('openSidebar', $_COOKIE) && !empty(FatUtility::int($_COOKIE['openSidebar'])) && array_key_exists('screenWidth', $_COOKIE) && applicationConstants::MOBILE_SCREEN_WIDTH < FatUtility::int($_COOKIE['screenWidth'])){
-                $isOpened = 'is-opened';
-            }
+        <?php $isOpened = '';
+        if (array_key_exists('openSidebar', $_COOKIE) && !empty(FatUtility::int($_COOKIE['openSidebar'])) && array_key_exists('screenWidth', $_COOKIE) && applicationConstants::MOBILE_SCREEN_WIDTH < FatUtility::int($_COOKIE['screenWidth'])) {
+            $isOpened = 'is-opened';
+        }
         ?>
         <div class="js-hamburger hamburger-toggle <?php echo $isOpened; ?>"><span class="bar-top"></span><span class="bar-mid"></span><span class="bar-bot"></span></div>
     </div>
@@ -46,17 +45,18 @@ $action = strtolower($action);
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-inventory-update" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-inventory-update"></use>
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Inventory_Update', $siteLangId); ?></span></a></div>
-                </li> <?php  if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0)) {
-                ?> <li class="menu__item <?php echo ($controller == 'importexport' && ($action == 'index')) ? 'is-active' : ''; ?>">
+                </li>
+                <?php if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0)) { ?>
+                    <li class="menu__item <?php echo ($controller == 'importexport' && ($action == 'index')) ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Import_Export', $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('ImportExport', 'index'); ?>"><i class="icn shop"><svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-import-export" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-import-export"></use>
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Import_Export', $siteLangId); ?></span></a></div>
-                </li> <?php
-            } ?>
+                    </li> <?php
+                } ?>
             <li class="divider"></li>
             <li class="menu__item">
-                <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_Promotions', $siteLangId);?></span></div>
+                <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_Ads_&_Promotions', $siteLangId);?></span></div>
             </li>
             <li class="menu__item <?php echo ($controller == 'seller' && $action == 'specialprice') ? 'is-active' : ''; ?>">
                 <div class="menu__item__inner">
@@ -71,10 +71,24 @@ $action = strtolower($action);
             </li>
             <li class="menu__item <?php echo ($controller == 'seller' && $action == 'volumediscount') ? 'is-active' : ''; ?>">
                 <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Volume_Discount', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'volumeDiscount'); ?>">
-                        <i class="icn shop"><svg class="svg">
-                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
-                            </svg>
-                        </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Volume_Discount', $siteLangId);?></span></a></div>
+                <i class="icn shop"><svg class="svg">
+                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
+                    </svg>
+                </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Volume_Discount', $siteLangId);?></span></a></div>
+            </li>
+            <li class="menu__item <?php echo ($controller == 'seller' && $action == 'volumediscount') ? 'is-active' : ''; ?>">
+                <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Buy_Together_Products', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'volumeDiscount'); ?>">
+                <i class="icn shop"><svg class="svg">
+                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
+                    </svg>
+                </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Buy_Together_Products', $siteLangId);?></span></a></div>
+            </li>
+            <li class="menu__item <?php echo ($controller == 'seller' && $action == 'relatedproducts') ? 'is-active' : ''; ?>">
+                <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Related_Products', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'RelatedProducts'); ?>">
+                <i class="icn shop"><svg class="svg">
+                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
+                    </svg>
+                </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Related_Products', $siteLangId);?></span></a></div>
             </li>
             <li class="divider"></li>
              <li class="menu__item">
@@ -171,10 +185,10 @@ $action = strtolower($action);
                             <i class="icn shop"><svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-messages" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-messages"></use>
                                 </svg>
-                            </i><span class="menu-item__title"><?php echo Labels::getLabel("LBL_Messages", $siteLangId); ?> <?php if ($todayUnreadMessageCount > 0) {
-            ?><span
-                                    class="msg-count"><?php echo ($todayUnreadMessageCount < 9) ? $todayUnreadMessageCount : '9+' ; ?></span> <?php
-        } ?></span></a></div>
+                            </i><span class="menu-item__title"><?php echo Labels::getLabel("LBL_Messages", $siteLangId); ?>
+                <?php if ($todayUnreadMessageCount > 0) { ?>
+                    <span class="msg-count"><?php echo ($todayUnreadMessageCount < 9) ? $todayUnreadMessageCount : '9+' ; ?></span>
+                <?php } ?></span></a></div>
                 </li>
                 <li class="menu__item <?php echo ($controller == 'account' && $action == 'credits') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_My_Credits', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Account', 'credits');?>">

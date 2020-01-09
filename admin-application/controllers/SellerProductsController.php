@@ -812,7 +812,7 @@ class SellerProductsController extends AdminBaseController
         $sellerProductRow = SellerProduct::getAttributesById($selprod_id);
         $productRow = Product::getAttributesById($sellerProductRow['selprod_product_id'], array('product_type'));
         $upsellProds = $sellProdObj->getUpsellProducts($selprod_id, $this->adminLangId);
-        $relatedProds = $sellProdObj->getRelatedProducts($selprod_id, $this->adminLangId);
+        $relatedProds = $sellProdObj->getRelatedProducts($this->adminLangId, $selprod_id);
         $sellerproductLinkFrm =  $this->getLinksFrm();
         $data['selprod_id'] = $selProd_id;
         $sellerproductLinkFrm->fill($data);
