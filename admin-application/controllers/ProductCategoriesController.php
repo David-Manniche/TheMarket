@@ -292,7 +292,7 @@ class ProductCategoriesController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function toggleBulkStatuses()
+    /* public function toggleBulkStatuses()
     {
         $this->objPrivilege->canEditProductCategories();
         $status = FatApp::getPostedData('status', FatUtility::VAR_INT, -1);
@@ -311,7 +311,7 @@ class ProductCategoriesController extends AdminBaseController
         }
         $this->set('msg', $this->str_update_record);
         $this->_template->render(false, false, 'json-success.php');
-    }
+    } */
 
     private function updateProductCategoryStatus($prodcatId, $status)
     {
@@ -346,7 +346,7 @@ class ProductCategoriesController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function deleteSelected()
+    /* public function deleteSelected()
     {
         $this->objPrivilege->canEditProductCategories();
         $prodcatIdsArr = FatUtility::int(FatApp::getPostedData('prodcat_ids'));
@@ -363,7 +363,7 @@ class ProductCategoriesController extends AdminBaseController
         }
         $this->set('msg', $this->str_delete_record);
         $this->_template->render(false, false, 'json-success.php');
-    }
+    } */
 
     private function markAsDeleted($prodcat_id)
     {

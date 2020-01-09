@@ -45,18 +45,6 @@
     content: "";
 }
 
-.prodcat-level-1 {
-    padding-left:15px;
-}
-
-.prodcat-level-2 {
-    padding-left:30px;
-}
-
-.prodcat-level-3 {
-    padding-left:45px;
-}
-
 @media screen and (min-width: 48em) {
     .fl--left {
         float: left;
@@ -650,20 +638,20 @@ table.table-bordered tr:nth-child(odd) td {
 }
 
 /**/
-.accordion-head {
-    
-}
+.accordion-head {}
 
 .accordion-head:after {
     font-family: 'Font Awesome 5 Free';
     content: "\f078";
     position: absolute;
     right: 1rem;
-     -webkit-transition: all 0.5s ease;
-     transition: all 0.5s ease;
+    -webkit-transition: all 0.5s ease;
+    transition: all 0.5s ease;
 }
 
-.collapsed .accordion-head:after {content: "\f054"; }
+.collapsed .accordion-head:after {
+    content: "\f054";
+}
 
 
 .list-inline-checkboxes {
@@ -679,4 +667,92 @@ table.table-bordered tr:nth-child(odd) td {
 
 .list-inline-checkboxes li:last-child {
     margin-right: 0;
+}
+
+
+
+/**/
+
+.accordion-categories ul {
+    background: #fff;
+    margin: 0;
+    padding: 0;
+}
+#sorting-categories {
+    margin: 10px auto;
+    background: #fff;
+
+
+}
+
+#sorting-categories,
+#sorting-categories li {
+    list-style-type: none;
+    border: 1px solid #eee;
+    list-style: none;
+}
+
+#sorting-categories li {
+    padding-left: 30px;
+    margin: 5px;
+    border: 1px solid #eeeeee;
+    background-color: #f7f8fa;
+    position: relative;
+}
+
+#sorting-categories li div {
+    background-color: #fff;
+}
+
+#sorting-categories li,
+#sorting-categories ul,
+#sorting-categories div {
+    border-radius: 3px;
+}
+ 
+
+.sorting-bar {
+    position: relative;
+    padding: 10px;
+    height:45px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
+.sorting-title {}
+
+.sorting-actions {}
+
+.note {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.note-icon {
+    margin-right: 15px;
+    font-size: 2.5rem;
+}
+
+.note-text {}
+
+.statustab.statustab-sm .switch-labels + .switch-handles {
+    width: 40px;
+    height: 14px;
+}
+
+.statustab.statustab-sm .switch-labels + .switch-handles:after {
+    width: 14px;
+}
+
+.statustab.statustab-sm.active .switch-labels + .switch-handles:after,
+.statustab.statustab-sm .switch-labels:checked + .switch-handles:after {
+    margin-left: 26px;
 }

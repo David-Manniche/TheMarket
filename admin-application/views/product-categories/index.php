@@ -51,21 +51,12 @@ $fldCancel->setFieldTagAttribute('onClick', 'clearSearch();');
                                     if ($canEdit) {
                                         $innerLiAddCat=$innerUl->appendElement('li');
                                         $innerLiAddCat->appendElement('a', array('href'=>commonHelper::generateUrl('ProductCategories', 'form'), 'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Add_Category', $adminLangId)), Labels::getLabel('LBL_Add_Category', $adminLangId), true);
-
-                                        $innerLi=$innerUl->appendElement('li');
-                                        $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green d-none display-link-js','title'=>Labels::getLabel('LBL_Activate', $adminLangId),"onclick"=>"toggleBulkStatues(1)"), Labels::getLabel('LBL_Activate', $adminLangId), true);
-
-                                        $innerLi=$innerUl->appendElement('li');
-                                        $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green d-none display-link-js','title'=>Labels::getLabel('LBL_Deactivate', $adminLangId),"onclick"=>"toggleBulkStatues(0)"), Labels::getLabel('LBL_Deactivate', $adminLangId), true);
-
-                                        $innerLi=$innerUl->appendElement('li');
-                                        $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green d-none display-link-js','title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteSelected()"), Labels::getLabel('LBL_Delete', $adminLangId), true);
                                     }
                                      echo $ul->getHtml();?>
                             </div>
-                            <div class="sectionbody">
-                                <div class="tablewrap" >
-                                    <div id="listing"> <?php echo Labels::getLabel('LBL_Processing...', $adminLangId); ?></div>
+                            <div class="sectionbody space">
+                                <div class="accordion-categories" id="listing" >
+                                    <?php echo Labels::getLabel('LBL_Processing...', $adminLangId); ?>
                                 </div>
                             </div>
                         </section>

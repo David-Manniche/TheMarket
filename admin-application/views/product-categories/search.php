@@ -1,95 +1,94 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');  
-    $arr_flds = array(
-            'select_all'=>Labels::getLabel('LBL_Select_all', $adminLangId),            
-            'prodcat_identifier'=>Labels::getLabel('LBL_Name', $adminLangId),
-            'category_products' => Labels::getLabel('LBL_Products', $adminLangId),
-            'prodcat_active' => Labels::getLabel('LBL_Publish', $adminLangId),
-            'action' => '',
-        );
-    $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered   table-category-accordion','id'=>'prodcat'));
-    $th = $tbl->appendElement('thead')->appendElement('tr');
-    foreach ($arr_flds as $key => $val) {
-        if ('select_all' == $key) {
-            $th->appendElement('th', array('width'=>'5%'))->appendElement('plaintext', array(), '<label class="checkbox"><input title="'.$val.'" type="checkbox" onclick="selectAll( $(this) )" class="selectAll-js"><i class="input-helper"></i></label>', true);
-        }else if('category_products' == $key || 'prodcat_active' == $key){
-            $th->appendElement('th', array('width'=>'15%'), $val);
-        } else if('prodcat_identifier' == $key){
-            $th->appendElement('th', array('width'=>'50%'), $val);
-        } else if('action' == $key){
-            $th->appendElement('th', array('width'=>'10%'), $val);
-        }
-    }
-
-    foreach ($arr_listing as $sn => $row) {
-        $tr = $tbl->appendElement('tr');
-        $tr->setAttribute("id", $row['prodcat_id']);
-        foreach ($arr_flds as $key => $val) { 
-            $td = $tr->appendElement('td');
-            switch ($key) {
-                case 'select_all':
-                    $td->appendElement('plaintext', array(), '<label><span class="checkbox"><input class="selectItem--js" type="checkbox" name="prodcat_ids[]" value='.$row['prodcat_id'].'><i class="input-helper"></i></span></label>', true);
-                    break;
-                case 'prodcat_identifier':
-                    if($row['subcategory_count'] > 0){
-                        $td->appendElement('plaintext', array(), '<a href="javascript:void(0);" onClick="displaySubCategories(this, 1)">'.$row[$key].' <i class="ion-chevron-right"></i></a>', true);
-                    }else{
-                        $td->appendElement('plaintext', array(), '<a href="javascript:void(0);">'.$row[$key].'</a>', true);
-                    }
-                    break;
-                case 'category_products':
-                    $td->appendElement('plaintext', array(), '<a href="'.commonHelper::generateUrl('Products', 'index', array($row['prodcat_id'])).'" class="badge badge-secondary badge-pill">'.$row[$key].'</a>', true);
-                    break;
-                case 'prodcat_active':
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
+if (count($arr_listing) > 0) {
+?>
+<ul id="sorting-categories" class="sorting-categories">
+    <?php foreach ($arr_listing as $sn => $row) {  ?>
+    <li id="<?php echo $row['prodcat_id'];?>" class="sortableListsClosed">
+        <div>
+            <div class="sorting-bar">
+                <div class="sorting-title"><span><?php echo $row['prodcat_identifier']; ?></span> <a href="<?php echo commonHelper::generateUrl('Products', 'index', array($row['prodcat_id'])); ?>" class="badge badge-secondary badge-pill clickable"><?php echo $row['category_products']; ?></a></div>
+                <div class="sorting-actions">
+                    <?php
                     $active = "";
                     if ($row['prodcat_active']) {
                         $active = 'checked';
                     }
                     $statusAct = ($canEdit === true) ? 'toggleStatus(event,this,' .applicationConstants::YES. ')' : 'toggleStatus(event,this,' .applicationConstants::NO. ')';
                     $statusClass = ($canEdit === false) ? 'disabled' : '';
-                    $str='<label class="statustab -txt-uppercase">
-                     <input '.$active.' type="checkbox" id="switch'.$row['prodcat_id'].'" value="'.$row['prodcat_id'].'" onclick="'.$statusAct.'" class="switch-labels"/>
-                    <i class="switch-handles '.$statusClass.'"></i></label>';
-                    $td->appendElement('plaintext', array(), $str, true);
-                    break;
-                case 'action':
-           
-                    if ($canEdit) {
-                        $div = $td->appendElement("div", array("class"=>"hidden-tools"));
-                        $innerDiv = $div->appendElement("div", array('class'=>'btn-group'));
-                        $innerDiv->appendElement('button', array('class'=>'btn btn-secondary btn-sm dropdown-toggle', 'type'=>'button', 'data-toggle'=>'dropdown', 'aria-haspopup'=>'true', 'aria-expanded'=>'false'), '<i class="ion ion-ios-settings"></i>', true);
-                        
-                        $dropDownDiv = $innerDiv->appendElement("div", array('class'=>'dropdown-menu'));
-                        $dropDownDiv->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'dropdown-item', 'title'=>Labels::getLabel('LBL_Add_Product', $adminLangId)), Labels::getLabel('LBL_Add_Product', $adminLangId), true);
-                        $dropDownDiv->appendElement("div", array('class'=>'dropdown-divider'));
+                    ?>
+                    <label class="statustab statustab-sm">
+                        <input <?php echo $active; ?> type="checkbox" id="switch<?php echo $row['prodcat_id'];?>" value="<?php echo $row['prodcat_id'];?>" onclick="<?php echo $statusAct;?>" class="switch-labels"/>
+                        <i class="switch-handles <?php echo $statusClass;?> clickable"></i>
+                    </label>
+                    <?php 
+                    if ($canEdit) { 
                         $url = commonHelper::generateUrl('ProductCategories', 'form', array($row['prodcat_id']));
                         if($row['prodcat_parent'] > 0){
                             $url = commonHelper::generateUrl('ProductCategories', 'form', array($row['prodcat_id'], $row['prodcat_parent']));
                         }
-                        $dropDownDiv->appendElement('a', array('href'=>$url, 'class'=>'dropdown-item', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId)), Labels::getLabel('LBL_Edit', $adminLangId), true);
-                        $dropDownDiv->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'dropdown-item', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId), "onclick"=>"deleteRecord(".$row['prodcat_id'].")"), Labels::getLabel('LBL_Delete', $adminLangId), true);
-                    }
-                    break;
-                default:
-                    $td->appendElement('plaintext', array(), $row[$key], true);
-                    break;
-            }
-        }
-    }
-    
-    if (count($arr_listing) == 0) {
-        $tbl->appendElement('tr')->appendElement('td', array('colspan'=>count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
-    }
+                    ?>
+                    <a href="javascript::void(0)" class="btn btn-clean btn-sm btn-icon"><i class="fa fa-trash clickable"></i></a>
+                    <a href="<?php echo $url; ?>" class="btn btn-clean btn-sm btn-icon"><i class="fa fa-trash clickable"></i></a>
+                    <a href="javascript::void(0)" onclick = "deleteRecord(<?php echo $row['prodcat_id']; ?>)" class="btn btn-clean btn-sm btn-icon"><i class="fa fa-trash clickable"></i></a>
+                    <?php } ?>
+                </div>
+            </div>
+            <?php if($row['subcategory_count'] > 0 ) { ?>
+            <span class="sortableListsOpener" style="float: left; display: inline-block; background-position: center center; background-repeat: no-repeat; margin-right: 0px; position: absolute; left: 10px; top: 15px; font-size: 12px;"><i class="fa fa-plus clickable" onClick="displaySubCategories(this)"></i></span>
+            <?php } ?>
+        </div>
+    </li>
+    <?php } ?>
+</ul>
+<?php }else{ ?>
+<ul class="list-inline">
+    <li><?php echo  Labels::getLabel('LBL_No_Records_Found', $adminLangId); ?></li>
+</ul>
+<?php } ?>
 
-    $frm = new Form('frmProdCatListing', array('id'=>'frmProdCatListing'));
-    $frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
-    $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-    $frm->setFormTagAttribute('action', CommonHelper::generateUrl('ProductCategories', 'toggleBulkStatuses'));
-    $frm->addHiddenField('', 'status');
-    echo $frm->getFormTag();
-    echo $frm->getFieldHtml('status');
-	echo $tbl->getHtml(); 
-?>
-	</form>
-    
+<script type="text/javascript">
+ $(function() {
+     var optionsPlus = {
+         insertZonePlus: true,
+         placeholderCss: {
+             'background-color': '#e5f5ff'
+         },
+         hintCss: {
+             'background-color': '#6dc5ff'
+         },
+         onChange: function(cEl) {
+             console.log('onChange');
+             console.log($('#sorting-categories').sortableListsToArray());
+         },
+         opener: {
+             active: true,
+             as: 'html', // if as is not set plugin uses background image
+             close: '<i class="fa fa-minus c3"></i>',
+             open: '<i class="fa fa-plus"></i>',
+             openerCss: {
+                 'display': 'inline-block',
+                 'margin-right': '0',
+                 'position': 'absolute',
+                 'left': '10px',
+                 'top': '15px',
+                 'font-size': '12px'
+             }
+         },
+         ignoreClass: 'clickable'
+     };
 
+     $('#sorting-categories').sortableLists(optionsPlus);
+
+     $('#toArrBtn').on('click', function() {
+         console.log($('#sorting-categories').sortableListsToArray());
+     });
+     $('#toHierBtn').on('click', function() {
+         console.log($('#sorting-categories').sortableListsToHierarchy());
+     });
+     $('#toStrBtn').on('click', function() {
+         console.log($('#sorting-categories').sortableListsToString());
+     });
+
+ });
+</script>
 
