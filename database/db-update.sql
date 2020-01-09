@@ -3,7 +3,7 @@ ALTER TABLE `tbl_currency` DROP `currency_is_default`;
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Google_Plus_Login';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_LoggedIn_SUCCESSFULLY';
 
-ALTER TABLE `tbl_users` DROP `user_facebook_id`, DROP `user_googleplus_id`, DROP `user_apple_id`;
+ALTER TABLE `tbl_users` DROP `user_facebook_id`, DROP `user_googleplus_id`;
 
 CREATE TABLE `tbl_user_meta` ( `usermeta_user_id` INT NOT NULL , `usermeta_key` VARCHAR(255) NOT NULL , `usermeta_value` VARCHAR(255) NOT NULL ) ENGINE = InnoDB;
 ALTER TABLE tbl_user_meta ADD PRIMARY KEY (usermeta_user_id, usermeta_key);
