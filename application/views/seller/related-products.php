@@ -87,7 +87,6 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
 <script type="text/javascript">
     $("document").ready(function() {
         var tagInput = document.querySelector("input[name='products_related']");
-        console.log(tagInput);
         var selprod_id = 0;
         $('input[name=\'product_name\']').blur(function() {
             selprod_id = $(this).closest("input[name='selprod_id']").val();

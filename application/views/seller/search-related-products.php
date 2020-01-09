@@ -10,10 +10,10 @@ $thead = $tbl->appendElement('thead');
 $th = $thead->appendElement('tr', array('class' => ''));
 
 foreach ($arr_flds as $key => $val) {
-    if ('select_all' == $key) {
-        $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input title="'.$val.'" type="checkbox" onclick="selectAll($(this))" class="selectAll-js"><i class="input-helper"></i></label>', true);
+    if ('product_name' == $key) {
+        $th->appendElement('th', array('width' => '25%'), $val);
     } else {
-        $th->appendElement('th', array(), $val);
+        $th->appendElement('th', array('width' => '75%'), $val);
     }
 }
 
@@ -32,10 +32,10 @@ foreach ($arrListing as $selProdId => $relatedProds) {
                 $td->appendElement('plaintext', array(), $productName, true);
                 break;
             case 'related_products':
-                $ul = $td->appendElement("ul", array("class"=>"list-vertical"));
+                $ul = $td->appendElement("ul", array("class"=>"list-tags"));
                 foreach ($relatedProds as $relatedProd) {
                     $li = $ul->appendElement("li");
-                    $li->appendElement('plaintext', array(), '<i class="remove_buyTogether remove_param fa fa-remove" onClick="deleteSelprodRelatedProduct('.$selProdId.', '.$relatedProd['selprod_id'].')"></i>'.$relatedProd['product_name'].'', true);
+                    $li->appendElement('plaintext', array(), '<span>'.$relatedProd['product_name'].' <i class="remove_buyTogether remove_param fal fa-times" onClick="deleteSelprodRelatedProduct('.$selProdId.', '.$relatedProd['selprod_id'].')"></i></span>', true);
                     $li->appendElement('plaintext', array(), '<input type="hidden" name="product_related[]" value="'.$relatedProd['selprod_id'].'">', true);
                 }
                 break;

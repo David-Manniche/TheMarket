@@ -2581,7 +2581,7 @@ trait SellerProducts
             $srchFrm->fill(array('keyword'=>$productsTitle[$selProdId]));
         }
 
-        $this->_template->addJs(array('js/tagify.js','js/tagify.polyfills.js'));
+        $this->_template->addJs(array('js/tagify.min.js','js/tagify.polyfills.js'));
         $this->_template->addCss(array('css/tagify.css'));
 
         $relProdFrm = $this->getRelatedProductsForm();
