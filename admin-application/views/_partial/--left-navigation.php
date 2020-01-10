@@ -260,6 +260,7 @@
 						<li><a href="<?php echo CommonHelper::generateUrl('CurrencyManagement'); ?>"><?php echo Labels::getLabel('LBL_Currency_Management',$adminLangId);?></a></li>
 					<?php }?>
 					<?php if($objPrivilege->canViewTax(AdminAuthentication::getLoggedAdminId(), true)){?>
+						<li><a href="<?php echo CommonHelper::generateUrl('TaxStructure'); ?>"><?php echo Labels::getLabel('LBL_Tax_Structure',$adminLangId);?></a></li>
 						<li><a href="<?php echo CommonHelper::generateUrl('Tax'); ?>"><?php echo Labels::getLabel('LBL_Sales_Tax',$adminLangId);?></a></li>
 					<?php }?>
 					<?php if($objPrivilege->canViewCommissionSettings(AdminAuthentication::getLoggedAdminId(), true)){?>

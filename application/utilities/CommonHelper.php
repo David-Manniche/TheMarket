@@ -491,24 +491,7 @@ class CommonHelper extends FatUtility
 
         return $amount;
     }
-    /*
-    public static function calculateTaxRates($productId, $prodPrice, $sellerId, $langId,$qty = 1){
-        $tax = 0 ;
-        $res = $this->getTaxRates($productId, $sellerId, $langId);
-
-        if(empty($res)){
-            return $tax;
-        }
-
-        if($res['taxval_is_percent'] == static::TYPE_PERCENTAGE){
-            $tax = round((($prodPrice*$qty) * $res['taxval_value'])/100,2);
-        }else{
-            $tax = $res['taxval_value']*$qty;
-        }
-
-        return $tax;
-    } */
-
+    
     public static function renderHtml($content = '', $stripJs = false)
     {
         $str = html_entity_decode($content);

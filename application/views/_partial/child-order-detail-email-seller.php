@@ -6,6 +6,7 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
     <td width="40%" style="padding:10px;background:#eee;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;">'.Labels::getLabel('LBL_Product', $siteLangId).'</td>
     <td width="10%" style="padding:10px;background:#eee;font-size:13px; border:1px solid #ddd;color:#333; font-weight:bold;">'.Labels::getLabel('L_Qty', $siteLangId).'</td>
     <td width="15%" style="padding:10px;background:#eee;font-size:13px; border:1px solid #ddd;color:#333; font-weight:bold;" align="right">'.Labels::getLabel('LBL_Price', $siteLangId).'</td>';
+
     if ($shippingHanldedBySeller) {
         $str.='<td width="15%" style="padding:10px;background:#eee;font-size:13px; border:1px solid #ddd;color:#333; font-weight:bold;" align="right">'.Labels::getLabel('LBL_Shipping', $siteLangId).'</td>';
     }
@@ -30,7 +31,9 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
     //$discountTotal = CommonHelper::orderProductAmount($orderProducts,'DISCOUNT');
 
     $taxCharged = 0;
+    $taxOptions = array();
     if ($orderProducts['op_tax_collected_by_seller']) {
+        $taxOptions = $orderProducts['taxOptions'];
         $taxCharged = CommonHelper::orderProductAmount($orderProducts, 'TAX');
     }
     $netAmount =  CommonHelper::orderProductAmount($orderProducts, 'NETAMOUNT', false, $userType);
@@ -52,14 +55,22 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
             <a href="'.$prodOrBatchUrl.'" style="font-size:13px; color:#333;">'.$orderProducts["op_product_name"].'</a><br/>'.Labels::getLabel('Lbl_Brand', $siteLangId).':'.$orderProducts["op_brand_name"].'<br/>'.Labels::getLabel('Lbl_Sold_By', $siteLangId).':'.$orderProducts["op_shop_name"].'<br/>'.$options.'
             </td>
             <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">'.$orderProducts['op_qty'].'</td>
-            <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($orderProducts["op_unit_price"]).'</td>';
+            <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($orderProducts["op_unit_price"]).'</td>';            
     if ($shippingHanldedBySeller) {
         $str .= '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($shippingPrice).'</td>';
     }
         $str .= '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($volumeDiscount).'</td>';
 
     if ($orderProducts['op_tax_collected_by_seller']) {
-        $str .= '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($taxCharged).'</td>';
+        if (empty($taxOptions)) {
+            $str .= '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($taxCharged).'</td>';
+        } else {
+            $taxChargedTxt = '';
+            foreach ($taxOptions as $key => $val) {
+                $taxChargedTxt .= '<p style="color:#333"><strong>'.$key.': </strong>'.CommonHelper::displayMoneyFormat($val).'</p>';
+            }
+            $str .= '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.$taxChargedTxt.'</td>';
+        }
     }
         $str .= '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($total).'</td>
         </tr>';
@@ -85,10 +96,19 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
     }
 
     if ($taxCharged > 0 && $orderProducts['op_tax_collected_by_seller'] > 0) {
-        $str.='<tr>
-        <td colspan="'.$colCount.'" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.Labels::getLabel('LBL_Tax', $siteLangId).'</td>
-        <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($taxCharged).'</td>
-        </tr>';
+        if (empty($taxOptions)) {
+            $str.='<tr>
+            <td colspan="'.$colCount.'" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.Labels::getLabel('LBL_Tax', $siteLangId).'</td>
+            <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($taxCharged).'</td>
+            </tr>';
+        } else {
+            foreach ($taxOptions as $key => $val) {
+                $str.='<tr>
+                <td colspan="'.$colCount.'" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.$key.'</td>
+                <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($val).'</td>
+                </tr>';
+            }
+        }
     }
     /* if ( $discountTotal ){
     $str.='<tr>

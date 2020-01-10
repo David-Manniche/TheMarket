@@ -293,6 +293,15 @@ submitForm = function(form, v) {
     return false;
 }
 
+getCountryStates = function(countryId, stateId, dv) {
+    fcom.displayProcessing();
+    fcom.ajax(fcom.makeUrl('Configurations', 'getStates', [countryId, stateId]), '', function(res) {
+        $(dv).empty();
+        $(dv).append(res);
+    });
+    $.systemMessage.close();
+};
+
 $(document).on('click', '.logoFiles-Js', function() {
     var node = this;
     $('#form-upload').remove();

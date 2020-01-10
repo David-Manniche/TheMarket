@@ -944,7 +944,7 @@ class Orders extends MyAppModel
         $srch->joinTable('(' . $qryOtherCharges . ')', 'LEFT OUTER JOIN', 'torp.op_id = opcc.'.OrderProduct::DB_TBL_CHARGES_PREFIX.'op_id', 'opcc');
         if ($langId > 0) {
             $srch->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_LANG, 'LEFT OUTER JOIN', 'torp_l.oplang_op_id = torp.op_id and torp_l.oplang_lang_id = '.$langId, 'torp_l');
-            $srch->addMultipleFields(array('op_product_name','op_selprod_options','op_brand_name','op_shop_name','op_other_charges','op_shipping_duration_name'));
+            $srch->addMultipleFields(array('op_product_name','op_selprod_options','op_brand_name','op_shop_name','op_other_charges','op_shipping_duration_name', 'op_product_tax_options'));
         }
 
         $srch->joinTable(Orders::DB_TBL, 'LEFT OUTER JOIN', 'torp.op_order_id = tor.order_id', 'tor');

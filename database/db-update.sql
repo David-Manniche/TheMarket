@@ -178,3 +178,67 @@ DELETE FROM `tbl_attached_files` WHERE `afile_type` = 52 and `afile_screen` = 0;
 
 ALTER TABLE `tbl_orders` ADD `order_deleted` TINYINT(1) NOT NULL AFTER `order_renew`;
 UPDATE tbl_product_saved_search SET pssearch_url = REPLACE(pssearch_url,'/','&');
+
+CREATE TABLE `tbl_tax_structure` (
+  `taxstr_id` int(11) NOT NULL,
+  `taxstr_identifier` varchar(150) NOT NULL,
+  `taxstr_type` int(4) NOT NULL,
+  `taxstr_state_dependent` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `tbl_tax_structure` (`taxstr_id`, `taxstr_identifier`, `taxstr_type`, `taxstr_state_dependent`) VALUES
+(1, 'Vat/Single Tax Structure', 1, 0),
+(2, 'Combined Tax structure', 2, 0);
+
+CREATE TABLE `tbl_tax_structure_lang` (
+  `taxstrlang_taxstr_id` int(11) NOT NULL,
+  `taxstrlang_lang_id` int(11) NOT NULL,
+  `taxstr_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `tbl_tax_structure_lang` (`taxstrlang_taxstr_id`, `taxstrlang_lang_id`, `taxstr_name`) VALUES
+(1, 1, 'Tax'),
+(1, 2, 'Tax'),
+(2, 1, 'GST'),
+(2, 2, 'GST');
+
+CREATE TABLE `tbl_tax_structure_options` (
+  `taxstro_id` int(11) NOT NULL,
+  `taxstro_taxstr_id` int(11) NOT NULL,
+  `taxstro_interstate` tinyint(1) NOT NULL,
+  `taxstro_identifier` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `tbl_tax_structure_options` (`taxstro_id`, `taxstro_taxstr_id`, `taxstro_interstate`, `taxstro_identifier`) VALUES
+(1, 2, 0, 'CGST'),
+(2, 2, 0, 'SGST'),
+(3, 2, 1, 'IGST');
+
+CREATE TABLE `tbl_tax_structure_options_lang` (
+  `taxstrolang_taxstro_id` int(11) NOT NULL,
+  `taxstrolang_lang_id` int(11) NOT NULL,
+  `taxstro_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `tbl_tax_structure_options_lang` (`taxstrolang_taxstro_id`, `taxstrolang_lang_id`, `taxstro_name`) VALUES
+(1, 1, 'CGST'),
+(1, 2, 'CGST'),
+(2, 1, 'SGST'),
+(2, 2, 'SGST'),
+(3, 1, 'IGST'),
+(3, 2, 'IGST');
+
+ALTER TABLE `tbl_tax_structure`
+  ADD PRIMARY KEY (`taxstr_id`);
+ALTER TABLE `tbl_tax_structure_lang`
+  ADD PRIMARY KEY (`taxstrlang_taxstr_id`,`taxstrlang_lang_id`);
+ALTER TABLE `tbl_tax_structure_options`
+  ADD PRIMARY KEY (`taxstro_id`);
+ALTER TABLE `tbl_tax_structure_options_lang`
+  ADD PRIMARY KEY (`taxstrolang_taxstro_id`,`taxstrolang_lang_id`);
+ALTER TABLE `tbl_tax_structure`
+  MODIFY `taxstr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `tbl_tax_structure_options`
+  MODIFY `taxstro_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `tbl_order_products_lang` ADD `op_product_tax_options` VARCHAR(255) NOT NULL AFTER `op_product_weight_unit_name`;
+ALTER TABLE `tbl_tax_values` ADD `taxval_options` TEXT NOT NULL AFTER `taxval_value`;

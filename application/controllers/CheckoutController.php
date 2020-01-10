@@ -1158,6 +1158,23 @@ class CheckoutController extends MyAppController
 
                     $op_products_dimension_unit_name = ($productInfo['product_dimension_unit']) ? $lengthUnitsArr[$productInfo['product_dimension_unit']] : '';
                     $op_product_weight_unit_name = ($productInfo['product_weight_unit']) ? $weightUnitsArr[$productInfo['product_weight_unit']] : '';
+                    $op_product_tax_options = array();
+                    $productTaxOption = $cartSummary["prodTaxOptions"][$productInfo['selprod_id']];
+                    foreach ($productTaxOption as $taxStroId => $taxStroName) {
+                        $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
+                        if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
+                            $taxLangData =  $taxStructure->getOptionData($taxStroId);
+                            // CommonHelper::printArray($taxLangData, true);
+                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]] = $taxStroName['value'];
+                        } else {
+                            $structureName =  $taxStructure->getName($lang_id);
+                            $label = Labels::getLabel('LBL_Tax', $lang_id);
+                            if (array_key_exists('taxstr_name', $structureName) && $structureName['taxstr_name'] != '') {
+                                $label  = $structureName['taxstr_name'];
+                            }
+                            $op_product_tax_options[$label] = $taxStroName['value'];
+                        }
+                    }
 
                     $productsLangData[$lang_id] = array(
                     'oplang_lang_id'    =>    $lang_id,
@@ -1170,6 +1187,7 @@ class CheckoutController extends MyAppController
                     'op_shipping_durations'    =>    $shippingDurationTitle,
                     'op_products_dimension_unit_name'    =>    $op_products_dimension_unit_name,
                     'op_product_weight_unit_name'        =>    $op_product_weight_unit_name,
+                    'op_product_tax_options'        =>    json_encode($op_product_tax_options),
                     );
                 }
 

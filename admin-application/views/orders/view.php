@@ -88,6 +88,7 @@ if ($order['order_reward_point_used'] > 0) {
                             $k = 1;
                             $cartTotal = 0;
                             $shippingTotal = 0;
+                            $taxOptionsTotal = array();
                             foreach ($order["products"] as $op) {
                                 $shippingCost = CommonHelper::orderProductAmount($op, 'SHIPPING');
                                 $volumeDiscount = CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT');
@@ -134,6 +135,14 @@ if ($order['order_reward_point_used'] > 0) {
                             </tr>
                                 <?php
                                 $k++;
+                                if (!empty($op['taxOptions'])) {
+                                    foreach ($op['taxOptions'] as $key => $val) {
+                                        if (!isset($taxOptionsTotal[$key])) {
+                                            $taxOptionsTotal[$key] = 0;
+                                        }
+                                        $taxOptionsTotal[$key] += $val;
+                                    }
+                                }
                             } ?>
                             <tr>
                                 <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Cart_Total', $adminLangId); ?></td>
@@ -143,10 +152,19 @@ if ($order['order_reward_point_used'] > 0) {
                                 <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Delivery/Shipping', $adminLangId); ?></td>
                                 <td class="text-right" colspan="2">+<?php echo CommonHelper::displayMoneyFormat($shippingTotal, true, true); ?></td>
                             </tr>
+                            <?php if (empty($taxOptionsTotal)) { ?>
                             <tr>
                                 <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Tax', $adminLangId); ?></td>
-                                <td class="text-right" colspan="2">+<?php echo CommonHelper::displayMoneyFormat($order['order_tax_charged'], true, true); ?></td>
+                                <td class="text-right" colspan="2"><?php echo '+'.CommonHelper::displayMoneyFormat($order['order_tax_charged'], true, true); ?></td>
                             </tr>
+                            <?php } else {
+                                foreach ($taxOptionsTotal as $key => $val) { ?>
+                                  <tr>
+                                    <td colspan="8" class="text-right"><?php echo $key ?></td>
+                                    <td class="text-right" colspan="2"><?php echo CommonHelper::displayMoneyFormat($val); ?></td>
+                                  </tr>
+                                <?php }
+                            } ?>
                             <?php if ($order['order_discount_total'] > 0) {?>
                             <tr>
                                 <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Discount', $adminLangId); ?></td>

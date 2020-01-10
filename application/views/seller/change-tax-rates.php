@@ -4,7 +4,7 @@
 	<?php
 	$frm->setFormTagAttribute('onsubmit','setUpTaxRates(this); return(false);');
 	$frm->setFormTagAttribute('class','form');
-	$frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
-	$frm->developerTags['fld_default_col'] = 12;
+	$frm->developerTags['colClassPrefix'] = 'col-lg-6 col-md-6 col-sm-';
+	$frm->developerTags['fld_default_col'] = 6;
 	echo $frm->getFormHtml(); ?>
 </div>

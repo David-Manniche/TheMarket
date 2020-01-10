@@ -160,7 +160,7 @@ class OrdersController extends AdminBaseController
             array('op_id', 'op_invoice_number', 'op_selprod_title', 'op_product_name',
             'op_qty', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model',
             'op_shop_name', 'op_shop_owner_name', 'op_shop_owner_email', 'op_shop_owner_phone', 'op_unit_price',
-            'totCombinedOrders as totOrders', 'op_shipping_duration_name', 'op_shipping_durations',  'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name','op_other_charges')
+            'totCombinedOrders as totOrders', 'op_shipping_duration_name', 'op_shipping_durations',  'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name','op_other_charges', 'op_product_tax_options')
         );
 
         $opRs = $opSrch->getResultSet();
@@ -172,6 +172,8 @@ class OrdersController extends AdminBaseController
 
         foreach ($order['products'] as $opId => $opVal) {
             $order['products'][$opId]['charges'] = $charges[$opId];
+            $taxOptions = json_decode($opVal['op_product_tax_options'], true);
+            $order['products'][$opId]['taxOptions'] = $taxOptions;
         }
 
         $addresses = $orderObj->getOrderAddresses($order['order_id']);

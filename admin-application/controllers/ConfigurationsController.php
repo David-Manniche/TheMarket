@@ -65,7 +65,6 @@ class ConfigurationsController extends AdminBaseController
         $this->set( 'favicon', $favicon );
         break;
         } */
-
         $frm = $this->getForm($frmType, $arrayValues);
         $frm->fill($record);
 
@@ -143,6 +142,11 @@ class ConfigurationsController extends AdminBaseController
         $this->objPrivilege->canEditGeneralSettings();
 
         $post = FatApp::getPostedData();
+        $user_state_id = 0;
+        if (isset($post['CONF_STATE'])) {
+            $user_state_id = FatUtility::int($post['CONF_STATE']);
+        }
+
         $frmType = FatUtility::int($post['form_type']);
 
         if (1 > $frmType) {
@@ -152,7 +156,9 @@ class ConfigurationsController extends AdminBaseController
 
         $frm = $this->getForm($frmType);
         $post = $frm->getFormDataFromArray($post);
-
+        if ($user_state_id > 0) {
+            $post['CONF_STATE'] = $user_state_id;
+        }
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
@@ -234,11 +240,11 @@ class ConfigurationsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function is_ssl_enabled()
+    private function isSslEnabled()
     {
 
         // url connection
-        $url = "https://".$_SERVER["HTTP_HOST"];
+        $url = "https://" . $_SERVER["HTTP_HOST"];
 
         // Initiate connection
         $ch = curl_init();
@@ -343,7 +349,7 @@ class ConfigurationsController extends AdminBaseController
 
         $this->set('file', $_FILES['file']['name']);
         $this->set('frmType', Configurations::FORM_GENERAL);
-        $this->set('msg', $_FILES['file']['name']. Labels::getLabel('MSG_Uploaded_Successfully', $this->adminLangId));
+        $this->set('msg', $_FILES['file']['name'] . Labels::getLabel('MSG_Uploaded_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -364,11 +370,11 @@ class ConfigurationsController extends AdminBaseController
             Message::addErrorMessage($e->getMessage());
         }
 
-        if (isset($get['code']) && isset($get['code'])!='') {
+        if (isset($get['code']) && isset($get['code']) != '') {
             $code = $get['code'];
             $auth = $analytics->getAccessToken($code);
-            if ($auth['refreshToken']!='') {
-                $arr = array('CONF_ANALYTICS_ACCESS_TOKEN'=>$auth['refreshToken']);
+            if ($auth['refreshToken'] != '') {
+                $arr = array('CONF_ANALYTICS_ACCESS_TOKEN' => $auth['refreshToken']);
                 $record = new Configurations();
                 if (!$record->update($arr)) {
                     Message::addErrorMessage($record->getError());
@@ -566,6 +572,10 @@ class ConfigurationsController extends AdminBaseController
                 $frm->addSelectBox(Labels::getLabel('LBL_Privacy_Policy_Page', $this->adminLangId), 'CONF_PRIVACY_POLICY_PAGE', $cpagesArr);
                 $frm->addSelectBox(Labels::getLabel('LBL_Terms_and_Conditions_Page', $this->adminLangId), 'CONF_TERMS_AND_CONDITIONS_PAGE', $cpagesArr);
                 $frm->addSelectBox(Labels::getLabel('LBL_GDPR_policy_page', $this->adminLangId), 'CONF_GDPR_POLICY_PAGE', $cpagesArr);
+
+                $taxStructureArr =  TaxStructure::getAllAssoc($this->adminLangId);
+                $frm->addSelectBox(Labels::getLabel('LBL_TAX_STRUCTURE', $this->adminLangId), 'CONF_TAX_STRUCTURE', $taxStructureArr, array(), array(), '');
+
                 $frm->addSelectBox(Labels::getLabel('LBL_Cookies_Policies_Page', $this->adminLangId), 'CONF_COOKIES_BUTTON_LINK', $cpagesArr);
                 $fld1 = $frm->addCheckBox(Labels::getLabel('LBL_Cookies_Policies', $this->adminLangId), 'CONF_ENABLE_COOKIES', 1, array(), false, 0);
                 $fld1->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_cookies_policies_section_will_be_shown_on_frontend", $this->adminLangId) . "</small>";
@@ -596,7 +606,9 @@ class ConfigurationsController extends AdminBaseController
                 $fld->htmlAfterField = '<small>' . Labels::getLabel("LBL_Current", $this->adminLangId) . ' <span id="currentDate">' . CommonHelper::currentDateTime(null, true) . '</span></small>';
                 $countryObj = new Countries();
                 $countriesArr = $countryObj->getCountriesArr($this->adminLangId);
-                $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'CONF_COUNTRY', $countriesArr);
+                $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'CONF_COUNTRY', $countriesArr);
+
+                $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'CONF_STATE', array());
 
                 $frm->addSelectBox(Labels::getLabel('LBL_date_Format', $this->adminLangId), 'CONF_DATE_FORMAT', Configurations::dateFormatPhpArr(), false, array(), '');
 
@@ -830,6 +842,9 @@ class ConfigurationsController extends AdminBaseController
 
                 $fld = $frm->addCheckBox(Labels::getLabel("LBL_Tax_Collected_By_Seller", $this->adminLangId), 'CONF_TAX_COLLECTED_BY_SELLER', 1, array(), false, 0);
                 $fld->htmlAfterField = '<br><small>' . Labels::getLabel("LBL_On_enabling_this_feature,_seller_will_be_able_to_collect_tax", $this->adminLangId) . '</small>';
+
+                $fld = $frm->addCheckBox(Labels::getLabel("LBL_TAX_AFTER_DISCOUNTS", $this->adminLangId), 'CONF_TAX_AFTER_DISOCUNT', 1, array(), false, 0);
+                $fld->htmlAfterField = '<br><small>'.Labels::getLabel("LBL_On_enabling_this_feature,_tax_will_be_applicable_after_discounts", $this->adminLangId).'</small>';
 
                 $fld = $frm->addCheckBox(Labels::getLabel("LBL_Return_Shipping_Charges_to_Customer", $this->adminLangId), 'CONF_RETURN_SHIPPING_CHARGES_TO_CUSTOMER', 1, array(), false, 0);
                 $fld->htmlAfterField = '<br><small>' . Labels::getLabel("LBL_On_enabling_return_shipping_charges_to_customer,", $this->adminLangId) . '</small>';
