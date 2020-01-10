@@ -530,6 +530,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
         </div>
     </div>
 </main>
+
 <script>
     /******** for tooltip ****************/
     $('.info--tooltip-js').hover(function() {

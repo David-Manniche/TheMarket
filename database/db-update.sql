@@ -177,3 +177,26 @@ DELETE FROM `tbl_attached_files` WHERE `afile_type` = 12 and `afile_screen` = 0;
 DELETE FROM `tbl_attached_files` WHERE `afile_type` = 52 and `afile_screen` = 0;
 
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Google Shopping Feed', '5', 'GoogleShoppingFeed', '1', '1');
+
+CREATE TABLE `tbl_ads_batches` (
+  `adsbatch_id` int(11) NOT NULL AUTO_INCREMENT,
+  `adsbatch_user_id` int(11) NOT NULL,
+  `adsbatch_name` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `adsbatch_lang_id` tinyint(2) NOT NULL,
+  `adsbatch_target_country_id` tinyint(2) NOT NULL,
+  `adsbatch_expired_on` datetime NOT NULL,
+  `adsbatch_synced_on` datetime NOT NULL,
+  `adsbatch_status` tinyint(2) NOT NULL,
+  `adsbatch_added_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY(`adsbatch_id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `tbl_ads_batch_products`(
+   `abprod_adsbatch_id` INT NOT NULL,
+   `abprod_selprod_id` INT NOT NULL,
+   `abprod_cat_id` INT NOT NULL COMMENT 'Google Product Category',
+   `abprod_age_group` VARCHAR(15) NOT NULL,
+   `abprod_item_group_identifier` varchar(100) NOT NULL,
+   `abprod_product_info` TEXT NOT NULL,
+   PRIMARY KEY(`abprod_adsbatch_id`, `abprod_selprod_id`)
+) ENGINE = InnoDB;

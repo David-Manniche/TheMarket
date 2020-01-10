@@ -6,16 +6,6 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
     public const KEY_NAME = 'GoogleShoppingFeed';
     public const SCOPE = 'https://www.googleapis.com/auth/content';
 
-    private const PRODUCTION_URL = 'https://www.googleapis.com/content/v2/';
-    private const INSERT_URL = '{merchantId}/products';
-    private const GET_URL = '{merchantId}/products/{productId}';
-    private const DELETE_URL = '{merchantId}/products/{productId}';
-    private const LIST_URL = '{merchantId}/products';
-    
-    private const BATCH_REQUEST_URL = 'products/batch';
-
-    private $merchantId;
-
     private $client;
     private $clientId;
     private $clientSecret;
@@ -24,11 +14,6 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
     public function __construct($action)
     {
         parent::__construct($action);
-        
-        $this->merchantId = $this->getMerchantAccountDetail(self::KEY_NAME . '_merchantId');
-        if (empty($this->merchantId)) {
-            $this->setupMerchantDetail();
-        }
     }
 
     private function validateSettings()
@@ -55,13 +40,6 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->client->setClientSecret($this->clientSecret);
         $this->client->setRedirectUri($redirectUri);
         $this->client->setDeveloperKey($this->developerKey);
-    }
-
-    private function makeUrl($url, $replaceData = [])
-    {
-        $url = self::PRODUCTION_URL . $url;
-        $replaceData = ['{merchantId}' => $this->merchantId] + $replaceData;
-        return CommonHelper::replaceStringData($url, $replaceData);
     }
 
     public function setupMerchantDetail()
@@ -97,43 +75,5 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         }
         $authUrl = $this->client->createAuthUrl();
         FatApp::redirectUser($authUrl);
-    }
-
-    public function insert($data)
-    {
-        if (empty($data) || !is_array($data)) {
-            $this->error = Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId());
-            return false;
-        }
-        $url = $this->makeUrl(self::INSERT_URL);
-        return $this->doRequest($url, 'POST', $data);
-    }
-
-    public function get($productId)
-    {
-        if (empty($productId)) {
-            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId());
-            return false;
-        }
-
-        $url = $this->makeUrl(self::GET_URL, ['{productId}' => $productId]);
-        return $this->doRequest($url, 'GET');
-    }
-
-    public function delete($productId)
-    {
-        if (empty($productId)) {
-            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId());
-            return false;
-        }
-
-        $url = $this->makeUrl(self::DELETE_URL, ['{productId}' => $productId]);
-        return $this->doRequest($url, 'DELETE');
-    }
-
-    public function list()
-    {
-        $url = $this->makeUrl(self::LIST_URL);
-        return $this->doRequest($url, 'GET');
     }
 }

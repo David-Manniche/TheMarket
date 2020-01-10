@@ -130,7 +130,7 @@ class SellerController extends SellerBaseController
 
         $txnObj = new Transactions();
         $txnsSummary = $txnObj->getTransactionSummary($userId, date('Y-m-d'));
-
+        
         $this->set('transactions', $transactions);
         $this->set('returnRequests', $returnRequests);
         $this->set('OrderReturnRequestStatusArr', OrderReturnRequest::getRequestStatusArr($this->siteLangId));
@@ -146,7 +146,6 @@ class SellerController extends SellerBaseController
         $this->set('userBalance', User::getUserBalance($userId));
         $this->set('ordersStats', $ordersStats);
         $this->set('dashboardStats', Stats::getUserSales($userId));
-
         $this->_template->addJs(array('js/chartist.min.js'));
         $this->_template->addCss(array('css/chartist.css'));
         $this->_template->addJs('js/slick.min.js');

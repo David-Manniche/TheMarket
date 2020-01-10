@@ -47,25 +47,39 @@ class PluginSetting
         }
     }
 
-    public static function getConfDataById($pluginId)
+    public static function getConfDataById($pluginId, $column = '')
     {
         $pluginId = FatUtility::int($pluginId);
         if (1 > $pluginId) {
             return false;
         }
-        $srch = new SearchBase(static::DB_TBL, 'tads');
-        $srch->addCondition('tads.' . static::DB_TBL_PREFIX . 'plugin_id', '=', (int) $pluginId);
+        $srch = new SearchBase(static::DB_TBL, 'tps');
+        $srch->addCondition('tps.' . static::DB_TBL_PREFIX . 'plugin_id', '=', (int) $pluginId);
+        
+        $singleColumn = false;
+        if (!empty($column) && is_string($column)) {
+            $srch->addCondition('tps.' . static::DB_TBL_PREFIX . 'key', '=', $column);
+            $singleColumn = true;
+        }
         $rs = $srch->getResultSet();
+
+        if ($singleColumn) {
+            $result = FatApp::getDb()->fetch($rs);
+            return $result[static::DB_TBL_PREFIX . 'value'];
+        }
         return FatApp::getDb()->fetchAll($rs);
     }
 
-    public static function getConfDataByCode($keyName)
+    public static function getConfDataByCode($keyName, $column = '')
     {
         $settingsData = Plugin::getAttributesByCode($keyName);
         if (!$settingsData) {
             return false;
         }
-        $pluginSettings = PluginSetting::getConfDataById($settingsData["plugin_id"]);
+        $pluginSettings = PluginSetting::getConfDataById($settingsData["plugin_id"], $column);
+        if (!empty($column) && is_string($column)) {
+            return $pluginSettings;
+        }
 
         $pluginSettingArr = [];
 
@@ -129,6 +143,13 @@ class PluginSetting
         }
 
         $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
+        return $frm;
+    }
+
+    public static function setupForm($frm, $langId)
+    {
+        $frm->addHiddenField('', 'keyName');
+        $frm->addHiddenField('', 'plugin_id');
         return $frm;
     }
 }

@@ -176,8 +176,8 @@ class Plugin extends MyAppModel
         }
         $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . $pluginType, FatUtility::VAR_INT, 0);
         if (1 > $defaultCurrConvAPI) {
-            Message::addMessage(Labels::getLabel('MSG_ADVERTISEMENT_PLUGIN_NOT_FOUND', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Advertisement'));
+            $this->error = Labels::getLabel('MSG_ADVERTISEMENT_PLUGIN_NOT_FOUND', CommonHelper::getLangId());
+            return false;
         }
         return Plugin::getAttributesById($defaultCurrConvAPI, 'plugin_code');
     }

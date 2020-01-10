@@ -76,13 +76,20 @@ $action = strtolower($action);
                             </svg>
                         </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Volume_Discount', $siteLangId);?></span></a></div>
             </li>
-            <li class="menu__item <?php echo ($controller == 'advertisement' && $action == 'index') ? 'is-active' : ''; ?>">
-                <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_SETUP_ADVERTISEMENT', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Advertisement'); ?>">
-                        <i class="icn shop"><svg class="svg">
-                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-promotions" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-promotions"></use>
-                            </svg>
-                        </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_SETUP_ADVERTISEMENT', $siteLangId);?></span></a></div>
-            </li>
+            <?php
+            $obj = new Plugin();
+            $keyName = $obj->getDefaultPluginKeyName(Plugin::TYPE_ADVERTISEMENT_FEED_API);
+            if (!empty($keyName)) {
+                $pluginDetail = Plugin::getAttributesByCode($keyName, ['plugin_active', 'plugin_identifier']);
+                if (0 < $pluginDetail['plugin_active']) { ?>
+                <li class="menu__item <?php echo ($controller == 'advertisement') ? 'is-active' : ''; ?>">
+                    <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_SETUP_ADVERTISEMENT', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Advertisement'); ?>">
+                    <i class="icn shop"><svg class="svg">
+                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-promotions" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-promotions"></use>
+                        </svg>
+                    </i><span class="menu-item__title"><?php echo $pluginDetail['plugin_identifier'];?></span></a></div>
+                </li>
+            <?php } } ?>
             <li class="divider"></li>
              <li class="menu__item">
                     <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_Sales', $siteLangId);?></span></div>

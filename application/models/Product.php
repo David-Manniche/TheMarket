@@ -2,7 +2,7 @@
 class Product extends MyAppModel
 {
     public const DB_TBL = 'tbl_products';
-    public const DB_TBL_LANG ='tbl_products_lang';
+    public const DB_TBL_LANG = 'tbl_products_lang';
     public const DB_TBL_PREFIX = 'product_';
     public const DB_TBL_LANG_PREFIX = 'productlang_';
 

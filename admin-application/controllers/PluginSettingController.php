@@ -72,16 +72,24 @@ class PluginSettingController extends AdminBaseController
 
     public function getForm()
     {
+        $class = get_called_class();
         try {
-            $requirements = get_called_class()::getConfigurationKeys();
+            $requirements = $class::getConfigurationKeys();
         } catch (\Error $e) {
-            FatUtility::dieJsonError('ERR - ' . $e->getMessage());
+            if (false == method_exists($class, 'form')) {
+                FatUtility::dieJsonError('ERR - ' . $e->getMessage());
+            }
+            $frm = $class::form($this->adminLangId);
         }
         
-        if (empty($requirements) || !is_array($requirements)) {
+        if ((empty($requirements) || !is_array($requirements)) && !isset($frm)) {
             return false;
         }
-        $frm = PluginSetting::getForm($requirements, $this->adminLangId);
+        if (isset($frm)) {
+            $frm = PluginSetting::setupForm($frm, $this->adminLangId);
+        } else {
+            $frm = PluginSetting::getForm($requirements, $this->adminLangId);
+        }
         $frm->fill(['keyName' => $this->keyName]);
         return $frm;
     }

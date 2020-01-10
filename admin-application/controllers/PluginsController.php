@@ -96,15 +96,6 @@ class PluginsController extends AdminBaseController
             Message::addErrorMessage($record->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
-        if (isset($post['CONF_DEFAULT_PLUGIN_' . $pluginType])) {
-            $confVal = $post['CONF_DEFAULT_PLUGIN_' . $pluginType];
-            $confRecord = new Configurations();
-            if (!$confRecord->update(['CONF_DEFAULT_PLUGIN_' . $pluginType => $confVal])) {
-                Message::addErrorMessage($confRecord->getError());
-                FatUtility::dieJsonError(Message::getHtml());
-            }
-        }
 
         $newTabLangId = 0;
         if ($pluginId > 0) {
@@ -119,6 +110,17 @@ class PluginsController extends AdminBaseController
             $pluginId = $record->getMainTableRecordId();
             $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
+        
+        $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . $pluginType, FatUtility::VAR_INT, 0);
+        if (!empty($post['CONF_DEFAULT_PLUGIN_' . $pluginType]) || empty($defaultCurrConvAPI)) {
+            $confVal = empty($defaultCurrConvAPI) ? $pluginId : $post['CONF_DEFAULT_PLUGIN_' . $pluginType];
+            $confRecord = new Configurations();
+            if (!$confRecord->update(['CONF_DEFAULT_PLUGIN_' . $pluginType => $confVal])) {
+                Message::addErrorMessage($confRecord->getError());
+                FatUtility::dieJsonError(Message::getHtml());
+            }
+        }
+
         $this->set('msg', $this->str_setup_successful);
         $this->set('pluginId', $pluginId);
         $this->set('langId', $newTabLangId);
@@ -150,7 +152,11 @@ class PluginsController extends AdminBaseController
             $langFrm->fill($langData);
         }
 
+        $pluginDetail = Plugin::getAttributesById($pluginId, ['plugin_type', 'plugin_identifier']);
+
         $this->set('languages', Language::getAllNames());
+        $this->set('type', $pluginDetail['plugin_type']);
+        $this->set('identifier', $pluginDetail['plugin_identifier']);
         $this->set('pluginId', $pluginId);
         $this->set('lang_id', $lang_id);
         $this->set('langFrm', $langFrm);

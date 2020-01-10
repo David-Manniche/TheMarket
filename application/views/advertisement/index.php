@@ -23,15 +23,29 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="cards">
-                        <div class="cards-content pl-4 pr-4">
-                            
+            <?php if (!empty($merchantId)) { ?>
+                <div class="row mb-4">
+                    <div class="col-lg-12">
+                        <div class="cards">
+                            <div class="cards-content p-4">
+                                <h4 class="content-header-title">
+                                    <?php echo Labels::getLabel('LBL_BATCH_SETUP', $siteLangId); ?>
+                                </h4>
+                                <div id="batchSetup"></div>
+                            </div>
                         </div>
                     </div>
-                </div>    
-            </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="cards">
+                            <div class="cards-content pl-4 pr-4">
+                                <div id="listing"></div>
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+            <?php } ?>
         </div>
     </div>
 </main>
