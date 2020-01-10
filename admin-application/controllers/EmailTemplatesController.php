@@ -23,6 +23,7 @@ class EmailTemplatesController extends AdminBaseController
     {
         $this->objPrivilege->canViewEmailTemplates();
         $frmSearch = $this->getSearchForm();
+        $this->_template->addJs('js/jscolor.js');
         $this->set("frmSearch", $frmSearch);
         $this->_template->render();
     }
@@ -80,7 +81,7 @@ class EmailTemplatesController extends AdminBaseController
         $to = FatApp::getConfig("CONF_SITE_OWNER_EMAIL");
         $langId = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 1);
         $tpl = FatApp::getPostedData('etpl_code', FatUtility::VAR_STRING, '');
-        
+
         if (empty($tpl)) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_INVALID_TEMPLATE', $this->adminLangId));
         }
@@ -140,7 +141,7 @@ class EmailTemplatesController extends AdminBaseController
             Message::addErrorMessage($etplObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
         if (0 < $autoUpdateOtherLangsData) {
             $updateLangDataobj = new TranslateLangData(EmailTemplates::DB_TBL);
@@ -166,14 +167,14 @@ class EmailTemplatesController extends AdminBaseController
         $fld->requirements()->setRequired(true);
         $frm->addHtml(Labels::getLabel('LBL_Replacement_Caption', $this->adminLangId), 'replacement_caption', '<h3>' . Labels::getLabel('LBL_Replacement_Vars', $this->adminLangId) . '</h3>');
         $frm->addHtml(Labels::getLabel('LBL_Replacement_Vars', $this->adminLangId), 'etpl_replacements', '');
-        
+
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
         if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
             $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
-        
+
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         $fldTestEmail = $frm->addButton("", "test_email", Labels::getLabel('LBL_SEND_TEST_EMAIL', $this->adminLangId));
         $fld_submit->attachField($fldTestEmail);
@@ -279,5 +280,122 @@ class EmailTemplatesController extends AdminBaseController
             Message::addErrorMessage($etplObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
+    }
+
+    public function settingsForm($lang_id = 0, $autoFillLangData = 0)
+    {
+        $this->objPrivilege->canViewEmailTemplates();
+
+        $lang_id = FatUtility::int($lang_id);
+
+        if ($lang_id == 0) {
+            $lang_id = $this->adminLangId;
+        }
+
+        $settingFrm = $this->getSettingsForm($lang_id);
+        $emailLogo = AttachedFile::getAttachment(AttachedFile::FILETYPE_EMAIL_LOGO, 0, 0, $lang_id);
+        $this->set('logoImage', $emailLogo);
+        $this->set('languages', Language::getAllNames());
+        $this->set('lang_id', $lang_id);
+        $this->set('settingFrm', $settingFrm);
+        $this->set('formLayout', Language::getLayoutDirection($lang_id));
+        $this->_template->render(false, false);
+    }
+
+    public function setupSettings()
+    {
+        $this->objPrivilege->canEditEmailTemplates();
+        $data = FatApp::getPostedData();
+        $lang_id = $data['lang_id'];
+        $frm = $this->getSettingsForm($lang_id);
+        $post = $frm->getFormDataFromArray($data);
+        if (false === $post) {
+            Message::addErrorMessage(current($frm->getValidationErrors()));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $record = new Configurations();
+        if (!$record->update($post)) {
+            Message::addErrorMessage($record->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $this->set('msg', $this->str_setup_successful);
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    private function getSettingsForm($lang_id = 0)
+    {
+        $this->objPrivilege->canViewEmailTemplates();
+
+        $frm = new Form('frmEtplSettingsForm');
+
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
+
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_Header_BG_color', $this->adminLangId), 'CONF_EMAIL_TEMPLATE_COLOR_CODE'.$lang_id, FatApp::getConfig('CONF_EMAIL_TEMPLATE_COLOR_CODE'.$lang_id, FatUtility::VAR_STRING, ''));
+        $fld->addFieldTagAttribute('class', 'jscolor');
+
+        $frm->addSelectBox(Labels::getLabel('LBL_Logo_Ratio', $this->adminLangId), 'CONF_EMAIL_TEMPLATE_LOGO_RATIO', EmailTemplates::getLogoRatioArr(), FatApp::getConfig('CONF_EMAIL_TEMPLATE_LOGO_RATIO', FatUtility::VAR_STRING, ''), array(), '');
+
+        $fld = $frm->addButton(
+            Labels::getLabel('LBL_Logo', $this->adminLangId),
+            'email_logo',
+            Labels::getLabel('LBL_Upload_Logo', $this->adminLangId),
+            array('class'=>'logoFile-Js btn-xs','id'=>'email_logo','data-file_type'=>AttachedFile::FILETYPE_EMAIL_LOGO,'data-frm'=>'frmEtplSettingsForm')
+        );
+        $fld = $frm->addHtmlEditor(Labels::getLabel('LBL_Footer_HTML', $this->adminLangId), 'CONF_EMAIL_TEMPLATE_FOOTER_HTML'.$lang_id, FatApp::getConfig('CONF_EMAIL_TEMPLATE_FOOTER_HTML'.$lang_id, FatUtility::VAR_STRING, ''));
+        $fld->requirements()->setRequired(true);
+
+
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
+        return $frm;
+    }
+
+    public function uploadLogo()
+    {
+        $this->objPrivilege->canEditShops();
+        $post = FatApp::getPostedData();
+        $file_type = FatApp::getPostedData('file_type', FatUtility::VAR_INT, 0);
+        $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
+
+        if (!$file_type) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $allowedFileTypeArr = array(AttachedFile::FILETYPE_EMAIL_LOGO);
+
+        if (!in_array($file_type, $allowedFileTypeArr)) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Please_Select_A_File', $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $fileHandlerObj = new AttachedFile();
+        if (!$res = $fileHandlerObj->saveImage($_FILES['file']['tmp_name'], $file_type, 0, 0, $_FILES['file']['name'], -1, true, $lang_id)) {
+            Message::addErrorMessage($fileHandlerObj->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $this->set('lang_id', $lang_id);
+        $this->set('msg', Labels::getLabel('LBL_File_Uploaded_Successfully', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function removeEmailLogo($lang_id = 0)
+    {
+        $lang_id = FatUtility::int($lang_id);
+        $fileHandlerObj = new AttachedFile();
+        if (!$fileHandlerObj->deleteFile(AttachedFile::FILETYPE_EMAIL_LOGO, 0, 0, 0, $lang_id)) {
+            Message::addErrorMessage($fileHandlerObj->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $this->set('msg', Labels::getLabel('MSG_Deleted_Successfully', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
     }
 }

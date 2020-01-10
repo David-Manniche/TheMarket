@@ -227,7 +227,7 @@ class ConfigurationsController extends AdminBaseController
             Message::addErrorMessage($record->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $this->set('msg', Labels::getLabel('MSG_Setup_Successful', $this->adminLangId));
         $this->set('frmType', $frmType);
         $this->set('langId', 0);
@@ -602,13 +602,13 @@ class ConfigurationsController extends AdminBaseController
 
                 $currencyArr = Currency::getCurrencyNameWithCode($this->adminLangId);
                 $frm->addSelectBox(Labels::getLabel('LBL_Default_System_Currency', $this->adminLangId), 'CONF_CURRENCY', $currencyArr, false, array(), '');
-                
+
                 $faqCategoriesArr = FaqCategory::getFaqPageCategories();
                 $sellerCategoriesArr = FaqCategory::getSellerPageCategories();
 
                 $frm->addSelectBox(Labels::getLabel('LBL_Faq_Page_Main_Category', $this->adminLangId), 'CONF_FAQ_PAGE_MAIN_CATEGORY', $faqCategoriesArr);
                 $frm->addSelectBox(Labels::getLabel('LBL_Seller_Page_Main_Faq_Category', $this->adminLangId), 'CONF_SELLER_PAGE_MAIN_CATEGORY', $sellerCategoriesArr);
-                
+
                 break;
 
             case Configurations::FORM_SEO:
@@ -778,7 +778,7 @@ class ConfigurationsController extends AdminBaseController
                     0
                 );
                 $fld11->htmlAfterField = "<br><small>".Labels::getLabel("LBL_On_enabling_this_feature,users_will_be_able_to_login_using_facebook_account._Please_define_settings_for_facebook_login_if_enabled_under_\"Third_Party_APIs\"_Tab", $this->adminLangId)."</small>";
-                
+
                 $fld11 = $frm->addCheckBox(
                     Labels::getLabel("LBL_GOOGLE_LOGIN", $this->adminLangId),
                     'CONF_ENABLE_GOOGLE_LOGIN',
@@ -788,7 +788,7 @@ class ConfigurationsController extends AdminBaseController
                     0
                 );
                 $fld11->htmlAfterField = "<br><small>".Labels::getLabel("LBL_On_enabling_this_feature,users_will_be_able_to_login_using_google_account._Please_define_settings_for_google_plus_login_if_enabled_under_\"Third_Party_APIs\"_Tab", $this->adminLangId)."</small>";
-                
+
                 $fld = $frm->addIntegerField(Labels::getLabel("LBL_Max_Seller_Request_Attempts", $this->adminLangId), 'CONF_MAX_SUPPLIER_REQUEST_ATTEMPT', '');
                 $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_Maximum_seller_request_attempts_allowed", $this->adminLangId) . "</small>";
 
@@ -902,7 +902,7 @@ class ConfigurationsController extends AdminBaseController
 
                 $fld = $frm->addSelectBox(Labels::getLabel("LBL_Cash_on_Delivery_Order_Status", $this->adminLangId), 'CONF_COD_ORDER_STATUS', $orderStatusArr, false, array(), '');
                 $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_Set_the_Cash_on_delivery_order_status.", $this->adminLangId)."</small>";
-                    
+
                 $fld = $frm->addSelectBox(
                     Labels::getLabel("LBL_STATUS_USED_BY_SYSTEM_TO_MARK_ORDER_AS_COMPLETED", $this->adminLangId),
                     'CONF_DEFAULT_COMPLETED_ORDER_STATUS',
@@ -916,7 +916,7 @@ class ConfigurationsController extends AdminBaseController
                 $returnAge = FatApp::getConfig("CONF_DEFAULT_RETURN_AGE", FatUtility::VAR_INT, 7);
                 $fld = $frm->addIntegerField(Labels::getLabel("LBL_DEFAULT_RETURN_AGE_[Days]", $this->adminLangId), 'CONF_DEFAULT_RETURN_AGE', $returnAge);
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_IT_WILL_CONSIDERED_IF_NO_RETURN_AGE_IS_DEFINED_IN_SHOP_OR_SELLER_PRODUCT.", $this->adminLangId) . "</small>";
-                
+
                 $vendorOrderSelected = (!empty($arrValues['CONF_VENDOR_ORDER_STATUS'])) ? $arrValues['CONF_VENDOR_ORDER_STATUS'] : 0;
 
                 $fld = $frm->addCheckBoxes(Labels::getLabel("LBL_Seller_Order_Statuses", $this->adminLangId), 'CONF_VENDOR_ORDER_STATUS', $orderStatusArr, $vendorOrderSelected, array('class' => 'list-inline'));
@@ -1315,7 +1315,7 @@ class ConfigurationsController extends AdminBaseController
                 $frm->addHtml('', 'Microsoft Translator Text API', '<h3>'.Labels::getLabel("LBL_Microsoft_Translator_Text_API", $this->adminLangId).'</h3>');
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_SUBSCRIPTION_KEY", $this->adminLangId), 'CONF_TRANSLATOR_SUBSCRIPTION_KEY');
                 $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_MICROSOFT_TRANSLATOR_TEXT_API_3.0_SUBSCRIPTION_KEY.", $this->adminLangId)."</small>";
-                
+
                 break;
             case Configurations::FORM_REFERAL:
                 $fld = $frm->addRadioButtons(
@@ -1616,14 +1616,14 @@ class ConfigurationsController extends AdminBaseController
                 $ul->htmlAfterField .= ' </div></div><input type="button" name="front_logo" class="logoFiles-Js btn-xs" id="front_logo" data-file_type='.AttachedFile::FILETYPE_FRONT_LOGO.' value="Upload file"><small>Dimensions 168*37</small></li>';
 
 
-                $ul->htmlAfterField .= '<li>'.Labels::getLabel('LBL_Select_Email_Template_Logo', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
+                /*$ul->htmlAfterField .= '<li>'.Labels::getLabel('LBL_Select_Email_Template_Logo', $this->adminLangId).'<div class="logoWrap"><div class="uploaded--image">';
 
 
                 if (AttachedFile::getAttachment(AttachedFile::FILETYPE_EMAIL_LOGO, 0, 0, $langId)) {
                     $ul->htmlAfterField .= '<img src="'.CommonHelper::generateFullUrl('Image', 'emailLogo', array($langId), CONF_WEBROOT_FRONT_URL).'"><a  class="remove--img" href="javascript:void(0);" onclick="removeEmailLogo('.$langId.')" ><i class="ion-close-round"></i></a>';
                 }
 
-                $ul->htmlAfterField .= ' </div></div><input type="button" name="email_logo" class="logoFiles-Js btn-xs" id="email_logo" data-file_type='.AttachedFile::FILETYPE_EMAIL_LOGO.' value="Upload file"><small>Dimensions 168*37</small></li>';
+                $ul->htmlAfterField .= ' </div></div><input type="button" name="email_logo" class="logoFiles-Js btn-xs" id="email_logo" data-file_type='.AttachedFile::FILETYPE_EMAIL_LOGO.' value="Upload file"><small>Dimensions 168*37</small></li>';*/
 
 
                 $ul->htmlAfterField .= '<li>'.Labels::getLabel('LBL_Select_Website_Favicon', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
