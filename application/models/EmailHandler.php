@@ -118,9 +118,12 @@ class EmailHandler extends FatModel
         if (!isset($row['etpl_body']) || $row['etpl_body'] == '') {
             return false;
         }
-
+        $etpl = new FatTemplate('', '');
+        $etpl->set('langId', $langId);
+        $header = $etpl->render(false, false, '_partial/emails/email-header.php', true);
+        $footer = FatApp::getConfig('CONF_EMAIL_TEMPLATE_FOOTER_HTML'.$langId, FatUtility::VAR_STRING, '');
         $subject = $row['etpl_subject'];
-        $body = $row['etpl_body'];
+        $body = $header.$row['etpl_body'].$footer;
 
         $vars += static::commonVars($langId);
 
@@ -311,13 +314,13 @@ class EmailHandler extends FatModel
     }
 
     public function sendNewRegistrationNotification($langId, $d)
-    { 
+    {
         $tpl = 'new_registration_admin';
 
         if (isset($d['user_is_affiliate']) && $d['user_is_affiliate']) {
             $tpl = 'new_affiliate_registration_admin';
         }
-        
+
         $userType = !empty($d['user_type']) ? User::getUserTypesArr($langId)[$d['user_type']] : '';
         $vars = array(
                     '{name}' => $d['user_name'],
@@ -511,7 +514,7 @@ class EmailHandler extends FatModel
         if (!empty($brandRequestComments)) {
             $tpl = new FatTemplate('', '');
             $tpl->set('brandRequestComments', $brandRequestComments);
-            $requestCommentTableFormatHtml = $tpl->render(false, false, '_partial/brand-request-comment-email.php', true);
+            $requestCommentTableFormatHtml = $tpl->render(false, false, '_partial/emails/brand-request-comment-email.php', true);
             $vars["{brand_request_comments}"] = $requestCommentTableFormatHtml;
         }
         if (self::sendMailTpl($userInfo['credential_email'], 'seller_brand_request_status_change', $langId, $vars)) {
@@ -642,7 +645,7 @@ class EmailHandler extends FatModel
             $tpl->set('billingAddress', $billingArr);
             $tpl->set('shippingAddress', $shippingArr);
 
-            $order_products_table_format = $tpl->render(false, false, '_partial/order-detail-email.php', true);
+            $order_products_table_format = $tpl->render(false, false, '_partial/emails/order-detail-email.php', true);
 
             $arrReplacements = array(
             '{user_full_name}' => trim($userInfo['user_name']),
@@ -717,7 +720,7 @@ class EmailHandler extends FatModel
             //$tpl->set('orderInfo', $orderDetail);
             $tpl->set('orderProducts', $childOrderInfo);
             $tpl->set('siteLangId', $langId);
-            $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/child-order-detail-email.php', true);
+            $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/emails/child-order-detail-email.php', true);
             $arrReplacements = array(
             '{user_full_name}' => trim($userInfo['user_name']),
             '{order_items_table_format}' => $orderItemsTableFormatHtml,
@@ -878,7 +881,7 @@ class EmailHandler extends FatModel
                 $tpl->set('shippingHanldedBySeller', $shippingHanldedBySeller);
                 $tpl->set('billingAddress', $billingArr);
                 $tpl->set('shippingAddress', $shippingArr);
-                $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/child-order-detail-email-seller.php', true);
+                $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/emails/child-order-detail-email-seller.php', true);
                 $userObj = new User($orderDetail["order_user_id"]);
                 $userInfo = $userObj->getUserInfo(array('user_name','credential_email','user_phone'));
                 $arrReplacements = array(
@@ -945,7 +948,7 @@ class EmailHandler extends FatModel
             $tpl = new FatTemplate('', '');
             $tpl->set('orderProducts', $orderComment);
             $tpl->set('siteLangId', $langId);
-            $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/child-order-detail-email.php', true);
+            $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/emails/child-order-detail-email.php', true);
             $statuesArr = Orders::getOrderProductStatusArr($orderComment["order_language_id"]);
 
             $arrReplacements = array(
@@ -1023,7 +1026,7 @@ class EmailHandler extends FatModel
             $tpl->set('siteLangId', $langId);
             $tpl->set('shippingHanldedBySeller', $shippingHanldedBySeller);
             $tpl->set('userType', User::USER_TYPE_SELLER);
-            $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/child-order-detail-email-seller.php', true);
+            $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/emails/child-order-detail-email-seller.php', true);
             $statuesArr = Orders::getOrderProductStatusArr($orderComment["order_language_id"]);
 
             $arrReplacements = array(
@@ -1113,7 +1116,7 @@ class EmailHandler extends FatModel
         $tpl = new FatTemplate('', '');
         $tpl->set('siteLangId', $langId);
         $tpl->set('data', $withdrawalRequestData);
-        $withdrawalDetailsTableFormatHtml = $tpl->render(false, false, '_partial/withdrawal-request-details-email.php', true);
+        $withdrawalDetailsTableFormatHtml = $tpl->render(false, false, '_partial/emails/withdrawal-request-details-email.php', true);
 
         $arrReplacements = array(
         '{request_id}' => $formattedRequestValue,
@@ -1867,7 +1870,7 @@ class EmailHandler extends FatModel
             $tpl = new FatTemplate('', '');
             $tpl->set('orderProducts', $orderProduct);
             $tpl->set('siteLangId', $langId);
-            $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/child-order-detail-email.php', true);
+            $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/emails/child-order-detail-email.php', true);
 
             $statuesArr = Orders::getOrderProductStatusArr($orderProduct["order_language_id"]);
 
@@ -2155,7 +2158,7 @@ class EmailHandler extends FatModel
             $tpl = new FatTemplate('', '');
             $tpl->set('orderDetail', $subsOrderDetail);
             $tpl->set('siteLangId', $langId);
-            $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/order-detail-subscription-email.php', true);
+            $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/emails/order-detail-subscription-email.php', true);
 
             $arrReplacements = array(
             '{user_full_name}' => trim($userInfo['user_name']),
@@ -2193,7 +2196,7 @@ class EmailHandler extends FatModel
             $tpl = new FatTemplate('', '');
             $tpl->set('orderDetail', $orderDetail);
             $tpl->set('siteLangId', $langId);
-            $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/order-detail-subscription-email.php', true);
+            $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/emails/order-detail-subscription-email.php', true);
 
             $arrReplacements = array(
             '{user_full_name}' => trim($userInfo['user_name']),
@@ -2417,7 +2420,7 @@ class EmailHandler extends FatModel
         $fatTpl = new FatTemplate('', '');
         $fatTpl->set('products', $products);
         $fatTpl->set('siteLangId', $langId);
-        $productsInCartFormatHtml = $fatTpl->render(false, false, '_partial/products-in-cart-wishlist-email.php', true);
+        $productsInCartFormatHtml = $fatTpl->render(false, false, '_partial/emails/products-in-cart-wishlist-email.php', true);
 
         $vars = array(
         '{user_full_name}' => $d['user_name'],
@@ -2469,7 +2472,7 @@ class EmailHandler extends FatModel
         $fatTpl = new FatTemplate('', '');
         $fatTpl->set('products', $products);
         $fatTpl->set('siteLangId', $langId);
-        $productsInWishlistFormatHtml = $fatTpl->render(false, false, '_partial/products-in-cart-wishlist-email.php', true);
+        $productsInWishlistFormatHtml = $fatTpl->render(false, false, '_partial/emails/products-in-cart-wishlist-email.php', true);
 
         $vars = array(
         '{user_full_name}' => $d['user_name'],

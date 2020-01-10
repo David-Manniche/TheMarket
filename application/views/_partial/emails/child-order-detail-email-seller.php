@@ -55,13 +55,18 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
             <a href="'.$prodOrBatchUrl.'" style="font-size:13px; color:#333;">'.$orderProducts["op_product_name"].'</a><br/>'.Labels::getLabel('Lbl_Brand', $siteLangId).':'.$orderProducts["op_brand_name"].'<br/>'.Labels::getLabel('Lbl_Sold_By', $siteLangId).':'.$orderProducts["op_shop_name"].'<br/>'.$options.'
             </td>
             <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">'.$orderProducts['op_qty'].'</td>
+<<<<<<< HEAD:application/views/_partial/child-order-detail-email-seller.php
             <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($orderProducts["op_unit_price"]).'</td>';            
+=======
+            <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($orderProducts["op_unit_price"]).'</td>';
+>>>>>>> 9effbde562fa03dd00056da07bd24b2bf280c448:application/views/_partial/emails/child-order-detail-email-seller.php
     if ($shippingHanldedBySeller) {
         $str .= '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($shippingPrice).'</td>';
     }
         $str .= '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($volumeDiscount).'</td>';
 
     if ($orderProducts['op_tax_collected_by_seller']) {
+<<<<<<< HEAD:application/views/_partial/child-order-detail-email-seller.php
         if (empty($taxOptions)) {
             $str .= '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($taxCharged).'</td>';
         } else {
@@ -71,6 +76,9 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
             }
             $str .= '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.$taxChargedTxt.'</td>';
         }
+=======
+        $str .= '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($taxCharged).'</td>';
+>>>>>>> 9effbde562fa03dd00056da07bd24b2bf280c448:application/views/_partial/emails/child-order-detail-email-seller.php
     }
         $str .= '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($total).'</td>
         </tr>';
@@ -96,6 +104,7 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
     }
 
     if ($taxCharged > 0 && $orderProducts['op_tax_collected_by_seller'] > 0) {
+<<<<<<< HEAD:application/views/_partial/child-order-detail-email-seller.php
         if (empty($taxOptions)) {
             $str.='<tr>
             <td colspan="'.$colCount.'" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.Labels::getLabel('LBL_Tax', $siteLangId).'</td>
@@ -109,6 +118,12 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
                 </tr>';
             }
         }
+=======
+        $str.='<tr>
+        <td colspan="'.$colCount.'" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.Labels::getLabel('LBL_Tax', $siteLangId).'</td>
+        <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($taxCharged).'</td>
+        </tr>';
+>>>>>>> 9effbde562fa03dd00056da07bd24b2bf280c448:application/views/_partial/emails/child-order-detail-email-seller.php
     }
     /* if ( $discountTotal ){
     $str.='<tr>

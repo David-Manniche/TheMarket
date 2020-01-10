@@ -65,7 +65,7 @@ class CommonHelper extends FatUtility
             self::$_currency_id,
             array('currency_code','currency_symbol_left','currency_symbol_right','currency_value')
         );
-        
+
         self::$_lang_code = Language::getAttributesById(
             self::$_lang_id,
             'language_code'
@@ -188,6 +188,10 @@ class CommonHelper extends FatUtility
             array_push($queryData, '?theme-preview');
         }
         $url = FatUtility::generateUrl($controller, $action, $queryData, $use_root_url, $url_rewriting);
+
+        if (rtrim($use_root_url, '/') === $url) {
+            $url = $use_root_url;
+        }
 
         if ($getOriginalUrl) {
             return $url;
@@ -1926,14 +1930,14 @@ class CommonHelper extends FatUtility
         $srch->setPageSize(1);
         $cond = $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'custom', '=', $customUrl[0]);
         $cond->attachCondition(UrlRewrite::DB_TBL_PREFIX . 'original', '=', $systemUrl);
-       
+
         $rs = $srch->getResultSet();
         if (!$row = FatApp::getDb()->fetch($rs)) {
             $url = $systemUrl;
         } else {
             $url = $row['urlrewrite_original'];
         }
-        
+
         $arr = explode('/', $url);
         $controller = (isset($arr[0])) ? $arr[0] : '';
         array_shift($arr);

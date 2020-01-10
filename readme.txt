@@ -13,7 +13,8 @@ Bugs:
 Enhancements:
     => 68474 - Library and code updated to handle 3-D secure payments through Omise Payment Gateway.
     => Updated new labels for IOS APP.
-    => Enhancement of existing multilingual functionality. Added MSN language translator API to language fields. 
+    => Enhancement of existing multilingual functionality. Added MSN language translator API to language fields.
+    => Separate header footer for email templates.
     => 69147 - Enhanced social login with plugin.
     => 66015 - Allowed "/" for url rewriting module.
     => 66015 - Enhancement - Load filters data via ajax call for better performance.
