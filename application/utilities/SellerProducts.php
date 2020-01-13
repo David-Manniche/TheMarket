@@ -2514,7 +2514,7 @@ trait SellerProducts
         FatUtility::dieJsonSuccess($json);
     }
 
-    public function getRelatedProductsList($selprod_id)
+    public function getRelatedProductsList($selprod_id = 0)
     {
         $selprod_id = FatUtility::int($selprod_id);
         $sellProdObj  = new SellerProduct();

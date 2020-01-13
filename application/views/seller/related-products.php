@@ -58,7 +58,9 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                             $relProdFld = $relProdFrm->getField('products_related');
                             $relProdFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Related_Product', $siteLangId));
                             $relProdFld->developerTags['noCaptionTag'] = true;
+                            $relProdFld->developerTags['col'] = 6;
                             $submitBtnFld = $relProdFrm->getField('btn_submit');
+                            $submitBtnFld->developerTags['col'] = 2;
                             $submitBtnFld->developerTags['noCaptionTag'] = true;
                             echo $relProdFrm->getFormHtml(); ?>
                         </div>
@@ -85,43 +87,31 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
     </div>
 </main>
 <script type="text/javascript">
+    var selprod_id = 0;
     $("document").ready(function() {
-        var tagInput = document.querySelector("input[name='products_related']");
-        var selprod_id = 0;
+        var tagInput;
         $('input[name=\'product_name\']').blur(function() {
             selprod_id = $(this).closest("input[name='selprod_id']").val();
         });
-        $('input[name=\'products_related\']').autocomplete({
-            'source': function(request, response) {
-                $.ajax({
-                    url: fcom.makeUrl('seller', 'autoCompleteProducts'),
-                    data: {
-                        keyword: request,
-                        fIsAjax: 1,
-                        selprod_id: selprod_id
-                    },
-                    dataType: 'json',
-                    type: 'post',
-                    success: function(json) {
-                        response($.map(json, function(item) {
-                            return {
-                                label: item['name'] + '[' + item['product_identifier'] + ']',
-                                value: item['id']
-                            };
-                        }));
-                    },
-                });
-            },
-            'select': function(item) {
-                if(selprod_id == 0){
-                    return;
-                }
-                $('input[name=\'products_related\']').val('');
-                $('#productRelated' + item['value']).remove();
-                $('#related-products').append('<li id="productRelated' + item['value'] + '"><i class="remove_related remove_param fa fa-remove"></i> ' + item['label'] + '<input type="hidden" name="product_related[]" value="' +
-                    item['value'] + '" /></li>');
+
+        var list = [];
+        fcom.ajax(fcom.makeUrl('Seller', 'getRelatedProductsList'), '', function(t) {
+            var ans = $.parseJSON(t);
+            for (var key in ans.relatedProducts) {
+                list.push({
+                 "id" : ans.relatedProducts[key]['selprod_id'],
+                 "value" : ans.relatedProducts[key]['product_name']+" ["+ans.relatedProducts[key]['product_identifier']+"]"
+             });
             }
         });
+
+        tagInput = document.querySelector('input[name=products_related]');
+        tagify = new Tagify(tagInput, {
+            enforceWhitelist : true,
+            whitelist : list,
+            delimiters : "#"
+        }).on('add', onAddTag).on('remove', onRemoveTag).on('click', onClickTag);
+
         $('#related-products').delegate('.remove_related', 'click', function() {
             $(this).parent().remove();
         });

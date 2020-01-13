@@ -24,12 +24,17 @@ $(document).on('keyup', "input[name='product_name']", function(){
                 currObj.val( item['label'] );
                 fcom.ajax(fcom.makeUrl('Seller', 'getRelatedProductsList', [item['value']]), '', function(t) {
                     var ans = $.parseJSON(t);
+                    var productName = '';
                     for (var key in ans.relatedProducts) {
+                        productName += ans.relatedProducts[key]['product_name']+" ["+ans.relatedProducts[key]['product_identifier']+"]#";
                         $('#related-products').append(
-                            "<li id=productRelated"+ans.relatedProducts[key]['selprod_id']+"><i class=\"remove_related remove_param fa fa-remove\"></i> "+ans.relatedProducts[key]['product_name']+"["+ans.relatedProducts[key]['product_identifier']+"]<input type=\"hidden\" name=\"product_related[]\" value="+ans.relatedProducts[key]['selprod_id']+" /></li>"
+                            "<li id=productRelated"+ans.relatedProducts[key]['selprod_id']+"><input type=\"hidden\" name=\"product_related[]\" value="+ans.relatedProducts[key]['selprod_id']+" /></li>"
                         );
                     }
-                    
+                    alert(productName);
+                    $('input[name=products_related]').val("'"+productName+"'");
+                    console.log($('input[name=products_related]').val());
+                    // $('input[name=products_related]').val(productName);
                 });
         	}
         });
@@ -74,6 +79,24 @@ $(document).on('blur', ".js--volDiscountCol", function(){
     return false;
 });
 
+// tag clicked callback
+function onClickTag(e){
+    // alert('hi');
+}
+
+// tag added callback
+function onAddTag(e){
+    console.log("original input value: ", e.detail.data.value);
+    $('#related-products').append('<li id="productRelated' + e.detail.data.id + '"><input type="hidden" name="product_related[]" value="' +e.detail.data.id + '" /></li>');
+    //tagify.off('add', onAddTag) // exmaple of removing a custom Tagify event
+}
+
+// tag remvoed callback
+function onRemoveTag(e){
+    $('li#productRelated'+e.detail.data.id).remove();
+    console.log("onRemoveTag:", e.detail, "tagify instance value:", tagify.value)
+}
+
 (function() {
 	var dv = '#listing';
 	searchRelatedProducts = function(frm){
@@ -91,7 +114,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
 			$("#listing").html(res);
 		});
 	};
-    
+
     clearSearch = function(selProd_id){
         if (0 < selProd_id) {
             location.href = fcom.makeUrl('Seller','relatedProducts');
@@ -100,7 +123,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
     		searchRelatedProducts(document.frmSearch);
         }
 	};
-    
+
     goToSearchPage = function(page) {
 		if(typeof page==undefined || page == null){
 			page =1;
@@ -114,7 +137,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
 		var frm = document.frmSearch;
 		searchRelatedProducts(frm);
 	}
-    
+
     deleteSelprodRelatedProduct = function( selProdId, relProdId ){
 		var agree = confirm(langLbl.confirmDelete);
 		if( !agree ){
@@ -128,7 +151,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
             searchRelatedProducts(document.frmSearch);
 		});
 	}
-    
+
     updateRelatedProductsRow = function(frm, selProd_id){
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('Seller', 'updateRelatedProductsRow'), data, function(t) {
@@ -162,12 +185,14 @@ $(document).on('blur', ".js--volDiscountCol", function(){
         sibling.fadeIn();
         currObj.addClass('hidden');
     };
-    
+
     setUpSellerProductLinks = function(frm){
 		if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupRelatedProduct'), data, function(t) {
-            searchRelatedProducts(document.frmSearch);
+            document.frmSellerProductSpecialPrice.reset();
+            window.location.reload(true);
+            // searchRelatedProducts(document.frmSearch);
 		});
 	};
 })();
