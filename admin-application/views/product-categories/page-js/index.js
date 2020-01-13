@@ -68,34 +68,50 @@ $(document).ready(function(){
 		document.frmSearch.reset();
 		reloadList();
 	};
-    
-    displaySubCategories = function(obj){
-        var prodCatId = $(obj).parent().parent().parent().attr('id'); 
-        var data = 'prodCatId='+prodCatId;		
-        fcom.ajax(fcom.makeUrl('productCategories','getSubCategories'),data,function(res){
-            $("#"+prodCatId+ ' ul').remove();
-            $("#"+prodCatId).append(res);             
-            if($("#"+prodCatId).hasClass('sortableListsClosed')){
-                $("#"+prodCatId).removeClass('sortableListsClosed');
-                $("#"+prodCatId).addClass('sortableListsOpen');
-                $("#"+prodCatId).children().children('.sortableListsOpener').html('');
-                $("#"+prodCatId).children().children('.sortableListsOpener').html('<i class="fa fa-minus clickable" onClick="hideItems(this)"></i>');
-            }else{
-                $("#"+prodCatId).removeClass('sortableListsOpen');
-                $("#"+prodCatId).addClass('sortableListsClosed');
-                $("#"+prodCatId+" .sortableListsOpener").html('');
-                $("#"+prodCatId+" .sortableListsOpener").html('<i class="fa fa-plus clickable" onClick="displaySubCategories(this)"></i>');
-            }
-        });
-    }
         
+    displaySubCategories = function(obj, catId = 0){
+        if(catId > 0 ){
+            var prodCatId = catId; 
+        }else{
+            var prodCatId = $(obj).parent().parent().parent().attr('id'); 
+        }
+        
+        if($("#"+prodCatId).hasClass('no-children')){
+            return false;
+        } 
+        
+        if($("#"+prodCatId+ ' ul li.child-category').length){
+            $("#"+prodCatId+ ' ul').show();
+            togglePlusMinus(prodCatId);
+            return false;
+        }
+        
+        fcom.ajax(fcom.makeUrl('productCategories','getSubCategories'), 'prodCatId='+prodCatId, function(res){            
+            $("#"+prodCatId).append('<ul>'+res+'</ul>');
+            if(catId == 0){
+                togglePlusMinus(prodCatId);
+            }
+        }); 
+    }
+   
+   togglePlusMinus = function(prodCatId){
+        $("#"+prodCatId).children( 'div' ).children( '.sortableListsOpener' ).remove();
+        if($("#"+prodCatId).hasClass('sortableListsClosed')){
+            $("#"+prodCatId).removeClass('sortableListsClosed').addClass('sortableListsOpen');
+            $("#"+prodCatId).children( 'div' ).append('<span class="sortableListsOpener" style="float: left; display: inline-block; background-position: center center; background-repeat: no-repeat; margin-right: 0px; position: absolute; left: 10px; top: 15px; font-size: 12px; cursor:pointer;"><i class="fa fa-minus clickable" onClick="hideItems(this)"></i></span>');                
+        }else{
+            $("#"+prodCatId).removeClass('sortableListsOpen').addClass('sortableListsClosed');
+            $("#"+prodCatId).children( 'div' ).append('<span class="sortableListsOpener" style="float: left; display: inline-block; background-position: center center; background-repeat: no-repeat; margin-right: 0px; position: absolute; left: 10px; top: 15px; font-size: 12px; cursor:pointer;"><i class="fa fa-plus c3 clickable" onClick="displaySubCategories(this)"></i></span>');
+            
+        }       
+   }
+   
    hideItems = function(obj){
         var prodCatId = $(obj).parent().parent().parent().attr('id');
-        $("#"+prodCatId+ ' ul').remove();
-        $("#"+prodCatId).removeClass('sortableListsOpen');
-        $("#"+prodCatId).addClass('sortableListsClosed');
-        $("#"+prodCatId).children().children('.sortableListsOpener').html('');
-        $("#"+prodCatId).children().children('.sortableListsOpener').html('<i class="fa fa-plus clickable" onClick="displaySubCategories(this)"></i>');
+        $("#"+prodCatId+ ' ul').hide();
+        $("#"+prodCatId).removeClass('sortableListsOpen').addClass('sortableListsClosed');
+        var icon = $("#"+prodCatId).children( 'div' ).children( '.sortableListsOpener' ).remove();
+        $("#"+prodCatId).children( 'div' ).append('<span class="sortableListsOpener" style="float: left; display: inline-block; background-position: center center; background-repeat: no-repeat; margin-right: 0px; position: absolute; left: 10px; top: 15px; font-size: 12px; cursor:pointer;"><i class="fa fa-plus c3 clickable" onClick="displaySubCategories(this)"></i></span>');
    }
 
 })();

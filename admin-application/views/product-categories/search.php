@@ -3,7 +3,7 @@ if (count($arr_listing) > 0) {
 ?>
 <ul id="sorting-categories" class="sorting-categories">
     <?php foreach ($arr_listing as $sn => $row) {  ?>
-    <li id="<?php echo $row['prodcat_id'];?>" class="sortableListsClosed">
+    <li id="<?php echo $row['prodcat_id'];?>" class="sortableListsClosed <?php if($row['subcategory_count'] == 0 ) { ?>no-children<?php } ?>">
         <div>
             <div class="sorting-bar">
                 <div class="sorting-title"><span><?php echo $row['prodcat_identifier']; ?></span> <a href="<?php echo commonHelper::generateUrl('Products', 'index', array($row['prodcat_id'])); ?>" class="badge badge-secondary badge-pill clickable"><?php echo $row['category_products']; ?></a></div>
@@ -26,15 +26,15 @@ if (count($arr_listing) > 0) {
                         if($row['prodcat_parent'] > 0){
                             $url = commonHelper::generateUrl('ProductCategories', 'form', array($row['prodcat_id'], $row['prodcat_parent']));
                         }
-                    ?>
-                    <a href="javascript::void(0)" class="btn btn-clean btn-sm btn-icon"><i class="fa fa-trash clickable"></i></a>
-                    <a href="<?php echo $url; ?>" class="btn btn-clean btn-sm btn-icon"><i class="fa fa-trash clickable"></i></a>
+                    ?> 
+                    <a href="javascript::void(0)" class="btn btn-clean btn-sm btn-icon"><i class="fas fa-plus clickable"></i></a>
+                    <a href="<?php echo $url; ?>" class="btn btn-clean btn-sm btn-icon"><i class="far fa-edit clickable"></i></a>
                     <a href="javascript::void(0)" onclick = "deleteRecord(<?php echo $row['prodcat_id']; ?>)" class="btn btn-clean btn-sm btn-icon"><i class="fa fa-trash clickable"></i></a>
                     <?php } ?>
                 </div>
             </div>
             <?php if($row['subcategory_count'] > 0 ) { ?>
-            <span class="sortableListsOpener" style="float: left; display: inline-block; background-position: center center; background-repeat: no-repeat; margin-right: 0px; position: absolute; left: 10px; top: 15px; font-size: 12px;"><i class="fa fa-plus clickable" onClick="displaySubCategories(this)"></i></span>
+            <span class="sortableListsOpener" style="float: left; display: inline-block; background-position: center center; background-repeat: no-repeat; margin-right: 0px; position: absolute; left: 10px; top: 15px; font-size: 12px; cursor:pointer;"><i class="fa fa-plus clickable" onClick="displaySubCategories(this)"></i></span>
             <?php } ?>
         </div>
     </li>
@@ -51,43 +51,44 @@ if (count($arr_listing) > 0) {
      var optionsPlus = {
          insertZonePlus: true,
          placeholderCss: {
-             'background-color': '#e5f5ff'
+             'background-color': '#e5f5ff',
          },
          hintCss: {
              'background-color': '#6dc5ff'
          },
-         onChange: function(cEl) {
-             console.log('onChange');
-             console.log($('#sorting-categories').sortableListsToArray());
+         baseCss: {
+            'list-style-type': 'none',
+         },
+         onChange: function(cEl)
+         {
+            var catId =  $( cEl ).attr('id');
+            var parentCatId = $( cEl ).parent('ul').parent('li').attr('id');   
+            var catOrder = [] ;               
+            $($( cEl ).parent().children()).each(function(i){               
+                catOrder[i+1] = $(this).attr('id');
+            })       
+            var data = "catId="+catId+"&parentCatId="+parentCatId+"&catOrder="+JSON.stringify(catOrder);
+            fcom.updateWithAjax(fcom.makeUrl('productCategories','updateOrder'), data, function(res){ });
          },
          opener: {
              active: true,
              as: 'html', // if as is not set plugin uses background image
-             close: '<i class="fa fa-minus c3"></i>',
-             open: '<i class="fa fa-plus"></i>',
+             close: '<i class="fa fa-minus clickable" onClick="hideItems(this)"></i>',
+             open: '<i class="fa fa-plus c3 clickable" onClick="displaySubCategories(this)"></i>',
              openerCss: {
                  'display': 'inline-block',
                  'margin-right': '0',
                  'position': 'absolute',
                  'left': '10px',
                  'top': '15px',
-                 'font-size': '12px'
+                 'font-size': '12px',
+                 'cursor':'pointer'
              }
          },
          ignoreClass: 'clickable'
      };
 
      $('#sorting-categories').sortableLists(optionsPlus);
-
-     $('#toArrBtn').on('click', function() {
-         console.log($('#sorting-categories').sortableListsToArray());
-     });
-     $('#toHierBtn').on('click', function() {
-         console.log($('#sorting-categories').sortableListsToHierarchy());
-     });
-     $('#toStrBtn').on('click', function() {
-         console.log($('#sorting-categories').sortableListsToString());
-     });
 
  });
 </script>

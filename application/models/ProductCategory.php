@@ -1162,7 +1162,7 @@ class ProductCategory extends MyAppModel
         $srch->addOrder(static::DB_TBL_PREFIX.'display_order', 'asc');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('m.*', 'prodcat_name'));
+        $srch->addMultipleFields(array('m.*', 'COALESCE(prodcat_name,prodcat_identifier ) as prodcat_name'));
         $rs = $srch->getResultSet(); 
         $records =FatApp::getDb()->fetchAll($rs);
         
@@ -1212,6 +1212,17 @@ class ProductCategory extends MyAppModel
         if (!FatApp::getDb()->deleteRecords(AttachedFile::DB_TBL, $where)) {
             return false;
         }
+        return true;
+    }
+    
+    public static function updateCatParent($prodCatId, $parentCatId)
+    {
+        $prodCatId = FatUtility::int($prodCatId);
+        $parentCatId = FatUtility::int($parentCatId);
+        if($prodCatId < 1){
+            return false;
+        }
+        FatApp::getDb()->updateFromArray(static::DB_TBL, array(static::DB_TBL_PREFIX.'parent' => $parentCatId), array('smt'=>static::DB_TBL_PREFIX.'id = ?', 'vals'=>array($prodCatId)));
         return true;
     }
     

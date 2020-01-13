@@ -105,7 +105,7 @@
 					var li = $( this ).closest( 'li' );
 
 					if ( li.hasClass( 'sortableListsClosed' ) )
-					{
+					{   
 						open( li );
 					}
 					else
@@ -150,16 +150,16 @@
 		};
 
 		if ( setting.opener.active )
-		{
+		{                      
 			if ( ! setting.opener.open ) throw 'Opener.open value is not defined. It should be valid url, html or css class.';
 			if ( ! setting.opener.close ) throw 'Opener.close value is not defined. It should be valid url, html or css class.';
 
 			$( this ).find( 'li' ).each( function()
-			{
+			{ 
 				var li = $( this );
 
 				if ( li.children( setting.listSelector ).length )
-				{
+				{ 
 					opener.clone( true ).prependTo( li.children( 'div' ).first() );
 
 					if ( ! li.hasClass( 'sortableListsOpen' ) )
@@ -167,7 +167,7 @@
 						close( li );
 					}
 					else
-					{
+					{ 
 						open( li );
 					}
 				}
@@ -605,7 +605,7 @@
 		 * @return No value
 		 */
 		function showOnTop( e, oEl )
-		{
+		{ 
 			if ( $( '#sortableListsHintWrapper', state.rootEl.el ).length )
 			{
 				hint.unwrap();  // If hint is wrapped by ul/ol #sortableListsHintWrapper
@@ -666,7 +666,7 @@
 		 * @return No value
 		 */
 		function showOnTopPlus( e, oEl, outside )
-		{
+		{ 
 			if ( $( '#sortableListsHintWrapper', state.rootEl.el ).length )
 			{
 				hint.unwrap();  // If hint is wrapped by ul/ol #sortableListsHintWrapper
@@ -696,7 +696,7 @@
 				}
 
 				if ( state.oEl )
-				{
+				{ 
 					open( oEl ); // TODO:animation??? .children('ul,ol').css('display', 'block');
 				}
 			}
@@ -800,7 +800,7 @@
 					list = oEl.children( setting.listSelector ).last();  // ul/ol || empty jQuery obj
 
 				if ( list.children().last().is( '#sortableListsPlaceholder' ) )
-				{
+				{  
 					hint.css( 'display', 'none' );
 					return;
 				}
@@ -817,7 +817,11 @@
 				}
 
 				if ( state.oEl )
-				{
+				{     
+                    /* [ custom work by developer */
+                    var catId = $(oEl).attr('id');
+                    displaySubCategories(this, catId);
+                    /* ] */
 					open( oEl ); // TODO: animation???
 				}
 
@@ -849,15 +853,15 @@
 		 * @param li
 		 */
 		function open( li )
-		{
-			li.removeClass( 'sortableListsClosed' ).addClass( 'sortableListsOpen' );
+		{ 
+            li.removeClass( 'sortableListsClosed' ).addClass( 'sortableListsOpen' );
 			li.children( setting.listSelector ).css( 'display', 'block' );
 
 			var opener = li.children( 'div' ).children( '.sortableListsOpener' ).first();
 
 			if ( setting.opener.as == 'html' )
-			{
-				opener.html( setting.opener.close );
+			{          
+                opener.html( setting.opener.close );
 			}
 			else if ( setting.opener.as == 'class' )
 			{
@@ -945,9 +949,7 @@
 	{
 		arr = arr || [];
 		var order = 0;
-
-		this.children( 'li' ).each( function()
-		{
+		this.children( 'li' ).each( function(){
 			var li = $( this ),
 				listItem = {},
 				id = li.attr( 'id' );
