@@ -644,7 +644,7 @@
                              <div class="sectionbody space ">
                                  <div class="note">
                                      <div class="note-icon">
-                                       <i class="fas fa-info-circle"></i>
+                                         <i class="fas fa-info-circle"></i>
                                      </div>
                                      <div class="note-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuri</div>
                                  </div>
@@ -1859,6 +1859,175 @@
                  <br>
                  <br>
                  <br>
+
+                 <div class="row equal-height">
+                     <div class="col-md-6">
+                         <section class="section">
+                             <div class="sectionhead">
+                                 <h4>Sms Templates</h4>
+
+                             </div>
+                             <div class="sectionbody">
+                                 <table class="table">
+                                     <thead>
+                                         <tr>
+                                             <th>#</th>
+                                             <th>Template name</th>
+                                             <th>Active</th>
+                                         </tr>
+                                     </thead>
+                                     <tbody>
+                                         <tr data-id="2">
+                                             <td scope="row">1</td>
+                                             <td><a title="Edit">Make Payment</a></td>
+                                             <td><label class="statustab statustab-sm active">
+                                                     <span class="switch-labels"></span>
+                                                     <span class="switch-handles"></span>
+                                                 </label></td>
+                                         </tr>
+                                         <tr data-id="1">
+                                             <td scope="row">2</td>
+                                             <td><a title="Edit">Forgot Password</a></td>
+                                             <td><label class="statustab statustab-sm active">
+                                                     <span class="switch-labels"></span>
+                                                     <span class="switch-handles"></span>
+                                                 </label></td>
+                                         </tr>
+                                     </tbody>
+                                 </table>
+                                 <div class="section footinfo">
+                                     <aside class="grid_1">
+                                         <ul class="pagination">
+                                             <li class="selected"><a href="javascript:void(0);">1</a></li>
+                                         </ul>
+                                     </aside>
+                                     <aside class="grid_2">Showing 8 Entries</aside>
+                                 </div>
+
+
+
+
+                             </div>
+                         </section>
+                     </div>
+                     <div class="col-md-6">
+                         <section class="section">
+                             <div class="sectionhead">
+                                 <h4>Make Payment - Edit</h4>
+
+                                 <ul class="actions actions--centered">
+                                     <li class="droplink"><a href="javascript:void(0)" class="button small green" title="Edit"><span class="ink animate"></span><i class="ion-android-more-horizontal icon"></i></a>
+                                         <div class="dropwrap">
+                                             <ul class="linksvertical">
+                                                 <li><a href="javascript:void(0)" class="button small green" title="" onclick="">Discard</a></li>
+
+                                             </ul>
+                                         </div>
+                                     </li>
+                                 </ul>
+
+
+                             </div>
+                             <div class="sectionbody space">
+                                 <form class="web_form" action="">
+                                     <div class="row">
+                                         <div class="col-md-12">
+                                             <div class="field-set">
+                                                 <div class="caption-wraper"><label class="field_label">Name</label></div>
+                                                 <div class="field-wraper">
+                                                     <div class="field_cover"><input type="text" title="Make Payment" placeholder="Make Payment" value=""> </div>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </div>
+
+                                     <div class="row">
+                                         <div class="col-md-12">
+                                             <div class="field-set">
+                                                 <div class="caption-wraper d-flex justify-content-between"><label class="field_label">Body </label> <a href="javascript:;" class="ml-2"><i class="fa fa-undo"></i></a></div>
+                                                 <div class="field-wraper">
+                                                     <div class="field_cover">
+                                                         <textarea name="" id="" cols="30" rows="10"></textarea> </div>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </div>
+
+                                     <div class="row">
+                                         <div class="col-md-12">
+                                             <div class="field-set">
+                                                 <div class="caption-wraper"><label class="field_label">Replacements Variables (Click to Copy)</label></div>
+                                                 <div class="field-wraper">
+                                                     <div class="field_cover">
+
+
+                                                         <ul class="list-group">
+                                                             <li class="list-group-item"><span>Name of User</span>
+
+                                                                 <span class="badge badge-secondary" data-container="body" data-toggle="tooltip" data-placement="top" title="" data-original-title="Copied to clipboard">name</span>
+                                                             </li>
+                                                             <li class="list-group-item"><span>OTP</span>
+
+
+                                                                 <span class="badge badge-secondary" data-container="body" data-toggle="tooltip" data-placement="top" title="" data-original-title="Copied to clipboard">otp</span></li>
+
+
+                                                         </ul>
+
+
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </div>
+
+                                     <div class="row">
+                                         <div class="col-md-6">
+                                             <div class="field-set">
+                                                 <div class="caption-wraper"><label class="field_label"></label></div>
+                                                 <div class="field-wraper">
+                                                     <div class="field_cover"><input title="" type="submit" name="btn_submit" value="Save "></div>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </div>
+
+
+
+                                 </form>
+
+                             </div>
+                         </section>
+                     </div>
+                 </div>
+
+                 <br>
+                 <br><br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br><br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br><br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
                  <br>
                  <br>
 
@@ -1870,6 +2039,10 @@
  <script>
      // jQuery
      $('[name=tags]').tagify();
+
+     $(function() {
+         $('[data-toggle="tooltip"]').tooltip()
+     })
  </script>
 
  <script type="text/javascript">

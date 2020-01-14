@@ -17,7 +17,8 @@ class ProductCategoriesController extends AdminBaseController
         $this->set("activeCategories", $activeCategories);
         $this->set("inactiveCategories", $inactiveCategories);
         $this->set("canEdit", $canEdit);
-        $this->_template->addJs('js/import-export.js');
+        //$this->_template->addJs('js/import-export.js');
+        $this->_template->addJs('js/jquery-sortable-lists.js');
         $this->_template->render();
     }
     

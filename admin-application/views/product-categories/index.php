@@ -16,27 +16,9 @@
                     <div class="col-md-9">
                         <section class="section">
                             <div class="sectionhead">
-                                <h4></h4>
-                                <?php
-                                    $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
-                                    $li = $ul->appendElement("li", array('class'=>'droplink'));
-                                    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                                    $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                                    $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-
-                                    if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canEdit) {
-                                        $innerLiExport=$innerUl->appendElement('li');
-                                        $innerLiExport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Export', $adminLangId),"onclick"=>"addExportForm(".Importexport::TYPE_CATEGORIES.")"), Labels::getLabel('LBL_Export', $adminLangId), true);
-                                    }
-                                    if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canEdit) {
-                                        $innerLiImport=$innerUl->appendElement('li');
-                                        $innerLiImport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Import', $adminLangId),"onclick"=>"addImportForm(". Importexport::TYPE_CATEGORIES.")"), Labels::getLabel('LBL_Import', $adminLangId), true);
-                                    }
-                                    if ($canEdit) {
-                                        $innerLiAddCat=$innerUl->appendElement('li');
-                                        $innerLiAddCat->appendElement('a', array('href'=>commonHelper::generateUrl('ProductCategories', 'form'), 'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Add_Category', $adminLangId)), Labels::getLabel('LBL_Add_Category', $adminLangId), true);
-                                    }
-                                     echo $ul->getHtml();?>
+                                <?php if ($canEdit) { ?>
+                                        <a href="<?php echo commonHelper::generateUrl('ProductCategories', 'form'); ?>" title="<?php echo  Labels::getLabel('LBL_Add_Category', $adminLangId); ?>" class="btn btn-clean btn-sm btn-icon"><i class="fas fa-plus clickable"></i></a>
+                                <?php }?>
                             </div>
                             <div class="sectionbody space">
                                 <div class="accordion-categories" id="listing" >

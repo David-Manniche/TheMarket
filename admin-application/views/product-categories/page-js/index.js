@@ -5,10 +5,6 @@ $(document).ready(function(){
 (function() {
 	var currentPage = 1;
 	var runningAjaxReq = false;
-
-	reloadList = function() {
-		searchProductCategories(document.frmSearch);
-	}
     
 	searchProductCategories = function(form){
 		var data = '';
@@ -29,7 +25,7 @@ $(document).ready(function(){
 			var ans = $.parseJSON(res);
 			if( ans.status == 1 ){
 				fcom.displaySuccessMessage(ans.msg);
-                reloadList();
+                window.location.href = fcom.makeUrl('productCategories');
 			} else {
 				fcom.displayErrorMessage(ans.msg);
 			}
@@ -63,12 +59,7 @@ $(document).ready(function(){
 		});
 		$.systemMessage.close();
 	};
-
-	clearSearch = function(){
-		document.frmSearch.reset();
-		reloadList();
-	};
-        
+ 
     displaySubCategories = function(obj, catId = 0){
         if(catId > 0 ){
             var prodCatId = catId; 

@@ -678,6 +678,7 @@ table.table-bordered tr:nth-child(odd) td {
     margin: 0;
     padding: 0;
 }
+
 #sorting-categories {
     margin: 10px auto;
     background: #fff;
@@ -709,12 +710,12 @@ table.table-bordered tr:nth-child(odd) td {
 #sorting-categories div {
     border-radius: 3px;
 }
- 
+
 
 .sorting-bar {
     position: relative;
     padding: 10px;
-    height:45px;
+    height: 45px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -755,4 +756,10 @@ table.table-bordered tr:nth-child(odd) td {
 .statustab.statustab-sm.active .switch-labels + .switch-handles:after,
 .statustab.statustab-sm .switch-labels:checked + .switch-handles:after {
     margin-left: 26px;
+}
+
+
+.equal-height .section {
+    height: 100%;
+    margin: 0;
 }

@@ -59,6 +59,15 @@ if (count($arr_listing) > 0) {
          baseCss: {
             'list-style-type': 'none',
          },
+         onDragStart: function( e, cEl ) { 
+            var catId =  $( cEl ).attr('id');
+            $("#"+catId).children().children().children('.sorting-title').css('margin-left', '25px');
+            $("#"+catId).children('ul').css('list-style-type', 'none');
+         },
+         complete: function( cEl ) { 
+            var catId =  $( cEl ).attr('id');
+            $("#"+catId).children().children().children('.sorting-title').css('margin-left', '0px');           
+         },
          onChange: function(cEl)
          {
             var catId =  $( cEl ).attr('id');
