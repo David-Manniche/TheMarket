@@ -5,8 +5,15 @@ class ImportExportController extends AdminBaseController
     {
         parent::__construct($action);
         $this->langId = $this->adminLangId;
+        $this->objPrivilege->canViewImportExport();
     }
-
+    
+    public function index()
+    {
+        $this->_template->addJs('js/import-export.js');
+        $this->_template->render();
+    }
+    
     public function exportData($actionType)
     {
         $langId = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
