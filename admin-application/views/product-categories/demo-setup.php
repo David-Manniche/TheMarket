@@ -262,7 +262,12 @@
                      <div class="col-md-9">
                          <section class="section">
                              <div class="sectionhead">
-                                 <h4>Categories</h4>
+                                 <h4>Categories</h4>                                 
+                                 <div class="section__toolbar">                                   
+                                     <a href="#" class="btn btn-clean btn-sm btn-icon btn-secondary"><i class="fas fa-plus"></i></a>
+                                     
+                                 </div>
+                                 
                              </div>
                              <div class="sectionbody space">
                                  <div class="accordion-categories">
@@ -276,8 +281,9 @@
                                                              <span class="switch-labels"></span>
                                                              <span class="switch-handles"></span>
                                                          </label>
-                                                         <button type="button" class="btn btn-clean btn-sm btn-icon"><i class="fa fa-trash"></i>
-                                                         </button>
+                                                         
+                                                         <a href="#" class="btn btn-clean btn-sm btn-icon"><i class="fa fa-trash"></i></a>
+                                                         
                                                          <button type="button" class="btn btn-clean btn-sm btn-icon"><i class="fa fa-trash"></i>
                                                          </button>
                                                          <button type="button" class="btn btn-clean btn-sm btn-icon"><i class="fa fa-trash"></i>

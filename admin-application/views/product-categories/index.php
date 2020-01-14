@@ -16,9 +16,11 @@
                     <div class="col-md-9">
                         <section class="section">
                             <div class="sectionhead">
+                                <div class="section__toolbar">                                  
                                 <?php if ($canEdit) { ?>
-                                        <a href="<?php echo commonHelper::generateUrl('ProductCategories', 'form'); ?>" title="<?php echo  Labels::getLabel('LBL_Add_Category', $adminLangId); ?>" class="btn btn-clean btn-sm btn-icon"><i class="fas fa-plus clickable"></i></a>
+                                    <a href="<?php echo commonHelper::generateUrl('ProductCategories', 'form'); ?>" title="<?php echo  Labels::getLabel('LBL_Add_Category', $adminLangId); ?>" class="btn btn-clean btn-sm btn-icon btn-secondary"><i class="fas fa-plus"></i></a>
                                 <?php }?>
+                                </div>
                             </div>
                             <div class="sectionbody space">
                                 <div class="accordion-categories" id="listing" >
