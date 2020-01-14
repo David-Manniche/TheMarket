@@ -1143,14 +1143,11 @@ class ProductCategory extends MyAppModel
         return $translatedData;
     }
     
-    public function getCategories($includeProductCount = true, $includeSubCategoriesCount = true, $keyword = '')
+    public function getCategories($includeProductCount = true, $includeSubCategoriesCount = true)
     {
         $srch = static::getSearchObject(false, $this->commonLangId, false);
         $srch->addCondition(static::DB_TBL_PREFIX.'deleted', '=', 0);        
         $srch->addCondition(static::DB_TBL_PREFIX.'parent', '=', $this->mainTableRecordId);
-        if(!empty($keyword)){
-            $srch->addCondition(static::DB_TBL_PREFIX.'identifier',  'like', '%' . $keyword . '%');   
-        }
         if($includeProductCount === true){
             $srch->joinTable(Product::DB_TBL_PRODUCT_TO_CATEGORY, 'LEFT JOIN', static::DB_TBL_PREFIX.'id = '.Product::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'prodcat_id', 'ptc');
             $srch->joinTable(Product::DB_TBL, 'LEFT JOIN', Product::DB_TBL_PREFIX.'id = '.Product::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'product_id', 'p');

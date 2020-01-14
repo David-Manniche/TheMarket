@@ -9,12 +9,10 @@ class ProductCategoriesController extends AdminBaseController
 
     public function index()
     {
-        $frmSearch = $this->getSearchForm();
         $totProds = Product::getProductsCount();
         $activeCategories = ProductCategory::getActiveInactiveCategoriesCount(applicationConstants::ACTIVE);
         $inactiveCategories = ProductCategory::getActiveInactiveCategoriesCount(applicationConstants::INACTIVE);
         $canEdit = $this->objPrivilege->canEditProductCategories(0, true); 
-        $this->set("frmSearch", $frmSearch);
         $this->set("totProds", $totProds);
         $this->set("activeCategories", $activeCategories);
         $this->set("inactiveCategories", $inactiveCategories);
@@ -23,22 +21,11 @@ class ProductCategoriesController extends AdminBaseController
         $this->_template->render();
     }
     
-    private function getSearchForm()
-    {
-        $frm = new Form('frmSearch');
-        $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'prodcat_identifier');
-        $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
-        $fldCancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->adminLangId));
-        $fldSubmit->attachField($fldCancel);
-        return $frm;
-    }
-
     public function search()
     {
         $records = array();
-        $keyword = FatApp::getPostedData('prodcat_identifier', FatUtility::VAR_STRING, '');
         $prodCat = new ProductCategory();
-        $records = $prodCat->getCategories(true, true, $keyword);
+        $records = $prodCat->getCategories();
         $canEdit = $this->objPrivilege->canEditProductCategories(0, true);
         $this->set("arr_listing", $records);
         $this->set("canEdit", $canEdit);
@@ -60,8 +47,6 @@ class ProductCategoriesController extends AdminBaseController
     
     public function updateOrder()
     {
-        $post = FatApp::getPostedData();
-        
         $this->objPrivilege->canEditProductCategories();
         $prodCatId = FatApp::getPostedData('catId', FatUtility::VAR_INT, 0); 
         $parentCatId = FatApp::getPostedData('parentCatId', FatUtility::VAR_INT, 0); 
@@ -78,7 +63,7 @@ class ProductCategoriesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }        
         ProductCategory::updateCatOrderCode($prodCatId);
-        $this->set('msg', Labels::getLabel('LBL_Order_Updated_Successfully', $this->adminLangId));
+        $this->set('msg', Labels::getLabel('LBL_Record_Updated_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }    
 
@@ -298,40 +283,27 @@ class ProductCategoriesController extends AdminBaseController
     public function changeStatus()
     {
         $this->objPrivilege->canEditProductCategories();
-        $prodcatId = FatApp::getPostedData('prodcatId', FatUtility::VAR_INT, 0);
-        if ($prodcatId < 1) {
+        $prodCatId = FatApp::getPostedData('prodCatId', FatUtility::VAR_INT, 0);
+        if ($prodCatId < 1) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieJsonError(Message::getHtml());
         }
-        $catData = ProductCategory::getAttributesById($prodcatId, array('prodcat_active'));
+        $catData = ProductCategory::getAttributesById($prodCatId, array('prodcat_active'));
         if (!$catData) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieJsonError(Message::getHtml());
         }
 
         $status = ($catData['prodcat_active'] == applicationConstants::ACTIVE) ? applicationConstants::INACTIVE : applicationConstants::ACTIVE;
-        $this->updateProductCategoryStatus($prodcatId, $status);
+        $prodCat = new ProductCategory($prodCatId);
+        if (!$prodCat->changeStatus($status)) {
+            Message::addErrorMessage($prodCat->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
         Product::updateMinPrices();
         $this->set('msg', $this->str_update_record);
         $this->_template->render(false, false, 'json-success.php');
-    }
-
-    private function updateProductCategoryStatus($prodcatId, $status)
-    {
-        $prodCatObj = new ProductCategory($prodcatId);
-        $status = FatUtility::int($status);
-        $prodcatId = FatUtility::int($prodcatId);
-
-        if (1 > $prodcatId || -1 == $status) {
-            FatUtility::dieWithError(
-                Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId)
-            );
-        }
-
-        if (!$prodCatObj->changeStatus($status)) {
-            Message::addErrorMessage($prodCatObj->getError());
-            FatUtility::dieWithError(Message::getHtml());
-        }
     }
 
     public function deleteRecord()
@@ -341,21 +313,6 @@ class ProductCategoriesController extends AdminBaseController
         if ($prodcat_id < 1) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieJsonError(Message::getHtml());
-        }
-
-        $this->markAsDeleted($prodcat_id);
-        Product::updateMinPrices();
-        $this->set("msg", $this->str_delete_record);
-        $this->_template->render(false, false, 'json-success.php');
-    }
-    
-    private function markAsDeleted($prodcat_id)
-    {
-        $prodcat_id = FatUtility::int($prodcat_id);
-        if (1 > $prodcat_id) {
-            FatUtility::dieWithError(
-                Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId)
-            );
         }
 
         $prodCateObj = new ProductCategory($prodcat_id);
@@ -384,8 +341,12 @@ class ProductCategoriesController extends AdminBaseController
         if (!$prodCateObj->save()) {
             FatUtility::dieJsonError($prodCateObj->getError());
         }
+        
+        Product::updateMinPrices();
+        $this->set("msg", $this->str_delete_record);
+        $this->_template->render(false, false, 'json-success.php');
     }
-    
+        
     public function getBreadcrumbNodes($action)
     {
         $nodes = array();
@@ -399,20 +360,10 @@ class ProductCategoriesController extends AdminBaseController
     
     public function autocomplete()
     {
-        if (!FatUtility::isAjaxCall()) {
-            Message::addErrorMessage($this->str_invalid_request);
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-
-        $post=FatApp::getPostedData();
-        $search_keyword='';
-        if (!empty($post["keyword"])) {
-            $search_keyword=urldecode($post["keyword"]);
-        }
-
+        $search_keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
+        $search_keyword = urldecode($search_keyword);
         $prodCateObj = new ProductCategory();
         $categories = $prodCateObj->getProdCatAutoSuggest($search_keyword, 10, $this->adminLangId);
-
         $json = array();
         $matches=$categories;
         foreach ($matches as $key => $val) {
@@ -426,9 +377,9 @@ class ProductCategoriesController extends AdminBaseController
 
     public function links_autocomplete()
     {
+        $keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
         $prodCatObj = new ProductCategory();
-        $post = FatApp::getPostedData();
-        $arr_options = $prodCatObj->getProdCatTreeStructureSearch(0, $this->adminLangId, $post['keyword']);
+        $arr_options = $prodCatObj->getProdCatTreeStructureSearch(0, $this->adminLangId, $keyword);
         $json = array();
         foreach ($arr_options as $key => $product) {
             $json[] = array(
@@ -442,46 +393,6 @@ class ProductCategoriesController extends AdminBaseController
     public function demoSetup()
     {
         $this->_template->render();
-    }
-    
-    /* public function toggleBulkStatuses()
-    {
-        $this->objPrivilege->canEditProductCategories();
-        $status = FatApp::getPostedData('status', FatUtility::VAR_INT, -1);
-        $prodcatIdsArr = FatUtility::int(FatApp::getPostedData('prodcat_ids'));
-        if (empty($prodcatIdsArr) || -1 == $status) {
-            FatUtility::dieWithError(
-                Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId)
-            );
-        }
-
-        foreach ($prodcatIdsArr as $prodcatId) {
-            if (1 > $prodcatId) {
-                continue;
-            }
-            $this->updateProductCategoryStatus($prodcatId, $status);
-        }
-        $this->set('msg', $this->str_update_record);
-        $this->_template->render(false, false, 'json-success.php');
-    } */
-
-    /* public function deleteSelected()
-    {
-        $this->objPrivilege->canEditProductCategories();
-        $prodcatIdsArr = FatUtility::int(FatApp::getPostedData('prodcat_ids'));
-        if (empty($prodcatIdsArr)) {
-            FatUtility::dieWithError(
-                Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId)
-            );
-        }
-        foreach ($prodcatIdsArr as $prodcatId) {
-            if (1 > $prodcatId) {
-                continue;
-            }
-            $this->markAsDeleted($prodcatId);
-        }
-        $this->set('msg', $this->str_delete_record);
-        $this->_template->render(false, false, 'json-success.php');
-    } */
+    }  
 
 }

@@ -45,12 +45,12 @@ $(document).ready(function(){
 			e.preventDefault();
 			return;
 		}
-		var prodcatId = parseInt(obj.value);
-		if( prodcatId < 1 ){
+		var prodCatId = parseInt(obj.value);
+		if( prodCatId < 1 ){
 			fcom.displayErrorMessage(langLbl.invalidRequest);
 			return false;
 		}
-		data='prodcatId='+prodcatId;
+		data='prodCatId='+prodCatId;
 		fcom.displayProcessing();
 		fcom.ajax(fcom.makeUrl('productCategories','changeStatus'),data,function(res){
 		var ans = $.parseJSON(res);
