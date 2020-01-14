@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$variables = array('siteLangId'=>$siteLangId,'action'=>$action);
-//$this->includeTemplate('import-export/_partial/top-navigation.php',$variables,false); ?>
+$variables = array('adminLangId'=>$adminLangId,'action'=>$action);
+$this->includeTemplate('import-export/_partial/top-navigation.php',$variables,false); ?>
 <div class="cards">
 	<div class="cards-content pt-4 pl-4 pr-4 pb-4">
 		<div class="cms" id="exportFormBlock">
@@ -11,7 +11,7 @@ $variables = array('siteLangId'=>$siteLangId,'action'=>$action);
 					<?php
 					echo FatUtility::decodeHtmlEntities( $pageData['epage_content'] );
 				}else{
-					echo Labels::getLabel('LBL_Sorry!_No_Instructions', $siteLangId);
+					echo Labels::getLabel('LBL_Sorry!_No_Instructions', $adminLangId);
 				}
 			?>
 		</div>

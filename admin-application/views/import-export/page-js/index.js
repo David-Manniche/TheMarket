@@ -25,4 +25,13 @@ $(document).ready(function() {
             $(dv).html(t);
         });
     };
-});
+    
+    updateSettings = function(frm) {
+        var data = fcom.frmData(frm);
+        $(settingDv).html(fcom.getLoader());
+        fcom.updateWithAjax(fcom.makeUrl('ImportExport', 'updateSettings'), data, function(ans) {
+            loadForm('settings');
+        });
+    };
+    
+})();

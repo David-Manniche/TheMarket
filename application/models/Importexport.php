@@ -5,6 +5,7 @@ class Importexport extends ImportexportCommon
     public const DB_TBL_TEMP_SELPROD_IDS = 'tbl_seller_products_temp_ids';
     public const DB_TBL_TEMP_PRODUCT_IDS = 'tbl_products_temp_ids';
 
+    public const TYPE_LANGUAGE_lABELS = 0;
     public const TYPE_CATEGORIES = 1;
     public const TYPE_BRANDS = 2;
     public const TYPE_PRODUCTS = 3;
@@ -17,6 +18,7 @@ class Importexport extends ImportexportCommon
     public const TYPE_POLICY_POINTS = 10;
     public const TYPE_USERS = 11;
     public const TYPE_TAX_CATEGORY = 12;
+    
 
     public const MAX_LIMIT = 1000;
 
@@ -60,6 +62,7 @@ class Importexport extends ImportexportCommon
                 $arr[static::TYPE_POLICY_POINTS] = Labels::getLabel('LBL_Export_Policy_Points', $langId);
                 if (!$sellerDashboard) {
                     $arr[static::TYPE_USERS] = Labels::getLabel('LBL_Export_users', $langId);
+                    $arr[static::TYPE_LANGUAGE_lABELS] = Labels::getLabel('LBL_Export_Language_Labels', $langId);
                 }
                 $arr[static::TYPE_TAX_CATEGORY] = Labels::getLabel('LBL_Export_Tax_Category', $langId);
                 break;
@@ -80,10 +83,10 @@ class Importexport extends ImportexportCommon
                     $arr[static::TYPE_POLICY_POINTS] = Labels::getLabel('LBL_Import_Policy_Points', $langId);
                 }
                 $arr[static::TYPE_SELLER_PRODUCTS] = Labels::getLabel('LBL_Import_Seller_Products', $langId);
-                if (!$sellerDashboard) {
+                /* if (!$sellerDashboard) {
                     $arr[static::TYPE_USERS] = Labels::getLabel('LBL_Import_users', $langId);
                     $arr[static::TYPE_TAX_CATEGORY] = Labels::getLabel('LBL_Import_Tax_Category', $langId);
-                }
+                } */
                 break;
         }
 
