@@ -1,0 +1,28 @@
+.custom-tagify {
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    height: auto;
+    padding: 0;
+    width: 100%;
+    color: var(--txt-color);
+    font-family: inherit;
+    font-size: 0.9em;
+    font-weight: normal;
+    border-radius: 4px;
+}
+
+.custom-tagify .list-tags {
+    display: flex;
+    flex: auto;
+    flex-wrap: wrap;
+    padding: 0 5px;
+}
+
+.custom-tagify .list-tags li {
+    padding: 0;
+    margin: 0;
+}
+
+.custom-tagify input[type="text"] {
+    border: none;
+}

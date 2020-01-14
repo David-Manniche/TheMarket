@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frmSearch->setFormTagAttribute('class', 'form');
-$frmSearch->setFormTagAttribute('onsubmit', 'searchRelatedProducts(this); return(false);');
+$frmSearch->setFormTagAttribute('onsubmit', 'searchUpsellProducts(this); return(false);');
 $frmSearch->developerTags['colClassPrefix'] = 'col-md-';
 $frmSearch->developerTags['fld_default_col'] = 4;
 
@@ -31,7 +31,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
         <div class="content-header  row justify-content-between mb-3">
             <div class="col-md-auto">
                 <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
-                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Manage_Related_Products', $siteLangId); ?></h2>
+                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Manage_Buy_Together_Products', $siteLangId); ?></h2>
             </div>
         </div>
         <div class="content-body">
@@ -44,8 +44,8 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                             $prodFld = $relProdFrm->getField('product_name');
                             $prodFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Select_Product', $siteLangId));
 
-                            $relProdFld = $relProdFrm->getField('products_related');
-                            $relProdFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search...', $siteLangId));
+                            $relProdFld = $relProdFrm->getField('products_upsell');
+                            $relProdFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Buy_Together_Product', $siteLangId));
 
                             $submitBtnFld = $relProdFrm->getField('btn_submit'); ?>
                             <?php echo $relProdFrm->getFormTag(); ?>
@@ -63,8 +63,8 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                     <div class="field-set">
                                         <div class="field-wraper">
                                             <div class="field_cover custom-tagify">
-                                                <ul class="list-tags" id="related-products"></ul>
-                                                <?php echo $relProdFrm->getFieldHTML('products_related');?>
+                                                <ul class="list-tags" id="upsell-products"></ul>
+                                                <?php echo $relProdFrm->getFieldHTML('products_upsell');?>
                                             </div>
                                         </div>
                                     </div>
@@ -79,9 +79,9 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                     </div>
                                 </div>
                             </div>
-                        <?php echo $relProdFrm->getFieldHTML('selprod_id'); ?>
-                        </form>
-                        <?php echo $relProdFrm->getExternalJS();?>
+                            <?php echo $relProdFrm->getFieldHTML('selprod_id'); ?>
+                            </form>
+                            <?php echo $relProdFrm->getExternalJS();?>
                         </div>
                         <div class="divider"></div>
                         <div class="cards-content pl-4 pr-4">
@@ -107,12 +107,13 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
 </main>
 <script type="text/javascript">
     $("document").ready(function() {
-        var tagInput = document.querySelector("input[name='products_related']");
+        var tagInput = document.querySelector("input[name='products_upsell']");
         var selprod_id = 0;
         $('input[name=\'product_name\']').blur(function() {
             selprod_id = $(this).closest("input[name='selprod_id']").val();
+            alert(selprod_id);
         });
-        $('input[name=\'products_related\']').autocomplete({
+        $('input[name=\'products_upsell\']').autocomplete({
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('seller', 'autoCompleteProducts'),
@@ -134,17 +135,17 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                 });
             },
             'select': function(item) {
-                /*if(selprod_id == 0){
+                if(selprod_id == 0){
                     return;
-                }*/
-                $('input[name=\'products_related\']').val('');
-                $('#productRelated' + item['value']).remove();
-                $('#related-products').append('<li id="productRelated' + item['value'] + '"><span> ' + item['label'] + '<i class="remove_related remove_param fal fa-times"></i></span><input type="hidden" name="product_related[]" value="' +
+                }
+                $('input[name=\'products_upsell\']').val('');
+                $('#productUpsell' + item['value']).remove();
+                $('#upsell-products').append('<li id="productUpsell' + item['value'] + '"><span> ' + item['label'] + '<i class="remove_upsell remove_param fal fa-times"></i></span><input type="hidden" name="product_upsell[]" value="' +
                     item['value'] + '" /></li>');
             }
         });
-        $('#related-products').delegate('.remove_related', 'click', function() {
-            $(this).parents('li').remove();
+        $('#upsell-products').delegate('.remove_upsell', 'click', function() {
+            $(this).parent().remove();
         });
     });
 </script>

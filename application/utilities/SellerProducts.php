@@ -2514,7 +2514,7 @@ trait SellerProducts
         FatUtility::dieJsonSuccess($json);
     }
 
-    public function getRelatedProductsList($selprod_id = 0)
+    public function getRelatedProductsList($selprod_id)
     {
         $selprod_id = FatUtility::int($selprod_id);
         $sellProdObj  = new SellerProduct();
@@ -2537,7 +2537,7 @@ trait SellerProducts
         $prodName = $frm->addTextBox('', 'product_name', '', array('class'=>'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $this->siteLangId)));
         $prodName->requirements()->setRequired();
         $fld1 = $frm->addTextBox('', 'products_related');
-        $fld1->htmlAfterField= '<div class="row"><div class="col-md-12"><ul class="list-vertical" id="related-products"></ul></div></div>';
+        // $fld1->htmlAfterField= '<div class="row"><div class="col-md-12"><ul class="list-vertical" id="related-products"></ul></div></div>';
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         return $frm;
     }
@@ -2581,8 +2581,8 @@ trait SellerProducts
             $srchFrm->fill(array('keyword'=>$productsTitle[$selProdId]));
         }
 
-        $this->_template->addJs(array('js/tagify.min.js','js/tagify.polyfills.js'));
-        $this->_template->addCss(array('css/tagify.css'));
+        // $this->_template->addJs(array('js/tagify.min.js','js/tagify.polyfills.js'));
+        $this->_template->addCss(array('css/custom-tagify.css'));
 
         $relProdFrm = $this->getRelatedProductsForm();
         $this->set("dataToEdit", $dataToEdit);
@@ -2671,6 +2671,170 @@ trait SellerProducts
 
         $db = FatApp::getDb();
         if (!$db->deleteRecords(SellerProduct::DB_TBL_RELATED_PRODUCTS, array( 'smt' => 'related_sellerproduct_id = ? AND related_recommend_sellerproduct_id = ?', 'vals' => array($selprod_id, $relprod_id) ))) {
+            Message::addErrorMessage(Labels::getLabel("LBL_".$db->getError(), $this->siteLangId));
+            FatApp::redirectUser($_SESSION['referer_page_url']);
+        }
+
+        $this->set('selprod_id', $selprod_id);
+        $this->set('msg', Labels::getLabel('LBL_Record_Deleted', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function getUpsellProductsList($selprod_id)
+    {
+        $selprod_id = FatUtility::int($selprod_id);
+        $sellProdObj  = new SellerProduct();
+        $upsellProds = $sellProdObj->getUpsellProducts($this->siteLangId, $selprod_id);
+        $json = array(
+            'selprodId'=>$selprod_id,
+            'upsellProducts'=> $upsellProds
+        );
+        FatUtility::dieJsonSuccess($json);
+    }
+
+    private function getUpsellProductsForm()
+    {
+        $frm = new Form('frmSellerProductSpecialPrice');
+
+        $frm->addHiddenField('', 'selprod_id', 0);
+        $prodName = $frm->addTextBox('', 'product_name', '', array('class'=>'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $this->siteLangId)));
+        $prodName->requirements()->setRequired();
+        $fld1 = $frm->addTextBox('', 'products_upsell');
+        // $fld1->htmlAfterField= '<div class="row"><div class="col-md-12"><ul class="list-vertical" id="upsell-products"></ul></div></div>';
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
+        return $frm;
+    }
+
+    public function upsellProducts($selProd_id = 0)
+    {
+        $selProd_id = FatUtility::int($selProd_id);
+        if (0 < $selProd_id || 0 > $selProd_id) {
+            $selProd_id = SellerProduct::getAttributesByID($selProd_id, 'selprod_id', false);
+            if (empty($selProd_id)) {
+                Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+                FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'volumeDiscount'));
+            }
+        }
+
+        $srchFrm = $this->getVolumeDiscountSearchForm();
+        $selProdIdsArr = FatApp::getPostedData('selprod_ids', FatUtility::VAR_INT, 0);
+
+        $dataToEdit = array();
+        if (!empty($selProdIdsArr) || 0 < $selProd_id) {
+            $selProdIdsArr = (0 < $selProd_id) ? array($selProd_id) : $selProdIdsArr;
+            $productsTitle = SellerProduct::getProductDisplayTitle($selProdIdsArr, $this->siteLangId);
+            foreach ($selProdIdsArr as $selProdId) {
+                $dataToEdit[] = array(
+                    'product_name' => html_entity_decode($productsTitle[$selProdId], ENT_QUOTES, 'UTF-8'),
+                    'voldiscount_selprod_id' => $selProdId
+                );
+            }
+        } else {
+            $post = $srchFrm->getFormDataFromArray(FatApp::getPostedData());
+
+            if (false === $post) {
+                FatUtility::dieJsonError(current($frm->getValidationErrors()));
+            } else {
+                unset($post['btn_submit'], $post['btn_clear']);
+                $srchFrm->fill($post);
+            }
+        }
+        if (0 < $selProd_id) {
+            $srchFrm->addHiddenField('', 'selprod_id', $selProd_id);
+            $srchFrm->fill(array('keyword'=>$productsTitle[$selProdId]));
+        }
+
+        // $this->_template->addJs(array('js/tagify.min.js','js/tagify.polyfills.js'));
+        $this->_template->addCss(array('css/custom-tagify.css'));
+
+        $relProdFrm = $this->getUpsellProductsForm();
+        $this->set("dataToEdit", $dataToEdit);
+        $this->set("frmSearch", $srchFrm);
+        $this->set("relProdFrm", $relProdFrm);
+        $this->set("selProd_id", $selProd_id);
+        $this->_template->render();
+    }
+
+    public function searchUpsellProducts()
+    {
+        $userId = UserAuthentication::getLoggedUserId();
+        $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
+        $selProdId = FatApp::getPostedData('selprod_id', FatUtility::VAR_INT, 0);
+        $keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
+
+        $srch = SellerProduct::searchUpsellProducts($this->siteLangId);
+        if ($keyword != '') {
+            $cnd = $srch->addCondition('product_name', 'like', "%$keyword%");
+            $cnd->attachCondition('product_identifier', 'LIKE', '%'. $keyword . '%', 'OR');
+        }
+        $srch->setPageNumber($page);
+        $srch->addOrder('selprod_id', 'DESC');
+        $rs = $srch->getResultSet();
+        $db = FatApp::getDb();
+        $upsellProds = $db->fetchAll($rs);
+        $arrListing = array();
+        foreach ($upsellProds as $key => $upsellProd) {
+            $arrListing[$upsellProd['upsell_sellerproduct_id']][$key] = $upsellProd;
+        }
+
+        $this->set("arrListing", $arrListing);
+
+        $this->set('page', $page);
+        $this->set('pageCount', $srch->pages());
+        $this->set('postedData', FatApp::getPostedData());
+        $this->set('recordCount', $srch->recordCount());
+        $this->set('pageSize', FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10));
+        $this->_template->render(false, false);
+    }
+
+    private function getUpsellProductsSearchForm()
+    {
+        $frm = new Form('frmSearch', array('id'=>'frmSearch'));
+        $frm->setRequiredStarWith('caption');
+        $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->siteLangId), 'keyword');
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->siteLangId));
+        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->siteLangId), array('onclick'=>'clearSearch();'));
+        return $frm;
+    }
+
+    public function setupUpsellProduct()
+    {
+        $post = FatApp::getPostedData();
+        $selprod_id = FatUtility::int($post['selprod_id']);
+        if (!UserPrivilege::canEditSellerProduct($selprod_id)) {
+            Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        if ($selprod_id <= 0) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
+            FatApp::redirectUser($_SESSION['referer_page_url']);
+        }
+        $upsellProducts = (isset($post['product_upsell']))?$post['product_upsell']:array();
+        
+        $sellerProdObj  = new sellerProduct();
+        /* saving of product Upsell Product[ */
+        if (!$sellerProdObj->addUpdateSellerUpsellProducts($selprod_id, $upsellProducts)) {
+            Message::addErrorMessage($sellerProdObj->getError());
+            FatApp::redirectUser($_SESSION['referer_page_url']);
+        }
+        /* ] */
+
+        $this->set('msg', Labels::getLabel('LBL_Upsell_Product_Setup_Successful', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function deleteSelprodUpsellProduct($selprod_id, $relprod_id)
+    {
+
+        $selprod_id = FatUtility::int($selprod_id);
+        $relprod_id = FatUtility::int($relprod_id);
+        if (!$selprod_id || !$relprod_id) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
+            FatApp::redirectUser($_SESSION['referer_page_url']);
+        }
+
+        $db = FatApp::getDb();
+        if (!$db->deleteRecords(SellerProduct::DB_TBL_UPSELL_PRODUCTS, array( 'smt' => 'upsell_sellerproduct_id = ? AND upsell_recommend_sellerproduct_id = ?', 'vals' => array($selprod_id, $relprod_id) ))) {
             Message::addErrorMessage(Labels::getLabel("LBL_".$db->getError(), $this->siteLangId));
             FatApp::redirectUser($_SESSION['referer_page_url']);
         }

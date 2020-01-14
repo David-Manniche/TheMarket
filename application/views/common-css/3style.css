@@ -14146,12 +14146,20 @@ div.faqanswer p {
 
 .list-tags li span {
     background-color: var(--gray-light);
+    border: solid 1px transparent;
     line-height: 1;
     padding: 8px;
     border-radius: 3px;
     display: flex;
+    /*color: var(--txt-color-light);*/
 	font-size: 0.8rem;
+    line-height: 1.3;
+    margin: 5px 0;
 }
+
+.list-tags li:hover span{ border-color:var(--border-color);}
+.list-tags li.hover span { border-color:#dc3545;}
+.list-tags li.hover span i { background-color:#dc3545; color: #fff;}
 
 .list-tags li i {
     cursor: pointer;
