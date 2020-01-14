@@ -344,12 +344,13 @@ class AdvertisementController extends LoggedUserController
         exit;
     }
 
-    public function pushBatch($adsBatchId)
+    public function publishBatch($adsBatchId)
     {
         $adsBatchId = FatUtility::int($adsBatchId);
         if (false === $this->validateBatchRequest($adsBatchId)) {
             LibHelper::dieJsonError($this->error);
         }
+
         $db = FatApp::getDb();
         $srch = $this->getBatchProductsObj($adsBatchId);
         $rs = $srch->getResultSet();
@@ -374,7 +375,7 @@ class AdvertisementController extends LoggedUserController
                 'siteCurrencyId' => $this->siteCurrencyId,
                 'data' => $productData
             ];
-            $response = $obj->pushBatch($data);
+            $response = $obj->publishBatch($data);
         } catch (\Error $e) {
             $message = 'ERR - ' . $e->getMessage();
             LibHelper::dieJsonError($message);

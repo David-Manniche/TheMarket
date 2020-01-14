@@ -28,10 +28,10 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->developerKey = $settings['developer_key'];
     }
 
-    private function setupConfiguration()
+    private function setupConfiguration($redirectUri = '')
     {
         $this->validateSettings();
-        $redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME, 'setupMerchantDetail');
+        $redirectUri = empty($redirectUri) ? CommonHelper::generateFullUrl(static::KEY_NAME, 'getAccessToken') : $redirectUri;
         
         $this->client = new Google_Client();
         $this->client->setApplicationName(FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->siteLangId)); // Set your application name
@@ -40,9 +40,11 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->client->setClientSecret($this->clientSecret);
         $this->client->setRedirectUri($redirectUri);
         $this->client->setDeveloperKey($this->developerKey);
+        $this->client->setAccessType('offline');
+        $this->client->setApprovalPrompt('force');
     }
 
-    public function setupMerchantDetail()
+    public function getAccessToken()
     {
         $get = FatApp::getQueryStringData();
         $userType = FatApp::getPostedData('type', FatUtility::VAR_INT, User::USER_TYPE_BUYER);
@@ -55,25 +57,30 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
 
         $this->setupConfiguration();
         
-        if (!empty($accessToken) || isset($get['code'])) {
-            if (empty($accessToken)) {
-                $this->client->authenticate($get['code']);
-                $accessToken = $this->client->getAccessToken();
+        if (isset($get['code'])) {
+            $this->client->authenticate($get['code']);
+            $accessToken = $this->client->getAccessToken();
+            $merchantId = User::getUserMeta(UserAuthentication::getLoggedUserId(), self::KEY_NAME . '_merchantId');
+            if (empty($setupMerchant)) {
+                $this->setupMerchantDetail($accessToken);
             }
-
-            $this->client->setAccessToken($accessToken);
-
-            $service = new Google_Service_ShoppingContent($this->client);
-            $authDetail = $service->accounts->authinfo();
-            $accountDetail = $authDetail->accountIdentifiers;
-            if (empty($accountDetail)) {
-                Message::addErrorMessage(Labels::getLabel("MSG_MERCHANT_ACCOUNT_DETAIL_NOT_FOUND", $this->siteLangId));
-                $this->redirectBack();
-            }
-            $merchantId = array_shift($accountDetail)->merchantId;
-            $this->updateMerchantAccountDetail([self::KEY_NAME . '_merchantId' => $merchantId]);
+            CommonHelper::redirectUserReferer();
         }
         $authUrl = $this->client->createAuthUrl();
         FatApp::redirectUser($authUrl);
+    }
+
+    private function setupMerchantDetail($accessToken)
+    {
+        $this->client->setAccessToken($accessToken);
+        $service = new Google_Service_ShoppingContent($this->client);
+        $authDetail = $service->accounts->authinfo();
+        $accountDetail = $authDetail->accountIdentifiers;
+        if (empty($accountDetail)) {
+            Message::addErrorMessage(Labels::getLabel("MSG_MERCHANT_ACCOUNT_DETAIL_NOT_FOUND", $this->siteLangId));
+            $this->redirectBack();
+        }
+        $merchantId = array_shift($accountDetail)->merchantId;
+        $this->updateMerchantAccountDetail([self::KEY_NAME . '_merchantId' => $merchantId]);
     }
 }

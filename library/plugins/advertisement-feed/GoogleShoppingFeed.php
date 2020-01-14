@@ -1,4 +1,5 @@
 <?php
+include_once CONF_INSTALLATION_PATH . 'library/GoogleAPI/vendor/autoload.php';
 class GoogleShoppingFeed extends AdvertisementFeedBase
 {
     private const PRODUCTION_URL = 'https://www.googleapis.com/content/v2/';
@@ -19,6 +20,13 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
         }
     }
 
+    private function makeUrl($url, $replaceData = [])
+    {
+        $url = self::PRODUCTION_URL . $url;
+        $replaceData = ['{merchantId}' => $this->merchantId] + $replaceData;
+        return CommonHelper::replaceStringData($url, $replaceData);
+    }
+
     public static function ageGroup($langId)
     {
         return [
@@ -30,72 +38,59 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
         ];
     }
 
-    private function makeUrl($url, $replaceData = [])
+    private function doRequest($data)
     {
-        $url = self::PRODUCTION_URL . $url;
-        $replaceData = ['{merchantId}' => $this->merchantId] + $replaceData;
-        return CommonHelper::replaceStringData($url, $replaceData);
-    }
+        $client = new Google_Client();
+        $client->setAuthConfig(CONF_PLUGIN_DIR .  'advertisement-feed/service-account.json');
+        $client->setScopes(Google_Service_ShoppingContent::CONTENT);
+        $client->useApplicationDefaultCredentials();
+        $client->setUseBatch(true);
 
-    private function formatPushData($data)
-    {
-        $arr = [
-            "entries" => [
-                "batchId" => $data['batchId'],
-                "merchantId" => $this->merchantId,
-                "method" => "insert"
-            ]
-        ];
+        $merchantId = User::getUserMeta(UserAuthentication::getLoggedUserId(), __CLASS__ . '_merchantId');
+        $service = new Google_Service_ShoppingContent($client);
+        $batch = $service->createBatch();
+
         foreach ($data['data'] as $prodDetail) {
-            // $color = array_column($users, 'id');
-            $colorOption = array_filter($prodDetail['optionsData'], function ($v) {
-                return 1 == $v['option_is_color'];
-            });
-            $color = !empty($colorOption) ? array_shift($colorOption)['optionvalue_identifier'] : '';
+            $product = new Google_Service_ShoppingContent_Product();
+            $product->setOfferId($prodDetail['abprod_selprod_id']);
+            $product->setTitle($prodDetail['selprod_title']);
+            $product->setDescription($prodDetail['product_description']);
+            $product->setLink(CommonHelper::generateFullUrl('Products', 'View', array($prodDetail['selprod_id'])));
+            $product->setImageLink(CommonHelper::generateFullUrl('image', 'product', array($prodDetail['product_id'], "MEDIUM", $prodDetail['selprod_id'], 0, CommonHelper::getLangId())));
+            $product->setContentLanguage(strtolower(Language::getAttributesById($prodDetail['adsbatch_lang_id'], 'language_code')));
+            $product->setTargetCountry(strtoupper(Countries::getAttributesById($prodDetail['adsbatch_target_country_id'], 'country_code')));
+            $product->setChannel($this->getSettings('channel'));
+            $inStock = (0 < $prodDetail['selprod_stock'] ? "in stock" : 'out of stock');
+            $product->setAvailability($inStock);
+            $product->setCondition(Product::getConditionArr($data['siteLangId'])[$prodDetail['selprod_condition']]);
+            $product->setGoogleProductCategory($prodDetail['abprod_cat_id']);
+            // $product->setGtin('9780007350896');
 
-            $sizeOption = array_filter($prodDetail['optionsData'], function ($v) {
-                return strpos(strtolower($v['option_name']), 'size') !== false;
-            });
-            $size = !empty($sizeOption) ? array_shift($sizeOption)['optionvalue_identifier'] : '';
+            $price = new Google_Service_ShoppingContent_Price();
+            $price->setValue($prodDetail['selprod_price']);
+            $price->setCurrency(strtoupper(Currency::getAttributesById($data['siteCurrencyId'], 'currency_code')));
 
-            $arr["entries"]["product"][] = [
-                "kind" => "content#product",
-                "offerId" => $prodDetail['abprod_selprod_id'],
-                "source" => "api",
-                "title" => $prodDetail['selprod_title'],
-                "description" => $prodDetail['product_description'],
-                "link" => CommonHelper::generateUrl('Products', 'View', array($prodDetail['selprod_id'])),
-                "imageLink" => CommonHelper::generateUrl('image', 'product', array($prodDetail['product_id'], "MEDIUM", $prodDetail['selprod_id'], 0, CommonHelper::getLangId())),
-                "contentLanguage" => strtolower(Language::getAttributesById($prodDetail['adsbatch_lang_id'], 'language_code')),
-                "targetCountry" => strtoupper(Countries::getAttributesById($prodDetail['adsbatch_target_country_id'], 'country_code')),
-                "channel" => $this->getSettings('channel'),
-                "ageGroup" => $prodDetail['abprod_age_group'],
-                "availability" => 0 < $prodDetail['selprod_stock'] ? "in stock" : 'out of stock',
-                "availabilityDate" => date('Y-m-dTH:i:s-Z', strtotime($prodDetail['selprod_available_from'])),
-                "brand" => ucfirst(Brand::getAttributesById($prodDetail['product_brand_id'], 'brand_identifier')),
-                "color" => $color,
-                "condition" => Product::getConditionArr($data['siteLangId'])[$prodDetail['selprod_condition']],
-                "gender" => "unisex",
-                "googleProductCategory" => $prodDetail['abprod_cat_id'],
-                // "gtin" => "608802531656",
-                "itemGroupId" => $prodDetail['abprod_item_group_identifier'],
-                // "mpn" => "608802531656",
-                "price" => [
-                    "value" => $prodDetail['selprod_price'],
-                    "currency" => strtoupper(Currency::getAttributesById($data['siteCurrencyId'], 'currency_code'))
-                ],
-                "sizes" => [
-                    $size
-                ],
-                "destinations" => [
-                    [
-                        "destinationName" => "Shopping",
-                        "intention" => "required"
-                    ]
-                ]
-            ];
+            /* $shipping_price = new Google_Service_ShoppingContent_Price();
+            $shipping_price->setValue('0.99');
+            $shipping_price->setCurrency('GBP');
+
+            $shipping = new Google_Service_ShoppingContent_ProductShipping();
+            $shipping->setPrice($shipping_price);
+            $shipping->setCountry('GB');
+            $shipping->setService('Standard shipping');
+
+            $shipping_weight = new Google_Service_ShoppingContent_ProductShippingWeight();
+            $shipping_weight->setValue(200);
+            $shipping_weight->setUnit('grams');
+
+            $product->setPrice($price);
+            $product->setShipping(array($shipping));
+            $product->setShippingWeight($shipping_weight); */
+        
+            $request = $service->products->insert($merchantId, $product);
+            $batch->add($request, $product->getOfferId());
         }
-        return $arr;
+        return $batch->execute();
     }
 
     public function getProductCategory($keyword = '', $returnFullArray = false)
@@ -127,52 +122,14 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
         return empty($keyword) ? $arr : preg_grep("/" . preg_quote($keyword) . "/i", $arr);
     }
 
-    public function insert($data)
-    {
-        if (empty($data) || !is_array($data)) {
-            $this->error = Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId());
-            return false;
-        }
-        $url = $this->makeUrl(self::INSERT_URL);
-        return $this->doRequest($url, 'POST', $data);
-    }
-
-    public function get($productId)
-    {
-        if (empty($productId)) {
-            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId());
-            return false;
-        }
-
-        $url = $this->makeUrl(self::GET_URL, ['{productId}' => $productId]);
-        return $this->doRequest($url, 'GET');
-    }
-
-    public function delete($productId)
-    {
-        if (empty($productId)) {
-            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId());
-            return false;
-        }
-
-        $url = $this->makeUrl(self::DELETE_URL, ['{productId}' => $productId]);
-        return $this->doRequest($url, 'DELETE');
-    }
-
-    public function list()
-    {
-        $url = $this->makeUrl(self::LIST_URL);
-        return $this->doRequest($url, 'GET');
-    }
-
-    public function pushBatch($data)
+    public function publishBatch($data)
     {
         if (empty($data) || !is_array($data)) {
             $this->error = Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId());
             return false;
         }
         $url = $this->makeUrl(self::BATCH_REQUEST_URL);
-        $data = $this->formatPushData($data);
-        return $this->doRequest($url, 'POST', $data);
+        $data = $this->doRequest($data);
+        CommonHelper::printArray($data);
     }
 }

@@ -16,7 +16,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                                 <?php echo Labels::getLabel('Lbl_MERCHANT_ID', $siteLangId);?> : 
                                 <?php echo $merchantId;
                                 if (empty($merchantId)) { ?>
-                                    <a class="btn btn--primary-border btn--sm" href="<?php echo CommonHelper::generateUrl($keyName, 'setupMerchantDetail')?>" title="<?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?>"><?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?></a>
+                                    <a class="btn btn--primary-border btn--sm" href="<?php echo CommonHelper::generateUrl($keyName, 'getAccessToken')?>" title="<?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?>"><?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?></a>
                                 <?php } ?>
                             </h2>
                         </div>

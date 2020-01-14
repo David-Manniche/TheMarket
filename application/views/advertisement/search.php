@@ -75,6 +75,16 @@ foreach ($arrListing as $sn => $row) {
                 $li->appendElement(
                     'a',
                     [
+                        'href' => CommonHelper::generateUrl('Advertisement', 'publishBatch', [$row['adsbatch_id']]),
+                        'title' => Labels::getLabel('LBL_PUBLISH', $siteLangId)
+                    ],
+                    '<i class="fa fa-forward"></i>',
+                    true
+                );
+                $li = $ul->appendElement('li');
+                $li->appendElement(
+                    'a',
+                    [
                         'href' => CommonHelper::generateUrl('Advertisement', 'bindProducts', [$row['adsbatch_id']]),
                         'title' => Labels::getLabel('LBL_BIND_PRODUCTS', $siteLangId)
                     ],
