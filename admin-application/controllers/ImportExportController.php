@@ -14,6 +14,15 @@ class ImportExportController extends AdminBaseController
         $this->_template->render();
     }
     
+    public function generalInstructions()
+    {
+        $obj = new Extrapage();
+        $pageData = $obj->getContentByPageType(Extrapage::SELLER_GENERAL_SETTINGS_INSTRUCTIONS, $this->adminLangId);
+        $this->set('pageData', $pageData);
+        $this->set('action', 'generalInstructions');
+        $this->_template->render(false, false);
+    }
+    
     public function exportData($actionType)
     {
         $langId = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
