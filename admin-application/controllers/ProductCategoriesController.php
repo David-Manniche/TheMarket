@@ -58,11 +58,12 @@ class ProductCategoriesController extends AdminBaseController
         }
         
         ProductCategory::updateCatParent($prodCatId, $parentCatId);
-        $prodCat = new ProductCategory();
+        $prodCat = new ProductCategory($prodCatId);
         if (!$prodCat->updateOrder($catOrder)) {
             Message::addErrorMessage($prodCat->getError());
             FatUtility::dieJsonError(Message::getHtml());
-        }        
+        } 
+        $prodCat->updateCatCode();
         ProductCategory::updateCatOrderCode($prodCatId);
         $this->set('msg', Labels::getLabel('LBL_Record_Updated_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
