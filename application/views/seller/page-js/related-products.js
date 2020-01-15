@@ -31,9 +31,10 @@ $(document).on('keyup', "input[name='product_name']", function(){
                 currObj.val( item['label'] );
                 fcom.ajax(fcom.makeUrl('Seller', 'getRelatedProductsList', [item['value']]), '', function(t) {
                     var ans = $.parseJSON(t);
+                    $('#related-products').empty();
                     for (var key in ans.relatedProducts) {
                         $('#related-products').append(
-                            "<li id=productRelated"+ans.relatedProducts[key]['selprod_id']+"><span>"+ans.relatedProducts[key]['product_name']+"["+ans.relatedProducts[key]['product_identifier']+"]<i class=\"remove_related remove_param fal fa-times\"></i></span><input type=\"hidden\" name=\"product_related[]\" value="+ans.relatedProducts[key]['selprod_id']+" /></li>"
+                            "<li id=productRelated"+ans.relatedProducts[key]['selprod_id']+"><span>"+ans.relatedProducts[key]['selprod_title']+" ["+ans.relatedProducts[key]['product_identifier']+"]<i class=\"remove_related remove_param fal fa-times\"></i></span><input type=\"hidden\" name=\"product_related[]\" value="+ans.relatedProducts[key]['selprod_id']+" /></li>"
                         );
                     }
 
@@ -132,6 +133,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
             if (1 > $('form#frmVolDiscountListing table tbody tr').length) {
                 searchRelatedProducts(document.frmSearch);
             } */
+            // $('#related-products').empty();
             searchRelatedProducts(document.frmSearch);
 		});
 	}
@@ -174,9 +176,9 @@ $(document).on('blur', ".js--volDiscountCol", function(){
 		if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupRelatedProduct'), data, function(t) {
-            window.location.reload(true);
-            /*document.frmSellerProductSpecialPrice.reset();
-            searchRelatedProducts(document.frmSearch);*/
+            document.frmSellerProductSpecialPrice.reset();
+            $('#related-products').empty();
+            searchRelatedProducts(document.frmSearch);
 		});
 	};
 })();

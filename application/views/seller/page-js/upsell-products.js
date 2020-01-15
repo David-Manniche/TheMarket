@@ -26,17 +26,16 @@ $(document).on('keyup', "input[name='product_name']", function(){
         		});
         	},
         	'select': function(item) {
-                alert(item['value']);
                 $("#"+parentForm+" input[name='selprod_id']").val(item['value']);
                 currObj.val( item['label'] );
                 fcom.ajax(fcom.makeUrl('Seller', 'getUpsellProductsList', [item['value']]), '', function(t) {
                     var ans = $.parseJSON(t);
+                    $('#upsell-products').empty();
                     for (var key in ans.upsellProducts) {
-                        $('#upsell-products').append(
-                            "<li id=productUpsell"+ans.upsellProducts[key]['selprod_id']+"><span>"+ans.upsellProducts[key]['product_name']+"["+ans.upsellProducts[key]['product_identifier']+"]<i class=\"remove_upsell remove_param fa fa-remove\"></i></span><input type=\"hidden\" name=\"product_upsell[]\" value="+ans.upsellProducts[key]['selprod_id']+" /></li>"
+                        $("#upsell-products").append(
+                            "<li id=productUpsell"+ans.upsellProducts[key]['selprod_id']+"><span>"+ans.upsellProducts[key]['selprod_title']+" ["+ans.upsellProducts[key]['product_identifier']+"]<i class=\"remove_upsell remove_param fal fa-times\"></i></span><input type=\"hidden\" name=\"product_upsell[]\" value="+ans.upsellProducts[key]['selprod_id']+" /></li>"
                         );
                     }
-
                 });
         	}
         });
@@ -132,6 +131,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
             if (1 > $('form#frmVolDiscountListing table tbody tr').length) {
                 searchUpsellProducts(document.frmSearch);
             } */
+            // $('#upsell-products').empty();
             searchUpsellProducts(document.frmSearch);
 		});
 	}
@@ -174,6 +174,8 @@ $(document).on('blur', ".js--volDiscountCol", function(){
 		if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupUpsellProduct'), data, function(t) {
+            document.frmSellerProductSpecialPrice.reset();
+            $('#upsell-products').empty();
             searchUpsellProducts(document.frmSearch);
 		});
 	};

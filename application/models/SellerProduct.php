@@ -313,7 +313,7 @@ class SellerProduct extends MyAppModel
         $srch->addCondition('c.prodcat_deleted', '=', applicationConstants::NO);
         $srch->addCondition('brand.brand_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('brand.brand_deleted', '=', applicationConstants::NO);
-        $srch->addGroupBy('selprod_id');
+
         $srch->addMultipleFields(array('upsell_sellerproduct_id', 'selprod_id', 'product_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title','selprod_price','selprod_stock', 'IFNULL(product_identifier ,product_name) as product_name','product_identifier','selprod_product_id','CASE WHEN m.splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found',
         'IFNULL(m.splprice_price, selprod_price) AS theprice', 'selprod_min_order_qty','product_image_updated_on'));
         $srch->addCondition(Product::DB_TBL_PREFIX . 'active', '=', applicationConstants::YES);
@@ -344,7 +344,7 @@ class SellerProduct extends MyAppModel
                 $srch->addFld('IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist');
             }
         }
-
+        $srch->addGroupBy('selprod_id');
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $data = array();
@@ -727,7 +727,7 @@ class SellerProduct extends MyAppModel
         if (!empty($criteria)) {
             $srch->addMultipleFields($criteria);
         } else {
-            $srch->addMultipleFields(array('related_sellerproduct_id', 'selprod_id', 'IFNULL(selprod_title ,product_name) as product_name','product_identifier','selprod_price','product_image_updated_on'));
+            $srch->addMultipleFields(array('related_sellerproduct_id', 'selprod_id', 'IFNULL(product_identifier ,product_name) as product_name', 'IFNULL(selprod_title, IFNULL(product_name, product_identifier)) as selprod_title', 'product_identifier','selprod_price','product_image_updated_on'));
         }
         return $srch;
     }
@@ -807,7 +807,7 @@ class SellerProduct extends MyAppModel
         } else {
             $prodSrch->addCondition('selprod_id', '=', $selProdId);
         }
-        $prodSrch->addMultipleFields(array('selprod_id', 'product_id','product_identifier', 'IFNULL(product_name, product_identifier) as product_name', 'selprod_title'));
+        $prodSrch->addMultipleFields(array('selprod_id', 'product_id','product_identifier', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title, IFNULL(product_name, product_identifier)) as selprod_title'));
         $prodSrch->addGroupBy('selprod_id');
         $productRs = $prodSrch->getResultSet();
         $products = FatApp::getDb()->fetchAll($productRs, 'selprod_id');
@@ -824,7 +824,7 @@ class SellerProduct extends MyAppModel
         }
         $optionsStringArr = array();
         foreach ($products as $selProdId => $product) {
-            $variantStr = (!empty($product['product_name'])) ? $product['product_name'] : $product['selprod_title'];
+            $variantStr = (!empty($product['selprod_title'])) ? $product['selprod_title'] : $product['product_name'];
 
             $options = static::getSellerProductOptions($selProdId, true, $langId);
             if (is_array($options) && count($options)) {

@@ -111,7 +111,6 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
         var selprod_id = 0;
         $('input[name=\'product_name\']').blur(function() {
             selprod_id = $(this).closest("input[name='selprod_id']").val();
-            alert(selprod_id);
         });
         $('input[name=\'products_upsell\']').autocomplete({
             'source': function(request, response) {

@@ -1765,7 +1765,6 @@ trait SellerProducts
     {
         $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
         $post = FatApp::getPostedData();
-        /* CommonHelper::printArray($post); die; */
         $srch = SellerProduct::getSearchObject($this->siteLangId);
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
         $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$this->siteLangId, 'p_l');
@@ -2517,8 +2516,12 @@ trait SellerProducts
     public function getRelatedProductsList($selprod_id)
     {
         $selprod_id = FatUtility::int($selprod_id);
-        $sellProdObj  = new SellerProduct();
-        $relatedProds = $sellProdObj->getRelatedProducts($this->siteLangId, $selprod_id);
+        $srch = SellerProduct::searchRelatedProducts($this->siteLangId);
+        $srch->addCondition('selprod_user_id', '=', UserAuthentication::getLoggedUserId());
+        $srch->addCondition(SellerProduct::DB_TBL_RELATED_PRODUCTS_PREFIX . 'sellerproduct_id', '=', $selprod_id);
+        $srch->addOrder('selprod_id', 'DESC');
+        $rs = $srch->getResultSet();
+        $relatedProds = FatApp::getDb()->fetchAll($rs);
         $json = array(
             'selprodId'=>$selprod_id,
             'relatedProducts'=> $relatedProds
@@ -2600,21 +2603,25 @@ trait SellerProducts
         $keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
 
         $srch = SellerProduct::searchRelatedProducts($this->siteLangId);
+
         if ($keyword != '') {
             $cnd = $srch->addCondition('product_name', 'like', "%$keyword%");
             $cnd->attachCondition('product_identifier', 'LIKE', '%'. $keyword . '%', 'OR');
         }
+
+        $srch->addCondition('selprod_user_id', '=', UserAuthentication::getLoggedUserId());
+        // echo $srch->getQuery($srch); die;
         $srch->setPageNumber($page);
         $srch->addOrder('selprod_id', 'DESC');
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $relatedProds = $db->fetchAll($rs);
-
+        // CommonHelper::printArray($relatedProds); die;
         $arrListing = array();
         foreach ($relatedProds as $key => $relatedProd) {
             $arrListing[$relatedProd['related_sellerproduct_id']][$key] = $relatedProd;
         }
-
+        // CommonHelper::printArray($arrListing); die;
         $this->set("arrListing", $arrListing);
 
         $this->set('page', $page);
@@ -2683,11 +2690,15 @@ trait SellerProducts
     public function getUpsellProductsList($selprod_id)
     {
         $selprod_id = FatUtility::int($selprod_id);
-        $sellProdObj  = new SellerProduct();
-        $upsellProds = $sellProdObj->getUpsellProducts($this->siteLangId, $selprod_id);
+        $srch = SellerProduct::searchUpsellProducts($this->siteLangId);
+        $srch->addCondition('selprod_user_id', '=', UserAuthentication::getLoggedUserId());
+        $srch->addCondition(SellerProduct::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'sellerproduct_id', '=', $selprod_id);
+        $srch->addOrder('selprod_id', 'DESC');
+        $rs = $srch->getResultSet();
+        $upsellProds = FatApp::getDb()->fetchAll($rs);
         $json = array(
-            'selprodId'=>$selprod_id,
-            'upsellProducts'=> $upsellProds
+            'selprodId' => $selprod_id,
+            'upsellProducts' => $upsellProds
         );
         FatUtility::dieJsonSuccess($json);
     }
@@ -2767,12 +2778,14 @@ trait SellerProducts
             $cnd = $srch->addCondition('product_name', 'like', "%$keyword%");
             $cnd->attachCondition('product_identifier', 'LIKE', '%'. $keyword . '%', 'OR');
         }
+        $srch->addCondition('selprod_user_id', '=', UserAuthentication::getLoggedUserId());
         $srch->setPageNumber($page);
         $srch->addOrder('selprod_id', 'DESC');
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $upsellProds = $db->fetchAll($rs);
         $arrListing = array();
+        // CommonHelper::printArray($upsellProds); die;
         foreach ($upsellProds as $key => $upsellProd) {
             $arrListing[$upsellProd['upsell_sellerproduct_id']][$key] = $upsellProd;
         }
@@ -2810,7 +2823,7 @@ trait SellerProducts
             FatApp::redirectUser($_SESSION['referer_page_url']);
         }
         $upsellProducts = (isset($post['product_upsell']))?$post['product_upsell']:array();
-        
+
         $sellerProdObj  = new sellerProduct();
         /* saving of product Upsell Product[ */
         if (!$sellerProdObj->addUpdateSellerUpsellProducts($selprod_id, $upsellProducts)) {
