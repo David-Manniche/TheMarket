@@ -726,7 +726,7 @@ class ImportExportController extends AdminBaseController
     
     public function settings()
     {
-        $frm =  $this->getSettingForm($this->adminLangId);
+        $frm =  $this->getSettingForm();
         $obj = new Importexport();
         $settingArr = $obj->getSettings(0);
         $frm->fill($settingArr);
@@ -735,80 +735,83 @@ class ImportExportController extends AdminBaseController
         $this->_template->render(false, false, 'import-export/settings.php');
     }
 
-    private function getSettingForm($langId)
+    private function getSettingForm()
     {
         $frm = new Form('frmImportExportSetting', array('id'=>'frmImportExportSetting'));
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_brand_id_instead_of_brand_identifier", $langId), 'CONF_USE_BRAND_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_brand_id_instead_of_brand_identifier_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_brand_id_instead_of_brand_identifier", $this->adminLangId), 'CONF_USE_BRAND_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_brand_id_instead_of_brand_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_category_id_instead_of_category_identifier", $langId), 'CONF_USE_CATEGORY_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_category_id_instead_of_category_identifier_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_category_id_instead_of_category_identifier", $this->adminLangId), 'CONF_USE_CATEGORY_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_category_id_instead_of_category_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_catalog_product_id_instead_of_catalog_product_identifier", $langId), 'CONF_USE_PRODUCT_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_catalog_product_id_instead_of_catalog_product_identifier_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_catalog_product_id_instead_of_catalog_product_identifier", $this->adminLangId), 'CONF_USE_PRODUCT_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_catalog_product_id_instead_of_catalog_product_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_option_id_instead_of_option_identifier", $langId), 'CONF_USE_OPTION_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_option_id_instead_of_option_identifier_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_user_id_instead_of_username", $this->adminLangId), 'CONF_USE_USER_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_user_id_instead_of_username_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_option_value_id_instead_of_option_identifier", $langId), 'CONF_OPTION_VALUE_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_option_value_id_instead_of_option_value_identifier_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_option_id_instead_of_option_identifier", $this->adminLangId), 'CONF_USE_OPTION_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_option_id_instead_of_option_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
-        /* $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_option_type_id_instead_of_option_type_identifier",$langId),'CONF_USE_OPTION_TYPE_ID',1,array(),false,0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_option_type_id_instead_of_option_type_identifier_in_worksheets",$langId).'</small>'; */
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_option_value_id_instead_of_option_identifier", $this->adminLangId), 'CONF_OPTION_VALUE_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_option_value_id_instead_of_option_value_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_tag_id_instead_of_tag_identifier", $langId), 'CONF_USE_TAG_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_tag_id_instead_of_tag_identifier_in_worksheets", $langId).'</small>';
+        /* $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_option_type_id_instead_of_option_type_identifier",$this->adminLangId),'CONF_USE_OPTION_TYPE_ID',1,array(),false,0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_option_type_id_instead_of_option_type_identifier_in_worksheets",$this->adminLangId) . '</small>'; */
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_tax_id_instead_of_tax_identifier", $langId), 'CONF_USE_TAX_CATEOGRY_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_tax_category_id_instead_of_tax_identifier_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_tag_id_instead_of_tag_identifier", $this->adminLangId), 'CONF_USE_TAG_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_tag_id_instead_of_tag_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_product_type_id_instead_of_product_type_identifier", $langId), 'CONF_USE_PRODUCT_TYPE_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_product_type_id_instead_of_product_type_identifier_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_tax_id_instead_of_tax_identifier", $this->adminLangId), 'CONF_USE_TAX_CATEOGRY_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_tax_category_id_instead_of_tax_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_dimension_unit_id_instead_of_dimension_unit_identifier", $langId), 'CONF_USE_DIMENSION_UNIT_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_dimension_unit_id_instead_of_dimension_unit_identifier_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_product_type_id_instead_of_product_type_identifier", $this->adminLangId), 'CONF_USE_PRODUCT_TYPE_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_product_type_id_instead_of_product_type_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_weight_unit_id_instead_of_weight_unit_identifier", $langId), 'CONF_USE_WEIGHT_UNIT_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_weight_unit_id_instead_of_weight_unit_identifier_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_dimension_unit_id_instead_of_dimension_unit_identifier", $this->adminLangId), 'CONF_USE_DIMENSION_UNIT_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_dimension_unit_id_instead_of_dimension_unit_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_lang_id_instead_of_lang_code", $langId), 'CONF_USE_LANG_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_language_id_instead_of_language_code_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_weight_unit_id_instead_of_weight_unit_identifier", $this->adminLangId), 'CONF_USE_WEIGHT_UNIT_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_weight_unit_id_instead_of_weight_unit_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_currency_id_instead_of_currency_code", $langId), 'CONF_USE_CURRENCY_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_currency_id_instead_of_currency_code_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_lang_id_instead_of_lang_code", $this->adminLangId), 'CONF_USE_LANG_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_language_id_instead_of_language_code_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_Product_condition_id_instead_of_condition_identifier", $langId), 'CONF_USE_PROD_CONDITION_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_Product_condition_id_instead_of_condition_identifier_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_currency_id_instead_of_currency_code", $this->adminLangId), 'CONF_USE_CURRENCY_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_currency_id_instead_of_currency_code_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_persent_or_flat_condition_id_instead_of_identifier", $langId), 'CONF_USE_PERSENT_OR_FLAT_CONDITION_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_persent_or_flat_condition_id_instead_of_identifier_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_Product_condition_id_instead_of_condition_identifier", $this->adminLangId), 'CONF_USE_PROD_CONDITION_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_Product_condition_id_instead_of_condition_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_country_id_instead_of_country_code", $langId), 'CONF_USE_COUNTRY_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_country_id_instead_of_country_code_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_persent_or_flat_condition_id_instead_of_identifier", $this->adminLangId), 'CONF_USE_PERSENT_OR_FLAT_CONDITION_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_persent_or_flat_condition_id_instead_of_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_state_id_instead_of_state_identifier", $langId), 'CONF_USE_STATE_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_state_id_instead_of_state_identifier_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_country_id_instead_of_country_code", $this->adminLangId), 'CONF_USE_COUNTRY_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_country_id_instead_of_country_code_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_policy_point_id_instead_of_policy_point_identifier", $langId), 'CONF_USE_POLICY_POINT_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_policy_point_id_instead_of_policy_point_identifier_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_state_id_instead_of_state_identifier", $this->adminLangId), 'CONF_USE_STATE_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_state_id_instead_of_state_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_shipping_company_id_instead_of_shipping_company_identifier", $langId), 'CONF_USE_SHIPPING_COMPANY_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_shipping_company_id_instead_of_shipping_company_identifier_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_policy_point_id_instead_of_policy_point_identifier", $this->adminLangId), 'CONF_USE_POLICY_POINT_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_policy_point_id_instead_of_policy_point_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_policy_point_type_id_instead_of_policy_point_type_identifier", $langId), 'CONF_USE_POLICY_POINT_TYPE_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_policy_point_type_id_instead_of_policy_point_type_identifier_in_worksheets", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_shipping_company_id_instead_of_shipping_company_identifier", $this->adminLangId), 'CONF_USE_SHIPPING_COMPANY_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_shipping_company_id_instead_of_shipping_company_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
-        /* $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_shipping_method_id_instead_of_shipping_method_identifier",$langId),'CONF_USE_SHIPPING_METHOD_ID',1,array(),false,0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_shipping_method_id_instead_of_shipping_method_identifier_in_worksheets",$langId).'</small>'; */
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_policy_point_type_id_instead_of_policy_point_type_identifier", $this->adminLangId), 'CONF_USE_POLICY_POINT_TYPE_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_policy_point_type_id_instead_of_policy_point_type_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_shipping_duration_id_instead_of_shipping_duration_identifier", $langId), 'CONF_USE_SHIPPING_DURATION_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_shipping_duration_id_instead_of_shipping_duration_identifier_in_worksheets", $langId).'</small>';
+        /* $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_shipping_method_id_instead_of_shipping_method_identifier",$this->adminLangId),'CONF_USE_SHIPPING_METHOD_ID',1,array(),false,0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_shipping_method_id_instead_of_shipping_method_identifier_in_worksheets",$this->adminLangId) . '</small>'; */
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_1_for_yes_0_for_no", $langId), 'CONF_USE_O_OR_1', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_1_for_yes_0_for_no_for_status_type_data", $langId).'</small>';
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_shipping_duration_id_instead_of_shipping_duration_identifier", $this->adminLangId), 'CONF_USE_SHIPPING_DURATION_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_shipping_duration_id_instead_of_shipping_duration_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Submit', $langId));
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_1_for_yes_0_for_no", $this->adminLangId), 'CONF_USE_O_OR_1', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_1_for_yes_0_for_no_for_status_type_data", $this->adminLangId) . '</small>';
+
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel("LBL_Save_Changes", $this->adminLangId));
         return $frm;
     }
     

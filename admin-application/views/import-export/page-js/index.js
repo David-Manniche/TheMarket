@@ -3,12 +3,8 @@ $(document).ready(function() {
 });
 
 (function() {
-    var dv = '#importExportBlock';
-    var settingDv = '#settingFormBlock';
-    var exportDv = '#exportFormBlock';
-    var importDv = '#importFormBlock';
-    var runningAjaxReq = false;
-
+    var dv = '#tabData';
+    
     loadForm = function(formType) {
         $(dv).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('ImportExport', 'loadForm', [formType]), '', function(t) {
@@ -18,5 +14,7 @@ $(document).ready(function() {
             }
         });
     };
+    
+    updateSettings = 
 
 })();
