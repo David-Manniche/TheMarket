@@ -41,10 +41,12 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
             $color = !empty($colorOption) ? array_shift($colorOption)['optionvalue_identifier'] : '';
 
             $product = new Google_Service_ShoppingContent_Product();
+            $product->setId($prodDetail['abprod_selprod_id']);
             $product->setOfferId($prodDetail['abprod_selprod_id']);
             $product->setTitle($prodDetail['selprod_title']);
             $product->setDescription($prodDetail['product_description']);
             $product->setColor($color);
+            $product->setItemGroupId($prodDetail['abprod_item_group_identifier']);
             $product->setBrand(ucfirst(Brand::getAttributesById($prodDetail['product_brand_id'], 'brand_identifier')));
             $product->setLink(CommonHelper::generateFullUrl('Products', 'View', array($prodDetail['selprod_id'])));
             $product->setImageLink(CommonHelper::generateFullUrl('image', 'product', array($prodDetail['product_id'], "MEDIUM", $prodDetail['selprod_id'], 0, CommonHelper::getLangId())));
