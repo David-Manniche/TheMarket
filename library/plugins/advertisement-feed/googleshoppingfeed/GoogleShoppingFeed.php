@@ -26,7 +26,7 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
     private function doRequest($data)
     {
         $client = new Google_Client();
-        $client->setAuthConfig(CONF_PLUGIN_DIR .  'advertisement-feed/service-account.json');
+        $client->setAuthConfig(__DIR__ . '/service-account.json');
         $client->setScopes(Google_Service_ShoppingContent::CONTENT);
         $client->useApplicationDefaultCredentials();
         $client->setUseBatch(true);

@@ -19,7 +19,7 @@ class AdvertisementController extends LoggedUserController
             FatApp::redirectUser(CommonHelper::generateUrl('Seller'));
         }
         $this->userId = UserAuthentication::getLoggedUserId();
-        require_once(CONF_PLUGIN_DIR . 'advertisement-feed/' . $this->keyName . '.php');
+        require_once(CONF_PLUGIN_DIR . 'advertisement-feed/' . strtolower($this->keyName) . '/' . $this->keyName . '.php');
     }
 
     private function getForm()
