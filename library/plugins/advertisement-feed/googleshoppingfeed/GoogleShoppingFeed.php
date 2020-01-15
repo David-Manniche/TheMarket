@@ -35,10 +35,22 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
         $batch = $service->createBatch();
 
         foreach ($data['data'] as $prodDetail) {
+            $colorOption = array_filter($prodDetail['optionsData'], function ($v) {
+                return 1 == $v['option_is_color'];
+            });
+            $color = !empty($colorOption) ? array_shift($colorOption)['optionvalue_identifier'] : '';
+
+            $sizeOption = array_filter($prodDetail['optionsData'], function ($v) {
+                return strpos(strtolower($v['option_name']), 'size') !== false;
+            });
+            $size = !empty($sizeOption) ? array_shift($sizeOption)['optionvalue_identifier'] : '';
+
             $product = new Google_Service_ShoppingContent_Product();
             $product->setOfferId($prodDetail['abprod_selprod_id']);
             $product->setTitle($prodDetail['selprod_title']);
             $product->setDescription($prodDetail['product_description']);
+            $product->setColor($color);
+            $product->setBrand(ucfirst(Brand::getAttributesById($prodDetail['product_brand_id'], 'brand_identifier')));
             $product->setLink(CommonHelper::generateFullUrl('Products', 'View', array($prodDetail['selprod_id'])));
             $product->setImageLink(CommonHelper::generateFullUrl('image', 'product', array($prodDetail['product_id'], "MEDIUM", $prodDetail['selprod_id'], 0, CommonHelper::getLangId())));
             $product->setContentLanguage(strtolower(Language::getAttributesById($prodDetail['adsbatch_lang_id'], 'language_code')));
@@ -49,6 +61,8 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
             $product->setCondition(Product::getConditionArr($data['siteLangId'])[$prodDetail['selprod_condition']]);
             $product->setGoogleProductCategory($prodDetail['abprod_cat_id']);
             // $product->setGtin('9780007350896');
+            // $product->setMpn('9780007350896');
+            $product->setSizes([$size]);
 
             $price = new Google_Service_ShoppingContent_Price();
             $price->setValue($prodDetail['selprod_price']);
