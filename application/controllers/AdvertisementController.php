@@ -152,7 +152,7 @@ class AdvertisementController extends LoggedUserController
         }
         unset($post['adsbatch_id']);
         $post['adsbatch_user_id'] = UserAuthentication::getLoggedUserId();
-        $adsBatchObj = new adsBatch($adsBatchId);
+        $adsBatchObj = new AdsBatch($adsBatchId);
         $adsBatchObj->assignValues($post);
 
         if (!$adsBatchObj->save()) {

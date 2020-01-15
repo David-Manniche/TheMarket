@@ -28,17 +28,16 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->developerKey = $settings['developer_key'];
     }
 
-    private function setupConfiguration($redirectUri = '')
+    private function setupConfiguration()
     {
         $this->validateSettings();
-        $redirectUri = empty($redirectUri) ? CommonHelper::generateFullUrl(static::KEY_NAME, 'getAccessToken') : $redirectUri;
         
         $this->client = new Google_Client();
         $this->client->setApplicationName(FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->siteLangId)); // Set your application name
         $this->client->setScopes(self::SCOPE);
         $this->client->setClientId($this->clientId);
         $this->client->setClientSecret($this->clientSecret);
-        $this->client->setRedirectUri($redirectUri);
+        $this->client->setRedirectUri(CommonHelper::generateFullUrl(static::KEY_NAME, 'getAccessToken', [], '', false));
         $this->client->setDeveloperKey($this->developerKey);
         $this->client->setAccessType('offline');
         $this->client->setApprovalPrompt('force');
@@ -46,12 +45,9 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
 
     public function getAccessToken()
     {
-        $get = FatApp::getQueryStringData();
-        $userType = FatApp::getPostedData('type', FatUtility::VAR_INT, User::USER_TYPE_BUYER);
-        $accessToken = FatApp::getPostedData('accessToken', FatUtility::VAR_STRING, '');
-
         $this->setupConfiguration();
-        
+
+        $get = FatApp::getQueryStringData();
         if (isset($get['code'])) {
             $this->client->authenticate($get['code']);
             $accessToken = $this->client->getAccessToken();
