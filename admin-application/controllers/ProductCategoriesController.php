@@ -51,20 +51,24 @@ class ProductCategoriesController extends AdminBaseController
         $this->objPrivilege->canEditProductCategories();
         $prodCatId = FatApp::getPostedData('catId', FatUtility::VAR_INT, 0); 
         $parentCatId = FatApp::getPostedData('parentCatId', FatUtility::VAR_INT, 0); 
-        $catOrder = json_decode(FatApp::getPostedData('catOrder'));
-        if( $prodCatId < 1 || count($catOrder) < 1){
+        $catOrderArr = json_decode(FatApp::getPostedData('catOrder'));
+        if( $prodCatId < 1 || count($catOrderArr) < 1){
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
         
         ProductCategory::updateCatParent($prodCatId, $parentCatId);
         $prodCat = new ProductCategory($prodCatId);
-        if (!$prodCat->updateOrder($catOrder)) {
+        if (!$prodCat->updateOrder($catOrderArr)) {
             Message::addErrorMessage($prodCat->getError());
             FatUtility::dieJsonError(Message::getHtml());
         } 
         $prodCat->updateCatCode();
-        ProductCategory::updateCatOrderCode($prodCatId);
+        foreach($catOrderArr as $catId){
+            if($catId > 0 ){
+                ProductCategory::updateCatOrderCode($catId);
+            }
+        }        
         $this->set('msg', Labels::getLabel('LBL_Record_Updated_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }    

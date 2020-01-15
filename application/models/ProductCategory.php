@@ -466,7 +466,7 @@ class ProductCategory extends MyAppModel
                 }
                 $out[$key] = $name;
             }
-        }
+        } 
         return $out;
     }
 
@@ -1007,9 +1007,10 @@ class ProductCategory extends MyAppModel
     }
     
     public function saveCategoryData($post)
-    { 
-        $prodCatId = $this->mainTableRecordId;
+    {  
         $parentCatId = FatUtility::int($post['parentCatId']);
+        $prodCatId = FatUtility::int($post['prodcat_id']);
+        unset($post['prodcat_id']);
         $autoUpdateOtherLangsData = 0; 
         if(isset($post['auto_update_other_langs_data'])){
             $autoUpdateOtherLangsData = FatUtility::int($post['auto_update_other_langs_data']);
@@ -1020,7 +1021,7 @@ class ProductCategory extends MyAppModel
             $post['prodcat_display_order'] = $this->getMaxOrder($parentCatId);
         }
         $this->assignValues($post);
-        if ( $this->save() ) {
+        if ( $this->save() ) { 
             $this->updateCatCode();
             $this->rewriteUrl($post['prodcat_identifier'], true, $parentCatId);
             Product::updateMinPrices();
