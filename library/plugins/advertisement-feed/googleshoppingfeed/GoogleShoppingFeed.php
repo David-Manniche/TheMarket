@@ -55,6 +55,12 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
             $product->setChannel($this->getSettings('channel'));
             $inStock = (0 < $prodDetail['selprod_stock'] ? "in stock" : 'out of stock');
             $product->setAvailability($inStock);
+            $product->setAvailabilityDate(date('Y-m-d', strtotime($prodDetail['selprod_available_from'])));
+            
+            $timestamp = strtotime($prodDetail['adsbatch_expired_on']);
+            if (0 < $timestamp) {
+                $product->setExpirationDate(date('Y-m-d', $timestamp));
+            }
             $product->setCondition(Product::getConditionArr($data['siteLangId'])[$prodDetail['selprod_condition']]);
             $product->setGoogleProductCategory($prodDetail['abprod_cat_id']);
             $product->setGtin($prodDetail['product_upc']);
