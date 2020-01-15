@@ -58,7 +58,7 @@ foreach ($arrListing as $sn => $row) {
                     case AdsBatch::STATUS_PENDING:
                         $class = 'badge-info';
                         break;
-                    case AdsBatch::STATUS_PUSHED:
+                    case AdsBatch::STATUS_PUBLISHED:
                         $class = 'badge-success';
                         break;
                     default:

@@ -90,4 +90,17 @@ class AdsBatch extends MyAppModel
 
         return $db->fetch($rs);
     }
+
+    public static function updateDetail($recordId, $data)
+    {
+        $recordId = FatUtility::int($recordId);
+        if (1 > $recordId || !is_array($data) || empty($data)) {
+            return false;
+        }
+
+        if (!FatApp::getDb()->insertFromArray(static::DB_TBL, $data, false, array(), $data)) {
+            return false;
+        }
+        return true;
+    }
 }
