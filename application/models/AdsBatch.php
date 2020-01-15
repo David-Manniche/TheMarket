@@ -97,7 +97,7 @@ class AdsBatch extends MyAppModel
         if (1 > $recordId || !is_array($data) || empty($data)) {
             return false;
         }
-
+        $data['adsbatch_id'] = !isset($data['adsbatch_id']) || empty($data['adsbatch_id']) ? $recordId : $data['adsbatch_id'];
         if (!FatApp::getDb()->insertFromArray(static::DB_TBL, $data, false, array(), $data)) {
             return false;
         }
