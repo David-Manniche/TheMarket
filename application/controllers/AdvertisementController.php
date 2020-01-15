@@ -380,7 +380,11 @@ class AdvertisementController extends LoggedUserController
             $message = 'ERR - ' . $e->getMessage();
             LibHelper::dieJsonError($message);
         }
-        if (false === AdsBatch::updateDetail($adsBatchId, ['adsbatch_status' => AdsBatch::STATUS_PUBLISHED])) {
+        $dataToUpdate = [
+            'adsbatch_status' => AdsBatch::STATUS_PUBLISHED,
+            'adsbatch_synced_on' => date('Y-m-d H:i:s')
+        ];
+        if (false === AdsBatch::updateDetail($adsBatchId, $dataToUpdate)) {
             Message::addErrorMessage(Labels::getLabel("MSG_UNABLE_TO_UPDATE", $this->siteLangId));
         } else {
             Message::addMessage(Labels::getLabel("MSG_PUBLISHED_SUCESSFULLY", $this->siteLangId));
