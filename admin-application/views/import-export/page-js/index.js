@@ -18,7 +18,7 @@ $(document).ready(function() {
             }
         });
     };
-    generalInstructions = function(frmType) {
+   /*  generalInstructions = function(frmType) {
         fcom.resetEditorInstance();
         $(dv).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('Configurations', 'generalInstructions', [frmType]), '', function(t) {
@@ -32,6 +32,6 @@ $(document).ready(function() {
         fcom.updateWithAjax(fcom.makeUrl('ImportExport', 'updateSettings'), data, function(ans) {
             loadForm('settings');
         });
-    };
+    }; */
     
 })();

@@ -668,7 +668,7 @@ class ImportExportController extends AdminBaseController
         $pageData = $obj->getContentByPageType(Extrapage::GENERAL_SETTINGS_INSTRUCTIONS, $this->adminLangId);
         $this->set('pageData', $pageData);
         $this->set('action', 'generalInstructions');
-        $this->_template->render(false, false, 'import-export/general-instructions.php');        
+        $this->_template->render(false, false, 'import-export/general-instructions.php');         
     }
     
     public function export()
