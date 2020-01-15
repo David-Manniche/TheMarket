@@ -59,11 +59,11 @@ class ProductCategoriesController extends AdminBaseController
         
         ProductCategory::updateCatParent($prodCatId, $parentCatId);
         $prodCat = new ProductCategory($prodCatId);
+        $prodCat->updateCatCode();
         if (!$prodCat->updateOrder($catOrderArr)) {
             Message::addErrorMessage($prodCat->getError());
             FatUtility::dieJsonError(Message::getHtml());
         } 
-        $prodCat->updateCatCode();
         foreach($catOrderArr as $catId){
             if($catId > 0 ){
                 ProductCategory::updateCatOrderCode($catId);

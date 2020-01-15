@@ -1041,6 +1041,7 @@ class ProductCategory extends MyAppModel
                 return false;
             }
             $this->mainTableRecordId = $record->getMainTableRecordId();
+            $this->updateCatCode();
         }
         
         $this->saveLangData($siteDefaultLangId, $post['prodcat_name'][$siteDefaultLangId]); // For site default language
