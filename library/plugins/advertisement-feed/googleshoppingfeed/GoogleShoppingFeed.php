@@ -113,7 +113,6 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
             $this->error = Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId());
             return false;
         }
-        $data = $this->doRequest($data);
-        CommonHelper::printArray($data);
+        return $this->doRequest($data);
     }
 }
