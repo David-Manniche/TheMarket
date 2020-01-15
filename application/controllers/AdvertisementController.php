@@ -76,7 +76,7 @@ class AdvertisementController extends LoggedUserController
         $obj = new Plugin();
         $keyName = $obj->getDefaultPluginKeyName(Plugin::TYPE_ADVERTISEMENT_FEED_API);
         if (false === $keyName) {
-            Message::addMessage($obj->getError());
+            Message::addErrorMessage($obj->getError());
             FatApp::redirectUser(CommonHelper::generateUrl('Advertisement'));
         }
 
@@ -380,7 +380,11 @@ class AdvertisementController extends LoggedUserController
             $message = 'ERR - ' . $e->getMessage();
             LibHelper::dieJsonError($message);
         }
-        
-        CommonHelper::printArray($response, true);
+        if (false === AdsBatch::updateDetail($adsBatchId, ['adsbatch_status' => AdsBatch::STATUS_PUBLISHED])) {
+            Message::addErrorMessage(Labels::getLabel("MSG_UNABLE_TO_UPDATE", $this->siteLangId));
+        } else {
+            Message::addMessage(Labels::getLabel("MSG_PUBLISHED_SUCESSFULLY", $this->siteLangId));
+        }
+        FatApp::redirectUser(CommonHelper::generateUrl('Advertisement'));
     }
 }
