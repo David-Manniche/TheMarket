@@ -64,7 +64,8 @@ class AdvertisementController extends LoggedUserController
     private function validateBatchRequest($adsBatchId)
     {
         $recordData = AdsBatch::getBatchesByUserId($this->userId, $adsBatchId);
-        if (1 > $adsBatchId || empty($recordData)) {
+        $status = AdsBatch::getAttributesById($adsBatchId, 'adsbatch_status');
+        if (1 > $adsBatchId || empty($recordData) || AdsBatch::STATUS_PENDING != $status) {
             $this->error = Labels::getLabel("LBL_INVALID_REQUEST", $this->siteLangId);
             return false;
         }
@@ -348,7 +349,8 @@ class AdvertisementController extends LoggedUserController
     {
         $adsBatchId = FatUtility::int($adsBatchId);
         if (false === $this->validateBatchRequest($adsBatchId)) {
-            LibHelper::dieJsonError($this->error);
+            Message::addErrorMessage($this->error);
+            FatApp::redirectUser(CommonHelper::generateUrl('Advertisement'));
         }
 
         $db = FatApp::getDb();

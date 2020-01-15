@@ -69,48 +69,52 @@ foreach ($arrListing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $htm, true);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class" => "actions"), '', true);
+                if (AdsBatch::STATUS_PUBLISHED == $row['adsbatch_status']) {
+                    $td->appendElement('plaintext', array(), Labels::getLabel('LBL_N/A', $siteLangId), true);
+                } else {
+                    $ul = $td->appendElement("ul", array("class" => "actions"), '', true);
 
-                $li = $ul->appendElement('li');
-                $li->appendElement(
-                    'a',
-                    [
-                        'href' => CommonHelper::generateUrl('Advertisement', 'publishBatch', [$row['adsbatch_id']]),
-                        'title' => Labels::getLabel('LBL_PUBLISH', $siteLangId)
-                    ],
-                    '<i class="fa fa-forward"></i>',
-                    true
-                );
-                $li = $ul->appendElement('li');
-                $li->appendElement(
-                    'a',
-                    [
-                        'href' => CommonHelper::generateUrl('Advertisement', 'bindProducts', [$row['adsbatch_id']]),
-                        'title' => Labels::getLabel('LBL_BIND_PRODUCTS', $siteLangId)
-                    ],
-                    '<i class="fa fa-link"></i>',
-                    true
-                );
-                $li = $ul->appendElement('li');
-                $li->appendElement(
-                    'a',
-                    [
-                        'href' => 'javascript:void(0)',
-                        'title' => Labels::getLabel('LBL_EDIT', $siteLangId), "onclick" => "form(" . $row['adsbatch_id'] . ")"
-                    ],
-                    '<i class="fa fa-pencil"></i>',
-                    true
-                );
-                $li = $ul->appendElement('li');
-                $li->appendElement(
-                    'a',
-                    [
-                        'href' => 'javascript:void(0)',
-                        'title' => Labels::getLabel('LBL_DELETE', $siteLangId), "onclick" => "deleteBatch(" . $row['adsbatch_id'] . ")"
-                    ],
-                    '<i class="fa fa-trash"></i>',
-                    true
-                );
+                    $li = $ul->appendElement('li');
+                    $li->appendElement(
+                        'a',
+                        [
+                            'href' => CommonHelper::generateUrl('Advertisement', 'publishBatch', [$row['adsbatch_id']]),
+                            'title' => Labels::getLabel('LBL_PUBLISH', $siteLangId)
+                        ],
+                        '<i class="fa fa-forward"></i>',
+                        true
+                    );
+                    $li = $ul->appendElement('li');
+                    $li->appendElement(
+                        'a',
+                        [
+                            'href' => CommonHelper::generateUrl('Advertisement', 'bindProducts', [$row['adsbatch_id']]),
+                            'title' => Labels::getLabel('LBL_BIND_PRODUCTS', $siteLangId)
+                        ],
+                        '<i class="fa fa-link"></i>',
+                        true
+                    );
+                    $li = $ul->appendElement('li');
+                    $li->appendElement(
+                        'a',
+                        [
+                            'href' => 'javascript:void(0)',
+                            'title' => Labels::getLabel('LBL_EDIT', $siteLangId), "onclick" => "form(" . $row['adsbatch_id'] . ")"
+                        ],
+                        '<i class="fa fa-pencil"></i>',
+                        true
+                    );
+                    $li = $ul->appendElement('li');
+                    $li->appendElement(
+                        'a',
+                        [
+                            'href' => 'javascript:void(0)',
+                            'title' => Labels::getLabel('LBL_DELETE', $siteLangId), "onclick" => "deleteBatch(" . $row['adsbatch_id'] . ")"
+                        ],
+                        '<i class="fa fa-trash"></i>',
+                        true
+                    );
+                }
                 break;
         }
     }
