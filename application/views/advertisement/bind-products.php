@@ -14,6 +14,11 @@ $this->includeTemplate('_partial/dashboardNavigation.php');?>
                     ?>
                 </h2>
             </div>
+            <div class="col-auto">
+                <div class="action btn-group-scroll">
+                    <a href="javascript:void(0)" onclick="window.history.back();" class="btn btn--primary btn--sm"><?php echo Labels::getLabel('LBL_BACK', $siteLangId);?></a>
+                </div>
+            </div>
         </div>
         <div class="content-body">
             <div class="row mb-4">

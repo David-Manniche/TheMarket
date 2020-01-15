@@ -10,7 +10,7 @@ $btnFld->addFieldTagAttribute('class', 'btn btn--primary');
 
 $btnFld = $frm->getField('btn_clear');
 $btnFld->addFieldTagAttribute('class', 'btn btn--primary-border');
-$btnFld->addFieldTagAttribute('onClick', 'window.history.back();');
+$btnFld->addFieldTagAttribute('onClick', 'clearForm();');
 
 /* $prodCatFld = $frm->getField('google_product_category');
 $prodCatFld->setWrapperAttribute('class', 'col-lg-4');

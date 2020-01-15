@@ -71,6 +71,10 @@ $(document).on('keyup', "input[name='google_product_category']", function(){
 		});
     };
 
+    clearForm = function() {
+        bindproductform();
+    };
+
 	searchproducts = function(){
         $(dv).html(fcom.getLoader());
         var adsBatchId = $("input[name='adsBatchId']").val();

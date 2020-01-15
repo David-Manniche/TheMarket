@@ -11,7 +11,12 @@ $adsbatch_name->setWrapperAttribute('class', 'col-lg-3');
 $adsbatch_name->developerTags['col'] = 3;
 
 $btnFld = $frm->getField('btn_submit');
-$btnFld->addFieldTagAttribute('class', 'btn--block btn btn--primary');
+$btnFld->addFieldTagAttribute('class', 'btn btn--primary');
+$btnFld->setWrapperAttribute('class', 'col-lg-3');
+$btnFld->developerTags['col'] = 3;
+
+$btnFld = $frm->getField('btn_clear');
+$btnFld->addFieldTagAttribute('class', 'btn btn--primary-border');
 $btnFld->setWrapperAttribute('class', 'col-lg-3');
 $btnFld->developerTags['col'] = 3;
 

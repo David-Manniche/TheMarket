@@ -23,7 +23,12 @@ $(document).ready(function() {
                 minDate: new Date()
             });
 		});
-	};
+    };
+    
+    clearForm = function() {
+        form();
+    };
+
 
 	setup = function (frm){
 		if (!$(frm).validate()) return;
