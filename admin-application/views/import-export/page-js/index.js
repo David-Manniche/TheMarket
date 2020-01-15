@@ -18,20 +18,5 @@ $(document).ready(function() {
             }
         });
     };
-   /*  generalInstructions = function(frmType) {
-        fcom.resetEditorInstance();
-        $(dv).html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Configurations', 'generalInstructions', [frmType]), '', function(t) {
-            $(dv).html(t);
-        });
-    };
-    
-    updateSettings = function(frm) {
-        var data = fcom.frmData(frm);
-        $(settingDv).html(fcom.getLoader());
-        fcom.updateWithAjax(fcom.makeUrl('ImportExport', 'updateSettings'), data, function(ans) {
-            loadForm('settings');
-        });
-    }; */
-    
+
 })();

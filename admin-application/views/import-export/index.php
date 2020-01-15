@@ -12,17 +12,8 @@
                             <?php $this->includeTemplate('_partial/header/header-breadcrumb.php'); ?>
                         </div>
                     </div>
-                </div>
-                <section class="section">
-                    <div class="sectionhead">
-                        <h4><?php echo Labels::getLabel('LBL_Import_Export',$adminLangId); ?> </h4>
-                    </div>
-                    <div class="sectionbody">
-                        <div id="importExportBlock">
-                            <?php echo Labels::getLabel('LBL_Loading..', $adminLangId); ?>
-                        </div>
-                    </div>
-                </section>
+                </div> 
+                <div id="importExportBlock"></div>
             </div>
         </div>
     </div>
