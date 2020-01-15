@@ -3766,7 +3766,7 @@ class SellerController extends SellerBaseController
 
         /* $frm->addFloatField( Labels::getLabel('LBL_Minimum_Selling_Price', $langId).' ['.CommonHelper::getCurrencySymbol(true).']', 'product_min_selling_price', ''); */
 
-        $frm->addTextBox(Labels::getLabel('LBL_EAN/UPC_code', $this->siteLangId), 'product_upc');
+        $frm->addTextBox(Labels::getLabel('LBL_EAN/UPC/GTIN_code', $this->siteLangId), 'product_upc');
 
         $frm->addCheckBox(Labels::getLabel('LBL_Product_Featured', $this->siteLangId), 'product_featured', 1, array(), false, 0);
 

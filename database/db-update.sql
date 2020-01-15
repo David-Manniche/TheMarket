@@ -200,3 +200,5 @@ CREATE TABLE `tbl_ads_batch_products`(
    `abprod_product_info` TEXT NOT NULL,
    PRIMARY KEY(`abprod_adsbatch_id`, `abprod_selprod_id`)
 ) ENGINE = InnoDB;
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_EAN/UPC_code';

@@ -40,11 +40,6 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
             });
             $color = !empty($colorOption) ? array_shift($colorOption)['optionvalue_identifier'] : '';
 
-            $sizeOption = array_filter($prodDetail['optionsData'], function ($v) {
-                return strpos(strtolower($v['option_name']), 'size') !== false;
-            });
-            $size = !empty($sizeOption) ? array_shift($sizeOption)['optionvalue_identifier'] : '';
-
             $product = new Google_Service_ShoppingContent_Product();
             $product->setOfferId($prodDetail['abprod_selprod_id']);
             $product->setTitle($prodDetail['selprod_title']);
@@ -60,9 +55,8 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
             $product->setAvailability($inStock);
             $product->setCondition(Product::getConditionArr($data['siteLangId'])[$prodDetail['selprod_condition']]);
             $product->setGoogleProductCategory($prodDetail['abprod_cat_id']);
-            // $product->setGtin('9780007350896');
+            $product->setGtin($prodDetail['product_upc']);
             // $product->setMpn('9780007350896');
-            $product->setSizes([$size]);
 
             $price = new Google_Service_ShoppingContent_Price();
             $price->setValue($prodDetail['selprod_price']);

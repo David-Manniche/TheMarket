@@ -278,7 +278,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
 
                                     <?php /* if ($product['product_upc']!='') { ?>
                                     <div class="gap"></div>
-                                    <div><?php echo Labels::getLabel('LBL_EAN/UPC_code', $siteLangId).' : '.$product['product_upc'];?></div>
+                                    <div><?php echo Labels::getLabel('LBL_EAN/UPC/GTIN_code', $siteLangId).' : '.$product['product_upc'];?></div>
                                     <?php } */ ?>
 
                                     <?php /* Volume Discounts[ */
