@@ -27,4 +27,14 @@ class AdvertisementFeedBaseController extends PluginBaseController
         Message::addMessage(Labels::getLabel("MSG_SUCCESSFULLY_UPDATED", $this->siteLangId));
         $this->redirectBack();
     }
+
+    protected function setErrorAndRedirect($message, $errRedirection = false)
+    {
+        if (false === $errRedirection) {
+            LibHelper::dieJsonError($message);
+        }
+
+        Message::addErrorMessage($message);
+        $this->redirectBack();
+    }
 }

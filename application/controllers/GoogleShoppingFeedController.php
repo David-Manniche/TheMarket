@@ -49,11 +49,6 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $get = FatApp::getQueryStringData();
         $userType = FatApp::getPostedData('type', FatUtility::VAR_INT, User::USER_TYPE_BUYER);
         $accessToken = FatApp::getPostedData('accessToken', FatUtility::VAR_STRING, '');
-        
-        if (true ===  MOBILE_APP_API_CALL && empty($accessToken)) {
-            $message = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
-            $this->setErrorAndRedirect($message, true);
-        }
 
         $this->setupConfiguration();
         
@@ -77,8 +72,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $authDetail = $service->accounts->authinfo();
         $accountDetail = $authDetail->accountIdentifiers;
         if (empty($accountDetail)) {
-            Message::addErrorMessage(Labels::getLabel("MSG_MERCHANT_ACCOUNT_DETAIL_NOT_FOUND", $this->siteLangId));
-            $this->redirectBack();
+            $this->setErrorAndRedirect(Labels::getLabel("MSG_MERCHANT_ACCOUNT_DETAIL_NOT_FOUND", $this->siteLangId), true);
         }
         $merchantId = array_shift($accountDetail)->merchantId;
         $this->updateMerchantAccountDetail([self::KEY_NAME . '_merchantId' => $merchantId]);

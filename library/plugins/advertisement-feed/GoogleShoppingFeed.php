@@ -2,14 +2,6 @@
 include_once CONF_INSTALLATION_PATH . 'library/GoogleAPI/vendor/autoload.php';
 class GoogleShoppingFeed extends AdvertisementFeedBase
 {
-    private const PRODUCTION_URL = 'https://www.googleapis.com/content/v2/';
-    private const INSERT_URL = '{merchantId}/products';
-    private const GET_URL = '{merchantId}/products/{productId}';
-    private const DELETE_URL = '{merchantId}/products/{productId}';
-    private const LIST_URL = '{merchantId}/products';
-    
-    private const BATCH_REQUEST_URL = 'products/batch';
-
     private $merchantId;
 
     public function __construct()
@@ -18,13 +10,6 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
         if (empty($this->merchantId)) {
             $this->setupMerchantDetail();
         }
-    }
-
-    private function makeUrl($url, $replaceData = [])
-    {
-        $url = self::PRODUCTION_URL . $url;
-        $replaceData = ['{merchantId}' => $this->merchantId] + $replaceData;
-        return CommonHelper::replaceStringData($url, $replaceData);
     }
 
     public static function ageGroup($langId)
@@ -46,7 +31,6 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
         $client->useApplicationDefaultCredentials();
         $client->setUseBatch(true);
 
-        $merchantId = User::getUserMeta(UserAuthentication::getLoggedUserId(), __CLASS__ . '_merchantId');
         $service = new Google_Service_ShoppingContent($client);
         $batch = $service->createBatch();
 
@@ -87,7 +71,7 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
             $product->setShipping(array($shipping));
             $product->setShippingWeight($shipping_weight); */
         
-            $request = $service->products->insert($merchantId, $product);
+            $request = $service->products->insert($this->merchantId, $product);
             $batch->add($request, $product->getOfferId());
         }
         return $batch->execute();
@@ -128,7 +112,6 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
             $this->error = Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId());
             return false;
         }
-        $url = $this->makeUrl(self::BATCH_REQUEST_URL);
         $data = $this->doRequest($data);
         CommonHelper::printArray($data);
     }
