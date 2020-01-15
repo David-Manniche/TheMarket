@@ -53,7 +53,8 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
             $price = new Google_Service_ShoppingContent_Price();
             $price->setValue($prodDetail['selprod_price']);
             $price->setCurrency(strtoupper(Currency::getAttributesById($data['siteCurrencyId'], 'currency_code')));
-
+            $product->setPrice($price);
+            
             /* $shipping_price = new Google_Service_ShoppingContent_Price();
             $shipping_price->setValue('0.99');
             $shipping_price->setCurrency('GBP');
