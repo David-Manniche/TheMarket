@@ -39,7 +39,7 @@
                             $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
                             //$innerLi=$innerUl->appendElement('li');
                         ?>
-                        <?php if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canView) {
+                        <?php /* if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canView) {
                             $innerLiExport=$innerUl->appendElement('li');
                             $innerLiExport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Export', $adminLangId),"onclick"=>"addExportForm(".Importexport::TYPE_TAG.")"), Labels::getLabel('LBL_Export', $adminLangId), true); ?>
                         <!--<a href="javascript:void(0)" class="themebtn btn-default btn-sm" onClick="exportForm(<?php echo Importexport::TYPE_TAG; ?>)";><?php echo Labels::getLabel('LBL_Export', $adminLangId); ?></a>-->
@@ -48,7 +48,7 @@
                             $innerLiImport=$innerUl->appendElement('li');
                             $innerLiImport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Import', $adminLangId),"onclick"=>"addImportForm(". Importexport::TYPE_TAG.")"), Labels::getLabel('LBL_Import', $adminLangId), true); ?>
                         <!--<a href="javascript:void(0)" class="themebtn btn-default btn-sm" onClick="importForm(<?php echo Importexport::TYPE_TAG; ?>)";><?php echo Labels::getLabel('LBL_Import', $adminLangId); ?></a>-->
-                        <?php } ?>
+                        <?php } */ ?>
                         <?php if ($canEdit) {
                             $innerLi=$innerUl->appendElement('li');
                             $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteSelected()"), Labels::getLabel('LBL_Delete', $adminLangId), true);

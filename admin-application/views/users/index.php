@@ -41,8 +41,8 @@
                             $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
                             $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
 
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Export', $adminLangId),"onclick"=>"addExportForm(".Importexport::TYPE_USERS.")"), Labels::getLabel('LBL_Export', $adminLangId), true);
+                            /* $innerLi=$innerUl->appendElement('li');
+                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Export', $adminLangId),"onclick"=>"addExportForm(".Importexport::TYPE_USERS.")"), Labels::getLabel('LBL_Export', $adminLangId), true); */
 
                             $innerLi=$innerUl->appendElement('li');
                             $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Deleted_users', $adminLangId),"onclick"=>"deletedUser()"), Labels::getLabel('LBL_Deleted_users', $adminLangId), true);

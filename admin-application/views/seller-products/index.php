@@ -40,18 +40,17 @@
                             $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
                             $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
                             $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                        if ($canView && FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0)) {
+                        
+                        /*if ($canView && FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0)) {
                             $innerLiExport=$innerUl->appendElement('li');
                             $innerLiExport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Export', $adminLangId), "onclick"=>"exportForm(".Importexport::TYPE_SELLER_PRODUCTS.")"), Labels::getLabel('LBL_Export', $adminLangId), true); ?>
                         <!--<a href="javascript:void(0)" class="themebtn btn-default btn-sm" onClick="exportForm(<?php echo Importexport::TYPE_SELLER_PRODUCTS; ?>)";><?php echo Labels::getLabel('LBL_Export', $adminLangId); ?></a>-->
-                        <?php
-                        } ?>
+                        <?php } ?>
                         <?php if ($canEdit && FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0)) {
                             $innerLiImport=$innerUl->appendElement('li');
                             $innerLiImport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Import', $adminLangId),"onclick"=>"addImportForm(". Importexport::TYPE_SELLER_PRODUCTS.")"), Labels::getLabel('LBL_Import', $adminLangId), true); ?>
                         <!--<a href="javascript:void(0)" class="themebtn btn-default btn-sm" onClick="importForm(<?php echo Importexport::TYPE_SELLER_PRODUCTS; ?>)";><?php echo Labels::getLabel('LBL_Import', $adminLangId); ?></a>-->
-                        <?php
-                        } ?>
+                        <?php } */ ?>
                         <?php if ($product_id) {
                             $innerLiAddCat=$innerUl->appendElement('li');
                             $innerLiAddCat->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small 	green','title'=>Labels::getLabel('LBL_Add_New_Product', $adminLangId),"onclick"=>"sellerProductForm(".$product_id.")"), Labels::getLabel('LBL_Add_New_Product', $adminLangId), true); ?>

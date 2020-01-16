@@ -40,14 +40,14 @@
                         $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
                         $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
 
-                        if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canView) {
+                       /* if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canView) {
                             $innerLiExport=$innerUl->appendElement('li');
                             $innerLiExport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Export', $adminLangId),"onclick"=>"addExportForm(".Importexport::TYPE_COUNTRY.")"), Labels::getLabel('LBL_Export', $adminLangId), true);
                         }
                         if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canEdit) {
                             $innerLiImport=$innerUl->appendElement('li'); $innerLiImport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small
                             green','title'=>Labels::getLabel('LBL_Import', $adminLangId),"onclick"=>"addImportForm(". Importexport::TYPE_COUNTRY.")"), Labels::getLabel('LBL_Import', $adminLangId), true);
-                        }
+                        } */
                         if ($canEdit) {
                             $innerLi=$innerUl->appendElement('li');
                             $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Activate', $adminLangId),"onclick"=>"toggleBulkStatues(1)"), Labels::getLabel('LBL_Activate', $adminLangId), true);

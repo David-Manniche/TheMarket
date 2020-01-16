@@ -24,14 +24,14 @@
                             $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
                             //$innerLi=$innerUl->appendElement('li');
 
-                            if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canView) {
+                            /* if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canView) {
                                 $innerLiExport=$innerUl->appendElement('li');
                                 $innerLiExport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Export', $adminLangId),"onclick"=>"addExportForm(".Importexport::TYPE_CATEGORIES.")"), Labels::getLabel('LBL_Export', $adminLangId), true);
                             }
                             if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canEdit) {
                                 $innerLiImport=$innerUl->appendElement('li');
                                 $innerLiImport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Import', $adminLangId),"onclick"=>"addImportForm(". Importexport::TYPE_CATEGORIES.")"), Labels::getLabel('LBL_Import', $adminLangId), true);
-                            }
+                            } */
                             if ($canEdit) {
                                 $innerLiAddCat=$innerUl->appendElement('li');
                                 $innerLiAddCat->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Add_Category', $adminLangId),"onclick"=>"addCategoryForm(0)"), Labels::getLabel('LBL_Add_Category', $adminLangId), true);
