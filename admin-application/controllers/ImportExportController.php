@@ -4,7 +4,6 @@ class ImportExportController extends AdminBaseController
     public function __construct($action)
     {
         parent::__construct($action);
-        $this->langId = $this->adminLangId;
         $this->objPrivilege->canViewImportExport();
     }
     
@@ -254,7 +253,7 @@ class ImportExportController extends AdminBaseController
 
     public function importMediaForm($actionType)
     {
-        $langId =     $this->langId;
+        $langId =     $this->adminLangId;
         switch ($actionType) {
             case Importexport::TYPE_CATEGORIES:
                 $this->objPrivilege->canEditProductCategories();
@@ -284,7 +283,7 @@ class ImportExportController extends AdminBaseController
 
     public function exportMediaForm($actionType)
     {
-        $langId = $this->langId;
+        $langId = $this->adminLangId;
         switch ($actionType) {
             case Importexport::TYPE_CATEGORIES:
                 $this->objPrivilege->canViewProductCategories();
@@ -319,7 +318,7 @@ class ImportExportController extends AdminBaseController
 
     public function importForm($actionType)
     {
-        $langId = $this->langId ;
+        $langId = $this->adminLangId ;
         $displayMediaTab = true;
         switch($actionType){
             case Importexport::TYPE_CATEGORIES:
@@ -384,7 +383,7 @@ class ImportExportController extends AdminBaseController
 
     public function importInstructions($actionType)
     {
-        $langId = $this->langId ;
+        $langId = $this->adminLangId ;
         $obj = new Extrapage();
         $pageData = '';
         $displayMediaTab = false;
@@ -446,7 +445,7 @@ class ImportExportController extends AdminBaseController
 
     public function exportForm($actionType)
     {
-        $langId = $this->langId;
+        $langId = $this->adminLangId;
         $displayMediaTab = false;
 
         $options = Importexport::getImportExportTypeArr('export', $this->adminLangId, false);
@@ -810,7 +809,6 @@ class ImportExportController extends AdminBaseController
 
         $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_1_for_yes_0_for_no", $this->adminLangId), 'CONF_USE_O_OR_1', 1, array(), false, 0);
         $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_1_for_yes_0_for_no_for_status_type_data", $this->adminLangId) . '</small>';
-        $frm->addHiddenField('', 'form_type', Configurations::FORM_IMPORT_EXPORT);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel("LBL_Save_Changes", $this->adminLangId));
         return $frm;
     }
@@ -819,26 +817,108 @@ class ImportExportController extends AdminBaseController
     {
         $frm = $this->getSettingForm($this->adminLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
         }
-
-        $obj = new Importexport();
-        $settingArr = $obj->getSettingsArr();
-
-        foreach ($settingArr as $k => $val) {
-            $data = array(
-            'impexp_setting_key'=>$k,
-            'impexp_setting_user_id'=>0,
-            'impexp_setting_value'=>isset($post[$k])?$post[$k]:0,
-            );
-            FatApp::getDb()->insertFromArray(Importexport::DB_TBL_SETTINGS, $data, false, array(), $data);
+        
+        $record = new Configurations();
+        if (!$record->update($post)) {
+            Message::addErrorMessage($record->getError());
+            FatUtility::dieJsonError(Message::getHtml());
         }
-
-        $this->set('msg', Labels::getLabel('MSG_Setup_Successfull', $this->adminLangId));
+        
+        $this->set('msg', Labels::getLabel('MSG_Settings_Updated_Successful', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
+    
+    public function bulkMedia()
+    {
+        $frm = $this->getbulkMediaForm($this->adminLangId);
+        $this->set('action', 'bulkMedia');
+        $this->set('frm', $frm);
+        $this->_template->render(false, false, 'import-export/bulk-media.php');
+    }
+    
+    private function getbulkMediaForm()
+    {
+        $frm = new Form('uploadBulkImages', array('id'=>'uploadBulkImages'));
+
+        $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_File_to_be_uploaded:', $this->adminLangId), 'bulk_images', array('id' => 'bulk_images', 'accept' => '.zip' ));
+        $fldImg->requirement->setRequired(true);
+        $fldImg->setFieldTagAttribute('onChange', '$("#uploadFileName").html(this.value)');
+        $fldImg->htmlBeforeField='<div class="filefield"><span class="filename" id="uploadFileName"></span>';
+        $fldImg->htmlAfterField='<label class="filelabel">'.Labels::getLabel('LBL_Browse_File', $this->adminLangId).'</label></div>';
+
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Submit', $this->adminLangId));
+        return $frm;
+    }
+    
+    public function bulkMediaList()
+    {
+        $bulkImage = new UploadBulkImages();
+        $srch = $bulkImage->bulkMediaFileObject();        
+        $rs = $srch->getResultSet();
+        $records = FatApp::getDb()->fetchAll($rs);
+        $this->set("records", $records);
+        $this->_template->render(false, false);
+    }
+    
+    public function upload()
+    {
+        $frm = $this->getbulkMediaForm();
+        $post = $frm->getFormDataFromArray($_FILES);
+
+        if (false === $post) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Data', $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $fileName = $_FILES['bulk_images']['name'];
+        $tmpName = $_FILES['bulk_images']['tmp_name'];
+
+        $uploadBulkImgobj = new UploadBulkImages();
+        $savedFile = $uploadBulkImgobj->upload($fileName, $tmpName);
+        if (false === $savedFile) {
+            Message::addErrorMessage($uploadBulkImgobj->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $path = CONF_UPLOADS_PATH . AttachedFile::FILETYPE_BULK_IMAGES_PATH;
+        $filePath = AttachedFile::FILETYPE_BULK_IMAGES_PATH . $savedFile;
+
+        $msg = '<br>'.str_replace('{path}', '<br><b>'.$filePath.'</b>', Labels::getLabel('MSG_Your_uploaded_files_path_will_be:_{path}', $this->adminLangId));
+        $msg = Labels::getLabel('MSG_Uploaded_Successfully.', $this->adminLangId) .' '.$msg;
+        $json = [
+            "msg" => $msg,
+            "path" => base64_encode($path . $savedFile)
+        ];
+        FatUtility::dieJsonSuccess($json);
+    }
+    
+    public function downloadPathsFile($path)
+    {
+        if (empty($path)) {
+            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
+        }
+        $filesPathArr = UploadBulkImages::getAllFilesPath(base64_decode($path));
+        if (!empty($filesPathArr) && 0 < count($filesPathArr)) {
+            $headers[] = ['File Path', 'File Name'];
+            $filesPathArr = array_merge($headers, $filesPathArr);
+            CommonHelper::convertToCsv($filesPathArr, time().'.csv');
+            exit;
+        }
+        Message::addErrorMessage(Labels::getLabel('MSG_No_File_Found', $this->adminLangId));
+        CommonHelper::redirectUserReferer();
+    }
+    
+    public function removeDir($directory)
+    {
+        $directory = CONF_UPLOADS_PATH . base64_decode($directory) ;
+        $obj = new UploadBulkImages();
+        $msg = $obj->deleteSingleBulkMediaDir($directory);
+        FatUtility::dieJsonSuccess($msg);
+    }
+    
     
 }

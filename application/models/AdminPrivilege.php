@@ -1402,5 +1402,10 @@ class AdminPrivilege
         return $this->checkPermission($adminId, static::SECTION_IMPORT_EXPORT, static::PRIVILEGE_READ, $returnResult);
     }
     
+    public function canEditImportExport($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_IMPORT_EXPORT, static::PRIVILEGE_WRITE, $returnResult);
+    }
+    
     
 }

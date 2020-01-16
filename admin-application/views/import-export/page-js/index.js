@@ -15,12 +15,81 @@ $(document).ready(function() {
         });
     };
     
+    searchFiles = function(){
+		var data = '';
+		var dv = $('#listing');
+		$(dv).html( fcom.getLoader() );
+		fcom.ajax(fcom.makeUrl('ImportExport','bulkMediaList'),data,function(res){
+			$("#listing").html(res);
+		});
+	};
+    
     updateSettings = function(frm) {
         var data = fcom.frmData(frm);
         $(dv).html(fcom.getLoader());
-        fcom.updateWithAjax(fcom.makeUrl('Configurations', 'setup'), data, function(ans) {
+        fcom.updateWithAjax(fcom.makeUrl('ImportExport', 'updateSettings'), data, function(ans) {
             loadForm('settings');
         });
     };
+
+    uploadZip = function() {
+        var data = new FormData();
+        $.each($('#bulk_images')[0].files, function(i, file) {
+            fcom.displayProcessing(langLbl.processing, ' ', true);
+            data.append('bulk_images', file);
+            $.ajax({
+                url: fcom.makeUrl('ImportExport', 'upload'),
+                type: "POST",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function(t) {
+                    try {
+                        var ans = $.parseJSON(t);
+                        if (ans.status == 1) {
+                            $(document).trigger('close.facebox');
+                            $(document).trigger('close.mbsmessage');
+                            fcom.displaySuccessMessage(ans.msg, 'alert--success', false);
+                            document.uploadBulkImages.reset();
+                            $("#uploadFileName").text('');
+                            loadForm('bulk_media');
+                        } else {
+                            $(document).trigger('close.mbsmessage');
+                            fcom.displayErrorMessage(ans.msg);
+                        }
+                    } catch (exc) {
+                        $(document).trigger('close.mbsmessage');
+                        fcom.displayErrorMessage(t);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    alert("Error Occured.");
+                }
+            });
+        });
+    };
+    
+    downloadPathsFile = function(path) {
+        location.href = fcom.makeUrl('ImportExport', 'downloadPathsFile', [path]);
+    };
+    
+    removeDir = function(dir) {
+        if (true == confirm(langLbl.confirmDelete)) {
+            fcom.displayProcessing();
+            fcom.ajax(fcom.makeUrl('ImportExport', 'removeDir', [dir]), '', function(t) {
+                var ans = $.parseJSON(t);
+                if (ans.status == 1) {
+                    $(document).trigger('close.facebox');
+                    $(document).trigger('close.mbsmessage');
+                    fcom.displaySuccessMessage(ans.msg, 'alert--success', false);
+                    loadForm('bulk_media');
+                } else {
+                    $(document).trigger('close.mbsmessage');
+                    fcom.displayErrorMessage(ans.msg);
+                }
+            });
+        }
+    };
+    
 
 })();

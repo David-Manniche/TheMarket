@@ -1,9 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
-$frm->setFormTagAttribute('class', 'form ');
-$frm->developerTags['colClassPrefix'] = 'col-lg-6 col-md-';
-$frm->developerTags['fld_default_col'] = 6;
-$optionFld = $frm->getField('export_option');
-$optionFld->developerTags['noCaptionTag'] = true;
+$frm->setFormTagAttribute('class', 'web_form');
+$frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-';
+$frm->developerTags['fld_default_col'] = 12;
 ?>
 <div class="tabs_nav_container">
 <?php 
