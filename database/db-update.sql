@@ -202,3 +202,5 @@ CREATE TABLE `tbl_ads_batch_products`(
 ) ENGINE = InnoDB;
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_EAN/UPC_code';
+
+ALTER TABLE `tbl_user_meta` CHANGE `usermeta_value` `usermeta_value` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;

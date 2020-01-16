@@ -9,7 +9,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php');?>
                 <h2 class="content-header-title">
                     <?php
                         $batchName = AdsBatch::getAttributesById($adsBatchId, 'adsbatch_name');
-                        $str = Labels::getLabel('LBL_BIND_PRODUCTS_TO_{BATCH}', $siteLangId);
+                        $str = Labels::getLabel('LBL_ADD_PRODUCTS_TO_{BATCH}', $siteLangId);
                         echo CommonHelper::replaceStringData($str, ['{BATCH}' => $batchName]);
                     ?>
                 </h2>

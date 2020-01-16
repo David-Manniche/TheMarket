@@ -4,21 +4,24 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
     <div class="content-wrapper content-space">
         <div class="content-header row justify-content-between mb-3">
             <div class="col-md-auto">
-                <h2 class="content-header-title"><?php echo Labels::getLabel('Lbl_SETUP_ADVERTISEMENT', $siteLangId);?></h2>
+                <h2 class="content-header-title"><?php echo $pluginName;?></h2>
             </div>
         </div>
         <div class="content-body">
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content p-4">
-                            <h2 class="content-header-title">
+                        <div class="cards-content p-4 d-flex justify-content-between align-items-center">
+                            <h6 class="m-0">
                                 <?php echo Labels::getLabel('Lbl_MERCHANT_ID', $siteLangId);?> : 
                                 <?php echo $merchantId;
                                 if (empty($merchantId)) { ?>
                                     <a class="btn btn--primary-border btn--sm" href="<?php echo CommonHelper::generateUrl($keyName, 'getAccessToken')?>" title="<?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?>"><?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?></a>
                                 <?php } ?>
-                            </h2>
+                            </h6>
+                            <?php if (false !== $havePluginFrm) { ?>
+                                <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="pluginForm();" id="userAccInfoBtn">Service Account Info </a>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -27,10 +30,10 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                 <div class="row mb-4">
                     <div class="col-lg-12">
                         <div class="cards">
-                            <div class="cards-content p-4">
-                                <h4 class="content-header-title">
+                            <div class="cards-content p-4 pb-0">
+                                <h5 class="cards-title mb-3">
                                     <?php echo Labels::getLabel('LBL_BATCH_SETUP', $siteLangId); ?>
-                                </h4>
+                                </h5>
                                 <div id="batchSetup"></div>
                             </div>
                         </div>

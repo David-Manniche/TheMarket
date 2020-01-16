@@ -25,6 +25,15 @@ $(document).ready(function() {
 		});
     };
     
+	pluginForm = function(){
+        $.facebox(function() {
+            var btn = "#userAccInfoBtn";
+            fcom.ajax(fcom.makeUrl('Advertisement','getPluginForm'),'',function(res){
+                $.facebox(res,'faceboxWidth medium-fb-width');
+            });
+		});
+    };
+    
     clearForm = function() {
         form();
     };
@@ -47,5 +56,11 @@ $(document).ready(function() {
 		fcom.updateWithAjax(fcom.makeUrl('Advertisement', 'deleteBatch', [adsBatchId]), '', function(t) {
             search();
 		});
+    }
+
+    setuppluginform = function (frm) {
+        if (!$(frm).validate()) return;
+        var data = fcom.frmData(frm);
+		fcom.updateWithAjax(fcom.makeUrl('Advertisement', 'setupPluginForm'), data, function(t) {});
     }
 })();

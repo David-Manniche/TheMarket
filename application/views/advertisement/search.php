@@ -1,13 +1,13 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = [
-    'listserial' => Labels::getLabel('LBL_Sr._No', $siteLangId),
-    'adsbatch_name' => Labels::getLabel('LBL_BATCH', $siteLangId),
+    'listserial' => Labels::getLabel('LBL_#', $siteLangId),
+    'adsbatch_name' => Labels::getLabel('LBL_BATCH_NAME', $siteLangId),
     'adsbatch_lang_id' => Labels::getLabel('LBL_CONTENT_LANG', $siteLangId),
     'adsbatch_target_country_id' => Labels::getLabel('LBL_TARGET_COUNTRY', $siteLangId),
-    'adsbatch_expired_on' => Labels::getLabel('LBL_EXPIRED_ON', $siteLangId),
-    'adsbatch_synced_on' => Labels::getLabel('LBL_SYNCED_ON', $siteLangId),
+    'adsbatch_expired_on' => Labels::getLabel('LBL_EXPIRY_DATE', $siteLangId),
+    'adsbatch_synced_on' => Labels::getLabel('LBL_LAST_SYNCED', $siteLangId),
     'adsbatch_status' => Labels::getLabel('LBL_STATUS', $siteLangId),
-    'action' => Labels::getLabel('LBL_ACTION', $siteLangId),
+    'action' => '',
 ];
 
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--hovered table-responsive js-scrollable scroll-hint','id' => 'plugin'));
@@ -69,9 +69,7 @@ foreach ($arrListing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $htm, true);
                 break;
             case 'action':
-                if (AdsBatch::STATUS_PUBLISHED == $row['adsbatch_status']) {
-                    $td->appendElement('plaintext', array(), Labels::getLabel('LBL_N/A', $siteLangId), true);
-                } else {
+                if (AdsBatch::STATUS_PUBLISHED != $row['adsbatch_status']) {
                     $ul = $td->appendElement("ul", array("class" => "actions"), '', true);
 
                     $li = $ul->appendElement('li');
@@ -81,7 +79,7 @@ foreach ($arrListing as $sn => $row) {
                             'href' => CommonHelper::generateUrl('Advertisement', 'publishBatch', [$row['adsbatch_id']]),
                             'title' => Labels::getLabel('LBL_PUBLISH', $siteLangId)
                         ],
-                        '<i class="fa fa-forward"></i>',
+                        '<i class="fa fa-rss"></i>',
                         true
                     );
                     $li = $ul->appendElement('li');

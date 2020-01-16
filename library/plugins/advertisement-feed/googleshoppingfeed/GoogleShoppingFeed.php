@@ -23,10 +23,26 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
         ];
     }
 
+    public static function form($langId)
+    {
+        $frm = new Form('frmServiceAccount');
+        $privateKey = $frm->addTextArea(Labels::getLabel('LBL_SERVICE_ACCOUNT_INFO', $langId), 'service_account');
+        $privateKey->requirements()->setRequired();
+        
+        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
+        return $frm;
+    }
+
     private function doRequest($data)
     {
         $client = new Google_Client();
-        $client->setAuthConfig(__DIR__ . '/service-account.json');
+        $serviceAccountDetail = $this->getUserAccountDetail('service_account');
+        if (empty($serviceAccountDetail)) {
+            $this->error = Labels::getLabel('LBL_SERVICE_ACCOUNT_DETAIL_NOT_FOUND', CommonHelper::getLangId());
+            return false;
+        }
+        $serviceAccountDetail = json_decode($serviceAccountDetail, true);
+        $client->setAuthConfig($serviceAccountDetail);
         $client->setScopes(Google_Service_ShoppingContent::CONTENT);
         $client->useApplicationDefaultCredentials();
         $client->setUseBatch(true);

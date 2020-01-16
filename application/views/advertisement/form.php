@@ -7,18 +7,13 @@ $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 2;
 
 $adsbatch_name = $frm->getField('adsbatch_name');
-$adsbatch_name->setWrapperAttribute('class', 'col-lg-3');
-$adsbatch_name->developerTags['col'] = 3;
+$adsbatch_name->developerTags['col'] = 2;
 
 $btnFld = $frm->getField('btn_submit');
-$btnFld->addFieldTagAttribute('class', 'btn btn--primary');
-$btnFld->setWrapperAttribute('class', 'col-lg-3');
-$btnFld->developerTags['col'] = 3;
+$btnFld->addFieldTagAttribute('class', 'btn btn--block btn--primary');
 
 $btnFld = $frm->getField('btn_clear');
-$btnFld->addFieldTagAttribute('class', 'btn btn--primary-border');
-$btnFld->setWrapperAttribute('class', 'col-lg-3');
-$btnFld->developerTags['col'] = 3;
+$btnFld->addFieldTagAttribute('class', 'btn btn--block btn--primary-border');
 
 $fld = $frm->getField('adsbatch_expired_on');
 $fld->addFieldTagAttribute('class', 'date_js');

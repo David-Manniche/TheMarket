@@ -26,7 +26,7 @@ class AdvertisementController extends LoggedUserController
     {
         $frm = new Form('frmAdsBatch');
         $frm->addHiddenField('', 'adsbatch_id');
-        $frm->addRequiredField(Labels::getLabel('LBL_ADS_BATCH_NAME', $this->siteLangId), 'adsbatch_name');
+        $frm->addRequiredField(Labels::getLabel('LBL_BATCH_NAME', $this->siteLangId), 'adsbatch_name');
         $fld = $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'adsbatch_lang_id', Language::getAllNames());
         $fld->requirement->setRequired(true);
 
@@ -37,9 +37,9 @@ class AdvertisementController extends LoggedUserController
         
         $frm->addDateField(Labels::getLabel('LBL_EXPIRY_DATE', $this->siteLangId), 'adsbatch_expired_on', '', array('readonly' => 'readonly'));
 
-        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $this->siteLangId));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId), array('onclick' => 'clearForm();'));
-        $fld_submit->attachField($fld_cancel);
+        // $fld_submit->attachField($fld_cancel);
         return $frm;
     }
 
@@ -57,10 +57,28 @@ class AdvertisementController extends LoggedUserController
         $fld = $frm->addSelectBox(Labels::getLabel('LBL_AGE_GROUP', $this->siteLangId), 'abprod_age_group', $this->keyName::ageGroup($this->siteLangId));
         $fld->requirement->setRequired(true);
 
-        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $this->siteLangId));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId));
-        $fld_submit->attachField($fld_cancel);
+        // $fld_submit->attachField($fld_cancel);
         return $frm;
+    }
+
+    public function getPluginForm()
+    {
+        try {
+            if (true == method_exists($this->keyName, 'form')) {
+                $data = User::getUserMeta(UserAuthentication::getLoggedUserId());
+                $frm = $this->keyName::form($this->siteLangId);
+                if (!empty($data) && 0 < count($data)) {
+                    $frm->fill($data);
+                }
+                $this->set('frm', $frm);
+                $this->_template->render(false, false);
+            }
+        } catch (\Error $e) {
+            FatUtility::dieWithError('ERR - ' . $e->getMessage());
+        }
+        return false;
     }
 
     private function validateBatchRequest($adsBatchId)
@@ -76,17 +94,13 @@ class AdvertisementController extends LoggedUserController
 
     public function index()
     {
-        $obj = new Plugin();
-        $keyName = $obj->getDefaultPluginKeyName(Plugin::TYPE_ADVERTISEMENT_FEED_API);
-        if (false === $keyName) {
-            Message::addErrorMessage($obj->getError());
-            FatApp::redirectUser(CommonHelper::generateUrl('Advertisement'));
-        }
+        $merchantId = User::getUserMeta($this->userId, $this->keyName . '_merchantId');
+        $pluginName = Plugin::getAttributesByCode($this->keyName, 'plugin_identifier');
 
-        $merchantId = User::getUserMeta($this->userId, $keyName . '_merchantId');
-
+        $this->set('havePluginFrm', method_exists($this->keyName, 'form'));
         $this->set('merchantId', $merchantId);
-        $this->set('keyName', $keyName);
+        $this->set('keyName', $this->keyName);
+        $this->set('pluginName', $pluginName);
         $this->_template->render();
     }
     
@@ -164,6 +178,25 @@ class AdvertisementController extends LoggedUserController
         }
 
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_ADS_BATCH_SETUP_SUCCESSFULLY', $this->siteLangId));
+    }
+
+    public function setupPluginForm()
+    {
+        try {
+            if (true == method_exists($this->keyName, 'form')) {
+                $frm = $this->keyName::form($this->siteLangId);
+                $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+                unset($post['btn_submit']);
+                $uObj = new User(UserAuthentication::getLoggedUserId());
+                foreach ($post as $key => $value) {
+                    $uObj->updateUserMeta($key, trim($value));
+                }
+                FatUtility::dieJsonSuccess(Labels::getLabel('MSG_UPDATED_SUCCESSFULLY', $this->siteLangId));
+            }
+        } catch (\Error $e) {
+            FatUtility::dieWithError('ERR - ' . $e->getMessage());
+        }
+        FatUtility::dieJsonError(Labels::getLabel("MSG_UNABLE_TO_UPDATE", $this->siteLangId));
     }
 
     public function setupProductsToBatch()
@@ -379,7 +412,10 @@ class AdvertisementController extends LoggedUserController
                 'siteCurrencyId' => $this->siteCurrencyId,
                 'data' => $productData
             ];
-            $response = $obj->publishBatch($data);
+            if (false === $obj->publishBatch($data)) {
+                Message::addErrorMessage($obj->getError());
+                FatApp::redirectUser(CommonHelper::generateUrl('Advertisement'));
+            }
         } catch (\Error $e) {
             $message = 'ERR - ' . $e->getMessage();
             LibHelper::dieJsonError($message);

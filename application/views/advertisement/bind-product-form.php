@@ -3,16 +3,24 @@ $frm->setFormTagAttribute('class', 'form');
 $frm->setFormTagAttribute('id', 'bindProducts');
 $frm->setFormTagAttribute('onsubmit', 'setupProductsToBatch(this); return(false);');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
-$frm->developerTags['fld_default_col'] = 3;
+$frm->developerTags['fld_default_col'] = 2;
 
 $btnFld = $frm->getField('btn_submit');
-$btnFld->addFieldTagAttribute('class', 'btn btn--primary');
+$btnFld->addFieldTagAttribute('class', 'btn btn--block btn--primary');
+$btnFld->developerTags['noCaptionTag'] = true;
 
 $btnFld = $frm->getField('btn_clear');
-$btnFld->addFieldTagAttribute('class', 'btn btn--primary-border');
+$btnFld->addFieldTagAttribute('class', 'btn btn--block btn--primary-border');
 $btnFld->addFieldTagAttribute('onClick', 'clearForm();');
+$btnFld->developerTags['noCaptionTag'] = true;
 
-/* $prodCatFld = $frm->getField('google_product_category');
-$prodCatFld->setWrapperAttribute('class', 'col-lg-4');
-$prodCatFld->developerTags['col'] = 4; */
+$prodName = $frm->getField('product_name');
+$prodName->developerTags['col'] = 4;
+
+$prodCatFld = $frm->getField('google_product_category');
+$prodCatFld->developerTags['col'] = 5;
+
+$prodName = $frm->getField('abprod_age_group');
+$prodName->developerTags['col'] = 3;
+
 echo $frm->getFormHtml();
