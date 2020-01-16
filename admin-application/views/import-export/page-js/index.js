@@ -48,10 +48,7 @@ $(document).ready(function() {
                         var ans = $.parseJSON(t);
                         if (ans.status == 1) {
                             $(document).trigger('close.facebox');
-                            $(document).trigger('close.mbsmessage');
-                            fcom.displaySuccessMessage(ans.msg, 'alert--success', false);
-                            document.uploadBulkImages.reset();
-                            $("#uploadFileName").text('');
+                            fcom.displaySuccessMessage(ans.msg, 'alert--success', false);      
                             loadForm('bulk_media');
                         } else {
                             $(document).trigger('close.mbsmessage');
@@ -80,7 +77,6 @@ $(document).ready(function() {
                 var ans = $.parseJSON(t);
                 if (ans.status == 1) {
                     $(document).trigger('close.facebox');
-                    $(document).trigger('close.mbsmessage');
                     fcom.displaySuccessMessage(ans.msg, 'alert--success', false);
                     loadForm('bulk_media');
                 } else {
@@ -90,6 +86,43 @@ $(document).ready(function() {
             });
         }
     };
+    
+    submitImportLaeblsUploadForm = function ( ){
+		var data = new FormData(  );
+		$inputs = $('#frmImportLabels input[type=text],#frmImportLabels select,#frmImportLabels input[type=hidden]');
+		$inputs.each(function() { data.append( this.name,$(this).val());});
+
+		$.each( $('#import_file')[0].files, function(i, file) {
+			$('#fileupload_div').html(fcom.getLoader());
+			data.append('import_file', file);
+			$.ajax({
+				url : fcom.makeUrl('ImportExport', 'uploadLabelsImportedFile'),
+				type: "POST",
+				data : data,
+				processData: false,
+				contentType: false,
+				success: function(t){
+					try {
+						var ans = $.parseJSON(t);
+						if( ans.status == 1 ){
+                            $(document).trigger('close.facebox');
+							fcom.displaySuccessMessage(ans.msg);
+							loadForm('import');
+						} else {
+							fcom.displayErrorMessage(ans.msg);
+							$('#fileupload_div').html('');
+						}
+					}
+					catch(exc){
+						fcom.displayErrorMessage(t);
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown){
+					alert("Error Occured.");
+				}
+			});
+		});
+	};
     
 
 })();

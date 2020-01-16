@@ -687,10 +687,9 @@ class ImportExportController extends AdminBaseController
             'export_option',
             $options,
             '',
-            array('class'=>'list-inline'),
+            array('class'=>'list-inline list-col-4'),
             array('onClick'=>'exportForm(this.value)')
         );
-        $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_Select_Above_option_to_export_data.", $langId)."</small>";
         return $frm;
     }
     
@@ -716,10 +715,10 @@ class ImportExportController extends AdminBaseController
             'export_option',
             $options,
             '',
-            array('class'=>'list-inline'),
+            array('class'=>'list-inline list-col-4'),
             array('onClick'=>'getInstructions(this.value)')
         );
-        $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_Select_Above_option_to_import_data.", $langId)."</small><br/><small>".Labels::getLabel('MSG_Invalid_data_will_not_be_processed', $langId)."</small>";
+        
         return $frm;
     }
     
@@ -844,10 +843,10 @@ class ImportExportController extends AdminBaseController
     {
         $frm = new Form('uploadBulkImages', array('id'=>'uploadBulkImages'));
 
-        $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_File_to_be_uploaded:', $this->adminLangId), 'bulk_images', array('id' => 'bulk_images', 'accept' => '.zip' ));
+        $fldImg = $frm->addFileUpload('', 'bulk_images', array('id' => 'bulk_images', 'accept' => '.zip' ));
         $fldImg->requirement->setRequired(true);
         $fldImg->setFieldTagAttribute('onChange', '$("#uploadFileName").html(this.value)');
-        $fldImg->htmlBeforeField='<div class="filefield"><span class="filename" id="uploadFileName"></span>';
+        $fldImg->htmlBeforeField='<div class="filefield"><span class="filename" id="uploadFileName">'.Labels::getLabel('LBL_Select_File_To_Upload', $this->adminLangId).'</span>';
         $fldImg->htmlAfterField='<label class="filelabel">'.Labels::getLabel('LBL_Browse_File', $this->adminLangId).'</label></div>';
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Submit', $this->adminLangId));
@@ -918,6 +917,159 @@ class ImportExportController extends AdminBaseController
         $obj = new UploadBulkImages();
         $msg = $obj->deleteSingleBulkMediaDir($directory);
         FatUtility::dieJsonSuccess($msg);
+    }
+    
+    public function exportLabels()
+    {
+        $srch = new SearchBase(Labels::DB_TBL, 'lbl');
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->joinTable(Language::DB_TBL, 'INNER JOIN', 'label_lang_id = language_id AND language_active = '. applicationConstants::ACTIVE);
+        $srch->addOrder('label_key', 'DESC');
+        $srch->addOrder('label_lang_id', 'ASC');
+        $srch->addMultipleFields(array( 'label_id', 'label_key', 'label_lang_id', 'label_caption' ));
+        $rs = $srch->getResultSet();
+
+        $langSrch = Language::getSearchObject();
+        $langSrch->doNotCalculateRecords();
+        $langSrch->addMultipleFields(array( 'language_id', 'language_code', 'language_name' ));
+        $langSrch->addOrder('language_id', 'ASC');
+        $langRs = $langSrch->getResultSet();
+        $languages = FatApp::getDb()->fetchAll($langRs);
+        $sheetData = array();
+
+        /* Sheet Heading Row[ */
+        $arr = array( Labels::getLabel('LBL_Key', $this->adminLangId) );
+        if ($languages) {
+            foreach ($languages as $lang) {
+                array_push($arr, $lang['language_code']);
+            }
+        }
+        array_push($sheetData, $arr);
+        /* ] */
+
+        $key = '';
+        $counter = 0;
+        $arr = array();
+        $langArr = array();
+
+        while ($row = FatApp::getDb()->fetch($rs)) {
+            if ($key != $row['label_key']) {
+                if (!empty($langArr)) {
+                    $arr[$counter] = array('label_key' => $key );
+                    foreach ($langArr as $k=>$val) {
+                        if (is_array($val)) {
+                            foreach ($val as $key=>$v) {
+                                $val[$key] = htmlentities($v);
+                            }
+                        }
+                        $arr[$counter]['data'] = $val;
+                    }
+                    $counter++;
+                }
+                $key = $row['label_key'];
+                $langArr = array();
+                foreach ($languages as $lang) {
+                    $langArr[$key][$lang['language_id']]  = '';
+                }
+                $langArr[$key][$row['label_lang_id']] = $row['label_caption'] ;
+            } else {
+                $langArr[$key][$row['label_lang_id']] = $row['label_caption'] ;
+            }
+        }
+
+        foreach ($arr as $a) {
+            $sheetArr = array();
+            $sheetArr = array( $a['label_key'] );
+            if (!empty($a['data'])) {
+                foreach ($a['data'] as $langId=>$caption) {
+                    array_push($sheetArr, html_entity_decode($caption));
+                }
+            }
+            array_push($sheetData, $sheetArr);
+        }
+        CommonHelper::convertToCsv($sheetData, 'Labels_'.date("d-M-Y").'.csv', ',');
+    }
+    
+    public function importLabelsForm()
+    {
+        $frm = $this->getImportLabelsForm();
+        $this->set('frm', $frm);
+        $this->_template->render(false, false);
+    }
+    
+    private function getImportLabelsForm()
+    {
+        $frm = new Form('frmImportLabels', array('id' => 'frmImportLabels'));
+        $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_Select_File_To_Upload:', $this->adminLangId), 'import_file', array('id' => 'import_file'));
+        $fldImg->setFieldTagAttribute('onChange', '$(\'#importFileName\').html(this.value)');
+        $fldImg->htmlBeforeField='<div class="filefield"><span class="filename" id="importFileName"></span>';
+        $fldImg->htmlAfterField='<label class="filelabel">'.Labels::getLabel('LBL_Browse_File', $this->adminLangId).'</label></div>';
+
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Import', $this->adminLangId));
+
+        return $frm;
+    }
+    
+    public function uploadLabelsImportedFile()
+    {
+        if (!is_uploaded_file($_FILES['import_file']['tmp_name'])) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Please_Select_A_CSV_File', $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }        
+        if (!in_array($_FILES['import_file']['type'], CommonHelper::isCsvValidMimes())) {
+            Message::addErrorMessage(Labels::getLabel("LBL_Not_a_Valid_CSV_File", $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $db = FatApp::getDb();
+        /* All Languages[  */
+        $langSrch = Language::getSearchObject();
+        $langSrch->doNotCalculateRecords();
+        $langSrch->addMultipleFields(array( 'language_id', 'language_code', 'language_name' ));
+        $langSrch->addOrder('language_id', 'ASC');
+        $langRs = $langSrch->getResultSet();
+        $languages = $db->fetchAll($langRs, 'language_code');
+        /* ] */
+
+        $csvFilePointer = fopen($_FILES['import_file']['tmp_name'], 'r');
+
+        $firstLine = fgetcsv($csvFilePointer);
+        array_shift($firstLine);
+        $firstLineLangArr = $firstLine;
+        $langIndexLangIds = array();
+        foreach ($firstLineLangArr as $key => $langCode) {
+            if (!array_key_exists($langCode, $languages)) {
+                Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Coloum_CSV_File", $this->adminLangId));
+                FatUtility::dieJsonError(Message::getHtml());
+            }
+            $langIndexLangIds[$key] = $languages[$langCode]['language_id'];
+        }
+
+        while (($line = fgetcsv($csvFilePointer)) !== false) {
+            if ($line[0] != '') {
+                $labelKey = array_shift($line);
+                foreach ($line as $key => $caption) {
+                    $sql = "SELECT label_key FROM ". Labels::DB_TBL ." WHERE label_key = " . $db->quoteVariable($labelKey). " AND label_lang_id = " .  $langIndexLangIds[$key];
+                    $rs = $db->query($sql);
+                    if ($row = $db->fetch($rs)) {
+                        $db->updateFromArray(Labels::DB_TBL, array( 'label_caption' => $caption ), array('smt' => 'label_key = ? AND label_lang_id = ?', 'vals' => array( $labelKey, $langIndexLangIds[$key] ) ));
+                    } else {
+                        $dataToSaveArr = array(
+                        'label_key'        =>    $labelKey,
+                        'label_lang_id'    =>    $langIndexLangIds[$key],
+                        'label_caption'    =>    $caption,
+                        );
+                        $db->insertFromArray(Labels::DB_TBL, $dataToSaveArr);
+                    }
+                }
+            }
+        }
+
+        $labelsUpdatedAt = array('conf_name'=>'CONF_LANG_LABELS_UPDATED_AT','conf_val'=>time());
+        $db->insertFromArray('tbl_configurations', $labelsUpdatedAt, false, array(), $labelsUpdatedAt);
+        Message::addMessage(Labels::getLabel('LBL_Labels_data_imported/updated_Successfully', $this->adminLangId));
+        FatUtility::dieJsonSuccess(Message::getHtml());
     }
     
     

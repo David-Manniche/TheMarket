@@ -60,33 +60,26 @@ class Importexport extends ImportexportCommon
                 $arr[static::TYPE_COUNTRY] = Labels::getLabel('LBL_Countries', $langId);
                 $arr[static::TYPE_STATE] = Labels::getLabel('LBL_States', $langId);
                 //$arr[static::TYPE_POLICY_POINTS] = Labels::getLabel('LBL_Policy_Points', $langId);
+                $arr[static::TYPE_TAX_CATEGORY] = Labels::getLabel('LBL_Tax_Category', $langId);
                 if (!$sellerDashboard) {
                     $arr[static::TYPE_USERS] = Labels::getLabel('LBL_users', $langId);
                     $arr[static::TYPE_LANGUAGE_lABELS] = Labels::getLabel('LBL_Language_Labels', $langId);
                 }
-                $arr[static::TYPE_TAX_CATEGORY] = Labels::getLabel('LBL_Tax_Category', $langId);
                 break;
             case 'IMPORT':
+                $arr[static::TYPE_PRODUCTS] = Labels::getLabel('LBL_Catalogs', $langId);
+                $arr[static::TYPE_SELLER_PRODUCTS] = Labels::getLabel('LBL_Seller_Products', $langId);
                 if (!$sellerDashboard) {
                     $arr[static::TYPE_CATEGORIES] = Labels::getLabel('LBL_Categories', $langId);
                     $arr[static::TYPE_BRANDS] = Labels::getLabel('LBL_Brands', $langId);
-                }
-
-                $arr[static::TYPE_PRODUCTS] = Labels::getLabel('LBL_Catalogs', $langId);
-
-                if (!$sellerDashboard) {
                     $arr[static::TYPE_OPTIONS] = Labels::getLabel('LBL_Options', $langId);
                     $arr[static::TYPE_OPTION_VALUES] = Labels::getLabel('LBL_Option_Values', $langId);
                     $arr[static::TYPE_TAG] = Labels::getLabel('LBL_Tags', $langId);
                     $arr[static::TYPE_COUNTRY] = Labels::getLabel('LBL_Countries', $langId);
                     $arr[static::TYPE_STATE] = Labels::getLabel('LBL_States', $langId);
+                    $arr[static::TYPE_LANGUAGE_lABELS] = Labels::getLabel('LBL_Language_Labels', $langId);
                     //$arr[static::TYPE_POLICY_POINTS] = Labels::getLabel('LBL_Policy_Points', $langId);
                 }
-                $arr[static::TYPE_SELLER_PRODUCTS] = Labels::getLabel('LBL_Seller_Products', $langId);
-                /* if (!$sellerDashboard) {
-                    $arr[static::TYPE_USERS] = Labels::getLabel('LBL_users', $langId);
-                    $arr[static::TYPE_TAX_CATEGORY] = Labels::getLabel('LBL_Tax_Category', $langId);
-                } */
                 break;
         }
 
@@ -5231,4 +5224,5 @@ class Importexport extends ImportexportCommon
         }
         CommonHelper::writeExportDataToCSV($this->CSVfileObj, array(), true, $this->CSVfileName);
     }
+    
 }

@@ -438,3 +438,13 @@
 }
 .autoSuggest a:hover{background-color: #f8f8f8;}
 .autoSuggest ul li:not(:last-child) a{border-bottom-width: 0;}
+
+.list-col-4{ display:flex; flex-wrap: wrap; }
+
+.list-col-4 li   {-ms-flex: 0 0 25%;
+    -webkit-box-flex: 0;
+    flex: 0 0 25%;
+    max-width: 25%;
+}
+
+
