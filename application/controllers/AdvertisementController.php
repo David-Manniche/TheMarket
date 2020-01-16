@@ -392,6 +392,11 @@ class AdvertisementController extends LoggedUserController
         $srch = $this->getBatchProductsObj($adsBatchId);
         $rs = $srch->getResultSet();
         $productData = $db->fetchAll($rs);
+        if (empty($productData)) {
+            Message::addErrorMessage(Labels::getLabel("MSG_PLEASE_ADD_ATLEAST_ONE_PRODUCT_TO_THE_BATCH", $this->siteLangId));
+            FatApp::redirectUser(CommonHelper::generateUrl('Advertisement'));
+        }
+
         foreach ($productData as &$prodDetail) {
             $srch = new SearchBase(SellerProduct::DB_TBL_SELLER_PROD_OPTIONS, 'spo');
             $srch->joinTable(OptionValue::DB_TBL, 'INNER JOIN', 'spo.selprodoption_optionvalue_id = ov.optionvalue_id', 'ov');

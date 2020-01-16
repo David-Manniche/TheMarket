@@ -19,7 +19,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                                     <a class="btn btn--primary-border btn--sm" href="<?php echo CommonHelper::generateUrl($keyName, 'getAccessToken')?>" title="<?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?>"><?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?></a>
                                 <?php } ?>
                             </h6>
-                            <?php if (false !== $havePluginFrm) { ?>
+                            <?php if (false !== $havePluginFrm && !empty($merchantId)) { ?>
                                 <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="pluginForm();" id="userAccInfoBtn">Service Account Info </a>
                             <?php } ?>
                         </div>
