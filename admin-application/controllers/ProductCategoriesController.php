@@ -47,7 +47,8 @@ class ProductCategoriesController extends AdminBaseController
     }
     
     public function updateOrder()
-    {
+    { 
+    ProductCategory::updateCatOrderCode();
         $this->objPrivilege->canEditProductCategories();
         $prodCatId = FatApp::getPostedData('catId', FatUtility::VAR_INT, 0); 
         $parentCatId = FatApp::getPostedData('parentCatId', FatUtility::VAR_INT, 0); 
@@ -63,12 +64,9 @@ class ProductCategoriesController extends AdminBaseController
         if (!$prodCat->updateOrder($catOrderArr)) {
             Message::addErrorMessage($prodCat->getError());
             FatUtility::dieJsonError(Message::getHtml());
-        } 
-        foreach($catOrderArr as $catId){
-            if($catId > 0 ){
-                ProductCategory::updateCatOrderCode($catId);
-            }
-        }        
+        }
+        ProductCategory::updateCatOrderCode();
+        
         $this->set('msg', Labels::getLabel('LBL_Record_Updated_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }    
