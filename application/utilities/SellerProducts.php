@@ -1779,6 +1779,9 @@ trait SellerProducts
         if (isset($post['selprod_id'])) {
             $srch->addCondition('selprod_id', '!=', $post['selprod_id']);
         }
+        if (isset($post['selected_products'])) {
+            $srch->addCondition('selprod_id', 'NOT IN', array_values($post['selected_products']));
+        }
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addMultipleFields(
             array(
@@ -2534,7 +2537,7 @@ trait SellerProducts
 
     private function getRelatedProductsForm()
     {
-        $frm = new Form('frmSellerProductSpecialPrice');
+        $frm = new Form('frmRelatedSellerProduct');
 
         $frm->addHiddenField('', 'selprod_id', 0);
         $prodName = $frm->addTextBox('', 'product_name', '', array('class'=>'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $this->siteLangId)));
@@ -2610,9 +2613,9 @@ trait SellerProducts
         }
 
         $srch->addCondition('selprod_user_id', '=', UserAuthentication::getLoggedUserId());
-        // echo $srch->getQuery($srch); die;
+        $srch->addFld('if(related_sellerproduct_id = '.$selProdId.', 1 , 0) as priority');
+        $srch->addOrder('priority', 'DESC');
         $srch->setPageNumber($page);
-        $srch->addOrder('selprod_id', 'DESC');
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $relatedProds = $db->fetchAll($rs);
@@ -2654,7 +2657,7 @@ trait SellerProducts
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
             FatApp::redirectUser($_SESSION['referer_page_url']);
         }
-        $relatedProducts = (isset($post['product_related']))?$post['product_related']:array();
+        $relatedProducts = (isset($post['selected_products']))?$post['selected_products']:array();
         unset($post['selprod_id']);
         $sellerProdObj  = new sellerProduct();
         if (!$sellerProdObj->addUpdateSellerRelatedProdcts($selprod_id, $relatedProducts)) {
@@ -2705,7 +2708,7 @@ trait SellerProducts
 
     private function getUpsellProductsForm()
     {
-        $frm = new Form('frmSellerProductSpecialPrice');
+        $frm = new Form('frmUpsellSellerProduct');
 
         $frm->addHiddenField('', 'selprod_id', 0);
         $prodName = $frm->addTextBox('', 'product_name', '', array('class'=>'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $this->siteLangId)));
@@ -2780,7 +2783,8 @@ trait SellerProducts
         }
         $srch->addCondition('selprod_user_id', '=', UserAuthentication::getLoggedUserId());
         $srch->setPageNumber($page);
-        $srch->addOrder('selprod_id', 'DESC');
+        $srch->addFld('if(upsell_sellerproduct_id = '.$selProdId.', 1 , 0) as priority');
+        $srch->addOrder('priority', 'DESC');
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $upsellProds = $db->fetchAll($rs);
@@ -2822,7 +2826,7 @@ trait SellerProducts
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
             FatApp::redirectUser($_SESSION['referer_page_url']);
         }
-        $upsellProducts = (isset($post['product_upsell']))?$post['product_upsell']:array();
+        $upsellProducts = (isset($post['selected_products']))?$post['selected_products']:array();
 
         $sellerProdObj  = new sellerProduct();
         /* saving of product Upsell Product[ */

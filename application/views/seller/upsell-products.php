@@ -35,7 +35,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
             </div>
         </div>
         <div class="content-body">
-            <div class="row">
+            <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
                         <div class="cards-content pt-4 pl-4 pr-4 pb-0">
@@ -63,8 +63,8 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                     <div class="field-set">
                                         <div class="field-wraper">
                                             <div class="field_cover custom-tagify">
-                                                <ul class="list-tags" id="upsell-products"></ul>
                                                 <?php echo $relProdFrm->getFieldHTML('products_upsell');?>
+                                                <ul class="list-tags" id="upsell-products"></ul>
                                             </div>
                                         </div>
                                     </div>
@@ -83,8 +83,13 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                             </form>
                             <?php echo $relProdFrm->getExternalJS();?>
                         </div>
-                        <div class="divider"></div>
-                        <div class="cards-content pl-4 pr-4">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="cards">
+                        <div class="cards-content pt-2 pl-4 pr-4 pb-4">
                             <div class="row justify-content-between">
                                 <div class="col-auto"></div>
                                 <div class="col-auto">
@@ -97,7 +102,6 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                             <div id="listing">
                                 <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>
-                            <span class="gap"></span>
                         </div>
                     </div>
                 </div>
@@ -105,46 +109,3 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
         </div>
     </div>
 </main>
-<script type="text/javascript">
-    $("document").ready(function() {
-        var tagInput = document.querySelector("input[name='products_upsell']");
-        var selprod_id = 0;
-        $('input[name=\'product_name\']').blur(function() {
-            selprod_id = $(this).closest("input[name='selprod_id']").val();
-        });
-        $('input[name=\'products_upsell\']').autocomplete({
-            'source': function(request, response) {
-                $.ajax({
-                    url: fcom.makeUrl('seller', 'autoCompleteProducts'),
-                    data: {
-                        keyword: request,
-                        fIsAjax: 1,
-                        selprod_id: selprod_id
-                    },
-                    dataType: 'json',
-                    type: 'post',
-                    success: function(json) {
-                        response($.map(json, function(item) {
-                            return {
-                                label: item['name'] + '[' + item['product_identifier'] + ']',
-                                value: item['id']
-                            };
-                        }));
-                    },
-                });
-            },
-            'select': function(item) {
-                if(selprod_id == 0){
-                    return;
-                }
-                $('input[name=\'products_upsell\']').val('');
-                $('#productUpsell' + item['value']).remove();
-                $('#upsell-products').append('<li id="productUpsell' + item['value'] + '"><span> ' + item['label'] + '<i class="remove_upsell remove_param fal fa-times"></i></span><input type="hidden" name="product_upsell[]" value="' +
-                    item['value'] + '" /></li>');
-            }
-        });
-        $('#upsell-products').delegate('.remove_upsell', 'click', function() {
-            $(this).parent().remove();
-        });
-    });
-</script>

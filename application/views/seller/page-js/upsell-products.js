@@ -1,5 +1,8 @@
 $(document).ready(function(){
     searchUpsellProducts(document.frmSearch);
+    $('#upsell-products').delegate('.remove_upsell', 'click', function() {
+        $(this).parent().remove();
+    });
 });
 $(document).on('mouseover', "ul.list-tags li span i", function(){
     $(this).parents('li').addClass("hover");
@@ -33,7 +36,7 @@ $(document).on('keyup', "input[name='product_name']", function(){
                     $('#upsell-products').empty();
                     for (var key in ans.upsellProducts) {
                         $("#upsell-products").append(
-                            "<li id=productUpsell"+ans.upsellProducts[key]['selprod_id']+"><span>"+ans.upsellProducts[key]['selprod_title']+" ["+ans.upsellProducts[key]['product_identifier']+"]<i class=\"remove_upsell remove_param fal fa-times\"></i></span><input type=\"hidden\" name=\"product_upsell[]\" value="+ans.upsellProducts[key]['selprod_id']+" /></li>"
+                            "<li id=productUpsell"+ans.upsellProducts[key]['selprod_id']+"><span>"+ans.upsellProducts[key]['selprod_title']+" ["+ans.upsellProducts[key]['product_identifier']+"]<i class=\"remove_upsell remove_param fal fa-times\"></i></span><input type=\"hidden\" name=\"selected_products[]\" value="+ans.upsellProducts[key]['selprod_id']+" /></li>"
                         );
                     }
                 });
@@ -41,6 +44,51 @@ $(document).on('keyup', "input[name='product_name']", function(){
         });
     }else{
         $("#"+parentForm+" input[name='selprod_id']").val('');
+    }
+});
+
+$(document).on('keyup', "input[name='products_upsell']", function(){
+    var currObj = $(this);
+    var parentForm = currObj.closest('form').attr('id');
+    var selprod_id = $("#"+parentForm+" input[name='selprod_id']").val();
+    var selected_products = [];
+    $('input[name="selected_products[]"]').each(function() {
+        selected_products.push($(this).val());
+    });
+    if(selprod_id != 0) {
+        currObj.siblings('ul.dropdown-menu').remove();
+        currObj.autocomplete({
+            'source': function(request, response) {
+                $.ajax({
+                    url: fcom.makeUrl('seller', 'autoCompleteProducts'),
+                    data: {
+                        keyword: request,
+                        fIsAjax: 1,
+                        selprod_id: selprod_id,
+                        selected_products: selected_products
+                    },
+                    dataType: 'json',
+                    type: 'post',
+                    success: function(json) {
+                        response($.map(json, function(item) {
+                            return {
+                                label: item['name'] + '[' + item['product_identifier'] + ']',
+                                value: item['id']
+                            };
+                        }));
+                    },
+                });
+            },
+            'select': function(item) {
+                if(selprod_id == 0){
+                    return;
+                }
+                $('input[name=\'products_upsell\']').val('');
+                $('#productUpsell' + item['value']).remove();
+                $('#upsell-products').append('<li id="productUpsell' + item['value'] + '"><span> ' + item['label'] + '<i class="remove_upsell remove_param fal fa-times"></i></span><input type="hidden" name="selected_products[]" value="' +
+                    item['value'] + '" /></li>');
+            }
+        });
     }
 });
 
@@ -117,7 +165,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
 	}
 
 	reloadList = function() {
-		var frm = document.frmSearch;
+		var frm = document.frmUpsellSellerProduct;
 		searchUpsellProducts(frm);
 	}
 
@@ -132,7 +180,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
                 searchUpsellProducts(document.frmSearch);
             } */
             // $('#upsell-products').empty();
-            searchUpsellProducts(document.frmSearch);
+            searchUpsellProducts(document.frmUpsellSellerProduct);
 		});
 	}
 
@@ -174,9 +222,9 @@ $(document).on('blur', ".js--volDiscountCol", function(){
 		if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupUpsellProduct'), data, function(t) {
-            document.frmSellerProductSpecialPrice.reset();
+            document.frmUpsellSellerProduct.reset();
             $('#upsell-products').empty();
-            searchUpsellProducts(document.frmSearch);
+            searchUpsellProducts(document.frmUpsellSellerProduct);
 		});
 	};
 })();
