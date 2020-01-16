@@ -2541,7 +2541,7 @@ trait SellerProducts
         $prodName->requirements()->setRequired();
         $fld1 = $frm->addTextBox('', 'products_related');
         // $fld1->htmlAfterField= '<div class="row"><div class="col-md-12"><ul class="list-vertical" id="related-products"></ul></div></div>';
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save', $this->siteLangId));
         return $frm;
     }
 
@@ -2712,7 +2712,7 @@ trait SellerProducts
         $prodName->requirements()->setRequired();
         $fld1 = $frm->addTextBox('', 'products_upsell');
         // $fld1->htmlAfterField= '<div class="row"><div class="col-md-12"><ul class="list-vertical" id="upsell-products"></ul></div></div>';
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save', $this->siteLangId));
         return $frm;
     }
 

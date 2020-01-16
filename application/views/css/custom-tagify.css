@@ -10,6 +10,7 @@
     font-weight: normal;
     border-radius: 4px;
 }
+.list-tag-wrapper{ max-height:133px; overflow-x: auto;}
 
 .custom-tagify .list-tags {
     display: flex;
@@ -21,6 +22,7 @@
 .custom-tagify .list-tags li {
     padding: 0;
     margin: 0;
+    margin-inline-end:5px;
 }
 
 .custom-tagify input[type="text"] {

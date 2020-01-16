@@ -31,11 +31,11 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
         <div class="content-header  row justify-content-between mb-3">
             <div class="col-md-auto">
                 <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
-                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Manage_Related_Products', $siteLangId); ?></h2>
+                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Related_Products', $siteLangId); ?></h2>
             </div>
         </div>
         <div class="content-body">
-            <div class="row">
+            <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
                         <div class="cards-content pt-4 pl-4 pr-4 pb-0">
@@ -45,12 +45,13 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                             $prodFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Select_Product', $siteLangId));
 
                             $relProdFld = $relProdFrm->getField('products_related');
-                            $relProdFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search...', $siteLangId));
+                            $relProdFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Add_Related_Products', $siteLangId));
 
-                            $submitBtnFld = $relProdFrm->getField('btn_submit'); ?>
+                            $submitBtnFld = $relProdFrm->getField('btn_submit');
+                            $submitBtnFld->setFieldTagAttribute('class', 'btn--block btn btn--primary'); ?>
                             <?php echo $relProdFrm->getFormTag(); ?>
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-3">
                                     <div class="field-set">
                                         <div class="field-wraper">
                                             <div class="field_cover">
@@ -59,12 +60,12 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-5">
+                                <div class="col-md-7">
                                     <div class="field-set">
                                         <div class="field-wraper">
                                             <div class="field_cover custom-tagify">
-                                                <ul class="list-tags" id="related-products"></ul>
                                                 <?php echo $relProdFrm->getFieldHTML('products_related');?>
+                                                <div class="list-tag-wrapper"><ul class="list-tags" id="related-products"></ul></div>
                                             </div>
                                         </div>
                                     </div>
@@ -83,8 +84,13 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                         </form>
                         <?php echo $relProdFrm->getExternalJS();?>
                         </div>
-                        <div class="divider"></div>
-                        <div class="cards-content pl-4 pr-4">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="cards">
+                        <div class="cards-content pt-2 pl-4 pr-4 pb-4">
                             <div class="row justify-content-between">
                                 <div class="col-auto"></div>
                                 <div class="col-auto">
@@ -97,7 +103,6 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                             <div id="listing">
                                 <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>
-                            <span class="gap"></span>
                         </div>
                     </div>
                 </div>

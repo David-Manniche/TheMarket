@@ -31,7 +31,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
         <div class="content-header  row justify-content-between mb-3">
             <div class="col-md-auto">
                 <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
-                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Manage_Buy_Together_Products', $siteLangId); ?></h2>
+                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Buy_Together_Products', $siteLangId); ?></h2>
             </div>
         </div>
         <div class="content-body">
@@ -45,7 +45,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                             $prodFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Select_Product', $siteLangId));
 
                             $relProdFld = $relProdFrm->getField('products_upsell');
-                            $relProdFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Buy_Together_Product', $siteLangId));
+                            $relProdFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Add_Buy_Together_Products', $siteLangId));
 
                             $submitBtnFld = $relProdFrm->getField('btn_submit'); ?>
                             <?php echo $relProdFrm->getFormTag(); ?>
@@ -59,7 +59,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-5">
+                                <div class="col-md-6">
                                     <div class="field-set">
                                         <div class="field-wraper">
                                             <div class="field_cover custom-tagify">
@@ -69,7 +69,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-1">
                                     <div class="field-set">
                                         <div class="field-wraper">
                                             <div class="field_cover">
