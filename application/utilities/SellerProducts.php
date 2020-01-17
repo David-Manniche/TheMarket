@@ -1255,15 +1255,9 @@ trait SellerProducts
     /*    ]    */
 
     /* Seller Product Seo [ */
-    public function productSeo($selprod_id = 0)
+    public function productSeo()
     {
-        $selprod_id = Fatutility::int($selprod_id);
-        if (!UserPrivilege::canEditSellerProduct($selprod_id)) {
-            Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-
-        $this->set('activeTab', 'SEO');
+        /*$selprod_id = Fatutility::int($selprod_id);
         $metaType = MetaTag::META_GROUP_PRODUCT_DETAIL;
         $this->set('metaType', $metaType);
         $sellerProductRow = SellerProduct::getAttributesById($selprod_id);
@@ -1271,8 +1265,31 @@ trait SellerProducts
         $this->set('userId', UserAuthentication::getLoggedUserId());
         $this->set('product_id', $sellerProductRow['selprod_product_id']);
         $this->set('product_type', $productRow['product_type']);
-        $this->set('selprod_id', $selprod_id);
+        $this->set('selprod_id', $selprod_id);*/
+        $this->set('frmSearch', $this->getSellerProductSearchForm());
+        $this->_template->render(true, true);
+    }
 
+    public function searchSeoProducts()
+    {
+        $userId = UserAuthentication::getLoggedUserId();
+        $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
+        $selProdId = FatApp::getPostedData('selprod_id', FatUtility::VAR_INT, 0);
+        $keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
+
+        $srch = SellerProduct::searchMetaTags($this->siteLangId, $selProdId, $keyword, $userId);
+        $srch->setPageNumber($page);
+        $db = FatApp::getDb();
+        $rs = $srch->getResultSet();
+        $arrListing = $db->fetchAll($rs);
+
+        $this->set("arrListing", $arrListing);
+
+        $this->set('page', $page);
+        $this->set('pageCount', $srch->pages());
+        $this->set('postedData', FatApp::getPostedData());
+        $this->set('recordCount', $srch->recordCount());
+        $this->set('pageSize', FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10));
         $this->_template->render(false, false);
     }
 
