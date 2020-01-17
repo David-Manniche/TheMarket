@@ -705,7 +705,6 @@ class AdvertiserController extends AdvertiserBaseController
         $records = FatApp::getDb()->fetchAll($rs, 'promotion_id');
 
         $this->_template->addJs(array('js/jquery.datetimepicker.js'), false);
-        $this->_template->addCss(array('css/jquery.datetimepicker.css'), false);
 
         $this->set("frmSearchPromotions", $frmSearchPromotions);
         $this->set("records", $records);

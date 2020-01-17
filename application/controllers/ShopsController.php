@@ -467,7 +467,6 @@ class ShopsController extends MyAppController
         $this->set('searchFrm', $searchFrm);
         $this->set('shopId', $shop_id);
         $this->_template->addJs('js/slick.js');
-        $this->_template->addCss('css/slick.css');
         $this->_template->addJs('js/shop-nav.js');
         $this->_template->addJs('js/jquery.colourbrightness.min.js');
 
@@ -528,7 +527,6 @@ class ShopsController extends MyAppController
         if (false ===  MOBILE_APP_API_CALL) {
             $this->includeProductPageJsCss();
             $this->_template->addJs('js/slick.min.js');
-            $this->_template->addCss(array('css/slick.css','css/product-detail.css'));
             $this->_template->addJs('js/shop-nav.js');
             $this->_template->addJs('js/jquery.colourbrightness.min.js');
         }

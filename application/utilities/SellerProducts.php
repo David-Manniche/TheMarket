@@ -151,7 +151,6 @@ trait SellerProducts
         }
 
         /* $this->_template->addJs(array('js/jquery.datetimepicker.js'), false); */
-        $this->_template->addCss(array('css/jquery.datetimepicker.css'), false);
         $this->set('customActiveTab', 'GENERAL');
         $this->set('product_id', $product_id);
         $this->set('selprod_id', $selprod_id);
@@ -258,7 +257,6 @@ trait SellerProducts
             $shippedBySeller = 1;
         }
         /* $this->_template->addJs(array('js/jquery.datetimepicker.js'), false); */
-        $this->_template->addCss(array('css/jquery.datetimepicker.css'), false);
         $this->set('customActiveTab', 'GENERAL');
         $this->set('frmSellerProduct', $frmSellerProduct);
         $this->set('product_id', $product_id);

@@ -103,10 +103,8 @@ trait CustomProducts
         $this->set('includeEditor', true);
         $this->_template->addJs('js/jscolor.js');
         $this->_template->addJs('js/multi-list.js');
-        $this->_template->addCss('css/multi-list.css');
         $this->_template->addJs('js/jquery.tablednd.js');
         $this->_template->addJs('js/slick.js');
-        $this->_template->addCss('css/slick.css');
         $this->_template->render(true, true);
     }
 
@@ -144,7 +142,6 @@ trait CustomProducts
     $this->set('includeEditor', true);
     $this->_template->addJs('js/jscolor.js');
     $this->_template->addJs('js/multi-list.js');
-    $this->_template->addCss('css/multi-list.css');
     $this->_template->render(true,false);
     } */
 

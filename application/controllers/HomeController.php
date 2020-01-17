@@ -45,7 +45,6 @@ class HomeController extends MyAppController
             $this->set('orderProducts', $orderProducts);
         } else {
             $this->_template->addJs(array('js/slick.min.js', 'js/responsive-img.min.js'));
-            $this->_template->addCss(array('css/slick.css', 'css/product-detail.css'));
             $cacheKey = $this->siteLangId . '-' . $this->siteCurrencyId;
 
             /*[ As all layout in sequence so added in one cache]*/

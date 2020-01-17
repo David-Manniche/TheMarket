@@ -66,8 +66,6 @@ class BraintreePayController extends PaymentController
         $this->set('cancelBtnUrl', $cancelBtnUrl);
         $this->set('exculdeMainHeaderDiv', true);
         $this->set('clientToken', $clientToken);
-        $this->_template->addCss('css/payment.css');
-
         $this->_template->render(true, false);
     }
 

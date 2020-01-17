@@ -1,0 +1,42 @@
+
+
+/*expand/collapse/accordion*/
+.acc-triger {
+    position: relative;
+}
+
+.acc-triger:before {
+    background: #000;
+    content: '';
+    height: 2px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    font-weight: 800;
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+    width: 10px;
+}
+
+.acc-triger:after {
+    font-weight: 800;
+    background: #000;
+    content: '';
+    height: 2px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 10px;
+}
+
+.acc-triger.active:before {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+}
+
+.acc-data {
+    padding: 0;
+    display: none;
+}

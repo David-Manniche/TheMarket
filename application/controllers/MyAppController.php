@@ -129,7 +129,6 @@ class MyAppController extends FatController
         }
 
         if (CommonHelper::getLayoutDirection() == 'rtl') {
-            $this->_template->addCss('css/style--arabic.css');
         }
 
         $themeId = FatApp::getConfig('CONF_FRONT_THEME', FatUtility::VAR_INT, 1);
@@ -142,7 +141,7 @@ class MyAppController extends FatController
         $currencySymbolRight = CommonHelper::getCurrencySymbolRight();
 
         if (CommonHelper::demoUrl()) {
-            $this->_template->addCss('css/demo.css');
+
         }
 
         $this->set('isUserDashboard', false);
@@ -573,7 +572,7 @@ class MyAppController extends FatController
 
     public function includeDateTimeFiles()
     {
-        $this->_template->addCss(array('css/jquery-ui-timepicker-addon.css'), false);
+
         $this->_template->addJs(array('js/jquery-ui-timepicker-addon.js'), false);
     }
 
@@ -583,8 +582,6 @@ class MyAppController extends FatController
         $this->_template->addJs('js/product-search.js');
         $this->_template->addJs('js/ion.rangeSlider.js');
         $this->_template->addJs('js/listing-functions.js');
-        $this->_template->addCss('css/ion.rangeSlider.css');
-        $this->_template->addCss('css/ion.rangeSlider.skinHTML5.css');
     }
 
     public function getAppTempUserId()

@@ -1,0 +1,181 @@
+/*old shop*/
+.ftshops .ftshops_item {
+    background: #fff;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
+.ftshops .shop-detail-side {
+    text-align: center;
+    background: #373737;
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    max-width: 350px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.ftshops .shop-detail-side:after {
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+    width: 0;
+    height: 12.5rem;
+    border: 180px solid var(--second-color);
+    border-top: 0 solid;
+    border-bottom: 35px solid rgba(0, 0, 0, 0);
+    color: rgba(0, 0, 0, 1);
+    text-overflow: clip;
+    position: absolute;
+    top: 0;
+    content: "";
+}
+
+.ftshops .shop-detail-inner {
+    position: relative;
+    z-index: 1;
+}
+
+.ftshops .shop-detail-side .ftshops_name a,
+.ftshops .shop-detail-side .products .products__rating,
+.ftshops .shop-detail-side .products__rating {
+    color: #fff;
+}
+
+.ftshops .shop-detail-side .products__rating {
+
+    -webkit-box-pack: center;
+
+    -ms-flex-pack: center;
+
+    justify-content: center;
+}
+
+.ftshops .product-wrapper {
+    /*  padding: 20px;*/
+    -webkit-margin-start: 1rem;
+    -moz-margin-start: 1rem;
+    margin-inline-start: 1rem;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+
+    border-radius: 4px;
+}
+
+.ftshops .product-wrapper .products {
+    height: 100%;
+
+}
+
+.ftshops .ftshops_item_head {
+    border-bottom: solid 1px var(--border-color);
+}
+
+
+
+.ftshops .ftshops_logo {
+    background: #fff;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 142px;
+    height: 142px;
+    margin: 20px auto;
+    position: relative;
+    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.11);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.11);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.ftshops .ftshops_logo img {}
+
+.ftshops .ftshops_detail {
+    font-size: 1em
+}
+
+.ftshops .ftshops_item_head_right {
+    margin: 15px auto;
+    color: #fff;
+    text-align: center;
+}
+
+.ftshops .ftshops_name {
+    font-size: 1.15em;
+    color: #333;
+    font-weight: 600;
+}
+
+.ftshops .ftshops_location {
+    color: var(--txt-color-light);
+    font-size: 0.9em;
+
+}
+
+.ftshops .ftshops_body {
+    background: #fff;
+}
+
+.ftshops .ftshops_body .products {
+    float: left;
+    width: 50%;
+    padding: 20px;
+    -webkit-border-end: solid 1px var(--border-color);
+    -moz-border-end: solid 1px var(--border-color);
+    border-inline-end: solid 1px var(--border-color);
+}
+
+.ftshops .ftshops_body .products:last-child {
+    -webkit-border-end: none;
+    -moz-border-end: none;
+    border-inline-end: none;
+}
+
+.ftshops.ftshops-rtl {
+    /*margin-top: 30px;*/
+}
+
+.ftshops.ftshops-rtl .shop-detail-side {
+    -webkit-box-ordinal-group: 3;
+    -ms-flex-order: 2;
+    order: 2;
+
+}
+
+.ftshops.ftshops-rtl .product-wrapper {
+    -webkit-margin-start: 0;
+    -moz-margin-start: 0;
+    margin-inline-start: 0;
+    -webkit-margin-end: 1rem;
+    -moz-margin-end: 1rem;
+    margin-inline-end: 1rem;
+
+}
+
+.ftshops.ftshops-rtl .shop-detail-side:after {
+    border-left-color: var(--first-color);
+    border-right-color: var(--first-color);
+}

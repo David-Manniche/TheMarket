@@ -59,7 +59,6 @@ class LoggedUserController extends MyAppController
 
     private function initCommonValues()
     {
-        $this->_template->addCss('css/dashboard.css');
         $this->set('isUserDashboard', true);
     }
 

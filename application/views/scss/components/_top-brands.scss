@@ -1,0 +1,52 @@
+
+/*top brands list*/
+.top-brand-list {}
+
+.top-brand-list ul {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
+.top-brand-list .brands-img {
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.top-brand-list .brands-logo {
+    margin: 0 auto;
+    width: 150px;
+    height: 100px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    justify-items: center;
+    padding: 2rem;
+}
+
+.top-brand-list .brands-logo img {
+    margin: 0 auto;
+}
+
+.top-brand-list .brands-img:before {
+    content: "";
+    background: #eef3f5 url(../images/retina/image.svg) no-repeat center;
+    background-size: 3rem;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+}

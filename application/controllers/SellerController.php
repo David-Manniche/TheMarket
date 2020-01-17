@@ -148,7 +148,6 @@ class SellerController extends SellerBaseController
         $this->set('dashboardStats', Stats::getUserSales($userId));
 
         $this->_template->addJs(array('js/chartist.min.js'));
-        $this->_template->addCss(array('css/chartist.css'));
         $this->_template->addJs('js/slick.min.js');
         $this->_template->render(true, true);
     }

@@ -854,7 +854,6 @@ class AccountController extends LoggedUserController
 
         $this->_template->addJs('js/jquery.form.js');
         $this->_template->addJs('js/cropper.js');
-        $this->_template->addCss('css/cropper.css');
         $this->includeDateTimeFiles();
 
         /* $langs = Language::getAllNames();
@@ -1563,9 +1562,7 @@ class AccountController extends LoggedUserController
 
     public function wishlist()
     {
-        $this->_template->addCss('css/slick.css');
         $this->_template->addJs('js/slick.js');
-        $this->_template->addCss('css/product-detail.css');
         $this->_template->render();
     }
 
