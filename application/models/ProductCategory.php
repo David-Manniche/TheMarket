@@ -222,8 +222,8 @@ class ProductCategory extends MyAppModel
         // echo $prodCatSrch->getQuery();exit;
         $rs = $prodCatSrch->getResultSet();
         $categoriesArr = FatApp::getDb()->fetchAll($rs, 'prodcat_id');
-        static::addMissingParentDetails($categoriesArr, $langId);
-        $categoriesArr = static::parseTree($categoriesArr, $parentId);
+        static::addMissingParentDetails($categoriesArr, $langId); 
+        $categoriesArr = static::parseTree($categoriesArr, $parentId); 
 
         return $categoriesArr;
     }
@@ -1008,7 +1008,8 @@ class ProductCategory extends MyAppModel
     
     public function saveCategoryData($post)
     {  
-        $parentCatId = FatUtility::int($post['parentCatId']);
+        //$parentCatId = FatUtility::int($post['parentCatId']);
+        $parentCatId = FatUtility::int($post['prodcat_parent']);
         $prodCatId = FatUtility::int($post['prodcat_id']);
         unset($post['prodcat_id']);
         $autoUpdateOtherLangsData = 0; 
@@ -1056,8 +1057,8 @@ class ProductCategory extends MyAppModel
         }
 
         if($prodCatId == 0){
-            $this->updateCatIcon($post['cat_icon_image_id']);
-            $this->updateCatBanner($post['cat_banner_image_id']);
+            $this->updateMedia($post['cat_icon_image_id']);
+            $this->updateMedia($post['cat_banner_image_id']);
         }
         return true;
     }
@@ -1097,28 +1098,13 @@ class ProductCategory extends MyAppModel
         }
         return true;
     }
-    
-    public function updateCatIcon($iconImageIds)
+
+    public function updateMedia($ImageIds)
     {
-        if(count($iconImageIds) == 0){
+        if(count($ImageIds) == 0){
             return false;
         }
-        foreach($iconImageIds as $imageId){
-            if($imageId > 0 ){
-                $data = array('afile_record_id' => $this->mainTableRecordId);
-                $where = array('smt'=>'afile_id = ?', 'vals'=>array($imageId));
-                FatApp::getDb()->updateFromArray(AttachedFile::DB_TBL, $data, $where);
-            }
-        }
-        return true;
-    }
-    
-    public function updateCatBanner($bannerImageIds)
-    {
-        if(count($bannerImageIds) == 0){
-            return false;
-        }
-        foreach($bannerImageIds as $imageId){
+        foreach($ImageIds as $imageId){
             if($imageId > 0 ){
                 $data = array('afile_record_id' => $this->mainTableRecordId);
                 $where = array('smt'=>'afile_id = ?', 'vals'=>array($imageId));
@@ -1212,18 +1198,7 @@ class ProductCategory extends MyAppModel
             return false;
         }
         return true;
-    }
-    
-    /* public static function updateCatParent($prodCatId, $parentCatId)
-    {
-        $prodCatId = FatUtility::int($prodCatId);
-        $parentCatId = FatUtility::int($parentCatId);
-        if($prodCatId < 1){
-            return false;
-        }
-        FatApp::getDb()->updateFromArray(static::DB_TBL, array(static::DB_TBL_PREFIX.'parent' => $parentCatId), array('smt'=>static::DB_TBL_PREFIX.'id = ?', 'vals'=>array($prodCatId)));
-        return true;
-    } */
+    }    
     
     public function updateCatParent($parentCatId)
     {

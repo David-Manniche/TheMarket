@@ -56,7 +56,6 @@ class ProductCategoriesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         
-        //ProductCategory::updateCatParent($prodCatId, $parentCatId);
         $prodCat = new ProductCategory($prodCatId);
         $prodCat->updateCatParent($parentCatId);
         $prodCat->updateCatCode();
