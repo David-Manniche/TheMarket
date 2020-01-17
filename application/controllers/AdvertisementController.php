@@ -417,7 +417,8 @@ class AdvertisementController extends LoggedUserController
                 'siteCurrencyId' => $this->siteCurrencyId,
                 'data' => $productData
             ];
-            if (false === $obj->publishBatch($data)) {
+            $response = $obj->publishBatch($data);
+            if (false === $response) {
                 Message::addErrorMessage($obj->getError());
                 FatApp::redirectUser(CommonHelper::generateUrl('Advertisement'));
             }
@@ -432,7 +433,7 @@ class AdvertisementController extends LoggedUserController
         if (false === AdsBatch::updateDetail($adsBatchId, $dataToUpdate)) {
             Message::addErrorMessage(Labels::getLabel("MSG_UNABLE_TO_UPDATE", $this->siteLangId));
         } else {
-            Message::addMessage(Labels::getLabel("MSG_PUBLISHED_SUCESSFULLY", $this->siteLangId));
+            Message::addMessage($response['msg']);
         }
         FatApp::redirectUser(CommonHelper::generateUrl('Advertisement'));
     }

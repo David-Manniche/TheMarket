@@ -142,9 +142,13 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
     public function publishBatch($data)
     {
         if (empty($data) || !is_array($data)) {
-            $this->error = Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId());
+            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId());
             return false;
         }
-        return $this->doRequest($data);
+        return [
+            'success' => true,
+            'msg' => Labels::getLabel('MSG_PUBLISHED_SUCESSFULLY', CommonHelper::getLangId()),
+            'data' => $this->doRequest($data)
+        ];
     }
 }
