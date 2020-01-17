@@ -10,6 +10,10 @@ $(document).on('mouseover', "ul.list-tags li span i", function(){
 $(document).on('mouseout', "ul.list-tags li span i", function(){
     $(this).parents('li').removeClass("hover");
 });
+$(document).on('click', ".dvFocus-js", function(){
+    $("input[name='product_name']").show().focus();
+    $(this).html('');
+});
 $(document).on('keyup', "input[name='product_name']", function(){
     var currObj = $(this);
     var parentForm = currObj.closest('form').attr('id');
@@ -40,6 +44,8 @@ $(document).on('keyup', "input[name='product_name']", function(){
                         );
                     }
                 });
+                $('.dvFocus-js').html(item['label']);
+                currObj.hide();
         	}
         });
     }else{
