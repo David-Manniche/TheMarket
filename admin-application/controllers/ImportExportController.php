@@ -10,6 +10,7 @@ class ImportExportController extends AdminBaseController
     public function index()
     {
         $this->_template->addJs('js/import-export.js');
+        $this->set('action', 'generalInstructions');
         $this->_template->render();
     }
     
