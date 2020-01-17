@@ -1,32 +1,11 @@
 $(document).ready(function(){
     searchSeoProducts(document.frmSearch);
 });
-$(document).on('keyup', "input[name='product_name']", function(){
-    var currObj = $(this);
-    var parentForm = currObj.closest('form').attr('id');
-    if('' != currObj.val()){
-        currObj.siblings('ul.dropdown-menu').remove();
-        currObj.autocomplete({'source': function(request, response) {
-        		$.ajax({
-        			url: fcom.makeUrl('Seller', 'autoCompleteProducts'),
-        			data: {keyword: request,fIsAjax:1,keyword:currObj.val()},
-        			dataType: 'json',
-        			type: 'post',
-        			success: function(json) {
-        				response($.map(json, function(item) {
-        					return { label: item['name'], value: item['id']	};
-        				}));
-        			},
-        		});
-        	},
-        	'select': function(item) {
-                $("#"+parentForm+" input[name='voldiscount_selprod_id']").val(item['value']);
-                currObj.val( item['label'] );
-        	}
-        });
-    }else{
-        $("#"+parentForm+" input[name='voldiscount_selprod_id']").val('');
-    }
+
+$(document).on('keyup', "input[name='keyword']", function(){
+    // if ($(this).val().length < 3) return;
+    var parentForm = $(this).closest('form');
+    parentForm.submit();
 });
 
 
@@ -59,7 +38,7 @@ $(document).on('keyup', "input[name='product_name']", function(){
 		if(typeof page==undefined || page == null){
 			page =1;
 		}
-		var frm = document.frmSearchSpecialPricePaging;
+		var frm = document.frmSearchSeoProductsPaging;
 		$(frm.page).val(page);
 		searchSeoProducts(frm);
 	}
@@ -68,7 +47,7 @@ $(document).on('keyup', "input[name='product_name']", function(){
 		var frm = document.frmSearch;
 		searchSeoProducts(frm);
 	}
-    
+
 	getProductSeoGeneralForm = function (selprod_id){
 		fcom.ajax(fcom.makeUrl('Seller', 'productSeoGeneralForm'), 'selprod_id='+selprod_id, function(t) {
 			$("#dvForm").html(t);
@@ -101,7 +80,7 @@ $(document).on('keyup', "input[name='product_name']", function(){
 
 	editProductMetaTagLangForm = function(metaId,langId, metaType, autoFillLangData = 0){
 			fcom.ajax(fcom.makeUrl('seller', 'productSeoLangForm', [metaId,langId,metaType, autoFillLangData]), '', function(t) {
-				$(dv).html(t);
+				$("#dvForm").html(t);
 			});
 
 	};

@@ -29,7 +29,6 @@ if ($page ==1) {
 } else {
     $sr_no = ($page-1) * $pageSize;
 }
-/* CommonHelper::printArray($arrListing); die; */
 foreach ($arrListing as $sn => $row) {
     $sr_no++;
     $tr = $tbl->appendElement('tr', array('class' => ($row['selprod_active'] != applicationConstants::ACTIVE) ? '' : '' ));

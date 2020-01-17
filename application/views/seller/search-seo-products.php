@@ -1,8 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-    // 'select_all'=>Labels::getLabel('LBL_Select_all', $siteLangId),
+    'listserial' => Labels::getLabel('LBL_Sr', $siteLangId),
     'product_name' => Labels::getLabel('LBL_Product_Name', $siteLangId),
-    'meta_title' => Labels::getLabel('LBL_Meta_Title', $siteLangId),
     'action' => Labels::getLabel('LBL_Action', $siteLangId),
 );
 
@@ -17,17 +16,24 @@ foreach ($arr_flds as $key => $val) {
         $th->appendElement('th', array(), $val);
     }
 }
-
+if ($page ==1) {
+    $sr_no = 0;
+} else {
+    $sr_no = ($page-1) * $pageSize;
+}
 foreach ($arrListing as $sn => $row) {
+    $sr_no++;
     $tr = $tbl->appendElement('tr', array());
-    $metaId = $row['meta_id'];
     $selProdId = $row['selprod_id'];
     foreach ($arr_flds as $key => $val) {
-        $tr->setAttribute('id', 'row-'.$metaId);
+        $tr->setAttribute('id', 'row-'.$selProdId);
         $td = $tr->appendElement('td');
         switch ($key) {
             case 'select_all':
-                $td->appendElement('plaintext', array(), '<label class="checkbox"><input class="selectItem--js" type="checkbox" name="selprod_ids['.$metaId.']" value='.$selProdId.'><i class="input-helper"></i></label>', true);
+                $td->appendElement('plaintext', array(), '<label class="checkbox"><input class="selectItem--js" type="checkbox" name="selprod_ids['.$selProdId.']" value='.$selProdId.'><i class="input-helper"></i></label>', true);
+                break;
+            case 'listserial':
+                $td->appendElement('plaintext', array(), $sr_no, true);
                 break;
             case 'product_name':
                 // last Param of getProductDisplayTitle function used to get title in html form.
@@ -38,13 +44,6 @@ foreach ($arrListing as $sn => $row) {
                 $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"), '', true);
 
                 $li = $ul->appendElement('li');
-                $li->appendElement(
-                    'a',
-                    array('href'=>'javascript:void(0)', 'class'=>'',
-                    'title'=>Labels::getLabel('LBL_Delete', $siteLangId),"onclick"=>"deleteSellerProductMetaData(".$metaId.")"),
-                    '<i class="fa fa-trash"></i>',
-                    true
-                );
                 $li->appendElement(
                     'a',
                     array('href'=>'javascript:void(0)', 'class'=>'',

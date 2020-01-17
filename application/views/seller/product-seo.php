@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frmSearch->setFormTagAttribute('class', 'form');
-$frmSearch->setFormTagAttribute('onsubmit', 'searchVolumeDiscountProducts(this); return(false);');
+$frmSearch->setFormTagAttribute('onsubmit', 'searchSeoProducts(this); return(false);');
 $frmSearch->developerTags['colClassPrefix'] = 'col-md-';
 $frmSearch->developerTags['fld_default_col'] = 4;
 
@@ -9,17 +9,6 @@ $keywordFld->setWrapperAttribute('class', 'col-lg-4');
 $keywordFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_by_keyword', $siteLangId));
 $keywordFld->developerTags['col'] = 4;
 $keywordFld->developerTags['noCaptionTag'] = true;
-
-$submitBtnFld = $frmSearch->getField('btn_submit');
-$submitBtnFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
-$submitBtnFld->developerTags['col'] = 2;
-$submitBtnFld->developerTags['noCaptionTag'] = true;
-
-$cancelBtnFld = $frmSearch->getField('btn_clear');
-$cancelBtnFld->setFieldTagAttribute('class', 'btn--block btn btn--primary-border ');
-$cancelBtnFld->developerTags['col'] = 2;
-$cancelBtnFld->developerTags['noCaptionTag'] = true;
-
 ?>
 <?php $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
@@ -31,33 +20,41 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
             </div>
         </div>
         <div class="content-body">
-            <div class="row mb-4">
-                <div class="col-lg-12">
+            <div class="row">
+                <div class="col-md-6">
                     <div class="cards">
-                        <div class="cards-content pt-4 pl-4 pr-4 pb-0">
-                            <div class="replaced">
-                                <?php echo $frmSearch->getFormHtml(); ?>
+                        <div class="cards-content p-4">
+                            <div>
+                                <?php echo $frmSearch->getFormTag(); ?>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="field-set">
+                                            <div class="field-wraper">
+                                                <div class="field_cover">
+                                                    <?php echo $frmSearch->getFieldHTML('keyword');?>
+                                                    <div class='dvFocus-js'></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </form>
+                                <?php echo $frmSearch->getExternalJS();?>
+                            </div>
+                            <div id="listing">
+                                <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-6">
                     <div class="cards">
-                        <div class="cards-content pl-4 pr-4">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div id="listing">
-                                        <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
-                                    </div>
-                                    <span class="gap"></span>
-                                </div>
-                                <div class="col-md-6">
-                                    <div id="dvForm">
-                                        <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
-                                    </div>
-                                    <span class="gap"></span>
+                        <div class="cards-content p-4">
+                        <div class="cards-content p-4">
+                            <div id="dvForm">
+                                <div class="cards-message" role="alert">
+                                    <div class="cards-message-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                                    <div class="cards-message-text">A simple primary alert—check it out!</div>
                                 </div>
                             </div>
                         </div>

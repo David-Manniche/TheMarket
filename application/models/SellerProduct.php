@@ -1055,40 +1055,21 @@ class SellerProduct extends MyAppModel
         return FatApp::getDb()->fetch($rs);
     }
 
-    public static function searchMetaTags($langId, $selProdId = 0, $keyword = '', $userId = 0)
+    public static function searchSellerProducts($langId, $userId, $keyword = '')
     {
-        $pageSize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
-        $srch = static::getSearchObject($langId);
-        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
+        $srch = SellerProduct::getSearchObject($langId);
+        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id and p.product_deleted = '.applicationConstants::NO.' and p.product_active = '.applicationConstants::YES, 'p');
         $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$langId, 'p_l');
-        $srch->joinTable(MetaTag::DB_TBL, 'INNER JOIN', 'mt.meta_record_id = sp.selprod_id', 'mt');
-        $srch->joinTable(MetaTag::DB_TBL_LANG, 'INNER JOIN', 'mt_l.metalang_meta_id = mt.meta_id', 'mt_l');
-
-        $srch->addMultipleFields(
-            array(
-            'selprod_id', 'IFNULL(meta_title, meta_identifier)', 'meta_title', 'IFNULL(selprod_title, IFNULL(product_name, product_identifier)) as selprod_title', 'meta_id', 'meta_record_id')
-        );
-        $metaTabArr = MetaTag::getTabsArr($langId);
-        $srch->addCondition('meta_controller', '=', $metaTabArr[MetaTag::META_GROUP_PRODUCT_DETAIL]['controller']);
-        $srch->addCondition('meta_action', '=', $metaTabArr[MetaTag::META_GROUP_PRODUCT_DETAIL]['action']);
-
-        if (0 < $selProdId) {
-            $srch->addCondition('selprod_id', '=', $selProdId);
-        }
-
-        if ($keyword != '') {
+        if ($keyword) {
             $cnd = $srch->addCondition('product_name', 'like', "%$keyword%");
-            $cnd->attachCondition('selprod_title', 'LIKE', '%'. $keyword . '%', 'OR');
+            $cnd->attachCondition('selprod_title', 'LIKE', "%$keyword%");
+            $cnd->attachCondition('product_identifier', 'LIKE', "%$keyword%");
         }
-
-        if (0 < $userId) {
-            $srch->addCondition('selprod_user_id', '=', $userId);
-        }
-
-        $srch->addCondition('selprod_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
-        $srch->setPageSize($pageSize);
-        $srch->addOrder('meta_id', 'DESC');
+        $srch->addOrder('selprod_active', 'DESC');
+        $srch->addOrder('selprod_added_on', 'DESC');
+        $srch->addOrder('product_name');
+        $srch->addCondition('selprod_user_id', '=', $userId);
         return $srch;
     }
 }

@@ -28,25 +28,28 @@ trait SellerProducts
 
     public function sellerProducts($product_id = 0)
     {
-        $srch = SellerProduct::getSearchObject($this->siteLangId);
-        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id and p.product_deleted = '.applicationConstants::NO.' and p.product_active = '.applicationConstants::YES, 'p');
-        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$this->siteLangId, 'p_l');
+        $product_id = FatUtility::int($product_id);
+        if ($product_id) {
+            $row = Product::getAttributesById($product_id, array('product_id'));
+            if (!$row) {
+                Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
+                FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
+            }
+        }
+        $keyword = FatApp::getPostedData('keyword');
+        $userId = UserAuthentication::getLoggedUserId();
 
-        $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
+        $srch = SellerProduct::searchSellerProducts($this->siteLangId, $userId, $keyword);
+        $srch->addMultipleFields(
+            array(
+            'selprod_id', 'selprod_user_id', 'selprod_price', 'selprod_stock', 'selprod_track_inventory', 'selprod_threshold_stock_level', 'selprod_product_id', 'selprod_active', 'selprod_available_from', 'IFNULL(product_name, product_identifier) as product_name', 'selprod_title')
+        );
         if ($product_id) {
             $srch->doNotCalculateRecords();
             $srch->doNotLimitRecords();
         } else {
             $pageSize = FatApp::getConfig('CONF_PAGE_SIZE');
-
             $post = FatApp::getPostedData();
-
-            if ($keyword = FatApp::getPostedData('keyword')) {
-                $cnd = $srch->addCondition('product_name', 'like', "%$keyword%");
-                $cnd->attachCondition('selprod_title', 'LIKE', "%$keyword%");
-                $cnd->attachCondition('product_identifier', 'LIKE', "%$keyword%");
-            }
-
             $page = (empty($post['page']) || $post['page'] <= 0)?1:$post['page'];
             $page = (empty($page) || $page <= 0) ? 1 : $page;
             $page = FatUtility::int($page);
@@ -55,29 +58,6 @@ trait SellerProducts
             $srch->setPageSize($pageSize);
         }
 
-        $product_id = FatUtility::int($product_id);
-        if ($product_id) {
-            $row = Product::getAttributesById($product_id, array('product_id'));
-            if (!$row) {
-                Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
-                /* FatApp::redirectUser($_SESSION['referer_page_url']); */
-                FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
-            }
-            $srch->addCondition('selprod_product_id', '=', $product_id);
-        }
-        $srch->addCondition('selprod_user_id', '=', UserAuthentication::getLoggedUserId());
-
-        /* $cnd = $srch->addCondition('product_seller_id' ,'=' , UserAuthentication::getLoggedUserId());
-        $cnd->attachCondition( 'product_seller_id', '=', 0,'OR'); */
-        $srch->addMultipleFields(
-            array(
-            'selprod_id', 'selprod_user_id', 'selprod_price', 'selprod_stock', 'selprod_track_inventory', 'selprod_threshold_stock_level', 'selprod_product_id', 'selprod_active', 'selprod_available_from', 'IFNULL(product_name, product_identifier) as product_name', 'selprod_title')
-        );
-
-
-        $srch->addOrder('selprod_active', 'DESC');
-        $srch->addOrder('selprod_added_on', 'DESC');
-        $srch->addOrder('product_name');
         $db = FatApp::getDb();
 
         $rs = $srch->getResultSet();
@@ -1257,15 +1237,6 @@ trait SellerProducts
     /* Seller Product Seo [ */
     public function productSeo()
     {
-        /*$selprod_id = Fatutility::int($selprod_id);
-        $metaType = MetaTag::META_GROUP_PRODUCT_DETAIL;
-        $this->set('metaType', $metaType);
-        $sellerProductRow = SellerProduct::getAttributesById($selprod_id);
-        $productRow = Product::getAttributesById($sellerProductRow['selprod_product_id'], array('product_type'));
-        $this->set('userId', UserAuthentication::getLoggedUserId());
-        $this->set('product_id', $sellerProductRow['selprod_product_id']);
-        $this->set('product_type', $productRow['product_type']);
-        $this->set('selprod_id', $selprod_id);*/
         $this->set('frmSearch', $this->getSellerProductSearchForm());
         $this->_template->render(true, true);
     }
@@ -1274,12 +1245,23 @@ trait SellerProducts
     {
         $userId = UserAuthentication::getLoggedUserId();
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
-        $selProdId = FatApp::getPostedData('selprod_id', FatUtility::VAR_INT, 0);
         $keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
+        $srch = SellerProduct::searchSellerProducts($this->siteLangId, $userId, $keyword);
+        $srch->addMultipleFields(
+            array(
+            'selprod_id', 'IFNULL(selprod_title, IFNULL(product_name, product_identifier)) as selprod_title')
+        );
+        $pageSize = FatApp::getConfig('CONF_PAGE_SIZE');
+        $post = FatApp::getPostedData();
+        $page = (empty($post['page']) || $post['page'] <= 0)?1:$post['page'];
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
+        $page = FatUtility::int($page);
 
-        $srch = SellerProduct::searchMetaTags($this->siteLangId, $selProdId, $keyword, $userId);
         $srch->setPageNumber($page);
+        $srch->setPageSize($pageSize);
+
         $db = FatApp::getDb();
+
         $rs = $srch->getResultSet();
         $arrListing = $db->fetchAll($rs);
 
