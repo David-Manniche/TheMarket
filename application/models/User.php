@@ -101,6 +101,10 @@ class User extends MyAppModel
         'credential_password',
     ];
 
+    public const DEVICE_OS_BOTH = 0;
+    public const DEVICE_OS_ANDROID = 1;
+    public const DEVICE_OS_IOS = 2;
+
     public function __construct($userId = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $userId);
@@ -123,6 +127,15 @@ class User extends MyAppModel
         static::USER_TYPE_ADVERTISER    =>    Labels::getLabel('LBL_Advertiser', $langId),
         static::USER_TYPE_AFFILIATE    =>    Labels::getLabel('LBL_Affiliate', $langId)
         );
+    }
+
+    public static function getDeviceTypeArr($langId)
+    {
+        return [
+            self::DEVICE_OS_BOTH    =>    Labels::getLabel('LBL_BOTH_OS', $langId),
+            self::DEVICE_OS_ANDROID    =>    Labels::getLabel('LBL_ANDROID', $langId),
+            self::DEVICE_OS_IOS    =>    Labels::getLabel('LBL_IOS', $langId),
+        ];
     }
 
     public static function getAffiliatePaymentMethodArr($langId)
@@ -2029,12 +2042,13 @@ class User extends MyAppModel
         }
     }
 
-    public function setPushNotificationToken($appToken, $fcmDeviceId)
+    public function setPushNotificationToken($appToken, $fcmDeviceId, $deviceType = 0)
     {
         if (($this->mainTableRecordId < 1)) {
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
             return false;
         }
+        $deviceType = FatUtility::int($deviceType);
 
         $expiry = strtotime("+7 DAYS");
         $values = array(
@@ -2043,6 +2057,7 @@ class User extends MyAppModel
         'uauth_expiry' => date('Y-m-d H:i:s', $expiry),
         'uauth_browser' => CommonHelper::userAgent(),
         'uauth_fcm_id' => $fcmDeviceId,
+        'uauth_device_type' => $deviceType,
         'uauth_last_access' => date('Y-m-d H:i:s'),
         'uauth_last_ip' => CommonHelper::getClientIp(),
         );

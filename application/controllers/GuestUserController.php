@@ -144,12 +144,13 @@ class GuestUserController extends MyAppController
     public function setUserPushNotificationToken()
     {
         $fcmDeviceId = FatApp::getPostedData('deviceToken', FatUtility::VAR_STRING, '');
+        $deviceOs = FatApp::getPostedData('deviceOs', FatUtility::VAR_INT, 0);
         if (empty($fcmDeviceId)) {
             FatUtility::dieJSONError(Labels::getLabel('Msg_Invalid_Request', $this->siteLangId));
         }
         $userId = UserAuthentication::getLoggedUserId();
         $uObj = new User($userId);
-        if (!$uObj->setPushNotificationToken($this->appToken, $fcmDeviceId)) {
+        if (!$uObj->setPushNotificationToken($this->appToken, $fcmDeviceId, $deviceOs)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
         $this->set('msg', Labels::getLabel('Msg_Successfully_Updated', $this->siteLangId));
