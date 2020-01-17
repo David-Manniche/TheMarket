@@ -9,9 +9,7 @@ $fldBulkImages->setRequiredStarPosition(Form::FORM_REQUIRED_STAR_POSITION_NONE);
 
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <div class="p-4">
-            <?php echo $frm->getFormHtml();  ?>
-        </div>
+        <?php echo $frm->getFormHtml();  ?>
     </div>
 </div>
 <div class="divider"></div>

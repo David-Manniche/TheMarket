@@ -688,7 +688,7 @@ class ImportExportController extends AdminBaseController
             'export_option',
             $options,
             '',
-            array('class'=>'list-inline list-col-4'),
+            array('class'=>'list-inline list-col-2'),
             array('onClick'=>'exportForm(this.value)')
         );
         return $frm;
@@ -716,7 +716,7 @@ class ImportExportController extends AdminBaseController
             'export_option',
             $options,
             '',
-            array('class'=>'list-inline list-col-4'),
+            array('class'=>'list-inline list-col-2'),
             array('onClick'=>'getInstructions(this.value)')
         );
         
