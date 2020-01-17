@@ -1214,7 +1214,7 @@ class ProductCategory extends MyAppModel
         return true;
     }
     
-    public static function updateCatParent($prodCatId, $parentCatId)
+    /* public static function updateCatParent($prodCatId, $parentCatId)
     {
         $prodCatId = FatUtility::int($prodCatId);
         $parentCatId = FatUtility::int($parentCatId);
@@ -1222,6 +1222,16 @@ class ProductCategory extends MyAppModel
             return false;
         }
         FatApp::getDb()->updateFromArray(static::DB_TBL, array(static::DB_TBL_PREFIX.'parent' => $parentCatId), array('smt'=>static::DB_TBL_PREFIX.'id = ?', 'vals'=>array($prodCatId)));
+        return true;
+    } */
+    
+    public function updateCatParent($parentCatId)
+    {
+        if($this->mainTableRecordId < 1){
+            return false;
+        }
+        $parentCatId = FatUtility::int($parentCatId);
+        FatApp::getDb()->updateFromArray(static::DB_TBL, array(static::DB_TBL_PREFIX.'parent' => $parentCatId), array('smt'=>static::DB_TBL_PREFIX.'id = ?', 'vals'=>array($this->mainTableRecordId)));
         return true;
     }
     

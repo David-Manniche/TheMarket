@@ -17,7 +17,6 @@ class ProductCategoriesController extends AdminBaseController
         $this->set("activeCategories", $activeCategories);
         $this->set("inactiveCategories", $inactiveCategories);
         $this->set("canEdit", $canEdit);
-        //$this->_template->addJs('js/import-export.js');
         $this->_template->addJs('js/jquery-sortable-lists.js');
         $this->_template->render();
     }
@@ -47,8 +46,7 @@ class ProductCategoriesController extends AdminBaseController
     }
     
     public function updateOrder()
-    { 
-    ProductCategory::updateCatOrderCode();
+    {    
         $this->objPrivilege->canEditProductCategories();
         $prodCatId = FatApp::getPostedData('catId', FatUtility::VAR_INT, 0); 
         $parentCatId = FatApp::getPostedData('parentCatId', FatUtility::VAR_INT, 0); 
@@ -58,8 +56,9 @@ class ProductCategoriesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         
-        ProductCategory::updateCatParent($prodCatId, $parentCatId);
+        //ProductCategory::updateCatParent($prodCatId, $parentCatId);
         $prodCat = new ProductCategory($prodCatId);
+        $prodCat->updateCatParent($parentCatId);
         $prodCat->updateCatCode();
         if (!$prodCat->updateOrder($catOrderArr)) {
             Message::addErrorMessage($prodCat->getError());
