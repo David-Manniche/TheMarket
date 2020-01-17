@@ -52,9 +52,9 @@ class Configurations extends FatModel
     {
         $adminLangId = CommonHelper::getLangId();
         $additionalArr  = array();
-        if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT')) {
+        /* if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT')) {
             $additionalArr = array(Configurations::FORM_IMPORT_EXPORT => Labels::getLabel('MSG_IMPORT_EXPORT', $adminLangId),);
-        }
+        } */
         $configurationArr =  array(
             Configurations::FORM_GENERAL => Labels::getLabel('MSG_General', $adminLangId),
             Configurations::FORM_LOCAL => Labels::getLabel('MSG_Local', $adminLangId),
