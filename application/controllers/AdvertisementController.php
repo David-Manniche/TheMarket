@@ -430,8 +430,7 @@ class AdvertisementController extends LoggedUserController
             'adsbatch_status' => AdsBatch::STATUS_PUBLISHED,
             'adsbatch_synced_on' => date('Y-m-d H:i:s')
         ];
-        $response = AdsBatch::updateDetail($adsBatchId, $dataToUpdate);
-        if (false === $response) {
+        if (false === AdsBatch::updateDetail($adsBatchId, $dataToUpdate)) {
             Message::addErrorMessage(Labels::getLabel("MSG_UNABLE_TO_UPDATE", $this->siteLangId));
         } else {
             Message::addMessage($response['msg']);
