@@ -589,7 +589,7 @@ class SellerProductsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    private function getProductSeoForm($metaTagId = 0, $metaType = 'default', $recordId = 0)
+    /* private function getProductSeoForm($metaTagId = 0, $metaType = 'default', $recordId = 0)
     {
         $metaTagId = FatUtility::int($metaTagId);
         $frm = new Form('frmMetaTag');
@@ -605,7 +605,7 @@ class SellerProductsController extends AdminBaseController
         $frm->addRequiredField(Labels::getLabel('LBL_Identifier', $this->adminLangId), 'meta_identifier');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
-    }
+    } */
 
     public function productSeoLangForm($metaId, $langId, $autoFillLangData = 0)
     {
@@ -656,6 +656,14 @@ class SellerProductsController extends AdminBaseController
     {
         $frm = new Form('frmMetaTagLang');
         $frm->addHiddenField('', 'meta_id', $metaId);
+        $tabsArr = MetaTag::getTabsArr();
+        $frm->addHiddenField('', 'meta_type', $metaType);
+
+        if ($metaTagId != 0 && ($metaType == '' || !isset($tabsArr[$metaType]))) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        $frm->addHiddenField('', 'meta_record_id', $recordId);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Meta_Title', $this->adminLangId), 'meta_title');
         $frm->addTextarea(Labels::getLabel('LBL_Meta_Keywords', $this->adminLangId), 'meta_keywords')->requirements()->setRequired(true);

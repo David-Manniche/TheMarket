@@ -669,7 +669,6 @@ trait SellerProducts
                     $newTabLangId = $langId;
                     break;
                 }*/
-
             }
         }
 
@@ -1275,12 +1274,12 @@ trait SellerProducts
         $this->_template->render(false, false);
     }
 
-    /*public function productSeoGeneralForm()
+    public function productSeoLangForm($selprodId, $langId)
     {
-        $post = FatApp::getPostedData();
-        $selprod_id = FatUtility::int($post['selprod_id']);
+        $selprodId = FatUtility::int($selprodId);
+        $langId = FatUtility::int($langId);
 
-        $sellerProductRow = SellerProduct::getAttributesById($selprod_id);
+        $sellerProductRow = SellerProduct::getAttributesById($selprodId);
         if ($sellerProductRow['selprod_user_id'] != UserAuthentication::getLoggedUserId()) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatApp::redirectUser($_SESSION['referer_page_url']);
@@ -1290,112 +1289,29 @@ trait SellerProducts
         $this->set('metaType', $metaType);
 
         $productRow = Product::getAttributesById($sellerProductRow['selprod_product_id'], array('product_type'));
-        $prodMetaData= Product::getProductMetaData($selprod_id);
+        $prodMetaData= Product::getProductMetaData($selprodId);
 
         $metaId= 0;
 
         if (!empty($prodMetaData)) {
             $metaId = $prodMetaData['meta_id'];
         }
-        $productSeoForm = $this->getProductSeoForm($metaId, $metaType, $selprod_id);
-        $productSeoForm->fill($prodMetaData);
-        $this->set('metaId', $metaId);
-        $this->set('product_id', $sellerProductRow['selprod_product_id']);
-        $this->set('selprod_id', $selprod_id);
-        $this->set('selprod_lang_id', '');
-        $this->set('languages', Language::getAllNames());
-        $this->set('productSeoForm', $productSeoForm);
-        $this->set('activeTab', 'SEO');
-        $this->set('product_type', $productRow['product_type']);
-        $this->set('seoActiveTab', 'GENERAL');
-        $this->_template->render(false, false);
-    }*/
 
-   /*  private function getProductSeoForm($metaTagId = 0, $metaType = 'default', $recordId = 0)
-    {
-        $metaTagId = FatUtility::int($metaTagId);
-        $frm = new Form('frmMetaTag');
-        $frm->addHiddenField('', 'meta_id', $metaTagId);
-        $tabsArr = MetaTag::getTabsArr();
-        $frm->addHiddenField('', 'meta_type', $metaType);
+        $metaData = MetaTag::getAttributesByLangId($langId, $metaId);
 
-        if ($metaTagId!= 0 && ($metaType == '' || !isset($tabsArr[$metaType]))) {
-            Message::addErrorMessage($this->str_invalid_request);
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-        $frm->addHiddenField(Labels::getLabel("LBL_Entity_Id", $this->siteLangId), 'meta_record_id', $recordId);
-        $frm->addRequiredField(Labels::getLabel("LBL_Identifier", $this->siteLangId), 'meta_identifier');
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel("LBL_Save_Changes", $this->siteLangId));
-        return $frm;
-    } */
-
-    public function productSeoLangForm()
-    {
-        $post = FatApp::getPostedData();
-        $selprod_id = FatUtility::int($post['selprod_id']);
-
-        $sellerProductRow = SellerProduct::getAttributesById($selprod_id);
-        if ($sellerProductRow['selprod_user_id'] != UserAuthentication::getLoggedUserId()) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatApp::redirectUser($_SESSION['referer_page_url']);
-        }
-
-        $metaType = MetaTag::META_GROUP_PRODUCT_DETAIL;
-        $this->set('metaType', $metaType);
-
-        $productRow = Product::getAttributesById($sellerProductRow['selprod_product_id'], array('product_type'));
-        $metaData= Product::getProductMetaData($selprod_id);
-
-        $metaId= 0;
-
-        if (!empty($metaData)) {
-            $metaId = $metaData['meta_id'];
-        }
-
-        $metaData = MetaTag::getAttributesById($metaId);
-        $meta_record_id = $metaData['meta_record_id'];
-        if (!UserPrivilege::canEditMetaTag($metaId, $meta_record_id)) {
-            Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-
-        $sellerProductRow  =  SellerProduct::getAttributesById($metaData['meta_record_id']);
-        $this->set('activeTab', 'SEO');
-        $metaType = MetaTag::META_GROUP_PRODUCT_DETAIL;
-        $this->set('metaType', $metaType);
-
-        if (0 < $autoFillLangData) {
-            $updateLangDataobj = new TranslateLangData(MetaTag::DB_TBL_LANG);
-            $translatedData = $updateLangDataobj->getTranslatedData($metaId, $lang_id);
-            if (false === $translatedData) {
-                Message::addErrorMessage($updateLangDataobj->getError());
-                FatUtility::dieWithError(Message::getHtml());
-            }
-            $metaData = current($translatedData);
-        } else {
-            $metaData = MetaTag::getAttributesByLangId($langId, $metaId);
-        }
-
-        $prodSeoLangFrm = $this->getSeoLangForm($metaId, $langId);
+        $prodSeoLangFrm = $this->getSeoLangForm($metaId, $langId, $selprodId, MetaTag::META_GROUP_PRODUCT_DETAIL);
         $prodSeoLangFrm->fill($metaData);
-
-        $productRow = Product::getAttributesById($sellerProductRow['selprod_product_id'], array('product_type'));
 
         $this->set('languages', Language::getAllNames());
         $this->set('productSeoLangForm', $prodSeoLangFrm);
         $this->set('formLayout', Language::getLayoutDirection($langId));
-        $this->set('userId', UserAuthentication::getLoggedUserId());
-        $this->set('metaId', $metaId);
-        $this->set('product_type', $productRow['product_type']);
-        $this->set('selprod_id', $sellerProductRow[ SellerProduct::DB_TBL_PREFIX.'id']);
-        $this->set('product_id', $sellerProductRow[SellerProduct::DB_TBL_PREFIX.'product_id']);
+        $this->set('selprodId', $selprodId);
         $this->set('selprod_lang_id', $langId);
-        $this->set('seoActiveTab', '');
 
         $this->_template->render(false, false);
     }
 
-    private function getSeoLangForm($metaId = 0, $lang_id = 0, $metaType = 'default', $recordId = 0)
+    private function getSeoLangForm($metaId = 0, $lang_id = 0, $recordId = 0, $metaType = 'default')
     {
         $frm = new Form('frmMetaTagLang');
 
@@ -1415,16 +1331,23 @@ trait SellerProducts
             $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->siteLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
 
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel("LBL_Save_Changes", $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_next', Labels::getLabel("LBL_Save_&_Next", $this->siteLangId));
+        $frm->addButton('', 'btn_exit', Labels::getLabel("LBL_Save_&_Exit", $this->siteLangId));
         return $frm;
     }
 
-    public function setupProdMeta()
+    public function setupProdMetaLang()
     {
         $post = FatApp::getPostedData();
+        $lang_id = $post['lang_id'];
+        if ($lang_id == 0) {
+            Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
+            FatApp::redirectUser($_SESSION['referer_page_url']);
+        }
         $metaId = FatUtility::int($post['meta_id']);
-        $metaReocrdId = FatUtility::int($post['meta_record_id']);
-        if (!UserPrivilege::canEditMetaTag($metaId, $metaReocrdId)) {
+        $metaRecordId = FatUtility::int($post['meta_record_id']);
+
+        if (!UserPrivilege::canEditMetaTag($metaId, $metaRecordId)) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -1433,80 +1356,29 @@ trait SellerProducts
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        /* foreach($post as $key=>$val){
-        $post[$key] = strip_tags($post[$key]);
-        } */
-
         $tabsArr = MetaTag::getTabsArr();
-        $metaType = FatUtility::convertToType($post['meta_type'], FatUtility::VAR_STRING);
+        $metaType = MetaTag::META_GROUP_PRODUCT_DETAIL;
 
         if ($metaType == '' || !isset($tabsArr[$metaType])) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        $frm = $this->getProductSeoForm($metaId, $metaType, $post['meta_record_id']);
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-
-
 
         $post['meta_controller'] = $tabsArr[$metaType]['controller'];
         $post['meta_action'] = $tabsArr[$metaType]['action'];
         if ($metaId == 0) {
             $post['meta_subrecord_id'] = 0;
         }
-
-
         $record = new MetaTag($metaId);
-
         $record->assignValues($post);
-
         if (!$record->save()) {
             Message::addErrorMessage($record->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $newTabLangId=0;
-        if ($metaId>0) {
-            $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
-                /* if(!$row = MetaTag::getAttributesByLangId($langId,$metaId)){
-                $newTabLangId = $langId;
-                break;
-                }     */
-                $newTabLangId = $langId;
-                break;
-            }
-        } else {
-            $metaId = $record->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
-        }
-
-        $this->set('msg', Labels::getLabel("MSG_Setup_Successful", $this->siteLangId));
-        $this->set('metaId', $metaId);
-        $this->set('metaType', $metaType);
-        $this->set('langId', $newTabLangId);
-        $this->_template->render(false, false, 'json-success.php');
-    }
-
-    public function setupProdMetaLang()
-    {
-        $post = FatApp::getPostedData();
-
-        $metaId = $post['meta_id'];
-        $lang_id = $post['lang_id'];
-
-        if ($metaId == 0 || $lang_id == 0) {
-            Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
-            FatApp::redirectUser($_SESSION['referer_page_url']);
-        }
-        if (!UserPrivilege::canEditMetaTag($metaId)) {
-            Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-        $frm = $this->getSeoLangForm($metaId, $lang_id);
+        $metaId = $record->getMainTableRecordId();
+        $frm = $this->getSeoLangForm($metaId, $lang_id, $metaRecordId, MetaTag::META_GROUP_PRODUCT_DETAIL);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-        unset($post['meta_id']);
-        unset($post['lang_id']);
 
         $data = array(
         'metalang_lang_id' => $lang_id,
@@ -1532,18 +1404,17 @@ trait SellerProducts
                 FatUtility::dieWithError(Message::getHtml());
             }
         }
-
-        $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach ($languages as $langId => $langName) {
-            if (!$row = MetaTag::getAttributesByLangId($langId, $metaId)) {
-                $newTabLangId = $langId;
-                break;
-            }
+
+        $newTabLangId = $this->siteLangId;
+        $keys = array_keys($languages);
+        $index = array_search($lang_id, $keys);
+        if (count($languages) > $index+1) {
+            $newTabLangId = $keys[$index+1];
         }
 
         $this->set('msg', Labels::getLabel("MSG_Setup_Successful", $this->siteLangId));
-        $this->set('metaId', $metaId);
+        $this->set('metaRecordId', $metaRecordId);
         $this->set('langId', $newTabLangId);
         $this->_template->render(false, false, 'json-success.php');
     }
@@ -2266,12 +2137,12 @@ trait SellerProducts
         $metaIdentifier = SellerProduct::getProductDisplayTitle($selprod_id, FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1));
         $meta = new MetaTag();
 
-        $count = 1;
+        /* $count = 1;
         while ($metaRow = MetaTag::getAttributesByIdentifier($metaIdentifier, array('meta_identifier'))) {
             $metaIdentifier = $metaRow['meta_identifier']."-".$count;
             $count++;
         }
-        $metaData['meta_identifier'] = $metaIdentifier;
+        $metaData['meta_identifier'] = $metaIdentifier; */
         $meta->assignValues($metaData);
 
         if (!$meta->save()) {
@@ -2691,7 +2562,6 @@ trait SellerProducts
 
     public function deleteSelprodRelatedProduct($selprod_id, $relprod_id)
     {
-
         $selprod_id = FatUtility::int($selprod_id);
         $relprod_id = FatUtility::int($relprod_id);
         if (!$selprod_id || !$relprod_id) {
@@ -2809,6 +2679,7 @@ trait SellerProducts
         $db = FatApp::getDb();
         $upsellProds = $db->fetchAll($rs);
         $arrListing = array();
+        // CommonHelper::printArray($upsellProds); die;
         foreach ($upsellProds as $key => $upsellProd) {
             $arrListing[$upsellProd['upsell_sellerproduct_id']][$key] = $upsellProd;
         }
@@ -2861,7 +2732,6 @@ trait SellerProducts
 
     public function deleteSelprodUpsellProduct($selprod_id, $relprod_id)
     {
-
         $selprod_id = FatUtility::int($selprod_id);
         $relprod_id = FatUtility::int($relprod_id);
         if (!$selprod_id || !$relprod_id) {

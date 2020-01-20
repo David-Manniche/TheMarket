@@ -1,4 +1,5 @@
-<?php require_once('sellerProductSeoTop.php');?>
+<?php /*require_once('sellerProductSeoTop.php');*/ ?>
+<h5 class="cards-title mb-2"><?php echo SellerProduct::getProductDisplayTitle($selprodId, $siteLangId, false); ?></h5>
 <div class="form__subcontent">
     <?php
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
@@ -9,16 +10,36 @@
                     <input class="btn btn-primary"
                         type="button"
                         value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $siteLangId); ?>"
-                        onClick="editProductMetaTagLangForm(<?php echo $metaId; ?>, <?php echo $selprod_lang_id; ?>, 1)">
+                        onClick="editProductMetaTagLangForm(<?php echo $selprodId; ?>, <?php echo $selprod_lang_id; ?>)">
                 </div>
             </div>
         <?php } ?>
     <?php
-        $productSeoLangForm->setFormTagAttribute('class', 'form form--horizontal layout--'.$formLayout);
-        $productSeoLangForm->setFormTagAttribute('onsubmit', 'setupProductLangMetaTag(this); return(false);');
-        $productSeoLangForm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-';
-        $productSeoLangForm->developerTags['fld_default_col'] = 12;
-        $langFld = $productSeoLangForm->getField('lang_id');
-        $langFld->setfieldTagAttribute('onChange', "editProductMetaTagLangForm(" . $metaId . ", this.value);");
-        echo $productSeoLangForm->getFormHtml(); ?>
+    $productSeoLangForm->setFormTagAttribute('class', 'form form--horizontal layout--'.$formLayout);
+    $productSeoLangForm->setFormTagAttribute('onsubmit', 'setupProductLangMetaTag(this, 0); return(false);');
+    $productSeoLangForm->developerTags['colClassPrefix'] = 'col-md-';
+    $productSeoLangForm->developerTags['fld_default_col'] = 12;
+    $langFld = $productSeoLangForm->getField('lang_id');
+    $langFld->setfieldTagAttribute('onChange', "editProductMetaTagLangForm(" . $selprodId . ", this.value);");
+    $mKeywordFld = $productSeoLangForm->getField('meta_keywords');
+    $mKeywordFld->setfieldTagAttribute('class', "txtarea-height");
+    $mDescFld = $productSeoLangForm->getField('meta_description');
+    $mDescFld->setfieldTagAttribute('class', "txtarea-height");
+    $mtagsFld = $productSeoLangForm->getField('meta_other_meta_tags');
+    $mtagsFld->setfieldTagAttribute('class', "txtarea-height");
+
+    $nextBtn = $productSeoLangForm->getField('btn_next');
+    $nextBtn->developerTags['col'] = 3;
+    $nextBtn->developerTags['noCaptionTag'] = true;
+    end($languages);
+    if (key($languages) == $selprod_lang_id) {
+        $nextBtn->value = Labels::getLabel("LBL_Save_&_Back", $siteLangId);
+    }
+
+    $exitBtn = $productSeoLangForm->getField('btn_exit');
+    $exitBtn->setfieldTagAttribute('class', "btn btn--primary-border");
+    $exitBtn->setfieldTagAttribute('onClick', "setupProductLangMetaTag(this.closest('form'), 1)");
+    $exitBtn->developerTags['col'] = 3;
+    $exitBtn->developerTags['noCaptionTag'] = true;
+    echo $productSeoLangForm->getFormHtml(); ?>
 </div>

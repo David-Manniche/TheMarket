@@ -6117,6 +6117,12 @@ a.loadmore.loading {
     width: 100%;
 }
 
+.layout--rtl  select {
+    background-position:11px center;
+}
+
+
+
 /* tooltips */
 .tooltip {
     position: relative;
@@ -14188,6 +14194,7 @@ div.faqanswer p {
 .cards-message{
     display: flex;
     justify-content: center;
+    flex-direction: column;
     align-items: center;
     position: relative;
     padding: 0.75rem 1.25rem;
@@ -14199,7 +14206,8 @@ div.faqanswer p {
 .cards-message .cards-message-icon {
     display: flex;
     align-items: center;
-    padding: 0 1.25rem 0 0;
+    padding: 1.25rem 0;
+    font-size: 2.5rem;
 }
 
 .cards-message .alert-text {
@@ -14209,6 +14217,9 @@ div.faqanswer p {
 
 .focused-div{ height:auto; cursor:text;
 color: var(--txt-color);
-    
+
     font-size: 0.9em;
     }
+
+
+    .form textarea.txtarea-height{ height: 85px;}

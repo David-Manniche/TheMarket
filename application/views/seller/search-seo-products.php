@@ -2,7 +2,6 @@
 $arr_flds = array(
     'listserial' => '#',
     'product_name' => Labels::getLabel('LBL_Product', $siteLangId),
-    // 'action' => Labels::getLabel('LBL_Action', $siteLangId),
 );
 
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered volDiscountList-js'));
@@ -41,22 +40,10 @@ foreach ($arrListing as $sn => $row) {
                 $td->appendElement(
                     'a',
                     array('href'=>'javascript:void(0)', 'class'=>'',
-                    'title'=>'Links',"onclick"=>"editProductMetaTagLangForm(".$selProdId.")"),
+                    'title'=>'Links',"onclick"=>"editProductMetaTagLangForm(".$selProdId.", ".$siteLangId.")"),
                     $productName,
                     true
                 );
-                break;
-            case 'action':
-                /*$ul = $td->appendElement("ul", array("class"=>"actions actions--centered"), '', true);
-
-                $li = $ul->appendElement('li');
-                $li->appendElement(
-                    'a',
-                    array('href'=>'javascript:void(0)', 'class'=>'',
-                    'title'=>Labels::getLabel('LBL_Edit', $siteLangId),"onclick"=>"getProductSeoGeneralForm(".$selProdId.")"),
-                    '<i class="fa fa-edit"></i>',
-                    true
-                );*/
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);

@@ -2,8 +2,7 @@
 <?php
 $arr_flds = array(
 		'listserial'=> Labels::getLabel('LBL_Sr._No',$adminLangId),
-		'cpage_title' => Labels::getLabel('LBL_CMS_Page',$adminLangId),
-		'meta_identifier'=>Labels::getLabel('LBL_Identifier',$adminLangId),	
+		'cpage_title' => Labels::getLabel('LBL_CMS_Page',$adminLangId),	
 		'meta_title'=>Labels::getLabel('LBL_Title',$adminLangId),	
 		'action' => Labels::getLabel('LBL_Action',$adminLangId),
 	);

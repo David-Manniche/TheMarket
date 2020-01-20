@@ -50,11 +50,11 @@ $keywordFld->developerTags['noCaptionTag'] = true;
                 <div class="col-md-6">
                     <div class="cards">
                         <div class="cards-content p-4">
-                        <div class="cards-content p-4">
-                            <div id="dvForm">
+                            <div id="dvForm"></div>
+                            <div id="dvAlert">
                                 <div class="cards-message" role="alert">
                                     <div class="cards-message-icon"><i class="fas fa-exclamation-triangle"></i></div>
-                                    <div class="cards-message-text">A simple primary alert—check it out!</div>
+                                    <div class="cards-message-text"><?php echo Labels::getLabel('Select_a_product_to_add_/_edit_SEO_related_data', $siteLangId); ?></div>
                                 </div>
                             </div>
                         </div>

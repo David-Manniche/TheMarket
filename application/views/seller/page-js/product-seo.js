@@ -54,35 +54,26 @@ $(document).on('keyup', "input[name='keyword']", function(){
 		});
 	} */
 
-    editProductMetaTagLangForm = function(selprod_id){
-			fcom.ajax(fcom.makeUrl('seller', 'productSeoLangForm'), 'selprod_id='+selprod_id, function(t) {
-				$("#dvForm").html(t);
+    editProductMetaTagLangForm = function(selprod_id, langId){
+			fcom.ajax(fcom.makeUrl('seller', 'productSeoLangForm', [selprod_id, langId]), '', function(t) {
+				$("#dvForm").html(t).show();
+                $("#dvAlert").hide();
 			});
 
 	};
 
-	setupProductMetaTag = function (frm){
-		if (!$(frm).validate()) return;
-		var data = fcom.frmData(frm);
-		fcom.updateWithAjax(fcom.makeUrl('seller', 'setupProdMeta'), data, function(t) {
-			$.mbsmessage.close();
-			editProductMetaTagLangForm(t.metaId, t.langId, t.metaType);
-		});
-	}
-
-	setupProductLangMetaTag = function (frm){
+	setupProductLangMetaTag = function (frm, exit){
 		if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('seller', 'setupProdMetaLang'), data, function(t) {
-			$.mbsmessage.close();
-
-			if (t.langId > 0) {
-				editProductMetaTagLangForm(t.metaId, t.langId, t.metaType);
+			if (!exit && t.langId > 0) {
+				editProductMetaTagLangForm(t.metaRecordId, t.langId);
 				return ;
-			}
-
+			} else {
+                $("#dvForm").hide();
+                $("#dvAlert").show();
+            }
 		});
-
 	}
 
 })();
