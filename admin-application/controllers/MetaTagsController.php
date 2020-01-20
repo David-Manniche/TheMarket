@@ -400,7 +400,7 @@ class MetaTagsController extends AdminBaseController
         else{
             $frm->addHiddenField(Labels::getLabel('LBL_Entity_Id', $this->adminLangId), 'meta_record_id', $recordId);
         }
-        $frm->addRequiredField(Labels::getLabel('LBL_Identifier', $this->adminLangId), 'meta_identifier');
+        /* $frm->addRequiredField(Labels::getLabel('LBL_Identifier', $this->adminLangId), 'meta_identifier'); */
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
@@ -448,8 +448,7 @@ class MetaTagsController extends AdminBaseController
         $srch->joinTable(MetaTag::DB_TBL_LANG, 'LEFT OUTER JOIN', "mt_l.metalang_meta_id = mt.meta_id AND mt_l.metalang_lang_id = ".$this->adminLangId, 'mt_l');
         $srch->addCondition('post_deleted', '=', applicationConstants::NO);
         if(!empty($post['keyword'])) {
-            $condition=$srch->addCondition('mt.meta_identifier', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('mt_l.meta_title', 'like', '%'.$post['keyword'].'%', 'OR');
+            $condition = $srch->addCondition('mt_l.meta_title', 'like', '%'.$post['keyword'].'%');
             $condition->attachCondition('bp_l.post_title', 'like', '%'.$post['keyword'].'%', 'OR');
             $condition->attachCondition('bp.post_identifier', 'like', '%'.$post['keyword'].'%', 'OR');
         }
@@ -463,7 +462,7 @@ class MetaTagsController extends AdminBaseController
             }
         }
 
-        $srch->addMultipleFields(array('meta_id','meta_identifier','meta_title','post_id','IF(post_title is NULL or post_title = "" ,post_identifier, post_title) as post_title'));
+        $srch->addMultipleFields(array('meta_id','meta_title','post_id','IF(post_title is NULL or post_title = "" ,post_identifier, post_title) as post_title'));
         $srch->addOrder('meta_id', 'DESC');
         $page = (empty($page) || $page <= 0)?1:$page;
         $page = FatUtility::int($page);
@@ -504,8 +503,7 @@ class MetaTagsController extends AdminBaseController
         $srch->joinTable(MetaTag::DB_TBL_LANG, 'LEFT OUTER JOIN', "mt_l.metalang_meta_id = mt.meta_id AND mt_l.metalang_lang_id = ".$this->adminLangId, 'mt_l');
 
         if(!empty($post['keyword'])) {
-            $condition=$srch->addCondition('mt.meta_identifier', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('mt_l.meta_title', 'like', '%'.$post['keyword'].'%', 'OR');
+            $condition = $srch->addCondition('mt_l.meta_title', 'like', '%'.$post['keyword'].'%');
             $condition->attachCondition('bpc_l.bpcategory_name', 'like', '%'.$post['keyword'].'%', 'OR');
             $condition->attachCondition('bpc.bpcategory_identifier', 'like', '%'.$post['keyword'].'%', 'OR');
         }
@@ -519,7 +517,7 @@ class MetaTagsController extends AdminBaseController
             }
         }
 
-        $srch->addMultipleFields(array('meta_id','meta_identifier','meta_title','bpcategory_id','IF(bpcategory_name is NULL or bpcategory_name = "" ,bpcategory_identifier,bpcategory_name) as bpcategory_name'));
+        $srch->addMultipleFields(array('meta_id','meta_title','bpcategory_id','IF(bpcategory_name is NULL or bpcategory_name = "" ,bpcategory_identifier,bpcategory_name) as bpcategory_name'));
         $srch->addCondition('bpcategory_deleted', '=', applicationConstants::NO);
         $srch->addOrder('meta_id', 'DESC');
         $page = (empty($page) || $page <= 0)?1:$page;
@@ -561,8 +559,7 @@ class MetaTagsController extends AdminBaseController
         $srch->joinTable(MetaTag::DB_TBL_LANG, 'LEFT OUTER JOIN', "mt_l.metalang_meta_id = mt.meta_id AND mt_l.metalang_lang_id = ".$this->adminLangId, 'mt_l');
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         if(!empty($post['keyword'])) {
-            $condition=$srch->addCondition('mt.meta_identifier', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('mt_l.meta_title', 'like', '%'.$post['keyword'].'%', 'OR');
+            $condition = $srch->addCondition('mt_l.meta_title', 'like', '%'.$post['keyword'].'%');
             $condition->attachCondition('p_l.product_name', 'like', '%'.$post['keyword'].'%', 'OR');
             $condition->attachCondition('sp_l.selprod_title', 'like', '%'.$post['keyword'].'%', 'OR');
         }
@@ -576,7 +573,7 @@ class MetaTagsController extends AdminBaseController
             }
         }
 
-        $srch->addMultipleFields(array('meta_id','meta_identifier','meta_title','selprod_id','IF(selprod_title is NULL or selprod_title = "" ,product_name, selprod_title) as selprod_title'));
+        $srch->addMultipleFields(array('meta_id','meta_title','selprod_id','IF(selprod_title is NULL or selprod_title = "" ,product_name, selprod_title) as selprod_title'));
         $srch->addOrder('meta_id', 'DESC');
         $page = (empty($page) || $page <= 0)?1:$page;
         $page = FatUtility::int($page);
@@ -618,8 +615,7 @@ class MetaTagsController extends AdminBaseController
         $srch->joinTable(MetaTag::DB_TBL_LANG, 'LEFT OUTER JOIN', "mt_l.metalang_meta_id = mt.meta_id AND mt_l.metalang_lang_id = ".$this->adminLangId, 'mt_l');
 
         if(!empty($post['keyword'])) {
-            $condition=$srch->addCondition('mt.meta_identifier', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('mt_l.meta_title', 'like', '%'.$post['keyword'].'%', 'OR');
+            $condition = $srch->addCondition('mt_l.meta_title', 'like', '%'.$post['keyword'].'%');
             $condition->attachCondition('s_l.shop_name', 'like', '%'.$post['keyword'].'%', 'OR');
         }
 
@@ -632,7 +628,7 @@ class MetaTagsController extends AdminBaseController
             }
         }
 
-        $srch->addMultipleFields(array('meta_id','meta_identifier','meta_title','shop_id','IFNULL(s_l.shop_name, s.shop_identifier) as shop_name'));
+        $srch->addMultipleFields(array('meta_id','meta_title','shop_id','IFNULL(s_l.shop_name, s.shop_identifier) as shop_name'));
         $srch->addOrder('meta_id', 'DESC');
         $page = (empty($page) || $page <= 0)?1:$page;
         $page = FatUtility::int($page);
@@ -674,8 +670,7 @@ class MetaTagsController extends AdminBaseController
         $srch->joinTable(MetaTag::DB_TBL_LANG, 'LEFT OUTER JOIN', "mt_l.metalang_meta_id = mt.meta_id AND mt_l.metalang_lang_id = ".$this->adminLangId, 'mt_l');
 
         if(!empty($post['keyword'])) {
-            $condition=$srch->addCondition('mt.meta_identifier', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('mt_l.meta_title', 'like', '%'.$post['keyword'].'%', 'OR');
+            $condition = $srch->addCondition('mt_l.meta_title', 'like', '%'.$post['keyword'].'%');
             $condition->attachCondition('p_l.cpage_title', 'like', '%'.$post['keyword'].'%', 'OR');
         }
 
@@ -688,7 +683,7 @@ class MetaTagsController extends AdminBaseController
             }
         }
 
-        $srch->addMultipleFields(array('meta_id','meta_identifier','meta_title','cpage_id','IF(cpage_title is NULL or cpage_title = "" ,cpage_identifier, cpage_title) as cpage_title'));
+        $srch->addMultipleFields(array('meta_id','meta_title','cpage_id','IF(cpage_title is NULL or cpage_title = "" ,cpage_identifier, cpage_title) as cpage_title'));
         $srch->addOrder('meta_id', 'DESC');
         $page = (empty($page) || $page <= 0)?1:$page;
         $page = FatUtility::int($page);
@@ -730,8 +725,7 @@ class MetaTagsController extends AdminBaseController
         $srch->joinTable(MetaTag::DB_TBL_LANG, 'LEFT OUTER JOIN', "mt_l.metalang_meta_id = mt.meta_id AND mt_l.metalang_lang_id = ".$this->adminLangId, 'mt_l');
 
         if(!empty($post['keyword'])) {
-            $condition=$srch->addCondition('mt.meta_identifier', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('mt_l.meta_title', 'like', '%'.$post['keyword'].'%', 'OR');
+            $condition = $srch->addCondition('mt_l.meta_title', 'like', '%'.$post['keyword'].'%');
             $condition->attachCondition('b_l.brand_name', 'like', '%'.$post['keyword'].'%', 'OR');
         }
 
@@ -744,7 +738,7 @@ class MetaTagsController extends AdminBaseController
             }
         }
 
-        $srch->addMultipleFields(array('meta_id','meta_identifier','meta_title','brand_id','IF(brand_name is NULL or brand_name = "" ,brand_identifier, brand_name) as brand_name'));
+        $srch->addMultipleFields(array('meta_id','meta_title','brand_id','IF(brand_name is NULL or brand_name = "" ,brand_identifier, brand_name) as brand_name'));
         $srch->addCondition('brand_status', '=', Brand::BRAND_REQUEST_APPROVED);
         $srch->addOrder('meta_id', 'DESC');
         $page = (empty($page) || $page <= 0)?1:$page;
@@ -787,8 +781,7 @@ class MetaTagsController extends AdminBaseController
         $srch->joinTable(MetaTag::DB_TBL_LANG, 'LEFT OUTER JOIN', "mt_l.metalang_meta_id = mt.meta_id AND mt_l.metalang_lang_id = ".$this->adminLangId, 'mt_l');
 
         if(!empty($post['keyword'])) {
-            $condition=$srch->addCondition('mt.meta_identifier', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('mt_l.meta_title', 'like', '%'.$post['keyword'].'%', 'OR');
+            $condition = $srch->addCondition('mt_l.meta_title', 'like', '%'.$post['keyword'].'%');
             $condition->attachCondition('pc_l.prodcat_name', 'like', '%'.$post['keyword'].'%', 'OR');
         }
 
@@ -801,7 +794,7 @@ class MetaTagsController extends AdminBaseController
             }
         }
 
-        $srch->addMultipleFields(array('meta_id','meta_identifier','meta_title','prodcat_id','IF(prodcat_name is NULL or prodcat_name = "" ,prodcat_identifier, prodcat_name) as prodcat_name'));
+        $srch->addMultipleFields(array('meta_id','meta_title','prodcat_id','IF(prodcat_name is NULL or prodcat_name = "" ,prodcat_identifier, prodcat_name) as prodcat_name'));
         $srch->addOrder('meta_id', 'DESC');
         $srch->addCondition('prodcat_deleted', '=', applicationConstants::NO);
         $page = (empty($page) || $page <= 0)?1:$page;
@@ -839,8 +832,7 @@ class MetaTagsController extends AdminBaseController
         $srch->addCondition('mt.meta_advanced', '=', 1);
         $srch->addFld('mt.* , mt_l.meta_title');
         if(!empty($post['keyword'])) {
-            $condition=$srch->addCondition('mt.meta_identifier', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('mt_l.meta_title', 'like', '%'.$post['keyword'].'%', 'OR');
+            $srch->addCondition('mt_l.meta_title', 'like', '%'.$post['keyword'].'%');
         }
 
         $page = (empty($page) || $page <= 0)?1:$page;

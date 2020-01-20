@@ -177,3 +177,5 @@ DELETE FROM `tbl_attached_files` WHERE `afile_type` = 12 and `afile_screen` = 0;
 DELETE FROM `tbl_attached_files` WHERE `afile_type` = 52 and `afile_screen` = 0;
 
 ALTER TABLE `tbl_orders` ADD `order_deleted` TINYINT(1) NOT NULL AFTER `order_renew`;
+
+ALTER TABLE `tbl_meta_tags` DROP `meta_identifier`;
