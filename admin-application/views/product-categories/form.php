@@ -65,7 +65,6 @@ $btn->setFieldTagAttribute('class', "themebtn btn-primary");
                                                 <div class="field-wraper">
                                                     <div class="field_cover">
                                                     <?php echo $prodCatFrm->getFieldHtml('prodcat_name['.$siteDefaultLangId.']'); ?>
-                                                    <?php echo $prodCatFrm->getFieldHtml('parentCatId'); ?>
                                                     <?php echo $prodCatFrm->getFieldHtml('prodcat_id'); ?>
                                                     </div>
                                                 </div>

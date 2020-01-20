@@ -69,12 +69,11 @@ class ProductCategoriesController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }    
 
-    public function form($prodCatId = 0, $parentCatId = 0)
+    public function form($prodCatId = 0)
     {
         $this->objPrivilege->canEditProductCategories();
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $prodCatId = FatUtility::int($prodCatId);
-        $parentCatId = FatUtility::int($parentCatId);
         $prodCatFrm = $this->getCategoryForm($prodCatId);      
         if (0 < $prodCatId) {
             $data = ProductCategory::getAttributesById($prodCatId);
@@ -87,9 +86,8 @@ class ProductCategoriesController extends AdminBaseController
                 $catNameArr[ProductCategory::DB_TBL_PREFIX.'name'][$value[ProductCategory::DB_TBL_LANG_PREFIX.'lang_id']] = $value[ProductCategory::DB_TBL_PREFIX.'name'];                              
             }
             $data = array_merge($data, $catNameArr); 
+            $prodCatFrm->fill($data);
         }         
-        $data['parentCatId'] = $parentCatId;
-        $prodCatFrm->fill($data);
         $mediaLanguages = applicationConstants::bannerTypeArr();
         $screenArr = applicationConstants::getDisplaysArr($this->adminLangId);
         $langData = Language::getAllNames();
@@ -106,7 +104,6 @@ class ProductCategoriesController extends AdminBaseController
         $prodCatId = FatUtility::int($prodCatId);
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $frm = new Form('frmProdCategory');
-        $frm->addHiddenField('', 'parentCatId', 0);
         $frm->addHiddenField('', 'prodcat_id', $prodCatId);
         $frm->addRequiredField(Labels::getLabel('LBL_Category_Name', $this->adminLangId), 'prodcat_name['.$siteDefaultLangId.']');
         

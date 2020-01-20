@@ -1008,7 +1008,6 @@ class ProductCategory extends MyAppModel
     
     public function saveCategoryData($post)
     {  
-        //$parentCatId = FatUtility::int($post['parentCatId']);
         $parentCatId = FatUtility::int($post['prodcat_parent']);
         $prodCatId = FatUtility::int($post['prodcat_id']);
         unset($post['prodcat_id']);

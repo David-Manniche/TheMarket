@@ -20,15 +20,9 @@ if (count($arr_listing) > 0) {
                         <input <?php echo $active; ?> type="checkbox" id="switch<?php echo $row['prodcat_id'];?>" value="<?php echo $row['prodcat_id'];?>" onclick="<?php echo $statusAct;?>" class="switch-labels"/>
                         <i class="switch-handles <?php echo $statusClass;?> clickable"></i>
                     </label>
-                    <?php 
-                    if ($canEdit) { 
-                        $url = commonHelper::generateUrl('ProductCategories', 'form', array($row['prodcat_id']));
-                        if($row['prodcat_parent'] > 0){
-                            $url = commonHelper::generateUrl('ProductCategories', 'form', array($row['prodcat_id'], $row['prodcat_parent']));
-                        }
-                    ?> 
+                    <?php if ($canEdit) { ?> 
                     <a href="javascript::void(0)" title="<?php echo  Labels::getLabel('LBL_Add_Product', $adminLangId); ?>" class="btn btn-clean btn-sm btn-icon"><i class="fas fa-plus clickable"></i></a>
-                    <a href="<?php echo $url; ?>" title="<?php echo  Labels::getLabel('LBL_Edit', $adminLangId); ?>" class="btn btn-clean btn-sm btn-icon"><i class="far fa-edit clickable"></i></a>
+                    <a href="<?php echo commonHelper::generateUrl('ProductCategories', 'form', array($row['prodcat_id'])); ?>" title="<?php echo  Labels::getLabel('LBL_Edit', $adminLangId); ?>" class="btn btn-clean btn-sm btn-icon"><i class="far fa-edit clickable"></i></a>
                     <a href="javascript::void(0)" title="<?php echo  Labels::getLabel('LBL_Delete', $adminLangId); ?>" onclick = "deleteRecord(<?php echo $row['prodcat_id']; ?>)" class="btn btn-clean btn-sm btn-icon"><i class="fa fa-trash clickable"></i></a>
                     <?php } ?>
                 </div>
