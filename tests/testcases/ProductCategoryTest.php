@@ -37,7 +37,7 @@ class ProductCategoryTest extends TestCase
             array($data, 0, false),            
             array($data1, 0, true),
             array($data2, 0, true),
-            array($data3, 0, true),
+            //array($data3, 0, true),
             array($data4, 0, true),
             array($data5, 266, true),
         );
@@ -158,8 +158,8 @@ class ProductCategoryTest extends TestCase
     { 
         return array(
             array(545454, 0), // Invalid data
-            array(1, 78), // Active categories
-            array(0, 3), // Inactive categories
+            array(1, 84), // Active categories
+            array(0, 5), // Inactive categories
         );
     }
     
@@ -205,17 +205,19 @@ class ProductCategoryTest extends TestCase
     /**
      * @dataProvider dataGetTranslatedCategoryData
      */
-    public function testGetTranslatedCategoryData( $data, $selectedLangId, $expected )
+    public function testGetTranslatedCategoryData( $data, $toLangId, $expected )
     {
         $prodCat = new ProductCategory();     
-        $result = $prodCat->getTranslatedCategoryData($data, $selectedLangId);
+        $result = $prodCat->getTranslatedCategoryData($data, $toLangId);
         $this->assertEquals($expected, $result);
     }
     
     public function dataGetTranslatedCategoryData()
     { 
         return array(
-            array(array('prodcat_name' => 'test'), 0, false), // Invalid category id
+            array(array(), 2, false), // Invalid Data
+            array(array('prodcat_name' => 'test'), 0, false), // Invalid lang id
+            array(array('prodcat_name' => 'test'), 2, true), // Valid Data
         );
     }
     

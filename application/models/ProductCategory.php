@@ -1114,16 +1114,16 @@ class ProductCategory extends MyAppModel
         return true;
     }
     
-    public function getTranslatedCategoryData($data, $selectedLangId)
+    public function getTranslatedCategoryData($data, $toLangId)
     {
-        $selectedLangId = FatUtility::int($selectedLangId);
-        if(empty($data) || $selectedLangId < 1){
+        $toLangId = FatUtility::int($toLangId);
+        if(empty($data) || $toLangId < 1){
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
         
         $translateLangobj = new TranslateLangData(static::DB_TBL_LANG);        
-        $translatedData = $translateLangobj->directTranslate($data, $selectedLangId);
+        $translatedData = $translateLangobj->directTranslate($data, $toLangId);
         if (false === $translatedData) {
             $this->error = $translateLangobj->getError();
             return false;

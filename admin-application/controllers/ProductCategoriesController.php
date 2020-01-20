@@ -173,15 +173,15 @@ class ProductCategoriesController extends AdminBaseController
     public function translatedCategoryData()
     {
         $catName = FatApp::getPostedData('catName', FatUtility::VAR_STRING, '');
-        $selectedLangId = FatApp::getPostedData('selectedLangId', FatUtility::VAR_INT, 0);
+        $toLangId = FatApp::getPostedData('toLangId', FatUtility::VAR_INT, 0);
         $data['prodcat_name'] = $catName;
         $productCategory = new ProductCategory(); 
-        $translatedData = $productCategory->getTranslatedCategoryData($data, $selectedLangId);
+        $translatedData = $productCategory->getTranslatedCategoryData($data, $toLangId);
         if(!$translatedData){
             Message::addErrorMessage($productCategory->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        $this->set('prodCatName', $translatedData[$selectedLangId]['prodcat_name']);
+        $this->set('prodCatName', $translatedData[$toLangId]['prodcat_name']);
         $this->_template->render(false, false, 'json-success.php');        
     }
     
