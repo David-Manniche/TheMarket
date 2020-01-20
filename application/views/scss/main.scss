@@ -112,7 +112,9 @@ img {
     max-width: 100%;
 }
 
-a:hover{ text-decoration: none;}
+a:hover {
+    text-decoration: none;
+}
 
 .-color-light {
     opacity: 0.6;
@@ -136,13 +138,20 @@ a:hover{ text-decoration: none;}
     display: inline-block;
     vertical-align: top;
 }
+/*Bg*/
 
-.bg--second-color, .bg--second {
+.bg--second-color,
+.bg--second {
     color: #fff;
     background: var(--second-color);
 }
 
-
+.bg-white {
+    background:#fff;
+}
+.bg-gray {
+    background: var(--gray-light);
+}
 .bg-light {
     background: #f0f0f0;
 }
@@ -169,6 +178,14 @@ a:hover{ text-decoration: none;}
 .formActions-css {
     display: none !important;
 }
+
 .column {
     margin-bottom: 30px;
+}
+
+.gap {
+    height: 1rem;
+    clear: both;
+    display: table;
+    width: 100%;
 }

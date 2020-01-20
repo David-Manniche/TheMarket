@@ -2,13 +2,6 @@
     padding: 20px 0 !important;
 }
 
-.header-checkout-inner .back-store {
-    -webkit-box-ordinal-group: 4;
-    -ms-flex-order: 3;
-    order: 3;
-}
-
-
 .body--checkout {
     position: relative;
 }
@@ -24,6 +17,50 @@
     bottom: 0;
     z-index: -1;
 }
+
+.header-checkout {
+    .header-checkout-inner {
+        padding: 15px 0;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+
+        .back-store {
+            -webkit-box-ordinal-group: 4;
+            -ms-flex-order: 3;
+            order: 3;
+        }
+    }
+
+    .logo {
+        width: 150px;
+        max-height: 60px;
+        margin: 0px 0;
+        -ms-margin-inline-end: 2rem;
+        -webkit-margin-end: 2rem;
+        -moz-margin-end: 2rem;
+        margin-inline-end: 2rem;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+    }
+
+}
+
+
+
+
+
+
 
 
 
@@ -51,43 +88,7 @@
     height: 94px;
 }
 
-.after-checkout-header {
-    /*height: 94px;*/
-}
 
-.header-checkout-inner {
-    padding: 15px 0;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-}
-
-.logo-checkout {
-    width: 100px;
-    margin: 5px 0;
-    -webkit-box-flex: 0;
-    -ms-flex: 0 0 100px;
-    flex: 0 0 100px;
-    height: 56px;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-}
-
-.logo-checkout img {
-    max-height: 100%;
-}
-
-.fixed .header-checkout .logo-checkout {}
 
 .nav-checkout {}
 

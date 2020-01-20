@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div id="body" class="body bg--gray">
+<div id="body" class="body bg-gray">
     <section class="dashboard">
 		<?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
 		<div class="container">

@@ -87,7 +87,7 @@
   }
 
   .main-search {
-      max-width: 655px;
+      /*max-width: 655px;*/
   }
 
   .backto {
@@ -924,11 +924,6 @@
           padding: 10px 0;
       }
 
-      .form--search-popup,
-      .toggle--search.is--active:after {
-          top: 67px;
-      }
-
       .main-search-form .search--keyword {
           border-left: solid 1px var(--first-color);
       }
@@ -999,11 +994,7 @@
       .backto {
           margin-left: 0;
       }
-
-      .form--search-popup {
-          top: 62px;
-          border-top: 1px solid #ddd;
-      }
+ 
 
       .post {
           margin-bottom: 20px;

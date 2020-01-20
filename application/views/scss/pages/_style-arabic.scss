@@ -39,25 +39,7 @@ html [dir="trl"] {
         text-align: right;
     }
 
-    .cart .cartQuantity {
-        right: 30px;
-        left: auto;
-    }
 
-
-    .form--search-popup .select__value {
-        padding: 0 15px 0 35px;
-    }
-
-    .form--search-popup .select__value:after {
-        right: auto;
-        left: 14px;
-    }
-
-    .form--search-popup .link__close {
-        right: auto;
-        left: 20px;
-    }
 
     .form--search-popup .form__cover input[type="submit"] {
         left: 0;
@@ -751,15 +733,7 @@ html [dir="trl"] {
             text-align: right;
         }
 
-        .logo {
-            margin-left: auto;
-        }
-
-        .cart {
-            -webkit-padding-start: 0;
-            -moz-padding-start: 0;
-            padding-inline-start: 0;
-        }
+ 
 
         .dropdown__target__right {
             left: 0;

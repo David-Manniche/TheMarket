@@ -1,14 +1,12 @@
 .section {
     padding: 3.75rem 0;
+
+
+    @include media-breakpoint-down(sm) {
+        padding: 2.5rem 0;
+    }
 }
 
-.section--gray {
-    background: var(--gray-light);
-}
-
-.section--white {
-    background: #fff;
-}
 
 .section--pagebar {
     background: var(--gray-light);

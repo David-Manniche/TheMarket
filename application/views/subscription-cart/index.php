@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div id="body" class="body bg--gray">
+<div id="body" class="body bg-gray">
     <section class="top-space">
       <div class="container">
         <div class="breadcrumbs">

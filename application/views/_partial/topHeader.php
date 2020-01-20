@@ -53,8 +53,9 @@
 		</div>
 		<div class="main-bar">
 			<div class="container">
-				<a class="navs_toggle" href="javascript:void(0)"><span></span></a>
+				
 				<div class="logo-bar">
+				<a class="navs_toggle" href="javascript:void(0)"><span></span></a>
 					<?php
                     if (CommonHelper::isThemePreview() && isset($_SESSION['preview_theme'])) {
                         $logoUrl = CommonHelper::generateUrl('home', 'index');

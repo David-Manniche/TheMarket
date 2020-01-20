@@ -7,7 +7,7 @@
 
 			/* category listing design [ */
 			if( isset($row['categories']) && count( $row['categories'] ) ) { ?>
-					<section class="section section--gray">
+					<section class="section bg-gray">
 						<div class="container">
 							<div class="section-head  section--head--center">
 								<?php echo ($row['collection_name'] != '') ? ' <div class="section__heading"><h2>' . $row['collection_name'] .'</h2></div>' : ''; ?>

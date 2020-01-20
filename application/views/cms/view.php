@@ -19,7 +19,7 @@
 			</div>
 		  </section>
 		<?php } if(isset ($blockData[Contentpage::CONTENT_PAGE_LAYOUT1_BLOCK_2])  && $blockData[Contentpage::CONTENT_PAGE_LAYOUT1_BLOCK_2]['cpblocklang_text']){?>
-		  <section class="section section--gray">
+		  <section class="section bg-gray">
 			<div class="container">
 			  <?php echo FatUtility::decodeHtmlEntities($blockData[Contentpage::CONTENT_PAGE_LAYOUT1_BLOCK_2]['cpblocklang_text']);?>
 			</div>
