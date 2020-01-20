@@ -112,6 +112,8 @@ img {
     max-width: 100%;
 }
 
+a:hover{ text-decoration: none;}
+
 .-color-light {
     opacity: 0.6;
 }
@@ -166,4 +168,7 @@ img {
 
 .formActions-css {
     display: none !important;
+}
+.column {
+    margin-bottom: 30px;
 }

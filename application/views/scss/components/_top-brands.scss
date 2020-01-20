@@ -1,4 +1,6 @@
 .top-brand-list {
+    margin-top: 1rem;
+
     ul {
         display: -webkit-box;
         display: -ms-flexbox;
@@ -9,8 +11,6 @@
         -webkit-box-pack: justify;
         -ms-flex-pack: justify;
         justify-content: space-between;
-
-
     }
 
 
@@ -36,6 +36,7 @@
     .brands-logo {
         width: 160px;
         height: 90px;
+        overflow: hidden;
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
@@ -43,10 +44,11 @@
         -ms-flex-align: center;
         align-items: center;
         justify-items: center;
-        padding:0 0.5rem;
+        padding: 0 0.5rem;
         margin: 0 0.5rem;
         background-color: #fff;
-        box-shadow: 0 0.25rem 0.25rem rgba(17, 17, 17, 0.02);
+        box-shadow: 0 0.25rem 0.25rem rgba(17, 17, 17, 0.03);
+        border-radius: 2px;
 
         img {
             margin: auto;

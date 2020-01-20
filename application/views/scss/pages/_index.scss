@@ -63,7 +63,7 @@
             display: inline-block;
             margin: 0 3px;
             width: 13px;
-            height:3px;
+            height: 3px;
             border-radius: 1px;
             cursor: pointer;
             background: #d2d2d2;
@@ -119,4 +119,13 @@
     z-index: 1;
     cursor: pointer;
     /*box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);*/
+}
+
+
+
+.collection-corner {
+    .products {
+        border-color: #fff;
+        margin: 0 1rem 1.5rem;
+    }
 }
