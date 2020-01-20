@@ -1,7 +1,4 @@
-#header {
-    position: relative;
-    z-index: 10;
-}
+ 
 
 .navigation-wrapper {
     margin: 0 auto;
@@ -116,6 +113,7 @@
 
 .navigations .three-pin {
     float: right;
+    margin-inline-end:0;
 }
 
 .navigations .more {
@@ -213,6 +211,8 @@
     z-index: 2;
     padding-bottom: 10px;
     border-radius: 0px 0 4px 4px;
+    max-height: 308px;
+    overflow-y: auto;
 }
 
 .subnav__wrapper.addspace {
@@ -298,9 +298,6 @@
 .sublinks > li > ul > li.seemore a {
     font-weight: 600;
 }
-
-
-/*Nav mobile toggle*/
 
 .navs_toggle {
     cursor: pointer;

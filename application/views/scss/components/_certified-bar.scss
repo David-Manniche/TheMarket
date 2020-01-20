@@ -1,0 +1,45 @@
+
+.certified-bar {
+    background: var(--gray-light);
+    border-top: solid 1px var(--border-color);
+    border-bottom: solid 1px var(--border-color);
+}
+
+.certified-bar .icn {
+    margin: 0 auto;
+    margin-bottom: 10px;
+
+}
+
+.certified-bar svg {
+    width: 24px;
+    height: 24px;
+
+    fill: #575757;
+}
+
+.certified-box {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    margin: 0 1rem;
+}
+
+.certified-box p {
+    font-size: 0.875rem;
+    color: #575757;
+    font-weight: 400;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.certified-box p a {
+    color: #575757;
+}

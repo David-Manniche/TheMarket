@@ -255,10 +255,6 @@
     word-break: break-word;
 }
 
-
-
-
-
 /*list*/
 .list-vertical {
     margin: 0;
@@ -271,12 +267,12 @@
 
 .list-vertical li {
     padding: 5px 0;
-
     display: block;
     position: relative;
-    /*  -webkit-transform: translate3d(0, -20px, 0);
-  transform: translate3d(0, -20px, 0);
-  opacity: 0;*/
+}
+
+.list-vertical li .divider {
+    margin: 0;
 }
 
 
@@ -318,11 +314,8 @@
     text-align: left;
     font-size: 0.9em;
     font-weight: 400;
-
     display: -webkit-box;
-
     display: -ms-flexbox;
-
     display: flex;
     -webkit-box-align: center;
     -ms-flex-align: center;

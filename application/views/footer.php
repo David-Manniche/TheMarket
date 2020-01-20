@@ -176,7 +176,7 @@ echo FatUtility::generateUrl('JsCss', 'js', array(), '', false). '&f=' . rawurle
         $this->includeTemplate('restore-system/page-content.php');
     }
 }?>
-<script>
+<script>/* 
 $(document).ready(function(){
  if ('serviceWorker' in navigator) {
  window.addEventListener('load', function() {
@@ -184,7 +184,7 @@ $(document).ready(function(){
  });
  });
  }
-});
+}); */
 </script>
 </div>
 </div>

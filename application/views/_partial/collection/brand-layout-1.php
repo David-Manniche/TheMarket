@@ -6,9 +6,9 @@ if( isset( $collections ) && count($collections) ){
 
 	foreach( $collections as $collection_id => $row ){ 	/* brand listing design [ */
 			if( isset($row['brands']) && count( $row['brands'] ) ) { ?>
-		<section class="section">
+		<section class="section bg-light">
 			<div class="container">
-				<div class="section-head  section--head--center">
+				<div class="section-head section--head--center">
 				 <?php echo ($row['collection_name'] != '') ? ' <div class="section__heading"><h2>' . $row['collection_name'] .'</h2></div>' : ''; ?>
 
 				<?php if( $row['totBrands'] > Collections::LIMIT_BRAND_LAYOUT1 ){ ?>
@@ -23,7 +23,7 @@ if( isset( $collections ) && count($collections) ){
                                 <img src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image','brandImage',array($brand['brand_id'],$siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>" data-ratio="1:1 (600x600)" alt="<?php echo $brand['brand_name']; ?>" title="<?php echo $brand['brand_name']; ?>">
                             </div>-->
                             <div class="brands-logo">
-                                <img src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'brand', array($brand['brand_id'] , $siteLangId, 'COLLECTION_PAGE')), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt= "<?php echo $brand['brand_name']; ?>" title="<?php echo $brand['brand_name']; ?>">
+                                <img data-ratio="16:9" src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'brand', array($brand['brand_id'] , $siteLangId, 'COLLECTION_PAGE')), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt= "<?php echo $brand['brand_name']; ?>" title="<?php echo $brand['brand_name']; ?>">
                             </div> </a> 
                         </li>
                         <?php $i++;
