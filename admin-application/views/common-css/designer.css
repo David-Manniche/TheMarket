@@ -731,6 +731,29 @@ table.table-bordered tr:nth-child(odd) td {
 
 .sorting-actions {}
 
+.sortableListsOpener{    
+    float: left;
+    background-position: center center;
+    background-repeat: no-repeat;
+    margin-right: 0px;
+    position: absolute;
+    left:0;
+    top: 0;
+    font-size: 12px;
+    cursor: pointer;display:flex; 
+    align-items: center;
+    justify-content: center;
+}
+    
+    
+.sortableListsOpener  .sort-icon{ 
+    width:30px; 
+    height:45px;
+    display:flex; 
+    align-items: center;
+    justify-content: center;
+}
+
 .note {
     display: -webkit-box;
     display: -ms-flexbox;

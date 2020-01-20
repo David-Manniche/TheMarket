@@ -89,10 +89,10 @@ $(document).ready(function(){
         $("#"+prodCatId).children( 'div' ).children( '.sortableListsOpener' ).remove();
         if($("#"+prodCatId).hasClass('sortableListsClosed')){
             $("#"+prodCatId).removeClass('sortableListsClosed').addClass('sortableListsOpen');
-            $("#"+prodCatId).children( 'div' ).append('<span class="sortableListsOpener" style="float: left; display: inline-block; background-position: center center; background-repeat: no-repeat; margin-right: 0px; position: absolute; left: 10px; top: 15px; font-size: 12px; cursor:pointer;"><i class="fa fa-minus clickable" onClick="hideItems(this)"></i></span>');                
+            $("#"+prodCatId).children( 'div' ).append('<span class="sortableListsOpener" ><i class="fa fa-minus clickable sort-icon" onClick="hideItems(this)"></i></span>');                
         }else{
             $("#"+prodCatId).removeClass('sortableListsOpen').addClass('sortableListsClosed');
-            $("#"+prodCatId).children( 'div' ).append('<span class="sortableListsOpener" style="float: left; display: inline-block; background-position: center center; background-repeat: no-repeat; margin-right: 0px; position: absolute; left: 10px; top: 15px; font-size: 12px; cursor:pointer;"><i class="fa fa-plus c3 clickable" onClick="displaySubCategories(this)"></i></span>');
+            $("#"+prodCatId).children( 'div' ).append('<span class="sortableListsOpener" ><i class="fa fa-plus c3 clickable sort-icon" onClick="displaySubCategories(this)"></i></span>');
             
         }       
    }
@@ -102,7 +102,7 @@ $(document).ready(function(){
         $("#"+prodCatId+ ' ul').hide();
         $("#"+prodCatId).removeClass('sortableListsOpen').addClass('sortableListsClosed');
         var icon = $("#"+prodCatId).children( 'div' ).children( '.sortableListsOpener' ).remove();
-        $("#"+prodCatId).children( 'div' ).append('<span class="sortableListsOpener" style="float: left; display: inline-block; background-position: center center; background-repeat: no-repeat; margin-right: 0px; position: absolute; left: 10px; top: 15px; font-size: 12px; cursor:pointer;"><i class="fa fa-plus c3 clickable" onClick="displaySubCategories(this)"></i></span>');
+        $("#"+prodCatId).children( 'div' ).append('<span class="sortableListsOpener" ><i class="fa fa-plus c3 clickable sort-icon" onClick="displaySubCategories(this)"></i></span>');
    }
 
 })();

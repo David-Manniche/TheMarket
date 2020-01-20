@@ -28,7 +28,7 @@ if (count($childCategories) > 0) {
                 </div>
             </div>   
             <?php if($row['subcategory_count'] > 0 ) { ?>
-            <span class="sortableListsOpener" style="float: left; display: inline-block; background-position: center center; background-repeat: no-repeat; margin-right: 0px; position: absolute; left: 10px; top: 15px; font-size: 12px; cursor:pointer;"><i class="fa fa-plus clickable" onClick="displaySubCategories(this)"></i></span>
+            <span class="sortableListsOpener" ><i class="fa fa-plus clickable sort-icon" onClick="displaySubCategories(this)"></i></span>
             <?php } ?>
         </div>
     </li>

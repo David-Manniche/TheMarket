@@ -28,7 +28,7 @@ if (count($arr_listing) > 0) {
                 </div>
             </div>
             <?php if($row['subcategory_count'] > 0 ) { ?>
-            <span class="sortableListsOpener" style="float: left; display: inline-block; background-position: center center; background-repeat: no-repeat; margin-right: 0px; position: absolute; left: 10px; top: 15px; font-size: 12px; cursor:pointer;"><i class="fa fa-plus clickable" onClick="displaySubCategories(this)"></i></span>
+            <span class="sortableListsOpener" ><i class="fa fa-plus clickable sort-icon" onClick="displaySubCategories(this)"></i></span>
             <?php } ?>
         </div>
     </li>
@@ -76,16 +76,9 @@ if (count($arr_listing) > 0) {
          opener: {
              active: true,
              as: 'html', // if as is not set plugin uses background image
-             close: '<i class="fa fa-minus clickable" onClick="hideItems(this)"></i>',
-             open: '<i class="fa fa-plus c3 clickable" onClick="displaySubCategories(this)"></i>',
+             close: '<i class="fa fa-minus clickable sort-icon" onClick="hideItems(this)"></i>',
+             open: '<i class="fa fa-plus c3 clickable sort-icon" onClick="displaySubCategories(this)"></i>',
              openerCss: {
-                 'display': 'inline-block',
-                 'margin-right': '0',
-                 'position': 'absolute',
-                 'left': '10px',
-                 'top': '15px',
-                 'font-size': '12px',
-                 'cursor':'pointer'
              }
          },
          ignoreClass: 'clickable'
