@@ -366,7 +366,7 @@
             <?php }?>
             
             <?php if($objPrivilege->canViewImportExport(AdminAuthentication::getLoggedAdminId(), true)){ ?>
-                <li><a href="<?php echo CommonHelper::generateUrl('ImportExport'); ?>"><?php echo Labels::getLabel('LBL_Import_Export_Management',$adminLangId);?></a>
+                <li><a href="<?php echo CommonHelper::generateUrl('ImportExport'); ?>"><?php echo Labels::getLabel('LBL_Import_Export',$adminLangId);?></a>
                 </li>
 			<?php } ?>
 
