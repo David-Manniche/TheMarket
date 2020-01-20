@@ -145,6 +145,80 @@ class ProductCategoryTest extends TestCase
         );
     }
     
+    /**
+     * @dataProvider dataGetActiveInactiveCategoriesCount
+     */
+    public function testGetActiveInactiveCategoriesCount( $status, $expected )
+    {
+        $result = ProductCategory::getActiveInactiveCategoriesCount($status);
+        $this->assertEquals($expected, $result['categories_count']);
+    }
+    
+    public function dataGetActiveInactiveCategoriesCount()
+    { 
+        return array(
+            array(545454, 0), // Invalid data
+            array(1, 78), // Active categories
+            array(0, 3), // Inactive categories
+        );
+    }
+    
+    /**
+     * @dataProvider dataDeleteImagesWithOutCategoryId
+     */
+    public function testDeleteImagesWithOutCategoryId( $fileType, $expected )
+    {
+        $result = ProductCategory::deleteImagesWithOutCategoryId($fileType);
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function dataDeleteImagesWithOutCategoryId()
+    { 
+        return array(
+            array('', false), // Invalid data
+            array('test', false), // Invalid data
+            array(AttachedFile::FILETYPE_CATEGORY_ICON, true), // Removed category icon
+            array(AttachedFile::FILETYPE_CATEGORY_BANNER, true), // Removed category banner
+        );
+    }
+    
+    /**
+     * @dataProvider dataUpdateCatParent
+     */
+    public function testUpdateCatParent($prodCatId, $parentCatId, $expected )
+    {
+        $prodCat = new ProductCategory(); 
+        $prodCat->setMainTableRecordId($prodCatId);     
+        $result = $prodCat->updateCatParent($parentCatId);
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function dataUpdateCatParent()
+    { 
+        return array(
+            array(0, 0, false), // Invalid category id
+            array('test', 0, false), // Invalid category id
+            array(109, 0, true), // Valid data
+        );
+    }
+    
+    /**
+     * @dataProvider dataGetTranslatedCategoryData
+     */
+    public function testGetTranslatedCategoryData( $data, $selectedLangId, $expected )
+    {
+        $prodCat = new ProductCategory();     
+        $result = $prodCat->getTranslatedCategoryData($data, $selectedLangId);
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function dataGetTranslatedCategoryData()
+    { 
+        return array(
+            array(array('prodcat_name' => 'test'), 0, false), // Invalid category id
+        );
+    }
+    
     
     
     

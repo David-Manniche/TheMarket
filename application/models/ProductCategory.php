@@ -6,7 +6,7 @@ class ProductCategory extends MyAppModel
     const DB_TBL_LANG ='tbl_product_categories_lang';
     const DB_TBL_LANG_PREFIX ='prodcatlang_';
     const REWRITE_URL_PREFIX = 'category/view/';
-    const REMOVED_IMAGE_TIME = 4;
+    const REMOVED_OLD_IMAGE_TIME = 4;
     private $db;
     private $categoryTreeArr = array();
 
@@ -1186,12 +1186,12 @@ class ProductCategory extends MyAppModel
     public static function deleteImagesWithOutCategoryId($fileType)
     {
         $allowedFileTypes = [AttachedFile::FILETYPE_CATEGORY_ICON, AttachedFile::FILETYPE_CATEGORY_BANNER];
-        if (!in_array($fileType, $allowedFileTypes) && !$fileType) {          
+        if (empty($fileType) ||  !in_array($fileType, $allowedFileTypes)) {          
             return false;
         }
         
         $currentDate = date('Y-m-d  H:i:s');
-        $prevDate = strtotime ( '-'.static::REMOVED_IMAGE_TIME.' hour' , strtotime ( $currentDate ) ) ;
+        $prevDate = strtotime ( '-'.static::REMOVED_OLD_IMAGE_TIME.' hour' , strtotime ( $currentDate ) ) ;
         $prevDate = date ( 'Y-m-d  H:i:s' , $prevDate );
         $where = array('smt'=>'afile_type = ? AND afile_record_id = ? AND afile_updated_at <= ?', 'vals'=>array($fileType, 0, $prevDate));
         if (!FatApp::getDb()->deleteRecords(AttachedFile::DB_TBL, $where)) {
