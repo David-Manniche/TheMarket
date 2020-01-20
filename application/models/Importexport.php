@@ -3357,7 +3357,7 @@ class Importexport extends ImportexportCommon
         $srch = SellerProduct::getSearchObject($langId);
         $srch->joinTable(MetaTag::DB_TBL, 'LEFT OUTER JOIN', 'sp.selprod_id = m.meta_record_id', 'm');
         $srch->joinTable(MetaTag::DB_TBL_LANG, 'LEFT OUTER JOIN', 'm_l.metalang_meta_id = m.meta_id and m_l.metalang_lang_id = '.$langId, 'm_l');
-        $srch->addCondition('meta_identifier', '!=', '');
+        /* $srch->addCondition('meta_identifier', '!=', ''); */
         $srch->addCondition('meta_controller', '=', $metaTabArr[MetaTag::META_GROUP_PRODUCT_DETAIL]['controller']);
         $srch->addCondition('meta_action', '=', $metaTabArr[MetaTag::META_GROUP_PRODUCT_DETAIL]['action']);
         $srch->doNotCalculateRecords();

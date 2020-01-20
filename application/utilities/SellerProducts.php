@@ -426,13 +426,13 @@ trait SellerProducts
 
             $meta = new MetaTag();
 
-            $count = 1;
+            /* $count = 1;
             while ($metaRow = MetaTag::getAttributesByIdentifier($metaIdentifier, array('meta_identifier'))) {
                 $metaIdentifier = $metaRow['meta_identifier']."-".$count;
                 $count++;
             }
 
-            $metaData['meta_identifier'] = $metaIdentifier;
+            $metaData['meta_identifier'] = $metaIdentifier; */
             $meta->assignValues($metaData);
 
             if (!$meta->save()) {
@@ -1275,7 +1275,7 @@ trait SellerProducts
         $this->_template->render(false, false);
     }
 
-    public function productSeoGeneralForm()
+    /*public function productSeoGeneralForm()
     {
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($post['selprod_id']);
@@ -1309,9 +1309,9 @@ trait SellerProducts
         $this->set('product_type', $productRow['product_type']);
         $this->set('seoActiveTab', 'GENERAL');
         $this->_template->render(false, false);
-    }
+    }*/
 
-    private function getProductSeoForm($metaTagId = 0, $metaType = 'default', $recordId = 0)
+   /*  private function getProductSeoForm($metaTagId = 0, $metaType = 'default', $recordId = 0)
     {
         $metaTagId = FatUtility::int($metaTagId);
         $frm = new Form('frmMetaTag');
@@ -1327,11 +1327,31 @@ trait SellerProducts
         $frm->addRequiredField(Labels::getLabel("LBL_Identifier", $this->siteLangId), 'meta_identifier');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel("LBL_Save_Changes", $this->siteLangId));
         return $frm;
-    }
+    } */
 
-    public function productSeoLangForm($metaId, $langId, $autoFillLangData = 0)
+    public function productSeoLangForm()
     {
-        $metaId = Fatutility::int($metaId);
+        $post = FatApp::getPostedData();
+        $selprod_id = FatUtility::int($post['selprod_id']);
+
+        $sellerProductRow = SellerProduct::getAttributesById($selprod_id);
+        if ($sellerProductRow['selprod_user_id'] != UserAuthentication::getLoggedUserId()) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatApp::redirectUser($_SESSION['referer_page_url']);
+        }
+
+        $metaType = MetaTag::META_GROUP_PRODUCT_DETAIL;
+        $this->set('metaType', $metaType);
+
+        $productRow = Product::getAttributesById($sellerProductRow['selprod_product_id'], array('product_type'));
+        $metaData= Product::getProductMetaData($selprod_id);
+
+        $metaId= 0;
+
+        if (!empty($metaData)) {
+            $metaId = $metaData['meta_id'];
+        }
+
         $metaData = MetaTag::getAttributesById($metaId);
         $meta_record_id = $metaData['meta_record_id'];
         if (!UserPrivilege::canEditMetaTag($metaId, $meta_record_id)) {
@@ -1375,10 +1395,13 @@ trait SellerProducts
         $this->_template->render(false, false);
     }
 
-    private function getSeoLangForm($metaId = 0, $lang_id = 0)
+    private function getSeoLangForm($metaId = 0, $lang_id = 0, $metaType = 'default', $recordId = 0)
     {
         $frm = new Form('frmMetaTagLang');
+
         $frm->addHiddenField('', 'meta_id', $metaId);
+        $frm->addHiddenField('', 'meta_type', $metaType);
+        $frm->addHiddenField('', 'meta_record_id', $recordId);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel("LBL_Meta_Title", $this->siteLangId), 'meta_title');
         $frm->addTextarea(Labels::getLabel("LBL_Meta_Keywords", $this->siteLangId), 'meta_keywords')->requirements()->setRequired(true);
@@ -2618,12 +2641,10 @@ trait SellerProducts
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $relatedProds = $db->fetchAll($rs);
-        // CommonHelper::printArray($relatedProds); die;
         $arrListing = array();
         foreach ($relatedProds as $key => $relatedProd) {
             $arrListing[$relatedProd['related_sellerproduct_id']][$key] = $relatedProd;
         }
-        // CommonHelper::printArray($arrListing); die;
         $this->set("arrListing", $arrListing);
 
         $this->set('page', $page);
@@ -2781,14 +2802,13 @@ trait SellerProducts
             $cnd->attachCondition('product_identifier', 'LIKE', '%'. $keyword . '%', 'OR');
         }
         $srch->addCondition('selprod_user_id', '=', UserAuthentication::getLoggedUserId());
-        $srch->setPageNumber($page);
         $srch->addFld('if(upsell_sellerproduct_id = '.$selProdId.', 1 , 0) as priority');
         $srch->addOrder('priority', 'DESC');
+        $srch->setPageNumber($page);
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $upsellProds = $db->fetchAll($rs);
         $arrListing = array();
-        // CommonHelper::printArray($upsellProds); die;
         foreach ($upsellProds as $key => $upsellProd) {
             $arrListing[$upsellProd['upsell_sellerproduct_id']][$key] = $upsellProd;
         }

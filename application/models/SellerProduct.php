@@ -125,9 +125,6 @@ class SellerProduct extends MyAppModel
             ImportexportCommon::VALIDATE_POSITIVE_INT => array(
                 'selprod_id',
             ),
-            ImportexportCommon::VALIDATE_NOT_NULL => array(
-                'meta_identifier',
-            ),
         );
     }
 

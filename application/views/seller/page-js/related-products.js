@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    $('.dvFocus-js').hide();
     searchRelatedProducts(document.frmSearch);
     $('#related-products').delegate('.remove_related', 'click', function() {
         $(this).parents('li').remove();
@@ -11,13 +12,21 @@ $(document).on('mouseout', "ul.list-tags li span i", function(){
     $(this).parents('li').removeClass("hover");
 });
 $(document).on('click', ".dvFocus-js", function(){
-    $("input[name='product_name']").show().focus();
+    var input = $("input[name='product_name']");
+    input.show().focus();
+    var tmpStr = input.val();
+    input.val('');
+    input.val(tmpStr);
+    $('.dvFocus-js').hide();
     $(this).html('');
 });
 $(document).on('keyup', "input[name='product_name']", function(){
     var currObj = $(this);
     var parentForm = currObj.closest('form').attr('id');
     if('' != currObj.val()){
+        if(currObj.val().length < 2){
+            return;
+        }
         currObj.siblings('ul.dropdown-menu').remove();
         currObj.autocomplete({'source': function(request, response) {
         		$.ajax({
@@ -44,7 +53,7 @@ $(document).on('keyup', "input[name='product_name']", function(){
                         );
                     }
                 });
-                $('.dvFocus-js').html(item['label']);
+                $('.dvFocus-js').html(item['label']).show();
                 currObj.hide();
         	}
         });
@@ -228,6 +237,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
 		fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupRelatedProduct'), data, function(t) {
             document.frmRelatedSellerProduct.reset();
             $('#related-products').empty();
+            $(".dvFocus-js").trigger('click');
             searchRelatedProducts(document.frmRelatedSellerProduct);
 		});
 	};

@@ -56,7 +56,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                         <div class="field-wraper">
                                             <div class="field_cover">
                                                 <?php echo $relProdFrm->getFieldHTML('product_name');?>
-                                                <div class='dvFocus-js'></div>
+                                                <div class='dvFocus-js form-control focused-div'></div>
                                             </div>
                                         </div>
                                     </div>

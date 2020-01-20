@@ -48,11 +48,18 @@ $(document).on('keyup', "input[name='keyword']", function(){
 		searchSeoProducts(frm);
 	}
 
-	getProductSeoGeneralForm = function (selprod_id){
+	/* getProductSeoGeneralForm = function (selprod_id){
 		fcom.ajax(fcom.makeUrl('Seller', 'productSeoGeneralForm'), 'selprod_id='+selprod_id, function(t) {
 			$("#dvForm").html(t);
 		});
-	}
+	} */
+
+    editProductMetaTagLangForm = function(selprod_id){
+			fcom.ajax(fcom.makeUrl('seller', 'productSeoLangForm'), 'selprod_id='+selprod_id, function(t) {
+				$("#dvForm").html(t);
+			});
+
+	};
 
 	setupProductMetaTag = function (frm){
 		if (!$(frm).validate()) return;
@@ -78,10 +85,4 @@ $(document).on('keyup', "input[name='keyword']", function(){
 
 	}
 
-	editProductMetaTagLangForm = function(metaId,langId, metaType, autoFillLangData = 0){
-			fcom.ajax(fcom.makeUrl('seller', 'productSeoLangForm', [metaId,langId,metaType, autoFillLangData]), '', function(t) {
-				$("#dvForm").html(t);
-			});
-
-	};
 })();

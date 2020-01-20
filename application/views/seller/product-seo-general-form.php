@@ -3,8 +3,8 @@
     <?php
         $productSeoForm->setFormTagAttribute('class', 'form form--horizontal');
         $productSeoForm->setFormTagAttribute('onsubmit', 'setupProductMetaTag(this); return(false);');
-        $productSeoForm->developerTags['colClassPrefix'] = 'col-lg-4 col-md-';
-        $productSeoForm->developerTags['fld_default_col'] = 4;
+        $productSeoForm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-';
+        $productSeoForm->developerTags['fld_default_col'] = 12;
         echo $productSeoForm->getFormHtml();
     ?>
 </div>

@@ -14206,3 +14206,9 @@ div.faqanswer p {
     align-self: center;
 
 }
+
+.focused-div{ height:auto; cursor:text;
+color: var(--txt-color);
+    
+    font-size: 0.9em;
+    }

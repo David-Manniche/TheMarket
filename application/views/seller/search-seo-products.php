@@ -1,8 +1,8 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-    'listserial' => Labels::getLabel('LBL_Sr', $siteLangId),
-    'product_name' => Labels::getLabel('LBL_Product_Name', $siteLangId),
-    'action' => Labels::getLabel('LBL_Action', $siteLangId),
+    'listserial' => '#',
+    'product_name' => Labels::getLabel('LBL_Product', $siteLangId),
+    // 'action' => Labels::getLabel('LBL_Action', $siteLangId),
 );
 
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered volDiscountList-js'));
@@ -37,11 +37,17 @@ foreach ($arrListing as $sn => $row) {
                 break;
             case 'product_name':
                 // last Param of getProductDisplayTitle function used to get title in html form.
-                $productName = SellerProduct::getProductDisplayTitle($selProdId, $siteLangId, true);
-                $td->appendElement('plaintext', array(), $productName, true);
+                $productName = SellerProduct::getProductDisplayTitle($selProdId, $siteLangId, false);
+                $td->appendElement(
+                    'a',
+                    array('href'=>'javascript:void(0)', 'class'=>'',
+                    'title'=>'Links',"onclick"=>"editProductMetaTagLangForm(".$selProdId.")"),
+                    $productName,
+                    true
+                );
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"), '', true);
+                /*$ul = $td->appendElement("ul", array("class"=>"actions actions--centered"), '', true);
 
                 $li = $ul->appendElement('li');
                 $li->appendElement(
@@ -50,7 +56,7 @@ foreach ($arrListing as $sn => $row) {
                     'title'=>Labels::getLabel('LBL_Edit', $siteLangId),"onclick"=>"getProductSeoGeneralForm(".$selProdId.")"),
                     '<i class="fa fa-edit"></i>',
                     true
-                );
+                );*/
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);
@@ -74,7 +80,7 @@ echo $tbl->getHtml(); ?>
 </form>
 <?php
 $postedData['page'] = $page;
-echo FatUtility::createHiddenFormFromData($postedData, array ('name' => 'frmSearchSeoProductsPaging'));
+echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmSearchSeoProductsPaging'));
 
 $pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'recordCount'=>$recordCount,'callBackJsFunc' => 'goToSearchPage','adminLangId'=>$siteLangId);
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

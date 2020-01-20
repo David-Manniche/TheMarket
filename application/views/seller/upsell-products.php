@@ -47,19 +47,21 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                             $relProdFld = $relProdFrm->getField('products_upsell');
                             $relProdFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Add_Buy_Together_Products', $siteLangId));
 
-                            $submitBtnFld = $relProdFrm->getField('btn_submit'); ?>
+                            $submitBtnFld = $relProdFrm->getField('btn_submit');
+                            $submitBtnFld->setFieldTagAttribute('class', 'btn--block btn btn--primary'); ?>
                             <?php echo $relProdFrm->getFormTag(); ?>
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-3">
                                     <div class="field-set">
                                         <div class="field-wraper">
                                             <div class="field_cover">
                                                 <?php echo $relProdFrm->getFieldHTML('product_name');?>
+                                                <div class='dvFocus-js form-control focused-div'></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-7">
                                     <div class="field-set">
                                         <div class="field-wraper">
                                             <div class="field_cover custom-tagify">
@@ -69,7 +71,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-md-2">
                                     <div class="field-set">
                                         <div class="field-wraper">
                                             <div class="field_cover">

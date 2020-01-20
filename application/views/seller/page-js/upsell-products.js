@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    $('.dvFocus-js').hide();
     searchUpsellProducts(document.frmSearch);
     $('#upsell-products').delegate('.remove_upsell', 'click', function() {
         $(this).parent().remove();
@@ -11,7 +12,12 @@ $(document).on('mouseout', "ul.list-tags li span i", function(){
     $(this).parents('li').removeClass("hover");
 });
 $(document).on('click', ".dvFocus-js", function(){
-    $("input[name='product_name']").show().focus();
+   var input = $("input[name='product_name']");
+    input.show().focus();
+    var tmpStr = input.val();
+    input.val('');
+    input.val(tmpStr);
+    $('.dvFocus-js').hide();
     $(this).html('');
 });
 $(document).on('keyup', "input[name='product_name']", function(){
@@ -44,7 +50,7 @@ $(document).on('keyup', "input[name='product_name']", function(){
                         );
                     }
                 });
-                $('.dvFocus-js').html(item['label']);
+                $('.dvFocus-js').html(item['label']).show();
                 currObj.hide();
         	}
         });
@@ -230,6 +236,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
 		fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupUpsellProduct'), data, function(t) {
             document.frmUpsellSellerProduct.reset();
             $('#upsell-products').empty();
+            $(".dvFocus-js").trigger('click');
             searchUpsellProducts(document.frmUpsellSellerProduct);
 		});
 	};
