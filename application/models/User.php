@@ -2042,13 +2042,13 @@ class User extends MyAppModel
         }
     }
 
-    public function setPushNotificationToken($appToken, $fcmDeviceId, $deviceType = 0)
+    public function setPushNotificationToken($appToken, $fcmDeviceId, $deviceOs = 0)
     {
         if (($this->mainTableRecordId < 1)) {
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
             return false;
         }
-        $deviceType = FatUtility::int($deviceType);
+        $deviceOs = FatUtility::int($deviceOs);
 
         $expiry = strtotime("+7 DAYS");
         $values = array(
@@ -2057,7 +2057,7 @@ class User extends MyAppModel
         'uauth_expiry' => date('Y-m-d H:i:s', $expiry),
         'uauth_browser' => CommonHelper::userAgent(),
         'uauth_fcm_id' => $fcmDeviceId,
-        'uauth_device_type' => $deviceType,
+        'uauth_device_os' => $deviceOs,
         'uauth_last_access' => date('Y-m-d H:i:s'),
         'uauth_last_ip' => CommonHelper::getClientIp(),
         );
