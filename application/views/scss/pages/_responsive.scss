@@ -1,7 +1,3 @@
-@media only screen and (max-width:1440px) {
-    .section {}
-}
-
 @media only screen and (max-width: 1399px) {
     .ftshops .shop-detail-side {
         max-width: 260px;
@@ -97,7 +93,7 @@
         padding: 10px 0;
     }
 
- 
+
 
     .short-links > ul > li > a {
         font-size: 0.9em;
@@ -258,10 +254,6 @@
 
 
 
-    .checkout-flow {
-        margin-top: 25px;
-        width: 100%;
-    }
 
     .checkout-flow li {
         min-width: 1%;
@@ -269,15 +261,6 @@
         -ms-flex-positive: 1;
         flex-grow: 1;
         padding: 0;
-    }
-
-    .cat-tittle {
-        padding: 0 1rem;
-        font-size: 1em;
-    }
-
-    .cat-list {
-        padding: 0 1rem;
     }
 
     .slider-for,
@@ -365,7 +348,7 @@
     .padd40 {
         padding: 15px 0;
     }
- 
+
 
     .top_bar .slogan {
         display: none;
@@ -380,7 +363,7 @@
         top: 10px;
     }
 
-   
+
 
 
     .cartdetail__footer {
@@ -407,7 +390,7 @@
         position: fixed;
         left: 0;
         right: 0;
-        top: 39px;
+        top: 31px;
         bottom: 0;
         background: rgba(0, 0, 0, 0.5);
         content: "";
@@ -439,18 +422,10 @@
         font-size: 0.85em;
     }
 
- 
 
-    .cart-is-active .dropsection {}
 
-    .cart-detail {
-        min-width: 700px;
-        width: auto;
-    }
 
-    .cartdetail__footer {
-        padding: 10px;
-    }
+
 
     .login-account {
         margin: 5px 0 0 0;
@@ -1091,7 +1066,7 @@
         margin: auto;
         position: relative;
     }
- 
+
 
     .column {
         margin-bottom: 15px;
@@ -2020,8 +1995,6 @@
         text-align: left !important;
         padding-top: 10px;
     }
-
-
 
     .box--offer {
         text-align: center;

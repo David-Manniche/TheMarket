@@ -1,4 +1,5 @@
-html [dir="trl"] {
+[dir="rtl"] {    
+    
     .product-view {
         overflow-x: hidden;
     }
@@ -755,13 +756,7 @@ html [dir="trl"] {
             -webkit-transition: none;
             -ms-transition: none;
         }
-
-        .dropsection.cart-detail {
-            transition: none;
-            -webkit-transition: none;
-            -ms-transition: none;
-            width: 90%;
-        }
+ 
 
         .form--search-popup .dropdown__target {
             left: auto;
@@ -944,8 +939,6 @@ html [dir="trl"] {
     }
 
     @media only screen and (max-width: 767px) {
-
-
         .widget-scroll .slick-prev {
             right: 0;
         }

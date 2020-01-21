@@ -79,26 +79,26 @@ sans-serif;
 @import 'vendors/xzoom';
 
 
-@import 'pages/_blog';
-@import 'pages/_blog-arabic';
-@import 'pages/_cart';
-@import 'pages/_category';
-@import 'pages/_checkout';
-@import 'pages/_contact';
-@import 'pages/_dashboard';
-@import 'pages/_detail';
-@import 'pages/_faq';
-@import 'pages/_index';
-@import 'pages/_listing';
-@import 'pages/_login';
-@import 'pages/_packages';
-@import 'pages/_payment';
-@import 'pages/_responsive';
-@import 'pages/_seller';
-@import 'pages/_shop';
-@import 'pages/_style-arabic';
-@import 'pages/_supplier';
-@import 'pages/_testimonials';
+@import 'pages/blog';
+@import 'pages/blog-arabic';
+@import 'pages/cart';
+@import 'pages/category';
+@import 'pages/checkout';
+@import 'pages/contact';
+@import 'pages/dashboard';
+@import 'pages/detail';
+@import 'pages/faq';
+@import 'pages/index';
+@import 'pages/listing';
+@import 'pages/login';
+@import 'pages/packages';
+@import 'pages/payment';
+@import 'pages/responsive';
+@import 'pages/seller';
+@import 'pages/shop';
+@import 'pages/supplier';
+@import 'pages/testimonials';
+@import 'pages/rtl';
 
 
 ol,
@@ -138,6 +138,13 @@ a:hover {
     display: inline-block;
     vertical-align: top;
 }
+
+.divider, hr{
+    height: 1px;
+    background: var(--border-color);
+    margin: 15px 0;
+}
+
 /*Bg*/
 
 .bg--second-color,
@@ -147,13 +154,19 @@ a:hover {
 }
 
 .bg-white {
-    background:#fff;
+    background: #fff;
 }
+
 .bg-gray {
     background: var(--gray-light);
 }
+
 .bg-light {
     background: #f0f0f0;
+}
+
+.bg-gray-dark {
+    background: #efeded;
 }
 
 .txt-white {

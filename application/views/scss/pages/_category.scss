@@ -3,9 +3,12 @@
     background: #fff;
     border-radius: 4px;
     height: 100%;
+	color:var(--body-color);
     -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
     min-height: 292px;
+	
+	a{ color:inherit;}
 
     .cat-img {
         display: block;
