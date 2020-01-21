@@ -252,17 +252,6 @@
         margin-inline-end: inherit;
     }
 
-
-
-
-    .checkout-flow li {
-        min-width: 1%;
-        -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
-        flex-grow: 1;
-        padding: 0;
-    }
-
     .slider-for,
     .slider-nav {
         width: 100%;
@@ -1737,16 +1726,6 @@
         padding: 1rem !important;
     }
 
-    .checkout-flow li > span {
-        font-size: 0.65em;
-        max-width: 60px;
-        margin: auto;
-    }
-
-    .checkout-flow li {
-        min-width: 65px;
-    }
-
     .order-summary {
         margin-top: 0;
     }
@@ -1835,11 +1814,7 @@
     }
 
 
-
-    .box--offer .offer {
-        height: auto;
-        margin-bottom: 20px;
-    }
+ 
 
     .saved-search-list li {
         display: block;
@@ -1995,10 +1970,7 @@
         text-align: left !important;
         padding-top: 10px;
     }
-
-    .box--offer {
-        text-align: center;
-    }
+ 
 
     .section--pagebar h1 {
         margin-bottom: 5px;
