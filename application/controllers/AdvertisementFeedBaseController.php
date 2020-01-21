@@ -1,5 +1,5 @@
 <?php
-class AdvertisementFeedBaseController extends PluginBaseController
+class AdvertisementFeedBaseController extends SellerPluginBaseController
 {
 
     public function __construct($action)

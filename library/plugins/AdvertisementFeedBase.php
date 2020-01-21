@@ -14,7 +14,7 @@ class AdvertisementFeedBase
         if (defined($class . '::KEY_NAME')) {
             $keyName = $class::KEY_NAME;
         }
-        return PluginSetting::getConfDataByCode($keyName, $column);
+        return PluginSetting::getConfDataByCode($keyName, $column, CommonHelper::getLangId());
     }
 
     public function getError()

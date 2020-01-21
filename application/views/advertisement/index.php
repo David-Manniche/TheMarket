@@ -1,5 +1,8 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$this->includeTemplate('_partial/dashboardNavigation.php'); ?>
+$this->includeTemplate('_partial/dashboardNavigation.php');
+$merchantId = isset($userData[$keyName . '_merchantId']) ? $userData[$keyName . '_merchantId'] : '';
+$serviceAccInfo = isset($userData['service_account']) ? $userData['service_account'] : '';
+?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
         <div class="content-header row justify-content-between mb-3">
@@ -26,7 +29,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                     </div>
                 </div>
             </div>
-            <?php if (!empty($merchantId)) { ?>
+            <?php if (!empty($merchantId) && !empty($serviceAccInfo)) { ?>
                 <div class="row mb-4">
                     <div class="col-lg-12">
                         <div class="cards">
@@ -52,3 +55,9 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
         </div>
     </div>
 </main>
+
+<?php if (false !== $havePluginFrm && empty($serviceAccInfo)) { ?>
+    <script>
+        pluginForm();
+    </script>
+<?php }

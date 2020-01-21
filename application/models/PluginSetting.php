@@ -70,9 +70,9 @@ class PluginSetting
         return FatApp::getDb()->fetchAll($rs);
     }
 
-    public static function getConfDataByCode($keyName, $column = '')
+    public static function getConfDataByCode($keyName, $column = '', $langId = 0)
     {
-        $settingsData = Plugin::getAttributesByCode($keyName);
+        $settingsData = Plugin::getAttributesByCode($keyName, $column, $langId);
         if (!$settingsData) {
             return false;
         }
@@ -86,7 +86,7 @@ class PluginSetting
         foreach ($pluginSettings as $val) {
             $pluginSettingArr[$val[ static::DB_TBL_PREFIX . "key"]] = $val[ static::DB_TBL_PREFIX . "value"];
         }
-        $pluginSettingArr['plugin_name'] = $settingsData['plugin_identifier'] ;
+        $pluginSettingArr['plugin_name'] = !empty($settingsData['plugin_name']) ? $settingsData['plugin_name'] : $settingsData['plugin_identifier'] ;
         return array_merge($pluginSettingArr, $settingsData);
     }
 

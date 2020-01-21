@@ -29,7 +29,7 @@ $(document).ready(function() {
         $.facebox(function() {
             var btn = "#userAccInfoBtn";
             fcom.ajax(fcom.makeUrl('Advertisement','getPluginForm'),'',function(res){
-                $.facebox(res,'faceboxWidth medium-fb-width');
+                $.facebox(res,'faceboxWidth');
             });
 		});
     };
@@ -61,6 +61,9 @@ $(document).ready(function() {
     setuppluginform = function (frm) {
         if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
-		fcom.updateWithAjax(fcom.makeUrl('Advertisement', 'setupPluginForm'), data, function(t) {});
+		fcom.updateWithAjax(fcom.makeUrl('Advertisement', 'setupPluginForm'), data, function(t) {
+            $(document).trigger('close.facebox');
+            location.reload();
+        });
     }
 })();

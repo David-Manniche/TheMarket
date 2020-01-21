@@ -67,7 +67,7 @@ class AdvertisementController extends LoggedUserController
     {
         try {
             if (true == method_exists($this->keyName, 'form')) {
-                $data = User::getUserMeta(UserAuthentication::getLoggedUserId());
+                $data = User::getUserMeta($this->userId);
                 $frm = $this->keyName::form($this->siteLangId);
                 if (!empty($data) && 0 < count($data)) {
                     $frm->fill($data);
@@ -94,11 +94,10 @@ class AdvertisementController extends LoggedUserController
 
     public function index()
     {
-        $merchantId = User::getUserMeta($this->userId, $this->keyName . '_merchantId');
         $pluginName = Plugin::getAttributesByCode($this->keyName, 'plugin_identifier');
-
+        $userData = User::getUserMeta($this->userId);
         $this->set('havePluginFrm', method_exists($this->keyName, 'form'));
-        $this->set('merchantId', $merchantId);
+        $this->set('userData', $userData);
         $this->set('keyName', $this->keyName);
         $this->set('pluginName', $pluginName);
         $this->_template->render();

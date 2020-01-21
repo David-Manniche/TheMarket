@@ -4,6 +4,7 @@ class Plugin extends MyAppModel
     public const DB_TBL = 'tbl_plugins';
     public const DB_TBL_LANG = 'tbl_plugins_lang';
     public const DB_TBL_PREFIX = 'plugin_';
+    public const DB_TBL_LANG_PREFIX = 'pluginlang_';
 
     public const TYPE_CURRENCY_API = 1;
     public const TYPE_SOCIAL_LOGIN_API = 2;
@@ -62,12 +63,16 @@ class Plugin extends MyAppModel
     }
 
 
-    public static function getAttributesByCode($code, $attr = null)
+    public static function getAttributesByCode($code, $attr = '', $langId = 0)
     {
         $srch = new SearchBase(static::DB_TBL, 'plg');
         $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'code', '=', $code);
         
-        if (null != $attr) {
+        if (0 < $langId) {
+            $srch->joinTable(self::DB_TBL_LANG, 'LEFT JOIN', self::DB_TBL_LANG_PREFIX . static::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_PREFIX . 'id and ' . self::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId);
+        }
+
+        if ('' != $attr) {
             if (is_array($attr)) {
                 $srch->addMultipleFields($attr);
             } elseif (is_string($attr)) {
@@ -81,7 +86,7 @@ class Plugin extends MyAppModel
             return false;
         }
 
-        if (is_string($attr)) {
+        if (!empty($attr) && is_string($attr)) {
             return $row[$attr];
         }
         return $row;

@@ -41,9 +41,11 @@ $(document).ready(function() {
 	}
 
 	editPluginLangForm = function(pluginId, langId, autoFillLangData = 0){
-		fcom.displayProcessing();
-		fcom.ajax(fcom.makeUrl('Plugins', 'langForm', [pluginId,langId, autoFillLangData]), '', function(t) {
-			fcom.updateFaceboxContent(t);
+        fcom.displayProcessing();
+        fcom.resetEditorInstance();
+		fcom.ajax(fcom.makeUrl('Plugins', 'langForm', [pluginId, langId, autoFillLangData]), '', function(t) {
+            fcom.updateFaceboxContent(t);
+            fcom.setEditorLayout(langId);
 		});
 	};
 

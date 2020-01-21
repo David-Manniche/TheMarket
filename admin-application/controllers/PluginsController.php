@@ -14,6 +14,7 @@ class PluginsController extends AdminBaseController
         $this->set("canEdit", $this->canEdit);
         $this->set("plugins", Plugin::getTypeArr($this->adminLangId));
         $this->set('activeTab', Plugin::TYPE_CURRENCY_API);
+        $this->set('includeEditor', true);
         $this->_template->render();
     }
 
@@ -328,7 +329,7 @@ class PluginsController extends AdminBaseController
         $frm->addHiddenField('', 'plugin_id', $pluginId);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Plugin_Name', $this->adminLangId), 'plugin_name');
-        $frm->addTextarea(Labels::getLabel('LBL_Details', $this->adminLangId), 'plugin_description');
+        $frm->addHtmlEditor(Labels::getLabel('LBL_EXTRA_INFO', $this->adminLangId), 'plugin_description');
 
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
