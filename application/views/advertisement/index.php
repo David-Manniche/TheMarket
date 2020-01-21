@@ -56,7 +56,7 @@ $serviceAccInfo = isset($userData['service_account']) ? $userData['service_accou
     </div>
 </main>
 
-<?php if (false !== $havePluginFrm && empty($serviceAccInfo)) { ?>
+<?php if (!empty($merchantId) && false !== $havePluginFrm && empty($serviceAccInfo)) { ?>
     <script>
         pluginForm();
     </script>
