@@ -141,7 +141,7 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
                     
                     <h3 class="mb-4"><?php echo Labels::getLabel('LBL_Icon', $adminLangId); ?></h3>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="field-set">
                                 <div class="caption-wraper"><label class="field_label">
                                 <?php  $fld = $prodCatFrm->getField('icon_lang_id');
@@ -155,7 +155,7 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
                                 </div>
                             </div>  
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="field-set">
                                 <div class="caption-wraper">
                                     <label class="field_label"></label>
@@ -172,15 +172,12 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-4" id="icon-image-listing"></div>
                     </div> 
-                    <div class="row">
-                        <div class="col-md-6" id="icon-image-listing"></div>
-                    </div> 
-                    
-                    
+
                     <h3 class="mb-4"><?php echo Labels::getLabel('LBL_Banner', $adminLangId); ?></h3>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="field-set">
                                 <div class="caption-wraper"><label class="field_label">
                                 <?php  $fld = $prodCatFrm->getField('banner_lang_id');
@@ -194,7 +191,7 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="field-set">
                                 <div class="caption-wraper"><label class="field_label">
                                 <?php  $fld = $prodCatFrm->getField('slide_screen');
@@ -208,7 +205,7 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="field-set">
                                 <div class="caption-wraper"><label class="field_label">
                                 </label></div>
@@ -226,115 +223,9 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-3" id="banner-image-listing"></div>
                     </div> 
-                    <div class="row">
-                        <div class="col-md-6" id="banner-image-listing"></div>
-                    </div> 
-                     
-                    
-                   <?php /* 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h3 class="mb-4"><?php echo Labels::getLabel('LBL_Icon', $adminLangId); ?></h3>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="field-set">
-                                        <div class="caption-wraper"><label class="field_label">
-                                        <?php  $fld = $prodCatFrm->getField('icon_lang_id');
-                                            echo $fld->getCaption();
-                                        ?>
-                                        </label></div>
-                                        <div class="field-wraper">
-                                            <div class="field_cover">
-                                                 <?php echo $prodCatFrm->getFieldHtml('icon_lang_id'); ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="field-set">
-                                        <div class="caption-wraper"><label class="field_label">
-                                        <?php  $fld = $prodCatFrm->getField('cat_icon');
-                                            echo $fld->getCaption();
-                                        ?>
-                                        </label></div>
-                                        <div class="field-wraper">
-                                            <div class="field_cover">
-                                                <?php echo $prodCatFrm->getFieldHtml('cat_icon'); ?>
-                                                <?php 
-                                                foreach($mediaLanguages as $key=>$data){
-                                                    echo $prodCatFrm->getFieldHtml('cat_icon_image_id['.$key.']'); 
-                                                }
-                                                ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <h3 class="mb-4"><?php echo Labels::getLabel('LBL_Banner', $adminLangId); ?></h3>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="field-set">
-                                        <div class="caption-wraper"><label class="field_label">
-                                        <?php  $fld = $prodCatFrm->getField('banner_lang_id');
-                                            echo $fld->getCaption();
-                                        ?>
-                                        </label></div>
-                                        <div class="field-wraper">
-                                            <div class="field_cover">
-                                            <?php echo $prodCatFrm->getFieldHtml('banner_lang_id'); ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="field-set">
-                                        <div class="caption-wraper"><label class="field_label">
-                                        <?php  $fld = $prodCatFrm->getField('slide_screen');
-                                            echo $fld->getCaption();
-                                        ?>
-                                        </label></div>
-                                        <div class="field-wraper">
-                                            <div class="field_cover">
-                                            <?php echo $prodCatFrm->getFieldHtml('slide_screen'); ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="field-set">
-                                        <div class="caption-wraper"><label class="field_label">
-                                        <?php  $fld = $prodCatFrm->getField('cat_banner');
-                                            echo $fld->getCaption();
-                                        ?>
-                                        </label></div>
-                                        <div class="field-wraper">
-                                            <div class="field_cover">
-                                                <?php echo $prodCatFrm->getFieldHtml('cat_banner'); ?>
-                                                <?php 
-                                                foreach($mediaLanguages as $key=>$data){
-                                                    foreach($screenArr as $key1=>$screen){
-                                                        echo $prodCatFrm->getFieldHtml('cat_banner_image_id['.$key.'_'.$key1.']');
-                                                    }
-                                                } 
-                                                ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                     */ ?>
-                   
+
                 </div>
             </div>
         </div>
