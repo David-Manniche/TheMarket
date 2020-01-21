@@ -80,14 +80,14 @@ $action = strtolower($action);
             $obj = new Plugin();
             $keyName = $obj->getDefaultPluginKeyName(Plugin::TYPE_ADVERTISEMENT_FEED_API);
             if (!empty($keyName)) {
-                $pluginDetail = Plugin::getAttributesByCode($keyName, ['plugin_active', 'plugin_identifier']);
+                $pluginDetail = Plugin::getAttributesByCode($keyName, ['plugin_active', 'plugin_identifier', 'plugin_name'], $siteLangId);
                 if (0 < $pluginDetail['plugin_active']) { ?>
                 <li class="menu__item <?php echo ($controller == 'advertisement') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_SETUP_ADVERTISEMENT', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Advertisement'); ?>">
                     <i class="icn shop"><svg class="svg">
                             <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-promotions" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-promotions"></use>
                         </svg>
-                    </i><span class="menu-item__title"><?php echo $pluginDetail['plugin_identifier'];?></span></a></div>
+                    </i><span class="menu-item__title"><?php echo !empty($pluginDetail['plugin_name']) ? $pluginDetail['plugin_name'] : $pluginDetail['plugin_identifier'];?></span></a></div>
                 </li>
             <?php } } ?>
             <li class="divider"></li>
