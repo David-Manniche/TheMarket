@@ -29,7 +29,7 @@ class FcmPushNotification extends PushNotificationBase
         $this->serverApiKey = $settings['server_api_key'];
     }
     
-    public function notify($title, $message, $data = [])
+    public function notify($title, $message, $os, $data = [])
     {
         if (empty($title) || empty($message)) {
             $this->error = Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId());
@@ -41,13 +41,18 @@ class FcmPushNotification extends PushNotificationBase
             'body' => $message,
             'image' => isset($data['image']) ? $data['image'] : ''
         ];
-
+        
         $fields = [
             'registration_ids' => $this->deviceTokens,
             'notification' => $msg,
             'data' => $data['customData'],
             'priority' => 'high'
         ];
+
+        if (User::DEVICE_OS_ANDROID == $os) {
+            unset($fields['notification']);
+            $fields['data'] = array_merge($msg, $fields['data']);
+        }
         
         $headers = [
             'Authorization: key=' . $this->serverApiKey,

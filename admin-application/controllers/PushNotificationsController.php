@@ -55,6 +55,11 @@ class PushNotificationsController extends AdminBaseController
             $srch->addCondition('pnotification_status', '=', $status);
         }
 
+        $deviceType = $post['pnotification_device_os'];
+        if ('' != $deviceType && -1 < $deviceType) {
+            $srch->addCondition('pnotification_device_os', '=', $deviceType);
+        }
+
         /* $notifyTo = $post['notify_to'];
         if (0 < $notifyTo) {
             switch ($notifyTo) {
@@ -93,6 +98,9 @@ class PushNotificationsController extends AdminBaseController
         $statusArr = [-1 => Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId)] + PushNotification::getStatusArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_STATUS', $this->adminLangId), 'pnotification_status', $statusArr, '', array(), '');
         
+        $deviceTypeArr = [-1 => Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId)] + User::getDeviceTypeArr($this->adminLangId);
+        $frm->addSelectBox(Labels::getLabel('LBL_DEVICE_OPERATING_SYSTEM', $this->adminLangId), 'pnotification_device_os', $deviceTypeArr, '', array(), '');
+        
         // $notifyToArr = array_merge([Labels::getLabel('LBL_DOES_NOT_MATTER', $this->adminLangId)], PushNotification::getUserTypeArr($this->adminLangId));
         // $frm->addSelectBox(Labels::getLabel('LBL_NOTIFY_TO', $this->adminLangId), 'notify_to', $notifyToArr, '', array(), '');
         
@@ -118,7 +126,10 @@ class PushNotificationsController extends AdminBaseController
 
         $dateFld = $frm->addDateTimeField(Labels::getLabel('LBL_SCHEDULE_DATE', $this->adminLangId), 'pnotification_notified_on', date('Y-m-d H:00'), ['readonly' => 'readonly','class' => 'small dateTimeFld field--calender date_js']);
         $dateFld->requirements()->setRequired(true);
-                
+
+        $deviceType = $frm->addSelectBox(Labels::getLabel('LBL_DEVICE_OPERATING_SYSTEM', $this->adminLangId), 'pnotification_device_os', User::getDeviceTypeArr($this->adminLangId));
+        $deviceType->requirements()->setRequired(true);
+
         // $frm->addCheckBox(Labels::getLabel('LBL_NOTIFY_TO_BUYERS', $this->adminLangId), 'pnotification_for_buyer', 1, [], false, 0);
         // $frm->addCheckBox(Labels::getLabel('LBL_NOTIFY_TO_SELLER', $this->adminLangId), 'pnotification_for_seller', 1, [], false, 0);
         

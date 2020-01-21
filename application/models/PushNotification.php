@@ -93,21 +93,30 @@ class PushNotification extends MyAppModel
             }
         }
 
+        $obj->addDirectCondition("IF(
+                pnotification_device_os = " . User::DEVICE_OS_BOTH . ",
+                (uauth.`uauth_device_os` = " . User::DEVICE_OS_ANDROID . " OR uauth.`uauth_device_os` = " . User::DEVICE_OS_IOS . "),
+                (uauth.`uauth_device_os` = pnotification_device_os)
+            )");
+
         $obj->addCondition('uauth_fcm_id', '!=', '');
         $obj->addCondition('uauth_last_access', '>=', date('Y-m-d H:i:s', strtotime("-7 DAYS")));
         $obj->addCondition('uauth_user_id', '>', 'mysql_func_pnotification_till_user_id', 'AND', true);
 
-        $obj->addMultipleFields(['uauth_user_id', 'uauth_fcm_id']);
+        $obj->addMultipleFields(['uauth_user_id', 'uauth_fcm_id', 'uauth_device_os']);
         $obj->addOrder('uauth_user_id', 'ASC');
         $rs = $obj->getResultSet();
-        $data = FatApp::getDb()->fetchAll($rs);
-        
-        $lastToken   = end($data);
+        $tokenData = FatApp::getDb()->fetchAll($rs);
+        $lastToken   = end($tokenData);
         $lastUserId = $lastToken['uauth_user_id'];
-
+        
+        $deviceTokens = [];
+        foreach ($tokenData as $data) {
+            $deviceTokens[$data['uauth_device_os']][] = $data['uauth_fcm_id'];
+        }
         return [
             'lastUserId' => $lastUserId,
-            'deviceTokens' => array_column($data, 'uauth_fcm_id')
+            'deviceTokens' => $deviceTokens
         ];
     }
 
@@ -185,19 +194,23 @@ class PushNotification extends MyAppModel
                     $uploadedTime = AttachedFile::setTimeParam($imgData['afile_updated_at']);
                     $imageUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'pushNotificationImage', [$recordId], CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 }
-                
-                $obj = new $keyName($deviceTokens);
+
                 $data = [
                     'image' => $imageUrl,
                     'customData' => [
                         'isCustomPushNotification' => 1,
+                        'notification_id' => $notificationDetail['pnotification_id'],
                         'lang_id' => $notificationDetail['pnotification_lang_id'],
                         'urlDetail' => !empty($notificationDetail['pnotification_url']) ? CommonHelper::getUrlTypeData($notificationDetail['pnotification_url']) : (object)array(),
                     ]
                 ];
-                $response = $obj->notify($notificationDetail['pnotification_title'], $notificationDetail['pnotification_description'], $data);
-                if (false === $response) {
-                    /* $this->error =  $obj->getError(); */
+
+                foreach ($deviceTokens as $os => $dtokens) {
+                    $obj = new $keyName($dtokens);
+                    $response = $obj->notify($notificationDetail['pnotification_title'], $notificationDetail['pnotification_description'], $os, $data);
+                    if (false === $response) {
+                        /* $this->error =  $obj->getError(); */
+                    }
                 }
             } catch (\Error $e) {
                 /* $this->error =  'ERR - ' . $e->getMessage(); */
