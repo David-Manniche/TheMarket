@@ -92,7 +92,7 @@ foreach ($arrListing as $sn => $row) {
                     $innerLiEdit->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'',
                     'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addSellerProductForm(" . $row['selprod_product_id'] . ",".$row['selprod_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
 
-                    $innerLiSeo = $innerUl->appendElement("li");
+                    /* $innerLiSeo = $innerUl->appendElement("li");
                     $innerLiSeo->appendElement(
                         'a',
                         array('href'=>'javascript:void(0)', 'class'=>'', 'title'=>Labels::getLabel('LBL_SEO_CONTENT', $adminLangId),"onclick"=>"getProductSeoGeneralForm(".$row['selprod_id'].")"),
@@ -114,7 +114,7 @@ foreach ($arrListing as $sn => $row) {
                         array('href'=>'javascript:void(0)', 'class'=>'', 'title'=>Labels::getLabel('LBL_Volume_Discount', $adminLangId),"onclick"=>"sellerProductVolumeDiscounts(".$row['selprod_id'].")"),
                         Labels::getLabel('LBL_Volume_Discount', $adminLangId),
                         true
-                    );
+                    ); */
 
                     $innerLiLinks = $innerUl->appendElement("li");
                     $innerLiLinks->appendElement(
