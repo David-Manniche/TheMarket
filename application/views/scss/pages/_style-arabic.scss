@@ -388,9 +388,7 @@ html [dir="trl"] {
         right: 0;
     }
 
-    .search--btn {
-        background-position: calc(100% - 10px) center;
-    }
+ 
 
     .payment {
         text-align: left;
@@ -743,12 +741,6 @@ html [dir="trl"] {
         .dropdown__target__right:before {
             left: 20px;
             right: auto;
-        }
-
-        .form--search-popup .select__value {
-            border-right: solid 1px var(--first-color);
-            border-left: none;
-            border-radius: 0 4px 4px 0;
         }
 
         .main-search-form .search--keyword {
