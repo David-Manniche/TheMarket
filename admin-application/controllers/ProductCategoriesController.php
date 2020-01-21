@@ -9,13 +9,8 @@ class ProductCategoriesController extends AdminBaseController
 
     public function index()
     {
-        $totProds = Product::getProductsCount();
-        $activeCategories = ProductCategory::getActiveInactiveCategoriesCount(applicationConstants::ACTIVE);
-        $inactiveCategories = ProductCategory::getActiveInactiveCategoriesCount(applicationConstants::INACTIVE);
+        
         $canEdit = $this->objPrivilege->canEditProductCategories(0, true); 
-        $this->set("totProds", $totProds);
-        $this->set("activeCategories", $activeCategories);
-        $this->set("inactiveCategories", $inactiveCategories);
         $this->set("canEdit", $canEdit);
         $this->_template->addJs('js/jquery-sortable-lists.js');
         $this->_template->render();
@@ -29,6 +24,17 @@ class ProductCategoriesController extends AdminBaseController
         $canEdit = $this->objPrivilege->canEditProductCategories(0, true);
         $this->set("arr_listing", $records);
         $this->set("canEdit", $canEdit);
+        $this->_template->render(false, false);
+    }
+    
+    public function getTotalBlock()
+    {
+        $totProds = Product::getProductsCount();
+        $activeCategories = ProductCategory::getActiveInactiveCategoriesCount(applicationConstants::ACTIVE);
+        $inactiveCategories = ProductCategory::getActiveInactiveCategoriesCount(applicationConstants::INACTIVE);
+        $this->set("totProds", $totProds);
+        $this->set("activeCategories", $activeCategories);
+        $this->set("inactiveCategories", $inactiveCategories);
         $this->_template->render(false, false);
     }
     
@@ -96,7 +102,7 @@ class ProductCategoriesController extends AdminBaseController
         $this->set('mediaLanguages', $mediaLanguages);
         $this->set('screenArr', $screenArr);
         $this->set('otherLangData', $langData);
-        $this->_template->render();
+        $this->_template->render(false, false);
     }
     
     private function getCategoryForm( $prodCatId = 0 )
@@ -144,6 +150,7 @@ class ProductCategoriesController extends AdminBaseController
         }
         
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Create', $this->adminLangId));
+        $frm->addButton('', 'btn_discard', Labels::getLabel('LBL_Discard', $this->adminLangId));
         return $frm;
     }
     

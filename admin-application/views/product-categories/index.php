@@ -14,19 +14,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-9">
-                        <section class="section">
-                            <div class="sectionhead">
-                                <div class="section__toolbar">                                  
-                                <?php if ($canEdit) { ?>
-                                    <a href="<?php echo commonHelper::generateUrl('ProductCategories', 'form'); ?>" title="<?php echo  Labels::getLabel('LBL_Add_Category', $adminLangId); ?>" class="btn btn-clean btn-sm btn-icon btn-secondary"><i class="fas fa-plus"></i></a>
-                                <?php }?>
-                                </div>
-                            </div>
-                            <div class="sectionbody space">
-                                <div class="accordion-categories" id="listing" >
-                                    <?php echo Labels::getLabel('LBL_Processing...', $adminLangId); ?>
-                                </div>
-                            </div>
+                        <section class="section  section-height" id="listing">
                         </section>
                     </div>
                     <div class="col-md-3">
@@ -34,13 +22,7 @@
                             <div class="sectionhead">
                                 <h4><?php echo Labels::getLabel('LBL_Total_', $adminLangId); ?></h4>
                             </div>
-                            <div class="sectionbody">
-                                <ul class=" list-group list-group-flush">
-                                    <li class="list-group-item d-flex justify-content-between align-items-center"><?php echo Labels::getLabel('LBL_Categories', $adminLangId); ?> <span class="badge badge-secondary badge-pill"><?php echo $activeCategories['categories_count'] + $inactiveCategories['categories_count'] ; ?></span></li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center"><?php echo Labels::getLabel('LBL_Products', $adminLangId); ?> <span class="badge badge-secondary badge-pill"><?php echo $totProds['total_products']; ?></span></li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center"><?php echo Labels::getLabel('LBL_Active_Categories', $adminLangId); ?> <span class="badge badge-secondary badge-pill"><?php echo $activeCategories['categories_count']; ?></span></li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center"><?php echo Labels::getLabel('LBL_Disabled_Categories', $adminLangId); ?> <span class="badge badge-secondary badge-pill"><?php echo $inactiveCategories['categories_count']; ?></span></li>
-                                </ul>
+                            <div class="sectionbody" id="total-block">
                             </div>
                         </section>
                         <section class="section">

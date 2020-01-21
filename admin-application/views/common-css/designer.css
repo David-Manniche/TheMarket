@@ -786,3 +786,5 @@ table.table-bordered tr:nth-child(odd) td {
     height: 100%;
     margin: 0;
 }
+
+.section-height{ min-height:700px;}
