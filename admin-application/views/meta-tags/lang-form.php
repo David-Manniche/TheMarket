@@ -16,15 +16,15 @@ $langFld->setfieldTagAttribute('onChange', "editMetaTagLangForm(" . $metaId . ",
             <div class="col-sm-12">
                 <h1><?php //echo Labels::getLabel('LBL_Meta_Setup',$adminLangId); ?></h1>
                 <div class="tabs_nav_container responsive flat">
-                    <?php if($metaType == MetaTag::META_GROUP_ADVANCED) {?>
-                    <ul class="tabs_nav">
-                        <li><a href="javascript:void(0);" onclick="editMetaTagForm(<?php echo "$metaId,'$metaType',$recordId" ?>);"><?php echo Labels::getLabel('LBL_General',$adminLangId); ?></a></li>
-                        <li class="<?php echo (0 == $metaId) ? 'fat-inactive' : ''; ?>">
-                            <a class="active" href="javascript:void(0);">
-                                <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
-                            </a>
-                        </li>
-                    </ul>
+                    <?php if($metaType == MetaTag::META_GROUP_ADVANCED) { ?>
+                        <ul class="tabs_nav">
+                            <li><a href="javascript:void(0);" onclick="editMetaTagForm(<?php echo "$metaId,'$metaType',$recordId" ?>);"><?php echo Labels::getLabel('LBL_General',$adminLangId); ?></a></li>
+                            <li class="<?php echo (0 == $metaId) ? 'fat-inactive' : ''; ?>">
+                                <a class="active" href="javascript:void(0);">
+                                    <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
+                                </a>
+                            </li>
+                        </ul>
                     <?php } ?>
                     <div class="tabs_panel_wrap">
                     <?php

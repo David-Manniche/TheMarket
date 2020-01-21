@@ -77,21 +77,18 @@ $(document).ready(function(){
 		fcom.updateWithAjax(fcom.makeUrl('MetaTags', 'setup'), data, function(t) {
 			reloadList();
 			if (t.langId>0) {
-				editMetaTagLangForm(t.metaId, t.langId, t.metaType);
+				editMetaTagLangForm(t.metaId, t.langId, t.metaType, t.recordId);
 				return ;
 			}
 			$(document).trigger('close.facebox');
 		});
 	}
 	
-	editMetaTagLangForm = function(metaId,langId, metaType, autoFillLangData = 0){
+	editMetaTagLangForm = function(metaId,langId, metaType, recordId, autoFillLangData = 0){
 		fcom.displayProcessing();
-	//	$.facebox(function() {
-			fcom.ajax(fcom.makeUrl('MetaTags', 'langForm', [metaId,langId,metaType, autoFillLangData]), '', function(t) {
-				//$.facebox(t,'faceboxWidth');
-				fcom.updateFaceboxContent(t);
-			});
-		//});
+        fcom.ajax(fcom.makeUrl('MetaTags', 'langForm', [metaId, langId, metaType, recordId, autoFillLangData]), '', function(t) {
+            fcom.updateFaceboxContent(t);
+        });
 	};
 	
 	setupLangMetaTag = function (frm , metaType){

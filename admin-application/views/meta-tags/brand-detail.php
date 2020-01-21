@@ -37,7 +37,7 @@ foreach ($arr_listing as $sn=>$row){
               		$innerLiEdit=$innerUl->appendElement('li');
               		
 					$innerLiEdit->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 
-					'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"editMetaTagFormNew($metaId,'$metaType',$recordId)"),Labels::getLabel('LBL_Edit',$adminLangId), 
+					'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"editMetaTagLangForm($metaId,".FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1).",'$metaType',$recordId)"),Labels::getLabel('LBL_Edit',$adminLangId), 
 					true);
 				}
 			break;
