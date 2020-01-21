@@ -26,13 +26,19 @@ $(document).ready(function() {
     };
     optionForm = function(optionId) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('Options', 'form', [optionId]), '', function(t) {
-            fcom.updateFaceboxContent(t);
-            addOptionForm(optionId);
-            optionValueListing(optionId);
-            fcom.resetFaceboxHeight();
-            $.systemMessage.close();
-        });
+        $.facebox(function() {
+			fcom.ajax(fcom.makeUrl('Options', 'form', [optionId]), '', function(t) {
+				try{
+					res= jQuery.parseJSON(t);
+					$.facebox(res.msg,'faceboxWidth');
+				}catch (e){
+					$.facebox(t,'faceboxWidth');
+					addOptionForm(optionId);
+					optionValueListing(optionId);
+				}
+				fcom.resetFaceboxHeight();
+			});
+		});
     };
 
     addOptionForm = function(optionId, autoFillLangData = 0) {
@@ -134,8 +140,9 @@ $(document).ready(function() {
         fcom.updateWithAjax(fcom.makeUrl('Options', 'setup'), data, function(t) {
             reloadList();
             if (t.optionId > 0) {
-                optionForm(t.optionId);
-                return;
+                optionValueForm(t.optionId); return;
+                /* optionForm(t.optionId);
+                return; */
             }
             fcom.resetFaceboxHeight();
             $(document).trigger('close.facebox');
