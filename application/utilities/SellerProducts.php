@@ -552,13 +552,10 @@ trait SellerProducts
         $formLangId = FatUtility::int($formLangId);
 
         $frm = new Form('frmSellerProductLang');
-        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $formLangId), 'lang_id', Language::getAllNames(), $formLangId, array(), '');
+        /* $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $formLangId), 'lang_id', Language::getAllNames(), $formLangId, array(), ''); */
         $frm->addRequiredField(Labels::getLabel('LBL_Product_Display_Title', $formLangId), 'selprod_title');
-        /* $frm->addTextArea( Labels::getLabel( 'LBL_Features', $formLangId), 'selprod_features');
-        $frm->addTextArea( Labels::getLabel( 'LBL_Warranty', $formLangId), 'selprod_warranty');
-        $frm->addTextArea( Labels::getLabel( 'LBL_Return_Policy', $formLangId), 'selprod_return_policy');
-        */
         $frm->addTextArea(Labels::getLabel('LBL_Any_Extra_Comment_for_buyer', $formLangId), 'selprod_comments');
+        $frm->addHiddenField('', 'lang_id', $formLangId);
         $frm->addHiddenField('', 'selprod_product_id');
         $frm->addHiddenField('', 'selprod_id', $selprod_id);
         
