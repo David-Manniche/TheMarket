@@ -224,14 +224,13 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
         if (false === $post) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());
+            $this->setErrorAndRedirect(current($frm->getValidationErrors()), false);
         }
 
         $adsBatchId = $post['adsbatch_id'];
         if (0 < $adsBatchId) {
             if (false === $this->validateBatchRequest($adsBatchId)) {
-                FatUtility::dieJsonError($this->error);
+                $this->setErrorAndRedirect($this->error, false);
             }
         }
         unset($post['adsbatch_id']);
@@ -240,8 +239,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $adsBatchObj->assignValues($post);
 
         if (!$adsBatchObj->save()) {
-            Message::addErrorMessage($adsBatchObj->getError());
-            FatUtility::dieJsonError(Message::getHtml());
+            $this->setErrorAndRedirect($adsBatchObj->getError(), false);
         }
 
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_ADS_BATCH_SETUP_SUCCESSFULLY', $this->siteLangId));
@@ -253,8 +251,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
         if (false === $post) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());
+            $this->setErrorAndRedirect(current($frm->getValidationErrors()), false);
         }
         
         $productId = SellerProduct::getAttributesById($post['abprod_selprod_id'], 'selprod_product_id');
@@ -265,7 +262,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         unset($post['btn_submit'], $post['product_name'], $post['btn_clear'], $post['google_product_category']);
         $db = FatApp::getDb();
         if (!$db->insertFromArray(AdsBatch::DB_TBL_BATCH_PRODS, $post, false, array(), $post)) {
-            FatUtility::dieJsonError($db->getError());
+            $this->setErrorAndRedirect($db->getError(), false);
         }
 
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_ADS_BATCH_SETUP_SUCCESSFULLY', $this->siteLangId));
@@ -274,7 +271,6 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
     public function search()
     {
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
-        $keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
 
         $srch = AdsBatch::getSearchObject();
         $attr = [
@@ -289,9 +285,6 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $srch->addMultipleFields($attr);
         $srch->addCondition(AdsBatch::DB_TBL_PREFIX . 'user_id', '=', UserAuthentication::getLoggedUserId());
         $srch->addCondition(AdsBatch::DB_TBL_PREFIX . 'status', '!=', AdsBatch::STATUS_DELETED);
-        if (!empty($keyword)) {
-            $srch->addCondition(AdsBatch::DB_TBL_PREFIX . 'name', 'LIKE', '%' . $keyword . '%');
-        }
         $srch->setPageNumber($page);
 
         $db = FatApp::getDb();
@@ -313,15 +306,14 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $adsBatchId = FatUtility::int($adsBatchId);
 
         if (false === $this->validateBatchRequest($adsBatchId)) {
-            LibHelper::dieJsonError($this->error);
+            $this->setErrorAndRedirect($this->error, false);
         }
 
         $adsBatchObj = new adsBatch($adsBatchId);
         $adsBatchObj->assignValues(['adsbatch_status' => AdsBatch::STATUS_DELETED]);
 
         if (!$adsBatchObj->save()) {
-            Message::addErrorMessage($adsBatchObj->getError());
-            FatUtility::dieJsonError(Message::getHtml());
+            $this->setErrorAndRedirect($adsBatchObj->getError(), false);
         }
 
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_SUCCESSFULLY_DELETED', $this->siteLangId));
@@ -339,7 +331,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
     {
         $adsBatchId = FatUtility::int($adsBatchId);
         if (1 > $adsBatchId) {
-            LibHelper::dieJsonError(Labels::getLabel('LBL_INVALID_REQUEST', $this->siteLangId));
+            $this->setErrorAndRedirect(Labels::getLabel('LBL_INVALID_REQUEST', $this->siteLangId), false);
         }
 
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
@@ -384,12 +376,12 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $selProdId = FatUtility::int($selProdId);
 
         if (false === $this->validateBatchRequest($adsBatchId)) {
-            LibHelper::dieJsonError($this->error);
+            $this->setErrorAndRedirect($this->error, false);
         }
 
         $db = FatApp::getDb();
         if (!$db->deleteRecords(AdsBatch::DB_TBL_BATCH_PRODS, ['smt' => 'abprod_adsbatch_id = ? AND abprod_selprod_id = ?', 'vals' => [$adsBatchId, $selProdId]])) {
-            LibHelper::dieJsonError($db->getError());
+            $this->setErrorAndRedirect($db->getError(), false);
         }
 
         if (true == $return) {
@@ -403,7 +395,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $adsBatchId = FatUtility::int($adsBatchId);
         $sellerProducts = FatApp::getPostedData('selprod_ids');
         if (1 > $adsBatchId || !is_array($sellerProducts) || 1 > count($sellerProducts)) {
-            LibHelper::dieJsonError(Labels::getLabel("LBL_INVALID_REQUEST", $this->siteLangId));
+            $this->setErrorAndRedirect(Labels::getLabel("LBL_INVALID_REQUEST", $this->siteLangId), false);
         }
 
         foreach ($sellerProducts as $selProdId) {
@@ -420,8 +412,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
             $obj = new $class();
             $data = $obj->getProductCategory($keyword, $returnFullArray);
         } catch (\Error $e) {
-            $message = 'ERR - ' . $e->getMessage();
-            LibHelper::dieJsonError($message);
+            $this->setErrorAndRedirect($e->getMessage(), false);
         }
         if (true === $returnFullArray) {
             return $data;
@@ -434,7 +425,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
     {
         $adsBatchId = FatUtility::int($adsBatchId);
         if (false === $this->validateBatchRequest($adsBatchId)) {
-            LibHelper::dieJsonError($this->error);
+            $this->setErrorAndRedirect($this->error, false);
         }
 
         $db = FatApp::getDb();
@@ -442,7 +433,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $rs = $srch->getResultSet();
         $productData = $db->fetchAll($rs);
         if (empty($productData)) {
-            LibHelper::dieJsonError(Labels::getLabel("MSG_PLEASE_ADD_ATLEAST_ONE_PRODUCT_TO_THE_BATCH", $this->siteLangId));
+            $this->setErrorAndRedirect(Labels::getLabel("MSG_PLEASE_ADD_ATLEAST_ONE_PRODUCT_TO_THE_BATCH", $this->siteLangId), false);
         }
 
         foreach ($productData as &$prodDetail) {
@@ -468,17 +459,17 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
             ];
             $response = $obj->publishBatch($data);
             if (false === $response) {
-                LibHelper::dieJsonError($obj->getError());
+                $this->setErrorAndRedirect($obj->getError(), false);
             }
         } catch (\Error $e) {
-            LibHelper::dieJsonError($e->getMessage());
+            $this->setErrorAndRedirect($e->getMessage(), false);
         }
         $dataToUpdate = [
             'adsbatch_status' => AdsBatch::STATUS_PUBLISHED,
             'adsbatch_synced_on' => date('Y-m-d H:i:s')
         ];
         if (false === AdsBatch::updateDetail($adsBatchId, $dataToUpdate)) {
-            LibHelper::dieJsonError(Labels::getLabel("MSG_UNABLE_TO_UPDATE", $this->siteLangId));
+            $this->setErrorAndRedirect(Labels::getLabel("MSG_UNABLE_TO_UPDATE", $this->siteLangId), false);
         }
 
         FatUtility::dieJsonSuccess($response['msg']);
