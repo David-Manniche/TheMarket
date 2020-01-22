@@ -1,17 +1,10 @@
 <?php
 class ProductsController extends AdminBaseController
-{
-    private $canView;
-    private $canEdit;
-
+{    
     public function __construct($action)
     {
         parent::__construct($action);
-        $this->admin_id = AdminAuthentication::getLoggedAdminId();
-        $this->canView = $this->objPrivilege->canViewProducts($this->admin_id, true);
-        $this->canEdit = $this->objPrivilege->canEditProducts($this->admin_id, true);
-        $this->set("canView", $this->canView);
-        $this->set("canEdit", $this->canEdit);
+        $this->objPrivilege->canViewProducts();
     }
 
     public function index()
@@ -167,7 +160,6 @@ class ProductsController extends AdminBaseController
             $attrgrp_id = Product::getAttributesById($product_id, 'product_attrgrp_id');
             if ($attrgrp_id === false) {
                 Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request._Product_Not_Found', $this->adminLangId));
-
                 FatUtility::dieWithError(Message::getHtml());
             }
         }
@@ -234,7 +226,8 @@ class ProductsController extends AdminBaseController
         $this->set('product_id', $product_id);
         $this->set('languages', Language::getAllNames());
         $this->set('productFrm', $productFrm);
-        $this->_template->render(false, false);
+        //$this->_template->render(false, false);
+        $this->_template->render();
     }
 
     public function setup()
@@ -1073,7 +1066,37 @@ class ProductsController extends AdminBaseController
 
     private function getForm($attrgrp_id = 0)
     {
-        return $this->getProductCatalogForm($attrgrp_id);
+        //return $this->getProductCatalogForm($attrgrp_id); 
+        return $this->getProductIntialSetUpForm();
+    }
+    
+    private function getProductIntialSetUpForm()
+    {
+        $frm = new Form('frmProductIntialSetUp'); 
+        $frm->addRequiredField(Labels::getLabel('LBL_Product_Identifier', $this->adminLangId), 'product_identifier');
+        $frm->addSelectBox(Labels::getLabel('LBL_Product_Type', $this->adminLangId), 'product_type', Product::getProductTypes($this->adminLangId), Product::PRODUCT_TYPE_PHYSICAL, array(), '');
+        $frm->addTextBox(Labels::getLabel('LBL_Brand', $this->adminLangId), 'brand_name');
+        $frm->addTextBox(Labels::getLabel('LBL_Category', $this->adminLangId), 'category_name');
+        
+        // language area
+        
+        $taxCategories =  Tax::getSaleTaxCatArr($this->adminLangId);
+        $frm->addSelectBox(Labels::getLabel('LBL_Tax_Category', $this->adminLangId), 'ptt_taxcat_id', $taxCategories, '', array(), Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired(true);
+        
+        $fldMinSelPrice= $frm->addFloatField(Labels::getLabel('LBL_Minimum_Selling_Price', $this->adminLangId).' ['.CommonHelper::getCurrencySymbol(true).']', 'product_min_selling_price', '');
+        $fldMinSelPrice->requirements()->setPositive();
+        
+        $approveUnApproveArr = Product::getApproveUnApproveArr($this->adminLangId);
+        $frm->addSelectBox(Labels::getLabel('LBL_Approval_Status', $this->adminLangId), 'product_approved', $approveUnApproveArr, Product::APPROVED, array(), '');
+        
+        $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
+        $frm->addSelectBox(Labels::getLabel('LBL_Product_Status', $this->adminLangId), 'product_active', $activeInactiveArr, applicationConstants::YES, array(), '');
+        
+        $frm->addHiddenField('', 'product_id');
+        $frm->addHiddenField('', 'product_brand_id');
+        $frm->addHiddenField('', 'product_category_id');
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->adminLangId));
+        return $frm;
     }
 
     private function getLangForm($product_id = 0, $lang_id = 0)

@@ -59,7 +59,8 @@
                             $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteSelected()"), Labels::getLabel('LBL_Delete', $adminLangId), true);
 
                             $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Add_New_Product', $adminLangId),"onclick"=>"productForm(0,0)"), Labels::getLabel('LBL_Add_New_Product', $adminLangId), true);
+                           // $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Add_New_Product', $adminLangId),"onclick"=>"productForm(0,0)"), Labels::getLabel('LBL_Add_New_Product', $adminLangId), true);
+                            $innerLi->appendElement('a', array('href'=> commonHelper::generateUrl('Products', 'form'),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Add_New_Product', $adminLangId),), Labels::getLabel('LBL_Add_New_Product', $adminLangId), true);
                         }
                         echo $ul->getHtml();
                         ?>
