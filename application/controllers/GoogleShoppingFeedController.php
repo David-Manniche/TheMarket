@@ -79,7 +79,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
             $this->setErrorAndRedirect(Labels::getLabel("MSG_MERCHANT_ACCOUNT_DETAIL_NOT_FOUND", $this->siteLangId), true);
         }
         $merchantId = array_shift($accountDetail)->merchantId;
-        $this->updateMerchantAccountDetail([self::KEY_NAME . '_merchantId' => $merchantId]);
+        $this->updateMerchantInfo([self::KEY_NAME . '_merchantId' => $merchantId]);
     }
 
     private function getServiceAccountForm()
@@ -110,7 +110,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $frm = $this->getServiceAccountForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         unset($post['btn_submit']);
-        $this->updateMerchantAccountDetail($post, false);
+        $this->updateMerchantInfo($post, false);
     }
 
     private function validateBatchRequest($adsBatchId)

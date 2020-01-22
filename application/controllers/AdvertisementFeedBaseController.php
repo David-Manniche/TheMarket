@@ -12,7 +12,7 @@ class AdvertisementFeedBaseController extends SellerPluginBaseController
         FatApp::redirectUser(CommonHelper::generateUrl(get_called_class()::KEY_NAME));
     }
 
-    protected function updateMerchantAccountDetail($detail = [], $redirect = true)
+    protected function updateMerchantInfo($detail = [], $redirect = true)
     {
         if (!is_array($detail)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
