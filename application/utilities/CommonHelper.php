@@ -262,7 +262,7 @@ class CommonHelper extends FatUtility
         }
     }
 
-    public static function combinationOfElementsOfArr($arr = array(), $useKey = '')
+    public static function combinationOfElementsOfArr($arr = array(), $useKey = '', $separater = '|')
     {
         $tempArr = array();
         $loopCount = count($arr);
@@ -278,7 +278,7 @@ class CommonHelper extends FatUtility
                 if (!empty($tempArr)) {
                     foreach ($tempArr as $tempKey => $tempVal) {
                         foreach ($val[$useKey] as $k => $v) {
-                            $tempArr[$tempKey.'|'.$k] = $tempVal.'|'.$v;
+                            $tempArr[$tempKey.$separater.$k] = $tempVal.$separater.$v;
                             unset($tempArr[$tempKey]);
                         }
                     }

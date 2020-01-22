@@ -400,7 +400,7 @@ trait CustomCatalogProducts
         /* ] */
 
         $productOptions =  ProductRequest::getProductReqOptions($preqId, $this->siteLangId, true);
-        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '_');
+        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues');
 
         $this->set('productOptions', $productOptions);
         $this->set('optionCombinations', $optionCombinations);

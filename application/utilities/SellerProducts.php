@@ -205,9 +205,9 @@ trait SellerProducts
             FatUtility::dieWithError(Message::getHtml());
         }
         $productLangRow = Product::getProductDataById(CommonHelper::getLangId(), $product_id, array('product_identifier'));
-        
+
         $frmSellerProduct = $this->getSellerProductForm($product_id);
-        
+
         $sellerProductRow = [];
         if ($selprod_id) {
             $sellerProductRow = SellerProduct::getAttributesById($selprod_id, null, true, true);
@@ -257,6 +257,9 @@ trait SellerProducts
         if (Product::isProductShippedBySeller($product_id, $productRow['product_seller_id'], UserAuthentication::getLoggedUserId())) {
             $shippedBySeller = 1;
         }
+        $productOptions = Product::getProductOptions($product_id, $this->siteLangId, true);
+        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues');
+        $this->set('optionCombinations', $optionCombinations);
         /* $this->_template->addJs(array('js/jquery.datetimepicker.js'), false); */
         $this->_template->addCss(array('css/jquery.datetimepicker.css'), false);
         $this->set('customActiveTab', 'GENERAL');
@@ -558,7 +561,7 @@ trait SellerProducts
         $frm->addHiddenField('', 'lang_id', $formLangId);
         $frm->addHiddenField('', 'selprod_product_id');
         $frm->addHiddenField('', 'selprod_id', $selprod_id);
-        
+
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
@@ -1382,7 +1385,7 @@ trait SellerProducts
         $frm->addTextarea(Labels::getLabel("LBL_Meta_Keywords", $this->siteLangId), 'meta_keywords')->requirements()->setRequired(true);
         $frm->addTextarea(Labels::getLabel("LBL_Meta_Description", $this->siteLangId), 'meta_description')->requirements()->setRequired(true);
         $frm->addTextarea(Labels::getLabel("LBL_Other_Meta_Tags", $this->siteLangId), 'meta_other_meta_tags');
-        
+
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
@@ -2014,10 +2017,10 @@ trait SellerProducts
         }
         $sellerProductRow['selprod_available_from'] = date('Y-m-d');
         $frm = $this->getSellerProductCloneForm($product_id, $selprod_id);
-        
+
         $returnAge = isset($sellerProductRow['selprod_return_age']) ? FatUtility::int($sellerProductRow['selprod_return_age']) : '';
         $cancellationAge = isset($sellerProductRow['selprod_cancellation_age']) ? FatUtility::int($sellerProductRow['selprod_cancellation_age']) : '';
-        
+
         if ('' === $returnAge || '' === $cancellationAge) {
             $sellerProductRow['use_shop_policy'] = 1;
         }
@@ -2079,7 +2082,7 @@ trait SellerProducts
         $orderCancellationAgeReqFld->setRequired(true);
         $orderCancellationAgeReqFld->setPositive();
         $orderCancellationAgeReqFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $this->siteLangId) . ' </small>';
-        
+
         $orderCancellationAgeUnReqFld = new FormFieldRequirement('selprod_cancellation_age', Labels::getLabel('LBL_ORDER_CANCELLATION_AGE', $this->siteLangId));
         $orderCancellationAgeUnReqFld->setRequired(false);
         $orderCancellationAgeUnReqFld->setPositive();
