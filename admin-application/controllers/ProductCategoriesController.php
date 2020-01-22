@@ -395,10 +395,5 @@ class ProductCategoriesController extends AdminBaseController
         }
         die(json_encode($json));
     }
-    
-    public function demoSetup()
-    {
-        $this->_template->render();
-    }  
 
 }
