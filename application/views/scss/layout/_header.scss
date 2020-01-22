@@ -13,11 +13,14 @@
 
     .top-bar {
         padding: 0;
+        fill:#fff;
         color: #fff;
         background: var(--first-color);
         transition: all 300ms linear 0s;
         -webkit-transition: all 300ms linear 0s;
         -ms-transition: all 300ms linear 0s;
+        
+        a{ color: inherit;}
 
         .slogan {
             line-height: 1;
@@ -70,7 +73,7 @@
                         }
                     }
 
-                    > a {
+                    a {
                         color: inherit;
                         display: block;
                         font-size: 0.775em;
@@ -86,16 +89,16 @@
                         -webkit-box-align: center;
                         -ms-flex-align: center;
                         align-items: center;
+                    }
 
-                        > span {}
-
-                        > .icn svg {
+                    .icn {
+                        svg {
                             width: 15px;
                             height: 15px;
                             -webkit-margin-end: 5px;
                             -moz-margin-end: 5px;
                             margin-inline-end: 5px;
-                            fill: #fff;
+                            fill: inherit;
                         }
                     }
                 }
@@ -358,9 +361,6 @@
     }
 }
 
-
-
-
 .dropdown.is-active .dropdown__target {
     pointer-events: auto;
 }
@@ -432,6 +432,7 @@
         & {}
     }
 }
+
 .cart {
     float: right;
     position: relative;

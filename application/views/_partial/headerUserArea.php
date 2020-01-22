@@ -40,32 +40,30 @@ if (!$isUserLogged) {
         $dashboardUrl = CommonHelper::generateUrl('Account');
         $dashboardOrgUrl = CommonHelper::generateUrl('Account', '', array(), '', null, false, $getOrgUrl);
     } ?>
-    <li class="dropdown dropdown--arrow dropdown--user">
-        <?php if (isset($isUserDashboard) && ($isUserDashboard)) { ?>
-        <a href="javascript:void(0)" class="dropdown__trigger dropdown__trigger-js">
-        <img class="my-account__avatar" src="<?php echo $profilePicUrl; ?>" alt=""> </a> <?php
-        } else {
-        ?> <a href="javascript:void(0)" class="dropdown__trigger dropdown__trigger-js"><span class="icn icn-txt"><?php echo Labels::getLabel('LBL_Hi,', $siteLangId).' '.User::getAttributesById(UserAuthentication::getLoggedUserId(), "user_name"); ?></span></a> <?php } ?>
-        <div class="dropdown__target dropdown__target__right dropdown__target-js">
-            <div class="dropdown__target-space">
-                <div class="dropdown__target-body">
-                    <!-- for desktop my account links -->
-                    <ul class="list-vertical list-vertical--tick">
-                        <?php
-                        $userName = User::getAttributesById(UserAuthentication::getLoggedUserId(), "user_name");
-                        ?>
-                        <li>
-                            <a href="<?php echo CommonHelper::generateUrl('account', 'profileInfo'); ?>">
-                                <?php echo Labels::getLabel('LBL_Hi,', $siteLangId).' '.$userName; ?>
-                            </a>
-                        </li>
-                        <li><div class="divider"></div></li>
-                        <li <?php  if(isset($isUserDashboard) && ($isUserDashboard)) { ?> class="d-block d-md-none" <?php }?> ><a data-org-url="<?php echo $dashboardOrgUrl; ?>" href="<?php echo $dashboardUrl; ?>"><?php echo Labels::getLabel("LBL_Dashboard", $siteLangId); ?></a></li>
-                        <li class="logout"><a data-org-url="<?php echo CommonHelper::generateUrl('GuestUser', 'logout', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo CommonHelper::generateUrl('GuestUser', 'logout'); ?>"><?php echo Labels::getLabel('LBL_Logout', $siteLangId); ?>
-                        </a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+    <li class="">
+		<div class="dropdown">
+		  <?php if (isset($isUserDashboard) && ($isUserDashboard)) { ?>
+		  <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
+			<img class="my-account__avatar" src="<?php echo $profilePicUrl; ?>" alt="">
+		  </a>
+		  <?php } else { ?>
+			<a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"><span class="icn icn-txt"><?php echo Labels::getLabel('LBL_Hi,', $siteLangId).' '.User::getAttributesById(UserAuthentication::getLoggedUserId(), "user_name"); ?></span></a>
+		  <?php } ?>
+		  <div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim" aria-labelledby="dropdownMenuButton">    
+			<ul class="nav nav-block">
+				<?php
+				$userName = User::getAttributesById(UserAuthentication::getLoggedUserId(), "user_name");
+				?>
+				<li class="nav__item">
+					<a class="dropdown-item nav__link" href="<?php echo CommonHelper::generateUrl('account', 'profileInfo'); ?>">
+						<?php echo Labels::getLabel('LBL_Hi,', $siteLangId).' '.$userName; ?>
+					</a>
+				</li>
+				<li class="nav__item <?php  if(isset($isUserDashboard) && ($isUserDashboard)) { ?> d-block d-md-none <?php }?>" ><a class="dropdown-item nav__link" data-org-url="<?php echo $dashboardOrgUrl; ?>" href="<?php echo $dashboardUrl; ?>"><?php echo Labels::getLabel("LBL_Dashboard", $siteLangId); ?></a></li>
+				<li class="nav__item logout"><a class="dropdown-item nav__link" data-org-url="<?php echo CommonHelper::generateUrl('GuestUser', 'logout', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo CommonHelper::generateUrl('GuestUser', 'logout'); ?>"><?php echo Labels::getLabel('LBL_Logout', $siteLangId); ?>
+				</a></li>
+			</ul>
+		  </div>
+		</div>
     </li>
 <?php } ?>

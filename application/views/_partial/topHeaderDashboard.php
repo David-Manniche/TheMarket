@@ -4,35 +4,31 @@
 <div class="wrapper">
     <header id="header-dashboard" class="header-dashboard no-print" role="header-dashboard">
         <?php if ((User::canViewSupplierTab() && User::canViewBuyerTab()) || (User::canViewSupplierTab() && User::canViewAdvertiserTab()) || (User::canViewBuyerTab() && User::canViewAdvertiserTab())) { ?>
-        <div class="dropdown dropdown--arrow user-type">
-            <a href="javascript:void(0)" class="dropdown__trigger dropdown__trigger-js">
-                <span><?php echo ($activeTab == 'S') ? Labels::getLabel('Lbl_Seller', $siteLangId) : (($activeTab == 'B') ? Labels::getLabel('Lbl_Buyer', $siteLangId) : (($activeTab == 'Ad') ? Labels::getLabel('Lbl_Advertiser', $siteLangId) : '')) ?></span><i class="chevron"></i></a>
-            <div class="dropdown__target dropdown__target-lang dropdown__target-js">
-                <div class="dropdown__target-space">
-                    <!--<span class="expand-heading">User</span>-->
-                    <ul class="list-vertical list-vertical--tick">
-                        <?php if (User::canViewSupplierTab()) { ?>
-                        <li <?php if ($activeTab == 'S') {
-                             echo 'class="is-active"';
-                            } ?>>
-                            <a href="<?php echo CommonHelper::generateUrl('Seller'); ?>"><?php echo Labels::getLabel('Lbl_Seller', $siteLangId);?></a></li>
-                        <?php }?>
-                        <?php if (User::canViewBuyerTab()) { ?>
-                        <li <?php if ($activeTab == 'B') {
-                            echo 'class="is-active"';
-                            } ?>>
-                            <a href="<?php echo CommonHelper::generateUrl('Buyer'); ?>"><?php echo Labels::getLabel('Lbl_Buyer', $siteLangId);?></a></li>
-                        <?php }?>
-                        <?php if (User::canViewAdvertiserTab()) { ?>
-                        <li <?php if ($activeTab == 'Ad') {
-                            echo 'class="is-active"';
-                            } ?>>
-                            <a href="<?php echo CommonHelper::generateUrl('Advertiser'); ?>"><?php echo Labels::getLabel('Lbl_Advertiser', $siteLangId);?></a></li>
-                        <?php }?>
-                    </ul>
-                </div>
-            </div>
-        </div>
+        
+		<div class="dropdown dashboard-user">
+		  <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dashboardDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<?php echo ($activeTab == 'S') ? Labels::getLabel('Lbl_Seller', $siteLangId) : (($activeTab == 'B') ? Labels::getLabel('Lbl_Buyer', $siteLangId) : (($activeTab == 'Ad') ? Labels::getLabel('Lbl_Advertiser', $siteLangId) : '')) ?>
+		  </button>
+		  <div class="dropdown-menu dropdown-menu-fit dropdown-menu-anim" aria-labelledby="dashboardDropdown">
+		  <ul class="nav nav-block">
+				<?php if (User::canViewSupplierTab()) { ?>
+				<li class="nav__item <?php echo ($activeTab == 'S') ? 'is-active' : ''; ?>">
+					<a class="dropdown-item nav__link" href="<?php echo CommonHelper::generateUrl('Seller'); ?>"><?php echo Labels::getLabel('Lbl_Seller', $siteLangId);?></a></li>
+				<?php }?>
+				<?php if (User::canViewBuyerTab()) { ?>
+				<li class="nav__item <?php echo ($activeTab == 'B') ? 'is-active' : ''; ?>">
+					<a class="dropdown-item nav__link" href="<?php echo CommonHelper::generateUrl('Buyer'); ?>"><?php echo Labels::getLabel('Lbl_Buyer', $siteLangId);?></a></li>
+				<?php }?>
+				<?php if (User::canViewAdvertiserTab()) { ?>
+				<li class="nav__item <?php echo ($activeTab == 'Ad') ? 'is-active' : ''; ?>">
+					<a class="dropdown-item nav__link" href="<?php echo CommonHelper::generateUrl('Advertiser'); ?>"><?php echo Labels::getLabel('Lbl_Advertiser', $siteLangId);?></a></li>
+				<?php }?>
+			</ul>
+
+		  </div>
+		</div>
+		
+		 
         <?php } ?>
         <div class="header-icons-group">
             <?php $getOrgUrl = (CONF_DEVELOPMENT_MODE) ? true : false; ?>

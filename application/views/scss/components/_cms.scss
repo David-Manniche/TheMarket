@@ -234,24 +234,15 @@
         th {
             font-weight: 600;
         }
+
+        th,
+        td {
+            padding: 10px;
+            font-size: 0.875rem;
+            vertical-align: top;
+        }
+
     }
-}
-
-
-.cms table th,
-.cms table td {
-    padding: 10px;
-    font-size: 0.875rem;
-    vertical-align: top;
-}
-
-.cms p {
-    color: var(--txt-color);
-    font-weight: 400;
-    font-size: 0.875rem;
-    line-height: 1.8;
-    margin-bottom: 1rem;
-    word-break: break-word;
 }
 
 /*list*/
