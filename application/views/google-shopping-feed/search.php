@@ -76,8 +76,9 @@ foreach ($arrListing as $sn => $row) {
                     $li->appendElement(
                         'a',
                         [
-                            'href' => CommonHelper::generateUrl('Advertisement', 'publishBatch', [$row['adsbatch_id']]),
-                            'title' => Labels::getLabel('LBL_PUBLISH', $siteLangId)
+                            'href' => 'javascript:void(0)',
+                            'title' => Labels::getLabel('LBL_PUBLISH', $siteLangId),
+                            'onclick' => "publishBatch(" . $row['adsbatch_id'] . ")"
                         ],
                         '<i class="fa fa-rss"></i>',
                         true
@@ -86,7 +87,7 @@ foreach ($arrListing as $sn => $row) {
                     $li->appendElement(
                         'a',
                         [
-                            'href' => CommonHelper::generateUrl('Advertisement', 'bindProducts', [$row['adsbatch_id']]),
+                            'href' => CommonHelper::generateUrl($keyName, 'bindProducts', [$row['adsbatch_id']]),
                             'title' => Labels::getLabel('LBL_BIND_PRODUCTS', $siteLangId)
                         ],
                         '<i class="fa fa-link"></i>',
@@ -97,7 +98,8 @@ foreach ($arrListing as $sn => $row) {
                         'a',
                         [
                             'href' => 'javascript:void(0)',
-                            'title' => Labels::getLabel('LBL_EDIT', $siteLangId), "onclick" => "form(" . $row['adsbatch_id'] . ")"
+                            'title' => Labels::getLabel('LBL_EDIT', $siteLangId),
+                            'onclick' => "getBatchForm(" . $row['adsbatch_id'] . ")"
                         ],
                         '<i class="fa fa-pencil"></i>',
                         true

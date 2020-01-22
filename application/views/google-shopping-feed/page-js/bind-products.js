@@ -1,3 +1,4 @@
+var keyName = 'GoogleShoppingFeed';
 $(document).ready(function() {
     bindproductform();
     searchproducts();
@@ -37,7 +38,7 @@ $(document).on('keyup', "input[name='google_product_category']", function(){
         currObj.siblings('ul.dropdown-menu').remove();
         currObj.autocomplete({'source': function(request, response) {
         		$.ajax({
-        			url: fcom.makeUrl('Advertisement', 'getProductCategory'),
+        			url: fcom.makeUrl(keyName, 'getProductCategory'),
         			data: {keyword: request,fIsAjax:1,keyword:currObj.val()},
         			dataType: 'json',
         			type: 'post',
@@ -66,7 +67,7 @@ $(document).on('keyup', "input[name='google_product_category']", function(){
 	bindproductform = function(selProdId = 0){
         $(bindProductForm).html(fcom.getLoader());
         var adsBatchId = $("input[name='adsBatchId']").val();
-		fcom.ajax(fcom.makeUrl('Advertisement','bindProductForm', [adsBatchId, selProdId]),'',function(res){
+		fcom.ajax(fcom.makeUrl(keyName,'bindProductForm', [adsBatchId, selProdId]),'',function(res){
 			$(bindProductForm).html(res);
 		});
     };
@@ -78,7 +79,7 @@ $(document).on('keyup', "input[name='google_product_category']", function(){
 	searchproducts = function(){
         $(dv).html(fcom.getLoader());
         var adsBatchId = $("input[name='adsBatchId']").val();
-		fcom.ajax(fcom.makeUrl('Advertisement','searchProducts', [adsBatchId]),'',function(res){
+		fcom.ajax(fcom.makeUrl(keyName,'searchProducts', [adsBatchId]),'',function(res){
 			$(dv).html(res);
 		});
     };
@@ -86,7 +87,7 @@ $(document).on('keyup', "input[name='google_product_category']", function(){
 	setupProductsToBatch = function (frm){
 		if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);
-		fcom.updateWithAjax(fcom.makeUrl('Advertisement', 'setupProductsToBatch'), data, function(t) {
+		fcom.updateWithAjax(fcom.makeUrl(keyName, 'setupProductsToBatch'), data, function(t) {
             bindproductform();
             searchproducts();
 		});
@@ -97,7 +98,7 @@ $(document).on('keyup', "input[name='google_product_category']", function(){
 		if( !agree ){
 			return false;
 		}
-		fcom.updateWithAjax(fcom.makeUrl('Advertisement', 'unlinkProduct', [adsBatchId, selProdId]), '', function(t) {
+		fcom.updateWithAjax(fcom.makeUrl(keyName, 'unlinkProduct', [adsBatchId, selProdId]), '', function(t) {
             searchproducts();
 		});
     }
@@ -110,7 +111,7 @@ $(document).on('keyup', "input[name='google_product_category']", function(){
         var agree = confirm(langLbl.confirmDelete);
 		if( !agree ){ return false; }
         var data = fcom.frmData(document.getElementById('frmBatchSelprodListing'));
-        fcom.ajax(fcom.makeUrl('Advertisement', 'unlinkProducts', [adsBatchId]), data, function(t) {
+        fcom.ajax(fcom.makeUrl(keyName, 'unlinkProducts', [adsBatchId]), data, function(t) {
             var ans = $.parseJSON(t);
 			if( ans.status == 1 ){
 				$.mbsmessage(ans.msg, true, 'alert--success');

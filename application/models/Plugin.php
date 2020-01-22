@@ -102,10 +102,10 @@ class Plugin extends MyAppModel
         ];
     }
 
-    private static function pluginTypeSrchObj($typeId, $langId, $assoc = true, $active = false)
+    private static function pluginTypeSrchObj($typeId, $langId, $customCols = true, $active = false)
     {
         $srch = static::getSearchObject($langId, $active);
-        if (false === $assoc) {
+        if (false === $customCols) {
             $srch->addMultipleFields(
                 [
                     static::DB_TBL_PREFIX . 'id',
@@ -175,6 +175,11 @@ class Plugin extends MyAppModel
 
     public function getDefaultPluginKeyName($pluginType)
     {
+        return $this->getDefaultPluginData($pluginType, 'plugin_code');
+    }
+
+    public function getDefaultPluginData($pluginType, $attr = null, $langId = 0)
+    {
         if (!in_array($pluginType, self::HAVING_KINGPIN)) {
             $this->error = Labels::getLabel('MSG_INVALID_PLUGIN_TYPE', CommonHelper::getLangId());
             return false;
@@ -184,6 +189,25 @@ class Plugin extends MyAppModel
             $this->error = Labels::getLabel('MSG_ADVERTISEMENT_PLUGIN_NOT_FOUND', CommonHelper::getLangId());
             return false;
         }
-        return Plugin::getAttributesById($defaultCurrConvAPI, 'plugin_code');
+
+        if (0 < $langId) {
+            $customCols = !empty($attr) ? true : false;
+            $srch = static::pluginTypeSrchObj($pluginType, $langId, $customCols, true);
+            if (!empty($attr)) {
+                if (is_string($attr) && 'plugin_name' == $attr) {
+                    $col = 'COALESCE(plg_l.' . static::DB_TBL_PREFIX . 'name, plg.' . static::DB_TBL_PREFIX . 'identifier) as plugin_name';
+                    $srch->addFld($col);
+                } else {
+                    $srch->addMultipleFields($attr);
+                }
+            }
+            $rs = $srch->getResultSet();
+            $result = FatApp::getDb()->fetch($rs);
+            if (is_string($attr)) {
+                return $result[$attr];
+            }
+            return $result;
+        }
+        return Plugin::getAttributesById($defaultCurrConvAPI, $attr);
     }
 }

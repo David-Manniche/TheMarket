@@ -9,7 +9,7 @@ class AdvertisementFeedBaseController extends SellerPluginBaseController
 
     protected function redirectBack()
     {
-        FatApp::redirectUser(CommonHelper::generateUrl('Advertisement'));
+        FatApp::redirectUser(CommonHelper::generateUrl(get_called_class()::KEY_NAME));
     }
 
     protected function updateMerchantAccountDetail($detail = [], $redirect = true)

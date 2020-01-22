@@ -1,5 +1,6 @@
+var keyName = 'GoogleShoppingFeed';
 $(document).ready(function() {
-    form();
+    batchForm();
     search();
 });
 
@@ -9,15 +10,15 @@ $(document).ready(function() {
     
 	search = function(){
 		$(dv).html(fcom.getLoader());
-		fcom.ajax(fcom.makeUrl('Advertisement','search'),'',function(res){
+		fcom.ajax(fcom.makeUrl(keyName,'search'),'',function(res){
 			$(dv).html(res);
 		});
     };
     
-	form = function(adsBatchId = 0){
+	batchForm = function(adsBatchId = 0){
         $(batchSetup).html(fcom.getLoader());
         $('html, body').animate({scrollTop: $(batchSetup).offset().top - 150 }, 'slow');
-		fcom.ajax(fcom.makeUrl('Advertisement','form', [adsBatchId]),'',function(res){
+		fcom.ajax(fcom.makeUrl(keyName, 'batchForm', [adsBatchId]),'',function(res){
             $(batchSetup).html(res);
             $('.date_js').datepicker('option', {
                 minDate: new Date()
@@ -25,28 +26,24 @@ $(document).ready(function() {
 		});
     };
     
-	pluginForm = function(keyName){
-        if (typeof keyName == 'undefined'){
-            $.systemMessage(langLbl.invalidRequest,'alert--danger');
-            return false;
-        }
+	serviceAccountForm = function(){
         $.facebox(function() {
-            fcom.ajax(fcom.makeUrl(keyName, 'getForm'),'',function(res){
+            fcom.ajax(fcom.makeUrl(keyName, 'serviceAccountForm'),'',function(res){
                 $.facebox(res,'faceboxWidth');
             });
 		});
     };
     
     clearForm = function() {
-        form();
+        batchForm();
     };
 
 
-	setup = function (frm){
+	setupBatch = function (frm){
 		if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);
-		fcom.updateWithAjax(fcom.makeUrl('Advertisement', 'setup'), data, function(t) {
-            form();
+		fcom.updateWithAjax(fcom.makeUrl(keyName, 'setupBatch'), data, function(t) {
+            batchForm();
             search();
 		});
     }
@@ -56,7 +53,7 @@ $(document).ready(function() {
 		if( !agree ){
 			return false;
 		}
-		fcom.updateWithAjax(fcom.makeUrl('Advertisement', 'deleteBatch', [adsBatchId]), '', function(t) {
+		fcom.updateWithAjax(fcom.makeUrl(keyName, 'deleteBatch', [adsBatchId]), '', function(t) {
             search();
 		});
     }
@@ -64,9 +61,21 @@ $(document).ready(function() {
     setuppluginform = function (frm) {
         if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
-		fcom.updateWithAjax(frm.action, data, function(t) {
+		fcom.updateWithAjax(fcom.makeUrl(keyName, 'setupServiceAccountForm'), data, function(t) {
             $(document).trigger('close.facebox');
             location.reload();
+        });
+    }
+
+    publishBatch = function (adsBatchId) {
+        $.mbsmessage(langLbl.processing,true,'alert--process alert');   
+		fcom.updateWithAjax(fcom.makeUrl(keyName, 'publishBatch', [adsBatchId]), '', function(t) {
+            if( t.status == 1 ){
+				$.mbsmessage(t.msg, true, 'alert--success');
+			} else {
+                $.mbsmessage(t.msg, true, 'alert--danger');
+            }
+            search();
         });
     }
 })();

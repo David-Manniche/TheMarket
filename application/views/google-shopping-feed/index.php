@@ -22,8 +22,8 @@ $serviceAccInfo = isset($userData['service_account']) ? $userData['service_accou
                                     <a class="btn btn--primary-border btn--sm" href="<?php echo CommonHelper::generateUrl($keyName, 'getAccessToken')?>" title="<?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?>"><?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?></a>
                                 <?php } ?>
                             </h6>
-                            <?php if (false !== $havePluginFrm && !empty($merchantId)) { ?>
-                                <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="pluginForm('<?php echo $keyName; ?>');" id="userAccInfoBtn">Service Account Info </a>
+                            <?php if (!empty($merchantId)) { ?>
+                                <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="serviceAccountForm();" id="userAccInfoBtn">Service Account Info </a>
                             <?php } ?>
                         </div>
                     </div>
@@ -56,7 +56,7 @@ $serviceAccInfo = isset($userData['service_account']) ? $userData['service_accou
     </div>
 </main>
 
-<?php if (!empty($merchantId) && false !== $havePluginFrm && empty($serviceAccInfo)) { ?>
+<?php if (!empty($merchantId) && empty($serviceAccInfo)) { ?>
     <script>
         pluginForm();
     </script>

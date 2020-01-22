@@ -62,7 +62,6 @@ class PluginSetting
             $singleColumn = true;
         }
         $rs = $srch->getResultSet();
-
         if ($singleColumn) {
             $result = FatApp::getDb()->fetch($rs);
             return $result[static::DB_TBL_PREFIX . 'value'];
@@ -72,7 +71,7 @@ class PluginSetting
 
     public static function getConfDataByCode($keyName, $column = '', $langId = 0)
     {
-        $settingsData = Plugin::getAttributesByCode($keyName, $column, $langId);
+        $settingsData = Plugin::getAttributesByCode($keyName, '', $langId);
         if (!$settingsData) {
             return false;
         }
