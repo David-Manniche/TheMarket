@@ -73,4 +73,36 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $merchantId = array_shift($accountDetail)->merchantId;
         $this->updateMerchantAccountDetail([self::KEY_NAME . '_merchantId' => $merchantId]);
     }
+
+    private function form()
+    {
+        $settings = $this->getSettings($this->siteLangId);
+        $frm = new Form('frmServiceAccount');
+        $privateKey = $frm->addTextArea(Labels::getLabel('LBL_SERVICE_ACCOUNT_DETAIL', $this->siteLangId), 'service_account');
+        $privateKey->requirements()->setRequired();
+        $privateKey->htmlAfterField = isset($settings['plugin_description']) ? $settings['plugin_description'] : '';
+        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
+        return $frm;
+    }
+
+    public function getForm()
+    {
+        $data = User::getUserMeta(UserAuthentication::getLoggedUserId());
+        $frm = $this->form();
+        if (!empty($data) && 0 < count($data)) {
+            $frm->fill($data);
+        }
+        $this->set('frm', $frm);
+        $this->set('keyName', self::KEY_NAME);
+        $this->_template->render(false, false, 'advertisement/get-plugin-form.php');
+    }
+
+    
+    public function setup()
+    {
+        $frm = $this->form();
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        unset($post['btn_submit']);
+        $this->updateMerchantAccountDetail($post, false);
+    }
 }

@@ -12,7 +12,7 @@ class AdvertisementFeedBaseController extends SellerPluginBaseController
         FatApp::redirectUser(CommonHelper::generateUrl('Advertisement'));
     }
 
-    protected function updateMerchantAccountDetail($detail = [])
+    protected function updateMerchantAccountDetail($detail = [], $redirect = true)
     {
         if (!is_array($detail)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
@@ -21,10 +21,15 @@ class AdvertisementFeedBaseController extends SellerPluginBaseController
         foreach ($detail as $key => $value) {
             if (false === $obj->updateUserMeta($key, $value)) {
                 Message::addErrorMessage($obj->getError());
-                $this->redirectBack();
+                if (true === $redirect) {
+                    $this->redirectBack();
+                }
             }
         }
         Message::addMessage(Labels::getLabel("MSG_SUCCESSFULLY_UPDATED", $this->siteLangId));
+        if (false === $redirect) {
+            FatUtility::dieJsonSuccess(Message::getHtml());
+        }
         $this->redirectBack();
     }
 

@@ -63,24 +63,6 @@ class AdvertisementController extends LoggedUserController
         return $frm;
     }
 
-    public function getPluginForm()
-    {
-        try {
-            if (true == method_exists($this->keyName, 'form')) {
-                $data = User::getUserMeta($this->userId);
-                $frm = $this->keyName::form($this->siteLangId);
-                if (!empty($data) && 0 < count($data)) {
-                    $frm->fill($data);
-                }
-                $this->set('frm', $frm);
-                $this->_template->render(false, false);
-            }
-        } catch (\Error $e) {
-            FatUtility::dieWithError('ERR - ' . $e->getMessage());
-        }
-        return false;
-    }
-
     private function validateBatchRequest($adsBatchId)
     {
         $recordData = AdsBatch::getBatchesByUserId($this->userId, $adsBatchId);
@@ -96,7 +78,7 @@ class AdvertisementController extends LoggedUserController
     {
         $pluginName = Plugin::getAttributesByCode($this->keyName, 'plugin_identifier');
         $userData = User::getUserMeta($this->userId);
-        $this->set('havePluginFrm', method_exists($this->keyName, 'form'));
+        $this->set('havePluginFrm', method_exists($this->keyName . 'Controller', 'form'));
         $this->set('userData', $userData);
         $this->set('keyName', $this->keyName);
         $this->set('pluginName', $pluginName);
@@ -177,25 +159,6 @@ class AdvertisementController extends LoggedUserController
         }
 
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_ADS_BATCH_SETUP_SUCCESSFULLY', $this->siteLangId));
-    }
-
-    public function setupPluginForm()
-    {
-        try {
-            if (true == method_exists($this->keyName, 'form')) {
-                $frm = $this->keyName::form($this->siteLangId);
-                $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-                unset($post['btn_submit']);
-                $uObj = new User(UserAuthentication::getLoggedUserId());
-                foreach ($post as $key => $value) {
-                    $uObj->updateUserMeta($key, trim($value));
-                }
-                FatUtility::dieJsonSuccess(Labels::getLabel('MSG_UPDATED_SUCCESSFULLY', $this->siteLangId));
-            }
-        } catch (\Error $e) {
-            FatUtility::dieWithError('ERR - ' . $e->getMessage());
-        }
-        FatUtility::dieJsonError(Labels::getLabel("MSG_UNABLE_TO_UPDATE", $this->siteLangId));
     }
 
     public function setupProductsToBatch()

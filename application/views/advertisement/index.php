@@ -23,7 +23,7 @@ $serviceAccInfo = isset($userData['service_account']) ? $userData['service_accou
                                 <?php } ?>
                             </h6>
                             <?php if (false !== $havePluginFrm && !empty($merchantId)) { ?>
-                                <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="pluginForm();" id="userAccInfoBtn">Service Account Info </a>
+                                <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="pluginForm('<?php echo $keyName; ?>');" id="userAccInfoBtn">Service Account Info </a>
                             <?php } ?>
                         </div>
                     </div>

@@ -22,19 +22,7 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
             'adult' => Labels::getLabel('LBL_TYPICALLY_TEENS_OR_OLDER', $langId) . ' - ' . Labels::getLabel('LBL_ADULT', $langId),
         ];
     }
-
-    public static function form($langId)
-    {
-        $obj = new GoogleShoppingFeed();
-        $settings = $obj->getSettings();
-        $frm = new Form('frmServiceAccount');
-        $privateKey = $frm->addTextArea(Labels::getLabel('LBL_SERVICE_ACCOUNT_DETAIL', $langId), 'service_account');
-        $privateKey->requirements()->setRequired();
-        $privateKey->htmlAfterField = isset($settings['plugin_description']) ? $settings['plugin_description'] : '';
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
-        return $frm;
-    }
-
+    
     private function doRequest($data)
     {
         $client = new Google_Client();

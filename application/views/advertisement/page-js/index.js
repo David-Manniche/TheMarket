@@ -25,10 +25,13 @@ $(document).ready(function() {
 		});
     };
     
-	pluginForm = function(){
+	pluginForm = function(keyName){
+        if (typeof keyName == 'undefined'){
+            $.systemMessage(langLbl.invalidRequest,'alert--danger');
+            return false;
+        }
         $.facebox(function() {
-            var btn = "#userAccInfoBtn";
-            fcom.ajax(fcom.makeUrl('Advertisement','getPluginForm'),'',function(res){
+            fcom.ajax(fcom.makeUrl(keyName, 'getForm'),'',function(res){
                 $.facebox(res,'faceboxWidth');
             });
 		});
@@ -61,7 +64,7 @@ $(document).ready(function() {
     setuppluginform = function (frm) {
         if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
-		fcom.updateWithAjax(fcom.makeUrl('Advertisement', 'setupPluginForm'), data, function(t) {
+		fcom.updateWithAjax(frm.action, data, function(t) {
             $(document).trigger('close.facebox');
             location.reload();
         });

@@ -120,6 +120,7 @@ class MyAppController extends FatController
         'atleastOneRecord' => Labels::getLabel('LBL_Please_select_atleast_one_record.', $this->siteLangId),
         'primaryLanguageField' => Labels::getLabel('LBL_PRIMARY_LANGUAGE_DATA_NEEDS_TO_BE_FILLED_FOR_SYSTEM_TO_TRANSLATE_TO_OTHER_LANGUAGES.', $this->siteLangId),
         'unknownPrimaryLanguageField' => Labels::getLabel('LBL_PRIMARY_LANGUAGE_FIELD_IS_NOT_SET.', $this->siteLangId),
+        'invalidRequest' => Labels::getLabel('LBL_INVALID_REQUEST', $this->siteLangId),
         );
 
         $languages = Language::getAllNames(false);

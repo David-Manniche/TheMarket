@@ -6,7 +6,7 @@ class SellerPluginBaseController extends SellerBaseController
         parent::__construct($action);
     }
 
-    public function getSettings()
+    public function getSettings($langId = 0, $column = '')
     {
         try {
             $keyName = get_called_class()::KEY_NAME;
@@ -18,6 +18,6 @@ class SellerPluginBaseController extends SellerBaseController
             Message::addErrorMessage($message);
             CommonHelper::redirectUserReferer();
         }
-        return PluginSetting::getConfDataByCode($keyName);
+        return PluginSetting::getConfDataByCode($keyName, $column, $langId);
     }
 }
