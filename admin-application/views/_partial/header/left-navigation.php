@@ -52,6 +52,8 @@
                     <li><a href="<?php echo CommonHelper::generateUrl('sellerProducts', 'index');?>"><?php echo Labels::getLabel('LBL_Seller_Inventory', $adminLangId);?></a></li>
                     <li><a href="<?php echo CommonHelper::generateUrl('sellerProducts', 'specialPrice');?>"><?php echo Labels::getLabel('LBL_Special_Price', $adminLangId);?></a></li>
                     <li><a href="<?php echo CommonHelper::generateUrl('sellerProducts', 'volumeDiscount');?>"><?php echo Labels::getLabel('LBL_Volume_Discount', $adminLangId);?></a></li>
+                    <li><a href="<?php echo CommonHelper::generateUrl('sellerProducts', 'upsellProducts');?>"><?php echo Labels::getLabel('LBL_Buy_Together_Products', $adminLangId);?></a></li>
+                    <li><a href="<?php echo CommonHelper::generateUrl('sellerProducts', 'relatedProducts');?>"><?php echo Labels::getLabel('LBL_Related_Products', $adminLangId);?></a></li>
                     <?php }/* if($objPrivilege->canViewProducts(AdminAuthentication::getLoggedAdminId(), true)){ ?>
                     <li><a href="<?php echo CommonHelper::generateUrl('sellerProducts','catalog');?>"><?php echo Labels::getLabel('LBL_Add_New_Product',$adminLangId);?></a></li>
                     <?php } */ ?>
