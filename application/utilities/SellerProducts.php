@@ -183,7 +183,7 @@ trait SellerProducts
             Message::addErrorMessage(Labels::getLabel("LBL_Please_Upgrade_your_package_to_add_new_products", $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        $productRow = Product::getAttributesById($product_id, array('product_active','product_seller_id','product_added_by_admin_id','product_cod_enabled','product_type','product_approved'));
+        $productRow = Product::getAttributesById($product_id, array('product_active','product_seller_id','product_added_by_admin_id','product_cod_enabled','product_type','product_approved', 'product_min_selling_price'));
 
         if (!$productRow) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
@@ -268,6 +268,7 @@ trait SellerProducts
         $this->set('selprod_id', $selprod_id);
         $this->set('product_type', $productRow['product_type']);
         $this->set('shippedBySeller', $shippedBySeller);
+        $this->set('productMinSellingPrice', $productRow['product_min_selling_price']);
         $this->set('language', Language::getAllNames());
         $this->set('activeTab', 'GENERAL');
         $this->_template->render(false, false);

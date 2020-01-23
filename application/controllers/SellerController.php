@@ -3900,8 +3900,8 @@ class SellerController extends SellerBaseController
         }
         $frm->addRequiredField(Labels::getLabel('LBL_Title', $this->siteLangId), 'selprod_title'.FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
         $frm->addRequiredField(Labels::getLabel('LBL_Url_Keyword', $this->siteLangId), 'selprod_url_keyword');
-        $frm->addRadioButtons(Labels::getLabel('LBL_Do_You_Want_to_Maintain_Stock_Levels?', $this->siteLangId), 'selprod_subtract_stock', applicationConstants::getYesNoArr($this->siteLangId), applicationConstants::YES);
-        $frm->addRadioButtons(Labels::getLabel('LBL_Do_You_Want_to_Track_Product_Inventory?', $this->siteLangId), 'selprod_track_inventory', Product::getInventoryTrackArr($this->siteLangId), Product::INVENTORY_NOT_TRACK);
+        $frm->addCheckBox(Labels::getLabel('LBL_System_Should_Maintain_Stock_Levels?', $this->siteLangId), 'selprod_subtract_stock', applicationConstants::YES, array(), false, 0);
+        $frm->addCheckBox(Labels::getLabel('LBL_System_Should_Track_Product_Inventory?', $this->siteLangId), 'selprod_track_inventory', Product::INVENTORY_TRACK, array(), false, 0);
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Alert_Stock_Level', $this->siteLangId), 'selprod_threshold_stock_level');
         $fld->requirements()->setInt();
         $fld = $frm->addIntegerField(Labels::getLabel('LBL_Minimum_Purchase_Quantity', $this->siteLangId), 'selprod_min_order_qty');
@@ -3976,7 +3976,6 @@ class SellerController extends SellerBaseController
                     $fld->requirements()->setPositive();
                     if (isset($productData['product_min_selling_price'])) {
                         $fld->requirements()->setRange($productData['product_min_selling_price'], 9999999999);
-                        $fld->htmlAfterField='<small class="text--small">'.Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates', $this->siteLangId).'</small> <br><small class="text--small">'.Labels::getLabel('LBL_Min_Selling_price', $this->siteLangId). CommonHelper::displayMoneyFormat($productData['product_min_selling_price'], true, true).'</small>';
                     }
 
                     $fld = $frm->addIntegerField(Labels::getLabel('LBL_Quantity', $this->siteLangId), 'selprod_stock'.$optionKey);
@@ -3986,7 +3985,6 @@ class SellerController extends SellerBaseController
                     if (FatApp::getConfig("CONF_PRODUCT_SKU_MANDATORY", FatUtility::VAR_INT, 1)) {
                         $fld_sku->requirements()->setRequired();
                     }
-                    $fld_sku->htmlAfterField='<br/><small class="text--small">'.Labels::getLabel('LBL_Stock_Keeping_Unit', $this->siteLangId).'</small>';
                 }
             }
         }
