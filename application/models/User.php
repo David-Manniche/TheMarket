@@ -1655,7 +1655,7 @@ class User extends MyAppModel
         return true;
     }
 
-    public static function getUserBalance($user_id, $excludePendingWidrawReq = true, $excludePromotion = true)
+    public static function getUserBalance($user_id, $excludePendingWidrawReq = true, $excludePromotion = true, $excludeProcessedWidrawReq = true)
     {
         $user_id = FatUtility::int($user_id);
         $srch = new SearchBase('tbl_user_transactions', 'txn');
@@ -1679,7 +1679,10 @@ class User extends MyAppModel
             $srch->addGroupBy('uwr.withdrawal_user_id');
             $srch->addMultipleFields(array("SUM(withdrawal_amount) as withdrawal_amount"));
             $srch->addCondition('withdrawal_user_id', '=', $user_id);
-            $srch->addCondition('withdrawal_status', '=', Transactions::WITHDRAWL_STATUS_PENDING);
+            $cnd = $srch->addCondition('withdrawal_status', '=', Transactions::WITHDRAWL_STATUS_PENDING);
+            if (true == $excludeProcessedWidrawReq) {
+                $cnd->attachCondition('withdrawal_status', '=', Transactions::WITHDRAWL_STATUS_PROCESSED);
+            }
             $rs = $srch->getResultSet();
             if ($res = FatApp::getDb()->fetch($rs)) {
                 $userBalance = $userBalance - $res["withdrawal_amount"];
