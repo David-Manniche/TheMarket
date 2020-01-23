@@ -12,7 +12,7 @@
                 } ?>
                 </h6>
             </div>
-            <div class="section__action"><a href="#" class="btn btn--primary-border btn--sm" onClick="showAddressList()"><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></a> </div>
+            <div class="section__action"><a href="#" class="btn btn-outline-primary btn--sm" onClick="showAddressList()"><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></a> </div>
         </div>
         <div class="shipping-address">
             <?php echo $defaultAddress['ua_identifier']; ?><br>
@@ -29,7 +29,7 @@
             <div class="section__heading">
                 <h6><?php echo Labels::getLabel('LBL_Order_Summary', $siteLangId); ?> - <?php echo count($products); ?> <?php echo Labels::getLabel('LBL_item(s)', $siteLangId); ?></h6>
             </div>
-            <div class="section__action js-editCart" style="display:block;"><a href="javascript:void(0);" onClick="editCart()" class="btn btn--primary-border btn--sm"><?php echo Labels::getLabel('LBL_Edit_Cart', $siteLangId);?></a> </div>
+            <div class="section__action js-editCart" style="display:block;"><a href="javascript:void(0);" onClick="editCart()" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Edit_Cart', $siteLangId);?></a> </div>
         </div>
         <div class="scrollbar-order-list" data-simplebar>
             <table class="cart-summary  table--justify order-table">

@@ -14,7 +14,7 @@
 
 <div class=" align--center">
 	<div class="no-product">
-		<div class="block--empty align--center">
+		<div class="block--empty m-auto text-center">
 			<img class="block__img" src="<?php echo CONF_WEBROOT_URL; ?>images/retina/empty_cart.svg" alt="<?php echo Labels::getLabel('LBL_No_Product_found', $siteLangId);?>">
 			<h2><?php echo Labels::getLabel('LBL_WE_COULD_NOT_FIND_ANY_MATCHES!', $siteLangId); ?></h2>
 			<h6><?php echo Labels::getLabel('LBL_Please_check_if_you_misspelt_something_or_try_searching_again_with_fewer_keywords.', $siteLangId); ?>

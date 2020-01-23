@@ -47,7 +47,7 @@
     $submitBtnFld = $frm->getField('btn_submit');
     $cancelBtnFld = $frm->getField('btn_cancel');
     $cancelBtnFld->setFieldTagAttribute('onClick', 'closeForm()');
-    $cancelBtnFld->setFieldTagAttribute('class', 'btn--primary-border');
+    $cancelBtnFld->setFieldTagAttribute('class', 'btn-outline-primary');
     $submitBtnFld->attachField($cancelBtnFld);
 
     echo $frm->getFormHtml();?> </div>

@@ -13,7 +13,7 @@ class ShopsController extends MyAppController
         $searchForm = $this->getShopSearchForm($this->siteLangId);
         $this->set('searchForm', $searchForm);
         $this->_template->addJs('js/slick.min.js');
-        $this->_template->addCss(array('css/slick.css','css/product-detail.css'));
+         
         $this->_template->render();
     }
 
@@ -228,7 +228,6 @@ class ShopsController extends MyAppController
 
             $this->includeProductPageJsCss();
             $this->_template->addJs('js/slick.min.js');
-            $this->_template->addCss(array('css/slick.css','css/product-detail.css'));
             $this->_template->addJs('js/shop-nav.js');
             $this->_template->addJs('js/jquery.colourbrightness.min.js');
         }
@@ -248,8 +247,8 @@ class ShopsController extends MyAppController
         if (false === MOBILE_APP_API_CALL) {
             $this->includeProductPageJsCss();
             $this->_template->addJs(array('js/slick.min.js', 'js/responsive-img.min.js', 'js/shop-nav.js', 'js/jquery.colourbrightness.min.js'));
-            $this->_template->addCss(array('css/slick.css','css/product-detail.css'));
-        }
+            
+			}
 
         $this->_template->render();
     }
@@ -448,7 +447,7 @@ class ShopsController extends MyAppController
 
         $this->includeProductPageJsCss();
         $this->_template->addJs('js/slick.min.js');
-        $this->_template->addCss(array('css/slick.css','css/product-detail.css'));
+       
         $this->_template->addJs('js/shop-nav.js');
         $this->_template->addJs('js/jquery.colourbrightness.min.js');
         $this->_template->render(true, true, 'shops/view.php');

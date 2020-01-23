@@ -13,14 +13,16 @@
 
     .top-bar {
         padding: 0;
-        fill:#fff;
+        fill: #fff;
         color: #fff;
         background: var(--first-color);
         transition: all 300ms linear 0s;
         -webkit-transition: all 300ms linear 0s;
         -ms-transition: all 300ms linear 0s;
-        
-        a{ color: inherit;}
+
+        a {
+            color: inherit;
+        }
 
         .slogan {
             line-height: 1;
@@ -73,23 +75,27 @@
                         }
                     }
 
-                    a {
-                        color: inherit;
-                        display: block;
-                        font-size: 0.775em;
-                        padding: 8px 0.8rem;
-                        line-height: 1;
-                        text-decoration: none;
-                        display: -webkit-box;
-                        display: -ms-flexbox;
-                        display: flex;
-                        -webkit-box-pack: justify;
-                        -ms-flex-pack: justify;
-                        justify-content: space-between;
-                        -webkit-box-align: center;
-                        -ms-flex-align: center;
-                        align-items: center;
+                    > .dropdown {
+                        > a {
+                            color: inherit;
+                            display: block;
+                            font-size: 0.775em;
+                            padding: 8px 0.8rem;
+                            line-height: 1;
+                            text-decoration: none;
+                            display: -webkit-box;
+                            display: -ms-flexbox;
+                            display: flex;
+                            -webkit-box-pack: justify;
+                            -ms-flex-pack: justify;
+                            justify-content: space-between;
+                            -webkit-box-align: center;
+                            -ms-flex-align: center;
+                            align-items: center;
+                        }
                     }
+
+
 
                     .icn {
                         svg {
@@ -104,6 +110,8 @@
                 }
             }
         }
+        
+        .logout{ font-weight: 600; border-top:solid 1px var(--border-color); }
     }
 
 
@@ -337,10 +345,7 @@
                 }
             }
         }
-
-        .dropdown {
-            position: static;
-        }
+ 
 
         .dropdown__target {
             position: absolute;

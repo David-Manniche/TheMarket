@@ -76,7 +76,7 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
                             echo $imgFrm->getFieldHtml('img_data');
                             ?>
                             <?php if ($mode == 'Edit') { ?>
-                            <a class="btn btn--primary-border btn--sm mt-1" href="javascript:void(0)" onClick="removeProfileImage()"><?php echo Labels::getLabel('LBL_Remove', $siteLangId);?></a>
+                            <a class="btn btn-outline-primary btn--sm mt-1" href="javascript:void(0)" onClick="removeProfileImage()"><?php echo Labels::getLabel('LBL_Remove', $siteLangId);?></a>
                             <?php }?>
                             </form>
                             <?php echo $imgFrm->getExternalJS();?>

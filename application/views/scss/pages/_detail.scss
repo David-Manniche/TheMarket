@@ -160,16 +160,11 @@ html.quick-view--open {
     /*font-family: $family-primary;*/
     margin: 0;
     width: 100%;
-
     -webkit-box-flex: 0;
-
     -ms-flex: 0 0 48%;
-
     flex: 0 0 48%;
     max-width: 48%;
-    height: 40px;
-    line-height: 40px;
-    font-weight: normal;
+
 }
 
 .buy-group .btn .icn {
@@ -421,6 +416,14 @@ html.quick-view--open {
     -ms-flex-pack: justify;
     justify-content: space-between;
 
+    @include media-breakpoint-down(lg) {
+        & {
+            display: block;
+            position: relative;
+            top: auto;
+        }
+    }
+
 }
 
 .slider-for {
@@ -430,6 +433,12 @@ html.quick-view--open {
     -webkit-box-ordinal-group: 3;
     -ms-flex-order: 2;
     order: 2;
+
+    @include media-breakpoint-down(lg) {
+        & {
+            padding: 0;
+        }
+    }
 }
 
 .slider-for img {
@@ -446,6 +455,13 @@ html.quick-view--open {
     padding: 0;
     margin: 0px auto;
     width: 90px;
+
+
+    @include media-breakpoint-down(lg) {
+        & {
+            width: 100%;
+        }
+    }
 
 
 }
@@ -1301,8 +1317,9 @@ html.quick-view--open {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    /*justify-content: space-between;*/
-    /*font-family: $family-primary;*/
+    flex-wrap: nowrap;
+    overflow-x: auto;
+
 }
 
 .nav-detail ul li {
@@ -1430,10 +1447,6 @@ html.quick-view--open {
     text-decoration: underline;
 }
 
-
-
-
-
 .products__quickview {
     position: absolute;
     z-index: 2;
@@ -1507,4 +1520,43 @@ html.quick-view--open {
     min-width: inherit;
     white-space: nowrap;
     bottom: 50px;
+}
+
+
+
+.listing--progress-wrapper {
+    li {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0;
+        margin: 4px 0;
+
+        .progress_count {
+            font-size: 0.875em;
+            min-width: 50px;
+            color: var(--txt-color-light);
+        }
+
+        .progress__bar {
+            background: #f3f3f3;
+            height: 6px;
+            width: 100%;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            overflow: hidden;
+
+            .progress__fill {
+                background: #616161;
+            }
+        }
+    }
 }

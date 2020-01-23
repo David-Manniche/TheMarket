@@ -48,7 +48,7 @@
                                         $submitFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
 
                                         $fldClear= $frmSearch->getField('btn_clear');
-                                        $fldClear->setFieldTagAttribute('class', 'btn--block btn btn--primary-border');
+                                        $fldClear->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
                                         echo $frmSearch->getFormHtml();
                                         echo $frmSearch->getExternalJS();?>
                                     </div>

@@ -28,7 +28,7 @@
 
     $submitFld = $addressFrm->getField('btn_submit');
     $cancelFld = $addressFrm->getField('btn_cancel');
-    $cancelFld->setFieldTagAttribute('class','btn btn--primary-border');
+    $cancelFld->setFieldTagAttribute('class','btn btn-outline-primary');
     $cancelFld->setFieldTagAttribute('onclick','resetAddress()');
 ?>
 <div class="section-head">

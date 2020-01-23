@@ -8,7 +8,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
             <div class="content-header-right col-auto">
                 <div class="">
                     <a href="<?php echo CommonHelper::generateUrl('Account', 'wishlist');?>" class="btn btn--secondary btn--sm"><?php echo Labels::getLabel('LBL_Favorites', $siteLangId);?> </a>
-                    <a href="<?php echo CommonHelper::generateUrl('Account', 'myAddresses');?>" class="btn btn--secondary-border btn--sm"> <?php echo Labels::getLabel('LBL_Manage_Addresses', $siteLangId);?> </a>
+                    <a href="<?php echo CommonHelper::generateUrl('Account', 'myAddresses');?>" class="btn btn-outline-secondary btn--sm"> <?php echo Labels::getLabel('LBL_Manage_Addresses', $siteLangId);?> </a>
                 </div>
             </div>
         </div>

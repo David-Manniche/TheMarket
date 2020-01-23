@@ -50,14 +50,14 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                                     <br>
                                     <?php if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::NO) {
                                         if (empty($product['ufp_id'])) {  ?>
-                                            <a href="javascript:void(0)" class="btn btn--sm btn--primary-border ripplelink" onClick="addToFavourite( '<?php echo md5($product['key']); ?>',<?php echo $product['selprod_id']; ?> );"
+                                            <a href="javascript:void(0)" class="btn btn--sm btn-outline-primary ripplelink" onClick="addToFavourite( '<?php echo md5($product['key']); ?>',<?php echo $product['selprod_id']; ?> );"
                                         title="<?php echo Labels::getLabel('LBL_Move_to_wishlist', $siteLangId); ?>"><?php echo Labels::getLabel('LBL_Move_to_favourites', $siteLangId); ?></a>
                                         <?php } else {
                                             echo Labels::getLabel('LBL_Already_marked_as_favourites.', $siteLangId);
                                         }
                                     } else {
                                         if (empty($product['is_in_any_wishlist'])) { ?>
-                                            <a href="javascript:void(0)" class="btn btn--sm btn--primary-border ripplelink" onClick="moveToWishlist( <?php echo $product['selprod_id']; ?>, event, '<?php echo md5($product['key']); ?>' );"
+                                            <a href="javascript:void(0)" class="btn btn--sm btn-outline-primary ripplelink" onClick="moveToWishlist( <?php echo $product['selprod_id']; ?>, event, '<?php echo md5($product['key']); ?>' );"
                                         title="<?php echo Labels::getLabel('LBL_Move_to_wishlist', $siteLangId); ?>"><?php echo Labels::getLabel('LBL_Move_to_wishlist', $siteLangId); ?></a>
                                         <?php  } else {
 
@@ -163,7 +163,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 
                             <div class="buy-group">
                                 <a class="btn btn--primary" href="<?php echo CommonHelper::generateUrl(); ?>"><?php echo Labels::getLabel('LBL_Shop_More', $siteLangId); ?></a>
-                                <a class="btn btn--primary-border" href="javascript:void(0)" onclick="goToCheckout()"><?php echo Labels::getLabel('LBL_Checkout', $siteLangId); ?></a>
+                                <a class="btn btn-outline-primary" href="javascript:void(0)" onclick="goToCheckout()"><?php echo Labels::getLabel('LBL_Checkout', $siteLangId); ?></a>
 
                             </div>
                         </td>

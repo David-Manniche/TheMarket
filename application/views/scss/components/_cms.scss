@@ -419,12 +419,12 @@
 .listing--check li a:before {
     height: 20px;
     width: 20px;
-    border: 2px solid #ddd;
+    border: 1px solid var(--border-color);
     position: absolute;
     left: 0;
     top: 0;
     content: "";
-    border-radius: 4px;
+    border-radius: 2px;
 }
 
 .listing--check li.is-active a:before {

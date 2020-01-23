@@ -1,53 +1,10 @@
 @media only screen and (max-width: 1399px) {
-    .ftshops .shop-detail-side {
-        max-width: 260px;
-    }
-
     .product-description .products__title h2 {
         font-size: 1.6rem;
     }
-
-    .shop-information {
-        padding: 20px;
-    }
-
 }
 
 @media only screen and (max-width: 1199px) {
-
-    .checkbox,
-    .radio {
-        font-size: 1rem;
-    }
-
-    .cat-accordion ul li a {
-        font-size: 1em;
-        padding: 5px;
-        display: block;
-    }
-
-    .cat-accordion ul ul {
-        -webkit-margin-start: 0;
-        -moz-margin-start: 0;
-        margin-inline-start: 0;
-        background: #f8f8f8;
-        padding: 10px;
-        margin: 10p 0;
-    }
-
-    .cart-summary th,
-    .cart-summary td {
-        font-size: 100%;
-    }
-
-    .cartdetail__body {
-        max-height: 300px;
-    }
-
-    body.fixed .top-bar {
-        margin-top: -40px;
-    }
-
     .dropsection {
         position: fixed;
         top: 0;
@@ -87,18 +44,8 @@
     .dropdown__target .list-vertical li {
         padding: 0;
     }
-
-    .list-vertical a {
-        font-size: 0.9em;
-        padding: 10px 0;
-    }
-
-
-
-    .short-links > ul > li > a {
-        font-size: 0.9em;
-    }
-
+    
+    
     .main-bar {
         padding: 10px 0;
     }
@@ -119,104 +66,9 @@
         display: inline-block;
         vertical-align: top;
     }
+ 
 
-    .shop-information {
-        padding: 20px !important;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        margin-bottom: 15px;
-    }
-
-    .shop-information .shop-logo {
-        margin-bottom: 0;
-    }
-
-    .shop-information .shop-info {
-        width: calc(100% - 170px);
-        text-align: left;
-        padding-top: 20px;
-        -webkit-padding-start: 30px;
-        -moz-padding-start: 30px;
-        padding-inline-start: 30px;
-    }
-
-    .shop-info .products__rating {
-        -webkit-box-pack: start !important;
-        -ms-flex-pack: start !important;
-        justify-content: start !important;
-        padding: 5px 0;
-    }
-
-    .product-detail-gallery {
-        display: block;
-        position: relative;
-        top: auto;
-    }
-
-    .slider-nav {
-        width: 100%;
-    }
-
-    .slider-for {
-        padding: 0;
-    }
-
-    .slider-nav .thumb {
-        border: none !important;
-        padding: 10px;
-        margin-bottom: 0;
-    }
-
-    .slider-nav .thumb > a {
-        display: block;
-        padding: 5px;
-        border: solid 1px var(--border-color) !important;
-        border-radius: 3px;
-    }
-
-    .slider-nav {
-        padding: 0 40px;
-    }
-
-    .slider-nav .slick-arrow {
-        position: absolute;
-        width: 40px;
-        top: 12px;
-        bottom: 12px;
-        height: auto;
-        margin-bottom: 0;
-    }
-
-    .slider-nav .slick-arrow.slick-prev {
-        right: auto;
-        left: 0;
-        top: 0;
-        bottom: 0;
-    }
-
-    .slider-nav .slick-arrow.slick-next {
-        right: 0;
-        top: 0;
-        bottom: 0;
-    }
-
-    .slider-nav .slick-prev:after {
-        -webkit-transform: rotate(135deg);
-        transform: rotate(135deg);
-        width: 10px;
-        height: 10px;
-    }
-
-    .slider-nav .slick-next:after {
-        -webkit-transform: rotate(-45deg);
-        transform: rotate(-45deg);
-        width: 10px;
-        height: 10px;
-        left: 20px;
-    }
-
-
+  
     .ftshops .product-wrapper {
         overflow: auto;
     }
@@ -232,36 +84,6 @@
         flex: 0 0 280px;
         max-width: 280px;
     }
-
-
-    .header-checkout {
-        position: relative;
-        height: auto;
-    }
-
-    .after-checkout-header {
-        display: none;
-    }
-
-    .header-checkout .logo {
-        -webkit-margin-start: 0;
-        -moz-margin-start: 0;
-        margin-inline-start: 0;
-        -webkit-margin-end: inherit;
-        -moz-margin-end: inherit;
-        margin-inline-end: inherit;
-    }
-
-    .slider-for,
-    .slider-nav {
-        width: 100%;
-        float: none;
-    }
-
-    .slider-nav .slick-next:after {
-        margin-top: -4px;
-    }
-
 
     .profile-container {
         display: -webkit-box;
@@ -343,17 +165,11 @@
         display: none;
     }
 
-
-
-
-    .link__close {
+.link__close {
         -webkit-transform: none;
         transform: none;
         top: 10px;
     }
-
-
-
 
     .cartdetail__footer {
         padding: 10px;
@@ -410,10 +226,6 @@
         border-left: none;
         font-size: 0.85em;
     }
-
-
-
-
 
 
     .login-account {
@@ -1023,17 +835,6 @@
         font-size: 1rem;
     }
 
-    .dropdown {
-        position: static !important;
-    }
-
-
-
-    .chevron {
-        -webkit-margin-start: 0.5rem;
-        -moz-margin-start: 0.5rem;
-        margin-inline-start: 0.5rem;
-    }
 
     .section-head .section__heading h2 {
         font-weight: 500;
@@ -1814,7 +1615,7 @@
     }
 
 
- 
+
 
     .saved-search-list li {
         display: block;
@@ -1970,7 +1771,7 @@
         text-align: left !important;
         padding-top: 10px;
     }
- 
+
 
     .section--pagebar h1 {
         margin-bottom: 5px;

@@ -100,11 +100,11 @@ if ($totReviews) {
                     <?php echo Labels::getLabel('Lbl_of', $siteLangId); ?> <span id='reviewsTotal'></span></span></div>
         </div>
         <div class="row mt-5 mt-sm-0">
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <a href="javascript:void(0);" class="btn btn--primary d-block" data-sort='most_recent' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Recent', $siteLangId); ?></a>
             </div>
-            <div class="col-md-3">
-                <a href="javascript:void(0);" class="btn btn--secondary d-block btn--primary-border" data-sort='most_helpful' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Helpful', $siteLangId); ?> </a>
+            <div class="col-md-6">
+                <a href="javascript:void(0);" class="btn btn--secondary d-block btn-outline-primary" data-sort='most_helpful' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Helpful', $siteLangId); ?> </a>
             </div>
         </div>
         <div class="gap"></div>

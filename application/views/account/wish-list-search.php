@@ -51,7 +51,7 @@
 					if ($wishlist['totalProducts']>0) { ?>
 
                             <div class="align--center ">
-                                <a onClick="<?php echo $functionName; ?>(<?php echo $wishlist['uwlist_id']; ?>);" href="javascript:void(0)" class="btn btn--primary-border">
+                                <a onClick="<?php echo $functionName; ?>(<?php echo $wishlist['uwlist_id']; ?>);" href="javascript:void(0)" class="btn btn-outline-primary">
                                     <?php echo str_replace('{n}', $wishlist['totalProducts'], Labels::getLabel('LBL_View_{n}_items', $siteLangId)); ?> <i class="fa fa-eye"></i>
                                 </a>
                             </div> <?php

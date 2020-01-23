@@ -1,4 +1,3 @@
-
 .flat-ui {
     text-align: center;
     margin: 120px auto;
@@ -22,37 +21,18 @@
     font-size: 1rem;
 }
 
-.block--empty .block__img {
-    display: block;
-    margin: 20px auto 30px !important;
-    opacity: 0.4;
-}
-
 .block--empty {
     padding: 20px;
-}
 
-.block--empty h1 {
-    padding: 0 0 20px 0;
-    font-size: 4em;
-}
+    .block__img {
+        display: block;
+        margin: 20px auto 30px !important;
+        opacity: 0.4;
+    }
 
-.block--empty h2 {
-    padding: 0 0 10px 0;
-    font-size: 1.5em;
-}
-
-.block--empty h4 {
-    font-size: 1.1em;
-    padding-bottom: 20px;
-}
-
-.block--empty h6 {
-    font-weight: 300;
-}
-
-.block--empty .error__img {
-    width: 449px;
-    display: block;
-    margin: 20px auto 0;
+    .error__img {
+        width: 449px;
+        display: block;
+        margin: 20px auto 0;
+    }
 }

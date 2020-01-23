@@ -95,7 +95,7 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
         <div class="row">
             <div class="col-xl-3 col-lg-12">
                 <?php if (isset($shop)) { ?>
-                <div class="bg-gray rounded shop-information">
+                <div class="bg-gray rounded shop-information p-4">
                     <div class="shop-logo"><img data-ratio="1:1 (150x150)" src="<?php echo CommonHelper::generateUrl('image', 'shopLogo', array($shop['shop_id'], $siteLangId, 'SMALL')); ?>" alt="<?php echo $shop['shop_name']; ?>"></div>
                     <div class="shop-info">
                         <div class="shop-name">
@@ -225,7 +225,7 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                                             </svg>
                                         </i><span class="txt"><?php echo Labels::getLabel('LBL_Filter', $siteLangId); ?></span></a>
                                     <?php if (!(UserAuthentication::isUserLogged()) || (UserAuthentication::isUserLogged() && (User::isBuyer()))) { ?>
-                                    <a href="javascript:void(0)" onclick="saveProductSearch()" class="btn btn--primary-border btn--filters-control"><i class="icn">
+                                    <a href="javascript:void(0)" onclick="saveProductSearch()" class="btn btn-outline-primary btn--filters-control"><i class="icn">
                                             <svg class="svg">
                                                 <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#savesearch" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#savesearch"></use>
                                             </svg>

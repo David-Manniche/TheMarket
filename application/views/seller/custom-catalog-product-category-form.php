@@ -17,7 +17,7 @@ $submitBtnFld->developerTags['col'] = 2;
 $submitBtnFld->developerTags['noCaptionTag'] = true;
 
 $cancelBtnFld = $frm->getField('btn_clear');
-$cancelBtnFld->setFieldTagAttribute('class', 'btn--block btn--primary-border');
+$cancelBtnFld->setFieldTagAttribute('class', 'btn--block btn-outline-primary');
 $cancelBtnFld->setWrapperAttribute('class', 'col-sm-3');
 $cancelBtnFld->developerTags['col'] = 2;
 $cancelBtnFld->developerTags['noCaptionTag'] = true; ?>

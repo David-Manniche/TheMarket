@@ -3,7 +3,7 @@ $submitBtnFld = $frmSellerProduct->getField('btn_submit');
 $submitBtnFld->setFieldTagAttribute('class', 'btn btn--primary');
 
 $cancelBtnFld = $frmSellerProduct->getField('btn_cancel');
-$cancelBtnFld->setFieldTagAttribute('class', 'btn btn--primary-border');
+$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
 $submitBtnFld->developerTags['col'] = 12;
 ?>
 <div class="tabs tabs--small tabs--scroll clearfix">
