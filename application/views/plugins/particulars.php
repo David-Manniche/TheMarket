@@ -3,7 +3,7 @@ $frm->setFormTagAttribute('id', 'frmPlugins');
 $frm->setFormTagAttribute('class', 'form');
 $frm->setFormTagAttribute('onsubmit', 'setupPluginsParticulars(this); return(false);');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
-$frm->developerTags['fld_default_col'] = 6;
+$frm->developerTags['fld_default_col'] = 3;
 
 $submitBtnFld = $frm->getField('btn_submit');
 
