@@ -1938,7 +1938,9 @@ class CommonHelper extends FatUtility
             $url = $row['urlrewrite_original'];
         }
 
-        $arr = explode('/', $url);
+        
+        $arr = array_values(array_filter(explode('/', $url)));
+
         $controller = (isset($arr[0])) ? $arr[0] : '';
         array_shift($arr);
         $action = (isset($arr[0])) ? $arr[0] : '';
@@ -1950,7 +1952,8 @@ class CommonHelper extends FatUtility
         if ($controller == '') {
             $controller = 'Content';
         }
-        $recordId = isset($queryString[0]) ? $queryString[0] :0;
+        $recordId = isset($queryString[0]) ? $queryString[0] : 0;
+        $extra = (object)[];
         switch ($controller . '/' . $action) {
             case 'category/view':
                 $urlType = applicationConstants::URL_TYPE_CATEGORY;
@@ -1965,15 +1968,19 @@ class CommonHelper extends FatUtility
                 $urlType = applicationConstants::URL_TYPE_PRODUCT;
                 break;
             case 'collections/view':
+                $collectionType = 0 < $recordId  ? Collections::getAttributesById($recordId, 'collection_type') : 0;
                 $urlType = applicationConstants::URL_TYPE_COLLECTION;
+                $extra = [
+                    'collectionType' => $collectionType
+                ];
                 break;
             case 'guest-user/login-form':
-                    $urlType = !empty($recordId) ?  applicationConstants::URL_TYPE_REGISTER : applicationConstants::URL_TYPE_SIGN_IN;
+                $urlType = !empty($recordId) ?  applicationConstants::URL_TYPE_REGISTER : applicationConstants::URL_TYPE_SIGN_IN;
                 break;
             case 'cms/view':
                 $urlType = applicationConstants::URL_TYPE_CMS;
                 break;
-            case 'contact-us/index':
+            case 'custom/contact-us':
                 $urlType = applicationConstants::URL_TYPE_CONTACT_US;
                 break;
             default:
@@ -1984,7 +1991,8 @@ class CommonHelper extends FatUtility
         return array(
             'url' => $url,
             'recordId' => $recordId,
-            'urlType' => $urlType
+            'urlType' => $urlType,
+            'extra' => $extra
         );
     }
 }
