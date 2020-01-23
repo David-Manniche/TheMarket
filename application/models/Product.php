@@ -1592,4 +1592,122 @@ END,   special_price_found ) as special_price_found'
         $query = "DELETE m FROM ".static::DB_PRODUCT_MIN_PRICE." m LEFT OUTER JOIN (".$tmpQry.") ON pmp_product_id = selprod_product_id WHERE m.pmp_product_id IS NULL";
         FatApp::getDb()->query($query);
     }
+    
+    public function saveProductData($data)
+    {
+        if(empty($data)){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        
+        if ( $this->mainTableRecordId < 1 ) {
+            $data['product_added_on'] = 'mysql_func_now()';            
+            $data['product_added_by_admin_id'] = applicationConstants::YES;
+        }
+        $this->assignValues($data, true);        
+        if (!$this->save() ) { 
+            $this->error = $this->getError();
+            return false;
+        }
+        Product::updateMinPrices($this->mainTableRecordId);
+        
+        if (!$this->saveProductLangData($data['product_name'], $data['product_description']) ) { 
+            $this->error = $this->getError();
+            return false;
+        }
+        
+        if (!$this->saveProductCategory($data['ptc_prodcat_id']) ) {
+            $this->error = $this->getError();
+            return false;
+        }
+        
+        if (!$this->saveProductTax($data['ptt_taxcat_id']) ) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+    
+    public function saveProductLangData($prodName, $prodDesc)
+    {
+        if($this->mainTableRecordId < 1 || empty($prodName)){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        
+        foreach($prodName as $langId=>$langName){
+            $data = array(
+                 static::DB_TBL_LANG_PREFIX .'product_id' => $this->mainTableRecordId,
+                 static::DB_TBL_LANG_PREFIX .'lang_id' => $langId,
+                'product_name' => $langName,
+                'product_description' => $prodDesc[$langId]
+            );
+            if (!$this->updateLangData($langId, $data)) {
+                $this->error = $this->getError();
+                return false;
+            }      
+        }
+        return true;
+    }
+    
+    public function saveProductCategory( $categoryId )
+    {
+        $categoryId = FatUtility::int($categoryId);
+        if($this->mainTableRecordId < 1 || $categoryId < 1 ){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        
+        $record = new TableRecord(static::DB_TBL_PRODUCT_TO_CATEGORY);
+        $data = array(
+            static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'product_id' => $this->mainTableRecordId,
+            static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'prodcat_id' => $categoryId
+        );
+        $record->assignValues($data);
+        if (!$record->addNew(array(), $data)) {
+            $this->error = $record->getError();
+            return false;
+        }
+        return true;
+    }
+    
+    public function saveProductTax( $taxId, $userId = 0 )
+    {
+        $taxId = FatUtility::int($taxId);
+        if($this->mainTableRecordId < 1 || $taxId < 1 ){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+
+        $data = array(        
+            'ptt_product_id' => $this->mainTableRecordId,
+            'ptt_taxcat_id' => $taxId,
+            'ptt_seller_user_id' => $userId
+        );
+        $tax = new Tax();
+        if ($userId > 0) {
+            $tax->removeTaxSetByAdmin($this->mainTableRecordId);
+        }
+        if (!$tax->addUpdateProductTaxCat($data)) {
+            $this->error = $tax->getError();
+            return false;
+        }
+        return true;        
+    }
+    
+    public static function getCatalogProductCount( $productId )
+    {
+        $productId = FatUtility::int($productId);
+        $srch = SellerProduct::getSearchObject();
+        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
+        $srch->addCondition('selprod_deleted', '=', 0);
+        $srch->addCondition('selprod_product_id', '=', $productId);
+        $srch->addFld('selprod_id');
+        $rs = $srch->getResultSet();
+        return $srch->recordCount();
+    }
+    
+    
+    
+    
 }

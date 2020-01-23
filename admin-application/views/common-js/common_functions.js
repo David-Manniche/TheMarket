@@ -372,7 +372,8 @@ $(document).ready(function() {
     $('.accordians_container').find('.accordianhead:first').addClass('active').next().show(); //Add "active" class to first trigger, then show/open the immediate next container
 
     //On Click
-    $('.accordianhead').click(function() {
+    //$('.accordianhead').click(function() {
+    $(document).on('click', '.accordianhead', function(){
         if ($(this).next().is(':hidden')) { //If immediate next container is closed...
             $(this).parents('.accordians_container:first').find('.accordianhead').removeClass('active').next().slideUp(); //Remove all .acc_trigger classes and slide up the immediate next container
             $(this).toggleClass('active').next().slideDown(); //Add .acc_trigger class to clicked trigger and slide down the immediate next container

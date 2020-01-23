@@ -38,7 +38,7 @@
                             $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
 
                             $productType=Importexport::TYPE_PRODUCTS;
-                        if ($canView && FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0)) {
+                        if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0)) {
                             $innerLiExport=$innerUl->appendElement('li');
 
                             $innerLiExport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Export', $adminLangId),"onclick"=>"addExportForm(".Importexport::TYPE_PRODUCTS.")"), Labels::getLabel('LBL_Export', $adminLangId), true);

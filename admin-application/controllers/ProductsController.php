@@ -5,8 +5,8 @@ class ProductsController extends AdminBaseController
     {
         parent::__construct($action);
         $this->objPrivilege->canViewProducts();
-    }
-
+    }   
+    
     public function index()
     {
         $data = FatApp::getPostedData();
@@ -16,18 +16,19 @@ class ProductsController extends AdminBaseController
             unset($data['id']);
             $srchFrm->fill($data);
         }
-        $this->objPrivilege->canViewProducts();
+
         $this->set("frmSearch", $srchFrm);
         $this->set("includeEditor", true);
 
         $this->_template->addJs('js/jscolor.js');
         $this->_template->addJs('js/import-export.js');
+        $this->set('canEdit', $this->objPrivilege->canEditProducts(0, true));
         $this->_template->render();
     }
 
     public function search()
     {
-        $this->objPrivilege->canViewProducts();
+        
         $db = FatApp::getDb();
         $srchFrm = $this->getSearchForm();
 
@@ -152,7 +153,7 @@ class ProductsController extends AdminBaseController
         return $frm;
     }
 
-    public function form($product_id = 0, $attrgrp_id = 0)
+    /* public function form($product_id = 0, $attrgrp_id = 0)
     {
         $this->objPrivilege->canEditProducts();
         $product_id = FatUtility::int($product_id);
@@ -226,8 +227,132 @@ class ProductsController extends AdminBaseController
         $this->set('product_id', $product_id);
         $this->set('languages', Language::getAllNames());
         $this->set('productFrm', $productFrm);
-        //$this->_template->render(false, false);
-        $this->_template->render();
+        $this->_template->render(false, false);
+    } */
+    
+    public function form($productId = 0)
+    {
+        $this->objPrivilege->canEditProducts();
+        $productId = FatUtility::int($productId);
+        $this->set('productId', $productId);        
+        $this->_template->render();            
+    }
+    
+    public function productInitialSetUpFrm()
+    {
+        $this->objPrivilege->canEditProducts();
+        $productFrm = $this->getProductIntialSetUpFrm();
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $languages = Language::getAllNames();
+        unset($languages[$siteDefaultLangId]);
+        $this->set('productFrm', $productFrm);
+        $this->set('siteDefaultLangId', $siteDefaultLangId); 
+        $this->set('otherLanguages', $languages);        
+        $this->_template->render(false, false, 'products/product-initial-setup-frm.php');
+    }
+    
+    private function getProductIntialSetUpFrm()
+    {
+        $frm = new Form('frmProductIntialSetUp'); 
+        $frm->addRequiredField(Labels::getLabel('LBL_Product_Identifier', $this->adminLangId), 'product_identifier');
+        $frm->addSelectBox(Labels::getLabel('LBL_Product_Type', $this->adminLangId), 'product_type', Product::getProductTypes($this->adminLangId), Product::PRODUCT_TYPE_PHYSICAL, array(), '');
+        $frm->addTextBox(Labels::getLabel('LBL_Brand', $this->adminLangId), 'brand_name');
+        $frm->addTextBox(Labels::getLabel('LBL_Category', $this->adminLangId), 'category_name');
+        
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $languages = Language::getAllNames();
+        foreach($languages as $langId=>$lang){
+            if($langId == $siteDefaultLangId  ){
+                $frm->addRequiredField(Labels::getLabel('LBL_Product_Name', $this->adminLangId), 'product_name['.$langId.']');
+            }else{
+                $frm->addTextBox(Labels::getLabel('LBL_Product_Name', $this->adminLangId), 'product_name['.$langId.']');
+            }            
+            $frm->addTextArea(Labels::getLabel('LBL_Description', $this->adminLangId), 'product_description['.$langId.']');
+        }
+        $taxCategories =  Tax::getSaleTaxCatArr($this->adminLangId);
+        $frm->addSelectBox(Labels::getLabel('LBL_Tax_Category', $this->adminLangId), 'ptt_taxcat_id', $taxCategories, '', array(), Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired(true);
+        
+        $fldMinSelPrice= $frm->addFloatField(Labels::getLabel('LBL_Minimum_Selling_Price', $this->adminLangId).' ['.CommonHelper::getCurrencySymbol(true).']', 'product_min_selling_price', '');
+        $fldMinSelPrice->requirements()->setPositive();
+        
+        $approveUnApproveArr = Product::getApproveUnApproveArr($this->adminLangId);
+        $frm->addSelectBox(Labels::getLabel('LBL_Approval_Status', $this->adminLangId), 'product_approved', $approveUnApproveArr, Product::APPROVED, array(), '');
+        
+        $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
+        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'product_active', $activeInactiveArr, applicationConstants::YES, array(), '');
+        $frm->addHiddenField('', 'product_brand_id');
+        $frm->addHiddenField('', 'ptc_prodcat_id');
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->adminLangId));
+        return $frm;
+    }
+    
+    public function setUpProduct() 
+    {
+        $this->objPrivilege->canEditProducts();
+        $productId = FatApp::getPostedData('product_id', FatUtility::VAR_INT, 0);
+        $frm = $this->getProductIntialSetUpFrm();
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        if (false === $post) {
+            Message::addErrorMessage(current($frm->getValidationErrors()));
+            FatUtility::dieWithError(Message::getHtml());
+        }                
+        
+        $prod = new Product($productId);
+        if(!$prod->saveProductData($post)){
+            Message::addErrorMessage($prod->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->adminLangId));
+        $this->set('productId', $prod->getMainTableRecordId());
+        $this->_template->render(false, false, 'json-success.php'); 
+    }
+    
+    public function productAttributeAndSpecificationsFrm()
+    {
+        $this->objPrivilege->canEditProducts();
+        $productId = FatApp::getPostedData('product_id', FatUtility::VAR_INT, 0);
+        $productFrm = $this->getProductAttributeAndSpecificationsFrm($productId);
+        $productData = Product::getAttributesById($productId, array('product_type','product_added_by_admin_id'));
+        $totalProducts = Product::getCatalogProductCount($productId);
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $languages = Language::getAllNames();
+        unset($languages[$siteDefaultLangId]);  
+        $productSpecifications = Product::getProductSpecifications($productId, $siteDefaultLangId);
+       
+        $this->set('productFrm', $productFrm);  
+        $this->set('productData', $productData);
+        $this->set('totalProducts', $totalProducts);
+        $this->set('siteDefaultLangId', $siteDefaultLangId);    
+        $this->set('otherLanguages', $languages);  
+        $this->set('productSpecifications', $productSpecifications);         
+        $this->_template->render(false, false, 'products/product-attribute-and-specifications-frm.php');
+    }
+    
+    private function getProductAttributeAndSpecificationsFrm($productId)
+    {
+        $frm = new Form('frmProductAttributeAndSpecifications'); 
+        $frm->addTextBox(Labels::getLabel('LBL_User', $this->adminLangId), 'selprod_user_shop_name');      
+        $fldModel = $frm->addTextBox(Labels::getLabel('LBL_Model', $this->adminLangId), 'product_model');
+        if (FatApp::getConfig("CONF_PRODUCT_MODEL_MANDATORY", FatUtility::VAR_INT, 1)) {
+            $fldModel->requirements()->setRequired();
+        }
+        $frm->addCheckBox(Labels::getLabel('LBL_Mark_This_Product_As_Featured?', $this->adminLangId), 'product_featured', 1, array(), false, 0);
+        
+        $productType = Product::getAttributesById($productId, 'product_type');
+        if($productType == Product::PRODUCT_TYPE_PHYSICAL){
+            $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Eligible_For_Free_Shipping?', $this->adminLangId), 'ps_free',1, array(), false, 0);
+            $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Available_for_Cash_on_Delivery_(COD)?', $this->adminLangId), 'product_cod_enabled', 1, array(), false, 0);
+        }
+        $frm->addTextBox(Labels::getLabel('LBL_Product_Collection', $this->adminLangId), 'product_collection');
+        
+        $languages = Language::getAllNames();
+        foreach($languages as $langId=>$lang){
+            $frm->addTextBox(Labels::getLabel('LBL_Specification_Label_Text', $this->adminLangId), 'prodspec_name['.$langId.']');
+            $frm->addTextBox(Labels::getLabel('LBL_Specification_Value', $this->adminLangId), 'prodspec_value['.$langId.']');
+        }
+        $frm->addHiddenField('', 'product_seller_id');
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->adminLangId));
+        return $frm;
     }
 
     public function setup()
@@ -468,7 +593,7 @@ class ProductsController extends AdminBaseController
 
     public function imagesForm($product_id)
     {
-        $this->objPrivilege->canViewProducts();
+        
         $product_id = FatUtility::int($product_id);
         if (!$product_id) {
             FatUtility::dieWithError($this->str_invalid_request);
@@ -485,7 +610,7 @@ class ProductsController extends AdminBaseController
 
     public function images($product_id, $option_id=0, $lang_id=0)
     {
-        $this->objPrivilege->canViewProducts();
+        
         $product_id = FatUtility::int($product_id);
         if (!$product_id) {
             Message::addErrorMessage($this->str_invalid_request);
@@ -581,7 +706,7 @@ class ProductsController extends AdminBaseController
 
     public function linksForm($product_id)
     {
-        $this->objPrivilege->canViewProducts();
+        
         $frm = $this->getLinksForm($product_id);
 
         $srch = Product::getSearchObject($this->adminLangId);
@@ -644,7 +769,7 @@ class ProductsController extends AdminBaseController
 
     public function optionsForm($product_id)
     {
-        $this->objPrivilege->canViewProducts();
+        
         $product_id = FatUtility::int($product_id);
         if ($product_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
@@ -671,7 +796,7 @@ class ProductsController extends AdminBaseController
 
     public function productOptions($product_id)
     {
-        $this->objPrivilege->canViewProducts();
+        
         $product_id = FatUtility::int($product_id);
         if ($product_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
@@ -747,7 +872,7 @@ class ProductsController extends AdminBaseController
 
     public function tagsForm($product_id)
     {
-        $this->objPrivilege->canViewProducts();
+        
         $product_id = FatUtility::int($product_id);
         if ($product_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
@@ -771,7 +896,7 @@ class ProductsController extends AdminBaseController
 
     public function productTags($product_id)
     {
-        $this->objPrivilege->canViewProducts();
+        
         $product_id = FatUtility::int($product_id);
         if ($product_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
@@ -837,7 +962,7 @@ class ProductsController extends AdminBaseController
 
     public function autoComplete()
     {
-        $this->objPrivilege->canViewProducts();
+       
 
         $srch = Product::getSearchObject($this->adminLangId);
 
@@ -866,7 +991,7 @@ class ProductsController extends AdminBaseController
 
     private function getLinksForm($product_id)
     {
-        $this->objPrivilege->canViewProducts();
+        
         $prodObj = new Product();
         $product_categories = $prodObj->getProductCategories($product_id);
         $selectedCats= array();
@@ -892,7 +1017,7 @@ class ProductsController extends AdminBaseController
 
     private function getOptionsForm()
     {
-        $this->objPrivilege->canViewProducts();
+        
         $frm = new Form('frmOptions', array('id'=>'frmOptions'));
         $frm->addHtml('', 'product_name', '');
         $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Add_Option_Groups', $this->adminLangId), 'option_name');
@@ -905,7 +1030,7 @@ class ProductsController extends AdminBaseController
 
     private function getTagsForm()
     {
-        $this->objPrivilege->canViewProducts();
+        
         $frm = new Form('frmTags', array('id'=>'frmTags'));
         $frm->addHtml('', 'product_name', '');
         $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Add_Tag', $this->adminLangId), 'tag_name');
@@ -935,7 +1060,7 @@ class ProductsController extends AdminBaseController
 
     private function getImagesFrm($product_id = 0, $lang_id = 0)
     {
-        $this->objPrivilege->canViewProducts();
+       
         $imgTypesArr = $this->getSeparateImageOptions($product_id, $lang_id);
         $frm = new Form('imageFrm', array('id' => 'imageFrm'));
         $frm->addSelectBox(Labels::getLabel('LBL_Image_File_Type', $this->adminLangId), 'option_id', $imgTypesArr, 0, array(), '');
@@ -1066,42 +1191,12 @@ class ProductsController extends AdminBaseController
 
     private function getForm($attrgrp_id = 0)
     {
-        //return $this->getProductCatalogForm($attrgrp_id); 
-        return $this->getProductIntialSetUpForm();
-    }
-    
-    private function getProductIntialSetUpForm()
-    {
-        $frm = new Form('frmProductIntialSetUp'); 
-        $frm->addRequiredField(Labels::getLabel('LBL_Product_Identifier', $this->adminLangId), 'product_identifier');
-        $frm->addSelectBox(Labels::getLabel('LBL_Product_Type', $this->adminLangId), 'product_type', Product::getProductTypes($this->adminLangId), Product::PRODUCT_TYPE_PHYSICAL, array(), '');
-        $frm->addTextBox(Labels::getLabel('LBL_Brand', $this->adminLangId), 'brand_name');
-        $frm->addTextBox(Labels::getLabel('LBL_Category', $this->adminLangId), 'category_name');
-        
-        // language area
-        
-        $taxCategories =  Tax::getSaleTaxCatArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Tax_Category', $this->adminLangId), 'ptt_taxcat_id', $taxCategories, '', array(), Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired(true);
-        
-        $fldMinSelPrice= $frm->addFloatField(Labels::getLabel('LBL_Minimum_Selling_Price', $this->adminLangId).' ['.CommonHelper::getCurrencySymbol(true).']', 'product_min_selling_price', '');
-        $fldMinSelPrice->requirements()->setPositive();
-        
-        $approveUnApproveArr = Product::getApproveUnApproveArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Approval_Status', $this->adminLangId), 'product_approved', $approveUnApproveArr, Product::APPROVED, array(), '');
-        
-        $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Product_Status', $this->adminLangId), 'product_active', $activeInactiveArr, applicationConstants::YES, array(), '');
-        
-        $frm->addHiddenField('', 'product_id');
-        $frm->addHiddenField('', 'product_brand_id');
-        $frm->addHiddenField('', 'product_category_id');
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->adminLangId));
-        return $frm;
+        return $this->getProductCatalogForm($attrgrp_id); 
     }
 
     private function getLangForm($product_id = 0, $lang_id = 0)
     {
-        $this->objPrivilege->canViewProducts();
+       
         $lang_id = ($lang_id == 0) ? $this->adminLangId : $lang_id;
         $frm = new Form('frmProductLang', array('id' => 'frmProductLang'));
         $frm->addHiddenField('', 'product_id', $product_id);
@@ -1189,7 +1284,7 @@ class ProductsController extends AdminBaseController
 
     public function sellerCatalog()
     {
-        $this->objPrivilege->canViewProducts();
+        
         $srchFrm = $this->getSearchForm();
         $this->set("frmSearch", $srchFrm);
         $this->_template->render();
@@ -1529,7 +1624,7 @@ class ProductsController extends AdminBaseController
 
     public function productLinks($product_id)
     {
-        $this->objPrivilege->canViewProducts();
+        
         $product_id = FatUtility::int($product_id);
         if ($product_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
@@ -1594,7 +1689,6 @@ class ProductsController extends AdminBaseController
 
     public function upcForm($product_id = 0)
     {
-        $this->objPrivilege->canViewProducts();
         $product_id = FatUtility::int($product_id);
         if (!$product_id) {
             FatUtility::dieWithError($this->str_invalid_request);
@@ -1717,4 +1811,5 @@ class ProductsController extends AdminBaseController
         }
         CommonHelper::jsonEncodeUnicode($data, true);
     }
+    
 }

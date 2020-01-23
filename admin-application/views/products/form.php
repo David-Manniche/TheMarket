@@ -1,59 +1,59 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$productFrm->setFormTagAttribute('class', 'web_form');
-$productFrm->setFormTagAttribute('onsubmit', 'setupProduct(this); return(false);');
-
-$productFrm->developerTags['colClassPrefix'] = 'col-md-';
-$productFrm->developerTags['fld_default_col'] = 6;
-?>
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');?>
 <div class="page">
     <div class="container container-fluid">
         <div class="row">
             <div class="col-lg-12 col-md-12 space">
-                <div class="tabs_nav_container vertical wizard-tabs-vertical">
+                <div class="page__title">
+                     <div class="row justify-content-between">
+                         <div class="col--first col-lg-6">
+                             <span class="page__icon"><i class="ion-android-star"></i></span>
+                             <h5><?php echo Labels::getLabel('LBL_Manage_Catalog', $adminLangId); ?>  </h5>
+                             <?php $this->includeTemplate('_partial/header/header-breadcrumb.php'); ?>
+                         </div>
+                     </div>
+                 </div>
+                <div class="tabs_nav_container vertical wizard-tabs-vertical">                    
                     
                     <ul class="tabs_nav">
                          <li><a class="active" rel="tabs_001" href="javascript:void(0)">
                                  <i class="tabs-icon fa fa-globe"></i>
                                  <div class="tabs-head">
-                                     <div class="tabs-title">Initial Setup<span>Setup Basic Product Details</span></div>
+                                     <div class="tabs-title"><?php echo Labels::getLabel('LBL_Initial_Setup', $adminLangId); ?><span><?php echo Labels::getLabel('LBL_Setup_Basic_Product_Details', $adminLangId); ?></span></div>
                                  </div>
 
                              </a></li>
-                         <li><a rel="tabs_002" href="javascript:void(0)"> <i class="tabs-icon fa fa-globe"></i>
+                         <li><a rel="tabs_002" href="javascript:void(0)" onClick="productAttributeAndSpecificationsFrm()"> <i class="tabs-icon fa fa-globe"></i>
                                  <div class="tabs-head">
-                                     <div class="tabs-title">Product Options &amp; Specifications<span>Add Product Specification &amp; Option details</span></div>
+                                     <div class="tabs-title"><?php echo Labels::getLabel('LBL_Product_Attribute_&_Specifications',$adminLangId); ?><span><?php echo Labels::getLabel('LBL_Add_Product_Attribute_&_Specifications', $adminLangId); ?></span></div>
 
                                  </div>
                              </a></li>
                          <li><a rel="tabs_003" href="javascript:void(0)"> <i class="tabs-icon fa fa-globe"></i>
                                  <div class="tabs-head">
-                                     <div class="tabs-title">Product Attribute<span>Add Product Related Specifications</span></div>
+                                     <div class="tabs-title"><?php echo Labels::getLabel('LBL_Product_Options_And_Tags', $adminLangId); ?><span><?php echo Labels::getLabel('LBL_Add_Product_Options_And_Tags', $adminLangId); ?></span></div>
                                  </div>
                              </a></li>
 
                          <li><a rel="tabs_004" href="javascript:void(0)"> <i class="tabs-icon fa fa-globe"></i>
                                  <div class="tabs-head">
-                                     <div class="tabs-title">Shipping Information<span>Setup Product Dimentions &amp; Shipping Information</span></div>
+                                     <div class="tabs-title"><?php echo Labels::getLabel('LBL_Shipping_Information', $adminLangId); ?><span><?php echo Labels::getLabel('LBL_Setup_Product_Dimentions_And_Shipping_Information', $adminLangId); ?></span></div>
                                  </div>
                              </a></li>
                          <li><a rel="tabs_005" href="javascript:void(0)"> <i class="tabs-icon fa fa-globe"></i>
                                  <div class="tabs-head">
-                                     <div class="tabs-title"> Product Media<span>Add Option Based Product Media</span></div>
+                                     <div class="tabs-title"> <?php echo Labels::getLabel('LBL_Product_Media', $adminLangId); ?><span><?php echo Labels::getLabel('LBL_Add_Option_Based_Product_Media', $adminLangId); ?></span></div>
                                  </div>
                              </a></li>
-
                      </ul>
                      
                      <div class="tabs_panel_wrap">
-                        <div id="tabs_001" class="tabs_panel" style="display: block;">
-                             <div class="row justify-content-center">
-                                 <div class="col-md-9">
-                                     <?php echo $productFrm->getFormHtml(); ?>
-                                 </div>
-                             </div>
-                         </div>
+                        <div id="tabs_001" class="tabs_panel" style="display: block;"></div>
+                        <div id="tabs_002" class="tabs_panel" style="display: none;"> </div>
+                        <div id="tabs_003" class="tabs_panel" style="display: none;"></div>
+                        <div id="tabs_004" class="tabs_panel" style="display: none;"></div>
+                        <div id="tabs_005" class="tabs_panel" style="display: none;"></div>
                      </div>
-                     
+                     <input type="hidden" name="product_id" value="<?php echo $productId; ?>">
                 </div>
             </div>
         </div>
@@ -62,18 +62,5 @@ $productFrm->developerTags['fld_default_col'] = 6;
 
 
 
-                    <ul class="tabs_nav">
-                        <li>
-                            <a class="active" href="javascript:void(0);">
-                                <?php echo Labels::getLabel('LBL_General', $adminLangId); ?>
-                            </a>
-                        </li>
-                        <li class="<?php echo (0 == $product_id) ? 'fat-inactive' : ''; ?>">
-                            <a href="javascript:void(0);" <?php echo (0 < $product_id) ? "onclick='productLangForm(" . $product_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
-                                <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
-                            </a>
-                        </li>
-                    </ul>
-                   
                 
 
