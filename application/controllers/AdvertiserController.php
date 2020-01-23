@@ -1528,7 +1528,7 @@ class AdvertiserController extends AdvertiserBaseController
         $frm = new Form('frmRechargeWallet');
         $fld = $frm->addFloatField('', 'amount');
         //$fld->requirements()->setRequired();
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Add_Money_to_account', $langId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Add_Money_to_wallet', $langId));
         return $frm;
     }
 

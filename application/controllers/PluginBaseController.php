@@ -1,15 +1,15 @@
 <?php
 class PluginBaseController extends MyAppController
 {
+    private $keyName;
+    private $plugin;
+
     public function __construct($action)
     {
         parent::__construct($action);
-    }
-
-    public function getSettings()
-    {
+        $this->plugin = get_called_class();
         try {
-            $keyName = get_called_class()::KEY_NAME;
+            $this->keyName = ($this->plugin)::KEY_NAME;
         } catch (\Error $e) {
             $message = 'ERR - ' . $e->getMessage();
             if (true ===  MOBILE_APP_API_CALL) {
@@ -18,23 +18,19 @@ class PluginBaseController extends MyAppController
             Message::addErrorMessage($message);
             CommonHelper::redirectUserReferer();
         }
-        return PluginSetting::getConfDataByCode($keyName);
     }
 
-    private function setParticularsFormObj($keyName)
+    public function getSettings()
     {
-        $this->particularFrmObj = $this->getParticulars($keyName);
-        if (false === $this->particularFrmObj) {
-            LibHelper::dieJsonError($Labels::getLabel('LBL_FORM_ELEMENTS_ARE_NOT_DEFINED', $this->siteLangId));
-        }
+        return PluginSetting::getConfDataByCode($this->keyName);
     }
 
-    private function getParticulars($keyName)
+    private function getParticulars()
     {
         try {
-            $particulars = $keyName::particulars();
+            $particulars = ($this->plugin)::particulars();
         } catch (\Error $e) {
-            FatUtility::dieJsonError('ERR - ' . $e->getMessage());
+            FatUtility::dieJsonError($e->getMessage());
         }
         
         if (empty($particulars) || !is_array($particulars)) {
@@ -44,13 +40,13 @@ class PluginBaseController extends MyAppController
         return $frm;
     }
 
-    public function getParticularsForm($keyName)
+    public function getParticularsForm()
     {
-        $this->setParticularsFormObj($keyName);
-        $pluginSetting = PluginSetting::getConfDataByCode($keyName, ['plugin_identifier']);
+        $frm = $this->getParticulars();
+        $pluginSetting = PluginSetting::getConfDataByCode($this->keyName, ['plugin_identifier']);
         $identifier = isset($pluginSetting['plugin_identifier']) ? $pluginSetting['plugin_identifier'] : '';
-        $this->particularFrmObj->fill(['plugin_id' => $pluginSetting['plugin_id'], 'keyName' => $keyName]);
-        $this->set('frm', $this->particularFrmObj);
+        $frm->fill(['plugin_id' => $pluginSetting['plugin_id'], 'keyName' => $this->keyName]);
+        $this->set('frm', $frm);
         $this->set('identifier', $identifier);
         $this->_template->render(false, false, 'plugins/particulars.php');
     }

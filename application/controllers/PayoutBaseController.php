@@ -1,8 +1,9 @@
 <?php
 class PayoutBaseController extends PluginBaseController
 {
-    public function updateWithdrawalRequest($recordId, $data, $status)
+    public function updateWithdrawalRequest($recordId, $data, $status, $txnstatus = '')
     {
+        $txnstatus = empty($txnstatus) ? Transactions::STATUS_COMPLETED : $txnstatus;
         $updateData = [
             'uwrs_withdrawal_id' => $recordId,
             'uwrs_key' => 'WEBHOOK_RESPONSE',
@@ -28,7 +29,7 @@ class PayoutBaseController extends PluginBaseController
         
         FatApp::getDb()->updateFromArray(
             Transactions::DB_TBL,
-            array("utxn_status" => Transactions::STATUS_COMPLETED),
+            array("utxn_status" => $txnstatus),
             array('smt' => 'utxn_withdrawal_id=?','vals' => array($recordId))
         );
         
@@ -39,7 +40,7 @@ class PayoutBaseController extends PluginBaseController
             
             $txnArray["utxn_user_id"] = $txnDetail["utxn_user_id"];
             $txnArray["utxn_credit"] = $txnDetail["utxn_debit"];
-            $txnArray["utxn_status"] = Transactions::STATUS_COMPLETED;
+            $txnArray["utxn_status"] = $txnstatus;
             $txnArray["utxn_withdrawal_id"] = $txnDetail["utxn_withdrawal_id"];
             $txnArray["utxn_type"] = Transactions::TYPE_MONEY_WITHDRAWL_REFUND;
             $txnArray["utxn_comments"] = sprintf(Labels::getLabel('MSG_Withdrawal_Request_Declined_Amount_Refunded', $this->siteLangId), $formattedRequestValue);

@@ -6,6 +6,7 @@ class Transactions extends MyAppModel
 
     public const STATUS_PENDING = 0;
     public const STATUS_COMPLETED = 1;
+    public const STATUS_DECLINED = 2;
 
     public const WITHDRAWL_STATUS_PENDING = 0;
     public const WITHDRAWL_STATUS_COMPLETED = 1;
@@ -13,6 +14,7 @@ class Transactions extends MyAppModel
     public const WITHDRAWL_STATUS_DECLINED = 3;
     public const WITHDRAWL_STATUS_PROCESSED = 4;
     public const WITHDRAWL_STATUS_PAYOUT_FAILED = 5;
+    public const WITHDRAWL_STATUS_PAYOUT_UNCLAIMED = 6;
 
     public const TYPE_AFFILIATE_REFERRAL_SIGN_UP = 1;
     public const TYPE_AFFILIATE_REFERRAL_ORDER = 2;
@@ -47,8 +49,9 @@ class Transactions extends MyAppModel
             trigger_error(Labels::getLabel('MSG_Language_Id_not_specified.', CommonHelper::getLangId()), E_USER_ERROR);
         }
         $arr = array(
-            static::STATUS_PENDING => Labels::getLabel('LBL_Transaction_Pending', $langId),
-            static::STATUS_COMPLETED => Labels::getLabel('LBL_Transaction_Completed', $langId)
+            static::STATUS_PENDING => Labels::getLabel('LBL_TRANSACTION_PENDING', $langId),
+            static::STATUS_COMPLETED => Labels::getLabel('LBL_TRANSACTION_COMPLETED', $langId),
+            static::STATUS_DECLINED => Labels::getLabel('LBL_TRANSACTION_DECLINED', $langId)
         );
         return $arr;
     }
@@ -66,6 +69,7 @@ class Transactions extends MyAppModel
             static::WITHDRAWL_STATUS_DECLINED => Labels::getLabel('LBL_Withdrawal_Request_Declined', $langId),
             static::WITHDRAWL_STATUS_PROCESSED => Labels::getLabel('LBL_WITHDRAWAL_REQUEST_PROCESSED', $langId),
             static::WITHDRAWL_STATUS_PAYOUT_FAILED => Labels::getLabel('LBL_WITHDRAWAL_REQUEST_PAYOUT_FAILED', $langId),
+            static::WITHDRAWL_STATUS_PAYOUT_UNCLAIMED => Labels::getLabel('LBL_WITHDRAWAL_REQUEST_PAYOUT_UNCLAMED', $langId),
         );
         return $arr;
     }

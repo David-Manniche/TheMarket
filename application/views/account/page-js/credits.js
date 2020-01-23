@@ -47,10 +47,14 @@ $(document).ready(function(){
                 $(dvForm).html(res);
             });
         } else {
-            fcom.ajax(fcom.makeUrl('PluginBase', 'getParticularsForm', [$payoutType]), '', function(res){
+            fcom.ajax(fcom.makeUrl($payoutType, 'getParticularsForm', [$payoutType]), '', function(res){
                 $(dvForm).html(res);
             });
         }
+        $(".withdrawForm").removeClass('d-none');
+        $('html, body').animate({
+            scrollTop: $('.withdrawForm').offset().top - 100
+        }, 'slow');
 	};
 
 	setupWithdrawalReq = function(frm){
@@ -64,7 +68,11 @@ $(document).ready(function(){
 	};
 
 	closeForm = function(){
-		$(dvForm).html('');
+        $(dvForm).html('');
+        $(".withdrawForm").addClass('d-none');
+        $('html, body').animate({
+            scrollTop: $('html, body').offset().top - 100
+        }, 'slow');
 	};
 
 	setUpWalletRecharge = function( frm ){
@@ -77,9 +85,9 @@ $(document).ready(function(){
 		});
 	}
     setupPluginsParticulars = function(frm){
-		if (!$(frm).validate()) return;
+        if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);
-		fcom.updateWithAjax(fcom.makeUrl('Account', 'setupPaypalRequestWithdrawal'), data, function(t) {
+		fcom.updateWithAjax(fcom.makeUrl(frm.keyName.value, 'setup'), data, function(t) {
 			$(dvForm).html('');
 			creditsInfo();
 			searchCredits(document.frmCreditSrch);

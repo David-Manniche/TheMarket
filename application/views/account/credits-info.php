@@ -58,19 +58,32 @@ if ($userTotalWalletBalance != $userWalletBalance || ($promotionWalletToBeCharge
     <div class="col-lg-<?php echo $divCol; ?> col-md-<?php echo $divCol; ?> col-md-12">
         <div class="balancebox border h-100 rounded text-center p-3">
             <p><?php echo Labels::getLabel('LBL_Available_Balance', $siteLangId);?>: </p>
-            <h2><strong>
-                <?php echo CommonHelper::displayMoneyFormat($userWalletBalance);?></strong></h2>
-                <?php if (CommonHelper::getCurrencyId() != FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1)) { ?>
-                    <small class="d-block"><?php echo Labels::getLabel('LBL_Approx.', $siteLangId); ?> <?php echo CommonHelper::displayMoneyFormat($userWalletBalance, true, true); ?></small>
-                <?php } ?>
-                <select name='payout_type' class='payout_type'>
-                    <?php
-                    foreach ($payouts as $type => $name) { ?>
-                        <option value='<?php echo $type; ?>'><?php echo $name; ?></option>
-                    <?php }
-                    ?>
-                </select>
-                <a href="javascript:void(0)" onClick="withdrawalReqForm()" class="btn btn--secondary btn--sm"><?php echo Labels::getLabel('LBL_Request_Withdrawal', $siteLangId); ?></a>
+            <h2>
+                <strong>
+                    <?php echo CommonHelper::displayMoneyFormat($userWalletBalance);?>
+                </strong>
+            </h2>
+            <?php if (CommonHelper::getCurrencyId() != FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1)) { ?>
+                <small class="d-block">
+                    <?php echo Labels::getLabel('LBL_Approx.', $siteLangId); ?> <?php echo CommonHelper::displayMoneyFormat($userWalletBalance, true, true); ?>
+                </small>
+            <?php } ?>
+            <div class="row">
+                <div class="col">
+                    <select name='payout_type' class='payout_type'>
+                        <?php
+                        foreach ($payouts as $type => $name) { ?>
+                            <option value='<?php echo $type; ?>'><?php echo $name; ?></option>
+                        <?php }
+                        ?>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <a href="javascript:void(0)" onClick="withdrawalReqForm()" class="btn btn--secondary">
+                        <?php echo Labels::getLabel('LBL_Withdraw', $siteLangId); ?>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
