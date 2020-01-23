@@ -206,7 +206,7 @@ trait SellerProducts
         }
         $productLangRow = Product::getProductDataById(CommonHelper::getLangId(), $product_id, array('product_identifier'));
 
-        $frmSellerProduct = $this->getSellerProductForm($product_id);
+        $frmSellerProduct = $this->getSellerProductForm($product_id, $selprod_id);
 
         $sellerProductRow = [];
         if ($selprod_id) {
@@ -251,15 +251,21 @@ trait SellerProducts
         if ('' === $returnAge || '' === $cancellationAge) {
             $sellerProductRow['use_shop_policy'] = 1;
         }
-
+        $languages = Language::getAllNames();
+        foreach ($languages as $langId => $langName) {
+            $langData = SellerProduct::getAttributesByLangId($langId, $selprod_id);
+            $sellerProductRow['selprod_title'.$langId] = $langData['selprod_title'];
+            $sellerProductRow['selprod_comments'.$langId] = $langData['selprod_comments'];
+        }
         $frmSellerProduct->fill($sellerProductRow);
         $shippedBySeller = 0;
         if (Product::isProductShippedBySeller($product_id, $productRow['product_seller_id'], UserAuthentication::getLoggedUserId())) {
             $shippedBySeller = 1;
         }
         $productOptions = Product::getProductOptions($product_id, $this->siteLangId, true);
-        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues');
+        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '_');
         $this->set('optionCombinations', $optionCombinations);
+        $this->set('productOptions', $productOptions);
         /* $this->_template->addJs(array('js/jquery.datetimepicker.js'), false); */
         $this->_template->addCss(array('css/jquery.datetimepicker.css'), false);
         $this->set('customActiveTab', 'GENERAL');
@@ -292,7 +298,6 @@ trait SellerProducts
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        /* 'IFNULL(product_name, product_identifier) as product_name' */
         $productRow = Product::getAttributesById($selprod_product_id, array('product_id', 'product_active', 'product_seller_id','product_added_by_admin_id'));
         if (!$productRow) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
@@ -303,7 +308,7 @@ trait SellerProducts
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $frm = $this->getSellerProductForm($selprod_product_id);
+        $frm = $this->getSellerProductForm($selprod_product_id, $selprod_id);
         $post['use_shop_policy'] = $useShopPolicy;
 
         $post = $frm->getFormDataFromArray($post);
@@ -406,20 +411,6 @@ trait SellerProducts
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        /*     $url =  $tabsArr[$metaType]['controller'].'/'.$tabsArr[$metaType]['action'].'/'.$selprod_id;
-        $urlRewriteData_Save['urlrewrite_original'] = trim($url, '/\\');
-        $urlRewriteData_Save['urlrewrite_custom'] = trim(CommonHelper::seoUrl($url_keyword), '/\\');
-        if($selprod_id){
-        $record = new UrlRewrite();
-        $record->assignValues($urlRewriteData_Save);
-
-        if (!$record->save()) {
-        Message::addErrorMessage($record->getError());
-        FatUtility::dieJsonError( Message::getHtml() );
-        }
-
-        } */
-
         /*--------  ] */
         /* save options data, if any[ */
         if ($selprod_id) {
@@ -465,17 +456,7 @@ trait SellerProducts
             }
             $metaId = $meta->getMainTableRecordId();
 
-            foreach ($languages as $langId =>$langName) {
-                $selProdData=array(
-                'selprodlang_selprod_id'=>$selprod_id,
-                'selprodlang_lang_id'=>$langId,
-                'selprod_title'=> SellerProduct::getProductDisplayTitle($selprod_id, $langId)
-                );
-                if (!$sellerProdObj->updateLangData($langId, $selProdData)) {
-                    Message::addErrorMessage(Labels::getLabel($sellerProdObj->getError(), $this->siteLangId));
-                    FatUtility::dieJsonError(Message::getHtml());
-                }
-
+            foreach ($languages as $langId => $langName) {
                 $selProdMeta = array(
                 'metalang_lang_id'=>$langId,
                 'metalang_meta_id'=>$metaId,
@@ -492,10 +473,36 @@ trait SellerProducts
         }
         /* ] */
 
+        /* Update seller product language data[ */
+        foreach ($languages as $langId => $langName) {
+            if (!empty($post['selprod_title'.$langId])) {
+                $selProdData = array(
+                'selprodlang_selprod_id' => $selprod_id,
+                'selprodlang_lang_id' => $langId,
+                'selprod_title' => $post['selprod_title'.$langId],
+                'selprod_comments' => $post['selprod_comments'.$langId],
+                );
+
+                if (!$sellerProdObj->updateLangData($langId, $selProdData)) {
+                    Message::addErrorMessage(Labels::getLabel($sellerProdObj->getError(), $this->siteLangId));
+                    FatUtility::dieJsonError(Message::getHtml());
+                }
+            }
+
+            /*$autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+            if (0 < $autoUpdateOtherLangsData) {
+                $updateLangDataobj = new TranslateLangData(SellerProduct::DB_TBL_LANG);
+                if (false === $updateLangDataobj->updateTranslatedData($selprod_id)) {
+                    Message::addErrorMessage($updateLangDataobj->getError());
+                    FatUtility::dieWithError(Message::getHtml());
+                }
+            }*/
+        }
+        /* ] */
 
         $newTabLangId = 0;
         if ($selprod_id > 0) {
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 /* if(!$row = SellerProduct::getAttributesByLangId($langId,$selprod_id)){
                 $newTabLangId = $langId;
                 break;
@@ -690,7 +697,6 @@ trait SellerProducts
                     $newTabLangId = $langId;
                     break;
                 }*/
-
             }
         }
 

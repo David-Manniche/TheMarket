@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-// $frmSellerProduct->setFormTagAttribute('onsubmit', 'setUpSellerProduct(this); return(false);');
+$frmSellerProduct->setFormTagAttribute('onsubmit', 'setUpSellerProduct(this); return(false);');
 $frmSellerProduct->setFormTagAttribute('class', 'form form--horizontal');
 
 $returnAgeFld = $frmSellerProduct->getField('selprod_return_age');
@@ -9,24 +9,23 @@ $hidden = '';
 if ('' === $returnAgeFld->value || '' === $cancellationAgeFld->value) {
     $hidden = 'hidden';
 }
-$returnAgeFld->setWrapperAttribute('class', 'use-shop-policy ' . $hidden);
-$cancellationAgeFld->setWrapperAttribute('class', 'use-shop-policy ' . $hidden);
 
 $selprod_threshold_stock_levelFld = $frmSellerProduct->getField('selprod_threshold_stock_level');
 $selprod_threshold_stock_levelFld->htmlAfterField = '<small class="text--small">'.Labels::getLabel('LBL_Alert_stock_level_hint_info', $siteLangId). '</small>';
-$selprod_threshold_stock_levelFld->setWrapperAttribute('class', 'selprod_threshold_stock_level_fld');
 $urlFld = $frmSellerProduct->getField('selprod_url_keyword');
 $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
 $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value, $selprod_id, 'post')");
 $urlFld->htmlAfterField = "<small class='text--small'>" . CommonHelper::generateFullUrl('Products', 'View', array($selprod_id), '/').'</small>';
-$selprodCodEnabledFld = $frmSellerProduct->getField('selprod_cod_enabled');
-$selprodCodEnabledFld->setWrapperAttribute('class', 'selprod_cod_enabled_fld');
 
 $fld = $frmSellerProduct->getField('selprod_subtract_stock');
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
 $fld = $frmSellerProduct->getField('selprod_track_inventory');
+$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+
+$fld = $frmSellerProduct->getField('use_shop_policy');
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
@@ -75,6 +74,20 @@ $submitBtnFld->developerTags['col'] = 12;
                     </div>
                     <div class="form__subcontent">
                         <?php echo $frmSellerProduct->getFormTag(); ?>
+                        <?php if ($selprod_id > 0 && $productOptions) { ?>
+                            <div class="row">
+                                <?php foreach ($productOptions as $option) { ?>
+                                <div class="col-md-6">
+                                    <div class="field-set">
+                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprodoption_optionvalue_id['.$option['option_id'].']')->getCaption(); ?><span class="spn_must_field">*</span></label></div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprodoption_optionvalue_id['.$option['option_id'].']'); ?></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php } ?>
+                            </div>
+                        <?php } ?>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="field-set">
@@ -94,6 +107,48 @@ $submitBtnFld->developerTags['col'] = 12;
                                 </div>
                             </div>
                         </div>
+                        <?php if ($selprod_id > 0) { ?>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="field-set">
+                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_cost')->getCaption(); ?><span
+                                                    class="spn_must_field">*</span></label></div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_cost'); ?></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="field-set">
+                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_price')->getCaption(); ?><span
+                                                    class="spn_must_field">*</span></label></div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_price'); ?></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="field-set">
+                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_stock')->getCaption(); ?><span
+                                                    class="spn_must_field">*</span></label></div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_stock'); ?></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="field-set">
+                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_sku')->getCaption(); ?><span
+                                                    class="spn_must_field">*</span></label></div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_sku'); ?></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php }?>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="field-set d-flex align-items-center">
@@ -112,7 +167,6 @@ $submitBtnFld->developerTags['col'] = 12;
                                 </div>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="selprod_threshold_stock_level_fld col-md-6">
                                 <div class="field-set">
@@ -131,7 +185,6 @@ $submitBtnFld->developerTags['col'] = 12;
                                 </div>
                             </div>
                         </div>
-
                         <?php if ($product_type == Product::PRODUCT_TYPE_DIGITAL) { ?>
                         <div class="row">
                             <div class="col-md-6">
@@ -192,7 +245,34 @@ $submitBtnFld->developerTags['col'] = 12;
                                 </div>
                             </div>
                         </div>
-                        <?php if ($optionCombinations) { ?>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="field-set">
+                                    <div class="field-wraper">
+                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('use_shop_policy'); ?></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row use-shop-policy <?php echo $hidden; ?>">
+                            <div class="col-md-6">
+                                <div class="field-set">
+                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_return_age')->getCaption(); ?></label></div>
+                                    <div class="field-wraper">
+                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_return_age'); ?></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="field-set">
+                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_cancellation_age')->getCaption(); ?></label></div>
+                                    <div class="field-wraper">
+                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_cancellation_age'); ?></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php if ($optionCombinations && $selprod_id == 0) { ?>
                         <div class="row">
                             <div class="col-md-12">
                                 <table id="shipping" class="table">
@@ -209,7 +289,7 @@ $submitBtnFld->developerTags['col'] = 12;
                                     <tbody>
                                         <?php foreach ($optionCombinations as $optionKey => $optionValue) { ?>
                                         <tr>
-                                            <td><?php echo $optionValue; ?></td>
+                                            <td><?php echo str_replace("_", " | ", $optionValue); ?></td>
                                             <td><?php echo $frmSellerProduct->getFieldHtml('selprod_cost'.$optionKey); ?></td>
                                             <td><?php echo $frmSellerProduct->getFieldHtml('selprod_price'.$optionKey); ?></td>
                                             <td><?php echo $frmSellerProduct->getFieldHtml('selprod_stock'.$optionKey); ?></td>
@@ -270,6 +350,9 @@ $submitBtnFld->developerTags['col'] = 12;
                                 </div>
                             </div>
                         </div>
+                        <?php echo $frmSellerProduct->getFieldHtml('selprod_product_id');
+                        echo $frmSellerProduct->getFieldHtml('selprod_urlrewrite_id');
+                        echo $frmSellerProduct->getFieldHtml('selprod_id');?>
                         </form>
                         <?php echo $frmSellerProduct->getExternalJS();?>
                     </div>
@@ -306,7 +389,7 @@ $submitBtnFld->developerTags['col'] = 12;
 
         $("input[name='selprod_track_inventory']").trigger('change');
 
-        $("#use_shop_policy").change(function() {
+        $("input[name='use_shop_policy']").change(function() {
             if ($(this).is(":checked")) {
                 $('.use-shop-policy').addClass('hidden');
             } else {
