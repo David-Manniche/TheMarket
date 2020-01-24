@@ -1,5 +1,9 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$frmSellerProduct->setFormTagAttribute('onsubmit', 'setUpSellerProduct(this); return(false);');
+if ($selprod_id > 0 || empty($productOptions)) {
+    $frmSellerProduct->setFormTagAttribute('onsubmit', 'setUpSellerProduct(this); return(false);');
+} else {
+    $frmSellerProduct->setFormTagAttribute('onsubmit', 'setUpMultipleSellerProducts(this); return(false);');
+}
 $frmSellerProduct->setFormTagAttribute('class', 'form form--horizontal');
 
 $returnAgeFld = $frmSellerProduct->getField('selprod_return_age');
@@ -53,22 +57,6 @@ $submitBtnFld->developerTags['col'] = 12;
                                     <?php }?>>
                                         <?php echo Labels::getLabel('LBL_Basic', $siteLangId); ?></a>
                                 </li>
-                                <li class="<?php echo (0 == $selprod_id) ? 'fat-inactive' : ''; ?>">
-                                    <a href="javascript:void(0);" <?php echo (0 < $selprod_id) ? "onclick='sellerProductLangForm(" . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ", " . $selprod_id . ");'" : ""; ?>>
-                                        <?php echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
-                                    </a>
-                                </li>
-                                <?php $inactive = ($selprod_id==0)?'fat-inactive':'';?>
-                                <li class="<?php echo $inactive ; ?>"><a href="javascript:void(0)"
-                                    <?php if ($selprod_id>0) { ?>
-                                        onClick="linkPoliciesForm(<?php echo $product_id, ',', $selprod_id, ',', PolicyPoint::PPOINT_TYPE_WARRANTY ; ?>)"
-                                    <?php }?>><?php echo Labels::getLabel('LBL_Link_Warranty_Policies', $siteLangId); ?></a>
-                                </li>
-                                <li class="<?php echo $inactive ; ?>"><a href="javascript:void(0)"
-                                    <?php if ($selprod_id>0) {?>
-                                        onClick="linkPoliciesForm(<?php echo $product_id, ',', $selprod_id, ',', PolicyPoint::PPOINT_TYPE_RETURN ; ?>)"
-                                    <?php }?>><?php echo Labels::getLabel('LBL_Link_Return_Policies', $siteLangId); ?></a>
-                                </li>
                             </ul>
                         </div>
                     </div>
@@ -107,7 +95,7 @@ $submitBtnFld->developerTags['col'] = 12;
                                 </div>
                             </div>
                         </div>
-                        <?php if ($selprod_id > 0) { ?>
+                        <?php if ($selprod_id > 0 || empty($productOptions)) { ?>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="field-set">
@@ -272,7 +260,7 @@ $submitBtnFld->developerTags['col'] = 12;
                                 </div>
                             </div>
                         </div>
-                        <?php if ($optionCombinations && $selprod_id == 0) { ?>
+                        <?php if ($availableOptions && $selprod_id == 0) { ?>
                         <div class="row">
                             <div class="col-md-12">
                                 <table id="shipping" class="table">
@@ -287,7 +275,7 @@ $submitBtnFld->developerTags['col'] = 12;
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($optionCombinations as $optionKey => $optionValue) { ?>
+                                        <?php foreach ($availableOptions as $optionKey => $optionValue) { ?>
                                         <tr>
                                             <td><?php echo str_replace("_", " | ", $optionValue); ?></td>
                                             <td><?php echo $frmSellerProduct->getFieldHtml('selprod_cost'.$optionKey); ?></td>

@@ -1359,7 +1359,7 @@ class Product extends MyAppModel
         if (0 < $shop_id) {
             $srch->addShopIdCondition($shop_id);
         }
-        
+
 
         if (array_key_exists('collection_id', $criteria)) {
             $collection_id =  FatUtility::int($criteria['collection_id']);
