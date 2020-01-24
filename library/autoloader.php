@@ -12,7 +12,7 @@ function fatAutoLoader($className)
         require_once CONF_INSTALLATION_PATH . 'library/fat/' . $className . '.class.php';
     } elseif (file_exists(CONF_INSTALLATION_PATH . 'library/' . $className . '.class.php')) {
         require_once CONF_INSTALLATION_PATH . 'library/' . $className . '.class.php';
-    } elseif (file_exists(CONF_APPLICATION_PATH . 'utilities/' . $className . '.php')) {
+    } elseif (file_exists(CONF_APPLICATION_PATH . 'utilities/' . $className . '.php')) { 
         require_once CONF_APPLICATION_PATH . 'utilities/' . $className . '.php';
     } elseif (file_exists(CONF_APPLICATION_PATH . 'controllers/' . $className . '.php')) {
         require_once CONF_APPLICATION_PATH . 'controllers/' . $className . '.php';

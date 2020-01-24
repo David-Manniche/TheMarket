@@ -186,23 +186,24 @@ if (isset($prodcat_code)) {
   } ?>
 <!-- ] -->
 
-
 <!--Brand Filters[ -->
 <?php if (isset($brandsArr) && count($brandsArr) > 1) {
       $brandsCheckedArr = (isset($brandsCheckedArr) && !empty($brandsCheckedArr))? $brandsCheckedArr : array(); ?>
 <div class="divider--filters"></div>
 <div class="widgets__heading filter-head-js"><?php echo Labels::getLabel('LBL_Brand', $siteLangId); ?></div>
 <div class="scrollbar-filters" id="scrollbar-filters">
-    <ul class="list-vertical">
+    <ul class="list-vertical brandFilter-js">
         <?php foreach ($brandsArr as $brand) {
           ?>
-        <li><label class="checkbox brand" id="brand_<?php echo $brand['brand_id']; ?>"><input name="brands" value="<?php echo $brand['brand_id']; ?>" type="checkbox" <?php if (in_array($brand['brand_id'], $brandsCheckedArr)) {
+        <li><label class="checkbox brand" id="brand_<?php echo $brand['brand_id']; ?>"><input name="brands" data-id="brand_<?php echo $brand['brand_id']; ?>" value="<?php echo $brand['brand_id']; ?>" data-title="<?php echo $brand['brand_name']; ?>" type="checkbox" <?php if (in_array($brand['brand_id'], $brandsCheckedArr)) {
               echo "checked='true'";
           } ?>><i class="input-helper"></i><?php echo $brand['brand_name']; ?> </label></li>
         <?php
       } ?>
-    </ul>
-    <!--<a onClick="alert('Pending')" class="btn btn--link ripplelink"><?php echo Labels::getLabel('LBL_View_More', $siteLangId); ?> </a> -->
+    </ul>    
+</div>
+<div class="py-3">
+<a href="javascript:void(0)" onClick="brandFilters()" class="link"><?php echo Labels::getLabel('LBL_View_More', $siteLangId); ?> </a>
 </div>
 <?php
   }?>

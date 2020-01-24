@@ -18,6 +18,7 @@ Enhancements:
     => 69147 - Enhanced social login with plugin.
     => 66015 - Allowed "/" for url rewriting module.
     => 66015 - Enhancement - Load filters data via ajax call for better performance.
+    => 66684 - View more option for brands filter.
 
 New Features:
     => Introduced Plugins for third party api's implementation.

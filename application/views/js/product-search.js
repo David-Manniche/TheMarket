@@ -19,19 +19,33 @@ $(document).ready(function(){
 	/* ] */
 
 	/* form submit upon onchange of elements not inside form tag[ */
-
-
 	if( typeof isBrandPage !== 'undefined' && isBrandPage !== null ){
 		$("input[name=brands]").attr("disabled","disabled");
 		$("input[name=brands]").parent("label").addClass("disabled");
 	}
 
 	$(document).on('change', 'input[name=brands]', function() {
-		var id= $(this).parent().parent().find('label').attr('id');
-		if($(this).is(":checked")){
-			addFilter(id,this);
+		var id = $(this).attr('data-id');
+		var val = $(this).val();
+		var title = $(this).attr('data-title');				
+		if ($(this).is(":checked")) {	
+			if ($('#'+id).length == 0) {
+				$('ul.brandFilter-js').prepend('<li><label class="checkbox brand" id="brand_'+val+'"><input name="brands" data-id="brand_'+val+'" value="'+val+'" data-title="'+title+'" type="checkbox" checked="true"><i class="input-helper">'+title+'</i><label></li>');				
+			}
+
+			$("input:checkbox[name=brands]").each(function(){
+				if($(this).attr('data-id') == id){
+					$(this).prop( "checked", true );						
+				} 	
+			});			
+			addFilter(id,this);			
 			addToSearchQueryString(id,this);
-		}else{
+		} else {						
+			$("input:checkbox[name=brands]").each(function(){
+				if($(this).attr('data-id') == id){
+					$(this).prop( "checked", false );						
+				} 	
+			});	
 			removeFilter(id,this);
 		}
 		removePaginationFromLink();
@@ -197,6 +211,32 @@ $(document).ready(function(){
 		e.stopPropagation();
 	});
 
+	$(document).on('mouseover', '.bfilter-js li', function() {	
+		$('.brandList-js').addClass('filter-directory_disabled');
+		$('.filter-directory_list_title').addClass('filter-directory_disabled');
+		 
+		$('.b-'+$(this).attr('data-item')).removeClass('filter-directory_disabled');
+		lbl = $(this).attr('data-item');
+		$('.filter-directory_list_title').each(function()
+		{
+			txt = $(this).attr('data-item').trim().toUpperCase();				
+			if (txt == lbl.toUpperCase()) {							
+				$(this).removeClass('filter-directory_disabled');
+			} 
+		}); 
+		$('.b-'+$(this).attr('data-item')).focus();
+	});	
+
+	$(document).on('mouseout', '.bfilter-js li', function() {		
+		$('.brandList-js').removeClass('filter-directory_disabled');
+		$('.filter-directory_list_title').removeClass('filter-directory_disabled');
+	});
+
+	$(document).on('click', '.bfilter-js li', function(e) {		
+		e.preventDefault();		
+		$(".filter-directory_list").animate({scrollLeft: $("#"+$(this).attr('data-item')).position().left}, 1000);
+	});	
+
 	if($(window).width()<1050){
 		if($(".grids")[0]){
 			$('.grids').masonry({
@@ -218,11 +258,67 @@ $(document).ready(function(){
   }
 } */
 
+function autoKeywordSearch(keyword) {	
+	keyword = keyword.toUpperCase();
+	var myarray = [];		
+	$('.filter-directory_list li').each(function()
+	{
+		txt = $(this).text().trim().toUpperCase();						
+		if(txt.indexOf(keyword) > -1){	
+			caption = $(this).attr('data-caption');
+			if(typeof caption !== 'undefined'){
+				myarray.push(caption.toUpperCase());
+			}			
+			$(this).show();
+		}else{
+			$(this).hide();
+		}		
+	});	
+	myarray = $.unique(myarray);		
+	$('.filter-directory_list_title').each(function()
+	{
+		txt = $(this).attr('data-item').trim().toUpperCase();				
+		if ($.inArray(txt, myarray) >= 0) {							
+			$(this).show();
+		}else{
+			$(this).hide();
+		}
+	}); 
+}
+
+function brandFilters(){
+	var frm = document.frmProductSearch;
+	var url = window.location.href;
+	if($currentPageUrl == removeLastSpace(url)+'/index'){
+		url = fcom.makeUrl('Products','brandFilters');
+	}else{
+		url = url.replace($currentPageUrl, fcom.makeUrl('Products','brandFilters'));
+	}
+	if (url.indexOf("products/brandFilters") == -1) {
+		url = fcom.makeUrl('Products','brandFilters');
+	}
+	//url = fcom.makeUrl('Products','filters');
+	var data = fcom.frmData(frm);	
+	var brands= getSelectedBrands();		
+	if ( brands.length ){
+		data=data+"&brand="+[brands];
+	}	
+	$.facebox(function() {
+		fcom.ajax(url, data, function(ans){
+		$.facebox(ans,'faceboxWidth');
+			
+		});
+	});
+}
+
 function htmlEncode(value){
   return $('<div/>').text(value).html();
 }
 
 function addFilter(id,obj){
+	if(typeof id === 'undefined'){
+		return;
+	}
 	removePaginationFromLink();
 	var click = "onclick=removeFilter('"+id+"',this)";
 	$filter = $(obj).parent().text();
@@ -235,13 +331,18 @@ function addFilter(id,obj){
 
 function resetListingFilter(){
     searchArr = [];
-    document.frmProductSearch.reset();
+	/* $("input:checkbox[name=brands]").each(function(){
+		$(this).prop( "checked", false );	
+	}); */
+
+	document.frmProductSearch.reset();
     document.frmProductSearchPaging.reset();
     var frm = document.frmProductSearch;
     $('#filters a').each(function(){
         id = $(this).attr('class');
         clearFilters(id,this);
-    });
+	});
+			
     updatePriceFilter();
 	reloadProductListing(frm);
 	showSelectedFilters();
@@ -272,10 +373,14 @@ function showSelectedFilters(){
 	}
 }
 
-function removeFilter(id,obj){ 
+function removeFilter(id,obj){ 	
 	$('.'+id).remove();			
 	$('#'+id).find('input[type=\'checkbox\']').prop('checked', false);
-	console.log('dsdsds');
+	$("input:checkbox[name=brands]").each(function(){
+		if($(this).attr('data-id') == id){
+			$(this).prop( "checked", false );						
+		} 	
+	});	
 	var frm = document.frmProductSearch;
 	/* form submit upon onchange of form elements select box[ */
 	removeFromSearchQueryString(id);
@@ -287,18 +392,26 @@ function removeFilter(id,obj){
 function clearFilters(id,obj){
 	$('.'+id).remove();
 	$('#'+id).find('input[type=\'checkbox\']').prop('checked', false);
+	$("input:checkbox[name=brands]").each(function(){
+		if($(this).attr('data-id') == id){
+			$(this).prop( "checked", false );						
+		} 	
+	});	
 }
 
 function addToSearchQueryString(id,obj){
+	if(typeof id === 'undefined'){
+		return;
+	}
 	//$filter = $(obj).parent().text();
-	var attrVal = $(obj).attr('data-title')
-	if (typeof attrVal !== typeof undefined && attrVal !== false) {
+	var attrVal = $(obj).attr('data-title');
+	if (typeof attrVal !== 'undefined' && attrVal !== false) {		
 		$filterVal = htmlEncode(removeSpecialCharacter(attrVal));
 	}else{
 		$filterVal = htmlEncode(removeSpecialCharacter($(obj).parent().text()));
 	}
 	$filterVal = $filterVal.trim().toLowerCase();
-	//searchArr[id] = encodeURIComponent($filterVal.replace(/ /g,'-'));
+	//searchArr[id] = encodeURIComponent($filterVal.replace(/ /g,'-'));	
 	searchArr[id] = $filterVal.replace(/ /g,'-');
 }
 
@@ -466,7 +579,7 @@ function updatePriceFilter(minPrice,maxPrice,addPriceFilter){
 	reloadProductListing = function(frm){
 		$('#productsList').html(fcom.getLoader());
 		getSetSelectedOptionsUrl(frm);
-		var data = fcom.frmData(frm);
+		var data = fcom.frmData(frm);		
 		var currUrl = getSearchQueryUrl(true);
 		fcom.ajax(currUrl, data, function(res){
 			$('#productsList').html(res);			
@@ -511,6 +624,17 @@ function updatePriceFilter(minPrice,maxPrice,addPriceFilter){
 		return str.replace(/\/*$/, "");
 	}
 
+	getSelectedBrands = function(){
+		var brands=[];
+		$("input:checkbox[name=brands]:checked").each(function(){
+			var id = $(this).attr('data-id');
+			addToSearchQueryString (id,this);
+			addFilter (id,this);
+			brands.push($(this).val());
+		});
+		return brands;
+	}
+
 	getSetSelectedOptionsUrl = function(frm){
 		var data = fcom.frmData(frm);
 
@@ -528,13 +652,7 @@ function updatePriceFilter(minPrice,maxPrice,addPriceFilter){
 		/* ] */
 
 		/* brands filter value pickup[ */
-		var brands=[];
-		$("input:checkbox[name=brands]:checked").each(function(){
-			var id = $(this).parent().parent().find('label').attr('id');
-			addToSearchQueryString (id,this);
-			addFilter (id,this);
-			brands.push($(this).val());
-		});
+		var brands= getSelectedBrands();		
 		if ( brands.length ){
 			data=data+"&brand="+[brands];
 		}

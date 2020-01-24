@@ -183,7 +183,7 @@ class ProductCategory extends MyAppModel
             $cnd = $prodCatSrch->addCondition('prodcat_identifier', 'like', '%'.$keywords.'%');
             $cnd->attachCondition('prodcat_name', 'like', '%'.$keywords.'%');
         }
-
+        
         $prodCatSrch->doNotCalculateRecords();
         $prodCatSrch->doNotLimitRecords();
         $prodCatSrch->addMultipleFields(array( 'prodcat_id', 'COALESCE(prodcat_name,prodcat_identifier ) as prodcat_name', 'substr(prodcat_code,1,6) AS prodrootcat_code',  'prodcat_content_block','prodcat_active','prodcat_parent','prodcat_code','prodcat_ordercode'));
