@@ -1600,6 +1600,7 @@ END,   special_price_found ) as special_price_found'
             return false;
         }
         
+        unset($data['product_id']);
         if ( $this->mainTableRecordId < 1 ) {
             $data['product_added_on'] = 'mysql_func_now()';            
             $data['product_added_by_admin_id'] = applicationConstants::YES;
@@ -1609,7 +1610,7 @@ END,   special_price_found ) as special_price_found'
             $this->error = $this->getError();
             return false;
         }
-        Product::updateMinPrices($this->mainTableRecordId);
+        self::updateMinPrices($this->mainTableRecordId);
         
         if (!$this->saveProductLangData($data['product_name'], $data['product_description']) ) { 
             $this->error = $this->getError();
@@ -1705,6 +1706,86 @@ END,   special_price_found ) as special_price_found'
         $srch->addFld('selprod_id');
         $rs = $srch->getResultSet();
         return $srch->recordCount();
+    }
+    
+    public function saveProductSpecifications($prodSpecId, $langId, $prodSpecName, $prodSpecValue)
+    {
+        $prodSpecId = FatUtility::int($prodSpecId); 
+        $langId = FatUtility::int($langId);
+        if( $langId < 1 || empty($prodSpecName) || empty($prodSpecValue) || ($prodSpecId < 1 && $this->mainTableRecordId < 1) ){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        
+        if($prodSpecId < 1){
+            $prodSpec = new ProdSpecification( $prodSpecId );
+            $data['prodspec_product_id'] = $this->mainTableRecordId;
+            $prodSpec->assignValues($data);
+            if (!$prodSpec->save()) {
+                $this->error = $prodSpec->getError();
+                return false;
+            }
+            $prodSpecId = $prodSpec->getMainTableRecordId();
+        }
+        
+        $prodSpec = new ProdSpecification( $prodSpecId );
+        $langData = array(
+            'prodspeclang_prodspec_id' => $prodSpecId,
+            'prodspeclang_lang_id' => $langId,
+            'prodspec_name' => $prodSpecName,
+            'prodspec_value' => $prodSpecValue
+        );
+        if (!$prodSpec->updateLangData($langId, $langData)) {
+            $this->error = $prodSpec->getError();
+            return false;
+        }
+        return true;
+    }
+    
+    public function getProdSpecificationsByLangId($langId)
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->mainTableRecordId < 1 || $langId < 1) {  
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        $srch = new SearchBase(static::DB_PRODUCT_SPECIFICATION);
+        $srch->joinTable(static::DB_PRODUCT_LANG_SPECIFICATION, 'LEFT JOIN', static::DB_PRODUCT_SPECIFICATION_PREFIX.'id = '.static::DB_PRODUCT_LANG_SPECIFICATION_PREFIX.'prodspec_id');
+        $srch->addCondition(static::DB_PRODUCT_SPECIFICATION_PREFIX . 'product_id', '=', $this->mainTableRecordId);
+        $srch->addCondition(static::DB_PRODUCT_LANG_SPECIFICATION_PREFIX.'lang_id', '=', $langId);
+        $srch->addMultipleFields(
+            array(
+                static::DB_PRODUCT_SPECIFICATION_PREFIX.'id',
+                static::DB_PRODUCT_SPECIFICATION_PREFIX.'name',
+                static::DB_PRODUCT_SPECIFICATION_PREFIX.'value'
+            )
+        );
+        $rs = $srch->getResultSet();
+        return FatApp::getDb()->fetchAll($rs);
+    }
+    
+    public function saveProductAttributes($data)
+    {
+        if($this->mainTableRecordId < 1 || empty($data)){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }     
+        unset($data['product_id']);
+        $this->assignValues($data);        
+        if (!$this->save()) { 
+            $this->error = $this->getError();
+            return false;
+        } 
+        
+        $prodSellerShip = array(
+            'ps_product_id' => $this->mainTableRecordId,
+            'ps_user_id' => $data['product_seller_id'],
+            'ps_free' => $data['ps_free']
+        );        
+        if(!FatApp::getDb()->insertFromArray(PRODUCT::DB_TBL_PRODUCT_SHIPPING, $prodSellerShip, false, array(), $prodSellerShip)) {
+            return false;
+        }
+        return true;
     }
     
     

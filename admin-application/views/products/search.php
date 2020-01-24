@@ -93,7 +93,7 @@ foreach ($arr_listing as $sn => $row) {
                     $innerLiEdit->appendElement(
                         'a',
                         //array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addProductForm(".$row['product_id'].", ".$row['product_attrgrp_id'].")"),
-                        array('href'=>commonHelper::generateUrl('Products', 'form', array($row['product_id'], $row['product_attrgrp_id'])), 'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Edit', $adminLangId))  ,
+                        array('href'=>commonHelper::generateUrl('Products', 'form', array($row['product_id'])), 'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Edit', $adminLangId))  ,
                         Labels::getLabel('LBL_Edit', $adminLangId),
                         true
                     );

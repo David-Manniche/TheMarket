@@ -246,6 +246,7 @@ $productFrm->setFormTagAttribute('onsubmit', 'setUpProduct(this); return(false);
                      <div class="field-wraper">
                          <div class="field_cover">
                          <?php 
+                         echo $productFrm->getFieldHtml('product_id'); 
                          echo $productFrm->getFieldHtml('product_brand_id'); 
                          echo $productFrm->getFieldHtml('ptc_prodcat_id'); 
                          echo $productFrm->getFieldHtml('btn_submit'); 

@@ -15,26 +15,27 @@
                 <div class="tabs_nav_container vertical wizard-tabs-vertical">                    
                     
                     <ul class="tabs_nav">
-                         <li><a class="active" rel="tabs_001" href="javascript:void(0)">
+                         <li><a class="active tabs_001" rel="tabs_001" href="javascript:void(0)">
                                  <i class="tabs-icon fa fa-globe"></i>
                                  <div class="tabs-head">
                                      <div class="tabs-title"><?php echo Labels::getLabel('LBL_Initial_Setup', $adminLangId); ?><span><?php echo Labels::getLabel('LBL_Setup_Basic_Product_Details', $adminLangId); ?></span></div>
                                  </div>
 
-                             </a></li>
-                         <li><a rel="tabs_002" href="javascript:void(0)" onClick="productAttributeAndSpecificationsFrm()"> <i class="tabs-icon fa fa-globe"></i>
+                             </a>
+                         </li>
+                         <li><a rel="tabs_002" class="tabs_002" href="javascript:void(0)"> <i class="tabs-icon fa fa-globe"></i>
                                  <div class="tabs-head">
                                      <div class="tabs-title"><?php echo Labels::getLabel('LBL_Product_Attribute_&_Specifications',$adminLangId); ?><span><?php echo Labels::getLabel('LBL_Add_Product_Attribute_&_Specifications', $adminLangId); ?></span></div>
 
                                  </div>
                              </a></li>
-                         <li><a rel="tabs_003" href="javascript:void(0)"> <i class="tabs-icon fa fa-globe"></i>
+                         <li><a rel="tabs_003" class="tabs_003" href="javascript:void(0)"> <i class="tabs-icon fa fa-globe"></i>
                                  <div class="tabs-head">
                                      <div class="tabs-title"><?php echo Labels::getLabel('LBL_Product_Options_And_Tags', $adminLangId); ?><span><?php echo Labels::getLabel('LBL_Add_Product_Options_And_Tags', $adminLangId); ?></span></div>
                                  </div>
                              </a></li>
 
-                         <li><a rel="tabs_004" href="javascript:void(0)"> <i class="tabs-icon fa fa-globe"></i>
+                         <li><a rel="tabs_004" class="tabs_004" href="javascript:void(0)"> <i class="tabs-icon fa fa-globe"></i>
                                  <div class="tabs-head">
                                      <div class="tabs-title"><?php echo Labels::getLabel('LBL_Shipping_Information', $adminLangId); ?><span><?php echo Labels::getLabel('LBL_Setup_Product_Dimentions_And_Shipping_Information', $adminLangId); ?></span></div>
                                  </div>
@@ -53,12 +54,14 @@
                         <div id="tabs_004" class="tabs_panel" style="display: none;"></div>
                         <div id="tabs_005" class="tabs_panel" style="display: none;"></div>
                      </div>
-                     <input type="hidden" name="product_id" value="<?php echo $productId; ?>">
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+ productInitialSetUpFrm(<?php echo $productId; ?>);
+</script>
 
 
 
