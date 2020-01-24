@@ -117,7 +117,7 @@ $(window).on('load',function() {
 	setSelectedCatValue();
 });
 
-$("document").ready(function(){
+$(document).ready(function(){
 	/*common drop down function  */
 	$('.dropdown__trigger-js').each(function(){
 		$(this).click(function() {
@@ -549,4 +549,19 @@ function getCookie(cname) {
     }
   }
   return "";
+}
+
+function googleCaptcha(captchaSiteKey)
+{
+    var inputObj = $("form input[name='g-recaptcha-response']");
+    /*Google reCaptcha V3  */
+    setTimeout(function(){
+        if (0 < inputObj.length) {
+            grecaptcha.ready(function() {
+                grecaptcha.execute(captchaSiteKey, {action: inputObj.data('action')}).then(function(token) {
+                    inputObj.val(token);
+                });
+            });
+        }
+    }, 200);
 }

@@ -14,28 +14,23 @@ $fld = $contactFrm->getField('btn_submit');
 $fld->developerTags['col'] = 12;
 ?>
 <div id="body" class="body" role="main">
-
-
     <div class="bg--second pt-3 pb-3">
-      <div class="container container--fixed">
-        <div class="row align-items-center justify-content-center">
-          <div class="col-md-8 col-sm-8">
-               <div class="section-head section--white--head justify-content-center mb-0">
-            <div class="section__heading text-center">
-                <h2><?php echo Labels::getLabel('LBL_Get_in_Touch', $siteLangId);?></h2>
-                <p><?php echo Labels::getLabel('LBL_Get_in_Touch_Txt', $siteLangId);?></p>
+        <div class="container container--fixed">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-8 col-sm-8">
+                    <div class="section-head section--white--head justify-content-center mb-0">
+                        <div class="section__heading text-center">
+                            <h2><?php echo Labels::getLabel('LBL_Get_in_Touch', $siteLangId);?>
+                            </h2>
+                            <p><?php echo Labels::getLabel('LBL_Get_in_Touch_Txt', $siteLangId);?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-auto col-sm-auto"></div>
             </div>
         </div>
-
-
-          </div>
-          <div class="col-md-auto col-sm-auto"></div>
-        </div>
-      </div>
     </div>
-
-
-
     <section class="section">
         <div class="container">
             <div class="row justify-content-center">
@@ -49,21 +44,28 @@ $fld->developerTags['col'] = 12;
                         </div>
                         <div class="col-md-5">
                             <div class="border rounded p-4 h-100">
-                                <h6><?php echo Labels::getLabel('LBL_General_Inquiry', $siteLangId);?></h6>
-                                <p class=""><?php echo FatApp::getConfig('CONF_SITE_PHONE', FatUtility::VAR_STRING, '');?> <br><?php echo Labels::getLabel('LBL_24_a_day_7_days_week', $siteLangId);?></p>
+                                <h6><?php echo Labels::getLabel('LBL_General_Inquiry', $siteLangId);?>
+                                </h6>
+                                <p class=""><?php echo FatApp::getConfig('CONF_SITE_PHONE', FatUtility::VAR_STRING, '');?>
+                                    <br><?php echo Labels::getLabel('LBL_24_a_day_7_days_week', $siteLangId);?>
+                                </p>
 
                                 <div class="divider"></div>
 
-                                <h6><?php echo Labels::getLabel('LBL_Fax', $siteLangId);?> </h6>
+                                <h6><?php echo Labels::getLabel('LBL_Fax', $siteLangId);?>
+                                </h6>
                                 <p class=""><?php echo FatApp::getConfig('CONF_SITE_FAX', FatUtility::VAR_STRING, '');?>
-                                <br><?php echo Labels::getLabel('LBL_24_a_day_7_days_week', $siteLangId);?></p>
+                                    <br><?php echo Labels::getLabel('LBL_24_a_day_7_days_week', $siteLangId);?>
+                                </p>
 
                                 <div class="divider"></div>
 
-                                <h6><?php echo Labels::getLabel('LBL_Address', $siteLangId);?></h6>
-                                <p class=""><?php echo nl2br(FatApp::getConfig('CONF_ADDRESS_'.$siteLangId, FatUtility::VAR_STRING, ''));?></p>
+                                <h6><?php echo Labels::getLabel('LBL_Address', $siteLangId);?>
+                                </h6>
+                                <p class=""><?php echo nl2br(FatApp::getConfig('CONF_ADDRESS_' . $siteLangId, FatUtility::VAR_STRING, ''));?>
+                                </p>
 
-                                <?php $this->includeTemplate( '_partial/footerSocialMedia.php'); ?>
+                                <?php $this->includeTemplate('_partial/footerSocialMedia.php'); ?>
                             </div>
 
                         </div>
@@ -74,10 +76,16 @@ $fld->developerTags['col'] = 12;
     </section>
     <section class="g-map">
         <?php if (FatApp::getConfig('CONF_MAP_IFRAME_CODE', FatUtility::VAR_STRING, '') != '') {
-            echo FatApp::getConfig('CONF_MAP_IFRAME_CODE', FatUtility::VAR_STRING);
-        } ?>
+    echo FatApp::getConfig('CONF_MAP_IFRAME_CODE', FatUtility::VAR_STRING);
+} ?>
     </section>
 </div>
-<?php if (FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '')!= '' && FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '')!= '') {?>
-<script src='https://www.google.com/recaptcha/api.js'></script>
-<?php }?>
+<?php 
+$siteKey = FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '');
+$secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '');
+if (!empty($siteKey) && !empty($secretKey)) {?>
+    <script src='https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>'></script>
+    <script>
+		googleCaptcha('<?php echo $siteKey; ?>');
+    </script>
+<?php } ?>

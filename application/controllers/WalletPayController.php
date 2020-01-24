@@ -227,7 +227,7 @@ class WalletPayController extends MyAppController
         }
 
         $frm = $this->getPaymentTabForm($this->siteLangId, $paymentMethod['pmethod_code']);
-        $controller = $paymentMethod['pmethod_code'].'Pay';
+        $controller = $paymentMethod['pmethod_code'] . 'Pay';
         $frm->setFormTagAttribute('action', CommonHelper::generateUrl($controller, 'charge', array($orderInfo['order_id'])));
         $frm->fill(
             array(
@@ -267,8 +267,8 @@ class WalletPayController extends MyAppController
         $frm = new Form('frmPaymentTabForm');
         $frm->setFormTagAttribute('id', 'frmPaymentTabForm');
 
-        if (strtolower($paymentMethodCode) == "cashondelivery" && FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '')!= '' && FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '')!= '') {
-            $frm->addHtml('htmlNote', 'htmlNote', '<div class="g-recaptcha" data-sitekey="'.FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '').'"></div>');
+        if (strtolower($paymentMethodCode) == "cashondelivery") {
+            CommonHelper::addCaptchaField($frm);
         }
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Confirm_Payment', $langId));
         $frm->addHiddenField('', 'order_type');

@@ -18,6 +18,7 @@ Enhancements:
     => 69147 - Enhanced social login with plugin.
     => 66015 - Allowed "/" for url rewriting module.
     => 66015 - Enhancement - Load filters data via ajax call for better performance.
+    => 69924 - Google reCatptcha upgraded to v3.
 
 New Features:
     => Introduced Plugins for third party api's implementation.

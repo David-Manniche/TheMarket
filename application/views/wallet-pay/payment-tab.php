@@ -14,9 +14,6 @@ $frm->setFormTagAttribute('onsubmit', 'confirmOrder(this); return(false);');
     }
     ?>
 </div>
-<?php if (strtolower($paymentMethod['pmethod_code']) == "cashondelivery" && FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '')!= '' && FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '')!= '') { ?>
-<script src='https://www.google.com/recaptcha/api.js'></script>
-<?php } ?>
 <script type="text/javascript">
     $("document").ready(function() {
         <?php if (isset($error)) { ?>
@@ -32,3 +29,12 @@ $frm->setFormTagAttribute('onsubmit', 'confirmOrder(this); return(false);');
         });
     }
 </script>
+<?php 
+$siteKey = FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '');
+$secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '');
+if (!empty($siteKey) && !empty($secretKey) && 'cashondelivery' == strtolower($paymentMethod['pmethod_code'])) {?>
+    <script src='https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>'></script>
+    <script>
+		googleCaptcha('<?php echo $siteKey; ?>');
+    </script>
+<?php } ?>
