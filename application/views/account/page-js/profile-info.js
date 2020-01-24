@@ -232,9 +232,24 @@ $(document).ready(function(){
 		fcom.updateWithAjax(fcom.makeUrl('Account', 'setupRequestData'), data, function(t) {
 			$("#facebox .close").trigger('click');
 		});
+    };
+    
+    pluginForm = function(keyName){
+		$(dv).html(fcom.getLoader());
+		$("ul.tabs-js li").removeClass("is-active");
+		$("#tab-" +keyName ).addClass("is-active");
+		fcom.ajax(fcom.makeUrl(keyName, 'form'),'',function(t){
+			$(dv).html(t);
+		});
+    };
+    
+    setupPluginForm = function(frm){
+		if (!$(frm).validate()) return;
+		var data = fcom.frmData(frm);
+		fcom.updateWithAjax(fcom.makeUrl(frm.keyName.value, 'setupAccountForm'), data, function(t) {
+			pluginForm(frm.keyName.value);
+		});
 	};
-
-
 })();
 
 /* $(document).on('click','.userFile-Js',function(){

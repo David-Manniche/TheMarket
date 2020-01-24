@@ -2,63 +2,62 @@
 class PayPalPayoutController extends PayoutBaseController
 {
     public const KEY_NAME = 'PayPalPayout';
-    public static function particulars()
+    public static function reqFields()
     {
-        return [
+        $reqFields =  [
                 'amount' => [
                     'type' => 'float',
                     'required' => true,
                     'label' => "Amount",
-                ],
-                'email' => [
-                    'type' => 'string',
-                    'required' => false,
-                    'label' => "Email Id",
-                ],
-                'paypal_id' => [
-                    'type' => 'string',
-                    'required' => false,
-                    'label' => "PayPal Id",
-                ],
+                ]
             ];
+        $formFields = static::formFields();
+        return array_merge($reqFields, $formFields);
     }
 
-    private function validateWithdrawalRequest()
+    public function getRequestForm()
+    {
+        $data = User::getUserMeta(UserAuthentication::getLoggedUserId());
+        return $this->getForm(static::reqFields(), $data);
+    }
+
+    public static function formFields()
+    {
+        return [
+            'email' => [
+                'type' => 'string',
+                'required' => false,
+                'label' => "Email Id",
+            ],
+            'paypal_id' => [
+                'type' => 'string',
+                'required' => false,
+                'label' => "PayPal Id",
+            ],
+        ];
+    }
+
+    public function form()
     {
         $userId = UserAuthentication::getLoggedUserId();
-        $post = FatApp::getPostedData();
+        $frm = $this->getFormObj(static::formFields());
 
-        $balance = User::getUserBalance($userId);
-        $lastWithdrawal = User::getUserLastWithdrawalRequest($userId);
-
-        if ($lastWithdrawal && (strtotime($lastWithdrawal["withdrawal_request_date"] . "+" . FatApp::getConfig("CONF_MIN_INTERVAL_WITHDRAW_REQUESTS", FatUtility::VAR_INT, 0) . " days") - time()) > 0) {
-            $nextWithdrawalDate = date('d M,Y', strtotime($lastWithdrawal["withdrawal_request_date"] . "+" . FatApp::getConfig("CONF_MIN_INTERVAL_WITHDRAW_REQUESTS") . " days"));
-
-            $message = sprintf(Labels::getLabel('MSG_Withdrawal_Request_Date', $this->siteLangId), FatDate::format($lastWithdrawal["withdrawal_request_date"]), FatDate::format($nextWithdrawalDate), FatApp::getConfig("CONF_MIN_INTERVAL_WITHDRAW_REQUESTS"));
-            FatUtility::dieJsonError($message);
+        $data = User::getUserMeta(UserAuthentication::getLoggedUserId());
+        if (!empty($data)) {
+            $frm->fill($data);
         }
 
-        $minimumWithdrawLimit = FatApp::getConfig("CONF_MIN_WITHDRAW_LIMIT", FatUtility::VAR_INT, 0);
-        if ($balance < $minimumWithdrawLimit) {
-            $message = sprintf(Labels::getLabel('MSG_Withdrawal_Request_Minimum_Balance_Less', $this->siteLangId), CommonHelper::displayMoneyFormat($minimumWithdrawLimit));
-            FatUtility::dieJsonError($message);
-        }
+        $this->set('frm', $frm);
+        $this->_template->render(false, false);
+    }
 
-        if (($minimumWithdrawLimit > $post["amount"])) {
-            $message = sprintf(Labels::getLabel('MSG_Your_withdrawal_request_amount_is_less_than_the_minimum_allowed_amount_of_%s', $this->siteLangId), CommonHelper::displayMoneyFormat($minimumWithdrawLimit));
-            FatUtility::dieJsonError($message);
-        }
+    public function setupAccountForm()
+    {
+        $frm = $this->getFormObj(self::formFields());
 
-        $maximumWithdrawLimit = FatApp::getConfig("CONF_MAX_WITHDRAW_LIMIT", FatUtility::VAR_INT, 0);
-        if (($maximumWithdrawLimit < $post["amount"])) {
-            $message = sprintf(Labels::getLabel('MSG_Your_withdrawal_request_amount_is_greater_than_the_maximum_allowed_amount_of_%s', $this->siteLangId), CommonHelper::displayMoneyFormat($maximumWithdrawLimit));
-            FatUtility::dieJsonError($message);
-        }
-
-        if (($post["amount"] > $balance)) {
-            $message = Labels::getLabel('MSG_Withdrawal_Request_Greater', $this->siteLangId);
-            FatUtility::dieJsonError($message);
-        }
+        $post = array_filter($frm->getFormDataFromArray(FatApp::getPostedData()));
+        unset($post['keyName'], $post['plugin_id']);
+        $this->updateUserInfo($post);
     }
 
     public function saveWithdrawalSpecifics($withdrawalId, $data, $elements)
@@ -90,21 +89,16 @@ class PayPalPayoutController extends PayoutBaseController
     {
         $this->validateWithdrawalRequest();
 
-        $particulars = self::particulars();
-        $frm = PluginSetting::getForm($particulars, $this->siteLangId);
+        $frm = PluginSetting::getForm(self::reqFields(), $this->siteLangId);
 
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         $post['withdrawal_amount'] = $post['amount'];
+        if (empty($post['email']) && empty($post['paypal_id'])) {
+            $post['email'] = UserAuthentication::getLoggedUserAttribute('user_email');
+        }
 
         if (false === $post) {
             LibHelper::dieJsonError(current($frm->getValidationErrors()));
-        }
-
-        foreach ($post as $key => $value) {
-            if (in_array($key, $particulars) && true === $particulars[$key]['required'] && empty($value)) {
-                $message = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
-                FatUtility::dieJsonError($message);
-            }
         }
 
         $userId = UserAuthentication::getLoggedUserId();
@@ -121,7 +115,7 @@ class PayPalPayoutController extends PayoutBaseController
             FatUtility::dieJsonError($message);
         }
 
-        $this->saveWithdrawalSpecifics($withdrawRequestId, $post, array_keys($particulars));
+        $this->saveWithdrawalSpecifics($withdrawRequestId, $post, array_keys(self::reqFields()));
 
         $emailNotificationObj = new EmailHandler();
         if (!$emailNotificationObj->sendWithdrawRequestNotification($withdrawRequestId, $this->siteLangId, "A")) {

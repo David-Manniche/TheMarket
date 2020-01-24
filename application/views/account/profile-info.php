@@ -30,8 +30,10 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                         <div class="cards-content p-4 pr-4 ">
                             <div class="tabs tabs--small tabs--scroll clearfix">
                                 <ul class="tabs-js">
-                                    <li class="is-active" id="tab-myaccount"><a href="javascript:void(0);"
-                                            onClick="profileInfoForm()"><?php echo Labels::getLabel('LBL_My_Account', $siteLangId);?></a>
+                                    <li class="is-active" id="tab-myaccount">
+                                        <a href="javascript:void(0);" onClick="profileInfoForm()">
+                                            <?php echo Labels::getLabel('LBL_My_Account', $siteLangId);?>
+                                        </a>
                                     </li>
                                     <?php if (User::isAffiliate()) { ?>
                                     <li id="tab-paymentinfo">
@@ -43,6 +45,15 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                                             <a href="javascript:void(0);" onClick="bankInfoForm()"><?php echo Labels::getLabel('LBL_Bank_Account', $siteLangId); ?></a>
                                         </li>
                                     <?php } ?>
+                                    <?php
+                                    foreach ($payouts as $type => $name) { ?>
+                                        <li id="tab-<?php echo $type; ?>">
+                                            <a href="javascript:void(0);" onClick="pluginForm('<?php echo $type; ?>')">
+                                                <?php echo $name; ?>
+                                            </a>
+                                        </li>
+                                    <?php }
+                                    ?>
                                 </ul>
                             </div>
                             <div id="profileInfoFrmBlock"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>

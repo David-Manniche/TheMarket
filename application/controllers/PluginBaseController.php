@@ -20,34 +20,50 @@ class PluginBaseController extends MyAppController
         }
     }
 
+    protected function updateUserInfo($detail = [])
+    {
+        if (!is_array($detail)) {
+            FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+        }
+        $obj = new User(UserAuthentication::getLoggedUserId());
+        foreach ($detail as $key => $value) {
+            if (false === $obj->updateUserMeta($key, $value)) {
+                Message::addErrorMessage($obj->getError());
+                if (true === $redirect) {
+                    $this->redirectBack();
+                }
+            }
+        }
+        Message::addMessage(Labels::getLabel("MSG_SUCCESSFULLY_UPDATED", $this->siteLangId));
+        FatUtility::dieJsonSuccess(Message::getHtml());
+    }
+
     public function getSettings()
     {
         return PluginSetting::getConfDataByCode($this->keyName);
     }
 
-    private function getParticulars()
+    public function getFormObj($fields)
     {
-        try {
-            $particulars = ($this->plugin)::particulars();
-        } catch (\Error $e) {
-            FatUtility::dieJsonError($e->getMessage());
+        if (!is_array($fields)) {
+            FatUtility::dieJsonError(Labels::getLabel('LBL_INVALID_FORM_FIELDS', $this->siteLangId));
         }
-        
-        if (empty($particulars) || !is_array($particulars)) {
-            return false;
-        }
-        $frm = PluginSetting::getForm($particulars, $this->siteLangId);
+        $frm = PluginSetting::getForm($fields, $this->siteLangId);
+        $pluginSetting = PluginSetting::getConfDataByCode($this->keyName, ['plugin_identifier']);
+        $this->identifier = isset($pluginSetting['plugin_identifier']) ? $pluginSetting['plugin_identifier'] : '';
+        $frm->fill(['plugin_id' => $pluginSetting['plugin_id'], 'keyName' => $this->keyName]);
         return $frm;
     }
 
-    public function getParticularsForm()
+    public function getForm($fields, $data)
     {
-        $frm = $this->getParticulars();
-        $pluginSetting = PluginSetting::getConfDataByCode($this->keyName, ['plugin_identifier']);
-        $identifier = isset($pluginSetting['plugin_identifier']) ? $pluginSetting['plugin_identifier'] : '';
-        $frm->fill(['plugin_id' => $pluginSetting['plugin_id'], 'keyName' => $this->keyName]);
+        $frm = $this->getFormObj($fields);
+        if (is_array($data) && !empty($data)) {
+            $frm->fill($data);
+        }
+
         $this->set('frm', $frm);
-        $this->set('identifier', $identifier);
-        $this->_template->render(false, false, 'plugins/particulars.php');
+        $this->set('identifier', $this->identifier);
+        $this->_template->render(false, false, 'plugins/form.php');
     }
 }

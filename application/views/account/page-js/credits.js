@@ -47,7 +47,7 @@ $(document).ready(function(){
                 $(dvForm).html(res);
             });
         } else {
-            fcom.ajax(fcom.makeUrl($payoutType, 'getParticularsForm', [$payoutType]), '', function(res){
+            fcom.ajax(fcom.makeUrl($payoutType, 'getRequestForm'), '', function(res){
                 $(dvForm).html(res);
             });
         }
@@ -84,7 +84,7 @@ $(document).ready(function(){
 			}
 		});
 	}
-    setupPluginsParticulars = function(frm){
+    setupPluginForm = function(frm){
         if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl(frm.keyName.value, 'setup'), data, function(t) {
