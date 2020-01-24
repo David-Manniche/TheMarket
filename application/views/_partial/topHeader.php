@@ -52,8 +52,7 @@
 			</div>
 		</div>
 		<div class="main-bar">
-			<div class="container">
-				
+			<div class="container">				
 				<div class="logo-bar">
 				<a class="navs_toggle" href="javascript:void(0)"><span></span></a>
 					<?php

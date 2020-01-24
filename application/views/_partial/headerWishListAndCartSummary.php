@@ -4,8 +4,9 @@ if (UserAuthentication::isUserLogged()) {
     $user_is_buyer = User::getAttributesById(UserAuthentication::getLoggedUserId(), 'user_is_buyer');
 }
 if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
-    <a href="javascript:void(0)">
-        <span class="icn"><svg class="svg">
+    <a href="javascript:void(0)" data-trigger="side-cart">
+        <span class="icn">
+        <svg class="svg">
          <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#main-cart" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#main-cart"></use>
         </svg></span>
         <span class="icn-txt"><strong><?php echo Labels::getLabel("LBL_Cart", $siteLangId); ?></strong>
@@ -15,8 +16,8 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
             <?php /* } */ ?>
         </span>
     </a>
-    <div class="dropsection cart-detail">
-        <a href="javascript:void(0)" id="close-cart-js" class="close-layer"></a>
+    <div class="side-cart" id="side-cart" data-close-on-click-outside="side-cart">
+        <a href="javascript:void(0)" class="close-layer" data-target-close="side-cart"></a>
         <?php if ($totalCartItems>0) { ?>
         <div class="cartdetail__body" data-simplebar>
             <div class="short-detail">
@@ -104,13 +105,6 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
         <?php } ?>
     </div>
 <?php } ?>
-<script>
-    $("document").ready(function() {
-        $('#close-cart-js').click(function() {
-            if ($('html').hasClass('cart-is-active')) {
-                $('html').removeClass('cart-is-active');
-                $('.cart').toggleClass("cart-is-active");
-            }
-        });
-    });
-</script>
+ 
+
+

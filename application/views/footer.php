@@ -13,23 +13,23 @@
 </div>
 <?php } ?>
 <?php if (!$isUserDashboard) { ?>
-<footer id="footer" class="footer no-print" role="site-footer">
-    <section class="bg-light">
+<footer class="footer section pb-0 no-print" id="footer"  role="site-footer">
+     
         <div class="back-to-top">
             <a href="#top">
                 <svg class="svg">
                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#up-arrow" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#up-arrow"></use>
                 </svg></a>
         </div>
-    </section>
+     
     <?php if ($controllerName == 'home' && $action == 'index') {
         $this->includeTemplate('_partial/footerTrustBanners.php');
     } ?>
     <div class="container">
-        <div class="up-footer section">
+        <div class="up-footer ">
             <div class="row">
                 <?php $this->includeTemplate('_partial/footerNavigation.php'); ?>
-                <div class="col-lg-2 col-md-4 col-sm-12 column">
+                <div class="col-lg-2 col-md-4  mb-3 mb-md-0">
                     <div class="toggle-group">
                         <h5 class="toggle__trigger toggle__trigger-js"><?php echo Labels::getLabel('LBL_Sell_With', $siteLangId)." ".FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId, FatUtility::VAR_STRING, ''); ?></h5>
                         <div class="toggle__target toggle__target-js">
@@ -44,7 +44,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-8 col-sm-12 col-xs-12 column">
+            <div class="col-lg-4 col-md-8  mb-3 mb-md-0">
                 <?php if (FatApp::getConfig('CONF_ENABLE_NEWSLETTER_SUBSCRIPTION', FatUtility::VAR_INT, 0)) { ?>
                 <div class="toggle-group">
                     <h5 class="toggle__trigger toggle__trigger-js"><?php echo Labels::getLabel('LBL_Sign_Up_To_Our_Newsletter', $siteLangId);?></h5>
@@ -74,10 +74,10 @@
     </div>*/ ?>
     <div class="bottom-footer">
         <div class="row align-items-center">
-            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+            <div class="col-md-4">
                 <?php $this->includeTemplate('_partial/footerSocialMedia.php'); ?>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+            <div class="col-md-4">
                 <div class="copyright">
                     <?php 
                     $replacements = array(
@@ -89,7 +89,7 @@
                 ?>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+            <div class="col-md-4">
                 <div class="payment">
                     <img src="<?php echo CONF_WEBROOT_URL; ?>images/payment.png" alt="<?php echo Labels::getLabel('LBL_PAYMENT_OPTIONS', $siteLangId); ?>">
                 </div>
@@ -113,6 +113,55 @@
 <?php }?>
 <?php if (!isset($_SESSION['geo_location']) && FatApp::getConfig('CONF_GOOGLEMAP_API_KEY', FatUtility::VAR_STRING, '') != '') { ?>
 <script type="text/javascript" src='https://maps.google.com/maps/api/js?key=<?php echo FatApp::getConfig('CONF_GOOGLEMAP_API_KEY', FatUtility::VAR_STRING, '');?>&libraries=places'></script>
+
+
+<script>
+
+/* 
+STARTS triggers & toggles[
+
+data-trigger => value = target element id to be opened
+data-target-close => value = target element id to be closed
+data-close-on-click-outside => value 
+
+*/
+
+$('body').find('*[data-trigger]').click(function () {
+
+    var targetElmId = $(this).data('trigger');
+	var elmToggleClass = targetElmId + '--on';
+	if ($('body').hasClass(elmToggleClass)) {
+		$('body').removeClass(elmToggleClass);
+	} else {
+		$('body').addClass(elmToggleClass);
+	}
+});
+
+$('body').find('*[data-target-close]').click(function () {
+	var targetElmId = $(this).data('target-close');
+	$('body').toggleClass(targetElmId + '--on');
+});
+
+$('body').mouseup(function (event) {
+
+	if ($(event.target).data('trigger') != '' && typeof $(event.target).data('trigger') !== typeof undefined) {
+		event.preventDefault();
+		return;
+	}
+
+	$('body').find('*[data-close-on-click-outside]').each(function (idx, elm) {
+		var slctr = $(elm);
+		if (!slctr.is(event.target) && !$.contains(slctr[0], event.target)) {
+			$('body').removeClass(slctr.data('close-on-click-outside') + '--on');
+		}
+	});
+});
+
+/*
+] ENDS triggers & toggles
+*/
+
+</script>
 <script>
     window.onload = function() {
         var startPos;

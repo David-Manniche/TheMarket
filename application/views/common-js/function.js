@@ -1,3 +1,5 @@
+
+
 if (getCookie("screenWidth") != screen.width) {
 	$.ajax({url: fcom.makeUrl('Custom', 'updateScreenResolution', [screen.width, screen.height])});
 }
@@ -184,7 +186,7 @@ $("document").ready(function(){
 	});*/
 
 	/* for footer */
-	if( $(window).width() < 767 ){
+	if( $(window).width() < 576 ){
 	 /* FOR FOOTER TOGGLES */
 		$('.toggle__trigger-js').click(function(){
 		  if($(this).hasClass('is-active')){

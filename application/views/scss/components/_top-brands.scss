@@ -8,9 +8,16 @@
         -webkit-box-align: start;
         -ms-flex-align: start;
         align-items: flex-start;
-        -webkit-box-pack: justify;
-        -ms-flex-pack: justify;
-        justify-content: space-between;
+        justify-content: center;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+
+        @include media-breakpoint-down(md) {
+            & {
+                justify-content: flex-start;
+
+            }
+        }
     }
 
 
@@ -45,7 +52,7 @@
         align-items: center;
         justify-items: center;
         padding: 0 0.5rem;
-        margin: 0 0.5rem;
+        margin: 0 1rem;
         background-color: #fff;
         box-shadow: 0 0.25rem 0.25rem rgba(17, 17, 17, 0.03);
         border-radius: 2px;

@@ -1,73 +1,93 @@
-#header.header-supplier,
-#header.header-supplier ~ .after-header {
-    /*height: 127px;*/
+.header-supplier {
+    .logo-bar {
+
+        @include media-breakpoint-down(sm) {
+            & {
+                flex-direction: column;
+            }
+        }
+
+        .logo {
+            margin: 0;
+
+
+
+        }
+    }
+
+    .seller-login {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+
+
+        @include media-breakpoint-down(sm) {
+            & {
+                padding: 10px 0 0 0;
+            }
+        }
+
+        .field-set {
+            margin-bottom: 0;
+            -webkit-margin-start: 10px;
+            -moz-margin-start: 10px;
+            margin-inline-start: 10px;
+        }
+
+        .forgot {
+            margin-inline-start: 10px;
+        }
+    }
+
+    .seller_login_toggle {
+        cursor: pointer;
+        display: none;
+        height: 30px;
+        top: calc(50% - 15px);
+        line-height: 1;
+        position: absolute;
+        right: 8px;
+        width: 30px;
+        z-index: 1;
+        background: url(../images/retina/account.svg) no-repeat center;
+        vertical-align: top;
+        background-size: 20px 20px;
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+    }
 }
 
-
-#header.header-guest-advertiser,
-#header.header-guest-advertiser ~ .after-header {
-    /*height: 96px;*/
+.header-advertiser {
+    @extend .header-supplier;
 }
 
-#header.header-guest-affiliate,
-#header.header-guest-affiliate ~ .after-header {
-    /*height: 96px;*/
+.header-affiliate {
+    @extend .header-advertiser;
 }
 
+.short-nav {
+    li {
+        display: inline-block;
+        vertical-align: top;
 
+        a {
+            display: block;
+            font-size: 0.8em;
+            padding: 6px 10px;
+            color: var(--txt-color)
+        }
 
-.seller-login {
-    margin: 15px 0;
-    text-align: right;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-pack: end;
-    -ms-flex-pack: end;
-    justify-content: flex-end;
-    /*	-webkit-box-align: center;
-	-ms-flex-align: center;
-	align-items: center;*/
+        &:first-child {
+            padding-left: 0;
+        }
+
+        &:last-child {
+            padding-right: 0;
+        }
+    }
 }
 
-.seller-login .field-set {
-    margin-bottom: 0;
-    -webkit-margin-start: 10px;
-    -moz-margin-start: 10px;
-    margin-inline-start: 10px;
-    vertical-align: top;
-    display: inline-block;
-    width: auto;
-}
-
-.form.seller-login input,
-.form.seller-login input[type="submit"] {
-    height: 34px;
-    line-height: 30px;
-    font-size: 0.75rem;
-}
-
-.forgot {}
-
-.short-nav li {
-    display: inline-block;
-    vertical-align: top;
-}
-
-.short-nav li a {
-    display: block;
-    font-size: 0.8em;
-    padding: 6px 10px;
-    color: var(--txt-color)
-}
-
-.short-nav li:first-child {
-    padding-left: 0;
-}
-
-.short-nav li:last-child {
-    padding-right: 0;
-}
 
 .bottom-head {
     background: rgba(0, 0, 0, 0.1);
@@ -79,29 +99,30 @@
     position: relative;
     background-attachment: fixed;
     background-size: cover;
+
+    &:after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+        content: "";
+        opacity: 0.5;
+        background: #232526;
+        /* fallback for old browsers */
+        /* Chrome 10-25, Safari 5.1-6 */
+        background: -webkit-gradient(linear, left top, right top, from(#414345), to(#232526));
+        background: linear-gradient(to right, #414345, #232526);
+        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    }
+
+    .container {
+        position: relative;
+        z-index: 1;
+    }
 }
 
-.banner:after {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 0;
-    content: "";
-    opacity: 0.5;
-    background: #232526;
-    /* fallback for old browsers */
-    /* Chrome 10-25, Safari 5.1-6 */
-    background: -webkit-gradient(linear, left top, right top, from(#414345), to(#232526));
-    background: linear-gradient(to right, #414345, #232526);
-    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-}
-
-.banner .container {
-    position: relative;
-    z-index: 1;
-}
 
 .seller-slogan {
     position: relative;
@@ -113,34 +134,36 @@
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
+
+    .seller-slogan-txt {
+        position: static;
+        bottom: 0;
+        color: #fff;
+
+        h3 {
+            font-size: 3em;
+            color: inherit;
+            font-weight: 600;
+
+            span {
+                display: block;
+                font-size: 32px;
+                color: inherit;
+            }
+        }
+
+        p {
+            color: inherit;
+        }
+    }
+
+    ul li {
+        display: inline-block;
+        margin-right: 20px;
+    }
 }
 
-.seller-slogan-txt {
-    position: static;
-    bottom: 0;
-    color: #fff;
-}
 
-.seller-slogan-txt h3 {
-    font-size: 3em;
-    color: inherit;
-    font-weight: 600;
-}
-
-.seller-slogan-txt h3 span {
-    display: block;
-    font-size: 32px;
-    color: inherit;
-}
-
-.seller-slogan-txt p {
-    color: inherit;
-}
-
-.seller-slogan-txt ul li {
-    display: inline-block;
-    margin-right: 20px;
-}
 
 .seller-register-form {
     margin: 3.125rem 0;
@@ -216,25 +239,6 @@
     height: 410px;
 }
 
-/*.seller-steps-slider:after {
-	background: url(../images/simple-step-1.png) no-repeat 0 0;
-	width: 418px;
-	height: 335px;
-	display: block;
-	position: absolute;
-	content: "";
-	left:-418px; bottom:0;
-}
-
-.seller-steps-slider:before {
-	background: url(../images/simple-step-2.png) no-repeat 0 0;
-	width: 577px;
-	height: 410px;
-	display: block;
-	position: absolute;
-	content: "";
-	right:-577px; bottom:0;
-}*/
 .simple-price {
     background: var(--second-color);
     text-align: center;
@@ -399,23 +403,7 @@
     position: relative;
 }
 
-.seller_login_toggle {
-    cursor: pointer;
-    display: none;
-    height: 30px;
-    top: calc(50% - 15px);
-    line-height: 1;
-    position: absolute;
-    right: 8px;
-    width: 30px;
-    z-index: 1;
-    background: url(../images/retina/account.svg) no-repeat center;
-    vertical-align: top;
-    background-size: 20px 20px;
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-}
+
 
 .seller_nav_toggle {
     cursor: pointer;
@@ -489,14 +477,8 @@
 
 
 @media only screen and (max-width: 1199px) {
- 
-
     .top-head {
         padding: 10px 0;
-    }
-
-    .fixed .logo.header-login-logo {
-        margin-left: 0;
     }
 
     .seller_nav_toggle {
@@ -557,31 +539,6 @@
         --webkit-transform: translate(0px, 0px);
     }
 
-    .forgot {
-        font-size: 0.9em;
-    }
-
-    .seller-login {
-        background: #fff;
-        -webkit-box-shadow: 0 10px 10px rgba(0, 0, 0, 0.3);
-        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.3);
-        top: 40px;
-        left: 0;
-        right: 0;
-        opacity: 0;
-        visibility: hidden;
-        padding: 18px;
-        position: fixed;
-        margin: 0;
-        transform: translate(0%, -50px);
-        -moz-transform: translate(0%, -50px);
-        -webkit-transform: translate(0%, -50px);
-        transition: all 300ms ease 0s;
-        -moz-transition: all 300ms ease 0s;
-        -webkit-transition: all 300ms ease 0s;
-        z-index: 9;
-        text-align: center;
-    }
 
     .banner {
         background-attachment: fixed;
@@ -613,11 +570,6 @@
 
 @media only screen and (max-width: 1023px) {
 
-    #header.header-supplier,
-    #header.header-supplier ~ .after-header {
-        /*height: 104px;*/
-    }
-
     .seller-steps li {
         width: 50%;
     }
@@ -625,32 +577,7 @@
 
 @media only screen and (max-width: 767px) {
 
-
     .seller-steps li {
-        width: 100%;
-    }
-
-    .seller-login {
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-        flex-direction: column;
-    }
-
-    .seller-login input[type="text"],
-    .seller-login input[type="password"],
-    .seller-login .field-set {
-        max-width: none;
-        margin: 0;
-        margin-bottom: 5px;
-        width: 100%;
-        display: block;
-    }
-
-    .seller-login input[type="submit"] {
-        display: block;
-        margin: 0;
-        max-width: 100%;
         width: 100%;
     }
 
@@ -709,4 +636,3 @@
         flex-direction: column;
     }
 }
-

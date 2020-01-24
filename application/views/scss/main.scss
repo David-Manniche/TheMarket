@@ -96,7 +96,6 @@ sans-serif;
 //@import 'pages/responsive';
 @import 'pages/seller';
 @import 'pages/shop';
-@import 'pages/supplier';
 @import 'pages/testimonials';
 @import 'pages/rtl';
 
@@ -139,10 +138,17 @@ a:hover {
     vertical-align: top;
 }
 
-.divider, hr{
+.divider,
+hr {
     height: 1px;
     background: var(--border-color);
     margin: 15px 0;
+}
+
+.note {
+    font-weight: 300;
+    margin-top: 10px;
+    display: block;
 }
 
 /*Bg*/
@@ -201,4 +207,13 @@ a:hover {
     clear: both;
     display: table;
     width: 100%;
+}
+
+.align--center {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.hidden {
+    display: none;
 }
