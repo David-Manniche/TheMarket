@@ -62,7 +62,7 @@ $submitBtnFld->developerTags['col'] = 12;
                     </div>
                     <div class="form__subcontent">
                         <?php echo $frmSellerProduct->getFormTag(); ?>
-                        <?php if ($selprod_id > 0 && $productOptions) { ?>
+                        <?php /*if ($selprod_id > 0 && $productOptions) { ?>
                             <div class="row">
                                 <?php foreach ($productOptions as $option) { ?>
                                 <div class="col-md-6">
@@ -75,7 +75,7 @@ $submitBtnFld->developerTags['col'] = 12;
                                 </div>
                                 <?php } ?>
                             </div>
-                        <?php } ?>
+                        <?php }*/ ?>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="field-set">
@@ -95,7 +95,7 @@ $submitBtnFld->developerTags['col'] = 12;
                                 </div>
                             </div>
                         </div>
-                        <?php if ($selprod_id > 0 || empty($productOptions)) { ?>
+                        <?php /*if ($selprod_id > 0 || empty($productOptions)) { ?>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="field-set">
@@ -136,11 +136,10 @@ $submitBtnFld->developerTags['col'] = 12;
                                     </div>
                                 </div>
                             </div>
-                        <?php }?>
+                        <?php }*/ ?>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="field-set d-flex align-items-center">
-
                                     <div class="field-wraper">
                                         <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_subtract_stock'); ?></div>
                                     </div>
@@ -148,7 +147,6 @@ $submitBtnFld->developerTags['col'] = 12;
                             </div>
                             <div class="col-md-6">
                                 <div class="field-set d-flex align-items-center">
-
                                     <div class="field-wraper">
                                         <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_track_inventory'); ?></div>
                                     </div>
@@ -260,7 +258,6 @@ $submitBtnFld->developerTags['col'] = 12;
                                 </div>
                             </div>
                         </div>
-                        <?php if ($availableOptions && $selprod_id == 0) { ?>
                         <div class="row">
                             <div class="col-md-12">
                                 <table id="shipping" class="table">
@@ -271,24 +268,32 @@ $submitBtnFld->developerTags['col'] = 12;
                                             <th width="20%"><?php echo Labels::getLabel('LBL_Selling_Price', $siteLangId); ?> <i class="fa fa-question-circle-o tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates.', $siteLangId).' '.Labels::getLabel('LBL_Min_Selling_price', $siteLangId).' '. CommonHelper::displayMoneyFormat($productMinSellingPrice, true, true); ?></span></i></th>
                                             <th width="20%"><?php echo Labels::getLabel('LBL_Quantity', $siteLangId); ?></th>
                                             <th width="20%"><?php echo Labels::getLabel('LBL_SKU', $siteLangId); ?> <i class="fa fa-question-circle-o tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_Stock_Keeping_Unit', $siteLangId) ?></span></i></th>
-                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($availableOptions as $optionKey => $optionValue) { ?>
-                                        <tr>
-                                            <td><?php echo str_replace("_", " | ", $optionValue); ?></td>
-                                            <td><?php echo $frmSellerProduct->getFieldHtml('selprod_cost'.$optionKey); ?></td>
-                                            <td><?php echo $frmSellerProduct->getFieldHtml('selprod_price'.$optionKey); ?></td>
-                                            <td><?php echo $frmSellerProduct->getFieldHtml('selprod_stock'.$optionKey); ?></td>
-                                            <td><?php echo $frmSellerProduct->getFieldHtml('selprod_sku'.$optionKey); ?></td>
-                                        </tr>
+                                        <?php if ($selprod_id == 0) { ?>
+                                            <?php foreach ($availableOptions as $optionKey => $optionValue) { ?>
+                                            <tr>
+                                                <td><?php echo str_replace("_", " | ", $optionValue); ?></td>
+                                                <td><?php echo $frmSellerProduct->getFieldHtml('selprod_cost'.$optionKey); ?></td>
+                                                <td><?php echo $frmSellerProduct->getFieldHtml('selprod_price'.$optionKey); ?></td>
+                                                <td><?php echo $frmSellerProduct->getFieldHtml('selprod_stock'.$optionKey); ?></td>
+                                                <td><?php echo $frmSellerProduct->getFieldHtml('selprod_sku'.$optionKey); ?></td>
+                                            </tr>
+                                            <?php } ?>
+                                        <?php } else { ?>
+                                            <tr>
+                                                <td><?php /*echo str_replace("_", " | ", $optionValue);*/ ?></td>
+                                                <td><?php echo $frmSellerProduct->getFieldHtml('selprod_cost'); ?></td>
+                                                <td><?php echo $frmSellerProduct->getFieldHtml('selprod_price'); ?></td>
+                                                <td><?php echo $frmSellerProduct->getFieldHtml('selprod_stock'); ?></td>
+                                                <td><?php echo $frmSellerProduct->getFieldHtml('selprod_sku'); ?></td>
+                                            </tr>
                                         <?php } ?>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                        <?php } ?>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="field-set">
@@ -302,7 +307,7 @@ $submitBtnFld->developerTags['col'] = 12;
                                 foreach ($languages as $langId => $langName) { ?>
                                     <div class="acc">
                                         <div class="js-acc-triger acc-triger">
-                                            <h6><?php echo Labels::getLabel('LBL_Inventory_Data_for', $siteLangId) ?> {<?php echo $langName;?>}</h6>
+                                            <h6><?php echo Labels::getLabel('LBL_Inventory_Data_for', $siteLangId) ?> <?php echo $langName;?></h6>
                                         </div>
                                         <div class="acc-data" style="display: none;">
                                             <div class="row">
@@ -333,7 +338,9 @@ $submitBtnFld->developerTags['col'] = 12;
                                 <div class="field-set">
                                     <div class="caption-wraper"><label class="field_label"></label></div>
                                     <div class="field-wraper">
-                                        <div class="field_cover"><input data-field-caption="" data-fatreq="{&quot;required&quot;:false}" type="submit" name="btn_submit" value="Save Changes"></div>
+                                        <div class="field_cover">
+                                            <?php echo $frmSellerProduct->getFieldHtml('btn_submit'); ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

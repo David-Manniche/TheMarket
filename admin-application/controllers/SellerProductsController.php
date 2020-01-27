@@ -185,7 +185,7 @@ class SellerProductsController extends AdminBaseController
         $frmSellerProduct = $this->getSellerProductForm($product_id);
         $sellerProductRow = [];
         if ($selprod_id) {
-            $sellerProductRow = SellerProduct::getAttributesById($selprod_id, null, true, true);            
+            $sellerProductRow = SellerProduct::getAttributesById($selprod_id, null, true, true);
             if (!$sellerProductRow) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
             }
@@ -194,7 +194,7 @@ class SellerProductsController extends AdminBaseController
         }
         $user_shop_name = User::getUserShopName($sellerProductRow['selprod_user_id']);
         $sellerProductRow['selprod_user_shop_name'] = $user_shop_name['user_name'] . ' - ' . $user_shop_name['shop_identifier'];
-        
+
         $productWarranty = Product::getAttributesById($product_id, 'product_warranty', true);
         $sellerProductRow['product_warranty'] = FatUtility::int($productWarranty);
 
@@ -216,12 +216,23 @@ class SellerProductsController extends AdminBaseController
         if (Product::isProductShippedBySeller($product_id, $product_seller_id, $sellerProductRow['selprod_user_id'])) {
             $shippedBySeller = 1;
         }
+        $optionValues = '';
+        /*if (isset($sellerProductRow['selprodoption_optionvalue_id'])) {
+            foreach ($sellerProductRow['selprodoption_optionvalue_id'] as $opId => $op) {
+                $optionValue = new OptionValue();
+                echo $opId;
+                CommonHelper::printArray($optionValue->getOptionValue($optionValue->getOptionValue($opId))); die;
+                // $optionValues .= $sellerProductRow['selprodoption_optionvalue_id'];
+            }
+        }*/
 
         $this->set('customActiveTab', 'GENERAL');
         $this->set('product_added_by_admin', $product_added_by_admin);
         $this->set('product_type', $product_type);
         $this->set('shippedBySeller', $shippedBySeller);
         $this->set('frmSellerProduct', $frmSellerProduct);
+        $this->set('optionValues', $optionValues);
+        $this->set('productMinSellingPrice', $productRow['product_min_selling_price']);
         $this->set('product_id', $product_id);
         $this->set('selprod_id', $selprod_id);
         $this->set('language', Language::getAllNames());
@@ -244,7 +255,6 @@ class SellerProductsController extends AdminBaseController
         $selprod_threshold_stock_level = Fatutility::int($post['selprod_threshold_stock_level']);
         $useShopPolicy = FatApp::getPostedData('use_shop_policy', FatUtility::VAR_INT, 0);
 
-        // commonHelper::printArray($post); die;
         if (!$selprod_product_id) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
@@ -277,7 +287,6 @@ class SellerProductsController extends AdminBaseController
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
-
         //Validate product belongs to current logged seller[
         if ($selprod_id) {
             $sellerProductRow = SellerProduct::getAttributesById($selprod_id, array('selprod_user_id'));
@@ -286,20 +295,21 @@ class SellerProductsController extends AdminBaseController
         $post['selprod_url_keyword']= strtolower(CommonHelper::createSlug($post['selprod_url_keyword']));
 
         unset($post['selprod_id']);
-        $options = array();
+        $sellerProdObj = new SellerProduct($selprod_id);
+        /*$options = array();
         if (isset($post['selprodoption_optionvalue_id']) && count($post['selprodoption_optionvalue_id'])) {
             $options = $post['selprodoption_optionvalue_id'];
             unset($post['selprodoption_optionvalue_id']);
         }
         asort($options);
-        $sellerProdObj = new SellerProduct($selprod_id);
+
         $post['selprod_code'] = $productRow['product_id'].'_'.implode('_', $options);
         $selProdCode = $post['selprod_code'];
 
         if ($sellerProductRow && !empty(Product::isSellProdAvailableForUser($selProdCode, $this->adminLangId, $sellerProductRow['selprod_user_id'], $selprod_id))) {
             Message::addErrorMessage(Labels::getLabel("MSG_Product_has_been_already_added_by_user", $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
-        }
+        }*/
 
         $data_to_be_save = $post;
 
@@ -333,15 +343,43 @@ class SellerProductsController extends AdminBaseController
         /*--------  ] */
 
         //save options data, if any[
-        if ($selprod_id) {
+        /*if ($selprod_id) {
             if (!$sellerProdObj->addUpdateSellerProductOptions($selprod_id, $options)) {
                 Message::addErrorMessage(Labels::getLabel($sellerProdObj->getError(), $this->adminLangId));
                 FatUtility::dieWithError(Message::getHtml());
             }
-        }
+        }*/
         //]
 
-        $newTabLangId = 0;
+        $languages = Language::getAllNames();
+        /* Update seller product language data[ */
+        foreach ($languages as $langId => $langName) {
+            if (!empty($post['selprod_title'.$langId])) {
+                $selProdData = array(
+                'selprodlang_selprod_id' => $selprod_id,
+                'selprodlang_lang_id' => $langId,
+                'selprod_title' => $post['selprod_title'.$langId],
+                'selprod_comments' => $post['selprod_comments'.$langId],
+                );
+
+                if (!$sellerProdObj->updateLangData($langId, $selProdData)) {
+                    Message::addErrorMessage(Labels::getLabel($sellerProdObj->getError(), $this->siteLangId));
+                    FatUtility::dieJsonError(Message::getHtml());
+                }
+            }
+
+            /*$autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+            if (0 < $autoUpdateOtherLangsData) {
+                $updateLangDataobj = new TranslateLangData(SellerProduct::DB_TBL_LANG);
+                if (false === $updateLangDataobj->updateTranslatedData($selprod_id)) {
+                    Message::addErrorMessage($updateLangDataobj->getError());
+                    FatUtility::dieWithError(Message::getHtml());
+                }
+            }*/
+        }
+        /* ] */
+
+        /*$newTabLangId = 0;
         if ($selprod_id > 0) {
             $languages = Language::getAllNames();
             foreach ($languages as $langId => $langName) {
@@ -353,13 +391,12 @@ class SellerProductsController extends AdminBaseController
         } else {
             $selprod_id = $sellerProdObj->getMainTableRecordId();
             $newTabLangId = $this->adminLangId;
-        }
+        }*/
 
         $productId = SellerProduct::getAttributesById($selprod_id, 'selprod_product_id', false);
         Product::updateMinPrices($productId);
 
         $this->set('selprod_id', $selprod_id);
-        $this->set('langId', $newTabLangId);
         $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
@@ -623,7 +660,7 @@ class SellerProductsController extends AdminBaseController
         $metaType = MetaTag::META_GROUP_PRODUCT_DETAIL;
         $this->set('metaType', $metaType);
         $prodSeoLangFrm = $this->getSeoLangForm($metaId, $langId);
-        
+
         if (0 < $autoFillLangData) {
             $updateLangDataobj = new TranslateLangData(MetaTag::DB_TBL_LANG);
             $translatedData = $updateLangDataobj->getTranslatedData($metaId, $langId);
@@ -662,10 +699,10 @@ class SellerProductsController extends AdminBaseController
         $frm->addTextarea(Labels::getLabel('LBL_Meta_Description', $this->adminLangId), 'meta_description')->requirements()->setRequired(true);
         $fld = $frm->addTextarea(Labels::getLabel('LBL_Other_Meta_Tags', $this->adminLangId), 'meta_other_meta_tags');
         $fld->htmlAfterField = '<small>' . Labels::getLabel('LBL_For_Example:', $this->adminLangId) . ' ' . htmlspecialchars('<meta name="copyright" content="text">') . '</small>';
-        
+
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
-        
+
         if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
             $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }

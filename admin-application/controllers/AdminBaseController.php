@@ -571,14 +571,14 @@ class AdminBaseController extends FatController
                 foreach ($productOptions as $option) {
                     $option_name = ($option['option_name'] != '') ? $option['option_name'] : $option['option_identifier'];
                     $fld = $frm->addSelectBox($option_name, 'selprodoption_optionvalue_id[' . $option['option_id'] . ']', $option['optionValues'], '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
-                    $fld->requirements()->setRequired();
+                    // $fld->requirements()->setRequired();
                 }
             }
             $frm->addTextBox(Labels::getLabel('LBL_User', $this->adminLangId), 'selprod_user_shop_name', '', array(' ' => ' '))->requirements()->setRequired();
             $frm->addHtml('', 'user_shop', '<div id="user_shop_name"></div>');
         }
         $frm->addHiddenField('', 'selprod_user_id');
-        $frm->addTextBox(Labels::getLabel('LBL_Url_Keyword', $this->adminLangId), 'selprod_url_keyword')->requirements()->setRequired();
+        $frm->addTextBox(Labels::getLabel('LBL_Url_Keyword', $this->adminLangId), 'selprod_url_keyword');
 
         $costPrice = $frm->addFloatField(Labels::getLabel('LBL_Cost_Price', $this->adminLangId) . ' [' . CommonHelper::getCurrencySymbol(true) . ']', 'selprod_cost');
         $costPrice->requirements()->setPositive();
@@ -587,16 +587,14 @@ class AdminBaseController extends FatController
         $fld->requirements()->setPositive();
         if (isset($productData['product_min_selling_price'])) {
             $fld->requirements()->setRange($productData['product_min_selling_price'], 9999999999);
-            $fld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Minimum_selling_price_for_this_product_is', $this->adminLangId).' '.CommonHelper::displayMoneyFormat($productData['product_min_selling_price'], true, true));
-            $fld->htmlAfterField='<small class="text--small">'.Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates', $this->adminLangId).'</small> <br><small class="text--small">'.Labels::getLabel('LBL_Min_Selling_price', $this->adminLangId). CommonHelper::displayMoneyFormat($productData['product_min_selling_price'], true, true).'</small>';
         }
 
         $fld = $frm->addIntegerField(Labels::getLabel('LBL_Quantity', $this->adminLangId), 'selprod_stock');
         $fld->requirements()->setPositive();
         $fld = $frm->addIntegerField(Labels::getLabel('LBL_Minimum_Quantity', $this->adminLangId), 'selprod_min_order_qty');
         $fld->requirements()->setPositive();
-        $frm->addSelectBox(Labels::getLabel('LBL_Subtract_Stock', $this->adminLangId), 'selprod_subtract_stock', applicationConstants::getYesNoArr($this->adminLangId), applicationConstants::YES, array(), '');
-        $selprod_track_inventoryFld =  $frm->addSelectBox(Labels::getLabel('LBL_Track_Inventory', $this->adminLangId), 'selprod_track_inventory', Product::getInventoryTrackArr($this->adminLangId), Product::INVENTORY_NOT_TRACK, array(), '');
+        $frm->addCheckBox(Labels::getLabel('LBL_System_Should_Maintain_Stock_Levels', $this->adminLangId), 'selprod_subtract_stock', applicationConstants::YES, array(), false, 0);
+        $frm->addCheckBox(Labels::getLabel('LBL_System_Should_Track_Product_Inventory', $this->adminLangId), 'selprod_track_inventory', Product::INVENTORY_TRACK, array(), false, 0);
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Alert_Stock_Level', $this->adminLangId), 'selprod_threshold_stock_level');
         $fld->requirements()->setInt();
 
@@ -613,7 +611,6 @@ class AdminBaseController extends FatController
         if (FatApp::getConfig("CONF_PRODUCT_SKU_MANDATORY", FatUtility::VAR_INT, 1)) {
             $fld_sku->requirements()->setRequired();
         }
-        $fld_sku->htmlAfterField='<br/><small class="text--small">'.Labels::getLabel('LBL_Stock_Keeping_Unit', $this->adminLangId).'</small>';
 
         if ($productData['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
             $fld = $frm->addIntegerField(Labels::getLabel('LBL_Max_Download_Times', $this->adminLangId), 'selprod_max_download_times');
@@ -631,7 +628,7 @@ class AdminBaseController extends FatController
 
         /* $frm->addDateTimeField( Labels::getLabel('LBL_Date_Available', $this->adminLangId), 'selprod_available_from', '' , array('readonly' => 'readonly')); */
 
-        /* 	$frm->addTextArea( Labels::getLabel( 'LBL_Any_Extra_Comment_for_buyer', $this->adminLangId), 'selprod_comments'); */
+        /* $frm->addTextArea( Labels::getLabel( 'LBL_Any_Extra_Comment_for_buyer', $this->adminLangId), 'selprod_comments'); */
 
         $useShopPolicy = $frm->addCheckBox(Labels::getLabel('LBL_USE_SHOP_RETURN_AND_CANCELLATION_AGE_POLICY', $this->adminLangId), 'use_shop_policy', 1, ['id' => 'use_shop_policy'], false, 0);
 
@@ -653,7 +650,7 @@ class AdminBaseController extends FatController
         $orderCancellationAgeReqFld->setRequired(true);
         $orderCancellationAgeReqFld->setPositive();
         $orderCancellationAgeReqFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $this->adminLangId) . ' </small>';
-        
+
         $orderCancellationAgeUnReqFld = new FormFieldRequirement('selprod_cancellation_age', Labels::getLabel('LBL_ORDER_CANCELLATION_AGE', $this->adminLangId));
         $orderCancellationAgeUnReqFld->setRequired(false);
         $orderCancellationAgeUnReqFld->setPositive();
@@ -674,7 +671,15 @@ class AdminBaseController extends FatController
             $codFld->addFieldTagAttribute('disabled', 'disabled');
             $codFld->htmlAfterField = '<br/><small>'.Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->adminLangId).'</small>';
         }
+        $frm->addRequiredField(Labels::getLabel('LBL_Title', $this->adminLangId), 'selprod_title'.FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
+        $frm->addTextArea(Labels::getLabel('LBL_Any_Extra_Comment_for_buyer', $this->adminLangId), 'selprod_comments'.FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
 
+        $languages = Language::getAllNames();
+        unset($languages[FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1)]);
+        foreach ($languages as $langId => $langName) {
+            $frm->addTextBox(Labels::getLabel('LBL_Title', $this->adminLangId), 'selprod_title'.$langId);
+            $frm->addTextArea(Labels::getLabel('LBL_Any_Extra_Comment_for_buyer', $this->adminLangId), 'selprod_comments'.$langId);
+        }
         $frm->addHiddenField('', 'selprod_product_id', $product_id);
         $frm->addHiddenField('', 'selprod_id');
         $fld1 = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));

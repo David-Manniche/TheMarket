@@ -3897,20 +3897,10 @@ class SellerController extends SellerBaseController
             if ($productData['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
                 $defaultProductCond = Product::CONDITION_NEW;
             }
-            if ($selprod_id > 0) {
-                $productOptions = Product::getProductOptions($product_id, $this->siteLangId, true);
-                if ($productOptions) {
-                    foreach ($productOptions as $option) {
-                        $option_name = ($option['option_name'] != '') ? $option['option_name'] : $option['option_identifier'];
-                        $fld = $frm->addSelectBox($option_name, 'selprodoption_optionvalue_id['.$option['option_id'].']', $option['optionValues'], '', array('class' => 'selprodoption_optionvalue_id'), Labels::getLabel('LBL_Select', $this->siteLangId));
-                        $fld->requirements()->setRequired();
-                    }
-                }
-            }
         }
         $frm->addRequiredField(Labels::getLabel('LBL_Title', $this->siteLangId), 'selprod_title'.FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
-        $frm->addCheckBox(Labels::getLabel('LBL_System_Should_Maintain_Stock_Levels?', $this->siteLangId), 'selprod_subtract_stock', applicationConstants::YES, array(), false, 0);
-        $frm->addCheckBox(Labels::getLabel('LBL_System_Should_Track_Product_Inventory?', $this->siteLangId), 'selprod_track_inventory', Product::INVENTORY_TRACK, array(), false, 0);
+        $frm->addCheckBox(Labels::getLabel('LBL_System_Should_Maintain_Stock_Levels', $this->siteLangId), 'selprod_subtract_stock', applicationConstants::YES, array(), false, 0);
+        $frm->addCheckBox(Labels::getLabel('LBL_System_Should_Track_Product_Inventory', $this->siteLangId), 'selprod_track_inventory', Product::INVENTORY_TRACK, array(), false, 0);
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Alert_Stock_Level', $this->siteLangId), 'selprod_threshold_stock_level');
         $fld->requirements()->setInt();
         $fld = $frm->addIntegerField(Labels::getLabel('LBL_Minimum_Purchase_Quantity', $this->siteLangId), 'selprod_min_order_qty');
@@ -3930,19 +3920,19 @@ class SellerController extends SellerBaseController
         $frm->addDateField(Labels::getLabel('LBL_Date_Available', $this->siteLangId), 'selprod_available_from', '', array('readonly' => 'readonly'))->requirements()->setRequired();
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->siteLangId), 'selprod_active', applicationConstants::getActiveInactiveArr($this->siteLangId), applicationConstants::ACTIVE, array(), '');
 
-        $useShopPolicy = $frm->addCheckBox(Labels::getLabel('LBL_USE_SHOP_RETURN_AND_CANCELLATION_AGE_POLICY', $this->siteLangId), 'use_shop_policy', 1, ['id' => 'use_shop_policy'], false, 0);
+        $useShopPolicy = $frm->addCheckBox(Labels::getLabel('LBL_USE_SHOP_RETURN_AND_CANCELLATION_POLICY', $this->siteLangId), 'use_shop_policy', 1, ['id' => 'use_shop_policy'], false, 0);
 
         $fld = $frm->addIntegerField(Labels::getLabel('LBL_ORDER_RETURN_AGE', $this->siteLangId), 'selprod_return_age');
 
         $orderReturnAgeReqFld = new FormFieldRequirement('selprod_return_age', Labels::getLabel('LBL_ORDER_RETURN_AGE', $this->siteLangId));
         $orderReturnAgeReqFld->setRequired(true);
         $orderReturnAgeReqFld->setPositive();
-        $orderReturnAgeReqFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $this->siteLangId) . ' </small>';
+        $orderReturnAgeReqFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_IN_DAYS', $this->siteLangId) . ' </small>';
 
         $orderReturnAgeUnReqFld = new FormFieldRequirement('selprod_return_age', Labels::getLabel('LBL_ORDER_RETURN_AGE', $this->siteLangId));
         $orderReturnAgeUnReqFld->setRequired(false);
         $orderReturnAgeUnReqFld->setPositive();
-        $orderReturnAgeUnReqFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $this->siteLangId) . ' </small>';
+        $orderReturnAgeUnReqFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_IN_DAYS', $this->siteLangId) . ' </small>';
 
         $fld = $frm->addIntegerField(Labels::getLabel('LBL_ORDER_CANCELLATION_AGE', $this->siteLangId), 'selprod_cancellation_age');
 
@@ -3977,7 +3967,12 @@ class SellerController extends SellerBaseController
             }
             $frm->addRequiredField(Labels::getLabel('LBL_Url_Keyword', $this->siteLangId), 'selprod_url_keyword');
             $productOptions = Product::getProductOptions($product_id, $this->siteLangId, true);
-            if ($selprod_id == 0 && !empty($productOptions)) {
+            /*foreach ($productOptions as $option) {
+                $option_name = ($option['option_name'] != '') ? $option['option_name'] : $option['option_identifier'];
+                $fld = $frm->addSelectBox($option_name, 'selprodoption_optionvalue_id['.$option['option_id'].']', $option['optionValues'], '', array('class' => 'selprodoption_optionvalue_id'), Labels::getLabel('LBL_Select', $this->siteLangId));
+                $fld->requirements()->setRequired();
+            }*/
+            if (!empty($productOptions) && $selprod_id == 0) {
                 $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '_');
                 if ($optionCombinations) {
                     foreach ($optionCombinations as $optionKey => $optionValue) {
@@ -4008,7 +4003,6 @@ class SellerController extends SellerBaseController
                     }
                 }
             } else {
-
                 $costPrice = $frm->addFloatField(Labels::getLabel('LBL_Cost_Price', $this->siteLangId).' ['.CommonHelper::getCurrencySymbol(true).']', 'selprod_cost');
                 $costPrice->requirements()->setPositive();
 
