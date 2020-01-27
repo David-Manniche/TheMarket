@@ -1,4 +1,4 @@
-<div class="bg--second pt-3 pb-3">
+<div class="bg-second pt-3 pb-3">
        <div class="container">
            <div class="row">
                <div class="col-md-8 col-sm-7">

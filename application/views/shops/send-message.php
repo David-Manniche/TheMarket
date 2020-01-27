@@ -49,7 +49,7 @@
 
 <div id="body" class="body">
  
- <div class="bg--second pt-3 pb-3">
+ <div class="bg-second pt-3 pb-3">
       <div class="container">
         <div class="row align-items-center justify-content-between">
           <div class="col-md-8 col-sm-8">
@@ -75,7 +75,7 @@
   <section class="section">
     <div class="container">      
 		  <div class="row justify-content-center">
-			<div class="col-xl-7 col-lg-7">
+			<div class="col-lg-7">
                 <div class="section-head">
                     <div class="section__heading">
                         <h4><?php echo Labels::getLabel('LBL_Send_Message_to_shop_owner', $siteLangId); ?></h4>
@@ -84,7 +84,7 @@
                         <div class="section__action"><div class="note-messages"><?php echo Labels::getLabel('LBL_User_is_not_allowed_to_send_message', $siteLangId); ?></div></div>
                     <?php } */ ?>
                 </div>
-                <div class="box box--gray box--radius box--border p-5"> <?php echo $frm->getFormHtml(); ?> </div>
+                <div class="bg-gray rounded p-5"> <?php echo $frm->getFormHtml(); ?> </div>
 			</div>
 		  </div>
 		 

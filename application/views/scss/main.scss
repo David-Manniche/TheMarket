@@ -152,9 +152,13 @@ hr {
 }
 
 /*Bg*/
+.bg--primary-color,
+.bg-primary {
+    color: #fff;
+    background: var(--first-color);
+}
 
-.bg--second-color,
-.bg--second {
+.bg-second {
     color: #fff;
     background: var(--second-color);
 }

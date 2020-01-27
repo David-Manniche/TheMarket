@@ -25,7 +25,7 @@
 			</div>
 		  </section>
 		<?php } if(isset ($blockData[Contentpage::CONTENT_PAGE_LAYOUT1_BLOCK_3])  && $blockData[Contentpage::CONTENT_PAGE_LAYOUT1_BLOCK_3]['cpblocklang_text']){?>
-		  <section class="section bg--second">
+		  <section class="section bg-second">
 			<div class="container">
 			  <?php echo FatUtility::decodeHtmlEntities($blockData[Contentpage::CONTENT_PAGE_LAYOUT1_BLOCK_3]['cpblocklang_text']);?>
 			</div>
@@ -51,7 +51,7 @@
 	}
 	//echo FatUtility::decodeHtmlEntities( $cPage['cpage_content'] ) ?>
 	<?php } else { ?>
-	<div class="bg--second pt-3 pb-3">
+	<div class="bg-second pt-3 pb-3">
       <div class="container">
         <div class="row align-items-center justify-content-center">
           <div class="col-md-12">               

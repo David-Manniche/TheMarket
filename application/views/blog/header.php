@@ -50,8 +50,7 @@ $this->includeTemplate('_partial/header/commonHeadBottom.php', $commonHeadData, 
 <?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) { 
 	$this->includeTemplate('restore-system/top-header.php');    
 } ?>
-<header class="header-blog">
+<header class="header header-blog" role="Blog-header">
     <?php $this->includeTemplate('_partial/blogNavigation.php'); ?>
 </header>
-<div class="after-header-blog"></div>
 <div class="clear"></div>

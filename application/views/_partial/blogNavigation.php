@@ -1,8 +1,7 @@
 <div class="main-bar-blog">
     <div class="container">
+        <div class="header-blog-inner">		
         <a class="navs_toggle" href="javascript:void(0)"><span></span></a>
-        <div class="header-blog-inner">
-
             <div class="logo">
                 <a href="<?php echo CommonHelper::generateUrl('Blog'); ?>">
                     <img src="<?php echo CommonHelper::generateFullUrl('Image', 'siteLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>"
@@ -10,9 +9,11 @@
                 </a>
             </div>
             <div class="main-search">
-                <a href="javascript:void(0)" class="toggle--search toggle--search-js"> <span class="icn"></span></a>
-                <div class="form--search form--search-popup">
-                    <a id="close-search-popup-js" class="close-layer d-xl-none d-lg-none" href="javascript:void(0)"></a>
+                <a href="javascript:void(0)" class="toggle--search" data-trigger="form--search-popup"><span class="icn"><svg class="svg">
+         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#magnifying" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#magnifying"></use>
+        </svg></span></a>
+                <div class="form--search form--search-popup" id="form--search-popup" data-close-on-click-outside="form--search-popup">
+                     
                     <?php $srchFrm->setFormTagAttribute('onSubmit', 'submitBlogSearch(this); return(false);');
                     $srchFrm->setFormTagAttribute('class', 'main-search-form');
                     $srchFrm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';

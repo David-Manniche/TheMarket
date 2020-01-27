@@ -1,5 +1,4 @@
-[dir="rtl"] {    
-    
+[dir="rtl"] {
     .product-view {
         overflow-x: hidden;
     }
@@ -389,7 +388,7 @@
         right: 0;
     }
 
- 
+
 
     .payment {
         text-align: left;
@@ -456,14 +455,6 @@
     .sold-by .products__rating {
         padding-right: 0;
     }
-
-    .btn .icn svg,
-    .btn .icn img {
-        margin-right: 0;
-        margin-left: 8px;
-    }
-
-
 
     .wrap-drop {
         -webkit-padding-end: 0;
@@ -732,7 +723,7 @@
             text-align: right;
         }
 
- 
+
 
         .dropdown__target__right {
             left: 0;
@@ -756,7 +747,7 @@
             -webkit-transition: none;
             -ms-transition: none;
         }
- 
+
 
         .form--search-popup .dropdown__target {
             left: auto;
@@ -777,7 +768,7 @@
         }
 
 
-       
+
     }
 
     @media only screen and (max-width: 767px) {

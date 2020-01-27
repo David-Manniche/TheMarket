@@ -6,7 +6,7 @@ $frm->getField('question')->setFieldTagAttribute('placeholder', Labels::getLabel
 $frm->getField('question')->setFieldTagAttribute('class', "faq-input no-focus");
 ?>
 <div id="body" class="body">
-    <div class="bg--second pt-5 pb-5">
+    <div class="bg-second pt-5 pb-5">
         <div class="container">
             <div class="row align-items-center justify-content-center">
                 <div class="col-md-6">

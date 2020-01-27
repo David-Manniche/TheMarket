@@ -68,7 +68,7 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
 <?php } ?>
 
 <?php if (isset($pageTitle)) { ?>
-<section class="bg--second pt-3 pb-3">
+<section class="bg-second pt-3 pb-3">
     <div class="container">
         <div class="section-head section--white--head section--head--center mb-0">
             <div class="section__heading">
@@ -93,7 +93,7 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
 <section class="section">
     <div class="container">
         <div class="row">
-            <div class="col-xl-3 col-lg-12">
+            <sidebar class="col flex-grow-0 collection-sidebar" id="collection-sidebar" data-close-on-click-outside="collection-sidebar">
                 <?php if (isset($shop)) { ?>
                 <div class="bg-gray rounded shop-information p-4">
                     <div class="shop-logo"><img data-ratio="1:1 (150x150)" src="<?php echo CommonHelper::generateUrl('image', 'shopLogo', array($shop['shop_id'], $siteLangId, 'SMALL')); ?>" alt="<?php echo $shop['shop_name']; ?>"></div>
@@ -207,8 +207,14 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                 <div class="filters bg-gray rounded">
                     <div class="filters__ele productFilters-js"></div>
                 </div>
-            </div>
-            <div class="col-xl-9 col-lg-12">
+				
+            </sidebar>
+            <div class="collection-content col-12 col-md pl-md-6">
+			 <button  class="btn btn-float link__filter btn--filters-control" data-trigger="collection-sidebar"><i class="icn">
+                                            <svg class="svg">
+                                                <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#filter" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#filter"></use>
+                                            </svg>
+                                        </i></button>
                 <div class="row align-items-center justify-content-between  flex-column flex-md-row mb-3">
                     <div class="col mb-3 mb-md-0">
                         <div class="total-products">
@@ -219,16 +225,11 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                         <div id="top-filters" class="page-sort hide_on_no_product">
                             <ul>
                                 <li class="list__item">
-                                    <a href="javascript:void(0)" class="link__filter btn btn--secondary-border d-xl-none btn--filters-control"><i class="icn">
-                                            <svg class="svg">
-                                                <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#filter" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#filter"></use>
-                                            </svg>
-                                        </i><span class="txt"><?php echo Labels::getLabel('LBL_Filter', $siteLangId); ?></span></a>
+                                   
+										
                                     <?php if (!(UserAuthentication::isUserLogged()) || (UserAuthentication::isUserLogged() && (User::isBuyer()))) { ?>
-                                    <a href="javascript:void(0)" onclick="saveProductSearch()" class="btn btn-outline-primary btn--filters-control"><i class="icn">
-                                            <svg class="svg">
-                                                <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#savesearch" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#savesearch"></use>
-                                            </svg>
+                                    <a href="javascript:void(0)" onclick="saveProductSearch()" class="btn btn--primary btn--filters-control"><i class="icn">
+                                          
                                         </i><span class="txt"><?php echo Labels::getLabel('LBL_Save_Search', $siteLangId); ?></span></a>
                                     <?php } ?>
                                 </li>

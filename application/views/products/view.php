@@ -566,7 +566,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
         </div>
     </section>
     <?php if ($recommendedProducts) { ?>
-    <section class="section bg--second">
+    <section class="section bg-second">
         <?php include(CONF_THEME_PATH.'products/recommended-products.php'); ?>
     </section>
     <?php } ?>

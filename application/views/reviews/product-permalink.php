@@ -2,7 +2,7 @@
 <div id="body" class="body">
 
 
-	<div class="bg--second pt-3 pb-3">
+	<div class="bg-second pt-3 pb-3">
 		<div class="container">
 			<div class="row align-items-center justify-content-between">
 				<div class="col-md-8 col-sm-8">
