@@ -99,7 +99,7 @@ foreach ($arrListing as $sn => $row) {
                         [
                             'href' => 'javascript:void(0)',
                             'title' => Labels::getLabel('LBL_EDIT', $siteLangId),
-                            'onclick' => "getBatchForm(" . $row['adsbatch_id'] . ")"
+                            'onclick' => "batchForm(" . $row['adsbatch_id'] . ")"
                         ],
                         '<i class="fa fa-pencil"></i>',
                         true

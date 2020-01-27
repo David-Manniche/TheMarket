@@ -183,7 +183,7 @@ CREATE TABLE `tbl_ads_batches` (
   `adsbatch_user_id` int(11) NOT NULL,
   `adsbatch_name` varchar(100) CHARACTER SET utf8 NOT NULL,
   `adsbatch_lang_id` tinyint(2) NOT NULL,
-  `adsbatch_target_country_id` tinyint(2) NOT NULL,
+  `adsbatch_target_country_id` int(11) NOT NULL,
   `adsbatch_expired_on` datetime NOT NULL,
   `adsbatch_synced_on` datetime NOT NULL,
   `adsbatch_status` tinyint(2) NOT NULL,
