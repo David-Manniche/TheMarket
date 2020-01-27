@@ -213,9 +213,8 @@ $(document).ready(function(){
 
 	$(document).on('mouseover', '.bfilter-js li', function() {	
 		$('.brandList-js').addClass('filter-directory_disabled');
-		$('.filter-directory_list_title').addClass('filter-directory_disabled');
-		 
-		$('.b-'+$(this).attr('data-item')).removeClass('filter-directory_disabled');
+		$('.filter-directory_list_title').addClass('filter-directory_disabled');		 
+		$('.b-'+$(this).attr('data-item').toLowerCase()).removeClass('filter-directory_disabled');
 		lbl = $(this).attr('data-item');
 		$('.filter-directory_list_title').each(function()
 		{
@@ -223,8 +222,7 @@ $(document).ready(function(){
 			if (txt == lbl.toUpperCase()) {							
 				$(this).removeClass('filter-directory_disabled');
 			} 
-		}); 
-		$('.b-'+$(this).attr('data-item')).focus();
+		}); 		
 	});	
 
 	$(document).on('mouseout', '.bfilter-js li', function() {		
@@ -234,7 +232,7 @@ $(document).ready(function(){
 
 	$(document).on('click', '.bfilter-js li', function(e) {		
 		e.preventDefault();		
-		$(".filter-directory_list").animate({scrollLeft: $("#"+$(this).attr('data-item')).position().left}, 1000);
+		$(".filter-directory_list").animate({scrollLeft: $("#"+$(this).attr('data-item').toLowerCase()).position().left}, 1000);
 	});	
 
 	if($(window).width()<1050){

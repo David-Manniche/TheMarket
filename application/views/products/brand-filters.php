@@ -21,7 +21,7 @@ foreach ($brandsArr as $brand) {
         $brandHtml .= '<li class="filter-directory_list_title ' . $str . '" data-item="' . $str . '" id="' . $str . '">' . $str . '</li>';
         $firstCharacter = $str;
     }
-    $charArr[$str] = $str;
+    $charArr[$str] = strtoupper($str);
     $brandHtml .= ' <li class="brandList-js b-' . $str . '" data-caption=' . substr(strtolower($brand['brand_name']), 0, 1) .'>
                 <label class="checkbox" ><input name="brands" value="' . $brand['brand_id'] . '" data-id="brand_' . $brand['brand_id'] . '" data-title="' . $brand['brand_name'] . '" type="checkbox" ><i class="input-helper"></i>' . $brand['brand_name'] . ' </label>
             </li>';
@@ -32,10 +32,14 @@ foreach ($brandsArr as $brand) {
     <input type="text" placeholder="Search brand" class="filter-directory_search_input" onKeyup="autoKeywordSearch(this.value)">
     <ul class="filter-directory_indices bfilter-js">      
       <?php
-        foreach ($charArr as $char) {?>
-      <li data-item="<?php echo $char ;?>"><a href="#<?php echo $char ;?>"><?php echo $char ;?></a>
-      </li>
-      <?php }?>
+      foreach (range('A', 'Z') as $char) {
+        $disabled = '';
+        if (!in_array($char, $charArr)) {
+          $disabled = 'class="filter-directory_disabled"';
+        }        
+        ?>
+          <li data-item="<?php echo $char ;?>" <?php echo $disabled; ?>><a href="#<?php echo $char ;?>"><?php echo $char ;?></a>
+     <?php }   ?>
     </ul>
   </div>
   <div>
