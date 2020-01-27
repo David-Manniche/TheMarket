@@ -1226,7 +1226,11 @@ class ConfigurationsController extends AdminBaseController
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_application_ID_used_in_login_and_post.", $this->adminLangId) . "</small>";
 
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Facebook_App_Secret", $this->adminLangId), 'CONF_FACEBOOK_APP_SECRET');
-                $fld->htmlAfterField = "<small>".Labels::getLabel("LBL_This_is_the_Facebook_secret_key_used_for_authentication_and_other_Facebook_related_plugins_support.", $this->adminLangId)."</small>";
+                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_Facebook_secret_key_used_for_authentication_and_other_Facebook_related_plugins_support.", $this->adminLangId) . "</small>";
+
+                $fld = $frm->addTextBox(Labels::getLabel("LBL_FACEBOOK_PIXEL_ID", $this->adminLangId), 'CONF_FACEBOOK_PIXEL_ID');
+                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_THIS_IS_THE_FACEBOOK_PIXEL_ID_USED_IN_TRACK_EVENTS.", $this->adminLangId) . "</small>";
+                
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Twitter_APP_KEY", $this->adminLangId), 'CONF_TWITTER_API_KEY');
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_application_ID_used_in_post.", $this->adminLangId) . "</small>";
 

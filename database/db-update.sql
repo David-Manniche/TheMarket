@@ -331,3 +331,5 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 
 ALTER TABLE `tbl_user_auth_token` ADD `uauth_device_os` TINYINT(1) NOT NULL COMMENT 'Defined In User Model' AFTER `uauth_fcm_id`;
 ALTER TABLE `tbl_push_notifications` ADD `pnotification_device_os` TINYINT(1) NOT NULL COMMENT 'Defined In User Model' AFTER `pnotification_for_seller`;
+
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_FACEBOOK_PIXEL_ID';

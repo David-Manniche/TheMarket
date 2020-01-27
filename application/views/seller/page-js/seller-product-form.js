@@ -46,7 +46,7 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 	setUpSellerProduct = function(frm){
 
 		if (!$(frm).validate()) return;
-
+        events.customizeProduct();
 		runningAjaxReq = true;
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('Seller', 'setUpSellerProduct'), data, function(t) {
