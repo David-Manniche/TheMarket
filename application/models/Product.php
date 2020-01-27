@@ -1785,6 +1785,11 @@ END,   special_price_found ) as special_price_found'
         if(!FatApp::getDb()->insertFromArray(PRODUCT::DB_TBL_PRODUCT_SHIPPING, $prodSellerShip, false, array(), $prodSellerShip)) {
             return false;
         }
+        
+        if($data['product_seller_id'] > 0){
+            $taxData = Tax::getTaxCatByProductId($this->mainTableRecordId);
+            $this->saveProductTax($taxData['ptt_taxcat_id'], $data['product_seller_id']);
+        }
         return true;
     }
     

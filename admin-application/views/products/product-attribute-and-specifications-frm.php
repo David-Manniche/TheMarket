@@ -3,13 +3,13 @@ $productFrm->setFormTagAttribute('class', 'web_form mt-5');
 $productFrm->setFormTagAttribute('onsubmit', 'setUpProductAttributes(this); return(false);');
 
 $fldSeller = $productFrm->getField('selprod_user_shop_name');
-$productFrm->htmlAfterField = '<br/><small>'.Labels::getLabel('LBL_Please_leave_empty_if_you_want_to_add_product_in_system_catalog', $adminLangId).' </small>';
+$fldSeller->htmlAfterField = '<br/><small>'.Labels::getLabel('LBL_Please_leave_empty_if_you_want_to_add_product_in_system_catalog', $adminLangId).' </small>';
 if ($productData['product_added_by_admin_id'] == 1 && $totalProducts >0) {
     $fldSeller->setfieldTagAttribute('readonly', 'readonly');
 }
 ?>
 <div class="row justify-content-center">
-     <div class="col-md-9">
+     <div class="col-md-10">
         <?php echo $productFrm->getFormTag(); ?>
         <div class="row">
              <div class="col-md-6">
@@ -83,26 +83,7 @@ if ($productData['product_added_by_admin_id'] == 1 && $totalProducts >0) {
             </div>
             <?php } ?>
          </div>
-         
-         <div class="row">
-             <div class="col-md-12">
-                 <div class="field-set">
-                     <div class="caption-wraper">
-                        <label class="field_label">
-                        <?php $fld = $productFrm->getField('product_collection');
-                              echo $fld->getCaption();
-                        ?>
-                        </label>
-                    </div>
-                     <div class="field-wraper">
-                         <div class="field_cover">
-                          <?php echo $productFrm->getFieldHtml('product_collection'); ?>
-                         </div>
-                     </div>
-                 </div>
-             </div>
-         </div>
-         
+
          <div class="specifications-form-<?php echo $siteDefaultLangId; ?>"></div>
          <div class="specifications-list-<?php echo $siteDefaultLangId; ?>"></div>
          

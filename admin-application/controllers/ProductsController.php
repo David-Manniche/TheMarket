@@ -903,7 +903,7 @@ class ProductsController extends AdminBaseController
         return $frm;
     }
 
-    private function getTagsForm()
+    /* private function getTagsForm()
     {
         
         $frm = new Form('frmTags', array('id'=>'frmTags'));
@@ -914,7 +914,7 @@ class ProductsController extends AdminBaseController
         $frm->addHiddenField('', 'product_id', '', array('id'=>'product_id'));
 
         return $frm;
-    }
+    } */
 
     private function getSeparateImageOptions($product_id, $lang_id)
     {
@@ -1691,7 +1691,10 @@ class ProductsController extends AdminBaseController
     {
         $this->objPrivilege->canEditProducts();
         $productId = FatUtility::int($productId);
-        $this->set('productId', $productId);        
+        $this->set('productId', $productId);   
+        $this->_template->addJs('js/tagify.min.js');
+        $this->_template->addJs('js/tagify.polyfills.min.js');
+        $this->_template->addCss('css/tagify.css');
         $this->_template->render();            
     }
     
@@ -1699,34 +1702,57 @@ class ProductsController extends AdminBaseController
     {
         $this->objPrivilege->canEditProducts();
         $productId = FatUtility::int($productId);
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $languages = Language::getAllNames();
         $productFrm = $this->getProductIntialSetUpFrm($productId);
         
         if($productId > 0){
-            $prodData = Product::getAttributesById($productId, null, true);
-
-            $taxData = array();
-            $taxObj = Tax::getTaxCatObjByProductId($productId, $this->adminLangId);
-            if ($prodData['product_seller_id'] > 0) {
-                $taxObj->addCondition('ptt_seller_user_id', '=', $prodData['product_seller_id']);
-            } else {
-                $taxObj->addCondition('ptt_seller_user_id', '=', 0);
+            $prodData = Product::getAttributesById($productId);
+            foreach($languages as $langId=>$data){
+                $prod = new Product();
+                $productLangData = $prod->getAttributesByLangId($langId, $productId);
+                $prodData['product_name'][$langId] = $productLangData['product_name'];
+                $prodData['product_description'][$langId] = $productLangData['product_description'];
             }
-            $taxObj->addMultipleFields(array('ptt_taxcat_id'));
-            $taxObj->doNotCalculateRecords();
-            $taxObj->setPageSize(1);
-            $taxObj->addOrder('ptt_seller_user_id', 'ASC');
-            $rs = $taxObj->getResultSet(); 
-            $taxData = FatApp::getDb()->fetch($rs);
             
-            if (!empty($taxData)) {
-                $prodData = array_merge($prodData, $taxData);
+            $taxData = array();
+            $tax = Tax::getTaxCatObjByProductId($productId, $this->adminLangId);
+            if ($prodData['product_seller_id'] > 0) {
+                $tax->addCondition('ptt_seller_user_id', '=', $prodData['product_seller_id']);
+            } else {
+                $tax->addCondition('ptt_seller_user_id', '=', 0);
             }
+            $tax->addMultipleFields(array('ptt_taxcat_id'));
+            $tax->doNotCalculateRecords();
+            $tax->setPageSize(1);
+            $tax->addOrder('ptt_seller_user_id', 'ASC');
+            $rs = $tax->getResultSet(); 
+            $taxData = FatApp::getDb()->fetch($rs);
+            $prodData['ptt_taxcat_id'] =  $taxData['ptt_taxcat_id'];
+            
+            $srch = Product::getSearchObject($this->adminLangId);
+            $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'tp.product_brand_id = brand.brand_id', 'brand');
+            $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'brandlang_brand_id = brand.brand_id AND brandlang_lang_id = ' . $this->adminLangId);
+            $srch->addMultipleFields(array('product_brand_id','IFNULL(brand_name,brand_identifier) as brand_name','IFNULL(brand.brand_active,1) AS brand_active','IFNULL(brand.brand_deleted,0) AS brand_deleted'));
+            $srch->addCondition('product_id', '=', $productId);
+            $srch->addHaving('brand_active', '=', applicationConstants::YES);
+            $srch->addHaving('brand_deleted', '=', applicationConstants::NO);
+            $rs = $srch->getResultSet();
+            $brandData = FatApp::getDb()->fetch($rs);
+            $prodData['product_brand_id'] =  $brandData['product_brand_id'];
+            $prodData['brand_name'] =  $brandData['brand_name'];
+            
+            $prod = new Product();
+            $product_categories = $prod->getProductCategories($productId);
+            $selectedCat = array_keys($product_categories);           
+            $prodCat = new ProductCategory();
+            $selectedCatName = $prodCat->getParentTreeStructure($selectedCat[0], 0 ,'', $this->adminLangId);
+            $prodData['category_name'] =  html_entity_decode($selectedCatName);
+            $prodData['ptc_prodcat_id'] =  $selectedCat[0];
             
             $productFrm->fill($prodData);
         }
-        
-        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
-        $languages = Language::getAllNames();
+
         unset($languages[$siteDefaultLangId]);
         $this->set('productFrm', $productFrm);
         $this->set('siteDefaultLangId', $siteDefaultLangId); 
@@ -1795,23 +1821,25 @@ class ProductsController extends AdminBaseController
     {
         $this->objPrivilege->canEditProducts();
         $productId = FatUtility::int($productId);
-        $productData = Product::getAttributesById($productId); 
-        $totalProducts = Product::getCatalogProductCount($productId);
+        if($productId < 1){
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }        
         $productFrm = $this->getProductAttributeAndSpecificationsFrm($productId);
-        if($productId > 0){
-            $shippingDetails = Product::getProductShippingDetails($productId, $this->adminLangId, $productData['product_seller_id']); 
-            $productData['ps_free'] = $shippingDetails['ps_free'];
-            if ($productData['product_seller_id'] > 0) {
-                $userShopName = User::getUserShopName($productData['product_seller_id']);
-                $productData['selprod_user_shop_name'] = $userShopName['user_name'] . ' - ' . $userShopName['shop_identifier'];
-            } else {
-                $productData['selprod_user_shop_name'] = 'Admin';
-            }
-            $productFrm->fill($productData);
+        $productData = Product::getAttributesById($productId); 
+        $prodShippingDetails = Product::getProductShippingDetails($productId, $this->adminLangId, $productData['product_seller_id']); 
+        $productData['ps_free'] = $prodShippingDetails['ps_free'];
+        if ($productData['product_seller_id'] > 0) {
+            $userShopName = User::getUserShopName($productData['product_seller_id']);
+            $productData['selprod_user_shop_name'] = $userShopName['user_name'] . ' - ' . $userShopName['shop_identifier'];
+        } else {
+            $productData['selprod_user_shop_name'] = 'Admin';
         }
+        $productFrm->fill($productData);
+        $totalProducts = Product::getCatalogProductCount($productId);
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);        
         $languages = Language::getAllNames();
-        unset($languages[$siteDefaultLangId]);  
+        unset($languages[$siteDefaultLangId]);          
         
         $this->set('productFrm', $productFrm);  
         $this->set('productData', $productData);
@@ -1836,7 +1864,6 @@ class ProductsController extends AdminBaseController
             $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Eligible_For_Free_Shipping?', $this->adminLangId), 'ps_free', 1, array(), false, 0);
             $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Available_for_Cash_on_Delivery_(COD)?', $this->adminLangId), 'product_cod_enabled', 1, array(), false, 0);
         }
-        $frm->addTextBox(Labels::getLabel('LBL_Product_Collection', $this->adminLangId), 'product_collection');
         $frm->addHiddenField('', 'product_seller_id');
         $frm->addHiddenField('', 'product_id', $productId);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->adminLangId));
@@ -1937,4 +1964,20 @@ class ProductsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
     
+    public function productOptionsAndTag($productId)
+    {
+        $this->objPrivilege->canEditProducts();
+        $productId = FatUtility::int($productId);
+        if($productId < 1){
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }        
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);        
+        $languages = Language::getAllNames();
+        unset($languages[$siteDefaultLangId]);          
+        $this->set('siteDefaultLangId', $siteDefaultLangId);    
+        $this->set('otherLanguages', $languages);                   
+        $this->set('productId', $productId); 
+        $this->_template->render(false, false, 'products/product-options-and-tag.php');
+    }
 }

@@ -124,7 +124,7 @@ class TagsController extends AdminBaseController
         Tag::updateTagStrings($tag_id);
         /* ] */
 
-        $this->set('msg', Labels::getLabel('LBL_Tag_Setup_Successful', $this->adminLangId));
+        $this->set('msg', Labels::getLabel('LBL_Tag_Updated_Successful', $this->adminLangId));
         $this->set('tagId', $tag_id);
         $this->set('langId', $newTabLangId);
         $this->_template->render(false, false, 'json-success.php');
@@ -181,7 +181,7 @@ class TagsController extends AdminBaseController
         Tag::updateTagStrings($tag_id);
         /* ] */
 
-        $this->set('msg', Labels::getLabel('LBL_Tag_Setup_Successful', $this->adminLangId));
+        $this->set('msg', Labels::getLabel('LBL_Tag_Updated_Successful', $this->adminLangId));
         $this->set('tagId', $tag_id);
         $this->set('langId', $newTabLangId);
         $this->_template->render(false, false, 'json-success.php');

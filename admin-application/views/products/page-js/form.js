@@ -30,7 +30,7 @@
         if (!$(frm).validate()) return;    
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('Products', 'setUpProductAttributes'), data, function(t) {
-            productAttributeAndSpecificationsFrm(t.productId);
+            productOptionsAndTag(t.productId);
         });
     };
     
@@ -81,6 +81,18 @@
         prodSpecificationsByLangId(langId);
     }
     
+    productOptionsAndTag = function(productId){
+        var data = '';
+		fcom.ajax(fcom.makeUrl('Products','productOptionsAndTag', [productId]),data,function(res){
+			$("#tabs_002").html('');
+            $("#tabs_003").html(res);
+            $(".tabs_panel").hide();
+            $(".tabs_nav  > li > a").removeClass('active');
+            $("#tabs_003").show();                    
+            $("a[rel='tabs_003']").addClass('active');
+		});
+    }
+    
     displayProdInitialTab = function(){
         $(".tabs_panel").hide();
         $(".tabs_nav  > li > a").removeClass('active');
@@ -103,4 +115,13 @@ $(document).on('click', '.tabs_002', function(){
         displayProdInitialTab();
     }        
 });
+
+$(document).on('click', '.tabs_003', function(){
+    var productId = $("input[name='product_id']").val();
+    if(productId > 0){
+        productOptionsAndTag(productId);
+    }else{
+        displayProdInitialTab();
+    }        
+}); 
 
