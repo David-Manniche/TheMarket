@@ -26,17 +26,20 @@ class AdsBatch extends MyAppModel
 
     public static function getSearchObject($joinAdsProds = false, $langId = 0)
     {
+        $langId = 1 > $langId ? CommonHelper::getLangId() : $langId;
         $srch = new SearchBase(static::DB_TBL, 'adb');
 
         $srch->addOrder('adb.' . static::DB_TBL_PREFIX . 'id', 'DESC');
-
+        $srch->joinTable(Language::DB_TBL, 'LEFT JOIN', self::DB_TBL_PREFIX . 'lang_id = ' . Language::DB_TBL_PREFIX . 'id', 'lang');
+        $srch->joinTable(Countries::DB_TBL, 'LEFT JOIN', self::DB_TBL_PREFIX . 'target_country_id = ' . Countries::DB_TBL_PREFIX . 'id', 'c');
         if (true === $joinAdsProds) {
-            $langId = 1 > $langId ? CommonHelper::getLangId() : $langId;
             $srch->joinTable(self::DB_TBL_BATCH_PRODS, 'LEFT JOIN', self::DB_TBL_PREFIX . 'id = ' . self::DB_TBL_BATCH_PRODS_PREFIX . self::DB_TBL_PREFIX . 'id', 'abp');
             $srch->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', 'selprod_id = abprod_selprod_id', 'sp');
             $srch->joinTable(SellerProduct::DB_TBL_LANG, 'INNER JOIN', 'selprod_id = selprodlang_selprod_id AND selprodlang_lang_id = ' . $langId, 'sp_l');
             $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
             $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $langId, 'p_l');
+            $srch->joinTable(Brand::DB_TBL, 'LEFT JOIN', 'b.brand_id = p.product_brand_id', 'b');
+            $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT JOIN', 'b_l.brandlang_brand_id = b.brand_id AND b_l.brandlang_lang_id = '.$langId, 'b_l');
         }
 
         return $srch;

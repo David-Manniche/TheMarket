@@ -17,6 +17,14 @@ class Plugin extends MyAppModel
         self::TYPE_ADVERTISEMENT_FEED_API,
     ];
 
+    public const ATTRS = [
+        self::DB_TBL_PREFIX . 'id',
+        self::DB_TBL_PREFIX . 'code',
+        self::DB_TBL_PREFIX . 'description',
+        'COALESCE(plg_l.' . self::DB_TBL_PREFIX . 'name, plg.' . self::DB_TBL_PREFIX . 'identifier) as plugin_name',
+        self::DB_TBL_PREFIX . 'active',
+    ];
+
     private $db;
     
     public function __construct($id = 0)
@@ -59,7 +67,7 @@ class Plugin extends MyAppModel
 
     public static function isActive($code)
     {
-        return static::getAttributesByCode($code, 'plugin_active');
+        return (0 < static::getAttributesByCode($code, 'plugin_active') ? true : false);
     }
 
 
@@ -69,7 +77,7 @@ class Plugin extends MyAppModel
         $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'code', '=', $code);
         
         if (0 < $langId) {
-            $srch->joinTable(self::DB_TBL_LANG, 'LEFT JOIN', self::DB_TBL_LANG_PREFIX . static::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_PREFIX . 'id and ' . self::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId);
+            $srch->joinTable(self::DB_TBL_LANG, 'LEFT JOIN', self::DB_TBL_LANG_PREFIX . static::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_PREFIX . 'id and ' . self::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'plg_l');
         }
 
         if ('' != $attr) {
@@ -106,15 +114,7 @@ class Plugin extends MyAppModel
     {
         $srch = static::getSearchObject($langId, $active);
         if (false === $customCols) {
-            $srch->addMultipleFields(
-                [
-                    static::DB_TBL_PREFIX . 'id',
-                    static::DB_TBL_PREFIX . 'code',
-                    static::DB_TBL_PREFIX . 'description',
-                    'COALESCE(plg_l.' . static::DB_TBL_PREFIX . 'name, plg.' . static::DB_TBL_PREFIX . 'identifier) as plugin_name',
-                    static::DB_TBL_PREFIX . 'active',
-                ]
-            );
+            $srch->addMultipleFields(self::ATTRS);
         }
 
         $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'type', '=', $typeId);

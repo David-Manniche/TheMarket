@@ -1,20 +1,13 @@
 <?php
 class AdvertisementFeedBase
 {
-    protected $envoirment;
-
-    public function __construct()
-    {
-        $this->envoirment = FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false);
-    }
-    
     public function getSettings($column = '')
     {
-        $class = $keyName = get_called_class();
+        $class = get_called_class();
         if (defined($class . '::KEY_NAME')) {
-            $keyName = $class::KEY_NAME;
+            return PluginSetting::getConfDataByCode($class::KEY_NAME, $column, CommonHelper::getLangId());
         }
-        return PluginSetting::getConfDataByCode($keyName, $column, CommonHelper::getLangId());
+        return PluginSetting::getConfDataByCode($class, $column, CommonHelper::getLangId());
     }
 
     public function getError()
@@ -22,7 +15,7 @@ class AdvertisementFeedBase
         return $this->error;
     }
 
-    protected function getUserAccountDetail($key = '')
+    protected function getUserMeta($key = '')
     {
         return User::getUserMeta(UserAuthentication::getLoggedUserId(), $key);
     }
