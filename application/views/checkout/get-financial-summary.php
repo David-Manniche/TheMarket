@@ -32,7 +32,7 @@
             <div class="section__action js-editCart" style="display:block;"><a href="javascript:void(0);" onClick="editCart()" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Edit_Cart', $siteLangId);?></a> </div>
         </div>
         <div class="scrollbar-order-list" data-simplebar>
-            <table class="cart-summary  table--justify order-table">
+            <table class="table table--justify cart-summary order-table">
                 <tbody>
                     <?php foreach ($products as $product) { ?>
                     <tr class="physical_product_tab-js">

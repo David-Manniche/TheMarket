@@ -13,6 +13,13 @@ $keywordFld = $frmProductSearch->getField('keyword');
 $keywordFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search', $siteLangId));
 $keywordFld = $frmProductSearch->getField('keyword');
 $keywordFld->overrideFldType("hidden");
+
+$sortByFld = $frmProductSearch->getField('sortBy');
+$sortByFld->addFieldTagAttribute('class', 'custom-select');
+
+$pageSizeFld = $frmProductSearch->getField('pageSize');
+$pageSizeFld->addFieldTagAttribute('class', 'custom-select');
+
 $desktop_url = '';
 $tablet_url = '';
 $mobile_url = '';

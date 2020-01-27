@@ -221,3 +221,9 @@ hr {
 .hidden {
     display: none;
 }
+
+.no-after {
+    &:after {
+        content: normal;
+    }
+}

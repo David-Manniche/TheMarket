@@ -72,8 +72,6 @@
 
 }
 
-
-
 .page-sort {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -109,26 +107,13 @@
             -webkit-margin-end: 1rem;
             -moz-margin-end: 1rem;
             margin-inline-end: 1rem;
-            
-            &:last-child{ margin: 0;}
+
+            &:last-child {
+                margin: 0;
+            }
         }
     }
 }
-
-.page-sort a {
-    color: #717171;
-}
-
-.page-sort ul li a:hover,
-.page-sort ul li.is--active a {
-    color: var(--first-color);
-}
-
-.page-sort select,
-.page-sort .btn {}
-
-
-
 
 .filters__ele {
     padding: 1.5rem;

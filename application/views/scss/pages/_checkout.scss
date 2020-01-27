@@ -195,7 +195,14 @@
             }
         }
     }
+}
 
+.short-detail {
+    margin-top: 1rem;
+
+    &:first-child {
+        margin: 0;
+    }
 }
 
 

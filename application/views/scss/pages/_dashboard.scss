@@ -351,7 +351,7 @@
 
 
         @include media-breakpoint-down(md) {
-           & {
+            & {
                 display: none;
             }
         }
@@ -892,7 +892,7 @@ ul.listing--bullet {
         }
 
         &.is-opened {
-            left: 0;
+
 
             & [class*='bar-'] {
                 background: #000;
@@ -1350,17 +1350,7 @@ ul.listing--bullet {
         font-size: 0.9em;
     }
 
-    .box--share-fb {
-        background: #3b5998;
-    }
 
-    .box--share-tw {
-        background: #22bdf0;
-    }
-
-    .box--share-mail {
-        background: #f15b5b;
-    }
 
     .fa {
         position: absolute;
@@ -1368,6 +1358,18 @@ ul.listing--bullet {
         top: 25px;
         margin: 0.4rem auto;
         font-size: 3.5em;
+    }
+
+    &.box--share-fb {
+        background: #3b5998;
+    }
+
+    &.box--share-tw {
+        background: #22bdf0;
+    }
+
+    &.box--share-mail {
+        background: #f15b5b;
     }
 }
 
@@ -2308,7 +2310,7 @@ a.link:after {
         display: inline-block;
     }
 }
- 
+
 
 .box--offer {
     margin: 10px 0 10px;

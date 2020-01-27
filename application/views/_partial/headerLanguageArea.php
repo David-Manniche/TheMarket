@@ -5,7 +5,7 @@ if ($languages && count($languages) > 1) {
     ?>
 <li>
 	<div class="dropdown dropdown--lang">
-  <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)"> 
+  <a class="dropdown-toggle no-after" data-toggle="dropdown" href="javascript:void(0)"> 
  <i class="icn icn--language">
             <svg class="svg">
                 <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#language" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#language"></use>
@@ -32,7 +32,7 @@ if ($currencies && count($currencies) > 1) {
     ?>
 <li>
 	<div class="dropdown dropdown--currency">
-	<a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)"> <i class="icn icn-currency">
+	<a class="dropdown-toggle no-after" data-toggle="dropdown" href="javascript:void(0)"> <i class="icn icn-currency">
             <svg class="svg">
                 <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#currency" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#currency"></use>
             </svg>

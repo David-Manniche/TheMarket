@@ -22,8 +22,7 @@
 		<?php echo $headerSrchFrm->getFormTag(); ?>
 			<div class="dropdown dropdown-select">
 			
-			<span class="select__value dropdown-toggle" id="selected__value-js "   data-toggle="dropdown"> <?php echo Labels::getLabel('LBL_All',$siteLangId); ?></span>
-			
+			<span class="select__value dropdown-toggle " id="selected__value-js"   data-toggle="dropdown"> <?php echo Labels::getLabel('LBL_All',$siteLangId); ?></span>			
 				<div class="dropdown-menu dropdown-menu-fit dropdown-menu-anim">					 
 						<div class="scroll-y" data-simplebar>							
 							<ul class="nav nav-block">
