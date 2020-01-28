@@ -1,7 +1,5 @@
 $("document").ready(function(){
-	searchWishList();
-
-	$(document).on("click","#wishListItems .selectItem--js", function(){
+	$(document).on("click",".selectItem--js", function(){
 		if( $(this).prop("checked") == false ){
 			$(".selectAll-js").prop("checked", false);
 		}
@@ -61,7 +59,7 @@ $("document").ready(function(){
 		});
 	};
 
-    viewFavouriteItems = function( frm , append){
+    viewFavouriteItems = function(append){
 		if(typeof append == undefined || append == null){
 			append = 0;
 		}
@@ -106,7 +104,7 @@ $("document").ready(function(){
 	}
 
 	searchWishListItems = function( uwlist_id, append, page ){
-		var dv2 = "#wishListItems";
+		var dv2 = "#favListItems";
 		append = ( append == "undefined" ) ? 0 : append;
 		page = ( page == "undefined" ) ? 0 : page;
 		if( append == 1 ){
@@ -180,7 +178,7 @@ $("document").ready(function(){
 	};
 
 	selectAll = function( obj ){
-		$("#wishListItems .selectItem--js").each(function(){
+		$(".selectItem--js").each(function(){
 			if( obj.prop("checked") == false ){
 				$(this).prop("checked", false);
 			}else{
@@ -202,10 +200,23 @@ $("document").ready(function(){
 		if( !confirm( langLbl.confirmDelete ) ){ return false; };
 		updateWishlist();
 		viewWishListItems(wish_list_id);
+    };
+    
+	removeSelectedFromWishlist = function(event){
+		event.stopPropagation();
+		if( !confirm( langLbl.confirmDelete ) ){ return false; };
+		fcom.updateWithAjax( fcom.makeUrl('Account', 'toggleProductFavoriteArr'), $('#favtlistForm').serialize(), function(ans){
+            viewFavouriteItems();
+			if( ans.status ){
+				$.mbsmessage.close();
+                $.systemMessage(ans.msg,'alert--success');
+            }
+		});
+		
 	};
 
 	updateWishlist = function(){
-		fcom.updateWithAjax( fcom.makeUrl('Account', 'addRemoveWishListProductArr'), $('#wishlistForm').serialize(), function(ans){
+		fcom.updateWithAjax( fcom.makeUrl('Account', 'addRemoveWishListProductArr'), $('#favtlistForm').serialize(), function(ans){
 			if( ans.status ){
 				$.mbsmessage.close();
 				$.systemMessage(ans.msg,'alert--success');
@@ -216,7 +227,7 @@ $("document").ready(function(){
 	addToCart = function( obj, event ){
 		event.stopPropagation();
 
-		$("#wishListItems .selectItem--js").each(function(){
+		$("#favListItems .selectItem--js").each(function(){
 			$(this).prop("checked", false);
 		});
 
@@ -228,7 +239,7 @@ $("document").ready(function(){
 	addSelectedToCart = function( event ){
 		event.stopPropagation();
 		$.mbsmessage(langLbl.processing,false,'alert--process alert');
-		fcom.updateWithAjax(fcom.makeUrl('cart', 'addSelectedToCart' ),$('#wishlistForm').serialize(), function(ans) {
+		fcom.updateWithAjax(fcom.makeUrl('cart', 'addSelectedToCart' ),$('#favtlistForm').serialize(), function(ans) {
 			updateWishlist();
 			setTimeout(function(){ location.href = fcom.makeUrl('cart'); }, 1000);
 		});

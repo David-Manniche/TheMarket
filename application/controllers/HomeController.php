@@ -18,6 +18,7 @@ class HomeController extends MyAppController
         $this->set('slides', $slides);
         $this->set('banners', $banners);
         $this->set('collections', $collections);
+        $this->set('isWishlistEnable', FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1));
 
         if (true ===  MOBILE_APP_API_CALL) {
             $orderProducts['pendingForReviews'] = array();
