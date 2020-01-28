@@ -41,7 +41,7 @@ class SellerProduct extends MyAppModel
                 'sp_l'
             );
         }
-        
+
         if (true === $joinSpecifics) {
             $srch->joinTable(
                 SellerProductSpecifics::DB_TBL,
@@ -859,7 +859,7 @@ class SellerProduct extends MyAppModel
         if ($this->mainTableRecordId < 1) {
             return false;
         }
-        
+
         $keyword = preg_replace('/-'.$this->mainTableRecordId.'$/', '', $keyword);
         $seoUrl = CommonHelper::seoUrl($keyword);
 
@@ -1042,13 +1042,13 @@ class SellerProduct extends MyAppModel
         $srch->addOrder('voldiscount_id', 'DESC');
         return $srch;
     }
-    
+
     public static function getSelProdDataById($selProdId, $langId = 0)
-    { 
+    {
         $srch = static::getSearchObject($langId);
         $srch->addCondition('selprod_id', '=', $selProdId);
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetch($rs);
     }
-    
+
 }

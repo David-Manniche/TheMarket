@@ -275,6 +275,16 @@ trait SellerProducts
             $availableOptions[$optionKey] = $optionValue;
             /* ] */
         }
+
+        $optionValues = array();
+        if (isset($sellerProductRow['selprodoption_optionvalue_id'])) {
+            foreach ($sellerProductRow['selprodoption_optionvalue_id'] as $opId => $op) {
+                $optionValue = new OptionValue($op[$opId]);
+                $option = $optionValue->getOptionValue($opId);
+                $optionValues[] = $option['optionvalue_name'.$this->siteLangId];
+            }
+        }
+        $this->set('optionValues', $optionValues);
         $this->set('availableOptions', $availableOptions);
         $this->set('productOptions', $productOptions);
         /* $this->_template->addJs(array('js/jquery.datetimepicker.js'), false); */
@@ -340,7 +350,7 @@ trait SellerProducts
         $post['selprod_url_keyword'] = strtolower(CommonHelper::createSlug($post['selprod_url_keyword']));
 
         unset($post['selprod_id']);
-        $options = array();
+        /*$options = array();
         if (isset($post['selprodoption_optionvalue_id']) && count($post['selprodoption_optionvalue_id'])) {
             $options = $post['selprodoption_optionvalue_id'];
             unset($post['selprodoption_optionvalue_id']);
@@ -348,7 +358,7 @@ trait SellerProducts
         asort($options);
 
         $selProdCode = $productRow['product_id'] . '_' . implode('_', $options);
-        $post['selprod_code']  = $selProdCode;
+        $post['selprod_code']  = $selProdCode;*/
 
         if ($post['selprod_track_inventory'] == Product::INVENTORY_NOT_TRACK) {
             $post['selprod_threshold_stock_level'] = 0;
@@ -360,37 +370,13 @@ trait SellerProducts
         }
 
         $languages = Language::getAllNames();
+        /* $selProdAvailable = Product::isSellProdAvailableForUser($selProdCode, $this->siteLangId, UserAuthentication::getLoggedUserId(), $selprod_id);*/
 
-        $selProdAvailable = Product::isSellProdAvailableForUser($selProdCode, $this->siteLangId, UserAuthentication::getLoggedUserId(), $selprod_id);
-
-        if (!empty($selProdAvailable)) {
-            if (!$selProdAvailable['selprod_deleted']) {
-                Message::addErrorMessage(Labels::getLabel("LBL_Inventory_for_this_option_have_been_added", $this->siteLangId));
-                FatUtility::dieWithError(Message::getHtml());
-            }
-            $sellerProdObj = new SellerProduct($selProdAvailable['selprod_id']);
-            $data_to_be_save['selprod_deleted'] = applicationConstants::NO;
-            $sellerProdObj->assignValues($data_to_be_save);
-            if (!$sellerProdObj->save()) {
-                Message::addErrorMessage(Labels::getLabel($sellerProdObj->getError(), $this->siteLangId));
-                FatUtility::dieWithError(Message::getHtml());
-            }
-            $newTabLangId = 0;
-            foreach ($languages as $langId => $langName) {
-                $newTabLangId = $langId;
-                break;
-            }
-            $this->set('selprod_id', $selProdAvailable['selprod_id']);
-            $this->set('langId', $newTabLangId);
-            $this->set('msg', Labels::getLabel('LBL_Product_was_deleted._Reactivate_the_same', $this->siteLangId));
-            $this->_template->render(false, false, 'json-success.php');
-        } else {
-            $sellerProdObj = new SellerProduct($selprod_id);
-            $sellerProdObj->assignValues($data_to_be_save);
-            if (!$sellerProdObj->save()) {
-                Message::addErrorMessage(Labels::getLabel($sellerProdObj->getError(), $this->siteLangId));
-                FatUtility::dieWithError(Message::getHtml());
-            }
+        $sellerProdObj = new SellerProduct($selprod_id);
+        $sellerProdObj->assignValues($data_to_be_save);
+        if (!$sellerProdObj->save()) {
+            Message::addErrorMessage(Labels::getLabel($sellerProdObj->getError(), $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
         }
 
         $selprod_id = $sellerProdObj->getMainTableRecordId();
@@ -424,12 +410,12 @@ trait SellerProducts
 
         /*--------  ] */
         /* save options data, if any[ */
-        if ($selprod_id) {
+        /*if ($selprod_id) {
             if (!$sellerProdObj->addUpdateSellerProductOptions($selprod_id, $options)) {
                 Message::addErrorMessage(Labels::getLabel($sellerProdObj->getError(), $this->siteLangId));
                 FatUtility::dieWithError(Message::getHtml());
             }
-        }
+        }*/
         /* ] */
 
         /* Add seller product title and SEO data automatically[ */

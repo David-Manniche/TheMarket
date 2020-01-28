@@ -226,15 +226,17 @@
                                              <th width="20%"><?php echo Labels::getLabel('LBL_Variant/Option', $adminLangId); ?></th>
                                             <?php } ?>
                                              <th width="20%"><?php echo Labels::getLabel('LBL_Cost_Price', $adminLangId); ?></th>
-                                             <th width="20%"><?php echo Labels::getLabel('LBL_Selling_Price', $adminLangId); ?> <i class="fa fa-question-circle-o tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates.', $adminLangId).' '.Labels::getLabel('LBL_Min_Selling_price', $adminLangId).' '. CommonHelper::displayMoneyFormat($productMinSellingPrice, true, true); ?></span></i></th>
+                                             <th width="20%"><?php echo Labels::getLabel('LBL_Selling_Price', $adminLangId); ?>
+                                                 <i data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates.', $adminLangId).' '.Labels::getLabel('LBL_Min_Selling_price', $adminLangId).' '. CommonHelper::displayMoneyFormat($productMinSellingPrice, true, true); ?>" class="fa fa-question-circle-o tooltip tooltip--right"></i>
+                                             </th>
                                              <th width="20%"><?php echo Labels::getLabel('LBL_Quantity', $adminLangId); ?></th>
-                                             <th width="20%"><?php echo Labels::getLabel('LBL_SKU', $adminLangId); ?> <i class="fa fa-question-circle-o tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_Stock_Keeping_Unit', $adminLangId) ?></span></i></th>
+                                             <th width="20%"><?php echo Labels::getLabel('LBL_SKU', $adminLangId); ?> <i data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_Stock_Keeping_Unit', $adminLangId) ?>" class="fa fa-question-circle-o tooltip tooltip--right"></i>
                                          </tr>
                                      </thead>
                                      <tbody>
                                          <tr>
                                             <?php if (!empty($optionValues)) { ?>
-                                             <td><?php /*echo str_replace("_", " | ", $optionValue);*/ ?></td>
+                                             <td><?php echo implode(' | ', $optionValues); ?></td>
                                             <?php } ?>
                                              <td><?php echo $frmSellerProduct->getFieldHtml('selprod_cost'); ?></td>
                                              <td><?php echo $frmSellerProduct->getFieldHtml('selprod_price'); ?></td>
@@ -364,4 +366,10 @@
             }
         });
     });
+
+
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
 </script>

@@ -62,20 +62,6 @@ $submitBtnFld->developerTags['col'] = 12;
                     </div>
                     <div class="form__subcontent">
                         <?php echo $frmSellerProduct->getFormTag(); ?>
-                        <?php /*if ($selprod_id > 0 && $productOptions) { ?>
-                            <div class="row">
-                                <?php foreach ($productOptions as $option) { ?>
-                                <div class="col-md-6">
-                                    <div class="field-set">
-                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprodoption_optionvalue_id['.$option['option_id'].']')->getCaption(); ?><span class="spn_must_field">*</span></label></div>
-                                        <div class="field-wraper">
-                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprodoption_optionvalue_id['.$option['option_id'].']'); ?></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <?php } ?>
-                            </div>
-                        <?php }*/ ?>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="field-set">
@@ -95,48 +81,6 @@ $submitBtnFld->developerTags['col'] = 12;
                                 </div>
                             </div>
                         </div>
-                        <?php /*if ($selprod_id > 0 || empty($productOptions)) { ?>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="field-set">
-                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_cost')->getCaption(); ?><span
-                                                    class="spn_must_field">*</span></label></div>
-                                        <div class="field-wraper">
-                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_cost'); ?></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="field-set">
-                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_price')->getCaption(); ?><span
-                                                    class="spn_must_field">*</span></label></div>
-                                        <div class="field-wraper">
-                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_price'); ?></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="field-set">
-                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_stock')->getCaption(); ?><span
-                                                    class="spn_must_field">*</span></label></div>
-                                        <div class="field-wraper">
-                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_stock'); ?></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="field-set">
-                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_sku')->getCaption(); ?><span
-                                                    class="spn_must_field">*</span></label></div>
-                                        <div class="field-wraper">
-                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_sku'); ?></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php }*/ ?>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="field-set d-flex align-items-center">
@@ -192,7 +136,6 @@ $submitBtnFld->developerTags['col'] = 12;
                         </div>
                         <?php echo $frmSellerProduct->getFieldHtml('selprod_condition'); ?>
                         <?php } ?>
-
                         <div class="row">
                             <?php if ($product_type == Product::PRODUCT_TYPE_PHYSICAL) { ?>
                             <div class="col-md-6">
@@ -263,7 +206,9 @@ $submitBtnFld->developerTags['col'] = 12;
                                 <table id="shipping" class="table">
                                     <thead>
                                         <tr>
+                                            <?php if (!$selprod_id || !empty($optionValues)) { ?>
                                             <th width="20%"><?php echo Labels::getLabel('LBL_Variant/Option', $siteLangId); ?></th>
+                                            <?php }?>
                                             <th width="20%"><?php echo Labels::getLabel('LBL_Cost_Price', $siteLangId); ?></th>
                                             <th width="20%"><?php echo Labels::getLabel('LBL_Selling_Price', $siteLangId); ?> <i class="fa fa-question-circle-o tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates.', $siteLangId).' '.Labels::getLabel('LBL_Min_Selling_price', $siteLangId).' '. CommonHelper::displayMoneyFormat($productMinSellingPrice, true, true); ?></span></i></th>
                                             <th width="20%"><?php echo Labels::getLabel('LBL_Quantity', $siteLangId); ?></th>
@@ -283,7 +228,9 @@ $submitBtnFld->developerTags['col'] = 12;
                                             <?php } ?>
                                         <?php } else { ?>
                                             <tr>
-                                                <td><?php /*echo str_replace("_", " | ", $optionValue);*/ ?></td>
+                                                <?php if (!empty($optionValues)) { ?>
+                                                 <td><?php echo implode(' | ', $optionValues); ?></td>
+                                                <?php } ?>
                                                 <td><?php echo $frmSellerProduct->getFieldHtml('selprod_cost'); ?></td>
                                                 <td><?php echo $frmSellerProduct->getFieldHtml('selprod_price'); ?></td>
                                                 <td><?php echo $frmSellerProduct->getFieldHtml('selprod_stock'); ?></td>

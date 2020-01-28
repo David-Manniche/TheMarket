@@ -204,7 +204,12 @@ class SellerProductsController extends AdminBaseController
         if ('' === $returnAge || '' === $cancellationAge) {
             $sellerProductRow['use_shop_policy'] = 1;
         }
-
+        $languages = Language::getAllNames();
+        foreach ($languages as $langId => $langName) {
+            $langData = SellerProduct::getAttributesByLangId($langId, $selprod_id);
+            $sellerProductRow['selprod_title'.$langId] = $langData['selprod_title'];
+            $sellerProductRow['selprod_comments'.$langId] = $langData['selprod_comments'];
+        }
         $frmSellerProduct->fill($sellerProductRow);
 
         $product_added_by_admin_arr = Product::getAttributesById($product_id, array('product_added_by_admin_id,product_type','product_seller_id'));
@@ -216,16 +221,14 @@ class SellerProductsController extends AdminBaseController
         if (Product::isProductShippedBySeller($product_id, $product_seller_id, $sellerProductRow['selprod_user_id'])) {
             $shippedBySeller = 1;
         }
-        $optionValues = '';
-        /*if (isset($sellerProductRow['selprodoption_optionvalue_id'])) {
+        $optionValues = array();
+        if (isset($sellerProductRow['selprodoption_optionvalue_id'])) {
             foreach ($sellerProductRow['selprodoption_optionvalue_id'] as $opId => $op) {
-                $optionValue = new OptionValue();
-                echo $opId;
-                CommonHelper::printArray($optionValue->getOptionValue($optionValue->getOptionValue($opId))); die;
-                // $optionValues .= $sellerProductRow['selprodoption_optionvalue_id'];
+                $optionValue = new OptionValue($op[$opId]);
+                $option = $optionValue->getOptionValue($opId);
+                $optionValues[] = $option['optionvalue_name'.$this->adminLangId];
             }
-        }*/
-
+        }
         $this->set('customActiveTab', 'GENERAL');
         $this->set('product_added_by_admin', $product_added_by_admin);
         $this->set('product_type', $product_type);
@@ -264,8 +267,7 @@ class SellerProductsController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-
-        if ($post['selprod_track_inventory'] == Product::INVENTORY_NOT_TRACK) {
+        if (isset($post['selprod_track_inventory']) && $post['selprod_track_inventory'] == Product::INVENTORY_NOT_TRACK) {
             $post['selprod_threshold_stock_level'] = 0;
         }
 
