@@ -56,9 +56,6 @@
 .avtar--rounded img {
     border-radius: 100% !important;
 }
-
-
-
 .profile-avatar {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -73,6 +70,14 @@
     -webkit-border-end: solid 1px var(--border-color);
     -moz-border-end: solid 1px var(--border-color);
     border-inline-end: solid 1px var(--border-color);
+
+
+    @include media-breakpoint-down(md) {
+        & {
+            border: none;
+
+        }
+    }
 }
 
 .profile-avatar .profile__dp {

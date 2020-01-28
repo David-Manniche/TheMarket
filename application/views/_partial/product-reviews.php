@@ -43,7 +43,7 @@ if ($totReviews) {
     </div>
     <?php } ?>
     <?php if ($totReviews > 0) { ?>
-    <div class="col-md-6 <?php echo ($canSubmitFeedback) ? '' : 'align--center'; ?>">
+    <div class="col-md-6 mt-2 mt-md-0<?php echo ($canSubmitFeedback) ? '' : 'align--center'; ?>">
         <div class="js-wrap-drop-reviews wrap-drop wrap-drop--first">
             <span><?php echo Labels::getLabel('Lbl_Most_Recent', $siteLangId); ?></span>
             <ul class="drop">
