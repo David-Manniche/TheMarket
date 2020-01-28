@@ -206,7 +206,7 @@ $submitBtnFld->developerTags['col'] = 12;
                                 <table id="shipping" class="table">
                                     <thead>
                                         <tr>
-                                            <?php if (!$selprod_id || !empty($optionValues)) { ?>
+                                            <?php if (($selprod_id == 0 && !empty($availableOptions)) || !empty($optionValues)) { ?>
                                             <th width="20%"><?php echo Labels::getLabel('LBL_Variant/Option', $siteLangId); ?></th>
                                             <?php }?>
                                             <th width="20%"><?php echo Labels::getLabel('LBL_Cost_Price', $siteLangId); ?></th>
@@ -216,7 +216,7 @@ $submitBtnFld->developerTags['col'] = 12;
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php if ($selprod_id == 0) { ?>
+                                        <?php if ($selprod_id == 0 && !empty($availableOptions)) { ?>
                                             <?php foreach ($availableOptions as $optionKey => $optionValue) { ?>
                                             <tr>
                                                 <td><?php echo str_replace("_", " | ", $optionValue); ?></td>

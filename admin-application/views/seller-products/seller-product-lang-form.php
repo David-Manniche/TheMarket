@@ -16,7 +16,7 @@ $langFld->setfieldTagAttribute('onChange', "sellerProductLangForm(" . $selprod_i
                 <div class="tabs_nav_container responsive flat">
                     <?php /* require_once('sellerCatalogProductTop.php'); */?>
                     <div class="tabs_panel_wrap ">
-                        <ul class="tabs_nav tabs_nav--internal">
+                        <?php /* <ul class="tabs_nav tabs_nav--internal">
                             <li><a href="javascript:void(0)"
                                     onClick="sellerProductForm(<?php echo $product_id;?>,<?php echo $selprod_id;?>)"><?php echo Labels::getLabel('LBL_Basic', $adminLangId); ?></a>
                             </li>
@@ -31,7 +31,7 @@ $langFld->setfieldTagAttribute('onChange', "sellerProductLangForm(" . $selprod_i
                             <li><a href="javascript:void(0)"
                                     onClick="linkPoliciesForm(<?php echo $product_id,',',$selprod_id,',',PolicyPoint::PPOINT_TYPE_RETURN ; ?>)"><?php echo Labels::getLabel('LBL_Link_Return_Policies', $adminLangId); ?></a>
                             </li>
-                        </ul>
+                        </ul>*/ ?>
                         <div class="tabs_panel_wrap">
                             <?php
                             $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');

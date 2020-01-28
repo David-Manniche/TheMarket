@@ -9,7 +9,7 @@
             <?php /* require_once 'sellerCatalogProductTop.php'; */?>
 
             <div class="tabs_panel_wrap">
-                <ul class="tabs_nav tabs_nav--internal">
+                <?php /* <ul class="tabs_nav tabs_nav--internal">
                     <li><a class="active" href="javascript:void(0)"
                             onClick="sellerProductForm(<?php echo $product_id;?>,<?php echo $selprod_id;?>)"><?php echo Labels::getLabel('LBL_Basic', $adminLangId); ?></a>
                     </li>
@@ -32,7 +32,7 @@
                             <?php
                         }?>><?php echo Labels::getLabel('LBL_Link_Return_Policies', $adminLangId); ?></a>
                     </li>
-                </ul>
+                </ul>*/ ?>
                 <div class="tabs_panel_wrap">
                     <?php
                     $frmSellerProduct->setFormTagAttribute('onsubmit', 'setUpSellerProduct(this); return(false);');
