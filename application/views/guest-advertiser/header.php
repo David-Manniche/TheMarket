@@ -69,15 +69,13 @@ $this->includeTemplate( '_partial/header/commonHeadBottom.php', $commonHeadData,
 		<div class="top-head">
 		  <div class="container">
 				<div class="logo-bar">      	 
-				<?php if(!empty($seller_navigation_left)) { ?>
-					<div class="seller_nav-trigger"> <a class="seller_nav_toggle" href="javascript:void(0)"><span></span></a> </div>
-				<?php }?>
 				<div class="logo logo-advertiser">
 					<a href="<?php echo CommonHelper::generateUrl(); ?>"><img src="<?php echo CommonHelper::generateFullUrl('Image','siteLogo',array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>"></a>
 				</div>
+				<div class="d-flex"><a class="seller_login_toggle" href="javascript:void(0)" data-trigger="yk-login--wrapper"><i class="fa fa-user-circle"></i></a> 
+			</div>
 			
-			  <div class="yk-login--wrapper">
-				<div class="seller-login-trigger hide--desktop"> <a class="seller_login_toggle" href="javascript:void(0)"></a> </div>
+			  <div class="yk-login--wrapper" id="yk-login--wrapper" data-close-on-click-outside="yk-login--wrapper">
 				<?php $this->includeTemplate( '_partial/advertiser/advertiserHeaderLoginForm.php',$loginData,false); ?>
 			  </div>
 			</div>

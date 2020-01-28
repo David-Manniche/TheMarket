@@ -1,5 +1,4 @@
 .collection-sidebar {
-
     .filters {
         width: 280px;
     }
@@ -36,7 +35,6 @@
 
 .btn-float {
     display: none;
-
 
     @include media-breakpoint-down(md) {
         & {
@@ -140,10 +138,11 @@
 }
 
 .widgets__heading {
-    font-size: 1em;
+    font-size: 0.8rem;
+    text-transform: uppercase;
     margin: 0 0 1rem 0;
-    color: var(--first-color);
-    font-weight: 400;
+    color: var(--body-color);
+    font-weight: 600;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -515,8 +514,8 @@
 /*grid list view*/
 .list-grid-toggle {
     width: 40px;
-    height: 2.4rem;
-    padding: 5px 2px;
+    height: 31px;
+    padding: 1px 2px;
     border-radius: 4px;
     border: solid 1px var(--border-color);
     color: #fff;

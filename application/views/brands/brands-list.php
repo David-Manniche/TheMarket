@@ -17,8 +17,8 @@
 				$firstCharacter = $str;
 	?>
   <div class="item">
-	<h6><?php echo $firstCharacter;?></h6>
-	<ul class="listing--onefifth">
+	<h6 class="big-title"><?php echo $firstCharacter;?></h6>
+	<ul>
 	  <?php } ?>
 	  <li><a href="<?php echo CommonHelper::generateUrl('Brands','view',array($brands['brand_id']));?>"><?php echo $brands['brand_name'];?></a></li>
 	  <?php } ?>

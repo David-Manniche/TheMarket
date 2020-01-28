@@ -65,13 +65,14 @@ sans-serif;
 @import 'components/wrap-drop';
 
 
-@import 'themes/theme';
+@import "themes/variables";
+@import "themes/theme";
 
 @import 'vendors/animate';
+@import 'vendors/fontawesome';
 @import 'vendors/chartist';
 @import 'vendors/cropper';
 @import 'vendors/facebox';
-@import 'vendors/font-awesome';
 @import 'vendors/jquery-ui';
 @import 'vendors/jquery-ui-timepicker-addon';
 @import 'vendors/simplebar';

@@ -15,10 +15,10 @@ $keywordFld = $frmProductSearch->getField('keyword');
 $keywordFld->overrideFldType("hidden");
 
 $sortByFld = $frmProductSearch->getField('sortBy');
-$sortByFld->addFieldTagAttribute('class', 'custom-select');
+$sortByFld->addFieldTagAttribute('class', 'custom-select custom-select-sm');
 
 $pageSizeFld = $frmProductSearch->getField('pageSize');
-$pageSizeFld->addFieldTagAttribute('class', 'custom-select');
+$pageSizeFld->addFieldTagAttribute('class', 'custom-select custom-select-sm');
 
 $desktop_url = '';
 $tablet_url = '';
@@ -231,11 +231,10 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                     <div class="col-auto">
                         <div id="top-filters" class="page-sort hide_on_no_product">
                             <ul>
-                                <li class="list__item">
-                                   
+                                <li class="list__item">                              
 										
                                     <?php if (!(UserAuthentication::isUserLogged()) || (UserAuthentication::isUserLogged() && (User::isBuyer()))) { ?>
-                                    <a href="javascript:void(0)" onclick="saveProductSearch()" class="btn btn--primary btn--filters-control"><i class="icn">
+                                    <a href="javascript:void(0)" onclick="saveProductSearch()" class="btn btn--primary btn-sm btn--filters-control"><i class="icn">
                                           
                                         </i><span class="txt"><?php echo Labels::getLabel('LBL_Save_Search', $siteLangId); ?></span></a>
                                     <?php } ?>

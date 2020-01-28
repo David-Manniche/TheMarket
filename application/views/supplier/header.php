@@ -71,34 +71,25 @@ $this->includeTemplate('_partial/header/commonHeadBottom.php', $commonHeadData,f
 	  <div class="logo-bar">                    
             <div class="logo logo-supplier"> <a href="<?php echo CommonHelper::generateUrl(); ?>"><img src="<?php echo CommonHelper::generateFullUrl('Image','siteLogo',array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>"></a></div> 
 			
-			<a class="seller_login_toggle d-block d-lg-none" href="javascript:void(0)"></a>
-          
-          <div class="yk-login--wrapper">
-			<div class="seller-login-trigger hide--desktop">
-				<?php if(!empty($seller_navigation_left)) { ?>
-					<div class="seller_nav-trigger"> <a class="seller_nav_toggle" href="javascript:void(0)"><span></span></a> </div>
-				<?php }?>
-			</div>
+			<div class="d-flex"><a class="seller_login_toggle" href="javascript:void(0)" data-trigger="yk-login--wrapper"><i class="fa fa-user-circle"></i></a> 
+			<a class="seller_nav_toggle" href="javascript:void(0)"  data-trigger="short-nav"><i class="fas fa-bars"></i></a>	</div>
+			
+          <div class="yk-login--wrapper" id="yk-login--wrapper" data-close-on-click-outside="yk-login--wrapper">
+		  	
             <?php $this->includeTemplate( '_partial/seller/sellerHeaderLoginForm.php',$loginData,false); ?>
           </div>
-         
-         
-		</div>
+        </div>
       </div>
     </div>
     <div class="bottom-head">
       <div class="container">
         <div class="row">
-          <div class="col-md-6 col-sm-6 ">
-            <div class="short-nav">
+          <div class="col">
+            <div class="short-nav" id="short-nav" data-close-on-click-outside="short-nav" >
               <?php $this->includeTemplate( '_partial/seller/sellerNavigationLeft.php'); ?>
             </div>
           </div>
-          <div class=" col-md-6 col-sm-6 ">
-            <div class="short-nav align--right hide--mobile hide--tab">
-              <?php $this->includeTemplate( '_partial/seller/sellerNavigationRight.php'); ?>
-            </div>
-          </div>
+          
         </div>
       </div>
     </div>
