@@ -48,4 +48,9 @@ class events {
     {
         this._validateAndTrigger('ViewContent');
     }
+
+    static newsLetterSubscription()
+    {
+        this._validateAndTrigger('CompleteRegistration');
+    }
 }
