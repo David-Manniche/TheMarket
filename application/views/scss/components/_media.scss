@@ -4,7 +4,7 @@
     display: inline-block;
     position: relative;
     padding: 15px 0;
-    border-top: 1px solid var(--border-color);
+    border-top: $border;
 }
 
 .media > li:first-child {
@@ -101,7 +101,7 @@
 }
 
 .media--details > li:first-child {
-    border-top: 1px solid var(--border-color);
+    border-top: $border;
 }
 
 .media--details > li:last-child {

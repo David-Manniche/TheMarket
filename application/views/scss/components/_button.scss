@@ -61,24 +61,24 @@
     
 
      &.btn--primary {
-         background: var(--first-color);
+         background: $brand-color;
          color: #fff;
      }
 
      &.btn--secondary {
-         background: var(--second-color);
+         background: $secondary-color;
          color: #fff;
      }
 
      &.btn-outline-primary {
          background: none;
-         border-color: var(--first-color);
-         color: var(--first-color);
+         border-color: $brand-color;
+         color: $brand-color;
      }
      &.btn-outline-secondary {
          background: none;
-         border-color: var(--second-color);
-         color: var(--second-color);
+         border-color: $secondary-color;
+         color: $secondary-color;
      }
 
      &.btn--block {

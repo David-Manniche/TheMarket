@@ -2101,7 +2101,7 @@ a.ui-button:active,
 }
 
 .ui-datepicker td.ui-datepicker-today {
-	background: var(--first-color);
+	background: $brand-color;
 	font-weight: 600;
 	color: #fff;
 }
@@ -2145,7 +2145,7 @@ a.ui-button:active,
 
 /*.ui-datepicker td.ui-datepicker-today {background: #333;}
 .ui-datepicker td.ui-datepicker-today:before {position: absolute;left: -4px; top: -4px; right: -4px;bottom: -4px;content: "";background: #333;box-shadow:0 0 15px 5px rgba(0, 0, 0, 0.1);}*/
-/*.ui-datepicker td.ui-datepicker-today a{color:var(--first-color);font-weight: 600;background:#EEE;}*/
+/*.ui-datepicker td.ui-datepicker-today a{color:$brand-color;font-weight: 600;background:#EEE;}*/
 .ui-datepicker .ui-datepicker-buttonpane {
 	border: none;
 	padding: 0;
@@ -2161,8 +2161,8 @@ a.ui-button:active,
 	font-size: 0.8em;
 	transition: 0.5s all ease;
 	background: none !important;
-	color: var(--first-color) !important;
-	border: 1px solid var(--first-color) !important;
+	color: $brand-color !important;
+	border: 1px solid $brand-color !important;
 }
 
 

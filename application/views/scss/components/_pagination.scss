@@ -33,7 +33,7 @@
     font-size: 1em;
     color: #333;
     border: none;
-    border: 1px solid var(--border-color);
+    border: $border;
     border-radius: 4px;
     position: relative;
     overflow: hidden;
@@ -42,8 +42,8 @@
 
 .pagination li.selected a {
     /*background: #f5f5f5;*/
-    border-color: var(--first-color);
-    color: var(--first-color);
+    border-color: $brand-color;
+    color: $brand-color;
 }
 
 .pagination li a:hover {

@@ -221,7 +221,7 @@
 
 
     .main-search-form .search--keyword {
-        border: solid 1px var(--first-color);
+        border: solid 1px $brand-color;
         border-radius: 0 4px 4px 0;
         border-left: none;
         font-size: 0.85em;
@@ -462,7 +462,7 @@
         padding: 10px 0;
         -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.25);
         box-shadow: 0 0 3px rgba(0, 0, 0, 0.25);
-        /*border-bottom: solid 1px var(--border-color);*/
+        /*border-bottom: $border;*/
     }
 
     .statistics__box {
@@ -473,7 +473,7 @@
         margin: 0 auto;
         border-radius: 2px;
         text-align: center;
-        border: solid 1px var(--border-color);
+        border: $border;
         width: auto;
         display: table;
     }
@@ -928,7 +928,7 @@
 
     .box--tabled .box__cell:first-child {
         border-right: none;
-        border-bottom: solid 1px var(--border-color);
+        border-bottom: $border;
     }
 
     .box--tabled .box__cell .listing--icons {
@@ -1100,7 +1100,7 @@
         display: block;
         width: auto;
         border: none;
-        border-bottom: solid 1px var(--border-color);
+        border-bottom: $border;
     }
 
 
@@ -1211,7 +1211,7 @@
     }
 
     .form-item.sign-up {
-        border-top: solid 1px var(--border-color);
+        border-top: $border;
         -webkit-transform: none;
         transform: none;
         opacity: 1;
@@ -1279,7 +1279,7 @@
         position: static;
         top: auto;
         padding: 0;
-        border-top: solid 1px var(--border-color);
+        border-top: $border;
     }
 
     .body--checkout:after {
@@ -1401,7 +1401,7 @@
         font-size: 0.95em;
         text-transform: uppercase;
         padding: 15px 10px 15px 15px !important;
-        border: solid 1px var(--border-color);
+        border: $border;
         border-radius: 4px;
     }
 
@@ -1516,7 +1516,7 @@
     }
 
     .ftshops .shop-detail-side:after {
-        border: 250px solid var(--second-color);
+        border: 250px solid $secondary-color;
         border-top: 0 solid;
         border-bottom: 35px solid rgba(0, 0, 0, 0);
     }

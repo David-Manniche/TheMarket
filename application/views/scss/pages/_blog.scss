@@ -38,7 +38,7 @@
         margin-left: 20px;
 
         a {
-            color: var(--first-color);
+            color: $brand-color;
             font-size: 0.875rem;
             font-weight: 600;
 
@@ -51,7 +51,7 @@
             .icn-arrow {
                 width: 16px;
                 height: auto;
-                fill: var(--first-color);
+                fill: $brand-color;
                 -webkit-margin-start: 0.3rem;
                 -moz-margin-start: 0.3rem;
                 margin-inline-start: 0.3rem;
@@ -187,7 +187,7 @@
         font-weight: 600;
         font-size: 1.25rem;
         margin-bottom: 1rem;
-        color: var(--txt-color);
+        color: $body-color;
 
         a {
             color: inherit;
@@ -200,7 +200,7 @@
     position: relative;
 
     &:after {
-        background: var(--second-color);
+        background: $secondary-color;
         height: 176px;
         width: 100%;
         top: 0;
@@ -230,7 +230,7 @@
     }
 
     a {
-        color: var(--first-color);
+        color: $brand-color;
     }
 
     .posted-media {
@@ -252,7 +252,7 @@
 
     &:hover {
         svg {
-            fill: var(--first-color);
+            fill: $brand-color;
         }
     }
 
@@ -321,9 +321,9 @@
             -webkit-margin-end: -3px;
             -moz-margin-end: -3px;
             margin-inline-end: -3px;
-            border: solid 1px var(--border-color);
+            border: $border;
             border-radius: 50px 0 0 50px;
-            color: var(--txt-color);
+            color: $body-color;
             vertical-align: top;
         }
 
@@ -348,7 +348,7 @@
 
 .post-meta-detail {
     .post--title {
-        color: var(--txt-color);
+        color: $body-color;
         font-size: calc(112.5% + 2vw);
         font-weight: 800;
         line-height: 1.3;
@@ -371,9 +371,9 @@
 }
 
 .posted-by span {
-    -webkit-border-end: solid 1px var(--border-color);
-    -moz-border-end: solid 1px var(--border-color);
-    border-inline-end: solid 1px var(--border-color);
+    -webkit-border-end: $border;
+    -moz-border-end: $border;
+    border-inline-end: $border;
     -webkit-padding-end: 1rem;
     -moz-padding-end: 1rem;
     padding-inline-end: 1rem;
@@ -396,14 +396,14 @@
         font-weight: 600;
         line-height: normal;
         font-style: italic;
-        color: var(--first-color);
+        color: $brand-color;
 
         p {
             font-size: 25px;
             font-weight: 600;
             line-height: normal;
             font-style: italic;
-            color: var(--first-color);
+            color: $brand-color;
         }
     }
 
@@ -415,7 +415,7 @@
     }
 
     a {
-        color: var(--first-color);
+        color: $brand-color;
         text-decoration: underline;
     }
 
@@ -463,7 +463,7 @@
             }
 
             a {
-                color: var(--first-color);
+                color: $brand-color;
                 text-decoration: none;
             }
         }
@@ -531,7 +531,7 @@
             padding: 5px 10px;
             vertical-align: top;
             text-align: left;
-            color: var(--second-color);
+            color: $secondary-color;
             background: var(--third-color);
         }
 
@@ -592,13 +592,13 @@
 }
 
 .comments {
-    border: solid 1px var(--border-color);
+    border: $border;
     margin-bottom: 2rem 0;
 
     h2 {
         font-weight: 700;
         font-size: 1.625rem;
-        color: var(--txt-color);
+        color: $body-color;
         margin: 2rem 1.5rem;
         margin-bottom: 2rem;
         margin-bottom: 0;
@@ -666,14 +666,14 @@
 }
 
 .comment-respond {
-    background: var(--gray-light);
+    background: $gray-light;
     padding: 2rem;
 }
 
 .right-side-bar {}
 
 .blog-subscribers-inner {
-    background: var(--first-color);
+    background: $brand-color;
     color: #fff;
 
     h3 {
@@ -739,7 +739,7 @@
         a {
             display: block;
             padding: 0;
-            color: var(--txt-color);
+            color: $body-color;
             font-size: 1.125rem;
             font-weight: 600;
             line-height: 3;
@@ -749,7 +749,7 @@
         &.is--active {
             a {
                 color: #fff;
-                background: var(--second-color);
+                background: $secondary-color;
             }
         }
     }
@@ -767,7 +767,7 @@
 }
 
 .content-data-blog > ul > li {
-    border-bottom: solid 1px var(--border-color);
+    border-bottom: $border;
     margin-bottom: 1rem;
 }
 
@@ -805,7 +805,7 @@
     font-size: 1em;
     color: #333;
     border: none;
-    border: 1px solid var(--border-color);
+    border: $border;
     border-radius: 50%;
     position: relative;
     overflow: hidden;
@@ -825,7 +825,7 @@
 }
 
 .pagination-blog li.selected a {
-    background: var(--second-color);
+    background: $secondary-color;
     border-color: transparent;
     color: #fff;
 }

@@ -113,7 +113,7 @@
         }
 
         &--on & {
-            background: var(--gray-light);
+            background: $gray-light;
             padding: 0;
             left: 0;
             visibility: visible;
@@ -128,7 +128,7 @@
             display: block;
             font-size: 0.8em;
             padding: 6px 10px;
-            color: var(--txt-color)
+            color: $body-color
         }
 
         &:first-child {
@@ -255,7 +255,7 @@
 }
 
 .growth-txt {
-    border-left: solid 1px var(--border-color);
+    border-left: $border;
     padding-left: 120px;
 }
 
@@ -294,7 +294,7 @@
 }
 
 .simple-price {
-    background: var(--second-color);
+    background: $secondary-color;
     text-align: center;
     color: #fff;
 }
@@ -364,7 +364,7 @@
 }
 
 .cta-right {
-    border-left: solid 1px var(--border-color);
+    border-left: $border;
     padding-left: 100px;
 }
 
@@ -395,7 +395,7 @@
 .registeration-process ul li {
     display: inline-block;
     font-size: 0.85em;
-    color: var(--txt-color);
+    color: $body-color;
     -webkit-margin-end: 1rem;
     -moz-margin-end: 1rem;
     margin-inline-end: 1rem;
@@ -418,7 +418,7 @@
 
 .registeration-process ul li.is--active,
 .registeration-process ul li:hover {
-    color: var(--first-color);
+    color: $brand-color;
 }
 
 .registeration-process ul li.is--active a {
@@ -428,7 +428,7 @@
 .registeration-process ul li:after {
     content: "";
     bottom: -10px;
-    background: var(--first-color);
+    background: $brand-color;
     height: 2px;
     position: absolute;
     z-index: 12;
@@ -445,7 +445,7 @@
 .registeration-process ul li.is--active:after {
     content: " ";
     position: absolute;
-    background: var(--first-color);
+    background: $brand-color;
 }
 
 .registeration-process ul li:hover:after,

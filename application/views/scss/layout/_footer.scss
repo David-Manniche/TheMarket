@@ -1,5 +1,5 @@
 .footer {
-    color: var(--txt-color);
+    color: $body-color;
     background: #fff;
     border-top: 1px solid #ddd;
     
@@ -11,7 +11,7 @@
     }
 
     h5 {
-        color: var(--txt-color);
+        color: $body-color;
         font-size: 1em;
         font-weight: 500;
         padding: 5px 0;
@@ -30,7 +30,7 @@
                 font-size: 0.95em;
                 text-transform: uppercase;
                 padding: 1rem;
-                border: solid 1px var(--border-color);
+                border: $border;
                 border-radius: 4px;
 
 
@@ -89,7 +89,7 @@
                 transition: all ease .3s;
 
                 &:hover {
-                    color: var(--first-color);
+                    color: $brand-color;
                     -webkit-margin-start: 10px;
                     -moz-margin-start: 10px;
                     margin-inline-start: 10px;
@@ -100,7 +100,7 @@
                 }
 
                 &:before {
-                    background: var(--first-color);
+                    background: $brand-color;
                     bottom: 0px;
                     content: "";
                     height: 1px;
@@ -141,8 +141,8 @@
 
 
 .upperContent-footer {
-    border-bottom: solid 1px var(--border-color);
-    border-top: solid 1px var(--border-color);
+    border-bottom: $border;
+    border-top: $border;
 }
 
 .upperContent-footer ul {
@@ -155,9 +155,9 @@
     vertical-align: top;
     display: table-cell;
     padding: 25px 15px;
-    -webkit-border-start: solid 1px var(--border-color);
-    -moz-border-start: solid 1px var(--border-color);
-    border-inline-start: solid 1px var(--border-color);
+    -webkit-border-start: $border;
+    -moz-border-start: $border;
+    border-inline-start: $border;
 }
 
 .upperContent-footer ul li:first-child {
@@ -181,7 +181,7 @@
 
 .upperContent-footer h3 {
     font-size: 1em;
-    color: var(--txt-color);
+    color: $body-color;
     margin: 5px auto;
     padding: 0;
     text-transform: uppercase;
@@ -196,7 +196,7 @@
 }
 
 .newsletter h4 {
-    color: var(--txt-color);
+    color: $body-color;
     font-size: 1em;
     font-weight: 500;
     padding: 5px 0;
@@ -287,15 +287,15 @@
     -webkit-margin-end: -3px;
     -moz-margin-end: -3px;
     margin-inline-end: -3px;
-    border: solid 1px var(--border-color);
+    border: $border;
     border-radius: 2px 0 2px 2px;
-    color: var(--txt-color);
+    color: $body-color;
     vertical-align: top;
 }
 
 .sub-form input[type="submit"] {
     font-size: 1em;
-    background: var(--first-color);
+    background: $brand-color;
     height: 2.5rem;
     width: 100%;
     max-width: 136px;
@@ -347,7 +347,7 @@
 }
 
 .social li a:hover svg path {
-    fill: var(--first-color);
+    fill: $brand-color;
 }
 
 .bottom-footer .fixed-container {
@@ -356,7 +356,7 @@
 
 .accordion-footer {
     margin-bottom: 25px;
-    border-bottom: solid 1px var(--border-color);
+    border-bottom: $border;
 }
 
 .accordion_triger {
@@ -421,7 +421,7 @@
 }
 
 .footerSubCategories li a:hover {
-    color: var(--first-color);
+    color: $brand-color;
 }
 
 .copyright {

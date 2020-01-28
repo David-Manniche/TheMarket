@@ -113,15 +113,15 @@ body {
 }
 
 .payment-wrapper {
-    background: var(--gray-light);
-    border: solid 1px var(--border-color);
+    background: $gray-light;
+    border: $border;
     border-radius: 4px;
 }
 
 .form--payment {
     background: #fff;
     border-radius: 4px;
-    border: solid 1px var(--border-color);
+    border: $border;
 }
 
 

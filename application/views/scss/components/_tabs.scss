@@ -25,7 +25,7 @@
 .tabs li {
     display: inline-block;
 
-    color: var(--txt-color);
+    color: $body-color;
     -webkit-margin-end: 2.5rem;
     -moz-margin-end: 2.5rem;
     margin-inline-end: 2.5rem;
@@ -58,7 +58,7 @@
 
 .tabs li.is-active,
 .tabs li:hover {
-    color: var(--first-color);
+    color: $brand-color;
 }
 
 .tabs li.is-active a {
@@ -68,7 +68,7 @@
 .tabs li:after {
     content: "";
     bottom: -1px;
-    background: var(--first-color);
+    background: $brand-color;
     height: 1px;
     position: absolute;
     z-index: 9;
@@ -85,7 +85,7 @@
 .tabs li.is-active:after {
     content: " ";
     position: absolute;
-    background: var(--first-color);
+    background: $brand-color;
 }
 
 .tabs li:hover:after,

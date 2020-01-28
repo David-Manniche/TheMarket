@@ -390,8 +390,8 @@
 
 .favourite.is-active a,
 .favourite a:hover {
-    /*  border-color: var(--first-color);*/
+    /*  border-color: $brand-color;*/
     background: #fff url(../images/retina/heart-filled.svg) no-repeat center;
     background-size: 12px;
-    border-color: var(--first-color);
+    border-color: $brand-color;
 }

@@ -104,7 +104,7 @@
     width: calc(100% - 20px);
 
     tr {
-        border-bottom: solid 1px var(--border-color);
+        border-bottom: $border;
     }
 
     th {
@@ -167,8 +167,8 @@
         &.hightlighted {
             font-weight: 600;
             font-size: 1em;
-            border-top: solid 1px var(--border-color);
-            border-bottom: solid 1px var(--border-color);
+            border-top: $border;
+            border-bottom: $border;
         }
     }
 }
@@ -260,7 +260,7 @@ table.cart--full .products-head {
 
 .addons-scrollbar {
     max-height: 232px;
-    border: solid 1px var(--border-color);
+    border: $border;
     border-radius: 4px;
 }
 
@@ -284,7 +284,7 @@ table.cart-tbl-addons .item__pic {
 
 table.cart-tbl-addons .item__title {
     font-weight: 300;
-    color: var(--txt-color);
+    color: $body-color;
 }
 
 .box {

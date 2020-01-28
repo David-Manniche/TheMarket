@@ -1,7 +1,7 @@
 
 .bg-contact {
     position: relative;
-    background: var(--second-color);
+    background: $secondary-color;
 
 
 }
@@ -70,7 +70,7 @@
 }
 
 .contact-address {
-    background: var(--second-color);
+    background: $secondary-color;
     position: relative;
 }
 
@@ -85,15 +85,15 @@
     -webkit-border-end: 30px solid transparent;
     -moz-border-end: 30px solid transparent;
     border-inline-end: 30px solid transparent;
-    border-top: 40px solid var(--second-color);
+    border-top: 40px solid $secondary-color;
 }
 
 .contact-phones {
-    background: var(--second-color);
+    background: $secondary-color;
 }
 
 .contact-email {
-    background: var(--second-color);
+    background: $secondary-color;
 }
 
 .g-map {

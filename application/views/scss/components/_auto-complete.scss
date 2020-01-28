@@ -45,7 +45,7 @@
 
 .auto-suggestion li {
     padding: 5px 10px;
-    border-bottom: solid 1px var(--border-color);
+    border-bottom: $border;
 }
 
 .auto-suggestion li a {

@@ -28,7 +28,7 @@
 }
 
 .cc-window .cc-close {
-    background-color: var(--first-color);
+    background-color: $brand-color;
     cursor: pointer;
     display: inline-block;
     font-weight: bold;

@@ -49,8 +49,8 @@ html.quick-view--open {
 .quick-col-2 {
     height: 100%;
     overflow-y: auto;
-    border-left: solid 1px var(--border-color);
-    background: var(--gray-light);
+    border-left: $border;
+    background: $gray-light;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -119,7 +119,7 @@ html.quick-view--open {
 
 .product-gallery .slick-dots li.slick-active {
     background: none;
-    border-color: var(--first-color);
+    border-color: $brand-color;
 }
 
 .product-gallery .slick-dots li.slick-active button:hover {}
@@ -225,7 +225,7 @@ html.quick-view--open {
     padding: 0;
     display: block;
     font-size: 0.875em;
-    color: var(--first-color);
+    color: $brand-color;
     white-space: nowrap;
     position: relative;
 }
@@ -302,7 +302,7 @@ html.quick-view--open {
 }
 
 .section--fill {
-    background: var(--second-color);
+    background: $secondary-color;
 }
 
 .section--fill .section-head {
@@ -324,14 +324,14 @@ html.quick-view--open {
     left: 0;
     right: 0;
     top: 0;
-    background: var(--gray-light);
+    background: $gray-light;
     height: 226px;
     z-index: -1;
 }
 
 .detail-wrapper {
     border-radius: 4px;
-    border: solid 1px var(--border-color);
+    border: $border;
     background: #fff;
 }
 
@@ -380,7 +380,7 @@ html.quick-view--open {
     max-width: 500px;
     float: none !important;
     border-radius: 4px;
-    border: solid 1px var(--border-color);
+    border: $border;
 }
 
 .slider-nav {
@@ -409,12 +409,12 @@ html.quick-view--open {
     margin-bottom: 20px;
     text-align: center;
     border-radius: 4px;
-    border: solid 1px var(--border-color) !important;
+    border: $border !important;
     overflow: hidden;
 }
 
 .slider-nav .thumb.slick-current {
-    border-color: var(--first-color);
+    border-color: $brand-color;
 }
 
 .slider-nav .thumb img {
@@ -431,7 +431,7 @@ html.quick-view--open {
     text-indent: -999999px;
     z-index: 1;
     /*transform: rotate(90deg);*/
-    background: var(--gray-light);
+    background: $gray-light;
     border-radius: 4px;
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -551,7 +551,7 @@ html.quick-view--open {
 
 .product-description .products__price {
     font-size: 2em;
-    color: var(--first-color);
+    color: $brand-color;
     font-weight: 700;
     line-height: 1.1;
     /*font-family: $family-primary;*/
@@ -609,7 +609,7 @@ html.quick-view--open {
 
 .list--specification li span {
     min-width: 50%;
-    color: var(--txt-color);
+    color: $body-color;
 }
 
 .discount-slider {
@@ -623,7 +623,7 @@ html.quick-view--open {
     -ms-flex-pack: justify;
     justify-content: space-between;
     border-radius: 4px;
-    border: solid 1px var(--border-color);
+    border: $border;
     -webkit-margin-end: -1px;
     -moz-margin-end: -1px;
     margin-inline-end: -1px;
@@ -631,9 +631,9 @@ html.quick-view--open {
 
 .discount-slider li {
     background: #fff;
-    -webkit-border-end: solid 1px var(--border-color);
-    -moz-border-end: solid 1px var(--border-color);
-    border-inline-end: solid 1px var(--border-color);
+    -webkit-border-end: $border;
+    -moz-border-end: $border;
+    border-inline-end: $border;
     padding: 1.5rem;
     margin: 0;
     font-size: 0.875em;
@@ -700,7 +700,7 @@ html.quick-view--open {
 }
 
 .owener_info .owener_info_mame {
-    color: var(--txt-color);
+    color: $body-color;
 }
 
 .owener_info .owener_info_mame a {
@@ -741,7 +741,7 @@ html.quick-view--open {
 }
 
 .shop-reviews-wrapper .shop-reviews .svg {
-    fill: var(--first-color);
+    fill: $brand-color;
     width: 130px;
     height: 130px;
     position: absolute;
@@ -766,12 +766,12 @@ html.quick-view--open {
 }
 
 .reviews-lisitng {
-    border: solid 1px var(--border-color);
+    border: $border;
     border-radius: 4px;
 }
 
 .reviews-lisitng > ul > li {
-    border-bottom: solid 1px var(--border-color);
+    border-bottom: $border;
     padding-bottom: 10px;
     margin-bottom: 10px;
 }
@@ -785,11 +785,11 @@ html.quick-view--open {
 .reviews-list {
     background: #fff;
     border-radius: 4px;
-    border: solid 1px var(--border-color);
+    border: $border;
 }
 
 .reviews-list li {
-    border-bottom: solid 1px var(--border-color);
+    border-bottom: $border;
 
 }
 
@@ -808,7 +808,7 @@ html.quick-view--open {
     -webkit-box-align: start;
     -ms-flex-align: start;
     align-items: flex-start;
-    border: solid 1px var(--border-color);
+    border: $border;
     max-width: 120px;
     background: #fff;
 }
@@ -872,15 +872,15 @@ html.quick-view--open {
 }
 
 .quantity .increase {
-    -webkit-border-start: solid 1px var(--border-color);
-    -moz-border-start: solid 1px var(--border-color);
-    border-inline-start: solid 1px var(--border-color);
+    -webkit-border-start: $border;
+    -moz-border-start: $border;
+    border-inline-start: $border;
 }
 
 .quantity .decrease {
-    -webkit-border-end: solid 1px var(--border-color);
-    -moz-border-end: solid 1px var(--border-color);
-    border-inline-end: solid 1px var(--border-color);
+    -webkit-border-end: $border;
+    -moz-border-end: $border;
+    border-inline-end: $border;
     line-height: 35px;
 }
 
@@ -947,7 +947,7 @@ html.quick-view--open {
     -moz-margin-end: 10px;
     margin-inline-end: 10px;
     font-size: 0.875em;
-    color: var(--txt-color);
+    color: $body-color;
 }
 
 .yes-no img {
@@ -977,7 +977,7 @@ html.quick-view--open {
     height: 35px;
     margin: 10px 0;
     background-color: #fff;
-    border: solid 1px var(--border-color);
+    border: $border;
     border-radius: 50px;
     /*-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);*/
@@ -1022,8 +1022,8 @@ html.quick-view--open {
 }
 
 .share-this:hover {
-    border-color: var(--second-color);
-    background-color: var(--second-color);
+    border-color: $secondary-color;
+    background-color: $secondary-color;
     -webkit-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
@@ -1060,7 +1060,7 @@ html.quick-view--open {
     justify-content: center;
     width: 100%;
     height: 100%;
-    color: var(--txt-color);
+    color: $body-color;
     font-size: 1em;
     font-weight: 600;
     /* font-family: $family-primary;*/
@@ -1121,7 +1121,7 @@ html.quick-view--open {
     -webkit-margin-end: 8px;
     -moz-margin-end: 8px;
     margin-inline-end: 8px;
-    fill: var(--txt-color);
+    fill: $body-color;
 }
 
 @-webkit-keyframes bounce {
@@ -1183,7 +1183,7 @@ html.quick-view--open {
     padding: 0;
     min-width: 1%;
     background-color: #fff !important;
-    border: 1px solid var(--border-color) !important;
+    border: $border !important;
 
 }
 
@@ -1191,19 +1191,19 @@ html.quick-view--open {
     margin: 10px auto 0;
     width: 18px;
     height: 18px;
-    fill: var(--first-color);
+    fill: $brand-color;
 }
 
 .shop-btn-group .social-toggle .icn svg {
     margin: -2px auto 0;
     width: 16px;
     height: 16px;
-    fill: var(--first-color);
+    fill: $brand-color;
 }
 
 .shop-btn-group .btn.is-active {
-    background: var(--first-color) !important;
-    border-color: var(--first-color) !important;
+    background: $brand-color !important;
+    border-color: $brand-color !important;
 }
 
 .shop-btn-group .btn.is-active .icn svg {
@@ -1212,7 +1212,7 @@ html.quick-view--open {
 
 .shop-profile {
     border-radius: 4px;
-    border: solid 1px var(--border-color);
+    border: $border;
 }
 
 .shop-avatar {
@@ -1297,21 +1297,21 @@ html.quick-view--open {
 }
 
 .nav-detail ul li > a.is-active {
-    color: var(--first-color);
+    color: $brand-color;
 }
 
 .nav-detail ul li a:hover::before,
 .nav-detail ul li > a.is-active:before {
     right: 0;
     width: 50%;
-    background: var(--first-color);
+    background: $brand-color;
 }
 
 .nav-detail ul li a:hover::after,
 .nav-detail ul li > a.is-active:after {
     left: 0;
     width: 50%;
-    background: var(--first-color);
+    background: $brand-color;
 }
 
 
@@ -1431,7 +1431,7 @@ html.quick-view--open {
 
 .icn-quickview {
     margin: 0 auto;
-    background: var(--first-color);
+    background: $brand-color;
     border-radius: 50%;
     width: 2.5rem;
     height: 2.5rem;

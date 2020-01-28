@@ -63,7 +63,7 @@
             box-sizing: content-box;
             width: 0;
             height: 12.5rem;
-            border: 180px solid var(--second-color);
+            border: 180px solid $secondary-color;
             border-top: 0 solid;
             border-bottom: 35px solid rgba(0, 0, 0, 0);
             color: rgba(0, 0, 0, 1);
@@ -119,7 +119,7 @@
     }
 
     .ftshops_item_head {
-        border-bottom: solid 1px var(--border-color);
+        border-bottom: $border;
     }
 
     .ftshops_logo {
@@ -170,9 +170,9 @@
             float: left;
             width: 50%;
             padding: 20px;
-            -webkit-border-end: solid 1px var(--border-color);
-            -moz-border-end: solid 1px var(--border-color);
-            border-inline-end: solid 1px var(--border-color);
+            -webkit-border-end: $border;
+            -moz-border-end: $border;
+            border-inline-end: $border;
 
             &:last-child {
                 -webkit-border-end: none;
@@ -190,8 +190,8 @@
             order: 2;
 
             &:after {
-                border-left-color: var(--first-color);
-                border-right-color: var(--first-color);
+                border-left-color: $brand-color;
+                border-right-color: $brand-color;
             }
 
             @include media-breakpoint-down(sm) {
@@ -216,7 +216,7 @@
     display: grid;
     grid-gap: 1px;
     grid-template-columns: repeat(5, 1fr);
-    border: solid 1px var(--border-color);
+    border: $border;
     border-radius: 4px;
     background-color: var(--border-color);
 }

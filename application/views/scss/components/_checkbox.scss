@@ -80,7 +80,7 @@
 
 .checkbox input:checked,
 .radio input:checked {
-    background: var(--first-color);
+    background: $brand-color;
 }
 
 .checkbox input:checked::before,
@@ -109,7 +109,7 @@
 .radio input:checked::after {
     -webkit-animation: click-wave 0.65s;
     animation: click-wave 0.65s;
-    background: var(--first-color);
+    background: $brand-color;
     content: '';
     display: block;
     position: relative;
@@ -118,7 +118,7 @@
 
 .checkbox input:checked,
 .radio input:checked {
-    border-color: var(--first-color);
+    border-color: $brand-color;
 }
 
 .radio input {
@@ -200,7 +200,7 @@
 }
 
 .switch-button:after {
-    background: var(--first-color);
+    background: $brand-color;
     width: 18px;
     height: 18px;
     display: block;
@@ -221,5 +221,5 @@
 }
 
 .switch-links a.is--active {
-    color: var(--first-color);
+    color: $brand-color;
 }

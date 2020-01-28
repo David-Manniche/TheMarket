@@ -48,13 +48,13 @@
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    border-top: solid 1px var(--border-color);
-    border-bottom: solid 1px var(--border-color);
+    border-top: $border;
+    border-bottom: $border;
     position: relative;
 }
 
 .filterDiv:hover {
-    color: var(--first-color);
+    color: $brand-color;
 }
 
 .filterDiv:after {
@@ -100,7 +100,7 @@ div.faqanswer {
     line-height: 1.8em;
     border-radius: 4px;
     /*margin-inline-start: 3rem;
-	border: solid 1px var(--border-color);*/
+	border: $border;*/
     display: none;
 }
 
@@ -110,11 +110,11 @@ div.faqanswer p {
 }
 
 .faq-filters a {
-    border: solid 1px var(--border-color);
+    border: $border;
     border-radius: 4px;
     margin: 5px 0;
     padding: 0.5rem;
-    color: var(--txt-color);
+    color: $body-color;
     font-size: 0.8rem;
     display: inline-block;
     position: relative;
@@ -128,17 +128,17 @@ div.faqanswer p {
     content: "";
     width: 0;
     height: 0;
-    border-top: 10px solid var(--first-color);
+    border-top: 10px solid $brand-color;
     border-left: 10px solid transparent;
 }
 
 .faq-filters a.is--active {
-    background: var(--first-color);
+    background: $brand-color;
     color: #fff;
-    border-color: var(--first-color);
+    border-color: $brand-color;
 }
 .browsed-box {
-    border: solid 1px var(--border-color);
+    border: $border;
     padding: 20px;
     margin-bottom: 20px;
 }
@@ -148,7 +148,7 @@ div.faqanswer p {
 }
 
 .browsed-box .category-q {
-    color: var(--txt-color);
+    color: $body-color;
     text-transform: uppercase;
     font-weight: 600;
     min-height: 43px;
@@ -160,5 +160,5 @@ div.faqanswer p {
 }
 
 .browsed-box a.btn--link .svg-icn svg path {
-    fill: var(--first-color);
+    fill: $brand-color;
 }

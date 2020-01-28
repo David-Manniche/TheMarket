@@ -56,7 +56,7 @@
 
 .dropdown__target-head {
     padding: 15px;
-    background: var(--first-color);
+    background: $brand-color;
 }
 
 .dropdown__target-head p {
@@ -99,7 +99,7 @@
     transform: translate(-50%, -50%);
     -webkit-transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
-    color: var(--first-color);
+    color: $brand-color;
     font-size: 2.5em;
     line-height: 1;
 }
@@ -213,7 +213,7 @@
         display: block;
         border: none;
         
-        &.is-active{ color: var(--first-color);  }
+        &.is-active{ color: $brand-color;  }
 
         .nav__link {
             display: -webkit-box;

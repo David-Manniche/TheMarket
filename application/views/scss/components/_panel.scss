@@ -56,9 +56,9 @@
 }
 
 .box--tabled .box__cell:first-child {
-    -webkit-border-end: 1px solid var(--border-color);
-    -moz-border-end: 1px solid var(--border-color);
-    border-inline-end: 1px solid var(--border-color);
+    -webkit-border-end: $border;
+    -moz-border-end: $border;
+    border-inline-end: $border;
 }
 
 .box--tabled .box__cell:last-child {

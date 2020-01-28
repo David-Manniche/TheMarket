@@ -215,7 +215,7 @@
 
 .is-dashboard {
     height: auto;
-    background: var(--gray-light);
+    background: $gray-light;
     padding: 50px;
 
     @include media-breakpoint-down(lg) {
@@ -257,7 +257,7 @@
     background: #fff;
     -webkit-transition: padding 0.5s ease-in-out;
     transition: padding 0.5s ease-in-out;
-    border-bottom: solid 1px var(--border-color);
+    border-bottom: $border;
 
     .sidebar-is-expanded & {
         -webkit-padding-start: 280px;
@@ -307,7 +307,7 @@
 
         .svg,
         img {
-            fill: var(--txt-color);
+            fill: $body-color;
             width: 20px;
             height: 20px;
             -webkit-margin-end: 5px;
@@ -334,7 +334,7 @@
             -webkit-box-pack: center;
             -ms-flex-pack: center;
             justify-content: center;
-            background: var(--first-color);
+            background: $brand-color;
         }
     }
 
@@ -345,9 +345,9 @@
         -webkit-box-align: center;
         -ms-flex-align: center;
         align-items: center;
-        -webkit-border-end: solid 1px var(--border-color);
-        -moz-border-end: solid 1px var(--border-color);
-        border-inline-end: solid 1px var(--border-color);
+        -webkit-border-end: $border;
+        -moz-border-end: $border;
+        border-inline-end: $border;
 
 
         @include media-breakpoint-down(md) {
@@ -360,7 +360,7 @@
             margin: 0 0.8rem;
 
             a {
-                color: var(--txt-color);
+                color: $body-color;
                 position: relative;
                 font-size: 0.875rem;
 
@@ -368,14 +368,14 @@
 
                 i {
                     font-size: 1rem;
-                    color: var(--first-color);
+                    color: $brand-color;
                 }
 
                 .icn {
                     svg {
                         width: 20px;
                         height: 20px;
-                        fill: var(--txt-color);
+                        fill: $body-color;
                     }
                 }
 
@@ -383,7 +383,7 @@
 
             &.is-active {
                 a {
-                    color: var(--first-color);
+                    color: $brand-color;
                 }
             }
         }
@@ -498,7 +498,7 @@
 
     .dropdown__target-head {
         padding: 15px;
-        background: var(--first-color);
+        background: $brand-color;
     }
 
     .dropdown__target-head p {
@@ -541,7 +541,7 @@
         transform: translate(-50%, -50%);
         -webkit-transform: translate(-50%, -50%);
         -ms-transform: translate(-50%, -50%);
-        color: var(--first-color);
+        color: $brand-color;
         font-size: 2.5em;
         line-height: 1;
     }
@@ -575,7 +575,7 @@
         }
 
         span {
-            color: var(--txt-color);
+            color: $body-color;
         }
 
         &.logout {
@@ -614,7 +614,7 @@
         }
 
         &.seprator {
-            border-top: solid 1px var(--border-color);
+            border-top: $border;
             padding-top: 10px;
             margin-top: 10px;
         }
@@ -629,12 +629,12 @@
         cursor: pointer;
 
         &:hover {
-            color: var(--first-color)
+            color: $brand-color
         }
     }
 
     a {
-        color: var(--txt-color);
+        color: $body-color;
         display: block;
         overflow: hidden;
         position: relative;
@@ -696,7 +696,7 @@
             a {
                 font-weight: normal;
                 font-weight: 700;
-                color: var(--first-color);
+                color: $brand-color;
             }
 
 
@@ -729,7 +729,7 @@
             &:before {
                 height: 20px;
                 width: 20px;
-                border: 1px solid var(--border-color);
+                border: $border;
                 position: absolute;
                 left: 0;
                 top: 0;
@@ -741,8 +741,8 @@
         &.is-active {
             a {
                 &:before {
-                    background: var(--first-color);
-                    border-color: var(--first-color);
+                    background: $brand-color;
+                    border-color: $brand-color;
                 }
 
                 &:after {
@@ -772,7 +772,7 @@ ul.listing--bullet {
         line-height: 30px;
         padding: 0 0 8px 18px;
         font-size: 0.875em;
-        color: var(--txt-color);
+        color: $body-color;
 
         &:before {
             position: absolute;
@@ -806,9 +806,9 @@ ul.listing--bullet {
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
-    -webkit-border-end: solid 1px var(--border-color);
-    -moz-border-end: solid 1px var(--border-color);
-    border-inline-end: solid 1px var(--border-color);
+    -webkit-border-end: $border;
+    -moz-border-end: $border;
+    border-inline-end: $border;
 
     &-is-expanded & {
         width: 280px;
@@ -834,7 +834,7 @@ ul.listing--bullet {
         align-items: center;
         padding: 10px;
         height: 71px;
-        border-bottom: solid 1px var(--border-color);
+        border-bottom: $border;
         position: absolute;
         top: 0;
         z-index: 1;
@@ -945,7 +945,7 @@ ul.listing--bullet {
                 width: 2px;
                 left: 0;
                 top: 0;
-                background-color: var(--first-color);
+                background-color: $brand-color;
                 opacity: 0;
                 -webkit-transition: all 0.5s ease-in-out;
                 transition: all 0.5s ease-in-out;
@@ -1025,7 +1025,7 @@ ul.listing--bullet {
                     -webkit-box-pack: center;
                     -ms-flex-pack: center;
                     justify-content: center;
-                    background: var(--first-color);
+                    background: $brand-color;
                 }
             }
 
@@ -1033,8 +1033,8 @@ ul.listing--bullet {
 
         &.is-active {
             background: rgba(0, 0, 0, 00.05);
-            color: var(--first-color);
-            fill: var(--first-color);
+            color: $brand-color;
+            fill: $brand-color;
         }
     }
 
@@ -1059,7 +1059,7 @@ ul.listing--bullet {
         color: inherit;
 
         &:hover {
-            background: var(--gray-light);
+            background: $gray-light;
         }
     }
 
@@ -1127,7 +1127,7 @@ ul.listing--bullet {
 }
 
 .main {
-    background: var(--gray-light);
+    background: $gray-light;
     width: 100%;
     height: 100%;
     padding-top: 72px;
@@ -1167,7 +1167,7 @@ ul.listing--bullet {
         justify-content: space-between;
 
         .content-header-title {
-            color: var(--txt-color);
+            color: $body-color;
             font-size: 2rem;
             font-weight: 300;
         }
@@ -1210,16 +1210,16 @@ ul.listing--bullet {
                 font-weight: 600;
                 border-radius: 2.5rem;
                 background: #fff;
-                border: solid 1px var(--border-color);
+                border: $border;
 
                 &:hover {
-                    border-color: var(--first-color);
+                    border-color: $brand-color;
                 }
             }
 
             .is-active {
                 a {
-                    border-color: var(--first-color);
+                    border-color: $brand-color;
                 }
             }
         }
@@ -1252,7 +1252,7 @@ ul.listing--bullet {
             font-size: 1.1rem;
 
             a {
-                color: var(--txt-color);
+                color: $body-color;
             }
         }
     }
@@ -1284,7 +1284,7 @@ ul.listing--bullet {
         .icn svg {
             width: 34px;
             height: 34px;
-            fill: var(--first-color) !important;
+            fill: $brand-color !important;
         }
 
         a {
@@ -1376,8 +1376,8 @@ ul.listing--bullet {
 
 
 .stats-number ul li {
-    border-top: solid 1px var(--border-color);
-    color: var(--txt-color);
+    border-top: $border;
+    color: $body-color;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -1404,7 +1404,7 @@ ul.listing--bullet {
         flex-wrap: wrap;
 
         li {
-            color: var(--txt-color);
+            color: $body-color;
             width: 50%;
 
             .total {
@@ -1478,9 +1478,9 @@ ul.listing--bullet {
     font-weight: unset;
     padding: 15px;
     border: none;
-    color: var(--txt-color);
+    color: $body-color;
     font-size: 0.875em;
-    border-bottom: solid 1px var(--border-color);
+    border-bottom: $border;
     vertical-align: top;
 }
 
@@ -1499,8 +1499,8 @@ ul.listing--bullet {
     border: none;
     font-weight: 600;
     color: #333;
-    /*	border-top: solid 1px var(--border-color);*/
-    border-bottom: solid 1px var(--border-color);
+    /*	border-top: $border;*/
+    border-bottom: $border;
     vertical-align: top;
     /*	text-transform: uppercase;font-size: 0.8em;*/
 }
@@ -1525,7 +1525,7 @@ ul.listing--bullet {
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
-        border-bottom: solid 1px var(--border-color);
+        border-bottom: $border;
         padding: 20px;
 
         &:last-child {
@@ -1634,7 +1634,7 @@ ul.listing--bullet {
 .dashboard-togles {
     position: relative;
     display: block;
-    background: var(--second-color);
+    background: $secondary-color;
     padding: 5px 0 5px 10px;
     color: #fff;
     border-radius: 4px;
@@ -1674,9 +1674,9 @@ ul.listing--bullet {
 .dashboard-options li a {
     display: block;
     padding: 8px;
-    color: var(--txt-color);
+    color: $body-color;
     font-size: 0.9em;
-    border-bottom: solid 1px var(--border-color);
+    border-bottom: $border;
 }
 
 .dashboard-options li:last-child a {
@@ -1687,7 +1687,7 @@ ul.listing--bullet {
 /*order data*/
 .item__pic {
     width: 80px;
-    border: solid 1px var(--border-color);
+    border: $border;
     border-radius: 4px;
     /*padding: 8px;*/
     margin: 0;
@@ -1699,7 +1699,7 @@ ul.listing--bullet {
 
 .item__description .item__title {
     /*font-weight: 700;*/
-    color: var(--txt-color);
+    color: $body-color;
     margin: 0 0 4px 0;
     /*	font-size: 1.2em;*/
 }
@@ -1764,9 +1764,9 @@ ul.listing--bullet {
             height: 26px;
             line-height: 1.4;
             text-align: center;
-            color: var(--txt-color);
+            color: $body-color;
             font-size: 1em;
-            border: solid 1px var(--border-color);
+            border: $border;
             border-radius: 2px;
             display: -webkit-box;
             display: -ms-flexbox;
@@ -1779,19 +1779,19 @@ ul.listing--bullet {
             justify-content: center;
 
             &:hover {
-                background: var(--first-color);
-                border-color: var(--first-color);
+                background: $brand-color;
+                border-color: $brand-color;
                 color: #fff;
                 text-decoration: none !important;
             }
 
             &.icn-highlighted {
                 border: none;
-                color: var(--first-color);
+                color: $brand-color;
                 background: #f0f0f0;
 
                 &:hover {
-                    background: var(--first-color);
+                    background: $brand-color;
                     color: #fff;
                 }
             }
@@ -1828,7 +1828,7 @@ ul.listing--bullet {
 
         li {
             display: inline-block;
-            color: var(--txt-color);
+            color: $body-color;
             -webkit-margin-end: 2.5rem;
             -moz-margin-end: 2.5rem;
             margin-inline-end: 2.5rem;
@@ -1850,7 +1850,7 @@ ul.listing--bullet {
             &:after {
                 content: "";
                 bottom: -1px;
-                background: var(--first-color);
+                background: $brand-color;
                 height: 1px;
                 position: absolute;
                 z-index: 9;
@@ -1875,7 +1875,7 @@ ul.listing--bullet {
                 &:after {
                     content: "";
                     position: absolute;
-                    background: var(--first-color);
+                    background: $brand-color;
                 }
             }
         }
@@ -1933,7 +1933,7 @@ ul.listing--bullet {
     }
 
     p {
-        color: var(--txt-color);
+        color: $body-color;
         font-weight: 400;
         font-size: 0.875rem;
         line-height: 1.8;
@@ -1947,7 +1947,7 @@ ul.listing--bullet {
 
     ul {
         margin: 10px 0;
-        color: var(--txt-color);
+        color: $body-color;
 
         li {
             position: relative;
@@ -2083,7 +2083,7 @@ input:checked + .slider:before {
     font-size: 1em;
     color: #333;
     border: none;
-    border: 1px solid var(--border-color);
+    border: $border;
     border-radius: 4px;
     position: relative;
     overflow: hidden;
@@ -2092,8 +2092,8 @@ input:checked + .slider:before {
 
 .pagination li.selected a {
     /*background: #f5f5f5;*/
-    border-color: var(--first-color);
-    color: var(--first-color);
+    border-color: $brand-color;
+    color: $brand-color;
 }
 
 .pagination li a:hover {
@@ -2192,7 +2192,7 @@ input:checked + .slider:before {
 }
 
 a.link {
-    color: var(--first-color);
+    color: $brand-color;
     position: relative;
     font-size: 0.875rem;
 }
@@ -2206,7 +2206,7 @@ a.link:after {
     bottom: -2px;
     left: 0;
     right: 0;
-    background: var(--first-color);
+    background: $brand-color;
     -webkit-transform-origin: bottom left;
     transform-origin: bottom left;
     -webkit-transform: scaleX(1);
@@ -2249,14 +2249,14 @@ a.link:after {
 
 .sales-graph .ct-series-a .ct-area,
 .sales-graph .ct-series-a .ct-slice-pie {
-    fill: var(--first-color);
+    fill: $brand-color;
 }
 
 .sales-graph .ct-series-a .ct-bar,
 .sales-graph .ct-series-a .ct-line,
 .sales-graph .ct-series-a .ct-point,
 .sales-graph .ct-series-a .ct-slice-donut {
-    stroke: var(--first-color);
+    stroke: $brand-color;
 }
 
 .sales-graph.ct-perfect-fourth:before {
@@ -2265,22 +2265,22 @@ a.link:after {
 
 .sales-graph .ct-series-b .ct-point,
 .graph--visitor .ct-series-b .ct-line {
-    stroke: var(--first-color);
+    stroke: $brand-color;
 }
 
 .sales-graph .ct-series-a .ct-point,
 .graph--visitor .ct-series-a .ct-line {
-    stroke: var(--first-color);
+    stroke: $brand-color;
 }
 
 .sales-graph .ct-series-c .ct-point,
 .graph--visitor .ct-series-c .ct-line {
-    stroke: var(--first-color);
+    stroke: $brand-color;
 }
 
 .sales-graph .ct-series-d .ct-point,
 .graph--visitor .ct-series-d .ct-line {
-    stroke: var(--first-color);
+    stroke: $brand-color;
 }
 
 .sales-graph .ct-line {
@@ -2477,7 +2477,7 @@ a.link:after {
     width: 60px;
     overflow: hidden;
     border-radius: 100%;
-    border: 1px solid var(--border-color);
+    border: $border;
     position: relative;
 
     .avtar--large {
@@ -2515,7 +2515,7 @@ a.link:after {
             color: inherit;
             position: relative;
             width: 100%;
-            border: 1px solid var(--border-color);
+            border: $border;
             border-radius: 4px;
             height: 100px;
             padding: 10px;
@@ -2535,8 +2535,8 @@ a.link:after {
 
         &.is-active {
             a {
-                border-color: var(--first-color);
-                background: var(--first-color);
+                border-color: $brand-color;
+                background: $brand-color;
                 color: #fff;
 
                 &:before {
@@ -2555,14 +2555,14 @@ a.link:after {
 .-inline-link {
     text-decoration: underline;
     font-size: 0.9em;
-    color: var(--first-color) !important;
+    color: $brand-color !important;
 }
 
 /*wishlist*/
 .items {
     width: 100%;
     border-radius: 4px;
-    border: solid 1px var(--border-color);
+    border: $border;
     margin: 0 0 20px;
     position: relative;
     padding: 1rem;
@@ -2687,7 +2687,7 @@ a.link:after {
     display: block;
     width: 100%;
     padding: 20px;
-    /*border-bottom: 1px solid var(--border-color);*/
+    /*border-bottom: $border;*/
     position: relative;
     margin: 0 0 15px;
     border-radius: 5px;
@@ -2733,7 +2733,7 @@ a.link:after {
     background: #fff;
     border-radius: 4px;
     overflow: hidden;
-    border: solid 1px var(--border-color);
+    border: $border;
     -webkit-transition: all 0.2s linear;
     transition: all 0.2s linear;
     -webkit-animation: slideRight 600ms ease both;
@@ -2741,7 +2741,7 @@ a.link:after {
 
     &:hover {
 
-        border-color: var(--first-color);
+        border-color: $brand-color;
     }
 
     .product-listing & {
@@ -2758,7 +2758,7 @@ a.link:after {
     line-height: 1;
     vertical-align: baseline;
     white-space: nowrap;
-    background-color: var(--first-color);
+    background-color: $brand-color;
     border-radius: 0;
     font-weight: normal;
     border-color: #fee188;
@@ -2774,7 +2774,7 @@ a.link:after {
 }
 
 .products-head-lable:before {
-    border-color: rgba(0, 0, 0, 0) var(--first-color) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+    border-color: rgba(0, 0, 0, 0) $brand-color rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
     -o-border-image: none;
     border-image: none;
     border-style: solid;
@@ -2805,7 +2805,7 @@ a.link:after {
 }
 
 .products .products__title {
-    color: var(--txt-color);
+    color: $body-color;
     /*overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;*/
@@ -2836,7 +2836,7 @@ a.link:after {
 
 .products .products__rating,
 .products__rating {
-    color: var(--txt-color);
+    color: $body-color;
     vertical-align: middle;
     padding: 3px 5px;
     margin: 5px 0;
@@ -2876,7 +2876,7 @@ a.link:after {
     font-weight: 300;
     display: inline-block;
     vertical-align: top;
-    color: var(--second-color);
+    color: $secondary-color;
 }
 
 .products .products__rating .be-first a,
@@ -2896,7 +2896,7 @@ a.link:after {
 .products__rating .svg svg {
     vertical-align: top;
     margin-inline-end: 0px;
-    fill: var(--first-color);
+    fill: $brand-color;
     vertical-align: top;
 }
 
@@ -2907,7 +2907,7 @@ a.link:after {
 .products .products__price,
 .products__price {
     font-size: 0.85em;
-    color: var(--txt-color);
+    color: $body-color;
     padding: 0 5px;
     font-weight: 600;
 }
@@ -2920,7 +2920,7 @@ a.link:after {
 .product_off {
     font-size: 0.875rem;
     font-weight: 300;
-    color: var(--first-color);
+    color: $brand-color;
     display: inline-block;
 }
 
@@ -2992,7 +2992,7 @@ a.link:after {
 
 .icn-quickview {
     margin: 0 auto;
-    background: var(--first-color);
+    background: $brand-color;
     border-radius: 50%;
     width: 2.5rem;
     height: 2.5rem;
@@ -3032,7 +3032,7 @@ a.link:after {
     /* -webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.11); */
     /* box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.11); */
     background: #fff;
-    border-bottom: solid 1px var(--border-color);
+    border-bottom: $border;
 }
 
 .saved-search-list li:last-child {
@@ -3045,7 +3045,7 @@ a.link:after {
 }
 
 .detail-side .heading3 {
-    color: var(--first-color);
+    color: $brand-color;
     /* font-weight: 600; */
 }
 
@@ -3056,7 +3056,7 @@ a.link:after {
 
 .results-side {
     font-size: 1em;
-    color: var(--txt-color);
+    color: $body-color;
 }
 
 .results-side .newly-added {
@@ -3085,7 +3085,7 @@ a.link:after {
     display: block;
     margin: 0;
     padding: 10px;
-    border-bottom: solid 1px var(--border-color);
+    border-bottom: $border;
     font-size: 0.9em;
 }
 
@@ -3098,7 +3098,7 @@ a.link:after {
 }
 
 .select-categories-slider .box-border {
-    border: solid 1px var(--border-color);
+    border: $border;
     border-radius: 4px;
 }
 
@@ -3158,7 +3158,7 @@ a.link:after {
 
 .box-categories ul li.is-active {
     color: #fff;
-    background: var(--first-color);
+    background: $brand-color;
 }
 
 .box-categories ul li.is-active a {

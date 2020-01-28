@@ -23,9 +23,9 @@
 }
 
 .fetured-slider .fetured-item {
-    -webkit-border-end: solid 1px var(--border-color);
-    -moz-border-end: solid 1px var(--border-color);
-    border-inline-end: solid 1px var(--border-color);
+    -webkit-border-end: $border;
+    -moz-border-end: $border;
+    border-inline-end: $border;
     padding: 0 20px;
 }
 
@@ -78,7 +78,7 @@
 }
 
 .fetured-slider .slick-next:hover {
-    background: var(--first-color);
+    background: $brand-color;
 }
 
 .fetured-slider .slick-next:hover:after {

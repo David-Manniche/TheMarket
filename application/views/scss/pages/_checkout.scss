@@ -10,7 +10,7 @@
     position: sticky;
     position: -webkit-sticky;
     z-index: 98;
-    border-bottom: solid 1px var(--border-color);
+    border-bottom: $border;
 
     .header-checkout-inner {
         position: relative;
@@ -148,13 +148,13 @@
 
                 &.inprogress {
                     &:before {
-                        background: var(--second-color);
-                        border-color: var(--second-color);
+                        background: $secondary-color;
+                        border-color: $secondary-color;
                         color: #fff;
                     }
 
                     > span {
-                        color: var(--second-color);
+                        color: $secondary-color;
                     }
                 }
 
@@ -239,7 +239,7 @@
 }
 
 .nav-checkout ul li a {
-    color: var(--txt-color);
+    color: $body-color;
     font-size: 1rem;
     padding: 8px 0px;
     margin: 0 20px;
@@ -250,7 +250,7 @@
 
 .nav-checkout ul li a:hover,
 .nav-checkout ul li.is--active a {
-    color: var(--first-color)
+    color: $brand-color
 }
 
 .nav-checkout ul li a:after,
@@ -277,14 +277,14 @@
 .nav-checkout ul li.is--active a:after {
     left: 0;
     width: 50%;
-    background: var(--first-color);
+    background: $brand-color;
 }
 
 .nav-checkout ul li a:hover:before,
 .nav-checkout ul li.is--active a:before {
     right: 0;
     width: 50%;
-    background: var(--first-color);
+    background: $brand-color;
 }
 
 .body--checkout {}
@@ -301,7 +301,7 @@
 }
 
 .section-checkout.is-current {
-    /*border-bottom: solid 1px var(--border-color);*/
+    /*border-bottom: $border;*/
 }
 
 .section-checkout.login {}
@@ -340,7 +340,7 @@
     width: 100%;
     padding: 0;
     font-size: 0.875rem;
-    color: var(--txt-color);
+    color: $body-color;
 }
 
 .address .address-inner span.radio {
@@ -392,9 +392,9 @@
 }
 
 .btn-action .action:hover {
-    background: var(--first-color);
+    background: $brand-color;
     color: #fff;
-    border: solid 1px var(--first-color);
+    border: solid 1px $brand-color;
 }
 
 .btn-action .action:hover .icon {
@@ -463,9 +463,9 @@
 }
 
 .payment_methods_list li a {
-    border: solid 1px var(--border-color);
+    border: $border;
     border-radius: 4px;
-    color: var(--txt-color);
+    color: $body-color;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -536,7 +536,7 @@
 
     border-radius: 4px;
 
-    border: solid 1px var(--border-color);
+    border: $border;
     padding: 2rem;
 }
 
@@ -584,7 +584,7 @@
     width: 100%;
     background: #fff;
     border-radius: 4px;
-    border-bottom: solid 1px var(--border-color);
+    border-bottom: $border;
     margin-bottom: 15px;
     -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.06);
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.06);
@@ -593,7 +593,7 @@
 
 .summary-listing .products__title {
     width: 80%;
-    color: var(--txt-color);
+    color: $body-color;
     font-weight: 300;
 }
 
@@ -657,7 +657,7 @@
     width: 100%;
     background: #fff;
     border-radius: 4px;
-    /*	border-bottom: solid 1px var(--border-color);*/
+    /*	border-bottom: $border;*/
     margin-bottom: 15px;
     -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
@@ -684,12 +684,12 @@
     -webkit-padding-start: 50px;
     -moz-padding-start: 50px;
     padding-inline-start: 50px;
-    color: var(--txt-color);
+    color: $body-color;
     font-size: 0.8em;
 }
 
 .selected-panel {
-    /*background: var(--gray-light);*/
+    /*background: $gray-light;*/
     color: #565656;
     font-weight: 300;
     padding: 0;
@@ -707,7 +707,7 @@
 
 .section-checkout h3 {
     color: #000;
-    border-bottom: solid 1px var(--border-color);
+    border-bottom: $border;
     padding: 10px 0;
     /*margin-bottom: 2rem;*/
     font-size: 1.3rem;
@@ -768,7 +768,7 @@
 
 .coupon-offers {
     li {
-        border-bottom: solid 1px var(--border-color);
+        border-bottom: $border;
         padding: 1rem 0;
         margin: 1rem 0;
         position: relative;
@@ -791,7 +791,7 @@
 
         .is--active {
             &:before {
-                background: var(--first-color);
+                background: $brand-color;
             }
         }
     }
@@ -831,7 +831,7 @@
 .txt-order-summary {
     text-align: center;
     border-radius: 4px;
-    /*	background: var(--first-color);*/
+    /*	background: $brand-color;*/
     padding: 15px 10px;
     color: #000;
     font-weight: 600;
@@ -875,7 +875,7 @@
 }
 
 .tabz--checkout-login li a {
-    border: solid 1px var(--first-color);
+    border: solid 1px $brand-color;
     border-radius: 4px;
     padding: 10px 20px;
     font-size: 1rem;
@@ -904,11 +904,11 @@
     -webkit-margin-end: 5px;
     -moz-margin-end: 5px;
     margin-inline-end: 5px;
-    fill: var(--first-color);
+    fill: $brand-color;
 }
 
 .tabz--checkout-login ul li.is-active a {
-    color: var(--first-color);
+    color: $brand-color;
     opacity: 1;
     -webkit-filter: grayscale(0%);
     /* Safari 6.0 - 9.0 */
@@ -918,7 +918,7 @@
 .tabz--checkout-login ul li:after {
     /*content: "";*/
     bottom: 0;
-    background: var(--first-color);
+    background: $brand-color;
     height: 2px;
     position: absolute;
     z-index: 12;
@@ -934,7 +934,7 @@
 
 .tabz--checkout-login ul li.is-active:after {
     position: absolute;
-    background: var(--first-color);
+    background: $brand-color;
 }
 
 .tabz--checkout-login ul li.is-active:after {
@@ -984,9 +984,9 @@
     -webkit-box-flex: 0;
     -ms-flex: 0 0 35%;
     flex: 0 0 35%;
-    -webkit-border-end: solid 1px var(--border-color);
-    -moz-border-end: solid 1px var(--border-color);
-    border-inline-end: solid 1px var(--border-color);
+    -webkit-border-end: $border;
+    -moz-border-end: $border;
+    border-inline-end: $border;
 }
 
 .same-delivery h3 {
@@ -1029,7 +1029,7 @@
 }
 
 .summary-order-list .actions li a:hover .icn svg {
-    fill: var(--first-color);
+    fill: $brand-color;
 }
 
 

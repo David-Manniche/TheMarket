@@ -8,10 +8,13 @@ sans-serif;
 @import 'bootstrap/bootstrap';
 @import 'bootstrap/variables';
 
+@import "themes/theme";
+@import "themes/variables";
 
 @import 'layout/header';
 @import 'layout/nav';
 @import 'layout/footer';
+
 
 @import 'components/accordion';
 @import 'components/auto-complete';
@@ -65,8 +68,8 @@ sans-serif;
 @import 'components/wrap-drop';
 
 
-@import "themes/variables";
-@import "themes/theme";
+
+
 
 @import 'vendors/animate';
 @import 'vendors/fontawesome';
@@ -156,12 +159,12 @@ hr {
 .bg--primary-color,
 .bg-primary {
     color: #fff;
-    background: var(--first-color);
+    background: $brand-color;
 }
 
 .bg-second {
     color: #fff;
-    background: var(--second-color);
+    background: $secondary-color;
 }
 
 .bg-white {
@@ -169,7 +172,7 @@ hr {
 }
 
 .bg-gray {
-    background: var(--gray-light);
+    background: $gray-light;
 }
 
 .bg-light {

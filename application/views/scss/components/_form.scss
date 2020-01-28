@@ -64,11 +64,11 @@ select,
 input[type="number"],
 input[type="file"] {
     background-color: #fff;
-    border: 1px solid var(--border-color);
+    border: $border;
     height: 2.5rem;
     padding: 0 10px;
     width: 100%;
-    color: var(--txt-color);
+    color: $body-color;
     font-family: inherit;
     font-size: 0.9em;
     font-weight: normal;
@@ -154,7 +154,7 @@ input[type="file"] {
         height: 2.5rem;
         vertical-align: middle;
         text-align: center;
-        background: var(--first-color);
+        background: $brand-color;
         font-size: 0.875rem;
         font-weight: 500;
         line-height: 2.375rem;
@@ -174,8 +174,8 @@ input[type="file"] {
     input[type="button"] {
         @extend input[type="submit"];
         background: none;
-        border-color: var(--first-color);
-        color: var(--first-color);
+        border-color: $brand-color;
+        color: $brand-color;
     }
     
     input[type="reset"] {

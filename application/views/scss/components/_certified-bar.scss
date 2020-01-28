@@ -1,7 +1,7 @@
 .certified-bar {
-    background: var(--gray-light);
-    border-top: solid 1px var(--border-color);
-    border-bottom: solid 1px var(--border-color);
+    background: $gray-light;
+    border-top: $border;
+    border-bottom: $border;
 
     ul {
         display: flex;

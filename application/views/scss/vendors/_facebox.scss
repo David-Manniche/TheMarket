@@ -95,12 +95,12 @@
 
 #facebox .content .pop-up-title {
     font-weight: 300;
-    color: var(--txt-color);
+    color: $body-color;
     font-size: 2rem;
     text-align: center;
     /*margin-bottom: 20px;*/
     padding: 10px;
-    /*border-bottom: solid 1px var(--border-color);*/
+    /*border-bottom: $border;*/
 }
 
 #facebox .content.small-fb-width {

@@ -737,7 +737,7 @@
 
         .main-search-form .search--keyword {
             border-radius: 4px 0 0 4px;
-            border-left: solid 1px var(--first-color);
+            border-left: solid 1px $brand-color;
         }
 
         .cart-is-active .dropsection {

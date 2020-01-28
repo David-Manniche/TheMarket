@@ -1,6 +1,6 @@
 .featured-item {
     text-align: center;
-    background: var(--gray-light);
+    background: $gray-light;
     position: relative;
     display: -webkit-box;
     display: -ms-flexbox;
@@ -26,7 +26,7 @@
 .featured-item:hover {
     /*box-shadow: 0 10px 15px 0 rgba(0, 0, 0, 0.1);*/
     background: none;
-    border-color: var(--first-color);
+    border-color: $brand-color;
 }
 
 .featured_inner {}
@@ -39,7 +39,7 @@
     height: 142px;
     margin: 0 auto;
     position: relative;
-    border: solid 1px var(--border-color);
+    border: $border;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -60,7 +60,7 @@
 
 .featured_name a {
     font-size: 1em;
-    color: var(--txt-color);
+    color: $body-color;
 }
 
 .featured_location {

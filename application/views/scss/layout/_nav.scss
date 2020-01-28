@@ -55,7 +55,7 @@
 }
 
 .navigations > li:hover > a {
-    color: var(--first-color);
+    color: $brand-color;
 }
 
 .navigations > li > a {
@@ -99,14 +99,14 @@
 .navigations > li.active > a:after {
     left: 0;
     width: 50%;
-    background: var(--first-color);
+    background: $brand-color;
 }
 
 .navigations > li > a:hover:before,
 .navigations > li.active > a:before {
     right: 0;
     width: 50%;
-    background: var(--first-color);
+    background: $brand-color;
 }
 
 .navigations .three-pin {
@@ -127,7 +127,7 @@
 .navigations .more i.icn svg {
     width: 28px;
     height: auto;
-    fill: var(--first-color);
+    fill: $brand-color;
 }
 
 .navigations > li .link__mobilenav {
@@ -241,7 +241,7 @@
 }
 
 .sublinks > li > a:hover {
-    color: var(--first-color);
+    color: $brand-color;
 }
 
 .sublinks > li > ul {
@@ -268,13 +268,13 @@
 }
 
 .sublinks > li > ul > li a:hover {
-    color: var(--first-color);
+    color: $brand-color;
     text-decoration: none;
     margin-left: 10px;
 }
 
 .sublinks > li > ul > li a:before {
-    background: var(--first-color);
+    background: $brand-color;
     bottom: 0px;
     content: "";
     height: 1px;
@@ -424,7 +424,7 @@
         margin: 0;
         padding: 0;
         position: relative;
-        border-bottom: solid 1px var(--border-color);
+        border-bottom: $border;
     }
 
     .navigations > li > a {

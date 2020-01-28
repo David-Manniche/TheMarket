@@ -38,19 +38,19 @@
 }
 
 .packages-box .box.two .box-inner {
-    background: var(--first-color);
+    background: $brand-color;
 }
 
 .packages-box .box.two .after-box h3 {
-    background: var(--first-color);
+    background: $brand-color;
 }
 
 .packages-box .box.three .box-inner {
-    background: var(--second-color);
+    background: $secondary-color;
 }
 
 .packages-box .box.three .after-box h3 {
-    background: var(--second-color);
+    background: $secondary-color;
 }
 
 .packages-box .name {

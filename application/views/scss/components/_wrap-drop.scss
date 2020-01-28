@@ -2,12 +2,12 @@
 .wrap-drop {
     position: relative;
     /*z-index: 1;*/
-    border: 1px solid var(--border-color);
+    border: $border;
     height: 38px;
     line-height:38px;
     padding: 0 10px;
     width: 100%;
-    color: var(--txt-color);
+    color: $body-color;
     font-family: inherit;
     font-size: 0.9em;
     font-weight: normal;
@@ -63,19 +63,19 @@
 }
 
 .wrap-drop.wrap-drop--first {
-    border-color: var(--first-color);
-    color: var(--first-color);
+    border-color: $brand-color;
+    color: $brand-color;
 }
 
 .wrap-drop.wrap-drop--first:after,
 .wrap-drop.wrap-drop--first:before {
-    background-color: var(--first-color);
+    background-color: $brand-color;
 }
 
 
 .wrap-drop .drop {
     background: #fff;
-    border: 1px solid var(--border-color);
+    border: $border;
     position: absolute;
     -webkit-transition: all 300ms;
     transition: all 300ms;
@@ -98,7 +98,7 @@
 
 .wrap-drop .drop li a {
     cursor: pointer;
-    color: var(--txt-color);
+    color: $body-color;
     display: block;
     overflow: hidden;
     position: relative;
@@ -120,7 +120,7 @@
 }
 
 .wrap-drop .drop li:hover a {
-    color: var(--first-color);
+    color: $brand-color;
 
 }
 

@@ -8,7 +8,7 @@
 
 
 .section--pagebar {
-    background: var(--gray-light);
+    background: $gray-light;
     margin: 0 0 0;
     padding: 30px 0 !important;
     color: #333;
@@ -110,7 +110,7 @@
 
 .section-head .section__heading {
     font-size: 2em;
-    color: var(--txt-color);
+    color: $body-color;
     display: inline-block;
     font-family: $family-primary;
     font-weight: 300;
@@ -181,7 +181,7 @@
     }
 
     p {
-        color: var(--txt-color);
+        color: $body-color;
         font-weight: 400;
         font-size: 0.875rem;
         line-height: 1.8;
@@ -195,7 +195,7 @@
 
     ul {
         margin: 10px 0;
-        color: var(--txt-color);
+        color: $body-color;
 
         li {
             position: relative;
@@ -267,7 +267,7 @@
 
 
 .list-vertical li span {
-    color: var(--txt-color);
+    color: $body-color;
 }
 
 .list-vertical li.logout a {
@@ -287,7 +287,7 @@
 }
 
 .list-vertical .remove_buyTogether:hover {
-    color: var(--first-color)
+    color: $brand-color
 }
 
 .list-vertical li.is-active a {
@@ -297,7 +297,7 @@
 }
 
 .list-vertical a {
-    color: var(--txt-color);
+    color: $body-color;
     display: block;
     overflow: hidden;
     position: relative;
@@ -318,7 +318,7 @@
 
 .list-vertical--tick li.is-active a {
     font-weight: 700;
-    color: var(--first-color);
+    color: $brand-color;
 }
 
 .list-vertical img {
@@ -369,7 +369,7 @@
 }
 
 .list-vertical li.seprator {
-    border-top: solid 1px var(--border-color);
+    border-top: $border;
     padding-top: 10px;
     margin-top: 10px;
 }
@@ -415,7 +415,7 @@
 .listing--check li a:before {
     height: 20px;
     width: 20px;
-    border: 1px solid var(--border-color);
+    border: $border;
     position: absolute;
     left: 0;
     top: 0;
@@ -424,8 +424,8 @@
 }
 
 .listing--check li.is-active a:before {
-    background: var(--first-color);
-    border-color: var(--first-color);
+    background: $brand-color;
+    border-color: $brand-color;
 }
 
 .listing--check li.is-active a:after {
@@ -460,7 +460,7 @@ ul.listing--bullet li {
     line-height: 30px;
     padding: 0 0 8px 18px;
     font-size: 0.875em;
-    color: var(--txt-color);
+    color: $body-color;
 }
 
 ul.listing--bullet li {
@@ -603,17 +603,17 @@ ul.listing--bullet li:before {
 }
 
 .heading1 {
-    color: var(--txt-color);
+    color: $body-color;
     font-size: 2em;
 }
 
 .heading2 {
-    color: var(--txt-color);
+    color: $body-color;
     font-size: 1.8em;
 }
 
 .heading3 {
-    color: var(--txt-color);
+    color: $body-color;
     font-size: 1.3em;
 }
 
@@ -622,7 +622,7 @@ ul.listing--bullet li:before {
 }
 
 .heading4 span {
-    color: var(--first-color);
+    color: $brand-color;
 }
 
 span.subheading {
