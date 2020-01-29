@@ -896,20 +896,18 @@ class HomeController extends MyAppController
     {
         $langCode = Language::getAttributesById($this->siteLangId, 'language_code', false);
 
-        $data['languageLabels'] = array(
+        $data['languageLabels'] = [
            'languageCode' => $langCode,
            'downloadUrl' => CommonHelper::generateFullUrl('Home', 'languageLabels', array(1, $this->siteLangId)),
            'langLabelUpdatedAt' => FatApp::getConfig('CONF_LANG_LABELS_UPDATED_AT', FatUtility::VAR_INT, time())
-        );
+        ];
 
-        $data['appThemeSetting'] = array(
-           'themeColor' => FatApp::getConfig('CONF_APP_THEME_COLOR', FatUtility::VAR_STRING, ''),
-           'headerFontColor' => FatApp::getConfig('CONF_APP_HEADER_FONT_COLOR', FatUtility::VAR_STRING, ''),
-           'buttonFontColor' => FatApp::getConfig('CONF_APP_BUTTON_FONT_COLOR', FatUtility::VAR_STRING, ''),
-           'buttonBackgroundColor' => FatApp::getConfig('CONF_APP_BUTTON_BACKGROUND_COLOR', FatUtility::VAR_STRING, ''),
-           'mainScreenImage' => CommonHelper::generateFullUrl('Image', 'appMainScreenImage', [$this->siteLangId]),
-           'logo' => CommonHelper::generateFullUrl('Image', 'appLoginScreenImage', [$this->siteLangId]),
-        );
+        $data['appThemeSetting'] = [
+           'primaryThemeColor' => FatApp::getConfig('CONF_PRIMARY_APP_THEME_COLOR', FatUtility::VAR_STRING, ''),
+           'primaryInverseThemeColor' => FatApp::getConfig('CONF_PRIMARY_INVERSE_APP_THEME_COLOR', FatUtility::VAR_STRING, ''),
+           'secondaryThemeColor' => FatApp::getConfig('CONF_SECONDARY_APP_THEME_COLOR', FatUtility::VAR_STRING, ''),
+           'secondaryInverseThemeColor' => FatApp::getConfig('CONF_SECONDARY_INVERSE_APP_THEME_COLOR', FatUtility::VAR_STRING, ''),
+        ];
 
         $this->set('data', $data);
         $this->_template->render();

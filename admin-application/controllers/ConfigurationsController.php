@@ -120,7 +120,6 @@ class ConfigurationsController extends AdminBaseController
 
         $mediaTabsArr = [
             Configurations::FORM_MEDIA,
-            Configurations::FORM_APPLICATION_THEME_SETTING,
         ];
 
         if (in_array($frmType, $mediaTabsArr)) {
@@ -1494,16 +1493,6 @@ class ConfigurationsController extends AdminBaseController
                 $fld->htmlAfterField = '<small>' . Labels::getLabel("LBL_NOTE:_Enable_Maintenance_Mode_Text", $this->adminLangId) . '.</small>';
 
                 break;
-            case Configurations::FORM_APPLICATION_THEME_SETTING:
-                $frm->addRequiredField(Labels::getLabel('LBL_THEME_COLOR', $this->adminLangId), 'CONF_APP_THEME_COLOR')->addFieldTagAttribute('class', 'jscolor');
-                $frm->addRequiredField(Labels::getLabel('LBL_HEADER_FONT_COLOR', $this->adminLangId), 'CONF_APP_HEADER_FONT_COLOR')->addFieldTagAttribute('class', 'jscolor');
-                $fontColors = [
-                    '000000' => Labels::getLabel('LBL_BLACK', $this->adminLangId),
-                    'FFFFFF' => Labels::getLabel('LBL_WHITE', $this->adminLangId),
-                ];
-                $frm->addRadioButtons(Labels::getLabel('LBL_BUTTON_FONT_COLOR', $this->adminLangId), 'CONF_APP_BUTTON_FONT_COLOR', $fontColors, 0, ['class' => 'list-inline']);
-                $frm->addRequiredField(Labels::getLabel('LBL_BUTTON_BACKGROUND_COLOR', $this->adminLangId), 'CONF_APP_BUTTON_BACKGROUND_COLOR')->addFieldTagAttribute('class', 'jscolor');
-                break;
             case Configurations::FORM_IMPORT_EXPORT:
                 $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_brand_id_instead_of_brand_identifier", $this->adminLangId), 'CONF_USE_BRAND_ID', 1, array(), false, 0);
                 $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_brand_id_instead_of_brand_identifier_in_worksheets", $this->adminLangId) . '</small>';
@@ -1742,26 +1731,6 @@ class ConfigurationsController extends AdminBaseController
                 $fld = $frm->addHtmlEditor(Labels::getLabel('LBL_Maintenance_Text', $this->adminLangId), 'CONF_MAINTENANCE_TEXT_'.$langId);
                 $fld->requirements()->setRequired(true);
                 break;
-            case Configurations::FORM_APPLICATION_THEME_SETTING:
-                $ul = $frm->addHtml('', 'MediaGrids', '<ul class="grids--onethird">');
-
-                $ul->htmlAfterField .= '<li>'.Labels::getLabel('LBL_MAIN_SCREEN_IMAGE', $langId).'<div class="logoWrap"><div class="uploaded--image">';
-
-                if (AttachedFile::getAttachment(AttachedFile::FILETYPE_APP_MAIN_SCREEN_IMAGE, 0, 0, $langId)) {
-                    $ul->htmlAfterField .= '<img src="'.CommonHelper::generateFullUrl('Image', 'appMainScreenImage', [$langId], CONF_WEBROOT_FRONT_URL).'"> <a  class="remove--img" href="javascript:void(0);" onclick="removeAppMainScreenImage('.$langId.')" ><i class="ion-close-round"></i></a>';
-                }
-
-                $ul->htmlAfterField .= ' </div></div><input type="button" name="app_main_screen_image" class="logoFiles-Js btn-xs" id="app_main_screen_image" data-file_type='.AttachedFile::FILETYPE_APP_MAIN_SCREEN_IMAGE.' value="Upload file"><small>Dimensions 1280*750</small></li>';
-
-                $ul->htmlAfterField .= '<li>'.Labels::getLabel('LBL_SELECT_APP_LOGO', $langId).'<div class="logoWrap"><div class="uploaded--image">';
-
-
-                if (AttachedFile::getAttachment(AttachedFile::FILETYPE_APP_LOGO, 0, 0, $langId)) {
-                    $ul->htmlAfterField .= '<img src="'.CommonHelper::generateFullUrl('Image', 'appLogo', [$langId], CONF_WEBROOT_FRONT_URL).'"> <a  class="remove--img" href="javascript:void(0);" onclick="removeAppLogo('.$langId.')" ><i class="ion-close-round"></i></a>';
-                }
-
-                $ul->htmlAfterField .= ' </div></div><input type="button" name="app_logo" class="logoFiles-Js btn-xs" id="app_logo" data-file_type='.AttachedFile::FILETYPE_APP_LOGO.' value="Upload file"><small>Dimensions 290*90</small></li>';
-                break;
         }
 
         $frm->addHiddenField('', 'form_type', $type);
@@ -1786,34 +1755,6 @@ class ConfigurationsController extends AdminBaseController
         $timeZone = $post['time_zone'];
         $dateTime = CommonHelper::currentDateTime(null, true, null, $timeZone);
         $this->set("dateTime", $dateTime);
-        $this->_template->render(false, false, 'json-success.php');
-    }
-
-    public function removeAppMainScreenImage($lang_id = 0)
-    {
-        $lang_id = FatUtility::int($lang_id);
-
-        $fileHandlerObj = new AttachedFile();
-        if (!$fileHandlerObj->deleteFile(AttachedFile::FILETYPE_APP_MAIN_SCREEN_IMAGE, 0, 0, 0, $lang_id)) {
-            Message::addErrorMessage($fileHandlerObj->getError());
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-
-        $this->set('msg', Labels::getLabel('MSG_Deleted_Successfully', $this->adminLangId));
-        $this->_template->render(false, false, 'json-success.php');
-    }
-
-    public function removeAppLogo($lang_id = 0)
-    {
-        $lang_id = FatUtility::int($lang_id);
-
-        $fileHandlerObj = new AttachedFile();
-        if (!$fileHandlerObj->deleteFile(AttachedFile::FILETYPE_APP_LOGO, 0, 0, 0, $lang_id)) {
-            Message::addErrorMessage($fileHandlerObj->getError());
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-
-        $this->set('msg', Labels::getLabel('MSG_Deleted_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 }

@@ -368,3 +368,11 @@ INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `p
 CREATE TABLE `tbl_user_withdrawal_requests_specifics` ( `uwrs_withdrawal_id` INT NOT NULL ,  `uwrs_key` VARCHAR(255) NOT NULL ,  `uwrs_value` VARCHAR(255) NOT NULL ) ENGINE = InnoDB;
 ALTER TABLE `tbl_user_withdrawal_requests_specifics`
   ADD PRIMARY KEY (`uwrs_withdrawal_id`,`uwrs_key`);
+
+DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_THEME_COLOR'
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_HEADER_FONT_COLOR';
+DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_HEADER_FONT_COLOR'
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BUTTON_FONT_COLOR';
+DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_FONT_COLOR'
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BUTTON_BACKGROUND_COLOR';
+DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_BACKGROUND_COLOR'

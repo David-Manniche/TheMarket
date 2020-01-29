@@ -316,13 +316,18 @@
 
                     <!--Mobile Application-->
             <?php if (
-                $objPrivilege->canViewPushNotification(AdminAuthentication::getLoggedAdminId(), true)
+                $objPrivilege->canViewPushNotification(AdminAuthentication::getLoggedAdminId(), true) ||
+                $objPrivilege->canViewAppThemeSettings(AdminAuthentication::getLoggedAdminId(), true) ||
+                $objPrivilege->canViewBlogSettings(AdminAuthentication::getLoggedAdminId(), true)
                 ) { ?>
-                <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_NOTIFICATION', $adminLangId);?></a>
+                <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_MOBILE_APPS', $adminLangId);?></a>
                     <ul>
 
                         <?php if ($objPrivilege->canViewPushNotification(AdminAuthentication::getLoggedAdminId(), true)) {?>
                             <li><a href="<?php echo CommonHelper::generateUrl('PushNotifications'); ?>"><?php echo Labels::getLabel('LBL_PUSH_NOTIFICATION', $adminLangId);?></a></li>
+                        <?php } ?>
+                        <?php if ($objPrivilege->canViewAppThemeSettings(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                            <li><a href="<?php echo CommonHelper::generateUrl('MobileAppSettings', 'appTheme'); ?>"><?php echo Labels::getLabel('LBL_APP_THEME_SETTINGS', $adminLangId);?></a></li>
                         <?php }?>
                     </ul>
                 </li>
