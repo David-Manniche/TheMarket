@@ -162,60 +162,72 @@ $(document).on('change','.display-js',function(){
 		});
 	};
 
-})();
-$(document).on('click','.bannerFile-Js',function(){
-	var node = this;
-	$('#form-upload').remove();
-	var bannerId = document.frmBannerMedia.banner_id.value;
-	var blocationId = document.frmBannerMedia.blocation_id.value;
-	var langId = document.frmBannerMedia.lang_id.value;
-	var banner_screen = document.frmBannerMedia.banner_screen.value;
-
-	var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-	frm = frm.concat('<input type="file" name="file" />');
-	frm = frm.concat('<input type="hidden" name="banner_id" value="'+bannerId+'"/>');
-	frm = frm.concat('<input type="hidden" name="blocation_id" value="'+blocationId+'"/>');
-	frm = frm.concat('<input type="hidden" name="lang_id" value="'+langId+'"/>');
-	frm = frm.concat('<input type="hidden" name="banner_screen" value="'+banner_screen+'"/>');
-	$('body').prepend(frm);
-	$('#form-upload input[name=\'file\']').trigger('click');
-	if (typeof timer != 'undefined') {
-		clearInterval(timer);
-	}
-	timer = setInterval(function() {
-		if ($('#form-upload input[name=\'file\']').val() != '') {
-			clearInterval(timer);
-			$val = $(node).val();
-
-			$.ajax({
-				url: fcom.makeUrl('Banners', 'upload',[bannerId]),
-				type: 'post',
-				dataType: 'json',
-				data: new FormData($('#form-upload')[0]),
-				cache: false,
-				contentType: false,
-				processData: false,
-				beforeSend: function() {
-					$(node).val('Loading');
-				},
-				complete: function() {
-					$(node).val($val);
-				},
-				success: function(ans) {
-					if(ans.status==1)
-					{
-						fcom.displaySuccessMessage(ans.msg);
-						reloadList();
-						$('#form-upload').remove();
-						images(blocationId,bannerId,langId,banner_screen);
-					}else{
-						fcom.displayErrorMessage(ans.msg);
-					}
-				},
-				error: function(xhr, ajaxOptions, thrownError) {
-					alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-				}
-			});
+	popupImage = function(inputBtn){
+		if (inputBtn.files && inputBtn.files[0]) {
+	        fcom.ajax(fcom.makeUrl('Shops', 'imgCropper'), '', function(t) {
+				$('#cropperBox-js').html(t);
+				$("#mediaForm-js").css("display", "none");
+				var container = document.querySelector('.img-container');
+                var file = inputBtn.files[0];
+                $('#new-img').attr('src', URL.createObjectURL(file));
+	    		var image = container.getElementsByTagName('img').item(0);
+	            var minWidth = document.frmBannerMedia.banner_min_width.value;
+	            var minHeight = document.frmBannerMedia.banner_min_height.value;
+	    		var options = {
+	                aspectRatio: aspectRatio,
+	                data: {
+	                    width: minWidth,
+	                    height: minHeight,
+	                },
+	                minCropBoxWidth: minWidth,
+	                minCropBoxHeight: minHeight,
+	                toggleDragModeOnDblclick: false,
+		        };
+				$(inputBtn).val('');
+				return cropImage(image, options, 'uploadImages', inputBtn);
+	    	});
 		}
-	}, 500);
-});
+	};
+
+	uploadImages = function(formData){
+		var bannerId = document.frmBannerMedia.banner_id.value;
+		var blocationId = document.frmBannerMedia.blocation_id.value;
+		var langId = document.frmBannerMedia.lang_id.value;
+		var bannerScreen = document.frmBannerMedia.banner_screen.value;
+		formData.append('banner_id', bannerId);
+		formData.append('blocation_id', blocationId);
+        formData.append('banner_screen', bannerScreen);
+        formData.append('lang_id', langId);
+        $.ajax({
+            url: fcom.makeUrl('Banners', 'upload',[bannerId]),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+            complete: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+			success: function(ans) {
+				if(ans.status==1)
+				{
+					fcom.displaySuccessMessage(ans.msg);
+					reloadList();
+					$('#form-upload').remove();
+					mediaForm(blocationId, bannerId);
+					images(blocationId, bannerId, langId, bannerScreen);
+				} else {
+					fcom.displayErrorMessage(ans.msg);
+				}
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+        });
+	}
+
+})();

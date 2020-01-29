@@ -32,9 +32,12 @@ class ProductCategoriesController extends AdminBaseController
         $prodCateData = ProductCategory::getAttributesById($parent);
 
         $prodCateObj = new ProductCategory();
-        $category_structure=$prodCateObj->getCategoryStructure($parent);
-        $this->set("includeEditor", true);
+        $category_structure = $prodCateObj->getCategoryStructure($parent);
 
+        $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
+        $this->_template->addCss('css/cropper.css');
+        $this->set("includeEditor", true);
         $this->set("search", $search);
         $this->set("prodcat_parent", $parent);
         $this->set("prodCateData", $prodCateData);
@@ -42,7 +45,7 @@ class ProductCategoriesController extends AdminBaseController
         $this->_template->addJs('js/import-export.js');
         $this->_template->render();
     }
-
+    
     public function search()
     {
         $searchForm = $this->getSearchForm();
@@ -245,22 +248,22 @@ class ProductCategoriesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('LBL_Please_Select_A_File', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
 
         $fileHandlerObj = new AttachedFile();
         if (!$res = $fileHandlerObj->saveImage(
-            $_FILES['file']['tmp_name'],
+            $_FILES['cropped_image']['tmp_name'],
             $file_type,
             $prodcat_id,
             0,
-            $_FILES['file']['name'],
+            $_FILES['cropped_image']['name'],
             -1,
             $unique_record = true,
             $lang_id,
-            $_FILES['file']['type'],
+            $_FILES['cropped_image']['type'],
             $slide_screen
         )
         ) {
@@ -269,9 +272,9 @@ class ProductCategoriesController extends AdminBaseController
             // FatUtility::dieJsonError($fileHandlerObj->getError());
         }
         ProductCategory::setImageUpdatedOn($prodcat_id);
-        $this->set('file', $_FILES['file']['name']);
+        $this->set('file', $_FILES['cropped_image']['name']);
         $this->set('prodcat_id', $prodcat_id);
-        $this->set('msg', $_FILES['file']['name'].' '.Labels::getLabel('LBL_Uploaded_Successfully', $this->adminLangId));
+        $this->set('msg', $_FILES['cropped_image']['name'].' '.Labels::getLabel('LBL_Uploaded_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -496,12 +499,10 @@ class ProductCategoriesController extends AdminBaseController
         $frm->addHiddenField('', 'prodcat_id', $prodcat_id);
         $bannerTypeArr = applicationConstants::bannerTypeArr();
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', $bannerTypeArr, '', array(), '');
-        $fld = $frm->addButton(
-            Labels::getLabel('LBL_Icon', $this->adminLangId),
-            'cat_icon',
-            Labels::getLabel('LBL_Upload', $this->adminLangId),
-            array('class'=>'catFile-Js','id'=>'shop_logo','data-file_type'=>AttachedFile::FILETYPE_CATEGORY_ICON,'data-frm'=>'frmCategoryIcon')
-        );
+        $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_CATEGORY_ICON);
+        $frm->addHiddenField('', 'logo_min_width');
+        $frm->addHiddenField('', 'logo_min_height');
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'cat_icon', array('accept'=>'image/*', 'data-frm'=>'frmCategoryIcon'));
         return $frm;
     }
 
@@ -516,12 +517,10 @@ class ProductCategoriesController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', $bannerTypeArr, '', array(), '');
         $screenArr = applicationConstants::getDisplaysArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel("LBL_Display_For", $this->adminLangId), 'slide_screen', $screenArr, '', array(), '');
-        $fld = $frm->addButton(
-            Labels::getLabel('LBL_Banner', $this->adminLangId),
-            'cat_banner',
-            Labels::getLabel('LBL_Upload', $this->adminLangId),
-            array('class'=>'catFile-Js','id'=>'shop_logo','data-file_type'=>AttachedFile::FILETYPE_CATEGORY_BANNER,'data-frm'=>'frmCategoryBanner')
-        );
+        $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_CATEGORY_BANNER);
+        $frm->addHiddenField('', 'banner_min_width');
+        $frm->addHiddenField('', 'banner_min_height');
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'cat_banner', array('accept'=>'image/*', 'data-frm'=>'frmCategoryBanner'));
         return $frm;
     }
 

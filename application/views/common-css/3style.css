@@ -1,3 +1,5 @@
+.loader-positon{ position: absolute; left:50%; top:50%; transform: translate(-50%, -50%);}
+
 .loader-yk {
     display: block;
     width: 30px;
@@ -3147,7 +3149,7 @@ img {
     font-size: 0.875em;
     color: var(--txt-color-light);
 }
- 
+
 
 .products .products__rating .rate,
 .products__rating .rate {
@@ -15280,7 +15282,9 @@ div.faqanswer p {
 
 /**/
 
-.social-profiles {}
+.social-profiles {
+
+}
 
 .social-icons {
     padding: 0;

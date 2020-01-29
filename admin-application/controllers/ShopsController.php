@@ -28,7 +28,9 @@ class ShopsController extends AdminBaseController
             $frmSearch->fill($data);
         }
         $this->objPrivilege->canViewShops();
-
+        $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
+        $this->_template->addCss('css/cropper.css');
         $this->set("includeEditor", true);
         $this->set("frmSearch", $frmSearch);
         $this->_template->render();
@@ -383,7 +385,7 @@ class ShopsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('LBL_Please_Select_A_File', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -394,11 +396,11 @@ class ShopsController extends AdminBaseController
             $unique_record = true;
         }*/
         if (!$res = $fileHandlerObj->saveAttachment(
-            $_FILES['file']['tmp_name'],
+            $_FILES['cropped_image']['tmp_name'],
             $file_type,
             $shop_id,
             0,
-            $_FILES['file']['name'],
+            $_FILES['cropped_image']['name'],
             -1,
             $unique_record,
             $lang_id,
@@ -410,7 +412,7 @@ class ShopsController extends AdminBaseController
         }
 
         $this->set('shopId', $shop_id);
-        $fileName = $_FILES['file']['name'];
+        $fileName = $_FILES['cropped_image']['name'];
         $this->set('file', $fileName);
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
         $fileName = strlen($fileName) > 10 ? substr($fileName, 0, 10).'.'.$ext : $fileName;
@@ -627,12 +629,12 @@ class ShopsController extends AdminBaseController
         $frm->addHiddenField('', 'shop_id', $shop_id);
         $bannerTypeArr = applicationConstants::bannerTypeArr();
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', $bannerTypeArr, '', array(), '');
-        $fld = $frm->addButton(
-            Labels::getLabel('LBL_Logo', $land_id),
-            'shop_logo',
-            Labels::getLabel('LBL_Upload', $land_id),
-            array('class'=>'shopFile-Js','id'=>'shop_logo','data-file_type'=>AttachedFile::FILETYPE_SHOP_LOGO,'data-frm'=>'frmShopLogo')
-        );
+        $ratioArr = AttachedFile::getRatioTypeArray($this->adminLangId);
+        $frm->addRadioButtons(Labels::getLabel('LBL_Ratio', $this->adminLangId), 'ratio_type', $ratioArr, AttachedFile::RATIO_TYPE_SQUARE);
+        $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_SHOP_LOGO);
+        $frm->addHiddenField('', 'logo_min_width');
+        $frm->addHiddenField('', 'logo_min_height');
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'shop_logo', array('accept'=>'image/*', 'data-frm'=>'frmShopLogo'));
         return $frm;
     }
 
@@ -646,7 +648,10 @@ class ShopsController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', $bannerTypeArr, '', array(), '');
         $screenArr = applicationConstants::getDisplaysArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel("LBL_Display_For", $this->adminLangId), 'slide_screen', $screenArr, '', array(), '');
-        $fld1 =  $frm->addButton(Labels::getLabel('Lbl_Banner', $land_id), 'shop_banner', Labels::getLabel('LBL_Upload', $land_id), array('class'=>'shopFile-Js','id'=>'shop_banner','data-file_type'=>AttachedFile::FILETYPE_SHOP_BANNER,'data-frm'=>'frmShopBanner'));
+        $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_SHOP_BANNER);
+        $frm->addHiddenField('', 'banner_min_width');
+        $frm->addHiddenField('', 'banner_min_height');
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'shop_banner', array('accept'=>'image/*', 'data-frm'=>'frmShopBanner'));
         return $frm;
     }
 
@@ -894,7 +899,7 @@ class ShopsController extends AdminBaseController
         $frm->addHiddenField('', 'shop_id', $shop_id);
         $bannerTypeArr = applicationConstants::bannerTypeArr();
         $frm->addSelectBox(Labels::getLabel('Lbl_Language', $this->adminLangId), 'lang_id', $bannerTypeArr, '', array('class'=>'collection-language-js'), '');
-        $fld1 =  $frm->addButton('', 'collection_image', Labels::getLabel('LBL_Upload_File', $this->adminLangId), array('class'=>'shopCollection-Js','id'=>'collection_image'));
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'collection_image', array('accept'=>'image/*', 'data-frm'=>'frmCollectionMedia'));
         return $frm;
     }
 
@@ -931,20 +936,21 @@ class ShopsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_select_a_file', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
 
         $fileHandlerObj = new AttachedFile();
-        if (!$res = $fileHandlerObj->saveImage($_FILES['file']['tmp_name'], AttachedFile::FILETYPE_SHOP_COLLECTION_IMAGE, $scollection_id, 0, $_FILES['file']['name'], -1, true, $lang_id)
+        if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], AttachedFile::FILETYPE_SHOP_COLLECTION_IMAGE, $scollection_id, 0, $_FILES['cropped_image']['name'], -1, true, $lang_id)
         ) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $this->set('file', $_FILES['file']['name']);
+        $this->set('file', $_FILES['cropped_image']['name']);
         $this->set('scollection_id', $scollection_id);
+        $this->set('lang_id', $lang_id);
         $this->set('msg', Labels::getLabel('MSG_File_uploaded_successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }

@@ -653,7 +653,7 @@ class AdminBaseController extends FatController
         $orderCancellationAgeReqFld->setRequired(true);
         $orderCancellationAgeReqFld->setPositive();
         $orderCancellationAgeReqFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $this->adminLangId) . ' </small>';
-        
+
         $orderCancellationAgeUnReqFld = new FormFieldRequirement('selprod_cancellation_age', Labels::getLabel('LBL_ORDER_CANCELLATION_AGE', $this->adminLangId));
         $orderCancellationAgeUnReqFld->setRequired(false);
         $orderCancellationAgeUnReqFld->setPositive();
@@ -710,5 +710,10 @@ class AdminBaseController extends FatController
             return $translatedText;
         }
         FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
+    }
+
+    public function imgCropper()
+    {
+        $this->_template->render(false, false, 'cropper/index.php');
     }
 }

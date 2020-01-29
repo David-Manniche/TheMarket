@@ -98,6 +98,10 @@ trait CustomProducts
         }
         } */
 
+        $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
+        $this->_template->addCss('css/cropper.css');
+
         $this->set('prodId', $prodId);
         $this->set('prodCatId', $prodCatId);
         $this->set('includeEditor', true);
@@ -1839,7 +1843,7 @@ trait CustomProducts
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_Select_A_File', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -1848,11 +1852,11 @@ trait CustomProducts
         $fileHandlerObj->deleteFile($fileHandlerObj::FILETYPE_BRAND_LOGO, $brand_id, 0, 0, $lang_id);
 
         if (!$res = $fileHandlerObj->saveAttachment(
-            $_FILES['file']['tmp_name'],
+            $_FILES['cropped_image']['tmp_name'],
             $fileHandlerObj::FILETYPE_BRAND_LOGO,
             $brand_id,
             0,
-            $_FILES['file']['name'],
+            $_FILES['cropped_image']['name'],
             -1,
             $unique_record = false,
             $lang_id
@@ -1863,8 +1867,8 @@ trait CustomProducts
         }
 
         $this->set('brandId', $brand_id);
-        $this->set('file', $_FILES['file']['name']);
-        $this->set('msg', $_FILES['file']['name']. Labels::getLabel('MSG_File_Uploaded_Successfully', $this->siteLangId));
+        $this->set('file', $_FILES['cropped_image']['name']);
+        $this->set('msg', $_FILES['cropped_image']['name']. Labels::getLabel('MSG_File_Uploaded_Successfully', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -1872,14 +1876,12 @@ trait CustomProducts
     {
         $frm = new Form('frmBrandMedia');
         $languagesAssocArr = Language::getAllNames();
+        $frm->addHiddenField('', 'brand_id', $brand_id);
         $frm->addHTML('', 'brand_logo_heading', '');
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->siteLangId), 'brand_lang_id', array( 0 => Labels::getLabel('LBL_Universal', $this->siteLangId) ) + $languagesAssocArr, '', array(), '');
-        $frm->addButton(
-            Labels::getLabel('Lbl_Logo', $this->siteLangId),
-            'logo',
-            Labels::getLabel('LBL_Upload_Logo', $this->siteLangId),
-            array('class'=>'uploadFile-Js','id'=>'logo','data-file_type'=>AttachedFile::FILETYPE_BRAND_LOGO,'data-brand_id' => $brand_id )
-        );
+        $ratioArr = AttachedFile::getRatioTypeArray($this->siteLangId);
+        $frm->addRadioButtons(Labels::getLabel('LBL_Ratio', $this->siteLangId), 'ratio_type', $ratioArr, AttachedFile::RATIO_TYPE_SQUARE);
+        $frm->addFileUpload(Labels::getLabel('Lbl_Logo', $this->siteLangId), 'logo', array('accept'=>'image/*', 'data-frm'=>'frmBrandMedia'));
 
         $frm->addHtml('', 'brand_logo_display_div', '');
 

@@ -17,6 +17,9 @@ class CollectionsController extends AdminBaseController
     public function index()
     {
         $this->objPrivilege->canViewCollections();
+        $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
+        $this->_template->addCss('css/cropper.css');
         $search = $this->getSearchForm();
         $this->set("search", $search);
         $this->_template->render();
@@ -773,32 +776,23 @@ class CollectionsController extends AdminBaseController
         $this->set('imgUpdatedOn', Collections::getAttributesById($collectionId, 'collection_img_updated_on'));
         $this->set('collection_id', $collectionId);
         $this->set('displayMediaOnly', $collectionDetails['collection_display_media_only']);
-        $this->set('collectionMediaFrm', $this->getMediaForm());
+        $this->set('collectionMediaFrm', $this->getMediaForm($collectionId));
         $this->set('languages', Language::getAllNames());
         $this->_template->render(false, false);
     }
 
-    /* private function getMediaForm( $collectionId = 0 ){
-    $frm = new Form('frmCollectionMedia');
-    $frm->addHiddenField('','collection_id',$collectionId);
-    $fld1 =  $frm->addButton('Image','collection_image','Upload file',array('class'=>'File-Js','data-file_type'=>AttachedFile::FILETYPE_COLLECTION_IMAGE,'data-collection_id'=>$collectionId));
-    $fld = $frm->addButton( 'Background Image (if any)', 'collection_bg_image', 'Upload File', array('class' => 'File-Js', 'data-file_type'=>AttachedFile::FILETYPE_COLLECTION_BG_IMAGE, 'data-collection_id'=>$collectionId) );
-    return $frm;
-    } */
-
-    private function getMediaForm()
+    private function getMediaForm($collectionId)
     {
         $frm = new Form('frmCollectionMedia');
         $languagesAssocArr = Language::getAllNames();
         $frm->addHTML('', 'collection_image_heading', '');
+        $frm->addHiddenField('', 'collection_id', $collectionId);
         $frm->addCheckBox(Labels::getLabel("LBL_Display_Media_Only", $this->adminLangId), 'collection_display_media_only', 1, array(), false, 0);
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'image_lang_id', array( 0 => Labels::getLabel('LBL_All_Languages', $this->adminLangId) ) + $languagesAssocArr, '', array(), '');
-        $frm->addButton(
-            Labels::getLabel('LBL_Image', $this->adminLangId),
-            'collection_image',
-            'Upload File',
-            array('class'=>'File-Js','id'=>'collection_image','data-file_type'=>AttachedFile::FILETYPE_COLLECTION_IMAGE)
-        );
+        $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_COLLECTION_IMAGE);
+        $frm->addHiddenField('', 'min_width');
+        $frm->addHiddenField('', 'min_height');
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'collection_image', array('accept'=>'image/*', 'data-frm'=>'frmCollectionMedia'));
         $frm->addHtml('', 'collection_image_display_div', '');
 
         /*$frm->addHTML('', 'collection_bg_image_heading', '');
@@ -838,11 +832,11 @@ class CollectionsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('LBL_Please_Select_A_File', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        $image_info = getimagesize($_FILES["file"]["tmp_name"]);
+        $image_info = getimagesize($_FILES["cropped_image"]["tmp_name"]);
         $image_width = $image_info[0];
         $image_height = $image_info[1];
 
@@ -853,11 +847,11 @@ class CollectionsController extends AdminBaseController
 
         $fileHandlerObj = new AttachedFile();
         if (!$res = $fileHandlerObj->saveAttachment(
-            $_FILES['file']['tmp_name'],
+            $_FILES['cropped_image']['tmp_name'],
             $file_type,
             $collection_id,
             0,
-            $_FILES['file']['name'],
+            $_FILES['cropped_image']['name'],
             -1,
             $unique_record = true,
             $lang_id
@@ -869,9 +863,9 @@ class CollectionsController extends AdminBaseController
 
         Collections::setLastUpdatedOn($collection_id);
 
-        $this->set('file', $_FILES['file']['name']);
+        $this->set('file', $_FILES['cropped_image']['name']);
         $this->set('collection_id', $collection_id);
-        $this->set('msg', $_FILES['file']['name']. Labels::getLabel('MSG_Uploaded_Successfully', $this->adminLangId));
+        $this->set('msg', $_FILES['cropped_image']['name']. Labels::getLabel('MSG_Uploaded_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 

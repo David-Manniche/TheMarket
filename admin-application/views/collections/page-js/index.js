@@ -367,6 +367,70 @@ $(document).ready(function() {
             }
 		});
     };
+
+    popupImage = function(inputBtn){
+        if (inputBtn.files && inputBtn.files[0]) {
+            fcom.ajax(fcom.makeUrl('Collections', 'imgCropper'), '', function(t) {
+    			$('#cropperBox-js').html(t);
+    			$("#mediaForm-js").css("display", "none");
+                var container = document.querySelector('.img-container');
+                var file = inputBtn.files[0];
+                $('#new-img').attr('src', URL.createObjectURL(file));
+        		var image = container.getElementsByTagName('img').item(0);
+                var minWidth = document.frmCollectionMedia.min_width.value;
+                var minHeight = document.frmCollectionMedia.min_height.value;
+        		var options = {
+                    aspectRatio: aspectRatio,
+                    data: {
+                        width: minWidth,
+                        height: minHeight,
+                    },
+                    minCropBoxWidth: minWidth,
+                    minCropBoxHeight: minHeight,
+                    toggleDragModeOnDblclick: false,
+    	        };
+                $(inputBtn).val('');
+                return cropImage(image, options, 'uploadImages', inputBtn);
+        	});
+        }
+	};
+
+	uploadImages = function(formData){
+        var collection_id = document.frmCollectionMedia.collection_id.value;
+        var langId = document.frmCollectionMedia.image_lang_id.value;
+        var fileType = document.frmCollectionMedia.file_type.value;
+
+        formData.append('collection_id', collection_id);
+        formData.append('file_type', fileType);
+        formData.append('lang_id', langId);
+        $.ajax({
+            url: fcom.makeUrl('Collections', 'uploadImage'),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                 $('#loader-js').html(fcom.getLoader());
+            },
+            complete: function() {
+                 $('#loader-js').html(fcom.getLoader());
+            },
+            success: function(ans) {
+                if(0 == ans.status){
+                    $.mbsmessage.close();
+                    $.systemMessage(ans.msg,'alert--danger');
+                } else {
+                    collectionMediaForm(ans.collection_id);
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+        });
+	}
+
 })();
 
 $(document).on('click', '.File-Js', function() {

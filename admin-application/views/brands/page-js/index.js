@@ -4,20 +4,20 @@ $(document).ready(function(){
 
 $(document).on('change','.logo-language-js',function(){
 	var lang_id = $(this).val();
-	var brand_id = $("input[id='id-js']").val();
+	var brand_id = $(this).closest("form").find('input[name="brand_id"]').val();
 	brandImages(brand_id, 'logo', 0, lang_id);
 });
 $(document).on('change','.image-language-js',function(){
 	var lang_id = $(this).val();
-	var brand_id = $("input[id='id-js']").val();
+	var brand_id = $(this).closest("form").find('input[name="brand_id"]').val();
 	var slide_screen = $(".prefDimensions-js").val();
 	brandImages(brand_id, 'image', slide_screen, lang_id);
 });
 $(document).on('change','.prefDimensions-js',function(){
 	var slide_screen = $(this).val();
-	var brand_id = $("input[id='id-js']").val();
+	var brand_id = $(this).closest("form").find('input[name="brand_id"]').val();
 	var lang_id = $(".image-language-js").val();
-	brandImages(brand_id,'image',slide_screen,lang_id);
+	brandImages(brand_id, 'image', slide_screen, lang_id);
 });
 (function() {
 	var currentPage = 1;
@@ -185,77 +185,115 @@ $(document).on('change','.prefDimensions-js',function(){
 		$("#frmBrandListing").attr("action",fcom.makeUrl('Brands','deleteSelected')).submit();
 	};
 
-})();
-
-$(document).on('click','.uploadFile-Js',function(){
-	var node = this;
-	$('#form-upload').remove();
-	/* var brandId = document.frmProdBrandLang.brand_id.value;
-	var langId = document.frmProdBrandLang.lang_id.value; */
-
-    var formName = $(node).attr('data-frm');
-	var slide_screen = 0;
-	if(formName == 'frmBrandImage'){
-        var brandId = document.frmBrandImage.brand_id.value;
-        var langId = document.frmBrandImage.lang_id.value;
-		slide_screen = document.frmBrandImage.slide_screen.value;
-        var imageType = 'image';
-	}else{
-		var brandId = document.frmBrandLogo.brand_id.value;
-        var langId = document.frmBrandLogo.lang_id.value;
-		var imageType = 'logo';
-	}
-
-    var fileType = $(node).attr('data-file_type');
-
-	var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-	frm = frm.concat('<input type="file" name="file" />');
-	frm = frm.concat('<input type="hidden" name="brand_id" value="' + brandId + '"/>');
-	frm = frm.concat('<input type="hidden" name="lang_id" value="' + langId + '"/>');
-    frm = frm.concat('<input type="hidden" name="file_type" value="' + fileType + '">');
-	frm = frm.concat('<input type="hidden" name="slide_screen" value="' + slide_screen + '">');
-	frm = frm.concat('</form>');
-
-	$( 'body' ).prepend( frm );
-	$('#form-upload input[name=\'file\']').trigger('click');
-	if ( typeof timer != 'undefined' ) {
-		clearInterval(timer);
-	}
-	timer = setInterval(function() {
-		if ($('#form-upload input[name=\'file\']').val() != '') {
-			clearInterval(timer);
-			$val = $(node).val();
-			$.ajax({
-				url: fcom.makeUrl('Brands', 'uploadMedia'),
-				type: 'post',
-				dataType: 'json',
-				data: new FormData($('#form-upload')[0]),
-				cache: false,
-				contentType: false,
-				processData: false,
-				beforeSend: function() {
-					$(node).val('Loading');
-				},
-				complete: function() {
-					$(node).val($val);
-				},
-				success: function(ans) {
-						$('.text-danger').remove();
-						$('#input-field').html(ans.msg);
-						if(ans.status==1)
-						{
-							fcom.displaySuccessMessage(ans.msg);
-							$('#form-upload').remove();
-							brandImages(ans.brandId,imageType,slide_screen,langId);
-							reloadList();
-						}else{
-							fcom.displayErrorMessage(ans.msg,'');
-						}
-					},
-					error: function(xhr, ajaxOptions, thrownError) {
-						alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-					}
-				});
+	bannerPopupImage = function(inputBtn){
+		if (inputBtn.files && inputBtn.files[0]) {
+	        fcom.ajax(fcom.makeUrl('Brands', 'imgCropper'), '', function(t) {
+				$('#cropperBox-js').html(t);
+				$("#mediaForm-js").css("display", "none");
+				var container = document.querySelector('.img-container');
+                var file = inputBtn.files[0];
+                $('#new-img').attr('src', URL.createObjectURL(file));
+	    		var image = container.getElementsByTagName('img').item(0);
+	            var minWidth = document.frmBrandImage.banner_min_width.value;
+	            var minHeight = document.frmBrandImage.banner_min_height.value;
+	    		var options = {
+	                aspectRatio: aspectRatio,
+	                data: {
+	                    width: minWidth,
+	                    height: minHeight,
+	                },
+	                minCropBoxWidth: minWidth,
+	                minCropBoxHeight: minHeight,
+	                toggleDragModeOnDblclick: false,
+		        };
+				$(inputBtn).val('');
+    	  		return cropImage(image, options, 'uploadBrandImages', inputBtn);
+	    	});
 		}
-	}, 500);
-});
+	};
+
+    logoPopupImage = function(inputBtn){
+		if (inputBtn.files && inputBtn.files[0]) {
+	        fcom.ajax(fcom.makeUrl('Brands', 'imgCropper'), '', function(t) {
+				$('#cropperBox-js').html(t);
+				$("#mediaForm-js").css("display", "none");
+				var container = document.querySelector('.img-container');
+                var file = inputBtn.files[0];
+                $('#new-img').attr('src', URL.createObjectURL(file));
+	    		var image = container.getElementsByTagName('img').item(0);
+	            var minWidth = document.frmBrandLogo.logo_min_width.value;
+	            var minHeight = document.frmBrandLogo.logo_min_height.value;
+				if(minWidth == minHeight){
+					var aspectRatio = 1 / 1
+				} else {
+	                var aspectRatio = 16 / 9;
+	            }
+	    		var options = {
+	                aspectRatio: aspectRatio,
+	                data: {
+	                    width: minWidth,
+	                    height: minHeight,
+	                },
+	                minCropBoxWidth: minWidth,
+	                minCropBoxHeight: minHeight,
+	                toggleDragModeOnDblclick: false,
+		        };
+				$(inputBtn).val('');
+    	  		return cropImage(image, options, 'uploadBrandImages', inputBtn);
+	    	});
+		}
+	};
+
+	uploadBrandImages = function(formData){
+        var frmName = formData.get("frmName");
+        if ('frmBrandLogo' == frmName) {
+			var brandId = document.frmBrandLogo.brand_id.value;
+            var langId = document.frmBrandLogo.lang_id.value;
+            var fileType = document.frmBrandLogo.file_type.value;
+            var imageType = 'logo';
+        } else {
+			var brandId = document.frmBrandImage.brand_id.value;
+            var langId = document.frmBrandImage.lang_id.value;
+            var slideScreen = document.frmBrandImage.slide_screen.value;
+            var fileType = document.frmBrandImage.file_type.value;
+            var imageType = 'banner';
+        }
+
+		formData.append('brand_id', brandId);
+        formData.append('slide_screen', slideScreen);
+        formData.append('lang_id', langId);
+        formData.append('file_type', fileType);
+        $.ajax({
+            url: fcom.makeUrl('Brands', 'uploadMedia'),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                 $('#loader-js').html(fcom.getLoader());
+            },
+            complete: function() {
+                 $('#loader-js').html(fcom.getLoader());
+            },
+			success: function(ans) {
+				$('.text-danger').remove();
+				$('#input-field').html(ans.msg);
+				if(ans.status==1)
+				{
+					fcom.displaySuccessMessage(ans.msg);
+					$('#form-upload').remove();
+					brandMediaForm(ans.brandId);
+					brandImages(ans.brandId, imageType, slideScreen, langId);
+					reloadList();
+				}else{
+					fcom.displayErrorMessage(ans.msg,'');
+				}
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+        });
+	}
+})();

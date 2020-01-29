@@ -30,6 +30,9 @@ class BrandsController extends AdminBaseController
             unset($data['id']);
             $search->fill($data);
         }
+        $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
+        $this->_template->addCss('css/cropper.css');
         $this->set("search", $search);
         $this->set('includeEditor', true);
         $this->_template->addJs('js/import-export.js');
@@ -406,8 +409,10 @@ class BrandsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function images($brand_id, $file_type, $lang_id=0, $slide_screen = 0)
+    public function images($brand_id, $file_type, $lang_id = 0, $slide_screen = 0)
     {
+        $lang_id = FatUtility::int($lang_id);
+        $slide_screen = FatUtility::int($slide_screen);
         $brand_id = FatUtility::int($brand_id);
         if ($file_type=='logo') {
             $brandLogos = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_BRAND_LOGO, $brand_id, 0, $lang_id, false);
@@ -455,7 +460,7 @@ class BrandsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_Select_A_File', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -464,11 +469,11 @@ class BrandsController extends AdminBaseController
         $fileHandlerObj->deleteFile($file_type, $brand_id, 0, 0, $lang_id);
 
         if (!$res = $fileHandlerObj->saveAttachment(
-            $_FILES['file']['tmp_name'],
+            $_FILES['cropped_image']['tmp_name'],
             $file_type,
             $brand_id,
             0,
-            $_FILES['file']['name'],
+            $_FILES['cropped_image']['name'],
             -1,
             $unique_record = false,
             $lang_id,
@@ -480,8 +485,8 @@ class BrandsController extends AdminBaseController
         }
 
         $this->set('brandId', $brand_id);
-        $this->set('file', $_FILES['file']['name']);
-        $this->set('msg', $_FILES['file']['name']. Labels::getLabel('MSG_File_Uploaded_Successfully', $this->adminLangId));
+        $this->set('file', $_FILES['cropped_image']['name']);
+        $this->set('msg', $_FILES['cropped_image']['name']. Labels::getLabel('MSG_File_Uploaded_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -501,12 +506,12 @@ class BrandsController extends AdminBaseController
         $frm->addHTML('', 'brand_logo_heading', '');
         $frm->addHiddenField('', 'brand_id', $brand_id);
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', array( 0 => Labels::getLabel('LBL_Universal', $this->adminLangId) ) + $languagesAssocArr, '', array(), '');
-        $frm->addButton(
-            Labels::getLabel('Lbl_Logo', $this->adminLangId),
-            'logo',
-            Labels::getLabel('LBL_Upload_Logo', $this->adminLangId),
-            array('class'=>'uploadFile-Js', 'id'=>'logo','data-file_type'=>AttachedFile::FILETYPE_BRAND_LOGO,'data-brand_id' => $brand_id, 'data-image_type'=>'logo', 'data-frm'=>'frmBrandLogo' )
-        );
+        $ratioArr = AttachedFile::getRatioTypeArray($this->adminLangId);
+        $frm->addRadioButtons(Labels::getLabel('LBL_Ratio', $this->adminLangId), 'ratio_type', $ratioArr, AttachedFile::RATIO_TYPE_SQUARE);
+        $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_BRAND_LOGO);
+        $frm->addHiddenField('', 'logo_min_width');
+        $frm->addHiddenField('', 'logo_min_height');
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'logo', array('accept'=>'image/*', 'data-frm'=>'frmBrandLogo'));
         $frm->addHtml('', 'brand_logo_display_div', '');
 
         return $frm;
@@ -522,12 +527,10 @@ class BrandsController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', array( 0 => Labels::getLabel('LBL_Universal', $this->adminLangId) ) + $languagesAssocArr, '', array(), '');
         $screenArr = applicationConstants::getDisplaysArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel("LBL_Display_For", $this->adminLangId), 'slide_screen', $screenArr, '', array(), '');
-        $frm->addButton(
-            Labels::getLabel('Lbl_Image', $this->adminLangId),
-            'image',
-            Labels::getLabel('LBL_Upload_Image', $this->adminLangId),
-            array('class'=>'uploadFile-Js','id'=>'image','data-file_type'=>AttachedFile::FILETYPE_BRAND_IMAGE,'data-brand_id' => $brand_id, 'data-image_type'=>'image', 'data-frm'=>'frmBrandImage' )
-        );
+        $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_BRAND_IMAGE);
+        $frm->addHiddenField('', 'banner_min_width');
+        $frm->addHiddenField('', 'banner_min_height');
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'image', array('accept'=>'image/*', 'data-frm'=>'frmBrandImage'));
         $frm->addHtml('', 'brand_image_display_div', '');
 
         return $frm;
@@ -815,6 +818,9 @@ class BrandsController extends AdminBaseController
             unset($data['id']);
             $search->fill($data);
         }
+        $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
+        $this->_template->addCss('css/cropper.css');
         $this->set("search", $search);
         $this->_template->render();
     }

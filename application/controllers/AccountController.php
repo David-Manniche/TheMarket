@@ -24,7 +24,7 @@ class AccountController extends LoggedUserController
         if (UserAuthentication::isGuestUserLogged()) {
             FatApp::redirectUser(CommonHelper::generateUrl('home'));
         }
-        
+
         switch ($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab']) {
             case 'B':
                 FatApp::redirectUser(CommonHelper::generateUrl('buyer'));
@@ -863,6 +863,7 @@ class AccountController extends LoggedUserController
         
         $this->_template->addJs('js/jquery.form.js');
         $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
         $this->_template->addCss('css/cropper.css');
         $this->includeDateTimeFiles();
 
@@ -954,7 +955,6 @@ class AccountController extends LoggedUserController
         if ($file_row != false) {
             $mode = 'Edit';
         }
-
         $this->set('data', $data);
         $this->set('frm', $frm);
         $this->set('imgFrm', $imgFrm);
@@ -962,6 +962,17 @@ class AccountController extends LoggedUserController
         $this->set('stateId', $stateId);
         $this->set('siteLangId', $this->siteLangId);
         $this->_template->render(false, false);
+    }
+
+    public function imgCropper()
+    {
+        $userId = UserAuthentication::getLoggedUserId(true);
+        $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
+        $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
+        $userImage = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'user', array($userId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+
+        $this->set('image', $userImage);
+        $this->_template->render(false, false, 'cropper/index.php');
     }
 
     public function profileImageForm()
@@ -987,56 +998,44 @@ class AccountController extends LoggedUserController
             $message = Labels::getLabel('LBL_Invalid_Request_Or_File_not_supported', $this->siteLangId);
             FatUtility::dieJsonError($message);
         }
-        $fileHandlerObj = new AttachedFile();
         $updatedAt = date('Y-m-d H:i:s');
         $uploadedTime = AttachedFile::setTimeParam($updatedAt);
 
-        if ($post['action'] == "demo_avatar") {
-            if (!$fileHandlerObj->isUploadedFile($_FILES['user_profile_image']['tmp_name'])) {
+        if (isset($_FILES['org_image']['tmp_name'])) {
+            $fileHandlerObj = new AttachedFile();
+            if (!$fileHandlerObj->isUploadedFile($_FILES['org_image']['tmp_name'])) {
                 FatUtility::dieJsonError($fileHandlerObj->getError());
             }
 
-            if (!$res = $fileHandlerObj->saveImage($_FILES['user_profile_image']['tmp_name'], AttachedFile::FILETYPE_USER_PROFILE_IMAGE, $userId, 0, $_FILES['user_profile_image']['name'], -1, true)
+            if (!$res = $fileHandlerObj->saveImage($_FILES['org_image']['tmp_name'], AttachedFile::FILETYPE_USER_PROFILE_IMAGE, $userId, 0, $_FILES['org_image']['name'], -1, true)
             ) {
                 $message = Labels::getLabel($fileHandlerObj->getError(), $this->siteLangId);
                 FatUtility::dieJsonError($message);
-            }
-
-            if (true ===  MOBILE_APP_API_CALL) {
-                $profileImg = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'user', array($userId,'mini',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
-                $this->set('file', $profileImg);
-            } else {
-                $profileImg = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Account', 'userProfileImage', array($userId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
-                $this->set('file', $profileImg);
             }
         }
 
-        if ($post['action'] == "avatar") {
-            if (!$fileHandlerObj->isUploadedFile($_FILES['user_profile_image']['tmp_name'])) {
+        if (isset($_FILES['cropped_image']['tmp_name'])) {
+            $fileHandlerObj = new AttachedFile();
+            if (!$fileHandlerObj->isUploadedFile($_FILES['cropped_image']['tmp_name'])) {
                 FatUtility::dieJsonError($fileHandlerObj->getError());
             }
 
-
-            if (!$res = $fileHandlerObj->saveImage($_FILES['user_profile_image']['tmp_name'], AttachedFile::FILETYPE_USER_PROFILE_CROPED_IMAGE, $userId, 0, $_FILES['user_profile_image']['name'], -1, true)
+            if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], AttachedFile::FILETYPE_USER_PROFILE_CROPED_IMAGE, $userId, 0, $_FILES['cropped_image']['name'], -1, true)
             ) {
                 $message = Labels::getLabel($fileHandlerObj->getError(), $this->siteLangId);
                 FatUtility::dieJsonError($message);
             }
+        }
 
-            if (isset($post['img_data'])) {
-                $data = json_decode(stripslashes($post['img_data']));
-                CommonHelper::crop($data, CONF_UPLOADS_PATH .$res, $this->siteLangId);
-            }
-
-            if (false ===  MOBILE_APP_API_CALL) {
-                $profileImg = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Account', 'userProfileImage', array($userId,'croped',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
-                $this->set('file', $profileImg);
-            } else {
-                $profileImg = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'user', array($userId,'mini',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
-                $this->set('file', $profileImg);
-            }
+        if (false ===  MOBILE_APP_API_CALL) {
+            $profileImg = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Account', 'userProfileImage', array($userId,'croped',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+            $this->set('file', $profileImg);
+        } else {
+            $profileImg = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'user', array($userId,'mini',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
             $this->set('file', $profileImg);
         }
+        $this->set('file', $profileImg);
+
         User::setImageUpdatedOn($userId, $updatedAt);
         $this->set('msg', Labels::getLabel('MSG_File_uploaded_successfully', $this->siteLangId));
         if (true ===  MOBILE_APP_API_CALL) {
@@ -2703,17 +2702,8 @@ class AccountController extends LoggedUserController
 
     private function getProfileImageForm()
     {
-        /* $frm = new Form('frmProfileImage');
-        $fld1 =  $frm->addButton('','user_profile_image',Labels::getLabel('LBL_Change',$this->siteLangId),array('class'=>'userFile-Js','id'=>'user_profile_image'));
-        return $frm; */
         $frm = new Form('frmProfile', array('id'=>'frmProfile'));
-        $frm->addFileUpload(Labels::getLabel('LBL_Profile_Picture', $this->siteLangId), 'user_profile_image', array('id'=>'user_profile_image','onchange'=>'popupImage(this)','accept'=>'image/*'));
-        $frm->addHiddenField('', 'update_profile_img', Labels::getLabel('LBL_Update', $this->siteLangId), array('id'=>'update_profile_img'));
-        $frm->addHiddenField('', 'rotate_left', Labels::getLabel('LBL_Rotate_Left', $this->siteLangId), array('id'=>'rotate_left'));
-        $frm->addHiddenField('', 'rotate_right', Labels::getLabel('LBL_Rotate_Right', $this->siteLangId), array('id'=>'rotate_right'));
-        $frm->addHiddenField('', 'remove_profile_img', 0, array('id'=>'remove_profile_img'));
-        $frm->addHiddenField('', 'action', 'avatar', array('id'=>'avatar-action'));
-        $frm->addHiddenField('', 'img_data', '', array('id'=>'img_data'));
+        $frm->addFileUpload(Labels::getLabel('LBL_Profile_Picture', $this->siteLangId), 'user_profile_image', array('id'=>'user_profile_image', 'onClick'=>'popupImage(this)', 'accept'=>'image/*', 'data-frm'=>'frmProfile'));
         return $frm;
     }
 

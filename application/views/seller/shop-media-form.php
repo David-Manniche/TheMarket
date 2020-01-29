@@ -3,9 +3,12 @@
     $shopLogoFrm->setFormTagAttribute('class', 'form');
     $shopLogoFrm->developerTags['colClassPrefix'] = 'col-md-';
     $shopLogoFrm->developerTags['fld_default_col'] = 12;
+    $ratioFld = $shopLogoFrm->getField('ratio_type');
+    $ratioFld->addFieldTagAttribute('class', 'prefRatio-js');
     $fld = $shopLogoFrm->getField('shop_logo');
     $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
-    
+    $fld->addFieldTagAttribute('onChange', 'logoPopupImage(this)');
+
     $shopBannerFrm->setFormTagAttribute('onsubmit', 'setupShopMedia(this); return(false);');
     $shopBannerFrm->setFormTagAttribute('class', 'form');
     $shopBannerFrm->developerTags['colClassPrefix'] = 'col-md-';
@@ -14,6 +17,7 @@
     $screenFld->addFieldTagAttribute('class', 'prefDimensions-js');
     $fld = $shopBannerFrm->getField('shop_banner');
     $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+    $fld->addFieldTagAttribute('onChange', 'bannerPopupImage(this)');
 
     $shopBackgroundImageFrm->setFormTagAttribute('onsubmit', 'setupShopMedia(this); return(false);');
     $shopBackgroundImageFrm->developerTags['colClassPrefix'] = 'col-md-';
@@ -57,20 +61,47 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
     </div>
 </div>
 <script>
-    $(document).on('change','.prefDimensions-js',function(){
-        var screenDesktop = <?php echo applicationConstants::SCREEN_DESKTOP ?>;
-        var screenIpad = <?php echo applicationConstants::SCREEN_IPAD ?>;
+$('input[name=banner_min_width]').val(2000);
+$('input[name=banner_min_height]').val(500);
+$('input[name=logo_min_width]').val(150);
+$('input[name=logo_min_height]').val(150);
+var ratioTypeSquare = <?php echo AttachedFile::RATIO_TYPE_SQUARE; ?>;
+var ratioTypeRectangular = <?php echo AttachedFile::RATIO_TYPE_RECTANGULAR; ?>;
+var aspectRatio = 4 / 1;
+$(document).on('change','.prefDimensions-js',function(){
+    var screenDesktop = <?php echo applicationConstants::SCREEN_DESKTOP ?>;
+    var screenIpad = <?php echo applicationConstants::SCREEN_IPAD ?>;
 
-        if($(this).val() == screenDesktop)
-        {
-            $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '2000 x 500'));
-        }
-        else if($(this).val() == screenIpad)
-        {
-            $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '1024 x 360'));
-        }
-        else{
-            $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '640 x 360'));
-        }
-    });
+    if($(this).val() == screenDesktop)
+    {
+        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '2000 x 500'));
+        $('input[name=banner_min_width]').val(2000);
+        $('input[name=banner_min_height]').val(500);
+        aspectRatio = 4 / 1;
+    }
+    else if($(this).val() == screenIpad)
+    {
+        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '1024 x 360'));
+        $('input[name=banner_min_width]').val(1024);
+        $('input[name=banner_min_height]').val(360);
+        aspectRatio = 128 / 45;
+    }
+    else{
+        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '640 x 360'));
+        $('input[name=banner_min_width]').val(640);
+        $('input[name=banner_min_height]').val(360);
+        aspectRatio = 16 / 9;
+    }
+});
+
+$(document).on('change','.prefRatio-js',function(){
+    if($(this).val() == ratioTypeSquare)
+    {
+        $('input[name=logo_min_width]').val(150);
+        $('input[name=logo_min_height]').val(150);
+    } else {
+        $('input[name=logo_min_width]').val(150);
+        $('input[name=logo_min_height]').val(85);
+    }
+});
 </script>

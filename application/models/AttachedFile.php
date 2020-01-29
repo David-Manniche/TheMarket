@@ -70,6 +70,9 @@ class AttachedFile extends MyAppModel
     public const APP_IMAGE_WIDTH = 640;
     public const APP_IMAGE_HEIGHT = 480;
 
+    const RATIO_TYPE_SQUARE = 1;
+    const RATIO_TYPE_RECTANGULAR = 2;
+
     public function __construct($fileId = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $fileId);
@@ -127,6 +130,15 @@ class AttachedFile extends MyAppModel
         static::FILETYPE_CATEGORY_IMAGE=>Labels::getLabel('LBL_Category_Image', $langId),
         static::FILETYPE_CATEGORY_BANNER=>Labels::getLabel('LBL_Category_Banner', $langId),
         static::FILETYPE_CATEGORY_BANNER_SELLER=>Labels::getLabel('LBL_Category_Banner_Seller', $langId),
+        );
+        return $arr;
+    }
+
+    public static function getRatioTypeArray($langId)
+    {
+        return $arr = array(
+        static::RATIO_TYPE_SQUARE=>Labels::getLabel('LBL_1*1', $langId),
+        static::RATIO_TYPE_RECTANGULAR=>Labels::getLabel('LBL_16*5', $langId)
         );
         return $arr;
     }

@@ -118,6 +118,74 @@ $(document).ready(function() {
         $("#frmPayMethodListing").submit();
     };
 
+    popupImage = function(inputBtn){
+        if (inputBtn.files && inputBtn.files[0]) {
+            fcom.ajax(fcom.makeUrl('PaymentMethods', 'imgCropper'), '', function(t) {
+    			$('#cropperBox-js').html(t);
+    			$("#mediaForm-js").css("display", "none");
+                var container = document.querySelector('.img-container');
+                var file = inputBtn.files[0];
+                $('#new-img').attr('src', URL.createObjectURL(file));
+        		var image = container.getElementsByTagName('img').item(0);
+                var minWidth = document.frmGateway.min_width.value;
+                var minHeight = document.frmGateway.min_height.value;
+                if(minWidth == minHeight){
+					var aspectRatio = 1 / 1
+				} else {
+	                var aspectRatio = 16 / 9;
+	            }
+        		var options = {
+                    aspectRatio: aspectRatio,
+                    data: {
+                        width: minWidth,
+                        height: minHeight,
+                    },
+                    minCropBoxWidth: minWidth,
+                    minCropBoxHeight: minHeight,
+                    toggleDragModeOnDblclick: false,
+    	        };
+                $(inputBtn).val('');
+                return cropImage(image, options, 'uploadImages', inputBtn);
+        	});
+        }
+	};
+
+	uploadImages = function(formData){
+        var pmethod_id = document.frmGateway.pmethod_id.value;
+        formData.append('pmethod_id', pmethod_id);
+        $.ajax({
+            url: fcom.makeUrl('PaymentMethods', 'uploadIcon',[pmethod_id]),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                 $('#loader-js').html(fcom.getLoader());
+            },
+            complete: function() {
+                 $('#loader-js').html(fcom.getLoader());
+            },
+            success: function(ans) {
+                $('.text-danger').remove();
+                $('#gateway_icon').html(ans.msg);
+                if(ans.status == true){
+                    $('#gateway_icon').removeClass('text-danger');
+                    $('#gateway_icon').addClass('text-success');
+                    gatewayForm(pmethod_id);
+                    //editGatewayForm(ans.pmethodId);
+                }else{
+                    $('#gateway_icon').removeClass('text-success');
+                    $('#gateway_icon').addClass('text-danger');
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+        });
+	}
+
 })();
 
 $(document).on('click','.uploadFile-Js',function(){

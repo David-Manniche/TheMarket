@@ -21,6 +21,9 @@ class TestimonialsController extends AdminBaseController
     public function index()
     {
         $this->objPrivilege->canViewTestimonial();
+        $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
+        $this->_template->addCss('css/cropper.css');
         $this->_template->render();
     }
 
@@ -347,13 +350,9 @@ class TestimonialsController extends AdminBaseController
     public function getMediaForm($testimonialId)
     {
         $frm = new Form('frmTestimonialMedia');
-        $frm->addButton(
-            Labels::getLabel('Lbl_Image', $this->adminLangId),
-            'testimonial_image',
-            Labels::getLabel('LBL_Upload_Image', $this->adminLangId),
-            array('class'=>'uploadFile-Js','id'=>'testimonial_image','data-file_type'=>AttachedFile::FILETYPE_TESTIMONIAL_IMAGE,'data-testimonial_id' => $testimonialId )
-        );
-
+        $frm->addHiddenField('', 'testimonial_id', $testimonialId);
+        $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_TESTIMONIAL_IMAGE);
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'testimonial_image', array('accept'=>'image/*', 'data-frm'=>'frmTestimonialMedia'));
         $frm->addHtml('', 'testimonial_image_display_div', '');
 
         return $frm;
@@ -366,13 +365,13 @@ class TestimonialsController extends AdminBaseController
         if (empty($post)) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_Invalid_Request_Or_File_not_supported', $this->adminLangId));
         }
-        $testimonialId = FatApp::getPostedData('testimonialId', FatUtility::VAR_INT, 0);
+        $testimonialId = FatApp::getPostedData('testimonial_id', FatUtility::VAR_INT, 0);
         $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
         if (!$testimonialId) {
             FatUtility::dieJsonError($this->str_invalid_request_id);
         }
 
-        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_Please_Select_A_File', $this->adminLangId));
         }
 
@@ -380,11 +379,11 @@ class TestimonialsController extends AdminBaseController
         $fileHandlerObj->deleteFile($fileHandlerObj::FILETYPE_TESTIMONIAL_IMAGE, $testimonialId, 0, 0, $lang_id);
 
         if (!$res = $fileHandlerObj->saveImage(
-            $_FILES['file']['tmp_name'],
+            $_FILES['cropped_image']['tmp_name'],
             $fileHandlerObj::FILETYPE_TESTIMONIAL_IMAGE,
             $testimonialId,
             0,
-            $_FILES['file']['name'],
+            $_FILES['cropped_image']['name'],
             -1,
             $unique_record = false,
             $lang_id
@@ -394,8 +393,8 @@ class TestimonialsController extends AdminBaseController
         }
 
         $this->set('testimonialId', $testimonialId);
-        $this->set('file', $_FILES['file']['name']);
-        $this->set('msg', $_FILES['file']['name']. Labels::getLabel('MSG_File_Uploaded_Successfully', $this->adminLangId));
+        $this->set('file', $_FILES['cropped_image']['name']);
+        $this->set('msg', $_FILES['cropped_image']['name']. Labels::getLabel('MSG_File_Uploaded_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 

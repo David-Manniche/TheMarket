@@ -2,8 +2,11 @@
 $shopLogoFrm->setFormTagAttribute('class', 'web_form form_horizontal');
 $shopLogoFrm->developerTags['colClassPrefix'] = 'col-md-';
 $shopLogoFrm->developerTags['fld_default_col'] = 12;
+$ratioFld = $shopLogoFrm->getField('ratio_type');
+$ratioFld->addFieldTagAttribute('class', 'prefRatio-js');
 $fld = $shopLogoFrm->getField('shop_logo');
 $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+$fld->addFieldTagAttribute('onChange', 'logoPopupImage(this)');
 $langFld = $shopLogoFrm->getField('lang_id');
 $langFld->addFieldTagAttribute('class', 'logo-language-js');
 
@@ -16,8 +19,9 @@ $fld->htmlAfterField = $htmlAfterField;
 $shopBannerFrm->setFormTagAttribute('class', 'web_form form_horizontal');
 $shopBannerFrm->developerTags['colClassPrefix'] = 'col-md-';
 $shopBannerFrm->developerTags['fld_default_col'] = 12;
-$fld1 = $shopBannerFrm->getField('shop_banner');
-$fld1->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+$fld = $shopBannerFrm->getField('shop_banner');
+$fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+$fld->addFieldTagAttribute('onChange', 'bannerPopupImage(this)');
 $langFld = $shopBannerFrm->getField('lang_id');
 $langFld->addFieldTagAttribute('class', 'banner-language-js');
 $screenFld = $shopBannerFrm->getField('slide_screen');
@@ -25,7 +29,7 @@ $screenFld->addFieldTagAttribute('class', 'prefDimensions-js');
 
 $htmlAfterField = '<div style="margin-top:15px;" class="preferredDimensions-js">' . sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s',$adminLangId),'2000 x 500') . '</div>';
 $htmlAfterField .= '<div id="banner-image-listing"></div>';
-$fld1->htmlAfterField = $htmlAfterField;
+$fld->htmlAfterField = $htmlAfterField;
 /*$bannerSize = applicationConstants::getShopBannerSize();
 $shopLayout= ($shopDetails['shop_ltemplate_id'])?$shopDetails['shop_ltemplate_id']:SHOP::TEMPLATE_ONE;
 $preferredDimensionsStr = '<span class="gap"></span><small class="text--small">'. sprintf(Labels::getLabel('MSG_Upload_shop_banner_text', $adminLangId), $bannerSize[$shopLayout]). '</small>';
@@ -44,7 +48,8 @@ $preferredDimensionsStr = '<span class="gap"></span><small class="text--small">'
 $htmlAfterField = $preferredDimensionsStr;
 $htmlAfterField .= '<div id="bg-image-listing"></div>';
 $fld1->htmlAfterField = $htmlAfterField; */ ?>
-<section class="section">
+<div id="cropperBox-js"></div>
+<section class="section" id="mediaForm-js">
     <div class="sectionhead">
         <h4><?php echo Labels::getLabel('LBL_Shop_Media_Setup', $adminLangId); ?></h4>
     </div>
@@ -90,20 +95,47 @@ $fld1->htmlAfterField = $htmlAfterField; */ ?>
     </div>
 </section>
 <script>
-    $(document).on('change','.prefDimensions-js',function(){
-        var screenDesktop = <?php echo applicationConstants::SCREEN_DESKTOP ?>;
-        var screenIpad = <?php echo applicationConstants::SCREEN_IPAD ?>;
+$('input[name=banner_min_width]').val(2000);
+$('input[name=banner_min_height]').val(500);
+$('input[name=logo_min_width]').val(150);
+$('input[name=logo_min_height]').val(150);
+var ratioTypeSquare = <?php echo AttachedFile::RATIO_TYPE_SQUARE; ?>;
+var ratioTypeRectangular = <?php echo AttachedFile::RATIO_TYPE_RECTANGULAR; ?>;
+var aspectRatio = 4 / 1;
+$(document).on('change','.prefDimensions-js',function(){
+    var screenDesktop = <?php echo applicationConstants::SCREEN_DESKTOP ?>;
+    var screenIpad = <?php echo applicationConstants::SCREEN_IPAD ?>;
 
-        if($(this).val() == screenDesktop)
-        {
-            $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '2000 x 500'));
-        }
-        else if($(this).val() == screenIpad)
-        {
-            $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '1024 x 360'));
-        }
-        else{
-            $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '640 x 360'));
-        }
-    });
+    if($(this).val() == screenDesktop)
+    {
+        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '2000 x 500'));
+        $('input[name=banner_min_width]').val(2000);
+        $('input[name=banner_min_height]').val(500);
+        aspectRatio = 4 / 1;
+    }
+    else if($(this).val() == screenIpad)
+    {
+        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '1024 x 360'));
+        $('input[name=banner_min_width]').val(1024);
+        $('input[name=banner_min_height]').val(360);
+        aspectRatio = 128 / 45;
+    }
+    else{
+        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '640 x 360'));
+        $('input[name=banner_min_width]').val(640);
+        $('input[name=banner_min_height]').val(360);
+        aspectRatio = 16 / 9;
+    }
+});
+
+$(document).on('change','.prefRatio-js',function(){
+    if($(this).val() == ratioTypeSquare)
+    {
+        $('input[name=logo_min_width]').val(150);
+        $('input[name=logo_min_height]').val(150);
+    } else {
+        $('input[name=logo_min_width]').val(150);
+        $('input[name=logo_min_height]').val(85);
+    }
+});
 </script>
