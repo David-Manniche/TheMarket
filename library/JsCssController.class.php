@@ -27,7 +27,7 @@ class JsCssController{
 		}
 	}
 
-    function css(){
+    function css(){ 
     	$this->setHeaders('text/css');
 
         $arr = explode(',', $_GET['f']);

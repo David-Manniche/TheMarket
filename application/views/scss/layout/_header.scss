@@ -575,7 +575,7 @@
             position: absolute;
             z-index: 0;
             bottom: 13px;
-            left: 30px;
+            #{$start-direction}: 30px;
             color: #fff;
             border: solid 1px $brand-color;
             background: $brand-color;

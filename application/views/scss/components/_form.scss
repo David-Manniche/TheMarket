@@ -142,47 +142,49 @@ input[type="file"] {
         padding: 10px;
     }
 
-    input[type="submit"] {
-        position: relative;
-        display: inline-block;
-        margin: 0 0px;
-        border: none;
-        border: solid 1px transparent;
-        border-radius: 4px;
-        padding: 0 16px;
-        min-width: 64px;
-        height: 2.5rem;
-        vertical-align: middle;
-        text-align: center;
-        background: $brand-color;
-        font-size: 0.875rem;
-        font-weight: 500;
-        line-height: 2.375rem;
-        overflow: hidden;
-        outline: none;
-        cursor: pointer;
-        color: #fff;
-        -webkit-transition: -webkit-box-shadow 0.2s;
-        transition: -webkit-box-shadow 0.2s;
-        transition: box-shadow 0.2s;
-        transition: box-shadow 0.2s, -webkit-box-shadow 0.2s;
-        -webkit-margin-end: 5px;
-        -moz-margin-end: 5px;
-        margin-inline-end: 5px;
-    }
+    input {
+        &[type="submit"] {
+            position: relative;
+            display: inline-block;
+            margin: 0 0px;
+            border: none;
+            border: solid 1px transparent;
+            border-radius: 4px;
+            padding: 0 16px;
+            min-width: 64px;
+            height: 2.5rem;
+            vertical-align: middle;
+            text-align: center;
+            background: $brand-color;
+            font-size: 0.875rem;
+            font-weight: 500;
+            line-height: 2.375rem;
+            overflow: hidden;
+            outline: none;
+            cursor: pointer;
+            color: #fff;
+            -webkit-transition: -webkit-box-shadow 0.2s;
+            transition: -webkit-box-shadow 0.2s;
+            transition: box-shadow 0.2s;
+            transition: box-shadow 0.2s, -webkit-box-shadow 0.2s;
+            -webkit-margin-end: 5px;
+            -moz-margin-end: 5px;
+            margin-inline-end: 5px;
+        }
 
-    input[type="button"] {
-        @extend input[type="submit"];
-        background: none;
-        border-color: $brand-color;
-        color: $brand-color;
-    }
-    
-    input[type="reset"] {
-        @extend input[type="button"];
-        
-    }
+        &[type="button"] {
+            @extend input[type="submit"];
+            background: none;
+            border-color: $brand-color;
+            color: $brand-color;
+        }
 
+        &[type="reset"] {
+            @extend input[type="button"];
+
+        }
+
+    }
 
     .btn--block {
         display: block;

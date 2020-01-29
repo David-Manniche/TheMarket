@@ -390,70 +390,71 @@
     display: block;
 }
 
-.listing--check li {
-    color: #666;
-    overflow: hidden;
-    padding: 0;
-    position: relative;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin: 0.5rem 0;
+
+
+
+.listing--check {
+    li {
+        color: #666;
+        overflow: hidden;
+        padding: 0;
+        position: relative;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin: 0.5rem 0;
+
+        a {
+
+            color: #666;
+            font-size: 14px;
+            padding: 0;
+            -webkit-padding-start: 30px;
+            -moz-padding-start: 30px;
+            padding-inline-start: 30px;
+            position: relative;
+            min-height: 22px;
+            display: block;
+
+            &:before {
+                height: 20px;
+                width: 20px;
+                border: $border;
+                position: absolute;
+                left: 0;
+                top: 0;
+                content: "";
+                border-radius:2px;
+            }
+        }
+
+        &.is-active {
+            a {
+                &:before {
+                    background: $brand-color;
+                    border-color: $brand-color;
+                }
+
+                &:after {
+                    height: 12px;
+                    width: 7px;
+                    position: absolute;
+                    content: '';
+                    display: inline-block;
+                    font-size: 16px;
+                    text-align: center;
+                    line-height: 16px;
+                    border-right: 2px solid #fff;
+                    border-bottom: 2px solid #fff;
+                    -webkit-transform: rotate(45deg);
+                    transform: rotate(45deg);
+                    left: 6px;
+                    top: 2px;
+                }
+            }
+        }
+    }
 }
 
-.listing--check li a {
-    color: #666;
-    font-size: 14px;
-    padding: 0;
-    -webkit-padding-start: 30px;
-    -moz-padding-start: 30px;
-    padding-inline-start: 30px;
-    position: relative;
-    min-height: 22px;
-    display: block;
-}
-
-.listing--check li a:before {
-    height: 20px;
-    width: 20px;
-    border: $border;
-    position: absolute;
-    left: 0;
-    top: 0;
-    content: "";
-    border-radius: 2px;
-}
-
-.listing--check li.is-active a:before {
-    background: $brand-color;
-    border-color: $brand-color;
-}
-
-.listing--check li.is-active a:after {
-    height: 12px;
-    width: 7px;
-    position: absolute;
-    content: '';
-    display: inline-block;
-    font-size: 16px;
-    text-align: center;
-    line-height: 16px;
-    border-right: 2px solid #fff;
-    border-bottom: 2px solid #fff;
-    -webkit-transform: rotate(45deg);
-    transform: rotate(45deg);
-    left: 6px;
-    top: 2px;
-}
-
-
-
-.listing--check li.is-active a,
-.listing--check li a:hover {
-    /*
-	background: url("../images/retina/checked.svg") no-repeat top left;
-	background-size: 16px;
-*/
-}
 
 ul.listing--bullet li {
     position: relative;

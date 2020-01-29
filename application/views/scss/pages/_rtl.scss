@@ -1,22 +1,9 @@
 [dir="rtl"] {
-    .product-view {
-        overflow-x: hidden;
-    }
-
-    .ltr-right {
-        direction: ltr;
-        text-align: right;
-    }
 
     body {
+        direction: rtl;
         text-align: right;
     }
-
-    th,
-    .grids--offset .grid-layout p {
-        text-align: right;
-    }
-
     .text-right {
         text-align: left !important;
     }
@@ -25,35 +12,10 @@
         text-align: right !important;
     }
 
-    /* float: none;*/
-    .align--right,
-    .align--right {
-        text-align: left !important;
-    }
-
-    .float-right {
-        float: left !important;
-    }
-
-    .sublinks {
+    .ltr-right {
+        direction: ltr;
         text-align: right;
     }
-
-
-
-    .form--search-popup .form__cover input[type="submit"] {
-        left: 0;
-        right: auto;
-    }
-
-    .seller-login {
-        text-align: left;
-    }
-
-    .login-account {
-        margin-left: 0;
-    }
-
     .checkbox input,
     .radio input,
     .checkbox .input-helper:before,
@@ -75,86 +37,10 @@
         left: auto;
     }
 
-    .box.box--list .links--vertical li {
-        padding-right: 25px;
-    }
-
-    .section__head .btn--positioned {
-        left: 0;
-        right: auto;
-    }
-
     .breadcrumbs ul li:before {
         right: auto;
         left: 10px;
     }
-
-    .buy-group .btn {
-        margin-right: 0;
-        margin-left: 10px;
-    }
-
-    .text-left {
-        text-align: inherit;
-    }
-
-    .panel--cols .col--right {
-        clear: left;
-    }
-
-    .panel--cols .col--left {
-        padding-right: 15px;
-    }
-
-    .cols--group .col__left {
-        clear: none;
-        float: right;
-    }
-
-    .cols--group .col__right {
-        clear: left;
-        float: left;
-    }
-
-    .table--view th,
-    .table--view td,
-    .table td,
-    .table th {
-        text-align: right;
-    }
-
-    .field--calender {
-        background-position: 13px center;
-        padding: 0 10px;
-        padding-left: 30px;
-    }
-
-    .list__selection .checkbox,
-    .list__selection .radio {
-        left: auto;
-        right: 25px;
-    }
-
-    .list__selection h6 {
-        padding-right: 30px;
-    }
-
-    .form--singlefield input[type="text"] {
-        float: right;
-    }
-
-    .form--singlefield input[type="submit"] {
-        float: left;
-    }
-
-    .listing--grids ul li {
-        padding: 0 0 0 20px;
-    }
-
-    #facebox {
-        text-align: inherit;
-    }
-
     #facebox .close,
     .close,
     .system_message .closeMsg {
@@ -183,15 +69,6 @@
         right: 6px;
     }
 
-    .box.box--list .links--vertical {
-        margin: 0;
-    }
-
-    .gurantee i.icn {
-        float: right;
-        margin-left: 15px;
-    }
-
     .coupon-offers li:before {
         left: auto;
         right: 0;
@@ -203,16 +80,6 @@
         right: -45px;
     }
 
-    .box__head .btn {
-        float: left;
-    }
-
-    .testimonial-blocks .description {
-        text-align: right;
-        padding-left: 0;
-        padding-right: 60px;
-    }
-
     .testimonial-blocks .description:before {
         left: auto;
         right: 0;
@@ -221,14 +88,6 @@
     .cms-editor ul li:before {
         left: auto;
         right: 0;
-    }
-
-    .statistics__box h4 span {
-        padding: 0 0 0 20px;
-    }
-
-    .statistics__box {
-        text-align: right;
     }
 
     .statistics__box h4:before {
@@ -258,11 +117,6 @@
     input[type="text"].p-cards.meastro {
         background-position: -135px -141px;
     }
-
-    .cat-accordion {
-        padding: 0;
-    }
-
     .cat-accordion .acc-trigger {
         left: 0;
         right: auto;
@@ -388,12 +242,6 @@
         right: 0;
     }
 
-
-
-    .payment {
-        text-align: left;
-    }
-
     .selected-filters a::after {
         right: auto;
         left: 4px;
@@ -426,47 +274,23 @@
         right: 20px;
     }
 
-    .certified-bar .icn {
-        margin: 0 0 0 10px;
-    }
+ 
 
     .divider--filters:after {
         left: auto;
         right: 0;
     }
 
-    .checkbox input,
-    .radio input {
-        margin-right: 0;
-        margin-left: 0.5rem;
-    }
-
-
-
     .alert--process:before {
         left: auto;
         right: 15px;
-    }
-
-    .sold-by {
-        text-align: right;
     }
 
     .sold-by .products__rating {
         padding-right: 0;
     }
 
-    .wrap-drop {
-        -webkit-padding-end: 0;
-        -moz-padding-end: 0;
-        padding-inline-end: 0;
-        padding-left: 35px;
-    }
-
-    .products__quickview > a .svg-icon {
-        margin-right: 0;
-        margin-left: 10px;
-    }
+ 
 
     .wrap-drop:before {
         right: auto;
@@ -477,8 +301,6 @@
         right: auto;
         left: 22px;
     }
-
-
 
     .widget-scroll .slick-prev {
         right: -28px;
@@ -559,18 +381,8 @@
         text-align: left;
     }
 
-    .col-details-right {
-        /*padding-left: 0;
-	padding-right: 80px;*/
-    }
-
     .slider-nav {
         float: right;
-    }
-
-    .slider-for {
-        /*float: left;
-	padding: 0 30px 0 0;*/
     }
 
     .favourite-wrapper-detail {
@@ -604,8 +416,7 @@
     }
 
     .fld-date {
-        /*background-position: calc(12px) 11px;*/
-    }
+          }
 
     .testimonials-item .user {
         left: auto;
@@ -644,14 +455,57 @@
 
     }
 
+    .sidebar {
+        left: auto;
+        right: 0;
+    }
+
+    .sidebar-is-expanded .header-dashboard {
+        padding-left: 20px;
+    }
+
+    .logo-dashboard {
+        left: auto;
+        right: 10px;
+    }
+
+    .dashboard-menu .accordianbody li a {
+        padding-left: 0;
+        padding-right: 70px;
+    }
+
+    .header-icons-group {
+        margin-left: 0;
+        margin-right: auto;
+    }
+
+
+    .header-icons-group .dropdown__target {
+        left: 0;
+        right: auto;
+    }
+
+    .header-icons-group .dropdown__target:before {
+        left: 20px;
+        right: auto;
+    }
+
+    .select-categories-slider .slick-prev {
+        left: -40px;
+    }
+
+    .select-categories-slider .slick-next {
+        right: -40px;
+    }
+
+
+
     /*All media queries */
     @media only screen and (max-width: 1600px) {
         .post-data.is-fixed .sticky-element {
             margin: 0;
         }
     }
-
-    @media only screen and (max-width: 1281px) {}
 
     @media only screen and (max-width: 1199px) {
         .navs_toggle {
@@ -766,15 +620,9 @@
         .slider-for {
             padding-right: 0;
         }
-
-
-
     }
 
-    @media only screen and (max-width: 767px) {
-        html {
-            overflow-x: hidden;
-        }
+    @media only screen and (max-width: 767px) { 
 
         .f-links h3:after,
         .f-links h3:before {
@@ -836,79 +684,6 @@
         }
     }
 
-    /*dashboard arabic-------------------------------*/
-    .checkbox input,
-    .radio input,
-    .checkbox .input-helper:before,
-    .radio .input-helper:before,
-    .bullet-list li:before,
-    .container--cms ul li:before,
-    .box.box--list .links--vertical li .fa {
-        right: 0;
-        left: auto;
-    }
-
-
-    .checkbox input,
-    .radio input {
-        margin-right: 0;
-        margin-left: 0.5rem;
-    }
-
-    .radio .input-helper::after {
-        right: 4px;
-        left: auto;
-    }
-
-    .checkbox .input-helper:after {
-        right: 3px;
-        left: auto;
-    }
-
-    .sidebar {
-        left: auto;
-        right: 0;
-    }
-
-    .sidebar-is-expanded .header-dashboard {
-        padding-left: 20px;
-    }
-
-    .logo-dashboard {
-        left: auto;
-        right: 10px;
-    }
-
-    .dashboard-menu .accordianbody li a {
-        padding-left: 0;
-        padding-right: 70px;
-    }
-
-    .header-icons-group {
-        margin-left: 0;
-        margin-right: auto;
-    }
-
-
-    .header-icons-group .dropdown__target {
-        left: 0;
-        right: auto;
-    }
-
-    .header-icons-group .dropdown__target:before {
-        left: 20px;
-        right: auto;
-    }
-
-    .select-categories-slider .slick-prev {
-        left: -40px;
-    }
-
-    .select-categories-slider .slick-next {
-        right: -40px;
-    }
-
-
     @media only screen and (max-width: 1080px) {
         .hamburger-toggle {
             right: 35px;
@@ -925,7 +700,7 @@
             -moz-padding-end: 10px;
             padding-inline-end: 10px;
         }
-    }
+    } 
 
     @media only screen and (max-width: 767px) {
         .widget-scroll .slick-prev {

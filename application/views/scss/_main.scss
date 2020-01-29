@@ -68,9 +68,6 @@ sans-serif;
 @import 'components/wrap-drop';
 
 
-
-
-
 @import 'vendors/animate';
 @import 'vendors/fontawesome';
 @import 'vendors/chartist';
@@ -101,7 +98,8 @@ sans-serif;
 @import 'pages/seller';
 @import 'pages/shop';
 @import 'pages/testimonials';
-@import 'pages/rtl';
+//@import 'pages/rtl';
+
 
 body {
     overflow-x: hidden;
