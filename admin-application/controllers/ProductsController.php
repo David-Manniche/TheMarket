@@ -769,7 +769,7 @@ class ProductsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function productTags($product_id)
+    /* public function productTags($product_id)
     {
         
         $product_id = FatUtility::int($product_id);
@@ -781,7 +781,7 @@ class ProductsController extends AdminBaseController
         $this->set('productTags', $productTags);
         $this->set('product_id', $product_id);
         $this->_template->render(false, false);
-    }
+    } */
 
     public function updateProductTag()
     {
@@ -1971,7 +1971,7 @@ class ProductsController extends AdminBaseController
         if($productId < 1){
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
-        }        
+        }                
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);        
         $languages = Language::getAllNames();
         unset($languages[$siteDefaultLangId]);          
@@ -1979,5 +1979,26 @@ class ProductsController extends AdminBaseController
         $this->set('otherLanguages', $languages);                   
         $this->set('productId', $productId); 
         $this->_template->render(false, false, 'products/product-options-and-tag.php');
+    }
+
+    public function upcListing($productId)
+    {
+        $productId = FatUtility::int($productId);
+        if ($productId < 1) {
+            FatUtility::dieWithError($this->str_invalid_request);
+        }
+
+        $srch = UpcCode::getSearchObject();
+        $srch->addCondition('upc_product_id', '=', $productId);
+        $srch->doNotCalculateRecords();
+        $rs = $srch->getResultSet();
+        $upcCodeData = FatApp::getDb()->fetchAll($rs, 'upc_options');
+        $productOptions = Product::getProductOptions($productId, $this->adminLangId, true);
+        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '_');
+        
+        $this->set('productOptions', $productOptions);
+        $this->set('optionCombinations', $optionCombinations);
+        $this->set('upcCodeData', $upcCodeData);         
+        $this->_template->render(false, false);
     }
 }
