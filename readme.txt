@@ -9,6 +9,11 @@ Bugs:
     => 033089 - Social Account not getting logged in if email is not updated in db
     => 033084 - Payment pending orders cannot be cancelled or removed from the system.
     => Safari Browser layout issue.
+    => 033975 - when user places bank withdrawal request then getting error in email
+    => 033974 - getting error on withdrawing amount from affiliate account using bank pay
+    => 033973 - getting error in side bar on login with affiliate account
+    => 033956 - request is getting placed more than available amount in wallet
+    => 033955 - withdrawing amount less than allowed withdrawal
 
 Enhancements:
     => 68474 - Library and code updated to handle 3-D secure payments through Omise Payment Gateway.
@@ -33,3 +38,4 @@ New Features:
     => PWA compliance.
     => 69879 - Facebook Pixel
     => 69217 - Google Shopping Feed Integration
+    => 69191 PayPal Payout.

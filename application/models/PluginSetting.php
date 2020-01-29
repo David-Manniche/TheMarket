@@ -8,6 +8,7 @@ class PluginSetting
 
     public const TYPE_STRING = 1;
     public const TYPE_INT = 2;
+    public const TYPE_FLOAT = 3;
 
     public function getError()
     {
@@ -40,6 +41,9 @@ class PluginSetting
         switch ($type) {
             case 'int':
                 return static::TYPE_INT;
+                break;
+            case 'float':
+                return static::TYPE_FLOAT;
                 break;
             default:
                 return static::TYPE_STRING;
@@ -131,6 +135,9 @@ class PluginSetting
             switch ($fieldType) {
                 case static::TYPE_INT:
                     $fld = $frm->addIntegerField($label, $fieldName);
+                    break;
+                case static::TYPE_FLOAT:
+                    $fld = $frm->addFloatField($label, $fieldName);
                     break;
                 default:
                     $fld = $frm->addTextBox($label, $fieldName);

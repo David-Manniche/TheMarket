@@ -1924,6 +1924,7 @@ class CommonHelper extends FatUtility
         if (empty($url)) {
             return false;
         }
+
         if (strpos($url, "?") !== false) {
             $url = str_replace('?', '/?', $url);
         }

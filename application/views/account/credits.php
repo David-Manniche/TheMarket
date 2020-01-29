@@ -53,7 +53,6 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div id="withdrawalReqForm"></div>
                         <?php if ($codMinWalletBalance > -1) { ?>
                         <div class="cards-header p-4 pb-0">
                             <p class="note"><?php echo Labels::getLabel('MSG_Minimum_balance_Required_For_COD', $siteLangId).' : '. CommonHelper::displaymoneyformat($codMinWalletBalance);?></p>
@@ -72,7 +71,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                         $submitFld = $frmSrch->getField('btn_submit');
                                         $submitFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
 
-                                        $fldClear= $frmSrch->getField('btn_clear');
+                                        $fldClear = $frmSrch->getField('btn_clear');
                                         $fldClear->setFieldTagAttribute('class', 'btn--block btn btn--primary-border');
                                         echo $frmSrch->getFormHtml();
                                         ?>
@@ -106,6 +105,13 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                         </div>
                     </div>
                     <div class="gap"></div>
+                </div>
+            </div>
+            <div class="row mb-4 d-none withdrawForm">
+                <div class="col-lg-12">
+                    <div class="cards">
+                        <div id="withdrawalReqForm"></div>
+                    </div>
                 </div>
             </div>
             <div class="row">

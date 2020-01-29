@@ -56,9 +56,10 @@ foreach ($arr_listing as $sn => $row) {
                     $td->appendElement('plaintext', array(), $row[$key] . $htm, true);
                 }
                 break;
-            /* case 'plugin_type':
-                $td->appendElement('plaintext', array(), $pluginTypes[$row[$key]], true);
-                break; */
+            case 'plugin_type':
+                $pluginType = isset($pluginTypes[$row[$key]]) ? $pluginTypes[$row[$key]] : Labels::getLabel('LBL_N/A', $adminLangId);
+                $td->appendElement('plaintext', array(), $pluginType, true);
+                break;
             case 'plugin_active':
                 $active = "active";
                 if (!$row['plugin_active']) {

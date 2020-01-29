@@ -40,10 +40,21 @@ $(document).ready(function(){
 	};
 
 	withdrawalReqForm = function(){
-		$(dvForm).html( fcom.getLoader() );
-		fcom.ajax(fcom.makeUrl('Account','requestWithdrawal'), '', function(res){
-			$(dvForm).html(res);
-		});
+        $(dvForm).html( fcom.getLoader() );
+        $payoutType = $(".payout_type").val();
+        if ('-1' == $payoutType) {
+            fcom.ajax(fcom.makeUrl('Account','requestWithdrawal'), '', function(res){
+                $(dvForm).html(res);
+            });
+        } else {
+            fcom.ajax(fcom.makeUrl($payoutType, 'getRequestForm'), '', function(res){
+                $(dvForm).html(res);
+            });
+        }
+        $(".withdrawForm").removeClass('d-none');
+        $('html, body').animate({
+            scrollTop: $('.withdrawForm').offset().top - 100
+        }, 'slow');
 	};
 
 	setupWithdrawalReq = function(frm){
@@ -57,7 +68,11 @@ $(document).ready(function(){
 	};
 
 	closeForm = function(){
-		$(dvForm).html('');
+        $(dvForm).html('');
+        $(".withdrawForm").addClass('d-none');
+        $('html, body').animate({
+            scrollTop: $('html, body').offset().top - 100
+        }, 'slow');
 	};
 
 	setUpWalletRecharge = function( frm ){
@@ -69,4 +84,13 @@ $(document).ready(function(){
 			}
 		});
 	}
+    setupPluginForm = function(frm){
+        if (!$(frm).validate()) return;
+		var data = fcom.frmData(frm);
+		fcom.updateWithAjax(fcom.makeUrl(frm.keyName.value, 'setup'), data, function(t) {
+			$(dvForm).html('');
+			creditsInfo();
+			searchCredits(document.frmCreditSrch);
+		});
+	};
 })();

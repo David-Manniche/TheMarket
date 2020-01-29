@@ -401,6 +401,10 @@ class AccountController extends LoggedUserController
 
     public function creditsInfo()
     {
+        $payoutPlugins = Plugin::getNamesWithCode(Plugin::TYPE_PAYOUTS, $this->siteLangId);
+        $payouts = [-1 => Labels::getLabel("LBL_BANK_PAYOUT", $this->siteLangId)] + $payoutPlugins;
+
+        $this->set('payouts', $payouts);
         $this->set('userWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId()));
         $this->set('userTotalWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId(), false, false));
         $this->set('promotionWalletToBeCharged', Promotion::getPromotionWalleToBeCharged(UserAuthentication::getLoggedUserId()));
@@ -428,7 +432,7 @@ class AccountController extends LoggedUserController
         }
         $orderData = array();
         $order_id = isset($_SESSION['wallet_recharge_cart']["order_id"]) ? $_SESSION['wallet_recharge_cart']["order_id"] : false;
-        $orderData['order_type']= Orders::ORDER_WALLET_RECHARGE;
+        $orderData['order_type'] = Orders::ORDER_WALLET_RECHARGE;
 
         $orderData['userAddresses'] = array(); //No Need of it
         $orderData['order_id'] = $order_id;
@@ -589,6 +593,11 @@ class AccountController extends LoggedUserController
     public function requestWithdrawal()
     {
         $frm = $this->getWithdrawalForm($this->siteLangId);
+
+        if (User::isAffiliate()) {
+            $fld = $frm->getField('ub_ifsc_swift_code');
+            $fld->requirements()->setRegularExpressionToValidate(ValidateElement::USERNAME_REGEX);
+        }
 
         $userId = UserAuthentication::getLoggedUserId();
         $balance = User::getUserBalance($userId);
@@ -851,7 +860,7 @@ class AccountController extends LoggedUserController
             $this->set('hasDigitalProducts', $hasDigitalProducts);
             $this->_template->render();
         }
-
+        
         $this->_template->addJs('js/jquery.form.js');
         $this->_template->addJs('js/cropper.js');
         $this->_template->addCss('css/cropper.css');
@@ -871,6 +880,10 @@ class AccountController extends LoggedUserController
         if (!User::canAccessSupplierDashboard() && $data['user_registered_initially_for'] == User::USER_TYPE_SELLER) {
             $showSellerActivateButton = true;
         }
+
+        $payoutPlugins = Plugin::getNamesWithCode(Plugin::TYPE_PAYOUTS, $this->siteLangId);
+
+        $this->set('payouts', $payoutPlugins);
 
         $this->set('showSellerActivateButton', $showSellerActivateButton);
         $this->set('userPreferredDashboard', $data['user_preferred_dashboard']);
@@ -2584,11 +2597,9 @@ class AccountController extends LoggedUserController
             $frm->addTextBox(Labels::getLabel('LBL_Swift_Code', $langId), 'ub_ifsc_swift_code');
             $bankIfscUnReqFld = new FormFieldRequirement('ub_ifsc_swift_code', Labels::getLabel('LBL_Swift_Code', $langId));
             $bankIfscUnReqFld->setRequired(false);
-            $bankIfscUnReqFld->requirements()->setRegularExpressionToValidate(ValidateElement::USERNAME_REGEX);
 
             $bankIfscReqFld = new FormFieldRequirement('ub_ifsc_swift_code', Labels::getLabel('LBL_Swift_Code', $langId));
             $bankIfscReqFld->setRequired(true);
-            $bankIfscReqFld->requirements()->setRegularExpressionToValidate(ValidateElement::USERNAME_REGEX);
 
             $PayMethodFld->requirements()->addOnChangerequirementUpdate(User::AFFILIATE_PAYMENT_METHOD_CHEQUE, 'eq', 'ub_ifsc_swift_code', $bankIfscUnReqFld);
             $PayMethodFld->requirements()->addOnChangerequirementUpdate(User::AFFILIATE_PAYMENT_METHOD_BANK, 'eq', 'ub_ifsc_swift_code', $bankIfscReqFld);
@@ -2830,7 +2841,7 @@ class AccountController extends LoggedUserController
 
                 case User::USER_FIELD_TYPE_TIME:
                     $fld = $frm->addTextBox($field['sformfield_caption'], $fieldName);
-                    $fld->requirement->setRegularExpressionToValidate(ValidateElement::TIME_REGEX);
+                    $fld->requirements()->setRegularExpressionToValidate(ValidateElement::TIME_REGEX);
                     $fld->htmlAfterField = Labels::getLabel('LBL_HH:MM', $this->siteLangId);
                     $fld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_time_format.', $this->siteLangId));
                     break;
@@ -3182,7 +3193,7 @@ class AccountController extends LoggedUserController
         $frm = new Form('frmRechargeWallet');
         $fld = $frm->addFloatField('', 'amount');
         //$fld->requirements()->setRequired();
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Add_Money_to_account', $langId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Add_Money_to_wallet', $langId));
         return $frm;
     }
 
