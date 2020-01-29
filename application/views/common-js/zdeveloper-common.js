@@ -330,6 +330,7 @@ removeFromCart = function (key) {
 function submitSiteSearch(frm, page) {
     events.search();
 	var keyword = $.trim($(frm).find('input[name="keyword"]').val());
+	keyword = keyword.replace('&', '++');
 
 	if (3 > keyword.length || '' === keyword) {
 		$.mbsmessage(langLbl.searchString, true, 'alert--danger');

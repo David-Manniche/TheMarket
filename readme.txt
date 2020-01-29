@@ -14,6 +14,7 @@ Bugs:
     => 033973 - getting error in side bar on login with affiliate account
     => 033956 - request is getting placed more than available amount in wallet
     => 033955 - withdrawing amount less than allowed withdrawal
+    => keyword search with & keyword.
 
 Enhancements:
     => 68474 - Library and code updated to handle 3-D secure payments through Omise Payment Gateway.

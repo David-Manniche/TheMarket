@@ -26,7 +26,6 @@ class ProductsController extends MyAppController
     {
         $db = FatApp::getDb();
         $get = Product::convertArrToSrchFiltersAssocArr(FatApp::getParameters());
-
         $includeKeywordRelevancy = false;
         $keyword = '';
         if (array_key_exists('keyword', $get)) {
