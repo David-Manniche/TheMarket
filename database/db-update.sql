@@ -332,3 +332,4 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Add_favorites_to_w
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_On_enabling_this_feature,_buyer_will_have_to_select_or_create_a_wishlist_to_group_his_favorites';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Wishlist/Favorites';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Products_That_I_Love';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_FACEBOOK_PIXEL_ID';

@@ -1,4 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<script>
+    events.initiateCheckout();
+</script>
 <section class="section bg-gray-dark">
     <div class="container">
         <div class="row justify-content-between">
@@ -19,8 +22,7 @@
     <?php } else { ?>
     $defaultAddress = 0;
     <?php } ?>
-</script>
-<script type="text/javascript">
+
     $("document").ready(function() {
         <?php if (empty($addresses) || count($addresses) == 0){ ?>
             showAddressFormDiv();

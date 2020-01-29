@@ -64,7 +64,7 @@ if (FatApp::getConfig("CONF_ENABLE_ENGAGESPOT_PUSH_NOTIFICATION", FatUtility::VA
     Engagespot.init()
     Engagespot.identifyUser('YT_<?php echo UserAuthentication::getLoggedUserId(); ?>');
     <?php }
-} 
+}
 
 if (Message::getMessageCount() || Message::getErrorCount() || Message::getDialogCount() || Message::getInfoCount()) { ?>
     $("document").ready(function() {
@@ -75,9 +75,29 @@ if (Message::getMessageCount() || Message::getErrorCount() || Message::getDialog
             }, time);
         }
     });
+<?php }
+
+$pixelId = FatApp::getConfig("CONF_FACEBOOK_PIXEL_ID", FatUtility::VAR_STRING, '');
+if ('' != $pixelId) { ?>        
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '<?php echo $pixelId;?>');
+        fbq('track', 'PageView'); 
+        var fbPixel = true;       
 <?php } ?>
 </script>
-<?php
+<?php if ('' !=  $pixelId) {  ?>
+    <noscript>
+        <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=<?php echo $pixelId; ?>&ev=PageView&noscript=1"/>
+    </noscript>
+<?php }
+
 if (FatApp::getConfig("CONF_GOOGLE_TAG_MANAGER_HEAD_SCRIPT", FatUtility::VAR_STRING, '')) {
     echo FatApp::getConfig("CONF_GOOGLE_TAG_MANAGER_HEAD_SCRIPT", FatUtility::VAR_STRING, '');
 }

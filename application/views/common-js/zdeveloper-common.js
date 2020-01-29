@@ -299,6 +299,7 @@ addRemoveWishListProduct = function (selprod_id, wish_list_id, event) {
 				$("[data-id=" + selprod_id + "]").removeClass("is-active");
 			}
 			if (ans.action == 'A') {
+                events.addToWishList();
 				$(dv).find(".wishListCheckBox_" + ans.wish_list_id).addClass('is-active');
 			} else if (ans.action == 'R') {
 				$(dv).find(".wishListCheckBox_" + ans.wish_list_id).removeClass('is-active');
@@ -327,7 +328,7 @@ removeFromCart = function (key) {
 };
 
 function submitSiteSearch(frm, page) {
-
+    events.search();
 	var keyword = $.trim($(frm).find('input[name="keyword"]').val());
 
 	if (3 > keyword.length || '' === keyword) {
@@ -1186,6 +1187,7 @@ $("document").ready(function () {
 	}); */
 
 	$(document).on('click', '.add-to-cart--js', function (event) {
+        events.addToCart();
 		/* $(document).delegate('.add-to-cart--js' ,'click' , function(event){ */
 		$btn = $(this);
 		event.preventDefault();

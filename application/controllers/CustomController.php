@@ -527,6 +527,7 @@ class CustomController extends MyAppController
         }
 
         $this->set('textMessage', $textMessage);
+        $this->set('orderInfo', $orderInfo);
         if (CommonHelper::isAppUser()) {
             $this->set('exculdeMainHeaderDiv', true);
             $this->_template->render(false, false);

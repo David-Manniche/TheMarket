@@ -31,3 +31,4 @@ New Features:
     => 69147 - Enhanced social login with plugin.
     => 68898 - Custom push notification management.
     => PWA compliance.
+    => 69879 - Facebook Pixel
