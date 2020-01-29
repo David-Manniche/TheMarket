@@ -1592,4 +1592,12 @@ END,   special_price_found ) as special_price_found'
         $query = "DELETE m FROM ".static::DB_PRODUCT_MIN_PRICE." m LEFT OUTER JOIN (".$tmpQry.") ON pmp_product_id = selprod_product_id WHERE m.pmp_product_id IS NULL";
         FatApp::getDb()->query($query);
     }
+    
+    public static function getProductsCount()
+    {
+        $srch = static::getSearchObject(); 
+        $srch->addFld('COUNT('.static::DB_TBL_PREFIX.'id) as total_products'); 
+        $rs = $srch->getResultSet();
+        return FatApp::getDb()->fetch($rs);
+    }
 }

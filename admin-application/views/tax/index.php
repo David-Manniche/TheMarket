@@ -37,10 +37,10 @@
                                 $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
                                 $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
                                 $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                        if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canView) {
+                        /* if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canView) {
                             $innerLi=$innerUl->appendElement('li');
                             $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Export', $adminLangId),"onclick"=>"exportForm(".Importexport::TYPE_TAX_CATEGORY.")"), Labels::getLabel('LBL_Export', $adminLangId), true);
-                        }
+                        } */
 
                         if ($canEdit) {
                             $innerLi=$innerUl->appendElement('li');

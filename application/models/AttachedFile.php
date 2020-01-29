@@ -836,7 +836,9 @@ class AttachedFile extends MyAppModel
             AttachedFile::FILETYPE_APP_LOGO,
             AttachedFile::FILETYPE_PUSH_NOTIFICATION_IMAGE,
         ];
-        if (!in_array($fileType, $allowedFileTypes) && (!$fileType || !$recordId)) {
+        //if (!in_array($fileType, $allowedFileTypes) && (!$fileType || !$recordId)) {
+        // Remove condition of $recordId for handle all data of add/edit product category in single form
+        if (!in_array($fileType, $allowedFileTypes) && !$fileType) {          
             $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->commonLangId);
             return false;
         }

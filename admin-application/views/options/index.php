@@ -44,7 +44,7 @@
                                 $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
                             //$innerLi=$innerUl->appendElement('li');
                         ?>
-                        <?php if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canView) {
+                        <?php /* if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canView) {
                             $innerLiExport=$innerUl->appendElement('li');
                             $innerLiExport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Export', $adminLangId),"onclick"=>"addExportForm(".Importexport::TYPE_OPTIONS.")"), Labels::getLabel('LBL_Export', $adminLangId), true); ?>
                         <!--<a href="javascript:void(0)" class="themebtn btn-default btn-sm" onClick="exportForm(<?php echo Importexport::TYPE_OPTION_VALUES; ?>)";><?php echo Labels::getLabel('LBL_Export_Option_Value', $adminLangId); ?></a>-->
@@ -53,7 +53,7 @@
                             $innerLiImport=$innerUl->appendElement('li');
                             $innerLiImport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Import', $adminLangId),"onclick"=>"addImportForm(". Importexport::TYPE_OPTIONS.")"), Labels::getLabel('LBL_Import', $adminLangId), true); ?>
                         <!--<a href="javascript:void(0)" class="themebtn btn-default btn-sm" onClick="importForm(<?php echo Importexport::TYPE_OPTION_VALUES; ?>)";><?php echo Labels::getLabel('LBL_Import_Option_Value', $adminLangId); ?></a>-->
-                        <?php }
+                        <?php } */
                         if ($canEdit) {
                             $innerLi=$innerUl->appendElement('li');
                             $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteSelected()"), Labels::getLabel('LBL_Delete', $adminLangId), true);

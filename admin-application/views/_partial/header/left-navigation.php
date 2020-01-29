@@ -383,6 +383,11 @@
             <?php if ($objPrivilege->canViewPromotions(AdminAuthentication::getLoggedAdminId(), true)) { ?>
                 <li><a href="<?php echo CommonHelper::generateUrl('promotions'); ?>"><?php echo Labels::getLabel('LBL_PPC_Promotions_Management', $adminLangId);?></a></li>
             <?php }?>
+            
+            <?php if($objPrivilege->canViewImportExport(AdminAuthentication::getLoggedAdminId(), true)){ ?>
+                <li><a href="<?php echo CommonHelper::generateUrl('ImportExport'); ?>"><?php echo Labels::getLabel('LBL_Import_Export',$adminLangId);?></a>
+                </li>
+			<?php } ?>
 
             <?php if (
                 $objPrivilege->canViewSuccessStories(AdminAuthentication::getLoggedAdminId(), true) ||

@@ -4419,6 +4419,7 @@ fieldset[disabled] .field_control.disabled {
 	background: #fff;
 	border-radius: 5px;
 	overflow: hidden;
+    min-height:575px;
 }
 
 .tabs_nav_container.vertical > .tabs_nav {

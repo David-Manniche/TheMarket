@@ -6,6 +6,7 @@ class ProductCategory extends MyAppModel
     const DB_TBL_LANG ='tbl_product_categories_lang';
     const DB_TBL_LANG_PREFIX ='prodcatlang_';
     const REWRITE_URL_PREFIX = 'category/view/';
+    const REMOVED_OLD_IMAGE_TIME = 4;
     private $db;
     private $categoryTreeArr = array();
 
@@ -221,8 +222,8 @@ class ProductCategory extends MyAppModel
         // echo $prodCatSrch->getQuery();exit;
         $rs = $prodCatSrch->getResultSet();
         $categoriesArr = FatApp::getDb()->fetchAll($rs, 'prodcat_id');
-        static::addMissingParentDetails($categoriesArr, $langId);
-        $categoriesArr = static::parseTree($categoriesArr, $parentId);
+        static::addMissingParentDetails($categoriesArr, $langId); 
+        $categoriesArr = static::parseTree($categoriesArr, $parentId); 
 
         return $categoriesArr;
     }
@@ -465,7 +466,7 @@ class ProductCategory extends MyAppModel
                 }
                 $out[$key] = $name;
             }
-        }
+        } 
         return $out;
     }
 
@@ -1004,4 +1005,208 @@ class ProductCategory extends MyAppModel
         $where = array('smt'=>'prodcat_id = ?', 'vals'=>array($userId));
         FatApp::getDb()->updateFromArray(static::DB_TBL, array('prodcat_img_updated_on'=>date('Y-m-d  H:i:s')), $where);
     }
+    
+    public function saveCategoryData($post)
+    {  
+        $parentCatId = FatUtility::int($post['prodcat_parent']);
+        $prodCatId = FatUtility::int($post['prodcat_id']);
+        unset($post['prodcat_id']);
+        $autoUpdateOtherLangsData = 0; 
+        if(isset($post['auto_update_other_langs_data'])){
+            $autoUpdateOtherLangsData = FatUtility::int($post['auto_update_other_langs_data']);
+        }        
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $post['prodcat_identifier'] = $post['prodcat_name'][$siteDefaultLangId];
+        if ($this->mainTableRecordId == 0) {
+            $post['prodcat_display_order'] = $this->getMaxOrder($parentCatId);
+        }
+        $this->assignValues($post);
+        if ( $this->save() ) { 
+            $this->updateCatCode();
+            $this->rewriteUrl($post['prodcat_identifier'], true, $parentCatId);
+            Product::updateMinPrices();
+        }else{
+            $categoryId = self::getDeletedProductCategoryByIdentifier($post['prodcat_identifier']);        
+            if(!$categoryId){      
+                $this->error = $this->getError();
+                return false;
+            }
+
+            $record = new ProductCategory($categoryId);
+            $data = $post;
+            $data['prodcat_deleted'] = applicationConstants::NO;
+            $record->assignValues($data);
+            if (!$record->save()) {
+                $this->error = $record->getError();
+                return false;
+            }
+            $this->mainTableRecordId = $record->getMainTableRecordId();
+            $this->updateCatCode();
+        }
+        
+        $this->saveLangData($siteDefaultLangId, $post['prodcat_name'][$siteDefaultLangId]); // For site default language
+        $catNameArr = $post['prodcat_name'];
+        unset($catNameArr[$siteDefaultLangId]);
+        foreach($catNameArr as $langId=>$catName){
+            if(empty($catName) && $autoUpdateOtherLangsData > 0){
+                $this->saveTranslatedLangData($langId);
+            }else if(!empty($catName)){
+                $this->saveLangData($langId, $catName);
+            }
+        }
+
+        if($prodCatId == 0){
+            $this->updateMedia($post['cat_icon_image_id']);
+            $this->updateMedia($post['cat_banner_image_id']);
+        }
+        return true;
+    }
+    
+    public function saveLangData($langId, $prodCatName)
+    {
+        $langId = FatUtility::int($langId);
+        if($this->mainTableRecordId < 1 || $langId < 1){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+
+        $data = array(
+            'prodcatlang_prodcat_id'=>$this->mainTableRecordId,
+            'prodcatlang_lang_id'=>$langId,
+            'prodcat_name'=> $prodCatName,
+        );
+        if (!$this->updateLangData($langId, $data)) {
+            $this->error = $this->getError();
+            return false;
+        }       
+        return true;
+    }
+    
+    public function saveTranslatedLangData($langId)
+    {
+        $langId = FatUtility::int($langId);
+        if($this->mainTableRecordId < 1 || $langId < 1){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        
+        $translateLangobj = new TranslateLangData(static::DB_TBL_LANG);
+        if (false === $translateLangobj->updateTranslatedData($this->mainTableRecordId, 0, $langId)) {
+            $this->error = $translateLangobj->getError();
+            return false;
+        }
+        return true;
+    }
+
+    public function updateMedia($ImageIds)
+    {
+        if(count($ImageIds) == 0){
+            return false;
+        }
+        foreach($ImageIds as $imageId){
+            if($imageId > 0 ){
+                $data = array('afile_record_id' => $this->mainTableRecordId);
+                $where = array('smt'=>'afile_id = ?', 'vals'=>array($imageId));
+                FatApp::getDb()->updateFromArray(AttachedFile::DB_TBL, $data, $where);
+            }
+        }
+        return true;
+    }
+    
+    public function getTranslatedCategoryData($data, $toLangId)
+    {
+        $toLangId = FatUtility::int($toLangId);
+        if(empty($data) || $toLangId < 1){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        
+        $translateLangobj = new TranslateLangData(static::DB_TBL_LANG);        
+        $translatedData = $translateLangobj->directTranslate($data, $toLangId);
+        if (false === $translatedData) {
+            $this->error = $translateLangobj->getError();
+            return false;
+        }
+        return $translatedData;
+    }
+    
+    public function getCategories($includeProductCount = true, $includeSubCategoriesCount = true)
+    {
+        $srch = static::getSearchObject(false, $this->commonLangId, false);
+        $srch->addCondition(static::DB_TBL_PREFIX.'deleted', '=', 0);        
+        $srch->addCondition(static::DB_TBL_PREFIX.'parent', '=', $this->mainTableRecordId);
+        if($includeProductCount === true){
+            $srch->joinTable(Product::DB_TBL_PRODUCT_TO_CATEGORY, 'LEFT JOIN', static::DB_TBL_PREFIX.'id = '.Product::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'prodcat_id', 'ptc');
+            $srch->joinTable(Product::DB_TBL, 'LEFT JOIN', Product::DB_TBL_PREFIX.'id = '.Product::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'product_id', 'p');
+            $cnd = $srch->addDirectCondition(Product::DB_TBL_PREFIX.'deleted IS NULL');
+            $cnd->attachCondition(Product::DB_TBL_PREFIX.'deleted', '=', 0);
+            $srch->addMultipleFields(array('COUNT('.Product::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'product_id) as category_products'));
+            $srch->addGroupBy(static::DB_TBL_PREFIX.'id');
+        }
+        $srch->addOrder(static::DB_TBL_PREFIX.'display_order', 'asc');
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->addMultipleFields(array('m.*', 'COALESCE(prodcat_name,prodcat_identifier ) as prodcat_name'));
+        $rs = $srch->getResultSet(); 
+        $records =FatApp::getDb()->fetchAll($rs);
+        
+        if($includeSubCategoriesCount === true){
+            foreach($records as $key=>$data){
+                $records[$key]['subcategory_count'] = $this->getSubCategoriesCount($data[static::DB_TBL_PREFIX.'id']);
+            } 
+        }
+        return $records;
+    }
+    
+    public function getSubCategoriesCount($prodCatId)
+    {
+        $prodCatId = FatUtility::int($prodCatId);
+        $srch = static::getSearchObject(false, 0, false);
+        $srch->addCondition(static::DB_TBL_PREFIX.'deleted', '=', 0);        
+        $srch->addCondition(static::DB_TBL_PREFIX.'parent', '=', $prodCatId);
+        $srch->addMultipleFields(array('COUNT('.static::DB_TBL_PREFIX.'id) as subcategory_count'));
+        $rs = $srch->getResultSet(); 
+        $record =FatApp::getDb()->fetch($rs);
+        return $record['subcategory_count'] ;
+    }
+    
+    public static function getActiveInactiveCategoriesCount($active)
+    {
+        $srch = static::getSearchObject(false, 0, false);
+        $srch->addCondition(static::DB_TBL_PREFIX.'deleted', '=', 0);
+        $srch->addCondition(static::DB_TBL_PREFIX.'active', '=', $active);           
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->addFld('COUNT('.static::DB_TBL_PREFIX.'id) as categories_count');
+        $rs = $srch->getResultSet(); 
+        return FatApp::getDb()->fetch($rs);
+    }
+    
+    public static function deleteImagesWithOutCategoryId($fileType)
+    {
+        $allowedFileTypes = [AttachedFile::FILETYPE_CATEGORY_ICON, AttachedFile::FILETYPE_CATEGORY_BANNER];
+        if (empty($fileType) ||  !in_array($fileType, $allowedFileTypes)) {          
+            return false;
+        }
+        
+        $currentDate = date('Y-m-d  H:i:s');
+        $prevDate = strtotime ( '-'.static::REMOVED_OLD_IMAGE_TIME.' hour' , strtotime ( $currentDate ) ) ;
+        $prevDate = date ( 'Y-m-d  H:i:s' , $prevDate );
+        $where = array('smt'=>'afile_type = ? AND afile_record_id = ? AND afile_updated_at <= ?', 'vals'=>array($fileType, 0, $prevDate));
+        if (!FatApp::getDb()->deleteRecords(AttachedFile::DB_TBL, $where)) {
+            return false;
+        }
+        return true;
+    }    
+    
+    public function updateCatParent($parentCatId)
+    {
+        if($this->mainTableRecordId < 1){
+            return false;
+        }
+        $parentCatId = FatUtility::int($parentCatId);
+        FatApp::getDb()->updateFromArray(static::DB_TBL, array(static::DB_TBL_PREFIX.'parent' => $parentCatId), array('smt'=>static::DB_TBL_PREFIX.'id = ?', 'vals'=>array($this->mainTableRecordId)));
+        return true;
+    }
+    
 }
