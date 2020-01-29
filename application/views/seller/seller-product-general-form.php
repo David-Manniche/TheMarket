@@ -41,25 +41,13 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn--primary-border');
 $submitBtnFld->developerTags['col'] = 12;
 ?>
 <div class="tabs tabs--small tabs--scroll clearfix">
-    <?php require_once('sellerCatalogProductTop.php');?>
+    <?php /* require_once('sellerCatalogProductTop.php'); */ ?>
 </div>
 <div class="cards">
     <div class="cards-content pt-3 pl-4 pr-4 ">
         <div class="tabs__content form">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="">
-                        <div class="tabs tabs-sm tabs--scroll clearfix">
-                            <ul>
-                                <li class="is-active"><a href="javascript:void(0)"
-                                    <?php if ($selprod_id > 0) { ?>
-                                        onClick="sellerProductForm(<?php echo $product_id, ',', $selprod_id ?>)"
-                                    <?php }?>>
-                                        <?php echo Labels::getLabel('LBL_Basic', $siteLangId); ?></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
                     <div class="form__subcontent">
                         <?php echo $frmSellerProduct->getFormTag(); ?>
                         <div class="row">
