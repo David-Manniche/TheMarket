@@ -10,7 +10,7 @@
 					<?php require_once('sellerCatalogProductTop.php');?>
 				</div>*/?>
 				<div class="tabs_nav_container responsive">
-					<ul class="tabs_nav tabs_nav--internal">
+					<?php /* <ul class="tabs_nav tabs_nav--internal">
 						<li><a href="javascript:void(0)" onClick="sellerProductForm(<?php echo $product_id;?>,<?php echo $selprod_id;?>)"><?php echo Labels::getLabel('LBL_Basic',$adminLangId); ?></a></li>
 						<?php $inactive = ($selprod_id==0)?'fat-inactive':'';		
 						foreach($language as $langId => $langName){?>	
@@ -19,7 +19,7 @@
 							<?php }?>
 							<li><a class="<?php echo ($ppoint_type == PolicyPoint::PPOINT_TYPE_WARRANTY)?'active':''; ?>" href="javascript:void(0)" onClick="linkPoliciesForm(<?php echo $product_id,',',$selprod_id,',',PolicyPoint::PPOINT_TYPE_WARRANTY ; ?>)"><?php echo Labels::getLabel('LBL_Link_Warranty_Policies',$adminLangId); ?></a></li>
 							<li><a class="<?php echo ($ppoint_type == PolicyPoint::PPOINT_TYPE_RETURN)?'active':''; ?>" href="javascript:void(0)" onClick="linkPoliciesForm(<?php echo $product_id,',',$selprod_id,',',PolicyPoint::PPOINT_TYPE_RETURN ; ?>)"><?php echo Labels::getLabel('LBL_Link_Return_Policies',$adminLangId); ?></a></li>
-						</ul>
+						</ul> */ ?>
 						<div class="tabs_panel_wrap">
 							<div class="tabs_panel">				
 								<?php echo Labels::getLabel('LBL_Loading..',$adminLangId); ?>

@@ -38,7 +38,6 @@ class OptionValue extends MyAppModel
         $srch = static::getSearchObject();
         $srch->addCondition('ov.'.static::tblFld('option_id'), '=', $optionId);
         $srch->addCondition('ov.'.static::tblFld('id'), '=', $this->mainTableRecordId);
-
         $rs = $srch->getResultSet();
         $record = FatApp::getDb()->fetch($rs, static::DB_TBL_PREFIX.'id');
 
