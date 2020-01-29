@@ -23,7 +23,7 @@
             ?>
             <tr>
                 <td><?php echo $variant; ?></td>
-                <td><input type="text" id="code<?php echo $optionValueId; ?>" name="code<?php echo $optionValueId?>" value="<?php echo (isset($upcCodeData[$key]['upc_code']))?$upcCodeData[$key]['upc_code']:'';?>" onBlur="updateUpc('<?php echo $optionValueId;?>')"></td>								
+                <td><input type="text" id="code<?php echo $optionValueId; ?>" name="code<?php echo $optionValueId?>" value="<?php echo (isset($upcCodeData[$key]['upc_code']))?$upcCodeData[$key]['upc_code']:'';?>" onBlur="updateUpc('<?php echo $productId; ?>','<?php echo $optionValueId;?>')"></td>								
             </tr>
             <?php } ?>	
         </tbody>

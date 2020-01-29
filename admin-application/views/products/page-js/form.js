@@ -106,6 +106,25 @@
             $("#upc-listing").html(t);
         });
     };
+    
+    updateUpc = function(productId, optionValueId){
+        var code = $("input[name='code"+optionValueId+"']").val();
+        var data = {'code':code,'optionValueId':optionValueId};
+        fcom.updateWithAjax(fcom.makeUrl('products', 'updateUpc',[productId]), data, function(t) {
+        });
+    };
+    
+    productShipping = function(productId){
+        var data = '';
+		//fcom.ajax(fcom.makeUrl('Products','productShipping', [productId]),data,function(res){
+			$("#tabs_003").html('');
+            //$("#tabs_004").html(res);
+            $(".tabs_panel").hide();
+            $(".tabs_nav  > li > a").removeClass('active');
+            $("#tabs_004").show();                    
+            $("a[rel='tabs_004']").addClass('active');
+		//});
+    }
 
 })();
 
@@ -131,4 +150,14 @@ $(document).on('click', '.tabs_003', function(){
         displayProdInitialTab();
     }        
 }); 
+
+$(document).on('click', '.tabs_004', function(){
+    var productId = $("input[name='product_id']").val();
+    if(productId > 0){
+        productShipping(productId);
+    }else{
+        displayProdInitialTab();
+    }        
+});
+
 

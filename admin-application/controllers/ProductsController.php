@@ -777,9 +777,8 @@ class ProductsController extends AdminBaseController
         }
         $productTags = Product::getProductTags($productId);
         $this->set('productTags', $productTags);
-        $this->_template->render(false, false, 'json-success.php');
-        /* $this->set('product_id', $product_id);
-        $this->_template->render(false, false); */
+        $this->set('product_id', $product_id);
+        $this->_template->render(false, false);
     } 
 
     public function updateProductTag()
@@ -1970,7 +1969,11 @@ class ProductsController extends AdminBaseController
         if($productId < 1){
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
-        }                
+        }    
+        $productTags = Product::getProductTags($productId);
+        $productOptions = Product::getProductOptions($productId, $this->adminLangId);
+        $this->set('productTags', $productTags);
+        $this->set('productOptions', $productOptions);
         $this->set('productId', $productId); 
         $this->_template->render(false, false, 'products/product-options-and-tag.php');
     }
@@ -1992,7 +1995,8 @@ class ProductsController extends AdminBaseController
         
         $this->set('productOptions', $productOptions);
         $this->set('optionCombinations', $optionCombinations);
-        $this->set('upcCodeData', $upcCodeData);         
+        $this->set('upcCodeData', $upcCodeData);    
+        $this->set('productId', $productId);
         $this->_template->render(false, false);
     }
 }
