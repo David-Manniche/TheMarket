@@ -59,7 +59,7 @@ class BrandsController extends MyAppController
                     $brandProduct['currency_selprod_price'] = CommonHelper::displayMoneyFormat($brandProduct['selprod_price'], true, false, false);
                     $brandProduct['currency_theprice'] = CommonHelper::displayMoneyFormat($brandProduct['theprice'], true, false, false);
                 }
-                $brandsArr[$cnt]['brandImage'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'brand', array($val['brand_id'], $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+                $brandsArr[$cnt]['brand_image'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'brand', array($val['brand_id'], $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
                 $brandsArr[$cnt]['products'] = $brandProducts;
                 $brandsArr[$cnt]['totalProducts'] = $prodSrch->recordCount();
                 $cnt++;

@@ -28,7 +28,6 @@ class Configurations extends FatModel
     public const FORM_USER_ACCOUNT = 21;
     public const FORM_CART_WISHLIST = 22;
     public const FORM_COMMISSION = 23;
-    public const FORM_APPLICATION_THEME_SETTING = 24;
 
     public function __construct()
     {
@@ -44,7 +43,6 @@ class Configurations extends FatModel
             Configurations::FORM_MEDIA,
             Configurations::FORM_PPC,
             Configurations::FORM_SERVER,
-            Configurations::FORM_APPLICATION_THEME_SETTING,
         );
     }
 
@@ -78,7 +76,6 @@ class Configurations extends FatModel
             Configurations::FORM_LIVE_CHAT => Labels::getLabel('MSG_Live_Chat', $adminLangId),
             Configurations::FORM_PPC => Labels::getLabel('MSG_PPC_Management', $adminLangId),
             Configurations::FORM_SERVER => Labels::getLabel('MSG_SERVER', $adminLangId),
-            Configurations::FORM_APPLICATION_THEME_SETTING => Labels::getLabel('MSG_APPLICATION_THEME_SETTING', $adminLangId),
         );
         return $configurationArr + $additionalArr;
     }
