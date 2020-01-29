@@ -7,7 +7,7 @@
 }?>>
             <?php echo Labels::getLabel('LBL_General', $siteLangId);?></a>
     </li>
-    <li
+    <?php /* <li
         class="<?php echo ($activeTab == 'SEO') ? 'is-active' : ''; echo $inactive;?>">
         <a href="javascript:void(0)" <?php if ($selprod_id > 0) {
         ?>onClick="productSeo(<?php echo $selprod_id; ?>)"<?php
@@ -34,7 +34,7 @@
         ?>onClick="sellerProductLinkFrm(<?php echo $selprod_id; ?>)"<?php
     }?>>
             <?php echo Labels::getLabel('LBL_Links', $siteLangId);?></a>
-    </li>
+    </li> */ ?>
     <?php if ($product_type == Product::PRODUCT_TYPE_DIGITAL) {
         ?>
     <li

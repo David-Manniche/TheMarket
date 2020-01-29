@@ -41,7 +41,7 @@ class SellerProduct extends MyAppModel
                 'sp_l'
             );
         }
-        
+
         if (true === $joinSpecifics) {
             $srch->joinTable(
                 SellerProductSpecifics::DB_TBL,
@@ -124,9 +124,6 @@ class SellerProduct extends MyAppModel
         return array(
             ImportexportCommon::VALIDATE_POSITIVE_INT => array(
                 'selprod_id',
-            ),
-            ImportexportCommon::VALIDATE_NOT_NULL => array(
-                'meta_identifier',
             ),
         );
     }
@@ -282,19 +279,10 @@ class SellerProduct extends MyAppModel
         return true;
     }
 
-    public function getUpsellProducts($sellProdId, $lang_id, $userId = 0)
+    public static function searchUpsellProducts($lang_id)
     {
-        $sellProdId = FatUtility::convertToType($sellProdId, FatUtility::VAR_INT);
-        $lang_id = FatUtility::convertToType($lang_id, FatUtility::VAR_INT);
-        if (!$sellProdId) {
-            trigger_error(Labels::getLabel("ERR_Arguments_not_specified.", CommonHelper::getLangId()), E_USER_ERROR);
-            return false;
-        }
         $splPriceForDate = FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d');
-
         $srch = new SearchBase(static::DB_TBL_UPSELL_PRODUCTS);
-
-        $srch->addCondition(static::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'sellerproduct_id', '=', $sellProdId);
         $srch->joinTable(static::DB_TBL, 'INNER JOIN', static::DB_TBL_PREFIX.'id = '.static::DB_TBL_UPSELL_PRODUCTS_PREFIX.'recommend_sellerproduct_id');
         $srch->joinTable(static::DB_TBL.'_lang', 'LEFT JOIN', 'slang.'.static::DB_TBL_LANG_PREFIX.'selprod_id = '.static::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'recommend_sellerproduct_id AND '.static::DB_TBL_LANG_PREFIX.'lang_id = '.$lang_id, 'slang');
         $srch->joinTable(Product::DB_TBL, 'LEFT JOIN', Product::DB_TBL_PREFIX.'id = '.static::DB_TBL_PREFIX.'product_id');
@@ -322,12 +310,28 @@ class SellerProduct extends MyAppModel
         $srch->addCondition('c.prodcat_deleted', '=', applicationConstants::NO);
         $srch->addCondition('brand.brand_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('brand.brand_deleted', '=', applicationConstants::NO);
-        $srch->addGroupBy('selprod_id');
 
-        $srch->addMultipleFields(array(
-            'selprod_id', 'product_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title','selprod_price','selprod_stock', 'IFNULL(product_identifier ,product_name) as product_name','product_identifier','selprod_product_id','CASE WHEN m.splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found',
+        $srch->addMultipleFields(array('upsell_sellerproduct_id', 'selprod_id', 'product_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title','selprod_price','selprod_stock', 'IFNULL(product_identifier ,product_name) as product_name','product_identifier','selprod_product_id','CASE WHEN m.splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found',
         'IFNULL(m.splprice_price, selprod_price) AS theprice', 'selprod_min_order_qty','product_image_updated_on'));
+        $srch->addCondition(Product::DB_TBL_PREFIX . 'active', '=', applicationConstants::YES);
+        $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
+        $srch->addCondition('product_deleted', '=', applicationConstants::NO);
+        $srch->addOrder('selprod_active', 'DESC');
+        $srch->addOrder('selprod_id', 'DESC');
+        return $srch;
+    }
 
+    public function getUpsellProducts($sellProdId, $lang_id, $userId = 0)
+    {
+        $sellProdId = FatUtility::convertToType($sellProdId, FatUtility::VAR_INT);
+        $lang_id = FatUtility::convertToType($lang_id, FatUtility::VAR_INT);
+        if (!$sellProdId) {
+            trigger_error(Labels::getLabel("ERR_Arguments_not_specified.", CommonHelper::getLangId()), E_USER_ERROR);
+            return false;
+        }
+
+        $srch = static::searchUpsellProducts($lang_id);
+        $srch->addCondition(static::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'sellerproduct_id', '=', $sellProdId);
         if (true ===  MOBILE_APP_API_CALL) {
             if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::NO) {
                 $this->joinFavouriteProducts($srch, $userId);
@@ -337,13 +341,7 @@ class SellerProduct extends MyAppModel
                 $srch->addFld('IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist');
             }
         }
-
-        $srch->addCondition(Product::DB_TBL_PREFIX . 'active', '=', applicationConstants::YES);
-        $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
-        $srch->addCondition('product_deleted', '=', applicationConstants::NO);
-        $srch->addOrder('selprod_active', 'DESC');
-        $srch->addOrder('selprod_id', 'DESC');
-        /* echo $srch->getQuery();die; */
+        $srch->addGroupBy('selprod_id');
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $data = array();
@@ -716,34 +714,37 @@ class SellerProduct extends MyAppModel
         return true;
     }
 
-    public function getRelatedProducts($sellProdId = 0, $lang_id = 0, $criteria = array())
+    public static function searchRelatedProducts($lang_id, $criteria = array())
     {
-        $sellProdId = FatUtility::convertToType($sellProdId, FatUtility::VAR_INT);
-        $lang_id = FatUtility::convertToType($lang_id, FatUtility::VAR_INT);
-        if (!$sellProdId) {
-            trigger_error(Labels::getLabel("ERR_Arguments_not_specified.", CommonHelper::getLangId()), E_USER_ERROR);
-            return false;
-        }
-
         $srch = new SearchBase(static::DB_TBL_RELATED_PRODUCTS);
-        $srch->addCondition(static::DB_TBL_RELATED_PRODUCTS_PREFIX . 'sellerproduct_id', '=', $sellProdId);
         $srch->joinTable(static::DB_TBL, 'INNER JOIN', static::DB_TBL_PREFIX.'id = '.static::DB_TBL_RELATED_PRODUCTS_PREFIX.'recommend_sellerproduct_id');
         $srch->joinTable(static::DB_TBL.'_lang', 'LEFT JOIN', 'slang.'.static::DB_TBL_LANG_PREFIX.'selprod_id = '.static::DB_TBL_RELATED_PRODUCTS_PREFIX . 'recommend_sellerproduct_id AND '.static::DB_TBL_LANG_PREFIX.'lang_id = '.$lang_id, 'slang');
         $srch->joinTable(Product::DB_TBL, 'LEFT JOIN', Product::DB_TBL_PREFIX.'id = '.static::DB_TBL_PREFIX.'product_id');
         $srch->joinTable(Product::DB_TBL.'_lang', 'LEFT JOIN', 'lang.productlang_product_id = '.static::DB_TBL_LANG_PREFIX . 'selprod_id AND productlang_lang_id = '.$lang_id, 'lang');
-        if ($criteria) {
-            $srch->addMultipleFields(array($criteria));
+        if (!empty($criteria)) {
+            $srch->addMultipleFields($criteria);
         } else {
-            $srch->addMultipleFields(array(
-            'selprod_id', 'IFNULL(selprod_title ,product_name) as product_name','product_identifier','selprod_price','product_image_updated_on'));
+            $srch->addMultipleFields(array('related_sellerproduct_id', 'selprod_id', 'IFNULL(product_identifier ,product_name) as product_name', 'IFNULL(selprod_title, IFNULL(product_name, product_identifier)) as selprod_title', 'product_identifier','selprod_price','product_image_updated_on'));
+        }
+        return $srch;
+    }
+
+    public function getRelatedProducts($lang_id = 0, $sellProdId = 0, $criteria = array())
+    {
+        $lang_id = FatUtility::convertToType($lang_id, FatUtility::VAR_INT);
+        $sellProdId = FatUtility::convertToType($sellProdId, FatUtility::VAR_INT);
+
+        $srch = static::searchRelatedProducts($lang_id, $criteria);
+        if ($sellProdId > 0) {
+            $srch->addCondition(static::DB_TBL_RELATED_PRODUCTS_PREFIX . 'sellerproduct_id', '=', $sellProdId);
         }
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
-        $data = array();
-        if ($row = $db->fetchAll($rs, 'selprod_id')) {
-            return $row;
+        if ($sellProdId > 0) {
+            return $db->fetchAll($rs, 'selprod_id');
+        } else {
+            return $db->fetchAll($rs);
         }
-        return $data;
     }
 
     public function deleteSellerProduct($selprod_id)
@@ -803,7 +804,7 @@ class SellerProduct extends MyAppModel
         } else {
             $prodSrch->addCondition('selprod_id', '=', $selProdId);
         }
-        $prodSrch->addMultipleFields(array('selprod_id', 'product_id','product_identifier', 'IFNULL(product_name, product_identifier) as product_name', 'selprod_title'));
+        $prodSrch->addMultipleFields(array('selprod_id', 'product_id','product_identifier', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title, IFNULL(product_name, product_identifier)) as selprod_title'));
         $prodSrch->addGroupBy('selprod_id');
         $productRs = $prodSrch->getResultSet();
         $products = FatApp::getDb()->fetchAll($productRs, 'selprod_id');
@@ -820,7 +821,7 @@ class SellerProduct extends MyAppModel
         }
         $optionsStringArr = array();
         foreach ($products as $selProdId => $product) {
-            $variantStr = (!empty($product['product_name'])) ? $product['product_name'] : $product['selprod_title'];
+            $variantStr = (!empty($product['selprod_title'])) ? $product['selprod_title'] : $product['product_name'];
 
             $options = static::getSellerProductOptions($selProdId, true, $langId);
             if (is_array($options) && count($options)) {
@@ -1042,13 +1043,30 @@ class SellerProduct extends MyAppModel
         $srch->addOrder('voldiscount_id', 'DESC');
         return $srch;
     }
-    
+
     public static function getSelProdDataById($selProdId, $langId = 0)
-    { 
+    {
         $srch = static::getSearchObject($langId);
         $srch->addCondition('selprod_id', '=', $selProdId);
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetch($rs);
     }
-    
+
+    public static function searchSellerProducts($langId, $userId, $keyword = '')
+    {
+        $srch = SellerProduct::getSearchObject($langId);
+        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id and p.product_deleted = '.applicationConstants::NO.' and p.product_active = '.applicationConstants::YES, 'p');
+        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$langId, 'p_l');
+        if ($keyword) {
+            $cnd = $srch->addCondition('product_name', 'like', "%$keyword%");
+            $cnd->attachCondition('selprod_title', 'LIKE', "%$keyword%");
+            $cnd->attachCondition('product_identifier', 'LIKE', "%$keyword%");
+        }
+        $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
+        $srch->addOrder('selprod_active', 'DESC');
+        $srch->addOrder('selprod_added_on', 'DESC');
+        $srch->addOrder('product_name');
+        $srch->addCondition('selprod_user_id', '=', $userId);
+        return $srch;
+    }
 }

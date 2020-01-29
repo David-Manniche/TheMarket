@@ -679,7 +679,7 @@ class ProductsController extends MyAppController
         $criteria = array('selprod_id');
 
         $upsellProducts = $sellerProduct->getUpsellProducts($product['selprod_id'], $this->siteLangId, $loggedUserId);
-        $relatedProducts = $sellerProduct->getRelatedProducts($product['selprod_id'], $this->siteLangId, $criteria);
+        $relatedProducts = $sellerProduct->getRelatedProducts($this->siteLangId, $product['selprod_id'], $criteria);
         $relatedProductsRs = $this->relatedProductsById(array_keys($relatedProducts));
 
         $srch = new ShopSearch($this->siteLangId);

@@ -368,3 +368,5 @@ INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `p
 CREATE TABLE `tbl_user_withdrawal_requests_specifics` ( `uwrs_withdrawal_id` INT NOT NULL ,  `uwrs_key` VARCHAR(255) NOT NULL ,  `uwrs_value` VARCHAR(255) NOT NULL ) ENGINE = InnoDB;
 ALTER TABLE `tbl_user_withdrawal_requests_specifics`
   ADD PRIMARY KEY (`uwrs_withdrawal_id`,`uwrs_key`);
+
+ALTER TABLE `tbl_meta_tags` DROP `meta_identifier`;

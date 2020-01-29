@@ -1076,12 +1076,11 @@ $(document).on('click', '#btn-demo', function () {
 			// Click
 			this.click = function (event) {
 				event.preventDefault();
-
 				value = $(event.target).parent().attr('data-value');
-
 				if (value && this.items[value]) {
+                    $(this).siblings('ul.dropdown-menu').hide();
 					this.select(this.items[value]);
-				}
+				} 
 			}
 
 			// Show

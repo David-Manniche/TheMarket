@@ -1617,7 +1617,7 @@ class MobileAppApiController extends MyAppController
         //$upsellProducts=$sellerObj->getUpsellProducts($product['selprod_id'],$this->siteLangId);
         //commonhelper::printArray($upsellProducts);
         //die();
-        //$relatedProducts=$sellerObj->getRelatedProducts($product['selprod_id'],$this->siteLangId,$criteria);
+        //$relatedProducts=$sellerObj->getRelatedProducts($this->siteLangId, $product['selprod_id'], $criteria);
 
         $srch = new SearchBase(SellerProduct::DB_TBL_RELATED_PRODUCTS);
         $srch->joinTable('(' . $productCustomSrchObj->getQuery() . ')', 'INNER JOIN', SellerProduct::DB_TBL_RELATED_PRODUCTS_PREFIX.'recommend_sellerproduct_id = selprod_id', 'pCust');

@@ -2,7 +2,6 @@
 <?php
 $arr_flds = array(
 		'listserial'=> Labels::getLabel('LBL_Sr._No',$adminLangId),
-		'meta_identifier'=> Labels::getLabel('LBL_Identifier',$adminLangId),	
 		'meta_title'=> Labels::getLabel('LBL_Title',$adminLangId),	
 		'action' => Labels::getLabel('LBL_Action',$adminLangId),
 	);
@@ -36,7 +35,7 @@ foreach ($arr_listing as $sn=>$row){
               		$innerUl=$innerDiv->appendElement('ul',array('class'=>'linksvertical'));
               		$innerLiEdit=$innerUl->appendElement('li');
 					$innerLiEdit->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 
-					'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"editMetaTagFormNew($metaId,'$metaType',$recordId)"),Labels::getLabel('LBL_Edit',$adminLangId), 
+					'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"editMetaTagLangForm($metaId,".FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1).",'$metaType',$recordId)"),Labels::getLabel('LBL_Edit',$adminLangId), 
 					true);
 					if($metaType == MetaTag::META_GROUP_ADVANCED)
 					{
