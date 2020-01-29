@@ -35,16 +35,14 @@
                             $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
                             $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
                             $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                        if ($canEdit) {
+                        /*if ($canEdit) {
                              $innerLiImport=$innerUl->appendElement('li');
                              $innerLiImport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Import', $adminLangId),"onclick"=>"importLabels(0)"), Labels::getLabel('LBL_Import', $adminLangId), true);
-
-                             /*<a href="javascript:void(0)" class="themebtn btn-default btn-sm" onClick="importLabels()";><?php echo Labels::getLabel('LBL_Import',$adminLangId); ?></a>*/
                         }
                         if ($canView) {
                             $innerLiImport=$innerUl->appendElement('li');
-                            $innerLiImport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Export', $adminLangId),"onclick"=>"exportLabels(0)"), Labels::getLabel('LBL_Export', $adminLangId), true); /*<a href="javascript:void(0)" class="themebtn btn-default btn-sm" onClick="exportLabels()" ;><?php echo Labels::getLabel('LBL_Export',$adminLangId); ?></a>*/
-                        }
+                            $innerLiImport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Export', $adminLangId),"onclick"=>"exportLabels(0)"), Labels::getLabel('LBL_Export', $adminLangId), true); 
+                        }*/ 
 
                         $innerLiImport=$innerUl->appendElement('li');
                         $innerLiImport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_UPDATE_WEB_LABEL_FILE', $adminLangId),"onclick"=>"updateFile()"), Labels::getLabel('LBL_UPDATE_WEB_LABEL_FILE', $adminLangId), true);

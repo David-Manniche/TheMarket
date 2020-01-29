@@ -788,3 +788,13 @@ table.table-bordered tr:nth-child(odd) td {
 }
 
 .section-height{ min-height:700px;}
+
+
+.list-col-2{ display:flex; flex-wrap: wrap; }
+
+.list-col-2 li   {-ms-flex: 0 0 50%;
+    -webkit-box-flex: 0;
+    flex: 0 0 50%;
+    max-width: 50%;
+}
+

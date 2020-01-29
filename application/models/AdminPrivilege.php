@@ -105,6 +105,7 @@ class AdminPrivilege
     public const SECTION_SITEMAP = 101;
 	public const SECTION_PLUGINS = 102;
     public const SECTION_ABANDONED_CART = 103;
+    public const SECTION_IMPORT_EXPORT = 104; 
 	
     public const PRIVILEGE_NONE = 0;
     public const PRIVILEGE_READ = 1;
@@ -1394,6 +1395,17 @@ class AdminPrivilege
     public function canViewAbandonedCart($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_ABANDONED_CART, static::PRIVILEGE_READ, $returnResult);
-
     }
+    
+    public function canViewImportExport($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_IMPORT_EXPORT, static::PRIVILEGE_READ, $returnResult);
+    }
+    
+    public function canEditImportExport($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_IMPORT_EXPORT, static::PRIVILEGE_WRITE, $returnResult);
+    }
+    
+    
 }

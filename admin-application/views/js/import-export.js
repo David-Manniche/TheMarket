@@ -7,10 +7,15 @@
         });
     };
     exportForm = function(actionType) {
-        fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('ImportExport', 'exportForm', [actionType]), '', function(t) {
-            fcom.updateFaceboxContent(t, 'faceboxWidth');
-        });
+        if(actionType == 13){
+            document.frmExport.action = fcom.makeUrl( 'ImportExport', 'exportLabels' );
+            document.frmExport.submit();         
+        }else{
+            fcom.displayProcessing();
+            fcom.ajax(fcom.makeUrl('ImportExport', 'exportForm', [actionType]), '', function(t) {
+                fcom.updateFaceboxContent(t, 'faceboxWidth');
+            });
+        }        
     }
     exportData = function(frm, actionType) {
         if (!$(frm).validate()) return;
@@ -44,12 +49,20 @@
         });
 
     }
+    
     getInstructions = function(actionType) {
-        fcom.ajax(fcom.makeUrl('ImportExport', 'importInstructions', [actionType]), '', function(t) {
-            fcom.updateFaceboxContent(t, 'faceboxWidth');
-        });
-
+        if(actionType == 13){            
+            fcom.ajax(fcom.makeUrl('ImportExport', 'importLabelsForm'), '', function(t) {
+                fcom.updateFaceboxContent(t, 'faceboxWidth');
+            });
+        }else{
+            fcom.ajax(fcom.makeUrl('ImportExport', 'importInstructions', [actionType]), '', function(t) {
+                fcom.updateFaceboxContent(t, 'faceboxWidth');
+            });
+        }
     }
+    
+    
     importMediaForm = function(actionType) {
         //$.facebox(function() {
         fcom.ajax(fcom.makeUrl('ImportExport', 'importMediaForm', [actionType]), '', function(t) {
