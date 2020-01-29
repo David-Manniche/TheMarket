@@ -66,6 +66,7 @@ foreach ($collections as $collectionIndex => $collectionData) {
 }
 
 $data = array(
+    'isWishlistEnable' => $isWishlistEnable,
     'sponsoredProds' => array(
                         'title' => FatApp::getConfig('CONF_PPC_PRODUCTS_HOME_PAGE_CAPTION_'.$siteLangId, FatUtility::VAR_STRING, Labels::getLabel('LBL_SPONSORED_PRODUCTS', $siteLangId)),
                         'data'=> $sponsoredProds),

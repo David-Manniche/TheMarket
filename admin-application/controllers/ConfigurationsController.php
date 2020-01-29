@@ -997,8 +997,7 @@ class ConfigurationsController extends AdminBaseController
                 break;
 
             case Configurations::FORM_CART_WISHLIST:
-                $fld = $frm->addRadioButtons(Labels::getLabel("LBL_Add_favorites_to_wishlist", $this->adminLangId), 'CONF_ADD_FAVORITES_TO_WISHLIST', applicationConstants::getYesNoArr($this->adminLangId), applicationConstants::YES, array('class' => 'list-inline'));
-                $fld->htmlAfterField = '<small>' . Labels::getLabel("LBL_On_enabling_this_feature,_buyer_will_have_to_select_or_create_a_wishlist_to_group_his_favorites", $this->adminLangId) . '</small>';
+                $fld = $frm->addRadioButtons(Labels::getLabel("LBL_ADD_PRODUCTS_TO_WISHLIST_OR_FAVORITE?", $this->adminLangId), 'CONF_ADD_FAVORITES_TO_WISHLIST', UserWishList::wishlistOrFavtArr($this->adminLangId), applicationConstants::YES, array('class' => 'list-inline'));
 
                 $frm->addHtml('', 'Cart', '<h3>'.Labels::getLabel("LBL_Cart", $this->adminLangId) . '</h3>');
 

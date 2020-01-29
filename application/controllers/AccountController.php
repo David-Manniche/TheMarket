@@ -1572,7 +1572,6 @@ class AccountController extends LoggedUserController
     public function wishListSearch()
     {
         $loggedUserId = UserAuthentication::getLoggedUserId();
-        $defaultWishListId = $this->getDefaultWishListId();
 
         if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::NO) {
             $wishLists[] = Product::getUserFavouriteProducts($loggedUserId, $this->siteLangId);
@@ -1608,7 +1607,6 @@ class AccountController extends LoggedUserController
                 }
             }
         }
-
         /* $wishLists = array_merge($favouriteProducts,$wishLists); */
 
         $this->set('wishLists', $wishLists);
@@ -1633,9 +1631,9 @@ class AccountController extends LoggedUserController
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-
         $this->set('wishListRow', $favouriteListRow);
         $this->_template->render(false, false, 'account/favourite-list-items.php');
+        // $this->_template->render(false, false, 'account/wish-list-items.php');
     }
 
     public function searchWishListItems()
@@ -1753,7 +1751,7 @@ class AccountController extends LoggedUserController
         $this->set('totalRecords', $totalRecords);
         $this->set('startRecord', $startRecord);
         $this->set('endRecord', $endRecord);
-        $this->set('forPage', Labels::getLabel('LBL_Wishlist', $this->siteLangId));
+        $this->set('showActionBtns', true);
 
         if (true ===  MOBILE_APP_API_CALL) {
             $this->_template->render();
@@ -1862,7 +1860,7 @@ class AccountController extends LoggedUserController
         $this->set('recordCount', $srch->recordCount());
         $this->set('pageCount', $srch->pages());
         $this->set('postedData', $post);
-
+        $this->set('showActionBtns', true);
         $startRecord = ($page-1)*$pageSize + 1 ;
         $endRecord = $page * $pageSize;
         $totalRecords = $srch->recordCount();
@@ -2086,10 +2084,8 @@ class AccountController extends LoggedUserController
         $this->_template->render(false, false);
     }
 
-    public function toggleProductFavorite()
+    private function toggleProductStatus($selprodId)
     {
-        $post = FatApp::getPostedData();
-        $selprodId = FatUtility::int($post['product_id']);
         $loggedUserId = UserAuthentication::getLoggedUserId();
         $db = FatApp::getDb();
 
@@ -2105,10 +2101,14 @@ class AccountController extends LoggedUserController
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
 
         $productRs = $srch->getResultSet();
-        $product= $db->fetch($productRs);
+        $product = $db->fetch($productRs);
 
         if (!$product) {
-            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
+            $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
+            if (true ===  MOBILE_APP_API_CALL) {
+                FatUtility::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
             FatUtility::dieWithError(Message::getHtml());
         }
 
@@ -2122,14 +2122,22 @@ class AccountController extends LoggedUserController
         if (!$row = $db->fetch($rs)) {
             $prodObj = new Product();
             if (!$prodObj->addUpdateUserFavoriteProduct($loggedUserId, $selprodId)) {
-                Message::addErrorMessage(Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId));
+                $message = Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId);
+                if (true ===  MOBILE_APP_API_CALL) {
+                    FatUtility::dieJsonError($message);
+                }
+                Message::addErrorMessage($message);
                 FatUtility::dieWithError(Message::getHtml());
             }
             $action = 'A'; //Added to favorite
             $this->set('msg', Labels::getLabel('LBL_Product_has_been_marked_as_favourite_successfully', $this->siteLangId));
         } else {
-            if (!$db->deleteRecords(Product::DB_TBL_PRODUCT_FAVORITE, array('smt'=>'ufp_user_id = ? AND ufp_selprod_id = ?', 'vals'=>array($loggedUserId, $selprodId)))) {
-                Message::addErrorMessage(Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId));
+            if (!$db->deleteRecords(Product::DB_TBL_PRODUCT_FAVORITE, array('smt' => 'ufp_user_id = ? AND ufp_selprod_id = ?', 'vals'=>array($loggedUserId, $selprodId)))) {
+                $message = Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId);
+                if (true ===  MOBILE_APP_API_CALL) {
+                    FatUtility::dieJsonError($message);
+                }
+                Message::addErrorMessage($message);
                 FatUtility::dieWithError(Message::getHtml());
             }
             $action = 'R'; //Removed from favorite
@@ -2137,6 +2145,42 @@ class AccountController extends LoggedUserController
         }
 
         $this->set('action', $action);
+    }
+
+    public function toggleProductFavoriteArr()
+    {
+        $selprod_id_arr = FatApp::getPostedData('selprod_id');
+        $selprod_id_arr = !empty($selprod_id_arr) ? array_filter($selprod_id_arr) : array();
+
+        if (empty($selprod_id_arr)) {
+            $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
+            if (true ===  MOBILE_APP_API_CALL) {
+                FatUtility::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        foreach ($selprod_id_arr as $selprod_id) {
+            $this->toggleProductStatus($selprod_id);
+        }
+
+        if (true ===  MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
+
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function toggleProductFavorite()
+    {
+        $post = FatApp::getPostedData();
+        $selprodId = FatUtility::int($post['product_id']);
+        $this->toggleProductStatus($selprodId);
+        
+        if (true ===  MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
 
         $this->_template->render(false, false, 'json-success.php');
     }
