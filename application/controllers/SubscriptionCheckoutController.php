@@ -618,7 +618,7 @@ class SubscriptionCheckoutController extends MyAppController
         $frm->setFormTagAttribute('id', 'frmPaymentTabForm');
 
         if (strtolower($paymentMethodCode) == "cashondelivery") {
-            $frm->addHtml('', 'htmlNote', '<div class="g-recaptcha" data-sitekey="'.FatApp::getConfig('CONF_RECAPTACHA_SITEKEY', FatUtility::VAR_STRING, '').'"></div>');
+            CommonHelper::addCaptchaField($frm);
         }
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Confirm_Payment', $langId));
         $frm->addHiddenField('', 'order_id');

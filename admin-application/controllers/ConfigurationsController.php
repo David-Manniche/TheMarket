@@ -1245,7 +1245,7 @@ class ConfigurationsController extends AdminBaseController
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_api_key_used_in_push_notifications.", $this->adminLangId) . "</small>";
 
 
-                $frm->addHtml('', 'Engagespot', '<h3>'.Labels::getLabel("LBL_Engagespot_Push_Notifications_(WEB)", $this->adminLangId) . '</h3>');
+                $frm->addHtml('', 'Engagespot', '<h3>' . Labels::getLabel("LBL_Engagespot_Push_Notifications_(WEB)", $this->adminLangId) . '</h3>');
 
                 $fld = $frm->addRadioButtons(Labels::getLabel("LBL_Enable_Engagespot", $this->adminLangId), 'CONF_ENABLE_ENGAGESPOT_PUSH_NOTIFICATION', applicationConstants::getYesNoArr($this->adminLangId), '', array('class' => 'list-inline'));
 

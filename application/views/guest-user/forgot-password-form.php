@@ -31,6 +31,7 @@
                             $frm->setFormTagAttribute('class', 'form form--normal');
                             $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
                             $frm->developerTags['fld_default_col'] = 12;
+                            
                             $frm->setFormTagAttribute('id', 'frmPwdForgot');
                             $frm->setFormTagAttribute('autocomplete', 'off');
                             $frm->setValidatorJsObjectName('forgotValObj');
@@ -39,49 +40,11 @@
                             $btnFld->setFieldTagAttribute('class', 'btn--block');
                             $frmFld = $frm->getField('user_email_username');
                             $frmFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_EMAIL_ADDRESS', $siteLangId));
-                            /* if(FatApp::getConfig('CONF_RECAPTCHA_SITEKEY',FatUtility::VAR_STRING,'')!= '' && FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY',FatUtility::VAR_STRING,'')!= ''){
-                                $captchaFld = $frm->getField('htmlNote');
-                                $captchaFld->htmlBeforeField = '<div class="field-set">
-                                               <div class="caption-wraper"><label class="field_label"></label></div>
-                                               <div class="field-wraper">
-                                                   <div class="field_cover">';
-                                $captchaFld->htmlAfterField = '</div></div></div>';
-                            } */
-                            /* echo $frm->getFormHtml(); */?>
-                            <?php echo $frm->getFormTag();    ?>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="field-set">
-                                        <div class="field-wraper">
-                                            <div class="field_cover"><?php echo $frm->getFieldHtml('user_email_username'); ?></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <?php if (FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '')!= '' && FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '')!= '') { ?>
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <div class="field-set">
-                                        <div class="field-wraper">
-                                            <div class="field_cover">
-                                                <?php echo $frm->getFieldHtml('htmlNote'); ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <?php } ?>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="field-set">
-                                        <div class="field-wraper">
-                                            <div class="field_cover"><?php echo $frm->getFieldHtml('btn_submit'); ?></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            </form>
-                            <?php echo $frm->getExternalJS();?>
+                            $frmFld->developerTags['noCaptionTag'] = true;
+                            
+                            $frmFld = $frm->getField('btn_submit');
+                            $frmFld->developerTags['noCaptionTag'] = true;
+                            echo $frm->getFormHtml(); ?>
                             <p class="text--dark"><?php echo Labels::getLabel('LBL_Back_to_login', $siteLangId);?>
                                 <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="link"><?php echo Labels::getLabel('LBL_Click_Here', $siteLangId);?></a></p>
                         </div>
@@ -94,4 +57,12 @@
         </div>
     </section>
 </div>
-<script src='https://www.google.com/recaptcha/api.js'></script>
+<?php 
+$siteKey = FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '');
+$secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '');
+if (!empty($siteKey) && !empty($secretKey)) {?>
+    <script src='https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>'></script>
+    <script>
+		googleCaptcha('<?php echo $siteKey; ?>');
+    </script>
+<?php } ?>

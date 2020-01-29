@@ -825,28 +825,42 @@ class CommonHelper extends FatUtility
         return $percent_friendly = number_format($percent * 100, 2) . '%';
     }
 
-    public static function verifyCaptcha($fld_name = 'g-recaptcha-response')
+    public static function addCaptchaField($frm)
     {
-        require_once(CONF_INSTALLATION_PATH . 'library/ReCaptcha/src/autoload.php');
-        if (!empty(FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '')) && !empty(FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, ''))) {
-            $recaptcha = new \ReCaptcha\ReCaptcha(FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, ''));
-            $post = FatApp::getPostedData();
-            if (isset($post[$fld_name])) {
-                $resp = $recaptcha->verify($post[$fld_name], $_SERVER['REMOTE_ADDR']);
-                return $resp->isSuccess()==true?true:false;
-            } else {
-                return false;
-            }
-        } else {
+        $caller = (debug_backtrace())[1];
+        $action = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', str_replace('Form', '', $caller['function'])));
+
+        $siteKey = FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '');
+        $secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '');
+        if (false === MOBILE_APP_API_CALL && !empty($frm) && !empty($siteKey) && !empty($secretKey)) {
+            $frm->addHiddenField('', 'g-recaptcha-response', '', ['data-action' => $action]);
+        }
+    }
+
+    public static function verifyCaptcha()
+    {
+        $siteKey = FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '');
+        $secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '');
+        if (true === MOBILE_APP_API_CALL || empty($siteKey) || empty($secretKey)) {
             return true;
         }
-        /* require_once CONF_INSTALLATION_PATH . 'library/securimage/securimage.php';
-        $img = new Securimage();
-        $img->case_sensitive = true;
-        if (!$img->check(FatApp::getPostedData('security_code', FatUtility::VAR_STRING))) {
-            return false;
-        }
-        return true; */
+
+        $captcha = FatApp::getPostedData('g-recaptcha-response', FatUtility::VAR_STRING, '');
+        $url = 'https://www.google.com/recaptcha/api/siteverify';
+        $data = ['secret' => $secretKey, 'response' => $captcha];
+
+        $options = [
+            'http' => [
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method'  => 'POST',
+                'content' => http_build_query($data)
+            ]
+        ];
+        $context  = stream_context_create($options);
+        $response = file_get_contents($url, false, $context);
+        $responseKeys = json_decode($response, true);
+        header('Content-type: application/json');
+        return ($responseKeys["success"]) ? true : false;
     }
 
     public static function stripJavascript($content = '')
