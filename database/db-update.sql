@@ -335,3 +335,4 @@ ALTER TABLE `tbl_push_notifications` ADD `pnotification_device_os` TINYINT(1) NO
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Add_favorites_to_wishlist';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_On_enabling_this_feature,_buyer_will_have_to_select_or_create_a_wishlist_to_group_his_favorites';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Wishlist/Favorites';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Products_That_I_Love';

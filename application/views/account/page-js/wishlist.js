@@ -8,7 +8,6 @@ $("document").ready(function(){
         }
         showFormActionsBtns();
 	});
-
 });
 
 (function() {
@@ -202,14 +201,18 @@ $("document").ready(function(){
 		viewWishListItems(wish_list_id);
     };
     
-	removeSelectedFromWishlist = function(event){
-		event.stopPropagation();
-		if( !confirm( langLbl.confirmDelete ) ){ return false; };
+	removeSelectedFromFavtlist = function(event, moveToCart = false){
+        event.stopPropagation();
+        if (false === moveToCart) {
+            if( !confirm( langLbl.confirmDelete ) ){ return false; };
+        }
 		fcom.updateWithAjax( fcom.makeUrl('Account', 'toggleProductFavoriteArr'), $('#favtlistForm').serialize(), function(ans){
-            viewFavouriteItems();
-			if( ans.status ){
-				$.mbsmessage.close();
-                $.systemMessage(ans.msg,'alert--success');
+            if (false === moveToCart) {
+                viewFavouriteItems();
+                if( ans.status ){
+                    $.mbsmessage.close();
+                    $.systemMessage(ans.msg,'alert--success');
+                }
             }
 		});
 		
@@ -233,14 +236,18 @@ $("document").ready(function(){
 
 		obj.parent().siblings('li').find('.selectItem--js').prop("checked", true);
 
-		addSelectedToCart( event );
+		addSelectedToCart(event);
 	};
 
-	addSelectedToCart = function( event ){
+	addSelectedToCart = function(event, isWishlist){
 		event.stopPropagation();
 		$.mbsmessage(langLbl.processing,false,'alert--process alert');
 		fcom.updateWithAjax(fcom.makeUrl('cart', 'addSelectedToCart' ),$('#favtlistForm').serialize(), function(ans) {
-			updateWishlist();
+            if (0 < isWishlist) {
+                updateWishlist();
+            } else {
+                removeSelectedFromFavtlist(event, true);
+            }
 			setTimeout(function(){ location.href = fcom.makeUrl('cart'); }, 1000);
 		});
 	};

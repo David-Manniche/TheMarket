@@ -22,7 +22,6 @@ if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) 
         </div>
         <div class="content-body">
             <div class="cards">
-
                 <div class="cards-content p-4">
                     <div class="box__body">
                         <div class="tabs tabs--small tabs--scroll clearfix">

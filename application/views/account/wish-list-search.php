@@ -89,17 +89,17 @@
                     <h5><?php echo Labels::getLabel('LBL_Create_new_list', $siteLangId); ?>
                     </h5> <?php
                         $frm->setFormTagAttribute('onsubmit', 'setupWishList2(this,event); return(false);');
-        $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
-        $frm->developerTags['fld_default_col'] = 12;
-        $titleFld = $frm->getField('uwlist_title');
-        $titleFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Enter_List_Name', $siteLangId));
-        $titleFld->setFieldTagAttribute('title', Labels::getLabel('LBL_List_Name', $siteLangId));
+                        $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
+                        $frm->developerTags['fld_default_col'] = 12;
+                        $titleFld = $frm->getField('uwlist_title');
+                        $titleFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Enter_List_Name', $siteLangId));
+                        $titleFld->setFieldTagAttribute('title', Labels::getLabel('LBL_List_Name', $siteLangId));
 
-        $btnSubmitFld = $frm->getField('btn_submit');
-        $btnSubmitFld->setFieldTagAttribute('class', 'btn--block');
-        $btnSubmitFld->value = Labels::getLabel('LBL_Create', $siteLangId);
+                        $btnSubmitFld = $frm->getField('btn_submit');
+                        $btnSubmitFld->setFieldTagAttribute('class', 'btn--block');
+                        $btnSubmitFld->value = Labels::getLabel('LBL_Create', $siteLangId);
 
-        echo $frm->getFormHtml(); ?>
+                        echo $frm->getFormHtml(); ?>
                 </div>
             </div>
         </div>

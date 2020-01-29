@@ -1,16 +1,14 @@
 <?php
 $showActionBtns = !empty($showActionBtns) ? $showActionBtns : false;
-$staticCollectionClass='';
-if ($controllerName='Products' && isset($action) && $action=='view') {
-    $staticCollectionClass='static--collection';
+$staticCollectionClass = '';
+if ($controllerName = 'Products' && isset($action) && $action == 'view') {
+    $staticCollectionClass = 'static--collection';
 } ?> <?php if (!isset($showAddToFavorite)) {
     $showAddToFavorite = true;
     if (UserAuthentication::isUserLogged() && (!User::isBuyer())) {
         $showAddToFavorite = false;
     }
 }
-
-
 
 if ($showAddToFavorite) { ?>
     <div class="favourite-wrapper <?php /* echo $staticCollectionClass; */ ?>">
@@ -31,13 +29,19 @@ if ($showAddToFavorite) { ?>
                 </li>
                 <?php } ?>
                 <li>
-                    <a  title='<?php echo Labels::getLabel('LBL_Move_to_trash', $siteLangId); ?>' onclick="removeFromWishlist(<?php echo $product['selprod_id']; ?>, <?php echo $product['uwlp_uwlist_id']; ?>, event);" href="javascript:void(0)" class="icn-highlighted">
-                       <i class="fa fa-trash"></i>
-                    </a>
+                    <?php if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::YES) { ?>
+                        <a title='<?php echo Labels::getLabel('LBL_Move_to_trash', $siteLangId); ?>' onclick="removeFromWishlist(<?php echo $product['selprod_id']; ?>, <?php echo $product['uwlp_uwlist_id']; ?>, event);" href="javascript:void(0)" class="icn-highlighted">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    <?php } else { ?>
+                        <a title='<?php echo Labels::getLabel('LBL_Move_to_trash', $siteLangId); ?>' href="javascript:void(0)" class="icn-highlighted heart-wrapper-Js" data-id="<?php echo $product['selprod_id']; ?>" data-callback="searchFavouriteListItems">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    <?php } ?>
                 </li>
             </ul>
         </div>
-        <?php $showFavtBtn = false;
+        <?php
     } else {
         if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::NO) { ?>
             <div class="favourite heart-wrapper heart-wrapper-Js <?php echo ($product['ufp_id']) ? 'is-active' : ''; ?>" data-id="<?php echo $product['selprod_id']; ?>">
