@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$langFrm->setFormTagAttribute('class', 'web_form form_horizontal layout--' . $formLayout);
-$langFrm->setFormTagAttribute('onsubmit', 'setupLangPlugin(this); return(false);');
+$langFrm->setFormTagAttribute('class', 'web_form layout--' . $formLayout);
+$langFrm->setFormTagAttribute('onsubmit', 'setupLangPlugin(document.frmPluginLang); return(false);');
 $langFrm->developerTags['colClassPrefix'] = 'col-md-';
 $langFrm->developerTags['fld_default_col'] = 12;
 
@@ -9,14 +9,13 @@ $langFld->setfieldTagAttribute('onChange', "editPluginLangForm(" . $pluginId . "
 ?>
 <section class="section">
     <div class="sectionhead">
-        <h4><?php echo Labels::getLabel('LBL_Payment_Method_Setup', $adminLangId); ?>
-        </h4>
+        <h4><?php echo $identifier ?> <?php echo Labels::getLabel('LBL_PLUGIN_SETUP', $adminLangId); ?></h4>
     </div>
     <div class="sectionbody space">
         <div class="tabs_nav_container responsive flat">
             <ul class="tabs_nav">
                 <li><a href="javascript:void(0);"
-                        onclick="pluginForm(<?php echo $pluginId ?>);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
+                        onclick="editPluginForm(<?php echo $type; ?>, <?php echo $pluginId ?>);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
                 </li>
                 <li
                     class="<?php echo (0 == $pluginId) ? 'fat-inactive' : ''; ?>">

@@ -4,14 +4,25 @@ class Plugin extends MyAppModel
     public const DB_TBL = 'tbl_plugins';
     public const DB_TBL_LANG = 'tbl_plugins_lang';
     public const DB_TBL_PREFIX = 'plugin_';
+    public const DB_TBL_LANG_PREFIX = 'pluginlang_';
 
     public const TYPE_CURRENCY_API = 1;
     public const TYPE_SOCIAL_LOGIN_API = 2;
     public const TYPE_PUSH_NOTIFICATION_API = 3;
+    public const TYPE_ADVERTISEMENT_FEED_API = 5;
 
     public const HAVING_KINGPIN = [
         self::TYPE_CURRENCY_API,
-        self::TYPE_PUSH_NOTIFICATION_API
+        self::TYPE_PUSH_NOTIFICATION_API,
+        self::TYPE_ADVERTISEMENT_FEED_API,
+    ];
+
+    public const ATTRS = [
+        self::DB_TBL_PREFIX . 'id',
+        self::DB_TBL_PREFIX . 'code',
+        self::DB_TBL_PREFIX . 'description',
+        'COALESCE(plg_l.' . self::DB_TBL_PREFIX . 'name, plg.' . self::DB_TBL_PREFIX . 'identifier) as plugin_name',
+        self::DB_TBL_PREFIX . 'active',
     ];
 
     private $db;
@@ -56,16 +67,20 @@ class Plugin extends MyAppModel
 
     public static function isActive($code)
     {
-        return static::getAttributesByCode($code, 'plugin_active');
+        return (0 < static::getAttributesByCode($code, 'plugin_active') ? true : false);
     }
 
 
-    public static function getAttributesByCode($code, $attr = null)
+    public static function getAttributesByCode($code, $attr = '', $langId = 0)
     {
         $srch = new SearchBase(static::DB_TBL, 'plg');
         $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'code', '=', $code);
         
-        if (null != $attr) {
+        if (0 < $langId) {
+            $srch->joinTable(self::DB_TBL_LANG, 'LEFT JOIN', self::DB_TBL_LANG_PREFIX . static::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_PREFIX . 'id and ' . self::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'plg_l');
+        }
+
+        if ('' != $attr) {
             if (is_array($attr)) {
                 $srch->addMultipleFields($attr);
             } elseif (is_string($attr)) {
@@ -79,7 +94,7 @@ class Plugin extends MyAppModel
             return false;
         }
 
-        if (is_string($attr)) {
+        if (!empty($attr) && is_string($attr)) {
             return $row[$attr];
         }
         return $row;
@@ -91,22 +106,15 @@ class Plugin extends MyAppModel
             static::TYPE_CURRENCY_API => Labels::getLabel('LBL_CURRENCY_API', $langId),
             static::TYPE_SOCIAL_LOGIN_API => Labels::getLabel('LBL_SOCIAL_LOGIN_API', $langId),
             static::TYPE_PUSH_NOTIFICATION_API => Labels::getLabel('LBL_PUSH_NOTIFICATION_API', $langId),
+            static::TYPE_ADVERTISEMENT_FEED_API => Labels::getLabel('LBL_ADVERTISEMENT_FEED_API', $langId),
         ];
     }
 
-    private static function pluginTypeSrchObj($typeId, $langId, $assoc = true, $active = false)
+    private static function pluginTypeSrchObj($typeId, $langId, $customCols = true, $active = false)
     {
         $srch = static::getSearchObject($langId, $active);
-        if (false === $assoc) {
-            $srch->addMultipleFields(
-                [
-                    static::DB_TBL_PREFIX . 'id',
-                    static::DB_TBL_PREFIX . 'code',
-                    static::DB_TBL_PREFIX . 'description',
-                    'COALESCE(plg_l.' . static::DB_TBL_PREFIX . 'name, plg.' . static::DB_TBL_PREFIX . 'identifier) as plugin_name',
-                    static::DB_TBL_PREFIX . 'active',
-                ]
-            );
+        if (false === $customCols) {
+            $srch->addMultipleFields(self::ATTRS);
         }
 
         $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'type', '=', $typeId);
@@ -163,5 +171,43 @@ class Plugin extends MyAppModel
         $rs = $srch->getResultSet();
         
         return FatApp::getDb()->fetchAllAssoc($rs);
+    }
+
+    public function getDefaultPluginKeyName($pluginType)
+    {
+        return $this->getDefaultPluginData($pluginType, 'plugin_code');
+    }
+
+    public function getDefaultPluginData($pluginType, $attr = null, $langId = 0)
+    {
+        if (!in_array($pluginType, self::HAVING_KINGPIN)) {
+            $this->error = Labels::getLabel('MSG_INVALID_PLUGIN_TYPE', CommonHelper::getLangId());
+            return false;
+        }
+        $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . $pluginType, FatUtility::VAR_INT, 0);
+        if (1 > $defaultCurrConvAPI) {
+            $this->error = Labels::getLabel('MSG_ADVERTISEMENT_PLUGIN_NOT_FOUND', CommonHelper::getLangId());
+            return false;
+        }
+
+        if (0 < $langId) {
+            $customCols = !empty($attr) ? true : false;
+            $srch = static::pluginTypeSrchObj($pluginType, $langId, $customCols, true);
+            if (!empty($attr)) {
+                if (is_string($attr) && 'plugin_name' == $attr) {
+                    $col = 'COALESCE(plg_l.' . static::DB_TBL_PREFIX . 'name, plg.' . static::DB_TBL_PREFIX . 'identifier) as plugin_name';
+                    $srch->addFld($col);
+                } else {
+                    $srch->addMultipleFields($attr);
+                }
+            }
+            $rs = $srch->getResultSet();
+            $result = FatApp::getDb()->fetch($rs);
+            if (is_string($attr)) {
+                return $result[$attr];
+            }
+            return $result;
+        }
+        return Plugin::getAttributesById($defaultCurrConvAPI, $attr);
     }
 }

@@ -231,7 +231,7 @@ class User extends MyAppModel
             $userMetaData[$val[ static::DB_TBL_META_PREFIX . "key"]] = $val[ static::DB_TBL_META_PREFIX . "value"];
         }
         if (!empty($key)) {
-            return $userMetaData[$key];
+            return isset($userMetaData[$key]) ? $userMetaData[$key] : '';
         }
         return $userMetaData;
     }

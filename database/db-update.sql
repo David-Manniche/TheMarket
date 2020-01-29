@@ -333,3 +333,31 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_On_enabling_this_f
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Wishlist/Favorites';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Products_That_I_Love';
 UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_FACEBOOK_PIXEL_ID';
+INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Google Shopping Feed', '5', 'GoogleShoppingFeed', '1', '1');
+
+CREATE TABLE `tbl_ads_batches` (
+  `adsbatch_id` int(11) NOT NULL AUTO_INCREMENT,
+  `adsbatch_user_id` int(11) NOT NULL,
+  `adsbatch_name` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `adsbatch_lang_id` tinyint(2) NOT NULL,
+  `adsbatch_target_country_id` int(11) NOT NULL,
+  `adsbatch_expired_on` datetime NOT NULL,
+  `adsbatch_synced_on` datetime NOT NULL,
+  `adsbatch_status` tinyint(2) NOT NULL,
+  `adsbatch_added_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY(`adsbatch_id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `tbl_ads_batch_products`(
+   `abprod_adsbatch_id` INT NOT NULL,
+   `abprod_selprod_id` INT NOT NULL,
+   `abprod_cat_id` INT NOT NULL COMMENT 'Google Product Category',
+   `abprod_age_group` VARCHAR(15) NOT NULL,
+   `abprod_item_group_identifier` varchar(100) NOT NULL,
+   `abprod_product_info` TEXT NOT NULL,
+   PRIMARY KEY(`abprod_adsbatch_id`, `abprod_selprod_id`)
+) ENGINE = InnoDB;
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_EAN/UPC_code';
+
+ALTER TABLE `tbl_user_meta` CHANGE `usermeta_value` `usermeta_value` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;

@@ -372,7 +372,7 @@ class ImportexportCommon extends FatModel
                 $arr['product_weight_unit_identifier'] = Labels::getLabel('LBL_Weight_unit_identifier', $langId);
             }
             $arr['product_warranty'] = Labels::getLabel('LBL_PRODUCT_WARRANTY_(DAYS)', $langId);
-            $arr['product_upc'] = Labels::getLabel('LBL_EAN/UPC_code', $langId);
+            $arr['product_upc'] = Labels::getLabel('LBL_EAN/UPC/GTIN_code', $langId);
             if ($this->settings['CONF_USE_COUNTRY_ID']) {
                 $arr['ps_from_country_id'] = Labels::getLabel('LBL_Shipping_Country_Id', $langId);
             // $arr['product_ship_country_id'] = Labels::getLabel('LBL_Shipping_Country_Id', $langId);

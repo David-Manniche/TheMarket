@@ -32,3 +32,4 @@ New Features:
     => 68898 - Custom push notification management.
     => PWA compliance.
     => 69879 - Facebook Pixel
+    => 69217 - Google Shopping Feed Integration

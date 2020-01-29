@@ -468,7 +468,7 @@ class AdminBaseController extends FatController
             $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Add_Tag', $this->adminLangId), 'tag_name');
             $fld1->htmlAfterField= '<div class="box--scroller"><ul class="columlist list--vertical" id="product-tag-js"></ul></div>';
         }
-        $frm->addTextBox(Labels::getLabel('LBL_EAN/UPC_code', $this->adminLangId), 'product_upc');
+        $frm->addTextBox(Labels::getLabel('LBL_EAN/UPC/GTIN_code', $this->adminLangId), 'product_upc');
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Shipping_country', $langId), 'shipping_country');
 
         $fld=$frm->addCheckBox(Labels::getLabel('LBL_Free_Shipping', $langId), 'ps_free', 1);

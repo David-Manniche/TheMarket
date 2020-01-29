@@ -14,6 +14,7 @@ class PluginsController extends AdminBaseController
         $this->set("canEdit", $this->canEdit);
         $this->set("plugins", Plugin::getTypeArr($this->adminLangId));
         $this->set('activeTab', Plugin::TYPE_CURRENCY_API);
+        $this->set('includeEditor', true);
         $this->_template->render();
     }
 
@@ -96,15 +97,6 @@ class PluginsController extends AdminBaseController
             Message::addErrorMessage($record->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
-        if (isset($post['CONF_DEFAULT_PLUGIN_' . $pluginType])) {
-            $confVal = $post['CONF_DEFAULT_PLUGIN_' . $pluginType];
-            $confRecord = new Configurations();
-            if (!$confRecord->update(['CONF_DEFAULT_PLUGIN_' . $pluginType => $confVal])) {
-                Message::addErrorMessage($confRecord->getError());
-                FatUtility::dieJsonError(Message::getHtml());
-            }
-        }
 
         $newTabLangId = 0;
         if ($pluginId > 0) {
@@ -119,6 +111,17 @@ class PluginsController extends AdminBaseController
             $pluginId = $record->getMainTableRecordId();
             $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
+        
+        $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . $pluginType, FatUtility::VAR_INT, 0);
+        if (!empty($post['CONF_DEFAULT_PLUGIN_' . $pluginType]) || empty($defaultCurrConvAPI)) {
+            $confVal = empty($defaultCurrConvAPI) ? $pluginId : $post['CONF_DEFAULT_PLUGIN_' . $pluginType];
+            $confRecord = new Configurations();
+            if (!$confRecord->update(['CONF_DEFAULT_PLUGIN_' . $pluginType => $confVal])) {
+                Message::addErrorMessage($confRecord->getError());
+                FatUtility::dieJsonError(Message::getHtml());
+            }
+        }
+
         $this->set('msg', $this->str_setup_successful);
         $this->set('pluginId', $pluginId);
         $this->set('langId', $newTabLangId);
@@ -150,7 +153,11 @@ class PluginsController extends AdminBaseController
             $langFrm->fill($langData);
         }
 
+        $pluginDetail = Plugin::getAttributesById($pluginId, ['plugin_type', 'plugin_identifier']);
+
         $this->set('languages', Language::getAllNames());
+        $this->set('type', $pluginDetail['plugin_type']);
+        $this->set('identifier', $pluginDetail['plugin_identifier']);
         $this->set('pluginId', $pluginId);
         $this->set('lang_id', $lang_id);
         $this->set('langFrm', $langFrm);
@@ -322,7 +329,7 @@ class PluginsController extends AdminBaseController
         $frm->addHiddenField('', 'plugin_id', $pluginId);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Plugin_Name', $this->adminLangId), 'plugin_name');
-        $frm->addTextarea(Labels::getLabel('LBL_Details', $this->adminLangId), 'plugin_description');
+        $frm->addHtmlEditor(Labels::getLabel('LBL_EXTRA_INFO', $this->adminLangId), 'plugin_description');
 
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');

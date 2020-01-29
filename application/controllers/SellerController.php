@@ -130,7 +130,7 @@ class SellerController extends SellerBaseController
 
         $txnObj = new Transactions();
         $txnsSummary = $txnObj->getTransactionSummary($userId, date('Y-m-d'));
-
+        
         $this->set('transactions', $transactions);
         $this->set('returnRequests', $returnRequests);
         $this->set('OrderReturnRequestStatusArr', OrderReturnRequest::getRequestStatusArr($this->siteLangId));
@@ -146,7 +146,6 @@ class SellerController extends SellerBaseController
         $this->set('userBalance', User::getUserBalance($userId));
         $this->set('ordersStats', $ordersStats);
         $this->set('dashboardStats', Stats::getUserSales($userId));
-
         $this->_template->addJs(array('js/chartist.min.js'));
         $this->_template->addCss(array('css/chartist.css'));
         $this->_template->addJs('js/slick.min.js');
@@ -3816,7 +3815,7 @@ class SellerController extends SellerBaseController
 
         /* $frm->addFloatField( Labels::getLabel('LBL_Minimum_Selling_Price', $langId).' ['.CommonHelper::getCurrencySymbol(true).']', 'product_min_selling_price', ''); */
 
-        $frm->addTextBox(Labels::getLabel('LBL_EAN/UPC_code', $this->siteLangId), 'product_upc');
+        $frm->addTextBox(Labels::getLabel('LBL_EAN/UPC/GTIN_code', $this->siteLangId), 'product_upc');
 
         $frm->addCheckBox(Labels::getLabel('LBL_Product_Featured', $this->siteLangId), 'product_featured', 1, array(), false, 0);
 
