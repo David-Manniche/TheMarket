@@ -9163,7 +9163,6 @@ a.text-dark:hover, .shop-nav ul li.is--active a.text-dark, a.text-dark:focus {
 .breadcrumbs ul li:last-child:before {
   display: none; }
 
-/*Old browsers*/
 .outdated {
   display: none; }
 
@@ -9311,7 +9310,6 @@ a.text-dark:hover, .shop-nav ul li.is--active a.text-dark, a.text-dark:focus {
   line-height: 1.5;
   border-radius: 0.2rem; }
 
-/*Catalog popup*/
 .catalog-bg {
   background-image: url(./images/catalog-bg.png);
   background-color: #fff;
@@ -9411,7 +9409,6 @@ a.text-dark:hover, .shop-nav ul li.is--active a.text-dark, a.text-dark:focus {
       .certified-bar .certified-box p a {
         color: #575757; }
 
-/*radio and checkbox */
 @-webkit-keyframes click-wave {
   0% {
     height: 24px;
@@ -10368,7 +10365,6 @@ span.subheading {
   border: solid 1px transparent; }
 
 .featured-item:hover, .shop-nav ul li.is--active a.featured-item {
-  /*box-shadow: 0 10px 15px 0 rgba(0, 0, 0, 0.1);*/
   background: none;
   border-color: #ff3a59; }
 
@@ -10974,7 +10970,6 @@ form.custom-form {
   -moz-padding-start: 0;
   padding-inline-start: 0; }
 
-/*messages*/
 .info-message {
   background: #f9edbe;
   border: 1px solid #f0c36d;
@@ -12219,7 +12214,6 @@ form.custom-form {
 .ui-timepicker-div.ui-timepicker-oneLine .ui_tpicker_unit_hide:before {
   display: none; }
 
-/* labels */
 .label {
   color: #fff;
   display: inline;
@@ -12861,7 +12855,6 @@ a.loadmore.loading {
   display: inline-block;
   vertical-align: middle; }
 
-/* Magnific Popup CSS */
 .mfp-bg {
   top: 0;
   left: 0;
@@ -14011,13 +14004,6 @@ img.mfp-img {
   -webkit-transform: translate(84px, 84px) rotate(360deg) translate(70px, 0);
   transform: translate(84px, 84px) rotate(360deg) translate(70px, 0); }
 
-/**
-* multi-list.js is a jQuery plugin to turn a <ul> element into a multiple selectable list
-*
-* Author: Albert Gonzalez - http://www.albertgonzalez.coffee
-* 
-* Under a UNLICENSE (http://unlicense.org/)
-*/
 /* Main ul container */
 .ml-container {
   margin: 0px; }
@@ -14077,7 +14063,6 @@ img.mfp-img {
 .ml-hide {
   display: none !important; }
 
-/* paginations */
 .pagination {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -14154,7 +14139,6 @@ img.mfp-img {
   -webkit-transform: rotate(45deg);
   transform: rotate(45deg); }
 
-/* panel ---------------------- */
 .panel {
   width: 100%; }
 
@@ -14298,14 +14282,12 @@ img.mfp-img {
 .preview .avtar--large {
   margin: 0 auto; }
 
-/*shops*/
 .shops .products {
   /*	border-right: $border;*/
   -webkit-box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05) inset;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05) inset;
   padding: 15px; }
 
-/*card*/
 @-webkit-keyframes slideRight {
   0% {
     opacity: 0;
@@ -14884,7 +14866,6 @@ img.mfp-img {
 .prod-info__right a {
   color: inherit; }
 
-/*scroll-hint*/
 @-webkit-keyframes scroll-hint-appear {
   0% {
     -webkit-transform: translateX(2.5rem);
@@ -15255,7 +15236,6 @@ input:checked + .slider:before {
   -ms-flex-direction: row;
   flex-direction: row; }
 
-/******* EXAMPLE A *******/
 .rating-a .br-widget {
   height: 52px; }
 
@@ -15476,7 +15456,6 @@ input:checked + .slider:before {
   -moz-padding-end: 0;
   padding-inline-end: 0; }
 
-/*demo header*/
 .sticky-demo-header .demo-header {
   background: #fff;
   position: -webkit-sticky;
@@ -15739,7 +15718,6 @@ input:checked + .slider:before {
   white-space: nowrap;
   background-color: rgba(0, 0, 0, 0.2); }
 
-/*system message */
 #mbsmessage,
 .system_message {
   position: fixed;

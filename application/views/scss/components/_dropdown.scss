@@ -1,7 +1,7 @@
 .dropdown__target {
     border-radius: 4px;
     z-index: 10;
-    left: 0;
+    #{$start-direction}: 0;
     top: 110%;
     background: #fff;
     -webkit-box-shadow: 0 0px 10px 0 rgba(0, 0, 0, 0.20);
@@ -22,22 +22,22 @@
     content: "";
     display: block;
     border-bottom: 6px solid #fff;
-    border-left: 6px solid transparent;
+    border-#{$start-direction}: 6px solid transparent;
     -webkit-border-end: 6px solid transparent;
     -moz-border-end: 6px solid transparent;
     border-inline-end: 6px solid transparent;
     position: absolute;
     top: -6px;
-    left: 20px;
+    #{$start-direction}: 20px;
 }
 
 .dropdown__target__right {
-    left: auto;
+    #{$start-direction}: auto;
     right: 0;
 }
 
 .dropdown__target__right:before {
-    left: auto;
+    #{$start-direction}: auto;
     right: 20px;
 }
 
@@ -93,7 +93,7 @@
 .dropdown__target .iconavtar .icon,
 .dropdown__target .iconavtar img {
     position: absolute;
-    left: 50%;
+    #{$start-direction}: 50%;
     top: 50%;
     border-radius: 100%;
     transform: translate(-50%, -50%);
@@ -127,7 +127,7 @@
     box-shadow: 0 0 50px 0 rgba(82, 63, 105, 0.15);
     padding: 1rem 0;
     border-radius: 4px;
-    left: 0;
+    #{$start-direction}: 0;
 
     &-anim {
         -webkit-animation: dropdown-menu-fade-in .3s ease 1, dropdown-menu-move-up .3s ease-out 1;
@@ -212,8 +212,10 @@
     .nav__item {
         display: block;
         border: none;
-        
-        &.is-active{ color: $brand-color;  }
+
+        &.is-active {
+            color: $brand-color;
+        }
 
         .nav__link {
             display: -webkit-box;

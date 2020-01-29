@@ -4,7 +4,7 @@
 
 .header-checkout {
     background: #fff;
-    left: 0;
+    #{$start-direction}: 0;
     right: 0;
     width: 100%;
     position: sticky;
@@ -177,9 +177,9 @@
                             height: 10px;
                             content: "";
                             position: absolute;
-                            left: 50%;
+                            #{$start-direction}: 50%;
                             top: 12px;
-                            border-left: 3px solid #fff;
+                            border-#{$start-direction}: 3px solid #fff;
                             border-bottom: 3px solid #fff;
                             transform: rotate(-45deg);
                             -webkit-transform: rotate(-45deg);
@@ -266,7 +266,7 @@
 }
 
 .nav-checkout ul li a:after {
-    left: 50%;
+    #{$start-direction}: 50%;
 }
 
 .nav-checkout ul li a:before {
@@ -275,7 +275,7 @@
 
 .nav-checkout ul li a:hover:after,
 .nav-checkout ul li.is--active a:after {
-    left: 0;
+    #{$start-direction}: 0;
     width: 50%;
     background: $brand-color;
 }
@@ -346,7 +346,7 @@
 .address .address-inner span.radio {
     position: absolute;
     top: 0;
-    left: -2rem;
+    #{$start-direction}: -2rem;
 }
 
 .address .address-inner p {
@@ -486,7 +486,7 @@
     background: url(../images/retina/tick-green.svg) no-repeat center;
     content: "";
     position: absolute;
-    left: 10px;
+    #{$start-direction}: 10px;
     top: 10px;
     background-size: 10px;
     width: 22px;
@@ -726,7 +726,7 @@
 
 .selected-panel-type:before {
     position: absolute;
-    left: 0;
+    #{$start-direction}: 0;
     background: url(../images/retina/green-check.svg) no-repeat 0 0;
     width: 17px;
     height: 17px;
@@ -780,7 +780,7 @@
             height: 10px;
             background: var(--border-color);
             display: block;
-            left: 0;
+            #{$start-direction}: 0;
             top: 32px;
             position: absolute;
         }
@@ -922,7 +922,7 @@
     height: 2px;
     position: absolute;
     z-index: 12;
-    left: 0;
+    #{$start-direction}: 0;
     right: 100%;
     -webkit-transition-duration: 0.3s;
     transition-duration: 0.3s;

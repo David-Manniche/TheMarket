@@ -9,7 +9,7 @@
         position: fixed;
         top: 0;
         overflow-x: auto;
-        left: 50%;
+        #{$start-direction}: 50%;
         top: 50%;
         -webkit-transform: translate(-50%, -50%) !important;
         transform: translate(-50%, -50%) !important;
@@ -31,7 +31,7 @@
     html.toggled-user,
     html.cart-is-active {
         position: fixed;
-        left: 0;
+        #{$start-direction}: 0;
         right: 0;
         bottom: 0;
         top: 0;
@@ -193,7 +193,7 @@
     .toggle--search.is--active:after,
     .cart.cart-is-active > a:after {
         position: fixed;
-        left: 0;
+        #{$start-direction}: 0;
         right: 0;
         top: 31px;
         bottom: 0;
@@ -223,7 +223,7 @@
     .main-search-form .search--keyword {
         border: solid 1px $brand-color;
         border-radius: 0 4px 4px 0;
-        border-left: none;
+        border-#{$start-direction}: none;
         font-size: 0.85em;
     }
 
@@ -328,7 +328,7 @@
         bottom: 0;
         -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-        left: 0;
+        #{$start-direction}: 0;
         opacity: 0;
         overflow: auto;
         position: fixed;
@@ -506,7 +506,7 @@
     .boxcontainer .box--gray .fa {
         color: #ffffff;
         font-size: 2em;
-        left: 20px;
+        #{$start-direction}: 20px;
         position: absolute;
         top: 20px;
     }
@@ -571,7 +571,7 @@
 
     .link__filter.active:after {
         position: fixed;
-        left: 0;
+        #{$start-direction}: 0;
         right: 0;
         bottom: 0;
         top: 0;
@@ -1358,7 +1358,7 @@
     }
 
     .dropsection {
-        left: 0;
+        #{$start-direction}: 0;
         top: 0;
         bottom: 0;
         right: 0;
@@ -1413,7 +1413,7 @@
         width: 10px;
         height: 10px;
         content: "";
-        border-left: 2px solid rgba(0, 0, 0, 0.32);
+        border-#{$start-direction}: 2px solid rgba(0, 0, 0, 0.32);
         border-bottom: 2px solid rgba(0, 0, 0, 0.32);
         transform: rotate(-45deg);
         -webkit-transform: rotate(-45deg);
@@ -1530,7 +1530,7 @@
     }
 
     .slick-prev {
-        left: 10px;
+        #{$start-direction}: 10px;
     }
 
     .slick-next {

@@ -1,5 +1,3 @@
-
-/*Catalog popup*/
 .catalog-bg {
     background-image: url(./images/catalog-bg.png);
     background-color: #fff;
@@ -53,7 +51,7 @@
     content: "";
     display: block;
     position: absolute;
-    left: 0;
+    #{$start-direction}: 0;
     top: 8px;
     -webkit-transform: rotate(45deg);
     transform: rotate(45deg);

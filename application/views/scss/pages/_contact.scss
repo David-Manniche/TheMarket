@@ -81,7 +81,7 @@
     margin: 0 auto;
     width: 0;
     height: 0;
-    border-left: 30px solid transparent;
+    border-#{$start-direction}: 30px solid transparent;
     -webkit-border-end: 30px solid transparent;
     -moz-border-end: 30px solid transparent;
     border-inline-end: 30px solid transparent;
@@ -133,7 +133,7 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 0;
+    #{$start-direction}: 0;
     right: 0;
     z-index: 0;
 }

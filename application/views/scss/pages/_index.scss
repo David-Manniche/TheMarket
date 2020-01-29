@@ -57,7 +57,7 @@
     .slick-prev {
         background: #ffffff url(../images/arrow-left.png) no-repeat center;
         background-size: 36px;
-        left: calc(50% - 38vw);
+        #{$start-direction}: calc(50% - 38vw);
     }
 
     .slick-next {
@@ -70,7 +70,7 @@
         padding: 0;
         position: absolute;
         bottom: 10px;
-        left: 0;
+        #{$start-direction}: 0;
         right: 0;
         margin: 0 auto;
         text-align: center;

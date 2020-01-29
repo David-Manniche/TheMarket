@@ -1,5 +1,5 @@
 .autocomplete-suggestions.search-dropdown-menu {
-    left: 0;
+    #{$start-direction}: 0;
     top: 100%;
     padding: 10px;
     background: #fff;

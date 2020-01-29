@@ -1,4 +1,5 @@
 .social-profiles {}
+
 .social-icons {
     padding: 0;
     list-style: none;
@@ -69,6 +70,7 @@
 .share-button {
     position: relative;
 }
+
 .social-toggle {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -136,7 +138,7 @@
     padding: 10px;
     border-radius: 4px;
     /*min-width: 180px;*/
-    left: 50%;
+    #{$start-direction}: 50%;
     -webkit-transform: scaleY(0) translateX(-50%);
     transform: scaleY(0) translateX(-50%);
     opacity: 0;
@@ -166,7 +168,7 @@
 .social-networks ul {
     position: relative;
     top: 0;
-    left: 0;
+    #{$start-direction}: 0;
     color: #fff;
     margin: auto;
     padding: 0;

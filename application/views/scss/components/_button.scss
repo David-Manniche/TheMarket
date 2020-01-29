@@ -58,7 +58,7 @@
  }
 
  .btn {
-    
+
 
      &.btn--primary {
          background: $brand-color;
@@ -75,6 +75,7 @@
          border-color: $brand-color;
          color: $brand-color;
      }
+
      &.btn-outline-secondary {
          background: none;
          border-color: $secondary-color;

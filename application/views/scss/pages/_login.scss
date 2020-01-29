@@ -83,7 +83,7 @@
 .container-form {
     overflow: hidden;
     position: absolute;
-    left: 50%;
+    #{$start-direction}: 50%;
     top: 0;
     -webkit-transform: translateX(0);
     transform: translateX(0);
@@ -155,7 +155,7 @@
             opacity: 1;
             -webkit-transition: all 0.5s;
             transition: all 0.5s;
-            left: 50%;
+            #{$start-direction}: 50%;
         }
 
         &.sign-up {
@@ -187,7 +187,7 @@
     }
 
     &.sign-up .form-item.sign-in {
-        left: -100%;
+        #{$start-direction}: -100%;
         opacity: 0;
         -webkit-transition: all 0.5s;
         transition: all 0.5s;
@@ -239,7 +239,7 @@
     }
 
     &:after {
-        left: 0;
+        #{$start-direction}: 0;
     }
 
     &:before {

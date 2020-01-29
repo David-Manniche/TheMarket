@@ -11,7 +11,7 @@
     visibility: hidden;
     opacity: 0;
     z-index: -1;
-    left: 0;
+    #{$start-direction}: 0;
     right: 0;
     top: 0;
     bottom: 0;
@@ -50,8 +50,8 @@
 }
 
 .navigations > li:first-child {
-    margin-left: 0;
-    padding-left: 0;
+    margin-#{$start-direction}: 0;
+    padding-#{$start-direction}: 0;
 }
 
 .navigations > li:hover > a {
@@ -88,7 +88,7 @@
 }
 
 .navigations > li > a:after {
-    left: 50%;
+    #{$start-direction}: 50%;
 }
 
 .navigations > li > a:before {
@@ -97,7 +97,7 @@
 
 .navigations > li > a:hover:after,
 .navigations > li.active > a:after {
-    left: 0;
+    #{$start-direction}: 0;
     width: 50%;
     background: $brand-color;
 }
@@ -174,10 +174,10 @@
 
 .navigations > li .arrow span::before {
     border-bottom: 12px solid #f67c17;
-    border-left: 12px solid transparent;
+    border-#{$start-direction}: 12px solid transparent;
     border-right: 12px solid transparent;
     content: "";
-    left: 50%;
+    #{$start-direction}: 50%;
     margin: 0 0 0 -14px;
     position: absolute;
     top: 0;
@@ -185,10 +185,10 @@
 
 .navigations > li .arrow span::after {
     border-bottom: 12px solid #fff;
-    border-left: 12px solid transparent;
+    border-#{$start-direction}: 12px solid transparent;
     border-right: 12px solid transparent;
     content: "";
-    left: 50%;
+    #{$start-direction}: 50%;
     margin: 0 0 0 -14px;
     position: absolute;
     top: 1px;
@@ -198,7 +198,7 @@
     background: #fff;
     -webkit-box-shadow: 0 5px 5px rgba(0, 0, 0, 0.20);
     box-shadow: 0 5px 5px rgba(0, 0, 0, 0.20);
-    left: 0;
+    #{$start-direction}: 0;
     margin: 0;
     opacity: 0;
     position: absolute;
@@ -270,7 +270,7 @@
 .sublinks > li > ul > li a:hover {
     color: $brand-color;
     text-decoration: none;
-    margin-left: 10px;
+    margin-#{$start-direction}: 10px;
 }
 
 .sublinks > li > ul > li a:before {
@@ -278,7 +278,7 @@
     bottom: 0px;
     content: "";
     height: 1px;
-    left: 0;
+    #{$start-direction}: 0;
     position: absolute;
     right: 100%;
     -webkit-transition-duration: 0.3s;
@@ -338,7 +338,7 @@
     &.active {
         &:after {
             position: fixed;
-            left: 0;
+            #{$start-direction}: 0;
             right: 0;
             top: 0;
             bottom: 0;
@@ -380,7 +380,7 @@
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
         -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
         -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-        left: 0;
+        #{$start-direction}: 0;
         opacity: 0;
         overflow: auto;
         padding: 0;
@@ -487,7 +487,7 @@
         background: #000;
         content: "";
         height: 2px;
-        left: 14px;
+        #{$start-direction}: 14px;
         position: absolute;
         top: 20px;
         width: 12px;
@@ -497,7 +497,7 @@
         background: #000;
         content: "";
         height: 2px;
-        left: 14px;
+        #{$start-direction}: 14px;
         position: absolute;
         top: 20px;
         transform: rotate(90deg);

@@ -212,6 +212,7 @@
         }
     }
 }
+
 .ft-pro-wrapper {
     display: grid;
     grid-gap: 1px;
@@ -242,7 +243,7 @@
     position: absolute;
     height: 100%;
     width: 100%;
-    left: 0;
+    #{$start-direction}: 0;
     top: 0;
     bottom: 0;
     right: 0;
@@ -269,7 +270,7 @@
     padding-inline-end: 1em;
     width: 100%;
     top: 80%;
-    left: 50%;
+    #{$start-direction}: 50%;
     opacity: 0;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
@@ -279,7 +280,7 @@
 
 .ft-pro-wrapper .products:hover .content-details {
     top: 50%;
-    left: 50%;
+    #{$start-direction}: 50%;
     opacity: 1;
 }
 

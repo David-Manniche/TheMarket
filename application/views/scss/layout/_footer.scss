@@ -41,7 +41,7 @@
                     width: 10px;
                     height: 10px;
                     content: "";
-                    border-left: 2px solid rgba(0, 0, 0, 0.32);
+                    border-#{$start-direction}: 2px solid rgba(0, 0, 0, 0.32);
                     border-bottom: 2px solid rgba(0, 0, 0, 0.32);
                     transform: rotate(-45deg);
                     -webkit-transform: rotate(-45deg);
@@ -104,7 +104,7 @@
                     bottom: 0px;
                     content: "";
                     height: 1px;
-                    left: 0;
+                    #{$start-direction}: 0;
                     position: absolute;
                     right: 100%;
                     -webkit-transition-duration: 0.3s;

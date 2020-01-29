@@ -415,7 +415,7 @@ a.loadmore.loading {
 #loader-wrapper {
     position: fixed;
     top: 0;
-    left: 0;
+    #{$start-direction}: 0;
     width: 100%;
     height: 100%;
     z-index: 1000;
@@ -424,7 +424,7 @@ a.loadmore.loading {
 #loader {
     display: block;
     position: relative;
-    left: 50%;
+    #{$start-direction}: 50%;
     top: 50%;
     width: 150px;
     height: 150px;
@@ -443,7 +443,7 @@ a.loadmore.loading {
     content: "";
     position: absolute;
     top: 5px;
-    left: 5px;
+    #{$start-direction}: 5px;
     right: 5px;
     bottom: 5px;
     border-radius: 50%;
@@ -459,7 +459,7 @@ a.loadmore.loading {
     content: "";
     position: absolute;
     top: 15px;
-    left: 15px;
+    #{$start-direction}: 15px;
     right: 15px;
     bottom: 15px;
     border-radius: 50%;
@@ -522,7 +522,7 @@ a.loadmore.loading {
 }
 
 #loader-wrapper .loader-section.section-left {
-    left: 0;
+    #{$start-direction}: 0;
 }
 
 #loader-wrapper .loader-section.section-right {
@@ -600,7 +600,7 @@ a.loadmore.loading {
 .pong-loader {
     position: absolute;
     margin: 0 auto;
-    left: 0;
+    #{$start-direction}: 0;
     right: 0;
     top: 50%;
     height: 2.5rem;
@@ -617,7 +617,7 @@ a.loadmore.loading {
     content: "";
     position: absolute;
     margin: 0 auto;
-    left: 0;
+    #{$start-direction}: 0;
     right: 0;
     top: 15px;
     width: 10px;

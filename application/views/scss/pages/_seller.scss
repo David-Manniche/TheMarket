@@ -96,7 +96,7 @@
             position: fixed;
             -webkit-overflow-scrolling: touch;
             top: 0;
-            left: -280px;
+            #{$start-direction}: -280px;
             bottom: 0;
             overflow-y: auto;
             -webkit-transform: translate3d(0, 0, 0);
@@ -115,7 +115,7 @@
         &--on & {
             background: $gray-light;
             padding: 0;
-            left: 0;
+            #{$start-direction}: 0;
             visibility: visible;
         }
     }
@@ -132,7 +132,7 @@
         }
 
         &:first-child {
-            padding-left: 0;
+            padding-#{$start-direction}: 0;
         }
 
         &:last-child {
@@ -156,7 +156,7 @@
     &:after {
         position: absolute;
         top: 0;
-        left: 0;
+        #{$start-direction}: 0;
         right: 0;
         bottom: 0;
         z-index: 0;
@@ -255,8 +255,8 @@
 }
 
 .growth-txt {
-    border-left: $border;
-    padding-left: 120px;
+    border-#{$start-direction}: $border;
+    padding-#{$start-direction}: 120px;
 }
 
 .growth-txt li {
@@ -364,8 +364,8 @@
 }
 
 .cta-right {
-    border-left: $border;
-    padding-left: 100px;
+    border-#{$start-direction}: $border;
+    padding-#{$start-direction}: 100px;
 }
 
 /*Seller registration*/
@@ -432,7 +432,7 @@
     height: 2px;
     position: absolute;
     z-index: 12;
-    left: 0;
+    #{$start-direction}: 0;
     right: 100%;
     -webkit-transition-duration: 0.3s;
     transition-duration: 0.3s;
@@ -464,7 +464,7 @@
             position: fixed;
             -webkit-overflow-scrolling: touch;
             top: 0;
-            left: -280px;
+            #{$start-direction}: -280px;
             bottom: 0;
             overflow-y: auto;
             -webkit-transform: translate3d(0, 0, 0);
@@ -477,7 +477,7 @@
 
         &--on & {
 
-            left: 0;
+            #{$start-direction}: 0;
             visibility: visible;
         }
     }
@@ -525,7 +525,7 @@
 
 .seller-steps .icn img {
     position: absolute;
-    left: 0;
+    #{$start-direction}: 0;
     right: 0;
     top: 0;
     bottom: 0;
@@ -562,7 +562,7 @@
 
     .growth-txt {
         padding: 0;
-        border-left: none;
+        border-#{$start-direction}: none;
     }
 
     .pricing-structure ul li {
@@ -577,8 +577,8 @@
     }
 
     .cta-right {
-        border-left: none;
-        padding-left: 0;
+        border-#{$start-direction}: none;
+        padding-#{$start-direction}: 0;
     }
 
     .pricing-structure ul {

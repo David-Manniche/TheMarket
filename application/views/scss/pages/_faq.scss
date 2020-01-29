@@ -129,7 +129,7 @@ div.faqanswer p {
     width: 0;
     height: 0;
     border-top: 10px solid $brand-color;
-    border-left: 10px solid transparent;
+    border-#{$start-direction}: 10px solid transparent;
 }
 
 .faq-filters a.is--active {

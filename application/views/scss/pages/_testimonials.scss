@@ -33,7 +33,7 @@
     position: relative;
     position: absolute;
     top: -10px;
-    left: 25px;
+    #{$start-direction}: 25px;
     z-index: 3;
     -webkit-transition: all 0.3s ease 0s;
     transition: all 0.3s ease 0s;
@@ -109,7 +109,7 @@
     font-family: FontAwesome;
     content: "\f10d";
     position: absolute;
-    left: 25px;
+    #{$start-direction}: 25px;
     top: 25px;
     color: #3B566E;
     z-index: 1;

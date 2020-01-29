@@ -48,13 +48,7 @@ echo $this->writeMetaTags();
 $this->includeTemplate('_partial/header/commonHeadMiddle.php', $commonHeadData, false);
 
 /* This is not included in common head, because, if we are adding any css/js from any controller then that file is not included[ */
-?>
-<link rel="stylesheet" type="text/css"
-						href="<?php echo CONF_WEBROOT_URL;?>public/index.php?url=js-css/css&f=css/main-<?php echo CommonHelper::getLayoutDirection();?>.css&min=0&sid=1" />
-
-<?php
 echo $this->getJsCssIncludeHtml(!CONF_DEVELOPMENT_MODE);
-
 /* ] */
 
 $this->includeTemplate('_partial/header/commonHeadBottom.php', $commonHeadData, false);

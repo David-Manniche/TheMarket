@@ -44,7 +44,7 @@
 .fetured-slider .slick-next {
     position: absolute;
     top: 50%;
-    left: 74%;
+    #{$start-direction}: 74%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     text-indent: -9999px;
@@ -65,7 +65,7 @@
     border-inline-end: 3px solid #000000;
     content: "";
     height: 15px;
-    left: 50%;
+    #{$start-direction}: 50%;
     -webkit-margin-start: -9px;
     -moz-margin-start: -9px;
     margin-inline-start: -9px;

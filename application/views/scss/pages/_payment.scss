@@ -74,12 +74,12 @@ body {
 }
 
 .ccExpiryYear {
-    margin-left: 20px;
+    margin-#{$start-direction}: 20px;
 }
 
 .ccCvvWrapper {
     width: 205px;
-    margin-left: 50px;
+    margin-#{$start-direction}: 50px;
 }
 
 .payment-from .siteForm input.ccCvvBox {

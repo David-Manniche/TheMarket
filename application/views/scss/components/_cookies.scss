@@ -1,9 +1,8 @@
-
 /*cookies*/
 .cc-window {
     background-color: rgba(0, 0, 0, 0.75);
     bottom: 0;
-    left: 0;
+    #{$start-direction}: 0;
     opacity: 1;
     position: fixed;
     right: 0;

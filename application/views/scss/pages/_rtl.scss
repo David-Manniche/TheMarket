@@ -4,6 +4,7 @@
         direction: rtl;
         text-align: right;
     }
+
     .text-right {
         text-align: left !important;
     }
@@ -16,6 +17,7 @@
         direction: ltr;
         text-align: right;
     }
+
     .checkbox input,
     .radio input,
     .checkbox .input-helper:before,
@@ -24,33 +26,34 @@
     .container--cms ul li:before,
     .box.box--list .links--vertical li .fa {
         right: 0;
-        left: auto;
+        #{$start-direction}: auto;
     }
 
     .radio .input-helper::after {
         right: 4px;
-        left: auto;
+        #{$start-direction}: auto;
     }
 
     .checkbox .input-helper:after {
         right: 3px;
-        left: auto;
+        #{$start-direction}: auto;
     }
 
     .breadcrumbs ul li:before {
         right: auto;
-        left: 10px;
+        #{$start-direction}: 10px;
     }
+
     #facebox .close,
     .close,
     .system_message .closeMsg {
         right: auto;
-        left: 10px;
+        #{$start-direction}: 10px;
     }
 
     #facebox .close {
         right: auto;
-        left: 0;
+        #{$start-direction}: 0;
     }
 
     .listing--check li a {
@@ -65,28 +68,28 @@
     }
 
     .listing--check li.is-active a:after {
-        left: auto;
+        #{$start-direction}: auto;
         right: 6px;
     }
 
     .coupon-offers li:before {
-        left: auto;
+        #{$start-direction}: auto;
         right: 0;
     }
 
     #mbsmessage .content::before,
     .system_message .content::before {
-        left: auto;
+        #{$start-direction}: auto;
         right: -45px;
     }
 
     .testimonial-blocks .description:before {
-        left: auto;
+        #{$start-direction}: auto;
         right: 0;
     }
 
     .cms-editor ul li:before {
-        left: auto;
+        #{$start-direction}: auto;
         right: 0;
     }
 
@@ -117,30 +120,31 @@
     input[type="text"].p-cards.meastro {
         background-position: -135px -141px;
     }
+
     .cat-accordion .acc-trigger {
-        left: 0;
+        #{$start-direction}: 0;
         right: auto;
     }
 
     .media--details > li .grid--first {
         padding-right: 0;
-        padding-left: 20px;
+        padding-#{$start-direction}: 20px;
     }
 
     .post-data .sticky-element {
-        left: auto;
+        #{$start-direction}: auto;
         right: -90px;
     }
 
     .post-data.is-fixed .sticky-element {
-        left: auto;
+        #{$start-direction}: auto;
         right: 50%;
         margin: 0 -700px 0 0;
     }
 
     .search-form {
         right: auto;
-        left: 0;
+        #{$start-direction}: 0;
     }
 
     .nav-blog {
@@ -150,7 +154,7 @@
     .likes-count li .icn-like,
     .likes-count li .icn-msg {
         margin-right: 0;
-        margin-left: 10px;
+        margin-#{$start-direction}: 10px;
     }
 
     .post__detail {
@@ -167,16 +171,16 @@
 
     .nav--toggled > ul > li .link--toggle {
         right: auto;
-        left: 0;
+        #{$start-direction}: 0;
     }
 
     .selected-panel-type::before {
-        left: auto;
+        #{$start-direction}: auto;
         right: 0;
     }
 
     .selected-panel-type {
-        padding-left: 0;
+        padding-#{$start-direction}: 0;
         padding-right: 25px;
     }
 
@@ -187,12 +191,12 @@
     .payment_methods_list li a {}
 
     .payment_methods_list li a:before {
-        left: auto;
+        #{$start-direction}: auto;
         right: 15px;
     }
 
     .payment_methods_list li.is-active:after {
-        left: auto;
+        #{$start-direction}: auto;
         right: 10px;
     }
 
@@ -206,7 +210,7 @@
     }
 
     .boxcontainer .box--gray .fa {
-        left: auto;
+        #{$start-direction}: auto;
         right: 20px;
     }
 
@@ -216,12 +220,12 @@
 
     .widgets-heading::after {
         right: auto;
-        left: 0;
+        #{$start-direction}: 0;
     }
 
     .group--social-onehalf .fb-color {
         margin-right: 0;
-        margin-left: 10px;
+        margin-#{$start-direction}: 10px;
     }
 
     .pagination li.next,
@@ -234,27 +238,27 @@
 
     .media > li .avtar {
         margin-right: 0px;
-        margin-left: 10px;
+        margin-#{$start-direction}: 10px;
     }
 
     .delivery-term-data-inner ul li:before {
-        left: auto;
+        #{$start-direction}: auto;
         right: 0;
     }
 
     .selected-filters a::after {
         right: auto;
-        left: 4px;
+        #{$start-direction}: 4px;
     }
 
     .list-vertical--tick li.is-active:before {
-        left: auto;
+        #{$start-direction}: auto;
         right: -15px;
     }
 
     .dropsection {
         right: auto;
-        left: 0;
+        #{$start-direction}: 0;
         -webkit-transform: translateX(-100%);
         transform: translateX(-100%);
     }
@@ -265,24 +269,24 @@
 
 
     .dropdown__target {
-        left: auto;
+        #{$start-direction}: auto;
         right: 0;
     }
 
     .dropdown__target:before {
-        left: auto;
+        #{$start-direction}: auto;
         right: 20px;
     }
 
- 
+
 
     .divider--filters:after {
-        left: auto;
+        #{$start-direction}: auto;
         right: 0;
     }
 
     .alert--process:before {
-        left: auto;
+        #{$start-direction}: auto;
         right: 15px;
     }
 
@@ -290,30 +294,30 @@
         padding-right: 0;
     }
 
- 
+
 
     .wrap-drop:before {
         right: auto;
-        left: 16px;
+        #{$start-direction}: 16px;
     }
 
     .wrap-drop:after {
         right: auto;
-        left: 22px;
+        #{$start-direction}: 22px;
     }
 
     .widget-scroll .slick-prev {
         right: -28px;
-        left: auto;
+        #{$start-direction}: auto;
     }
 
     .widget-scroll .slick-next {
-        left: -28px;
+        #{$start-direction}: -28px;
         right: auto;
     }
 
     .product-gallery .slick-dots {
-        left: 0;
+        #{$start-direction}: 0;
         right: auto;
     }
 
@@ -321,35 +325,35 @@
         background: #5c5c5c;
         top: auto;
         bottom: 20px;
-        left: calc(50% - 50px);
+        #{$start-direction}: calc(50% - 50px);
         right: auto;
     }
 
     .product-gallery .slick-prev {
         right: calc(50% - 50px);
         margin: 0;
-        left: auto;
+        #{$start-direction}: auto;
     }
 
     .slick-prev:after {
         -webkit-transform: rotate(-45deg);
         transform: rotate(-45deg);
-        margin-left: -5px;
+        margin-#{$start-direction}: -5px;
     }
 
     .slick-next:after {
         -webkit-transform: rotate(135deg);
         transform: rotate(135deg);
-        margin-left: -3px;
+        margin-#{$start-direction}: -3px;
     }
 
     .favourite {
         right: auto;
-        left: 15px;
+        #{$start-direction}: 15px;
     }
 
     .close-layer {
-        left: 10px;
+        #{$start-direction}: 10px;
         right: auto;
     }
 
@@ -387,111 +391,110 @@
 
     .favourite-wrapper-detail {
         right: auto;
-        left: 0;
+        #{$start-direction}: 0;
     }
 
     .dashboard-menu .menu__item__inner::before {
-        left: auto;
+        #{$start-direction}: auto;
         right: 0;
     }
 
     .discount-slider .slick-arrow.slick-prev {
-        left: 20px;
+        #{$start-direction}: 20px;
         right: auto;
     }
 
     .discount-slider .slick-arrow.slick-next {
-        left: 0;
+        #{$start-direction}: 0;
         right: auto;
     }
 
     .checkout-flow li:after {
         right: auto;
-        left: -60%;
+        #{$start-direction}: -60%;
     }
 
     .address .address-inner span.radio {
-        left: auto;
+        #{$start-direction}: auto;
         right: -2rem;
     }
 
-    .fld-date {
-          }
+    .fld-date {}
 
     .testimonials-item .user {
-        left: auto;
+        #{$start-direction}: auto;
         right: 25px;
     }
 
     .listing--check li a:before {
-        left: auto;
+        #{$start-direction}: auto;
         right: 0;
     }
 
     .short-links > ul > li:after {
         right: auto;
-        left: -16px;
+        #{$start-direction}: -16px;
     }
 
     .slick-prev {
-        left: auto;
+        #{$start-direction}: auto;
         right: 0;
     }
 
     .slick-next,
     .filterDiv:after {
         right: auto;
-        left: 0;
+        #{$start-direction}: 0;
     }
 
     .tooltip--right .hovertxt {
         right: auto;
-        left: 0;
+        #{$start-direction}: 0;
     }
 
     .tooltip--right .hovertxt:before {
         right: auto;
-        left: 10px;
+        #{$start-direction}: 10px;
 
     }
 
     .sidebar {
-        left: auto;
+        #{$start-direction}: auto;
         right: 0;
     }
 
     .sidebar-is-expanded .header-dashboard {
-        padding-left: 20px;
+        padding-#{$start-direction}: 20px;
     }
 
     .logo-dashboard {
-        left: auto;
+        #{$start-direction}: auto;
         right: 10px;
     }
 
     .dashboard-menu .accordianbody li a {
-        padding-left: 0;
+        padding-#{$start-direction}: 0;
         padding-right: 70px;
     }
 
     .header-icons-group {
-        margin-left: 0;
+        margin-#{$start-direction}: 0;
         margin-right: auto;
     }
 
 
     .header-icons-group .dropdown__target {
-        left: 0;
+        #{$start-direction}: 0;
         right: auto;
     }
 
     .header-icons-group .dropdown__target:before {
-        left: 20px;
+        #{$start-direction}: 20px;
         right: auto;
     }
 
     .select-categories-slider .slick-prev {
-        left: -40px;
+        #{$start-direction}: -40px;
     }
 
     .select-categories-slider .slick-next {
@@ -509,7 +512,7 @@
 
     @media only screen and (max-width: 1199px) {
         .navs_toggle {
-            left: auto;
+            #{$start-direction}: auto;
             right: 8px;
         }
 
@@ -527,12 +530,12 @@
 
         .list--vertical li .parents--link:after {
             right: auto;
-            left: 10px;
+            #{$start-direction}: 10px;
         }
 
         .wrapper-menu {
             right: auto;
-            left: 0;
+            #{$start-direction}: 0;
         }
 
         .wrapper-menu.open .line-menu.start {
@@ -561,7 +564,7 @@
             -moz-transform: translate(100%, 0);
             -webkit-transform: translate(100%, 0);
             right: -100%;
-            left: auto;
+            #{$start-direction}: auto;
         }
 
         body.toggled_left .navigation-wrapper {
@@ -570,7 +573,7 @@
 
         .navigations > li .link__mobilenav {
             right: auto;
-            left: 0;
+            #{$start-direction}: 0;
         }
 
         .navigations > li > a {
@@ -580,23 +583,23 @@
 
 
         .dropdown__target__right {
-            left: 0;
+            #{$start-direction}: 0;
             right: auto;
         }
 
         .dropdown__target__right:before {
-            left: 20px;
+            #{$start-direction}: 20px;
             right: auto;
         }
 
         .main-search-form .search--keyword {
             border-radius: 4px 0 0 4px;
-            border-left: solid 1px $brand-color;
+            border-#{$start-direction}: solid 1px $brand-color;
         }
 
         .cart-is-active .dropsection {
             right: auto;
-            left: 50%;
+            #{$start-direction}: 50%;
             transition: none;
             -webkit-transition: none;
             -ms-transition: none;
@@ -604,13 +607,13 @@
 
 
         .form--search-popup .dropdown__target {
-            left: auto;
+            #{$start-direction}: auto;
             right: 15px;
         }
 
         .favourite-wrapper-detail {
             right: auto;
-            left: 30px;
+            #{$start-direction}: 30px;
         }
 
         .col-details-right {
@@ -622,17 +625,17 @@
         }
     }
 
-    @media only screen and (max-width: 767px) { 
+    @media only screen and (max-width: 767px) {
 
         .f-links h3:after,
         .f-links h3:before {
             right: auto;
-            left: 0;
+            #{$start-direction}: 0;
         }
 
         .tabs--scroll:after {
             right: auto;
-            left: 0px;
+            #{$start-direction}: 0px;
             -webkit-transform: rotate(-180deg);
             transform: rotate(-180deg);
         }
@@ -640,12 +643,12 @@
         .toggle--nav-vertical:after,
         .toggle--nav-vertical:before {
             right: auto;
-            left: 15px;
+            #{$start-direction}: 15px;
         }
 
         .short-links > ul > li.dropdown--user:last-child {
             margin-right: auto;
-            margin-left: 0;
+            margin-#{$start-direction}: 0;
         }
 
         .short-links > ul > li.dropdown--lang {
@@ -653,7 +656,7 @@
         }
 
         .cart-is-active .dropsection {
-            left: 0;
+            #{$start-direction}: 0;
         }
 
         .footer .toggle__trigger {
@@ -663,13 +666,13 @@
         .footer .toggle__trigger:before,
         .settings-group .btn.btn--bordered-inverse:before {
             right: auto;
-            left: 15px;
+            #{$start-direction}: 15px;
         }
 
 
 
         .form--search-popup .dropdown__target {
-            left: 0;
+            #{$start-direction}: 0;
             right: 0;
         }
 
@@ -679,7 +682,7 @@
 
         .page-sort ul li .btn--filters-control.btn--primary-border,
         .page-sort ul li:nth-last-child(2) {
-            margin-left: 0;
+            margin-#{$start-direction}: 0;
             margin-right: auto;
         }
     }
@@ -690,7 +693,7 @@
         }
 
         .hamburger-toggle.is-opened {
-            left: auto;
+            #{$start-direction}: auto;
             right: 0;
         }
 
@@ -700,7 +703,7 @@
             -moz-padding-end: 10px;
             padding-inline-end: 10px;
         }
-    } 
+    }
 
     @media only screen and (max-width: 767px) {
         .widget-scroll .slick-prev {
@@ -708,7 +711,7 @@
         }
 
         .widget-scroll .slick-next {
-            left: 0;
+            #{$start-direction}: 0;
         }
 
         .ft-pro-wrapper {
