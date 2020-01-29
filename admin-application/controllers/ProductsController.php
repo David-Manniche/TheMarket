@@ -769,19 +769,18 @@ class ProductsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    /* public function productTags($product_id)
-    {
-        
-        $product_id = FatUtility::int($product_id);
-        if ($product_id == 0) {
+    public function productTags($productId)
+    {        
+        $productId = FatUtility::int($productId);
+        if ($productId == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
-        $productTags = Product::getProductTags($product_id, $this->adminLangId);
-
+        $productTags = Product::getProductTags($productId);
         $this->set('productTags', $productTags);
-        $this->set('product_id', $product_id);
-        $this->_template->render(false, false);
-    } */
+        $this->_template->render(false, false, 'json-success.php');
+        /* $this->set('product_id', $product_id);
+        $this->_template->render(false, false); */
+    } 
 
     public function updateProductTag()
     {
@@ -1972,11 +1971,6 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }                
-        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);        
-        $languages = Language::getAllNames();
-        unset($languages[$siteDefaultLangId]);          
-        $this->set('siteDefaultLangId', $siteDefaultLangId);    
-        $this->set('otherLanguages', $languages);                   
         $this->set('productId', $productId); 
         $this->_template->render(false, false, 'products/product-options-and-tag.php');
     }

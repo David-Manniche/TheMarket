@@ -99,7 +99,14 @@
         $("#tabs_001").show();                    
         $("a[rel='tabs_001']").addClass('active');
     }
- 
+    
+    
+    upcListing = function (product_id){
+        fcom.ajax(fcom.makeUrl('products', 'upcListing', [product_id]), '', function(t) {
+            $("#upc-listing").html(t);
+        });
+    };
+
 })();
 
 $(document).on('click', '.tabs_001', function(){
