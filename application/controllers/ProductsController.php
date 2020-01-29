@@ -162,32 +162,29 @@ class ProductsController extends MyAppController
         $db = FatApp::getDb();
         $post = FilterHelper::getParamsAssocArr();
 
-        $langId = 0;
-        if (array_key_exists('keyword', $post) && !empty($post['keyword'])) {
-            $langId = $this->siteLangId;
-        }
-
         $categoryId = 0;
         if (array_key_exists('category', $post)) {
             $categoryId = FatUtility::int($post['category']);
         }
 
         $keyword = '';
+        $langIdForKeywordSeach = 0;
         if (array_key_exists('keyword', $post) && !empty($post['keyword'])) {
             $keyword = $post['keyword'];
+            $langIdForKeywordSeach = $this->siteLangId;
         }
 
         $post['doNotJoinSpecialPrice'] = true;
-        $prodSrchObj = $this->getFilterSearchObj($langId, $post);
+        $prodSrchObj = $this->getFilterSearchObj($langIdForKeywordSeach, $post);
         $prodSrchObj->doNotCalculateRecords();
 
         $brandsCheckedArr = FilterHelper::selectedBrands($post);
         //$prodSrchObj->addFld('count(selprod_id) as totalProducts');
-        $cacheKey = FilterHelper::getCacheKey($langId, $post);
+        $cacheKey = FilterHelper::getCacheKey($this->siteLangId, $post);
         
         $brandFilter =  FatCache::get('brandFilter' . $cacheKey, CONF_FILTER_CACHE_TIME, '.txt');
         if (!$brandFilter) {
-            $brandsArr = FilterHelper::brands($prodSrchObj, $langId, $post, true);
+            $brandsArr = FilterHelper::brands($prodSrchObj, $langIdForKeywordSeach, $post, true);
             FatCache::set('brandFilter' . $cacheKey, serialize($brandsArr), '.txt');
         } else {
             $brandsArr = unserialize($brandFilter);
@@ -205,41 +202,34 @@ class ProductsController extends MyAppController
         $db = FatApp::getDb();
         $headerFormParamsAssocArr = FilterHelper::getParamsAssocArr();
 
-        $langId = 0;
-        if (array_key_exists('keyword', $headerFormParamsAssocArr) && !empty($headerFormParamsAssocArr['keyword'])) {
-            $langId = $this->siteLangId;
-        }
-
         $categoryId = 0;
         if (array_key_exists('category', $headerFormParamsAssocArr)) {
             $categoryId = FatUtility::int($headerFormParamsAssocArr['category']);
         }
 
         $keyword = '';
+        $langIdForKeywordSeach = 0;
         if (array_key_exists('keyword', $headerFormParamsAssocArr) && !empty($headerFormParamsAssocArr['keyword'])) {
             $keyword = $headerFormParamsAssocArr['keyword'];
+            $langIdForKeywordSeach = $this->siteLangId;
         }
 
-        $cacheKey = FilterHelper::getCacheKey($langId, $headerFormParamsAssocArr);
+        $cacheKey = FilterHelper::getCacheKey($this->siteLangId, $headerFormParamsAssocArr);
 
         $headerFormParamsAssocArr['doNotJoinSpecialPrice'] = true;
-        $prodSrchObj = $this->getFilterSearchObj($langId, $headerFormParamsAssocArr);
+        $prodSrchObj = $this->getFilterSearchObj($langIdForKeywordSeach, $headerFormParamsAssocArr);
         $prodSrchObj->doNotCalculateRecords();
 
         /* Categories Data[ */
         $categoriesArr = array();
-        if (empty($keyword)) {
-            $catSrch = $prodSrchObj;
-            if (0 == $langId) {
-                $catSrch->joinProductToCategoryLang($this->siteLangId);
-            }
-            $categoriesArr =  FilterHelper::getCategories($this->siteLangId, $categoryId, $catSrch, $cacheKey);
+        if (empty($keyword)) {            
+            $categoriesArr =  FilterHelper::getCategories($this->siteLangId, $categoryId, $prodSrchObj, $cacheKey);
         }
         /* ] */
 
         /* Brand Filters Data[ */
         $brandsCheckedArr = FilterHelper::selectedBrands($headerFormParamsAssocArr);
-        $brandsArr = FilterHelper::brands($prodSrchObj, $langId, $headerFormParamsAssocArr, false, true);
+        $brandsArr = FilterHelper::brands($prodSrchObj, $langIdForKeywordSeach, $headerFormParamsAssocArr, false, true);
         /* ] */
 
         /* {Can modify the logic fetch data directly from query . will implement later}
@@ -275,7 +265,7 @@ class ProductsController extends MyAppController
 
         /* Price Filters[ */
         unset($headerFormParamsAssocArr['doNotJoinSpecialPrice']);
-        $priceSrch = $this->getFilterSearchObj($langId, $headerFormParamsAssocArr);
+        $priceSrch = $this->getFilterSearchObj($langIdForKeywordSeach, $headerFormParamsAssocArr);
         $priceSrch->doNotLimitRecords();
         $priceSrch->doNotCalculateRecords();
         $priceSrch->addMultipleFields(array('MIN(theprice) as minPrice', 'MAX(theprice) as maxPrice'));

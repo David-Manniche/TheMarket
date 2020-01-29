@@ -102,13 +102,11 @@ class FilterHelper extends FatUtility
 
     public static function getCategories($langId, $categoryId, $prodSrchObj, $cacheKey){
         $cacheKey .= (true ===  MOBILE_APP_API_CALL) ? $cacheKey . '-m': $cacheKey;
-        $catFilter =  FatCache::get('catFilter' . $cacheKey, CONF_FILTER_CACHE_TIME, '.txt');
-        if (!$catFilter) {
-            $catSrch = clone $prodSrchObj;
-            $prodSrchObj->doNotLimitRecords();
-            if (0 == $langId) {
-                $catSrch->joinProductToCategoryLang($langId);
-            }
+        /* $catFilter =  FatCache::get('catFilter' . $cacheKey, CONF_FILTER_CACHE_TIME, '.txt');
+        if (!$catFilter) { */
+            $catSrch = clone $prodSrchObj;            
+            $catSrch->doNotLimitRecords();
+            $catSrch->joinProductToCategoryLang($langId);
             $catSrch->addGroupBy('c.prodcat_id');
             $excludeCatHavingNoProducts = true;
             if (!empty($keyword)) {
@@ -118,7 +116,7 @@ class FilterHelper extends FatUtility
             $categoriesArr = (true ===  MOBILE_APP_API_CALL) ? array_values($categoriesArr) : $categoriesArr;
             FatCache::set('catFilter' . $cacheKey, serialize($categoriesArr), '.txt');
             return $categoriesArr;
-        }
+       /*  } */
         return unserialize($catFilter);
     }
 
