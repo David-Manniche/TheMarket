@@ -327,9 +327,7 @@ class DummyController extends MyAppController
 
     public function index()
     {
-       $res = CommonHelper::getUrlTypeData('http://yokartv8.local.4livedemo.com/blog'); 
-      var_dump($res);
-       exit;
+
 
     }
 
@@ -654,19 +652,6 @@ class DummyController extends MyAppController
             }
         }
     }
-
-
-    public function langData()
-    {
-        $languages1 = Language::getAllNames();
-        CommonHelper::printArray($languages1);
-
-        $languages2 = Language::getAllNames(false);
-        CommonHelper::printArray($languages2);
-        // $obj = new TranslateLangData(Product::DB_TBL_LANG);
-        // $obj->getTranslatedData(889);
-    }
-    
     
     public function testEmail()
     {
@@ -674,4 +659,8 @@ class DummyController extends MyAppController
         
     }
 
+    public function notify()
+    {
+        PushNotification::send();
+    }
 }

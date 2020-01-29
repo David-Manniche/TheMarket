@@ -2,16 +2,16 @@
 class WithdrawalRequestsController extends AdminBaseController
 {
     private $canView;
-    private $canEdit;    
+    private $canEdit;
     
     public function __construct($action)
-    {        
+    {
         parent::__construct($action);
         $this->admin_id = AdminAuthentication::getLoggedAdminId();
         $this->canView = $this->objPrivilege->canViewWithdrawRequests($this->admin_id, true);
         $this->canEdit = $this->objPrivilege->canEditWithdrawRequests($this->admin_id, true);
         $this->set("canView", $this->canView);
-        $this->set("canEdit", $this->canEdit);        
+        $this->set("canEdit", $this->canEdit);
     }
     
     public function index()
@@ -19,20 +19,20 @@ class WithdrawalRequestsController extends AdminBaseController
         $this->objPrivilege->canViewWithdrawRequests();
         $data = FatApp::getPostedData();
         $frmSearch = $this->getSearchForm($this->adminLangId);
-        if($data) {
+        if ($data) {
             $data['withdrawal_id'] = $data['id'];
             unset($data['id']);
             $frmSearch->fill($data);
-        }                    
-        $this->set("frmSearch", $frmSearch);    
+        }
+        $this->set("frmSearch", $frmSearch);
         $this->_template->render();
-    }    
+    }
     
     public function search()
     {
         $this->objPrivilege->canViewWithdrawRequests();
         
-        $pagesize=FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);                
+        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm($this->adminLangId);
         $data = FatApp::getPostedData();
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
@@ -45,73 +45,75 @@ class WithdrawalRequestsController extends AdminBaseController
         $srch->joinUsers(true);
         $srch->joinForUserBalance();
         $srch->addOrder('withdrawal_id', 'DESC');
+        $srch->joinTable(User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC, 'LEFT JOIN', User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC_PREFIX . 'withdrawal_id = tuwr.withdrawal_id');
         $srch->addMultipleFields(
-            array('tuwr.*','user_name','credential_email as user_email','credential_username as user_username',
+            array('tuwr.*', 'GROUP_CONCAT(CONCAT(`uwrs_key`, ":", `uwrs_value`)) as payout_detail' ,'user_name','credential_email as user_email','credential_username as user_username',
             'user_balance', 'user_is_buyer', 'user_is_supplier', 'user_is_advertiser', 'user_is_affiliate')
         );
         
-        if($post['keyword']) {
-            $cond = $srch->addCondition('credential_username', 'like', '%'.$post['keyword'].'%');
-            $cond->attachCondition('user_name', 'like', '%'.$post['keyword'].'%', 'OR');
-            $cond->attachCondition('credential_email', 'like', '%'.$post['keyword'].'%', 'OR');
+        if ($post['keyword']) {
+            $cond = $srch->addCondition('credential_username', 'like', '%' . $post['keyword'] . '%');
+            $cond->attachCondition('user_name', 'like', '%' . $post['keyword'] . '%', 'OR');
+            $cond->attachCondition('credential_email', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
         
-        if($post['minprice'] > 0 ) {
+        if ($post['minprice'] > 0) {
             $srch->addCondition('tuwr.withdrawal_amount', '>=', $post['minprice']);
         }
-        if($post['withdrawal_id'] > 0 ) {
+        if ($post['withdrawal_id'] > 0) {
             $srch->addCondition('tuwr.withdrawal_id', '=', $post['withdrawal_id']);
         }
         
-        if($post['maxprice'] > 0 ) {
+        if ($post['maxprice'] > 0) {
             $srch->addCondition('tuwr.withdrawal_amount', '<=', $post['maxprice']);
         }
         
-        if($post['status'] >= 0 ) {
+        if ($post['status'] >= 0) {
             $srch->addCondition('tuwr.withdrawal_status', '=', $post['status']);
         }
         
-        if($post['date_from'] ) {
-            $srch->addCondition('tuwr.withdrawal_request_date', '>=', $post['date_from']. ' 00:00:00');
+        if ($post['date_from']) {
+            $srch->addCondition('tuwr.withdrawal_request_date', '>=', $post['date_from'] .  ' 00:00:00');
         }
         
-        if($post['date_to'] ) {
-            $srch->addCondition('tuwr.withdrawal_request_date', '<=', $post['date_to']. ' 00:00:00');
+        if ($post['date_to']) {
+            $srch->addCondition('tuwr.withdrawal_request_date', '<=', $post['date_to'] . ' 00:00:00');
         }
         
         $type = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
         if ($type > 0) {
-            if ($type == User::USER_TYPE_SELLER ) {
+            if ($type == User::USER_TYPE_SELLER) {
                 $srch->addCondition('user_is_supplier', '=', applicationConstants::YES);
             }
-            if($type == User::USER_TYPE_BUYER ) {
+            if ($type == User::USER_TYPE_BUYER) {
                 $srch->addCondition('user_is_buyer', '=', applicationConstants::YES);
             }
             
-            if($type == User::USER_TYPE_ADVERTISER ) {
+            if ($type == User::USER_TYPE_ADVERTISER) {
                 $srch->addCondition('user_is_advertiser', '=', applicationConstants::YES);
             }
             
-            if($type == User::USER_TYPE_AFFILIATE ) {
+            if ($type == User::USER_TYPE_AFFILIATE) {
                 $srch->addCondition('user_is_affiliate', '=', applicationConstants::YES);
             }
         }
         
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
+        $srch->addGroupBy('tuwr.withdrawal_id');
         $rs = $srch->getResultSet();
         
-        $records = FatApp::getDb()->fetchAll($rs); 
+        $records = FatApp::getDb()->fetchAll($rs);
     
         $this->set("arr_listing", $records);
         $this->set('pageCount', $srch->pages());
         $this->set('recordCount', $srch->recordCount());
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
-        $this->set('postedData', $post);                        
-        $this->set('statusArr', Transactions::getWithdrawlStatusArr($this->adminLangId));                        
+        $this->set('postedData', $post);
+        $this->set('statusArr', Transactions::getWithdrawlStatusArr($this->adminLangId));
         $this->_template->render(false, false);
     }
     
@@ -120,7 +122,7 @@ class WithdrawalRequestsController extends AdminBaseController
         $this->objPrivilege->canEditWithdrawRequests();
         $post = FatApp::getPostedData();
         
-        if($post == false) {
+        if ($post == false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -128,7 +130,7 @@ class WithdrawalRequestsController extends AdminBaseController
         $withdrawalId = FatUtility::int($post['id']);
         $status = FatUtility::int($post['status']);
         
-        $allowedStatusUpdateArr = array(Transactions::WITHDRAWL_STATUS_APPROVED,Transactions::WITHDRAWL_STATUS_DECLINED);
+        $allowedStatusUpdateArr = array(Transactions::WITHDRAWL_STATUS_APPROVED, Transactions::WITHDRAWL_STATUS_DECLINED);
         
         $srch = new WithdrawalRequestsSearch();
         $srch->addCondition('withdrawal_id', '=', $withdrawalId);
@@ -137,20 +139,17 @@ class WithdrawalRequestsController extends AdminBaseController
         $rs = $srch->getResultSet();
         
         $records = array();
-        if($rs) {
-            $records = FatApp::getDb()->fetch($rs); 
+        if ($rs) {
+            $records = FatApp::getDb()->fetch($rs);
         }
         
-        if(1 > $withdrawalId || !in_array($status, $allowedStatusUpdateArr) || $records['withdrawal_status']!= Transactions::WITHDRAWL_STATUS_PENDING) {
+        if (1 > $withdrawalId || !in_array($status, $allowedStatusUpdateArr) || $records['withdrawal_status'] != Transactions::WITHDRAWL_STATUS_PENDING) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
         
-        $assignFields = array('withdrawal_status'=>$status);
-        if(!FatApp::getDb()->updateFromArray(
-            User::DB_TBL_USR_WITHDRAWAL_REQ, $assignFields,
-            array('smt'=>'withdrawal_id=?','vals'=>array($withdrawalId))
-        )) {
+        $assignFields = array('withdrawal_status' => $status);
+        if (!FatApp::getDb()->updateFromArray(User::DB_TBL_USR_WITHDRAWAL_REQ, $assignFields, array('smt' => 'withdrawal_id=?','vals' => array($withdrawalId)))) {
             Message::addErrorMessage(FatApp::getDb()->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -159,18 +158,18 @@ class WithdrawalRequestsController extends AdminBaseController
         if (!$emailNotificationObj->sendWithdrawRequestNotification($withdrawalId, $this->adminLangId, "U")) {
             Message::addErrorMessage(Labels::getLabel($emailNotificationObj->getError(), $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
-        }    
+        }
         
         $rs = FatApp::getDb()->updateFromArray(
-            Transactions::DB_TBL, array("utxn_status"=>Transactions::STATUS_COMPLETED), 
-            array('smt'=>'utxn_withdrawal_id=?','vals'=>array($withdrawalId))
+            Transactions::DB_TBL,
+            array("utxn_status" => Transactions::STATUS_COMPLETED),
+            array('smt' => 'utxn_withdrawal_id=?','vals' => array($withdrawalId))
         );
         
-        if($status == Transactions::WITHDRAWL_STATUS_DECLINED) {
-            
+        if ($status == Transactions::WITHDRAWL_STATUS_DECLINED) {
             $transObj = new Transactions();
             $txnDetail = $transObj->getAttributesBywithdrawlId($withdrawalId);
-            $formattedRequestValue = '#'.str_pad($withdrawalId, 6, '0', STR_PAD_LEFT);
+            $formattedRequestValue = '#' . str_pad($withdrawalId, 6, '0', STR_PAD_LEFT);
             
             $txnArray["utxn_user_id"] = $txnDetail["utxn_user_id"];
             $txnArray["utxn_credit"] = $txnDetail["utxn_debit"];
@@ -179,7 +178,7 @@ class WithdrawalRequestsController extends AdminBaseController
             $txnArray["utxn_type"] = Transactions::TYPE_MONEY_WITHDRAWL_REFUND;
             $txnArray["utxn_comments"] = sprintf(Labels::getLabel('MSG_Withdrawal_Request_Declined_Amount_Refunded', $this->adminLangId), $formattedRequestValue);
             
-            if($txnId = $transObj->addTransaction($txnArray)) {
+            if ($txnId = $transObj->addTransaction($txnArray)) {
                 $emailNotificationObj->sendTxnNotification($txnId, $this->adminLangId);
             }
         }
@@ -190,10 +189,10 @@ class WithdrawalRequestsController extends AdminBaseController
     
     private function getSearchForm($langId)
     {
-        $frm = new Form('frmReqSearch');        
+        $frm = new Form('frmReqSearch');
         $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
-        $frm->addTextBox(Labels::getLabel('LBL_From', $this->adminLangId).' ['.$this->siteDefaultCurrencyCode.']', 'minprice')->requirements()->setFloatPositive(true);
-        $frm->addTextBox(Labels::getLabel('LBL_To', $this->adminLangId).' ['.$this->siteDefaultCurrencyCode.']', 'maxprice')->requirements()->setFloatPositive(true);
+        $frm->addTextBox(Labels::getLabel('LBL_From', $this->adminLangId) . ' [' . $this->siteDefaultCurrencyCode . ']', 'minprice')->requirements()->setFloatPositive(true);
+        $frm->addTextBox(Labels::getLabel('LBL_To', $this->adminLangId) . ' [' . $this->siteDefaultCurrencyCode . ']', 'maxprice')->requirements()->setFloatPositive(true);
         
         $statusArr = Transactions::getWithdrawlStatusArr($langId);
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'status', array('-1'=>'Does not matter')+$statusArr, '', array(), '');
@@ -201,13 +200,29 @@ class WithdrawalRequestsController extends AdminBaseController
         $frm->addDateField(Labels::getLabel('LBL_Date_From', $this->adminLangId), 'date_from', '', array( 'readonly'=>'readonly', 'class'=>'field--calender' ));
         $frm->addDateField(Labels::getLabel('LBL_Date_To', $this->adminLangId), 'date_to', '', array( 'readonly'=>'readonly', 'class'=>'field--calender' ));
         
-        $arr_options2 = array('-1'=>Labels::getLabel('LBL_Does_Not_Matter', $this->adminLangId))+User::getUserTypesArr($this->adminLangId);
+        $arr_options2 = array('-1' => Labels::getLabel('LBL_Does_Not_Matter', $this->adminLangId)) + User::getUserTypesArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_User_Type', $this->adminLangId), 'type', $arr_options2, -1, array(), '');
         $frm->addHiddenField('', 'withdrawal_id', '');
         $fld_submit=$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick'=>'clearTagSearch();'));
-        $fld_submit->attachField($fld_cancel);        
+        $fld_submit->attachField($fld_cancel);
         return $frm;
     }
-}    
-    
+
+    public static function getConfDataByCode($keyName)
+    {
+        $settingsData = Plugin::getAttributesByCode($keyName);
+        if (!$settingsData) {
+            return false;
+        }
+        $pluginSettings = PluginSetting::getConfDataById($settingsData["plugin_id"]);
+
+        $pluginSettingArr = [];
+
+        foreach ($pluginSettings as $val) {
+            $pluginSettingArr[$val[ static::DB_TBL_PREFIX . "key"]] = $val[ static::DB_TBL_PREFIX . "value"];
+        }
+        $pluginSettingArr['plugin_name'] = $settingsData['plugin_identifier'] ;
+        return array_merge($pluginSettingArr, $settingsData);
+    }
+}

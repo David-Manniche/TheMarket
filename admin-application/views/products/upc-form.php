@@ -26,7 +26,7 @@
 										echo "<th>".$option['option_name']."</th>";
 									}
 									?>
-									<th><?php echo Labels::getLabel('LBL_EAN/UPC_code',$adminLangId);?></th>									
+									<th><?php echo Labels::getLabel('LBL_EAN/UPC/GTIN_code',$adminLangId);?></th>									
 									<th><?php echo Labels::getLabel('LBL_Action',$adminLangId);?></th>
 								</tr>
 								<?php 

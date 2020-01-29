@@ -1,8 +1,9 @@
 <?php
 class Language extends MyAppModel
 {
-    const DB_TBL = 'tbl_languages';
-    const DB_TBL_PREFIX = 'language_';
+    public const DB_TBL = 'tbl_languages';
+    public const DB_TBL_PREFIX = 'language_';
+    
     public function __construct($langId = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $langId);

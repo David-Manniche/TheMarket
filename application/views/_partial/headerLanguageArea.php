@@ -14,11 +14,13 @@ if ($languages && count($languages) > 1) {
     <div class="dropdown__target dropdown__target-lang dropdown__target-js">
         <div class="dropdown__target-space">
             <span class="expand-heading"><?php echo Labels::getLabel('LBL_Select_Language', $siteLangId);?></span>
-            <ul class="list-vertical list-vertical--tick">
-                <?php foreach ($languages as $langId => $language) { ?>
-                <li <?php echo ($siteLangId==$langId)?'class="is-active"':'';?>><a href="javascript:void(0);" onClick="setSiteDefaultLang(<?php echo $langId;?>)"> <?php echo $language['language_name']; ?></a></li>
-                <?php } ?>
-            </ul>
+            <div class="scroll-y" data-simplebar>
+                <ul class="list-vertical list-vertical--tick">
+                    <?php foreach ($languages as $langId => $language) { ?>
+                    <li <?php echo ($siteLangId==$langId)?'class="is-active"':'';?>><a href="javascript:void(0);" onClick="setSiteDefaultLang(<?php echo $langId;?>)"> <?php echo $language['language_name']; ?></a></li>
+                    <?php } ?>
+                </ul>
+            </div>
         </div>
     </div>
 </li>
@@ -37,11 +39,13 @@ if ($currencies && count($currencies) > 1) {
     <div class="dropdown__target dropdown__target-lang dropdown__target-js">
         <div class="dropdown__target-space">
             <span class="expand-heading"><?php echo Labels::getLabel('LBL_Select_Currency', $siteLangId);?></span>
-            <ul class="list-vertical list-vertical--tick" data-simplebar>
-                <?php foreach ($currencies as $currencyId => $currency) { ?>
-                <li <?php echo ($siteCurrencyId == $currencyId)?'class="is-active"':'';?>><a href="javascript:void(0);" onClick="setSiteDefaultCurrency(<?php echo $currencyId;?>)"> <?php echo $currency; ?></a></li>
-                <?php } ?>
-            </ul>
+            <div class="scroll-y" data-simplebar>
+                <ul class="list-vertical list-vertical--tick">
+                    <?php foreach ($currencies as $currencyId => $currency) { ?>
+                    <li <?php echo ($siteCurrencyId == $currencyId)?'class="is-active"':'';?>><a href="javascript:void(0);" onClick="setSiteDefaultCurrency(<?php echo $currencyId;?>)"> <?php echo $currency; ?></a></li>
+                    <?php } ?>
+                </ul>
+            </div>
         </div>
     </div>
 </li>

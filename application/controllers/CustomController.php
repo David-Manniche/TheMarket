@@ -1,4 +1,5 @@
-<?php class CustomController extends MyAppController
+<?php 
+class CustomController extends MyAppController
 {
     public function contactUs()
     {
@@ -14,7 +15,7 @@
 
     public function contactSubmit()
     {
-        $frm = $this->contactUsForm(MOBILE_APP_API_CALL);
+        $frm = $this->contactUsForm();
         $post = FatApp::getPostedData();
         $post['phone'] = !empty($post['phone']) ? ValidateElement::convertPhone($post['phone']) : '';
         $post = $frm->getFormDataFromArray($post);
@@ -34,9 +35,7 @@
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
-            $this->ContactUs();
-            die();
-            //FatApp::redirectUser(CommonHelper::generateUrl('Custom', 'ContactUs'));
+            FatApp::redirectUser(CommonHelper::generateUrl('Custom', 'ContactUs'));
         }
 
         $email = explode(',', FatApp::getConfig("CONF_CONTACT_EMAIL"));
@@ -475,9 +474,9 @@
         $orderObj = new Orders();
         $orderInfo = $orderObj->getOrderById($orderId, $this->siteLangId);
         
-        if($orderInfo['order_user_id'] > 0){
-            $orderProdData = OrderProduct::getOpArrByOrderId($orderId);            
-            foreach($orderProdData as $data){
+        if ($orderInfo['order_user_id'] > 0) {
+            $orderProdData = OrderProduct::getOpArrByOrderId($orderId);
+            foreach ($orderProdData as $data) {
                 $amount = $data['op_unit_price'] * $data['op_qty'];
                 AbandonedCart::saveAbandonedCart($orderInfo['order_user_id'], $data['op_selprod_id'], $data['op_qty'], AbandonedCart::ACTION_PURCHASED, $amount);
             }
@@ -528,6 +527,7 @@
         }
 
         $this->set('textMessage', $textMessage);
+        $this->set('orderInfo', $orderInfo);
         if (CommonHelper::isAppUser()) {
             $this->set('exculdeMainHeaderDiv', true);
             $this->_template->render(false, false);
@@ -669,7 +669,7 @@
         return $frm;
     }
 
-    private function contactUsForm($mobileApiCall = false)
+    private function contactUsForm()
     {
         $frm = new Form('frmContact');
         $frm->addRequiredField(Labels::getLabel('LBL_Your_Name', $this->siteLangId), 'name', '');
@@ -682,9 +682,7 @@
 
         $frm->addTextArea(Labels::getLabel('LBL_Your_Message', $this->siteLangId), 'message', '')->requirements()->setRequired();
 
-        if (false === $mobileApiCall) {
-            $frm->addHtml('', 'htmlNote', '<div class="g-recaptcha" data-sitekey="'.FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '').'"></div>');
-        }
+        CommonHelper::addCaptchaField($frm);
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('BTN_SUBMIT', $this->siteLangId));
         return $frm;

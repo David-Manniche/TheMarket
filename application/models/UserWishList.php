@@ -1,17 +1,29 @@
 <?php
 class UserWishList extends MyAppModel
 {
-    const DB_TBL = 'tbl_user_wish_lists';
-    const DB_TBL_PREFIX = 'uwlist_';
+    public const DB_TBL = 'tbl_user_wish_lists';
+    public const DB_TBL_PREFIX = 'uwlist_';
 
-    const DB_TBL_LIST_PRODUCTS = 'tbl_user_wish_list_products';
-    const DB_TBL_LIST_PRODUCTS_PREFFIX = 'uwlp_';
-    const TYPE_FAVOURITE = '1';
+    public const DB_TBL_LIST_PRODUCTS = 'tbl_user_wish_list_products';
+    public const DB_TBL_LIST_PRODUCTS_PREFFIX = 'uwlp_';
+    public const TYPE_FAVOURITE = '1';
 
     public function __construct($uwlistId = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $uwlistId);
         $this->objMainTableRecord->setSensitiveFields(array());
+    }
+
+    public static function wishlistOrFavtArr($langId)
+    {
+        $langId = FatUtility::int($langId);
+        if ($langId < 1) {
+            $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
+        }
+        return [
+            applicationConstants::NO => Labels::getLabel("LBL_FAVORITE", $langId),
+            applicationConstants::YES => Labels::getLabel("LBL_WISHLIST", $langId)
+        ];
     }
 
     public static function getSearchObject($userId = 0)

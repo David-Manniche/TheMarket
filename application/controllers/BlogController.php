@@ -409,6 +409,13 @@
         $this->_template->render(true, true, 'blog/contribution-form.php');
     }
 
+    private function setErrorAndRedirect($message)
+    {
+        Message::addErrorMessage($message);
+        /* $this->contributionForm();
+        return false; */
+        FatApp::redirectUser(CommonHelper::generateUrl('Blog', 'contributionForm'));
+    }
     public function setupContribution()
     {
         $frm = $this->getContributionForm();
@@ -417,16 +424,12 @@
         $post = $frm->getFormDataFromArray($post);
 
         if (false === $post) {
-            Message::addErrorMessage($frm->getValidationErrors());
-            $this->contributionForm();
-            return false;
+            $this->setErrorAndRedirect($frm->getValidationErrors());
         }
 
         if (FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '')!= '' && FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '')!= '') {
             if (!CommonHelper::verifyCaptcha()) {
-                Message::addErrorMessage(Labels::getLabel('MSG_That_captcha_was_incorrect', $this->siteLangId));
-                $this->contributionForm();
-                return false;
+                $this->setErrorAndRedirect(Labels::getLabel('MSG_That_captcha_was_incorrect', $this->siteLangId));
             }
         }
         $post['bcontributions_added_on'] = date('Y-m-d H:i:s');
@@ -441,23 +444,17 @@
         }
 
         if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Please_select_a_file', $this->siteLangId));
-            $this->contributionForm();
-            return false;
+            $this->setErrorAndRedirect(Labels::getLabel('MSG_Please_select_a_file', $this->siteLangId));
         } else {
             $fileExt = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
             $fileExt = strtolower($fileExt);
             if (!in_array($fileExt, applicationConstants::allowedFileExtensions())) {
-                Message::addErrorMessage(Labels::getLabel('MSG_INVALID_FILE_EXTENSION', $this->siteLangId));
-                $this->contributionForm();
-                return false;
+                $this->setErrorAndRedirect(Labels::getLabel('MSG_INVALID_FILE_EXTENSION', $this->siteLangId));
             }
 
             $fileMimeType = mime_content_type($_FILES['file']['tmp_name']);
             if (!in_array($fileMimeType, applicationConstants::allowedMimeTypes())) {
-                Message::addErrorMessage(Labels::getLabel('MSG_INVALID_FILE_MIME_TYPE', $this->siteLangId));
-                $this->contributionForm();
-                return false;
+                $this->setErrorAndRedirect(Labels::getLabel('MSG_INVALID_FILE_MIME_TYPE', $this->siteLangId));
             }
         }
 
@@ -465,17 +462,13 @@
 
         $fileHandlerObj = new AttachedFile();
         if (!$fileHandlerObj->isUploadedFile($uploadedFile)) {
-            Message::addErrorMessage($fileHandlerObj->getError());
-            $this->contributionForm();
-            return false;
+            $this->setErrorAndRedirect($fileHandlerObj->getError());
         }
 
         $contribution = new BlogContribution();
         $contribution->assignValues($post);
         if (!$contribution->save()) {
-            Message::addErrorMessage($contribution->getError());
-            $this->contributionForm();
-            return false;
+            $this->setErrorAndRedirect($contribution->getError());
         }
         $contributionId = $contribution->getMainTableRecordId();
 
@@ -488,14 +481,11 @@
         );
 
         if (!Notification::saveNotifications($notificationData)) {
-            Message::addErrorMessage(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->siteLangId));
-            FatUtility::dieJsonError(Message::getHtml());
+            $this->setErrorAndRedirect(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->siteLangId));
         }
 
         if (!$res = $fileHandlerObj->saveAttachment($_FILES['file']['tmp_name'], AttachedFile::FILETYPE_BLOG_CONTRIBUTION, $contributionId, 0, $_FILES['file']['name'], -1, true)) {
-            Message::addErrorMessage($fileHandlerObj->getError());
-            $this->contributionForm();
-            return false;
+            $this->setErrorAndRedirect($fileHandlerObj->getError());
         }
 
         Message::addMessage(Labels::getLabel('Lbl_Contributed_Successfully', $this->siteLangId));
@@ -514,9 +504,9 @@
         $fld_phn->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
 
         $frm->addFileUpload(Labels::getLabel('LBL_Upload_File', $this->siteLangId), 'file')->requirements()->setRequired(true);
-        if (FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '')!= '' && FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '')!= '') {
-            $frm->addHtml('', 'htmlNote', '<div class="g-recaptcha" data-sitekey="'.FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '').'"></div>');
-        }
+        
+		CommonHelper::addCaptchaField($frm);
+		
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('BTN_SUBMIT', $this->siteLangId));
         return $frm;
     }

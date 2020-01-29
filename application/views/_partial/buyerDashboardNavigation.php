@@ -150,13 +150,19 @@
                 </li>
                 <li class="menu__item <?php echo ($controller == 'account' && $action == 'wishlist') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">
-                        <a title="<?php echo Labels::getLabel("LBL_Wishlist/Favorites", $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Account', 'wishlist');?>">
+                        <?php 
+                            $label = Labels::getLabel("LBL_FAVORITES", $siteLangId);
+                            if (0 < FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1)) {
+                                $label = Labels::getLabel("LBL_WISHLIST", $siteLangId);
+                            }
+                        ?>
+                        <a title="<?php echo $label; ?>" href="<?php echo CommonHelper::generateUrl('Account', 'wishlist');?>">
                             <i class="icn shop">
                                 <svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-wishlist-favorite" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-wishlist-favorite"></use>
                                 </svg>
                             </i>
-                            <span class="menu-item__title"><?php echo Labels::getLabel('LBL_Wishlist/Favorites', $siteLangId);?></span>
+                            <span class="menu-item__title"><?php echo $label;?></span>
                         </a>
                     </div>
                 </li>

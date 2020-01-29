@@ -3,8 +3,7 @@ class MyAppController extends FatController
 {
     public $app_user = array();
     public $appToken = '';
-
-	protected $themeDetail;
+    public $themeDetail = '';
 	
     public function __construct($action)
     {
@@ -26,6 +25,7 @@ class MyAppController extends FatController
     public function initCommonVariables()
     {
         $this->siteLangId = CommonHelper::getLangId();
+        $this->siteLangCode = CommonHelper::getLangCode();
         $this->siteCurrencyId = CommonHelper::getCurrencyId();
         
         $this->app_user['temp_user_id'] = 0;
@@ -34,6 +34,7 @@ class MyAppController extends FatController
         }
 
         $this->set('siteLangId', $this->siteLangId);
+        $this->set('siteLangCode', $this->siteLangCode);
         $this->set('siteCurrencyId', $this->siteCurrencyId);
         $loginData = array(
         'loginFrm' => $this->getLoginForm(),
@@ -120,6 +121,7 @@ class MyAppController extends FatController
         'atleastOneRecord' => Labels::getLabel('LBL_Please_select_atleast_one_record.', $this->siteLangId),
         'primaryLanguageField' => Labels::getLabel('LBL_PRIMARY_LANGUAGE_DATA_NEEDS_TO_BE_FILLED_FOR_SYSTEM_TO_TRANSLATE_TO_OTHER_LANGUAGES.', $this->siteLangId),
         'unknownPrimaryLanguageField' => Labels::getLabel('LBL_PRIMARY_LANGUAGE_FIELD_IS_NOT_SET.', $this->siteLangId),
+        'invalidRequest' => Labels::getLabel('LBL_INVALID_REQUEST', $this->siteLangId),
         );
 
         $languages = Language::getAllNames(false);

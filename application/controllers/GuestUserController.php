@@ -144,12 +144,13 @@ class GuestUserController extends MyAppController
     public function setUserPushNotificationToken()
     {
         $fcmDeviceId = FatApp::getPostedData('deviceToken', FatUtility::VAR_STRING, '');
+        $deviceOs = FatApp::getPostedData('deviceOs', FatUtility::VAR_INT, 0);
         if (empty($fcmDeviceId)) {
             FatUtility::dieJSONError(Labels::getLabel('Msg_Invalid_Request', $this->siteLangId));
         }
         $userId = UserAuthentication::getLoggedUserId();
         $uObj = new User($userId);
-        if (!$uObj->setPushNotificationToken($this->appToken, $fcmDeviceId)) {
+        if (!$uObj->setPushNotificationToken($this->appToken, $fcmDeviceId, $deviceOs)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
         $this->set('msg', Labels::getLabel('Msg_Successfully_Updated', $this->siteLangId));
@@ -850,9 +851,8 @@ class GuestUserController extends MyAppController
         $frm = new Form('frmPwdForgot');
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Username_or_email', $siteLangId), 'user_email_username')->requirements()->setRequired();
 
-        if (false ===  MOBILE_APP_API_CALL && FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '')!= '' && FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '')!= '') {
-            $frm->addHtml('', 'htmlNote', '<div class="g-recaptcha" data-sitekey="'.FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '').'"></div>');
-        }
+        CommonHelper::addCaptchaField($frm);
+        
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('BTN_SUBMIT', $siteLangId));
         return $frm;
     }

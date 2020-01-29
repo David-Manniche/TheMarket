@@ -88,6 +88,7 @@ if ($order['order_reward_point_used'] > 0) {
                             $k = 1;
                             $cartTotal = 0;
                             $shippingTotal = 0;
+                            $taxOptionsTotal = array();
                             foreach ($order["products"] as $op) {
                                 $shippingCost = CommonHelper::orderProductAmount($op, 'SHIPPING');
                                 $volumeDiscount = CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT');
@@ -134,6 +135,14 @@ if ($order['order_reward_point_used'] > 0) {
                             </tr>
                                 <?php
                                 $k++;
+                                if (!empty($op['taxOptions'])) {
+                                    foreach ($op['taxOptions'] as $key => $val) {
+                                        if (!isset($taxOptionsTotal[$key])) {
+                                            $taxOptionsTotal[$key] = 0;
+                                        }
+                                        $taxOptionsTotal[$key] += $val;
+                                    }
+                                }
                             } ?>
                             <tr>
                                 <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Cart_Total', $adminLangId); ?></td>
@@ -143,10 +152,19 @@ if ($order['order_reward_point_used'] > 0) {
                                 <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Delivery/Shipping', $adminLangId); ?></td>
                                 <td class="text-right" colspan="2">+<?php echo CommonHelper::displayMoneyFormat($shippingTotal, true, true); ?></td>
                             </tr>
+                            <?php if (empty($taxOptionsTotal)) { ?>
                             <tr>
                                 <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Tax', $adminLangId); ?></td>
-                                <td class="text-right" colspan="2">+<?php echo CommonHelper::displayMoneyFormat($order['order_tax_charged'], true, true); ?></td>
+                                <td class="text-right" colspan="2"><?php echo '+'.CommonHelper::displayMoneyFormat($order['order_tax_charged'], true, true); ?></td>
                             </tr>
+                            <?php } else {
+                                foreach ($taxOptionsTotal as $key => $val) { ?>
+                                  <tr>
+                                    <td colspan="8" class="text-right"><?php echo $key ?></td>
+                                    <td class="text-right" colspan="2"><?php echo CommonHelper::displayMoneyFormat($val); ?></td>
+                                  </tr>
+                                <?php }
+                            } ?>
                             <?php if ($order['order_discount_total'] > 0) {?>
                             <tr>
                                 <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Discount', $adminLangId); ?></td>
@@ -289,65 +307,67 @@ if ($order['order_reward_point_used'] > 0) {
                     </div>
                 </section>
                 <?php } ?>
-            <?php if (!empty($order['payments'])) {?>
-            <section class="section">
-                <div class="sectionhead">
-                    <h4><?php echo Labels::getLabel('LBL_Order_Payment_History', $adminLangId); ?></h4>
-                </div>
-                <div class="sectionbody">
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <th width="10%"><?php echo Labels::getLabel('LBL_Date_Added', $adminLangId); ?></th>
-                                <th width="10%"><?php echo Labels::getLabel('LBL_Txn_ID', $adminLangId); ?></th>
-                                <th width="15%"><?php echo Labels::getLabel('LBL_Payment_Method', $adminLangId); ?></th>
-                                <th width="10%"><?php echo Labels::getLabel('LBL_Amount', $adminLangId); ?></th>
-                                <th width="15%"><?php echo Labels::getLabel('LBL_Comments', $adminLangId); ?></th>
-                                <th width="40%"><?php echo Labels::getLabel('LBL_Gateway_Response', $adminLangId); ?></th>
-                            </tr>
-                            <?php foreach ($order["payments"] as $key => $row) { ?>
-                            <tr>
-                                <td><?php echo FatDate::format($row['opayment_date']);?></td>
-                                <td><?php echo $row['opayment_gateway_txn_id'];?></td>
-                                <td><?php echo $row['opayment_method'];?></td>
-                                <td><?php echo CommonHelper::displayMoneyFormat($row['opayment_amount'], true, true);?></td>
-                                <td><div class="break-me"><?php echo nl2br($row['opayment_comments']);?></div></td>
-                                <td><div class="break-me"><?php echo nl2br($row['opayment_gateway_response']);?></div></td>
-                            </tr>
-                            <?php } ?>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-            <?php }?>
-            <?php if (!$order["order_is_paid"] && $canEdit && 'CashOnDelivery' != $order['pmethod_code']) {?>
+            <?php if (!empty($order['order_deleted'])) {?>
+                <?php if (!empty($order['payments'])) {?>
                 <section class="section">
                     <div class="sectionhead">
-                        <h4><?php echo Labels::getLabel('LBL_Order_Payments', $adminLangId); ?></h4>
+                        <h4><?php echo Labels::getLabel('LBL_Order_Payment_History', $adminLangId); ?></h4>
                     </div>
-                    <div class="sectionbody space">
-                        <?php
-                        $frm->setFormTagAttribute('onsubmit', 'updatePayment(this); return(false);');
-                        $frm->setFormTagAttribute('class', 'web_form');
-                        $frm->developerTags['colClassPrefix'] = 'col-md-';
-                        $frm->developerTags['fld_default_col'] = 12;
-
-
-                        $paymentFld = $frm->getField('opayment_method');
-                        $paymentFld->developerTags['col'] = 4;
-
-                        $gatewayFld = $frm->getField('opayment_gateway_txn_id');
-                        $gatewayFld->developerTags['col'] = 4;
-
-                        $amountFld = $frm->getField('opayment_amount');
-                        $amountFld->developerTags['col'] = 4;
-
-                        $submitFld = $frm->getField('btn_submit');
-                        $submitFld->developerTags['col'] = 4;
-
-                        echo $frm->getFormHtml(); ?>
+                    <div class="sectionbody">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th width="10%"><?php echo Labels::getLabel('LBL_Date_Added', $adminLangId); ?></th>
+                                    <th width="10%"><?php echo Labels::getLabel('LBL_Txn_ID', $adminLangId); ?></th>
+                                    <th width="15%"><?php echo Labels::getLabel('LBL_Payment_Method', $adminLangId); ?></th>
+                                    <th width="10%"><?php echo Labels::getLabel('LBL_Amount', $adminLangId); ?></th>
+                                    <th width="15%"><?php echo Labels::getLabel('LBL_Comments', $adminLangId); ?></th>
+                                    <th width="40%"><?php echo Labels::getLabel('LBL_Gateway_Response', $adminLangId); ?></th>
+                                </tr>
+                                <?php foreach ($order["payments"] as $key => $row) { ?>
+                                <tr>
+                                    <td><?php echo FatDate::format($row['opayment_date']);?></td>
+                                    <td><?php echo $row['opayment_gateway_txn_id'];?></td>
+                                    <td><?php echo $row['opayment_method'];?></td>
+                                    <td><?php echo CommonHelper::displayMoneyFormat($row['opayment_amount'], true, true);?></td>
+                                    <td><div class="break-me"><?php echo nl2br($row['opayment_comments']);?></div></td>
+                                    <td><div class="break-me"><?php echo nl2br($row['opayment_gateway_response']);?></div></td>
+                                </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
                     </div>
                 </section>
+                <?php }?>
+                <?php if (!$order["order_is_paid"] && $canEdit && 'CashOnDelivery' != $order['pmethod_code']) {?>
+                    <section class="section">
+                        <div class="sectionhead">
+                            <h4><?php echo Labels::getLabel('LBL_Order_Payments', $adminLangId); ?></h4>
+                        </div>
+                        <div class="sectionbody space">
+                            <?php
+                            $frm->setFormTagAttribute('onsubmit', 'updatePayment(this); return(false);');
+                            $frm->setFormTagAttribute('class', 'web_form');
+                            $frm->developerTags['colClassPrefix'] = 'col-md-';
+                            $frm->developerTags['fld_default_col'] = 12;
+
+
+                            $paymentFld = $frm->getField('opayment_method');
+                            $paymentFld->developerTags['col'] = 4;
+
+                            $gatewayFld = $frm->getField('opayment_gateway_txn_id');
+                            $gatewayFld->developerTags['col'] = 4;
+
+                            $amountFld = $frm->getField('opayment_amount');
+                            $amountFld->developerTags['col'] = 4;
+
+                            $submitFld = $frm->getField('btn_submit');
+                            $submitFld->developerTags['col'] = 4;
+
+                            echo $frm->getFormHtml(); ?>
+                        </div>
+                    </section>
+                <?php }?>
             <?php }?>
             </div>
         </div>

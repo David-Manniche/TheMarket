@@ -117,7 +117,7 @@ $(window).on('load',function() {
 	setSelectedCatValue();
 });
 
-$("document").ready(function(){
+$(document).ready(function(){
 	/*common drop down function  */
 	$('.dropdown__trigger-js').each(function(){
 		$(this).click(function() {
@@ -174,14 +174,14 @@ $("document").ready(function(){
 	});
 
 	/* for fixed header */
-	$(window).scroll(function(){
+	/*$(window).scroll(function(){
 		body_height = $("#body").position();
 		scroll_position = $(window).scrollTop();
 		if( typeof body_height !== typeof undefined && body_height.top < scroll_position)
 			$("body").addClass("fixed");
 		else
 			$("body").removeClass("fixed");
-	});
+	});*/
 
 	/* for footer */
 	if( $(window).width() < 767 ){
@@ -323,9 +323,13 @@ $(document).ready(function(){
 	var h = document.querySelector('.heart-wrapper-Js');
     $(document).on('click', '.heart-wrapper-Js',function(){
 	/* $(document).delegate('.heart-wrapper-Js','click',function(){ */
-		product_id= $(this).attr('data-id');
+		var product_id= $(this).attr('data-id');
+		var callbackFunction = $(this).attr('data-callback');
 		toggleProductFavorite(product_id,$(this));
 		h = document.querySelector('heart-wrapper-Js');
+		if (typeof callbackFunction !== 'undefined' && callbackFunction !== false) {
+			window[callbackFunction]();
+		}
 	});
 
 /*   function toggleActivate(){
@@ -421,6 +425,13 @@ $(document).ready(function(){
 			$('#selected__value-js').closest('form').find('input[name="category"]').val(id);
             $('.dropdown__trigger-js').parent('.dropdown').removeClass("is-active");
 		}
+	}
+
+	function setQueryParamSeperator(urlstr){
+		if(urlstr.indexOf("?") > -1){ 
+			return '&';
+		}		
+		return '?';
 	}
 
    function animation(obj){
@@ -542,4 +553,19 @@ function getCookie(cname) {
     }
   }
   return "";
+}
+
+function googleCaptcha(captchaSiteKey)
+{
+    var inputObj = $("form input[name='g-recaptcha-response']");
+    /*Google reCaptcha V3  */
+    setTimeout(function(){
+        if (0 < inputObj.length) {
+            grecaptcha.ready(function() {
+                grecaptcha.execute(captchaSiteKey, {action: inputObj.data('action')}).then(function(token) {
+                    inputObj.val(token);
+                });
+            });
+        }
+    }, 200);
 }

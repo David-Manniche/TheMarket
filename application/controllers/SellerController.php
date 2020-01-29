@@ -130,7 +130,7 @@ class SellerController extends SellerBaseController
 
         $txnObj = new Transactions();
         $txnsSummary = $txnObj->getTransactionSummary($userId, date('Y-m-d'));
-
+        
         $this->set('transactions', $transactions);
         $this->set('returnRequests', $returnRequests);
         $this->set('OrderReturnRequestStatusArr', OrderReturnRequest::getRequestStatusArr($this->siteLangId));
@@ -146,7 +146,6 @@ class SellerController extends SellerBaseController
         $this->set('userBalance', User::getUserBalance($userId));
         $this->set('ordersStats', $ordersStats);
         $this->set('dashboardStats', Stats::getUserSales($userId));
-
         $this->_template->addJs(array('js/chartist.min.js'));
         $this->_template->addCss(array('css/chartist.css'));
         $this->_template->addJs('js/slick.min.js');
@@ -410,6 +409,9 @@ class SellerController extends SellerBaseController
 
         $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("op_id"=>$op_id,'seller_id'=>$userId));
 
+        $taxOptions = json_decode($orderDetail['op_product_tax_options'], true);
+        $orderDetail['taxOptions'] = $taxOptions;
+
         $data = array('op_id'=>$op_id , 'op_status_id' => $orderDetail['op_status_id']);
         $frm = $this->getOrderCommentsForm($orderDetail, $processingStatuses);
         $frm->fill($data);
@@ -641,6 +643,8 @@ class SellerController extends SellerBaseController
             $notEligible = true;
             Message::addErrorMessage(sprintf(Labels::getLabel('LBL_this_order_already', $this->siteLangId), $orderStatuses[$orderDetail["op_status_id"]]));
         }
+        $taxOptions = json_decode($orderDetail['op_product_tax_options'], true);
+        $orderDetail['taxOptions'] = $taxOptions;
 
         $frm = $this->getOrderCancelForm($this->siteLangId);
         $frm->fill(array('op_id'=>$op_id));
@@ -1303,12 +1307,36 @@ class SellerController extends SellerBaseController
     public function changeTaxRates($taxcat_id)
     {
         $taxcat_id = FatUtility::int($taxcat_id);
-        $taxObj = new Tax();
-
-        $taxValues = $taxObj->getTaxValuesByCatId($taxcat_id, UserAuthentication::getLoggedUserId());
 
         $frm = $this->getchangeTaxRatesForm($this->siteLangId);
-        $frm->fill($taxValues+array('taxcat_id'=>$taxcat_id));
+
+        $taxObj = new Tax($taxcat_id);
+        $srch = $taxObj->getSearchObject($this->siteLangId, false);
+
+        $srch->joinTable(
+            Tax::DB_TBL_VALUES,
+            'LEFT OUTER JOIN',
+            'tv.taxval_taxcat_id = t.taxcat_id AND taxval_seller_user_id = '.UserAuthentication::getLoggedUserId(),
+            'tv'
+        );
+        $srch->addCondition('taxcat_id', '=', $taxcat_id);
+        $srch->addMultipleFields(array("t.*","t_l.taxcat_name","tv.taxval_is_percent,tv.taxval_value,tv.taxval_options"));
+
+        $rs =  $srch->getResultSet();
+        $data = FatApp::getDb()->fetch($rs);
+
+        if ($data === false) {
+            FatUtility::dieWithError($this->str_invalid_request);
+        }
+
+        $taxOptions = json_decode($data['taxval_options'], true);
+        $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
+        $options =  $taxStructure->getOptions($this->siteLangId);
+        foreach ($options as $optionVal) {
+            $data[$optionVal['taxstro_id']] = $taxOptions[$optionVal['taxstro_id']];
+        }
+        $frm->fill($data);
+        // $frm->fill($taxValues+array('taxcat_id'=>$taxcat_id));
 
         $this->set('frm', $frm);
         $this->set('userId', UserAuthentication::getLoggedUserId());
@@ -1325,17 +1353,30 @@ class SellerController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
+        if (Tax::validatePostOptions($this->siteLangId) == false) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Tax_Option_Rate', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
         $taxcat_id = $post['taxcat_id'];
         if (1 > $taxcat_id) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access'));
             FatUtility::dieJsonError(Message::getHtml());
         }
 
+        $taxvalOptions = array();
+        $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
+        $options =  $taxStructure->getOptions($this->siteLangId);
+        foreach ($options as $optionVal) {
+            $taxvalOptions[$optionVal['taxstro_id']] = $post[$optionVal['taxstro_id']];
+        }
+
         $data = array(
         'taxval_taxcat_id' =>$taxcat_id,
         'taxval_seller_user_id'=>UserAuthentication::getLoggedUserId(),
         'taxval_is_percent'=>$post['taxval_is_percent'],
-        'taxval_value'=>$post['taxval_value']
+        'taxval_value'=>$post['taxval_value'],
+        'taxval_options' => FatUtility::convertToJson($taxvalOptions),
         );
 
         $taxObj = new Tax();
@@ -3100,6 +3141,13 @@ class SellerController extends SellerBaseController
         $typeArr = applicationConstants::getYesNoArr($langId);
         $frm->addSelectBox(Labels::getLabel('LBL_Tax_in_percent', $langId), 'taxval_is_percent', $typeArr, '', array(), '');
         $fld = $frm->addFloatField(Labels::getLabel('LBL_Value', $langId), 'taxval_value');
+        if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
+            $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
+            $options =  $taxStructure->getOptions($this->siteLangId);
+            foreach ($options as $optionVal) {
+                $frm->addRequiredField($optionVal['taxstro_name'], $optionVal['taxstro_id'], '', array('data-type' => $optionVal['taxstro_interstate']));
+            }
+        }
         $fld->requirements()->setFloatPositive(true);
         $fld->requirements()->setRange('0', '100');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
@@ -3767,7 +3815,7 @@ class SellerController extends SellerBaseController
 
         /* $frm->addFloatField( Labels::getLabel('LBL_Minimum_Selling_Price', $langId).' ['.CommonHelper::getCurrencySymbol(true).']', 'product_min_selling_price', ''); */
 
-        $frm->addTextBox(Labels::getLabel('LBL_EAN/UPC_code', $this->siteLangId), 'product_upc');
+        $frm->addTextBox(Labels::getLabel('LBL_EAN/UPC/GTIN_code', $this->siteLangId), 'product_upc');
 
         $frm->addCheckBox(Labels::getLabel('LBL_Product_Featured', $this->siteLangId), 'product_featured', 1, array(), false, 0);
 

@@ -1,49 +1,49 @@
 <?php
 class Collections extends MyAppModel
 {
-    const DB_TBL = 'tbl_collections';
-    const DB_TBL_PREFIX = 'collection_';
+    public const DB_TBL = 'tbl_collections';
+    public const DB_TBL_PREFIX = 'collection_';
 
-    const DB_TBL_LANG = 'tbl_collections_lang';
-    const DB_TBL_LANG_PREFIX = 'collectionlang_';
+    public const DB_TBL_LANG = 'tbl_collections_lang';
+    public const DB_TBL_LANG_PREFIX = 'collectionlang_';
 
-    const DB_TBL_COLLECTION_TO_SELPROD = 'tbl_collection_to_seller_products';
-    const DB_TBL_COLLECTION_TO_SELPROD_PREFIX = 'ctsp_';
+    public const DB_TBL_COLLECTION_TO_SELPROD = 'tbl_collection_to_seller_products';
+    public const DB_TBL_COLLECTION_TO_SELPROD_PREFIX = 'ctsp_';
 
-    const DB_TBL_COLLECTION_TO_BRANDS = 'tbl_collection_to_brands';
-    const DB_TBL_COLLECTION_TO_BRANDS_PREFIX = 'ctpb_';
+    public const DB_TBL_COLLECTION_TO_BRANDS = 'tbl_collection_to_brands';
+    public const DB_TBL_COLLECTION_TO_BRANDS_PREFIX = 'ctpb_';
 
-    const DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES = 'tbl_collection_to_product_categories';
-    const DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX = 'ctpc_';
+    public const DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES = 'tbl_collection_to_product_categories';
+    public const DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX = 'ctpc_';
 
-    const DB_TBL_COLLECTION_TO_SHOPS = 'tbl_collection_to_shops';
-    const DB_TBL_COLLECTION_TO_SHOPS_PREFIX = 'ctps_';
+    public const DB_TBL_COLLECTION_TO_SHOPS = 'tbl_collection_to_shops';
+    public const DB_TBL_COLLECTION_TO_SHOPS_PREFIX = 'ctps_';
 
-    const COLLECTION_TYPE_PRODUCT = 1;
-    const COLLECTION_TYPE_CATEGORY = 2;
-    const COLLECTION_TYPE_SHOP = 3;
-    const COLLECTION_TYPE_BRAND = 4;
+    public const COLLECTION_TYPE_PRODUCT = 1;
+    public const COLLECTION_TYPE_CATEGORY = 2;
+    public const COLLECTION_TYPE_SHOP = 3;
+    public const COLLECTION_TYPE_BRAND = 4;
 
-    const TYPE_PRODUCT_LAYOUT1 = 1;
-    const TYPE_PRODUCT_LAYOUT2 = 2;
-    const TYPE_PRODUCT_LAYOUT3 = 3;
-    const TYPE_CATEGORY_LAYOUT1 = 4;
-    const TYPE_CATEGORY_LAYOUT2 = 5;
-    const TYPE_SHOP_LAYOUT1 = 6;
-    const TYPE_BRAND_LAYOUT1 = 7;
+    public const TYPE_PRODUCT_LAYOUT1 = 1;
+    public const TYPE_PRODUCT_LAYOUT2 = 2;
+    public const TYPE_PRODUCT_LAYOUT3 = 3;
+    public const TYPE_CATEGORY_LAYOUT1 = 4;
+    public const TYPE_CATEGORY_LAYOUT2 = 5;
+    public const TYPE_SHOP_LAYOUT1 = 6;
+    public const TYPE_BRAND_LAYOUT1 = 7;
 
-    const LIMIT_PRODUCT_LAYOUT1 = 12;
-    const LIMIT_PRODUCT_LAYOUT2 = 6;
-    const LIMIT_PRODUCT_LAYOUT3 = 12;
-    const LIMIT_CATEGORY_LAYOUT1 = 8;
-    const LIMIT_CATEGORY_LAYOUT2 = 4;
-    const LIMIT_SHOP_LAYOUT1= 4;
-    const LIMIT_BRAND_LAYOUT1 = 5;
+    public const LIMIT_PRODUCT_LAYOUT1 = 12;
+    public const LIMIT_PRODUCT_LAYOUT2 = 6;
+    public const LIMIT_PRODUCT_LAYOUT3 = 12;
+    public const LIMIT_CATEGORY_LAYOUT1 = 8;
+    public const LIMIT_CATEGORY_LAYOUT2 = 4;
+    public const LIMIT_SHOP_LAYOUT1 = 4;
+    public const LIMIT_BRAND_LAYOUT1 = 5;
 
-    const COLLECTION_CRITERIA_PRICE_LOW_TO_HIGH = 1;
-    const COLLECTION_CRITERIA_PRICE_HIGH_TO_LOW = 2;
+    public const COLLECTION_CRITERIA_PRICE_LOW_TO_HIGH = 1;
+    public const COLLECTION_CRITERIA_PRICE_HIGH_TO_LOW = 2;
 
-    const COLLECTION_WITHOUT_MEDIA = [
+    public const COLLECTION_WITHOUT_MEDIA = [
             Collections::COLLECTION_TYPE_SHOP,
             Collections::COLLECTION_TYPE_BRAND
         ];
@@ -51,7 +51,7 @@ class Collections extends MyAppModel
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
-        $this->db=FatApp::getDb();
+        $this->db = FatApp::getDb();
     }
 
     public static function getSearchObject($isActive = true, $langId = 0)
@@ -59,17 +59,17 @@ class Collections extends MyAppModel
         $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 'c');
 
-        $srch->addCondition('c.'.static::DB_TBL_PREFIX.'deleted', '=', applicationConstants::NO);
-        if ($isActive==true) {
-            $srch->addCondition('c.'.static::DB_TBL_PREFIX.'active', '=', applicationConstants::ACTIVE);
+        $srch->addCondition('c.' . static::DB_TBL_PREFIX . 'deleted', '=', applicationConstants::NO);
+        if ($isActive == true) {
+            $srch->addCondition('c.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
         }
 
         if ($langId > 0) {
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'c_l.'.static::DB_TBL_LANG_PREFIX.'collection_id = c.'.static::tblFld('id').' and
-			c_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
+                'c_l.' . static::DB_TBL_LANG_PREFIX . 'collection_id = c.' . static::tblFld('id') . ' and
+			    c_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 'c_l'
             );
         }

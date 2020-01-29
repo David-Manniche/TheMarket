@@ -18,6 +18,7 @@ class HomeController extends MyAppController
         $this->set('slides', $slides);
         $this->set('banners', $banners);
         $this->set('collections', $collections);
+        $this->set('isWishlistEnable', FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1));
 
         if (true ===  MOBILE_APP_API_CALL) {
             $orderProducts['pendingForReviews'] = array();
@@ -56,7 +57,7 @@ class HomeController extends MyAppController
                     $tpl = new FatTemplate('', '');
                     $tpl->set('siteLangId', $this->siteLangId);
                     $tpl->set('collections', $collections[Collections::TYPE_PRODUCT_LAYOUT1]);
-                    $homePageProdLayout1 = $this->_template->render(false, false, '_partial/collection/product-layout-1.php', true, true);
+                    $homePageProdLayout1 = $tpl->render(false, false, '_partial/collection/product-layout-1.php', true, true);
                 }
 
                 $homePageCatLayout1 = '';
@@ -230,15 +231,15 @@ class HomeController extends MyAppController
             if (!Labels::updateDataToFile($langId, $langCode, Labels::TYPE_APP)) {
                 FatUtility::dieJsonError(Labels::getLabel('MSG_Unable_to_update_file', $langId));
             }
-            $fileName = $langCode.'.json';
-            $filePath = Labels::JSON_FILE_DIR_NAME.'/'.Labels::TYPE_APP.'/'.$fileName;
+            $fileName = $langCode . '.json';
+            $filePath = Labels::JSON_FILE_DIR_NAME . '/' . Labels::TYPE_APP . '/' . $fileName;
 
             AttachedFile::downloadAttachment($filePath, $fileName);
             exit;
         }
 
         $data = array(
-           'languageCode'=>$langCode,
+           'languageCode' => $langCode,
            'downloadUrl' => CommonHelper::generateFullUrl('Home', 'languageLabels', array(1, $langId)),
            'langLabelUpdatedAt' => FatApp::getConfig('CONF_LANG_LABELS_UPDATED_AT', FatUtility::VAR_INT, time())
         );
@@ -862,7 +863,7 @@ class HomeController extends MyAppController
         $this->set('image_url', $image_url);
         $this->_template->render();
     }
-     
+
     public function countries()
     {
         $countryObj = new Countries();
@@ -923,5 +924,53 @@ class HomeController extends MyAppController
         $detail = CommonHelper::getUrlTypeData($url);
         $this->set('data', ['urlSegmentsDetail' => $detail]);
         $this->_template->render();
+    }
+        
+    public function pwaManifest()
+    {
+        $manifestFile = CONF_UPLOADS_PATH . '/manifest-' . $this->siteLangId . '.json';
+        if (!file_exists($manifestFile)) {
+            $iconsArr = [36,48,57,60,70,72,76,96,114,120,144,192,152,180,150,310,512 ];
+            $websiteName = FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->siteLangId, FatUtility::VAR_STRING, '');
+
+            $srch = new MetaTagSearch($this->siteLangId);
+            $cond = $srch->addCondition('meta_controller', '=', 'Home');
+            $cond->attachCondition('meta_controller', '=', '', 'OR');
+            
+            $cond1 = $srch->addCondition('meta_action', '=', 'index');
+            $cond1->attachCondition('meta_action', '=', '', 'OR');
+            
+            $srch->addOrder('meta_default', 'asc');
+            $srch->doNotCalculateRecords();
+            $srch->setPageSize(1);
+            $srch->addMultipleFields(array(
+                'IFNULL(meta_title, meta_identifier) as meta_title',
+                'meta_keywords', 'meta_description', 'meta_other_meta_tags' ));
+            
+            $rs = $srch->getResultSet();
+            $metas = FatApp::getDb()->fetch($rs) ;
+            $arr = array(
+                "name" => $websiteName,
+                "short_name" => $websiteName,
+                "description" => isset($metas['meta_description']) ? $metas['meta_description'] : $websiteName,
+                "lang" => $this->siteLangCode,
+                "start_url" => CONF_WEBROOT_URL,
+                "display" => "standalone",
+                "background_color" => '#' . $this->themeDetail['tcolor_first_color'],
+                "theme_color" => '#' . $this->themeDetail['tcolor_first_color'],
+            );
+            foreach ($iconsArr as $key => $val) {
+                $iconUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'appleTouchIcon', array($this->siteLangId, $val . '-' . $val)), CONF_IMG_CACHE_TIME, '.png');
+                $icons = [
+                    'src' => $iconUrl,
+                    'sizes' => $val . 'x' . $val,
+                    'type' =>   'image/png'
+                ]       ;
+                $arr['icons'][] = $icons;
+            }
+            file_put_contents($manifestFile, FatUtility::convertToJson($arr, JSON_UNESCAPED_UNICODE));
+        }
+        echo file_get_contents($manifestFile);
+        exit;
     }
 }

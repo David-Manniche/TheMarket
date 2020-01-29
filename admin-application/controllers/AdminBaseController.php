@@ -139,6 +139,8 @@ class AdminBaseController extends FatController
         'atleastOneRecord' =>Labels::getLabel('LBL_Please_select_atleast_one_record.', $this->adminLangId),
         'primaryLanguageField' =>Labels::getLabel('LBL_PRIMARY_LANGUAGE_DATA_NEEDS_TO_BE_FILLED_FOR_SYSTEM_TO_TRANSLATE_TO_OTHER_LANGUAGES.', $this->adminLangId),
         'updateCurrencyRates' =>Labels::getLabel('LBL_WANT_TO_UPDATE_CURRENCY_RATES?.', $this->adminLangId),
+        'cloneNotification' =>Labels::getLabel('LBL_DO_YOU_REALLY_WANT_TO_CLONE?', $this->adminLangId),
+        'clonedNotification' =>Labels::getLabel('LBL_NOTIFICATION_CLONED_SUCCESSFULLY', $this->adminLangId),
         );
 
         $languages = Language::getAllNames(false);
@@ -466,7 +468,7 @@ class AdminBaseController extends FatController
             $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Add_Tag', $this->adminLangId), 'tag_name');
             $fld1->htmlAfterField= '<div class="box--scroller"><ul class="columlist list--vertical" id="product-tag-js"></ul></div>';
         }
-        $frm->addTextBox(Labels::getLabel('LBL_EAN/UPC_code', $this->adminLangId), 'product_upc');
+        $frm->addTextBox(Labels::getLabel('LBL_EAN/UPC/GTIN_code', $this->adminLangId), 'product_upc');
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Shipping_country', $langId), 'shipping_country');
 
         $fld=$frm->addCheckBox(Labels::getLabel('LBL_Free_Shipping', $langId), 'ps_free', 1);

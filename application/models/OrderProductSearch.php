@@ -7,7 +7,7 @@ class OrderProductSearch extends SearchBase
     private $isOrderProductStatusJoined;
     private $commonLangId;
 
-    public function __construct($langId = 0, $joinOrders = false, $joinOrderProductStatus = false)
+    public function __construct($langId = 0, $joinOrders = false, $joinOrderProductStatus = false, $deletedOrders = false)
     {
         parent::__construct(Orders::DB_TBL_ORDER_PRODUCTS, 'op');
         $this->langId = FatUtility::int($langId);
@@ -30,6 +30,10 @@ class OrderProductSearch extends SearchBase
 
         if ($joinOrderProductStatus) {
             $this->joinOrderProductStatus($this->langId);
+        }
+
+        if ($joinOrders && false == $deletedOrders) {
+            $this->addCondition('order_deleted', '=', applicationConstants::NO);
         }
 
         $this->joinSettings();

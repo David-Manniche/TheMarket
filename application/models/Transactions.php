@@ -1,31 +1,35 @@
 <?php
 class Transactions extends MyAppModel
 {
-    const DB_TBL = 'tbl_user_transactions';
-    const DB_TBL_PREFIX = 'utxn_';
+    public const DB_TBL = 'tbl_user_transactions';
+    public const DB_TBL_PREFIX = 'utxn_';
 
-    const STATUS_PENDING = 0;
-    const STATUS_COMPLETED = 1;
+    public const STATUS_PENDING = 0;
+    public const STATUS_COMPLETED = 1;
+    public const STATUS_DECLINED = 2;
 
-    const WITHDRAWL_STATUS_PENDING = 0;
-    const WITHDRAWL_STATUS_COMPLETED = 1;
-    const WITHDRAWL_STATUS_APPROVED = 2;
-    const WITHDRAWL_STATUS_DECLINED = 3;
+    public const WITHDRAWL_STATUS_PENDING = 0;
+    public const WITHDRAWL_STATUS_COMPLETED = 1;
+    public const WITHDRAWL_STATUS_APPROVED = 2;
+    public const WITHDRAWL_STATUS_DECLINED = 3;
+    public const WITHDRAWL_STATUS_PROCESSED = 4;
+    public const WITHDRAWL_STATUS_PAYOUT_FAILED = 5;
+    public const WITHDRAWL_STATUS_PAYOUT_UNCLAIMED = 6;
 
-    const TYPE_AFFILIATE_REFERRAL_SIGN_UP = 1;
-    const TYPE_AFFILIATE_REFERRAL_ORDER = 2;
-    const TYPE_LOADED_MONEY_TO_WALLET = 3;
-    const TYPE_ORDER_PAYMENT = 4;
-    const TYPE_ORDER_REFUND = 5;
-    const TYPE_PRODUCT_SALE = 6;
-    const TYPE_PRODUCT_SALE_ADMIN_COMMISSION = 7;
-    const TYPE_MONEY_WITHDRAWN = 8;
-    const TYPE_PPC = 9;
-    const TYPE_MONEY_WITHDRAWL_REFUND = 10;
-    const TYPE_ORDER_SHIPPING = 11;
+    public const TYPE_AFFILIATE_REFERRAL_SIGN_UP = 1;
+    public const TYPE_AFFILIATE_REFERRAL_ORDER = 2;
+    public const TYPE_LOADED_MONEY_TO_WALLET = 3;
+    public const TYPE_ORDER_PAYMENT = 4;
+    public const TYPE_ORDER_REFUND = 5;
+    public const TYPE_PRODUCT_SALE = 6;
+    public const TYPE_PRODUCT_SALE_ADMIN_COMMISSION = 7;
+    public const TYPE_MONEY_WITHDRAWN = 8;
+    public const TYPE_PPC = 9;
+    public const TYPE_MONEY_WITHDRAWL_REFUND = 10;
+    public const TYPE_ORDER_SHIPPING = 11;
 
-    const CREDIT_TYPE = 1;
-    const DEBIT_TYPE = 2;
+    public const CREDIT_TYPE = 1;
+    public const DEBIT_TYPE = 2;
 
     public function __construct($utxnId = 0)
     {
@@ -44,9 +48,10 @@ class Transactions extends MyAppModel
         if ($langId == 0) {
             trigger_error(Labels::getLabel('MSG_Language_Id_not_specified.', CommonHelper::getLangId()), E_USER_ERROR);
         }
-        $arr=array(
-        static::STATUS_PENDING => Labels::getLabel('LBL_Transaction_Pending', $langId),
-        static::STATUS_COMPLETED => Labels::getLabel('LBL_Transaction_Completed', $langId)
+        $arr = array(
+            static::STATUS_PENDING => Labels::getLabel('LBL_TRANSACTION_PENDING', $langId),
+            static::STATUS_COMPLETED => Labels::getLabel('LBL_TRANSACTION_COMPLETED', $langId),
+            static::STATUS_DECLINED => Labels::getLabel('LBL_TRANSACTION_DECLINED', $langId)
         );
         return $arr;
     }
@@ -57,11 +62,14 @@ class Transactions extends MyAppModel
         if ($langId == 0) {
             trigger_error(Labels::getLabel('MSG_Language_Id_not_specified.', $langId), E_USER_ERROR);
         }
-        $arr=array(
-        static::WITHDRAWL_STATUS_PENDING => Labels::getLabel('LBL_Withdrawal_Request_Pending', $langId),
-        static::WITHDRAWL_STATUS_COMPLETED => Labels::getLabel('LBL_Withdrawal_Request_Completed', $langId),
-        static::WITHDRAWL_STATUS_APPROVED => Labels::getLabel('LBL_Withdrawal_Request_Approved', $langId),
-        static::WITHDRAWL_STATUS_DECLINED => Labels::getLabel('LBL_Withdrawal_Request_Declined', $langId)
+        $arr = array(
+            static::WITHDRAWL_STATUS_PENDING => Labels::getLabel('LBL_Withdrawal_Request_Pending', $langId),
+            static::WITHDRAWL_STATUS_COMPLETED => Labels::getLabel('LBL_Withdrawal_Request_Completed', $langId),
+            static::WITHDRAWL_STATUS_APPROVED => Labels::getLabel('LBL_Withdrawal_Request_Approved', $langId),
+            static::WITHDRAWL_STATUS_DECLINED => Labels::getLabel('LBL_Withdrawal_Request_Declined', $langId),
+            static::WITHDRAWL_STATUS_PROCESSED => Labels::getLabel('LBL_WITHDRAWAL_REQUEST_PROCESSED', $langId),
+            static::WITHDRAWL_STATUS_PAYOUT_FAILED => Labels::getLabel('LBL_WITHDRAWAL_REQUEST_PAYOUT_FAILED', $langId),
+            static::WITHDRAWL_STATUS_PAYOUT_UNCLAIMED => Labels::getLabel('LBL_WITHDRAWAL_REQUEST_PAYOUT_UNCLAMED', $langId),
         );
         return $arr;
     }
@@ -73,9 +81,9 @@ class Transactions extends MyAppModel
             trigger_error(Labels::getLabel('MSG_Language_Id_not_specified.', $langId), E_USER_ERROR);
         }
 
-        $arr=array(
-        static::CREDIT_TYPE => Labels::getLabel('LBL_Credit', $langId),
-        static::DEBIT_TYPE => Labels::getLabel('LBL_Debit', $langId)
+        $arr = array(
+            static::CREDIT_TYPE => Labels::getLabel('LBL_Credit', $langId),
+            static::DEBIT_TYPE => Labels::getLabel('LBL_Debit', $langId)
         );
         return $arr;
     }

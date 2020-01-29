@@ -10,14 +10,7 @@ $fileFld = $frm->getField('file');
 $fileFld->htmlBeforeField='<div class="filefield"><span class="filename"></span>';
 $preferredDimensionsStr = '<label class="filelabel">'.Labels::getLabel('LBL_Browse_File', $siteLangId).'</label></div><small class="text--small">'.Labels::getLabel('MSG_Allowed_Extensions', $siteLangId).'</small>';
 $fileFld->htmlAfterField = $preferredDimensionsStr;
-if (FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '')!= '' && FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '')!= '') {
-    $captchaFld = $frm->getField('htmlNote');
-    $captchaFld->htmlBeforeField = '<div class="field-set">
-           <div class="caption-wraper"><label class="field_label"></label></div>
-           <div class="field-wraper">
-               <div class="field_cover">';
-    $captchaFld->htmlAfterField = '</div></div></div>';
-}
+
 $isUserLogged = UserAuthentication::isUserLogged();
 if ($isUserLogged) {
     $nameFld = $frm->getField(BlogContribution::DB_TBL_PREFIX.'author_first_name');
@@ -51,4 +44,12 @@ if ($isUserLogged) {
         </div>
     </section>
 </div>
-<script src='https://www.google.com/recaptcha/api.js'></script>
+<?php 
+$siteKey = FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '');
+$secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '');
+if (!empty($siteKey) && !empty($secretKey)) {?>
+    <script src='https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>'></script>
+    <script>
+		googleCaptcha('<?php echo $siteKey; ?>');
+    </script>
+<?php } ?>

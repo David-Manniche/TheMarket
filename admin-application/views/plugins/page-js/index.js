@@ -1,44 +1,30 @@
 $(document).ready(function() {
-    searchPlugin(document.frmPluginSearch);
+    searchPlugin(1);
 });
 
 (function() {
 	var dv = '#pluginsListing';
 
 	reloadList = function() {
-		var frm = document.frmPluginSearch;
-		searchPlugin(frm);
+		$activeFormType = $('.tabs_nav_container ul.tabs_nav li a.active').data('formtype')
+		searchPlugin($activeFormType);
     };
     
-    clearSearch = function() {
-        document.frmPluginSearch.reset();
-        searchPlugin(document.frmPluginSearch);
-    };
-
-	searchPlugin = function(form){
-		var data = '';
-		if (form) {
-			data = fcom.frmData(form);
-		}
+	searchPlugin = function(type){
 		$(dv).html(fcom.getLoader());
 
-		fcom.ajax(fcom.makeUrl('Plugins','search'),data,function(res){
+		fcom.ajax(fcom.makeUrl('Plugins','search', [type]),'',function(res){
 			$(dv).html(res);
 		});
 	};
 
-	editPluginForm = function(pluginId){
+	editPluginForm = function(pluginType, pluginId){
 		$.facebox(function() {
-			pluginForm(pluginId);
+            fcom.ajax(fcom.makeUrl('Plugins', 'form', [pluginType, pluginId]), '', function(t) {
+                fcom.updateFaceboxContent(t);
+            });
 		});
 	};
-    
-	pluginForm = function(pluginId){
-		fcom.displayProcessing();
-		fcom.ajax(fcom.makeUrl('Plugins', 'form', [pluginId]), '', function(t) {
-			fcom.updateFaceboxContent(t);
-		});
-	}
 
 
 	setupPlugin = function (frm){
@@ -54,10 +40,12 @@ $(document).ready(function() {
 		});
 	}
 
-	editPluginLangForm = function(pluginId,langId, autoFillLangData = 0){
-		fcom.displayProcessing();
-		fcom.ajax(fcom.makeUrl('Plugins', 'langForm', [pluginId,langId, autoFillLangData]), '', function(t) {
-			fcom.updateFaceboxContent(t);
+	editPluginLangForm = function(pluginId, langId, autoFillLangData = 0){
+        fcom.displayProcessing();
+        fcom.resetEditorInstance();
+		fcom.ajax(fcom.makeUrl('Plugins', 'langForm', [pluginId, langId, autoFillLangData]), '', function(t) {
+            fcom.updateFaceboxContent(t);
+            fcom.setEditorLayout(langId);
 		});
 	};
 

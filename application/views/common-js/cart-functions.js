@@ -15,7 +15,8 @@ $(document).ready(function() {
 var cart = {
 	add: function( selprod_id, quantity, isRedirectToCart ){
 		isRedirectToCart = (typeof(isRedirectToCart) != 'undefined') ? true : false;
-		var data = 'selprod_id=' + selprod_id + '&quantity=' + (typeof(quantity) != 'undefined' ? quantity : 1);
+        var data = 'selprod_id=' + selprod_id + '&quantity=' + (typeof(quantity) != 'undefined' ? quantity : 1);
+        events.addToCart();
 		fcom.updateWithAjax(fcom.makeUrl('Cart','add'), data ,function(ans){
 			if (ans['redirect']) {
 				location = ans['redirect'];

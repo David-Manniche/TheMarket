@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	searchOrders(document.frmOrderSearch);
-	
+
 	$('input[name=\'buyer\']').autocomplete({
 		'source': function(request, response) {
 			$.ajax({
@@ -20,16 +20,16 @@ $(document).ready(function(){
 			$("input[name='buyer']").val( item['label'] );
 		}
 	});
-	
+
 	$('input[name=\'buyer\']').keyup(function(){
 		if( $(this).val() == "" ){
 			$("input[name='user_id']").val( "" );
 		}
 	});
-	
+
 	$(document).on('click','ul.linksvertical li a.redirect--js',function(event){
 		event.stopPropagation();
-	});	
+	});
 
 });
 (function() {
@@ -37,18 +37,18 @@ $(document).ready(function(){
 	goToSearchPage = function(page) {
 		if(typeof page==undefined || page == null){
 			page = 1;
-		}		
-		var frm = document.frmOrderSearchPaging;		
+		}
+		var frm = document.frmOrderSearchPaging;
 		$(frm.page).val(page);
 		searchOrders(frm);
 	}
-	
+
 	searchOrders = function(form,page){
 		if (!page) {
 			page = currentPage;
 		}
-		currentPage = page;	
-		var dv = $('#ordersListing');		
+		currentPage = page;
+		var dv = $('#ordersListing');
 		var data = '';
 		if (form) {
 			data = fcom.frmData(form);
@@ -58,21 +58,33 @@ $(document).ready(function(){
 			dv.html(res);
 		});
 	};
-	
+
 	cancelOrder = function (id){
-		if(!confirm(langLbl.confirmCancelOrder)){return;}		
-		fcom.updateWithAjax(fcom.makeUrl('Orders','cancel',[id]),'',function(res){		
+		if(!confirm(langLbl.confirmCancelOrder)){return;}
+		fcom.updateWithAjax(fcom.makeUrl('Orders','cancel',[id]),'',function(res){
 			reloadOrderList();
 		});
 	};
-		
+
 	reloadOrderList = function() {
 		searchOrders(document.frmOrderSearchPaging, currentPage);
 	};
-	
+
 	clearOrderSearch = function(){
 		document.frmOrderSearch.user_id.value = '';
 		document.frmOrderSearch.reset();
 		searchOrders(document.frmOrderSearch);
 	};
+
+	deletedOrders = function() {
+        document.location.href = fcom.makeUrl('Orders', 'deletedOrders');
+    };
+
+	deleteOrder = function (id){
+		if(!confirm(langLbl.confirmCancelOrder)){return;}
+		fcom.updateWithAjax(fcom.makeUrl('Orders','delete',[id]),'',function(res){
+			reloadOrderList();
+		});
+	};
+
 })();

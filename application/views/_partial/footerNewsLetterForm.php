@@ -22,6 +22,7 @@
     (function() {
         setUpNewsLetter = function(frm) {
             if (!$(frm).validate()) return;
+			events.newsLetterSubscription();
             var data = fcom.frmData(frm);
             fcom.updateWithAjax(fcom.makeUrl('MyApp', 'setUpNewsLetter'), data, function(t) {
                 if(t.status){

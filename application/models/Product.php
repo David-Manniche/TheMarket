@@ -2,7 +2,7 @@
 class Product extends MyAppModel
 {
     public const DB_TBL = 'tbl_products';
-    public const DB_TBL_LANG ='tbl_products_lang';
+    public const DB_TBL_LANG = 'tbl_products_lang';
     public const DB_TBL_PREFIX = 'product_';
     public const DB_TBL_LANG_PREFIX = 'productlang_';
 
@@ -978,7 +978,7 @@ class Product extends MyAppModel
         /* die($srch->getQuery());  */
         $rs = $srch->getResultSet();
         $result['uwlist_id'] = 0;
-        $result['uwlist_title'] = Labels::getLabel('LBL_Products_That_I_Love', $langId);
+        $result['uwlist_title'] = Labels::getLabel('LBL_FAVORITE_LIST', $langId);
         $result['uwlist_type'] = UserWishList::TYPE_FAVOURITE;
 
         $result['totalProducts'] = $srch->recordCount();
@@ -992,9 +992,9 @@ class Product extends MyAppModel
             return false;
         }
         $srch = MetaTag::getSearchObject();
-        $srch->addCondition(MetaTag::DB_TBL_PREFIX.'record_id', '=', $selProductId);
-        $srch->addCondition(MetaTag::DB_TBL_PREFIX.'controller', '=', 'Products');
-        $srch->addCondition(MetaTag::DB_TBL_PREFIX.'action', '=', 'view');
+        $srch->addCondition(MetaTag::DB_TBL_PREFIX . 'record_id', '=', $selProductId);
+        $srch->addCondition(MetaTag::DB_TBL_PREFIX . 'controller', '=', 'Products');
+        $srch->addCondition(MetaTag::DB_TBL_PREFIX . 'action', '=', 'view');
         $srch->addMultipleFields(array('meta_id','meta_identifier'));
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetch($rs);

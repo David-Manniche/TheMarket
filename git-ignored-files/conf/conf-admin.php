@@ -1,5 +1,4 @@
 <?php
-
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'conf-common.php';
 
 define('CONF_APPLICATION_PATH', CONF_INSTALLATION_PATH . 'admin-application/');

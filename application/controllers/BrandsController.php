@@ -43,7 +43,7 @@ class BrandsController extends MyAppController
             }
 
             $productCustomSrchObj->setPageSize($totalProdCountToDisplay);
-            $cnt=0;
+            $cnt = 0;
             foreach ($brandsArr as $val) {
                 $prodSrch = clone $productCustomSrchObj;
                 $prodSrch->addBrandCondition($val['brand_id']);
@@ -59,6 +59,7 @@ class BrandsController extends MyAppController
                     $brandProduct['currency_selprod_price'] = CommonHelper::displayMoneyFormat($brandProduct['selprod_price'], true, false, false);
                     $brandProduct['currency_theprice'] = CommonHelper::displayMoneyFormat($brandProduct['theprice'], true, false, false);
                 }
+                $brandsArr[$cnt]['brandImage'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'brand', array($val['brand_id'], $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
                 $brandsArr[$cnt]['products'] = $brandProducts;
                 $brandsArr[$cnt]['totalProducts'] = $prodSrch->recordCount();
                 $cnt++;
@@ -150,6 +151,17 @@ class BrandsController extends MyAppController
             'showBreadcrumb'=> true,
         );
 
+        if (FatUtility::isAjaxCall()) {
+            $this->set('products', $products);
+            $this->set('page', $page);
+            $this->set('pageCount', $srch->pages());
+            $this->set('postedData', $get);
+            $this->set('recordCount', $srch->recordCount());
+            $this->set('siteLangId', $this->siteLangId);
+            echo $this->_template->render(false, false, 'products/products-list.php', true);
+            exit;
+        }
+
         $this->set('data', $data);
         $this->includeProductPageJsCss();
         $this->_template->addJs(array('js/slick.min.js', 'js/responsive-img.min.js'));
@@ -168,7 +180,8 @@ class BrandsController extends MyAppController
         $srch->addMultipleFields(array('brand_id, IFNULL(brand_name, brand_identifier) as brand_name'));
 
         if (!empty($post['keyword'])) {
-            $srch->addCondition('brand_name', 'LIKE', '%' . $post['keyword'] . '%');
+            $cond = $srch->addCondition('brand_name', 'LIKE', '%' . $post['keyword'] . '%');
+            $cond->attachCondition('brand_identifier', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
         }
         $srch->addCondition('brand_status', '=', Brand::BRAND_REQUEST_APPROVED);
 

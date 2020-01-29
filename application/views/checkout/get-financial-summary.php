@@ -115,13 +115,22 @@
                         <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartVolumeDiscount']); ?></td>
                     </tr>
                     <?php } ?>
-                    <?php if ($cartSummary['cartTaxTotal']) { ?>
+                    <?php if (FatApp::getConfig('CONF_TAX_AFTER_DISOCUNT', FatUtility::VAR_INT, 0) && !empty($cartSummary['cartDiscounts'])) { ?>
                     <tr>
-                        <td class="text-left"><?php echo Labels::getLabel('LBL_Tax', $siteLangId); ?></td>
-                        <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTaxTotal']); ?></td>
+                        <td class="text-left"><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?></td>
+                        <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartDiscounts']['coupon_discount_total']); ?></td>
                     </tr>
-                    <?php } ?>
-                    <?php if (!empty($cartSummary['cartDiscounts'])) { ?>
+                    <?php } ?>   
+
+                    <?php if ($cartSummary['taxOptions']){
+                        foreach($cartSummary['taxOptions'] as $taxName => $taxVal){ ?>
+                        <tr>
+                            <td class="text-left"><?php echo $taxName; ?></td>
+                            <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($taxVal); ?></td>
+                        </tr>
+                      <?php }
+                    }?>
+                    <?php if (!FatApp::getConfig('CONF_TAX_AFTER_DISOCUNT', FatUtility::VAR_INT, 0) && !empty($cartSummary['cartDiscounts'])) { ?>
                     <tr>
                         <td class="text-left"><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?></td>
                         <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartDiscounts']['coupon_discount_total']); ?></td>

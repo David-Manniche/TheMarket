@@ -69,7 +69,8 @@
 #facebox .faceboxWidth {
 	display: block;
 	width: 900px;
-	overflow-y: auto;
+	/* overflow-y: auto; */
+	overflow: scroll;
 }
 #facebox .fbminwidth {
 	max-width: 900px;

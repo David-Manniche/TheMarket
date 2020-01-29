@@ -42,6 +42,14 @@ switch ($frmType) {
         break;
     case Configurations::FORM_MEDIA:
         break;
+    case Configurations::FORM_LOCAL:
+        $countryFld = $frm->getField('CONF_COUNTRY');
+        $countryFld->setFieldTagAttribute('id', 'user_country_id');
+        $countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,'.FatApp::getConfig('CONF_STATE', FatUtility::VAR_INT, 1).',\'#user_state_id\')');
+
+        $stateFld = $frm->getField('CONF_STATE');
+        $stateFld->setFieldTagAttribute('id', 'user_state_id');
+        break;    
 
     case Configurations::FORM_DISCOUNT:
         $discountValue = $frm->getField('CONF_FIRST_TIME_BUYER_COUPON_DISCOUNT_VALUE');
@@ -86,3 +94,8 @@ switch ($frmType) {
 <div class="tabs_panel_wrap">
     <?php echo $frm->getFormHtml();?>
 </div>
+<script language="javascript">
+    $(document).ready(function(){
+        getCountryStates($( "#user_country_id" ).val(),<?php echo FatApp::getConfig('CONF_STATE', FatUtility::VAR_INT, 1);?>,'#user_state_id');
+    });
+</script>

@@ -88,7 +88,7 @@ class Common
     {
         $siteLangId = CommonHelper::getLangId();
         $headerSrchFrm = static::getSiteSearchForm();
-        $headerSrchFrm->setFormTagAttribute('onSubmit', 'submitSiteSearch(this); return(false);');
+        $headerSrchFrm->setFormTagAttribute('onSubmit', 'submitSiteSearch(this, '.FatApp::getConfig('CONF_ITEMS_PER_PAGE_CATALOG', FatUtility::VAR_INT, 10).'); return(false);');
 
         /* to fill the posted data to form[ */
         $paramsArr = FatApp::getParameters();

@@ -55,6 +55,8 @@ class MetaTagsWriter {
 		if( $metas = FatApp::getDb()->fetch( $rs ) ){ 
 			$title = $metas['meta_title']. ' | '.$websiteName;
 			echo '<title>' . $title . '</title>' . "\n";
+			echo '<meta name="application-name" content="' . $title . '">' . "\n";
+			echo '<meta name="apple-mobile-web-app-title" content="' . $title . '">' . "\n";
 			if(isset($metas['meta_description']))
 				echo '<meta name="description" content="'.$metas['meta_description'].'" />';
 			if(isset($metas['meta_keywords']))
@@ -62,7 +64,8 @@ class MetaTagsWriter {
 			if(isset($metas['meta_other_meta_tags']))
 				echo CommonHelper::renderHtml($metas['meta_other_meta_tags'], ENT_QUOTES, 'UTF-8');
 		} else {
-			return '<title>' . $websiteName . '</title>';
+			return '<title>' . $websiteName . '</title>\n<meta name="application-name" content="' . $title . '">\n
+			<meta name="apple-mobile-web-app-title" content="' . $title . '">';
 		}
 		/* $srch = Meta::metaSearch();
 		

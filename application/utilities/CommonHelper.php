@@ -3,7 +3,8 @@ class CommonHelper extends FatUtility
 {
     private static $_ip;
     private static $_user_agent;
-    private static $_lang_id = 1;
+    private static $_lang_id;
+    private static $_lang_code;
     private static $_layout_direction;
     private static $_currency_id;
     private static $_currency_symbol_left;
@@ -65,6 +66,11 @@ class CommonHelper extends FatUtility
             array('currency_code','currency_symbol_left','currency_symbol_right','currency_value')
         );
 
+        self::$_lang_code = Language::getAttributesById(
+            self::$_lang_id,
+            'language_code'
+        );
+
         self::$_currency_symbol_left = $currencyData['currency_symbol_left'];
         self::$_currency_symbol_right = $currencyData['currency_symbol_right'];
         self::$_currency_code = $currencyData['currency_code'];
@@ -80,6 +86,11 @@ class CommonHelper extends FatUtility
     public static function getLangId()
     {
         return self::$_lang_id;
+    }
+
+    public static function getLangCode()
+    {
+        return self::$_lang_code;
     }
 
     public static function getLayoutDirection()
@@ -177,6 +188,10 @@ class CommonHelper extends FatUtility
             array_push($queryData, '?theme-preview');
         }
         $url = FatUtility::generateUrl($controller, $action, $queryData, $use_root_url, $url_rewriting);
+
+        if (rtrim($use_root_url, '/') === $url) {
+            $url = $use_root_url;
+        }
 
         if ($getOriginalUrl) {
             return $url;
@@ -480,24 +495,7 @@ class CommonHelper extends FatUtility
 
         return $amount;
     }
-    /*
-    public static function calculateTaxRates($productId, $prodPrice, $sellerId, $langId,$qty = 1){
-        $tax = 0 ;
-        $res = $this->getTaxRates($productId, $sellerId, $langId);
-
-        if(empty($res)){
-            return $tax;
-        }
-
-        if($res['taxval_is_percent'] == static::TYPE_PERCENTAGE){
-            $tax = round((($prodPrice*$qty) * $res['taxval_value'])/100,2);
-        }else{
-            $tax = $res['taxval_value']*$qty;
-        }
-
-        return $tax;
-    } */
-
+    
     public static function renderHtml($content = '', $stripJs = false)
     {
         $str = html_entity_decode($content);
@@ -827,28 +825,42 @@ class CommonHelper extends FatUtility
         return $percent_friendly = number_format($percent * 100, 2) . '%';
     }
 
-    public static function verifyCaptcha($fld_name = 'g-recaptcha-response')
+    public static function addCaptchaField($frm)
     {
-        require_once(CONF_INSTALLATION_PATH . 'library/ReCaptcha/src/autoload.php');
-        if (!empty(FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '')) && !empty(FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, ''))) {
-            $recaptcha = new \ReCaptcha\ReCaptcha(FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, ''));
-            $post = FatApp::getPostedData();
-            if (isset($post[$fld_name])) {
-                $resp = $recaptcha->verify($post[$fld_name], $_SERVER['REMOTE_ADDR']);
-                return $resp->isSuccess()==true?true:false;
-            } else {
-                return false;
-            }
-        } else {
+        $caller = (debug_backtrace())[1];
+        $action = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', str_replace('Form', '', $caller['function'])));
+
+        $siteKey = FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '');
+        $secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '');
+        if (false === MOBILE_APP_API_CALL && !empty($frm) && !empty($siteKey) && !empty($secretKey)) {
+            $frm->addHiddenField('', 'g-recaptcha-response', '', ['data-action' => $action]);
+        }
+    }
+
+    public static function verifyCaptcha()
+    {
+        $siteKey = FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '');
+        $secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '');
+        if (true === MOBILE_APP_API_CALL || empty($siteKey) || empty($secretKey)) {
             return true;
         }
-        /* require_once CONF_INSTALLATION_PATH . 'library/securimage/securimage.php';
-        $img = new Securimage();
-        $img->case_sensitive = true;
-        if (!$img->check(FatApp::getPostedData('security_code', FatUtility::VAR_STRING))) {
-            return false;
-        }
-        return true; */
+
+        $captcha = FatApp::getPostedData('g-recaptcha-response', FatUtility::VAR_STRING, '');
+        $url = 'https://www.google.com/recaptcha/api/siteverify';
+        $data = ['secret' => $secretKey, 'response' => $captcha];
+
+        $options = [
+            'http' => [
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method'  => 'POST',
+                'content' => http_build_query($data)
+            ]
+        ];
+        $context  = stream_context_create($options);
+        $response = file_get_contents($url, false, $context);
+        $responseKeys = json_decode($response, true);
+        header('Content-type: application/json');
+        return ($responseKeys["success"]) ? true : false;
     }
 
     public static function stripJavascript($content = '')
@@ -1440,11 +1452,11 @@ class CommonHelper extends FatUtility
     {
 
         //Lower case everything
-        $string = strtolower($string);
+        $string = ltrim(strtolower($string), '/');
         //Make alphanumeric (removes all other characters)
         //$string = preg_replace("/[^a-z0-9,&_\s-\/]/", "", $string);
         //covert / to -
-        $string = preg_replace("/[\s,&\/]/", "-", $string);
+        $string = preg_replace("/[\s,&]/", "-", $string);
         //Clean up multiple dashes or whitespaces
         $string = preg_replace("/[\s-]+/", " ", $string);
         //Convert whitespaces and underscore to dash
@@ -1538,7 +1550,7 @@ class CommonHelper extends FatUtility
 
     public static function createSlug($string)
     {
-        $slug=preg_replace('/[^A-Za-z0-9-]+/', '-', $string);
+        $slug = preg_replace('/[^A-Za-z0-9-\/]+/', '-', ltrim($string, '/'));
         return $slug;
     }
 
@@ -1909,10 +1921,13 @@ class CommonHelper extends FatUtility
 
     public static function getUrlTypeData($url)
     {
+        if (empty($url)) {
+            return false;
+        }
+
         if (strpos($url, "?") !== false) {
             $url = str_replace('?', '/?', $url);
         }
-
         $originalUrl = $url;
         $url = preg_replace('/https:/', 'http:', $url, 1);
         /* [ Check url rewritten by the system and "/" discarded in url rewrite*/
@@ -1922,38 +1937,38 @@ class CommonHelper extends FatUtility
         $systemUrl = rtrim($systemUrl, '/');
         $customUrl = array_filter(explode('/', $systemUrl));
         $customUrl = array_values($customUrl);
+        if (empty($customUrl)) {
+            return false;
+        }
         $srch = UrlRewrite::getSearchObject();
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $cond = $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'custom', '=', $customUrl[0]);
         $cond->attachCondition(UrlRewrite::DB_TBL_PREFIX . 'original', '=', $systemUrl);
-       
+
         $rs = $srch->getResultSet();
         if (!$row = FatApp::getDb()->fetch($rs)) {
             $url = $systemUrl;
         } else {
             $url = $row['urlrewrite_original'];
         }
+
         
-        $arr = explode('/', $url);
+        $arr = array_values(array_filter(explode('/', $url)));
 
         $controller = (isset($arr[0])) ? $arr[0] : '';
         array_shift($arr);
-
         $action = (isset($arr[0])) ? $arr[0] : '';
         array_shift($arr);
-
         $queryString = $arr;
-
         if ($controller != '' && $action == '') {
             $action = 'index';
         }
-
         if ($controller == '') {
             $controller = 'Content';
         }
-
-        $recordId = isset($queryString[0]) ? $queryString[0] :0;
+        $recordId = isset($queryString[0]) ? $queryString[0] : 0;
+        $extra = (object)[];
         switch ($controller . '/' . $action) {
             case 'category/view':
                 $urlType = applicationConstants::URL_TYPE_CATEGORY;
@@ -1968,15 +1983,19 @@ class CommonHelper extends FatUtility
                 $urlType = applicationConstants::URL_TYPE_PRODUCT;
                 break;
             case 'collections/view':
+                $collectionType = 0 < $recordId  ? Collections::getAttributesById($recordId, 'collection_type') : 0;
                 $urlType = applicationConstants::URL_TYPE_COLLECTION;
+                $extra = [
+                    'collectionType' => $collectionType
+                ];
                 break;
             case 'guest-user/login-form':
-                    $urlType = !empty($recordId) ?  applicationConstants::URL_TYPE_REGISTER : applicationConstants::URL_TYPE_SIGN_IN;
+                $urlType = !empty($recordId) ?  applicationConstants::URL_TYPE_REGISTER : applicationConstants::URL_TYPE_SIGN_IN;
                 break;
             case 'cms/view':
                 $urlType = applicationConstants::URL_TYPE_CMS;
                 break;
-            case 'contact-us/index':
+            case 'custom/contact-us':
                 $urlType = applicationConstants::URL_TYPE_CONTACT_US;
                 break;
             default:
@@ -1984,11 +2003,11 @@ class CommonHelper extends FatUtility
                 $urlType = applicationConstants::URL_TYPE_EXTERNAL;
                 break;
         }
-
         return array(
             'url' => $url,
             'recordId' => $recordId,
-            'urlType' => $urlType
+            'urlType' => $urlType,
+            'extra' => $extra
         );
     }
 }

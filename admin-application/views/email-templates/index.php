@@ -46,6 +46,9 @@
                             $innerLi=$innerUl->appendElement('li');
                             $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Deactivate', $adminLangId),"onclick"=>"toggleBulkStatues(0)"), Labels::getLabel('LBL_Deactivate', $adminLangId), true);
 
+                            $innerLi=$innerUl->appendElement('li');
+                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Settings', $adminLangId),"onclick"=>"settingsForm(".$adminLangId.")"), Labels::getLabel('LBL_Settings', $adminLangId), true);
+
                             echo $ul->getHtml();
                         } ?>
                     </div>

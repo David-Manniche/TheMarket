@@ -103,10 +103,12 @@ class AdminPrivilege
     public const SECTION_IMPORT_INSTRUCTIONS = 99;
     public const SECTION_UPLOAD_BULK_IMAGES = 100;
     public const SECTION_SITEMAP = 101;
-	public const SECTION_PLUGINS = 102;
+    public const SECTION_PLUGINS = 102;
     public const SECTION_ABANDONED_CART = 103;
-    public const SECTION_IMPORT_EXPORT = 104; 
-	
+    public const SECTION_PUSH_NOTIFICATION = 104;
+    public const SECTION_PRODUCT_ADVERTISEMENT = 105;
+    public const SECTION_IMPORT_EXPORT = 106; 
+
     public const PRIVILEGE_NONE = 0;
     public const PRIVILEGE_READ = 1;
     public const PRIVILEGE_WRITE = 2;
@@ -240,7 +242,15 @@ class AdminPrivilege
         static::SECTION_PRODUCT_TEMP_IMAGES => Labels::getLabel('MSG_Products_Temp_Images', CommonHelper::getLangId()),
         static::SECTION_IMPORT_INSTRUCTIONS => Labels::getLabel('MSG_Import_Instructions', CommonHelper::getLangId()),
         static::SECTION_UPLOAD_BULK_IMAGES => Labels::getLabel('MSG_Bulk_Upload', CommonHelper::getLangId()),
-		static::SECTION_PLUGINS => Labels::getLabel('MSG_Plugins', CommonHelper::getLangId()),
+        static::SECTION_SITEMAP => Labels::getLabel('MSG_SITEMAP', CommonHelper::getLangId()),
+        static::SECTION_PUSH_NOTIFICATION => Labels::getLabel('MSG_PUSH_NOTIFICATION', CommonHelper::getLangId()),
+        static::SECTION_PRODUCT_ADVERTISEMENT => Labels::getLabel('MSG_PRODUCT_ADVERTISEMENT', CommonHelper::getLangId()),
+
+        static::SECTION_PLUGINS => Labels::getLabel('MSG_Plugins', CommonHelper::getLangId()),
+        static::SECTION_ABANDONED_CART => Labels::getLabel('MSG_ABANDONED_CART', CommonHelper::getLangId()), 
+        static::SECTION_IMPORT_EXPORT => Labels::getLabel('MSG_IMPORT_EXPORT', CommonHelper::getLangId()), 
+        
+        
         /* static::SECTION_Languages => Labels::getLabel('MSG_Languages',CommonHelper::getLangId()),
         static::SECTION_Languages => Labels::getLabel('MSG_Order_Status',CommonHelper::getLangId()), */
 
@@ -1381,8 +1391,17 @@ class AdminPrivilege
         return $this->checkPermission($adminId, static::SECTION_SITEMAP, static::PRIVILEGE_WRITE, $returnResult);
     }
 
-	
-	public function canViewPlugins($adminId = 0, $returnResult = false)
+    public function canViewPushNotification($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_PUSH_NOTIFICATION, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    public function canEditPushNotification($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_PUSH_NOTIFICATION, static::PRIVILEGE_WRITE, $returnResult);
+    }
+    
+    public function canViewPlugins($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_PLUGINS, static::PRIVILEGE_READ, $returnResult);
     }
@@ -1395,6 +1414,16 @@ class AdminPrivilege
     public function canViewAbandonedCart($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_ABANDONED_CART, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    public function canViewAdvertisements($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_PRODUCT_ADVERTISEMENT, static::PRIVILEGE_READ, $returnResult);
+    }
+    
+    public function canEditAdvertisements($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_PRODUCT_ADVERTISEMENT, static::PRIVILEGE_WRITE, $returnResult);
     }
     
     public function canViewImportExport($adminId = 0, $returnResult = false)

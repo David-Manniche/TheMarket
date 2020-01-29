@@ -43,6 +43,14 @@ $(document).ready(function(){
 			});
 		}
 	};
+	requestOutside = function(object, id, status, statusName){
+		data = 'id='+id+'&status='+status;
+		if(confirm(langLbl.DoYouWantTo+' '+statusName+' '+langLbl.theRequest)){
+			fcom.updateWithAjax(fcom.makeUrl(object), data, function(t) {
+				reloadList();
+			});
+		}
+	};
 	
 	clearTagSearch = function(){
 		document.frmReqSearch.reset();

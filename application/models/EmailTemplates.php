@@ -4,9 +4,20 @@ class EmailTemplates extends MyAppModel
     const DB_TBL = 'tbl_email_templates';
     const DB_TBL_PREFIX = 'etpl_';
 
+    const LOGO_RATIO_SQUARE = 1;
+    const LOGO_RATIO_RECTANGLE = 2;
+
     public function __construct($etplCode = '')
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'code', $etplCode);
+    }
+
+    public static function getLogoRatioArr()
+    {
+        return array(
+        static::LOGO_RATIO_SQUARE => '1:1',
+        static::LOGO_RATIO_RECTANGLE => '16:5'
+        );
     }
 
     public static function getInstance()

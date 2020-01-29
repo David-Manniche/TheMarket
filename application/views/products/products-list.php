@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 if ($products) {
-    $forPage = !empty($forPage) ? $forPage : '';
+    $showActionBtns = !empty($showActionBtns) ? $showActionBtns : false;
     foreach ($products as $product) {
         $productUrl = CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])); ?> <div class="col-xl-3 col-lg-4 col-md-<?php echo (isset($colMdVal) && $colMdVal > 0)?$colMdVal:4; ?> mb-3">
     <!--product tile-->
@@ -16,7 +16,9 @@ if ($products) {
         <?php if($product['in_stock'] == 0) { ?>
             <span class="tag--soldout"><?php echo Labels::getLabel('LBL_SOLD_OUT', $siteLangId);?></span>
         <?php  } ?>
-        <div class="products__body"> <?php $this->includeTemplate('_partial/collection-ui.php', array('product'=>$product,'siteLangId'=>$siteLangId, 'forPage'=> $forPage), false); ?> <div class="products__img">
+        <div class="products__body"> 
+            <?php $this->includeTemplate('_partial/collection-ui.php', array('product'=>$product,'siteLangId'=>$siteLangId, 'showActionBtns'=> $showActionBtns), false); ?> 
+        <div class="products__img">
                 <?php $uploadedTime = AttachedFile::setTimeParam($product['product_image_updated_on']);?> <a title="<?php echo $product['selprod_title']; ?>"
                     href="<?php echo !isset($product['promotion_id'])?CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])):CommonHelper::generateUrl('Products', 'track', array($product['promotion_record_id']))?>">
                     <img data-ratio="1:1 (500x500)"
@@ -37,7 +39,7 @@ if ($products) {
                     href="<?php echo CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])); ?>"><?php echo (mb_strlen($product['selprod_title']) > 50) ? mb_substr($product['selprod_title'], 0, 50)."..." : $product['selprod_title']; ?>
                 </a></div> <?php $this->includeTemplate('_partial/collection-product-price.php', array('product'=>$product,'siteLangId'=>$siteLangId), false); ?>
         </div>
-    </div>
+    </div>    
     <!--/product tile-->
 </div> <?php
     }
@@ -48,9 +50,12 @@ if ($products) {
     }
 
     $postedData['page'] = (isset($page)) ? $page:1;
+    $postedData['recordDisplayCount'] = $recordCount;
     echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmProductSearchPaging','id' => 'frmProductSearchPaging'));
     $pagingArr = array('pageCount'=>$pageCount,'page'=>$postedData['page'],'recordCount'=>$recordCount, 'callBackJsFunc' => $searchFunction);
     $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
 } else {
+    $arr['recordDisplayCount'] = $recordCount;
+    echo FatUtility::createHiddenFormFromData($arr, array('name' => 'frmProductSearchPaging','id' => 'frmProductSearchPaging'));
     echo Labels::getLabel('LBL_No_record_found!', $siteLangId);
 }
