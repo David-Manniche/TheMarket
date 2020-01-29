@@ -229,6 +229,7 @@ $(document).ready(function() {
             $(dv).html(t);
         });
     };
+
     removeAppMainScreenImage = function(lang_id) {
         if (!confirm(langLbl.confirmDeleteImage)) {
             return;
@@ -245,6 +246,77 @@ $(document).ready(function() {
             getLangForm(document.frmConfiguration.form_type.value, lang_id);
         });
     };
+
+    popupImage = function(inputBtn){
+		if (inputBtn.files && inputBtn.files[0]) {
+	        fcom.ajax(fcom.makeUrl('Configurations', 'imgCropper'), '', function(t) {
+				$.facebox(t,'faceboxWidth medium-fb-width');
+				var container = document.querySelector('.img-container');
+                var file = inputBtn.files[0];
+                $('#new-img').attr('src', URL.createObjectURL(file));
+	    		var image = container.getElementsByTagName('img').item(0);
+                var minWidth = $(inputBtn).attr('data-min_width');
+                var minHeight = $(inputBtn).attr('data-min_height');
+                /*if(minWidth == minHeight){
+					var aspectRatio = 1 / 1
+				} else {
+	                var aspectRatio = 16 / 9;
+	            }*/
+	    		var options = {
+	                aspectRatio: minWidth / minHeight,
+	                data: {
+	                    width: minWidth,
+	                    height: minHeight,
+	                },
+	                minCropBoxWidth: minWidth,
+	                minCropBoxHeight: minHeight,
+	                toggleDragModeOnDblclick: false,
+		        };
+				$(inputBtn).val('');
+    	  		return cropImage(image, options, 'uploadConfImages', inputBtn);
+	    	});
+		}
+	};
+
+	uploadConfImages = function(formData){
+        var langId = document.frmConfiguration.lang_id.value;
+        var formType = document.frmConfiguration.form_type.value;
+
+        formData.append('lang_id', langId);
+        formData.append('form_type', formType);
+        $.ajax({
+            url: fcom.makeUrl('Configurations', 'uploadMedia'),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+            complete: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+            success: function(ans) {
+                if (!ans.status) {
+                    $.systemMessage(ans.msg, 'alert--danger');
+                    return;
+                }
+                $.systemMessage(ans.msg, 'alert--success');
+                getLangForm(formType, langId);
+                $(document).trigger('close.facebox');
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                if (xhr.responseText) {
+                    $.systemMessage(xhr.responseText, 'alert--danger');
+                    return;
+                }
+                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+        });
+	}
+
 })();
 
 

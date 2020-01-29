@@ -3,7 +3,6 @@
 $arr_flds = array(
 		'listserial'=> Labels::getLabel('LBL_Sr_no.',$adminLangId),
 		'post_title' => Labels::getLabel('LBL_Post_Title',$adminLangId),
-		'meta_identifier'=> Labels::getLabel('LBL_Identifier',$adminLangId),
 		'meta_title'=> Labels::getLabel('LBL_Title',$adminLangId),
 		'action' => Labels::getLabel('LBL_Action',$adminLangId),
 	);

@@ -992,10 +992,10 @@ class Product extends MyAppModel
             return false;
         }
         $srch = MetaTag::getSearchObject();
-        $srch->addCondition(MetaTag::DB_TBL_PREFIX . 'record_id', '=', $selProductId);
-        $srch->addCondition(MetaTag::DB_TBL_PREFIX . 'controller', '=', 'Products');
-        $srch->addCondition(MetaTag::DB_TBL_PREFIX . 'action', '=', 'view');
-        $srch->addMultipleFields(array('meta_id','meta_identifier'));
+        $srch->addCondition(MetaTag::DB_TBL_PREFIX.'record_id', '=', $selProductId);
+        $srch->addCondition(MetaTag::DB_TBL_PREFIX.'controller', '=', 'Products');
+        $srch->addCondition(MetaTag::DB_TBL_PREFIX.'action', '=', 'view');
+        $srch->addMultipleFields(array('meta_id'));
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetch($rs);
         return $records;
@@ -1359,7 +1359,7 @@ class Product extends MyAppModel
         if (0 < $shop_id) {
             $srch->addShopIdCondition($shop_id);
         }
-        
+
 
         if (array_key_exists('collection_id', $criteria)) {
             $collection_id =  FatUtility::int($criteria['collection_id']);
@@ -1591,5 +1591,13 @@ END,   special_price_found ) as special_price_found'
         FatApp::getDb()->query($qry);
         $query = "DELETE m FROM ".static::DB_PRODUCT_MIN_PRICE." m LEFT OUTER JOIN (".$tmpQry.") ON pmp_product_id = selprod_product_id WHERE m.pmp_product_id IS NULL";
         FatApp::getDb()->query($query);
+    }
+    
+    public static function getProductsCount()
+    {
+        $srch = static::getSearchObject(); 
+        $srch->addFld('COUNT('.static::DB_TBL_PREFIX.'id) as total_products'); 
+        $rs = $srch->getResultSet();
+        return FatApp::getDb()->fetch($rs);
     }
 }

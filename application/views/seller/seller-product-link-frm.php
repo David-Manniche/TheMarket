@@ -3,7 +3,7 @@
     <?php require_once('sellerCatalogProductTop.php');?>
 </div>
 <div class="cards">
-    <div class="cards-content pt-3 pl-4 pr-4 ">    
+    <div class="cards-content pt-3 pl-4 pr-4 ">
     <?php
         $sellerproductLinkFrm->setFormTagAttribute('onsubmit', 'setUpSellerProductLinks(this); return(false);');
         $sellerproductLinkFrm->setFormTagAttribute('class', 'form form--horizontal');

@@ -184,60 +184,66 @@ $(document).ready(function() {
             testimonialMediaForm(testimonialId);
         });
     }
-})();
 
-
-$(document).on('click', '.uploadFile-Js', function() {
-    var node = this;
-    $('#form-upload').remove();
-    /* var brandId = document.frmProdBrandLang.brand_id.value;
-    var langId = document.frmProdBrandLang.lang_id.value; */
-
-    var testimonialId = $(node).attr('data-testimonial_id');
-    var langId = 0;
-
-    var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-    frm = frm.concat('<input type="file" name="file" />');
-    frm = frm.concat('<input type="hidden" name="testimonialId" value="' + testimonialId + '"/>');
-    frm = frm.concat('<input type="hidden" name="lang_id" value="' + langId + '"/>');
-    frm = frm.concat('</form>');
-    $('body').prepend(frm);
-    $('#form-upload input[name=\'file\']').trigger('click');
-    if (typeof timer != 'undefined') {
-        clearInterval(timer);
-    }
-    timer = setInterval(function() {
-        if ($('#form-upload input[name=\'file\']').val() != '') {
-            clearInterval(timer);
-            $val = $(node).val();
-            $.ajax({
-                url: fcom.makeUrl('Testimonials', 'uploadTestimonialMedia'),
-                type: 'post',
-                dataType: 'json',
-                data: new FormData($('#form-upload')[0]),
-                cache: false,
-                contentType: false,
-                processData: false,
-                beforeSend: function() {
-                    $(node).val('Loading');
-                },
-                complete: function() {
-                    $(node).val($val);
-                },
-                success: function(ans) {
-                    $('.text-danger').remove();
-                    $('#input-field').html(ans.msg);
-                    if (!ans.status) {
-                        fcom.displayErrorMessage(ans.msg);
-                        return;
-                    }
-                    fcom.displaySuccessMessage(ans.msg);
-                    testimonialMediaForm(ans.testimonialId);
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-                }
-            });
+    popupImage = function(inputBtn){
+        if (inputBtn.files && inputBtn.files[0]) {
+            fcom.ajax(fcom.makeUrl('Testimonials', 'imgCropper'), '', function(t) {
+    			$('#cropperBox-js').html(t);
+    			$("#mediaForm-js").css("display", "none");
+                var container = document.querySelector('.img-container');
+                var file = inputBtn.files[0];
+                $('#new-img').attr('src', URL.createObjectURL(file));
+        		var image = container.getElementsByTagName('img').item(0);
+        		var options = {
+                    aspectRatio:  1 / 1,
+                    data: {
+                        width: 80,
+                        height: 80,
+                    },
+                    minCropBoxWidth: 80,
+                    minCropBoxHeight: 80,
+                    toggleDragModeOnDblclick: false,
+    	        };
+                $(inputBtn).val('');
+                return cropImage(image, options, 'uploadTestimonialImage', inputBtn);
+        	});
         }
-    }, 500);
-});
+	};
+
+	uploadTestimonialImage = function(formData){
+		var testimonialId = document.frmTestimonialMedia.testimonial_id.value;
+        var langId = 0;
+
+		formData.append('testimonial_id', testimonialId);
+        formData.append('lang_id', langId);
+        $.ajax({
+            url: fcom.makeUrl('Testimonials', 'uploadTestimonialMedia'),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+            complete: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+            success: function(ans) {
+                $('.text-danger').remove();
+                $('#input-field').html(ans.msg);
+                if (!ans.status) {
+                    fcom.displayErrorMessage(ans.msg);
+                    return;
+                }
+                fcom.displaySuccessMessage(ans.msg);
+                testimonialMediaForm(ans.testimonialId);
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+        });
+	}
+
+})();

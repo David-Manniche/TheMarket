@@ -73,7 +73,7 @@ $(document).on('change','.language-js',function(){
         /*]*/
         var dv = $('#listing');
         $(dv).html( fcom.getLoader() );
-
+        window.history.replaceState({}, document.title, fcom.makeUrl('Products'));
         fcom.ajax(fcom.makeUrl('Products','search'),data,function(res){
             runningAjaxReq = false;
             $("#listing").html(res);
@@ -186,6 +186,7 @@ $(document).on('change','.language-js',function(){
     clearSearch = function(){
         document.frmSearch.reset();
         document.frmSearch.product_seller_id.value = '';
+        document.frmSearch.prodcat_id.value = -1;
         searchProducts(document.frmSearch);
     };
 

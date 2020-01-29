@@ -78,6 +78,11 @@ class TranslateLangData
             $this->error = $this->translateObj->getError();
             return false;
         }
+        
+        if(isset($response['error'])){
+            $this->error = $response['error']['message'];
+            return false;
+        }
 
         $convertedLangsData = $this->formatTranslatedData($response, count($langArr));
 

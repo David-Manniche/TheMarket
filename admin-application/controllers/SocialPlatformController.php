@@ -17,6 +17,9 @@ class SocialPlatformController extends AdminBaseController
     public function index()
     {
         $this->objPrivilege->canViewSocialPlatforms();
+        $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
+        $this->_template->addCss('css/cropper.css');
         $this->_template->render();
     }
 
@@ -231,7 +234,7 @@ class SocialPlatformController extends AdminBaseController
         FatUtility::dieJsonError(Message::getHtml());
         } */
 
-        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('LBL_Please_select_a_file', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -239,11 +242,11 @@ class SocialPlatformController extends AdminBaseController
         $fileHandlerObj = new AttachedFile();
         $fileHandlerObj->deleteFile(AttachedFile::FILETYPE_SOCIAL_PLATFORM_IMAGE, $splatform_id);
         if (!$res = $fileHandlerObj->saveAttachment(
-            $_FILES['file']['tmp_name'],
+            $_FILES['cropped_image']['tmp_name'],
             AttachedFile::FILETYPE_SOCIAL_PLATFORM_IMAGE,
             $splatform_id,
             0,
-            $_FILES['file']['name'],
+            $_FILES['cropped_image']['name'],
             -1
         )
         ) {
@@ -251,9 +254,9 @@ class SocialPlatformController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $this->set('file', $_FILES['file']['name']);
+        $this->set('file', $_FILES['cropped_image']['name']);
         $this->set('splatform_id', $splatform_id);
-        $this->set('msg', $_FILES['file']['name'].' '.Labels::getLabel('LBL_Uploaded_Successfully', $this->adminLangId));
+        $this->set('msg', $_FILES['cropped_image']['name'].' '.Labels::getLabel('LBL_Uploaded_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -441,7 +444,7 @@ class SocialPlatformController extends AdminBaseController
     {
         $frm = new Form('frmSocialPlatformMedia');
         $frm->addHiddenField('', 'splatform_id', $splatform_id);
-        $fld =  $frm->addButton(Labels::getLabel('LBL_Icon_Image', $this->adminLangId), 'image', Labels::getLabel('LBL_Upload_File', $this->adminLangId), array('class'=>'File-Js','id'=>'image','data-splatform_id'=>$splatform_id));
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'image', array('accept'=>'image/*', 'data-frm'=>'frmSocialPlatformMedia'));
         return $frm;
     }
 }

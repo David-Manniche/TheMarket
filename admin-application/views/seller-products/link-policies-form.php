@@ -11,7 +11,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                 <div class="tabs_nav_container responsive flat">
                     <?php /* require_once('sellerCatalogProductTop.php'); */?>
                     <div class="tabs_panel_wrap">
-                        <ul class="tabs_nav tabs_nav--internal">
+                        <?php /* <ul class="tabs_nav tabs_nav--internal">
                             <li><a href="javascript:void(0)"
                                     onClick="sellerProductForm(<?php echo $product_id;?>,<?php echo $selprod_id;?>)"><?php echo Labels::getLabel('LBL_Basic', $adminLangId); ?></a>
                             </li>
@@ -28,7 +28,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                                     href="javascript:void(0)"
                                     onClick="linkPoliciesForm(<?php echo $product_id,',',$selprod_id,',',PolicyPoint::PPOINT_TYPE_RETURN ; ?>)"><?php echo Labels::getLabel('LBL_Link_Return_Policies', $adminLangId); ?></a>
                             </li>
-                        </ul>
+                        </ul> */ ?>
                         <div class="tabs_panel_wrap">
                             <?php echo $frm->getFormHtml(); ?>
                             <div id="listPolicies" class="col-md-12">

@@ -1,4 +1,4 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');?>
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <div class='page'>
 	<div class='container container-fluid'>
 		<div class="row">
@@ -12,20 +12,19 @@
 						</div>
 					</div>
 				</div>
-
-		<div class="tabs_nav_container vertical">
-			 <ul class="tabs_nav">
-				<?php $itr = 0; foreach($tabsArr as $metaType => $metaDetail){
-					?>
-					<li><a class="<?php echo ($activeTab==$itr)?'active':''?>" href="javascript:void(0)" onClick="listMetaTags(<?php echo "'$metaType'";?>)"><?php echo $metaDetail['name'];?></a></li>
-				<?php $itr++; }?>			
-			</ul>
-			<div class="tabs_panel_wrap">
-				<div class="tabs_nav_container" id="frmBlock"> 
-				</div>
-			</div>
-		</div>
-	</div>		
-</div>
-</div>
+                <div class="tabs_nav_container vertical">
+                     <ul class="tabs_nav">
+                        <?php $itr = 0; foreach($tabsArr as $metaType => $metaDetail){
+                            ?>
+                            <li><a class="<?php echo ($activeTab==$itr)?'active':''?>" href="javascript:void(0)" onClick="listMetaTags(<?php echo "'$metaType'";?>)"><?php echo $metaDetail['name'];?></a></li>
+                        <?php $itr++; }?>			
+                    </ul>
+                    <div class="tabs_panel_wrap">
+                        <div class="tabs_nav_container" id="frmBlock"> 
+                        </div>
+                    </div>
+                </div>
+            </div>		
+        </div>
+    </div>
 </div>

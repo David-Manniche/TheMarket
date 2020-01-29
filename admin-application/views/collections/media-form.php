@@ -23,6 +23,7 @@ if (0 < $displayMediaOnly) {
 
 $fld = $collectionMediaFrm->getField('collection_image');
 $fld->setFieldTagAttribute('data-collection_id', $collection_id);
+$fld->addFieldTagAttribute('onChange', 'popupImage(this)');
 $preferredDimensionsStr = '<small class="text--small">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $adminLangId), '640*480').'</small>';
 $fld->htmlAfterField = $preferredDimensionsStr;
 
@@ -102,7 +103,8 @@ $collectionMediaFrm->developerTags['colClassPrefix'] = 'col-md-';
 $collectionMediaFrm->developerTags['fld_default_col'] = 12;
 
 ?>
-<section class="section">
+<div id="cropperBox-js"></div>
+<section class="section" id="mediaForm-js">
     <div class="sectionhead">
 
         <h4><?php echo Labels::getLabel('LBL_Collection_Media_Setup', $adminLangId); ?></h4>
@@ -126,8 +128,10 @@ $collectionMediaFrm->developerTags['fld_default_col'] = 12;
         </div>
     </div>
 </div>
-
 <script type="text/javascript">
-    var FILETYPE_COLLECTION_IMAGE = '<?php echo AttachedFile::FILETYPE_COLLECTION_IMAGE ?>';
-    var FILETYPE_COLLECTION_BG_IMAGE = '<?php echo AttachedFile::FILETYPE_COLLECTION_BG_IMAGE ?>';
+$('input[name=min_width]').val(640);
+$('input[name=min_height]').val(480);
+var aspectRatio = 4 / 3;
+var FILETYPE_COLLECTION_IMAGE = '<?php echo AttachedFile::FILETYPE_COLLECTION_IMAGE ?>';
+var FILETYPE_COLLECTION_BG_IMAGE = '<?php echo AttachedFile::FILETYPE_COLLECTION_BG_IMAGE ?>';
 </script>

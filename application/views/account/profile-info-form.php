@@ -50,7 +50,7 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
                 <div class="row align-items-center" id="profileImageFrmBlock">
                     <div class="col-6">
                         <div class="avtar avtar--large">
-                            <?php 
+                            <?php
                                 $userId = UserAuthentication::getLoggedUserId();
                                 $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
                                 $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
@@ -64,17 +64,15 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
                     </div>
                     <div class="col-6">
                         <div class="btngroup--fix">
-                            <?php echo $imgFrm->getFormTag();    ?>
-                            <span class="btn btn--primary btn--sm btn--fileupload mt-1">
-                                <?php echo $imgFrm->getFieldHtml('user_profile_image'); ?><?php echo ($mode == 'Edit') ? Labels::getLabel('LBL_Change', $siteLangId): Labels::getLabel('LBL_Upload', $siteLangId) ;?>
-                            </span>
-                            <?php echo $imgFrm->getFieldHtml('update_profile_img');
-                            echo $imgFrm->getFieldHtml('rotate_left');
-                            echo $imgFrm->getFieldHtml('rotate_right');
-                            echo $imgFrm->getFieldHtml('remove_profile_img');
-                            echo $imgFrm->getFieldHtml('action');
-                            echo $imgFrm->getFieldHtml('img_data');
-                            ?>
+                            <?php echo $imgFrm->getFormTag(); ?>
+                            <?php if ($mode == 'Edit') { ?>
+                                <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="popupImage()"><?php echo Labels::getLabel('LBL_Change', $siteLangId);?></a>
+                            <?php } else { ?>
+                                <label class="btn btn-primary btn--sm" title="Upload image file">
+                                  <input type="file" class="sr-only" id="profileInputImage" name="file" accept="image/*" onChange="popupImage(this)">
+                                  <?php echo Labels::getLabel('LBL_Upload', $siteLangId); ?>
+                                </label>
+                            <?php } ?>
                             <?php if ($mode == 'Edit') { ?>
                             <a class="btn btn--primary-border btn--sm mt-1" href="javascript:void(0)" onClick="removeProfileImage()"><?php echo Labels::getLabel('LBL_Remove', $siteLangId);?></a>
                             <?php }?>

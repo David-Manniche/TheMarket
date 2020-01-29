@@ -628,9 +628,9 @@ class ImportexportCommon extends FatModel
         $arr = array();
         $arr['selprod_id'] = Labels::getLabel('LBL_seller_product_id', $langId);
 
-        if ($this->isDefaultSheetData($langId)) {
+        /* if ($this->isDefaultSheetData($langId)) {
             $arr['meta_identifier'] = Labels::getLabel('LBL_meta_identifier', $langId);
-        }
+        } */
         $arr['meta_title'] = Labels::getLabel('LBL_meta_title', $langId);
         $arr['meta_keywords'] = Labels::getLabel('LBL_meta_keywords', $langId);
         $arr['meta_description'] = Labels::getLabel('LBL_meta_description', $langId);

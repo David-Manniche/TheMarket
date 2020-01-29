@@ -15,6 +15,7 @@ class ProfileController extends AdminBaseController
     {
         $this->_template->addJs('js/jquery.form.js');
         $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
         $this->_template->addCss('css/cropper.css');
         $this->_template->render();
     }
@@ -26,12 +27,25 @@ class ProfileController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
+    public function imgCropper()
+    {
+        $this->set('image', CommonHelper::generateFullUrl('Image', 'profileImage', array($this->_adminId)));
+        $this->_template->render(false, false, 'cropper/index.php');
+    }
+
     public function profileInfoForm()
     {
         $imgFrm = $this->getImageForm();
         $admin_row = AdminUsers::getAttributesById($this->_adminId);
         $frm = $this->getProfileInfoForm();
         $frm->fill($admin_row);
+
+        $mode = 'Add';
+        $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_ADMIN_PROFILE_IMAGE, $this->_adminId);
+        if ($file_row != false) {
+            $mode = 'Edit';
+        }
+        $this->set('mode', $mode);
         $this->set('imgFrm', $imgFrm);
         $this->set('frm', $frm);
         $this->set('admin_row', $admin_row);
@@ -113,7 +127,7 @@ class ProfileController extends AdminBaseController
     private function getImageForm()
     {
         $frm = new Form('frmProfile', array('id'=>'frmProfile'));
-        $frm->addFileUpload(Labels::getLabel('LBL_Profile_Picture', $this->adminLangId), 'user_profile_image', array('id'=>'user_profile_image','onchange'=>'popupImage(this)','accept'=>'image/*'));
+        $frm->addFileUpload(Labels::getLabel('LBL_Profile_Picture', $this->adminLangId), 'user_profile_image', array('onChange'=>'popupImage(this)','accept'=>'image/*'));
         $frm->addHiddenField('', 'update_profile_img', Labels::getLabel('LBL_Update_Profile_Picture', $this->adminLangId), array('id'=>'update_profile_img'));
         $frm->addHiddenField('', 'rotate_left', Labels::getLabel('LBL_Rotate_Left', $this->adminLangId), array('id'=>'rotate_left'));
         $frm->addHiddenField('', 'rotate_right', Labels::getLabel('LBL_Rotate_Right', $this->adminLangId), array('id'=>'rotate_right'));
@@ -131,15 +145,15 @@ class ProfileController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request_Or_File_not_supported', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        if($post['action'] == "demo_avatar") {
-            if (!is_uploaded_file($_FILES['user_profile_image']['tmp_name'])) {
+        if (isset($_FILES['org_image']['tmp_name'])) {
+            if (!is_uploaded_file($_FILES['org_image']['tmp_name'])) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Please_select_a_file', $this->adminLangId));
                 FatUtility::dieJsonError(Message::getHtml());
             }
 
             $fileHandlerObj = new AttachedFile();
 
-            if(!$res = $fileHandlerObj->saveImage($_FILES['user_profile_image']['tmp_name'], AttachedFile::FILETYPE_ADMIN_PROFILE_IMAGE, $this->_adminId, 0, $_FILES['user_profile_image']['name'], -1, true)
+            if(!$res = $fileHandlerObj->saveImage($_FILES['org_image']['tmp_name'], AttachedFile::FILETYPE_ADMIN_PROFILE_IMAGE, $this->_adminId, 0, $_FILES['org_image']['name'], -1, true)
             ) {
                 Message::addErrorMessage($fileHandlerObj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
@@ -147,22 +161,22 @@ class ProfileController extends AdminBaseController
             $this->set('file', CommonHelper::generateFullUrl('Image', 'profileImage', array($this->_adminId)));
         }
 
-        if($post['action'] == "avatar") {
-            if (!is_uploaded_file($_FILES['user_profile_image']['tmp_name'])) {
+        if (isset($_FILES['cropped_image']['tmp_name'])) {
+            if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Please_select_a_file', $this->adminLangId));
                 FatUtility::dieJsonError(Message::getHtml());
             }
 
             $fileHandlerObj = new AttachedFile();
 
-            if(!$res = $fileHandlerObj->saveImage($_FILES['user_profile_image']['tmp_name'], AttachedFile::FILETYPE_ADMIN_PROFILE_CROPED_IMAGE, $this->_adminId, 0, $_FILES['user_profile_image']['name'], -1, true)
+            if(!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], AttachedFile::FILETYPE_ADMIN_PROFILE_CROPED_IMAGE, $this->_adminId, 0, $_FILES['cropped_image']['name'], -1, true)
             ) {
                 Message::addErrorMessage($fileHandlerObj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
             }
 
-            $data = json_decode(stripslashes($post['img_data']));
-            CommonHelper::crop($data, CONF_UPLOADS_PATH .$res, $this->adminLangId);
+            /*$data = json_decode(stripslashes($post['img_data']));
+            CommonHelper::crop($data, CONF_UPLOADS_PATH .$res, $this->adminLangId);*/
             $this->set('file', CommonHelper::generateFullUrl('Account', 'userProfileImage', array($this->_adminId,'croped',true)));
         }
 

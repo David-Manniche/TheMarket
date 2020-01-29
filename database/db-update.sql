@@ -376,3 +376,4 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BUTTON_FONT_COLOR';
 DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_FONT_COLOR'
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BUTTON_BACKGROUND_COLOR';
 DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_BACKGROUND_COLOR'
+ALTER TABLE `tbl_meta_tags` DROP `meta_identifier`;

@@ -181,58 +181,69 @@ blogPostForm = function(id) {
         $("#frmBlogPostListing").attr("action",fcom.makeUrl('BlogPosts','deleteSelected')).submit();
     };
 
-})();
+    popupImage = function(inputBtn){
+        if (inputBtn.files && inputBtn.files[0]) {
+            fcom.ajax(fcom.makeUrl('Collections', 'imgCropper'), '', function(t) {
+    			$('#cropperBox-js').html(t);
+    			$("#mediaForm-js").css("display", "none");
+                var container = document.querySelector('.img-container');
+                var file = inputBtn.files[0];
+                $('#new-img').attr('src', URL.createObjectURL(file));
+        		var image = container.getElementsByTagName('img').item(0);
+                var minWidth = document.frmBlogPostImage.min_width.value;
+                var minHeight = document.frmBlogPostImage.min_height.value;
+        		var options = {
+                    aspectRatio: aspectRatio,
+                    data: {
+                        width: minWidth,
+                        height: minHeight,
+                    },
+                    minCropBoxWidth: minWidth,
+                    minCropBoxHeight: minHeight,
+                    toggleDragModeOnDblclick: false,
+    	        };
+                $(inputBtn).val('');
+                return cropImage(image, options, 'uploadImages', inputBtn);
+        	});
+        }
+	};
 
-$(document).on('click', '.blogFile-Js', function() {
-    var node = this;
-    $('#form-upload').remove();
-    var frmName = $(node).attr('data-frm');
-    if ('frmBlogPostImage' == frmName) {
+	uploadImages = function(formData){
         var langId = document.frmBlogPostImage.lang_id.value;
         var postId = document.frmBlogPostImage.post_id.value;
-    }
-    var fileType = $(node).attr('data-file_type');
+        var fileType = document.frmBlogPostImage.file_type.value;
 
-    var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-    frm = frm.concat('<input type="file" name="file" />');
-    frm = frm.concat('<input type="hidden" name="post_id" value="' + postId + '"/>');
-    frm = frm.concat('<input type="hidden" name="file_type" value="' + fileType + '"></form>');
-    $('body').prepend(frm);
-    $('#form-upload input[name=\'file\']').trigger('click');
-    if (typeof timer != 'undefined') {
-        clearInterval(timer);
-    }
-    timer = setInterval(function() {
-        if ($('#form-upload input[name=\'file\']').val() != '') {
-            clearInterval(timer);
-            $val = $(node).val();
-            $.ajax({
-                url: fcom.makeUrl('BlogPosts', 'uploadBlogPostImages', [postId, langId]),
-                type: 'post',
-                dataType: 'json',
-                data: new FormData($('#form-upload')[0]),
-                cache: false,
-                contentType: false,
-                processData: false,
-                beforeSend: function() {
-                    $(node).val('Loading');
-                },
-                complete: function() {
-                    $(node).val($val);
-                },
-                success: function(t) {
-                    if (t.status == 1) {
-                        fcom.displaySuccessMessage(t.msg);
-                    } else {
-                        fcom.displayErrorMessage(t.msg);
-                    }
-                    $('#form-upload').remove();
-                    images(postId, langId);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    alert("Error Occured.");
+        formData.append('post_id', postId);
+        formData.append('file_type', fileType);
+        formData.append('lang_id', langId);
+        $.ajax({
+            url: fcom.makeUrl('BlogPosts', 'uploadBlogPostImages', [postId, langId]),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+            complete: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+            success: function(t) {
+                if (t.status == 1) {
+                    fcom.displaySuccessMessage(t.msg);
+                } else {
+                    fcom.displayErrorMessage(t.msg);
                 }
-            });
-        }
-    }, 500);
-});
+                $('#form-upload').remove();
+                postImages(postId);
+                images(postId, langId);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert("Error Occured.");
+            }
+        });
+	}
+
+})();

@@ -690,64 +690,68 @@
 		});
 	}
 
-})();
-
-$(document).on('click','.uploadFile-Js',function(){
-	var node = this;
-	$('#form-upload').remove();
-	/* var brandId = document.frmProdBrandLang.brand_id.value;
-	var langId = document.frmProdBrandLang.lang_id.value; */
-
-	var brandId = $(node).attr( 'data-brand_id' );
-	var langId = document.frmBrandMedia.brand_lang_id.value;
-
-	var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-	frm = frm.concat('<input type="file" name="file" />');
-	frm = frm.concat('<input type="hidden" name="brand_id" value="' + brandId + '"/>');
-	frm = frm.concat('<input type="hidden" name="lang_id" value="' + langId + '"/>');
-	frm = frm.concat('</form>');
-	$( 'body' ).prepend( frm );
-	$('#form-upload input[name=\'file\']').trigger('click');
-	if ( typeof timer != 'undefined' ) {
-		clearInterval(timer);
-	}
-	timer = setInterval(function() {
-		if ($('#form-upload input[name=\'file\']').val() != '') {
-			clearInterval(timer);
-			$val = $(node).val();
-			$.ajax({
-				url: fcom.makeUrl('Seller', 'uploadLogo'),
-				type: 'post',
-				dataType: 'json',
-				data: new FormData($('#form-upload')[0]),
-				cache: false,
-				contentType: false,
-				processData: false,
-				beforeSend: function() {
-					$(node).val('Loading');
-				},
-				complete: function() {
-					$(node).val($val);
-				},
-				success: function(ans) {
-						//$.mbsmessage(ans.msg);
-						$('.text-danger').remove();
-						$('#input-field').html(ans.msg);
-						if( ans.status == true ){
-							$('#input-field').removeClass('text-danger');
-							$('#input-field').addClass('text-success');
-							//brandLangForm( brandId, langId );
-							brandMediaForm(ans.brandId);
-						}else{
-							$('#input-field').removeClass('text-success');
-							$('#input-field').addClass('text-danger');
-						}
-						reloadList();
-					},
-					error: function(xhr, ajaxOptions, thrownError) {
-						alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+	brandPopupImage = function(inputBtn){
+		if (inputBtn.files && inputBtn.files[0]) {
+			fcom.ajax(fcom.makeUrl('Seller', 'imgCropper'), '', function(t) {
+				$('#cropperBox-js').html(t);
+				$("#brandMediaForm-js").css("display", "none");
+				var ratioType = document.frmBrandMedia.ratio_type.value;
+				var aspectRatio = 1 / 1;
+				if(ratioType == ratioTypeRectangular){
+					aspectRatio = 16 / 5
+				}
+				var options = {
+					aspectRatio: aspectRatio,
+					preview: '.img-preview',
+					crop: function (e) {
+					  var data = e.detail;
 					}
-				});
+			  	};
+				var container = document.querySelector('.img-container');
+                var file = inputBtn.files[0];
+                $('#new-img').attr('src', URL.createObjectURL(file));
+				var image = container.getElementsByTagName('img').item(0);
+				$(inputBtn).val('');
+			  return cropImage(image, options, 'uploadBrandLogo', inputBtn);
+			});
 		}
-	}, 500);
-});
+	};
+
+    uploadBrandLogo = function(formData){
+		var brandId = document.frmBrandMedia.brand_id.value;
+		var langId = document.frmBrandMedia.brand_lang_id.value;
+        formData.append('brand_id', brandId);
+        formData.append('lang_id', langId);
+        $.ajax({
+            url: fcom.makeUrl('Seller', 'uploadLogo'),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+            complete: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+            success: function(ans) {
+				$('.text-danger').remove();
+				$('#input-field').html(ans.msg);
+				if( ans.status == true ){
+					$('#input-field').removeClass('text-danger');
+					$('#input-field').addClass('text-success');
+					brandMediaForm(ans.brandId);
+				}else{
+					$('#input-field').removeClass('text-success');
+					$('#input-field').addClass('text-danger');
+				}
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+        });
+	}
+
+})();

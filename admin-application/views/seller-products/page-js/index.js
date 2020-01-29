@@ -65,9 +65,11 @@ $(document).ready(function(){
 			if(t.selprod_id > 0){
 				$(frm.splprice_selprod_id).val(t.selprod_id);
 			}
-			if(t.langId > 0){
+			reloadList();
+			$(document).trigger('close.facebox');
+			/* if(t.langId > 0){
 				sellerProductLangForm(t.selprod_id,t.langId);
-			}
+			} */
 		});
 	};
 

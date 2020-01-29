@@ -5,7 +5,7 @@ $mediaFrm->developerTags['fld_default_col'] = 12;
 
 $fld1 = $mediaFrm->getField('banner_image');
 $fld1->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
-
+$fld1->addFieldTagAttribute('onChange', 'popupImage(this)');
 $langFld = $mediaFrm->getField('lang_id');
 $langFld->addFieldTagAttribute('class', 'language-js');
 
@@ -21,7 +21,9 @@ $preferredDimensionsStr = '<span class="uploadimage--info" ></span>';
 $htmlAfterField = $preferredDimensionsStr;
 $htmlAfterField .= '<div id="image-listing"></div>';
 $fld1->htmlAfterField = $htmlAfterField;
-?> <section class="section">
+?>
+<div id="cropperBox-js"></div>
+<section class="section" id="mediaForm-js">
     <div class="sectionhead">
         <h4><?php echo Labels::getLabel('LBL_Banner_Image', $adminLangId); ?></h4>
     </div>
@@ -47,11 +49,27 @@ $fld1->htmlAfterField = $htmlAfterField;
     </div>
 </section>
 <script>
+$('input[name=banner_min_width]').val(1350);
+$('input[name=banner_min_height]').val(405);
+var aspectRatio = 10 / 3;
     $(document).on('change', '.display-js', function() {
+        var screenDesktop = <?php echo applicationConstants::SCREEN_DESKTOP ?>;
+        var screenIpad = <?php echo applicationConstants::SCREEN_IPAD ?>;
         var deviceType = $(this).val();
         fcom.ajax(fcom.makeUrl('Banners', 'getBannerLocationDimensions', [<?php echo $blocation_id;?>, deviceType]), '', function(t) {
-            var ans = $.parseJSON(t);            
+            var ans = $.parseJSON(t);
             $('.uploadimage--info').html((langLbl.preferredDimensions).replace(/%s/g, ans.bannerWidth + ' * ' + ans.bannerHeight));
+            $('input[name=banner_min_width]').val(ans.bannerWidth);
+            $('input[name=banner_min_height]').val(ans.bannerHeight);
+            if(deviceType == screenDesktop) {
+                aspectRatio = 10 / 3;
+            }
+            else if(deviceType == screenIpad){
+                aspectRatio = 10 / 3;
+            }
+            else{
+                aspectRatio = 16 / 9;
+            }
         });
     });
     $("document").ready(function() {
