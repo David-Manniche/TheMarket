@@ -350,15 +350,6 @@ trait SellerProducts
         $post['selprod_url_keyword'] = strtolower(CommonHelper::createSlug($post['selprod_url_keyword']));
 
         unset($post['selprod_id']);
-        /*$options = array();
-        if (isset($post['selprodoption_optionvalue_id']) && count($post['selprodoption_optionvalue_id'])) {
-            $options = $post['selprodoption_optionvalue_id'];
-            unset($post['selprodoption_optionvalue_id']);
-        }
-        asort($options);
-
-        $selProdCode = $productRow['product_id'] . '_' . implode('_', $options);
-        $post['selprod_code']  = $selProdCode;*/
 
         if ($post['selprod_track_inventory'] == Product::INVENTORY_NOT_TRACK) {
             $post['selprod_threshold_stock_level'] = 0;
@@ -370,7 +361,6 @@ trait SellerProducts
         }
 
         $languages = Language::getAllNames();
-        /* $selProdAvailable = Product::isSellProdAvailableForUser($selProdCode, $this->siteLangId, UserAuthentication::getLoggedUserId(), $selprod_id);*/
 
         $sellerProdObj = new SellerProduct($selprod_id);
         $sellerProdObj->assignValues($data_to_be_save);
@@ -407,16 +397,6 @@ trait SellerProducts
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-
-        /*--------  ] */
-        /* save options data, if any[ */
-        /*if ($selprod_id) {
-            if (!$sellerProdObj->addUpdateSellerProductOptions($selprod_id, $options)) {
-                Message::addErrorMessage(Labels::getLabel($sellerProdObj->getError(), $this->siteLangId));
-                FatUtility::dieWithError(Message::getHtml());
-            }
-        }*/
-        /* ] */
 
         /* Add seller product title and SEO data automatically[ */
         if (0 == FatApp::getPostedData('selprod_id', Fatutility::VAR_INT, 0)) {
@@ -497,25 +477,9 @@ trait SellerProducts
         }
         /* ] */
 
-        $newTabLangId = 0;
-        if ($selprod_id > 0) {
-            foreach ($languages as $langId => $langName) {
-                /* if(!$row = SellerProduct::getAttributesByLangId($langId,$selprod_id)){
-                $newTabLangId = $langId;
-                break;
-                } */
-                $newTabLangId = $langId;
-                break;
-            }
-        } else {
-            $selprod_id = $sellerProdObj->getMainTableRecordId();
-            $newTabLangId = $this->siteLangId;
-        }
-
         $productId = SellerProduct::getAttributesById($selprod_id, 'selprod_product_id', false);
         Product::updateMinPrices($productId);
         $this->set('selprod_id', $selprod_id);
-        $this->set('langId', $newTabLangId);
         $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
@@ -587,8 +551,12 @@ trait SellerProducts
                     /* Check if product already added for this option [ */
                     $selProdCode = $productRow['product_id'].'_'.$optionKey;
                     $selProdAvailable = Product::isSellProdAvailableForUser($selProdCode, $this->siteLangId, UserAuthentication::getLoggedUserId());
+
                     if (!empty($selProdAvailable)) {
-                        continue;
+                        if (!$selProdAvailable['selprod_deleted']) {
+                            continue;
+                        }
+                        $data_to_be_save['selprod_deleted'] = applicationConstants::NO;
                     }
                     $data_to_be_save['selprod_code'] = $selProdCode;
                     $data_to_be_save['selprod_cost'] = $post['selprod_cost'.$optionKey];
@@ -720,28 +688,12 @@ trait SellerProducts
                     }
                     /* ] */
 
-                    $newTabLangId = 0;
-                    if ($selprod_id > 0) {
-                        foreach ($languages as $langId => $langName) {
-                            /* if(!$row = SellerProduct::getAttributesByLangId($langId,$selprod_id)){
-                            $newTabLangId = $langId;
-                            break;
-                            } */
-                            $newTabLangId = $langId;
-                            break;
-                        }
-                    } else {
-                        $selprod_id = $sellerProdObj->getMainTableRecordId();
-                        $newTabLangId = $this->siteLangId;
-                    }
-
                     $productId = SellerProduct::getAttributesById($selprod_id, 'selprod_product_id', false);
                     Product::updateMinPrices($productId);
                 }
             }
         }
         $this->set('selprod_id', $selprod_id);
-        $this->set('langId', $newTabLangId);
         $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }

@@ -54,7 +54,6 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 				$(frm.splprice_selprod_id).val(t.selprod_id);
 			}
 			window.location.replace(fcom.makeUrl('Seller', 'products'));
-			// sellerProductLangForm(t.langId,t.selprod_id);
 		});
 	};
 
@@ -65,10 +64,10 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('Seller', 'setUpMultipleSellerProducts'), data, function(t) {
 			runningAjaxReq = false;
-			/*if(t.selprod_id > 0){
+			if(t.selprod_id > 0){
 				$(frm.splprice_selprod_id).val(t.selprod_id);
-			}*/
-			// window.location.replace(fcom.makeUrl('Seller', 'products'));
+			}
+			window.location.replace(fcom.makeUrl('Seller', 'products'));
 			// sellerProductLangForm(t.langId,t.selprod_id);
 		});
 	};
