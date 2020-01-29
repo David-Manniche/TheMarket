@@ -4,8 +4,7 @@ $frm->developerTags['fld_default_col'] = 6;
 ?>
 <section class="section">
     <div class="sectionhead">
-        <h4><?php echo Labels::getLabel('LBL_Option_Setup', $adminLangId); ?>
-        </h4>
+        <h4><?php echo Labels::getLabel('LBL_Option_Setup', $adminLangId); ?></h4>
     </div>
     <div class="sectionbody space">
         <div class="border-box border-box--space">
@@ -26,15 +25,15 @@ $frm->developerTags['fld_default_col'] = 6;
                     </a>  */
                     ?>
                     <?php
-                    $ul = new HtmlElement("ul", array("class" => "actions actions--centered"));
+                   /*  $ul = new HtmlElement("ul", array("class" => "actions actions--centered"));
                     $li = $ul->appendElement("li", array('class' =>'droplink'));
                     $li->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
                     $innerDiv = $li->appendElement('div', array('class' => 'dropwrap'));
                     $innerUl = $innerDiv->appendElement('ul', array('class' => 'linksvertical'));
                     $innerLiExport = $innerUl->appendElement('li');
                     $innerLiExport->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_ADD_NEW', $adminLangId), "onclick" => "optionValueForm('" . $option_id . "')"), Labels::getLabel('LBL_ADD_NEW', $adminLangId), true);
-                                            
-                    echo $ul->getHtml(); ?>
+                    echo $ul->getHtml(); */ ?>
+                    <a href="javascript:void(0)" class="themebtn btn-default btn-sm" onClick="optionValueForm(<?php echo $option_id;?>)";><?php echo Labels::getLabel('LBL_ADD_NEW',$adminLangId); ?></a>		
                 </div>
                 <div class="border-box ">
                     <div id="optionValueListing"></div>

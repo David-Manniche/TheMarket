@@ -127,7 +127,8 @@ $(document).ready(function(){
 			reloadList();
 			$.mbsmessage.close();
 			if(t.optionId > 0){
-				optionForm(t.optionId); return;
+                optionValueForm(t.optionId); return;
+				/* optionForm(t.optionId); return; */
 			}
 			$(document).trigger('close.facebox');
 		});
