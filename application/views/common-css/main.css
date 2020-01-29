@@ -33026,6 +33026,12 @@ div.faqanswer p {
   position: relative;
   padding-top: 20px;
   margin: 0 -10px; }
+  @media (min-width: 1200px) {
+    .hero-slider {
+      overflow: visible !important; } }
+  @media (min-width: 1200px) {
+    .hero-slider .slick-list {
+      overflow: visible !important; } }
   .hero-slider .hero-item {
     margin: 0;
     position: relative;
@@ -35334,6 +35340,9 @@ body {
     [dir="rtl"] .ft-pro-wrapper {
       background: none;
       border: none; } }
+
+body {
+  overflow-x: hidden; }
 
 ol,
 ul {

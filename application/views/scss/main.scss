@@ -103,6 +103,9 @@ sans-serif;
 @import 'pages/testimonials';
 @import 'pages/rtl';
 
+body {
+    overflow-x: hidden;
+}
 
 ol,
 ul {

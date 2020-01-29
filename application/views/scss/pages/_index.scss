@@ -3,6 +3,23 @@
     padding-top: 20px;
     margin: 0 -10px;
 
+    @include media-breakpoint-up(xl) {
+        & {
+            overflow: visible !important;
+
+        }
+    }
+
+    .slick-list {
+        @include media-breakpoint-up(xl) {
+            & {
+                overflow: visible !important;
+
+            }
+        }
+    }
+
+
     .hero-item {
         margin: 0;
         position: relative;
