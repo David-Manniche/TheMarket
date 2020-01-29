@@ -1395,7 +1395,6 @@ class BuyerController extends BuyerBaseController
         $frm = $this->getOrderFeedbackForm($opId, $this->siteLangId);
         $this->set('frm', $frm);
         $this->set('opDetail', $opDetail);
-        $this->_template->addCss(array('css/star-rating.css'));
         $this->_template->addJs(array('js/jquery.barrating.min.js'));
         $this->_template->render(true, true);
     }

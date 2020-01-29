@@ -1,4 +1,4 @@
-<div id="body" class="body bg--gray">
+<div id="body" class="body bg-gray">
     <section class="dashboard">
 		<div class="container">
 			<div class="row">

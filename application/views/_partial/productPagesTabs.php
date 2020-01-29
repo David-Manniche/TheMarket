@@ -32,7 +32,7 @@
             <?php } ?>
             <!--<a href="<?php /* echo CommonHelper::generateUrl('seller','products');?>" class="btn btn--primary btn--sm "><?php echo Labels::getLabel( 'LBL_My_Inventory', $siteLangId) */?></a>-->
             <?php if ((isset($canAddCustomProduct) && $canAddCustomProduct==false) && (isset($canRequestProduct) && $canRequestProduct === true)) {?>
-            <a href="<?php echo CommonHelper::generateUrl('Seller', 'requestedCatalog');?>" class="btn btn--secondary-border btn--sm"><?php echo Labels::getLabel('LBL_Request_A_Product', $siteLangId);?></a>
+            <a href="<?php echo CommonHelper::generateUrl('Seller', 'requestedCatalog');?>" class="btn btn-outline-secondary btn--sm"><?php echo Labels::getLabel('LBL_Request_A_Product', $siteLangId);?></a>
             <?php } ?>
             <?php if (User::canAddCustomProductAvailableToAllSellers() && $action == 'customCatalogProducts') {?>
             <a href="<?php echo CommonHelper::generateUrl('Seller', 'customCatalogProductForm');?>" class="btn btn--primary btn--sm "><?php echo Labels::getLabel('LBL_Request_New_Product', $siteLangId);?></a>

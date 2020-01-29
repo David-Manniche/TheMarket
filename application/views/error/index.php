@@ -1,5 +1,5 @@
 <div id="wrapper" class="bg-daimonds">
-  <div id="body" class="body bg--gray">
+  <div id="body" class="body bg-gray">
     <section class="top-space">
       <div class="container">
         <div class="page-404"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">

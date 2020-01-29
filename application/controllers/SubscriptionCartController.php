@@ -12,7 +12,6 @@ class SubscriptionCartController extends MyAppController
 
     public function index()
     {
-        $this->_template->addCss('css/cart.css');
         $sCartObj = new SubscriptionCart();
         $subscriptionArr = $sCartObj->getSubscription($this->siteLangId);
         if (count($subscriptionArr)==0) {

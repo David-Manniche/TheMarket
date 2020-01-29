@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');  ?>
 
 <div id="body" class="body">
- <div class="bg--second pt-3 pb-3">
+ <div class="bg-second pt-3 pb-3">
       <div class="container">
         <div class="row align-items-center justify-content-center">
           <div class="col-md-8">               
@@ -41,8 +41,8 @@
 							$firstCharacter = $str;
 				?>
               <div class="item">
-                <h6><?php echo $firstCharacter;?></h6>
-                <ul class="listing--onefifth">
+                <h6 class="big-title"><?php echo $firstCharacter;?></h6>
+                <ul>
                   <?php } ?>
                   <li><a href="<?php echo CommonHelper::generateUrl('Brands','view',array($brands['brand_id']));?>"><?php echo $brands['brand_name'];?></a></li>
                   <?php } ?>

@@ -47,8 +47,7 @@ class AmazonPayController extends PaymentController
         }
 
         $this->set('exculdeMainHeaderDiv', true);
-        $this->_template->addCss('css/payment.css');
-
+        
         $queryStr = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '?') + 1);
         $queryStrArr = explode('&', $queryStr);
 

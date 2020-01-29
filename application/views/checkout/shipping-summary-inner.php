@@ -48,7 +48,7 @@ $shippingapi_idFld->developerTags['col'] = 6;
                         </div>
                     </div>
                 </div>
-                <table class="cart-summary table cart--full js-scrollable scroll-hint">
+                <table class="table cart-summary cart--full">
                     <tbody>
                         <?php }
                             $newShippingMethods = $shippingMethods;
@@ -143,7 +143,7 @@ $shippingapi_idFld->developerTags['col'] = 6;
                                 echo $shippingOptions = CommonHelper::displayNotApplicable($siteLangId, '');
                             } else {
                                 if (sizeof($newShippingMethods)>0) {
-                                    echo '<li>'. CommonHelper::createDropDownFromArray('data[' . md5($product['key']) . ']['."shipping_type".']', $newShippingMethods, $selectedShippingType, 'class="shipping_method"  data-product-key="' . md5($product['key']) . '" ', Labels::getLabel('LBL_Select_Shipping_Method', $siteLangId)) .'</li>';
+                                    echo '<li>'. CommonHelper::createDropDownFromArray('data[' . md5($product['key']) . ']['."shipping_type".']', $newShippingMethods, $selectedShippingType, 'class="custom-select shipping_method"  data-product-key="' . md5($product['key']) . '" ', Labels::getLabel('LBL_Select_Shipping_Method', $siteLangId)) .'</li>';
                                 } else {
                                     echo '<li class="info-message">'.Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId).'</li>';
                                 } ?>
@@ -202,7 +202,7 @@ $shippingapi_idFld->developerTags['col'] = 6;
 
     </section>
     <div class="row align-items-center justify-content-between mt-4">
-        <div class="col"><a class="btn btn--primary-border" onclick="showAddressList();" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></a></div>
+        <div class="col"><a class="btn btn-outline-primary" onclick="showAddressList();" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></a></div>
         <div class="col-auto">
             <a class="btn btn--primary " onClick="setUpShippingMethod();" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
         </div>

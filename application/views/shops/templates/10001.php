@@ -27,7 +27,7 @@ foreach ($catBannerArr as $slideScreen) {
    </div>
 </section>
 <?php } ?>
-<section class="bg--second">
+<section class="bg-second">
     <div class="container">
         <div class="shop-nav">
             <?php

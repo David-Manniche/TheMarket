@@ -1,0 +1,234 @@
+/*@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,700,800|Poppins:300,400,400i,500,600,700,800');*/
+
+$family-primary: 'Poppins',
+sans-serif;
+$family-secondary: 'Open Sans',
+sans-serif;
+
+@import 'bootstrap/bootstrap';
+@import 'bootstrap/variables';
+
+@import "themes/theme";
+@import "themes/variables";
+
+@import 'layout/header';
+@import 'layout/nav';
+@import 'layout/footer';
+
+
+@import 'components/accordion';
+@import 'components/auto-complete';
+@import 'components/avtar';
+@import 'components/back-to-top';
+@import 'components/breadcrumbs';
+@import 'components/browser_ie';
+@import 'components/button';
+@import 'components/cart';
+@import 'components/catalog-popup';
+@import 'components/certified-bar';
+@import 'components/checkbox';
+@import 'components/cms';
+@import 'components/cookies';
+@import 'components/data-not-found';
+@import 'components/dropdown';
+@import 'components/featured-shop';
+@import 'components/fetured-slider';
+@import 'components/form';
+@import 'components/ftshops';
+@import 'components/graph';
+@import 'components/hamburger';
+@import 'components/heart';
+@import 'components/ion.rangeSlider';
+@import 'components/ion.rangeSlider.skinHTML5';
+@import 'components/jquery.datetimepicker';
+@import 'components/jquery-ui-timepicker-addon';
+@import 'components/label';
+@import 'components/loader';
+@import 'components/login-wrapper';
+@import 'components/magnific-popup';
+@import 'components/media';
+@import 'components/message';
+@import 'components/modaal';
+@import 'components/multi-list';
+@import 'components/pagination';
+@import 'components/panel';
+@import 'components/preview';
+@import 'components/products-grid';
+@import 'components/pro-info';
+@import 'components/scroll-hint';
+@import 'components/slider';
+@import 'components/social-profiles';
+@import 'components/star-rating';
+@import 'components/steps';
+@import 'components/sticky-head-demo';
+@import 'components/system-messages';
+@import 'components/table';
+@import 'components/tabs';
+@import 'components/top-brands';
+@import 'components/wrap-drop';
+
+
+@import 'vendors/animate';
+@import 'vendors/fontawesome';
+@import 'vendors/chartist';
+@import 'vendors/cropper';
+@import 'vendors/facebox';
+@import 'vendors/jquery-ui';
+@import 'vendors/jquery-ui-timepicker-addon';
+@import 'vendors/simplebar';
+@import 'vendors/slick';
+@import 'vendors/xzoom';
+
+
+@import 'pages/blog';
+@import 'pages/blog-arabic';
+@import 'pages/cart';
+@import 'pages/category';
+@import 'pages/checkout';
+@import 'pages/contact';
+@import 'pages/dashboard';
+@import 'pages/detail';
+@import 'pages/faq';
+@import 'pages/index';
+@import 'pages/listing';
+@import 'pages/login';
+@import 'pages/packages';
+@import 'pages/payment';
+//@import 'pages/responsive';
+@import 'pages/seller';
+@import 'pages/shop';
+@import 'pages/testimonials';
+//@import 'pages/rtl';
+
+
+body {
+    overflow-x: hidden;
+}
+
+ol,
+ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+img {
+    max-width: 100%;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.-color-light {
+    opacity: 0.6;
+}
+
+.-color-light {
+    opacity: 0.6;
+    font-weight: normal;
+}
+
+.-heightfull {
+    height: 100%;
+}
+
+.-heightfull.-border.rounded p.small {
+    font-size: 100%;
+    font-style: normal;
+}
+
+.-inline-element {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.divider,
+hr {
+    height: 1px;
+    background: var(--border-color);
+    margin: 15px 0;
+}
+
+.note {
+    font-weight: 300;
+    margin-top: 10px;
+    display: block;
+}
+
+/*Bg*/
+.bg--primary-color,
+.bg-primary {
+    color: #fff;
+    background: $brand-color;
+}
+
+.bg-second {
+    color: #fff;
+    background: $secondary-color;
+}
+
+.bg-white {
+    background: #fff;
+}
+
+.bg-gray {
+    background: $gray-light;
+}
+
+.bg-light {
+    background: #f0f0f0;
+}
+
+.bg-gray-dark {
+    background: #efeded;
+}
+
+.txt-white {
+    color: #fff;
+}
+
+
+.dragHandle {
+    cursor: move;
+}
+
+#st_gdpr_iframe {
+    display: none;
+}
+
+.not-allowed {
+    background: #ededed;
+    color: #888;
+    cursor: not-allowed !important;
+}
+
+.formActions-css {
+    display: none !important;
+}
+
+.column {
+    margin-bottom: 30px;
+}
+
+.gap {
+    height: 1rem;
+    clear: both;
+    display: table;
+    width: 100%;
+}
+
+.align--center {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+.no-after {
+    &:after {
+        content: normal;
+    }
+}

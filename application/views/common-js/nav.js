@@ -76,42 +76,8 @@ $(document).ready(function() {
             //return false;
         });
 		
-		/*Seller menu */  
-	   
-	   $('.seller_nav_toggle').each(function(){
-			$(this).click(function() {
-			 $(this).parent('.seller_nav-trigger').toggleClass("is-active");
-			 $("html").toggleClass("seller_nav-active"); return false;
-			});
-		})
-		$('html').click(function(){
-			if($('.seller_nav-trigger').hasClass('is-active')){
-				
-			$('.seller_nav-trigger').removeClass('is-active');
-			 $('html').removeClass('seller_nav-active');
-			}
-		});
-		$('.short-nav').click(function(e){
-			e.stopPropagation();
-		});
-	 
-		 /*Seller login */  
-		$('.seller_login_toggle').each(function(){
-			$(this).click(function() {
-			 $(this).parent('.seller-login-trigger').toggleClass("is-active");
-			 $("html").toggleClass("seller_login-active"); return false;
-			});
-		})
-		$('html').click(function(){
-			if($('.seller-login-trigger').hasClass('is-active')){
-				
-			$('.seller-login-trigger').removeClass('is-active');
-			 $('html').removeClass('seller_login-active');
-			}
-		});
-		$('.seller-login').click(function(e){
-			e.stopPropagation();
-		});
+		  
+		 
       
 });
 

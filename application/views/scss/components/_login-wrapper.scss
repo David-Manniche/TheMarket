@@ -1,0 +1,102 @@
+.login-wrapper {}
+
+.login-wrapper .form-side {
+    padding: 2rem;
+    /*color: #fff;
+
+	background: -moz-linear-gradient(112deg, rgba(235,54,129,1) 0%, rgba(255,58,89,1) 100%); /* ff3.6+
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255,58,89,1)), color-stop(100%, rgba(235,54,129,1))); /* safari4+,chrome
+	background: -webkit-linear-gradient(112deg, rgba(235,54,129,1) 0%, rgba(255,58,89,1) 100%); /* safari5.1+,chrome10+
+	background: -o-linear-gradient(112deg, rgba(235,54,129,1) 0%, rgba(255,58,89,1) 100%); /* opera 11.10+
+	background: -ms-linear-gradient(112deg, rgba(235,54,129,1) 0%, rgba(255,58,89,1) 100%); /* ie10+
+	background: linear-gradient(338deg, rgba(235,54,129,1) 0%, rgba(255,58,89,1) 100%); /* w3c
+ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3a59', endColorstr='#eb3681', GradientType=0 ); /* ie6-9 */
+}
+
+.login-wrapper .form-side .field_label,
+.login-wrapper .form-side label {
+    /*color: #fff;
+	text-transform: uppercase;*/
+    font-size: 0.9em;
+}
+
+.login-wrapper .form-side input {
+    /*border: none !important;*/
+}
+
+.login-wrapper .form-side input[type="submit"] {
+    background: $secondary-color;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 1em;
+    border: none;
+    display: block;
+    width: 100%;
+}
+
+.login-wrapper .forgot {
+    text-align: right;
+    color: #fff;
+    /*text-transform: uppercase;*/
+    font-size: 0.9em;
+    line-height: 1;
+}
+
+.login-wrapper .last-button {
+    background: none;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 1em;
+    border: solid 1px rgba(255, 255, 255, 0.2);
+    display: block;
+    padding: 10px 20px;
+    text-align: center;
+    line-height: 1.42857;
+    width: 100%;
+}
+
+.login-wrapper .last-button:hover {
+    background-color: #424242;
+}
+
+.login-wrapper .add-side {
+    padding: 2rem;
+    display: table-cell;
+    max-width: 40%;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 40%;
+    flex: 0 0 40%;
+    background: #fff url(../images/login-with.png) no-repeat bottom center;
+}
+
+.login-wrapper .add-side .heading {}
+
+.connect a.link {
+    display: block;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 1em;
+    border: none;
+    display: block;
+    padding: 10px 20px;
+    text-align: center;
+    line-height: 1.42857;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.connect a.fb {
+    background: #3856a0;
+}
+
+.connect a.gp {
+    background: #dd4330;
+}
+
+.connect .svg svg {
+    width: 18px;
+    height: 18px;
+    fill: #fff;
+    display: inline-block;
+    vertical-align: middle;
+}

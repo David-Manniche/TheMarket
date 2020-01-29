@@ -1,0 +1,146 @@
+.top-categories {
+    overflow: hidden;
+    background: #fff;
+    border-radius: 4px;
+    height: 100%;
+    color: var(--body-color);
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
+    min-height: 292px;
+
+    a {
+        color: inherit;
+    }
+
+    .cat-img {
+        display: block;
+        margin: 0 0 1rem;
+        padding: 0 0 25%;
+        position: relative;
+        width: 100%;
+
+        img {
+            max-width: 100%;
+            bottom: 0;
+            #{$start-direction}: 0;
+            margin: auto;
+            position: absolute;
+            right: 0;
+            top: 0;
+            -webkit-transition: all 0.5s linear;
+            transition: all 0.5s linear;
+            -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+            -webkit-filter: blur(0px);
+            -webkit-animation: fadein linear 1.5s;
+        }
+
+
+    }
+
+    .cat-tittle {
+        color: #000;
+        font-weight: 600;
+        font-size: 1em;
+        padding: 0 1.5rem;
+    }
+
+    .cat-list {
+        padding: 0 1.5rem;
+
+
+        li {
+            display: block;
+            margin: 10px 0;
+            color: #515050;
+            font-size: 0.9em;
+        }
+    }
+
+
+    a {
+        &:hover {
+            color: $brand-color;
+        }
+    }
+}
+
+.page-category {
+    padding: 0;
+    position: relative;
+    z-index: 1;
+    background: $gray-light;
+}
+
+.page-category__content {
+    padding: 15px;
+    border: 1px solid #ddd;
+    color: #333;
+    border-top: none;
+    background: #fff;
+}
+
+.page-category__content p {
+    font-size: 0.9em;
+}
+
+.cg-main {
+    color: var(--body-color);
+
+
+
+    a {
+        color: inherit;
+    }
+
+    ul {
+        display: flex;
+        flex-wrap: wrap;
+
+        @include media-breakpoint-down(md) {
+
+            & {
+                flex-direction: column;
+
+            }
+        }
+
+
+        li {
+            flex: 0 0 25%;
+            max-width: 25%;
+
+            @include media-breakpoint-down(md) {
+
+                & {
+                    flex: auto;
+                    max-width: none;
+
+                }
+            }
+
+            a {
+                padding: 0.5rem 0;
+            }
+
+        }
+    }
+
+    .item {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: $border;
+
+
+        &:last-child {
+            margin: 0;
+        }
+    }
+
+    .big-title {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+}

@@ -3,7 +3,7 @@ if(!empty($allShops)){ $i=0;
 foreach($allShops as $shop){ /* CommonHelper::printArray($shop); die; */ ?>
 
 <div class="ftshops row <?php echo ($i%2!=0) ? 'ftshops-rtl' : ''; ?>">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 column">
+    <div class="col-md-12 mb-4">
         <div class="ftshops_item">
           <div class="shop-detail-side">
             <div class="shop-detail-inner">
@@ -28,7 +28,7 @@ foreach($allShops as $shop){ /* CommonHelper::printArray($shop); die; */ ?>
           <div class="product-wrapper">
             <div class="row">
             <?php foreach($shop['products'] as $product){?>
-                <div class="col-lg-3 col-md-4  col-sm-3 mb-3 mb-md-0">
+                <div class="col mb-3 mb-md-0">
                     <?php include(CONF_THEME_PATH.'_partial/collection/product-layout-1-list.php'); ?>
                 </div>
                 <?php } ?>

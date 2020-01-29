@@ -1,0 +1,145 @@
+.hero-slider {
+    position: relative;
+    padding-top: 20px;
+    margin: 0 -10px;
+
+    @include media-breakpoint-up(xl) {
+        & {
+            overflow: visible !important;
+
+        }
+    }
+
+    .slick-list {
+        @include media-breakpoint-up(xl) {
+            & {
+                overflow: visible !important;
+
+            }
+        }
+    }
+
+
+    .hero-item {
+        margin: 0;
+        position: relative;
+        padding: 0 10px;
+    }
+
+    .hero-media {
+        /*background: #000;*/
+        border-radius: 4px;
+        overflow: hidden;
+
+        img {
+            /*  opacity: 0.5;*/
+            margin: 0 auto;
+        }
+    }
+
+
+    .slick-arrow {
+        position: absolute;
+        z-index: 5;
+        top: 50%;
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+        background: #858835;
+        border-radius: 50%;
+        width: 75px;
+        height: 76px;
+        padding: 0;
+        cursor: pointer;
+        text-indent: -9999px;
+        border: none;
+    }
+
+    .slick-prev {
+        background: #ffffff url(../images/arrow-left.png) no-repeat center;
+        background-size: 36px;
+        #{$start-direction}: calc(50% - 38vw);
+    }
+
+    .slick-next {
+        background: #ffffff url(../images/arrow-right.png) no-repeat center;
+        background-size: 36px;
+        right: calc(50% - 38vw);
+    }
+
+    .slick-dots {
+        padding: 0;
+        position: absolute;
+        bottom: 10px;
+        #{$start-direction}: 0;
+        right: 0;
+        margin: 0 auto;
+        text-align: center;
+
+        li {
+            vertical-align: middle;
+            display: inline-block;
+            margin: 0 3px;
+            width: 13px;
+            height: 3px;
+            border-radius: 1px;
+            cursor: pointer;
+            background: #d2d2d2;
+            -webkit-transition: all 0.5s ease-in-out;
+            transition: all 0.5s ease-in-out;
+
+            button {
+                background: none;
+                border: none;
+                text-indent: -9999999px;
+            }
+
+            &.slick-active {
+                background: $brand-color;
+                width: 30px;
+                border-radius: 15px;
+            }
+        }
+    }
+}
+
+.banner-ppc {
+    border-radius: 4px;
+    overflow: hidden;
+
+
+    .advertise__block {
+        margin-bottom: 2rem;
+        display: block;
+    }
+
+
+    img {
+        margin: 0 auto;
+        display: inline-block;
+    }
+}
+
+
+
+.slick-arrow {
+    position: absolute;
+    top: calc(50% - 20px);
+    background-color: #fff;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    text-indent: -999999px;
+    z-index: 1;
+    cursor: pointer;
+    /*box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);*/
+}
+
+
+
+.collection-corner {
+    .products {
+        border-color: #fff;
+        margin: 0 1rem 1.5rem;
+    }
+}

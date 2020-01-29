@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php if (!empty($postList)) {
     foreach ($postList as $blogPost) { ?>
-        <section class="section bg--second">
+        <section class="section bg-second">
             <div class="container">
                 <div class="first-fold">
                     <div class="post">
@@ -188,7 +188,7 @@
     <?php } ?>
 
     <?php if (FatApp::getConfig('CONF_ENABLE_NEWSLETTER_SUBSCRIPTION', FatUtility::VAR_INT, 0)) { ?>
-    <section class="section bg--first-color">
+    <section class="section bg-primary">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xl-6">

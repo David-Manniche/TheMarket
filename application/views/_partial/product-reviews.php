@@ -38,12 +38,12 @@ if ($totReviews) {
 <?php if($canSubmitFeedback || $totReviews > 0) { ?>
 <div class="row mt-5">
     <?php if ($canSubmitFeedback) { ?>
-    <div class="<?php echo ($totReviews > 0) ? 'col-md-3' : 'col-md-12 align--center'; ?>">
+    <div class="<?php echo ($totReviews > 0) ? 'col-md-6' : 'col-md-12 align--center'; ?>">
         <a onClick="rateAndReviewProduct(<?php echo $product_id; ?>)" href="javascript:void(0)" class="btn btn--primary <?php echo ($totReviews > 0) ? 'btn--block' : '' ; ?>"><?php echo Labels::getLabel('Lbl_Add_Review', $siteLangId); ?></a>
     </div>
     <?php } ?>
     <?php if ($totReviews > 0) { ?>
-    <div class="col-md-3 <?php echo ($canSubmitFeedback) ? '' : 'align--center'; ?>">
+    <div class="col-md-6 mt-2 mt-md-0<?php echo ($canSubmitFeedback) ? '' : 'align--center'; ?>">
         <div class="js-wrap-drop-reviews wrap-drop wrap-drop--first">
             <span><?php echo Labels::getLabel('Lbl_Most_Recent', $siteLangId); ?></span>
             <ul class="drop">

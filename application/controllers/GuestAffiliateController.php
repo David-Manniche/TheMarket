@@ -4,7 +4,6 @@ class GuestAffiliateController extends MyAppController
     public function __construct($action)
     {
         parent::__construct($action);
-        $this->_template->addCss('css/seller.css');
     }
 
     public function index()

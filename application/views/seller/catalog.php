@@ -42,7 +42,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
 
                                 $fldClear= $frmSearchCatalogProduct->getField('btn_clear');
                                 $fldClear->setFieldTagAttribute('onclick', 'clearSearch()');
-                                $fldClear->setFieldTagAttribute('class', 'btn--block btn btn--primary-border');
+                                $fldClear->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
                                 $fldClear->setWrapperAttribute('class', 'col-lg-2');
                                 $fldClear->developerTags['col'] = 2;
                                     /* if( User::canAddCustomProductAvailableToAllSellers() ){

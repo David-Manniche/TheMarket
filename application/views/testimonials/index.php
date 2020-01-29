@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <div id="body" class="body">
 
-	<div class="bg--second pt-3 pb-3">
+	<div class="bg-second pt-3 pb-3">
       <div class="container">
         <div class="row align-items-center justify-content-center">
           <div class="col-md-12">               
@@ -18,7 +18,7 @@
       </div>
     </div>
     </div>
-	<section class="section section--gray">
+	<section class="section bg-gray">
 	  <div class="container">
 		<div class="cms">
 			<div class="list__all" id='listing'></div>

@@ -48,8 +48,7 @@ $this->includeTemplate( '_partial/header/commonHeadBottom.php', $commonHeadData,
 	$this->includeTemplate('restore-system/top-header.php');    
 } ?>
 <div class="wrapper">
-	<div id="header" class="header-guest-advertiser" >
-		<div class="common_overlay"></div>
+	<div id="header" class="header header-advertiser" role="header-advertiser" >
 		<div class="top-bar">
 		  <div class="container">
 			<div class="row">
@@ -69,17 +68,14 @@ $this->includeTemplate( '_partial/header/commonHeadBottom.php', $commonHeadData,
 		</div>
 		<div class="top-head">
 		  <div class="container">
-			<div class="row align-items-center">
-			  <div class="col-3">
-				<?php if(!empty($seller_navigation_left)) { ?>
-					<div class="seller_nav-trigger"> <a class="seller_nav_toggle" href="javascript:void(0)"><span></span></a> </div>
-				<?php }?>
-				<div class="logo header-login-logo">
+				<div class="logo-bar">      	 
+				<div class="logo logo-advertiser">
 					<a href="<?php echo CommonHelper::generateUrl(); ?>"><img src="<?php echo CommonHelper::generateFullUrl('Image','siteLogo',array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>"></a>
 				</div>
-			  </div>
-			  <div class="col-9 yk-login--wrapper">
-				<div class="seller-login-trigger hide--desktop"> <a class="seller_login_toggle" href="javascript:void(0)"></a> </div>
+				<div class="d-flex"><a class="seller_login_toggle" href="javascript:void(0)" data-trigger="yk-login--wrapper"><i class="fa fa-user-circle"></i></a> 
+			</div>
+			
+			  <div class="yk-login--wrapper" id="yk-login--wrapper" data-close-on-click-outside="yk-login--wrapper">
 				<?php $this->includeTemplate( '_partial/advertiser/advertiserHeaderLoginForm.php',$loginData,false); ?>
 			  </div>
 			</div>

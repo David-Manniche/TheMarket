@@ -1,0 +1,39 @@
+.label {
+    color: #fff;
+    display: inline;
+    font-size: 0.8em;
+    padding: 0 10px;
+    text-align: center;
+    vertical-align: baseline;
+    white-space: nowrap;
+    display: inline-block;
+    text-transform: uppercase;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 1px;
+}
+
+.label.label-default {
+    background: #fff;
+    border: $border;
+}
+
+.label.label--success {
+    background: $brand-color;
+}
+
+.label.label--primary {
+    background: $brand-color;
+}
+
+.label.label--info {
+    background: #12afcb;
+}
+
+.label.label--danger {
+    background: #f15c5c;
+}
+
+.label.label--warning {
+    background: #f6d433;
+}

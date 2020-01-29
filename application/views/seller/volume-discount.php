@@ -20,7 +20,7 @@ if (0 < $selProd_id) {
     $submitBtnFld->developerTags['noCaptionTag'] = true;
 
     $cancelBtnFld = $frmSearch->getField('btn_clear');
-    $cancelBtnFld->setFieldTagAttribute('class', 'btn--block btn btn--primary-border ');
+    $cancelBtnFld->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary ');
     $cancelBtnFld->setFieldTagAttribute('onclick', 'clearSearch('.$selProd_id.');');
     $cancelBtnFld->developerTags['col'] = 2;
     $cancelBtnFld->developerTags['noCaptionTag'] = true;
@@ -64,7 +64,7 @@ if (0 < $selProd_id) {
                                 <div class="col-auto"></div>
                                  <div class="col-auto">
                                     <div class="action">
-                                        <a class="btn btn--primary-border btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Remove_Volume_Discount', $siteLangId); ?>" onclick="deleteVolumeDiscountRows()" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Remove_Volume_Discount', $siteLangId); ?></a>
+                                        <a class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Remove_Volume_Discount', $siteLangId); ?>" onclick="deleteVolumeDiscountRows()" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Remove_Volume_Discount', $siteLangId); ?></a>
                                     </div>
                                 </div>
                             </div>

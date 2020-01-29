@@ -1,9 +1,9 @@
 <?php if (!empty($product['selprod_warranty_policies']) || !empty($product['selprod_return_policies']) || (isset($shippingDetails['ps_free']) && $shippingDetails['ps_free']==applicationConstants::YES) || (count($shippingRates)>0) || ($codEnabled)) { ?>
 <section class="section certified-bar">
 
-        <div class="row justify-content-around">
+        <ul>
             <?php if (!empty($product['product_warranty'])) { ?>
-                <div class="col-auto">
+                <li>
                     <div class="certified-box">
                         <i class="icn">
                             <svg class="svg">
@@ -18,10 +18,10 @@
 							?>
 						</p>
                     </div>
-                </div>
+                </li>
             <?php } ?>
             <?php if (!empty($product['selprod_return_age'])) { ?>
-                <div class="col-auto">
+                <li>
                     <div class="certified-box">
                         <i class="icn">
                             <svg class="svg">
@@ -38,10 +38,10 @@
 							?>
 						</p>
                     </div>
-                </div>
+                </li>
             <?php } ?>
 			<?php if (!empty($product['selprod_cancellation_age'])) { ?>
-                <div class="col-auto">
+                <li>
                     <div class="certified-box">
                         <i class="icn">
                             <svg class="svg">
@@ -57,10 +57,10 @@
 							?>
 						</p>
                     </div>
-                </div>
+                </li>
             <?php } ?>
             <?php if (isset($shippingDetails['ps_free']) && $shippingDetails['ps_free']==applicationConstants::YES) { ?>
-                <div class="col-auto">
+                <li>
                     <div class="certified-box">
                         <i class="icn">
                             <svg class="svg">
@@ -69,9 +69,9 @@
                         </i>
                         <p><?php echo Labels::getLabel('LBL_Free_Shipping_on_this_Order', $siteLangId); ?></p>
                     </div>
-                </div>
+                </li>
             <?php } elseif (count($shippingRates)>0) { ?>
-                <div class="col-auto">
+                <li>
                     <div class="certified-box">
                         <i class="icn">
                             <svg class="svg">
@@ -118,10 +118,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </li>
             <?php } ?>
             <?php if ($codEnabled) { ?>
-                <div class="col-auto">
+                <li>
                     <div class="certified-box">
                         <i class="icn">
                             <svg class="svg">
@@ -130,9 +130,9 @@
                         </i>
                         <p><?php echo Labels::getLabel('LBL_Cash_on_delivery_is_available', $siteLangId);?> <i class="fa fa-question-circle-o tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('MSG_Cash_on_delivery_available._Choose_from_payment_options', $siteLangId);?> </span></i></p>
                     </div>
-                </div>
+                </li>
             <?php } ?>
-        </div>
+        </ul>
 
 </section>
 <?php }?>

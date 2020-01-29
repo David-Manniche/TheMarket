@@ -36,7 +36,6 @@ class CcavenuePayController extends PaymentController
         $this->set('paymentAmount', $paymentAmount);
         $this->set('orderInfo', $orderInfo);
         $this->set('exculdeMainHeaderDiv', true);
-        $this->_template->addCss('css/payment.css');
         $this->_template->render(true, false);
     }
 

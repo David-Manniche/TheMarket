@@ -18,7 +18,7 @@ if ($isUserLogged) {
 }
 ?>
 <div id="body" class="body">
-   <div class="bg--second pt-3 pb-3">
+   <div class="bg-second pt-3 pb-3">
       <div class="container">
         <div class="row align-items-center justify-content-between">
           <div class="col-md-8 col-sm-8">
@@ -35,8 +35,8 @@ if ($isUserLogged) {
     <section class="section">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-xl-8 col-lg-8">
-                    <div class="box box--gray box--radius box--border p-5">
+                <div class="col-lg-7">
+                    <div class="bg-gray rounded p-5">
                     <?php echo $frm->getFormHtml(); ?>
                     </div>
                 </div>

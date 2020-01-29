@@ -39,7 +39,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true; ?> <?php $this->includeTemp
                                             $submitFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
 
                                             $fldClear= $frmSrch->getField('btn_clear');
-                                            $fldClear->setFieldTagAttribute('class', 'btn--block btn btn--primary-border');
+                                            $fldClear->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
                                             echo $frmSrch->getFormHtml(); ?>
                                         </div>
                                     </div>

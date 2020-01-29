@@ -51,7 +51,7 @@ class CustomRouter
         }
         define('MOBILE_APP_USER_TYPE', $userType);
 
-        if (defined('SYSTEM_FRONT') && SYSTEM_FRONT === true/*  && !FatUtility::isAjaxCall() */) {
+        if (defined('SYSTEM_FRONT') && SYSTEM_FRONT === true/*  && !FatUtility::isAjaxCall() */) { 
             $url = urldecode($_SERVER['REQUEST_URI']);
             
             if (strpos($url, "index.php?url=") !== false) {
@@ -72,7 +72,7 @@ class CustomRouter
             $srch->addMultipleFields(array('urlrewrite_custom','urlrewrite_original'));
             $srch->setPageSize(1);
             $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'custom', '=', $customUrl[0]);
-            $rs = $srch->getResultSet();
+            $rs = $srch->getResultSet(); 
             $row = FatApp::getDb()->fetch($rs);            
             if (!$row && (!isset($customUrl[1]) || (isset($customUrl[1]) && strpos($customUrl[1], 'pagesize') === false))) {
                 return;

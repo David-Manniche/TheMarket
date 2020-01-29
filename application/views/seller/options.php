@@ -35,7 +35,7 @@
                 <div class="action btn-group-scroll">
                     <a class=" btn btn--secondary btn--sm" title="<?php echo Labels::getLabel('LBL_Add_Option', $siteLangId); ?>" onclick="optionForm(0)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Add_Option', $siteLangId); ?></a>
                     <!-- <a href="#modal-popup" class="btn--block modaal-inline-content link" onclick="optionForm(0)"><?php echo Labels::getLabel('LBL_Add_Option', $siteLangId);?></a> -->
-                    <a class="btn btn--primary-border btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Delete', $siteLangId); ?>" onclick="deleteOptions()" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Delete', $siteLangId); ?></a>
+                    <a class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Delete', $siteLangId); ?>" onclick="deleteOptions()" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Delete', $siteLangId); ?></a>
                 </div>
             </div>
         </div>
@@ -52,7 +52,7 @@
                                         $submitFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
 
                                         $fldClear= $frmSearch->getField('btn_clear');
-                                        $fldClear->setFieldTagAttribute('class', 'btn--block btn btn--primary-border');
+                                        $fldClear->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
                                         echo $frmSearch->getFormHtml();
                                         ?>
                                     </div>

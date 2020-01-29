@@ -84,11 +84,11 @@ if ($totReviews) {
                 </div>
             </div>
             <?php if ($canSubmitFeedback) { ?>
-            <div class="col-md-4 border--left">
-                <div class="box box--white box--radius box--space have-you">
-                    <h4><?php echo Labels::getLabel('Lbl_Share_your_thoughts', $siteLangId); ?></h4>
-                    <h6><?php echo Labels::getLabel('Lbl_With_other_customers', $siteLangId); ?></h6>
-                    <a class="btn btn--primary btn--h-large" href="<?php echo CommonHelper::generateUrl('Reviews', 'write', array($product_id)); ?>"><?php echo Labels::getLabel('Lbl_Write_a_Review', $siteLangId); ?></a>
+            <div class="col-md-4">
+                <div class="box box--white shadow rounded p-3 have-you">
+                    <h5><?php echo Labels::getLabel('Lbl_Share_your_thoughts', $siteLangId); ?></h5>
+                    <p><?php echo Labels::getLabel('Lbl_With_other_customers', $siteLangId); ?></p>
+                    <a class="btn btn--primary btn-sm" href="<?php echo CommonHelper::generateUrl('Reviews', 'write', array($product_id)); ?>"><?php echo Labels::getLabel('Lbl_Write_a_Review', $siteLangId); ?></a>
                 </div>
             </div>
             <?php }?>
@@ -100,11 +100,11 @@ if ($totReviews) {
                     <?php echo Labels::getLabel('Lbl_of', $siteLangId); ?> <span id='reviewsTotal'></span></span></div>
         </div>
         <div class="row mt-5 mt-sm-0">
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <a href="javascript:void(0);" class="btn btn--primary d-block" data-sort='most_recent' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Recent', $siteLangId); ?></a>
             </div>
-            <div class="col-md-3">
-                <a href="javascript:void(0);" class="btn btn--secondary d-block btn--primary-border" data-sort='most_helpful' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Helpful', $siteLangId); ?> </a>
+            <div class="col-md-6">
+                <a href="javascript:void(0);" class="btn btn--secondary d-block btn-outline-primary" data-sort='most_helpful' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Helpful', $siteLangId); ?> </a>
             </div>
         </div>
         <div class="gap"></div>

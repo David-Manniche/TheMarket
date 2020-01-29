@@ -10,7 +10,7 @@
         <div class="content-header-right col-auto">
             <div class="">
                 <a href="javascript:void(0)" onClick="promotionForm()" class="btn btn--primary"><?php echo Labels::getLabel('LBL_Add_Promotion', $siteLangId);?></a>
-                <a href="javascript:void(0)" onClick="reloadList()" class="btn btn--primary-border"><?php echo Labels::getLabel('LBL_My_promotions', $siteLangId);?></a>
+                <a href="javascript:void(0)" onClick="reloadList()" class="btn btn-outline-primary"><?php echo Labels::getLabel('LBL_My_promotions', $siteLangId);?></a>
             </div>
         </div>
     </div>
@@ -68,7 +68,7 @@
                                     $submitBtnFld->developerTags['noCaptionTag'] = true;
 
                                     $cancelBtnFld = $frmSearchPromotions->getField('btn_clear');
-                                    $cancelBtnFld->setFieldTagAttribute('class', 'btn btn--block btn--primary-border');
+                                    $cancelBtnFld->setFieldTagAttribute('class', 'btn btn--block btn-outline-primary');
                                     $cancelBtnFld->setWrapperAttribute('class', 'col-lg-2');
                                     $cancelBtnFld->developerTags['col'] = 2;
                                     $cancelBtnFld->developerTags['noCaptionTag'] = true;

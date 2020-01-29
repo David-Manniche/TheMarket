@@ -1,0 +1,72 @@
+.hamburger .lines {
+    #{$start-direction}: 0;
+    right: 0;
+    margin: 0 auto;
+    position: absolute;
+    width: 16px;
+    height: 2px;
+    background: #fff;
+    -webkit-transition: 0.6s;
+    transition: 0.6s;
+    top: 0;
+}
+
+.hamburger .line2 {
+    top: 5px;
+}
+
+.hamburger .line3 {
+    top: 5px;
+}
+
+.hamburger .line4 {
+    top: 10px;
+}
+
+.hamburger.cross .lines {
+    -webkit-transition: 0.6s;
+    transition: 0.6s;
+}
+
+.hamburger.cross .line1 {
+    -webkit-transform: translateY(45px);
+    transform: translateY(45px);
+    opacity: 0;
+}
+
+.hamburger.cross .line2 {
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.hamburger.cross .line3 {
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+
+.hamburger.cross .line4 {
+    -webkit-transform: translateY(-45px);
+    transform: translateY(-45px);
+    opacity: 0;
+}
+
+.hamburger {}
+
+.hamburger path {
+    fill: none;
+    -webkit-transition: stroke-dashoffset 0.5s cubic-bezier(0.25, -0.25, 0.75, 1.25), stroke-dasharray 0.5s cubic-bezier(0.25, -0.25, 0.75, 1.25);
+    transition: stroke-dashoffset 0.5s cubic-bezier(0.25, -0.25, 0.75, 1.25), stroke-dasharray 0.5s cubic-bezier(0.25, -0.25, 0.75, 1.25);
+    stroke-width: 30px;
+    stroke-linecap: square;
+    stroke: #fff;
+    stroke-dashoffset: 0px;
+}
+
+.hamburger path#top,
+.hamburger path#bottom {
+    stroke-dasharray: 22.5rem 950px;
+}
+
+.hamburger path#middle {
+    stroke-dasharray: 22.5rem 22.5rem;
+}

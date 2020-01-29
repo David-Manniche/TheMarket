@@ -1,0 +1,33 @@
+.back-to-top {
+    a {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        -webkit-box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
+        position: fixed;
+        bottom: 70px;
+        right: 10px;
+        cursor: pointer;
+        -webkit-transition: .3s;
+        transition: .3s;
+        background-color: $brand-color;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        z-index: 2;
+    }
+}
+
+
+.back-to-top a svg {
+    width: 1rem;
+    height: 1rem;
+    fill: #fff;
+}

@@ -35,7 +35,6 @@ class PayFortStartPayController extends PaymentController
         $this->set('customer_email', $orderInfo['customer_email']);
         $this->set('orderPaymentGatewayDescription', $orderPaymentGatewayDescription);
         $this->set('exculdeMainHeaderDiv', true);
-        $this->_template->addCss('css/payment.css');
         $this->_template->render(true, false);
     }
 

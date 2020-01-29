@@ -37,7 +37,7 @@ $submitBtnFld->setWrapperAttribute('class','col-lg-2 col-sm-2 col-md-2 ');
 $submitBtnFld->developerTags['col'] = 2;
 
 $cancelBtnFld = $frmOrderSrch->getField('btn_clear');
-$cancelBtnFld->setFieldTagAttribute('class','btn btn--primary-border btn--block');
+$cancelBtnFld->setFieldTagAttribute('class','btn btn-outline-primary btn--block');
 $cancelBtnFld->setWrapperAttribute('class','col-lg-2 col-sm-2 col-md-2 ');
 $cancelBtnFld->developerTags['col'] = 2;
 ?> <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-area" class="main" role="main">

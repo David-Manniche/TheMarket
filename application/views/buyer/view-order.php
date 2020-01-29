@@ -65,7 +65,7 @@ if (true == $primaryOrder) {
                         <div class="">
                             <iframe src="<?php echo Fatutility::generateUrl('buyer', 'viewOrder', $urlParts) . '/print'; ?>" name="frame" style="display:none"></iframe>
                             <a href="javascript:void(0)" onclick="frames['frame'].print()" class="btn btn--primary btn--sm no-print"><?php echo Labels::getLabel('LBL_Print', $siteLangId); ?></a>
-                            <a href="<?php echo CommonHelper::generateUrl('Buyer', 'orders'); ?>" class="btn btn--primary-border btn--sm no-print"><?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId); ?></a>
+                            <a href="<?php echo CommonHelper::generateUrl('Buyer', 'orders'); ?>" class="btn btn-outline-primary btn--sm no-print"><?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId); ?></a>
                         </div>
                     </div> <?php
                     } ?>

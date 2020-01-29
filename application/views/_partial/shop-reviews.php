@@ -79,26 +79,26 @@ if($totReviews){
    </div> */
 ?>
 
-	<div class="listings__body">
-	 <div class="container">
+	
+</div><div class="listings__body">
+	  
 		<div class="row">
 			<div class="col-md-6 col-sm-6"><span id='reviews-pagination-strip--js' hidden><?php echo Labels::getLabel('Lbl_Displaying_Reviews',$siteLangId); ?>  <span id='reviewStartIndex'>XX</span>-<span id='reviewEndIndex'>XX</span> <?php echo Labels::getLabel('Lbl_of',$siteLangId); ?> <span id='reviewsTotal'>XX</span></span></div>
         </div>
         <div class="row mt-5">
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <a href="javascript:void(0);" class="btn btn--primary d-block" data-sort='most_recent' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Recent', $siteLangId); ?></a>
             </div>
-            <div class="col-md-3">
-               <a href="javascript:void(0);" class="btn btn--secondary d-block btn--primary-border" data-sort='most_helpful' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Helpful', $siteLangId); ?> </a>
+            <div class="col-md-6">
+               <a href="javascript:void(0);" class="btn btn--secondary d-block btn-outline-primary" data-sort='most_helpful' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Helpful', $siteLangId); ?> </a>
             </div>
         </div>
 		<div class="gap"></div>
         <div class="listing__all"></div>
         <div id="loadMoreReviewsBtnDiv" class="align--center"></div>
 		<!--<a class="loadmore text--uppercase" href="javascript:alert('Pending');">Load More</a>-->
-		</div>
+		 
 	</div>
-</div>
 <script>
 
 var $linkMoreText = '<?php echo Labels::getLabel('Lbl_SHOW_MORE',$siteLangId); ?>';

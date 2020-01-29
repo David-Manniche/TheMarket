@@ -1,0 +1,126 @@
+.bg-shop {}
+
+.shop-banner {
+    background-position: center top;
+    background-repeat: no-repeat;
+    position: relative;
+    text-align: center;
+}
+
+
+.shop-nav {
+    padding: 10px 0 0 0;
+
+    ul {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: nowrap;
+        flex-wrap: nowrap;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        flex-wrap: wrap;
+
+
+        @include media-breakpoint-down(md) {
+            & {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                justify-content: flex-start;
+            }
+        }
+
+        li {
+            a {
+                color: #fff;
+                font-size: 0.9rem;
+                padding: 15px 30px;
+                margin: 0 5px;
+                display: block;
+                font-weight: 600;
+                position: relative;
+
+                @include media-breakpoint-down(md) {
+                    & {
+                        white-space: nowrap;
+                    }
+                }
+
+                &:hover {
+                    color: #000000;
+                    background: #fff;
+                    border-radius: 4px 4px 0 0;
+                }
+            }
+
+            &.is--active a {
+                @extend :hover;
+            }
+        }
+    }
+
+}
+
+
+
+.shop-information {
+    .shop-logo {
+        border-radius: 50%;
+        width: 170px;
+        height: 170px;
+        margin: 0 auto;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background: #fff;
+        overflow: hidden;
+    }
+
+    .shop-info {
+        padding: 0;
+        text-align: center;
+
+        .products__rating {
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+
+        .shop-name {
+            margin-bottom: 1rem;
+
+            span { display: block;
+                font-size: 0.775rem;
+                color: var(--txt-color-light);
+            }
+        }
+
+
+    }
+
+    .shop-btn-group {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .btn {
+            background: #9b9a9a;
+
+            &:hover {
+                background: $brand-color;
+            }
+
+        }
+    }
+}

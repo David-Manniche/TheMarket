@@ -5,7 +5,6 @@
         parent::__construct($action);
         $this->set('blogPage', true);
         $this->set('bodyClass', 'is--blog');
-        $this->_template->addCss('css/blog.css');
         if ('rtl' == CommonHelper::getLayoutDirection()) {
             $this->_template->addCss('css/blog1-arabic.css');
         }
@@ -73,7 +72,6 @@
         $this->set('featuredPostList', $featuredRecords);
         $this->set('popularPostList', $popularRecords);
         $this->_template->addJs('js/slick.min.js');
-        $this->_template->addCss('css/slick.css');
         $this->_template->render();
     }
 
@@ -108,7 +106,6 @@
 
         $this->set('postList', $records);
         $this->_template->addJs('js/slick.min.js');
-        $this->_template->addCss('css/slick.css');
         $this->set('bpCategoryId', $categoryId);
         $this->_template->render(true, true, 'blog/index.php');
     }
@@ -142,7 +139,6 @@
         $this->set('popularPostList', $popularRecords);
 
         $this->_template->addJs('js/slick.min.js');
-        $this->_template->addCss('css/slick.css');
         $this->_template->render(true, true);
     }
 
@@ -288,8 +284,6 @@
 
         $this->_template->addJs(array('js/masonry.pkgd.js'));
         $this->_template->addJs(array('js/slick.js'));
-        $this->_template->addCss(array('css/slick.css'));
-
         $this->_template->render();
     }
 
