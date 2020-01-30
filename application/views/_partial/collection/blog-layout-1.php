@@ -6,9 +6,9 @@ if (isset($collections) && count($collections)) {
             <section class="section bg-gray">
                 <div class="container">
                     <div class="section-head">
-                        <?php echo ($row['collection_name'] != '') ? ' <div class="section__heading"><h2>' . $row['collection_name'] . '</h2></div>' : ''; ?>
+                        <?php echo (isset($row['collection_name']) && $row['collection_name'] != '') ? ' <div class="section__heading"><h2>' . $row['collection_name'] . '</h2></div>' : ''; ?>
 
-                        <?php if ($row['totBlogs'] > Collections::LIMIT_BLOG_LAYOUT1) { ?>
+                        <?php if (isset($row['totBlogs']) && $row['totBlogs'] > Collections::LIMIT_BLOG_LAYOUT1) { ?>
                             <div class="section__action"> 
                                 <a href="<?php echo CommonHelper::generateUrl('Collections', 'View', array($row['collection_id'])); ?>" class="link">
                                     <?php echo Labels::getLabel('LBL_View_More', $siteLangId); ?>

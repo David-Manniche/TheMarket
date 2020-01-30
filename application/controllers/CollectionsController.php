@@ -9,7 +9,6 @@ class CollectionsController extends MyAppController
     public function view($collection_id)
     {
         $searchForm = $this->getCollectionSearchForm($collection_id);
-        $collection = Collections::getAttributesById($collection_id);
 
         /* Collection Data[ */
 
@@ -300,7 +299,6 @@ class CollectionsController extends MyAppController
                 $tempObj->joinCollectionBlogs();
                 $tempObj->addMultipleFields(array('ctb_post_id'));
                 $tempObj->addCondition('ctb_post_id', '!=', 'NULL');
-                $tempObj->setPageSize($collection['collection_primary_records']);
                 $rs = $tempObj->getResultSet();
                 $blogPostIds = $db->fetchAll($rs, 'ctb_post_id');
                 if (empty($blogPostIds)) {
@@ -321,9 +319,7 @@ class CollectionsController extends MyAppController
                 $blogSearchTempObj = clone $blogSearchObj;
                 $blogSearchTempObj->addMultipleFields($attr);
                 $blogSearchTempObj->addCondition('post_id', 'IN', array_keys($blogPostIds));
-                if (false ===  MOBILE_APP_API_CALL) {
-                    $blogSearchTempObj->setPageSize($collection['collection_primary_records']);
-                }
+                
                 $blogSearchTempObj->addGroupBy('post_id');
                 $rs = $blogSearchTempObj->getResultSet();
                 $collectionsArr = $db->fetchAll($rs);
