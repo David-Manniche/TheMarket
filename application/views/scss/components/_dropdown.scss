@@ -33,12 +33,12 @@
 
 .dropdown__target__right {
     #{$start-direction}: auto;
-    right: 0;
+    #{$end-direction}: 0;
 }
 
-.dropdown__target__right:before {
+.dropdown__target__#{$end-direction}:before {
     #{$start-direction}: auto;
-    right: 20px;
+    #{$end-direction}: 20px;
 }
 
 .dropdown.is-active .dropdown__target {
@@ -106,8 +106,7 @@
 
 .dropdown__target .scroll-y {
     max-height: 350px;
-    /*  overflow-y: auto;*/
-}
+    }
 
 
 .dropdown.is-active .dropdown__target .list-vertical li {
@@ -128,6 +127,8 @@
     padding: 1rem 0;
     border-radius: 4px;
     #{$start-direction}: 0;
+    text-align: #{$start-direction};
+    
 
     &-anim {
         -webkit-animation: dropdown-menu-fade-in .3s ease 1, dropdown-menu-move-up .3s ease-out 1;

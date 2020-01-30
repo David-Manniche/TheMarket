@@ -53,7 +53,7 @@
 .section__head .btn--positioned {
     position: absolute;
     top: 0;
-    right: 0;
+    #{$end-direction}: 0;
 }
 
 .section__head h2,
@@ -339,7 +339,7 @@
     font-weight: 600;
     font-size: 1.25em;
     color: #888;
-    right: 10px;
+    #{$end-direction}: 10px;
     top: -4px;
 }
 
@@ -443,7 +443,7 @@
                     font-size: 16px;
                     text-align: center;
                     line-height: 16px;
-                    border-right: 2px solid #fff;
+                    border-#{$end-direction}: 2px solid #fff;
                     border-bottom: 2px solid #fff;
                     -webkit-transform: rotate(45deg);
                     transform: rotate(45deg);
@@ -499,7 +499,7 @@ ul.listing--bullet li:before {
     top: 0;
     bottom: 0;
     #{$start-direction}: 0;
-    right: 0;
+    #{$end-direction}: 0;
     position: absolute;
 }
 
