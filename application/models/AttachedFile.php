@@ -237,7 +237,7 @@ class AttachedFile extends MyAppModel
     {
         if (!empty($file) && !empty($name) && file_exists($file)) {
             $fileExt = pathinfo($name, PATHINFO_EXTENSION);
-
+            $fileExt = strtolower($fileExt);
             if (false === in_array($fileExt, applicationConstants::allowedFileExtensions())) {
                 $this->error = Labels::getLabel('MSG_INVALID_FILE_EXTENSION', $defaultLangIdForErrors);
                 return false;

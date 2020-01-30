@@ -15,6 +15,8 @@ Bugs:
     => 033956 - request is getting placed more than available amount in wallet
     => 033955 - withdrawing amount less than allowed withdrawal
     => keyword search with & keyword.
+    => 66015-1115873 Allowed uppercased extension in media upload.
+    
 
 Enhancements:
     => 68474 - Library and code updated to handle 3-D secure payments through Omise Payment Gateway.
