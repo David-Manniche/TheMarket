@@ -1,4 +1,18 @@
-(function() {    
+(function() { 
+    
+    displayProdInitialTab = function(){
+        $(".tabs_panel").hide();
+        $(".tabs_nav  > li > a").removeClass('active');
+        $("#tabs_001").show();                    
+        $("a[rel='tabs_001']").addClass('active');
+    }
+    
+    
+    hideShippingTab = function(){
+        $(".tabs_004").parent().remove();
+        $("#tabs_004").remove();
+    }        
+    
     productInitialSetUpFrm = function(productId){
 		var data = '';
 		fcom.ajax(fcom.makeUrl('Products','productInitialSetUpFrm',[productId]),data,function(res){
@@ -11,18 +25,22 @@
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('Products', 'setUpProduct'), data, function(t) {
             productAttributeAndSpecificationsFrm(t.productId);
+            if(t.productType == PRODUCT_TYPE_DIGITAL){
+                hideShippingTab();
+            }
         });
     };
     
     productAttributeAndSpecificationsFrm = function(productId){ 
         var data = '';
 		fcom.ajax(fcom.makeUrl('Products','productAttributeAndSpecificationsFrm', [productId]),data,function(res){
-			$("#tabs_001").html('');
-            $("#tabs_002").html(res);
+			//$("#tabs_001").html('');
+            $(".tabs_panel").html('');
             $(".tabs_panel").hide();
             $(".tabs_nav  > li > a").removeClass('active');
             $("#tabs_002").show();                    
             $("a[rel='tabs_002']").addClass('active');
+            $("#tabs_002").html(res);
 		});        
     }
     
@@ -37,7 +55,7 @@
     prodSpecificationSection = function(langId, prodSpecId = 0){
         var productId = $("input[name='product_id']").val();
         var data = "langId="+langId+"&prodSpecId="+prodSpecId;
-        fcom.ajax(fcom.makeUrl('Products', 'prodSpecificationSection', [productId]), data, function(res) {
+        fcom.ajax(fcom.makeUrl('Products', 'prodSpecificationFrm', [productId]), data, function(res) {
             $(".specifications-form-"+langId).html(res);
         });
     }
@@ -84,22 +102,15 @@
     productOptionsAndTag = function(productId){
         var data = '';
 		fcom.ajax(fcom.makeUrl('Products','productOptionsAndTag', [productId]),data,function(res){
-			$("#tabs_002").html('');
-            $("#tabs_003").html(res);
+			//$("#tabs_002").html('');            
+            $(".tabs_panel").html('');
             $(".tabs_panel").hide();
             $(".tabs_nav  > li > a").removeClass('active');
             $("#tabs_003").show();                    
             $("a[rel='tabs_003']").addClass('active');
+            $("#tabs_003").html(res);
 		});
-    }
-    
-    displayProdInitialTab = function(){
-        $(".tabs_panel").hide();
-        $(".tabs_nav  > li > a").removeClass('active');
-        $("#tabs_001").show();                    
-        $("a[rel='tabs_001']").addClass('active');
-    }
-    
+    }   
     
     upcListing = function (product_id){
         fcom.ajax(fcom.makeUrl('products', 'upcListing', [product_id]), '', function(t) {
@@ -116,17 +127,201 @@
     
     productShipping = function(productId){
         var data = '';
-		//fcom.ajax(fcom.makeUrl('Products','productShipping', [productId]),data,function(res){
-			$("#tabs_003").html('');
-            //$("#tabs_004").html(res);
+		fcom.ajax(fcom.makeUrl('Products','productShippingFrm', [productId]),data,function(res){
+			//$("#tabs_003").html('');
+            $(".tabs_panel").html('');            
             $(".tabs_panel").hide();
             $(".tabs_nav  > li > a").removeClass('active');
             $("#tabs_004").show();                    
             $("a[rel='tabs_004']").addClass('active');
-		//});
+            $("#tabs_004").html(res);            
+            addShippingTab(productId);
+		});
+    }
+    
+    addShippingTab = function(productId){
+        var ShipDiv = "#tab_shipping";
+        fcom.ajax(fcom.makeUrl('products','getShippingTab'),'product_id='+productId,function(t){
+            $(ShipDiv).html(t);
+        });
+    };    
+    
+    setUpProductShipping = function(frm){
+        if (!$(frm).validate()) return;    
+        var data = fcom.frmData(frm);
+        fcom.updateWithAjax(fcom.makeUrl('Products', 'setUpProductShipping'), data, function(t) {
+            productMedia(t.productId);
+        });
     }
 
+    shippingautocomplete = function(shipping_row) {
+        $('input[name="product_shipping[' + shipping_row + '][country_name]"]').focusout(function() {
+                setTimeout(function(){ $('.suggestions').hide(); }, 500);
+        });
+
+        $('input[name="product_shipping[' + shipping_row + '][company_name]"]').focusout(function() {
+                setTimeout(function(){ $('.suggestions').hide(); }, 500);
+        });
+
+        $('input[name="product_shipping[' + shipping_row + '][processing_time]"]').focusout(function() {
+                setTimeout(function(){ $('.suggestions').hide(); }, 500);
+        });
+        $('input[name="product_shipping[' + shipping_row + '][country_name]"]').autocomplete({
+            'source': function(request, response) {
+                $.ajax({
+                    url: fcom.makeUrl('products', 'countries_autocomplete'),
+                    data: {keyword: request,fIsAjax:1,includeEverywhere:true},
+                    dataType: 'json',
+                    type: 'post',
+                    success: function(json) {
+                        response($.map(json, function(item) {
+                            return {
+                                label: item['name'] ,
+                                value: item['id']
+                            };
+                        }));
+                    },
+                });
+            },
+            'select': function(item) {
+                $('input[name="product_shipping[' + shipping_row + '][country_name]"]').val(item.label);
+                $('input[name="product_shipping[' + shipping_row + '][country_id]"]').val(item.value);
+            }
+        });
+
+        $('input[name="product_shipping[' + shipping_row + '][company_name]"]').autocomplete({
+                'source': function(request, response) {
+                $.ajax({
+                    url: fcom.makeUrl('products', 'shippingCompanyAutocomplete'),
+                    data: {keyword: request,fIsAjax:1},
+                    dataType: 'json',
+                    type: 'post',
+                    success: function(json) {
+                        response($.map(json, function(item) {
+                            return {
+                                label: item['name'] ,
+                                value: item['id']
+                            };
+                        }));
+                    },
+                });
+            },
+            'select': function(item) {
+                $('input[name="product_shipping[' + shipping_row + '][company_name]"]').val(item.label);
+                $('input[name="product_shipping[' + shipping_row + '][company_id]"]').val(item.value);
+            }
+        });
+
+        $('input[name="product_shipping[' + shipping_row + '][processing_time]"]').autocomplete({
+                'source': function(request, response) {
+                $.ajax({
+                    url: fcom.makeUrl('products', 'shippingMethodDurationAutocomplete'),
+                    data: {keyword: request,fIsAjax:1},
+                    dataType: 'json',
+                    type: 'post',
+                    success: function(json) {
+                        response($.map(json, function(item) {
+                            return {
+                                label: item['name']+'['+ item['duraion']+']' ,
+                                value: item['id']
+                                };
+                        }));
+                    },
+                });
+            },
+            'select': function(item) {
+                $('input[name="product_shipping[' + shipping_row + '][processing_time]"]').val(item.label);
+                $('input[name="product_shipping[' + shipping_row + '][processing_time_id]"]').val(item.value);
+            }
+        });
+    };
+    
+    productMedia = function(productId){
+        var data = '';
+		fcom.ajax(fcom.makeUrl('Products','imagesForm', [productId]),data,function(res){
+			//$("#tabs_003").html('');
+            //$("#tabs_004").html('');            
+            $(".tabs_panel").html('');
+            $(".tabs_panel").hide();
+            $(".tabs_nav  > li > a").removeClass('active');
+            $("#tabs_005").show();                    
+            $("a[rel='tabs_005']").addClass('active'); 
+            $("#tabs_005").html(res);
+            productImages(productId);
+		});
+    }
+    
+    productImages = function( product_id,option_id,lang_id ){
+        fcom.ajax(fcom.makeUrl('Products', 'images', [product_id,option_id,lang_id]), '', function(t) {
+            $('#imageupload_div').html(t);
+        });
+    };
+    
+    submitImageUploadForm = function ( ){
+        var data = new FormData(  );
+        $inputs = $('#imageFrm input[type=text],#imageFrm select,#imageFrm input[type=hidden]');
+        $inputs.each(function() { data.append( this.name,$(this).val());});
+        var product_id = $('#imageFrm input[name="product_id"]').val();
+        $.each( $('#prod_image')[0].files, function(i, file) {
+                $('#imageupload_div').html(fcom.getLoader());
+                data.append('prod_image', file);
+                $.ajax({
+                    url : fcom.makeUrl('Products', 'uploadProductImages'),
+                    type: "POST",
+                    data : data,
+                    processData: false,
+                    contentType: false,
+                    success: function(t){
+                        try{
+                            var ans = $.parseJSON(t);
+                            productImages( $('#imageFrm input[name=product_id]').val(), $('.option-js').val(), $('.language-js').val() );
+                            if( ans.status == 1 ){
+                                $.systemMessage(ans.msg, 'alert--success');
+                            }else {
+                                $.systemMessage(ans.msg, 'alert--danger');
+                            }
+                        }
+                        catch(exc){
+                            productImages( $('#imageFrm input[name=product_id]').val(), $('.option-js').val(), $('.language-js').val() );
+                            $.systemMessage(t, 'alert--danger');
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        alert("Error Occured.");
+                    }
+                });
+            });
+    };
+    
+    deleteImage = function( product_id, image_id ){
+        var agree = confirm(langLbl.confirmDelete);
+        if( !agree ){ return false; }
+        fcom.ajax( fcom.makeUrl( 'Products', 'deleteImage', [product_id, image_id] ), '' , function(t) {
+            var ans = $.parseJSON(t);
+            if( ans.status == 0 ){
+                fcom.displayErrorMessage( ans.msg);
+                return;
+            }else{
+                fcom.displaySuccessMessage( ans.msg);
+            }
+            productImages( product_id, $('.option-js').val(), $('.language-js').val() );
+        });
+    };
+
 })();
+
+$(document).on('change','.option-js',function(){
+    var option_id = $(this).val();
+    var product_id = $('#imageFrm input[name=product_id]').val();
+    var lang_id = $('.language-js').val();
+    productImages(product_id,option_id,lang_id);
+});
+$(document).on('change','.language-js',function(){
+    var lang_id = $(this).val();
+    var product_id = $('#imageFrm input[name=product_id]').val();
+    var option_id = $('.option-js').val();
+    productImages(product_id,option_id,lang_id);
+});
 
 $(document).on('click', '.tabs_001', function(){
     var productId = $("input[name='product_id']").val();
@@ -155,6 +350,15 @@ $(document).on('click', '.tabs_004', function(){
     var productId = $("input[name='product_id']").val();
     if(productId > 0){
         productShipping(productId);
+    }else{
+        displayProdInitialTab();
+    }        
+});
+
+$(document).on('click', '.tabs_005', function(){
+    var productId = $("input[name='product_id']").val();
+    if(productId > 0){
+        productMedia(productId);
     }else{
         displayProdInitialTab();
     }        

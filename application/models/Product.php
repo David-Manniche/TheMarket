@@ -1610,33 +1610,17 @@ END,   special_price_found ) as special_price_found'
             $this->error = $this->getError();
             return false;
         }
-        self::updateMinPrices($this->mainTableRecordId);
-        
-        if (!$this->saveProductLangData($data['product_name'], $data['product_description']) ) { 
-            $this->error = $this->getError();
-            return false;
-        }
-        
-        if (!$this->saveProductCategory($data['ptc_prodcat_id']) ) {
-            $this->error = $this->getError();
-            return false;
-        }
-        
-        if (!$this->saveProductTax($data['ptt_taxcat_id']) ) {
-            $this->error = $this->getError();
-            return false;
-        }
         return true;
     }
     
-    public function saveProductLangData($prodName, $prodDesc)
+    public function saveProductLangData($prodNames, $prodDesc)
     {
-        if($this->mainTableRecordId < 1 || empty($prodName)){
+        if($this->mainTableRecordId < 1 || empty($prodNames)){
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
         
-        foreach($prodName as $langId=>$langName){
+        foreach($prodNames as $langId=>$langName){
             $data = array(
                  static::DB_TBL_LANG_PREFIX .'product_id' => $this->mainTableRecordId,
                  static::DB_TBL_LANG_PREFIX .'lang_id' => $langId,
@@ -1658,6 +1642,8 @@ END,   special_price_found ) as special_price_found'
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
+
+        FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_CATEGORY, array('smt'=> static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'product_id = ?', 'vals' => array($this->mainTableRecordId)));
         
         $record = new TableRecord(static::DB_TBL_PRODUCT_TO_CATEGORY);
         $data = array(
@@ -1693,7 +1679,7 @@ END,   special_price_found ) as special_price_found'
             $this->error = $tax->getError();
             return false;
         }
-        return true;        
+        return true;
     }
     
     public static function getCatalogProductCount( $productId )
@@ -1763,34 +1749,29 @@ END,   special_price_found ) as special_price_found'
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetchAll($rs);
     }
-    
-    public function saveProductAttributes($data)
+        
+    public function saveProductSellerShipping($prodSellerId, $psFree, $psCountryId)
     {
-        if($this->mainTableRecordId < 1 || empty($data)){
+        if ( $this->mainTableRecordId < 1 ) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
-        }     
-        unset($data['product_id']);
-        $this->assignValues($data);        
-        if (!$this->save()) { 
-            $this->error = $this->getError();
-            return false;
-        } 
-        
+        }
         $prodSellerShip = array(
             'ps_product_id' => $this->mainTableRecordId,
-            'ps_user_id' => $data['product_seller_id'],
-            'ps_free' => $data['ps_free']
-        );        
+            'ps_user_id' => $prodSellerId,
+        );
+        $psFree = FatUtility::int($psFree);
+        if($psFree > 0){
+            $prodSellerShip['ps_free'] = $psFree;
+        }
+        $psCountryId = FatUtility::int($psCountryId);
+        if($psCountryId > 0){
+            $prodSellerShip['ps_from_country_id'] = $psCountryId;
+        }     
         if(!FatApp::getDb()->insertFromArray(PRODUCT::DB_TBL_PRODUCT_SHIPPING, $prodSellerShip, false, array(), $prodSellerShip)) {
             return false;
         }
-        
-        if($data['product_seller_id'] > 0){
-            $taxData = Tax::getTaxCatByProductId($this->mainTableRecordId);
-            $this->saveProductTax($taxData['ptt_taxcat_id'], $data['product_seller_id']);
-        }
-        return true;
+        return true;       
     }
     
     

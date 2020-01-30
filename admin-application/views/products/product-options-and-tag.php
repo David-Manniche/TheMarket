@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 
 <div class="row justify-content-center mt-5">
-    <div class="col-md-10">
+    <div class="col-md-12">
         <div class="row">
             <div class="col-md-8"> 
                 <h3 class="form__heading"><?php echo Labels::getLabel('LBL_Option_Groups', $adminLangId); ?></h3>
@@ -60,7 +60,7 @@
                      <div class="field-wraper">
                          <div class="field_cover">
                             <input type="hidden" name="product_id" value="<?php echo $productId; ?>">
-                            <button class="btn btn-primary" onClick= "productShipping(<?php echo $productId; ?>)"><?php echo Labels::getLabel('LBL_Next', $adminLangId); ?></button>
+                            <input type="button" class="btn btn-primary" onClick= <?php if($productType == Product::PRODUCT_TYPE_DIGITAL) { ?> "productMedia(<?php echo $productId; ?>)" <?php }else{ ?> "productShipping(<?php echo $productId; ?>)" <?php  } ?> value="<?php echo Labels::getLabel('LBL_Save_And_Next', $adminLangId); ?>">
                          </div>
                      </div>
                  </div>
