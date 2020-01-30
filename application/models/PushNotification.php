@@ -213,7 +213,7 @@ class PushNotification extends MyAppModel
                     }
                 }
             } catch (\Error $e) {
-                /* $this->error =  'ERR - ' . $e->getMessage(); */
+                /* $this->error =  $e->getMessage(); */
             }
 
             if (true === $joinNotificationUsers) {
