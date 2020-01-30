@@ -254,7 +254,6 @@ trait SellerProducts
             $availableOptions[$optionKey] = $optionValue;
             /* ] */
         }
-
         $optionValues = array();
         if (isset($sellerProductRow['selprodoption_optionvalue_id'])) {
             foreach ($sellerProductRow['selprodoption_optionvalue_id'] as $opId => $op) {
@@ -536,6 +535,9 @@ trait SellerProducts
                         }
                         $data_to_be_save['selprod_deleted'] = applicationConstants::NO;
                     }
+                    if (!$post['selprod_cost'.$optionKey] || (!$post['selprod_price'.$optionKey]) || (!$post['selprod_stock'.$optionKey])) {
+                        continue;
+                    }
                     $data_to_be_save['selprod_code'] = $selProdCode;
                     $data_to_be_save['selprod_cost'] = $post['selprod_cost'.$optionKey];
                     $data_to_be_save['selprod_price'] = $post['selprod_price'.$optionKey];
@@ -549,8 +551,13 @@ trait SellerProducts
                     }
                     $selprod_id = $sellerProdObj->getMainTableRecordId();
 
-                    /* save options data, if any[ */
-                    $options = explode("_", $optionKey);
+                    /* save options data, if any [ */
+                    $options = array();
+                    $optionValues = explode("_", $optionKey);
+                    foreach ($optionValues as $optionValueId) {
+                        $optionId = OptionValue::getAttributesById($optionValueId, 'optionvalue_option_id', false);
+                        $options[$optionId] = $optionValueId;
+                    }
                     asort($options);
                     if (!$sellerProdObj->addUpdateSellerProductOptions($selprod_id, $options)) {
                         Message::addErrorMessage(Labels::getLabel($sellerProdObj->getError(), $this->siteLangId));
@@ -670,6 +677,10 @@ trait SellerProducts
                     Product::updateMinPrices($productId);
                 }
             }
+        }
+        if ($selprod_id == 0) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Please_fill_all_mandatory_fields', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
         }
         $this->set('selprod_id', $selprod_id);
         $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->siteLangId));

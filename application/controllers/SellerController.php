@@ -130,7 +130,7 @@ class SellerController extends SellerBaseController
 
         $txnObj = new Transactions();
         $txnsSummary = $txnObj->getTransactionSummary($userId, date('Y-m-d'));
-        
+
         $this->set('transactions', $transactions);
         $this->set('returnRequests', $returnRequests);
         $this->set('OrderReturnRequestStatusArr', OrderReturnRequest::getRequestStatusArr($this->siteLangId));
@@ -3981,11 +3981,6 @@ class SellerController extends SellerBaseController
             }
             $frm->addRequiredField(Labels::getLabel('LBL_Url_Keyword', $this->siteLangId), 'selprod_url_keyword');
             $productOptions = Product::getProductOptions($product_id, $this->siteLangId, true);
-            /*foreach ($productOptions as $option) {
-                $option_name = ($option['option_name'] != '') ? $option['option_name'] : $option['option_identifier'];
-                $fld = $frm->addSelectBox($option_name, 'selprodoption_optionvalue_id['.$option['option_id'].']', $option['optionValues'], '', array('class' => 'selprodoption_optionvalue_id'), Labels::getLabel('LBL_Select', $this->siteLangId));
-                $fld->requirements()->setRequired();
-            }*/
             if (!empty($productOptions) && $selprod_id == 0) {
                 $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '_');
                 if ($optionCombinations) {
@@ -3998,16 +3993,16 @@ class SellerController extends SellerBaseController
                         }
                         /* ] */
                         // $frm->addRequiredField(Labels::getLabel('LBL_Url_Keyword', $this->siteLangId), 'selprod_url_keyword'.$optionKey);
-                        $costPrice = $frm->addFloatField(Labels::getLabel('LBL_Cost_Price', $this->siteLangId).' ['.CommonHelper::getCurrencySymbol(true).']', 'selprod_cost'.$optionKey, 0);
+                        $costPrice = $frm->addTextBox(Labels::getLabel('LBL_Cost_Price', $this->siteLangId).' ['.CommonHelper::getCurrencySymbol(true).']', 'selprod_cost'.$optionKey);
                         // $costPrice->requirements()->setPositive();
 
-                        $fld = $frm->addFloatField(Labels::getLabel('LBL_Price', $this->siteLangId).' ['.CommonHelper::getCurrencySymbol(true).']', 'selprod_price'.$optionKey, 0);
+                        $fld = $frm->addTextBox(Labels::getLabel('LBL_Price', $this->siteLangId).' ['.CommonHelper::getCurrencySymbol(true).']', 'selprod_price'.$optionKey);
                         /*$fld->requirements()->setPositive();
                         if (isset($productData['product_min_selling_price'])) {
                             $fld->requirements()->setRange($productData['product_min_selling_price'], 9999999999);
                         }*/
 
-                        $fld = $frm->addIntegerField(Labels::getLabel('LBL_Quantity', $this->siteLangId), 'selprod_stock'.$optionKey, 0);
+                        $fld = $frm->addTextBox(Labels::getLabel('LBL_Quantity', $this->siteLangId), 'selprod_stock'.$optionKey);
                         // $fld->requirements()->setPositive();
 
                         $fld_sku = $frm->addTextBox(Labels::getLabel('LBL_Product_SKU', $this->siteLangId), 'selprod_sku'.$optionKey);

@@ -14,8 +14,6 @@ if ('' === $returnAgeFld->value || '' === $cancellationAgeFld->value) {
     $hidden = 'hidden';
 }
 
-$selprod_threshold_stock_levelFld = $frmSellerProduct->getField('selprod_threshold_stock_level');
-$selprod_threshold_stock_levelFld->htmlAfterField = '<small class="text--small">'.Labels::getLabel('LBL_Alert_stock_level_hint_info', $siteLangId). '</small>';
 $urlFld = $frmSellerProduct->getField('selprod_url_keyword');
 $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
 $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value, $selprod_id, 'post')");
@@ -88,7 +86,7 @@ $submitBtnFld->developerTags['col'] = 12;
                         <div class="row">
                             <div class="selprod_threshold_stock_level_fld col-md-6">
                                 <div class="field-set">
-                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_threshold_stock_level')->getCaption(); ?></label></div>
+                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_threshold_stock_level')->getCaption(); ?> <i class="far fa-question-circle tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_Alert_stock_level_hint_info', $siteLangId); ?></span></i></label></div>
                                     <div class="field-wraper">
                                         <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_threshold_stock_level'); ?></div>
                                     </div>
@@ -191,16 +189,16 @@ $submitBtnFld->developerTags['col'] = 12;
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <table id="shipping" class="table">
+                                <table id="optionsTable-js" class="table">
                                     <thead>
                                         <tr>
                                             <?php if (($selprod_id == 0 && !empty($availableOptions)) || !empty($optionValues)) { ?>
                                             <th width="20%"><?php echo Labels::getLabel('LBL_Variant/Option', $siteLangId); ?></th>
                                             <?php }?>
                                             <th width="20%"><?php echo Labels::getLabel('LBL_Cost_Price', $siteLangId); ?></th>
-                                            <th width="20%"><?php echo Labels::getLabel('LBL_Selling_Price', $siteLangId); ?> <i class="fa fa-question-circle-o tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates.', $siteLangId).' '.Labels::getLabel('LBL_Min_Selling_price', $siteLangId).' '. CommonHelper::displayMoneyFormat($productMinSellingPrice, true, true); ?></span></i></th>
+                                            <th width="20%"><?php echo Labels::getLabel('LBL_Selling_Price', $siteLangId); ?> <i class="far fa-question-circle tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates.', $siteLangId).' '.Labels::getLabel('LBL_Min_Selling_price', $siteLangId).' '. CommonHelper::displayMoneyFormat($productMinSellingPrice, true, true); ?></span></i></th>
                                             <th width="20%"><?php echo Labels::getLabel('LBL_Quantity', $siteLangId); ?></th>
-                                            <th width="20%"><?php echo Labels::getLabel('LBL_SKU', $siteLangId); ?> <i class="fa fa-question-circle-o tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_Stock_Keeping_Unit', $siteLangId) ?></span></i></th>
+                                            <th width="20%"><?php echo Labels::getLabel('LBL_SKU', $siteLangId); ?> <i class="far fa-question-circle tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_Stock_Keeping_Unit', $siteLangId) ?></span></i></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -208,10 +206,10 @@ $submitBtnFld->developerTags['col'] = 12;
                                             <?php foreach ($availableOptions as $optionKey => $optionValue) { ?>
                                             <tr>
                                                 <td><?php echo str_replace("_", " | ", $optionValue); ?></td>
-                                                <td><?php echo $frmSellerProduct->getFieldHtml('selprod_cost'.$optionKey); ?></td>
-                                                <td><?php echo $frmSellerProduct->getFieldHtml('selprod_price'.$optionKey); ?></td>
-                                                <td><?php echo $frmSellerProduct->getFieldHtml('selprod_stock'.$optionKey); ?></td>
-                                                <td><?php echo $frmSellerProduct->getFieldHtml('selprod_sku'.$optionKey); ?></td>
+                                                <td class="optionFld-js"><?php echo $frmSellerProduct->getFieldHtml('selprod_cost'.$optionKey); ?></td>
+                                                <td class="optionFld-js"><?php echo $frmSellerProduct->getFieldHtml('selprod_price'.$optionKey); ?></td>
+                                                <td class="optionFld-js"><?php echo $frmSellerProduct->getFieldHtml('selprod_stock'.$optionKey); ?></td>
+                                                <td class="optionFld-js fldSku"><?php echo $frmSellerProduct->getFieldHtml('selprod_sku'.$optionKey); ?></td>
                                             </tr>
                                             <?php } ?>
                                         <?php } else { ?>
@@ -295,7 +293,8 @@ $submitBtnFld->developerTags['col'] = 12;
 <script type="text/javascript">
     var PERCENTAGE = <?php echo applicationConstants::PERCENTAGE; ?>;
     var FLAT = <?php echo applicationConstants::FLAT; ?>;
-
+    var CONF_PRODUCT_SKU_MANDATORY = <?php echo FatApp::getConfig("CONF_PRODUCT_SKU_MANDATORY", FatUtility::VAR_INT, 1); ?>;
+    var LBL_MANDATORY_OPTION_FIELDS = '<?php echo Labels::getLabel('LBL_Atleast_one_option_needs_to_be_added_before_creating_inventory_for_this_product', $siteLangId); ?>';
     $("document").ready(function() {
         var INVENTORY_TRACK = <?php echo Product::INVENTORY_TRACK; ?>;
         var INVENTORY_NOT_TRACK = <?php echo Product::INVENTORY_NOT_TRACK; ?>;
@@ -324,6 +323,27 @@ $submitBtnFld->developerTags['col'] = 12;
                 $('.use-shop-policy').addClass('hidden');
             } else {
                 $('.use-shop-policy').removeClass('hidden');
+            }
+        });
+
+        $(document).on('keyup', ".optionFld-js input", function(){
+            if($(this).val() > 0){
+                $(this).parent().parent().find('input').each(function(){
+                    if($(this).parent().hasClass('fldSku') && CONF_PRODUCT_SKU_MANDATORY != 1){
+                        return;
+                    }
+                    if($(this).val().length == 0 || $(this).val() == 0){
+                        $(this).attr('class', 'error');
+                        // $(this).attr('required', 'required');
+                    }
+                });
+            } else {
+                $(this).parent().parent().find('input').each(function(){
+                    if($(this).val().length == 0 || $(this).val() == 0){
+                        $(this).removeClass('error');
+                        // $(this).removeAttr('required');
+                    }
+                });
             }
         });
     });
