@@ -601,7 +601,7 @@ html.quick-view--open {
     display: -ms-flexbox;
     display: flex;
     font-size: 0.875em;
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
 }
 
 .list--specification li span {
@@ -635,7 +635,7 @@ html.quick-view--open {
 }
 
 .discount-slider .item__price {
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
     display: block;
     font-weight: 300;
 
@@ -1232,7 +1232,7 @@ html.quick-view--open {
 
 .profile__bio .deg {
     font-weight: 300;
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
     font-size: 0.875rem;
 }
 
@@ -1464,7 +1464,7 @@ html.quick-view--open {
         .progress_count {
             font-size: 0.875em;
             min-width: 50px;
-            color: var(--txt-color-light);
+            color: lighten($body-color, 50%);
         }
 
         .progress__bar {

@@ -40,7 +40,7 @@
 }
 
 .gray-txt {
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
 }
 
 

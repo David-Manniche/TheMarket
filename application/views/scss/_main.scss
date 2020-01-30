@@ -147,7 +147,7 @@ a:hover {
 .divider,
 hr {
     height: 1px;
-    background: var(--border-color);
+    background: $border-color;
     margin: 15px 0;
 }
 
@@ -206,6 +206,12 @@ hr {
 
 .formActions-css {
     display: none !important;
+}
+
+.-inline-link {
+    text-decoration: underline;
+    font-size: 0.9em;
+    color: $brand-color !important;
 }
 
 .column {

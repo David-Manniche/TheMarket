@@ -359,7 +359,7 @@
 .system_message .closeMsg:before {
     width: 3px;
     height: 15px;
-    #{$start-direction}: 50%;
+    left: 50%;
     margin: 0 0 0 -2px;
     position: absolute;
     top: 2px;
@@ -371,7 +371,7 @@
 .system_message .closeMsg:after {
     width: 15px;
     height: 3px;
-    #{$start-direction}: 2px;
+    left: 2px;
     top: 50%;
     margin: -2px 0 0 0;
     position: absolute;

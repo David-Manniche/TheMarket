@@ -102,7 +102,7 @@
 
             span { display: block;
                 font-size: 0.775rem;
-                color: var(--txt-color-light);
+                color: lighten($body-color, 50%);
             }
         }
 

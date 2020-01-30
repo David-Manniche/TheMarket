@@ -148,7 +148,7 @@ switch( $affiliate_register_step_number ){
 }	
 ?>
 <div class="registeration-process">
-	<ul data-simplebar>
+	<ul>
 		<?php
 		if( $registerStepsArr ){
 			foreach( $registerStepsArr as $key => $val ){

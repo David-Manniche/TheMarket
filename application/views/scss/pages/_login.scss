@@ -85,8 +85,8 @@
     position: absolute;
     #{$start-direction}: 50%;
     top: 0;
-    -webkit-transform: translateX(0);
-    transform: translateX(0);
+    -webkit-transform: translateX(0 * $transform-direction);
+    transform: translateX(0 * $transform-direction);
     width: 50%;
     height: 100%;
     background-color: #fff;
@@ -122,8 +122,7 @@
 
 
     &.sign-up {
-        -webkit-transform: translateX(-100%);
-        transform: translateX(-100%);
+        transform: translateX(-100% * $transform-direction);
     }
 
 
@@ -133,8 +132,8 @@
         max-width: 450px;
         margin: 0 auto;
         position: absolute;
-        -webkit-transform: translateX(-50%);
-        transform: translateX(-50%);
+        -webkit-transform: translateX(-50% * $transform-direction);
+        transform: translateX(-50% * $transform-direction);
         -webkit-transition: all 0.5s;
         transition: all 0.5s;
 
@@ -159,8 +158,8 @@
         }
 
         &.sign-up {
-            -webkit-transform: translateX(100%);
-            transform: translateX(100%);
+            -webkit-transform: translateX(100% * $transform-direction);
+            transform: translateX(100% * $transform-direction);
             #{$end-direction}: 0;
             opacity: 0;
             -webkit-transition: all 0.5s;
@@ -176,8 +175,8 @@
 
             &.is-opened {
                 opacity: 1;
-                -webkit-transform: translateX(50%);
-                transform: translateX(50%);
+                -webkit-transform: translateX(50% * $transform-direction);
+                transform: translateX(50% * $transform-direction);
                 -webkit-transition: all 0.5s;
                 transition: all 0.5s;
                 #{$end-direction}: 50%;
@@ -318,4 +317,3 @@
         background: #3f729b;
     }
 }
-

@@ -1,10 +1,9 @@
 .custom-tagify {
     background-color: #fff;
-    border: 1px solid var(--border-color);
+    border: 1px solid $border-color;
     height: auto;
     padding: 0;
     width: 100%;
-    color: var(--txt-color);
     font-family: inherit;
     font-size: 0.9em;
     font-weight: normal;

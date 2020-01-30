@@ -159,7 +159,7 @@
     }
 
     .ftshops_location {
-        color: var(--txt-color-light);
+        color: lighten($body-color, 50%);
         font-size: 0.9em;
     }
 
@@ -217,7 +217,7 @@
     grid-template-columns: repeat(5, 1fr);
     border: $border;
     border-radius: 4px;
-    background-color: var(--border-color);
+    background-color: $border-color;
 }
 
 .ft-pro-wrapper .products {

@@ -374,7 +374,7 @@
 .btn-action .action {
     position: relative;
     display: inline-block;
-    border: solid 1px var(--txt-color-light);
+    border: solid 1px lighten($body-color, 50%);
     border-radius: 50%;
     color: #777;
     width: 30px;
@@ -406,7 +406,7 @@
 .btn-action .action .icon svg path,
 .btn-action .action .icon svg polygon,
 .btn-action .action .icon svg circle {
-    fill: var(--txt-color-light);
+    fill: lighten($body-color, 50%);
 }
 
 .btn-action .action:hover .icon svg path,
@@ -416,7 +416,7 @@
 }
 
 .address-type {
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
     font-size: 0.8em;
     font-weight: 600;
     margin-bottom: 15px;
@@ -595,7 +595,7 @@
 }
 
 .summary-listing .products__category {
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
     font-size: 0.8em;
     font-weight: 400;
     float: left;
@@ -774,7 +774,7 @@
             border-radius: 50%;
             width: 10px;
             height: 10px;
-            background: var(--border-color);
+            background: $border-color;
             display: block;
             #{$start-direction}: 0;
             top: 32px;
@@ -793,13 +793,13 @@
     }
 
     p {
-        color: var(--txt-color-light);
+        color: lighten($body-color, 50%);
         padding: 0px 0;
         margin: 0;
     }
 
     .coupon-code {
-        border: dashed 1px var(--border-color);
+        border: dashed 1px $border-color;
         padding: 5px 10px;
         display: inline-block;
         font-weight: 500;
@@ -1020,7 +1020,7 @@
 
 .summary-order-list .actions li a:hover {
     background: none;
-    border-color: var(--border-color);
+    border-color: $border-color;
 }
 
 .summary-order-list .actions li a:hover .icn svg {

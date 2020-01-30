@@ -70,13 +70,6 @@
     vertical-align: middle;
 }
 
-/*
-.checkbox input:hover,
-.radio input:hover {
-	background: #9faab7;
-}
-*/
-
 .checkbox input:checked,
 .radio input:checked {
     background: $brand-color;
@@ -84,21 +77,19 @@
 
 .checkbox input:checked::before,
 .radio input:checked::before {
-    /*	content: '✔';*/
     height: 12px;
     width: 7px;
     position: absolute;
-    content: '';
-    /*content: '✔';*/
+    content: '';    
     display: inline-block;
     font-size: 16px;
     text-align: center;
     line-height: 16px;
-    border-#{$end-direction}: 2px solid #fff;
+    border-right: 2px solid #fff;
     border-bottom: 2px solid #fff;
     -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
-    #{$start-direction}: 50%;
+    left: 50%;
     top: 50%;
     margin: -7px 0 0 -3px;
 
@@ -159,7 +150,7 @@
     display: inline-block;
     vertical-align: top;
     position: relative;
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
     font-size: 0.8em;
 }
 

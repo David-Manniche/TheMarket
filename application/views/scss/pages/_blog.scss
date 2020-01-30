@@ -166,8 +166,8 @@
 
         a {
             display: block;
-            color: var(--txt-color-light);
-            border: solid 1px var(--txt-color-light);
+            color: lighten($body-color, 50%);
+            border: solid 1px lighten($body-color, 50%);
             border-radius: 40px;
             font-size: 0.75rem;
             line-height: 1.2;
@@ -361,7 +361,7 @@
     -ms-flex-align: center;
     align-items: center;
     margin-bottom: 2rem;
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
     font-size: 0.875rem;
     text-transform: uppercase;
     flex-wrap: wrap;
@@ -527,8 +527,7 @@
             vertical-align: top;
             text-align: left;
             color: $secondary-color;
-            background: var(--third-color);
-        }
+                   }
 
         td {
             border: solid 1px #CDCDCD;
@@ -649,7 +648,7 @@
     time {
         display: block;
         font-style: normal;
-        color: var(--txt-color-light);
+        color: lighten($body-color, 50%);
         font-weight: 300;
         font-size: 0.875rem;
     }
