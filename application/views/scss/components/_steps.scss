@@ -64,5 +64,5 @@
 .steps li:last-child {
     -webkit-padding-end: 0;
     -moz-padding-end: 0;
-    padding-inline-end: 0;
+    padding-#{$end-direction}: 0;
 }

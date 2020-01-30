@@ -100,7 +100,7 @@
 
     .three-pin {
         float: right;
-        margin-inline-end: 0;
+        margin-#{$end-direction}: 0;
     }
 
     .more {
@@ -306,7 +306,7 @@
     line-height: 1;
     width: 40px;
     padding: 0;
-    margin-inline-end: 1rem;
+    margin-#{$end-direction}: 1rem;
 
     span {
         background: #333;

@@ -27,9 +27,9 @@
 
         .field-set {
             margin-bottom: 0;
-            -webkit-margin-start: 10px;
-            -moz-margin-start: 10px;
-            margin-inline-start: 10px;
+            
+            
+            margin-#{$start-direction}: 10px;
 
             @include media-breakpoint-down(md) {
                 & {
@@ -50,7 +50,7 @@
 
 
         .forgot {
-            margin-inline-start: 10px;
+            margin-#{$start-direction}: 10px;
         }
     }
 
@@ -396,9 +396,9 @@
     display: inline-block;
     font-size: 0.85em;
     color: $body-color;
-    -webkit-margin-end: 1rem;
-    -moz-margin-end: 1rem;
-    margin-inline-end: 1rem;
+    
+    
+    margin-#{$end-direction}: 1rem;
     position: relative;
     white-space: nowrap;
 }
@@ -406,10 +406,10 @@
 .registeration-process ul li:first-child {
     -webkit-margin-start: 0;
     -moz-margin-start: 0;
-    margin-inline-start: 0;
+    margin-#{$start-direction}: 0;
     -webkit-padding-start: 0;
     -moz-padding-start: 0;
-    padding-inline-start: 0;
+    padding-#{$start-direction}: 0;
 }
 
 .registeration-process ul li a {

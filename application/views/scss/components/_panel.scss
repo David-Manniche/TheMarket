@@ -52,9 +52,8 @@
 }
 
 .box--tabled .box__cell:first-child {
-    -webkit-border-end: $border;
-    -moz-border-end: $border;
-    border-inline-end: $border;
+    
+    border-#{$end-direction}: $border;
 }
 
 .box--tabled .box__cell:last-child {
@@ -62,7 +61,7 @@
     width: 45%;
     -webkit-padding-end: 0;
     -moz-padding-end: 0;
-    padding-inline-end: 0;
+    padding-#{$end-direction}: 0;
 }
 
 .box--tabled .box__cell .listing--icons {
@@ -78,7 +77,7 @@
 .panel--cols .col--left {
     -webkit-padding-end: 30px;
     -moz-padding-end: 30px;
-    padding-inline-end: 30px;
+    padding-#{$end-direction}: 30px;
     clear: left;
 }
 
@@ -129,7 +128,7 @@
     content: "|";
     -webkit-margin-start: 5px;
     -moz-margin-start: 5px;
-    margin-inline-start: 5px;
+    margin-#{$start-direction}: 5px;
 }
 
 .panel__head .links--inline li:last-child:after {

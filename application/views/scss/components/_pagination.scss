@@ -73,9 +73,8 @@
 .pagination li.next a:before {
     width: 12px;
     height: 12px;
-    -webkit-border-end: 2px solid #333;
-    -moz-border-end: 2px solid #333;
-    border-inline-end: 2px solid #333;
+    
+    border-#{$end-direction}: 2px solid #333;
     border-top: 2px solid #333;
     position: absolute;
     #{$start-direction}: calc(50% - 8px);

@@ -23,9 +23,8 @@
     display: block;
     border-bottom: 6px solid #fff;
     border-#{$start-direction}: 6px solid transparent;
-    -webkit-border-end: 6px solid transparent;
-    -moz-border-end: 6px solid transparent;
-    border-inline-end: 6px solid transparent;
+    
+    border-#{$end-direction}: 6px solid transparent;
     position: absolute;
     top: -6px;
     #{$start-direction}: 20px;

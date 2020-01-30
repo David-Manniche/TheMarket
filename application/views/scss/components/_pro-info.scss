@@ -27,7 +27,7 @@
     width: calc(100% - 80px);
     -webkit-padding-start: 20px;
     -moz-padding-start: 20px;
-    padding-inline-start: 20px;
+    padding-#{$start-direction}: 20px;
     color: #fff;
 }
 

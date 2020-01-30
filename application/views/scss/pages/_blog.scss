@@ -54,7 +54,7 @@
                 fill: $brand-color;
                 -webkit-margin-start: 0.3rem;
                 -moz-margin-start: 0.3rem;
-                margin-inline-start: 0.3rem;
+                margin-#{$start-direction}: 0.3rem;
             }
         }
     }
@@ -158,10 +158,10 @@
             border-#{$start-direction}: none;
             -webkit-padding-start: 0;
             -moz-padding-start: 0;
-            padding-inline-start: 0;
+            padding-#{$start-direction}: 0;
             -webkit-margin-start: 0;
             -moz-margin-start: 0;
-            margin-inline-start: 0;
+            margin-#{$start-direction}: 0;
         }
 
         a {
@@ -174,9 +174,8 @@
             /*text-transform: uppercase;*/
             padding: 5px 10px;
             margin-bottom: 8px;
-            -webkit-margin-end: 8px;
-            -moz-margin-end: 8px;
-            margin-inline-end: 8px;
+            
+            margin-#{$end-direction}: 8px;
         }
 
     }
@@ -217,14 +216,14 @@
 
 
 .posted-content {
-    -webkit-margin-end: 2.5rem;
-    -moz-margin-end: 2.5rem;
-    margin-inline-end: 2.5rem;
+    
+    
+    margin-#{$end-direction}: 2.5rem;
 
 
     @include media-breakpoint-down(md) {
         & {
-            margin-inline-end: 0;
+            margin-#{$end-direction}: 0;
 
         }
     }
@@ -259,9 +258,8 @@
 }
 
 .arrows--left {
-    -webkit-margin-end: 1.5rem;
-    -moz-margin-end: 1.5rem;
-    margin-inline-end: 1.5rem;
+    
+    margin-#{$end-direction}: 1.5rem;
 }
 
 
@@ -270,7 +268,7 @@
     margin: 0 auto;
 
     .item {
-        text-align: left;
+         
         margin: 0 15px;
         padding-bottom: 10px;
     }
@@ -318,9 +316,8 @@
             font-size: 1em;
             padding: 5px 20px;
             margin: 0;
-            -webkit-margin-end: -3px;
-            -moz-margin-end: -3px;
-            margin-inline-end: -3px;
+            
+            margin-#{$end-direction}: -3px;
             border: $border;
             border-radius: 50px 0 0 50px;
             color: $body-color;
@@ -371,15 +368,13 @@
 }
 
 .posted-by span {
-    -webkit-border-end: $border;
-    -moz-border-end: $border;
-    border-inline-end: $border;
-    -webkit-padding-end: 1rem;
-    -moz-padding-end: 1rem;
-    padding-inline-end: 1rem;
-    -webkit-margin-end: 1rem;
-    -moz-margin-end: 1rem;
-    margin-inline-end: 1rem;
+    
+    border-#{$end-direction}: $border;
+    
+    padding-#{$end-direction}: 1rem;
+    
+    
+    margin-#{$end-direction}: 1rem;
 }
 
 /*post detail*/
@@ -566,9 +561,9 @@
     }
 
     .media__image {
-        -webkit-margin-end: 2rem;
-        -moz-margin-end: 2rem;
-        margin-inline-end: 2rem;
+        
+        
+        margin-#{$end-direction}: 2rem;
     }
 
     .avatar {
@@ -611,7 +606,7 @@
     &.odd {
         -webkit-padding-start: 110px;
         -moz-padding-start: 110px;
-        padding-inline-start: 110px;
+        padding-#{$start-direction}: 110px;
     }
 }
 
@@ -636,9 +631,9 @@
     width: 78px;
     height: 78px;
     min-width: 78px;
-    -webkit-margin-end: 2rem;
-    -moz-margin-end: 2rem;
-    margin-inline-end: 2rem;
+    
+    
+    margin-#{$end-direction}: 2rem;
 }
 
 .comment-by {
@@ -791,9 +786,9 @@
 }
 
 .pagination-blog li {
-    -webkit-margin-end: 1rem;
-    -moz-margin-end: 1rem;
-    margin-inline-end: 1rem;
+    
+    
+    margin-#{$end-direction}: 1rem;
 }
 
 .pagination-blog li a {

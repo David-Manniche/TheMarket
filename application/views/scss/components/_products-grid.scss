@@ -203,17 +203,17 @@
 .products__rating .svg {
     width: 13px;
     height: 13px;
-    -webkit-margin-end: 5px;
-    -moz-margin-end: 5px;
-    margin-inline-end: 5px;
+    
+    
+    margin-#{$end-direction}: 5px;
 }
 
 .products .products__rating .svg svg,
 .products__rating .svg svg {
     vertical-align: top;
-    -webkit-margin-end: 0px;
-    -moz-margin-end: 0px;
-    margin-inline-end: 0px;
+    
+    
+    margin-#{$end-direction}: 0px;
     fill: $brand-color;
     vertical-align: top;
 }
@@ -245,9 +245,9 @@
 
 
 .products-reviews .icn {
-    -webkit-margin-end: 5px;
-    -moz-margin-end: 5px;
-    margin-inline-end: 5px;
+    
+    
+    margin-#{$end-direction}: 5px;
 
 }
 
@@ -262,9 +262,8 @@
 
 .products-reviews .rate {
     font-size: 0.875rem;
-    -webkit-margin-end: 10px;
-    -moz-margin-end: 10px;
-    margin-inline-end: 10px;
+    
+    margin-#{$end-direction}: 10px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;

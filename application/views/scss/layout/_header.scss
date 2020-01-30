@@ -72,9 +72,8 @@
                     }
 
                     &:first-child {
-                        -webkit-margin-end: 0;
-                        -moz-margin-end: 0;
-                        margin-inline-end: 0;
+
+                        margin-#{$end-direction}: 0;
 
                         &:after {
                             content: normal;
@@ -101,15 +100,11 @@
                         }
                     }
 
-
-
                     .icn {
                         svg {
                             width: 15px;
                             height: 15px;
-                            -webkit-margin-end: 5px;
-                            -moz-margin-end: 5px;
-                            margin-inline-end: 5px;
+                            margin-#{$end-direction}: 5px;
                             fill: inherit;
                         }
                     }
@@ -143,10 +138,10 @@
         width: 150px;
         max-height: 60px;
         margin: 0px 0;
-        -ms-margin-inline-end: 2rem;
-        -webkit-margin-end: 2rem;
-        -moz-margin-end: 2rem;
-        margin-inline-end: 2rem;
+        -ms-margin-#{$end-direction}: 2rem;
+
+
+        margin-#{$end-direction}: 2rem;
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
@@ -404,14 +399,14 @@
 .select__value {
     color: $body-color;
     display: block;
-    padding: 0 35px 0 15px;
+    padding-#{$start-direction}: 15px;
+    padding-#{$end-direction}: 35px;
     position: relative;
     vertical-align: top;
     line-height: 36px;
     height: 36px;
-    -webkit-border-end: solid 1px $brand-color;
-    -moz-border-end: solid 1px $brand-color;
-    border-inline-end: solid 1px $brand-color;
+    
+    border-#{$end-direction}: solid 1px $brand-color;
     font-size: 0.8em;
     cursor: pointer;
 
@@ -460,7 +455,7 @@
     position: relative;
     -webkit-padding-start: 3.125rem;
     -moz-padding-start: 3.125rem;
-    padding-inline-start: 3.125rem;
+    padding-#{$start-direction}: 3.125rem;
 
     @include media-breakpoint-down(lg) {
         & {
@@ -496,7 +491,6 @@
 
 
     span.icn {
-
         vertical-align: top;
         display: -webkit-box;
         display: -ms-flexbox;
@@ -511,9 +505,9 @@
         height: 48px;
         border-radius: 50%;
         border: solid 1px $brand-color;
-        -webkit-margin-end: 10px;
-        -moz-margin-end: 10px;
-        margin-inline-end: 10px;
+
+
+        margin-#{$end-direction}: 10px;
 
 
 

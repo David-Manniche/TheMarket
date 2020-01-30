@@ -163,7 +163,7 @@
     top: auto;
     -webkit-margin-start: 1rem;
     -moz-margin-start: 1rem;
-    margin-inline-start: 1rem;
+    margin-#{$start-direction}: 1rem;
 }
 
 .restore-demo-bg {
@@ -234,7 +234,7 @@
 .demo-data-inner ul ul {
     -webkit-margin-start: 15px;
     -moz-margin-start: 15px;
-    margin-inline-start: 15px;
+    margin-#{$start-direction}: 15px;
     margin-bottom: 20px;
 }
 

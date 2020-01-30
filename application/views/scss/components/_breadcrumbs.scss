@@ -48,7 +48,7 @@
     padding: 0;
     -webkit-padding-end: 25px;
     -moz-padding-end: 25px;
-    padding-inline-end: 25px;
+    padding-#{$end-direction}: 25px;
     font-size: 0.875rem;
     vertical-align: top;
     display: block;
@@ -79,7 +79,7 @@
 .breadcrumbs ul li:last-child {
     -webkit-padding-end: 0;
     -moz-padding-end: 0;
-    padding-inline-end: 0;
+    padding-#{$end-direction}: 0;
 }
 
 .breadcrumbs ul li:last-child:before {

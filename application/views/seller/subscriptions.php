@@ -5,7 +5,7 @@ $frmOrderSrch->setFormTagAttribute('onSubmit','searchOrders(this); return false;
 $frmOrderSrch->setFormTagAttribute('class', 'form');
 
 $keywordFld = $frmOrderSrch->getField('keyword');
-$keywordFld->setWrapperAttribute('class','col-lg-4 col-sm-4 col-md-4 ');
+$keywordFld->setWrapperAttribute('class','col-lg-4');
 $keywordFld->developerTags['col'] = 4;
 /* $keywordFld->htmlAfterField = '<small class="text--small">'.Labels::getLabel('LBL_Buyer_account_orders_listing_search_form_keyword_help_txt', $siteLangId).'</small>'; */
 
@@ -15,12 +15,12 @@ $statusFld->developerTags['col'] = 4; */
 
 $dateFromFld = $frmOrderSrch->getField('date_from');
 $dateFromFld->setFieldTagAttribute('class','field--calender');
-$dateFromFld->setWrapperAttribute('class','col-lg-2 col-sm-2 col-md-2 ');
+$dateFromFld->setWrapperAttribute('class','col-lg-2');
 $dateFromFld->developerTags['col'] = 2;
 
 $dateToFld = $frmOrderSrch->getField('date_to');
 $dateToFld->setFieldTagAttribute('class','field--calender');
-$dateToFld->setWrapperAttribute('class','col-lg-2 col-sm-2 col-md-2 ');
+$dateToFld->setWrapperAttribute('class','col-lg-2');
 $dateToFld->developerTags['col'] = 2;
 
 /* $priceFromFld = $frmOrderSrch->getField('price_from');
@@ -33,12 +33,12 @@ $priceToFld->developerTags['col'] = 2; */
 
 $submitBtnFld = $frmOrderSrch->getField('btn_submit');
 $submitBtnFld->setFieldTagAttribute('class','btn--block');
-$submitBtnFld->setWrapperAttribute('class','col-lg-2 col-sm-2 col-md-2 ');
+$submitBtnFld->setWrapperAttribute('class','col-lg-2 ');
 $submitBtnFld->developerTags['col'] = 2;
 
 $cancelBtnFld = $frmOrderSrch->getField('btn_clear');
 $cancelBtnFld->setFieldTagAttribute('class','btn btn-outline-primary btn--block');
-$cancelBtnFld->setWrapperAttribute('class','col-lg-2 col-sm-2 col-md-2 ');
+$cancelBtnFld->setWrapperAttribute('class','col-lg-2 ');
 $cancelBtnFld->developerTags['col'] = 2;
 ?> <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">

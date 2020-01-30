@@ -47,7 +47,7 @@
 .side-cart {
     position: fixed;
     max-width: 450px;
-    width: 0;
+    width: 100%;
     height: 100vh;
     #{$end-direction}: 0;
     top: 0;
@@ -58,10 +58,12 @@
     padding-top: 50px;
     display: flex;
     flex-direction: column;
-    transition: all 0.8s ease;
+    transform: translateX(100% * $transform-direction);
+    transition: all 0.5s ease;
 
     &--on & {
-        width: 100%;
+
+        transform: translateX(0% * $transform-direction);
         box-shadow: 0 0px 10px 0 rgba(0, 0, 0, 0.20);
 
 
@@ -229,13 +231,13 @@ table.cart--full td {
 table.cart--full tr th:first-child {
     -webkit-padding-start: 15px;
     -moz-padding-start: 15px;
-    padding-inline-start: 15px;
+    padding-#{$start-direction}: 15px;
 }
 
 table.cart--full tr td:first-child {
     -webkit-padding-start: 0;
     -moz-padding-start: 0;
-    padding-inline-start: 0;
+    padding-#{$start-direction}: 0;
 }
 
 table.cart--full .products__img img {
@@ -264,7 +266,7 @@ table.cart-tbl-addons td {
 table.cart-tbl-addons tr td:first-child {
     -webkit-padding-start: 1.5rem;
     -moz-padding-start: 1.5rem;
-    padding-inline-start: 1.5rem;
+    padding-#{$start-direction}: 1.5rem;
 }
 
 table.cart-tbl-addons .item__pic {

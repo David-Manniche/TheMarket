@@ -14,7 +14,7 @@
     cursor: pointer;
     -webkit-padding-end: 35px;
     -moz-padding-end: 35px;
-    padding-inline-end: 35px;
+    padding-#{$end-direction}: 35px;
     background: #fff;
 
 }
@@ -132,9 +132,9 @@
     height: 10px;
     border-radius: 50%;
     display: inline-block;
-    -webkit-margin-end: 5px;
-    -moz-margin-end: 5px;
-    margin-inline-end: 5px;
+    
+    
+    margin-#{$end-direction}: 5px;
     -webkit-box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.30);
     box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.30);
 

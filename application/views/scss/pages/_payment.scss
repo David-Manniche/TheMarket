@@ -134,7 +134,7 @@ body {
 .make-payment-wrapper .row > .column {
     -webkit-padding-end: 30px;
     -moz-padding-end: 30px;
-    padding-inline-end: 30px;
+    padding-#{$end-direction}: 30px;
 }
 
 .make-payment-wrapper .payment_methods_list {
