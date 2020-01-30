@@ -226,7 +226,7 @@ class CollectionsController extends MyAppController
                 $collections = $db->fetchAll($shopRs, 'shop_id');
 
                 $totalProdCountToDisplay = 4;
-
+                
                 foreach ($collections as $val) {
                     $prodSrch = clone $productSrchObj;
                     $prodSrch->addOrder('in_stock', 'DESC');
@@ -234,15 +234,24 @@ class CollectionsController extends MyAppController
                     $prodSrch->addShopIdCondition($val['shop_id']);
                     $prodSrch->setPageSize(4);
                     $prodSrch->addGroupBy('product_id');
-
                     $prodRs = $prodSrch->getResultSet();
-                    $collections[$val['shop_id']]['products'] = $db->fetchAll($prodRs);
+                    $products = $db->fetchAll($prodRs);
+
+                    if (true ===  MOBILE_APP_API_CALL) {
+                        $collections[$val['shop_id']]['shop_logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', array($val['shop_id'], $this->siteLangId));
+                        $collections[$val['shop_id']]['shop_banner'] = CommonHelper::generateFullUrl('image', 'shopBanner', array($val['shop_id'], $this->siteLangId));
+                        array_walk($products, function (&$value, &$key) {
+                            $uploadedTime = AttachedFile::setTimeParam($value['product_image_updated_on']);
+                            $value['product_image_url'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($value['product_id'], "THUMB", $value['selprod_id'], 0, $this->siteLangId)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                        });
+                    }
+                    
+                    $collections[$val['shop_id']]['products'] = $products;
                     $collections[$val['shop_id']]['totalProducts'] = $prodSrch->recordCount();
                     $collections[$val['shop_id']]['shopRating'] = SelProdRating::getSellerRating($val['shop_user_id']);
                     $collections[$val['shop_id']]['shopTotalReviews'] = SelProdReview::getSellerTotalReviews($val['shop_user_id']);
                 }
                 $rs = $tempObj->getResultSet();
-
                 unset($tempObj);
                 $this->set('collections', $collections);
                 $this->set('totalProdCountToDisplay', $totalProdCountToDisplay);
@@ -268,15 +277,22 @@ class CollectionsController extends MyAppController
                 $brandSearchTempObj->addOrder('brand_name', 'ASC');
                 /* echo $brandSearchTempObj->getQuery(); die; */
                 $rs = $brandSearchTempObj->getResultSet();
+                $collectionsArr = $db->fetchAll($rs);
                 /* ] */
-
-                $collections[$collection['collection_layout_type']][$collection['collection_id']] = $collection;
-                $collections[$collection['collection_layout_type']][$collection['collection_id']]['brands'] = $db->fetchAll($rs);
+                
                 unset($brandSearchTempObj);
-                $this->set('collections', $collections);
+                if (true ===  MOBILE_APP_API_CALL) {
+                    array_walk($collectionsArr, function (&$value, &$key) {
+                        $value['brand_image'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'brand', array($value['brand_id'], $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+                    });
+                    $this->set('collections', $collectionsArr);
+                } else {
+                    $collections[$collection['collection_layout_type']][$collection['collection_id']] = $collection;
+                    $collections[$collection['collection_layout_type']][$collection['collection_id']]['brands'] =  $collectionsArr;
+                    $this->set('collections', $collections);
+                }
                 break;
         }
-
         $this->set('collection', $collection);
         $this->set('siteLangId', CommonHelper::getLangId());
 
