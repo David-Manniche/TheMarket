@@ -1,16 +1,24 @@
 <?php
 
 defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = array(
-    'listserial'=>'Sr.',
-    'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
-    //'attrgrp_name' => Labels::getLabel('LBL_Attribute_Group', $siteLangId),
-    'product_model' => Labels::getLabel('LBL_Model', $siteLangId),
-    'product_active' => Labels::getLabel('LBL_Status', $siteLangId),
-    'product_approved' => Labels::getLabel('LBL_Admin_Approval', $siteLangId),
-    'product_shipped_by' => Labels::getLabel('LBL_Shipped_by_me', $siteLangId),
-    'action' => Labels::getLabel('LBL_Action', $siteLangId)
-);
+if($otherPageListing){
+    $arr_flds = array(
+        'listserial'=>'#',
+        'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
+    );
+} else {
+    $arr_flds = array(
+        'listserial'=>'Sr.',
+        'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
+        //'attrgrp_name' => Labels::getLabel('LBL_Attribute_Group', $siteLangId),
+        'product_model' => Labels::getLabel('LBL_Model', $siteLangId),
+        'product_active' => Labels::getLabel('LBL_Status', $siteLangId),
+        'product_approved' => Labels::getLabel('LBL_Admin_Approval', $siteLangId),
+        'product_shipped_by' => Labels::getLabel('LBL_Shipped_by_me', $siteLangId),
+        'action' => Labels::getLabel('LBL_Action', $siteLangId)
+    );
+}
+
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--orders'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
@@ -29,8 +37,18 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $sr_no, true);
                 break;
             case 'product_identifier':
-                $td->appendElement('plaintext', array(), $row['product_name'] . '<br>', true);
-                $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
+                if ($otherPageListing) {
+                    $td->appendElement(
+                        'a',
+                        array('href'=>'javascript:void(0)', 'class'=>'',
+                        'title'=>'Links',"onclick"=>"editTagsLangForm(".$row['product_id'].", ".$siteLangId.")"),
+                        $row['product_name'],
+                        true
+                    );
+                } else {
+                    $td->appendElement('plaintext', array(), $row['product_name'] . '<br>', true);
+                    $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
+                }
                 break;
             case 'attrgrp_name':
                 $td->appendElement('plaintext', array(), CommonHelper::displayNotApplicable($siteLangId, $row[$key]), true);

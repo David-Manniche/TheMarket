@@ -730,8 +730,19 @@ class SellerController extends SellerBaseController
         $this->_template->render(true, true);
     }
 
+    public function productTags()
+    {
+        if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
+            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
+        }
+        $frmSearchCatalogProduct = $this->getCatalogProductSearchForm();
+        $this->set("frmSearch", $frmSearchCatalogProduct);
+        $this->_template->render(true, true);
+    }
+
     public function requestedCatalog()
     {
+
         if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
         }
@@ -1097,7 +1108,7 @@ class SellerController extends SellerBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function searchCatalogProduct()
+    public function searchCatalogProduct($otherPageListing = false)
     {
         $frmSearchCatalogProduct = $this->getCatalogProductSearchForm();
         $post = $frmSearchCatalogProduct->getFormDataFromArray(FatApp::getPostedData());
@@ -1184,6 +1195,7 @@ class SellerController extends SellerBaseController
         $rs = $srch->getResultSet();
         $arr_listing = $db->fetchAll($rs);
 
+        $this->set("otherPageListing", $otherPageListing);
         $this->set("arr_listing", $arr_listing);
         $this->set('pageCount', $srch->pages());
         $this->set('page', $page);
