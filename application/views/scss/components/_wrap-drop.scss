@@ -40,13 +40,13 @@
 }
 
 .wrap-drop:before {
-    right: 16px;
+    #{$end-direction}: 16px;
     -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
 }
 
 .wrap-drop:after {
-    right: 10px;
+    #{$end-direction}: 10px;
     -webkit-transform: rotate(-45deg);
     transform: rotate(-45deg);
 }
@@ -82,7 +82,7 @@
     pointer-events: none;
     position: absolute;
     opacity: 0;
-    right: 0;
+    #{$end-direction}: 0;
     top: 120%;
     z-index: 2;
     border-radius: 4px;

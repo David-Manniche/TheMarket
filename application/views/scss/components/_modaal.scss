@@ -134,7 +134,7 @@
 
 .modaal-close {
     position: fixed;
-    right: 20px;
+    #{$end-direction}: 20px;
     top: 20px;
     color: #fff;
     cursor: pointer;
@@ -199,7 +199,7 @@
 
 .modaal-fullscreen .modaal-close {
     background: #afb7bc;
-    right: 10px;
+    #{$end-direction}: 10px;
     top: 10px;
 }
 
@@ -297,7 +297,7 @@
 
 .modaal-image .modaal-inner-wrapper {
     padding-#{$start-direction}: 140px;
-    padding-right: 140px;
+    padding-#{$end-direction}: 140px;
 }
 
 .modaal-image .modaal-container {
@@ -416,8 +416,8 @@
 }
 
 .modaal-gallery-prev {
-    right: 100%;
-    margin-right: 40px;
+    #{$end-direction}: 100%;
+    margin-#{$end-direction}: 40px;
 }
 
 .modaal-gallery-prev:before,
@@ -453,7 +453,7 @@
     background: #000;
     max-width: 1300px;
     margin-#{$start-direction}: auto;
-    margin-right: auto;
+    margin-#{$end-direction}: auto;
 }
 
 .modaal-video-container iframe,
@@ -487,7 +487,7 @@
 @media only screen and (max-width: 1140px) {
     .modaal-image .modaal-inner-wrapper {
         padding-#{$start-direction}: 25px;
-        padding-right: 25px;
+        padding-#{$end-direction}: 25px;
     }
 
     .modaal-gallery-control {
@@ -505,12 +505,12 @@
 
     .modaal-gallery-next {
         #{$start-direction}: auto;
-        right: 20px;
+        #{$end-direction}: 20px;
     }
 
     .modaal-gallery-prev {
         #{$start-direction}: 20px;
-        right: auto;
+        #{$end-direction}: auto;
     }
 }
 

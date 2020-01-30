@@ -2,7 +2,7 @@
     height: 100%;
     z-index: 15;
     #{$start-direction}: 0;
-    right: 0;
+    #{$end-direction}: 0;
     top: 0;
     bottom: 0;
     background: #fff;
@@ -69,7 +69,7 @@ html.quick-view--open {
     background: #5c5c5c;
     top: auto;
     bottom: 20px;
-    right: calc(50% - 50px);
+    #{$end-direction}: calc(50% - 50px);
 }
 
 .product-gallery .slick-prev:after,
@@ -92,7 +92,7 @@ html.quick-view--open {
 
 .product-gallery .slick-dots {
     #{$start-direction}: auto;
-    right: 0;
+    #{$end-direction}: 0;
     bottom: auto;
     top: 50%;
     -webkit-transform: translateY(-50%);
@@ -270,7 +270,7 @@ html.quick-view--open {
     background-color: #000;
     position: absolute;
     #{$start-direction}: -5px;
-    right: -5px;
+    #{$end-direction}: -5px;
     bottom: -15px;
     content: "";
     height: 2px;
@@ -322,7 +322,7 @@ html.quick-view--open {
     content: "";
     position: absolute;
     #{$start-direction}: 0;
-    right: 0;
+    #{$end-direction}: 0;
     top: 0;
     background: $gray-light;
     height: 226px;
@@ -447,7 +447,7 @@ html.quick-view--open {
 .slider-nav .slick-prev:after,
 .slider-nav .slick-next:after {
     content: "";
-    border-right: 2px solid #000;
+    border-#{$end-direction}: 2px solid #000;
     border-bottom: 2px solid #000;
     width: 16px;
     height: 16px;
@@ -471,7 +471,7 @@ html.quick-view--open {
     /*position: absolute;
 	flex-direction: column;	*/
     position: static;
-    right: 0;
+    #{$end-direction}: 0;
     top: 0;
     display: -webkit-box;
     display: -ms-flexbox;
@@ -657,11 +657,11 @@ html.quick-view--open {
 
 .discount-slider .slick-arrow.slick-prev {
     #{$start-direction}: auto;
-    right: 20px;
+    #{$end-direction}: 20px;
 }
 
 .discount-slider .slick-arrow.slick-next {
-    right: 0px;
+    #{$end-direction}: 0px;
 }
 
 .shops-detail-wrapper {}
@@ -1014,7 +1014,7 @@ html.quick-view--open {
 
 .share-this:after {
     content: '';
-    right: 0;
+    #{$end-direction}: 0;
     -webkit-box-pack: start;
     -ms-flex-pack: start;
     justify-content: flex-start;
@@ -1289,7 +1289,7 @@ html.quick-view--open {
 }
 
 .nav-detail ul li a::before {
-    right: 50%;
+    #{$end-direction}: 50%;
 }
 
 .nav-detail ul li a::after {
@@ -1302,7 +1302,7 @@ html.quick-view--open {
 
 .nav-detail ul li a:hover::before,
 .nav-detail ul li > a.is-active:before {
-    right: 0;
+    #{$end-direction}: 0;
     width: 50%;
     background: $brand-color;
 }

@@ -64,7 +64,7 @@
 
 /* Shortened version style */
 .ui-timepicker-div.ui-timepicker-oneLine {
-    padding-right: 2px;
+    padding-#{$end-direction}: 2px;
 }
 
 .ui-timepicker-div.ui-timepicker-oneLine .ui_tpicker_time,

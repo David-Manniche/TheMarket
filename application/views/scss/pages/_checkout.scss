@@ -5,7 +5,7 @@
 .header-checkout {
     background: #fff;
     #{$start-direction}: 0;
-    right: 0;
+    #{$end-direction}: 0;
     width: 100%;
     position: sticky;
     position: -webkit-sticky;
@@ -35,7 +35,7 @@
 
         .back-store {
             position: absolute;
-            right: 0;
+            #{$end-direction}: 0;
             top: 30px;
         }
     }
@@ -120,7 +120,7 @@
                     background: #cdcdcd;
                     content: "";
                     position: absolute;
-                    right: -60%;
+                    #{$end-direction}: -60%;
                     top: 20px;
                     pointer-events: none;
 
@@ -270,7 +270,7 @@
 }
 
 .nav-checkout ul li a:before {
-    right: 50%;
+    #{$end-direction}: 50%;
 }
 
 .nav-checkout ul li a:hover:after,
@@ -282,7 +282,7 @@
 
 .nav-checkout ul li a:hover:before,
 .nav-checkout ul li.is--active a:before {
-    right: 0;
+    #{$end-direction}: 0;
     width: 50%;
     background: $brand-color;
 }
@@ -923,7 +923,7 @@
     position: absolute;
     z-index: 12;
     #{$start-direction}: 0;
-    right: 100%;
+    #{$end-direction}: 100%;
     -webkit-transition-duration: 0.3s;
     transition-duration: 0.3s;
     -webkit-transition-property: right;
@@ -938,7 +938,7 @@
 }
 
 .tabz--checkout-login ul li.is-active:after {
-    right: 0;
+    #{$end-direction}: 0;
 }
 
 .buttons-list-checkout ul {

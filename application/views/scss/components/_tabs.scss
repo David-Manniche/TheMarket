@@ -73,7 +73,7 @@
     position: absolute;
     z-index: 9;
     #{$start-direction}: 0;
-    right: 100%;
+    #{$end-direction}: 100%;
     -webkit-transition-duration: 0.3s;
     transition-duration: 0.3s;
     -webkit-transition-property: right;
@@ -90,7 +90,7 @@
 
 .tabs li:hover:after,
 .tabs li.is-active:after {
-    right: 0;
+    #{$end-direction}: 0;
 }
 
 .tabs-content {

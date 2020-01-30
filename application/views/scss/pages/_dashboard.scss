@@ -243,7 +243,7 @@
     padding-inline-start: 70px;
     position: absolute;
     top: 0;
-    right: 0;
+    #{$end-direction}: 0;
     z-index: 10;
     width: 100%;
     height: 71px;
@@ -317,7 +317,7 @@
 
         .h-badge {
             position: absolute;
-            right: -5px;
+            #{$end-direction}: -5px;
             top: -5px;
             text-align: center;
             border-radius: 50%;
@@ -392,7 +392,7 @@
     .heartbit {
         position: absolute;
         top: -7px;
-        right: -7px;
+        #{$end-direction}: -7px;
         height: 35px;
         width: 35px;
         z-index: -1;
@@ -474,11 +474,11 @@
 
         &.dropdown__target__right {
             #{$start-direction}: auto;
-            right: 0;
+            #{$end-direction}: 0;
 
             &:before {
                 #{$start-direction}: auto;
-                right: 20px;
+                #{$end-direction}: 20px;
             }
         }
     }
@@ -608,7 +608,7 @@
                 font-weight: 600;
                 font-size: 1.25em;
                 color: #888;
-                right: 10px;
+                #{$end-direction}: 10px;
                 top: -4px;
             }
         }
@@ -863,8 +863,8 @@ ul.listing--bullet {
 }
 
 .dashboard-menu {
-    color: var(--body-color);
-    fill: var(--body-color);
+    color: $body-color;
+    fill: $body-color;
 
     .menu__item {
         overflow: hidden;
@@ -891,7 +891,7 @@ ul.listing--bullet {
 
             .menu-head {
                 font-weight: 600;
-                color: var(--body-color);
+                color: $body-color;
                 font-size: 0.875rem;
                 -webkit-padding-start: 24px;
                 -moz-padding-start: 24px;
@@ -1056,7 +1056,7 @@ ul.listing--bullet {
                 -webkit-padding-start: 70px;
                 -moz-padding-start: 70px;
                 padding-inline-start: 70px;
-                color: var(--body-color);
+                color: $body-color;
                 font-size: 0.8125rem;
                 line-height: 2rem;
             }
@@ -1141,7 +1141,7 @@ ul.listing--bullet {
 
             a {
                 font-size: 1.125rem;
-                color: var(--body-color);
+                color: $body-color;
                 display: block;
                 padding: 10px 30px;
                 line-height: 1;
@@ -1239,7 +1239,7 @@ ul.listing--bullet {
     }
 
     .slick-next {
-        right: -28px;
+        #{$end-direction}: -28px;
     }
 }
 
@@ -1793,7 +1793,7 @@ ul.listing--bullet {
                 position: absolute;
                 z-index: 9;
                 #{$start-direction}: 0;
-                right: 100%;
+                #{$end-direction}: 100%;
                 -webkit-transition-duration: 0.3s;
                 transition-duration: 0.3s;
                 -webkit-transition-property: right;
@@ -1834,7 +1834,7 @@ ul.listing--bullet {
 
 .tabs li:hover:after,
 .tabs li.is-active:after {
-    right: 0;
+    #{$end-direction}: 0;
 }
 
 
@@ -1953,7 +1953,7 @@ ul.listing--bullet {
     cursor: pointer;
     #{$start-direction}: 0;
     position: absolute;
-    right: 0;
+    #{$end-direction}: 0;
     top: 0;
     -webkit-transition: .4s;
     transition: .4s;
@@ -2093,7 +2093,7 @@ input:checked + .slider:before {
 .slick-prev:after,
 .slick-next:after {
     content: "";
-    border-right: 2px solid black;
+    border-#{$end-direction}: 2px solid black;
     border-bottom: 2px solid black;
     width: 10px;
     height: 10px;
@@ -2126,7 +2126,7 @@ input:checked + .slider:before {
 }
 
 .slick-next {
-    right: 0;
+    #{$end-direction}: 0;
 }
 
 a.link {
@@ -2143,7 +2143,7 @@ a.link:after {
     height: 1px;
     bottom: -2px;
     #{$start-direction}: 0;
-    right: 0;
+    #{$end-direction}: 0;
     background: $brand-color;
     -webkit-transform-origin: bottom left;
     transform-origin: bottom left;
@@ -2177,7 +2177,7 @@ a.link:after {
             position: absolute;
             top: 0;
             bottom: 0;
-            right: 0;
+            #{$end-direction}: 0;
             #{$start-direction}: 0;
         }
     }
@@ -2401,7 +2401,7 @@ a.link:after {
         opacity: 0;
         position: absolute;
         #{$start-direction}: 0;
-        right: 0;
+        #{$end-direction}: 0;
         top: 0;
         bottom: 0;
         cursor: pointer;
@@ -2426,7 +2426,7 @@ a.link:after {
     img {
         position: absolute;
         #{$start-direction}: 0;
-        right: 0;
+        #{$end-direction}: 0;
         bottom: 0;
         top: 0;
         margin: auto;
@@ -2466,7 +2466,7 @@ a.link:after {
                 content: "\f111";
                 line-height: 1;
                 position: absolute;
-                right: 5px;
+                #{$end-direction}: 5px;
                 bottom: 5px;
             }
         }
@@ -2576,7 +2576,7 @@ a.link:after {
 }
 
 .items .item__title {
-    color: var(--body-color);
+    color: $body-color;
 }
 
 .items .form--creatlist {
@@ -2703,7 +2703,7 @@ a.link:after {
     color: #fff;
     padding: 3px 8px 4px;
     position: absolute;
-    right: 15px;
+    #{$end-direction}: 15px;
     top: 15px;
     font-size: 0.8em;
     text-align: right;
@@ -3084,12 +3084,12 @@ a.link:after {
 
 .select-categories-slider .slick-prev {
     #{$start-direction}: 0;
-    right: auto;
+    #{$end-direction}: auto;
     margin-inline-start: -2.125rem;
 }
 
 .select-categories-slider .slick-next {
-    right: 0;
+    #{$end-direction}: 0;
     #{$start-direction}: auto;
     margin-inline-end: -2.125rem;
 }
@@ -3233,7 +3233,7 @@ input.sp-input {
         top: 0;
         #{$start-direction}: 0;
         bottom: 0;
-        right: 0;
+        #{$end-direction}: 0;
         overflow: hidden;
         z-index: 11;
         background: rgba(0, 0, 0, 0.22);
@@ -3297,7 +3297,7 @@ input.sp-input {
     }
 
     .widget-scroll .slick-next {
-        right: 0;
+        #{$end-direction}: 0;
     }
 
     .widget-scroll .widget-stats .cards .cards-header {

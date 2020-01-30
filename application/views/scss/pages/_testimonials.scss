@@ -124,7 +124,7 @@
     font-family: FontAwesome;
     content: "\f10e";
     position: absolute;
-    right: 25px;
+    #{$end-direction}: 25px;
     bottom: 15px;
     color: #3B566E;
     z-index: 1;

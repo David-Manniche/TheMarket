@@ -7,7 +7,7 @@
         box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
         position: fixed;
         bottom: 70px;
-        right: 10px;
+        #{$end-direction}: 10px;
         cursor: pointer;
         -webkit-transition: .3s;
         transition: .3s;

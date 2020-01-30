@@ -48,7 +48,7 @@
     top: 33px;
     width: 14px;
     border: 1px solid #428bca;
-    border-right: 0;
+    border-#{$end-direction}: 0;
     background: #428bca;
     background: -webkit-gradient(linear, left bottom, left top, from(rgba(66, 139, 202, 1)), to(rgba(127, 195, 232, 1)));
     background: linear-gradient(to top, rgba(66, 139, 202, 1) 0%, rgba(127, 195, 232, 1) 100%);

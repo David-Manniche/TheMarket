@@ -84,7 +84,7 @@ body {
 
 .payment-from .siteForm input.ccCvvBox {
     width: 119px;
-    margin-right: 10px;
+    margin-#{$end-direction}: 10px;
     float: left;
 }
 

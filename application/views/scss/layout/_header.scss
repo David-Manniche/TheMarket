@@ -62,8 +62,8 @@
 
                     &:after {
                         top: 0;
-                        right: 0;
                         bottom: 0;
+                        #{$start-direction}: 0;
                         position: absolute;
                         content: "";
                         background: rgba(255, 255, 255, 0.4);
@@ -71,7 +71,7 @@
                         height: 100%;
                     }
 
-                    &:last-child {
+                    &:first-child {
                         -webkit-margin-end: 0;
                         -moz-margin-end: 0;
                         margin-inline-end: 0;
@@ -302,7 +302,7 @@
         padding: 10px;
         position: fixed;
         #{$start-direction}: 0;
-        right: 0;
+        #{$end-direction}: 0;
         top: 30px;
         z-index: 10;
         -webkit-transition: all 400ms ease-in;
@@ -333,7 +333,7 @@
 
         .close-layer {
             top: 20px;
-            right: 20px;
+            #{$end-direction}: 20px;
             display: none;
         }
 
@@ -343,10 +343,11 @@
 
         .form__cover {
             #{$start-direction}: 5%;
-            right: 5%;
+            #{$end-direction}: 5%;
 
             form {
                 display: block;
+
                 input[type="text"],
                 select {
                     display: block;
@@ -378,13 +379,13 @@
             transform: translate(0, 0) scale(1) !important;
             pointer-events: none;
             #{$start-direction}: 0;
-            right: 0;
+            #{$end-direction}: 0;
             border-radius: 0;
         }
 
         .link__close {
             display: block;
-            right: 10px;
+            #{$end-direction}: 10px;
         }
     }
 }
@@ -395,13 +396,13 @@
 
 .is--form-visible {
     #{$start-direction}: 0;
-    right: 0;
+    #{$end-direction}: 0;
     top: 0;
     bottom: 0;
 }
 
 .select__value {
-    color: var(--body-color);
+    color: $body-color;
     display: block;
     padding: 0 35px 0 15px;
     position: relative;
@@ -416,12 +417,12 @@
 
     &:after {
         border-#{$start-direction}: 5px solid rgba(0, 0, 0, 0);
-        border-right: 5px solid rgba(0, 0, 0, 0);
+        border-#{$end-direction}: 5px solid rgba(0, 0, 0, 0);
         border-top: 5px solid $brand-color;
         content: "";
         pointer-events: none;
         position: absolute;
-        right: 14px;
+        #{$end-direction}: 14px;
         top: 50%;
         -webkit-transform: translateY(-50%);
         transform: translateY(-50%);
@@ -589,7 +590,7 @@
 .close-layer {
     z-index: 2;
     position: absolute;
-    right: 10px;
+    #{$end-direction}: 10px;
     top: 10px;
     width: 32px;
     height: 32px;

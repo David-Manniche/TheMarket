@@ -6,7 +6,7 @@
     @include media-breakpoint-down(md) {
         & {
             background-color: #fff;
-            
+
             box-shadow: 0px 0px 28px 0px rgba(0, 0, 0, 0.05);
             z-index: 1050;
             position: fixed;
@@ -43,7 +43,7 @@
             display: block;
             position: fixed;
             bottom: 10px;
-            right: 10px;
+            #{$end-direction}: 10px;
             z-index: 10;
             border-radius: 50%;
             border: none;
@@ -141,7 +141,7 @@
     font-size: 0.8rem;
     text-transform: uppercase;
     margin: 0 0 1rem 0;
-    color: var(--body-color);
+    color: $body-color;
     font-weight: 600;
     display: -webkit-box;
     display: -ms-flexbox;
@@ -177,33 +177,35 @@
     max-width: none !important;
 }
 
-.selected-filters {}
 
-.selected-filters a {
-    color: $body-color;
-    font-size: 0.8em;
-    display: inline-block;
-    padding: 2px 8px;
-    margin: 2px 2px;
-    background: #d7d7d7;
-    position: relative;
-    -webkit-padding-end: 18px;
-    -moz-padding-end: 18px;
-    padding-inline-end: 18px;
-    border-radius: 10px;
-    line-height: 20px;
+.selected-filters {
+    a {
+        color: $body-color;
+        font-size: 0.8em;
+        display: inline-block;
+        padding: 2px 8px;
+        margin: 2px 2px;
+        background: #d7d7d7;
+        position: relative;
+        -webkit-padding-end: 18px;
+        -moz-padding-end: 18px;
+        padding-inline-end: 18px;
+        border-radius: 10px;
+        line-height: 20px;
+
+        &:after {
+            content: "X";
+            font-weight: 400;
+            position: absolute;
+            top: 52%;
+            -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+            #{$end-direction}: 7px;
+            font-size: 0.8em;
+        }
+    }
 }
 
-.selected-filters a:after {
-    content: "X";
-    font-weight: 400;
-    position: absolute;
-    top: 52%;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-    right: 7px;
-    font-size: 0.8em;
-}
 
 .scrollbar-ui,
 .scrollbar {
@@ -215,7 +217,7 @@
 .scroll__track {
     width: 10px;
     /*background: #dce1e6;*/
-    right: 0 !important;
+    #{$end-direction}: 0 !important;
     position: relative;
 }
 
@@ -284,7 +286,7 @@
 .cat-accordion .acc-trigger {
     position: absolute;
     top: 0;
-    right: 0;
+    #{$end-direction}: 0;
     cursor: pointer;
     width: 30px;
     height: 30px;
@@ -297,7 +299,7 @@
     content: '';
     height: 2px;
     position: absolute;
-    right: calc(50% - 5px);
+    #{$end-direction}: calc(50% - 5px);
     top: calc(50% - 2px);
     -webkit-transform: rotate(90deg);
     transform: rotate(90deg);
@@ -311,7 +313,7 @@
     content: '';
     height: 2px;
     position: absolute;
-    right: calc(50% - 5px);
+    #{$end-direction}: calc(50% - 5px);
     top: calc(50% - 2px);
     width: 10px;
 }
@@ -403,7 +405,8 @@
 
 .price-text-box .input-filter {
     margin: 0;
-    padding: 0 5px 0 36px;
+    padding-#{$end-direction}: 5px;
+    padding-#{$start-direction}: 36px;
     display: inline-block;
     font-size: 12px;
     vertical-align: top;
@@ -579,7 +582,7 @@
 }
 
 .icon-bar:after {
-    right: -8px;
+    #{$end-direction}: -8px;
 }
 
 .icon-grid .icon-bar {

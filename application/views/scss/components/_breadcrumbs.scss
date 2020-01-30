@@ -58,7 +58,7 @@
 
 .breadcrumbs ul li:before {
     position: absolute;
-    right: 10px;
+    #{$end-direction}: 10px;
     top: calc(50% - 3px);
     content: "";
     height: 7px;
