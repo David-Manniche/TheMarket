@@ -377,3 +377,8 @@ DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_FONT_COLOR
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BUTTON_BACKGROUND_COLOR';
 DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_BACKGROUND_COLOR'
 ALTER TABLE `tbl_meta_tags` DROP `meta_identifier`;
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_CURRENCY_API';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_SOCIAL_LOGIN_API';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_PUSH_NOTIFICATION_API';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_ADVERTISEMENT_FEED_API';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_PAYOUT_API';
