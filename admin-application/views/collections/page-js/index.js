@@ -200,6 +200,15 @@ $(document).ready(function() {
         });
     };
 
+    collectionBlogsForm = function(collection_id) {
+        $.facebox(function() {
+            fcom.ajax(fcom.makeUrl('Collections', 'collectionBlogsForm', [collection_id]), '', function(t) {
+                $.facebox(t, 'faceboxWidth');
+                reloadCollectionBlogs(collection_id);
+            });
+        });
+    };
+
     reloadProducts = function(collection_id) {
         $("#products_list").html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('Collections', 'collectionSelprods', [collection_id]), '', function(t) {
@@ -228,6 +237,13 @@ $(document).ready(function() {
         });
     }
 
+    reloadCollectionBlogs = function(collection_id) {
+        $("#blogs_list").html(fcom.getLoader());
+        fcom.ajax(fcom.makeUrl('Collections', 'collectionBlogs', [collection_id]), '', function(t) {
+            $("#blogs_list").html(t);
+        });
+    }
+
     updateProduct = function(collection_id, selprod_id) {
         fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateSelProd'), 'collection_id=' + collection_id + '&selprod_id=' + selprod_id, function(t) {
             reloadProducts(collection_id);
@@ -249,6 +265,12 @@ $(document).ready(function() {
     updateCollectionBrands = function(collection_id, brand_id) {
         fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionBrands'), 'collection_id=' + collection_id + '&brand_id=' + brand_id, function(t) {
             reloadCollectionBrands(collection_id);
+        });
+    };
+
+    updateCollectionBlogs = function(collection_id, post_id) {
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionBlogs'), 'collection_id=' + collection_id + '&post_id=' + post_id, function(t) {
+            reloadCollectionBlogs(collection_id);
         });
     };
 
@@ -289,6 +311,16 @@ $(document).ready(function() {
         }
         fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionBrand'), 'collection_id=' + collection_id + '&brand_id=' + brand_id, function(t) {
             reloadCollectionBrands(collection_id);
+        });
+    }
+
+    removeCollectionBlog = function(collection_id, post_id) {
+        var agree = confirm(langLbl.confirmRemoveBlog);
+        if (!agree) {
+            return false;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionBlog'), 'collection_id=' + collection_id + '&post_id=' + post_id, function(t) {
+            reloadCollectionBlogs(collection_id);
         });
     }
 

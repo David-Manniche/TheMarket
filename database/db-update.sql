@@ -382,3 +382,16 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_SOCIAL_LOGIN_API';
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_PUSH_NOTIFICATION_API';
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_ADVERTISEMENT_FEED_API';
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_PAYOUT_API';
+
+CREATE TABLE `tbl_collection_to_blogs` (
+  `ctb_collection_id` int(11) NOT NULL,
+  `ctb_post_id` int(11) NOT NULL,
+  `ctb_display_order` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `tbl_collection_to_blogs`
+  ADD PRIMARY KEY (`ctb_collection_id`,`ctb_post_id`);
+
+ALTER TABLE `tbl_collections` ADD `collection_for_web` TINYINT(1) NOT NULL AFTER `collection_display_media_only`, ADD `collection_for_app` TINYINT(1) NOT NULL AFTER `collection_for_web`;
+UPDATE `tbl_collections` SET `collection_for_web` = '1', `collection_for_app` = '1';

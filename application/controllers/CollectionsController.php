@@ -66,7 +66,9 @@ class CollectionsController extends MyAppController
         $shopSearchObj ->setDefinedCriteria($this->siteLangId);
         $shopSearchObj->joinShopCountry();
         $shopSearchObj->joinShopState();
+
         $brandSearchObj = Brand::getSearchObject($this->siteLangId, true, true);
+
         /* sub query to find out that logged user have marked shops as favorite or not[ */
         $favSrchObj = new UserFavoriteShopSearch();
         $favSrchObj->doNotCalculateRecords();
@@ -289,6 +291,53 @@ class CollectionsController extends MyAppController
                 } else {
                     $collections[$collection['collection_layout_type']][$collection['collection_id']] = $collection;
                     $collections[$collection['collection_layout_type']][$collection['collection_id']]['brands'] =  $collectionsArr;
+                    $this->set('collections', $collections);
+                }
+                break;
+            case Collections::COLLECTION_TYPE_BLOG:
+                $tempObj = clone $collectionObj;
+                $tempObj->addCondition('collection_id', '=', $collection_id);
+                $tempObj->joinCollectionBlogs();
+                $tempObj->addMultipleFields(array('ctb_post_id'));
+                $tempObj->addCondition('ctb_post_id', '!=', 'NULL');
+                $tempObj->setPageSize($collection['collection_primary_records']);
+                $rs = $tempObj->getResultSet();
+                $blogPostIds = $db->fetchAll($rs, 'ctb_post_id');
+                if (empty($blogPostIds)) {
+                    break;
+                }
+
+                /* fetch Blog data[ */
+                $attr = [
+                    'post_id',
+                    'post_author_name',
+                    'IFNULL(post_title, post_identifier) as post_title',
+                    'post_short_description',
+                    'post_updated_on',
+                    'post_updated_on',
+                    'IFNULL(bpcategory_name, bpcategory_identifier) as bpcategory_name',
+                ];
+                $blogSearchObj = BlogPost::getSearchObject($this->siteLangId, true, true);
+                $blogSearchTempObj = clone $blogSearchObj;
+                $blogSearchTempObj->addMultipleFields($attr);
+                $blogSearchTempObj->addCondition('post_id', 'IN', array_keys($blogPostIds));
+                if (false ===  MOBILE_APP_API_CALL) {
+                    $blogSearchTempObj->setPageSize($collection['collection_primary_records']);
+                }
+                $blogSearchTempObj->addGroupBy('post_id');
+                $rs = $blogSearchTempObj->getResultSet();
+                $collectionsArr = $db->fetchAll($rs);
+                /* ] */
+
+                unset($blogSearchTempObj);
+                if (true ===  MOBILE_APP_API_CALL) {
+                    array_walk($collectionsArr, function (&$value, &$key) {
+                        $value['post_image'] = CommonHelper::generateFullUrl('Image', 'blogPostFront', array($value['post_id'], $this->siteLangId, ''));
+                    });
+                    $this->set('collections', $collectionsArr);
+                } else {
+                    $collections[$collection['collection_layout_type']][$collection['collection_id']] = $collection;
+                    $collections[$collection['collection_layout_type']][$collection['collection_id']]['blogs'] =  $collectionsArr;
                     $this->set('collections', $collections);
                 }
                 break;

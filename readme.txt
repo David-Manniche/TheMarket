@@ -39,4 +39,5 @@ New Features:
     => PWA compliance.
     => 69879 - Facebook Pixel
     => 69217 - Google Shopping Feed Integration
-    => 69191 PayPal Payout.
+    => 69191 - PayPal Payout.
+    => 70149 - Blog Collection.
