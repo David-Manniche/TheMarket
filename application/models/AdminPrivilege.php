@@ -107,8 +107,9 @@ class AdminPrivilege
     public const SECTION_ABANDONED_CART = 103;
     public const SECTION_PUSH_NOTIFICATION = 104;
     public const SECTION_PRODUCT_ADVERTISEMENT = 105;
-    public const SECTION_IMPORT_EXPORT = 106; 
+    public const SECTION_IMPORT_EXPORT = 106;
     public const SECTION_APP_THEME_SETTINGS = 107;
+    public const SECTION_SMS_TEMPLATE = 108;
 
     public const PRIVILEGE_NONE = 0;
     public const PRIVILEGE_READ = 1;
@@ -250,7 +251,7 @@ class AdminPrivilege
         static::SECTION_APP_THEME_SETTINGS => Labels::getLabel('MSG_APP_THEME_SETTINGS', CommonHelper::getLangId()),
         static::SECTION_ABANDONED_CART => Labels::getLabel('MSG_ABANDONED_CART', CommonHelper::getLangId()), 
         static::SECTION_IMPORT_EXPORT => Labels::getLabel('MSG_IMPORT_EXPORT', CommonHelper::getLangId()),
-        
+        static::SECTION_SMS_TEMPLATE => Labels::getLabel('MSG_SMS_TEMPLATE', CommonHelper::getLangId()),
         /* static::SECTION_Languages => Labels::getLabel('MSG_Languages',CommonHelper::getLangId()),
         static::SECTION_Languages => Labels::getLabel('MSG_Order_Status',CommonHelper::getLangId()), */
 
@@ -1446,5 +1447,13 @@ class AdminPrivilege
         return $this->checkPermission($adminId, static::SECTION_IMPORT_EXPORT, static::PRIVILEGE_WRITE, $returnResult);
     }
     
+    public function canEditSmsTemplate($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_SMS_TEMPLATE, static::PRIVILEGE_WRITE, $returnResult);
+    }
     
+    public function canViewSmsTemplate($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_SMS_TEMPLATE, static::PRIVILEGE_READ, $returnResult);
+    }    
 }

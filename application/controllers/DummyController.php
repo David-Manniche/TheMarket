@@ -663,4 +663,14 @@ class DummyController extends MyAppController
     {
         PushNotification::send();
     }
+
+    public function send()
+    {
+        $messageDetail = SmsTemplate::getTpl('test', $this->siteLangId);
+        $body = $messageDetail['stpl_body'];
+        $body = CommonHelper::replaceStringData($body, ['{buddy}' => 'Satbir', '{otp}' => '123456']);
+
+        $response = SmsArchive::send('+918053250813', $body, 'admin_order_email');
+        CommonHelper::printArray($response, true);
+    }
 }

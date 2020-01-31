@@ -377,3 +377,55 @@ DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_FONT_COLOR
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BUTTON_BACKGROUND_COLOR';
 DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_BACKGROUND_COLOR'
 ALTER TABLE `tbl_meta_tags` DROP `meta_identifier`;
+
+INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES (NULL, 'Twilio Sms Notification', '6', 'TwilioSms', '1', '8');
+
+CREATE TABLE `tbl_sms_archives` (
+  `smsarchive_id` varchar(255) NOT NULL,
+  `smsarchive_to` varchar(255) NOT NULL,
+  `smsarchive_tpl_name` varchar(255) NOT NULL,
+  `smsarchive_body` text NOT NULL,
+  `smsarchive_sent_on` datetime NOT NULL,
+  `smsarchive_status` int(11) NOT NULL,
+  `smsarchive_response` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_sms_archives`
+--
+ALTER TABLE `tbl_sms_archives`
+  ADD PRIMARY KEY (`smsarchive_id`);
+
+ALTER TABLE `tbl_sms_archives` CHANGE `smsarchive_id` `smsarchive_id` INT(255) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `tbl_sms_archives` ADD `smsarchive_response_id` VARCHAR(255) NOT NULL AFTER `smsarchive_id`;
+ALTER TABLE `tbl_sms_archives` CHANGE `smsarchive_id` `smsarchive_id` INT(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `tbl_sms_archives` ADD UNIQUE(`smsarchive_response_id`);
+ALTER TABLE `tbl_sms_archives` CHANGE `smsarchive_status` `smsarchive_status` VARCHAR(255) NOT NULL;
+
+--
+-- Table structure for table `tbl_sms_templates`
+--
+
+CREATE TABLE `tbl_sms_templates` (
+  `stpl_code` varchar(50) NOT NULL,
+  `stpl_lang_id` int(11) NOT NULL,
+  `stpl_name` varchar(100) NOT NULL,
+  `stpl_body` varchar(160) NOT NULL,
+  `stpl_replacements` text NOT NULL,
+  `stpl_status` tinyint(1) NOT NULL DEFAULT '1'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_sms_templates`
+--
+ALTER TABLE `tbl_sms_templates`
+  ADD PRIMARY KEY (`stpl_code`,`stpl_lang_id`);

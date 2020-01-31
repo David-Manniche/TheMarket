@@ -1,0 +1,28 @@
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');?>
+<section class="section">
+    <div class="sectionhead">
+        <h4><?php echo Labels::getLabel('LBL_TEMPLATE_DETAIL', $adminLangId); ?></h4>
+    </div>
+    <div class="sectionbody space">
+        <?php
+            $tempFrm->setFormTagAttribute('onsubmit', 'setup(this); return(false);');
+            $tempFrm->setFormTagAttribute('id', 'frmStplSetup');
+            $tempFrm->setFormTagAttribute('class', 'web_form');
+            $tempFrm->developerTags['colClassPrefix'] = 'col-md-';
+            $tempFrm->developerTags['fld_default_col'] = 12;
+
+            $fld = $tempFrm->getField("stpl_body");
+            $fld->setfieldTagAttribute('maxlength', applicationConstants::SMS_CHARACTER_LENGTH);
+            $fld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_MAXIMUM_OF_160_CHARACTERS_ALLOWED', $adminLangId) . ' </small>';
+
+            $langFld = $tempFrm->getField('lang_id');
+            $langFld->setfieldTagAttribute('onChange', "detailSection('" . $stplCode . "', this.value);");
+
+            $btnDiscard = $tempFrm->getField('btn_discard');
+            $btnDiscard->setfieldTagAttribute('href', "javascript:void(0)");
+            $btnDiscard->setfieldTagAttribute('onClick', "recordInfoSection();");
+
+            echo  $tempFrm->getFormHtml();
+        ?>
+    </div>
+</section>

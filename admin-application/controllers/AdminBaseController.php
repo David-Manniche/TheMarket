@@ -721,4 +721,9 @@ class AdminBaseController extends FatController
     {
         $this->_template->render(false, false, 'cropper/index.php');
     }
+
+    public function recordInfoSection()
+    {
+        $this->_template->render(false, false, '_partial/record-info-section.php');
+    }
 }
