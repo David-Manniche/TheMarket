@@ -957,7 +957,8 @@ class HomeController extends MyAppController
         $langCode = Language::getAttributesById($this->siteLangId, 'language_code', false);
 
         $data['languageLabels'] = [
-           'languageCode' => $langCode,
+           'language_code' => $langCode,
+           'language_layout_direction' => Language::getLayoutDirection($this->siteLangId),
            'downloadUrl' => CommonHelper::generateFullUrl('Home', 'languageLabels', array(1, $this->siteLangId)),
            'langLabelUpdatedAt' => FatApp::getConfig('CONF_LANG_LABELS_UPDATED_AT', FatUtility::VAR_INT, time())
         ];
