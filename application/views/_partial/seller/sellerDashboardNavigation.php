@@ -55,6 +55,13 @@ $action = strtolower($action);
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Import_Export', $siteLangId); ?></span></a></div>
                     </li> <?php
                 } ?>
+                <li class="menu__item <?php echo ($controller == 'seller' && $action == 'producttags') ? 'is-active' : ''; ?>">
+                    <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Product_Tags', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'productTags'); ?>">
+                    <i class="icn shop"><svg class="svg">
+                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
+                        </svg>
+                    </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Product_Tags', $siteLangId);?></span></a></div>
+                </li>
             <li class="divider"></li>
             <li class="menu__item">
                 <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_SEO', $siteLangId);?></span></div>
@@ -105,13 +112,6 @@ $action = strtolower($action);
                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
                     </svg>
                 </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Related_Products', $siteLangId);?></span></a></div>
-            </li>
-            <li class="menu__item <?php echo ($controller == 'seller' && $action == 'productTags') ? 'is-active' : ''; ?>">
-                <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Product_Tags', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'productTags'); ?>">
-                <i class="icn shop"><svg class="svg">
-                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
-                    </svg>
-                </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Product_Tags', $siteLangId);?></span></a></div>
             </li>
             <?php
             $obj = new Plugin();
