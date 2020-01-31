@@ -369,12 +369,12 @@ CREATE TABLE `tbl_user_withdrawal_requests_specifics` ( `uwrs_withdrawal_id` INT
 ALTER TABLE `tbl_user_withdrawal_requests_specifics`
   ADD PRIMARY KEY (`uwrs_withdrawal_id`,`uwrs_key`);
 
-DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_THEME_COLOR'
+DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_THEME_COLOR';
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_HEADER_FONT_COLOR';
-DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_HEADER_FONT_COLOR'
+DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_HEADER_FONT_COLOR';
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BUTTON_FONT_COLOR';
-DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_FONT_COLOR'
+DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_FONT_COLOR';
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BUTTON_BACKGROUND_COLOR';
-DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_BACKGROUND_COLOR'
+DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_BACKGROUND_COLOR';
 ALTER TABLE `tbl_meta_tags` DROP `meta_identifier`;
 ---------TV-9.1.2.20200131 -----------------------
