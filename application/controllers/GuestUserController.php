@@ -325,7 +325,7 @@ class GuestUserController extends MyAppController
 
         $frm = $this->getRegistrationForm($showNewsLetterCheckBox, $signUpWithPhone);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-        CommonHelper::printArray($post, true);
+        
         if ($post == false) {
             $message = Labels::getLabel(current($frm->getValidationErrors()), $this->siteLangId);            
             LibHelper::exitWithError($message, false, true);
