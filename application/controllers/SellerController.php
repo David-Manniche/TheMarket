@@ -1113,7 +1113,7 @@ class SellerController extends SellerBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function searchCatalogProduct($otherPageListing = false)
+    public function searchCatalogProduct()
     {
         $frmSearchCatalogProduct = $this->getCatalogProductSearchForm();
         $post = $frmSearchCatalogProduct->getFormDataFromArray(FatApp::getPostedData());
@@ -1126,9 +1126,7 @@ class SellerController extends SellerBaseController
         $srch->joinProductShippedBySeller(UserAuthentication::getLoggedUserId());
         $srch->joinTable(AttributeGroup::DB_TBL, 'LEFT OUTER JOIN', 'product_attrgrp_id = attrgrp_id', 'attrgrp');
         $srch->joinTable(UpcCode::DB_TBL, 'LEFT OUTER JOIN', 'upc_product_id = product_id', 'upc');
-        if ($otherPageListing) {
-            $srch->addCondition('product_seller_id', '=', UserAuthentication::getLoggedUserId());
-        }
+
         /* $cnd = $srch->addCondition( 'product_seller_id', '=',0);
         $cnd->attachCondition( 'product_added_by_admin_id', '=', applicationConstants::YES,'OR');
 
@@ -1202,7 +1200,74 @@ class SellerController extends SellerBaseController
         $rs = $srch->getResultSet();
         $arr_listing = $db->fetchAll($rs);
 
-        $this->set("otherPageListing", $otherPageListing);
+        $this->set("arr_listing", $arr_listing);
+        $this->set('pageCount', $srch->pages());
+        $this->set('page', $page);
+        $this->set('pageSize', $pagesize);
+        $this->set('postedData', $post);
+        $this->set('siteLangId', $this->siteLangId);
+
+        unset($post['page']);
+        $frmSearchCatalogProduct->fill($post);
+        $this->set("frmSearchCatalogProduct", $frmSearchCatalogProduct);
+        $this->_template->render(false, false);
+    }
+
+    public function searchProductTags()
+    {
+        $frmSearchCatalogProduct = $this->getCatalogProductSearchForm();
+        $post = $frmSearchCatalogProduct->getFormDataFromArray(FatApp::getPostedData());
+        $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : intval($post['page']);
+        /* echo $page; die; */
+        $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
+
+        //$srch = Product::getSearchObject($this->siteLangId);
+        $srch = new ProductSearch($this->siteLangId, null, null, false, false);
+        $srch->joinProductShippedBySeller(UserAuthentication::getLoggedUserId());
+        $srch->joinTable(AttributeGroup::DB_TBL, 'LEFT OUTER JOIN', 'product_attrgrp_id = attrgrp_id', 'attrgrp');
+        $srch->joinTable(UpcCode::DB_TBL, 'LEFT OUTER JOIN', 'upc_product_id = product_id', 'upc');
+        $srch->addCondition('product_seller_id', '=', UserAuthentication::getLoggedUserId());
+        $srch->addDirectCondition(
+            '((CASE
+                    WHEN product_seller_id = 0 THEN product_active = 1
+                    WHEN product_seller_id > 0 THEN product_active IN (1, 0)
+                    END ) )'
+        );
+        if (User::canAddCustomProduct()) {
+            $srch->addDirectCondition('((product_seller_id = 0 AND product_added_by_admin_id = '.applicationConstants::YES.') OR product_seller_id = '.UserAuthentication::getLoggedUserId().')');
+        } else {
+            $cnd = $srch->addCondition('product_seller_id', '=', 0);
+            $cnd->attachCondition('product_added_by_admin_id', '=', applicationConstants::YES, 'AND');
+        }
+
+        $srch->addCondition('product_deleted', '=', applicationConstants::NO);
+
+        $keyword = FatApp::getPostedData('keyword', null, '');
+        if (!empty($keyword)) {
+            $cnd = $srch->addCondition('product_name', 'like', '%' . $keyword . '%');
+            $cnd->attachCondition('product_identifier', 'like', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('attrgrp_name', 'like', '%' . $keyword . '%');
+            $cnd->attachCondition('product_model', 'like', '%' . $keyword . '%');
+            $cnd->attachCondition('upc_code', 'like', '%' . $keyword . '%');
+            $cnd->attachCondition('product_upc', 'like', '%' . $keyword . '%');
+        }
+
+        $srch->addMultipleFields(
+            array(
+            'product_id',
+            'product_identifier',
+            'IFNULL(product_name, product_identifier) as product_name',
+            )
+        );
+        $srch->addOrder('product_active', 'DESC');
+        $srch->addOrder('product_added_on', 'DESC');
+        $srch->addGroupBy('product_id');
+        $srch->setPageNumber($page);
+        $srch->setPageSize($pagesize);
+        $db = FatApp::getDb();
+        $rs = $srch->getResultSet();
+        $arr_listing = $db->fetchAll($rs);
+
         $this->set("arr_listing", $arr_listing);
         $this->set('pageCount', $srch->pages());
         $this->set('page', $page);

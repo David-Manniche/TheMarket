@@ -1,25 +1,14 @@
-<?php
-
-defined('SYSTEM_INIT') or die('Invalid Usage.');
-if($otherPageListing){
-    $arr_flds = array(
-        'listserial'=>'#',
-        'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
-        'tags' => ''
-    );
-} else {
-    $arr_flds = array(
-        'listserial'=>'Sr.',
-        'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
-        //'attrgrp_name' => Labels::getLabel('LBL_Attribute_Group', $siteLangId),
-        'product_model' => Labels::getLabel('LBL_Model', $siteLangId),
-        'product_active' => Labels::getLabel('LBL_Status', $siteLangId),
-        'product_approved' => Labels::getLabel('LBL_Admin_Approval', $siteLangId),
-        'product_shipped_by' => Labels::getLabel('LBL_Shipped_by_me', $siteLangId),
-        'action' => Labels::getLabel('LBL_Action', $siteLangId)
-    );
-}
-
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
+$arr_flds = array(
+    'listserial'=>'Sr.',
+    'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
+    //'attrgrp_name' => Labels::getLabel('LBL_Attribute_Group', $siteLangId),
+    'product_model' => Labels::getLabel('LBL_Model', $siteLangId),
+    'product_active' => Labels::getLabel('LBL_Status', $siteLangId),
+    'product_approved' => Labels::getLabel('LBL_Admin_Approval', $siteLangId),
+    'product_shipped_by' => Labels::getLabel('LBL_Shipped_by_me', $siteLangId),
+    'action' => Labels::getLabel('LBL_Action', $siteLangId)
+);
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--orders'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
@@ -38,22 +27,8 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $sr_no, true);
                 break;
             case 'product_identifier':
-                if ($otherPageListing) {
-                    $td->appendElement(
-                        'a',
-                        array('href'=>'javascript:void(0)', 'class'=>'',
-                        'title'=>'Links',"onclick"=>"editTagsLangForm(".$row['product_id'].")"),
-                        $row['product_name'],
-                        true
-                    );
-                } else {
-                    $td->appendElement('plaintext', array(), $row['product_name'] . '<br>', true);
-                    $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
-                }
-                break;
-            case 'tags':
-                $td->appendElement('plaintext', array(), '<div class="product-tag" id="product'.$row['product_id'].'"><input class="tag_name" type="text" name="tag_name" id="get-tags" data-product_id="'.$row['product_id'].'">
-            <input type="hidden" name="product_id" value="'.$row['product_id'].'"></div>', true);
+                $td->appendElement('plaintext', array(), $row['product_name'] . '<br>', true);
+                $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
                 break;
             case 'attrgrp_name':
                 $td->appendElement('plaintext', array(), CommonHelper::displayNotApplicable($siteLangId, $row[$key]), true);
@@ -127,31 +102,19 @@ foreach ($arr_listing as $sn => $row) {
         }
     }
 }
-
+echo $tbl->getHtml();
 if (count($arr_listing) == 0) {
-    echo $tbl->getHtml();
-    if (!$otherPageListing) {
-        $message = Labels::getLabel('LBL_Searched_product_is_not_found_in_catalog', $siteLangId);
-        $linkArr = array();
-        if (User::canAddCustomProductAvailableToAllSellers()) {
-            $linkArr = array(
-            0=>array(
-                'href'=>CommonHelper::generateUrl('Seller', 'CustomCatalogProductForm'),
-                'label'=>Labels::getLabel('LBL_Request_New_Product', $siteLangId),
-                )
-            );
-        }
-        $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'linkArr'=>$linkArr,'message'=>$message));
-    } else {
-        $tbl->appendElement('tr', array('class' => 'noResult--js'))->appendElement(
-            'td',
-            array('colspan'=>count($arr_flds)),
-            Labels::getLabel('LBL_No_Record_Found', $siteLangId)
+    $message = Labels::getLabel('LBL_Searched_product_is_not_found_in_catalog', $siteLangId);
+    $linkArr = array();
+    if (User::canAddCustomProductAvailableToAllSellers()) {
+        $linkArr = array(
+        0=>array(
+            'href'=>CommonHelper::generateUrl('Seller', 'CustomCatalogProductForm'),
+            'label'=>Labels::getLabel('LBL_Request_New_Product', $siteLangId),
+            )
         );
-        echo $tbl->getHtml();
     }
-} else {
-    echo $tbl->getHtml();
+    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'linkArr'=>$linkArr,'message'=>$message));
 }
 
 
@@ -160,30 +123,3 @@ echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmCatal
 
 $pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'callBackJsFunc' => 'goToCatalogProductSearchPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
-?>
-<?php if ($otherPageListing && count($arr_listing) > 0) { ?>
-<script>
-$("document").ready(function() {
-    getTagsAutoComplete = function(){
-        var list = [];
-        fcom.ajax(fcom.makeUrl('Seller', 'tagsAutoComplete'), '', function(t) {
-            var ans = $.parseJSON(t);
-            for (i = 0; i < ans.length; i++) {
-                list.push({
-                    "id" : ans[i].id,
-                    "value" : ans[i].tag_identifier,
-                    "product_id": ans[i].product_id
-                });
-            }
-        });
-        return list;
-    }
-
-    tagify = new Tagify(document.querySelector('input[name=tag_name]'), {
-           whitelist : getTagsAutoComplete(),
-           delimiters : "#",
-           editTags : false,
-        }).on('add', addTagData).on('remove', removeTagData);
-});
-</script>
-<?php }?>

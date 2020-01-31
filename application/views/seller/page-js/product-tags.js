@@ -20,7 +20,7 @@ $(document).on('keyup', "input[name='keyword']", function(){
 		var dv = $('#listing');
 		$(dv).html( fcom.getLoader() );
 
-		fcom.ajax(fcom.makeUrl('Seller','searchCatalogProduct', [true]), data, function(res){
+		fcom.ajax(fcom.makeUrl('Seller','searchProductTags'), data, function(res){
 			$("#listing").html(res);
 		});
 	};
