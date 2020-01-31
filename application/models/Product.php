@@ -1694,7 +1694,7 @@ END,   special_price_found ) as special_price_found'
         return $srch->recordCount();
     }
     
-    public function saveProductSpecifications($prodSpecId, $langId, $prodSpecName, $prodSpecValue)
+    public function saveProductSpecifications($prodSpecId, $langId, $prodSpecName, $prodSpecValue, $prodSpecGroup)
     {
         $prodSpecId = FatUtility::int($prodSpecId); 
         $langId = FatUtility::int($langId);
@@ -1719,7 +1719,8 @@ END,   special_price_found ) as special_price_found'
             'prodspeclang_prodspec_id' => $prodSpecId,
             'prodspeclang_lang_id' => $langId,
             'prodspec_name' => $prodSpecName,
-            'prodspec_value' => $prodSpecValue
+            'prodspec_value' => $prodSpecValue,
+            'prodspec_group' => $prodSpecGroup
         );
         if (!$prodSpec->updateLangData($langId, $langData)) {
             $this->error = $prodSpec->getError();

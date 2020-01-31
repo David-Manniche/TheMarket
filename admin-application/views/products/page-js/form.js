@@ -72,10 +72,11 @@
         var productId = $("input[name='product_id']").val();        
         var prodspec_name = $("input[name='prodspec_name["+langId+"]']").val();
         var prodspec_value = $("input[name='prodspec_value["+langId+"]']").val();
+        var prodspec_group = $("input[name='prodspec_group["+langId+"]']").val();
         if(prodspec_name == '' || prodspec_value == ''){
             return false;
         }        
-        var data = 'product_id='+productId+'&langId='+langId+'&prodSpecId='+prodSpecId+'&prodspec_name='+prodspec_name+'&prodspec_value='+prodspec_value;
+        var data = 'product_id='+productId+'&langId='+langId+'&prodSpecId='+prodSpecId+'&prodspec_name='+prodspec_name+'&prodspec_value='+prodspec_value+'&prodspec_group='+prodspec_group;
         fcom.updateWithAjax(fcom.makeUrl('Products', 'setUpProductSpecifications'), data, function(t) {
             prodSpecificationsByLangId(langId);
             prodSpecificationSection(langId);

@@ -32,7 +32,7 @@
                  </div>
                  <div class="field-wraper">
                     <div class="field_cover">
-                        <input type="text" name="prodspec_group[<?php echo $langId; ?>]" value="">
+                        <input type="text" class="prodspec_group" name="prodspec_group[<?php echo $langId; ?>]" value="">
                     </div>
                 </div>
             </div>
@@ -48,3 +48,32 @@
          </div>
     </div>
 </div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    var langId = '<?php echo $langId; ?>';
+    $('input[name="prodspec_group['+langId+']"]').autocomplete({
+        'source': function(request, response) {
+            $.ajax({
+                url: fcom.makeUrl('products', 'prodSpecGroupAutoComplete'),
+                data: {keyword: request, langId: langId, fIsAjax:1},
+                dataType: 'json',
+                type: 'post',
+                success: function(json) {
+                    response($.map(json, function(item) {
+                        return {
+                            label: item['name'] ,
+                            value: item['name']
+                            };
+                    }));
+                },
+            });
+        },
+        'select': function(item) {
+                $('input[name="prodspec_group['+langId+']"]').val(item.value);
+        }
+
+    });
+
+});
+</script>

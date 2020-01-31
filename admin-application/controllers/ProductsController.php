@@ -1167,7 +1167,7 @@ class ProductsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         $prod = new Product($productId);
-        if(!$prod->saveProductSpecifications( $post['prodSpecId'], $post['langId'], $post['prodspec_name'], $post['prodspec_value'] )){
+        if(!$prod->saveProductSpecifications( $post['prodSpecId'], $post['langId'], $post['prodspec_name'], $post['prodspec_value'], $post['prodspec_group'] )){
             Message::addErrorMessage($prod->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }        
@@ -1325,6 +1325,26 @@ class ProductsController extends AdminBaseController
         $this->set('msg', Labels::getLabel('LBL_Product_Shipping_Setup_Successful', $this->adminLangId));
         $this->set('productId', $prod->getMainTableRecordId());
         $this->_template->render(false, false, 'json-success.php'); 
+    }
+    
+    public function prodSpecGroupAutoComplete()
+    {
+        $post = FatApp::getPostedData();
+        $srch = ProdSpecification::getSearchObject($post['langId'], false);
+        if (!empty($post['keyword'])) {
+            $srch->addCondition('prodspec_group', 'LIKE', '%' . $post['keyword'] . '%');
+        }
+        $srch->setPageSize(FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10));
+        $srch->addMultipleFields(array('DISTINCT(prodspec_group)'));
+        $rs = $srch->getResultSet();
+        $prodSpecGroup = FatApp::getDb()->fetchAll($rs);
+        $json = array();
+        foreach ($prodSpecGroup as $key => $group) { 
+            $json[] = array(
+            'name'  => strip_tags(html_entity_decode($group['prodspec_group'], ENT_QUOTES, 'UTF-8'))
+            );
+        }
+        die(json_encode($json));      
     }
 
 }
