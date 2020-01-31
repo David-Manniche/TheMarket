@@ -71,7 +71,7 @@ class SocialMediaAuthController extends PluginBaseController
 
     public function getListing()
     {
-        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN_API, $this->siteLangId);
+        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN, $this->siteLangId);
         $this->set('data', ['socialLoginApis' => array_values($socialLoginApis)]);
         $this->_template->render();
     }

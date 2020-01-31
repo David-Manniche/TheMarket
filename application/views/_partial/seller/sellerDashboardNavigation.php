@@ -108,7 +108,7 @@ $action = strtolower($action);
             </li>
             <?php
             $obj = new Plugin();
-            $pluginData = $obj->getDefaultPluginData(Plugin::TYPE_ADVERTISEMENT_FEED_API, null, $siteLangId);
+            $pluginData = $obj->getDefaultPluginData(Plugin::TYPE_ADVERTISEMENT_FEED, null, $siteLangId);
             if (false !== $pluginData && 0 < $pluginData['plugin_active']) { ?>
                 <li class="menu__item <?php echo ($controller == strtolower($pluginData['plugin_code'])) ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">

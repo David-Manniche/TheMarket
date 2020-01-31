@@ -6,18 +6,18 @@ class Plugin extends MyAppModel
     public const DB_TBL_PREFIX = 'plugin_';
     public const DB_TBL_LANG_PREFIX = 'pluginlang_';
 
-    public const TYPE_CURRENCY_API = 1;
-    public const TYPE_SOCIAL_LOGIN_API = 2;
-    public const TYPE_PUSH_NOTIFICATION_API = 3;
+    public const TYPE_CURRENCY = 1;
+    public const TYPE_SOCIAL_LOGIN = 2;
+    public const TYPE_PUSH_NOTIFICATION = 3;
     public const TYPE_PAYOUTS = 4;
-    public const TYPE_ADVERTISEMENT_FEED_API = 5;
-    public const TYPE_SMS_NOTIFICATION_API = 6;
+    public const TYPE_ADVERTISEMENT_FEED = 5;
+    public const TYPE_SMS_NOTIFICATION = 6;
 
     public const HAVING_KINGPIN = [
-        self::TYPE_CURRENCY_API,
-        self::TYPE_PUSH_NOTIFICATION_API,
-        self::TYPE_ADVERTISEMENT_FEED_API,
-        self::TYPE_SMS_NOTIFICATION_API
+        self::TYPE_CURRENCY,
+        self::TYPE_PUSH_NOTIFICATION,
+        self::TYPE_ADVERTISEMENT_FEED,
+        self::TYPE_SMS_NOTIFICATION
     ];
 
     public const ATTRS = [
@@ -106,12 +106,12 @@ class Plugin extends MyAppModel
     public static function getTypeArr($langId)
     {
         return [
-            static::TYPE_CURRENCY_API => Labels::getLabel('LBL_CURRENCY', $langId),
-            static::TYPE_SOCIAL_LOGIN_API => Labels::getLabel('LBL_SOCIAL_LOGIN', $langId),
-            static::TYPE_PUSH_NOTIFICATION_API => Labels::getLabel('LBL_PUSH_NOTIFICATION', $langId),
+            static::TYPE_CURRENCY => Labels::getLabel('LBL_CURRENCY', $langId),
+            static::TYPE_SOCIAL_LOGIN => Labels::getLabel('LBL_SOCIAL_LOGIN', $langId),
+            static::TYPE_PUSH_NOTIFICATION => Labels::getLabel('LBL_PUSH_NOTIFICATION', $langId),
             static::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT', $langId),
-            static::TYPE_ADVERTISEMENT_FEED_API => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
-            static::TYPE_SMS_NOTIFICATION_API => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
+            static::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
+            static::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
         ];
     }
 
@@ -181,7 +181,7 @@ class Plugin extends MyAppModel
 
     public static function getSocialLoginPluginsStatus($langId)
     {
-        $srch = static::pluginTypeSrchObj(static::TYPE_SOCIAL_LOGIN_API, $langId);
+        $srch = static::pluginTypeSrchObj(static::TYPE_SOCIAL_LOGIN, $langId);
         $srch->addMultipleFields(
             [
                 'plg.' . static::DB_TBL_PREFIX . 'code',

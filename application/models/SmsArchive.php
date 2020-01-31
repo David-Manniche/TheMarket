@@ -32,7 +32,7 @@ class SmsArchive extends MyAppModel
 
     public static function send($toNumber, $body, $tpl)
     {
-        $defaultPushNotiAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_SMS_NOTIFICATION_API, FatUtility::VAR_INT, 0);
+        $defaultPushNotiAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_SMS_NOTIFICATION, FatUtility::VAR_INT, 0);
         if (empty($defaultPushNotiAPI)) {
             // $this->error =  Labels::getLabel('MSG_DEFAULT_PUSH_NOTIFICATION_API_NOT_SET', CommonHelper::getLangId());
             return false;

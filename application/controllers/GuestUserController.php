@@ -17,17 +17,25 @@ class GuestUserController extends MyAppController
         if (UserAuthentication::isUserLogged()) {
             FatApp::redirectUser(CommonHelper::generateUrl('account'));
         }
-
-        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN_API, $this->siteLangId);
+        
+        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN, $this->siteLangId);
 
         $loginFrm = $this->getLoginForm();
         $loginData = array(
-        'loginFrm' => $loginFrm,
-        'socialLoginApis' => $socialLoginApis,
-        'siteLangId' => $this->siteLangId,
+            'loginFrm' => $loginFrm,
+            'socialLoginApis' => $socialLoginApis,
+            'siteLangId' => $this->siteLangId,
         );
 
-        $registerFrm = $this->getRegistrationForm();
+        $this->registerFormDetail($isRegisterForm);
+
+        $this->set('loginData', $loginData);
+        $this->_template->render();
+    }
+
+    public function registerFormDetail($isRegisterForm, $signUpWithPhone = 0)
+    {
+        $registerFrm = $this->getRegistrationForm(true, $signUpWithPhone);
         $cPageSrch = ContentPage::getSearchObject($this->siteLangId);
         $cPageSrch->addCondition('cpage_id', '=', FatApp::getConfig('CONF_TERMS_AND_CONDITIONS_PAGE', FatUtility::VAR_INT, 0));
         $cpage = FatApp::getDb()->fetch($cPageSrch->getResultSet());
@@ -37,15 +45,35 @@ class GuestUserController extends MyAppController
             $termsAndConditionsLinkHref = 'javascript:void(0)';
         }
         $registerdata = array(
-        'registerFrm'    =>    $registerFrm,
-        'termsAndConditionsLinkHref'    =>    $termsAndConditionsLinkHref,
-        'siteLangId'    =>    $this->siteLangId
+            'registerFrm' => $registerFrm,
+            'termsAndConditionsLinkHref' => $termsAndConditionsLinkHref,
+            'siteLangId' => $this->siteLangId,
+            'signUpWithPhone' => $signUpWithPhone,
         );
-        $isRegisterForm = FatUtility::int($isRegisterForm);
+        $isRegisterForm  = FatUtility::int($isRegisterForm);
+
+        $obj = new Plugin();
+        $active = $obj->getDefaultPluginData(Plugin::TYPE_SMS_NOTIFICATION, 'plugin_active');
+        $smsPluginStatus = (false != $active && !empty($active) ? applicationConstants::YES : applicationConstants::NO);
+
+        $this->set('smsPluginStatus', $smsPluginStatus);
         $this->set('isRegisterForm', $isRegisterForm);
-        $this->set('loginData', $loginData);
         $this->set('registerdata', $registerdata);
-        $this->_template->render();
+    }
+
+    public function signUpWithPhone()
+    {
+        $obj = new Plugin();
+        $active = $obj->getDefaultPluginData(Plugin::TYPE_SMS_NOTIFICATION, 'plugin_active');
+        $signUpWithPhone = (false != $active && !empty($active) ? applicationConstants::YES : applicationConstants::NO);
+        $this->registerFormDetail(applicationConstants::YES, $signUpWithPhone);
+        $this->_template->render(false, false, 'guest-user/register-form-detail.php');
+    }
+
+    public function signUpWithEmail()
+    {
+        $this->registerFormDetail(applicationConstants::YES, applicationConstants::NO);
+        $this->_template->render(false, false, 'guest-user/register-form-detail.php');
     }
 
     public function login()
@@ -230,7 +258,7 @@ class GuestUserController extends MyAppController
     {
         $includeGuestLogin = FatApp::getPostedData('includeGuestLogin', FatUtility::VAR_STRING, false);
         $frm = $this->getLoginForm($includeGuestLogin);
-        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN_API, $this->siteLangId);
+        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN, $this->siteLangId);
         $data = array(
             'loginFrm' => $frm,
             'siteLangId' => $this->siteLangId,
@@ -292,9 +320,12 @@ class GuestUserController extends MyAppController
 
     public function register()
     {
-        $frm = $this->getRegistrationForm();
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        $signUpWithPhone = FatApp::getPostedData('signUpWithPhone', FatUtility::VAR_INT, 0);
+        $showNewsLetterCheckBox = 0 < $signUpWithPhone ? false : true;
 
+        $frm = $this->getRegistrationForm($showNewsLetterCheckBox, $signUpWithPhone);
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        CommonHelper::printArray($post, true);
         if ($post == false) {
             $message = Labels::getLabel(current($frm->getValidationErrors()), $this->siteLangId);            
             LibHelper::exitWithError($message, false, true);

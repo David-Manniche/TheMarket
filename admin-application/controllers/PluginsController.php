@@ -13,7 +13,7 @@ class PluginsController extends AdminBaseController
         $this->canEdit = $this->objPrivilege->canEditPlugins($this->admin_id, true);
         $this->set("canEdit", $this->canEdit);
         $this->set("plugins", Plugin::getTypeArr($this->adminLangId));
-        $this->set('activeTab', Plugin::TYPE_CURRENCY_API);
+        $this->set('activeTab', Plugin::TYPE_CURRENCY);
         $this->set('includeEditor', true);
         $this->_template->render();
     }
