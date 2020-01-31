@@ -202,9 +202,11 @@ if (isset($prodcat_code)) {
       } ?>
     </ul>    
 </div>
+<?php if(count($brandsArr) >= 10){?>
 <div class="py-3">
 <a href="javascript:void(0)" onClick="brandFilters()" class="link"><?php echo Labels::getLabel('LBL_View_More', $siteLangId); ?> </a>
 </div>
+<?php }?>
 <?php
   }?>
 <!-- ] -->
