@@ -1603,7 +1603,7 @@ END,   special_price_found ) as special_price_found'
         unset($data['product_id']);
         if ( $this->mainTableRecordId < 1 ) {
             $data['product_added_on'] = 'mysql_func_now()';            
-            $data['product_added_by_admin_id'] = applicationConstants::YES;
+            $data['product_added_by_admin_id'] = isset($data['product_added_by_admin_id']) ? $data['product_added_by_admin_id'] : applicationConstants::YES;
         }
         $this->assignValues($data, true);        
         if (!$this->save() ) { 
@@ -1621,16 +1621,18 @@ END,   special_price_found ) as special_price_found'
         }
         
         foreach($prodNames as $langId=>$langName){
-            $data = array(
-                 static::DB_TBL_LANG_PREFIX .'product_id' => $this->mainTableRecordId,
-                 static::DB_TBL_LANG_PREFIX .'lang_id' => $langId,
-                'product_name' => $langName,
-                'product_description' => $prodDesc[$langId]
-            );
-            if (!$this->updateLangData($langId, $data)) {
-                $this->error = $this->getError();
-                return false;
-            }      
+            if(!empty($langName)){
+                $data = array(
+                     static::DB_TBL_LANG_PREFIX .'product_id' => $this->mainTableRecordId,
+                     static::DB_TBL_LANG_PREFIX .'lang_id' => $langId,
+                    'product_name' => $langName,
+                    'product_description' => $prodDesc[$langId]
+                );
+                if (!$this->updateLangData($langId, $data)) {
+                    $this->error = $this->getError();
+                    return false;
+                } 
+            }
         }
         return true;
     }
@@ -1760,15 +1762,17 @@ END,   special_price_found ) as special_price_found'
         $prodSellerShip = array(
             'ps_product_id' => $this->mainTableRecordId,
             'ps_user_id' => $prodSellerId,
+            'ps_free' => $psFree,
+            'ps_from_country_id' => $psCountryId
         );
-        $psFree = FatUtility::int($psFree);
+        /* $psFree = FatUtility::int($psFree);
         if($psFree > 0){
             $prodSellerShip['ps_free'] = $psFree;
-        }
+        } 
         $psCountryId = FatUtility::int($psCountryId);
         if($psCountryId > 0){
             $prodSellerShip['ps_from_country_id'] = $psCountryId;
-        }     
+        }     */ 
         if(!FatApp::getDb()->insertFromArray(PRODUCT::DB_TBL_PRODUCT_SHIPPING, $prodSellerShip, false, array(), $prodSellerShip)) {
             return false;
         }
