@@ -155,7 +155,7 @@
             $srch->addCondition('ptc_bpcategory_id', '=', $categoryId);
             $this->set('bpCategoryId', $categoryId);
         } elseif ($keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '')) {
-            $keywordCond= $srch->addCondition('post_title', 'like', "%$keyword%");
+            $keywordCond = $srch->addCondition('post_title', 'like', "%$keyword%");
             $keywordCond->attachCondition('post_short_description', 'like', "%$keyword%");
             $keywordCond->attachCondition('post_description', 'like', "%$keyword%");
             $this->set('keyword', $keyword);
@@ -180,6 +180,10 @@
         $this->set('postList', $records);
         $this->set('recordCount', $totalRecords);
         $this->set('postedData', $post);
+        
+        if (true ===  MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
 
         $json['totalRecords'] = $totalRecords;
         $json['startRecord'] = ($totalRecords > 0) ? 1 : 0 ;
