@@ -40,7 +40,7 @@ foreach ($arr_listing as $sn => $row) {
                     $tagData[$key]['value'] = $data['tag_identifier'];
                 }
                 $encodedData = json_encode($tagData);
-                $td->appendElement('plaintext', array(), "<div class='product-tag' id='product".$row['product_id']."'><input class='tag_name' type='text' name='tag_name".$row['product_id']."' id='get-tags' value='".$encodedData."' data-product_id='".$row['product_id']."'></div>", true);
+                $td->appendElement('plaintext', array(), "<div class='product-tag' id='product".$row['product_id']."'><input class='tag_name' type='text' name='tag_name".$row['product_id']."' value='".$encodedData."' data-product_id='".$row['product_id']."'></div>", true);
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);
@@ -80,9 +80,10 @@ $("document").ready(function() {
         });
         return list;
     }
+    var whitelist = getTagsAutoComplete();
     $.each(productsArr, function( index, value ) {
         tagify = new Tagify(document.querySelector('input[name=tag_name'+value+']'), {
-               whitelist : getTagsAutoComplete(),
+               whitelist : whitelist,
                delimiters : "#",
                editTags : false,
             }).on('add', addTagData).on('remove', removeTagData);
