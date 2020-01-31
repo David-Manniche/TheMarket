@@ -62,6 +62,30 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 
 		runningAjaxReq = true;
 		var data = fcom.frmData(frm);
+
+		$('.optionFld-js').each(function(){
+			var $this = $(this);
+			var errorInRow = false;
+			$this.find('input').each(function(){
+				if($(this).parent().hasClass('fldSku') && CONF_PRODUCT_SKU_MANDATORY != 1){
+					return;
+				}
+				if($(this).val().length == 0 || $(this).val() == 0){
+					errorInRow = true;
+					return false;
+				}
+			});
+			if (errorInRow) {
+				$this.parent().addClass('invalid');
+			} else {
+				$this.parent().removeClass('invalid');
+			}
+		});
+		if ($("#optionsTable-js > tbody > tr.invalid").length == $("#optionsTable-js > tbody > tr").length) {
+			$.systemMessage(LBL_MANDATORY_OPTION_FIELDS, 'alert--danger');
+			return false;
+		}
+
 		fcom.updateWithAjax(fcom.makeUrl('Seller', 'setUpMultipleSellerProducts'), data, function(t) {
 			runningAjaxReq = false;
 			if(t.selprod_id > 0){
