@@ -1159,7 +1159,10 @@ class CheckoutController extends MyAppController
                     $op_products_dimension_unit_name = ($productInfo['product_dimension_unit']) ? $lengthUnitsArr[$productInfo['product_dimension_unit']] : '';
                     $op_product_weight_unit_name = ($productInfo['product_weight_unit']) ? $weightUnitsArr[$productInfo['product_weight_unit']] : '';
                     $op_product_tax_options = array();
-                    $productTaxOption = $cartSummary["prodTaxOptions"][$productInfo['selprod_id']];
+                    $productTaxOption = array();
+                    if (array_key_exists($productInfo['selprod_id'], $cartSummary["prodTaxOptions"])) {
+                        $productTaxOption = $cartSummary["prodTaxOptions"][$productInfo['selprod_id']];
+                    } 
                     foreach ($productTaxOption as $taxStroId => $taxStroName) {
                         $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
                         if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
