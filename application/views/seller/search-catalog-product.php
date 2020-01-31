@@ -129,8 +129,8 @@ foreach ($arr_listing as $sn => $row) {
 }
 
 if (count($arr_listing) == 0) {
+    echo $tbl->getHtml();
     if (!$otherPageListing) {
-        echo $tbl->getHtml();
         $message = Labels::getLabel('LBL_Searched_product_is_not_found_in_catalog', $siteLangId);
         $linkArr = array();
         if (User::canAddCustomProductAvailableToAllSellers()) {
@@ -150,7 +150,10 @@ if (count($arr_listing) == 0) {
         );
         echo $tbl->getHtml();
     }
+} else {
+    echo $tbl->getHtml();
 }
+
 
 $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmCatalogProductSearchPaging'));
@@ -158,7 +161,7 @@ echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmCatal
 $pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'callBackJsFunc' => 'goToCatalogProductSearchPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
 ?>
-<?php if ($otherPageListing) { ?>
+<?php if ($otherPageListing && count($arr_listing) > 0) { ?>
 <script>
 $("document").ready(function() {
     getTagsAutoComplete = function(){
