@@ -1,3 +1,4 @@
+-----------------------TV-9.1.2.20200131-------------------------------
 Bugs:
     => Added shipping information in vendor order email.
     => While searching categories > added 'all' option in drop down.
@@ -42,3 +43,4 @@ New Features:
     => 69879 - Facebook Pixel
     => 69217 - Google Shopping Feed Integration
     => 69191 PayPal Payout.
+-------------------------------------------------------
