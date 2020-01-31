@@ -1,0 +1,208 @@
+
+html {
+    font-size: 16px;
+
+
+
+    @include media-breakpoint-down(lg) {
+        & {
+            font-size: 15px;
+        }
+    }
+
+    @include media-breakpoint-down(md) {
+        & {
+            font-size: 14px;
+        }
+    }
+    
+    @include media-breakpoint-down(sm) {
+        & {
+            font-size: 13px;
+        }
+    }
+
+}
+
+body {
+    overflow-x: hidden;
+}
+
+ol,
+ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+img {
+    max-width: 100%;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.-color-light {
+    opacity: 0.6;
+}
+
+.-color-light {
+    opacity: 0.6;
+    font-weight: normal;
+}
+
+.-heightfull {
+    height: 100%;
+}
+
+.-heightfull.-border.rounded p.small {
+    font-size: 100%;
+    font-style: normal;
+}
+
+.-inline-element {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.divider,
+hr {
+    height: 1px;
+    background: $border-color;
+    margin: 15px 0;
+}
+
+.note {
+    font-weight: 300;
+    margin-top: 10px;
+    display: block;
+}
+
+/*Bg*/
+.bg--primary-color,
+.bg-primary {
+    color: #fff;
+    background: $brand-color;
+}
+
+.bg-second {
+    color: #fff;
+    background: $secondary-color;
+}
+
+.bg-white {
+    background: #fff;
+}
+
+.bg-gray {
+    background: $gray-light;
+}
+
+.bg-light {
+    background: #f0f0f0;
+}
+
+.bg-gray-dark {
+    background: #efeded;
+}
+
+.txt-white {
+    color: #fff;
+}
+
+
+.dragHandle {
+    cursor: move;
+}
+
+#st_gdpr_iframe {
+    display: none;
+}
+
+.not-allowed {
+    background: #ededed;
+    color: #888;
+    cursor: not-allowed !important;
+}
+
+.formActions-css {
+    display: none !important;
+}
+
+.-inline-link {
+    text-decoration: underline;
+    font-size: 0.9em;
+    color: $brand-color !important;
+}
+
+.column {
+    margin-bottom: 30px;
+}
+
+.gap {
+    height: 1rem;
+    clear: both;
+    display: table;
+    width: 100%;
+}
+
+.align--center {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+.no-after {
+    &:after {
+        content: normal;
+    }
+}
+
+.focused-div {
+    height: auto;
+    cursor: text;
+    font-size: 0.9em;
+}
+
+
+.cards-message {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    margin: auto;
+    color: var(--body-color);
+    height: 100%;
+
+    .cards-message-icon {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        padding: 1.25rem 0;
+        font-size: 2.5rem;
+    }
+
+    .alert-text {
+        -ms-flex-item-align: center;
+        align-self: center;
+
+    }
+}

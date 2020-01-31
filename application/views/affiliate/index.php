@@ -73,13 +73,13 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                     </a>
                 </div>
                 <div class="widget widget-stats">
-                    <div class="cards d-flex -direction-col">
+                    <div class="cards">
                         <div class="cards-header p-4">
                             <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Share_and_earn_commission_on_every_purchase', $siteLangId)?></h5>
                         </div>
                         <div class="cards-content p-4 pr-4 ">
                             <div class="stats">
-                                <a href="javascript:void(0)" class="-inline-link" title="<?php echo $affiliateTrackingUrl; ?>" onclick="copy($(this))"><?php echo Labels::getLabel('LBL_Click_to_copy', $siteLangId)?></a>
+                                <a href="javascript:void(0)" class="btn btn-outline-primary btn--sm" title="<?php echo $affiliateTrackingUrl; ?>" onclick="copy($(this))"><?php echo Labels::getLabel('LBL_Click_to_copy', $siteLangId)?></a>
                             </div>
                         </div>
                     </div>
@@ -136,8 +136,10 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                 <div class="col-lg-12 col-md-12">
                     <div class="cards">
                         <div class="cards-header p-4">
-                            <h4><?php echo Labels::getLabel('L_Invite_friends_through_email', $siteLangId)?></h4> <?php echo $sharingFrm->getFormHtml(); ?> <span class="ajax_message" id="custom_ajax"></span>
+                            <h4><?php echo Labels::getLabel('L_Invite_friends_through_email', $siteLangId)?></h4>
                         </div>
+						<div class="cards-content p-4"> <?php echo $sharingFrm->getFormHtml(); ?> <span class="ajax_message" id="custom_ajax"></span></div>
+						
                     </div>
                 </div>
             </div>

@@ -689,8 +689,8 @@
 }
 
 .dashboard-menu {
-    color: $body-color;
-    fill: $body-color;
+    color: lighten($body-color, 20%);
+    fill: lighten($body-color, 30%);
 
     .menu__item {
         overflow: hidden;
@@ -920,6 +920,13 @@
                 padding: 2rem;
             }
         }
+
+        @include media-breakpoint-down(sm) {
+            & {
+                padding: 1rem;
+            }
+        }
+
     }
 
     .content-header {

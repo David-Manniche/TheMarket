@@ -1,9 +1,6 @@
-/*@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,700,800|Poppins:300,400,400i,500,600,700,800');*/
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,700,800|Poppins:300,400,400i,500,600,700,800');
 
-$family-primary: 'Poppins',
-sans-serif;
-$family-secondary: 'Open Sans',
-sans-serif;
+
 
 @import 'bootstrap/bootstrap';
 @import 'bootstrap/variables';
@@ -67,7 +64,9 @@ sans-serif;
 @import 'components/tabs';
 @import 'components/top-brands';
 @import 'components/wrap-drop';
-
+@import 'components/auto-suggestions';
+@import 'components/filter-directory';
+@import 'components/misc';
 
 @import 'vendors/animate';
 @import 'vendors/fontawesome';
@@ -81,6 +80,7 @@ sans-serif;
 @import 'vendors/xzoom';
 
 
+@import 'pages/offline';
 @import 'pages/blog';
 @import 'pages/blog-arabic';
 @import 'pages/cart';
@@ -100,142 +100,3 @@ sans-serif;
 @import 'pages/shop';
 @import 'pages/testimonials';
 //@import 'pages/rtl';
-
-
-body {
-    overflow-x: hidden;
-}
-
-ol,
-ul {
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
-}
-
-img {
-    max-width: 100%;
-}
-
-a:hover {
-    text-decoration: none;
-}
-
-.-color-light {
-    opacity: 0.6;
-}
-
-.-color-light {
-    opacity: 0.6;
-    font-weight: normal;
-}
-
-.-heightfull {
-    height: 100%;
-}
-
-.-heightfull.-border.rounded p.small {
-    font-size: 100%;
-    font-style: normal;
-}
-
-.-inline-element {
-    display: inline-block;
-    vertical-align: top;
-}
-
-.divider,
-hr {
-    height: 1px;
-    background: $border-color;
-    margin: 15px 0;
-}
-
-.note {
-    font-weight: 300;
-    margin-top: 10px;
-    display: block;
-}
-
-/*Bg*/
-.bg--primary-color,
-.bg-primary {
-    color: #fff;
-    background: $brand-color;
-}
-
-.bg-second {
-    color: #fff;
-    background: $secondary-color;
-}
-
-.bg-white {
-    background: #fff;
-}
-
-.bg-gray {
-    background: $gray-light;
-}
-
-.bg-light {
-    background: #f0f0f0;
-}
-
-.bg-gray-dark {
-    background: #efeded;
-}
-
-.txt-white {
-    color: #fff;
-}
-
-
-.dragHandle {
-    cursor: move;
-}
-
-#st_gdpr_iframe {
-    display: none;
-}
-
-.not-allowed {
-    background: #ededed;
-    color: #888;
-    cursor: not-allowed !important;
-}
-
-.formActions-css {
-    display: none !important;
-}
-
-.-inline-link {
-    text-decoration: underline;
-    font-size: 0.9em;
-    color: $brand-color !important;
-}
-
-.column {
-    margin-bottom: 30px;
-}
-
-.gap {
-    height: 1rem;
-    clear: both;
-    display: table;
-    width: 100%;
-}
-
-.align--center {
-    margin: 0 auto;
-    text-align: center;
-}
-
-.hidden {
-    display: none;
-}
-
-.no-after {
-    &:after {
-        content: normal;
-    }
-}
