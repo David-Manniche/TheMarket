@@ -2,7 +2,7 @@
     height: 100%;
     z-index: 15;
     #{$start-direction}: 0;
-    right: 0;
+    #{$end-direction}: 0;
     top: 0;
     bottom: 0;
     background: #fff;
@@ -69,7 +69,7 @@ html.quick-view--open {
     background: #5c5c5c;
     top: auto;
     bottom: 20px;
-    right: calc(50% - 50px);
+    #{$end-direction}: calc(50% - 50px);
 }
 
 .product-gallery .slick-prev:after,
@@ -92,7 +92,7 @@ html.quick-view--open {
 
 .product-gallery .slick-dots {
     #{$start-direction}: auto;
-    right: 0;
+    #{$end-direction}: 0;
     bottom: auto;
     top: 50%;
     -webkit-transform: translateY(-50%);
@@ -175,9 +175,9 @@ html.quick-view--open {
 .buy-group .btn .icn svg {
     width: 20px;
     height: 20px;
-    -webkit-margin-end: 5px;
-    -moz-margin-end: 5px;
-    margin-inline-end: 5px;
+    
+    
+    margin-#{$end-direction}: 5px;
     fill: #fff;
 }
 
@@ -191,9 +191,8 @@ html.quick-view--open {
     font-weight: 600;
     font-size: 0.875em;
     line-height: 1;
-    -webkit-margin-end: 10px;
-    -moz-margin-end: 10px;
-    margin-inline-end: 10px;
+    
+    margin-#{$end-direction}: 10px;
 }
 
 .article-options {
@@ -270,7 +269,7 @@ html.quick-view--open {
     background-color: #000;
     position: absolute;
     #{$start-direction}: -5px;
-    right: -5px;
+    #{$end-direction}: -5px;
     bottom: -15px;
     content: "";
     height: 2px;
@@ -291,10 +290,8 @@ html.quick-view--open {
     background-size: 20px;
     width: 20px;
     height: 20px;
-    display: block;
-    -webkit-margin-end: 8px;
-    -moz-margin-end: 8px;
-    margin-inline-end: 8px;
+    display: block;    
+    margin-#{$end-direction}: 8px;
 }
 
 .icn-add-cart {
@@ -322,7 +319,7 @@ html.quick-view--open {
     content: "";
     position: absolute;
     #{$start-direction}: 0;
-    right: 0;
+    #{$end-direction}: 0;
     top: 0;
     background: $gray-light;
     height: 226px;
@@ -447,7 +444,7 @@ html.quick-view--open {
 .slider-nav .slick-prev:after,
 .slider-nav .slick-next:after {
     content: "";
-    border-right: 2px solid #000;
+    border-#{$end-direction}: 2px solid #000;
     border-bottom: 2px solid #000;
     width: 16px;
     height: 16px;
@@ -471,7 +468,7 @@ html.quick-view--open {
     /*position: absolute;
 	flex-direction: column;	*/
     position: static;
-    right: 0;
+    #{$end-direction}: 0;
     top: 0;
     display: -webkit-box;
     display: -ms-flexbox;
@@ -486,9 +483,9 @@ html.quick-view--open {
 .favourite-wrapper-detail .favourite {
     position: static;
     margin-bottom: 5px;
-    -webkit-margin-end: 5px;
-    -moz-margin-end: 5px;
-    margin-inline-end: 5px;
+    
+    
+    margin-#{$end-direction}: 5px;
 }
 
 
@@ -581,7 +578,7 @@ html.quick-view--open {
     opacity: 0.5;
     -webkit-padding-start: 20px;
     -moz-padding-start: 20px;
-    padding-inline-start: 20px;
+    padding-#{$start-direction}: 20px;
 }
 
 .condition-txt:before {
@@ -604,7 +601,7 @@ html.quick-view--open {
     display: -ms-flexbox;
     display: flex;
     font-size: 0.875em;
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
 }
 
 .list--specification li span {
@@ -624,23 +621,21 @@ html.quick-view--open {
     justify-content: space-between;
     border-radius: 4px;
     border: $border;
-    -webkit-margin-end: -1px;
-    -moz-margin-end: -1px;
-    margin-inline-end: -1px;
+    
+    margin-#{$end-direction}: -1px;
 }
 
 .discount-slider li {
     background: #fff;
-    -webkit-border-end: $border;
-    -moz-border-end: $border;
-    border-inline-end: $border;
+    
+    border-#{$end-direction}: $border;
     padding: 1.5rem;
     margin: 0;
     font-size: 0.875em;
 }
 
 .discount-slider .item__price {
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
     display: block;
     font-weight: 300;
 
@@ -657,11 +652,11 @@ html.quick-view--open {
 
 .discount-slider .slick-arrow.slick-prev {
     #{$start-direction}: auto;
-    right: 20px;
+    #{$end-direction}: 20px;
 }
 
 .discount-slider .slick-arrow.slick-next {
-    right: 0px;
+    #{$end-direction}: 0px;
 }
 
 .shops-detail-wrapper {}
@@ -681,9 +676,9 @@ html.quick-view--open {
     overflow: hidden;
     width: 70px;
     height: 70px;
-    -webkit-margin-end: 20px;
-    -moz-margin-end: 20px;
-    margin-inline-end: 20px;
+    
+    
+    margin-#{$end-direction}: 20px;
     position: relative;
     -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.11);
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.11);
@@ -874,13 +869,12 @@ html.quick-view--open {
 .quantity .increase {
     -webkit-border-start: $border;
     -moz-border-start: $border;
-    border-inline-start: $border;
+    border-#{$start-direction}: $border;
 }
 
 .quantity .decrease {
-    -webkit-border-end: $border;
-    -moz-border-end: $border;
-    border-inline-end: $border;
+    
+    border-#{$end-direction}: $border;
     line-height: 35px;
 }
 
@@ -898,9 +892,8 @@ html.quick-view--open {
     width: 0;
     height: 0;
     border-#{$start-direction}: 4px solid transparent;
-    -webkit-border-end: 4px solid transparent;
-    -moz-border-end: 4px solid transparent;
-    border-inline-end: 4px solid transparent;
+    
+    border-#{$end-direction}: 4px solid transparent;
     -webkit-transition: opacity ease .3s;
     transition: opacity ease .3s;
 }
@@ -943,17 +936,16 @@ html.quick-view--open {
 }
 
 .yes-no ul li a {
-    -webkit-margin-end: 10px;
-    -moz-margin-end: 10px;
-    margin-inline-end: 10px;
+    
+    margin-#{$end-direction}: 10px;
     font-size: 0.875em;
     color: $body-color;
 }
 
 .yes-no img {
-    -webkit-margin-end: 5px;
-    -moz-margin-end: 5px;
-    margin-inline-end: 5px;
+    
+    
+    margin-#{$end-direction}: 5px;
 }
 
 .reviews-desc {
@@ -1014,7 +1006,7 @@ html.quick-view--open {
 
 .share-this:after {
     content: '';
-    right: 0;
+    #{$end-direction}: 0;
     -webkit-box-pack: start;
     -ms-flex-pack: start;
     justify-content: flex-start;
@@ -1118,9 +1110,8 @@ html.quick-view--open {
 .share-this .share .svg {
     width: 18px;
     height: 18px;
-    -webkit-margin-end: 8px;
-    -moz-margin-end: 8px;
-    margin-inline-end: 8px;
+    
+    margin-#{$end-direction}: 8px;
     fill: $body-color;
 }
 
@@ -1235,14 +1226,13 @@ html.quick-view--open {
     align-items: center;
     overflow: hidden;
     border-radius: 50%;
-    -webkit-margin-end: 10px;
-    -moz-margin-end: 10px;
-    margin-inline-end: 10px;
+    
+    margin-#{$end-direction}: 10px;
 }
 
 .profile__bio .deg {
     font-weight: 300;
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
     font-size: 0.875rem;
 }
 
@@ -1260,7 +1250,7 @@ html.quick-view--open {
 }
 
 .nav-detail ul li:first-child {
-    /*padding-inline-start: 0;*/
+    /*padding-#{$start-direction}: 0;*/
 }
 
 .nav-detail ul li a {
@@ -1289,7 +1279,7 @@ html.quick-view--open {
 }
 
 .nav-detail ul li a::before {
-    right: 50%;
+    #{$end-direction}: 50%;
 }
 
 .nav-detail ul li a::after {
@@ -1302,7 +1292,7 @@ html.quick-view--open {
 
 .nav-detail ul li a:hover::before,
 .nav-detail ul li > a.is-active:before {
-    right: 0;
+    #{$end-direction}: 0;
     width: 50%;
     background: $brand-color;
 }
@@ -1346,7 +1336,7 @@ html.quick-view--open {
 .sold-by .products__rating {
     -webkit-padding-start: 0;
     -moz-padding-start: 0;
-    padding-inline-start: 0;
+    padding-#{$start-direction}: 0;
     margin-bottom: 10px;
 }
 
@@ -1358,7 +1348,7 @@ html.quick-view--open {
     margin-top: -3px;
     -webkit-margin-end: 0;
     -moz-margin-end: 0;
-    margin-inline-end: 0;
+    margin-#{$end-direction}: 0;
 }
 
 .sold-by .btn {
@@ -1368,9 +1358,8 @@ html.quick-view--open {
 .sold-by .shop-logo {
     width: 100px;
     height: 100px;
-    -webkit-margin-end: 15px;
-    -moz-margin-end: 15px;
-    margin-inline-end: 15px;
+    
+    margin-#{$end-direction}: 15px;
     -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
 }
@@ -1385,8 +1374,8 @@ html.quick-view--open {
     z-index: 2;
     top: 70%;
     #{$start-direction}: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
+ 
+    transform: translateX(-50% * $transform-direction);
     opacity: 0;
     visibility: hidden;
     cursor: pointer;
@@ -1420,7 +1409,7 @@ html.quick-view--open {
     display: inline-block;
     vertical-align: top;
     position: relative;
-    margin: -1px 10px 0 0;
+    margin-#{$end-direction}:10px;
 }
 
 .products__quickview > a .svg-icon svg {
@@ -1475,7 +1464,7 @@ html.quick-view--open {
         .progress_count {
             font-size: 0.875em;
             min-width: 50px;
-            color: var(--txt-color-light);
+            color: lighten($body-color, 50%);
         }
 
         .progress__bar {

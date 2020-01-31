@@ -40,7 +40,7 @@
 }
 
 .irs-line-right {
-    right: 0;
+    #{$end-direction}: 0;
     width: 11%;
 }
 
@@ -92,7 +92,7 @@
 .irs-max {
     position: absolute;
     display: block;
-    right: 0;
+    #{$end-direction}: 0;
     cursor: default;
 }
 

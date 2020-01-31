@@ -16,7 +16,7 @@
         top: 50%;
         margin-top: 0;
         -webkit-margin-start: 0;
-        margin-inline-start: 0;
+        margin-#{$start-direction}: 0;
     }
 
     44.44444% {
@@ -25,7 +25,7 @@
         top: 54%;
         margin-top: -6.25em;
         -webkit-margin-start: -6.25em;
-        margin-inline-start: -6.25em;
+        margin-#{$start-direction}: -6.25em;
     }
 
     62.96296% {
@@ -34,7 +34,7 @@
         top: 54%;
         margin-top: -5em;
         -webkit-margin-start: -5em;
-        margin-inline-start: -5em;
+        margin-#{$start-direction}: -5em;
     }
 
     81.48148% {
@@ -43,7 +43,7 @@
         top: 54%;
         margin-top: -5.125em;
         -webkit-margin-start: -5.125em;
-        margin-inline-start: -5.125em;
+        margin-#{$start-direction}: -5.125em;
     }
 
     100% {
@@ -52,7 +52,7 @@
         top: 54%;
         margin-top: -5em;
         -webkit-margin-start: -5em;
-        margin-inline-start: -5em;
+        margin-#{$start-direction}: -5em;
     }
 }
 
@@ -66,7 +66,7 @@
         margin-top: 0;
         -webkit-margin-start: 0;
         -moz-margin-start: 0;
-        margin-inline-start: 0;
+        margin-#{$start-direction}: 0;
     }
 
     44.44444% {
@@ -76,7 +76,7 @@
         margin-top: -6.25em;
         -webkit-margin-start: -6.25em;
         -moz-margin-start: -6.25em;
-        margin-inline-start: -6.25em;
+        margin-#{$start-direction}: -6.25em;
     }
 
     62.96296% {
@@ -86,7 +86,7 @@
         margin-top: -5em;
         -webkit-margin-start: -5em;
         -moz-margin-start: -5em;
-        margin-inline-start: -5em;
+        margin-#{$start-direction}: -5em;
     }
 
     81.48148% {
@@ -96,7 +96,7 @@
         margin-top: -5.125em;
         -webkit-margin-start: -5.125em;
         -moz-margin-start: -5.125em;
-        margin-inline-start: -5.125em;
+        margin-#{$start-direction}: -5.125em;
     }
 
     100% {
@@ -106,7 +106,7 @@
         margin-top: -5em;
         -webkit-margin-start: -5em;
         -moz-margin-start: -5em;
-        margin-inline-start: -5em;
+        margin-#{$start-direction}: -5em;
     }
 }
 
@@ -117,7 +117,7 @@
         border-width: 0;
         margin-top: 0;
         -webkit-margin-start: 0;
-        margin-inline-start: 0;
+        margin-#{$start-direction}: 0;
     }
 
     3.7037% {
@@ -126,7 +126,7 @@
         border-width: 1em;
         margin-top: -1em;
         -webkit-margin-start: -1em;
-        margin-inline-start: -1em;
+        margin-#{$start-direction}: -1em;
         border-color: #E2264D;
     }
 
@@ -136,7 +136,7 @@
         border-width: 7em;
         margin-top: -7em;
         -webkit-margin-start: -7em;
-        margin-inline-start: -7em;
+        margin-#{$start-direction}: -7em;
     }
 
     11.11111% {
@@ -145,7 +145,7 @@
         border-width: 8em;
         margin-top: -8em;
         -webkit-margin-start: -8em;
-        margin-inline-start: -8em;
+        margin-#{$start-direction}: -8em;
     }
 
     14.81481% {
@@ -154,7 +154,7 @@
         border-width: 8.5em;
         margin-top: -8.5em;
         -webkit-margin-start: -8.5em;
-        margin-inline-start: -8.5em;
+        margin-#{$start-direction}: -8.5em;
     }
 
     18.51852% {
@@ -177,7 +177,7 @@
         border-width: 0;
         margin-top: -8.5em;
         -webkit-margin-start: -8.5em;
-        margin-inline-start: -8.5em;
+        margin-#{$start-direction}: -8.5em;
     }
 }
 
@@ -189,7 +189,7 @@
         margin-top: 0;
         -webkit-margin-start: 0;
         -moz-margin-start: 0;
-        margin-inline-start: 0;
+        margin-#{$start-direction}: 0;
     }
 
     3.7037% {
@@ -199,7 +199,7 @@
         margin-top: -1em;
         -webkit-margin-start: -1em;
         -moz-margin-start: -1em;
-        margin-inline-start: -1em;
+        margin-#{$start-direction}: -1em;
         border-color: #E2264D;
     }
 
@@ -210,7 +210,7 @@
         margin-top: -7em;
         -webkit-margin-start: -7em;
         -moz-margin-start: -7em;
-        margin-inline-start: -7em;
+        margin-#{$start-direction}: -7em;
     }
 
     11.11111% {
@@ -220,7 +220,7 @@
         margin-top: -8em;
         -webkit-margin-start: -8em;
         -moz-margin-start: -8em;
-        margin-inline-start: -8em;
+        margin-#{$start-direction}: -8em;
     }
 
     14.81481% {
@@ -230,7 +230,7 @@
         margin-top: -8.5em;
         -webkit-margin-start: -8.5em;
         -moz-margin-start: -8.5em;
-        margin-inline-start: -8.5em;
+        margin-#{$start-direction}: -8.5em;
     }
 
     18.51852% {
@@ -254,7 +254,7 @@
         margin-top: -8.5em;
         -webkit-margin-start: -8.5em;
         -moz-margin-start: -8.5em;
-        margin-inline-start: -8.5em;
+        margin-#{$start-direction}: -8.5em;
     }
 }
 
@@ -333,7 +333,7 @@
     margin-top: -0.83333em;
     -webkit-margin-start: -0.83333em;
     -moz-margin-start: -0.83333em;
-    margin-inline-start: -0.83333em;
+    margin-#{$start-direction}: -0.83333em;
     z-index: 2;
     border-radius: 50%;
 }
@@ -363,7 +363,7 @@
 
 .favourite {
     position: absolute;
-    right: 15px;
+    #{$end-direction}: 15px;
     top: 15px;
     z-index: 1;
     display: -webkit-box;

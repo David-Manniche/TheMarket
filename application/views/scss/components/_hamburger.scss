@@ -1,6 +1,6 @@
 .hamburger .lines {
     #{$start-direction}: 0;
-    right: 0;
+    #{$end-direction}: 0;
     margin: 0 auto;
     position: absolute;
     width: 16px;

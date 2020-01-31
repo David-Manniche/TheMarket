@@ -64,7 +64,7 @@
 
 .featured_location {
     font-size: 0.875rem;
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
 }
 
 .featured_footer .products__rating {

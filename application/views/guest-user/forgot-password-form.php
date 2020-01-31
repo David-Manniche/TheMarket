@@ -27,6 +27,9 @@
                                     <p><?php echo Labels::getLabel('LBL_Forgot_Password_Msg', $siteLangId);?></p>
                                 </div>
                             </div>
+							<div class="row justify-content-center">
+							<div class="col-md-6">
+							
                             <?php
                             $frm->setFormTagAttribute('class', 'form form--normal');
                             $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
@@ -47,6 +50,8 @@
                             echo $frm->getFormHtml(); ?>
                             <p class="text--dark"><?php echo Labels::getLabel('LBL_Back_to_login', $siteLangId);?>
                                 <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="link"><?php echo Labels::getLabel('LBL_Click_Here', $siteLangId);?></a></p>
+								</div>
+							</div>
                         </div>
                     </div>
                     <?php if (!empty($pageData)) {

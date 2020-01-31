@@ -77,7 +77,7 @@
     margin-top: 20px;
     -webkit-padding-start: 100px;
     -moz-padding-start: 100px;
-    padding-inline-start: 100px;
+    padding-#{$start-direction}: 100px;
     letter-spacing: 0.69px;
     margin-bottom: 5px;
     position: relative;
@@ -92,10 +92,10 @@
     letter-spacing: 0.6px;
     -webkit-padding-start: 100px;
     -moz-padding-start: 100px;
-    padding-inline-start: 100px;
+    padding-#{$start-direction}: 100px;
     -webkit-padding-end: 25px;
     -moz-padding-end: 25px;
-    padding-inline-end: 25px;
+    padding-#{$end-direction}: 25px;
     position: relative;
     z-index: 3;
 }
@@ -124,7 +124,7 @@
     font-family: FontAwesome;
     content: "\f10e";
     position: absolute;
-    right: 25px;
+    #{$end-direction}: 25px;
     bottom: 15px;
     color: #3B566E;
     z-index: 1;
@@ -138,10 +138,10 @@
 .testimonials-item .testimonials-content .txt p {
     -webkit-padding-start: 25px;
     -moz-padding-start: 25px;
-    padding-inline-start: 25px;
+    padding-#{$start-direction}: 25px;
     -webkit-padding-end: 25px;
     -moz-padding-end: 25px;
-    padding-inline-end: 25px;
+    padding-#{$end-direction}: 25px;
     margin-bottom: 25px;
     margin-top: 1rem;
     font-weight: 400;

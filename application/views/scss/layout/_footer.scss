@@ -36,7 +36,7 @@
 
                 &:before {
                     position: absolute;
-                    right: 15px;
+                    #{$end-direction}: 15px;
                     top: 18px;
                     width: 10px;
                     height: 10px;
@@ -90,12 +90,12 @@
 
                 &:hover {
                     color: $brand-color;
-                    -webkit-margin-start: 10px;
-                    -moz-margin-start: 10px;
-                    margin-inline-start: 10px;
+                    
+                    
+                    margin-#{$start-direction}: 10px;
 
                     &:before {
-                        right: 0;
+                        #{$end-direction}: 0;
                     }
                 }
 
@@ -106,7 +106,7 @@
                     height: 1px;
                     #{$start-direction}: 0;
                     position: absolute;
-                    right: 100%;
+                    #{$end-direction}: 100%;
                     -webkit-transition-duration: 0.3s;
                     transition-duration: 0.3s;
                     -webkit-transition-property: right;
@@ -157,13 +157,13 @@
     padding: 25px 15px;
     -webkit-border-start: $border;
     -moz-border-start: $border;
-    border-inline-start: $border;
+    border-#{$start-direction}: $border;
 }
 
 .upperContent-footer ul li:first-child {
     -webkit-border-start: none;
     -moz-border-start: none;
-    border-inline-start: none;
+    border-#{$start-direction}: none;
 }
 
 .upperContent-footer .individualTupple {
@@ -228,10 +228,8 @@
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    margin: 10px 0;
-    -webkit-margin-end: 20px;
-    -moz-margin-end: 20px;
-    margin-inline-end: 20px;
+    margin: 10px 0;    
+    margin-#{$end-direction}: 20px;
     font-size: 0.875em;
     font-weight: 300;
     color: #000;
@@ -239,9 +237,8 @@
 }
 
 .contact-info li i {
-    -webkit-margin-end: 8px;
-    -moz-margin-end: 8px;
-    margin-inline-end: 8px;
+    
+    margin-#{$end-direction}: 8px;
 }
 
 .contact-info li i img {
@@ -284,9 +281,8 @@
     font-size: 0.8em;
     padding: 5px 10px;
     margin: 0;
-    -webkit-margin-end: -3px;
-    -moz-margin-end: -3px;
-    margin-inline-end: -3px;
+    
+    margin-#{$end-direction}: -3px;
     border: $border;
     border-radius: 2px 0 2px 2px;
     color: $body-color;
@@ -320,9 +316,8 @@
 
 .social li {
     display: inline-block;
-    -webkit-margin-end: 8px;
-    -moz-margin-end: 8px;
-    margin-inline-end: 8px;
+    
+    margin-#{$end-direction}: 8px;
     vertical-align: top;
 }
 
@@ -382,7 +377,7 @@
     content: "+";
     -webkit-padding-start: 5px;
     -moz-padding-start: 5px;
-    padding-inline-start: 5px;
+    padding-#{$start-direction}: 5px;
 }
 
 .accordion_triger.active span:after {
@@ -413,7 +408,7 @@
     content: "|";
     -webkit-padding-start: 2px;
     -moz-padding-start: 2px;
-    padding-inline-start: 2px;
+    padding-#{$start-direction}: 2px;
 }
 
 .footerSubCategories li:last-child:after {

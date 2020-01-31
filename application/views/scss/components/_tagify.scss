@@ -1,16 +1,19 @@
 .custom-tagify {
     background-color: #fff;
-    border: 1px solid var(--border-color);
+    border: 1px solid $border-color;
     height: auto;
     padding: 0;
     width: 100%;
-    color: var(--txt-color);
     font-family: inherit;
     font-size: 0.9em;
     font-weight: normal;
     border-radius: 4px;
 }
-.list-tag-wrapper{ max-height:133px; overflow-x: auto;}
+
+.list-tag-wrapper {
+    max-height: 133px;
+    overflow-x: auto;
+}
 
 .custom-tagify .list-tags {
     display: flex;
@@ -22,7 +25,7 @@
 .custom-tagify .list-tags li {
     padding: 0;
     margin: 0;
-    margin-inline-end:5px;
+    margin-#{$end-direction}: 5px;
 }
 
 .custom-tagify input[type="text"] {

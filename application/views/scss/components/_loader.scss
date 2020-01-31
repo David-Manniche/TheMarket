@@ -444,7 +444,7 @@ a.loadmore.loading {
     position: absolute;
     top: 5px;
     #{$start-direction}: 5px;
-    right: 5px;
+    #{$end-direction}: 5px;
     bottom: 5px;
     border-radius: 50%;
     border: 3px solid transparent;
@@ -460,7 +460,7 @@ a.loadmore.loading {
     position: absolute;
     top: 15px;
     #{$start-direction}: 15px;
-    right: 15px;
+    #{$end-direction}: 15px;
     bottom: 15px;
     border-radius: 50%;
     border: 3px solid transparent;
@@ -526,7 +526,7 @@ a.loadmore.loading {
 }
 
 #loader-wrapper .loader-section.section-right {
-    right: 0;
+    #{$end-direction}: 0;
 }
 
 /* Loaded */
@@ -601,7 +601,7 @@ a.loadmore.loading {
     position: absolute;
     margin: 0 auto;
     #{$start-direction}: 0;
-    right: 0;
+    #{$end-direction}: 0;
     top: 50%;
     height: 2.5rem;
     width: 6px;
@@ -618,7 +618,7 @@ a.loadmore.loading {
     position: absolute;
     margin: 0 auto;
     #{$start-direction}: 0;
-    right: 0;
+    #{$end-direction}: 0;
     top: 15px;
     width: 10px;
     height: 10px;

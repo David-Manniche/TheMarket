@@ -49,11 +49,11 @@
 .ml-li {
     /* border-bottom: 1px solid #D0DBE0; */
     padding: 0px 0px 6px 0px;
-    margin-right: 10px;
+    margin-#{$end-direction}: 10px;
 }
 
 .ml-li input {
-    /* margin-right: 10px; */
+    /* margin-#{$end-direction}: 10px; */
 }
 
 .ml-disabled-element-li {

@@ -102,3 +102,38 @@
 
 
  }
+
+
+
+ a.link {
+     color: $brand-color;
+     position: relative;
+     font-size: 0.875rem;
+ }
+
+ a.link:hover {}
+
+ a.link:after {
+     content: "";
+     position: absolute;
+     height: 1px;
+     bottom: -2px;
+     #{$start-direction}: 0;
+     #{$end-direction}: 0;
+     background: $brand-color;
+     -webkit-transform-origin: bottom left;
+     transform-origin: bottom left;
+     -webkit-transform: scaleX(1);
+     transform: scaleX(1);
+     transition: -webkit-transform .3s ease-in-out;
+     -webkit-transition: -webkit-transform .3s ease-in-out;
+     transition: transform .3s ease-in-out;
+     transition: transform .3s ease-in-out, -webkit-transform .3s ease-in-out;
+ }
+
+ .link:hover:after {
+     -webkit-transform: scaleX(0);
+     transform: scaleX(0);
+     -webkit-transform-origin: bottom right;
+     transform-origin: bottom right;
+ }

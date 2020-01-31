@@ -23,16 +23,14 @@
 }
 
 .fetured-slider .fetured-item {
-    -webkit-border-end: $border;
-    -moz-border-end: $border;
-    border-inline-end: $border;
+    
+    border-#{$end-direction}: $border;
     padding: 0 20px;
 }
 
 .fetured-slider .fetured-item:last-child {
-    -webkit-border-end: none;
-    -moz-border-end: none;
-    border-inline-end: none;
+    
+    border-#{$end-direction}: none;
 }
 
 .fetured-slider button.slick-prev.slick-arrow {
@@ -62,13 +60,12 @@
     border-bottom: 3px solid #000000;
     -webkit-border-end: 3px solid #000000;
     -moz-border-end: 3px solid #000000;
-    border-inline-end: 3px solid #000000;
+    border-#{$end-direction}: 3px solid #000000;
     content: "";
     height: 15px;
     #{$start-direction}: 50%;
-    -webkit-margin-start: -9px;
-    -moz-margin-start: -9px;
-    margin-inline-start: -9px;
+    
+    margin-#{$start-direction}: -9px;
     margin-top: -7px;
     position: absolute;
     top: 50%;

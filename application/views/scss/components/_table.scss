@@ -276,9 +276,8 @@
     #{$start-direction}: 0;
     pointer-events: none;
     border-#{$start-direction}: 1px solid #f2f2f2;
-    -webkit-border-end: 1px solid #f2f2f2;
-    -moz-border-end: 1px solid #f2f2f2;
-    border-inline-end: 1px solid #f2f2f2;
+    
+    border-#{$end-direction}: 1px solid #f2f2f2;
 }
 
 .table.ver5 .hov-column-head-ver5 {
@@ -344,13 +343,13 @@
 .table--justify tr td:first-child {
     -webkit-padding-start: 0;
     -moz-padding-start: 0;
-    padding-inline-start: 0;
+    padding-#{$start-direction}: 0;
 }
 
 .table--justify tr td:last-child {
     -webkit-padding-end: 0;
     -moz-padding-end: 0;
-    padding-inline-end: 0;
+    padding-#{$end-direction}: 0;
     text-align: right;
 }
 

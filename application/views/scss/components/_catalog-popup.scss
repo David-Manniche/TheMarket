@@ -61,6 +61,6 @@
 .delivery-term-data-inner ul ul {
     -webkit-margin-start: 15px;
     -moz-margin-start: 15px;
-    margin-inline-start: 15px;
+    margin-#{$start-direction}: 15px;
     margin-bottom: 20px;
 }

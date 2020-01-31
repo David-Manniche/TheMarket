@@ -107,10 +107,8 @@ class AdminPrivilege
     public const SECTION_ABANDONED_CART = 103;
     public const SECTION_PUSH_NOTIFICATION = 104;
     public const SECTION_PRODUCT_ADVERTISEMENT = 105;
-    public const SECTION_APP_THEME_SETTINGS = 106;
-    public const SECTION_BLOG_SETTINGS = 107;
-    
     public const SECTION_IMPORT_EXPORT = 106; 
+    public const SECTION_APP_THEME_SETTINGS = 107;
 
     public const PRIVILEGE_NONE = 0;
     public const PRIVILEGE_READ = 1;
@@ -250,10 +248,8 @@ class AdminPrivilege
         static::SECTION_PRODUCT_ADVERTISEMENT => Labels::getLabel('MSG_PRODUCT_ADVERTISEMENT', CommonHelper::getLangId()),
         static::SECTION_PLUGINS => Labels::getLabel('MSG_Plugins', CommonHelper::getLangId()),
         static::SECTION_APP_THEME_SETTINGS => Labels::getLabel('MSG_APP_THEME_SETTINGS', CommonHelper::getLangId()),
-        static::SECTION_BLOG_SETTINGS => Labels::getLabel('MSG_SECTION_BLOG_SETTINGS', CommonHelper::getLangId()),
         static::SECTION_ABANDONED_CART => Labels::getLabel('MSG_ABANDONED_CART', CommonHelper::getLangId()), 
-        static::SECTION_IMPORT_EXPORT => Labels::getLabel('MSG_IMPORT_EXPORT', CommonHelper::getLangId()), 
-        
+        static::SECTION_IMPORT_EXPORT => Labels::getLabel('MSG_IMPORT_EXPORT', CommonHelper::getLangId()),
         
         /* static::SECTION_Languages => Labels::getLabel('MSG_Languages',CommonHelper::getLangId()),
         static::SECTION_Languages => Labels::getLabel('MSG_Order_Status',CommonHelper::getLangId()), */
@@ -1439,16 +1435,7 @@ class AdminPrivilege
     {
         return $this->checkPermission($adminId, static::SECTION_APP_THEME_SETTINGS, static::PRIVILEGE_WRITE, $returnResult);
     }
-
-    public function canViewBlogSettings($adminId = 0, $returnResult = false)
-    {
-        return $this->checkPermission($adminId, static::SECTION_BLOG_SETTINGS, static::PRIVILEGE_READ, $returnResult);
-    }
-
-    public function canEditBlogSettings($adminId = 0, $returnResult = false)
-    {
-        return $this->checkPermission($adminId, static::SECTION_BLOG_SETTINGS, static::PRIVILEGE_WRITE, $returnResult);
-    }
+    
     public function canViewImportExport($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_IMPORT_EXPORT, static::PRIVILEGE_READ, $returnResult);

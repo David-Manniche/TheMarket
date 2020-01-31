@@ -100,7 +100,6 @@ trait CustomProducts
 
         $this->_template->addJs('js/cropper.js');
         $this->_template->addJs('js/cropper-main.js');
-        $this->_template->addCss('css/cropper.css');
 
         $this->set('prodId', $prodId);
         $this->set('prodCatId', $prodCatId);

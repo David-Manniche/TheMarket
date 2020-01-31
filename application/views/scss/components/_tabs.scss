@@ -1,4 +1,5 @@
-/*tabs*/
+
+ 
 .tabs {
     margin: 0 auto;
     display: block;
@@ -13,88 +14,83 @@
     overflow-x: auto;
     overflow-y: hidden;
     width: 100%;
-}
 
-.tabs ul {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
+    ul {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
 
-}
+        li {
+            display: inline-block;
+            color: $body-color;
+            
+            
+            margin-#{$end-direction}: 2.5rem;
+            position: relative;
+            white-space: nowrap;
+            /*text-transform: uppercase;*/
+            font-weight: 400;
+            font-size: 0.95em;
 
-.tabs li {
-    display: inline-block;
+            &:first-child {
+                -webkit-margin-start: 0;
+                -moz-margin-start: 0;
+                margin-#{$start-direction}: 0;
+                -webkit-padding-start: 0;
+                -moz-padding-start: 0;
+                padding-#{$start-direction}: 0;
+            }
 
-    color: $body-color;
-    -webkit-margin-end: 2.5rem;
-    -moz-margin-end: 2.5rem;
-    margin-inline-end: 2.5rem;
-    position: relative;
-    white-space: nowrap;
-    /*text-transform: uppercase;*/
-    font-weight: 400;
-    font-size: 0.95em;
-}
+            &:after {
+                content: "";
+                bottom: -1px;
+                background: $brand-color;
+                height: 1px;
+                position: absolute;
+                z-index: 9;
+                #{$start-direction}: 0;
+                #{$end-direction}: 100%;
+                -webkit-transition-duration: 0.3s;
+                transition-duration: 0.3s;
+                -webkit-transition-property: right;
+                transition-property: right;
+                -webkit-transition-timing-function: ease-out;
+                transition-timing-function: ease-out;
+            }
 
-.tabs.tabs-sm li a {
-    font-size: 0.88em;
-}
+            a {
+                color: inherit;
+                display: inline-block;
+                vertical-align: top;
+                padding: 10px 0;
+            }
 
-.tabs li:first-child {
-    -webkit-margin-start: 0;
-    -moz-margin-start: 0;
-    margin-inline-start: 0;
-    -webkit-padding-start: 0;
-    -moz-padding-start: 0;
-    padding-inline-start: 0;
-}
+            &.is-active {
+                &:after {
+                    content: "";
+                    position: absolute;
+                    background: $brand-color;
+                }
+            }
+        }
+    }
 
-.tabs li a {
-    color: inherit;
-    display: inline-block;
-    vertical-align: top;
-    padding: 10px 0;
-}
-
-.tabs li.is-active,
-.tabs li:hover {
-    color: $brand-color;
-}
-
-.tabs li.is-active a {
-    /*font-weight: 600;*/
-}
-
-.tabs li:after {
-    content: "";
-    bottom: -1px;
-    background: $brand-color;
-    height: 1px;
-    position: absolute;
-    z-index: 9;
-    #{$start-direction}: 0;
-    right: 100%;
-    -webkit-transition-duration: 0.3s;
-    transition-duration: 0.3s;
-    -webkit-transition-property: right;
-    transition-property: right;
-    -webkit-transition-timing-function: ease-out;
-    transition-timing-function: ease-out;
-}
-
-.tabs li.is-active:after {
-    content: " ";
-    position: absolute;
-    background: $brand-color;
-}
-
-.tabs li:hover:after,
-.tabs li.is-active:after {
-    right: 0;
+    &.tabs-sm {
+        li {
+            a {
+                font-size: 0.88em;
+            }
+        }
+    }
 }
 
 .tabs-content {
     margin: 2rem 0 0;
+}
+
+.tabs li:hover:after,
+.tabs li.is-active:after {
+    #{$end-direction}: 0;
 }
 
 

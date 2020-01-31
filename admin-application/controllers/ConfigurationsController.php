@@ -16,8 +16,7 @@ class ConfigurationsController extends AdminBaseController
     {
         $this->objPrivilege->canViewGeneralSettings();
         $this->_template->addJs('js/cropper.js');
-        $this->_template->addJs('js/cropper-main.js');
-        $this->_template->addCss('css/cropper.css');
+        $this->_template->addJs('js/cropper-main.js');        
         $tabs = Configurations::getTabsArr();
         $this->set('activeTab', Configurations::FORM_GENERAL);
         $this->set('tabs', $tabs);

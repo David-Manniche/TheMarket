@@ -1,5 +1,5 @@
 .shops .products {
-    /*	border-right: $border;*/
+    /*	border-#{$end-direction}: $border;*/
     -webkit-box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05) inset;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05) inset;
     padding: 15px;
@@ -67,7 +67,7 @@
     color: #fff;
     padding: 3px 8px 4px;
     position: absolute;
-    right: 15px;
+    #{$end-direction}: 15px;
     top: 15px;
     font-size: 0.8em;
     text-align: right;
@@ -90,7 +90,7 @@
 
 .products .products__category,
 .products__category {
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
     font-size: 0.8em;
     font-weight: 400;
 }
@@ -125,7 +125,7 @@
 }
 
 .products .products-head-specification {
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
     font-size: 1em;
     font-weight: 300;
 }
@@ -171,7 +171,7 @@
 .products .products__rating span.rate span,
 .products__rating span.rate span {
     font-size: 0.875em;
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
 }
 
 
@@ -203,17 +203,17 @@
 .products__rating .svg {
     width: 13px;
     height: 13px;
-    -webkit-margin-end: 5px;
-    -moz-margin-end: 5px;
-    margin-inline-end: 5px;
+    
+    
+    margin-#{$end-direction}: 5px;
 }
 
 .products .products__rating .svg svg,
 .products__rating .svg svg {
     vertical-align: top;
-    -webkit-margin-end: 0px;
-    -moz-margin-end: 0px;
-    margin-inline-end: 0px;
+    
+    
+    margin-#{$end-direction}: 0px;
     fill: $brand-color;
     vertical-align: top;
 }
@@ -245,9 +245,9 @@
 
 
 .products-reviews .icn {
-    -webkit-margin-end: 5px;
-    -moz-margin-end: 5px;
-    margin-inline-end: 5px;
+    
+    
+    margin-#{$end-direction}: 5px;
 
 }
 
@@ -262,9 +262,8 @@
 
 .products-reviews .rate {
     font-size: 0.875rem;
-    -webkit-margin-end: 10px;
-    -moz-margin-end: 10px;
-    margin-inline-end: 10px;
+    
+    margin-#{$end-direction}: 10px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -294,7 +293,7 @@
 .products.item--sold:after {
     position: absolute;
     #{$start-direction}: 0;
-    right: 0;
+    #{$end-direction}: 0;
     top: 0;
     bottom: 0;
     background: rgba(255, 255, 255, 0.85);
@@ -348,7 +347,7 @@
     #{$start-direction}: 0;
     margin: auto;
     position: absolute;
-    right: 0;
+    #{$end-direction}: 0;
     top: 0;
     -webkit-transition: all 0.5s linear;
     transition: all 0.5s linear;
@@ -395,7 +394,7 @@
 
 .products .collections-ui {
     position: absolute;
-    right: 2.5rem;
+    #{$end-direction}: 2.5rem;
     bottom: 0;
     z-index: 1;
     -webkit-transition-delay: 500ms;
@@ -403,7 +402,7 @@
 }
 
 .products .collections-ui.static--collection {
-    right: 0;
+    #{$end-direction}: 0;
 }
 
 .products .collections-ui.static--collection > ul > li {
@@ -497,7 +496,7 @@
 .products__price_sold {
     font-size: 0.875rem;
     font-weight: 300;
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
     line-height: 1;
     vertical-align: middle;
 }
@@ -506,14 +505,14 @@
 .products__price_old {
 
     font-weight: 300;
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
     line-height: 1;
 
     text-decoration: line-through;
 }
 
 .products .products_ft_list li {
-    color: var(--txt-color-light);
+    color: lighten($body-color, 50%);
     font-size: 0.9em;
     font-weight: 300;
     margin: 4px 0;

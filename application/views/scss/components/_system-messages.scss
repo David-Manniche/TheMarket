@@ -5,7 +5,7 @@
     max-width: 450px;
     top: calc(5%);
     #{$start-direction}: 0;
-    right: 0;
+    #{$end-direction}: 0;
     margin: 0 auto;
     border-radius: 5px;
     -webkit-box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.07);
@@ -261,7 +261,7 @@
 }
 
 .alert--positioned-top {
-    right: 20px;
+    #{$end-direction}: 20px;
     top: 25px;
     #{$start-direction}: auto !important;
     bottom: auto !important;
@@ -273,14 +273,14 @@
 }
 
 .alert--positioned-right-top {
-    right: 20px;
+    #{$end-direction}: 20px;
     top: 25px;
     #{$start-direction}: auto !important;
     bottom: auto !important;
 }
 
 .alert--positioned-right-bottom {
-    right: 20px;
+    #{$end-direction}: 20px;
     bottom: 25px;
     #{$start-direction}: auto !important;
     bottom: auto !important;
@@ -288,13 +288,13 @@
 
 .alert--positioned-bottom-center {
     #{$start-direction}: 0 !important;
-    right: 0 !important;
+    #{$end-direction}: 0 !important;
     bottom: 25px;
 }
 
 .alert--positioned-top-center {
     #{$start-direction}: 0 !important;
-    right: 0 !important;
+    #{$end-direction}: 0 !important;
     top: 0;
 }
 
@@ -308,7 +308,7 @@
 
 .alert--positioned-top-full {
     #{$start-direction}: 0 !important;
-    right: 0 !important;
+    #{$end-direction}: 0 !important;
     top: 0;
 }
 
@@ -339,7 +339,7 @@
     width: 20px;
     height: 20px;
     position: absolute;
-    right: 10px;
+    #{$end-direction}: 10px;
     top: 10px;
     text-align: center;
     line-height: 18px;
@@ -359,7 +359,7 @@
 .system_message .closeMsg:before {
     width: 3px;
     height: 15px;
-    #{$start-direction}: 50%;
+    left: 50%;
     margin: 0 0 0 -2px;
     position: absolute;
     top: 2px;
@@ -371,7 +371,7 @@
 .system_message .closeMsg:after {
     width: 15px;
     height: 3px;
-    #{$start-direction}: 2px;
+    left: 2px;
     top: 50%;
     margin: -2px 0 0 0;
     position: absolute;
@@ -422,7 +422,7 @@
     #{$start-direction}: 15px;
     top: 14px;
     border-top: 3px solid rgba(255, 255, 255, 0.2);
-    border-right: 3px solid rgba(255, 255, 255, 0.2);
+    border-#{$end-direction}: 3px solid rgba(255, 255, 255, 0.2);
     border-bottom: 3px solid rgba(255, 255, 255, 0.2);
     border-#{$start-direction}: 3px solid #ffffff;
     -webkit-transform: translateZ(0);
@@ -460,7 +460,7 @@
     #mbsmessage,
     .system_message {
         #{$start-direction}: 10px;
-        right: 10px;
+        #{$end-direction}: 10px;
         width: auto;
     }
 

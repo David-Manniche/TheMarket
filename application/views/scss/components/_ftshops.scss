@@ -88,7 +88,7 @@
     .product-wrapper {
         -webkit-margin-start: 1rem;
         -moz-margin-start: 1rem;
-        margin-inline-start: 1rem;
+        margin-#{$start-direction}: 1rem;
         -webkit-box-flex: 1;
         -ms-flex: 1;
         flex: 1;
@@ -159,7 +159,7 @@
     }
 
     .ftshops_location {
-        color: var(--txt-color-light);
+        color: lighten($body-color, 50%);
         font-size: 0.9em;
     }
 
@@ -170,14 +170,12 @@
             float: left;
             width: 50%;
             padding: 20px;
-            -webkit-border-end: $border;
-            -moz-border-end: $border;
-            border-inline-end: $border;
+            
+            border-#{$end-direction}: $border;
 
             &:last-child {
-                -webkit-border-end: none;
-                -moz-border-end: none;
-                border-inline-end: none;
+                
+                border-#{$end-direction}: none;
             }
         }
 
@@ -204,10 +202,10 @@
         .product-wrapper {
             -webkit-margin-start: 0;
             -moz-margin-start: 0;
-            margin-inline-start: 0;
-            -webkit-margin-end: 1rem;
-            -moz-margin-end: 1rem;
-            margin-inline-end: 1rem;
+            margin-#{$start-direction}: 0;
+            
+            
+            margin-#{$end-direction}: 1rem;
 
         }
     }
@@ -219,7 +217,7 @@
     grid-template-columns: repeat(5, 1fr);
     border: $border;
     border-radius: 4px;
-    background-color: var(--border-color);
+    background-color: $border-color;
 }
 
 .ft-pro-wrapper .products {
@@ -246,7 +244,7 @@
     #{$start-direction}: 0;
     top: 0;
     bottom: 0;
-    right: 0;
+    #{$end-direction}: 0;
     opacity: 0;
     -webkit-transition: all 0.4s ease-in-out 0s;
     transition: all 0.4s ease-in-out 0s;
@@ -264,10 +262,10 @@
     text-align: center;
     -webkit-padding-start: 1em;
     -moz-padding-start: 1em;
-    padding-inline-start: 1em;
+    padding-#{$start-direction}: 1em;
     -webkit-padding-end: 1em;
     -moz-padding-end: 1em;
-    padding-inline-end: 1em;
+    padding-#{$end-direction}: 1em;
     width: 100%;
     top: 80%;
     #{$start-direction}: 50%;
@@ -334,5 +332,5 @@
 .ft-products .products--layout .products__footer .products__title {
     -webkit-padding-start: 0;
     -moz-padding-start: 0;
-    padding-inline-start: 0;
+    padding-#{$start-direction}: 0;
 }
