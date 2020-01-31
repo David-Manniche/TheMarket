@@ -31,8 +31,7 @@ class BrandsController extends AdminBaseController
             $search->fill($data);
         }
         $this->_template->addJs('js/cropper.js');
-        $this->_template->addJs('js/cropper-main.js');
-        $this->_template->addCss('css/cropper.css');
+        $this->_template->addJs('js/cropper-main.js');        
         $this->set("search", $search);
         $this->set('includeEditor', true);
         $this->_template->addJs('js/import-export.js');
@@ -819,8 +818,7 @@ class BrandsController extends AdminBaseController
             $search->fill($data);
         }
         $this->_template->addJs('js/cropper.js');
-        $this->_template->addJs('js/cropper-main.js');
-        $this->_template->addCss('css/cropper.css');
+        $this->_template->addJs('js/cropper-main.js');        
         $this->set("search", $search);
         $this->_template->render();
     }

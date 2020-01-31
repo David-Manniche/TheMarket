@@ -143,8 +143,7 @@ class BannersController extends AdminBaseController
         $data = FatApp::getDb()->fetch($rs);
         } */
         $this->_template->addJs('js/cropper.js');
-        $this->_template->addJs('js/cropper-main.js');
-        $this->_template->addCss('css/cropper.css');
+        $this->_template->addJs('js/cropper-main.js');        
         $this->_template->addJs('js/responsive-img.min.js');
         $this->set('data', $data);
         $this->set('bLocationId', $bLocationId);

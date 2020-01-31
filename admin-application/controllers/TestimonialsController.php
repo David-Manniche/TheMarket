@@ -22,8 +22,7 @@ class TestimonialsController extends AdminBaseController
     {
         $this->objPrivilege->canViewTestimonial();
         $this->_template->addJs('js/cropper.js');
-        $this->_template->addJs('js/cropper-main.js');
-        $this->_template->addCss('css/cropper.css');
+        $this->_template->addJs('js/cropper-main.js');        
         $this->_template->render();
     }
 
