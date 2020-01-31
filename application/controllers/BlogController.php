@@ -78,7 +78,7 @@
     private function getBlogSearchObject()
     {
         $srch = BlogPost::getSearchObject($this->siteLangId, true, false, true);
-        $srch->addMultipleFields(array('bp.*' , 'IFNULL(bp_l.post_title,post_identifier) as post_title' , 'bp_l.post_author_name', 'bp_l.post_short_description', 'group_concat(bpcategory_id) categoryIds', 'group_concat(IFNULL(bpcategory_name, bpcategory_identifier) SEPARATOR "~") categoryNames', 'group_concat(GETBLOGCATCODE(bpcategory_id)) AS categoryCodes'));
+        $srch->addMultipleFields(array('bp.*' , 'IFNULL(bp_l.post_title,post_identifier) as post_title' , 'bp_l.post_author_name', 'bp_l.post_short_description', 'group_concat(bpcategory_id) categoryIds', 'group_concat(IFNULL(bpcategory_name, bpcategory_identifier) SEPARATOR "~") categoryNames', 'group_concat(GETBLOGCATCODE(bpcategory_id)) AS categoryCodes', 'post_description'));
         $srch->addCondition('postlang_post_id', 'is not', 'mysql_func_null', 'and', true);
         $srch->addCondition('post_published', '=', applicationConstants::YES);
         $srch->addGroupby('post_id');
@@ -197,7 +197,11 @@
     {
         $blogPostId = FatUtility::int($blogPostId);
         if ($blogPostId <= 0) {
-            Message::addErrorMessage(Labels::getLabel('Lbl_Invalid_Request', $this->siteLangId));
+            $message = Labels::getLabel('Lbl_Invalid_Request', $this->siteLangId);
+            if (true ===  MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
             FatApp::redirectUser(CommonHelper::generateUrl('Blog'));
         }
 
@@ -207,14 +211,19 @@
         $srch = BlogPost::getSearchObject($this->siteLangId, true, true);
         $srch->addCondition('post_id', '=', $blogPostId);
         $srch->addMultipleFields(array('bp.*' , 'IFNULL(bp_l.post_title,post_identifier) as post_title' , 'bp_l.post_author_name', 'bp_l.post_description' , 'group_concat(bpcategory_id) categoryIds', 'group_concat(IFNULL(bpcategory_name, bpcategory_identifier) SEPARATOR "~") categoryNames'));
-        $srchComment = clone $srch;
+                
         $srch->addGroupby('post_id');
         if (!$blogPostData = FatApp::getDb()->fetch($srch->getResultSet())) {
-            Message::addErrorMessage(Labels::getLabel('Lbl_Invalid_Request', $this->siteLangId));
+            $message = Labels::getLabel('Lbl_Invalid_Request', $this->siteLangId);
+            if (true ===  MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
             FatApp::redirectUser(CommonHelper::generateUrl('Blog'));
         }
         $this->set('blogPostData', $blogPostData);
 
+        $srchComment = BlogPost::getSearchObject($this->siteLangId, true, true);
         $srchComment->addGroupby('bpcomment_id');
         $srchComment->joinTable(BlogComment::DB_TBL, 'inner join', 'bpcomment.bpcomment_post_id = post_id and bpcomment.bpcomment_deleted=0', 'bpcomment');
         $srchComment->addMultipleFields(array('bpcomment.*'));
@@ -237,13 +246,13 @@
         }
         $title  = $blogPostData['post_title'];
         $post_description = trim(CommonHelper::subStringByWords(strip_tags(CommonHelper::renderHtml($blogPostData["post_description"], true)), 500));
-        $post_description .= ' - '.Labels::getLabel('LBL_See_more_at', $this->siteLangId).": ".CommonHelper::getCurrUrl();
+        $post_description .= ' - ' . Labels::getLabel('LBL_See_more_at', $this->siteLangId) . ": " . CommonHelper::getCurrUrl();
         $postImageUrl = CommonHelper::generateFullUrl('Image', 'blogPostFront', array($blogPostData['post_id'],$this->siteLangId, ''));
         $socialShareContent = array(
-        'type'=>'Blog Post',
-        'title'=>$title,
-        'description'=>$post_description,
-        'image'=>$postImageUrl,
+            'type' => 'Blog Post',
+            'title' => $title,
+            'description' => $post_description,
+            'image' => $postImageUrl,
         );
 
         /* View Count functionality [ */
@@ -286,8 +295,10 @@
         $srchCommentsFrm = $this->getCommentSearchForm($blogPostId);
         $this->set('srchCommentsFrm', $srchCommentsFrm);
 
-        $this->_template->addJs(array('js/masonry.pkgd.js'));
-        $this->_template->addJs(array('js/slick.js'));
+        if (false ===  MOBILE_APP_API_CALL) {
+            $this->_template->addJs(array('js/masonry.pkgd.js'));
+            $this->_template->addJs(array('js/slick.js'));
+        }
         $this->_template->render();
     }
 

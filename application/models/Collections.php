@@ -44,7 +44,7 @@ class Collections extends MyAppModel
     public const LIMIT_CATEGORY_LAYOUT2 = 4;
     public const LIMIT_SHOP_LAYOUT1 = 4;
     public const LIMIT_BRAND_LAYOUT1 = 5;
-    public const LIMIT_BLOG_LAYOUT1 = 4;
+    public const LIMIT_BLOG_LAYOUT1 = 3;
 
     public const COLLECTION_CRITERIA_PRICE_LOW_TO_HIGH = 1;
     public const COLLECTION_CRITERIA_PRICE_HIGH_TO_LOW = 2;

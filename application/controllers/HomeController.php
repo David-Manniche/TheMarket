@@ -624,10 +624,11 @@ class HomeController extends MyAppController
                         'post_id',
                         'post_author_name',
                         'IFNULL(post_title, post_identifier) as post_title',
+                        'post_updated_on',
+                        'post_updated_on',
+                        'group_concat(IFNULL(bpcategory_name, bpcategory_identifier) SEPARATOR "~") categoryNames',
                         'post_short_description',
-                        'post_updated_on',
-                        'post_updated_on',
-                        'IFNULL(bpcategory_name, bpcategory_identifier) as bpcategory_name',
+                        'post_description'
                     ];
                     $blogSearchObj = BlogPost::getSearchObject($langId, true, true);
                     $blogSearchTempObj = clone $blogSearchObj;
