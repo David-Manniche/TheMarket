@@ -735,6 +735,11 @@ class SellerController extends SellerBaseController
         if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
         }
+
+        $this->_template->addJs('js/tagify.min.js');
+        $this->_template->addJs('js/tagify.polyfills.min.js');
+        $this->_template->addCss('css/tagify.css');
+
         $frmSearchCatalogProduct = $this->getCatalogProductSearchForm();
         $this->set("frmSearch", $frmSearchCatalogProduct);
         $this->_template->render(true, true);
@@ -1121,7 +1126,9 @@ class SellerController extends SellerBaseController
         $srch->joinProductShippedBySeller(UserAuthentication::getLoggedUserId());
         $srch->joinTable(AttributeGroup::DB_TBL, 'LEFT OUTER JOIN', 'product_attrgrp_id = attrgrp_id', 'attrgrp');
         $srch->joinTable(UpcCode::DB_TBL, 'LEFT OUTER JOIN', 'upc_product_id = product_id', 'upc');
-
+        if ($otherPageListing) {
+            $srch->addCondition('product_seller_id', '=', UserAuthentication::getLoggedUserId());
+        }
         /* $cnd = $srch->addCondition( 'product_seller_id', '=',0);
         $cnd->attachCondition( 'product_added_by_admin_id', '=', applicationConstants::YES,'OR');
 

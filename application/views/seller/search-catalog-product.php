@@ -5,6 +5,7 @@ if($otherPageListing){
     $arr_flds = array(
         'listserial'=>'#',
         'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
+        'tags' => ''
     );
 } else {
     $arr_flds = array(
@@ -41,7 +42,7 @@ foreach ($arr_listing as $sn => $row) {
                     $td->appendElement(
                         'a',
                         array('href'=>'javascript:void(0)', 'class'=>'',
-                        'title'=>'Links',"onclick"=>"editTagsLangForm(".$row['product_id'].", ".$siteLangId.")"),
+                        'title'=>'Links',"onclick"=>"editTagsLangForm(".$row['product_id'].")"),
                         $row['product_name'],
                         true
                     );
@@ -49,6 +50,10 @@ foreach ($arr_listing as $sn => $row) {
                     $td->appendElement('plaintext', array(), $row['product_name'] . '<br>', true);
                     $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
                 }
+                break;
+            case 'tags':
+                $td->appendElement('plaintext', array(), '<div class="product-tag" id="product'.$row['product_id'].'"><input class="tag_name" type="text" name="tag_name" id="get-tags" data-product_id="'.$row['product_id'].'">
+            <input type="hidden" name="product_id" value="'.$row['product_id'].'"></div>', true);
                 break;
             case 'attrgrp_name':
                 $td->appendElement('plaintext', array(), CommonHelper::displayNotApplicable($siteLangId, $row[$key]), true);
@@ -122,24 +127,60 @@ foreach ($arr_listing as $sn => $row) {
         }
     }
 }
-echo $tbl->getHtml();
-if (count($arr_listing) == 0) {
-    $message = Labels::getLabel('LBL_Searched_product_is_not_found_in_catalog', $siteLangId);
-    $linkArr = array();
-    if (User::canAddCustomProductAvailableToAllSellers()) {
-        $linkArr = array(
-        0=>array(
-            'href'=>CommonHelper::generateUrl('Seller', 'CustomCatalogProductForm'),
-            'label'=>Labels::getLabel('LBL_Request_New_Product', $siteLangId),
-            )
-        );
-    }
-    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'linkArr'=>$linkArr,'message'=>$message));
-}
 
+if (count($arr_listing) == 0) {
+    if (!$otherPageListing) {
+        echo $tbl->getHtml();
+        $message = Labels::getLabel('LBL_Searched_product_is_not_found_in_catalog', $siteLangId);
+        $linkArr = array();
+        if (User::canAddCustomProductAvailableToAllSellers()) {
+            $linkArr = array(
+            0=>array(
+                'href'=>CommonHelper::generateUrl('Seller', 'CustomCatalogProductForm'),
+                'label'=>Labels::getLabel('LBL_Request_New_Product', $siteLangId),
+                )
+            );
+        }
+        $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'linkArr'=>$linkArr,'message'=>$message));
+    } else {
+        $tbl->appendElement('tr', array('class' => 'noResult--js'))->appendElement(
+            'td',
+            array('colspan'=>count($arr_flds)),
+            Labels::getLabel('LBL_No_Record_Found', $siteLangId)
+        );
+        echo $tbl->getHtml();
+    }
+}
 
 $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmCatalogProductSearchPaging'));
 
 $pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'callBackJsFunc' => 'goToCatalogProductSearchPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
+?>
+<?php if ($otherPageListing) { ?>
+<script>
+$("document").ready(function() {
+    getTagsAutoComplete = function(){
+        var list = [];
+        fcom.ajax(fcom.makeUrl('Seller', 'tagsAutoComplete'), '', function(t) {
+            var ans = $.parseJSON(t);
+            for (i = 0; i < ans.length; i++) {
+                list.push({
+                    "id" : ans[i].id,
+                    "value" : ans[i].tag_identifier,
+                    "product_id": ans[i].product_id
+                });
+            }
+        });
+        return list;
+    }
+
+    tagify = new Tagify(document.querySelector('input[name=tag_name]'), {
+           whitelist : getTagsAutoComplete(),
+           delimiters : "#",
+           editTags : false,
+        }).on('add', addTagData).on('remove', removeTagData);
+});
+</script>
+<?php }?>

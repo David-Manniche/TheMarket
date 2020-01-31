@@ -389,7 +389,7 @@ trait CustomProducts
         }
 
         $customProductLangFrm = $this->getCustomProductLangForm($lang_id);
-        
+
         if (0 < $autoFillLangData) {
             $updateLangDataobj = new TranslateLangData(Product::DB_TBL_LANG);
             $translatedData = $updateLangDataobj->getTranslatedData($product_id, $lang_id);
@@ -1359,7 +1359,6 @@ trait CustomProducts
             $cnd->attachCondition('tag_identifier', 'LIKE', '%'. $post['keyword'] . '%', 'OR');
         }
 
-
         $srch->setPageSize($pagesize);
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
@@ -1375,9 +1374,160 @@ trait CustomProducts
         die(json_encode($json));
     }
 
-    public function addtagsForm($tag_id=0)
+    public function updateProductTag()
     {
-        $tag_id=FatUtility::int($tag_id);
+        $post = FatApp::getPostedData();
+        if (false === $post) {
+            Message::addErrorMessage(current($frm->getValidationErrors()));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $product_id = FatUtility::int($post['product_id']);
+        $tag_id = FatUtility::int($post['tag_id']);
+        if (!$product_id || !$tag_id) {
+            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $prodObj = new Product();
+        if (!$prodObj->addUpdateProductTag($product_id, $tag_id)) {
+            Message::addErrorMessage(Labels::getLabel($prodObj->getError(), $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        Tag::updateProductTagString($product_id);
+
+        $this->set('msg', Labels::getLabel('LBL_Record_Updated_Successfully', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function tagSetup()
+    {
+        $frm = $this->getTagsForm();
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+
+        if (false === $post) {
+            Message::addErrorMessage(current($frm->getValidationErrors()));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $tag_id = $post['tag_id'];
+        unset($post['tag_id']);
+
+        $record = new Tag($tag_id);
+        $record->assignValues($post);
+
+        if (!$record->save()) {
+            Message::addErrorMessage(Labels::getLabel('MSG_This_identifier_is_not_available._Please_try_with_another_one.', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $newTabLangId = 0;
+        if ($tag_id > 0) {
+            $languages = Language::getAllNames();
+            foreach ($languages as $langId => $langName) {
+                if (!$row = Tag::getAttributesByLangId($langId, $tag_id)) {
+                    $newTabLangId = $langId;
+                    break;
+                }
+            }
+        } else {
+            $tag_id = $record->getMainTableRecordId();
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+        }
+
+        /* update product tags association and tag string in products lang table[ */
+        Tag::updateTagStrings($tag_id);
+        /* ] */
+
+        $this->set('msg', Labels::getLabel('LBL_Tag_Updated_Successful', $this->siteLangId));
+        $this->set('tagId', $tag_id);
+        $this->set('langId', $newTabLangId);
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function tagLangSetup()
+    {
+        $post = FatApp::getPostedData();
+
+        $tag_id = FatUtility::int($post['tag_id']);
+        $lang_id = FatUtility::int($post['lang_id']);
+
+        if ($tag_id < 1) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $frm = $this->getTagLangForm($tag_id, $lang_id);
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        unset($post['tag_id']);
+        unset($post['lang_id']);
+        $data = array(
+        'taglang_lang_id' => $lang_id,
+        'taglang_tag_id' => $tag_id,
+        'tag_name' => $post['tag_name'],
+        );
+
+        $tagObj = new Tag($tag_id);
+        if (!$tagObj->updateLangData($lang_id, $data)) {
+            Message::addErrorMessage($tagObj->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(Tag::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($tag_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        }
+
+        $newTabLangId = 0;
+        $languages = Language::getAllNames();
+        foreach ($languages as $langId => $langName) {
+            if (!$row = Tag::getAttributesByLangId($langId, $tag_id)) {
+                $newTabLangId = $langId;
+                break;
+            }
+        }
+
+        /* update product tags association and tag string in products lang table[ */
+        Tag::updateTagStrings($tag_id);
+        /* ] */
+
+        $this->set('msg', Labels::getLabel('LBL_Tag_Updated_Successful', $this->siteLangId));
+        $this->set('tagId', $tag_id);
+        $this->set('langId', $newTabLangId);
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function removeProductTag()
+    {
+        $post = FatApp::getPostedData();
+        if (false === $post) {
+            Message::addErrorMessage(current($frm->getValidationErrors()));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $product_id = FatUtility::int($post['product_id']);
+        $tag_id = FatUtility::int($post['tag_id']);
+        if (!$product_id || !$tag_id) {
+            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $prodObj = new Product();
+        if (!$prodObj->removeProductTag($product_id, $tag_id)) {
+            Message::addErrorMessage(Labels::getLabel($prodObj->getError(), $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        Tag::updateProductTagString($product_id);
+
+        $this->set('msg', Labels::getLabel('LBL_Tag_Removed_Successfully', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function addtagsForm($tag_id = 0)
+    {
+        $tag_id = FatUtility::int($tag_id);
         $frm = $this->getTagsForm($tag_id);
 
         if (0 < $tag_id) {
@@ -1484,7 +1634,7 @@ trait CustomProducts
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function tagLangSetup()
+    /*public function tagLangSetup()
     {
         $post=FatApp::getPostedData();
 
@@ -1535,15 +1685,13 @@ trait CustomProducts
             }
         }
 
-        /* update product tags association and tag string in products lang table[ */
         Tag::updateTagStrings($tag_id);
-        /* ] */
 
         $this->set('msg', Labels::getLabel("MSG_Tag_Setup_Successful", $this->siteLangId));
         $this->set('tagId', $tag_id);
         $this->set('langId', $newTabLangId);
         $this->_template->render(false, false, 'json-success.php');
-    }
+    }*/
 
     /*...................................Product Shipping Rates..................................*/
     public function removeProductShippingRates($product_id, $userId =0)
@@ -1936,7 +2084,7 @@ trait CustomProducts
         $frm->addHiddenField('', 'brand_id', $brandReqId);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Brand_Name', $this->siteLangId), 'brand_name');
-        
+
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
@@ -1973,7 +2121,7 @@ trait CustomProducts
         $frm->addHiddenField('', 'tag_id', $tag_id);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Tag_Name', $this->siteLangId), 'tag_name');
-        
+
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
@@ -2130,7 +2278,7 @@ trait CustomProducts
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $prodSpecName = FatApp::getPostedData('prod_spec_name');
         $prodSpecValue = FatApp::getPostedData('prod_spec_value');
-        
+
         if (empty($prodSpecName) || empty($prodSpecValue)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }

@@ -21,7 +21,7 @@ $keywordFld->developerTags['noCaptionTag'] = true;
         </div>
         <div class="content-body">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="cards">
                         <div class="cards-content p-4">
                             <div>
@@ -47,69 +47,7 @@ $keywordFld->developerTags['noCaptionTag'] = true;
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="cards">
-                        <div class="cards-content p-4">
-                            <div id="dvForm"></div>
-                            <div id="dvAlert">
-                                <div class="cards-message" role="alert">
-                                    <div class="cards-message-icon"><i class="fas fa-exclamation-triangle"></i></div>
-                                    <div class="cards-message-text"><?php echo Labels::getLabel('Select_a_product_to_add_/_edit_Tags', $siteLangId); ?></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 </main>
-<script>
-$("document").ready(function() {
-    var product_id = '<?php echo $productId; ?>';
-    addTagData = function(e){
-        var tag_id = e.detail.tag.id;
-        var tag_name = e.detail.tag.title;
-        if(tag_id == ''){
-            var data = 'tag_id=0&tag_identifier='+tag_name
-            fcom.updateWithAjax(fcom.makeUrl('Tags', 'setup'), data, function(t) {
-                var dataLang = 'tag_id='+t.tagId+'&tag_name='+tag_name+'&lang_id=0';
-                fcom.updateWithAjax(fcom.makeUrl('Tags', 'langSetup'), dataLang, function(t2) {
-                    fcom.updateWithAjax(fcom.makeUrl('Products', 'updateProductTag'), 'product_id='+product_id+'&tag_id='+t.tagId, function(t3) {
-                         var tagifyId = e.detail.tag.__tagifyId;
-                         $('[__tagifyid='+tagifyId+']').attr('id', t.tagId);
-                     });
-                });
-            });
-        }else{
-            fcom.updateWithAjax(fcom.makeUrl('Products', 'updateProductTag'), 'product_id='+product_id+'&tag_id='+tag_id, function(t) { });
-        }
-    }
-
-    removeTagData = function(e){
-        var tag_id = e.detail.tag.id;
-        fcom.updateWithAjax(fcom.makeUrl('Products', 'removeProductTag'), 'product_id='+product_id+'&tag_id='+tag_id, function(t) {
-        });
-    }
-
-    getTagsAutoComplete = function(){
-        var list = [];
-        fcom.ajax(fcom.makeUrl('Tags', 'autoComplete'), '', function(t) {
-            var ans = $.parseJSON(t);
-            for (i = 0; i < ans.length; i++) {
-                list.push({
-                    "id" : ans[i].id,
-                    "value" : ans[i].tag_identifier,
-                });
-            }
-        });
-        return list;
-    }
-
-    tagify = new Tagify(document.querySelector('input[name=tag_name]'), {
-           whitelist : getTagsAutoComplete(),
-           delimiters : "#",
-           editTags : false,
-        }).on('add', addTagData).on('remove', removeTagData);
-});
-</script>
