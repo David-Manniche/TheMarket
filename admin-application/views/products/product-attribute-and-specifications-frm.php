@@ -7,6 +7,8 @@ $fldSeller->htmlAfterField = '<br/><small>'.Labels::getLabel('LBL_Please_leave_e
 if ($productData['product_added_by_admin_id'] == 1 && $totalProducts >0) {
     $fldSeller->setfieldTagAttribute('readonly', 'readonly');
 }
+$warrantyFld = $productFrm->getField('product_warranty');
+$warrantyFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $adminLangId) . ' </small>';
 ?>
 <div class="row justify-content-center">
      <div class="col-md-12">
@@ -50,7 +52,24 @@ if ($productData['product_added_by_admin_id'] == 1 && $totalProducts >0) {
           </div>
           
           <div class="row">
-             <div class="col-md-4">
+            <div class="col-md-6">
+                 <div class="field-set">
+                     <div class="caption-wraper">
+                        <label class="field_label">
+                            <?php $fld = $productFrm->getField('product_warranty');
+                              echo $fld->getCaption();
+                            ?>
+                        </label>
+                        <span class="spn_must_field">*</span>
+                     </div>
+                     <div class="field-wraper">
+                         <div class="field_cover">
+                         <?php echo $productFrm->getFieldHtml('product_warranty'); ?>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <div class="col-md-6">
                  <div class="field-set">
                      <div class="caption-wraper"></div>
                      <div class="field-wraper">
@@ -60,7 +79,9 @@ if ($productData['product_added_by_admin_id'] == 1 && $totalProducts >0) {
                      </div>
                  </div>
              </div>
-             <?php if($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) { ?>
+          </div>   
+        <?php if($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) { ?>  
+          <div class="row">
              <div class="col-md-4">
                  <div class="field-set">
                      <div class="caption-wraper"></div>
@@ -81,9 +102,9 @@ if ($productData['product_added_by_admin_id'] == 1 && $totalProducts >0) {
                      </div>
                  </div>
             </div>
-            <?php } ?>
          </div>
-
+        <?php } ?>
+        
          <div class="specifications-form-<?php echo $siteDefaultLangId; ?>"></div>
          <div class="specifications-list-<?php echo $siteDefaultLangId; ?>"></div>
          

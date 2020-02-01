@@ -1033,6 +1033,7 @@ class ProductsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }        
         $productFrm = $this->getProductAttributeAndSpecificationsFrm($productId);
+        
         $productData = Product::getAttributesById($productId); 
         $prodShippingDetails = Product::getProductShippingDetails($productId, $this->adminLangId, $productData['product_seller_id']); 
         $productData['ps_free'] = $prodShippingDetails['ps_free'];
@@ -1042,7 +1043,10 @@ class ProductsController extends AdminBaseController
         } else {
             $productData['selprod_user_shop_name'] = 'Admin';
         }
+        $prodSpecificsDetails = Product::getProductSpecificsDetails($productId); 
+        $productData['product_warranty'] = $prodSpecificsDetails['product_warranty'];
         $productFrm->fill($productData);
+        
         $totalProducts = Product::getCatalogProductCount($productId);
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);        
         $languages = Language::getAllNames();
@@ -1064,6 +1068,9 @@ class ProductsController extends AdminBaseController
         if (FatApp::getConfig("CONF_PRODUCT_MODEL_MANDATORY", FatUtility::VAR_INT, 1)) {
             $fldModel->requirements()->setRequired();
         }
+        $warrantyFld = $frm->addRequiredField(Labels::getLabel('LBL_PRODUCT_WARRANTY', $this->adminLangId), 'product_warranty');
+        $warrantyFld->requirements()->setInt();
+        $warrantyFld->requirements()->setPositive();
         $frm->addCheckBox(Labels::getLabel('LBL_Mark_This_Product_As_Featured?', $this->adminLangId), 'product_featured', 1, array(), false, 0);
         
         $productType = Product::getAttributesById($productId, 'product_type');
@@ -1098,6 +1105,15 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         } 
+        
+        $post['ps_product_id'] = $productId;
+        $productSpecifics = new ProductSpecifics($productId);
+        $productSpecifics->assignValues($post);
+        $data = $productSpecifics->getFlds();
+        if (!$productSpecifics->addNew(array(), $data)) {
+            Message::addErrorMessage($productSpecifics->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
         
         $productType = Product::getAttributesById($productId, 'product_type');
         if($productType == Product::PRODUCT_TYPE_PHYSICAL){

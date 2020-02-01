@@ -1773,6 +1773,19 @@ END,   special_price_found ) as special_price_found'
         return true;       
     }
     
+    public static function getProductSpecificsDetails($productId)
+    {
+        $productId = FatUtility::int($productId);
+        if ( $productId < 1 ) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        $srch = new SearchBase(ProductSpecifics::DB_TBL);
+        $srch->addCondition(ProductSpecifics::DB_TBL_PREFIX . 'product_id', '=', $productId);
+        $rs = $srch->getResultSet();
+        return FatApp::getDb()->fetch($rs);
+    }
+    
     
     
     
