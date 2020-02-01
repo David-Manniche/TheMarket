@@ -652,11 +652,11 @@ class DummyController extends MyAppController
             }
         }
     }
-    
+
     public function testEmail()
     {
         AbandonedCart::sendReminderAbandonedCart();
-        
+
     }
 
     public function notify()

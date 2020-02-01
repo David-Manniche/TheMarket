@@ -15,7 +15,7 @@ class SocialMediaAuthController extends PluginBaseController
         Message::addErrorMessage($message);
         FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
     }
-      
+
     protected function redirectToDashboard($preferredDashboard = 0, $referredRedirection = true)
     {
         $referredUrl = User::getPreferedDashbordRedirectUrl($preferredDashboard);
@@ -41,7 +41,7 @@ class SocialMediaAuthController extends PluginBaseController
         }
         FatApp::redirectUser($referredUrl);
     }
-   
+
     protected function doLogin($email, $userName, $socialAccountID, $userType)
     {
         try {
