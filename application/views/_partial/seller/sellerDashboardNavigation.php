@@ -62,6 +62,13 @@ $action = strtolower($action);
                         </svg>
                     </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Product_Tags', $siteLangId);?></span></a></div>
                 </li>
+                <li class="menu__item <?php echo ($controller == 'seller' && $action == 'producturlrewriting') ? 'is-active' : ''; ?>">
+                    <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_URL_Rewriting', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'productUrlRewriting'); ?>">
+                    <i class="icn shop"><svg class="svg">
+                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
+                        </svg>
+                    </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_URL_Rewriting', $siteLangId);?></span></a></div>
+                </li>
             <li class="divider"></li>
             <li class="menu__item">
                 <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_SEO', $siteLangId);?></span></div>

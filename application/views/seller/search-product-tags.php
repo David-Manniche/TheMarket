@@ -24,13 +24,7 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $sr_no, true);
                 break;
             case 'product_identifier':
-                $td->appendElement(
-                    'a',
-                    array('href'=>'javascript:void(0)', 'class'=>'',
-                    'title'=>'Links',"onclick"=>"editTagsLangForm(".$row['product_id'].")"),
-                    $row['product_name'],
-                    true
-                );
+                $td->appendElement('plaintext', array(), $row['product_name'], true);
                 break;
             case 'tags':
                 $productTags = Product::getProductTags($row['product_id']);

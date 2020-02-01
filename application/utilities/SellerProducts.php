@@ -1612,7 +1612,96 @@ trait SellerProducts
 
     /*  --- ] Seller Product Seo  --- -   */
 
-    /*  - --- Seller Product Links  ----- [*/
+    /* Seller Product URL Rewriting [ */
+    public function productUrlRewriting()
+    {
+        $this->set('frmSearch', $this->getSellerProductSearchForm());
+        $this->_template->render(true, true);
+    }
+
+    public function searchUrlRewritingProducts()
+    {
+        $userId = UserAuthentication::getLoggedUserId();
+        $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
+        $keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
+        $srch = SellerProduct::searchSellerProducts($this->siteLangId, $userId, $keyword);
+        $srch->addMultipleFields(
+            array(
+            'selprod_id', 'IFNULL(selprod_title, IFNULL(product_name, product_identifier)) as selprod_title')
+        );
+        $pageSize = FatApp::getConfig('CONF_PAGE_SIZE');
+        $post = FatApp::getPostedData();
+        $page = (empty($post['page']) || $post['page'] <= 0)?1:$post['page'];
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
+        $page = FatUtility::int($page);
+
+        $srch->setPageNumber($page);
+        $srch->setPageSize($pageSize);
+
+        $db = FatApp::getDb();
+
+        $rs = $srch->getResultSet();
+        $arrListing = $db->fetchAll($rs);
+
+        foreach ($arrListing as $key => $sellerProduct) {
+            $urlRewriteData =  UrlRewrite::getAttributesById($sellerProduct['selprod_id']);
+            $urlSrch = UrlRewrite::getSearchObject();
+            $urlSrch->doNotCalculateRecords();
+            $urlSrch->doNotLimitRecords();
+            $urlSrch->addMultipleFields(array('urlrewrite_id', 'urlrewrite_custom'));
+            $urlSrch->addCondition('urlrewrite_original', '=', 'products/view/' . $sellerProduct['selprod_id']);
+            $rs = $urlSrch->getResultSet();
+            $urlRow = FatApp::getDb()->fetch($rs);
+            if ($urlRow) {
+                $arrListing[$key]['urlrewrite_id'] = $urlRow['urlrewrite_id'];
+                $arrListing[$key]['urlrewrite_custom'] = $urlRow['urlrewrite_custom'];
+            }
+        }
+
+        $this->set("arrListing", $arrListing);
+        $this->set('page', $page);
+        $this->set('pageCount', $srch->pages());
+        $this->set('postedData', FatApp::getPostedData());
+        $this->set('recordCount', $srch->recordCount());
+        $this->set('pageSize', FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10));
+        $this->_template->render(false, false);
+    }
+
+    public function setupCustomUrl($selprod_id, $url_rewriting_id, $custom_url)
+    {
+        $selprod_id = FatUtility::int($selprod_id);
+        $url_rewriting_id = FatUtility::int($url_rewriting_id);
+        if (!UserPrivilege::canEditSellerProduct($selprod_id)) {
+            Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $tabsArr = MetaTag::getTabsArr();
+        $metaType = MetaTag::META_GROUP_PRODUCT_DETAIL;
+
+        if ($metaType == '' || !isset($tabsArr[$metaType])) {
+            Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        $url =  $tabsArr[$metaType]['controller'].'/'.$tabsArr[$metaType]['action'].'/'.$selprod_id;
+        $urlRewriteData_Save['urlrewrite_original'] = trim($url, '/\\');
+        $urlRewriteData_Save['urlrewrite_custom'] = trim(CommonHelper::seoUrl($custom_url), '/\\');
+
+        $record = new UrlRewrite($url_rewriting_id);
+        $record->assignValues($urlRewriteData_Save);
+
+        if (!$record->save()) {
+            Message::addErrorMessage($record->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $this->set('msg', Labels::getLabel("MSG_Setup_Successful", $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    /*  --- ] Seller Product URL Rewriting  ----   */
+
+    /*  ---- Seller Product Links  ----- [*/
 
     public function sellerProductLinkFrm($selProd_id)
     {
