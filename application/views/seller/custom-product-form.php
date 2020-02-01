@@ -72,12 +72,9 @@ $(document).ready(function(){
     customProductForm();
     <?php } */ ?>
     
-    var product_type =  '<?php echo $productType; ?>';
-    var PRODUCT_TYPE_DIGITAL = '<?php echo Product::PRODUCT_TYPE_DIGITAL; ?>';
-        customProductForm('<?php echo $productId ;?>');
-    if(product_type == PRODUCT_TYPE_DIGITAL){
-        hideShippingTab();
-    }
+    customProductForm('<?php echo $productId ;?>');
+    hideShippingTab('<?php echo $productType; ?>', '<?php echo Product::PRODUCT_TYPE_DIGITAL; ?>');
+    
 });
 </script>
 

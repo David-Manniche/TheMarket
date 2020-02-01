@@ -2279,6 +2279,7 @@ trait CustomProducts
         $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->siteLangId));
         $this->set('productId', $prod->getMainTableRecordId());
         $this->set('productType', $post['product_type']);
+        $this->set('productTypeDigital', Product::PRODUCT_TYPE_DIGITAL);
         $this->_template->render(false, false, 'json-success.php'); 
     }
     
@@ -2331,8 +2332,8 @@ trait CustomProducts
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
-        $prodSellerId = Product::getAttributesById($productId, 'product_seller_id');
-        if ($prodSellerId != UserAuthentication::getLoggedUserId()) {
+        $prodData = Product::getAttributesById($productId, array('product_seller_id','product_type'));
+        if ($prodData['product_seller_id'] != UserAuthentication::getLoggedUserId()) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
 
@@ -2341,11 +2342,18 @@ trait CustomProducts
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         } 
-        $psFree = isset($post['ps_free']) ? $post['ps_free'] : 0;
-        $prodShippingDetails = Product::getProductShippingDetails($productId, $this->siteLangId, $prodSellerId); 
-        if(!$prod->saveProductSellerShipping($prodSellerId, $psFree, $prodShippingDetails['ps_from_country_id'])){
-            Message::addErrorMessage($prod->getError());
-            FatUtility::dieWithError(Message::getHtml());
+        
+        if($prodData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL){
+            $psFree = isset($post['ps_free']) ? $post['ps_free'] : 0;
+            $psFromCountryId = 0;
+            $prodShippingDetails = Product::getProductShippingDetails($productId, $this->siteLangId, $prodData['product_seller_id']); 
+            if(!empty($prodShippingDetails)){
+                $psFromCountryId = $prodShippingDetails['ps_from_country_id'];
+            } 
+            if(!$prod->saveProductSellerShipping($prodData['product_seller_id'], $psFree, $psFromCountryId)){
+                Message::addErrorMessage($prod->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
         $this->set('msg', Labels::getLabel('LBL_Product_Attributes_Setup_Successful', $this->siteLangId));
         $this->set('productId', $prod->getMainTableRecordId());
@@ -2478,6 +2486,24 @@ trait CustomProducts
         $this->set('productId', $productId); 
         $this->set('productType', $productType);
         $this->_template->render(false, false, 'seller/product-options-and-tag.php'); 
+    }
+    
+    public function upcListing($productId)
+    {
+        $productId = FatUtility::int($productId);
+        if (!UserPrivilege::canSellerEditCustomProduct( $productId )) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        } 
+        if ($productId < 1) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $productOptions = Product::getProductOptions($productId, $this->siteLangId, true);
+        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '_');
+        $this->set('optionCombinations', $optionCombinations);        
+        $this->set('productId', $productId);
+        $this->_template->render(false, false);
     }
     
     public function updateProductTag()

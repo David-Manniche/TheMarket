@@ -4714,7 +4714,7 @@ class SellerController extends SellerBaseController
             /* ] */
         }
         $frm->addTextBox(Labels::getLabel('LBL_Country_the_Product_is_being_shipped_from', $this->siteLangId), 'shipping_country');
-        $frm->addHtml('', '', '<table id="tab_shipping" width="100%" class="table table-bordered"></table><div class="gap"></div>');
+        $frm->addHtml('', '', '<div id="tab_shipping"></div>');
         
         $frm->addHiddenField('', 'ps_from_country_id');
         $frm->addHiddenField('', 'product_id', $productId);

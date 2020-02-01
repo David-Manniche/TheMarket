@@ -24,6 +24,11 @@
                          </div>
                      </div>
                  </div> 
+                 <div class="row">
+                     <div class="col-md-12 mb-4" id="upc-listing">
+                         
+                     </div>
+                 </div>
             </div>
             <?php 
                 $tagData = array();
@@ -68,7 +73,9 @@
 
 $("document").ready(function() {   
     var product_id = '<?php echo $productId; ?>';
- 
+    
+    upcListing(product_id); 
+    
     addTagData = function(e){
         var tag_id = e.detail.tag.id; 
         var tag_name = e.detail.tag.title;   
