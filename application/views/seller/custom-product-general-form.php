@@ -152,6 +152,24 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
                      </div>
                  </div>
              </div>
+             <div class="row">
+                <div class="col-md-12">
+                     <div class="field-set">
+                         <div class="caption-wraper">
+                            <label class="field_label">
+                                <?php $fld = $productFrm->getField('product_youtube_video['.$siteDefaultLangId.']');
+                                      echo $fld->getCaption();
+                                ?>
+                            </label>
+                         </div>
+                         <div class="field-wraper">
+                             <div class="field_cover">
+                               <?php echo $productFrm->getFieldHtml('product_youtube_video['.$siteDefaultLangId.']'); ?>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
              
              <div class="row">
                  <div class="col-md-12">
@@ -195,6 +213,23 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
                                 <div class="field-wraper">
                                     <div class="field_cover">
                                     <?php echo $productFrm->getFieldHtml('product_name['.$langId.']'); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="field-set">
+                                <div class="caption-wraper">
+                                    <label class="field_label">
+                                    <?php  $fld = $productFrm->getField('product_youtube_video['.$langId.']');
+                                        echo $fld->getCaption(); ?>
+                                    </label>
+                                </div>
+                                <div class="field-wraper">
+                                    <div class="field_cover">
+                                    <?php echo $productFrm->getFieldHtml('product_youtube_video['.$langId.']'); ?>
                                     </div>
                                 </div>
                             </div>

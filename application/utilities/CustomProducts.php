@@ -2261,7 +2261,7 @@ trait CustomProducts
         }        
         Product::updateMinPrices($productId);
         
-        if(!$prod->saveProductLangData($post['product_name'], $post['product_description'])){
+        if(!$prod->saveProductLangData($post['product_name'], $post['product_description'], $post['product_youtube_video'])){
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }

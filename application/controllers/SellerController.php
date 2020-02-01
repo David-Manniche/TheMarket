@@ -4640,6 +4640,7 @@ class SellerController extends SellerBaseController
                 $frm->addTextBox(Labels::getLabel('LBL_Product_Name', $this->siteLangId ), 'product_name['.$langId.']');
             }            
             $frm->addTextArea(Labels::getLabel('LBL_Description', $this->siteLangId ), 'product_description['.$langId.']');
+            $frm->addTextBox(Labels::getLabel('LBL_Youtube_Video_Url', $this->siteLangId), 'product_youtube_video['.$langId.']');
         }
         $taxCategories =  Tax::getSaleTaxCatArr($this->siteLangId );
         $frm->addSelectBox(Labels::getLabel('LBL_Tax_Category', $this->siteLangId ), 'ptt_taxcat_id', $taxCategories, '', array(), Labels::getLabel('LBL_Select', $this->siteLangId ))->requirements()->setRequired(true);
