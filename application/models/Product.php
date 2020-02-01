@@ -1764,16 +1764,9 @@ END,   special_price_found ) as special_price_found'
             'ps_user_id' => $prodSellerId,
             'ps_free' => $psFree,
             'ps_from_country_id' => $psCountryId
-        );
-        /* $psFree = FatUtility::int($psFree);
-        if($psFree > 0){
-            $prodSellerShip['ps_free'] = $psFree;
-        } 
-        $psCountryId = FatUtility::int($psCountryId);
-        if($psCountryId > 0){
-            $prodSellerShip['ps_from_country_id'] = $psCountryId;
-        }     */ 
+        );        
         if(!FatApp::getDb()->insertFromArray(PRODUCT::DB_TBL_PRODUCT_SHIPPING, $prodSellerShip, false, array(), $prodSellerShip)) {
+            $this->error = FatApp::getDb()->getError();
             return false;
         }
         return true;       

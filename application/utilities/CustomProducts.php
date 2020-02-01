@@ -2614,8 +2614,12 @@ trait CustomProducts
             FatUtility::dieWithError(Message::getHtml());
         } 
         
+        $psFree = 0;
         $prodShippingDetails = Product::getProductShippingDetails($productId, $this->siteLangId, $prodSellerId); 
-        if(!$prod->saveProductSellerShipping($prodSellerId, $prodShippingDetails['ps_free'], $post['ps_from_country_id'])){
+        if(!empty($prodShippingDetails)){
+            $psFree = $prodShippingDetails['ps_free'];
+        }
+        if(!$prod->saveProductSellerShipping($prodSellerId, $psFree, $post['ps_from_country_id'])){
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
