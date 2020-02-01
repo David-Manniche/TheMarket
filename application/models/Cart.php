@@ -407,8 +407,10 @@ class Cart extends FatModel
                     $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, array(), $shipFromStateId, $shipToStateId);
                    
                     $taxOptions = [];
-                    foreach ($taxData['options'] as $optionId => $optionval) {
-                        $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']])? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
+                    if (array_key_exists('options', $taxData)) {
+                        foreach ($taxData['options'] as $optionId => $optionval) {
+                            $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']])? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
+                        }
                     }
                        
                     $tax = $taxData['tax'];
@@ -616,8 +618,10 @@ class Cart extends FatModel
                     $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, array(), $shipFromStateId, $shipToStateId);
                    
                     $taxOptions = [];
-                    foreach ($taxData['options'] as $optionId => $optionval) {
-                        $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']])? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
+                    if (array_key_exists('options', $taxData)) {
+                        foreach ($taxData['options'] as $optionId => $optionval) {
+                            $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']])? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
+                        }
                     }
                        
                     $tax = $taxData['tax'];
@@ -1190,9 +1194,11 @@ class Cart extends FatModel
                 $taxObj = new Tax();
                 $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], array(), $shipFromStateId, $shipToStateId);
                 
-                foreach ($taxData['options'] as $optionId => $optionval) {
-                    $prodTaxOptions[$product['selprod_id']][$optionId] = $optionval;
-                    $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']])? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
+                if (array_key_exists('options', $taxData)) {
+                    foreach ($taxData['options'] as $optionId => $optionval) {
+                        $prodTaxOptions[$product['selprod_id']][$optionId] = $optionval;
+                        $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']])? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
+                    }
                 }
 
                 $tax = $taxData['tax'];
