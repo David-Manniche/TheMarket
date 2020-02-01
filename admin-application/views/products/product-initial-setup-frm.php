@@ -50,6 +50,7 @@ $productFrm->setFormTagAttribute('onsubmit', 'setUpProduct(this); return(false);
                               echo $fld->getCaption();
                             ?>
                         </label>
+                        <span class="spn_must_field">*</span>
                      </div>
                      <div class="field-wraper">
                          <div class="field_cover">
@@ -66,6 +67,7 @@ $productFrm->setFormTagAttribute('onsubmit', 'setUpProduct(this); return(false);
                               echo $fld->getCaption();
                             ?>
                         </label>
+                        <span class="spn_must_field">*</span>
                      </div>
                      <div class="field-wraper">
                          <div class="field_cover">
