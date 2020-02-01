@@ -4628,8 +4628,8 @@ class SellerController extends SellerBaseController
         $frm = new Form('frmProductIntialSetUp'); 
         $frm->addRequiredField(Labels::getLabel('LBL_Product_Identifier', $this->siteLangId), 'product_identifier');
         $frm->addSelectBox(Labels::getLabel('LBL_Product_Type', $this->siteLangId ), 'product_type', Product::getProductTypes($this->siteLangId ), Product::PRODUCT_TYPE_PHYSICAL, array(), '');
-        $frm->addTextBox(Labels::getLabel('LBL_Brand', $this->siteLangId ), 'brand_name');
-        $frm->addTextBox(Labels::getLabel('LBL_Category', $this->siteLangId ), 'category_name');
+        $frm->addRequiredField(Labels::getLabel('LBL_Brand', $this->siteLangId ), 'brand_name');
+        $frm->addRequiredField(Labels::getLabel('LBL_Category', $this->siteLangId ), 'category_name');
         
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $languages = Language::getAllNames();
