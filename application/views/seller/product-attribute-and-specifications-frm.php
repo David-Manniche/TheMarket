@@ -26,19 +26,36 @@ $productFrm->setFormTagAttribute('onsubmit', 'setUpProductAttributes(this); retu
                  </div>
              </div>
              <div class="col-md-6">
-                 <div class="field-set">
+                <div class="field-set">
+                     <div class="caption-wraper">
+                        <label class="field_label">
+                            <?php $fld = $productFrm->getField('product_warranty');
+                              echo $fld->getCaption();
+                            ?>
+                        </label>
+                        <span class="spn_must_field">*</span>
+                     </div>
+                     <div class="field-wraper">
+                         <div class="field_cover">
+                         <?php echo $productFrm->getFieldHtml('product_warranty'); ?>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+                <div class="field-set">
                     <div class="caption-wraper"></div>
                      <div class="field-wraper">
                          <div class="field_cover">
                          <?php echo $productFrm->getFieldHtml('product_featured'); ?>
                          </div>
                      </div>
-                 </div>
-             </div>
-          </div>
-        <?php if($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) { ?>
-          <div class="row">
-             <div class="col-md-6">
+                </div>
+            </div>
+           <?php if($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) { ?>
+             <div class="col-md-4">
                  <div class="field-set">
                      <div class="caption-wraper"></div>
                      <div class="field-wraper">
@@ -48,7 +65,7 @@ $productFrm->setFormTagAttribute('onsubmit', 'setUpProductAttributes(this); retu
                      </div>
                  </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                  <div class="field-set">
                      <div class="caption-wraper"></div>
                      <div class="field-wraper">
@@ -58,8 +75,8 @@ $productFrm->setFormTagAttribute('onsubmit', 'setUpProductAttributes(this); retu
                      </div>
                  </div>
             </div>
+            <?php } ?>
          </div>
-        <?php } ?>
          <div class="specifications-form-<?php echo $siteDefaultLangId; ?>"></div>
          <div class="specifications-list-<?php echo $siteDefaultLangId; ?>"></div>
          

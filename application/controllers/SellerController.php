@@ -4664,6 +4664,9 @@ class SellerController extends SellerBaseController
         if (FatApp::getConfig("CONF_PRODUCT_MODEL_MANDATORY", FatUtility::VAR_INT, 1)) {
             $fldModel->requirements()->setRequired();
         }
+        $warrantyFld = $frm->addRequiredField(Labels::getLabel('LBL_PRODUCT_WARRANTY', $this->siteLangId), 'product_warranty');
+        $warrantyFld->requirements()->setInt();
+        $warrantyFld->requirements()->setPositive();
         $frm->addCheckBox(Labels::getLabel('LBL_Mark_This_Product_As_Featured?', $this->siteLangId), 'product_featured', 1, array(), false, 0);
         
         $productType = Product::getAttributesById($productId, 'product_type');

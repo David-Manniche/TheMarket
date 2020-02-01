@@ -2306,7 +2306,10 @@ trait CustomProducts
         $productData = Product::getAttributesById($productId); 
         $prodShippingDetails = Product::getProductShippingDetails($productId, $this->siteLangId, $productData['product_seller_id']); 
         $productData['ps_free'] = $prodShippingDetails['ps_free'];
+        $prodSpecificsDetails = Product::getProductSpecificsDetails($productId); 
+        $productData['product_warranty'] = $prodSpecificsDetails['product_warranty'];
         $productFrm->fill($productData);
+        
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);        
         $languages = Language::getAllNames();
         unset($languages[$siteDefaultLangId]);                  
@@ -2342,6 +2345,15 @@ trait CustomProducts
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         } 
+        
+        $post['ps_product_id'] = $productId;
+        $productSpecifics = new ProductSpecifics($productId);
+        $productSpecifics->assignValues($post);
+        $data = $productSpecifics->getFlds();
+        if (!$productSpecifics->addNew(array(), $data)) {
+            Message::addErrorMessage($productSpecifics->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
         
         if($prodData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL){
             $psFree = isset($post['ps_free']) ? $post['ps_free'] : 0;
