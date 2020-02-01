@@ -404,7 +404,6 @@ ALTER TABLE `tbl_sms_archives` CHANGE `smsarchive_id` `smsarchive_id` INT(255) N
 
 ALTER TABLE `tbl_sms_archives` ADD `smsarchive_response_id` VARCHAR(255) NOT NULL AFTER `smsarchive_id`;
 ALTER TABLE `tbl_sms_archives` CHANGE `smsarchive_id` `smsarchive_id` INT(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `tbl_sms_archives` ADD UNIQUE(`smsarchive_response_id`);
 ALTER TABLE `tbl_sms_archives` CHANGE `smsarchive_status` `smsarchive_status` VARCHAR(255) NOT NULL;
 
 --
@@ -433,3 +432,7 @@ ALTER TABLE `tbl_sms_templates`
 INSERT INTO `tbl_sms_templates` (`stpl_code`, `stpl_lang_id`, `stpl_name`, `stpl_body`, `stpl_replacements`, `stpl_status`) VALUES ('login', '1', 'Login Template', 'Dear User,\r\n\r\nThis is your {OTP}', '<ul class=\"list-group\">\r\n <li class=\"list-group-item\"><span>Login OTP</span>\r\n <span class=\"badge badge-secondary\" data-container=\"body\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"\"\r\n data-original-title=\"Copied to clipboard\">\r\n {OTP}\r\n </span>\r\n </li>\r\n</ul>', '1');
 CREATE TABLE `tbl_user_phone_verification` ( `upv_user_id` INT(11) NOT NULL ,  `upv_otp` INT(6) NOT NULL ,  `upv_phone` VARCHAR(25) NOT NULL ,  `upv_expired_on` DATETIME NOT NULL ) ENGINE = InnoDB;
 ALTER TABLE tbl_user_phone_verification ADD PRIMARY KEY (`upv_user_id`);
+
+UPDATE `tbl_email_templates` SET `etpl_replacements` = '{website_name} Name of the website<br /> {username} Username of the person registered<br /> {email} Email Address of the person registered<br />{phone} Phone number of the person registered<br /> {name} Name of the person registered<br /> {user_type} Type of the User registered<br /> {social_media_icons} <br> {contact_us_url} <br>' WHERE `tbl_email_templates`.`etpl_code` = 'new_registration_admin' AND `tbl_email_templates`.`etpl_lang_id` = 1;
+
+UPDATE `tbl_email_templates` SET `etpl_replacements` = '{website_name} Name of the website<br />\r\n{username} Username of the person registered<br />\r\n{email} Email Address of the person registered<br />\r\n{phone} Phone Number of the person registered<br />\r\n{name} Name of the person registered<br />\r\n{social_media_icons} <br>\r\n{contact_us_url} <br>' WHERE `tbl_email_templates`.`etpl_code` = 'new_affiliate_registration_admin' AND `tbl_email_templates`.`etpl_lang_id` = 1;

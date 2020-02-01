@@ -4,6 +4,7 @@ class UserAuthentication extends FatModel
     public const SESSION_ELEMENT_NAME = 'yokartUserSession';
     public const AFFILIATE_SESSION_ELEMENT_NAME = 'yokartAffiliateSession';
     public const YOKARTUSER_COOKIE_NAME = '_uyokart';
+    public const TEMP_SESSION_ELEMENT_NAME = 'yokartTempUserSession';
 
     public const DB_TBL_USER_PRR = 'tbl_user_password_reset_requests';
     public const DB_TBL_UPR_PREFIX = 'uprr_';
@@ -32,10 +33,10 @@ class UserAuthentication extends FatModel
             trigger_error("Language Id not specified.", E_USER_ERROR);
         }
         return array(
-        static::AFFILIATE_REG_STEP1    =>    Labels::getLabel('LBL_Personal_Details', $langId),
-        static::AFFILIATE_REG_STEP2    =>    Labels::getLabel('LBL_Company_Details', $langId),
-        static::AFFILIATE_REG_STEP3    =>    Labels::getLabel('LBL_Payment_Information', $langId),
-        static::AFFILIATE_REG_STEP4    =>    Labels::getLabel('LBL_Confirmation', $langId),
+            static::AFFILIATE_REG_STEP1    =>    Labels::getLabel('LBL_Personal_Details', $langId),
+            static::AFFILIATE_REG_STEP2    =>    Labels::getLabel('LBL_Company_Details', $langId),
+            static::AFFILIATE_REG_STEP3    =>    Labels::getLabel('LBL_Payment_Information', $langId),
+            static::AFFILIATE_REG_STEP4    =>    Labels::getLabel('LBL_Confirmation', $langId),
         );
     }
 
@@ -392,7 +393,7 @@ class UserAuthentication extends FatModel
         'user_name' => $data['user_name'],
         'user_ip' => $data['user_ip'],
         'user_email' => $data['user_email'],
-        'user_is_guest' => isset($data['user_is_guest'])?$data['user_is_guest']:false,
+        'user_is_guest' => isset($data['user_is_guest']) ? $data['user_is_guest'] : false,
         );
         return true;
     }

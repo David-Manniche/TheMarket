@@ -3,6 +3,9 @@ class SmsTemplate extends MyAppModel
 {
     public const DB_TBL = 'tbl_sms_templates';
     public const DB_TBL_PREFIX = 'stpl_';
+
+    public const LOGIN = 'LOGIN';
+
     private $stplCode;
 
     public function __construct($stplCode = '')
@@ -124,5 +127,20 @@ class SmsTemplate extends MyAppModel
     public function makeInActive()
     {
         return $this->updateStatus(applicationConstants::INACTIVE);
+    }
+
+    public static function formatBody($str, $replacements, $data)
+    {
+        $replacements = json_decode($replacements, true);
+        
+        $arr = [];
+        array_walk($data, function (&$value, &$key) use (&$arr, &$replacements) {
+            $key = '{' . strtoupper($key) . '}';
+            if (array($key, $replacements)) {
+                $arr[$key] = $value;
+            }
+        });
+
+        return CommonHelper::replaceStringData($str, $arr);
     }
 }

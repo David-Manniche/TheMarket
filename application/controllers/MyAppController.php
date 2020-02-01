@@ -201,7 +201,7 @@ class MyAppController extends FatController
 
         $currencyRow = Currency::getAttributesById($this->siteCurrencyId);
 
-        $this->currencySymbol = !empty($currencyRow['currency_symbol_left'])?$currencyRow['currency_symbol_left']:$currencyRow['currency_symbol_right'];
+        $this->currencySymbol = !empty($currencyRow['currency_symbol_left']) ? $currencyRow['currency_symbol_left'] : $currencyRow['currency_symbol_right'];
         $this->set('currencySymbol', $this->currencySymbol);
 
         $user_id = $this->getAppLoggedUserId();
@@ -228,7 +228,7 @@ class MyAppController extends FatController
 
     private function getAppLoggedUserId()
     {
-        return isset($this->app_user["user_id"])?$this->app_user["user_id"]:0;
+        return isset($this->app_user["user_id"]) ? $this->app_user["user_id"] : 0;
     }
 
     public function getStates($countryId, $stateId = 0, $return = false)
@@ -540,6 +540,16 @@ class MyAppController extends FatController
         }
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $this->siteLangId));
+        return $frm;
+    }
+
+    protected function getOtpForm()
+    {
+        $frm = new Form('otpFrm');
+        $frm->addHiddenField('', 'user_id');
+        $frm->addRequiredField(Labels::getLabel('LBL_OTP', $this->siteLangId), 'upv_otp');
+        
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SUBMIT', $this->siteLangId));
         return $frm;
     }
 

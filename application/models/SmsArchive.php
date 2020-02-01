@@ -12,29 +12,10 @@ class SmsArchive extends MyAppModel
         $this->db = FatApp::getDb();
     }
 
-    public function saveRecord($response)
-    {
-        $dataToSave = [
-            'smsarchive_to' => $to,
-            'smsarchive_tpl_name' => $tpl,
-            'smsarchive_body' => $body,
-            'smsarchive_sent_on' => date('Y-m-d H:i:s'),
-            'smsarchive_response_id' => !empty($response->sid) ? $response->sid : 0
-        ];
-
-        $this->assignValues($dataToSave);
-        if (!$this->save()) {
-            $this->error = $this->getError();
-            return false;
-        }
-        return true;
-    }
-
     public static function send($toNumber, $body, $tpl)
     {
         $defaultPushNotiAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_SMS_NOTIFICATION, FatUtility::VAR_INT, 0);
-        if (empty($defaultPushNotiAPI)) {
-            // $this->error =  Labels::getLabel('MSG_DEFAULT_PUSH_NOTIFICATION_API_NOT_SET', CommonHelper::getLangId());
+        if (empty($defaultPushNotiAPI) || empty($toNumber) || empty($body) || empty($tpl)) {
             return false;
         }
 
@@ -48,15 +29,23 @@ class SmsArchive extends MyAppModel
 
         $obj = new $keyName();
         $response = $obj->send($toNumber, $body);
-
         if (false == $response) {
             // $this->error = $obj->getError();
             return false;
         }
         if (true == $response['status']) {
+            $dataToSave = [
+                'smsarchive_to' => $toNumber,
+                'smsarchive_tpl_name' => $tpl,
+                'smsarchive_body' => $body,
+                'smsarchive_sent_on' => date('Y-m-d H:i:s'),
+                'smsarchive_response_id' => !empty($response->sid) ? $response->sid : 0
+            ];
+    
             $smsArObj = new SmsArchive();
-            if (false == $smsArObj->saveRecord($response['data'])) {
-                // $this->error = $smsArObj->getError();
+            $smsArObj->assignValues($dataToSave);
+            if (!$smsArObj->save()) {
+                // $error = $smsArObj->getError();
                 return false;
             }
             return true;

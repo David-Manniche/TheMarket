@@ -17,7 +17,7 @@ class TwilioSmsSettingsController extends SmsNotificationSettingsController
             'phone' => [
                 'type' => 'string',
                 'required' => true,
-                'label' => "From Phone Number",
+                'label' => "Sender Id",
             ]
         ];
     }

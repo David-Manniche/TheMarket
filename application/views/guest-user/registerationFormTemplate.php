@@ -3,6 +3,10 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 $showLogInLink = isset($showLogInLink) ? $showLogInLink : true;
 $onSubmitFunctionName = isset($onSubmitFunctionName) ? $onSubmitFunctionName : false;
 
+if (isset($signUpWithPhone) && 0 < $signUpWithPhone) {
+    $onSubmitFunctionName = 'return registerWithPhone';
+}
+
 $registerFrm->setFormTagAttribute('action', CommonHelper::generateUrl('GuestUser', 'register'));
 
 if ($onSubmitFunctionName) {
@@ -104,7 +108,7 @@ echo $registerFrm->getFormTag();
                         <i class="input-helper"></i>
                     </label>
                     <?php }
-                    if ((isset($signUpWithPhone) || 1 > $signUpWithPhone) && $registerFrm->getField('isCheckOutPage')) {
+                    if ((!isset($signUpWithPhone) || 1 > $signUpWithPhone) && $registerFrm->getField('isCheckOutPage')) {
                         echo $registerFrm->getFieldHTML('isCheckOutPage');
                     } ?>
                 </div>

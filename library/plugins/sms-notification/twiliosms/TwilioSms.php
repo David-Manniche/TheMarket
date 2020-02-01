@@ -44,7 +44,7 @@ class TwilioSms extends SmsNotificationBase
         );
         
         return [
-            'success' => true,
+            'status' => true,
             'msg' => Labels::getLabel("MSG_SUCCESS", CommonHelper::getLangId()),
             'data' => $response
         ];
