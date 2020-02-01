@@ -32,7 +32,7 @@
                  </div>
                  <div class="field-wraper">
                     <div class="field_cover">
-                        <input type="text" class="prodspec_group" name="prodspec_group[<?php echo $langId; ?>]" value="">
+                        <input type="text" class="prodspec_group" name="prodspec_group[<?php echo $langId; ?>]" value="<?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_group']; } ?>">
                     </div>
                 </div>
             </div>

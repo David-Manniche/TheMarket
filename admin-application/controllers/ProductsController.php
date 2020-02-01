@@ -218,24 +218,19 @@ class ProductsController extends AdminBaseController
     public function updateProductTag()
     {
         $this->objPrivilege->canEditProducts();
-        $post = FatApp::getPostedData();
-        if (false === $post) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $product_id = FatUtility::int($post['product_id']);
-        $tag_id = FatUtility::int($post['tag_id']);
-        if (!$product_id || !$tag_id) {
+        $productId = FatApp::getPostedData('product_id', FatUtility::VAR_INT, 0);
+        $tagId =   FatApp::getPostedData('tag_id', FatUtility::VAR_INT, 0);
+        if ($productId < 1 || $tagId < 1) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
-        $prodObj = new Product();
-        if (!$prodObj->addUpdateProductTag($product_id, $tag_id)) {
-            Message::addErrorMessage(Labels::getLabel($prodObj->getError(), $this->adminLangId));
+        $prod = new Product();
+        if (!$prod->addUpdateProductTag($productId, $tagId)) {
+            Message::addErrorMessage(Labels::getLabel($prod->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        Tag::updateProductTagString($product_id);
+        Tag::updateProductTagString($productId);
 
         $this->set('msg', Labels::getLabel('LBL_Record_Updated_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
@@ -244,24 +239,20 @@ class ProductsController extends AdminBaseController
     public function removeProductTag()
     {
         $this->objPrivilege->canEditProducts();
-        $post = FatApp::getPostedData();
-        if (false === $post) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $product_id = FatUtility::int($post['product_id']);
-        $tag_id = FatUtility::int($post['tag_id']);
-        if (!$product_id || !$tag_id) {
+        $productId = FatApp::getPostedData('product_id', FatUtility::VAR_INT, 0);
+        $tagId =   FatApp::getPostedData('tag_id', FatUtility::VAR_INT, 0);
+        if ($productId < 1 || $tagId < 1) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
-        $prodObj = new Product();
-        if (!$prodObj->removeProductTag($product_id, $tag_id)) {
-            Message::addErrorMessage(Labels::getLabel($prodObj->getError(), $this->adminLangId));
+        
+        $prod = new Product();
+        if (!$prod->removeProductTag($productId, $tagId)) {
+            Message::addErrorMessage(Labels::getLabel($prod->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        Tag::updateProductTagString($product_id);
+        Tag::updateProductTagString($productId);
 
         $this->set('msg', Labels::getLabel('LBL_Tag_Removed_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
@@ -1106,11 +1097,21 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         } 
-        $psFree = isset($post['ps_free']) ? $post['ps_free'] : 0;
-        if(!$prod->saveProductSellerShipping($post['product_seller_id'], $psFree, 0)){
-            Message::addErrorMessage($prod->getError());
-            FatUtility::dieWithError(Message::getHtml());
-        } 
+        
+        $productType = Product::getAttributesById($productId, 'product_type');
+        if($productType == Product::PRODUCT_TYPE_PHYSICAL){
+            $psFree = isset($post['ps_free']) ? $post['ps_free'] : 0;
+            $psFromCountryId = 0;
+            $prodShippingDetails = Product::getProductShippingDetails($productId, $this->adminLangId, $post['product_seller_id']); 
+            if(!empty($prodShippingDetails)){
+                $psFromCountryId = $prodShippingDetails['ps_from_country_id'];
+            }             
+            if(!$prod->saveProductSellerShipping($post['product_seller_id'], $psFree, $psFromCountryId)){
+                Message::addErrorMessage($prod->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            } 
+        }
+        
         if($post['product_seller_id'] > 0){
             $taxData = Tax::getTaxCatByProductId($productId);
             $prod->saveProductTax($taxData['ptt_taxcat_id'], $post['product_seller_id']);
@@ -1313,7 +1314,12 @@ class ProductsController extends AdminBaseController
         } 
         
         $prodSellerId = Product::getAttributesById($productId, 'product_seller_id');
-        if(!$prod->saveProductSellerShipping($prodSellerId, 0, $post['ps_from_country_id'])){
+        $psFree = 0;
+        $prodShippingDetails = Product::getProductShippingDetails($productId, $this->adminLangId, $prodSellerId); 
+        if(!empty($prodShippingDetails)){
+            $psFree = $prodShippingDetails['ps_free'];
+        }
+        if(!$prod->saveProductSellerShipping($prodSellerId, $psFree, $post['ps_from_country_id'])){
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
