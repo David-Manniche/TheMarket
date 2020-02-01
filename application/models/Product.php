@@ -1613,7 +1613,7 @@ END,   special_price_found ) as special_price_found'
         return true;
     }
     
-    public function saveProductLangData($prodNameArr, $prodDescArr, $prodYoutubeUrl)
+    /* public function saveProductLangData($prodNameArr, $prodDescArr, $prodYoutubeUrlArr)
     {
         if($this->mainTableRecordId < 1 || empty($prodNameArr)){
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
@@ -1627,7 +1627,7 @@ END,   special_price_found ) as special_price_found'
                      static::DB_TBL_LANG_PREFIX .'lang_id' => $langId,
                     'product_name' => $langName,
                     'product_description' => $prodDescArr[$langId],
-                    'product_youtube_video' => $prodYoutubeUrl[$langId]
+                    'product_youtube_video' => $prodYoutubeUrlArr[$langId]
                 );
                 if (!$this->updateLangData($langId, $data)) {
                     $this->error = $this->getError();
@@ -1636,8 +1636,69 @@ END,   special_price_found ) as special_price_found'
             }
         }
         return true;
+    } */
+    
+    public function saveProductLangData($siteDefaultLangId, $langData)
+    {
+        if($this->mainTableRecordId < 1 || empty($langData)){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+
+        $autoUpdateOtherLangsData = $langData['auto_update_other_langs_data']; 
+        foreach( $langData['product_name'] as $langId=>$prodName ){ 
+            if( empty( $prodName ) && $autoUpdateOtherLangsData > 0 ){ 
+                $this->saveTranslatedProductLangData($langId);                
+            }else if( !empty( $prodName ) ){                
+                $data = array(
+                     static::DB_TBL_LANG_PREFIX .'product_id' => $this->mainTableRecordId,
+                     static::DB_TBL_LANG_PREFIX .'lang_id' => $langId,
+                    'product_name' => $prodName,
+                    'product_description' => $langData['product_description'][$langId],
+                    'product_youtube_video' => $langData['product_youtube_video'][$langId],
+                ); 
+                if (!$this->updateLangData( $langId, $data )) {
+                    $this->error = $this->getError();
+                    return false;
+                }                
+            }
+        }
+        return true; 
     }
     
+    public function saveTranslatedProductLangData($langId)
+    {
+        $langId = FatUtility::int($langId);
+        if($this->mainTableRecordId < 1 || $langId < 1){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        
+        $translateLangobj = new TranslateLangData(static::DB_TBL_LANG);
+        if (false === $translateLangobj->updateTranslatedData($this->mainTableRecordId, 0, $langId)) {
+            $this->error = $translateLangobj->getError();
+            return false;
+        }
+        return true;
+    }
+    
+    public function getTranslatedProductData($data, $toLangId)
+    {
+        $toLangId = FatUtility::int($toLangId);
+        if(empty($data) || $toLangId < 1){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        
+        $translateLangobj = new TranslateLangData(static::DB_TBL_LANG);        
+        $translatedData = $translateLangobj->directTranslate($data, $toLangId);
+        if (false === $translatedData) {
+            $this->error = $translateLangobj->getError();
+            return false;
+        }
+        return $translatedData;
+    }
+
     public function saveProductCategory( $categoryId )
     {
         $categoryId = FatUtility::int($categoryId);

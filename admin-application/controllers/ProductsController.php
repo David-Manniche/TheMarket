@@ -967,6 +967,13 @@ class ProductsController extends AdminBaseController
             $frm->addTextArea(Labels::getLabel('LBL_Description', $this->adminLangId), 'product_description['.$langId.']');
             $frm->addTextBox(Labels::getLabel('LBL_Youtube_Video_Url', $this->adminLangId), 'product_youtube_video['.$langId.']');
         }
+        
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+        unset($languages[$siteDefaultLangId]);
+        if (!empty($translatorSubscriptionKey) && count($languages) > 0) {
+            $frm->addCheckBox(Labels::getLabel('LBL_Translate_For_Other_Languages', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+        
         $taxCategories =  Tax::getSaleTaxCatArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Tax_Category', $this->adminLangId), 'ptt_taxcat_id', $taxCategories, '', array(), Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired(true);
         
@@ -995,7 +1002,7 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }                
-                
+             
         $prod = new Product($productId);
         if(!$prod->saveProductData($post)){
             Message::addErrorMessage($prod->getError());
@@ -1003,11 +1010,12 @@ class ProductsController extends AdminBaseController
         }        
         Product::updateMinPrices($productId);
         
-        if(!$prod->saveProductLangData($post['product_name'], $post['product_description'], $post['product_youtube_video'])){
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        if(!$prod->saveProductLangData( $siteDefaultLangId, $post )){
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         if(!$prod->saveProductCategory($post['ptc_prodcat_id'])){
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
@@ -1348,6 +1356,27 @@ class ProductsController extends AdminBaseController
         $this->set('msg', Labels::getLabel('LBL_Product_Shipping_Setup_Successful', $this->adminLangId));
         $this->set('productId', $prod->getMainTableRecordId());
         $this->_template->render(false, false, 'json-success.php'); 
+    }
+    
+    public function translatedProductData()
+    {
+        $prodName = FatApp::getPostedData('product_name', FatUtility::VAR_STRING, '');
+        $prodDesc = FatApp::getPostedData('product_description', FatUtility::VAR_STRING, '');
+        $toLangId = FatApp::getPostedData('toLangId', FatUtility::VAR_INT, 0);
+        $data = array(
+            'product_name' => $prodName,
+            'product_description' => $prodDesc,
+        ); 
+        $product = new Product(); 
+        $translatedData = $product->getTranslatedProductData($data, $toLangId);
+        if(!$translatedData){
+            Message::addErrorMessage($product->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        $this->set('productName', $translatedData[$toLangId]['product_name']);
+        $this->set('productDesc', $translatedData[$toLangId]['product_description']);
+        $this->set('msg', Labels::getLabel('LBL_Product_Data_Translated_Successful', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');        
     }
     
     public function prodSpecGroupAutoComplete()

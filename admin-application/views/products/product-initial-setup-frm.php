@@ -207,6 +207,25 @@ $productFrm->setFormTagAttribute('onsubmit', 'setUpProduct(this); return(false);
                      </div>
                  </div>
              </div>
+             
+             <?php 
+                $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+                if(!empty($translatorSubscriptionKey) && count($otherLanguages) > 0){
+             ?>
+             <div class="row">
+                 <div class="col-md-12">
+                     <div class="field-set mb-0">
+                         <div class="caption-wraper"></div>
+                         <div class="field-wraper">
+                             <div class="field_cover"> 
+                             <?php echo $productFrm->getFieldHtml('auto_update_other_langs_data'); ?>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+            <?php } ?>
+                            
          </div>
          
          <?php 
@@ -215,7 +234,7 @@ $productFrm->setFormTagAttribute('onsubmit', 'setUpProduct(this); return(false);
          ?>
          <div class="accordians_container accordians_container-categories mt-5">
              <div class="accordian_panel">
-                 <span class="accordian_title accordianhead" id="collapse_<?php echo $langId; ?>">
+                 <span class="accordian_title accordianhead" id="collapse_<?php echo $langId; ?>" onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
                  <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                  </span>
                  <div class="accordian_body accordiancontent" style="display: none;">

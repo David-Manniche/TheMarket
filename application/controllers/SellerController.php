@@ -4642,6 +4642,13 @@ class SellerController extends SellerBaseController
             $frm->addTextArea(Labels::getLabel('LBL_Description', $this->siteLangId ), 'product_description['.$langId.']');
             $frm->addTextBox(Labels::getLabel('LBL_Youtube_Video_Url', $this->siteLangId), 'product_youtube_video['.$langId.']');
         }
+        
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+        unset($languages[$siteDefaultLangId]);
+        if (!empty($translatorSubscriptionKey) && count($languages) > 0) {
+            $frm->addCheckBox(Labels::getLabel('LBL_Translate_For_Other_Languages', $this->siteLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+        
         $taxCategories =  Tax::getSaleTaxCatArr($this->siteLangId );
         $frm->addSelectBox(Labels::getLabel('LBL_Tax_Category', $this->siteLangId ), 'ptt_taxcat_id', $taxCategories, '', array(), Labels::getLabel('LBL_Select', $this->siteLangId ))->requirements()->setRequired(true);
         

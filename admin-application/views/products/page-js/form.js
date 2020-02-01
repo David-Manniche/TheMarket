@@ -308,6 +308,23 @@
             productImages( product_id, $('.option-js').val(), $('.language-js').val() );
         });
     };
+    
+    translateData = function(item, defaultLang, toLangId){
+        var autoTranslate = $("input[name='auto_update_other_langs_data']:checked").length;               
+        var prodName = $("input[name='product_name["+defaultLang+"]']").val();
+        var prodDesc = $("[name='product_description["+defaultLang+"]']").val();
+        var alreadyOpen = $('#collapse_'+toLangId).hasClass('active');        
+        if(autoTranslate == 0 || prodName == "" || alreadyOpen == true){
+            return false;
+        }                
+        var data = "product_name="+prodName+'&product_description='+prodDesc+"&toLangId="+toLangId ;
+        fcom.updateWithAjax(fcom.makeUrl('Products', 'translatedProductData'), data, function(t) {
+            if(t.status == 1){
+                $("input[name='product_name["+toLangId+"]']").val(t.productName);
+                $("[name='product_description["+toLangId+"]']").val(t.productDesc);
+            }
+        }); 
+    }
 
 })();
 

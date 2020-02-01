@@ -116,7 +116,7 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
          </div>
          
          <div class="row">
-             <div class="col-md-12">
+             <div class="col-md-6">
                  <div class="field-set">
                      <div class="caption-wraper">
                         <label class="field_label">
@@ -172,7 +172,6 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
                      </div>
                  </div>
              </div>
-             
              <div class="row">
                  <div class="col-md-12">
                      <div class="field-set mb-0">
@@ -191,6 +190,23 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
                      </div>
                  </div>
              </div>
+              <?php 
+                $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+                if(!empty($translatorSubscriptionKey) && count($otherLanguages) > 0){
+             ?>
+             <div class="row">
+                 <div class="col-md-12">
+                     <div class="field-set mb-0">
+                         <div class="caption-wraper"></div>
+                         <div class="field-wraper">
+                             <div class="field_cover"> 
+                             <?php echo $productFrm->getFieldHtml('auto_update_other_langs_data'); ?>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+            <?php } ?>
          </div>
          
          <?php 
@@ -199,10 +215,10 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
          ?>
          <div class="accordians_container accordians_container-categories mt-5">
              <div class="accordian_panel">
-                 <span class="accordian_title accordianhead" id="collapse_<?php echo $langId; ?>">
+                 <span class="accordian_title accordianhead" id="collapse_<?php echo $langId; ?>"  onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
                  <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
                  </span>
-                 <div class="accordian_body accordiancontent" style="display: none;">
+                 <div class="accordian_body accordiancontent">
                      <div class="row">
                         <div class="col-md-12">
                             <div class="field-set">
