@@ -657,7 +657,7 @@ class ConfigurationsController extends AdminBaseController
                 array(),false,0);
                 $fld4->htmlAfterField = '<br><small>' . Labels::getLabel("LBL_On_enabling_this_feature,_Seller_can_request_to_add_product_on_catalog",$this->adminLangId) . '</small>'; */
 
-                $fld4 = $frm->addCheckBox(
+                /*$fld4 = $frm->addCheckBox(
                     Labels::getLabel("LBL_Allow_Sellers_to_request_products_which_is_availble_to_all_sellers", $this->adminLangId),
                     'CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT',
                     1,
@@ -665,7 +665,7 @@ class ConfigurationsController extends AdminBaseController
                     false,
                     0
                 );
-                $fld4->htmlAfterField = '<br><small>' . Labels::getLabel("LBL_On_enabling_this_feature,_Seller_can_request_to_add_products_available_for_all_sellers", $this->adminLangId) . '</small>';
+                $fld4->htmlAfterField = '<br><small>' . Labels::getLabel("LBL_On_enabling_this_feature,_Seller_can_request_to_add_products_available_for_all_sellers", $this->adminLangId) . '</small>'; */
 
                 $fld1 = $frm->addCheckBox(Labels::getLabel("LBL_Product's_Model_Mandatory", $this->adminLangId), 'CONF_PRODUCT_MODEL_MANDATORY', 1, array(), false, 0);
                 $fld1->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_will_make_Product's_model_mandatory", $this->adminLangId) . "</small>";
