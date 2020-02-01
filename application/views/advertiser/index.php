@@ -2,8 +2,8 @@
 <?php $this->includeTemplate('_partial/advertiser/advertiserDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
-        <div class="content-header justify-content-between row mb-3">
-            <div class="content-header-left col-md-auto">
+        <div class="content-header row">
+            <div class="col">
                 <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
                 <h2 class="content-header-title"><?php echo Labels::getLabel('Lbl_Advertiser', $siteLangId); ?></h2>
             </div>
@@ -13,7 +13,7 @@
                 <div class="widget widget-stats">
                     <a href="<?php echo CommonHelper::generateUrl('Account', 'credits'); ?>">
                         <div class="cards">
-                            <div class="cards-header p-4">
+                            <div class="cards-header">
                                 <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Credits', $siteLangId);?></h5>
                                 <i class="icn"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#credits" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#Credits"></use>
@@ -42,7 +42,7 @@
                 <div class="widget widget-stats">
                     <a href="javascript:void(0)" onClick="redirectToPromotions('<?php echo CommonHelper::generateUrl('advertiser', 'promotions');?>')">
                         <div class="cards">
-                            <div class="cards-header p-4">
+                            <div class="cards-header">
                                 <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Active_Promotions', $siteLangId);?></h5>
                                 <i class="icn"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#speaker" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#speaker"></use>
@@ -71,7 +71,7 @@
                 <div class="widget widget-stats">
                     <a href="<?php echo CommonHelper::generateUrl('advertiser', 'promotionCharges');?>">
                         <div class="cards">
-                            <div class="cards-header p-4">
+                            <div class="cards-header">
                                 <h5 class="cards-title"><?php echo Labels::getLabel('LBL_All_Promotions', $siteLangId);?></h5>
                                 <i class="icn">
                                     <svg class="svg">
@@ -102,7 +102,7 @@
             <div class="row">
                 <div class="col-lg-12 col-md-12 mb-4">
                     <div class="cards">
-                        <div class="cards-header p-4">
+                        <div class="cards-header">
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Active_Promotions', $siteLangId);?></h5>
                             <?php if (count($activePromotions)>0) { ?>
                             <div class="action">
@@ -178,7 +178,7 @@
             <div class="row">
                 <div class="col-lg-12 col-md-12 mb-4">
                     <div class="cards">
-                        <div class="cards-header p-4">
+                        <div class="cards-header">
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Transaction_History', $siteLangId);?></h5>
                             <?php if (count($transactions) > 0) { ?>
                             <div class="action">

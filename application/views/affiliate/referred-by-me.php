@@ -29,8 +29,8 @@ $cancelBtnFld->developerTags['col'] = 2;
 <?php $this->includeTemplate('_partial/affiliate/affiliateDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
-        <div class="content-header  row justify-content-between mb-3">
-            <div class="col-md-auto">
+        <div class="content-header row">
+            <div class="col">
                 <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
                 <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_My_Referrals', $siteLangId); ?></h2>
             </div>

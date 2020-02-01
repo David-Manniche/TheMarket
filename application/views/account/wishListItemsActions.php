@@ -12,6 +12,7 @@ if (true == $isWishList) {
             <input type="checkbox" class='selectAll-js' onclick="selectAll($(this));"><i
                 class="input-helper"></i>Select all
         </label>
+		<div class="btn-group">
         <?php if (true == $isWishList) { ?>
             <a title='<?php echo Labels::getLabel('LBL_Move_to_other_wishlist', $siteLangId); ?>'
                 class="btn btn--primary btn--sm formActionBtn-js formActions-css"
@@ -37,4 +38,5 @@ if (true == $isWishList) {
             </a>
         <?php } ?>
     </div>
+	</div>
 </div>

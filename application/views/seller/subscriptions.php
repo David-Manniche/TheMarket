@@ -42,15 +42,15 @@ $cancelBtnFld->setWrapperAttribute('class','col-lg-2 ');
 $cancelBtnFld->developerTags['col'] = 2;
 ?> <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
-        <div class="content-header row justify-content-between mb-3">
-            <div class="col-md-auto"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_My_Subscriptions',$siteLangId);?></h2>
+        <div class="content-header row">
+            <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_My_Subscriptions',$siteLangId);?></h2>
             </div>
         </div>
         <div class="content-body">
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-header p-4">
+                        <div class="cards-header">
                             <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Search_Subscriptions',$siteLangId);?></h5> <?php if($currentActivePlan) {
                                             if(strtotime(date("Y-m-d"))>=strtotime('-3 day',strtotime($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])) ){
                                                 if($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'type']==SellerPackages::PAID_TYPE && FatDate::diff(date("Y-m-d"),$currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])>0 ){
@@ -99,7 +99,7 @@ $cancelBtnFld->developerTags['col'] = 2;
             <div class="row">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-header p-4">
+                        <div class="cards-header">
                         </div>
                         <div class="cards-content pl-4 pr-4 ">
                             <div id="ordersListing"><?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?></div>

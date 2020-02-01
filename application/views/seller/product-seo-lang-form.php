@@ -37,7 +37,7 @@
     }
 
     $exitBtn = $productSeoLangForm->getField('btn_exit');
-    $exitBtn->setfieldTagAttribute('class', "btn btn--primary-border");
+    $exitBtn->setfieldTagAttribute('class', "btn btn-outline-primary");
     $exitBtn->setfieldTagAttribute('onClick', "setupProductLangMetaTag(this.closest('form'), 1)");
     $exitBtn->developerTags['col'] = 3;
     $exitBtn->developerTags['noCaptionTag'] = true;

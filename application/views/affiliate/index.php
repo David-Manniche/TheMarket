@@ -7,8 +7,8 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
 ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
-        <div class="content-header justify-content-between row mb-4">
-            <div class="content-header-left col-md-auto"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Affiliate', $siteLangId); ?></h2>
+        <div class="content-header row">
+            <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Affiliate', $siteLangId); ?></h2>
             </div>
         </div>
         <div class="content-body">
@@ -16,7 +16,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                 <div class="widget widget-stats">
                     <a href="<?php echo CommonHelper::generateUrl('Account', 'credits'); ?>">
                         <div class="cards">
-                            <div class="cards-header p-4">
+                            <div class="cards-header">
                                 <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Credits', $siteLangId);?></h5>
                                 <i class="icn"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#credits" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#Credits"></use>
@@ -45,7 +45,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                 <div class="widget widget-stats">
                     <a href="<?php echo CommonHelper::generateUrl('Account', 'credits'); ?>">
                         <div class="cards">
-                            <div class="cards-header p-4">
+                            <div class="cards-header">
                                 <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Revenue', $siteLangId);?></h5>
                                 <i class="icn">
                                     <svg class="svg">
@@ -74,7 +74,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                 </div>
                 <div class="widget widget-stats">
                     <div class="cards">
-                        <div class="cards-header p-4">
+                        <div class="cards-header">
                             <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Share_and_earn_commission_on_every_purchase', $siteLangId)?></h5>
                         </div>
                         <div class="cards-content p-4 pr-4 ">
@@ -114,7 +114,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
             <!-- <div class="row">
             <div class="col-lg-6 col-md-12">
                 <div class="cards">
-                    <div class="cards-header p-4">
+                    <div class="cards-header">
                         <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Information', $siteLangId);?></h5>
                         <div class="action">
                             <a href="<?php echo CommonHelper::generateUrl('account', 'profileInfo');?>" class="link"><?php echo Labels::getLabel('LBL_Edit', $siteLangId);?>  <i class="fa fa-pencil"></i></a>
@@ -135,7 +135,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
             <div class="row mb-3 borderwrap showwrap" style="display:none;">
                 <div class="col-lg-12 col-md-12">
                     <div class="cards">
-                        <div class="cards-header p-4">
+                        <div class="cards-header">
                             <h4><?php echo Labels::getLabel('L_Invite_friends_through_email', $siteLangId)?></h4>
                         </div>
 						<div class="cards-content p-4"> <?php echo $sharingFrm->getFormHtml(); ?> <span class="ajax_message" id="custom_ajax"></span></div>
@@ -146,7 +146,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
             <div class="row ">
                 <div class="col-lg-6 col-md-12 mb-4">
                     <div class="cards">
-                        <div class="cards-header p-4">
+                        <div class="cards-header">
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Referred_by_me', $siteLangId);?></h5> <?php if (count($user_listing) > 0) {
         ?> <div class="action">
                                 <a href="<?php echo CommonHelper::generateUrl('affiliate', 'referredByMe'); ?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId); ?></a>
@@ -204,7 +204,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                 </div>
                 <div class="col-lg-6 col-md-12 mb-4">
                     <div class="cards">
-                        <div class="cards-header p-4">
+                        <div class="cards-header">
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Transaction_History', $siteLangId);?></h5> <?php if (count($transactions) > 0) {
         ?> <div class="action">
                                 <a href="<?php echo CommonHelper::generateUrl('Account', 'credits'); ?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId); ?></a>

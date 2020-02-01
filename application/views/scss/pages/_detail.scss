@@ -513,7 +513,7 @@ html.quick-view--open {
         color: $brand-color;
         font-weight: 700;
         line-height: 1.1;
-        /*font-family: $family-primary;*/
+        font-family: $family-primary;
         padding: 0;
     }
 
@@ -1343,8 +1343,7 @@ html.quick-view--open {
 .products__quickview > a {
     /*background: #000 url(../images/retina/icn-view.svg) no-repeat 15px 6px;
 	background-size:18px;*/
-    border-radius: 4px;
-    display: block;
+    border-radius:2px;   
     padding: 5px 14px;
     font-weight: 600;
     font-size: 0.7em;
@@ -1352,6 +1351,8 @@ html.quick-view--open {
     text-transform: uppercase;
     white-space: nowrap;
     background: #000;
+	display:flex;
+	align-items:center;
 }
 
 .products__quickview > a .svg-icon {

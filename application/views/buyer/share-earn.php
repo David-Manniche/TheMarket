@@ -7,8 +7,8 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
 $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
-        <div class="content-header row justify-content-between mb-3">
-            <div class="col-md-auto"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
+        <div class="content-header row">
+            <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
                 <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Share_and_Earn', $siteLangId);?></h2>
             </div>
         </div>
@@ -16,7 +16,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
             <div class="js-widget-scroll widget-scroll">
                 <div class="widget widget-stats">
                     <div class="cards">
-                        <div class="cards-header p-4">
+                        <div class="cards-header">
                             <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Share_with_your_friends_and_you_both_earn_reward_points', $siteLangId)?></h5>
                         </div>
                         <div class="cards-content p-4 pr-4 ">
@@ -58,7 +58,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
             <div class="row mb-3 borderwrap showwrap" style="display:none;">
                 <div class="col-lg-12 col-md-12">
                     <div class="cards">
-                        <div class="cards-header p-4">
+                        <div class="cards-header">
                             <h4><?php echo Labels::getLabel('L_Invite_friends_through_email', $siteLangId)?></h4>
                         </div>
 						<div class="cards-content p-4"> <?php echo $sharingFrm->getFormHtml(); ?> <span class="ajax_message" id="custom_ajax"></span></div>
