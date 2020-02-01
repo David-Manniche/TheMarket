@@ -965,6 +965,7 @@ class ProductsController extends AdminBaseController
                 $frm->addTextBox(Labels::getLabel('LBL_Product_Name', $this->adminLangId), 'product_name['.$langId.']');
             }            
             $frm->addTextArea(Labels::getLabel('LBL_Description', $this->adminLangId), 'product_description['.$langId.']');
+            $frm->addTextBox(Labels::getLabel('LBL_Youtube_Video_Url', $this->adminLangId), 'product_youtube_video['.$langId.']');
         }
         $taxCategories =  Tax::getSaleTaxCatArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Tax_Category', $this->adminLangId), 'ptt_taxcat_id', $taxCategories, '', array(), Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired(true);
@@ -1002,7 +1003,7 @@ class ProductsController extends AdminBaseController
         }        
         Product::updateMinPrices($productId);
         
-        if(!$prod->saveProductLangData($post['product_name'], $post['product_description'])){
+        if(!$prod->saveProductLangData($post['product_name'], $post['product_description'], $post['product_youtube_video'])){
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }

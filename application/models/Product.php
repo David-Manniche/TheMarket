@@ -1613,20 +1613,21 @@ END,   special_price_found ) as special_price_found'
         return true;
     }
     
-    public function saveProductLangData($prodNames, $prodDesc)
+    public function saveProductLangData($prodNameArr, $prodDescArr, $prodYoutubeUrl)
     {
-        if($this->mainTableRecordId < 1 || empty($prodNames)){
+        if($this->mainTableRecordId < 1 || empty($prodNameArr)){
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
         
-        foreach($prodNames as $langId=>$langName){
+        foreach($prodNameArr as $langId=>$langName){
             if(!empty($langName)){
                 $data = array(
                      static::DB_TBL_LANG_PREFIX .'product_id' => $this->mainTableRecordId,
                      static::DB_TBL_LANG_PREFIX .'lang_id' => $langId,
                     'product_name' => $langName,
-                    'product_description' => $prodDesc[$langId]
+                    'product_description' => $prodDescArr[$langId],
+                    'product_youtube_video' => $prodYoutubeUrl[$langId]
                 );
                 if (!$this->updateLangData($langId, $data)) {
                     $this->error = $this->getError();
