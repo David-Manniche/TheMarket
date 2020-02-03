@@ -545,7 +545,7 @@ trait SellerProducts
                     $data_to_be_save['selprod_price'] = $post['selprod_price'.$optionKey];
                     $data_to_be_save['selprod_stock'] = $post['selprod_stock'.$optionKey];
                     $data_to_be_save['selprod_sku'] = $post['selprod_sku'.$optionKey];
-                    $sellerProdObj = new SellerProduct($selprod_id);
+                    $sellerProdObj = new SellerProduct();
                     $sellerProdObj->assignValues($data_to_be_save);
                     if (!$sellerProdObj->save()) {
                         Message::addErrorMessage(Labels::getLabel($sellerProdObj->getError(), $this->siteLangId));
@@ -594,7 +594,6 @@ trait SellerProducts
                         FatUtility::dieJsonError(Message::getHtml());
                     }
                     /*--------  ] */
-                    $sellerProdObj = new SellerProduct($selprod_id);
                     /* Update seller product language data[ */
                     foreach ($languages as $langId => $langName) {
                         if (!empty($post['selprod_title'.$langId])) {
