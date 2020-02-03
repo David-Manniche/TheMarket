@@ -594,7 +594,7 @@ trait SellerProducts
                         FatUtility::dieJsonError(Message::getHtml());
                     }
                     /*--------  ] */
-
+                    $sellerProdObj = new SellerProduct($selprod_id);
                     /* Update seller product language data[ */
                     foreach ($languages as $langId => $langName) {
                         if (!empty($post['selprod_title'.$langId])) {
