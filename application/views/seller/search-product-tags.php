@@ -81,7 +81,7 @@ $("document").ready(function() {
                whitelist : whitelist,
                delimiters : "#",
                editTags : false,
-               backspace : "edit"
+               backspace : false
             }).on('add', addTagData).on('remove', removeTagData);
     });
 
