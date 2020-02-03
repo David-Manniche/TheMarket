@@ -34,7 +34,6 @@
     productAttributeAndSpecificationsFrm = function(productId){ 
         var data = '';
 		fcom.ajax(fcom.makeUrl('Products','productAttributeAndSpecificationsFrm', [productId]),data,function(res){
-			//$("#tabs_001").html('');
             $(".tabs_panel").html('');
             $(".tabs_panel").hide();
             $(".tabs_nav  > li > a").removeClass('active');
@@ -45,7 +44,9 @@
     }
     
     setUpProductAttributes = function(frm) {
-        if (!$(frm).validate()) return;    
+        if (!$(frm).validate()){
+            return false;    
+        }
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('Products', 'setUpProductAttributes'), data, function(t) {
             productOptionsAndTag(t.productId);
@@ -102,8 +103,7 @@
     
     productOptionsAndTag = function(productId){
         var data = '';
-		fcom.ajax(fcom.makeUrl('Products','productOptionsAndTag', [productId]),data,function(res){
-			//$("#tabs_002").html('');            
+		fcom.ajax(fcom.makeUrl('Products','productOptionsAndTag', [productId]),data,function(res){          
             $(".tabs_panel").html('');
             $(".tabs_panel").hide();
             $(".tabs_nav  > li > a").removeClass('active');
@@ -129,7 +129,6 @@
     productShipping = function(productId){
         var data = '';
 		fcom.ajax(fcom.makeUrl('Products','productShippingFrm', [productId]),data,function(res){
-			//$("#tabs_003").html('');
             $(".tabs_panel").html('');            
             $(".tabs_panel").hide();
             $(".tabs_nav  > li > a").removeClass('active');
@@ -239,9 +238,7 @@
     
     productMedia = function(productId){
         var data = '';
-		fcom.ajax(fcom.makeUrl('Products','imagesForm', [productId]),data,function(res){
-			//$("#tabs_003").html('');
-            //$("#tabs_004").html('');            
+		fcom.ajax(fcom.makeUrl('Products','imagesForm', [productId]),data,function(res){         
             $(".tabs_panel").html('');
             $(".tabs_panel").hide();
             $(".tabs_nav  > li > a").removeClass('active');

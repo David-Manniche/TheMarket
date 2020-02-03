@@ -44,7 +44,8 @@ $layout = Language::getLayoutDirection($langId);
                  <div class="caption-wraper"></div>
                  <div class="field-wraper">
                     <div class="field_cover">
-                        <input type="button" class="btn btn-primary btn-block" onClick="saveSpecification(<?php echo $langId; ?>, <?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_id']; } ?>)" value="<?php echo Labels::getLabel('LBL_Add', $adminLangId) ?>">
+                        <?php /* <input type="button" class="btn btn-primary btn-block" onClick="saveSpecification(<?php echo $langId; ?>, <?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_id']; } ?>)" value="<?php echo Labels::getLabel('LBL_Add', $adminLangId) ?>"> */ ?>
+                        <button type="button" class="btn btn-primary btn-block" onClick="saveSpecification(<?php echo $langId; ?>, <?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_id']; } ?>)"><?php echo Labels::getLabel('LBL_Add', $adminLangId) ?></button>
                     </div>
                  </div>
              </div>
