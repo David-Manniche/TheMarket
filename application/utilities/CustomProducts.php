@@ -1342,7 +1342,6 @@ trait CustomProducts
 
     public function tagsAutoComplete()
     {
-        $pagesize = 10;
         $post = FatApp::getPostedData();
 
         $srch = Tag::getSearchObject();
@@ -1359,7 +1358,6 @@ trait CustomProducts
             $cnd->attachCondition('tag_identifier', 'LIKE', '%'. $post['keyword'] . '%', 'OR');
         }
 
-        $srch->setPageSize($pagesize);
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $options = $db->fetchAll($rs, 'tag_id');

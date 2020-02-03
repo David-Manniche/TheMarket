@@ -75,11 +75,13 @@ $("document").ready(function() {
         return list;
     }
     var whitelist = getTagsAutoComplete();
+    console.log(whitelist);
     $.each(productsArr, function( index, value ) {
         tagify = new Tagify(document.querySelector('input[name=tag_name'+value+']'), {
                whitelist : whitelist,
                delimiters : "#",
                editTags : false,
+               backspace : "edit"
             }).on('add', addTagData).on('remove', removeTagData);
     });
 
