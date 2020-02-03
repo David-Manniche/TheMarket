@@ -5,16 +5,20 @@ $prodCatFrm->setFormTagAttribute('id', 'frmProdCategory');
 $prodCatFrm->setFormTagAttribute('onsubmit', 'setupCategory(); return(false);');
 
 $statusFld = $prodCatFrm->getField('prodcat_active');
-$statusFld->setOptionListTagAttribute('class', 'list-inline-checkboxes'); 
+$statusFld->setOptionListTagAttribute('class', 'list-inline-checkboxes');
 
 $iconLangFld = $prodCatFrm->getField('icon_lang_id');
 $iconLangFld->addFieldTagAttribute('class', 'icon-language-js');
 
 $iconFld = $prodCatFrm->getField('cat_icon');
+$iconFld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+$iconFld->addFieldTagAttribute('onChange', 'iconPopupImage(this)');
 $iconFld->htmlAfterField = '<small class="text--small">'.sprintf(Labels::getLabel('LBL_This_will_be_displayed_in_%s_on_your_store', $adminLangId), '60*60').'</small>';
 
 $bannerFld = $prodCatFrm->getField('cat_banner');
-$bannerFld->htmlAfterField = '<small class="text--small" class="preferredDimensions-js">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s',$adminLangId),'2000 x 500').'</small>';
+$bannerFld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+$bannerFld->addFieldTagAttribute('onChange', 'bannerPopupImage(this)');
+$bannerFld->htmlAfterField = '<small class="text--small" class="preferredDimensions-js">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $adminLangId), '2000 x 500').'</small>';
 
 $bannerLangFld = $prodCatFrm->getField('banner_lang_id');
 $bannerLangFld->addFieldTagAttribute('class', 'banner-language-js');
@@ -33,13 +37,13 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
 <?php echo $prodCatFrm->getFormTag(); ?>
 <div class="sectionhead">
     <h4></h4>
-    <div class="section__toolbar">                                  
+    <div class="section__toolbar">
     <?php echo $prodCatFrm->getFieldHtml('btn_discard'); ?>
     <?php echo $prodCatFrm->getFieldHtml('btn_submit'); ?>
     </div>
 </div>
 <div class="sectionbody space">
-    
+
     <div class="row">
         <div class="col-lg-12 col-md-12">
             <div class="row justify-content-center">
@@ -50,7 +54,7 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
                                 <div class="field-set">
                                     <div class="caption-wraper">
                                         <label class="field_label">
-                                        <?php 
+                                        <?php
                                             $fld = $prodCatFrm->getField('prodcat_name['.$siteDefaultLangId.']');
                                             echo $fld->getCaption();
                                         ?>
@@ -96,7 +100,7 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
                                     </div>
                                 </div>
                             </div>
-                            <?php 
+                            <?php
                                 $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
                                 if(!empty($translatorSubscriptionKey) && count($otherLangData) > 0){
                             ?>
@@ -107,7 +111,7 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
                                 </div>
                             <?php } ?>
                         </div>
- 
+
                     <?php foreach($otherLangData as $langId=>$data) { ?>
                         <div class="accordians_container accordians_container-categories" defaultLang= "<?php echo $siteDefaultLangId; ?>" language="<?php echo $langId; ?>" id="accordion-language_<?php echo $langId; ?>" onClick="translateData(this)">
                              <div class="accordian_panel">
@@ -136,9 +140,9 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
                              </div>
                          </div>
                     <?php } ?>
-                
-                    <h3 class="form__heading"><?php echo Labels::getLabel('LBL_Media', $adminLangId); ?></h3>               
-                    
+
+                    <h3 class="form__heading"><?php echo Labels::getLabel('LBL_Media', $adminLangId); ?></h3>
+
                     <h3 class="mb-4"><?php echo Labels::getLabel('LBL_Icon', $adminLangId); ?></h3>
                     <div class="row">
                         <div class="col-md-4">
@@ -150,10 +154,10 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
                                 </label></div>
                                 <div class="field-wraper">
                                     <div class="field_cover">
-                                         <?php echo $prodCatFrm->getFieldHtml('icon_lang_id'); ?>
+                                        <?php echo $prodCatFrm->getFieldHtml('icon_lang_id'); ?>
                                     </div>
                                 </div>
-                            </div>  
+                            </div>
                         </div>
                         <div class="col-md-4">
                             <div class="field-set">
@@ -162,10 +166,11 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
                                 </div>
                                 <div class="field-wraper">
                                     <div class="field_cover">
-                                        <?php echo $prodCatFrm->getFieldHtml('cat_icon'); ?>
-                                        <?php 
-                                        foreach($mediaLanguages as $key=>$data){
-                                            echo $prodCatFrm->getFieldHtml('cat_icon_image_id['.$key.']'); 
+                                        <?php echo $prodCatFrm->getFieldHtml('icon_file_type');
+                                        echo $prodCatFrm->getFieldHtml('cat_icon'); ?>
+                                        <?php
+                                        foreach ($mediaLanguages as $key => $data) {
+                                            echo $prodCatFrm->getFieldHtml('cat_icon_image_id['.$key.']');
                                         }
                                         ?>
                                     </div>
@@ -173,7 +178,7 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
                             </div>
                         </div>
                         <div class="col-md-4" id="icon-image-listing"></div>
-                    </div> 
+                    </div>
 
                     <h3 class="mb-4"><?php echo Labels::getLabel('LBL_Banner', $adminLangId); ?></h3>
                     <div class="row">
@@ -211,27 +216,64 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
                                 </label></div>
                                 <div class="field-wraper">
                                     <div class="field_cover">
-                                        <?php echo $prodCatFrm->getFieldHtml('cat_banner'); ?>
-                                        <?php 
-                                        foreach($mediaLanguages as $key=>$data){
-                                            foreach($screenArr as $key1=>$screen){
+                                        <?php echo $prodCatFrm->getFieldHtml('banner_file_type');
+                                        echo $prodCatFrm->getFieldHtml('cat_banner'); ?>
+                                        <?php
+                                        foreach ($mediaLanguages as $key => $data) {
+                                            foreach ($screenArr as $key1 => $screen) {
                                                 echo $prodCatFrm->getFieldHtml('cat_banner_image_id['.$key.'_'.$key1.']');
                                             }
-                                        } 
+                                        }
                                         ?>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3" id="banner-image-listing"></div>
-                    </div> 
+                    </div>
 
                 </div>
             </div>
         </div>
     </div>
-        
 </div>
+<?php echo $prodCatFrm->getFieldHtml('banner_min_width');
+echo $prodCatFrm->getFieldHtml('banner_min_height');
+echo $prodCatFrm->getFieldHtml('logo_min_width');
+echo $prodCatFrm->getFieldHtml('logo_min_height');
+?>
 </form>
 <?php echo $prodCatFrm->getExternalJS(); ?>
-   
+
+<script>
+$('input[name=banner_min_width]').val(2000);
+$('input[name=banner_min_height]').val(500);
+$('input[name=logo_min_width]').val(150);
+$('input[name=logo_min_height]').val(150);
+var aspectRatio = 4 / 1;
+$(document).on('change','.prefDimensions-js',function(){
+    var screenDesktop = <?php echo applicationConstants::SCREEN_DESKTOP ?>;
+    var screenIpad = <?php echo applicationConstants::SCREEN_IPAD ?>;
+
+    if($(this).val() == screenDesktop)
+    {
+        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '2000 x 500'));
+        $('input[name=banner_min_width]').val(2000);
+        $('input[name=banner_min_height]').val(500);
+        aspectRatio = 4 / 1;
+    }
+    else if($(this).val() == screenIpad)
+    {
+        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '1024 x 360'));
+        $('input[name=banner_min_width]').val(1024);
+        $('input[name=banner_min_height]').val(360);
+        aspectRatio = 128 / 45;
+    }
+    else{
+        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '640 x 360'));
+        $('input[name=banner_min_width]').val(640);
+        $('input[name=banner_min_height]').val(360);
+        aspectRatio = 16 / 9;
+    }
+});
+</script>
