@@ -88,7 +88,7 @@ echo $tbl->getHtml(); ?>
 </form>
 <?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array(
-        'name' => 'frmEtplsSrchPaging'
+        'name' => 'frmStplsSrchPaging'
 ));
 $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'adminLangId' => $adminLangId);
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

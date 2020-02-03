@@ -20,8 +20,8 @@
             $htm = '<ul class="list-group">';
         foreach ($replacementVariables as $val) {
             $htm .= '<li class="list-group-item">
-                        <span>' . $val['name'] . '</span>
-                        <span class="badge badge-secondary" data-container="body" data-toggle="tooltip" data-placement="top" title="' . $val['name'] . '">
+                        <span>' . $val['title'] . '</span>
+                        <span class="badge badge-secondary" data-container="body" data-toggle="tooltip" data-placement="top" title="' . $val['title'] . '">
                         ' . $val['variable'] . '
                         </span>
                     </li>';
