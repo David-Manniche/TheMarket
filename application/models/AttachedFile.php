@@ -876,13 +876,13 @@ class AttachedFile extends MyAppModel
 
     public function extractZip($file)
     {
-        rename($file, $file.'.zip');
-        $zip = new ZipArchive;
-        $res = $zip->open($file.'.zip');
+        rename($file, $file . '.zip');
+        $zip = new ZipArchive();
+        $res = $zip->open($file . '.zip');
         if ($res === true) {
             $zip->extractTo($file);
             $zip->close();
-            unlink($file.'.zip');
+            unlink($file . '.zip');
             return true;
         } else {
             return false;
@@ -892,6 +892,38 @@ class AttachedFile extends MyAppModel
     public static function setTimeParam($dateTime)
     {
         $time = strtotime($dateTime);
-        return ($time > 0) ? '?t='.$time : '' ;
+        return ($time > 0) ? '?t=' . $time : '' ;
+    }
+    
+    public static function uploadErrorMessage($code, $langId)
+    {
+        switch ($code) {
+            case UPLOAD_ERR_INI_SIZE:
+                $message = Labels::getLabel("MSG_THE_UPLOADED_FILE_EXCEEDS_THE_UPLOAD_MAX_FILESIZE_DIRECTIVE_IN_PHP.INI", $langId);
+                break;
+            case UPLOAD_ERR_FORM_SIZE:
+                $message = Labels::getLabel("MSG_THE_UPLOADED_FILE_EXCEEDS_THE_MAX_FILE_SIZE_DIRECTIVE_THAT_WAS_SPECIFIED_IN_THE_HTML_FORM", $langId);
+                break;
+            case UPLOAD_ERR_PARTIAL:
+                $message = Labels::getLabel("MSG_THE_UPLOADED_FILE_WAS_ONLY_PARTIALLY_UPLOADED", $langId);
+                break;
+            case UPLOAD_ERR_NO_FILE:
+                $message = Labels::getLabel("MSG_NO_FILE_WAS_UPLOADED", $langId);
+                break;
+            case UPLOAD_ERR_NO_TMP_DIR:
+                $message = Labels::getLabel("MSG_MISSING_A_TEMPORARY_FOLDER", $langId);
+                break;
+            case UPLOAD_ERR_CANT_WRITE:
+                $message = Labels::getLabel("MSG_FAILED_TO_WRITE_FILE_TO_DISK", $langId);
+                break;
+            case UPLOAD_ERR_EXTENSION:
+                $message = Labels::getLabel("MSG_FILE_UPLOAD_STOPPED_BY_EXTENSION", $langId);
+                break;
+
+            default:
+                $message = Labels::getLabel("MSG_UNKNOWN_UPLOAD_ERROR", $langId);
+                break;
+        }
+        return $message;
     }
 }

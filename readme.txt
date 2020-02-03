@@ -44,3 +44,6 @@ New Features:
     => 69217 - Google Shopping Feed Integration
     => 69191 PayPal Payout.
 -------------------------------------------------------
+
+Bugs:
+    => 034264 => Getting error (invalid data) while using upload bulk media feature in import export.

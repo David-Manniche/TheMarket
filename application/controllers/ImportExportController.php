@@ -621,14 +621,12 @@ class ImportExportController extends SellerBaseController
 
     public function uploadBulkMedia()
     {
-        $frm = $this->getBulkMediaUploadForm($this->siteLangId);
-        $post = $frm->getFormDataFromArray($_FILES);
-
-        if (false === $post) {
-            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Data', $this->siteLangId));
+        if ($_FILES['bulk_images']['error'] !== UPLOAD_ERR_OK) {
+            $message = AttachedFile::uploadErrorMessage($_FILES['bulk_images']['error'], $this->siteLangId);
+            Message::addErrorMessage($message);
             FatUtility::dieJsonError(Message::getHtml());
         }
-
+        
         $fileName = $_FILES['bulk_images']['name'];
         $tmpName = $_FILES['bulk_images']['tmp_name'];
 
@@ -643,8 +641,8 @@ class ImportExportController extends SellerBaseController
 
         $filePath = AttachedFile::FILETYPE_BULK_IMAGES_PATH . $savedFile;
 
-        $msg = '<br>'.str_replace('{path}', '<br><b>'.$filePath.'</b>', Labels::getLabel('MSG_Your_uploaded_files_path_will_be:_{path}', $this->siteLangId));
-        $msg = Labels::getLabel('MSG_Uploaded_Successfully.', $this->siteLangId) .' '.$msg;
+        $msg = '<br>' . str_replace('{path}', '<br><b>' . $filePath . '</b>', Labels::getLabel('MSG_Your_uploaded_files_path_will_be:_{path}', $this->siteLangId));
+        $msg = Labels::getLabel('MSG_Uploaded_Successfully.', $this->siteLangId) . ' ' .$msg;
         $json = [
             "msg" => $msg,
             "path" => base64_encode($path . $savedFile)
