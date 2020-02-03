@@ -134,7 +134,7 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
              </div>
          </div>
          <?php $divLayout = Language::getLayoutDirection($siteDefaultLangId); ?>
-         <div class="p-4 mb-4 bg-gray rounded layout--<?php echo $divLayou;?>"">
+         <div class="p-4 mb-4 bg-gray rounded layout--<?php echo $divLayout;?>">
              <div class="row">
                 <div class="col-md-12">
                      <div class="field-set">
