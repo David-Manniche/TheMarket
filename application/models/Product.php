@@ -1593,6 +1593,7 @@ END,   special_price_found ) as special_price_found'
         FatApp::getDb()->query($query);
     }
     
+
     public static function getProductsCount()
     {
         $srch = static::getSearchObject(); 
@@ -1600,4 +1601,234 @@ END,   special_price_found ) as special_price_found'
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetch($rs);
     }
+
+    public function saveProductData($data)
+    {
+        if(empty($data)){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        
+        unset($data['product_id']);
+        if ( $this->mainTableRecordId < 1 ) {
+            $data['product_added_on'] = 'mysql_func_now()';            
+            $data['product_added_by_admin_id'] = isset($data['product_added_by_admin_id']) ? $data['product_added_by_admin_id'] : applicationConstants::YES;
+        }
+        $this->assignValues($data, true);        
+        if (!$this->save() ) { 
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+    public function saveProductLangData($siteDefaultLangId, $langData)
+    {
+        if($this->mainTableRecordId < 1 || empty($langData)){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+
+        $autoUpdateOtherLangsData = $langData['auto_update_other_langs_data']; 
+        foreach( $langData['product_name'] as $langId=>$prodName ){ 
+            if( empty( $prodName ) && $autoUpdateOtherLangsData > 0 ){ 
+                $this->saveTranslatedProductLangData($langId);                
+            }else if( !empty( $prodName ) ){                
+                $data = array(
+                     static::DB_TBL_LANG_PREFIX .'product_id' => $this->mainTableRecordId,
+                     static::DB_TBL_LANG_PREFIX .'lang_id' => $langId,
+                    'product_name' => $prodName,
+                    'product_description' => $langData['product_description'][$langId],
+                    'product_youtube_video' => $langData['product_youtube_video'][$langId],
+                ); 
+                if (!$this->updateLangData( $langId, $data )) {
+                    $this->error = $this->getError();
+                    return false;
+                }                
+            }
+        }
+        return true; 
+    }
+    
+    public function saveTranslatedProductLangData($langId)
+    {
+        $langId = FatUtility::int($langId);
+        if($this->mainTableRecordId < 1 || $langId < 1){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        
+        $translateLangobj = new TranslateLangData(static::DB_TBL_LANG);
+        if (false === $translateLangobj->updateTranslatedData($this->mainTableRecordId, 0, $langId)) {
+            $this->error = $translateLangobj->getError();
+            return false;
+        }
+        return true;
+    }
+    
+    public function getTranslatedProductData($data, $toLangId)
+    {
+        $toLangId = FatUtility::int($toLangId);
+        if(empty($data) || $toLangId < 1){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        
+        $translateLangobj = new TranslateLangData(static::DB_TBL_LANG);        
+        $translatedData = $translateLangobj->directTranslate($data, $toLangId);
+        if (false === $translatedData) {
+            $this->error = $translateLangobj->getError();
+            return false;
+        }
+        return $translatedData;
+    }
+
+    public function saveProductCategory( $categoryId )
+    {
+        $categoryId = FatUtility::int($categoryId);
+        if($this->mainTableRecordId < 1 || $categoryId < 1 ){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+
+        FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_CATEGORY, array('smt'=> static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'product_id = ?', 'vals' => array($this->mainTableRecordId)));
+        
+        $record = new TableRecord(static::DB_TBL_PRODUCT_TO_CATEGORY);
+        $data = array(
+            static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'product_id' => $this->mainTableRecordId,
+            static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'prodcat_id' => $categoryId
+        );
+        $record->assignValues($data);
+        if (!$record->addNew(array(), $data)) {
+            $this->error = $record->getError();
+            return false;
+        }
+        return true;
+    }
+    
+    public function saveProductTax( $taxId, $userId = 0 )
+    {
+        $taxId = FatUtility::int($taxId);
+        if($this->mainTableRecordId < 1 || $taxId < 1 ){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+
+        $data = array(        
+            'ptt_product_id' => $this->mainTableRecordId,
+            'ptt_taxcat_id' => $taxId,
+            'ptt_seller_user_id' => $userId
+        );
+        $tax = new Tax();
+        if ($userId > 0) {
+            $tax->removeTaxSetByAdmin($this->mainTableRecordId);
+        }
+        if (!$tax->addUpdateProductTaxCat($data)) {
+            $this->error = $tax->getError();
+            return false;
+        }
+        return true;
+    }
+    
+    public static function getCatalogProductCount( $productId )
+    {
+        $productId = FatUtility::int($productId);
+        $srch = SellerProduct::getSearchObject();
+        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
+        $srch->addCondition('selprod_deleted', '=', 0);
+        $srch->addCondition('selprod_product_id', '=', $productId);
+        $srch->addFld('selprod_id');
+        $rs = $srch->getResultSet();
+        return $srch->recordCount();
+    }
+    
+    public function saveProductSpecifications($prodSpecId, $langId, $prodSpecName, $prodSpecValue, $prodSpecGroup)
+    {
+        $prodSpecId = FatUtility::int($prodSpecId); 
+        $langId = FatUtility::int($langId);
+        if( $langId < 1 || empty($prodSpecName) || empty($prodSpecValue) || ($prodSpecId < 1 && $this->mainTableRecordId < 1) ){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        
+        if($prodSpecId < 1){
+            $prodSpec = new ProdSpecification( $prodSpecId );
+            $data['prodspec_product_id'] = $this->mainTableRecordId;
+            $prodSpec->assignValues($data);
+            if (!$prodSpec->save()) {
+                $this->error = $prodSpec->getError();
+                return false;
+            }
+            $prodSpecId = $prodSpec->getMainTableRecordId();
+        }
+        
+        $prodSpec = new ProdSpecification( $prodSpecId );
+        $langData = array(
+            'prodspeclang_prodspec_id' => $prodSpecId,
+            'prodspeclang_lang_id' => $langId,
+            'prodspec_name' => $prodSpecName,
+            'prodspec_value' => $prodSpecValue,
+            'prodspec_group' => $prodSpecGroup
+        );
+        if (!$prodSpec->updateLangData($langId, $langData)) {
+            $this->error = $prodSpec->getError();
+            return false;
+        }
+        return true;
+    }
+    
+    public function getProdSpecificationsByLangId($langId)
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->mainTableRecordId < 1 || $langId < 1) {  
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        $srch = new SearchBase(static::DB_PRODUCT_SPECIFICATION);
+        $srch->joinTable(static::DB_PRODUCT_LANG_SPECIFICATION, 'LEFT JOIN', static::DB_PRODUCT_SPECIFICATION_PREFIX.'id = '.static::DB_PRODUCT_LANG_SPECIFICATION_PREFIX.'prodspec_id');
+        $srch->addCondition(static::DB_PRODUCT_SPECIFICATION_PREFIX . 'product_id', '=', $this->mainTableRecordId);
+        $srch->addCondition(static::DB_PRODUCT_LANG_SPECIFICATION_PREFIX.'lang_id', '=', $langId);
+        $srch->addMultipleFields(
+            array(
+                static::DB_PRODUCT_SPECIFICATION_PREFIX.'id',
+                static::DB_PRODUCT_SPECIFICATION_PREFIX.'name',
+                static::DB_PRODUCT_SPECIFICATION_PREFIX.'value'
+            )
+        );
+        $rs = $srch->getResultSet();
+        return FatApp::getDb()->fetchAll($rs);
+    }
+        
+    public function saveProductSellerShipping($prodSellerId, $psFree, $psCountryId)
+    {
+        if ( $this->mainTableRecordId < 1 ) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        $prodSellerShip = array(
+            'ps_product_id' => $this->mainTableRecordId,
+            'ps_user_id' => $prodSellerId,
+            'ps_free' => $psFree,
+            'ps_from_country_id' => $psCountryId
+        );        
+        if(!FatApp::getDb()->insertFromArray(PRODUCT::DB_TBL_PRODUCT_SHIPPING, $prodSellerShip, false, array(), $prodSellerShip)) {
+            $this->error = FatApp::getDb()->getError();
+            return false;
+        }
+        return true;       
+    }
+    
+    public static function getProductSpecificsDetails($productId)
+    {
+        $productId = FatUtility::int($productId);
+        if ( $productId < 1 ) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        $srch = new SearchBase(ProductSpecifics::DB_TBL);
+        $srch->addCondition(ProductSpecifics::DB_TBL_PREFIX . 'product_id', '=', $productId);
+        $rs = $srch->getResultSet();
+        return FatApp::getDb()->fetch($rs);
+    }
+
 }

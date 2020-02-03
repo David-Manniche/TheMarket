@@ -38,7 +38,8 @@
                             $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
 
                             $productType=Importexport::TYPE_PRODUCTS;
-                        /* if ($canView && FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0)) {
+
+                        /* if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0)) {
                             $innerLiExport=$innerUl->appendElement('li');
 
                             $innerLiExport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Export', $adminLangId),"onclick"=>"addExportForm(".Importexport::TYPE_PRODUCTS.")"), Labels::getLabel('LBL_Export', $adminLangId), true);
@@ -59,7 +60,8 @@
                             $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteSelected()"), Labels::getLabel('LBL_Delete', $adminLangId), true);
 
                             $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Add_New_Product', $adminLangId),"onclick"=>"productForm(0,0)"), Labels::getLabel('LBL_Add_New_Product', $adminLangId), true);
+                           // $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Add_New_Product', $adminLangId),"onclick"=>"productForm(0,0)"), Labels::getLabel('LBL_Add_New_Product', $adminLangId), true);
+                            $innerLi->appendElement('a', array('href'=> commonHelper::generateUrl('Products', 'form'),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Add_New_Product', $adminLangId),), Labels::getLabel('LBL_Add_New_Product', $adminLangId), true);
                         }
                         echo $ul->getHtml();
                         ?>

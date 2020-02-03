@@ -3,7 +3,7 @@
     <?php
     if (!empty($shipping_rates) && count($shipping_rates) > 0) {
         $shipping_row = 0;
-        foreach ($shipping_rates as $shipping) { ?>
+        foreach ($shipping_rates as $key=>$shipping) {  ?>
             <div class="row align-items-center shippingRow--js" id="shipping-row<?php echo $shipping_row; ?>">
                 <div class="col-lg-2">
                     <div class="field-set">
@@ -114,6 +114,10 @@
         shippingautocomplete(shipping_row);
     }
     removeShippingRow = function(shipping_row) {
+        var rowLen = parseInt($("span.shippingTabListing--js div.shippingRow--js").length);
+        if(rowLen == 1){
+            return false;
+        }
         $("#shipping-row" + shipping_row).remove();
     }
     $('span.shippingTabListing--js div.shippingRow--js').each(function(index, element) {

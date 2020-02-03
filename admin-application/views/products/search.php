@@ -12,8 +12,8 @@ $arr_flds3 = array(
     //'attrgrp_name'=>Labels::getLabel('LBL_Attribute_Group',$adminLangId),
     'product_added_on'=>Labels::getLabel('LBL_Date', $adminLangId),
     'product_approved' => Labels::getLabel('LBL_Approval_Status', $adminLangId),
-    'product_active'=>Labels::getLabel('LBL_Status', $adminLangId),
-    'action'=>Labels::getLabel('LBL_Action', $adminLangId)
+    'product_active'=>Labels::getLabel('LBL_Publish', $adminLangId),
+    'action'=>Labels::getLabel('', $adminLangId)
 );
 $arr_flds = $arr_flds1 + $arr_flds2 + $arr_flds3;
 
@@ -78,73 +78,11 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), FatDate::format($row[$key], true));
                 break;
             case 'action':
-                    $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
-
-                    $li = $ul->appendElement("li", array('class'=>'droplink'));
-
-
-                    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                      $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                      $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                      //$innerLi=$innerUl->appendElement('li');
-
-                if ($canEdit) {
-                    $innerLiEdit = $innerUl->appendElement("li");
-                    $innerLiEdit->appendElement(
-                        'a',
-                        array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addProductForm(".$row['product_id'].", ".$row['product_attrgrp_id'].")"),
-                        Labels::getLabel('LBL_Edit', $adminLangId),
-                        true
-                    );
-
-                    $innerLiLinks = $innerUl->appendElement("li");
-                    $innerLiLinks->appendElement(
-                        'a',
-                        array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Links', $adminLangId),"onclick"=>"productLinksForm(".$row['product_id'].")"),
-                        Labels::getLabel('LBL_Links', $adminLangId),
-                        true
-                    );
-                }
-                $innerLiOptions = $innerUl->appendElement("li");
-                $innerLiOptions->appendElement(
-                    'a',
-                    array('href'=>'javascript:void(0)', 'class'=>'button small green', 'innerLi'=>Labels::getLabel('LBL_Options', $adminLangId),"onclick"=>"addProductOptionsForm(".$row['product_id'].")"),
-                    Labels::getLabel('LBL_Options', $adminLangId),
-                    true
-                );
-
-                $innerLiProductImages = $innerUl->appendElement("li");
-                $innerLiProductImages->appendElement(
-                    "a",
-                    array('title' =>Labels::getLabel('LBL_Product_Images', $adminLangId), 'onclick' => 'productImagesForm('.$row['product_id'].')','href'=>'javascript:void(0)'),
-                    Labels::getLabel('LBL_Product_Images', $adminLangId),
-                    true
-                );
-
-                $innerLiproductTags =  $innerUl->appendElement("li");
-                $innerLiproductTags->appendElement(
-                    "a",
-                    array('title' => Labels::getLabel('LBL_Product_Tags', $adminLangId), 'onclick' => 'productTagsForm('.$row['product_id'].')','href'=>'javascript:void(0)'),
-                    Labels::getLabel('LBL_Product_Tags', $adminLangId),
-                    true
-                );
-
-                $innerLiSpecifications = $innerUl->appendElement("li");
-                $innerLiSpecifications->appendElement(
-                    "a",
-                    array('title' =>Labels::getLabel('LBL_Specifications', $adminLangId), 'onclick' => 'productSpecifications('.$row['product_id'].')','href'=>'javascript:void(0)'),
-                    Labels::getLabel('LBL_Specifications', $adminLangId),
-                    true
-                );
-                if ($canEdit) {
-                    $innerLiDeleteProduct = $innerUl->appendElement("li");
-                    $innerLiDeleteProduct->appendElement(
-                        "a",
-                        array('title' =>Labels::getLabel('LBL_Delete_Product', $adminLangId), 'onclick' => 'deleteProduct('.$row['product_id'].')','href'=>'javascript:void(0)'),
-                        Labels::getLabel('LBL_Delete_Product', $adminLangId),
-                        true
-                    );
-                }
+                    if($canEdit){
+                        $td->appendElement('a', array('href'=> CommonHelper::generateUrl('Products','form',array($row['product_id'])), 'class'=>'btn btn-clean  btn-icon', 'title'=> Labels::getLabel('LBL_Edit',$adminLangId)),'<i class="ion-edit icon"></i>', true);
+                        
+                        $td->appendElement('a', array('href'=>"javascript:;", 'class'=>'btn btn-clean  btn-icon', 'title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteProduct(".$row['product_id'].")"),'<i class="ion-android-delete icon"></i>', true);
+                    }
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);

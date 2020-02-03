@@ -124,7 +124,7 @@ class TagsController extends AdminBaseController
         Tag::updateTagStrings($tag_id);
         /* ] */
 
-        $this->set('msg', Labels::getLabel('LBL_Tag_Setup_Successful', $this->adminLangId));
+        $this->set('msg', Labels::getLabel('LBL_Tag_Updated_Successful', $this->adminLangId));
         $this->set('tagId', $tag_id);
         $this->set('langId', $newTabLangId);
         $this->_template->render(false, false, 'json-success.php');
@@ -135,10 +135,11 @@ class TagsController extends AdminBaseController
         $this->objPrivilege->canEditTags();
         $post = FatApp::getPostedData();
 
-        $tag_id = $post['tag_id'];
-        $lang_id = $post['lang_id'];
+        $tag_id = FatUtility::int($post['tag_id']);
+        $lang_id = FatUtility::int($post['lang_id']);
 
-        if ($tag_id == 0 || $lang_id == 0) {
+        //if ($tag_id == 0 || $lang_id == 0) {
+        if ($tag_id < 1) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -181,7 +182,7 @@ class TagsController extends AdminBaseController
         Tag::updateTagStrings($tag_id);
         /* ] */
 
-        $this->set('msg', Labels::getLabel('LBL_Tag_Setup_Successful', $this->adminLangId));
+        $this->set('msg', Labels::getLabel('LBL_Tag_Updated_Successful', $this->adminLangId));
         $this->set('tagId', $tag_id);
         $this->set('langId', $newTabLangId);
         $this->_template->render(false, false, 'json-success.php');

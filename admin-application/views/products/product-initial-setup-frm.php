@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
-$productFrm->setFormTagAttribute('class', 'form form--horizontal');
-$productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(false);');
+$productFrm->setFormTagAttribute('class', 'web_form mt-5');
+$productFrm->setFormTagAttribute('onsubmit', 'setUpProduct(this); return(false);');
 ?>
 <div class="row justify-content-center">
      <div class="col-md-12">
@@ -120,6 +120,22 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
                  <div class="field-set">
                      <div class="caption-wraper">
                         <label class="field_label">
+                            <?php $fld = $productFrm->getField('product_approved');
+                              echo $fld->getCaption();
+                            ?>
+                        </label>
+                     </div>
+                     <div class="field-wraper">
+                         <div class="field_cover">
+                         <?php echo $productFrm->getFieldHtml('product_approved'); ?>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <div class="col-md-6">
+                 <div class="field-set">
+                     <div class="caption-wraper">
+                        <label class="field_label">
                             <?php $fld = $productFrm->getField('product_active');
                               echo $fld->getCaption();
                             ?>
@@ -172,6 +188,7 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
                      </div>
                  </div>
              </div>
+             
              <div class="row">
                  <div class="col-md-12">
                      <div class="field-set mb-0">
@@ -190,7 +207,8 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
                      </div>
                  </div>
              </div>
-              <?php 
+             
+             <?php 
                 $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
                 if(!empty($translatorSubscriptionKey) && count($otherLanguages) > 0){
              ?>
@@ -207,6 +225,7 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
                  </div>
              </div>
             <?php } ?>
+                            
          </div>
          
          <?php 
@@ -214,16 +233,12 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
             foreach($otherLanguages as $langId=>$data) { 
                 $layout = Language::getLayoutDirection($langId);
          ?>
-         <div class="accordion layout--<?php echo $layout; ?>" id="specification-accordion">
-           
-             <ul class="list-group list-group-sm list-group-flush-y list-group-flush-x">
-                 <li>
-                     
-                 <h6 data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><span onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
-                 <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
-                     </span>
-                     </h6>
-                 <div id="collapseOne" class="collapse collapse-js-<?php echo $langId; ?>" aria-labelledby="headingOne" data-parent="#specification-accordion">
+         <div class="accordians_container accordians_container-categories mt-5 layout--<?php echo $layout; ?>">
+             <div class="accordian_panel">
+                 <span class="accordian_title accordianhead" id="collapse_<?php echo $langId; ?>" onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
+                 <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
+                 </span>
+                 <div class="accordian_body accordiancontent" style="display: none;">
                      <div class="row">
                         <div class="col-md-12">
                             <div class="field-set">
@@ -276,12 +291,7 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
                         </div>
                     </div>
                  </div>
-             
-                 </li>
-             </ul>
-             
-            
-             
+             </div>
          </div>
          <?php } 
          }
@@ -340,7 +350,7 @@ $(document).ready(function(){
 	$('input[name=\'category_name\']').autocomplete({
         'source': function(request, response) {
 			$.ajax({
-				url: fcom.makeUrl('products', 'linksAutocomplete'),
+				url: fcom.makeUrl('productCategories', 'links_autocomplete'),
 				data: {keyword: request,fIsAjax:1},
 				dataType: 'json',
 				type: 'post',

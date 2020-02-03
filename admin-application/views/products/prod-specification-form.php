@@ -1,12 +1,12 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');  
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
 $layout = Language::getLayoutDirection($langId);
 ?>
-<div class="p-4 mb-4 bg-gray rounded layout--<?php echo $layout; ?>">
+<div class="web_form p-4 mb-4 bg-gray rounded layout--<?php echo $layout; ?>">
      <div class="row">
         <div class="col-md-4">
              <div class="field-set">
                  <div class="caption-wraper">
-                    <label class="field_label"><?php echo Labels::getLabel('LBL_Specification_Label_Text', $siteLangId); ?></label>
+                    <label class="field_label"><?php echo Labels::getLabel('LBL_Specification_Label_Text', $adminLangId); ?></label>
                  </div>
                  <div class="field-wraper">
                     <div class="field_cover">
@@ -18,7 +18,7 @@ $layout = Language::getLayoutDirection($langId);
          <div class="col-md-4">
              <div class="field-set">
                  <div class="caption-wraper">
-                    <label class="field_label"><?php echo Labels::getLabel('LBL_Specification_Value', $siteLangId); ?></label>
+                    <label class="field_label"><?php echo Labels::getLabel('LBL_Specification_Value', $adminLangId); ?></label>
                  </div>
                  <div class="field-wraper">
                     <div class="field_cover">
@@ -30,7 +30,7 @@ $layout = Language::getLayoutDirection($langId);
          <div class="col-md-2">
              <div class="field-set">
                  <div class="caption-wraper">
-                    <label class="field_label"><?php echo Labels::getLabel('LBL_Specification_Group', $siteLangId); ?></label>
+                    <label class="field_label"><?php echo Labels::getLabel('LBL_Specification_Group', $adminLangId); ?></label>
                  </div>
                  <div class="field-wraper">
                     <div class="field_cover">
@@ -44,7 +44,9 @@ $layout = Language::getLayoutDirection($langId);
                  <div class="caption-wraper"></div>
                  <div class="field-wraper">
                     <div class="field_cover">
-                    <button type="button" class="btn btn-primary" onClick="saveSpecification(<?php echo $langId; ?>, <?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_id']; } ?>)"><?php echo Labels::getLabel('LBL_Add', $siteLangId) ?></button></div>
+                        <?php /* <input type="button" class="btn btn-primary btn-block" onClick="saveSpecification(<?php echo $langId; ?>, <?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_id']; } ?>)" value="<?php echo Labels::getLabel('LBL_Add', $adminLangId) ?>"> */ ?>
+                        <button type="button" class="btn btn-primary btn-block" onClick="saveSpecification(<?php echo $langId; ?>, <?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_id']; } ?>)"><?php echo Labels::getLabel('LBL_Add', $adminLangId) ?></button>
+                    </div>
                  </div>
              </div>
          </div>
@@ -57,7 +59,7 @@ $(document).ready(function(){
     $('input[name="prodspec_group['+langId+']"]').autocomplete({
         'source': function(request, response) {
             $.ajax({
-                url: fcom.makeUrl('Seller', 'prodSpecGroupAutoComplete'),
+                url: fcom.makeUrl('products', 'prodSpecGroupAutoComplete'),
                 data: {keyword: request, langId: langId, fIsAjax:1},
                 dataType: 'json',
                 type: 'post',
