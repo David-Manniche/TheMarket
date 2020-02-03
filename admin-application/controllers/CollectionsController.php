@@ -17,6 +17,7 @@ class CollectionsController extends AdminBaseController
     public function index()
     {
         $this->objPrivilege->canViewCollections();
+        $this->_template->addCss('css/cropper.css');
         $this->_template->addJs('js/cropper.js');
         $this->_template->addJs('js/cropper-main.js');        
         $search = $this->getSearchForm();

@@ -17,6 +17,7 @@ class SlidesController extends AdminBaseController
     public function index()
     {
         $this->objPrivilege->canViewSlides();
+        $this->_template->addCss('css/cropper.css');
         $this->_template->addJs('js/cropper.js');
         $this->_template->addJs('js/cropper-main.js');        
         $this->_template->render();
