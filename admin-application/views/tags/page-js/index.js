@@ -81,6 +81,33 @@ $(document).ready(function(){
 		});
 	};
 
+	addTagData = function(e){
+        var product_id = $(e.detail.tagify.DOM.originalInput).attr('data-product_id');
+        var tag_id = e.detail.tag.id;
+        var tag_name = e.detail.tag.title;
+        if(tag_id == ''){
+            var data = 'tag_id=0&tag_identifier='+tag_name
+            fcom.updateWithAjax(fcom.makeUrl('Tags', 'setup'), data, function(t) {
+                var dataLang = 'tag_id='+t.tagId+'&tag_name='+tag_name+'&lang_id=0';
+                fcom.updateWithAjax(fcom.makeUrl('Tags', 'langSetup'), dataLang, function(t2) {
+                    fcom.updateWithAjax(fcom.makeUrl('Products', 'updateProductTag'), 'product_id='+product_id+'&tag_id='+t.tagId, function(t3) {
+                         var tagifyId = e.detail.tag.__tagifyId;
+                         $('[__tagifyid='+tagifyId+']').attr('id', t.tagId);
+                     });
+                });
+            });
+        }else{
+            fcom.updateWithAjax(fcom.makeUrl('Products', 'updateProductTag'), 'product_id='+product_id+'&tag_id='+tag_id, function(t) { });
+        }
+    }
+
+    removeTagData = function(e){
+        var tag_id = e.detail.tag.id;
+        var product_id = $(e.detail.tagify.DOM.originalInput).attr('data-product_id');
+        fcom.updateWithAjax(fcom.makeUrl('Products', 'removeProductTag'), 'product_id='+product_id+'&tag_id='+tag_id, function(t) {
+        });
+    }
+
 	deleteTagRecord = function(id){
 		if(!confirm(langLbl.confirmDelete)){return;}
 		data='id='+id;

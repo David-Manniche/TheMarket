@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
     'listserial'=>'#',
-    'product_identifier' => Labels::getLabel('LBL_Product', $adminLangId),
+    'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
     'tags' => ''
 );
 
@@ -24,13 +24,7 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $sr_no, true);
                 break;
             case 'product_identifier':
-                $td->appendElement(
-                    'a',
-                    array('href'=>'javascript:void(0)', 'class'=>'',
-                    'title'=>'Links',"onclick"=>"editTagsLangForm(".$row['product_id'].")"),
-                    $row['product_name'],
-                    true
-                );
+                $td->appendElement('plaintext', array(), $row['product_name'], true);
                 break;
             case 'tags':
                 $productTags = Product::getProductTags($row['product_id']);
@@ -49,34 +43,27 @@ foreach ($arr_listing as $sn => $row) {
     }
 }
 if (count($arr_listing) == 0) {
-    $tbl->appendElement('tr')->appendElement('td', array('colspan'=>count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
+    $tbl->appendElement('tr', array('class' => 'noResult--js'))->appendElement(
+        'td',
+        array('colspan'=>count($arr_flds)),
+        Labels::getLabel('LBL_No_Record_Found', $siteLangId)
+    );
 }
 
+echo $tbl->getHtml();
+$postedData['page'] = $page;
+echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmCatalogProductSearchPaging'));
 
-$frm = new Form('frmTagsListing', array('id'=>'frmTagsListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
-$frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('Tags', 'deleteSelected'));
-$frm->addHiddenField('', 'status');
-
-echo $frm->getFormTag();
-echo $frm->getFieldHtml('status');
-echo $tbl->getHtml(); ?>
-</form>
-<?php $postedData['page']=$page;
-echo FatUtility::createHiddenFormFromData($postedData, array(
-    'name' => 'frmTagSearchPaging'
-));
-$pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'recordCount'=>$recordCount,'adminLangId'=>$adminLangId);
-$this->includeTemplate('_partial/pagination.php', $pagingArr, false); ?>
-
+$pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'callBackJsFunc' => 'goToCatalogProductSearchPage');
+$this->includeTemplate('_partial/pagination.php', $pagingArr, false);
+?>
 <?php if (count($arr_listing) > 0) { ?>
 <script>
 var productsArr = [<?php echo '"'.implode('","', $productsArr).'"' ?>];
 $("document").ready(function() {
     getTagsAutoComplete = function(){
         var list = [];
-        fcom.ajax(fcom.makeUrl('Tags', 'autoComplete'), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Seller', 'tagsAutoComplete'), '', function(t) {
             var ans = $.parseJSON(t);
             for (i = 0; i < ans.length; i++) {
                 list.push({
@@ -88,11 +75,13 @@ $("document").ready(function() {
         return list;
     }
     var whitelist = getTagsAutoComplete();
+    console.log(whitelist);
     $.each(productsArr, function( index, value ) {
         tagify = new Tagify(document.querySelector('input[name=tag_name'+value+']'), {
                whitelist : whitelist,
                delimiters : "#",
                editTags : false,
+               backspace : false
             }).on('add', addTagData).on('remove', removeTagData);
     });
 

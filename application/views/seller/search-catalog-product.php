@@ -1,6 +1,4 @@
-<?php
-
-defined('SYSTEM_INIT') or die('Invalid Usage.');
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
     'listserial'=>'Sr.',
     'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),

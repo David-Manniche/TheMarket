@@ -327,23 +327,31 @@ $submitBtnFld->developerTags['col'] = 12;
         });
 
         $(document).on('keyup', ".optionFld-js input", function(){
-            if($(this).val() > 0){
-                $(this).parent().parent().find('input').each(function(){
+            var currentObj = $(this);
+            if(currentObj.val().length > 0){
+                currentObj.parent().parent().find('input').each(function(){
                     if($(this).parent().hasClass('fldSku') && CONF_PRODUCT_SKU_MANDATORY != 1){
                         return;
                     }
                     if($(this).val().length == 0 || $(this).val() == 0){
                         $(this).attr('class', 'error');
-                        // $(this).attr('required', 'required');
                     }
                 });
+                currentObj.removeClass('error');
             } else {
-                $(this).parent().parent().find('input').each(function(){
-                    if($(this).val().length == 0 || $(this).val() == 0){
-                        $(this).removeClass('error');
-                        // $(this).removeAttr('required');
+                var allEmpty = true;
+                currentObj.parent().parent().find('input').each(function(){
+                    if($(this).val().length > 0){
+                        allEmpty = false;
                     }
                 });
+                if(allEmpty){
+                    currentObj.parent().parent().find('input').each(function(){
+                        $(this).removeClass('error');
+                    });
+                } else {
+                    currentObj.attr('class', 'error');
+                }
             }
         });
     });
