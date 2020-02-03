@@ -706,9 +706,9 @@
     
     displayProdInitialTab = function(){
         $(".tabs_panel").hide();
-        $(".tabs_nav  > li > a").removeClass('active');
+        $(".tabs_nav-js  > li").removeClass('is-active');
         $("#tabs_001").show();                    
-        $("a[rel='tabs_001']").addClass('active');
+        $("a[rel='tabs_001']").parent().addClass('is-active');
     }
     
     
@@ -723,9 +723,9 @@
 		fcom.ajax(fcom.makeUrl('Seller', 'customProductGeneralForm', [ productId]), '', function(t) {
             $(".tabs_panel").html('');
             $(".tabs_panel").hide();
-            $(".tabs_nav  > li > a").removeClass('active');
+            $(".tabs_nav-js  > li").removeClass('is-active');
             $("#tabs_001").show();                    
-            $("a[rel='tabs_001']").addClass('active');
+            $("a[rel='tabs_001']").parent().addClass('is-active');
             $("#tabs_001").html(t);
 		});
 	};
@@ -744,9 +744,9 @@
 		fcom.ajax(fcom.makeUrl('Seller','productAttributeAndSpecificationsFrm', [productId]),data,function(res){
             $(".tabs_panel").html('');
             $(".tabs_panel").hide();
-            $(".tabs_nav  > li > a").removeClass('active');
+            $(".tabs_nav-js  > li").removeClass('is-active');
             $("#tabs_002").show();                    
-            $("a[rel='tabs_002']").addClass('active');
+            $("a[rel='tabs_002']").parent().addClass('is-active');
             $("#tabs_002").html(res);
 		});        
     }
@@ -801,9 +801,9 @@
     }
     
     displayOtherLangProdSpec = function(obj, langId){
-        if($(obj).hasClass('active')){
+        if($('.collapse-js-'+langId).hasClass('show')){
             return false;
-        }
+        }        
         prodSpecificationSection(langId);
         prodSpecificationsByLangId(langId);
     }
@@ -813,9 +813,9 @@
 		fcom.ajax(fcom.makeUrl('Seller','productOptionsAndTag', [productId]),data,function(res){         
             $(".tabs_panel").html('');
             $(".tabs_panel").hide();
-            $(".tabs_nav  > li > a").removeClass('active');
+            $(".tabs_nav-js  > li").removeClass('is-active');
             $("#tabs_003").show();                    
-            $("a[rel='tabs_003']").addClass('active');
+            $("a[rel='tabs_003']").parent().addClass('is-active');
             $("#tabs_003").html(res);
 		});
     }
@@ -831,9 +831,9 @@
 		fcom.ajax(fcom.makeUrl('Seller','productShippingFrm', [productId]),data,function(res){
             $(".tabs_panel").html('');            
             $(".tabs_panel").hide();
-            $(".tabs_nav  > li > a").removeClass('active');
+            $(".tabs_nav-js  > li").removeClass('is-active');
             $("#tabs_004").show();                    
-            $("a[rel='tabs_004']").addClass('active');
+            $("a[rel='tabs_004']").parent().addClass('is-active');
             $("#tabs_004").html(res);            
             addShippingTab(productId);
 		});
@@ -852,9 +852,9 @@
 		fcom.ajax(fcom.makeUrl('Seller','customProductImages', [productId]),data,function(res){          
             $(".tabs_panel").html('');
             $(".tabs_panel").hide();
-            $(".tabs_nav  > li > a").removeClass('active');
+            $(".tabs_nav-js  > li").removeClass('is-active');
             $("#tabs_005").show();                    
-            $("a[rel='tabs_005']").addClass('active'); 
+            $("a[rel='tabs_005']").parent().addClass('is-active'); 
             $("#tabs_005").html(res);
             productImages(productId);
 		});
@@ -914,7 +914,7 @@
         var autoTranslate = $("input[name='auto_update_other_langs_data']:checked").length;               
         var prodName = $("input[name='product_name["+defaultLang+"]']").val();
         var prodDesc = $("[name='product_description["+defaultLang+"]']").val();
-        var alreadyOpen = $('#collapse_'+toLangId).hasClass('active');        
+        var alreadyOpen = $('.collapse-js-'+toLangId).hasClass('show');        
         if(autoTranslate == 0 || prodName == "" || alreadyOpen == true){
             return false;
         }                

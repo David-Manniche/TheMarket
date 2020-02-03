@@ -219,11 +219,11 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
              <ul class="list-group list-group-sm list-group-flush-y list-group-flush-x">
                  <li>
                      
-                 <h6 data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><span  id="collapse_<?php echo $langId; ?>"  onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
+                 <h6 data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><span onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
                  <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
                      </span>
                      </h6>
-                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#specification-accordion">
+                 <div id="collapseOne" class="collapse collapse-js-<?php echo $langId; ?>" aria-labelledby="headingOne" data-parent="#specification-accordion">
                      <div class="row">
                         <div class="col-md-12">
                             <div class="field-set">

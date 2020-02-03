@@ -19,8 +19,8 @@ var  productCatId  =  <?php echo $prodCatId ;?>; */
         </div>
         <div class="content-body">            
             <div class="tabs">                    
-                <ul class="">
-                     <li class="is-active">
+                <ul class="tabs_nav-js">
+                     <li>
 					 <a class="tabs_001" rel="tabs_001" href="javascript:void(0)">
                              <?php echo Labels::getLabel('LBL_Initial_Setup', $siteLangId); ?> <i class="tabs-icon fa fa-info-circle"  data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_Setup_Basic_Product_Details', $siteLangId); ?>">
 							 </i>

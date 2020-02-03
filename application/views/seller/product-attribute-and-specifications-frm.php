@@ -92,7 +92,7 @@ $productFrm->setFormTagAttribute('onsubmit', 'setUpProductAttributes(this); retu
                  <?php echo $data." "; echo Labels::getLabel('LBL_Language_Specification', $siteLangId); ?>
                  </span>
 		 </h6>
-                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#specification-accordion">
+                 <div id="collapseOne" class="collapse collapse-js-<?php echo $langId; ?>" aria-labelledby="headingOne" data-parent="#specification-accordion">
                      <div class="specifications-form-<?php echo $langId; ?>"></div>
                     <div class="specifications-list-<?php echo $langId; ?>"></div>
                  </div>
