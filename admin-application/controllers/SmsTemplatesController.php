@@ -156,11 +156,7 @@ class SmsTemplatesController extends AdminBaseController
         if ($tempData) {
             $tempFrm->fill($tempData);
         }
-        // if ($tempData['stpl_replacements'] == '') {
-        //     $stplData =  $stplObj->getTpl($stplCode);
-        //     CommonHelper::printArray($stplData, true);
-        //     $tempFrm->getField('stpl_replacements')->value = $stplData['stpl_replacements'];
-        // }
+
         $this->set('languages', Language::getAllNames());
         $this->set('stplCode', $stplCode);
         $this->set('lang_id', $lang_id);

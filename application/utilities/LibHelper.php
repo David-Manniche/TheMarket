@@ -33,4 +33,17 @@ class LibHelper extends FatUtility
             Message::addErrorMessage($message);
         }
     }
+
+    public static function getCommonReplacementVarsArr($langId)
+    {
+        $langId = FatUtility::int($langId);
+        if ($langId < 1) {
+            $langId = CommonHelper::getLangId();
+        }
+        return array(
+            '{SITE_NAME}' => FatApp::getConfig("CONF_WEBSITE_NAME_$langId"),
+            '{SITE_URL}' => CommonHelper::generateFullUrl(),
+        );
+    }
+
 }

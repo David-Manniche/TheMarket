@@ -15,6 +15,21 @@
             $fld->setfieldTagAttribute('maxlength', applicationConstants::SMS_CHARACTER_LENGTH);
             $fld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_MAXIMUM_OF_160_CHARACTERS_ALLOWED', $adminLangId) . ' </small>';
 
+            $replacementVarObj = $tempFrm->getField('stpl_replacements');
+            $replacementVariables = !empty($replacementVarObj->value) ? json_decode($replacementVarObj->value, true) : [];
+            $htm = '<ul class="list-group">';
+        foreach ($replacementVariables as $val) {
+            $htm .= '<li class="list-group-item">
+                        <span>' . $val['name'] . '</span>
+                        <span class="badge badge-secondary" data-container="body" data-toggle="tooltip" data-placement="top" title="' . $val['name'] . '">
+                        ' . $val['variable'] . '
+                        </span>
+                    </li>';
+        }
+            $htm .= '</ul>';
+
+            $replacementVarObj->value = !empty($replacementVariables) ? $htm : '';
+
             $langFld = $tempFrm->getField('lang_id');
             $langFld->setfieldTagAttribute('onChange', "detailSection('" . $stplCode . "', this.value);");
 

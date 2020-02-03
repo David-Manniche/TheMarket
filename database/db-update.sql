@@ -429,7 +429,6 @@ CREATE TABLE `tbl_sms_templates` (
 ALTER TABLE `tbl_sms_templates`
   ADD PRIMARY KEY (`stpl_code`,`stpl_lang_id`);
 
-INSERT INTO `tbl_sms_templates` (`stpl_code`, `stpl_lang_id`, `stpl_name`, `stpl_body`, `stpl_replacements`, `stpl_status`) VALUES ('login', '1', 'Login Template', 'Dear User,\r\n\r\nThis is your {OTP}', '<ul class=\"list-group\">\r\n <li class=\"list-group-item\"><span>Login OTP</span>\r\n <span class=\"badge badge-secondary\" data-container=\"body\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"\"\r\n data-original-title=\"Copied to clipboard\">\r\n {OTP}\r\n </span>\r\n </li>\r\n</ul>', '1');
 CREATE TABLE `tbl_user_phone_verification` ( `upv_user_id` INT(11) NOT NULL ,  `upv_otp` INT(6) NOT NULL ,  `upv_phone` VARCHAR(25) NOT NULL ,  `upv_expired_on` DATETIME NOT NULL ) ENGINE = InnoDB;
 ALTER TABLE tbl_user_phone_verification ADD PRIMARY KEY (`upv_user_id`);
 

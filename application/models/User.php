@@ -1672,18 +1672,24 @@ class User extends MyAppModel
         return true;
     }
 
-    public function sendOtp($phone, $otp, $langId)
+    public function sendOtp($data, $otp, $langId)
     {
         $langId = FatUtility::int($langId);
         $langId = 1 > $langId ? $this->commonLangId : $langId;
-
+        $phone = isset($data['user_phone']) ? $data['user_phone'] : '';
+        $user_name = isset($data['user_name']) ? $data['user_name'] : Labels::getLabel('LBL_USER', $langId);
         if (empty($phone) || empty($otp)) {
             $this->error = Labels::getLabel("MSG_INVALID_REQUEST", $langId);
             return false;
         }
 
         $messageDetail = SmsTemplate::getTpl(SmsTemplate::LOGIN, $langId);
-        $body = SmsTemplate::formatBody($messageDetail['stpl_body'], $messageDetail['stpl_replacements'], ['otp' => $otp]);
+        $replacements = [
+            '{OTP}' => $otp,
+            '{NAME}' => $user_name
+        ];
+        $replacements = array_merge($replacements, LibHelper::getCommonReplacementVarsArr($langId));
+        $body = SmsTemplate::formatBody($messageDetail['stpl_body'], $messageDetail['stpl_replacements'], $replacements);
 
         return SmsArchive::send($phone, $body, SmsTemplate::LOGIN);
     }
@@ -1694,7 +1700,7 @@ class User extends MyAppModel
         if (false === $otp) {
             return false;
         }
-        return $this->sendOtp($data['user_phone'], $otp, $langId);
+        return $this->sendOtp($data, $otp, $langId);
     }
 
     public function guestUserWelcomeEmail($data, $langId)
@@ -1703,8 +1709,8 @@ class User extends MyAppModel
 
         $data = array(
             'user_name' => $data['user_name'],
-        'user_email' => $data['user_email'],
-        'link' => $link,
+            'user_email' => $data['user_email'],
+            'link' => $link,
         );
 
         $email = new EmailHandler();

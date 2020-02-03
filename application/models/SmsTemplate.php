@@ -132,11 +132,15 @@ class SmsTemplate extends MyAppModel
     public static function formatBody($str, $replacements, $data)
     {
         $replacements = json_decode($replacements, true);
-        
+        $repVars = array_column($replacements, 'variable');
         $arr = [];
-        array_walk($data, function (&$value, &$key) use (&$arr, &$replacements) {
-            $key = '{' . strtoupper($key) . '}';
-            if (array($key, $replacements)) {
+        if (empty($repVars)) {
+            return $arr;
+        }
+
+        array_walk($data, function (&$value, &$key) use (&$arr, $repVars) {
+            $key = strtoupper($key);
+            if (in_array($key, $repVars)) {
                 $arr[$key] = $value;
             }
         });
