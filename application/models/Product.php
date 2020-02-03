@@ -41,8 +41,8 @@ class Product extends MyAppModel
     public const DB_PRODUCT_MIN_PRICE = 'tbl_products_min_price';
     public const DB_PRODUCT_MIN_PRICE_PREFIX = 'pmp_';
 
-	public const DB_PRODUCT_EXTERNAL_RELATION = 'tbl_product_external_relations';
-	public const DB_PRODUCT_EXTERNAL_RELATION_PREFIX = 'perel_';
+	public const DB_PRODUCT_EXTERNAL_RELATIONS = 'tbl_product_external_relations';
+	public const DB_PRODUCT_EXTERNAL_RELATIONS_PREFIX = 'perel_';
 
     public const PRODUCT_TYPE_PHYSICAL = 1;
     public const PRODUCT_TYPE_DIGITAL = 2;

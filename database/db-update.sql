@@ -378,3 +378,54 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BUTTON_BACKGROUND_COL
 DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_BACKGROUND_COLOR';
 ALTER TABLE `tbl_meta_tags` DROP `meta_identifier`;
 ---------TV-9.1.2.20200131 -----------------------
+--
+-- Table structure for table `tbl_product_external_relations`
+--
+
+CREATE TABLE `tbl_product_external_relations` (
+  `perel_product_id` int(11) NOT NULL,
+  `perel_indexed_for_search` tinyint(1) NOT NULL COMMENT 'used for elastic search '
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_product_external_relations`
+--
+ALTER TABLE `tbl_product_external_relations`
+  ADD PRIMARY KEY (`perel_product_id`);
+
+--
+-- Table structure for table `tbl_seller_product_external_relations`
+--
+
+CREATE TABLE `tbl_seller_product_external_relations` (
+  `sperel_selprod_id` int(11) NOT NULL,
+  `sperel_indexed_for_search` tinyint(4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_seller_product_external_relations`
+--
+ALTER TABLE `tbl_seller_product_external_relations`
+  ADD PRIMARY KEY (`sperel_selprod_id`);
+
+ALTER TABLE `tbl_seller_product_external_relations` ADD `sperel_product_id` INT(11) NOT NULL AFTER `sperel_selprod_id`;
+
+ALTER TABLE `tbl_product_external_relations` ADD `perel_lang_id` INT(11) NOT NULL AFTER `perel_indexed_for_search`;
+
+ALTER TABLE `tbl_product_external_relations` ADD `perel_productlang_id` INT(11) NOT NULL FIRST, ADD PRIMARY KEY (`perel_productlang_id`);
+
+ALTER TABLE `tbl_seller_product_external_relations` DROP PRIMARY KEY;
+
+ALTER TABLE tbl_seller_product_external_relations
+   ADD PRIMARY KEY (sperel_selprod_id, sperel_lang_id);
+
+ALTER TABLE  tbl_product_external_relations
+      ADD PRIMARY KEY (perel_product_id, perel_lang_id);
