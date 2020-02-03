@@ -84,16 +84,21 @@ $productFrm->setFormTagAttribute('onsubmit', 'setUpProductAttributes(this); retu
          if(!empty($otherLanguages)){ 
             foreach($otherLanguages as $langId=>$data) { 
          ?>
-         <div class="accordians_container accordians_container-categories mt-5">
-             <div class="accordian_panel">
-                 <span class="accordian_title accordianhead" onClick="displayOtherLangProdSpec(this,<?php echo $langId; ?>)">
+         <div class="accordion" id="specification-accordion">
+		 <ul class="list-group list-group-sm list-group-flush-y list-group-flush-x">
+		 <li class="list-group-item">
+		 <h6 data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                 <span onClick="displayOtherLangProdSpec(this,<?php echo $langId; ?>)">
                  <?php echo $data." "; echo Labels::getLabel('LBL_Language_Specification', $siteLangId); ?>
                  </span>
-                 <div class="accordian_body accordiancontent" style="display: none;">
+		 </h6>
+                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#specification-accordion">
                      <div class="specifications-form-<?php echo $langId; ?>"></div>
                     <div class="specifications-list-<?php echo $langId; ?>"></div>
                  </div>
-             </div>
+				 </li>
+		 </ul>
+             
          </div>
          <?php } 
          }

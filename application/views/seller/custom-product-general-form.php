@@ -214,12 +214,16 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
             foreach($otherLanguages as $langId=>$data) { 
                 $layout = Language::getLayoutDirection($langId);
          ?>
-         <div class="accordians_container accordians_container-categories mt-5 layout--<?php echo $layout; ?>"">
-             <div class="accordian_panel">
-                 <span class="accordian_title accordianhead" id="collapse_<?php echo $langId; ?>"  onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
+         <div class="accordion layout--<?php echo $layout; ?>" id="specification-accordion">
+           
+             <ul class="list-group list-group-sm list-group-flush-y list-group-flush-x">
+                 <li>
+                     
+                 <h6 data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><span  id="collapse_<?php echo $langId; ?>"  onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
                  <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
-                 </span>
-                 <div class="accordian_body accordiancontent">
+                     </span>
+                     </h6>
+                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#specification-accordion">
                      <div class="row">
                         <div class="col-md-12">
                             <div class="field-set">
@@ -272,7 +276,12 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
                         </div>
                     </div>
                  </div>
-             </div>
+             
+                 </li>
+             </ul>
+             
+            
+             
          </div>
          <?php } 
          }
