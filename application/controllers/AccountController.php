@@ -791,7 +791,7 @@ class AccountController extends LoggedUserController
 
         $this->set('msg', Labels::getLabel('MSG_Profile_Image_Removed_Successfully', $this->siteLangId));
         if (true ===  MOBILE_APP_API_CALL) {
-            $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
+            $userImgUpdatedOn = User::getAttributesById($userId, 'user_updated_on');
             $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
             $userImage = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'user', array($userId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
 
@@ -836,7 +836,7 @@ class AccountController extends LoggedUserController
     {
         if (true ===  MOBILE_APP_API_CALL) {
             $userId = UserAuthentication::getLoggedUserId(true);
-            $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
+            $userImgUpdatedOn = User::getAttributesById($userId, 'user_updated_on');
             $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
 
             $hasDigitalProducts = 0;
@@ -966,7 +966,7 @@ class AccountController extends LoggedUserController
     public function imgCropper()
     {
         $userId = UserAuthentication::getLoggedUserId(true);
-        $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
+        $userImgUpdatedOn = User::getAttributesById($userId, 'user_updated_on');
         $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
         $userImage = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'user', array($userId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
 
@@ -1715,7 +1715,7 @@ class AccountController extends LoggedUserController
 
         $srch->addMultipleFields(
             array( 'selprod_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
-            'product_id', 'prodcat_id', 'ufp_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','product_image_updated_on',
+            'product_id', 'prodcat_id', 'ufp_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','product_updated_on',
             'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand.brand_id', 'product_model',
             'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(splprice_price, selprod_price) AS theprice','splprice_display_list_price', 'splprice_display_dis_val','splprice_display_dis_type',
             'CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found', 'selprod_price', 'selprod_user_id', 'selprod_code', 'selprod_sold_count', 'selprod_condition', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist','IFNULL(uwlp.uwlp_uwlist_id, 0) as uwlp_uwlist_id','ifnull(prod_rating,0) prod_rating', 'selprod_min_order_qty'  )
@@ -1835,7 +1835,7 @@ class AccountController extends LoggedUserController
 
         $srch->addMultipleFields(
             array( 'selprod_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
-            'product_id', 'prodcat_id', 'ufp_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','product_image_updated_on',
+            'product_id', 'prodcat_id', 'ufp_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','product_updated_on',
             'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand.brand_id', 'product_model',
             'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(splprice_price, selprod_price) AS theprice','splprice_display_list_price', 'splprice_display_dis_val','splprice_display_dis_type',
             'CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found', 'selprod_price', 'selprod_user_id', 'selprod_code', 'selprod_condition', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist', 'ifnull(prod_rating,0) prod_rating','selprod_sold_count' )
@@ -2204,7 +2204,7 @@ class AccountController extends LoggedUserController
     public function messageSearch()
     {
         $userId = UserAuthentication::getLoggedUserId();
-        $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
+        $userImgUpdatedOn = User::getAttributesById($userId, 'user_updated_on');
         $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
 
         $frm = $this->getMessageSearchForm($this->siteLangId);

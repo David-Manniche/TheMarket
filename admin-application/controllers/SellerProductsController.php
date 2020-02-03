@@ -2469,7 +2469,7 @@ class SellerProductsController extends AdminBaseController
             );
         }
 
-        $sellerProdObj = new SellerProduct($selprodId);
+        $sellerProdObj = new SellerProduct($selprodId);        
         if (!$sellerProdObj->changeStatus($status)) {
             Message::addErrorMessage($sellerProdObj->getError());
             FatUtility::dieWithError(Message::getHtml());

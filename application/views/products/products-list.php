@@ -19,7 +19,7 @@ if ($products) {
         <div class="products__body"> 
             <?php $this->includeTemplate('_partial/collection-ui.php', array('product'=>$product,'siteLangId'=>$siteLangId, 'showActionBtns'=> $showActionBtns), false); ?> 
         <div class="products__img">
-                <?php $uploadedTime = AttachedFile::setTimeParam($product['product_image_updated_on']);?> <a title="<?php echo $product['selprod_title']; ?>"
+                <?php $uploadedTime = AttachedFile::setTimeParam($product['product_updated_on']);?> <a title="<?php echo $product['selprod_title']; ?>"
                     href="<?php echo !isset($product['promotion_id'])?CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])):CommonHelper::generateUrl('Products', 'track', array($product['promotion_record_id']))?>">
                     <img data-ratio="1:1 (500x500)"
                         src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'product', array($product['product_id'], "CLAYOUT3", $product['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg'); ?>"

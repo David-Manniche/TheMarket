@@ -378,6 +378,13 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BUTTON_BACKGROUND_COL
 DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_BACKGROUND_COLOR';
 ALTER TABLE `tbl_meta_tags` DROP `meta_identifier`;
 ---------TV-9.1.2.20200131 -----------------------
+ALTER TABLE `tbl_products` CHANGE `product_image_updated_on` `product_updated_on` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE `tbl_seller_products` ADD `selprod_updated_on` DATETIME NOT NULL AFTER `selprod_added_on`;
+ALTER TABLE `tbl_product_categories` CHANGE `prodcat_img_updated_on` `prodcat_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE `tbl_brands` ADD `brand_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `brand_comments`;
+ALTER TABLE `tbl_users` CHANGE `user_img_updated_on` `user_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE `tbl_countries` ADD `country_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `country_language_id`;
+ALTER TABLE `tbl_states` ADD `state_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `state_active`;
 --
 -- Table structure for table `tbl_product_external_relations`
 --

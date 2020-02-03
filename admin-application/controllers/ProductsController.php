@@ -24,7 +24,7 @@ class ProductsController extends AdminBaseController
             $srchFrm->fill($data);
         }
         $prodCatId = FatUtility::int($prodCatId);
-        if($prodCatId > 0){
+        if ($prodCatId > 0) {
             $srchFrm->fill(array('prodcat_id' => $prodCatId));
         }
         
@@ -281,7 +281,7 @@ class ProductsController extends AdminBaseController
             $data_to_be_save['product_approved'] = 1;
             $data_to_be_save['product_added_by_admin_id'] = applicationConstants::YES;
         }
-
+                
         $prodObj->assignValues($data_to_be_save, true);
 
         if (!$prodObj->save()) {
@@ -560,8 +560,8 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        FatApp::getDb()->updateFromArray('tbl_products', array('product_image_updated_on' => date('Y-m-d H:i:s')), array('smt' => 'product_id = ?','vals' => array($product_id)));
-
+        FatApp::getDb()->updateFromArray('tbl_products', array('product_updated_on' => date('Y-m-d H:i:s')), array('smt' => 'product_id = ?','vals' => array($product_id)));
+        
         //Message::addMessage(Labels::getLabel('LBL_Image_Uploaded_Successfully',$this->adminLangId));
         $this->set("msg", Labels::getLabel('LBL_Image_Uploaded_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
@@ -583,7 +583,7 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage($productObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        FatApp::getDb()->updateFromArray('tbl_products', array('product_image_updated_on' => date('Y-m-d H:i:s')), array('smt' => 'product_id = ?','vals' => array($product_id)));
+        FatApp::getDb()->updateFromArray('tbl_products', array('product_updated_on' => date('Y-m-d H:i:s')), array('smt' => 'product_id = ?','vals' => array($product_id)));
 
         //Message::addMessage(Labels::getLabel('LBL_Image_Removed_Successfully',$this->adminLangId));
         $this->set("msg", Labels::getLabel('LBL_Image_Removed_Successfully', $this->adminLangId));
@@ -1449,7 +1449,6 @@ class ProductsController extends AdminBaseController
         }
 
         $productObj = new Product($productId);
-
         if (!$productObj->changeStatus($status)) {
             Message::addErrorMessage($productObj->getError());
             FatUtility::dieWithError(Message::getHtml());

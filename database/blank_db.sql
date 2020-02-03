@@ -12356,7 +12356,7 @@ CREATE TABLE `tbl_products` (
   `product_weight` decimal(10,2) NOT NULL,
   `product_weight_unit` int(11) NOT NULL,
   `product_added_on` datetime NOT NULL,
-  `product_image_updated_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `product_img_updated_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `product_featured` tinyint(4) NOT NULL,
   `product_active` tinyint(4) NOT NULL,
   `product_approved` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'needed for custom products mostly',

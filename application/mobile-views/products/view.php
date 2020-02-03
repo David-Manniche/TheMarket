@@ -1,28 +1,28 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 
 foreach ($upsellProducts as $index => $btProduct) {
-    $uploadedTime = AttachedFile::setTimeParam($btProduct['product_image_updated_on']);
+    $uploadedTime = AttachedFile::setTimeParam($btProduct['product_updated_on']);
     $upsellProducts[$index]['product_image_url'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($btProduct['product_id'], "THUMB", $btProduct['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
     $upsellProducts[$index]['selprod_price'] = CommonHelper::displayMoneyFormat($btProduct['selprod_price'], false, false, false);
     $upsellProducts[$index]['theprice'] = CommonHelper::displayMoneyFormat($btProduct['theprice'], false, false, false);
 }
 
 foreach ($relatedProductsRs as $index => $rProduct) {
-    $uploadedTime = AttachedFile::setTimeParam($rProduct['product_image_updated_on']);
+    $uploadedTime = AttachedFile::setTimeParam($rProduct['product_updated_on']);
     $relatedProductsRs[$index]['product_image_url'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($rProduct['product_id'], "THUMB", $rProduct['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
     $relatedProductsRs[$index]['selprod_price'] = CommonHelper::displayMoneyFormat($rProduct['selprod_price'], false, false, false);
     $relatedProductsRs[$index]['theprice'] = CommonHelper::displayMoneyFormat($rProduct['theprice'], false, false, false);
 }
 
 foreach ($recommendedProducts as $index => $recProduct) {
-    $uploadedTime = AttachedFile::setTimeParam($recProduct['product_image_updated_on']);
+    $uploadedTime = AttachedFile::setTimeParam($recProduct['product_updated_on']);
     $recommendedProducts[$index]['product_image_url'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($recProduct['product_id'], "THUMB", $recProduct['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
     $recommendedProducts[$index]['selprod_price'] = CommonHelper::displayMoneyFormat($recProduct['selprod_price'], false, false, false);
     $recommendedProducts[$index]['theprice'] = CommonHelper::displayMoneyFormat($recProduct['theprice'], false, false, false);
 }
 
 foreach ($recentlyViewed as $index => $recViewed) {
-    $uploadedTime = AttachedFile::setTimeParam($recViewed['product_image_updated_on']);
+    $uploadedTime = AttachedFile::setTimeParam($recViewed['product_updated_on']);
     $recentlyViewed[$index]['product_image_url'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($recViewed['product_id'], "THUMB", $recViewed['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
     $recentlyViewed[$index]['selprod_price'] = CommonHelper::displayMoneyFormat($recViewed['selprod_price'], false, false, false);
     $recentlyViewed[$index]['theprice'] = CommonHelper::displayMoneyFormat($recViewed['theprice'], false, false, false);

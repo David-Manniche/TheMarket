@@ -315,7 +315,7 @@ class SellerProduct extends MyAppModel
         $srch->addCondition('brand.brand_deleted', '=', applicationConstants::NO);
 
         $srch->addMultipleFields(array('upsell_sellerproduct_id', 'selprod_id', 'product_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title','selprod_price','selprod_stock', 'IFNULL(product_identifier ,product_name) as product_name','product_identifier','selprod_product_id','CASE WHEN m.splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found',
-        'IFNULL(m.splprice_price, selprod_price) AS theprice', 'selprod_min_order_qty','product_image_updated_on'));
+        'IFNULL(m.splprice_price, selprod_price) AS theprice', 'selprod_min_order_qty','product_updated_on'));
         $srch->addCondition(Product::DB_TBL_PREFIX . 'active', '=', applicationConstants::YES);
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addCondition('product_deleted', '=', applicationConstants::NO);
@@ -727,7 +727,7 @@ class SellerProduct extends MyAppModel
         if (!empty($criteria)) {
             $srch->addMultipleFields($criteria);
         } else {
-            $srch->addMultipleFields(array('related_sellerproduct_id', 'selprod_id', 'IFNULL(product_identifier ,product_name) as product_name', 'IFNULL(selprod_title, IFNULL(product_name, product_identifier)) as selprod_title', 'product_identifier','selprod_price','product_image_updated_on'));
+            $srch->addMultipleFields(array('related_sellerproduct_id', 'selprod_id', 'IFNULL(product_identifier ,product_name) as product_name', 'IFNULL(selprod_title, IFNULL(product_name, product_identifier)) as selprod_title', 'product_identifier','selprod_price','product_updated_on'));
         }
         return $srch;
     }
@@ -750,19 +750,26 @@ class SellerProduct extends MyAppModel
         }
     }
 
-    public function deleteSellerProduct($selprod_id)
+    public function deleteSellerProduct($selprodId)
     {
-        if (!$selprod_id) {
+        if (!$selprodId) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', CommonHelper::getLangId());
             return false;
         }
 
-        $db = FatApp::getDb();
+        $sellerProdObj = new SellerProduct($selprodId); 
+        if (!$sellerProdObj->deleteRecord(true)) {
+            $this->error = $sellerProdObj->getError();
+            return false;
+        }
+        return true;
+
+        /* $db = FatApp::getDb();
         if (!$db->updateFromArray(static::DB_TBL, array( static::DB_TBL_PREFIX . 'deleted' => 1), array('smt' => static::DB_TBL_PREFIX . 'id = ?','vals' => array($selprod_id)))) {
             $this->error = $db->getError();
             return false;
         }
-        return true;
+        return true; */
     }
 
     public static function getSelprodPolicies($selprod_id, $policy_type, $langId, $limit = null, $active = true, $deleted = false)

@@ -1193,6 +1193,13 @@ class Product extends MyAppModel
             $this->error = $db->getError();
             return false;
         }
+
+        $product = new Product($product_id);
+        if (!$product->updateModifiedTime()) {
+            $this->error = $product->getError();
+            return false;
+        }
+
         return true;
     }
 
@@ -1213,6 +1220,12 @@ class Product extends MyAppModel
             $this->error = $record->getError();
             return false;
         }
+
+        $product = new Product($product_id);
+        if (!$product->updateModifiedTime()) {
+            $this->error = $product->getError();
+            return false;
+        }
         return true;
     }
 
@@ -1224,9 +1237,9 @@ class Product extends MyAppModel
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $db = FatApp::getDb();
-        if (!$db->updateFromArray(static::DB_TBL, array(static::DB_TBL_PREFIX.'deleted' => applicationConstants::YES), array('smt' => static::DB_TBL_PREFIX.'id = ?','vals' => array($this->mainTableRecordId)))) {
-            $this->error = $db->getError();
+        $product = new Product($productId);
+        if (!$product->deleteRecord()) {
+            $this->error = $product->getError();
             return false;
         }
         return true;
@@ -1300,7 +1313,7 @@ class Product extends MyAppModel
         }
         /*substring_index(group_concat(IFNULL(prodcat_name, prodcat_identifier) ORDER BY IFNULL(prodcat_name, prodcat_identifier) ASC SEPARATOR "," ) , ",", 1) as prodcat_name*/
         $srch->addMultipleFields(
-            array('prodcat_code','product_id', 'prodcat_id', 'COALESCE(product_name, product_identifier) as product_name', 'product_model',  'product_image_updated_on','COALESCE(prodcat_name, prodcat_identifier) as prodcat_name',
+            array('prodcat_code','product_id', 'prodcat_id', 'COALESCE(product_name, product_identifier) as product_name', 'product_model',  'product_updated_on','COALESCE(prodcat_name, prodcat_identifier) as prodcat_name',
             'selprod_id', 'selprod_user_id',  'selprod_code', 'selprod_stock', 'selprod_condition', 'selprod_price', 'COALESCE(selprod_title  ,COALESCE(product_name, product_identifier)) as selprod_title',
             'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type', 'splprice_start_date', 'splprice_end_date',
             'brand_id', 'COALESCE(brand_name, brand_identifier) as brand_name', 'user_name', 'IF(selprod_stock > 0, 1, 0) AS in_stock',
@@ -1598,9 +1611,15 @@ END,   special_price_found ) as special_price_found'
     
     public static function getProductsCount()
     {
-        $srch = static::getSearchObject(); 
-        $srch->addFld('COUNT('.static::DB_TBL_PREFIX.'id) as total_products'); 
+        $srch = static::getSearchObject();
+        $srch->addFld('COUNT('.static::DB_TBL_PREFIX.'id) as total_products');
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetch($rs);
+    }
+
+    public function updateUpdatedOn()
+    {
+        $productId = FatUtility::int($this->mainTableRecordId);
+        FatApp::getDb()->updateFromArray('tbl_products', array('product_updated_on' => date('Y-m-d H:i:s')), array('smt' => 'product_id = ?','vals' => array($productId)));
     }
 }
