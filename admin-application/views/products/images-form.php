@@ -5,7 +5,8 @@ $imagesFrm->developerTags['colClassPrefix'] = 'col-md-';
 $imagesFrm->developerTags['fld_default_col'] = 6;
 
 $imgFld = $imagesFrm->getField('prod_image');
-$imgFld->setFieldTagAttribute('onchange', 'submitImageUploadForm(); return false;');
+$imgFld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+$imgFld->addFieldTagAttribute('onChange', 'popupImage(this)');
 $imgFld->htmlBeforeField='<span class="filename"></span>';
 $imgFld->htmlAfterField='<br/><small>'.Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500._You_can_upload_multiple_photos_from_here.', $adminLangId).'</small>';
 
@@ -19,7 +20,7 @@ $langFld->addFieldTagAttribute('class', 'language-js');
 <div class="row justify-content-center">
      <div class="col-md-12">
          <?php echo $imagesFrm->getFormHtml(); ?>
-         
+
          <div id="imageupload_div" class="padd15">
             <?php if (!empty($product_images)) { ?>
             <ul class="grids--onefifth ui-sortable" id="<?php if ($canEdit) { ?>sortable<?php } ?>">
@@ -49,11 +50,12 @@ $langFld->addFieldTagAttribute('class', 'language-js');
             </ul>
             <?php } ?>
         </div>
-                    
+
      </div>
 </div>
 
 <script type="text/javascript">
+var aspectRatio = 1 / 1;
 $(function() {
     $("#sortable").sortable({
         stop: function() {
@@ -73,5 +75,3 @@ $(function() {
     }).disableSelection();
 });
 </script>
-   
-
