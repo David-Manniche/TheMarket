@@ -9,12 +9,13 @@ class Plugin extends MyAppModel
     public const TYPE_CURRENCY_API = 1;
     public const TYPE_SOCIAL_LOGIN_API = 2;
     public const TYPE_PUSH_NOTIFICATION_API = 3;
-    public const TYPE_ADVERTISEMENT_FEED_API = 5;
+    public const TYPE_FULL_TEXT_SEARCH = 6;
 
+    /* Define here :  if system can not activate multiple plugins for a same feature*/
     public const HAVING_KINGPIN = [
         self::TYPE_CURRENCY_API,
         self::TYPE_PUSH_NOTIFICATION_API,
-        self::TYPE_ADVERTISEMENT_FEED_API,
+        self::TYPE_FULL_TEXT_SEARCH
     ];
 
     public const ATTRS = [
@@ -24,11 +25,11 @@ class Plugin extends MyAppModel
         'COALESCE(plg_l.' . self::DB_TBL_PREFIX . 'name, plg.' . self::DB_TBL_PREFIX . 'identifier) as plugin_name',
         self::DB_TBL_PREFIX . 'active',
     ];
-    
+
     public const TYPE_PAYOUTS = 4;
 
     private $db;
-    
+
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
@@ -77,7 +78,7 @@ class Plugin extends MyAppModel
     {
         $srch = new SearchBase(static::DB_TBL, 'plg');
         $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'code', '=', $code);
-        
+
         if (0 < $langId) {
             $srch->joinTable(self::DB_TBL_LANG, 'LEFT JOIN', self::DB_TBL_LANG_PREFIX . static::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_PREFIX . 'id and ' . self::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'plg_l');
         }
@@ -105,11 +106,10 @@ class Plugin extends MyAppModel
     public static function getTypeArr($langId)
     {
         return [
-            static::TYPE_CURRENCY_API => Labels::getLabel('LBL_CURRENCY_API', $langId),
-            static::TYPE_SOCIAL_LOGIN_API => Labels::getLabel('LBL_SOCIAL_LOGIN_API', $langId),
-            static::TYPE_PUSH_NOTIFICATION_API => Labels::getLabel('LBL_PUSH_NOTIFICATION_API', $langId),
-            static::TYPE_ADVERTISEMENT_FEED_API => Labels::getLabel('LBL_ADVERTISEMENT_FEED_API', $langId),
-            static::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT_API', $langId),
+            static::TYPE_CURRENCY_API => Labels::getLabel('LBL_CURRENCY', $langId),
+            static::TYPE_SOCIAL_LOGIN_API => Labels::getLabel('LBL_SOCIAL_LOGIN', $langId),
+            static::TYPE_PUSH_NOTIFICATION_API => Labels::getLabel('LBL_PUSH_NOTIFICATION', $langId),
+            static::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_Full_TEXT_SEARCH', $langId)
         ];
     }
 
@@ -143,7 +143,7 @@ class Plugin extends MyAppModel
         }
 
         $rs = $srch->getResultSet();
-        
+
         $db = FatApp::getDb();
         if (true == $assoc) {
             return $db->fetchAllAssoc($rs);
@@ -187,7 +187,7 @@ class Plugin extends MyAppModel
             ]
         );
         $rs = $srch->getResultSet();
-        
+
         return FatApp::getDb()->fetchAllAssoc($rs);
     }
 

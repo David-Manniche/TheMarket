@@ -10,13 +10,14 @@ class ElasticSearch extends FullTextSearchBase
 	private  $indexName;
 	public $error = false;
 	const KEY_NAME = "ElasticSearch";
+	const INDEX_PREFIX = "products-";
 
 	/* Creating ElasticSearch Connection
 	*
 	*  @indexName - Pass Index Name you Want to Create in Elasticsearch
 	*/
-    public function __construct($indexName){
-		$this->indexName = $indexName;
+    public function __construct( $langCode ){
+		$this->indexName = self::INDEX_PREFIX.$langCode;
 		$settings = $this->getSettings();
 		if ( !isset($settings['host']) && !isset($settings['username']) && !isset($settings['password']) ) {
             $this->error = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', CommonHelper::getLangId());
