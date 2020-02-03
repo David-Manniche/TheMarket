@@ -54,7 +54,8 @@ class GuestUserController extends MyAppController
 
         $obj = new Plugin();
         $active = $obj->getDefaultPluginData(Plugin::TYPE_SMS_NOTIFICATION, 'plugin_active');
-        $smsPluginStatus = (false != $active && !empty($active) ? applicationConstants::YES : applicationConstants::NO);
+        $status = SmsTemplate::getTpl(SmsTemplate::LOGIN, 0, 'stpl_status');
+        $smsPluginStatus = (false != $active && !empty($active) && 0 < $status ? applicationConstants::YES : applicationConstants::NO);
 
         $this->set('smsPluginStatus', $smsPluginStatus);
         $this->set('isRegisterForm', $isRegisterForm);
@@ -65,7 +66,8 @@ class GuestUserController extends MyAppController
     {
         $obj = new Plugin();
         $active = $obj->getDefaultPluginData(Plugin::TYPE_SMS_NOTIFICATION, 'plugin_active');
-        $signUpWithPhone = (false != $active && !empty($active) ? applicationConstants::YES : applicationConstants::NO);
+        $status = SmsTemplate::getTpl(SmsTemplate::LOGIN, 0, 'stpl_status');
+        $signUpWithPhone = (false != $active && !empty($active) && 0 < $status ? applicationConstants::YES : applicationConstants::NO);
         $this->registerFormDetail(applicationConstants::YES, $signUpWithPhone);
         $this->_template->render(false, false, 'guest-user/register-form-detail.php');
     }

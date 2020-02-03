@@ -63,7 +63,7 @@ class SmsTemplatesController extends AdminBaseController
         $post = $searchForm->getFormDataFromArray($data);
 
         $srch = SmsTemplate::getSearchObject($this->adminLangId);
-        $srch->addOrder(SmsTemplate::DB_TBL_PREFIX . 'lang_id', 'ASC');
+        $srch->addOrder(SmsTemplate::DB_TBL_PREFIX . 'code', 'ASC');
         $srch->addGroupBy(SmsTemplate::DB_TBL_PREFIX . 'code');
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -72,12 +72,13 @@ class SmsTemplatesController extends AdminBaseController
             $cond = $srch->addCondition('stpl_code', 'like', '%' . $post['keyword'] . '%');
             $cond->attachCondition('stpl_name', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
-
         $rs = $srch->getResultSet();
-        $records = array();
-        if ($rs) {
-            $records = FatApp::getDb()->fetchAll($rs);
+        
+        if (!$rs) {
+            Message::addErrorMessage($srch->getError());
+            FatUtility::dieJsonError(Message::getHtml());
         }
+        $records = FatApp::getDb()->fetchAll($rs);
         $this->set("arr_listing", $records);
         $this->set('pageCount', $srch->pages());
         $this->set('recordCount', $srch->recordCount());

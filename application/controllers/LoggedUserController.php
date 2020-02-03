@@ -48,7 +48,8 @@ class LoggedUserController extends MyAppController
 
         $obj = new Plugin();
         $active = $obj->getDefaultPluginData(Plugin::TYPE_SMS_NOTIFICATION, 'plugin_active');
-        $smsPluginStatus = (false != $active && !empty($active) ? applicationConstants::YES : applicationConstants::NO);
+        $status = SmsTemplate::getTpl(SmsTemplate::LOGIN, 0, 'stpl_status');
+        $smsPluginStatus = (false != $active && !empty($active) && 0 < $status ? applicationConstants::YES : applicationConstants::NO);
         
         if (false === $smsPluginStatus && empty($userInfo['credential_email'])) {
             $message = Labels::getLabel('MSG_Please_Configure_Your_Email', $this->siteLangId);

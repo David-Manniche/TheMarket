@@ -1684,6 +1684,11 @@ class User extends MyAppModel
         }
 
         $messageDetail = SmsTemplate::getTpl(SmsTemplate::LOGIN, $langId);
+        if (1 > $messageDetail['stpl_status']) {
+            $this->error = Labels::getLabel("MSG_TEMPLATE_NOT_ACTIVE", $langId);
+            return false;
+        }
+        
         $replacements = [
             '{OTP}' => $otp,
             '{NAME}' => $user_name

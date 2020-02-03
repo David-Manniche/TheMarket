@@ -38,7 +38,7 @@ class SmsTemplate extends MyAppModel
         return $srch;
     }
 
-    public static function getTpl($stpl_code, $langId = 0)
+    public static function getTpl($stpl_code, $langId = 0, $attr = '')
     {
         if (empty($stpl_code)) {
             return false;
@@ -51,11 +51,19 @@ class SmsTemplate extends MyAppModel
         if ($langId > 0) {
             $srch->addCondition(static::DB_TBL_PREFIX . 'lang_id', '=', $langId);
         }
+        if (!empty($attr)) {
+            $cols = is_string($attr) ? [$attr] : $attr;
+            $srch->addMultipleFields($cols);
+        }
+
         $srch->addOrder(static::DB_TBL_PREFIX . 'lang_id', 'ASC');
         $srch->addGroupby(static::DB_TBL_PREFIX . 'code');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         if ($data = $db->fetch($srch->getResultSet())) {
+            if (is_string($attr)) {
+                return isset($data[$attr]) ? $data[$attr] : '';
+            }
             return $data;
         }
         return false;
