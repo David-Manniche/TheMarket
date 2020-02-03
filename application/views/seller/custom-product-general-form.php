@@ -133,8 +133,8 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
                  </div>
              </div>
          </div>
-         
-         <div class="p-4 mb-4 bg-gray rounded">
+         <?php $divLayout = Language::getLayoutDirection($siteDefaultLangId); ?>
+         <div class="p-4 mb-4 bg-gray rounded layout--<?php echo $divLayou;?>"">
              <div class="row">
                 <div class="col-md-12">
                      <div class="field-set">
@@ -212,8 +212,9 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
          <?php 
          if(!empty($otherLanguages)){ 
             foreach($otherLanguages as $langId=>$data) { 
+                $layout = Language::getLayoutDirection($langId);
          ?>
-         <div class="accordians_container accordians_container-categories mt-5">
+         <div class="accordians_container accordians_container-categories mt-5 layout--<?php echo $layout; ?>"">
              <div class="accordian_panel">
                  <span class="accordian_title accordianhead" id="collapse_<?php echo $langId; ?>"  onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
                  <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
