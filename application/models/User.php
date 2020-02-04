@@ -1695,7 +1695,7 @@ class User extends MyAppModel
         ];
         $replacements = array_merge($replacements, LibHelper::getCommonReplacementVarsArr($langId));
         $body = CommonHelper::replaceStringData($messageDetail['stpl_body'], $replacements);
-        return SmsArchive::send($phone, $body, SmsTemplate::LOGIN);
+        return SmsArchive::send($phone, $body, SmsTemplate::LOGIN, $this->error);
     }
 
     public function userPhoneVerification($data, $langId)
@@ -2301,7 +2301,7 @@ class User extends MyAppModel
         } else if (!empty($userPhone)) {
             if (!$this->userPhoneVerification($postedData, $this->commonLangId)) {
                 $db->rollbackTransaction();
-                $this->error = Labels::getLabel("ERR_ERROR_IN_SENDING_VERFICATION_SMS", $this->commonLangId);
+                $this->error = !empty($this->error) ? $this->error : Labels::getLabel("ERR_ERROR_IN_SENDING_VERFICATION_SMS", $this->commonLangId);
                 return false;
             }
             $_SESSION[UserAuthentication::TEMP_SESSION_ELEMENT_NAME]['otpUserId'] = $this->getMainTableRecordId();

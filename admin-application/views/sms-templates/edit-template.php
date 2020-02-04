@@ -13,7 +13,7 @@
 
             $fld = $tempFrm->getField("stpl_body");
             $fld->setfieldTagAttribute('maxlength', applicationConstants::SMS_CHARACTER_LENGTH);
-            $fld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_MAXIMUM_OF_160_CHARACTERS_ALLOWED', $adminLangId) . ' </small>';
+            $fld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_MAXIMUM_OF_160_CHARACTERS_ALLOWED', $adminLangId) . ' </small> : ' . 'YOUR message length : ' . strlen($fld->value) ;
 
             $replacementVarObj = $tempFrm->getField('stpl_replacements');
             $replacementVariables = !empty($replacementVarObj->value) ? json_decode($replacementVarObj->value, true) : [];

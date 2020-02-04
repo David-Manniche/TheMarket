@@ -34,9 +34,12 @@ class TwilioSms extends SmsNotificationBase
     public function send($to, $body)
     {
         if (empty($to) || empty($body)) {
-            $this->error = Labels::getLabel('LBL_INVALID_REQUEST', $this->langId);
-            return false;
+            return [
+                'status' => false,
+                'msg' => Labels::getLabel('LBL_INVALID_REQUEST', $this->langId)
+            ];
         }
+
         try {
             $twilio = new Client($this->settings['account_sid'], $this->settings['auth_token']);
             $response = $twilio->messages->create(
@@ -48,10 +51,11 @@ class TwilioSms extends SmsNotificationBase
                 ]
             );
         } catch (Exception $e) {
-            $this->error = $e->getMessage();
-            return false;
+            return [
+                'status' => false,
+                'msg' => $e->getMessage()
+            ];
         }
-        
         
         return [
             'status' => true,
