@@ -1694,7 +1694,8 @@ class User extends MyAppModel
             '{NAME}' => $user_name
         ];
         $replacements = array_merge($replacements, LibHelper::getCommonReplacementVarsArr($langId));
-        $body = SmsTemplate::formatBody($messageDetail['stpl_body'], $messageDetail['stpl_replacements'], $replacements);
+        $body = CommonHelper::replaceStringData($messageDetail['stpl_body'], $replacements);
+        //$body = SmsTemplate::formatBody($messageDetail['stpl_body'], $messageDetail['stpl_replacements'], $replacements);
 
         return SmsArchive::send($phone, $body, SmsTemplate::LOGIN);
     }
