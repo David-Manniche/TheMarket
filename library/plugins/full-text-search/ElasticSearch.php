@@ -73,7 +73,7 @@ class ElasticSearch extends FullTextSearchBase
         try {
             $results = $this->client->search($params);
         } catch (exception $e) {
-            $this->error = $e;
+            $this->error = $e->getMessage();
             return false;
         }
         return $results;
@@ -124,7 +124,7 @@ class ElasticSearch extends FullTextSearchBase
         try {
             $response = $this->client->indices()->create($params);
         } catch (exception $e) {
-            $this->error = $e->getError();
+            $this->error = $e->getMessage();
             return false;
         }
         return true;
@@ -139,7 +139,7 @@ class ElasticSearch extends FullTextSearchBase
         try {
             $response = $this->client->indices()->delete($params);
         } catch (exception $e) {
-            $this->error = $e;
+            $this->error = $e->getMessage();
             return false;
         }
         return true;
@@ -163,7 +163,7 @@ class ElasticSearch extends FullTextSearchBase
         try {
             $response = $this->client->index($params);
         } catch (exception $e) {
-            $this->error = $e;
+            $this->error = $e->getMessage();
             return false;
         }
         return true;
@@ -184,6 +184,7 @@ class ElasticSearch extends FullTextSearchBase
         try {
             $response = $this->client->delete($params);
         } catch (exception $e) {
+            $this->error = $e->getMessage();
             return false;
         }
         return true;
@@ -206,7 +207,7 @@ class ElasticSearch extends FullTextSearchBase
         try {
             $response = $this->client->update($params);
         } catch (exception $e) {
-            $this->error = $e;
+            $this->error = $e->getMessage();
             return false;
         }
         return true;
@@ -227,7 +228,7 @@ class ElasticSearch extends FullTextSearchBase
         try {
             $response = $this->client->get($params);
         } catch (exception $e) {
-            $this->error = $e;
+            $this->error = $e->getMessage();
             return false;
         }
         return true;
@@ -261,7 +262,7 @@ class ElasticSearch extends FullTextSearchBase
         try {
             $response = $this->client->update($params);
         } catch (exception $e) {
-            $this->error = $e;
+            $this->error = $e->getMessage();
             return false;
         }
         return true;
@@ -295,7 +296,7 @@ class ElasticSearch extends FullTextSearchBase
         try {
             $response = $this->client->update($params);
         } catch (exception $e) {
-            //$this->error = $e;
+            //$this->error = $e->getMessage();
             return true; // sending true because in case of document data not exists then we are pushing  if exits then delete the document data and then pushing
         }
         return true;
