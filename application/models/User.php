@@ -1691,12 +1691,10 @@ class User extends MyAppModel
         
         $replacements = [
             '{OTP}' => $otp,
-            '{NAME}' => $user_name
+            '{USER_NAME}' => $user_name
         ];
         $replacements = array_merge($replacements, LibHelper::getCommonReplacementVarsArr($langId));
         $body = CommonHelper::replaceStringData($messageDetail['stpl_body'], $replacements);
-        //$body = SmsTemplate::formatBody($messageDetail['stpl_body'], $messageDetail['stpl_replacements'], $replacements);
-
         return SmsArchive::send($phone, $body, SmsTemplate::LOGIN);
     }
 
@@ -2262,16 +2260,14 @@ class User extends MyAppModel
         $this->assignValues($postedData);
         if (!$this->save()) {
             $db->rollbackTransaction();
-            $this->error = $db->getError();
             return false;
         }
         
         if (!$this->setLoginCredentials($postedData['user_username'], $email, $postedData['user_password'], $postedData['user_active'], $postedData['user_verify'])) {
             $db->rollbackTransaction();
-            $this->error = $db->getError();
             return false;
         }
-        
+
         if (empty($userPhone) && isset($postedData['user_newsletter_signup']) && $postedData['user_newsletter_signup'] == 1) {
             if (!MailchimpHelper::saveSubscriber($email)) {
                 $db->rollbackTransaction();
@@ -2287,7 +2283,7 @@ class User extends MyAppModel
                 return false;
             }
         }
-        
+
         if ($socialUser == false) {
             if (!$this->saveUserNotifications()) {
                 $db->rollbackTransaction();

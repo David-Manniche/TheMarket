@@ -60,13 +60,17 @@ class SmsTemplate extends MyAppModel
         $srch->addGroupby(static::DB_TBL_PREFIX . 'code');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        if ($data = $db->fetch($srch->getResultSet())) {
-            if (is_string($attr)) {
-                return isset($data[$attr]) ? $data[$attr] : '';
-            }
-            return $data;
+        $rs = $srch->getResultSet();
+        if (!$rs) {
+            return false;
         }
-        return false;
+
+        $data = $db->fetch($rs);
+
+        if (!empty($attr) && is_string($attr)) {
+            return isset($data[$attr]) ? $data[$attr] : '';
+        }
+        return $data;
     }
 
     private function formatData($data)
@@ -135,24 +139,5 @@ class SmsTemplate extends MyAppModel
     public function makeInActive()
     {
         return $this->updateStatus(applicationConstants::INACTIVE);
-    }
-
-    public static function formatBody($str, $replacements, $data)
-    {
-        $replacements = json_decode($replacements, true);
-        $repVars = array_column($replacements, 'variable');
-        $arr = [];
-        if (empty($repVars)) {
-            return $arr;
-        }
-
-        array_walk($data, function (&$value, &$key) use (&$arr, $repVars) {
-            $key = strtoupper($key);
-            if (in_array($key, $repVars)) {
-                $arr[$key] = $value;
-            }
-        });
-
-        return CommonHelper::replaceStringData($str, $arr);
     }
 }

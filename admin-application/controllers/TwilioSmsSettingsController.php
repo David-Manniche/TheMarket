@@ -14,7 +14,7 @@ class TwilioSmsSettingsController extends SmsNotificationSettingsController
                 'required' => true,
                 'label' => "Auth Token",
             ],
-            'phone' => [
+            'sender_id' => [
                 'type' => 'string',
                 'required' => true,
                 'label' => "Sender Id",

@@ -22,7 +22,7 @@ class TwilioSms extends SmsNotificationBase
     private function validateSettings()
     {
         $this->settings = $this->getSettings();
-        $requiredKeyArr = ['account_sid','auth_token','phone'];
+        $requiredKeyArr = ['account_sid', 'auth_token', 'phone'];
         foreach ($requiredKeyArr as $key) {
             if (!array_key_exists($key, $this->settings)) {
                 $this->error = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->langId);
@@ -37,16 +37,21 @@ class TwilioSms extends SmsNotificationBase
             $this->error = Labels::getLabel('LBL_INVALID_REQUEST', $this->langId);
             return false;
         }
+        try {
+            $twilio = new Client($this->settings['account_sid'], $this->settings['auth_token']);
+            $response = $twilio->messages->create(
+                $to,
+                [
+                    "body" => $body,
+                    "from" => $this->settings['sender_id'],
+                    "statusCallback" => CommonHelper::generateFullUrl('smsNotification', 'callback', [static::KEY_NAME], '', false)
+                ]
+            );
+        } catch (\Throwable $e) {
+            $this->error = $e->getMessage();
+            return false;
+        }
         
-        $twilio = new Client($this->settings['account_sid'], $this->settings['auth_token']);
-        $response = $twilio->messages->create(
-            $to,
-            [
-                "body" => $body,
-                "from" => $this->settings['fromNumber'],
-                "statusCallback" => CommonHelper::generateFullUrl('smsNotification', 'callback', [static::KEY_NAME], '', false)
-            ]
-        );
         
         return [
             'status' => true,
