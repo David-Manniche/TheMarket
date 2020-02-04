@@ -627,31 +627,31 @@ $(document).on('change', '.collection-language-js', function() {
 
 function bindAutoComplete() {
     $("input[name='scp_selprod_id']").autocomplete({
-
         'source': function(request, response) {
             $.ajax({
                 url: fcom.makeUrl('seller', 'autoCompleteProducts'),
                 data: {
-                    keyword: request,
+                    keyword: request['term'],
                     fIsAjax: 1
                 },
                 dataType: 'json',
                 type: 'post',
                 success: function(json) {
                     response($.map(json, function(item) {
-
                         return {
                             label: item['name'] + '[' + item['product_identifier'] + ']',
-                            value: item['id']
+                            value: item['name'] + '[' + item['product_identifier'] + ']',
+                            id: item['id']
                         };
                     }));
                 },
             });
         },
-        'select': function(item) {
+        select: function (event, ui) {
             $('input[name=\'scp_selprod_id\']').val('');
-            $('#selprod-products' + item['value']).remove();
-            $('#selprod-products ul ').append('<li id="selprod-products' + item['value'] + '"><i class="remove_link remove_param fa fa-remove"></i> ' + item['label'] + '<input type="hidden" name="product_ids[]" value="' + item['value'] + '" /></li>');
+            $('#selprod-products' + ui.item.id).remove();
+            $('#selprod-products ul ').append('<li id="selprod-products' + ui.item.id + '"><i class="remove_link remove_param fa fa-remove"></i> ' + ui.item.label + '<input type="hidden" name="product_ids[]" value="' + ui.item.id + '" /></li>');
+            return false;
         }
     });
 }

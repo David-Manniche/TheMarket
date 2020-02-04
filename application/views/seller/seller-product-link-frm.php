@@ -24,7 +24,7 @@
                 $.ajax({
                     url: fcom.makeUrl('seller', 'autoCompleteProducts'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1,
                         selprod_id: selprod_id
                     },
@@ -33,18 +33,19 @@
                     success: function(json) {
                         response($.map(json, function(item) {
                             return {
-                                label: item['name'] + '[' + item['product_identifier'] + ']',
-                                value: item['id']
+                            label: item['name'] + '[' + item['product_identifier'] + ']' ,
+                            value: item['name'] + '[' + item['product_identifier'] + ']',
+                            id: item['id']
                             };
                         }));
                     },
                 });
             },
-            'select': function(item) {
+            select: function (event, ui) {
                 $('input[name=\'products_buy_together\']').val('');
-                $('#productBuyTogether' + item['value']).remove();
-                $('#buy-together-products').append('<li id="productBuyTogether' + item['value'] + '"><i class="remove_buyTogether remove_param fa fa-remove"></i> ' + item['label'] +
-                    '<input type="hidden" name="product_upsell[]" value="' + item['value'] + '" /></li>');
+                $('#productBuyTogether' + ui.item.id).remove();
+                $('#buy-together-products').append('<li id="productBuyTogether' + ui.item.id + '"><i class="remove_buyTogether remove_param fa fa-remove"></i> ' + ui.item.label + '<input type="hidden" name="product_upsell[]" value="' + ui.item.id + '" /></li>');
+                return false;
             }
         });
         $('#buy-together-products').delegate('.remove_buyTogether', 'click', function() {
@@ -61,7 +62,7 @@
                 $.ajax({
                     url: fcom.makeUrl('seller', 'autoCompleteProducts'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1,
                         selprod_id: selprod_id
                     },
@@ -71,17 +72,17 @@
                         response($.map(json, function(item) {
                             return {
                                 label: item['name'] + '[' + item['product_identifier'] + ']',
-                                value: item['id']
+                                value: item['name'] + '[' + item['product_identifier'] + ']',
+                                id: item['id']
                             };
                         }));
                     },
                 });
             },
-            'select': function(item) {
+            select: function (event, ui) {
                 $('input[name=\'products_related\']').val('');
-                $('#productRelated' + item['value']).remove();
-                $('#related-products').append('<li id="productRelated' + item['value'] + '"><i class="remove_related remove_param fa fa-remove"></i> ' + item['label'] + '<input type="hidden" name="product_related[]" value="' +
-                    item['value'] + '" /></li>');
+                $('#productRelated' + ui.item.id).remove();
+                $('#related-products').append('<li id="productRelated' + ui.item.id + '"><i class="remove_related remove_param fa fa-remove"></i> ' + ui.item.label + '<input type="hidden" name="product_related[]" value="' + ui.item.id + '" /></li>');
             }
         });
         $('#related-products').delegate('.remove_related', 'click', function() {

@@ -31,20 +31,20 @@ $(document).on('keyup', "input[name='product_name']", function(){
         currObj.autocomplete({'source': function(request, response) {
         		$.ajax({
         			url: fcom.makeUrl('Seller', 'autoCompleteProducts'),
-        			data: {keyword: request,fIsAjax:1,keyword:currObj.val()},
+        			data: {keyword: request['term'],fIsAjax:1,keyword:currObj.val()},
         			dataType: 'json',
         			type: 'post',
         			success: function(json) {
         				response($.map(json, function(item) {
-        					return { label: item['name'], value: item['id']	};
+        					return { label: item['name'], value: item['name'], id: item['id'] };
         				}));
         			},
         		});
         	},
-        	'select': function(item) {
-                $("#"+parentForm+" input[name='selprod_id']").val(item['value']);
-                currObj.val(item['label']);
-                fcom.ajax(fcom.makeUrl('Seller', 'getRelatedProductsList', [item['value']]), '', function(t) {
+        	select: function (event, ui) {
+                $("#"+parentForm+" input[name='selprod_id']").val(ui.item.id);
+                currObj.val(ui.item.label);
+                fcom.ajax(fcom.makeUrl('Seller', 'getRelatedProductsList', [ui.item.id]), '', function(t) {
                     var ans = $.parseJSON(t);
                     $('#related-products').empty();
                     for (var key in ans.relatedProducts) {
@@ -53,7 +53,7 @@ $(document).on('keyup', "input[name='product_name']", function(){
                         );
                     }
                 });
-                $('.dvFocus-js').html(item['label']).show();
+                $('.dvFocus-js').html(ui.item.label).show();
                 currObj.hide();
         	}
         });
@@ -78,7 +78,7 @@ $(document).on('keyup', "input[name='products_related']", function(){
                 $.ajax({
                     url: fcom.makeUrl('seller', 'autoCompleteProducts'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1,
                         selprod_id: selprod_id,
                         selected_products: selected_products
@@ -87,20 +87,18 @@ $(document).on('keyup', "input[name='products_related']", function(){
                     type: 'post',
                     success: function(json) {
                         response($.map(json, function(item) {
-                            return {
-                                label: item['name'] + '[' + item['product_identifier'] + ']',
-                                value: item['id']
-                            };
+                            return { label: item['name'] + '[' + item['product_identifier'] + ']', value: item['name'] + '[' + item['product_identifier'] + ']', id: item['id'] };
                         }));
                     },
                 });
             },
-            'select': function(item) {
+            select: function (event, ui) {
                 $('input[name=\'products_related\']').val('');
-                $('#productRelated' + item['value']).remove();
-                $('#related-products').append('<li id="productRelated' + item['value'] + '"><span> ' + item['label'] + '<i class="remove_related remove_param fal fa-times"></i></span><input type="hidden" name="selected_products[]" value="' +
-                    item['value'] + '" /></li>');
+                $('#productRelated' + ui.item.id).remove();
+                $('#related-products').append('<li id="productRelated' + ui.item.id + '"><span> ' + ui.item.label + '<i class="remove_related remove_param fal fa-times"></i></span><input type="hidden" name="selected_products[]" value="' +
+                    ui.item.id + '" /></li>');
                 // currObj.focus();
+                return false;
             }
         });
     }

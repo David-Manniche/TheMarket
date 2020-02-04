@@ -1628,8 +1628,8 @@ END,   special_price_found ) as special_price_found'
             return false;
         }
 
-        $autoUpdateOtherLangsData = $langData['auto_update_other_langs_data'];
-        foreach ($langData['product_name'] as $langId=>$prodName) {
+        $autoUpdateOtherLangsData = isset($langData['auto_update_other_langs_data']) ? $langData['auto_update_other_langs_data'] : 0;
+        foreach ($langData['product_name'] as $langId => $prodName) {
             if (empty($prodName) && $autoUpdateOtherLangsData > 0) {
                 $this->saveTranslatedProductLangData($langId);
             } elseif (!empty($prodName)) {
