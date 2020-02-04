@@ -9,19 +9,29 @@ class SmsArchive extends MyAppModel
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
     }
 
-    public static function send($toNumber, $body, $tpl, &$error = '')
+    public static function send($toNumber, $tpl, $langId, $replacements = [], &$error = '')
     {
+        $langId  = FatUtility::int($langId);
         $defaultPushNotiAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_SMS_NOTIFICATION, FatUtility::VAR_INT, 0);
-        if (empty($defaultPushNotiAPI) || empty($toNumber) || empty($body) || empty($tpl)) {
-            $error = Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId());
+        if (empty($defaultPushNotiAPI) || empty($toNumber) || empty($tpl) || 1 > $langId) {
+            $error = Labels::getLabel('MSG_INVALID_REQUEST', $langId);
             return false;
         }
 
         $keyName = Plugin::getAttributesById($defaultPushNotiAPI, 'plugin_code');
         if (1 > Plugin::isActive($keyName)) {
-            $error = Labels::getLabel('MSG_PLUGIN_NOT_ACTIVE', CommonHelper::getLangId());
+            $error = Labels::getLabel('MSG_PLUGIN_NOT_ACTIVE', $langId);
             return false;
         }
+
+        $messageDetail = SmsTemplate::getTpl($tpl, $langId);
+        if (1 > $messageDetail['stpl_status']) {
+            $error = Labels::getLabel("MSG_TEMPLATE_NOT_ACTIVE", $langId);
+            return false;
+        }
+
+        $replacements = array_merge($replacements, LibHelper::getCommonReplacementVarsArr($langId));
+        $body = CommonHelper::replaceStringData($messageDetail['stpl_body'], $replacements);
 
         require_once CONF_PLUGIN_DIR . '/sms-notification/' . strtolower($keyName) . '/' . $keyName . '.php';
 

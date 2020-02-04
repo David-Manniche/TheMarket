@@ -1675,7 +1675,7 @@ class User extends MyAppModel
     public function sendOtp($data, $otp, $langId)
     {
         $langId = FatUtility::int($langId);
-        $langId = 1 > $langId ? $this->commonLangId : $langId;
+       // $langId = 1 > $langId ? $this->commonLangId : $langId;
         $phone = isset($data['user_phone']) ? $data['user_phone'] : '';
         $user_name = isset($data['user_name']) ? $data['user_name'] : Labels::getLabel('LBL_USER', $langId);
         if (empty($phone) || empty($otp)) {
@@ -1683,19 +1683,11 @@ class User extends MyAppModel
             return false;
         }
 
-        $messageDetail = SmsTemplate::getTpl(SmsTemplate::LOGIN, $langId);
-        if (1 > $messageDetail['stpl_status']) {
-            $this->error = Labels::getLabel("MSG_TEMPLATE_NOT_ACTIVE", $langId);
-            return false;
-        }
-        
         $replacements = [
             '{OTP}' => $otp,
             '{USER_NAME}' => $user_name
         ];
-        $replacements = array_merge($replacements, LibHelper::getCommonReplacementVarsArr($langId));
-        $body = CommonHelper::replaceStringData($messageDetail['stpl_body'], $replacements);
-        return SmsArchive::send($phone, $body, SmsTemplate::LOGIN, $this->error);
+        return SmsArchive::send($phone, SmsTemplate::LOGIN, $replacements, $this->error);
     }
 
     public function userPhoneVerification($data, $langId)

@@ -436,7 +436,7 @@ UPDATE `tbl_email_templates` SET `etpl_replacements` = '{website_name} Name of t
 
 UPDATE `tbl_email_templates` SET `etpl_replacements` = '{website_name} Name of the website<br />\r\n{username} Username of the person registered<br />\r\n{email} Email Address of the person registered<br />\r\n{phone} Phone Number of the person registered<br />\r\n{name} Name of the person registered<br />\r\n{social_media_icons} <br>\r\n{contact_us_url} <br>' WHERE `tbl_email_templates`.`etpl_code` = 'new_affiliate_registration_admin' AND `tbl_email_templates`.`etpl_lang_id` = 1;
 
-ALTER TABLE `tbl_sms_templates` CHANGE `stpl_body` `stpl_body` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `tbl_sms_templates` CHANGE `stpl_body` `stpl_body` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 
 INSERT INTO `tbl_sms_templates` (`stpl_code`, `stpl_lang_id`, `stpl_name`, `stpl_body`, `stpl_replacements`, `stpl_status`) VALUES
 ('LOGIN',1,'login', 'Hello {USER_NAME},\r\n{OTP} is the OTP for account verification.\r\n\r\n{SITE_NAME} Team', '[{"title":"Name", "variable":"{USER_NAME}"},{"title":"Otp", "variable":"{OTP}"},{"title":"Site Name", "variable":"{SITE_NAME}"}]', 1),
