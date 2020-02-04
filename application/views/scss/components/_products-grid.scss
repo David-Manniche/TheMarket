@@ -203,16 +203,16 @@
 .products__rating .svg {
     width: 13px;
     height: 13px;
-    
-    
+
+
     margin-#{$end-direction}: 5px;
 }
 
 .products .products__rating .svg svg,
 .products__rating .svg svg {
     vertical-align: top;
-    
-    
+
+
     margin-#{$end-direction}: 0px;
     fill: $brand-color;
     vertical-align: top;
@@ -245,8 +245,8 @@
 
 
 .products-reviews .icn {
-    
-    
+
+
     margin-#{$end-direction}: 5px;
 
 }
@@ -262,7 +262,7 @@
 
 .products-reviews .rate {
     font-size: 0.875rem;
-    
+
     margin-#{$end-direction}: 10px;
     display: -webkit-box;
     display: -ms-flexbox;
@@ -557,115 +557,109 @@
 
 .item__description {
     font-size: 0.9em;
+
+    .item__title {
+        color: $body-color;
+        margin: 0 0 4px 0;
+        font-weight: 600;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        -ms-word-break: break-all;
+        word-break: break-all;
+        word-break: break-word;
+        -ms-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+
+        a {
+            opacity: 1;
+            color: inherit;
+            font-weight: inherit;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .item__sub_title {
+        display: block;
+        opacity: 0.8;
+    }
+
+    .item__brand {
+        font-style: italic;
+    }
+
+    .item__category {
+        opacity: 0.8;
+    }
+
+    .item__specification { color: lighten($body-color, 20%);}
+
+    .item__sold_by {}
+
+    .item__shipping {}
+
+    .item__date {
+        display: block;
+        opacity: 0.6;
+    }
+
+    p {
+        margin: 3px 0;
+    }
+
 }
 
-.item__description .item__title {
-    /*	font-size: 1.2em;*/
-    /*font-weight: 700;*/
-    color: $body-color;
-    margin: 0 0 4px 0;
-    /* These are technically the same, but use both */
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-
-    -ms-word-break: break-all;
-    /* This is the dangerous one in WebKit, as it breaks things wherever */
-    word-break: break-all;
-    /* Instead use this non-standard one: */
-    word-break: break-word;
-
-    /* Adds a hyphen where the word breaks, if supported (No Blink) */
-    -ms-hyphens: auto;
-    -webkit-hyphens: auto;
-    hyphens: auto;
-
-}
-
-.item__description .item__title a {
-    opacity: 1;
-    color: inherit;
-}
-
-.item__description .item__title a:hover {
-    text-decoration: underline;
-}
-
-.item__description .item__sub_title {
-    display: block;
-    opacity: 0.8;
-}
-
-.item__description .item__brand {
-    font-style: italic;
-}
-
-.item__description .item__category {
-    opacity: 0.8;
-}
-
-.item__description .item__specification {}
-
-.item__description .item__sold_by {}
-
-.item__description .item__shipping {}
-
-.item__description {}
-
-.item__description p {
-    margin: 3px 0;
-}
-
-.item__description .item__date {
-    display: block;
-    opacity: 0.6;
-}
 
 .actions {
     display: inline-block;
     vertical-align: top;
     margin: 0 0;
-}
 
-.actions li {
-    display: inline-block;
-    vertical-align: top;
-    margin: 0 2px 4px 0;
-}
+    li {
+        display: inline-block;
+        vertical-align: top;
+        margin: 0 2px 4px 0;
 
-.actions li a {
-    display: block;
-    background: none;
-    border-radius: 4px;
-    padding: 5px;
-    width: 26px;
-    height: 26px;
-    line-height: 1.4;
-    text-align: center;
-    color: $body-color;
-    font-size: 1em;
-    border: $border;
-    border-radius: 2px;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
+        a {
+            display: block;
+            background: none;
+            border-radius: 4px;
+            padding: 5px;
+            width: 26px;
+            height: 26px;
+            line-height: 1.4;
+            text-align: center;
+            color: $body-color;
+            font-size: 1em;
+            border: $border;
+            border-radius: 2px;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            justify-content: center;
 
-}
+            &:hover {
+                background: $brand-color;
+                border-color: $brand-color;
+                color: #fff;
+                text-decoration: none !important;
+            }
 
-.actions li a:hover {
-    background: $brand-color;
-    border-color: $brand-color;
-    color: #fff;
-    text-decoration: none !important;
-}
+        }
+    }
 
-.actions--large li a {
-    width: 2.5rem;
-    height: 2.5rem;
-    line-height: 2;
+    &.actions--large li a {
+        width: 2.5rem;
+        height: 2.5rem;
+        line-height: 2;
+    }
+
 }

@@ -48,7 +48,7 @@ $shippingapi_idFld->developerTags['col'] = 6;
                         </div>
                     </div>
                 </div>
-                <table class="table cart-summary cart--full">
+                <table class="table table-shipping">
                     <tbody>
                         <?php }
                             $newShippingMethods = $shippingMethods;
@@ -56,12 +56,12 @@ $shippingapi_idFld->developerTags['col'] = 6;
                             $shopUrl = !$isAppUser?CommonHelper::generateUrl('Shops', 'View', array($product['shop_id'])):'javascript:void(0)';
                             $imageUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>
                         <tr class="<?php echo (!$product['in_stock']) ? 'disabled' : ''; ?>">
-                            <td>
+                            <td width="10%">
                                 <figure class="item__pic"><a href="<?php echo $productUrl; ?>"><img src="<?php echo $imageUrl; ?>" alt="<?php echo $product['product_name']; ?>" title="<?php echo $product['product_name']; ?>"></a></figure>
                             </td>
-                            <td>
+                            <td width="30%">
                                 <div class="item__description">
-                                    <div class="item__category"><?php echo Labels::getLabel('LBL_Shop', $siteLangId) ?>: <span class="text--dark"><?php echo $product['shop_name']; ?></span></div>
+                                    <div class="item__category"><?php echo Labels::getLabel('LBL_Shop', $siteLangId) ?>: <span class="text-dark"><?php echo $product['shop_name']; ?></span></div>
                                     <div class="item__title"><a title="<?php echo ($product['selprod_title']) ? $product['selprod_title'] : $product['product_name']; ?>"
                                             href="<?php echo $productUrl; ?>"><?php echo ($product['selprod_title']) ? $product['selprod_title'] : $product['product_name']; ?></a></div>
                                     <div class="item__specification">
@@ -69,7 +69,7 @@ $shippingapi_idFld->developerTags['col'] = 6;
                                             if (isset($product['options']) && count($product['options'])) {
                                                 foreach ($product['options'] as $option) { ?>
                                         <?php echo ' | ' . $option['option_name'].':'; ?>
-                                        <span class="text--dark"><?php echo $option['optionvalue_name']; ?></span>
+                                        <span class="text-dark"><?php echo $option['optionvalue_name']; ?></span>
                                         <?php
                                                 }
                                             } ?>
@@ -82,7 +82,7 @@ $shippingapi_idFld->developerTags['col'] = 6;
                                     </div>
                                 </div>
                             </td>
-                            <td>
+                            <td width="30%">
                                 <?php
                             $selectedShippingType = "";
                             $displayManualOptions = "style='display:none'";
@@ -127,7 +127,7 @@ $shippingapi_idFld->developerTags['col'] = 6;
                                         }
                                     }
                                 }
-                                $courierProviders = CommonHelper::createDropDownFromArray('data[' . md5($product['key']) . ']['."shipping_carrier".']', $shipStationCarrierList, $carrierCode, 'class="courier_carriers" onChange="loadShippingCarriers(this);"  data-product-key=\'' . md5($product['key']) . '\'', '');
+                                $courierProviders = CommonHelper::createDropDownFromArray('data[' . md5($product['key']) . ']['."shipping_carrier".']', $shipStationCarrierList, $carrierCode, 'class="custom-select custom-select-sm shipping-select  courier_carriers" onChange="loadShippingCarriers(this);"  data-product-key=\'' . md5($product['key']) . '\'', '');
                                 $serviceProviders = CommonHelper::createDropDownFromArray('data[' . md5($product['key']) . ']['."shipping_services".']', $servicesList, $selectedService, 'class="courier_services "  ', '');
                             }
                             $select_shipping_options = CommonHelper:: createDropDownFromArray('data[' . md5($product['key']) . ']['."shipping_locations".']', $shipping_options[$product['product_id']], isset($product["pship_id"])?$product["pship_id"]:'', '', ''); ?>
@@ -143,7 +143,7 @@ $shippingapi_idFld->developerTags['col'] = 6;
                                 echo $shippingOptions = CommonHelper::displayNotApplicable($siteLangId, '');
                             } else {
                                 if (sizeof($newShippingMethods)>0) {
-                                    echo '<li>'. CommonHelper::createDropDownFromArray('data[' . md5($product['key']) . ']['."shipping_type".']', $newShippingMethods, $selectedShippingType, 'class="custom-select shipping_method"  data-product-key="' . md5($product['key']) . '" ', Labels::getLabel('LBL_Select_Shipping_Method', $siteLangId)) .'</li>';
+                                    echo '<li>'. CommonHelper::createDropDownFromArray('data[' . md5($product['key']) . ']['."shipping_type".']', $newShippingMethods, $selectedShippingType, 'class="custom-select custom-select-sm shipping-select shipping_method"  data-product-key="' . md5($product['key']) . '" ', Labels::getLabel('LBL_Select_Shipping_Method', $siteLangId)) .'</li>';
                                 } else {
                                     echo '<li class="info-message">'.Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId).'</li>';
                                 } ?>
@@ -175,12 +175,13 @@ $shippingapi_idFld->developerTags['col'] = 6;
                                 <?php
                             } ?>
                             </td>
-                            <td><span class="item__price"><?php echo CommonHelper::displayMoneyFormat($product['theprice']*$product['quantity']); ?> </span>
+                            <td width="10%">
+							<span class="item__price"><?php echo CommonHelper::displayMoneyFormat($product['theprice']*$product['quantity']); ?> </span>
                                 <?php if ($product['special_price_found']) { ?>
-                                <span class="text--normal text--normal-secondary text-nowrap"><?php echo CommonHelper::showProductDiscountedText($product, $siteLangId); ?></span>
+                            <span class="item__price text-nowrap"><?php echo CommonHelper::showProductDiscountedText($product, $siteLangId); ?></span>
                                 <?php } ?>
                             </td>
-                            <td class="text-right">
+                            <td width="10%">
                                 <a href="javascript:void(0)" onclick="cart.remove('<?php echo md5($product['key']); ?>','checkout')" class="icons-wrapper"><i class="icn"><svg class="svg">
                                             <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#bin" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#bin"></use>
                                         </svg></i></a>

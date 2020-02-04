@@ -28,7 +28,7 @@
     $endDate = $frm->getField('splprice_end_date');
     $endDate->setFieldTagAttribute('id', 'splprice_end_date'.$selProdId);
 
-    $frm->addSubmitButton('', 'btn_update', Labels::getLabel('LBL_Save_Changes', $siteLangId), array('class'=>'btn--block btn btn--primary'));
+    $frm->addSubmitButton('', 'btn_update', Labels::getLabel('LBL_Save', $siteLangId), array('class'=>'btn--block btn btn--primary'));
 
 if (!empty($data) && 0 < count($data)) {
     $prodName->setFieldTagAttribute('readonly', 'readonly');

@@ -26,7 +26,7 @@
         </div>
     </div>
     <div class="col-auto">
-        <div class="action btn-group-scroll">
+        <div class="btn-group">
             <?php if (User::canAddCustomProduct() && $action == 'catalog') { ?>
             <a href="<?php echo CommonHelper::generateUrl('seller', 'customProductForm');?>" class="btn btn--primary btn--sm"><?php echo Labels::getLabel('LBL_Add_New_Product', $siteLangId);?></a>
             <?php } ?>

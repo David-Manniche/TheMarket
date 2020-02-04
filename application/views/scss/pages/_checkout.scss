@@ -202,13 +202,8 @@
     }
 }
 
-
-
-
-
-
-
-
+.table-shipping{
+    .shipping-select{ min-width: 200px;}}
 
 .checkout--steps {
     background: #fff;
@@ -1057,8 +1052,6 @@
 
 .shipping-seller-title {
     font-weight: 600;
-    color: #000;
-    opacity: 0.3;
     font-size: 0.8rem;
     text-transform: uppercase;
 }

@@ -78,16 +78,104 @@
     color: #333;
     border-top: none;
     background: #fff;
+
+    p {
+        font-size: 0.9em;
+    }
 }
 
-.page-category__content p {
-    font-size: 0.9em;
+
+.cg-nav-wrapper {
+    margin-bottom: 2rem;
+
+    ul {
+        display: flex;
+        flex: 1;
+        flex-wrap: wrap;
+        color: $body-color;
+
+        @include media-breakpoint-down(md) {
+            & {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+        }
+
+
+
+
+        li {
+
+            flex: 0 0 25%;
+            max-width: 25%;
+            padding: 5px;
+
+
+            @include media-breakpoint-down(md) {
+                & {
+                    flex: auto;
+                    max-width: inherit;
+                }
+            }
+
+
+            &:first-child {}
+
+            a {
+                background: #fff;
+                border: $border;
+                border-radius: 3px;
+                color: inherit;
+                display: flex;
+                align-items: center;
+                padding: 0;
+
+                .cg-icon {
+                    height: 2.5rem;
+                    width: 2.5rem;
+                    display: flex;
+                    align-items: center;
+                    border-right: $border;
+                    overflow: hidden;
+                    padding: 0.5rem;
+                    margin-right: 0.5rem;
+                }
+
+                .caption {
+                    padding: 0.5rem;
+
+                    @include media-breakpoint-down(md) {
+                        & {
+                            white-space: nowrap;
+                        }
+                    }
+                }
+
+            }
+
+
+
+            &.iss--active {
+                a {
+                    color: $primary-color;
+                    border-color: $primary-color;
+
+                    .cg-icon {
+                        border-color: $primary-color;
+                    }
+                }
+            }
+
+        }
+    }
+
+
+
+
 }
 
 .cg-main {
     color: $body-color;
-
-
 
     a {
         color: inherit;
@@ -121,6 +209,7 @@
 
             a {
                 padding: 0.5rem 0;
+                font-size: 0.8rem;
             }
 
         }
@@ -134,11 +223,12 @@
 
         &:last-child {
             margin: 0;
+            border-bottom: none;
         }
     }
 
     .big-title {
-        font-size: 1rem;
+        font-size: 0.89rem;
         margin-bottom: 1rem;
         text-transform: uppercase;
         font-weight: 600;

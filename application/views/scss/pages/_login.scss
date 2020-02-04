@@ -123,6 +123,12 @@
 
     &.sign-up {
         transform: translateX(-100% * $transform-direction);
+
+        @include media-breakpoint-down(sm) {
+            & {
+                transform: none;
+            }
+        }
     }
 
 
@@ -144,6 +150,7 @@
                 transform: none;
                 width: auto;
                 height: auto;
+                max-width: 350px;
                 opacity: 1;
                 padding: 2rem;
             }
@@ -180,6 +187,16 @@
                 -webkit-transition: all 0.5s;
                 transition: all 0.5s;
                 #{$end-direction}: 50%;
+
+
+
+                @include media-breakpoint-down(sm) {
+                    & {
+                        transform: none;
+                        left: auto;
+
+                    }
+                }
             }
 
         }
@@ -190,6 +207,14 @@
         opacity: 0;
         -webkit-transition: all 0.5s;
         transition: all 0.5s;
+
+
+        @include media-breakpoint-down(sm) {
+            & {
+                opacity: 1;
+                #{$start-direction}: auto;
+            }
+        }
     }
 }
 

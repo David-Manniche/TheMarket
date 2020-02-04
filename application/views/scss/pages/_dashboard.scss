@@ -350,9 +350,7 @@
 
 
         @include media-breakpoint-down(md) {
-            & {
-                
-            }
+            & {}
         }
 
         li {
@@ -1042,19 +1040,37 @@
 
 }
 
+.share-earn {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+
+    .share-earn-block {
+        padding-#{$end-direction}: 1rem;
+        flex: 1;
+        min-width: 250px;
+
+        &:last-child {
+            padding-#{$end-direction}: 0;
+        }
+    }
+}
 
 
 .box--share {
-    display: block;
+    display: flex;
+    align-items: center;
     width: 100%;
-    padding: 30px 15px 10px 100px;
+    padding: 1rem;
     position: relative;
-    background: #ddd;
     border-radius: 4px;
     color: #fff !important;
-    text-align: left;
     height: 100%;
     position: relative;
+
+    .detail {
+        padding: 0 1.5rem;
+    }
 
     h2 {
         font-size: 2em;
@@ -1074,11 +1090,11 @@
 
 
     .fa {
-        position: absolute;
-        #{$start-direction}: 20px;
-        top: 25px;
-        margin: 0.4rem auto;
+        margin: 0.4rem 0;
         font-size: 3.5em;
+        flex: 0 0 80px;
+        max-width: 80px;
+        text-align: center;
     }
 
     &.box--share-fb {
@@ -2103,7 +2119,7 @@ input.sp-input {
     .header-dashboard {
         padding-#{$start-direction}: 70px;
     }
- 
+
 }
 
 @media only screen and (max-width: 1199px) {
