@@ -6,33 +6,50 @@ class PatchUpdateController extends AdminBaseController
         parent::__construct($action);
         $this->objPrivilege->canEditPatch($this->admin_id);
     }
-       
+
     public function fullTextSearch()
     {
         /* [ Reset Product data for full text search*/
-        $srch = new ProductSearch();
-        $srch->addMultipleFields(array('product_id', '0'));
-        $srch->doNotLimitRecords();
-        $srch->doNotCalculateRecords();
-        //$srch->addGroupBy('product_id');
-        $tmpQry = $srch->getQuery();
-        $qry = "INSERT INTO " . Product::DB_PRODUCT_EXTERNAL_RELATIONS . " (" . Product::DB_PRODUCT_EXTERNAL_RELATIONS_PREFIX . "product_id, " . Product::DB_PRODUCT_EXTERNAL_RELATIONS_PREFIX . "indexed_for_search) SELECT * FROM (" . $tmpQry . ") AS t ON DUPLICATE KEY UPDATE ". Product::DB_PRODUCT_EXTERNAL_RELATIONS_PREFIX . "product_id = t.product_id, ". Product::DB_PRODUCT_EXTERNAL_RELATIONS_PREFIX ."indexed_for_search = 0";
-        FatApp::getDb()->query($qry);
-        /*] */
+		$srch = Language::getSearchObject();
+		$srch->doNotLimitRecords(true);
+        $srch->doNotCalculateRecords(true);
+		$srch->addMultipleFields(array('language_id'));
+		$languages = FatApp::getDb()->fetchAll($srch->getResultSet());
 
-        /* [ Reset Seller Product data for full text search*/
-        $srch = new ProductSearch();
-        $srch->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', 'p.product_id = sprods.selprod_product_id and selprod_active = ' . applicationConstants::ACTIVE .' and selprod_deleted = ' . applicationConstants::NO, 'sprods');
-        $srch->addMultipleFields(array('selprod_id', '0'));
-        $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
-        $srch->doNotLimitRecords();
-        $srch->doNotCalculateRecords();
-        $tmpQry = $srch->getQuery();
-       
-        $qry = "INSERT INTO " . SellerProduct::DB_TBL_EXTERNAL_RELATIONS . " (" . SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . "selprod_id, " . SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . "indexed_for_search) SELECT * FROM (" . $tmpQry . ") AS t ON DUPLICATE KEY UPDATE ". SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . "selprod_id = t.selprod_id, ". SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX ."indexed_for_search = 0";
-        FatApp::getDb()->query($qry);
-        /* ]*/
-        echo "Done";
+		if(1 > count($languages)){
+			echo "Language not found";
+			die;
+		}
+
+		foreach($languages as $language) {
+
+			$langId = FatUtility::int($language['language_id']);
+
+			$srch = new ProductSearch();
+	        $srch->addMultipleFields(array('product_id', '0',$langId));
+	        $srch->doNotLimitRecords();
+	        $srch->doNotCalculateRecords();
+	        //$srch->addGroupBy('product_id');
+	        $tmpQry = $srch->getQuery();
+
+			$qry = "INSERT INTO " . Product::DB_PRODUCT_EXTERNAL_RELATIONS . " (".Product::DB_PRODUCT_EXTERNAL_RELATIONS_PREFIX . "product_id, " . Product::DB_PRODUCT_EXTERNAL_RELATIONS_PREFIX . "indexed_for_search, ".Product::DB_PRODUCT_EXTERNAL_RELATIONS_PREFIX. "lang_id ) SELECT * FROM (" . $tmpQry . ") AS t ON DUPLICATE KEY UPDATE ". Product::DB_PRODUCT_EXTERNAL_RELATIONS_PREFIX . "product_id = t.product_id, ". Product::DB_PRODUCT_EXTERNAL_RELATIONS_PREFIX ."indexed_for_search = 0, ". Product::DB_PRODUCT_EXTERNAL_RELATIONS_PREFIX . "lang_id = t.".$langId;
+
+			FatApp::getDb()->query($qry);
+
+			$srch = new ProductSearch();
+	        $srch->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', 'p.product_id = sprods.selprod_product_id and selprod_active = ' . applicationConstants::ACTIVE .' and selprod_deleted = ' . applicationConstants::NO, 'sprods');
+	        $srch->addMultipleFields(array('selprod_id',$langId,'selprod_product_id','0',));
+	        $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
+	        $srch->doNotLimitRecords();
+	        $srch->doNotCalculateRecords();
+	        $tmpQry = $srch->getQuery();
+
+			$qry = "INSERT INTO " . SellerProduct::DB_TBL_EXTERNAL_RELATIONS . " (" . SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . "selprod_id, ". SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX."lang_id," . SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . "product_id," .SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX. "indexed_for_search ) SELECT * FROM (" . $tmpQry . ") AS t ON DUPLICATE KEY UPDATE ". SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . "selprod_id = t.selprod_id, ". SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX ." lang_id = t. ".$langId. ",". SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . "product_id = t.selprod_product_id," . SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX ."indexed_for_search = 0";
+
+			FatApp::getDb()->query($qry);
+
+		}
+		echo "Done";
     }
 
     public function updateCategoryTable()

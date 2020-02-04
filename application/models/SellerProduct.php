@@ -22,8 +22,8 @@ class SellerProduct extends MyAppModel
     public const DB_TBL_RELATED_PRODUCTS = 'tbl_related_products';
     public const DB_TBL_RELATED_PRODUCTS_PREFIX = 'related_';
 
-    public const DB_TBL_EXTERNAL_RELATIONS = 'tbl_seller_product_external_relations';
-    public const DB_TBL_EXTERNAL_RELATIONS_PREFIX = 'sperel_';
+	public const DB_TBL_EXTERNAL_RELATIONS = 'tbl_seller_product_external_relations';
+	public const DB_TBL_EXTERNAL_RELATIONS_PREFIX = 'sperel_';
 
     public function __construct($id = 0)
     {

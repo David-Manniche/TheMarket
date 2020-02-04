@@ -421,4 +421,18 @@ CREATE TABLE `tbl_seller_product_external_relations` (
 -- Indexes for table `tbl_seller_product_external_relations`
 --
 ALTER TABLE `tbl_seller_product_external_relations`
-  ADD PRIMARY KEY (`sperel_selprod_id`);  
+  ADD PRIMARY KEY (`sperel_selprod_id`);
+
+ALTER TABLE `tbl_seller_product_external_relations` ADD `sperel_product_id` INT(11) NOT NULL AFTER `sperel_selprod_id`;
+
+ALTER TABLE `tbl_product_external_relations` ADD `perel_lang_id` INT(11) NOT NULL AFTER `perel_indexed_for_search`;
+
+ALTER TABLE `tbl_product_external_relations` ADD `perel_productlang_id` INT(11) NOT NULL FIRST, ADD PRIMARY KEY (`perel_productlang_id`);
+
+ALTER TABLE `tbl_seller_product_external_relations` DROP PRIMARY KEY;
+
+ALTER TABLE tbl_seller_product_external_relations
+   ADD PRIMARY KEY (sperel_selprod_id, sperel_lang_id);
+
+ALTER TABLE  tbl_product_external_relations
+      ADD PRIMARY KEY (perel_product_id, perel_lang_id);

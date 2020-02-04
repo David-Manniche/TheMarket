@@ -89,7 +89,7 @@ class DummyController extends MyAppController
         //echo 'Created All the Procedures.';
     }
 
-    
+
 
     public function updateDecimal()
     {
@@ -566,4 +566,8 @@ class DummyController extends MyAppController
     {
         PushNotification::send();
     }
+
+	public function checking(){
+		FullTextSearch::insertProduct();
+	}
 }

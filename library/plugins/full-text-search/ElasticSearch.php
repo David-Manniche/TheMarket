@@ -10,13 +10,14 @@ class ElasticSearch extends FullTextSearchBase
 	private  $indexName;
 	public $error = false;
 	const KEY_NAME = "ElasticSearch";
+	const INDEX_PREFIX = "yk-products-";
 
 	/* Creating ElasticSearch Connection
 	*
 	*  @indexName - Pass Index Name you Want to Create in Elasticsearch
 	*/
-    public function __construct($indexName){
-		$this->indexName = $indexName;
+    public function __construct( $langCode ){
+		$this->indexName = self::INDEX_PREFIX.$langCode;
 		$settings = $this->getSettings();
 		if ( !isset($settings['host']) && !isset($settings['username']) && !isset($settings['password']) ) {
             $this->error = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', CommonHelper::getLangId());
@@ -41,19 +42,22 @@ class ElasticSearch extends FullTextSearchBase
 					'analysis'=>[
 						'filter' => [
 							$language."_stop" => [ "type" => "stop","stopwords"=>"_".$language."_"],
-							$language."_stemmer"  => [ "type" => "stemmer", "language"=> $language ],
-							$language."_possessive_stemmer" => [ "type" => "stemmer", "language"=> "possessive_". $language ]
+							$language."_stemmer"  => [ "type" => "stemmer", "language"=> $language ]
 						],
 						"analyzer" => [
 							"rebuilt_".$language => [
 								"tokenizer" => "standard",
-								"filter"  => [ "lowercase","decimal_digit",$language."_stop",$language."_stemmer",$language."_possessive_stemmer","snowball"]
+								"filter"  => [ "lowercase","decimal_digit",$language."_stop",$language."_stemmer","snowball"]
 							]
 						]
 					]
 				]
 		 ]
 	  ]; // index name
+	  if($language == "english"){
+		$params['body']['settings']['analysis']['filter'][$language."_possessive_stemmer"] = [ "type" => "stemmer", "language"=> "possessive_". $language ];
+		array_push($params['body']['settings']['analysis']['analyzer']["rebuilt_".$language]["filter"], $language."_possessive_stemmer");
+	  }
 	  try{
 			$response = $this->client->indices()->create($params);
 	  }catch (exception $e) {
@@ -234,10 +238,11 @@ class ElasticSearch extends FullTextSearchBase
 				)
     		]
 		];
-
 		try{
 			$response = $this->client->update($params);
+
 		} catch(exception $e){
+
 			$this->error = $e;
 			return false;
 		}
