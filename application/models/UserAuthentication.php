@@ -694,7 +694,7 @@ class UserAuthentication extends FatModel
         return $row;
     }
 
-    public function checkUserPwdResetRequest($userId)
+    public function getUserResetPwdToken($userId)
     {
         $db = FatApp::getDb();
         $srch = new SearchBase(static::DB_TBL_USER_PRR);
@@ -707,6 +707,15 @@ class UserAuthentication extends FatModel
         if (!$row = $db->fetch($rs)) {
             return false;
         }
+        return $row;
+    }
+
+    public function checkUserPwdResetRequest($userId)
+    {
+        if (!$db->getUserResetPwdToken($userId)) {
+            return false;
+        }
+        
         $this->error = Labels::getLabel('ERR_RESET_PASSWORD_REQUEST_ALREADY_PLACED', $this->commonLangId);
         return true;
     }

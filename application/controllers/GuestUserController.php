@@ -412,7 +412,7 @@ class GuestUserController extends MyAppController
         FatApp::redirectUser($redirectUrl);
     }
 
-    public function validateOtp()
+    public function validateOtp($forRecoveringPwd = false)
     {
         $otp = FatApp::getPostedData('upv_otp', FatUtility::VAR_INT, 0);
         if (1 > $otp) {
@@ -423,7 +423,16 @@ class GuestUserController extends MyAppController
         if (false == $obj->verifyUserPhoneOtp($otp, true)) {
             LibHelper::dieJsonError($obj->getError());
         }
-        $redirectUrl = isset($_SESSION['referer_page_url']) ? $_SESSION['referer_page_url'] : CommonHelper::generateUrl('Account');
+
+        if (true == $forRecoveringPwd) {
+            $obj = UserAuthentication();
+            $record = $obj->getUserResetPwdToken($userId);
+            $token = $record['uprr_token'];
+            $redirectUrl = CommonHelper::generateFullUrl('GuestUser', 'resetPassword', array($userId, $token));
+        } else {
+            $redirectUrl = isset($_SESSION['referer_page_url']) ? $_SESSION['referer_page_url'] : CommonHelper::generateUrl('Account');
+        }
+
         unset($_SESSION[UserAuthentication::TEMP_SESSION_ELEMENT_NAME]);
         $this->set('redirectUrl', $redirectUrl);
         $this->set('msg', Labels::getLabel("MSG_LOGGED_IN_SUCCESSFULLY", $this->siteLangId));
@@ -706,6 +715,7 @@ class GuestUserController extends MyAppController
         $checkVerificationRow = $db->fetch($rs);
 
         $userObj = new User($row['user_id']);
+        $notVerified = false;
         if ($checkVerificationRow['credential_verified'] == applicationConstants::NO) {
             $error = false;
             if (0 < $withPhone) {
@@ -714,6 +724,7 @@ class GuestUserController extends MyAppController
                     $message = !empty($userObj->getError()) ? $userObj->getError() : Labels::getLabel("ERR_ERROR_IN_SENDING_VERFICATION_SMS", $this->siteLangId);
                     $error = true;
                 }
+                $notVerified = true;
             } else {
                 $row['link'] = CommonHelper::generateFullUrl('GuestUser', 'resetPassword', array($row['user_id'], $token));
                 $row['user_email'] = $row['credential_email'];
@@ -744,7 +755,7 @@ class GuestUserController extends MyAppController
                 FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'forgotPasswordForm'));
             }
         } else {
-            if (!$userObj->resendOtp()) {
+            if (false === $notVerified && !$userObj->resendOtp()) {
                 $message = $userObj->getError();
                 if (true ===  MOBILE_APP_API_CALL || FatUtility::isAjaxCall()) {
                     FatUtility::dieJsonError($message);

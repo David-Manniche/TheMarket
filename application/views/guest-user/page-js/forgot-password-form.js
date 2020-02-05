@@ -36,5 +36,16 @@
 			}
         });
         return false;
-	};
+    };
+    
+    validateOtp = function (frm){
+		if (!$(frm).validate()) return;	
+		var data = fcom.frmData(frm);
+		fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'validateOtp'), data, function(t) {						
+            if (1 == t.status) {
+                window.location.href = t.redirectUrl;
+            }
+        });	
+        return false;
+    };
 })();
