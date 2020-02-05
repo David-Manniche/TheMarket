@@ -4,7 +4,7 @@ class MyAppController extends FatController
     public $app_user = array();
     public $appToken = '';
     public $themeDetail = '';
-	
+    
     public function __construct($action)
     {
         parent::__construct($action);
@@ -20,7 +20,7 @@ class MyAppController extends FatController
         CommonHelper::initCommonVariables();
         $this->initCommonVariables();
         $this->tempTokenLogin();
-		$this->_template->addCss('css/main-'.CommonHelper::getLayoutDirection().'.css');
+        $this->_template->addCss('css/main-' . CommonHelper::getLayoutDirection() . '.css');
     }
 
     public function initCommonVariables()
@@ -143,7 +143,6 @@ class MyAppController extends FatController
         $currencySymbolRight = CommonHelper::getCurrencySymbolRight();
 
         if (CommonHelper::demoUrl()) {
-
         }
 
         $this->set('isUserDashboard', false);
@@ -590,7 +589,6 @@ class MyAppController extends FatController
 
     public function includeDateTimeFiles()
     {
-
         $this->_template->addJs(array('js/jquery-ui-timepicker-addon.js'), false);
     }
 

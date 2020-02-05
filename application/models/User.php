@@ -1706,8 +1706,7 @@ class User extends MyAppModel
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
             return false;
         }
-
-        $this->setMainTableRecordId($this->mainTableRecordId);
+        
         $attr = ['user_name','user_phone'];
         $userData = $this->getUserInfo($attr, false, false);
         return $this->userPhoneVerification($userData, $this->commonLangId);

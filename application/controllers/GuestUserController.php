@@ -33,6 +33,14 @@ class GuestUserController extends MyAppController
         $this->_template->render();
     }
 
+    private function getSmsPluginAndTemplateStatus()
+    {
+        $obj = new Plugin();
+        $active = $obj->getDefaultPluginData(Plugin::TYPE_SMS_NOTIFICATION, 'plugin_active');
+        $status = SmsTemplate::getTpl(SmsTemplate::LOGIN, 0, 'stpl_status');
+        return (false != $active && !empty($active) && 0 < $status ? applicationConstants::YES : applicationConstants::NO);
+    }
+
     public function registerFormDetail($isRegisterForm, $signUpWithPhone = 0)
     {
         $registerFrm = $this->getRegistrationForm(true, $signUpWithPhone);
@@ -52,10 +60,7 @@ class GuestUserController extends MyAppController
         );
         $isRegisterForm  = FatUtility::int($isRegisterForm);
 
-        $obj = new Plugin();
-        $active = $obj->getDefaultPluginData(Plugin::TYPE_SMS_NOTIFICATION, 'plugin_active');
-        $status = SmsTemplate::getTpl(SmsTemplate::LOGIN, 0, 'stpl_status');
-        $smsPluginStatus = (false != $active && !empty($active) && 0 < $status ? applicationConstants::YES : applicationConstants::NO);
+        $smsPluginStatus = $this->getSmsPluginAndTemplateStatus();
 
         $this->set('smsPluginStatus', $smsPluginStatus);
         $this->set('isRegisterForm', $isRegisterForm);
@@ -596,31 +601,40 @@ class GuestUserController extends MyAppController
         $this->_template->render();
     }
 
-    public function forgotPasswordForm()
+    public function forgotPasswordForm($withPhone = 0, $includeHeaderAndFooter = 1)
     {
-        $frm = $this->getForgotForm();
+        $frm = $this->getForgotForm($withPhone);
         $obj = new Extrapage();
         $pageData = $obj->getContentByPageType(Extrapage::FORGOT_PAGE_RIGHT_BLOCK, $this->siteLangId);
+
+        $smsPluginStatus = $this->getSmsPluginAndTemplateStatus();
+
+        $this->set('smsPluginStatus', $smsPluginStatus);
+        $this->set('withPhone', $withPhone);
         $this->set('pageData', $pageData);
         $this->set('frm', $frm);
         $this->set('siteLangId', $this->siteLangId);
-        $this->_template->render();
+        if (1 > $withPhone && 0 < $includeHeaderAndFooter) {
+            $this->_template->render();
+            return;
+        }
+        $this->_template->render(false, false);
     }
 
     public function forgotPassword()
     {
-        $frm = $this->getForgotForm();
+        $withPhone = FatApp::getPostedData('withPhone', FatUtility::VAR_INT, 0);
+        $frm = $this->getForgotForm($withPhone);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-
         if (false === $post) {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true ===  MOBILE_APP_API_CALL || FatUtility::isAjaxCall()) {
                 FatUtility::dieJsonError(current($frm->getValidationErrors()));
             }
             Message::addErrorMessage($frm->getValidationErrors());
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'forgotPasswordForm'));
         }
 
-        if (false ===  MOBILE_APP_API_CALL && FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '')!= '' && FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '')!= '') {
+        if (false ===  MOBILE_APP_API_CALL && FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '') != '' && FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '') != '') {
             if (!CommonHelper::verifyCaptcha()) {
                 $message = Labels::getLabel('MSG_That_captcha_was_incorrect', $this->siteLangId);
                 Message::addErrorMessage($message);
@@ -628,14 +642,18 @@ class GuestUserController extends MyAppController
             }
         }
 
-        $user = $post['user_email_username'];
+        $user = (0 < $withPhone) ? $post['user_phone'] : $post['user_email_username'];
 
         $userAuthObj = new UserAuthentication();
-        $row = $userAuthObj->getUserByEmailOrUserName($user, '', false);
+        if (0 < $withPhone) {
+            $row = $userAuthObj->getUserByPhone($user, '', false);
+        } else {
+            $row = $userAuthObj->getUserByEmailOrUserName($user, '', false);
+        }
 
         if (!$row || false === $row) {
             $message = Labels::getLabel($userAuthObj->getError(), $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true ===  MOBILE_APP_API_CALL || FatUtility::isAjaxCall()) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -644,7 +662,7 @@ class GuestUserController extends MyAppController
 
         if ($row['user_is_shipping_company'] == applicationConstants::YES) {
             $message = Labels::getLabel('ERR_Shipping_user_are_not_allowed_to_place_forgot_password_request', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true ===  MOBILE_APP_API_CALL || FatUtility::isAjaxCall()) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -653,7 +671,7 @@ class GuestUserController extends MyAppController
 
         if ($userAuthObj->checkUserPwdResetRequest($row['user_id'])) {
             $message = Labels::getLabel($userAuthObj->getError(), $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true ===  MOBILE_APP_API_CALL || FatUtility::isAjaxCall()) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -671,27 +689,38 @@ class GuestUserController extends MyAppController
         if (!$userAuthObj->addPasswordResetRequest($row)) {
             $db->rollbackTransaction();
             $message = Labels::getLabel($userAuthObj->getError(), $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true ===  MOBILE_APP_API_CALL || FatUtility::isAjaxCall()) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'forgotPasswordForm'));
         }
 
-        $row['link'] = CommonHelper::generateFullUrl('GuestUser', 'resetPassword', array($row['user_id'], $token));
-
         /*Send verification email if email not verified[*/
-        $row['user_email'] = $row['credential_email'];
         $srch = new SearchBase('tbl_user_credentials');
-        $srch->addCondition('credential_email', '=', $row['user_email']);
+        $srch->addCondition('credential_user_id', '=', $row['user_id']);
         $rs = $srch->getResultSet();
         $checkVerificationRow = $db->fetch($rs);
 
         $userObj = new User($row['user_id']);
-        if ($checkVerificationRow['credential_verified'] != applicationConstants::YES) {
-            if (!$userObj->userEmailVerification($row, $this->siteLangId)) {
-                $message = Labels::getLabel("MSG_VERIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
+        if ($checkVerificationRow['credential_verified'] == applicationConstants::NO) {
+            $error = false;
+            if (0 < $withPhone) {
+                $row['user_phone'] = $post['user_phone'];
+                if (!$userObj->userPhoneVerification($row, $this->siteLangId)) {
+                    $message = !empty($userObj->getError()) ? $userObj->getError() : Labels::getLabel("ERR_ERROR_IN_SENDING_VERFICATION_SMS", $this->siteLangId);
+                    $error = true;
+                }
+            } else {
+                $row['link'] = CommonHelper::generateFullUrl('GuestUser', 'resetPassword', array($row['user_id'], $token));
+                $row['user_email'] = $row['credential_email'];
+                if (!$userObj->userEmailVerification($row, $this->siteLangId)) {
+                    $message = Labels::getLabel("MSG_VERIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId);
+                    $error = true;
+                }
+            }
+            if (true === $error) {
+                if (true ===  MOBILE_APP_API_CALL || FatUtility::isAjaxCall()) {
                     FatUtility::dieJsonError($message);
                 }
                 Message::addErrorMessage($message);
@@ -700,24 +729,53 @@ class GuestUserController extends MyAppController
         }
         /*]*/
 
-        $email = new EmailHandler();
-        if (!$email->sendForgotPasswordLinkEmail($this->siteLangId, $row)) {
-            $db->rollbackTransaction();
-            $message = Labels::getLabel("MSG_ERROR_IN_SENDING_PASSWORD_RESET_LINK_EMAIL", $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
-                FatUtility::dieJsonError($message);
+        if (1 > $withPhone) {
+            $email = new EmailHandler();
+            if (!$email->sendForgotPasswordLinkEmail($this->siteLangId, $row)) {
+                $db->rollbackTransaction();
+                $message = Labels::getLabel("MSG_ERROR_IN_SENDING_PASSWORD_RESET_LINK_EMAIL", $this->siteLangId);
+                if (true ===  MOBILE_APP_API_CALL || FatUtility::isAjaxCall()) {
+                    FatUtility::dieJsonError($message);
+                }
+                Message::addErrorMessage($message);
+                FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'forgotPasswordForm'));
             }
-            Message::addErrorMessage($message);
-            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'forgotPasswordForm'));
+        } else {
+            if (!$userObj->resendOtp()) {
+                $message = $userObj->getError();
+                if (true ===  MOBILE_APP_API_CALL || FatUtility::isAjaxCall()) {
+                    FatUtility::dieJsonError($message);
+                }
+                Message::addErrorMessage($message);
+                FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'forgotPasswordForm'));
+            }
         }
 
         $db->commitTransaction();
-
-        if (true ===  MOBILE_APP_API_CALL) {
-            $this->set('msg', Labels::getLabel("MSG_YOUR_PASSWORD_RESET_INSTRUCTIONS_TO_YOUR_EMAIL", $this->siteLangId));
-            $this->_template->render();
+        if (1 > $withPhone) {
+            $message = Labels::getLabel("MSG_YOUR_PASSWORD_RESET_INSTRUCTIONS_TO_YOUR_EMAIL", $this->siteLangId);
+        } else {
+            $message = Labels::getLabel("MSG_AN_OTP_SENT_ON_YOUR_PHONE", $this->siteLangId);
         }
-        Message::addMessage(Labels::getLabel("MSG_YOUR_PASSWORD_RESET_INSTRUCTIONS_TO_YOUR_EMAIL", $this->siteLangId));
+
+        if (true ===  MOBILE_APP_API_CALL || FatUtility::isAjaxCall()) {
+            $this->set('msg', $message);
+            if (true ===  MOBILE_APP_API_CALL) {
+                $this->_template->render();
+            } else {
+                if (0 < $withPhone) {
+                    $frm = $this->getOtpForm();
+                    $frm->fill(['user_id' => $row['user_id']]);
+                    $this->set('frm', $frm);
+                    $this->_template->render(false, false, 'guest-user/otp-form.php');
+                } else {
+                    $this->_template->render(false, false, 'json-success.php');
+                }
+            }
+            exit;
+        }
+
+        Message::addMessage($message);
         FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
     }
 
@@ -934,35 +992,38 @@ class GuestUserController extends MyAppController
         FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
     }
 
-    private function getForgotForm()
+    private function getForgotForm($withPhone = 0)
     {
-        $siteLangId = $this->siteLangId;
         $frm = new Form('frmPwdForgot');
-        $fld = $frm->addTextBox(Labels::getLabel('LBL_Username_or_email', $siteLangId), 'user_email_username')->requirements()->setRequired();
+        $frm->addHiddenField('', 'withPhone', $withPhone);
+        if (1 > $withPhone) {
+            $frm->addTextBox(Labels::getLabel('LBL_Username_or_email', $this->siteLangId), 'user_email_username')->requirements()->setRequired();
+        } else {
+            $frm->addRequiredField(Labels::getLabel('LBL_PHONE_NUMBER', $this->siteLangId), 'user_phone', '', array('placeholder' => Labels::getLabel('LBL_PHONE_NUMBER_(INCLUDING_COUNTRY_CODE)', $this->siteLangId)));
+        }
 
         CommonHelper::addCaptchaField($frm);
         
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('BTN_SUBMIT', $siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('BTN_SUBMIT', $this->siteLangId));
         return $frm;
     }
 
     private function getResetPwdForm($uId, $token)
     {
-        $siteLangId = $this->siteLangId;
         $frm = new Form('frmResetPwd');
-        $fld_np = $frm->addPasswordField(Labels::getLabel('LBL_NEW_PASSWORD', $siteLangId), 'new_pwd');
-        $fld_np->htmlAfterField='<p class="note">'.sprintf(Labels::getLabel('LBL_Example_password', $siteLangId), 'User@123').'</p>';
+        $fld_np = $frm->addPasswordField(Labels::getLabel('LBL_NEW_PASSWORD', $this->siteLangId), 'new_pwd');
+        $fld_np->htmlAfterField = '<p class="note">' . sprintf(Labels::getLabel('LBL_Example_password', $this->siteLangId), 'User@123') . '</p>';
         $fld_np->requirements()->setRequired();
         $fld_np->requirements()->setRegularExpressionToValidate(ValidateElement::PASSWORD_REGEX);
-        $fld_np->requirements()->setCustomErrorMessage(Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $siteLangId));
-        $fld_cp = $frm->addPasswordField(Labels::getLabel('LBL_CONFIRM_NEW_PASSWORD', $siteLangId), 'confirm_pwd');
+        $fld_np->requirements()->setCustomErrorMessage(Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->siteLangId));
+        $fld_cp = $frm->addPasswordField(Labels::getLabel('LBL_CONFIRM_NEW_PASSWORD', $this->siteLangId), 'confirm_pwd');
         $fld_cp->requirements()->setRequired();
         $fld_cp->requirements()->setCompareWith('new_pwd', 'eq', '');
 
-        $frm->addHiddenField('', 'user_id', $uId, array('id'=>'user_id'));
-        $frm->addHiddenField('', 'token', $token, array('id'=>'token'));
+        $frm->addHiddenField('', 'user_id', $uId, array('id' => 'user_id'));
+        $frm->addHiddenField('', 'token', $token, array('id' => 'token'));
 
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_RESET_PASSWORD', $siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_RESET_PASSWORD', $this->siteLangId));
         return $frm;
     }
     

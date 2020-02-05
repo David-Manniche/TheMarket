@@ -626,13 +626,10 @@ class UserAuthentication extends FatModel
         return $row;
     }
 
-    public function getUserByEmailOrUserName($user, $isActive = true, $isVerfied = true, $addDeletedCheck = true)
+    public function validateUserObj($user, $isActive = true, $isVerfied = true, $addDeletedCheck = true, $isPhone = false)
     {
-        $db = FatApp::getDb();
         $srch = new SearchBase(User::DB_TBL);
         $srch->joinTable(User::DB_TBL_CRED, 'INNER JOIN', User::tblFld('id') . '=' . User::DB_TBL_CRED_PREFIX . 'user_id');
-        $cnd=$srch->addCondition(User::DB_TBL_CRED_PREFIX . 'username', '=', $user);
-        $cnd->attachCondition(User::DB_TBL_CRED_PREFIX . 'email', '=', $user, 'OR');
 
         if (true === $isActive) {
             $srch->addCondition(User::DB_TBL_CRED_PREFIX . 'active', '=', applicationConstants::ACTIVE);
@@ -663,6 +660,31 @@ class UserAuthentication extends FatModel
 
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
+        return $srch;
+    }
+
+    public function getUserByPhone($phoneNumber, $isActive = true, $isVerfied = true, $addDeletedCheck = true)
+    {
+        $db = FatApp::getDb();
+        $srch = $this->validateUserObj($phoneNumber, $isActive, $isVerfied, $addDeletedCheck, true);
+        $srch->addCondition(User::DB_TBL_PREFIX . 'phone', '=', $phoneNumber);
+
+        $rs = $srch->getResultSet();
+        if (!$row = $db->fetch($rs, User::tblFld('id'))) {
+            $this->error = Labels::getLabel('ERR_INVALID_PHONE_NUMBER', $this->commonLangId);
+            return false;
+        }
+
+        return $row;
+    }
+
+    public function getUserByEmailOrUserName($user, $isActive = true, $isVerfied = true, $addDeletedCheck = true)
+    {
+        $db = FatApp::getDb();
+        $srch = $this->validateUserObj($user, $isActive, $isVerfied, $addDeletedCheck);
+        $cnd = $srch->addCondition(User::DB_TBL_CRED_PREFIX . 'username', '=', $user);
+        $cnd->attachCondition(User::DB_TBL_CRED_PREFIX . 'email', '=', $user, 'OR');
+
         $rs = $srch->getResultSet();
         if (!$row = $db->fetch($rs, User::tblFld('id'))) {
             $this->error = Labels::getLabel('ERR_INVALID_USERNAME', $this->commonLangId);
