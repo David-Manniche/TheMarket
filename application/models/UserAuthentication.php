@@ -700,7 +700,7 @@ class UserAuthentication extends FatModel
         $srch = new SearchBase(static::DB_TBL_USER_PRR);
         $srch->addCondition(static::DB_TBL_UPR_PREFIX . 'user_id', '=', $userId);
         $srch->addCondition(static::DB_TBL_UPR_PREFIX . 'expiry', '>', date('Y-m-d H:i:s'));
-        $srch->addFld(static::DB_TBL_UPR_PREFIX . 'user_id');
+        $srch->addMultipleFields([static::DB_TBL_UPR_PREFIX . 'user_id', static::DB_TBL_UPR_PREFIX . 'token']);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
