@@ -412,7 +412,7 @@ class GuestUserController extends MyAppController
         FatApp::redirectUser($redirectUrl);
     }
 
-    public function validateOtp($forRecoveringPwd = false)
+    public function validateOtp($forRecoveringPwd = 0)
     {
         $otp = FatApp::getPostedData('upv_otp', FatUtility::VAR_INT, 0);
         if (1 > $otp) {
@@ -424,7 +424,7 @@ class GuestUserController extends MyAppController
             LibHelper::dieJsonError($obj->getError());
         }
 
-        if (true == $forRecoveringPwd) {
+        if (0 < $forRecoveringPwd) {
             $obj = UserAuthentication();
             $record = $obj->getUserResetPwdToken($userId);
             $token = $record['uprr_token'];
