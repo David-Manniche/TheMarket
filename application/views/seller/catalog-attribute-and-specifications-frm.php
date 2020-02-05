@@ -2,6 +2,19 @@
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $productFrm->setFormTagAttribute('class', 'form form--horizontal');
 $productFrm->setFormTagAttribute('onsubmit', 'setUpCatalogProductAttributes(this); return(false);');
+
+$featuredFld = $productFrm->getField('product_featured');
+$featuredFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+$featuredFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+
+$freeShopFld = $productFrm->getField('ps_free');
+$freeShopFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+$freeShopFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+
+$codFld = $productFrm->getField('product_cod_enabled');
+$codFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+$codFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+
 ?>
 <div class="row justify-content-center">
     <div class="col-md-12">

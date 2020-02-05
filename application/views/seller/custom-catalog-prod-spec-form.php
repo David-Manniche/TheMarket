@@ -11,9 +11,11 @@ $layout = Language::getLayoutDirection($langId);
                 </div>
                 <div class="field-wraper">
                     <div class="field_cover">
-                        <input type="text" name="prodspec_name[<?php echo $langId; ?>]" value="<?php if (!empty($prodSpecData)) {
-    echo $prodSpecData['prod_spec_name'];
-} ?>">                        
+                        <input type="text" name="prodspec_name[<?php echo $langId; ?>]" value="<?php
+                        if (!empty($prodSpecData)) {
+                            echo $prodSpecData['prod_spec_name'];
+                        }
+                        ?>">                        
                     </div>
                 </div>
             </div>
@@ -25,9 +27,11 @@ $layout = Language::getLayoutDirection($langId);
                 </div>
                 <div class="field-wraper">
                     <div class="field_cover">
-                        <input type="text" name="prodspec_value[<?php echo $langId; ?>]" value="<?php if (!empty($prodSpecData)) {
-    echo $prodSpecData['prod_spec_value'];
-} ?>">
+                        <input type="text" name="prodspec_value[<?php echo $langId; ?>]" value="<?php
+                               if (!empty($prodSpecData)) {
+                                   echo $prodSpecData['prod_spec_value'];
+                               }
+                        ?>">
                     </div>
                 </div>
             </div>
@@ -49,9 +53,11 @@ $layout = Language::getLayoutDirection($langId);
                 <div class="caption-wraper"></div>
                 <div class="field-wraper">
                     <div class="field_cover">
-                        <button type="button" class="btn btn-primary" onClick="saveSpecification(<?php echo $langId; ?>, <?php if (!empty($prodSpecData)) {
-    echo $prodSpecData['key'];
-} ?>)"><?php echo Labels::getLabel('LBL_Add', $siteLangId) ?></button></div>
+                        <button type="button" class="btn btn-primary" onClick="saveSpecification(<?php echo $langId; ?>, <?php
+                               if (!empty($prodSpecData)) {
+                                   echo $prodSpecData['key'];
+                               }
+                        ?>)"><?php echo Labels::getLabel('LBL_Add', $siteLangId) ?></button></div>
                 </div>
             </div>
         </div>

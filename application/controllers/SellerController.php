@@ -4636,12 +4636,12 @@ class SellerController extends SellerBaseController {
         $warrantyFld->requirements()->setInt();
         $warrantyFld->requirements()->setPositive();
         $frm->addCheckBox(Labels::getLabel('LBL_Mark_This_Product_As_Featured?', $this->siteLangId), 'product_featured', 1, array(), false, 0);
-        
-        if( $preqId > 0 ){
-            $preqContent = ProductRequest::getAttributesById($preqId, 'preq_content');                        
+
+        if ($preqId > 0) {
+            $preqContent = ProductRequest::getAttributesById($preqId, 'preq_content');
             $preqContentData = json_decode($preqContent, true);
             $productType = $preqContentData['product_type'];
-        }else{
+        } else {
             $productType = Product::getAttributesById($productId, 'product_type');
         }
         if ($productType == Product::PRODUCT_TYPE_PHYSICAL) {
@@ -4659,10 +4659,15 @@ class SellerController extends SellerBaseController {
         return $frm;
     }
 
-    private function getProductShippingFrm($productId) {
+    private function getProductShippingFrm($productId, $preqId = 0) {
         $frm = new Form('frmProductShipping');
-        $productType = Product::getAttributesById($productId, 'product_type');
-
+        if ($preqId > 0) {
+            $preqContent = ProductRequest::getAttributesById($preqId, 'preq_content');
+            $preqContentData = json_decode($preqContent, true);
+            $productType = $preqContentData['product_type'];
+        } else {
+            $productType = Product::getAttributesById($productId, 'product_type');
+        }
         if ($productType == Product::PRODUCT_TYPE_PHYSICAL && FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
             $lengthUnitsArr = applicationConstants::getLengthUnitsArr($this->siteLangId);
             $frm->addSelectBox(Labels::getLabel('LBL_Dimensions_Unit', $this->siteLangId), 'product_dimension_unit', $lengthUnitsArr)->requirements()->setRequired();
@@ -4696,6 +4701,7 @@ class SellerController extends SellerBaseController {
 
         $frm->addHiddenField('', 'ps_from_country_id');
         $frm->addHiddenField('', 'product_id', $productId);
+        $frm->addHiddenField('', 'preq_id', $preqId);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->siteLangId));
         return $frm;
     }
