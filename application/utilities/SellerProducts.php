@@ -328,6 +328,9 @@ trait SellerProducts
 
         unset($post['selprod_id']);
 
+        $selProdCode = $productRow['product_id'] . '_';
+        $post['selprod_code']  = $selProdCode;
+
         if ($post['selprod_track_inventory'] == Product::INVENTORY_NOT_TRACK) {
             $post['selprod_threshold_stock_level'] = 0;
         }
