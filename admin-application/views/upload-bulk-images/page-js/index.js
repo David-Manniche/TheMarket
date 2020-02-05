@@ -5,7 +5,7 @@ $(document).ready(function() {
             $.ajax({
                 url: fcom.makeUrl('UploadBulkImages', 'autoCompleteSellerJson'),
                 data: {
-                    keyword: request
+                    keyword: request['term']
                 },
                 dataType: 'json',
                 type: 'post',
@@ -17,15 +17,15 @@ $(document).ready(function() {
                         }
                         return {
                             label: item['seller'] + email,
-                            value: item['product_seller_id']
+                            value: item['seller'] + email,
+                            id: item['product_seller_id']
                         };
                     }));
                 },
             });
         },
-        'select': function(item) {
-            $("input[name='user']").val(item['label']);
-            $("input[name='afile_record_id']").val(item['value']);
+        'select': function(event, ui) {
+            $("input[name='afile_record_id']").val(ui.item.id);
         }
     });
 });

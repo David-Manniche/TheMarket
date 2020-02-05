@@ -15,7 +15,7 @@ $(document).ready(function(){
             if( '' != request ){
                 $.ajax({
                     url: fcom.makeUrl('Products', 'autoCompleteSellerJson'),
-                    data: {keyword: request},
+                    data: {keyword: request['term']},
                     dataType: 'json',
                     type: 'post',
                     success: function(json) {
@@ -24,7 +24,7 @@ $(document).ready(function(){
                             if( null !== item['credential_email'] ){
                                 email = ' ('+item['credential_email']+')';
                             }
-                            return { label: item['credential_username'] + email,    value: item['credential_user_id']    };
+                            return { label: item['credential_username'] + email, value: item['credential_username'] + email, id: item['credential_user_id'] };
                         }));
                     },
                 });
@@ -32,9 +32,8 @@ $(document).ready(function(){
                 $("input[name='product_seller_id']").val('');
             }
         },
-        'select': function(item) {
-            $("input[name='product_seller_id']").val( item['value'] );
-            $("input[name='product_seller']").val( item['label'] );
+        select: function(event, ui) {
+            $("input[name='product_seller_id']").val( ui.item.id );
         }
     });
 

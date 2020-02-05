@@ -3,6 +3,8 @@ $frm->setFormTagAttribute('class', 'web_form form_horizontal');
 $frm->setFormTagAttribute('onsubmit', 'setupAffiliateCommission(this); return(false);');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
+$fld = $frm->getField('affiliate_name');
+$fld->setWrapperAttribute('class', 'ui-front');
 ?>
 <section class="section">
 	<div class="sectionhead">
@@ -18,22 +20,21 @@ $frm->developerTags['fld_default_col'] = 12;
 <script type="text/javascript">
 $("document").ready(function(){
 	$('input[name=\'affiliate_name\']').autocomplete({
-		'source': function(request, response) {		
+		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('Users', 'autoCompleteJson'),
-				data: {keyword: request, user_is_affiliate: 1, credential_active: 1, credential_verified: 1, fIsAjax:1},
+				data: {keyword: request['term'], user_is_affiliate: 1, credential_active: 1, credential_verified: 1, fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['name'] ,	value: item['id']	};
+                        return { label: item['name'], value: item['name'], id: item['id'] };
 					}));
 				},
 			});
 		},
-		'select': function(item) {
-			$("input[name='afcommsetting_user_id']").val( item['value'] );
-			$("input[name='affiliate_name']").val( item['label'] );
+		select: function (event, ui) {
+			$("input[name='afcommsetting_user_id']").val( ui.item.id );
 		}
 	});
 	

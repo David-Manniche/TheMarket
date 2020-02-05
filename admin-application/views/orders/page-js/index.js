@@ -5,19 +5,18 @@ $(document).ready(function(){
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('Users', 'autoCompleteJson'),
-				data: {keyword: request, user_is_buyer: 1, fIsAjax:1},
+				data: {keyword: request['term'], user_is_buyer: 1, fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['credential_email']+' ('+item['username']+')' ,	value: item['id']	};
+						return { label: item['credential_email']+' ('+item['username']+')', value: item['credential_email']+' ('+item['username']+')', id: item['id'] };
 					}));
 				},
 			});
 		},
-		'select': function(item) {
-			$("input[name='user_id']").val( item['value'] );
-			$("input[name='buyer']").val( item['label'] );
+		select: function(event, ui) {
+			$("input[name='user_id']").val( ui.item.id );
 		}
 	});
 

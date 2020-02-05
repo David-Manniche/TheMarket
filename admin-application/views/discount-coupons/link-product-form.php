@@ -2,7 +2,9 @@
 defined('SYSTEM_INIT') or die('Invalid Usage.'); 
 $frmProduct->setFormTagAttribute('class', 'web_form form_horizontal');
 $frmProduct->developerTags['colClassPrefix'] = 'col-md-';
-$frmProduct->developerTags['fld_default_col'] = 12; 
+$frmProduct->developerTags['fld_default_col'] = 12;
+$fld = $frmProduct->getField('product_name');
+$fld->setWrapperAttribute('class', 'ui-front');
 ?>
 
 <section class="section">
@@ -42,18 +44,20 @@ $("document").ready(function(){
 		'source': function(request, response) {			
 			$.ajax({
 				url: fcom.makeUrl('Products', 'autoComplete'),
-				data: {keyword: request,fIsAjax:1},
+				data: {keyword: request['term'],fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['name'],	value: item['id']	};
+						return { label: item['name'], value: item['name'], id: item['id']	};
 					}));
 				},
 			});
 		},
-		'select': function(item) {
-			updateCouponProduct(<?php echo $coupon_id; ?>, item['value'] );
+		'select': function(event, ui) {
+			updateCouponProduct(<?php echo $coupon_id; ?>, ui.item.id );
+            $('input[name=\'product_name\']').val('');
+            return false;
 		}
 	});
 	

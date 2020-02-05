@@ -534,7 +534,7 @@ $(document).ready(function() {
 
 
     // Autocomplete */
-    (function($) {
+    /* (function($) {
         $.fn.autocomplete = function(option) {
             return this.each(function() {
                 this.timer = null;
@@ -607,7 +607,7 @@ $(document).ready(function() {
                         $(object).siblings('ul.dropdown-menu').width(txt_box_width + 'px');
 
                         if ($(object).attr('name') == 'keyword') {
-                            /* i.e header search form will enable autocomplete, if minimum characters are 3 */
+                            // i.e header search form will enable autocomplete, if minimum characters are 3 
                             if ($(object).val().length < 3) {
                                 return;
                             }
@@ -666,11 +666,11 @@ $(document).ready(function() {
                 }
 
                 $(this).after('<ul class="dropdown-menu"></ul>');
-                /* $(this).siblings('ul.dropdown-menu').delegate('a', 'click', $.proxy(this.click, this)); */
+                //$(this).siblings('ul.dropdown-menu').delegate('a', 'click', $.proxy(this.click, this));
                 $(this).siblings('ul.dropdown-menu').on('click', 'a', $.proxy(this.click, this));
             });
         }
-    })(window.jQuery);
+    })(window.jQuery); */
 
     $('.close').click(function() {
         $.systemMessage.close();

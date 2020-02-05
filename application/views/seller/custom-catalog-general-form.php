@@ -130,24 +130,20 @@
                 $.ajax({
                     url: fcom.makeUrl('brands', 'autoComplete'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1
                     },
                     dataType: 'json',
                     type: 'post',
                     success: function(json) {
                         response($.map(json, function(item) {
-                            return {
-                                label: item['name'],
-                                value: item['id']
-                            };
+                            return { label: item['name'], value: item['name'], id: item['id'] };
                         }));
                     },
                 });
             },
-            'select': function(item) {
-                $('input[name=\'brand_name\']').val(item['label']);
-                $('input[name=\'product_brand_id\']').val(item['value']);
+            select: function (event, ui) {
+                $('input[name=\'product_brand_id\']').val(ui.item.id);
             }
         });
 
@@ -161,27 +157,23 @@
                 $.ajax({
                     url: fcom.makeUrl('seller', 'autoCompleteOptions'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1
                     },
                     dataType: 'json',
                     type: 'post',
                     success: function(json) {
                         response($.map(json, function(item) {
-
-                            return {
-                                label: item['name'] + ' (' + item['option_identifier'] + ')',
-                                value: item['id']
-                            };
+                            return { label: item['name'] + ' (' + item['option_identifier'] + ')', value: item['name'] + ' (' + item['option_identifier'] + ')', id: item['id'] };
                         }));
                     },
                 });
             },
-            'select': function(item) {
+            select: function (event, ui) {
                 $('input[name=\'option_name\']').val('');
-                $('#product-option' + item['value']).remove();
-                $('#product_options_list').append('<li id="product-option' + item['value'] + '"><i class="remove_option-js remove_param fa fa-trash"></i> ' + item['label'] + '<input type="hidden" name="product_option[]" value="' +
-                    item['value'] + '"  /></li>');
+                $('#product-option' + ui.item.id).remove();
+                $('#product_options_list').append('<li id="product-option' + ui.item.id + '"><i class="remove_option-js remove_param fa fa-trash"></i> ' + ui.item.label + '<input type="hidden" name="product_option[]" value="' + ui.item.id + '"  /></li>');
+                return false;
             }
         });
         $('#product_options_list').on('click', '.remove_option-js', function() {
@@ -203,32 +195,31 @@
 
         $('input[name=\'tag_name\']').autocomplete({
             'source': function(request, response) {
-
                 $.ajax({
                     url: fcom.makeUrl('seller', 'tagsAutoComplete'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1
                     },
                     dataType: 'json',
                     type: 'post',
                     success: function(json) {
                         response($.map(json, function(item) {
-
-                            return {
-                                label: item['name'] + ' (' + item['tag_identifier'] + ')',
-                                value: item['id']
-                            };
+                            return { label: item['name'] + ' (' + item['tag_identifier'] + ')', value: item['name'] + ' (' + item['tag_identifier'] + ')', id: item['id'] };
                         }));
                     },
                 });
             },
-            'select': function(item) {
+            select: function (event, ui) {
+                $('#product-tag' + ui.item.id).remove();
+                $('#product-tag-js').append('<li id="product-tag' + ui.item.id + '"><i class="remove_tag-js remove_param fa fa-trash"></i> ' + ui.item.label + '<input type="hidden" name="product_tags[]" value="' + ui.item.id + '" /></li>');
+                $('input[name=\'tag_name\']').val(''); return false;
+    		}
+            /*'select': function(item) {
                 $('input[name=\'tag_name\']').val('');
                 $('#product-tag' + item['value']).remove();
-                $('#product-tag-js').append('<li id="product-tag' + item['value'] + '"><i class="remove_tag-js remove_param fa fa-trash"></i> ' + item['label'] + '<input type="hidden" name="product_tags[]" value="' + item[
-                    'value'] + '" /></li>');
-            }
+                $('#product-tag-js').append('<li id="product-tag' + item['value'] + '"><i class="remove_tag-js remove_param fa fa-trash"></i> ' + item['label'] + '<input type="hidden" name="product_tags[]" value="' + item['value'] + '" /></li>');
+            }*/
         });
 
         $('#product-tag-js').on('click', '.remove_tag-js', function() {
@@ -255,25 +246,21 @@
                 $.ajax({
                     url: fcom.makeUrl('seller', 'countries_autocomplete'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1
                     },
                     dataType: 'json',
                     type: 'post',
                     success: function(json) {
                         response($.map(json, function(item) {
-                            return {
-                                label: item['name'],
-                                value: item['id']
-                            };
+                            return { label: item['name'], value: item['name'], id: item['id'] };
                         }));
                     },
                 });
             },
-            'select': function(item) {
-                $('input[name=\'shipping_country\']').val(item.label);
-                $('input[name=\'ps_from_country_id\']').val(item.value);
-            }
+            select: function (event, ui) {
+    			$("input[name='ps_from_country_id']").val(ui.item.id);
+    		}
         });
 
         $('input[name=\'shipping_country\']').keyup(function() {

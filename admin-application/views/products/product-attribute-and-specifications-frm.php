@@ -161,7 +161,7 @@ $warrantyFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_I
                 $.ajax({
                     url: fcom.makeUrl('sellerProducts', 'autoCompleteUserShopName'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1
                     },
                     dataType: 'json',
@@ -170,15 +170,15 @@ $warrantyFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_I
                         response($.map(json, function(item) {
                             return {
                                 label: item['user_name'] + ' - ' + item['shop_identifier'],
-                                value: item['user_id']
+                                value: item['user_name'] + ' - ' + item['shop_identifier'],
+                                id: item['user_id']
                             };
                         }));
                     },
                 });
             },
-            'select': function(item) {
-                $("input[name='product_seller_id']").val(item['value']);
-                $("input[name='selprod_user_shop_name']").val(item['label']);
+            select: function(event, ui) {
+                $("input[name='product_seller_id']").val(ui.item.id);
             }
         });
     } else {

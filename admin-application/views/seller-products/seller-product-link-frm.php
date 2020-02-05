@@ -12,12 +12,15 @@
 						<div class="tabs_panel_wrap">
 							<div class="tabs_panel">
 								<?php
-                $sellerproductLinkFrm->setFormTagAttribute('onsubmit', 'setUpSellerProductLinks(this); return(false);');
-                $sellerproductLinkFrm->setFormTagAttribute('class', 'web_form form--horizontal');
-                $sellerproductLinkFrm->developerTags['colClassPrefix'] = 'col-md-';
-                $sellerproductLinkFrm->developerTags['fld_default_col'] = 12;
-
-                echo $sellerproductLinkFrm->getFormHtml(); ?>
+                                $sellerproductLinkFrm->setFormTagAttribute('onsubmit', 'setUpSellerProductLinks(this); return(false);');
+                                $sellerproductLinkFrm->setFormTagAttribute('class', 'web_form form--horizontal');
+                                $sellerproductLinkFrm->developerTags['colClassPrefix'] = 'col-md-';
+                                $sellerproductLinkFrm->developerTags['fld_default_col'] = 12;
+                                $fld = $sellerproductLinkFrm->getField('products_buy_together');
+                                $fld->setWrapperAttribute('class', 'ui-front');
+                                $fld = $sellerproductLinkFrm->getField('products_related');
+                                $fld->setWrapperAttribute('class', 'ui-front');
+                                echo $sellerproductLinkFrm->getFormHtml(); ?>
 							</div>
 						</div>
 					</div>
@@ -41,7 +44,7 @@
 				$.ajax({
 					url: fcom.makeUrl('sellerProducts', 'autoCompleteProducts'),
 					data: {
-						keyword: request,
+						keyword: request['term'],
 						fIsAjax: 1,
 						selProdId: selProdId
 					},
@@ -50,21 +53,21 @@
 					success: function(json) {
 						response($.map(json, function(item) {
 							return {
-								label: item['name'] + '[' + item[
-									'product_identifier'] + ']',
-								value: item['id']
+								label: item['name'] + '[' + item['product_identifier'] + ']',
+								value: item['name'] + '[' + item['product_identifier'] + ']',
+                                id: item['id']
 							};
 						}));
 					},
 				});
 			},
-			'select': function(item) {
+			'select': function(event, ui) {
 				$('input[name=\'products_buy_together\']').val('');
-				$('#productBuyTogether' + item['value']).remove();
-				$('#buy-together-products ul').append('<li id="productBuyTogether' + item['value'] +
+				$('#productBuyTogether' + ui.item.id).remove();
+				$('#buy-together-products ul').append('<li id="productBuyTogether' + ui.item.id +
 					'"><i class="remove_buyTogether remove_param ion-android-delete icon"></i> ' +
-					item['label'] + '<input type="hidden" name="product_upsell[]" value="' + item[
-						'value'] + '" /></li>');
+					ui.item.label + '<input type="hidden" name="product_upsell[]" value="' + ui.item.id + '" /></li>');
+                return false;
 			}
 		});
 		$('#buy-together-products').on('click', '.remove_buyTogether', function() {
@@ -81,7 +84,7 @@
 				$.ajax({
 					url: fcom.makeUrl('sellerProducts', 'autoCompleteProducts'),
 					data: {
-						keyword: request,
+						keyword: request['term'],
 						fIsAjax: 1,
 						selProdId: selProdId
 					},
@@ -90,21 +93,21 @@
 					success: function(json) {
 						response($.map(json, function(item) {
 							return {
-								label: item['name'] + '[' + item[
-									'product_identifier'] + ']',
-								value: item['id']
+								label: item['name'] + '[' + item['product_identifier'] + ']',
+								value: item['name'] + '[' + item['product_identifier'] + ']',
+                                id: item['id']
 							};
 						}));
 					},
 				});
 			},
-			'select': function(item) {
+			'select': function(event, ui) {
 				$('input[name=\'products_related\']').val('');
-				$('#productRelated' + item['value']).remove();
-				$('#related-products ul').append('<li id="productRelated' + item['value'] +
+				$('#productRelated' + ui.item.id).remove();
+				$('#related-products ul').append('<li id="productRelated' + ui.item.id +
 					'"><i class="remove_related remove_param ion-android-delete icon"></i> ' +
-					item['label'] + '<input type="hidden" name="product_related[]" value="' + item[
-						'value'] + '" /></li>');
+					ui.item.label + '<input type="hidden" name="product_related[]" value="' + ui.item.id + '" /></li>');
+                return false;
 			}
 		});
 		$('#related-products').on('click', '.remove_related', function() {

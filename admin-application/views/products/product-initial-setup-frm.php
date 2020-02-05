@@ -325,19 +325,18 @@ $(document).ready(function(){
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('brands', 'autoComplete'),
-				data: {keyword: request,fIsAjax:1},
+				data: {keyword: request['term'],fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['name'],	value: item['id']	};
+						return { label: item['name'], value: item['name'], id: item['id'] };
 					}));
 				},
 			});
 		},
-		'select': function(item) {
-			$('input[name=\'brand_name\']').val(item['label']);
-			$('input[name=\'product_brand_id\']').val(item['value']);
+		select: function(event, ui) {
+			$('input[name=\'product_brand_id\']').val(ui.item.id);
 		}
 	});
 	
@@ -351,19 +350,18 @@ $(document).ready(function(){
         'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('productCategories', 'links_autocomplete'),
-				data: {keyword: request,fIsAjax:1},
+				data: {keyword: request['term'],fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['name'],	value: item['id']	};
+						return { label: item['name'], value: item['name'], id: item['id'] };
 					}));
 				},
 			});
 		},
-		'select': function(item) {
-            $('input[name=\'category_name\']').val(item['label']);
-			$('input[name=\'ptc_prodcat_id\']').val(item['value']);
+		select: function(event, ui) {
+			$('input[name=\'ptc_prodcat_id\']').val(ui.item.id);
 		}
 	});	
     

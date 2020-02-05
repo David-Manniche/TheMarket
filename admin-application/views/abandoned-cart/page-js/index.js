@@ -5,20 +5,19 @@ $(document).ready(function(){
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('Users', 'autoCompleteJson'),
-				data: {keyword: request, fIsAjax:1},
+				data: {keyword: request['term'], fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['credential_email']+' ('+item['username']+')' ,	value: item['id']	};
+                        return { label: item['credential_email']+' ('+item['username']+')', value: item['credential_email']+' ('+item['username']+')', id: item['id'] };
 					}));
 				},
 			});
 		},
-		'select': function(item) {
-			$("input[name='abandonedcart_user_id']").val( item['value'] );
-			$("input[name='user_name']").val( item['label'] );
-		}
+        select: function (event, ui) {
+            $("input[name='abandonedcart_user_id']").val( ui.item.id );
+        }
 	});
 	
 	$('input[name=\'user_name\']').keyup(function(){
@@ -31,20 +30,19 @@ $(document).ready(function(){
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('sellerProducts', 'autoComplete'),
-				data: {keyword: request, fIsAjax:1},
+				data: {keyword: request['term'], fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['name'] ,	value: item['id']	};
+						return { label: item['name'], value: item['name'], id: item['id'] };
 					}));
 				},
 			});
 		},
-		'select': function(item) {
-			$("input[name='abandonedcart_selprod_id']").val( item['value'] );
-			$("input[name='seller_product']").val( item['label'] );
-		}
+        select: function (event, ui) {
+            $("input[name='abandonedcart_selprod_id']").val( ui.item.id );
+        }
 	});
 	
 	$('input[name=\'seller_product\']').keyup(function(){

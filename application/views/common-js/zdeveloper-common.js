@@ -341,12 +341,12 @@ function submitSiteSearch(frm, page) {
 	var qryParam = ($(frm).serialize_without_blank());
 
 	var urlString = '';
-	if (qryParam.indexOf("keyword") > -1) {		
-		var protomatch = /^(https?|ftp):\/\//; 
-		urlString = urlString + setQueryParamSeperator(urlString)+'keyword-' + encodeURIComponent(keyword.replace(protomatch, '').replace(/\//g, '-'))+'&pagesize='+page;			
+	if (qryParam.indexOf("keyword") > -1) {
+		var protomatch = /^(https?|ftp):\/\//;
+		urlString = urlString + setQueryParamSeperator(urlString)+'keyword-' + encodeURIComponent(keyword.replace(protomatch, '').replace(/\//g, '-'))+'&pagesize='+page;
 	}
-	
-	if (qryParam.indexOf("category") > -1 && $(frm).find('input[name="category"]').val() > 0) {				
+
+	if (qryParam.indexOf("category") > -1 && $(frm).find('input[name="category"]').val() > 0) {
 		urlString = urlString + setQueryParamSeperator(urlString)+'category-' + $(frm).find('input[name="category"]').val();
 	}
 
@@ -708,8 +708,7 @@ function defaultSetUpLogin(frm, v) {
 
 
 $(document).ready(function () {
-
-	if (typeof $.fn.autocomplete_advanced !== typeof undefined) {
+	/*if (typeof $.fn.autocomplete_advanced !== typeof undefined) {
 		$('#header_search_keyword').autocomplete_advanced({
 			appendTo: ".main-search__field",
 			minChars: 2,
@@ -724,8 +723,8 @@ $(document).ready(function () {
 					type: 'post',
 					success: function (json) {
 						done(json);
-						/* $('.autocomplete-suggestions').appendTo('.form__cover');
-						$('.autocomplete-suggestions').insertAfter( "#header_search_keyword" ); */
+						// $('.autocomplete-suggestions').appendTo('.form__cover');
+						// $('.autocomplete-suggestions').insertAfter( "#header_search_keyword" );
 					}
 				});
 			},
@@ -735,16 +734,12 @@ $(document).ready(function () {
 				//alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
 			}
 		});
-	}
+	}*/
 
 	if ($('.system_message').find('.div_error').length > 0 || $('.system_message').find('.div_msg').length > 0 || $('.system_message').find('.div_info').length > 0 || $('.system_message').find('.div_msg_dialog').length > 0) {
 		$('.system_message').show();
 	}
 	$('.close').click(function () {
-		/* $('.system_message').find('.div_error').remove();
-		$('.system_message').find('.div_msg').remove();
-		$('.system_message').find('.div_info').remove();
-		$('.system_message').find('.div_msg_dialog').remove(); */
 		$('.system_message').hide();
 	});
 	addCatalogPopup = function () {
@@ -807,10 +802,10 @@ $(document).ready(function () {
 		});
 		return false;
     };
-    
+
     autofillLangData = function (autoFillBtn, frm) {
         var actionUrl = autoFillBtn.data('action');
-        
+
         var defaultLangField = $('input.defaultLang', frm);
         if (1 > defaultLangField.length) {
             $.systemMessage(langLbl.unknownPrimaryLanguageField, 'alert--danger');
@@ -840,7 +835,7 @@ $(document).ready(function () {
                     $.each(values, function(selector, value) {
                         $("input.langField_" + langId + "[name='" + selector + "']").val(value);
                     });
-                }); 
+                });
                 $(document).trigger('close.mbsmessage');
             });
         }
@@ -998,13 +993,7 @@ function quickDetail(selprod_id) {
 			fcom.updateFaceboxContent(t, 'faceboxWidth productQuickView ');
 		});
 	});
-	/* fcom.ajax(fcom.makeUrl('Products','productQuickDetail',[selprod_id]), '', function(t){
-		$('#quick-view-section').html(t);
-		$('html').toggleClass("quick-view--open");
-		$('#quick-view-section').toggleClass("quick-view--open");
-	}); */
 }
-
 
 /* read more functionality [ */
 $(document).on('click', '.readMore', function () {
@@ -1038,7 +1027,7 @@ $(document).on('click', '#btn-demo', function () {
 /* ] */
 
 // Autocomplete */
-(function ($) {
+/*(function ($) {
 	$.fn.autocomplete = function (option) {
 		return this.each(function () {
 			this.timer = null;
@@ -1081,7 +1070,7 @@ $(document).on('click', '#btn-demo', function () {
 				if (value && this.items[value]) {
                     $(this).siblings('ul.dropdown-menu').hide();
 					this.select(this.items[value]);
-				} 
+				}
 			}
 
 			// Show
@@ -1110,7 +1099,7 @@ $(document).on('click', '#btn-demo', function () {
 					$(object).siblings('ul.dropdown-menu').width(txt_box_width + 'px');
 
 					if ($(object).attr('name') == 'keyword') {
-						/* i.e header search form will enable autocomplete, if minimum characters are 3 */
+						// i.e header search form will enable autocomplete, if minimum characters are 3
 						if ($(object).val().length < 3) {
 							return;
 						}
@@ -1172,23 +1161,12 @@ $(document).on('click', '#btn-demo', function () {
 			$(this).siblings('ul.dropdown-menu').on('click', 'a', $.proxy(this.click, this));
 		});
 	}
-})(window.jQuery);
+})(window.jQuery);*/
 
 
 $("document").ready(function () {
-
-	/* $("#btnProductBuy").on('click', function(event){
-		event.preventDefault();
-		var frmObj = $(this).parents("form");
-		var selprod_id = $(frmObj).find('input[name="selprod_id"]').val();
-		var quantity = $(frmObj).find('input[name="quantity"]').val();
-		cart.add( selprod_id, quantity, true);
-		return false;
-	}); */
-
 	$(document).on('click', '.add-to-cart--js', function (event) {
         events.addToCart();
-		/* $(document).delegate('.add-to-cart--js' ,'click' , function(event){ */
 		$btn = $(this);
 		event.preventDefault();
 		var data = fcom.frmData(document.frmBuyProduct);
@@ -1218,9 +1196,6 @@ $("document").ready(function () {
 				$(document).trigger('close.facebox');
 			}
 			$('span.cartQuantity').html(ans.total);
-			/* $('html, body').animate({ scrollTop: 0 }, 'slow');
-			$('html').toggleClass("cart-is-active");
-			$('.cart').toggleClass("cart-is-active"); */
 			$('#cartSummary').load(fcom.makeUrl('cart', 'getCartSummary'));
 		});
 		return false;
@@ -1228,7 +1203,7 @@ $("document").ready(function () {
 	});
 });
 
-$(document).ready(function () {	
+$(document).ready(function () {
 	if ($(window).width() < 1025) {
        $('html').removeClass('sticky-demo-header');
        $("div.demo-header").hide();
@@ -1259,6 +1234,3 @@ $(document).ajaxComplete(function() {
         });
     }
 });
-
-
-

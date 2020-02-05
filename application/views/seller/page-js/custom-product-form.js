@@ -339,59 +339,43 @@
 		});
 		$('input[name="product_shipping[' + shipping_row + '][country_name]"]').autocomplete({
 			'source': function(request, response) {
-
 				$.ajax({
 					url: fcom.makeUrl('seller', 'countries_autocomplete'),
-					data: {keyword: request,fIsAjax:1,includeEverywhere:true},
+					data: {keyword: request['term'],fIsAjax:1,includeEverywhere:true},
 					dataType: 'json',
 					type: 'post',
 					success: function(json) {
-
 						response($.map(json, function(item) {
-
-							return {
-								label: item['name'] ,
-								value: item['id']
-								};
+                            return { label: item['name'], value: item['name'], id: item['id'] };
 						}));
 					},
 				});
 			},
-			'select': function(item) {
-				$('input[name="product_shipping[' + shipping_row + '][country_name]"]').val(item.label);
-				$('input[name="product_shipping[' + shipping_row + '][country_id]"]').val(item.value);
-			}
+            select: function (event, ui) {
+                $('input[name="product_shipping[' + shipping_row + '][country_name]"]').val(ui.item.label);
+				$('input[name="product_shipping[' + shipping_row + '][country_id]"]').val(ui.item.id);
+            }
 		});
 
 
 		$('input[name="product_shipping[' + shipping_row + '][company_name]"]').autocomplete({
 				'source': function(request, response) {
-
 				$.ajax({
 					url: fcom.makeUrl('seller', 'shippingCompanyAutocomplete'),
-					data: {keyword: request,fIsAjax:1},
+					data: {keyword: request['term'],fIsAjax:1},
 					dataType: 'json',
 					type: 'post',
 					success: function(json) {
-
 						response($.map(json, function(item) {
-
-							return {
-								label: item['name'] ,
-								value: item['id']
-								};
+                            return { label: item['name'], value: item['name'], id: item['id'] };
 						}));
 					},
 				});
 			},
-			'select': function(item) {
-
-				$('input[name="product_shipping[' + shipping_row + '][company_name]"]').val(item.label);
-					$('input[name="product_shipping[' + shipping_row + '][company_id]"]').val(item.value);
-
-
-			}
-
+            select: function (event, ui) {
+                $('input[name="product_shipping[' + shipping_row + '][company_name]"]').val(ui.item.label);
+                $('input[name="product_shipping[' + shipping_row + '][company_id]"]').val(ui.item.id);
+            }
 		});
 
 		$('input[name="product_shipping[' + shipping_row + '][processing_time]"]').autocomplete({
@@ -399,29 +383,20 @@
 
 				$.ajax({
 					url: fcom.makeUrl('seller', 'shippingMethodDurationAutocomplete'),
-					data: {keyword: request,fIsAjax:1},
+					data: {keyword: request['term'],fIsAjax:1},
 					dataType: 'json',
 					type: 'post',
 					success: function(json) {
-
 						response($.map(json, function(item) {
-
-							return {
-								label: item['name']+'['+ item['duraion']+']' ,
-								value: item['id']
-								};
+                            return { label: item['name']+'['+ item['duraion']+']', value: item['duraion'], id: item['id'] };
 						}));
 					},
 				});
 			},
-			'select': function(item) {
-
-				$('input[name="product_shipping[' + shipping_row + '][processing_time]"]').val(item.label);
-					$('input[name="product_shipping[' + shipping_row + '][processing_time_id]"]').val(item.value);
-
-
-			}
-
+            select: function (event, ui) {
+                $('input[name="product_shipping[' + shipping_row + '][processing_time]"]').val(ui.item.label);
+                $('input[name="product_shipping[' + shipping_row + '][processing_time_id]"]').val(ui.item.id);
+            }
 		});
 	}
 

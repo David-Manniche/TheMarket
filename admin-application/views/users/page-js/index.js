@@ -11,7 +11,7 @@ $(document).ready(function() {
             $.ajax({
                 url: fcom.makeUrl('Users', 'autoCompleteJson'),
                 data: {
-                    keyword: request,
+                    keyword: request['term'],
                     fIsAjax: 1
                 },
                 dataType: 'json',
@@ -20,16 +20,15 @@ $(document).ready(function() {
                     response($.map(json, function(item) {
                         return {
                             label: item['name'] + '(' + item['username'] + ')',
-                            value: item['id'],
-                            name: item['username']
+                            value: item['username'],
+                            id: item['user_id']
                         };
                     }));
                 },
             });
         },
-        'select': function(item) {
-            $("input[name='user_id']").val(item['value']);
-            $("input[name='keyword']").val(item['name']);
+        'select': function(event, ui) {
+            $("input[name='user_id']").val(ui.item.id);
         }
     });
 
