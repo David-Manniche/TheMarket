@@ -382,3 +382,4 @@ ALTER TABLE `tbl_meta_tags` DROP `meta_identifier`;
 
 ALTER TABLE `tbl_product_specifications_lang` ADD `prodspec_group` VARCHAR(255) NOT NULL AFTER `prodspec_value`;
 
+--------------TV-9.1.2.20200205------------
