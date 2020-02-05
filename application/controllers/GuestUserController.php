@@ -339,12 +339,21 @@ class GuestUserController extends MyAppController
         $post['user_registered_initially_for'] = User::USER_TYPE_BUYER;
         $post['user_is_supplier'] = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1))  ? 0 : 1;
         $post['user_is_advertiser'] = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0 : 1;
-        $post['user_active'] = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1) ? 0: 1;
+        $post['user_active'] = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
         $post['user_verify'] = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
         
         $userObj = new User();
         if (!$userObj->saveUserData($post)) {
             $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
+            if (0 < $signUpWithPhone) {
+                $row = $userObj->checkUserByPhoneOrUserName($post['user_username'], $post['user_phone']);
+                $userId = $row['user_id'];
+                $replacements = [
+                    '{CONTINUE-BTN}' => '<a class="btn btn-outline-white" href="javascript:void(0);" onclick="resendOtp(' . $userId . ')">' . Labels::getLabel('MSG_PROCEED', $this->siteLangId) . '</a>'
+                ];
+                $message = CommonHelper::replaceStringData($message, $replacements);
+            }
+
             LibHelper::exitWithError($message, false, true);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
         }
@@ -404,7 +413,7 @@ class GuestUserController extends MyAppController
         if (1 > $otp) {
             LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_OTP', $this->siteLangId));
         }
-        $userId = $_SESSION[UserAuthentication::TEMP_SESSION_ELEMENT_NAME]['otpUserId'];
+        $userId = FatApp::getPostedData('user_id', FatUtility::VAR_INT, 0);
         $obj = new User($userId);
         if (false == $obj->verifyUserPhoneOtp($otp, true)) {
             LibHelper::dieJsonError($obj->getError());
@@ -825,17 +834,29 @@ class GuestUserController extends MyAppController
         $this->_template->render(false, false, 'json-success.php');
     }
     
-    public function otpForm()
+    public function resendOtp($userId)
     {
-        if (!isset($_SESSION[UserAuthentication::TEMP_SESSION_ELEMENT_NAME]['otpUserId'])) {
+        $userId = FatUtility::int($userId);
+        $userObj = new User($userId);
+        if (false == $userObj->resendOtp()) {
+            FatUtility::dieJsonError($userObj->getError());
+        }
+        $this->otpForm($userId);
+    }
+
+    public function otpForm($userId = 0)
+    {
+        $userId = FatUtility::int($userId);
+        if (1 > $userId && !isset($_SESSION[UserAuthentication::TEMP_SESSION_ELEMENT_NAME]['otpUserId'])) {
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
         }
-        $userId = $_SESSION[UserAuthentication::TEMP_SESSION_ELEMENT_NAME]['otpUserId'];
         
+        $userId = 0 < $userId ? $userId : $_SESSION[UserAuthentication::TEMP_SESSION_ELEMENT_NAME]['otpUserId'];
+
         $frm = $this->getOtpForm();
         $frm->fill(['user_id' => $userId]);
         $this->set('frm', $frm);
-        $this->_template->render(false, false);
+        $this->_template->render(false, false, 'guest-user/otp-form.php');
     }
 
     public function configureEmail()

@@ -1,4 +1,3 @@
-
 ALTER TABLE `tbl_currency` DROP `currency_is_default`;
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Google_Plus_Login';
@@ -509,3 +508,7 @@ INSERT INTO `tbl_sms_templates` (`stpl_code`, `stpl_lang_id`, `stpl_name`, `stpl
 ('COD_ORDER_PAYMENT_STATUS',1,'Cod Order Payment Status', 'Hello Admin,\r\n{COD} order has been placed with Order Invoice Number - {INVOICE_NUMBER}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Cod", "variable":"{COD}"},{"title":"Invoice Number", "variable":"{INVOICE_NUMBER}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
 ('SUBSCRIPTION_PACKAGE_PURCHASED',1,'Subscription Package Purchased', 'Hello Admin,\r\nNew subscription package purchased by {SELLER shop} for an amount {CURRENCY_CODE} {AMOUNT} with Order ID {ORDER id}\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller", "variable":"{SELLER "},{"title":"Currency", "variable":"{CURRENCY_CODE}"},{"title":"Amount", "variable":"{AMOUNT}"},{"title":"Order Id", "variable":"{ORDER_ID}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
 ('PRODUCT_REVIEW_REPORTED',1,'Product Review Reported', 'Hello Admin,\r\n{USER_FULL_NAME} has posted an abusive review at {SITE_NAME}.\r\n{URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{USER_FULL_NAME}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Url", "variable":"{URL}"}]', 1);
+
+ALTER TABLE `tbl_users` CHANGE `user_phone` `user_phone` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+UPDATE `tbl_users` SET `user_phone`= NULL WHERE user_phone = '';
+ALTER TABLE tbl_users ADD UNIQUE (user_phone);

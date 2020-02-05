@@ -33,5 +33,23 @@
             }
         });	
         return false;
+    };
+    
+    resendOtp = function (userId){
+        $.systemMessage(langLbl.processing,'alert--process', false);
+		fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId]), '', function(t) {
+            try{
+				t = $.parseJSON(t);
+				if(typeof t.status != 'undefined' &&  1 > t.status){
+                    $.systemMessage(t.msg,'alert--danger', false);
+                    return false;
+                }
+			}
+			catch(exc){
+                $.systemMessage.close();
+                $('#sign-up').html(t);
+			}
+        });
+        return false;
 	};
 })();

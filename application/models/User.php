@@ -1672,12 +1672,22 @@ class User extends MyAppModel
         return true;
     }
 
-    public function sendOtp($data, $otp, $langId)
+    
+    public function userPhoneVerification($data, $langId)
     {
-        $langId = FatUtility::int($langId);
-       // $langId = 1 > $langId ? $this->commonLangId : $langId;
+        $otp = $this->prepareUserPhoneOtp();
+        if (false === $otp) {
+            return false;
+        }
         $phone = isset($data['user_phone']) ? $data['user_phone'] : '';
         $user_name = isset($data['user_name']) ? $data['user_name'] : Labels::getLabel('LBL_USER', $langId);
+        
+        return $this->sendOtp($phone, $user_name, $otp, $langId);
+    }
+
+    public function sendOtp($phone, $user_name, $otp, $langId)
+    {
+        $langId = FatUtility::int($langId);
         if (empty($phone) || empty($otp)) {
             $this->error = Labels::getLabel("MSG_INVALID_REQUEST", $langId);
             return false;
@@ -1690,13 +1700,17 @@ class User extends MyAppModel
         return SmsArchive::send($phone, SmsTemplate::LOGIN, $langId, $replacements, $this->error);
     }
 
-    public function userPhoneVerification($data, $langId)
+    public function resendOtp()
     {
-        $otp = $this->prepareUserPhoneOtp();
-        if (false === $otp) {
+        if ($this->mainTableRecordId < 1) {
+            $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
             return false;
         }
-        return $this->sendOtp($data, $otp, $langId);
+
+        $this->setMainTableRecordId($this->mainTableRecordId);
+        $attr = ['user_name','user_phone'];
+        $userData = $this->getUserInfo($attr, false, false);
+        return $this->userPhoneVerification($userData, $this->commonLangId);
     }
 
     public function guestUserWelcomeEmail($data, $langId)
@@ -1747,8 +1761,8 @@ class User extends MyAppModel
         $data = array(
             'user_name' => $userData['user_name'],
             'username' => $userData['credential_username'],
-        'user_email' => $userData['credential_email'],
-        'reference_number' => $data['reference'],
+            'user_email' => $userData['credential_email'],
+            'reference_number' => $data['reference'],
         );
 
         $email = new EmailHandler();
@@ -2337,8 +2351,11 @@ class User extends MyAppModel
         if (empty($userPhone) && $row['credential_email'] == $userEmail) {
             $this->error = Labels::getLabel('MSG_DUPLICATE_EMAIL', $this->commonLangId);
             return false;
-        } else if ($row['user_phone'] == $userPhone && $row['credential_verified'] == applicationConstants::YES) {
-            $this->error = Labels::getLabel('MSG_DUPLICATE_PHONE', $this->commonLangId);
+        } else if ($row['user_phone'] == $userPhone) {
+            $this->error = Labels::getLabel('MSG_DUPLICATE_PHONE.', $this->commonLangId);
+            if ($row['credential_verified'] == applicationConstants::NO) {
+                $this->error .= ' ' . Labels::getLabel('MSG_THIS_PHONE_NUMBER_IS_NOT_VERIFIED_YET._DO_YOU_WANT_TO_CONTINUE?_{CONTINUE-BTN}', $this->commonLangId);
+            }
             return false;
         }
         return true;
