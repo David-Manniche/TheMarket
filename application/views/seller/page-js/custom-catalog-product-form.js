@@ -816,6 +816,27 @@ $(document).on('change', '.language-js', function () {
             customCatalogProductImages(t.preqId);
         });
     }
+    
+    productOptionsAndTag = function(preqId){
+        var data = '';
+		fcom.ajax(fcom.makeUrl('Seller','customCatalogOptionsAndTag', [preqId]),data,function(res){         
+            $(".tabs_panel").html('');
+            $(".tabs_panel").hide();
+            $(".tabs_nav-js  > li").removeClass('is-active');
+            $("#tabs_003").show();                    
+            $("a[rel='tabs_003']").parent().addClass('is-active');
+            $("#tabs_003").html(res);
+		});
+    }
+    
+    updateProductOption = function (preq_id, option_id){
+		fcom.ajax(fcom.makeUrl('Seller', 'updateCustomCatalogOption'), 'preq_id='+preq_id+'&option_id='+option_id, function(t) {
+            var ans = $.parseJSON(t);
+            if( ans.status == 1 ){
+                $.mbsmessage(ans.msg, true, 'alert--success');
+            }
+		});
+	}
 
 })();
 
