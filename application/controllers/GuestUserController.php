@@ -425,7 +425,7 @@ class GuestUserController extends MyAppController
         }
 
         if (0 < $forRecoveringPwd) {
-            $obj = UserAuthentication();
+            $obj = new UserAuthentication();
             $record = $obj->getUserResetPwdToken($userId);
             $token = $record['uprr_token'];
             $redirectUrl = CommonHelper::generateFullUrl('GuestUser', 'resetPassword', array($userId, $token));
