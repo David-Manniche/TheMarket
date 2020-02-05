@@ -19,7 +19,7 @@
             <div class="cards">
                 <div class="cards-header">
                     <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Request_Details', $siteLangId); ?></h5>
-                    <div class=""><?php if ($canEscalateRequest) { ?>
+                    <div class="btn-group"><?php if ($canEscalateRequest) { ?>
                             <a class="btn btn--primary ripplelink btn--sm" onClick="javascript: return confirm('<?php echo Labels::getLabel('MSG_Do_you_want_to_proceed?', $siteLangId); ?>')" href="<?php echo CommonHelper::generateUrl('Account', 'EscalateOrderReturnRequest', array($request['orrequest_id'])); ?>"><?php echo str_replace("{website_name}", FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId), Labels::getLabel('LBL_Escalate_to', $siteLangId)); ?></a>
                             <?php } ?>
                             <?php if ($canApproveReturnRequest) { ?>

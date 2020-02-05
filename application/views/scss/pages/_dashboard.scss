@@ -936,6 +936,11 @@
         justify-content: space-between;
         margin-bottom: 1.5rem;
 
+
+        [class*="col-"] {
+           /* margin: 0.5rem 0;*/
+        }
+
         .content-header-title {
             color: $body-color;
             font-size: 2rem;
@@ -1007,7 +1012,6 @@
 
         }
     }
-
 
     .widget-stats {
         padding-#{$end-direction}: 15px;

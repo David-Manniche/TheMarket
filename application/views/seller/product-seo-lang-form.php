@@ -28,9 +28,8 @@
     $mtagsFld = $productSeoLangForm->getField('meta_other_meta_tags');
     $mtagsFld->setfieldTagAttribute('class', "txtarea-height");
 
-    $nextBtn = $productSeoLangForm->getField('btn_next');
-    $nextBtn->setWrapperAttribute('class', "txtarea-height");
-//    $nextBtn->developerTags['col'] = 3;
+    $nextBtn = $productSeoLangForm->getField('btn_next');    
+    $nextBtn->developerTags['col'] = 3;
     $nextBtn->developerTags['noCaptionTag'] = true;
     end($languages);
     if (key($languages) == $selprod_lang_id) {

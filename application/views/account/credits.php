@@ -59,29 +59,13 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                         </div>
                         <?php } ?>
                         <div class="cards-content pt-4 pl-4 pr-4">
-                            <div id="credits-info"></div>
-                            <div class="gap"></div>
-                            <?php //echo $balanceTotalBlocksDisplayed;?>
-                            <?php $srchFormDivWidth = $canAddMoneyToWallet ? '8' : '12'; ?>
-                            <div class="row">
-                                <div class="col-lg-<?php echo $srchFormDivWidth; ?> col-md-<?php echo $srchFormDivWidth; ?> col-md-12">
-                                    <div class="replaced">
-                                        <h5 class="cards-title mb-2"><?php echo Labels::getLabel('LBL_Search_Transactions', $siteLangId);?></h5>
-                                        <?php
-                                        $submitFld = $frmSrch->getField('btn_submit');
-                                        $submitFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
-
-                                        $fldClear= $frmSrch->getField('btn_clear');
-                                        $fldClear->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
-                                        echo $frmSrch->getFormHtml();
-                                        ?>
-                                    </div>
-                                </div>
-                                <?php if ($canAddMoneyToWallet) { ?>
-                                    <div class="col-lg-4 col-md-12">
+                                <div class="row">
+                                  <?php $srchFormDivWidth = $canAddMoneyToWallet ? '8' : '12'; ?>
+                                   <?php if ($canAddMoneyToWallet) { ?>
+                                    <div class="col-lg-3" id="credits-info">
                                         <div class="replaced amount-added-box">
-                                            <h5 class="cards-title mb-2">
-                                            <?php echo Labels::getLabel('LBL_Enter_amount_to_be_Added'.'_['.CommonHelper::getDefaultCurrencySymbol().']', $siteLangId); ?></h5>
+                                            <h6 class="cards-title mb-2">
+                                            <?php echo Labels::getLabel('LBL_Enter_amount_to_be_Added'.'_['.CommonHelper::getDefaultCurrencySymbol().']', $siteLangId); ?></h6>
                                             <div id="rechargeWalletDiv" class="cellright nopadding--bottom">
                                                 <?php
                                                 $frmRechargeWallet->setFormTagAttribute('onSubmit', 'setUpWalletRecharge(this); return false;');
@@ -101,6 +85,16 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                         </div>
                                     </div>
                                 <?php } ?>
+                                </div>
+                                
+                                
+                            
+                            <div class="gap"></div>
+                            <?php //echo $balanceTotalBlocksDisplayed;?>
+                            
+                            <div class="row">
+                                
+                                
                             </div>
                         </div>
                     </div>
@@ -114,6 +108,27 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                     </div>
                 </div>
             </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                                   <div class="cards">
+                                       <div class="cards-content pt-4 pl-4 pr-4">
+                                       <div class="replaced">
+                                        <h5 class="cards-title mb-2"><?php echo Labels::getLabel('LBL_Search_Transactions', $siteLangId);?></h5>
+                                        <?php
+                                        $submitFld = $frmSrch->getField('btn_submit');
+                                        $submitFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
+
+                                        $fldClear= $frmSrch->getField('btn_clear');
+                                        $fldClear->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
+                                        echo $frmSrch->getFormHtml();
+                                        ?>
+                                    </div>
+                                      </div>                                       
+                                   </div>                                   
+                                </div>
+            </div>
+            <div class="gap"></div>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="cards">

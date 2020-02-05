@@ -1,4 +1,4 @@
-<div class="row justify-content-between align-items-center">
+ 
     <div class="col-auto">
         <div class="tabs tabs--small clearfix">
             <ul>
@@ -39,4 +39,4 @@
             <?php }?>
         </div>
     </div>
-</div>
+ 

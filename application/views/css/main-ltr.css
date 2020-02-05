@@ -16258,8 +16258,8 @@ input:checked + .slider:before {
   margin: 0 auto;
   display: block;
   text-align: center;
-  margin-bottom: 20px;
-  padding-bottom: 12px;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -16283,6 +16283,9 @@ input:checked + .slider:before {
       .tabs ul li:first-child {
         margin-left: 0;
         padding-left: 0; }
+      .tabs ul li:last-child {
+        margin-right: 0;
+        padding-right: 0; }
       .tabs ul li:after {
         content: "";
         bottom: 0;
@@ -16857,6 +16860,9 @@ hr {
   border-radius: 6px;
   /*margin-bottom: 1rem;*/
   height: 100%; }
+  @media (max-width: 991.98px) {
+    .cards {
+      word-break: break-word; } }
   .cards .cards-header {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -27257,10 +27263,11 @@ a.ui-button:active,
     padding: 5px 20px;
     margin: 0;
     margin-right: -3px;
-    border: solid 1px #dee2e6;
-    border-radius: 50px 0 0 50px;
+    border: none;
     color: #212529;
-    vertical-align: top; }
+    vertical-align: top;
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px; }
   .form-subscribe input[type="submit"], .form-subscribe .form input[type="button"], .form .form-subscribe input[type="button"], .form-subscribe .form input[type="reset"], .form .form-subscribe input[type="reset"] {
     font-size: 1em;
     background: #000;
@@ -27274,7 +27281,9 @@ a.ui-button:active,
     color: #fff;
     vertical-align: top;
     font-weight: 300;
-    border-radius: 0 50px 50px 0;
+    border-radius: 0;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
     cursor: pointer; }
 
 .post-meta-detail .post--title {
@@ -27642,11 +27651,6 @@ a.ui-button:active,
   font-size: 1.1rem;
   font-weight: 500; }
 
-[dir="rtl"] .form-subscribe input[type="text"] {
-  border-radius: 0px 50px 50px 0px; }
-[dir="rtl"] .form-subscribe input[type="submit"], [dir="rtl"] .form-subscribe .form input[type="button"], .form [dir="rtl"] .form-subscribe input[type="button"], [dir="rtl"] .form-subscribe .form input[type="reset"], .form [dir="rtl"] .form-subscribe input[type="reset"] {
-  border-radius: 50px 0px 0px 50px; }
-
 .delv,
 .qnt {
   width: auto; }
@@ -27712,7 +27716,7 @@ table.cart--full {
     padding: 1rem; }
 
 .cart-summary {
-  width: calc(100% - 20px); }
+  width: 100%; }
   .cart-summary tr {
     border-bottom: solid 1px #dee2e6; }
   .cart-summary th {
@@ -28768,6 +28772,9 @@ max-height: 408px;*/ }
   background-color: #fff;
   border-radius: 4px;
   margin-top: 63px; }
+  @media (max-width: 767.98px) {
+    .order-summary {
+      margin-top: 0; } }
 
 .order-summary .divider {
   margin: 0; }
@@ -28899,23 +28906,27 @@ max-height: 408px;*/ }
   display: -ms-flexbox;
   display: flex;
   padding: 20px 0 0; }
-
-.txt-where {
-  font-size: 0.875rem;
-  -webkit-box-flex: 0;
-  -ms-flex: 0 0 25%;
-  flex: 0 0 25%;
-  margin: 10px 0; }
-
-.same-delivery {
-  -webkit-box-flex: 0;
-  -ms-flex: 0 0 35%;
-  flex: 0 0 35%;
-  border-right: solid 1px #dee2e6; }
-
-.same-delivery h3 {
-  font-weight: 400;
-  font-size: 1.5rem; }
+  @media (max-width: 767.98px) {
+    .same-as {
+      flex-direction: column;
+      align-items: flex-start; } }
+  .same-as .txt-where {
+    font-size: 0.875rem;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 25%;
+    flex: 0 0 25%;
+    margin: 10px 0; }
+  .same-as .same-delivery {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 35%;
+    flex: 0 0 35%;
+    border-right: solid 1px #dee2e6; }
+    @media (max-width: 767.98px) {
+      .same-as .same-delivery {
+        border: none; } }
+    .same-as .same-delivery h3 {
+      font-weight: 400;
+      font-size: 1.5rem; }
 
 .form--singlefield {
   display: -webkit-box;
@@ -29746,6 +29757,8 @@ max-height: 408px;*/ }
   -ms-flex-pack: justify;
   justify-content: space-between;
   margin-bottom: 1.5rem; }
+  .content-wrapper .content-header [class*="col-"] {
+    /* margin: 0.5rem 0;*/ }
   .content-wrapper .content-header .content-header-title {
     color: #212529;
     font-size: 2rem;

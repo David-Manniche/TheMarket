@@ -21,14 +21,14 @@ if ($isUserLogged) {
    <div class="bg-second pt-3 pb-3">
       <div class="container">
         <div class="row align-items-center justify-content-between">
-          <div class="col-md-8 col-sm-8">
+          <div class="col">
                <div class="section-head section--white--head mb-0">
 						<div class="section__heading">
                 		<h2 class="mb-0"><?php echo Labels::getLabel('Lbl_Blog_Contribution', $siteLangId); ?></h2>
                         </div>
                      </div>
           </div>
-          <div class="col-md-auto col-sm-auto"><a href="<?php echo CommonHelper::generateUrl('Blog'); ?>" class="btn btn--primary d-block"><?php echo Labels::getLabel('Lbl_Back_to_home', $siteLangId); ?></a></div>
+          <div class="col-auto"><a href="<?php echo CommonHelper::generateUrl('Blog'); ?>" class="btn btn--primary btn-sm"><?php echo Labels::getLabel('Lbl_Back_to_home', $siteLangId); ?></a></div>
         </div>
       </div>
     </div>

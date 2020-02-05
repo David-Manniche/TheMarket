@@ -6,9 +6,9 @@ if (true == $isWishList) {
     $function = 'removeSelectedFromFavtlist(event)';
 }
 ?>
-<div class="col text-right">
+<div class="col-auto">
     <div class="action action--favs btn-group-scroll">
-        <label class="checkbox checkbox-inline">
+        <label class="btn btn-outline-primary btn--sm checkbox checkbox-inline select-all">
             <input type="checkbox" class='selectAll-js' onclick="selectAll($(this));"><i
                 class="input-helper"></i>Select all
         </label>
@@ -34,7 +34,7 @@ if (true == $isWishList) {
         </a>
         <?php if (true == $isWishList) { ?>
             <a class="btn btn--primary btn--sm" onClick="searchWishList();" href="javascript:void(0)">
-                <?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>
+               <i class="fa fa-backward"></i>&nbsp;&nbsp;<?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>
             </a>
         <?php } ?>
     </div>

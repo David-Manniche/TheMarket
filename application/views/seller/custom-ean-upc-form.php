@@ -8,7 +8,7 @@
                 <div class="form__subcontent">
                     <?php if (!empty($productOptions)) {?>
                     <form name="upcFrm" onSubmit="setupEanUpcCode(<?php echo $preqId;?>,this); return(false);" class="form">
-                        <table width="100%" class="table table-responsive" cellpadding="0" cellspacing="0">
+                        <table width="100%" class="table" cellpadding="0" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th><?php echo Labels::getLabel('LBL_Sr.', $siteLangId);?></th>

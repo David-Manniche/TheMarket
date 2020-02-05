@@ -21,7 +21,7 @@ $keywordFld->developerTags['noCaptionTag'] = true;
         </div>
         <div class="content-body">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3 mb-md-0">
                     <div class="cards">
                         <div class="cards-content p-4">
                             <div>
