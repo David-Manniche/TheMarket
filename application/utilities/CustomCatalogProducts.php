@@ -1203,7 +1203,7 @@ trait CustomCatalogProducts {
         unset($post['btn_submit']);
         unset($post['auto_update_other_langs_data']);
 
-        $dataForSave = array_merge($prodContent, $post); 
+        $dataForSave = array_merge($prodContent, $post);
         $dataForSave['preq_prodcat_id'] = $preqProdCatId;
         $dataForSave['product_added_by_admin_id'] = 0;
         $dataForSave['product_seller_id'] = UserAuthentication::getLoggedUserId();
@@ -1257,17 +1257,13 @@ trait CustomCatalogProducts {
     public function productAttributeAndSpecifications($preqId) {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
-        if ($preqId < 1) {
-            Message::addErrorMessage($this->str_invalid_request);
-            FatUtility::dieWithError(Message::getHtml());
-        }
         $productReqRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_content'));
         if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
 
         $productFrm = $this->getProductAttributeAndSpecificationsFrm(0, $preqId);
-        $preqContent = $productReqRow['preq_content'];             
+        $preqContent = $productReqRow['preq_content'];
         $preqContentData = json_decode($preqContent, true);
         $productFrm->fill($preqContentData);
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
@@ -1279,10 +1275,8 @@ trait CustomCatalogProducts {
         $this->set('otherLanguages', $languages);
         $this->_template->render(false, false, 'seller/catalog-attribute-and-specifications-frm.php');
     }
-    
-    
-    public function setUpCatalogProductAttributes()
-    {
+
+    public function setUpCatalogProductAttributes() {
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $frm = $this->getProductAttributeAndSpecificationsFrm(0, $preqId);
@@ -1290,15 +1284,15 @@ trait CustomCatalogProducts {
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
-        }        
-        $productData = ProductRequest::getAttributesById( $preqId );
-        if ($productData['preq_user_id'] != UserAuthentication::getLoggedUserId() || $productData['preq_status'] != ProductRequest::STATUS_PENDING)         {
+        }
+        $productData = ProductRequest::getAttributesById($preqId);
+        if ($productData['preq_user_id'] != UserAuthentication::getLoggedUserId() || $productData['preq_status'] != ProductRequest::STATUS_PENDING) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-  
-        unset($post['preq_id']); 
-        unset($post['btn_submit']);        
+
+        unset($post['preq_id']);
+        unset($post['btn_submit']);
         $prodContent = json_decode($productData['preq_content'], true);
         $data['preq_content'] = FatUtility::convertToJson(array_merge($prodContent, $post));
         $prodReq = new ProductRequest($preqId);
@@ -1308,14 +1302,38 @@ trait CustomCatalogProducts {
             FatUtility::dieWithError(Message::getHtml());
         }
         $this->set('msg', Labels::getLabel('LBL_Product_Attributes_Setup_Successful', $this->siteLangId));
-        $this->set('preqId', $prodReq->getMainTableRecordId());        
+        $this->set('preqId', $prodReq->getMainTableRecordId());
         $this->_template->render(false, false, 'json-success.php');
     }
-    
-    public function catalogProdSpecForm($preqId)
-    {
+
+    public function catalogProdSpecForm($preqId) {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
+        $langId = FatApp::getPostedData('langId', FatUtility::VAR_INT, 0);
+        $key = FatApp::getPostedData('key', FatUtility::VAR_INT, -1);
+        if ($preqId < 1 || $langId < 1) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $productReqRow = ProductRequest::getAttributesById($preqId);
+        if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
+            FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+        }
+        $prodSpecData = array();
+        if ($key >= 0) {
+            $specifications = json_decode($productReqRow['preq_specifications'], true);
+            $prodSpecData['prod_spec_name'] = $specifications['prod_spec_name'][$langId][$key];
+            $prodSpecData['prod_spec_value'] = $specifications['prod_spec_value'][$langId][$key];
+            $prodSpecData['key'] = $key;
+        }
+        $this->set('langId', $langId);
+        $this->set('prodSpecData', $prodSpecData);
+        $this->_template->render(false, false, 'seller/custom-catalog-prod-spec-form.php');
+    }
+
+    public function catalogSpecificationsByLangId() {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $langId = FatApp::getPostedData('langId', FatUtility::VAR_INT, 0);
         if ($preqId < 1 || $langId < 1) {
             Message::addErrorMessage($this->str_invalid_request);
@@ -1325,39 +1343,82 @@ trait CustomCatalogProducts {
         if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
-        
-        $prodSpecData = array();
+        $specifications = json_decode($productReqRow['preq_specifications'], true);
+        $productSpecifications['prod_spec_name'] = $specifications['prod_spec_name'][$langId];
+        $productSpecifications['prod_spec_value'] = $specifications['prod_spec_value'][$langId];
+        $this->set('productSpecifications', $productSpecifications);
         $this->set('langId', $langId);
-        $this->set('prodSpecData', $prodSpecData);
-        $this->_template->render(false, false, 'seller/custom-catalog-prod-spec-form.php'); 
+        $this->_template->render(false, false, 'seller/catalog-specifications.php');
     }
-    
-    public function catalogSpecificationsByLangId()
-    {
+
+    public function deleteCustomCatalogSpecification($preqId) {
         $this->canAddCustomCatalogProduct();
-        $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
-        $langId = FatApp::getPostedData('langId', FatUtility::VAR_INT, 0);        
-        if($preqId < 1 || $langId < 1){
+        $preqId = FatUtility::int($preqId);
+        $prodReqData = ProductRequest::getAttributesById($preqId);
+        if ($prodReqData['preq_user_id'] != UserAuthentication::getLoggedUserId() || $prodReqData['preq_status'] != ProductRequest::STATUS_PENDING) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $langId = FatApp::getPostedData('langId', FatUtility::VAR_INT, 0);
+        $key = FatApp::getPostedData('key', FatUtility::VAR_INT, -1);
+        if ($langId < 1 || $key < 0) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
-        $productReqRow = ProductRequest::getAttributesById($preqId);
-        if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
-            FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+
+        $prodReqSpecification = json_decode($prodReqData['preq_specifications'], true);
+        unset($prodReqSpecification['prod_spec_name'][$langId][$key]);
+        unset($prodReqSpecification['prod_spec_value'][$langId][$key]);
+        $prodReqSpecification['prod_spec_name'][$langId] = array_values($prodReqSpecification['prod_spec_name'][$langId]);
+        $prodReqSpecification['prod_spec_value'][$langId] = array_values($prodReqSpecification['prod_spec_value'][$langId]);
+
+        $data['preq_specifications'] = FatUtility::convertToJson($prodReqSpecification);
+        $prodReq = new ProductRequest($preqId);
+        $prodReq->assignValues($data);
+        if (!$prodReq->save()) {
+            Message::addErrorMessage($prodReq->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $this->set('msg', Labels::getLabel('LBL_Specification_deleted_successfully', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+    
+    public function setUpCustomCatalogSpecifications() {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
+        $prodReqData = ProductRequest::getAttributesById($preqId);
+        if ($prodReqData['preq_user_id'] != UserAuthentication::getLoggedUserId() || $prodReqData['preq_status'] != ProductRequest::STATUS_PENDING) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
         }
         
-
-        $productSpecifications = json_decode($productReqRow['preq_specifications'], true);        
-        //echo "<pre>"; print_r($prodSpecifications['prod_spec_name'][$langId]);
-        //echo "<pre>"; print_r($prodSpecifications['prod_spec_value'][$langId]); die;
+        $langId = FatApp::getPostedData('langId', FatUtility::VAR_INT, 0);
+        $key = FatApp::getPostedData('key', FatUtility::VAR_INT, -1); 
+        $prodSpecName = FatApp::getPostedData('prodspec_name', FatUtility::VAR_STRING, '');
+        $prodSpecValue = FatApp::getPostedData('prodspec_value', FatUtility::VAR_STRING, '');
+        if ($langId < 1 || empty($prodSpecName) || empty($prodSpecValue)) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
         
-        /* foreach($prodSpecifications['prod_spec_name'][$langId] as $key=>$data ){
-            $specificationData[$key]['prod_spec_name'] = $data;
-            $specificationData[$key]['prod_spec_value'] = $prodSpecifications['prod_spec_value'][$langId][$key];
-        } */
-        $this->set('productSpecifications', $productSpecifications); 
-        $this->set('langId', $langId);          
-        $this->_template->render(false, false, 'seller/catalog-specifications.php');
+        $prodReqSpecification = json_decode($prodReqData['preq_specifications'], true);
+        if($key >= 0){            
+            $prodReqSpecification['prod_spec_name'][$langId][$key] = $prodSpecName;
+            $prodReqSpecification['prod_spec_value'][$langId][$key] = $prodSpecValue; 
+        }else{
+            $prodReqSpecification['prod_spec_name'][$langId][] = $prodSpecName;
+            $prodReqSpecification['prod_spec_value'][$langId][] = $prodSpecValue; 
+        }
+        
+        $data['preq_specifications'] = FatUtility::convertToJson($prodReqSpecification);
+        $prodReq = new ProductRequest($preqId);
+        $prodReq->assignValues($data);
+        if (!$prodReq->save()) {
+            Message::addErrorMessage($prodReq->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $this->set('msg', Labels::getLabel('LBL_Specification_updated_successfully', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
     }
     
 

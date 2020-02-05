@@ -731,9 +731,9 @@ $(document).on('change', '.language-js', function () {
         });
     };
 
-    prodSpecificationSection = function (langId) {
+    prodSpecificationSection = function (langId, $key = - 1) {
         var preqId = $("input[name='preq_id']").val();
-        var data = "langId=" + langId;
+        var data = "langId=" + langId + "&key=" + $key;
         fcom.ajax(fcom.makeUrl('Seller', 'catalogProdSpecForm', [preqId]), data, function (res) {
             $(".specifications-form-" + langId).html(res);
         });
@@ -747,37 +747,37 @@ $(document).on('change', '.language-js', function () {
         });
     }
 
-    saveSpecification = function (langId, prodSpecId) {
-        var productId = $("input[name='product_id']").val();
+    saveSpecification = function (langId, key = -1) {
+        var preqId = $("input[name='preq_id']").val();
         var prodspec_name = $("input[name='prodspec_name[" + langId + "]']").val();
         var prodspec_value = $("input[name='prodspec_value[" + langId + "]']").val();
         var prodspec_group = $("input[name='prodspec_group[" + langId + "]']").val();
         if (prodspec_name == '' || prodspec_value == '') {
             return false;
         }
-        var data = 'product_id=' + productId + '&langId=' + langId + '&prodSpecId=' + prodSpecId + '&prodspec_name=' + prodspec_name + '&prodspec_value=' + prodspec_value + '&prodspec_group=' + prodspec_group;
-        fcom.updateWithAjax(fcom.makeUrl('Seller', 'setUpProductSpecifications'), data, function (t) {
+        var data = 'preq_id=' + preqId + '&langId=' + langId + '&key=' + key + '&prodspec_name=' + prodspec_name + '&prodspec_value=' + prodspec_value + '&prodspec_group=' + prodspec_group;
+        fcom.updateWithAjax(fcom.makeUrl('Seller', 'setUpCustomCatalogSpecifications'), data, function (t) {
             prodSpecificationsByLangId(langId);
             prodSpecificationSection(langId);
         });
     }
 
-    deleteProdSpec = function (prodSpecId, langId) {
+    deleteProdSpec = function ($key, langId) {
         var agree = confirm("Do you want to delete record?");
         if (!agree) {
             return false;
         }
-        var productId = $("input[name='product_id']").val();
-        var data = 'prodSpecId=' + prodSpecId;
-        fcom.updateWithAjax(fcom.makeUrl('Seller', 'deleteProdSpec', [productId]), data, function (t) {
+        var preqId = $("input[name='preq_id']").val();
+        var data = "langId=" + langId + "&key=" + $key;
+        fcom.updateWithAjax(fcom.makeUrl('Seller', 'deleteCustomCatalogSpecification', [preqId]), data, function (t) {
             prodSpecificationsByLangId(langId);
         });
     }
-    
-    displayOtherLangProdSpec = function(obj, langId){
-        if($('.collapse-js-'+langId).hasClass('show')){
+
+    displayOtherLangProdSpec = function (obj, langId) {
+        if ($('.collapse-js-' + langId).hasClass('show')) {
             return false;
-        }        
+        }
         prodSpecificationSection(langId);
         prodSpecificationsByLangId(langId);
     }
