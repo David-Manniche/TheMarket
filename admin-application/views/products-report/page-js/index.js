@@ -5,19 +5,18 @@ $(document).ready(function(){
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('Shops', 'autoComplete'),
-				data: { keyword: request, fIsAjax:1},
+				data: { keyword: request['term'], fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['name'] ,	value: item['id']	};
+						return { label: item['name'], value: item['name'], id: item['id'] };
 					}));
 				},
 			});
 		},
-		'select': function(item) {
-			$("input[name='shop_id']").val( item['value'] );
-			$("input[name='shop_name']").val( item['label'] );
+		select: function(event, ui) {
+			$("input[name='shop_id']").val( ui.item.id );
 		}
 	});
 	
@@ -25,19 +24,18 @@ $(document).ready(function(){
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('Brands', 'autoComplete'),
-				data: { keyword: request, fIsAjax:1},
+				data: { keyword: request['term'], fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['name'] ,	value: item['id']	};
+						return { label: item['name'], value: item['name'], id: item['id'] };
 					}));
 				},
 			});
 		},
-		'select': function(item) {
-			$("input[name='brand_id']").val( item['value'] );
-			$("input[name='brand_name']").val( item['label'] );
+		select: function(event, ui) {
+			$("input[name='brand_id']").val( ui.item.id );
 		}
 	});
 	

@@ -36,19 +36,18 @@
 				}); */
 				$.ajax({
 					url: fcom.makeUrl('brands', 'autoComplete'),
-					data: {keyword: request,fIsAjax:1},
+					data: {keyword: request['term'],fIsAjax:1},
 					dataType: 'json',
 					type: 'post',
 					success: function(json) {
 						response($.map(json, function(item) {
-							return { label: item['name'],	value: item['id']	};
+							return { label: item['name'], value: item['name'], id: item['id'] };
 						}));
 					},
 				});
 			},
-			'select': function(item) {
-				$('input[name=\'brand_name\']').val(item['label']);
-				$('input[name=\'product_brand_id\']').val(item['value']);
+			select: function(event, ui) {
+				$('input[name=\'product_brand_id\']').val(ui.item.id);
 			}
 		});
 		
@@ -61,26 +60,24 @@
 				
 					$.ajax({
 						url: fcom.makeUrl('sellerProducts', 'tagsAutoComplete'),
-						data: {keyword: request,fIsAjax:1},
+						data: {keyword: request['term'],fIsAjax:1},
 						dataType: 'json',
 						type: 'post',
 						success: function(json) {
 							response($.map(json, function(item) {
-							
-								return { 
+								return {
 									label: item['name'] + ' (' + item['tag_identifier'] + ')',
-									value: item['id']
-									};
+									value: item['name'] + ' (' + item['tag_identifier'] + ')',
+                                    id: item['id']
+                                };
 							}));
 						},
 					});
 				},
-				'select': function(item) {
-					
-					$('input[name=\'tag_name\']').val('');
-				$('#product-tag' + item['value']).remove();
-				$('#product-tag').append("<li id='product-tag" + item["value"] + "'><i class='remove_tag remove_param ion-android-delete icon'></i> " +item["label"] + "<input type='hidden' name='product_tag[]' value='" + item["value"] + "' /></li>");
-					
+				select: function(event, ui) {
+                    $('input[name=\'tag_name\']').val('');
+                    $('#product-tag' + ui.item.id).remove();
+                    $('#product-tag').append("<li id='product-tag" + ui.item.id + "'><i class='remove_tag remove_param ion-android-delete icon'></i> " + ui.item.label + "<input type='hidden' name='product_tag[]' value='" + ui.item.id + "' /></li>");	
 				}
 			});
 			

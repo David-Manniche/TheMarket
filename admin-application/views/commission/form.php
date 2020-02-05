@@ -3,6 +3,8 @@ $frm->setFormTagAttribute('class', 'web_form form_horizontal');
 $frm->setFormTagAttribute('onsubmit', 'setupCommission(this); return(false);');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
+$fld = $frm->getField('user_name');
+$fld->setWrapperAttribute('class', 'ui-front');
 ?>
 <section class="section">
 	<div class="sectionhead">
@@ -17,22 +19,21 @@ $frm->developerTags['fld_default_col'] = 12;
 <script type="text/javascript">
 $("document").ready(function(){
 	$('input[name=\'user_name\']').autocomplete({
-		'source': function(request, response) {			
+		'source': function(request, response) {		
 			$.ajax({
 				url: fcom.makeUrl('Commission', 'userAutoComplete'),
-				data: {keyword: request,fIsAjax:1},
+				data: {keyword: request['term'],fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['name'],	value: item['id']	};
+						return { label: item['name'], value: item['name'], id: item['id'] };
 					}));
 				},
 			});
 		},
-		'select': function(item) {
-			$('input[name=\'user_name\']').val(item['label']);
-			$('input[name=\'commsetting_user_id\']').val(item['value']);
+		select: function(event, ui) {
+			$("input[name='commsetting_user_id']").val( ui.item.id );
 		}
 	});
 	

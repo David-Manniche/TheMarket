@@ -5,6 +5,13 @@ $customProductFrm->setFormTagAttribute('onsubmit', 'setupProduct(this); return(f
 
 $customProductFrm->developerTags['colClassPrefix'] = 'col-md-';
 $customProductFrm->developerTags['fld_default_col'] = 12;
+$brandFld = $customProductFrm->getField('brand_name');
+$brandFld->setWrapperAttribute('class', 'ui-front');
+$optionFld = $customProductFrm->getField('option_name');
+$optionFld->setWrapperAttribute('class', 'ui-front');
+$tagFld = $customProductFrm->getField('tag_name');
+$tagFld->setWrapperAttribute('class', 'ui-front');
+
 if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
     $lengthFld = $customProductFrm->getField('product_length');
     $lengthFld->setWrapperAttribute('class', 'product_length_fld');
@@ -34,7 +41,7 @@ $productTypeFld = $customProductFrm->getField('product_type');
 $productTypeFld->setfieldTagAttribute('onchange', "showHideExtraFields();");
 
 $shippingCountryFld = $customProductFrm->getField('shipping_country');
-$shippingCountryFld->setWrapperAttribute('class', 'not-digital-js');
+$shippingCountryFld->setWrapperAttribute('class', 'not-digital-js ui-front');
 
 $shippFreeFld = $customProductFrm->getField('ps_free');
 $shippFreeFld->setWrapperAttribute('class', 'not-digital-js');
@@ -143,7 +150,7 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
                 $.ajax({
                     url: fcom.makeUrl('brands', 'autoComplete'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1
                     },
                     dataType: 'json',
@@ -152,15 +159,15 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
                         response($.map(json, function(item) {
                             return {
                                 label: item['name'],
-                                value: item['id']
+                                value: item['name'],
+                                id: item['id']
                             };
                         }));
                     },
                 });
             },
-            'select': function(item) {
-                $('input[name=\'brand_name\']').val(item['label']);
-                $('input[name=\'product_brand_id\']').val(item['value']);
+            select: function(event, ui) {
+                $('input[name=\'product_brand_id\']').val(ui.item.id);
             }
         });
 
@@ -173,7 +180,7 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
                 $.ajax({
                     url: fcom.makeUrl('productCategories', 'links_autocomplete'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1
                     },
                     dataType: 'json',
@@ -182,15 +189,15 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
                         response($.map(json, function(item) {
                             return {
                                 label: item['name'],
-                                value: item['id']
+                                value: item['name'],
+                                id: item['id']
                             };
                         }));
                     },
                 });
             },
-            'select': function(item) {
-                $('input[name=\'category_name\']').val(item['label']);
-                $('input[name=\'product_category_id\']').val(item['value']);
+            select: function(event, ui) {
+                $('input[name=\'product_category_id\']').val(ui.item.id);
             }
         });
 
@@ -199,7 +206,7 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
                 $.ajax({
                     url: fcom.makeUrl('options', 'autoComplete'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1
                     },
                     dataType: 'json',
@@ -209,21 +216,23 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
                             return {
                                 label: item['name'] + ' (' + item[
                                     'option_identifier'] + ')',
-                                value: item['id']
+                                value: item['name'] + ' (' + item[
+                                    'option_identifier'] + ')',
+                                id: item['id']
                             };
                         }));
                     },
                 });
             },
-            'select': function(item) {
+            select: function(event, ui) {
                 $('input[name=\'option_name\']').val('');
-                $('#product-option' + item['value']).remove();
-                $('#product-option-js').append('<li id="product-option' + item['value'] +
+                $('#product-option' + ui.item.id).remove();
+                $('#product-option-js').append('<li id="product-option' + ui.item.id +
                     '"><span class="left" ><a href="javascript:void(0)" title="Remove" onClick="removeProductOption(' +
-                    item['value'] + ');"><i class="icon ion-close" data-option-id="' + item[
-                        'value'] + '"></i></a></span><span class="left">' + item['label'] +
-                    '<input type="hidden" value="' + item['value'] +
+                    ui.item.id + ');"><i class="icon ion-close" data-option-id="' + ui.item.id + '"></i></a></span><span class="left">' + ui.item.label +
+                    '<input type="hidden" value="' + ui.item.id +
                     '"  name="product_option[]"></span></li>');
+                return false;
             }
         });
 
@@ -245,7 +254,7 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
                 $.ajax({
                     url: fcom.makeUrl('tags', 'autoComplete'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1
                     },
                     dataType: 'json',
@@ -253,24 +262,24 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
                     success: function(json) {
                         response($.map(json, function(item) {
                             return {
-                                label: item['name'] + ' (' + item[
-                                    'tag_identifier'] + ')',
-                                value: item['id']
+                                label: item['name'] + ' (' + item['tag_identifier'] + ')',
+                                value: item['name'] + ' (' + item['tag_identifier'] + ')',
+                                id: item['id']
                             };
                         }));
                     },
                 });
             },
-            'select': function(item) {
+            select: function(event, ui) {
                 $('input[name=\'tag_name\']').val('');
-                $('#product-tag' + item['value']).remove();
-                $('#product-tag-js').append('<li id="product-tag' + item['value'] +
+                $('#product-tag' + ui.item.id).remove();
+                $('#product-tag-js').append('<li id="product-tag' + ui.item.id +
                     '"><span class="left "><a href="javascript:void(0)" title="Remove" onClick="removeProductTag(' +
-                    item['value'] +
-                    ');"><i class="icon ion-close remove_tag-js" data-tag-id="' + item[
-                    'value'] + '"></i></a></span><span class="left">' + item['label'] +
-                    '<input type="hidden" value="' + item['value'] +
+                    ui.item.id +
+                    ');"><i class="icon ion-close remove_tag-js" data-tag-id="' + ui.item.id + '"></i></a></span><span class="left">' + ui.item.label +
+                    '<input type="hidden" value="' + ui.item.id +
                     '"  name="product_tags[]"></span></li></li>');
+                return false;
             }
         });
 
@@ -303,7 +312,7 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
                 $.ajax({
                     url: fcom.makeUrl('products', 'countries_autocomplete'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1
                     },
                     dataType: 'json',
@@ -312,15 +321,15 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
                         response($.map(json, function(item) {
                             return {
                                 label: item['name'],
-                                value: item['id']
+                                value: item['name'],
+                                id: item['id']
                             };
                         }));
                     },
                 });
             },
-            'select': function(item) {
-                $('input[name=\'shipping_country\']').val(item.label);
-                $('input[name=\'ps_from_country_id\']').val(item.value);
+            select: function(event, ui) {
+                $('input[name=\'ps_from_country_id\']').val(ui.item.id);
             }
 
         });

@@ -60,21 +60,22 @@ $(document).ready(function(){
         'source': function(request, response) {
             $.ajax({
                 url: fcom.makeUrl('products', 'prodSpecGroupAutoComplete'),
-                data: {keyword: request, langId: langId, fIsAjax:1},
+                data: {keyword: request['term'], langId: langId, fIsAjax:1},
                 dataType: 'json',
                 type: 'post',
                 success: function(json) {
                     response($.map(json, function(item) {
                         return {
-                            label: item['name'] ,
+                            label: item['name'],
                             value: item['name']
                             };
                     }));
                 },
             });
         },
-        'select': function(item) {
-                $('input[name="prodspec_group['+langId+']"]').val(item.value);
+        'select': function(event, ui) {
+            $('input[name="prodspec_group['+langId+']"]').val(ui.item.value);
+            return false;
         }
 
     });

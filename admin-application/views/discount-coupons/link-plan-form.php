@@ -3,7 +3,8 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 $spPlanFrm->setFormTagAttribute('class', 'web_form form_horizontal');
 $spPlanFrm->developerTags['colClassPrefix'] = 'col-md-';
 $spPlanFrm->developerTags['fld_default_col'] = 12; 
-
+$fld = $spPlanFrm->getField('plan_name');
+$fld->setWrapperAttribute('class', 'ui-front');
 ?>
 <section class="section">
 	<div class="sectionhead">
@@ -38,18 +39,20 @@ $("document").ready(function(){
 		'source': function(request, response) {			
 			$.ajax({
 				url: fcom.makeUrl('SellerPackages', 'autoComplete'),
-				data: {keyword: request,fIsAjax:1},
+				data: {keyword: request['term'],fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['name'],	value: item['id']	};
+						return { label: item['name'], value: item['name'], id: item['id']	};
 					}));
 				},
 			});
 		},
-		'select': function(item) {
-			updateCouponPlan(<?php echo $coupon_id; ?>, item['value'] );
+		'select': function(event, ui) {
+			updateCouponPlan(<?php echo $coupon_id; ?>, ui.item.id );
+            $('input[name=\'plan_name\']').val('');
+            return false;
 		}
 	});
 	

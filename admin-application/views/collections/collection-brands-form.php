@@ -3,6 +3,8 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->setFormTagAttribute('class', 'web_form form_horizontal');
 $frm->developerTags['colClassPrefix'] = 'col-md-';							
 $frm->developerTags['fld_default_col'] = 12;
+$fld = $frm->getField('brands');
+$fld->setWrapperAttribute('class', 'ui-front');
 ?>
 <section class="section">
 	<div class="sectionhead">
@@ -30,18 +32,20 @@ $("document").ready(function(){
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('Brands', 'autocomplete'),
-				data: {keyword: request,fIsAjax:1},
+				data: {keyword: request['term'],fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['name'] ,	value: item['id']	};
+						return { label: item['name'], value: item['name'], id: item['id'] };
 					}));
 				},
 			});
 		},
-		'select': function( item ) {
-			updateCollectionBrands(<?php echo $collection_id; ?>, item['value'] );
+		select: function( event, ul ) {
+			updateCollectionBrands(<?php echo $collection_id; ?>, ul.item.id );
+            $('input[name=\'brands\']').val('');
+            return false;
 		}
 	});
 });
