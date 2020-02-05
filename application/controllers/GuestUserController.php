@@ -637,6 +637,9 @@ class GuestUserController extends MyAppController
         if (false ===  MOBILE_APP_API_CALL && FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '') != '' && FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '') != '') {
             if (!CommonHelper::verifyCaptcha()) {
                 $message = Labels::getLabel('MSG_That_captcha_was_incorrect', $this->siteLangId);
+                if (FatUtility::isAjaxCall()) {
+                    FatUtility::dieJsonError($message);
+                }
                 Message::addErrorMessage($message);
                 FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'forgotPasswordForm'));
             }
