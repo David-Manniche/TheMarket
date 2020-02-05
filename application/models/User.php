@@ -1687,7 +1687,7 @@ class User extends MyAppModel
             '{OTP}' => $otp,
             '{USER_NAME}' => $user_name
         ];
-        return SmsArchive::send($phone, SmsTemplate::LOGIN, $replacements, $this->error);
+        return SmsArchive::send($phone, SmsTemplate::LOGIN, $langId, $replacements, $this->error);
     }
 
     public function userPhoneVerification($data, $langId)
