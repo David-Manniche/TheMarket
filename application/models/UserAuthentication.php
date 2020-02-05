@@ -712,10 +712,10 @@ class UserAuthentication extends FatModel
 
     public function checkUserPwdResetRequest($userId)
     {
-        if (!$db->getUserResetPwdToken($userId)) {
+        if (!$this->getUserResetPwdToken($userId)) {
             return false;
         }
-        
+
         $this->error = Labels::getLabel('ERR_RESET_PASSWORD_REQUEST_ALREADY_PLACED', $this->commonLangId);
         return true;
     }
