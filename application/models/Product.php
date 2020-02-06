@@ -1120,6 +1120,27 @@ class Product extends MyAppModel
         return true;
     }
 
+    public static function hasInventory($productId, $userId)
+    {
+        $productId = FatUtility::int($productId);
+        $userId = FatUtility::int($userId);
+        if (!$productId || !$userId) {
+            FatUtility::dieJsonError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
+        }
+        $srch = SellerProduct::getSearchObject();
+        $srch->joinTable(SellerProduct::DB_TBL_SELLER_PROD_OPTIONS, 'LEFT JOIN', 'selprod_id = selprodoption_selprod_id', 'tspo');
+        $srch->addCondition('selprod_product_id', '=', $productId);
+        $srch->addCondition('selprod_user_id', '=', $userId);
+        $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
+        $srch->addFld('selprodoption_optionvalue_id');
+        $rs = $srch->getResultSet();
+        $alreadyAdded = FatApp::getDb()->fetchAll($rs, 'selprodoption_optionvalue_id');
+        if (empty($alreadyAdded)) {
+            return false;
+        }
+        return true;
+    }
+
     public static function addUpdateProductSellerShipping($product_id, $data_to_be_save, $userId)
     {
         $productSellerShiping = array();

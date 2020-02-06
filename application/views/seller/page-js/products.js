@@ -147,6 +147,7 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 		document.frmSearch.reset();
 		var frm = document.frmSearch;
 		$(frm.page).val(1);
+		$(frm.product_id).val('');
 		loadSellerProducts(document.frmSearch);
 	};
 	addSpecialPrice = function(){
@@ -157,7 +158,7 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 		$("#frmSellerProductsListing").attr({'action': fcom.makeUrl('Seller','specialPrice'), 'target':"_blank"}).removeAttr('onsubmit').submit();
 		loadSellerProducts(document.frmSearch);
 	}
-	
+
 	addVolumeDiscount = function(){
 		if (typeof $(".selectItem--js:checked").val() === 'undefined') {
 	        $.systemMessage(langLbl.atleastOneRecord, 'alert--danger');
