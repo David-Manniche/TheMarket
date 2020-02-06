@@ -2167,6 +2167,7 @@ trait CustomProducts
                 $productLangData = $prod->getAttributesByLangId($langId, $productId);
                 if(!empty($productLangData)){
                     $prodData['product_name'][$langId] = $productLangData['product_name'];
+                    $prodData['product_youtube_video'][$langId] = $productLangData['product_youtube_video'];
                     $prodData['product_description'][$langId] = $productLangData['product_description'];
                 }
             }

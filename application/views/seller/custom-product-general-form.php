@@ -1,6 +1,11 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
 $productFrm->setFormTagAttribute('class', 'form form--horizontal');
 $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(false);');
+
+$fld = $productFrm->getField('auto_update_other_langs_data');
+$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+
 ?>
 <div class="row justify-content-center">
      <div class="col-md-12">
