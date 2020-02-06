@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="cards-header p-4">
+<div class="cards-header">
     <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Request_Withdrawal', $siteLangId);?></h5>
 </div>
 <div class="cards-content pl-4 pr-4 ">

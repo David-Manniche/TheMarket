@@ -45,8 +45,8 @@ $cancelBtnFld->developerTags['col'] = 2;
 $cancelBtnFld->developerTags['noCaptionTag'] = true;
 ?> <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
-        <div class="content-header row justify-content-between mb-3">
-            <div class="col-md-auto"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_My_Credits', $siteLangId);?></h2>
+        <div class="content-header row">
+            <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_My_Credits', $siteLangId);?></h2>
             </div>
         </div>
         <div class="content-body">
@@ -54,34 +54,18 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                 <div class="col-lg-12">
                     <div class="cards">
                         <?php if ($codMinWalletBalance > -1) { ?>
-                        <div class="cards-header p-4 pb-0">
+                        <div class="cards-header pb-0">
                             <p class="note"><?php echo Labels::getLabel('MSG_Minimum_balance_Required_For_COD', $siteLangId).' : '. CommonHelper::displaymoneyformat($codMinWalletBalance);?></p>
                         </div>
                         <?php } ?>
                         <div class="cards-content pt-4 pl-4 pr-4">
-                            <div id="credits-info"></div>
-                            <div class="gap"></div>
-                            <?php //echo $balanceTotalBlocksDisplayed;?>
-                            <?php $srchFormDivWidth = $canAddMoneyToWallet ? '8' : '12'; ?>
-                            <div class="row">
-                                <div class="col-lg-<?php echo $srchFormDivWidth; ?> col-md-<?php echo $srchFormDivWidth; ?> col-md-12">
-                                    <div class="replaced">
-                                        <h5 class="cards-title mb-2"><?php echo Labels::getLabel('LBL_Search_Transactions', $siteLangId);?></h5>
-                                        <?php
-                                        $submitFld = $frmSrch->getField('btn_submit');
-                                        $submitFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
-
-                                        $fldClear= $frmSrch->getField('btn_clear');
-                                        $fldClear->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
-                                        echo $frmSrch->getFormHtml();
-                                        ?>
-                                    </div>
-                                </div>
-                                <?php if ($canAddMoneyToWallet) { ?>
-                                    <div class="col-lg-4 col-md-12">
+                                <div class="row">
+                                  <?php $srchFormDivWidth = $canAddMoneyToWallet ? '8' : '12'; ?>
+                                   <?php if ($canAddMoneyToWallet) { ?>
+                                    <div class="col-lg-3" id="credits-info">
                                         <div class="replaced amount-added-box">
-                                            <h5 class="cards-title mb-2">
-                                            <?php echo Labels::getLabel('LBL_Enter_amount_to_be_Added'.'_['.CommonHelper::getDefaultCurrencySymbol().']', $siteLangId); ?></h5>
+                                            <h6 class="cards-title mb-2">
+                                            <?php echo Labels::getLabel('LBL_Enter_amount_to_be_Added'.'_['.CommonHelper::getDefaultCurrencySymbol().']', $siteLangId); ?></h6>
                                             <div id="rechargeWalletDiv" class="cellright nopadding--bottom">
                                                 <?php
                                                 $frmRechargeWallet->setFormTagAttribute('onSubmit', 'setUpWalletRecharge(this); return false;');
@@ -101,6 +85,16 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                         </div>
                                     </div>
                                 <?php } ?>
+                                </div>
+                                
+                                
+                            
+                            <div class="gap"></div>
+                            <?php //echo $balanceTotalBlocksDisplayed;?>
+                            
+                            <div class="row">
+                                
+                                
                             </div>
                         </div>
                     </div>
@@ -114,6 +108,27 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                     </div>
                 </div>
             </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                                   <div class="cards">
+                                       <div class="cards-content pt-4 pl-4 pr-4">
+                                       <div class="replaced">
+                                        <h5 class="cards-title mb-2"><?php echo Labels::getLabel('LBL_Search_Transactions', $siteLangId);?></h5>
+                                        <?php
+                                        $submitFld = $frmSrch->getField('btn_submit');
+                                        $submitFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
+
+                                        $fldClear= $frmSrch->getField('btn_clear');
+                                        $fldClear->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
+                                        echo $frmSrch->getFormHtml();
+                                        ?>
+                                    </div>
+                                      </div>                                       
+                                   </div>                                   
+                                </div>
+            </div>
+            <div class="gap"></div>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="cards">

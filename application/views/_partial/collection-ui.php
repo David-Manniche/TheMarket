@@ -13,28 +13,26 @@ if ($controllerName = 'Products' && isset($action) && $action == 'view') {
 if ($showAddToFavorite) { ?>
     <div class="favourite-wrapper <?php /* echo $staticCollectionClass; */ ?>">
     <?php if (true ==  $showActionBtns) { ?>
-        <div class="container wishlist_items--css">
-            <ul class="actions mt-2">
+        <div class="actions_wishlist">
+            <ul class="actions">
                 <?php if ($product['in_stock']) { ?>
                 <li>
-                    <a title='<?php echo Labels::getLabel('LBL_Select_Item', $siteLangId); ?>' href="javascript:void(0)" class="icn-highlighted">
-                        <label class="checkbox">
+                     <label class="checkbox">
                             <input type="checkbox" name='selprod_id[]' class="selectItem--js" value="<?php echo $product['selprod_id']; ?>"/>
                             <i class="input-helper"></i>
                         </label>
-                    </a>
                 </li>
                 <li>
-                    <a onClick="addToCart( $(this), event );" href="javascript:void(0)" class="icn-highlighted" title="<?php echo Labels::getLabel('LBL_Move_to_cart', $siteLangId); ?>" data-id='<?php echo $product['selprod_id']; ?>'><i class="fa fa-shopping-cart"></i></a>
+                    <a onClick="addToCart( $(this), event );" href="javascript:void(0)" class="" title="<?php echo Labels::getLabel('LBL_Move_to_cart', $siteLangId); ?>" data-id='<?php echo $product['selprod_id']; ?>'><i class="fa fa-shopping-cart"></i></a>
                 </li>
                 <?php } ?>
                 <li>
                     <?php if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::YES) { ?>
-                        <a title='<?php echo Labels::getLabel('LBL_Move_to_trash', $siteLangId); ?>' onclick="removeFromWishlist(<?php echo $product['selprod_id']; ?>, <?php echo $product['uwlp_uwlist_id']; ?>, event);" href="javascript:void(0)" class="icn-highlighted">
+                        <a title='<?php echo Labels::getLabel('LBL_Move_to_trash', $siteLangId); ?>' onclick="removeFromWishlist(<?php echo $product['selprod_id']; ?>, <?php echo $product['uwlp_uwlist_id']; ?>, event);" href="javascript:void(0)" class="">
                             <i class="fa fa-trash"></i>
                         </a>
                     <?php } else { ?>
-                        <a title='<?php echo Labels::getLabel('LBL_Move_to_trash', $siteLangId); ?>' href="javascript:void(0)" class="icn-highlighted heart-wrapper-Js" data-id="<?php echo $product['selprod_id']; ?>" data-callback="searchFavouriteListItems">
+                        <a title='<?php echo Labels::getLabel('LBL_Move_to_trash', $siteLangId); ?>' href="javascript:void(0)" class="heart-wrapper-Js" data-id="<?php echo $product['selprod_id']; ?>" data-callback="searchFavouriteListItems">
                             <i class="fa fa-trash"></i>
                         </a>
                     <?php } ?>

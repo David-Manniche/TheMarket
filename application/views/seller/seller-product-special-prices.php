@@ -4,7 +4,7 @@
 </div>
 <div class="cards">
     <?php if (count($arrListing) > 0) { ?>
-        <div class="cards-header p-4">
+        <div class="cards-header">
             <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Special_price', $siteLangId); ?>
             </h5>
             <div class="action">

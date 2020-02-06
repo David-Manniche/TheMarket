@@ -123,6 +123,12 @@
 
     &.sign-up {
         transform: translateX(-100% * $transform-direction);
+
+        @include media-breakpoint-down(sm) {
+            & {
+                transform: none;
+            }
+        }
     }
 
 
@@ -144,6 +150,7 @@
                 transform: none;
                 width: auto;
                 height: auto;
+                max-width: 350px;
                 opacity: 1;
                 padding: 2rem;
             }
@@ -180,6 +187,16 @@
                 -webkit-transition: all 0.5s;
                 transition: all 0.5s;
                 #{$end-direction}: 50%;
+
+
+
+                @include media-breakpoint-down(sm) {
+                    & {
+                        transform: none;
+                        left: auto;
+
+                    }
+                }
             }
 
         }
@@ -190,6 +207,14 @@
         opacity: 0;
         -webkit-transition: all 0.5s;
         transition: all 0.5s;
+
+
+        @include media-breakpoint-down(sm) {
+            & {
+                opacity: 1;
+                #{$start-direction}: auto;
+            }
+        }
     }
 }
 
@@ -246,6 +271,9 @@
     }
 }
 
+.other-option {
+    margin-top: 1.5rem;
+}
 
 .buttons-list {
     ul {
@@ -315,5 +343,100 @@
 
     .btn--InstagramLogin {
         background: #3f729b;
+    }
+}
+
+
+.login-wrapper {
+    .form-side {
+        padding: 2rem;
+
+        @include media-breakpoint-down(md) {
+            & {
+                padding: 1rem;
+            }
+        }
+
+        input {
+            &[type="submit"] {
+                background: $secondary-color;
+                color: #fff;
+                text-transform: uppercase;
+                font-size: 1em;
+                border: none;
+                display: block;
+                width: 100%;
+            }
+        }
+    }
+
+    .forgot {
+        text-align: #{$end-direction};
+        color: #fff;
+        font-size: 0.9em;
+        line-height: 1;
+    }
+
+    .last-button {
+        background: none;
+        color: #fff;
+        text-transform: uppercase;
+        font-size: 1em;
+        border: solid 1px rgba(255, 255, 255, 0.2);
+        display: block;
+        padding: 10px 20px;
+        text-align: center;
+        line-height: 1.42857;
+        width: 100%;
+
+        &:hover {
+            background-color: #424242;
+        }
+    }
+
+    .add-side {
+        padding: 2rem;
+        display: table-cell;
+        max-width: 40%;
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 40%;
+        flex: 0 0 40%;
+        background: #fff url(../images/login-with.png) no-repeat bottom center;
+    }
+}
+
+.connect {
+    a {
+        &.link {
+            display: block;
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 1em;
+            border: none;
+            display: block;
+            padding: 10px 20px;
+            text-align: center;
+            line-height: 1.42857;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        &.fb {
+            background: #3856a0;
+        }
+
+        &.gp {
+            background: #dd4330;
+        }
+    }
+
+    .svg {
+        svg {
+            width: 18px;
+            height: 18px;
+            fill: #fff;
+            display: inline-block;
+            vertical-align: middle;
+        }
     }
 }

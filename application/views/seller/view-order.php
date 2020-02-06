@@ -5,8 +5,8 @@ if (!$print) {
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
         <?php if (!$print) { ?>
-        <div class="content-header  row justify-content-between mb-3">
-            <div class="col-md-auto">
+        <div class="content-header row">
+            <div class="col">
                 <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
                 <h2 class="content-header-title">
                     <?php echo Labels::getLabel('LBL_View_Sale_Order', $siteLangId);?>
@@ -16,7 +16,7 @@ if (!$print) {
             $orderObj = new Orders();
             $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses();
             if (in_array($orderDetail['orderstatus_id'], $processingStatuses)) { ?>
-            <div class="col-md-auto">
+            <div class="col-auto">
                 <div class="btn-group">
                     <ul class="actions">
                         <li>
@@ -31,7 +31,7 @@ if (!$print) {
         <?php } ?>
         <div class="content-body">
             <div class="cards">
-                <div class="cards-header p-4">
+                <div class="cards-header">
                     <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Order_Details', $siteLangId);?></h5>
                     <?php if (!$print) { ?>
                     <div class="">

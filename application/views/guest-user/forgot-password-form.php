@@ -2,16 +2,16 @@
 <div id="body" class="body">
     <div class="bg-second pt-3 pb-3">
         <div class="container container--fixed">
-            <div class="row align-items-center  justify-content-between">
-                <div class="col-md-8 col-sm-8">
+            <div class="row align-items-center justify-content-between">
+                <div class="col">
                     <div class="section-head section--white--head mb-0">
                         <div class="section__heading">
                             <h2><?php echo Labels::getLabel('LBL_Forgot_Password?', $siteLangId);?></h2>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-auto col-sm-auto">
-                    <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="btn btn--primary d-block"><?php echo Labels::getLabel('LBL_Back_to_Login', $siteLangId);?></a>
+                <div class="col-auto">
+                    <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="btn btn--primary btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Login', $siteLangId);?></a>
                 </div>
             </div>
         </div>
@@ -54,11 +54,13 @@
 							</div>
                         </div>
                     </div>
-                    <?php if (!empty($pageData)) {
+                   
+                </div>
+				
+            </div>
+			 <?php if (!empty($pageData)) {
                         $this->includeTemplate('_partial/GuestUserRightPanel.php', $pageData, false);
                     } ?>
-                </div>
-            </div>
         </div>
     </section>
 </div>

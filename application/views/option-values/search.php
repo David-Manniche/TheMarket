@@ -4,7 +4,7 @@ $arr_flds = array(
         'optionvalue_identifier' => Labels::getLabel('LBL_OPTION_VALUE_NAME', $langId),
         'action'  =>  Labels::getLabel('LBL_ACTION', $langId),
     );
-$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--orders table-responsive sortable--js', 'id' => 'optionvalues'));
+$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table sortable--js', 'id' => 'optionvalues'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);

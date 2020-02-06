@@ -5,8 +5,8 @@ $serviceAccInfo = isset($userData['service_account']) ? $userData['service_accou
 ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
-        <div class="content-header row justify-content-between mb-3">
-            <div class="col-md-auto">
+        <div class="content-header row">
+            <div class="col">
                 <h2 class="content-header-title"><?php echo $pluginName;?></h2>
             </div>
         </div>
@@ -19,7 +19,7 @@ $serviceAccInfo = isset($userData['service_account']) ? $userData['service_accou
                                 <?php echo Labels::getLabel('Lbl_MERCHANT_ID', $siteLangId);?> : 
                                 <?php echo $merchantId;
                                 if (empty($merchantId)) { ?>
-                                    <a class="btn btn--primary-border btn--sm" href="<?php echo CommonHelper::generateUrl($keyName, 'getAccessToken')?>" title="<?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?>"><?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?></a>
+                                    <a class="btn btn-outline-primary btn--sm" href="<?php echo CommonHelper::generateUrl($keyName, 'getAccessToken')?>" title="<?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?>"><?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?></a>
                                 <?php } ?>
                             </h6>
                             <?php if (!empty($merchantId)) { ?>

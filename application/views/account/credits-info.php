@@ -4,11 +4,11 @@ $showTotalBalanceAvailableDiv = false;
 $divCol = 12;
 if ($userTotalWalletBalance != $userWalletBalance || ($promotionWalletToBeCharged) || ($withdrawlRequestAmount)) {
     $showTotalBalanceAvailableDiv = true;
-    $divCol = 4;
+    $divCol = 3;
 } ?>
-<div class="row">
+
     <?php if ($showTotalBalanceAvailableDiv) { ?>
-        <div class="col-lg-8 col-md-12 mb-3 mb-md-0">
+        <div class="col-lg-6 mb-3 mb-md-0">
             <div class="balancebox border h-100 text-center rounded p-3">
 
                     <div class="credits-number">
@@ -55,7 +55,7 @@ if ($userTotalWalletBalance != $userWalletBalance || ($promotionWalletToBeCharge
             </div>
         </div>
     <?php } ?>
-    <div class="col-lg-<?php echo $divCol; ?> col-md-<?php echo $divCol; ?> col-md-12">
+    <div class="col-lg-<?php echo $divCol; ?> ">
         <div class="balancebox border h-100 rounded text-center p-3">
             <p><?php echo Labels::getLabel('LBL_Available_Balance', $siteLangId);?>: </p>
             <h2>
@@ -69,21 +69,22 @@ if ($userTotalWalletBalance != $userWalletBalance || ($promotionWalletToBeCharge
                 </small>
             <?php } ?>
             <div class="row">
-                <div class="col">
-                    <select name='payout_type' class='payout_type'>
+                <div class="col-md-12 my-3">
+                  <select name='payout_type' class='custom-select payout_type'>
                         <?php
                         foreach ($payouts as $type => $name) { ?>
                             <option value='<?php echo $type; ?>'><?php echo $name; ?></option>
                         <?php }
                         ?>
                     </select>
+                   
                 </div>
-                <div class="col-auto">
-                    <a href="javascript:void(0)" onClick="withdrawalReqForm()" class="btn btn--secondary">
+                <div class="col-md-12">
+                    <a href="javascript:void(0)" onClick="withdrawalReqForm()" class="btn btn--secondary btn--block">
                         <?php echo Labels::getLabel('LBL_Withdraw', $siteLangId); ?>
                     </a>
                 </div>
             </div>
         </div>
     </div>
-</div>
+

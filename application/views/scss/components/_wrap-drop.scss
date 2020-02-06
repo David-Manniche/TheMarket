@@ -1,10 +1,8 @@
 .wrap-drop {
     position: relative;
-    /*z-index: 1;*/
     border: $border;
     height: 38px;
     line-height: 38px;
-    padding: 0 10px;
     width: 100%;
     color: $body-color;
     font-family: inherit;
@@ -12,130 +10,126 @@
     font-weight: normal;
     border-radius: 4px;
     cursor: pointer;
-    -webkit-padding-end: 35px;
-    -moz-padding-end: 35px;
+    padding-#{$start-direction}: 10px;
     padding-#{$end-direction}: 35px;
     background: #fff;
 
-}
+    span {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
 
-.wrap-drop span {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
+    &:before,
+    &:after {
+        top: 50%;
+        position: absolute;
+        width: 9px;
+        height: 2px;
+        background-color: #545454;
+        display: inline-block;
+        -webkit-transition: all 0.2s ease;
+        transition: all 0.2s ease;
+        content: "";
+    }
 
+    &:after {
+        right: 10px;
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+    }
 
-.wrap-drop:before,
-.wrap-drop:after {
-    top: 50%;
-    position: absolute;
-    width: 9px;
-    height: 2px;
-    background-color: #545454;
-    display: inline-block;
-    -webkit-transition: all 0.2s ease;
-    transition: all 0.2s ease;
-    content: "";
-}
+    &:before {
+        right: 16px;
+        -webkit-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
 
-.wrap-drop:before {
-    #{$end-direction}: 16px;
-    -webkit-transform: rotate(45deg);
-    transform: rotate(45deg);
-}
+    &.wrap-drop--first {
+        border-color: $brand-color;
+        color: $brand-color;
 
-.wrap-drop:after {
-    #{$end-direction}: 10px;
-    -webkit-transform: rotate(-45deg);
-    transform: rotate(-45deg);
-}
+        &:after,
+        &:before {
+            background-color: $brand-color;
+        }
+    }
 
-.wrap-drop.active:before {
-    -webkit-transform: rotate(-45deg);
-    transform: rotate(-45deg);
-}
+    .drop {
+        background: #fff;
+        border: $border;
+        position: absolute;
+        -webkit-transition: all 300ms;
+        transition: all 300ms;
+        left: 0;
+        right: 0;
+        pointer-events: none;
+        position: absolute;
+        opacity: 0;
 
-.wrap-drop.active:after {
-    -webkit-transform: rotate(45deg);
-    transform: rotate(45deg);
-}
+        top: 120%;
+        z-index: 2;
+        border-radius: 4px;
 
-.wrap-drop.wrap-drop--first {
-    border-color: $brand-color;
-    color: $brand-color;
-}
+        li {
+            &:hover {
+                a {
+                    color: $brand-color;
+                }
+            }
 
-.wrap-drop.wrap-drop--first:after,
-.wrap-drop.wrap-drop--first:before {
-    background-color: $brand-color;
-}
+            a {
+                cursor: pointer;
+                color: $body-color;
+                display: block;
+                overflow: hidden;
+                position: relative;
+                text-align: left;
+                font-size: 0.875em;
+                font-weight: 400;
+                padding: 10px;
+                line-height: 1.2;
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -webkit-box-align: center;
+                -ms-flex-align: center;
+                align-items: center;
+                text-decoration: none;
+                -webkit-transition: all 0.2s linear;
+                transition: all 0.2s linear;
 
+            }
+        }
+    }
 
-.wrap-drop .drop {
-    background: #fff;
-    border: $border;
-    position: absolute;
-    -webkit-transition: all 300ms;
-    transition: all 300ms;
-    #{$start-direction}: 0;
-    pointer-events: none;
-    position: absolute;
-    opacity: 0;
-    #{$end-direction}: 0;
-    top: 120%;
-    z-index: 2;
-    border-radius: 4px;
-}
+    &.active {
+        &:after {
+            -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+            border-width: 0 10px 10px;
+        }
 
-.wrap-drop.active .drop {
-    display: block;
-    opacity: 1;
-    pointer-events: auto;
-}
+        &:before {
+            -webkit-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+        }
 
+        .drop {
+            display: block;
+            opacity: 1;
+            pointer-events: auto;
+        }
+    }
 
-.wrap-drop .drop li a {
-    cursor: pointer;
-    color: $body-color;
-    display: block;
-    overflow: hidden;
-    position: relative;
-    text-align: left;
-    font-size: 0.875em;
-    font-weight: 400;
-    padding: 10px;
-    line-height: 1.2;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    text-decoration: none;
-    -webkit-transition: all 0.2s linear;
-    transition: all 0.2s linear;
+    .colors {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-#{$end-direction}: 5px;
+        -webkit-box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.30);
+        box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.30);
 
-}
-
-.wrap-drop .drop li:hover a {
-    color: $brand-color;
-
-}
-
-.wrap-drop.active::after {
-    border-width: 0 10px 10px;
-}
-
-.wrap-drop .colors {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    display: inline-block;
-    
-    
-    margin-#{$end-direction}: 5px;
-    -webkit-box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.30);
-    box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.30);
-
+    }
 }

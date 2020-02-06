@@ -2,8 +2,7 @@
     width: 100%;
     background-color: #fff;
     margin-bottom: 0;
-
-
+    color: $body-color;
 
     @include media-breakpoint-down(lg) {
         & {
@@ -11,53 +10,73 @@
             display: block;
         }
     }
-}
 
-.table th,
-.table td {
-    font-weight: unset;
-    padding: 15px;
-    border: none;
-    color: $body-color;
-    font-size: 0.875em;
-    border-bottom: $border;
-    vertical-align: top;
-}
 
-.table th a,
-.table td a {
-    color: inherit;
-}
 
-.table th a:hover,
-.table td a:hover {
-    text-decoration: underline;
-}
+    tr {
+        &:last-child {
+            td {
+                border-bottom: none;
+            }
+        }
 
-.table thead th,
-.table th {
-    border: none;
-    font-weight: 600;
-    color: #333;
-    /*	border-top: $border;*/
-    border-bottom: $border;
-    vertical-align: top;
-    /*	text-transform: uppercase;font-size: 0.8em;*/
-}
+        td {
+            &:first-child {
+                padding-left: 0;
+            }
 
-/*.table table thead, .table table tbody{width: 100%;}*/
-.table thead table thead th,
-.table table th,
-.table table td {
-    font-size: 100%;
-}
+            &:last-child {
+                padding-right: 0;
+            }
+        }
+    }
 
-.table tr:last-child td {
-    border-bottom: none;
-}
+    th,
+    td {
+        font-weight: unset;
+        padding: 1rem;
+        border: none;
+        color: inherit;
+        font-size: 0.875em;
+        border-bottom: $border;
+        vertical-align: top;
+    }
 
-.table-responsive {
-    display: table;
+    th {
+        font-weight: 600;
+        vertical-align: top;
+
+        &:first-child {
+            padding-left: 0;
+        }
+
+        &:last-child {
+            padding-right: 0;
+        }
+    }
+
+
+
+    a {
+        color: inherit;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    thead {
+        th {
+            border-bottom: $border;
+        }
+    }
+
+    tfooter {}
+
+
+    table {
+        font-size: 100%;
+    }
 }
 
 /*==================================================================
@@ -276,7 +295,7 @@
     #{$start-direction}: 0;
     pointer-events: none;
     border-#{$start-direction}: 1px solid #f2f2f2;
-    
+
     border-#{$end-direction}: 1px solid #f2f2f2;
 }
 

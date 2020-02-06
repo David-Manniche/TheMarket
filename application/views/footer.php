@@ -15,17 +15,20 @@
 <?php if (!$isUserDashboard) { ?>
 <footer class="footer section pb-0 no-print" id="footer"  role="site-footer">
      
-        <div class="back-to-top">
-            <a href="#top">
-                <svg class="svg">
-                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#up-arrow" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#up-arrow"></use>
-                </svg></a>
-        </div>
+        
      
     <?php if ($controllerName == 'home' && $action == 'index') {
         $this->includeTemplate('_partial/footerTrustBanners.php');
     } ?>
     <div class="container">
+	<div class="back-to-top">
+            <a href="#top">
+                <svg class="svg">
+                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#up-arrow" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#up-arrow"></use>
+                </svg>
+				<span>Top</span>
+				</a>
+        </div>
         <div class="up-footer ">
             <div class="row">
                 <?php $this->includeTemplate('_partial/footerNavigation.php'); ?>

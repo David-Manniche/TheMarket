@@ -2,8 +2,8 @@
 <?php $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
  <div class="content-wrapper content-space">
-    <div class="content-header justify-content-between row mb-4">
-        <div class="content-header-left col-md-auto">
+    <div class="content-header row">
+        <div class="col">
             <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
             <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Downloads', $siteLangId); ?></h2>
         </div>

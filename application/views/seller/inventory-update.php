@@ -2,8 +2,8 @@
 $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
-        <div class="content-header row justify-content-between mb-3">
-            <div class="col-md-auto">
+        <div class="content-header row">
+            <div class="col">
                 <h2 class="content-header-title"><?php echo Labels::getLabel('Lbl_Update_Products_Inventory', $siteLangId);?></h2>
             </div>
         </div>

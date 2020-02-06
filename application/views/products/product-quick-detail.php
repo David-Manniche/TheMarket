@@ -155,19 +155,21 @@
         if (layoutDirection == 'rtl') {
             $('.js-product-gallery').slick({
                 dots: true,
-                arrows: true,
+                arrows: false,
                 autoplay: false,
                 pauseOnHover: false,
                 slidesToShow: 1,
+				draggable:true,
                 rtl: true,
             });
         } else {
             $('.js-product-gallery').slick({
                 dots: true,
-                arrows: true,
+                arrows: false,
                 autoplay: false,
                 pauseOnHover: false,
-                slidesToShow: 1,
+				slidesToShow: 1,
+				draggable:true,
             });
         }
 
