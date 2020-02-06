@@ -1005,6 +1005,22 @@ function quickDetail(selprod_id) {
 	}); */
 }
 
+function stylePhoneNumberFld() {
+    var input = document.querySelector("input[name='user_phone']");
+    var country = langLbl.defaultCountryCode;
+    if ('' == country) {
+        country = 'in';
+    }
+    var iti = window.intlTelInput(input, {
+        initialCountry:country,
+        utilsScript: "/yokartv8/intlTelInput/intlTelInput-utils.js"
+    });
+    input.value = "+" + iti.getSelectedCountryData().dialCode;
+    input.addEventListener('countrychange', function(e) {
+        input.value = "+" + iti.getSelectedCountryData().dialCode;
+    });
+}
+
 
 /* read more functionality [ */
 $(document).on('click', '.readMore', function () {

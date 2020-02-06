@@ -2,6 +2,7 @@
 	signUpWithPhone = function() {
         fcom.ajax(fcom.makeUrl( 'GuestUser', 'signUpWithPhone'), '', function(t) {
             $('#sign-up').html(t);
+            stylePhoneNumberFld();
 		});
     };
     

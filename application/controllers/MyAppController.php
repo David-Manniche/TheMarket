@@ -66,6 +66,8 @@ class MyAppController extends FatController
             $this->cartItemsCount = $cartObj->countProducts();
             $this->set('cartItemsCount', $this->cartItemsCount);
         }
+        $defultCountryId = FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 0);
+        $defaultCountryCode = Countries::getAttributesById($defultCountryId, 'country_code');
 
         $jsVariables = array(
         'confirmRemove' => Labels::getLabel('LBL_Do_you_want_to_remove', $this->siteLangId),
@@ -123,6 +125,7 @@ class MyAppController extends FatController
         'primaryLanguageField' => Labels::getLabel('LBL_PRIMARY_LANGUAGE_DATA_NEEDS_TO_BE_FILLED_FOR_SYSTEM_TO_TRANSLATE_TO_OTHER_LANGUAGES.', $this->siteLangId),
         'unknownPrimaryLanguageField' => Labels::getLabel('LBL_PRIMARY_LANGUAGE_FIELD_IS_NOT_SET.', $this->siteLangId),
         'invalidRequest' => Labels::getLabel('LBL_INVALID_REQUEST', $this->siteLangId),
+        'defaultCountryCode' => $defaultCountryCode,
         );
 
         $languages = Language::getAllNames(false);

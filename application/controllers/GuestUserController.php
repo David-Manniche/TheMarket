@@ -632,6 +632,7 @@ class GuestUserController extends MyAppController
 
     public function forgotPassword()
     {
+        CommonHelper::printArray($_POST, true);
         $withPhone = FatApp::getPostedData('withPhone', FatUtility::VAR_INT, 0);
         $frm = $this->getForgotForm($withPhone);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
@@ -1016,7 +1017,7 @@ class GuestUserController extends MyAppController
         $frm = new Form('frmPwdForgot');
         $frm->addHiddenField('', 'withPhone', $withPhone);
         if (1 > $withPhone) {
-            $frm->addTextBox(Labels::getLabel('LBL_Username_or_email', $this->siteLangId), 'user_email_username')->requirements()->setRequired();
+            $frm->addRequiredField(Labels::getLabel('LBL_Username_or_email', $this->siteLangId), 'user_email_username');
         } else {
             $frm->addRequiredField(Labels::getLabel('LBL_PHONE_NUMBER', $this->siteLangId), 'user_phone', '', array('placeholder' => Labels::getLabel('LBL_PHONE_NUMBER_(INCLUDING_COUNTRY_CODE)', $this->siteLangId)));
         }

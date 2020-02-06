@@ -28,61 +28,57 @@ if (0 < $withPhone) {
             <div class="row justify-content-center">
                 <div class="col-lg-6 <?php echo (empty($pageData)) ? '' : '';?>">
                     <div class="bg-gray rounded p-4">
-                        <div class="text-center">
-                            <div id="otpFom">
-                                <div class="section-head">
-                                    <div class="section__heading">
-                                        <p class="m-0">
-                                            <?php if (1 > $withPhone) {
-                                                echo Labels::getLabel('LBL_Forgot_Password_Msg', $siteLangId);
-                                            } else {
-                                                echo Labels::getLabel('LBL_RECOVER_PASSWORD_FORM_MSG', $siteLangId);
-                                            } ?>
-                                            <br>
-                                            <?php if (isset($smsPluginStatus)) {
-                                                    if (isset($withPhone) && 1 > $withPhone) { ?>
-                                                        <a href="javaScript:void(0)" onClick="forgotPwdForm(<?php echo applicationConstants::YES; ?>)">
-                                                            <?php echo Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $siteLangId); ?>
-                                                        </a>
-                                                    <?php } else { ?>
-                                                        <a href="javaScript:void(0)" onClick="forgotPwdForm(<?php echo applicationConstants::NO; ?>)">
-                                                            <?php echo Labels::getLabel('LBL_WITH_EMAIL_?', $siteLangId); ?>
-                                                        </a>
-                                                    <?php } ?>
-                                            <?php } ?>
-                                        </p>
-                                    </div>
+                        <div id="otpFom">
+                            <div class="section-head">
+                                <div class="section__heading">
+                                    <p class="m-0">
+                                        <?php if (1 > $withPhone) {
+                                            echo Labels::getLabel('LBL_Forgot_Password_Msg', $siteLangId);
+                                        } else {
+                                            echo Labels::getLabel('LBL_RECOVER_PASSWORD_FORM_MSG', $siteLangId);
+                                        } ?>
+                                        <?php if (isset($smsPluginStatus)) {
+                                                if (isset($withPhone) && 1 > $withPhone) { ?>
+                                                    <a href="javaScript:void(0)" onClick="forgotPwdForm(<?php echo applicationConstants::YES; ?>)">
+                                                        <?php echo Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $siteLangId); ?>
+                                                    </a>
+                                                <?php } else { ?>
+                                                    <a href="javaScript:void(0)" onClick="forgotPwdForm(<?php echo applicationConstants::NO; ?>)">
+                                                        <?php echo Labels::getLabel('LBL_WITH_EMAIL_?', $siteLangId); ?>
+                                                    </a>
+                                                <?php } ?>
+                                        <?php } ?>
+                                    </p>
                                 </div>
-                                <?php
-                                $frm->setFormTagAttribute('class', 'form form--normal');
-                                $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
-                                $frm->developerTags['fld_default_col'] = 12;
-                                
-                                $frm->setFormTagAttribute('id', 'frmPwdForgot');
-                                $frm->setFormTagAttribute('autocomplete', 'off');
-                                $frm->setValidatorJsObjectName('forgotValObj');
-                                $frm->setFormTagAttribute('action', CommonHelper::generateUrl('GuestUser', 'forgotPassword'));
-                                $btnFld = $frm->getField('btn_submit');
-                                $btnFld->setFieldTagAttribute('class', 'btn--block');
-                                if (1 > $withPhone) {
-                                    $frmFld = $frm->getField('user_email_username');
-                                    $frmFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_EMAIL_ADDRESS', $siteLangId));
-                                } else {
-                                    $frmFld = $frm->getField('user_phone');
-                                    $frmFld->htmlAfterField = '<span class="note">' . sprintf(Labels::getLabel('LBL_e.g._%s', $siteLangId), '+91XXXXXXXXXX') . '</span>';
-                                }
-                                $frmFld->developerTags['noCaptionTag'] = true;
-                                
-                                $frmFld = $frm->getField('btn_submit');
-                                $frmFld->developerTags['noCaptionTag'] = true;
-                                echo $frm->getFormHtml(); ?>
                             </div>
-                            <p class="text--dark"><?php echo Labels::getLabel('LBL_Back_to_login', $siteLangId);?>
-                                <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="link">
-                                    <?php echo Labels::getLabel('LBL_Click_Here', $siteLangId);?>
-                                </a>
-                            </p>
+                            <?php
+                            $frm->setFormTagAttribute('class', 'form form--normal');
+                            $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
+                            $frm->developerTags['fld_default_col'] = 12;
+                            
+                            $frm->setFormTagAttribute('id', 'frmPwdForgot');
+                            $frm->setFormTagAttribute('autocomplete', 'off');
+                            $frm->setValidatorJsObjectName('forgotValObj');
+                            $frm->setFormTagAttribute('action', CommonHelper::generateUrl('GuestUser', 'forgotPassword'));
+                            $btnFld = $frm->getField('btn_submit');
+                            $btnFld->setFieldTagAttribute('class', 'btn--block');
+                            if (1 > $withPhone) {
+                                $frmFld = $frm->getField('user_email_username');
+                                $frmFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_EMAIL_ADDRESS', $siteLangId));
+                            } else {
+                                $frmFld = $frm->getField('user_phone');
+                            }
+                            $frmFld->developerTags['noCaptionTag'] = true;
+                            
+                            $frmFld = $frm->getField('btn_submit');
+                            $frmFld->developerTags['noCaptionTag'] = true;
+                            echo $frm->getFormHtml(); ?>
                         </div>
+                        <p class="text--dark"><?php echo Labels::getLabel('LBL_Back_to_login', $siteLangId);?>
+                            <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="link">
+                                <?php echo Labels::getLabel('LBL_Click_Here', $siteLangId);?>
+                            </a>
+                        </p>
                     </div>
                     <?php if (!empty($pageData)) {
                         $this->includeTemplate('_partial/GuestUserRightPanel.php', $pageData, false);
