@@ -1017,7 +1017,9 @@ function stylePhoneNumberFld() {
     });
     input.value = "+" + iti.getSelectedCountryData().dialCode;
     input.addEventListener('countrychange', function(e) {
-        input.value = "+" + iti.getSelectedCountryData().dialCode;
+        if (typeof iti.getSelectedCountryData().dialCode !== 'undefined') {
+            input.value = "+" + iti.getSelectedCountryData().dialCode;
+        }
     });
 }
 

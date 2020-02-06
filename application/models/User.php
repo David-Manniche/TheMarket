@@ -111,6 +111,7 @@ class User extends MyAppModel
     public const DEVICE_OS_ANDROID = 1;
     public const DEVICE_OS_IOS = 2;
 
+    public const OTP_LENGTH = 6;
     public const OTP_AGE = 15; //IN MINUTES
 
     public function __construct($userId = 0)
@@ -1524,7 +1525,10 @@ class User extends MyAppModel
             $this->deletePhoneOtp($this->mainTableRecordId);
         }
 
-        $otp = mt_rand(100000, 999999);
+        $min = pow(10, self::OTP_LENGTH - 1) ;
+        $max = pow(10, self::OTP_LENGTH) - 1;
+        $otp = mt_rand($min, $max);
+
         $data = [
             static::DB_TBL_UPV_PREFIX . 'user_id' => $this->mainTableRecordId,
             static::DB_TBL_UPV_PREFIX . 'otp' => $otp,

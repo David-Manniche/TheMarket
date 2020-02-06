@@ -632,7 +632,6 @@ class GuestUserController extends MyAppController
 
     public function forgotPassword()
     {
-        CommonHelper::printArray($_POST, true);
         $withPhone = FatApp::getPostedData('withPhone', FatUtility::VAR_INT, 0);
         $frm = $this->getForgotForm($withPhone);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());

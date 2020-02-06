@@ -549,7 +549,10 @@ class MyAppController extends FatController
     {
         $frm = new Form('otpFrm');
         $frm->addHiddenField('', 'user_id');
-        $frm->addRequiredField(Labels::getLabel('LBL_OTP', $this->siteLangId), 'upv_otp');
+        $attr = ['maxlength' => 1, 'size' => 1];
+        for ($i = 0; $i < User::OTP_LENGTH; $i++) {
+            $frm->addRequiredField('', "upv_otp[$i]", '', $attr);
+        }
         
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SUBMIT', $this->siteLangId));
         return $frm;

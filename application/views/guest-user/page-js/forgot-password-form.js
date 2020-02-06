@@ -1,3 +1,9 @@
+$(document).on('keyup', 'input.otpVal', function(){
+    if ('' != $(this).val()) {
+        $(this).nextAll('input.otpVal:first').focus();  
+    }
+});
+
 (function() {
 	forgot = function(frm, v) {
 		v.validate();
