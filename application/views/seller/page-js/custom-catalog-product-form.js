@@ -833,6 +833,7 @@ $(document).on('change', '.language-js', function () {
 		fcom.ajax(fcom.makeUrl('Seller', 'updateCustomCatalogOption'), 'preq_id='+preq_id+'&option_id='+option_id, function(t) {
             var ans = $.parseJSON(t);
             if( ans.status == 1 ){
+                upcListing(preq_id); 
                 $.mbsmessage(ans.msg, true, 'alert--success');
             }
 		});
@@ -842,15 +843,30 @@ $(document).on('change', '.language-js', function () {
         fcom.ajax(fcom.makeUrl('Seller', 'removeCustomCatalogOption'), 'preq_id='+preq_id+'&option_id='+option_id, function(t) {
             var ans = $.parseJSON(t);
             if( ans.status == 1 ){
+                upcListing(preq_id); 
                 $.mbsmessage(ans.msg, true, 'alert--success');
             }
         });
 	};
-    
+
     removeProductTag = function( preq_id,tag_id){
         fcom.updateWithAjax(fcom.makeUrl('Seller', 'removeCustomCatalogTag'), 'preq_id='+preq_id+'&tag_id='+tag_id, function(t) {
         });
 	};
+    
+    upcListing = function (preq_id){
+        fcom.ajax(fcom.makeUrl('Seller', 'customEanUpcForm', [preq_id]), '', function(t) {
+            $("#upc-listing").html(t);
+        });
+    };
+    
+    updateUpc = function(preqId, optionValueId){
+        var code = $("input[name='code"+optionValueId+"']").val();
+        var data = {'code':code,'optionValueId':optionValueId};
+        fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupEanUpcCode',[preqId]), data, function(t) {
+        });
+    };
+    
 
 })();
 

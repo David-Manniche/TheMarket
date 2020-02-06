@@ -230,6 +230,24 @@ trait CustomCatalogProducts {
       $this->_template->render(false, false, 'json-success.php');
       } */
 
+    public function validateUpcCode() {
+        $post = FatApp::getPostedData();
+        if (empty($post) || $post['code'] == '') {
+            FatUtility::dieWithError(Labels::getLabel('MSG_Please_fill_UPC/EAN_code', $this->siteLangId));
+        }
+
+        $srch = UpcCode::getSearchObject();
+        $srch->addCondition('upc_code', '=', $post['code']);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $rs = $srch->getResultSet();
+        $totalRecords = FatApp::getDb()->totalRecords($rs);
+        if ($totalRecords > 0) {
+            FatUtility::dieWithError(Labels::getLabel('MSG_This_UPC/EAN_code_already_assigned_to_another_product', $this->siteLangId));
+        }
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
     public function customCatalogSellerProductForm($preqId = 0) {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
@@ -372,92 +390,6 @@ trait CustomCatalogProducts {
     }
 
     /* ] */
-
-    public function customEanUpcForm($preqId = 0) {
-        $this->canAddCustomCatalogProduct();
-        $preqId = FatUtility::int($preqId);
-        $upcCodeData = array();
-
-        /* Validate product request belongs to current logged seller[ */
-        if ($preqId) {
-            $productReqRow = ProductRequest::getAttributesById($preqId);
-            if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
-                FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            }
-            $prodcat_id = $productReqRow['preq_prodcat_id'];
-            $upcCodeData = json_decode($productReqRow['preq_ean_upc_code'], true);
-        }
-        /* ] */
-
-        $productOptions = ProductRequest::getProductReqOptions($preqId, $this->siteLangId, true);
-        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues');
-
-        $this->set('productOptions', $productOptions);
-        $this->set('optionCombinations', $optionCombinations);
-        $this->set('upcCodeData', $upcCodeData);
-        $this->set('preqId', $preqId);
-        $this->set('preqCatId', $prodcat_id);
-        $this->set('activeTab', 'CUSTOMEANUPC');
-        $this->set('languages', Language::getAllNames());
-        $this->_template->render(false, false);
-    }
-
-    public function validateUpcCode() {
-        $post = FatApp::getPostedData();
-        if (empty($post) || $post['code'] == '') {
-            FatUtility::dieWithError(Labels::getLabel('MSG_Please_fill_UPC/EAN_code', $this->siteLangId));
-        }
-
-        $srch = UpcCode::getSearchObject();
-        $srch->addCondition('upc_code', '=', $post['code']);
-        $srch->doNotCalculateRecords();
-        $srch->setPageSize(1);
-        $rs = $srch->getResultSet();
-        $totalRecords = FatApp::getDb()->totalRecords($rs);
-        if ($totalRecords > 0) {
-            FatUtility::dieWithError(Labels::getLabel('MSG_This_UPC/EAN_code_already_assigned_to_another_product', $this->siteLangId));
-        }
-        $this->_template->render(false, false, 'json-success.php');
-    }
-
-    public function setupEanUpcCode($preqId) {
-        $this->canAddCustomCatalogProduct();
-        $preqId = FatUtility::int($preqId);
-
-        /* Validate product request belongs to current logged seller[ */
-        if ($preqId) {
-            $productReqRow = ProductRequest::getAttributesById($preqId);
-            if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
-                FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            }
-            $prodcat_id = $productReqRow['preq_prodcat_id'];
-        }
-        /* ] */
-
-        $post = FatApp::getPostedData();
-        if (false === $post) {
-            FatUtility::dieWithError(Labels::getLabel('MSG_Please_fill_UPC/EAN_code', $this->siteLangId));
-        }
-
-        unset($post['btn_submit']);
-        unset($post['fOutMode']);
-        unset($post['fIsAjax']);
-        $prodReqObj = new ProductRequest($preqId);
-        $data = array(
-            'preq_ean_upc_code' => str_replace('code', '', FatUtility::convertToJson($post))
-        );
-
-        $prodReqObj->assignValues($data);
-
-        if (!$prodReqObj->save()) {
-            FatUtility::dieWithError($prodReqObj->getError());
-        }
-
-        $preq_id = $prodReqObj->getMainTableRecordId();
-        $this->set('msg', Labels::getLabel('LBL_Setup_Successful', $this->siteLangId));
-        $this->set('preq_id', $preq_id);
-        $this->_template->render(false, false, 'json-success.php');
-    }
 
     public function setUpCustomSellerProduct() {
         $this->canAddCustomCatalogProduct();
@@ -1294,6 +1226,7 @@ trait CustomCatalogProducts {
             $specifications = json_decode($productReqRow['preq_specifications'], true);
             $prodSpecData['prod_spec_name'] = $specifications['prod_spec_name'][$langId][$key];
             $prodSpecData['prod_spec_value'] = $specifications['prod_spec_value'][$langId][$key];
+            $prodSpecData['prod_spec_group'] = isset($specifications['prod_spec_group'][$langId][$key]) ? $specifications['prod_spec_group'][$langId][$key] : '';
             $prodSpecData['key'] = $key;
         }
         $this->set('langId', $langId);
@@ -1339,8 +1272,10 @@ trait CustomCatalogProducts {
         $prodReqSpecification = json_decode($prodReqData['preq_specifications'], true);
         unset($prodReqSpecification['prod_spec_name'][$langId][$key]);
         unset($prodReqSpecification['prod_spec_value'][$langId][$key]);
+        unset($prodReqSpecification['prod_spec_group'][$langId][$key]);
         $prodReqSpecification['prod_spec_name'][$langId] = array_values($prodReqSpecification['prod_spec_name'][$langId]);
         $prodReqSpecification['prod_spec_value'][$langId] = array_values($prodReqSpecification['prod_spec_value'][$langId]);
+        $prodReqSpecification['prod_spec_group'][$langId] = array_values($prodReqSpecification['prod_spec_group'][$langId]);
 
         $data['preq_specifications'] = FatUtility::convertToJson($prodReqSpecification);
         $prodReq = new ProductRequest($preqId);
@@ -1366,6 +1301,7 @@ trait CustomCatalogProducts {
         $key = FatApp::getPostedData('key', FatUtility::VAR_INT, -1);
         $prodSpecName = FatApp::getPostedData('prodspec_name', FatUtility::VAR_STRING, '');
         $prodSpecValue = FatApp::getPostedData('prodspec_value', FatUtility::VAR_STRING, '');
+        $prodSpecGroup = FatApp::getPostedData('prodspec_group', FatUtility::VAR_STRING, '');
         if ($langId < 1 || empty($prodSpecName) || empty($prodSpecValue)) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
@@ -1375,9 +1311,11 @@ trait CustomCatalogProducts {
         if ($key >= 0) {
             $prodReqSpecification['prod_spec_name'][$langId][$key] = $prodSpecName;
             $prodReqSpecification['prod_spec_value'][$langId][$key] = $prodSpecValue;
+            $prodReqSpecification['prod_spec_group'][$langId][$key] = $prodSpecGroup;
         } else {
             $prodReqSpecification['prod_spec_name'][$langId][] = $prodSpecName;
             $prodReqSpecification['prod_spec_value'][$langId][] = $prodSpecValue;
+            $prodReqSpecification['prod_spec_group'][$langId][] = $prodSpecGroup;
         }
 
         $data['preq_specifications'] = FatUtility::convertToJson($prodReqSpecification);
@@ -1456,7 +1394,7 @@ trait CustomCatalogProducts {
         $preqContent = $productReqRow['preq_content'];
         $preqContentData = json_decode($preqContent, true);
         $productOptions = array();
-        if (isset($preqContentData['product_option'])) {
+        if (!empty($preqContentData['product_option'])) {
             $srch = Option::getSearchObject($this->siteLangId);
             $srch->addMultipleFields(array('option_id, option_name, option_identifier'));
             $srch->addCondition('option_id', 'IN', $preqContentData['product_option']);
@@ -1465,7 +1403,7 @@ trait CustomCatalogProducts {
             $productOptions = FatApp::getDb()->fetchAll($rs);
         }
         $productTags = array();
-        if (isset($preqContentData['product_tags'])) {
+        if (!empty($preqContentData['product_tags'])) {
             $srch = Tag::getSearchObject();
             $srch->addOrder('tag_identifier');
             $srch->joinTable(
@@ -1595,6 +1533,63 @@ trait CustomCatalogProducts {
             FatUtility::dieWithError(Message::getHtml());
         }
         $this->set('msg', Labels::getLabel('LBL_Tag_removed_successfully', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function customEanUpcForm($preqId) {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatUtility::int($preqId);
+        $productReqRow = ProductRequest::getAttributesById($preqId);
+        if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
+            FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+        }
+        $upcCodeData = array();
+        if(!empty($productReqRow['preq_ean_upc_code'])){
+            $upcCodeData = json_decode($productReqRow['preq_ean_upc_code'], true);
+        }     
+        $optionCombinations = array();
+        $productOptions = ProductRequest::getProductReqOptions($preqId, $this->siteLangId, true);
+        if(!empty($productOptions)){
+            $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues');
+        }
+        $this->set('upcCodeData', $upcCodeData);
+        $this->set('optionCombinations', $optionCombinations);
+        $this->set('preqId', $preqId);
+        $this->_template->render(false, false);
+    }
+
+    public function setupEanUpcCode($preqId) {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatUtility::int($preqId);
+        $prodReqData = ProductRequest::getAttributesById($preqId);
+        if ($prodReqData['preq_user_id'] != UserAuthentication::getLoggedUserId() || $prodReqData['preq_status'] != ProductRequest::STATUS_PENDING) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $optionValueId = FatApp::getPostedData('optionValueId', FatUtility::VAR_INT, 0);
+        if( $optionValueId < 1 ){
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $code = FatApp::getPostedData('code', FatUtility::VAR_STRING, '');        
+        if(empty($code)){
+            Message::addErrorMessage(Labels::getLabel('MSG_Please_fill_UPC/EAN_code', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        $productUpcData = array();
+        if(!empty($prodReqData['preq_ean_upc_code'])){
+             $productUpcData = json_decode($prodReqData['preq_ean_upc_code'], true);
+        }   
+        $productUpcData[$optionValueId] = $code;
+        $data['preq_ean_upc_code'] = FatUtility::convertToJson($productUpcData);
+        $prodReq = new ProductRequest($preqId);
+        $prodReq->assignValues($data);
+        if (!$prodReq->save()) {
+            Message::addErrorMessage($prodReq->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $this->set('msg', Labels::getLabel('LBL_ean/upc_code_added_successfully', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 

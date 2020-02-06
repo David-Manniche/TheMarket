@@ -28,9 +28,9 @@ $layout = Language::getLayoutDirection($langId);
                 <div class="field-wraper">
                     <div class="field_cover">
                         <input type="text" name="prodspec_value[<?php echo $langId; ?>]" value="<?php
-                               if (!empty($prodSpecData)) {
-                                   echo $prodSpecData['prod_spec_value'];
-                               }
+                        if (!empty($prodSpecData)) {
+                            echo $prodSpecData['prod_spec_value'];
+                        }
                         ?>">
                     </div>
                 </div>
@@ -43,7 +43,11 @@ $layout = Language::getLayoutDirection($langId);
                 </div>
                 <div class="field-wraper">
                     <div class="field_cover">
-                        <input type="text" class="prodspec_group" name="prodspec_group[<?php echo $langId; ?>]" value="">
+                        <input type="text" class="prodspec_group" name="prodspec_group[<?php echo $langId; ?>]" value="<?php
+                        if (!empty($prodSpecData)) {
+                            echo $prodSpecData['prod_spec_group'];
+                        }
+                        ?>">
                     </div>
                 </div>
             </div>
@@ -54,10 +58,10 @@ $layout = Language::getLayoutDirection($langId);
                 <div class="field-wraper">
                     <div class="field_cover">
                         <button type="button" class="btn btn-primary" onClick="saveSpecification(<?php echo $langId; ?>, <?php
-                               if (!empty($prodSpecData)) {
-                                   echo $prodSpecData['key'];
-                               }
-                        ?>)"><?php echo Labels::getLabel('LBL_Add', $siteLangId) ?></button></div>
+                                if (!empty($prodSpecData)) {
+                                    echo $prodSpecData['key'];
+                                }
+                                ?>)"><?php echo Labels::getLabel('LBL_Add', $siteLangId) ?></button></div>
                 </div>
             </div>
         </div>

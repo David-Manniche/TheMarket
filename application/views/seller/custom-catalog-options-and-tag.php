@@ -60,7 +60,7 @@
                     <div class="field-wraper">
                         <div class="field_cover">
                             <input type="hidden" name="preq_id" value="<?php echo $preqId; ?>">
-                            <input type="button" class="btn btn-primary" onClick= <?php if ($productType == Product::PRODUCT_TYPE_DIGITAL) { ?> "productMedia(<?php echo $productId; ?>)" <?php } else { ?> "productShipping(<?php echo $preqId; ?>)" <?php } ?> value="<?php echo Labels::getLabel('LBL_Save_And_Next', $siteLangId); ?>">
+                            <input type="button" class="btn btn-primary" onClick= <?php if ($productType == Product::PRODUCT_TYPE_DIGITAL) { ?> "productMedia(<?php echo $productId; ?>)" <?php } else { ?> "productShipping(<?php echo $preqId; ?>)" <?php } ?> value="<?php echo Labels::getLabel('LBL_Next', $siteLangId); ?>">
                         </div>
                     </div>
                 </div>
@@ -73,7 +73,9 @@
 
     $("document").ready(function () {
         var preq_id = '<?php echo $preqId; ?>';
-
+        
+       upcListing(preq_id);
+        
         addTagData = function (e) {
             var tag_id = e.detail.tag.id;
             var tag_name = e.detail.tag.title;
