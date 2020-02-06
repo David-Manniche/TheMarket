@@ -1,4 +1,5 @@
-<?php class BlogController extends MyAppController
+<?php 
+class BlogController extends MyAppController
 {
     public function __construct($action = '')
     {
@@ -21,9 +22,9 @@
         $className = ucwords(implode(' ', $arr));
 
         if ($action == 'index') {
-            $nodes[] = array('title'=>$className);
+            $nodes[] = array('title' => $className);
         } else {
-            $nodes[] = array('title'=>$className, 'href'=>CommonHelper::generateUrl($urlController));
+            $nodes[] = array('title' => $className, 'href' => CommonHelper::generateUrl($urlController));
         }
         $parameters = FatApp::getParameters();
 
@@ -33,16 +34,16 @@
                 $id = FatUtility::int($id);
                 $data = BlogPostCategory::getAttributesByLangId($this->siteLangId, $id);
                 $title = $data['bpcategory_name'];
-                $nodes[] = array('title'=>$title);
+                $nodes[] = array('title' => $title);
             } elseif ($action == 'postDetail') {
                 $id = reset($parameters);
                 $id = FatUtility::int($id);
                 $data = BlogPost::getAttributesByLangId($this->siteLangId, $id);
                 $title = CommonHelper::truncateCharacters($data['post_title'], 40);
-                $nodes[] = array('title'=>$title);
+                $nodes[] = array('title' => $title);
             }
         } elseif ($action == 'contributionForm' || $action == 'setupContribution') {
-            $nodes[] = array('title'=>Labels::getLabel('Lbl_Contribution', $this->siteLangId));
+            $nodes[] = array('title' => Labels::getLabel('Lbl_Contribution', $this->siteLangId));
         }
 
         return $nodes;
@@ -253,6 +254,7 @@
             'title' => $title,
             'description' => $post_description,
             'image' => $postImageUrl,
+            'blogLink' => CommonHelper::generateFullUrl('Blog', 'postDetail', array($blogPostData['post_id']))
         );
 
         /* View Count functionality [ */
@@ -514,8 +516,8 @@
 
         $frm->addFileUpload(Labels::getLabel('LBL_Upload_File', $this->siteLangId), 'file')->requirements()->setRequired(true);
         
-		CommonHelper::addCaptchaField($frm);
-		
+        CommonHelper::addCaptchaField($frm);
+        
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('BTN_SUBMIT', $this->siteLangId));
         return $frm;
     }
