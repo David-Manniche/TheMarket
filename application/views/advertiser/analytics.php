@@ -2,8 +2,8 @@
 <?php $this->includeTemplate('_partial/advertiser/advertiserDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
  <div class="content-wrapper content-space">
-	<div class="content-header justify-content-between row mb-4">
-		<div class="content-header-left col-md-auto">
+	<div class="content-header row">
+		<div class="col">
 			<?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
 			<h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Promotion_Analytics',$siteLangId);?></h2>
 		</div>
@@ -12,7 +12,7 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="cards">
-					<div class="cards-header p-4">
+					<div class="cards-header">
 						<h5 class="cards-title "><?php echo ucfirst($promotionDetails['promotion_name']);?></h5>
 						<div class="btn-group">
 							<a href="<?php echo CommonHelper::generateUrl('advertiser','promotions');?>" class="btn btn--primary btn--sm"><?php echo Labels::getLabel('LBL_My_promotions',$siteLangId);?></a>

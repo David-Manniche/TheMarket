@@ -1,12 +1,12 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?> <?php $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?> <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
-        <div class="content-header justify-content-between row mb-4">
-            <div class="content-header-left col-md-auto"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_My_Offers', $siteLangId); ?></h2>
+        <div class="content-header row">
+            <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_My_Offers', $siteLangId); ?></h2>
             </div>
         </div>
         <div class="content-body">
             <div class="cards">
-                <!-- <div class="cards-header p-4">
+                <!-- <div class="cards-header">
                     <h5 class="cards-title"><?php echo Labels::getLabel('LBL_My_Offers', $siteLangId); ?></h5>
                 </div> -->
                 <div class="cards-content p-4">

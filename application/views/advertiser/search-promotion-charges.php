@@ -9,7 +9,7 @@ $arr_flds = array(
     );
 $tbl = new HtmlElement(
     'table',
-    array('width'=>'100%', 'class'=>'table table--orders table-responsive','id'=>'promotions')
+    array('width'=>'100%', 'class'=>'table','id'=>'promotions')
 );
 
 $th = $tbl->appendElement('thead')->appendElement('tr');

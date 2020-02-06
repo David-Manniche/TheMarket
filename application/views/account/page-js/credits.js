@@ -19,9 +19,10 @@ $(document).ready(function(){
 
 	creditsInfo = function(){
 		var div = '#credits-info';
-		$(div).html( fcom.getLoader() );
+		//$(div).html( fcom.getLoader() );      
 		fcom.ajax(fcom.makeUrl('Account','creditsInfo'), '', function(res){
-			$(div).html(res);
+			//$(div).html(res);
+            $(div).before(res);
 		});
 	};
 

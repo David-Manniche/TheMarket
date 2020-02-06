@@ -9,6 +9,13 @@
 
         }
     }
+    
+    @include media-breakpoint-down(lg) {
+        & {
+            overflow: hidden;
+
+        }
+    }
 
     .slick-list {
         @include media-breakpoint-up(xl) {

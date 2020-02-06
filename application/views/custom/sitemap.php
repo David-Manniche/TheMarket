@@ -19,15 +19,14 @@
 	<section class="section">
 		<div class="container">
 			<div class="row">
-				<div class="col-lg-12 ">
-					
-						<div class="sitemapcontainer">
+				<div class="col-lg-12 ">					
+						<div class="cg-main">
 							<?php  if(!empty($contentPages)){ ?>
-							<h2>
+							<h6 class="big-title">
 								<?php echo Labels::getLabel('LBL_CONTENT_PAGES',$siteLangId);?>
-							</h2>
+							</h6>
 							 
-								<div class="site-map-list">
+								<div class="item">
 									<ul>
 										<?php
                         foreach($contentPages as $contentId=> $contentPageName){
@@ -46,11 +45,11 @@
 			if($categoriesArr){
 			?>
 
-							<h2>
+							<h6 class="big-title">
 								<?php echo Labels::getLabel('LBL_Categories', $siteLangId);?>
-							</h2>
+							</h6>
 						 
-								<div class="site-map-list">
+								<div class="item">
 									<?php $this->includeTemplate('_partial/custom/categories-list.php',array('categoriesArr'=>$categoriesArr),false);?>
 
 								</div>
@@ -61,11 +60,11 @@
 			}
 			if(!empty($allShops)){ ?>
 
-							<h2>
+							<h6 class="big-title">
 								<?php echo Labels::getLabel('LBL_Shops',$siteLangId);?>
-							</h2>
+							</h6>
 							 
-								<div class="site-map-list">
+								<div class="item ">
 									<ul>
 										<?php foreach($allShops as $shop){
 					?>
@@ -84,11 +83,11 @@
 				
 			if(!empty($allBrands)){ ?>
 
-							<h2>
+							<h6 class="big-title">
 								<?php echo Labels::getLabel('LBL_Brands',$siteLangId);?>
-							</h2>
+							</h6>
 							 
-								<div class="site-map-list">
+								<div class="item ">
 									<ul>
 										<?php foreach($allBrands as $brands){
 					?>

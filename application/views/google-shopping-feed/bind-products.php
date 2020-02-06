@@ -4,8 +4,8 @@ $this->includeTemplate('_partial/dashboardNavigation.php');?>
 <main id="main-area" class="main" role="main">
     <input type='hidden' name='adsBatchId' value="<?php echo $adsBatchId; ?>">
     <div class="content-wrapper content-space">
-        <div class="content-header row justify-content-between mb-3">
-            <div class="col-md-auto">
+        <div class="content-header row">
+            <div class="col">
                 <h2 class="content-header-title">
                     <?php
                         $batchName = AdsBatch::getAttributesById($adsBatchId, 'adsbatch_name');
@@ -15,7 +15,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php');?>
                 </h2>
             </div>
             <div class="col-auto">
-                <div class="action btn-group-scroll">
+                <div class="btn-group">
                     <a href="javascript:void(0)" onclick="window.history.back();" class="btn btn--primary btn--sm"><?php echo Labels::getLabel('LBL_BACK', $siteLangId);?></a>
                 </div>
             </div>
@@ -38,7 +38,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php');?>
                                 <div class="col-auto"></div>
                                  <div class="col-auto">
                                     <div class="action">
-                                        <a class="btn btn--primary-border btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_UNLINK', $siteLangId); ?>" onclick="unlinkproducts(<?php echo $adsBatchId; ?>)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_UNLINK', $siteLangId); ?></a>
+                                        <a class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_UNLINK', $siteLangId); ?>" onclick="unlinkproducts(<?php echo $adsBatchId; ?>)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_UNLINK', $siteLangId); ?></a>
                                     </div>
                                 </div>
                             </div>

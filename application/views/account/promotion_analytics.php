@@ -30,15 +30,15 @@ $cancelBtnFld->developerTags['col'] = 3;
 <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
  <div class="content-wrapper content-space">
-	<div class="content-header row justify-content-between mb-3">
-		<div class="col-md-auto">
+	<div class="content-header row">
+		<div class="col">
 			<?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
 			<h2 class="content-header-title"><?php echo Labels::getLabel('LBL_My_Promotions',$siteLangId) ?></h2>
 		</div>
 	</div>
 	<div class="content-body">
 		<div class="cards">
-			<div class="cards-header p-4">
+			<div class="cards-header">
 				<h5 class="cards-title"><?php echo Labels::getLabel('LBL_Promotion_Analytics',$siteLangId); ?></h5>
 				<div class="padding20 fr">  <a href="<?php echo CommonHelper::generateUrl('account', 'promote')?>" class="btn small ">&laquo;&laquo; <?php echo Labels::getLabel('LBL_Back_To_Promotions',$siteLangId) ?></a></div>
 			</div>

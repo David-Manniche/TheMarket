@@ -2,7 +2,7 @@
 $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
-        <div class="content-header">
+        <div class="content-header row">
             <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
             <?php $this->includeTemplate('_partial/productPagesTabs.php', array('siteLangId'=>$siteLangId,'controllerName'=>$controllerName,'action'=>$action), false); ?>
         </div>

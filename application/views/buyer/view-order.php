@@ -22,12 +22,12 @@ if (true == $primaryOrder) {
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
         <?php if (!$print) { ?>
-        <div class="content-header row justify-content-between mb-3">
-            <div class="col-md-auto"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
+        <div class="content-header row">
+            <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
                 <h2 class="content-header-title no-print"><?php echo Labels::getLabel('LBL_Order_Details', $siteLangId); ?></h2>
             </div>
             <?php if (true == $primaryOrder) { ?>
-            <div class="col-md-auto">
+            <div class="col-auto">
                 <div class="btn-group">
                     <?php if (!$print) { ?>
                     <ul class="actions no-print">
@@ -58,7 +58,7 @@ if (true == $primaryOrder) {
         <?php } ?>
         <div class="content-body">
             <div class="cards">
-                <div class="cards-header p-4">
+                <div class="cards-header">
                     <h5 class="cards-title"> <?php echo Labels::getLabel('LBL_Order_Details', $siteLangId);?> </h5>
                     <?php if (!$print) { ?>
                     <div class="action">

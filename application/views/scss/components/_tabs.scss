@@ -1,11 +1,10 @@
-
- 
 .tabs {
+    font-family: $family-primary;
     margin: 0 auto;
     display: block;
     text-align: center;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -14,6 +13,7 @@
     overflow-x: auto;
     overflow-y: hidden;
     width: 100%;
+    color: lighten($body-color, 20%);
 
     ul {
         display: -webkit-box;
@@ -22,29 +22,26 @@
 
         li {
             display: inline-block;
-            color: $body-color;
-            
-            
             margin-#{$end-direction}: 2.5rem;
             position: relative;
             white-space: nowrap;
-            /*text-transform: uppercase;*/
             font-weight: 400;
             font-size: 0.95em;
 
             &:first-child {
-                -webkit-margin-start: 0;
-                -moz-margin-start: 0;
                 margin-#{$start-direction}: 0;
-                -webkit-padding-start: 0;
-                -moz-padding-start: 0;
                 padding-#{$start-direction}: 0;
+            }
+
+            &:last-child {
+                margin-#{$end-direction}: 0;
+                padding-#{$end-direction}: 0;
             }
 
             &:after {
                 content: "";
-                bottom: -1px;
-                background: $brand-color;
+                bottom: 0;
+                background: $body-color;
                 height: 1px;
                 position: absolute;
                 z-index: 9;
@@ -62,10 +59,15 @@
                 color: inherit;
                 display: inline-block;
                 vertical-align: top;
-                padding: 10px 0;
+                padding: 5px 0;
             }
 
             &.is-active {
+
+                a {
+                    color: $brand-color;
+                }
+
                 &:after {
                     content: "";
                     position: absolute;

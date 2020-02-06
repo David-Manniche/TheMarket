@@ -60,7 +60,7 @@
                 <?php echo Labels::getLabel('LBL_Please_add_addresss_where_you_want_to_ship_your_product', $siteLangId);?>
             <?php }  ?>
         </p>
-        <a onClick="showAddressFormDiv();" name="addNewAddress" class="btn btn-outline-primary ripplelink"> <?php echo Labels::getLabel('LBL_Add_New_Address', $siteLangId);?> </a>
+        <a onClick="showAddressFormDiv();" name="addNewAddress" class="btn btn-outline-primary ripplelink" href="javascript:void(0)"> <?php echo Labels::getLabel('LBL_Add_New_Address', $siteLangId);?> </a>
     </div>
 </div>
 

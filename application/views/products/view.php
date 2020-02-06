@@ -7,7 +7,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
 <div id="body" class="body detail-page" role="main">
     <section class="">
         <div class="container">
-            <div class="section">
+            <div class="py-4">
                 <div class="breadcrumbs breadcrumbs--center">
                     <?php  $this->includeTemplate('_partial/custom/header-breadcrumb.php');  ?>
                 </div>

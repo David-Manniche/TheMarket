@@ -202,13 +202,11 @@
     }
 }
 
-
-
-
-
-
-
-
+.table-shipping {
+    .shipping-select {
+        min-width: 200px;
+    }
+}
 
 .checkout--steps {
     background: #fff;
@@ -618,8 +616,8 @@
 
 .summary-listing .product_qty .qty-wrapper {
     height: 26px;
-    
-    
+
+
     margin-#{$end-direction}: 5px;
 }
 
@@ -672,7 +670,7 @@
 
 .gurantee i.icn {
     float: left;
-    
+
     margin-#{$end-direction}: 15px;
 }
 
@@ -818,6 +816,12 @@
     background-color: #fff;
     border-radius: 4px;
     margin-top: 63px;
+
+    @include media-breakpoint-down(sm) {
+        & {
+            margin-top: 0;
+        }
+    }
 }
 
 .order-summary .divider {
@@ -897,8 +901,8 @@
 .tabz--checkout-login .icn svg {
     width: 14px;
     height: 14px;
-    
-    
+
+
     margin-#{$end-direction}: 5px;
     fill: $brand-color;
 }
@@ -966,28 +970,46 @@
     display: -ms-flexbox;
     display: flex;
     padding: 20px 0 0;
+
+    @include media-breakpoint-down(sm) {
+        & {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+
+    .txt-where {
+        font-size: 0.875rem;
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 25%;
+        flex: 0 0 25%;
+        margin: 10px 0;
+    }
+
+    .same-delivery {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 35%;
+        flex: 0 0 35%;
+        border-#{$end-direction}: $border;
+
+        @include media-breakpoint-down(sm) {
+            & {
+                border: none;
+            }
+        }
+
+        h3 {
+            font-weight: 400;
+            font-size: 1.5rem;
+        }
+    }
 }
 
-.txt-where {
-    font-size: 0.875rem;
-    -webkit-box-flex: 0;
-    -ms-flex: 0 0 25%;
-    flex: 0 0 25%;
-    margin: 10px 0;
-}
 
-.same-delivery {
-    -webkit-box-flex: 0;
-    -ms-flex: 0 0 35%;
-    flex: 0 0 35%;
-    
-    border-#{$end-direction}: $border;
-}
 
-.same-delivery h3 {
-    font-weight: 400;
-    font-size: 1.5rem;
-}
+
+
+
 
 .form--singlefield {
     display: -webkit-box;
@@ -999,8 +1021,8 @@
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
-    
-    
+
+
     margin-#{$end-direction}: 5px;
 }
 
@@ -1047,7 +1069,7 @@
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
-    
+
     padding-#{$end-direction}: 1rem;
 }
 
@@ -1057,8 +1079,6 @@
 
 .shipping-seller-title {
     font-weight: 600;
-    color: #000;
-    opacity: 0.3;
     font-size: 0.8rem;
     text-transform: uppercase;
 }

@@ -2,15 +2,15 @@
 <?php $this->includeTemplate('_partial/advertiser/advertiserDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
  <div class="content-wrapper content-space">
-    <div class="content-header justify-content-between row mb-4">
-        <div class="content-header-left col-md-auto">
+    <div class="content-header row">
+        <div class="col">
             <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
             <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Promotions', $siteLangId);?></h2>
         </div>
-        <div class="content-header-right col-auto">
+        <div class="content-header-right btn-group col-auto">
             <div class="">
-                <a href="javascript:void(0)" onClick="promotionForm()" class="btn btn--primary"><?php echo Labels::getLabel('LBL_Add_Promotion', $siteLangId);?></a>
-                <a href="javascript:void(0)" onClick="reloadList()" class="btn btn-outline-primary"><?php echo Labels::getLabel('LBL_My_promotions', $siteLangId);?></a>
+                <a href="javascript:void(0)" onClick="promotionForm()" class="btn btn--primary btn-sm"><?php echo Labels::getLabel('LBL_Add_Promotion', $siteLangId);?></a>
+                <a href="javascript:void(0)" onClick="reloadList()" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_My_promotions', $siteLangId);?></a>
             </div>
         </div>
     </div>
@@ -18,7 +18,7 @@
         <div class="row mb-4">
             <div class="col-md-12">
                 <div class="cards">
-                    <div class="cards-header p-4">
+                    <div class="cards-header">
                         <!-- <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Promotions', $siteLangId);?></h5> -->
                         <p class="note"><?php echo Labels::getLabel('MSG_Minimum_balance_Required_For_Promotions', $siteLangId).' : '. CommonHelper::displaymoneyformat(FatApp::getConfig('CONF_PPC_MIN_WALLET_BALANCE'));?></p>
                     </div>

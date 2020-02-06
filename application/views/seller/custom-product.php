@@ -24,7 +24,7 @@ $cancelBtnFld->developerTags['col'] = 2;
 <?php $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
 	<div class="content-wrapper content-space">
-		<div class="content-header row justify-content-between mb-3">
+		<div class="content-header row">
 			<div class="col-md-auto">
 				<?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
 				<h2 class="content-header-title"><?php echo Labels::getLabel('LBL_My_Product',$siteLangId); ?></h2>
@@ -32,7 +32,7 @@ $cancelBtnFld->developerTags['col'] = 2;
 		</div>
 		<div class="content-body">
 			<div class="cards">
-				<div class="cards-header p-4">
+				<div class="cards-header">
 					<h5 class="cards-title"><?php echo Labels::getLabel('LBL_My_Products_list',$siteLangId); ?></h5>
 					<div class="action">
 						<div class="">
