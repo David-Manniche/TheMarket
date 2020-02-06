@@ -202,6 +202,10 @@ $(document).on('change','.language-js',function(){
 		});
 	}
 
+	sellerProducts = function(product_id) {
+		window.location.href = fcom.makeUrl('Seller' ,'Products' , [product_id]);
+	}
+
 	shippingautocomplete = function(shipping_row) {
 		$('input[name="product_shipping[' + shipping_row + '][country_name]"]').focusout(function() {
 			    setTimeout(function(){ $('.suggestions').hide(); }, 500);

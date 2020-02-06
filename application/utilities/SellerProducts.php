@@ -1,13 +1,13 @@
 <?php
 trait SellerProducts
 {
-    protected function getSellerProductSearchForm()
+    protected function getSellerProductSearchForm($product_id)
     {
         $frm = new Form('frmSearch');
         $frm->addTextBox('', 'keyword', '', array('id'=>'keyword'));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->siteLangId));
         $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $this->siteLangId), array('onclick'=>'clearSearch();'));
-        $frm->addHiddenField('product_id', 'product_id');
+        $frm->addHiddenField('product_id', 'product_id', $product_id);
         $frm->addHiddenField('page', 'page', 1);
         return $frm;
     }
@@ -21,7 +21,7 @@ trait SellerProducts
 
         $product_id = FatUtility::int($product_id);
 
-        $this->set('frmSearch', $this->getSellerProductSearchForm());
+        $this->set('frmSearch', $this->getSellerProductSearchForm($product_id));
         $this->set('product_id', $product_id);
         $this->_template->render(true, true);
     }
@@ -32,7 +32,6 @@ trait SellerProducts
         if ($product_id) {
             $row = Product::getAttributesById($product_id, array('product_id'));
             if (!$row) {
-                Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
             }
         }
@@ -45,6 +44,7 @@ trait SellerProducts
             'selprod_id', 'selprod_user_id', 'selprod_price', 'selprod_stock', 'selprod_track_inventory', 'selprod_threshold_stock_level', 'selprod_product_id', 'selprod_active', 'selprod_available_from', 'IFNULL(product_name, product_identifier) as product_name', 'selprod_title')
         );
         if ($product_id) {
+            $srch->addCondition('selprod_product_id', '=', $product_id);
             $srch->doNotCalculateRecords();
             $srch->doNotLimitRecords();
         } else {
