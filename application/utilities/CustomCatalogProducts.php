@@ -1132,30 +1132,13 @@ trait CustomCatalogProducts {
             Message::addErrorMessage($prodReq->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-
-        /*foreach ($prodName as $langId => $value) {
-            $langData = array(
-                'product_name' => $value,
-                'product_description' => $prodDesc[$langId],
-                'product_youtube_video' => $prodYouTubeUrl[$langId],
-            );
-            $dataForUpdate = array(
-                'preqlang_preq_id' => $preqId,
-                'preqlang_lang_id' => $langId,
-                'preq_lang_data' => FatUtility::convertToJson($langData),
-            );
-            if (!$prodReq->updateLangData($langId, $dataForUpdate)) {
-                Message::addErrorMessage($prodReq->getError());
-                FatUtility::dieWithError(Message::getHtml());
-            }
-        } */
         
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
-        if(!$prodReq->saveProductRequestLangData( $siteDefaultLangId, $autoUpdateOtherLangsData, $prodName, $prodDesc, $prodYouTubeUrl )){
+        if (!$prodReq->saveProductRequestLangData($siteDefaultLangId, $autoUpdateOtherLangsData, $prodName, $prodDesc, $prodYouTubeUrl)) {
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->siteLangId));
         $this->set('preqId', $prodReq->getMainTableRecordId());
         $this->set('productType', $post['product_type']);
@@ -1550,12 +1533,12 @@ trait CustomCatalogProducts {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
         $upcCodeData = array();
-        if(!empty($productReqRow['preq_ean_upc_code'])){
+        if (!empty($productReqRow['preq_ean_upc_code'])) {
             $upcCodeData = json_decode($productReqRow['preq_ean_upc_code'], true);
-        }     
+        }
         $optionCombinations = array();
         $productOptions = ProductRequest::getProductReqOptions($preqId, $this->siteLangId, true);
-        if(!empty($productOptions)){
+        if (!empty($productOptions)) {
             $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues');
         }
         $this->set('upcCodeData', $upcCodeData);
@@ -1573,20 +1556,20 @@ trait CustomCatalogProducts {
             FatUtility::dieWithError(Message::getHtml());
         }
         $optionValueId = FatApp::getPostedData('optionValueId', FatUtility::VAR_INT, 0);
-        if( $optionValueId < 1 ){
+        if ($optionValueId < 1) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        $code = FatApp::getPostedData('code', FatUtility::VAR_STRING, '');        
-        if(empty($code)){
+        $code = FatApp::getPostedData('code', FatUtility::VAR_STRING, '');
+        if (empty($code)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_fill_UPC/EAN_code', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         $productUpcData = array();
-        if(!empty($prodReqData['preq_ean_upc_code'])){
-             $productUpcData = json_decode($prodReqData['preq_ean_upc_code'], true);
-        }   
+        if (!empty($prodReqData['preq_ean_upc_code'])) {
+            $productUpcData = json_decode($prodReqData['preq_ean_upc_code'], true);
+        }
         $productUpcData[$optionValueId] = $code;
         $data['preq_ean_upc_code'] = FatUtility::convertToJson($productUpcData);
         $prodReq = new ProductRequest($preqId);

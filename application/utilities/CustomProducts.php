@@ -2259,11 +2259,11 @@ trait CustomProducts
         Product::updateMinPrices($productId);
         
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
-        if(!$prod->saveProductLangData( $siteDefaultLangId, $post )){
+        if (!$prod->saveProductLangData($siteDefaultLangId, $post)) {
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         if(!$prod->saveProductCategory($post['ptc_prodcat_id'])){
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
