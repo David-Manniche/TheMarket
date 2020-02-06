@@ -837,6 +837,20 @@ $(document).on('change', '.language-js', function () {
             }
 		});
 	}
+    
+    removeProductOption = function( preq_id,option_id){
+        fcom.ajax(fcom.makeUrl('Seller', 'removeCustomCatalogOption'), 'preq_id='+preq_id+'&option_id='+option_id, function(t) {
+            var ans = $.parseJSON(t);
+            if( ans.status == 1 ){
+                $.mbsmessage(ans.msg, true, 'alert--success');
+            }
+        });
+	};
+    
+    removeProductTag = function( preq_id,tag_id){
+        fcom.updateWithAjax(fcom.makeUrl('Seller', 'removeCustomCatalogTag'), 'preq_id='+preq_id+'&tag_id='+tag_id, function(t) {
+        });
+	};
 
 })();
 
