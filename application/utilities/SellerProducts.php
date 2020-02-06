@@ -2578,10 +2578,7 @@ trait SellerProducts
             $srchFrm->addHiddenField('', 'selprod_id', $selProd_id);
             $srchFrm->fill(array('keyword'=>$productsTitle[$selProdId]));
         }
-
-        // $this->_template->addJs(array('js/tagify.min.js','js/tagify.polyfills.js'));
-        $this->_template->addCss(array('css/custom-tagify.css'));
-
+        
         $relProdFrm = $this->getRelatedProductsForm();
         $this->set("dataToEdit", $dataToEdit);
         $this->set("frmSearch", $srchFrm);
@@ -2746,9 +2743,6 @@ trait SellerProducts
             $srchFrm->addHiddenField('', 'selprod_id', $selProd_id);
             $srchFrm->fill(array('keyword'=>$productsTitle[$selProdId]));
         }
-
-        // $this->_template->addJs(array('js/tagify.min.js','js/tagify.polyfills.js'));
-        $this->_template->addCss(array('css/custom-tagify.css'));
 
         $relProdFrm = $this->getUpsellProductsForm();
         $this->set("dataToEdit", $dataToEdit);
