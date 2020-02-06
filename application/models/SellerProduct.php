@@ -1069,4 +1069,53 @@ class SellerProduct extends MyAppModel
         $srch->addCondition('selprod_user_id', '=', $userId);
         return $srch;
     }
+
+    public function saveMetaData()
+    {
+        if ($this->mainTableRecordId < 1) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', CommonHelper::getLangId());
+            return false;
+        }
+        $selprod_id = $this->mainTableRecordId;
+        $metaData = array();
+        $tabsArr = MetaTag::getTabsArr();
+        $metaType = MetaTag::META_GROUP_PRODUCT_DETAIL;
+
+        if ($metaType == '' || !isset($tabsArr[$metaType])) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', CommonHelper::getLangId());
+            return false;
+        }
+
+        $metaData['meta_controller'] = $tabsArr[$metaType]['controller'];
+        $metaData['meta_action'] = $tabsArr[$metaType]['action'];
+        $metaData['meta_record_id'] = $selprod_id;
+        $metaData['meta_subrecord_id'] = 0;
+
+        $metaIdentifier = static::getProductDisplayTitle($selprod_id, FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1));
+
+        $meta = new MetaTag();
+        $meta->assignValues($metaData);
+
+        if (!$meta->save()) {
+            $this->error = $meta->getError();
+            return false;
+        }
+        $metaId = $meta->getMainTableRecordId();
+        $languages = Language::getAllNames();
+        foreach ($languages as $langId => $langName) {
+            $selProdMeta = array(
+            'metalang_lang_id'=>$langId,
+            'metalang_meta_id'=>$metaId,
+            'meta_title'=>static::getProductDisplayTitle($selprod_id, $langId),
+            );
+
+            $metaObj = new MetaTag($metaId);
+
+            if (!$metaObj->updateLangData($langId, $selProdMeta)) {
+                $this->error = $meta->getError();
+                return false;
+            }
+        }
+        return true;
+    }
 }
