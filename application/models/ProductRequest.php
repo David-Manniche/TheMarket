@@ -201,4 +201,45 @@ class ProductRequest extends MyAppModel
 
         return $shippingRates;
     }
+    
+    public function saveProductRequestLangData($siteDefaultLangId, $autoUpdateOtherLangsData, $prodName, $prodDesc, $prodYouTubeUrl)
+    {
+        if($this->mainTableRecordId < 1 || empty($prodName)){
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        $autoUpdateOtherLangsData = FatUtility::int($autoUpdateOtherLangsData);
+        foreach ($prodName as $langId => $value) {
+            if( empty( $value ) && $autoUpdateOtherLangsData > 0 ){                
+                $data = array(
+                    'product_name' => $prodName[$siteDefaultLangId],
+                    'product_description' => $prodDesc[$siteDefaultLangId],
+                );  
+                $product = new Product(); 
+                $translatedData = $product->getTranslatedProductData($data, $langId);
+                $langData = array(
+                    'product_name' => $translatedData[$langId]['product_name'],
+                    'product_description' => $translatedData[$langId]['product_description'],
+                    'product_youtube_video' => $prodYouTubeUrl[$langId],
+                );
+            }else if( !empty( $value ) ){             
+                $langData = array(
+                    'product_name' => $value,
+                    'product_description' => $prodDesc[$langId],
+                    'product_youtube_video' => $prodYouTubeUrl[$langId],
+                );
+            }            
+            $dataForUpdate = array(
+                'preqlang_preq_id' => $this->mainTableRecordId,
+                'preqlang_lang_id' => $langId,
+                'preq_lang_data' => FatUtility::convertToJson($langData),
+            );
+            if (!$this->updateLangData($langId, $dataForUpdate)) {
+                $this->error = $this->getError();
+                return false;
+            }                
+        }
+        return true;
+    }
+    
 }

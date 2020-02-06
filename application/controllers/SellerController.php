@@ -4705,5 +4705,26 @@ class SellerController extends SellerBaseController {
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->siteLangId));
         return $frm;
     }
+    
+    public function translatedProductData()
+    {
+        $prodName = FatApp::getPostedData('product_name', FatUtility::VAR_STRING, '');
+        $prodDesc = FatApp::getPostedData('product_description', FatUtility::VAR_STRING, '');
+        $toLangId = FatApp::getPostedData('toLangId', FatUtility::VAR_INT, 0);
+        $data = array(
+            'product_name' => $prodName,
+            'product_description' => $prodDesc,
+        ); 
+        $product = new Product(); 
+        $translatedData = $product->getTranslatedProductData($data, $toLangId);
+        if(!$translatedData){
+            Message::addErrorMessage($product->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        $this->set('productName', $translatedData[$toLangId]['product_name']);
+        $this->set('productDesc', $translatedData[$toLangId]['product_description']);
+        $this->set('msg', Labels::getLabel('LBL_Product_Data_Translated_Successful', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');        
+    }
 
 }

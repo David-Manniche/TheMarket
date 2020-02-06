@@ -1133,7 +1133,7 @@ trait CustomCatalogProducts {
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        foreach ($prodName as $langId => $value) {
+        /*foreach ($prodName as $langId => $value) {
             $langData = array(
                 'product_name' => $value,
                 'product_description' => $prodDesc[$langId],
@@ -1148,8 +1148,14 @@ trait CustomCatalogProducts {
                 Message::addErrorMessage($prodReq->getError());
                 FatUtility::dieWithError(Message::getHtml());
             }
+        } */
+        
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        if(!$prodReq->saveProductRequestLangData( $siteDefaultLangId, $autoUpdateOtherLangsData, $prodName, $prodDesc, $prodYouTubeUrl )){
+            Message::addErrorMessage($prod->getError());
+            FatUtility::dieWithError(Message::getHtml());
         }
-
+        
         $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->siteLangId));
         $this->set('preqId', $prodReq->getMainTableRecordId());
         $this->set('productType', $post['product_type']);
