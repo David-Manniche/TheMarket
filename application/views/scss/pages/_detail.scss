@@ -68,12 +68,19 @@ html.quick-view--open {
         background: #5c5c5c;
         top: auto;
         bottom: 20px;
-        #{$end-direction}: calc(50% - 50px);
+        margin: 0;
+
     }
 
     .slick-prev {
+        #{$end-direction}: auto;
         #{$start-direction}: calc(50% - 50px);
-        margin: 0;
+
+    }
+
+    .slick-next {
+        #{$start-direction}: auto;
+        #{$end-direction}: calc(50% - 50px);
     }
 
     .slick-prev:after,
@@ -85,13 +92,11 @@ html.quick-view--open {
         padding: 0;
         margin: 0;
         position: absolute;
-        #{$start-direction}: 0;
-        #{$start-direction}: auto;
-        #{$end-direction}: 0;
-        bottom: auto;
-        top: 50%;
-        -webkit-transform: translateY(-50%);
-        transform: translateY(-50%);
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
 
         li {
             vertical-align: middle;
@@ -100,18 +105,20 @@ html.quick-view--open {
             width: 15px;
             height: 15px;
             border-radius: 50%;
+
             border: solid 2px #d1d1d1;
             cursor: pointer;
-            background: none;
+            background: #fff;
 
             button {
                 background: none;
+
                 border: none;
                 text-indent: -9999999px;
             }
 
             &.slick-active {
-                background: none;
+                background: #fff;
                 border-color: $brand-color;
             }
         }
@@ -1343,7 +1350,7 @@ html.quick-view--open {
 .products__quickview > a {
     /*background: #000 url(../images/retina/icn-view.svg) no-repeat 15px 6px;
 	background-size:18px;*/
-    border-radius:2px;   
+    border-radius: 2px;
     padding: 5px 14px;
     font-weight: 600;
     font-size: 0.7em;
@@ -1351,8 +1358,8 @@ html.quick-view--open {
     text-transform: uppercase;
     white-space: nowrap;
     background: #000;
-	display:flex;
-	align-items:center;
+    display: flex;
+    align-items: center;
 }
 
 .products__quickview > a .svg-icon {
