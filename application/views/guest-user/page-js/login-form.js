@@ -35,15 +35,17 @@
         return false;
     };
     
-    resendOtp = function (userId){
+    resendOtp = function (userId, getOtpOnly = 0){
         $.systemMessage(langLbl.processing,'alert--process', false);
-		fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId]), '', function(t) {
+		fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
             try{
 				t = $.parseJSON(t);
 				if(typeof t.status != 'undefined' &&  1 > t.status){
                     $.systemMessage(t.msg,'alert--danger', false);
-                    return false;
+                } else {
+                    $.systemMessage(t.msg,'alert--success', false);
                 }
+                return false;
 			}
 			catch(exc){
                 $.systemMessage.close();

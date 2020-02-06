@@ -69,7 +69,7 @@ if (0 < $withPhone) {
                                     $frmFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_EMAIL_ADDRESS', $siteLangId));
                                 } else {
                                     $frmFld = $frm->getField('user_phone');
-                                    $frmFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_PHONE_NUMBER', $siteLangId));
+                                    $frmFld->htmlAfterField = '<span class="note">' . sprintf(Labels::getLabel('LBL_e.g._%s', $siteLangId), '+91XXXXXXXXXX') . '</span>';
                                 }
                                 $frmFld->developerTags['noCaptionTag'] = true;
                                 

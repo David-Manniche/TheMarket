@@ -906,12 +906,17 @@ class GuestUserController extends MyAppController
         $this->_template->render(false, false, 'json-success.php');
     }
     
-    public function resendOtp($userId)
+    public function resendOtp($userId, $getOtpOnly = 0)
     {
         $userId = FatUtility::int($userId);
         $userObj = new User($userId);
         if (false == $userObj->resendOtp()) {
             FatUtility::dieJsonError($userObj->getError());
+        }
+
+        if (0 < $getOtpOnly) {
+            $this->set('msg', Labels::getLabel('MSG_OTP_SENT!_PLEASE_CHECK_YOUR_PHONE.', $this->siteLangId));
+            $this->_template->render(false, false, 'json-success.php');
         }
         $this->otpForm($userId);
     }

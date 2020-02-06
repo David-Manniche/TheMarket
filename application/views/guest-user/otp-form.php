@@ -1,5 +1,8 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
 
+$userIdFld = $frm->getField('user_id');
+$userId = $userIdFld->value;
+
 $frm->setFormTagAttribute('class', 'form form--normal');
 $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
 $frm->developerTags['fld_default_col'] = 12;
@@ -15,9 +18,11 @@ $btnFld->setFieldTagAttribute('class', 'btn--block');
 $frmFld = $frm->getField('upv_otp');
 $frmFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_OTP*', $siteLangId));
 $frmFld->developerTags['noCaptionTag'] = true;
+$frmFld->htmlAfterField = '<span class="note"><a href="javaScript:void(0)" onClick="resendOtp(' . $userId . ', ' . applicationConstants::YES . ')">' . Labels::getLabel('LBL_RESEND_OTP?', $siteLangId) . '</a></span>';
 
 $frmFld = $frm->getField('btn_submit');
 $frmFld->developerTags['noCaptionTag'] = true;
+
 ?>
 
 <div class="form-side-inner">

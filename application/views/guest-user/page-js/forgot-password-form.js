@@ -13,7 +13,9 @@
 		});
     };
     forgotPwdForm = function(withPhone = 0) {
+        $.systemMessage(langLbl.processing,'alert--process', false);
         fcom.ajax(fcom.makeUrl( 'GuestUser', 'forgotPasswordForm', [withPhone, 0]), '', function(t) {
+            $.systemMessage.close();
             $('.forgotPwForm').html(t);
 		});
     };
@@ -48,4 +50,17 @@
         });	
         return false;
     };
+
+    resendOtp = function (userId, getOtpOnly = 0){
+        $.systemMessage(langLbl.processing,'alert--process', false);
+		fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
+            t = $.parseJSON(t);
+            if(1 > t.status){
+                $.systemMessage(t.msg,'alert--danger', false);
+                return false;
+            }
+            $.systemMessage(t.msg,'alert--success', false);
+        });
+        return false;
+	};
 })();
