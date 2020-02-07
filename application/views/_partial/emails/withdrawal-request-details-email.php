@@ -10,7 +10,7 @@
             <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" width="620">
                 <?php 
                     $paymentMethods = User::getAffiliatePaymentMethodArr($siteLangId);
-                    $payoutPlugins = Plugin::getNamesByType(Plugin::TYPE_PAYOUTS, $adminLangId);
+                    $payoutPlugins = Plugin::getNamesByType(Plugin::TYPE_PAYOUTS, $siteLangId);
                     $methodType = $paymentMethods + $payoutPlugins;
                 ?>
                 <?php echo $methodType[$data['withdrawal_payment_method']]; ?>

@@ -51,3 +51,4 @@ Bugs:
 
 Bugs:
     => 034406 - Plugin settings are not opening
+    => 034260 - Paypal payout getting fatal error while placing withdrawal request
