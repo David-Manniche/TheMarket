@@ -874,7 +874,7 @@ class ProductsController extends AdminBaseController
         $this->set('productId', $productId);
         $this->set('productType', $productType);
         $this->_template->addJs(array('js/cropper.js', 'js/cropper-main.js', 'js/jquery-sortable-lists.js', 'js/tagify.min.js', 'js/tagify.polyfills.min.js'));
-        $this->_template->addCss('css/cropper.css', 'css/tagify.css');
+        $this->_template->addCss(array('css/cropper.css', 'css/tagify.css'));
         $this->_template->render();
     }
 
