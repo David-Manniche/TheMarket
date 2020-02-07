@@ -46,5 +46,8 @@ New Features:
 -----------------------TV-9.1.2.20200205-------------------------------
 
 Bugs:
-    => 034264 => Getting error (invalid data) while using upload bulk media feature in import export.
+    => 034264 - Getting error (invalid data) while using upload bulk media feature in import export.
 ---------------------------------------------------------------------------------    
+
+Bugs:
+    => 034406 - Plugin settings are not opening
