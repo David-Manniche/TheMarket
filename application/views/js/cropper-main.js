@@ -120,7 +120,7 @@ cropImage = function(image, options, callback, inputBtn){
 			canvas = cropper.clear().getCroppedCanvas();
 			canvas.toBlob(function (blob) {
 				formData.append('org_image', blob, 'org'+uploadedImageName);
-			});
+			}, uploadedImageType);
 			result.toBlob(function (blob) {
                 formData.append('cropped_image', blob, uploadedImageName);
                 formData.append("action", "avatar");
@@ -129,7 +129,7 @@ cropImage = function(image, options, callback, inputBtn){
 					formData.append("frmName", frmName);
 				}
 				window[callback](formData);
-			});
+			}, uploadedImageType);
 		  }
 
 		  break;
