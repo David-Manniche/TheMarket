@@ -41,8 +41,8 @@ class Product extends MyAppModel
     public const DB_PRODUCT_MIN_PRICE = 'tbl_products_min_price';
     public const DB_PRODUCT_MIN_PRICE_PREFIX = 'pmp_';
 
-	public const DB_PRODUCT_EXTERNAL_RELATIONS = 'tbl_product_external_relations';
-	public const DB_PRODUCT_EXTERNAL_RELATIONS_PREFIX = 'perel_';
+    public const DB_PRODUCT_EXTERNAL_RELATIONS = 'tbl_product_external_relations';
+    public const DB_PRODUCT_EXTERNAL_RELATIONS_PREFIX = 'perel_';
 
     public const PRODUCT_TYPE_PHYSICAL = 1;
     public const PRODUCT_TYPE_DIGITAL = 2;
@@ -378,101 +378,95 @@ class Product extends MyAppModel
         return true;
     }
 
-    public function addUpdateProductOption($product_id, $option_id)
+    public function addUpdateProductOption($option_id)
     {
-        $product_id = FatUtility::int($product_id);
         $option_id = FatUtility::int($option_id);
-        if (!$product_id || !$option_id) {
+        if (!$this->mainTableRecordId || !$option_id) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
         $record = new TableRecord(static::DB_PRODUCT_TO_OPTION);
         $to_save_arr = array();
-        $to_save_arr[static::DB_PRODUCT_TO_OPTION_PREFIX.'product_id'] = $product_id;
-        $to_save_arr[static::DB_PRODUCT_TO_OPTION_PREFIX.'option_id'] = $option_id;
+        $to_save_arr[static::DB_PRODUCT_TO_OPTION_PREFIX . 'product_id'] = $this->mainTableRecordId;
+        $to_save_arr[static::DB_PRODUCT_TO_OPTION_PREFIX . 'option_id'] = $option_id;
         $record->assignValues($to_save_arr);
         if (!$record->addNew(array(), $to_save_arr)) {
             $this->error = $record->getError();
             return false;
         }
+        $this->logUpdatedRecord();
         return true;
     }
 
-    public function removeProductOption($product_id, $option_id)
+    public function removeProductOption($option_id)
     {
         $db = FatApp::getDb();
-        $product_id = FatUtility::int($product_id);
         $option_id = FatUtility::int($option_id);
-        if (!$product_id || !$option_id) {
+        if (!$this->mainTableRecordId || !$option_id) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
-        if (!$db->deleteRecords(static::DB_PRODUCT_TO_OPTION, array('smt'=> static::DB_PRODUCT_TO_OPTION_PREFIX.'product_id = ? AND '.static::DB_PRODUCT_TO_OPTION_PREFIX . 'option_id = ?','vals' => array($product_id, $option_id)))) {
+        if (!$db->deleteRecords(static::DB_PRODUCT_TO_OPTION, array('smt'=> static::DB_PRODUCT_TO_OPTION_PREFIX.'product_id = ? AND '.static::DB_PRODUCT_TO_OPTION_PREFIX . 'option_id = ?','vals' => array($this->mainTableRecordId, $option_id)))) {
             $this->error = $db->getError();
             return false;
         }
+        $this->logUpdatedRecord();
         return true;
     }
 
-    public function addUpdateProductTag($product_id, $tag_id)
+    public function addUpdateProductTag($tag_id)
     {
-        $product_id = FatUtility::int($product_id);
         $tag_id = FatUtility::int($tag_id);
-        if (!$product_id || !$tag_id) {
+        if (!$this->mainTableRecordId || !$tag_id) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
         $record = new TableRecord(static::DB_PRODUCT_TO_TAG);
         $to_save_arr = array();
-        $to_save_arr[static::DB_PRODUCT_TO_TAG_PREFIX.'product_id'] = $product_id;
+        $to_save_arr[static::DB_PRODUCT_TO_TAG_PREFIX.'product_id'] = $this->mainTableRecordId;
         $to_save_arr[static::DB_PRODUCT_TO_TAG_PREFIX.'tag_id'] = $tag_id;
         $record->assignValues($to_save_arr);
         if (!$record->addNew(array(), $to_save_arr)) {
             $this->error = $record->getError();
             return false;
         }
+        $this->logUpdatedRecord();
         return true;
     }
 
-    public function addUpdateProductTags($product_id, $tags = array())
+    public function addUpdateProductTags($tags = array())
     {
-        if (!$product_id) {
+        if (!$this->mainTableRecordId) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
 
-        FatApp::getDb()->deleteRecords(static::DB_PRODUCT_TO_TAG, array('smt'=> static::DB_PRODUCT_TO_TAG_PREFIX.'product_id = ?','vals' => array($product_id)));
+        FatApp::getDb()->deleteRecords(static::DB_PRODUCT_TO_TAG, array('smt'=> static::DB_PRODUCT_TO_TAG_PREFIX.'product_id = ?','vals' => array($this->mainTableRecordId)));
         if (empty($tags)) {
             return true;
         }
 
-        $record = new TableRecord(static::DB_PRODUCT_TO_TAG);
         foreach ($tags as $tag_id) {
-            $to_save_arr = array();
-            $to_save_arr['ptt_product_id'] = $product_id;
-            $to_save_arr['ptt_tag_id'] = $tag_id;
-            $record->assignValues($to_save_arr);
-            if (!$record->addNew(array(), $to_save_arr)) {
-                $this->error = $record->getError();
+            if (!$this->addUpdateProductTag($tag_id)) {
                 return false;
             }
         }
         return true;
     }
 
-    public function removeProductTag($product_id, $tag_id)
+    public function removeProductTag($tag_id)
     {
         $db = FatApp::getDb();
-        $product_id = FatUtility::int($product_id);
         $tag_id = FatUtility::int($tag_id);
-        if (!$product_id || !$tag_id) {
+        if (!$this->mainTableRecordId || !$tag_id) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
-        if (!$db->deleteRecords(static::DB_PRODUCT_TO_TAG, array('smt'=> static::DB_PRODUCT_TO_TAG_PREFIX.'product_id = ? AND '.static::DB_PRODUCT_TO_TAG_PREFIX . 'tag_id = ?','vals' => array($product_id, $tag_id)))) {
+        if (!$db->deleteRecords(static::DB_PRODUCT_TO_TAG, array('smt'=> static::DB_PRODUCT_TO_TAG_PREFIX.'product_id = ? AND '.static::DB_PRODUCT_TO_TAG_PREFIX . 'tag_id = ?','vals' => array($this->mainTableRecordId, $tag_id)))) {
             $this->error = $db->getError();
             return false;
         }
+        $this->logUpdatedRecord();
         return true;
     }
 

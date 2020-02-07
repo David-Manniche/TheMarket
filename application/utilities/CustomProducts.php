@@ -571,8 +571,8 @@ trait CustomProducts
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $prodObj = new Product();
-        if (!$prodObj->addUpdateProductOption($product_id, $option_id)) {
+        $prodObj = new Product($product_id);
+        if (!$prodObj->addUpdateProductOption($option_id)) {
             Message::addErrorMessage(Labels::getLabel($prodObj->getError(), FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 1)));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -653,8 +653,8 @@ trait CustomProducts
         }
         /* ] */
 
-        $prodObj = new Product();
-        if (!$prodObj->removeProductOption($productId, $optionId)) {
+        $prodObj = new Product($productId);
+        if (!$prodObj->removeProductOption($optionId)) {
             Message::addErrorMessage(Labels::getLabel($prodObj->getError(), FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 1)));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -1326,8 +1326,7 @@ trait CustomProducts
         /* saving of product Tag[ */
 
 
-        if (!$prodObj->addUpdateProductTags($product_id, $product_tags)) {
-            var_dump($prodObj->getError());
+        if (!$prodObj->addUpdateProductTags($product_tags)) {           
             Message::addErrorMessage($prodObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }

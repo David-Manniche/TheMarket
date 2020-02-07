@@ -114,6 +114,9 @@ class MyAppModel extends FatModel
             $this->error = $this->objMainTableRecord->getError();
             return false;
         }
+        
+        $this->logUpdatedRecord();
+
         return true;
     }
 
@@ -144,6 +147,8 @@ class MyAppModel extends FatModel
             return false;
         }
         
+        $this->logUpdatedRecord();
+
         return true;
     }
 
@@ -366,6 +371,8 @@ class MyAppModel extends FatModel
             return false;
         }
 
+        $this->logUpdatedRecord();
+
         return true;
     }
 
@@ -400,5 +407,28 @@ class MyAppModel extends FatModel
             return false;
         }
         return true;
+    }
+
+    public function logUpdatedRecord()
+    {
+        if (1 > $this->mainTableRecordId) {
+            return false;
+        }
+
+        //$prefix = substr(static::DB_TBL_PREFIX, 0, -1);
+        $prefix = static::DB_TBL_PREFIX;
+        $typeArr = UpdatedRecordLog::getTypeArr();
+
+        if (!array_key_exists($prefix, $typeArr)) {
+            return false;
+        }
+
+        $data = [
+            'urlog_record_id' => $this->mainTableRecordId,
+            'urlog_subrecord_id' => 0,
+            'urlog_record_type' => $typeArr[$prefix],
+            'urlog_added_on' => date('Y-m-d H:i:s')
+        ];
+        FatApp::getDb()->insertFromArray(UpdatedRecordLog::DB_TBL, $data, false, array(), $data);
     }
 }

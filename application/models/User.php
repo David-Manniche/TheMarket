@@ -1443,7 +1443,7 @@ class User extends MyAppModel
             $this->error = $db->getError();
             return false;
         }
-
+        $this->logUpdatedRecord();
         return true;
     }
 

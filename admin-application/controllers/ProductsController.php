@@ -708,8 +708,8 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
-        $prodObj = new Product();
-        if (!$prodObj->addUpdateProductOption($product_id, $option_id)) {
+        $prodObj = new Product($product_id);
+        if (!$prodObj->addUpdateProductOption($option_id)) {
             Message::addErrorMessage(Labels::getLabel($prodObj->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -748,8 +748,8 @@ class ProductsController extends AdminBaseController
         }
         /* ] */
 
-        $prodObj = new Product();
-        if (!$prodObj->removeProductOption($product_id, $option_id)) {
+        $prodObj = new Product($product_id);
+        if (!$prodObj->removeProductOption($option_id)) {
             Message::addErrorMessage(Labels::getLabel($prodObj->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -809,8 +809,8 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
-        $prodObj = new Product();
-        if (!$prodObj->addUpdateProductTag($product_id, $tag_id)) {
+        $prodObj = new Product($product_id);
+        if (!$prodObj->addUpdateProductTag($tag_id)) {
             Message::addErrorMessage(Labels::getLabel($prodObj->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -835,8 +835,8 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
-        $prodObj = new Product();
-        if (!$prodObj->removeProductTag($product_id, $tag_id)) {
+        $prodObj = new Product($product_id);
+        if (!$prodObj->removeProductTag($tag_id)) {
             Message::addErrorMessage(Labels::getLabel($prodObj->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -1652,6 +1652,9 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage($upcObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
+
+        $product = new Product($product_id);
+        $product->logUpdatedRecord();
 
         $this->set('msg', Labels::getLabel('LBL_Record_Updated_Successfully', $this->adminLangId));
         $this->set('product_id', $product_id);
