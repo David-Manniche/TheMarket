@@ -55,8 +55,17 @@ class CollectionsController extends MyAppController
         if (UserAuthentication::isUserLogged()) {
             $loggedUserId = UserAuthentication::getLoggedUserId();
         }
-        $collection = Collections::getAttributesById($collection_id);
+
         $db = FatApp::getDb();
+
+        $srch = new CollectionSearch($this->siteLangId);
+        $srch->addMultipleFields(['collection_id', 'IFNULL(collection_name, collection_identifier) as collection_name', 'collection_identifier','collection_link_url', 'collection_layout_type','collection_type','collection_criteria','collection_child_records','collection_primary_records', 'collection_display_order', 'collection_display_media_only', 'collection_active', 'collection_deleted', 'collection_img_updated_on']);
+
+        $srch->addCondition('collection_id', '=', $collection_id);
+
+        $rs = $srch->getResultSet();
+        $collection = $db->fetch($rs);
+
         $collectionObj = new CollectionSearch();
         $collectionObj->doNotCalculateRecords();
         $collectionObj->doNotLimitRecords();
