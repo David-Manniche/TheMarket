@@ -18,13 +18,12 @@ table.cart--full {
             color: #000;
             font-weight: 300;
             border: none;
-            padding: 10px 10px;
+            
         }
     }
 
     td {
         vertical-align: top;
-
         &:first-child {
             padding-#{$start-direction}: 0;
         }

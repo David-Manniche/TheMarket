@@ -361,6 +361,7 @@ html.quick-view--open {
     -webkit-box-ordinal-group: 3;
     -ms-flex-order: 2;
     order: 2;
+     
 
     @include media-breakpoint-down(lg) {
         & {

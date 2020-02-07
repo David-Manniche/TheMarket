@@ -1798,9 +1798,8 @@
     }
 
     .item__pic {
-        margin-bottom: 0;
+        overflow: hidden;
         background: #fff;
-        margin: 0 auto;
         width: auto;
         border: $border;
         border-radius: 4px;
@@ -2145,6 +2144,6 @@ input.sp-input {
 
 .actions_wishlist {
     margin: 0.5rem auto;
-    flex: 1;
-    justify-content: center;
+    display: flex;
+     
 }

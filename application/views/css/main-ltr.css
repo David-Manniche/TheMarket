@@ -10493,6 +10493,8 @@ input[type="file"] {
   background-color: #fff;
   background-repeat: no-repeat;
   background-position: calc(100% - 11px) center; }
+  [dir="rtl"] .form select {
+    background-position: calc(0% - -11px) center; }
 .form textarea {
   resize: vertical;
   height: 120px;
@@ -10594,6 +10596,13 @@ form.custom-form {
     flex: 1; }
   form.custom-form input[type="submit"], form.custom-form .form input[type="button"], .form form.custom-form input[type="button"], form.custom-form .form input[type="reset"], .form form.custom-form input[type="reset"] {
     margin: 0; }
+
+.form-otp .otp-row {
+  display: flex;
+  align-items: center; }
+.form-otp .otp-col {
+  display: flex;
+  align-items: center; }
 
 .ftshops {
   color: #fff; }
@@ -14420,8 +14429,8 @@ img.mfp-img {
     font-size: 0.6rem; }
 
 .item__pic {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   border: solid 1px #dee2e6;
   border-radius: 4px;
   margin: 0;
@@ -15417,8 +15426,7 @@ input:checked + .slider:before {
   border-radius: 5px;
   -webkit-box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.07);
   box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.07);
-  z-index: 101;
-  text-align: center; }
+  z-index: 101; }
 
 #mbsmessage .content,
 .system_message .content {
@@ -15542,15 +15550,16 @@ input:checked + .slider:before {
   font-weight: 300;
   font-size: 1em;
   position: relative;
-  padding: 0 0 5px 0;
+  padding: 0 0 10px 0;
   color: inherit; }
-
-.div_msg li a {
-  font-weight: normal;
-  font-size: 13px;
-  text-decoration: none;
-  color: #fff;
-  cursor: default; }
+  .div_msg li:last-child {
+    padding-bottom: 0; }
+  .div_msg li a {
+    font-weight: normal;
+    font-size: 13px;
+    text-decoration: none;
+    color: #fff;
+    cursor: default; }
 
 .div_info li:last-child,
 .div_error li:last-child,
@@ -15572,7 +15581,6 @@ input:checked + .slider:before {
 .errorlist li a {
   color: #f44336;
   font-size: 11px;
-  /*text-transform: uppercase;*/
   text-decoration: none; }
 
 .errorlist li:last-child {
@@ -27496,8 +27504,7 @@ table.cart--full {
     background: #f3f3f3;
     color: #000;
     font-weight: 300;
-    border: none;
-    padding: 10px 10px; }
+    border: none; }
   table.cart--full td {
     vertical-align: top; }
     table.cart--full td:first-child {
@@ -30191,9 +30198,8 @@ max-height: 408px;*/ }
     -ms-flex-pack: justify;
     justify-content: space-between; }
   .items .item__pic {
-    margin-bottom: 0;
+    overflow: hidden;
     background: #fff;
-    margin: 0 auto;
     width: auto;
     border: solid 1px #dee2e6;
     border-radius: 4px;
@@ -30421,8 +30427,7 @@ input.sp-input {
 
 .actions_wishlist {
   margin: 0.5rem auto;
-  flex: 1;
-  justify-content: center; }
+  display: flex; }
 
 .quick-view {
   height: 100%;
@@ -32103,7 +32108,7 @@ div.faqanswer p {
 
 .filter-content {
   margin: 0;
-  /*overflow: hidden;*/
+  overflow: hidden;
   -webkit-transition: height 0.3s ease 0s;
   transition: height 0.3s ease 0s; }
 
