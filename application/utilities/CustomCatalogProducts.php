@@ -1235,9 +1235,12 @@ trait CustomCatalogProducts {
         if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
-        $specifications = json_decode($productReqRow['preq_specifications'], true);
-        $productSpecifications['prod_spec_name'] = $specifications['prod_spec_name'][$langId];
-        $productSpecifications['prod_spec_value'] = $specifications['prod_spec_value'][$langId];
+        $productSpecifications = array();
+        if(!empty($productReqRow['preq_specifications'])){
+            $specifications = json_decode($productReqRow['preq_specifications'], true);
+            $productSpecifications['prod_spec_name'] = $specifications['prod_spec_name'][$langId];
+            $productSpecifications['prod_spec_value'] = $specifications['prod_spec_value'][$langId];
+        }
         $this->set('productSpecifications', $productSpecifications);
         $this->set('langId', $langId);
         $this->_template->render(false, false, 'seller/catalog-specifications.php');
