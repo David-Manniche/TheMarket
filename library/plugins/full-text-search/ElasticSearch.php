@@ -76,11 +76,17 @@ class ElasticSearch extends FullTextSearchBase
 
         try {
             $results = $this->client->search($params);
+			
         } catch (exception $e) {
+			
             $this->setErrorMessage($e);
             return false;
         }
 		
+		if($aggregation)
+		{
+			return $results;
+		}
 		return array_key_exists('hits',$results) ? $results['hits'] : $results;
     }
     

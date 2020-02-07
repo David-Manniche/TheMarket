@@ -38,16 +38,36 @@ class FullTextSearch
 			array_push($search["must"], $brandsFilters);
 		}
 		
+		if( array_key_exists('price-min-range', $criteria) && array_key_exists('price-max-range', $criteria))
+		{
+			$priceFilters = (new self())->priceCondition($criteria['price-min-range'],$criteria['price-max-range']);
+			if(isset($priceFilters) && !empty($priceFilters)){
+				array_push($search["must"], $priceFilters);
+			}
+		}
 		
 		$data = $fullTextSearch->search($search, $from, $size);
-		
 		return $data;
 	}
 	
+	private function priceCondition($minPrice,$maxPrice)
+	{
+		$priceFilter = ["range" => ["general.theprice" => [ "gte" => $minPrice ,"lte" => $maxPrice ]  ]];
+		return $priceFilter;
+	}
+	
+	private function brandConditions($brands)
+	{
+		$brandsFilters['bool']['should'] = array();
+		foreach($brands as $key => $brand) 
+		{
+			$brandsFilters['bool']['should'][$key] = ['match' => ['brand.brand_id' => $brand ]];
+		}
+		return $brandsFilters;
+	}
 	
 	
 	/* Search all the brands and calculating aggregation price results */
-	
 	public static function getSearchBrands($criteria,$langId)
 	{
 		$allProductbrands = array();
@@ -62,22 +82,22 @@ class FullTextSearch
 		
 		$fullTextSearch = new $defaultPlugin($langId);
 		
-		$allProductbrands = $fullTextSearch->search($search, 0, 1000, false, array('brand.brand_id','brand.brand_name'),'brand.brand_name',array('brand.brand_name.keyword' => 'asc') );
+		$allProductbrands = $fullTextSearch->search($search, 0, 1000, true, array('brand.brand_id','brand.brand_name'),'brand.brand_name',array('brand.brand_name.keyword' => 'asc') );
 		
 		return $allProductbrands;
-		
-		
 	}
 	
-	private function brandConditions($brands)
+	public static function getSearchCat($criteria,$langId)
 	{
-		$brandsFilters['bool']['should'] = array();
-		foreach($brands as $key => $brand) 
+		$category = array();
+		$search["must"] = [];
+		if(array_key_exists('keyword',$criteria) && empty($criteria['keyword'])) 
 		{
-			$brandsFilters['bool']['should'][$key] = ['match' => ['brand.brand_id' => $brand ]];
+			$defaultPlugin = (new self())->getDefaultPlugin();
+			$fullTextSearch = new $defaultPlugin($langId);
 		}
-		return $brandsFilters;
 	}
+	
 	
 	/* 
 	*	Pass text  in the function

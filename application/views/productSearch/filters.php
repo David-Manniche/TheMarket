@@ -155,6 +155,7 @@ if (isset($prodcat_code)) {
 <!-- ] -->
 
 <!--Price Filters[ -->
+
 <?php if (isset($priceArr) && $priceArr) {
       ?>
 <div class="divider--filters"></div>
