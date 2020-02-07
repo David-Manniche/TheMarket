@@ -1236,8 +1236,8 @@ trait CustomCatalogProducts {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
         $productSpecifications = array();
-        if(!empty($productReqRow['preq_specifications'])){
-            $specifications = json_decode($productReqRow['preq_specifications'], true);
+        $specifications = json_decode($productReqRow['preq_specifications'], true);
+        if(!empty($specifications['prod_spec_name'][$langId]) && !empty($specifications['prod_spec_value'][$langId])){
             $productSpecifications['prod_spec_name'] = $specifications['prod_spec_name'][$langId];
             $productSpecifications['prod_spec_value'] = $specifications['prod_spec_value'][$langId];
         }

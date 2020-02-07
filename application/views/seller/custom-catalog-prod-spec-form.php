@@ -8,14 +8,16 @@ $layout = Language::getLayoutDirection($langId);
             <div class="field-set">
                 <div class="caption-wraper">
                     <label class="field_label"><?php echo Labels::getLabel('LBL_Specification_Label_Text', $siteLangId); ?></label>
+                    <span class="spn_must_field">*</span>
                 </div>
                 <div class="field-wraper">
                     <div class="field_cover">
-                        <input type="text" name="prodspec_name[<?php echo $langId; ?>]" value="<?php
+                        <input class="specification-field-js" type="text" name="prodspec_name[<?php echo $langId; ?>]" value="<?php
                         if (!empty($prodSpecData)) {
                             echo $prodSpecData['prod_spec_name'];
                         }
                         ?>">
+                        <ul style="display:none;" class="errorlist erlist_specification_<?php echo $langId; ?>"><li><a href="javascript:void(0);"><?php echo    Labels::getLabel('LBL_Specification_Label_Text_Is_Mandatory', $siteLangId); ?></a></li></ul>  
                     </div>
                 </div>
             </div>
@@ -24,14 +26,16 @@ $layout = Language::getLayoutDirection($langId);
             <div class="field-set">
                 <div class="caption-wraper">
                     <label class="field_label"><?php echo Labels::getLabel('LBL_Specification_Value', $siteLangId); ?></label>
+                    <span class="spn_must_field">*</span>
                 </div>
                 <div class="field-wraper">
                     <div class="field_cover">
-                        <input type="text" name="prodspec_value[<?php echo $langId; ?>]" value="<?php
+                        <input class="specification-field-js" type="text" name="prodspec_value[<?php echo $langId; ?>]" value="<?php
                         if (!empty($prodSpecData)) {
                             echo $prodSpecData['prod_spec_value'];
                         }
                         ?>">
+                         <ul style="display:none;" class="errorlist erlist_specification_<?php echo $langId; ?>"><li><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Specification_Value_Is_Mandatory', $siteLangId); ?></a></li></ul>
                     </div>
                 </div>
             </div>
@@ -43,7 +47,7 @@ $layout = Language::getLayoutDirection($langId);
                 </div>
                 <div class="field-wraper">
                     <div class="field_cover">
-                        <input type="text" class="prodspec_group" name="prodspec_group[<?php echo $langId; ?>]" value="<?php
+                        <input type="text" class="prodspec_group specification-field-js" name="prodspec_group[<?php echo $langId; ?>]" value="<?php
                         if (!empty($prodSpecData)) {
                             echo $prodSpecData['prod_spec_group'];
                         }
@@ -69,31 +73,39 @@ $layout = Language::getLayoutDirection($langId);
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        var langId = '<?php echo $langId; ?>';
-        $('input[name="prodspec_group[' + langId + ']"]').autocomplete({
-            'source': function (request, response) {
-                $.ajax({
-                    url: fcom.makeUrl('Seller', 'prodSpecGroupAutoComplete'),
-                    data: {keyword: request['term'], langId: langId, fIsAjax: 1},
-                    dataType: 'json',
-                    type: 'post',
-                    success: function (json) {
-                        response($.map(json, function (item) {
-                            return {
-                                label: item['name'],
-                                value: item['name'],
-                                id: item['name']
-                            };
-                        }));
-                    },
-                });
-            },
-            'select': function (event, ui) {
-                $('input[name="prodspec_group[' + langId + ']"]').val(ui.item.id);
-            }
-
-        });
+$(document).ready(function () {
+    var langId = '<?php echo $langId; ?>';
+    $('input[name="prodspec_group[' + langId + ']"]').autocomplete({
+        'source': function (request, response) {
+            $.ajax({
+                url: fcom.makeUrl('Seller', 'prodSpecGroupAutoComplete'),
+                data: {keyword: request['term'], langId: langId, fIsAjax: 1},
+                dataType: 'json',
+                type: 'post',
+                success: function (json) {
+                    response($.map(json, function (item) {
+                        return {
+                            label: item['name'],
+                            value: item['name'],
+                            id: item['name']
+                        };
+                    }));
+                },
+            });
+        },
+        'select': function (event, ui) {
+            $('input[name="prodspec_group[' + langId + ']"]').val(ui.item.id);
+        }
 
     });
+    
+    $('.specification-field-js').on('keyup keypress', function(e) {
+        var keyCode = e.keyCode || e.which;
+        if (keyCode === 13) { 
+            e.preventDefault();
+            return false;
+        }
+    });
+
+});
 </script>
