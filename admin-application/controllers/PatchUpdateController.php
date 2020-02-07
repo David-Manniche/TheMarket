@@ -7,6 +7,22 @@ class PatchUpdateController extends AdminBaseController
         $this->objPrivilege->canEditPatch($this->admin_id);
     }
 
+    public function resetFullTextSearchData()
+    {
+        $date = date('Y-m-d H:i:s');
+        $srch = new ProductSearch();
+        $srch->addMultipleFields(array('product_id', '0 as subrecord_id' , UpdatedRecordLog::TYPE_PRODUCT . ' as record_type', "'" . $date . "' as updated_time"));
+        $srch->doNotLimitRecords();
+        $srch->doNotCalculateRecords();
+        //$srch->addGroupBy('product_id');
+        $tmpQry = $srch->getQuery();
+
+        $qry = "INSERT INTO " . UpdatedRecordLog::DB_TBL . " (" . UpdatedRecordLog::DB_TBL_PREFIX . "record_id, " . UpdatedRecordLog::DB_TBL_PREFIX . "subrecord_id, ". UpdatedRecordLog::DB_TBL_PREFIX . "record_type, ". UpdatedRecordLog::DB_TBL_PREFIX . "added_on ) SELECT * FROM (" . $tmpQry . ") AS t ON DUPLICATE KEY UPDATE ". UpdatedRecordLog::DB_TBL_PREFIX . "record_id = t.product_id, " . UpdatedRecordLog::DB_TBL_PREFIX ."subrecord_id = t.subrecord_id, " . UpdatedRecordLog::DB_TBL_PREFIX . "record_type = t.record_type, " . UpdatedRecordLog::DB_TBL_PREFIX . "added_on = t.updated_time";
+
+        FatApp::getDb()->query($qry);
+        echo "Done";
+    }
+
     public function fullTextSearch()
     {
         $languages = Language::getAllNames();

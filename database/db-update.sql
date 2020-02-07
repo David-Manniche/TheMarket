@@ -385,13 +385,17 @@ ALTER TABLE `tbl_brands` ADD `brand_updated_on` DATETIME NOT NULL DEFAULT CURREN
 ALTER TABLE `tbl_users` CHANGE `user_img_updated_on` `user_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE `tbl_countries` ADD `country_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `country_language_id`;
 ALTER TABLE `tbl_states` ADD `state_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `state_active`;
+
 --
--- Table structure for table `tbl_product_external_relations`
+-- Table structure for table `tbl_updated_record_log`
 --
 
-CREATE TABLE `tbl_product_external_relations` (
-  `perel_product_id` int(11) NOT NULL,
-  `perel_indexed_for_search` tinyint(1) NOT NULL COMMENT 'used for elastic search '
+CREATE TABLE `tbl_updated_record_log` (
+  `urlog_id` bigint(15) NOT NULL,
+  `urlog_record_id` int(11) NOT NULL,
+  `urlog_subrecord_id` int(11) NOT NULL,
+  `urlog_record_type` int(11) NOT NULL,
+  `urlog_added_on` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -399,40 +403,18 @@ CREATE TABLE `tbl_product_external_relations` (
 --
 
 --
--- Indexes for table `tbl_product_external_relations`
+-- Indexes for table `tbl_updated_record_log`
 --
-ALTER TABLE `tbl_product_external_relations`
-  ADD PRIMARY KEY (`perel_product_id`);
+ALTER TABLE `tbl_updated_record_log`
+  ADD PRIMARY KEY (`urlog_id`),
+  ADD UNIQUE KEY `urlog_record_id` (`urlog_record_id`,`urlog_subrecord_id`,`urlog_record_type`);
 
 --
--- Table structure for table `tbl_seller_product_external_relations`
---
-
-CREATE TABLE `tbl_seller_product_external_relations` (
-  `sperel_selprod_id` int(11) NOT NULL,
-  `sperel_indexed_for_search` tinyint(4) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Indexes for dumped tables
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- Indexes for table `tbl_seller_product_external_relations`
+-- AUTO_INCREMENT for table `tbl_updated_record_log`
 --
-ALTER TABLE `tbl_seller_product_external_relations`
-  ADD PRIMARY KEY (`sperel_selprod_id`);
-
-ALTER TABLE `tbl_seller_product_external_relations` ADD `sperel_product_id` INT(11) NOT NULL AFTER `sperel_selprod_id`;
-
-ALTER TABLE `tbl_product_external_relations` ADD `perel_lang_id` INT(11) NOT NULL AFTER `perel_indexed_for_search`;
-
-ALTER TABLE `tbl_product_external_relations` ADD `perel_productlang_id` INT(11) NOT NULL FIRST, ADD PRIMARY KEY (`perel_productlang_id`);
-
-ALTER TABLE `tbl_seller_product_external_relations` DROP PRIMARY KEY;
-
-ALTER TABLE tbl_seller_product_external_relations
-   ADD PRIMARY KEY (sperel_selprod_id, sperel_lang_id);
-
-ALTER TABLE  tbl_product_external_relations
-      ADD PRIMARY KEY (perel_product_id, perel_lang_id);
+ALTER TABLE `tbl_updated_record_log`
+  MODIFY `urlog_id` bigint(15) NOT NULL AUTO_INCREMENT;
