@@ -8,6 +8,7 @@ $layout = Language::getLayoutDirection($langId);
             <div class="field-set">
                 <div class="caption-wraper">
                     <label class="field_label"><?php echo Labels::getLabel('LBL_Specification_Label_Text', $siteLangId); ?></label>
+                    <span class="spn_must_field">*</span>
                 </div>
                 <div class="field-wraper">
                     <div class="field_cover">
@@ -16,6 +17,7 @@ $layout = Language::getLayoutDirection($langId);
                             echo $prodSpecData['prod_spec_name'];
                         }
                         ?>">
+                        <ul style="display:none;" class="errorlist erlist_specification_<?php echo $langId; ?>"><li><a href="javascript:void(0);"><?php echo    Labels::getLabel('LBL_Specification_Label_Text_Is_Mandatory', $siteLangId); ?></a></li></ul>  
                     </div>
                 </div>
             </div>
@@ -24,6 +26,7 @@ $layout = Language::getLayoutDirection($langId);
             <div class="field-set">
                 <div class="caption-wraper">
                     <label class="field_label"><?php echo Labels::getLabel('LBL_Specification_Value', $siteLangId); ?></label>
+                    <span class="spn_must_field">*</span>
                 </div>
                 <div class="field-wraper">
                     <div class="field_cover">
@@ -32,6 +35,7 @@ $layout = Language::getLayoutDirection($langId);
                             echo $prodSpecData['prod_spec_value'];
                         }
                         ?>">
+                         <ul style="display:none;" class="errorlist erlist_specification_<?php echo $langId; ?>"><li><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Specification_Value_Is_Mandatory', $siteLangId); ?></a></li></ul>
                     </div>
                 </div>
             </div>

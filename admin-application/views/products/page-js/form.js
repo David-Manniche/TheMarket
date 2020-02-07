@@ -74,9 +74,11 @@
         var prodspec_name = $("input[name='prodspec_name["+langId+"]']").val();
         var prodspec_value = $("input[name='prodspec_value["+langId+"]']").val();
         var prodspec_group = $("input[name='prodspec_group["+langId+"]']").val();
-        if(prodspec_name == '' || prodspec_value == ''){
+        if(prodspec_name.trim() == '' || prodspec_value.trim() == ''){
+            $(".erlist_specification_"+langId).show();
             return false;
         }
+        $(".erlist_specification").hide();
         var data = 'product_id='+productId+'&langId='+langId+'&prodSpecId='+prodSpecId+'&prodspec_name='+prodspec_name+'&prodspec_value='+prodspec_value+'&prodspec_group='+prodspec_group;
         fcom.updateWithAjax(fcom.makeUrl('Products', 'setUpProductSpecifications'), data, function(t) {
             prodSpecificationsByLangId(langId);
