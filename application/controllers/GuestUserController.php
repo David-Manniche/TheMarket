@@ -442,7 +442,7 @@ class GuestUserController extends MyAppController
 
         unset($_SESSION[UserAuthentication::TEMP_SESSION_ELEMENT_NAME]);
         $this->set('redirectUrl', $redirectUrl);
-        $this->set('msg', Labels::getLabel("MSG_LOGGED_IN_SUCCESSFULLY", $this->siteLangId));
+        $this->set('msg', Labels::getLabel("MSG_OTP_MATCHED", $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
