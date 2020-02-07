@@ -361,7 +361,9 @@ html.quick-view--open {
     -webkit-box-ordinal-group: 3;
     -ms-flex-order: 2;
     order: 2;
-     
+    border-radius: 4px;
+    border: $border;
+
 
     @include media-breakpoint-down(lg) {
         & {
@@ -373,8 +375,7 @@ html.quick-view--open {
         margin: 0 auto !important;
         max-width: 500px;
         float: none !important;
-        border-radius: 4px;
-        border: $border;
+
     }
 }
 
@@ -388,6 +389,7 @@ html.quick-view--open {
     @include media-breakpoint-down(lg) {
         & {
             width: 100%;
+            display: flex;
         }
     }
 
@@ -413,6 +415,13 @@ html.quick-view--open {
             margin: 0 auto;
         }
 
+
+        @include media-breakpoint-down(lg) {
+            & {
+                margin: 0.5rem;
+            }
+        }
+
     }
 
     .slick-arrow {
@@ -430,30 +439,56 @@ html.quick-view--open {
         box-shadow: none;
         margin: 0;
         margin-bottom: 1rem;
+
+        @include media-breakpoint-down(lg) {
+            & {
+                margin:0.5rem 0;
+                width: 100px;
+                height: 82px;
+            }
+        }
+
     }
+
+    .slick-prev {
+        &:after {
+            content: "";
+            border-#{$end-direction}: 2px solid #000;
+            border-bottom: 2px solid #000;
+            width: 16px;
+            height: 16px;
+            -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+            position: absolute;
+            #{$start-direction}: calc(50% - 3px);
+            top: 50%;
+            -webkit-transform: rotate(-135deg);
+            transform: rotate(-135deg);
+        }
+    }
+
+
+    .slick-next {
+        &:after {
+            content: "";
+            border-#{$end-direction}: 2px solid #000;
+            border-bottom: 2px solid #000;
+            width: 16px;
+            height: 16px;
+            -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+            position: absolute;
+            #{$start-direction}: calc(50% - 3px);
+            top: 50%;
+        }
+    }
+
+
 }
 
-.slider-nav .slick-prev:after,
-.slider-nav .slick-next:after {
-    content: "";
-    border-#{$end-direction}: 2px solid #000;
-    border-bottom: 2px solid #000;
-    width: 16px;
-    height: 16px;
-    -webkit-transform: rotate(45deg);
-    transform: rotate(45deg);
-    position: absolute;
-    #{$start-direction}: calc(50% - 3px);
-    top: 50%;
-}
 
-.slider-nav .slick-prev:after {
-    -webkit-transform: rotate(-135deg);
-    transform: rotate(-135deg);
-}
 
 .favourite-wrapper-detail {
-
     position: static;
     #{$end-direction}: 0;
     top: 0;
@@ -523,6 +558,22 @@ html.quick-view--open {
         line-height: 1.1;
         font-family: $family-primary;
         padding: 0;
+
+        .products__price_old {
+            font-weight: 300;
+            color: var(--txt-color-light);
+            line-height: 1;
+            text-decoration: line-through;
+        }
+
+        .product_off {
+            font-size: 0.875rem;
+            font-weight: 300;
+            color: var(--first-color);
+            display: inline-block;
+        }
+
+
     }
 
     .h6 {

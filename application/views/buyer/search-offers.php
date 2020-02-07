@@ -21,7 +21,7 @@ if (!empty($offers)) {
                         <p><?php echo Labels::getLabel('LBL_Expires_On', $siteLangId); ?>: <strong><?php echo FatDate::format($row['coupon_end_date']); ?></strong> <br><?php echo Labels::getLabel('LBL_Min_Order', $siteLangId); ?>:
                             <strong><?php echo CommonHelper::displayMoneyFormat($row['coupon_min_order_value']); ?></strong></p>
                     </div>
-                    <span class="label label--success "><?php echo $row['coupon_code']; ?></span>
+                    <span class="coupon-code"><?php echo $row['coupon_code']; ?></span>
                 </div>
             </div>
         </div>
