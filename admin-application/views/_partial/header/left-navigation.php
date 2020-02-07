@@ -438,9 +438,9 @@
                     <?php if ($objPrivilege->canViewProductTempImages(AdminAuthentication::getLoggedAdminId(), true)) { ?>
                         <li><a href="<?php echo CommonHelper::generateUrl('ProductTempImages'); ?>"><?php echo Labels::getLabel('LBL_Product_Temp_Images', $adminLangId);?></a></li>
                     <?php } ?>
-                    <?php if ($objPrivilege->canUploadBulkImages(AdminAuthentication::getLoggedAdminId(), true)) { ?>
+                    <?php /* if ($objPrivilege->canUploadBulkImages(AdminAuthentication::getLoggedAdminId(), true)) { ?>
                         <li><a href="<?php echo CommonHelper::generateUrl('UploadBulkImages'); ?>"><?php echo Labels::getLabel('LBL_Upload_Bulk_Images', $adminLangId);?></a></li>
-                    <?php } ?>
+                    <?php } */ ?>
                 </ul>
             </li>
             <?php }

@@ -15,6 +15,8 @@ if (true == $primaryOrder) {
         $canReviewOrders = true;
     }
 }
+$canSubmitFeedback = Orders::canSubmitFeedback($childOrderDetail['order_user_id'], $childOrderDetail['order_id'], $childOrderDetail['op_selprod_id']);
+
 ?> <?php if (!$print) {
     ?> <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <?php
 } ?>
@@ -37,7 +39,7 @@ if (true == $primaryOrder) {
                                     class="fa fa-close"></i></a>
                         </li>
                         <?php }
-                            if (FatApp::getConfig("CONF_ALLOW_REVIEWS", FatUtility::VAR_INT, 0) && $canReviewOrders) {
+                            if (FatApp::getConfig("CONF_ALLOW_REVIEWS", FatUtility::VAR_INT, 0) && $canReviewOrders && $canSubmitFeedback) {
                                 ?> <li>
                             <a href="<?php echo CommonHelper::generateUrl('Buyer', 'orderFeedback', array($childOrderDetail['op_id'])); ?>" class="icn-highlighted" title="<?php echo Labels::getLabel('LBL_Feedback', $siteLangId); ?>"><i
                                     class="fa fa-star"></i></a>

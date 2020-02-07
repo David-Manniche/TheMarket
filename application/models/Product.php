@@ -1767,7 +1767,7 @@ END,   special_price_found ) as special_price_found'
         $prodSpecId = FatUtility::int($prodSpecId);
         $langId = FatUtility::int($langId);
         if ($langId < 1 || empty($prodSpecName) || empty($prodSpecValue) || ($prodSpecId < 1 && $this->mainTableRecordId < 1)) {
-            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            $this->error = Labels::getLabel('ERR_Please_fill_product_speicification_text_and_value', $this->commonLangId);
             return false;
         }
 

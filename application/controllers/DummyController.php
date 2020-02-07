@@ -658,9 +658,4 @@ class DummyController extends MyAppController
         AbandonedCart::sendReminderAbandonedCart();
         
     }
-
-    public function notify()
-    {
-        PushNotification::send();
-    }
 }

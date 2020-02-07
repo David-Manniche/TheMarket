@@ -46,5 +46,16 @@ New Features:
 -----------------------TV-9.1.2.20200205-------------------------------
 
 Bugs:
-    => 034264 => Getting error (invalid data) while using upload bulk media feature in import export.
+    => 034264 - Getting error (invalid data) while using upload bulk media feature in import export.
 ---------------------------------------------------------------------------------    
+
+Bugs:
+    => 034406 - Plugin settings are not opening
+    => 034260 - Paypal payout getting fatal error while placing withdrawal request
+    => 034257 - Getting error on currency management page admin
+    => 034242 - Cancellation and return policy is not listing on product detail page if opted from shop
+    => 034233 - Getting error on withdrawal amount using paypal payout
+    => 033975 - When user places bank withdrawal request then getting error in email
+    => 033220 - Once review is submitted for an order> review button is listing on order detail page
+    => 034116 - Getting invalid request on clicking save button in special price and volume discount
+    => 033149 - Getting error on affiliate withdrawal request 
