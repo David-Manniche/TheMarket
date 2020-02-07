@@ -1632,7 +1632,7 @@ trait CustomProducts
         $frm->addSelectBox(Labels::getLabel('LBL_Image_File_Type', $this->siteLangId), 'option_id', $imgTypesArr, 0, array('class'=>'option'), '');
         $languagesAssocArr = Language::getAllNames();
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->siteLangId), 'lang_id', array( 0 => Labels::getLabel('LBL_All_Languages', $this->siteLangId) ) + $languagesAssocArr, '', array('class'=>'language'), '');
-        $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_Photo(s)', $this->siteLangId), 'prod_image', array('id' => 'prod_image', 'multiple' => 'multiple'));
+        $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_Photo(s)', $this->siteLangId), 'prod_image', array('id' => 'prod_image'));
         $fldImg->htmlBeforeField='<div class="filefield"><span class="filename"></span>';
         $fldImg->htmlAfterField='<label class="filelabel">'.Labels::getLabel('LBL_Browse_File', $this->siteLangId).'</label></div><small>'.Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500._You_can_upload_multiple_photos_from_here', $this->siteLangId).'</small>';
 
@@ -1660,7 +1660,7 @@ trait CustomProducts
     private function getCustomProductImagesForm()
     {
         $frm = new Form('frmCustomProductImage');
-        $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_Photo(s):', $this->siteLangId), 'prod_image', array('id' => 'prod_image', 'multiple' => 'multiple'));
+        $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_Photo(s):', $this->siteLangId), 'prod_image', array('id' => 'prod_image'));
         $fldImg->htmlBeforeField='<div class="filefield"><span class="filename"></span>';
         $fldImg->htmlAfterField='<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->siteLangId).'</label></div><br/><small class="text--small">'.Labels::getLabel('LBL_You_can_upload_multiple_photos_from_here', $this->siteLangId).'</small>';
         $frm->addHiddenField('', 'product_id');
@@ -1777,6 +1777,7 @@ trait CustomProducts
                 $productLangData = $prod->getAttributesByLangId($langId, $productId);
                 if (!empty($productLangData)) {
                     $prodData['product_name'][$langId] = $productLangData['product_name'];
+                    $prodData['product_youtube_video'][$langId] = $productLangData['product_youtube_video'];
                     $prodData['product_description'][$langId] = $productLangData['product_description'];
                 }
             }
@@ -1867,13 +1868,12 @@ trait CustomProducts
         }
         Product::updateMinPrices($productId);
 
-        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
-        if (!$prod->saveProductLangData($siteDefaultLangId, $post)) {
+        if (!$prod->saveProductLangData($post)) {
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if (!$prod->saveProductCategory($post['ptc_prodcat_id'])) {
+        if(!$prod->saveProductCategory($post['ptc_prodcat_id'])){
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -2225,7 +2225,6 @@ trait CustomProducts
         $this->set('msg', Labels::getLabel('LBL_Product_Data_Translated_Successful', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
-
     public function setUpProductShipping()
     {
         if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {

@@ -770,7 +770,7 @@ class ProductsController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', array( 0 => Labels::getLabel('LBL_All_Languages', $this->adminLangId) ) + $languagesAssocArr, '', array(), '');
         $frm->addHiddenField('', 'min_width', 500);
         $frm->addHiddenField('', 'min_height', 500);
-        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'prod_image', array('id' => 'prod_image', 'multiple' => 'multiple'));
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'prod_image', array('id' => 'prod_image'));
         $frm->addHiddenField('', 'product_id', $productId);
         return $frm;
     }
@@ -893,6 +893,7 @@ class ProductsController extends AdminBaseController
                 $productLangData = $prod->getAttributesByLangId($langId, $productId);
                 if (!empty($productLangData)) {
                     $prodData['product_name'][$langId] = $productLangData['product_name'];
+                    $prodData['product_youtube_video'][$langId] = $productLangData['product_youtube_video'];
                     $prodData['product_description'][$langId] = $productLangData['product_description'];
                 }
             }
@@ -1010,8 +1011,7 @@ class ProductsController extends AdminBaseController
         }
         Product::updateMinPrices($productId);
 
-        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
-        if (!$prod->saveProductLangData($siteDefaultLangId, $post)) {
+        if(!$prod->saveProductLangData($post)){
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
