@@ -10,7 +10,7 @@ $layout = Language::getLayoutDirection($langId);
                  </div>
                  <div class="field-wraper">
                     <div class="field_cover">
-                        <input type="text" name="prodspec_name[<?php echo $langId; ?>]" value="<?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_name']; } ?>">                        
+                        <input class="specification-field-js" type="text" name="prodspec_name[<?php echo $langId; ?>]" value="<?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_name']; } ?>">                        
                     </div>
                  </div>
              </div>
@@ -22,7 +22,7 @@ $layout = Language::getLayoutDirection($langId);
                  </div>
                  <div class="field-wraper">
                     <div class="field_cover">
-                        <input type="text" name="prodspec_value[<?php echo $langId; ?>]" value="<?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_value']; } ?>">
+                        <input class="specification-field-js" type="text" name="prodspec_value[<?php echo $langId; ?>]" value="<?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_value']; } ?>">
                     </div>
                 </div>
             </div>
@@ -34,7 +34,7 @@ $layout = Language::getLayoutDirection($langId);
                  </div>
                  <div class="field-wraper">
                     <div class="field_cover">
-                        <input type="text" class="prodspec_group" name="prodspec_group[<?php echo $langId; ?>]" value="<?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_group']; } ?>">
+                        <input type="text" class="prodspec_group specification-field-js" name="prodspec_group[<?php echo $langId; ?>]" value="<?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_group']; } ?>">
                     </div>
                 </div>
             </div>
@@ -73,6 +73,13 @@ $(document).ready(function(){
         }
 
     });
-
+    
+    $('.specification-field-js').on('keyup keypress', function(e) {
+        var keyCode = e.keyCode || e.which;
+        if (keyCode === 13) { 
+            e.preventDefault();
+            return false;
+        }
+    });
 });
 </script>
