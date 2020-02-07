@@ -97,7 +97,7 @@ class CollectionsController extends MyAppController
         /* $productSrchObj->joinFavouriteProducts($loggedUserId ); */
         if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::NO) {
             $productSrchObj->joinFavouriteProducts($loggedUserId);
-            $productSrchObj->addFld('ufp_id');
+            $productSrchObj->addFld('IFNULL(ufp_id, 0) as ufp_id');
         } else {
             $productSrchObj->joinUserWishListProducts($loggedUserId);
             $productSrchObj->addFld('IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist');
