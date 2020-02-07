@@ -55,3 +55,4 @@ Bugs:
     => 034257 - Getting error on currency management page admin
     => 034242 - Cancellation and return policy is not listing on product detail page if opted from shop
     => 034233 - Getting error on withdrawal amount using paypal payout
+    => 033975 - When user places bank withdrawal request then getting error in email
