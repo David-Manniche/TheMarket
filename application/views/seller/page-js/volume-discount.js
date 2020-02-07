@@ -135,6 +135,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
         });
 	};
     updateVolumeDiscountRow = function(frm, selProd_id){
+        if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('Seller', 'updateVolumeDiscountRow'), data, function(t) {
             if(t.status == true){
