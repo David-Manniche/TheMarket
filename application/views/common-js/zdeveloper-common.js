@@ -1013,7 +1013,7 @@ function stylePhoneNumberFld() {
     }
     var iti = window.intlTelInput(input, {
         initialCountry:country,
-        utilsScript: "/yokartv8/intlTelInput/intlTelInput-utils.js"
+        utilsScript: "/intlTelInput/intlTelInput-utils.js"
     });
     input.value = "+" + iti.getSelectedCountryData().dialCode;
     input.addEventListener('countrychange', function(e) {
