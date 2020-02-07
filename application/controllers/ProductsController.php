@@ -79,7 +79,7 @@ class ProductsController extends MyAppController
         );
 
         $data = array_merge($data, $common, $arr);
-        
+
         if (FatUtility::isAjaxCall()) {
             $this->set('products', $data['products']);
             $this->set('page', $data['page']);
@@ -91,7 +91,7 @@ class ProductsController extends MyAppController
             exit;
         }
         $this->set('data', $data);
-                
+
         $this->includeProductPageJsCss();
         $this->_template->addJs('js/slick.min.js');
         $this->_template->render(true, true, 'products/index.php');
@@ -179,7 +179,7 @@ class ProductsController extends MyAppController
         $brandsCheckedArr = FilterHelper::selectedBrands($post);
         //$prodSrchObj->addFld('count(selprod_id) as totalProducts');
         $cacheKey = FilterHelper::getCacheKey($this->siteLangId, $post);
-        
+
         $brandFilter =  FatCache::get('brandFilter' . $cacheKey, CONF_FILTER_CACHE_TIME, '.txt');
         if (!$brandFilter) {
             $brandsArr = FilterHelper::brands($prodSrchObj, $langIdForKeywordSeach, $post, true);
@@ -187,7 +187,7 @@ class ProductsController extends MyAppController
         } else {
             $brandsArr = unserialize($brandFilter);
         }
-        
+
         $this->set('brandsArr', $brandsArr);
         $this->set('brandsCheckedArr', $brandsCheckedArr);
 
@@ -220,7 +220,7 @@ class ProductsController extends MyAppController
 
         /* Categories Data[ */
         $categoriesArr = array();
-        if (empty($keyword)) {            
+        if (empty($keyword)) {
             $categoriesArr =  FilterHelper::getCategories($this->siteLangId, $categoryId, $prodSrchObj, $cacheKey);
         }
         /* ] */
@@ -748,7 +748,7 @@ class ProductsController extends MyAppController
         $this->setRecentlyViewedItem($selprod_id);
 
         if (false ===  MOBILE_APP_API_CALL) {
-            
+
             $this->_template->addJs(array('js/slick.js','js/modaal.js','js/product-detail.js','js/responsive-img.min.js','js/xzoom.js','js/magnific-popup.js'));
         } else {
             $recentlyViewed  = FatApp::getPostedData('recentlyViewed');
@@ -920,7 +920,7 @@ class ProductsController extends MyAppController
         $selProdRviewSubQuery = $selProdReviewObj->getQuery();
         $srch->joinTable('(' . $selProdRviewSubQuery . ')', 'LEFT OUTER JOIN', 'sq_sprating.spreview_selprod_id = selprod_id', 'sq_sprating');
         $srch->addFld('COALESCE(prod_rating,0) prod_rating');*/
-
+        $srch->addCondition('selprod_id', '!=', $selprod_id);
         $srch->addCondition('product_id', 'in', array_keys($recommendedProds));
         $srch->setPageSize(5);
         $srch->doNotCalculateRecords();
