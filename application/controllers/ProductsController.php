@@ -36,7 +36,7 @@ class ProductsController extends MyAppController
         $frm = $this->getProductSearchForm($includeKeywordRelevancy);
 
         $get['join_price'] = 1;
-
+		
         $arr = array();
 
         switch ($method) {
@@ -69,9 +69,9 @@ class ProductsController extends MyAppController
         }
 
         $frm->fill($get);
-
         $data = $this->getListingData($get);
-
+		
+		
         $common = array(
             'frmProductSearch' => $frm,
             'recordId' => 0,
@@ -228,6 +228,7 @@ class ProductsController extends MyAppController
         /* Brand Filters Data[ */
         $brandsCheckedArr = FilterHelper::selectedBrands($headerFormParamsAssocArr);
         $brandsArr = FilterHelper::brands($prodSrchObj, $langIdForKeywordSeach, $headerFormParamsAssocArr, false, true);
+		
         /* ] */
 
         /* {Can modify the logic fetch data directly from query . will implement later}

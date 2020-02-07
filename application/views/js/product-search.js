@@ -436,7 +436,6 @@ function getSearchQueryUrl(includeBaseUrl){
 	if(typeof includeBaseUrl != 'undefined' || includeBaseUrl != null){
 		url = $currentPageUrl;		
 	}
-	
 	var keyword = $("input[id=keyword]").val();
 	if(keyword !=''){
 		delete searchArr['keyword'];
@@ -598,7 +597,7 @@ function updatePriceFilter(minPrice,maxPrice,addPriceFilter){
 		reloadProductListing(frm);
 	};
 
-	loadProductListingfilters = function(frm){
+	loadProductListingfilters = function(frm) {		
 		$('.productFilters-js').html(fcom.getLoader());
 		var url = window.location.href;
 		if($currentPageUrl == removeLastSpace(url)+'/index'){

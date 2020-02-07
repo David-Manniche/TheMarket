@@ -567,6 +567,16 @@ class DummyController extends MyAppController
     }
 
 	public function checking(){
-		FullTextSearch::insertProduct();
+		/*$searchCondition = array(
+			'keyword'  => 'phone',
+			'category' => '109',
+			//'brand'    => array(),
+		);*/
+		$response = FullTextSearch::insertProduct();
+		/*if(!$response){
+			echo 'not done proper'; die;
+		}
+		echo "done sucessfully";
+		die;*/
 	}
 }

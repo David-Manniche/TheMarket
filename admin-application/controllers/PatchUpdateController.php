@@ -47,7 +47,7 @@ class PatchUpdateController extends AdminBaseController
             /* ]*/
 
             /* [ Reset Seller Product data for full text search*/
-            $srch = new ProductSearch();
+            /*$srch = new ProductSearch();
             $srch->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', 'p.product_id = sprods.selprod_product_id and selprod_active = ' . applicationConstants::ACTIVE .' and selprod_deleted = ' . applicationConstants::NO, 'sprods');
             $srch->addMultipleFields(array('selprod_id',$langId,'selprod_product_id','0',));
             $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
@@ -57,7 +57,7 @@ class PatchUpdateController extends AdminBaseController
 
             $qry = "INSERT INTO " . SellerProduct::DB_TBL_EXTERNAL_RELATIONS . " (" . SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . "selprod_id, " . SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . "lang_id," . SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . "product_id," . SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . "indexed_for_search ) SELECT * FROM (" . $tmpQry . ") AS t ON DUPLICATE KEY UPDATE ". SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . "selprod_id = t.selprod_id, " . SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . " lang_id = t. " . $langId . "," . SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . "product_id = t.selprod_product_id," . SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . "indexed_for_search = 0";
 
-            FatApp::getDb()->query($qry);
+            FatApp::getDb()->query($qry);*/
             /* ]*/
         }
         echo "Done";
