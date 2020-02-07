@@ -317,7 +317,7 @@ trait SellerProducts
         /* ] */
         $post['selprod_url_keyword'] = strtolower(CommonHelper::createSlug($post['selprod_url_keyword']));
 
-        if ($post['selprod_track_inventory'] == Product::INVENTORY_NOT_TRACK) {
+        if (isset($post['selprod_track_inventory']) && $post['selprod_track_inventory'] == Product::INVENTORY_NOT_TRACK) {
             $post['selprod_threshold_stock_level'] = 0;
         }
 

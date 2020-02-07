@@ -53,3 +53,4 @@ Bugs:
     => 034406 - Plugin settings are not opening
     => 034260 - Paypal payout getting fatal error while placing withdrawal request
     => 034257 - Getting error on currency management page admin
+    => 034242 - Cancellation and return policy is not listing on product detail page if opted from shop

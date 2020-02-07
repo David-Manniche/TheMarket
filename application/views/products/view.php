@@ -24,9 +24,9 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                 <div class="slider-for" dir="<?php echo CommonHelper::getLayoutDirection();?>" id="slider-for">
                                     <?php if ($productImagesArr) { ?>
                                     <?php foreach ($productImagesArr as $afile_id => $image) {
-                                        $originalImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array($product['product_id'], 'ORIGINAL', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg');
-                                        $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array($product['product_id'], 'MEDIUM', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg');
-                                        $thumbImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array($product['product_id'], 'THUMB', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg'); ?>
+                                            $originalImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array($product['product_id'], 'ORIGINAL', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg');
+                                            $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array($product['product_id'], 'MEDIUM', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg');
+                                            $thumbImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array($product['product_id'], 'THUMB', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg'); ?>
                                     <img class="xzoom active" id="xzoom-default" src="<?php echo $mainImgUrl; ?>" xoriginal="<?php echo $originalImgUrl; ?>">
                                     <?php break;
                                     } ?>
@@ -51,74 +51,74 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
 
 
                         </div>
-						</div>
+                    </div>
                         <div class="col-lg-5 col-details-right">
                             <div class="product-description">
                                 <div class="product-description-inner">
                                     <div class="">
                                         <div class="products__title">
-                                            <div clss="">
-											<h2><?php echo $product['selprod_title'];?></h2>
-											 <div class="favourite-wrapper favourite-wrapper-detail ">
-                                <?php include(CONF_THEME_PATH.'_partial/collection-ui.php'); ?>
-                                <div class="share-button">
-                                    <a href="javascript:void(0)" class="social-toggle"><i class="icn">
-                                            <svg class="svg">
-                                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#share" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#share"></use>
-                                            </svg>
-                                        </i></a>
-                                    <div class="social-networks">
-                                        <ul>
-                                            <li class="social-facebook">
-                                                <a class="st-custom-button" data-network="facebook" data-url="<?php echo CommonHelper::generateFullUrl('Products', 'view', array($product['selprod_id'])); ?>/">
-                                                    <i class="icn"><svg class="svg">
-                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#fb" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#fb"></use>
-                                                        </svg></i>
-                                                </a>
-                                            </li>
-                                            <li class="social-twitter">
-                                                <a class="st-custom-button" data-network="twitter">
-                                                    <i class="icn"><svg class="svg">
-                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#tw" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#tw"></use>
-                                                        </svg></i>
-                                                </a>
-                                            </li>
-                                            <li class="social-pintrest">
-                                                <a class="st-custom-button" data-network="pinterest">
-                                                    <i class="icn"><svg class="svg">
-                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#pt" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#pt"></use>
-                                                        </svg></i>
-                                                </a>
-                                            </li>
-                                            <li class="social-email">
-                                                <a class="st-custom-button" data-network="email">
-                                                    <i class="icn"><svg class="svg">
-                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#envelope" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#envelope"></use>
-                                                        </svg></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
+                                            <div>
+                                                <h2><?php echo $product['selprod_title'];?></h2>
+                                                <div class="favourite-wrapper favourite-wrapper-detail ">
+                                                    <?php include(CONF_THEME_PATH . '_partial/collection-ui.php'); ?>
+                                                    <div class="share-button">
+                                                        <a href="javascript:void(0)" class="social-toggle"><i class="icn">
+                                                                <svg class="svg">
+                                                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#share" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#share"></use>
+                                                                </svg>
+                                                            </i></a>
+                                                        <div class="social-networks">
+                                                            <ul>
+                                                                <li class="social-facebook">
+                                                                    <a class="st-custom-button" data-network="facebook" data-url="<?php echo CommonHelper::generateFullUrl('Products', 'view', array($product['selprod_id'])); ?>/">
+                                                                        <i class="icn"><svg class="svg">
+                                                                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#fb" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#fb"></use>
+                                                                            </svg></i>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="social-twitter">
+                                                                    <a class="st-custom-button" data-network="twitter">
+                                                                        <i class="icn"><svg class="svg">
+                                                                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#tw" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#tw"></use>
+                                                                            </svg></i>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="social-pintrest">
+                                                                    <a class="st-custom-button" data-network="pinterest">
+                                                                        <i class="icn"><svg class="svg">
+                                                                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#pt" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#pt"></use>
+                                                                            </svg></i>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="social-email">
+                                                                    <a class="st-custom-button" data-network="email">
+                                                                        <i class="icn"><svg class="svg">
+                                                                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#envelope" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#envelope"></use>
+                                                                            </svg></i>
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
 											</div>
                                             <?php if (FatApp::getConfig("CONF_ALLOW_REVIEWS", FatUtility::VAR_INT, 0)) { ?>
-                                            <?php /*if (round($product['prod_rating']) > 0) {*/ ?>
-                                            <?php $label = (round($product['prod_rating']) > 0) ? round($product['totReviews'], 1).' '.Labels::getLabel('LBL_Reviews', $siteLangId) : Labels::getLabel('LBL_No_Reviews', $siteLangId); ?>
-                                            <div class="products-reviews">
-											<div class="products__rating">
-											<i class="icn"><svg class="svg">
-                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#star-yellow" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#star-yellow"></use>
-                                            </svg>
-											</i>
-                                            <span class="rate"><?php echo round($product['prod_rating'], 1);?></span>
-											</div>
-                                            <a href="#itemRatings" class="totals-review link nav-scroll-js"><?php echo $label; ?></a>
-                                            </div>
-                                            <?php /*}*/ ?>
-                                            <?php /* if (round($product['prod_rating']) == 0) {  ?>
-                                            <span class="be-first"> <a href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Be_the_first_to_review_this_product', $siteLangId); ?> </a> </span>
-                                            <?php } */ ?>
+                                                <?php /*if (round($product['prod_rating']) > 0) {*/ ?>
+                                                <?php $label = (round($product['prod_rating']) > 0) ? round($product['totReviews'], 1).' '.Labels::getLabel('LBL_Reviews', $siteLangId) : Labels::getLabel('LBL_No_Reviews', $siteLangId); ?>
+                                                <div class="products-reviews">
+                                                    <div class="products__rating">
+                                                        <i class="icn"><svg class="svg">
+                                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#star-yellow" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#star-yellow"></use>
+                                                        </svg>
+                                                        </i>
+                                                        <span class="rate"><?php echo round($product['prod_rating'], 1);?></span>
+                                                    </div>
+                                                    <a href="#itemRatings" class="totals-review link nav-scroll-js"><?php echo $label; ?></a>
+                                                </div>
+                                                <?php /*}*/ ?>
+                                                <?php /* if (round($product['prod_rating']) == 0) {  ?>
+                                                <span class="be-first"> <a href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Be_the_first_to_review_this_product', $siteLangId); ?> </a> </span>
+                                                <?php } */ ?>
                                             <?php } ?>
                                         </div>
                                     </div>
@@ -144,7 +144,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                     <?php if (!empty($optionRows)) { ?>
                                     <div class="gap"> </div>
                                     <div class="row">
-                                        <?php $selectedOptionsArr = $product['selectedOptionValues'];
+                                <?php $selectedOptionsArr = $product['selectedOptionValues'];
                                 /*CommonHelper::printArray($selectedOptionsArr);
                                 CommonHelper::printArray($optionRows);*/
                                 $count = 0;
@@ -196,7 +196,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                             </div>
                                         </div>
                                         <?php $count++;
-                                }?>
+                                    } ?>
                                     </div>
                                     <?php }?>
 
