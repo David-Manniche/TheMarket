@@ -123,6 +123,25 @@ $submitBtnFld->developerTags['col'] = 12;
                         <?php echo $frmSellerProduct->getFieldHtml('selprod_condition'); ?>
                         <?php } ?>
                         <div class="row">
+                            <div class="col-md-6">
+                                <div class="field-set">
+                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_active')->getCaption(); ?></label></div>
+                                    <div class="field-wraper">
+                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_active'); ?></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="field-set">
+                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_available_from')->getCaption(); ?><span class="spn_must_field">*</span></label></div>
+                                    <div class="field-wraper">
+                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_available_from'); ?></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
                             <?php if ($product_type == Product::PRODUCT_TYPE_PHYSICAL) { ?>
                             <div class="col-md-6">
                                 <div class="field-set">
@@ -135,34 +154,7 @@ $submitBtnFld->developerTags['col'] = 12;
                             <?php } ?>
                             <div class="col-md-6">
                                 <div class="field-set">
-                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_available_from')->getCaption(); ?><span class="spn_must_field">*</span></label></div>
-                                    <div class="field-wraper">
-                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_available_from'); ?></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="field-set">
-                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_active')->getCaption(); ?></label></div>
-                                    <div class="field-wraper">
-                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_active'); ?></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="selprod_cod_enabled_fld col-md-6">
-                                <div class="field-set">
-                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_cod_enabled')->getCaption(); ?></label></div>
-                                    <div class="field-wraper">
-                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_cod_enabled'); ?></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="field-set">
+                                    <div class="caption-wraper"><label class="field_label"></label></div>
                                     <div class="field-wraper">
                                         <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('use_shop_policy'); ?></div>
                                     </div>
@@ -183,6 +175,16 @@ $submitBtnFld->developerTags['col'] = 12;
                                     <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_cancellation_age')->getCaption(); ?></label></div>
                                     <div class="field-wraper">
                                         <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_cancellation_age'); ?></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="selprod_cod_enabled_fld col-md-6">
+                                <div class="field-set">
+                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_cod_enabled')->getCaption(); ?></label></div>
+                                    <div class="field-wraper">
+                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_cod_enabled'); ?></div>
                                     </div>
                                 </div>
                             </div>
