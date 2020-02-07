@@ -1584,7 +1584,7 @@ class User extends MyAppModel
         }
 
         if ('' == $otp) {
-            $this->error = Labels::getLabel('ERR_INVALID_CODE', $this->commonLangId);
+            $this->error = Labels::getLabel('MSG_INVALID_OTP', $this->commonLangId);
             return false;
         }
 
@@ -1608,7 +1608,7 @@ class User extends MyAppModel
             }
             return true;
         } else {
-            $this->error = Labels::getLabel('ERR_INVALID_CODE.', $this->commonLangId);
+            $this->error = Labels::getLabel('MSG_INVALID_OTP.', $this->commonLangId);
             return false;
         }
         return false;

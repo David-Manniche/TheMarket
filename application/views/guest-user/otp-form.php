@@ -26,26 +26,30 @@ $btnFld->setFieldTagAttribute('class', 'btn--block');
         <div class="row">
             <div class="col-md-12">
                 <?php echo $frm->getFormTag(); ?>
-                <div class="otp-row">
-                    <?php for ($i = 0; $i < User::OTP_LENGTH; $i++) { ?>
-                        <div class="otp-col">
-                            <?php
-                            $fld = $frm->getField("upv_otp[$i]");
-                            $fld->setFieldTagAttribute('class', 'otpVal');
-                            echo $frm->getFieldHtml("upv_otp[$i]"); ?>
-                            <?php if ($i < (User::OTP_LENGTH - 1)) { ?>
-                                <span>-</span>
-                            <?php } ?>
-                        </div>
-                    <?php } ?>
-                </div>
-                <span class="note mb-2">
-                    <a href="javaScript:void(0)" onClick="resendOtp(<?php echo $userId; ?>, <?php echo applicationConstants::YES; ?>)">
-                        <?php echo Labels::getLabel('LBL_RESEND_OTP?', $siteLangId); ?>
-                    </a>
-                </span>
-                <?php echo $frm->getFieldHtml('btn_submit'); ?>
+                    <div class="otp-row">
+                        <?php for ($i = 0; $i < User::OTP_LENGTH; $i++) { ?>
+                            <div class="otp-col">
+                                <?php
+                                $fld = $frm->getField('upv_otp[' . $i . ']');
+                                $fld->setFieldTagAttribute('class', 'otpVal');
+                                echo $frm->getFieldHtml('upv_otp[' . $i . ']'); ?>
+                                <?php if ($i < (User::OTP_LENGTH - 1)) { ?>
+                                    <span>-</span>
+                                <?php } ?>
+                            </div>
+                        <?php } ?>
+                    </div>
+                    <span class="note mb-2">
+                        <a href="javaScript:void(0)" onClick="resendOtp(<?php echo $userId; ?>, <?php echo applicationConstants::YES; ?>)">
+                            <?php echo Labels::getLabel('LBL_RESEND_OTP?', $siteLangId); ?>
+                        </a>
+                    </span>
+                    <?php 
+                        echo $frm->getFieldHtml('user_id');
+                        echo $frm->getFieldHtml('btn_submit');
+                    ?>
                 </form>
+                <?php echo $frm->getExternalJs(); ?>
             </div>
         </div>
     </div>

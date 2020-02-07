@@ -412,19 +412,26 @@ class GuestUserController extends MyAppController
         FatApp::redirectUser($redirectUrl);
     }
 
-    public function validateOtp($forRecoveringPwd = 0)
+    public function validateOtp($recoverPwd = 0)
     {
-        $otp = FatApp::getPostedData('upv_otp', FatUtility::VAR_INT, 0);
-        if (1 > $otp) {
+        $frm = $this->getOtpForm();
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        if (false === $post) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+
+        if (!is_array($post['upv_otp']) || User::OTP_LENGTH != count($post['upv_otp'])) {
             LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_OTP', $this->siteLangId));
         }
+        $otp = implode("", $post['upv_otp']);
+
         $userId = FatApp::getPostedData('user_id', FatUtility::VAR_INT, 0);
         $obj = new User($userId);
         if (false == $obj->verifyUserPhoneOtp($otp, true)) {
             LibHelper::dieJsonError($obj->getError());
         }
 
-        if (0 < $forRecoveringPwd) {
+        if (0 < $recoverPwd) {
             $obj = new UserAuthentication();
             $record = $obj->getUserResetPwdToken($userId);
             $token = $record['uprr_token'];
