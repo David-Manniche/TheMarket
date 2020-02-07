@@ -4,7 +4,8 @@ class FilterHelper extends FatUtility
     public static function getParamsAssocArr()
     {
         $post = FatApp::getPostedData();
-        $get = FatApp::getParameters();
+		
+        $get = FatApp::getParameters();		
         $headerFormParamsAssocArr = Product::convertArrToSrchFiltersAssocArr($get);
         return array_merge($headerFormParamsAssocArr, $post);
     }

@@ -436,3 +436,6 @@ ALTER TABLE tbl_seller_product_external_relations
 
 ALTER TABLE  tbl_product_external_relations
       ADD PRIMARY KEY (perel_product_id, perel_lang_id);
+	  
+INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('MSG_INDEX_ALREADY_EXISTS', '1', 'Index Already Exists', '1');
+
