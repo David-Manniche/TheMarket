@@ -1,8 +1,8 @@
 <?php
-trait CustomCatalogProducts
-{
-    public function CustomCatalogProducts()
-    {
+
+trait CustomCatalogProducts {
+
+    public function CustomCatalogProducts() {
         if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
         }
@@ -23,8 +23,7 @@ trait CustomCatalogProducts
         $this->_template->render(true, true);
     }
 
-    public function searchCustomCatalogProducts()
-    {
+    public function searchCustomCatalogProducts() {
         $this->canAddCustomCatalogProduct();
         $frmSearchCustomCatalogProducts = $this->getCustomCatalogProductsSearchForm();
         $post = $frmSearchCustomCatalogProducts->getFormDataFromArray(FatApp::getPostedData());
@@ -50,21 +49,21 @@ trait CustomCatalogProducts
         $arr_listing = $db->fetchAll($rs);
         $jsonDecodedContent = array();
         foreach ($arr_listing as $key => $row) {
-            $content =     (!empty($row['preq_content']))?json_decode($row['preq_content'], true):array();
-            $langContent =     (!empty($row['preq_lang_data']))?json_decode($row['preq_lang_data'], true):array();
+            $content = (!empty($row['preq_content'])) ? json_decode($row['preq_content'], true) : array();
+            $langContent = (!empty($row['preq_lang_data'])) ? json_decode($row['preq_lang_data'], true) : array();
 
-            $row  = array_merge($row, $content);
+            $row = array_merge($row, $content);
             if (!empty($langContent)) {
-                $row  = array_merge($row, $langContent);
+                $row = array_merge($row, $langContent);
             }
 
-            $arr  = array(
-            'preq_id'=>$row['preq_id'],
-            'preq_user_id'=>$row['preq_user_id'],
-            'preq_added_on'=>$row['preq_added_on'],
-            'preq_status'=>$row['preq_status'],
-            'product_identifier'=>$row['product_identifier'],
-            'product_name'=>(!empty($row['product_name']))?$row['product_name']:'',
+            $arr = array(
+                'preq_id' => $row['preq_id'],
+                'preq_user_id' => $row['preq_user_id'],
+                'preq_added_on' => $row['preq_added_on'],
+                'preq_status' => $row['preq_status'],
+                'product_identifier' => $row['product_identifier'],
+                'product_name' => (!empty($row['product_name'])) ? $row['product_name'] : '',
             );
             $arr_listing[$key] = $arr;
         }
@@ -84,157 +83,172 @@ trait CustomCatalogProducts
         $this->_template->render(false, false);
     }
 
-    public function customCatalogProductForm($preqId = 0, $preqCatId = 0)
-    {
-        $this->canAddCustomCatalogProduct(true);
-        $preqId = FatUtility::int($preqId);
-        $preqCatId = FatUtility::int($preqCatId);
+    /* public function customCatalogProductForm($preqId = 0, $preqCatId = 0)
+      {
+      $this->canAddCustomCatalogProduct(true);
+      $preqId = FatUtility::int($preqId);
+      $preqCatId = FatUtility::int($preqCatId);
 
-        if ($preqId > 0) {
-            $row = ProductRequest::getAttributesById($preqId);
-            if (!empty($row) && $row['preq_id'] == $preqId && $row['preq_user_id'] == UserAuthentication::getLoggedUserId()) {
-                $preqCatId = $row['preq_prodcat_id'];
-            } else {
-                $preqId = 0;
-            }
-        }
+      if ($preqId > 0) {
+      $row = ProductRequest::getAttributesById($preqId);
+      if (!empty($row) && $row['preq_id'] == $preqId && $row['preq_user_id'] == UserAuthentication::getLoggedUserId()) {
+      $preqCatId = $row['preq_prodcat_id'];
+      } else {
+      $preqId = 0;
+      }
+      }
 
-        $this->set('preqId', $preqId);
-        $this->set('preqCatId', $preqCatId);
-        $this->_template->addJs('js/slick.js');
-        $this->_template->addJs('js/jquery.tablednd.js');
-        $this->_template->render(true, true);
-    }
+      $this->set('preqId', $preqId);
+      $this->set('preqCatId', $preqCatId);
+      $this->_template->addJs('js/slick.js');
+      $this->_template->addJs('js/jquery.tablednd.js');
+      $this->_template->render(true, true);
+      } */
 
-    public function customCatalogProductCategoryForm()
-    {
-        $frm = $this->getCustomCatalogProductCategoryForm();
-        $this->set('frm', $frm);
-        $this->_template->render(false, false);
-    }
+    /* public function customCatalogProductCategoryForm() {
+      $frm = $this->getCustomCatalogProductCategoryForm();
+      $this->set('frm', $frm);
+      $this->_template->render(false, false);
+      } */
 
-    public function customCatalogGeneralForm($preqId = 0, $prodcat_id = 0)
-    {
-        if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
-            FatUtility::dieWithError(Labels::getLabel('MSG_Your_shop_is_inactive', $this->siteLangId));
-        }
+    /* public function customCatalogGeneralForm($preqId = 0, $prodcat_id = 0)
+      {
+      if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
+      FatUtility::dieWithError(Labels::getLabel('MSG_Your_shop_is_inactive', $this->siteLangId));
+      }
 
-        if (!User::canAddCustomProductAvailableToAllSellers()) {
-            FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-        }
+      if (!User::canAddCustomProductAvailableToAllSellers()) {
+      FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+      }
 
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
-            FatUtility::dieWithError(Labels::getLabel('MSG_Please_buy_subscription', $this->siteLangId));
-        }
+      if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+      FatUtility::dieWithError(Labels::getLabel('MSG_Please_buy_subscription', $this->siteLangId));
+      }
 
-        $preqId = FatUtility::int($preqId);
-        /* Validate product request belongs to current logged seller[ */
-        $productReqRow = array();
-        $productOptions = array();
-        if ($preqId) {
-            $productReqRow = ProductRequest::getAttributesById($preqId, array('preq_id','preq_user_id','preq_prodcat_id','preq_content'));
-            if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId() || $productReqRow['preq_prodcat_id'] === false) {
-                FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            }
+      $preqId = FatUtility::int($preqId);
+      $productReqRow = array();
+      $productOptions = array();
+      if ($preqId) {
+      $productReqRow = ProductRequest::getAttributesById($preqId, array('preq_id','preq_user_id','preq_prodcat_id','preq_content'));
+      if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId() || $productReqRow['preq_prodcat_id'] === false) {
+      FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+      }
 
-            $prodcat_id = $productReqRow['preq_prodcat_id'];
-            $productData = json_decode($productReqRow['preq_content'], true);
-            unset($productReqRow['preq_content']);
-            $productReqRow = array_merge($productReqRow, $productData, array('preq_prodcat_id'=>$prodcat_id));
-            $productOptions = $productReqRow['product_option'];
-        }
-        /* ] */
+      $prodcat_id = $productReqRow['preq_prodcat_id'];
+      $productData = json_decode($productReqRow['preq_content'], true);
+      unset($productReqRow['preq_content']);
+      $productReqRow = array_merge($productReqRow, $productData, array('preq_prodcat_id'=>$prodcat_id));
+      $productOptions = $productReqRow['product_option'];
+      }
 
-        $customProductFrm = $this->getCustomProductForm('CATALOG_PRODUCT', $prodcat_id);
-        if (!empty($productReqRow)) {
-            $customProductFrm->fill($productReqRow);
-        }
 
-        $this->set('languages', Language::getAllNames());
-        $this->set('activeTab', 'GENERAL');
-        $this->set('customProductFrm', $customProductFrm);
-        $this->set('preqCatId', $prodcat_id);
-        $this->set('preqId', $preqId);
-        $this->set('productReqRow', $productReqRow);
-        $this->set('productOptions', $productOptions);
-        $this->set('includeEditor', true);
-        $this->_template->addJs('js/jscolor.js');
-        $this->_template->addJs('js/multi-list.js');
-        $this->_template->render(false, false);
-    }
+      $customProductFrm = $this->getCustomProductForm('CATALOG_PRODUCT', $prodcat_id);
+      if (!empty($productReqRow)) {
+      $customProductFrm->fill($productReqRow);
+      }
 
-    public function setupCustomCatalogProduct()
-    {
-        $this->canAddCustomCatalogProduct();
+      $this->set('languages', Language::getAllNames());
+      $this->set('activeTab', 'GENERAL');
+      $this->set('customProductFrm', $customProductFrm);
+      $this->set('preqCatId', $prodcat_id);
+      $this->set('preqId', $preqId);
+      $this->set('productReqRow', $productReqRow);
+      $this->set('productOptions', $productOptions);
+      $this->set('includeEditor', true);
+      $this->_template->addJs('js/jscolor.js');
+      $this->_template->addJs('js/multi-list.js');
+      $this->_template->render(false, false);
+      } */
 
+    /* public function setupCustomCatalogProduct() 
+      {
+      $this->canAddCustomCatalogProduct();
+
+      $post = FatApp::getPostedData();
+      $product_tags = FatApp::getPostedData('product_tags');
+      $product_option = FatApp::getPostedData('product_option');
+      //$prodcat_id = FatApp::getPostedData('prodcat_id',FatUtility::VAR_INT,0);
+      $frm = $this->getCustomProductForm('CATALOG_PRODUCT');
+      $post = $frm->getFormDataFromArray($post);
+
+      if (false === $post) {
+      FatUtility::dieWithError(current($frm->getValidationErrors()));
+      }
+
+      $preq_id = FatUtility::int($post['preq_id']);
+      $preq_prodcat_id = FatUtility::int($post['preq_prodcat_id']);
+      $productShiping = FatApp::getPostedData('product_shipping');
+      $productTaxCategory = $post['ptt_taxcat_id'];
+
+
+      if ($preq_id) {
+      $productRow = ProductRequest::getAttributesById($preq_id, array('preq_user_id', 'preq_status'));
+      if ($productRow['preq_user_id'] != UserAuthentication::getLoggedUserId() || $productRow['preq_status'] != ProductRequest::STATUS_PENDING) {
+      FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+      }
+      }
+
+
+      unset($post['preq_id']);
+      unset($post['btn_submit']);
+
+      $prodReqObj = new ProductRequest($preq_id);
+      $data_to_be_save = $post;
+      $data_to_be_save['product_added_by_admin_id'] = 0;
+      $data_to_be_save['product_tags'] = $product_tags;
+      $data_to_be_save['product_option'] = $product_option;
+      $data_to_be_save['product_shipping'] = $productShiping;
+      $data_to_be_save['product_seller_id'] = UserAuthentication::getLoggedUserId();
+      if ($post['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
+      $data_to_be_save['product_length'] = 0;
+      $data_to_be_save['product_width'] = 0;
+      $data_to_be_save['product_height'] = 0;
+      $data_to_be_save['product_dimension_unit'] = 0;
+      $data_to_be_save['product_weight'] = 0;
+      $data_to_be_save['product_weight_unit'] = 0;
+      $data_to_be_save['product_cod_enabled'] = applicationConstants::NO;
+      }
+
+      $data = array(
+      'preq_user_id' => UserAuthentication::getLoggedUserId(),
+      'preq_prodcat_id' => $preq_prodcat_id,
+      'preq_content' => FatUtility::convertToJson($data_to_be_save),
+      'preq_status' => ProductRequest::STATUS_PENDING,
+      'preq_added_on' => date('Y-m-d H:i:s')
+      );
+
+      $prodReqObj->assignValues($data);
+
+      if (!$prodReqObj->save()) {
+      FatUtility::dieWithError($prodReqObj->getError());
+      }
+
+
+      $preq_id = $prodReqObj->getMainTableRecordId();
+      $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->siteLangId));
+      $this->set('preq_id', $preq_id);
+      $this->_template->render(false, false, 'json-success.php');
+      } */
+
+    public function validateUpcCode() {
         $post = FatApp::getPostedData();
-        $product_tags = FatApp::getPostedData('product_tags');
-        $product_option = FatApp::getPostedData('product_option');
-        //$prodcat_id = FatApp::getPostedData('prodcat_id',FatUtility::VAR_INT,0);
-        $frm = $this->getCustomProductForm('CATALOG_PRODUCT');
-        $post = $frm->getFormDataFromArray($post);
-
-        if (false === $post) {
-            FatUtility::dieWithError(current($frm->getValidationErrors()));
+        if (empty($post) || $post['code'] == '') {
+            FatUtility::dieWithError(Labels::getLabel('MSG_Please_fill_UPC/EAN_code', $this->siteLangId));
         }
 
-        $preq_id = FatUtility::int($post['preq_id']);
-        $preq_prodcat_id = FatUtility::int($post['preq_prodcat_id']);
-        $productShiping = FatApp::getPostedData('product_shipping');
-        $productTaxCategory  = $post['ptt_taxcat_id'];
-
-        /* Validate product belongs to current logged seller[ */
-        if ($preq_id) {
-            $productRow = ProductRequest::getAttributesById($preq_id, array('preq_user_id','preq_status'));
-            if ($productRow['preq_user_id'] != UserAuthentication::getLoggedUserId() || $productRow['preq_status']!= ProductRequest::STATUS_PENDING) {
-                FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            }
+        $srch = UpcCode::getSearchObject();
+        $srch->addCondition('upc_code', '=', $post['code']);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $rs = $srch->getResultSet();
+        $totalRecords = FatApp::getDb()->totalRecords($rs);
+        if ($totalRecords > 0) {
+            FatUtility::dieWithError(Labels::getLabel('MSG_This_UPC/EAN_code_already_assigned_to_another_product', $this->siteLangId));
         }
-        /* ] */
-
-        unset($post['preq_id']);
-        unset($post['btn_submit']);
-
-        $prodReqObj = new ProductRequest($preq_id);
-        $data_to_be_save = $post;
-        $data_to_be_save['product_added_by_admin_id'] = 0;
-        $data_to_be_save['product_tags'] = $product_tags;
-        $data_to_be_save['product_option'] = $product_option;
-        $data_to_be_save['product_shipping'] = $productShiping;
-        $data_to_be_save['product_seller_id'] = UserAuthentication::getLoggedUserId();
-        if ($post['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
-            $data_to_be_save['product_length'] = 0;
-            $data_to_be_save['product_width'] = 0;
-            $data_to_be_save['product_height'] = 0;
-            $data_to_be_save['product_dimension_unit'] = 0;
-            $data_to_be_save['product_weight'] = 0;
-            $data_to_be_save['product_weight_unit'] = 0;
-            $data_to_be_save['product_cod_enabled'] = applicationConstants::NO;
-        }
-
-        $data = array(
-        'preq_user_id'=>UserAuthentication::getLoggedUserId(),
-        'preq_prodcat_id'=>$preq_prodcat_id,
-        'preq_content'=>FatUtility::convertToJson($data_to_be_save),
-        'preq_status'=>ProductRequest::STATUS_PENDING,
-        'preq_added_on'=>date('Y-m-d H:i:s')
-        );
-
-        $prodReqObj->assignValues($data);
-
-        if (!$prodReqObj->save()) {
-            FatUtility::dieWithError($prodReqObj->getError());
-        }
-
-
-        $preq_id = $prodReqObj->getMainTableRecordId();
-        $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->siteLangId));
-        $this->set('preq_id', $preq_id);
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function customCatalogSellerProductForm($preqId = 0)
-    {
+    public function customCatalogSellerProductForm($preqId = 0) {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
 
@@ -250,8 +264,8 @@ trait CustomCatalogProducts
         if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
-        $prodcat_id    = $productReqRow['preq_prodcat_id'];
-        if ($productReqRow['preq_sel_prod_data'] !='') {
+        $prodcat_id = $productReqRow['preq_prodcat_id'];
+        if ($productReqRow['preq_sel_prod_data'] != '') {
             $productReqRow = array_merge($productReqRow, json_decode($productReqRow['preq_sel_prod_data'], true));
         }
         $productData = json_decode($productReqRow['preq_content'], true);
@@ -275,8 +289,7 @@ trait CustomCatalogProducts
 
     /* Specification Module [ */
 
-    public function customCatalogSpecifications($preqId = 0, $prodspecId = 0)
-    {
+    public function customCatalogSpecifications($preqId = 0, $prodspecId = 0) {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
 
@@ -284,7 +297,7 @@ trait CustomCatalogProducts
         $productRow = array();
         /* Validate product request belongs to current logged seller[ */
         if ($preqId) {
-            $productRow = ProductRequest::getAttributesById($preqId, array('preq_user_id','preq_prodcat_id','preq_content','preq_specifications'));
+            $productRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_prodcat_id', 'preq_content', 'preq_specifications'));
             if ($productRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
                 FatUtility::dieWithError(Message::getHtml());
@@ -304,8 +317,7 @@ trait CustomCatalogProducts
         $this->_template->render(false, false);
     }
 
-    public function getCustomCatalogSpecificationForm($preqId, $prodspecId = 0, $divCount = 0)
-    {
+    public function getCustomCatalogSpecificationForm($preqId, $prodspecId = 0, $divCount = 0) {
         $post = FatApp::getPostedData();
         $data = array();
         $data['product_id'] = $preqId;
@@ -317,8 +329,7 @@ trait CustomCatalogProducts
         $this->_template->render(false, false);
     }
 
-    public function setupCustomCatalogSpecification($preqId, $prodSpecId = 0)
-    {
+    public function setupCustomCatalogSpecification($preqId, $prodSpecId = 0) {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
 
@@ -328,7 +339,7 @@ trait CustomCatalogProducts
             if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             }
-            $prodcat_id    = $productReqRow['preq_prodcat_id'];
+            $prodcat_id = $productReqRow['preq_prodcat_id'];
         }
         /* ] */
 
@@ -359,7 +370,7 @@ trait CustomCatalogProducts
         unset($post['fIsAjax']);
         $prodReqObj = new ProductRequest($preqId);
         $data = array(
-        'preq_specifications'=> FatUtility::convertToJson($post)
+            'preq_specifications' => FatUtility::convertToJson($post)
         );
 
         $prodReqObj->assignValues($data);
@@ -380,97 +391,7 @@ trait CustomCatalogProducts
 
     /* ] */
 
-    public function customEanUpcForm($preqId = 0)
-    {
-        $this->canAddCustomCatalogProduct();
-        $preqId = FatUtility::int($preqId);
-        $upcCodeData = array();
-
-        /* Validate product request belongs to current logged seller[ */
-        if ($preqId) {
-            $productReqRow = ProductRequest::getAttributesById($preqId);
-            if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
-                FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            }
-            $prodcat_id    = $productReqRow['preq_prodcat_id'];
-            $upcCodeData = json_decode($productReqRow['preq_ean_upc_code'], true);
-        }
-        /* ] */
-
-        $productOptions =  ProductRequest::getProductReqOptions($preqId, $this->siteLangId, true);
-        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues');
-
-        $this->set('productOptions', $productOptions);
-        $this->set('optionCombinations', $optionCombinations);
-        $this->set('upcCodeData', $upcCodeData);
-        $this->set('preqId', $preqId);
-        $this->set('preqCatId', $prodcat_id);
-        $this->set('activeTab', 'CUSTOMEANUPC');
-        $this->set('languages', Language::getAllNames());
-        $this->_template->render(false, false);
-    }
-
-    public function validateUpcCode()
-    {
-        $post = FatApp::getPostedData();
-        if (empty($post) || $post['code'] == '') {
-            FatUtility::dieWithError(Labels::getLabel('MSG_Please_fill_UPC/EAN_code', $this->siteLangId));
-        }
-
-        $srch = UpcCode::getSearchObject();
-        $srch->addCondition('upc_code', '=', $post['code']);
-        $srch->doNotCalculateRecords();
-        $srch->setPageSize(1);
-        $rs = $srch->getResultSet();
-        $totalRecords = FatApp::getDb()->totalRecords($rs);
-        if ($totalRecords > 0) {
-            FatUtility::dieWithError(Labels::getLabel('MSG_This_UPC/EAN_code_already_assigned_to_another_product', $this->siteLangId));
-        }
-        $this->_template->render(false, false, 'json-success.php');
-    }
-
-    public function setupEanUpcCode($preqId)
-    {
-        $this->canAddCustomCatalogProduct();
-        $preqId = FatUtility::int($preqId);
-
-        /* Validate product request belongs to current logged seller[ */
-        if ($preqId) {
-            $productReqRow = ProductRequest::getAttributesById($preqId);
-            if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
-                FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            }
-            $prodcat_id    = $productReqRow['preq_prodcat_id'];
-        }
-        /* ] */
-
-        $post = FatApp::getPostedData();
-        if (false === $post) {
-            FatUtility::dieWithError(Labels::getLabel('MSG_Please_fill_UPC/EAN_code', $this->siteLangId));
-        }
-
-        unset($post['btn_submit']);
-        unset($post['fOutMode']);
-        unset($post['fIsAjax']);
-        $prodReqObj = new ProductRequest($preqId);
-        $data = array(
-        'preq_ean_upc_code'=> str_replace('code', '', FatUtility::convertToJson($post))
-        );
-
-        $prodReqObj->assignValues($data);
-
-        if (!$prodReqObj->save()) {
-            FatUtility::dieWithError($prodReqObj->getError());
-        }
-
-        $preq_id = $prodReqObj->getMainTableRecordId();
-        $this->set('msg', Labels::getLabel('LBL_Setup_Successful', $this->siteLangId));
-        $this->set('preq_id', $preq_id);
-        $this->_template->render(false, false, 'json-success.php');
-    }
-
-    public function setUpCustomSellerProduct()
-    {
+    public function setUpCustomSellerProduct() {
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('selprod_product_id', FatUtility::VAR_INT, 0);
         if (!$preqId) {
@@ -487,8 +408,8 @@ trait CustomCatalogProducts
 
         /* Validate product belongs to current logged seller[ */
         if ($preqId) {
-            $productRow = ProductRequest::getAttributesById($preqId, array('preq_user_id','preq_status','preq_content'));
-            if (!$productRow || $productRow['preq_user_id'] != UserAuthentication::getLoggedUserId()|| $productRow['preq_status']!= ProductRequest::STATUS_PENDING) {
+            $productRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_status', 'preq_content'));
+            if (!$productRow || $productRow['preq_user_id'] != UserAuthentication::getLoggedUserId() || $productRow['preq_status'] != ProductRequest::STATUS_PENDING) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             }
             $productData = json_decode($productRow['preq_content'], true);
@@ -500,10 +421,10 @@ trait CustomCatalogProducts
         unset($post['btn_cancel']);
         unset($post['btn_submit']);
 
-        $post['selprod_cod_enabled'] = (!empty($productData['product_cod_enabled']))?$productData['product_cod_enabled']:0;
+        $post['selprod_cod_enabled'] = (!empty($productData['product_cod_enabled'])) ? $productData['product_cod_enabled'] : 0;
         $prodReqObj = new ProductRequest($preqId);
         $data = array(
-        'preq_sel_prod_data'=>FatUtility::convertToJson($post),
+            'preq_sel_prod_data' => FatUtility::convertToJson($post),
         );
         $prodReqObj->assignValues($data);
 
@@ -521,8 +442,7 @@ trait CustomCatalogProducts
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function customCatalogProductLangForm($preqId = 0, $lang_id = 0, $autoFillLangData = 0)
-    {
+    public function customCatalogProductLangForm($preqId = 0, $lang_id = 0, $autoFillLangData = 0) {
         $this->canAddCustomCatalogProduct();
 
         $preqId = FatUtility::int($preqId);
@@ -536,7 +456,7 @@ trait CustomCatalogProducts
         $productOptions = array();
         /* Validate product request belongs to current logged seller[ */
         if ($preqId) {
-            $productRow = ProductRequest::getAttributesById($preqId, array('preq_user_id','preq_prodcat_id','preq_content'));
+            $productRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_prodcat_id', 'preq_content'));
             if ($productRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
                 FatUtility::dieWithError(Message::getHtml());
@@ -555,7 +475,7 @@ trait CustomCatalogProducts
         } else {
             $customProductLangData = $prodObj->getAttributesByLangId($lang_id, $preqId);
         }
-        
+
         if ($customProductLangData) {
             $customProductLangData['preq_id'] = $preqId;
             $productData = json_decode($customProductLangData['preq_lang_data'], true);
@@ -589,8 +509,7 @@ trait CustomCatalogProducts
         $this->_template->render(false, false);
     }
 
-    public function setupCustomCatalogProductLangForm()
-    {
+    public function setupCustomCatalogProductLangForm() {
         $this->canAddCustomCatalogProduct();
         $post = FatApp::getPostedData();
         $lang_id = $post['lang_id'];
@@ -601,8 +520,8 @@ trait CustomCatalogProducts
         }
         /* Validate product belongs to current logged seller[ */
         if ($preq_id) {
-            $productRow = ProductRequest::getAttributesById($preq_id, array('preq_user_id','preq_status','preq_content'));
-            if ($productRow['preq_user_id'] != UserAuthentication::getLoggedUserId() || $productRow['preq_status']!= ProductRequest::STATUS_PENDING) {
+            $productRow = ProductRequest::getAttributesById($preq_id, array('preq_user_id', 'preq_status', 'preq_content'));
+            if ($productRow['preq_user_id'] != UserAuthentication::getLoggedUserId() || $productRow['preq_status'] != ProductRequest::STATUS_PENDING) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             }
         }
@@ -615,15 +534,15 @@ trait CustomCatalogProducts
         unset($post['preq_id']);
         unset($post['lang_id']);
         unset($post['btn_submit']);
-        
+
         if (array_key_exists('auto_update_other_langs_data', $post)) {
             unset($post['auto_update_other_langs_data']);
         }
-        
+
         $data_to_update = array(
-        'preqlang_preq_id'    =>    $preq_id,
-        'preqlang_lang_id'    =>    $lang_id,
-        'preq_lang_data'    =>    FatUtility::convertToJson($post),
+            'preqlang_preq_id' => $preq_id,
+            'preqlang_lang_id' => $lang_id,
+            'preq_lang_data' => FatUtility::convertToJson($post),
         );
 
         $prodObj = new ProductRequest($preq_id);
@@ -648,15 +567,14 @@ trait CustomCatalogProducts
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    private function getCustomCatalogProductLangForm($preqId, $langId)
-    {
+    private function getCustomCatalogProductLangForm($preqId, $langId) {
         $siteLangId = $this->siteLangId;
         $frm = new Form('frmCustomProductLang');
         $frm->addHiddenField('', 'preq_id', $preqId);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'lang_id', Language::getAllNames(), $langId, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Product_Name', $this->siteLangId), 'product_name');
         $fld = $frm->addRequiredField(Labels::getLabel('LBL_Seller_Product_Title', $this->siteLangId), 'selprod_title');
-        $fld->htmlAfterField = "<small class='text--small'>".Labels::getLabel('LBL_This_product_title_will_be_displayed_on_the_site', $this->siteLangId).'</small>';
+        $fld->htmlAfterField = "<small class='text--small'>" . Labels::getLabel('LBL_This_product_title_will_be_displayed_on_the_site', $this->siteLangId) . '</small>';
         $frm->addTextBox(Labels::getLabel('LBL_Any_extra_comment_for_buyer', $this->siteLangId), 'selprod_comments');
         $frm->addTextBox(Labels::getLabel('LBL_YouTube_Video', $this->siteLangId), 'product_youtube_video');
         //$frm->addHtmlEditor(Labels::getLabel('LBL_Description',$this->siteLangId),'product_description');
@@ -666,55 +584,20 @@ trait CustomCatalogProducts
         return $frm;
     }
 
-    public function customCatalogProductImages($preqId = 0)
-    {
+    public function customCatalogProductImages($preqId) {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
-        if (!$preqId) {
-            FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
-        }
-
-        if (!$productRow = ProductRequest::getAttributesById($preqId, array('preq_user_id'))) {
-            FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
-        }
-
-        /* Validate product belongs to current logged seller[ */
-        if ($productRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
+        $productReqRow = ProductRequest::getAttributesById($preqId, array('preq_user_id'));
+        if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-        }
-        /* ] */
-
-        $productRow = ProductRequest::getAttributesById($preqId, array('preq_user_id','preq_prodcat_id','preq_content'));
-        $preqCatId = $productRow['preq_prodcat_id'];
-        $productReqData = json_decode($productRow['preq_content'], true);
-        $productOptions = $productReqData['product_option'];
-
-        $post = FatApp::getPostedData();
-        $displayLinkNavigation = false;
-        if (!empty($post['displayLinkNavigation']) && $post['displayLinkNavigation'] == true) {
-            $displayLinkNavigation = true;
         }
 
         $imagesFrm = $this->getCustomProductImagesFrm($preqId, $this->siteLangId);
-        $arr = array('preq_id' => $preqId);
-        $imagesFrm->fill($arr);
-
-        /* $product_images = AttachedFile::getMultipleAttachments( AttachedFile::FILETYPE_CUSTOM_PRODUCT_IMAGE, $preqId, 0, -1 );
-        $this->set('product_images', $product_images ); */
-
         $this->set('imagesFrm', $imagesFrm);
-        $this->set('preqId', $preqId);
-        $this->set('activeTab', 'PRODUCTIMAGES');
-        $this->set('languages', Language::getAllNames());
-        $this->set('siteLangId', $this->siteLangId);
-        $this->set('productOptions', $productOptions);
-        $this->set('preqCatId', $preqCatId);
-        $this->set('displayLinkNavigation', $displayLinkNavigation);
         $this->_template->render(false, false);
     }
 
-    public function deleteCustomCatalogProductImage($preq_id, $image_id)
-    {
+    public function deleteCustomCatalogProductImage($preq_id, $image_id) {
         $this->canAddCustomCatalogProduct();
         $preq_id = FatUtility :: int($preq_id);
         $image_id = FatUtility :: int($image_id);
@@ -739,8 +622,7 @@ trait CustomCatalogProducts
         FatUtility::dieJsonSuccess(Message::getHtml());
     }
 
-    public function customCatalogImages($preq_id, $option_id = 0, $lang_id = 0)
-    {
+    public function customCatalogImages($preq_id, $option_id = 0, $lang_id = 0) {
         $this->canAddCustomCatalogProduct();
         $preq_id = FatUtility::int($preq_id);
 
@@ -766,8 +648,7 @@ trait CustomCatalogProducts
         $this->_template->render(false, false);
     }
 
-    public function setCustomCatalogProductImagesOrder()
-    {
+    public function setCustomCatalogProductImagesOrder() {
         $this->canAddCustomCatalogProduct();
 
         $preqObj = new ProductRequest();
@@ -782,7 +663,7 @@ trait CustomCatalogProducts
         $imageIds = explode('-', $post['ids']);
         $count = 1;
         foreach ($imageIds as $row) {
-            $order[$count]=$row;
+            $order[$count] = $row;
             $count++;
         }
 
@@ -793,8 +674,7 @@ trait CustomCatalogProducts
         FatUtility::dieJsonSuccess(Labels::getLabel("LBL_Ordered_Successfully!", $this->siteLangId));
     }
 
-    public function setupCustomCatalogProductImages()
-    {
+    public function setupCustomCatalogProductImages() {
         $this->canAddCustomCatalogProduct();
         $post = FatApp::getPostedData();
         if (empty($post)) {
@@ -830,14 +710,13 @@ trait CustomCatalogProducts
         FatUtility::dieJsonSuccess(Message::getHtml());
     }
 
-    public function customCategoryListing()
-    {
+    public function customCategoryListing() {
         $post = FatApp::getPostedData();
         $prodCatId = $post['prodCatId'];
         $blockCount = $post['blockCount'];
         //$prodCatId = FatUtility::convertToType($prodCatId,FATUtility::VAR_INT);
         $srch = ProductCategory::getSearchObject(true, $this->siteLangId, true);
-        $srch->addMultipleFields(array('m.prodcat_id','IFNULL(pc_l.prodcat_name,m.prodcat_identifier) as prodcat_name'));
+        $srch->addMultipleFields(array('m.prodcat_id', 'IFNULL(pc_l.prodcat_name,m.prodcat_identifier) as prodcat_name'));
         $srch->addCondition('m.prodcat_deleted', '=', applicationConstants::NO);
         $srch->addCondition('m.prodcat_parent', '=', $prodCatId);
         $srch->addOrder('prodcat_name');
@@ -849,37 +728,37 @@ trait CustomCatalogProducts
 
         $result = array();
         $result['prodcat_id'] = $prodCatId;
-        $str = "<div class='slider-item col-lg-4 col-md-4 col-sm-3 col-xs-12 slider-item-js categoryblock-js' rel=".$blockCount." id='categoryblock".$blockCount."' ><div class='box-border box-categories' data-simplebar>";
+        $str = "<div class='slider-item col-lg-4 col-md-4 col-sm-3 col-xs-12 slider-item-js categoryblock-js' rel=" . $blockCount . " id='categoryblock" . $blockCount . "' ><div class='box-border box-categories' data-simplebar>";
         //$result['msg'] = Labels::getLabel('MSG_Loaded_successfully',$this->siteLangId);
         if (!empty($listing)) {
-            $str.= "<ul>";
+            $str .= "<ul>";
             foreach ($listing as $category) {
                 $arrow = "";
-                if ($category['child_count']>0) {
+                if ($category['child_count'] > 0) {
                     //$arrow = "<i class='fa  fa-long-arrow-right'></i>";
-                    $arrow = ' ('.$category['child_count'].')';
+                    $arrow = ' (' . $category['child_count'] . ')';
                 }
-                $str.= "<li onClick='customCategoryListing(".$category['prodcat_id'].",this)'><a class='selectCategory' href='javascript:void(0)'>".strip_tags($category['prodcat_name']).$arrow."</a></li>";
+                $str .= "<li onClick='customCategoryListing(" . $category['prodcat_id'] . ",this)'><a class='selectCategory' href='javascript:void(0)'>" . strip_tags($category['prodcat_name']) . $arrow . "</a></li>";
             }
-            $str.= "</ul>";
-        //$result['msg'] = Labels::getLabel('MSG_updated_successfully',$this->siteLangId);
+            $str .= "</ul>";
+            //$result['msg'] = Labels::getLabel('MSG_updated_successfully',$this->siteLangId);
         } else {
             $srch = ProductCategory::getSearchObject(false, $this->siteLangId, true);
-            $srch->addMultipleFields(array('m.prodcat_id','IFNULL(pc_l.prodcat_name,m.prodcat_identifier) as prodcat_name'));
+            $srch->addMultipleFields(array('m.prodcat_id', 'IFNULL(pc_l.prodcat_name,m.prodcat_identifier) as prodcat_name'));
             $srch->addCondition('m.prodcat_deleted', '=', applicationConstants::NO);
             $srch->addCondition('m.prodcat_id', '=', $prodCatId);
             $db = FatApp::getDb();
             $rs = $srch->getResultSet();
             $category = $db->fetch($rs);
-            $str.= "<ul><li>".strip_tags($category['prodcat_name'])." <a href='javascript:void(0)' onClick='customCatalogProductForm(0,".$category['prodcat_id'].")' ></a></li><li class='align--center'><a onClick='customCatalogProductForm(0,".$category['prodcat_id'].")' class='btn btn--primary'>".Labels::getLabel('LBL_Select', $this->siteLangId)."</a></li>";
-            $str.= "</ul>";
+            $str .= "<ul><li>" . strip_tags($category['prodcat_name']) . " <a href='javascript:void(0)' onClick='customCatalogProductForm(0," . $category['prodcat_id'] . ")' ></a></li><li class='align--center'><a onClick='customCatalogProductForm(0," . $category['prodcat_id'] . ")' class='btn btn--primary'>" . Labels::getLabel('LBL_Select', $this->siteLangId) . "</a></li>";
+            $str .= "</ul>";
             //$result['msg'] = Labels::getLabel('MSG_updated_successfully',$this->siteLangId);
         }
-        $str.= "</div></div>";
+        $str .= "</div></div>";
 
-        $emptyBlock ='';
-        for ($i = $blockCount+1; $i<=3; $i++) {
-            $str.="<div class='slider-item col-lg-4 col-md-4 col-sm-3 col-xs-12 slider-item-js categoryblock-js' id='categoryblock".$blockCount."' ><div class='box-border box-categories ' data-simplebar></div></div>";
+        $emptyBlock = '';
+        for ($i = $blockCount + 1; $i <= 3; $i++) {
+            $str .= "<div class='slider-item col-lg-4 col-md-4 col-sm-3 col-xs-12 slider-item-js categoryblock-js' id='categoryblock" . $blockCount . "' ><div class='box-border box-categories ' data-simplebar></div></div>";
         }
 
         $result['structure'] = $str;
@@ -887,8 +766,7 @@ trait CustomCatalogProducts
         exit;
     }
 
-    private function getSubCatRecordCount($rootCategories, &$childCountArr, $keyword)
-    {
+    private function getSubCatRecordCount($rootCategories, &$childCountArr, $keyword) {
         foreach ($rootCategories as $catId => $category) {
             $childCountArr[$catId]['total_child_count'] = 0;
 
@@ -897,23 +775,22 @@ trait CustomCatalogProducts
 
             if ($childCount > 0) {
                 if (strpos($category['prodcat_name'], $keyword) !== false && $id != $catId) {
-                    $childCountArr[$id]['total_child_count']+= 1;
+                    $childCountArr[$id]['total_child_count'] += 1;
                 }
                 $this->getSubCatRecordCount($category['children'], $childCountArr, $keyword);
             } else {
-                $childCountArr[$id]['total_child_count']+= 1;
+                $childCountArr[$id]['total_child_count'] += 1;
             }
         }
     }
 
-    public function searchCategory($prodRootCatCode = false)
-    {
+    public function searchCategory($prodRootCatCode = false) {
         $keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
         $prodCatObj = new ProductCategory();
 
         $rootCategories = ProductCategory::getTreeArr($this->siteLangId, 0, false, false, false, $keyword);
-        /*$rootCategories = $prodCatObj->getProdRootCategoriesWithKeyword($this->siteLangId, $keyword, false, false, true);
-        */
+        /* $rootCategories = $prodCatObj->getProdRootCategoriesWithKeyword($this->siteLangId, $keyword, false, false, true);
+         */
         $childCountArr = array();
         $this->getSubCatRecordCount($rootCategories, $childCountArr, $keyword);
 
@@ -937,8 +814,7 @@ trait CustomCatalogProducts
         // FatUtility::dieJsonSuccess($html);
     }
 
-    public function loadCustomProductTags()
-    {
+    public function loadCustomProductTags() {
         $this->canAddCustomCatalogProduct();
         $post = FatApp::getPostedData();
         if (empty($post['tags'])) {
@@ -948,9 +824,9 @@ trait CustomCatalogProducts
         $srch = Tag::getSearchObject();
         $srch->addOrder('tag_identifier');
         $srch->joinTable(
-            Tag::DB_TBL . '_lang',
-            'LEFT OUTER JOIN',
-            'taglang_tag_id = tag_id AND taglang_lang_id = ' . $this->siteLangId
+                Tag::DB_TBL . '_lang',
+                'LEFT OUTER JOIN',
+                'taglang_tag_id = tag_id AND taglang_lang_id = ' . $this->siteLangId
         );
         $srch->addMultipleFields(array('tag_id, tag_name, tag_identifier'));
         $srch->addCondition('tag_id', 'IN', $post['tags']);
@@ -961,15 +837,14 @@ trait CustomCatalogProducts
         $li = '';
         foreach ($tags as $key => $tag) {
             $li .= '<li id="product-tag' . $tag['tag_id'] . '"> <i class="remove_tag-js remove_param fa fa-trash"></i> ';
-            $li .= $tag['tag_name'].' ('.$tag['tag_identifier'].')'.'<input type="hidden" value="'.$tag['tag_id'].'"  name="product_tags[]"></li>';
+            $li .= $tag['tag_name'] . ' (' . $tag['tag_identifier'] . ')' . '<input type="hidden" value="' . $tag['tag_id'] . '"  name="product_tags[]"></li>';
         }
 
         echo $li;
         exit;
     }
 
-    public function loadCustomProductOptionss()
-    {
+    public function loadCustomProductOptionss() {
         $this->canAddCustomCatalogProduct();
         $post = FatApp::getPostedData();
         if (empty($post['options'])) {
@@ -987,15 +862,14 @@ trait CustomCatalogProducts
         $li = '';
         foreach ($tags as $key => $tag) {
             $li .= '<li id="product-option' . $tag['option_id'] . '"> <i class="remove_option-js remove_param fa fa-trash"></i> ';
-            $li .= $tag['option_name'].' ('.$tag['option_identifier'].')'.'<input type="hidden" value="'.$tag['option_id'].'"  name="product_option[]"></li>';
+            $li .= $tag['option_name'] . ' (' . $tag['option_identifier'] . ')' . '<input type="hidden" value="' . $tag['option_id'] . '"  name="product_option[]"></li>';
         }
 
         echo $li;
         exit;
     }
 
-    public function getCustomCatalogShippingTab()
-    {
+    public function getCustomCatalogShippingTab() {
         $shipping_rates = array();
         $post = FatApp::getPostedData();
         $userId = UserAuthentication::getLoggedUserId();
@@ -1009,8 +883,7 @@ trait CustomCatalogProducts
         $this->_template->render(false, false);
     }
 
-    public function approveCustomCatalogProducts($preqId = 0)
-    {
+    public function approveCustomCatalogProducts($preqId = 0) {
         $this->canAddCustomCatalogProduct(true);
         $preqId = FatUtility::int($preqId);
         if (!$preqId) {
@@ -1018,15 +891,15 @@ trait CustomCatalogProducts
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'customCatalogProducts'));
         }
 
-        if (!$productRow = ProductRequest::getAttributesById($preqId, array('preq_user_id','preq_content'))) {
+        if (!$productRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_content'))) {
             Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Access", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'customCatalogProducts'));
         }
 
-        $content =     (!empty($productRow['preq_content']))?json_decode($productRow['preq_content'], true):array();
+        $content = (!empty($productRow['preq_content'])) ? json_decode($productRow['preq_content'], true) : array();
 
         $prodReqObj = new ProductRequest($preqId);
-        $data = array('preq_submitted_for_approval'=>applicationConstants::YES);
+        $data = array('preq_submitted_for_approval' => applicationConstants::YES);
         $prodReqObj->assignValues($data);
         if (!$prodReqObj->save()) {
             Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Access", $this->siteLangId));
@@ -1034,9 +907,9 @@ trait CustomCatalogProducts
         }
 
         $mailData = array(
-        'request_title'=>$content['product_identifier'],
-        'brand_name'=>(!empty($content['brand_name']))?$content['brand_name']:'',
-        'product_model'=>(!empty($content['product_model']))?$content['product_model']:'',
+            'request_title' => $content['product_identifier'],
+            'brand_name' => (!empty($content['brand_name'])) ? $content['brand_name'] : '',
+            'product_model' => (!empty($content['product_model'])) ? $content['product_model'] : '',
         );
 
         $email = new EmailHandler();
@@ -1045,68 +918,64 @@ trait CustomCatalogProducts
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'customCatalogProducts'));
         }
 
-        /*send notification to admin [ */
+        /* send notification to admin [ */
         $notificationData = array(
-        'notification_record_type' => Notification::TYPE_CATALOG,
-        'notification_record_id' => $preqId,
-        'notification_user_id' => UserAuthentication::getLoggedUserId(),
-        'notification_label_key' => Notification::NEW_CUSTOM_CATALOG_REQUEST_NOTIFICATION,
-        'notification_added_on' => date('Y-m-d H:i:s'),
+            'notification_record_type' => Notification::TYPE_CATALOG,
+            'notification_record_id' => $preqId,
+            'notification_user_id' => UserAuthentication::getLoggedUserId(),
+            'notification_label_key' => Notification::NEW_CUSTOM_CATALOG_REQUEST_NOTIFICATION,
+            'notification_added_on' => date('Y-m-d H:i:s'),
         );
 
         if (!Notification::saveNotifications($notificationData)) {
             Message::addErrorMessage(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        /*]*/
+        /* ] */
 
         Message::addMessage(Labels::getLabel('MSG_Your_catalog_request_submitted_for_approval', $this->siteLangId));
         FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'customCatalogProducts'));
     }
 
-    private function getCustomCatalogProductCategoryForm()
-    {
-        $frm = new Form('frmCustomCatalogProductCategoryForm');
-        $frm->addTextBox('', 'keyword');
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->siteLangId));
-        $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $this->siteLangId), array('onclick'=>'clearCategorySearch();'));
-        return $frm;
-    }
+    /* private function getCustomCatalogProductCategoryForm() {
+      $frm = new Form('frmCustomCatalogProductCategoryForm');
+      $frm->addTextBox('', 'keyword');
+      $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->siteLangId));
+      $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $this->siteLangId), array('onclick' => 'clearCategorySearch();'));
+      return $frm;
+      } */
 
-    private function getCustomCatalogProductsSearchForm()
-    {
+    private function getCustomCatalogProductsSearchForm() {
         $frm = new Form('frmSearchCustomCatalogProducts');
         $frm->addTextBox('', 'keyword');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->siteLangId));
-        $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $this->siteLangId), array('onclick'=>'clearSearch();'));
+        $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $this->siteLangId), array('onclick' => 'clearSearch();'));
         $frm->addHiddenField('', 'page');
         return $frm;
     }
 
-    private function getCustomProductImagesFrm($preq_id = 0, $lang_id = 0)
-    {
+    private function getCustomProductImagesFrm($preq_id = 0, $lang_id = 0) {
         $imgTypesArr = $this->getSeparateImageOptionsOfCustomProduct($preq_id, $lang_id);
         $frm = new Form('imageFrm', array('id' => 'imageFrm'));
-        $frm->addSelectBox(Labels::getLabel('LBL_Image_File_Type', $this->siteLangId), 'option_id', $imgTypesArr, 0, array('class'=>'option'), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Image_File_Type', $this->siteLangId), 'option_id', $imgTypesArr, 0, array('class' => 'option'), '');
         $languagesAssocArr = Language::getAllNames();
-        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->siteLangId), 'lang_id', array( 0 => Labels::getLabel('LBL_All_Languages', $this->siteLangId) ) + $languagesAssocArr, '', array('class'=>'language'), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->siteLangId), 'lang_id', array(0 => Labels::getLabel('LBL_All_Languages', $this->siteLangId)) + $languagesAssocArr, '', array('class' => 'language'), '');
         $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_Photo(s)', $this->siteLangId), 'prod_image', array('id' => 'prod_image', 'multiple' => 'multiple'));
-        $fldImg->htmlBeforeField='<div class="filefield"><span class="filename"></span>';
-        $fldImg->htmlAfterField='<label class="filelabel">'.Labels::getLabel('LBL_Browse_File', $this->siteLangId).'</label></div><small>'.Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500._You_can_upload_multiple_photos_from_here', $this->siteLangId).'</small>';
+        $fldImg->htmlBeforeField = '<div class="filefield"><span class="filename"></span>';
+        $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->siteLangId) . '</label></div><small>' . Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500._You_can_upload_multiple_photos_from_here', $this->siteLangId) . '</small>';
         $frm->addHiddenField('', 'preq_id', $preq_id);
         return $frm;
     }
 
-    private function getSeparateImageOptionsOfCustomProduct($preq_id = 0, $lang_id = 0)
-    {
+    private function getSeparateImageOptionsOfCustomProduct($preq_id = 0, $lang_id = 0) {
         $preq_id = FatUtility::int($preq_id);
-        $imgTypesArr = array( 0 => Labels::getLabel('LBL_For_All_Options', $this->siteLangId));
+        $imgTypesArr = array(0 => Labels::getLabel('LBL_For_All_Options', $this->siteLangId));
         if ($preq_id) {
             $reqData = ProductRequest::getAttributesById($preq_id, array('preq_content'));
             if (!empty($reqData)) {
                 $reqData = json_decode($reqData['preq_content'], true);
             }
-            $productOptions =  isset($reqData['product_option'])?$reqData['product_option']:array();
+            $productOptions = isset($reqData['product_option']) ? $reqData['product_option'] : array();
             if (!empty($productOptions)) {
                 foreach ($productOptions as $optionId) {
                     $optionData = Option::getAttributesById($optionId, array('option_is_separate_images'));
@@ -1127,8 +996,7 @@ trait CustomCatalogProducts
         return $imgTypesArr;
     }
 
-    private function canAddCustomCatalogProduct($redirect = false)
-    {
+    private function canAddCustomCatalogProduct($redirect = false) {
         if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
             if ($redirect) {
                 FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
@@ -1152,4 +1020,566 @@ trait CustomCatalogProducts
             FatUtility::dieWithError(Labels::getLabel('MSG_Please_buy_subscription', $this->siteLangId));
         }
     }
+
+    public function customCatalogProductForm($preqId = 0) {
+        $this->canAddCustomCatalogProduct(true);
+        $preqId = FatUtility::int($preqId);
+        $this->set('preqId', $preqId);
+        $this->_template->addJs('js/tagify.min.js');
+        $this->_template->addJs('js/tagify.polyfills.min.js');
+        $this->_template->addCss('css/tagify.css');
+        $this->_template->render();
+    }
+
+    public function customCatalogGeneralForm($preqId) {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatUtility::int($preqId);
+        $customProductFrm = $this->getCustomProductIntialSetUpFrm(0, $preqId);
+        $languages = Language::getAllNames();
+        if ($preqId > 0) {
+            $productReqRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_prodcat_id', 'preq_content'));
+            if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
+                FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            }
+
+            $prodcatId = $productReqRow['preq_prodcat_id'];
+            $productData = json_decode($productReqRow['preq_content'], true);
+            unset($productReqRow['preq_content']);
+            $productReqRow = array_merge($productReqRow, $productData, array('preq_prodcat_id' => $prodcatId));
+            $productReqRow['ptc_prodcat_id'] = $prodcatId;
+            $prodCat = new ProductCategory();
+            $selectedCatName = $prodCat->getParentTreeStructure($prodcatId, 0, '', $this->siteLangId);
+            $productReqRow['category_name'] = html_entity_decode($selectedCatName);
+
+            $langData = array();
+            foreach ($languages as $langId => $data) {
+                $prodReq = new ProductRequest($preqId);
+                $customProductLangData = $prodReq->getAttributesByLangId($langId, $preqId);
+                $langContent = json_decode($customProductLangData['preq_lang_data'], true);
+                $langData['product_name'][$langId] = $langContent['product_name'];
+                $langData['product_youtube_video'][$langId] = $langContent['product_youtube_video'];
+                $langData['product_description'][$langId] = $langContent['product_description'];
+            }
+            $productReqRow = array_merge($productReqRow, $langData);
+            $customProductFrm->fill($productReqRow);
+        }
+
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        unset($languages[$siteDefaultLangId]);
+        $this->set('siteDefaultLangId', $siteDefaultLangId);
+        $this->set('otherLanguages', $languages);
+        $this->set('productFrm', $customProductFrm);
+        $this->set('preqId', $preqId);
+        $this->_template->render(false, false);
+    }
+
+    public function setupCustomCatalogProduct() {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
+        $frm = $this->getCustomProductIntialSetUpFrm(0, $preqId);
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        if (false === $post) {
+            Message::addErrorMessage(current($frm->getValidationErrors()));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $prodContent = array();
+        if ($preqId > 0) {
+            $productRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_status', 'preq_content'));
+            if ($productRow['preq_user_id'] != UserAuthentication::getLoggedUserId() || $productRow['preq_status'] != ProductRequest::STATUS_PENDING) {
+                Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $prodContent = json_decode($productRow['preq_content'], true);
+        }
+
+        $preqProdCatId = FatUtility::int($post['ptc_prodcat_id']);
+        $autoUpdateOtherLangsData = FatUtility::int($post['auto_update_other_langs_data']);
+        $prodName = $post['product_name'];
+        $prodDesc = $post['product_description'];
+        $prodYouTubeUrl = $post['product_youtube_video'];
+        unset($post['preq_id']);
+        unset($post['ptc_prodcat_id']);
+        unset($post['product_name']);
+        unset($post['product_description']);
+        unset($post['product_youtube_video']);
+        unset($post['btn_submit']);
+        unset($post['auto_update_other_langs_data']);
+
+        $dataForSave = array_merge($prodContent, $post);
+        $dataForSave['preq_prodcat_id'] = $preqProdCatId;
+        $dataForSave['product_added_by_admin_id'] = 0;
+        $dataForSave['product_seller_id'] = UserAuthentication::getLoggedUserId();
+        if ($post['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
+            $dataForSave['product_length'] = 0;
+            $dataForSave['product_width'] = 0;
+            $dataForSave['product_height'] = 0;
+            $dataForSave['product_dimension_unit'] = 0;
+            $dataForSave['product_weight'] = 0;
+            $dataForSave['product_weight_unit'] = 0;
+            $dataForSave['product_cod_enabled'] = applicationConstants::NO;
+        }
+
+        $data = array(
+            'preq_user_id' => UserAuthentication::getLoggedUserId(),
+            'preq_prodcat_id' => $preqProdCatId,
+            'preq_content' => FatUtility::convertToJson($dataForSave),
+            'preq_status' => ProductRequest::STATUS_PENDING,
+            'preq_added_on' => date('Y-m-d H:i:s')
+        );
+        $prodReq = new ProductRequest($preqId);
+        $prodReq->assignValues($data);
+        if (!$prodReq->save()) {
+            Message::addErrorMessage($prodReq->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        if (!$prodReq->saveProductRequestLangData($siteDefaultLangId, $autoUpdateOtherLangsData, $prodName, $prodDesc, $prodYouTubeUrl)) {
+            Message::addErrorMessage($prod->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->siteLangId));
+        $this->set('preqId', $prodReq->getMainTableRecordId());
+        $this->set('productType', $post['product_type']);
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function productAttributeAndSpecifications($preqId) {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatUtility::int($preqId);
+        $productReqRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_content'));
+        if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
+            FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+        }
+
+        $productFrm = $this->getProductAttributeAndSpecificationsFrm(0, $preqId);
+        $preqContent = $productReqRow['preq_content'];
+        $preqContentData = json_decode($preqContent, true);
+        $productFrm->fill($preqContentData);
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $languages = Language::getAllNames();
+        unset($languages[$siteDefaultLangId]);
+        $this->set('productFrm', $productFrm);
+        $this->set('productType', $preqContentData['product_type']);
+        $this->set('siteDefaultLangId', $siteDefaultLangId);
+        $this->set('otherLanguages', $languages);
+        $this->_template->render(false, false, 'seller/catalog-attribute-and-specifications-frm.php');
+    }
+
+    public function setUpCatalogProductAttributes() {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
+        $frm = $this->getProductAttributeAndSpecificationsFrm(0, $preqId);
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        if (false === $post) {
+            Message::addErrorMessage(current($frm->getValidationErrors()));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $productData = ProductRequest::getAttributesById($preqId);
+        if ($productData['preq_user_id'] != UserAuthentication::getLoggedUserId() || $productData['preq_status'] != ProductRequest::STATUS_PENDING) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        unset($post['preq_id']);
+        unset($post['btn_submit']);
+        $prodContent = json_decode($productData['preq_content'], true);
+        $data['preq_content'] = FatUtility::convertToJson(array_merge($prodContent, $post));
+        $prodReq = new ProductRequest($preqId);
+        $prodReq->assignValues($data);
+        if (!$prodReq->save()) {
+            Message::addErrorMessage($prodReq->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $this->set('msg', Labels::getLabel('LBL_Product_Attributes_Setup_Successful', $this->siteLangId));
+        $this->set('preqId', $prodReq->getMainTableRecordId());
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function catalogProdSpecForm($preqId) {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatUtility::int($preqId);
+        $langId = FatApp::getPostedData('langId', FatUtility::VAR_INT, 0);
+        $key = FatApp::getPostedData('key', FatUtility::VAR_INT, -1);
+        if ($preqId < 1 || $langId < 1) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $productReqRow = ProductRequest::getAttributesById($preqId);
+        if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
+            FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+        }
+        $prodSpecData = array();
+        if ($key >= 0) {
+            $specifications = json_decode($productReqRow['preq_specifications'], true);
+            $prodSpecData['prod_spec_name'] = $specifications['prod_spec_name'][$langId][$key];
+            $prodSpecData['prod_spec_value'] = $specifications['prod_spec_value'][$langId][$key];
+            $prodSpecData['prod_spec_group'] = isset($specifications['prod_spec_group'][$langId][$key]) ? $specifications['prod_spec_group'][$langId][$key] : '';
+            $prodSpecData['key'] = $key;
+        }
+        $this->set('langId', $langId);
+        $this->set('prodSpecData', $prodSpecData);
+        $this->_template->render(false, false, 'seller/custom-catalog-prod-spec-form.php');
+    }
+
+    public function catalogSpecificationsByLangId() {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
+        $langId = FatApp::getPostedData('langId', FatUtility::VAR_INT, 0);
+        if ($preqId < 1 || $langId < 1) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $productReqRow = ProductRequest::getAttributesById($preqId);
+        if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
+            FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+        }
+        $specifications = json_decode($productReqRow['preq_specifications'], true);
+        $productSpecifications['prod_spec_name'] = $specifications['prod_spec_name'][$langId];
+        $productSpecifications['prod_spec_value'] = $specifications['prod_spec_value'][$langId];
+        $this->set('productSpecifications', $productSpecifications);
+        $this->set('langId', $langId);
+        $this->_template->render(false, false, 'seller/catalog-specifications.php');
+    }
+
+    public function deleteCustomCatalogSpecification($preqId) {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatUtility::int($preqId);
+        $prodReqData = ProductRequest::getAttributesById($preqId);
+        if ($prodReqData['preq_user_id'] != UserAuthentication::getLoggedUserId() || $prodReqData['preq_status'] != ProductRequest::STATUS_PENDING) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $langId = FatApp::getPostedData('langId', FatUtility::VAR_INT, 0);
+        $key = FatApp::getPostedData('key', FatUtility::VAR_INT, -1);
+        if ($langId < 1 || $key < 0) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $prodReqSpecification = json_decode($prodReqData['preq_specifications'], true);
+        unset($prodReqSpecification['prod_spec_name'][$langId][$key]);
+        unset($prodReqSpecification['prod_spec_value'][$langId][$key]);
+        unset($prodReqSpecification['prod_spec_group'][$langId][$key]);
+        $prodReqSpecification['prod_spec_name'][$langId] = array_values($prodReqSpecification['prod_spec_name'][$langId]);
+        $prodReqSpecification['prod_spec_value'][$langId] = array_values($prodReqSpecification['prod_spec_value'][$langId]);
+        $prodReqSpecification['prod_spec_group'][$langId] = array_values($prodReqSpecification['prod_spec_group'][$langId]);
+
+        $data['preq_specifications'] = FatUtility::convertToJson($prodReqSpecification);
+        $prodReq = new ProductRequest($preqId);
+        $prodReq->assignValues($data);
+        if (!$prodReq->save()) {
+            Message::addErrorMessage($prodReq->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $this->set('msg', Labels::getLabel('LBL_Specification_deleted_successfully', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function setUpCustomCatalogSpecifications() {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
+        $prodReqData = ProductRequest::getAttributesById($preqId);
+        if ($prodReqData['preq_user_id'] != UserAuthentication::getLoggedUserId() || $prodReqData['preq_status'] != ProductRequest::STATUS_PENDING) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $langId = FatApp::getPostedData('langId', FatUtility::VAR_INT, 0);
+        $key = FatApp::getPostedData('key', FatUtility::VAR_INT, -1);
+        $prodSpecName = FatApp::getPostedData('prodspec_name', FatUtility::VAR_STRING, '');
+        $prodSpecValue = FatApp::getPostedData('prodspec_value', FatUtility::VAR_STRING, '');
+        $prodSpecGroup = FatApp::getPostedData('prodspec_group', FatUtility::VAR_STRING, '');
+        if ($langId < 1 || empty($prodSpecName) || empty($prodSpecValue)) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $prodReqSpecification = json_decode($prodReqData['preq_specifications'], true);
+        if ($key >= 0) {
+            $prodReqSpecification['prod_spec_name'][$langId][$key] = $prodSpecName;
+            $prodReqSpecification['prod_spec_value'][$langId][$key] = $prodSpecValue;
+            $prodReqSpecification['prod_spec_group'][$langId][$key] = $prodSpecGroup;
+        } else {
+            $prodReqSpecification['prod_spec_name'][$langId][] = $prodSpecName;
+            $prodReqSpecification['prod_spec_value'][$langId][] = $prodSpecValue;
+            $prodReqSpecification['prod_spec_group'][$langId][] = $prodSpecGroup;
+        }
+
+        $data['preq_specifications'] = FatUtility::convertToJson($prodReqSpecification);
+        $prodReq = new ProductRequest($preqId);
+        $prodReq->assignValues($data);
+        if (!$prodReq->save()) {
+            Message::addErrorMessage($prodReq->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $this->set('msg', Labels::getLabel('LBL_Specification_updated_successfully', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function CustomCatalogShippingFrm($preqId) {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatUtility::int($preqId);
+        $productReqRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_content'));
+        if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
+            FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+        }
+
+        $productFrm = $this->getProductShippingFrm(0, $preqId);
+        $preqContent = $productReqRow['preq_content'];
+        $preqContentData = json_decode($preqContent, true);
+        $productFrm->fill($preqContentData);
+
+        $this->set('productFrm', $productFrm);
+        $this->set('productType', $preqContentData['product_type']);
+        $this->_template->render(false, false, 'seller/custom-catalog-shipping-frm.php');
+    }
+
+    public function setUpCustomCatalogShipping() {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
+        $frm = $this->getProductShippingFrm(0, $preqId);
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        if (false === $post) {
+            Message::addErrorMessage(current($frm->getValidationErrors()));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $productReqData = ProductRequest::getAttributesById($preqId);
+        if ($productReqData['preq_user_id'] != UserAuthentication::getLoggedUserId() || $productReqData['preq_status'] != ProductRequest::STATUS_PENDING) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        unset($post['preq_id']);
+        unset($post['product_id']);
+        unset($post['btn_submit']);
+        $prodContent = json_decode($productReqData['preq_content'], true);
+        $prodContent = array_merge($prodContent, $post);
+        $productShiping = FatApp::getPostedData('product_shipping');
+        if (!empty($productShiping)) {
+            $prodContent['product_shipping'] = $productShiping;
+        }
+        $data['preq_content'] = FatUtility::convertToJson($prodContent);
+        $prodReq = new ProductRequest($preqId);
+        $prodReq->assignValues($data);
+        if (!$prodReq->save()) {
+            Message::addErrorMessage($prodReq->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $this->set('msg', Labels::getLabel('LBL_Product_Shipping_Setup_Successful', $this->siteLangId));
+        $this->set('preqId', $prodReq->getMainTableRecordId());
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function customCatalogOptionsAndTag($preqId) {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatUtility::int($preqId);
+        $productReqRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_content'));
+        if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
+            FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+        }
+
+        $preqContent = $productReqRow['preq_content'];
+        $preqContentData = json_decode($preqContent, true);
+        $productOptions = array();
+        if (!empty($preqContentData['product_option'])) {
+            $srch = Option::getSearchObject($this->siteLangId);
+            $srch->addMultipleFields(array('option_id, option_name, option_identifier'));
+            $srch->addCondition('option_id', 'IN', $preqContentData['product_option']);
+            $srch->addOrder('option_identifier');
+            $rs = $srch->getResultSet();
+            $productOptions = FatApp::getDb()->fetchAll($rs);
+        }
+        $productTags = array();
+        if (!empty($preqContentData['product_tags'])) {
+            $srch = Tag::getSearchObject();
+            $srch->addOrder('tag_identifier');
+            $srch->joinTable(
+                    Tag::DB_TBL . '_lang',
+                    'LEFT OUTER JOIN',
+                    'taglang_tag_id = tag_id AND taglang_lang_id = ' . $this->siteLangId
+            );
+            $srch->addMultipleFields(array('tag_id, tag_name, tag_identifier'));
+            $srch->addCondition('tag_id', 'IN', $preqContentData['product_tags']);
+
+            $rs = $srch->getResultSet();
+            $productTags = FatApp::getDb()->fetchAll($rs);
+        }
+        $this->set('productOptions', $productOptions);
+        $this->set('productTags', $productTags);
+        $this->set('preqId', $preqId);
+        $this->set('productType', $preqContentData['product_type']);
+        $this->_template->render(false, false, 'seller/custom-catalog-options-and-tag.php');
+    }
+
+    public function updateCustomCatalogOption() {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
+        $optionId = FatApp::getPostedData('option_id', FatUtility::VAR_INT, 0);
+        $prodReqData = ProductRequest::getAttributesById($preqId);
+        if ($prodReqData['preq_user_id'] != UserAuthentication::getLoggedUserId() || $prodReqData['preq_status'] != ProductRequest::STATUS_PENDING) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        if ($preqId < 1 || $optionId < 0) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $prodContent = json_decode($prodReqData['preq_content'], true);
+        $prodContent['product_option'][] = $optionId;
+        $data['preq_content'] = FatUtility::convertToJson($prodContent);
+        $prodReq = new ProductRequest($preqId);
+        $prodReq->assignValues($data);
+        if (!$prodReq->save()) {
+            Message::addErrorMessage($prodReq->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $this->set('msg', Labels::getLabel('LBL_Option_updated_successfully', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function removeCustomCatalogOption() {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
+        $optionId = FatApp::getPostedData('option_id', FatUtility::VAR_INT, 0);
+        $prodReqData = ProductRequest::getAttributesById($preqId);
+        if ($prodReqData['preq_user_id'] != UserAuthentication::getLoggedUserId() || $prodReqData['preq_status'] != ProductRequest::STATUS_PENDING) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        if ($preqId < 1 || $optionId < 0) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $prodContent = json_decode($prodReqData['preq_content'], true);
+        $key = array_search($optionId, $prodContent['product_option']);
+        unset($prodContent['product_option'][$key]);
+        $prodContent['product_option'] = array_values($prodContent['product_option']);
+        $data['preq_content'] = FatUtility::convertToJson($prodContent);
+        $prodReq = new ProductRequest($preqId);
+        $prodReq->assignValues($data);
+        if (!$prodReq->save()) {
+            Message::addErrorMessage($prodReq->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $this->set('msg', Labels::getLabel('LBL_Option_removed_successfully', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function updateCustomCatalogTag() {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
+        $tagId = FatApp::getPostedData('tag_id', FatUtility::VAR_INT, 0);
+        $prodReqData = ProductRequest::getAttributesById($preqId);
+        if ($prodReqData['preq_user_id'] != UserAuthentication::getLoggedUserId() || $prodReqData['preq_status'] != ProductRequest::STATUS_PENDING) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        if ($preqId < 1 || $tagId < 0) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $prodContent = json_decode($prodReqData['preq_content'], true);
+        $prodContent['product_tags'][] = $tagId;
+        $data['preq_content'] = FatUtility::convertToJson($prodContent);
+        $prodReq = new ProductRequest($preqId);
+        $prodReq->assignValues($data);
+        if (!$prodReq->save()) {
+            Message::addErrorMessage($prodReq->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $this->set('msg', Labels::getLabel('LBL_Tag_updated_successfully', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function removeCustomCatalogTag() {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
+        $tagId = FatApp::getPostedData('tag_id', FatUtility::VAR_INT, 0);
+        $prodReqData = ProductRequest::getAttributesById($preqId);
+        if ($prodReqData['preq_user_id'] != UserAuthentication::getLoggedUserId() || $prodReqData['preq_status'] != ProductRequest::STATUS_PENDING) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        if ($preqId < 1 || $tagId < 0) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $prodContent = json_decode($prodReqData['preq_content'], true);
+        $key = array_search($tagId, $prodContent['product_tags']);
+        unset($prodContent['product_tags'][$key]);
+        $prodContent['product_tags'] = array_values($prodContent['product_tags']);
+        $data['preq_content'] = FatUtility::convertToJson($prodContent);
+        $prodReq = new ProductRequest($preqId);
+        $prodReq->assignValues($data);
+        if (!$prodReq->save()) {
+            Message::addErrorMessage($prodReq->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $this->set('msg', Labels::getLabel('LBL_Tag_removed_successfully', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function customEanUpcForm($preqId) {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatUtility::int($preqId);
+        $productReqRow = ProductRequest::getAttributesById($preqId);
+        if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
+            FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+        }
+        $upcCodeData = array();
+        if (!empty($productReqRow['preq_ean_upc_code'])) {
+            $upcCodeData = json_decode($productReqRow['preq_ean_upc_code'], true);
+        }
+        $optionCombinations = array();
+        $productOptions = ProductRequest::getProductReqOptions($preqId, $this->siteLangId, true);
+        if (!empty($productOptions)) {
+            $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues');
+        }
+        $this->set('upcCodeData', $upcCodeData);
+        $this->set('optionCombinations', $optionCombinations);
+        $this->set('preqId', $preqId);
+        $this->_template->render(false, false);
+    }
+
+    public function setupEanUpcCode($preqId) {
+        $this->canAddCustomCatalogProduct();
+        $preqId = FatUtility::int($preqId);
+        $prodReqData = ProductRequest::getAttributesById($preqId);
+        if ($prodReqData['preq_user_id'] != UserAuthentication::getLoggedUserId() || $prodReqData['preq_status'] != ProductRequest::STATUS_PENDING) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $optionValueId = FatApp::getPostedData('optionValueId', FatUtility::VAR_INT, 0);
+        if ($optionValueId < 1) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $code = FatApp::getPostedData('code', FatUtility::VAR_STRING, '');
+        if (empty($code)) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Please_fill_UPC/EAN_code', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $productUpcData = array();
+        if (!empty($prodReqData['preq_ean_upc_code'])) {
+            $productUpcData = json_decode($prodReqData['preq_ean_upc_code'], true);
+        }
+        $productUpcData[$optionValueId] = $code;
+        $data['preq_ean_upc_code'] = FatUtility::convertToJson($productUpcData);
+        $prodReq = new ProductRequest($preqId);
+        $prodReq->assignValues($data);
+        if (!$prodReq->save()) {
+            Message::addErrorMessage($prodReq->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $this->set('msg', Labels::getLabel('LBL_ean/upc_code_added_successfully', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
 }

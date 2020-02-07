@@ -5,7 +5,10 @@ $prodCatFrm->setFormTagAttribute('id', 'frmProdCategory');
 $prodCatFrm->setFormTagAttribute('onsubmit', 'setupCategory(); return(false);');
 
 $statusFld = $prodCatFrm->getField('prodcat_active');
-$statusFld->setOptionListTagAttribute('class', 'list-inline-checkboxes');
+
+$statusFld->setOptionListTagAttribute('class', 'list-inline-checkboxes'); 
+$statusFld->developerTags['rdLabelAttributes'] = array('class'=>'radio');
+$statusFld->developerTags['rdHtmlAfterRadio'] = '<i class="input-helper"></i>';
 
 $iconLangFld = $prodCatFrm->getField('icon_lang_id');
 $iconLangFld->addFieldTagAttribute('class', 'icon-language-js');
@@ -33,6 +36,9 @@ $btn = $prodCatFrm->getField('btn_discard');
 $btn->addFieldTagAttribute('onClick', "discardForm()");
 $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
 
+$fld = $prodCatFrm->getField('auto_update_other_langs_data');
+$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 ?>
 <?php echo $prodCatFrm->getFormTag(); ?>
 <div class="sectionhead">

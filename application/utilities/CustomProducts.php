@@ -1777,6 +1777,7 @@ trait CustomProducts
                 $productLangData = $prod->getAttributesByLangId($langId, $productId);
                 if (!empty($productLangData)) {
                     $prodData['product_name'][$langId] = $productLangData['product_name'];
+                    $prodData['product_youtube_video'][$langId] = $productLangData['product_youtube_video'];
                     $prodData['product_description'][$langId] = $productLangData['product_description'];
                 }
             }
@@ -1867,13 +1868,12 @@ trait CustomProducts
         }
         Product::updateMinPrices($productId);
 
-        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
-        if (!$prod->saveProductLangData($siteDefaultLangId, $post)) {
+        if (!$prod->saveProductLangData($post)) {
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if (!$prod->saveProductCategory($post['ptc_prodcat_id'])) {
+        if(!$prod->saveProductCategory($post['ptc_prodcat_id'])){
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -2225,7 +2225,6 @@ trait CustomProducts
         $this->set('msg', Labels::getLabel('LBL_Product_Data_Translated_Successful', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
-
     public function setUpProductShipping()
     {
         if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {

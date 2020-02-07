@@ -1642,18 +1642,18 @@ END,   special_price_found ) as special_price_found'
         return true;
     }
 
-    public function saveProductLangData($siteDefaultLangId, $langData)
+    public function saveProductLangData($langData)
     {
         if ($this->mainTableRecordId < 1 || empty($langData)) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
 
-        $autoUpdateOtherLangsData = isset($langData['auto_update_other_langs_data']) ? $langData['auto_update_other_langs_data'] : 0;
-        foreach ($langData['product_name'] as $langId => $prodName) {
-            if (empty($prodName) && $autoUpdateOtherLangsData > 0) {
-                $this->saveTranslatedProductLangData($langId);
-            } elseif (!empty($prodName)) {
+        $autoUpdateOtherLangsData = isset($langData['auto_update_other_langs_data']) ? FatUtility::int($langData['auto_update_other_langs_data']) : 0; 
+        foreach( $langData['product_name'] as $langId=>$prodName ){ 
+            if( empty( $prodName ) && $autoUpdateOtherLangsData > 0 ){ 
+                $this->saveTranslatedProductLangData($langId);                
+            }else if( !empty( $prodName ) ){                
                 $data = array(
                      static::DB_TBL_LANG_PREFIX .'product_id' => $this->mainTableRecordId,
                      static::DB_TBL_LANG_PREFIX .'lang_id' => $langId,
