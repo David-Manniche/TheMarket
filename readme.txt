@@ -62,3 +62,5 @@ Bugs:
     => 032282 - On product detail page > same product is getting as addon through admin
     => 034391 - While searhing seller product b tags is displaying around seller name.
     => 034399 - After selection of buy together product unable to remove that selection.
+    => 033833 - Change label to ORDER INVOICE ID from CHILD ORDER INVOICE ID.
+    => 032432 - Deleted categories are displaying on home page category collection
