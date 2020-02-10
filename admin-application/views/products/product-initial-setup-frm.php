@@ -198,14 +198,14 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                      <div class="field-set mb-0">
                          <div class="caption-wraper">
                             <label class="field_label">
-                            <?php $fld = $productFrm->getField('product_description['.$siteDefaultLangId.']');
+                            <?php $fld = $productFrm->getField('product_description_'.$siteDefaultLangId);
                                   echo $fld->getCaption();
                             ?>
                             </label>
                          </div>
                          <div class="field-wraper">
                              <div class="field_cover"> 
-                             <?php echo $productFrm->getFieldHtml('product_description['.$siteDefaultLangId.']'); ?>
+                             <?php echo $productFrm->getFieldHtml('product_description_'.$siteDefaultLangId); ?>
                              </div>
                          </div>
                      </div>
@@ -282,13 +282,13 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                             <div class="field-set">
                                 <div class="caption-wraper">
                                     <label class="field_label">
-                                    <?php  $fld = $productFrm->getField('product_description['.$langId.']');
+                                    <?php  $fld = $productFrm->getField('product_description_'.$langId);
                                         echo $fld->getCaption(); ?>
                                     </label>
                                 </div>
                                 <div class="field-wraper">
                                     <div class="field_cover">
-                                    <?php echo $productFrm->getFieldHtml('product_description['.$langId.']'); ?>
+                                    <?php echo $productFrm->getFieldHtml('product_description_'.$langId); ?>
                                     </div>
                                 </div>
                             </div>

@@ -1658,7 +1658,7 @@ END,   special_price_found ) as special_price_found'
                      static::DB_TBL_LANG_PREFIX .'product_id' => $this->mainTableRecordId,
                      static::DB_TBL_LANG_PREFIX .'lang_id' => $langId,
                     'product_name' => $prodName,
-                    'product_description' => $langData['product_description'][$langId],
+                    'product_description' => $langData['product_description_'.$langId],
                     'product_youtube_video' => $langData['product_youtube_video'][$langId],
                 );
                 if (!$this->updateLangData($langId, $data)) {

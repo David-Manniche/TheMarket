@@ -18,8 +18,6 @@ class ProductsController extends AdminBaseController
         }
 
         $this->set("frmSearch", $srchFrm);
-        $this->set("includeEditor", true);
-
         $this->_template->addJs('js/jscolor.js');
         $this->_template->addJs('js/import-export.js');
         $this->set('canEdit', $this->objPrivilege->canEditProducts(0, true));
@@ -875,6 +873,7 @@ class ProductsController extends AdminBaseController
         $this->set('productType', $productType);
         $this->_template->addJs(array('js/cropper.js', 'js/cropper-main.js', 'js/jquery-sortable-lists.js', 'js/tagify.min.js', 'js/tagify.polyfills.min.js'));
         $this->_template->addCss(array('css/cropper.css', 'css/tagify.css'));
+        $this->set("includeEditor", true);
         $this->_template->render();
     }
 
@@ -894,7 +893,7 @@ class ProductsController extends AdminBaseController
                 if (!empty($productLangData)) {
                     $prodData['product_name'][$langId] = $productLangData['product_name'];
                     $prodData['product_youtube_video'][$langId] = $productLangData['product_youtube_video'];
-                    $prodData['product_description'][$langId] = $productLangData['product_description'];
+                    $prodData['product_description_'.$langId] = $productLangData['product_description'];
                 }
             }
 
@@ -965,7 +964,8 @@ class ProductsController extends AdminBaseController
             } else {
                 $frm->addTextBox(Labels::getLabel('LBL_Product_Name', $this->adminLangId), 'product_name['.$langId.']');
             }
-            $frm->addTextArea(Labels::getLabel('LBL_Description', $this->adminLangId), 'product_description['.$langId.']');
+            //$frm->addTextArea(Labels::getLabel('LBL_Description', $this->adminLangId), 'product_description['.$langId.']');
+            $frm->addHtmlEditor(Labels::getLabel('LBL_Description', $this->adminLangId), 'product_description_'.$langId);
             $frm->addTextBox(Labels::getLabel('LBL_Youtube_Video_Url', $this->adminLangId), 'product_youtube_video['.$langId.']');
         }
 
@@ -994,7 +994,7 @@ class ProductsController extends AdminBaseController
     }
 
     public function setUpProduct()
-    {
+    { 
         $this->objPrivilege->canEditProducts();
         $productId = FatApp::getPostedData('product_id', FatUtility::VAR_INT, 0);
         $frm = $this->getProductIntialSetUpFrm($productId);

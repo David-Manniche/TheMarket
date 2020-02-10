@@ -4809,7 +4809,8 @@ class SellerController extends SellerBaseController
             } else {
                 $frm->addTextBox(Labels::getLabel('LBL_Product_Name', $this->siteLangId), 'product_name[' . $langId . ']');
             }
-            $frm->addTextArea(Labels::getLabel('LBL_Description', $this->siteLangId), 'product_description[' . $langId . ']');
+            //$frm->addTextArea(Labels::getLabel('LBL_Description', $this->siteLangId), 'product_description[' . $langId . ']');
+            $frm->addHtmlEditor(Labels::getLabel('LBL_Description', $this->siteLangId), 'product_description_'.$langId);
             $frm->addTextBox(Labels::getLabel('LBL_Youtube_Video_Url', $this->siteLangId), 'product_youtube_video[' . $langId . ']');
         }
 

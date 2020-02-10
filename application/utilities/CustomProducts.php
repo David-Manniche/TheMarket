@@ -1751,7 +1751,7 @@ trait CustomProducts
         $this->_template->addJs('js/tagify.min.js');
         $this->_template->addJs('js/tagify.polyfills.min.js');
         $this->_template->addCss('css/tagify.css');
-
+        $this->set("includeEditor", true);
         $this->_template->render();
     }
 
@@ -1778,7 +1778,8 @@ trait CustomProducts
                 if (!empty($productLangData)) {
                     $prodData['product_name'][$langId] = $productLangData['product_name'];
                     $prodData['product_youtube_video'][$langId] = $productLangData['product_youtube_video'];
-                    $prodData['product_description'][$langId] = $productLangData['product_description'];
+                    //$prodData['product_description'][$langId] = $productLangData['product_description'];
+                    $prodData['product_description_'.$langId] = $productLangData['product_description'];
                 }
             }
 
