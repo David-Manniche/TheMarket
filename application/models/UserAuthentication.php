@@ -297,6 +297,7 @@ class UserAuthentication extends FatModel
         $srch = User::getSearchObject(true, false);
         $condition = $srch->addCondition('credential_username', '=', $username);
         $condition->attachCondition('credential_email', '=', $username, 'OR');
+        $condition->attachCondition('user_phone', '=', $username, 'OR');
         $srch->addCondition('credential_password', '=', $password);
         if (0 < $userType) {
             switch ($userType) {
@@ -318,10 +319,7 @@ class UserAuthentication extends FatModel
             }
         }
         $rs = $srch->getResultSet();
-
-
         if (!$row = $db->fetch($rs)) {
-            $this->logFailedAttempt($ip, $username);
             $this->error = Labels::getLabel('ERR_INVALID_USERNAME_OR_PASSWORD', $this->commonLangId);
             return false;
         }
@@ -338,7 +336,7 @@ class UserAuthentication extends FatModel
             return false;
         }
 
-        if ((!(strtolower($row['credential_username']) === strtolower($username) || strtolower($row['credential_email']) === strtolower($username))) || $row['credential_password'] !== $password) {
+        if ((!(strtolower($row['credential_username']) === strtolower($username) || strtolower($row['credential_email']) === strtolower($username) || $row['user_phone'] === $username)) || $row['credential_password'] !== $password) {
             $this->logFailedAttempt($ip, $username);
             $this->error = Labels::getLabel('ERR_INVALID_USERNAME_OR_PASSWORD', $this->commonLangId);
             return false;
