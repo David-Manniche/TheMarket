@@ -1367,7 +1367,7 @@ class Importexport extends ImportexportCommon
         $taxCategoryArr = array();
         $countryArr = array();
         $userProdUploadLimit = $usersCrossedUploadLimit = array();
-
+        $userId = 0; 
         if (!$this->settings['CONF_USE_PRODUCT_TYPE_ID']) {
             $prodTypeIdentifierArr = Product::getProductTypes($langId);
             $prodTypeIdentifierArr = array_flip($prodTypeIdentifierArr);
