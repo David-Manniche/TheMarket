@@ -51,7 +51,7 @@ $(document).on('change','.language-js',function(){
 	productInstructions = function( type ){
 		$.facebox(function() {
 			fcom.ajax(fcom.makeUrl('Seller', 'productTooltipInstruction', [type]), '', function(t) {
-				$.facebox(t,'faceboxWidth catalog-bg');
+				$.facebox(t,'medium-fb-width catalog-bg');
 			});
 		});
 	};

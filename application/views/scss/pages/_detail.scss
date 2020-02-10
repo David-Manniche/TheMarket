@@ -352,7 +352,7 @@ html.quick-view--open {
     position: sticky;
     position: -webkit-sticky;
     /*z-index: 1;*/
-    top: 130px;
+    top: 180px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -361,6 +361,7 @@ html.quick-view--open {
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
+    align-items: center;
 
     @include media-breakpoint-down(lg) {
         & {

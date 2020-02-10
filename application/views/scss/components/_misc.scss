@@ -1,5 +1,6 @@
 html {
     font-size: 16px;
+    overflow-x: hidden;
 
     @include media-breakpoint-down(lg) {
         & {
@@ -75,11 +76,12 @@ a:hover {
 }
 
 .divider,
-hr {
+{
     height: 1px;
     background: $border-color;
     margin: 15px 0;
 }
+hr {}
 
 .note {
     font-weight: 300;
@@ -232,4 +234,14 @@ hr {
     .avtar {
         margin: 0 auto;
     }
+}
+
+.info-message {
+    background: #f9edbe;
+    border: 1px solid #f0c36d;
+    color: #6c6c6c;
+    font-size: 0.85em;
+    line-height: 1.2;
+    border-radius: 4px;
+    padding: 0.8rem;
 }

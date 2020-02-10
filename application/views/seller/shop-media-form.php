@@ -6,7 +6,7 @@
     $ratioFld = $shopLogoFrm->getField('ratio_type');
     $ratioFld->addFieldTagAttribute('class', 'prefRatio-js');
     $fld = $shopLogoFrm->getField('shop_logo');
-    $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+    $fld->addFieldTagAttribute('class', 'btn btn--sm');
     $fld->addFieldTagAttribute('onChange', 'logoPopupImage(this)');
 
     $shopBannerFrm->setFormTagAttribute('onsubmit', 'setupShopMedia(this); return(false);');
@@ -16,14 +16,14 @@
     $screenFld = $shopBannerFrm->getField('slide_screen');
     $screenFld->addFieldTagAttribute('class', 'prefDimensions-js');
     $fld = $shopBannerFrm->getField('shop_banner');
-    $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+    $fld->addFieldTagAttribute('class', 'btn  btn--sm');
     $fld->addFieldTagAttribute('onChange', 'bannerPopupImage(this)');
 
     $shopBackgroundImageFrm->setFormTagAttribute('onsubmit', 'setupShopMedia(this); return(false);');
     $shopBackgroundImageFrm->developerTags['colClassPrefix'] = 'col-md-';
     $shopBackgroundImageFrm->developerTags['fld_default_col'] = 12;
     $fld = $shopBackgroundImageFrm->getField('shop_background_image');
-    $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+    $fld->addFieldTagAttribute('class', 'btn btn--sm');
     // $bannerSize = applicationConstants::getShopBannerSize();
     // $shopLayout= ($shopDetails['shop_ltemplate_id'])?$shopDetails['shop_ltemplate_id']:SHOP::TEMPLATE_ONE;
     $shopLayout= SHOP::TEMPLATE_ONE;
@@ -39,6 +39,7 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
                     <div class="preview">
                     <h5><?php echo Labels::getLabel('LBL_Banner_Setup', $siteLangId); ?></h5>
                       <small class="form-text text-muted preferredDimensions-js"><?php echo sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $siteLangId), '2000 x 500'); ?></small>
+                       <div class="gap"></div>
                         <?php echo $shopBannerFrm->getFormHtml();?>
                         <div id="banner-image-listing" class="row"></div>
                     </div>
@@ -47,6 +48,7 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
                     <div class="preview">
                     <h5><?php echo Labels::getLabel('LBL_Logo_Setup', $siteLangId); ?></h5>
                         <small class="form-text text-muted"><?php echo sprintf(Labels::getLabel('MSG_Upload_shop_logo_text', $siteLangId), '150*150')?></small>
+                        <div class="gap"></div>
                         <?php echo $shopLogoFrm->getFormHtml();?>
                            <div id="logo-image-listing" class="row" ></div>
                     </div>

@@ -133,6 +133,10 @@
         -webkit-animation: dropdown-menu-fade-in .3s ease 1, dropdown-menu-move-up .3s ease-out 1;
         animation: dropdown-menu-fade-in .3s ease 1, dropdown-menu-move-up .3s ease-out 1
     }
+	
+	&-right{#{$end-direction}: 0;
+    #{$start-direction}: auto;}
+	
 }
 
 
@@ -236,3 +240,5 @@
     }
 
 }
+
+.box--scroller{ overflow-y: auto; max-height: 250px;}

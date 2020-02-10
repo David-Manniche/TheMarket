@@ -40,10 +40,10 @@ $(document).ready(function() {
 		   /* for mobile toggle navigation */    
 		$('.navs_toggle').click(function() {
 			
-			if($('html').hasClass('cart-is-active')){
+			/* if($('html').hasClass('cart-is-active')){
 				$('.cart').removeClass('cart-is-active');
 				$('html').removeClass("cart-is-active");
-			}
+			} */
 			if($('html').hasClass('toggled-user')){
 				$('.dropdown__trigger-js').parent('.dropdown').removeClass("is-active");
 				$("html").removeClass("toggled-user"); 

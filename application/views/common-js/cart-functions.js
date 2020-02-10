@@ -33,8 +33,8 @@ var cart = {
 			} else {
 				$('span.cartQuantity').html(ans.total);
 				$('html, body').animate({ scrollTop: 0 }, 'slow');
-				$('html').toggleClass("cart-is-active");
-				$('.cart').toggleClass("cart-is-active");
+				/*$('html').toggleClass("cart-is-active");
+				$('.cart').toggleClass("cart-is-active");*/
 				$('#cartSummary').load(fcom.makeUrl('cart', 'getCartSummary'));
 			}
 
