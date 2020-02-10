@@ -1028,6 +1028,7 @@ trait CustomCatalogProducts {
         $this->_template->addJs('js/tagify.min.js');
         $this->_template->addJs('js/tagify.polyfills.min.js');
         $this->_template->addCss('css/tagify.css');
+        $this->set('includeEditor', true);
         $this->_template->render();
     }
 
@@ -1058,7 +1059,8 @@ trait CustomCatalogProducts {
                 $langContent = json_decode($customProductLangData['preq_lang_data'], true);
                 $langData['product_name'][$langId] = $langContent['product_name'];
                 $langData['product_youtube_video'][$langId] = $langContent['product_youtube_video'];
-                $langData['product_description'][$langId] = $langContent['product_description'];
+                //$langData['product_description'][$langId] = $langContent['product_description'];
+                $langData['product_description_'.$langId] = $langContent['product_description'];
             }
             $productReqRow = array_merge($productReqRow, $langData);
             $customProductFrm->fill($productReqRow);
@@ -1094,13 +1096,16 @@ trait CustomCatalogProducts {
 
         $preqProdCatId = FatUtility::int($post['ptc_prodcat_id']);
         $autoUpdateOtherLangsData = FatUtility::int($post['auto_update_other_langs_data']);
-        $prodName = $post['product_name'];
-        $prodDesc = $post['product_description'];
+        $prodName = $post['product_name'];        
         $prodYouTubeUrl = $post['product_youtube_video'];
+        $languages = Language::getAllNames();
+        foreach($languages as $langId=>$data){
+            $prodDesc[$langId] = $post['product_description_'.$langId];
+            unset($post['product_description_'.$langId]);
+        } 
         unset($post['preq_id']);
         unset($post['ptc_prodcat_id']);
         unset($post['product_name']);
-        unset($post['product_description']);
         unset($post['product_youtube_video']);
         unset($post['btn_submit']);
         unset($post['auto_update_other_langs_data']);

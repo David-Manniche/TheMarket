@@ -682,7 +682,10 @@ $(document).on('change', '.language-js', function () {
     translateData = function (item, defaultLang, toLangId) {
         var autoTranslate = $("input[name='auto_update_other_langs_data']:checked").length;
         var prodName = $("input[name='product_name[" + defaultLang + "]']").val();
-        var prodDesc = $("[name='product_description[" + defaultLang + "]']").val();
+        //var prodDesc = $("[name='product_description[" + defaultLang + "]']").val();
+        var oEdit = eval(oUtil.arrEditor[0]);
+        var prodDesc = oEdit.getTextBody();
+        
         var alreadyOpen = $('.collapse-js-' + toLangId).hasClass('show');
         if (autoTranslate == 0 || prodName == "" || alreadyOpen == true) {
             return false;
@@ -691,7 +694,9 @@ $(document).on('change', '.language-js', function () {
         fcom.updateWithAjax(fcom.makeUrl('Seller', 'translatedProductData'), data, function (t) {
             if (t.status == 1) {
                 $("input[name='product_name[" + toLangId + "]']").val(t.productName);
-                $("[name='product_description[" + toLangId + "]']").val(t.productDesc);
+                //$("[name='product_description[" + toLangId + "]']").val(t.productDesc);
+                var oEdit1 = eval(oUtil.arrEditor[1]);
+                oEdit1.putHTML(t.productDesc);
             }
         });
     }
@@ -708,9 +713,13 @@ $(document).on('change', '.language-js', function () {
     };
 
     setupcustomCatalogProduct = function (frm) {
-        if (!$(frm).validate())
-            return;
-        var data = fcom.frmData(frm);
+        //if (!$(frm).validate())return;
+        var getFrm = $('#tabs_001 form')[0];
+        var validator = $(getFrm).validation({errordisplay: 3});
+        validator.validate();
+        if (!validator.isValid()) return;
+        //var data = fcom.frmData(frm);
+        var data = fcom.frmData(getFrm);
         fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupCustomCatalogProduct'), data, function (t) {
             productAttributeAndSpecificationsFrm(t.preqId);
             hideShippingTab(t.productType, t.productTypeDigital);

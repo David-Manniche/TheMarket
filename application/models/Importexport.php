@@ -17,7 +17,7 @@ class Importexport extends ImportexportCommon
     public const TYPE_POLICY_POINTS = 10;
     public const TYPE_USERS = 11;
     public const TYPE_TAX_CATEGORY = 12;
-    public const TYPE_LANGUAGE_lABELS = 13;
+    public const TYPE_LANGUAGE_LABELS = 13;
     
 
     public const MAX_LIMIT = 1000;
@@ -56,14 +56,14 @@ class Importexport extends ImportexportCommon
                 $arr[static::TYPE_BRANDS] = Labels::getLabel('LBL_Brands', $langId);
                 $arr[static::TYPE_OPTIONS] = Labels::getLabel('LBL_Options', $langId);
                 $arr[static::TYPE_OPTION_VALUES] = Labels::getLabel('LBL_Option_Values', $langId);
-                $arr[static::TYPE_TAG] = Labels::getLabel('LBL_Tags', $langId);
+                //$arr[static::TYPE_TAG] = Labels::getLabel('LBL_Tags', $langId);
                 $arr[static::TYPE_COUNTRY] = Labels::getLabel('LBL_Countries', $langId);
                 $arr[static::TYPE_STATE] = Labels::getLabel('LBL_States', $langId);
                 //$arr[static::TYPE_POLICY_POINTS] = Labels::getLabel('LBL_Policy_Points', $langId);
                 $arr[static::TYPE_TAX_CATEGORY] = Labels::getLabel('LBL_Tax_Category', $langId);
                 if (!$sellerDashboard) {
                     $arr[static::TYPE_USERS] = Labels::getLabel('LBL_users', $langId);
-                    $arr[static::TYPE_LANGUAGE_lABELS] = Labels::getLabel('LBL_Language_Labels', $langId);
+                    $arr[static::TYPE_LANGUAGE_LABELS] = Labels::getLabel('LBL_Language_Labels', $langId);
                 }
                 break;
             case 'IMPORT':
@@ -74,10 +74,10 @@ class Importexport extends ImportexportCommon
                     $arr[static::TYPE_BRANDS] = Labels::getLabel('LBL_Brands', $langId);
                     $arr[static::TYPE_OPTIONS] = Labels::getLabel('LBL_Options', $langId);
                     $arr[static::TYPE_OPTION_VALUES] = Labels::getLabel('LBL_Option_Values', $langId);
-                    $arr[static::TYPE_TAG] = Labels::getLabel('LBL_Tags', $langId);
+                    //$arr[static::TYPE_TAG] = Labels::getLabel('LBL_Tags', $langId);
                     $arr[static::TYPE_COUNTRY] = Labels::getLabel('LBL_Countries', $langId);
                     $arr[static::TYPE_STATE] = Labels::getLabel('LBL_States', $langId);
-                    $arr[static::TYPE_LANGUAGE_lABELS] = Labels::getLabel('LBL_Language_Labels', $langId);
+                    $arr[static::TYPE_LANGUAGE_LABELS] = Labels::getLabel('LBL_Language_Labels', $langId);
                     //$arr[static::TYPE_POLICY_POINTS] = Labels::getLabel('LBL_Policy_Points', $langId);
                 }
                 break;
