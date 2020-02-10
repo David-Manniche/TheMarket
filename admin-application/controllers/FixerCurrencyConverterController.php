@@ -63,7 +63,7 @@ class FixerCurrencyConverterController extends CurrencyConverterBaseController
         return [
             'status' => $status,
             'msg' => $message,
-            'data' => $data['rates']
+            'data' => isset($data['rates']) ? $data['rates'] : []
         ];
     }
 }
