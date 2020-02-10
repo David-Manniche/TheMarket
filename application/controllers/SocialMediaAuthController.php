@@ -47,7 +47,7 @@ class SocialMediaAuthController extends PluginBaseController
         try {
             $keyName = get_called_class()::KEY_NAME;
         } catch (\Error $e) {
-            $this->setErrorMessage('ERR - ' . $e->getMessage());
+            $this->setErrorMessage($e->getMessage());
         }
 
         $userObj = new User();

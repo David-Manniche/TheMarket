@@ -1311,7 +1311,7 @@ class Product extends MyAppModel
         /* to check current product is in wish list or not[ */
         if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::NO) {
             $srch->joinFavouriteProducts($userId);
-            $srch->addFld('ufp_id');
+            $srch->addFld('IFNULL(ufp_id, 0) as ufp_id');
         } else {
             $srch->joinUserWishListProducts($userId);
             $srch->addFld('COALESCE(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist');

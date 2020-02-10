@@ -335,7 +335,7 @@ class SellerProduct extends MyAppModel
         if (true ===  MOBILE_APP_API_CALL) {
             if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::NO) {
                 $this->joinFavouriteProducts($srch, $userId);
-                $srch->addFld('ufp_id');
+                $srch->addFld('IFNULL(ufp_id, 0) as ufp_id');
             } else {
                 $this->joinUserWishListProducts($srch, $userId);
                 $srch->addFld('IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist');

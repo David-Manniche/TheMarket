@@ -3,7 +3,7 @@
 $data = array(
     'recordCount' => !empty($recordCount) ? $recordCount : 0,
     'collection' => !empty($collection) ? $collection : (object)array(),
-    'collectionItems' => !empty($collections) ? $collections : array(),
+    'collectionItems' => !empty($collections) ? array_values($collections) : array(),
 );
 
 

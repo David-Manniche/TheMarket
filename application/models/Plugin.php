@@ -105,11 +105,11 @@ class Plugin extends MyAppModel
     public static function getTypeArr($langId)
     {
         return [
-            static::TYPE_CURRENCY_API => Labels::getLabel('LBL_CURRENCY_API', $langId),
-            static::TYPE_SOCIAL_LOGIN_API => Labels::getLabel('LBL_SOCIAL_LOGIN_API', $langId),
-            static::TYPE_PUSH_NOTIFICATION_API => Labels::getLabel('LBL_PUSH_NOTIFICATION_API', $langId),
-            static::TYPE_ADVERTISEMENT_FEED_API => Labels::getLabel('LBL_ADVERTISEMENT_FEED_API', $langId),
-            static::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT_API', $langId),
+            static::TYPE_CURRENCY_API => Labels::getLabel('LBL_CURRENCY', $langId),
+            static::TYPE_SOCIAL_LOGIN_API => Labels::getLabel('LBL_SOCIAL_LOGIN', $langId),
+            static::TYPE_PUSH_NOTIFICATION_API => Labels::getLabel('LBL_PUSH_NOTIFICATION', $langId),
+            static::TYPE_ADVERTISEMENT_FEED_API => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
+            static::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT', $langId),
         ];
     }
 

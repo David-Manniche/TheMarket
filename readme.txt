@@ -42,7 +42,7 @@ New Features:
     => PWA compliance.
     => 69879 - Facebook Pixel
     => 69217 - Google Shopping Feed Integration
-    => 69191 PayPal Payout.
+    => 69191  - PayPal Payout.
 -----------------------TV-9.1.2.20200205-------------------------------
 
 Bugs:
@@ -67,3 +67,5 @@ Bugs:
     => 034290 - Some labels are not there in admin for front end
     => 032866 - Shop is getting reported multiple times
     => 032857 - Collection name is not displaying after visiting shop collection
+    => 69191 - PayPal Payout.
+    => 70149 - Blog Collection.

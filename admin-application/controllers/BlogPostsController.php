@@ -592,4 +592,33 @@ class BlogPostsController extends AdminBaseController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
+
+    public function autoComplete()
+    {
+        $pagesize = FatApp::getConfig('CONF_PAGE_SIZE');
+        $post = FatApp::getPostedData();
+
+        $postObj = new BlogPost();
+        $srch = $postObj->getSearchObject($this->adminLangId, false, true);
+
+        $srch->addMultipleFields(array('post_id, IFNULL(post_title, post_identifier) as post_title'));
+
+        if (!empty($post['keyword'])) {
+            $cond = $srch->addCondition('post_title', 'LIKE', '%' . $post['keyword'] . '%');
+            $cond->attachCondition('post_identifier', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
+        }
+
+        $srch->setPageSize($pagesize);
+        $rs = $srch->getResultSet();
+        $db = FatApp::getDb();
+        $posts = $db->fetchAll($rs, 'post_id');
+        $json = array();
+        foreach ($posts as $key => $post) {
+            $json[] = array(
+            'id' => $key,
+            'name' => strip_tags(html_entity_decode($post['post_title'], ENT_QUOTES, 'UTF-8'))
+            );
+        }
+        die(json_encode($json));
+    }
 }

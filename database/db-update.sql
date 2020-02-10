@@ -410,3 +410,21 @@ INSERT INTO `tbl_language_labels` (`label_id`, `label_key`, `label_lang_id`, `la
 
 INSERT INTO `tbl_extra_pages` (`epage_id`, `epage_identifier`, `epage_type`, `epage_content_for`, `epage_active`, `epage_default`, `epage_default_content`) VALUES (NULL, 'Marketplace Product Instructions', '41', '0', '1', '0', '<div class=\"delivery-term-data-inner\">\r\n                <div class=\"heading\">Products<span>All the information you need regarding this page</span></div>\r\n                <ul class=\"\">\r\n                    <li>\r\n                        This page lists all the marketplace products added by admin and seller.\r\n                        Marketplace products are of two types:-\r\n                        <ul>\r\n                            <li><strong>System Products</strong>: Available to all sellers and any seller can add to their own store.</li>\r\n                            <li><strong>My Products</strong>: Available only for you. No other seller can add to their own store.</li>\r\n                        </ul>\r\n                    </li>\r\n                    <li>On clicking \"<strong>Add Product</strong>\" button, seller can add new product to marketplace products.</li>\r\n                    <li>On click of \"<strong>Add to Store</strong>\" the seller can pick the product and add the products to his store inventory.</li>\r\n                </ul>\r\n            </div>'), (NULL, 'Seller Inventory Instructions', '42', '0', '1', '0', '<div class=\"delivery-term-data-inner\">\r\n                    <div class=\"heading\">Store Inventory<span>All the information you need regarding this page</span></div>\r\n                    <ul>\r\n                        <li>This tab lists all the products available to your front end store.</li>\r\n                        <li>For each product variant, separate copy need to be created by seller either from Marketplace product tab or clone product icon.</li>\r\n                        <li>To add new product to your store inventory, seller will have to pick the products from the marketplace products tabs from \"Add to Store\" button</li>\r\n                    </ul>\r\n                </div>'), (NULL, 'Product Request Instructions', '43', '0', '1', '0', '<div class=\"delivery-term-data-inner\">\r\n                    <div class=\"heading\">Requested Products<span>All the information you need regarding this page</span></div>\r\n                    <ul>\r\n                        <li>This tab lists all the products requested by seller to the admin which are not available in the marketplace products.</li>\r\n                        <li>On admin approval, the product will be added to the marketplace products and to the seller inventory.</li>\r\n                    </ul>\r\n                </div>');
 ALTER TABLE tbl_shop_reports ADD UNIQUE (sreport_shop_id, sreport_user_id);
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_CURRENCY_API';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_SOCIAL_LOGIN_API';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_PUSH_NOTIFICATION_API';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_ADVERTISEMENT_FEED_API';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_PAYOUT_API';
+
+CREATE TABLE `tbl_collection_to_blogs` (
+  `ctb_collection_id` int(11) NOT NULL,
+  `ctb_post_id` int(11) NOT NULL,
+  `ctb_display_order` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `tbl_collection_to_blogs`
+  ADD PRIMARY KEY (`ctb_collection_id`,`ctb_post_id`);
+
+ALTER TABLE `tbl_collections` ADD `collection_for_web` TINYINT(1) NOT NULL AFTER `collection_display_media_only`, ADD `collection_for_app` TINYINT(1) NOT NULL AFTER `collection_for_web`;
+UPDATE `tbl_collections` SET `collection_for_web` = '1', `collection_for_app` = '1';
