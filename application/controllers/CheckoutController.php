@@ -1218,11 +1218,11 @@ class CheckoutController extends MyAppController
                     'op_product_weight'    =>    $productInfo['product_weight'],
                     'op_product_weight_unit'    =>    $productInfo['product_weight_unit'],
                     'op_shop_id'        =>    $productInfo['shop_id'],
-                    'op_shop_owner_username'=>    $productInfo['shop_owner_username'],
-                    'op_shop_owner_name'=>    $productInfo['shop_onwer_name'],
+                    'op_shop_owner_username' =>    $productInfo['shop_owner_username'],
+                    'op_shop_owner_name' =>    $productInfo['shop_onwer_name'],
                     'op_shop_owner_email'    =>    $productInfo['shop_owner_email'],
-                    'op_shop_owner_phone'    =>    $productInfo['shop_owner_phone'],
-                    'op_selprod_max_download_times' => ($productInfo['selprod_max_download_times']!='-1')?$cartProduct['quantity']*$productInfo['selprod_max_download_times']:$productInfo['selprod_max_download_times'],
+                    'op_shop_owner_phone'    =>    isset($productInfo['shop_owner_phone']) && !empty($productInfo['shop_owner_phone']) ? $productInfo['shop_owner_phone'] : '',
+                    'op_selprod_max_download_times' => ($productInfo['selprod_max_download_times'] != '-1') ? $cartProduct['quantity'] * $productInfo['selprod_max_download_times'] : $productInfo['selprod_max_download_times'],
                     'op_selprod_download_validity_in_days' => $productInfo['selprod_download_validity_in_days'],
                     'op_sduration_id'            =>    $cartProduct['sduration_id'],
                     //'op_discount_total'    =>    0, //todo:: after coupon discount integration
@@ -1246,8 +1246,8 @@ class CheckoutController extends MyAppController
                     ]
                 );
 
-                $order_affiliate_user_id = isset($cartProduct['affiliate_user_id'])?$cartProduct['affiliate_user_id']:'';
-                $order_affiliate_total_commission += isset($cartProduct['affiliate_commission'])?$cartProduct['affiliate_commission']:'';
+                $order_affiliate_user_id = isset($cartProduct['affiliate_user_id']) ? $cartProduct['affiliate_user_id'] : '';
+                $order_affiliate_total_commission += isset($cartProduct['affiliate_commission']) ? $cartProduct['affiliate_commission'] : '';
 
                 $discount = 0;
                 if (!empty($cartSummary["cartDiscounts"]["discountedSelProdIds"])) {
