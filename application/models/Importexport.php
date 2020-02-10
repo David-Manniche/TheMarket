@@ -100,7 +100,7 @@ class Importexport extends ImportexportCommon
         $arr = array(
         static::PRODUCT_CATALOG=>Labels::getLabel('LBL_Product_Catalog', $langId),
         static::PRODUCT_OPTION=>Labels::getLabel('LBL_Product_Options', $langId),
-        static::PRODUCT_TAG=>Labels::getLabel('LBL_Product_Tags', $langId),
+        //static::PRODUCT_TAG=>Labels::getLabel('LBL_Product_Tags', $langId),
         static::PRODUCT_SPECIFICATION=>Labels::getLabel('LBL_Product_Specifications', $langId),
         static::PRODUCT_SHIPPING=>Labels::getLabel('LBL_Product_Shipping', $langId),
         );
