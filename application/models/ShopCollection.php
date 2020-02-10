@@ -37,9 +37,15 @@ class ShopCollection extends MyAppModel
         return $this->mainTableRecordId;
     }
 
-    public static function getCollectionGeneralDetail($shop_id, $scollection_id = 0)
+    public static function getCollectionGeneralDetail($shop_id, $scollection_id = 0, $langId = 0)
     {
+        $langId = FatUtility::int($langId);
         $srch = self::getSearchObject();
+        if (0 < $langId) {
+            $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', static::DB_TBL_LANG_PREFIX . 'scollection_id = ' . static::DB_TBL_PREFIX . 'id and ' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId);
+            $srch->addMultipleFields(['scollection_id', 'scollection_shop_id', 'scollection_identifier', 'scollection_active', 'IFNULL(scollection_name, scollection_identifier) as scollection_name']);
+        }
+
         $srch->addCondition(static::DB_TBL_PREFIX . "shop_id", "=", $shop_id);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
@@ -60,9 +66,9 @@ class ShopCollection extends MyAppModel
         }
         $record = new TableRecord(static::DB_TBL_LANG);
         $to_save_arr = array();
-        $to_save_arr[static::DB_TBL_LANG_PREFIX.'scollection_id'] = $data['scollection_id'];
-        $to_save_arr[static::DB_TBL_LANG_PREFIX.'lang_id'] = $data['lang_id'];
-        $to_save_arr[static::DB_TBL_PREFIX.'name'] = $data['name'];
+        $to_save_arr[static::DB_TBL_LANG_PREFIX . 'scollection_id'] = $data['scollection_id'];
+        $to_save_arr[static::DB_TBL_LANG_PREFIX . 'lang_id'] = $data['lang_id'];
+        $to_save_arr[static::DB_TBL_PREFIX . 'name'] = $data['name'];
         $record->assignValues($to_save_arr);
         if (!$record->addNew(array(), $to_save_arr)) {
             $this->error = $record->getError();
@@ -142,7 +148,7 @@ class ShopCollection extends MyAppModel
     public static function getShopCollectionsDetail($shop_id, $langId)
     {
         $srch = self::getSearchObject();
-        $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', static::DB_TBL_LANG_PREFIX . 'scollection_id = ' . static::DB_TBL_PREFIX . 'id'.' and '.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId);
+        $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', static::DB_TBL_LANG_PREFIX . 'scollection_id = ' . static::DB_TBL_PREFIX . 'id and ' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId);
         $srch->addMultipleFields(array( 'scollection_id', 'IFNULL(scollection_name, scollection_identifier) as scollection_name', 'scollection_shop_id'));
         $srch->addCondition(static::DB_TBL_PREFIX . "shop_id", "=", $shop_id);
         $srch->addCondition(static::DB_TBL_PREFIX . "active", "=", applicationConstants::YES);

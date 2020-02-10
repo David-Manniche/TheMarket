@@ -483,8 +483,8 @@ class ShopsController extends MyAppController
             FatApp::redirectUser(CommonHelper::generateUrl(''));
         }
         $this->shopDetail($shop_id);
-
-        $shopcolDetails = ShopCollection::getCollectionGeneralDetail($shop_id, $scollectionId);
+        
+        $shopcolDetails = ShopCollection::getCollectionGeneralDetail($shop_id, $scollectionId, $this->siteLangId);
 
         $frm = $this->getProductSearchForm();
 
@@ -503,12 +503,13 @@ class ShopsController extends MyAppController
 
         $fld = $frm->getField('sortBy');
         $fld->value = 'popularity_desc';
-        $fld->fldType ='hidden';
+        $fld->fldType = 'hidden';
         $frm->fill($get);
 
         $data = $this->getListingData($get);
 
         $arr = array(
+            'scollection_name' => $shopcolDetails['scollection_name'],
             'canonicalUrl' => CommonHelper::generateFullUrl('Shops', 'collection', array($shop_id, $scollectionId)),
             'productSearchPageType' => SavedSearchProduct::PAGE_SHOP,
             'recordId' => $shop_id,
