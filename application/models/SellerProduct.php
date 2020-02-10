@@ -234,7 +234,7 @@ class SellerProduct extends MyAppModel
             return false;
         }
 
-        FatApp::getDb()->deleteRecords(static::DB_TBL_UPSELL_PRODUCTS, array('smt'=> static::DB_TBL_UPSELL_PRODUCTS_PREFIX.'sellerproduct_id = ?','vals' => array($selprod_id) ));
+        FatApp::getDb()->deleteRecords(static::DB_TBL_UPSELL_PRODUCTS, array('smt' => static::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'sellerproduct_id = ?','vals' => array($selprod_id) ));
         if (empty($upsellProds)) {
             return true;
         }
@@ -242,8 +242,8 @@ class SellerProduct extends MyAppModel
         $record = new TableRecord(static::DB_TBL_UPSELL_PRODUCTS);
         foreach ($upsellProds as $upsell_id) {
             $to_save_arr = array();
-            $to_save_arr[static::DB_TBL_UPSELL_PRODUCTS_PREFIX.'sellerproduct_id'] = $selprod_id;
-            $to_save_arr[static::DB_TBL_UPSELL_PRODUCTS_PREFIX.'recommend_sellerproduct_id'] = $upsell_id;
+            $to_save_arr[static::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'sellerproduct_id'] = $selprod_id;
+            $to_save_arr[static::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'recommend_sellerproduct_id'] = $upsell_id;
             $record->assignValues($to_save_arr);
             if (!$record->addNew(array(), $to_save_arr)) {
                 $this->error = $record->getError();
@@ -260,7 +260,7 @@ class SellerProduct extends MyAppModel
             return false;
         }
 
-        FatApp::getDb()->deleteRecords(static::DB_TBL_RELATED_PRODUCTS, array('smt'=> static::DB_TBL_RELATED_PRODUCTS_PREFIX.'sellerproduct_id = ?','vals' => array($selprod_id) ));
+        FatApp::getDb()->deleteRecords(static::DB_TBL_RELATED_PRODUCTS, array('smt' => static::DB_TBL_RELATED_PRODUCTS_PREFIX .'sellerproduct_id = ?','vals' => array($selprod_id) ));
         if (empty($relatedProds)) {
             return true;
         }
@@ -268,8 +268,8 @@ class SellerProduct extends MyAppModel
         $record = new TableRecord(static::DB_TBL_RELATED_PRODUCTS);
         foreach ($relatedProds as $relprod_id) {
             $to_save_arr = array();
-            $to_save_arr[static::DB_TBL_RELATED_PRODUCTS_PREFIX.'sellerproduct_id'] = $selprod_id;
-            $to_save_arr[static::DB_TBL_RELATED_PRODUCTS_PREFIX.'recommend_sellerproduct_id'] = $relprod_id;
+            $to_save_arr[static::DB_TBL_RELATED_PRODUCTS_PREFIX . 'sellerproduct_id'] = $selprod_id;
+            $to_save_arr[static::DB_TBL_RELATED_PRODUCTS_PREFIX . 'recommend_sellerproduct_id'] = $relprod_id;
             $record->assignValues($to_save_arr);
             if (!$record->addNew(array(), $to_save_arr)) {
                 $this->error = $record->getError();

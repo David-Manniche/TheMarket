@@ -60,3 +60,4 @@ Bugs:
     => 034116 - Getting invalid request on clicking save button in special price and volume discount
     => 033149 - Getting error on affiliate withdrawal request
     => 032282 - On product detail page > same product is getting as addon through admin
+    => 034391 - While searhing seller product b tags is displaying around seller name.
