@@ -19,6 +19,9 @@ $frm->setFormTagAttribute('onsubmit', 'updateProfileInfo(this); return(false);')
 $usernameFld = $frm->getField('credential_username');
 $usernameFld->setFieldTagAttribute('disabled', 'disabled');
 
+$phoneFld = $frm->getField('user_phone');
+$phoneFld->setFieldTagAttribute('disabled', 'disabled');
+
 $userDobFld = $frm->getField('user_dob');
 if (!empty($data['user_dob']) && $data['user_dob'] != '0000-00-00') {
     $userDobFld->setFieldTagAttribute('disabled', 'disabled');
