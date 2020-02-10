@@ -84,6 +84,8 @@ class applicationConstants
     public const URL_TYPE_REGISTER = 9;
     public const URL_TYPE_CMS = 10;
 
+    public const SMS_CHARACTER_LENGTH = 160;
+
     public static function getWeightUnitsArr($langId)
     {
         $langId = FatUtility::int($langId);

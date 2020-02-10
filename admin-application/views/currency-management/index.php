@@ -34,7 +34,7 @@
                             $innerLi = $innerUl->appendElement('li');
                             $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green','title' => Labels::getLabel('LBL_Add_Currency', $adminLangId), "onclick" => "editCurrencyForm(0)"), Labels::getLabel('LBL_Add_Currency', $adminLangId), true);
                             
-                            $currencyPlugins = Plugin::getNamesByType(Plugin::TYPE_CURRENCY_API, $adminLangId);
+                            $currencyPlugins = Plugin::getNamesByType(Plugin::TYPE_CURRENCY, $adminLangId);
                             $obj = new Currency();
                             $currencyConverter = $obj->getCurrencyConverterApi();
                             if (!empty($currencyPlugins) && 0 < count($currencyPlugins) && false !== $currencyConverter) {

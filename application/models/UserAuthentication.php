@@ -4,6 +4,7 @@ class UserAuthentication extends FatModel
     public const SESSION_ELEMENT_NAME = 'yokartUserSession';
     public const AFFILIATE_SESSION_ELEMENT_NAME = 'yokartAffiliateSession';
     public const YOKARTUSER_COOKIE_NAME = '_uyokart';
+    public const TEMP_SESSION_ELEMENT_NAME = 'yokartTempUserSession';
 
     public const DB_TBL_USER_PRR = 'tbl_user_password_reset_requests';
     public const DB_TBL_UPR_PREFIX = 'uprr_';
@@ -32,10 +33,10 @@ class UserAuthentication extends FatModel
             trigger_error("Language Id not specified.", E_USER_ERROR);
         }
         return array(
-        static::AFFILIATE_REG_STEP1    =>    Labels::getLabel('LBL_Personal_Details', $langId),
-        static::AFFILIATE_REG_STEP2    =>    Labels::getLabel('LBL_Company_Details', $langId),
-        static::AFFILIATE_REG_STEP3    =>    Labels::getLabel('LBL_Payment_Information', $langId),
-        static::AFFILIATE_REG_STEP4    =>    Labels::getLabel('LBL_Confirmation', $langId),
+            static::AFFILIATE_REG_STEP1    =>    Labels::getLabel('LBL_Personal_Details', $langId),
+            static::AFFILIATE_REG_STEP2    =>    Labels::getLabel('LBL_Company_Details', $langId),
+            static::AFFILIATE_REG_STEP3    =>    Labels::getLabel('LBL_Payment_Information', $langId),
+            static::AFFILIATE_REG_STEP4    =>    Labels::getLabel('LBL_Confirmation', $langId),
         );
     }
 
@@ -392,7 +393,7 @@ class UserAuthentication extends FatModel
         'user_name' => $data['user_name'],
         'user_ip' => $data['user_ip'],
         'user_email' => $data['user_email'],
-        'user_is_guest' => isset($data['user_is_guest'])?$data['user_is_guest']:false,
+        'user_is_guest' => isset($data['user_is_guest']) ? $data['user_is_guest'] : false,
         );
         return true;
     }
@@ -625,13 +626,10 @@ class UserAuthentication extends FatModel
         return $row;
     }
 
-    public function getUserByEmailOrUserName($user, $isActive = true, $isVerfied = true, $addDeletedCheck = true)
+    public function validateUserObj($user, $isActive = true, $isVerfied = true, $addDeletedCheck = true, $isPhone = false)
     {
-        $db = FatApp::getDb();
         $srch = new SearchBase(User::DB_TBL);
         $srch->joinTable(User::DB_TBL_CRED, 'INNER JOIN', User::tblFld('id') . '=' . User::DB_TBL_CRED_PREFIX . 'user_id');
-        $cnd=$srch->addCondition(User::DB_TBL_CRED_PREFIX . 'username', '=', $user);
-        $cnd->attachCondition(User::DB_TBL_CRED_PREFIX . 'email', '=', $user, 'OR');
 
         if (true === $isActive) {
             $srch->addCondition(User::DB_TBL_CRED_PREFIX . 'active', '=', applicationConstants::ACTIVE);
@@ -662,6 +660,31 @@ class UserAuthentication extends FatModel
 
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
+        return $srch;
+    }
+
+    public function getUserByPhone($phoneNumber, $isActive = true, $isVerfied = true, $addDeletedCheck = true)
+    {
+        $db = FatApp::getDb();
+        $srch = $this->validateUserObj($phoneNumber, $isActive, $isVerfied, $addDeletedCheck, true);
+        $srch->addCondition(User::DB_TBL_PREFIX . 'phone', '=', $phoneNumber);
+
+        $rs = $srch->getResultSet();
+        if (!$row = $db->fetch($rs, User::tblFld('id'))) {
+            $this->error = Labels::getLabel('ERR_INVALID_PHONE_NUMBER', $this->commonLangId);
+            return false;
+        }
+
+        return $row;
+    }
+
+    public function getUserByEmailOrUserName($user, $isActive = true, $isVerfied = true, $addDeletedCheck = true)
+    {
+        $db = FatApp::getDb();
+        $srch = $this->validateUserObj($user, $isActive, $isVerfied, $addDeletedCheck);
+        $cnd = $srch->addCondition(User::DB_TBL_CRED_PREFIX . 'username', '=', $user);
+        $cnd->attachCondition(User::DB_TBL_CRED_PREFIX . 'email', '=', $user, 'OR');
+
         $rs = $srch->getResultSet();
         if (!$row = $db->fetch($rs, User::tblFld('id'))) {
             $this->error = Labels::getLabel('ERR_INVALID_USERNAME', $this->commonLangId);
@@ -671,19 +694,28 @@ class UserAuthentication extends FatModel
         return $row;
     }
 
-    public function checkUserPwdResetRequest($userId)
+    public function getUserResetPwdToken($userId)
     {
         $db = FatApp::getDb();
         $srch = new SearchBase(static::DB_TBL_USER_PRR);
         $srch->addCondition(static::DB_TBL_UPR_PREFIX . 'user_id', '=', $userId);
         $srch->addCondition(static::DB_TBL_UPR_PREFIX . 'expiry', '>', date('Y-m-d H:i:s'));
-        $srch->addFld(static::DB_TBL_UPR_PREFIX . 'user_id');
+        $srch->addMultipleFields([static::DB_TBL_UPR_PREFIX . 'user_id', static::DB_TBL_UPR_PREFIX . 'token']);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
         if (!$row = $db->fetch($rs)) {
             return false;
         }
+        return $row;
+    }
+
+    public function checkUserPwdResetRequest($userId)
+    {
+        if (!$this->getUserResetPwdToken($userId)) {
+            return false;
+        }
+
         $this->error = Labels::getLabel('ERR_RESET_PASSWORD_REQUEST_ALREADY_PLACED', $this->commonLangId);
         return true;
     }

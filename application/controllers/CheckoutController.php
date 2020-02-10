@@ -226,7 +226,7 @@ class CheckoutController extends MyAppController
 
     public function login()
     {
-        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN_API, $this->siteLangId);
+        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN, $this->siteLangId);
         $loginFormData = array(
         'loginFrm'         => $this->getLoginForm(),
         'guestLoginFrm' => $this->getGuestUserForm($this->siteLangId),

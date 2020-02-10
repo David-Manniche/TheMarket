@@ -1467,7 +1467,7 @@ class CommonHelper extends FatUtility
         $keyword = ucfirst(FatUtility::dashed2Camel($keyword));
 
         if (file_exists(CONF_INSTALLATION_PATH . 'application/controllers/' .$keyword.'Controller' . '.php')) {
-            return $string.'-'.rand(1, 100);
+            return $string . '-' . rand(1, 100);
         }
 
         return trim($string, '-');

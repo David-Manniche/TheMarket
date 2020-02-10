@@ -121,9 +121,9 @@ class EmailHandler extends FatModel
         $etpl = new FatTemplate('', '');
         $etpl->set('langId', $langId);
         $header = $etpl->render(false, false, '_partial/emails/email-header.php', true);
-        $footer = FatApp::getConfig('CONF_EMAIL_TEMPLATE_FOOTER_HTML'.$langId, FatUtility::VAR_STRING, '');
+        $footer = FatApp::getConfig('CONF_EMAIL_TEMPLATE_FOOTER_HTML' . $langId, FatUtility::VAR_STRING, '');
         $subject = $row['etpl_subject'];
-        $body = $header.$row['etpl_body'].$footer;
+        $body = $header . $row['etpl_body'] . $footer;
 
         $vars += static::commonVars($langId);
 
@@ -325,6 +325,7 @@ class EmailHandler extends FatModel
         $vars = array(
                     '{name}' => $d['user_name'],
                     '{email}' => $d['user_email'],
+                    '{phone}' => $d['user_phone'],
                     '{username}' => $d['user_username'],
                     '{user_type}' => $userType
                 );

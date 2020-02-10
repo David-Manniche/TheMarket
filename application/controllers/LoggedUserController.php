@@ -20,7 +20,7 @@ class LoggedUserController extends MyAppController
         }
 
         if (!isset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'])) {
-            $userPreferedDashboardType = ($userInfo['user_preferred_dashboard'])?$userInfo['user_preferred_dashboard']:$userInfo['user_registered_initially_for'];
+            $userPreferedDashboardType = ($userInfo['user_preferred_dashboard']) ? $userInfo['user_preferred_dashboard'] : $userInfo['user_registered_initially_for'];
 
             switch ($userPreferedDashboardType) {
                 case User::USER_TYPE_BUYER:
@@ -46,7 +46,12 @@ class LoggedUserController extends MyAppController
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'logout'));
         }
 
-        if (empty($userInfo['credential_email'])) {
+        $obj = new Plugin();
+        $active = $obj->getDefaultPluginData(Plugin::TYPE_SMS_NOTIFICATION, 'plugin_active');
+        $status = SmsTemplate::getTpl(SmsTemplate::LOGIN, 0, 'stpl_status');
+        $smsPluginStatus = (false != $active && !empty($active) && 0 < $status ? applicationConstants::YES : applicationConstants::NO);
+        
+        if (false === $smsPluginStatus && empty($userInfo['credential_email'])) {
             $message = Labels::getLabel('MSG_Please_Configure_Your_Email', $this->siteLangId);
             if (true ===  MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
@@ -54,6 +59,7 @@ class LoggedUserController extends MyAppController
             Message::addErrorMessage($message);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'configureEmail'));
         }
+
         $this->initCommonValues();
     }
 
