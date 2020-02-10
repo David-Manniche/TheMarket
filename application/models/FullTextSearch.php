@@ -6,10 +6,7 @@ class FullTextSearch extends FatModel
     private $fullTextSearch;
     private $search;
     private $fields;
-
-    /* public const SIZE = 50;
-    public const SEARCHRESULTSIZE = 12; */
-    
+        
     public function __construct($langId)
     {
         $langId = FatUtility::int($langId);
@@ -111,7 +108,301 @@ class FullTextSearch extends FatModel
         
         return $this->fullTextSearch->search($this->search, $this->page, $this->pageSize, $aggregationPrice, $this->fields);
     }
-     
+    
+    public static function updateLastProcessedRecord($lastProcessedRecordTime)
+    {
+        $labelsUpdatedAt = array('conf_name' => 'CONF_FULL_TEXT_SEARCH_LAST_PROCESSED','conf_val' => $lastProcessedRecordTime);
+        $db->insertFromArray('tbl_configurations', $labelsUpdatedAt, false, array(), $labelsUpdatedAt);
+    }
+
+    public static function updateQueue($data)
+    {
+        if (empty($data)) {
+            return false;
+        }
+
+        return FatApp::getDb()->insertFromArray(UpdatedRecordLog::DB_TBL, $data, false, array(), $data);
+
+        /* $updatedRecordLog = new UpdatedRecordLog();
+        $updatedRecordLog->assignValues($data);
+        if (!$updatedRecordLog->save()) {
+            return false;
+        }
+        return true; */
+    }
+
+    public static function setup()
+    {
+        $srch = UpdatedRecordLog::getSearchObject();
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->addCondition(UpdatedRecordLog::DB_TBL_PREFIX . 'added_on', '>', FatApp::getConfig('CONF_FULL_TEXT_SEARCH_LAST_PROCESSED', FatUtility::VAR_STRING, ''));
+        $srch->addOrder(UpdatedRecordLog::DB_TBL_PREFIX . 'added_on', 'asc');
+        $rs = $srch->getResultSet();
+        $record = FatApp::getDb()->fetchAll($rs);
+        
+        if (empty($record)) {
+            return false;
+        }
+                
+        foreach ($record as $row) {
+            $recordId = $row[UpdatedRecordLog::DB_TBL_PREFIX . 'record_id'];
+            switch ($row[UpdatedRecordLog::DB_TBL_PREFIX . 'record_type']) {
+                case UpdatedRecordLog::TYPE_SHOP:
+                    if (!static::updateShopProductsQueue($recordId)) {
+                        return false;
+                    }
+                    static::updateLastProcessedRecord($row['urlog_added_on']);
+                    break;
+                case UpdatedRecordLog::TYPE_USER:
+                    if (!static::updateUserProductsQueue($recordId)) {
+                        return false;
+                    }
+                    static::updateLastProcessedRecord($row['urlog_added_on']);
+                    break;
+                case UpdatedRecordLog::TYPE_CATEGORY:
+                    if (!static::updateCategoryProductsQueue($recordId)) {
+                        return false;
+                    }
+                    static::updateLastProcessedRecord($row['urlog_added_on']);
+                    break;
+                case UpdatedRecordLog::TYPE_BRAND:
+                    if (!static::updateBrandProductsQueue($recordId)) {
+                        return false;
+                    }
+                    static::updateLastProcessedRecord($row['urlog_added_on']);
+                    break;
+                case UpdatedRecordLog::TYPE_COUNTRY:
+                    if (!static::updateCountryProductsQueue($recordId)) {
+                        return false;
+                    }
+                    static::updateLastProcessedRecord($row['urlog_added_on']);
+                    break;
+                case UpdatedRecordLog::TYPE_STATE:
+                    if (!static::updateStateProductsQueue($recordId)) {
+                        return false;
+                    }
+                    static::updateLastProcessedRecord($row['urlog_added_on']);
+                    break;
+                case UpdatedRecordLog::TYPE_PRODUCT:
+                    if (!static::updateProducts($recordId)) {
+                        return false;
+                    }
+                    static::updateLastProcessedRecord($row['urlog_added_on']);
+                    break;
+                case UpdatedRecordLog::TYPE_INVENTORY:
+                    if (!static::updateProductInventory($recordId)) {
+                        return false;
+                    }
+                    static::updateLastProcessedRecord($row['urlog_added_on']);
+                    break;
+            }
+        }
+    }
+
+    public static function updateShopProductsQueue($shopId)
+    {
+        $shopId = FatUtility::int($shopId);
+        if (1 > $shopId) {
+            return false;
+        }
+
+        $srch = new ProductSearch(0, null, null, false, false, false);
+        $srch->joinSellerProducts(0, '', array(), false);
+        $srch->joinSellers();
+        $srch->joinShops(0, false, false, $shopId);
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->addCondition('shop_id', '=', $shopId);
+        $srch->addMultipleFields(array('distinct(product_id)'));
+        $rs = $srch->getResultSet();
+        while ($record = FatApp::getDb()->fetch($rs)) {
+            $data = [
+                'urlog_record_id' => $record['product_id'],
+                'urlog_subrecord_id' => 0,
+                'urlog_record_type' => UpdatedRecordLog::TYPE_PRODUCT,
+                'urlog_added_on' => date('Y-m-d H:i:s')
+            ];
+            if (!static::updateQueue($data)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static function updateUserProductsQueue($sellerId)
+    {
+        $sellerId = FatUtility::int($sellerId);
+        if (1 > $sellerId) {
+            return false;
+        }
+
+        $srch = new ProductSearch(0, null, null, false, false, false);
+        $srch->joinSellerProducts($sellerId, '', array(), false);
+        $srch->joinSellers();
+        $srch->joinShops(0, false, false, 0);
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        //$srch->addCondition('selprod_user_id', '=', $sellerId);
+        $srch->addMultipleFields(array('distinct(product_id)'));
+        $rs = $srch->getResultSet();
+        while ($record = FatApp::getDb()->fetch($rs)) {
+            $data = [
+                'urlog_record_id' => $record['product_id'],
+                'urlog_subrecord_id' => 0,
+                'urlog_record_type' => UpdatedRecordLog::TYPE_PRODUCT,
+                'urlog_added_on' => date('Y-m-d H:i:s')
+            ];
+            if (!static::updateQueue($data)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static function updateCategoryProductsQueue($categoryId)
+    {
+        $categoryId = FatUtility::int($categoryId);
+        if (1 > $categoryId) {
+            return false;
+        }
+
+        $srch = new ProductSearch(0, null, null, false, false, false);
+        $srch->joinProductToCategory(0, false, false, false);
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->addCondition('prodcat_id', '=', $categoryId);
+        $srch->addMultipleFields(array('distinct(product_id)'));
+        $rs = $srch->getResultSet();
+        while ($record = FatApp::getDb()->fetch($rs)) {
+            $data = [
+                'urlog_record_id' => $record['product_id'],
+                'urlog_subrecord_id' => 0,
+                'urlog_record_type' => UpdatedRecordLog::TYPE_PRODUCT,
+                'urlog_added_on' => date('Y-m-d H:i:s')
+            ];
+            if (!static::updateQueue($data)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static function updateBrandProductsQueue($brandId)
+    {
+        $brandId = FatUtility::int($brandId);
+        if (1 > $brandId) {
+            return false;
+        }
+
+        $srch = new ProductSearch(0, null, null, false, false, false);
+        $srch->joinBrands(0, false, false, false);
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->addCondition('brand_id', '=', $brandId);
+        $srch->addMultipleFields(array('distinct(product_id)'));
+        $rs = $srch->getResultSet();
+        while ($record = FatApp::getDb()->fetch($rs)) {
+            $data = [
+                'urlog_record_id' => $record['product_id'],
+                'urlog_subrecord_id' => 0,
+                'urlog_record_type' => UpdatedRecordLog::TYPE_PRODUCT,
+                'urlog_added_on' => date('Y-m-d H:i:s')
+            ];
+            if (!static::updateQueue($data)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static function updateCountryProductsQueue($countryId)
+    {
+        $countryId = FatUtility::int($countryId);
+        if (1 > $countryId) {
+            return false;
+        }
+
+        $srch = new ProductSearch(0, null, null, false, false, false);
+        $srch->joinSellerProducts(0, '', array(), false);
+        $srch->joinSellers();
+        $srch->joinShops(0, false, false, 0);
+        $srch->joinShopCountry(0, false);
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->addCondition('country_id', '=', $countryId);
+        $srch->addMultipleFields(array('distinct(product_id)'));
+        $rs = $srch->getResultSet();
+        while ($record = FatApp::getDb()->fetch($rs)) {
+            $data = [
+                'urlog_record_id' => $record['product_id'],
+                'urlog_subrecord_id' => 0,
+                'urlog_record_type' => UpdatedRecordLog::TYPE_PRODUCT,
+                'urlog_added_on' => date('Y-m-d H:i:s')
+            ];
+            if (!static::updateQueue($data)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static function updateStateProductsQueue($stateId)
+    {
+        $stateId = FatUtility::int($stateId);
+        if (1 > $stateId) {
+            return false;
+        }
+
+        $srch = new ProductSearch(0, null, null, false, false, false);
+        $srch->joinSellerProducts(0, '', array(), false);
+        $srch->joinSellers();
+        $srch->joinShops(0, false, false, 0);
+        $srch->joinShopState(0, false);
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->addCondition('state_id', '=', $stateId);
+        $srch->addMultipleFields(array('distinct(product_id)'));
+        $rs = $srch->getResultSet();
+        while ($record = FatApp::getDb()->fetch($rs)) {
+            $data = [
+                'urlog_record_id' => $record['product_id'],
+                'urlog_subrecord_id' => 0,
+                'urlog_record_type' => UpdatedRecordLog::TYPE_PRODUCT,
+                'urlog_added_on' => date('Y-m-d H:i:s')
+            ];
+            if (!static::updateQueue($data)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static function updateProducts($productId)
+    {
+        $productId = FatUtility::int($productId);
+        if (1 > $productId) {
+            return false;
+        }
+
+        return static::insertProduct($productId);
+    }
+   
+    public static function updateProductInventory($selProdId)
+    {
+        $selProdId = FatUtility::int($selProdId);
+        if (1 > $selProdId) {
+            return false;
+        }
+        
+        $languages = Language::getAllNames();
+        if (0 > count($languages)) {
+            return false;
+        }
+
+        $productId = SellerProduct::getAttributesById($selProdId, 'selprod_product_id');
+        return static::insertSellerProduct($productId, $selProdId);
+    }
     
     /* [ Start ElasticSearch Data Insert Functions */
     public static function insertProduct($productId = 0)
@@ -176,10 +467,10 @@ class FullTextSearch extends FatModel
                         unset($product[$brandKey]);
                     }
                 }
-                $inventories = static::insertInventory($productId, $langId);
+                //$inventories = static::insertInventory($productId, $langId);
                 $categories = static::insertCategory($productId, $langId);
                 $options = static::insertOptions($productId, $langId);
-                $data = array( 'general' => $product, 'brand' => $brand, 'categories'=> $categories,'options' => $options, 'inventories' => $inventories );
+                $data = array( 'general' => $product, 'brand' => $brand, 'categories'=> $categories,'options' => $options/* , 'inventories' => $inventories */ );
                 
                 // Checking Document Id Exists Or Not
                 if (!$response = $fullTextSearch->isDocumentExists($productId)) {
@@ -187,14 +478,14 @@ class FullTextSearch extends FatModel
                     if (!$results) {
                         continue;
                     }
-                    (new self())->updateProductStatus($productId, $langId);
+                    return static::insertSellerProduct($productId);
                     continue;
                 }
                 $upDateGeneralData = $fullTextSearch->updateDocument($productId, $data);
                 if (!$upDateGeneralData) {
                     continue;
                 }
-                (new self())->updateProductStatus($productId, $langId);
+                return static::insertSellerProduct($productId);
             }
         }
         return true;
@@ -319,66 +610,57 @@ class FullTextSearch extends FatModel
     * Param @sellerProductId required when you want to update a seller product data
     */
     
-    /*public static function insertInventory($productId, $sellerProductId = 0)
+    public static function insertSellerProduct($productId, $sellerProductId = 0)
     {
         $defaultPlugin = (new self())->getDefaultPlugin();
-        if(!$defaultPlugin)
-        {
+        if (!$defaultPlugin) {
             return false;
         }
         $languages = Language::getAllNames();
-        if(0 > count($languages))
-        {
+        if (0 > count($languages)) {
             return false;
         }
 
-        foreach($languages as $langId => $language)
-        {
+        foreach ($languages as $langId => $language) {
             $langId = FatUtility::int($langId);
-            $fullTextSearch = new $defaultPlugin( $langId );
-            $srch  = SellerProduct::getSearchObject( $langId );
+            $fullTextSearch = new $defaultPlugin($langId);
+            $srch  = SellerProduct::getSearchObject($langId);
 
-            if(1 > $productId)
-            {
+            if (1 > $productId) {
                 return false;
             }
 
-            $srch->addCondition( SellerProduct::DB_TBL_PREFIX . 'product_id', '=', $productId);
-            if($sellerProductId != 0)
-            {
-                $srch->addCondition( SellerProduct::DB_TBL_PREFIX . 'id', '=', $sellerProductId);
+            $srch->addCondition(SellerProduct::DB_TBL_PREFIX . 'product_id', '=', $productId);
+            if ($sellerProductId != 0) {
+                $srch->addCondition(SellerProduct::DB_TBL_PREFIX . 'id', '=', $sellerProductId);
             }
-            $srch->joinTable( SellerProduct::DB_TBL_EXTERNAL_RELATIONS, 'INNER JOIN' , SellerProduct::DB_TBL_PREFIX . 'id = '. SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . 'selprod_id');
-            $srch->addCondition( SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . 'indexed_for_search', '=', applicationConstants::NO);
-            $srch->addCondition( SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . 'lang_id', '=', $langId);
+            $srch->joinTable(SellerProduct::DB_TBL_EXTERNAL_RELATIONS, 'INNER JOIN', SellerProduct::DB_TBL_PREFIX . 'id = '. SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . 'selprod_id');
+            $srch->addCondition(SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . 'indexed_for_search', '=', applicationConstants::NO);
+            $srch->addCondition(SellerProduct::DB_TBL_EXTERNAL_RELATIONS_PREFIX . 'lang_id', '=', $langId);
             $srch->addMultipleFields(array('selprod_id','selprod_title','selprod_code','selprod_stock', 'selprod_condition', 'selprod_active', 'selprod_cod_enabled', 'selprod_available_from','selprod_price', 'selprod_sold_count', 'selprod_sku'));
 
             $rs    = $srch->getResultSet();
             $sellerProducts = FatApp::getDb()->fetchAll($rs);
 
-            foreach( $sellerProducts as $key => $sellerProduct) {
+            foreach ($sellerProducts as $key => $sellerProduct) {
                 $sellerProducts[$key]['shop']     = Shop::getAttributesByUserId($sellerProduct['selprod_user_id'], null, true, $language['language_id']);
-                $sellerProducts[$key]['userData'] = User::getAttributesById( $sellerProduct['selprod_user_id'] );
-                $sellerProducts[$key]['options']  = (new self())->getSellerProductOptions( $sellerProduct['selprod_id'], $language['language_id']);
-                $sellerProducts[$key]['reviews']  = (new self())->getSellerProductReviews( $sellerProduct['selprod_id'], $language['language_id']);
-                $sellerProducts[$key]['min_price'] = (new self())->getSellerProductMinimumPrice( $sellerProduct['selprod_id'] );
+                $sellerProducts[$key]['userData'] = User::getAttributesById($sellerProduct['selprod_user_id']);
+                $sellerProducts[$key]['options']  = (new self())->getSellerProductOptions($sellerProduct['selprod_id'], $language['language_id']);
+                $sellerProducts[$key]['reviews']  = (new self())->getSellerProductReviews($sellerProduct['selprod_id'], $language['language_id']);
+                $sellerProducts[$key]['min_price'] = (new self())->getSellerProductMinimumPrice($sellerProduct['selprod_id']);
             }
 
-            if(1 > count($sellerProducts))
-            {
+            if (1 > count($sellerProducts)) {
                 return false;
             }
 
-            if(!$response = $fullTextSearch->isDocumentExists($productId))
-            {
+            if (!$response = $fullTextSearch->isDocumentExists($productId)) {
                 return false;
             }
-            if(1 > $sellerProductId )
-            {
+            if (1 > $sellerProductId) {
                 $data = array('inventories' => $sellerProducts);
-                $results = $fullTextSearch->updateDocument($productId,$data);
-                if(!$results)
-                {
+                $results = $fullTextSearch->updateDocument($productId, $data);
+                if (!$results) {
                     continue;
                 }
                 $updateStatus = (new self())->updateSellerProductStatus($productId, $langId);
@@ -391,15 +673,14 @@ class FullTextSearch extends FatModel
 
             $results = $fullTextSearch->updateDocumentData($productId, 'inventories', $dataIndexArray, $data);
 
-            if(!$results)
-            {
+            if (!$results) {
                 continue;
             }
             $updateStatus = (new self())->updateSellerProductStatus($productId, $langId);
             continue;
         }
         return true;
-    }*/
+    }
     
     /*
     * Insert Brand
