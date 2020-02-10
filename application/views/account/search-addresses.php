@@ -13,8 +13,8 @@
         $addresses[0]['ua_is_default'] = 1;
     }
     foreach ($addresses as $address) {
-        $address['ua_identifier'] = ($address['ua_identifier'] == '') ? '&nbsp;' : $address['ua_identifier']; ?> <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-            <label class="list__selection <?php echo ($address['ua_is_default']==1)?'is-active':''; ?>">
+        $address['ua_identifier'] = ($address['ua_identifier'] == '') ? '&nbsp;' : $address['ua_identifier']; ?> <div class="col-lg-4 col-md-6 mb-4">
+            <label class="address-block <?php echo ($address['ua_is_default']==1)?'is-active':''; ?>">
                 <span class="radio">
                     <?php
                     $action = "setDefaultAddress(".$address['ua_id'].", event)";

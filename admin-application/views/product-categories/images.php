@@ -19,6 +19,6 @@
                         } ?>
             <small class="text--small"><?php echo Labels::getLabel('LBL_Language', $adminLangId); ?>: <?php echo $lang_name; ?></small>
         </div>
-    </li> 
+    </li>
 </ul>
 <?php }    ?>

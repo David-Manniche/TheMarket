@@ -40,18 +40,18 @@ $("document").ready(function(){
 		'source': function(request, response) {
 			$.ajax({
 				url: '<?php echo CommonHelper::generateUrl('Products','autoComplete'); ?>',
-				data: {keyword: request,fIsAjax:1},
+				data: {keyword: request['term'],fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['name'] ,	value: item['id']	};
+						return { label: item['name'], value: item['name'], id: item['id'] };
 					}));
 				},
 			});
 		},
-		'select': function(item) {
-			updateLinkedProducts(<?php echo $polling_id; ?>, item['value'] );
+		'select': function(event, ui) {
+			updateLinkedProducts(<?php echo $polling_id; ?>, ui.item.id );
 		}
 	});
 	<?php } elseif( $polling_type == Polling::POLLING_TYPE_CATEGORY ){ ?>
@@ -60,18 +60,18 @@ $("document").ready(function(){
 		'source': function(request, response) {
 			$.ajax({
 				url: '<?php echo CommonHelper::generateUrl('ProductCategories','autoComplete'); ?>',
-				data: {keyword: request,fIsAjax:1},
+				data: {keyword: request['term'],fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['prodcat_identifier'] ,	value: item['prodcat_id']	};
+						return { label: item['prodcat_identifier'], value: item['prodcat_identifier'], id: item['prodcat_id'] };
 					}));
 				},
 			});
 		},
-		'select': function(item) {
-			updateLinkedCategories(<?php echo $polling_id; ?>, item['value'] );
+		select: function(event, ui) {
+			updateLinkedCategories(<?php echo $polling_id; ?>, ui.item.id );
 		}
 	});
 	<?php } ?>

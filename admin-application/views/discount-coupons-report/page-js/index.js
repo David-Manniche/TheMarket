@@ -5,19 +5,18 @@ $(document).ready(function(){
 		'source': function(request, response) {	
 			$.ajax({
 				url: fcom.makeUrl('DiscountCouponsReport', 'autoCompleteJson'),
-				data: {keyword: request, fIsAjax:1},
+				data: {keyword: request['term'], fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['code'], value: item['id'], name: item['code']	};
+						return { label: item['code'], value: item['code'], id: item['id']	};
 					}));
 				},
 			});
 		},
-		'select': function(item) {
-			$("input[name='coupon_id']").val( item['value'] );
-			$("input[name='keyword']").val( item['name'] );
+		'select': function(event, ui) {
+			$("input[name='coupon_id']").val( ui.item.id );
 		}
 	});
 	

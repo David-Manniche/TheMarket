@@ -705,10 +705,9 @@ class AdvertiserController extends AdvertiserBaseController
         $records = FatApp::getDb()->fetchAll($rs, 'promotion_id');
 
         $this->_template->addJs(array('js/jquery.datetimepicker.js'), false);
-        $this->_template->addCss(array('css/jquery.datetimepicker.css'), false);
-        
+
         $this->_template->addJs('js/cropper.js');
-        $this->_template->addJs('js/cropper-main.js');        
+        $this->_template->addJs('js/cropper-main.js');
 
         $this->set("frmSearchPromotions", $frmSearchPromotions);
         $this->set("records", $records);
@@ -1068,9 +1067,6 @@ class AdvertiserController extends AdvertiserBaseController
         $srch->joinProductToCategory();
         $srch->joinSellerSubscription($this->siteLangId, true);
         $srch->addSubscriptionValidCondition();
-        /* if (!empty($post['keyword'])) {
-        $srch->addCondition('selprod_title', 'LIKE', '%' . $post['keyword'] . '%');
-        } */
 
         $post = FatApp::getPostedData();
         $srch->addCondition('selprod_id', '>', 0);
@@ -1081,14 +1077,12 @@ class AdvertiserController extends AdvertiserBaseController
             $srch->addCondition('product_identifier', 'LIKE', '%' . $post['keyword'] . '%','OR'); */
             $srch->addDirectCondition("(selprod_title like " . $db->quoteVariable($post['keyword']) . " or selprod_title like " . $db->quoteVariable('%' . $post['keyword'] . '%') . " or product_name LIKE " . $db->quoteVariable('%' . $post['keyword'] . '%') . " or product_identifier LIKE " . $db->quoteVariable('%' . $post['keyword'] . '%') . ")", 'and');
         }
-        //echo $srch->getQuery();
         $srch->setPageSize(FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10));
 
         $srch->addMultipleFields(array(
             'selprod_id',
             'IFNULL(product_name,product_identifier) as product_name, IFNULL(selprod_title,product_identifier) as selprod_title'
         ));
-        //echo $srch->getQuery();
         $rs = $srch->getResultSet();
 
         $products = $db->fetchAll($rs, 'selprod_id');
@@ -1424,7 +1418,7 @@ class AdvertiserController extends AdvertiserBaseController
         $frm->addHiddenField('', 'promotion_id', $promotionId);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'lang_id', Language::getAllNames(), $langId, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_promotion_name', $langId), 'promotion_name');
-        
+
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
@@ -1434,7 +1428,7 @@ class AdvertiserController extends AdvertiserBaseController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
         return $frm;
     }
-    
+
     public function imgCropper()
     {
         $this->_template->render(false, false, 'cropper/index.php');

@@ -1,97 +1,78 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$prodSpecFrm->setFormTagAttribute('class', 'form form_horizontal');
-$prodSpecFrm->setFormTagAttribute('onsubmit', 'return submitSpecificationForm(this); return(false);');
-$prodSpecFrm->developerTags['fld_default_col'] = 6;
-
-//echo $prodSpecFrm->getFormHtml();
-
-$translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
-
-if (!empty($translatorSubscriptionKey)) { ?> 
-    <div class="row justify-content-end"> 
-        <div class="col-auto mb-4">
-            <input class="btn btn-primary" 
-                type="button" 
-                value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $siteLangId); ?>" 
-                onClick="autofillLangData($(this), $('form#frm_fat_id_frmProductSpec'))"
-                data-action="<?php echo CommonHelper::generateUrl('Seller', 'getTranslatedSpecData'); ?>">
-        </div>
-    </div>
-<?php }
-
-echo $prodSpecFrm->getFormTag();?>
-
-<?php foreach ($languages as $langId => $langName) { ?>
-<div class="row">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xm-12 ">
-        <div class="row">
-            <div class="col-md-12">
-               <div class="field-set">
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');  
+$layout = Language::getLayoutDirection($langId);
+?>
+<div class="p-4 mb-4 bg-gray rounded layout--<?php echo $layout; ?>">
+     <div class="row">
+        <div class="col-md-4">
+             <div class="field-set">
                  <div class="caption-wraper">
-                   <h5><?php  echo $langName;?></h5>
+                    <label class="field_label"><?php echo Labels::getLabel('LBL_Specification_Label_Text', $siteLangId); ?></label>
                  </div>
-               </div>
+                 <div class="field-wraper">
+                    <div class="field_cover">
+                        <input type="text" name="prodspec_name[<?php echo $langId; ?>]" value="<?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_name']; } ?>">                        
+                    </div>
+                 </div>
+             </div>
+         </div>
+         <div class="col-md-4">
+             <div class="field-set">
+                 <div class="caption-wraper">
+                    <label class="field_label"><?php echo Labels::getLabel('LBL_Specification_Value', $siteLangId); ?></label>
+                 </div>
+                 <div class="field-wraper">
+                    <div class="field_cover">
+                        <input type="text" name="prodspec_value[<?php echo $langId; ?>]" value="<?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_value']; } ?>">
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xm-12">
-        <div class="row">
-         <div class="col-lg-6 col-md-12 <?php echo 'layout--' . Language::getLayoutDirection($langId); ?>">
-           <div class="field-set">
-             <div class="caption-wraper">
-               <label class="field_label"><?php  $fld = $prodSpecFrm->getField('prod_spec_name[' . $langId . ']');
-                echo $fld->getCaption();?><span class="mandatory">*</span></label>
-             </div>
-             <div class="field-wraper">
-               <div class="field_cover">
-                <?php if (isset($data['prod_spec_name[' . $langId . ']'])) {
-                    $fld->value = $data['prod_spec_name[' . $langId . ']'];
-                } ?>
-                <?php echo $prodSpecFrm->getFieldHtml('prod_spec_name[' . $langId . ']');?>
-               </div>
-             </div>
-           </div>
          </div>
-         <div class="col-lg-6 col-md-12 <?php echo 'layout--' . Language::getLayoutDirection($langId); ?>">
-           <div class="field-set">
-             <div class="caption-wraper">
-               <label class="field_label"><?php $fld = $prodSpecFrm->getField('prod_spec_value[' . $langId . ']');
-                echo $fld->getCaption(); ?><span class="mandatory">*</span></label>
-             </div>
-             <div class="field-wraper">
-               <div class="field_cover">
-                <?php if (isset($data['prod_spec_value[' . $langId . ']'])) {
-                    $fld->value = $data['prod_spec_value[' . $langId . ']'];
-                }
-                echo $prodSpecFrm->getFieldHtml('prod_spec_value[' . $langId . ']');?>
-               </div>
-             </div>
-           </div>
+         <div class="col-md-2">
+             <div class="field-set">
+                 <div class="caption-wraper">
+                    <label class="field_label"><?php echo Labels::getLabel('LBL_Specification_Group', $siteLangId); ?></label>
+                 </div>
+                 <div class="field-wraper">
+                    <div class="field_cover">
+                        <input type="text" class="prodspec_group" name="prodspec_group[<?php echo $langId; ?>]" value="<?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_group']; } ?>">
+                    </div>
+                </div>
+            </div>
          </div>
-        </div>
+         <div class="col-md-2">
+             <div class="field-set">
+                 <div class="caption-wraper"></div>
+                 <div class="field-wraper">
+                    <div class="field_cover">
+                    <button type="button" class="btn btn-primary" onClick="saveSpecification(<?php echo $langId; ?>, <?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_id']; } ?>)"><?php echo Labels::getLabel('LBL_Add', $siteLangId) ?></button></div>
+                 </div>
+             </div>
+         </div>
     </div>
 </div>
 
-<?php  } ?>
-<div class="row">
-    <div class="col-lg-6 col-md-12">
-       <div class="field-set">
-         <div class="caption-wraper">
-           <label class="field_label"><?php  $fld = $prodSpecFrm->getField('btn_submit');
-            echo $fld->getCaption();?></label>
-         </div>
-         <div class="field-wraper">
-           <div class="field_cover">
-            <?php echo $prodSpecFrm->getFieldHtml('product_id');?>
-            <?php echo $prodSpecFrm->getFieldHtml('prodspec_id');?>
-            <?php echo $prodSpecFrm->getFieldHtml('btn_submit');?>
-           </div>
-         </div>
-       </div>
-     </div>
- </div>
+<script type="text/javascript">
+$(document).ready(function(){
+    var langId = '<?php echo $langId; ?>';
+    $('input[name="prodspec_group['+langId+']"]').autocomplete({
+        'source': function(request, response) {
+            $.ajax({
+                url: fcom.makeUrl('Seller', 'prodSpecGroupAutoComplete'),
+                data: {keyword: request['term'], langId: langId, fIsAjax:1},
+                dataType: 'json',
+                type: 'post',
+                success: function(json) {
+                    response($.map(json, function(item) {
+                        return { label: item['name'], value: item['name'] };
+                    }));
+                },
+            });
+        },
+        select: function (event, ui) {
+            $('input[name="prodspec_group['+langId+']"]').val(ui.item.value);
+        }
 
-<?php echo $prodSpecFrm->getExternalJs();?>
-</form>
+    });
+
+});
+</script>

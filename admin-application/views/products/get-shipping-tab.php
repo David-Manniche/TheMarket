@@ -12,7 +12,7 @@
 		<th></th>
 		</tr>
 		</thead>
-		<tbody>
+		<tbody class="ui-front">
 		<?php $shipping_row = 0; /* CommonHelper::printArray($shipping_rates); die; */ ?>
 		<?php
 			if(!empty($shipping_rates) && count($shipping_rates)>0){

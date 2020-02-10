@@ -155,7 +155,7 @@ $(document).on('click','.uploadFile-Js',function(){
                 $.ajax({
                     url: fcom.makeUrl('Users', 'autoCompleteJson'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1,
                         user_is_buyer : buyers,
                         user_is_supplier : sellers,
@@ -166,19 +166,20 @@ $(document).on('click','.uploadFile-Js',function(){
                         response($.map(json, function(item) {
                             return {
                                 label: item['name'] + '(' + item['username'] + ')',
-                                value: item['id'],
-                                name: item['username']
+                                value: item['username'],
+                                id: item['id']
                             };
                         }));
                     },
                 });
             },
-            'select': function(item) {
+            select: function(event, ui) {
                 $(userSelector).val('');
                 var listSelector = 'ul#selectedUsersList-js';
-                $(listSelector + ' #selectedUser-js-' + item['value']).remove();
-                $(listSelector).append('<li id="selectedUser-js-' + item['value'] + '"><i class=" icon ion-close-round"></i> ' + item['label'] + '<input type="hidden" name="pntu_user_id[]" class="userId" value="' + item['value'] + '" /></li>');
-                bindUser(item['value']);
+                $(listSelector + ' #selectedUser-js-' + ui.item.id).remove();
+                $(listSelector).append('<li id="selectedUser-js-' + ui.item.id + '"><i class=" icon ion-close-round"></i> ' + ui.item.label + '<input type="hidden" name="pntu_user_id[]" class="userId" value="' + ui.item.id + '" /></li>');
+                bindUser(ui.item.id);
+                return false;
             }
         });
     }

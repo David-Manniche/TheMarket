@@ -24,11 +24,11 @@ class ImportExportController extends AdminBaseController
         $batchNumber = FatApp::getPostedData('batch_number', FatUtility::VAR_INT, 1);
         $sheetType = FatApp::getPostedData('sheet_type', FatUtility::VAR_INT, 0);
 
-        if(1 > $langId) {
+        if (1 > $langId) {
             $langId =  CommonHelper::getLangId();
         }
 
-        switch($actionType){
+        switch ($actionType) {
             case Importexport::TYPE_CATEGORIES:
                 $this->objPrivilege->canViewProductCategories();
                 break;
@@ -71,7 +71,7 @@ class ImportExportController extends AdminBaseController
         $obj = new Importexport();
         $min = null;
         $max = null;
-        switch($exportDataRange){
+        switch ($exportDataRange) {
             case Importexport::BY_ID_RANGE:
                 if (isset($startId) && $startId >0) {
                     $min = $startId;
@@ -321,7 +321,7 @@ class ImportExportController extends AdminBaseController
     {
         $langId = $this->adminLangId ;
         $displayMediaTab = true;
-        switch($actionType){
+        switch ($actionType) {
             case Importexport::TYPE_CATEGORIES:
                 $this->objPrivilege->canEditProductCategories();
                 $title = Labels::getLabel('LBL_Import_Categories', $langId);
@@ -388,7 +388,7 @@ class ImportExportController extends AdminBaseController
         $obj = new Extrapage();
         $pageData = '';
         $displayMediaTab = false;
-        switch($actionType){
+        switch ($actionType) {
             case Importexport::TYPE_CATEGORIES:
                 $this->objPrivilege->canEditProductCategories();
                 $displayMediaTab = true;
@@ -452,7 +452,7 @@ class ImportExportController extends AdminBaseController
         $options = Importexport::getImportExportTypeArr('export', $this->adminLangId, false);
         $title = $options[$actionType];
 
-        switch($actionType){
+        switch ($actionType) {
             case Importexport::TYPE_CATEGORIES:
                 $this->objPrivilege->canViewProductCategories();
                 $displayMediaTab = true;
@@ -507,7 +507,7 @@ class ImportExportController extends AdminBaseController
     }
 
 
-    public function getImportExportForm($langId,$type = 'EXPORT',$actionType)
+    public function getImportExportForm($langId, $type = 'EXPORT', $actionType)
     {
         $frm = new Form('frmImportExport', array('id'=>'frmImportExport'));
         $languages = Language::getAllNames();
@@ -526,7 +526,7 @@ class ImportExportController extends AdminBaseController
 
         switch (strtoupper($type)) {
             case 'EXPORT':
-                switch($actionType){
+                switch ($actionType) {
                     case Importexport::TYPE_PRODUCTS:
                         $displayRangeFields = true;
                         $frm->addSelectBox(Labels::getLabel('LBL_Select_Data', $langId), 'sheet_type', Importexport::getProductCatalogContentTypeArr($langId), '', array(), '')->requirements()->setRequired();
@@ -544,7 +544,7 @@ class ImportExportController extends AdminBaseController
                     }
                     break;
             case 'EXPORT_MEDIA':
-                switch($actionType){
+                switch ($actionType) {
                     case Importexport::TYPE_PRODUCTS:
                     case Importexport::TYPE_SELLER_PRODUCTS:
                         $displayRangeFields = true;
@@ -552,7 +552,7 @@ class ImportExportController extends AdminBaseController
                 }
                 break;
             case 'IMPORT':
-                switch($actionType){
+                switch ($actionType) {
                     case Importexport::TYPE_PRODUCTS:
                         $frm->addSelectBox(Labels::getLabel('LBL_Select_Data', $langId), 'sheet_type', Importexport::getProductCatalogContentTypeArr($langId), '', array(), '')->requirements()->setRequired();
                         break;
@@ -578,7 +578,7 @@ class ImportExportController extends AdminBaseController
                 break;
         }
 
-        if($displayRangeFields) {
+        if ($displayRangeFields) {
             $dataRangeArr = array(0=>Labels::getLabel('LBL_Does_not_matter', $langId))+Importexport::getDataRangeArr($langId);
             $rangeTypeFld = $frm->addSelectBox(Labels::getLabel('LBL_Export_data_range', $langId), 'export_data_range', $dataRangeArr, '', array(), '');
 
@@ -668,7 +668,7 @@ class ImportExportController extends AdminBaseController
         $pageData = $obj->getContentByPageType(Extrapage::GENERAL_SETTINGS_INSTRUCTIONS, $this->adminLangId);
         $this->set('pageData', $pageData);
         $this->set('action', 'generalInstructions');
-        $this->_template->render(false, false, 'import-export/general-instructions.php');         
+        $this->_template->render(false, false, 'import-export/general-instructions.php');
     }
     
     public function export()
@@ -857,7 +857,7 @@ class ImportExportController extends AdminBaseController
     public function bulkMediaList()
     {
         $bulkImage = new UploadBulkImages();
-        $srch = $bulkImage->bulkMediaFileObject();        
+        $srch = $bulkImage->bulkMediaFileObject();
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
         $this->set("records", $records);
@@ -1017,7 +1017,7 @@ class ImportExportController extends AdminBaseController
         if (!is_uploaded_file($_FILES['import_file']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('LBL_Please_Select_A_CSV_File', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
-        }        
+        }
         if (!in_array($_FILES['import_file']['type'], CommonHelper::isCsvValidMimes())) {
             Message::addErrorMessage(Labels::getLabel("LBL_Not_a_Valid_CSV_File", $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -1051,7 +1051,13 @@ class ImportExportController extends AdminBaseController
             if ($line[0] != '') {
                 $labelKey = array_shift($line);
                 foreach ($line as $key => $caption) {
-                    $sql = "SELECT label_key FROM ". Labels::DB_TBL ." WHERE label_key = " . $db->quoteVariable($labelKey). " AND label_lang_id = " .  $langIndexLangIds[$key];
+                    $dataToSaveArr = array(
+                        'label_key'        =>    $labelKey,
+                        'label_lang_id'    =>    $langIndexLangIds[$key],
+                        'label_caption'    =>    $caption,
+                        );
+                    $db->insertFromArray(Labels::DB_TBL, $dataToSaveArr, false, array(), array('label_caption' => $caption));
+                    /* $sql = "SELECT label_key FROM ". Labels::DB_TBL ." WHERE label_key = " . $db->quoteVariable($labelKey). " AND label_lang_id = " .  $langIndexLangIds[$key];
                     $rs = $db->query($sql);
                     if ($row = $db->fetch($rs)) {
                         $db->updateFromArray(Labels::DB_TBL, array( 'label_caption' => $caption ), array('smt' => 'label_key = ? AND label_lang_id = ?', 'vals' => array( $labelKey, $langIndexLangIds[$key] ) ));
@@ -1062,7 +1068,7 @@ class ImportExportController extends AdminBaseController
                         'label_caption'    =>    $caption,
                         );
                         $db->insertFromArray(Labels::DB_TBL, $dataToSaveArr);
-                    }
+                    } */
                 }
             }
         }
@@ -1072,6 +1078,4 @@ class ImportExportController extends AdminBaseController
         Message::addMessage(Labels::getLabel('LBL_Labels_data_imported/updated_Successfully', $this->adminLangId));
         FatUtility::dieJsonSuccess(Message::getHtml());
     }
-    
-    
 }

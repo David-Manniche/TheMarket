@@ -7,7 +7,7 @@
     width: 15px;
     padding: 5px 0 5px 0;
     height: 30px;
-    float: left;
+    float: #{$start-direction};
     background-color: #e3e3e3;
     margin: 1px;
     text-align: center;
@@ -21,7 +21,7 @@
 .rating-a .br-widget .br-current-rating {
     font-size: 20px;
     line-height: 2;
-    float: left;
+    float: #{$start-direction};
     padding: 0 20px 0 20px;
     color: #646464;
 }
@@ -36,7 +36,7 @@
     display: block;
     width: 70px;
     height: 16px;
-    float: left;
+    float: #{$start-direction};
     background-color: #e3e3e3;
     margin: 1px;
 }
@@ -48,7 +48,7 @@
 
 .rating-b .br-widget .br-current-rating {
     line-height: 1.1;
-    float: left;
+    float: #{$start-direction};
     padding: 0 20px 0 20px;
     color: #646464;
 }
@@ -68,7 +68,7 @@
     display: block;
     width: 35px;
     height: 35px;
-    float: left;
+    float: #{$start-direction};
     background-color: #e3e3e3;
     margin: 2px;
     text-decoration: none;
@@ -96,7 +96,7 @@
     width: 40px;
     padding: 5px 0 5px 0;
     height: 30px;
-    float: left;
+    float: #{$start-direction};
     background-color: white;
     border-bottom: 2px solid #e3e3e3;
     color: #646464;
@@ -154,7 +154,7 @@
     width: 24px;
     height: 24px;
     display: block;
-    float: left;
+    float: #{$start-direction};
 }
 
 .rating-f .br-widget a:hover,
@@ -173,7 +173,7 @@
     display: block;
     width: 50px;
     height: 16px;
-    float: left;
+    float: #{$start-direction};
     background-color: #e3e3e3;
     margin: 1px;
 }
@@ -185,7 +185,7 @@
 
 .rating-g .br-widget .br-current-rating {
     line-height: 1.1;
-    float: left;
+    float: #{$start-direction};
     padding: 0 20px 0 20px;
     color: #646464;
 }

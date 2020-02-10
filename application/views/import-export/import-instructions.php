@@ -9,11 +9,11 @@
         <?php }?>
     </ul>
 </div>
-<div class="form__subcontent">
+<div class="">
     <?php
         if( !empty($pageData['epage_content']) ){
 			?>
-				<h2><?php echo $pageData['epage_label'];?></h2>
+				<h3><?php echo $pageData['epage_label'];?></h3>
 				<hr>
 			<?php
             	echo FatUtility::decodeHtmlEntities( $pageData['epage_content'] );

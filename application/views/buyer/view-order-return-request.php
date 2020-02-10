@@ -5,8 +5,8 @@
 <main id="main-area" class="main" role="main">
  <div class="content-wrapper content-space">
     <?php if (!$print) { ?>
-    <div class="content-header row justify-content-between mb-3">
-        <div class="col-md-auto">
+    <div class="content-header row">
+        <div class="col">
             <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
             <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_View_Order_Return_Request', $siteLangId).': <span class="number">' . $request['orrequest_reference'].'</span>' ; ?></h2>
         </div>
@@ -14,7 +14,7 @@
     <?php } ?>
     <div class="content-body">
         <div class="cards">
-            <div class="cards-header p-4">
+            <div class="cards-header">
                 <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Request_Details', $siteLangId); ?></h5>
                 <?php if (!$print) { ?>
                     <div class="">

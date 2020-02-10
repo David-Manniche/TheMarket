@@ -2,11 +2,11 @@
 $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
-        <div class="content-header justify-content-between row mb-3">
-            <div class="content-header-left col-md-auto"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Dashboard', $siteLangId);?></h2>
+        <div class="content-header row">
+            <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Dashboard', $siteLangId);?></h2>
             </div>
-            <div class="content-header-right col-auto">
-                <div class="">
+            <div class="col-auto">
+                <div class="btn-group">
                     <a href="<?php echo CommonHelper::generateUrl('Account', 'wishlist');?>" class="btn btn--secondary btn--sm"><?php echo Labels::getLabel('LBL_Favorites', $siteLangId);?> </a>
                     <a href="<?php echo CommonHelper::generateUrl('Account', 'myAddresses');?>" class="btn btn-outline-secondary btn--sm"> <?php echo Labels::getLabel('LBL_Manage_Addresses', $siteLangId);?> </a>
                 </div>
@@ -17,7 +17,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                 <div class="widget widget-stats">
                     <a href="<?php echo CommonHelper::generateUrl('account', 'credits');?>">
                         <div class="cards">
-                            <div class="cards-header p-4">
+                            <div class="cards-header">
                                 <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Credits', $siteLangId);?></h5>
                                 <i class="icn">
                                     <svg class="svg">
@@ -46,7 +46,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                 <div class="widget widget-stats">
                     <a href="<?php echo CommonHelper::generateUrl('buyer', 'orders');?>">
                         <div class="cards">
-                            <div class="cards-header p-4">
+                            <div class="cards-header">
                                 <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Orders', $siteLangId);?></h5>
                                 <i class="icn">
                                     <svg class="svg">
@@ -72,7 +72,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                 <div class="widget widget-stats">
                     <a href="<?php echo CommonHelper::generateUrl('buyer', 'rewardPoints');?>">
                         <div class="cards">
-                            <div class="cards-header p-4">
+                            <div class="cards-header">
                                 <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Reward_Points', $siteLangId);?></h5>
                                 <i class="icn">
                                     <svg class="svg">
@@ -101,7 +101,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
             <div class="row">
                 <div class="col-lg-6 col-md-12 mb-4">
                     <div class="cards">
-                        <div class="cards-header p-4">
+                        <div class="cards-header">
                             <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Latest_Orders', $siteLangId);?></h5>
                             <div class="action">
                             <?php if (count($orders)>0) { ?>
@@ -194,7 +194,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                 </div>
                 <div class="col-lg-6 col-md-12 mb-4">
                     <div class="cards">
-                        <div class="cards-header p-4">
+                        <div class="cards-header">
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Latest_Offers', $siteLangId);?></h5>
                             <div class="action"> <?php if (count($offers)>0) { ?> <a href="<?php echo CommonHelper::generateUrl('buyer', 'offers');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a> <?php }?> </div>
                         </div>
@@ -239,7 +239,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
             <div class="row ">
                 <div class="col-lg-6 col-md-12 mb-4">
                     <div class="cards">
-                        <div class="cards-header p-4">
+                        <div class="cards-header">
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Return_requests', $siteLangId);?></h5> <?php if (count($returnRequests) > 0) { ?> <div class="action">
                                 <a href="<?php echo CommonHelper::generateUrl('buyer', 'orderReturnRequests');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
                             </div> <?php } ?>
@@ -308,7 +308,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                         <?php // $this->includeTemplate('_partial/userDashboardMessages.php');?>
                         </div> -->
                     <div class="cards">
-                        <div class="cards-header p-4">
+                        <div class="cards-header">
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Cancellation_requests', $siteLangId);?></h5> <?php if (count($cancellationRequests) > 0) { ?> <div class="action">
                                 <a href="<?php echo CommonHelper::generateUrl('buyer', 'orderCancellationRequests');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
                             </div> <?php } ?>

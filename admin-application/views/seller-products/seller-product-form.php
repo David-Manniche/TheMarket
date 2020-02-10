@@ -322,28 +322,6 @@
         if (productType == PRODUCT_TYPE_DIGITAL || shippedBySeller == 0) {
             $(".selprod_cod_enabled_fld").hide();
         }
-        /* if( addedByAdmin == 1 )
-        {
-            $('input[name=\'selprod_user_shop_name\']').autocomplete({
-                'source': function(request, response) {
-                    $.ajax({
-                        url: fcom.makeUrl('sellerProducts', 'autoCompleteUserShopName'),
-                        data: {keyword: request, fIsAjax:1},
-                        dataType: 'json',
-                        type: 'post',
-                        success: function(json) {
-                            response($.map(json, function(item) {
-                                return { label: item['user_name'] +' - '+item['shop_identifier'],    value: item['user_id']    };
-                            }));
-                        },
-                    });
-                },
-                'select': function(item) {
-                    $("input[name='selprod_user_id']").val( item['value'] );
-                    $("input[name='selprod_user_shop_name']").val( item['label'] );
-                }
-            });
-        } */
         var INVENTORY_TRACK = <?php echo Product::INVENTORY_TRACK; ?> ;
         var INVENTORY_NOT_TRACK = <?php echo Product::INVENTORY_NOT_TRACK; ?> ;
 

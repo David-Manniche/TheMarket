@@ -140,7 +140,13 @@ input[type="file"] {
         resize: vertical;
         height: 120px;
         padding: 10px;
+
+        &.txtarea-height {
+            height: 85px;
+        }
     }
+
+
 
     input {
         &[type="submit"] {
@@ -167,8 +173,8 @@ input[type="file"] {
             transition: -webkit-box-shadow 0.2s;
             transition: box-shadow 0.2s;
             transition: box-shadow 0.2s, -webkit-box-shadow 0.2s;
-            
-            
+
+
             margin-#{$end-direction}: 5px;
         }
 
@@ -190,11 +196,12 @@ input[type="file"] {
         display: block;
         width: 100%;
     }
-
-
-
+    
+    .text--small{ display: block;}
 
 }
+
+
 
 .note-messages {
     font-size: 13px;
@@ -239,12 +246,12 @@ input[type="file"] {
 
 .uploadedphoto img {
     display: inline-block;
-    vertical-align: top;    
+    vertical-align: top;
     margin-#{$end-direction}: 10px;
     max-width: 150px;
 }
 
-.uploadedphoto a.removepic {}
+ 
 
 
 
@@ -266,8 +273,8 @@ form.custom-form {
     input[type="text"] {
         width: auto;
         margin: 0;
-        
-        
+
+
         margin-#{$end-direction}: 5px;
         -webkit-box-flex: 1;
         -ms-flex: 1;

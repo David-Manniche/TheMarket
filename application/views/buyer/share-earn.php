@@ -7,60 +7,71 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
 $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
-        <div class="content-header row justify-content-between mb-3">
-            <div class="col-md-auto"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
+        <div class="content-header row">
+            <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
                 <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Share_and_Earn', $siteLangId);?></h2>
             </div>
         </div>
         <div class="content-body">
-            <div class="js-widget-scroll widget-scroll">
-                <div class="widget widget-stats">
-                    <div class="cards d-flex -direction-col">
-                        <div class="cards-header p-4">
+            <div class="share-earn mb-4">
+                <div class="share-earn-block">
+                    <div class="cards">
+                        <div class="cards-header">
                             <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Share_with_your_friends_and_you_both_earn_reward_points', $siteLangId)?></h5>
                         </div>
                         <div class="cards-content p-4 pr-4 ">
                             <div class="stats">
-                                <a href="javascript:void(0)" class="-inline-link" title="<?php echo $referralTrackingUrl; ?>" onclick="copy($(this))"><?php echo Labels::getLabel('LBL_Click_to_copy', $siteLangId)?></a>
+                                <a href="javascript:void(0)" class="btn btn-outline-primary btn--sm" title="<?php echo $referralTrackingUrl; ?>" onclick="copy($(this))"><?php echo Labels::getLabel('LBL_Click_to_copy', $siteLangId)?></a>
                             </div>
                         </div>
                     </div>
                 </div>
                 <?php if (!empty(FatApp::getConfig("CONF_FACEBOOK_APP_ID")) && !empty(FatApp::getConfig("CONF_FACEBOOK_APP_SECRET"))) { ?>
-                <div class="widget widget-stats">
-                    <a id="facebook_btn" href="javascript:void(0);" class="box--share box--share-fb"> <i class="fa fa-facebook"></i>
+                <div class="share-earn-block">
+                    <a id="facebook_btn" href="javascript:void(0);" class="box--share box--share-fb">
+					<i class="fa fa-facebook"></i>
+					<div class="detail">
                         <h5><?php echo Labels::getLabel('L_Share_on', $siteLangId)?></h5>
                         <h2><?php echo Labels::getLabel('L_Facebook', $siteLangId)?></h2>
                         <p> <?php echo sprintf(Labels::getLabel('L_Post_your_wall_facebook', $siteLangId), '<strong>'.Labels::getLabel('L_Facebook', $siteLangId).'</strong>')?> </p>
                         <span class="ajax_message thanks-msg" id="fb_ajax"></span>
+						</div>
                     </a>
                 </div>
                 <?php } ?>
                 <?php if (false !== $twitterUrl) { ?>
-                <div class="widget widget-stats">
-                    <a class="box--share box--share-tw" id="twitter_btn" href="javascript:void(0);"> <i class="fa fa-twitter"></i>
+                <div class="share-earn-block">
+                    <a class="box--share box--share-tw" id="twitter_btn" href="javascript:void(0);">
+					<i class="fa fa-twitter"></i>
+					<div class="detail">	
+					
                         <h5><?php echo Labels::getLabel('L_Share_on', $siteLangId)?></h5>
                         <h2><?php echo Labels::getLabel('L_Twitter', $siteLangId)?></h2>
                         <p> <?php echo sprintf(Labels::getLabel('L_Send_a_tweet_followers', $siteLangId), '<strong>'.Labels::getLabel('L_Tweet', $siteLangId).'</strong>')?> </p>
                         <span class="ajax_message thanks-msg" id="twitter_ajax"></span>
+						</div>
                     </a>
                 </div>
                 <?php } ?>
-                <div class="widget widget-stats">
-                    <a class="showbutton box--share box--share-mail" href="javascript:void(0);"> <i class="fa fa-envelope"></i>
+                <div class="share-earn-block">
+                    <a class="showbutton box--share box--share-mail" href="javascript:void(0);"> 
+					<i class="fa fa-envelope"></i><div class="detail">
+					
                         <h5><?php echo Labels::getLabel('L_Share_on', $siteLangId)?></h5>
                         <h2><?php echo Labels::getLabel('L_Email', $siteLangId)?></h2>
                         <p> <?php echo Labels::getLabel('L_Email', $siteLangId)?> <?php echo Labels::getLabel('L_Your_friend_tell_them_about_yourself', $siteLangId)?> </p>
                         <span class="ajax_message thanks-msg"></span>
+						</div>
                     </a>
                 </div>
             </div>
             <div class="row mb-3 borderwrap showwrap" style="display:none;">
                 <div class="col-lg-12 col-md-12">
                     <div class="cards">
-                        <div class="cards-header p-4">
-                            <h4><?php echo Labels::getLabel('L_Invite_friends_through_email', $siteLangId)?></h4> <?php echo $sharingFrm->getFormHtml(); ?> <span class="ajax_message" id="custom_ajax"></span>
+                        <div class="cards-header">
+                            <h4><?php echo Labels::getLabel('L_Invite_friends_through_email', $siteLangId)?></h4>
                         </div>
+						<div class="cards-content p-4"> <?php echo $sharingFrm->getFormHtml(); ?> <span class="ajax_message" id="custom_ajax"></span></div>
                     </div>
                 </div>
             </div>

@@ -48,7 +48,7 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
             <div class="col-xl-12 col-lg-6 mb-4">
 			<div class=" bg-gray rounded p-4">
                 <div class="row align-items-center" id="profileImageFrmBlock">
-                    <div class="col-6">
+                    <div class="col-auto">
                         <div class="avtar avtar--large">
                             <?php
                                 $userId = UserAuthentication::getLoggedUserId();
@@ -62,19 +62,19 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
                                 alt="<?php echo Labels::getLabel('LBL_Profile_Image', $siteLangId); */?>"-->
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div class="btngroup--fix">
+                    <div class="col">
+                        <div class="btn-group">
                             <?php echo $imgFrm->getFormTag(); ?>
                             <?php if ($mode == 'Edit') { ?>
                                 <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="popupImage()"><?php echo Labels::getLabel('LBL_Change', $siteLangId);?></a>
                             <?php } else { ?>
-                                <label class="btn btn-primary btn--sm" title="Upload image file">
+                                <label class="btn btn--primary btn--sm" title="Upload image file">
                                   <input type="file" class="sr-only" id="profileInputImage" name="file" accept="image/*" onChange="popupImage(this)">
                                   <?php echo Labels::getLabel('LBL_Upload', $siteLangId); ?>
                                 </label>
                             <?php } ?>
                             <?php if ($mode == 'Edit') { ?>
-                            <a class="btn btn-outline-primary btn--sm mt-1" href="javascript:void(0)" onClick="removeProfileImage()"><?php echo Labels::getLabel('LBL_Remove', $siteLangId);?></a>
+                            <a class="btn btn-outline-primary btn--sm" href="javascript:void(0)" onClick="removeProfileImage()"><?php echo Labels::getLabel('LBL_Remove', $siteLangId);?></a>
                             <?php }?>
                             </form>
                             <?php echo $imgFrm->getExternalJS();?>

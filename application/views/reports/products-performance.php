@@ -1,15 +1,13 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?> <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
-        <div class="content-header row justify-content-between mb-3">
-            <div class="col-md-auto"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Products_Performance_Report', $siteLangId);?></h2>
+        <div class="content-header row">
+            <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Products_Performance_Report', $siteLangId);?></h2>
             </div>
-            <div class="col-auto">
-            <div class="content-header-right"> <a href="javascript:void(0)" id="performanceReportExport" onclick="exportProdPerformanceReport('DESC')" class="btn btn--secondary btn--sm btn--block"><?php echo Labels::getLabel('LBL_Export', $siteLangId);?></a></div>
+            <div class="col-auto"><div class="btn-group"> <a href="javascript:void(0)" id="performanceReportExport" onclick="exportProdPerformanceReport('DESC')" class="btn btn--primary btn-sm"><?php echo Labels::getLabel('LBL_Export', $siteLangId);?></a></div>
             </div>
         </div>
-        <div class="content-body">           
+        <div class="content-body"> 
            
-            <div class="gap"></div>
             <div class="tabs tabs--small tabs--scroll setactive-js">
                                     <ul>
                                         <li class="is-active"><a href="javascript:void(0);" onClick="topPerformingProducts()"><?php echo Labels::getLabel('LBL_Top_Performing_Products', $siteLangId);?></a></li>

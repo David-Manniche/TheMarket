@@ -5,12 +5,12 @@ $frmSrch->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
 $frmSrch->developerTags['fld_default_col'] = 12;
 ?> <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
-        <div class="content-header row justify-content-between mb-3">
-            <div class="col-md-auto"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Reward_Points', $siteLangId);?></h2> <?php echo $frmSrch->getFormHtml();?> </div>
+        <div class="content-header row">
+            <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Reward_Points', $siteLangId);?></h2> <?php echo $frmSrch->getFormHtml();?> </div>
         </div>
         <div class="content-body">
             <div class="cards">
-                <div class="cards-header p-4">
+                <div class="cards-header">
                     <h5 class="cards-title">
                         <?php echo Labels::getLabel('LBL_Current_Reward_Points', $siteLangId);?> (<?php echo $totalRewardPoints;?>) -
                         <?php echo CommonHelper::displayMoneyFormat(CommonHelper::convertRewardPointToCurrency($totalRewardPoints));?>

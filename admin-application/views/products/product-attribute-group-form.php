@@ -21,6 +21,8 @@ $productAttributeGroupForm->developerTags['fld_default_col'] = 12;
 			<div class="tabs_panel">
 				<?php echo Labels::getLabel('LBL_Select_Attribute_Group',$adminLangId); ?>
 				<?php echo $productAttributeGroupForm->getFormHtml(); ?>
+                
+                
 			</div>
 		</div>
 	</div>

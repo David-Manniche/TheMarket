@@ -6,22 +6,22 @@ $frmSearch->developerTags['fld_default_col'] = 4;
 
 $keywordFld = $frmSearch->getField('keyword');
 $keywordFld->setWrapperAttribute('class', 'col-lg-4');
-$keywordFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_by_keyword', $siteLangId));
+$keywordFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_by_Product_Name', $siteLangId));
 $keywordFld->developerTags['col'] = 4;
 $keywordFld->developerTags['noCaptionTag'] = true;
 ?>
 <?php $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
-        <div class="content-header  row justify-content-between mb-3">
-            <div class="col-md-auto">
+        <div class="content-header row">
+            <div class="col">
                 <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
                 <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Manage_SEO', $siteLangId); ?></h2>
             </div>
         </div>
         <div class="content-body">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3 mb-md-0">
                     <div class="cards">
                         <div class="cards-content p-4">
                             <div>

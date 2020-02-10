@@ -7,7 +7,7 @@ use Elasticsearch\ClientBuilder;
 class ElasticSearch extends FullTextSearchBase
 {
     private $client;
-    private $indexName;   
+    private $indexName;
     public $error = false;
     const KEY_NAME = "ElasticSearch";
     const INDEX_PREFIX = "yk-products-";
@@ -23,7 +23,7 @@ class ElasticSearch extends FullTextSearchBase
         $this->langId = $langId;
         
         $reqKeys = array('host', 'username', 'password');
-		
+        
         foreach ($reqKeys as $key) {
             if (!array_key_exists($key, $settings)) {
                 $this->error = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->langId);
@@ -49,7 +49,6 @@ class ElasticSearch extends FullTextSearchBase
 
     public function search($queryData, $from = 0, $size = 12, $aggregation = false, $source = array(), $groupByField = null, $sort = array())
     {
-		
         $result = array();
         $params = [
             'index' => $this->indexName,
@@ -58,7 +57,7 @@ class ElasticSearch extends FullTextSearchBase
                 'query' => [
                     'bool' => $queryData,
                 ],
-				//'min_score'=>5,
+                //'min_score'=>5,
                 'sort' => $sort,
                 'from' => $from,
                 'size' => $size,
@@ -80,8 +79,8 @@ class ElasticSearch extends FullTextSearchBase
             $this->setErrorMessage($e);
             return false;
         }
-		
-		return array_key_exists('hits',$results) ? $results['hits'] : $results;
+        
+        return array_key_exists('hits', $results) ? $results['hits'] : $results;
     }
     
 
@@ -91,15 +90,15 @@ class ElasticSearch extends FullTextSearchBase
 
     public function createIndex()
     {
-		if($this->isIndexExists()){
-			$this->error = Labels::getLabel('MSG_INDEX_ALREADY_EXISTS', $this->langId);
+        if ($this->isIndexExists()) {
+            $this->error = Labels::getLabel('MSG_INDEX_ALREADY_EXISTS', $this->langId);
             return false;
-		}
-		$language = Language::getAttributesById($this->langId, "language_name");
-		if(empty($language)) {
-			$this->error = Labels::getLabel('MSG_NO_RECORD_FOUND', $this->langId);
-			return false;
-		}
+        }
+        $language = Language::getAttributesById($this->langId, "language_name");
+        if (empty($language)) {
+            $this->error = Labels::getLabel('MSG_NO_RECORD_FOUND', $this->langId);
+            return false;
+        }
         $params = [
             'index'  =>  $this->indexName,
             'body'   =>  [
@@ -135,7 +134,7 @@ class ElasticSearch extends FullTextSearchBase
         try {
             $response = $this->client->indices()->create($params);
         } catch (exception $e) {
-			$this->setErrorMessage($e);
+            $this->setErrorMessage($e);
             return false;
         }
         return true;
@@ -195,7 +194,7 @@ class ElasticSearch extends FullTextSearchBase
         try {
             $response = $this->client->delete($params);
         } catch (exception $e) {
-			$this->setErrorMessage($e);
+            $this->setErrorMessage($e);
             return false;
         }
         return true;
@@ -238,29 +237,29 @@ class ElasticSearch extends FullTextSearchBase
         ];
         try {
             $response = $this->client->get($params);
-        } catch (exception $e) {            
+        } catch (exception $e) {
             return false;
         }
         return true;
     }
-	
-	public function isIndexExists()
+    
+    public function isIndexExists()
     {
         $params = [
             'index' => $this->indexName
         ];
         try {
             $response = $this->client->indices()->exists($params);
-			if(!$response) {
-				return false;
-			}
+            if (!$response) {
+                return false;
+            }
         } catch (exception $e) {
             $this->setErrorMessage($e);
             return false;
         }
         return true;
     }
-	
+    
     /*	Updating Nested Data Into The ElasticSearch Index
     *
     *   @documentId     - Pass Unique Id document id
@@ -333,10 +332,10 @@ class ElasticSearch extends FullTextSearchBase
     {
         return $this->error;
     }
-	
-	private function setErrorMessage($e)
-	{
-		$error = json_decode($e->getMessage(),true);
+    
+    private function setErrorMessage($e)
+    {
+        $error = json_decode($e->getMessage(), true);
         $this->error = array_key_exists('reason', $error['error']) ? $error['error']['reason'] : "error";
-	}
+    }
 }

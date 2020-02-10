@@ -3,7 +3,8 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frmCategory->setFormTagAttribute('class', 'web_form form_horizontal');
 $frmCategory->developerTags['colClassPrefix'] = 'col-md-';
 $frmCategory->developerTags['fld_default_col'] = 12; 
-
+$fld = $frmCategory->getField('category_name');
+$fld->setWrapperAttribute('class', 'ui-front');
 ?>
 <section class="section">
 	<div class="sectionhead">
@@ -40,18 +41,20 @@ $("document").ready(function(){
 		'source': function(request, response) {			
 			$.ajax({
 				url: fcom.makeUrl('ProductCategories', 'autoComplete'),
-				data: {keyword: request,fIsAjax:1},
+				data: {keyword: request['term'],fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['prodcat_identifier'],	value: item['prodcat_id']	};
+						return { label: item['prodcat_identifier'],	value: item['prodcat_identifier'],	id: item['prodcat_id'] };
 					}));
 				},
 			});
 		},
-		'select': function(item) {
-			updateCouponCategory(<?php echo $coupon_id; ?>, item['value'] );
+		select: function(event, ui) {
+			updateCouponCategory(<?php echo $coupon_id; ?>, ui.item.id );
+            $('input[name=\'category_name\']').val('');
+            return false;
 		}
 	});
 	

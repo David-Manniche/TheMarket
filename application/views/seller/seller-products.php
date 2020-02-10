@@ -24,10 +24,11 @@ foreach ($arr_flds as $key => $val) {
         $e = $th->appendElement('th', array(), $val);
     }
 }
-if ($page ==1) {
-    $sr_no = 0;
-} else {
-    $sr_no = ($page-1) * $pageSize;
+$sr_no = 0;
+if (!$product_id) {
+    if ($page > 1) {
+        $sr_no = ($page-1) * $pageSize;
+    }
 }
 foreach ($arrListing as $sn => $row) {
     $sr_no++;

@@ -1,59 +1,46 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-        'select_all'=>Labels::getLabel('LBL_Select_all', $adminLangId),
-        'listserial'=> Labels::getLabel('LBL_Sr._No', $adminLangId),
-        'tag_identifier'=>Labels::getLabel('LBL_Tag_Name', $adminLangId),
-        'action' => Labels::getLabel('LBL_Action', $adminLangId),
-    );
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered'));
-$th = $tbl->appendElement('thead')->appendElement('tr');
-foreach ($arr_flds as $key => $val) {
-    if ('select_all' == $key) {
-        $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input title="'.$val.'" type="checkbox" onclick="selectAll( $(this) )" class="selectAll-js"><i class="input-helper"></i></label>', true);
-    } else {
-        $e = $th->appendElement('th', array(), $val);
-    }
-}
+    'listserial'=>'#',
+    'product_identifier' => Labels::getLabel('LBL_Product', $adminLangId),
+    'tags' => ''
+);
 
-$sr_no = $page==1?0:$pageSize*($page-1);
+$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--orders'));
+$th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
+foreach ($arr_flds as $val) {
+    $e = $th->appendElement('th', array(), $val);
+}
+$productsArr = array();
+$sr_no = ($page == 1) ? 0 : ($pageSize*($page-1));
 foreach ($arr_listing as $sn => $row) {
+    $productsArr[] = $row['product_id'];
     $sr_no++;
-    $tr = $tbl->appendElement('tr');
-    $tr->setAttribute("id", $row['tag_id']);
+    $tr = $tbl->appendElement('tr', array('class' => ''));
 
     foreach ($arr_flds as $key => $val) {
         $td = $tr->appendElement('td');
         switch ($key) {
-            case 'select_all':
-                $td->appendElement('plaintext', array(), '<label class="checkbox"><input class="selectItem--js" type="checkbox" name="tag_ids[]" value='.$row['tag_id'].'><i class="input-helper"></i></label>', true);
-                break;
             case 'listserial':
-                $td->appendElement('plaintext', array(), $sr_no);
+                $td->appendElement('plaintext', array(), $sr_no, true);
                 break;
-            case 'tag_identifier':
-                if ($row['tag_name']!='') {
-                    $td->appendElement('plaintext', array(), $row['tag_name'], true);
-                    $td->appendElement('br', array());
-                    $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
-                } else {
-                    $td->appendElement('plaintext', array(), $row[$key], true);
-                }
+            case 'product_identifier':
+                $td->appendElement(
+                    'a',
+                    array('href'=>'javascript:void(0)', 'class'=>'',
+                    'title'=>'Links',"onclick"=>"editTagsLangForm(".$row['product_id'].")"),
+                    $row['product_name'],
+                    true
+                );
                 break;
-            case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
-                if ($canEdit) {
-                    $li = $ul->appendElement("li", array('class'=>'droplink'));
-                    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                    $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                    $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                    $innerLiEdit=$innerUl->appendElement('li');
-                    //$innerLi = $ul->appendElement("li");
-                    $innerLiEdit->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addTagFormNew(".$row['tag_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
-
-                    $innerLiDelete=$innerUl->appendElement('li');
-
-                    $innerLiDelete->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteTagRecord(".$row['tag_id'].")"), Labels::getLabel('LBL_Delete', $adminLangId), true);
+            case 'tags':
+                $productTags = Product::getProductTags($row['product_id']);
+                $tagData = array();
+                foreach ($productTags as $key => $data) {
+                    $tagData[$key]['id'] = $data['tag_id'];
+                    $tagData[$key]['value'] = $data['tag_identifier'];
                 }
+                $encodedData = json_encode($tagData);
+                $td->appendElement('plaintext', array(), "<div class='product-tag' id='product".$row['product_id']."'><input class='tag_name' type='text' name='tag_name".$row['product_id']."' value='".$encodedData."' data-product_id='".$row['product_id']."'></div>", true);
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);
@@ -64,6 +51,7 @@ foreach ($arr_listing as $sn => $row) {
 if (count($arr_listing) == 0) {
     $tbl->appendElement('tr')->appendElement('td', array('colspan'=>count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
 }
+
 
 $frm = new Form('frmTagsListing', array('id'=>'frmTagsListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
@@ -77,7 +65,37 @@ echo $tbl->getHtml(); ?>
 </form>
 <?php $postedData['page']=$page;
 echo FatUtility::createHiddenFormFromData($postedData, array(
-        'name' => 'frmTagSearchPaging'
+    'name' => 'frmTagSearchPaging'
 ));
 $pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'recordCount'=>$recordCount,'adminLangId'=>$adminLangId);
-$this->includeTemplate('_partial/pagination.php', $pagingArr, false);
+$this->includeTemplate('_partial/pagination.php', $pagingArr, false); ?>
+
+<?php if (count($arr_listing) > 0) { ?>
+<script>
+var productsArr = [<?php echo '"'.implode('","', $productsArr).'"' ?>];
+$("document").ready(function() {
+    getTagsAutoComplete = function(){
+        var list = [];
+        fcom.ajax(fcom.makeUrl('Tags', 'autoComplete'), '', function(t) {
+            var ans = $.parseJSON(t);
+            for (i = 0; i < ans.length; i++) {
+                list.push({
+                    "id" : ans[i].id,
+                    "value" : ans[i].tag_identifier,
+                });
+            }
+        });
+        return list;
+    }
+    var whitelist = getTagsAutoComplete();
+    $.each(productsArr, function( index, value ) {
+        tagify = new Tagify(document.querySelector('input[name=tag_name'+value+']'), {
+               whitelist : whitelist,
+               delimiters : "#",
+               editTags : false,
+            }).on('add', addTagData).on('remove', removeTagData);
+    });
+
+});
+</script>
+<?php }?>

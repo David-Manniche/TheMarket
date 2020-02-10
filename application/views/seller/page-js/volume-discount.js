@@ -9,19 +9,19 @@ $(document).on('keyup', "input[name='product_name']", function(){
         currObj.autocomplete({'source': function(request, response) {
         		$.ajax({
         			url: fcom.makeUrl('Seller', 'autoCompleteProducts'),
-        			data: {keyword: request,fIsAjax:1,keyword:currObj.val()},
+        			data: {fIsAjax:1,keyword:currObj.val()},
         			dataType: 'json',
         			type: 'post',
         			success: function(json) {
         				response($.map(json, function(item) {
-        					return { label: item['name'], value: item['id']	};
+        					return { label: item['name'], value: item['name'], id: item['id'] };
         				}));
         			},
         		});
         	},
-        	'select': function(item) {
-                $("#"+parentForm+" input[name='voldiscount_selprod_id']").val(item['value']);
-                currObj.val( item['label'] );
+        	select: function (event, ui) {
+                $("#"+parentForm+" input[name='voldiscount_selprod_id']").val(ui.item.id);
+                currObj.val( ui.item.label );
         	}
         });
     }else{

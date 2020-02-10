@@ -6,7 +6,7 @@ $(document).ready(function() {
             $.ajax({
                 url: fcom.makeUrl('Users', 'autoCompleteJson'),
                 data: {
-                    keyword: request,
+                    keyword: request['term'],
                     fIsAjax: 1
                 },
                 dataType: 'json',
@@ -15,15 +15,16 @@ $(document).ready(function() {
                     response($.map(json, function(item) {
                         return {
                             label: item['name'] + '(' + item['username'] + ')',
-                            value: item['id'],
+                            value: item['name'] + '(' + item['username'] + ')',
                             name: item['username']
                         };
                     }));
                 },
             });
         },
-        'select': function(item) {
-            $("input[name='message_by']").val(item['name']);
+        'select': function(event, ui) {
+            $("input[name='message_by']").val(ui.item.name);
+            return false;
         }
     });
 
@@ -32,7 +33,7 @@ $(document).ready(function() {
             $.ajax({
                 url: fcom.makeUrl('Users', 'autoCompleteJson'),
                 data: {
-                    keyword: request,
+                    keyword: request['term'],
                     fIsAjax: 1
                 },
                 dataType: 'json',
@@ -41,15 +42,16 @@ $(document).ready(function() {
                     response($.map(json, function(item) {
                         return {
                             label: item['name'] + '(' + item['username'] + ')',
-                            value: item['id'],
+                            value: item['name'] + '(' + item['username'] + ')',
                             name: item['username']
                         };
                     }));
                 },
             });
         },
-        'select': function(item) {
-            $("input[name='message_to']").val(item['name']);
+        'select': function(event, ui) {
+            $("input[name='message_to']").val(ui.item.name);
+            return false;
         }
     });
 

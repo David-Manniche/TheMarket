@@ -10,19 +10,18 @@ $(document).ready(function(){
 		'source': function(request, response) {		
 			$.ajax({
 				url: fcom.makeUrl('Users', 'autoCompleteJson'),
-				data: {keyword: request,deletedUser:true, fIsAjax:1},
+				data: {keyword: request['term'],deletedUser:true, fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['name'] +'(' + item['username'] + ')', value: item['id'], name: item['username']	};
+						return { label: item['name'] +'(' + item['username'] + ')', value: item['name'] +'(' + item['username'] + ')', id: item['id'], name: item['username'] };
 					}));
 				},
 			});
 		},
-		'select': function(item) {
-			$("input[name='user_id']").val( item['value'] );
-			$("input[name='keyword']").val( item['name'] );
+		select: function(event, ui) {
+			$("input[name='user_id']").val( ui.item.id );
 		}
 	});
 	

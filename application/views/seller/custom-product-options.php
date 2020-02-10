@@ -25,30 +25,23 @@
 <script>
     $('input[name=\'option_name\']').autocomplete({
         'source': function(request, response) {
-
             $.ajax({
                 url: fcom.makeUrl('seller', 'autoCompleteOptions'),
                 data: {
-                    keyword: request,
+                    keyword: request['term'],
                     fIsAjax: 1
                 },
                 dataType: 'json',
                 type: 'post',
                 success: function(json) {
                     response($.map(json, function(item) {
-
-                        return {
-                            label: item['name'] + ' (' + item['option_identifier'] + ')',
-                            value: item['id']
-                        };
+                        return { label: item['name'] + ' (' + item['option_identifier'] + ')', value: item['name'] + ' (' + item['option_identifier'] + ')', id: item['id'] };
                     }));
                 },
             });
         },
-        'select': function(item) {
-
-            updateProductOption(<?php echo $product_id;?>, item['value']);
-
+        select: function (event, ui) {
+            updateProductOption(<?php echo $product_id;?>, ui.item.id);
         }
     });
 </script>

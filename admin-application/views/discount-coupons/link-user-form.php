@@ -3,7 +3,8 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frmUser->setFormTagAttribute('class', 'web_form form_horizontal');
 $frmUser->developerTags['colClassPrefix'] = 'col-md-';
 $frmUser->developerTags['fld_default_col'] = 12; 
-
+$fld = $frmUser->getField('user_name');
+$fld->setWrapperAttribute('class', 'ui-front');
 ?>
 
 <section class="section">
@@ -41,18 +42,18 @@ $("document").ready(function(){
 		'source': function(request, response) {			
 			$.ajax({
 				url: fcom.makeUrl('Users', 'autoCompleteJson'),
-				data: {keyword: request,fIsAjax:1},
+				data: {keyword: request['term'],fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['name']+' ('+item['username']+')',	value: item['id']	};
+						return { label: item['name']+' ('+item['username']+')',	value: item['name']+' ('+item['username']+')',	id: item['id'] };
 					}));
 				},
 			});
 		},
-		'select': function(item) {
-			updateCouponUser(<?php echo $coupon_id; ?>, item['value'] );
+		'select': function(event, ui) {
+			updateCouponUser(<?php echo $coupon_id; ?>, ui.item.id );
 		}
 	});
 });

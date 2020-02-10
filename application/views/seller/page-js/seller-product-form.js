@@ -92,7 +92,6 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 				$(frm.splprice_selprod_id).val(t.selprod_id);
 			}
 			window.location.replace(fcom.makeUrl('Seller', 'products'));
-			// sellerProductLangForm(t.langId,t.selprod_id);
 		});
 	};
 

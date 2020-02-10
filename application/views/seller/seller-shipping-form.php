@@ -27,28 +27,25 @@
 			/* Shipping Information */
 			$('input[name=\'shipping_country\']').autocomplete({
 				'source': function(request, response) {
-
 					$.ajax({
 						url: fcom.makeUrl('seller', 'countries_autocomplete'),
-						data: {keyword: request,fIsAjax:1},
+						data: {keyword: request['term'],fIsAjax:1},
 						dataType: 'json',
 						type: 'post',
 						success: function(json) {
 							response($.map(json, function(item) {
-
-								return {
-									label: item['name'] ,
-									value: item['id']
-									};
+                                return {
+                                    label: item['name'],
+                                    value: item['name'],
+                                    id: item['id']
+                                    };
 							}));
 						},
 					});
 				},
-				'select': function(item) {
-						$('input[name=\'ps_from_country_id\']').val(item.value);
-						$('input[name=\'shipping_country\']').val(item.label);
+				select: function (event, ui) {
+                    $('input[name=\'ps_from_country_id\']').val(ui.item.id);
 				}
-
 			});
 
 			$('input[name=\'shipping_country\']').keyup(function(){

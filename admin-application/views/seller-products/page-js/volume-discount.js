@@ -9,19 +9,20 @@ $(document).on('keyup', "input[name='product_name']", function(){
         currObj.autocomplete({'source': function(request, response) {
         		$.ajax({
         			url: fcom.makeUrl('SellerProducts', 'autoCompleteProducts'),
-        			data: {keyword: request,fIsAjax:1,keyword:currObj.val()},
+        			data: {fIsAjax:1,keyword:currObj.val()},
         			dataType: 'json',
         			type: 'post',
         			success: function(json) {
         				response($.map(json, function(item) {
-        					return { label: item['name'], value: item['id']	};
+        					return { label: item['name'], value: item['name'], id: item['id']	};
         				}));
         			},
         		});
         	},
-        	'select': function(item) {
-        		$("#"+parentForm+" input[name='voldiscount_selprod_id']").val(item['value']);
-                currObj.val((item['label']).replace(/<[^>]+>/g, ''));
+        	select: function(event, ui) {
+        		$("#"+parentForm+" input[name='voldiscount_selprod_id']").val(ui.item.id);
+                currObj.val((ui.item.label).replace(/<[^>]+>/g, ''));
+                return false;
         	}
         });
     }else{
@@ -37,7 +38,7 @@ $(document).on('keyup', "input[name='product_seller']", function(){
             if( '' != request ){
                 $.ajax({
                     url: fcom.makeUrl('Products', 'autoCompleteSellerJson'),
-                    data: {keyword: request},
+                    data: {keyword: request['term']},
                     dataType: 'json',
                     type: 'post',
                     success: function(json) {
@@ -46,7 +47,7 @@ $(document).on('keyup', "input[name='product_seller']", function(){
                             if( null !== item['credential_email'] ){
                                 email = ' ('+item['credential_email']+')';
                             }
-                            return { label: item['credential_username'] + email,    value: item['credential_user_id']    };
+                            return { label: item['credential_username'] + email, value: item['credential_username'] + email, id: item['credential_user_id'] };
                         }));
                     },
                 });
@@ -54,9 +55,8 @@ $(document).on('keyup', "input[name='product_seller']", function(){
                 $("input[name='product_seller_id']").val('');
             }
         },
-        'select': function(item) {
-            $("input[name='product_seller_id']").val( item['value'] );
-            $("input[name='product_seller']").val( item['label'] );
+        select: function(event, ui) {
+            $("input[name='product_seller_id']").val( ui.item.id );
         }
     });
 });

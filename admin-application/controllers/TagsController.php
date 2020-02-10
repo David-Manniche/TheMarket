@@ -21,6 +21,9 @@ class TagsController extends AdminBaseController
     public function index()
     {
         $this->objPrivilege->canViewTags();
+        $this->_template->addJs('js/tagify.min.js');
+        $this->_template->addJs('js/tagify.polyfills.min.js');
+        $this->_template->addCss('css/tagify.css');
         $frmSearch = $this->getSearchForm();
         $this->set("frmSearch", $frmSearch);
         $this->_template->addJs('js/import-export.js');
@@ -30,7 +33,7 @@ class TagsController extends AdminBaseController
     private function getSearchForm()
     {
         $frm = new Form('frmTagSearch', array('id' => 'frmTagSearch'));
-        $f1 = $frm->addTextBox(Labels::getLabel('LBL_Tag_Identifier', $this->adminLangId), 'tag_identifier', '', array('class' => 'search-input'));
+        $f1 = $frm->addTextBox(Labels::getLabel('LBL_Product_Name', $this->adminLangId), 'keyword', '', array('class' => 'search-input'));
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick' => 'clearTagSearch();'));
         $fld_submit->attachField($fld_cancel);
@@ -46,33 +49,46 @@ class TagsController extends AdminBaseController
         $data = FatApp::getPostedData();
         $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
+        $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : intval($post['page']);
+        $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
+        $srch = new ProductSearch($this->adminLangId, null, null, false, false);
+        $srch->joinProductShippedBySeller(UserAuthentication::getLoggedUserId());
+        $srch->joinTable(AttributeGroup::DB_TBL, 'LEFT OUTER JOIN', 'product_attrgrp_id = attrgrp_id', 'attrgrp');
+        $srch->joinTable(UpcCode::DB_TBL, 'LEFT OUTER JOIN', 'upc_product_id = product_id', 'upc');
+        $srch->addDirectCondition(
+            '((CASE
+                    WHEN product_seller_id = 0 THEN product_active = 1
+                    WHEN product_seller_id > 0 THEN product_active IN (1, 0)
+                    END ) )'
+        );
 
-        /* $tagObj = new Tag(); */
-        $srch = Tag::getSearchObject();
-        $srch->addFld('t.*');
+        $srch->addCondition('product_deleted', '=', applicationConstants::NO);
 
-        if (!empty($post['tag_identifier'])) {
-            $srch->addCondition('t.tag_identifier', 'like', '%' . $post['tag_identifier'] . '%');
+        $keyword = FatApp::getPostedData('keyword', null, '');
+        if (!empty($keyword)) {
+            $cnd = $srch->addCondition('product_name', 'like', '%' . $keyword . '%');
+            $cnd->attachCondition('product_identifier', 'like', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('attrgrp_name', 'like', '%' . $keyword . '%');
+            $cnd->attachCondition('product_model', 'like', '%' . $keyword . '%');
+            $cnd->attachCondition('upc_code', 'like', '%' . $keyword . '%');
+            $cnd->attachCondition('product_upc', 'like', '%' . $keyword . '%');
         }
 
-        $page = (empty($page) || $page <= 0) ? 1 : $page;
-        $page = FatUtility::int($page);
+        $srch->addMultipleFields(
+            array(
+            'product_id',
+            'product_identifier',
+            'IFNULL(product_name, product_identifier) as product_name',
+            )
+        );
+        $srch->addOrder('product_active', 'DESC');
+        $srch->addOrder('product_added_on', 'DESC');
+        $srch->addGroupBy('product_id');
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
-
-        $srch->joinTable(
-            Tag::DB_TBL . '_lang',
-            'LEFT OUTER JOIN',
-            'taglang_tag_id = t.tag_id AND taglang_lang_id = ' . $this->adminLangId,
-            'tl'
-        );
-        $srch->addMultipleFields(array("tl.tag_name"));
-        $srch->addOrder('tag_id', 'DESC');
+        $db = FatApp::getDb();
         $rs = $srch->getResultSet();
-        $records = array();
-        if ($rs) {
-            $records = FatApp::getDb()->fetchAll($rs);
-        }
+        $records = $db->fetchAll($rs);
 
         $this->set("arr_listing", $records);
         $this->set('pageCount', $srch->pages());
@@ -124,7 +140,7 @@ class TagsController extends AdminBaseController
         Tag::updateTagStrings($tag_id);
         /* ] */
 
-        $this->set('msg', Labels::getLabel('LBL_Tag_Setup_Successful', $this->adminLangId));
+        $this->set('msg', Labels::getLabel('LBL_Tag_Updated_Successful', $this->adminLangId));
         $this->set('tagId', $tag_id);
         $this->set('langId', $newTabLangId);
         $this->_template->render(false, false, 'json-success.php');
@@ -135,10 +151,11 @@ class TagsController extends AdminBaseController
         $this->objPrivilege->canEditTags();
         $post = FatApp::getPostedData();
 
-        $tag_id = $post['tag_id'];
-        $lang_id = $post['lang_id'];
+        $tag_id = FatUtility::int($post['tag_id']);
+        $lang_id = FatUtility::int($post['lang_id']);
 
-        if ($tag_id == 0 || $lang_id == 0) {
+        //if ($tag_id == 0 || $lang_id == 0) {
+        if ($tag_id < 1) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -158,7 +175,7 @@ class TagsController extends AdminBaseController
             Message::addErrorMessage($tagObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
         if (0 < $autoUpdateOtherLangsData) {
             $updateLangDataobj = new TranslateLangData(Tag::DB_TBL_LANG);
@@ -181,7 +198,7 @@ class TagsController extends AdminBaseController
         Tag::updateTagStrings($tag_id);
         /* ] */
 
-        $this->set('msg', Labels::getLabel('LBL_Tag_Setup_Successful', $this->adminLangId));
+        $this->set('msg', Labels::getLabel('LBL_Tag_Updated_Successful', $this->adminLangId));
         $this->set('tagId', $tag_id);
         $this->set('langId', $newTabLangId);
         $this->_template->render(false, false, 'json-success.php');
@@ -262,14 +279,14 @@ class TagsController extends AdminBaseController
         $frm->addHiddenField('', 'tag_id', $tag_id);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Tag_Name', $this->adminLangId), 'tag_name');
-        
-        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+
+        $adminLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
-        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+        if (!empty($translatorSubscriptionKey) && $lang_id == $adminLangId) {
             $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
-        
+
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;
     }
