@@ -65,3 +65,4 @@ Bugs:
     => 033833 - Change label to ORDER INVOICE ID from CHILD ORDER INVOICE ID.
     => 032432 - Deleted categories are displaying on home page category collection
     => 034290 - Some labels are not there in admin for front end
+    => 032866 - shop is getting reported multiple times

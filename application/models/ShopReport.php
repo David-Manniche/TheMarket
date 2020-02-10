@@ -1,8 +1,8 @@
 <?php
 class ShopReport extends MyAppModel
 {
-    const DB_TBL = 'tbl_shop_reports';
-    const DB_TBL_PREFIX = 'sreport_';
+    public const DB_TBL = 'tbl_shop_reports';
+    public const DB_TBL_PREFIX = 'sreport_';
 
     public function __construct($sreport_id = 0)
     {
@@ -15,5 +15,23 @@ class ShopReport extends MyAppModel
         $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 'sreport');
         return $srch;
+    }
+
+    public static function getReportDetail($shopId, $userId = 0, $attr = '')
+    {
+        if (empty($attr)) {
+            $attr = ['sreport_id'];
+        } else if (is_string($attr)) {
+            $attr = [$attr];
+        }
+        
+        $srch = static::getSearchObject();
+        $srch->addMultipleFields($attr);
+        $srch->addCondition('sreport_shop_id', '=', $shopId);
+        if (0 < $userId) {
+            $srch->addCondition('sreport_user_id', '=', $userId);
+        }
+        $srch = $srch->getResultSet();
+        return FatApp::getDb()->fetch($srch);
     }
 }
