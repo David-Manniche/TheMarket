@@ -2,7 +2,6 @@
 
 class SellerController extends SellerBaseController
 {
-
     // use Attributes;
     use Options;
     use CustomProducts;
@@ -2152,7 +2151,7 @@ class SellerController extends SellerBaseController
             $unique_record,
             $lang_id,
             $slide_screen
-                )
+        )
         ) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
@@ -2348,7 +2347,7 @@ class SellerController extends SellerBaseController
             -1,
             $unique_record = true,
             $lang_id
-                )
+        )
         ) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());

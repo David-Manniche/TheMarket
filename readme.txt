@@ -58,4 +58,5 @@ Bugs:
     => 033975 - When user places bank withdrawal request then getting error in email
     => 033220 - Once review is submitted for an order> review button is listing on order detail page
     => 034116 - Getting invalid request on clicking save button in special price and volume discount
-    => 033149 - Getting error on affiliate withdrawal request 
+    => 033149 - Getting error on affiliate withdrawal request
+    => 032282 - On product detail page > same product is getting as addon through admin

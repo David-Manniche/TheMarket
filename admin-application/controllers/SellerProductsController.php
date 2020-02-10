@@ -904,7 +904,7 @@ class SellerProductsController extends AdminBaseController
         if (!empty($post['keyword'])) {
             $cnd = $srch->addCondition('product_name', 'LIKE', '%' . $post['keyword'] . '%');
             $cnd = $cnd->attachCondition('selprod_title', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
-            $cnd->attachCondition('product_identifier', 'LIKE', '%'. $post['keyword'] . '%', 'OR');
+            $cnd->attachCondition('product_identifier', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
         }
 
         if (!empty($post['selProdId']) && 0 < FatUtility::int($post['selProdId'])) {
@@ -922,7 +922,6 @@ class SellerProductsController extends AdminBaseController
         $srch->addOrder('selprod_active', 'DESC');
         $db = FatApp::getDb();
         $rs = $srch->getResultSet();
-        // echo  $srch->getQuery(); die;
         $products = array();
         if ($rs) {
             $products = $db->fetchAll($rs, 'id');
