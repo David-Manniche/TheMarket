@@ -1,4 +1,5 @@
 <?php
+
 class SellerPackageSearch extends SearchBase
 {
     private $langId;

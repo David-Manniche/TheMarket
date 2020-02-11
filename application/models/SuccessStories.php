@@ -1,10 +1,11 @@
 <?php
+
 class SuccessStories extends MyAppModel
 {
-    const DB_TBL = 'tbl_success_stories';
-    const DB_TBL_LANG = 'tbl_success_stories_lang';
-    const DB_TBL_PREFIX = 'sstory_';
-    const DB_TBL_LANG_PREFIX = 'sstorylang_';
+    public const DB_TBL = 'tbl_success_stories';
+    public const DB_TBL_LANG = 'tbl_success_stories_lang';
+    public const DB_TBL_PREFIX = 'sstory_';
+    public const DB_TBL_LANG_PREFIX = 'sstorylang_';
     private $db;
 
     public function __construct($id = 0)
@@ -18,16 +19,16 @@ class SuccessStories extends MyAppModel
         $srch = new SearchBase(static::DB_TBL, 'ss');
 
         if ($isActive == true) {
-            $srch->addCondition('ss.'.static::DB_TBL_PREFIX.'active', '=', applicationConstants::ACTIVE);
+            $srch->addCondition('ss.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
         }
-        $srch->addCondition('ss.'.static::DB_TBL_PREFIX.'deleted', '=', applicationConstants::NO);
+        $srch->addCondition('ss.' . static::DB_TBL_PREFIX . 'deleted', '=', applicationConstants::NO);
 
         if ($langId > 0) {
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'ss_l.'.static::DB_TBL_LANG_PREFIX.'sstory_id = ss.'.static::tblFld('id').' and
-			ss_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
+                'ss_l.' . static::DB_TBL_LANG_PREFIX . 'sstory_id = ss.' . static::tblFld('id') . ' and
+			ss_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 'ss_l'
             );
         }
@@ -43,7 +44,7 @@ class SuccessStories extends MyAppModel
         $rs = $srch->getResultSet();
         $record = FatApp::getDb()->fetch($rs);
         if (!empty($record)) {
-            return $record['max_order']+1;
+            return $record['max_order'] + 1;
         }
         return 1;
     }

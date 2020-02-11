@@ -1,4 +1,5 @@
 <?php
+
 class MobileAppSettingsController extends AdminBaseController
 {
     private const APP_IMAGES = [

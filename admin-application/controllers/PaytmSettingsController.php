@@ -1,10 +1,10 @@
 <?php
+
 class PaytmSettingsController extends PaymentSettingsController
 {
+    private $keyName = "paytm";
     
-    private $keyName="paytm";
-    
-    public function index() 
+    public function index()
     {
         $paymentSettings = $this->getPaymentSettings($this->keyName);
         $frm = $this->getSettingsForm();
@@ -17,10 +17,10 @@ class PaytmSettingsController extends PaymentSettingsController
     public function setup()
     {
         $frm = $this->getSettingsForm();
-        $this->setUpPaymentSettings($frm, $this->keyName);        
+        $this->setUpPaymentSettings($frm, $this->keyName);
     }
     
-    private function getSettingsForm() 
+    private function getSettingsForm()
     {
         $frm = new Form('frmPaymentMethods');
         $frm->addRequiredField(Labels::getLabel('LBL_Merchant_ID', $this->adminLangId), 'merchant_id');
@@ -31,5 +31,4 @@ class PaytmSettingsController extends PaymentSettingsController
         $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
-    
 }

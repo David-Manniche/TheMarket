@@ -1,4 +1,5 @@
 <?php
+
 class CmsController extends MyAppController
 {
     public function __construct($action)
@@ -10,14 +11,14 @@ class CmsController extends MyAppController
     {
         $cPageId = FatUtility::int($cPageId);
         $srch = ContentPage::getSearchObject($this->siteLangId);
-        $srch->addMultipleFields(array('cpage_id', 'IFNULL(cpage_title, cpage_identifier) as cpage_title','cpage_layout','cpage_image_title','cpage_image_content','cpage_content' ));
+        $srch->addMultipleFields(array('cpage_id', 'IFNULL(cpage_title, cpage_identifier) as cpage_title', 'cpage_layout', 'cpage_image_title', 'cpage_image_content', 'cpage_content' ));
         $srch->addCondition('cpage_id', '=', $cPageId);
         $cPage = FatApp::getDb()->fetch($srch->getResultset());
         if ($cPage == false) {
             FatUtility::exitWithErrorCode(404);
         }
         $blockData = array();
-        if ($cPage['cpage_layout']==ContentPage::CONTENT_PAGE_LAYOUT1_TYPE) {
+        if ($cPage['cpage_layout'] == ContentPage::CONTENT_PAGE_LAYOUT1_TYPE) {
             $srch = new searchBase(ContentPage::DB_TBL_CONTENT_PAGES_BLOCK_LANG);
             $srch->doNotCalculateRecords();
             $srch->doNotLimitRecords();
@@ -46,11 +47,11 @@ class CmsController extends MyAppController
             $cPageId = reset($parameters);
             $cPageId = FatUtility::int($cPageId);
             $cPage = ContentPage::getAllAttributesById($cPageId, $this->siteLangId);
-            $title = isset($cPage['cpage_title'])?$cPage['cpage_title']:$cPage['cpage_identifier'];
+            $title = isset($cPage['cpage_title']) ? $cPage['cpage_title'] : $cPage['cpage_identifier'];
         }
         switch ($action) {
         default:
-            $nodes[] = array('title'=>$title);
+            $nodes[] = array('title' => $title);
             break;
         }
         return $nodes;

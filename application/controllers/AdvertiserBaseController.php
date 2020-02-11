@@ -1,4 +1,5 @@
 <?php
+
 class AdvertiserBaseController extends LoggedUserController
 {
     public function __construct($action)

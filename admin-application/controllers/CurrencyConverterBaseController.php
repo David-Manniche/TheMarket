@@ -1,4 +1,5 @@
 <?php
+
 class CurrencyConverterBaseController extends PluginSettingController
 {
     protected $baseCurrencyId;

@@ -1,4 +1,5 @@
 <?php
+
 class OrderCancelRequest extends MyAppModel
 {
     public const DB_TBL = 'tbl_order_cancel_requests';
@@ -26,9 +27,9 @@ class OrderCancelRequest extends MyAppModel
     public static function getStatusClassArr()
     {
         return array(
-        static::CANCELLATION_REQUEST_STATUS_PENDING        =>    static::CLASS_PENDING,
-        static::CANCELLATION_REQUEST_STATUS_APPROVED    =>    static::CLASS_COMPLETED,
-        static::CANCELLATION_REQUEST_STATUS_DECLINED    =>    static::CLASS_CANCELLED,
+        static::CANCELLATION_REQUEST_STATUS_PENDING => static::CLASS_PENDING,
+        static::CANCELLATION_REQUEST_STATUS_APPROVED => static::CLASS_COMPLETED,
+        static::CANCELLATION_REQUEST_STATUS_DECLINED => static::CLASS_CANCELLED,
         );
     }
 
@@ -39,9 +40,9 @@ class OrderCancelRequest extends MyAppModel
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
         return array(
-        static::CANCELLATION_REQUEST_STATUS_PENDING        =>    Labels::getLabel('LBL_Cancellation_Request_Status_Pending', $langId),
-        static::CANCELLATION_REQUEST_STATUS_APPROVED    =>    Labels::getLabel('LBL_Cancellation_Request_Status_Approved', $langId),
-        static::CANCELLATION_REQUEST_STATUS_DECLINED    =>    Labels::getLabel('LBL_Cancellation_Request_Status_Declined', $langId),
+        static::CANCELLATION_REQUEST_STATUS_PENDING => Labels::getLabel('LBL_Cancellation_Request_Status_Pending', $langId),
+        static::CANCELLATION_REQUEST_STATUS_APPROVED => Labels::getLabel('LBL_Cancellation_Request_Status_Approved', $langId),
+        static::CANCELLATION_REQUEST_STATUS_DECLINED => Labels::getLabel('LBL_Cancellation_Request_Status_Declined', $langId),
         );
     }
 

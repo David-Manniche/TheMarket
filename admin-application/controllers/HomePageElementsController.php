@@ -1,8 +1,9 @@
 <?php
+
 class HomePageElementsController extends AdminBaseController
 {
     private $canView;
-    private $canEdit;    
+    private $canEdit;
     
     public function __construct($action)
     {
@@ -11,7 +12,7 @@ class HomePageElementsController extends AdminBaseController
         $this->canView = $this->objPrivilege->canViewHomePageElements($this->admin_id, true);
         $this->canEdit = $this->objPrivilege->canEditHomePageElements($this->admin_id, true);
         $this->set("canView", $this->canView);
-        $this->set("canEdit", $this->canEdit);        
+        $this->set("canEdit", $this->canEdit);
     }
     
     public function index()
@@ -19,4 +20,4 @@ class HomePageElementsController extends AdminBaseController
         $this->objPrivilege->canViewHomePageElements();
         $this->_template->render();
     }
-}    
+}

@@ -1,4 +1,5 @@
 <?php
+
 class FcmPushNotificationSettingsController extends PushNotificationSettingsController
 {
     public static function getConfigurationKeys()

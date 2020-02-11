@@ -1,13 +1,14 @@
 <?php
+
 class BadProductsReportController extends AdminBaseController
 {
     private $canView;
     private $canEdit;
     
-    const REPORT_TYPE_TODAY = 1;
-    const REPORT_TYPE_WEEKLY = 2;
-    const REPORT_TYPE_MONTHLY = 3;
-    const REPORT_TYPE_YEARLY = 4;
+    public const REPORT_TYPE_TODAY = 1;
+    public const REPORT_TYPE_WEEKLY = 2;
+    public const REPORT_TYPE_MONTHLY = 3;
+    public const REPORT_TYPE_YEARLY = 4;
     
     public function __construct($action)
     {
@@ -21,14 +22,14 @@ class BadProductsReportController extends AdminBaseController
     
     private function getReportTypeArr()
     {
-        return array( self::REPORT_TYPE_TODAY => 'Today',  self::REPORT_TYPE_WEEKLY => 'Weekly', self::REPORT_TYPE_MONTHLY => 'Monthly', self::REPORT_TYPE_YEARLY=> 'Yearly');
+        return array( self::REPORT_TYPE_TODAY => 'Today',  self::REPORT_TYPE_WEEKLY => 'Weekly', self::REPORT_TYPE_MONTHLY => 'Monthly', self::REPORT_TYPE_YEARLY => 'Yearly');
     }
     
-    public function index() 
+    public function index()
     {
-        $this->objPrivilege->canViewPerformanceReport();    
+        $this->objPrivilege->canViewPerformanceReport();
         $frmSearch = $this->getSearchForm();
-        $this->set('frmSearch', $frmSearch);    
+        $this->set('frmSearch', $frmSearch);
         $this->_template->render();
     }
     
@@ -45,9 +46,8 @@ class BadProductsReportController extends AdminBaseController
         $frm->addHiddenField('', 'page', 1);
         $frm->addHiddenField('', 'top_perfomed', 0);
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
-        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick'=>'clearSearch();'));
+        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick' => 'clearSearch();'));
         $fld_submit->attachField($fld_cancel);
         return $frm;
     }
 }
-?>

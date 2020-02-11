@@ -1,4 +1,5 @@
 <?php
+
 class CollectionSearch extends SearchBase
 {
     private $langId;
@@ -23,8 +24,8 @@ class CollectionSearch extends SearchBase
             $this->joinTable(
                 Collections::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'c_l.'.Collections::DB_TBL_LANG_PREFIX.'collection_id = c.'.Collections::tblFld('id').' and
-			c_l.'.Collections::DB_TBL_LANG_PREFIX.'lang_id = '.$this->langId,
+                'c_l.' . Collections::DB_TBL_LANG_PREFIX . 'collection_id = c.' . Collections::tblFld('id') . ' and
+			c_l.' . Collections::DB_TBL_LANG_PREFIX . 'lang_id = ' . $this->langId,
                 'c_l'
             );
         }
@@ -40,7 +41,7 @@ class CollectionSearch extends SearchBase
         $this->joinTable(
             Collections::DB_TBL_COLLECTION_TO_SELPROD,
             'LEFT OUTER JOIN',
-            'ctsp.'.Collections::DB_TBL_COLLECTION_TO_SELPROD_PREFIX.'collection_id = c.'.Collections::tblFld('id'),
+            'ctsp.' . Collections::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'collection_id = c.' . Collections::tblFld('id'),
             'ctsp'
         );
     }
@@ -51,7 +52,7 @@ class CollectionSearch extends SearchBase
         $this->joinTable(
             Collections::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES,
             'LEFT OUTER JOIN',
-            'ctpc.'.Collections::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX.'collection_id = c.'.Collections::tblFld('id'),
+            'ctpc.' . Collections::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'collection_id = c.' . Collections::tblFld('id'),
             'ctpc'
         );
     }
@@ -62,7 +63,7 @@ class CollectionSearch extends SearchBase
         $this->joinTable(
             Collections::DB_TBL_COLLECTION_TO_SHOPS,
             'LEFT OUTER JOIN',
-            'ctps.'.Collections::DB_TBL_COLLECTION_TO_SHOPS_PREFIX.'collection_id = c.'.Collections::tblFld('id'),
+            'ctps.' . Collections::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'collection_id = c.' . Collections::tblFld('id'),
             'ctps'
         );
     }
@@ -95,10 +96,10 @@ class CollectionSearch extends SearchBase
             $forDate = $now;
         }
 
-        $this->joinTable(SellerProduct::DB_TBL, 'LEFT OUTER JOIN', SellerProduct::DB_TBL_PREFIX.'id = '.Collections::DB_TBL_COLLECTION_TO_SELPROD_PREFIX.'selprod_id', 'sprods');
+        $this->joinTable(SellerProduct::DB_TBL, 'LEFT OUTER JOIN', SellerProduct::DB_TBL_PREFIX . 'id = ' . Collections::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'selprod_id', 'sprods');
 
         if ($langId > 0) {
-            $this->joinTable(SellerProduct::DB_TBL.'_lang', 'LEFT OUTER JOIN', 'sprods_l.selprodlang_selprod_id = ' . SellerProduct::DB_TBL_PREFIX.'id AND sprods_l.selprodlang_lang_id = '.$langId, 'sprods_l');
+            $this->joinTable(SellerProduct::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'sprods_l.selprodlang_selprod_id = ' . SellerProduct::DB_TBL_PREFIX . 'id AND sprods_l.selprodlang_lang_id = ' . $langId, 'sprods_l');
         }
 
         $this->joinTable(
@@ -115,10 +116,10 @@ class CollectionSearch extends SearchBase
             $langId = $this->langId;
         }
 
-        $this->joinTable(Product::DB_TBL, 'LEFT OUTER JOIN', Product::DB_TBL_PREFIX.'id = '.SellerProduct::DB_TBL_PREFIX.'product_id', 'p');
+        $this->joinTable(Product::DB_TBL, 'LEFT OUTER JOIN', Product::DB_TBL_PREFIX . 'id = ' . SellerProduct::DB_TBL_PREFIX . 'product_id', 'p');
 
         if ($langId > 0) {
-            $this->joinTable(Product::DB_TBL.'_lang', 'LEFT OUTER JOIN', 'p_l.productlang_product_id = ' . Product::tblFld('id').' AND p_l.productlang_lang_id = '.$langId, 'p_l');
+            $this->joinTable(Product::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'p_l.productlang_product_id = ' . Product::tblFld('id') . ' AND p_l.productlang_lang_id = ' . $langId, 'p_l');
         }
     }
 }

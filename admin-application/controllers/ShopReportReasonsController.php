@@ -1,4 +1,5 @@
 <?php
+
 class ShopReportReasonsController extends AdminBaseController
 {
     private $canView;
@@ -6,7 +7,7 @@ class ShopReportReasonsController extends AdminBaseController
 
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup');
+        $ajaxCallArray = array('deleteRecord', 'form', 'langForm', 'search', 'setup', 'langSetup');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }
@@ -30,7 +31,7 @@ class ShopReportReasonsController extends AdminBaseController
 
         $srch = ShopReportReason::getSearchObject($this->adminLangId);
 
-        $srch->addMultipleFields(array('reportreason.*' , 'reportreason_l.reportreason_title'));
+        $srch->addMultipleFields(array('reportreason.*', 'reportreason_l.reportreason_title'));
         $srch->addOrder('reportreason_id', 'DESC');
         $rs = $srch->getResultSet();
         $records = array();
@@ -48,12 +49,12 @@ class ShopReportReasonsController extends AdminBaseController
     {
         $this->objPrivilege->canViewShopReportReasons();
 
-        $reasonId =  FatUtility::int($reasonId);
+        $reasonId = FatUtility::int($reasonId);
 
         $frm = $this->getForm($reasonId);
 
         if (0 < $reasonId) {
-            $data = ShopReportReason::getAttributesById($reasonId, array('reportreason_id','reportreason_identifier'));
+            $data = ShopReportReason::getAttributesById($reasonId, array('reportreason_id', 'reportreason_identifier'));
 
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
@@ -88,8 +89,8 @@ class ShopReportReasonsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $newTabLangId=0;
-        if ($reasonId>0) {
+        $newTabLangId = 0;
+        if ($reasonId > 0) {
             $languages = Language::getAllNames();
             foreach ($languages as $langId => $langName) {
                 if (!$row = ShopReportReason::getAttributesByLangId($langId, $reasonId)) {
@@ -99,7 +100,7 @@ class ShopReportReasonsController extends AdminBaseController
             }
         } else {
             $reasonId = $record->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
         $this->set('msg', $this->str_setup_successful);
         $this->set('reasonId', $reasonId);
@@ -161,9 +162,9 @@ class ShopReportReasonsController extends AdminBaseController
         unset($post['lang_id']);
 
         $data = array(
-        'reportreasonlang_lang_id'=>$lang_id,
-        'reportreasonlang_reportreason_id'=>$reasonId,
-        'reportreason_title'=>$post['reportreason_title'],
+        'reportreasonlang_lang_id' => $lang_id,
+        'reportreasonlang_reportreason_id' => $reasonId,
+        'reportreason_title' => $post['reportreason_title'],
         // 'reportreason_description'=>$post['reportreason_description']
         );
 
@@ -201,7 +202,7 @@ class ShopReportReasonsController extends AdminBaseController
     private function getForm($reasonId = 0)
     {
         $this->objPrivilege->canViewShopReportReasons();
-        $reasonId =  FatUtility::int($reasonId);
+        $reasonId = FatUtility::int($reasonId);
 
         $frm = new Form('frmShopReportReason');
         $frm->addHiddenField('', 'reportreason_id', $reasonId);

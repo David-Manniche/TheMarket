@@ -1,10 +1,10 @@
 <?php
+
 class SupplierController extends MyAppController
 {
     public function __construct($action)
     {
         parent::__construct($action);
-
     }
 
     public function index()
@@ -31,7 +31,7 @@ class SupplierController extends MyAppController
         $slogan = $obj->getContentByPageType(Extrapage::SELLER_BANNER_SLOGAN, $this->siteLangId);
 
         $srch = FaqCategory::getSearchObject($this->siteLangId);
-        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = '.applicationConstants::ACTIVE.'  and faq_deleted = '.applicationConstants::NO);
+        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = ' . applicationConstants::ACTIVE . '  and faq_deleted = ' . applicationConstants::NO);
         $srch->joinTable('tbl_faqs_lang', 'LEFT OUTER JOIN', 'faqlang_faq_id = faq_id');
         $srch->addCondition('faqlang_lang_id', '=', $this->siteLangId);
         $srch->addCondition('faqcat_active', '=', applicationConstants::ACTIVE);
@@ -67,7 +67,7 @@ class SupplierController extends MyAppController
         if (!FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) {
             FatApp::redirectUser(CommonHelper::generateUrl('guest-user', 'registration-form'));
         }
-        $frm=$this->getSellerForm();
+        $frm = $this->getSellerForm();
         $postedData = $frm->getFormDataFromArray(FatApp::getPostedData());
         $obj = new Extrapage();
         $slogan = $obj->getContentByPageType(Extrapage::SELLER_BANNER_SLOGAN, $this->siteLangId);
@@ -165,8 +165,8 @@ class SupplierController extends MyAppController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $active = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1)?0:1;
-        $verify = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1)?0:1;
+        $active = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
+        $verify = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
 
         if (!$userObj->setLoginCredentials($post['user_username'], $post['user_email'], $post['user_password'], $active, $verify)) {
             Message::addErrorMessage(Labels::getLabel("MSG_LOGIN_CREDENTIALS_COULD_NOT_BE_SET", $this->siteLangId) . $userObj->getError());
@@ -282,7 +282,7 @@ class SupplierController extends MyAppController
         }
 
         $srch = $userObj->getUserSupplierRequestsObj();
-        $srch->addFld(array('usuprequest_attempts','usuprequest_id'));
+        $srch->addFld(array('usuprequest_attempts', 'usuprequest_id'));
 
         $rs = $srch->getResultSet();
         if (!$rs) {
@@ -298,7 +298,7 @@ class SupplierController extends MyAppController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $data = array('id'=>$supplierRequest['usuprequest_id']);
+        $data = array('id' => $supplierRequest['usuprequest_id']);
         $approvalFrm = $this->getSupplierForm();
         $approvalFrm->fill($data);
 
@@ -334,8 +334,8 @@ class SupplierController extends MyAppController
 
         foreach ($supplier_form_fields as $field) {
             $fieldIdsArr[] = $field['sformfield_id'];
-            if ($field['sformfield_required'] && empty($post["sformfield_".$field['sformfield_id']])) {
-                $error_messages[]=sprintf(Labels::getLabel('MSG_Label_Required', $this->siteLangId), $field['sformfield_caption']);
+            if ($field['sformfield_required'] && empty($post["sformfield_" . $field['sformfield_id']])) {
+                $error_messages[] = sprintf(Labels::getLabel('MSG_Label_Required', $this->siteLangId), $field['sformfield_caption']);
             }
         }
 
@@ -344,13 +344,13 @@ class SupplierController extends MyAppController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $reference_number = $userId.'-'.time();
+        $reference_number = $userId . '-' . time();
         $data = array_merge(
             $post,
             array(
-            "user_id"=>$userId,
-            "reference"=>$reference_number,
-            'fieldIdsArr'=>$fieldIdsArr
+            "user_id" => $userId,
+            "reference" => $reference_number,
+            'fieldIdsArr' => $fieldIdsArr
             )
         );
 
@@ -382,7 +382,7 @@ class SupplierController extends MyAppController
         'notification_record_type' => Notification::TYPE_USER,
         'notification_record_id' => $userObj->getMainTableRecordId(),
         'notification_user_id' => $userId,
-        'notification_label_key' => ($approval_request)?Notification::NEW_SUPPLIER_APPROVAL_NOTIFICATION:Notification::NEW_SELLER_APPROVED_NOTIFICATION,
+        'notification_label_key' => ($approval_request) ? Notification::NEW_SUPPLIER_APPROVAL_NOTIFICATION : Notification::NEW_SELLER_APPROVED_NOTIFICATION,
         'notification_added_on' => date('Y-m-d H:i:s'),
         );
 
@@ -411,7 +411,7 @@ class SupplierController extends MyAppController
         }
 
         $userObj = new User($userId);
-        $userdata = $userObj->getUserInfo(array('credential_active','credential_verified'), false, false);
+        $userdata = $userObj->getUserInfo(array('credential_active', 'credential_verified'), false, false);
 
         if (false == $userdata) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
@@ -480,7 +480,7 @@ class SupplierController extends MyAppController
         if (sizeof($cmsPagesToFaq) > 0 && is_array($cmsPagesToFaq)) {
             $contentPageSrch = ContentPage::getSearchObject($this->siteLangId);
             $contentPageSrch->addCondition('cpage_id', 'in', $cmsPagesToFaq);
-            $contentPageSrch->addMultipleFields(array('cpage_id','cpage_identifier','cpage_title'));
+            $contentPageSrch->addMultipleFields(array('cpage_id', 'cpage_identifier', 'cpage_title'));
             $rs = $contentPageSrch->getResultSet();
             $cpages = FatApp::getDb()->fetchAll($rs);
             $this->set('cpages', $cpages);
@@ -494,7 +494,7 @@ class SupplierController extends MyAppController
         if (!empty($catId) && $catId > 0) {
             $faqCatId = array( $catId );
         } elseif ($faqMainCat) {
-            $faqCatId=array($faqMainCat);
+            $faqCatId = array($faqMainCat);
         } else {
             $srchFAQCat = FaqCategory::getSearchObject($this->siteLangId);
             $srchFAQCat->setPageSize(1);
@@ -504,7 +504,7 @@ class SupplierController extends MyAppController
         }
 
         $srch = FaqCategory::getSearchObject($this->siteLangId);
-        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = '.applicationConstants::ACTIVE.'  and faq_deleted = '.applicationConstants::NO);
+        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = ' . applicationConstants::ACTIVE . '  and faq_deleted = ' . applicationConstants::NO);
         $srch->joinTable('tbl_faqs_lang', 'LEFT OUTER JOIN', 'faqlang_faq_id = faq_id');
         $srch->addCondition('faqlang_lang_id', '=', $this->siteLangId);
         $srch->addCondition('faqcat_active', '=', applicationConstants::ACTIVE);
@@ -544,7 +544,7 @@ class SupplierController extends MyAppController
     public function faqCategoriesPanel()
     {
         $srch = FaqCategory::getSearchObject($this->siteLangId);
-        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id AND faq_active = ' . applicationConstants::ACTIVE . ' AND faq_deleted = '.applicationConstants::NO);
+        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id AND faq_active = ' . applicationConstants::ACTIVE . ' AND faq_deleted = ' . applicationConstants::NO);
         $srch->joinTable('tbl_faqs_lang', 'LEFT OUTER JOIN', 'faqlang_faq_id = faq_id');
         $srch->addCondition('faqlang_lang_id', '=', $this->siteLangId);
         $srch->addCondition('faqcat_active', '=', applicationConstants::ACTIVE);
@@ -559,7 +559,7 @@ class SupplierController extends MyAppController
         $json['recordCount'] = $srch->recordCount();
 
         $srch->addGroupBy('faqcat_id');
-        $srch->addMultipleFields(array('faqcat_name','faqcat_id'));
+        $srch->addMultipleFields(array('faqcat_name', 'faqcat_id'));
         $srch->addFld('COUNT(*) AS faq_count');
         if (isset($srchCondition)) {
             $srchCondition->remove();
@@ -611,7 +611,7 @@ class SupplierController extends MyAppController
 
         $frm->addRequiredField(Labels::getLabel('LBL_NAME', $this->siteLangId), 'user_name');
 
-        $frm->addHiddenField('', 'user_id', 0, array('id'=>'user_id'));
+        $frm->addHiddenField('', 'user_id', 0, array('id' => 'user_id'));
 
         $fld = $frm->addTextBox(Labels::getLabel('LBL_USERNAME', $this->siteLangId), 'user_username');
         $fld->setUnique('tbl_user_credentials', 'credential_username', 'credential_user_id', 'user_id', 'user_id');
@@ -654,7 +654,7 @@ class SupplierController extends MyAppController
         $supplier_form_fields = $userObj->getSupplierFormFields($this->siteLangId);
 
         foreach ($supplier_form_fields as $field) {
-            $fieldName = 'sformfield_'.$field['sformfield_id'];
+            $fieldName = 'sformfield_' . $field['sformfield_id'];
 
             switch ($field['sformfield_type']) {
                 case User::USER_FIELD_TYPE_TEXT:
@@ -668,26 +668,26 @@ class SupplierController extends MyAppController
                 case User::USER_FIELD_TYPE_FILE:
                     $fld1 = $frm->addButton(
                         $field['sformfield_caption'],
-                        'button['.$field['sformfield_id'].']',
+                        'button[' . $field['sformfield_id'] . ']',
                         Labels::getLabel('LBL_Upload_File', $this->siteLangId),
-                        array('class'=>'fileType-Js btn--sm','id'=>'button-upload'.$field['sformfield_id'],'data-field_id'=>$field['sformfield_id'])
+                        array('class' => 'fileType-Js btn--sm', 'id' => 'button-upload' . $field['sformfield_id'], 'data-field_id' => $field['sformfield_id'])
                     );
-                    $fld1->htmlAfterField='<span id="input-sformfield'.$field['sformfield_id'].'"></span>';
+                    $fld1->htmlAfterField = '<span id="input-sformfield' . $field['sformfield_id'] . '"></span>';
                     if ($field['sformfield_required'] == 1) {
-                        $fld1->captionWrapper = array('<div class="astrick">','</div>');
+                        $fld1->captionWrapper = array('<div class="astrick">', '</div>');
                     }
                     // $fld = $frm->addHiddenField($field['sformfield_caption'],$fieldName,'',array('id'=>$fieldName));
-                    $fld = $frm->addTextBox('', $fieldName, '', array('id'=>$fieldName, 'hidden'=>'hidden', 'title'=>$field['sformfield_caption']));
+                    $fld = $frm->addTextBox('', $fieldName, '', array('id' => $fieldName, 'hidden' => 'hidden', 'title' => $field['sformfield_caption']));
                     $fld->setRequiredStarWith(Form::FORM_REQUIRED_STAR_WITH_NONE);
                     $fld1->attachField($fld);
                     break;
 
                 case User::USER_FIELD_TYPE_DATE:
-                    $fld = $frm->addDateField($field['sformfield_caption'], $fieldName, '', array('readonly'=>'readonly'));
+                    $fld = $frm->addDateField($field['sformfield_caption'], $fieldName, '', array('readonly' => 'readonly'));
                     break;
 
                 case User::USER_FIELD_TYPE_DATETIME:
-                    $fld = $frm->addDateTimeField($field['sformfield_caption'], $fieldName, '', array('readonly'=>'readonly'));
+                    $fld = $frm->addDateTimeField($field['sformfield_caption'], $fieldName, '', array('readonly' => 'readonly'));
                     break;
 
                 case User::USER_FIELD_TYPE_TIME:
@@ -698,7 +698,7 @@ class SupplierController extends MyAppController
                     break;
 
                 case User::USER_FIELD_TYPE_PHONE:
-                    $fld = $frm->addTextBox($field['sformfield_caption'], $fieldName, '', array('class'=>'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
+                    $fld = $frm->addTextBox($field['sformfield_caption'], $fieldName, '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
                     $fld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
                     break;
             }
@@ -707,7 +707,7 @@ class SupplierController extends MyAppController
                 $fld->requirements()->setRequired();
             }
             if ($field['sformfield_comment']) {
-                $fld->htmlAfterField = '<p class="note">'.$field['sformfield_comment'].'</p>';
+                $fld->htmlAfterField = '<p class="note">' . $field['sformfield_comment'] . '</p>';
             }
         }
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
@@ -717,7 +717,7 @@ class SupplierController extends MyAppController
     private function getSellerForm()
     {
         $frm = new Form('frmSeller');
-        $frm->addHiddenField('', 'user_id', 0, array('id'=>'user_id'));
+        $frm->addHiddenField('', 'user_id', 0, array('id' => 'user_id'));
         $frm->setFormTagAttribute("class", "form invalid");
         $frm->setFormTagAttribute("action", CommonHelper::generateUrl('supplier', 'account'));
         $fld = $frm->addEmailField(Labels::getLabel('LBL_Your_Email', $this->siteLangId), 'user_email', '');

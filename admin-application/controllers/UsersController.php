@@ -1,4 +1,5 @@
 <?php
+
 class UsersController extends AdminBaseController
 {
     public function __construct($action)
@@ -47,7 +48,7 @@ class UsersController extends AdminBaseController
         $userObj = new User();
         $srch = $userObj->getUserSearchObj(null, true);
         $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'user_id = shop.shop_user_id', 'shop');
-        $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = '. $this->adminLangId, 's_l');
+        $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $this->adminLangId, 's_l');
         $srch->addOrder('u.user_id', 'DESC');
         $srch->addOrder('credential_active', 'DESC');
 
@@ -57,9 +58,9 @@ class UsersController extends AdminBaseController
         } else {
             $keyword = FatApp::getPostedData('keyword', null, '');
             if (!empty($keyword)) {
-                $cond = $srch->addCondition('uc.credential_username', 'like', '%'.$keyword.'%');
-                $cond->attachCondition('uc.credential_email', 'like', '%'.$keyword.'%', 'OR');
-                $cond->attachCondition('u.user_name', 'like', '%'. $keyword .'%');
+                $cond = $srch->addCondition('uc.credential_username', 'like', '%' . $keyword . '%');
+                $cond->attachCondition('uc.credential_email', 'like', '%' . $keyword . '%', 'OR');
+                $cond->attachCondition('u.user_name', 'like', '%' . $keyword . '%');
             }
         }
 
@@ -98,15 +99,15 @@ class UsersController extends AdminBaseController
 
         $user_regdate_from = FatApp::getPostedData('user_regdate_from', FatUtility::VAR_DATE, '');
         if (!empty($user_regdate_from)) {
-            $srch->addCondition('user_regdate', '>=', $user_regdate_from. ' 00:00:00');
+            $srch->addCondition('user_regdate', '>=', $user_regdate_from . ' 00:00:00');
         }
 
         $user_regdate_to = FatApp::getPostedData('user_regdate_to', FatUtility::VAR_DATE, '');
         if (!empty($user_regdate_to)) {
-            $srch->addCondition('user_regdate', '<=', $user_regdate_to. ' 23:59:59');
+            $srch->addCondition('user_regdate', '<=', $user_regdate_to . ' 23:59:59');
         }
 
-        $srch->addFld(array('user_is_buyer', 'user_is_supplier','user_is_advertiser','user_is_affiliate', 'user_registered_initially_for'));
+        $srch->addFld(array('user_is_buyer', 'user_is_supplier', 'user_is_advertiser', 'user_is_affiliate', 'user_registered_initially_for'));
 
         $srch->addMultipleFields(array('user_id', 'user_name', 'user_phone', 'user_profile_info', 'user_regdate', 'user_is_buyer', 'credential_username', 'credential_email', 'credential_active', 'credential_verified', 'shop_id', 'shop_user_id', 'IFNULL(shop_name, shop_identifier) as shop_name'));
 
@@ -131,8 +132,8 @@ class UsersController extends AdminBaseController
     public function login($userId)
     {
         $this->objPrivilege->canEditUsers();
-        $userObj=new User($userId);
-        $user = $userObj->getUserInfo(array('credential_username','credential_password','user_preferred_dashboard'), false, false);
+        $userObj = new User($userId);
+        $user = $userObj->getUserInfo(array('credential_username', 'credential_password', 'user_preferred_dashboard'), false, false);
         if (!$user) {
             Message::addErrorMessage($this->str_invalid_request);
             FatApp::redirectUser(CommonHelper::generateUrl('Users'));
@@ -221,11 +222,11 @@ class UsersController extends AdminBaseController
             FatUtility::dieWithError($this->str_invalid_request);
         }
 
-        $pagesize =  FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
+        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
 
         $post = FatApp::getPostedData();
-        $page = (empty($post['page']) || $post['page'] <= 0)?1:$post['page'];
-        $page = (empty($page) || $page <= 0)?1:FatUtility::int($page);
+        $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : $post['page'];
+        $page = (empty($page) || $page <= 0) ? 1 : FatUtility::int($page);
 
         $srch = new UserRewardSearch();
         $srch->addCondition('urp.urp_user_id', '=', $userId);
@@ -255,14 +256,14 @@ class UsersController extends AdminBaseController
     public function addUserRewardPoints($userId = 0)
     {
         $this->objPrivilege->canViewUsers();
-        $userId  = FatUtility::int($userId);
+        $userId = FatUtility::int($userId);
 
         if (1 > $userId) {
             FatUtility::dieWithError($this->str_invalid_request_id);
         }
 
         $frm = $this->addUserRewardPointsForm($this->adminLangId);
-        $frm->fill(array('urp_user_id'=>$userId));
+        $frm->fill(array('urp_user_id' => $userId));
 
         $this->set('userId', $userId);
         $this->set('frm', $frm);
@@ -321,8 +322,8 @@ class UsersController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
 
         $post = FatApp::getPostedData();
-        $page = (empty($post['page']) || $post['page'] <= 0)?1:$post['page'];
-        $page = (empty($page) || $page <= 0)?1:FatUtility::int($page);
+        $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : $post['page'];
+        $page = (empty($page) || $page <= 0) ? 1 : FatUtility::int($page);
 
         $srch = Transactions::getSearchObject();
         $srch->addCondition('utxn.utxn_user_id', '=', $userId);
@@ -330,14 +331,14 @@ class UsersController extends AdminBaseController
         $balSrch = Transactions::getSearchObject();
         $balSrch->doNotCalculateRecords();
         $balSrch->doNotLimitRecords();
-        $balSrch->addMultipleFields(array('utxn.*',"utxn_credit - utxn_debit as bal"));
+        $balSrch->addMultipleFields(array('utxn.*', "utxn_credit - utxn_debit as bal"));
         $balSrch->addCondition('utxn_user_id', '=', $userId);
         $balSrch->addCondition('utxn_status', '=', 1);
         $qryUserPointsBalance = $balSrch->getQuery();
 
         $srch->joinTable('(' . $qryUserPointsBalance . ')', 'JOIN', 'tqupb.utxn_id <= utxn.utxn_id', 'tqupb');
 
-        $srch->addMultipleFields(array('utxn.*',"SUM(tqupb.bal) balance"));
+        $srch->addMultipleFields(array('utxn.*', "SUM(tqupb.bal) balance"));
 
         $srch->addOrder('utxn_id', 'DESC');
         $srch->addGroupBy('utxn.utxn_id');
@@ -364,14 +365,14 @@ class UsersController extends AdminBaseController
     public function addUserTransaction($userId = 0)
     {
         $this->objPrivilege->canViewUsers();
-        $userId  = FatUtility::int($userId);
+        $userId = FatUtility::int($userId);
 
         if (1 > $userId) {
             FatUtility::dieWithError($this->str_invalid_request_id);
         }
 
         $frm = $this->addUserTransactionForm($this->adminLangId);
-        $frm->fill(array('user_id'=>$userId));
+        $frm->fill(array('user_id' => $userId));
 
         $this->set('userId', $userId);
         $this->set('frm', $frm);
@@ -512,14 +513,14 @@ class UsersController extends AdminBaseController
 
         $stateId = 0;
         if ($ua_id > 0) {
-            $data =  UserAddress::getUserAddresses($userId, $this->adminLangId, 0, $ua_id);
+            $data = UserAddress::getUserAddresses($userId, $this->adminLangId, 0, $ua_id);
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
-            $stateId =  $data['ua_state_id'];
+            $stateId = $data['ua_state_id'];
             $addressFrm->fill($data);
         } else {
-            $addressFrm->fill(array('ua_user_id'=>$userId));
+            $addressFrm->fill(array('ua_user_id' => $userId));
         }
 
         $this->set('addressFrm', $addressFrm);
@@ -587,7 +588,7 @@ class UsersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $data =  UserAddress::getUserAddresses($user_id, $this->adminLangId, 0, $ua_id);
+        $data = UserAddress::getUserAddresses($user_id, $this->adminLangId, 0, $ua_id);
         if ($data === false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
@@ -659,7 +660,7 @@ class UsersController extends AdminBaseController
             );
         }
         $userObj = new User($user_id);
-        $userObj->assignValues(array('user_deleted'=>applicationConstants::YES));
+        $userObj->assignValues(array('user_deleted' => applicationConstants::YES));
         if (!$userObj->save()) {
             Message::addErrorMessage($userObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
@@ -691,7 +692,7 @@ class UsersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (! ValidateElement::password($post['new_password'])) {
+        if (!ValidateElement::password($post['new_password'])) {
             Message::addErrorMessage(
                 Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->adminLangId)
             );
@@ -721,7 +722,7 @@ class UsersController extends AdminBaseController
         }
 
         if (!$userObj->setLoginPassword($post['new_password'])) {
-            Message::addErrorMessage(Labels::getLabel('LBL_Password_could_not_be_set ', $this->adminLangId).' '. $userObj->getError());
+            Message::addErrorMessage(Labels::getLabel('LBL_Password_could_not_be_set ', $this->adminLangId) . ' ' . $userObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
 
@@ -749,8 +750,8 @@ class UsersController extends AdminBaseController
         $srchForm = $this->supplierRequestSearchForm();
 
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $post = $srchForm->getFormDataFromArray($data);
 
@@ -760,15 +761,15 @@ class UsersController extends AdminBaseController
         $srch->addOrder('usuprequest_id', 'desc');
 
         if (!empty($post['keyword'])) {
-            $cond = $srch->addCondition('tusr.usuprequest_reference', '=', '%'.$post['keyword'].'%', 'AND');
-            $cond->attachCondition('u.user_name', 'like', '%'.$post['keyword'].'%', 'OR');
-            $cond->attachCondition('uc.credential_email', 'like', '%'.$post['keyword'].'%', 'OR');
-            $cond->attachCondition('uc.credential_username', 'like', '%'.$post['keyword'].'%', 'OR');
-            $cond->attachCondition('tusr.usuprequest_reference', 'like', '%'.$post['keyword'].'%', 'OR');
+            $cond = $srch->addCondition('tusr.usuprequest_reference', '=', '%' . $post['keyword'] . '%', 'AND');
+            $cond->attachCondition('u.user_name', 'like', '%' . $post['keyword'] . '%', 'OR');
+            $cond->attachCondition('uc.credential_email', 'like', '%' . $post['keyword'] . '%', 'OR');
+            $cond->attachCondition('uc.credential_username', 'like', '%' . $post['keyword'] . '%', 'OR');
+            $cond->attachCondition('tusr.usuprequest_reference', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
 
         if (!empty($post['date_from'])) {
-            $srch->addCondition('tusr.usuprequest_date', '>=', $post['date_from']. ' 00:00:00');
+            $srch->addCondition('tusr.usuprequest_date', '>=', $post['date_from'] . ' 00:00:00');
         }
 
         if ($post['status'] > -1) {
@@ -776,14 +777,14 @@ class UsersController extends AdminBaseController
         }
 
         if (!empty($post['date_to'])) {
-            $srch->addCondition('tusr.usuprequest_date', '<=', $post['date_to']. ' 23:59:59');
+            $srch->addCondition('tusr.usuprequest_date', '<=', $post['date_to'] . ' 23:59:59');
         }
 
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
 
         $rs = $srch->getResultSet();
-        $records =array();
+        $records = array();
         if ($rs) {
             $records = FatApp::getDb()->fetchAll($rs);
         }
@@ -822,7 +823,7 @@ class UsersController extends AdminBaseController
         }
 
         $supplierRequest = FatApp::getDb()->fetch($rs);
-        if ($supplierRequest==false) {
+        if ($supplierRequest == false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -844,7 +845,7 @@ class UsersController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $data=array('requestId'=>$requestId);
+        $data = array('requestId' => $requestId);
         $frm = $this->supplierRequestForm();
         $frm->fill($data);
         $this->set('frm', $frm);
@@ -880,19 +881,19 @@ class UsersController extends AdminBaseController
 
         $supplierRequest = FatApp::getDb()->fetch($rs);
 
-        if ($supplierRequest==false) {
+        if ($supplierRequest == false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $statusArr = array(User::SUPPLIER_REQUEST_APPROVED,User::SUPPLIER_REQUEST_CANCELLED);
+        $statusArr = array(User::SUPPLIER_REQUEST_APPROVED, User::SUPPLIER_REQUEST_CANCELLED);
 
         if (!in_array($post['status'], $statusArr)) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Status_Request', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if (in_array($post['status'], $statusArr)&& in_array($supplierRequest['usuprequest_status'], $statusArr)) {
+        if (in_array($post['status'], $statusArr) && in_array($supplierRequest['usuprequest_status'], $statusArr)) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Status_Request', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -901,7 +902,7 @@ class UsersController extends AdminBaseController
         $db->startTransaction();
 
         if (!in_array($supplierRequest['usuprequest_status'], $statusArr) && in_array($post['status'], $statusArr)) {
-            $post['request_id'] = $supplierRequest['usuprequest_id'] ;
+            $post['request_id'] = $supplierRequest['usuprequest_id'];
             if (!$userObj->updateSupplierRequest($post)) {
                 $db->rollbackTransaction();
                 Message::addErrorMessage($userObj->getError());
@@ -1018,11 +1019,11 @@ class UsersController extends AdminBaseController
 
         /* save catalog request message[ */
         $dataToSave = array(
-        'scatrequestmsg_scatrequest_id'    =>    $requestRow['scatrequest_id'],
-        'scatrequestmsg_from_user_id'    =>    0,
-        'scatrequestmsg_from_admin_id'    =>    $admin_id,
-        'scatrequestmsg_msg'            =>    $post['message'],
-        'scatrequestmsg_date'            =>    date('Y-m-d H:i:s'),
+        'scatrequestmsg_scatrequest_id' => $requestRow['scatrequest_id'],
+        'scatrequestmsg_from_user_id' => 0,
+        'scatrequestmsg_from_admin_id' => $admin_id,
+        'scatrequestmsg_msg' => $post['message'],
+        'scatrequestmsg_date' => date('Y-m-d H:i:s'),
         );
         $catRequestMsgObj = new CatalogRequestMessage();
         $catRequestMsgObj->assignValues($dataToSave, true);
@@ -1069,7 +1070,7 @@ class UsersController extends AdminBaseController
         $srch->setPageSize($pageSize);
         $srch->addOrder('scatrequestmsg_id', 'DESC');
         $srch->addMultipleFields(
-            array( 'scatrequestmsg_id','scatrequestmsg_from_user_id', 'scatrequestmsg_from_admin_id',
+            array( 'scatrequestmsg_id', 'scatrequestmsg_from_user_id', 'scatrequestmsg_from_admin_id',
             'admin_name', 'admin_username', 'admin_email', 'scatrequestmsg_msg',
             'scatrequestmsg_date', 'msg_user.user_name as msg_user_name', 'msg_user_cred.credential_username as msg_username',
             'msg_user_cred.credential_email as msg_user_email',
@@ -1089,7 +1090,7 @@ class UsersController extends AdminBaseController
         $this->set('pageCount', $srch->pages());
         $this->set('postedData', $post);
 
-        $startRecord = ($page-1)*$pageSize + 1 ;
+        $startRecord = ($page - 1) * $pageSize + 1;
         $endRecord = $page * $pageSize;
         $totalRecords = $srch->recordCount();
         if ($totalRecords < $endRecord) {
@@ -1144,7 +1145,7 @@ class UsersController extends AdminBaseController
         $record = new SupplierFormFields($sformfield_id);
 
         if ($sformfield_id == 0) {
-            $display_order=$record->getMaxOrder();
+            $display_order = $record->getMaxOrder();
             $post['sformfield_display_order'] = $display_order;
         }
 
@@ -1154,18 +1155,18 @@ class UsersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $newTabLangId=0;
-        if ($sformfield_id>0) {
-            $languages=Language::getAllNames();
+        $newTabLangId = 0;
+        if ($sformfield_id > 0) {
+            $languages = Language::getAllNames();
             foreach ($languages as $langId => $langName) {
-                if (!$row=SupplierFormFields::getAttributesByLangId($langId, $sformfield_id)) {
+                if (!$row = SupplierFormFields::getAttributesByLangId($langId, $sformfield_id)) {
                     $newTabLangId = $langId;
                     break;
                 }
             }
         } else {
             $sformfield_id = $record->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
 
         $this->set('msg', $this->str_setup_successful);
@@ -1191,7 +1192,7 @@ class UsersController extends AdminBaseController
         $frm = $this->getSupplierApprovalForm();
 
         if (0 < $sformfield_id) {
-            $attr = array('sformfield_id','sformfield_identifier','sformfield_type','sformfield_required');
+            $attr = array('sformfield_id', 'sformfield_identifier', 'sformfield_type', 'sformfield_required');
             $data = SupplierFormFields::getAttributesById($sformfield_id, $attr);
 
             if ($data === false) {
@@ -1312,8 +1313,8 @@ class UsersController extends AdminBaseController
         $srchForm = $this->catalogRequestSearchForm();
 
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $post = $srchForm->getFormDataFromArray($data);
 
@@ -1324,14 +1325,14 @@ class UsersController extends AdminBaseController
 
         if (!empty($post['keyword'])) {
             $cond = $srch->addCondition('tucr.scatrequest_reference', '=', $post['keyword'], 'AND');
-            $cond = $srch->addCondition('tucr.scatrequest_title', '=', '%'.$post['keyword'].'%', 'OR');
-            $cond->attachCondition('u.user_name', 'like', '%'.$post['keyword'].'%', 'OR');
-            $cond->attachCondition('uc.credential_email', 'like', '%'.$post['keyword'].'%', 'OR');
-            $cond->attachCondition('uc.credential_username', 'like', '%'.$post['keyword'].'%', 'OR');
+            $cond = $srch->addCondition('tucr.scatrequest_title', '=', '%' . $post['keyword'] . '%', 'OR');
+            $cond->attachCondition('u.user_name', 'like', '%' . $post['keyword'] . '%', 'OR');
+            $cond->attachCondition('uc.credential_email', 'like', '%' . $post['keyword'] . '%', 'OR');
+            $cond->attachCondition('uc.credential_username', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
 
         if (!empty($post['date_from'])) {
-            $srch->addCondition('tucr.scatrequest_date', '>=', $post['date_from']. ' 00:00:00');
+            $srch->addCondition('tucr.scatrequest_date', '>=', $post['date_from'] . ' 00:00:00');
         }
 
         if ($post['status'] > -1) {
@@ -1339,14 +1340,14 @@ class UsersController extends AdminBaseController
         }
 
         if (!empty($post['date_to'])) {
-            $srch->addCondition('tucr.scatrequest_date', '<=', $post['date_to']. ' 23:59:59');
+            $srch->addCondition('tucr.scatrequest_date', '<=', $post['date_to'] . ' 23:59:59');
         }
 
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
 
         $rs = $srch->getResultSet();
-        $records =array();
+        $records = array();
         if ($rs) {
             $records = FatApp::getDb()->fetchAll($rs);
         }
@@ -1364,7 +1365,7 @@ class UsersController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function downloadAttachedFileForCatalogRequest($recordId, $recordSubid =0)
+    public function downloadAttachedFileForCatalogRequest($recordId, $recordSubid = 0)
     {
         $recordId = FatUtility::int($recordId);
 
@@ -1406,7 +1407,7 @@ class UsersController extends AdminBaseController
         }
 
         $catalogRequest = FatApp::getDb()->fetch($rs);
-        if ($catalogRequest==false) {
+        if ($catalogRequest == false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -1430,7 +1431,7 @@ class UsersController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $data=array('requestId'=>$requestId);
+        $data = array('requestId' => $requestId);
         $frm = $this->catalogRequestForm();
         $frm->fill($data);
         $this->set('frm', $frm);
@@ -1470,14 +1471,14 @@ class UsersController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $statusArr = array(User::CATALOG_REQUEST_APPROVED,User::CATALOG_REQUEST_CANCELLED);
+        $statusArr = array(User::CATALOG_REQUEST_APPROVED, User::CATALOG_REQUEST_CANCELLED);
 
         if (!in_array($post['status'], $statusArr)) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Status_Request', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if (in_array($post['status'], $statusArr)&& in_array($catalogRequest['scatrequest_status'], $statusArr)) {
+        if (in_array($post['status'], $statusArr) && in_array($catalogRequest['scatrequest_status'], $statusArr)) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Status_Request', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -1486,7 +1487,7 @@ class UsersController extends AdminBaseController
         $db->startTransaction();
 
         if (!in_array($catalogRequest['scatrequest_status'], $statusArr) && in_array($post['status'], $statusArr)) {
-            $post['request_id'] = $catalogRequest['scatrequest_id'] ;
+            $post['request_id'] = $catalogRequest['scatrequest_id'];
             if (!$userObj->updateCatalogRequest($post)) {
                 $db->rollbackTransaction();
                 Message::addErrorMessage($userObj->getError());
@@ -1537,7 +1538,7 @@ class UsersController extends AdminBaseController
     {
         $this->objPrivilege->canEditSellerApprovalForm();
 
-        $post=FatApp::getPostedData();
+        $post = FatApp::getPostedData();
 
         if (!empty($post)) {
             $obj = new SupplierFormFields();
@@ -1590,9 +1591,9 @@ class UsersController extends AdminBaseController
 
         $keyword = FatApp::getPostedData('keyword', null, '');
         if (!empty($keyword)) {
-            $cond = $srch->addCondition('uc.credential_username', 'like', '%'.$keyword.'%');
-            $cond->attachCondition('uc.credential_email', 'like', '%'.$keyword.'%', 'OR');
-            $cond->attachCondition('u.user_name', 'like', '%'. $keyword .'%');
+            $cond = $srch->addCondition('uc.credential_username', 'like', '%' . $keyword . '%');
+            $cond->attachCondition('uc.credential_email', 'like', '%' . $keyword . '%', 'OR');
+            $cond->attachCondition('u.user_name', 'like', '%' . $keyword . '%');
         }
 
         if (!empty($post['user_is_buyer'])) {
@@ -1634,9 +1635,9 @@ class UsersController extends AdminBaseController
         foreach ($users as $key => $user) {
             $json[] = array(
             'id' => $key,
-            'name'      => strip_tags(html_entity_decode($user['user_name'], ENT_QUOTES, 'UTF-8')),
-            'username'      => strip_tags(html_entity_decode($user['credential_username'], ENT_QUOTES, 'UTF-8')),
-            'credential_email'      => strip_tags(html_entity_decode($user['credential_email'], ENT_QUOTES, 'UTF-8')),
+            'name' => strip_tags(html_entity_decode($user['user_name'], ENT_QUOTES, 'UTF-8')),
+            'username' => strip_tags(html_entity_decode($user['credential_username'], ENT_QUOTES, 'UTF-8')),
+            'credential_email' => strip_tags(html_entity_decode($user['credential_email'], ENT_QUOTES, 'UTF-8')),
             );
         }
 
@@ -1656,7 +1657,7 @@ class UsersController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $this->set('msg', ((1 == $v)? Labels::getLabel('MSG_Account_Unverified', $this->adminLangId) : Labels::getLabel('MSG_Account_Verified', $this->adminLangId)));
+        $this->set('msg', ((1 == $v) ? Labels::getLabel('MSG_Account_Unverified', $this->adminLangId) : Labels::getLabel('MSG_Account_Verified', $this->adminLangId)));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -1672,7 +1673,7 @@ class UsersController extends AdminBaseController
         $userObj = new User($userId);
         $srch = $userObj->getUserSearchObj();
         $rs = $srch->getResultSet();
-        $data=FatApp::getDb()->fetch($rs);
+        $data = FatApp::getDb()->fetch($rs);
         $status = ($data['credential_active'] == applicationConstants::ACTIVE) ? applicationConstants::INACTIVE : applicationConstants::ACTIVE;
 
         $this->updateUserStatus($userId, $status);
@@ -1739,7 +1740,7 @@ class UsersController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $this->set('msg', ((1 == $v)? Labels::getLabel('MSG_Account_Deactivated', $this->adminLangId) : Labels::getLabel('MSG_Account_Activated', $this->adminLangId)));
+        $this->set('msg', ((1 == $v) ? Labels::getLabel('MSG_Account_Deactivated', $this->adminLangId) : Labels::getLabel('MSG_Account_Activated', $this->adminLangId)));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -1788,7 +1789,7 @@ class UsersController extends AdminBaseController
             )
         );
 
-        $this->set('msg', Labels::getLabel('LBL_Your_Message_Sent_To', $this->adminLangId).' - '.$user["credential_email"]);
+        $this->set('msg', Labels::getLabel('LBL_Your_Message_Sent_To', $this->adminLangId) . ' - ' . $user["credential_email"]);
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -1853,14 +1854,14 @@ class UsersController extends AdminBaseController
 
     private function supplierRequestSearchForm()
     {
-        $frm = new Form('frmSupplierReqSrch', array('id'=>'frmSupplierReqSrch'));
+        $frm = new Form('frmSupplierReqSrch', array('id' => 'frmSupplierReqSrch'));
         $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '');
 
-        $statusArr = array('-1'=>Labels::getLabel('LBL_All', $this->adminLangId))+User::getSupplierReqStatusArr($this->adminLangId);
+        $statusArr = array('-1' => Labels::getLabel('LBL_All', $this->adminLangId)) + User::getSupplierReqStatusArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'status', $statusArr, '', array(), '');
-        $frm->addDateField(Labels::getLabel('LBL_Date_From', $this->adminLangId), 'date_from', '', array( 'readonly'=>'readonly', 'class'=>'field--calender' ));
-        $frm->addDateField(Labels::getLabel('LBL_Date_To', $this->adminLangId), 'date_to', '', array( 'readonly'=>'readonly', 'class'=>'field--calender' ));
-        $fld_submit=$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $frm->addDateField(Labels::getLabel('LBL_Date_From', $this->adminLangId), 'date_from', '', array( 'readonly' => 'readonly', 'class' => 'field--calender' ));
+        $frm->addDateField(Labels::getLabel('LBL_Date_To', $this->adminLangId), 'date_to', '', array( 'readonly' => 'readonly', 'class' => 'field--calender' ));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;
@@ -1880,7 +1881,7 @@ class UsersController extends AdminBaseController
     private function getSupplierApprovalLangForm($sformfield_id, $lang_id)
     {
         if (0 < $sformfield_id) {
-            $attr = array('sformfield_id','sformfield_type');
+            $attr = array('sformfield_id', 'sformfield_type');
             $data = SupplierFormFields::getAttributesById($sformfield_id, $attr);
         }
 
@@ -1928,13 +1929,13 @@ class UsersController extends AdminBaseController
     private function getForm($user_id = 0)
     {
         $user_id = FatUtility::int($user_id);
-        $frm = new Form('frmUser', array('id'=>'frmUser'));
+        $frm = new Form('frmUser', array('id' => 'frmUser'));
         $frm->addHiddenField('', 'user_id', $user_id);
         $frm->addTextBox(Labels::getLabel('LBL_Username', $this->adminLangId), 'credential_username', '');
         $frm->addRequiredField(Labels::getLabel('LBL_Customer_Name', $this->adminLangId), 'user_name');
         $frm->addDateField(Labels::getLabel('LBL_Date_Of_Birth', $this->adminLangId), 'user_dob', '', array('readonly' => 'readonly'));
 
-        $phnFld = $frm->addTextBox(Labels::getLabel('LBL_Phone', $this->adminLangId), 'user_phone', '', array('class'=>'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
+        $phnFld = $frm->addTextBox(Labels::getLabel('LBL_Phone', $this->adminLangId), 'user_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
         $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
 
         $frm->addTextBox(Labels::getLabel('LBL_Email', $this->adminLangId), 'credential_email', '');
@@ -1951,9 +1952,9 @@ class UsersController extends AdminBaseController
         return $frm;
     }
 
-    private function getChangePasswordForm($user_id=0)
+    private function getChangePasswordForm($user_id = 0)
     {
-        $user_id=FatUtility::int($user_id);
+        $user_id = FatUtility::int($user_id);
         $frm = new Form('changePwdFrm');
         $frm->addHiddenField('', 'user_id', $user_id);
 
@@ -1961,7 +1962,7 @@ class UsersController extends AdminBaseController
             Labels::getLabel('LBL_New_Password', $this->adminLangId),
             'new_password',
             '',
-            array('id'=>'new_password')
+            array('id' => 'new_password')
         );
         $newPwd->requirements()->setRequired();
 
@@ -1969,26 +1970,26 @@ class UsersController extends AdminBaseController
             Labels::getLabel('LBL_Confirm_New_Password', $this->adminLangId),
             'conf_new_password',
             '',
-            array('id'=>'conf_new_password')
+            array('id' => 'conf_new_password')
         );
         $conNewPwdReq = $conNewPwd->requirements();
         $conNewPwdReq->setRequired();
         $conNewPwdReq->setCompareWith('new_password', 'eq');
         $conNewPwdReq->setCustomErrorMessage(Labels::getLabel('LBL_Confirm_Password_Not_Matched!', $this->adminLangId));
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId), array('id'=>'btn_submit'));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId), array('id' => 'btn_submit'));
         return $frm;
     }
 
-    private function getSendMailForm($user_id=0)
+    private function getSendMailForm($user_id = 0)
     {
-        $user_id=FatUtility::int($user_id);
+        $user_id = FatUtility::int($user_id);
         $frm = new Form('sendMailFrm');
         $frm->addHiddenField('', 'user_id', $user_id);
 
         $frm->addTextBox(Labels::getLabel('LBL_Subject', $this->adminLangId), 'mail_subject')->requirements()->setRequired(true);
         $frm->addTextArea(Labels::getLabel('LBL_Message', $this->adminLangId), 'mail_message')->requirements()->setRequired(true);
 
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Send', $this->adminLangId), array('id'=>'btn_submit'));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Send', $this->adminLangId), array('id' => 'btn_submit'));
         return $frm;
     }
 
@@ -1997,11 +1998,11 @@ class UsersController extends AdminBaseController
         $frm = new Form('frmCatalogReqSrch');
         $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '');
 
-        $statusArr = array('-1'=>Labels::getLabel('LBL_All', $this->adminLangId))+User::getCatalogReqStatusArr($this->adminLangId);
+        $statusArr = array('-1' => Labels::getLabel('LBL_All', $this->adminLangId)) + User::getCatalogReqStatusArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'status', $statusArr, '', array(), '');
-        $frm->addDateField(Labels::getLabel('LBL_Date_From', $this->adminLangId), 'date_from', '', array( 'readonly'=>'readonly', 'class'=>'field--calender' ));
-        $frm->addDateField(Labels::getLabel('LBL_Date_To', $this->adminLangId), 'date_to', '', array( 'readonly'=>'readonly', 'class'=>'field--calender' ));
-        $fld_submit=$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $frm->addDateField(Labels::getLabel('LBL_Date_From', $this->adminLangId), 'date_from', '', array( 'readonly' => 'readonly', 'class' => 'field--calender' ));
+        $frm->addDateField(Labels::getLabel('LBL_Date_To', $this->adminLangId), 'date_to', '', array( 'readonly' => 'readonly', 'class' => 'field--calender' ));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;
@@ -2053,7 +2054,7 @@ class UsersController extends AdminBaseController
         $frm->addTextArea(Labels::getLabel('LBL_Comments', $this->adminLangId), 'urp_comments')->requirements()->setRequired();
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Validity', $this->adminLangId), 'validity');
         $fld->requirements()->setIntPositive();
-        $fld->htmlAfterField='<small>'.Labels::getLabel('LBL_Leave_this_field_empty_ever_valid_reward_points.', $this->adminLangId).'</small>';
+        $fld->htmlAfterField = '<small>' . Labels::getLabel('LBL_Leave_this_field_empty_ever_valid_reward_points.', $this->adminLangId) . '</small>';
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
@@ -2076,7 +2077,7 @@ class UsersController extends AdminBaseController
 
         $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'ua_state_id', array())->requirement->setRequired(true);
         $frm->addTextBox(Labels::getLabel('LBL_Postal_Code', $this->adminLangId), 'ua_zip');
-        $phnFld = $frm->addTextBox(Labels::getLabel('LBL_Phone', $this->adminLangId), 'ua_phone', '', array('class'=>'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
+        $phnFld = $frm->addTextBox(Labels::getLabel('LBL_Phone', $this->adminLangId), 'ua_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
         $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
         $frm->addHiddenField('', 'ua_user_id');
         $frm->addHiddenField('', 'ua_id');

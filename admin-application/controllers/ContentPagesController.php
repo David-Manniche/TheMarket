@@ -1,4 +1,5 @@
 <?php
+
 class ContentPagesController extends AdminBaseController
 {
     private $canView;
@@ -31,23 +32,23 @@ class ContentPagesController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
         $srch = ContentPage::getSearchObject($this->adminLangId);
 
         if (!empty($post['keyword'])) {
-            $srch->addCondition('p.cpage_identifier', 'like', '%'.$post['keyword'].'%');
+            $srch->addCondition('p.cpage_identifier', 'like', '%' . $post['keyword'] . '%');
         }
 
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         $srch->addOrder('cpage_id', 'DESC');
         $srch->setPageSize($pagesize);
         $rs = $srch->getResultSet();
 
-        $records =array();
+        $records = array();
         if ($rs) {
             $records = FatApp::getDb()->fetchAll($rs);
         }
@@ -74,13 +75,13 @@ class ContentPagesController extends AdminBaseController
         $blockFrm = $this->getForm($cpage_id);
 
         if (0 < $cpage_id) {
-            $data = ContentPage::getAttributesById($cpage_id, array('cpage_id','cpage_identifier','cpage_layout'));
+            $data = ContentPage::getAttributesById($cpage_id, array('cpage_id', 'cpage_identifier', 'cpage_layout'));
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
 
             /* url data[ */
-            $urlRow = UrlRewrite::getDataByOriginalUrl($this->rewriteUrl.$cpage_id);
+            $urlRow = UrlRewrite::getDataByOriginalUrl($this->rewriteUrl . $cpage_id);
             if (!empty($urlRow)) {
                 $data['urlrewrite_custom'] = $urlRow['urlrewrite_custom'];
             }
@@ -121,7 +122,7 @@ class ContentPagesController extends AdminBaseController
         $cpage_id = $contentPage->getMainTableRecordId();
 
         /* url data[ */
-        $originalUrl = $this->rewriteUrl.$cpage_id;
+        $originalUrl = $this->rewriteUrl . $cpage_id;
         if ($post['urlrewrite_custom'] == '') {
             UrlRewrite::remove($originalUrl);
         } else {
@@ -259,7 +260,7 @@ class ContentPagesController extends AdminBaseController
         }
         $pageObj = new ContentPage($cpage_id);
         if ($cpage_layout == ContentPage::CONTENT_PAGE_LAYOUT1_TYPE) {
-            for ($i=1; $i<= ContentPage::CONTENT_PAGE_LAYOUT1_BLOCK_COUNT; $i++) {
+            for ($i = 1; $i <= ContentPage::CONTENT_PAGE_LAYOUT1_BLOCK_COUNT; $i++) {
                 $data['cpblocklang_text'] = $post['cpblock_content_block_' . $i];
                 $data['cpblocklang_block_id'] = $i;
                 if (!$pageObj->addUpdateContentPageBlocks($lang_id, $cpage_id, $data)) {
@@ -363,7 +364,7 @@ class ContentPagesController extends AdminBaseController
         }
 
         $srch->setPageSize(FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10));
-        $srch->addMultipleFields(array('cpage_id','IFNULL(cpage_title,cpage_identifier) as cpage_name'));
+        $srch->addMultipleFields(array('cpage_id', 'IFNULL(cpage_title,cpage_identifier) as cpage_name'));
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $products = $db->fetchAll($rs, 'cpage_id');
@@ -371,7 +372,7 @@ class ContentPagesController extends AdminBaseController
         foreach ($products as $key => $product) {
             $json[] = array(
             'id' => $key,
-            'name'      => strip_tags(html_entity_decode($product['cpage_name'], ENT_QUOTES, 'UTF-8'))
+            'name' => strip_tags(html_entity_decode($product['cpage_name'], ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));
@@ -381,7 +382,7 @@ class ContentPagesController extends AdminBaseController
     {
         $frm = new Form('frmPagesSearch');
         $f1 = $frm->addTextBox(Labels::getLabel('LBL_Page_Identifier', $this->adminLangId), 'keyword', '');
-        $fld_submit=$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;
@@ -397,7 +398,7 @@ class ContentPagesController extends AdminBaseController
         $frm->addRequiredField(Labels::getLabel('LBL_Page_Identifier', $this->adminLangId), 'cpage_identifier');
         $fld = $frm->addTextBox(Labels::getLabel('LBL_SEO_Friendly_URL', $this->adminLangId), 'urlrewrite_custom');
         $fld->requirements()->setRequired();
-        $frm->addSelectBox(Labels::getLabel('LBL_Layout_Type', $this->adminLangId), 'cpage_layout', $this->getAvailableLayouts(), '', array('id'=>'cpage_layout'))->requirements()->setRequired();
+        $frm->addSelectBox(Labels::getLabel('LBL_Layout_Type', $this->adminLangId), 'cpage_layout', $this->getAvailableLayouts(), '', array('id' => 'cpage_layout'))->requirements()->setRequired();
 
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
@@ -426,12 +427,12 @@ class ContentPagesController extends AdminBaseController
                 Labels::getLabel('LBL_Backgroud_Image', $this->adminLangId),
                 'cpage_bg_image',
                 Labels::getLabel('LBL_Upload_Image', $this->adminLangId),
-                array('class'=>'bgImageFile-Js','id'=>'cpage_bg_image','data-file_type'=>AttachedFile::FILETYPE_CPAGE_BACKGROUND_IMAGE,'data-frm'=>'frmBlock')
+                array('class' => 'bgImageFile-Js', 'id' => 'cpage_bg_image', 'data-file_type' => AttachedFile::FILETYPE_CPAGE_BACKGROUND_IMAGE, 'data-frm' => 'frmBlock')
             );
             $frm->addTextBox(Labels::getLabel('LBL_Background_Image_Title', $this->adminLangId), 'cpage_image_title');
             $frm->addTextarea(Labels::getLabel('LBL_Background_Image_Description', $this->adminLangId), 'cpage_image_content');
-            for ($i=1; $i<= ContentPage::CONTENT_PAGE_LAYOUT1_BLOCK_COUNT; $i++) {
-                $frm->addHtmlEditor(Labels::getLabel('LBL_Content_Block_'.$i, $this->adminLangId), 'cpblock_content_block_'.$i);
+            for ($i = 1; $i <= ContentPage::CONTENT_PAGE_LAYOUT1_BLOCK_COUNT; $i++) {
+                $frm->addHtmlEditor(Labels::getLabel('LBL_Content_Block_' . $i, $this->adminLangId), 'cpblock_content_block_' . $i);
             }
         } else {
             $frm->addHtmlEditor(Labels::getLabel('LBL_Page_Content', $this->adminLangId), 'cpage_content');
@@ -493,7 +494,7 @@ class ContentPagesController extends AdminBaseController
         $this->set('cpage_id', $cpage_id);
         $this->set('cpage_layout', $cpage_layout);
         $this->set('lang_id', $lang_id);
-        $this->set('msg', $_FILES['file']['name'].' '.Labels::getLabel('LBL_Uploaded_Successfully', $this->adminLangId));
+        $this->set('msg', $_FILES['file']['name'] . ' ' . Labels::getLabel('LBL_Uploaded_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 

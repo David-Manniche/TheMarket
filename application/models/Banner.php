@@ -1,4 +1,5 @@
 <?php
+
 class Banner extends MyAppModel
 {
     public const DB_TBL = 'tbl_banners';
@@ -33,8 +34,8 @@ class Banner extends MyAppModel
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
         return array(
-        static::TYPE_BANNER    =>    Labels::getLabel('LBL_Banner', $langId),
-        static::TYPE_PPC    =>    Labels::getLabel('LBL_Promotion', $langId),
+        static::TYPE_BANNER => Labels::getLabel('LBL_Banner', $langId),
+        static::TYPE_PPC => Labels::getLabel('LBL_Promotion', $langId),
         );
     }
     
@@ -85,11 +86,11 @@ class Banner extends MyAppModel
         $assignValues = array(
         /* 'blocation_banner_width'=>$data['blocation_banner_width'],
         'blocation_banner_height'=>$data['blocation_banner_height'], */
-        'blocation_active'=>$data['blocation_active'],
-        'blocation_promotion_cost'=>$data['blocation_promotion_cost'],
-        'blocation_identifier'=>$data['blocation_identifier'],
+        'blocation_active' => $data['blocation_active'],
+        'blocation_promotion_cost' => $data['blocation_promotion_cost'],
+        'blocation_identifier' => $data['blocation_identifier'],
         );
-        $where = array('smt'=>'blocation_id = ?', 'vals'=>array($blocationId));
+        $where = array('smt' => 'blocation_id = ?', 'vals' => array($blocationId));
         if (!$db->updateFromArray(static::DB_TBL_LOCATIONS, $assignValues, $where)) {
             $this->error = $db->getError();
             return false;
@@ -100,21 +101,22 @@ class Banner extends MyAppModel
     public static function updateImpressionData($bannerId = 0)
     {
         if (1 > $bannerId) {
-            return ;
+            return;
         }
 
         $bannerLogData = array(
         'lbanner_banner_id' => $bannerId,
-        'lbanner_date' =>  date('Y-m-d'),
-        'lbanner_impressions' =>  1,
+        'lbanner_date' => date('Y-m-d'),
+        'lbanner_impressions' => 1,
         );
 
-        $onDuplicateBannerLogData = array_merge($bannerLogData, array('lbanner_impressions'=>'mysql_func_lbanner_impressions+1'));
+        $onDuplicateBannerLogData = array_merge($bannerLogData, array('lbanner_impressions' => 'mysql_func_lbanner_impressions+1'));
         FatApp::getDb()->insertFromArray(static::DB_TBL_LOGS, $bannerLogData, true, array(), $onDuplicateBannerLogData);
     }
 
-    public static function setLastModified($banner_id){
-        $where = array('smt'=>'banner_id = ?', 'vals'=>array($banner_id));
-        FatApp::getDb()->updateFromArray(static::DB_TBL, array('banner_img_updated_on'=>date('Y-m-d  H:i:s')), $where);
+    public static function setLastModified($banner_id)
+    {
+        $where = array('smt' => 'banner_id = ?', 'vals' => array($banner_id));
+        FatApp::getDb()->updateFromArray(static::DB_TBL, array('banner_img_updated_on' => date('Y-m-d  H:i:s')), $where);
     }
 }

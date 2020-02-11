@@ -1,4 +1,5 @@
 <?php
+
 class BrandsController extends MyAppController
 {
     public function __construct($action)
@@ -14,7 +15,7 @@ class BrandsController extends MyAppController
         $brandSrch->addOrder('brand_name', 'asc');
         $brandRs = $brandSrch->getResultSet();
         $brandsArr = FatApp::getDb()->fetchAll($brandRs);
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $db = FatApp::getDb();
             $totalProdCountToDisplay = 4;
             $productCustomSrchObj = new ProductSearch($this->siteLangId);
@@ -34,12 +35,12 @@ class BrandsController extends MyAppController
             $productCustomSrchObj->addMultipleFields(
                 array('product_id', 'selprod_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
                 'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
-                'theprice', 'selprod_price','selprod_stock', 'selprod_condition','prodcat_id','IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','ifnull(sq_sprating.prod_rating,0) prod_rating ','ifnull(sq_sprating.totReviews,0) totReviews','selprod_sold_count','selprod_min_order_qty')
+                'theprice', 'selprod_price', 'selprod_stock', 'selprod_condition', 'prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'ifnull(sq_sprating.prod_rating,0) prod_rating ', 'ifnull(sq_sprating.totReviews,0) totReviews', 'selprod_sold_count', 'selprod_min_order_qty')
             );
             if (UserAuthentication::isUserLogged()) {
-                $productCustomSrchObj->addFld(array('IF(ufp_id > 0, 1, 0) as isfavorite','IFNULL(ufp_id, 0) as ufp_id'));
+                $productCustomSrchObj->addFld(array('IF(ufp_id > 0, 1, 0) as isfavorite', 'IFNULL(ufp_id, 0) as ufp_id'));
             } else {
-                $productCustomSrchObj->addFld(array('0 as isfavorite','0 as ufp_id'));
+                $productCustomSrchObj->addFld(array('0 as isfavorite', '0 as ufp_id'));
             }
 
             $productCustomSrchObj->setPageSize($totalProdCountToDisplay);
@@ -54,8 +55,8 @@ class BrandsController extends MyAppController
 
                 foreach ($brandProducts as &$brandProduct) {
                     $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($brandProduct['product_id'], "MEDIUM", $brandProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-                    $brandProduct['discounted_text'] =  CommonHelper::showProductDiscountedText($brandProduct, $this->siteLangId);
-                    $brandProduct['product_image'] =  $mainImgUrl;
+                    $brandProduct['discounted_text'] = CommonHelper::showProductDiscountedText($brandProduct, $this->siteLangId);
+                    $brandProduct['product_image'] = $mainImgUrl;
                     $brandProduct['currency_selprod_price'] = CommonHelper::displayMoneyFormat($brandProduct['selprod_price'], true, false, false);
                     $brandProduct['currency_theprice'] = CommonHelper::displayMoneyFormat($brandProduct['theprice'], true, false, false);
                 }
@@ -135,20 +136,20 @@ class BrandsController extends MyAppController
         $products = $db->fetchAll($rs);
 
         $data = array(
-            'frmProductSearch'=>$frm,
-            'products'=>$products,
-            'page'=>$page,
-            'pageSize'=>$pageSize,
-            'pageCount'=>$srch->pages(),
-            'postedData'=>$get,
-            'recordCount'=>$srch->recordCount(),
-            'pageTitle'=>$brand['brand_name'],
-            'canonicalUrl'=>CommonHelper::generateFullUrl('Brands', 'view', array($brandId)),
-            'productSearchPageType'=>SavedSearchProduct::PAGE_BRAND,
-            'recordId'=>$brandId,
-            'bannerListigUrl'=>CommonHelper::generateFullUrl('Banner', 'brands'),
-            'siteLangId'=>$this->siteLangId,
-            'showBreadcrumb'=> true,
+            'frmProductSearch' => $frm,
+            'products' => $products,
+            'page' => $page,
+            'pageSize' => $pageSize,
+            'pageCount' => $srch->pages(),
+            'postedData' => $get,
+            'recordCount' => $srch->recordCount(),
+            'pageTitle' => $brand['brand_name'],
+            'canonicalUrl' => CommonHelper::generateFullUrl('Brands', 'view', array($brandId)),
+            'productSearchPageType' => SavedSearchProduct::PAGE_BRAND,
+            'recordId' => $brandId,
+            'bannerListigUrl' => CommonHelper::generateFullUrl('Banner', 'brands'),
+            'siteLangId' => $this->siteLangId,
+            'showBreadcrumb' => true,
         );
 
         if (FatUtility::isAjaxCall()) {
@@ -192,7 +193,7 @@ class BrandsController extends MyAppController
         foreach ($brands as $key => $brand) {
             $json[] = array(
             'id' => $key,
-            'name'      => strip_tags(html_entity_decode($brand['brand_name'], ENT_QUOTES, 'UTF-8'))
+            'name' => strip_tags(html_entity_decode($brand['brand_name'], ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));
@@ -207,11 +208,11 @@ class BrandsController extends MyAppController
         $langId = FatUtility::int($post['langId']);
 
         $brandName = $post['brandName'];
-        $brandId =  FatUtility::int($post['brandId']);
-        if (1>$langId) {
+        $brandId = FatUtility::int($post['brandId']);
+        if (1 > $langId) {
             trigger_error(Labels::getLabel('LBL_Lang_Id_not_Specified', CommonHelper::getLangId()), E_USER_ERROR);
         }
-        if (1>$brandId) {
+        if (1 > $brandId) {
             trigger_error(Labels::getLabel('LBL_Brand_Id_not_Specified', CommonHelper::getLangId()), E_USER_ERROR);
         }
         $srch = Brand::getSearchObject($langId);
@@ -221,7 +222,7 @@ class BrandsController extends MyAppController
         }
         $rs = $srch->getResultSet();
         $records = $srch->recordCount();
-        if ($records>0) {
+        if ($records > 0) {
             FatUtility::dieJsonError(sprintf(Labels::getLabel('LBL_%s_not_available', $this->siteLangId), $brandName));
         }
         FatUtility::dieJsonSuccess(array());
@@ -233,24 +234,24 @@ class BrandsController extends MyAppController
         $parameters = FatApp::getParameters();
         switch ($action) {
         case 'view':
-            $nodes[] = array('title'=>Labels::getLabel('LBL_Brands', $this->siteLangId), 'href'=>CommonHelper::generateUrl('brands'));
+            $nodes[] = array('title' => Labels::getLabel('LBL_Brands', $this->siteLangId), 'href' => CommonHelper::generateUrl('brands'));
             if (isset($parameters[0]) && $parameters[0] > 0) {
                 $brandId = FatUtility::int($parameters[0]);
-                if ($brandId>0) {
+                if ($brandId > 0) {
                     $brandSrch = Brand::getListingObj($this->siteLangId, array( 'IFNULL(brand_name, brand_identifier) as brand_name', ));
                     $brandSrch->doNotCalculateRecords();
                     $brandSrch->doNotLimitRecords();
                     $brandSrch->addCondition('brand_id', '=', $brandId);
                     $brandRs = $brandSrch->getResultSet();
                     $brandsArr = FatApp::getDb()->fetch($brandRs);
-                    $nodes[] = array('title'=>$brandsArr['brand_name']);
+                    $nodes[] = array('title' => $brandsArr['brand_name']);
                 }
             }
 
             break;
 
         case 'index':
-            $nodes[] = array('title'=>Labels::getLabel('LBL_Brands', $this->siteLangId));
+            $nodes[] = array('title' => Labels::getLabel('LBL_Brands', $this->siteLangId));
 
             break;
 

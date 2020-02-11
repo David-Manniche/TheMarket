@@ -1,4 +1,5 @@
 <?php
+
 class PayPalPayoutController extends PayoutBaseController
 {
     public const KEY_NAME = 'PayPalPayout';

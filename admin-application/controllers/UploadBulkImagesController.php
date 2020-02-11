@@ -1,4 +1,5 @@
 <?php
+
 class UploadBulkImagesController extends AdminBaseController
 {
     public function __construct($action)
@@ -18,13 +19,13 @@ class UploadBulkImagesController extends AdminBaseController
 
     private function getUploadForm()
     {
-        $frm = new Form('uploadBulkImages', array('id'=>'uploadBulkImages'));
+        $frm = new Form('uploadBulkImages', array('id' => 'uploadBulkImages'));
 
         $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_File_to_be_uploaded:', $this->langId), 'bulk_images', array('id' => 'bulk_images', 'accept' => '.zip' ));
         $fldImg->requirement->setRequired(true);
         $fldImg->setFieldTagAttribute('onChange', '$("#uploadFileName").html(this.value)');
-        $fldImg->htmlBeforeField='<div class="filefield"><span class="filename" id="uploadFileName"></span>';
-        $fldImg->htmlAfterField='<label class="filelabel">'.Labels::getLabel('LBL_Browse_File', $this->langId).'</label></div>';
+        $fldImg->htmlBeforeField = '<div class="filefield"><span class="filename" id="uploadFileName"></span>';
+        $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->langId) . '</label></div>';
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Submit', $this->langId));
         return $frm;
@@ -60,8 +61,8 @@ class UploadBulkImagesController extends AdminBaseController
         $path = CONF_UPLOADS_PATH . AttachedFile::FILETYPE_BULK_IMAGES_PATH;
         $filePath = AttachedFile::FILETYPE_BULK_IMAGES_PATH . $savedFile;
 
-        $msg = '<br>'.str_replace('{path}', '<br><b>'.$filePath.'</b>', Labels::getLabel('MSG_Your_uploaded_files_path_will_be:_{path}', $this->langId));
-        $msg = Labels::getLabel('MSG_Uploaded_Successfully.', $this->langId) .' '.$msg;
+        $msg = '<br>' . str_replace('{path}', '<br><b>' . $filePath . '</b>', Labels::getLabel('MSG_Your_uploaded_files_path_will_be:_{path}', $this->langId));
+        $msg = Labels::getLabel('MSG_Uploaded_Successfully.', $this->langId) . ' ' . $msg;
         $json = [
             "msg" => $msg,
             "path" => base64_encode($path . $savedFile)
@@ -71,14 +72,14 @@ class UploadBulkImagesController extends AdminBaseController
 
     private function getSearchForm()
     {
-        $frm = new Form('frmSearch', array('id'=>'frmSearch'));
+        $frm = new Form('frmSearch', array('id' => 'frmSearch'));
         $frm->setRequiredStarWith('caption');
         $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
 
         $frm->addTextBox(Labels::getLabel('LBL_User', $this->adminLangId), 'user', '');
 
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
-        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick'=>'clearSearch();'));
+        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick' => 'clearSearch();'));
         $fld_submit->attachField($fld_cancel);
         $frm->addHiddenField('', 'page');
         $frm->addHiddenField('', 'afile_record_id');
@@ -129,7 +130,7 @@ class UploadBulkImagesController extends AdminBaseController
 
     public function removeDir($directory)
     {
-        $directory = CONF_UPLOADS_PATH . base64_decode($directory) ;
+        $directory = CONF_UPLOADS_PATH . base64_decode($directory);
         $obj = new UploadBulkImages();
         $msg = $obj->deleteSingleBulkMediaDir($directory);
         FatUtility::dieJsonSuccess($msg);
@@ -149,7 +150,7 @@ class UploadBulkImagesController extends AdminBaseController
             if (empty($uploadDir)) {
                 continue;
             }
-            $directory = CONF_UPLOADS_PATH . base64_decode($uploadDir).'/' ;
+            $directory = CONF_UPLOADS_PATH . base64_decode($uploadDir) . '/';
             $msg = $obj->deleteSingleBulkMediaDir($directory);
         }
         $this->set('msg', $msg);
@@ -161,7 +162,7 @@ class UploadBulkImagesController extends AdminBaseController
         $pagesize = applicationConstants::PAGE_SIZE;
         $post = FatApp::getPostedData();
         $sellersObj = Product::getSellers(array( "product_seller_id", "IFNULL(credential_username,'Admin') as seller", "credential_email" ));
-        $sellersObj->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'product_seller_id = afile_record_id AND afile_type = '.AttachedFile::FILETYPE_BULK_IMAGES);
+        $sellersObj->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'product_seller_id = afile_record_id AND afile_type = ' . AttachedFile::FILETYPE_BULK_IMAGES);
         $sellersObj->addOrder('seller');
         if ('' != $post['keyword']) {
             $sellersObj->addCondition('credential_username', 'like', '%' . $post['keyword'] . '%');
@@ -182,7 +183,7 @@ class UploadBulkImagesController extends AdminBaseController
         if (!empty($filesPathArr) && 0 < count($filesPathArr)) {
             $headers[] = ['File Path', 'File Name'];
             $filesPathArr = array_merge($headers, $filesPathArr);
-            CommonHelper::convertToCsv($filesPathArr, time().'.csv');
+            CommonHelper::convertToCsv($filesPathArr, time() . '.csv');
             exit;
         }
         Message::addErrorMessage(Labels::getLabel('MSG_No_File_Found', $this->adminLangId));

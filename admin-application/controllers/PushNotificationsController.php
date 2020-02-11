@@ -1,4 +1,5 @@
 <?php
+
 class PushNotificationsController extends AdminBaseController
 {
     public function __construct($action)
@@ -124,7 +125,7 @@ class PushNotificationsController extends AdminBaseController
 
         $frm->addTextBox(Labels::getLabel('LBL_URL', $this->adminLangId), 'pnotification_url');
 
-        $dateFld = $frm->addDateTimeField(Labels::getLabel('LBL_SCHEDULE_DATE', $this->adminLangId), 'pnotification_notified_on', date('Y-m-d H:00'), ['readonly' => 'readonly','class' => 'small dateTimeFld field--calender date_js']);
+        $dateFld = $frm->addDateTimeField(Labels::getLabel('LBL_SCHEDULE_DATE', $this->adminLangId), 'pnotification_notified_on', date('Y-m-d H:00'), ['readonly' => 'readonly', 'class' => 'small dateTimeFld field--calender date_js']);
         $dateFld->requirements()->setRequired(true);
 
         $deviceType = $frm->addSelectBox(Labels::getLabel('LBL_DEVICE_OPERATING_SYSTEM', $this->adminLangId), 'pnotification_device_os', User::getDeviceTypeArr($this->adminLangId));
@@ -316,7 +317,7 @@ class PushNotificationsController extends AdminBaseController
         }
         $PushNotificationData = [
             'pntu_pnotification_id' => $pNotificationId,
-            'pntu_user_id' =>  $userId
+            'pntu_user_id' => $userId
         ];
         $db = FatApp::getDb();
         if (!$db->insertFromArray(PushNotification::DB_TBL_NOTIFICATION_TO_USER, $PushNotificationData, true, array(), $PushNotificationData)) {

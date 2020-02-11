@@ -1,4 +1,5 @@
 <?php
+
 class BraintreePayController extends PaymentController
 {
     public const ENVOIRMENT_LIVE = 'live';
@@ -95,7 +96,7 @@ class BraintreePayController extends PaymentController
     private function getPaymentForm($orderId)
     {
         $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => CommonHelper::generateUrl('BraintreePay', 'charge', array($orderId)), 'class' => "form form--normal"));
-        $frm->addButton('', 'btn_submit', Labels::getLabel('LBL_Pay_Now', $this->siteLangId), array("disabled" => "disabled","id" => "submit-button"));
+        $frm->addButton('', 'btn_submit', Labels::getLabel('LBL_Pay_Now', $this->siteLangId), array("disabled" => "disabled", "id" => "submit-button"));
         return $frm;
     }
 
@@ -117,7 +118,7 @@ class BraintreePayController extends PaymentController
                         Message::addErrorMessage(Labels::getLabel('BRAINTREE_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId));
                         CommonHelper::redirectUserReferer();
                     }
-                    $charge =     Braintree_Transaction::sale(
+                    $charge = Braintree_Transaction::sale(
                         array(
                                     'amount' => $_POST['amount'],
                                     'paymentMethodNonce' => $_POST['paymentMethodNonce'],
@@ -194,7 +195,7 @@ class BraintreePayController extends PaymentController
             if ($lastNsPos = strripos($className, '\\')) {
                 $namespace = substr($className, 0, $lastNsPos);
                 $className = substr($className, $lastNsPos + 1);
-                $fileName  .= str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+                $fileName .= str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
             }
         
             $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';

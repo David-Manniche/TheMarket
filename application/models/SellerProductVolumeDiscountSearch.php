@@ -1,4 +1,5 @@
 <?php
+
 class SellerProductVolumeDiscountSearch extends SearchBase
 {
     public function __construct($langId = 0)

@@ -1,7 +1,8 @@
 <?php
+
 class UserPrivilege
 {
-    private static $instance = null ;
+    private static $instance = null;
 
     private $loadedPermissions = array();
 
@@ -19,7 +20,7 @@ class UserPrivilege
 
     public static function canSellerEditOption($optionId, $langId)
     {
-        $userId =   UserAuthentication::getLoggedUserId();
+        $userId = UserAuthentication::getLoggedUserId();
         $option = new Option();
         if (!$row = $option->getOption($optionId, $userId)) {
             return false;
@@ -29,7 +30,7 @@ class UserPrivilege
 
     public static function canSellerEditOptionValue($optionId, $optionValueId, $langId)
     {
-        $userId =   UserAuthentication::getLoggedUserId();
+        $userId = UserAuthentication::getLoggedUserId();
         $optionValue = new OptionValue($optionValueId);
         if (!$row = $optionValue->getOptionValue($optionId)) {
             return false;
@@ -48,13 +49,13 @@ class UserPrivilege
 
     public static function canSellerEditCustomProduct($productId = -1)
     {
-        if ($productId<0) {
+        if ($productId < 0) {
             return false;
         }
 
         /* Validate product belongs to current logged seller[ */
         $productRow = Product::getAttributesById($productId, array('product_seller_id'));
-        if (!$productRow ||  $productRow['product_seller_id'] != UserAuthentication::getLoggedUserId()) {
+        if (!$productRow || $productRow['product_seller_id'] != UserAuthentication::getLoggedUserId()) {
             return false;
         }
         return true;
@@ -63,14 +64,14 @@ class UserPrivilege
 
     public static function canEditSellerProduct($productId = -1)
     {
-        if ($productId<0) {
+        if ($productId < 0) {
             return false;
         }
 
         /* Validate product belongs to current logged seller[ */
         $sellerProductRow = SellerProduct::getAttributesById($productId, array('selprod_user_id'));
 
-        if (!$sellerProductRow ||  $sellerProductRow['selprod_user_id'] != UserAuthentication::getLoggedUserId()) {
+        if (!$sellerProductRow || $sellerProductRow['selprod_user_id'] != UserAuthentication::getLoggedUserId()) {
             return false;
         }
         return true;
@@ -79,10 +80,10 @@ class UserPrivilege
 
     public static function canEditMetaTag($metaId = 0, $metaRecordId = 0)
     {
-        if ($metaId==0 && !self::canEditSellerProduct($metaRecordId)) {
+        if ($metaId == 0 && !self::canEditSellerProduct($metaRecordId)) {
             return false;
         }
-        if ($metaId>0 &&  !$data = MetaTag::getAttributesById($metaId, array('meta_record_id'))) {
+        if ($metaId > 0 && !$data = MetaTag::getAttributesById($metaId, array('meta_record_id'))) {
             return false;
         }
 
@@ -91,12 +92,12 @@ class UserPrivilege
 
     public static function canSellerUpdateTag($tagId)
     {
-        $userId =   UserAuthentication::getLoggedUserId();
+        $userId = UserAuthentication::getLoggedUserId();
 
         if (!$data = Tag::getAttributesById($tagId, array('tag_user_id'))) {
             return false;
         } else {
-            if ($data['tag_user_id']!=$userId) {
+            if ($data['tag_user_id'] != $userId) {
                 return false;
             }
         }
@@ -105,12 +106,12 @@ class UserPrivilege
 
     public static function canSellerUpdateBrandRequest($brandId)
     {
-        $userId =   UserAuthentication::getLoggedUserId();
+        $userId = UserAuthentication::getLoggedUserId();
 
         if (!$data = Brand::getAttributesById($brandId, array('brand_seller_id'))) {
             return false;
         } else {
-            if ($data['brand_seller_id']!=$userId) {
+            if ($data['brand_seller_id'] != $userId) {
                 return false;
             }
         }
@@ -119,7 +120,7 @@ class UserPrivilege
 
     public static function canSellerAddNewProduct()
     {
-        $userId =   UserAuthentication::getLoggedUserId();
+        $userId = UserAuthentication::getLoggedUserId();
         if (!self::isUserHasValidSubsription($userId)) {
             return false;
         }
@@ -137,7 +138,7 @@ class UserPrivilege
         $currentPlanData = OrderSubscription::getUserCurrentActivePlanDetails(CommonHelper::getLangId(), $userId, array('ossubs_products_allowed'));
         $productsAllowed = $currentPlanData['ossubs_products_allowed'];
         
-        $totalProducts  =  $products->getTotalProductsAddedByUser($userId);
+        $totalProducts = $products->getTotalProductsAddedByUser($userId);
         if ($totalProducts >= $productsAllowed) {
             return false;
         }
@@ -146,7 +147,7 @@ class UserPrivilege
 
     public static function isUserHasValidSubsription($userId = 0)
     {
-        if ($userId<1) {
+        if ($userId < 1) {
             return false;
         }
 
@@ -154,10 +155,10 @@ class UserPrivilege
             return true;
         }
 
-        $latestOrder = OrderSubscription::getUserCurrentActivePlanDetails(CommonHelper::getLangId(), $userId, array('ossubs_till_date','ossubs_id'));
+        $latestOrder = OrderSubscription::getUserCurrentActivePlanDetails(CommonHelper::getLangId(), $userId, array('ossubs_till_date', 'ossubs_id'));
         if (empty($latestOrder)) {
             return false;
-        } elseif ($latestOrder['ossubs_till_date']<date("Y-m-d")) {
+        } elseif ($latestOrder['ossubs_till_date'] < date("Y-m-d")) {
             return false;
         }
 
@@ -173,13 +174,13 @@ class UserPrivilege
         if (1 > $userId || $spPlanId < 1) {
             return false;
         }
-        $currentPlanData = OrderSubscription:: getUserCurrentActivePlanDetails($langId, $userId, array(OrderSubscription::DB_TBL_PREFIX.'id'));
-        $currentActivePlanId = $currentPlanData[OrderSubscription::DB_TBL_PREFIX.'id'];
+        $currentPlanData = OrderSubscription:: getUserCurrentActivePlanDetails($langId, $userId, array(OrderSubscription::DB_TBL_PREFIX . 'id'));
+        $currentActivePlanId = $currentPlanData[OrderSubscription::DB_TBL_PREFIX . 'id'];
         
         if (!$currentActivePlanId) {
             return true;
         } else {
-            $totalActiveProducts =  Product::getActiveCount($userId);
+            $totalActiveProducts = Product::getActiveCount($userId);
             $allowedLimit = SellerPackagePlans::getSubscriptionPlanDataByPlanId($spPlanId, $langId);
 
             if ($totalActiveProducts > $allowedLimit['spackage_products_allowed']) {
@@ -187,7 +188,7 @@ class UserPrivilege
                 return false;
             }
 
-            $totalActiveInventories =  SellerProduct::getActiveCount($userId);
+            $totalActiveInventories = SellerProduct::getActiveCount($userId);
             if ($totalActiveInventories > $allowedLimit['spackage_inventory_allowed']) {
                 Message::addErrorMessage(sprintf(Labels::getLabel('M_YOU_ARE_DOWNGRADING_YOUR_PACKAGE', $langId), $allowedLimit['spackage_inventory_allowed'], $totalActiveInventories));
                 return false;
@@ -219,7 +220,7 @@ class UserPrivilege
     {
         $product = Product::getAttributesById($productId);
 
-        if ($userId !=$product['product_seller_id'] && $product['product_seller_id']!=0) {
+        if ($userId != $product['product_seller_id'] && $product['product_seller_id'] != 0) {
             return false;
         }
         return true;

@@ -1,7 +1,7 @@
 <?php
+
 class PaymentSettingsController extends AdminBaseController
 {
-    
     public function getPaymentSettings($keyName)
     {
         $pmObj = new PaymentSettings($keyName);
@@ -9,19 +9,18 @@ class PaymentSettingsController extends AdminBaseController
         
         if (!$paymentSettings) {
             Message::addErrorMessage($pmObj->getError());
-            FatUtility::dieJsonError(Message::getHtml());    
+            FatUtility::dieJsonError(Message::getHtml());
         }
         return $paymentSettings;
     }
     
     public function setUpPaymentSettings($frm, $keyName)
     {
-        
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         
-        if (false === $post) {            
+        if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());    
+            FatUtility::dieJsonError(Message::getHtml());
         }
         
         $pmObj = new PaymentSettings($keyName);
@@ -29,13 +28,13 @@ class PaymentSettingsController extends AdminBaseController
         
         if (!$paymentSettings) {
             Message::addErrorMessage($pmObj->getError());
-            FatUtility::dieWithError(Message::getHtml());    
+            FatUtility::dieWithError(Message::getHtml());
         }
         
         $psObj = new PaymentSettings($keyName);
-        if(!$psObj->saveSettings($post)) {
+        if (!$psObj->saveSettings($post)) {
             Message::addErrorMessage($psObj->getError());
-            FatUtility::dieWithError(Message::getHtml());    
+            FatUtility::dieWithError(Message::getHtml());
         }
         
         $this->set('msg', $this->str_setup_successful);

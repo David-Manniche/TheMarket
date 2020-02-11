@@ -1,4 +1,5 @@
 <?php
+
 class ShippingDurationsController extends AdminBaseController
 {
     private $canView;
@@ -6,7 +7,7 @@ class ShippingDurationsController extends AdminBaseController
 
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup');
+        $ajaxCallArray = array('deleteRecord', 'form', 'langForm', 'search', 'setup', 'langSetup');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }
@@ -33,14 +34,14 @@ class ShippingDurationsController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
         $srch = ShippingDurations::getSearchObject($this->adminLangId);
 
         if (!empty($post['keyword'])) {
-            $cond = $srch->addCondition('sd.sduration_identifier', 'like', '%'.$post['keyword'].'%', 'AND');
-            $cond->attachCondition('sd_l.sduration_name', 'like', '%'.$post['keyword'].'%', 'OR');
+            $cond = $srch->addCondition('sd.sduration_identifier', 'like', '%' . $post['keyword'] . '%', 'AND');
+            $cond->attachCondition('sd_l.sduration_name', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
 
         $srch->setPageNumber($page);
@@ -48,7 +49,7 @@ class ShippingDurationsController extends AdminBaseController
         $srch->addOrder('sduration_id', 'DESC');
 
         $rs = $srch->getResultSet();
-        $records =array();
+        $records = array();
         if ($rs) {
             $records = FatApp::getDb()->fetchAll($rs);
         }
@@ -70,7 +71,7 @@ class ShippingDurationsController extends AdminBaseController
         $frm = $this->getForm();
 
         if (0 < $sduration_id) {
-            $data = ShippingDurations::getAttributesById($sduration_id, array('sduration_id','sduration_identifier','sduration_from','sduration_to','sduration_days_or_weeks'));
+            $data = ShippingDurations::getAttributesById($sduration_id, array('sduration_id', 'sduration_identifier', 'sduration_from', 'sduration_to', 'sduration_days_or_weeks'));
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
@@ -109,7 +110,7 @@ class ShippingDurationsController extends AdminBaseController
         $newTabLangId = 0;
         if ($sduration_id > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = ShippingDurations::getAttributesByLangId($langId, $sduration_id)) {
                     $newTabLangId = $langId;
                     break;
@@ -179,9 +180,9 @@ class ShippingDurationsController extends AdminBaseController
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
         $data = array(
-        'sdurationlang_sduration_id'=>$sduration_id,
-        'sdurationlang_lang_id'=>$lang_id,
-        'sduration_name'=>$post['sduration_name'],
+        'sdurationlang_sduration_id' => $sduration_id,
+        'sdurationlang_lang_id' => $lang_id,
+        'sduration_name' => $post['sduration_name'],
         );
 
         $obj = new ShippingDurations($sduration_id);
@@ -199,9 +200,9 @@ class ShippingDurationsController extends AdminBaseController
             }
         }
 
-        $newTabLangId=0;
+        $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach ($languages as $langId =>$langName) {
+        foreach ($languages as $langId => $langName) {
             if (!$row = ShippingDurations::getAttributesByLangId($langId, $sduration_id)) {
                 $newTabLangId = $langId;
                 break;
@@ -276,7 +277,7 @@ class ShippingDurationsController extends AdminBaseController
     {
         $frm = new Form('frmshipDurationSearch');
         $f1 = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '');
-        $fld_submit=$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;
@@ -292,7 +293,7 @@ class ShippingDurationsController extends AdminBaseController
         $fld->setUnique(ShippingDurations::DB_TBL, 'sduration_identifier', 'sduration_id', 'sduration_id', 'sduration_id');
 
         $arr = array();
-        for ($i = 1; $i < 11 ; $i++) {
+        for ($i = 1; $i < 11; $i++) {
             $arr[$i] = $i;
         }
 

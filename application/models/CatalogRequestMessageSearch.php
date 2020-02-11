@@ -1,4 +1,5 @@
 <?php
+
 class CatalogRequestMessageSearch extends SearchBase
 {
     private $langId;

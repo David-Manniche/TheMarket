@@ -1,15 +1,16 @@
 <?php
+
 class SelProdReview extends MyAppModel
 {
-    const DB_TBL = 'tbl_seller_product_reviews';
-    const DB_TBL_PREFIX = 'spreview_';
+    public const DB_TBL = 'tbl_seller_product_reviews';
+    public const DB_TBL_PREFIX = 'spreview_';
 
-    const DB_TBL_ABUSE = 'tbl_seller_product_reviews_abuse';
-    const DB_TBL_ABUSE_PREFIX = 'spra_';
+    public const DB_TBL_ABUSE = 'tbl_seller_product_reviews_abuse';
+    public const DB_TBL_ABUSE_PREFIX = 'spra_';
 
-    const STATUS_PENDING = 0;
-    const STATUS_APPROVED = 1;
-    const STATUS_CANCELLED = 2;
+    public const STATUS_PENDING = 0;
+    public const STATUS_APPROVED = 1;
+    public const STATUS_CANCELLED = 2;
 
     public function __construct($id = 0)
     {
@@ -86,7 +87,7 @@ class SelProdReview extends MyAppModel
         $srch = new OrderProductSearch(0, true);
         $allowedReviewStatus = implode(",", SelProdReview::getBuyerAllowedOrderReviewStatuses());
         $allowedSelProdId = implode(",", $selProdList);
-        $srch->addDirectCondition('order_user_id ='.$loggedUserId.' and ( FIND_IN_SET(op_selprod_id,(\''.$allowedSelProdId.'\')) and op_is_batch = 0) and  FIND_IN_SET(op_status_id,(\''.$allowedReviewStatus.'\')) ');
+        $srch->addDirectCondition('order_user_id =' . $loggedUserId . ' and ( FIND_IN_SET(op_selprod_id,(\'' . $allowedSelProdId . '\')) and op_is_batch = 0) and  FIND_IN_SET(op_status_id,(\'' . $allowedReviewStatus . '\')) ');
         /* $srch->addOrder('order_date_added'); */
         $orderProduct = FatApp::getDb()->fetch($srch->getResultSet());
         return $orderProduct;

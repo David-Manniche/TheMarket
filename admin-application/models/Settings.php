@@ -1,7 +1,8 @@
-<?php 
+<?php
+
 class Settings
 {
-    public function __construct() 
+    public function __construct()
     {
         $this->db = FatApp::getDb();
     }
@@ -60,13 +61,13 @@ class Settings
         $create_backup = system($data_str);
         if ($download) {
             $this->download_file($fileToDownload);
-        } 
+        }
         return true;
     }
 
     public function download_file($file)
     {
-        ini_set('memory_limit', '100M'); 
+        ini_set('memory_limit', '100M');
         set_time_limit(0);
         $download_dir = CONF_DB_BACKUP_DIRECTORY_FULL_PATH;
         $path = $download_dir . $file;
@@ -110,7 +111,7 @@ class Settings
         $f = explode('.', $filename);
         $filename = $f[0];
         $filename = (($filename == '') ? $destination . date("d-m-y H-i-s") . '.zip' : $destination . $filename . '.zip');
-        $zip = new ZipArchive;
+        $zip = new ZipArchive();
         $res = $zip->open($filename, ZipArchive::CREATE);
         if ($res !== true) {
             echo Labels::getLabel('LBL_Unable_to_create_zip_file', CommonHelper::getLangId());
@@ -145,7 +146,7 @@ class Settings
             }
         }
         closedir($handle);
-        if(isset($file_date)) {
+        if (isset($file_date)) {
             asort($file_date, SORT_NUMERIC);
             reset($file_date);
             $oldest = key($file_date);
@@ -155,4 +156,3 @@ class Settings
         }
     }
 }
-?>

@@ -1,4 +1,5 @@
 <?php
+
 class OffersController extends MyAppController
 {
     public function __construct($action)
@@ -42,7 +43,7 @@ class OffersController extends MyAppController
         $this->set('pageSize', $pagesize);
         $this->set('postedData', $post);
 
-        $startRecord = ($page-1)* $pagesize + 1 ;
+        $startRecord = ($page - 1) * $pagesize + 1;
         $endRecord = $pagesize;
         $totalRecords = $srch->recordCount();
         if ($totalRecords < $endRecord) {

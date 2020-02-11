@@ -1,4 +1,5 @@
 <?php
+
 class NavigationsController extends AdminBaseController
 {
     private $canView;
@@ -47,7 +48,7 @@ class NavigationsController extends AdminBaseController
         $frm = $this->getForm($nav_id);
 
         if (0 < $nav_id) {
-            $data = Navigations::getAttributesById($nav_id, array('nav_id','nav_identifier','nav_active','nav_type','nav_deleted'));
+            $data = Navigations::getAttributesById($nav_id, array('nav_id', 'nav_identifier', 'nav_active', 'nav_type', 'nav_deleted'));
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
@@ -78,7 +79,7 @@ class NavigationsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $data = Navigations::getAttributesById($nav_id, array('nav_id','nav_identifier'));
+        $data = Navigations::getAttributesById($nav_id, array('nav_id', 'nav_identifier'));
         if ($data === false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
@@ -382,7 +383,7 @@ class NavigationsController extends AdminBaseController
             $langData['nav_id'] = $nav_id;
             $langFrm->fill($langData);
         } else {
-            $langFrm->fill(array('lang_id' => $lang_id, 'nav_id' => $nav_id,'nlink_id' => $nlink_id ));
+            $langFrm->fill(array('lang_id' => $lang_id, 'nav_id' => $nav_id, 'nlink_id' => $nlink_id ));
         }
 
         /* if( !$nlink_id ){
@@ -568,7 +569,7 @@ class NavigationsController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Link_to_Category', $this->adminLangId), 'nlink_category_id', $categoryPages);
 
         $fld = $frm->addTextBox(Labels::getLabel('LBL_External_Page', $this->adminLangId), 'nlink_url');
-        $fld->htmlAfterField = '<br/>'.Labels::getLabel('LBL_Prefix_with_{SITEROOT}_if_u_want_to_generate_system_site_url', $this->adminLangId).'<br/>E.g: {SITEROOT}products, {SITEROOT}contact_us'.Labels::getLabel('LBL_etc', $this->adminLangId).'.'    ;
+        $fld->htmlAfterField = '<br/>' . Labels::getLabel('LBL_Prefix_with_{SITEROOT}_if_u_want_to_generate_system_site_url', $this->adminLangId) . '<br/>E.g: {SITEROOT}products, {SITEROOT}contact_us' . Labels::getLabel('LBL_etc', $this->adminLangId) . '.';
 
         $frm->addTextBox(Labels::getLabel('LBL_Display_Order', $this->adminLangId), 'nlink_display_order')->requirements()->setInt();
 

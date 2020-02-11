@@ -1,4 +1,5 @@
 <?php
+
 class SocialPlatformController extends AdminBaseController
 {
     private $canView;
@@ -19,7 +20,7 @@ class SocialPlatformController extends AdminBaseController
         $this->objPrivilege->canViewSocialPlatforms();
         $this->_template->addCss('css/cropper.css');
         $this->_template->addJs('js/cropper.js');
-        $this->_template->addJs('js/cropper-main.js');        
+        $this->_template->addJs('js/cropper-main.js');
         $this->_template->render();
     }
 
@@ -159,9 +160,9 @@ class SocialPlatformController extends AdminBaseController
         unset($post['splatform_id']);
         unset($post['lang_id']);
         $data_to_update = array(
-        'splatformlang_splatform_id'    =>    $splatform_id,
-        'splatformlang_lang_id'        =>    $lang_id,
-        'splatform_title'                =>    $post['splatform_title'],
+        'splatformlang_splatform_id' => $splatform_id,
+        'splatformlang_lang_id' => $lang_id,
+        'splatform_title' => $post['splatform_title'],
         );
 
         $socialObj = new SocialPlatform($splatform_id);
@@ -205,7 +206,7 @@ class SocialPlatformController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $frm =  $this->getMediaForm($splatform_id);
+        $frm = $this->getMediaForm($splatform_id);
 
         if (!false == $splatformDetail) {
             $img = AttachedFile::getAttachment(AttachedFile::FILETYPE_SOCIAL_PLATFORM_IMAGE, $splatform_id);
@@ -256,7 +257,7 @@ class SocialPlatformController extends AdminBaseController
 
         $this->set('file', $_FILES['cropped_image']['name']);
         $this->set('splatform_id', $splatform_id);
-        $this->set('msg', $_FILES['cropped_image']['name'].' '.Labels::getLabel('LBL_Uploaded_Successfully', $this->adminLangId));
+        $this->set('msg', $_FILES['cropped_image']['name'] . ' ' . Labels::getLabel('LBL_Uploaded_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -412,7 +413,7 @@ class SocialPlatformController extends AdminBaseController
 
         $frm->addRequiredField(Labels::getLabel('LBL_URL', $this->adminLangId), 'splatform_url');
         $fld = $frm->addSelectBox(Labels::getLabel('LBL_Icon_Type_From_CSS', $this->adminLangId), 'splatform_icon_class', SocialPlatform::getIconArr($this->adminLangId));
-        $fld->htmlAfterField = '<small>'.Labels::getLabel('LBL_If_you_have_to_add_a_platform_icon_except_this_select_list', $this->adminLangId).'</small>';
+        $fld->htmlAfterField = '<small>' . Labels::getLabel('LBL_If_you_have_to_add_a_platform_icon_except_this_select_list', $this->adminLangId) . '</small>';
 
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'splatform_active', $activeInactiveArr, '', array(), '');
@@ -444,7 +445,7 @@ class SocialPlatformController extends AdminBaseController
     {
         $frm = new Form('frmSocialPlatformMedia');
         $frm->addHiddenField('', 'splatform_id', $splatform_id);
-        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'image', array('accept'=>'image/*', 'data-frm'=>'frmSocialPlatformMedia'));
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'image', array('accept' => 'image/*', 'data-frm' => 'frmSocialPlatformMedia'));
         return $frm;
     }
 }

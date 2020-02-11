@@ -1,4 +1,5 @@
 <?php
+
 class OrderCancelRequestSearch extends SearchBase
 {
     private $langId;
@@ -60,7 +61,7 @@ class OrderCancelRequestSearch extends SearchBase
 
         $this->joinTable(Orders::DB_TBL_ORDERS_STATUS, 'LEFT OUTER JOIN', 'os.orderstatus_id = op.op_status_id', 'os');
         if ($langId) {
-            $this->joinTable(Orders::DB_TBL_ORDERS_STATUS_LANG, 'LEFT OUTER JOIN', 'os_l.orderstatuslang_orderstatus_id = os.orderstatus_id AND os_l.orderstatuslang_lang_id = '.$langId, 'os_l');
+            $this->joinTable(Orders::DB_TBL_ORDERS_STATUS_LANG, 'LEFT OUTER JOIN', 'os_l.orderstatuslang_orderstatus_id = os.orderstatus_id AND os_l.orderstatuslang_lang_id = ' . $langId, 'os_l');
         }
     }
 
@@ -73,7 +74,7 @@ class OrderCancelRequestSearch extends SearchBase
         $this->joinTable(OrderCancelReason::DB_TBL, 'LEFT OUTER JOIN', 'ocrequest.ocrequest_ocreason_id = ocreason.ocreason_id', 'ocreason');
 
         if ($langId) {
-            $this->joinTable(OrderCancelReason::DB_TBL_LANG, 'LEFT OUTER JOIN', 'ocreason.ocreason_id = ocreason_l.ocreasonlang_ocreason_id AND  	ocreasonlang_lang_id = ' .$langId, 'ocreason_l');
+            $this->joinTable(OrderCancelReason::DB_TBL_LANG, 'LEFT OUTER JOIN', 'ocreason.ocreason_id = ocreason_l.ocreasonlang_ocreason_id AND  	ocreasonlang_lang_id = ' . $langId, 'ocreason_l');
         }
     }
 
@@ -102,7 +103,7 @@ class OrderCancelRequestSearch extends SearchBase
         if (!$this->isJoinedOrderProducts) {
             trigger_error(Labels::getLabel('MSG_joinOrderProductChargesByType_cannot_be_applied_until_joinOrderProducts_is_not_applied.', $this->commonLangId), E_USER_ERROR);
         }
-        $this->joinTable(OrderProduct::DB_TBL_CHARGES, 'LEFT OUTER JOIN', 'op.op_id = '.$alias.'.opcharge_op_id and '.$alias.'.opcharge_type = '.$type, $alias);
+        $this->joinTable(OrderProduct::DB_TBL_CHARGES, 'LEFT OUTER JOIN', 'op.op_id = ' . $alias . '.opcharge_op_id and ' . $alias . '.opcharge_type = ' . $type, $alias);
     }
 
     public function addOrderProductCharges()
@@ -113,7 +114,7 @@ class OrderCancelRequestSearch extends SearchBase
         $srch = new SearchBase(OrderProduct::DB_TBL_CHARGES, 'opc');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('opcharge_op_id','sum(opcharge_amount) as op_other_charges'));
+        $srch->addMultipleFields(array('opcharge_op_id', 'sum(opcharge_amount) as op_other_charges'));
         $srch->addGroupBy('opc.opcharge_op_id');
         $qryOtherCharges = $srch->getQuery();
         $this->joinTable('(' . $qryOtherCharges . ')', 'LEFT OUTER JOIN', 'op.op_id = opcc.opcharge_op_id', 'opcc');
@@ -141,7 +142,7 @@ class OrderCancelRequestSearch extends SearchBase
         $dateFrom = date('Y-m-d', strtotime($dateFrom));
 
         if ($dateFrom != '') {
-            $this->addCondition('ocrequest_date', '>=', $dateFrom. ' 00:00:00');
+            $this->addCondition('ocrequest_date', '>=', $dateFrom . ' 00:00:00');
         }
     }
 
@@ -151,7 +152,7 @@ class OrderCancelRequestSearch extends SearchBase
         $dateTo = date('Y-m-d', strtotime($dateTo));
 
         if ($dateTo != '') {
-            $this->addCondition('ocrequest_date', '<=', $dateTo. ' 23:59:59');
+            $this->addCondition('ocrequest_date', '<=', $dateTo . ' 23:59:59');
         }
     }
 }

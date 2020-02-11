@@ -1,22 +1,23 @@
 <?php
+
 class AttrGroupAttribute extends MyAppModel
 {
-    const DB_TBL = 'tbl_attribute_group_attributes';
-    const DB_TBL_PREFIX = 'attr_';
+    public const DB_TBL = 'tbl_attribute_group_attributes';
+    public const DB_TBL_PREFIX = 'attr_';
 
-    const ATTRTYPE_NUMBER = 1;
-    const ATTRTYPE_DECIMAL = 2;
-    const ATTRTYPE_SELECT_BOX = 3;
-    const ATTRTYPE_TEXT = 4;
+    public const ATTRTYPE_NUMBER = 1;
+    public const ATTRTYPE_DECIMAL = 2;
+    public const ATTRTYPE_SELECT_BOX = 3;
+    public const ATTRTYPE_TEXT = 4;
 
-    const MAX_NUMERIC_ATTRIBUTE_ROWS = 30; /*Do not play with value of this variable, unless you have not known about this */
-    const MAX_TEXTUAL_ATTRIBUTE_ROWS = 40; /*Do not play with value of this variable, unless you have not known about this */
+    public const MAX_NUMERIC_ATTRIBUTE_ROWS = 30; /*Do not play with value of this variable, unless you have not known about this */
+    public const MAX_TEXTUAL_ATTRIBUTE_ROWS = 40; /*Do not play with value of this variable, unless you have not known about this */
     private $db;
 
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
-        $this->db=FatApp::getDb();
+        $this->db = FatApp::getDb();
     }
 
     public static function getNumericAttributeTypeArr($langId)
@@ -67,9 +68,9 @@ class AttrGroupAttribute extends MyAppModel
         foreach ($data as $key => $val) {
             $record->assignValues($val);
             $on_duplicate_update_vals = array(
-            'attr_identifier'    => $val['attr_identifier'],
-            'attr_type'            => $val['attr_type'],
-            'attr_fld_name'        => $val['attr_fld_name']
+            'attr_identifier' => $val['attr_identifier'],
+            'attr_type' => $val['attr_type'],
+            'attr_fld_name' => $val['attr_fld_name']
             );
             if (!$record->addNew(array(), $on_duplicate_update_vals)) {
                 $this->error = $record->getError();
@@ -81,7 +82,7 @@ class AttrGroupAttribute extends MyAppModel
         $data_to_be_delete_arr = array_diff($existed_checkboxes, $selected_posted_checboxes);
         if (count($data_to_be_delete_arr)) {
             foreach ($data_to_be_delete_arr as $val) {
-                $this->db->deleteRecords(self::DB_TBL, array( 'smt'=> self::DB_TBL_PREFIX . 'attrgrp_id=? and attr_fld_name = ?', 'vals'=>array($attrgrp_id, $val )));
+                $this->db->deleteRecords(self::DB_TBL, array( 'smt' => self::DB_TBL_PREFIX . 'attrgrp_id=? and attr_fld_name = ?', 'vals' => array($attrgrp_id, $val )));
             }
         }
         return true;
@@ -92,8 +93,8 @@ class AttrGroupAttribute extends MyAppModel
         $attrgrp_id = FatUtility::convertToType($attrgrp_id, FatUtility::VAR_INT);
         $srch = self::getSearchObject();
 
-        $srch->addCondition(self::DB_TBL_PREFIX.'attrgrp_id', '=', $attrgrp_id);
-        $srch->addOrder(self::DB_TBL_PREFIX.'display_order');
+        $srch->addCondition(self::DB_TBL_PREFIX . 'attrgrp_id', '=', $attrgrp_id);
+        $srch->addOrder(self::DB_TBL_PREFIX . 'display_order');
         if (null != $fetch_attr) {
             if (is_array($fetch_attr)) {
                 $srch->addMultipleFields($fetch_attr);
@@ -102,7 +103,7 @@ class AttrGroupAttribute extends MyAppModel
             }
         }
         $rs = $srch->getResultSet();
-        $records =array();
+        $records = array();
         if ($rs) {
             $records = $this->db->fetchAll($rs);
         }

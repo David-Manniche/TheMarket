@@ -1,7 +1,8 @@
 <?php
+
 class NotificationsController extends AdminBaseController
 {
-    public function __construct($action) 
+    public function __construct($action)
     {
         parent::__construct($action);
         $this->objPrivilege->canViewNotifications();
@@ -20,19 +21,19 @@ class NotificationsController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
 
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
-        if ($page < 2 ) {
+        if ($page < 2) {
             $page = 1;
         }
 
         $srch = Notification::getSearchObject();
 
-        if(!AdminPrivilege::isAdminSuperAdmin($this->admin_id)) {
+        if (!AdminPrivilege::isAdminSuperAdmin($this->admin_id)) {
             $recordTypeArr = Notification::getAllowedRecordTypeArr($this->admin_id);
             $srch->addCondition('notification_record_type', 'IN', $recordTypeArr);
         }
 
         $srch->addOrder('n.notification_added_on', 'DESC');
-        $srch->addCondition('n.'.Notification::DB_TBL_PREFIX.'deleted', '=', applicationConstants::NO);
+        $srch->addCondition('n.' . Notification::DB_TBL_PREFIX . 'deleted', '=', applicationConstants::NO);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
 
@@ -58,7 +59,7 @@ class NotificationsController extends AdminBaseController
 
         $obj = new Notification();
 
-        if(!$obj->deleteNotifications($notificationIds)) {
+        if (!$obj->deleteNotifications($notificationIds)) {
             Message::addErrorMessage($obj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -76,11 +77,11 @@ class NotificationsController extends AdminBaseController
         $markread = FatApp::getPostedData('markread', FatUtility::VAR_INT, 0);
         $obj = new Notification();
 
-        if(!$obj->changeNotifyStatus($status, $notificationIds)) {
+        if (!$obj->changeNotifyStatus($status, $notificationIds)) {
             Message::addErrorMessage($obj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-        if($markread!=1) {
+        if ($markread != 1) {
             $this->set('msg', $this->str_update_record);
         }
         $this->_template->render(false, false, 'json-success.php');
@@ -88,10 +89,9 @@ class NotificationsController extends AdminBaseController
 
     public function notificationList()
     {
-
         $srch = Notification::getSearchObject();
 
-        if(!AdminPrivilege::isAdminSuperAdmin($this->admin_id)) {
+        if (!AdminPrivilege::isAdminSuperAdmin($this->admin_id)) {
             $recordTypeArr = Notification::getAllowedRecordTypeArr($this->admin_id);
             $srch->addCondition('notification_record_type', 'IN', $recordTypeArr);
         }
@@ -106,6 +106,4 @@ class NotificationsController extends AdminBaseController
         $this->set('arr_listing', $records);
         $this->_template->render(false, false);
     }
-
 }
-?>

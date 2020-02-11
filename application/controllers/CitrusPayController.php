@@ -1,4 +1,5 @@
 <?php
+
 class CitrusPayController extends PaymentController
 {
     private $keyName = "Citrus";

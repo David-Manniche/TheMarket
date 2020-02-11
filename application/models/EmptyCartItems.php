@@ -1,9 +1,10 @@
 <?php
+
 class EmptyCartItems extends MyAppModel
 {
-    const DB_TBL = 'tbl_empty_cart_items';
-    const DB_TBL_LANG ='tbl_empty_cart_items_lang';
-    const DB_TBL_PREFIX = 'emptycartitem_';
+    public const DB_TBL = 'tbl_empty_cart_items';
+    public const DB_TBL_LANG = 'tbl_empty_cart_items_lang';
+    public const DB_TBL_PREFIX = 'emptycartitem_';
 
     public function __construct($id = 0)
     {
@@ -34,12 +35,12 @@ class EmptyCartItems extends MyAppModel
 
     public function canRecordMarkDelete($id)
     {
-        $srch =static::getSearchObject(0, false);
-        $srch->addCondition(static::DB_TBL_PREFIX.'id', '=', $id);
-        $srch->addFld(static::DB_TBL_PREFIX.'id');
+        $srch = static::getSearchObject(0, false);
+        $srch->addCondition(static::DB_TBL_PREFIX . 'id', '=', $id);
+        $srch->addFld(static::DB_TBL_PREFIX . 'id');
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
-        if (!empty($row) && $row[static::DB_TBL_PREFIX.'id']==$id) {
+        if (!empty($row) && $row[static::DB_TBL_PREFIX . 'id'] == $id) {
             return true;
         }
         return false;

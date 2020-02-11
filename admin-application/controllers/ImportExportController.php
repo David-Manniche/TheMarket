@@ -1,4 +1,5 @@
 <?php
+
 class ImportExportController extends AdminBaseController
 {
     public function __construct($action)
@@ -25,7 +26,7 @@ class ImportExportController extends AdminBaseController
         $sheetType = FatApp::getPostedData('sheet_type', FatUtility::VAR_INT, 0);
 
         if (1 > $langId) {
-            $langId =  CommonHelper::getLangId();
+            $langId = CommonHelper::getLangId();
         }
 
         switch ($actionType) {
@@ -73,25 +74,25 @@ class ImportExportController extends AdminBaseController
         $max = null;
         switch ($exportDataRange) {
             case Importexport::BY_ID_RANGE:
-                if (isset($startId) && $startId >0) {
+                if (isset($startId) && $startId > 0) {
                     $min = $startId;
                 }
 
-                if (isset($endId) && $endId >1 && $endId  > $min) {
+                if (isset($endId) && $endId > 1 && $endId > $min) {
                     $max = $endId;
                 }
                 $obj->export($actionType, $langId, $sheetType, null, null, $min, $max);
                 break;
             case Importexport::BY_BATCHES:
-                if (isset($batchNumber) && $batchNumber >0) {
+                if (isset($batchNumber) && $batchNumber > 0) {
                     $min = $batchNumber;
                 }
 
                 $max = Importexport::MAX_LIMIT;
-                if (isset($batchCount) && $batchCount >0 && $batchCount <= Importexport::MAX_LIMIT) {
+                if (isset($batchCount) && $batchCount > 0 && $batchCount <= Importexport::MAX_LIMIT) {
                     $max = $batchCount;
                 }
-                $min = (!$min)?1:$min;
+                $min = (!$min) ? 1 : $min;
                 $obj->export($actionType, $langId, $sheetType, $min, $max, null, null);
                 break;
 
@@ -189,26 +190,26 @@ class ImportExportController extends AdminBaseController
 
         switch ($exportDataRange) {
             case Importexport::BY_ID_RANGE:
-                if (isset($startId) && $startId >0) {
+                if (isset($startId) && $startId > 0) {
                     $min = $startId;
                 }
 
-                if (isset($endId) && $endId >1 && $endId  > $min) {
+                if (isset($endId) && $endId > 1 && $endId > $min) {
                     $max = $endId;
                 }
 
                 $obj->exportMedia($actionType, $langId, null, null, $min, $max);
                 break;
             case Importexport::BY_BATCHES:
-                if (isset($batchNumber) && $batchNumber >0) {
+                if (isset($batchNumber) && $batchNumber > 0) {
                     $min = $batchNumber;
                 }
 
                 $max = Importexport::MAX_LIMIT;
-                if (isset($batchCount) && $batchCount >0 && $batchCount <= Importexport::MAX_LIMIT) {
+                if (isset($batchCount) && $batchCount > 0 && $batchCount <= Importexport::MAX_LIMIT) {
                     $max = $batchCount;
                 }
-                $min = (!$min)?1:$min;
+                $min = (!$min) ? 1 : $min;
                 $obj->exportMedia($actionType, $langId, $min, $max, null, null);
                 break;
 
@@ -254,7 +255,7 @@ class ImportExportController extends AdminBaseController
 
     public function importMediaForm($actionType)
     {
-        $langId =     $this->adminLangId;
+        $langId = $this->adminLangId;
         switch ($actionType) {
             case Importexport::TYPE_CATEGORIES:
                 $this->objPrivilege->canEditProductCategories();
@@ -319,7 +320,7 @@ class ImportExportController extends AdminBaseController
 
     public function importForm($actionType)
     {
-        $langId = $this->adminLangId ;
+        $langId = $this->adminLangId;
         $displayMediaTab = true;
         switch ($actionType) {
             case Importexport::TYPE_CATEGORIES:
@@ -384,7 +385,7 @@ class ImportExportController extends AdminBaseController
 
     public function importInstructions($actionType)
     {
-        $langId = $this->adminLangId ;
+        $langId = $this->adminLangId;
         $obj = new Extrapage();
         $pageData = '';
         $displayMediaTab = false;
@@ -509,7 +510,7 @@ class ImportExportController extends AdminBaseController
 
     public function getImportExportForm($langId, $type = 'EXPORT', $actionType)
     {
-        $frm = new Form('frmImportExport', array('id'=>'frmImportExport'));
+        $frm = new Form('frmImportExport', array('id' => 'frmImportExport'));
         $languages = Language::getAllNames();
 
         /* if($type != 'EXPORT_MEDIA'){ */
@@ -566,20 +567,20 @@ class ImportExportController extends AdminBaseController
                 $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_File_to_be_uploaded:', $langId), 'import_file', array('id' => 'import_file'));
                 $fldImg->requirement->setRequired(true);
                 $fldImg->setFieldTagAttribute('onChange', '$(\'#importFileName\').html(this.value)');
-                $fldImg->htmlBeforeField='<div class="filefield"><span class="filename" id="importFileName"></span>';
-                $fldImg->htmlAfterField='<label class="filelabel">'.Labels::getLabel('LBL_Browse_File', $langId).'</label></div>';
+                $fldImg->htmlBeforeField = '<div class="filefield"><span class="filename" id="importFileName"></span>';
+                $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $langId) . '</label></div>';
                 break;
             case 'IMPORT_MEDIA':
                 $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_File_to_be_uploaded:', $langId), 'import_file', array('id' => 'import_file'));
                 $fldImg->requirement->setRequired(true);
                 $fldImg->setFieldTagAttribute('onChange', '$(\'#importFileName\').html(this.value)');
-                $fldImg->htmlBeforeField='<div class="filefield"><span class="filename" id="importFileName"></span>';
-                $fldImg->htmlAfterField='<label class="filelabel">'.Labels::getLabel('LBL_Browse_File', $langId).'</label></div>';
+                $fldImg->htmlBeforeField = '<div class="filefield"><span class="filename" id="importFileName"></span>';
+                $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $langId) . '</label></div>';
                 break;
         }
 
         if ($displayRangeFields) {
-            $dataRangeArr = array(0=>Labels::getLabel('LBL_Does_not_matter', $langId))+Importexport::getDataRangeArr($langId);
+            $dataRangeArr = array(0 => Labels::getLabel('LBL_Does_not_matter', $langId)) + Importexport::getDataRangeArr($langId);
             $rangeTypeFld = $frm->addSelectBox(Labels::getLabel('LBL_Export_data_range', $langId), 'export_data_range', $dataRangeArr, '', array(), '');
 
             /* Start Id[ */
@@ -681,15 +682,15 @@ class ImportExportController extends AdminBaseController
     
     private function getExportForm($langId)
     {
-        $frm = new Form('frmExport', array('id'=>'frmExport'));
+        $frm = new Form('frmExport', array('id' => 'frmExport'));
         $options = Importexport::getImportExportTypeArr('export', $langId, false);
         $fld = $frm->addRadioButtons(
             '',
             'export_option',
             $options,
             '',
-            array('class'=>'list-inline list-col-2'),
-            array('onClick'=>'exportForm(this.value)')
+            array('class' => 'list-inline list-col-2'),
+            array('onClick' => 'exportForm(this.value)')
         );
         return $frm;
     }
@@ -706,7 +707,7 @@ class ImportExportController extends AdminBaseController
     
     private function getImportForm($langId)
     {
-        $frm = new Form('frmImport', array('id'=>'frmImport'));
+        $frm = new Form('frmImport', array('id' => 'frmImport'));
         $options = Importexport::getImportExportTypeArr('import', $langId, false);
         if (!FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0)) {
             unset($options[Importexport::TYPE_PRODUCTS]);
@@ -716,8 +717,8 @@ class ImportExportController extends AdminBaseController
             'export_option',
             $options,
             '',
-            array('class'=>'list-inline list-col-2'),
-            array('onClick'=>'getInstructions(this.value)')
+            array('class' => 'list-inline list-col-2'),
+            array('onClick' => 'getInstructions(this.value)')
         );
         
         return $frm;
@@ -725,7 +726,7 @@ class ImportExportController extends AdminBaseController
     
     public function settings()
     {
-        $frm =  $this->getSettingForm();
+        $frm = $this->getSettingForm();
         $obj = new Importexport();
         $settingArr = $obj->getSettings(0);
         $frm->fill($settingArr);
@@ -736,7 +737,7 @@ class ImportExportController extends AdminBaseController
 
     private function getSettingForm()
     {
-        $frm = new Form('frmImportExportSetting', array('id'=>'frmImportExportSetting'));
+        $frm = new Form('frmImportExportSetting', array('id' => 'frmImportExportSetting'));
 
         $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_brand_id_instead_of_brand_identifier", $this->adminLangId), 'CONF_USE_BRAND_ID', 1, array(), false, 0);
         $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_brand_id_instead_of_brand_identifier_in_worksheets", $this->adminLangId) . '</small>';
@@ -842,13 +843,13 @@ class ImportExportController extends AdminBaseController
     
     private function getbulkMediaForm()
     {
-        $frm = new Form('uploadBulkImages', array('id'=>'uploadBulkImages'));
+        $frm = new Form('uploadBulkImages', array('id' => 'uploadBulkImages'));
 
         $fldImg = $frm->addFileUpload('', 'bulk_images', array('id' => 'bulk_images', 'accept' => '.zip' ));
         $fldImg->requirement->setRequired(true);
         $fldImg->setFieldTagAttribute('onChange', '$("#uploadFileName").html(this.value)');
-        $fldImg->htmlBeforeField='<div class="filefield"><span class="filename" id="uploadFileName">'.Labels::getLabel('LBL_Select_File_To_Upload', $this->adminLangId).'</span>';
-        $fldImg->htmlAfterField='<label class="filelabel">'.Labels::getLabel('LBL_Browse_File', $this->adminLangId).'</label></div>';
+        $fldImg->htmlBeforeField = '<div class="filefield"><span class="filename" id="uploadFileName">' . Labels::getLabel('LBL_Select_File_To_Upload', $this->adminLangId) . '</span>';
+        $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->adminLangId) . '</label></div>';
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Submit', $this->adminLangId));
         return $frm;
@@ -887,8 +888,8 @@ class ImportExportController extends AdminBaseController
         $path = CONF_UPLOADS_PATH . AttachedFile::FILETYPE_BULK_IMAGES_PATH;
         $filePath = AttachedFile::FILETYPE_BULK_IMAGES_PATH . $savedFile;
 
-        $msg = '<br>'.str_replace('{path}', '<br><b>'.$filePath.'</b>', Labels::getLabel('MSG_Your_uploaded_files_path_will_be:_{path}', $this->adminLangId));
-        $msg = Labels::getLabel('MSG_Uploaded_Successfully.', $this->adminLangId) .' '.$msg;
+        $msg = '<br>' . str_replace('{path}', '<br><b>' . $filePath . '</b>', Labels::getLabel('MSG_Your_uploaded_files_path_will_be:_{path}', $this->adminLangId));
+        $msg = Labels::getLabel('MSG_Uploaded_Successfully.', $this->adminLangId) . ' ' . $msg;
         $json = [
             "msg" => $msg,
             "path" => base64_encode($path . $savedFile)
@@ -905,7 +906,7 @@ class ImportExportController extends AdminBaseController
         if (!empty($filesPathArr) && 0 < count($filesPathArr)) {
             $headers[] = ['File Path', 'File Name'];
             $filesPathArr = array_merge($headers, $filesPathArr);
-            CommonHelper::convertToCsv($filesPathArr, time().'.csv');
+            CommonHelper::convertToCsv($filesPathArr, time() . '.csv');
             exit;
         }
         Message::addErrorMessage(Labels::getLabel('MSG_No_File_Found', $this->adminLangId));
@@ -914,7 +915,7 @@ class ImportExportController extends AdminBaseController
     
     public function removeDir($directory)
     {
-        $directory = CONF_UPLOADS_PATH . base64_decode($directory) ;
+        $directory = CONF_UPLOADS_PATH . base64_decode($directory);
         $obj = new UploadBulkImages();
         $msg = $obj->deleteSingleBulkMediaDir($directory);
         FatUtility::dieJsonSuccess($msg);
@@ -925,7 +926,7 @@ class ImportExportController extends AdminBaseController
         $srch = new SearchBase(Labels::DB_TBL, 'lbl');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->joinTable(Language::DB_TBL, 'INNER JOIN', 'label_lang_id = language_id AND language_active = '. applicationConstants::ACTIVE);
+        $srch->joinTable(Language::DB_TBL, 'INNER JOIN', 'label_lang_id = language_id AND language_active = ' . applicationConstants::ACTIVE);
         $srch->addOrder('label_key', 'DESC');
         $srch->addOrder('label_lang_id', 'ASC');
         $srch->addMultipleFields(array( 'label_id', 'label_key', 'label_lang_id', 'label_caption' ));
@@ -958,9 +959,9 @@ class ImportExportController extends AdminBaseController
             if ($key != $row['label_key']) {
                 if (!empty($langArr)) {
                     $arr[$counter] = array('label_key' => $key );
-                    foreach ($langArr as $k=>$val) {
+                    foreach ($langArr as $k => $val) {
                         if (is_array($val)) {
-                            foreach ($val as $key=>$v) {
+                            foreach ($val as $key => $v) {
                                 $val[$key] = htmlentities($v);
                             }
                         }
@@ -971,11 +972,11 @@ class ImportExportController extends AdminBaseController
                 $key = $row['label_key'];
                 $langArr = array();
                 foreach ($languages as $lang) {
-                    $langArr[$key][$lang['language_id']]  = '';
+                    $langArr[$key][$lang['language_id']] = '';
                 }
-                $langArr[$key][$row['label_lang_id']] = $row['label_caption'] ;
+                $langArr[$key][$row['label_lang_id']] = $row['label_caption'];
             } else {
-                $langArr[$key][$row['label_lang_id']] = $row['label_caption'] ;
+                $langArr[$key][$row['label_lang_id']] = $row['label_caption'];
             }
         }
 
@@ -983,13 +984,13 @@ class ImportExportController extends AdminBaseController
             $sheetArr = array();
             $sheetArr = array( $a['label_key'] );
             if (!empty($a['data'])) {
-                foreach ($a['data'] as $langId=>$caption) {
+                foreach ($a['data'] as $langId => $caption) {
                     array_push($sheetArr, html_entity_decode($caption));
                 }
             }
             array_push($sheetData, $sheetArr);
         }
-        CommonHelper::convertToCsv($sheetData, 'Labels_'.date("d-M-Y").'.csv', ',');
+        CommonHelper::convertToCsv($sheetData, 'Labels_' . date("d-M-Y") . '.csv', ',');
     }
     
     public function importLabelsForm()
@@ -1004,8 +1005,8 @@ class ImportExportController extends AdminBaseController
         $frm = new Form('frmImportLabels', array('id' => 'frmImportLabels'));
         $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_Select_File_To_Upload:', $this->adminLangId), 'import_file', array('id' => 'import_file'));
         $fldImg->setFieldTagAttribute('onChange', '$(\'#importFileName\').html(this.value)');
-        $fldImg->htmlBeforeField='<div class="filefield"><span class="filename" id="importFileName"></span>';
-        $fldImg->htmlAfterField='<label class="filelabel">'.Labels::getLabel('LBL_Browse_File', $this->adminLangId).'</label></div>';
+        $fldImg->htmlBeforeField = '<div class="filefield"><span class="filename" id="importFileName"></span>';
+        $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->adminLangId) . '</label></div>';
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Import', $this->adminLangId));
 
@@ -1052,9 +1053,9 @@ class ImportExportController extends AdminBaseController
                 $labelKey = array_shift($line);
                 foreach ($line as $key => $caption) {
                     $dataToSaveArr = array(
-                        'label_key'        =>    $labelKey,
-                        'label_lang_id'    =>    $langIndexLangIds[$key],
-                        'label_caption'    =>    $caption,
+                        'label_key' => $labelKey,
+                        'label_lang_id' => $langIndexLangIds[$key],
+                        'label_caption' => $caption,
                         );
                     $db->insertFromArray(Labels::DB_TBL, $dataToSaveArr, false, array(), array('label_caption' => $caption));
                     /* $sql = "SELECT label_key FROM ". Labels::DB_TBL ." WHERE label_key = " . $db->quoteVariable($labelKey). " AND label_lang_id = " .  $langIndexLangIds[$key];
@@ -1073,7 +1074,7 @@ class ImportExportController extends AdminBaseController
             }
         }
 
-        $labelsUpdatedAt = array('conf_name'=>'CONF_LANG_LABELS_UPDATED_AT','conf_val'=>time());
+        $labelsUpdatedAt = array('conf_name' => 'CONF_LANG_LABELS_UPDATED_AT', 'conf_val' => time());
         $db->insertFromArray('tbl_configurations', $labelsUpdatedAt, false, array(), $labelsUpdatedAt);
         Message::addMessage(Labels::getLabel('LBL_Labels_data_imported/updated_Successfully', $this->adminLangId));
         FatUtility::dieJsonSuccess(Message::getHtml());

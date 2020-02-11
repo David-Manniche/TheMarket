@@ -1,4 +1,5 @@
 <?php
+
 class PayPalPayoutSettingsController extends PayoutSettingsController
 {
     public static function getConfigurationKeys()

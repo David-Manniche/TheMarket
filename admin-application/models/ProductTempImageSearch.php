@@ -1,12 +1,12 @@
 <?php
+
 class ProductTempImageSearch extends SearchBase
 {
     private $langId;
-    public function __construct($langId = 0) 
+    public function __construct($langId = 0)
     {
-
         $this->langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
-        if(1 < $langId) {
+        if (1 < $langId) {
             $this->langId = $langId;
         }
 
@@ -15,22 +15,25 @@ class ProductTempImageSearch extends SearchBase
 
     public function joinProduct($langId = 0)
     {
-        if(1 < $langId) {
+        if (1 < $langId) {
             $this->langId = $langId;
         }
 
         $this->joinTable(
-            Product::DB_TBL, 'LEFT JOIN',
-            'afile_record_id = tp.product_id', 'tp'
+            Product::DB_TBL,
+            'LEFT JOIN',
+            'afile_record_id = tp.product_id',
+            'tp'
         );
 
         $this->joinTable(
-            Product::DB_TBL_LANG, 'LEFT JOIN',
+            Product::DB_TBL_LANG,
+            'LEFT JOIN',
             'afile_record_id = productlang_product_id
-		AND productlang_lang_id = ' . $this->langId, 'tp_l'
+		AND productlang_lang_id = ' . $this->langId,
+            'tp_l'
         );
 
         return $this;
-
     }
 }

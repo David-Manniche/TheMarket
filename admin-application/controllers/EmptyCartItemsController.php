@@ -1,4 +1,5 @@
 <?php
+
 class EmptyCartItemsController extends AdminBaseController
 {
     private $canView;
@@ -29,23 +30,23 @@ class EmptyCartItemsController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
         $srch = EmptyCartItems::getSearchObject($this->adminLangId, false);
 
         if (!empty($post['keyword'])) {
-            $srch->addCondition('emptycartitem_identifier', 'like', '%'.$post['keyword'].'%');
+            $srch->addCondition('emptycartitem_identifier', 'like', '%' . $post['keyword'] . '%');
         }
 
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
         $srch->addOrder('emptycartitem_id', 'DESC');
         $rs = $srch->getResultSet();
 
-        $arrListing =array();
+        $arrListing = array();
         if ($rs) {
             $arrListing = FatApp::getDb()->fetchAll($rs);
         }
@@ -130,7 +131,7 @@ class EmptyCartItemsController extends AdminBaseController
         $emptycartitem_id = FatUtility::int($emptycartitem_id);
         $lang_id = FatUtility::int($lang_id);
 
-        if ($emptycartitem_id == 0 || $lang_id==0) {
+        if ($emptycartitem_id == 0 || $lang_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
 
@@ -161,7 +162,7 @@ class EmptyCartItemsController extends AdminBaseController
     public function langSetup()
     {
         $this->objPrivilege->canEditEmptyCartItems();
-        $post=FatApp::getPostedData();
+        $post = FatApp::getPostedData();
 
         $emptycartitem_id = $post['emptycartitem_id'];
         $lang_id = $post['lang_id'];
@@ -277,7 +278,7 @@ class EmptyCartItemsController extends AdminBaseController
 
         $data = EmptyCartItems::getAttributesById($emptycartitemId, array( 'emptycartitem_id', 'emptycartitem_active' ));
 
-        if ($data==false) {
+        if ($data == false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -336,7 +337,7 @@ class EmptyCartItemsController extends AdminBaseController
         $frm->addHiddenField('', 'emptycartitem_id');
         $frm->addRequiredField(Labels::getLabel('LBL_Empty_Cart_Item_Identifier', $this->adminLangId), 'emptycartitem_identifier');
         $fld = $frm->addRequiredField(Labels::getLabel('LBL_Empty_Cart_Item_URL', $this->adminLangId), 'emptycartitem_url');
-        $fld->htmlAfterField = '<small>'.Labels::getLabel('LBL_Prefix_with_{SITEROOT},_if_needs_to_generate_system\'s_url.', $this->adminLangId).'</small>';
+        $fld->htmlAfterField = '<small>' . Labels::getLabel('LBL_Prefix_with_{SITEROOT},_if_needs_to_generate_system\'s_url.', $this->adminLangId) . '</small>';
         $frm->addSelectBox(Labels::getLabel('LBL_Open_Link_in_New_Tab', $this->adminLangId), 'emptycartitem_url_is_newtab', applicationConstants::getYesNoArr($this->adminLangId), applicationConstants::NO, array(), '');
         $frm->addIntegerField(Labels::getLabel('LBL_Display_Order', $this->adminLangId), 'emptycartitem_display_order');
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'emptycartitem_active', applicationConstants::getActiveInactiveArr($this->adminLangId), applicationConstants::ACTIVE, array(), '');
@@ -364,9 +365,9 @@ class EmptyCartItemsController extends AdminBaseController
 
     private function getSearchForm()
     {
-        $frm = new Form('frmEmptyCartItemSearch', array('id'=>'frmEmptyCartItemSearch'));
+        $frm = new Form('frmEmptyCartItemSearch', array('id' => 'frmEmptyCartItemSearch'));
         $f1 = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '');
-        $fld_submit =$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;

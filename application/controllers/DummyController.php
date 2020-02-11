@@ -1,9 +1,10 @@
 <?php
+
 class DummyController extends MyAppController
 {
     public function deleteUserUplaods()
     {
-        $dirName = CONF_INSTALLATION_PATH.'user-uploads';
+        $dirName = CONF_INSTALLATION_PATH . 'user-uploads';
         //CommonHelper::recursiveDelete( $dirName );
     }
 
@@ -79,7 +80,7 @@ class DummyController extends MyAppController
 
         foreach ($queries as $qry) {
             if ($printQuery) {
-                echo $qry.'<br><br>';
+                echo $qry . '<br><br>';
             } else {
                 if (!$con->query($qry)) {
                     die($con->error);
@@ -114,20 +115,20 @@ class DummyController extends MyAppController
         $srch = new SearchBase(OrderProduct::DB_TBL);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('op_id','op_tax_collected_by_seller'));
+        $srch->addMultipleFields(array('op_id', 'op_tax_collected_by_seller'));
         $rs = $srch->getResultSet();
         $urlRows = FatApp::getDb()->fetchAll($rs);
         $db = FatApp::getDb();
         foreach ($urlRows as $row) {
             $data = array(
-            'opsetting_op_id'=>$row['op_id'],
-            'op_tax_collected_by_seller'=>$row['op_tax_collected_by_seller'],
-            'op_commission_include_tax'=>FatApp::getConfig('CONF_COMMISSION_INCLUDING_SHIPPING', FatUtility::VAR_INT, 0),
-            'op_commission_include_shipping'=>FatApp::getConfig('CONF_COMMISSION_INCLUDING_TAX', FatUtility::VAR_INT, 0),
+            'opsetting_op_id' => $row['op_id'],
+            'op_tax_collected_by_seller' => $row['op_tax_collected_by_seller'],
+            'op_commission_include_tax' => FatApp::getConfig('CONF_COMMISSION_INCLUDING_SHIPPING', FatUtility::VAR_INT, 0),
+            'op_commission_include_shipping' => FatApp::getConfig('CONF_COMMISSION_INCLUDING_TAX', FatUtility::VAR_INT, 0),
             );
 
             if (!$db->insertFromArray(OrderProduct::DB_TBL_SETTINGS, $data, false, array(), $data)) {
-                echo "Error with ".$row['op_id'].':'.$db->getError() .'<br>';
+                echo "Error with " . $row['op_id'] . ':' . $db->getError() . '<br>';
             }
         }
         echo "Done";
@@ -138,14 +139,14 @@ class DummyController extends MyAppController
         $urlSrch = UrlRewrite::getSearchObject();
         $urlSrch->doNotCalculateRecords();
         $urlSrch->doNotLimitRecords();
-        $urlSrch->addMultipleFields(array('urlrewrite_id','urlrewrite_original','urlrewrite_custom'));
+        $urlSrch->addMultipleFields(array('urlrewrite_id', 'urlrewrite_original', 'urlrewrite_custom'));
         $rs = $urlSrch->getResultSet();
         $urlRows = FatApp::getDb()->fetchAll($rs);
         $db = FatApp::getDb();
         foreach ($urlRows as $row) {
             $url = str_replace("/", "-", $row['urlrewrite_custom']);
             if ($db->updateFromArray(UrlRewrite::DB_TBL, array('urlrewrite_custom' => $url), array('smt' => 'urlrewrite_id = ?', 'vals' => array($row['urlrewrite_id'])))) {
-                echo $row['urlrewrite_id']."<br>";
+                echo $row['urlrewrite_id'] . "<br>";
             }
         }
     }
@@ -153,10 +154,10 @@ class DummyController extends MyAppController
     public function updateDecimal()
     {
         $database = CONF_DB_NAME;
-        $qry = FatApp::getDb()->query("SELECT TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '".$database."' AND DATA_TYPE = 'decimal'");
+        $qry = FatApp::getDb()->query("SELECT TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $database . "' AND DATA_TYPE = 'decimal'");
         while ($row = FatApp::getDb()->fetch($qry)) {
             //FatApp::getDb()->query("ALTER TABLE ".$row['TABLE_NAME']." MODIFY COLUMN ".$row['COLUMN_NAME']." decimal(12,4)");
-            echo 'Done:- '.$row['TABLE_NAME'].' - '.$row['COLUMN_NAME'].'<br>';
+            echo 'Done:- ' . $row['TABLE_NAME'] . ' - ' . $row['COLUMN_NAME'] . '<br>';
             //var_dump($row);
         }
     }
@@ -190,7 +191,7 @@ class DummyController extends MyAppController
         $mail->SetFrom('test@marketsanat.com', 'test');
         $mail->addAddress('pooja.rani@ablysoft.com');
         $mail->Subject = 'test Headers test From marketsanat';
-        $mail->AltBody="This is text only alternative body.";
+        $mail->AltBody = "This is text only alternative body.";
         $mail->MsgHTML('<b>Headers test</b><br><br>Port: 26, Secure: tls');
         if (!$mail->send()) {
             echo 'Message could not be sent.';
@@ -229,8 +230,8 @@ class DummyController extends MyAppController
 
         //$data = array('title'=>'Yocabs Notification Title', 'message'=>'Yocabs Notification Message Body');
         $msg = array(
-        'message'     => 'here is a message. message',
-        'title'        => 'This is a title. title',
+        'message' => 'here is a message. message',
+        'title' => 'This is a title. title',
         /* 'subtitle'    => 'This is a subtitle. subtitle',
         'id'    => 12,
         'tickerText'    => 'Ticker text here...Ticker text here...Ticker text here',
@@ -267,22 +268,22 @@ class DummyController extends MyAppController
     public function pushNotificaton()
     {
         // API access key from Google API's Console
-        $API_ACCESS_KEY =  'AAAAZA6vRK8:APA91bHlfYreFEpCK18CSBahNCe7e4pU-3c3925duLwhxXvxAGbWF5m4K7U4oMKWht_BBCAZ6VC6v8dGIBnR14_X-lNxJQwiORNUgeM3Djm9ZvUQJRk_n3hjkuAG2D8-iVAqtN2IC1GU' ;
+        $API_ACCESS_KEY = 'AAAAZA6vRK8:APA91bHlfYreFEpCK18CSBahNCe7e4pU-3c3925duLwhxXvxAGbWF5m4K7U4oMKWht_BBCAZ6VC6v8dGIBnR14_X-lNxJQwiORNUgeM3Djm9ZvUQJRk_n3hjkuAG2D8-iVAqtN2IC1GU';
         $registrationIds = 'c8T6nDKFl68:APA91bEWa0IYJGeWK7m89vxQErP8hR69INX3NgkZ75GfadIa282oWLd4EsGCv9lcYVRM0KvuPu78KZnCRuxtWOyKly-zii85jbi5XYIPCDmURJx11FKj5-80xK-m4b26i3yQigjSe44E';
         // prep the bundle
         $msg = array(
-        'message'     => 'here is a message. message',
-        'title'        => 'This is a title. title',
-        'subtitle'    => 'This is a subtitle. subtitle',
-        'tickerText'    => 'Ticker text here...Ticker text here...Ticker text here',
-        'vibrate'    => 1,
-        'sound'        => 1,
-        'largeIcon'    => 'large_icon',
-        'smallIcon'    => 'small_icon'
+        'message' => 'here is a message. message',
+        'title' => 'This is a title. title',
+        'subtitle' => 'This is a subtitle. subtitle',
+        'tickerText' => 'Ticker text here...Ticker text here...Ticker text here',
+        'vibrate' => 1,
+        'sound' => 1,
+        'largeIcon' => 'large_icon',
+        'smallIcon' => 'small_icon'
         );
         $fields = array(
-        'registration_ids'     => $registrationIds,
-        'data'            => $msg
+        'registration_ids' => $registrationIds,
+        'data' => $msg
         );
 
         $headers = array(
@@ -317,40 +318,39 @@ class DummyController extends MyAppController
     {
         $prefixes = 'KMGTPEZY';
         if ($number >= 1000) {
-            for ($i=-1; $number>=1000; ++$i) {
-                $number =  $number/1000;
+            for ($i = -1; $number >= 1000; ++$i) {
+                $number = $number / 1000;
             }
-            return floor($number).$prefixes[$i];
+            return floor($number) . $prefixes[$i];
         }
         return $number;
     }
 
     public function index()
     {
-
-
     }
 
 
     public function test()
     {
         $warning = Labels::getLabel("MSG_One_of_the_product_in_combo_is_not_available_in_requested_quantity,_you_can_buy_upto_max_{n}_quantity.", $this->siteLangId);
-        echo $warning  = str_replace(array('{n}','{N}'), 1, $warning);
+        echo $warning = str_replace(array('{n}', '{N}'), 1, $warning);
         exit;
         $srch = new ProductSearch(1);
         $srch->setDefinedCriteria();
         //$srch->joinProductToCategory();
-        $srch->joinTable(Product::DB_TBL_PRODUCT_TO_CATEGORY,'INNER JOIN', 'ptc.ptc_product_id = p.product_id', 'ptc');
-        $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', 'c.prodcat_id = ptc.ptc_prodcat_id and c.prodcat_active = '.applicationConstants::ACTIVE.' and c.prodcat_deleted = '.applicationConstants::NO, 'c');
+        $srch->joinTable(Product::DB_TBL_PRODUCT_TO_CATEGORY, 'INNER JOIN', 'ptc.ptc_product_id = p.product_id', 'ptc');
+        $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', 'c.prodcat_id = ptc.ptc_prodcat_id and c.prodcat_active = ' . applicationConstants::ACTIVE . ' and c.prodcat_deleted = ' . applicationConstants::NO, 'c');
         $srch->joinSellerSubscription(0, false, true);
         $srch->addSubscriptionValidCondition();
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
-        $srch->addMultipleFields(array('count(distinct(p.product_id)) as productCounts', 'c.prodcat_code','c.prodcat_id'));
+        $srch->addMultipleFields(array('count(distinct(p.product_id)) as productCounts', 'c.prodcat_code', 'c.prodcat_id'));
         $srch->addGroupBy('p.product_id');
         $srch->addDirectCondition('c.prodcat_code like "%000113%"');
-        echo $srch->getQuery(); exit;
+        echo $srch->getQuery();
+        exit;
     }
 
     private function getShopInfo($shop_id)
@@ -362,7 +362,7 @@ class DummyController extends MyAppController
         $srch->doNotCalculateRecords();
 
         $srch->addMultipleFields(
-            array( 'shop_id','shop_user_id','shop_ltemplate_id', 'shop_created_on', 'shop_name', 'shop_description',
+            array( 'shop_id', 'shop_user_id', 'shop_ltemplate_id', 'shop_created_on', 'shop_name', 'shop_description',
             'shop_country_l.country_name as shop_country_name', 'shop_state_l.state_name as shop_state_name', 'shop_city' )
         );
         $srch->addCondition('shop_id', '=', $shop_id);
@@ -454,7 +454,7 @@ class DummyController extends MyAppController
 
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addFld(array('country_id','country_code','country_name','country_temp_id','country_temp_name'));
+        $srch->addFld(array('country_id', 'country_code', 'country_name', 'country_temp_id', 'country_temp_name'));
 
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
@@ -513,7 +513,7 @@ class DummyController extends MyAppController
 
     public function testCache()
     {
-        $collectionCache =  FatCache::get('testcache', 1000, '.txt');
+        $collectionCache = FatCache::get('testcache', 1000, '.txt');
 
         if (!$collectionCache) {
             die;
@@ -526,10 +526,10 @@ class DummyController extends MyAppController
     public function truncateTables($type = 'orders')
     {
         if ($type == 'orders') {
-            $tables = array('tbl_orders','tbl_orders_lang','tbl_orders_status_history','tbl_order_cancel_requests','tbl_order_extras','tbl_order_payments','tbl_order_products','tbl_order_products_lang','tbl_order_product_charges','tbl_order_product_charges_lang','tbl_order_product_digital_download_links','tbl_order_product_shipping','tbl_order_product_shipping_lang','tbl_order_product_to_shipping_users','tbl_order_return_requests','tbl_order_return_request_messages','tbl_order_seller_subscriptions','tbl_order_seller_subscriptions_lang','tbl_order_user_address','tbl_user_reward_points','tbl_user_reward_point_breakup','tbl_rewards_on_purchase','tbl_user_transactions','tbl_coupons_history','tbl_coupons_hold','tbl_user_cart','tbl_order_product_settings');
+            $tables = array('tbl_orders', 'tbl_orders_lang', 'tbl_orders_status_history', 'tbl_order_cancel_requests', 'tbl_order_extras', 'tbl_order_payments', 'tbl_order_products', 'tbl_order_products_lang', 'tbl_order_product_charges', 'tbl_order_product_charges_lang', 'tbl_order_product_digital_download_links', 'tbl_order_product_shipping', 'tbl_order_product_shipping_lang', 'tbl_order_product_to_shipping_users', 'tbl_order_return_requests', 'tbl_order_return_request_messages', 'tbl_order_seller_subscriptions', 'tbl_order_seller_subscriptions_lang', 'tbl_order_user_address', 'tbl_user_reward_points', 'tbl_user_reward_point_breakup', 'tbl_rewards_on_purchase', 'tbl_user_transactions', 'tbl_coupons_history', 'tbl_coupons_hold', 'tbl_user_cart', 'tbl_order_product_settings');
             FatApp::getDb()->query('UPDATE `tbl_seller_products` SET `selprod_sold_count` = 0 WHERE 1');
         } elseif ($type == 'all') {
-            $tables = array('tbl_abusive_words','tbl_admin_auth_token','tbl_admin_password_reset_requests','tbl_admin_permissions','tbl_affiliate_commission_setting_history','tbl_affiliate_commission_settings','tbl_attached_files_temp','tbl_attribute_group_attributes','tbl_attribute_group_attributes_lang','tbl_attribute_groups','tbl_banner_locations_lang','tbl_banners','tbl_banners_clicks','tbl_banners_lang','tbl_banners_logs','tbl_blog_contributions','tbl_blog_post','tbl_blog_post_categories','tbl_blog_post_categories_lang','tbl_blog_post_comments','tbl_blog_post_lang','tbl_blog_post_to_category','tbl_brands','tbl_brands_lang','tbl_catalog_request_messages','tbl_collection_to_product_categories','tbl_collection_to_seller_products','tbl_collection_to_shops','tbl_collections','tbl_collections_lang','tbl_commission_setting_history','tbl_content_block_to_category','tbl_coupon_to_category','tbl_coupon_to_plan','tbl_coupon_to_products','tbl_coupon_to_seller','tbl_coupon_to_users','tbl_coupons','tbl_coupons_history','tbl_coupons_hold','tbl_coupons_lang','tbl_cron_log','tbl_email_archives','tbl_extra_attribute_groups','tbl_extra_attribute_groups_lang','tbl_extra_attributes','tbl_extra_attributes_lang','tbl_failed_login_attempts','tbl_faq_categories','tbl_faq_categories_lang','tbl_faqs','tbl_faqs_lang','tbl_filter_groups','tbl_filter_groups_lang','tbl_filters','tbl_filters_lang','tbl_import_export_settings','tbl_manual_shipping_api','tbl_manual_shipping_api_lang','tbl_meta_tags_lang','tbl_notifications','tbl_option_values','tbl_option_values_lang','tbl_options','tbl_options_lang','tbl_order_cancel_reasons_lang','tbl_order_cancel_requests','tbl_order_extras','tbl_order_payments','tbl_order_product_charges','tbl_order_product_charges_lang','tbl_order_product_shipping','tbl_order_product_shipping_lang','tbl_order_product_to_shipping_users','tbl_order_products','tbl_order_products_lang','tbl_order_return_request_messages','tbl_order_return_requests','tbl_order_seller_subscriptions','tbl_order_seller_subscriptions_lang','tbl_order_seller_subscriptions_lang_old','tbl_order_user_address','tbl_orders','tbl_orders_lang','tbl_orders_status_history','tbl_orders_status_lang','tbl_policy_points','tbl_policy_points_lang','tbl_polling','tbl_polling_feedback','tbl_polling_lang','tbl_polling_to_category','tbl_polling_to_products','tbl_product_categories','tbl_product_categories_lang','tbl_product_groups','tbl_product_groups_lang','tbl_product_numeric_attributes','tbl_product_product_recommendation','tbl_product_shipping_rates','tbl_product_special_prices','tbl_product_specifications','tbl_product_specifications_lang','tbl_product_stock_hold','tbl_product_text_attributes','tbl_product_to_category','tbl_product_to_groups','tbl_product_to_options','tbl_product_to_tags','tbl_product_to_tax','tbl_product_volume_discount','tbl_products','tbl_products_browsing_history','tbl_products_lang','tbl_products_shipped_by_seller','tbl_products_shipping','tbl_products_temp_ids','tbl_promotion_item_charges','tbl_promotions','tbl_promotions_charges','tbl_promotions_clicks','tbl_promotions_lang','tbl_promotions_logs','tbl_promotions_old','tbl_question_banks','tbl_question_banks_lang','tbl_question_to_answers','tbl_questionnaire_feedback','tbl_questionnaires','tbl_questionnaires_lang','tbl_questionnaires_to_question','tbl_questions','tbl_questions_lang','tbl_recommendation_activity_browsing','tbl_related_products','tbl_rewards_on_purchase','tbl_search_items','tbl_seller_brand_requests','tbl_seller_brand_requests_lang','tbl_seller_catalog_requests','tbl_seller_packages','tbl_seller_packages_lang','tbl_seller_packages_plan','tbl_seller_product_options','tbl_seller_product_policies','tbl_seller_product_rating','tbl_seller_product_reviews','tbl_seller_product_reviews_abuse','tbl_seller_product_reviews_helpful','tbl_seller_products','tbl_seller_products_lang','tbl_seller_products_temp_ids','tbl_shipping_company','tbl_shipping_company_lang','tbl_shipping_durations','tbl_shipping_durations_lang','tbl_shippingapi_settings','tbl_shop_collection_products','tbl_shop_collections','tbl_shop_collections_lang','tbl_shop_reports','tbl_shops','tbl_shops_lang','tbl_shops_to_theme','tbl_smart_log_actions','tbl_smart_products_weightage','tbl_smart_remommended_products','tbl_smart_user_activity_browsing','tbl_smart_weightage_settings','tbl_social_platforms','tbl_social_platforms_lang','tbl_success_stories','tbl_success_stories_lang','tbl_tag_product_recommendation','tbl_tags','tbl_tags_lang','tbl_tax_categories','tbl_tax_categories_lang','tbl_tax_values','tbl_testimonials','tbl_testimonials_lang','tbl_theme','tbl_theme_lang','tbl_thread_messages','tbl_threads','tbl_tool_tips','tbl_tool_tips_lang','tbl_upsell_products','tbl_url_rewrite','tbl_user_address','tbl_user_auth_token','tbl_user_bank_details','tbl_user_cart','tbl_user_credentials','tbl_user_email_verification','tbl_user_extras','tbl_user_favourite_products','tbl_user_favourite_shops','tbl_user_password_reset_requests','tbl_user_product_recommendation','tbl_user_return_address','tbl_user_return_address_lang','tbl_user_reward_point_breakup','tbl_user_reward_points','tbl_user_supplier_request_values','tbl_user_supplier_request_values_lang','tbl_user_supplier_requests','tbl_user_transactions','tbl_user_wish_list_products','tbl_user_wish_lists','tbl_user_withdrawal_requests','tbl_users','tbl_order_product_settings','tbl_user_requests_history');
+            $tables = array('tbl_abusive_words', 'tbl_admin_auth_token', 'tbl_admin_password_reset_requests', 'tbl_admin_permissions', 'tbl_affiliate_commission_setting_history', 'tbl_affiliate_commission_settings', 'tbl_attached_files_temp', 'tbl_attribute_group_attributes', 'tbl_attribute_group_attributes_lang', 'tbl_attribute_groups', 'tbl_banner_locations_lang', 'tbl_banners', 'tbl_banners_clicks', 'tbl_banners_lang', 'tbl_banners_logs', 'tbl_blog_contributions', 'tbl_blog_post', 'tbl_blog_post_categories', 'tbl_blog_post_categories_lang', 'tbl_blog_post_comments', 'tbl_blog_post_lang', 'tbl_blog_post_to_category', 'tbl_brands', 'tbl_brands_lang', 'tbl_catalog_request_messages', 'tbl_collection_to_product_categories', 'tbl_collection_to_seller_products', 'tbl_collection_to_shops', 'tbl_collections', 'tbl_collections_lang', 'tbl_commission_setting_history', 'tbl_content_block_to_category', 'tbl_coupon_to_category', 'tbl_coupon_to_plan', 'tbl_coupon_to_products', 'tbl_coupon_to_seller', 'tbl_coupon_to_users', 'tbl_coupons', 'tbl_coupons_history', 'tbl_coupons_hold', 'tbl_coupons_lang', 'tbl_cron_log', 'tbl_email_archives', 'tbl_extra_attribute_groups', 'tbl_extra_attribute_groups_lang', 'tbl_extra_attributes', 'tbl_extra_attributes_lang', 'tbl_failed_login_attempts', 'tbl_faq_categories', 'tbl_faq_categories_lang', 'tbl_faqs', 'tbl_faqs_lang', 'tbl_filter_groups', 'tbl_filter_groups_lang', 'tbl_filters', 'tbl_filters_lang', 'tbl_import_export_settings', 'tbl_manual_shipping_api', 'tbl_manual_shipping_api_lang', 'tbl_meta_tags_lang', 'tbl_notifications', 'tbl_option_values', 'tbl_option_values_lang', 'tbl_options', 'tbl_options_lang', 'tbl_order_cancel_reasons_lang', 'tbl_order_cancel_requests', 'tbl_order_extras', 'tbl_order_payments', 'tbl_order_product_charges', 'tbl_order_product_charges_lang', 'tbl_order_product_shipping', 'tbl_order_product_shipping_lang', 'tbl_order_product_to_shipping_users', 'tbl_order_products', 'tbl_order_products_lang', 'tbl_order_return_request_messages', 'tbl_order_return_requests', 'tbl_order_seller_subscriptions', 'tbl_order_seller_subscriptions_lang', 'tbl_order_seller_subscriptions_lang_old', 'tbl_order_user_address', 'tbl_orders', 'tbl_orders_lang', 'tbl_orders_status_history', 'tbl_orders_status_lang', 'tbl_policy_points', 'tbl_policy_points_lang', 'tbl_polling', 'tbl_polling_feedback', 'tbl_polling_lang', 'tbl_polling_to_category', 'tbl_polling_to_products', 'tbl_product_categories', 'tbl_product_categories_lang', 'tbl_product_groups', 'tbl_product_groups_lang', 'tbl_product_numeric_attributes', 'tbl_product_product_recommendation', 'tbl_product_shipping_rates', 'tbl_product_special_prices', 'tbl_product_specifications', 'tbl_product_specifications_lang', 'tbl_product_stock_hold', 'tbl_product_text_attributes', 'tbl_product_to_category', 'tbl_product_to_groups', 'tbl_product_to_options', 'tbl_product_to_tags', 'tbl_product_to_tax', 'tbl_product_volume_discount', 'tbl_products', 'tbl_products_browsing_history', 'tbl_products_lang', 'tbl_products_shipped_by_seller', 'tbl_products_shipping', 'tbl_products_temp_ids', 'tbl_promotion_item_charges', 'tbl_promotions', 'tbl_promotions_charges', 'tbl_promotions_clicks', 'tbl_promotions_lang', 'tbl_promotions_logs', 'tbl_promotions_old', 'tbl_question_banks', 'tbl_question_banks_lang', 'tbl_question_to_answers', 'tbl_questionnaire_feedback', 'tbl_questionnaires', 'tbl_questionnaires_lang', 'tbl_questionnaires_to_question', 'tbl_questions', 'tbl_questions_lang', 'tbl_recommendation_activity_browsing', 'tbl_related_products', 'tbl_rewards_on_purchase', 'tbl_search_items', 'tbl_seller_brand_requests', 'tbl_seller_brand_requests_lang', 'tbl_seller_catalog_requests', 'tbl_seller_packages', 'tbl_seller_packages_lang', 'tbl_seller_packages_plan', 'tbl_seller_product_options', 'tbl_seller_product_policies', 'tbl_seller_product_rating', 'tbl_seller_product_reviews', 'tbl_seller_product_reviews_abuse', 'tbl_seller_product_reviews_helpful', 'tbl_seller_products', 'tbl_seller_products_lang', 'tbl_seller_products_temp_ids', 'tbl_shipping_company', 'tbl_shipping_company_lang', 'tbl_shipping_durations', 'tbl_shipping_durations_lang', 'tbl_shippingapi_settings', 'tbl_shop_collection_products', 'tbl_shop_collections', 'tbl_shop_collections_lang', 'tbl_shop_reports', 'tbl_shops', 'tbl_shops_lang', 'tbl_shops_to_theme', 'tbl_smart_log_actions', 'tbl_smart_products_weightage', 'tbl_smart_remommended_products', 'tbl_smart_user_activity_browsing', 'tbl_smart_weightage_settings', 'tbl_social_platforms', 'tbl_social_platforms_lang', 'tbl_success_stories', 'tbl_success_stories_lang', 'tbl_tag_product_recommendation', 'tbl_tags', 'tbl_tags_lang', 'tbl_tax_categories', 'tbl_tax_categories_lang', 'tbl_tax_values', 'tbl_testimonials', 'tbl_testimonials_lang', 'tbl_theme', 'tbl_theme_lang', 'tbl_thread_messages', 'tbl_threads', 'tbl_tool_tips', 'tbl_tool_tips_lang', 'tbl_upsell_products', 'tbl_url_rewrite', 'tbl_user_address', 'tbl_user_auth_token', 'tbl_user_bank_details', 'tbl_user_cart', 'tbl_user_credentials', 'tbl_user_email_verification', 'tbl_user_extras', 'tbl_user_favourite_products', 'tbl_user_favourite_shops', 'tbl_user_password_reset_requests', 'tbl_user_product_recommendation', 'tbl_user_return_address', 'tbl_user_return_address_lang', 'tbl_user_reward_point_breakup', 'tbl_user_reward_points', 'tbl_user_supplier_request_values', 'tbl_user_supplier_request_values_lang', 'tbl_user_supplier_requests', 'tbl_user_transactions', 'tbl_user_wish_list_products', 'tbl_user_wish_lists', 'tbl_user_withdrawal_requests', 'tbl_users', 'tbl_order_product_settings', 'tbl_user_requests_history');
             /* DELETE FROM `tbl_attached_files` WHERE `afile_type` in (1,2,3,4,5,7,9,10,11,12,13,14,22,23,24,25,26,27,28,29,30,32,33,41,42,43,48)
             */
             /*
@@ -538,12 +538,12 @@ class DummyController extends MyAppController
         }
 
         foreach ($tables as $table) {
-            $result = FatApp::getDb()->query("TRUNCATE TABLE `".$table."`");
+            $result = FatApp::getDb()->query("TRUNCATE TABLE `" . $table . "`");
 
             if ($result) {
-                echo 'Done: '.$table.' <br>';
+                echo 'Done: ' . $table . ' <br>';
             } else {
-                echo 'Error in: '.$table.' <br>';
+                echo 'Error in: ' . $table . ' <br>';
             }
         }
     }
@@ -581,7 +581,7 @@ class DummyController extends MyAppController
 
     public function checkEmailTemplate()
     {
-        $selprod_id = array(109,141,148,59,66);
+        $selprod_id = array(109, 141, 148, 59, 66);
         $prodSrch = new ProductSearch(1);
         $prodSrch->setDefinedCriteria(0, 0, array(), false);
         $prodSrch->joinProductToCategory();
@@ -593,9 +593,9 @@ class DummyController extends MyAppController
         $prodSrch->doNotLimitRecords();
         $prodSrch->addMultipleFields(
             array(
-            'product_id','product_identifier', 'IFNULL(product_name,product_identifier) as product_name', 'product_seller_id', 'product_model','product_type', 'prodcat_id', 'IFNULL(prodcat_name,prodcat_identifier) as prodcat_name', 'product_upc', 'product_isbn',
+            'product_id', 'product_identifier', 'IFNULL(product_name,product_identifier) as product_name', 'product_seller_id', 'product_model', 'product_type', 'prodcat_id', 'IFNULL(prodcat_name,prodcat_identifier) as prodcat_name', 'product_upc', 'product_isbn',
             'selprod_id', 'selprod_user_id', 'selprod_condition', 'selprod_price', 'special_price_found', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
-            'theprice', 'selprod_stock' , 'selprod_threshold_stock_level', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name', 'user_name',
+            'theprice', 'selprod_stock', 'selprod_threshold_stock_level', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name', 'user_name',
             'shop_id', 'shop_name',
             'splprice_display_dis_type', 'splprice_display_dis_val', 'splprice_display_list_price')
         );
@@ -606,7 +606,7 @@ class DummyController extends MyAppController
         $this->_template->render(false, false, '_partial/products-in-cart-email.php');
     }
 
-    public static function orderProduct($orderId='O1530169223', $opId='428', $isRefunded = true, $isCancelled = true)
+    public static function orderProduct($orderId = 'O1530169223', $opId = '428', $isRefunded = true, $isCancelled = true)
     {
 
         /* $op = new Orders();
@@ -615,7 +615,7 @@ class DummyController extends MyAppController
         $opSrch = OrderProduct::getSearchObject();
         $opSrch->doNotCalculateRecords();
         $opSrch->doNotLimitRecords();
-        $opSrch->addMultipleFields(array('op_id','op_selprod_id','op_selprod_user_id','op_unit_price','op_qty','op_actual_shipping_charges'));
+        $opSrch->addMultipleFields(array('op_id', 'op_selprod_id', 'op_selprod_user_id', 'op_unit_price', 'op_qty', 'op_actual_shipping_charges'));
         $opSrch->addCondition('op_order_id', '=', $orderId);
         if ($opId) {
             $opSrch->addCondition('op_id', '!=', $opId);
@@ -624,7 +624,7 @@ class DummyController extends MyAppController
             $opSrch->addCondition(OrderProduct::DB_TBL_PREFIX . 'refund_qty', '=', 0);
         }
         if ($isCancelled) {
-            $opSrch->joinTable(OrderCancelRequest::DB_TBL, 'LEFT OUTER JOIN', 'ocr.'.OrderCancelRequest::DB_TBL_PREFIX.'op_id = op.op_id', 'ocr');
+            $opSrch->joinTable(OrderCancelRequest::DB_TBL, 'LEFT OUTER JOIN', 'ocr.' . OrderCancelRequest::DB_TBL_PREFIX . 'op_id = op.op_id', 'ocr');
             $cnd = $opSrch->addCondition(OrderCancelRequest::DB_TBL_PREFIX . 'status', '!=', 1);
             $cnd->attachCondition(OrderCancelRequest::DB_TBL_PREFIX . 'status', 'IS', 'mysql_func_null', 'OR', true);
         }
@@ -641,7 +641,7 @@ class DummyController extends MyAppController
     {
         $urlSrch = UrlRewrite::getSearchObject();
         $urlSrch->doNotCalculateRecords();
-        $urlSrch->addMultipleFields(array('urlrewrite_id','urlrewrite_original','urlrewrite_custom'));
+        $urlSrch->addMultipleFields(array('urlrewrite_id', 'urlrewrite_original', 'urlrewrite_custom'));
         $rs = $urlSrch->getResultSet();
         $urlRows = FatApp::getDb()->fetchAll($rs);
         $db = FatApp::getDb();
@@ -656,6 +656,5 @@ class DummyController extends MyAppController
     public function testEmail()
     {
         AbandonedCart::sendReminderAbandonedCart();
-        
     }
 }

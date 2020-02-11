@@ -1,4 +1,5 @@
 <?php
+
 class SubscriptionOrdersController extends AdminBaseController
 {
     public function __construct($action)
@@ -39,7 +40,7 @@ class SubscriptionOrdersController extends AdminBaseController
         $srch->addCondition('order_type', '=', Orders::ORDER_SUBSCRIPTION);
         $srch->setPageNumber($page);
         $srch->setPageSize($pageSize);
-        $srch->addMultipleFields(array('order_id','order_date_added', 'order_is_paid', 'buyer.user_id', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'order_net_amount'));
+        $srch->addMultipleFields(array('order_id', 'order_date_added', 'order_is_paid', 'buyer.user_id', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'order_net_amount'));
         
         $keyword = FatApp::getPostedData('keyword', null, '');
         if (!empty($keyword)) {
@@ -103,8 +104,8 @@ class SubscriptionOrdersController extends AdminBaseController
         $srch->doNotLimitRecords();
         $srch->joinOrderUser();
         $srch->addMultipleFields(
-            array('order_id','order_user_id', 'order_date_added', 'order_is_paid','order_tax_charged', 'order_site_commission',
-            'ou.user_name as buyer_user_name', 'ouc.credential_email as buyer_email','ou.user_phone as buyer_phone', 'order_net_amount',   'order_pmethod_id', 'pmethod_name','order_discount_total')
+            array('order_id', 'order_user_id', 'order_date_added', 'order_is_paid', 'order_tax_charged', 'order_site_commission',
+            'ou.user_name as buyer_user_name', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'order_net_amount',   'order_pmethod_id', 'pmethod_name', 'order_discount_total')
         );
         $srch->addCondition('order_id', '=', $order_id);
         $srch->addCondition('order_type', '=', Orders::ORDER_SUBSCRIPTION);
@@ -128,8 +129,8 @@ class SubscriptionOrdersController extends AdminBaseController
         $opSrch->addMultipleFields(
             array('ossubs_id', 'ossubs_invoice_number',
          
-            'ossubs_price','ossubs_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name',
-            'ossubs_frequency','ossubs_subscription_name,ossubs_interval','ossubs_status_id','ossubs_till_date','ossubs_from_date'/* ,'op_other_charges' */ )
+            'ossubs_price', 'ossubs_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name',
+            'ossubs_frequency', 'ossubs_subscription_name,ossubs_interval', 'ossubs_status_id', 'ossubs_till_date', 'ossubs_from_date'/* ,'op_other_charges' */ )
         );
         
         $opRs = $opSrch->getResultSet();
@@ -145,8 +146,8 @@ class SubscriptionOrdersController extends AdminBaseController
         $addresses = $orderObj->getOrderAddresses($order['order_id']);
         
         
-        $order['comments'] = $orderObj->getOrderComments($this->adminLangId, array("order_id"=>$order['order_id']));
-        $order['payments'] = $orderObj->getOrderPayments(array("order_id"=>$order['order_id']));
+        $order['comments'] = $orderObj->getOrderComments($this->adminLangId, array("order_id" => $order['order_id']));
+        $order['payments'] = $orderObj->getOrderPayments(array("order_id" => $order['order_id']));
         
         $frm = $this->getPaymentForm($this->adminLangId, $order['order_id']);
         $this->set('frm', $frm);
@@ -188,10 +189,10 @@ class SubscriptionOrdersController extends AdminBaseController
     {
         $this->objPrivilege->canEditSubscriptionOrders();
         
-        $orderObj =  new Orders();
+        $orderObj = new Orders();
         $order = $orderObj->getOrderById($order_id);
         
-        if ($order==false) {
+        if ($order == false) {
             Message::addErrorMessage(Labels::getLabel('LBL_Error:_Please_perform_this_action_on_valid_record.', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -227,11 +228,11 @@ class SubscriptionOrdersController extends AdminBaseController
     private function getOrderSearchForm($langId)
     {
         $currency_id = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
-        $currencyData = Currency::getAttributesById($currency_id, array('currency_code','currency_symbol_left','currency_symbol_right'));
+        $currencyData = Currency::getAttributesById($currency_id, array('currency_code', 'currency_symbol_left', 'currency_symbol_right'));
         $currencySymbol = ($currencyData['currency_symbol_left'] != '') ? $currencyData['currency_symbol_left'] : $currencyData['currency_symbol_right'];
         
         $frm = new Form('frmSubscriptionOrderSearch');
-        $keyword = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '', array('id'=>'keyword','autocomplete'=>'off'));
+        $keyword = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '', array('id' => 'keyword', 'autocomplete' => 'off'));
         
         $frm->addTextBox(Labels::getLabel('LBL_Buyer', $this->adminLangId), 'buyer', '');
         
@@ -239,12 +240,12 @@ class SubscriptionOrdersController extends AdminBaseController
         
         $frm->addDateField('', 'date_from', '', array('placeholder' => 'Date From', 'readonly' => 'readonly' ));
         $frm->addDateField('', 'date_to', '', array('placeholder' => 'Date To', 'readonly' => 'readonly' ));
-        $frm->addTextBox('', 'price_from', '', array('placeholder' => 'Order From'.' ['.$currencySymbol.']' ));
-        $frm->addTextBox('', 'price_to', '', array('placeholder' => 'Order To ['.$currencySymbol.']' ));
+        $frm->addTextBox('', 'price_from', '', array('placeholder' => 'Order From' . ' [' . $currencySymbol . ']' ));
+        $frm->addTextBox('', 'price_to', '', array('placeholder' => 'Order To [' . $currencySymbol . ']' ));
         
         $frm->addHiddenField('', 'page');
         $frm->addHiddenField('', 'user_id');
-        $fld_submit=$frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_submit = $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;

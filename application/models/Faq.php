@@ -1,10 +1,11 @@
 <?php
+
 class Faq extends MyAppModel
 {
-    const DB_TBL = 'tbl_faqs';
-    const DB_TBL_LANG = 'tbl_faqs_lang';
-    const DB_TBL_PREFIX = 'faq_';
-    const DB_TBL_LANG_PREFIX = 'faqlang_';
+    public const DB_TBL = 'tbl_faqs';
+    public const DB_TBL_LANG = 'tbl_faqs_lang';
+    public const DB_TBL_PREFIX = 'faq_';
+    public const DB_TBL_LANG_PREFIX = 'faqlang_';
     private $db;
 
     public function __construct($id = 0)
@@ -18,20 +19,20 @@ class Faq extends MyAppModel
         $srch = new SearchBase(static::DB_TBL, 'f');
 
         if ($isDeleted == true) {
-            $srch->addCondition('f.'.static::DB_TBL_PREFIX.'deleted', '=', applicationConstants::NO);
+            $srch->addCondition('f.' . static::DB_TBL_PREFIX . 'deleted', '=', applicationConstants::NO);
         }
 
         if ($langId > 0) {
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'f_l.'.static::DB_TBL_LANG_PREFIX.'faq_id = f.'.static::tblFld('id').' and
-			f_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
+                'f_l.' . static::DB_TBL_LANG_PREFIX . 'faq_id = f.' . static::tblFld('id') . ' and
+			f_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 'f_l'
             );
         }
 
-        $srch->addOrder('f.'.static::DB_TBL_PREFIX.'active', 'DESC');
+        $srch->addOrder('f.' . static::DB_TBL_PREFIX . 'active', 'DESC');
         return $srch;
     }
 
@@ -44,7 +45,7 @@ class Faq extends MyAppModel
         $rs = $srch->getResultSet();
         $record = FatApp::getDb()->fetch($rs);
         if (!empty($record)) {
-            return $record['max_order']+1;
+            return $record['max_order'] + 1;
         }
         return 1;
     }

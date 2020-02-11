@@ -1,4 +1,5 @@
 <?php
+
 class LanguagesController extends AdminBaseController
 {
     private $canView;
@@ -15,7 +16,7 @@ class LanguagesController extends AdminBaseController
         $this->set("canEdit", $this->canEdit);
     }
 
-    public function index( )
+    public function index()
     {
         $this->objPrivilege->canViewLanguage();
         $search = $this->getSearchForm();
@@ -27,7 +28,7 @@ class LanguagesController extends AdminBaseController
     {
         $frm = new Form('frmSearch');
         $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
-        $fld_submit=$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;
@@ -40,26 +41,26 @@ class LanguagesController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
         $srch = Language::getSearchObject(false, $this->adminLangId);
 
         $srch->addFld('l.* ');
 
-        if(!empty($post['keyword'])) {
-            $condition=$srch->addCondition('l.language_code', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('l.language_name', 'like', '%'.$post['keyword'].'%', 'OR');
+        if (!empty($post['keyword'])) {
+            $condition = $srch->addCondition('l.language_code', 'like', '%' . $post['keyword'] . '%');
+            $condition->attachCondition('l.language_name', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
 
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
 
         $rs = $srch->getResultSet();
         $records = array();
-        if($rs) {
+        if ($rs) {
             $records = FatApp::getDb()->fetchAll($rs);
         }
 
@@ -77,12 +78,12 @@ class LanguagesController extends AdminBaseController
     {
         $this->objPrivilege->canEditLanguage();
 
-        $languageId =  FatUtility::int($languageId);
+        $languageId = FatUtility::int($languageId);
 
         $frm = $this->getForm($languageId);
 
-        if (0 < $languageId ) {
-            $data = Language::getAttributesById($languageId, array('language_id','language_code','language_name','language_active','language_layout_direction'));
+        if (0 < $languageId) {
+            $data = Language::getAttributesById($languageId, array('language_id', 'language_code', 'language_name', 'language_active', 'language_layout_direction'));
 
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
@@ -121,15 +122,18 @@ class LanguagesController extends AdminBaseController
     private function getForm($languageId = 0)
     {
         $this->objPrivilege->canViewLanguage();
-        $languageId =  FatUtility::int($languageId);
+        $languageId = FatUtility::int($languageId);
 
         $frm = new Form('frmLanguage');
         $frm->addHiddenField('', 'language_id', $languageId);
         $frm->addRequiredField(Labels::getLabel('LBL_Language_code', $this->adminLangId), 'language_code');
         $frm->addRequiredField(Labels::getLabel('LBL_Language_name', $this->adminLangId), 'language_name');
-        $fld =$frm->addRadioButtons(
-            Labels::getLabel("LBL_Language_Layout_Direction", $this->adminLangId), 'language_layout_direction',
-            applicationConstants::getLayoutDirections($this->adminLangId), '', array('class'=>'list-inline')
+        $fld = $frm->addRadioButtons(
+            Labels::getLabel("LBL_Language_Layout_Direction", $this->adminLangId),
+            'language_layout_direction',
+            applicationConstants::getLayoutDirections($this->adminLangId),
+            '',
+            array('class' => 'list-inline')
         );
         $arrFlags = $this->getlanguageFlags();
         /* $arrFlag= array();
@@ -148,7 +152,7 @@ class LanguagesController extends AdminBaseController
     public function getLanguageFlags()
     {
         $arrFlag = array();
-        $dir    = CONF_INSTALLATION_PATH.'public/images/flags';
+        $dir = CONF_INSTALLATION_PATH . 'public/images/flags';
         $arrFlags = array_diff(scandir($dir, 1), array(".", ".."));
 
         return $arrFlags;
@@ -158,7 +162,7 @@ class LanguagesController extends AdminBaseController
     {
         $this->objPrivilege->canEditLanguage();
 
-        if(0 >= $languageId) {
+        if (0 >= $languageId) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -173,19 +177,19 @@ class LanguagesController extends AdminBaseController
     {
         $this->objPrivilege->canEditLanguage();
         $languageId = FatApp::getPostedData('languageId', FatUtility::VAR_INT, 0);
-        if(0 >= $languageId) {
+        if (0 >= $languageId) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
 
         $data = Language::getAttributesById($languageId, array('language_active'));
 
-        if($data==false) {
+        if ($data == false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $status = ( $data['language_active'] == applicationConstants::ACTIVE ) ? applicationConstants::INACTIVE : applicationConstants::ACTIVE;
+        $status = ($data['language_active'] == applicationConstants::ACTIVE) ? applicationConstants::INACTIVE : applicationConstants::ACTIVE;
 
         $countryObj = new Language($languageId);
         if (!$countryObj->changeStatus($status)) {
@@ -200,18 +204,18 @@ class LanguagesController extends AdminBaseController
         $this->objPrivilege->canEditLanguage();
         $languageId = FatApp::getPostedData('languageId', FatUtility::VAR_INT, 0);
         $flag = FatApp::getPostedData('flag', FatUtility::VAR_STRING, '');
-        if(0 >= $languageId) {
+        if (0 >= $languageId) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
 
         $data = Language::getAttributesById($languageId, array('language_active'));
 
-        if($data==false) {
+        if ($data == false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
-        $data['language_flag']= $flag;
+        $data['language_flag'] = $flag;
         $record = new Language($languageId);
         $record->assignValues($data);
 
@@ -222,5 +226,4 @@ class LanguagesController extends AdminBaseController
 
         FatUtility::dieJsonSuccess($this->str_update_record);
     }
-
 }

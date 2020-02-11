@@ -995,6 +995,25 @@ function quickDetail(selprod_id) {
 	});
 }
 
+function stylePhoneNumberFld() {
+    var input = document.querySelector("input[name='user_phone']");
+    var country = langLbl.defaultCountryCode;
+    if ('' == country) {
+        country = 'in';
+    }
+    var iti = window.intlTelInput(input, {
+        initialCountry:country,
+        utilsScript: "/intlTelInput/intlTelInput-utils.js"
+    });
+    input.value = "+" + iti.getSelectedCountryData().dialCode;
+    input.addEventListener('countrychange', function(e) {
+        if (typeof iti.getSelectedCountryData().dialCode !== 'undefined') {
+            input.value = "+" + iti.getSelectedCountryData().dialCode;
+        }
+    });
+}
+
+
 /* read more functionality [ */
 $(document).on('click', '.readMore', function () {
 	/* $(document).delegate('.readMore' ,'click' , function(){ */

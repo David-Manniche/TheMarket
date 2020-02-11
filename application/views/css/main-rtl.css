@@ -10595,6 +10595,13 @@ form.custom-form {
   form.custom-form input[type="submit"], form.custom-form .form input[type="button"], .form form.custom-form input[type="button"], form.custom-form .form input[type="reset"], .form form.custom-form input[type="reset"] {
     margin: 0; }
 
+.form-otp .otp-row {
+  display: flex;
+  align-items: center; }
+.form-otp .otp-col {
+  display: flex;
+  align-items: center; }
+
 .ftshops {
   color: #fff; }
   .ftshops a {

@@ -1,10 +1,10 @@
 <?php
+
 class BraintreeSettingsController extends PaymentSettingsController
 {
+    private $keyName = "Braintree";
 
-    private $keyName="Braintree";
-
-    public function index() 
+    public function index()
     {
         $paymentSettings = $this->getPaymentSettings($this->keyName);
         $frm = $this->getSettingsForm();
@@ -20,7 +20,7 @@ class BraintreeSettingsController extends PaymentSettingsController
         $this->setUpPaymentSettings($frm, $this->keyName);
     }
 
-    private function getSettingsForm() 
+    private function getSettingsForm()
     {
         $frm = new Form('frmPaymentMethods');
         $frm->addRequiredField(Labels::getLabel('LBL_MerchantId', $this->adminLangId), 'merchant_id');
@@ -29,5 +29,4 @@ class BraintreeSettingsController extends PaymentSettingsController
         $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
-
 }

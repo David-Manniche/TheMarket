@@ -1,4 +1,5 @@
 <?php
+
 class UserFavoriteShopSearch extends SearchBase
 {
     private $langId;
@@ -28,7 +29,7 @@ class UserFavoriteShopSearch extends SearchBase
         $this->joinTable(Shop::DB_TBL, 'INNER JOIN', 'ufs.ufs_shop_id = s.shop_id', 's');
 
         if ($langId) {
-            $this->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 's.shop_id = shop_l.shoplang_shop_id AND shoplang_lang_id = '. $langId, 'shop_l');
+            $this->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 's.shop_id = shop_l.shoplang_shop_id AND shoplang_lang_id = ' . $langId, 'shop_l');
         }
 
         if ($isActive) {
@@ -99,7 +100,7 @@ class UserFavoriteShopSearch extends SearchBase
         $this->joinTable(Countries::DB_TBL, 'LEFT OUTER JOIN', 's.shop_country_id = shop_country.country_id', 'shop_country');
 
         if ($langId) {
-            $this->joinTable(Countries::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop_country.country_id = shop_country_l.countrylang_country_id AND shop_country_l.countrylang_lang_id = '.$langId, 'shop_country_l');
+            $this->joinTable(Countries::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop_country.country_id = shop_country_l.countrylang_country_id AND shop_country_l.countrylang_lang_id = ' . $langId, 'shop_country_l');
         }
         if ($isActive) {
             $this->addCondition('shop_country.country_active', '=', applicationConstants::ACTIVE);
@@ -115,7 +116,7 @@ class UserFavoriteShopSearch extends SearchBase
         $this->joinTable(States::DB_TBL, 'LEFT OUTER JOIN', 's.shop_state_id = shop_state.state_id', 'shop_state');
 
         if ($langId) {
-            $this->joinTable(States::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop_state.state_id = shop_state_l.statelang_state_id AND shop_state_l.statelang_lang_id = '.$langId, 'shop_state_l');
+            $this->joinTable(States::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop_state.state_id = shop_state_l.statelang_state_id AND shop_state_l.statelang_lang_id = ' . $langId, 'shop_state_l');
         }
         if ($isActive) {
             $this->addCondition('shop_state.state_active', '=', applicationConstants::ACTIVE);
@@ -137,7 +138,7 @@ class UserFavoriteShopSearch extends SearchBase
         $srch = new SearchBase(Shop::DB_TBL_SHOP_FAVORITE, 'fsc');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('fsc.ufs_user_id as userFavShopcount_user_id','count(fsc.ufs_id) as userFavShopcount'));
+        $srch->addMultipleFields(array('fsc.ufs_user_id as userFavShopcount_user_id', 'count(fsc.ufs_id) as userFavShopcount'));
         $srch->addGroupBy('fsc.ufs_user_id');
         $qrytotal = $srch->getQuery();
         $this->joinTable('(' . $qrytotal . ')', 'LEFT OUTER JOIN', 'ufs.ufs_user_id = fusc.userFavShopcount_user_id', 'fusc');
@@ -147,7 +148,7 @@ class UserFavoriteShopSearch extends SearchBase
     {
         $this->sellerOrderJoined = true;
         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) {
-            $this->joinTable(Orders::DB_TBL, 'INNER JOIN', 'o.order_user_id=shop_user_id and o.order_type='.ORDERS::ORDER_SUBSCRIPTION, 'o');
+            $this->joinTable(Orders::DB_TBL, 'INNER JOIN', 'o.order_user_id=shop_user_id and o.order_type=' . ORDERS::ORDER_SUBSCRIPTION, 'o');
         }
     }
 
@@ -162,10 +163,10 @@ class UserFavoriteShopSearch extends SearchBase
         }
         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) {
             $this->joinTable(OrderSubscription::DB_TBL, 'INNER JOIN', 'o.order_id = oss.ossubs_order_id ', 'oss');
-            if ($langId>0) {
-                $this->joinTable(OrderSubscription::DB_TBL_LANG, 'LEFT OUTER JOIN', 'oss.ossubs_id = ossl.'.OrderSubscription::DB_TBL_LANG_PREFIX.'ossubs_id AND ossl.'.OrderSubscription::DB_TBL_LANG_PREFIX.'lang_id = '.$langId, 'ossl');
+            if ($langId > 0) {
+                $this->joinTable(OrderSubscription::DB_TBL_LANG, 'LEFT OUTER JOIN', 'oss.ossubs_id = ossl.' . OrderSubscription::DB_TBL_LANG_PREFIX . 'ossubs_id AND ossl.' . OrderSubscription::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'ossl');
             }
-            if ($date =='') {
+            if ($date == '') {
                 $date = date("Y-m-d");
             }
             $this->addCondition('oss.ossubs_till_date', '>=', $date);

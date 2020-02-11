@@ -1,10 +1,11 @@
 <?php
+
 class Tag extends MyAppModel
 {
-    const DB_TBL = 'tbl_tags';
-    const DB_TBL_PREFIX = 'tag_';
+    public const DB_TBL = 'tbl_tags';
+    public const DB_TBL_PREFIX = 'tag_';
 
-    const DB_TBL_LANG  = 'tbl_tags_lang';
+    public const DB_TBL_LANG = 'tbl_tags_lang';
     private $db;
 
     public function __construct($id = 0)
@@ -18,7 +19,7 @@ class Tag extends MyAppModel
         $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 't');
         if ($langId) {
-            $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', 't.tag_id = t_l.taglang_tag_id AND t_l.taglang_lang_id = '.$langId, 't_l');
+            $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', 't.tag_id = t_l.taglang_tag_id AND t_l.taglang_lang_id = ' . $langId, 't_l');
         }
         return $srch;
     }
@@ -80,12 +81,12 @@ class Tag extends MyAppModel
 
     public function canRecordDelete($id)
     {
-        $srch =static::getSearchObject();
-        $srch->addCondition('t.'.static::DB_TBL_PREFIX.'id', '=', $id);
-        $srch->addFld('t.'.static::DB_TBL_PREFIX.'id');
+        $srch = static::getSearchObject();
+        $srch->addCondition('t.' . static::DB_TBL_PREFIX . 'id', '=', $id);
+        $srch->addFld('t.' . static::DB_TBL_PREFIX . 'id');
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
-        if (!empty($row) && $row[static::DB_TBL_PREFIX.'id']==$id) {
+        if (!empty($row) && $row[static::DB_TBL_PREFIX . 'id'] == $id) {
             return true;
         }
         return false;
@@ -128,7 +129,7 @@ class Tag extends MyAppModel
                 $productTags = Product::getProductTags($productId, $lang_id);
                 $productName = Product::getAttributesBylangId($lang_id, $productId, 'product_name');
                 if (!$productName) {
-                    $productData = Product::getProductDataById(FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1), $productId, array('ifNull(product_name,product_identifier) as product_name','product_identifier'));
+                    $productData = Product::getProductDataById(FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1), $productId, array('ifNull(product_name,product_identifier) as product_name', 'product_identifier'));
                     $productName = $productData['product_name'];
                 }
 

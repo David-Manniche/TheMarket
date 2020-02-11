@@ -1,4 +1,5 @@
 <?php
+
 class PaypalStandardPayController extends PaymentController
 {
     private $keyName = "PaypalStandard";

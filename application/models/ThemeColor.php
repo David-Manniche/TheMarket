@@ -1,9 +1,10 @@
 <?php
+
 class ThemeColor extends MyAppModel
 {
-    const DB_TBL = 'tbl_theme_colors';
-    const DB_TBL_PREFIX = 'tcolor_';
-    const DB_TBL_LANG = 'tbl_theme_colors_lang';
+    public const DB_TBL = 'tbl_theme_colors';
+    public const DB_TBL_PREFIX = 'tcolor_';
+    public const DB_TBL_LANG = 'tbl_theme_colors_lang';
 
     public function __construct($id = 0)
     {

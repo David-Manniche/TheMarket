@@ -1,4 +1,5 @@
 <?php
+
 class ShopSearch extends SearchBase
 {
     private $sellerOrderJoined = false;
@@ -15,8 +16,8 @@ class ShopSearch extends SearchBase
             $this->joinTable(
                 Shop::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                's_l.'.Shop::DB_TBL_LANG_PREFIX.'shop_id = s.shop_id
-			AND s_l.'.Shop::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
+                's_l.' . Shop::DB_TBL_LANG_PREFIX . 'shop_id = s.shop_id
+			AND s_l.' . Shop::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 's_l'
             );
         }
@@ -57,7 +58,7 @@ class ShopSearch extends SearchBase
         $this->joinTable(Countries::DB_TBL, 'LEFT OUTER JOIN', 's.shop_country_id = shop_country.country_id', 'shop_country');
 
         if ($langId) {
-            $this->joinTable(Countries::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop_country.country_id = shop_country_l.countrylang_country_id AND shop_country_l.countrylang_lang_id = '.$langId, 'shop_country_l');
+            $this->joinTable(Countries::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop_country.country_id = shop_country_l.countrylang_country_id AND shop_country_l.countrylang_lang_id = ' . $langId, 'shop_country_l');
         }
         if ($isActive) {
             $this->addCondition('shop_country.country_active', '=', applicationConstants::ACTIVE);
@@ -73,7 +74,7 @@ class ShopSearch extends SearchBase
         $this->joinTable(States::DB_TBL, 'LEFT OUTER JOIN', 's.shop_state_id = shop_state.state_id', 'shop_state');
 
         if ($langId) {
-            $this->joinTable(States::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop_state.state_id = shop_state_l.statelang_state_id AND shop_state_l.statelang_lang_id = '.$langId, 'shop_state_l');
+            $this->joinTable(States::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop_state.state_id = shop_state_l.statelang_state_id AND shop_state_l.statelang_lang_id = ' . $langId, 'shop_state_l');
         }
         if ($isActive) {
             $this->addCondition('shop_state.state_active', '=', applicationConstants::ACTIVE);
@@ -84,7 +85,7 @@ class ShopSearch extends SearchBase
     {
         $this->sellerOrderJoined = true;
         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) {
-            $this->joinTable(Orders::DB_TBL, 'INNER JOIN', 'o.order_user_id=shop_user_id and o.order_type='.ORDERS::ORDER_SUBSCRIPTION, 'o');
+            $this->joinTable(Orders::DB_TBL, 'INNER JOIN', 'o.order_user_id=shop_user_id and o.order_type=' . ORDERS::ORDER_SUBSCRIPTION, 'o');
         }
     }
 
@@ -99,8 +100,8 @@ class ShopSearch extends SearchBase
         }
         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) {
             $this->joinTable(OrderSubscription::DB_TBL, 'INNER JOIN', 'o.order_id = oss.ossubs_order_id ', 'oss');
-            if ($langId>0) {
-                $this->joinTable(OrderSubscription::DB_TBL_LANG, 'LEFT OUTER JOIN', 'oss.ossubs_id = ossl.'.OrderSubscription::DB_TBL_LANG_PREFIX.'ossubs_id AND ossl.'.OrderSubscription::DB_TBL_LANG_PREFIX.'lang_id = '.$langId, 'ossl');
+            if ($langId > 0) {
+                $this->joinTable(OrderSubscription::DB_TBL_LANG, 'LEFT OUTER JOIN', 'oss.ossubs_id = ossl.' . OrderSubscription::DB_TBL_LANG_PREFIX . 'ossubs_id AND ossl.' . OrderSubscription::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'ossl');
             }
         }
     }
@@ -113,7 +114,7 @@ class ShopSearch extends SearchBase
 
     public function addSubscriptionValidCondition($date = '')
     {
-        if ($date =='') {
+        if ($date == '') {
             $date = date("Y-m-d");
         }
         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) {
