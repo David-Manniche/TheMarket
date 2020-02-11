@@ -80,3 +80,4 @@ Bugs:
     => 034354 - link to product is not there in admin for tags
     => 033034 - loader is there on address screen when user sign up through FB (number)
     => 034470 - inventory> digital products> return option is there , which is not needed on digital items
+    => 034409 - Rename "Upsell Products" breadcrumb to "Buy Together Products" on seller product's buy together page.

@@ -1556,6 +1556,8 @@ class SellerProductsController extends AdminBaseController
         $className = ucwords(implode(' ', $arr));
         if ($action == 'index') {
             $nodes[] = array('title' => $className);
+        } else if ($action == 'upsellProducts') {
+            $nodes[] = array('title' => Labels::getLabel('LBL_BUY_TOGETHER_PRODUCTS', $this->adminLangId));
         } else {
             $arr = explode('-', FatUtility::camel2dashed($action));
             $action = ucwords(implode(' ', $arr));
