@@ -1,4 +1,5 @@
 <?php
+
 class EmailTemplatesController extends AdminBaseController
 {
     private $canView;
@@ -6,7 +7,7 @@ class EmailTemplatesController extends AdminBaseController
 
     public function __construct($action)
     {
-        $ajaxCallArray = array('langForm','search','setup');
+        $ajaxCallArray = array('langForm', 'search', 'setup');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }
@@ -46,7 +47,7 @@ class EmailTemplatesController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
         $srch = EmailTemplates::getSearchObject($this->adminLangId);
@@ -56,9 +57,9 @@ class EmailTemplatesController extends AdminBaseController
         $srch->setPageSize($pagesize);
 
         if (!empty($post['keyword'])) {
-            $cond = $srch->addCondition('etpl_code', 'like', '%'.$post['keyword'].'%', 'AND');
-            $cond->attachCondition('etpl_name', 'like', '%'.$post['keyword'].'%', 'OR');
-            $cond->attachCondition('etpl_subject', 'like', '%'.$post['keyword'].'%', 'OR');
+            $cond = $srch->addCondition('etpl_code', 'like', '%' . $post['keyword'] . '%', 'AND');
+            $cond->attachCondition('etpl_name', 'like', '%' . $post['keyword'] . '%', 'OR');
+            $cond->attachCondition('etpl_subject', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
 
         $rs = $srch->getResultSet();
@@ -202,14 +203,14 @@ class EmailTemplatesController extends AdminBaseController
             $langData = current($translatedData);
         } else {
             $etplObj = new EmailTemplates($etplCode);
-            $langData =  $etplObj->getEtpl($etplCode, $lang_id);
+            $langData = $etplObj->getEtpl($etplCode, $lang_id);
         }
 
         if ($langData) {
             $langFrm->fill($langData);
         }
         if ($langData['etpl_replacements'] == '') {
-            $etplData =  $etplObj->getEtpl($etplCode);
+            $etplData = $etplObj->getEtpl($etplCode);
             $langFrm->getField('etpl_replacements')->value = $etplData['etpl_replacements'];
         }
         $this->set('languages', Language::getAllNames());
@@ -230,7 +231,7 @@ class EmailTemplatesController extends AdminBaseController
         }
 
         $etplObj = new EmailTemplates($etplCode);
-        $records =  $etplObj->getEtpl($etplCode);
+        $records = $etplObj->getEtpl($etplCode);
 
         if ($records == false) {
             Message::addErrorMessage($this->str_invalid_request);
@@ -332,7 +333,7 @@ class EmailTemplatesController extends AdminBaseController
 
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
 
-        $fld = $frm->addTextBox(Labels::getLabel('LBL_Header_BG_color', $this->adminLangId), 'CONF_EMAIL_TEMPLATE_COLOR_CODE'.$lang_id, FatApp::getConfig('CONF_EMAIL_TEMPLATE_COLOR_CODE'.$lang_id, FatUtility::VAR_STRING, ''));
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_Header_BG_color', $this->adminLangId), 'CONF_EMAIL_TEMPLATE_COLOR_CODE' . $lang_id, FatApp::getConfig('CONF_EMAIL_TEMPLATE_COLOR_CODE' . $lang_id, FatUtility::VAR_STRING, ''));
         $fld->addFieldTagAttribute('class', 'jscolor');
 
         $frm->addSelectBox(Labels::getLabel('LBL_Logo_Ratio', $this->adminLangId), 'CONF_EMAIL_TEMPLATE_LOGO_RATIO', EmailTemplates::getLogoRatioArr(), FatApp::getConfig('CONF_EMAIL_TEMPLATE_LOGO_RATIO', FatUtility::VAR_STRING, ''), array(), '');
@@ -341,9 +342,9 @@ class EmailTemplatesController extends AdminBaseController
             Labels::getLabel('LBL_Logo', $this->adminLangId),
             'email_logo',
             Labels::getLabel('LBL_Upload_Logo', $this->adminLangId),
-            array('class'=>'logoFile-Js btn-xs','id'=>'email_logo','data-file_type'=>AttachedFile::FILETYPE_EMAIL_LOGO,'data-frm'=>'frmEtplSettingsForm')
+            array('class' => 'logoFile-Js btn-xs', 'id' => 'email_logo', 'data-file_type' => AttachedFile::FILETYPE_EMAIL_LOGO, 'data-frm' => 'frmEtplSettingsForm')
         );
-        $fld = $frm->addHtmlEditor(Labels::getLabel('LBL_Footer_HTML', $this->adminLangId), 'CONF_EMAIL_TEMPLATE_FOOTER_HTML'.$lang_id, FatApp::getConfig('CONF_EMAIL_TEMPLATE_FOOTER_HTML'.$lang_id, FatUtility::VAR_STRING, ''));
+        $fld = $frm->addHtmlEditor(Labels::getLabel('LBL_Footer_HTML', $this->adminLangId), 'CONF_EMAIL_TEMPLATE_FOOTER_HTML' . $lang_id, FatApp::getConfig('CONF_EMAIL_TEMPLATE_FOOTER_HTML' . $lang_id, FatUtility::VAR_STRING, ''));
         $fld->requirements()->setRequired(true);
 
 

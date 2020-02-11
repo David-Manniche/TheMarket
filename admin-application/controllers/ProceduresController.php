@@ -1,8 +1,8 @@
 <?php
+
 class ProceduresController extends AdminBaseController
 {
-
-    public function createProcedures() 
+    public function createProcedures()
     {
         $db = FatApp::getDb();
         $con = $db->getConnectionObject();
@@ -74,4 +74,4 @@ END"
         }
         echo 'Created All the Procedures.';
     }
-}    
+}

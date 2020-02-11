@@ -1,4 +1,5 @@
 <?php
+
 class ValidateElement extends FatUtility
 {
     // public const PHONE_REGEX = '^(\+\d{1,2}\s)?\(?\d{3}\)?[\s#-]\d{3}[\s#-]\d{4}$';
@@ -31,7 +32,7 @@ class ValidateElement extends FatUtility
             return false;
         }
 
-        if (!preg_match('/'.static::PHONE_REGEX.'/', $string)) {
+        if (!preg_match('/' . static::PHONE_REGEX . '/', $string)) {
             return false;
         }
         return true;
@@ -60,7 +61,7 @@ class ValidateElement extends FatUtility
             return false;
         }
 
-        if (!preg_match('/'.static::PASSWORD_REGEX.'/', $string)) {
+        if (!preg_match('/' . static::PASSWORD_REGEX . '/', $string)) {
             return false;
         }
         return true;
@@ -71,7 +72,7 @@ class ValidateElement extends FatUtility
         if (strlen($string) < 3) {
             return false;
         }
-        if (!preg_match('/'.static::USERNAME_REGEX.'/', $string)) {
+        if (!preg_match('/' . static::USERNAME_REGEX . '/', $string)) {
             return false;
         }
         return true;
@@ -81,35 +82,35 @@ class ValidateElement extends FatUtility
     {
         $cardNumber = preg_replace('/\D/', '', ($cardNumber));
         $len = strlen($cardNumber);
-        $result=array();
+        $result = array();
         if ($len > 16) {
-            $result['card_type']='Invalid';
+            $result['card_type'] = 'Invalid';
             return $result;
         }
         switch ($cardNumber) {
             case 0:
-                $result['card_type']='';
+                $result['card_type'] = '';
                 break;
-            case (preg_match('/'.static::VISA_REGEX.'/', $cardNumber) >= 1):
-                $result['card_type']='VISA';
+            case (preg_match('/' . static::VISA_REGEX . '/', $cardNumber) >= 1):
+                $result['card_type'] = 'VISA';
                 break;
-            case (preg_match('/'.static::MASTER_REGEX.'/', $cardNumber) >= 1):
-                $result['card_type']='MASTER';
+            case (preg_match('/' . static::MASTER_REGEX . '/', $cardNumber) >= 1):
+                $result['card_type'] = 'MASTER';
                 break;
-            case (preg_match('/'.static::AMEX_REGEX.'/', $cardNumber) >= 1):
-                $result['card_type']='AMEX';
+            case (preg_match('/' . static::AMEX_REGEX . '/', $cardNumber) >= 1):
+                $result['card_type'] = 'AMEX';
                 break;
-            case (preg_match('/'.static::DINERS_CLUB_REGEX.'/', $cardNumber) >= 1):
-                $result['card_type']='DINERS_CLUB';
+            case (preg_match('/' . static::DINERS_CLUB_REGEX . '/', $cardNumber) >= 1):
+                $result['card_type'] = 'DINERS_CLUB';
                 break;
-            case (preg_match('/'.static::DISCOVER_REGEX.'/', $cardNumber) >= 1):
-                $result['card_type']='DISCOVER';
+            case (preg_match('/' . static::DISCOVER_REGEX . '/', $cardNumber) >= 1):
+                $result['card_type'] = 'DISCOVER';
                 break;
-            case (preg_match('/'.static::JCB_REGEX.'/', $cardNumber) >= 1):
-                $result['card_type']='JCB';
+            case (preg_match('/' . static::JCB_REGEX . '/', $cardNumber) >= 1):
+                $result['card_type'] = 'JCB';
                 break;
             default:
-                $result['card_type']='';
+                $result['card_type'] = '';
                 break;
         }
         return $result;

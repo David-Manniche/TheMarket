@@ -1,15 +1,16 @@
 <?php
+
 class SavedSearchProduct extends MyAppModel
 {
-    const DB_TBL = 'tbl_product_saved_search';
-    const DB_TBL_PREFIX = 'pssearch_';
+    public const DB_TBL = 'tbl_product_saved_search';
+    public const DB_TBL_PREFIX = 'pssearch_';
 
-    const PAGE_CATEGORY = 1;
-    const PAGE_PRODUCT = 2;
-    const PAGE_BRAND = 3;
-    const PAGE_SHOP = 4;
-    const PAGE_FEATURED_PRODUCT = 5;
-    const PAGE_PRODUCT_INDEX = 6;
+    public const PAGE_CATEGORY = 1;
+    public const PAGE_PRODUCT = 2;
+    public const PAGE_BRAND = 3;
+    public const PAGE_SHOP = 4;
+    public const PAGE_FEATURED_PRODUCT = 5;
+    public const PAGE_PRODUCT_INDEX = 6;
 
     public function __construct($id = 0)
     {
@@ -20,12 +21,12 @@ class SavedSearchProduct extends MyAppModel
     public static function getPageUrl()
     {
         return array(
-        static::PAGE_CATEGORY    =>    'Category/view/',
-        static::PAGE_PRODUCT    =>    'Products/search/',
-        static::PAGE_PRODUCT_INDEX    =>    'Products/index/',
-        static::PAGE_BRAND    =>    'Brands/view/',
-        static::PAGE_SHOP    =>    'Shops/view/',
-        static::PAGE_FEATURED_PRODUCT    =>    'Products/featured/'
+        static::PAGE_CATEGORY => 'Category/view/',
+        static::PAGE_PRODUCT => 'Products/search/',
+        static::PAGE_PRODUCT_INDEX => 'Products/index/',
+        static::PAGE_BRAND => 'Brands/view/',
+        static::PAGE_SHOP => 'Shops/view/',
+        static::PAGE_FEATURED_PRODUCT => 'Products/featured/'
         );
     }
 
@@ -97,7 +98,7 @@ class SavedSearchProduct extends MyAppModel
                         $result[$count]['label'] = Labels::getLabel('LBL_Brand', $langId);
                         $result[$count]['value'] = [];
                         foreach ($brandData as $val) {
-                            $result[$count]['value'][] = ($val['brand_name']!='')?$val['brand_name']:$val['brand_identifier'];
+                            $result[$count]['value'][] = ($val['brand_name'] != '') ? $val['brand_name'] : $val['brand_identifier'];
                         }
                     }
                     break;
@@ -111,7 +112,7 @@ class SavedSearchProduct extends MyAppModel
                         $result[$count]['label'] = Labels::getLabel('LBL_Category', $langId);
                         $result[$count]['value'] = [];
                         foreach ($productCategoryData as $val) {
-                            $result[$count]['value'][] = ($val['prodcat_name']!='')?$val['prodcat_name']:$val['prodcat_identifier'];
+                            $result[$count]['value'][] = ($val['prodcat_name'] != '') ? $val['prodcat_name'] : $val['prodcat_identifier'];
                         }
                     }
                     break;
@@ -136,7 +137,7 @@ class SavedSearchProduct extends MyAppModel
                         $result[$count]['label'] = Labels::getLabel('LBL_Options', $langId);
                         $result[$count]['value'] = [];
                         foreach ($optionValueData as $val) {
-                            $result[$count]['value'][]= ($val['optionvalue_name']!='')?$val['optionvalue_name']:$val['optionvalue_identifier'];
+                            $result[$count]['value'][] = ($val['optionvalue_name'] != '') ? $val['optionvalue_name'] : $val['optionvalue_identifier'];
                         }
                     }
                     break;

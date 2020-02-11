@@ -1,4 +1,5 @@
 <?php
+
 class UserRewardSearch extends SearchBase
 {
     private $langId;

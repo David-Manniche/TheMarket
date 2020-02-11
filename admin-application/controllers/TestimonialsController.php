@@ -1,4 +1,5 @@
 <?php
+
 class TestimonialsController extends AdminBaseController
 {
     private $canView;
@@ -6,7 +7,7 @@ class TestimonialsController extends AdminBaseController
 
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup');
+        $ajaxCallArray = array('deleteRecord', 'form', 'langForm', 'search', 'setup', 'langSetup');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }
@@ -23,7 +24,7 @@ class TestimonialsController extends AdminBaseController
         $this->objPrivilege->canViewTestimonial();
         $this->_template->addCss('css/cropper.css');
         $this->_template->addJs('js/cropper.js');
-        $this->_template->addJs('js/cropper-main.js');        
+        $this->_template->addJs('js/cropper-main.js');
         $this->_template->render();
     }
 
@@ -33,7 +34,7 @@ class TestimonialsController extends AdminBaseController
 
         $srch = Testimonial::getSearchObject($this->adminLangId, false);
 
-        $srch->addMultipleFields(array('t.*' , 't_l.testimonial_title' , 't_l.testimonial_text'));
+        $srch->addMultipleFields(array('t.*', 't_l.testimonial_title', 't_l.testimonial_text'));
         $srch->addOrder('testimonial_active', 'desc');
         $srch->addOrder('testimonial_added_on', 'desc');
         $rs = $srch->getResultSet();
@@ -52,12 +53,12 @@ class TestimonialsController extends AdminBaseController
     {
         $this->objPrivilege->canViewTestimonial();
 
-        $testimonialId =  FatUtility::int($testimonialId);
+        $testimonialId = FatUtility::int($testimonialId);
 
         $frm = $this->getForm($testimonialId);
 
         if (0 < $testimonialId) {
-            $data = Testimonial::getAttributesById($testimonialId, array('testimonial_id','testimonial_identifier','testimonial_active','testimonial_user_name'));
+            $data = Testimonial::getAttributesById($testimonialId, array('testimonial_id', 'testimonial_identifier', 'testimonial_active', 'testimonial_user_name'));
 
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
@@ -94,8 +95,8 @@ class TestimonialsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $newTabLangId=0;
-        if ($testimonialId>0) {
+        $newTabLangId = 0;
+        if ($testimonialId > 0) {
             $languages = Language::getAllNames();
             foreach ($languages as $langId => $langName) {
                 if (!$row = Testimonial::getAttributesByLangId($langId, $testimonialId)) {
@@ -105,7 +106,7 @@ class TestimonialsController extends AdminBaseController
             }
         } else {
             $testimonialId = $record->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
         if ($newTabLangId == 0 && !$this->isMediaUploaded($testimonialId)) {
             $this->set('openMediaForm', true);
@@ -170,10 +171,10 @@ class TestimonialsController extends AdminBaseController
         unset($post['lang_id']);
 
         $data = array(
-        'testimoniallang_lang_id'=>$lang_id,
-        'testimoniallang_testimonial_id'=>$testimonialId,
-        'testimonial_title'=>$post['testimonial_title'],
-        'testimonial_text'=>$post['testimonial_text']
+        'testimoniallang_lang_id' => $lang_id,
+        'testimoniallang_testimonial_id' => $testimonialId,
+        'testimonial_title' => $post['testimonial_title'],
+        'testimonial_text' => $post['testimonial_text']
         );
 
         $obj = new Testimonial($testimonialId);
@@ -220,7 +221,7 @@ class TestimonialsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $data = Testimonial::getAttributesById($testimonialId, array('testimonial_id','testimonial_active'));
+        $data = Testimonial::getAttributesById($testimonialId, array('testimonial_id', 'testimonial_active'));
 
         if ($data == false) {
             Message::addErrorMessage($this->str_invalid_request);
@@ -352,7 +353,7 @@ class TestimonialsController extends AdminBaseController
         $frm = new Form('frmTestimonialMedia');
         $frm->addHiddenField('', 'testimonial_id', $testimonialId);
         $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_TESTIMONIAL_IMAGE);
-        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'testimonial_image', array('accept'=>'image/*', 'data-frm'=>'frmTestimonialMedia'));
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'testimonial_image', array('accept' => 'image/*', 'data-frm' => 'frmTestimonialMedia'));
         $frm->addHtml('', 'testimonial_image_display_div', '');
 
         return $frm;
@@ -394,7 +395,7 @@ class TestimonialsController extends AdminBaseController
 
         $this->set('testimonialId', $testimonialId);
         $this->set('file', $_FILES['cropped_image']['name']);
-        $this->set('msg', $_FILES['cropped_image']['name']. Labels::getLabel('MSG_File_Uploaded_Successfully', $this->adminLangId));
+        $this->set('msg', $_FILES['cropped_image']['name'] . Labels::getLabel('MSG_File_Uploaded_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -420,7 +421,7 @@ class TestimonialsController extends AdminBaseController
     private function getForm($testimonialId = 0)
     {
         $this->objPrivilege->canViewTestimonial();
-        $testimonialId =  FatUtility::int($testimonialId);
+        $testimonialId = FatUtility::int($testimonialId);
 
         $frm = new Form('frmTestimonial');
         $frm->addHiddenField('', 'testimonial_id', $testimonialId);

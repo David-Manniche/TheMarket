@@ -1,4 +1,5 @@
 <?php
+
 /* created this class to access direct functions of getAttributesById and save function for below mentioned DB table. */
 class SellerProduct extends MyAppModel
 {
@@ -36,8 +37,8 @@ class SellerProduct extends MyAppModel
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'sp_l.'.static::DB_TBL_LANG_PREFIX.'selprod_id = sp.'.static::tblFld('id').' and
-			sp_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
+                'sp_l.' . static::DB_TBL_LANG_PREFIX . 'selprod_id = sp.' . static::tblFld('id') . ' and
+			sp_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 'sp_l'
             );
         }
@@ -234,7 +235,7 @@ class SellerProduct extends MyAppModel
             return false;
         }
 
-        FatApp::getDb()->deleteRecords(static::DB_TBL_UPSELL_PRODUCTS, array('smt' => static::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'sellerproduct_id = ?','vals' => array($selprod_id) ));
+        FatApp::getDb()->deleteRecords(static::DB_TBL_UPSELL_PRODUCTS, array('smt' => static::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'sellerproduct_id = ?', 'vals' => array($selprod_id) ));
         if (empty($upsellProds)) {
             return true;
         }
@@ -260,7 +261,7 @@ class SellerProduct extends MyAppModel
             return false;
         }
 
-        FatApp::getDb()->deleteRecords(static::DB_TBL_RELATED_PRODUCTS, array('smt' => static::DB_TBL_RELATED_PRODUCTS_PREFIX .'sellerproduct_id = ?','vals' => array($selprod_id) ));
+        FatApp::getDb()->deleteRecords(static::DB_TBL_RELATED_PRODUCTS, array('smt' => static::DB_TBL_RELATED_PRODUCTS_PREFIX . 'sellerproduct_id = ?', 'vals' => array($selprod_id) ));
         if (empty($relatedProds)) {
             return true;
         }
@@ -283,10 +284,10 @@ class SellerProduct extends MyAppModel
     {
         $splPriceForDate = FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d');
         $srch = new SearchBase(static::DB_TBL_UPSELL_PRODUCTS);
-        $srch->joinTable(static::DB_TBL, 'INNER JOIN', static::DB_TBL_PREFIX.'id = '.static::DB_TBL_UPSELL_PRODUCTS_PREFIX.'recommend_sellerproduct_id');
-        $srch->joinTable(static::DB_TBL.'_lang', 'LEFT JOIN', 'slang.'.static::DB_TBL_LANG_PREFIX.'selprod_id = '.static::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'recommend_sellerproduct_id AND '.static::DB_TBL_LANG_PREFIX.'lang_id = '.$lang_id, 'slang');
-        $srch->joinTable(Product::DB_TBL, 'LEFT JOIN', Product::DB_TBL_PREFIX.'id = '.static::DB_TBL_PREFIX.'product_id');
-        $srch->joinTable(Product::DB_TBL.'_lang', 'LEFT JOIN', 'lang.productlang_product_id = '.static::DB_TBL_LANG_PREFIX . 'selprod_id AND productlang_lang_id = '.$lang_id, 'lang');
+        $srch->joinTable(static::DB_TBL, 'INNER JOIN', static::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'recommend_sellerproduct_id');
+        $srch->joinTable(static::DB_TBL . '_lang', 'LEFT JOIN', 'slang.' . static::DB_TBL_LANG_PREFIX . 'selprod_id = ' . static::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'recommend_sellerproduct_id AND ' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $lang_id, 'slang');
+        $srch->joinTable(Product::DB_TBL, 'LEFT JOIN', Product::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_PREFIX . 'product_id');
+        $srch->joinTable(Product::DB_TBL . '_lang', 'LEFT JOIN', 'lang.productlang_product_id = ' . static::DB_TBL_LANG_PREFIX . 'selprod_id AND productlang_lang_id = ' . $lang_id, 'lang');
         $srch->joinTable(
             SellerProduct::DB_TBL_SELLER_PROD_SPCL_PRICE,
             'LEFT OUTER JOIN',
@@ -311,8 +312,8 @@ class SellerProduct extends MyAppModel
         $srch->addCondition('brand.brand_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('brand.brand_deleted', '=', applicationConstants::NO);
 
-        $srch->addMultipleFields(array('upsell_sellerproduct_id', 'selprod_id', 'product_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title','selprod_price','selprod_stock', 'IFNULL(product_identifier ,product_name) as product_name','product_identifier','selprod_product_id','CASE WHEN m.splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found',
-        'IFNULL(m.splprice_price, selprod_price) AS theprice', 'selprod_min_order_qty','product_image_updated_on'));
+        $srch->addMultipleFields(array('upsell_sellerproduct_id', 'selprod_id', 'product_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'selprod_price', 'selprod_stock', 'IFNULL(product_identifier ,product_name) as product_name', 'product_identifier', 'selprod_product_id', 'CASE WHEN m.splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found',
+        'IFNULL(m.splprice_price, selprod_price) AS theprice', 'selprod_min_order_qty', 'product_image_updated_on'));
         $srch->addCondition(Product::DB_TBL_PREFIX . 'active', '=', applicationConstants::YES);
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addCondition('product_deleted', '=', applicationConstants::NO);
@@ -332,7 +333,7 @@ class SellerProduct extends MyAppModel
 
         $srch = static::searchUpsellProducts($lang_id);
         $srch->addCondition(static::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'sellerproduct_id', '=', $sellProdId);
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::NO) {
                 $this->joinFavouriteProducts($srch, $userId);
                 $srch->addFld('IFNULL(ufp_id, 0) as ufp_id');
@@ -409,13 +410,13 @@ class SellerProduct extends MyAppModel
             return false;
         }
         $db = FatApp::getDb();
-        $db->deleteRecords(static::DB_TBL_SELLER_PROD_OPTIONS, array('smt' => static::DB_TBL_SELLER_PROD_OPTIONS_PREFIX.'selprod_id = ?', 'vals' => array($selprod_id)));
+        $db->deleteRecords(static::DB_TBL_SELLER_PROD_OPTIONS, array('smt' => static::DB_TBL_SELLER_PROD_OPTIONS_PREFIX . 'selprod_id = ?', 'vals' => array($selprod_id)));
         if (is_array($data) && count($data)) {
             $record = new TableRecord(static::DB_TBL_SELLER_PROD_OPTIONS);
             foreach ($data as $option_id => $optionvalue_id) {
                 $data_to_save = array(
-                    static::DB_TBL_SELLER_PROD_OPTIONS_PREFIX . 'selprod_id'=>$selprod_id,
-                    static::DB_TBL_SELLER_PROD_OPTIONS_PREFIX . 'option_id'=>$option_id,
+                    static::DB_TBL_SELLER_PROD_OPTIONS_PREFIX . 'selprod_id' => $selprod_id,
+                    static::DB_TBL_SELLER_PROD_OPTIONS_PREFIX . 'option_id' => $option_id,
                     static::DB_TBL_SELLER_PROD_OPTIONS_PREFIX . 'optionvalue_id' => $optionvalue_id
                 );
                 $record->assignValues($data_to_save);
@@ -448,10 +449,10 @@ class SellerProduct extends MyAppModel
             }
 
             $srch->joinTable(OptionValue::DB_TBL, 'INNER JOIN', 'spo.selprodoption_optionvalue_id = ov.optionvalue_id', 'ov');
-            $srch->joinTable(OptionValue::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'ov_lang.optionvaluelang_optionvalue_id = ov.optionvalue_id AND ov_lang.optionvaluelang_lang_id = '.$lang_id, 'ov_lang');
+            $srch->joinTable(OptionValue::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'ov_lang.optionvaluelang_optionvalue_id = ov.optionvalue_id AND ov_lang.optionvaluelang_lang_id = ' . $lang_id, 'ov_lang');
 
             $srch->joinTable(Option::DB_TBL, 'INNER JOIN', 'o.option_id = ov.optionvalue_option_id', 'o');
-            $srch->joinTable(Option::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'o.option_id = o_lang.optionlang_option_id AND o_lang.optionlang_lang_id = '.$lang_id, 'o_lang');
+            $srch->joinTable(Option::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'o.option_id = o_lang.optionlang_option_id AND o_lang.optionlang_lang_id = ' . $lang_id, 'o_lang');
             $srch->addMultipleFields(array('o.option_id', 'ov.optionvalue_id', 'IFNULL(option_name, option_identifier) as option_name', 'IFNULL(optionvalue_name, optionvalue_identifier) as optionvalue_name'));
         }
 
@@ -483,9 +484,9 @@ class SellerProduct extends MyAppModel
         $srch->joinTable(Option::DB_TBL, 'INNER JOIN', 'o.option_id = ov.optionvalue_option_id', 'o');
 
         if ($langId) {
-            $srch->joinTable(OptionValue::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'ov_lang.optionvaluelang_optionvalue_id = ov.optionvalue_id AND ov_lang.optionvaluelang_lang_id = '.$langId, 'ov_lang');
+            $srch->joinTable(OptionValue::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'ov_lang.optionvaluelang_optionvalue_id = ov.optionvalue_id AND ov_lang.optionvaluelang_lang_id = ' . $langId, 'ov_lang');
 
-            $srch->joinTable(Option::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'o.option_id = o_lang.optionlang_option_id AND o_lang.optionlang_lang_id = '.$langId, 'o_lang');
+            $srch->joinTable(Option::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'o.option_id = o_lang.optionlang_option_id AND o_lang.optionlang_lang_id = ' . $langId, 'o_lang');
         }
 
         $srch->addCondition('optionvalue_id', 'IN', $opValArr);
@@ -602,19 +603,19 @@ class SellerProduct extends MyAppModel
         $db = FatApp::getDb();
         $sql = "SELECT commsetting_fees,
 			CASE
-				WHEN commsetting_product_id = '". $product_id ."' AND commsetting_user_id = '". $selprod_user_id ."' AND commsetting_prodcat_id IN (".implode(",", $catIds).") THEN 10
-  				WHEN commsetting_product_id = '". $product_id ."' AND commsetting_user_id = '". $selprod_user_id ."' AND commsetting_prodcat_id = '0' THEN 9
-				WHEN commsetting_product_id = '". $product_id ."' AND commsetting_user_id = 0 AND commsetting_prodcat_id IN (".implode(",", $catIds).") THEN 8
-				WHEN commsetting_product_id = '". $product_id ."' AND commsetting_user_id = '0' AND commsetting_prodcat_id = '0' THEN 7
+				WHEN commsetting_product_id = '" . $product_id . "' AND commsetting_user_id = '" . $selprod_user_id . "' AND commsetting_prodcat_id IN (" . implode(",", $catIds) . ") THEN 10
+  				WHEN commsetting_product_id = '" . $product_id . "' AND commsetting_user_id = '" . $selprod_user_id . "' AND commsetting_prodcat_id = '0' THEN 9
+				WHEN commsetting_product_id = '" . $product_id . "' AND commsetting_user_id = 0 AND commsetting_prodcat_id IN (" . implode(",", $catIds) . ") THEN 8
+				WHEN commsetting_product_id = '" . $product_id . "' AND commsetting_user_id = '0' AND commsetting_prodcat_id = '0' THEN 7
 
-				WHEN commsetting_product_id = 0 AND commsetting_user_id = '". $selprod_user_id ."' AND commsetting_prodcat_id IN (".implode(",", $catIds).") THEN 6
-				WHEN commsetting_product_id = 0 AND commsetting_user_id = '". $selprod_user_id ."' AND commsetting_prodcat_id = 0 THEN 5
+				WHEN commsetting_product_id = 0 AND commsetting_user_id = '" . $selprod_user_id . "' AND commsetting_prodcat_id IN (" . implode(",", $catIds) . ") THEN 6
+				WHEN commsetting_product_id = 0 AND commsetting_user_id = '" . $selprod_user_id . "' AND commsetting_prodcat_id = 0 THEN 5
 
-				WHEN commsetting_product_id = 0 AND commsetting_user_id = 0 AND commsetting_prodcat_id IN (".implode(",", $catIds).") THEN 4
+				WHEN commsetting_product_id = 0 AND commsetting_user_id = 0 AND commsetting_prodcat_id IN (" . implode(",", $catIds) . ") THEN 4
 
 				WHEN (commsetting_product_id = '0' AND commsetting_user_id = '0' AND commsetting_prodcat_id = '0') THEN 1
 			END
-       		as matches FROM ". Commission::DB_TBL ." WHERE commsetting_deleted = 0 order by matches desc, commsetting_fees desc  limit 0,1";
+       		as matches FROM " . Commission::DB_TBL . " WHERE commsetting_deleted = 0 order by matches desc, commsetting_fees desc  limit 0,1";
         $rs = $db->query($sql);
         if ($row = $db->fetch($rs)) {
             return $row['commsetting_fees'];
@@ -633,9 +634,9 @@ class SellerProduct extends MyAppModel
         }
 
         $srch = new SearchBase(ProductGroup::DB_PRODUCT_TO_GROUP, 'ptg');
-        $srch->joinTable(static::DB_TBL, 'INNER JOIN', 'ptg.'.ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'selprod_id = sp.selprod_id', 'sp');
+        $srch->joinTable(static::DB_TBL, 'INNER JOIN', 'ptg.' . ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'selprod_id = sp.selprod_id', 'sp');
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'sp.selprod_product_id = p.product_id', 'p');
-        $srch->joinTable(ProductGroup::DB_TBL, 'INNER JOIN', 'ptg.'.ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX.'prodgroup_id = pg.prodgroup_id', 'pg');
+        $srch->joinTable(ProductGroup::DB_TBL, 'INNER JOIN', 'ptg.' . ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'prodgroup_id = pg.prodgroup_id', 'pg');
         $srch->joinTable(
             SellerProduct::DB_TBL_SELLER_PROD_SPCL_PRICE,
             'LEFT OUTER JOIN',
@@ -649,10 +650,10 @@ class SellerProduct extends MyAppModel
         $srch->addCondition('sp.selprod_available_from', '<=', $now);
 
         if ($lang_id > 0) {
-            $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp.selprod_id = sp_l.selprodlang_selprod_id AND selprodlang_lang_id = '.$lang_id, 'sp_l');
+            $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp.selprod_id = sp_l.selprodlang_selprod_id AND selprodlang_lang_id = ' . $lang_id, 'sp_l');
             $srch->addFld('selprod_title');
 
-            $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND productlang_lang_id = '.$lang_id, 'p_l');
+            $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND productlang_lang_id = ' . $lang_id, 'p_l');
             $srch->addFld('IFNULL(product_name, product_identifier) as product_name');
         }
 
@@ -660,7 +661,7 @@ class SellerProduct extends MyAppModel
             $srch->addCondition( ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'selprod_id', '=', $selprod_id );
         } */
 
-        $srch->addMultipleFields(array('selprod_id', 'product_id', 'IFNULL(splprice_price, selprod_price) AS theprice','IF(selprod_stock > 0, 1, 0) AS in_stock', 'selprod_sold_count', 'CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found', 'ptg.ptg_is_main_product'  ));
+        $srch->addMultipleFields(array('selprod_id', 'product_id', 'IFNULL(splprice_price, selprod_price) AS theprice', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'selprod_sold_count', 'CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found', 'ptg.ptg_is_main_product'  ));
         $srch->addOrder('ptg_is_main_product', 'DESC');
         $srch->addOrder('product_name');
         $srch->doNotCalculateRecords();
@@ -679,9 +680,9 @@ class SellerProduct extends MyAppModel
         $lang_id = FatUtility::int($lang_id);
 
         $srch = new SearchBase(ProductGroup::DB_PRODUCT_TO_GROUP, 'ptg');
-        $srch->joinTable(static::DB_TBL, 'INNER JOIN', 'ptg.'.ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'selprod_id = sp.selprod_id', 'sp');
+        $srch->joinTable(static::DB_TBL, 'INNER JOIN', 'ptg.' . ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'selprod_id = sp.selprod_id', 'sp');
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'sp.selprod_product_id = p.product_id', 'p');
-        $srch->joinTable(ProductGroup::DB_TBL, 'INNER JOIN', 'ptg.'.ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX.'prodgroup_id = pg.prodgroup_id', 'pg');
+        $srch->joinTable(ProductGroup::DB_TBL, 'INNER JOIN', 'ptg.' . ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'prodgroup_id = pg.prodgroup_id', 'pg');
 
         $srch->addCondition(ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'selprod_id', '=', $this->mainTableRecordId);
         $srch->addCondition('pg.prodgroup_active', '=', applicationConstants::ACTIVE);
@@ -693,7 +694,7 @@ class SellerProduct extends MyAppModel
         $srch->doNotLimitRecords();
 
         if ($lang_id > 0) {
-            $srch->joinTable(ProductGroup::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pg.prodgroup_id = pg_l.prodgrouplang_prodgroup_id AND pg_l.prodgrouplang_lang_id = '.$lang_id, 'pg_l');
+            $srch->joinTable(ProductGroup::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pg.prodgroup_id = pg_l.prodgrouplang_prodgroup_id AND pg_l.prodgrouplang_lang_id = ' . $lang_id, 'pg_l');
             $srch->addFld('IFNULL(prodgroup_name, prodgroup_identifier) as prodgroup_name');
         }
         $srch->addMultipleFields(array( 'selprod_id', 'ptg_prodgroup_id', 'pg.prodgroup_price' ));
@@ -717,14 +718,14 @@ class SellerProduct extends MyAppModel
     public static function searchRelatedProducts($lang_id, $criteria = array())
     {
         $srch = new SearchBase(static::DB_TBL_RELATED_PRODUCTS);
-        $srch->joinTable(static::DB_TBL, 'INNER JOIN', static::DB_TBL_PREFIX.'id = '.static::DB_TBL_RELATED_PRODUCTS_PREFIX.'recommend_sellerproduct_id');
-        $srch->joinTable(static::DB_TBL.'_lang', 'LEFT JOIN', 'slang.'.static::DB_TBL_LANG_PREFIX.'selprod_id = '.static::DB_TBL_RELATED_PRODUCTS_PREFIX . 'recommend_sellerproduct_id AND '.static::DB_TBL_LANG_PREFIX.'lang_id = '.$lang_id, 'slang');
-        $srch->joinTable(Product::DB_TBL, 'LEFT JOIN', Product::DB_TBL_PREFIX.'id = '.static::DB_TBL_PREFIX.'product_id');
-        $srch->joinTable(Product::DB_TBL.'_lang', 'LEFT JOIN', 'lang.productlang_product_id = '.static::DB_TBL_LANG_PREFIX . 'selprod_id AND productlang_lang_id = '.$lang_id, 'lang');
+        $srch->joinTable(static::DB_TBL, 'INNER JOIN', static::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_RELATED_PRODUCTS_PREFIX . 'recommend_sellerproduct_id');
+        $srch->joinTable(static::DB_TBL . '_lang', 'LEFT JOIN', 'slang.' . static::DB_TBL_LANG_PREFIX . 'selprod_id = ' . static::DB_TBL_RELATED_PRODUCTS_PREFIX . 'recommend_sellerproduct_id AND ' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $lang_id, 'slang');
+        $srch->joinTable(Product::DB_TBL, 'LEFT JOIN', Product::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_PREFIX . 'product_id');
+        $srch->joinTable(Product::DB_TBL . '_lang', 'LEFT JOIN', 'lang.productlang_product_id = ' . static::DB_TBL_LANG_PREFIX . 'selprod_id AND productlang_lang_id = ' . $lang_id, 'lang');
         if (!empty($criteria)) {
             $srch->addMultipleFields($criteria);
         } else {
-            $srch->addMultipleFields(array('related_sellerproduct_id', 'selprod_id', 'IFNULL(product_identifier ,product_name) as product_name', 'IFNULL(selprod_title, IFNULL(product_name, product_identifier)) as selprod_title', 'product_identifier','selprod_price','product_image_updated_on'));
+            $srch->addMultipleFields(array('related_sellerproduct_id', 'selprod_id', 'IFNULL(product_identifier ,product_name) as product_name', 'IFNULL(selprod_title, IFNULL(product_name, product_identifier)) as selprod_title', 'product_identifier', 'selprod_price', 'product_image_updated_on'));
         }
         return $srch;
     }
@@ -755,7 +756,7 @@ class SellerProduct extends MyAppModel
         }
 
         $db = FatApp::getDb();
-        if (!$db->updateFromArray(static::DB_TBL, array( static::DB_TBL_PREFIX . 'deleted' => 1), array('smt' => static::DB_TBL_PREFIX . 'id = ?','vals' => array($selprod_id)))) {
+        if (!$db->updateFromArray(static::DB_TBL, array( static::DB_TBL_PREFIX . 'deleted' => 1), array('smt' => static::DB_TBL_PREFIX . 'id = ?', 'vals' => array($selprod_id)))) {
             $this->error = $db->getError();
             return false;
         }
@@ -778,7 +779,7 @@ class SellerProduct extends MyAppModel
         );
         $srch->addCondition('pp.ppoint_type', '=', $policy_type);
         $srch->addCondition('sppolicy_selprod_id', '=', $selprod_id);
-        $srch->addMultipleFields(array('ppoint_id','ifnull(ppoint_title,ppoint_identifier) ppoint_title'));
+        $srch->addMultipleFields(array('ppoint_id', 'ifnull(ppoint_title,ppoint_identifier) ppoint_title'));
         $srch->doNotCalculateRecords();
         $srch->addOrder('pp.ppoint_display_order');
         if ($deleted == false) {
@@ -804,7 +805,7 @@ class SellerProduct extends MyAppModel
         } else {
             $prodSrch->addCondition('selprod_id', '=', $selProdId);
         }
-        $prodSrch->addMultipleFields(array('selprod_id', 'product_id','product_identifier', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title, IFNULL(product_name, product_identifier)) as selprod_title'));
+        $prodSrch->addMultipleFields(array('selprod_id', 'product_id', 'product_identifier', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title, IFNULL(product_name, product_identifier)) as selprod_title'));
         $prodSrch->addGroupBy('selprod_id');
         $productRs = $prodSrch->getResultSet();
         $products = FatApp::getDb()->fetchAll($productRs, 'selprod_id');
@@ -828,7 +829,7 @@ class SellerProduct extends MyAppModel
                 $variantStr .= (true === $toHtml) ? '<br/>' : ' - ';
                 $counter = 1;
                 foreach ($options as $op) {
-                    $variantStr .= (true === $toHtml) ? $op['option_name'].': '.$op['optionvalue_name'] : $op['optionvalue_name'];
+                    $variantStr .= (true === $toHtml) ? $op['option_name'] . ': ' . $op['optionvalue_name'] : $op['optionvalue_name'];
                     if ($counter != count($options)) {
                         $variantStr .= (true === $toHtml) ? '<br/>' : ' - ';
                     }
@@ -861,26 +862,26 @@ class SellerProduct extends MyAppModel
             return false;
         }
 
-        $keyword = preg_replace('/-'.$this->mainTableRecordId.'$/', '', $keyword);
+        $keyword = preg_replace('/-' . $this->mainTableRecordId . '$/', '', $keyword);
         $seoUrl = CommonHelper::seoUrl($keyword);
 
         switch (strtolower($type)) {
             case 'reviews':
-                $originalUrl = Product::PRODUCT_REVIEWS_ORGINAL_URL.$this->mainTableRecordId;
+                $originalUrl = Product::PRODUCT_REVIEWS_ORGINAL_URL . $this->mainTableRecordId;
                 $seoUrl = preg_replace('/-reviews$/', '', $seoUrl);
-                $seoUrl.=  '-reviews';
+                $seoUrl .= '-reviews';
                 break;
             case 'moresellers':
-                $originalUrl = Product::PRODUCT_MORE_SELLERS_ORGINAL_URL.$this->mainTableRecordId;
+                $originalUrl = Product::PRODUCT_MORE_SELLERS_ORGINAL_URL . $this->mainTableRecordId;
                 $seoUrl = preg_replace('/-sellers$/', '', $seoUrl);
-                $seoUrl.=  '-sellers';
+                $seoUrl .= '-sellers';
                 break;
             default:
-                $originalUrl = Product::PRODUCT_VIEW_ORGINAL_URL.$this->mainTableRecordId;
+                $originalUrl = Product::PRODUCT_VIEW_ORGINAL_URL . $this->mainTableRecordId;
                 break;
         }
 
-        $seoUrl.= '-'.$this->mainTableRecordId;
+        $seoUrl .= '-' . $this->mainTableRecordId;
 
         $customUrl = UrlRewrite::getValidSeoUrl($seoUrl, $originalUrl);
         return UrlRewrite::update($originalUrl, $customUrl);
@@ -907,7 +908,7 @@ class SellerProduct extends MyAppModel
         $userId = FatUtility::int($userId);
 
         $srch = static::getSearchObject();
-        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id and p.product_deleted = '.applicationConstants::NO.' and p.product_active = '.applicationConstants::YES, 'p');
+        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id and p.product_deleted = ' . applicationConstants::NO . ' and p.product_active = ' . applicationConstants::YES, 'p');
 
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addCondition('selprod_user_id', '=', $userId);
@@ -936,13 +937,13 @@ class SellerProduct extends MyAppModel
 
     public function joinFavouriteProducts($srch, $user_id)
     {
-        $srch->joinTable(Product::DB_TBL_PRODUCT_FAVORITE, 'LEFT OUTER JOIN', 'ufp.ufp_selprod_id = selprod_id and ufp.ufp_user_id = '.$user_id, 'ufp');
+        $srch->joinTable(Product::DB_TBL_PRODUCT_FAVORITE, 'LEFT OUTER JOIN', 'ufp.ufp_selprod_id = selprod_id and ufp.ufp_user_id = ' . $user_id, 'ufp');
     }
 
     public static function specialPriceForm($langId)
     {
         $frm = new Form('frmSellerProductSpecialPrice');
-        $fld = $frm->addFloatField(Labels::getLabel('LBL_Special_Price', $langId).CommonHelper::concatCurrencySymbolWithAmtLbl(), 'splprice_price');
+        $fld = $frm->addFloatField(Labels::getLabel('LBL_Special_Price', $langId) . CommonHelper::concatCurrencySymbolWithAmtLbl(), 'splprice_price');
         $fld->requirements()->setPositive();
         $fld = $frm->addDateField(Labels::getLabel('LBL_Price_Start_Date', $langId), 'splprice_start_date', '', array('readonly' => 'readonly'));
         $fld->requirements()->setRequired();
@@ -982,7 +983,7 @@ class SellerProduct extends MyAppModel
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tuc.credential_user_id = sp.selprod_user_id', 'tuc');
         $srch->joinTable(static::DB_TBL_SELLER_PROD_SPCL_PRICE, 'INNER JOIN', 'spp.splprice_selprod_id = sp.selprod_id', 'spp');
-        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$langId, 'p_l');
+        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $langId, 'p_l');
 
         $srch->addMultipleFields(
             array(
@@ -994,7 +995,7 @@ class SellerProduct extends MyAppModel
         }
         if (!empty($keyword)) {
             $cnd = $srch->addCondition('product_name', 'like', "%$keyword%");
-            $cnd->attachCondition('selprod_title', 'LIKE', '%'. $keyword . '%', 'OR');
+            $cnd->attachCondition('selprod_title', 'LIKE', '%' . $keyword . '%', 'OR');
         }
 
         if (0 < $userId) {
@@ -1017,7 +1018,7 @@ class SellerProduct extends MyAppModel
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tuc.credential_user_id = sp.selprod_user_id', 'tuc');
         $srch->joinTable(SellerProductVolumeDiscount::DB_TBL, 'INNER JOIN', 'vd.voldiscount_selprod_id = sp.selprod_id', 'vd');
-        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$langId, 'p_l');
+        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $langId, 'p_l');
         $srch->addMultipleFields(
             array(
             'selprod_id', 'credential_username', 'voldiscount_min_qty', 'voldiscount_percentage', 'IFNULL(product_name, product_identifier) as product_name', 'selprod_title', 'voldiscount_id')
@@ -1030,7 +1031,7 @@ class SellerProduct extends MyAppModel
 
         if ($keyword != '') {
             $cnd = $srch->addCondition('product_name', 'like', "%$keyword%");
-            $cnd->attachCondition('selprod_title', 'LIKE', '%'. $keyword . '%', 'OR');
+            $cnd->attachCondition('selprod_title', 'LIKE', '%' . $keyword . '%', 'OR');
         }
 
         if (0 < $userId) {
@@ -1055,8 +1056,8 @@ class SellerProduct extends MyAppModel
     public static function searchSellerProducts($langId, $userId, $keyword = '')
     {
         $srch = SellerProduct::getSearchObject($langId);
-        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id and p.product_deleted = '.applicationConstants::NO.' and p.product_active = '.applicationConstants::YES, 'p');
-        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$langId, 'p_l');
+        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id and p.product_deleted = ' . applicationConstants::NO . ' and p.product_active = ' . applicationConstants::YES, 'p');
+        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $langId, 'p_l');
         if ($keyword) {
             $cnd = $srch->addCondition('product_name', 'like', "%$keyword%");
             $cnd->attachCondition('selprod_title', 'LIKE', "%$keyword%");
@@ -1104,9 +1105,9 @@ class SellerProduct extends MyAppModel
         $languages = Language::getAllNames();
         foreach ($languages as $langId => $langName) {
             $selProdMeta = array(
-            'metalang_lang_id'=>$langId,
-            'metalang_meta_id'=>$metaId,
-            'meta_title'=>static::getProductDisplayTitle($selprod_id, $langId),
+            'metalang_lang_id' => $langId,
+            'metalang_meta_id' => $metaId,
+            'meta_title' => static::getProductDisplayTitle($selprod_id, $langId),
             );
 
             $metaObj = new MetaTag($metaId);

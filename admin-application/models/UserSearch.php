@@ -1,8 +1,8 @@
 <?php
+
 class UserSearch extends SearchBase
 {
-    
-    public function __construct() 
+    public function __construct()
     {
         parent::__construct('tbl_users', 'u');
         
@@ -13,15 +13,15 @@ class UserSearch extends SearchBase
         $this->addOrder('user_regdate', 'DESC');
         
         $this->addMultipleFields(
-            array (
+            array(
             'user_id',
             'user_name',
             'user_phone',
             'user_regdate',
             'credential_username',
             'credential_active',
-            'credential_verified' 
-            ) 
+            'credential_verified'
+            )
         );
     }
 }

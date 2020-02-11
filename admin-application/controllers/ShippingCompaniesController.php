@@ -1,4 +1,5 @@
 <?php
+
 class ShippingCompaniesController extends AdminBaseController
 {
     public function __construct($action)
@@ -28,7 +29,7 @@ class ShippingCompaniesController extends AdminBaseController
         $srch->addOrder('scompany_id', 'DESC');
 
         $rs = $srch->getResultSet();
-        $records =array();
+        $records = array();
         if ($rs) {
             $records = FatApp::getDb()->fetchAll($rs);
         }
@@ -41,7 +42,7 @@ class ShippingCompaniesController extends AdminBaseController
     public function form($shippingCompanyId)
     {
         $this->objPrivilege->canViewShippingCompanies();
-        $shippingCompanyId =  FatUtility::int($shippingCompanyId);
+        $shippingCompanyId = FatUtility::int($shippingCompanyId);
 
         $frm = $this->getForm($shippingCompanyId);
 
@@ -50,7 +51,7 @@ class ShippingCompaniesController extends AdminBaseController
         FatUtility::dieJsonError( Message::getHtml() );
         } */
         if (0 < $shippingCompanyId) {
-            $data = ShippingCompanies::getAttributesById($shippingCompanyId, array('scompany_id','scompany_identifier','scompany_active'));
+            $data = ShippingCompanies::getAttributesById($shippingCompanyId, array('scompany_id', 'scompany_identifier', 'scompany_active'));
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
@@ -93,7 +94,7 @@ class ShippingCompaniesController extends AdminBaseController
         $newTabLangId = 0;
         if ($scompany_id > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = ShippingCompanies::getAttributesByLangId($langId, $scompany_id)) {
                     $newTabLangId = $langId;
                     break;
@@ -165,9 +166,9 @@ class ShippingCompaniesController extends AdminBaseController
         unset($post['lang_id']);
 
         $data = array(
-        'scompanylang_lang_id'=>$lang_id,
-        'scompanylang_scompany_id'=>$scompany_id,
-        'scompany_name'=>$post['scompany_name']
+        'scompanylang_lang_id' => $lang_id,
+        'scompanylang_scompany_id' => $scompany_id,
+        'scompany_name' => $post['scompany_name']
         );
 
         $sCompanyObj = new ShippingCompanies($scompany_id);
@@ -186,9 +187,9 @@ class ShippingCompaniesController extends AdminBaseController
             }
         }
 
-        $newTabLangId=0;
+        $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach ($languages as $langId =>$langName) {
+        foreach ($languages as $langId => $langName) {
             if (!$row = ShippingCompanies::getAttributesByLangId($langId, $scompany_id)) {
                 $newTabLangId = $langId;
                 break;
@@ -282,7 +283,7 @@ class ShippingCompaniesController extends AdminBaseController
 
     private function getForm($scompany_id = 0)
     {
-        $scompany_id =  FatUtility::int($scompany_id);
+        $scompany_id = FatUtility::int($scompany_id);
 
         $frm = new Form('frmShippingCompany');
         $frm->addHiddenField('', 'scompany_id', $scompany_id);

@@ -1,4 +1,5 @@
 <?php
+
 class Importexport extends ImportexportCommon
 {
     public const DB_TBL_SETTINGS = 'tbl_import_export_settings';
@@ -89,8 +90,8 @@ class Importexport extends ImportexportCommon
     public static function getOptionContentTypeArr($langId)
     {
         $arr = array(
-        static::LABEL_OPTIONS=>Labels::getLabel('LBL_Options', $langId),
-        static::LABEL_OPTIONS_VALUES=>Labels::getLabel('LBL_Option_Values', $langId),
+        static::LABEL_OPTIONS => Labels::getLabel('LBL_Options', $langId),
+        static::LABEL_OPTIONS_VALUES => Labels::getLabel('LBL_Option_Values', $langId),
         );
         return $arr;
     }
@@ -98,11 +99,11 @@ class Importexport extends ImportexportCommon
     public static function getProductCatalogContentTypeArr($langId)
     {
         $arr = array(
-        static::PRODUCT_CATALOG=>Labels::getLabel('LBL_Product_Catalog', $langId),
-        static::PRODUCT_OPTION=>Labels::getLabel('LBL_Product_Options', $langId),
-        static::PRODUCT_TAG=>Labels::getLabel('LBL_Product_Tags', $langId),
-        static::PRODUCT_SPECIFICATION=>Labels::getLabel('LBL_Product_Specifications', $langId),
-        static::PRODUCT_SHIPPING=>Labels::getLabel('LBL_Product_Shipping', $langId),
+        static::PRODUCT_CATALOG => Labels::getLabel('LBL_Product_Catalog', $langId),
+        static::PRODUCT_OPTION => Labels::getLabel('LBL_Product_Options', $langId),
+        static::PRODUCT_TAG => Labels::getLabel('LBL_Product_Tags', $langId),
+        static::PRODUCT_SPECIFICATION => Labels::getLabel('LBL_Product_Specifications', $langId),
+        static::PRODUCT_SHIPPING => Labels::getLabel('LBL_Product_Shipping', $langId),
         );
         return $arr;
     }
@@ -110,14 +111,14 @@ class Importexport extends ImportexportCommon
     public static function getSellerProductContentTypeArr($langId)
     {
         $arr = array(
-        static::SELLER_PROD_GENERAL_DATA=>Labels::getLabel('LBL_General_Data', $langId),
-        static::SELLER_PROD_OPTION=>Labels::getLabel('LBL_Product_Options', $langId),
-        static::SELLER_PROD_SEO=>Labels::getLabel('LBL_SEO_Data', $langId),
-        static::SELLER_PROD_SPECIAL_PRICE=>Labels::getLabel('LBL_Special_Price', $langId),
-        static::SELLER_PROD_VOLUME_DISCOUNT=>Labels::getLabel('LBL_Volume_Discount', $langId),
-        static::SELLER_PROD_BUY_TOGTHER=>Labels::getLabel('LBL_Buy_togther', $langId),
-        static::SELLER_PROD_RELATED_PRODUCT=>Labels::getLabel('LBL_Related_products', $langId),
-        static::SELLER_PROD_POLICY=>Labels::getLabel('LBL_Seller_Product_Policy', $langId),
+        static::SELLER_PROD_GENERAL_DATA => Labels::getLabel('LBL_General_Data', $langId),
+        static::SELLER_PROD_OPTION => Labels::getLabel('LBL_Product_Options', $langId),
+        static::SELLER_PROD_SEO => Labels::getLabel('LBL_SEO_Data', $langId),
+        static::SELLER_PROD_SPECIAL_PRICE => Labels::getLabel('LBL_Special_Price', $langId),
+        static::SELLER_PROD_VOLUME_DISCOUNT => Labels::getLabel('LBL_Volume_Discount', $langId),
+        static::SELLER_PROD_BUY_TOGTHER => Labels::getLabel('LBL_Buy_togther', $langId),
+        static::SELLER_PROD_RELATED_PRODUCT => Labels::getLabel('LBL_Related_products', $langId),
+        static::SELLER_PROD_POLICY => Labels::getLabel('LBL_Seller_Product_Policy', $langId),
         );
         return $arr;
     }
@@ -125,8 +126,8 @@ class Importexport extends ImportexportCommon
     public static function getDataRangeArr($langId)
     {
         $arr = array(
-        static::BY_ID_RANGE=>Labels::getLabel('LBL_By_id_range', $langId),
-        static::BY_BATCHES=>Labels::getLabel('LBL_By_batches', $langId),
+        static::BY_ID_RANGE => Labels::getLabel('LBL_By_id_range', $langId),
+        static::BY_BATCHES => Labels::getLabel('LBL_By_batches', $langId),
         );
         return $arr;
     }
@@ -170,11 +171,11 @@ class Importexport extends ImportexportCommon
         $sheetName = '';
 
         if (isset($offset) && isset($noOfRows)) {
-            $sheetName .='_'.$offset;
+            $sheetName .= '_' . $offset;
         }
 
         if (isset($minId) && isset($maxId)) {
-            $sheetName .='_'.$minId.'-'.$maxId;
+            $sheetName .= '_' . $minId . '-' . $maxId;
         }
 
         $default = false;
@@ -342,11 +343,11 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         $sheetName = '';
         if (isset($offset) && isset($noOfRows)) {
-            $sheetName .='_'.$offset;
+            $sheetName .= '_' . $offset;
         }
 
         if (isset($minId) && isset($maxId)) {
-            $sheetName .='_'.$minId.'-'.$maxId;
+            $sheetName .= '_' . $minId . '-' . $maxId;
         }
         switch ($type) {
             case Importexport::TYPE_BRANDS:
@@ -569,7 +570,7 @@ class Importexport extends ImportexportCommon
         }
 
         $srch = ProductCategory::getSearchObject(false, $langId, false);
-        $srch->addMultipleFields(array('prodcat_id','prodcat_identifier','prodcat_parent','IFNULL(prodcat_name,prodcat_identifier) as prodcat_name','prodcat_description','prodcat_featured','prodcat_active','prodcat_deleted','prodcat_display_order'));
+        $srch->addMultipleFields(array('prodcat_id', 'prodcat_identifier', 'prodcat_parent', 'IFNULL(prodcat_name,prodcat_identifier) as prodcat_name', 'prodcat_description', 'prodcat_featured', 'prodcat_active', 'prodcat_deleted', 'prodcat_display_order'));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addOrder('prodcat_id', 'asc');
@@ -595,7 +596,7 @@ class Importexport extends ImportexportCommon
                 }
 
                 if ('urlrewrite_custom' == $columnKey) {
-                    $colValue = isset($urlKeywords[ProductCategory::REWRITE_URL_PREFIX.$row['prodcat_id']]) ? $urlKeywords[ProductCategory::REWRITE_URL_PREFIX.$row['prodcat_id']] : '';
+                    $colValue = isset($urlKeywords[ProductCategory::REWRITE_URL_PREFIX . $row['prodcat_id']]) ? $urlKeywords[ProductCategory::REWRITE_URL_PREFIX . $row['prodcat_id']] : '';
                 }
 
                 if ('prodcat_parent_identifier' == $columnKey) {
@@ -611,10 +612,10 @@ class Importexport extends ImportexportCommon
     public function exportCategoryMedia($langId)
     {
         $srch = ProductCategory::getSearchObject(false, false, false);
-        $srch->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'prodcat_id = afile_record_id and ( afile_type = '.AttachedFile::FILETYPE_CATEGORY_ICON.' or afile_type = '.AttachedFile::FILETYPE_CATEGORY_BANNER.')');
+        $srch->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'prodcat_id = afile_record_id and ( afile_type = ' . AttachedFile::FILETYPE_CATEGORY_ICON . ' or afile_type = ' . AttachedFile::FILETYPE_CATEGORY_BANNER . ')');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('prodcat_id','prodcat_identifier','afile_record_id','afile_record_subid','afile_type','afile_lang_id','afile_screen','afile_physical_path','afile_name','afile_display_order'));
+        $srch->addMultipleFields(array('prodcat_id', 'prodcat_identifier', 'afile_record_id', 'afile_record_subid', 'afile_type', 'afile_lang_id', 'afile_screen', 'afile_physical_path', 'afile_name', 'afile_display_order'));
         $rs = $srch->getResultSet();
 
         $sheetData = array();
@@ -636,7 +637,7 @@ class Importexport extends ImportexportCommon
                 }
 
                 if ('afile_type' == $columnKey) {
-                    $colValue =  array_key_exists($row['afile_type'], $fileTypeArr) ? $fileTypeArr[ $row['afile_type'] ] : '';
+                    $colValue = array_key_exists($row['afile_type'], $fileTypeArr) ? $fileTypeArr[ $row['afile_type'] ] : '';
                 }
 
                 $sheetData[] = $colValue;
@@ -667,7 +668,7 @@ class Importexport extends ImportexportCommon
 
                 if (false !== $errMsg) {
                     $errorInRow = true;
-                    $err = array($rowIndex,($colIndex + 1),$errMsg);
+                    $err = array($rowIndex, ($colIndex + 1), $errMsg);
                     CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
                 } else {
                     if (in_array($columnKey, array( 'prodcat_featured', 'prodcat_active', 'prodcat_deleted', 'prodcat_display_order' ))) {
@@ -739,8 +740,8 @@ class Importexport extends ImportexportCommon
                 if ($categoryId) {
                     /* Lang Data [*/
                     $langData = array(
-                    'prodcatlang_prodcat_id'=> $categoryId,
-                    'prodcatlang_lang_id'=> $langId,
+                    'prodcatlang_prodcat_id' => $categoryId,
+                    'prodcatlang_lang_id' => $langId,
                     );
                     $langData = array_merge($langData, $prodCatlangDataArr);
 
@@ -874,7 +875,7 @@ class Importexport extends ImportexportCommon
                     );
 
                     $physical_path = explode('/', $categoryMediaArr['afile_physical_path']);
-                    if (AttachedFile::FILETYPE_BULK_IMAGES_PATH ==  $physical_path[0].'/') {
+                    if (AttachedFile::FILETYPE_BULK_IMAGES_PATH == $physical_path[0] . '/') {
                         $afileObj = new AttachedFile();
 
                         $moved = $afileObj->moveAttachment($categoryMediaArr['afile_physical_path'], $categoryMediaArr['afile_type'], $categoryMediaArr['afile_record_id'], 0, $categoryMediaArr['afile_name'], $categoryMediaArr['afile_display_order'], true, $categoryMediaArr['afile_lang_id']);
@@ -920,7 +921,7 @@ class Importexport extends ImportexportCommon
         $srch = Brand::getSearchObject($langId, false);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('brand_id','brand_identifier','iFNULL(brand_name,brand_identifier) as brand_name','brand_short_description','brand_featured','brand_active','brand_deleted'));
+        $srch->addMultipleFields(array('brand_id', 'brand_identifier', 'iFNULL(brand_name,brand_identifier) as brand_name', 'brand_short_description', 'brand_featured', 'brand_active', 'brand_deleted'));
         $srch->addCondition('brand_status', '=', applicationConstants::ACTIVE);
         if ($userId) {
             $srch->addCondition('brand_active', '=', applicationConstants::ACTIVE);
@@ -949,7 +950,7 @@ class Importexport extends ImportexportCommon
                         }
                         break;
                     case 'urlrewrite_custom':
-                        $colValue = isset($urlKeywords[Brand::REWRITE_URL_PREFIX.$row['brand_id']]) ? $urlKeywords[Brand::REWRITE_URL_PREFIX.$row['brand_id']] : '';
+                        $colValue = isset($urlKeywords[Brand::REWRITE_URL_PREFIX . $row['brand_id']]) ? $urlKeywords[Brand::REWRITE_URL_PREFIX . $row['brand_id']] : '';
                         break;
                 }
 
@@ -982,14 +983,14 @@ class Importexport extends ImportexportCommon
 
                 if (false !== $errMsg) {
                     $errorInRow = true;
-                    $err = array($rowIndex,($colIndex + 1),$errMsg);
+                    $err = array($rowIndex, ($colIndex + 1), $errMsg);
                     CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
                 } else {
-                    if (in_array($columnKey, array('brand_featured', 'brand_active','brand_deleted'))) {
+                    if (in_array($columnKey, array('brand_featured', 'brand_active', 'brand_deleted'))) {
                         if ($this->settings['CONF_USE_O_OR_1']) {
-                            $colValue = (FatUtility::int($colValue) == 1)?applicationConstants::YES:applicationConstants::NO;
+                            $colValue = (FatUtility::int($colValue) == 1) ? applicationConstants::YES : applicationConstants::NO;
                         } else {
-                            $colValue = (strtoupper($colValue) == 'YES')?applicationConstants::YES:applicationConstants::NO;
+                            $colValue = (strtoupper($colValue) == 'YES') ? applicationConstants::YES : applicationConstants::NO;
                         }
                     }
 
@@ -1027,8 +1028,8 @@ class Importexport extends ImportexportCommon
                 if ($brandId) {
                     /* Lang Data [*/
                     $langData = array(
-                    'brandlang_brand_id'=> $brandId,
-                    'brandlang_lang_id'=> $langId,
+                    'brandlang_brand_id' => $brandId,
+                    'brandlang_lang_id' => $langId,
                     );
                     $langData = array_merge($langData, $brandlangDataArr);
 
@@ -1072,7 +1073,7 @@ class Importexport extends ImportexportCommon
         $srch->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'brand_id = afile_record_id');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('brand_id','brand_identifier','afile_record_id','afile_record_subid','afile_lang_id','afile_screen','afile_physical_path','afile_name','afile_display_order','afile_type'));
+        $srch->addMultipleFields(array('brand_id', 'brand_identifier', 'afile_record_id', 'afile_record_subid', 'afile_lang_id', 'afile_screen', 'afile_physical_path', 'afile_name', 'afile_display_order', 'afile_type'));
         $srch->addCondition('brand_status', '=', applicationConstants::ACTIVE);
         $rs = $srch->getResultSet();
 
@@ -1119,7 +1120,7 @@ class Importexport extends ImportexportCommon
         $languageCodes = Language::getAllCodesAssoc(true);
         $languageIds = array_flip($languageCodes);
 
-        $brandIdentifiers =  Brand::getAllIdentifierAssoc();
+        $brandIdentifiers = Brand::getAllIdentifierAssoc();
         $brandIds = array_flip($brandIdentifiers);
 
         $coloumArr = $this->getBrandMediaColoumArr($langId);
@@ -1158,9 +1159,9 @@ class Importexport extends ImportexportCommon
                             break;
 
                         case 'afile_type':
-                            $fileType  = AttachedFile::FILETYPE_BRAND_LOGO;
+                            $fileType = AttachedFile::FILETYPE_BRAND_LOGO;
                             if ('image' == mb_strtolower($colValue)) {
-                                $fileType  = AttachedFile::FILETYPE_BRAND_IMAGE;
+                                $fileType = AttachedFile::FILETYPE_BRAND_IMAGE;
                             }
                             $colValue = $fileType;
                             break;
@@ -1172,7 +1173,7 @@ class Importexport extends ImportexportCommon
 
             if (false === $errorInRow && count($brandsMediaArr)) {
                 $dataToSaveArr = array(
-                'afile_record_subid'=> 0,
+                'afile_record_subid' => 0,
                 );
                 $dataToSaveArr = array_merge($dataToSaveArr, $brandsMediaArr);
 
@@ -1204,7 +1205,7 @@ class Importexport extends ImportexportCommon
                     );
 
                     $physical_path = explode('/', $brandsMediaArr['afile_physical_path']);
-                    if (AttachedFile::FILETYPE_BULK_IMAGES_PATH ==  $physical_path[0].'/') {
+                    if (AttachedFile::FILETYPE_BULK_IMAGES_PATH == $physical_path[0] . '/') {
                         $afileObj = new AttachedFile();
 
                         $moved = $afileObj->moveAttachment($brandsMediaArr['afile_physical_path'], $fileType, $dataToSaveArr['afile_record_id'], 0, $brandsMediaArr['afile_name'], $brandsMediaArr['afile_display_order'], true, $brandsMediaArr['afile_lang_id']);
@@ -1266,14 +1267,14 @@ class Importexport extends ImportexportCommon
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.credential_user_id = tp.product_seller_id', 'uc');
         $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'b.brand_id = tp.product_brand_id', 'b');
         if ($userId) {
-            $srch->joinTable(Product::DB_TBL_PRODUCT_SHIPPING, 'LEFT OUTER JOIN', 'ps.ps_product_id = tp.product_id and ps.ps_user_id = '.$userId, 'ps');
+            $srch->joinTable(Product::DB_TBL_PRODUCT_SHIPPING, 'LEFT OUTER JOIN', 'ps.ps_product_id = tp.product_id and ps.ps_user_id = ' . $userId, 'ps');
         } else {
             $srch->joinTable(Product::DB_TBL_PRODUCT_SHIPPING, 'LEFT OUTER JOIN', 'ps.ps_product_id = tp.product_id and ps.ps_user_id = tp.product_seller_id', 'ps');
         }
         $srch->joinTable(Countries::DB_TBL, 'LEFT OUTER JOIN', 'c.country_id = ps.ps_from_country_id', 'c');
         //$srch->joinTable(Countries::DB_TBL,'LEFT OUTER JOIN','c.country_id = tp.product_ship_country','c');
         $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(['tp.*','tp_l.*','ps.ps_from_country_id','ps.ps_free','user_id','credential_username','brand_id','brand_identifier','country_id','country_code', 'product_warranty']);
+        $srch->addMultipleFields(['tp.*', 'tp_l.*', 'ps.ps_from_country_id', 'ps.ps_free', 'user_id', 'credential_username', 'brand_id', 'brand_identifier', 'country_id', 'country_code', 'product_warranty']);
         if ($userId) {
             $cnd = $srch->addCondition('tp.product_seller_id', '=', $userId, 'OR');
             $cnd->attachCondition('tp.product_seller_id', '=', 0);
@@ -1319,11 +1320,11 @@ class Importexport extends ImportexportCommon
                         $productCategories = $this->getProductCategoriesByProductId($row['product_id']);
                     }
 
-                    $colValue =  ($productCategories) ? implode(',', $productCategories) : '';
+                    $colValue = ($productCategories) ? implode(',', $productCategories) : '';
                 }
 
                 if ('credential_username' == $columnKey) {
-                    $colValue = (!empty($row[$columnKey]) ? $row['credential_username'] :  Labels::getLabel('LBL_Admin', $langId));
+                    $colValue = (!empty($row[$columnKey]) ? $row['credential_username'] : Labels::getLabel('LBL_Admin', $langId));
                 }
 
                 if ('product_type_identifier' == $columnKey) {
@@ -1401,11 +1402,11 @@ class Importexport extends ImportexportCommon
 
                 if ($this->isDefaultSheetData($langId) && in_array($columnKey, array('product_seller_id', 'credential_username', 'product_id', 'product_identifier'))) {
                     if ($this->settings['CONF_USE_USER_ID']) {
-                        $colTitle = ('product_seller_id' != $columnKey) ? $coloumArr['product_seller_id'] :$columnTitle;
+                        $colTitle = ('product_seller_id' != $columnKey) ? $coloumArr['product_seller_id'] : $columnTitle;
                         $colInd = $this->headingIndexArr[$colTitle];
                         $userId = $this->getCell($row, $colInd, '');
                     } else {
-                        $colTitle = ('credential_username' != $columnKey)? $coloumArr['credential_username']:$columnTitle;
+                        $colTitle = ('credential_username' != $columnKey) ? $coloumArr['credential_username'] : $columnTitle;
 
                         if ('credential_username' == $columnKey) {
                             $columnKey = 'product_seller_id';
@@ -1443,7 +1444,7 @@ class Importexport extends ImportexportCommon
                         $breakForeach = true;
                     }
 
-                    if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && in_array($columnKey, array('credential_username','product_seller_id')) && 0 < $userId) {
+                    if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && in_array($columnKey, array('credential_username', 'product_seller_id')) && 0 < $userId) {
                         if (!array_key_exists($userId, $userProdUploadLimit)) {
                             $userProdUploadLimit[$userId] = SellerPackages::getAllowedLimit($userId, $langId, 'spackage_products_allowed');
                         }
@@ -1456,7 +1457,7 @@ class Importexport extends ImportexportCommon
 
                 if (false !== $errMsg) {
                     $errorInRow = true;
-                    $err = array($rowIndex,($colIndex + 1),$errMsg);
+                    $err = array($rowIndex, ($colIndex + 1), $errMsg);
                     CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
                     if ($breakForeach) {
                         break;
@@ -1547,7 +1548,7 @@ class Importexport extends ImportexportCommon
                             } else {
                                 $colValue = $prodTypeIdentifierArr[$colValue];
                             }
-                            $prodType =  $colValue;
+                            $prodType = $colValue;
                             break;
                         case 'tax_category_id':
                             $taxCatId = $colValue;
@@ -1646,8 +1647,8 @@ class Importexport extends ImportexportCommon
                     $productId = $prodData['product_id'];
 
                     if ($sellerId) {
-                        $prodDataArr['product_featured'] = $prodData['product_featured'] ;
-                        $prodDataArr['product_approved'] = $prodData['product_approved'] ;
+                        $prodDataArr['product_featured'] = $prodData['product_featured'];
+                        $prodDataArr['product_approved'] = $prodData['product_approved'];
                         unset($prodDataArr['product_added_on']);
                     }
 
@@ -1662,11 +1663,11 @@ class Importexport extends ImportexportCommon
 
                     if ($sellerId && $this->isDefaultSheetData($langId)) {
                         $tempData = array(
-                        'pti_product_id' =>$productId,
-                        'pti_product_temp_id' =>$productId,
-                        'pti_user_id' =>$userId,
+                        'pti_product_id' => $productId,
+                        'pti_product_temp_id' => $productId,
+                        'pti_user_id' => $userId,
                         );
-                        $this->db->deleteRecords(Importexport::DB_TBL_TEMP_PRODUCT_IDS, array('smt'=> 'pti_product_id = ? and pti_user_id = ?','vals' => array($productId,$userId) ));
+                        $this->db->deleteRecords(Importexport::DB_TBL_TEMP_PRODUCT_IDS, array('smt' => 'pti_product_id = ? and pti_user_id = ?', 'vals' => array($productId, $userId) ));
                         $this->db->insertFromArray(Importexport::DB_TBL_TEMP_PRODUCT_IDS, $tempData, false, array(), $tempData);
                     }
                 } else {
@@ -1693,11 +1694,11 @@ class Importexport extends ImportexportCommon
 
                         if ($sellerId) {
                             $tempData = array(
-                            'pti_product_id' =>$productId,
-                            'pti_product_temp_id' =>$productId,
-                            'pti_user_id' =>$userId,
+                            'pti_product_id' => $productId,
+                            'pti_product_temp_id' => $productId,
+                            'pti_user_id' => $userId,
                             );
-                            $this->db->deleteRecords(Importexport::DB_TBL_TEMP_PRODUCT_IDS, array('smt'=> 'pti_product_id = ? and pti_user_id = ?','vals' => array($productId,$userId) ));
+                            $this->db->deleteRecords(Importexport::DB_TBL_TEMP_PRODUCT_IDS, array('smt' => 'pti_product_id = ? and pti_user_id = ?', 'vals' => array($productId, $userId) ));
                             $this->db->insertFromArray(Importexport::DB_TBL_TEMP_PRODUCT_IDS, $tempData, false, array(), $tempData);
                         }
                     }
@@ -1715,8 +1716,8 @@ class Importexport extends ImportexportCommon
 
                     if ($this->isDefaultSheetData($langId)) {
                         $productSellerShiping = array(
-                        'ps_product_id'=>$productId,
-                        'ps_user_id'=>$userId,
+                        'ps_product_id' => $productId,
+                        'ps_user_id' => $userId,
                         );
                         $productSellerShiping = array_merge($productSellerShiping, $prodShippingArr);
 
@@ -1725,8 +1726,8 @@ class Importexport extends ImportexportCommon
 
                     /* Lang Data [*/
                     $langData = array(
-                    'productlang_product_id'=> $productId,
-                    'productlang_lang_id'=> $langId,
+                    'productlang_product_id' => $productId,
+                    'productlang_lang_id' => $langId,
                     );
 
                     $langData = array_merge($langData, $prodlangDataArr);
@@ -1736,14 +1737,14 @@ class Importexport extends ImportexportCommon
 
                     if ($this->isDefaultSheetData($langId)) {
                         /* Product Categories [*/
-                        $this->db->deleteRecords(Product::DB_TBL_PRODUCT_TO_CATEGORY, array('smt'=> Product::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'product_id = ?','vals' => array($productId) ));
+                        $this->db->deleteRecords(Product::DB_TBL_PRODUCT_TO_CATEGORY, array('smt' => Product::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX . 'product_id = ?', 'vals' => array($productId) ));
 
                         $categoryIdsArr = explode(',', $categoryIds);
                         if (!empty($categoryIdsArr)) {
                             foreach ($categoryIdsArr as $catId) {
                                 $catData = array(
-                                'ptc_product_id'=>$productId,
-                                'ptc_prodcat_id'=>$catId
+                                'ptc_product_id' => $productId,
+                                'ptc_prodcat_id' => $catId
                                 );
                                 $this->db->insertFromArray(Product::DB_TBL_PRODUCT_TO_CATEGORY, $catData);
                             }
@@ -1751,9 +1752,9 @@ class Importexport extends ImportexportCommon
                         /*]*/
 
                         /* Tax Category [*/
-                        $this->db->deleteRecords(Tax::DB_TBL_PRODUCT_TO_TAX, array('smt'=> 'ptt_product_id = ? and ptt_seller_user_id = ?','vals' => array( $productId, $userId ) ));
+                        $this->db->deleteRecords(Tax::DB_TBL_PRODUCT_TO_TAX, array('smt' => 'ptt_product_id = ? and ptt_seller_user_id = ?', 'vals' => array( $productId, $userId ) ));
                         if ($taxCatId) {
-                            $this->db->insertFromArray(Tax::DB_TBL_PRODUCT_TO_TAX, array('ptt_product_id'=>$productId,'ptt_taxcat_id'=>$taxCatId,'ptt_seller_user_id'=>$userId));
+                            $this->db->insertFromArray(Tax::DB_TBL_PRODUCT_TO_TAX, array('ptt_product_id' => $productId, 'ptt_taxcat_id' => $taxCatId, 'ptt_seller_user_id' => $userId));
                         }
                         /*]*/
                     }
@@ -1783,9 +1784,9 @@ class Importexport extends ImportexportCommon
     {
         $userId = FatUtility::int($userId);
         $srch = Product::getSearchObject();
-        $srch->joinTable(Product::DB_PRODUCT_TO_OPTION, 'INNER JOIN', Product::DB_TBL_PREFIX.'id = '.Product::DB_PRODUCT_TO_OPTION_PREFIX.'product_id');
-        $srch->joinTable(Option::DB_TBL, 'INNER JOIN', Option::DB_TBL_PREFIX.'id = '.Product::DB_PRODUCT_TO_OPTION_PREFIX.'option_id');
-        $srch->addMultipleFields(array('option_id','option_identifier','product_id','product_identifier'));
+        $srch->joinTable(Product::DB_PRODUCT_TO_OPTION, 'INNER JOIN', Product::DB_TBL_PREFIX . 'id = ' . Product::DB_PRODUCT_TO_OPTION_PREFIX . 'product_id');
+        $srch->joinTable(Option::DB_TBL, 'INNER JOIN', Option::DB_TBL_PREFIX . 'id = ' . Product::DB_PRODUCT_TO_OPTION_PREFIX . 'option_id');
+        $srch->addMultipleFields(array('option_id', 'option_identifier', 'product_id', 'product_identifier'));
         $srch->doNotCalculateRecords();
         if ($userId) {
             $cnd = $srch->addCondition('tp.product_seller_id', '=', $userId, 'OR');
@@ -1850,7 +1851,7 @@ class Importexport extends ImportexportCommon
 
                 if (false !== $errMsg) {
                     $errorInRow = true;
-                    $err = array($rowIndex,($colIndex + 1),$errMsg);
+                    $err = array($rowIndex, ($colIndex + 1), $errMsg);
                     CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
                 } else {
                     if (in_array($columnKey, array( 'product_identifier', 'option_identifier' ))) {
@@ -1863,7 +1864,7 @@ class Importexport extends ImportexportCommon
                                     $prodIndetifierArr = array_merge($prodIndetifierArr, $res);
                                 }
                             }
-                            $colValue =   array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
+                            $colValue = array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
                         } else {
                             if (!array_key_exists($colValue, $optionIdentifierArr)) {
                                 $res = $this->getAllOptions(false, $colValue);
@@ -1903,7 +1904,7 @@ class Importexport extends ImportexportCommon
             if (false === $errorInRow && count($optionsArr)) {
                 if (!in_array($productId, $prodArr)) {
                     $prodArr[] = $productId;
-                    $this->db->deleteRecords(Product::DB_PRODUCT_TO_OPTION, array('smt'=> 'prodoption_product_id = ? ','vals' => array( $productId ) ));
+                    $this->db->deleteRecords(Product::DB_PRODUCT_TO_OPTION, array('smt' => 'prodoption_product_id = ? ', 'vals' => array( $productId ) ));
                 }
 
                 $this->db->insertFromArray(Product::DB_PRODUCT_TO_OPTION, $optionsArr);
@@ -1930,9 +1931,9 @@ class Importexport extends ImportexportCommon
     {
         $userId = FatUtility::int($userId);
         $srch = Product::getSearchObject();
-        $srch->joinTable(Product::DB_PRODUCT_TO_TAG, 'INNER JOIN', Product::DB_TBL_PREFIX.'id = '.Product::DB_PRODUCT_TO_TAG_PREFIX.'product_id');
-        $srch->joinTable(Tag::DB_TBL, 'INNER JOIN', Tag::DB_TBL_PREFIX.'id = '.Product::DB_PRODUCT_TO_TAG_PREFIX.'tag_id');
-        $srch->addMultipleFields(array('tag_id','tag_identifier','product_id','product_identifier'));
+        $srch->joinTable(Product::DB_PRODUCT_TO_TAG, 'INNER JOIN', Product::DB_TBL_PREFIX . 'id = ' . Product::DB_PRODUCT_TO_TAG_PREFIX . 'product_id');
+        $srch->joinTable(Tag::DB_TBL, 'INNER JOIN', Tag::DB_TBL_PREFIX . 'id = ' . Product::DB_PRODUCT_TO_TAG_PREFIX . 'tag_id');
+        $srch->addMultipleFields(array('tag_id', 'tag_identifier', 'product_id', 'product_identifier'));
         $srch->doNotCalculateRecords();
         if ($userId) {
             $cnd = $srch->addCondition('tp.product_seller_id', '=', $userId, 'OR');
@@ -1997,7 +1998,7 @@ class Importexport extends ImportexportCommon
 
                 if (false !== $errMsg) {
                     $errorInRow = true;
-                    $err = array($rowIndex,($colIndex + 1),$errMsg);
+                    $err = array($rowIndex, ($colIndex + 1), $errMsg);
                     CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
                 } else {
                     if (in_array($columnKey, array( 'product_identifier', 'tag_identifier' ))) {
@@ -2010,7 +2011,7 @@ class Importexport extends ImportexportCommon
                                     $prodIndetifierArr = array_merge($prodIndetifierArr, $res);
                                 }
                             }
-                            $colValue =   array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
+                            $colValue = array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
                         } else {
                             if (!array_key_exists($colValue, $tagIndetifierArr)) {
                                 $res = $this->getAllTags(false, $colValue);
@@ -2050,7 +2051,7 @@ class Importexport extends ImportexportCommon
             if (false === $errorInRow && count($tagsArr)) {
                 if (!in_array($productId, $prodArr)) {
                     $prodArr[] = $productId;
-                    $this->db->deleteRecords(Product::DB_PRODUCT_TO_TAG, array('smt'=> 'ptt_product_id = ? ','vals' => array($productId) ));
+                    $this->db->deleteRecords(Product::DB_PRODUCT_TO_TAG, array('smt' => 'ptt_product_id = ? ', 'vals' => array($productId) ));
                 }
 
                 $this->db->insertFromArray(Product::DB_PRODUCT_TO_TAG, $tagsArr);
@@ -2077,9 +2078,9 @@ class Importexport extends ImportexportCommon
     {
         $userId = FatUtility::int($userId);
         $srch = Product::getSearchObject();
-        $srch->joinTable(Product::DB_PRODUCT_SPECIFICATION, 'INNER JOIN', Product::DB_TBL_PREFIX.'id = '.Product::DB_PRODUCT_SPECIFICATION_PREFIX.'product_id');
-        $srch->joinTable(Product::DB_PRODUCT_LANG_SPECIFICATION, 'LEFT OUTER JOIN', Product::DB_PRODUCT_SPECIFICATION_PREFIX.'id = '.Product::DB_PRODUCT_LANG_SPECIFICATION_PREFIX.'prodspec_id');
-        $srch->addMultipleFields(array('prodspec_id','prodspeclang_lang_id','prodspec_name','prodspec_value','product_id','product_identifier'));
+        $srch->joinTable(Product::DB_PRODUCT_SPECIFICATION, 'INNER JOIN', Product::DB_TBL_PREFIX . 'id = ' . Product::DB_PRODUCT_SPECIFICATION_PREFIX . 'product_id');
+        $srch->joinTable(Product::DB_PRODUCT_LANG_SPECIFICATION, 'LEFT OUTER JOIN', Product::DB_PRODUCT_SPECIFICATION_PREFIX . 'id = ' . Product::DB_PRODUCT_LANG_SPECIFICATION_PREFIX . 'prodspec_id');
+        $srch->addMultipleFields(array('prodspec_id', 'prodspeclang_lang_id', 'prodspec_name', 'prodspec_value', 'product_id', 'product_identifier'));
         $srch->joinTable(Language::DB_TBL, 'INNER JOIN', 'language_id = prodspeclang_lang_id');
         $srch->doNotCalculateRecords();
         if ($userId) {
@@ -2158,7 +2159,7 @@ class Importexport extends ImportexportCommon
 
                 if (false !== $errMsg) {
                     $errorInRow = true;
-                    $err = array($rowIndex,($colIndex + 1),$errMsg);
+                    $err = array($rowIndex, ($colIndex + 1), $errMsg);
                     CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
                 } else {
                     switch ($columnKey) {
@@ -2188,7 +2189,7 @@ class Importexport extends ImportexportCommon
                             break;
                         case 'prodspeclang_lang_code':
                             $columnKey = 'prodspeclang_lang_id';
-                            $colValue =  array_key_exists($colValue, $languageCodes) ? $languageCodes[$colValue] : 0;
+                            $colValue = array_key_exists($colValue, $languageCodes) ? $languageCodes[$colValue] : 0;
                             if (0 >= $colValue) {
                                 $invalid = true;
                             }
@@ -2219,9 +2220,9 @@ class Importexport extends ImportexportCommon
                     $rs = $srch->getResultSet();
                     $res = FatApp::getDb()->fetchAll($rs);
                     foreach ($res as $val) {
-                        $this->db->deleteRecords(Product::DB_PRODUCT_LANG_SPECIFICATION, array('smt'=> 'prodspeclang_prodspec_id = ? ','vals' => array($val['prodspec_id']) ));
+                        $this->db->deleteRecords(Product::DB_PRODUCT_LANG_SPECIFICATION, array('smt' => 'prodspeclang_prodspec_id = ? ', 'vals' => array($val['prodspec_id']) ));
                     }
-                    $this->db->deleteRecords(Product::DB_PRODUCT_SPECIFICATION, array('smt'=> 'prodspec_product_id = ? ','vals' => array( $productId ) ));
+                    $this->db->deleteRecords(Product::DB_PRODUCT_SPECIFICATION, array('smt' => 'prodspec_product_id = ? ', 'vals' => array( $productId ) ));
                 }
 
                 if (!in_array($languageId, $langArr)) {
@@ -2239,7 +2240,7 @@ class Importexport extends ImportexportCommon
                 }
 
                 $langData = array(
-                'prodspeclang_prodspec_id'=>$prodspec_id
+                'prodspeclang_prodspec_id' => $prodspec_id
                 );
                 $langData = array_merge($langData, $prodSpecLangArr);
 
@@ -2266,17 +2267,17 @@ class Importexport extends ImportexportCommon
     {
         $userId = FatUtility::int($userId);
         $srch = Product::getSearchObject();
-        $srch->joinTable(Product::DB_PRODUCT_TO_SHIP, 'INNER JOIN', Product::DB_TBL_PREFIX.'id = '.Product::DB_PRODUCT_TO_SHIP_PREFIX.'prod_id', 'tpsr');
-        $srch->joinTable(ShippingCompanies::DB_TBL, 'LEFT OUTER JOIN', ShippingCompanies::DB_TBL_PREFIX.'id = tpsr.pship_company', 'tsc');
+        $srch->joinTable(Product::DB_PRODUCT_TO_SHIP, 'INNER JOIN', Product::DB_TBL_PREFIX . 'id = ' . Product::DB_PRODUCT_TO_SHIP_PREFIX . 'prod_id', 'tpsr');
+        $srch->joinTable(ShippingCompanies::DB_TBL, 'LEFT OUTER JOIN', ShippingCompanies::DB_TBL_PREFIX . 'id = tpsr.pship_company', 'tsc');
         $srch->joinTable(ShippingDurations::DB_TBL, 'LEFT OUTER JOIN', 'tpsr.pship_duration=tsd.sduration_id', 'tsd');
         $srch->joinTable(ShippingMethods::DB_TBL, 'LEFT OUTER JOIN', 'tpsr.pship_method = tsm.shippingapi_id', 'tsm');
         $srch->joinTable(Countries::DB_TBL, 'LEFT OUTER JOIN', 'tpsr.pship_country = c.country_id', 'c');
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'tpsr.pship_user_id = u.user_id', 'u');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tpsr.pship_user_id = uc.credential_user_id', 'uc');
-        $srch->addMultipleFields(array('product_id','product_identifier','scompany_id','scompany_identifier','shippingapi_id','shippingapi_identifier','sduration_id','sduration_identifier','user_id','credential_username','country_id','country_code','pship_charges','pship_additional_charges'));
+        $srch->addMultipleFields(array('product_id', 'product_identifier', 'scompany_id', 'scompany_identifier', 'shippingapi_id', 'shippingapi_identifier', 'sduration_id', 'sduration_identifier', 'user_id', 'credential_username', 'country_id', 'country_code', 'pship_charges', 'pship_additional_charges'));
         $srch->doNotCalculateRecords();
         if ($userId) {
-            $srch->addDirectCondition("( ( tp.product_seller_id = '".$userId."' and (tpsr.pship_user_id = '".$userId."' or tpsr.pship_user_id = 0)) or (tp.product_seller_id = 0 and (tpsr.pship_user_id = '".$userId."' or tpsr.pship_user_id = 0)))");
+            $srch->addDirectCondition("( ( tp.product_seller_id = '" . $userId . "' and (tpsr.pship_user_id = '" . $userId . "' or tpsr.pship_user_id = 0)) or (tp.product_seller_id = 0 and (tpsr.pship_user_id = '" . $userId . "' or tpsr.pship_user_id = 0)))");
         }
 
         if (isset($offset) && isset($noOfRows)) {
@@ -2363,7 +2364,7 @@ class Importexport extends ImportexportCommon
                                         $prodIndetifierArr = array_merge($prodIndetifierArr, $res);
                                     }
                                 }
-                                $colValue =   array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
+                                $colValue = array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
                             }
                             $productId = $colValue;
 
@@ -2472,15 +2473,15 @@ class Importexport extends ImportexportCommon
 
             if (false === $errorInRow && count($prodShipArr)) {
                 $data = array(
-                'pship_method'=>ShippingCompanies::MANUAL_SHIPPING,
+                'pship_method' => ShippingCompanies::MANUAL_SHIPPING,
                 );
                 $data = array_merge($prodShipArr, $data);
 
                 if (!in_array($productId, $prodArr)) {
                     $prodArr[] = $productId;
-                    $where =  array('smt'=> 'pship_prod_id = ? ','vals' => array( $productId ) );
+                    $where = array('smt' => 'pship_prod_id = ? ', 'vals' => array( $productId ) );
                     if ($sellerId) {
-                        $where =  array('smt'=> 'pship_prod_id = ? and pship_user_id = ?','vals' => array( $productId, $sellerId ) );
+                        $where = array('smt' => 'pship_prod_id = ? and pship_user_id = ?', 'vals' => array( $productId, $sellerId ) );
                     }
                     $this->db->deleteRecords(Product::DB_PRODUCT_TO_SHIP, $where);
                 }
@@ -2508,7 +2509,7 @@ class Importexport extends ImportexportCommon
     {
         $userId = FatUtility::int($userId);
         $srch = Product::getSearchObject();
-        $srch->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'product_id = afile_record_id and ( afile_type = '.AttachedFile::FILETYPE_PRODUCT_IMAGE.')');
+        $srch->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'product_id = afile_record_id and ( afile_type = ' . AttachedFile::FILETYPE_PRODUCT_IMAGE . ')');
         $srch->joinTable(OptionValue::DB_TBL, 'LEFT OUTER JOIN', 'ov.optionvalue_id = afile_record_subid', 'ov');
         $srch->joinTable(Option::DB_TBL, 'LEFT OUTER JOIN', 'o.option_id = ov.optionvalue_option_id', 'o');
         $srch->doNotCalculateRecords();
@@ -2529,7 +2530,7 @@ class Importexport extends ImportexportCommon
             $srch->addCondition('product_id', '<=', $maxId);
         }
 
-        $srch->addMultipleFields(array('product_id','product_identifier','afile_record_id','afile_record_subid','afile_type','afile_lang_id','afile_screen','afile_physical_path','afile_name','afile_display_order','optionvalue_identifier','option_identifier','optionvalue_id','option_id'));
+        $srch->addMultipleFields(array('product_id', 'product_identifier', 'afile_record_id', 'afile_record_subid', 'afile_type', 'afile_lang_id', 'afile_screen', 'afile_physical_path', 'afile_name', 'afile_display_order', 'optionvalue_identifier', 'option_identifier', 'optionvalue_id', 'option_id'));
         $rs = $srch->getResultSet();
 
         $sheetData = array();
@@ -2668,7 +2669,7 @@ class Importexport extends ImportexportCommon
                             if ('optionvalue_identifier' == $columnKey) {
                                 $columnKey = 'afile_record_subid';
                                 $optionValueId = 0;
-                                $optionValueIndetifierArr[$optionId] = array_key_exists($optionId, $optionValueIndetifierArr)  ? $optionValueIndetifierArr[$optionId] : array();
+                                $optionValueIndetifierArr[$optionId] = array_key_exists($optionId, $optionValueIndetifierArr) ? $optionValueIndetifierArr[$optionId] : array();
 
                                 if (!empty($colValue) && !array_key_exists($colValue, $optionValueIndetifierArr[$optionId])) {
                                     $res = $this->getAllOptionValues($optionId, false, $colValue);
@@ -2739,7 +2740,7 @@ class Importexport extends ImportexportCommon
 
                     $physical_path = explode('/', $prodCatalogMediaArr['afile_physical_path']);
 
-                    if (AttachedFile::FILETYPE_BULK_IMAGES_PATH ==  $physical_path[0].'/') {
+                    if (AttachedFile::FILETYPE_BULK_IMAGES_PATH == $physical_path[0] . '/') {
                         $afileObj = new AttachedFile();
 
                         $moved = $afileObj->moveAttachment($prodCatalogMediaArr['afile_physical_path'], $fileType, $productId, $prodCatalogMediaArr['afile_record_subid'], $prodCatalogMediaArr['afile_name'], $prodCatalogMediaArr['afile_display_order'], false, $prodCatalogMediaArr['afile_lang_id']);
@@ -2778,14 +2779,14 @@ class Importexport extends ImportexportCommon
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = sp.selprod_user_id', 'u');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.credential_user_id = u.user_id', 'uc');
-        $srch->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'pa.afile_record_id = sp.selprod_id and afile_type = '.AttachedFile::FILETYPE_SELLER_PRODUCT_DIGITAL_DOWNLOAD, 'pa');
+        $srch->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'pa.afile_record_id = sp.selprod_id and afile_type = ' . AttachedFile::FILETYPE_SELLER_PRODUCT_DIGITAL_DOWNLOAD, 'pa');
         if ($userId) {
             $srch->addCondition('u.user_id', '=', $userId);
             $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         }
         $srch->doNotCalculateRecords();
         $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(array('sp.*','sp_l.*','pa.*','user_id','credential_username','product_id','product_identifier'));
+        $srch->addMultipleFields(array('sp.*', 'sp_l.*', 'pa.*', 'user_id', 'credential_username', 'product_id', 'product_identifier'));
 
         if (isset($offset) && isset($noOfRows)) {
             $srch->setPageNumber($offset);
@@ -2840,7 +2841,7 @@ class Importexport extends ImportexportCommon
             /*$srch->addCondition('selprod_deleted', '=', applicationConstants::NO);*/
         }
         $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(array('sp.*','sp_l.*','user_id','credential_username','product_id','product_identifier', 'selprod_return_age', 'selprod_cancellation_age'));
+        $srch->addMultipleFields(array('sp.*', 'sp_l.*', 'user_id', 'credential_username', 'product_id', 'product_identifier', 'selprod_return_age', 'selprod_cancellation_age'));
         if (isset($offset) && isset($noOfRows)) {
             $srch->setPageNumber($offset);
             $srch->setPageSize($noOfRows);
@@ -3055,11 +3056,11 @@ class Importexport extends ImportexportCommon
                         'spti_selprod_temp_id' => $sellerTempId,
                         'spti_user_id' => $userId,
                         );
-                        $this->db->deleteRecords(Importexport::DB_TBL_TEMP_SELPROD_IDS, array('smt'=> 'spti_selprod_id = ? and spti_user_id = ?','vals' => array( $selprodId, $userId ) ));
+                        $this->db->deleteRecords(Importexport::DB_TBL_TEMP_SELPROD_IDS, array('smt' => 'spti_selprod_id = ? and spti_user_id = ?', 'vals' => array( $selprodId, $userId ) ));
                         $this->db->insertFromArray(Importexport::DB_TBL_TEMP_SELPROD_IDS, $tempData, false, array(), $tempData);
                     }
                 } else {
-                    $selProdGenArr['selprod_code'] = $productId.'_';
+                    $selProdGenArr['selprod_code'] = $productId . '_';
                     if ($sellerId) {
                         unset($selProdGenArr['selprod_id']);
                         unset($selProdGenArr['selprod_sold_count']);
@@ -3075,11 +3076,11 @@ class Importexport extends ImportexportCommon
                         $selprodId = $this->db->getInsertId();
 
                         $tempData = array(
-                        'spti_selprod_id' =>$selprodId,
-                        'spti_selprod_temp_id' =>$sellerTempId,
-                        'spti_user_id' =>$userId,
+                        'spti_selprod_id' => $selprodId,
+                        'spti_selprod_temp_id' => $sellerTempId,
+                        'spti_user_id' => $userId,
                         );
-                        $this->db->deleteRecords(Importexport::DB_TBL_TEMP_SELPROD_IDS, array('smt'=> 'spti_selprod_id = ? and spti_user_id = ?','vals' => array( $selprodId, $userId ) ));
+                        $this->db->deleteRecords(Importexport::DB_TBL_TEMP_SELPROD_IDS, array('smt' => 'spti_selprod_id = ? and spti_user_id = ?', 'vals' => array( $selprodId, $userId ) ));
                         $this->db->insertFromArray(Importexport::DB_TBL_TEMP_SELPROD_IDS, $tempData, false, array(), $tempData);
                     }
                 }
@@ -3098,8 +3099,8 @@ class Importexport extends ImportexportCommon
 
                     /* Lang Data [ */
                     $langData = array(
-                    'selprodlang_selprod_id'=> $selprodId,
-                    'selprodlang_lang_id'=> $langId,
+                    'selprodlang_selprod_id' => $selprodId,
+                    'selprodlang_lang_id' => $langId,
                     );
                     $langData = array_merge($langData, $selProdGenLangArr);
                     $this->db->insertFromArray(SellerProduct::DB_TBL_LANG, $langData, false, array(), $langData);
@@ -3141,10 +3142,10 @@ class Importexport extends ImportexportCommon
         $srch = new SearchBase(SellerProduct::DB_TBL_SELLER_PROD_OPTIONS, 'spo');
         $srch->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', 'sp.selprod_id = spo.selprodoption_selprod_id', 'sp');
         $srch->joinTable(OptionValue::DB_TBL, 'INNER JOIN', 'spo.selprodoption_optionvalue_id = ov.optionvalue_id', 'ov');
-        $srch->joinTable(OptionValue::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'ov_lang.optionvaluelang_optionvalue_id = ov.optionvalue_id AND ov_lang.optionvaluelang_lang_id = '.$langId, 'ov_lang');
+        $srch->joinTable(OptionValue::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'ov_lang.optionvaluelang_optionvalue_id = ov.optionvalue_id AND ov_lang.optionvaluelang_lang_id = ' . $langId, 'ov_lang');
         $srch->joinTable(Option::DB_TBL, 'INNER JOIN', 'o.option_id = ov.optionvalue_option_id', 'o');
-        $srch->joinTable(Option::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'o.option_id = o_lang.optionlang_option_id AND o_lang.optionlang_lang_id = '.$langId, 'o_lang');
-        $srch->addMultipleFields(array('selprodoption_selprod_id','o.option_id', 'ov.optionvalue_id', 'option_identifier', 'optionvalue_identifier'));
+        $srch->joinTable(Option::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'o.option_id = o_lang.optionlang_option_id AND o_lang.optionlang_lang_id = ' . $langId, 'o_lang');
+        $srch->addMultipleFields(array('selprodoption_selprod_id', 'o.option_id', 'ov.optionvalue_id', 'option_identifier', 'optionvalue_identifier'));
         if ($userId) {
             $srch->addCondition('sp.selprod_user_id', '=', $userId);
         }
@@ -3291,7 +3292,7 @@ class Importexport extends ImportexportCommon
             if (false === $errorInRow) {
                 if (!in_array($selprodId, $selProdArr)) {
                     $selProdArr[] = $selprodId;
-                    $where = array('smt' => 'selprodoption_selprod_id = ?','vals' => array($selprodId));
+                    $where = array('smt' => 'selprodoption_selprod_id = ?', 'vals' => array($selprodId));
                     $this->db->deleteRecords(SellerProduct::DB_TBL_SELLER_PROD_OPTIONS, $where);
                 }
                 $selProdOptionsArr[$selprodId]['optionValueIds'][] = $optionValueId;
@@ -3319,12 +3320,12 @@ class Importexport extends ImportexportCommon
                     CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
                     continue;
                 }
-                $options['selprod_code'] = $productRow['selprod_product_id'].'_'.implode('_', $v['optionValueIds']);
+                $options['selprod_code'] = $productRow['selprod_product_id'] . '_' . implode('_', $v['optionValueIds']);
                 $sellerProdObj = new SellerProduct($k);
                 $sellerProdObj->assignValues($options);
                 if (!$sellerProdObj->save()) {
                     $errMsg = Labels::getLabel("MSG_Product_not_saved.", $langId);
-                    $err = array($v['row'], 'N/A',$errMsg);
+                    $err = array($v['row'], 'N/A', $errMsg);
                     CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
                     continue;
                 }
@@ -3352,12 +3353,12 @@ class Importexport extends ImportexportCommon
 
         $srch = SellerProduct::getSearchObject($langId);
         $srch->joinTable(MetaTag::DB_TBL, 'LEFT OUTER JOIN', 'sp.selprod_id = m.meta_record_id', 'm');
-        $srch->joinTable(MetaTag::DB_TBL_LANG, 'LEFT OUTER JOIN', 'm_l.metalang_meta_id = m.meta_id and m_l.metalang_lang_id = '.$langId, 'm_l');
+        $srch->joinTable(MetaTag::DB_TBL_LANG, 'LEFT OUTER JOIN', 'm_l.metalang_meta_id = m.meta_id and m_l.metalang_lang_id = ' . $langId, 'm_l');
         /* $srch->addCondition('meta_identifier', '!=', ''); */
         $srch->addCondition('meta_controller', '=', $metaTabArr[MetaTag::META_GROUP_PRODUCT_DETAIL]['controller']);
         $srch->addCondition('meta_action', '=', $metaTabArr[MetaTag::META_GROUP_PRODUCT_DETAIL]['action']);
         $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(array('sp.selprod_id','m.*','m_l.*'));
+        $srch->addMultipleFields(array('sp.selprod_id', 'm.*', 'm_l.*'));
 
         if ($userId) {
             $srch->addCondition('sp.selprod_user_id', '=', $userId);
@@ -3449,14 +3450,14 @@ class Importexport extends ImportexportCommon
                 $srch->addCondition('meta_controller', '=', $metaTabArr[MetaTag::META_GROUP_PRODUCT_DETAIL]['controller']);
                 $srch->addCondition('meta_action', '=', $metaTabArr[MetaTag::META_GROUP_PRODUCT_DETAIL]['action']);
                 $srch->addCondition('meta_record_id', '=', $selProdId);
-                $srch->addMultipleFields(array('meta_id','meta_record_id'));
+                $srch->addMultipleFields(array('meta_id', 'meta_record_id'));
                 $srch->doNotCalculateRecords();
                 $srch->setPageSize(1);
                 $rs = $srch->getResultSet();
                 $row = $this->db->fetch($rs);
                 if ($row && $row['meta_record_id'] === $selProdId) {
                     $metaId = $row['meta_id'];
-                    $where = array('smt' => 'meta_controller = ? AND meta_action = ? AND meta_record_id = ?', 'vals' => array( $metaTabArr[MetaTag::META_GROUP_PRODUCT_DETAIL]['controller'], $metaTabArr[MetaTag::META_GROUP_PRODUCT_DETAIL]['action'],$selProdId ) );
+                    $where = array('smt' => 'meta_controller = ? AND meta_action = ? AND meta_record_id = ?', 'vals' => array( $metaTabArr[MetaTag::META_GROUP_PRODUCT_DETAIL]['controller'], $metaTabArr[MetaTag::META_GROUP_PRODUCT_DETAIL]['action'], $selProdId ) );
                     $this->db->updateFromArray(MetaTag::DB_TBL, $data, $where);
                 } else {
                     if ($this->isDefaultSheetData($langId)) {
@@ -3469,8 +3470,8 @@ class Importexport extends ImportexportCommon
                 if (isset($metaId)) {
                     /* Lang Data [*/
                     $langData = array(
-                    'metalang_meta_id'=> $metaId,
-                    'metalang_lang_id'=> $langId,
+                    'metalang_meta_id' => $metaId,
+                    'metalang_lang_id' => $langId,
                     );
                     $langData = array_merge($langData, $selProdSeoLangArr);
                     $this->db->insertFromArray(MetaTag::DB_TBL_LANG, $langData, false, array(), $langData);
@@ -3501,7 +3502,7 @@ class Importexport extends ImportexportCommon
         $srch = SellerProduct::getSearchObject($langId);
         $srch->joinTable(SellerProduct::DB_TBL_SELLER_PROD_SPCL_PRICE, 'INNER JOIN', 'sp.selprod_id = spsp.splprice_selprod_id', 'spsp');
         $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(array('spsp.*','sp.selprod_id'));
+        $srch->addMultipleFields(array('spsp.*', 'sp.selprod_id'));
         if ($userId) {
             $srch->addCondition('sp.selprod_user_id', '=', $userId);
         }
@@ -3595,7 +3596,7 @@ class Importexport extends ImportexportCommon
             unset($sellerProdSplPriceArr['selprod_id']);
             if (false === $errorInRow && count($sellerProdSplPriceArr)) {
                 $data = array(
-                'splprice_selprod_id'=>$selProdId,
+                'splprice_selprod_id' => $selProdId,
                 );
                 $data = array_merge($data, $sellerProdSplPriceArr);
 
@@ -3603,7 +3604,7 @@ class Importexport extends ImportexportCommon
                 if (!empty($res)) {
                     if (!in_array($selProdId, $selProdArr)) {
                         $selProdArr[] = $selProdId;
-                        $where = array('smt' => 'splprice_selprod_id = ?','vals' => array($selProdId));
+                        $where = array('smt' => 'splprice_selprod_id = ?', 'vals' => array($selProdId));
                         $this->db->deleteRecords(SellerProduct::DB_TBL_SELLER_PROD_SPCL_PRICE, $where);
                     }
                 }
@@ -3633,7 +3634,7 @@ class Importexport extends ImportexportCommon
         $srch = SellerProduct::getSearchObject($langId);
         $srch->joinTable(SellerProductVolumeDiscount::DB_TBL, 'INNER JOIN', 'sp.selprod_id = spvd.voldiscount_selprod_id', 'spvd');
         $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(array('spvd.voldiscount_min_qty','spvd.voldiscount_percentage','sp.selprod_id'));
+        $srch->addMultipleFields(array('spvd.voldiscount_min_qty', 'spvd.voldiscount_percentage', 'sp.selprod_id'));
         if ($userId) {
             $srch->addCondition('sp.selprod_user_id', '=', $userId);
         }
@@ -3717,13 +3718,13 @@ class Importexport extends ImportexportCommon
             unset($selProdVolDisArr['selprod_id']);
             if (false === $errorInRow && count($selProdVolDisArr)) {
                 $data = array(
-                'voldiscount_selprod_id'=>$selProdId,
+                'voldiscount_selprod_id' => $selProdId,
                 );
                 $data = array_merge($data, $selProdVolDisArr);
 
                 if (!in_array($selProdId, $selProdArr)) {
                     $selProdArr[] = $selProdId;
-                    $where = array( 'smt' => 'voldiscount_selprod_id = ?','vals' => array( $selProdId ) );
+                    $where = array( 'smt' => 'voldiscount_selprod_id = ?', 'vals' => array( $selProdId ) );
                     $this->db->deleteRecords(SellerProductVolumeDiscount::DB_TBL, $where);
                 }
                 $this->db->insertFromArray(SellerProductVolumeDiscount::DB_TBL, $data);
@@ -3752,7 +3753,7 @@ class Importexport extends ImportexportCommon
         $srch = SellerProduct::getSearchObject($langId);
         $srch->joinTable(SellerProduct::DB_TBL_UPSELL_PRODUCTS, 'INNER JOIN', 'sp.selprod_id = spu.upsell_sellerproduct_id', 'spu');
         $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(array('spu.upsell_sellerproduct_id','spu.upsell_recommend_sellerproduct_id','sp.selprod_id'));
+        $srch->addMultipleFields(array('spu.upsell_sellerproduct_id', 'spu.upsell_recommend_sellerproduct_id', 'sp.selprod_id'));
         if ($userId) {
             $srch->addCondition('sp.selprod_user_id', '=', $userId);
         }
@@ -3814,7 +3815,7 @@ class Importexport extends ImportexportCommon
 
                 if (false !== $errMsg) {
                     $errorInRow = true;
-                    $err = array($rowIndex,($colIndex + 1),$errMsg);
+                    $err = array($rowIndex, ($colIndex + 1), $errMsg);
                     CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
                 } else {
                     if ('selprod_id' == $columnKey) {
@@ -3870,7 +3871,7 @@ class Importexport extends ImportexportCommon
             if (false === $errorInRow && count($selProdBuyTogetherArr)) {
                 if (!in_array($selProdId, $selProdArr)) {
                     $selProdArr[] = $selProdId;
-                    $where = array('smt' => 'upsell_sellerproduct_id = ?','vals' => array($selProdId));
+                    $where = array('smt' => 'upsell_sellerproduct_id = ?', 'vals' => array($selProdId));
                     $this->db->deleteRecords(SellerProduct::DB_TBL_UPSELL_PRODUCTS, $where);
                 }
 
@@ -3900,7 +3901,7 @@ class Importexport extends ImportexportCommon
         $srch = SellerProduct::getSearchObject($langId);
         $srch->joinTable(SellerProduct::DB_TBL_RELATED_PRODUCTS, 'INNER JOIN', 'sp.selprod_id = spr.related_sellerproduct_id', 'spr');
         $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(array('spr.related_sellerproduct_id','spr.related_recommend_sellerproduct_id','sp.selprod_id'));
+        $srch->addMultipleFields(array('spr.related_sellerproduct_id', 'spr.related_recommend_sellerproduct_id', 'sp.selprod_id'));
         if ($userId) {
             $srch->addCondition('sp.selprod_user_id', '=', $userId);
         }
@@ -3985,7 +3986,7 @@ class Importexport extends ImportexportCommon
             if (false === $errorInRow && count($sellerProdSplPriceArr)) {
                 if (!in_array($selProdId, $selProdArr)) {
                     $selProdArr[] = $selProdId;
-                    $where = array('smt' => 'related_sellerproduct_id = ?','vals' => array($selProdId));
+                    $where = array('smt' => 'related_sellerproduct_id = ?', 'vals' => array($selProdId));
                     $this->db->deleteRecords(SellerProduct::DB_TBL_RELATED_PRODUCTS, $where);
                 }
                 $this->db->insertFromArray(SellerProduct::DB_TBL_RELATED_PRODUCTS, $sellerProdSplPriceArr);
@@ -4015,7 +4016,7 @@ class Importexport extends ImportexportCommon
         $srch->joinTable(SellerProduct::DB_TBL_SELLER_PROD_POLICY, 'INNER JOIN', 'sp.selprod_id = spp.sppolicy_selprod_id', 'spp');
         $srch->joinTable(PolicyPoint::DB_TBL, 'INNER JOIN', 'spp.sppolicy_ppoint_id = pp.ppoint_id', 'pp');
         $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(array('pp.ppoint_identifier','sp.selprod_id','spp.sppolicy_ppoint_id'));
+        $srch->addMultipleFields(array('pp.ppoint_identifier', 'sp.selprod_id', 'spp.sppolicy_ppoint_id'));
         if ($userId) {
             $srch->addCondition('sp.selprod_user_id', '=', $userId);
         }
@@ -4135,7 +4136,7 @@ class Importexport extends ImportexportCommon
             if (false === $errorInRow && count($sellerProdPolicyArr)) {
                 if (!in_array($selProdId, $selProdArr)) {
                     $selProdArr[] = $selProdId;
-                    $where = array('smt' => 'sppolicy_selprod_id = ?','vals' => array($selProdId));
+                    $where = array('smt' => 'sppolicy_selprod_id = ?', 'vals' => array($selProdId));
                     $this->db->deleteRecords(SellerProduct::DB_TBL_SELLER_PROD_POLICY, $where);
                 }
                 $this->db->insertFromArray(SellerProduct::DB_TBL_SELLER_PROD_POLICY, $sellerProdPolicyArr);
@@ -4166,7 +4167,7 @@ class Importexport extends ImportexportCommon
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.credential_user_id = o.option_seller_id', 'uc');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('option_id','option_identifier','option_seller_id','option_type','option_deleted','option_is_separate_images','option_is_color','option_display_in_filter','IFNULL(option_name,option_identifier)option_name','credential_username'));
+        $srch->addMultipleFields(array('option_id', 'option_identifier', 'option_seller_id', 'option_type', 'option_deleted', 'option_is_separate_images', 'option_is_color', 'option_display_in_filter', 'IFNULL(option_name,option_identifier)option_name', 'credential_username'));
         $srch->addOrder('option_id', 'ASC');
         if ($userId) {
             $srch->addCondition('option_deleted', '=', applicationConstants::NO);
@@ -4229,7 +4230,7 @@ class Importexport extends ImportexportCommon
                     $err = array($rowIndex, ($colIndex + 1), $errMsg);
                     CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
                 } else {
-                    if ('credential_username' ==  $columnKey) {
+                    if ('credential_username' == $columnKey) {
                         $columnKey = 'option_seller_id';
                         $colValue = ($colValue == Labels::getLabel('LBL_Admin', $langId) ? '' : $colValue);
 
@@ -4271,7 +4272,7 @@ class Importexport extends ImportexportCommon
                 $data = array_merge($data, $optionsArr);
 
                 if ($this->settings['CONF_USE_OPTION_ID']) {
-                    $optionData =  Option::getAttributesById($data['option_id'], array('option_id'));
+                    $optionData = Option::getAttributesById($data['option_id'], array('option_id'));
                 } else {
                     $brandId = 0;
                     $optionData = Option::getAttributesByIdentifier($data['option_identifier'], array('option_id'));
@@ -4292,8 +4293,8 @@ class Importexport extends ImportexportCommon
                 if ($optionId) {
                     /* Lang Data [*/
                     $langData = array(
-                    'optionlang_option_id'=> $optionId,
-                    'optionlang_lang_id'=> $langId,
+                    'optionlang_option_id' => $optionId,
+                    'optionlang_lang_id' => $langId,
                     );
                     $langData = array_merge($langData, $optionsLangArr);
                     $this->db->insertFromArray(Option::DB_TBL_LANG, $langData, false, array(), $langData);
@@ -4332,7 +4333,7 @@ class Importexport extends ImportexportCommon
         $srch->joinTable(Option::DB_TBL, 'LEFT OUTER JOIN', 'ov.optionvalue_option_id = o.option_id', 'o');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('optionvalue_id','optionvalue_option_id','optionvalue_identifier','optionvalue_color_code','optionvalue_display_order','IFNULL(optionvalue_name,optionvalue_identifier) as optionvalue_name','option_identifier'));
+        $srch->addMultipleFields(array('optionvalue_id', 'optionvalue_option_id', 'optionvalue_identifier', 'optionvalue_color_code', 'optionvalue_display_order', 'IFNULL(optionvalue_name,optionvalue_identifier) as optionvalue_name', 'option_identifier'));
         $srch->addOrder('optionvalue_id', 'ASC');
         $rs = $srch->getResultSet();
 
@@ -4359,7 +4360,7 @@ class Importexport extends ImportexportCommon
         $optionIdentifierArr = array();
         $optionIdArr = array();
 
-        $optionValueObj= new OptionValue();
+        $optionValueObj = new OptionValue();
         $srchObj = OptionValue::getSearchObject();
 
         $coloumArr = $this->getOptionsValueColoumArr($langId);
@@ -4457,8 +4458,8 @@ class Importexport extends ImportexportCommon
                 if ($optionValueId) {
                     /* Lang Data [*/
                     $langData = array(
-                    'optionvaluelang_optionvalue_id'=> $optionValueId,
-                    'optionvaluelang_lang_id'=> $langId,
+                    'optionvaluelang_optionvalue_id' => $optionValueId,
+                    'optionvaluelang_lang_id' => $langId,
                     );
                     $langData = array_merge($langData, $sellerProdPolicyLangArr);
 
@@ -4488,7 +4489,7 @@ class Importexport extends ImportexportCommon
     {
         $userId = FatUtility::int($userId);
         $srch = Tag::getSearchObject($langId);
-        $srch->addMultipleFields(array('tag_id','tag_identifier','tag_user_id','tag_admin_id','tag_name','credential_username'));
+        $srch->addMultipleFields(array('tag_id', 'tag_identifier', 'tag_user_id', 'tag_admin_id', 'tag_name', 'credential_username'));
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = t.tag_user_id', 'u');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.credential_user_id = u.user_id', 'uc');
         $srch->doNotCalculateRecords();
@@ -4521,7 +4522,7 @@ class Importexport extends ImportexportCommon
     {
         $rowIndex = 1;
         $usernameArr = array();
-        $useTagId  = false;
+        $useTagId = false;
         if ($this->settings['CONF_USE_TAG_ID']) {
             $useTagId = true;
         }
@@ -4584,7 +4585,7 @@ class Importexport extends ImportexportCommon
                             $tagsLangArr[$columnKey] = $colValue;
                         } else {
                             if (isset($userId)) {
-                                $tagsArr['tag_admin_id']    = 0;
+                                $tagsArr['tag_admin_id'] = 0;
                             }
 
                             $tagsArr[$columnKey] = $colValue;
@@ -4608,8 +4609,8 @@ class Importexport extends ImportexportCommon
                 if ($tagId) {
                     /* Lang Data [*/
                     $langData = array(
-                    'taglang_tag_id'=> $tagId,
-                    'taglang_lang_id'=> $langId,
+                    'taglang_tag_id' => $tagId,
+                    'taglang_lang_id' => $langId,
                     );
                     $langData = array_merge($langData, $tagsLangArr);
 
@@ -4671,11 +4672,11 @@ class Importexport extends ImportexportCommon
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : 'a';
 
                 if ('country_currency_code' == $columnKey) {
-                    $colValue =  array_key_exists($row['country_currency_id'], $currencyCodes) ? $currencyCodes[$row['country_currency_id']] : 0;
+                    $colValue = array_key_exists($row['country_currency_id'], $currencyCodes) ? $currencyCodes[$row['country_currency_id']] : 0;
                 }
 
                 if ('country_language_code' == $columnKey) {
-                    $colValue =  array_key_exists($row['country_language_id'], $languageCodes) ? $languageCodes[$row['country_language_id']] : 0;
+                    $colValue = array_key_exists($row['country_language_id'], $languageCodes) ? $languageCodes[$row['country_language_id']] : 0;
                 }
 
                 if ('country_active' == $columnKey) {
@@ -4695,7 +4696,7 @@ class Importexport extends ImportexportCommon
     {
         $rowIndex = 1;
 
-        $useCountryId  = false;
+        $useCountryId = false;
         if ($this->settings['CONF_USE_COUNTRY_ID']) {
             $useCountryId = true;
         }
@@ -4730,7 +4731,7 @@ class Importexport extends ImportexportCommon
                     switch ($columnKey) {
                         case 'country_currency_id':
                             $currencyId = FatUtility::int($colValue);
-                            $colValue =  array_key_exists($currencyId, $currencyCodes) ? $currencyId : 0;
+                            $colValue = array_key_exists($currencyId, $currencyCodes) ? $currencyId : 0;
                             break;
                         case 'country_currency_code':
                             $columnKey = 'country_currency_id';
@@ -4783,8 +4784,8 @@ class Importexport extends ImportexportCommon
                 if ($countryId) {
                     /* Lang Data [*/
                     $langData = array(
-                    'countrylang_country_id'=> $countryId,
-                    'countrylang_lang_id'=> $langId,
+                    'countrylang_country_id' => $countryId,
+                    'countrylang_lang_id' => $langId,
                     );
                     $langData = array_merge($langData, $countryLangArr);
                     $this->db->insertFromArray(Countries::DB_TBL_LANG, $langData, false, array(), $langData);
@@ -4819,7 +4820,7 @@ class Importexport extends ImportexportCommon
 
         $srch = States::getSearchObject(false, $langId);
         $srch->joinTable(Countries::DB_TBL, 'LEFT OUTER JOIN', 'st.state_country_id = c.country_id', 'c');
-        $srch->addMultipleFields(array('state_id','state_code','state_country_id','state_identifier','state_active','country_id','country_code','state_name'));
+        $srch->addMultipleFields(array('state_id', 'state_code', 'state_country_id', 'state_identifier', 'state_active', 'country_id', 'country_code', 'state_name'));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         if ($userId) {
@@ -4948,8 +4949,8 @@ class Importexport extends ImportexportCommon
                 if ($stateId) {
                     /* Lang Data [*/
                     $langData = array(
-                    'statelang_state_id'=> $stateId,
-                    'statelang_lang_id'=> $langId,
+                    'statelang_state_id' => $stateId,
+                    'statelang_lang_id' => $langId,
                     );
 
                     $langData = array_merge($langData, $statesLangArr);
@@ -4979,7 +4980,7 @@ class Importexport extends ImportexportCommon
     {
         $userId = FatUtility::int($userId);
         $srch = PolicyPoint::getSearchObject($langId, false, false);
-        $srch->addMultipleFields(array('ppoint_id','ppoint_identifier','ppoint_type','ppoint_display_order','ppoint_active','ppoint_deleted','ppoint_title'));
+        $srch->addMultipleFields(array('ppoint_id', 'ppoint_identifier', 'ppoint_type', 'ppoint_display_order', 'ppoint_active', 'ppoint_deleted', 'ppoint_title'));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         if ($userId) {
@@ -5103,8 +5104,8 @@ class Importexport extends ImportexportCommon
                 if ($policyPointId) {
                     /* Lang Data [*/
                     $langData = array(
-                    'ppointlang_ppoint_id'=> $policyPointId,
-                    'ppointlang_lang_id'=> $langId,
+                    'ppointlang_ppoint_id' => $policyPointId,
+                    'ppointlang_lang_id' => $langId,
                     );
 
                     $langData = array_merge($langData, $policyPointsLangArr);
@@ -5138,7 +5139,7 @@ class Importexport extends ImportexportCommon
         $srch->addOrder('u.user_id', 'DESC');
         $srch->addCondition('u.user_is_shipping_company', '=', applicationConstants::NO);
         $srch->doNotCalculateRecords();
-        $srch->addFld(array('user_is_buyer', 'user_is_supplier','user_is_advertiser','user_is_affiliate', 'user_registered_initially_for'));
+        $srch->addFld(array('user_is_buyer', 'user_is_supplier', 'user_is_advertiser', 'user_is_affiliate', 'user_registered_initially_for'));
         if (isset($offset) && isset($noOfRows)) {
             $srch->setPageNumber($offset);
             $srch->setPageSize($noOfRows);
@@ -5171,7 +5172,7 @@ class Importexport extends ImportexportCommon
                 }
 
                 if ('urlrewrite_custom' == $columnKey) {
-                    $colValue = isset($urlKeywords[ProductCategory::REWRITE_URL_PREFIX.$row['prodcat_id']]) ? $urlKeywords[ProductCategory::REWRITE_URL_PREFIX.$row['prodcat_id']] : '';
+                    $colValue = isset($urlKeywords[ProductCategory::REWRITE_URL_PREFIX . $row['prodcat_id']]) ? $urlKeywords[ProductCategory::REWRITE_URL_PREFIX . $row['prodcat_id']] : '';
                 }
 
                 if ('prodcat_parent_identifier' == $columnKey) {
@@ -5224,5 +5225,4 @@ class Importexport extends ImportexportCommon
         }
         CommonHelper::writeExportDataToCSV($this->CSVfileObj, array(), true, $this->CSVfileName);
     }
-    
 }

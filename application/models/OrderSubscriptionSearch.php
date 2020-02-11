@@ -1,4 +1,5 @@
 <?php
+
 class OrderSubscriptionSearch extends SearchBase
 {
     private $langId;
@@ -19,8 +20,8 @@ class OrderSubscriptionSearch extends SearchBase
             $this->joinTable(
                 OrderSubscription::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'oss_l.'.OrderSubscription::DB_TBL_LANG_PREFIX.'ossubs_id = oss.'.OrderSubscription::DB_TBL_PREFIX.'id
-			AND oss_l.'.OrderSubscription::DB_TBL_LANG_PREFIX.'lang_id = ' . $langId,
+                'oss_l.' . OrderSubscription::DB_TBL_LANG_PREFIX . 'ossubs_id = oss.' . OrderSubscription::DB_TBL_PREFIX . 'id
+			AND oss_l.' . OrderSubscription::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 'oss_l'
             );
         }
@@ -43,7 +44,7 @@ class OrderSubscriptionSearch extends SearchBase
         $this->joinTable(PaymentMethods::DB_TBL, 'LEFT OUTER JOIN', 'o.order_pmethod_id = pm.pmethod_id', 'pm');
 
         if ($langId) {
-            $this->joinTable(PaymentMethods::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pm.pmethod_id = pm_l.pmethodlang_pmethod_id AND pm_l.pmethodlang_lang_id = '. $langId, 'pm_l');
+            $this->joinTable(PaymentMethods::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pm.pmethod_id = pm_l.pmethodlang_pmethod_id AND pm_l.pmethodlang_lang_id = ' . $langId, 'pm_l');
         }
     }
     public function joinOrders()
@@ -52,14 +53,14 @@ class OrderSubscriptionSearch extends SearchBase
             trigger_error(Labels::getLabel('MSG_Orders_Table_is_already_joined', $this->commonLangId), E_USER_ERROR);
         }
         $this->isOrdersTableJoined = true;
-        $this->joinTable(Orders::DB_TBL, 'INNER JOIN', 'o.order_id = oss.'.OrderSubscription::DB_TBL_PREFIX.'order_id', 'o');
+        $this->joinTable(Orders::DB_TBL, 'INNER JOIN', 'o.order_id = oss.' . OrderSubscription::DB_TBL_PREFIX . 'order_id', 'o');
     }
     public function addOrderProductCharges()
     {
         $srch = new SearchBase(OrderProduct::DB_TBL_CHARGES, 'opc');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('opcharge_op_id','sum(opcharge_amount) as op_other_charges'));
+        $srch->addMultipleFields(array('opcharge_op_id', 'sum(opcharge_amount) as op_other_charges'));
         $srch->addGroupBy('opc.opcharge_op_id');
         $qryOtherCharges = $srch->getQuery();
         $this->joinTable('(' . $qryOtherCharges . ')', 'LEFT OUTER JOIN', 'oss.ossubs_id = opcc.opcharge_op_id', 'opcc');
@@ -74,9 +75,9 @@ class OrderSubscriptionSearch extends SearchBase
             trigger_error(Labels::getLabel('MSG_OrderProduct_Status_is_already_joined', $this->commonLangId), E_USER_ERROR);
         }
         $this->isOrderSubscriptionStatusJoined = true;
-        $this->joinTable(Orders::DB_TBL_ORDERS_STATUS, 'LEFT OUTER JOIN', 'os.orderstatus_id = oss.'.OrderSubscription::DB_TBL_PREFIX.'status_id', 'os');
+        $this->joinTable(Orders::DB_TBL_ORDERS_STATUS, 'LEFT OUTER JOIN', 'os.orderstatus_id = oss.' . OrderSubscription::DB_TBL_PREFIX . 'status_id', 'os');
         if ($langId) {
-            $this->joinTable(Orders::DB_TBL_ORDERS_STATUS_LANG, 'LEFT OUTER JOIN', 'os_l.orderstatuslang_orderstatus_id = os.orderstatus_id AND os_l.orderstatuslang_lang_id = '.$langId, 'os_l');
+            $this->joinTable(Orders::DB_TBL_ORDERS_STATUS_LANG, 'LEFT OUTER JOIN', 'os_l.orderstatuslang_orderstatus_id = os.orderstatus_id AND os_l.orderstatuslang_lang_id = ' . $langId, 'os_l');
         }
     }
 
@@ -96,7 +97,7 @@ class OrderSubscriptionSearch extends SearchBase
         if ($this->langId) {
             $langId = $this->langId;
         }
-        $this->joinTable(SellerPackagePlans::DB_TBL, 'LEFT OUTER JOIN', 'spp.'.SellerPackagePlans::DB_TBL_PREFIX.'id = oss.'.OrderSubscription::DB_TBL_PREFIX.'plan_id ', 'spp');
+        $this->joinTable(SellerPackagePlans::DB_TBL, 'LEFT OUTER JOIN', 'spp.' . SellerPackagePlans::DB_TBL_PREFIX . 'id = oss.' . OrderSubscription::DB_TBL_PREFIX . 'plan_id ', 'spp');
     }
     public function addStatusCondition($op_status)
     {
@@ -133,7 +134,7 @@ class OrderSubscriptionSearch extends SearchBase
             trigger_error(Labels::getLabel('MSG_Order_Date_Condition_cannot_be_applied,_as_Orders_Table_is_not_Joined,_So,_Please_Use_joinOrders()_first,_then_try_to_add_Order_date_from_condition', $this->commonLangId), E_USER_ERROR);
         }
         if ($dateFrom != '') {
-            $this->addCondition('o.order_date_added', '>=', $dateFrom. ' 00:00:00');
+            $this->addCondition('o.order_date_added', '>=', $dateFrom . ' 00:00:00');
         }
     }
 
@@ -146,7 +147,7 @@ class OrderSubscriptionSearch extends SearchBase
             trigger_error(Labels::getLabel('MSG_Order_Date_Condition_cannot_be_applied,_as_Orders_Table_is_not_Joined,_So,_Please_Use_joinOrders()_first,_then_try_to_add_Order_date_to_condition', $this->commonLangId), E_USER_ERROR);
         }
         if ($dateTo != '') {
-            $this->addCondition('o.order_date_added', '<=', $dateTo. ' 23:59:59');
+            $this->addCondition('o.order_date_added', '<=', $dateTo . ' 23:59:59');
         }
     }
     public function addMinPriceCondition($priceFrom)

@@ -1,10 +1,11 @@
 <?php
+
 class OrderReturnReason extends MyAppModel
 {
-    const DB_TBL = 'tbl_order_return_reasons';
-    const DB_TBL_PREFIX = 'orreason_';
+    public const DB_TBL = 'tbl_order_return_reasons';
+    public const DB_TBL_PREFIX = 'orreason_';
 
-    const DB_TBL_LANG = 'tbl_order_return_reasons_lang';
+    public const DB_TBL_LANG = 'tbl_order_return_reasons_lang';
 
     public function __construct($id = 0)
     {
@@ -34,7 +35,7 @@ class OrderReturnReason extends MyAppModel
         $srch = static::getSearchObject($langId);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('orreason_id','IFNULL(orreason_title,orreason_identifier) as orreason_title'));
+        $srch->addMultipleFields(array('orreason_id', 'IFNULL(orreason_title,orreason_identifier) as orreason_title'));
         $srch->addOrder('orreason_title');
         $rs = $srch->getResultSet();
         return $row = FatApp::getDb()->fetchAllAssoc($rs);

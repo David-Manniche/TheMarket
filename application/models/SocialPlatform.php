@@ -1,4 +1,5 @@
 <?php
+
 class SocialPlatform extends MyAppModel
 {
     public const DB_TBL = 'tbl_social_platforms';

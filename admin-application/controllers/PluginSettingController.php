@@ -1,4 +1,5 @@
 <?php
+
 class PluginSettingController extends AdminBaseController
 {
     protected $keyName;

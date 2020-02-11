@@ -1,4 +1,5 @@
 <?php
+
 class PluginsController extends AdminBaseController
 {
     public function __construct($action)
@@ -40,7 +41,7 @@ class PluginsController extends AdminBaseController
 
     public function form($pluginType, $pluginId)
     {
-        $pluginId =  FatUtility::int($pluginId);
+        $pluginId = FatUtility::int($pluginId);
         $frm = $this->getForm($pluginType, $pluginId);
         $identifier = '';
         if (0 < $pluginId) {
@@ -296,7 +297,7 @@ class PluginsController extends AdminBaseController
 
     private function getForm($pluginType, $pluginId = 0)
     {
-        $pluginId =  FatUtility::int($pluginId);
+        $pluginId = FatUtility::int($pluginId);
 
         $frm = new Form('frmPlugin');
         $frm->addHiddenField('', 'plugin_id', $pluginId);
@@ -381,5 +382,4 @@ class PluginsController extends AdminBaseController
         $this->set('msg', $this->str_update_record);
         $this->_template->render(false, false, 'json-success.php');
     }
-
 }

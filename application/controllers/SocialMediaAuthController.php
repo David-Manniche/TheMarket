@@ -1,4 +1,5 @@
 <?php
+
 class SocialMediaAuthController extends PluginBaseController
 {
     public function __construct($action)
@@ -8,7 +9,7 @@ class SocialMediaAuthController extends PluginBaseController
 
     protected function setErrorAndRedirect($message, $errRedirection = false)
     {
-        if (false === $errRedirection || true ===  MOBILE_APP_API_CALL) {
+        if (false === $errRedirection || true === MOBILE_APP_API_CALL) {
             LibHelper::dieJsonError($message);
         }
 
@@ -56,7 +57,7 @@ class SocialMediaAuthController extends PluginBaseController
             $this->setErrorMessage($userObj->getError());
         }
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $userId = $userInfo['user_id'];
             $userObj = new User($userId);
             if (!$token = $userObj->setMobileAppToken()) {

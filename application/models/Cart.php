@@ -1,14 +1,15 @@
 <?php
+
 class Cart extends FatModel
 {
     private $products = array();
     private $SYSTEM_ARR = array();
     private $warning;
 
-    const CART_KEY_PREFIX_PRODUCT = 'SP_'; /* SP stands for Seller Product */
-    const CART_KEY_PREFIX_BATCH = 'SB_'; /* SB stands for Seller Batch/Combo Product */
-    const TYPE_PRODUCT = 1;
-    const TYPE_SUBSCRIPTION = 2;
+    public const CART_KEY_PREFIX_PRODUCT = 'SP_'; /* SP stands for Seller Product */
+    public const CART_KEY_PREFIX_BATCH = 'SB_'; /* SB stands for Seller Batch/Combo Product */
+    public const TYPE_PRODUCT = 1;
+    public const TYPE_SUBSCRIPTION = 2;
     public function __construct($user_id = 0, $langId = 0, $tempCartUserId = 0)
     {
         parent::__construct();
@@ -106,7 +107,7 @@ class Cart extends FatModel
         $selprod_id = FatUtility::int($selprod_id);
         $prodgroup_id = FatUtility::int($prodgroup_id);
         $qty = FatUtility::int($qty);
-        if($selprod_id < 1 || $qty < 1){
+        if ($selprod_id < 1 || $qty < 1) {
             return false;
         }
 
@@ -141,7 +142,7 @@ class Cart extends FatModel
 
         $this->updateUserCart();
         
-        if(is_numeric($this->cart_user_id) && $this->cart_user_id > 0){
+        if (is_numeric($this->cart_user_id) && $this->cart_user_id > 0) {
             AbandonedCart::saveAbandonedCart($this->cart_user_id, $selprod_id, $this->SYSTEM_ARR['cart'][$key], AbandonedCart::ACTION_ADDED);
         }
         
@@ -250,7 +251,7 @@ class Cart extends FatModel
                     'commission_percentage' => '',
                     'commission' => 0,
                     'tax' => 0,
-                    'taxOptions' =>  [],
+                    'taxOptions' => [],
                     'reward_point' => 0,
                     'volume_discount' => 0,
                     'volume_discount_total' => 0,
@@ -377,20 +378,20 @@ class Cart extends FatModel
                     $shippingCost = 0;
                     if (!empty($productSelectedShippingMethodsArr['product']) && isset($productSelectedShippingMethodsArr['product'][$sellerProductRow['selprod_id']])) {
                         $shippingDurationRow = $productSelectedShippingMethodsArr['product'][$sellerProductRow['selprod_id']];
-                        $this->products[$key]['sduration_id'] = isset($shippingDurationRow['sduration_id'])?$shippingDurationRow['sduration_id']:'';
+                        $this->products[$key]['sduration_id'] = isset($shippingDurationRow['sduration_id']) ? $shippingDurationRow['sduration_id'] : '';
                         $shippingCost = ROUND(($shippingDurationRow['mshipapi_cost']), 2);
                         $this->products[$key]['shipping_cost'] = $shippingCost;
                     }
 
                     if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
-                        $this->products[$key]['shipping_address'] =  UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $siteLangId, 0, $this->getCartShippingAddress());
+                        $this->products[$key]['shipping_address'] = UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $siteLangId, 0, $this->getCartShippingAddress());
                     }
                     /*]*/
                     
                     /*[ Product Tax */
                     $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
                     if (isset($cartDiscounts['discountedSelProdIds']) && array_key_exists($sellerProductRow['selprod_id'], $cartDiscounts['discountedSelProdIds'])) {
-                       $taxableProdPrice = $taxableProdPrice - ($cartDiscounts['discountedSelProdIds'][$sellerProductRow['selprod_id']]) / $quantity; 
+                        $taxableProdPrice = $taxableProdPrice - ($cartDiscounts['discountedSelProdIds'][$sellerProductRow['selprod_id']]) / $quantity;
                     }
                     
                     $shipFromStateId = 0;
@@ -409,7 +410,7 @@ class Cart extends FatModel
                     $taxOptions = [];
                     if (array_key_exists('options', $taxData)) {
                         foreach ($taxData['options'] as $optionId => $optionval) {
-                            $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']])? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
+                            $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']]) ? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
                         }
                     }
                        
@@ -431,8 +432,8 @@ class Cart extends FatModel
                         $commissionCostValue = $commissionCostValue + ($shippingCost / $quantity);
                     }
 
-                    $commissionCostValue =  ROUND(($commissionCostValue * $quantity), 2);
-                    $commission = ROUND(($commissionCostValue * $commissionPercentage/100), 2);
+                    $commissionCostValue = ROUND(($commissionCostValue * $quantity), 2);
+                    $commission = ROUND(($commissionCostValue * $commissionPercentage / 100), 2);
                     $commission = MIN($commission, $maxConfiguredCommissionVal);
 
                     $this->products[$key]['commission_percentage'] = $commissionPercentage;
@@ -442,8 +443,8 @@ class Cart extends FatModel
                     /* Affiliate Commission[ */
                     if ($associatedAffiliateUserId > 0) {
                         $affiliateCommissionPercentage = AffiliateCommission::getAffiliateCommission($associatedAffiliateUserId, $sellerProductRow['product_id'], $prodObj);
-                        $affiliateCommissionCostValue =  ROUND($sellerProductRow['theprice'] * $quantity, 2);
-                        $affiliateCommission = ROUND($affiliateCommissionCostValue * $affiliateCommissionPercentage/100, 2);
+                        $affiliateCommissionCostValue = ROUND($sellerProductRow['theprice'] * $quantity, 2);
+                        $affiliateCommission = ROUND($affiliateCommissionCostValue * $affiliateCommissionPercentage / 100, 2);
                     }
                     /* ] */
                     $selProdCost = $sellerProductRow['selprod_cost'];
@@ -451,7 +452,7 @@ class Cart extends FatModel
                 } else {
                     $is_cod_enabled = false;
                     if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
-                        $this->products[$key]['shipping_address'] =  UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $siteLangId, 0, $this->getCartShippingAddress());
+                        $this->products[$key]['shipping_address'] = UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $siteLangId, 0, $this->getCartShippingAddress());
                     }
                 }
                 /* ] */
@@ -469,7 +470,7 @@ class Cart extends FatModel
                 $this->products[$key]['affiliate_commission'] = $affiliateCommission;
                 $this->products[$key]['affiliate_user_id'] = $associatedAffiliateUserId;
                 if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
-                    $this->products[$key]['seller_address'] =  Shop::getShopAddress($shopId, true, $siteLangId);
+                    $this->products[$key]['seller_address'] = Shop::getShopAddress($shopId, true, $siteLangId);
                 }
             }
 
@@ -592,13 +593,13 @@ class Cart extends FatModel
                     $shippingCost = 0;
                     if (!empty($productSelectedShippingMethodsArr['product']) && isset($productSelectedShippingMethodsArr['product'][$sellerProductRow['selprod_id']])) {
                         $shippingDurationRow = $productSelectedShippingMethodsArr['product'][$sellerProductRow['selprod_id']];
-                        $this->products[$key]['sduration_id'] = isset($shippingDurationRow['sduration_id'])?$shippingDurationRow['sduration_id']:'';
+                        $this->products[$key]['sduration_id'] = isset($shippingDurationRow['sduration_id']) ? $shippingDurationRow['sduration_id'] : '';
                         $shippingCost = ROUND(($shippingDurationRow['mshipapi_cost']), 2);
                         $this->products[$key]['shipping_cost'] = $shippingCost;
                     }
 
                     if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
-                        $this->products[$key]['shipping_address'] =  UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $siteLangId, 0, $this->getCartShippingAddress());
+                        $this->products[$key]['shipping_address'] = UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $siteLangId, 0, $this->getCartShippingAddress());
                     }
                     /*]*/
                     
@@ -620,7 +621,7 @@ class Cart extends FatModel
                     $taxOptions = [];
                     if (array_key_exists('options', $taxData)) {
                         foreach ($taxData['options'] as $optionId => $optionval) {
-                            $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']])? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
+                            $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']]) ? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
                         }
                     }
                        
@@ -642,8 +643,8 @@ class Cart extends FatModel
                         $commissionCostValue = $commissionCostValue + ($shippingCost / $quantity);
                     }
 
-                    $commissionCostValue =  ROUND(($commissionCostValue * $quantity), 2);
-                    $commission = ROUND(($commissionCostValue * $commissionPercentage/100), 2);
+                    $commissionCostValue = ROUND(($commissionCostValue * $quantity), 2);
+                    $commission = ROUND(($commissionCostValue * $commissionPercentage / 100), 2);
                     $commission = MIN($commission, $maxConfiguredCommissionVal);
 
                     $this->products[$key]['commission_percentage'] = $commissionPercentage;
@@ -653,8 +654,8 @@ class Cart extends FatModel
                     /* Affiliate Commission[ */
                     if ($associatedAffiliateUserId > 0) {
                         $affiliateCommissionPercentage = AffiliateCommission::getAffiliateCommission($associatedAffiliateUserId, $sellerProductRow['product_id'], $prodObj);
-                        $affiliateCommissionCostValue =  ROUND($sellerProductRow['theprice'] * $quantity, 2);
-                        $affiliateCommission = ROUND($affiliateCommissionCostValue * $affiliateCommissionPercentage/100, 2);
+                        $affiliateCommissionCostValue = ROUND($sellerProductRow['theprice'] * $quantity, 2);
+                        $affiliateCommission = ROUND($affiliateCommissionCostValue * $affiliateCommissionPercentage / 100, 2);
                     }
                     /* ] */
                     $selProdCost = $sellerProductRow['selprod_cost'];
@@ -662,7 +663,7 @@ class Cart extends FatModel
                 } else {
                     $is_cod_enabled = false;
                     if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
-                        $this->products[$key]['shipping_address'] =  UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $siteLangId, 0, $this->getCartShippingAddress());
+                        $this->products[$key]['shipping_address'] = UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $siteLangId, 0, $this->getCartShippingAddress());
                     }
                 }
                 /* ] */
@@ -680,7 +681,7 @@ class Cart extends FatModel
                 $this->products[$key]['affiliate_commission'] = $affiliateCommission;
                 $this->products[$key]['affiliate_user_id'] = $associatedAffiliateUserId;
                 if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
-                    $this->products[$key]['seller_address'] =  Shop::getShopAddress($shopId, true, $siteLangId);
+                    $this->products[$key]['seller_address'] = Shop::getShopAddress($shopId, true, $siteLangId);
                 }
             }
 
@@ -713,15 +714,15 @@ class Cart extends FatModel
         $prodSrch->doNotCalculateRecords();
         $prodSrch->doNotLimitRecords();
         $prodSrch->addCondition('selprod_id', '=', $selprod_id);
-        $prodSrch->addMultipleFields(array( 'product_id', 'product_type', 'product_length', 'product_width', 'product_height','product_ship_free' ,
+        $prodSrch->addMultipleFields(array( 'product_id', 'product_type', 'product_length', 'product_width', 'product_height', 'product_ship_free',
         'product_dimension_unit', 'product_weight', 'product_weight_unit',
-        'selprod_id','selprod_code', 'selprod_stock','selprod_user_id','IF(selprod_stock > 0, 1, 0) AS in_stock','selprod_min_order_qty',
+        'selprod_id', 'selprod_code', 'selprod_stock', 'selprod_user_id', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'selprod_min_order_qty',
         'special_price_found', 'theprice', 'shop_id', 'shop_free_ship_upto',
-        'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type', 'selprod_price', 'selprod_cost','case when product_seller_id=0 then IFNULL(psbs_user_id,0)   else product_seller_id end  as psbs_user_id','product_seller_id','product_cod_enabled','selprod_cod_enabled'));
+        'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type', 'selprod_price', 'selprod_cost', 'case when product_seller_id=0 then IFNULL(psbs_user_id,0)   else product_seller_id end  as psbs_user_id', 'product_seller_id', 'product_cod_enabled', 'selprod_cod_enabled'));
 
         if ($siteLangId) {
             $prodSrch->joinBrands();
-            $prodSrch->addFld(array('IFNULL(product_name, product_identifier) as product_name','IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title','IFNULL(brand_name, brand_identifier) as brand_name','IFNULL(shop_name, shop_identifier) as shop_name'));
+            $prodSrch->addFld(array('IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(shop_name, shop_identifier) as shop_name'));
         }
 
         if (0 < $loggedUserId) {
@@ -785,7 +786,7 @@ class Cart extends FatModel
         $maxConfiguredCommissionVal = FatApp::getConfig("CONF_MAX_COMMISSION");
 
         $commissionPercentage = SellerProduct::getProductCommission($selprod_id);
-        $commission = MIN(ROUND($sellerProductRow['theprice'] * $commissionPercentage/100, 2), $maxConfiguredCommissionVal);
+        $commission = MIN(ROUND($sellerProductRow['theprice'] * $commissionPercentage / 100, 2), $maxConfiguredCommissionVal);
         $sellerProductRow['commission_percentage'] = $commissionPercentage;
         $sellerProductRow['commission'] = ROUND($commission * $quantity, 2);
 
@@ -830,10 +831,10 @@ class Cart extends FatModel
             foreach ($cartProducts as $cartKey => $product) {
                 if ($key == 'all' || (md5($product['key']) == $key && !$product['is_batch'])) {
                     $found = true;
-                    unset($this->SYSTEM_ARR['cart'][$cartKey]);                    
+                    unset($this->SYSTEM_ARR['cart'][$cartKey]);
                     $this->updateTempStockHold($product['selprod_id'], 0, 0);
                     if (md5($product['key']) == $key && !$product['is_batch']) {
-                        if(is_numeric($this->cart_user_id) && $this->cart_user_id > 0){
+                        if (is_numeric($this->cart_user_id) && $this->cart_user_id > 0) {
                             AbandonedCart::saveAbandonedCart($this->cart_user_id, $product['selprod_id'], $product['quantity'], AbandonedCart::ACTION_DELETED);
                         }
                         break;
@@ -893,7 +894,7 @@ class Cart extends FatModel
                         if ($quantity < $minimum_quantity) {
                             $str = Labels::getLabel('LBL_Please_add_minimum_{minimumquantity}', $this->cart_lang_id);
                             $str = str_replace("{minimumquantity}", $minimum_quantity, $str);
-                            $this->warning = $str." ".FatUtility::decodeHtmlEntities($product['product_name']);
+                            $this->warning = $str . " " . FatUtility::decodeHtmlEntities($product['product_name']);
                             break;
                         }
                         /* ] */
@@ -915,7 +916,7 @@ class Cart extends FatModel
                             /* to keep track of temporary hold the product stock[ */
                             $this->updateTempStockHold($product['selprod_id'], $quantity);
                             /* ] */
-                            if(is_numeric($this->cart_user_id) && $this->cart_user_id > 0){
+                            if (is_numeric($this->cart_user_id) && $this->cart_user_id > 0) {
                                 AbandonedCart::saveAbandonedCart($this->cart_user_id, $product['selprod_id'], $quantity, AbandonedCart::ACTION_ADDED);
                             }
                             break;
@@ -1197,7 +1198,7 @@ class Cart extends FatModel
                 if (array_key_exists('options', $taxData)) {
                     foreach ($taxData['options'] as $optionId => $optionval) {
                         $prodTaxOptions[$product['selprod_id']][$optionId] = $optionval;
-                        $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']])? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
+                        $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']]) ? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
                     }
                 }
 
@@ -1220,7 +1221,7 @@ class Cart extends FatModel
         //$orderPaymentGatewayCharges = $netTotalAfterDiscount - $orderCreditsCharge;
 
         $totalDiscountAmount = (isset($cartDiscounts['coupon_discount_total'])) ? $cartDiscounts['coupon_discount_total'] : 0;
-        $orderNetAmount = (max($cartTotal - $cartVolumeDiscount - $totalDiscountAmount, 0)  + $shippingTotal  + $cartTaxTotal) ;
+        $orderNetAmount = (max($cartTotal - $cartVolumeDiscount - $totalDiscountAmount, 0) + $shippingTotal + $cartTaxTotal);
 
         $orderNetAmount = $orderNetAmount - CommonHelper::rewardPointDiscount($orderNetAmount, $cartRewardPoints);
         $WalletAmountCharge = ($this->isCartUserWalletSelected()) ? min($orderNetAmount, $userWalletBalance) : 0;
@@ -1235,7 +1236,7 @@ class Cart extends FatModel
             }
         }
 
-        $netChargeAmt = $cartTotal + $cartTaxTotal - ((0 < $cartVolumeDiscount) ? $cartVolumeDiscount: 0);
+        $netChargeAmt = $cartTotal + $cartTaxTotal - ((0 < $cartVolumeDiscount) ? $cartVolumeDiscount : 0);
 
         $cartSummary = array(
             'cartTotal' => $cartTotal,
@@ -1243,30 +1244,30 @@ class Cart extends FatModel
             'originalShipping' => $originalShipping,
             'cartTaxTotal' => $cartTaxTotal,
             'cartDiscounts' => $cartDiscounts,
-            'cartVolumeDiscount'=> $cartVolumeDiscount,
+            'cartVolumeDiscount' => $cartVolumeDiscount,
             'cartRewardPoints' => $cartRewardPoints,
-            'cartWalletSelected'=> $this->isCartUserWalletSelected(),
+            'cartWalletSelected' => $this->isCartUserWalletSelected(),
             'siteCommission' => $totalSiteCommission,
             'orderNetAmount' => $orderNetAmount,
-            'WalletAmountCharge'=> $WalletAmountCharge,
+            'WalletAmountCharge' => $WalletAmountCharge,
             'isCodEnabled' => $isCodEnabled,
             'isCodValidForNetAmt' => $isCodValidForNetAmt,
             'orderPaymentGatewayCharges' => $orderPaymentGatewayCharges,
             'netChargeAmount' => $netChargeAmt,
             'taxOptions' => $taxOptions,
             'prodTaxOptions' => $prodTaxOptions,
-        );            
+        );
         return $cartSummary;
     }
 
     public function getCouponDiscounts()
-    { 
+    {
         $couponObj = new DiscountCoupons();
         if (!self::getCartDiscountCoupon()) {
             return false;
         }
         
-        $orderId = isset($_SESSION['order_id'])?$_SESSION['order_id']:'';
+        $orderId = isset($_SESSION['order_id']) ? $_SESSION['order_id'] : '';
         $couponInfo = $couponObj->getValidCoupons($this->cart_user_id, $this->cart_lang_id, self::getCartDiscountCoupon(), $orderId);
         $cartSubTotal = self::getSubTotal();
         
@@ -1314,7 +1315,7 @@ class Cart extends FatModel
             }
             /* ] */
 
-            if (empty($couponInfo['grouped_coupon_products'])|| $this->cart_user_id == $couponInfo['grouped_coupon_users']) {
+            if (empty($couponInfo['grouped_coupon_products']) || $this->cart_user_id == $couponInfo['grouped_coupon_users']) {
                 $subTotal = $cartSubTotal;
             } else {
                 $subTotal = 0;
@@ -1392,7 +1393,7 @@ class Cart extends FatModel
                         $selProdDiscountTotal += $totalSelProdDiscount;
                         $discountedProdGroupIds[$cartProduct['prodgroup_id']] = round($totalSelProdDiscount,2); */
                     } else {
-                        $totalSelProdDiscount = round(($discountTotal*($cartProduct['total'] - $cartProduct['volume_discount_total']))/($subTotal-$cartVolumeDiscount), 2);
+                        $totalSelProdDiscount = round(($discountTotal * ($cartProduct['total'] - $cartProduct['volume_discount_total'])) / ($subTotal - $cartVolumeDiscount), 2);
                         $selProdDiscountTotal += $totalSelProdDiscount;
                         $discountedSelProdIds[$cartProduct['selprod_id']] = round($totalSelProdDiscount, 2);
                     }
@@ -1407,7 +1408,7 @@ class Cart extends FatModel
                         } */
                     } else {
                         if (in_array($cartProduct['product_id'], $couponInfo['grouped_coupon_products'])) {
-                            $totalSelProdDiscount = round(($discountTotal*($cartProduct['total'] - $cartProduct['volume_discount_total']))/($subTotal-$cartVolumeDiscount), 2);
+                            $totalSelProdDiscount = round(($discountTotal * ($cartProduct['total'] - $cartProduct['volume_discount_total'])) / ($subTotal - $cartVolumeDiscount), 2);
                             $selProdDiscountTotal += $totalSelProdDiscount;
                             $discountedSelProdIds[$cartProduct['selprod_id']] = round($totalSelProdDiscount, 2);
                         }
@@ -1417,10 +1418,10 @@ class Cart extends FatModel
             /*]*/
             $selProdDiscountTotal = $selProdDiscountTotal /*- $cartVolumeDiscount*/;
             $labelArr = array(
-                'coupon_label'=>$couponInfo["coupon_title"],
-                'coupon_id'=>$couponInfo["coupon_id"],
-                'coupon_discount_in_percent'=>$couponInfo["coupon_discount_in_percent"],
-                'max_discount_value' =>$couponInfo["coupon_max_discount_value"]
+                'coupon_label' => $couponInfo["coupon_title"],
+                'coupon_id' => $couponInfo["coupon_id"],
+                'coupon_discount_in_percent' => $couponInfo["coupon_discount_in_percent"],
+                'max_discount_value' => $couponInfo["coupon_max_discount_value"]
             );
 
             if ($couponInfo['coupon_discount_in_percent'] == applicationConstants::PERCENTAGE) {
@@ -1434,13 +1435,13 @@ class Cart extends FatModel
             }
 
             $couponData = array(
-                'coupon_discount_type'       => $couponInfo["coupon_type"],
+                'coupon_discount_type' => $couponInfo["coupon_type"],
                 'coupon_code' => $couponInfo["coupon_code"],
-                'coupon_discount_value'      =>$couponInfo["coupon_discount_value"],
-                'coupon_discount_total'      => ($selProdDiscountTotal < 0)?0:$selProdDiscountTotal,
-                'coupon_info'      => json_encode($labelArr),
-                'discountedSelProdIds'=>$discountedSelProdIds,
-                'discountedProdGroupIds'=>$discountedProdGroupIds,
+                'coupon_discount_value' => $couponInfo["coupon_discount_value"],
+                'coupon_discount_total' => ($selProdDiscountTotal < 0) ? 0 : $selProdDiscountTotal,
+                'coupon_info' => json_encode($labelArr),
+                'discountedSelProdIds' => $discountedSelProdIds,
+                'discountedProdGroupIds' => $discountedProdGroupIds,
             );
         }
 
@@ -1481,13 +1482,13 @@ class Cart extends FatModel
             $couponRow = FatApp::getDb()->fetch($rs);
 
             if ($couponRow && $loggedUserId) {
-                FatApp::getDb()->deleteRecords(DiscountCoupons::DB_TBL_COUPON_HOLD, array( 'smt' => 'couponhold_coupon_id = ? AND couponhold_user_id = ?', 'vals'=> array( $couponRow['coupon_id'], $loggedUserId ) ));
+                FatApp::getDb()->deleteRecords(DiscountCoupons::DB_TBL_COUPON_HOLD, array( 'smt' => 'couponhold_coupon_id = ? AND couponhold_user_id = ?', 'vals' => array( $couponRow['coupon_id'], $loggedUserId ) ));
             }
         }
 
-        $orderId = isset($_SESSION['order_id'])?$_SESSION['order_id']:'';
+        $orderId = isset($_SESSION['order_id']) ? $_SESSION['order_id'] : '';
         if ($orderId != '') {
-            FatApp::getDb()->deleteRecords(DiscountCoupons::DB_TBL_COUPON_HOLD_PENDING_ORDER, array( 'smt' => 'ochold_order_id = ?', 'vals'=> array( $orderId ) ));
+            FatApp::getDb()->deleteRecords(DiscountCoupons::DB_TBL_COUPON_HOLD_PENDING_ORDER, array( 'smt' => 'ochold_order_id = ?', 'vals' => array( $orderId ) ));
         }
 
         /* ] */
@@ -1514,7 +1515,7 @@ class Cart extends FatModel
 
     public function getCartRewardPoint()
     {
-        return isset($this->SYSTEM_ARR['shopping_cart']['reward_points'])?$this->SYSTEM_ARR['shopping_cart']['reward_points']:0;
+        return isset($this->SYSTEM_ARR['shopping_cart']['reward_points']) ? $this->SYSTEM_ARR['shopping_cart']['reward_points'] : 0;
     }
 
     public function getCartDiscountCoupon()
@@ -1529,7 +1530,7 @@ class Cart extends FatModel
 
     public function isCartUserWalletSelected()
     {
-        return (isset($this->SYSTEM_ARR['shopping_cart']['Pay_from_wallet']) && intval($this->SYSTEM_ARR['shopping_cart']['Pay_from_wallet'])==1) ? 1: 0;
+        return (isset($this->SYSTEM_ARR['shopping_cart']['Pay_from_wallet']) && intval($this->SYSTEM_ARR['shopping_cart']['Pay_from_wallet']) == 1) ? 1 : 0;
     }
 
     public function updateUserCart()
@@ -1541,8 +1542,8 @@ class Cart extends FatModel
                 $cart_arr["shopping_cart"] = $this->SYSTEM_ARR['shopping_cart'];
             }
             $cart_arr = serialize($cart_arr);
-            $record->assignValues(array("usercart_user_id" => $this->cart_user_id,"usercart_type" =>CART::TYPE_PRODUCT, "usercart_details" => $cart_arr, "usercart_added_date" => date('Y-m-d H:i:s'),"usercart_last_used_date" => date('Y-m-d H:i:s'),"usercart_last_session_id" => $this->cart_id ));
-            if (!$record->addNew(array(), array( 'usercart_details' => $cart_arr, "usercart_added_date" => date('Y-m-d H:i:s'),"usercart_last_used_date" => date('Y-m-d H:i:s'),"usercart_last_session_id" => $this->cart_id, "usercart_sent_reminder" => 0 ))) {
+            $record->assignValues(array("usercart_user_id" => $this->cart_user_id, "usercart_type" => CART::TYPE_PRODUCT, "usercart_details" => $cart_arr, "usercart_added_date" => date('Y-m-d H:i:s'), "usercart_last_used_date" => date('Y-m-d H:i:s'), "usercart_last_session_id" => $this->cart_id ));
+            if (!$record->addNew(array(), array( 'usercart_details' => $cart_arr, "usercart_added_date" => date('Y-m-d H:i:s'), "usercart_last_used_date" => date('Y-m-d H:i:s'), "usercart_last_session_id" => $this->cart_id, "usercart_sent_reminder" => 0 ))) {
                 Message::addErrorMessage($record->getError());
                 throw new Exception('');
             }
@@ -1561,7 +1562,7 @@ class Cart extends FatModel
         $db = FatApp::getDb();
 
         if ($quantity <= 0) {
-            $db->deleteRecords('tbl_product_stock_hold', array('smt'=>'pshold_selprod_id = ? AND pshold_user_id = ? AND pshold_prodgroup_id = ?', 'vals' => array($selprod_id, $this->cart_user_id, $prodgroup_id)));
+            $db->deleteRecords('tbl_product_stock_hold', array('smt' => 'pshold_selprod_id = ? AND pshold_user_id = ? AND pshold_prodgroup_id = ?', 'vals' => array($selprod_id, $this->cart_user_id, $prodgroup_id)));
             return;
         }
 
@@ -1578,7 +1579,7 @@ class Cart extends FatModel
         }
 
         /* delete old records[ */
-        $this->deleteProductStockHold();        
+        $this->deleteProductStockHold();
         /* ] */
     }
     /* ] */
@@ -1640,7 +1641,7 @@ class Cart extends FatModel
 
             $cartObj->add($selprod_id, $quantity, $prodgroup_id);
 
-            $db->deleteRecords('tbl_user_cart', array('smt'=>'`usercart_user_id`=? and usercart_type=?', 'vals'=>array($tempUserId,CART::TYPE_PRODUCT)));
+            $db->deleteRecords('tbl_user_cart', array('smt' => '`usercart_user_id`=? and usercart_type=?', 'vals' => array($tempUserId, CART::TYPE_PRODUCT)));
         }
         $cartObj->updateUserCart();
     }
@@ -1648,7 +1649,7 @@ class Cart extends FatModel
     public function shipStationCarrierList()
     {
         $carrierList = array();
-        $carrierList[0] =  Labels::getLabel('MSG_Select_Services', commonHelper::getLangId());
+        $carrierList[0] = Labels::getLabel('MSG_Select_Services', commonHelper::getLangId());
         try {
             require_once(CONF_INSTALLATION_PATH . 'library/APIs/shipstatation/ship.class.php');
             $carriers = null;
@@ -1691,7 +1692,7 @@ class Cart extends FatModel
         return $cache->set($key, $value, 60 * 60);
     }
 
-    public function getCarrierShipmentServicesList($cartKey, $carrier_id = 0, $lang_id =0)
+    public function getCarrierShipmentServicesList($cartKey, $carrier_id = 0, $lang_id = 0)
     {
         $products = $this->getProducts($this->cart_lang_id);
         $prodKey = $this->getProductByKey($cartKey);
@@ -1793,7 +1794,7 @@ class Cart extends FatModel
     {
         $coversionRate = 1;
         switch ($productWeightClass) {
-            case "KG":
+            case "KG" :
                 $coversionRate = "35.274";
                 break;
             case "GM":
@@ -1849,7 +1850,7 @@ class Cart extends FatModel
                 }
 
                 if ($shipBy) {
-                    $sellerPrice[$selprod['selprod_user_id']]['totalPrice']+= $selprod['theprice'] * $selprod['quantity'];
+                    $sellerPrice[$selprod['selprod_user_id']]['totalPrice'] += $selprod['theprice'] * $selprod['quantity'];
                 }
             }
         }
@@ -1868,9 +1869,8 @@ class Cart extends FatModel
     public function deleteProductStockHold()
     {
         $intervalInMinutes = FatApp::getConfig('cart_stock_hold_minutes', FatUtility::VAR_INT, 15);
-        $deleteQuery = "DELETE FROM tbl_product_stock_hold WHERE pshold_added_on < DATE_SUB(NOW(), INTERVAL ". $intervalInMinutes ." MINUTE)";
+        $deleteQuery = "DELETE FROM tbl_product_stock_hold WHERE pshold_added_on < DATE_SUB(NOW(), INTERVAL " . $intervalInMinutes . " MINUTE)";
         FatApp::getDb()->query($deleteQuery);
         return true;
     }
-    
 }

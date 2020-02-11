@@ -1,4 +1,5 @@
 <?php
+
 class UserWishList extends MyAppModel
 {
     public const DB_TBL = 'tbl_user_wish_lists';
@@ -49,7 +50,7 @@ class UserWishList extends MyAppModel
     {
         $uwlp_uwlist_id = FatUtility::int($uwlp_uwlist_id);
         $selprod_id = FatUtility::int($selprod_id);
-        $data_to_save = array( 'uwlp_uwlist_id' => $uwlp_uwlist_id, 'uwlp_selprod_id' => $selprod_id, 'uwlp_added_on'  => date('Y-m-d H:i:s') );
+        $data_to_save = array( 'uwlp_uwlist_id' => $uwlp_uwlist_id, 'uwlp_selprod_id' => $selprod_id, 'uwlp_added_on' => date('Y-m-d H:i:s') );
         $data_to_save_on_duplicate = array( 'uwlp_selprod_id' => $selprod_id );
         if (!FatApp::getDb()->insertFromArray(UserWishListProducts::DB_TBL, $data_to_save, false, array(), $data_to_save_on_duplicate)) {
             $this->error = FatApp::getDb()->getError();
@@ -82,7 +83,7 @@ class UserWishList extends MyAppModel
         $srchWishlist->joinProductToCategory();
         $srchWishlist->joinSellerSubscription(0, true);
         $srchWishlist->addSubscriptionValidCondition();
-        $srchWishlist->addMultipleFields(array('uwlp_uwlist_id',"count(selprod_id) as WishlistItemsProductCnt"));
+        $srchWishlist->addMultipleFields(array('uwlp_uwlist_id', "count(selprod_id) as WishlistItemsProductCnt"));
         $srchWishlist->doNotCalculateRecords();
         $srchWishlist->doNotLimitRecords();
         //$srch->addMultipleFields( array( 'selprod_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'product_id', 'IFNULL(product_name, product_identifier) as product_name', 'IF(selprod_stock > 0, 1, 0) AS in_stock') );

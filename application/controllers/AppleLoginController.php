@@ -1,4 +1,5 @@
 <?php
+
 class AppleLoginController extends SocialMediaAuthController
 {
     private const PRODUCTION_URL = 'https://appleid.apple.com/auth/';
@@ -43,7 +44,7 @@ class AppleLoginController extends SocialMediaAuthController
         $userType = FatApp::getPostedData('type', FatUtility::VAR_INT, User::USER_TYPE_BUYER);
 
         if (isset($post['id_token'])) {
-            if (false ===  MOBILE_APP_API_CALL && $_SESSION['appleSignIn']['state'] != $post['state']) {
+            if (false === MOBILE_APP_API_CALL && $_SESSION['appleSignIn']['state'] != $post['state']) {
                 $message = Labels::getLabel('MSG_AUTHORIZATION_SERVER_RETURNED_AN_INVALID_STATE_PARAMETER', $this->siteLangId);
                 $this->setErrorAndRedirect($message, true);
             }

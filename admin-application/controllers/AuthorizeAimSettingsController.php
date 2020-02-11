@@ -1,4 +1,5 @@
 <?php
+
 class AuthorizeAimSettingsController extends PaymentSettingsController
 {
     private $keyName = "AuthorizeAim";

@@ -1,4 +1,5 @@
 <?php
+
 class AdminPrivilege
 {
     public const SECTION_PRODUCT_CATEGORIES = 1;
@@ -115,7 +116,7 @@ class AdminPrivilege
     public const PRIVILEGE_READ = 1;
     public const PRIVILEGE_WRITE = 2;
 
-    private static $instance = null ;
+    private static $instance = null;
     private $loadedPermissions = array();
 
     public static function getInstance()
@@ -249,7 +250,7 @@ class AdminPrivilege
         static::SECTION_PRODUCT_ADVERTISEMENT => Labels::getLabel('MSG_PRODUCT_ADVERTISEMENT', CommonHelper::getLangId()),
         static::SECTION_PLUGINS => Labels::getLabel('MSG_Plugins', CommonHelper::getLangId()),
         static::SECTION_APP_THEME_SETTINGS => Labels::getLabel('MSG_APP_THEME_SETTINGS', CommonHelper::getLangId()),
-        static::SECTION_ABANDONED_CART => Labels::getLabel('MSG_ABANDONED_CART', CommonHelper::getLangId()), 
+        static::SECTION_ABANDONED_CART => Labels::getLabel('MSG_ABANDONED_CART', CommonHelper::getLangId()),
         static::SECTION_IMPORT_EXPORT => Labels::getLabel('MSG_IMPORT_EXPORT', CommonHelper::getLangId()),
         static::SECTION_SMS_TEMPLATE => Labels::getLabel('MSG_SMS_TEMPLATE', CommonHelper::getLangId()),
         /* static::SECTION_Languages => Labels::getLabel('MSG_Languages',CommonHelper::getLangId()),
@@ -288,7 +289,7 @@ class AdminPrivilege
             if ($sectionId > 0) {
                 $arrLevels[$sectionId] = static::PRIVILEGE_WRITE;
             } else {
-                for ($i = 0; $i <= 2; $i ++) {
+                for ($i = 0; $i <= 2; $i++) {
                     $arrLevels [$i] = static::PRIVILEGE_WRITE;
                 }
             }
@@ -322,7 +323,7 @@ class AdminPrivilege
         $db = FatApp::getDb();
 
         if (!in_array($level, array(1, 2))) {
-            trigger_error(Labels::getLabel('MSG_Invalid_permission_level_checked', CommonHelper::getLangId()).' ' . $level, E_USER_ERROR);
+            trigger_error(Labels::getLabel('MSG_Invalid_permission_level_checked', CommonHelper::getLangId()) . ' ' . $level, E_USER_ERROR);
         }
 
         $adminId = FatUtility::convertToType($adminId, FatUtility::VAR_INT);
@@ -353,7 +354,7 @@ class AdminPrivilege
             "SELECT admperm_value FROM tbl_admin_permissions WHERE
 				admperm_admin_id = " . $adminId . " AND admperm_section_id = " . $secId
         );
-        if (! $row = $db->fetch($rs)) {
+        if (!$row = $db->fetch($rs)) {
             $this->cacheLoadedPermission($adminId, $secId, static::PRIVILEGE_NONE);
             return $this->returnFalseOrDie($returnResult);
         }
@@ -1455,5 +1456,5 @@ class AdminPrivilege
     public function canViewSmsTemplate($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_SMS_TEMPLATE, static::PRIVILEGE_READ, $returnResult);
-    }    
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 class SmsTemplatesController extends AdminBaseController
 {
     private $stplCode;
@@ -151,7 +152,7 @@ class SmsTemplatesController extends AdminBaseController
             $tempData = current($translatedData);
         } else {
             $stplObj = new SmsTemplate($stplCode);
-            $tempData =  $stplObj->getTpl($stplCode, $lang_id);
+            $tempData = $stplObj->getTpl($stplCode, $lang_id);
         }
 
         if ($tempData) {

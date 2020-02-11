@@ -1,8 +1,9 @@
 <?php
+
 class UrlRewrite extends MyAppModel
 {
-    const DB_TBL = 'tbl_url_rewrite';
-    const DB_TBL_PREFIX = 'urlrewrite_';
+    public const DB_TBL = 'tbl_url_rewrite';
+    public const DB_TBL_PREFIX = 'urlrewrite_';
     private $db;
 
     public function __construct($id = 0)
@@ -28,10 +29,10 @@ class UrlRewrite extends MyAppModel
     public static function update($originalUrl, $customUrl)
     {
         $seoUrlKeyword = array(
-        'urlrewrite_original'=>$originalUrl,
-        'urlrewrite_custom'=>$customUrl
+        'urlrewrite_original' => $originalUrl,
+        'urlrewrite_custom' => $customUrl
         );
-        if (FatApp::getDb()->insertFromArray(static::DB_TBL, $seoUrlKeyword, false, array(), array('urlrewrite_custom'=>$customUrl))) {
+        if (FatApp::getDb()->insertFromArray(static::DB_TBL, $seoUrlKeyword, false, array(), array('urlrewrite_custom' => $customUrl))) {
             return true;
         }
         return false;
@@ -42,7 +43,7 @@ class UrlRewrite extends MyAppModel
         $urlSrch = static::getSearchObject();
         $urlSrch->doNotCalculateRecords();
         $urlSrch->setPageSize(1);
-        $urlSrch->addMultipleFields(array('urlrewrite_id','urlrewrite_original','urlrewrite_custom'));
+        $urlSrch->addMultipleFields(array('urlrewrite_id', 'urlrewrite_original', 'urlrewrite_custom'));
         $urlSrch->addCondition('urlrewrite_custom', '=', $customUrl);
         if ($originalUrl) {
             $urlSrch->addCondition('urlrewrite_original', '!=', $originalUrl);
@@ -60,7 +61,7 @@ class UrlRewrite extends MyAppModel
         $urlSrch = static::getSearchObject();
         $urlSrch->doNotCalculateRecords();
         $urlSrch->setPageSize(1);
-        $urlSrch->addMultipleFields(array('urlrewrite_id','urlrewrite_original','urlrewrite_custom'));
+        $urlSrch->addMultipleFields(array('urlrewrite_id', 'urlrewrite_original', 'urlrewrite_custom'));
         $urlSrch->addCondition('urlrewrite_original', '=', $originalUrl);
         if ($excludeThisCustomUrl) {
             $urlSrch->addCondition('urlrewrite_custom', '!=', $excludeThisCustomUrl);
@@ -85,7 +86,7 @@ class UrlRewrite extends MyAppModel
 
         $i = 1;
         if ($recordId > 0) {
-            $customUrl = preg_replace('/-'.$recordId.'$/', '', $customUrl).'-'.$recordId ;
+            $customUrl = preg_replace('/-' . $recordId . '$/', '', $customUrl) . '-' . $recordId;
         }
 
         $slug = $customUrl;

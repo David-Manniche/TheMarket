@@ -1,4 +1,5 @@
 <?php
+
 class CartController extends MyAppController
 {
     public function __construct($action)
@@ -23,7 +24,7 @@ class CartController extends MyAppController
         $productsArr = $cartObj->getProducts($this->siteLangId);
         $prodGroupIds = array();
 
-        if (0 < count($productsArr) || true ===  MOBILE_APP_API_CALL) {
+        if (0 < count($productsArr) || true === MOBILE_APP_API_CALL) {
             /* foreach( $productsArr as $product ) {
                 if( $product['prodgroup_id'] > 0 ){
                 $prodGroupIds[$product['prodgroup_id']] = $product['prodgroup_id'];
@@ -42,7 +43,7 @@ class CartController extends MyAppController
                 }
             } */
 
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 $cartObj->removeProductShippingMethod();
 
                 $loggedUserId = UserAuthentication::getLoggedUserId(true);
@@ -88,7 +89,7 @@ class CartController extends MyAppController
             $this->set('EmptyCartItems', $EmptyCartItems);
             $templateName = 'cart/empty-cart.php';
         }
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->_template->render(true, true, $templateName);
         }
         $this->_template->render(false, false, $templateName);
@@ -99,7 +100,7 @@ class CartController extends MyAppController
         $post = FatApp::getPostedData();
         if (empty($post)) {
             $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -109,7 +110,7 @@ class CartController extends MyAppController
             $user_is_buyer = User::getAttributesById(UserAuthentication::getLoggedUserId(), 'user_is_buyer');
             if (!$user_is_buyer) {
                 $errMsg = Labels::getLabel('MSG_Please_login_with_buyer_account_to_add_products_to_cart', $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($errMsg);
                 }
                 Message::addErrorMessage($errMsg);
@@ -125,16 +126,16 @@ class CartController extends MyAppController
         $selprod_id = FatApp::getPostedData('selprod_id', FatUtility::VAR_INT, 0);
         $quantity = FatApp::getPostedData('quantity', FatUtility::VAR_INT, 1);
 
-        if (true ===  MOBILE_APP_API_CALL) {
-            $productsToAdd  = isset($post['addons']) ? json_decode($post['addons'], true) : array();
+        if (true === MOBILE_APP_API_CALL) {
+            $productsToAdd = isset($post['addons']) ? json_decode($post['addons'], true) : array();
         } else {
-            $productsToAdd  = isset($post['addons'])?$post['addons']:array();
+            $productsToAdd = isset($post['addons']) ? $post['addons'] : array();
         }
         $productsToAdd[$selprod_id] = $quantity;
 
         $this->addProductToCart($productsToAdd, $selprod_id);
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $cartObj = new Cart();
             $this->set('cartItemsCount', $cartObj->countProducts());
             $this->set('msg', Labels::getLabel('LBL_Added_Successfully', $this->siteLangId));
@@ -160,7 +161,7 @@ class CartController extends MyAppController
                 $sellerProductRow = $db->fetch($rs);
                 if (empty($sellerProductRow)) {
                     $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
-                    if (true ===  MOBILE_APP_API_CALL) {
+                    if (true === MOBILE_APP_API_CALL) {
                         FatUtility::dieJsonError($message);
                     }
                     Message::addErrorMessage($message);
@@ -172,13 +173,13 @@ class CartController extends MyAppController
                 $productsToAdd = [$selprod_id => $minQty];
                 $this->addProductToCart($productsToAdd, $selprod_id);
             }
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 $this->_template->render();
             }
             $this->_template->render(false, false, 'json-success.php', false, false);
         } else {
             $message = Labels::getLabel('LBL_Invalid_Request_Parameters', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -189,9 +190,9 @@ class CartController extends MyAppController
     private function addProductToCart($productsToAdd, $selprod_id)
     {
         $selprod_id = FatUtility::int($selprod_id);
-        if($selprod_id < 1){
+        if ($selprod_id < 1) {
             $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -202,7 +203,7 @@ class CartController extends MyAppController
         foreach ($productsToAdd as $productId => $quantity) {
             if ($productId <= 0) {
                 $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     FatUtility::dieJsonError($message);
                 }
                 Message::addErrorMessage($message);
@@ -217,13 +218,13 @@ class CartController extends MyAppController
             $srch->joinProductToCategory();
             $srch->addCondition('pricetbl.selprod_id', '=', $productId);
             $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
-            $srch->addMultipleFields(array('selprod_id','selprod_code', 'selprod_min_order_qty', 'selprod_stock', 'product_name' ));
+            $srch->addMultipleFields(array('selprod_id', 'selprod_code', 'selprod_min_order_qty', 'selprod_stock', 'product_name' ));
             $rs = $srch->getResultSet();
             $db = FatApp::getDb();
             $sellerProductRow = $db->fetch($rs);
             if (!$sellerProductRow || $sellerProductRow['selprod_id'] != $productId) {
                 $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     FatUtility::dieJsonError($message);
                 }
                 Message::addErrorMessage($message);
@@ -235,10 +236,10 @@ class CartController extends MyAppController
             if ($sellerProductRow['selprod_stock'] <= 0) {
                 $message = Labels::getLabel('LBL_Out_of_Stock_Products_cannot_be_added_to_cart_%s', $this->siteLangId);
                 $message = sprintf($message, FatUtility::decodeHtmlEntities($sellerProductRow['product_name']));
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     FatUtility::dieJsonError($message);
                 }
-                if ($productId!=$selprod_id) {
+                if ($productId != $selprod_id) {
                     $productErr['addon'][$productId] = $message;
                 } else {
                     $productErr['product'] = $message;
@@ -252,13 +253,13 @@ class CartController extends MyAppController
                 $productAdd = false;
                 $str = Labels::getLabel('LBL_Please_add_minimum_{minimumquantity}', $this->siteLangId);
                 $str = str_replace("{minimumquantity}", $minimum_quantity, $str);
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($str);
-                }  
-                if ($productId!=$selprod_id) {
-                    $productErr['addon'][$productId] = $str." ".FatUtility::decodeHtmlEntities($sellerProductRow['product_name']);
+                }
+                if ($productId != $selprod_id) {
+                    $productErr['addon'][$productId] = $str . " " . FatUtility::decodeHtmlEntities($sellerProductRow['product_name']);
                 } else {
-                    $productErr['product'] = $str." ".FatUtility::decodeHtmlEntities($sellerProductRow['product_name']);
+                    $productErr['product'] = $str . " " . FatUtility::decodeHtmlEntities($sellerProductRow['product_name']);
                 }
             }
             /* ] */
@@ -271,20 +272,20 @@ class CartController extends MyAppController
             $selprod_stock = $sellerProductRow['selprod_stock'] - Product::tempHoldStockCount($productId);
             if ($quantity > $selprod_stock) {
                 $message = Labels::getLabel('MSG_Requested_quantity_more_than_stock_available', $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     FatUtility::dieJsonError($message);
-                }                    
+                }
                 if ($productId != $selprod_id) {
-                    $productErr['addon'][$productId]=Message::addInfo($message." ". $selprod_stock." " .strip_tags($sellerProductRow['product_name']));
-                } else {                    
-                    $productErr['product']=$message." ". $selprod_stock." " .strip_tags($sellerProductRow['product_name']);
+                    $productErr['addon'][$productId] = Message::addInfo($message . " " . $selprod_stock . " " . strip_tags($sellerProductRow['product_name']));
+                } else {
+                    $productErr['product'] = $message . " " . $selprod_stock . " " . strip_tags($sellerProductRow['product_name']);
                 }
             }
             /* ] */
             if ($productAdd) {
-                $returnUserId = (true ===  MOBILE_APP_API_CALL) ? true : false;
+                $returnUserId = (true === MOBILE_APP_API_CALL) ? true : false;
                 $cartUserId = $cartObj->add($productId, $quantity, 0, $returnUserId);
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     $this->set('tempUserId', $cartUserId);
                 }
                 $ProductAdded = true;
@@ -295,7 +296,7 @@ class CartController extends MyAppController
             Message::addInfo($productErr);
             $this->set('msg', CommonHelper::renderHtml(Message::getHtml($productErr)));
             if (!$ProductAdded) {
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError(current($productErr));
                 }
                 Message::addErrorMessage($productErr);
@@ -303,8 +304,8 @@ class CartController extends MyAppController
             }
             $this->set('alertType', 'alert--info');
         } else {
-            $strProduct = '<a href="'.CommonHelper::generateUrl('Products', 'view', array($selprod_id)).'">'.strip_tags(html_entity_decode($sellerProductRow['product_name'], ENT_QUOTES, 'UTF-8')).'</a>';
-            $strCart = '<a href="'.CommonHelper::generateUrl('Cart').'">'.Labels::getLabel('Lbl_Shopping_Cart', $this->siteLangId).'</a>';
+            $strProduct = '<a href="' . CommonHelper::generateUrl('Products', 'view', array($selprod_id)) . '">' . strip_tags(html_entity_decode($sellerProductRow['product_name'], ENT_QUOTES, 'UTF-8')) . '</a>';
+            $strCart = '<a href="' . CommonHelper::generateUrl('Cart') . '">' . Labels::getLabel('Lbl_Shopping_Cart', $this->siteLangId) . '</a>';
             Message::addMessage(sprintf(Labels::getLabel('MSG_Success_cart_add', $this->siteLangId), $strProduct, $strCart));
             $this->set('msg', Labels::getLabel("MSG_Added_to_cart", $this->siteLangId));
         }
@@ -316,7 +317,7 @@ class CartController extends MyAppController
         $post = FatApp::getPostedData();
         if (empty($post)) {
             $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -325,7 +326,7 @@ class CartController extends MyAppController
 
         if (!isset($post['key'])) {
             $message = Labels::getLabel('LBL_Product_Key_Required', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -339,11 +340,11 @@ class CartController extends MyAppController
             $cartObj->clear();
             $cartObj->updateUserCart();
         } else {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 $key = md5($key);
             }
             if (!$cartObj->remove($key)) {
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($cartObj->getError());
                 }
                 Message::addMessage($cartObj->getError());
@@ -355,8 +356,8 @@ class CartController extends MyAppController
         }
         $total = $cartObj->countProducts();
         $this->set('msg', Labels::getLabel("MSG_Item_removed_successfully", $this->siteLangId));
-        if (true ===  MOBILE_APP_API_CALL) {
-            $this->set('data', array('cartItemsCount'=>$total));
+        if (true === MOBILE_APP_API_CALL) {
+            $this->set('data', array('cartItemsCount' => $total));
             $this->_template->render();
         }
         $this->set('total', $total);
@@ -372,7 +373,7 @@ class CartController extends MyAppController
             FatApp::redirectUser(CommonHelper::generateUrl());
         }
 
-        $prodgroup_id  = FatApp::getPostedData('prodgroup_id', FatUtility::VAR_INT, 0);
+        $prodgroup_id = FatApp::getPostedData('prodgroup_id', FatUtility::VAR_INT, 0);
         if ($prodgroup_id <= 0) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
@@ -392,7 +393,7 @@ class CartController extends MyAppController
         $post = FatApp::getPostedData();
         if (empty($post)) {
             $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -400,20 +401,20 @@ class CartController extends MyAppController
         }
         if (empty($post['key'])) {
             $message = Labels::getLabel('LBL_Invalid_Product', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
             FatUtility::dieWithError(Message::getHtml());
         }
         $key = $post['key'];
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $key = md5($key);
         }
         $quantity = isset($post['quantity']) ? FatUtility::int($post['quantity']) : 1;
         $cartObj = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id']);
         if (!$cartObj->update($key, $quantity)) {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($cartObj->getError());
             }
             Message::addErrorMessage($cartObj->getError());
@@ -423,7 +424,7 @@ class CartController extends MyAppController
         $cartObj->removeProductShippingMethod();
 
         if (!empty($cartObj->getWarning())) {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($cartObj->getWarning());
             }
             Message::addInfo($cartObj->getWarning());
@@ -432,8 +433,8 @@ class CartController extends MyAppController
         } else {
             $this->set('msg', Labels::getLabel("MSG_cart_updated_successfully", $this->siteLangId));
         }
-        if (true ===  MOBILE_APP_API_CALL) {
-            $this->set('data', array('cartItemsCount'=>$cartObj->countProducts()));
+        if (true === MOBILE_APP_API_CALL) {
+            $this->set('data', array('cartItemsCount' => $cartObj->countProducts()));
             $this->_template->render();
         }
         $this->_template->render(false, false, 'json-success.php');
@@ -533,7 +534,7 @@ class CartController extends MyAppController
 
         if (empty($post)) {
             $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -542,7 +543,7 @@ class CartController extends MyAppController
 
         if (empty($post['coupon_code'])) {
             $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -554,11 +555,11 @@ class CartController extends MyAppController
         /* $couponObj = new DiscountCoupons();
         $couponInfo = $couponObj->getCoupon($couponCode,$this->siteLangId);
         */
-        $orderId = isset($_SESSION['order_id'])?$_SESSION['order_id']:'';
+        $orderId = isset($_SESSION['order_id']) ? $_SESSION['order_id'] : '';
         $couponInfo = DiscountCoupons::getValidCoupons($loggedUserId, $this->siteLangId, $couponCode, $orderId);
         if ($couponInfo == false) {
             $message = Labels::getLabel('LBL_Invalid_Coupon_Code', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -568,7 +569,7 @@ class CartController extends MyAppController
         $cartObj = new Cart();
         if (!$cartObj->updateCartDiscountCoupon($couponInfo['coupon_code'])) {
             $message = Labels::getLabel('LBL_Action_Trying_Perform_Not_Valid', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -576,22 +577,22 @@ class CartController extends MyAppController
         }
 
         $holdCouponData = array(
-        'couponhold_coupon_id'=>$couponInfo['coupon_id'],
-        'couponhold_user_id'=>UserAuthentication::getLoggedUserId(),
+        'couponhold_coupon_id' => $couponInfo['coupon_id'],
+        'couponhold_user_id' => UserAuthentication::getLoggedUserId(),
         /* 'couponhold_usercart_id'=>$cartObj->cart_id, */
-        'couponhold_added_on'=>date('Y-m-d H:i:s'),
+        'couponhold_added_on' => date('Y-m-d H:i:s'),
         );
 
         if (!FatApp::getDb()->insertFromArray(DiscountCoupons::DB_TBL_COUPON_HOLD, $holdCouponData, true, array(), $holdCouponData)) {
             $message = Labels::getLabel('LBL_Action_Trying_Perform_Not_Valid', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
             FatUtility::dieWithError(Message::getHtml());
         }
         $cartObj->removeUsedRewardPoints();
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
         $this->set('msg', Labels::getLabel("MSG_cart_discount_coupon_applied", $this->siteLangId));
@@ -603,14 +604,14 @@ class CartController extends MyAppController
         $cartObj = new Cart();
         if (!$cartObj->removeCartDiscountCoupon()) {
             $message = Labels::getLabel('LBL_Action_Trying_Perform_Not_Valid', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
             FatUtility::dieWithError(Message::getHtml());
         }
         $cartObj->removeUsedRewardPoints();
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
         $this->set('msg', Labels::getLabel("MSG_cart_discount_coupon_removed", $this->siteLangId));
@@ -621,7 +622,7 @@ class CartController extends MyAppController
     {
         $langId = FatUtility::int($langId);
         $frm = new Form('frmPromoCoupons');
-        $frm->addTextBox(Labels::getLabel('LBL_Coupon_code', $langId), 'coupon_code', '', array('placeholder'=>Labels::getLabel('LBL_Enter_Your_code', $langId)));
+        $frm->addTextBox(Labels::getLabel('LBL_Coupon_code', $langId), 'coupon_code', '', array('placeholder' => Labels::getLabel('LBL_Enter_Your_code', $langId)));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Apply', $langId));
         return $frm;
     }
@@ -637,5 +638,4 @@ class CartController extends MyAppController
         $this->set('totalCartItems', $cartObj->countProducts());
         $this->_template->render(false, false);
     }
-
 }

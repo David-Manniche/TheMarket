@@ -1,4 +1,5 @@
 <?php
+
 class AffiliateCommissionController extends AdminBaseController
 {
     public function __construct($action)
@@ -36,7 +37,7 @@ class AffiliateCommissionController extends AdminBaseController
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'affiliate_cred.credential_user_id = affiliate_user.user_id', 'affiliate_cred');
 
         $srch->joinTable(ProductCategory::DB_TBL, 'LEFT OUTER JOIN', 'prod_cat.prodcat_id = afcs.afcommsetting_prodcat_id', 'prod_cat');
-        $srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'prod_cat.prodcat_id = prd_cat_l.prodcatlang_prodcat_id AND prd_cat_l.prodcatlang_lang_id = '.$this->adminLangId, 'prd_cat_l');
+        $srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'prod_cat.prodcat_id = prd_cat_l.prodcatlang_prodcat_id AND prd_cat_l.prodcatlang_lang_id = ' . $this->adminLangId, 'prd_cat_l');
 
         $srch->addMultipleFields(array( 'afcs.*', 'affiliate_cred.credential_username', 'IFNULL(prd_cat_l.prodcat_name, prod_cat.prodcat_identifier) as prodcat_name' ));
         $srch->addOrder('afcommsetting_is_mandatory', 'DESC');
@@ -46,8 +47,8 @@ class AffiliateCommissionController extends AdminBaseController
         $srch->setPageSize($pageSize);
 
         if (!empty($post['keyword'])) {
-            $cond = $srch->addCondition('affiliate_cred.credential_username', 'like', '%'.$post['keyword'].'%', 'AND');
-            $cond->attachCondition('prodcat_name', 'like', '%'.$post['keyword'].'%', 'OR');
+            $cond = $srch->addCondition('affiliate_cred.credential_username', 'like', '%' . $post['keyword'] . '%', 'AND');
+            $cond->attachCondition('prodcat_name', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
 
         $rs = $srch->getResultSet();
@@ -167,8 +168,8 @@ class AffiliateCommissionController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
 
         $post = FatApp::getPostedData();
-        $page = (empty($post['page']) || $post['page'] <= 0)?1:$post['page'];
-        $page = (empty($page) || $page <= 0)?1:FatUtility::int($page);
+        $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : $post['page'];
+        $page = (empty($page) || $page <= 0) ? 1 : FatUtility::int($page);
 
         $srch = AffiliateCommission::getAffiliateCommissionHistoryObj($this->adminLangId);
         $srch->addCondition('tacsh.acsh_afcommsetting_id', '=', $afcommsetting_id);
@@ -232,7 +233,7 @@ class AffiliateCommissionController extends AdminBaseController
                 Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId)
             );
         }
-        $row =  AffiliateCommission::getAttributesById($afcommsettingId, array('afcommsetting_id', 'afcommsetting_is_mandatory'));
+        $row = AffiliateCommission::getAttributesById($afcommsettingId, array('afcommsetting_id', 'afcommsetting_is_mandatory'));
         if ($row == false) {
             Message::addErrorMessage(Labels::getLabel("LBL_Invalid_Request", $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -247,7 +248,7 @@ class AffiliateCommissionController extends AdminBaseController
     private function getForm($afcommsetting_id = 0)
     {
         $this->objPrivilege->canViewAffiliateCommissionSettings();
-        $afcommsetting_id =  FatUtility::int($afcommsetting_id);
+        $afcommsetting_id = FatUtility::int($afcommsetting_id);
 
         $frm = new Form('frmAffiliateCommission');
         $frm->addHiddenField('', 'afcommsetting_id', $afcommsetting_id);
@@ -280,7 +281,7 @@ class AffiliateCommissionController extends AdminBaseController
         $frm = new Form('frmAffiliateCommissionSearch');
         $frm->addHiddenField('', 'page');
         $f1 = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '');
-        $fld_submit=$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;

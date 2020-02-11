@@ -1,17 +1,18 @@
 <?php
+
 class Questions extends MyAppModel
 {
-    const DB_TBL = 'tbl_questions';
-    const DB_TBL_LANG = 'tbl_questions_lang';
+    public const DB_TBL = 'tbl_questions';
+    public const DB_TBL_LANG = 'tbl_questions_lang';
 
-    const DB_TBL_PREFIX = 'question_';
-    const DB_TBL_LANG_PREFIX = 'questionlang_';
+    public const DB_TBL_PREFIX = 'question_';
+    public const DB_TBL_LANG_PREFIX = 'questionlang_';
 
-    const TYPE_TEXT = 1;
-    const TYPE_SINGLE_CHOICE = 2;
-    const TYPE_MULTIPLE_CHOICE = 3;
-    const TYPE_RATING_5 = 4;
-    const TYPE_RATING_10 = 5;
+    public const TYPE_TEXT = 1;
+    public const TYPE_SINGLE_CHOICE = 2;
+    public const TYPE_MULTIPLE_CHOICE = 3;
+    public const TYPE_RATING_5 = 4;
+    public const TYPE_RATING_10 = 5;
 
     private $db;
 
@@ -30,18 +31,18 @@ class Questions extends MyAppModel
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'q_l.'.static::DB_TBL_LANG_PREFIX.'question_id = q.'.static::tblFld('id').' and
-			q_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
+                'q_l.' . static::DB_TBL_LANG_PREFIX . 'question_id = q.' . static::tblFld('id') . ' and
+			q_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 'q_l'
             );
         }
 
         if ($active == true) {
-            $srch->addCondition('q.'.static::DB_TBL_PREFIX.'active', '=', applicationConstants::active);
+            $srch->addCondition('q.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::active);
         }
 
         if ($deleted == true) {
-            $srch->addCondition('q.'.static::DB_TBL_PREFIX.'deleted', '=', applicationConstants::NO);
+            $srch->addCondition('q.' . static::DB_TBL_PREFIX . 'deleted', '=', applicationConstants::NO);
         }
         return $srch;
     }
@@ -55,7 +56,7 @@ class Questions extends MyAppModel
 
         return array(
         static::TYPE_TEXT => Labels::getLabel('LBL_Question_Type_Text', $langId),
-        static::TYPE_SINGLE_CHOICE=> Labels::getLabel('LBL_Question_Type_Single_Choice', $langId),
+        static::TYPE_SINGLE_CHOICE => Labels::getLabel('LBL_Question_Type_Single_Choice', $langId),
         static::TYPE_MULTIPLE_CHOICE => Labels::getLabel('LBL_Question_Type_Multiple_Choice', $langId),
         static::TYPE_RATING_5 => Labels::getLabel('LBL_Question_Type_Rating_5', $langId),
         static::TYPE_RATING_10 => Labels::getLabel('LBL_Question_Type_Rating_10', $langId),

@@ -1,4 +1,5 @@
 <?php
+
 class BrandsController extends AdminBaseController
 {
     private $canView;
@@ -6,7 +7,7 @@ class BrandsController extends AdminBaseController
 
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup');
+        $ajaxCallArray = array('deleteRecord', 'form', 'langForm', 'search', 'setup', 'langSetup');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die(Labels::getLabel('MSG_Invalid_Action', $this->adminLangId));
         }
@@ -32,7 +33,7 @@ class BrandsController extends AdminBaseController
         }
         $this->_template->addCss('css/cropper.css');
         $this->_template->addJs('js/cropper.js');
-        $this->_template->addJs('js/cropper-main.js');        
+        $this->_template->addJs('js/cropper-main.js');
         $this->set("search", $search);
         $this->set('includeEditor', true);
         $this->_template->addJs('js/import-export.js');
@@ -41,14 +42,14 @@ class BrandsController extends AdminBaseController
 
     private function getSearchForm($request = false)
     {
-        $frm = new Form('frmSearch', array('id'=>'frmSearch'));
-        $f1 = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '', array('class'=>'search-input'));
+        $frm = new Form('frmSearch', array('id' => 'frmSearch'));
+        $f1 = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '', array('class' => 'search-input'));
         if ($request) {
-            $frm->addTextBox(Labels::getLabel('LBL_Seller_Name_Or_Email', $this->adminLangId), 'user_name', '', array('id'=>'keyword','autocomplete'=>'off'));
+            $frm->addTextBox(Labels::getLabel('LBL_Seller_Name_Or_Email', $this->adminLangId), 'user_name', '', array('id' => 'keyword', 'autocomplete' => 'off'));
             $frm->addHiddenField('', 'user_id');
         }
-        $fld_submit=$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
-        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick'=>'clearSearch();'));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick' => 'clearSearch();'));
         $frm->addHiddenField('', 'brand_id');
         $fld_submit->attachField($fld_cancel);
         return $frm;
@@ -61,7 +62,7 @@ class BrandsController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
         $prodBrandObj = new Brand();
@@ -69,11 +70,11 @@ class BrandsController extends AdminBaseController
         $srch->addFld('b.*');
 
         if (!empty($post['keyword'])) {
-            $condition=$srch->addCondition('b.brand_identifier', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('b_l.brand_name', 'like', '%'.$post['keyword'].'%', 'OR');
+            $condition = $srch->addCondition('b.brand_identifier', 'like', '%' . $post['keyword'] . '%');
+            $condition->attachCondition('b_l.brand_name', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
 
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -174,8 +175,8 @@ class BrandsController extends AdminBaseController
         }
 
         $brand_id = $post['brand_id'];
-        if ($post['brand_status']==applicationConstants::YES) {
-            $post['brand_active']  = applicationConstants::ACTIVE;
+        if ($post['brand_status'] == applicationConstants::YES) {
+            $post['brand_active'] = applicationConstants::ACTIVE;
         }
 
         unset($post['brand_id']);
@@ -191,7 +192,7 @@ class BrandsController extends AdminBaseController
         $brand_id = $record->getMainTableRecordId();
 
         /* url data[ */
-        $shopOriginalUrl = $this->rewriteUrl.$brand_id;
+        $shopOriginalUrl = $this->rewriteUrl . $brand_id;
         $shopCustomUrl = CommonHelper::seoUrl($post['urlrewrite_custom']);
         if ($post['urlrewrite_custom'] == '') {
             FatApp::getDb()->deleteRecords(UrlRewrite::DB_TBL, array( 'smt' => 'urlrewrite_original = ?', 'vals' => array($shopOriginalUrl)));
@@ -205,45 +206,45 @@ class BrandsController extends AdminBaseController
             $urlRow = FatApp::getDb()->fetch($rs);
             $recordObj = new TableRecord(UrlRewrite::DB_TBL);
             if ($urlRow) {
-                $recordObj->assignValues(array('urlrewrite_custom'    =>    $shopCustomUrl ));
+                $recordObj->assignValues(array('urlrewrite_custom' => $shopCustomUrl ));
                 if (!$recordObj->update(array( 'smt' => 'urlrewrite_original = ?', 'vals' => array($shopOriginalUrl)))) {
                     Message::addErrorMessage(Labels::getLabel("Please_try_different_url,_URL_already_used_for_another_record.", $this->adminLangId));
                     FatUtility::dieJsonError(Message::getHtml());
                 }
                 //$shopDetails['urlrewrite_custom'] = $urlRow['urlrewrite_custom'];
             } else {
-                $recordObj->assignValues(array('urlrewrite_original' => $shopOriginalUrl, 'urlrewrite_custom'    =>    $shopCustomUrl ));
+                $recordObj->assignValues(array('urlrewrite_original' => $shopOriginalUrl, 'urlrewrite_custom' => $shopCustomUrl ));
                 if (!$recordObj->addNew()) {
                     Message::addErrorMessage(Labels::getLabel("Please_try_different_url,_URL_already_used_for_another_record.", $this->adminLangId));
                     FatUtility::dieJsonError(Message::getHtml());
                 }
             }
         }
-        $brandData  = Brand::getAttributesById($brand_id);
+        $brandData = Brand::getAttributesById($brand_id);
         $brandLangData = Brand::getAttributesByLangId($this->adminLangId, $brand_id);
         $brandData['brand_name'] = $brandLangData['brand_name'];
         /* ] */
         $email = new EmailHandler();
-        if ($post['brand_status']!=Brand::BRAND_REQUEST_PENDING) {
+        if ($post['brand_status'] != Brand::BRAND_REQUEST_PENDING) {
             if (!$email->sendBrandRequestStatusChangeNotification($this->adminLangId, $brandData)) {
                 Message::addErrorMessage(Labels::getLabel('LBL_Email_Could_Not_Be_Sent', $this->adminLangId));
                 FatUtility::dieWithError(Message::getHtml());
             }
         }
 
-        $newTabLangId=0;
-        if ($brand_id>0) {
-            $brandId=$brand_id;
-            $languages=Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
-                if (!$row=Brand::getAttributesByLangId($langId, $brand_id)) {
+        $newTabLangId = 0;
+        if ($brand_id > 0) {
+            $brandId = $brand_id;
+            $languages = Language::getAllNames();
+            foreach ($languages as $langId => $langName) {
+                if (!$row = Brand::getAttributesByLangId($langId, $brand_id)) {
                     $newTabLangId = $langId;
                     break;
                 }
             }
         } else {
             $brandId = $record->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
 
         if ($newTabLangId == 0 && !$this->isMediaUploaded($brand_id)) {
@@ -333,7 +334,7 @@ class BrandsController extends AdminBaseController
         $prodBrandFrm = $this->getForm($brand_id);
 
         if (0 < $brand_id) {
-            $data = Brand::getAttributesById($brand_id, array('brand_id','brand_identifier','brand_active','brand_featured'));
+            $data = Brand::getAttributesById($brand_id, array('brand_id', 'brand_identifier', 'brand_active', 'brand_featured'));
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
@@ -342,7 +343,7 @@ class BrandsController extends AdminBaseController
             $urlSrch->doNotCalculateRecords();
             $urlSrch->doNotLimitRecords();
             $urlSrch->addFld('urlrewrite_custom');
-            $urlSrch->addCondition('urlrewrite_original', '=', $this->rewriteUrl.$brand_id);
+            $urlSrch->addCondition('urlrewrite_original', '=', $this->rewriteUrl . $brand_id);
             $rs = $urlSrch->getResultSet();
             $urlRow = FatApp::getDb()->fetch($rs);
             if ($urlRow) {
@@ -358,15 +359,15 @@ class BrandsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function requestForm($brand_id=0)
+    public function requestForm($brand_id = 0)
     {
         $this->objPrivilege->canEditBrandRequests();
 
-        $brand_id=FatUtility::int($brand_id);
+        $brand_id = FatUtility::int($brand_id);
         $prodBrandFrm = $this->getRequestForm($brand_id);
 
         if (0 < $brand_id) {
-            $data = Brand::getAttributesById($brand_id, array('brand_id','brand_identifier','brand_active','brand_featured','brand_status','brand_seller_id'));
+            $data = Brand::getAttributesById($brand_id, array('brand_id', 'brand_identifier', 'brand_active', 'brand_featured', 'brand_status', 'brand_seller_id'));
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
@@ -375,16 +376,16 @@ class BrandsController extends AdminBaseController
             $urlSrch->doNotCalculateRecords();
             $urlSrch->doNotLimitRecords();
             $urlSrch->addFld('urlrewrite_custom');
-            $urlSrch->addCondition('urlrewrite_original', '=', $this->rewriteUrl.$brand_id);
+            $urlSrch->addCondition('urlrewrite_original', '=', $this->rewriteUrl . $brand_id);
             $rs = $urlSrch->getResultSet();
             $urlRow = FatApp::getDb()->fetch($rs);
-            $data['urlrewrite_custom'] ='';
+            $data['urlrewrite_custom'] = '';
             if ($urlRow) {
                 $data['urlrewrite_custom'] = $urlRow['urlrewrite_custom'];
             }
 
-            if ($data['urlrewrite_custom'] =='') {
-                $data['urlrewrite_custom']= CommonHelper::seoUrl($data['brand_identifier']);
+            if ($data['urlrewrite_custom'] == '') {
+                $data['urlrewrite_custom'] = CommonHelper::seoUrl($data['brand_identifier']);
             }
             /* ] */
             $prodBrandFrm->fill($data);
@@ -414,7 +415,7 @@ class BrandsController extends AdminBaseController
         $lang_id = FatUtility::int($lang_id);
         $slide_screen = FatUtility::int($slide_screen);
         $brand_id = FatUtility::int($brand_id);
-        if ($file_type=='logo') {
+        if ($file_type == 'logo') {
             $brandLogos = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_BRAND_LOGO, $brand_id, 0, $lang_id, false);
             $this->set('images', $brandLogos);
             $this->set('imageFunction', 'brandReal');
@@ -486,7 +487,7 @@ class BrandsController extends AdminBaseController
 
         $this->set('brandId', $brand_id);
         $this->set('file', $_FILES['cropped_image']['name']);
-        $this->set('msg', $_FILES['cropped_image']['name']. Labels::getLabel('MSG_File_Uploaded_Successfully', $this->adminLangId));
+        $this->set('msg', $_FILES['cropped_image']['name'] . Labels::getLabel('MSG_File_Uploaded_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -501,7 +502,7 @@ class BrandsController extends AdminBaseController
     public function getBrandLogoForm($brand_id)
     {
         $frm = new Form('frmBrandLogo');
-        $frm->addHTML('', Labels::getLabel('LBL_logo', $this->adminLangId), '<h3>'.Labels::getLabel('LBL_Logo', $this->adminLangId).'</h3>');
+        $frm->addHTML('', Labels::getLabel('LBL_logo', $this->adminLangId), '<h3>' . Labels::getLabel('LBL_Logo', $this->adminLangId) . '</h3>');
         $languagesAssocArr = Language::getAllNames();
         $frm->addHTML('', 'brand_logo_heading', '');
         $frm->addHiddenField('', 'brand_id', $brand_id);
@@ -511,7 +512,7 @@ class BrandsController extends AdminBaseController
         $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_BRAND_LOGO);
         $frm->addHiddenField('', 'logo_min_width');
         $frm->addHiddenField('', 'logo_min_height');
-        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'logo', array('accept'=>'image/*', 'data-frm'=>'frmBrandLogo'));
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'logo', array('accept' => 'image/*', 'data-frm' => 'frmBrandLogo'));
         $frm->addHtml('', 'brand_logo_display_div', '');
 
         return $frm;
@@ -520,7 +521,7 @@ class BrandsController extends AdminBaseController
     public function getBrandImageForm($brand_id)
     {
         $frm = new Form('frmBrandImage');
-        $frm->addHTML('', Labels::getLabel('LBL_Image', $this->adminLangId), '<h3>'.Labels::getLabel('LBL_Image', $this->adminLangId).'</h3>');
+        $frm->addHTML('', Labels::getLabel('LBL_Image', $this->adminLangId), '<h3>' . Labels::getLabel('LBL_Image', $this->adminLangId) . '</h3>');
         $languagesAssocArr = Language::getAllNames();
         $frm->addHTML('', 'brand_logo_heading', '');
         $frm->addHiddenField('', 'brand_id', $brand_id);
@@ -530,23 +531,23 @@ class BrandsController extends AdminBaseController
         $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_BRAND_IMAGE);
         $frm->addHiddenField('', 'banner_min_width');
         $frm->addHiddenField('', 'banner_min_height');
-        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'image', array('accept'=>'image/*', 'data-frm'=>'frmBrandImage'));
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'image', array('accept' => 'image/*', 'data-frm' => 'frmBrandImage'));
         $frm->addHtml('', 'brand_image_display_div', '');
 
         return $frm;
     }
 
-    private function getForm($brand_id=0)
+    private function getForm($brand_id = 0)
     {
         $this->objPrivilege->canEditBrands();
         $brand_id = FatUtility::int($brand_id);
 
-        $action=Labels::getLabel('LBL_Add_New', $this->adminLangId);
-        if ($brand_id>0) {
-            $action=Labels::getLabel('LBL_Update', $this->adminLangId);
+        $action = Labels::getLabel('LBL_Add_New', $this->adminLangId);
+        if ($brand_id > 0) {
+            $action = Labels::getLabel('LBL_Update', $this->adminLangId);
         }
 
-        $frm = new Form('frmProdBrand', array('id'=>'frmProdBrand'));
+        $frm = new Form('frmProdBrand', array('id' => 'frmProdBrand'));
         $frm->addHiddenField('', 'brand_id', 0);
         $frm->addRequiredField(Labels::getLabel('LBL_Brand_Identifier', $this->adminLangId), 'brand_identifier');
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Brand_SEO_Friendly_URL', $this->adminLangId), 'urlrewrite_custom');
@@ -556,7 +557,7 @@ class BrandsController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Brand_Status', $this->adminLangId), 'brand_active', $activeInactiveArr, '', array(), '');
 
         /* $frm->addCheckBox(Labels::getLabel('LBL_Featured',$this->adminLangId), 'brand_featured', 1,array(),false,0); */
-        $fld = $frm->addHiddenField('', 'brand_logo', '', array('id'=>'brand_logo'));
+        $fld = $frm->addHiddenField('', 'brand_logo', '', array('id' => 'brand_logo'));
         $frm->addSubmitButton('', 'btn_submit', $action);
         return $frm;
     }
@@ -800,7 +801,7 @@ class BrandsController extends AdminBaseController
         foreach ($brands as $key => $brand) {
             $json[] = array(
                 'id' => $key,
-                'name'      => strip_tags(html_entity_decode($brand['brand_name'], ENT_QUOTES, 'UTF-8'))
+                'name' => strip_tags(html_entity_decode($brand['brand_name'], ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));
@@ -820,7 +821,7 @@ class BrandsController extends AdminBaseController
         }
         $this->_template->addCss('css/cropper.css');
         $this->_template->addJs('js/cropper.js');
-        $this->_template->addJs('js/cropper-main.js');        
+        $this->_template->addJs('js/cropper-main.js');
         $this->set("search", $search);
         $this->_template->render();
     }
@@ -832,19 +833,19 @@ class BrandsController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm(true);
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
         $prodBrandObj = new Brand();
         $srch = $prodBrandObj->getSearchObject();
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = brand_seller_id', 'u');
-        $srch->addMultipleFields(array('b.*','user_name'));
+        $srch->addMultipleFields(array('b.*', 'user_name'));
         $srch->addCondition('brand_status', '=', applicationConstants::NO);
         $srch->addCondition('brand_seller_id', '>', 0);
         $srch->addOrder('b.brand_id', 'desc');
         if (!empty($post['keyword'])) {
-            $condition=$srch->addCondition('b.brand_identifier', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('bl.brand_name', 'like', '%'.$post['keyword'].'%', 'OR');
+            $condition = $srch->addCondition('b.brand_identifier', 'like', '%' . $post['keyword'] . '%');
+            $condition->attachCondition('bl.brand_name', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
         if (!empty($post['brand_id'])) {
             $srch->addCondition('b.brand_id', '=', $post['brand_id']);
@@ -853,7 +854,7 @@ class BrandsController extends AdminBaseController
         if ($user_id > 0) {
             $srch->addCondition('brand_seller_id', '=', $user_id);
         }
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -947,7 +948,7 @@ class BrandsController extends AdminBaseController
         $langId = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
 
         if (1 > $langId) {
-            $langId =  CommonHelper::getLangId();
+            $langId = CommonHelper::getLangId();
         }
 
         $db = FatApp::getDb();
@@ -956,8 +957,8 @@ class BrandsController extends AdminBaseController
         $keywordSrch = UrlRewrite::getSearchObject();
         $keywordSrch->doNotCalculateRecords();
         $keywordSrch->doNotLimitRecords();
-        $keywordSrch->addMultipleFields(array('urlrewrite_original','urlrewrite_custom'));
-        $keywordSrch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'original', 'like', $this->rewriteUrl.'%');
+        $keywordSrch->addMultipleFields(array('urlrewrite_original', 'urlrewrite_custom'));
+        $keywordSrch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'original', 'like', $this->rewriteUrl . '%');
         $keywordRs = $keywordSrch->getResultSet();
         $urlKeywords = $db->fetchAllAssoc($keywordRs, 'brand_identifier');
         /*]*/
@@ -991,11 +992,11 @@ class BrandsController extends AdminBaseController
                     $featured = $row['brand_featured'];
                     $active = $row['brand_active'];
                 } else {
-                    $featured = ($row['brand_featured'])?'YES':'NO';
-                    $active = ($row['brand_active'])?'YES':'NO';
+                    $featured = ($row['brand_featured']) ? 'YES' : 'NO';
+                    $active = ($row['brand_active']) ? 'YES' : 'NO';
                 }
 
-                $keyword = isset($urlKeywords[$this->rewriteUrl.$row['brand_id']])?$urlKeywords[$this->rewriteUrl.$row['brand_id']]:'';
+                $keyword = isset($urlKeywords[$this->rewriteUrl . $row['brand_id']]) ? $urlKeywords[$this->rewriteUrl . $row['brand_id']] : '';
 
                 $sheetArr[] = $keyword;
                 $sheetArr[] = $featured;
@@ -1007,7 +1008,7 @@ class BrandsController extends AdminBaseController
 
         $langData = Language::getAttributesById($langId, array('language_code'));
 
-        CommonHelper::convertToCsv($sheetData, 'Brands_'.$langData['language_code'].'_'.date("d-M-Y").'.csv', ',');
+        CommonHelper::convertToCsv($sheetData, 'Brands_' . $langData['language_code'] . '_' . date("d-M-Y") . '.csv', ',');
         exit;
     }
 
@@ -1016,10 +1017,10 @@ class BrandsController extends AdminBaseController
         $this->objPrivilege->canViewBrands();
 
         $srch = Brand::getSearchObject();
-        $srch->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'brand_id = afile_record_id and afile_type = '.AttachedFile::FILETYPE_BRAND_LOGO);
+        $srch->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'brand_id = afile_record_id and afile_type = ' . AttachedFile::FILETYPE_BRAND_LOGO);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('brand_id','brand_identifier','afile_record_id','afile_record_subid','afile_lang_id','afile_screen','afile_physical_path','afile_name','afile_display_order'));
+        $srch->addMultipleFields(array('brand_id', 'brand_identifier', 'afile_record_id', 'afile_record_subid', 'afile_lang_id', 'afile_screen', 'afile_physical_path', 'afile_name', 'afile_display_order'));
         $srch->addCondition('brand_status', '=', applicationConstants::ACTIVE);
         $rs = $srch->getResultSet();
 
@@ -1056,7 +1057,7 @@ class BrandsController extends AdminBaseController
             array_push($sheetData, $sheetArr);
         }
 
-        CommonHelper::convertToCsv($sheetData, 'Brands_Media_'.$languageCodes[$langId].'_'.date("d-M-Y").'.csv', ',');
+        CommonHelper::convertToCsv($sheetData, 'Brands_Media_' . $languageCodes[$langId] . '_' . date("d-M-Y") . '.csv', ',');
         exit;
     }
 
@@ -1119,8 +1120,8 @@ class BrandsController extends AdminBaseController
 
             if ($rowCount > 0) {
                 $dataToSaveArr = array(
-                    'brand_status'=>applicationConstants::ACTIVE,
-                    'brand_identifier'=>$identifier,
+                    'brand_status' => applicationConstants::ACTIVE,
+                    'brand_identifier' => $identifier,
                 );
 
                 if (FatApp::getConfig('CONF_USE_BRAND_ID', FatUtility::VAR_INT, 0)) {
@@ -1129,11 +1130,11 @@ class BrandsController extends AdminBaseController
 
                 if ($obj->isDefaultSheetData($langId)) {
                     if (FatApp::getConfig('CONF_USE_O_OR_1', FatUtility::VAR_INT, 0)) {
-                        $dataToSaveArr['brand_featured'] = (FatUtility::int($featured) == 1)?applicationConstants::YES:applicationConstants::NO;
-                        $dataToSaveArr['brand_active'] = (FatUtility::int($active) == 1)?applicationConstants::YES:applicationConstants::NO;
+                        $dataToSaveArr['brand_featured'] = (FatUtility::int($featured) == 1) ? applicationConstants::YES : applicationConstants::NO;
+                        $dataToSaveArr['brand_active'] = (FatUtility::int($active) == 1) ? applicationConstants::YES : applicationConstants::NO;
                     } else {
-                        $dataToSaveArr['brand_featured'] = (strtoupper($featured) == 'YES')?applicationConstants::YES:applicationConstants::NO;
-                        $dataToSaveArr['brand_active'] = (strtoupper($active) == 'YES')?applicationConstants::YES:applicationConstants::NO;
+                        $dataToSaveArr['brand_featured'] = (strtoupper($featured) == 'YES') ? applicationConstants::YES : applicationConstants::NO;
+                        $dataToSaveArr['brand_active'] = (strtoupper($active) == 'YES') ? applicationConstants::YES : applicationConstants::NO;
                     }
                 }
 
@@ -1161,10 +1162,10 @@ class BrandsController extends AdminBaseController
                 if ($brandId) {
                     /* Lang Data [*/
                     $langData = array(
-                        'brandlang_brand_id'=> $brandId,
-                        'brandlang_lang_id'=> $langId,
-                        'brand_name'=> $name,
-                        'brand_short_description'=> $description,
+                        'brandlang_brand_id' => $brandId,
+                        'brandlang_lang_id' => $langId,
+                        'brand_name' => $name,
+                        'brand_short_description' => $description,
                     );
                     $db->insertFromArray(Brand::DB_TBL_LANG, $langData, false, array(), $langData);
                     /* ]*/
@@ -1216,7 +1217,7 @@ class BrandsController extends AdminBaseController
         $languageCodes = Language::getAllCodesAssoc(true);
         $languageIds = array_flip($languageCodes);
 
-        $brandIdentifiers =  Brand::getAllIdentifierAssoc();
+        $brandIdentifiers = Brand::getAllIdentifierAssoc();
         $brandIds = array_flip($brandIdentifiers);
 
         while (($line = fgetcsv($csvFilePointer)) !== false) {
@@ -1257,7 +1258,7 @@ class BrandsController extends AdminBaseController
             }
 
             if ($rowCount > 0) {
-                $fileType  = AttachedFile::FILETYPE_BRAND_LOGO;
+                $fileType = AttachedFile::FILETYPE_BRAND_LOGO;
 
                 if (FatApp::getConfig('CONF_USE_BRAND_ID', FatUtility::VAR_INT, 0)) {
                     $recordId = $brandId;
@@ -1274,13 +1275,13 @@ class BrandsController extends AdminBaseController
                 $recordSubid = 0;
 
                 $dataToSaveArr = array(
-                    'afile_type'=>$fileType,
-                    'afile_record_id'=>$recordId,
-                    'afile_record_subid'=>$recordSubid,
-                    'afile_lang_id'=>$fileLangId,
-                    'afile_physical_path'=>$filePath,
-                    'afile_name'=>$fileName,
-                    'afile_display_order'=>$displayOrder,
+                    'afile_type' => $fileType,
+                    'afile_record_id' => $recordId,
+                    'afile_record_subid' => $recordSubid,
+                    'afile_lang_id' => $fileLangId,
+                    'afile_physical_path' => $filePath,
+                    'afile_name' => $fileName,
+                    'afile_display_order' => $displayOrder,
                 );
 
                 $saveToTempTable = false;

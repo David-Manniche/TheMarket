@@ -1,8 +1,9 @@
 <?php
+
 class UpcCode extends MyAppModel
 {
-    const DB_TBL = 'tbl_upc_codes';
-    const DB_TBL_PREFIX = 'upc_';
+    public const DB_TBL = 'tbl_upc_codes';
+    public const DB_TBL_PREFIX = 'upc_';
 
     private $db;
 
@@ -29,8 +30,8 @@ class UpcCode extends MyAppModel
 
         $srch = self::getSearchObject();
 
-        $srch->addCondition(self::DB_TBL_PREFIX.'product_id', '=', $product_id);
-        $srch->addCondition(self::DB_TBL_PREFIX.'options', '=', $optionvalue_id);
+        $srch->addCondition(self::DB_TBL_PREFIX . 'product_id', '=', $product_id);
+        $srch->addCondition(self::DB_TBL_PREFIX . 'options', '=', $optionvalue_id);
         $srch->addFld('upc_code');
         $rs = $srch->getResultSet();
         $code = $db->fetch($rs);

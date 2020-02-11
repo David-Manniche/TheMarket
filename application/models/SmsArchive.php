@@ -1,4 +1,5 @@
 <?php
+
 class SmsArchive extends MyAppModel
 {
     public const DB_TBL = 'tbl_sms_archives';
@@ -11,7 +12,7 @@ class SmsArchive extends MyAppModel
 
     public static function send($toNumber, $tpl, $langId, $replacements = [], &$error = '')
     {
-        $langId  = FatUtility::int($langId);
+        $langId = FatUtility::int($langId);
         $defaultPushNotiAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_SMS_NOTIFICATION, FatUtility::VAR_INT, 0);
         if (empty($defaultPushNotiAPI) || empty($toNumber) || empty($tpl) || 1 > $langId) {
             $error = Labels::getLabel('MSG_INVALID_REQUEST', $langId);
@@ -39,7 +40,7 @@ class SmsArchive extends MyAppModel
         $response = $smsGateway->send($toNumber, $body);
         
         if (false == $response || false == $response['status']) {
-            $error = isset($response['msg']) ? $response['msg'] :  $smsGateway->getError();
+            $error = isset($response['msg']) ? $response['msg'] : $smsGateway->getError();
             return false;
         }
        

@@ -1,4 +1,5 @@
 <?php
+
 class AffiliatesReportController extends AdminBaseController
 {
     private $canView;
@@ -41,7 +42,7 @@ class AffiliatesReportController extends AdminBaseController
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addGroupBy('utxn.utxn_user_id');
-        $srch->addMultipleFields(array('utxn.utxn_user_id',"SUM(utxn_credit - utxn_debit) as userBalance"));
+        $srch->addMultipleFields(array('utxn.utxn_user_id', "SUM(utxn_credit - utxn_debit) as userBalance"));
         $qryUserBalance = $srch->getQuery();
         /* ] */
 
@@ -92,8 +93,8 @@ class AffiliatesReportController extends AdminBaseController
         $srch->joinTable('(' . $qryUserOrderRevenue . ')', 'LEFT OUTER JOIN', 'u.user_id = tquor.utxn_user_id', 'tquor');
         $srch->joinTable('(' . $qryUserReffered . ')', 'LEFT OUTER JOIN', 'u.user_id = tqureferred.user_affiliate_referrer_user_id', 'tqureferred');
         $srch->addMultipleFields(
-            array('u.*','uc.credential_email','user_name',
-            'u.user_regdate','COALESCE(tqub.userBalance,0) as totUserBalance',
+            array('u.*', 'uc.credential_email', 'user_name',
+            'u.user_regdate', 'COALESCE(tqub.userBalance,0) as totUserBalance',
             'COALESCE( tqur.userRevenue, 0 ) as totRevenue',
             'COALESCE( tqusr.userSignUpRevenue, 0 ) as totSignUpRevenue',
             'COALESCE( tquor.userOrderRevenue, 0 ) as totOrderRevenue',
@@ -105,12 +106,12 @@ class AffiliatesReportController extends AdminBaseController
 
         $date_from = FatApp::getPostedData('date_from', FatUtility::VAR_DATE, '');
         if (!empty($date_from)) {
-            $srch->addCondition('u.user_regdate', '>=', $date_from. ' 00:00:00');
+            $srch->addCondition('u.user_regdate', '>=', $date_from . ' 00:00:00');
         }
 
         $date_to = FatApp::getPostedData('date_to', FatUtility::VAR_DATE, '');
         if (!empty($date_to)) {
-            $srch->addCondition('u.user_regdate', '<=', $date_to. ' 23:59:59');
+            $srch->addCondition('u.user_regdate', '<=', $date_to . ' 23:59:59');
         }
 
         if ($type == 'export') {
@@ -118,18 +119,18 @@ class AffiliatesReportController extends AdminBaseController
             $srch->doNotLimitRecords();
             $rs = $srch->getResultSet();
             $sheetData = array();
-            $arr = array(Labels::getLabel('LBL_Name', $this->adminLangId),Labels::getLabel('LBL_Email', $this->adminLangId),Labels::getLabel('LBL_Reg.Date', $this->adminLangId),Labels::getLabel('LBL_Balance', $this->adminLangId), Labels::getLabel('LBL_Revenue', $this->adminLangId), Labels::getLabel('LBL_SignUp_Revenue', $this->adminLangId), Labels::getLabel('LBL_Order_Revenue', $this->adminLangId) );
+            $arr = array(Labels::getLabel('LBL_Name', $this->adminLangId), Labels::getLabel('LBL_Email', $this->adminLangId), Labels::getLabel('LBL_Reg.Date', $this->adminLangId), Labels::getLabel('LBL_Balance', $this->adminLangId), Labels::getLabel('LBL_Revenue', $this->adminLangId), Labels::getLabel('LBL_SignUp_Revenue', $this->adminLangId), Labels::getLabel('LBL_Order_Revenue', $this->adminLangId) );
             array_push($sheetData, $arr);
             while ($row = $db->fetch($rs)) {
                 $totUserBalance = CommonHelper::displayMoneyFormat($row['totUserBalance'], true, true);
                 $totRevenue = CommonHelper::displayMoneyFormat($row['totRevenue'], true, true);
                 $totSignUpRevenue = CommonHelper::displayMoneyFormat($row['totSignUpRevenue'], true, true);
                 $totOrderRevenue = CommonHelper::displayMoneyFormat($row['totOrderRevenue'], true, true);
-                $arr = array($row['user_name'],$row['credential_email'], FatDate::format($row['user_regdate']), $totUserBalance, $totRevenue, $totSignUpRevenue, $totOrderRevenue );
+                $arr = array($row['user_name'], $row['credential_email'], FatDate::format($row['user_regdate']), $totUserBalance, $totRevenue, $totSignUpRevenue, $totOrderRevenue );
                 array_push($sheetData, $arr);
             }
 
-            CommonHelper::convertToCsv($sheetData, str_replace("{reportgenerationdate}", date("d-M-Y"), Labels::getLabel("LBL_Affiliates_Report_{reportgenerationdate}", $this->adminLangId)).'.csv', ',');
+            CommonHelper::convertToCsv($sheetData, str_replace("{reportgenerationdate}", date("d-M-Y"), Labels::getLabel("LBL_Affiliates_Report_{reportgenerationdate}", $this->adminLangId)) . '.csv', ',');
             exit;
         } else {
             $srch->setPageNumber($page);
@@ -156,10 +157,10 @@ class AffiliatesReportController extends AdminBaseController
     {
         $frm = new Form('frmAffiliatesReportSearch');
         $frm->addHiddenField('', 'page', 1);
-        $frm->addDateField(Labels::getLabel('LBL_Reg._Date_From', $this->adminLangId), 'date_from', '', array('readonly' => 'readonly','class' => 'small dateTimeFld field--calender' ));
-        $frm->addDateField(Labels::getLabel('LBL_Reg._Date_To', $this->adminLangId), 'date_to', '', array('readonly' => 'readonly','class' => 'small dateTimeFld field--calender'));
+        $frm->addDateField(Labels::getLabel('LBL_Reg._Date_From', $this->adminLangId), 'date_from', '', array('readonly' => 'readonly', 'class' => 'small dateTimeFld field--calender' ));
+        $frm->addDateField(Labels::getLabel('LBL_Reg._Date_To', $this->adminLangId), 'date_to', '', array('readonly' => 'readonly', 'class' => 'small dateTimeFld field--calender'));
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
-        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick'=>'clearSearch();'));
+        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick' => 'clearSearch();'));
         $fld_submit->attachField($fld_cancel);
 
         return $frm;

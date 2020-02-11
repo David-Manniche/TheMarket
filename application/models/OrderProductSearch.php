@@ -1,4 +1,5 @@
 <?php
+
 class OrderProductSearch extends SearchBase
 {
     private $langId;
@@ -71,7 +72,7 @@ class OrderProductSearch extends SearchBase
         $this->isOrderProductStatusJoined = true;
         $this->joinTable(Orders::DB_TBL_ORDERS_STATUS, 'LEFT OUTER JOIN', 'os.orderstatus_id = op.op_status_id', 'os');
         if ($langId) {
-            $this->joinTable(Orders::DB_TBL_ORDERS_STATUS_LANG, 'LEFT OUTER JOIN', 'os_l.orderstatuslang_orderstatus_id = os.orderstatus_id AND os_l.orderstatuslang_lang_id = '.$langId, 'os_l');
+            $this->joinTable(Orders::DB_TBL_ORDERS_STATUS_LANG, 'LEFT OUTER JOIN', 'os_l.orderstatuslang_orderstatus_id = os.orderstatus_id AND os_l.orderstatuslang_lang_id = ' . $langId, 'os_l');
         }
     }
 
@@ -93,7 +94,7 @@ class OrderProductSearch extends SearchBase
         }
         $this->joinTable(SellerProduct::DB_TBL, 'LEFT OUTER JOIN', 'sp.selprod_id = op.op_selprod_id and op.op_is_batch = 0', 'sp');
         if ($langId) {
-            $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp_l.selprodlang_selprod_id = sp.selprod_id AND sp_l.selprodlang_lang_id = '.$langId, 'sp_l');
+            $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp_l.selprodlang_selprod_id = sp.selprod_id AND sp_l.selprodlang_lang_id = ' . $langId, 'sp_l');
         }
     }
 
@@ -105,7 +106,7 @@ class OrderProductSearch extends SearchBase
         }
         $this->joinTable(ProductGroup::DB_TBL, 'LEFT OUTER JOIN', 'pg.prodgroup_id = op.op_selprod_id and op.op_is_batch = 1', 'pg');
         if ($langId) {
-            $this->joinTable(ProductGroup::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pg_l.prodgrouplang_prodgroup_id = pg.prodgroup_id AND pg_l.prodgrouplang_lang_id = '.$langId, 'pg_l');
+            $this->joinTable(ProductGroup::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pg_l.prodgrouplang_prodgroup_id = pg.prodgroup_id AND pg_l.prodgrouplang_lang_id = ' . $langId, 'pg_l');
         }
     }
 
@@ -121,13 +122,13 @@ class OrderProductSearch extends SearchBase
         }
         $this->joinTable(PaymentMethods::DB_TBL, 'LEFT OUTER JOIN', 'o.order_pmethod_id = pm.pmethod_id', 'pm');
         if ($langId) {
-            $this->joinTable(PaymentMethods::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pm.pmethod_id = pm_l.pmethodlang_pmethod_id AND pm_l.pmethodlang_lang_id = '.$langId, 'pm_l');
+            $this->joinTable(PaymentMethods::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pm.pmethod_id = pm_l.pmethodlang_pmethod_id AND pm_l.pmethodlang_lang_id = ' . $langId, 'pm_l');
         }
     }
 
     public function joinOrderProductCharges($type, $alias = 'opc_temp')
     {
-        $this->joinTable(OrderProduct::DB_TBL_CHARGES, 'LEFT OUTER JOIN', $alias.'.opcharge_op_id = op.op_id and '.$alias.'.opcharge_type = '.$type, $alias);
+        $this->joinTable(OrderProduct::DB_TBL_CHARGES, 'LEFT OUTER JOIN', $alias . '.opcharge_op_id = op.op_id and ' . $alias . '.opcharge_type = ' . $type, $alias);
     }
 
     public function joinShippingUsers()
@@ -147,7 +148,7 @@ class OrderProductSearch extends SearchBase
 
     public function joinDigitalDownloads($type = AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD)
     {
-        $this->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'opa.afile_record_id = op.op_id and afile_type = '.$type, 'opa');
+        $this->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'opa.afile_record_id = op.op_id and afile_type = ' . $type, 'opa');
     }
 
     public function joinDigitalDownloadLinks()
@@ -171,7 +172,7 @@ class OrderProductSearch extends SearchBase
         $srch = new SearchBase(OrderProduct::DB_TBL_CHARGES, 'opc');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('opcharge_op_id','sum(opcharge_amount) as op_other_charges'));
+        $srch->addMultipleFields(array('opcharge_op_id', 'sum(opcharge_amount) as op_other_charges'));
         $srch->addGroupBy('opc.opcharge_op_id');
         $srch->addCondition('opc.opcharge_order_type', '=', ORDERS::ORDER_PRODUCT);
         $qryOtherCharges = $srch->getQuery();
@@ -184,7 +185,7 @@ class OrderProductSearch extends SearchBase
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addGroupBy('temp_op.op_order_id');
-        $srch->addMultipleFields(array('temp_op.op_order_id',"count(temp_op.op_order_id) as totCombinedOrders"));
+        $srch->addMultipleFields(array('temp_op.op_order_id', "count(temp_op.op_order_id) as totCombinedOrders"));
         $qryCombinedOrders = $srch->getQuery();
         $this->joinTable('(' . $qryCombinedOrders . ')', 'LEFT OUTER JOIN', 'op.op_order_id = co.op_order_id', 'co');
     }
@@ -197,34 +198,34 @@ class OrderProductSearch extends SearchBase
         $srch = new SearchBase(Orders::DB_TBL, $alias);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addGroupBy($alias.'.order_user_id');
+        $srch->addGroupBy($alias . '.order_user_id');
         if ($startDate) {
-            $srch->addCondition($alias.'.order_date_added', '>=', $startDate. ' 00:00:00');
+            $srch->addCondition($alias . '.order_date_added', '>=', $startDate . ' 00:00:00');
         }
         if ($endDate) {
-            $srch->addCondition($alias.'.order_date_added', '<=', $endDate. ' 23:59:59');
+            $srch->addCondition($alias . '.order_date_added', '<=', $endDate . ' 23:59:59');
         }
-        $srch->addMultipleFields(array($alias.'.order_user_id as '.$alias.'_order_user_id',"count(".$alias.".order_id) as ".$alias.'Count'));
+        $srch->addMultipleFields(array($alias . '.order_user_id as ' . $alias . '_order_user_id', "count(" . $alias . ".order_id) as " . $alias . 'Count'));
         $qrytotalOrders = $srch->getQuery();
-        $this->joinTable('(' . $qrytotalOrders . ')', 'LEFT OUTER JOIN', 'o.order_user_id = '.$alias.'.'.$alias.'_order_user_id', $alias);
+        $this->joinTable('(' . $qrytotalOrders . ')', 'LEFT OUTER JOIN', 'o.order_user_id = ' . $alias . '.' . $alias . '_order_user_id', $alias);
     }
 
     public function addSellerOrdersCounts($startDate = false, $endDate = false, $alias = 'sellerOrder')
     {
         $srch = new SearchBase(Orders::DB_TBL_ORDER_PRODUCTS, $alias);
-        $srch->joinTable(Orders::DB_TBL, 'LEFT OUTER JOIN', $alias.'.op_order_id = '.$alias.'temp.order_id', $alias.'temp');
+        $srch->joinTable(Orders::DB_TBL, 'LEFT OUTER JOIN', $alias . '.op_order_id = ' . $alias . 'temp.order_id', $alias . 'temp');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addGroupBy($alias.'.op_selprod_user_id');
+        $srch->addGroupBy($alias . '.op_selprod_user_id');
         if ($startDate) {
-            $srch->addCondition($alias.'temp.order_date_added', '>=', $startDate. ' 00:00:00');
+            $srch->addCondition($alias . 'temp.order_date_added', '>=', $startDate . ' 00:00:00');
         }
         if ($endDate) {
-            $srch->addCondition($alias.'temp.order_date_added', '<=', $endDate. ' 23:59:59');
+            $srch->addCondition($alias . 'temp.order_date_added', '<=', $endDate . ' 23:59:59');
         }
-        $srch->addMultipleFields(array($alias.'.op_selprod_user_id as '.$alias.'_op_selprod_user_id',"count(".$alias.".op_id) as ".$alias.'Count'));
+        $srch->addMultipleFields(array($alias . '.op_selprod_user_id as ' . $alias . '_op_selprod_user_id', "count(" . $alias . ".op_id) as " . $alias . 'Count'));
         $qrytotalOrders = $srch->getQuery();
-        $this->joinTable('(' . $qrytotalOrders . ')', 'LEFT OUTER JOIN', 'op.op_selprod_user_id = '.$alias.'.'.$alias.'_op_selprod_user_id', $alias);
+        $this->joinTable('(' . $qrytotalOrders . ')', 'LEFT OUTER JOIN', 'op.op_selprod_user_id = ' . $alias . '.' . $alias . '_op_selprod_user_id', $alias);
     }
 
     public function addSellerCompletedOrdersStats($startDate = false, $endDate = false, $alias = 'CompleteOrder')
@@ -251,32 +252,32 @@ class OrderProductSearch extends SearchBase
     {
         $srch = Stats::getSalesStatsObj($startDate, $endDate, $alias, $type);
 
-        $subSrch = Stats::getSalesStatsObj($startDate, $endDate, $alias.'_t', $type);
+        $subSrch = Stats::getSalesStatsObj($startDate, $endDate, $alias . '_t', $type);
 
-        $subSrch->joinTable(OrderProduct::DB_TBL_CHARGES, 'LEFT OUTER JOIN', $alias.'_tc.opcharge_op_id = '.$alias.'_t.op_id', $alias.'_tc');
+        $subSrch->joinTable(OrderProduct::DB_TBL_CHARGES, 'LEFT OUTER JOIN', $alias . '_tc.opcharge_op_id = ' . $alias . '_t.op_id', $alias . '_tc');
         /* $cnd = $subSrch->addCondition($alias.'_tc.opcharge_type','=',OrderProduct::CHARGE_TYPE_SHIPPING);
         $cnd->attachCondition($alias.'_tc.opcharge_type','=',OrderProduct::CHARGE_TYPE_TAX,'OR'); */
-        $subSrch->addFld($alias.'_tc.opcharge_op_id,SUM('.$alias.'_tc.opcharge_amount) as opcharge_amount');
-        $subSrch->addGroupBy($alias.'_tc.opcharge_op_id');
+        $subSrch->addFld($alias . '_tc.opcharge_op_id,SUM(' . $alias . '_tc.opcharge_amount) as opcharge_amount');
+        $subSrch->addGroupBy($alias . '_tc.opcharge_op_id');
 
-        $srch->joinTable('(' . $subSrch->getQuery() . ')', 'LEFT OUTER JOIN', $alias.'c.opcharge_op_id = '.$alias.'.op_id', $alias.'c');
+        $srch->joinTable('(' . $subSrch->getQuery() . ')', 'LEFT OUTER JOIN', $alias . 'c.opcharge_op_id = ' . $alias . '.op_id', $alias . 'c');
 
         switch ($type) {
             case Stats::REFUNDED_SALES:
-                $srch->addMultipleFields(array($alias.'.op_selprod_user_id as '.$alias.'_op_selprod_user_id',"count(".$alias.".op_id) as ".$alias.'Count','SUM('.$alias.'.op_refund_amount) AS '.$alias.'Amount'));
+                $srch->addMultipleFields(array($alias . '.op_selprod_user_id as ' . $alias . '_op_selprod_user_id', "count(" . $alias . ".op_id) as " . $alias . 'Count', 'SUM(' . $alias . '.op_refund_amount) AS ' . $alias . 'Amount'));
                 break;
             case Stats::CANCELLED_SALES:
-                $srch->addMultipleFields(array($alias.'.op_selprod_user_id as '.$alias.'_op_selprod_user_id',"count(".$alias.".op_id) as ".$alias.'Count','SUM(('.$alias.'.op_unit_price * '.$alias.'.op_qty) + IFNULL('.$alias.'c.opcharge_amount,0)) AS '.$alias.'Amount'));
+                $srch->addMultipleFields(array($alias . '.op_selprod_user_id as ' . $alias . '_op_selprod_user_id', "count(" . $alias . ".op_id) as " . $alias . 'Count', 'SUM((' . $alias . '.op_unit_price * ' . $alias . '.op_qty) + IFNULL(' . $alias . 'c.opcharge_amount,0)) AS ' . $alias . 'Amount'));
                 break;
             default:
-                $srch->addMultipleFields(array($alias.'.op_selprod_user_id as '.$alias.'_op_selprod_user_id',"count(".$alias.".op_id) as ".$alias.'Count','SUM((('.$alias.'.op_unit_price * '.$alias.'.op_qty) + IFNULL('.$alias.'c.opcharge_amount,0)) - '.$alias.'.op_refund_amount) AS '.$alias.'Sales'));
+                $srch->addMultipleFields(array($alias . '.op_selprod_user_id as ' . $alias . '_op_selprod_user_id', "count(" . $alias . ".op_id) as " . $alias . 'Count', 'SUM(((' . $alias . '.op_unit_price * ' . $alias . '.op_qty) + IFNULL(' . $alias . 'c.opcharge_amount,0)) - ' . $alias . '.op_refund_amount) AS ' . $alias . 'Sales'));
                 break;
         }
 
-        $srch->addGroupBy($alias.'.op_selprod_user_id');
+        $srch->addGroupBy($alias . '.op_selprod_user_id');
 
         $qrytotalOrders = $srch->getQuery();
-        $this->joinTable('(' . $qrytotalOrders . ')', 'LEFT OUTER JOIN', 'op.op_selprod_user_id = '.$alias.'.'.$alias.'_op_selprod_user_id', $alias);
+        $this->joinTable('(' . $qrytotalOrders . ')', 'LEFT OUTER JOIN', 'op.op_selprod_user_id = ' . $alias . '.' . $alias . '_op_selprod_user_id', $alias);
     }
 
     public function addKeywordSearch($keyword, $cnd = false)
@@ -307,7 +308,7 @@ class OrderProductSearch extends SearchBase
             trigger_error(Labels::getLabel('MSG_Order_Date_Condition_cannot_be_applied,_as_Orders_Table_is_not_Joined,_So,_Please_Use_joinOrders()_first,_then_try_to_add_Order_date_from_condition', $this->commonLangId), E_USER_ERROR);
         }
         if ($dateFrom != '') {
-            $this->addCondition('o.order_date_added', '>=', $dateFrom. ' 00:00:00');
+            $this->addCondition('o.order_date_added', '>=', $dateFrom . ' 00:00:00');
         }
     }
 
@@ -320,7 +321,7 @@ class OrderProductSearch extends SearchBase
             trigger_error(Labels::getLabel('MSG_Order_Date_Condition_cannot_be_applied,_as_Orders_Table_is_not_Joined,_So,_Please_Use_joinOrders()_first,_then_try_to_add_Order_date_to_condition', $this->commonLangId), E_USER_ERROR);
         }
         if ($dateTo != '') {
-            $this->addCondition('o.order_date_added', '<=', $dateTo. ' 23:59:59');
+            $this->addCondition('o.order_date_added', '<=', $dateTo . ' 23:59:59');
         }
     }
 

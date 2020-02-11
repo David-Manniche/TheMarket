@@ -1,4 +1,5 @@
 <?php
+
 class SiteMapController extends MyAppController
 {
     public function index()

@@ -1,4 +1,5 @@
 <?php
+
 class NavigationLinkSearch extends SearchBase
 {
     private $langId;
@@ -31,7 +32,7 @@ class NavigationLinkSearch extends SearchBase
 
         $this->joinTable(Navigations::DB_TBL, 'LEFT OUTER JOIN', 'nav.nav_id = link.nlink_nav_id', 'nav');
         if ($langId) {
-            $this->joinTable(Navigations::DB_TBL_LANG, 'LEFT OUTER JOIN', 'nav.nav_id = nav_l.navlang_nav_id AND navlang_lang_id = '.$langId, 'nav_l');
+            $this->joinTable(Navigations::DB_TBL_LANG, 'LEFT OUTER JOIN', 'nav.nav_id = nav_l.navlang_nav_id AND navlang_lang_id = ' . $langId, 'nav_l');
         }
     }
 

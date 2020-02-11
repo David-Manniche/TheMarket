@@ -1,4 +1,5 @@
 <?php
+
 class CronController extends FatController
 {
     public function __construct($action)
@@ -18,7 +19,7 @@ class CronController extends FatController
             $cron->loadFromDb();
 
             $logId = $cron->markStarted();
-            if (! $logId) {
+            if (!$logId) {
                 continue;
             }
 
@@ -48,7 +49,7 @@ class CronController extends FatController
         $found = false;
 
         foreach ($allCrons as $row) {
-            if (strtolower($row['cron_command']) == strtolower('cronjob/'.$cron_command)) {
+            if (strtolower($row['cron_command']) == strtolower('cronjob/' . $cron_command)) {
                 $cron = new Cron($row ['cron_id']);
                 $found = true;
 

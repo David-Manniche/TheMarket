@@ -1,8 +1,9 @@
 <?php
+
 class CatalogRequestMessage extends MyAppModel
 {
-    const DB_TBL = 'tbl_catalog_request_messages';
-    const DB_TBL_PREFIX = 'scatrequestmsg_';
+    public const DB_TBL = 'tbl_catalog_request_messages';
+    public const DB_TBL_PREFIX = 'scatrequestmsg_';
 
     public function __construct($id = 0)
     {

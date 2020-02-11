@@ -1,4 +1,5 @@
 <?php
+
 class Option extends MyAppModel
 {
     public const DB_TBL = 'tbl_options';
@@ -15,7 +16,7 @@ class Option extends MyAppModel
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
-        $this->db=FatApp::getDb();
+        $this->db = FatApp::getDb();
     }
 
     public static function getSearchObject($langId = 0, $isDeleted = true)
@@ -32,7 +33,7 @@ class Option extends MyAppModel
         }
 
         if ($isDeleted == true) {
-            $srch->addCondition('o.'.static::DB_TBL_PREFIX.'deleted', '=', applicationConstants::NO);
+            $srch->addCondition('o.' . static::DB_TBL_PREFIX . 'deleted', '=', applicationConstants::NO);
         }
         return $srch;
     }
@@ -120,7 +121,7 @@ class Option extends MyAppModel
 
     public static function ignoreOptionValues()
     {
-        return $arr=array(static::OPTION_TYPE_TEXT,static::OPTION_TYPE_TEXTAREA);
+        return $arr = array(static::OPTION_TYPE_TEXT, static::OPTION_TYPE_TEXTAREA);
     }
 
     public function getOption($optionId)
@@ -135,7 +136,7 @@ class Option extends MyAppModel
                 'optionlang_option_id',
                 'optionlang_lang_id',
                 array('option_name'),
-                static::DB_TBL.'_lang'
+                static::DB_TBL . '_lang'
             );
             return  array_merge($record, $lang_record);
         }
@@ -159,9 +160,9 @@ class Option extends MyAppModel
         $srch = new SearchBase(static::DB_TBL);
         $srch->addFld("MAX(" . static::DB_TBL_PREFIX . "display_order) as max_order");
 
-        $userId=FatUtility::int($userId);
-        if ($userId>0) {
-            $srch->addCondition(static::DB_TBL_PREFIX.'seller_id', '=', $userId);
+        $userId = FatUtility::int($userId);
+        if ($userId > 0) {
+            $srch->addCondition(static::DB_TBL_PREFIX . 'seller_id', '=', $userId);
         }
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
@@ -171,19 +172,19 @@ class Option extends MyAppModel
         }
         $record = FatApp::getDb()->fetch($rs);
         if (!empty($record)) {
-            return $record['max_order']+1;
+            return $record['max_order'] + 1;
         }
         return 1;
     }
 
     public function canRecordMarkDelete($id)
     {
-        $srch =static::getSearchObject();
-        $srch->addCondition('o.'.static::DB_TBL_PREFIX.'id', '=', $id);
-        $srch->addFld('o.'.static::DB_TBL_PREFIX.'id');
+        $srch = static::getSearchObject();
+        $srch->addCondition('o.' . static::DB_TBL_PREFIX . 'id', '=', $id);
+        $srch->addFld('o.' . static::DB_TBL_PREFIX . 'id');
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
-        if (!empty($row) && $row[static::DB_TBL_PREFIX.'id']==$id) {
+        if (!empty($row) && $row[static::DB_TBL_PREFIX . 'id'] == $id) {
             return true;
         }
         return false;
@@ -192,9 +193,9 @@ class Option extends MyAppModel
     public function isLinkedWithProduct($id)
     {
         $srch = Product::getSearchObject();
-        $srch->joinTable(Product::DB_PRODUCT_TO_OPTION, 'INNER JOIN', Product::DB_TBL_PREFIX.'id = '.Product::DB_PRODUCT_TO_OPTION_PREFIX.'product_id');
-        $srch->joinTable(static::DB_TBL, 'INNER JOIN', static::DB_TBL_PREFIX.'id = '.Product::DB_PRODUCT_TO_OPTION_PREFIX.'option_id');
-        $srch->addCondition(static::DB_TBL_PREFIX.'id', '=', $id);
+        $srch->joinTable(Product::DB_PRODUCT_TO_OPTION, 'INNER JOIN', Product::DB_TBL_PREFIX . 'id = ' . Product::DB_PRODUCT_TO_OPTION_PREFIX . 'product_id');
+        $srch->joinTable(static::DB_TBL, 'INNER JOIN', static::DB_TBL_PREFIX . 'id = ' . Product::DB_PRODUCT_TO_OPTION_PREFIX . 'option_id');
+        $srch->addCondition(static::DB_TBL_PREFIX . 'id', '=', $id);
         $srch->addFld('product_id');
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);

@@ -1,10 +1,11 @@
 <?php
+
 class Testimonial extends MyAppModel
 {
-    const DB_TBL = 'tbl_testimonials';
-    const DB_TBL_PREFIX = 'testimonial_';
+    public const DB_TBL = 'tbl_testimonials';
+    public const DB_TBL_PREFIX = 'testimonial_';
 
-    const DB_TBL_LANG = 'tbl_testimonials_lang';
+    public const DB_TBL_LANG = 'tbl_testimonials_lang';
 
     public function __construct($id = 0)
     {
@@ -41,7 +42,7 @@ class Testimonial extends MyAppModel
         $srch->addFld('testimonial_id');
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
-        if (!empty($row) && $row['testimonial_id']==$testimonialId) {
+        if (!empty($row) && $row['testimonial_id'] == $testimonialId) {
             return true;
         }
         return false;

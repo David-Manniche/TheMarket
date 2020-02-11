@@ -1,14 +1,15 @@
 <?php
+
 class UserGdprRequest extends MyAppModel
 {
-    const DB_TBL = 'tbl_user_requests_history';
-    const DB_TBL_PREFIX = 'ureq_';
+    public const DB_TBL = 'tbl_user_requests_history';
+    public const DB_TBL_PREFIX = 'ureq_';
 
-    const TYPE_TRUNCATE = 1;
-    const TYPE_DATA_REQUEST = 2;
+    public const TYPE_TRUNCATE = 1;
+    public const TYPE_DATA_REQUEST = 2;
 
-    const STATUS_PENDING = 0;
-    const STATUS_COMPLETE = 1;
+    public const STATUS_PENDING = 0;
+    public const STATUS_COMPLETE = 1;
 
 
     public function __construct($userReqId = 0)
@@ -36,8 +37,8 @@ class UserGdprRequest extends MyAppModel
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
         return array(
-        static::TYPE_TRUNCATE    =>    Labels::getLabel('LBL_Truncate_Data', $langId),
-        static::TYPE_DATA_REQUEST    =>    Labels::getLabel('LBL_Data_Request', $langId)
+        static::TYPE_TRUNCATE => Labels::getLabel('LBL_Truncate_Data', $langId),
+        static::TYPE_DATA_REQUEST => Labels::getLabel('LBL_Data_Request', $langId)
         );
     }
 
@@ -48,8 +49,8 @@ class UserGdprRequest extends MyAppModel
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
         return array(
-        static::STATUS_PENDING    =>    Labels::getLabel('LBL_Pending', $langId),
-        static::STATUS_COMPLETE =>    Labels::getLabel('LBL_Complete', $langId)
+        static::STATUS_PENDING => Labels::getLabel('LBL_Pending', $langId),
+        static::STATUS_COMPLETE => Labels::getLabel('LBL_Complete', $langId)
         );
     }
 
@@ -62,8 +63,8 @@ class UserGdprRequest extends MyAppModel
         $status = FatUtility::int($status);
 
         $assignValues = array(
-        'ureq_status'=>$status,
-        'ureq_approved_date'=>date('Y-m-d H:i:s'),
+        'ureq_status' => $status,
+        'ureq_approved_date' => date('Y-m-d H:i:s'),
         );
         if (!FatApp::getDb()->updateFromArray(static::DB_TBL, $assignValues, array('smt' => static::DB_TBL_PREFIX . 'id = ? ', 'vals' => array($this->mainTableRecordId)))) {
             $this->error = FatApp::getDb()->getError();
@@ -81,7 +82,7 @@ class UserGdprRequest extends MyAppModel
         }
 
         $assignValues = array(
-        'ureq_deleted'=>applicationConstants::YES,
+        'ureq_deleted' => applicationConstants::YES,
         );
         if (!FatApp::getDb()->updateFromArray(static::DB_TBL, $assignValues, array('smt' => static::DB_TBL_PREFIX . 'id = ? ', 'vals' => array($this->mainTableRecordId)))) {
             $this->error = FatApp::getDb()->getError();

@@ -1,4 +1,5 @@
 <?php
+
 class ProductsReportController extends AdminBaseController
 {
     private $canView;
@@ -53,9 +54,9 @@ class ProductsReportController extends AdminBaseController
         /* get Seller product Options[ */
         $spOptionSrch = new SearchBase(SellerProduct::DB_TBL_SELLER_PROD_OPTIONS, 'spo');
         $spOptionSrch->joinTable(OptionValue::DB_TBL, 'INNER JOIN', 'spo.selprodoption_optionvalue_id = ov.optionvalue_id', 'ov');
-        $spOptionSrch->joinTable(OptionValue::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'ov_lang.optionvaluelang_optionvalue_id = ov.optionvalue_id AND ov_lang.optionvaluelang_lang_id = '.$this->adminLangId, 'ov_lang');
+        $spOptionSrch->joinTable(OptionValue::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'ov_lang.optionvaluelang_optionvalue_id = ov.optionvalue_id AND ov_lang.optionvaluelang_lang_id = ' . $this->adminLangId, 'ov_lang');
         $spOptionSrch->joinTable(Option::DB_TBL, 'INNER JOIN', '`option`.option_id = ov.optionvalue_option_id', '`option`');
-        $spOptionSrch->joinTable(Option::DB_TBL . '_lang', 'LEFT OUTER JOIN', '`option`.option_id = option_lang.optionlang_option_id AND option_lang.optionlang_lang_id = '.$this->adminLangId, 'option_lang');
+        $spOptionSrch->joinTable(Option::DB_TBL . '_lang', 'LEFT OUTER JOIN', '`option`.option_id = option_lang.optionlang_option_id AND option_lang.optionlang_lang_id = ' . $this->adminLangId, 'option_lang');
         $spOptionSrch->doNotCalculateRecords();
         $spOptionSrch->doNotLimitRecords();
         $spOptionSrch->addGroupBy('spo.selprodoption_selprod_id');
@@ -72,7 +73,7 @@ class ProductsReportController extends AdminBaseController
 
         $srch = new ProductSearch($this->adminLangId, '', '', false, false, false);
         $srch->joinTable(SellerProduct::DB_TBL, 'LEFT OUTER JOIN', 'p.product_id = selprod.selprod_product_id', 'selprod');
-        $srch->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'selprod.selprod_id = sprod_l.selprodlang_selprod_id AND sprod_l.selprodlang_lang_id = '.$this->adminLangId, 'sprod_l');
+        $srch->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'selprod.selprod_id = sprod_l.selprodlang_selprod_id AND sprod_l.selprodlang_lang_id = ' . $this->adminLangId, 'sprod_l');
         $srch->joinSellers();
         $srch->joinBrands($this->adminLangId, false, true);
         //$srch->addCondition('brand_id', '!=', 'NULL');
@@ -117,13 +118,13 @@ class ProductsReportController extends AdminBaseController
 
         $price_from = FatApp::getPostedData('price_from', null, '');
         if (!empty($price_from)) {
-            $min_price_range_default_currency =  CommonHelper::getDefaultCurrencyValue($price_from, false, false);
+            $min_price_range_default_currency = CommonHelper::getDefaultCurrencyValue($price_from, false, false);
             $srch->addCondition('selprod_price', '>=', $min_price_range_default_currency);
         }
 
         $price_to = FatApp::getPostedData('price_to', null, '');
         if (!empty($price_to)) {
-            $max_price_range_default_currency =  CommonHelper::getDefaultCurrencyValue($price_to, false, false);
+            $max_price_range_default_currency = CommonHelper::getDefaultCurrencyValue($price_to, false, false);
             $srch->addCondition('selprod_price', '<=', $max_price_range_default_currency);
         }
 
@@ -132,12 +133,12 @@ class ProductsReportController extends AdminBaseController
             $srch->doNotLimitRecords();
             $rs = $srch->getResultSet();
             $sheetData = array();
-            $arr = array(Labels::getLabel('LBL_Title', $this->adminLangId), Labels::getLabel('LBL_Options_(If_Any)', $this->adminLangId), Labels::getLabel('LBL_Brand', $this->adminLangId), Labels::getLabel('LBL_Shop_Name', $this->adminLangId), Labels::getLabel('LBL_Unit_Price', $this->adminLangId),Labels::getLabel('LBL_No._Of_Orders', $this->adminLangId),Labels::getLabel('LBL_Sold_QTY', $this->adminLangId),Labels::getLabel('LBL_Total(A)', $this->adminLangId),Labels::getLabel('LBL_Shipping(B)', $this->adminLangId),Labels::getLabel('LBL_Tax(C)', $this->adminLangId),Labels::getLabel('LBL_Total(A+B+C)', $this->adminLangId),Labels::getLabel('LBL_Commission', $this->adminLangId));
+            $arr = array(Labels::getLabel('LBL_Title', $this->adminLangId), Labels::getLabel('LBL_Options_(If_Any)', $this->adminLangId), Labels::getLabel('LBL_Brand', $this->adminLangId), Labels::getLabel('LBL_Shop_Name', $this->adminLangId), Labels::getLabel('LBL_Unit_Price', $this->adminLangId), Labels::getLabel('LBL_No._Of_Orders', $this->adminLangId), Labels::getLabel('LBL_Sold_QTY', $this->adminLangId), Labels::getLabel('LBL_Total(A)', $this->adminLangId), Labels::getLabel('LBL_Shipping(B)', $this->adminLangId), Labels::getLabel('LBL_Tax(C)', $this->adminLangId), Labels::getLabel('LBL_Total(A+B+C)', $this->adminLangId), Labels::getLabel('LBL_Commission', $this->adminLangId));
             array_push($sheetData, $arr);
             while ($row = $db->fetch($rs)) {
                 $name = $row['product_name'];
                 if ($row['selprod_title'] != '') {
-                    $name .= "\n". Labels::getLabel('LBL_Custom_Title:', $this->adminLangId).' '. $row['selprod_title'];
+                    $name .= "\n" . Labels::getLabel('LBL_Custom_Title:', $this->adminLangId) . ' ' . $row['selprod_title'];
                 }
                 $optionsData = '';
                 if ($row['grouped_option_name'] != '') {
@@ -145,7 +146,7 @@ class ProductsReportController extends AdminBaseController
                     $groupedOptionValueArr = explode(',', $row['grouped_optionvalue_name']);
                     if (!empty($groupedOptionNameArr)) {
                         foreach ($groupedOptionNameArr as $key => $optionName) {
-                            $optionsData .= $optionName.': '.$groupedOptionValueArr[$key]. "\n" ;
+                            $optionsData .= $optionName . ': ' . $groupedOptionValueArr[$key] . "\n";
                         }
                     }
                 }
@@ -170,7 +171,7 @@ class ProductsReportController extends AdminBaseController
                 array_push($sheetData, $arr);
             }
 
-            CommonHelper::convertToCsv($sheetData, 'Products_Report_'.date("d-M-Y").'.csv', ',');
+            CommonHelper::convertToCsv($sheetData, 'Products_Report_' . date("d-M-Y") . '.csv', ',');
             exit;
         } else {
             $srch->setPageNumber($page);
@@ -209,7 +210,7 @@ class ProductsReportController extends AdminBaseController
         $frm->addTextBox(Labels::getLabel('LBL_Price_To', $this->adminLangId), 'price_to');
 
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
-        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick'=>'clearSearch();'));
+        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick' => 'clearSearch();'));
         $fld_submit->attachField($fld_cancel);
         return $frm;
     }

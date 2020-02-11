@@ -1,4 +1,5 @@
 <?php
+
 class SmsTemplate extends MyAppModel
 {
     public const DB_TBL = 'tbl_sms_templates';
@@ -16,7 +17,7 @@ class SmsTemplate extends MyAppModel
 
     public static function getSearchObject($langId = 0)
     {
-        $langId =  FatUtility::int($langId);
+        $langId = FatUtility::int($langId);
         if ($langId < 1) {
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }

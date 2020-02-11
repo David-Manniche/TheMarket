@@ -1,4 +1,5 @@
 <?php
+
 class Plugin extends MyAppModel
 {
     public const DB_TBL = 'tbl_plugins';

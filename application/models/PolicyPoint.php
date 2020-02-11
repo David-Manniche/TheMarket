@@ -1,13 +1,14 @@
 <?php
+
 class PolicyPoint extends MyAppModel
 {
-    const DB_TBL = 'tbl_policy_points';
-    const DB_TBL_PREFIX = 'ppoint_';
+    public const DB_TBL = 'tbl_policy_points';
+    public const DB_TBL_PREFIX = 'ppoint_';
 
-    const DB_TBL_LANG = 'tbl_policy_points_lang';
+    public const DB_TBL_LANG = 'tbl_policy_points_lang';
 
-    const PPOINT_TYPE_WARRANTY = 1;
-    const PPOINT_TYPE_RETURN = 2;
+    public const PPOINT_TYPE_WARRANTY = 1;
+    public const PPOINT_TYPE_RETURN = 2;
 
     public function __construct($id = 0)
     {
@@ -79,7 +80,7 @@ class PolicyPoint extends MyAppModel
         $srch->addFld('ppoint_id');
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
-        if (!empty($row) && $row['ppoint_id']==$ppointId) {
+        if (!empty($row) && $row['ppoint_id'] == $ppointId) {
             return true;
         }
         return false;

@@ -1,4 +1,5 @@
 <?php
+
 class UserAuthentication extends FatModel
 {
     public const SESSION_ELEMENT_NAME = 'yokartUserSession';
@@ -33,10 +34,10 @@ class UserAuthentication extends FatModel
             trigger_error("Language Id not specified.", E_USER_ERROR);
         }
         return array(
-            static::AFFILIATE_REG_STEP1    =>    Labels::getLabel('LBL_Personal_Details', $langId),
-            static::AFFILIATE_REG_STEP2    =>    Labels::getLabel('LBL_Company_Details', $langId),
-            static::AFFILIATE_REG_STEP3    =>    Labels::getLabel('LBL_Payment_Information', $langId),
-            static::AFFILIATE_REG_STEP4    =>    Labels::getLabel('LBL_Confirmation', $langId),
+            static::AFFILIATE_REG_STEP1 => Labels::getLabel('LBL_Personal_Details', $langId),
+            static::AFFILIATE_REG_STEP2 => Labels::getLabel('LBL_Company_Details', $langId),
+            static::AFFILIATE_REG_STEP3 => Labels::getLabel('LBL_Payment_Information', $langId),
+            static::AFFILIATE_REG_STEP4 => Labels::getLabel('LBL_Confirmation', $langId),
         );
     }
 
@@ -76,7 +77,7 @@ class UserAuthentication extends FatModel
             'tbl_failed_login_attempts',
             array(
             'smt' => 'attempt_username = ? and attempt_ip = ?',
-            'vals' => array($username,$ip) )
+            'vals' => array($username, $ip) )
         );
     }
 
@@ -208,12 +209,12 @@ class UserAuthentication extends FatModel
         $db->startTransaction();
 
         $data = array(
-        'user_name'=>$name,
-        'user_username'=>$useremail,
-        'user_email'=>$useremail,
-        'user_is_buyer'=>1,
-        'user_preferred_dashboard'=>User::USER_BUYER_DASHBOARD,
-        'user_registered_initially_for'=>User::USER_TYPE_BUYER,
+        'user_name' => $name,
+        'user_username' => $useremail,
+        'user_email' => $useremail,
+        'user_is_buyer' => 1,
+        'user_preferred_dashboard' => User::USER_BUYER_DASHBOARD,
+        'user_registered_initially_for' => User::USER_TYPE_BUYER,
         );
         $userObj->assignValues($data);
 
@@ -223,19 +224,19 @@ class UserAuthentication extends FatModel
             return false;
         }
 
-        $active = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1) ? 0: 1;
+        $active = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
         $verify = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
 
-        $pass =  CommonHelper::getRandomPassword(8);
+        $pass = CommonHelper::getRandomPassword(8);
         if (!$userObj->setLoginCredentials($useremail, $useremail, $pass, $active, $verify)) {
-            $this->error =Labels::getLabel("MSG_LOGIN_CREDENTIALS_COULD_NOT_BE_SET", $this->commonLangId) . $userObj->getError();
+            $this->error = Labels::getLabel("MSG_LOGIN_CREDENTIALS_COULD_NOT_BE_SET", $this->commonLangId) . $userObj->getError();
             $db->rollbackTransaction();
             return false;
         }
 
         if (FatApp::getConfig('CONF_NOTIFY_ADMIN_REGISTRATION', FatUtility::VAR_INT, 1)) {
             if (!$userObj->notifyAdminRegistration($data, $this->commonLangId)) {
-                $this->error =Labels::getLabel("MSG_NOTIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->commonLangId);
+                $this->error = Labels::getLabel("MSG_NOTIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->commonLangId);
                 $db->rollbackTransaction();
                 return false;
             }
@@ -286,7 +287,7 @@ class UserAuthentication extends FatModel
                 $email->failedLoginAttempt(FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1), $row);
             }
 
-            $this->error =  Labels::getLabel('ERR_LOGIN_ATTEMPT_LIMIT_EXCEEDED_PLEASE_TRY_LATER', $this->commonLangId);
+            $this->error = Labels::getLabel('ERR_LOGIN_ATTEMPT_LIMIT_EXCEEDED_PLEASE_TRY_LATER', $this->commonLangId);
             return false;
         }
 
@@ -345,11 +346,11 @@ class UserAuthentication extends FatModel
             if ($row['credential_verified'] != applicationConstants::YES) {
                 $this->error = str_replace("{clickhere}", '<a href="javascript:void(0)" onclick="resendVerificationLink(' . "'" . $username . "'" . ')">' . Labels::getLabel('LBL_Click_Here', $this->commonLangId) . '</a>', Labels::getLabel('MSG_Your_Account_verification_is_pending_{clickhere}', $this->commonLangId));
 
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     $this->error = Labels::getLabel('MSG_Your_Account_verification_is_pending', $this->commonLangId);
                 }
 
-                if (FatUtility::isAjaxCall() || true ===  MOBILE_APP_API_CALL) {
+                if (FatUtility::isAjaxCall() || true === MOBILE_APP_API_CALL) {
                     $json['status'] = 0;
                     $json['msg'] = $this->error;
                     $json['notVerified'] = 1;
@@ -511,9 +512,9 @@ class UserAuthentication extends FatModel
         $user = $facebook->getUser();
 
         if ($user) {
-            unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_code']);
-            unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_access_token']);
-            unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_user_id']);
+            unset($_SESSION['fb_' . FatApp::getConfig("CONF_FACEBOOK_APP_ID") . '_code']);
+            unset($_SESSION['fb_' . FatApp::getConfig("CONF_FACEBOOK_APP_ID") . '_access_token']);
+            unset($_SESSION['fb_' . FatApp::getConfig("CONF_FACEBOOK_APP_ID") . '_user_id']);
         }
 
         unset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]);
@@ -533,7 +534,7 @@ class UserAuthentication extends FatModel
             $ip = CommonHelper::getClientIp();
         }
 
-        $token = empty($token)?CommonHelper::getAppToken():$token;
+        $token = empty($token) ? CommonHelper::getAppToken() : $token;
 
         if ($token != '' && static::doAppLogin($token)) {
             return true;
@@ -557,12 +558,12 @@ class UserAuthentication extends FatModel
 
     public static function getLoggedUserAttribute($attr, $returnNullIfNotLogged = false)
     {
-        if (! static::isUserLogged() && ! static::isGuestUserLogged()) {
+        if (!static::isUserLogged() && !static::isGuestUserLogged()) {
             if ($returnNullIfNotLogged) {
                 return null;
             }
             $message = Labels::getLabel('MSG_USER_NOT_LOGGED', CommonHelper::getLangId());
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -600,7 +601,7 @@ class UserAuthentication extends FatModel
             $srch->addFld(User::DB_TBL_CRED_PREFIX . 'verified');
         }
 
-        if($attr == null){
+        if ($attr == null) {
             $srch->addMultipleFields(
                 array(
                 User::tblFld('id'),
@@ -609,7 +610,7 @@ class UserAuthentication extends FatModel
                 User::DB_TBL_CRED_PREFIX . 'password'
                 )
             );
-        }else{
+        } else {
             $srch->addMultipleFields($attr);
         }
         
@@ -721,7 +722,7 @@ class UserAuthentication extends FatModel
     public function deleteOldPasswordResetRequest()
     {
         $db = FatApp::getDb();
-        if (!$db->deleteRecords(static::DB_TBL_USER_PRR, array('smt'=>static::DB_TBL_UPR_PREFIX . 'expiry < ?','vals'=>array(date('Y-m-d H:i:s'))))) {
+        if (!$db->deleteRecords(static::DB_TBL_USER_PRR, array('smt' => static::DB_TBL_UPR_PREFIX . 'expiry < ?', 'vals' => array(date('Y-m-d H:i:s'))))) {
             $this->error = $db->getError();
             return false;
         }
@@ -777,7 +778,7 @@ class UserAuthentication extends FatModel
             return false;
         }
 
-        if ($row[static::DB_TBL_UPR_PREFIX.'user_id'] == $uId && $row[static::DB_TBL_UPR_PREFIX.'token'] === $token) {
+        if ($row[static::DB_TBL_UPR_PREFIX . 'user_id'] == $uId && $row[static::DB_TBL_UPR_PREFIX . 'token'] === $token) {
             return true;
         }
         $this->error = Labels::getLabel('ERR_LINK_IS_INVALID_OR_EXPIRED', $this->commonLangId);
@@ -792,7 +793,7 @@ class UserAuthentication extends FatModel
             return false;
         }
         
-        if (! ValidateElement::password($pwd)) {
+        if (!ValidateElement::password($pwd)) {
             $this->error = Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->commonLangId);
             return false;
         }
@@ -805,7 +806,7 @@ class UserAuthentication extends FatModel
                 $this->error = $user->getError();
                 return false;
             }
-            FatApp::getDb()->deleteRecords(static::DB_TBL_USER_PRR, array('smt' => static::DB_TBL_UPR_PREFIX . 'user_id =?', 'vals'=>array($userId)));
+            FatApp::getDb()->deleteRecords(static::DB_TBL_USER_PRR, array('smt' => static::DB_TBL_UPR_PREFIX . 'user_id =?', 'vals' => array($userId)));
             return true;
         }
         $this->error = Labels::getLabel('ERR_INVALID_PASSWORD', $this->commonLangId);
@@ -817,7 +818,7 @@ class UserAuthentication extends FatModel
         if (static::isUserLogged() || static::isGuestUserLogged()) {
             return true;
         }
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $message = Labels::getLabel('MSG_Session_seems_to_be_expired', CommonHelper::getLangId());
             FatUtility::dieJsonError($message);
         }

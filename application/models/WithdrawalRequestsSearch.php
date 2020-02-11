@@ -1,10 +1,11 @@
 <?php
+
 class WithdrawalRequestsSearch extends SearchBase
 {
     private $langId;
     private $joinUsers = false;
     private $commonLangId;
-    const DB_TBL = 'tbl_user_withdrawal_requests';
+    public const DB_TBL = 'tbl_user_withdrawal_requests';
 
     public function __construct()
     {
@@ -34,10 +35,10 @@ class WithdrawalRequestsSearch extends SearchBase
         $srch->doNotLimitRecords();
         $srch->addGroupBy('txn.utxn_user_id');
         $srch->addCondition('txn.utxn_status', '=', Transactions::STATUS_COMPLETED);
-        $srch->addMultipleFields(array('txn.utxn_user_id as userId',"SUM(utxn_credit - utxn_debit) as user_balance"));
+        $srch->addMultipleFields(array('txn.utxn_user_id as userId', "SUM(utxn_credit - utxn_debit) as user_balance"));
         $qryUserBalance = $srch->getQuery();
 
-        $this->joinTable('('.$qryUserBalance.')', 'LEFT OUTER JOIN', 'tu.user_id = tqub.userId', 'tqub');
+        $this->joinTable('(' . $qryUserBalance . ')', 'LEFT OUTER JOIN', 'tu.user_id = tqub.userId', 'tqub');
     }
 
     

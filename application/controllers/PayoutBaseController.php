@@ -1,4 +1,5 @@
 <?php
+
 class PayoutBaseController extends PluginBaseController
 {
     protected function validateWithdrawalRequest()
@@ -54,7 +55,7 @@ class PayoutBaseController extends PluginBaseController
         }
 
         $assignFields = array('withdrawal_status' => $status);
-        if (!FatApp::getDb()->updateFromArray(User::DB_TBL_USR_WITHDRAWAL_REQ, $assignFields, array('smt' => 'withdrawal_id=?','vals' => array($recordId)))) {
+        if (!FatApp::getDb()->updateFromArray(User::DB_TBL_USR_WITHDRAWAL_REQ, $assignFields, array('smt' => 'withdrawal_id=?', 'vals' => array($recordId)))) {
             Message::addErrorMessage(FatApp::getDb()->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -68,7 +69,7 @@ class PayoutBaseController extends PluginBaseController
         FatApp::getDb()->updateFromArray(
             Transactions::DB_TBL,
             array("utxn_status" => $txnstatus),
-            array('smt' => 'utxn_withdrawal_id=?','vals' => array($recordId))
+            array('smt' => 'utxn_withdrawal_id=?', 'vals' => array($recordId))
         );
         
         if ($status == Transactions::WITHDRAWL_STATUS_DECLINED) {

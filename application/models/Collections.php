@@ -1,4 +1,5 @@
 <?php
+
 class Collections extends MyAppModel
 {
     public const DB_TBL = 'tbl_collections';
@@ -138,8 +139,8 @@ class Collections extends MyAppModel
         }
         $record = new TableRecord(static::DB_TBL_COLLECTION_TO_SELPROD);
         $to_save_arr = array();
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX.'collection_id'] = $collection_id;
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX.'selprod_id'] = $selprod_id;
+        $to_save_arr[static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'collection_id'] = $collection_id;
+        $to_save_arr[static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'selprod_id'] = $selprod_id;
         $record->assignValues($to_save_arr);
         if (!$record->addNew(array(), $to_save_arr)) {
             $this->error = $record->getError();
@@ -158,8 +159,8 @@ class Collections extends MyAppModel
         }
         $record = new TableRecord(static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES);
         $to_save_arr = array();
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX.'collection_id'] = $collection_id;
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX.'prodcat_id'] = $prodcat_id;
+        $to_save_arr[static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'collection_id'] = $collection_id;
+        $to_save_arr[static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'prodcat_id'] = $prodcat_id;
         $record->assignValues($to_save_arr);
         if (!$record->addNew(array(), $to_save_arr)) {
             $this->error = $record->getError();
@@ -178,8 +179,8 @@ class Collections extends MyAppModel
         }
         $record = new TableRecord(static::DB_TBL_COLLECTION_TO_SHOPS);
         $to_save_arr = array();
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX.'collection_id'] = $collection_id;
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX.'shop_id'] = $shop_id;
+        $to_save_arr[static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'collection_id'] = $collection_id;
+        $to_save_arr[static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'shop_id'] = $shop_id;
         $record->assignValues($to_save_arr);
         if (!$record->addNew(array(), $to_save_arr)) {
             $this->error = $record->getError();
@@ -259,12 +260,12 @@ class Collections extends MyAppModel
 
         $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_SELPROD);
         $srch->addCondition(static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'collection_id', '=', $collection_id);
-        $srch->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', SellerProduct::DB_TBL_PREFIX.'id = '.static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX.'selprod_id');
-        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', SellerProduct::DB_TBL_PREFIX.'product_id = '.Product::DB_TBL_PREFIX.'id');
+        $srch->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', SellerProduct::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'selprod_id');
+        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', SellerProduct::DB_TBL_PREFIX . 'product_id = ' . Product::DB_TBL_PREFIX . 'id');
 
-        $srch->joinTable(SellerProduct::DB_TBL.'_lang', 'LEFT JOIN', 'lang.selprodlang_selprod_id = ' . SellerProduct::DB_TBL_PREFIX.'id AND selprodlang_lang_id = '.$lang_id, 'lang');
+        $srch->joinTable(SellerProduct::DB_TBL . '_lang', 'LEFT JOIN', 'lang.selprodlang_selprod_id = ' . SellerProduct::DB_TBL_PREFIX . 'id AND selprodlang_lang_id = ' . $lang_id, 'lang');
 
-        $srch->addMultipleFields(array('selprod_id','IFNULL(selprod_title,product_identifier) as selprod_title'));
+        $srch->addMultipleFields(array('selprod_id', 'IFNULL(selprod_title,product_identifier) as selprod_title'));
 
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
@@ -284,7 +285,7 @@ class Collections extends MyAppModel
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
-        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_SELPROD, array('smt'=> static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX.'collection_id = ? AND '.static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'selprod_id = ?','vals' => array($collection_id, $selprod_id) ))) {
+        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_SELPROD, array('smt' => static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'collection_id = ? AND ' . static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'selprod_id = ?', 'vals' => array($collection_id, $selprod_id) ))) {
             $this->error = $db->getError();
             return false;
         }
@@ -301,7 +302,7 @@ class Collections extends MyAppModel
             ;
             return false;
         }
-        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES, array('smt'=> static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX.'collection_id = ? AND '.static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'prodcat_id = ?','vals' => array($collection_id, $prodcat_id) ))) {
+        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES, array('smt' => static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'collection_id = ? AND ' . static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'prodcat_id = ?', 'vals' => array($collection_id, $prodcat_id) ))) {
             $this->error = $db->getError();
             return false;
         }
@@ -318,7 +319,7 @@ class Collections extends MyAppModel
             ;
             return false;
         }
-        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_SHOPS, array('smt'=> static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX.'collection_id = ? AND '.static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'shop_id = ?','vals' => array($collection_id, $shop_id) ))) {
+        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_SHOPS, array('smt' => static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'collection_id = ? AND ' . static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'shop_id = ?', 'vals' => array($collection_id, $shop_id) ))) {
             $this->error = $db->getError();
             return false;
         }
@@ -367,7 +368,7 @@ class Collections extends MyAppModel
         $srch->addFld('collection_id');
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
-        if (!empty($row) && $row['collection_id']==$collection_id) {
+        if (!empty($row) && $row['collection_id'] == $collection_id) {
             return true;
         }
         return false;
@@ -386,15 +387,15 @@ class Collections extends MyAppModel
         $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES);
         $srch->doNotLimitRecords();
         $srch->doNotCalculateRecords();
-        $srch->addCondition(static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX. 'collection_id', '=', $collection_id);
+        $srch->addCondition(static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'collection_id', '=', $collection_id);
 
-        $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', ProductCategory::DB_TBL_PREFIX .'id = ' . static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX.'prodcat_id');
+        $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', ProductCategory::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'prodcat_id');
 
         $srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT JOIN', 'lang.prodcatlang_prodcat_id = ' . ProductCategory::DB_TBL_PREFIX . 'id AND prodcatlang_lang_id = ' . $lang_id, 'lang');
         $srch->addMultipleFields(array('prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name'));
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
-        $data =  $db->fetchAll($rs);
+        $data = $db->fetchAll($rs);
         return $data;
     }
 
@@ -411,16 +412,16 @@ class Collections extends MyAppModel
         $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_SHOPS);
         $srch->doNotLimitRecords();
         $srch->doNotCalculateRecords();
-        $srch->addCondition(static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX. 'collection_id', '=', $collection_id);
+        $srch->addCondition(static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'collection_id', '=', $collection_id);
 
-        $srch->joinTable(Shop::DB_TBL, 'INNER JOIN', Shop::DB_TBL_PREFIX .'id = ' . static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX.'shop_id');
+        $srch->joinTable(Shop::DB_TBL, 'INNER JOIN', Shop::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'shop_id');
 
         $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT JOIN', 'lang.shoplang_shop_id = ' . Shop::DB_TBL_PREFIX . 'id AND shoplang_lang_id = ' . $lang_id, 'lang');
         $srch->addMultipleFields(array('shop_id', 'IFNULL(shop_name, shop_identifier) as shop_name'));
         $rs = $srch->getResultSet();
 
         $db = FatApp::getDb();
-        $data =  $db->fetchAll($rs);
+        $data = $db->fetchAll($rs);
         return $data;
     }
 

@@ -1,13 +1,13 @@
 <?php
+
 class TestController extends AdminBaseController
 {
-
-    public function checkEditor() 
+    public function checkEditor()
     {
         $this->_template->render();
     }
 
-    public function loadForm() 
+    public function loadForm()
     {
         $frm = new Form('frmWithEditor');
         $frm->addTextBox(Labels::getLabel('LBL_Name', $this->adminLangId), 'name');
@@ -19,9 +19,8 @@ class TestController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function submitForm() 
+    public function submitForm()
     {
         die(print_r(FatApp::getPostedData(), true));
     }
-    
 }

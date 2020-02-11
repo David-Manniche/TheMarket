@@ -1,4 +1,5 @@
 <?php
+
 class OrderStatusController extends AdminBaseController
 {
     private $canView;
@@ -46,7 +47,7 @@ class OrderStatusController extends AdminBaseController
 
         $srch = OrderStatus::getSearchObject(false, $this->adminLangId);
 
-        $srch->addFld(array('ostatus.*','IFNULL(ostatus_l.orderstatus_name,ostatus.orderstatus_identifier) as orderstatus_name'));
+        $srch->addFld(array('ostatus.*', 'IFNULL(ostatus_l.orderstatus_name,ostatus.orderstatus_identifier) as orderstatus_name'));
 
         if (!empty($post['keyword'])) {
             $condition = $srch->addCondition('ostatus.orderstatus_identifier', 'like', '%' . $post['keyword'] . '%');
@@ -86,12 +87,12 @@ class OrderStatusController extends AdminBaseController
     {
         $this->objPrivilege->canEditOrderStatus();
 
-        $orderStatusId =  FatUtility::int($orderStatusId);
+        $orderStatusId = FatUtility::int($orderStatusId);
 
         $frm = $this->getForm($orderStatusId);
 
         if (0 < $orderStatusId) {
-            $data = OrderStatus::getAttributesById($orderStatusId, array('orderstatus_id','orderstatus_identifier','orderstatus_is_active','orderstatus_is_digital','orderstatus_color_code'));
+            $data = OrderStatus::getAttributesById($orderStatusId, array('orderstatus_id', 'orderstatus_identifier', 'orderstatus_is_active', 'orderstatus_is_digital', 'orderstatus_color_code'));
 
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
@@ -241,7 +242,7 @@ class OrderStatusController extends AdminBaseController
     private function getForm($orderStatusId = 0)
     {
         $this->objPrivilege->canViewOrderStatus();
-        $orderStatusId =  FatUtility::int($orderStatusId);
+        $orderStatusId = FatUtility::int($orderStatusId);
 
         $frm = new Form('frmorderstatus');
         $frm->addHiddenField('', 'orderstatus_id', $orderStatusId);

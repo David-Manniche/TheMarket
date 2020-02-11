@@ -1,28 +1,29 @@
 <?php
+
 class DiscountCoupons extends MyAppModel
 {
-    const DB_TBL = 'tbl_coupons';
-    const DB_TBL_PREFIX = 'coupon_';
+    public const DB_TBL = 'tbl_coupons';
+    public const DB_TBL_PREFIX = 'coupon_';
 
-    const DB_TBL_LANG = 'tbl_coupons_lang';
-    const DB_TBL_LANG_PREFIX = 'coupon_';
+    public const DB_TBL_LANG = 'tbl_coupons_lang';
+    public const DB_TBL_LANG_PREFIX = 'coupon_';
 
-    const DB_TBL_COUPON_TO_CATEGORY = 'tbl_coupon_to_category';
-    const DB_TBL_COUPON_TO_PRODUCT = 'tbl_coupon_to_products';
-    const DB_TBL_COUPON_TO_USER = 'tbl_coupon_to_users';
-    const DB_TBL_COUPON_TO_PLAN = 'tbl_coupon_to_plan';
-    const DB_TBL_COUPON_HOLD = 'tbl_coupons_hold';
-    const DB_TBL_COUPON_HOLD_PENDING_ORDER = 'tbl_coupons_hold_pending_order';
-    const DB_TBL_COUPON_HISTORY = 'tbl_coupons_history';
+    public const DB_TBL_COUPON_TO_CATEGORY = 'tbl_coupon_to_category';
+    public const DB_TBL_COUPON_TO_PRODUCT = 'tbl_coupon_to_products';
+    public const DB_TBL_COUPON_TO_USER = 'tbl_coupon_to_users';
+    public const DB_TBL_COUPON_TO_PLAN = 'tbl_coupon_to_plan';
+    public const DB_TBL_COUPON_HOLD = 'tbl_coupons_hold';
+    public const DB_TBL_COUPON_HOLD_PENDING_ORDER = 'tbl_coupons_hold_pending_order';
+    public const DB_TBL_COUPON_HISTORY = 'tbl_coupons_history';
 
     private $db;
 
-    const TYPE_DISCOUNT = 1;
-    const TYPE_FREE_SHIPPING = 2;
-    const TYPE_SELLER_PACKAGE = 3;
+    public const TYPE_DISCOUNT = 1;
+    public const TYPE_FREE_SHIPPING = 2;
+    public const TYPE_SELLER_PACKAGE = 3;
 
-    const VALID_FOR_ONE_TIME = 1;
-    const VALID_FOR_RECURRING_ALSO = 2;
+    public const VALID_FOR_ONE_TIME = 1;
+    public const VALID_FOR_RECURRING_ALSO = 2;
 
     public function __construct($id = 0)
     {
@@ -45,11 +46,11 @@ AND couponlang_lang_id = ' . $langId,
         }
 
         if ($isDeleted == true) {
-            $srch->addCondition('dc.'.static::DB_TBL_PREFIX.'deleted', '=', applicationConstants::NO);
+            $srch->addCondition('dc.' . static::DB_TBL_PREFIX . 'deleted', '=', applicationConstants::NO);
         }
 
         if ($active == true) {
-            $srch->addCondition('dc.'.static::DB_TBL_PREFIX.'active', '=', applicationConstants::ACTIVE);
+            $srch->addCondition('dc.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
         }
         return $srch;
     }
@@ -60,15 +61,15 @@ AND couponlang_lang_id = ' . $langId,
         if ($langId < 1) {
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
-        $select_arr = array(''=>Labels::getLabel('LBL_Coupon_Type', $langId));
+        $select_arr = array('' => Labels::getLabel('LBL_Coupon_Type', $langId));
 
-        $coupon_type_arr =  array(
-        static::TYPE_DISCOUNT        =>    Labels::getLabel('LBL_Product_Purchase', $langId),
+        $coupon_type_arr = array(
+        static::TYPE_DISCOUNT => Labels::getLabel('LBL_Product_Purchase', $langId),
         /* static::TYPE_FREE_SHIPPING    =>    Labels::getLabel('LBL_Free_Shipping', $langId),     */
-        static::TYPE_SELLER_PACKAGE    =>    Labels::getLabel('LBL_Subscription_Package', $langId),
+        static::TYPE_SELLER_PACKAGE => Labels::getLabel('LBL_Subscription_Package', $langId),
         );
         if ($select) {
-            return $select_arr+$coupon_type_arr;
+            return $select_arr + $coupon_type_arr;
         } else {
             return $coupon_type_arr;
         }
@@ -81,8 +82,8 @@ AND couponlang_lang_id = ' . $langId,
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
         return array(
-        static::VALID_FOR_ONE_TIME        =>    Labels::getLabel('LBL_One_Time', $langId),
-        static::VALID_FOR_RECURRING_ALSO    =>    Labels::getLabel('LBL_Include_Recurring', $langId),
+        static::VALID_FOR_ONE_TIME => Labels::getLabel('LBL_One_Time', $langId),
+        static::VALID_FOR_RECURRING_ALSO => Labels::getLabel('LBL_Include_Recurring', $langId),
         );
     }
 
@@ -100,10 +101,10 @@ AND couponlang_lang_id = ' . $langId,
         $srch->addCondition('ctc_coupon_id', '=', $coupon_id);
         $srch->joinTable(ProductCategory::DB_TBL, 'LEFT OUTER JOIN', 'prodcat_id = ctc_prodcat_id', 'c');
 
-        $srch->addMultipleFields(array("prodcat_id","prodcat_identifier"));
+        $srch->addMultipleFields(array("prodcat_id", "prodcat_identifier"));
         if ($lang_id) {
-            $srch->joinTable(ProductCategory::DB_TBL.'_lang', 'LEFT OUTER JOIN', 'c_l.prodcatlang_prodcat_id = prodcat_id AND prodcatlang_lang_id = '.$lang_id, 'c_l');
-            $srch->addFld(array("prodcat_id","prodcat_name"));
+            $srch->joinTable(ProductCategory::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'c_l.prodcatlang_prodcat_id = prodcat_id AND prodcatlang_lang_id = ' . $lang_id, 'c_l');
+            $srch->addFld(array("prodcat_id", "prodcat_name"));
         }
 
         $rs = $srch->getResultSet();
@@ -131,7 +132,7 @@ AND couponlang_lang_id = ' . $langId,
             'sp.spackage_id = spp.spplan_spackage_id ',
             'sp'
         );
-        $srch->addMultipleFields(array("spplan_id","spackage_identifier"));
+        $srch->addMultipleFields(array("spplan_id", "spackage_identifier"));
         if ($lang_id) {
             $srch->joinTable(
                 SellerPackages::DB_TBL . '_lang',
@@ -139,7 +140,7 @@ AND couponlang_lang_id = ' . $langId,
                 'spl.spackagelang_spackage_id = sp.spackage_id AND spl.spackagelang_lang_id = ' . CommonHelper::getlangId(),
                 'spl'
             );
-            $srch->addMultipleFields(array('spplan_id', "IFNULL( spl.spackage_name, sp.spackage_identifier ) as spackage_name","spplan_interval","spplan_frequency"));
+            $srch->addMultipleFields(array('spplan_id', "IFNULL( spl.spackage_name, sp.spackage_identifier ) as spackage_name", "spplan_interval", "spplan_frequency"));
         }
 
         $rs = $srch->getResultSet();
@@ -162,9 +163,9 @@ AND couponlang_lang_id = ' . $langId,
         $srch = new SearchBase(static::DB_TBL_COUPON_TO_PRODUCT);
         $srch->addCondition('ctp_coupon_id', '=', $coupon_id);
         $srch->joinTable(Product::DB_TBL, 'LEFT OUTER JOIN', 'product_id = ctp_product_id', 'p');
-        $srch->addMultipleFields(array("product_id","product_identifier"));
+        $srch->addMultipleFields(array("product_id", "product_identifier"));
         if ($lang_id) {
-            $srch->joinTable(Product::DB_TBL.'_lang', 'LEFT OUTER JOIN', 'p_l.productlang_product_id = product_id AND productlang_lang_id = '.$lang_id, 'p_l');
+            $srch->joinTable(Product::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'p_l.productlang_product_id = product_id AND productlang_lang_id = ' . $lang_id, 'p_l');
             $srch->addFld(array('product_name'));
         }
         $rs = $srch->getResultSet();
@@ -186,7 +187,7 @@ AND couponlang_lang_id = ' . $langId,
         $srch->addCondition('ctu_coupon_id', '=', $coupon_id);
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'user_id = ctu_user_id', 'u');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'credential_user_id = user_id', 'c');
-        $srch->addMultipleFields(array("user_id","user_name","credential_username"));
+        $srch->addMultipleFields(array("user_id", "user_name", "credential_username"));
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetchAll($rs, 'user_id');
         return $row;
@@ -200,12 +201,12 @@ AND couponlang_lang_id = ' . $langId,
             trigger_error(Labels::getLabel("ERR_Arguments_not_specified.", $lang_id), E_USER_ERROR);
             return false;
         }
-        $interval = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s').' - 15 minute'));
+        $interval = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') . ' - 15 minute'));
         /* coupon history[ */
         $cHistorySrch = CouponHistory::getSearchObject();
         $cHistorySrch->doNotLimitRecords();
         $cHistorySrch->doNotCalculateRecords();
-        $cHistorySrch->addMultipleFields(array('couponhistory_coupon_id','couponhistory_id'));
+        $cHistorySrch->addMultipleFields(array('couponhistory_coupon_id', 'couponhistory_id'));
         /* ] */
         /* coupon temp hold[ */
         $cHoldSrch = new SearchBase(DiscountCoupons::DB_TBL_COUPON_HOLD);
@@ -229,12 +230,12 @@ AND couponlang_lang_id = ' . $langId,
             $srch->addCondition('ctu_user_id', '=', $user_id);
             $srch->joinTable(self::DB_TBL_COUPON_TO_USER, 'LEFT OUTER JOIN', 'coupon_id = ctu_coupon_id', 'ctu');
         }
-        $srch->joinTable(self::DB_TBL_LANG, 'LEFT OUTER JOIN', 'couponlang_coupon_id = coupon_id and couponlang_lang_id = '.$lang_id, 'dc_l');
-        $srch->joinTable('('.$cHistorySrch->getQuery().')', 'LEFT OUTER JOIN', 'coupon_history.couponhistory_coupon_id = dc.coupon_id', 'coupon_history');
-        $srch->joinTable('('.$cHoldSrch->getQuery().')', 'LEFT OUTER JOIN', 'dc.coupon_id = coupon_hold.couponhold_coupon_id', 'coupon_hold');
-        $srch->joinTable('('. $userCouponHistorySrch->getQuery() .')', 'LEFT OUTER JOIN', 'dc.coupon_id = user_coupon_history.couponhistory_coupon_id', 'user_coupon_history');
-        $srch->addMultipleFields(array("dc.*","dc_l.*",'IFNULL(COUNT(coupon_history.couponhistory_id), 0) as coupon_used_count', 'IFNULL(COUNT(coupon_hold.couponhold_coupon_id), 0) as coupon_hold_count','count(user_coupon_history.couponhistory_id) as user_coupon_used_count'));
-        $srch->addCondition('dc.'.static::DB_TBL_PREFIX.'active', '=', applicationConstants::ACTIVE);
+        $srch->joinTable(self::DB_TBL_LANG, 'LEFT OUTER JOIN', 'couponlang_coupon_id = coupon_id and couponlang_lang_id = ' . $lang_id, 'dc_l');
+        $srch->joinTable('(' . $cHistorySrch->getQuery() . ')', 'LEFT OUTER JOIN', 'coupon_history.couponhistory_coupon_id = dc.coupon_id', 'coupon_history');
+        $srch->joinTable('(' . $cHoldSrch->getQuery() . ')', 'LEFT OUTER JOIN', 'dc.coupon_id = coupon_hold.couponhold_coupon_id', 'coupon_hold');
+        $srch->joinTable('(' . $userCouponHistorySrch->getQuery() . ')', 'LEFT OUTER JOIN', 'dc.coupon_id = user_coupon_history.couponhistory_coupon_id', 'user_coupon_history');
+        $srch->addMultipleFields(array("dc.*", "dc_l.*", 'IFNULL(COUNT(coupon_history.couponhistory_id), 0) as coupon_used_count', 'IFNULL(COUNT(coupon_hold.couponhold_coupon_id), 0) as coupon_hold_count', 'count(user_coupon_history.couponhistory_id) as user_coupon_used_count'));
+        $srch->addCondition('dc.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
         $cnd = $srch->addCondition('dc.coupon_end_date', '>=', date('Y-m-d'));
         $cnd->attachCondition('dc.coupon_end_date', '=', '0000-00-00');
         if ($coupon_type) {
@@ -264,7 +265,7 @@ AND couponlang_lang_id = ' . $langId,
         $currDate = date('Y-m-d');
 
         $srch = static::getSearchObject($langId);
-        $srch->addMultipleFields(array('dc.*','IFNULL(dc_l.coupon_title,dc.coupon_identifier) as coupon_title'));
+        $srch->addMultipleFields(array('dc.*', 'IFNULL(dc_l.coupon_title,dc.coupon_identifier) as coupon_title'));
 
         $srch->addCondition('coupon_code', '=', $code);
 
@@ -298,7 +299,7 @@ AND couponlang_lang_id = ' . $langId,
 
         $couponHistoryData = FatApp::getDb()->fetch($chistoryRs);
 
-        $interval = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s').' - 15 minute'));
+        $interval = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') . ' - 15 minute'));
 
         FatApp::getDb()->deleteRecords(DiscountCoupons::DB_TBL_COUPON_HOLD, array('smt' => 'couponhold_added_on < ?', 'vals' => array($interval ) ));
 
@@ -342,7 +343,7 @@ AND couponlang_lang_id = ' . $langId,
         }
 
         // Products
-        $productData = array('group'=>'','product'=>'');
+        $productData = array('group' => '', 'product' => '');
         $products = $cartObj->getProducts($langId);
         $prodObj = new Product();
 
@@ -362,24 +363,24 @@ AND couponlang_lang_id = ' . $langId,
                 foreach ($products as $product) {
                     if ($product['is_batch']) {
                         $productData['group'][] = array();
-                        /* if(!empty($product['products'])){
-                        foreach($product['products'] as $pgproduct){
-                        if (array_key_exists($pgproduct['product_id'], $couponProductData)) {
-                        $productData['group'][] = $pgproduct['product_id'];
-                        continue;
-                        }
+                    /* if(!empty($product['products'])){
+                    foreach($product['products'] as $pgproduct){
+                    if (array_key_exists($pgproduct['product_id'], $couponProductData)) {
+                    $productData['group'][] = $pgproduct['product_id'];
+                    continue;
+                    }
 
-                        $prodCategories = $prodObj->getProductCategories($pgproduct['product_id']);
-                        if(count($prodCategories>0)){
-                        foreach($prodCategories as $category){
-                        if(array_key_exists($category['prodcat_id'],$couponCategoryData)){
-                        $productData['group'][] = $pgproduct['product_id'];
-                        continue;
-                        }
-                        }
-                        }
-                        }
-                        } */
+                    $prodCategories = $prodObj->getProductCategories($pgproduct['product_id']);
+                    if(count($prodCategories>0)){
+                    foreach($prodCategories as $category){
+                    if(array_key_exists($category['prodcat_id'],$couponCategoryData)){
+                    $productData['group'][] = $pgproduct['product_id'];
+                    continue;
+                    }
+                    }
+                    }
+                    }
+                    } */
                     } else {
                         if (array_key_exists($product['product_id'], $couponProductData)) {
                             $productData['product'][] = $product['product_id'];
@@ -387,7 +388,7 @@ AND couponlang_lang_id = ' . $langId,
                         }
 
                         $prodCategories = $prodObj->getProductCategories($product['product_id']);
-                        if (count($prodCategories>0) && $prodCategories != false) {
+                        if (count($prodCategories > 0) && $prodCategories != false) {
                             foreach ($prodCategories as $category) {
                                 if (array_key_exists($category['prodcat_id'], $couponCategoryData)) {
                                     $productData['product'][] = $product['product_id'];
@@ -407,7 +408,7 @@ AND couponlang_lang_id = ' . $langId,
         }
 
         if ($status) {
-            return array_merge($couponData, array("products"=>$productData['product'],'groups'=>$productData['group']));
+            return array_merge($couponData, array("products" => $productData['product'], 'groups' => $productData['group']));
         }
     }
 
@@ -424,7 +425,7 @@ AND couponlang_lang_id = ' . $langId,
         }
 
         $currDate = date('Y-m-d');
-        $interval = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s').' - 15 minute'));
+        $interval = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') . ' - 15 minute'));
 
         $cartObj = new Cart($userId);
         $cartProducts = $cartObj->getBasketProducts($langId);
@@ -449,11 +450,11 @@ AND couponlang_lang_id = ' . $langId,
 
         /* coupon temp hold for order[ */
         $pendingOrderHoldSrch = new SearchBase(DiscountCoupons::DB_TBL_COUPON_HOLD_PENDING_ORDER);
-        $pendingOrderHoldSrch->addMultipleFields(array('count(ochold_order_id) as pending_order_hold_count','ochold_coupon_id'));
+        $pendingOrderHoldSrch->addMultipleFields(array('count(ochold_order_id) as pending_order_hold_count', 'ochold_coupon_id'));
         $pendingOrderHoldSrch->doNotLimitRecords();
         $pendingOrderHoldSrch->addGroupBy('ochold_coupon_id');
         $pendingOrderHoldSrch->doNotCalculateRecords();
-        if ($orderId !='') {
+        if ($orderId != '') {
             $pendingOrderHoldSrch->addCondition('ochold_order_id', '!=', $orderId);
         }
         /* ] */
@@ -473,7 +474,7 @@ AND couponlang_lang_id = ' . $langId,
         $cUsersSrch->doNotCalculateRecords();
         $cUsersSrch->doNotLimitRecords();
         $cUsersSrch->addGroupBy('ctu_coupon_id');
-        $cUsersSrch->addMultipleFields(array('ctu_coupon_id','GROUP_CONCAT(ctu_user_id) as grouped_coupon_users'));
+        $cUsersSrch->addMultipleFields(array('ctu_coupon_id', 'GROUP_CONCAT(ctu_user_id) as grouped_coupon_users'));
         /* ] */
 
         /* Coupon Products[ */
@@ -481,7 +482,7 @@ AND couponlang_lang_id = ' . $langId,
         $cProductSrch->doNotCalculateRecords();
         $cProductSrch->doNotLimitRecords();
         $cProductSrch->addGroupBy('ctp_coupon_id');
-        $cProductSrch->addMultipleFields(array('ctp_coupon_id','GROUP_CONCAT(ctp_product_id) as grouped_coupon_products'));
+        $cProductSrch->addMultipleFields(array('ctp_coupon_id', 'GROUP_CONCAT(ctp_product_id) as grouped_coupon_products'));
         /* ] */
 
         /* Coupon categories[ */
@@ -495,18 +496,18 @@ AND couponlang_lang_id = ' . $langId,
         $srch = DiscountCoupons::getSearchObject($langId);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->joinTable('('.$cHistorySrch->getQuery().')', 'LEFT OUTER JOIN', 'coupon_history.couponhistory_coupon_id = dc.coupon_id', 'coupon_history');
-        $srch->joinTable('('.$cHoldSrch->getQuery().')', 'LEFT OUTER JOIN', 'dc.coupon_id = coupon_hold.couponhold_coupon_id', 'coupon_hold');
+        $srch->joinTable('(' . $cHistorySrch->getQuery() . ')', 'LEFT OUTER JOIN', 'coupon_history.couponhistory_coupon_id = dc.coupon_id', 'coupon_history');
+        $srch->joinTable('(' . $cHoldSrch->getQuery() . ')', 'LEFT OUTER JOIN', 'dc.coupon_id = coupon_hold.couponhold_coupon_id', 'coupon_hold');
 
-        $srch->joinTable('('.$cUsersSrch->getQuery().')', 'LEFT OUTER JOIN', 'dc.coupon_id = ctu.ctu_coupon_id', 'ctu');
+        $srch->joinTable('(' . $cUsersSrch->getQuery() . ')', 'LEFT OUTER JOIN', 'dc.coupon_id = ctu.ctu_coupon_id', 'ctu');
 
-        $srch->joinTable('('. $userCouponHistorySrch->getQuery() .')', 'LEFT OUTER JOIN', 'dc.coupon_id = user_coupon_history.couponhistory_coupon_id', 'user_coupon_history');
-        $srch->joinTable('('.$cProductSrch->getQuery().')', 'LEFT OUTER JOIN', 'dc.coupon_id = ctp.ctp_coupon_id', 'ctp');
-        $srch->joinTable('('.$cCategorySrch->getQuery().')', 'LEFT OUTER JOIN', 'dc.coupon_id = ctc.ctc_coupon_id', 'ctc');
+        $srch->joinTable('(' . $userCouponHistorySrch->getQuery() . ')', 'LEFT OUTER JOIN', 'dc.coupon_id = user_coupon_history.couponhistory_coupon_id', 'user_coupon_history');
+        $srch->joinTable('(' . $cProductSrch->getQuery() . ')', 'LEFT OUTER JOIN', 'dc.coupon_id = ctp.ctp_coupon_id', 'ctp');
+        $srch->joinTable('(' . $cCategorySrch->getQuery() . ')', 'LEFT OUTER JOIN', 'dc.coupon_id = ctc.ctc_coupon_id', 'ctc');
 
 
         // if ($orderId !='') {
-        $srch->joinTable('('.$pendingOrderHoldSrch->getQuery().')', 'LEFT OUTER JOIN', 'dc.coupon_id = ctop.ochold_coupon_id', 'ctop');
+        $srch->joinTable('(' . $pendingOrderHoldSrch->getQuery() . ')', 'LEFT OUTER JOIN', 'dc.coupon_id = ctop.ochold_coupon_id', 'ctop');
         // }
 
 
@@ -526,22 +527,22 @@ AND couponlang_lang_id = ' . $langId,
 
         /* $srch->addMultipleFields(array( 'dc.*', 'dc_l.coupon_description', 'IFNULL(dc_l.coupon_title, dc.coupon_identifier) as coupon_title', 'IFNULL(COUNT(coupon_history.couponhistory_id), 0) as coupon_used_count', 'IFNULL(COUNT(coupon_hold.couponhold_coupon_id), 0) as coupon_hold_count','count(user_coupon_history.couponhistory_id) as user_coupon_used_count', 'ctu.grouped_coupon_users', 'ctp.grouped_coupon_products', 'ctc.grouped_coupon_categories')); */
 
-        $selectArr = array( 'dc.*', 'dc_l.coupon_description', 'IFNULL(dc_l.coupon_title, dc.coupon_identifier) as coupon_title', 'IFNULL(coupon_history.coupon_used_count, 0) as coupon_used_count', 'IFNULL(COUNT(coupon_hold.couponhold_coupon_id), 0) as coupon_hold_count','count(user_coupon_history.couponhistory_id) as user_coupon_used_count', 'ctu.grouped_coupon_users', 'ctp.grouped_coupon_products', 'ctc.grouped_coupon_categories');
+        $selectArr = array( 'dc.*', 'dc_l.coupon_description', 'IFNULL(dc_l.coupon_title, dc.coupon_identifier) as coupon_title', 'IFNULL(coupon_history.coupon_used_count, 0) as coupon_used_count', 'IFNULL(COUNT(coupon_hold.couponhold_coupon_id), 0) as coupon_hold_count', 'count(user_coupon_history.couponhistory_id) as user_coupon_used_count', 'ctu.grouped_coupon_users', 'ctp.grouped_coupon_products', 'ctc.grouped_coupon_categories');
         // if ($orderId !='') {
-        $selectArr =  array_merge($selectArr, array('IFNULL(ctop.pending_order_hold_count,0) as pending_order_hold_count'));
+        $selectArr = array_merge($selectArr, array('IFNULL(ctop.pending_order_hold_count,0) as pending_order_hold_count'));
         // }
         $srch->addMultipleFields($selectArr);
 
         /* checking current coupon is valid for current logged user[ */
         $directCondtion1 = ' (grouped_coupon_users IS NULL AND grouped_coupon_products IS NULL AND grouped_coupon_categories IS NULL) ';
-        $directCondtion2 = ' ( grouped_coupon_users IS NOT NULL AND ( FIND_IN_SET('.$userId.', grouped_coupon_users) ) ) ';
+        $directCondtion2 = ' ( grouped_coupon_users IS NOT NULL AND ( FIND_IN_SET(' . $userId . ', grouped_coupon_users) ) ) ';
         /* ] */
 
         /* Or current coupon is valid for current cart products[  */
         $directCondtion3 = '';
         foreach ($cartProducts as $cartProduct) {
             if (!$cartProduct['is_batch']) {
-                $directCondtion3 .= ' OR ( grouped_coupon_products IS NOT NULL AND ( FIND_IN_SET( '. $cartProduct['product_id'] .', grouped_coupon_products) ) ) ';
+                $directCondtion3 .= ' OR ( grouped_coupon_products IS NOT NULL AND ( FIND_IN_SET( ' . $cartProduct['product_id'] . ', grouped_coupon_products) ) ) ';
             }
         }
         /* ] */
@@ -554,14 +555,14 @@ AND couponlang_lang_id = ' . $langId,
                 $prodCategories = $prodObj->getProductCategories($cartProduct['product_id']);
                 if ($prodCategories) {
                     foreach ($prodCategories as $prodcat_id => $prodCategory) {
-                        $directCondition4 .= ' OR (grouped_coupon_categories IS NOT NULL AND ( FIND_IN_SET('.$prodcat_id.', grouped_coupon_categories) ) ) ';
+                        $directCondition4 .= ' OR (grouped_coupon_categories IS NOT NULL AND ( FIND_IN_SET(' . $prodcat_id . ', grouped_coupon_categories) ) ) ';
                     }
                 }
             }
         }
         /* ] */
 
-        $srch->addDirectCondition("(". $directCondtion1.' OR ( '. $directCondtion2 . $directCondtion3 . $directCondition4 .' )' . " )", 'AND');
+        $srch->addDirectCondition("(" . $directCondtion1 . ' OR ( ' . $directCondtion2 . $directCondtion3 . $directCondition4 . ' )' . " )", 'AND');
 
         $srch->addGroupBy('dc.coupon_id');
         $srch->addHaving('coupon_uses_count', '>', 'mysql_func_coupon_used_count + coupon_hold_count + pending_order_hold_count', 'AND', true);
@@ -577,13 +578,13 @@ AND couponlang_lang_id = ' . $langId,
         $rs = $srch->getResultSet();
         if ($coupon_code != '') {
             $data = FatApp::getDb()->fetch($rs);
-            /* if( $cartProducts ){
-            foreach( $cartProducts as $cartProduct ){
-            if( $cartProduct['is_batch'] ){
-            $data['groups'][] = $cartProduct['prodgroup_id'];
-            }
-            }
-            } */
+        /* if( $cartProducts ){
+        foreach( $cartProducts as $cartProduct ){
+        if( $cartProduct['is_batch'] ){
+        $data['groups'][] = $cartProduct['prodgroup_id'];
+        }
+        }
+        } */
         } else {
             $data = FatApp::getDb()->fetchAll($rs, 'coupon_id');
         }
@@ -601,7 +602,7 @@ AND couponlang_lang_id = ' . $langId,
         $currDate = date('Y-m-d');
 
         $srch = static::getSearchObject($langId);
-        $srch->addMultipleFields(array('dc.*','IFNULL(dc_l.coupon_title,dc.coupon_identifier) as coupon_title'));
+        $srch->addMultipleFields(array('dc.*', 'IFNULL(dc_l.coupon_title,dc.coupon_identifier) as coupon_title'));
 
         $srch->addCondition('coupon_code', '=', $code);
         $srch->addCondition('coupon_type', '=', static::TYPE_SELLER_PACKAGE);
@@ -634,7 +635,7 @@ AND couponlang_lang_id = ' . $langId,
 
         $couponHistoryData = FatApp::getDb()->fetch($chistoryRs);
 
-        $interval = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s').' - 15 minute'));
+        $interval = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') . ' - 15 minute'));
 
         FatApp::getDb()->deleteRecords(DiscountCoupons::DB_TBL_COUPON_HOLD, array('smt' => 'couponhold_added_on < ?', 'vals' => array($interval ) ));
 
@@ -676,7 +677,7 @@ AND couponlang_lang_id = ' . $langId,
         }
 
         // Products
-        $subscriptionData = array('product'=>'');
+        $subscriptionData = array('product' => '');
         $subscriptions = $scartObj->getSubscription($langId);
 
 
@@ -703,7 +704,7 @@ AND couponlang_lang_id = ' . $langId,
         } */
 
         if ($status) {
-            return array_merge($couponData, array("products"=>$subscriptionData['product']));
+            return array_merge($couponData, array("products" => $subscriptionData['product']));
         }
     }
 
@@ -740,7 +741,7 @@ AND couponlang_lang_id = ' . $langId,
             return false;
         }
 
-        if (!FatApp::getDb()->deleteRecords(static::DB_TBL_COUPON_TO_CATEGORY, array('smt'=>'ctc_coupon_id = ? AND ctc_prodcat_id = ?','vals' => array($coupon_id, $prodcat_id) ))) {
+        if (!FatApp::getDb()->deleteRecords(static::DB_TBL_COUPON_TO_CATEGORY, array('smt' => 'ctc_coupon_id = ? AND ctc_prodcat_id = ?', 'vals' => array($coupon_id, $prodcat_id) ))) {
             $this->error = $db->getError();
             return false;
         }
@@ -780,7 +781,7 @@ AND couponlang_lang_id = ' . $langId,
             return false;
         }
 
-        if (!FatApp::getDb()->deleteRecords(static::DB_TBL_COUPON_TO_PLAN, array('smt'=>'ctplan_coupon_id = ? AND ctplan_spplan_id = ?','vals' => array($coupon_id, $spplan_id) ))) {
+        if (!FatApp::getDb()->deleteRecords(static::DB_TBL_COUPON_TO_PLAN, array('smt' => 'ctplan_coupon_id = ? AND ctplan_spplan_id = ?', 'vals' => array($coupon_id, $spplan_id) ))) {
             $this->error = $db->getError();
             return false;
         }
@@ -798,7 +799,7 @@ AND couponlang_lang_id = ' . $langId,
             return false;
         }
 
-        if (!FatApp::getDb()->deleteRecords(static::DB_TBL_COUPON_TO_PRODUCT, array('smt'=>'ctp_coupon_id = ? AND ctp_product_id = ?','vals' => array($coupon_id, $product_id) ))) {
+        if (!FatApp::getDb()->deleteRecords(static::DB_TBL_COUPON_TO_PRODUCT, array('smt' => 'ctp_coupon_id = ? AND ctp_product_id = ?', 'vals' => array($coupon_id, $product_id) ))) {
             $this->error = $db->getError();
             return false;
         }
@@ -860,14 +861,14 @@ AND couponlang_lang_id = ' . $langId,
             return false;
         }
 
-        if (!FatApp::getDb()->deleteRecords(static::DB_TBL_COUPON_TO_USER, array('smt'=>'ctu_coupon_id = ? AND ctu_user_id = ?','vals' => array($coupon_id, $user_id) ))) {
+        if (!FatApp::getDb()->deleteRecords(static::DB_TBL_COUPON_TO_USER, array('smt' => 'ctu_coupon_id = ? AND ctu_user_id = ?', 'vals' => array($coupon_id, $user_id) ))) {
             $this->error = $db->getError();
             return false;
         }
         return true;
     }
 
-    public static function getPlanTitle($sPlanRow = array(), $siteLangId =0)
+    public static function getPlanTitle($sPlanRow = array(), $siteLangId = 0)
     {
         if (empty($sPlanRow)) {
             return '';
@@ -881,8 +882,8 @@ AND couponlang_lang_id = ' . $langId,
         $str = Labels::getLabel('LBL_Seller_AutoSuggest_Plan_Name', $siteLangId);
         $planIntervals = SellerPackagePlans::getSubscriptionPeriods($siteLangId);
         $replacementArr = array(
-        '{package_name}'    =>    $sPlanRow['spackage_name'],
-        '{plan_days}'        =>    $sPlanRow['spplan_interval']." ".$planIntervals[$sPlanRow['spplan_frequency']],
+        '{package_name}' => $sPlanRow['spackage_name'],
+        '{plan_days}' => $sPlanRow['spplan_interval'] . " " . $planIntervals[$sPlanRow['spplan_frequency']],
 
         );
         foreach ($replacementArr as $key => $val) {

@@ -1,22 +1,23 @@
 <?php
+
 class ShippingMethods extends MyAppModel
 {
-    const DB_TBL = 'tbl_shipping_apis';
-    const DB_TBL_LANG = 'tbl_shipping_apis_lang';
-    const DB_TBL_PREFIX = 'shippingapi_';
-    const DB_TBL_LANG_PREFIX = 'shippingapilang_';
-    const DB_SETTING_TBL = 'tbl_shippingapi_settings';
-    const DB_SETTING_TBL_PREFIX = 'shippingapi_';
+    public const DB_TBL = 'tbl_shipping_apis';
+    public const DB_TBL_LANG = 'tbl_shipping_apis_lang';
+    public const DB_TBL_PREFIX = 'shippingapi_';
+    public const DB_TBL_LANG_PREFIX = 'shippingapilang_';
+    public const DB_SETTING_TBL = 'tbl_shippingapi_settings';
+    public const DB_SETTING_TBL_PREFIX = 'shippingapi_';
 
-    const MANUAL_SHIPPING =1;
-    const SHIPSTATION_SHIPPING =2;
+    public const MANUAL_SHIPPING = 1;
+    public const SHIPSTATION_SHIPPING = 2;
 
     private $db;
 
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
-        $this->db=FatApp::getDb();
+        $this->db = FatApp::getDb();
     }
 
     public static function getSearchObject($isActive = true, $langId = 0)
@@ -25,19 +26,19 @@ class ShippingMethods extends MyAppModel
 
         $srch = new SearchBase(static::DB_TBL, 'sm');
         if ($isActive == true) {
-            $srch->addCondition('sm.'.static::DB_TBL_PREFIX.'active', '=', applicationConstants::ACTIVE);
+            $srch->addCondition('sm.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
         }
 
         if ($langId > 0) {
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'sm_l.shippingapilang_'.static::DB_TBL_PREFIX.'id = sm.'.static::DB_TBL_PREFIX.'id and sm_l.shippingapilang_lang_id = '.$langId,
+                'sm_l.shippingapilang_' . static::DB_TBL_PREFIX . 'id = sm.' . static::DB_TBL_PREFIX . 'id and sm_l.shippingapilang_lang_id = ' . $langId,
                 'sm_l'
             );
         }
 
-        $srch->addOrder('sm.'.static::DB_TBL_PREFIX.'display_order', 'ASC');
+        $srch->addOrder('sm.' . static::DB_TBL_PREFIX . 'display_order', 'ASC');
         return $srch;
     }
 
@@ -80,7 +81,7 @@ class ShippingMethods extends MyAppModel
 
         $data = array();
         foreach ($row as $val) {
-            $data[$val['shipsetting_key']]=$val['shipsetting_value'];
+            $data[$val['shipsetting_key']] = $val['shipsetting_value'];
         }
         return $data;
     }

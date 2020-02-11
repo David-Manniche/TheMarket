@@ -1,4 +1,5 @@
 <?php
+
 class PushNotification extends MyAppModel
 {
     public const DB_TBL = 'tbl_push_notifications';
@@ -44,8 +45,8 @@ class PushNotification extends MyAppModel
     public static function getUserTypeArr($langId)
     {
         return [
-            static::NOTIFY_TO_BUYER  => Labels::getLabel('LBL_BUYERS', $langId),
-            static::NOTIFY_TO_SELLER  => Labels::getLabel('LBL_SELLERS', $langId),
+            static::NOTIFY_TO_BUYER => Labels::getLabel('LBL_BUYERS', $langId),
+            static::NOTIFY_TO_SELLER => Labels::getLabel('LBL_SELLERS', $langId),
         ];
     }
 
@@ -65,7 +66,7 @@ class PushNotification extends MyAppModel
             $joinBuyers = 'pn.pnotification_for_buyer = u.user_is_buyer AND pn.pnotification_for_buyer = 1';
             $joinSellers = 'pn.pnotification_for_seller = u.user_is_supplier and pn.pnotification_for_seller = 1';
             if (0 < $buyers && 0 < $sellers) {
-                $joinUsers =  '((' . $joinBuyers . ') OR (' . $joinSellers . '))';
+                $joinUsers = '((' . $joinBuyers . ') OR (' . $joinSellers . '))';
             } elseif (0 < $sellers) {
                 $joinUsers = $joinSellers;
             } elseif (0 < $buyers) {
@@ -107,7 +108,7 @@ class PushNotification extends MyAppModel
         $obj->addOrder('uauth_user_id', 'ASC');
         $rs = $obj->getResultSet();
         $tokenData = FatApp::getDb()->fetchAll($rs);
-        $lastToken   = end($tokenData);
+        $lastToken = end($tokenData);
         $lastUserId = $lastToken['uauth_user_id'];
         
         $deviceTokens = [];

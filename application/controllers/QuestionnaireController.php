@@ -1,4 +1,5 @@
 <?php
+
 class QuestionnaireController extends MyAppController
 {
     public function __construct($action)
@@ -32,7 +33,7 @@ class QuestionnaireController extends MyAppController
         if (false == $post) {
             Message::addErrorMessage($frm->getValidationErrors());
             $this->view($questionnaireId);
-            return ;
+            return;
         }
 
         $feedback = new QuestionnaireFeedback();
@@ -41,9 +42,9 @@ class QuestionnaireController extends MyAppController
             CommonHelper::redirectUserReferer();
         }
         $feedbackData = array(
-        'qfeedback_questionnaire_id' => $post['qfeedback_questionnaire_id'] ,
-        'qfeedback_user_name' => $post['qfeedback_user_name'] ,
-        'qfeedback_user_email' => $post['qfeedback_user_email'] ,
+        'qfeedback_questionnaire_id' => $post['qfeedback_questionnaire_id'],
+        'qfeedback_user_name' => $post['qfeedback_user_name'],
+        'qfeedback_user_email' => $post['qfeedback_user_email'],
         'qfeedback_user_ip' => $_SERVER['REMOTE_ADDR'],
         'qfeedback_lang_id' => $this->siteLangId,
         'qfeedback_added_on' => date('Y-m-d H:i:s'),
@@ -52,7 +53,7 @@ class QuestionnaireController extends MyAppController
         if (!$feedback->save()) {
             Message::addErrorMessage($feedback->getError());
             $this->view($questionnaireId);
-            return ;
+            return;
         }
         $feedbackId = $feedback->getMainTableRecordId();
         $srch = new QuestionnairesSearch();
@@ -63,7 +64,7 @@ class QuestionnaireController extends MyAppController
 
         $isValid = true;
         foreach ($questions as $question) {
-            $fieldName = 'question_'.$question['question_id'];
+            $fieldName = 'question_' . $question['question_id'];
             if ($question['question_required'] == 1 && !isset($post[$fieldName])) {
                 $isValid = false;
                 Message::addErrorMessage(sprintf(Labels::getLabel('Lbl_%s_is_Mandatory', $this->siteLangId), $question['question_title']));
@@ -71,13 +72,13 @@ class QuestionnaireController extends MyAppController
         }
         if ($isValid == false) {
             $this->view($questionnaireId);
-            return ;
+            return;
         }
         foreach ($questions as $question) {
-            $fieldName = 'question_'.$question['question_id'];
+            $fieldName = 'question_' . $question['question_id'];
             if (isset($post[$fieldName])) {
-                $post[$fieldName] = is_array($post[$fieldName])?serialize($post[$fieldName]):$post[$fieldName];
-                $feedback->addAnswerToQuestion(array('qta_qfeedback_id'=>$feedbackId ,'qta_question_id'=>$question['question_id'] ,'qta_answers'=>$post[$fieldName]));
+                $post[$fieldName] = is_array($post[$fieldName]) ? serialize($post[$fieldName]) : $post[$fieldName];
+                $feedback->addAnswerToQuestion(array('qta_qfeedback_id' => $feedbackId, 'qta_question_id' => $question['question_id'], 'qta_answers' => $post[$fieldName]));
             }
         }
         Message::addMessage(Labels::getLabel('Msg_Feedback_sent_successfuly', $this->siteLangId));
@@ -132,14 +133,14 @@ class QuestionnaireController extends MyAppController
         $questions = FatApp::getDb()->fetchAll($srch->getResultset());
 
         foreach ($questions as $question) {
-            $fieldName = 'question_'.$question['question_id'];
+            $fieldName = 'question_' . $question['question_id'];
             $question_options = preg_replace('~\r?\n~', "\n", $question['question_options']);
 
             $arr_options = explode("\n", $question_options);
             $arr_options = array_combine($arr_options, $arr_options);
 
-            $arr_rating_5 = array(1=>1,2=>2,3=>3,4=>4,5=>5);
-            $arr_rating_10 = array(1=>1,2=>2,3=>3,4=>4,5=>5,6=>6,7=>7,8=>8,9=>9,10=>10);
+            $arr_rating_5 = array(1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5);
+            $arr_rating_10 = array(1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9, 10 => 10);
             switch ($question['question_type']) {
 
             case Questions::TYPE_TEXT:
@@ -155,12 +156,12 @@ class QuestionnaireController extends MyAppController
                 break;
 
             case Questions::TYPE_RATING_5:
-                $fld = $frm->addSelectBox($question['question_title'], $fieldName, $arr_rating_5, "", array('class'=>"star-rating"), Labels::getLabel('L_Rate', $langId));
+                $fld = $frm->addSelectBox($question['question_title'], $fieldName, $arr_rating_5, "", array('class' => "star-rating"), Labels::getLabel('L_Rate', $langId));
                 $fld->setWrapperAttribute('class', 'rating-f');
                 break;
 
             case Questions::TYPE_RATING_10:
-                $fld = $frm->addSelectBox($question['question_title'], $fieldName, $arr_rating_10, "", array('class'=>"star-rating"), Labels::getLabel('L_Rate', $langId));
+                $fld = $frm->addSelectBox($question['question_title'], $fieldName, $arr_rating_10, "", array('class' => "star-rating"), Labels::getLabel('L_Rate', $langId));
                 $fld->setWrapperAttribute('class', 'rating-f');
                 break;
             }

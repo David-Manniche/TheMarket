@@ -1,12 +1,13 @@
 <?php
+
 class ProductGroup extends MyAppModel
 {
-    const DB_TBL = 'tbl_product_groups';
-    const DB_TBL_LANG ='tbl_product_groups_lang';
-    const DB_TBL_PREFIX = 'prodgroup_';
+    public const DB_TBL = 'tbl_product_groups';
+    public const DB_TBL_LANG = 'tbl_product_groups_lang';
+    public const DB_TBL_PREFIX = 'prodgroup_';
 
-    const DB_PRODUCT_TO_GROUP = 'tbl_product_to_groups';
-    const DB_PRODUCT_TO_GROUP_PREFIX = 'ptg_';
+    public const DB_PRODUCT_TO_GROUP = 'tbl_product_to_groups';
+    public const DB_PRODUCT_TO_GROUP_PREFIX = 'ptg_';
 
     public function __construct($id = 0)
     {
@@ -15,7 +16,7 @@ class ProductGroup extends MyAppModel
 
     public static function getSearchObj($langId = 0, $active = true)
     {
-        $langId =  FatUtility::int($langId);
+        $langId = FatUtility::int($langId);
 
         $srch = new SearchBase(static::DB_TBL, 'b');
 
@@ -45,8 +46,8 @@ class ProductGroup extends MyAppModel
         }
         $record = new TableRecord(static::DB_PRODUCT_TO_GROUP);
         $to_save_arr = array();
-        $to_save_arr[static::DB_PRODUCT_TO_GROUP_PREFIX.'prodgroup_id'] = $prodgroup_id;
-        $to_save_arr[static::DB_PRODUCT_TO_GROUP_PREFIX.'selprod_id'] = $selprod_id;
+        $to_save_arr[static::DB_PRODUCT_TO_GROUP_PREFIX . 'prodgroup_id'] = $prodgroup_id;
+        $to_save_arr[static::DB_PRODUCT_TO_GROUP_PREFIX . 'selprod_id'] = $selprod_id;
 
         /* check current record is first record, then mark it as main product[ */
         $srch = new ProductGroupProductSearch(0, $prodgroup_id);
@@ -55,7 +56,7 @@ class ProductGroup extends MyAppModel
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
         if (!$row) {
-            $to_save_arr[static::DB_PRODUCT_TO_GROUP_PREFIX.'is_main_product'] = 1;
+            $to_save_arr[static::DB_PRODUCT_TO_GROUP_PREFIX . 'is_main_product'] = 1;
         }
         /* ] */
 
@@ -78,7 +79,7 @@ class ProductGroup extends MyAppModel
             return false;
         }
 
-        if (!$db->deleteRecords(ProductGroup::DB_PRODUCT_TO_GROUP, array('smt'=> ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX.'prodgroup_id = ? AND '.ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'selprod_id = ?','vals' => array($prodgroup_id, $selprod_id) ))) {
+        if (!$db->deleteRecords(ProductGroup::DB_PRODUCT_TO_GROUP, array('smt' => ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'prodgroup_id = ? AND ' . ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'selprod_id = ?', 'vals' => array($prodgroup_id, $selprod_id) ))) {
             $this->error = $db->getError();
             return false;
         }

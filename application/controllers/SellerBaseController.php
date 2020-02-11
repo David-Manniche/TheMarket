@@ -1,4 +1,5 @@
 <?php
+
 class SellerBaseController extends LoggedUserController
 {
     public function __construct($action)

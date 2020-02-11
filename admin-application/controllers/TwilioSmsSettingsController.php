@@ -1,4 +1,5 @@
 <?php
+
 class TwilioSmsSettingsController extends SmsNotificationSettingsController
 {
     public static function getConfigurationKeys()

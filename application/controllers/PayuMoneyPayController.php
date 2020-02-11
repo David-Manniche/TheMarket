@@ -1,4 +1,5 @@
 <?php
+
 class PayuMoneyPayController extends PaymentController
 {
     private $keyName = "PayuMoney";
@@ -34,7 +35,7 @@ class PayuMoneyPayController extends PaymentController
         }
         $this->set('orderInfo', $orderInfo);
         $this->set('exculdeMainHeaderDiv', true);
-         $this->_template->render(true, false);
+        $this->_template->render(true, false);
     }
 
     public function callback()
@@ -97,7 +98,7 @@ class PayuMoneyPayController extends PaymentController
             $actionUrl = 'https://test.payu.in/_payment';
         }
 
-        $frm = new Form('frmPayuMoney', array('id'=>'frmPayuMoney', 'action'=>$actionUrl, 'class' => "form form--normal"));
+        $frm = new Form('frmPayuMoney', array('id' => 'frmPayuMoney', 'action' => $actionUrl, 'class' => "form form--normal"));
 
         /* Retrieve Primary Info corresponding to your order */
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
@@ -121,11 +122,11 @@ class PayuMoneyPayController extends PaymentController
         $frm->addHiddenField('surl', 'surl', CommonHelper::generateFullUrl('PayuMoneyPay', 'callback'));
         $frm->addHiddenField('furl', 'furl', CommonHelper::generateFullUrl('PayuMoneyPay', 'callback'));
         $frm->addHiddenField('curl', 'curl', CommonHelper::getPaymentCancelPageUrl());
-        $key =  $paymentSettings["merchant_key"];
+        $key = $paymentSettings["merchant_key"];
         $amount = $paymentGatewayCharge;
         $salt = $paymentSettings["salt"];
         $udf1 = $orderId;
-        $Hash = hash('sha512', $key . '|' . $txnid . '|' . $paymentGatewayCharge . '|' . $orderPaymentGatewayDescription . '|' . $firstname . '|' . $email . '|' . $udf1.'||||||||||'.$salt);
+        $Hash = hash('sha512', $key . '|' . $txnid . '|' . $paymentGatewayCharge . '|' . $orderPaymentGatewayDescription . '|' . $firstname . '|' . $email . '|' . $udf1 . '||||||||||' . $salt);
         $frm->addHiddenField('hash', 'hash', $Hash);
         $frm->addHiddenField('udf1', 'udf1', $udf1);
         $frm->addHiddenField('Pg', 'Pg', 'CC');

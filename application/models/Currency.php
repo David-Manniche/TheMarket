@@ -1,4 +1,5 @@
 <?php
+
 class Currency extends MyAppModel
 {
     public const DB_TBL = 'tbl_currency';
@@ -59,7 +60,7 @@ class Currency extends MyAppModel
     public static function getCurrencyAssoc($langId)
     {
         $langId = FatUtility::int($langId);
-        $srch = self::getListingObj($langId, array('currency_id','currency_code'));
+        $srch = self::getListingObj($langId, array('currency_id', 'currency_code'));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();

@@ -1,4 +1,5 @@
 <?php
+
 class SmsNotificationController extends PluginBaseController
 {
     public function __construct($action)

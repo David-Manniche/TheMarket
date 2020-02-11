@@ -1,4 +1,5 @@
 <?php
+
 require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/khipu/init.php';
 class KhipuPayController extends PaymentController
 {

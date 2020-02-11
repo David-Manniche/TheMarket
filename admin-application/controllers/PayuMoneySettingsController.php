@@ -1,10 +1,10 @@
 <?php
+
 class PayuMoneySettingsController extends PaymentSettingsController
 {
+    private $keyName = "PayuMoney";
     
-    private $keyName="PayuMoney";
-    
-    public function index() 
+    public function index()
     {
         $paymentSettings = $this->getPaymentSettings($this->keyName);
         $frm = $this->getSettingsForm();
@@ -17,10 +17,10 @@ class PayuMoneySettingsController extends PaymentSettingsController
     public function setup()
     {
         $frm = $this->getSettingsForm();
-        $this->setUpPaymentSettings($frm, $this->keyName);        
+        $this->setUpPaymentSettings($frm, $this->keyName);
     }
     
-    private function getSettingsForm() 
+    private function getSettingsForm()
     {
         $frm = new Form('frmPaymentMethods');
         $frm->addRequiredField(Labels::getLabel('LBL_Merchant_Key', $this->adminLangId), 'merchant_key');
@@ -28,5 +28,4 @@ class PayuMoneySettingsController extends PaymentSettingsController
         $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
-    
 }
