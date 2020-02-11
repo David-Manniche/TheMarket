@@ -1,13 +1,13 @@
 <?php
 class BlogPost extends MyAppModel
 {
-    const DB_TBL = 'tbl_blog_post';
-    const DB_TBL_PREFIX = 'post_';
-    const DB_TBL_LANG ='tbl_blog_post_lang';
-    const DB_TBL_LANG_PREFIX ='postlang_';
-    const DB_POST_TO_CAT_TBL ='tbl_blog_post_to_category';
-    const DB_POST_TO_CAT_TBL_PREFIX ='ptc_';
-    const REWRITE_URL_PREFIX = 'blog/post-detail/';
+    public const DB_TBL = 'tbl_blog_post';
+    public const DB_TBL_PREFIX = 'post_';
+    public const DB_TBL_LANG ='tbl_blog_post_lang';
+    public const DB_TBL_LANG_PREFIX ='postlang_';
+    public const DB_POST_TO_CAT_TBL ='tbl_blog_post_to_category';
+    public const DB_POST_TO_CAT_TBL_PREFIX ='ptc_';
+    public const REWRITE_URL_PREFIX = 'blog/post-detail/';
 
     private $db;
 

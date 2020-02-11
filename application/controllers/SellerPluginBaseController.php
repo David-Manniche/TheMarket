@@ -11,7 +11,7 @@ class SellerPluginBaseController extends SellerBaseController
         try {
             $keyName = get_called_class()::KEY_NAME;
         } catch (\Error $e) {
-            $message = 'ERR - ' . $e->getMessage();
+            $message = $e->getMessage();
             if (true ===  MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }

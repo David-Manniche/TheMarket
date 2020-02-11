@@ -1,8 +1,8 @@
 $(document).ready(function(){
     $('.dvFocus-js').hide();
     searchUpsellProducts(document.frmSearch);
-    $('#upsell-products').delegate('.remove_upsell', 'click', function() {
-        $(this).parent().remove();
+    $('#upsell-products').on('click', '.remove_upsell', function() {
+        $(this).closest('li').remove();
     });
 });
 $(document).on('mouseover', "ul.list-tags li span i", function(){
@@ -75,7 +75,7 @@ $(document).on('keyup', "input[name='products_upsell']", function(){
                     data: {
                         keyword: request['term'],
                         fIsAjax: 1,
-                        selprod_id: selprod_id,
+                        selProdId: selprod_id,
                         selected_products: selected_products
                     },
                     dataType: 'json',

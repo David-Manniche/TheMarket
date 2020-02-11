@@ -7,6 +7,8 @@ class CollectionSearch extends SearchBase
     private $joinCollectionCategories = false;
     private $joinCollectionShops = false;
     private $joinCollectionBrands = false;
+    private $joinCollectionBlogs = false;
+
     private $commonLangId;
     public function __construct($langId = 0)
     {
@@ -69,6 +71,12 @@ class CollectionSearch extends SearchBase
     {
         $this->joinCollectionBrands = true;
         $this->joinTable(Collections::DB_TBL_COLLECTION_TO_BRANDS, 'LEFT OUTER JOIN', 'ctpb.' . Collections::DB_TBL_COLLECTION_TO_BRANDS_PREFIX . 'collection_id = c.' . Collections::tblFld('id'), 'ctpb');
+    }
+
+    public function joinCollectionBlogs()
+    {
+        $this->joinCollectionBlogs = true;
+        $this->joinTable(Collections::DB_TBL_COLLECTION_TO_BLOGS, 'LEFT OUTER JOIN', 'ctb.' . Collections::DB_TBL_COLLECTION_TO_BLOGS_PREFIX . 'collection_id = c.' . Collections::tblFld('id'), 'ctb');
     }
 
     public function joinSellerProductsForPrice($langId = 0, $forDate = '')

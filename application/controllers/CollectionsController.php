@@ -9,7 +9,6 @@ class CollectionsController extends MyAppController
     public function view($collection_id)
     {
         $searchForm = $this->getCollectionSearchForm($collection_id);
-        $collection = Collections::getAttributesById($collection_id);
 
         /* Collection Data[ */
 
@@ -56,8 +55,17 @@ class CollectionsController extends MyAppController
         if (UserAuthentication::isUserLogged()) {
             $loggedUserId = UserAuthentication::getLoggedUserId();
         }
-        $collection = Collections::getAttributesById($collection_id);
+
         $db = FatApp::getDb();
+
+        $srch = new CollectionSearch($this->siteLangId);
+        $srch->addMultipleFields(['collection_id', 'IFNULL(collection_name, collection_identifier) as collection_name', 'collection_identifier','collection_link_url', 'collection_layout_type','collection_type','collection_criteria','collection_child_records','collection_primary_records', 'collection_display_order', 'collection_display_media_only', 'collection_active', 'collection_deleted', 'collection_img_updated_on']);
+
+        $srch->addCondition('collection_id', '=', $collection_id);
+
+        $rs = $srch->getResultSet();
+        $collection = $db->fetch($rs);
+
         $collectionObj = new CollectionSearch();
         $collectionObj->doNotCalculateRecords();
         $collectionObj->doNotLimitRecords();
@@ -66,7 +74,9 @@ class CollectionsController extends MyAppController
         $shopSearchObj ->setDefinedCriteria($this->siteLangId);
         $shopSearchObj->joinShopCountry();
         $shopSearchObj->joinShopState();
+
         $brandSearchObj = Brand::getSearchObject($this->siteLangId, true, true);
+
         /* sub query to find out that logged user have marked shops as favorite or not[ */
         $favSrchObj = new UserFavoriteShopSearch();
         $favSrchObj->doNotCalculateRecords();
@@ -87,7 +97,7 @@ class CollectionsController extends MyAppController
         /* $productSrchObj->joinFavouriteProducts($loggedUserId ); */
         if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::NO) {
             $productSrchObj->joinFavouriteProducts($loggedUserId);
-            $productSrchObj->addFld('ufp_id');
+            $productSrchObj->addFld('IFNULL(ufp_id, 0) as ufp_id');
         } else {
             $productSrchObj->joinUserWishListProducts($loggedUserId);
             $productSrchObj->addFld('IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist');
@@ -226,7 +236,7 @@ class CollectionsController extends MyAppController
                 $collections = $db->fetchAll($shopRs, 'shop_id');
 
                 $totalProdCountToDisplay = 4;
-
+                
                 foreach ($collections as $val) {
                     $prodSrch = clone $productSrchObj;
                     $prodSrch->addOrder('in_stock', 'DESC');
@@ -234,15 +244,24 @@ class CollectionsController extends MyAppController
                     $prodSrch->addShopIdCondition($val['shop_id']);
                     $prodSrch->setPageSize(4);
                     $prodSrch->addGroupBy('product_id');
-
                     $prodRs = $prodSrch->getResultSet();
-                    $collections[$val['shop_id']]['products'] = $db->fetchAll($prodRs);
+                    $products = $db->fetchAll($prodRs);
+
+                    if (true ===  MOBILE_APP_API_CALL) {
+                        $collections[$val['shop_id']]['shop_logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', array($val['shop_id'], $this->siteLangId));
+                        $collections[$val['shop_id']]['shop_banner'] = CommonHelper::generateFullUrl('image', 'shopBanner', array($val['shop_id'], $this->siteLangId));
+                        array_walk($products, function (&$value, &$key) {
+                            $uploadedTime = AttachedFile::setTimeParam($value['product_image_updated_on']);
+                            $value['product_image_url'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($value['product_id'], "THUMB", $value['selprod_id'], 0, $this->siteLangId)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                        });
+                    }
+                    
+                    $collections[$val['shop_id']]['products'] = $products;
                     $collections[$val['shop_id']]['totalProducts'] = $prodSrch->recordCount();
                     $collections[$val['shop_id']]['shopRating'] = SelProdRating::getSellerRating($val['shop_user_id']);
                     $collections[$val['shop_id']]['shopTotalReviews'] = SelProdReview::getSellerTotalReviews($val['shop_user_id']);
                 }
                 $rs = $tempObj->getResultSet();
-
                 unset($tempObj);
                 $this->set('collections', $collections);
                 $this->set('totalProdCountToDisplay', $totalProdCountToDisplay);
@@ -268,15 +287,67 @@ class CollectionsController extends MyAppController
                 $brandSearchTempObj->addOrder('brand_name', 'ASC');
                 /* echo $brandSearchTempObj->getQuery(); die; */
                 $rs = $brandSearchTempObj->getResultSet();
+                $collectionsArr = $db->fetchAll($rs);
+                /* ] */
+                
+                unset($brandSearchTempObj);
+                if (true ===  MOBILE_APP_API_CALL) {
+                    array_walk($collectionsArr, function (&$value, &$key) {
+                        $value['brand_image'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'brand', array($value['brand_id'], $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+                    });
+                    $this->set('collections', $collectionsArr);
+                } else {
+                    $collections[$collection['collection_layout_type']][$collection['collection_id']] = $collection;
+                    $collections[$collection['collection_layout_type']][$collection['collection_id']]['brands'] =  $collectionsArr;
+                    $this->set('collections', $collections);
+                }
+                break;
+            case Collections::COLLECTION_TYPE_BLOG:
+                $tempObj = clone $collectionObj;
+                $tempObj->addCondition('collection_id', '=', $collection_id);
+                $tempObj->joinCollectionBlogs();
+                $tempObj->addMultipleFields(array('ctb_post_id'));
+                $tempObj->addCondition('ctb_post_id', '!=', 'NULL');
+                $rs = $tempObj->getResultSet();
+                $blogPostIds = $db->fetchAll($rs, 'ctb_post_id');
+                if (empty($blogPostIds)) {
+                    break;
+                }
+
+                /* fetch Blog data[ */
+                $attr = [
+                    'post_id',
+                    'post_author_name',
+                    'IFNULL(post_title, post_identifier) as post_title',
+                    'post_updated_on',
+                    'post_updated_on',
+                    'IFNULL(bpcategory_name, bpcategory_identifier) as bpcategory_name',
+                    'post_short_description',
+                    'post_description'
+                ];
+                $blogSearchObj = BlogPost::getSearchObject($this->siteLangId, true, true);
+                $blogSearchTempObj = clone $blogSearchObj;
+                $blogSearchTempObj->addMultipleFields($attr);
+                $blogSearchTempObj->addCondition('post_id', 'IN', array_keys($blogPostIds));
+                
+                $blogSearchTempObj->addGroupBy('post_id');
+                $rs = $blogSearchTempObj->getResultSet();
+                $collectionsArr = $db->fetchAll($rs);
                 /* ] */
 
-                $collections[$collection['collection_layout_type']][$collection['collection_id']] = $collection;
-                $collections[$collection['collection_layout_type']][$collection['collection_id']]['brands'] = $db->fetchAll($rs);
-                unset($brandSearchTempObj);
-                $this->set('collections', $collections);
+                unset($blogSearchTempObj);
+                if (true ===  MOBILE_APP_API_CALL) {
+                    array_walk($collectionsArr, function (&$value, &$key) {
+                        $value['post_image'] = CommonHelper::generateFullUrl('Image', 'blogPostFront', array($value['post_id'], $this->siteLangId, ''));
+                    });
+                    $this->set('collections', $collectionsArr);
+                } else {
+                    $collections[$collection['collection_layout_type']][$collection['collection_id']] = $collection;
+                    $collections[$collection['collection_layout_type']][$collection['collection_id']]['blogs'] =  $collectionsArr;
+                    $this->set('collections', $collections);
+                }
                 break;
         }
-
         $this->set('collection', $collection);
         $this->set('siteLangId', CommonHelper::getLangId());
 

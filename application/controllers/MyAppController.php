@@ -384,7 +384,7 @@ class MyAppController extends FatController
         if (isset($_SESSION['referer_page_url'])) {
             $checkoutPage = basename(parse_url($_SESSION['referer_page_url'], PHP_URL_PATH));
             if ($checkoutPage == 'checkout') {
-                $isCheckOutPage=true;
+                $isCheckOutPage = true;
             }
         }
         if ($isCheckOutPage) {
@@ -419,7 +419,7 @@ class MyAppController extends FatController
         $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
         $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId));
 
-        $phnFld = $frm->addRequiredField(Labels::getLabel('LBL_Phone', $siteLangId), 'ua_phone', '', array('class'=>'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
+        $phnFld = $frm->addRequiredField(Labels::getLabel('LBL_Phone', $siteLangId), 'ua_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
         $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
         // $phnFld->htmlAfterField='<small class="text--small">'.Labels::getLabel('LBL_e.g.', $this->siteLangId).': '.implode(', ', ValidateElement::PHONE_FORMATS).'</small>';
         $phnFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));

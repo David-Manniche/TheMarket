@@ -1,14 +1,14 @@
 <?php
 trait SellerProducts
 {
-    protected function getSellerProductSearchForm($product_id)
+    protected function getSellerProductSearchForm($product_id = 0)
     {
         $frm = new Form('frmSearch');
-        $frm->addTextBox('', 'keyword', '', array('id'=>'keyword'));
+        $frm->addTextBox('', 'keyword', '', array('id' => 'keyword'));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->siteLangId));
-        $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $this->siteLangId), array('onclick'=>'clearSearch();'));
-        $frm->addHiddenField('product_id', 'product_id', $product_id);
-        $frm->addHiddenField('page', 'page', 1);
+        $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $this->siteLangId), array('onclick' => 'clearSearch();'));
+        $frm->addHiddenField('', 'product_id', $product_id);
+        $frm->addHiddenField('', 'page', 1);
         return $frm;
     }
 
@@ -1743,10 +1743,10 @@ trait SellerProducts
         $frm = new Form('frmLinks', array('id'=>'frmLinks'));
 
         $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Buy_Together_Products', $this->siteLangId), 'products_buy_together');
-        $fld1->htmlAfterField= '<div class="row"><div class="col-md-12"><ul class="list-vertical" id="buy-together-products"></ul></div></div>';
+        $fld1->htmlAfterField = '<div class="row"><div class="col-md-12"><ul class="list-vertical" id="buy-together-products"></ul></div></div>';
 
         $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Related_Products', $this->siteLangId), 'products_related');
-        $fld1->htmlAfterField= '<div class="row"><div class="col-md-12"><ul class="list-vertical" id="related-products"></ul></div></div>';
+        $fld1->htmlAfterField = '<div class="row"><div class="col-md-12"><ul class="list-vertical" id="related-products"></ul></div></div>';
 
         $frm->addHiddenField('', 'selprod_id');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel("LBL_Save_Changes", $this->siteLangId));
@@ -1764,7 +1764,7 @@ trait SellerProducts
         if (!empty($post['keyword'])) {
             $cnd = $srch->addCondition('product_name', 'LIKE', '%' . $post['keyword'] . '%');
             $cnd = $cnd->attachCondition('selprod_title', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
-            $cnd->attachCondition('product_identifier', 'LIKE', '%'. $post['keyword'] . '%', 'OR');
+            $cnd->attachCondition('product_identifier', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
         }
 
         $srch->addCondition('selprod_user_id', '=', UserAuthentication::getLoggedUserId());

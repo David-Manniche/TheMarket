@@ -1,13 +1,13 @@
 <?php
 class SubscriptionOrdersController extends AdminBaseController
 {
-    public function __construct($action) 
+    public function __construct($action)
     {
         $ajaxCallArray = array();
-        if(!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
+        if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
-        }     
-        parent::__construct($action);        
+        }
+        parent::__construct($action);
         $this->admin_id = AdminAuthentication::getLoggedAdminId();
         $this->canView = $this->objPrivilege->canViewSubscriptionOrders($this->admin_id, true);
         $this->canEdit = $this->objPrivilege->canEditSubscriptionOrders($this->admin_id, true);
@@ -15,14 +15,14 @@ class SubscriptionOrdersController extends AdminBaseController
         $this->set("canEdit", $this->canEdit);
     }
     
-    public function index() 
+    public function index()
     {
         $this->objPrivilege->canViewSubscriptionOrders();
-        $this->set('frmSearch', $this->getOrderSearchForm($this->adminLangId));        
+        $this->set('frmSearch', $this->getOrderSearchForm($this->adminLangId));
         $this->_template->render();
     }
     
-    public function search() 
+    public function search()
     {
         $this->objPrivilege->canViewSubscriptionOrders();
         $frmSearch = $this->getOrderSearchForm($this->adminLangId);
@@ -42,37 +42,37 @@ class SubscriptionOrdersController extends AdminBaseController
         $srch->addMultipleFields(array('order_id','order_date_added', 'order_is_paid', 'buyer.user_id', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'order_net_amount'));
         
         $keyword = FatApp::getPostedData('keyword', null, '');
-        if(!empty($keyword) ) {
+        if (!empty($keyword)) {
             $srch->addKeywordSearch($keyword);
         }
         
         $user_id = FatApp::getPostedData('user_id', '', -1);
-        if($user_id ) {
+        if ($user_id) {
             $srch->addCondition('buyer.user_id', '=', $user_id);
         }
         
-        if(isset($post['order_is_paid']) && $post['order_is_paid'] != '' ) {
+        if (isset($post['order_is_paid']) && $post['order_is_paid'] != '') {
             $order_is_paid = FatUtility::int($post['order_is_paid']);
             $srch->addCondition('order_is_paid', '=', $order_is_paid);
         }
         
         $dateFrom = FatApp::getPostedData('date_from', null, '');
-        if(!empty($dateFrom) ) {
+        if (!empty($dateFrom)) {
             $srch->addDateFromCondition($dateFrom);
         }
         
         $dateTo = FatApp::getPostedData('date_to', null, '');
-        if(!empty($dateTo) ) {
+        if (!empty($dateTo)) {
             $srch->addDateToCondition($dateTo);
         }
         
         $priceFrom = FatApp::getPostedData('price_from', null, '');
-        if(!empty($priceFrom) ) {
+        if (!empty($priceFrom)) {
             $srch->addMinPriceCondition($priceFrom);
         }
         
         $priceTo = FatApp::getPostedData('price_to', null, '');
-        if(!empty($priceTo) ) {
+        if (!empty($priceTo)) {
             $srch->addMaxPriceCondition($priceTo);
         }
         
@@ -83,7 +83,7 @@ class SubscriptionOrdersController extends AdminBaseController
         $this->set('pageCount', $srch->pages());
         $this->set('page', $page);
         $this->set('pageSize', $pageSize);
-        $this->set('postedData', $post);                        
+        $this->set('postedData', $post);
         $this->set('recordCount', $srch->recordCount());
         
         $this->set('canViewSellerOrders', $this->objPrivilege->canViewSellerOrders($this->admin_id, true));
@@ -92,7 +92,7 @@ class SubscriptionOrdersController extends AdminBaseController
         $this->_template->render(false, false);
     }
     
-    public function View( $order_id ) 
+    public function View($order_id)
     {
         $this->objPrivilege->canViewSubscriptionOrders();
         
@@ -110,7 +110,7 @@ class SubscriptionOrdersController extends AdminBaseController
         $srch->addCondition('order_type', '=', Orders::ORDER_SUBSCRIPTION);
         $rs = $srch->getResultSet();
         $order = FatApp::getDb()->fetch($rs);
-        if(!$order ) {
+        if (!$order) {
             Message::addErrorMessage(Labels::getLabel('LBL_Order_data_not_found', $this->adminLangId));
             FatApp::redirectUser(CommonHelper::generateUrl("SubscriptionOrders"));
         }
@@ -163,21 +163,21 @@ class SubscriptionOrdersController extends AdminBaseController
         $frm = $this->getPaymentForm($this->adminLangId);
     
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-        if (false === $post) {            
+        if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());    
+            FatUtility::dieJsonError(Message::getHtml());
         }
         
         $orderId = $post['opayment_order_id'];
-        if($orderId == '' || $orderId == null) {
+        if ($orderId == '' || $orderId == null) {
             Message::addErrorMessage($this->str_invalid_request);
-            FatUtility::dieJsonError(Message::getHtml());    
+            FatUtility::dieJsonError(Message::getHtml());
         }
         
         $orderPaymentObj = new OrderPayment($orderId, $this->adminLangId);
-        if(!$orderPaymentObj->addOrderPayment($post["opayment_method"], $post['opayment_gateway_txn_id'], $post["opayment_amount"], $post["opayment_comments"])) {
+        if (!$orderPaymentObj->addOrderPayment($post["opayment_method"], $post['opayment_gateway_txn_id'], $post["opayment_amount"], $post["opayment_comments"])) {
             Message::addErrorMessage($orderPaymentObj->getError());
-            FatUtility::dieJsonError(Message::getHtml());    
+            FatUtility::dieJsonError(Message::getHtml());
         }
         
         $this->set('msg', Labels::getLabel('LBL_Payment_Details_Added_Successfully', $this->adminLangId));
@@ -191,21 +191,21 @@ class SubscriptionOrdersController extends AdminBaseController
         $orderObj =  new Orders();
         $order = $orderObj->getOrderById($order_id);
         
-        if($order==false) {
+        if ($order==false) {
             Message::addErrorMessage(Labels::getLabel('LBL_Error:_Please_perform_this_action_on_valid_record.', $this->adminLangId));
-            FatUtility::dieJsonError(Message::getHtml());    
+            FatUtility::dieJsonError(Message::getHtml());
         }
         
-        if (!$order["order_is_paid"] ) {
-            if(!$orderObj->addOrderPaymentHistory($order_id, Orders::ORDER_IS_CANCELLED, Labels::getLabel('MSG_Order_Cancelled', $order['order_language_id']), 1)) {
-                Message::addErrorMessage($orderObj->getError());
-                FatUtility::dieJsonError(Message::getHtml());    
-            }
-            
-            if(!$orderObj->refundOrderPaidAmount($order_id, $order['order_language_id'])) {
+        if (!$order["order_is_paid"]) {
+            if (!$orderObj->addOrderPaymentHistory($order_id, Orders::ORDER_IS_CANCELLED, Labels::getLabel('MSG_Order_Cancelled', $order['order_language_id']), 1)) {
                 Message::addErrorMessage($orderObj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
-            }    
+            }
+            
+            if (!$orderObj->refundOrderPaidAmount($order_id, $order['order_language_id'])) {
+                Message::addErrorMessage($orderObj->getError());
+                FatUtility::dieJsonError(Message::getHtml());
+            }
         }
         
         $this->set('msg', Labels::getLabel('LBL_Payment_Details_Added_Successfully', $this->adminLangId));
@@ -227,7 +227,7 @@ class SubscriptionOrdersController extends AdminBaseController
     private function getOrderSearchForm($langId)
     {
         $currency_id = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
-        $currencyData = Currency::getAttributesById($currency_id,    array('currency_code','currency_symbol_left','currency_symbol_right'));
+        $currencyData = Currency::getAttributesById($currency_id, array('currency_code','currency_symbol_left','currency_symbol_right'));
         $currencySymbol = ($currencyData['currency_symbol_left'] != '') ? $currencyData['currency_symbol_left'] : $currencyData['currency_symbol_right'];
         
         $frm = new Form('frmSubscriptionOrderSearch');
@@ -246,7 +246,7 @@ class SubscriptionOrdersController extends AdminBaseController
         $frm->addHiddenField('', 'user_id');
         $fld_submit=$frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
-        $fld_submit->attachField($fld_cancel);            
+        $fld_submit->attachField($fld_cancel);
         return $frm;
     }
 }

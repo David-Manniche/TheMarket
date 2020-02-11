@@ -141,6 +141,7 @@ class AdminBaseController extends FatController
         'updateCurrencyRates' =>Labels::getLabel('LBL_WANT_TO_UPDATE_CURRENCY_RATES?.', $this->adminLangId),
         'cloneNotification' =>Labels::getLabel('LBL_DO_YOU_REALLY_WANT_TO_CLONE?', $this->adminLangId),
         'clonedNotification' =>Labels::getLabel('LBL_NOTIFICATION_CLONED_SUCCESSFULLY', $this->adminLangId),
+        'confirmRemoveBlog' =>Labels::getLabel('LBL_Do_you_want_to_remove_this_blog', $this->adminLangId),
         );
 
         $languages = Language::getAllNames(false);

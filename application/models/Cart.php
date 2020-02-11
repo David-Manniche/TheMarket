@@ -727,7 +727,7 @@ class Cart extends FatModel
         if (0 < $loggedUserId) {
             if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::NO) {
                 $prodSrch->joinFavouriteProducts($loggedUserId);
-                $prodSrch->addFld('ufp_id');
+                $prodSrch->addFld('IFNULL(ufp_id, 0) as ufp_id');
             } else {
                 $prodSrch->joinUserWishListProducts($loggedUserId);
                 $prodSrch->addFld('IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist, IFNULL(uwlp.uwlp_uwlist_id, 0) as uwlp_uwlist_id');

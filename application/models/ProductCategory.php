@@ -1,12 +1,12 @@
 <?php
 class ProductCategory extends MyAppModel
 {
-    const DB_TBL = 'tbl_product_categories';
-    const DB_TBL_PREFIX = 'prodcat_';
-    const DB_TBL_LANG ='tbl_product_categories_lang';
-    const DB_TBL_LANG_PREFIX ='prodcatlang_';
-    const REWRITE_URL_PREFIX = 'category/view/';
-    const REMOVED_OLD_IMAGE_TIME = 4;
+    public const DB_TBL = 'tbl_product_categories';
+    public const DB_TBL_PREFIX = 'prodcat_';
+    public const DB_TBL_LANG ='tbl_product_categories_lang';
+    public const DB_TBL_LANG_PREFIX ='prodcatlang_';
+    public const REWRITE_URL_PREFIX = 'category/view/';
+    public const REMOVED_OLD_IMAGE_TIME = 4;
     private $db;
     private $categoryTreeArr = array();
 
@@ -28,7 +28,7 @@ class ProductCategory extends MyAppModel
             $childSrchbase->addCondition('prodcat_deleted', '=', 0);
             $childSrchbase->doNotCalculateRecords();
             $childSrchbase->doNotLimitRecords();
-            $srch->joinTable('('.$childSrchbase->getQuery().')', 'LEFT OUTER JOIN', 's.prodcat_parent = m.prodcat_id', 's');
+            $srch->joinTable('(' . $childSrchbase->getQuery() . ')', 'LEFT OUTER JOIN', 's.prodcat_parent = m.prodcat_id', 's');
             $srch->addGroupBy('m.prodcat_id');
             $srch->addFld('COUNT(s.prodcat_id) AS child_count');
         }
@@ -37,8 +37,8 @@ class ProductCategory extends MyAppModel
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'pc_l.'.static::DB_TBL_LANG_PREFIX.'prodcat_id = m.'.static::tblFld('id').' and
-			pc_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
+                'pc_l.' . static::DB_TBL_LANG_PREFIX . 'prodcat_id = m.' . static::tblFld('id') . ' and
+			pc_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 'pc_l'
             );
         }

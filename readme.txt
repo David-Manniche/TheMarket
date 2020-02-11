@@ -42,12 +42,12 @@ New Features:
     => PWA compliance.
     => 69879 - Facebook Pixel
     => 69217 - Google Shopping Feed Integration
-    => 69191 PayPal Payout.
+    => 69191  - PayPal Payout.
 -----------------------TV-9.1.2.20200205-------------------------------
 
 Bugs:
     => 034264 - Getting error (invalid data) while using upload bulk media feature in import export.
----------------------------------------------------------------------------------    
+-----------------------------TV-9.1.2.20200211----------------------------------------------------    
 
 Bugs:
     => 034406 - Plugin settings are not opening
@@ -58,4 +58,20 @@ Bugs:
     => 033975 - When user places bank withdrawal request then getting error in email
     => 033220 - Once review is submitted for an order> review button is listing on order detail page
     => 034116 - Getting invalid request on clicking save button in special price and volume discount
-    => 033149 - Getting error on affiliate withdrawal request 
+    => 033149 - Getting error on affiliate withdrawal request
+    => 032282 - On product detail page > same product is getting as addon through admin
+    => 034391 - While searhing seller product b tags is displaying around seller name.
+    => 034399 - After selection of buy together product unable to remove that selection.
+    => 033833 - Change label to ORDER INVOICE ID from CHILD ORDER INVOICE ID.
+    => 032432 - Deleted categories are displaying on home page category collection
+    => 034290 - Some labels are not there in admin for front end
+    => 032866 - Shop is getting reported multiple times
+    => 032857 - Collection name is not displaying after visiting shop collection
+    => 69191 - PayPal Payout.
+    => 70149 - Blog Collection.
+    => 034467 - SEO and Url rewriting fatal error while accessing
+
+-----------------------------------------------------------
+
+Bugs:
+    => 034376 - While entering data in RTL supported languages it is not getting entered in RTL mode.

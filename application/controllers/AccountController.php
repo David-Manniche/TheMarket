@@ -1715,7 +1715,7 @@ class AccountController extends LoggedUserController
 
         $srch->addMultipleFields(
             array( 'selprod_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
-            'product_id', 'prodcat_id', 'ufp_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','product_image_updated_on',
+            'product_id', 'prodcat_id', 'IFNULL(ufp_id, 0) as ufp_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','product_image_updated_on',
             'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand.brand_id', 'product_model',
             'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(splprice_price, selprod_price) AS theprice','splprice_display_list_price', 'splprice_display_dis_val','splprice_display_dis_type',
             'CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found', 'selprod_price', 'selprod_user_id', 'selprod_code', 'selprod_sold_count', 'selprod_condition', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist','IFNULL(uwlp.uwlp_uwlist_id, 0) as uwlp_uwlist_id','ifnull(prod_rating,0) prod_rating', 'selprod_min_order_qty'  )
@@ -1835,7 +1835,7 @@ class AccountController extends LoggedUserController
 
         $srch->addMultipleFields(
             array( 'selprod_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
-            'product_id', 'prodcat_id', 'ufp_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','product_image_updated_on',
+            'product_id', 'prodcat_id', 'IFNULL(ufp_id, 0) as ufp_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','product_image_updated_on',
             'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand.brand_id', 'product_model',
             'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(splprice_price, selprod_price) AS theprice','splprice_display_list_price', 'splprice_display_dis_val','splprice_display_dis_type',
             'CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found', 'selprod_price', 'selprod_user_id', 'selprod_code', 'selprod_condition', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist', 'ifnull(prod_rating,0) prod_rating','selprod_sold_count' )
@@ -3273,9 +3273,9 @@ class AccountController extends LoggedUserController
     private function getRequestDataForm()
     {
         $frm = new Form('frmRequestdata');
-        $frm->addTextBox(Labels::getLabel('LBL_Email', $this->siteLangId), 'credential_email', '', array('readonly'=>'readonly'));
-        $frm->addTextBox(Labels::getLabel('LBL_Name', $this->siteLangId), 'user_name', '', array('readonly'=>'readonly'));
-        $purposeFld = $frm->addTextArea(Labels::getLabel('LBL_Purpose_of_Request_Data', $this->siteLangId), 'ureq_purpose');
+        $frm->addTextBox(Labels::getLabel('LBL_Email', $this->siteLangId), 'credential_email', '', array('readonly' => 'readonly'));
+        $frm->addTextBox(Labels::getLabel('LBL_Name', $this->siteLangId), 'user_name', '', array('readonly' => 'readonly'));
+        $purposeFld = $frm->addTextArea(Labels::getLabel('LBL_PURPOSE_OF_REQUEST_DATA', $this->siteLangId), 'ureq_purpose');
         $purposeFld->requirements()->setRequired();
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Send_Request', $this->siteLangId));
         return $frm;
