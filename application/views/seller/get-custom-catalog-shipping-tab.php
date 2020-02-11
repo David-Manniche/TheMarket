@@ -118,6 +118,10 @@
         shippingautocomplete(index);
     });
     removeShippingRow = function(shipping_row) {
+        var rowLen = parseInt($("span.shippingTabListing--js div.shippingRow--js").length);
+        if(rowLen == 1){
+            return false;
+        }
         $("#shipping-row" + shipping_row).remove();
     }
 </script>

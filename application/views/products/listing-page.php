@@ -176,11 +176,14 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                             <?php $showMoreButtons = true; if (UserAuthentication::isUserLogged() && UserAuthentication::getLoggedUserId(true) == $shop['shop_user_id']) {
                                 $showMoreButtons = false;
                             } ?>
-                            <?php if ($showMoreButtons) { ?>
-                            <a href="<?php echo CommonHelper::generateUrl('Shops', 'ReportSpam', array($shop['shop_id'])); ?>" title="<?php echo Labels::getLabel('Lbl_Report_Spam', $siteLangId); ?>" class="btn btn--primary btn--sm"><i
+                            <?php if ($showMoreButtons) { 
+								$shopRepData = ShopReport::getReportDetail($shop['shop_id'], UserAuthentication::getLoggedUserId(), 'sreport_id');
+							if (empty($shopRepData)) { ?>
+								<a href="<?php echo CommonHelper::generateUrl('Shops', 'ReportSpam', array($shop['shop_id'])); ?>" title="<?php echo Labels::getLabel('Lbl_Report_Spam', $siteLangId); ?>" class="btn btn--primary btn--sm"><i
                                     class="icn"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#report" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#report"></use>
                                     </svg></i></a>
+							<?php } ?>
                             <?php if (!UserAuthentication::isUserLogged() || (UserAuthentication::isUserLogged() && ((User::isBuyer()) || (User::isSeller() )))) { ?>
                             <a href="<?php echo CommonHelper::generateUrl('shops', 'sendMessage', array($shop['shop_id'])); ?>" title="<?php echo Labels::getLabel('Lbl_Send_Message', $siteLangId); ?>" class="btn btn--primary btn--sm"><i
                                     class="icn"><svg class="svg">
@@ -214,10 +217,9 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                 <div class="filters bg-gray rounded">
                     <div class="filters__ele productFilters-js"></div>
                 </div>
-				
             </sidebar>
             <div class="collection-content col-12 col-md pl-md-6">
-			 <button  class="btn btn-float link__filter btn--filters-control" data-trigger="collection-sidebar"><i class="icn">
+			    <button  class="btn btn-float link__filter btn--filters-control" data-trigger="collection-sidebar"><i class="icn">
                                             <svg class="svg">
                                                 <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#filter" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#filter"></use>
                                             </svg>
@@ -225,17 +227,22 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                 <div class="row align-items-center justify-content-between  flex-column flex-md-row mb-3">
                     <div class="col mb-3 mb-md-0">
                         <div class="total-products">
-                            <span class="hide_on_no_product"><span id="total_records"><?php echo $recordCount;?></span> <?php echo Labels::getLabel('LBL_ITEM(S)', $siteLangId); ?></span>
+                            <h4>
+                                <?php echo isset($scollection_name) && !empty($scollection_name) ? $scollection_name : '';?>
+                                <span class="hide_on_no_product">
+                                    <small class="text-muted" id="total_records">
+                                        <?php echo $recordCount;?> <?php echo Labels::getLabel('LBL_ITEM(S)', $siteLangId); ?>
+                                    </small>
+                                </span>
+                            </h4>
                         </div>
                     </div>
                     <div class="col-auto">
                         <div id="top-filters" class="page-sort hide_on_no_product">
                             <ul>
-                                <li class="list__item">                              
-										
+                                <li class="list__item">
                                     <?php if (!(UserAuthentication::isUserLogged()) || (UserAuthentication::isUserLogged() && (User::isBuyer()))) { ?>
                                     <a href="javascript:void(0)" onclick="saveProductSearch()" class="btn btn--primary btn-sm btn--filters-control"><i class="icn">
-                                          
                                         </i><span class="txt"><?php echo Labels::getLabel('LBL_Save_Search', $siteLangId); ?></span></a>
                                     <?php } ?>
                                 </li>
@@ -258,17 +265,16 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                 </div>
                 <div class="listing-products -listing-products ">
                     <div id="productsList" role="main-listing" class="row product-listing">
-                        <?php
-                        $productsData = array(
-                                        'products'=> $products,
-                                        'page'=> $page,
-                                        'pageCount'=> $pageCount,
-                                        'postedData'=> $postedData,
-                                        'recordCount'=> $recordCount,
-                                        'siteLangId'=> $siteLangId,
+                        <?php $productsData = array(
+                                        'products' => $products,
+                                        'page' => $page,
+                                        'pageCount' => $pageCount,
+                                        'postedData' => $postedData,
+                                        'recordCount' => $recordCount,
+                                        'siteLangId' => $siteLangId,
                                     );
-                        $this->includeTemplate('products/products-list.php', $productsData, false);
-                    ?> </div>
+                            $this->includeTemplate('products/products-list.php', $productsData, false); ?> 
+                    </div>
                 </div>
             </div>
         </div>

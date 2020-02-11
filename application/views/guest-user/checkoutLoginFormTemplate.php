@@ -73,8 +73,7 @@
 					</ul>
 				</div>
 			</div>
-		</div>
-		<?php }?>
+		</div>		
 		<div class="gap"></div>
 		<div class="term">
 			<?php if( $showSignUpLink ){ ?><p class="text--dark"> <a href="" class="text text--uppercase"></a></p><?php } ?>

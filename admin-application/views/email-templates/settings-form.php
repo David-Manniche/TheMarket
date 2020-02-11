@@ -5,11 +5,11 @@ $settingFrm->setFormTagAttribute('onsubmit', 'setupSettings(this); return(false)
 $settingFrm->developerTags['colClassPrefix'] = 'col-md-';
 $settingFrm->developerTags['fld_default_col'] = 6;
 
-$colorFld = $settingFrm->getField('CONF_EMAIL_TEMPLATE_COLOR_CODE'.$adminLangId);
+$colorFld = $settingFrm->getField('CONF_EMAIL_TEMPLATE_COLOR_CODE'.$lang_id);
 $langFld = $settingFrm->getField('lang_id');
 $langFld->setfieldTagAttribute('onChange', "editSettingsForm(this.value);");
 
-$edFld = $settingFrm->getField('CONF_EMAIL_TEMPLATE_FOOTER_HTML'.$adminLangId);
+$edFld = $settingFrm->getField('CONF_EMAIL_TEMPLATE_FOOTER_HTML'.$lang_id);
 $edFld->htmlBeforeField = '<br/><a class="themebtn btn-primary" onClick="resetToDefaultContent();" href="javascript:void(0)">Reset Editor Content to default</a>';
 $edFld->developerTags['col'] = 12;
 

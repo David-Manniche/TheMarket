@@ -17,8 +17,6 @@ class ProductsController extends AdminBaseController
             $srchFrm->fill($data);
         }
         $this->set("frmSearch", $srchFrm);
-        $this->set("includeEditor", true);
-
         $this->_template->addJs('js/jscolor.js');
         $this->_template->addJs('js/import-export.js');
         $this->set('canEdit', $this->objPrivilege->canEditProducts(0, true));
@@ -769,7 +767,7 @@ class ProductsController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', array( 0 => Labels::getLabel('LBL_All_Languages', $this->adminLangId) ) + $languagesAssocArr, '', array(), '');
         $frm->addHiddenField('', 'min_width', 500);
         $frm->addHiddenField('', 'min_height', 500);
-        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'prod_image', array('id' => 'prod_image', 'multiple' => 'multiple'));
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'prod_image', array('id' => 'prod_image'));
         $frm->addHiddenField('', 'product_id', $productId);
         return $frm;
     }
@@ -873,7 +871,8 @@ class ProductsController extends AdminBaseController
         $this->set('productId', $productId);
         $this->set('productType', $productType);
         $this->_template->addJs(array('js/cropper.js', 'js/cropper-main.js', 'js/jquery-sortable-lists.js', 'js/tagify.min.js', 'js/tagify.polyfills.min.js'));
-        $this->_template->addCss('css/cropper.css', 'css/tagify.css');
+        $this->_template->addCss(array('css/cropper.css', 'css/tagify.css'));
+        $this->set("includeEditor", true);
         $this->_template->render();
     }
 
@@ -892,7 +891,8 @@ class ProductsController extends AdminBaseController
                 $productLangData = $prod->getAttributesByLangId($langId, $productId);
                 if (!empty($productLangData)) {
                     $prodData['product_name'][$langId] = $productLangData['product_name'];
-                    $prodData['product_description'][$langId] = $productLangData['product_description'];
+                    $prodData['product_youtube_video'][$langId] = $productLangData['product_youtube_video'];
+                    $prodData['product_description_'.$langId] = $productLangData['product_description'];
                 }
             }
 
@@ -963,7 +963,8 @@ class ProductsController extends AdminBaseController
             } else {
                 $frm->addTextBox(Labels::getLabel('LBL_Product_Name', $this->adminLangId), 'product_name['.$langId.']');
             }
-            $frm->addTextArea(Labels::getLabel('LBL_Description', $this->adminLangId), 'product_description['.$langId.']');
+            //$frm->addTextArea(Labels::getLabel('LBL_Description', $this->adminLangId), 'product_description['.$langId.']');
+            $frm->addHtmlEditor(Labels::getLabel('LBL_Description', $this->adminLangId), 'product_description_'.$langId);
             $frm->addTextBox(Labels::getLabel('LBL_Youtube_Video_Url', $this->adminLangId), 'product_youtube_video['.$langId.']');
         }
 
@@ -992,7 +993,7 @@ class ProductsController extends AdminBaseController
     }
 
     public function setUpProduct()
-    {
+    { 
         $this->objPrivilege->canEditProducts();
         $productId = FatApp::getPostedData('product_id', FatUtility::VAR_INT, 0);
         $frm = $this->getProductIntialSetUpFrm($productId);
@@ -1009,8 +1010,7 @@ class ProductsController extends AdminBaseController
         }
         Product::updateMinPrices($productId);
 
-        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
-        if (!$prod->saveProductLangData($siteDefaultLangId, $post)) {
+        if(!$prod->saveProductLangData($post)){
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }

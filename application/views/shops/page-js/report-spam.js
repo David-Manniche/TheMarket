@@ -9,12 +9,12 @@
 		runningAjaxReq = true;
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('Shops', 'setUpShopSpam'), data, function(t) {
-			runningAjaxReq = false;
-			if( t.status ){
-				/* window.location.href = fcom.makeUrl('Shops', 'reportSpam', [frm.elements["shop_id"].value]); */
-				setTimeout("pageRedirect("+frm.elements["shop_id"].value+")", 1000);
-			}
-		});
+            runningAjaxReq = false;
+            if (t.status && 'undefined' != typeof t.redirectUri && '' != t.redirectUri) {
+                setTimeout(function(){ location.href = t.redirectUri; }, 1000);
+            }
+        });
+        setTimeout(function(){ location.href = $('.backToStore-js').attr('href'); }, 1000);
 		return false;
 	}
 })();
