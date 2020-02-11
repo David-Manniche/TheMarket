@@ -1,4 +1,5 @@
 <?php
+
 class SavedProductsSearchController extends LoggedUserController
 {
     public function __construct($action)
@@ -15,7 +16,7 @@ class SavedProductsSearchController extends LoggedUserController
     {
         $post = FatApp::getPostedData();
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
-        $page = ($page <= 0)? 1 : $page;
+        $page = ($page <= 0) ? 1 : $page;
         $pageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
 
         $srch = SavedSearchProduct::getSearchObject();
@@ -26,11 +27,11 @@ class SavedProductsSearchController extends LoggedUserController
         $rs = $srch->getResultSet();
         $arrListing = FatApp::getDb()->fetchAll($rs, 'pssearch_id');
 
-        foreach ($arrListing as $key=>$val) {
+        foreach ($arrListing as $key => $val) {
             $searchedArr = SearchItem::convertUrlStringToArr($val['pssearch_url']);
             $searchItems = SearchItem::convertArrToSrchFiltersAssocArr($searchedArr);
             $arrListing[$key]['search_items'] = SavedSearchProduct::getSearhResultFormat($searchItems, $this->siteLangId);
-            $arrListing[$key]['search_url'] =  SavedSearchProduct::getSearchPageFullUrl($val['pssearch_type'], $val['pssearch_record_id']).'?'.$val['pssearch_url'];
+            $arrListing[$key]['search_url'] = SavedSearchProduct::getSearchPageFullUrl($val['pssearch_type'], $val['pssearch_record_id']) . '?' . $val['pssearch_url'];
             $arrListing[$key]['totalRecords'] = 0;
             $arrListing[$key]['newRecords'] = 0;
         }

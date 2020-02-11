@@ -1,4 +1,5 @@
 <?php
+
 class RewardsOnPurchaseController extends AdminBaseController
 {
     private $canView;
@@ -6,7 +7,7 @@ class RewardsOnPurchaseController extends AdminBaseController
 
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup');
+        $ajaxCallArray = array('deleteRecord', 'form', 'langForm', 'search', 'setup', 'langSetup');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die(Labels::getLabel('LBL_Invalid_Action', $this->adminLangId));
         }
@@ -34,7 +35,7 @@ class RewardsOnPurchaseController extends AdminBaseController
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
 
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
         $srch = RewardsOnPurchase::getSearchObject();

@@ -1,10 +1,11 @@
 <?php
+
 class ShopReportReason extends MyAppModel
 {
-    const DB_TBL = 'tbl_report_reasons';
-    const DB_TBL_PREFIX = 'reportreason_';
+    public const DB_TBL = 'tbl_report_reasons';
+    public const DB_TBL_PREFIX = 'reportreason_';
 
-    const DB_TBL_LANG = 'tbl_report_reasons_lang';
+    public const DB_TBL_LANG = 'tbl_report_reasons_lang';
 
     public function __construct($id = 0)
     {
@@ -34,7 +35,7 @@ class ShopReportReason extends MyAppModel
         $srch = static::getSearchObject($langId);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('reportreason_id','IFNULL(reportreason_title, reportreason_identifier) as reportreason_title'));
+        $srch->addMultipleFields(array('reportreason_id', 'IFNULL(reportreason_title, reportreason_identifier) as reportreason_title'));
         $srch->addOrder('reportreason_title');
 
         if (true === $returnObj) {

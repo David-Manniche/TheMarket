@@ -1,4 +1,5 @@
 <?php
+
 class UploadBulkImages extends FatModel
 {
     public $bulkRoot;
@@ -38,18 +39,18 @@ class UploadBulkImages extends FatModel
     public function deleteSingleBulkMediaDir($dirPath)
     {
         if (empty($dirPath)) {
-            return Labels::getLabel('LBL_Directory_Path_is_required.', $this->langId) ;
+            return Labels::getLabel('LBL_Directory_Path_is_required.', $this->langId);
         }
 
         if (!file_exists($dirPath)) {
-            return Labels::getLabel('LBL_Invalid_Directory.', $this->langId) ;
+            return Labels::getLabel('LBL_Invalid_Directory.', $this->langId);
         }
 
         $files = array_diff(scandir($dirPath), array( '..', '.' ));
 
         if (0 < count($files)) {
             foreach ($files as $file) {
-                $filePath = $dirPath .'/'. $file;
+                $filePath = $dirPath . '/' . $file;
                 if (false !== strpos($dirPath, $this->bulkRoot)) {
                     if (is_dir($filePath)) {
                         $this->deleteSingleBulkMediaDir($filePath);
@@ -67,7 +68,7 @@ class UploadBulkImages extends FatModel
 
         // Remove Db row having that directory detail.
         $this->updateDb($dirPath);
-        return Labels::getLabel('LBL_Directory_removed.', $this->langId) ;
+        return Labels::getLabel('LBL_Directory_removed.', $this->langId);
     }
 
     public function deleteBulkUploadSubDirs($hoursBefore = '48', $dirPath = '')
@@ -75,7 +76,7 @@ class UploadBulkImages extends FatModel
         if (empty($dirPath)) {
             $dirPath = $this->bulkRoot;
         } elseif ($dirPath == $this->bulkRoot) {
-            return Labels::getLabel('LBL_Bulk_Images_Directory_Clean', $this->langId) ;
+            return Labels::getLabel('LBL_Bulk_Images_Directory_Clean', $this->langId);
         }
 
         if (is_dir($dirPath)) {
@@ -95,7 +96,7 @@ class UploadBulkImages extends FatModel
                     $this->updateDb($dirPath);
 
                     $removedDir = array_reverse(array_filter(explode('/', $dirPath)));
-                    $dirPath = str_replace($removedDir[0].'/', '', $dirPath);
+                    $dirPath = str_replace($removedDir[0] . '/', '', $dirPath);
                     return $this->deleteBulkUploadSubDirs($hoursBefore, $dirPath);
                 }
             }
@@ -103,14 +104,14 @@ class UploadBulkImages extends FatModel
 
         if (is_file($dirPath)) {
             $modifiedOn = filemtime($dirPath);
-            if ($modifiedOn <= strtotime('-'.$hoursBefore.' hour')) {
+            if ($modifiedOn <= strtotime('-' . $hoursBefore . ' hour')) {
                 if (false !== strpos($dirPath, $this->bulkRoot) && unlink($dirPath)) {
                     $dirPath = str_replace(basename($dirPath), '', $dirPath);
                     return $this->deleteBulkUploadSubDirs($hoursBefore, $dirPath);
                 }
             }
         }
-        return Labels::getLabel('LBL_Done!', $this->langId) ;
+        return Labels::getLabel('LBL_Done!', $this->langId);
     }
 
     private function updateDb($dirPath)
@@ -160,12 +161,12 @@ class UploadBulkImages extends FatModel
             $allFiles = scandir($path);
             $files = array_diff($allFiles, array( '..', '.' ));
             foreach ($files as $fileName) {
-                if (is_dir($path.'/'.$fileName)) {
-                    $subLocations = static::getAllFilesPath($path.'/'.$fileName);
+                if (is_dir($path . '/' . $fileName)) {
+                    $subLocations = static::getAllFilesPath($path . '/' . $fileName);
                     $locations = array_merge($locations, $subLocations);
                 } else {
                     $locations[] = array(
-                                        str_replace(CONF_UPLOADS_PATH, '', $path.'/'.$fileName),
+                                        str_replace(CONF_UPLOADS_PATH, '', $path . '/' . $fileName),
                                         $fileName
                                     );
                 }

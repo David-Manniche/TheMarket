@@ -1,18 +1,19 @@
 <?php
+
 class Thread extends MyAppModel
 {
-    const DB_TBL = 'tbl_threads';
-    const DB_TBL_PREFIX = 'thread_';
+    public const DB_TBL = 'tbl_threads';
+    public const DB_TBL_PREFIX = 'thread_';
 
-    const DB_TBL_THREAD_MESSAGES = 'tbl_thread_messages';
-    const DB_TBL_THREAD_MESSAGES_PREFIX = 'message_';
+    public const DB_TBL_THREAD_MESSAGES = 'tbl_thread_messages';
+    public const DB_TBL_THREAD_MESSAGES_PREFIX = 'message_';
 
-    const THREAD_TYPE_PRODUCT = 1;
-    const THREAD_TYPE_SHOP = 2;
-    const THREAD_TYPE_ORDER_PRODUCT = 3;
+    public const THREAD_TYPE_PRODUCT = 1;
+    public const THREAD_TYPE_SHOP = 2;
+    public const THREAD_TYPE_ORDER_PRODUCT = 3;
 
-    const MESSAGE_IS_READ = 0;
-    const MESSAGE_IS_UNREAD = 1;
+    public const MESSAGE_IS_READ = 0;
+    public const MESSAGE_IS_UNREAD = 1;
 
     public function __construct($id = 0)
     {
@@ -32,9 +33,9 @@ class Thread extends MyAppModel
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
         return array(
-        static::THREAD_TYPE_PRODUCT =>    Labels::getLabel('LBL_Message_Product', $langId),
-        static::THREAD_TYPE_SHOP =>    Labels::getLabel('LBL_Order_Message_Shop', $langId),
-        static::THREAD_TYPE_ORDER_PRODUCT    =>    Labels::getLabel('LBL_Message_Order', $langId),
+        static::THREAD_TYPE_PRODUCT => Labels::getLabel('LBL_Message_Product', $langId),
+        static::THREAD_TYPE_SHOP => Labels::getLabel('LBL_Order_Message_Shop', $langId),
+        static::THREAD_TYPE_ORDER_PRODUCT => Labels::getLabel('LBL_Message_Order', $langId),
         );
     }
 
@@ -109,12 +110,12 @@ class Thread extends MyAppModel
         if ($startDate) {
             $startDate = FatDate::convertDatetimeToTimestamp($startDate);
             $startDate = date('Y-m-d', strtotime($startDate));
-            $srch->addCondition('ttm.message_date', '>=', $startDate. ' 00:00:00');
+            $srch->addCondition('ttm.message_date', '>=', $startDate . ' 00:00:00');
         }
         if ($endDate) {
             $endDate = FatDate::convertDatetimeToTimestamp($endDate);
             $endDate = date('Y-m-d', strtotime($endDate));
-            $srch->addCondition('ttm.message_date', '<=', $endDate. ' 23:59:59');
+            $srch->addCondition('ttm.message_date', '<=', $endDate . ' 23:59:59');
         }
 
         if ($this->mainTableRecordId > 0) {
@@ -135,7 +136,7 @@ class Thread extends MyAppModel
 
     public function markUserMessageRead($threadId, $userId)
     {
-        if (FatApp::getDb()->updateFromArray('tbl_thread_messages', array('message_is_unread' => self::MESSAGE_IS_READ), array('smt'=>'`message_thread_id`=? AND `message_to`=? ', 'vals'=>array($threadId, $userId)))) {
+        if (FatApp::getDb()->updateFromArray('tbl_thread_messages', array('message_is_unread' => self::MESSAGE_IS_READ), array('smt' => '`message_thread_id`=? AND `message_to`=? ', 'vals' => array($threadId, $userId)))) {
             return true;
         }
 
@@ -151,7 +152,7 @@ class Thread extends MyAppModel
         }
 
         $db = FatApp::getDb();
-        if (!$db->updateFromArray(static::DB_TBL_THREAD_MESSAGES, array( static::DB_TBL_THREAD_MESSAGES_PREFIX . 'deleted' => 1), array('smt' => static::DB_TBL_THREAD_MESSAGES_PREFIX . 'id = ?','vals' => array($message_id)))) {
+        if (!$db->updateFromArray(static::DB_TBL_THREAD_MESSAGES, array( static::DB_TBL_THREAD_MESSAGES_PREFIX . 'deleted' => 1), array('smt' => static::DB_TBL_THREAD_MESSAGES_PREFIX . 'id = ?', 'vals' => array($message_id)))) {
             $this->error = $db->getError();
             return false;
         }

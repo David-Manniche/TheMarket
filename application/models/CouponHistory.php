@@ -1,8 +1,9 @@
 <?php
+
 class CouponHistory extends MyAppModel
 {
-    const DB_TBL = 'tbl_coupons_history';
-    const DB_TBL_PREFIX = 'couponhistory_';
+    public const DB_TBL = 'tbl_coupons_history';
+    public const DB_TBL_PREFIX = 'couponhistory_';
 
     private $db;
 

@@ -1,8 +1,9 @@
 <?php
+
 class RewardsOnPurchase extends MyAppModel
 {
-    const DB_TBL = 'tbl_rewards_on_purchase';
-    const DB_TBL_PREFIX = 'rop_';
+    public const DB_TBL = 'tbl_rewards_on_purchase';
+    public const DB_TBL_PREFIX = 'rop_';
     private $db;
 
     public function __construct($id = 0)

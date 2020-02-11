@@ -1,4 +1,5 @@
 <?php
+
 class LoggedUserController extends MyAppController
 {
     public function __construct($action)
@@ -20,7 +21,7 @@ class LoggedUserController extends MyAppController
         }
 
         if (!isset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'])) {
-            $userPreferedDashboardType = ($userInfo['user_preferred_dashboard'])?$userInfo['user_preferred_dashboard']:$userInfo['user_registered_initially_for'];
+            $userPreferedDashboardType = ($userInfo['user_preferred_dashboard']) ? $userInfo['user_preferred_dashboard'] : $userInfo['user_registered_initially_for'];
 
             switch ($userPreferedDashboardType) {
                 case User::USER_TYPE_BUYER:
@@ -38,7 +39,7 @@ class LoggedUserController extends MyAppController
             }
         }
 
-        if ((!UserAuthentication::isGuestUserLogged() && $userInfo['credential_verified'] != 1) && !($_SESSION[USER::ADMIN_SESSION_ELEMENT_NAME] && $_SESSION[USER::ADMIN_SESSION_ELEMENT_NAME]>0)) {
+        if ((!UserAuthentication::isGuestUserLogged() && $userInfo['credential_verified'] != 1) && !($_SESSION[USER::ADMIN_SESSION_ELEMENT_NAME] && $_SESSION[USER::ADMIN_SESSION_ELEMENT_NAME] > 0)) {
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'logout'));
         }
 
@@ -46,14 +47,20 @@ class LoggedUserController extends MyAppController
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'logout'));
         }
 
-        if (empty($userInfo['credential_email'])) {
+        $obj = new Plugin();
+        $active = $obj->getDefaultPluginData(Plugin::TYPE_SMS_NOTIFICATION, 'plugin_active');
+        $status = SmsTemplate::getTpl(SmsTemplate::LOGIN, 0, 'stpl_status');
+        $smsPluginStatus = (false != $active && !empty($active) && 0 < $status ? applicationConstants::YES : applicationConstants::NO);
+        
+        if (false === $smsPluginStatus && empty($userInfo['credential_email'])) {
             $message = Labels::getLabel('MSG_Please_Configure_Your_Email', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'configureEmail'));
         }
+
         $this->initCommonValues();
     }
 
@@ -67,11 +74,11 @@ class LoggedUserController extends MyAppController
         $frm = new Form('frmOrderCancellationRequest');
         $frm->addTextBox('', 'op_invoice_number');
         $frm->addSelectBox('', 'ocrequest_status', array( '-1' => Labels::getLabel('LBL_Status_Does_Not_Matter', $langId)  ) + OrderCancelRequest::getRequestStatusArr($langId), '', array(), '');
-        $frm->addDateField('', 'ocrequest_date_from', '', array('readonly'=>'readonly'));
-        $frm->addDateField('', 'ocrequest_date_to', '', array('readonly'=>'readonly'));
+        $frm->addDateField('', 'ocrequest_date_from', '', array('readonly' => 'readonly'));
+        $frm->addDateField('', 'ocrequest_date_to', '', array('readonly' => 'readonly'));
 
         $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $langId));
-        $fldCancel = $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $langId), array('onclick'=>'clearOrderCancelRequestSearch();'));
+        $fldCancel = $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $langId), array('onclick' => 'clearOrderCancelRequestSearch();'));
         $frm->addHiddenField('', 'page');
         return $frm;
     }
@@ -87,10 +94,10 @@ class LoggedUserController extends MyAppController
         } else {
             $frm->addHiddenField('', 'orrequest_type', '-1');
         }
-        $frm->addDateField('', 'orrequest_date_from', '', array('readonly'=>'readonly'));
-        $frm->addDateField('', 'orrequest_date_to', '', array('readonly'=>'readonly'));
+        $frm->addDateField('', 'orrequest_date_from', '', array('readonly' => 'readonly'));
+        $frm->addDateField('', 'orrequest_date_to', '', array('readonly' => 'readonly'));
         $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $langId));
-        $fldCancel = $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $langId), array('onclick'=>'clearOrderReturnRequestSearch();'));
+        $fldCancel = $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $langId), array('onclick' => 'clearOrderReturnRequestSearch();'));
         $frm->addHiddenField('', 'page');
         return $frm;
     }

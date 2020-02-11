@@ -27,7 +27,7 @@
 <link rel="manifest" href="<?php echo CommonHelper::generateUrl('Home', 'pwaManifest'); ?>">
 <?php
 if ($canonicalUrl == '') {
-    $canonicalUrl = CommonHelper::generateFullUrl($controllerName, FatApp::getAction(), !empty(FatApp::getParameters())?FatApp::getParameters():array());
+    $canonicalUrl = CommonHelper::generateFullUrl($controllerName, FatApp::getAction(), !empty(FatApp::getParameters()) ? FatApp::getParameters() : array());
 }
 ?>
 <link rel="canonical" href="<?php echo $canonicalUrl;?>" />        

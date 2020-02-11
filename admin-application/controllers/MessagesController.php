@@ -1,4 +1,5 @@
 <?php
+
 class MessagesController extends AdminBaseController
 {
     private $canView;
@@ -41,7 +42,7 @@ class MessagesController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
         $srch = new MessageSearch();
@@ -50,32 +51,32 @@ class MessagesController extends AdminBaseController
         $srch->joinMessagePostedToUser();
         $srch->joinShops($this->adminLangId);
         $srch->joinOrderProducts($this->adminLangId);
-        $srch->addMultipleFields(array('tth.*','ttm.*','tfr.user_id as message_sent_by','tfr.user_name as message_sent_by_username','tfto.user_id as message_sent_to','tfto.user_name as message_sent_to_name','tfto_c.credential_email as message_sent_to_email','tfto.user_name as message_sent_to_name'));
+        $srch->addMultipleFields(array('tth.*', 'ttm.*', 'tfr.user_id as message_sent_by', 'tfr.user_name as message_sent_by_username', 'tfto.user_id as message_sent_to', 'tfto.user_name as message_sent_to_name', 'tfto_c.credential_email as message_sent_to_email', 'tfto.user_name as message_sent_to_name'));
         if (!empty($post['thread_id'])) {
             $srch->addCondition('tth.thread_id', '=', $post['thread_id']);
         }
         $srch->addCondition('ttm.message_deleted', '=', 0);
         if (!empty($post['keyword'])) {
-            $condition=$srch->addCondition('tth.thread_subject', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('ttm.message_text', 'like', '%'.$post['keyword'].'%');
+            $condition = $srch->addCondition('tth.thread_subject', 'like', '%' . $post['keyword'] . '%');
+            $condition->attachCondition('ttm.message_text', 'like', '%' . $post['keyword'] . '%');
             /* $condition->attachCondition('tfr.user_name','like','%'.$post['keyword'].'%','OR');
             $condition->attachCondition('tfto.user_name','like','%'.$post['keyword'].'%','OR'); */
         }
         $date_from = FatApp::getPostedData('date_from', FatUtility::VAR_DATE, '');
         if (!empty($date_from)) {
-            $srch->addCondition('ttm.message_date', '>=', $date_from. ' 00:00:00');
+            $srch->addCondition('ttm.message_date', '>=', $date_from . ' 00:00:00');
         }
         $date_to = FatApp::getPostedData('date_to', FatUtility::VAR_DATE, '');
         if (!empty($date_to)) {
-            $srch->addCondition('ttm.message_date', '<=', $date_to. ' 23:59:59');
+            $srch->addCondition('ttm.message_date', '<=', $date_to . ' 23:59:59');
         }
         if (!empty($post['message_by'])) {
-            $condition=$srch->addCondition('tfr.user_name', 'like', '%'.$post['message_by'].'%');
+            $condition = $srch->addCondition('tfr.user_name', 'like', '%' . $post['message_by'] . '%');
         }
         if (!empty($post['message_to'])) {
-            $condition=$srch->addCondition('tfto.user_name', 'like', '%'.$post['message_to'].'%');
+            $condition = $srch->addCondition('tfto.user_name', 'like', '%' . $post['message_to'] . '%');
         }
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -112,7 +113,7 @@ class MessagesController extends AdminBaseController
         $srch->joinMessagePostedToUser();
         $srch->joinShops($this->adminLangId);
         $srch->joinOrderProducts($this->adminLangId);
-        $srch->addMultipleFields(array('tth.*','ttm.*','tfr.user_id as message_sent_by','tfr.user_name as message_sent_by_username','tfto.user_id as message_sent_to','tfto.user_name as message_sent_to_name','tfto_c.credential_email as message_sent_to_email','tfto.user_name as message_sent_to_name'));
+        $srch->addMultipleFields(array('tth.*', 'ttm.*', 'tfr.user_id as message_sent_by', 'tfr.user_name as message_sent_by_username', 'tfto.user_id as message_sent_to', 'tfto.user_name as message_sent_to_name', 'tfto_c.credential_email as message_sent_to_email', 'tfto.user_name as message_sent_to_name'));
         $srch->addCondition('message_deleted', '=', applicationConstants::NO);
         if (!empty($post['thread_id'])) {
             $srch->addCondition('tth.thread_id', '=', $post['thread_id']);
@@ -131,12 +132,12 @@ class MessagesController extends AdminBaseController
     {
         $frm = new Form('frmSearch');
         $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
-        $frm->addTextBox(Labels::getLabel('LBL_Message_By', $this->adminLangId), 'message_by', '', array('id'=>'message_by','autocomplete'=>'off'));
-        $frm->addTextBox(Labels::getLabel('LBL_Message_To', $this->adminLangId), 'message_to', '', array('id'=>'message_to','autocomplete'=>'off'));
-        $frm->addDateField(Labels::getLabel('LBL_Date_From', $this->adminLangId), 'date_from', '', array('readonly' => 'readonly','class' => 'small dateTimeFld field--calender' ));
-        $frm->addDateField(Labels::getLabel('LBL_Date_To', $this->adminLangId), 'date_to', '', array('readonly' => 'readonly','class' => 'small dateTimeFld field--calender'));
+        $frm->addTextBox(Labels::getLabel('LBL_Message_By', $this->adminLangId), 'message_by', '', array('id' => 'message_by', 'autocomplete' => 'off'));
+        $frm->addTextBox(Labels::getLabel('LBL_Message_To', $this->adminLangId), 'message_to', '', array('id' => 'message_to', 'autocomplete' => 'off'));
+        $frm->addDateField(Labels::getLabel('LBL_Date_From', $this->adminLangId), 'date_from', '', array('readonly' => 'readonly', 'class' => 'small dateTimeFld field--calender' ));
+        $frm->addDateField(Labels::getLabel('LBL_Date_To', $this->adminLangId), 'date_to', '', array('readonly' => 'readonly', 'class' => 'small dateTimeFld field--calender'));
         $frm->addHiddenField('', 'thread_id');
-        $fld_submit=$frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_submit = $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;
@@ -207,7 +208,7 @@ class MessagesController extends AdminBaseController
 
         /* Save Message[ */
         $data = array(
-        'message_text'=>$post['message_text']
+        'message_text' => $post['message_text']
         );
 
         $tObj = new Thread();

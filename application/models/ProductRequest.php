@@ -1,7 +1,7 @@
 <?php
 
-class ProductRequest extends MyAppModel {
-
+class ProductRequest extends MyAppModel
+{
     public const DB_TBL = 'tbl_product_requests';
     public const DB_TBL_LANG = 'tbl_product_requests_lang';
     public const DB_TBL_PREFIX = 'preq_';
@@ -12,12 +12,14 @@ class ProductRequest extends MyAppModel {
 
     private $db;
 
-    public function __construct($id = 0) {
+    public function __construct($id = 0)
+    {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
         $this->db = FatApp::getDb();
     }
 
-    public static function getStatusArr($langId) {
+    public static function getStatusArr($langId)
+    {
         $langId = FatUtility::int($langId);
         if ($langId < 1) {
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
@@ -29,16 +31,17 @@ class ProductRequest extends MyAppModel {
         );
     }
 
-    public static function getSearchObject($langId = 0, $deleted = false, $submittedForApproval = false) {
+    public static function getSearchObject($langId = 0, $deleted = false, $submittedForApproval = false)
+    {
         $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 'preq');
         if ($langId) {
             $srch->joinTable(
-                    static::DB_TBL_LANG,
-                    'LEFT OUTER JOIN',
-                    'preq_l.' . static::DB_TBL_LANG_PREFIX . 'preq_id = preq.' . static::tblFld('id') . ' and
+                static::DB_TBL_LANG,
+                'LEFT OUTER JOIN',
+                'preq_l.' . static::DB_TBL_LANG_PREFIX . 'preq_id = preq.' . static::tblFld('id') . ' and
 			preq_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
-                    'preq_l'
+                'preq_l'
             );
         }
 
@@ -53,7 +56,8 @@ class ProductRequest extends MyAppModel {
         return $srch;
     }
 
-    public static function getDataArr($preqId, $attr) {
+    public static function getDataArr($preqId, $attr)
+    {
         $row_data = static::getAttributesById($preqId, $attr);
         $productData = json_decode($row_data['preq_content'], true);
         unset($row_data['preq_content']);
@@ -61,7 +65,8 @@ class ProductRequest extends MyAppModel {
         return $row_data;
     }
 
-    public function deleteProductImage($preq_id, $image_id) {
+    public function deleteProductImage($preq_id, $image_id)
+    {
         $preq_id = FatUtility :: int($preq_id);
         $image_id = FatUtility :: int($image_id);
         if ($preq_id < 1 || $image_id < 1) {
@@ -77,7 +82,8 @@ class ProductRequest extends MyAppModel {
         return true;
     }
 
-    public function updateProdImagesOrder($preq_id, $order) {
+    public function updateProdImagesOrder($preq_id, $order)
+    {
         $preq_id = FatUtility :: int($preq_id);
         if (is_array($order) && sizeof($order) > 0) {
             foreach ($order as $i => $id) {
@@ -91,7 +97,8 @@ class ProductRequest extends MyAppModel {
         return false;
     }
 
-    public static function getProductReqOptions($preq_id, $lang_id, $includeOptionValues = false, $option_is_separate_images = 0) {
+    public static function getProductReqOptions($preq_id, $lang_id, $includeOptionValues = false, $option_is_separate_images = 0)
+    {
         $preq_id = FatUtility::convertToType($preq_id, FatUtility::VAR_INT);
         $lang_id = FatUtility::convertToType($lang_id, FatUtility::VAR_INT);
         if (!$preq_id || !$lang_id) {
@@ -121,7 +128,8 @@ class ProductRequest extends MyAppModel {
         }
     }
 
-    public static function getProductShippingRates($preq_id, $lang_id, $country_id = 0, $sellerId = 0, $limit = 0) {
+    public static function getProductShippingRates($preq_id, $lang_id, $country_id = 0, $sellerId = 0, $limit = 0)
+    {
         $preq_id = FatUtility::convertToType($preq_id, FatUtility::VAR_INT);
         $lang_id = FatUtility::convertToType($lang_id, FatUtility::VAR_INT);
         $sellerId = FatUtility::convertToType($sellerId, FatUtility::VAR_INT);
@@ -158,8 +166,8 @@ class ProductRequest extends MyAppModel {
                 $shippingRates[$count]['country_name'] = $val['country_name'];
 
                 $shipCompSrch = ShippingCompanies::getListingObj(
-                                $lang_id,
-                                array('ifNull(' . ShippingCompanies::DB_TBL_PREFIX . 'name', ShippingCompanies::DB_TBL_PREFIX . 'identifier) as ' . ShippingCompanies::DB_TBL_PREFIX . 'name',
+                    $lang_id,
+                    array('ifNull(' . ShippingCompanies::DB_TBL_PREFIX . 'name', ShippingCompanies::DB_TBL_PREFIX . 'identifier) as ' . ShippingCompanies::DB_TBL_PREFIX . 'name',
                                     ShippingCompanies::DB_TBL_PREFIX . 'id',
                                     ShippingCompanies::DB_TBL_LANG_PREFIX . 'scompany_id')
                 );
@@ -171,8 +179,8 @@ class ProductRequest extends MyAppModel {
                 }
 
                 $shipDurationSrch = ShippingDurations::getListingObj(
-                                $lang_id,
-                                array(ShippingDurations::DB_TBL_PREFIX . 'name',
+                    $lang_id,
+                    array(ShippingDurations::DB_TBL_PREFIX . 'name',
                                     ShippingDurations::DB_TBL_PREFIX . 'id',
                                     ShippingDurations::DB_TBL_PREFIX . 'from',
                                     ShippingDurations::DB_TBL_PREFIX . 'identifier ',
@@ -192,7 +200,8 @@ class ProductRequest extends MyAppModel {
         return $shippingRates;
     }
 
-    public function saveProductRequestLangData($siteDefaultLangId, $autoUpdateOtherLangsData, $prodName, $prodDesc, $prodYouTubeUrl) {
+    public function saveProductRequestLangData($siteDefaultLangId, $autoUpdateOtherLangsData, $prodName, $prodDesc, $prodYouTubeUrl)
+    {
         if ($this->mainTableRecordId < 1 || empty($prodName)) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
@@ -211,7 +220,7 @@ class ProductRequest extends MyAppModel {
                     'product_description' => $translatedData[$langId]['product_description'],
                     'product_youtube_video' => $prodYouTubeUrl[$langId],
                 );
-            } else if (!empty($value)) {
+            } elseif (!empty($value)) {
                 $langData = array(
                     'product_name' => $value,
                     'product_description' => $prodDesc[$langId],
@@ -230,5 +239,4 @@ class ProductRequest extends MyAppModel {
         }
         return true;
     }
-
 }

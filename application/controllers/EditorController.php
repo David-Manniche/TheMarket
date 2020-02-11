@@ -1,21 +1,22 @@
 <?php
+
 class EditorController extends FatController
 {
     private $common;
     private $task;
 
-    public function demoPhoto($image ="", $w = 0, $h = 0)
+    public function demoPhoto($image = "", $w = 0, $h = 0)
     {
         self::displayImage($image, 5, 5, true);
     }
 
-    public function editorImage($dir ='', $img ='')
+    public function editorImage($dir = '', $img = '')
     {
         ob_end_clean();
         if ($img == '') {
             $pth = CONF_INSTALLATION_PATH . 'user-uploads/editor/' . ltrim($dir, '/');
         } else {
-            $pth = CONF_INSTALLATION_PATH . 'user-uploads/editor/' . ltrim($dir, '/'). '/' . ltrim($img, '/');
+            $pth = CONF_INSTALLATION_PATH . 'user-uploads/editor/' . ltrim($dir, '/') . '/' . ltrim($img, '/');
         }
 
 
@@ -52,9 +53,9 @@ class EditorController extends FatController
         $obj->setResizeMethod(imageResize::IMG_RESIZE_EXTRA_ADDSPACE);
 
         if ($fileMimeType != '') {
-            header("content-type: ".$fileMimeType);
+            header("content-type: " . $fileMimeType);
         } else {
-            header("Content-Type: ".$size['mime']);
+            header("Content-Type: " . $size['mime']);
         }
         $obj->displayImage(80, false);
     }

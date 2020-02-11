@@ -1,4 +1,5 @@
 <?php
+
 class SelProdReviewSearch extends SearchBase
 {
     private $langId;
@@ -35,7 +36,7 @@ class SelProdReviewSearch extends SearchBase
         }
 
         if ($langId) {
-            $this->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = '. $langId, 's_l');
+            $this->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $langId, 's_l');
         }
     }
 
@@ -55,7 +56,7 @@ class SelProdReviewSearch extends SearchBase
         $this->joinTable(Product::DB_TBL, 'LEFT OUTER JOIN', 'p.product_id = spr. 	spreview_product_id', 'p');
 
         if ($langId > 0) {
-            $this->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p_l.productlang_product_id = p.product_id and p_l.productlang_lang_id = '.$langId, 'p_l');
+            $this->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p_l.productlang_product_id = p.product_id and p_l.productlang_lang_id = ' . $langId, 'p_l');
         }
 
         if ($isProductActive) {
@@ -80,7 +81,7 @@ class SelProdReviewSearch extends SearchBase
 
         $this->joinTable(SellerProduct::DB_TBL, 'LEFT OUTER JOIN', 'sp.selprod_code = spr.spreview_selprod_code and sp.selprod_user_id = spr.spreview_seller_user_id', 'sp');
         if ($langId > 0) {
-            $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp_l.selprodlang_selprod_id = sp.selprod_id and sp_l.selprodlang_lang_id = '.$langId, 'sp_l');
+            $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp_l.selprodlang_selprod_id = sp.selprod_id and sp_l.selprodlang_lang_id = ' . $langId, 'sp_l');
         }
         if ($active == true) {
             $this->addCondition('sp.selprod_active', '=', applicationConstants::YES);
@@ -102,10 +103,10 @@ class SelProdReviewSearch extends SearchBase
         }
         if (!is_array($ratingType)) {
             $ratingType = FatUtility::int($ratingType);
-            $this->joinTable(SelProdRating::DB_TBL, 'LEFT OUTER JOIN', $obj.'.sprating_spreview_id = spr.spreview_id and '.$obj.'.sprating_rating_type = '.$ratingType, $obj);
+            $this->joinTable(SelProdRating::DB_TBL, 'LEFT OUTER JOIN', $obj . '.sprating_spreview_id = spr.spreview_id and ' . $obj . '.sprating_rating_type = ' . $ratingType, $obj);
         } else {
             if (count($ratingType)) {
-                $this->joinTable(SelProdRating::DB_TBL, 'LEFT OUTER JOIN', $obj.'.sprating_spreview_id = spr.spreview_id and '.$obj.'.sprating_rating_type in ('.implode(',', $ratingType).')', $obj);
+                $this->joinTable(SelProdRating::DB_TBL, 'LEFT OUTER JOIN', $obj . '.sprating_spreview_id = spr.spreview_id and ' . $obj . '.sprating_rating_type in (' . implode(',', $ratingType) . ')', $obj);
             } else {
                 trigger_error(Labels::getLabel('ERR_Please_supply_non_empty_rating_types_array', $this->commonLangId), E_USER_ERROR);
             }

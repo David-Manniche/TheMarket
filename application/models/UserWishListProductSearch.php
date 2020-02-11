@@ -1,4 +1,5 @@
 <?php
+
 class UserWishListProductSearch extends SearchBase
 {
     private $langId;
@@ -6,7 +7,7 @@ class UserWishListProductSearch extends SearchBase
     private $productsJoined;
     private $sellerUserJoined;
     private $commonLangId;
-    private $joinSellerOrder ;
+    private $joinSellerOrder;
 
     public function __construct($langId = 0)
     {
@@ -24,7 +25,7 @@ class UserWishListProductSearch extends SearchBase
 
     public function joinFavouriteProducts($user_id)
     {
-        $this->joinTable(Product::DB_TBL_PRODUCT_FAVORITE, 'LEFT OUTER JOIN', 'ufp.ufp_selprod_id = selprod_id and ufp.ufp_user_id = '.$user_id, 'ufp');
+        $this->joinTable(Product::DB_TBL_PRODUCT_FAVORITE, 'LEFT OUTER JOIN', 'ufp.ufp_selprod_id = selprod_id and ufp.ufp_user_id = ' . $user_id, 'ufp');
     }
 
     public function joinSellerProducts($langId = 0)
@@ -37,7 +38,7 @@ class UserWishListProductSearch extends SearchBase
         $this->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', 'uwlp.uwlp_selprod_id = sp.selprod_id', 'sp');
 
         if ($langId) {
-            $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp.selprod_id = sp_l.selprodlang_selprod_id AND sp_l.selprodlang_lang_id = '.$langId, 'sp_l');
+            $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp.selprod_id = sp_l.selprodlang_selprod_id AND sp_l.selprodlang_lang_id = ' . $langId, 'sp_l');
         }
         $this->sellerProductsJoined = true;
     }
@@ -70,7 +71,7 @@ class UserWishListProductSearch extends SearchBase
         $this->joinTable(Product::DB_TBL, 'INNER JOIN', 'sp.selprod_product_id = p.product_id', 'p');
 
         if ($langId) {
-            $this->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$langId, 'p_l');
+            $this->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $langId, 'p_l');
         }
 
         if ($isProductActive) {
@@ -103,7 +104,7 @@ class UserWishListProductSearch extends SearchBase
         $this->addCondition('brand.brand_deleted', '=', '0');
 
         if ($langId) {
-            $this->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'brand.brand_id = tb_l.brandlang_brand_id AND brandlang_lang_id = '.$langId, 'tb_l');
+            $this->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'brand.brand_id = tb_l.brandlang_brand_id AND brandlang_lang_id = ' . $langId, 'tb_l');
         }
     }
 
@@ -124,7 +125,7 @@ class UserWishListProductSearch extends SearchBase
         $this->addCondition('c.prodcat_deleted', '=', applicationConstants::NO);
 
         if ($langId) {
-            $this->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'c_l.prodcatlang_prodcat_id = c.prodcat_id AND prodcatlang_lang_id = '.$langId, 'c_l');
+            $this->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'c_l.prodcatlang_prodcat_id = c.prodcat_id AND prodcatlang_lang_id = ' . $langId, 'c_l');
         }
     }
 
@@ -132,7 +133,7 @@ class UserWishListProductSearch extends SearchBase
     {
         $this->joinSellerOrder = true;
         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) {
-            $this->joinTable(Orders::DB_TBL, 'INNER JOIN', 'o.order_user_id=shop_user_id and o.order_type='.ORDERS::ORDER_SUBSCRIPTION, 'o');
+            $this->joinTable(Orders::DB_TBL, 'INNER JOIN', 'o.order_user_id=shop_user_id and o.order_type=' . ORDERS::ORDER_SUBSCRIPTION, 'o');
         }
     }
 
@@ -155,7 +156,7 @@ class UserWishListProductSearch extends SearchBase
         }
 
         if ($langId) {
-            $this->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = '. $langId, 's_l');
+            $this->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $langId, 's_l');
         }
     }
 
@@ -178,9 +179,9 @@ class UserWishListProductSearch extends SearchBase
             trigger_error(Labels::getLabel('ERR_Seller_Subscription_Order_must_joined.', CommonHelper::getLangId()), E_USER_ERROR);
         }
         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) {
-            $this->joinTable(OrderSubscription::DB_TBL, 'INNER JOIN', 'o.order_id = oss.ossubs_order_id and oss.ossubs_status_id='.FatApp::getConfig('CONF_DEFAULT_SUBSCRIPTION_PAID_ORDER_STATUS'), 'oss');
+            $this->joinTable(OrderSubscription::DB_TBL, 'INNER JOIN', 'o.order_id = oss.ossubs_order_id and oss.ossubs_status_id=' . FatApp::getConfig('CONF_DEFAULT_SUBSCRIPTION_PAID_ORDER_STATUS'), 'oss');
             if ($langId > 0) {
-                $this->joinTable(OrderSubscription::DB_TBL_LANG, 'LEFT OUTER JOIN', 'oss.ossubs_id = ossl.'.OrderSubscription::DB_TBL_LANG_PREFIX.'ossubs_id AND ossubslang_lang_id = ' . $langId, 'ossl');
+                $this->joinTable(OrderSubscription::DB_TBL_LANG, 'LEFT OUTER JOIN', 'oss.ossubs_id = ossl.' . OrderSubscription::DB_TBL_LANG_PREFIX . 'ossubs_id AND ossubslang_lang_id = ' . $langId, 'ossl');
             }
         }
     }
@@ -203,7 +204,7 @@ class UserWishListProductSearch extends SearchBase
 
     public function addSubscriptionValidCondition($date = '')
     {
-        if ($date =='') {
+        if ($date == '') {
             $date = date("Y-m-d");
         }
         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) {

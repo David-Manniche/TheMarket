@@ -1,4 +1,5 @@
 <?php
+
 class applicationConstants
 {
     public const YES = 1;
@@ -83,6 +84,8 @@ class applicationConstants
     public const URL_TYPE_SIGN_IN = 8;
     public const URL_TYPE_REGISTER = 9;
     public const URL_TYPE_CMS = 10;
+
+    public const SMS_CHARACTER_LENGTH = 160;
 
     public static function getWeightUnitsArr($langId)
     {
@@ -230,12 +233,12 @@ class applicationConstants
 
     public static function allowedMimeTypes()
     {
-        return array('text/plain','image/png','image/jpeg','image/jpg','image/gif','image/bmp','image/tiff','image/svg+xml','application/zip','application/x-zip','application/x-zip-compressed','application/rar','application/x-rar','application/x-rar-compressed','application/octet-stream','audio/mpeg','video/quicktime','application/pdf','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/msword','text/plain','image/x-icon','video/mp4');
+        return array('text/plain', 'image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/bmp', 'image/tiff', 'image/svg+xml', 'application/zip', 'application/x-zip', 'application/x-zip-compressed', 'application/rar', 'application/x-rar', 'application/x-rar-compressed', 'application/octet-stream', 'audio/mpeg', 'video/quicktime', 'application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword', 'text/plain', 'image/x-icon', 'video/mp4');
     }
 
     public static function allowedFileExtensions()
     {
-        return array('zip','txt','png','jpeg','jpg','gif','bmp','ico','tiff','tif','svg','svgz','rar','msi','cab','mp3','qt','mov','pdf','psd','ai','eps','ps','doc','docx','mp4');
+        return array('zip', 'txt', 'png', 'jpeg', 'jpg', 'gif', 'bmp', 'ico', 'tiff', 'tif', 'svg', 'svgz', 'rar', 'msi', 'cab', 'mp3', 'qt', 'mov', 'pdf', 'psd', 'ai', 'eps', 'ps', 'doc', 'docx', 'mp4');
     }
 
     public static function getBlogPostStatusArr($langId)
@@ -259,10 +262,10 @@ class applicationConstants
         }
 
         return array(
-            static::BLOG_CONTRIBUTION_PENDING    => Labels::getLabel('LBL_Pending', $langId),
-            static::BLOG_CONTRIBUTION_APPROVED     => Labels::getLabel('LBL_Approved', $langId),
-            static::BLOG_CONTRIBUTION_POSTED     => Labels::getLabel('LBL_Posted', $langId),
-            static::BLOG_CONTRIBUTION_REJECTED     => Labels::getLabel('LBL_Rejected', $langId),
+            static::BLOG_CONTRIBUTION_PENDING => Labels::getLabel('LBL_Pending', $langId),
+            static::BLOG_CONTRIBUTION_APPROVED => Labels::getLabel('LBL_Approved', $langId),
+            static::BLOG_CONTRIBUTION_POSTED => Labels::getLabel('LBL_Posted', $langId),
+            static::BLOG_CONTRIBUTION_REJECTED => Labels::getLabel('LBL_Rejected', $langId),
         );
     }
 
@@ -275,7 +278,7 @@ class applicationConstants
 
         return array(
         static::INACTIVE => Labels::getLabel('LBL_Pending', $langId),
-        static::ACTIVE    => Labels::getLabel('LBL_Approved', $langId)
+        static::ACTIVE => Labels::getLabel('LBL_Approved', $langId)
         );
     }
 
@@ -286,9 +289,9 @@ class applicationConstants
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
         return array(
-        static::GENDER_MALE =>    Labels::getLabel('LBL_Male', $langId),
-        static::GENDER_FEMALE =>    Labels::getLabel('LBL_Female', $langId),
-        static::GENDER_OTHER =>    Labels::getLabel('LBL_Other', $langId),
+        static::GENDER_MALE => Labels::getLabel('LBL_Male', $langId),
+        static::GENDER_FEMALE => Labels::getLabel('LBL_Female', $langId),
+        static::GENDER_OTHER => Labels::getLabel('LBL_Other', $langId),
         );
     }
 
@@ -344,35 +347,35 @@ class applicationConstants
     public static function getShopBannerSize()
     {
         return array(
-        Shop::TEMPLATE_ONE    =>   '2000*500',
-        Shop::TEMPLATE_TWO    =>   '1300*600',
-        Shop::TEMPLATE_THREE  =>   '1350*410',
-        Shop::TEMPLATE_FOUR   =>   '1350*410',
-        Shop::TEMPLATE_FIVE   =>   '1350*570'
+        Shop::TEMPLATE_ONE => '2000*500',
+        Shop::TEMPLATE_TWO => '1300*600',
+        Shop::TEMPLATE_THREE => '1350*410',
+        Shop::TEMPLATE_FOUR => '1350*410',
+        Shop::TEMPLATE_FIVE => '1350*570'
         );
     }
 
     public static function getSmtpSecureArr($langId)
     {
         return array(
-        static :: SMTP_TLS       =>  Labels::getLabel('LBL_tls', $langId),
-        static :: SMTP_SSL       =>   Labels::getLabel('LBL_ssl', $langId),
+        static :: SMTP_TLS => Labels::getLabel('LBL_tls', $langId),
+        static :: SMTP_SSL => Labels::getLabel('LBL_ssl', $langId),
         );
     }
 
     public static function getSmtpSecureSettingsArr()
     {
         return array(
-        static :: SMTP_TLS       =>  'tls',
-        static :: SMTP_SSL       =>  'ssl',
+        static :: SMTP_TLS => 'tls',
+        static :: SMTP_SSL => 'ssl',
         );
     }
 
     public static function getLayoutDirections($langId)
     {
         return array(
-        static::LAYOUT_LTR=>Labels::getLabel('LBL_Left_To_Right', $langId),
-        static::LAYOUT_RTL=>Labels::getLabel('LBL_Right_To_Left', $langId),
+        static::LAYOUT_LTR => Labels::getLabel('LBL_Left_To_Right', $langId),
+        static::LAYOUT_RTL => Labels::getLabel('LBL_Right_To_Left', $langId),
         );
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 class OrderReturnRequestSearch extends SearchBase
 {
     private $langId;
@@ -50,7 +51,7 @@ class OrderReturnRequestSearch extends SearchBase
         $this->joinTable(OrderReturnReason::DB_TBL, 'LEFT OUTER JOIN', 'orrequest.orrequest_returnreason_id = orreason.orreason_id', 'orreason');
 
         if ($langId) {
-            $this->joinTable(OrderReturnReason::DB_TBL_LANG, 'LEFT OUTER JOIN', 'orreason.orreason_id = orreason_l.orreasonlang_orreason_id AND  	orreasonlang_lang_id = ' .$langId, 'orreason_l');
+            $this->joinTable(OrderReturnReason::DB_TBL_LANG, 'LEFT OUTER JOIN', 'orreason.orreason_id = orreason_l.orreasonlang_orreason_id AND  	orreasonlang_lang_id = ' . $langId, 'orreason_l');
         }
     }
 
@@ -66,7 +67,7 @@ class OrderReturnRequestSearch extends SearchBase
 
         $this->joinTable(Orders::DB_TBL, 'LEFT OUTER JOIN', 'op_order_id = order_id', 'o');
         if ($langId) {
-            $this->joinTable(Orders::DB_TBL_LANG, 'LEFT OUTER JOIN', 'order_id = orderlang_order_id AND orderlang_lang_id = '.$langId, 'o_l');
+            $this->joinTable(Orders::DB_TBL_LANG, 'LEFT OUTER JOIN', 'order_id = orderlang_order_id AND orderlang_lang_id = ' . $langId, 'o_l');
         }
         $this->isOrdersJoined = true;
     }
@@ -106,7 +107,7 @@ class OrderReturnRequestSearch extends SearchBase
         $srch = new SearchBase(OrderProduct::DB_TBL_CHARGES, 'opc');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('opcharge_op_id','sum(opcharge_amount) as op_other_charges'));
+        $srch->addMultipleFields(array('opcharge_op_id', 'sum(opcharge_amount) as op_other_charges'));
         $srch->addGroupBy('opc.opcharge_op_id');
         $qryOtherCharges = $srch->getQuery();
         $this->joinTable('(' . $qryOtherCharges . ')', 'LEFT OUTER JOIN', 'op.op_id = opcc.opcharge_op_id', 'opcc');
@@ -118,7 +119,7 @@ class OrderReturnRequestSearch extends SearchBase
         $dateFrom = date('Y-m-d', strtotime($dateFrom));
 
         if ($dateFrom != '') {
-            $this->addCondition('orrequest_date', '>=', $dateFrom. ' 00:00:00');
+            $this->addCondition('orrequest_date', '>=', $dateFrom . ' 00:00:00');
         }
     }
 
@@ -128,7 +129,7 @@ class OrderReturnRequestSearch extends SearchBase
         $dateTo = date('Y-m-d', strtotime($dateTo));
 
         if ($dateTo != '') {
-            $this->addCondition('orrequest_date', '<=', $dateTo. ' 23:59:59');
+            $this->addCondition('orrequest_date', '<=', $dateTo . ' 23:59:59');
         }
     }
 }

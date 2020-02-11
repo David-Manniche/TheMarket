@@ -1,4 +1,5 @@
 <?php
+
 class SuccessStoriesController extends AdminBaseController
 {
     private $canView;
@@ -6,8 +7,8 @@ class SuccessStoriesController extends AdminBaseController
     
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup');
-        if(!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
+        $ajaxCallArray = array('deleteRecord', 'form', 'langForm', 'search', 'setup', 'langSetup');
+        if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }
         parent::__construct($action);
@@ -23,7 +24,7 @@ class SuccessStoriesController extends AdminBaseController
         $this->objPrivilege->canViewSuccessStories();
         
         $srchFrm = $this->getSearchForm();
-        $this->set("srchFrm", $srchFrm);    
+        $this->set("srchFrm", $srchFrm);
         $this->_template->render();
     }
     
@@ -31,20 +32,20 @@ class SuccessStoriesController extends AdminBaseController
     {
         $this->objPrivilege->canViewSuccessStories();
         
-        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);                
+        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
         
         $srch = SuccessStories::getSearchObject($this->adminLangId);
         $srch->addCondition('sstory_deleted', '=', 0);
-        if(!empty($post['keyword'])) {
-            $condition = $srch->addCondition('ss.sstory_identifier', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('ss_l.sstory_title', 'like', '%'.$post['keyword'].'%', 'OR');
+        if (!empty($post['keyword'])) {
+            $condition = $srch->addCondition('ss.sstory_identifier', 'like', '%' . $post['keyword'] . '%');
+            $condition->attachCondition('ss_l.sstory_title', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
         
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         //	$srch->setPageSize($pagesize);
@@ -54,8 +55,8 @@ class SuccessStoriesController extends AdminBaseController
         $rs = $srch->getResultSet();
         
         $records = array();
-        if($rs) {
-            $records = FatApp::getDb()->fetchAll($rs);            
+        if ($rs) {
+            $records = FatApp::getDb()->fetchAll($rs);
         }
         
         $this->set("arr_listing", $records);
@@ -63,11 +64,11 @@ class SuccessStoriesController extends AdminBaseController
         $this->set('recordCount', $srch->recordCount());
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
-        $this->set('postedData', $post);                        
-        $this->_template->render(false, false);    
+        $this->set('postedData', $post);
+        $this->_template->render(false, false);
     }
     
-    public function form( $sstory_id = 0 )
+    public function form($sstory_id = 0)
     {
         $this->objPrivilege->canViewSuccessStories();
         
@@ -76,11 +77,11 @@ class SuccessStoriesController extends AdminBaseController
         $frm = $this->getForm();
         $frm->fill(array( 'sstory_id' => $sstory_id ));
 
-        if (0 < $sstory_id ) {
+        if (0 < $sstory_id) {
             $srch = SuccessStories::getSearchObject($this->adminLangId, false);
-            $srch->addCondition('sstory_id', '=', $sstory_id);            
+            $srch->addCondition('sstory_id', '=', $sstory_id);
             $rs = $srch->getResultSet();
-            $data = FatApp::getDb()->fetch($rs);            
+            $data = FatApp::getDb()->fetch($rs);
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
@@ -88,7 +89,7 @@ class SuccessStoriesController extends AdminBaseController
         }
     
         $this->set('languages', Language::getAllNames());
-        $this->set('sstory_id', $sstory_id);        
+        $this->set('sstory_id', $sstory_id);
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
@@ -110,11 +111,11 @@ class SuccessStoriesController extends AdminBaseController
         
         $record = new SuccessStories($sstory_id);
         
-        if($sstory_id == 0) {
+        if ($sstory_id == 0) {
             $display_order = $record->getMaxOrder();
             $post['sstory_display_order'] = $display_order;
             $post['sstory_added_on'] = date('Y-m-d H:i:s');
-        }        
+        }
         
         $record->assignValues($post);
 
@@ -124,38 +125,38 @@ class SuccessStoriesController extends AdminBaseController
         }
 
         $newTabLangId = 0;
-        if($sstory_id > 0) {
+        if ($sstory_id > 0) {
             $sstory_id = $sstory_id;
             $languages = Language::getAllNames();
-            foreach($languages as $langId =>$langName ){
-                if(!$row = SuccessStories::getAttributesByLangId($langId, $sstory_id)) {
+            foreach ($languages as $langId => $langName) {
+                if (!$row = SuccessStories::getAttributesByLangId($langId, $sstory_id)) {
                     $newTabLangId = $langId;
                     break;
                 }
             }
-        }else{
+        } else {
             $sstory_id = $record->getMainTableRecordId();
             $newTabLangId = $this->adminLangId;
         }
         
         $this->set('msg', Labels::getLabel('LBL_Category_Setup_Successful', $this->adminLangId));
-        $this->set('sstoryId', $sstory_id);    
+        $this->set('sstoryId', $sstory_id);
         $this->set('langId', $newTabLangId);
         $this->_template->render(false, false, 'json-success.php');
     }
     
     public function langForm($sstory_id = 0, $lang_id = 0, $autoFillLangData = 0)
-    {        
+    {
         $this->objPrivilege->canViewSuccessStories();
         
         $sstory_id = FatUtility::int($sstory_id);
         $lang_id = FatUtility::int($lang_id);
         
-        if($sstory_id == 0 || $lang_id == 0) {
+        if ($sstory_id == 0 || $lang_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
         
-        $langFrm = $this->getLangForm();    
+        $langFrm = $this->getLangForm();
         if (0 < $autoFillLangData) {
             $updateLangDataobj = new TranslateLangData(SuccessStories::DB_TBL_LANG);
             $translatedData = $updateLangDataobj->getTranslatedData($sstory_id, $lang_id);
@@ -164,52 +165,52 @@ class SuccessStoriesController extends AdminBaseController
                 FatUtility::dieWithError(Message::getHtml());
             }
             $langData = current($translatedData);
-        } else {        
-            $langData = SuccessStories::getAttributesByLangId($lang_id, $sstory_id);        
+        } else {
+            $langData = SuccessStories::getAttributesByLangId($lang_id, $sstory_id);
         }
         
-        $langData['sstory_id'] = $sstory_id;        
+        $langData['sstory_id'] = $sstory_id;
         $langData['lang_id'] = $lang_id;
         
-        if($langData) {
-            $langFrm->fill($langData);            
+        if ($langData) {
+            $langFrm->fill($langData);
         }
         
         $this->set('languages', Language::getAllNames());
-        $this->set('sstory_id', $sstory_id);    
+        $this->set('sstory_id', $sstory_id);
         $this->set('sstory_lang_id', $lang_id);
         $this->set('langFrm', $langFrm);
         $this->set('formLayout', Language::getLayoutDirection($lang_id));
         $this->_template->render(false, false);
     }
     
-    public function langSetup()    
+    public function langSetup()
     {
         $this->objPrivilege->canEditSuccessStories();
         $post = FatApp::getPostedData();
 
-        $sstory_id = $post['sstory_id'];    
+        $sstory_id = $post['sstory_id'];
         $lang_id = $post['lang_id'];
 
-        if($sstory_id == 0 || $lang_id == 0) {
+        if ($sstory_id == 0 || $lang_id == 0) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
 
         $frm = $this->getLangForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-        unset($post['sstory_id']);    
+        unset($post['sstory_id']);
         unset($post['lang_id']);
         $data = array(
-        'sstorylang_lang_id'=>$lang_id,
-        'sstorylang_sstory_id'=>$sstory_id,
-        'sstory_title'=>$post['sstory_title'],
-        'sstory_name'=>$post['sstory_name'],
-        'sstory_content'=>$post['sstory_content'],
+        'sstorylang_lang_id' => $lang_id,
+        'sstorylang_sstory_id' => $sstory_id,
+        'sstory_title' => $post['sstory_title'],
+        'sstory_name' => $post['sstory_name'],
+        'sstory_content' => $post['sstory_content'],
         );
 
         $obj = new SuccessStories($sstory_id);
-        if(!$obj->updateLangData($lang_id, $data)) {
+        if (!$obj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($obj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -225,15 +226,15 @@ class SuccessStoriesController extends AdminBaseController
 
         $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach($languages as $langId =>$langName ){
-            if(!$row = SuccessStories::getAttributesByLangId($langId, $sstory_id)) {
+        foreach ($languages as $langId => $langName) {
+            if (!$row = SuccessStories::getAttributesByLangId($langId, $sstory_id)) {
                 $newTabLangId = $langId;
                 break;
             }
         }
                 
         $this->set('msg', $this->str_setup_successful);
-        $this->set('sstoryId', $sstory_id);        
+        $this->set('sstoryId', $sstory_id);
         $this->set('langId', $newTabLangId);
         $this->_template->render(false, false, 'json-success.php');
     }
@@ -245,7 +246,7 @@ class SuccessStoriesController extends AdminBaseController
         $post = FatApp::getPostedData();
         if (!empty($post)) {
             $obj = new SuccessStories();
-            if(!$obj->updateOrder($post['stories'])) {
+            if (!$obj->updateOrder($post['stories'])) {
                 Message::addErrorMessage($obj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
             }
@@ -258,44 +259,44 @@ class SuccessStoriesController extends AdminBaseController
         $this->objPrivilege->canEditSuccessStories();
         
         $sstory_id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
-        if($sstory_id < 1) {
+        if ($sstory_id < 1) {
             FatUtility::dieJsonError($this->str_invalid_request_id);
         }
 
-        $res =     SuccessStories::getAttributesById($sstory_id, array('sstory_id'));    
-        if($res == false) {
+        $res = SuccessStories::getAttributesById($sstory_id, array('sstory_id'));
+        if ($res == false) {
             Message::addErrorMessage($this->str_invalid_request_id);
-            FatUtility::dieJsonError(Message::getHtml());    
+            FatUtility::dieJsonError(Message::getHtml());
         }
         
         $obj = new SuccessStories($sstory_id);
         $obj->assignValues(array(SuccessStories::tblFld('deleted') => 1));
-        if(!$obj->save()) {
+        if (!$obj->save()) {
             Message::addErrorMessage($obj->getError());
-            FatUtility::dieJsonError(Message::getHtml());        
+            FatUtility::dieJsonError(Message::getHtml());
         }
         
-        FatUtility::dieJsonSuccess($this->str_delete_record);    
+        FatUtility::dieJsonSuccess($this->str_delete_record);
     }
     
     private function getSearchForm()
     {
-        $frm = new Form('frmSearch');        
-        $f1 = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');    
+        $frm = new Form('frmSearch');
+        $f1 = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
-        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick'=>'clearSearch();'));
-        $fld_submit->attachField($fld_cancel);        
+        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick' => 'clearSearch();'));
+        $fld_submit->attachField($fld_cancel);
         return $frm;
     }
     
-    private function getForm() 
+    private function getForm()
     {
         $frm = new Form('frmStories');
-        $frm->addHiddenField('', 'sstory_id', 0);    
-        $frm->addRequiredField(Labels::getLabel('LBL_Identifier', $this->adminLangId), 'sstory_identifier');    
-        $fld = $frm->addTextBox(Labels::getLabel('LBL_Site_Domain', $this->adminLangId), 'sstory_site_domain');            
+        $frm->addHiddenField('', 'sstory_id', 0);
+        $frm->addRequiredField(Labels::getLabel('LBL_Identifier', $this->adminLangId), 'sstory_identifier');
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_Site_Domain', $this->adminLangId), 'sstory_site_domain');
         $fld->htmlAfterField = Labels::getLabel('LBL_Example_:_sitename.com', $this->adminLangId);
-        $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);        
+        $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'sstory_active', $activeInactiveArr, '', array(), '');
         $frm->addCheckBox(Labels::getLabel('LBL_Featured', $this->adminLangId), 'sstory_featured', 1, array(), false, 0);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
@@ -303,8 +304,8 @@ class SuccessStoriesController extends AdminBaseController
     }
     
     private function getLangForm()
-    {        
-        $frm = new Form('frmStories');        
+    {
+        $frm = new Form('frmStories');
         $frm->addHiddenField('', 'sstory_id');
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Title', $this->adminLangId), 'sstory_title');
@@ -321,4 +322,4 @@ class SuccessStoriesController extends AdminBaseController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;
     }
-}    
+}

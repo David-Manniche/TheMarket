@@ -1,4 +1,5 @@
 <?php
+
 require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/PayFortStart/autoload.php';
 class PayFortStartPayController extends PaymentController
 {
@@ -139,13 +140,13 @@ class PayFortStartPayController extends PaymentController
             return false;
         }
         $amount = number_format($amount, 2, '.', '');
-        return $amount*100;
+        return $amount * 100;
         return $amount;
     }
 
     private function validatePayFortStartSettings($paymentSettings = array())
     {
-        $settingVal = array('transaction_mode','secret_key','open_key');
+        $settingVal = array('transaction_mode', 'secret_key', 'open_key');
         foreach ($settingVal as $val) {
             if (!isset($paymentSettings[$val]) || strlen(trim($paymentSettings[$val])) == 0) {
                 return false;

@@ -1,7 +1,8 @@
 <?php
+
 class HelperController extends FatController
 {
-    public function captcha() 
+    public function captcha()
     {
         CommonHelper::captchaImg();
     }
@@ -10,4 +11,3 @@ class HelperController extends FatController
     {
     }
 }
-?>

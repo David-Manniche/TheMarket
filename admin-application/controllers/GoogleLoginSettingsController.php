@@ -1,4 +1,5 @@
 <?php
+
 class GoogleLoginSettingsController extends SocialLoginSettingsController
 {
     public static function getConfigurationKeys()

@@ -1,4 +1,5 @@
 <?php
+
 class PaymentSettings
 {
     public const DB_PAYMENT_METHODS_TBL = 'tbl_payment_methods';
@@ -91,7 +92,7 @@ class PaymentSettings
         foreach ($paymentMethodSettings as $pkey => $pval) {
             $paymentSettings[$pval["paysetting_key"]] = $pval["paysetting_value"];
         }
-        $paymentSettings['pmethod_name'] = $paymentMethod['pmethod_identifier'] ;
+        $paymentSettings['pmethod_name'] = $paymentMethod['pmethod_identifier'];
         return array_merge($paymentSettings, $paymentMethod);
     }
 

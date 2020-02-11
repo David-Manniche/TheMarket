@@ -1,4 +1,5 @@
 <?php
+
 class PolicyPointsController extends AdminBaseController
 {
     private $canView;
@@ -6,7 +7,7 @@ class PolicyPointsController extends AdminBaseController
 
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup');
+        $ajaxCallArray = array('deleteRecord', 'form', 'langForm', 'search', 'setup', 'langSetup');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }
@@ -31,7 +32,7 @@ class PolicyPointsController extends AdminBaseController
 
         $srch = PolicyPoint::getSearchObject($this->adminLangId, false);
 
-        $srch->addMultipleFields(array('pp.*' , 'pp_l.ppoint_title' ));
+        $srch->addMultipleFields(array('pp.*', 'pp_l.ppoint_title' ));
         $srch->addOrder('ppoint_active', 'desc');
         $srch->addOrder('ppoint_id', 'desc');
         $rs = $srch->getResultSet();
@@ -51,12 +52,12 @@ class PolicyPointsController extends AdminBaseController
     {
         $this->objPrivilege->canViewPolicyPoints();
 
-        $ppointId =  FatUtility::int($ppointId);
+        $ppointId = FatUtility::int($ppointId);
 
         $frm = $this->getForm($ppointId);
 
         if (0 < $ppointId) {
-            $data = PolicyPoint::getAttributesById($ppointId, array('ppoint_id','ppoint_identifier','ppoint_type','ppoint_active'));
+            $data = PolicyPoint::getAttributesById($ppointId, array('ppoint_id', 'ppoint_identifier', 'ppoint_type', 'ppoint_active'));
 
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
@@ -93,10 +94,10 @@ class PolicyPointsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $newTabLangId=0;
-        if ($ppointId>0) {
+        $newTabLangId = 0;
+        if ($ppointId > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = PolicyPoint::getAttributesByLangId($langId, $ppointId)) {
                     $newTabLangId = $langId;
                     break;
@@ -104,7 +105,7 @@ class PolicyPointsController extends AdminBaseController
             }
         } else {
             $ppointId = $record->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
         $this->set('msg', $this->str_setup_successful);
         $this->set('ppointId', $ppointId);
@@ -166,9 +167,9 @@ class PolicyPointsController extends AdminBaseController
         unset($post['lang_id']);
 
         $data = array(
-        'ppointlang_lang_id'=>$lang_id,
-        'ppointlang_ppoint_id'=>$ppointId,
-        'ppoint_title'=>$post['ppoint_title'],
+        'ppointlang_lang_id' => $lang_id,
+        'ppointlang_ppoint_id' => $ppointId,
+        'ppoint_title' => $post['ppoint_title'],
 
         );
 
@@ -190,7 +191,7 @@ class PolicyPointsController extends AdminBaseController
 
         $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach ($languages as $langId =>$langName) {
+        foreach ($languages as $langId => $langName) {
             if (!$row = PolicyPoint::getAttributesByLangId($langId, $ppointId)) {
                 $newTabLangId = $langId;
                 break;
@@ -212,9 +213,9 @@ class PolicyPointsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $data = PolicyPoint::getAttributesById($ppointId, array('ppoint_id','ppoint_active'));
+        $data = PolicyPoint::getAttributesById($ppointId, array('ppoint_id', 'ppoint_active'));
 
-        if ($data==false) {
+        if ($data == false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -324,7 +325,7 @@ class PolicyPointsController extends AdminBaseController
     private function getForm($ppointId = 0)
     {
         $this->objPrivilege->canViewPolicyPoints();
-        $ppointId =  FatUtility::int($ppointId);
+        $ppointId = FatUtility::int($ppointId);
 
         $frm = new Form('frmPolicyPoint');
         $frm->addHiddenField('', 'ppoint_id', $ppointId);

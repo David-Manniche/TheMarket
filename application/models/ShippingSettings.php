@@ -1,10 +1,11 @@
 <?php
+
 class ShippingSettings
 {
-    const DB_SHIPPING_METHODS_TBL = 'tbl_shipping_apis';
-    const DB_SHIPPING_METHODS_TBL_PREFIX = 'shippingapi_';
-    const DB_SHIPPING_METHOD_SETTINGS_TBL = 'tbl_shippingapi_settings';
-    const DB_SHIPPING_METHOD_SETTINGS_TBL_PREFIX = 'shipsetting_';
+    public const DB_SHIPPING_METHODS_TBL = 'tbl_shipping_apis';
+    public const DB_SHIPPING_METHODS_TBL_PREFIX = 'shippingapi_';
+    public const DB_SHIPPING_METHOD_SETTINGS_TBL = 'tbl_shippingapi_settings';
+    public const DB_SHIPPING_METHOD_SETTINGS_TBL_PREFIX = 'shipsetting_';
 
     private $db;
     private $error;
@@ -41,7 +42,7 @@ class ShippingSettings
 
         if (!$this->db->deleteRecords(
             static::DB_SHIPPING_METHOD_SETTINGS_TBL,
-            array('smt' => static::DB_SHIPPING_METHOD_SETTINGS_TBL_PREFIX.'shippingapi_id = ?', 'vals' => array($shippingapi_id))
+            array('smt' => static::DB_SHIPPING_METHOD_SETTINGS_TBL_PREFIX . 'shippingapi_id = ?', 'vals' => array($shippingapi_id))
         )) {
             $this->error = $this->db->getError();
             return false;
@@ -68,7 +69,7 @@ class ShippingSettings
                 return false;
             }
         }
-        return true    ;
+        return true;
     }
 
     public function getShippingSettings()
@@ -100,7 +101,7 @@ class ShippingSettings
             return false;
         }
         $srch = new SearchBase(static::DB_SHIPPING_METHODS_TBL, 'tpm');
-        $srch->addCondition('tpm.'.static::DB_SHIPPING_METHODS_TBL_PREFIX.'code', '=', $code);
+        $srch->addCondition('tpm.' . static::DB_SHIPPING_METHODS_TBL_PREFIX . 'code', '=', $code);
         $rs = $srch->getResultSet();
         $shipping_method = $this->db->fetch($rs);
         return $shipping_method;
@@ -109,7 +110,7 @@ class ShippingSettings
     private function getShippingMethodFieldsById($shippingapi_id)
     {
         $srch = new SearchBase(static::DB_SHIPPING_METHOD_SETTINGS_TBL, 'tsms');
-        $srch->addCondition('tsms.'.static::DB_SHIPPING_METHOD_SETTINGS_TBL_PREFIX.'shippingapi_id', '=', (int)$shippingapi_id);
+        $srch->addCondition('tsms.' . static::DB_SHIPPING_METHOD_SETTINGS_TBL_PREFIX . 'shippingapi_id', '=', (int)$shippingapi_id);
         $rs = $srch->getResultSet();
         $shippingMethodSettings = $this->db->fetchAll($rs);
         return $shippingMethodSettings;

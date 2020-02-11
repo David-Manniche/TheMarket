@@ -1,4 +1,5 @@
 <?php
+
 class OrderSearch extends SearchBase
 {
     private $langId;
@@ -36,7 +37,7 @@ class OrderSearch extends SearchBase
         $this->joinTable(PaymentMethods::DB_TBL, 'LEFT OUTER JOIN', 'o.order_pmethod_id = pm.pmethod_id', 'pm');
 
         if ($langId) {
-            $this->joinTable(PaymentMethods::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pm.pmethod_id = pm_l.pmethodlang_pmethod_id AND pm_l.pmethodlang_lang_id = '. $langId, 'pm_l');
+            $this->joinTable(PaymentMethods::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pm.pmethod_id = pm_l.pmethodlang_pmethod_id AND pm_l.pmethodlang_lang_id = ' . $langId, 'pm_l');
         }
     }
 
@@ -56,7 +57,7 @@ class OrderSearch extends SearchBase
         $dateFrom = date('Y-m-d', strtotime($dateFrom));
 
         if ($dateFrom != '') {
-            $this->addCondition('o.order_date_added', '>=', $dateFrom. ' 00:00:00');
+            $this->addCondition('o.order_date_added', '>=', $dateFrom . ' 00:00:00');
         }
     }
 
@@ -66,7 +67,7 @@ class OrderSearch extends SearchBase
         $dateTo = date('Y-m-d', strtotime($dateTo));
 
         if ($dateTo != '') {
-            $this->addCondition('o.order_date_added', '<=', $dateTo. ' 23:59:59');
+            $this->addCondition('o.order_date_added', '<=', $dateTo . ' 23:59:59');
         }
     }
 
@@ -82,7 +83,7 @@ class OrderSearch extends SearchBase
     /* For Subscription Module */
     public function addSubscriptionValidCondition($date = '')
     {
-        if ($date =='') {
+        if ($date == '') {
             $date = date("Y-m-d");
         }
         $this->addCondition('oss.ossubs_till_date', '>=', $date);
@@ -91,8 +92,8 @@ class OrderSearch extends SearchBase
     public function joinTableOrderSellerSubscription($langId = 0)
     {
         $this->joinTable(OrderSubscription::DB_TBL, 'LEFT OUTER JOIN', 'oss.ossubs_order_id = o.order_id', 'oss');
-        if ($langId>0) {
-            $this->joinTable(OrderSubscription::DB_TBL_LANG, 'LEFT OUTER JOIN', 'oss.ossubs_id = ossl.'.OrderSubscription::DB_TBL_LANG_PREFIX.'ossubs_id', 'ossl');
+        if ($langId > 0) {
+            $this->joinTable(OrderSubscription::DB_TBL_LANG, 'LEFT OUTER JOIN', 'oss.ossubs_id = ossl.' . OrderSubscription::DB_TBL_LANG_PREFIX . 'ossubs_id', 'ossl');
         }
     }
     public function joinTableSubscriptionPlan()
@@ -106,8 +107,8 @@ class OrderSearch extends SearchBase
             $this->joinTable(
                 SellerPackages::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'sp_l.'.SellerPackages::DB_TBL_LANG_PREFIX.'spackage_id = sp.'.SellerPackages::DB_TBL_PREFIX.'id
-			AND sp_l.'.SellerPackages::DB_TBL_LANG_PREFIX.'lang_id = ' . $langId,
+                'sp_l.' . SellerPackages::DB_TBL_LANG_PREFIX . 'spackage_id = sp.' . SellerPackages::DB_TBL_PREFIX . 'id
+			AND sp_l.' . SellerPackages::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 'sp_l'
             );
         }

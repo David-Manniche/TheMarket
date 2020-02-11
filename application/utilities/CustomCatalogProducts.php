@@ -1,8 +1,9 @@
 <?php
 
-trait CustomCatalogProducts {
-
-    public function CustomCatalogProducts() {
+trait CustomCatalogProducts
+{
+    public function CustomCatalogProducts()
+    {
         if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
         }
@@ -23,7 +24,8 @@ trait CustomCatalogProducts {
         $this->_template->render(true, true);
     }
 
-    public function searchCustomCatalogProducts() {
+    public function searchCustomCatalogProducts()
+    {
         $this->canAddCustomCatalogProduct();
         $frmSearchCustomCatalogProducts = $this->getCustomCatalogProductsSearchForm();
         $post = $frmSearchCustomCatalogProducts->getFormDataFromArray(FatApp::getPostedData());
@@ -160,7 +162,7 @@ trait CustomCatalogProducts {
       $this->_template->render(false, false);
       } */
 
-    /* public function setupCustomCatalogProduct() 
+    /* public function setupCustomCatalogProduct()
       {
       $this->canAddCustomCatalogProduct();
 
@@ -230,7 +232,8 @@ trait CustomCatalogProducts {
       $this->_template->render(false, false, 'json-success.php');
       } */
 
-    public function validateUpcCode() {
+    public function validateUpcCode()
+    {
         $post = FatApp::getPostedData();
         if (empty($post) || $post['code'] == '') {
             FatUtility::dieWithError(Labels::getLabel('MSG_Please_fill_UPC/EAN_code', $this->siteLangId));
@@ -248,7 +251,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function customCatalogSellerProductForm($preqId = 0) {
+    public function customCatalogSellerProductForm($preqId = 0)
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
 
@@ -289,7 +293,8 @@ trait CustomCatalogProducts {
 
     /* Specification Module [ */
 
-    public function customCatalogSpecifications($preqId = 0, $prodspecId = 0) {
+    public function customCatalogSpecifications($preqId = 0, $prodspecId = 0)
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
 
@@ -317,7 +322,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false);
     }
 
-    public function getCustomCatalogSpecificationForm($preqId, $prodspecId = 0, $divCount = 0) {
+    public function getCustomCatalogSpecificationForm($preqId, $prodspecId = 0, $divCount = 0)
+    {
         $post = FatApp::getPostedData();
         $data = array();
         $data['product_id'] = $preqId;
@@ -329,7 +335,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false);
     }
 
-    public function setupCustomCatalogSpecification($preqId, $prodSpecId = 0) {
+    public function setupCustomCatalogSpecification($preqId, $prodSpecId = 0)
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
 
@@ -391,7 +398,8 @@ trait CustomCatalogProducts {
 
     /* ] */
 
-    public function setUpCustomSellerProduct() {
+    public function setUpCustomSellerProduct()
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('selprod_product_id', FatUtility::VAR_INT, 0);
         if (!$preqId) {
@@ -442,7 +450,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function customCatalogProductLangForm($preqId = 0, $lang_id = 0, $autoFillLangData = 0) {
+    public function customCatalogProductLangForm($preqId = 0, $lang_id = 0, $autoFillLangData = 0)
+    {
         $this->canAddCustomCatalogProduct();
 
         $preqId = FatUtility::int($preqId);
@@ -509,7 +518,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false);
     }
 
-    public function setupCustomCatalogProductLangForm() {
+    public function setupCustomCatalogProductLangForm()
+    {
         $this->canAddCustomCatalogProduct();
         $post = FatApp::getPostedData();
         $lang_id = $post['lang_id'];
@@ -567,7 +577,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    private function getCustomCatalogProductLangForm($preqId, $langId) {
+    private function getCustomCatalogProductLangForm($preqId, $langId)
+    {
         $siteLangId = $this->siteLangId;
         $frm = new Form('frmCustomProductLang');
         $frm->addHiddenField('', 'preq_id', $preqId);
@@ -584,7 +595,8 @@ trait CustomCatalogProducts {
         return $frm;
     }
 
-    public function customCatalogProductImages($preqId) {
+    public function customCatalogProductImages($preqId)
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
         $productReqRow = ProductRequest::getAttributesById($preqId, array('preq_user_id'));
@@ -597,7 +609,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false);
     }
 
-    public function deleteCustomCatalogProductImage($preq_id, $image_id) {
+    public function deleteCustomCatalogProductImage($preq_id, $image_id)
+    {
         $this->canAddCustomCatalogProduct();
         $preq_id = FatUtility :: int($preq_id);
         $image_id = FatUtility :: int($image_id);
@@ -622,7 +635,8 @@ trait CustomCatalogProducts {
         FatUtility::dieJsonSuccess(Message::getHtml());
     }
 
-    public function customCatalogImages($preq_id, $option_id = 0, $lang_id = 0) {
+    public function customCatalogImages($preq_id, $option_id = 0, $lang_id = 0)
+    {
         $this->canAddCustomCatalogProduct();
         $preq_id = FatUtility::int($preq_id);
 
@@ -648,7 +662,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false);
     }
 
-    public function setCustomCatalogProductImagesOrder() {
+    public function setCustomCatalogProductImagesOrder()
+    {
         $this->canAddCustomCatalogProduct();
 
         $preqObj = new ProductRequest();
@@ -674,7 +689,8 @@ trait CustomCatalogProducts {
         FatUtility::dieJsonSuccess(Labels::getLabel("LBL_Ordered_Successfully!", $this->siteLangId));
     }
 
-    public function setupCustomCatalogProductImages() {
+    public function setupCustomCatalogProductImages()
+    {
         $this->canAddCustomCatalogProduct();
         $post = FatApp::getPostedData();
         if (empty($post)) {
@@ -710,7 +726,8 @@ trait CustomCatalogProducts {
         FatUtility::dieJsonSuccess(Message::getHtml());
     }
 
-    public function customCategoryListing() {
+    public function customCategoryListing()
+    {
         $post = FatApp::getPostedData();
         $prodCatId = $post['prodCatId'];
         $blockCount = $post['blockCount'];
@@ -741,7 +758,7 @@ trait CustomCatalogProducts {
                 $str .= "<li onClick='customCategoryListing(" . $category['prodcat_id'] . ",this)'><a class='selectCategory' href='javascript:void(0)'>" . strip_tags($category['prodcat_name']) . $arrow . "</a></li>";
             }
             $str .= "</ul>";
-            //$result['msg'] = Labels::getLabel('MSG_updated_successfully',$this->siteLangId);
+        //$result['msg'] = Labels::getLabel('MSG_updated_successfully',$this->siteLangId);
         } else {
             $srch = ProductCategory::getSearchObject(false, $this->siteLangId, true);
             $srch->addMultipleFields(array('m.prodcat_id', 'IFNULL(pc_l.prodcat_name,m.prodcat_identifier) as prodcat_name'));
@@ -766,7 +783,8 @@ trait CustomCatalogProducts {
         exit;
     }
 
-    private function getSubCatRecordCount($rootCategories, &$childCountArr, $keyword) {
+    private function getSubCatRecordCount($rootCategories, &$childCountArr, $keyword)
+    {
         foreach ($rootCategories as $catId => $category) {
             $childCountArr[$catId]['total_child_count'] = 0;
 
@@ -784,7 +802,8 @@ trait CustomCatalogProducts {
         }
     }
 
-    public function searchCategory($prodRootCatCode = false) {
+    public function searchCategory($prodRootCatCode = false)
+    {
         $keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
         $prodCatObj = new ProductCategory();
 
@@ -814,7 +833,8 @@ trait CustomCatalogProducts {
         // FatUtility::dieJsonSuccess($html);
     }
 
-    public function loadCustomProductTags() {
+    public function loadCustomProductTags()
+    {
         $this->canAddCustomCatalogProduct();
         $post = FatApp::getPostedData();
         if (empty($post['tags'])) {
@@ -824,9 +844,9 @@ trait CustomCatalogProducts {
         $srch = Tag::getSearchObject();
         $srch->addOrder('tag_identifier');
         $srch->joinTable(
-                Tag::DB_TBL . '_lang',
-                'LEFT OUTER JOIN',
-                'taglang_tag_id = tag_id AND taglang_lang_id = ' . $this->siteLangId
+            Tag::DB_TBL . '_lang',
+            'LEFT OUTER JOIN',
+            'taglang_tag_id = tag_id AND taglang_lang_id = ' . $this->siteLangId
         );
         $srch->addMultipleFields(array('tag_id, tag_name, tag_identifier'));
         $srch->addCondition('tag_id', 'IN', $post['tags']);
@@ -844,7 +864,8 @@ trait CustomCatalogProducts {
         exit;
     }
 
-    public function loadCustomProductOptionss() {
+    public function loadCustomProductOptionss()
+    {
         $this->canAddCustomCatalogProduct();
         $post = FatApp::getPostedData();
         if (empty($post['options'])) {
@@ -869,7 +890,8 @@ trait CustomCatalogProducts {
         exit;
     }
 
-    public function getCustomCatalogShippingTab() {
+    public function getCustomCatalogShippingTab()
+    {
         $shipping_rates = array();
         $post = FatApp::getPostedData();
         $userId = UserAuthentication::getLoggedUserId();
@@ -883,7 +905,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false);
     }
 
-    public function approveCustomCatalogProducts($preqId = 0) {
+    public function approveCustomCatalogProducts($preqId = 0)
+    {
         $this->canAddCustomCatalogProduct(true);
         $preqId = FatUtility::int($preqId);
         if (!$preqId) {
@@ -945,7 +968,8 @@ trait CustomCatalogProducts {
       return $frm;
       } */
 
-    private function getCustomCatalogProductsSearchForm() {
+    private function getCustomCatalogProductsSearchForm()
+    {
         $frm = new Form('frmSearchCustomCatalogProducts');
         $frm->addTextBox('', 'keyword');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->siteLangId));
@@ -954,7 +978,8 @@ trait CustomCatalogProducts {
         return $frm;
     }
 
-    private function getCustomProductImagesFrm($preq_id = 0, $lang_id = 0) {
+    private function getCustomProductImagesFrm($preq_id = 0, $lang_id = 0)
+    {
         $imgTypesArr = $this->getSeparateImageOptionsOfCustomProduct($preq_id, $lang_id);
         $frm = new Form('imageFrm', array('id' => 'imageFrm'));
         $frm->addSelectBox(Labels::getLabel('LBL_Image_File_Type', $this->siteLangId), 'option_id', $imgTypesArr, 0, array('class' => 'option'), '');
@@ -967,7 +992,8 @@ trait CustomCatalogProducts {
         return $frm;
     }
 
-    private function getSeparateImageOptionsOfCustomProduct($preq_id = 0, $lang_id = 0) {
+    private function getSeparateImageOptionsOfCustomProduct($preq_id = 0, $lang_id = 0)
+    {
         $preq_id = FatUtility::int($preq_id);
         $imgTypesArr = array(0 => Labels::getLabel('LBL_For_All_Options', $this->siteLangId));
         if ($preq_id) {
@@ -996,7 +1022,8 @@ trait CustomCatalogProducts {
         return $imgTypesArr;
     }
 
-    private function canAddCustomCatalogProduct($redirect = false) {
+    private function canAddCustomCatalogProduct($redirect = false)
+    {
         if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
             if ($redirect) {
                 FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
@@ -1021,7 +1048,8 @@ trait CustomCatalogProducts {
         }
     }
 
-    public function customCatalogProductForm($preqId = 0) {
+    public function customCatalogProductForm($preqId = 0)
+    {
         $this->canAddCustomCatalogProduct(true);
         $preqId = FatUtility::int($preqId);
         $this->set('preqId', $preqId);
@@ -1032,7 +1060,8 @@ trait CustomCatalogProducts {
         $this->_template->render();
     }
 
-    public function customCatalogGeneralForm($preqId) {
+    public function customCatalogGeneralForm($preqId)
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
         $customProductFrm = $this->getCustomProductIntialSetUpFrm(0, $preqId);
@@ -1060,7 +1089,7 @@ trait CustomCatalogProducts {
                 $langData['product_name'][$langId] = $langContent['product_name'];
                 $langData['product_youtube_video'][$langId] = $langContent['product_youtube_video'];
                 //$langData['product_description'][$langId] = $langContent['product_description'];
-                $langData['product_description_'.$langId] = $langContent['product_description'];
+                $langData['product_description_' . $langId] = $langContent['product_description'];
             }
             $productReqRow = array_merge($productReqRow, $langData);
             $customProductFrm->fill($productReqRow);
@@ -1075,7 +1104,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false);
     }
 
-    public function setupCustomCatalogProduct() {
+    public function setupCustomCatalogProduct()
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $frm = $this->getCustomProductIntialSetUpFrm(0, $preqId);
@@ -1096,13 +1126,13 @@ trait CustomCatalogProducts {
 
         $preqProdCatId = FatUtility::int($post['ptc_prodcat_id']);
         $autoUpdateOtherLangsData = FatUtility::int($post['auto_update_other_langs_data']);
-        $prodName = $post['product_name'];        
+        $prodName = $post['product_name'];
         $prodYouTubeUrl = $post['product_youtube_video'];
         $languages = Language::getAllNames();
-        foreach($languages as $langId=>$data){
-            $prodDesc[$langId] = $post['product_description_'.$langId];
-            unset($post['product_description_'.$langId]);
-        } 
+        foreach ($languages as $langId => $data) {
+            $prodDesc[$langId] = $post['product_description_' . $langId];
+            unset($post['product_description_' . $langId]);
+        }
         unset($post['preq_id']);
         unset($post['ptc_prodcat_id']);
         unset($post['product_name']);
@@ -1150,7 +1180,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function productAttributeAndSpecifications($preqId) {
+    public function productAttributeAndSpecifications($preqId)
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
         $productReqRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_content'));
@@ -1172,7 +1203,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false, 'seller/catalog-attribute-and-specifications-frm.php');
     }
 
-    public function setUpCatalogProductAttributes() {
+    public function setUpCatalogProductAttributes()
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $frm = $this->getProductAttributeAndSpecificationsFrm(0, $preqId);
@@ -1202,7 +1234,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function catalogProdSpecForm($preqId) {
+    public function catalogProdSpecForm($preqId)
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
         $langId = FatApp::getPostedData('langId', FatUtility::VAR_INT, 0);
@@ -1228,7 +1261,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false, 'seller/custom-catalog-prod-spec-form.php');
     }
 
-    public function catalogSpecificationsByLangId() {
+    public function catalogSpecificationsByLangId()
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $langId = FatApp::getPostedData('langId', FatUtility::VAR_INT, 0);
@@ -1242,7 +1276,7 @@ trait CustomCatalogProducts {
         }
         $productSpecifications = array();
         $specifications = json_decode($productReqRow['preq_specifications'], true);
-        if(!empty($specifications['prod_spec_name'][$langId]) && !empty($specifications['prod_spec_value'][$langId])){
+        if (!empty($specifications['prod_spec_name'][$langId]) && !empty($specifications['prod_spec_value'][$langId])) {
             $productSpecifications['prod_spec_name'] = $specifications['prod_spec_name'][$langId];
             $productSpecifications['prod_spec_value'] = $specifications['prod_spec_value'][$langId];
         }
@@ -1251,7 +1285,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false, 'seller/catalog-specifications.php');
     }
 
-    public function deleteCustomCatalogSpecification($preqId) {
+    public function deleteCustomCatalogSpecification($preqId)
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
         $prodReqData = ProductRequest::getAttributesById($preqId);
@@ -1285,7 +1320,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function setUpCustomCatalogSpecifications() {
+    public function setUpCustomCatalogSpecifications()
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $prodReqData = ProductRequest::getAttributesById($preqId);
@@ -1326,7 +1362,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function CustomCatalogShippingFrm($preqId) {
+    public function CustomCatalogShippingFrm($preqId)
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
         $productReqRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_content'));
@@ -1344,7 +1381,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false, 'seller/custom-catalog-shipping-frm.php');
     }
 
-    public function setUpCustomCatalogShipping() {
+    public function setUpCustomCatalogShipping()
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $frm = $this->getProductShippingFrm(0, $preqId);
@@ -1380,7 +1418,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function customCatalogOptionsAndTag($preqId) {
+    public function customCatalogOptionsAndTag($preqId)
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
         $productReqRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_content'));
@@ -1404,9 +1443,9 @@ trait CustomCatalogProducts {
             $srch = Tag::getSearchObject();
             $srch->addOrder('tag_identifier');
             $srch->joinTable(
-                    Tag::DB_TBL . '_lang',
-                    'LEFT OUTER JOIN',
-                    'taglang_tag_id = tag_id AND taglang_lang_id = ' . $this->siteLangId
+                Tag::DB_TBL . '_lang',
+                'LEFT OUTER JOIN',
+                'taglang_tag_id = tag_id AND taglang_lang_id = ' . $this->siteLangId
             );
             $srch->addMultipleFields(array('tag_id, tag_name, tag_identifier'));
             $srch->addCondition('tag_id', 'IN', $preqContentData['product_tags']);
@@ -1421,7 +1460,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false, 'seller/custom-catalog-options-and-tag.php');
     }
 
-    public function updateCustomCatalogOption() {
+    public function updateCustomCatalogOption()
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $optionId = FatApp::getPostedData('option_id', FatUtility::VAR_INT, 0);
@@ -1448,7 +1488,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function removeCustomCatalogOption() {
+    public function removeCustomCatalogOption()
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $optionId = FatApp::getPostedData('option_id', FatUtility::VAR_INT, 0);
@@ -1477,7 +1518,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function updateCustomCatalogTag() {
+    public function updateCustomCatalogTag()
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $tagId = FatApp::getPostedData('tag_id', FatUtility::VAR_INT, 0);
@@ -1504,7 +1546,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function removeCustomCatalogTag() {
+    public function removeCustomCatalogTag()
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $tagId = FatApp::getPostedData('tag_id', FatUtility::VAR_INT, 0);
@@ -1533,7 +1576,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function customEanUpcForm($preqId) {
+    public function customEanUpcForm($preqId)
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
         $productReqRow = ProductRequest::getAttributesById($preqId);
@@ -1555,7 +1599,8 @@ trait CustomCatalogProducts {
         $this->_template->render(false, false);
     }
 
-    public function setupEanUpcCode($preqId) {
+    public function setupEanUpcCode($preqId)
+    {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
         $prodReqData = ProductRequest::getAttributesById($preqId);
@@ -1589,5 +1634,4 @@ trait CustomCatalogProducts {
         $this->set('msg', Labels::getLabel('LBL_ean/upc_code_added_successfully', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
-
 }

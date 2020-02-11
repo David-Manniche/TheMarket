@@ -1,4 +1,5 @@
 <?php
+
 class ShopReportsController extends AdminBaseController
 {
     private $canView;
@@ -6,7 +7,7 @@ class ShopReportsController extends AdminBaseController
 
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','search');
+        $ajaxCallArray = array('deleteRecord', 'search');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }
@@ -20,7 +21,7 @@ class ShopReportsController extends AdminBaseController
 
     public function index($shopId = 0)
     {
-        if ($shopId==0) {
+        if ($shopId == 0) {
             $shopId = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
         }
         $this->objPrivilege->canViewShopReports();
@@ -35,7 +36,7 @@ class ShopReportsController extends AdminBaseController
         $shopId = FatApp::getPostedData('shopId', FatUtility::VAR_INT, 0);
 
         $reportReasonObj = ShopReportReason::getSearchObject($this->adminLangId);
-        $reportReasonObj->addMultipleFields(array('reportreason.*' , 'reportreason_l.reportreason_title'));
+        $reportReasonObj->addMultipleFields(array('reportreason.*', 'reportreason_l.reportreason_title'));
         $reportReasonObj->doNotCalculateRecords();
         $reportReasonObj->doNotLimitRecords();
         $result_report_reasons = $reportReasonObj->getQuery();
@@ -47,7 +48,7 @@ class ShopReportsController extends AdminBaseController
         if ($shopId > 0) {
             $srch->addCondition('sreport.sreport_shop_id', '=', $shopId);
         }
-        $srch->addMultipleFields(array('sreport.*' ,'u.user_name','reportreason.reportreason_title'));
+        $srch->addMultipleFields(array('sreport.*', 'u.user_name', 'reportreason.reportreason_title'));
 
         $rs = $srch->getResultSet();
         $records = array();

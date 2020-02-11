@@ -1,4 +1,5 @@
 <?php
+
 class FilterHelper extends FatUtility
 {
     public static function getParamsAssocArr()
@@ -43,7 +44,7 @@ class FilterHelper extends FatUtility
     public static function selectedBrands($post)
     {
         if (array_key_exists('brand', $post)) {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 $post['brand'] = json_decode($post['brand'], true);
             }
             
@@ -83,11 +84,11 @@ class FilterHelper extends FatUtility
         $brandSrch->addMultipleFields(array( 'brand.brand_id', 'COALESCE(tb_l.brand_name,brand.brand_identifier) as brand_name'));
         if ($brandId) {
             $brandSrch->addCondition('brand_id', '=', $brandId);
-            $brandsCheckedArr =  array($brandId);
+            $brandsCheckedArr = array($brandId);
         }
     
         if (!empty($brandsCheckedArr) && true == $includePriority) {
-            $brandSrch->addFld('IF(FIND_IN_SET(brand.brand_id, "'.implode(',', $brandsCheckedArr).'"), 1, 0) as priority');
+            $brandSrch->addFld('IF(FIND_IN_SET(brand.brand_id, "' . implode(',', $brandsCheckedArr) . '"), 1, 0) as priority');
             $brandSrch->addOrder('priority', 'desc');
         } else {
             $brandSrch->addFld('0 as priority');
@@ -100,28 +101,30 @@ class FilterHelper extends FatUtility
         return FatApp::getDb()->fetchAll($brandRs);
     }
 
-    public static function getCategories($langId, $categoryId, $prodSrchObj, $cacheKey){
-        $cacheKey .= (true ===  MOBILE_APP_API_CALL) ? $cacheKey . '-m': $cacheKey;
+    public static function getCategories($langId, $categoryId, $prodSrchObj, $cacheKey)
+    {
+        $cacheKey .= (true === MOBILE_APP_API_CALL) ? $cacheKey . '-m' : $cacheKey;
         /* $catFilter =  FatCache::get('catFilter' . $cacheKey, CONF_FILTER_CACHE_TIME, '.txt');
         if (!$catFilter) { */
-            $catSrch = clone $prodSrchObj;            
-            $catSrch->doNotLimitRecords();
-            $catSrch->joinProductToCategoryLang($langId);
-            $catSrch->addGroupBy('c.prodcat_id');
-            $excludeCatHavingNoProducts = true;
-            if (!empty($keyword)) {
-                $excludeCatHavingNoProducts = false;
-            }
-            $categoriesArr = ProductCategory::getTreeArr($langId, $categoryId, false, $catSrch, $excludeCatHavingNoProducts);
-            $categoriesArr = (true ===  MOBILE_APP_API_CALL) ? array_values($categoriesArr) : $categoriesArr;
-            FatCache::set('catFilter' . $cacheKey, serialize($categoriesArr), '.txt');
-            return $categoriesArr;
-       /*  } */
+        $catSrch = clone $prodSrchObj;
+        $catSrch->doNotLimitRecords();
+        $catSrch->joinProductToCategoryLang($langId);
+        $catSrch->addGroupBy('c.prodcat_id');
+        $excludeCatHavingNoProducts = true;
+        if (!empty($keyword)) {
+            $excludeCatHavingNoProducts = false;
+        }
+        $categoriesArr = ProductCategory::getTreeArr($langId, $categoryId, false, $catSrch, $excludeCatHavingNoProducts);
+        $categoriesArr = (true === MOBILE_APP_API_CALL) ? array_values($categoriesArr) : $categoriesArr;
+        FatCache::set('catFilter' . $cacheKey, serialize($categoriesArr), '.txt');
+        return $categoriesArr;
+        /*  } */
         return unserialize($catFilter);
     }
 
-    public static function getOptions($langId, $categoryId, $prodSrchObj){
-        $options =  FatCache::get('options' . $categoryId . '-' . $langId, CONF_FILTER_CACHE_TIME, '.txt');
+    public static function getOptions($langId, $categoryId, $prodSrchObj)
+    {
+        $options = FatCache::get('options' . $categoryId . '-' . $langId, CONF_FILTER_CACHE_TIME, '.txt');
         if (!$options) {
             $options = array();
             if ($categoryId && ProductCategory::isLastChildCategory($categoryId)) {
@@ -129,7 +132,7 @@ class FilterHelper extends FatUtility
                 $selProdCodeSrch->doNotLimitRecords();
                 /*Removed Group by as taking time for huge data. handled in fetch all second param*/
                 //$selProdCodeSrch->addGroupBy('selprod_code');
-                $selProdCodeSrch->addMultipleFields(array('product_id','selprod_code'));
+                $selProdCodeSrch->addMultipleFields(array('product_id', 'selprod_code'));
                 $selProdCodeRs = $selProdCodeSrch->getResultSet();
                 $selProdCodeArr = FatApp::getDb()->fetchAll($selProdCodeRs, 'selprod_code');
 
@@ -147,12 +150,12 @@ class FilterHelper extends FatUtility
                     if ($a['optionvalue_id'] == $b['optionvalue_id']) {
                         return 0;
                     }
-                    return ($a['optionvalue_id'] < $b['optionvalue_id'])?-1:1;
+                    return ($a['optionvalue_id'] < $b['optionvalue_id']) ? -1 : 1;
                 }
             );
-            FatCache::set('options '. $categoryId . '-' . $langId, serialize($options), '.txt');
+            FatCache::set('options ' . $categoryId . '-' . $langId, serialize($options), '.txt');
             return $options;
-        } 
+        }
         return unserialize($options);
     }
 }

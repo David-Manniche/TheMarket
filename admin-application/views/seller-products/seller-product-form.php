@@ -263,24 +263,24 @@
                                 <?php $languages = Language::getAllNames();
                                 unset($languages[FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1)]);
                                 foreach ($languages as $langId => $langName) { ?>
-                                <div class="accordians_container accordians_container-categories">
+                                <div class="accordians_container accordians_container-categories <?php echo 'layout--' . Language::getLayoutDirection($langId); ?>">
                                     <div class="accordian_panel">
                                         <span class="accordian_title accordianhead accordian_title"><?php echo Labels::getLabel('LBL_Inventory_Data_for', $adminLangId) ?> <?php echo $langName;?></span>
                                         <div class="accordian_body accordiancontent p-0" style="display: none;">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="field-set">
-                                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_title'.$langId)->getCaption(); ?></label></div>
+                                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_title' . $langId)->getCaption(); ?></label></div>
                                                         <div class="field-wraper">
-                                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_title'.$langId); ?></div>
+                                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_title' . $langId); ?></div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-12">
                                                     <div class="field-set">
-                                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_comments'.$langId)->getCaption(); ?></label></div>
+                                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_comments' . $langId)->getCaption(); ?></label></div>
                                                         <div class="field-wraper">
-                                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_comments'.$langId); ?></div>
+                                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_comments' . $langId); ?></div>
                                                         </div>
                                                     </div>
                                                 </div>

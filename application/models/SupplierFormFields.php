@@ -1,4 +1,5 @@
 <?php
+
 class SupplierFormFields extends MyAppModel
 {
     public const DB_TBL = 'tbl_user_supplier_form_fields';
@@ -32,7 +33,7 @@ class SupplierFormFields extends MyAppModel
         }
         $record = FatApp::getDb()->fetch($rs);
         if (!empty($record)) {
-            return $record['max_order']+1;
+            return $record['max_order'] + 1;
         }
         return 1;
     }
@@ -45,15 +46,15 @@ class SupplierFormFields extends MyAppModel
         }
 
         $srch = static::getSearchObject();
-        $srch->addCondition('sf.'.static::DB_TBL_PREFIX.'id', '=', $this->mainTableRecordId);
-        $srch->addFld(array('sf.'.static::DB_TBL_PREFIX.'id','sf.'.static::DB_TBL_PREFIX.'mandatory'));
+        $srch->addCondition('sf.' . static::DB_TBL_PREFIX . 'id', '=', $this->mainTableRecordId);
+        $srch->addFld(array('sf.' . static::DB_TBL_PREFIX . 'id', 'sf.' . static::DB_TBL_PREFIX . 'mandatory'));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
         if ($rs) {
             $row = FatApp::getDb()->fetch($rs); //var_dump($row);
-            if (!empty($row) && $row[static::DB_TBL_PREFIX.'id'] == $this->mainTableRecordId) {
-                if ($row[static::DB_TBL_PREFIX.'mandatory'] == 1) {
+            if (!empty($row) && $row[static::DB_TBL_PREFIX . 'id'] == $this->mainTableRecordId) {
+                if ($row[static::DB_TBL_PREFIX . 'mandatory'] == 1) {
                     return false;
                 }
                 return true;

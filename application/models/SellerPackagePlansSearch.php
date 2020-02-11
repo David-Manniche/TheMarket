@@ -1,4 +1,5 @@
 <?php
+
 class SellerPackagePlansSearch extends SearchBase
 {
     private $langId;
@@ -10,7 +11,7 @@ class SellerPackagePlansSearch extends SearchBase
     }
     public function joinPackage($langId = 0)
     {
-        $this->joinTable(SellerPackages::DB_TBL, 'LEFT OUTER JOIN', 'spp.'.SellerPackagePlans::DB_TBL_PREFIX.'spackage_id=sp.'.SellerPackages::DB_TBL_PREFIX.'id', 'sp');
+        $this->joinTable(SellerPackages::DB_TBL, 'LEFT OUTER JOIN', 'spp.' . SellerPackagePlans::DB_TBL_PREFIX . 'spackage_id=sp.' . SellerPackages::DB_TBL_PREFIX . 'id', 'sp');
         if ($langId) {
             $this->joinTable(
                 SellerPackages::DB_TBL . '_lang',

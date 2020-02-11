@@ -1,10 +1,11 @@
 <?php
+
 class EbsSettingsController extends PaymentSettingsController
 {
     private $keyName = "ebs";
     
     public function index()
-    {        
+    {
         $paymentSettings = $this->getPaymentSettings($this->keyName);
         $frm = $this->getForm();
         $frm->fill($paymentSettings);
@@ -16,10 +17,10 @@ class EbsSettingsController extends PaymentSettingsController
     public function setup()
     {
         $frm = $this->getForm();
-        $this->setUpPaymentSettings($frm, $this->keyName);        
+        $this->setUpPaymentSettings($frm, $this->keyName);
     }
     
-    private function getForm() 
+    private function getForm()
     {
         $frm = new Form('frmPaymentMethods');
         $frm->addRequiredField(Labels::getLabel('LBL_Account_ID', $this->adminLangId), 'accountId');

@@ -1,4 +1,5 @@
 <?php
+
 class CollectionsController extends AdminBaseController
 {
     private $canView;
@@ -19,7 +20,7 @@ class CollectionsController extends AdminBaseController
         $this->objPrivilege->canViewCollections();
         $this->_template->addCss('css/cropper.css');
         $this->_template->addJs('js/cropper.js');
-        $this->_template->addJs('js/cropper-main.js');        
+        $this->_template->addJs('js/cropper-main.js');
         $search = $this->getSearchForm();
         $this->set("search", $search);
         $this->_template->render();
@@ -31,9 +32,9 @@ class CollectionsController extends AdminBaseController
         $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
 
         $frm->addSelectBox(Labels::getLabel('LBL_Type', $this->adminLangId), 'collection_type', Collections::getTypeArr($this->adminLangId));
-        $frm->addSelectBox(Labels::getLabel('LBL_Layout_Type', $this->adminLangId), 'collection_layout_type', array( -1 =>Labels::getLabel('LBL_Does_Not_matter', $this->adminLangId) )+Collections::getLayoutTypeArr($this->adminLangId), '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Layout_Type', $this->adminLangId), 'collection_layout_type', array( -1 => Labels::getLabel('LBL_Does_Not_matter', $this->adminLangId) ) + Collections::getLayoutTypeArr($this->adminLangId), '', array(), '');
 
-        $fld_submit=$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;
@@ -47,8 +48,8 @@ class CollectionsController extends AdminBaseController
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
 
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
 
         $post = $searchForm->getFormDataFromArray($data);
@@ -57,8 +58,8 @@ class CollectionsController extends AdminBaseController
         $srch->doNotLimitRecords();
 
         if (!empty($post['keyword'])) {
-            $condition = $srch->addCondition('c.collection_identifier', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('c_l.collection_name', 'like', '%'.$post['keyword'].'%', 'OR');
+            $condition = $srch->addCondition('c.collection_identifier', 'like', '%' . $post['keyword'] . '%');
+            $condition->attachCondition('c_l.collection_name', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
 
         $collection_type = FatApp::getPostedData('collection_type', FatUtility::VAR_INT, '');
@@ -76,7 +77,7 @@ class CollectionsController extends AdminBaseController
             $srch->addOrder('collection_id', 'DESC');
         }
 
-        $srch->addMultipleFields(array('c.*' , 'c_l.collection_name'));
+        $srch->addMultipleFields(array('c.*', 'c_l.collection_name'));
 
 
 
@@ -101,7 +102,7 @@ class CollectionsController extends AdminBaseController
     {
         $this->objPrivilege->canViewCollections();
 
-        $collectionId =  FatUtility::int($collectionId);
+        $collectionId = FatUtility::int($collectionId);
 
         $frm = $this->getForm($collectionId);
 
@@ -126,7 +127,7 @@ class CollectionsController extends AdminBaseController
     {
         $this->objPrivilege->canViewCollections();
 
-        $collectionId =  FatUtility::int($collectionId);
+        $collectionId = FatUtility::int($collectionId);
 
         $frm = $this->getSelProdForm($collectionId);
 
@@ -138,7 +139,7 @@ class CollectionsController extends AdminBaseController
     public function collectionCategoryForm($collectionId)
     {
         $this->objPrivilege->canViewCollections();
-        $collectionId =  FatUtility::int($collectionId);
+        $collectionId = FatUtility::int($collectionId);
         $frm = $this->getCollectionCategoryForm($collectionId);
         $this->set('collection_id', $collectionId);
         $this->set('frm', $frm);
@@ -147,7 +148,7 @@ class CollectionsController extends AdminBaseController
     public function collectionShopForm($collectionId)
     {
         $this->objPrivilege->canViewCollections();
-        $collectionId =  FatUtility::int($collectionId);
+        $collectionId = FatUtility::int($collectionId);
         $frm = $this->getCollectionShopForm($collectionId);
         $this->set('collection_id', $collectionId);
         $this->set('frm', $frm);
@@ -157,7 +158,7 @@ class CollectionsController extends AdminBaseController
     public function collectionBrandsForm($collectionId)
     {
         $this->objPrivilege->canViewCollections();
-        $collectionId =  FatUtility::int($collectionId);
+        $collectionId = FatUtility::int($collectionId);
         $frm = $this->getCollectionBrandsForm($collectionId);
         $this->set('collection_id', $collectionId);
         $this->set('frm', $frm);
@@ -167,7 +168,7 @@ class CollectionsController extends AdminBaseController
     public function collectionBlogsForm($collectionId)
     {
         $this->objPrivilege->canViewCollections();
-        $collectionId =  FatUtility::int($collectionId);
+        $collectionId = FatUtility::int($collectionId);
         $frm = $this->getCollectionBlogsForm($collectionId);
         $this->set('collection_id', $collectionId);
         $this->set('frm', $frm);
@@ -333,12 +334,12 @@ class CollectionsController extends AdminBaseController
     private function getForm($collectionId = 0)
     {
         $this->objPrivilege->canViewCollections();
-        $collectionId =  FatUtility::int($collectionId);
+        $collectionId = FatUtility::int($collectionId);
         $collectionData = Collections::getAttributesById($collectionId);
         if ($collectionId) {
             $collectionType = $collectionData['collection_type'];
         } else {
-            $collectionType =  Collections::COLLECTION_TYPE_PRODUCT;
+            $collectionType = Collections::COLLECTION_TYPE_PRODUCT;
         }
         $frm = new Form('frmCollection');
         $frm->addHiddenField('', 'collection_id', $collectionId);
@@ -369,7 +370,7 @@ class CollectionsController extends AdminBaseController
     private function getSelProdForm($collectionId = 0)
     {
         $this->objPrivilege->canViewCollections();
-        $collectionId =  FatUtility::int($collectionId);
+        $collectionId = FatUtility::int($collectionId);
 
         $frm = new Form('frmCollectionSelProd');
         $frm->addHiddenField('', 'collection_id', $collectionId);
@@ -381,7 +382,7 @@ class CollectionsController extends AdminBaseController
     private function getCollectionCategoryForm($collectionId = 0)
     {
         $this->objPrivilege->canViewCollections();
-        $collectionId =  FatUtility::int($collectionId);
+        $collectionId = FatUtility::int($collectionId);
 
         $frm = new Form('frmCollectionCategory');
         $frm->addHiddenField('', 'collection_id', $collectionId);
@@ -392,7 +393,7 @@ class CollectionsController extends AdminBaseController
     private function getCollectionShopForm($collectionId = 0)
     {
         $this->objPrivilege->canViewCollections();
-        $collectionId =  FatUtility::int($collectionId);
+        $collectionId = FatUtility::int($collectionId);
 
         $frm = new Form('frmCollectionShop');
         $frm->addHiddenField('', 'collection_id', $collectionId);
@@ -403,7 +404,7 @@ class CollectionsController extends AdminBaseController
     private function getCollectionBrandsForm($collectionId = 0)
     {
         $this->objPrivilege->canViewCollections();
-        $collectionId =  FatUtility::int($collectionId);
+        $collectionId = FatUtility::int($collectionId);
 
         $frm = new Form('frmCollectionBrands');
         $fld = $frm->addHiddenField('', 'collection_id', $collectionId);
@@ -417,7 +418,7 @@ class CollectionsController extends AdminBaseController
     private function getCollectionBlogsForm($collectionId = 0)
     {
         $this->objPrivilege->canViewCollections();
-        $collectionId =  FatUtility::int($collectionId);
+        $collectionId = FatUtility::int($collectionId);
 
         $frm = new Form('frmCollectionBlogs');
         $fld = $frm->addHiddenField('', 'collection_id', $collectionId);
@@ -459,9 +460,9 @@ class CollectionsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $data = Collections::getAttributesById($collectionId, array('collection_id','collection_active'));
+        $data = Collections::getAttributesById($collectionId, array('collection_id', 'collection_active'));
 
-        if ($data==false) {
+        if ($data == false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -825,12 +826,12 @@ class CollectionsController extends AdminBaseController
             /* $srch->addCondition('selprod_title', 'LIKE', '%' . $post['keyword'] . '%');
             $srch->addCondition('product_name', 'LIKE', '%' . $post['keyword'] . '%','OR');
             $srch->addCondition('product_identifier', 'LIKE', '%' . $post['keyword'] . '%','OR'); */
-            $srch->addDirectCondition("(selprod_title like " . $db->quoteVariable('%'.$post['keyword'].'%') . " or product_name LIKE " . $db->quoteVariable('%'.$post['keyword'].'%') . " or product_identifier LIKE " . $db->quoteVariable('%'.$post['keyword'].'%') . " )", 'and');
+            $srch->addDirectCondition("(selprod_title like " . $db->quoteVariable('%' . $post['keyword'] . '%') . " or product_name LIKE " . $db->quoteVariable('%' . $post['keyword'] . '%') . " or product_identifier LIKE " . $db->quoteVariable('%' . $post['keyword'] . '%') . " )", 'and');
         }
 
         $srch->setPageSize(FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10));
 
-        $srch->addMultipleFields(array('selprod_id','IFNULL(product_name,product_identifier) as product_name, IFNULL(selprod_title,product_identifier) as selprod_title'));
+        $srch->addMultipleFields(array('selprod_id', 'IFNULL(product_name,product_identifier) as product_name, IFNULL(selprod_title,product_identifier) as selprod_title'));
         /* echo $srch->getQuery(); */
         $rs = $srch->getResultSet();
 
@@ -839,7 +840,7 @@ class CollectionsController extends AdminBaseController
         foreach ($products as $key => $product) {
             $json[] = array(
             'id' => $key,
-            'name'      => strip_tags(html_entity_decode(($product['selprod_title']!='')?$product['selprod_title']:$product['product_name'], ENT_QUOTES, 'UTF-8'))
+            'name' => strip_tags(html_entity_decode(($product['selprod_title'] != '') ? $product['selprod_title'] : $product['product_name'], ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));
@@ -881,7 +882,7 @@ class CollectionsController extends AdminBaseController
         $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_COLLECTION_IMAGE);
         $frm->addHiddenField('', 'min_width');
         $frm->addHiddenField('', 'min_height');
-        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'collection_image', array('accept'=>'image/*', 'data-frm'=>'frmCollectionMedia'));
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'collection_image', array('accept' => 'image/*', 'data-frm' => 'frmCollectionMedia'));
         $frm->addHtml('', 'collection_image_display_div', '');
 
         /*$frm->addHTML('', 'collection_bg_image_heading', '');
@@ -954,7 +955,7 @@ class CollectionsController extends AdminBaseController
 
         $this->set('file', $_FILES['cropped_image']['name']);
         $this->set('collection_id', $collection_id);
-        $this->set('msg', $_FILES['cropped_image']['name']. Labels::getLabel('MSG_Uploaded_Successfully', $this->adminLangId));
+        $this->set('msg', $_FILES['cropped_image']['name'] . Labels::getLabel('MSG_Uploaded_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 

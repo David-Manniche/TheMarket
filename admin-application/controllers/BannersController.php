@@ -1,4 +1,5 @@
 <?php
+
 class BannersController extends AdminBaseController
 {
     private $canView;
@@ -36,11 +37,11 @@ class BannersController extends AdminBaseController
         $post = $searchForm->getFormDataFromArray($data); */
 
         $srch = BannerLocation::getSearchObject($this->adminLangId, false);
-        $srch->addMultipleFields(array('blocation_banner_count','blocation_banner_width','blocation_banner_height','blocation_id','blocation_promotion_cost','blocation_active',"IFNULL(blocation_name,blocation_identifier) as blocation_name"));
+        $srch->addMultipleFields(array('blocation_banner_count', 'blocation_banner_width', 'blocation_banner_height', 'blocation_id', 'blocation_promotion_cost', 'blocation_active', "IFNULL(blocation_name,blocation_identifier) as blocation_name"));
 
         $srch->addOrder(Banner::DB_TBL_LOCATIONS_PREFIX . 'active', 'DESC');
         $srch->addOrder(Banner::DB_TBL_LOCATIONS_PREFIX . 'id', 'DESC');
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -68,7 +69,7 @@ class BannersController extends AdminBaseController
 
         $frm = $this->getLocationForm();
 
-        $data =  $this->getBannerLocationById($bLocationId);
+        $data = $this->getBannerLocationById($bLocationId);
         /* $srch = Banner::getBannerLocationSrchObj(false);
         $srch->addCondition('blocation_id','=',$bLocationId);
         $srch->doNotCalculateRecords();
@@ -129,7 +130,7 @@ class BannersController extends AdminBaseController
         }
 
         $frmSearch = $this->getListingSearchForm();
-        $frmSearch->fill(array('blocation_id'=>$bLocationId));
+        $frmSearch->fill(array('blocation_id' => $bLocationId));
 
         $data = $this->getBannerLocationById($bLocationId);
 
@@ -144,7 +145,7 @@ class BannersController extends AdminBaseController
         } */
         $this->_template->addCss('css/cropper.css');
         $this->_template->addJs('js/cropper.js');
-        $this->_template->addJs('js/cropper-main.js');        
+        $this->_template->addJs('js/cropper-main.js');
         $this->_template->addJs('js/responsive-img.min.js');
         $this->set('data', $data);
         $this->set('bLocationId', $bLocationId);
@@ -159,7 +160,7 @@ class BannersController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getListingSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
         $blocation_id = $post['blocation_id'];
@@ -171,7 +172,7 @@ class BannersController extends AdminBaseController
         $srch->joinLocations();
         $srch->joinPromotions($this->adminLangId, true);
         $srch->addPromotionTypeCondition();
-        $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name','banner_id','banner_type','banner_url','banner_target','banner_active','banner_blocation_id','banner_title','banner_img_updated_on'));
+        $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_img_updated_on'));
         $srch->addCondition('b.banner_blocation_id', '=', $blocation_id);
 
         $srch->addOrder('banner_active', 'DESC');
@@ -205,7 +206,7 @@ class BannersController extends AdminBaseController
         }
 
         $frm = $this->getBannerForm();
-        $data = array('banner_blocation_id'=>$blocation_id,'banner_id'=>$banner_id);
+        $data = array('banner_blocation_id' => $blocation_id, 'banner_id' => $banner_id);
 
         $banner_id = FatUtility::int($banner_id);
         if ($banner_id > 0) {
@@ -220,7 +221,7 @@ class BannersController extends AdminBaseController
                 $data = FatApp::getDb()->fetch($rs);
             }
         }
-        if ($banner_id==0) {
+        if ($banner_id == 0) {
             $data['banner_type'] = Banner::TYPE_BANNER;
         }
 
@@ -513,7 +514,7 @@ class BannersController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function images($blocation_id, $banner_id, $lang_id=0, $screen=0)
+    public function images($blocation_id, $banner_id, $lang_id = 0, $screen = 0)
     {
         $blocation_id = FatUtility::int($blocation_id);
         $banner_id = FatUtility::int($banner_id);
@@ -604,8 +605,8 @@ class BannersController extends AdminBaseController
         $fileName = $_FILES['cropped_image']['name'];
         $this->set('file', $fileName);
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
-        $fileName = strlen($fileName) > 10 ? substr($fileName, 0, 10).'.'.$ext : $fileName;
-        $this->set('msg', $fileName.' '.Labels::getLabel('MSG_File_uploaded_successfully', $this->adminLangId));
+        $fileName = strlen($fileName) > 10 ? substr($fileName, 0, 10) . '.' . $ext : $fileName;
+        $this->set('msg', $fileName . ' ' . Labels::getLabel('MSG_File_uploaded_successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -873,7 +874,7 @@ class BannersController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel("LBL_Display_For", $this->adminLangId), 'banner_screen', $screenArr, $displayFor, array(), '');
         $frm->addHiddenField('', 'banner_min_width');
         $frm->addHiddenField('', 'banner_min_height');
-        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'banner_image', array('accept'=>'image/*', 'data-frm'=>'frmBannerMedia'));
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'banner_image', array('accept' => 'image/*', 'data-frm' => 'frmBannerMedia'));
         return $frm;
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 include_once CONF_INSTALLATION_PATH . 'library/instagram/instagram-login-api.php';
 class InstagramLoginController extends SocialMediaAuthController
 {

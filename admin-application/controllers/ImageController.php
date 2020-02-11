@@ -1,4 +1,5 @@
 <?php
+
 class ImageController extends FatController
 {
     public function default_action()
@@ -45,7 +46,7 @@ class ImageController extends FatController
     {
         $lang_id = FatUtility::int($lang_id);
         $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_ADMIN_LOGO, 0, 0, $lang_id);
-        $image_name = isset($file_row['afile_physical_path']) ?  $file_row['afile_physical_path'] : '';
+        $image_name = isset($file_row['afile_physical_path']) ? $file_row['afile_physical_path'] : '';
         $default_image = '';
         AttachedFile::displayImage($image_name, 0, 0, $default_image, '', ImageResize::IMG_RESIZE_RESET_DIMENSIONS);
         /* switch( strtoupper($sizeType) ){

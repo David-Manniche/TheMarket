@@ -1,19 +1,20 @@
 <?php
+
 class QuestionnairesSearch extends SearchBase
 {
-    const DB_QUESTION_BANKS_TBL = 'tbl_question_banks';
-    const DB_QUESTION_BANKS_LANG_TBL = 'tbl_question_banks_lang';
-    const DB_QUESTIONS_TBL = 'tbl_questions';
-    const DB_QUESTIONS_LANG_TBL = 'tbl_questions_lang';
-    const DB_QUESTIONNAIRES_TBL = 'tbl_questionnaires';
-    const DB_QUESTIONNAIRES_LANG_TBL = 'tbl_questionnaires_lang';
-    const DB_QUESTIONNAIRES_TO_QUESTIONS_TBL = 'tbl_questionnaires_to_question';
+    public const DB_QUESTION_BANKS_TBL = 'tbl_question_banks';
+    public const DB_QUESTION_BANKS_LANG_TBL = 'tbl_question_banks_lang';
+    public const DB_QUESTIONS_TBL = 'tbl_questions';
+    public const DB_QUESTIONS_LANG_TBL = 'tbl_questions_lang';
+    public const DB_QUESTIONNAIRES_TBL = 'tbl_questionnaires';
+    public const DB_QUESTIONNAIRES_LANG_TBL = 'tbl_questionnaires_lang';
+    public const DB_QUESTIONNAIRES_TO_QUESTIONS_TBL = 'tbl_questionnaires_to_question';
 
-    const DB_QUESTIONS_TBL_PREFIX = 'question_';
-    const DB_QUESTIONS_LANG_TBL_PREFIX = 'questionlang_';
-    const DB_QUESTIONNAIRES_TBL_PREFIX = 'questionnaire_';
-    const DB_QUESTIONNAIRES_TBL_LANG_PREFIX = 'questionnairelang_';
-    const DB_QUESTIONNAIRES_TO_QUESTIONS_TBL_PREFIX = 'qtq_';
+    public const DB_QUESTIONS_TBL_PREFIX = 'question_';
+    public const DB_QUESTIONS_LANG_TBL_PREFIX = 'questionlang_';
+    public const DB_QUESTIONNAIRES_TBL_PREFIX = 'questionnaire_';
+    public const DB_QUESTIONNAIRES_TBL_LANG_PREFIX = 'questionnairelang_';
+    public const DB_QUESTIONNAIRES_TO_QUESTIONS_TBL_PREFIX = 'qtq_';
 
     private $db;
     private $langId;
@@ -34,7 +35,7 @@ class QuestionnairesSearch extends SearchBase
                 self::DB_QUESTIONNAIRES_LANG_TBL,
                 'LEFT OUTER JOIN',
                 'questionnaire_l.questionnairelang_questionnaire_id = questionnaire.questionnaire_id and
-			questionnaire_l.questionnairelang_lang_id = '.$this->langId,
+			questionnaire_l.questionnairelang_lang_id = ' . $this->langId,
                 'questionnaire_l'
             );
         }
@@ -57,7 +58,7 @@ class QuestionnairesSearch extends SearchBase
         }
         $this->joinTable(self::DB_QUESTIONS_TBL, 'INNER JOIN', 'q.question_id = qtq.qtq_question_id and q.question_deleted = 0', 'q');
         if ($langId) {
-            $this->joinTable(self::DB_QUESTIONS_LANG_TBL, 'LEFT OUTER JOIN', 'q.question_id = q_l.questionlang_question_id and q_l.questionlang_lang_id = '.$langId, 'q_l');
+            $this->joinTable(self::DB_QUESTIONS_LANG_TBL, 'LEFT OUTER JOIN', 'q.question_id = q_l.questionlang_question_id and q_l.questionlang_lang_id = ' . $langId, 'q_l');
         }
         $this->joinedQuestions = true;
     }
@@ -69,7 +70,7 @@ class QuestionnairesSearch extends SearchBase
         }
         $this->joinTable(self::DB_QUESTION_BANKS_TBL, 'LEFT JOIN', 'qb.qbank_id = q.question_qbank_id and qb.qbank_deleted = 0', 'qb');
         if ($langId) {
-            $this->joinTable(self::DB_QUESTION_BANKS_LANG_TBL, 'LEFT OUTER JOIN', 'qb.qbank_id = qb_l.qbanklang_qbank_id and qb_l.qbanklang_lang_id = '.$langId, 'qb_l');
+            $this->joinTable(self::DB_QUESTION_BANKS_LANG_TBL, 'LEFT OUTER JOIN', 'qb.qbank_id = qb_l.qbanklang_qbank_id and qb_l.qbanklang_lang_id = ' . $langId, 'qb_l');
         }
     }
 
@@ -95,7 +96,7 @@ class QuestionnairesSearch extends SearchBase
         }
         $this->joinTable(self::DB_QUESTIONS_TBL, 'LEFT OUTER JOIN', 'qta.qta_question_id = fq.question_id', 'fq');
         if ($langId) {
-            $this->joinTable(self::DB_QUESTIONS_LANG_TBL, 'LEFT OUTER JOIN', 'fq.question_id = fq_l.questionlang_question_id and fq_l.questionlang_lang_id = '.$langId, 'fq_l');
+            $this->joinTable(self::DB_QUESTIONS_LANG_TBL, 'LEFT OUTER JOIN', 'fq.question_id = fq_l.questionlang_question_id and fq_l.questionlang_lang_id = ' . $langId, 'fq_l');
         }
     }
 
@@ -109,7 +110,7 @@ class QuestionnairesSearch extends SearchBase
         $childSrchbase->addFld('COUNT(*) AS qnCount');
         $childSrchbase->addFld('qtq_questionnaire_id');
 
-        $this->joinTable('('.$childSrchbase->getQuery().')', 'LEFT OUTER JOIN', 's.qtq_questionnaire_id = questionnaire.questionnaire_id', 's');
+        $this->joinTable('(' . $childSrchbase->getQuery() . ')', 'LEFT OUTER JOIN', 's.qtq_questionnaire_id = questionnaire.questionnaire_id', 's');
     }
 
     public function countResponse()
@@ -121,7 +122,7 @@ class QuestionnairesSearch extends SearchBase
         $childSrchbase->addFld('COUNT(*) AS qFeedbackCount');
         $childSrchbase->addFld('qfeedback_questionnaire_id');
 
-        $this->joinTable('('.$childSrchbase->getQuery().')', 'LEFT OUTER JOIN', 'qfeedback_rs.qfeedback_questionnaire_id = questionnaire.questionnaire_id', 'qfeedback_rs');
+        $this->joinTable('(' . $childSrchbase->getQuery() . ')', 'LEFT OUTER JOIN', 'qfeedback_rs.qfeedback_questionnaire_id = questionnaire.questionnaire_id', 'qfeedback_rs');
     }
 
     public function addDateFromCondition($dateFrom)
@@ -130,7 +131,7 @@ class QuestionnairesSearch extends SearchBase
         $dateFrom = date('Y-m-d', strtotime($dateFrom));
 
         if ($dateFrom != '') {
-            $this->addCondition('questionnaire_start_date', '>=', $dateFrom. ' 00:00:00');
+            $this->addCondition('questionnaire_start_date', '>=', $dateFrom . ' 00:00:00');
         }
     }
 
@@ -140,7 +141,7 @@ class QuestionnairesSearch extends SearchBase
         $dateTo = date('Y-m-d', strtotime($dateTo));
 
         if ($dateTo != '') {
-            $this->addCondition('questionnaire_end_date', '<=', $dateTo. ' 23:59:59');
+            $this->addCondition('questionnaire_end_date', '<=', $dateTo . ' 23:59:59');
         }
     }
 }

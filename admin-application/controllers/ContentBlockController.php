@@ -1,4 +1,5 @@
 <?php
+
 class ContentBlockController extends AdminBaseController
 {
     public const IMPORT_INSTRUCTIONS = 1;
@@ -20,7 +21,7 @@ class ContentBlockController extends AdminBaseController
 
         switch ($action) {
             case 'importInstructions':
-                $nodes[] = array('title'=>Labels::getLabel('LBL_Import_instructions', $this->adminLangId));
+                $nodes[] = array('title' => Labels::getLabel('LBL_Import_instructions', $this->adminLangId));
                 break;
             case 'index':
                 $className = get_class($this);
@@ -28,7 +29,7 @@ class ContentBlockController extends AdminBaseController
                 array_pop($arr);
                 $urlController = implode('-', $arr);
                 $className = ucwords(implode(' ', $arr));
-                $nodes[] = array('title'=>$className);
+                $nodes[] = array('title' => $className);
                 break;
             default:
                 $nodes[] = array('title' => $action);
@@ -92,13 +93,13 @@ class ContentBlockController extends AdminBaseController
         $blockFrm = $this->getForm($epage_id, $this->adminLangId);
 
         if (0 < $epage_id) {
-            $data = Extrapage::getAttributesById($epage_id, array('epage_id','epage_identifier','epage_active'));
+            $data = Extrapage::getAttributesById($epage_id, array('epage_id', 'epage_identifier', 'epage_active'));
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
 
             /* url data[ */
-            $urlRow = UrlRewrite::getDataByOriginalUrl($this->rewriteUrl.$epage_id);
+            $urlRow = UrlRewrite::getDataByOriginalUrl($this->rewriteUrl . $epage_id);
             if (!empty($urlRow)) {
                 $data['urlrewrite_custom'] = $urlRow['urlrewrite_custom'];
             }
@@ -130,7 +131,7 @@ class ContentBlockController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $data = Extrapage::getAttributesById($epage_id, array('epage_id','epage_identifier'));
+        $data = Extrapage::getAttributesById($epage_id, array('epage_id', 'epage_identifier'));
         if ($data === false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
@@ -145,7 +146,7 @@ class ContentBlockController extends AdminBaseController
         }
 
         /* url data[ */
-        $originalUrl = $this->rewriteUrl.$epage_id;
+        $originalUrl = $this->rewriteUrl . $epage_id;
         if ($urlrewrite_custom == '') {
             UrlRewrite::remove($originalUrl);
         } else {
@@ -434,9 +435,9 @@ class ContentBlockController extends AdminBaseController
         $frm->addRequiredField(Labels::getLabel('LBL_Page_Title', $this->adminLangId), 'epage_label');
 
         if (array_key_exists($epage_id, Extrapage::getContentBlockArrWithBg($this->adminLangId))) {
-            if ($epage_id==Extrapage::SELLER_BANNER_SLOGAN) {
+            if ($epage_id == Extrapage::SELLER_BANNER_SLOGAN) {
                 $fileType = AttachedFile::FILETYPE_SELLER_PAGE_SLOGAN_BG_IMAGE;
-            } elseif ($epage_id==Extrapage::ADVERTISER_BANNER_SLOGAN) {
+            } elseif ($epage_id == Extrapage::ADVERTISER_BANNER_SLOGAN) {
                 $fileType = AttachedFile::FILETYPE_ADVERTISER_PAGE_SLOGAN_BG_IMAGE;
             } else {
                 $fileType = AttachedFile::FILETYPE_AFFILIATE_PAGE_SLOGAN_BG_IMAGE;
@@ -445,7 +446,7 @@ class ContentBlockController extends AdminBaseController
                 Labels::getLabel('LBL_Backgroud_Image', $this->adminLangId),
                 'cblock_bg_image',
                 Labels::getLabel('LBL_Upload_Image', $this->adminLangId),
-                array('class'=>'bgImageFile-Js','id'=>'cblock_bg_image','data-file_type'=>$fileType,'data-frm'=>'frmBlock')
+                array('class' => 'bgImageFile-Js', 'id' => 'cblock_bg_image', 'data-file_type' => $fileType, 'data-frm' => 'frmBlock')
             );
         }
 
@@ -473,7 +474,7 @@ class ContentBlockController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $allowedFileTypeArr = array(AttachedFile::FILETYPE_SELLER_PAGE_SLOGAN_BG_IMAGE,AttachedFile::FILETYPE_ADVERTISER_PAGE_SLOGAN_BG_IMAGE,AttachedFile::FILETYPE_AFFILIATE_PAGE_SLOGAN_BG_IMAGE);
+        $allowedFileTypeArr = array(AttachedFile::FILETYPE_SELLER_PAGE_SLOGAN_BG_IMAGE, AttachedFile::FILETYPE_ADVERTISER_PAGE_SLOGAN_BG_IMAGE, AttachedFile::FILETYPE_AFFILIATE_PAGE_SLOGAN_BG_IMAGE);
 
         if (!in_array($file_type, $allowedFileTypeArr)) {
             Message::addErrorMessage($this->str_invalid_request);
@@ -507,7 +508,7 @@ class ContentBlockController extends AdminBaseController
         $this->set('epage_id', $epage_id);
         $this->set('file_type', $file_type);
         $this->set('lang_id', $lang_id);
-        $this->set('msg', $_FILES['file']['name'].' '.Labels::getLabel('LBL_Uploaded_Successfully', $this->adminLangId));
+        $this->set('msg', $_FILES['file']['name'] . ' ' . Labels::getLabel('LBL_Uploaded_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 

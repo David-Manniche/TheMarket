@@ -1,4 +1,5 @@
 <?php
+
 class Brand extends MyAppModel
 {
     public const DB_TBL = 'tbl_brands';
@@ -24,23 +25,23 @@ class Brand extends MyAppModel
         $srch = new SearchBase(static::DB_TBL, 'b');
 
         if ($isDeleted == true) {
-            $srch->addCondition('b.'.static::DB_TBL_PREFIX.'deleted', '=', 0);
+            $srch->addCondition('b.' . static::DB_TBL_PREFIX . 'deleted', '=', 0);
         }
         if ($isActive == true) {
-            $srch->addCondition('b.'.static::DB_TBL_PREFIX.'active', '=', applicationConstants::ACTIVE);
+            $srch->addCondition('b.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
         }
 
         if ($langId > 0) {
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'b_l.'.static::DB_TBL_LANG_PREFIX.'brand_id = b.'.static::tblFld('id').' and
-			b_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
+                'b_l.' . static::DB_TBL_LANG_PREFIX . 'brand_id = b.' . static::tblFld('id') . ' and
+			b_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 'b_l'
             );
         }
 
-        $srch->addOrder('b.'.static::DB_TBL_PREFIX.'active', 'DESC');
+        $srch->addOrder('b.' . static::DB_TBL_PREFIX . 'active', 'DESC');
         return $srch;
     }
 
@@ -116,12 +117,12 @@ class Brand extends MyAppModel
 
     public function canRecordMarkDelete($id)
     {
-        $srch =$this->getSearchObject();
-        $srch->addCondition('b.'.static::DB_TBL_PREFIX.'id', '=', $id);
-        $srch->addFld('b.'.static::DB_TBL_PREFIX.'id');
+        $srch = $this->getSearchObject();
+        $srch->addCondition('b.' . static::DB_TBL_PREFIX . 'id', '=', $id);
+        $srch->addFld('b.' . static::DB_TBL_PREFIX . 'id');
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
-        if (!empty($row) && $row[static::DB_TBL_PREFIX.'id']==$id) {
+        if (!empty($row) && $row[static::DB_TBL_PREFIX . 'id'] == $id) {
             return true;
         }
         return false;
@@ -129,12 +130,12 @@ class Brand extends MyAppModel
 
     public function canRecordUpdateStatus($id)
     {
-        $srch =$this->getSearchObject();
-        $srch->addCondition('b.'.static::DB_TBL_PREFIX.'id', '=', $id);
-        $srch->addFld('b.'.static::DB_TBL_PREFIX.'id', 'b.'.static::DB_TBL_PREFIX.'active');
+        $srch = $this->getSearchObject();
+        $srch->addCondition('b.' . static::DB_TBL_PREFIX . 'id', '=', $id);
+        $srch->addFld('b.' . static::DB_TBL_PREFIX . 'id', 'b.' . static::DB_TBL_PREFIX . 'active');
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
-        if (!empty($row) && $row[static::DB_TBL_PREFIX.'id']==$id) {
+        if (!empty($row) && $row[static::DB_TBL_PREFIX . 'id'] == $id) {
             return $row;
         }
         return false;
@@ -146,9 +147,9 @@ class Brand extends MyAppModel
             return false;
         }
 
-        $originalUrl = Brand::REWRITE_URL_PREFIX.$this->mainTableRecordId;
+        $originalUrl = Brand::REWRITE_URL_PREFIX . $this->mainTableRecordId;
 
-        $seoUrl =  CommonHelper::seoUrl($keyword);
+        $seoUrl = CommonHelper::seoUrl($keyword);
 
         $customUrl = UrlRewrite::getValidSeoUrl($seoUrl, $originalUrl, $this->mainTableRecordId);
 
@@ -171,7 +172,7 @@ class Brand extends MyAppModel
         if ($langId == 0) {
             trigger_error(Labels::getLabel('ERR_Language_Id_not_specified.', CommonHelper::getLangId()), E_USER_ERROR);
         }
-        $arr=array(
+        $arr = array(
             static::BRAND_REQUEST_PENDING => Labels::getLabel('LBL_Pending', $langId),
             static::BRAND_REQUEST_APPROVED => Labels::getLabel('LBL_Approved', $langId),
             static::BRAND_REQUEST_CANCELLED => Labels::getLabel('LBL_Cancelled', $langId)
@@ -182,7 +183,7 @@ class Brand extends MyAppModel
     public static function getBrandName($brandId, $langId, $isActive = true)
     {
         $srch = static::getListingObj($langId, null, $isActive);
-        $srch->addCondition('b.'.static::DB_TBL_PREFIX.'id', '=', $brandId);
+        $srch->addCondition('b.' . static::DB_TBL_PREFIX . 'id', '=', $brandId);
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
         if ($row) {

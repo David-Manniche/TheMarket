@@ -1,35 +1,36 @@
 <?php
+
 class ShippingApi extends MyAppModel
 {
-    const DB_TBL = 'tbl_shipping_apis';
-    const DB_TBL_PREFIX = 'shippingapi_';
-    const DB_TBL_LANG = 'tbl_shipping_apis_lang';
-    const DB_TBL_LANG_PREFIX = 'shippingapilang_';
-    const DB_TBL_PRODUCT_SHIPPING_RATES = 'tbl_product_shipping_rates';
-    const DB_TBL_PRODUCT_SHIPPING_RATES_PREFIX = 'pship_';
-    const DB_TBL_PRODUCT_SHIPPING_DURATION = 'tbl_shipping_durations';
-    const DB_TBL_PRODUCT_SHIPPING_DURATION_PREFIX = 'sduration_';
+    public const DB_TBL = 'tbl_shipping_apis';
+    public const DB_TBL_PREFIX = 'shippingapi_';
+    public const DB_TBL_LANG = 'tbl_shipping_apis_lang';
+    public const DB_TBL_LANG_PREFIX = 'shippingapilang_';
+    public const DB_TBL_PRODUCT_SHIPPING_RATES = 'tbl_product_shipping_rates';
+    public const DB_TBL_PRODUCT_SHIPPING_RATES_PREFIX = 'pship_';
+    public const DB_TBL_PRODUCT_SHIPPING_DURATION = 'tbl_shipping_durations';
+    public const DB_TBL_PRODUCT_SHIPPING_DURATION_PREFIX = 'sduration_';
 
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
-        $this->db=FatApp::getDb();
+        $this->db = FatApp::getDb();
     }
     public static function getSearchObject($isActive = true, $langId = 0)
     {
         $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 'c');
 
-        if ($isActive==true) {
-            $srch->addCondition('c.'.static::DB_TBL_PREFIX.'active', '=', applicationConstants::ACTIVE);
+        if ($isActive == true) {
+            $srch->addCondition('c.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
         }
 
         if ($langId > 0) {
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'c_l.'.static::DB_TBL_LANG_PREFIX.'shippingapi_id = c.'.static::tblFld('id').' and
-			c_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
+                'c_l.' . static::DB_TBL_LANG_PREFIX . 'shippingapi_id = c.' . static::tblFld('id') . ' and
+			c_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 'c_l'
             );
         }
@@ -86,31 +87,31 @@ class ShippingApi extends MyAppModel
     public static function getShippingPrice($data = array(), $langId = 0, &$msg)
     {
         $langId = FatUtility::int($langId);
-        $langId = ($langId == 0)?1:$langId;
+        $langId = ($langId == 0) ? 1 : $langId;
 
         $mshipapi_sduration_id = isset($data['mshipapi_sduration_id']) ? FatUtility::int($data['mshipapi_sduration_id']) : 0;
         if (1 > $mshipapi_sduration_id) {
-            $msg =  Labels::getLabel('MSG_Invalid_Access', $langId);
+            $msg = Labels::getLabel('MSG_Invalid_Access', $langId);
             return false;
         }
 
         if (isset($data['weight']) && $data['weight'] != '' && (!isset($data['weight_unit']) || $data['weight_unit'] == '')) {
-            $msg =  Labels::getLabel('MSG_Invalid_Access', $langId);
+            $msg = Labels::getLabel('MSG_Invalid_Access', $langId);
             return false;
         }
 
-        $weight        = isset($data['weight'])    ?    CommonHelper::getWeightInGrams($data['weight_unit'], $data['weight'])    : 0;
-        $length     = isset($data['length'])    ?    $data['length']    : 0;
-        $width        = isset($data['width'])        ?    $data['width']    : 0;
-        $height        = isset($data['height'])    ?    $data['height']    : 0;
-        $zipCode    = isset($data['zipCode'])    ?    $data['zipCode']: '';
-        $state        = isset($data['state'])        ?    $data['state']    : 0;
-        $country    = isset($data['country'])    ?    $data['country']: 0;
+        $weight = isset($data['weight']) ? CommonHelper::getWeightInGrams($data['weight_unit'], $data['weight']) : 0;
+        $length = isset($data['length']) ? $data['length'] : 0;
+        $width = isset($data['width']) ? $data['width'] : 0;
+        $height = isset($data['height']) ? $data['height'] : 0;
+        $zipCode = isset($data['zipCode']) ? $data['zipCode'] : '';
+        $state = isset($data['state']) ? $data['state'] : 0;
+        $country = isset($data['country']) ? $data['country'] : 0;
 
         $volume = ($length * $width * $height);
         $volume = CommonHelper::getVolumeInCC($data['product_dimension_unit'], $volume);
         if ($volume == 0 || $weight == 0) {
-            $msg =  Labels::getLabel('MSG_Volume_and_weight_should_not_be_null', $langId);
+            $msg = Labels::getLabel('MSG_Volume_and_weight_should_not_be_null', $langId);
             return false;
         }
 
@@ -123,7 +124,7 @@ class ShippingApi extends MyAppModel
         );
         $srch->joinTable('tbl_shipping_durations', 'LEFT OUTER JOIN', 'msapi.mshipapi_sduration_id = sd.sduration_id', 'sd');
         $srch->addCondition('sd.sduration_deleted', '=', applicationConstants::NO);
-        $srch->addMultipleFields(array('mshipapi_id','mshipapi_cost','mshipapi_comment'));
+        $srch->addMultipleFields(array('mshipapi_id', 'mshipapi_cost', 'mshipapi_comment'));
         $srch->addCondition('mshipapi_sduration_id', '=', $mshipapi_sduration_id);
         $srch->addCondition('mshipapi_volume_upto', '>=', $volume);
         $srch->addCondition('mshipapi_weight_upto', '>=', $weight);
@@ -156,7 +157,7 @@ class ShippingApi extends MyAppModel
 
         $rs = $srch->getResultSet();
         if (!$rs) {
-            $msg =  Labels::getLabel('MSG_Invalid_Access', $langId);
+            $msg = Labels::getLabel('MSG_Invalid_Access', $langId);
             return false;
         }
 
@@ -206,8 +207,8 @@ class ShippingApi extends MyAppModel
         $db = FatApp::getDb();
         $srch = new SearchBase(static::DB_TBL . '_lang', 'ln');
         $prefix = substr(static::DB_TBL_PREFIX, 0, -1);
-        $srch->addCondition('ln.'.$prefix . 'lang_' . static::DB_TBL_PREFIX . 'id', '=', $recordId);
-        $srch->addCondition('ln.'.$prefix . 'lang_lang_id', '=', FatUtility::int($langId));
+        $srch->addCondition('ln.' . $prefix . 'lang_' . static::DB_TBL_PREFIX . 'id', '=', $recordId);
+        $srch->addCondition('ln.' . $prefix . 'lang_lang_id', '=', FatUtility::int($langId));
 
         if (null != $attr) {
             if (is_array($attr)) {

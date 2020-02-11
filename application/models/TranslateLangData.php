@@ -32,7 +32,7 @@ class TranslateLangData
         $this->translateObj = new TranslateApi($translateFromlang);
 
         if (0 < $toLangId) {
-            $languages = [Language::getAttributesById($toLangId, array('language_id','language_code'))];
+            $languages = [Language::getAttributesById($toLangId, array('language_id', 'language_code'))];
         } else {
             $languages = Language::getAllNames(false);
             unset($languages[$this->fromLangId]);
@@ -79,7 +79,7 @@ class TranslateLangData
             return false;
         }
         
-        if(isset($response['error'])){
+        if (isset($response['error'])) {
             $this->error = $response['error']['message'];
             return false;
         }

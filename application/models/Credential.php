@@ -1,8 +1,9 @@
 <?php
+
 class Credential extends MyAppModel
 {
-    const DB_TBL = 'tbl_user_credentials';
-    const DB_TBL_PREFIX = 'credential_';
+    public const DB_TBL = 'tbl_user_credentials';
+    public const DB_TBL_PREFIX = 'credential_';
     public function __construct($userId = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $userId);

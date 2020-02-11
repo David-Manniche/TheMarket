@@ -1,4 +1,5 @@
 <?php
+
 class CurrencyManagementController extends AdminBaseController
 {
     private $canView;
@@ -45,7 +46,7 @@ class CurrencyManagementController extends AdminBaseController
     {
         $this->objPrivilege->canViewCurrencyManagement();
 
-        $currencyId =  FatUtility::int($currencyId);
+        $currencyId = FatUtility::int($currencyId);
 
         $frm = $this->getForm($currencyId);
 
@@ -57,7 +58,7 @@ class CurrencyManagementController extends AdminBaseController
         
         $defaultCurrency = 0;
         if ($currencyId > 0) {
-            $data = Currency::getAttributesById($currencyId, array('currency_id','currency_code','currency_active','currency_symbol_left','currency_symbol_right','currency_value'));
+            $data = Currency::getAttributesById($currencyId, array('currency_id', 'currency_code', 'currency_active', 'currency_symbol_left', 'currency_symbol_right', 'currency_value'));
 
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
@@ -295,7 +296,7 @@ class CurrencyManagementController extends AdminBaseController
     private function getForm($currencyId = 0)
     {
         $this->objPrivilege->canViewCurrencyManagement();
-        $currencyId =  FatUtility::int($currencyId);
+        $currencyId = FatUtility::int($currencyId);
 
         $frm = new Form('frmCurrency');
         $frm->addHiddenField('', 'currency_id', $currencyId);

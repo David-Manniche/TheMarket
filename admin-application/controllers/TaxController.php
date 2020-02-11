@@ -1,4 +1,5 @@
 <?php
+
 class TaxController extends AdminBaseController
 {
     private $canView;
@@ -6,7 +7,7 @@ class TaxController extends AdminBaseController
 
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup');
+        $ajaxCallArray = array('deleteRecord', 'form', 'langForm', 'search', 'setup', 'langSetup');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }
@@ -31,7 +32,7 @@ class TaxController extends AdminBaseController
     {
         $frm = new Form('frmTaxSearch');
         $f1 = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
-        $fld_submit=$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;
@@ -44,7 +45,7 @@ class TaxController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
         $taxObj = new Tax();
@@ -53,11 +54,11 @@ class TaxController extends AdminBaseController
         $srch->addFld('t.*');
 
         if (!empty($post['keyword'])) {
-            $cnd = $srch->addCondition('t.taxcat_identifier', 'like', '%'.$post['keyword'].'%');
-            $cnd->attachCondition('t_l.taxcat_name', 'like', '%'.$post['keyword'].'%', 'OR');
+            $cnd = $srch->addCondition('t.taxcat_identifier', 'like', '%' . $post['keyword'] . '%');
+            $cnd->attachCondition('t_l.taxcat_name', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
 
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -68,7 +69,7 @@ class TaxController extends AdminBaseController
             'tv.taxval_taxcat_id = t.taxcat_id AND taxval_seller_user_id = 0',
             'tv'
         );
-        $srch->addMultipleFields(array("t_l.taxcat_name","tv.taxval_is_percent,tv.taxval_value"));
+        $srch->addMultipleFields(array("t_l.taxcat_name", "tv.taxval_is_percent,tv.taxval_value"));
         $srch->addOrder('taxcat_active', 'DESC');
         $rs = $srch->getResultSet();
         $records = array();
@@ -119,7 +120,7 @@ class TaxController extends AdminBaseController
 
         $taxvalOptions = array();
         $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
-        $options =  $taxStructure->getOptions($this->adminLangId);
+        $options = $taxStructure->getOptions($this->adminLangId);
         foreach ($options as $optionVal) {
             $taxvalOptions[$optionVal['taxstro_id']] = $post[$optionVal['taxstro_id']];
         }
@@ -199,7 +200,7 @@ class TaxController extends AdminBaseController
 
         $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach ($languages as $langId =>$langName) {
+        foreach ($languages as $langId => $langName) {
             if (!$row = Tax::getAttributesByLangId($langId, $taxcat_id)) {
                 $newTabLangId = $langId;
                 break;
@@ -230,9 +231,9 @@ class TaxController extends AdminBaseController
                 'tv'
             );
             $srch->addCondition('taxcat_id', '=', $taxcat_id);
-            $srch->addMultipleFields(array("t.*","t_l.taxcat_name","tv.taxval_is_percent,tv.taxval_value,tv.taxval_options"));
+            $srch->addMultipleFields(array("t.*", "t_l.taxcat_name", "tv.taxval_is_percent,tv.taxval_value,tv.taxval_options"));
 
-            $rs =  $srch->getResultSet();
+            $rs = $srch->getResultSet();
             $data = FatApp::getDb()->fetch($rs);
 
             if ($data === false) {
@@ -241,7 +242,7 @@ class TaxController extends AdminBaseController
 
             $taxOptions = json_decode($data['taxval_options'], true);
             $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
-            $options =  $taxStructure->getOptions($this->adminLangId);
+            $options = $taxStructure->getOptions($this->adminLangId);
             foreach ($options as $optionVal) {
                 $data[$optionVal['taxstro_id']] = $taxOptions[$optionVal['taxstro_id']];
             }
@@ -450,7 +451,7 @@ class TaxController extends AdminBaseController
 
         if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
             $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
-            $options =  $taxStructure->getOptions($this->adminLangId);
+            $options = $taxStructure->getOptions($this->adminLangId);
             foreach ($options as $optionVal) {
                 $frm->addRequiredField($optionVal['taxstro_name'], $optionVal['taxstro_id'], '', array('data-type' => $optionVal['taxstro_interstate']));
             }

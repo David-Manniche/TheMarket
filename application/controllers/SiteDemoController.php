@@ -1,4 +1,5 @@
 <?php
+
 class SiteDemoController extends MyAppController
 {
     public function __construct($action)

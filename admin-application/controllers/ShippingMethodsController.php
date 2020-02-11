@@ -1,4 +1,5 @@
 <?php
+
 class ShippingMethodsController extends AdminBaseController
 {
     public function __construct($action)
@@ -28,7 +29,7 @@ class ShippingMethodsController extends AdminBaseController
         $srch->addOrder('shippingapi_id', 'DESC');
 
         $rs = $srch->getResultSet();
-        $records =array();
+        $records = array();
         if ($rs) {
             $records = FatApp::getDb()->fetchAll($rs);
         }
@@ -41,7 +42,7 @@ class ShippingMethodsController extends AdminBaseController
     public function form($shippingApiId)
     {
         $this->objPrivilege->canViewShippingMethods();
-        $shippingApiId =  FatUtility::int($shippingApiId);
+        $shippingApiId = FatUtility::int($shippingApiId);
 
         $frm = $this->getForm($shippingApiId);
 
@@ -50,7 +51,7 @@ class ShippingMethodsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $data = ShippingMethods::getAttributesById($shippingApiId, array('shippingapi_id','shippingapi_identifier','shippingapi_active'));
+        $data = ShippingMethods::getAttributesById($shippingApiId, array('shippingapi_id', 'shippingapi_identifier', 'shippingapi_active'));
         if ($data === false) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
@@ -94,7 +95,7 @@ class ShippingMethodsController extends AdminBaseController
 
         if ($shippingapi_id > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = ShippingMethods::getAttributesByLangId($langId, $shippingapi_id)) {
                     $newTabLangId = $langId;
                     break;
@@ -166,9 +167,9 @@ class ShippingMethodsController extends AdminBaseController
         unset($post['lang_id']);
 
         $data = array(
-        'shippingapilang_lang_id'=>$lang_id,
-        'shippingapilang_shippingapi_id'=>$shippingapi_id,
-        'shippingapi_name'=>$post['shippingapi_name']
+        'shippingapilang_lang_id' => $lang_id,
+        'shippingapilang_shippingapi_id' => $shippingapi_id,
+        'shippingapi_name' => $post['shippingapi_name']
         );
 
         $sMethodObj = new ShippingMethods($shippingapi_id);
@@ -187,9 +188,9 @@ class ShippingMethodsController extends AdminBaseController
             }
         }
 
-        $newTabLangId=0;
+        $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach ($languages as $langId =>$langName) {
+        foreach ($languages as $langId => $langName) {
             if (!$row = PaymentMethods::getAttributesByLangId($langId, $shippingapi_id)) {
                 $newTabLangId = $langId;
                 break;
@@ -283,7 +284,7 @@ class ShippingMethodsController extends AdminBaseController
 
     private function getForm($shippingapi_id = 0)
     {
-        $shippingapi_id =  FatUtility::int($shippingapi_id);
+        $shippingapi_id = FatUtility::int($shippingapi_id);
 
         $frm = new Form('frmShippingMethod');
         $frm->addHiddenField('', 'shippingapi_id', $shippingapi_id);

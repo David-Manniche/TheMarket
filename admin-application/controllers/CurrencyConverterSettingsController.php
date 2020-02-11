@@ -1,4 +1,5 @@
 <?php
+
 class CurrencyConverterSettingsController extends CurrencyApiSettingsController
 {
     public static function getConfigurationKeys()

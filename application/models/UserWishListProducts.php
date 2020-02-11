@@ -1,8 +1,9 @@
 <?php
+
 class UserWishListProducts extends MyAppModel
 {
-    const DB_TBL = 'tbl_user_wish_list_products';
-    const DB_TBL_PREFIX = 'uwlp_';
+    public const DB_TBL = 'tbl_user_wish_list_products';
+    public const DB_TBL_PREFIX = 'uwlp_';
 
     public function __construct($id = 0)
     {

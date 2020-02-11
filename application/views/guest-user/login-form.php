@@ -46,15 +46,8 @@
                 </div>
             </div>
             <div id="sign-up" class="form-item sign-up <?php echo ($isRegisterForm == 1) ? 'is-opened' : '' ;?>">
-                <div class="form-side-inner">
-                    <div class="section-head">
-                        <div class="section__heading">
-                            <h2><?php echo Labels::getLabel('LBL_Create_Your_Account_For_Sign_Up', $siteLangId);?></h2>
-                        </div>
-                    </div>
-
-                    <?php $this->includeTemplate('guest-user/registerationFormTemplate.php', $registerdata, false); ?>
-                </div>
+                <?php $smsPluginStatus = $smsPluginStatus; ?>
+                <?php require_once CONF_VIEW_DIR_PATH . 'guest-user/register-form-detail.php'; ?>
             </div>
         </div>
     </section>
@@ -63,6 +56,5 @@
     $('.info-item a.btn').click(function() {
         $('.container-form').toggleClass("sign-up");
         $('#sign-up').toggleClass("is-opened");
-
     });
 </script>

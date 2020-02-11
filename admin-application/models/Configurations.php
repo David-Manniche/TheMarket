@@ -1,4 +1,5 @@
 <?php
+
 class Configurations extends FatModel
 {
     private $db;
@@ -49,11 +50,11 @@ class Configurations extends FatModel
     public static function getTabsArr()
     {
         $adminLangId = CommonHelper::getLangId();
-        $additionalArr  = array();
+        $additionalArr = array();
         /* if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT')) {
             $additionalArr = array(Configurations::FORM_IMPORT_EXPORT => Labels::getLabel('MSG_IMPORT_EXPORT', $adminLangId),);
         } */
-        $configurationArr =  array(
+        $configurationArr = array(
             Configurations::FORM_GENERAL => Labels::getLabel('MSG_General', $adminLangId),
             Configurations::FORM_LOCAL => Labels::getLabel('MSG_Local', $adminLangId),
             Configurations::FORM_SEO => Labels::getLabel('MSG_Seo', $adminLangId),
@@ -88,13 +89,13 @@ class Configurations extends FatModel
 
     public static function dateFormatMysqlArr()
     {
-        return array('%Y-%m-%d','%d/%m/%Y','%m-%d-%Y','%b %d, %Y');
+        return array('%Y-%m-%d', '%d/%m/%Y', '%m-%d-%Y', '%b %d, %Y');
     }
 
     public static function dateTimeZoneArr()
     {
         $arr = DateTimeZone::listIdentifiers();
-        $arr=array_combine($arr, $arr);
+        $arr = array_combine($arr, $arr);
         return $arr;
     }
 
@@ -112,7 +113,7 @@ class Configurations extends FatModel
     public function update($data)
     {
         foreach ($data as $key => $val) {
-            $assignValues = array('conf_name'=>$key,'conf_val'=>$val);
+            $assignValues = array('conf_name' => $key, 'conf_val' => $val);
             FatApp::getDb()->insertFromArray(
                 static::DB_TBL,
                 $assignValues,

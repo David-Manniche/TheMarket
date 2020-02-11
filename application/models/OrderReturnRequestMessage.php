@@ -1,8 +1,9 @@
 <?php
+
 class OrderReturnRequestMessage extends MyAppModel
 {
-    const DB_TBL = 'tbl_order_return_request_messages';
-    const DB_TBL_PREFIX = 'orrmsg_';
+    public const DB_TBL = 'tbl_order_return_request_messages';
+    public const DB_TBL_PREFIX = 'orrmsg_';
 
     public function __construct($id = 0)
     {

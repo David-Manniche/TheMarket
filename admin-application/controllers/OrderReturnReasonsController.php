@@ -1,4 +1,5 @@
 <?php
+
 class OrderReturnReasonsController extends AdminBaseController
 {
     private $canView;
@@ -6,7 +7,7 @@ class OrderReturnReasonsController extends AdminBaseController
 
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup');
+        $ajaxCallArray = array('deleteRecord', 'form', 'langForm', 'search', 'setup', 'langSetup');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }
@@ -30,7 +31,7 @@ class OrderReturnReasonsController extends AdminBaseController
 
         $srch = OrderReturnReason::getSearchObject($this->adminLangId);
 
-        $srch->addMultipleFields(array('orreason.*' , 'orreason_l.orreason_title'));
+        $srch->addMultipleFields(array('orreason.*', 'orreason_l.orreason_title'));
         $srch->addOrder('orreason_id', 'DESC');
 
         $rs = $srch->getResultSet();
@@ -49,12 +50,12 @@ class OrderReturnReasonsController extends AdminBaseController
     {
         $this->objPrivilege->canViewOrderReturnReasons();
 
-        $reasonId =  FatUtility::int($reasonId);
+        $reasonId = FatUtility::int($reasonId);
 
         $frm = $this->getForm($reasonId);
 
         if (0 < $reasonId) {
-            $data = OrderReturnReason::getAttributesById($reasonId, array('orreason_id','orreason_identifier'));
+            $data = OrderReturnReason::getAttributesById($reasonId, array('orreason_id', 'orreason_identifier'));
 
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
@@ -89,10 +90,10 @@ class OrderReturnReasonsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $newTabLangId=0;
-        if ($reasonId>0) {
+        $newTabLangId = 0;
+        if ($reasonId > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = OrderReturnReason::getAttributesByLangId($langId, $reasonId)) {
                     $newTabLangId = $langId;
                     break;
@@ -100,7 +101,7 @@ class OrderReturnReasonsController extends AdminBaseController
             }
         } else {
             $reasonId = $record->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
         $this->set('msg', $this->str_setup_successful);
         $this->set('reasonId', $reasonId);
@@ -162,9 +163,9 @@ class OrderReturnReasonsController extends AdminBaseController
         unset($post['lang_id']);
 
         $data = array(
-        'orreasonlang_lang_id'=>$lang_id,
-        'orreasonlang_orreason_id'=>$reasonId,
-        'orreason_title'=>$post['orreason_title'],
+        'orreasonlang_lang_id' => $lang_id,
+        'orreasonlang_orreason_id' => $reasonId,
+        'orreason_title' => $post['orreason_title'],
         // 'orreason_description'=>$post['orreason_description']
         );
 
@@ -186,7 +187,7 @@ class OrderReturnReasonsController extends AdminBaseController
 
         $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach ($languages as $langId =>$langName) {
+        foreach ($languages as $langId => $langName) {
             if (!$row = OrderReturnReason::getAttributesByLangId($langId, $reasonId)) {
                 $newTabLangId = $langId;
                 break;
@@ -202,7 +203,7 @@ class OrderReturnReasonsController extends AdminBaseController
     private function getForm($reasonId = 0)
     {
         $this->objPrivilege->canViewOrderReturnReasons();
-        $reasonId =  FatUtility::int($reasonId);
+        $reasonId = FatUtility::int($reasonId);
 
         $frm = new Form('frmOrderReturnReason');
         $frm->addHiddenField('', 'orreason_id', $reasonId);
@@ -282,5 +283,4 @@ class OrderReturnReasonsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
     }
-
 }

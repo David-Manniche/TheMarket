@@ -1,22 +1,23 @@
 <?php
+
 class Tax extends MyAppModel
 {
-    const DB_TBL = 'tbl_tax_categories';
-    const DB_TBL_PREFIX = 'taxcat_';
+    public const DB_TBL = 'tbl_tax_categories';
+    public const DB_TBL_PREFIX = 'taxcat_';
 
-    const DB_TBL_LANG = 'tbl_tax_categories_lang';
-    const DB_TBL_LANG_PREFIX = 'taxcatlang_';
+    public const DB_TBL_LANG = 'tbl_tax_categories_lang';
+    public const DB_TBL_LANG_PREFIX = 'taxcatlang_';
 
-    const DB_TBL_VALUES = 'tbl_tax_values';
-    const DB_TBL_VALUES_PREFIX = 'taxval_';
+    public const DB_TBL_VALUES = 'tbl_tax_values';
+    public const DB_TBL_VALUES_PREFIX = 'taxval_';
 
-    const DB_TBL_PRODUCT_TO_TAX = 'tbl_product_to_tax';
-    const DB_TBL_PRODUCT_TO_TAX_PREFIX = 'ptt__';
+    public const DB_TBL_PRODUCT_TO_TAX = 'tbl_product_to_tax';
+    public const DB_TBL_PRODUCT_TO_TAX_PREFIX = 'ptt__';
 
     private $db;
 
-    const TYPE_PERCENTAGE = 1;
-    const TYPE_FIXED = 0;
+    public const TYPE_PERCENTAGE = 1;
+    public const TYPE_FIXED = 0;
 
     public function __construct($id = 0)
     {
@@ -57,15 +58,15 @@ class Tax extends MyAppModel
         $srch = new SearchBase(static::DB_TBL, 't');
 
         if ($isActive == true) {
-            $srch->addCondition('t.'.static::DB_TBL_PREFIX.'active', '=', applicationConstants::ACTIVE);
+            $srch->addCondition('t.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
         }
 
         if ($langId > 0) {
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                't_l.'.static::DB_TBL_LANG_PREFIX.'taxcat_id = t.'.static::tblFld('id').' and
-			t_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
+                't_l.' . static::DB_TBL_LANG_PREFIX . 'taxcat_id = t.' . static::tblFld('id') . ' and
+			t_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 't_l'
             );
         }
@@ -171,8 +172,8 @@ class Tax extends MyAppModel
     {
         unset($data['taxcat_id']);
         $assignValues = array(
-        'taxcat_identifier' =>$data['taxcat_identifier'],
-        'taxcat_active' =>$data['taxcat_active'],
+        'taxcat_identifier' => $data['taxcat_identifier'],
+        'taxcat_active' => $data['taxcat_active'],
         'taxcat_deleted' => 0,
         'taxcat_last_updated' => date('Y-m-d H:i:s')
         );
@@ -196,11 +197,11 @@ class Tax extends MyAppModel
     public function canRecordMarkDelete($id)
     {
         $srch = $this->getSearchObject(0, false);
-        $srch->addCondition('t.'.static::DB_TBL_PREFIX.'id', '=', $id);
-        $srch->addFld('t.'.static::DB_TBL_PREFIX.'id');
+        $srch->addCondition('t.' . static::DB_TBL_PREFIX . 'id', '=', $id);
+        $srch->addFld('t.' . static::DB_TBL_PREFIX . 'id');
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
-        if (!empty($row) && $row[static::DB_TBL_PREFIX.'id'] == $id) {
+        if (!empty($row) && $row[static::DB_TBL_PREFIX . 'id'] == $id) {
             return true;
         }
         return false;
@@ -214,7 +215,7 @@ class Tax extends MyAppModel
 
         $taxRates = array();
         $taxObj = self::getTaxCatObjByProductId($productId, $langId);
-        $taxObj->addMultipleFields(array('IFNULL(taxcat_name,taxcat_identifier) as taxcat_name','ptt_seller_user_id','ptt_taxcat_id','ptt_product_id','taxval_is_percent','taxval_value','taxval_options'));
+        $taxObj->addMultipleFields(array('IFNULL(taxcat_name,taxcat_identifier) as taxcat_name', 'ptt_seller_user_id', 'ptt_taxcat_id', 'ptt_product_id', 'taxval_is_percent', 'taxval_value', 'taxval_options'));
         $taxObj->doNotCalculateRecords();
 
         $cnd = $taxObj->addCondition('ptt_seller_user_id', '=', 0);
@@ -238,7 +239,7 @@ class Tax extends MyAppModel
 
     public function calculateTaxRates($productId, $prodPrice, $sellerId, $langId, $qty = 1, $extraDiscounts = array(), $shipFromStateId = 0, $shipToStateId = 0)
     {
-        $tax = 0 ;
+        $tax = 0;
         $res = $this->getTaxRates($productId, $sellerId, $langId);
         if (empty($res)) {
             return $tax;
@@ -257,11 +258,11 @@ class Tax extends MyAppModel
             $shipFromStateId = FatUtility::int($shipFromStateId);
             $shipToStateId = FatUtility::int($shipToStateId);
 
-            $shipFromStateId = (1 > $shipFromStateId) ? FatApp::getConfig('CONF_STATE', FatUtility::VAR_INT, 0): $shipFromStateId;
+            $shipFromStateId = (1 > $shipFromStateId) ? FatApp::getConfig('CONF_STATE', FatUtility::VAR_INT, 0) : $shipFromStateId;
 
             $taxOptions = json_decode($res['taxval_options'], true);
             $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
-            $options =  $taxStructure->getOptions($langId);
+            $options = $taxStructure->getOptions($langId);
             foreach ($options as $optionVal) {
                 if ($shipFromStateId != $shipToStateId && $optionVal['taxstro_interstate'] == applicationConstants::YES) {
                     $data['options'][$optionVal['taxstro_id']]['name'] = $optionVal['taxstro_name'];
@@ -281,19 +282,19 @@ class Tax extends MyAppModel
             }
         } else {
             $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
-            $structureName =  $taxStructure->getName($langId);
+            $structureName = $taxStructure->getName($langId);
             $data['options'][-1]['name'] = Labels::getLabel('LBL_Tax', $langId);
             if (array_key_exists('taxstr_name', $structureName) && $structureName['taxstr_name'] != '') {
                 $data['options'][-1]['name'] = $structureName['taxstr_name'];
             }
-            $data['options'][-1]['value']= $tax;
+            $data['options'][-1]['value'] = $tax;
         }
         return $data;
     }
 
     public static function getTaxCatByProductId($productId = 0, $userId = 0, $langId = 0, $fields = array())
     {
-        $taxData =  array();
+        $taxData = array();
         $taxObj = static::getTaxCatObjByProductId($productId, $langId);
         $taxObj->addCondition('ptt_seller_user_id', '=', $userId);
         if ($fields) {
@@ -318,7 +319,7 @@ class Tax extends MyAppModel
         }
 
         $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
-        $options =  $taxStructure->getOptions($langId);
+        $options = $taxStructure->getOptions($langId);
         $post = FatApp::getPostedData();
 
         $sameStateSum = 0;

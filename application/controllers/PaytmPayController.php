@@ -1,4 +1,5 @@
 <?php
+
 require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/paytm/PaytmKit/lib/encdec_paytm.php';
 class PaytmPayController extends PaymentController
 {
@@ -52,7 +53,7 @@ class PaytmPayController extends PaymentController
         $paymentSettings = $pmObj->getPaymentSettings();
         $post = FatApp::getPostedData();
 
-        $request ='';
+        $request = '';
         foreach ($post as $key => $value) {
             $request .= '&' . $key . '=' . urlencode(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
         }
@@ -152,7 +153,7 @@ class PaytmPayController extends PaymentController
 
         $parameters = array(
         "MID" => $paymentSettings["merchant_id"],
-        "ORDER_ID"  => date("ymdhis") . "_" . $orderId,
+        "ORDER_ID" => date("ymdhis") . "_" . $orderId,
         "CUST_ID" => $orderInfo['customer_id'],
         "TXN_AMOUNT" => $paymentGatewayCharge,
         "CHANNEL_ID" => $paymentSettings['merchant_channel_id'],

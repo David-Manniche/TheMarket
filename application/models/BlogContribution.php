@@ -1,8 +1,9 @@
 <?php
+
 class BlogContribution extends MyAppModel
 {
-    const DB_TBL = 'tbl_blog_contributions';
-    const DB_TBL_PREFIX = 'bcontributions_';
+    public const DB_TBL = 'tbl_blog_contributions';
+    public const DB_TBL_PREFIX = 'bcontributions_';
 
     private $db;
 

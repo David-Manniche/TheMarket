@@ -1,11 +1,12 @@
 <?php
+
 class SubscriptionCart extends FatModel
 {
     private $subscriptions = array();
     private $SYSTEM_ARR = array();
     private $warning;
 
-    const SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT = 'SSP_'; /* SPP stands for Seller Package Plan */
+    public const SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT = 'SSP_'; /* SPP stands for Seller Package Plan */
     /* SPP stands for Seller Package Plan */
 
 
@@ -21,12 +22,12 @@ class SubscriptionCart extends FatModel
         }
 
         $this->scart_user_id = session_id();
-        if (UserAuthentication::isUserLogged() || ($user_id > 0)) {            
+        if (UserAuthentication::isUserLogged() || ($user_id > 0)) {
             if ($user_id > 0) {
                 $this->scart_user_id = $user_id;
-            }else{
+            } else {
                 $this->scart_user_id = UserAuthentication::getLoggedUserId();
-            }                
+            }
         }
 
         $srch = new SearchBase('tbl_user_cart');
@@ -52,7 +53,7 @@ class SubscriptionCart extends FatModel
     public static function getCartKeyPrefixArr()
     {
         return array(
-        static::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT =>    static::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT,
+        static::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT => static::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT,
 
         );
     }
@@ -85,11 +86,11 @@ class SubscriptionCart extends FatModel
         $this->subscription = array();
         $spplan_id = FatUtility::int($spplan_id);
 
-        $this->SYSTEM_ARR['subscription_cart']=array();
-        $this->SYSTEM_ARR['subscription_shopping_cart']=array();
-        $key = static::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT .$spplan_id;
+        $this->SYSTEM_ARR['subscription_cart'] = array();
+        $this->SYSTEM_ARR['subscription_shopping_cart'] = array();
+        $key = static::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT . $spplan_id;
         $key = base64_encode(serialize($key));
-        $this->SYSTEM_ARR['subscription_cart'][$key] =1;
+        $this->SYSTEM_ARR['subscription_cart'][$key] = 1;
         $this->updateUserSubscriptionCart();
 
 
@@ -98,18 +99,18 @@ class SubscriptionCart extends FatModel
 
     public function adjustPreviousPlan($langId)
     {
-        $adjustedAmount=0;
+        $adjustedAmount = 0;
         $userId = UserAuthentication::getLoggedUserId();
         if (FatApp::getConfig('CONF_ENABLE_ADJUST_AMOUNT_CHANGE_PLAN')) {
             $currentActivePlanDetails = OrderSubscription:: getUserCurrentActivePlanDetails(
                 $langId,
                 UserAuthentication::getLoggedUserId(),
                 array(
-                OrderSubscription::DB_TBL_PREFIX.'plan_id',
-                OrderSubscription::DB_TBL_PREFIX.'till_date',
-                OrderSubscription::DB_TBL_PREFIX.'from_date',
-                OrderSubscription::DB_TBL_PREFIX.'price',
-                SellerPackages::DB_TBL_PREFIX.'type'
+                OrderSubscription::DB_TBL_PREFIX . 'plan_id',
+                OrderSubscription::DB_TBL_PREFIX . 'till_date',
+                OrderSubscription::DB_TBL_PREFIX . 'from_date',
+                OrderSubscription::DB_TBL_PREFIX . 'price',
+                SellerPackages::DB_TBL_PREFIX . 'type'
                 )
             );
             $adjustedAmount = 0;
@@ -169,7 +170,7 @@ class SubscriptionCart extends FatModel
         $susbscriptions = $this->getSubscription($this->scart_lang_id);
 
         foreach ($susbscriptions as $subscription) {
-            $cartTotal = $subscription[SellerPackagePlans::DB_TBL_PREFIX.'price'];
+            $cartTotal = $subscription[SellerPackagePlans::DB_TBL_PREFIX . 'price'];
         }
 
 
@@ -195,7 +196,7 @@ class SubscriptionCart extends FatModel
         $orderNetAmount = 0;
         if (is_array($susbscriptions) && count($susbscriptions)) {
             foreach ($susbscriptions as $susbscription) {
-                $cartTotal += $susbscription[SellerPackagePlans::DB_TBL_PREFIX.'price'];
+                $cartTotal += $susbscription[SellerPackagePlans::DB_TBL_PREFIX . 'price'];
             }
         }
 
@@ -212,13 +213,13 @@ class SubscriptionCart extends FatModel
 
 
         $cartSummary = array(
-        'cartTotal'        =>    $cartTotal,
+        'cartTotal' => $cartTotal,
 
-        'cartDiscounts'    =>    $cartDiscounts,
-        'cartWalletSelected'    =>    $this->isCartUserWalletSelected(),
-        'cartRewardPoints'    =>    $cartRewardPoints,
-        'cartAdjustableAmount'    =>    $cartAdjustableAmount,
-        'orderNetAmount'    =>    $orderNetAmount,
+        'cartDiscounts' => $cartDiscounts,
+        'cartWalletSelected' => $this->isCartUserWalletSelected(),
+        'cartRewardPoints' => $cartRewardPoints,
+        'cartAdjustableAmount' => $cartAdjustableAmount,
+        'orderNetAmount' => $orderNetAmount,
         'WalletAmountCharge' => $WalletAmountCharge,
         'orderPaymentGatewayCharges' => $orderPaymentGatewayCharges,
         );
@@ -242,7 +243,7 @@ class SubscriptionCart extends FatModel
             } else {
                 $subTotal = 0;
                 foreach ($this->getSubscription($this->scart_lang_id) as $product) {
-                    if (in_array($product[SellerPackagePlans::DB_TBL_PREFIX.'id'], $couponInfo['products'])) {
+                    if (in_array($product[SellerPackagePlans::DB_TBL_PREFIX . 'id'], $couponInfo['products'])) {
                         $subTotal += $product['spplan_price'];
                     }
                 }
@@ -258,7 +259,7 @@ class SubscriptionCart extends FatModel
                 if (empty($couponInfo['products'])) {
                     $status = true;
                 } else {
-                    if (in_array($product[SellerPackagePlans::DB_TBL_PREFIX.'id'], $couponInfo['products'])) {
+                    if (in_array($product[SellerPackagePlans::DB_TBL_PREFIX . 'id'], $couponInfo['products'])) {
                         $status = true;
                     } else {
                         $status = false;
@@ -289,25 +290,25 @@ class SubscriptionCart extends FatModel
             $discountedProdGroupIds = array();
             if (empty($couponInfo['products'])) {
                 foreach ($this->getSubscription($this->scart_lang_id) as $product) {
-                    $totalSelProdDiscount = round(($discountTotal*$product['spplan_price'])/$subTotal, 2);
+                    $totalSelProdDiscount = round(($discountTotal * $product['spplan_price']) / $subTotal, 2);
                     $selProdDiscountTotal += $totalSelProdDiscount;
-                    $discountedSelProdIds[$product[SellerPackagePlans::DB_TBL_PREFIX.'id']] = round(($totalSelProdDiscount), 2);
+                    $discountedSelProdIds[$product[SellerPackagePlans::DB_TBL_PREFIX . 'id']] = round(($totalSelProdDiscount), 2);
                 }
             } else {
                 foreach ($this->getSubscription($this->scart_lang_id) as $product) {
-                    if (in_array($product[SellerPackagePlans::DB_TBL_PREFIX.'id'], $couponInfo['products'])) {
-                        $totalSelProdDiscount = round(($discountTotal*$product['spplan_price'])/$subTotal, 2);
+                    if (in_array($product[SellerPackagePlans::DB_TBL_PREFIX . 'id'], $couponInfo['products'])) {
+                        $totalSelProdDiscount = round(($discountTotal * $product['spplan_price']) / $subTotal, 2);
                         $selProdDiscountTotal += $totalSelProdDiscount;
-                        $discountedSelProdIds[$product[SellerPackagePlans::DB_TBL_PREFIX.'id']] = round(($totalSelProdDiscount), 2);
+                        $discountedSelProdIds[$product[SellerPackagePlans::DB_TBL_PREFIX . 'id']] = round(($totalSelProdDiscount), 2);
                     }
                 }
             }
             /*]*/
 
             $labelArr = array(
-            'coupon_label'=>$couponInfo["coupon_title"],
-            'coupon_discount_in_percent'=>$couponInfo["coupon_discount_in_percent"],
-            'max_discount_value' =>$couponInfo["coupon_max_discount_value"]
+            'coupon_label' => $couponInfo["coupon_title"],
+            'coupon_discount_in_percent' => $couponInfo["coupon_discount_in_percent"],
+            'max_discount_value' => $couponInfo["coupon_max_discount_value"]
             );
 
             // If discount greater than total
@@ -316,13 +317,13 @@ class SubscriptionCart extends FatModel
             }
 
             $couponData = array(
-            'coupon_discount_type'       => $couponInfo["coupon_type"],
+            'coupon_discount_type' => $couponInfo["coupon_type"],
             'coupon_code' => $couponInfo["coupon_code"],
-            'coupon_discount_value'      =>$couponInfo["coupon_discount_value"],
-            'coupon_discount_total'      => $selProdDiscountTotal,
-            'coupon_info'      => json_encode($labelArr),
-            'discountedSelProdIds'=>$discountedSelProdIds,
-            'discountedProdGroupIds'=>$discountedProdGroupIds,
+            'coupon_discount_value' => $couponInfo["coupon_discount_value"],
+            'coupon_discount_total' => $selProdDiscountTotal,
+            'coupon_info' => json_encode($labelArr),
+            'discountedSelProdIds' => $discountedSelProdIds,
+            'discountedProdGroupIds' => $discountedProdGroupIds,
             );
         }
 
@@ -355,7 +356,7 @@ class SubscriptionCart extends FatModel
 
     public function getCartRewardPoint()
     {
-        return isset($this->SYSTEM_ARR['subscription_shopping_cart']['reward_points'])?$this->SYSTEM_ARR['subscription_shopping_cart']['reward_points']:0;
+        return isset($this->SYSTEM_ARR['subscription_shopping_cart']['reward_points']) ? $this->SYSTEM_ARR['subscription_shopping_cart']['reward_points'] : 0;
     }
 
     public function updateCartDiscountCoupon($val)
@@ -367,17 +368,17 @@ class SubscriptionCart extends FatModel
 
     public function getAdjustableAmount()
     {
-        return isset($this->SYSTEM_ARR['subscription_shopping_cart']['adjusted_amount'])?$this->SYSTEM_ARR['subscription_shopping_cart']['adjusted_amount']:0;
+        return isset($this->SYSTEM_ARR['subscription_shopping_cart']['adjusted_amount']) ? $this->SYSTEM_ARR['subscription_shopping_cart']['adjusted_amount'] : 0;
     }
 
     public function updateAdjustableAmount($adjustableAmount)
     {
-        $subTotal =0;
+        $subTotal = 0;
         foreach ($this->getSubscription($this->scart_lang_id) as $product) {
             $subTotal += $product['spplan_price'];
         }
-        $maxAdjustableAmount=  $subTotal;
-        if ($maxAdjustableAmount<$adjustableAmount) {
+        $maxAdjustableAmount = $subTotal;
+        if ($maxAdjustableAmount < $adjustableAmount) {
             $adjustableAmount = $maxAdjustableAmount;
         }
 
@@ -395,7 +396,7 @@ class SubscriptionCart extends FatModel
 
     public function getSubscriptionCartDiscountCoupon()
     {
-        return isset($this->SYSTEM_ARR['subscription_shopping_cart']['discount_coupon'])?$this->SYSTEM_ARR['subscription_shopping_cart']['discount_coupon']:'';
+        return isset($this->SYSTEM_ARR['subscription_shopping_cart']['discount_coupon']) ? $this->SYSTEM_ARR['subscription_shopping_cart']['discount_coupon'] : '';
     }
 
     public function isDiscountCouponSet()
@@ -405,7 +406,7 @@ class SubscriptionCart extends FatModel
 
     public function isCartUserWalletSelected()
     {
-        return (isset($this->SYSTEM_ARR['subscription_shopping_cart']['Pay_from_wallet']) && intval($this->SYSTEM_ARR['subscription_shopping_cart']['Pay_from_wallet'])==1) ? 1: 0;
+        return (isset($this->SYSTEM_ARR['subscription_shopping_cart']['Pay_from_wallet']) && intval($this->SYSTEM_ARR['subscription_shopping_cart']['Pay_from_wallet']) == 1) ? 1 : 0;
     }
 
     public function updateUserSubscriptionCart()
@@ -419,7 +420,7 @@ class SubscriptionCart extends FatModel
                 $cart_arr["subscription_shopping_cart"] = $this->SYSTEM_ARR['subscription_shopping_cart'];
             }
             $cart_arr = serialize($cart_arr);
-            $record->assignValues(array("usercart_user_id" => $this->scart_user_id, 'usercart_type'=> Cart::TYPE_SUBSCRIPTION, "usercart_details" => $cart_arr, "usercart_added_date" => date('Y-m-d H:i:s') ));
+            $record->assignValues(array("usercart_user_id" => $this->scart_user_id, 'usercart_type' => Cart::TYPE_SUBSCRIPTION, "usercart_details" => $cart_arr, "usercart_added_date" => date('Y-m-d H:i:s') ));
             if (!$record->addNew(array(), array( 'usercart_details' => $cart_arr ))) {
                 Message::addErrorMessage($record->getError());
                 throw new Exception('');
@@ -471,7 +472,7 @@ class SubscriptionCart extends FatModel
 
             $cartObj->add($spplan_id);
 
-            $db->deleteRecords('tbl_user_cart', array('smt'=>'`usercart_user_id`=? and usercart_type=?', 'vals'=>array(session_id(),CART::TYPE_SUBSCRIPTION)));
+            $db->deleteRecords('tbl_user_cart', array('smt' => '`usercart_user_id`=? and usercart_type=?', 'vals' => array(session_id(), CART::TYPE_SUBSCRIPTION)));
         }
         $cartObj->updateUserSubscriptionCart();
     }

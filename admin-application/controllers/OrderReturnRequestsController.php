@@ -1,32 +1,32 @@
 <?php
+
 class OrderReturnRequestsController extends AdminBaseController
 {
-    
-    public function __construct($action) 
+    public function __construct($action)
     {
         $ajaxCallArray = array();
-        if(!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
+        if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
-        } 
-        parent::__construct($action);        
+        }
+        parent::__construct($action);
         $this->admin_id = AdminAuthentication::getLoggedAdminId();
         $this->canView = $this->objPrivilege->canViewOrderReturnRequests($this->admin_id, true);
         $this->canEdit = $this->objPrivilege->canEditOrderReturnRequests($this->admin_id, true);
         $this->set("canView", $this->canView);
-        $this->set("canEdit", $this->canEdit);    
+        $this->set("canEdit", $this->canEdit);
     }
     
-    public function index() 
+    public function index()
     {
         $this->objPrivilege->canViewOrderReturnRequests();
         $frmSearch = $this->getOrderReturnRequestSearchForm($this->adminLangId);
         $data = FatApp::getPostedData();
-        if($data) {
+        if ($data) {
             $data['orrequest_id'] = FatUtility::int($data['id']);
             unset($data['id']);
             $frmSearch->fill($data);
         }
-        $this->set('frmSearch', $frmSearch);        
+        $this->set('frmSearch', $frmSearch);
         $this->_template->render();
     }
     
@@ -48,67 +48,67 @@ class OrderReturnRequestsController extends AdminBaseController
         $srch->joinOrderSellerUser();
         $srch->addOrderProductCharges();
         $srch->addMultipleFields(
-            array( 'orrequest_id', 'orrequest_qty', 'orrequest_type', 'orrequest_returnreason_id', 
+            array( 'orrequest_id', 'orrequest_qty', 'orrequest_type', 'orrequest_returnreason_id',
             'orrequest_date', 'orrequest_status', 'orrequest_reference', 'buyer.user_name as buyer_name', 'buyer_cred.credential_username as buyer_username',
-            'buyer_cred.credential_email as buyer_email', 'buyer.user_phone as buyer_phone', 'seller.user_name as seller_name', 
+            'buyer_cred.credential_email as buyer_email', 'buyer.user_phone as buyer_phone', 'seller.user_name as seller_name',
             'seller.user_phone as seller_phone', 'seller_cred.credential_username as seller_username', 'seller_cred.credential_email as seller_email',
-            'op_product_name','op_selprod_title', 'op_selprod_options', 'op_brand_name', 'op_shop_name',  'op_qty', 'op_unit_price','order_tax_charged','op_other_charges','op_refund_shipping' ) 
+            'op_product_name', 'op_selprod_title', 'op_selprod_options', 'op_brand_name', 'op_shop_name',  'op_qty', 'op_unit_price', 'order_tax_charged', 'op_other_charges', 'op_refund_shipping' )
         );
         $srch->addOrder('orrequest_date', 'DESC');
         $srch->setPageNumber($page);
         $srch->setPageSize($pageSize);
         
-        if(isset($post['buyer']) && $post['buyer'] != '' ) {
+        if (isset($post['buyer']) && $post['buyer'] != '') {
             $buyer = $post['buyer'];
-            $cnd = $srch->addCondition('buyer.user_name', 'LIKE', "%". $buyer. "%");
-            $cnd->attachCondition('buyer_cred.credential_username', 'LIKE', "%". $buyer. "%");
-            $cnd->attachCondition('buyer_cred.credential_email', 'LIKE', "%". $buyer. "%");
-            $cnd->attachCondition('buyer.user_phone', 'LIKE', "%". $buyer. "%");
+            $cnd = $srch->addCondition('buyer.user_name', 'LIKE', "%" . $buyer . "%");
+            $cnd->attachCondition('buyer_cred.credential_username', 'LIKE', "%" . $buyer . "%");
+            $cnd->attachCondition('buyer_cred.credential_email', 'LIKE', "%" . $buyer . "%");
+            $cnd->attachCondition('buyer.user_phone', 'LIKE', "%" . $buyer . "%");
         }
         
-        if(isset($post['seller']) && $post['seller'] != '' ) {
+        if (isset($post['seller']) && $post['seller'] != '') {
             $seller = $post['seller'];
-            $cnd = $srch->addCondition('seller.user_name', 'LIKE', "%" . $seller. "%");
-            $cnd->attachCondition('seller_cred.credential_username', 'LIKE', "%" . $seller. "%");
-            $cnd->attachCondition('seller_cred.credential_email', 'LIKE', "%" . $seller. "%");
-            $cnd->attachCondition('seller.user_phone', 'LIKE', "%" . $seller. "%");
+            $cnd = $srch->addCondition('seller.user_name', 'LIKE', "%" . $seller . "%");
+            $cnd->attachCondition('seller_cred.credential_username', 'LIKE', "%" . $seller . "%");
+            $cnd->attachCondition('seller_cred.credential_email', 'LIKE', "%" . $seller . "%");
+            $cnd->attachCondition('seller.user_phone', 'LIKE', "%" . $seller . "%");
         }
         
-        if(isset($post['product']) && $post['product'] != '' ) {
+        if (isset($post['product']) && $post['product'] != '') {
             $product = $post['product'];
-            $cnd = $srch->addCondition('op_product_name', 'LIKE', "%" . $product. "%");
-            $cnd->attachCondition('op_selprod_title', 'LIKE', "%" . $product. "%");
-            $cnd->attachCondition('op_selprod_options', 'LIKE', "%" . $product. "%");
-            $cnd->attachCondition('op_brand_name', 'LIKE', "%" . $product. "%");
-            $cnd->attachCondition('op_shop_name', 'LIKE', "%" . $product. "%");
+            $cnd = $srch->addCondition('op_product_name', 'LIKE', "%" . $product . "%");
+            $cnd->attachCondition('op_selprod_title', 'LIKE', "%" . $product . "%");
+            $cnd->attachCondition('op_selprod_options', 'LIKE', "%" . $product . "%");
+            $cnd->attachCondition('op_brand_name', 'LIKE', "%" . $product . "%");
+            $cnd->attachCondition('op_shop_name', 'LIKE', "%" . $product . "%");
         }
         
-        if(isset($post['ref_no']) && $post['ref_no'] != '' ) {
+        if (isset($post['ref_no']) && $post['ref_no'] != '') {
             $ref_no = FatUtility::convertToType($post['ref_no'], FatUtility::VAR_STRING);
             $srch->addCondition('orrequest_reference', 'like', "%$ref_no%");
         }
         
-        if(isset($post['orrequest_status']) && $post['orrequest_status'] != '' ) {
+        if (isset($post['orrequest_status']) && $post['orrequest_status'] != '') {
             $orrequest_status = FatUtility::int($post['orrequest_status']);
             $srch->addCondition('orrequest_status', '=', $orrequest_status);
         }
         
-        if(isset($post['orrequest_type']) && $post['orrequest_type'] != '' ) {
+        if (isset($post['orrequest_type']) && $post['orrequest_type'] != '') {
             $orrequest_type = FatUtility::int($post['orrequest_type']);
             $srch->addCondition('orrequest_type', '=', $orrequest_type);
         }
 
-        if(isset($post['orrequest_id']) && $post['orrequest_id'] > 0 ) {
+        if (isset($post['orrequest_id']) && $post['orrequest_id'] > 0) {
             $srch->addCondition('orrequest_id', '=', $post['orrequest_id']);
         }
 
         $dateFrom = FatApp::getPostedData('date_from', null, '');
-        if(!empty($dateFrom) ) {
+        if (!empty($dateFrom)) {
             $srch->addDateFromCondition($dateFrom);
         }
         
         $dateTo = FatApp::getPostedData('date_to', null, '');
-        if(!empty($dateTo) ) {
+        if (!empty($dateTo)) {
             $srch->addDateToCondition($dateTo);
         }
         
@@ -119,7 +119,7 @@ class OrderReturnRequestsController extends AdminBaseController
         $this->set('pageCount', $srch->pages());
         $this->set('page', $page);
         $this->set('pageSize', $pageSize);
-        $this->set('postedData', $post);                        
+        $this->set('postedData', $post);
         $this->set('recordCount', $srch->recordCount());
         $this->set('requestStatusArr', OrderReturnRequest::getRequestStatusArr($this->adminLangId));
         $this->set('requestTypeArr', OrderReturnRequest::getRequestTypeArr($this->adminLangId));
@@ -127,33 +127,32 @@ class OrderReturnRequestsController extends AdminBaseController
         $this->_template->render(false, false);
     }
     
-    public function downloadAttachedFileForReturn($recordId, $recordSubid =0) 
+    public function downloadAttachedFileForReturn($recordId, $recordSubid = 0)
     {
-        
         $recordId = FatUtility::int($recordId);
         
-        if(1 > $recordId) {
+        if (1 > $recordId) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
         
         $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_BUYER_RETURN_PRODUCT, $recordId, $recordSubid);
         
-        if(false == $file_row) {
+        if (false == $file_row) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
         
         $fileName = isset($file_row['afile_physical_path']) ? $file_row['afile_physical_path'] : '';
-        AttachedFile::downloadAttachment($fileName, $file_row['afile_name']);        
+        AttachedFile::downloadAttachment($fileName, $file_row['afile_name']);
     }
     
-    public function view( $orrequest_id )
+    public function view($orrequest_id)
     {
         $orrequest_id = FatUtility::int($orrequest_id);
-        if(!$orrequest_id) {
+        if (!$orrequest_id) {
             $data = FatApp::getPostedData();
-            if($data) {
+            if ($data) {
                 $orrequest_id = $data['id'];
             }
         }
@@ -166,25 +165,25 @@ class OrderReturnRequestsController extends AdminBaseController
         $srch->joinOrderReturnReasons($this->adminLangId);
         $srch->addOrderProductCharges();
         $srch->addMultipleFields(
-            array( 'orrequest_id','orrequest_op_id', 'orrequest_qty', 'orrequest_type', 'orrequest_returnreason_id', 
-            'orrequest_date', 'orrequest_status','orrequest_reference', 'buyer.user_name as buyer_name', 'buyer_cred.credential_username as buyer_username',
-            'buyer_cred.credential_email as buyer_email', 'buyer.user_phone as buyer_phone', 'seller.user_name as seller_name', 
+            array( 'orrequest_id', 'orrequest_op_id', 'orrequest_qty', 'orrequest_type', 'orrequest_returnreason_id',
+            'orrequest_date', 'orrequest_status', 'orrequest_reference', 'buyer.user_name as buyer_name', 'buyer_cred.credential_username as buyer_username',
+            'buyer_cred.credential_email as buyer_email', 'buyer.user_phone as buyer_phone', 'seller.user_name as seller_name',
             'seller.user_phone as seller_phone', 'seller_cred.credential_username as seller_username', 'seller_cred.credential_email as seller_email',
-            'op_product_name','op_selprod_title', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_qty', 'op_unit_price',  'IFNULL(orreason_title, orreason_identifier) as orreason_title','order_tax_charged','op_other_charges','op_refund_shipping','op_refund_amount','op_commission_percentage','op_affiliate_commission_percentage','op_commission_include_shipping','op_commission_include_tax','op_free_ship_upto','op_actual_shipping_charges') 
+            'op_product_name', 'op_selprod_title', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_qty', 'op_unit_price',  'IFNULL(orreason_title, orreason_identifier) as orreason_title', 'order_tax_charged', 'op_other_charges', 'op_refund_shipping', 'op_refund_amount', 'op_commission_percentage', 'op_affiliate_commission_percentage', 'op_commission_include_shipping', 'op_commission_include_tax', 'op_free_ship_upto', 'op_actual_shipping_charges')
         );
         $srch->addCondition('orrequest_id', '=', $orrequest_id);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
         $requestRow = FatApp::getDb()->fetch($rs);
-        if(!$requestRow ) {
+        if (!$requestRow) {
             Message::addErrorMessage($this->str_invalid_request);
             FatApp::redirectUser(CommonHelper::generateUrl('OrderReturnRequests'));
         }
         
         $oObj = new Orders();
         $charges = $oObj->getOrderProductChargesArr($requestRow['orrequest_op_id']);
-        $requestRow['charges'] = $charges; 
+        $requestRow['charges'] = $charges;
         
         $this->set('requestRow', $requestRow);
         $this->set('requestStatusArr', OrderReturnRequest::getRequestStatusArr($this->adminLangId));
@@ -198,7 +197,7 @@ class OrderReturnRequestsController extends AdminBaseController
         $frmMsg->fill(array( 'orrmsg_orrequest_id' => $requestRow['orrequest_id'] ));
         $this->set('frmMsg', $frmMsg);
         
-        if($attachedFile = AttachedFile::getAttachment(AttachedFile::FILETYPE_BUYER_RETURN_PRODUCT, $orrequest_id)) {
+        if ($attachedFile = AttachedFile::getAttachment(AttachedFile::FILETYPE_BUYER_RETURN_PRODUCT, $orrequest_id)) {
             $this->set('attachedFile', $attachedFile);
         }
         $this->set('frmUpdateStatus', $this->getUpdateStatusForm($orrequest_id, $this->adminLangId));
@@ -223,11 +222,11 @@ class OrderReturnRequestsController extends AdminBaseController
         $srch->setPageSize($pageSize);
         $srch->addOrder('orrmsg_id', 'DESC');
         $srch->addMultipleFields(
-            array( 'orrmsg_id','orrmsg_from_user_id', 'orrmsg_from_admin_id', 
-            'admin_name', 'admin_username', 'admin_email', 'orrmsg_msg', 
-            'orrmsg_date', 'msg_user.user_name as msg_user_name', 'msg_user_cred.credential_username as msg_username', 
+            array( 'orrmsg_id', 'orrmsg_from_user_id', 'orrmsg_from_admin_id',
+            'admin_name', 'admin_username', 'admin_email', 'orrmsg_msg',
+            'orrmsg_date', 'msg_user.user_name as msg_user_name', 'msg_user_cred.credential_username as msg_username',
             'msg_user_cred.credential_email as msg_user_email',
-            'orrequest_status' ) 
+            'orrequest_status' )
         );
         
         $rs = $srch->getResultSet();
@@ -240,10 +239,11 @@ class OrderReturnRequestsController extends AdminBaseController
         $this->set('pageCount', $srch->pages());
         $this->set('postedData', $post);
 
-        $startRecord = ($page-1)*$pageSize + 1 ;
+        $startRecord = ($page - 1) * $pageSize + 1;
         $endRecord = $page * $pageSize;
         $totalRecords = $srch->recordCount();
-        if ($totalRecords < $endRecord) { $endRecord = $totalRecords; 
+        if ($totalRecords < $endRecord) {
+            $endRecord = $totalRecords;
         }
         $json['totalRecords'] = $totalRecords;
         $json['startRecord'] = $startRecord;
@@ -261,7 +261,7 @@ class OrderReturnRequestsController extends AdminBaseController
         
         $frm = $this->getOrderReturnRequestMessageForm($this->adminLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-        if (false === $post ) {
+        if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -276,30 +276,30 @@ class OrderReturnRequestsController extends AdminBaseController
         $srch->joinOrderReturnReasons();
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('orrequest_id', 'orrequest_status','orrequest_user_id' ));
+        $srch->addMultipleFields(array('orrequest_id', 'orrequest_status', 'orrequest_user_id' ));
         $rs = $srch->getResultSet();
         $requestRow = FatApp::getDb()->fetch($rs);
-        if(!$requestRow ) {
+        if (!$requestRow) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
 
         /* save return request message[ */
         $returnRequestMsgDataToSave = array(
-        'orrmsg_orrequest_id'    =>    $requestRow['orrequest_id'],
-        'orrmsg_from_user_id'    =>    0,
-        'orrmsg_from_admin_id'    =>    $admin_id,
-        'orrmsg_msg'            =>    $post['orrmsg_msg'],
-        'orrmsg_date'            =>    date('Y-m-d H:i:s'),
+        'orrmsg_orrequest_id' => $requestRow['orrequest_id'],
+        'orrmsg_from_user_id' => 0,
+        'orrmsg_from_admin_id' => $admin_id,
+        'orrmsg_msg' => $post['orrmsg_msg'],
+        'orrmsg_date' => date('Y-m-d H:i:s'),
         );
         $oReturnRequestMsgObj = new OrderReturnRequestMessage();
         $oReturnRequestMsgObj->assignValues($returnRequestMsgDataToSave);
-        if (!$oReturnRequestMsgObj->save() ) {
+        if (!$oReturnRequestMsgObj->save()) {
             Message::addErrorMessage($oReturnRequestMsgObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
         $orrmsg_id = $oReturnRequestMsgObj->getMainTableRecordId();
-        if(!$orrmsg_id ) {
+        if (!$orrmsg_id) {
             Message::addErrorMessage(Labels::getLabel('MSG_Something_went_wrong,_please_contact_Technical_team', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -307,13 +307,13 @@ class OrderReturnRequestsController extends AdminBaseController
         
         /* sending of email notification[ */
         $emailNotificationObj = new EmailHandler();
-        if(!$emailNotificationObj->sendReturnRequestMessageNotification($orrmsg_id, $this->adminLangId) ) {
+        if (!$emailNotificationObj->sendReturnRequestMessageNotification($orrmsg_id, $this->adminLangId)) {
             Message::addErrorMessage($emailNotificationObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
         /* ] */
         
-        //send notification to admin			
+        //send notification to admin
         /*$notificationData = array(
         'notification_record_type' => Notification::TYPE_ORDER_RETURN_REQUEST_MESSAGE,
         'notification_record_id' => $orrmsg_orrequest_id,
@@ -323,7 +323,7 @@ class OrderReturnRequestsController extends AdminBaseController
         );
 
         if(!Notification::saveNotifications($notificationData)){
-        Message::addErrorMessage(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT",$this->adminLangId));	
+        Message::addErrorMessage(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT",$this->adminLangId));
         FatUtility::dieWithError( Message::getHtml() );
         }	*/
         
@@ -340,7 +340,7 @@ class OrderReturnRequestsController extends AdminBaseController
         $orrequest_id = FatApp::getPostedData('orrequest_id', FatUtility::VAR_INT, 0);
         $frm = $this->getUpdateStatusForm($orrequest_id, $this->adminLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-        if(false == $post) {
+        if (false == $post) {
             Message::addErrorMessage($frm->getValidationErrors());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -353,20 +353,20 @@ class OrderReturnRequestsController extends AdminBaseController
         $cnd->attachCondition('orrequest_status', '=', OrderReturnRequest::RETURN_REQUEST_STATUS_ESCALATED);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('orrequest_id', 'op_id', 'order_language_id','orrequest_user_id'));
+        $srch->addMultipleFields(array('orrequest_id', 'op_id', 'order_language_id', 'orrequest_user_id'));
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
-        if(!$row ) {
+        if (!$row) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request_or_Status_is_already_Approved_or_Declined!', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
         
         $orrObj = new OrderReturnRequest();
         $user_id = 0;
-        $successMsg='';
-        switch ( $post['orrequest_status'] ){
+        $successMsg = '';
+        switch ($post['orrequest_status']) {
         case OrderReturnRequest::RETURN_REQUEST_STATUS_REFUNDED:
-            if(!$orrObj->approveRequest($row['orrequest_id'], $user_id, $this->adminLangId, $post['orrequest_refund_in_wallet'], $post['orrequest_admin_comment']) ) {
+            if (!$orrObj->approveRequest($row['orrequest_id'], $user_id, $this->adminLangId, $post['orrequest_refund_in_wallet'], $post['orrequest_admin_comment'])) {
                 Message::addErrorMessage($orrObj->getError());
                 FatApp::redirectUser(CommonHelper::generateUrl('orderReturnRequests'));
             }
@@ -374,7 +374,7 @@ class OrderReturnRequestsController extends AdminBaseController
             break;
             
         case OrderReturnRequest::RETURN_REQUEST_STATUS_WITHDRAWN:
-            if(!$orrObj->withdrawRequest($row['orrequest_id'], $user_id, $this->adminLangId, $row['op_id'], $row['order_language_id']) ) {
+            if (!$orrObj->withdrawRequest($row['orrequest_id'], $user_id, $this->adminLangId, $row['op_id'], $row['order_language_id'])) {
                 Message::addErrorMessage(Labels::getLabel($orrObj->getError(), $this->adminLangId));
                 FatApp::redirectUser(CommonHelper::generateUrl('orderReturnRequests'));
             }
@@ -383,12 +383,12 @@ class OrderReturnRequestsController extends AdminBaseController
         }
         
         $emailNotificationObj = new EmailHandler();
-        if (!$emailNotificationObj->sendOrderReturnRequestStatusChangeNotification($row['orrequest_id'], $this->adminLangId) ) {
+        if (!$emailNotificationObj->sendOrderReturnRequestStatusChangeNotification($row['orrequest_id'], $this->adminLangId)) {
             Message::addErrorMessage(Labels::getLabel($emailNotificationObj->getError(), $this->adminLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('orderReturnRequests'));
         }
 
-        //send notification to admin			
+        //send notification to admin
         $notificationData = array(
         'notification_record_type' => Notification::TYPE_ORDER_RETURN_REQUEST,
         'notification_record_id' => $row['orrequest_id'],
@@ -397,10 +397,10 @@ class OrderReturnRequestsController extends AdminBaseController
         'notification_added_on' => date('Y-m-d H:i:s'),
         );
         
-        if(!Notification::saveNotifications($notificationData)) {
-            Message::addErrorMessage(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->adminLangId));    
+        if (!Notification::saveNotifications($notificationData)) {
+            Message::addErrorMessage(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->adminLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('orderReturnRequests'));
-        }        
+        }
         
         FatUtility::dieJsonSuccess($successMsg);
     }
@@ -491,7 +491,7 @@ class OrderReturnRequestsController extends AdminBaseController
     $this->_template->render(false , false);
     } */
     
-    private function getOrderReturnRequestSearchForm( $langId )
+    private function getOrderReturnRequestSearchForm($langId)
     {
         $frm = new Form('frmRequestSearch');
         
@@ -501,7 +501,7 @@ class OrderReturnRequestsController extends AdminBaseController
         $frm->addTextBox(Labels::getLabel('LBL_Product', $this->adminLangId), 'product');
         $frm->addSelectBox(Labels::getLabel('LBL_Request_Status', $this->adminLangId), 'orrequest_status', OrderReturnRequest::getRequestStatusArr($langId), '', array(), 'All Request Status');
         $requestType = OrderReturnRequest::getRequestTypeArr($langId);
-        if(count($requestType)>1) {
+        if (count($requestType) > 1) {
             $frm->addSelectBox(Labels::getLabel('LBL_Request_Type', $this->adminLangId), 'orrequest_type', OrderReturnRequest::getRequestTypeArr($langId), '', array(), 'All Request Types');
         }
         $frm->addDateField(Labels::getLabel('LBL_Date_From', $this->adminLangId), 'date_from', '', array('readonly' => 'readonly'));
@@ -509,13 +509,13 @@ class OrderReturnRequestsController extends AdminBaseController
         
         $frm->addHiddenField('', 'page');
         $frm->addHiddenField('', 'orrequest_id');
-        $fld_submit=$frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Submit', $this->adminLangId));
+        $fld_submit = $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Submit', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
-        $fld_submit->attachField($fld_cancel);            
+        $fld_submit->attachField($fld_cancel);
         return $frm;
     }
     
-    private function getOrderReturnRequestMessageSearchForm( $langId )
+    private function getOrderReturnRequestMessageSearchForm($langId)
     {
         $frm = new Form('frmOrderReturnRequestMsgsSrch');
         $frm->addHiddenField('', 'page');
@@ -523,7 +523,7 @@ class OrderReturnRequestsController extends AdminBaseController
         return $frm;
     }
     
-    private function getOrderReturnRequestMessageForm( $langId )
+    private function getOrderReturnRequestMessageForm($langId)
     {
         $frm = new Form('frmOrderReturnRequestMessge');
         $frm->setRequiredStarPosition('');
@@ -535,16 +535,15 @@ class OrderReturnRequestsController extends AdminBaseController
         return $frm;
     }
     
-    private function getUpdateStatusForm( $orrequest_id , $langId )
+    private function getUpdateStatusForm($orrequest_id, $langId)
     {
-        
         $frm = new Form('frmUpdateStatus');
         
         $statusArr = OrderReturnRequest::getRequestStatusArr($langId);
         unset($statusArr[OrderReturnRequest::RETURN_REQUEST_STATUS_ESCALATED]);
         unset($statusArr[OrderReturnRequest::RETURN_REQUEST_STATUS_CANCELLED]);
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'orrequest_status', $statusArr, '', array(), '');
-        $frm->addCheckBox(Labels::getLabel('LBL_Transfer_Refund_to_Wallet', $this->adminLangId), 'orrequest_refund_in_wallet', 1, array('checked'=>'checked'), false, 0);
+        $frm->addCheckBox(Labels::getLabel('LBL_Transfer_Refund_to_Wallet', $this->adminLangId), 'orrequest_refund_in_wallet', 1, array('checked' => 'checked'), false, 0);
         $frm->addTextarea(Labels::getLabel('LBL_Comment', $this->adminLangId), 'orrequest_admin_comment');
         $frm->addHiddenField('', 'orrequest_id', $orrequest_id);
         $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));

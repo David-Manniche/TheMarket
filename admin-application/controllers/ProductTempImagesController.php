@@ -1,4 +1,5 @@
 <?php
+
 class ProductTempImagesController extends AdminBaseController
 {
     private $canView;
@@ -27,14 +28,14 @@ class ProductTempImagesController extends AdminBaseController
         $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
-        if($post == false ) {
+        if ($post == false) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
 
         $srch = new ProductTempImageSearch();
         $srch->joinProduct();
         $srch->addMultipleFields(
-            array('afile_id','afile_downloaded','afile_record_id', 'afile_physical_path',
+            array('afile_id', 'afile_downloaded', 'afile_record_id', 'afile_physical_path',
             'afile_name', 'IFNULL(tp.product_identifier,tp_l.product_name) as product_name')
         );
 
@@ -42,12 +43,12 @@ class ProductTempImagesController extends AdminBaseController
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
 
-        if(-1 < $post['is_downloaded'] ) {
+        if (-1 < $post['is_downloaded']) {
             $srch->addCondition('af.afile_downloaded', '=', $post['is_downloaded']);
         }
 
         $keyword = FatApp::getPostedData('keyword', null, '');
-        if(!empty($keyword) ) {
+        if (!empty($keyword)) {
             $cnd = $srch->addCondition('product_name', 'like', '%' . $keyword . '%');
             $cnd->attachCondition('product_identifier', 'like', '%' . $keyword . '%', 'OR');
         }
@@ -82,16 +83,16 @@ class ProductTempImagesController extends AdminBaseController
 
         $frm->addSelectBox(Labels::getLabel('LBL_Is_Downloaded', $this->adminLangId), 'is_downloaded', $is_downloaded, -1, array(), '');
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
-        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick'=>'clearSearch();'));
+        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick' => 'clearSearch();'));
         return $frm;
     }
 
     // Edit Form
-    public function form( $afile_id )
+    public function form($afile_id)
     {
         $this->objPrivilege->canEditProductTempImages();
 
-        if (1 > $afile_id ) {
+        if (1 > $afile_id) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
 
@@ -132,13 +133,13 @@ class ProductTempImagesController extends AdminBaseController
         $data = FatApp::getPostedData();
         $post = $updateForm->getFormDataFromArray($data);
 
-        if($post == false ) {
+        if ($post == false) {
             Message::addErrorMessage(current($updateForm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
         }
 
         $afile_id = FatApp::getPostedData('afile_id', FatUtility::VAR_INT, 0);
-        if(1 > $afile_id) {
+        if (1 > $afile_id) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }

@@ -1,4 +1,5 @@
 <?php
+
 class OrderProductSpecifics extends MyAppModel
 {
     public const DB_TBL = 'tbl_order_product_specifics';

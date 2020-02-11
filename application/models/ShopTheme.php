@@ -1,11 +1,12 @@
 <?php
+
 class ShopTheme extends MyAppModel
 {
-    const DB_TBL = 'tbl_shops_to_theme';
-    const DB_TBL_PREFIX = 'stt_';
-    const THEME_BACKGROUND_COLOR ='stt_bg_color';
-    const THEME_HEADER_COLOR = 'stt_header_color';
-    const THEME_TEXT_COLOR = 'stt_text_color';
+    public const DB_TBL = 'tbl_shops_to_theme';
+    public const DB_TBL_PREFIX = 'stt_';
+    public const THEME_BACKGROUND_COLOR = 'stt_bg_color';
+    public const THEME_HEADER_COLOR = 'stt_header_color';
+    public const THEME_TEXT_COLOR = 'stt_text_color';
     public function __construct($uwlistId = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $uwlistId);
@@ -50,48 +51,48 @@ class ShopTheme extends MyAppModel
             case SHOP::TEMPLATE_ONE:
                 return array(
 
-               static::THEME_BACKGROUND_COLOR=>'dadee7',
-               static::THEME_HEADER_COLOR=>'FFFFFF',
-               static::THEME_TEXT_COLOR=>'000000',
+               static::THEME_BACKGROUND_COLOR => 'dadee7',
+               static::THEME_HEADER_COLOR => 'FFFFFF',
+               static::THEME_TEXT_COLOR => '000000',
                 );
                 break;
             case SHOP::TEMPLATE_TWO:
                 return array(
 
-               static::THEME_BACKGROUND_COLOR=>'dadee7',
-               static::THEME_HEADER_COLOR=>'FFFFFF',
-               static::THEME_TEXT_COLOR=>'000000',
+               static::THEME_BACKGROUND_COLOR => 'dadee7',
+               static::THEME_HEADER_COLOR => 'FFFFFF',
+               static::THEME_TEXT_COLOR => '000000',
                 );
                 break;
             case SHOP::TEMPLATE_THREE:
                 return array(
 
-               static::THEME_BACKGROUND_COLOR=>'FFFFFF',
-               static::THEME_HEADER_COLOR=>'ffff66',
-               static::THEME_TEXT_COLOR=>'000000',
+               static::THEME_BACKGROUND_COLOR => 'FFFFFF',
+               static::THEME_HEADER_COLOR => 'ffff66',
+               static::THEME_TEXT_COLOR => '000000',
                 );
                 break;
             case SHOP::TEMPLATE_FOUR:
                 return array(
 
-               static::THEME_BACKGROUND_COLOR=>'09bfe3',
-               static::THEME_HEADER_COLOR=>'09bfe3',
-               static::THEME_TEXT_COLOR=>'FFFFFF',
+               static::THEME_BACKGROUND_COLOR => '09bfe3',
+               static::THEME_HEADER_COLOR => '09bfe3',
+               static::THEME_TEXT_COLOR => 'FFFFFF',
                 );
                 break;
             case SHOP::TEMPLATE_FIVE:
                 return array(
 
-               static::THEME_BACKGROUND_COLOR=>'174a67',
-               static::THEME_HEADER_COLOR=>'174a67',
-               static::THEME_TEXT_COLOR=>'FFFFFF',
+               static::THEME_BACKGROUND_COLOR => '174a67',
+               static::THEME_HEADER_COLOR => '174a67',
+               static::THEME_TEXT_COLOR => 'FFFFFF',
                 );
                 break;
             default:
                 return array(
-                    static::THEME_BACKGROUND_COLOR=>'dadee7',
-                    static::THEME_HEADER_COLOR=>'FFFFFF',
-                    static::THEME_TEXT_COLOR=>'000000',
+                    static::THEME_BACKGROUND_COLOR => 'dadee7',
+                    static::THEME_HEADER_COLOR => 'FFFFFF',
+                    static::THEME_TEXT_COLOR => '000000',
                 );
         }
     }
