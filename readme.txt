@@ -69,5 +69,6 @@ Bugs:
     => 032857 - Collection name is not displaying after visiting shop collection
     => 69191 - PayPal Payout.
     => 70149 - Blog Collection.
+    => 034467 - SEO and Url rewriting fatal error while accessing
 
 -----------------------------------------------------------

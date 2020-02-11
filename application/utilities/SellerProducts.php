@@ -1,14 +1,14 @@
 <?php
 trait SellerProducts
 {
-    protected function getSellerProductSearchForm($product_id)
+    protected function getSellerProductSearchForm($product_id = 0)
     {
         $frm = new Form('frmSearch');
-        $frm->addTextBox('', 'keyword', '', array('id'=>'keyword'));
+        $frm->addTextBox('', 'keyword', '', array('id' => 'keyword'));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->siteLangId));
-        $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $this->siteLangId), array('onclick'=>'clearSearch();'));
-        $frm->addHiddenField('product_id', 'product_id', $product_id);
-        $frm->addHiddenField('page', 'page', 1);
+        $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $this->siteLangId), array('onclick' => 'clearSearch();'));
+        $frm->addHiddenField('', 'product_id', $product_id);
+        $frm->addHiddenField('', 'page', 1);
         return $frm;
     }
 
