@@ -8,7 +8,7 @@ Bugs:
     => 032501-User default image is blurred.
     => 033061 - Getting error on login with Apple
     => 033089 - Social Account not getting logged in if email is not updated in db
-    => 033084 - Payment pending orders cannot be cancelled or removed from the system.
+    => 033084 - Payment pending orders cannot be canceled or removed from the system.
     => Safari Browser layout issue.
     => 033975 - when user places bank withdrawal request then getting error in email
     => 033974 - getting error on withdrawing amount from affiliate account using bank pay
@@ -17,7 +17,7 @@ Bugs:
     => 033955 - withdrawing amount less than allowed withdrawal
     => keyword search with & keyword.
     => 66015-1115873 Allowed uppercased extension in media upload.
-    
+
 
 Enhancements:
     => 68474 - Library and code updated to handle 3-D secure payments through Omise Payment Gateway.
@@ -47,7 +47,7 @@ New Features:
 
 Bugs:
     => 034264 - Getting error (invalid data) while using upload bulk media feature in import export.
------------------------------TV-9.1.2.20200211----------------------------------------------------    
+-----------------------------TV-9.1.2.20200211----------------------------------------------------
 
 Bugs:
     => 034406 - Plugin settings are not opening
@@ -75,3 +75,5 @@ Bugs:
 
 Bugs:
     => 034376 - While entering data in RTL supported languages it is not getting entered in RTL mode.
+    => 034350 - option name should get displayed on pop-up for which values are adding.
+    => 034477 - Cropper JS white background issue
