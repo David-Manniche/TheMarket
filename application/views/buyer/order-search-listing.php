@@ -80,6 +80,20 @@ foreach ($orders as $sn => $order) {
                     $pMethod = " - " . $order['pmethod_name'] ;
                 }
                 $txt = $order['orderstatus_name'] . $pMethod;
+
+                $orderStatusArr = Orders::getOrderProductStatusArr($siteLangId);                
+                $class = "";
+                if($order['orderstatus_name'] == $orderStatusArr[1] || $order['orderstatus_name'] == $orderStatusArr[6] || $order['orderstatus_name'] == $orderStatusArr[9]){
+                    $class = "badge-info";
+                }elseif($order['orderstatus_name'] == $orderStatusArr[2] || $order['orderstatus_name'] == $orderStatusArr[3] || $order['orderstatus_name'] == $orderStatusArr[4] || $order['orderstatus_name'] == $orderStatusArr[5] || $order['orderstatus_name'] == $orderStatusArr[7] || $order['orderstatus_name'] == $orderStatusArr[15]){
+                    $class = "badge-success";
+                }elseif($order['orderstatus_name'] == $orderStatusArr[8]){
+                    $class = "badge-danger";
+                }elseif($order['orderstatus_name'] == $orderStatusArr[16]){
+                    $class = "badge-warning";
+                }
+                
+                $txt = "<span class='badge badge-pill ".$class."'>".$txt."</span>";
                 $td->appendElement('plaintext', array(), $txt, true);
                 break;
 

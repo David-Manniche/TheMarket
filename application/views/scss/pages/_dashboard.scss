@@ -259,6 +259,15 @@
     transition: padding 0.5s ease-in-out;
     border-bottom: $border;
 
+
+    @include media-breakpoint-down(xl) {
+        & {
+            padding-#{$start-direction}: 70px;
+        }
+    }
+
+
+
     .sidebar-is-expanded & {
         -webkit-padding-start: 280px;
         -moz-padding-start: 280px;
@@ -266,13 +275,18 @@
     }
 
     .dashboard-user {
-        -webkit-margin-start: 50px;
-        -moz-margin-start: 50px;
-        margin-#{$start-direction}: 50px;
+        margin-#{$start-direction}: 3.125rem;
 
         @include media-breakpoint-down(lg) {
             & {
-                margin-#{$start-direction}: 0;
+               margin-#{$start-direction}: 2rem;
+
+            }
+        }
+        
+        @include media-breakpoint-down(sm) {
+            & {
+               margin-#{$start-direction}: 0;
 
             }
         }
@@ -938,7 +952,7 @@
 
 
         [class*="col-"] {
-           /* margin: 0.5rem 0;*/
+            /* margin: 0.5rem 0;*/
         }
 
         .content-header-title {
@@ -1093,7 +1107,8 @@
 
 
 
-    .fa, .icon {
+    .fa,
+    .icon {
         margin: 0.4rem 0;
         font-size: 2.5em;
         flex: 0 0 60px;
@@ -1569,8 +1584,8 @@
         display: inline-block;
 
         .coupon-code {
-            margin-top:10px;
-             
+            margin-top: 10px;
+
         }
 
         p {
@@ -2054,16 +2069,44 @@ input.sp-input {
     width: 110px !important;
 }
 
-@media only screen and (max-width: 1399px) {
+.address-block {
+    border: $border;
+    padding: 1rem;
+    border-radius: 4px;
+    display: block;
+    height: 100%;
 
-    .header-dashboard {
-        padding-#{$start-direction}: 70px;
+    .radio {
+        float: $end-direction;
     }
+
+    address {
+        margin-bottom: 1rem;
+        min-height: 200px;
+
+        @include media-breakpoint-down(md) {
+            & {
+                min-height: inherit;
+            }
+        }
+
+
+        p {
+            font-size: 0.88rem;
+            color: lighten($body-color, 20%);
+        }
+    }
+}
+
+.actions_wishlist {
+    margin: 0.5rem auto;
+    display: flex;
 
 }
 
-@media only screen and (max-width: 1199px) {
 
+
+@media only screen and (max-width: 1199px) {
     .sidebar,
     .header-dashboard {
         position: fixed;
@@ -2076,7 +2119,6 @@ input.sp-input {
 
     }
 
-
     .header-dashboard {
         -webkit-padding-end: 30px;
         -moz-padding-end: 30px;
@@ -2086,6 +2128,7 @@ input.sp-input {
 }
 
 @media only screen and (max-width:1080px) {
+
     .sidebar-is-expanded .header-dashboard {
         padding-#{$start-direction}: 20px;
     }
@@ -2111,39 +2154,4 @@ input.sp-input {
     }
 
 
-}
-
-.address-block {
-    border: $border;
-    padding: 1rem;
-    border-radius: 4px;
-    display: block;
-    height: 100%;
-
-    .radio {
-        float: $end-direction;
-    }
-
-    address {
-        margin-bottom:1rem;
-        min-height: 200px;
-
-        @include media-breakpoint-down(md) {
-            & {
-                min-height: inherit;
-            }
-        }
-
-
-        p {
-            font-size: 0.88rem;
-            color: lighten($body-color, 20%);
-        }
-    }
-}
-
-.actions_wishlist {
-    margin: 0.5rem auto;
-    display: flex;
-     
 }
