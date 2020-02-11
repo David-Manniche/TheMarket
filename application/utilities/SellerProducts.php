@@ -162,7 +162,8 @@ trait SellerProducts
             Message::addErrorMessage(Labels::getLabel("LBL_Please_Upgrade_your_package_to_add_new_products", $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        $productRow = Product::getAttributesById($product_id, array('product_active','product_seller_id','product_added_by_admin_id','product_cod_enabled','product_type','product_approved', 'product_min_selling_price'));
+        
+        $productRow = Product::getProductDataById($this->siteLangId, $product_id, array('IFNULL(product_name, product_identifier) as product_name', 'product_active','product_seller_id','product_added_by_admin_id','product_cod_enabled','product_type','product_approved', 'product_min_selling_price'));
 
         if (!$productRow) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
@@ -230,12 +231,18 @@ trait SellerProducts
         if ('' === $returnAge || '' === $cancellationAge) {
             $sellerProductRow['use_shop_policy'] = 1;
         }
-        $languages = Language::getAllNames();
-        foreach ($languages as $langId => $langName) {
-            $langData = SellerProduct::getAttributesByLangId($langId, $selprod_id);
-            $sellerProductRow['selprod_title'.$langId] = $langData['selprod_title'];
-            $sellerProductRow['selprod_comments'.$langId] = $langData['selprod_comments'];
+
+        if ($selprod_id > 0) {
+            $languages = Language::getAllNames();
+            foreach ($languages as $langId => $langName) {
+                $langData = SellerProduct::getAttributesByLangId($langId, $selprod_id);
+                $sellerProductRow['selprod_title'.$langId] = $langData['selprod_title'];
+                $sellerProductRow['selprod_comments'.$langId] = $langData['selprod_comments'];
+            }
+        } else {
+            $sellerProductRow['selprod_title'.FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1)] = $productRow['product_name'];
         }
+
         $frmSellerProduct->fill($sellerProductRow);
         $shippedBySeller = 0;
         if (Product::isProductShippedBySeller($product_id, $productRow['product_seller_id'], UserAuthentication::getLoggedUserId())) {
@@ -2578,7 +2585,7 @@ trait SellerProducts
             $srchFrm->addHiddenField('', 'selprod_id', $selProd_id);
             $srchFrm->fill(array('keyword'=>$productsTitle[$selProdId]));
         }
-        
+
         $relProdFrm = $this->getRelatedProductsForm();
         $this->set("dataToEdit", $dataToEdit);
         $this->set("frmSearch", $srchFrm);
