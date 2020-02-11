@@ -45,7 +45,9 @@ $layout = Language::getLayoutDirection($langId);
          </div>
          <div class="col-md-2">
              <div class="field-set">
-                 <div class="caption-wraper"></div>
+                 <div class="caption-wraper">
+                    <label class="field_label"></label>
+                 </div>
                  <div class="field-wraper">
                     <div class="field_cover">
                     <button type="button" class="btn btn-primary" onClick="saveSpecification(<?php echo $langId; ?>, <?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_id']; } ?>)"><?php echo Labels::getLabel('LBL_Add', $siteLangId) ?></button></div>

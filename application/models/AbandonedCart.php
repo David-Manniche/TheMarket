@@ -135,11 +135,12 @@ class AbandonedCart extends MyAppModel
         $srch->joinSellerProducts($this->commonLangId);
         $srch->addSubQueryCondition();
         $srch->addActionCondition();
-        $srch->addMultipleFields(array(static::DB_TBL_PREFIX . 'selprod_id', 'selprod_title', 'count(' . static::DB_TBL_PREFIX . 'selprod_id' . ') as product_count'));
-        $srch->addGroupBy(static::DB_TBL_PREFIX . 'selprod_id');
-        $srch->setPageNumber($page);
-        $srch->setPageSize($this->setPageSize());
-        $rs = $srch->getResultSet();
+        $srch->addMultipleFields(array(static::DB_TBL_PREFIX.'selprod_id', 'selprod_title', 'count('.static::DB_TBL_PREFIX.'selprod_id'.') as product_count')); 
+        $srch->addGroupBy(static::DB_TBL_PREFIX.'selprod_id');
+        $srch->addOrder('product_count', 'DESC');
+        $srch->setPageNumber($page);        
+        $srch->setPageSize($this->setPageSize());        
+        $rs = $srch->getResultSet();                  
         $this->totalRecords = $srch->recordCount();
         $this->totalPages = $srch->pages();
         $this->pageSize = $this->setPageSize();
