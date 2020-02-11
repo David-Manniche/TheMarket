@@ -10,7 +10,7 @@ class TwilioSms extends SmsNotificationBase
     private $langId = 0;
     
 
-    public function __construct($langId = 0)
+    public function __construct($langId)
     {
         $this->langId = FatUtility::int($langId);
         if (1 > $this->langId) {
@@ -22,7 +22,7 @@ class TwilioSms extends SmsNotificationBase
     private function validateSettings()
     {
         $this->settings = $this->getSettings();
-        $requiredKeyArr = ['account_sid', 'auth_token', 'phone'];
+        $requiredKeyArr = ['account_sid', 'auth_token', 'sender_id'];
         foreach ($requiredKeyArr as $key) {
             if (!array_key_exists($key, $this->settings)) {
                 $this->error = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->langId);

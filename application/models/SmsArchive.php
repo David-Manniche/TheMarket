@@ -35,7 +35,7 @@ class SmsArchive extends MyAppModel
 
         require_once CONF_PLUGIN_DIR . '/sms-notification/' . strtolower($keyName) . '/' . $keyName . '.php';
 
-        $smsGateway = new $keyName();
+        $smsGateway = new $keyName($langId);
         $response = $smsGateway->send($toNumber, $body);
         
         if (false == $response || false == $response['status']) {
