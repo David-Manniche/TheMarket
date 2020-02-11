@@ -81,7 +81,7 @@ $(document).on('keyup', "input[name='products_related']", function(){
                     data: {
                         keyword: request['term'],
                         fIsAjax: 1,
-                        selprod_id: selprod_id,
+                        selProdId: selprod_id,
                         selected_products: selected_products
                     },
                     dataType: 'json',
