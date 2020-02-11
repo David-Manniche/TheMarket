@@ -72,3 +72,6 @@ Bugs:
     => 034467 - SEO and Url rewriting fatal error while accessing
 
 -----------------------------------------------------------
+
+Bugs:
+    => 034376 - While entering data in RTL supported languages it is not getting entered in RTL mode.
