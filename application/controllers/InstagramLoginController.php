@@ -25,7 +25,7 @@ class InstagramLoginController extends SocialMediaAuthController
         }
         $this->clientId = $settings['client_id'];
         $this->clientSecret = $settings['client_secret'];
-        $this->redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME);
+        $this->redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME, 'index', [], '', false);
     }
 
     

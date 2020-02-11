@@ -26,7 +26,19 @@ class CheckoutController extends MyAppController
                 }
                 FatApp::redirectUser(CommonHelper::generateUrl('Cart'));
             }
+        } else {
+            $userObj = new User(UserAuthentication::getLoggedUserId());
+            $userInfo = $userObj->getUserInfo(array(), false, false);
+            if (empty($userInfo['user_phone']) && empty($userInfo['credential_email'])) {
+                $message = Labels::getLabel('MSG_Please_Configure_Your_Email', $this->siteLangId);
+                if (true === MOBILE_APP_API_CALL) {
+                    LibHelper::dieJsonError($message);
+                }
+                Message::addErrorMessage($message);
+                FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'configureEmail'));
+            }
         }
+
 
         $this->cartObj = new Cart(UserAuthentication::getLoggedUserId(), $this->siteLangId, $this->app_user['temp_user_id']);
         if (1 > $this->cartObj->getCartBillingAddress()) {

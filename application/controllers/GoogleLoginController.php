@@ -31,7 +31,7 @@ class GoogleLoginController extends SocialMediaAuthController
     private function setupConfiguration()
     {
         $this->validateSettings();
-        $redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME);
+        $redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME, 'index', [], '', false);
         
         $this->client = new Google_Client();
         $this->client->setApplicationName(FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->siteLangId)); // Set your applicatio name
