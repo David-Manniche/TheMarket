@@ -136,7 +136,7 @@ class AbandonedCart extends MyAppModel
         $srch->addActionCondition();
         $srch->addMultipleFields(array(static::DB_TBL_PREFIX.'selprod_id', 'selprod_title', 'count('.static::DB_TBL_PREFIX.'selprod_id'.') as product_count')); 
         $srch->addGroupBy(static::DB_TBL_PREFIX.'selprod_id');
-        $srch->addOrder(static::DB_TBL_PREFIX.'id', 'DESC');
+        $srch->addOrder('product_count', 'DESC');
         $srch->setPageNumber($page);        
         $srch->setPageSize($this->setPageSize());        
         $rs = $srch->getResultSet();                  
