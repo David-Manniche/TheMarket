@@ -24,14 +24,14 @@ class SmsArchive extends MyAppModel
             return false;
         }
 
-        $messageDetail = SmsTemplate::getTpl($tpl, $langId);
-        if (1 > $messageDetail['stpl_status']) {
+        $tplData = SmsTemplate::getTpl($tpl, $langId);
+        if (1 > $tplData['stpl_status']) {
             $error = Labels::getLabel("MSG_TEMPLATE_NOT_ACTIVE", $langId);
             return false;
         }
 
         $replacements = array_merge($replacements, LibHelper::getCommonReplacementVarsArr($langId));
-        $body = CommonHelper::replaceStringData($messageDetail['stpl_body'], $replacements);
+        $body = CommonHelper::replaceStringData($tplData['stpl_body'], $replacements);
 
         require_once CONF_PLUGIN_DIR . '/sms-notification/' . strtolower($keyName) . '/' . $keyName . '.php';
 
