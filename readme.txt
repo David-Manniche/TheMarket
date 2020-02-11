@@ -77,3 +77,4 @@ Bugs:
 
 Bugs:
     => 034376 - While entering data in RTL supported languages it is not getting entered in RTL mode.
+    => 034354 - link to product is not there in admin for tags
