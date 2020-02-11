@@ -54,9 +54,9 @@ class Product extends MyAppModel
     public const CONDITION_USED = 2;
     public const CONDITION_REFURBISH = 3;
 
-    public const PRODUCT_VIEW_ORGINAL_URL ='products/view/';
-    public const PRODUCT_REVIEWS_ORGINAL_URL ='reviews/product/';
-    public const PRODUCT_MORE_SELLERS_ORGINAL_URL ='products/sellers/';
+    public const PRODUCT_VIEW_ORGINAL_URL = 'products/view/';
+    public const PRODUCT_REVIEWS_ORGINAL_URL = 'reviews/product/';
+    public const PRODUCT_MORE_SELLERS_ORGINAL_URL = 'products/sellers/';
 
     public function __construct($id = 0)
     {
@@ -356,7 +356,7 @@ class Product extends MyAppModel
             return false;
         }
 
-        FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_CATEGORY, array('smt'=> static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'product_id = ?','vals' => array($product_id) ));
+        FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_CATEGORY, array('smt' => static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX . 'product_id = ?','vals' => array($product_id) ));
         if (empty($categories)) {
             return true;
         }
@@ -1125,7 +1125,7 @@ class Product extends MyAppModel
         $productId = FatUtility::int($productId);
         $userId = FatUtility::int($userId);
         if (!$productId || !$userId) {
-            FatUtility::dieJsonError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
+            FatUtility::dieJsonError(Labels::getLabel('LBL_Invalid_Request', CommonHelper::getLangId()));
         }
         $srch = SellerProduct::getSearchObject();
         $srch->joinTable(SellerProduct::DB_TBL_SELLER_PROD_OPTIONS, 'LEFT JOIN', 'selprod_id = selprodoption_selprod_id', 'tspo');
@@ -1649,11 +1649,11 @@ END,   special_price_found ) as special_price_found'
             return false;
         }
 
-        $autoUpdateOtherLangsData = isset($langData['auto_update_other_langs_data']) ? FatUtility::int($langData['auto_update_other_langs_data']) : 0; 
-        foreach( $langData['product_name'] as $langId=>$prodName ){ 
-            if( empty( $prodName ) && $autoUpdateOtherLangsData > 0 ){ 
-                $this->saveTranslatedProductLangData($langId);                
-            }else if( !empty( $prodName ) ){                
+        $autoUpdateOtherLangsData = isset($langData['auto_update_other_langs_data']) ? FatUtility::int($langData['auto_update_other_langs_data']) : 0;
+        foreach ($langData['product_name'] as $langId=>$prodName) {
+            if (empty($prodName) && $autoUpdateOtherLangsData > 0) {
+                $this->saveTranslatedProductLangData($langId);
+            } elseif (!empty($prodName)) {
                 $data = array(
                      static::DB_TBL_LANG_PREFIX .'product_id' => $this->mainTableRecordId,
                      static::DB_TBL_LANG_PREFIX .'lang_id' => $langId,
@@ -1842,7 +1842,6 @@ END,   special_price_found ) as special_price_found'
     {
         $productId = FatUtility::int($productId);
         if ($productId < 1) {
-            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
         $srch = new SearchBase(ProductSpecifics::DB_TBL);

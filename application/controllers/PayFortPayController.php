@@ -87,7 +87,7 @@ class PayFortPayController extends PaymentController
 
         $returnSignature = $payfortIntegration->calculateSignature($arrData, $paymentSettings['sha_response_phrase'], $paymentSettings['sha_type']);
 
-        if ($returnSignature == $_REQUEST['signature'] && substr($_REQUEST['response_code'], 2) == '000' && $_REQUEST['amount'] == $paymentGatewayCharge && $_REQUEST['currency'] == $this->systemCurrencyCode) && $_REQUEST['merchant_reference'] == $orderInfo['id']) {
+        if ($returnSignature == $_REQUEST['signature'] && substr($_REQUEST['response_code'], 2) == '000' && $_REQUEST['amount'] == $paymentGatewayCharge && $_REQUEST['currency'] == $this->systemCurrencyCode && $_REQUEST['merchant_reference'] == $orderInfo['id']) {
             $message = array();
 
             foreach ($_REQUEST as $key => $value) {
