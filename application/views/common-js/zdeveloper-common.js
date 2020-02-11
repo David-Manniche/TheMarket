@@ -427,7 +427,8 @@ var screenResolutionForSlider = {
 	1199: 4,
 	1023: 3,
 	767: 2,
-	480: 2
+	480: 2,
+    375: 1
 };
 
 function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection, autoInfinitePlay, slidesToShowForDiffResolution) {
@@ -470,6 +471,12 @@ function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection, a
 				breakpoint: 480,
 				settings: {
 					slidesToShow: slidesToShowForDiffResolution[480],
+				}
+                                },
+            {
+				breakpoint: 375,
+				settings: {
+					slidesToShow: slidesToShowForDiffResolution[375],
 				}
                                 }
                             ]
