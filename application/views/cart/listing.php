@@ -1,7 +1,7 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <div class="row">
-    <div class="col-xl-9 col-lg-8">
+    <div class="col-xl-9 col-lg-8 mb-3 mb-lg-0">
         <div class="box box--white box--radius box--space">
             <table class="table cart--full js-scrollable ">
                 <thead>

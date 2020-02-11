@@ -216,7 +216,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                             <div class="item__description">
                                                 <div class="item__title"><?php echo $discountValue; ?> <?php echo Labels::getLabel('LBL_OFF', $siteLangId); ?></div>
                                                 <div class="item__title"><?php echo ($row['coupon_title'] == '')?$row['coupon_identifier']:$row['coupon_title']; ?></div>
-                                                <span class="label label--success "><?php echo $row['coupon_code']; ?></span>
+                                                <span class="coupon-code"><?php echo $row['coupon_code']; ?></span>
                                             </div>
                                         </td>
                                         <td><?php echo FatDate::format($row['coupon_end_date']); ?></td>

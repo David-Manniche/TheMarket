@@ -6,7 +6,7 @@ $frmOrderReturnRequestsSrch->developerTags['fld_default_col'] = 12;
 
 $keywordFld = $frmOrderReturnRequestsSrch->getField('keyword');
 $keywordFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Keyword', $siteLangId));
-// $keywordFld->htmlAfterField = '<small class="text--small">'.Labels::getLabel('LBL_Search_in_Order_Id/Invoice_number,_Product_Name,_Brand_Name,_SKU,_Model,_,Request_reference_number', $siteLangId).'</small>';
+// $keywordFld->htmlAfterField = '<small class="form-text text-muted">'.Labels::getLabel('LBL_Search_in_Order_Id/Invoice_number,_Product_Name,_Brand_Name,_SKU,_Model,_,Request_reference_number', $siteLangId).'</small>';
 $keywordFld->setWrapperAttribute('class', 'col-lg-4');
 $keywordFld->developerTags['col'] = 4;
 $keywordFld->developerTags['noCaptionTag'] = true;

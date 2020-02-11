@@ -44,7 +44,7 @@ if (!$isUserLogged) {
     <li class="">
 		<div class="dropdown">
 		  <?php if (isset($isUserDashboard) && ($isUserDashboard)) { ?>
-		  <a href="javascript:void(0)" class="dropdown-toggle no-after" data-toggle="dropdown">
+		  <a href="javascript:void(0)" class="dropdown-toggle no-after" data-display="static" data-toggle="dropdown">
 			<img class="my-account__avatar" src="<?php echo $profilePicUrl; ?>" alt="">
 		  </a>
 		  <?php } else { ?>

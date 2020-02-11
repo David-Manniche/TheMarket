@@ -57,7 +57,7 @@ $frm->developerTags['fld_default_col'] = 12; */
       </div>
       <div class="field-wraper">
         <div class="field_cover"><?php echo $frm->getFieldHTML('user_password');?></div>
-        <span class="text--small"><?php echo sprintf(Labels::getLabel('LBL_Example_password',$siteLangId), 'User@123') ?></span> </div>
+        <span class="form-text text-muted"><?php echo sprintf(Labels::getLabel('LBL_Example_password',$siteLangId), 'User@123') ?></span> </div>
     </div>
   </div>
   <div class="col-md-6">

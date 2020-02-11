@@ -3453,10 +3453,10 @@ class SellerController extends SellerBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Product_Type', $this->siteLangId), 'product_type', array(-1 => Labels::getLabel('LBL_All', $this->siteLangId)) + Product::getProductTypes($this->siteLangId), '-1', array(), '');
         /* }  */
 
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Submit', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Submit', $this->siteLangId));
 
         /* if( !User::canAddCustomProductAvailableToAllSellers() ){ */
-        $frm->addButton('&nbsp;', 'btn_clear', Labels::getLabel('LBL_Clear', $this->siteLangId));
+        $frm->addButton('', 'btn_clear', Labels::getLabel('LBL_Clear', $this->siteLangId));
         /* } */
         //$fldSubmit->attachField($fldCancel);
         $frm->addHiddenField('', 'page');
