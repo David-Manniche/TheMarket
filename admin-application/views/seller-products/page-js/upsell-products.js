@@ -171,7 +171,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
 		if(typeof page==undefined || page == null){
 			page =1;
 		}
-		var frm = document.frmSearchSpecialPricePaging;
+		var frm = document.frmSearchUpsellProductsPaging;
 		$(frm.page).val(page);
 		searchUpsellProducts(frm);
 	}
