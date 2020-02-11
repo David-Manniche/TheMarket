@@ -47,7 +47,7 @@ New Features:
 
 Bugs:
     => 034264 - Getting error (invalid data) while using upload bulk media feature in import export.
----------------------------------------------------------------------------------    
+-----------------------------TV-9.1.2.20200211----------------------------------------------------    
 
 Bugs:
     => 034406 - Plugin settings are not opening
@@ -67,3 +67,5 @@ Bugs:
     => 034290 - Some labels are not there in admin for front end
     => 032866 - Shop is getting reported multiple times
     => 032857 - Collection name is not displaying after visiting shop collection
+
+-----------------------------------------------------------
