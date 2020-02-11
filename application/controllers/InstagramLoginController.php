@@ -1,4 +1,5 @@
 <?php
+
 include_once CONF_INSTALLATION_PATH . 'library/instagram/instagram-login-api.php';
 class InstagramLoginController extends SocialMediaAuthController
 {
@@ -24,7 +25,7 @@ class InstagramLoginController extends SocialMediaAuthController
         }
         $this->clientId = $settings['client_id'];
         $this->clientSecret = $settings['client_secret'];
-        $this->redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME);
+        $this->redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME, 'index', [], '', false);
     }
 
     

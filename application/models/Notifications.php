@@ -1,8 +1,9 @@
 <?php
+
 class Notifications extends MyAppModel
 {
-    const DB_TBL = 'tbl_user_notifications';
-    const DB_TBL_PREFIX = 'unotification_';
+    public const DB_TBL = 'tbl_user_notifications';
+    public const DB_TBL_PREFIX = 'unotification_';
 
 
     public function __construct($unotificationId = 0)
@@ -45,7 +46,7 @@ class Notifications extends MyAppModel
             /* require_once(CONF_INSTALLATION_PATH . 'library/APIs/notifications/pusher.php');
             $pusher = new Pusher($google_push_notification_api_key); */
             foreach ($fcmDeviceIds as $pushNotificationApiToken) {
-                $message = array( 'text' => $data['unotification_body'], 'type'=>$data['unotification_type']);
+                $message = array( 'text' => $data['unotification_body'], 'type' => $data['unotification_type']);
                 self::sendPushNotification($google_push_notification_api_key, $pushNotificationApiToken['uauth_fcm_id'], $message);
                 /* $pusher->notify($pushNotificationApiToken['uauth_fcm_id'], array('text'=>$data['unotification_body'],'type'=>$data['unotification_type'])); */
             }
@@ -59,11 +60,11 @@ class Notifications extends MyAppModel
         $url = "https://fcm.googleapis.com/fcm/send";
 
         $notification = $data;
-        $arrayToSend = array('to' => $deviceToken, 'notification' => $notification,'priority'=>'high');
+        $arrayToSend = array('to' => $deviceToken, 'notification' => $notification, 'priority' => 'high');
         $json = json_encode($arrayToSend);
         $headers = array();
         $headers[] = 'Content-Type: application/json';
-        $headers[] = 'Authorization: key='. $serverKey;
+        $headers[] = 'Authorization: key=' . $serverKey;
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -91,10 +92,10 @@ class Notifications extends MyAppModel
     public function readUserNotification($notificationId, $userId)
     {
         $smt = array(
-            'smt' => static::DB_TBL_PREFIX . 'id = ? AND '.static::DB_TBL_PREFIX . 'user_id = ?',
+            'smt' => static::DB_TBL_PREFIX . 'id = ? AND ' . static::DB_TBL_PREFIX . 'user_id = ?',
             'vals' => array((int)$notificationId, (int)$userId)
         );
-        if (!FatApp::getDb()->updateFromArray(static::DB_TBL, array(static::DB_TBL_PREFIX.'is_read'=>1), $smt)) {
+        if (!FatApp::getDb()->updateFromArray(static::DB_TBL, array(static::DB_TBL_PREFIX . 'is_read' => 1), $smt)) {
             $this->error = FatApp::getDb()->getError();
             return false;
         }

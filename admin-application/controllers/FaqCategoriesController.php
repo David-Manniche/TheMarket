@@ -1,11 +1,12 @@
 <?php
+
 class FaqCategoriesController extends AdminBaseController
 {
     private $canView;
     private $canEdit;
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup','updateOrder','faqToCmsForm');
+        $ajaxCallArray = array('deleteRecord', 'form', 'langForm', 'search', 'setup', 'langSetup', 'updateOrder', 'faqToCmsForm');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }
@@ -32,17 +33,17 @@ class FaqCategoriesController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
         $srch = FaqCategory::getSearchObject($this->adminLangId);
 
         if (!empty($post['keyword'])) {
-            $condition = $srch->addCondition('fc.faqcat_identifier', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('fc_l.faqcat_name', 'like', '%'.$post['keyword'].'%', 'OR');
+            $condition = $srch->addCondition('fc.faqcat_identifier', 'like', '%' . $post['keyword'] . '%');
+            $condition->attachCondition('fc_l.faqcat_name', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
 
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         //$srch->setPageNumber($page);
         //$srch->setPageSize($pagesize);
@@ -75,10 +76,10 @@ class FaqCategoriesController extends AdminBaseController
 
         $faqcat_id = FatUtility::int($faqcat_id);
         $faqCatFrm = $this->getForm();
-        $faqCatFrm->fill(array('faqcat_id'=>$faqcat_id));
+        $faqCatFrm->fill(array('faqcat_id' => $faqcat_id));
 
         if (0 < $faqcat_id) {
-            $data = FaqCategory::getAttributesById($faqcat_id, array('faqcat_id','faqcat_identifier','faqcat_active','faqcat_type','faqcat_featured'));
+            $data = FaqCategory::getAttributesById($faqcat_id, array('faqcat_id', 'faqcat_identifier', 'faqcat_active', 'faqcat_type', 'faqcat_featured'));
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
@@ -269,7 +270,7 @@ class FaqCategoriesController extends AdminBaseController
             FatUtility::dieJsonError($this->str_invalid_request_id);
         }
 
-        $res =     FaqCategory::getAttributesById($faqcat_id, array('faqcat_id'));
+        $res = FaqCategory::getAttributesById($faqcat_id, array('faqcat_id'));
         if ($res == false) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieJsonError(Message::getHtml());
@@ -409,8 +410,8 @@ class FaqCategoriesController extends AdminBaseController
     {
         $frm = new Form('frmSearch');
         $f1 = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
-        $fld_submit=$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
-        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick'=>'clearSearch();'));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick' => 'clearSearch();'));
         $fld_submit->attachField($fld_cancel);
         return $frm;
     }

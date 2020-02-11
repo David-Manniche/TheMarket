@@ -1,25 +1,26 @@
 <?php
+
 class MetaTag extends MyAppModel
 {
-    const DB_TBL = 'tbl_meta_tags';
-    const DB_TBL_PREFIX = 'meta_';
+    public const DB_TBL = 'tbl_meta_tags';
+    public const DB_TBL_PREFIX = 'meta_';
 
-    const DB_TBL_LANG ='tbl_meta_tags_lang';
-    const DB_TBL_LANG_PREFIX ='metalang_';
+    public const DB_TBL_LANG = 'tbl_meta_tags_lang';
+    public const DB_TBL_LANG_PREFIX = 'metalang_';
 
-    const META_GROUP_ALL_PRODUCTS = 'all_product' ;
-    const META_GROUP_PRODUCT_DETAIL = 'product_view' ;
-    const META_GROUP_ALL_SHOPS = 'all_shop' ;
-    const META_GROUP_SHOP_DETAIL = 'shop_view' ;
-    const META_GROUP_CMS_PAGE = 'cms_page_view' ;
-    const META_GROUP_DEFAULT = 'default' ;
-    const META_GROUP_ADVANCED = 'advanced_setting' ;
-    const META_GROUP_ALL_BRANDS = 'all_brand' ;
-    const META_GROUP_BRAND_DETAIL = 'brand_view' ;
-    const META_GROUP_CATEGORY_DETAIL = 'category_view' ;
-    const META_GROUP_BLOG_PAGE = 'BLOG_PAGE' ;
-    const META_GROUP_BLOG_CATEGORY = 'Blog_Category' ;
-    const META_GROUP_BLOG_POST = 'Blog_Post' ;
+    public const META_GROUP_ALL_PRODUCTS = 'all_product';
+    public const META_GROUP_PRODUCT_DETAIL = 'product_view';
+    public const META_GROUP_ALL_SHOPS = 'all_shop';
+    public const META_GROUP_SHOP_DETAIL = 'shop_view';
+    public const META_GROUP_CMS_PAGE = 'cms_page_view';
+    public const META_GROUP_DEFAULT = 'default';
+    public const META_GROUP_ADVANCED = 'advanced_setting';
+    public const META_GROUP_ALL_BRANDS = 'all_brand';
+    public const META_GROUP_BRAND_DETAIL = 'brand_view';
+    public const META_GROUP_CATEGORY_DETAIL = 'category_view';
+    public const META_GROUP_BLOG_PAGE = 'BLOG_PAGE';
+    public const META_GROUP_BLOG_CATEGORY = 'Blog_Category';
+    public const META_GROUP_BLOG_POST = 'Blog_Post';
 
     public function __construct($id = 0)
     {

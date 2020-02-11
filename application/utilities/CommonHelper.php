@@ -1,4 +1,5 @@
 <?php
+
 class CommonHelper extends FatUtility
 {
     private static $_ip;
@@ -18,12 +19,12 @@ class CommonHelper extends FatUtility
     public static function initCommonVariables($isAdmin = false)
     {
         self::$_ip = self::getClientIp();
-        self::$_user_agent = isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'';
+        self::$_user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
         self::$_lang_id = FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1);
         self::$_currency_id = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
 
         if (!$isAdmin) {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 if (!empty($_SERVER['HTTP_X_LANGUAGE_ID'])) {
                     self::$_lang_id = FatUtility::int($_SERVER['HTTP_X_LANGUAGE_ID']);
                 }
@@ -47,8 +48,8 @@ class CommonHelper extends FatUtility
                 }
             }
 
-            if (true ===  MOBILE_APP_API_CALL && array_key_exists('HTTP_X_TOKEN', $_SERVER) && !empty($_SERVER['HTTP_X_TOKEN'])) {
-                self::$_appToken = ($_SERVER['HTTP_X_TOKEN'] != '')?$_SERVER['HTTP_X_TOKEN']:'';
+            if (true === MOBILE_APP_API_CALL && array_key_exists('HTTP_X_TOKEN', $_SERVER) && !empty($_SERVER['HTTP_X_TOKEN'])) {
+                self::$_appToken = ($_SERVER['HTTP_X_TOKEN'] != '') ? $_SERVER['HTTP_X_TOKEN'] : '';
             }
         } else {
             if (isset($_COOKIE['defaultAdminSiteLang'])) {
@@ -63,7 +64,7 @@ class CommonHelper extends FatUtility
 
         $currencyData = Currency::getAttributesById(
             self::$_currency_id,
-            array('currency_code','currency_symbol_left','currency_symbol_right','currency_value')
+            array('currency_code', 'currency_symbol_left', 'currency_symbol_right', 'currency_value')
         );
 
         self::$_lang_code = Language::getAttributesById(
@@ -267,7 +268,7 @@ class CommonHelper extends FatUtility
         $tempArr = array();
         $loopCount = count($arr);
 
-        for ($i=0; $i<$loopCount; $i++) {
+        for ($i = 0; $i < $loopCount; $i++) {
             $count = 0;
             foreach ($arr as $key => $val) {
                 if ($count != $i) {
@@ -278,7 +279,7 @@ class CommonHelper extends FatUtility
                 if (!empty($tempArr)) {
                     foreach ($tempArr as $tempKey => $tempVal) {
                         foreach ($val[$useKey] as $k => $v) {
-                            $tempArr[$tempKey.$separater.$k] = $tempVal.$separater.$v;
+                            $tempArr[$tempKey . $separater . $k] = $tempVal . $separater . $v;
                             unset($tempArr[$tempKey]);
                         }
                     }
@@ -312,22 +313,22 @@ class CommonHelper extends FatUtility
 
         switch (strtoupper($amountType)) {
             case 'NETAMOUNT':
-                $amount = $cartTotal + $opArr['op_other_charges'] ;
+                $amount = $cartTotal + $opArr['op_other_charges'];
                 if ($userType == User::USER_TYPE_SELLER) {
                     if ($opArr['op_tax_collected_by_seller'] == 0) {
-                        $tax = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_TAX]['opcharge_amount'])?$opArr['charges'][OrderProduct::CHARGE_TYPE_TAX]['opcharge_amount']:0;
+                        $tax = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_TAX]['opcharge_amount']) ? $opArr['charges'][OrderProduct::CHARGE_TYPE_TAX]['opcharge_amount'] : 0;
                         $amount = $amount - $tax;
                     }
 
                     if (!CommonHelper::canAvailShippingChargesBySeller($opArr['op_selprod_user_id'], $opArr['opshipping_by_seller_user_id'])) {
-                        $shippingCharges = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_SHIPPING]['opcharge_amount'])?$opArr['charges'][OrderProduct::CHARGE_TYPE_SHIPPING]['opcharge_amount']:0;
+                        $shippingCharges = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_SHIPPING]['opcharge_amount']) ? $opArr['charges'][OrderProduct::CHARGE_TYPE_SHIPPING]['opcharge_amount'] : 0;
                         $amount = $amount - $shippingCharges;
                     }
 
-                    $discount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount'])?abs($opArr['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount']):0;
+                    $discount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount']) ? abs($opArr['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount']) : 0;
                     $amount = $amount + $discount;
 
-                    $rewardDiscount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]['opcharge_amount'])?abs($opArr['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]['opcharge_amount']):0;
+                    $rewardDiscount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]['opcharge_amount']) ? abs($opArr['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]['opcharge_amount']) : 0;
                     $amount = $amount + $rewardDiscount;
                 }
                 break;
@@ -335,17 +336,17 @@ class CommonHelper extends FatUtility
                 $amount = $shippingAmount;
                 break;
             case 'REWARDPOINT':
-                $amount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]['opcharge_amount'])?$opArr['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]['opcharge_amount']:0;
+                $amount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]['opcharge_amount']) ? $opArr['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]['opcharge_amount'] : 0;
                 break;
             case 'DISCOUNT':
-                $amount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount'])?$opArr['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount']:0;
+                $amount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount']) ? $opArr['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount'] : 0;
                 break;
             case 'CART_TOTAL':
                 $amount = $cartTotal;
                 break;
             case 'TAX':
                 //$amount = FatUtility::convertToType($opArr['op_tax_total'] , FatUtility::VAR_FLOAT);
-                $amount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_TAX]['opcharge_amount'])?$opArr['charges'][OrderProduct::CHARGE_TYPE_TAX]['opcharge_amount']:0;
+                $amount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_TAX]['opcharge_amount']) ? $opArr['charges'][OrderProduct::CHARGE_TYPE_TAX]['opcharge_amount'] : 0;
                 break;
             case 'VOLUME_DISCOUNT':
                 $amount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_VOLUME_DISCOUNT]['opcharge_amount']) ? $opArr['charges'][OrderProduct::CHARGE_TYPE_VOLUME_DISCOUNT]['opcharge_amount'] : 0;
@@ -353,15 +354,15 @@ class CommonHelper extends FatUtility
         }
 
         if ($pricePerItem) {
-            $amount = round($amount/$opArr['op_qty'], 2);
+            $amount = round($amount / $opArr['op_qty'], 2);
         }
         return (float)$amount;
     }
 
     public static function getOrderProductRefundAmtArr($requestRow = array())
     {
-        $volumeDiscount = isset($requestRow['charges'][OrderProduct::CHARGE_TYPE_VOLUME_DISCOUNT]['opcharge_amount'])?abs($requestRow['charges'][OrderProduct::CHARGE_TYPE_VOLUME_DISCOUNT]['opcharge_amount']):0;
-        $shipCharges = isset($requestRow['charges'][OrderProduct::CHARGE_TYPE_SHIPPING][OrderProduct::DB_TBL_CHARGES_PREFIX.'amount'])?$requestRow['charges'][OrderProduct::CHARGE_TYPE_SHIPPING][OrderProduct::DB_TBL_CHARGES_PREFIX.'amount']:0;
+        $volumeDiscount = isset($requestRow['charges'][OrderProduct::CHARGE_TYPE_VOLUME_DISCOUNT]['opcharge_amount']) ? abs($requestRow['charges'][OrderProduct::CHARGE_TYPE_VOLUME_DISCOUNT]['opcharge_amount']) : 0;
+        $shipCharges = isset($requestRow['charges'][OrderProduct::CHARGE_TYPE_SHIPPING][OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount']) ? $requestRow['charges'][OrderProduct::CHARGE_TYPE_SHIPPING][OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount'] : 0;
 
         $productAvaliedFreeShip = false;
         if (0 < $requestRow["op_free_ship_upto"] && array_key_exists(OrderProduct::CHARGE_TYPE_SHIPPING, $requestRow['charges']) && $requestRow["op_actual_shipping_charges"] != $requestRow['charges'][OrderProduct::CHARGE_TYPE_SHIPPING]['opcharge_amount']) {
@@ -371,10 +372,10 @@ class CommonHelper extends FatUtility
 
         $perUnitShippingCost = $shipCharges / $requestRow["op_qty"];
 
-        $couponDiscount = isset($requestRow['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount'])?abs($requestRow['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount']):0;
+        $couponDiscount = isset($requestRow['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount']) ? abs($requestRow['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount']) : 0;
 
-        $taxCharges = isset($requestRow['charges'][OrderProduct::CHARGE_TYPE_TAX]['opcharge_amount'])?$requestRow['charges'][OrderProduct::CHARGE_TYPE_TAX]['opcharge_amount']:0;
-        $taxPerQty = ($taxCharges/$requestRow['op_qty']);
+        $taxCharges = isset($requestRow['charges'][OrderProduct::CHARGE_TYPE_TAX]['opcharge_amount']) ? $requestRow['charges'][OrderProduct::CHARGE_TYPE_TAX]['opcharge_amount'] : 0;
+        $taxPerQty = ($taxCharges / $requestRow['op_qty']);
 
         $cartAmount = $requestRow["op_unit_price"] * $requestRow["orrequest_qty"];
 
@@ -387,18 +388,18 @@ class CommonHelper extends FatUtility
             $commissionCostValue = $commissionCostValue + $perUnitShippingCost;
         }
 
-        $op_refund_commission = round((($commissionCostValue*$requestRow['op_qty']) * $requestRow['op_commission_percentage'])/100, 2);
+        $op_refund_commission = round((($commissionCostValue * $requestRow['op_qty']) * $requestRow['op_commission_percentage']) / 100, 2);
 
         $op_refund_commission = min($op_refund_commission, FatApp::getConfig("CONF_MAX_COMMISSION"));
 
-        $perProdRefundCommission = round($op_refund_commission /$requestRow['op_qty'], 2);
+        $perProdRefundCommission = round($op_refund_commission / $requestRow['op_qty'], 2);
         $op_refund_commission = $perProdRefundCommission * $requestRow["orrequest_qty"];
         //$op_refund_commission = min( $op_refund_commission, (FatApp::getConfig("CONF_MAX_COMMISSION")*$requestRow["orrequest_qty"] ));
 
         /* $op_refund_commission = round( ($cartAmount * $requestRow['op_commission_percentage'])/100, 2 );
         $op_refund_commission = min( $op_refund_commission, (FatApp::getConfig("CONF_MAX_COMMISSION")*$requestRow["orrequest_qty"] )); */
 
-        $op_refund_affiliate_commission = round(($cartAmount * $requestRow['op_affiliate_commission_percentage'])/100, 2);
+        $op_refund_affiliate_commission = round(($cartAmount * $requestRow['op_affiliate_commission_percentage']) / 100, 2);
 
 
         $taxToRefund = 0;
@@ -409,18 +410,18 @@ class CommonHelper extends FatUtility
         $volumeDiscountPerQty = 0;
         $deductVolumeDiscountFromRefund = 0;
         if ($volumeDiscount > 0) {
-            $volumeDiscountPerQty = ($volumeDiscount/$requestRow['op_qty']);
+            $volumeDiscountPerQty = ($volumeDiscount / $requestRow['op_qty']);
             $deductVolumeDiscountFromRefund = ($volumeDiscountPerQty * $requestRow['orrequest_qty']);
         }
 
         $couponDiscountPerQty = 0;
         $deductCouponDiscountFromRefund = 0;
         if ($couponDiscount > 0) {
-            $couponDiscountPerQty = ($couponDiscount/$requestRow['op_qty']);
+            $couponDiscountPerQty = ($couponDiscount / $requestRow['op_qty']);
             $deductCouponDiscountFromRefund = ($couponDiscountPerQty * $requestRow['orrequest_qty']);
         }
 
-        $totalPaidAmtBuyer = ($requestRow["op_unit_price"]*$requestRow['op_qty']) + $requestRow["op_other_charges"];
+        $totalPaidAmtBuyer = ($requestRow["op_unit_price"] * $requestRow['op_qty']) + $requestRow["op_other_charges"];
         if (!$productAvaliedFreeShip) {
             $totalPaidAmtBuyer = $totalPaidAmtBuyer - $shipCharges;
         }
@@ -450,12 +451,12 @@ class CommonHelper extends FatUtility
         }
 
         $opDataToUpdate = array(
-            'op_refund_qty'=>$requestRow['orrequest_qty'],
-            'op_cart_amount'=>$cartAmount,
-            'op_prod_price'=>$cartAmount- $deductVolumeDiscountFromRefund - $deductCouponDiscountFromRefund,
-            'op_refund_amount'=>round($op_refund_amount, 2),
-            'op_refund_shipping'=>$op_refund_shipping,
-            'op_refund_commission'=>$op_refund_commission,
+            'op_refund_qty' => $requestRow['orrequest_qty'],
+            'op_cart_amount' => $cartAmount,
+            'op_prod_price' => $cartAmount - $deductVolumeDiscountFromRefund - $deductCouponDiscountFromRefund,
+            'op_refund_amount' => round($op_refund_amount, 2),
+            'op_refund_shipping' => $op_refund_shipping,
+            'op_refund_commission' => $op_refund_commission,
             'op_refund_affiliate_commission' => $op_refund_affiliate_commission,
             'op_refund_tax' => $taxToRefund,
         );
@@ -475,17 +476,17 @@ class CommonHelper extends FatUtility
 
         switch (strtoupper($amountType)) {
             case 'NETAMOUNT':
-                $amount = $cartTotal + $opArr['op_other_charges'] ;
+                $amount = $cartTotal + $opArr['op_other_charges'];
                 break;
 
             case 'REWARDPOINT':
-                $amount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]['opcharge_amount'])?$opArr['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]['opcharge_amount']:0;
+                $amount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]['opcharge_amount']) ? $opArr['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]['opcharge_amount'] : 0;
                 break;
             case 'DISCOUNT':
-                $amount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount'])?$opArr['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount']:0;
+                $amount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount']) ? $opArr['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount'] : 0;
                 break;
             case 'ADJUSTEDAMOUNT':
-                $amount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_ADJUST_SUBSCRIPTION_PRICE]['opcharge_amount'])?$opArr['charges'][OrderProduct::CHARGE_TYPE_ADJUST_SUBSCRIPTION_PRICE]['opcharge_amount']:0;
+                $amount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_ADJUST_SUBSCRIPTION_PRICE]['opcharge_amount']) ? $opArr['charges'][OrderProduct::CHARGE_TYPE_ADJUST_SUBSCRIPTION_PRICE]['opcharge_amount'] : 0;
                 break;
             case 'CART_TOTAL':
                 $amount = $cartTotal;
@@ -499,7 +500,7 @@ class CommonHelper extends FatUtility
     public static function renderHtml($content = '', $stripJs = false)
     {
         $str = html_entity_decode($content);
-        $str = ($stripJs == true)?static::stripJavascript($str):$str;
+        $str = ($stripJs == true) ? static::stripJavascript($str) : $str;
 
         return $str;
     }
@@ -511,10 +512,10 @@ class CommonHelper extends FatUtility
         }
 
         if ($position == 'L') {
-            return '% '.$val;
+            return '% ' . $val;
         }
 
-        return $val.' %';
+        return $val . ' %';
     }
 
     public static function getDefaultCurrencyValue($val, $format = true, $displaySymbol = true)
@@ -540,7 +541,7 @@ class CommonHelper extends FatUtility
             $currency_id = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
             $currencyData = Currency::getAttributesById(
                 $currency_id,
-                array('currency_symbol_left','currency_symbol_right')
+                array('currency_symbol_left', 'currency_symbol_right')
             );
             $currencySymbolLeft = $currencyData['currency_symbol_left'];
             $currencySymbolRight = $currencyData['currency_symbol_right'];
@@ -548,17 +549,17 @@ class CommonHelper extends FatUtility
             $currencySymbolLeft = self::getCurrencySymbolLeft();
             $currencySymbolRight = self::getCurrencySymbolRight();
         }
-        return   $currencySymbolLeft.$currencySymbolRight;
+        return   $currencySymbolLeft . $currencySymbolRight;
     }
 
     public static function numberStringFormat($number)
     {
         $prefixes = 'KMGTPEZY';
         if ($number >= 1000) {
-            for ($i=-1; $number>=1000; ++$i) {
-                $number =  $number/1000;
+            for ($i = -1; $number >= 1000; ++$i) {
+                $number = $number / 1000;
             }
-            return floor($number).$prefixes[$i];
+            return floor($number) . $prefixes[$i];
         }
         return $number;
     }
@@ -570,14 +571,14 @@ class CommonHelper extends FatUtility
             array('currency_value')
         );
         $currencyValue = $currencyData['currency_value'];
-        $val = $val/$currencyValue;
+        $val = $val / $currencyValue;
 
         $currencyData = Currency::getAttributesById(
             $otherCurrencyId,
             array('currency_value')
         );
         $currencyValue = $currencyData['currency_value'];
-        $val = $val* $currencyValue;
+        $val = $val * $currencyValue;
 
         if ($numberFormat) {
             $val = number_format($val, 2);
@@ -597,7 +598,7 @@ class CommonHelper extends FatUtility
             $currency_id = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
             $currencyData = Currency::getAttributesById(
                 $currency_id,
-                array('currency_code','currency_symbol_left','currency_symbol_right','currency_value')
+                array('currency_code', 'currency_symbol_left', 'currency_symbol_right', 'currency_value')
             );
             $currencyValue = $currencyData['currency_value'];
             $currencySymbolLeft = $currencyData['currency_symbol_left'];
@@ -624,10 +625,10 @@ class CommonHelper extends FatUtility
         }
 
         if ($displaySymbol) {
-            $sign.= ' ';
-            $val =  $sign.$currencySymbolLeft.$val.$currencySymbolRight;
+            $sign .= ' ';
+            $val = $sign . $currencySymbolLeft . $val . $currencySymbolRight;
         } else {
-            $val =  $sign.$val;
+            $val = $sign . $val;
         }
 
         return trim($val);
@@ -691,14 +692,14 @@ class CommonHelper extends FatUtility
             header('Content-type: image/svg+xml');
             header('Cache-Control: public, must-revalidate');
             header("Pragma: public");
-            header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($path)).' GMT', true, 304);
+            header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($path)) . ' GMT', true, 304);
             header("Expires: " . date('D, d M Y H:i:s', strtotime("+30 days")));
             exit;
         }
         header('Content-type: image/svg+xml');
         header("Pragma: public");
         header('Cache-Control: public, must-revalidate');
-        header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($path)).' GMT', true, 200);
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($path)) . ' GMT', true, 200);
         header("Expires: " . date('D, d M Y H:i:s', strtotime("+30 days")));
         readfile($path);
     }
@@ -802,7 +803,7 @@ class CommonHelper extends FatUtility
             return false;
         }
 
-        $file = fopen(ImportexportCommon::IMPORT_ERROR_LOG_PATH.$fileName, "r");
+        $file = fopen(ImportexportCommon::IMPORT_ERROR_LOG_PATH . $fileName, "r");
 
         /**** Skip first heading row ****/
         fgetcsv($file);
@@ -811,7 +812,7 @@ class CommonHelper extends FatUtility
         $havingData = fgetcsv($file);
 
         if (!$havingData) {
-            unlink(ImportexportCommon::IMPORT_ERROR_LOG_PATH.$fileName);
+            unlink(ImportexportCommon::IMPORT_ERROR_LOG_PATH . $fileName);
         }
         return $havingData;
     }
@@ -821,7 +822,7 @@ class CommonHelper extends FatUtility
         if (!$total) {
             return 0;
         }
-        $percent = $percentage/$total;
+        $percent = $percentage / $total;
         return $percent_friendly = number_format($percent * 100, 2) . '%';
     }
 
@@ -851,12 +852,12 @@ class CommonHelper extends FatUtility
 
         $options = [
             'http' => [
-                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                'method'  => 'POST',
+                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method' => 'POST',
                 'content' => http_build_query($data)
             ]
         ];
-        $context  = stream_context_create($options);
+        $context = stream_context_create($options);
         $response = file_get_contents($url, false, $context);
         $responseKeys = json_decode($response, true);
         header('Content-type: application/json');
@@ -943,16 +944,16 @@ class CommonHelper extends FatUtility
     {
         if ($type == NavigationLinks::NAVLINK_TYPE_CMS) {
             $url = CommonHelper::generateUrl('cms', 'view', array($nav_cpage_id), '', null, false, $getOriginalUrl);
-        } elseif ($type==NavigationLinks::NAVLINK_TYPE_EXTERNAL_PAGE) {
-            $url = str_replace('{SITEROOT}', CONF_WEBROOT_URL, $nav_url) ;
-            $url = str_replace('{siteroot}', CONF_WEBROOT_URL, $url) ;
+        } elseif ($type == NavigationLinks::NAVLINK_TYPE_EXTERNAL_PAGE) {
+            $url = str_replace('{SITEROOT}', CONF_WEBROOT_URL, $nav_url);
+            $url = str_replace('{siteroot}', CONF_WEBROOT_URL, $url);
             $url = CommonHelper::processURLString($url);
         } elseif ($type == NavigationLinks::NAVLINK_TYPE_CATEGORY_PAGE) {
             $url = CommonHelper::generateUrl('category', 'view', array($nav_category_id), '', null, false, $getOriginalUrl);
         }
 
         if (self::isThemePreview()) {
-            $url = $url.'?theme-preview';
+            $url = $url . '?theme-preview';
         }
 
         return $url;
@@ -1017,7 +1018,7 @@ class CommonHelper extends FatUtility
         $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
         $pass = '';
         for ($i = 0; $i < $n; $i++) {
-            $pass .= substr($chars, rand(0, strlen($chars)-1), 1);
+            $pass .= substr($chars, rand(0, strlen($chars) - 1), 1);
         }
         return $pass;
     }
@@ -1069,7 +1070,7 @@ class CommonHelper extends FatUtility
     public static function getLangFields($condition_id = 0, $condition_field = "", $condition_lang_field = "", $lang_flds = array(), $lang_table = "")
     {
         $condition_id = FatUtility::int($condition_id);
-        if ($condition_id ==0 || $condition_field == "" || $condition_lang_field =="" || $lang_table=="" || empty($lang_flds)) {
+        if ($condition_id == 0 || $condition_field == "" || $condition_lang_field == "" || $lang_table == "" || empty($lang_flds)) {
             return array();
         }
         $langs = Language::getAllNames();
@@ -1085,7 +1086,7 @@ class CommonHelper extends FatUtility
                 if ($rec[$condition_lang_field] == $langId) {
                     foreach ($lang_flds as $fld) {
                         $array[$fld][$langId] = $rec[$fld];
-                        $array[$fld.$langId] = $rec[$fld];
+                        $array[$fld . $langId] = $rec[$fld];
                     }
                     continue;
                 }
@@ -1119,7 +1120,7 @@ class CommonHelper extends FatUtility
         if (!empty($arr)) {
             foreach ($arr as $key => $val) {
                 $v = 0;
-                if ($key%2 == 0) {
+                if ($key % 2 == 0) {
                     $k = $val;
                 } else {
                     $v = $val;
@@ -1247,7 +1248,7 @@ class CommonHelper extends FatUtility
             $template = $themeDirName . '/' . $actionName;
         }
 
-        if (file_exists(CONF_THEME_PATH.$template)) {
+        if (file_exists(CONF_THEME_PATH . $template)) {
             return true;
         }
         return false;
@@ -1255,12 +1256,12 @@ class CommonHelper extends FatUtility
 
     public static function subStringByWords($str, $maxlength)
     {
-        if (strlen($str)<$maxlength) {
+        if (strlen($str) < $maxlength) {
             return $str;
         }
         $str = substr($str, 0, $maxlength);
         $rpos = strrpos($str, ' ');
-        if ($rpos>0) {
+        if ($rpos > 0) {
             $str = substr($str, 0, $rpos);
         }
         return $str;
@@ -1300,10 +1301,10 @@ class CommonHelper extends FatUtility
                 $length = $val;
                 break;
             case applicationConstants::LENGTH_METER:
-                $length = $val*100;
+                $length = $val * 100;
                 break;
             case applicationConstants::LENGTH_INCH:
-                $length = $val*2.54;
+                $length = $val * 2.54;
                 break;
             default:
                 trigger_error("Invalid Argument", E_USER_ERROR);
@@ -1333,13 +1334,13 @@ class CommonHelper extends FatUtility
     public static function formatOrderReturnRequestNumber($requestId)
     {
         $new_value = str_pad($requestId, 5, '0', STR_PAD_LEFT);
-        $new_value = "R".$new_value;
+        $new_value = "R" . $new_value;
         return $new_value;
     }
 
     public static function processURLString($urlString)
     {
-        $strtestpos = strpos(" ".$urlString, ".");
+        $strtestpos = strpos(" " . $urlString, ".");
         if (!$strtestpos) {
             return $urlString;
         }
@@ -1355,7 +1356,7 @@ class CommonHelper extends FatUtility
             if ($my_bool) {
                 $pre_str = 'https://';
             }
-            $urlString = $pre_str.$urlString;
+            $urlString = $pre_str . $urlString;
         }
         return $urlString;
     }
@@ -1378,10 +1379,10 @@ class CommonHelper extends FatUtility
             trigger_error("Invalid Argument Passed!", E_USER_ERROR);
         }
 
-        $originalPrice  = $product['selprod_price'];
-        $specialPrice  = $product['theprice'];
-        $discount =  (($originalPrice - $specialPrice)*100)/$originalPrice;
-        return $disVal = round($discount)."% ".Labels::getLabel('LBL_Off', $langId);
+        $originalPrice = $product['selprod_price'];
+        $specialPrice = $product['theprice'];
+        $discount = (($originalPrice - $specialPrice) * 100) / $originalPrice;
+        return $disVal = round($discount) . "% " . Labels::getLabel('LBL_Off', $langId);
         /* $str = '';
         $listPrice = $product['splprice_display_list_price'];
         if( $listPrice > 0 ){
@@ -1414,7 +1415,7 @@ class CommonHelper extends FatUtility
     public static function truncateCharacters($string, $limit, $break = " ", $pad = "...", $nl2br = false)
     {
         if (strlen($string) <= $limit) {
-            return ($nl2br)? nl2br($string) : $string ;
+            return ($nl2br) ? nl2br($string) : $string;
         }
 
 
@@ -1428,7 +1429,7 @@ class CommonHelper extends FatUtility
         if (false !== ($breakpoint = mb_strrpos($string, $break))) {
             $string = mb_substr($string, 0, $breakpoint);
         }
-        return (($nl2br)? nl2br($string) : $string) . $pad;
+        return (($nl2br) ? nl2br($string) : $string) . $pad;
     }
 
     public static function displayName($string)
@@ -1466,8 +1467,8 @@ class CommonHelper extends FatUtility
         $keyword = strtolower($string);
         $keyword = ucfirst(FatUtility::dashed2Camel($keyword));
 
-        if (file_exists(CONF_INSTALLATION_PATH . 'application/controllers/' .$keyword.'Controller' . '.php')) {
-            return $string.'-'.rand(1, 100);
+        if (file_exists(CONF_INSTALLATION_PATH . 'application/controllers/' . $keyword . 'Controller' . '.php')) {
+            return $string . '-' . rand(1, 100);
         }
 
         return trim($string, '-');
@@ -1478,7 +1479,7 @@ class CommonHelper extends FatUtility
         if (is_file($str)) {
             return @unlink($str);
         } elseif (is_dir($str)) {
-            $scan = glob(rtrim($str, '/').'/*');
+            $scan = glob(rtrim($str, '/') . '/*');
             foreach ($scan as $index => $path) {
                 static::recursiveDelete($path);
             }
@@ -1488,12 +1489,12 @@ class CommonHelper extends FatUtility
 
     public static function displayText($value = '')
     {
-        return empty(trim($value)) ? '-' : $value ;
+        return empty(trim($value)) ? '-' : $value;
     }
 
     public static function getPlaceholderForAmtField($langId)
     {
-        return Labels::getLabel('Lbl_Amount_in', $langId).' '.static::concatCurrencySymbolWithAmtLbl();
+        return Labels::getLabel('Lbl_Amount_in', $langId) . ' ' . static::concatCurrencySymbolWithAmtLbl();
     }
 
     public static function concatCurrencySymbolWithAmtLbl()
@@ -1501,15 +1502,15 @@ class CommonHelper extends FatUtility
         $currencyId = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
         $currencyData = Currency::getAttributesById(
             $currencyId,
-            array('currency_code','currency_symbol_left','currency_symbol_right','currency_value')
+            array('currency_code', 'currency_symbol_left', 'currency_symbol_right', 'currency_value')
         );
 
         $currencySymbolLeft = $currencyData['currency_symbol_left'];
         $currencySymbolRight = $currencyData['currency_symbol_right'];
 
-        $symbol = $currencySymbolRight ? $currencySymbolRight : $currencySymbolLeft ;
+        $symbol = $currencySymbolRight ? $currencySymbolRight : $currencySymbolLeft;
 
-        return empty($symbol) ? '' : " ($symbol)" ;
+        return empty($symbol) ? '' : " ($symbol)";
     }
 
     public static function isValidEmail($email)
@@ -1522,18 +1523,18 @@ class CommonHelper extends FatUtility
         $mainDelim = end($delimiters);
         array_pop($delimiters);
         foreach ($delimiters as $delimiter) {
-            $string= str_replace($delimiter, $mainDelim, $string);
+            $string = str_replace($delimiter, $mainDelim, $string);
         }
-        $result= explode($mainDelim, $string);
+        $result = explode($mainDelim, $string);
         return self::arrayTrim($result);
     }
 
     public static function arrayTrim($ar)
     {
         foreach ($ar as $key => $val) {
-            $val=trim($val);
+            $val = trim($val);
             if (!empty($val)) {
-                $reArray[]=$val;
+                $reArray[] = $val;
             }
         }
         return $reArray;
@@ -1557,9 +1558,9 @@ class CommonHelper extends FatUtility
 
     public static function getProdRatingInPercentage($rating, $total, $circleView)
     {
-        $percentage=($rating/$total)*100;
-        if ($circleView==true) {
-            $degree=($percentage*360)/100;
+        $percentage = ($rating / $total) * 100;
+        if ($circleView == true) {
+            $degree = ($percentage * 360) / 100;
             return $degree;
         }
         return $percentage;
@@ -1570,10 +1571,10 @@ class CommonHelper extends FatUtility
         $days = $packageInfo['ossubs_interval'];
         $durationArr = SellerPackagePlans::getSubscriptionPeriodValues();
         $duration = $durationArr[$packageInfo['ossubs_frequency']];
-        if ($sub_last_date =='') {
-            $sub_last_date =  date('Y-m-d');
+        if ($sub_last_date == '') {
+            $sub_last_date = date('Y-m-d');
         }
-        return  date('Y-m-d', strtotime("+" . $days . " ".$duration, strtotime($sub_last_date)));
+        return  date('Y-m-d', strtotime("+" . $days . " " . $duration, strtotime($sub_last_date)));
     }
 
     public static function isCsvValidMimes()
@@ -1596,25 +1597,25 @@ class CommonHelper extends FatUtility
 
     public static function createDropDownFromArray($name = '', $arr = array(), $selected = 0, $extra = ' ', $selectCaption = '')
     {
-        $dropDown ='<select name="'.$name.'" '.$extra.'>';
+        $dropDown = '<select name="' . $name . '" ' . $extra . '>';
         if ($selectCaption) {
-            $dropDown .='<option  value="0">'.$selectCaption.'</option>';
+            $dropDown .= '<option  value="0">' . $selectCaption . '</option>';
         }
 
         foreach ($arr as $key => $val) {
-            $selectedStr = ($key==$selected)?"selected=selected":"" ;
-            $dropDown .='<option '.$selectedStr.' value="'.$key.'">'.$val.'</option>';
+            $selectedStr = ($key == $selected) ? "selected=selected" : "";
+            $dropDown .= '<option ' . $selectedStr . ' value="' . $key . '">' . $val . '</option>';
         }
-        $dropDown .='</select>';
+        $dropDown .= '</select>';
         return  $dropDown;
     }
 
     public static function getUserFirstName($userName = '')
     {
         $nameArr = explode(" ", $userName);
-        $firstName =  $nameArr[0];
-        if (strlen($firstName)>15) {
-            return substr($firstName, 0, 11)."...";
+        $firstName = $nameArr[0];
+        if (strlen($firstName) > 15) {
+            return substr($firstName, 0, 11) . "...";
         } else {
             return $firstName;
         }
@@ -1676,12 +1677,12 @@ class CommonHelper extends FatUtility
         }
         if (strpos($input, '</style>') !== false) {
             $input = preg_replace_callback('#<style(.*?)>(.*?)</style>#is', function ($matches) {
-                return '<style' . $matches[1] .'>'. CommonHelper::minifyCss($matches[2]) . '</style>';
+                return '<style' . $matches[1] . '>' . CommonHelper::minifyCss($matches[2]) . '</style>';
             }, $input);
         }
         if (strpos($input, '</script>') !== false) {
             $input = preg_replace_callback('#<script(.*?)>(.*?)</script>#is', function ($matches) {
-                return '<script' . $matches[1] .'>'. CommonHelper::minifyJs($matches[2]) . '</script>';
+                return '<script' . $matches[1] . '>' . CommonHelper::minifyJs($matches[2]) . '</script>';
             }, $input);
         }
         return preg_replace(
@@ -1796,14 +1797,14 @@ class CommonHelper extends FatUtility
 
     public static function getUserCookiesEnabled()
     {
-        return (isset($_SESSION['cookies_enabled']) && $_SESSION['cookies_enabled']==true)?true:false;
+        return (isset($_SESSION['cookies_enabled']) && $_SESSION['cookies_enabled'] == true) ? true : false;
     }
 
     public static function getDefaultCurrencySymbol()
     {
-        $row = Currency::getAttributesById(FatApp::getConfig('CONF_CURRENCY'), array('currency_symbol_left','currency_symbol_right'));
+        $row = Currency::getAttributesById(FatApp::getConfig('CONF_CURRENCY'), array('currency_symbol_left', 'currency_symbol_right'));
         if (!empty($row)) {
-            return ($row['currency_symbol_left']!='')?$row['currency_symbol_left']:$row['currency_symbol_right'];
+            return ($row['currency_symbol_left'] != '') ? $row['currency_symbol_left'] : $row['currency_symbol_right'];
         }
         trigger_error(Labels::getLabel('ERR_Default_currency_not_specified.', CommonHelper::getLangId()), E_USER_ERROR);
     }
@@ -1814,10 +1815,10 @@ class CommonHelper extends FatUtility
             $str = json_encode($str);
         }
         //Something to write to txt log
-        $log  = "User: ".$_SERVER['REMOTE_ADDR'].' - '.date("F j, Y, g:i:s:u a").PHP_EOL.
-                "data: ".$str.PHP_EOL.
-                "-------------------------".PHP_EOL;
-        $file = CONF_UPLOADS_PATH.'./log_'.date("Y-m-d").'.txt';
+        $log = "User: " . $_SERVER['REMOTE_ADDR'] . ' - ' . date("F j, Y, g:i:s:u a") . PHP_EOL .
+                "data: " . $str . PHP_EOL .
+                "-------------------------" . PHP_EOL;
+        $file = CONF_UPLOADS_PATH . './log_' . date("Y-m-d") . '.txt';
         //Save string to log, use FILE_APPEND to append.
         file_put_contents($file, $log, FILE_APPEND);
     }
@@ -1902,7 +1903,7 @@ class CommonHelper extends FatUtility
     public static function displayBadgeCount($totalCount, $maxValue = 99)
     {
         if ($totalCount > $maxValue) {
-            return $maxValue.'+';
+            return $maxValue . '+';
         }
         return $totalCount;
     }
@@ -1971,7 +1972,7 @@ class CommonHelper extends FatUtility
         $recordId = isset($queryString[0]) ? $queryString[0] : 0;
         $extra = (object)[];
         switch ($controller . '/' . $action) {
-            case 'category/view':
+            case 'category/view' :
                 $urlType = applicationConstants::URL_TYPE_CATEGORY;
                 break;
             case 'brands/view':
@@ -1984,14 +1985,14 @@ class CommonHelper extends FatUtility
                 $urlType = applicationConstants::URL_TYPE_PRODUCT;
                 break;
             case 'collections/view':
-                $collectionType = 0 < $recordId  ? Collections::getAttributesById($recordId, 'collection_type') : 0;
+                $collectionType = 0 < $recordId ? Collections::getAttributesById($recordId, 'collection_type') : 0;
                 $urlType = applicationConstants::URL_TYPE_COLLECTION;
                 $extra = [
                     'collectionType' => $collectionType
                 ];
                 break;
             case 'guest-user/login-form':
-                $urlType = !empty($recordId) ?  applicationConstants::URL_TYPE_REGISTER : applicationConstants::URL_TYPE_SIGN_IN;
+                $urlType = !empty($recordId) ? applicationConstants::URL_TYPE_REGISTER : applicationConstants::URL_TYPE_SIGN_IN;
                 break;
             case 'cms/view':
                 $urlType = applicationConstants::URL_TYPE_CMS;

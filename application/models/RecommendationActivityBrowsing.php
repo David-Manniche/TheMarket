@@ -1,8 +1,9 @@
 <?php
+
 class RecommendationActivityBrowsing extends MyAppModel
 {
-    const DB_TBL = 'tbl_recommendation_activity_browsing';
-    const DB_TBL_PREFIX = 'rab_';
+    public const DB_TBL = 'tbl_recommendation_activity_browsing';
+    public const DB_TBL_PREFIX = 'rab_';
     private $db;
 
     public function __construct($id = 0)

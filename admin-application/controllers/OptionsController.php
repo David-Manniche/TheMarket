@@ -1,4 +1,5 @@
 <?php
+
 class OptionsController extends AdminBaseController
 {
     private $canView;
@@ -32,7 +33,7 @@ class OptionsController extends AdminBaseController
     {
         $frm = new Form('frmOptionSearch', array('id' => 'frmOptionSearch'));
         $f1 = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '');
-        $fld_submit =$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;
@@ -42,19 +43,19 @@ class OptionsController extends AdminBaseController
     {
         $this->objPrivilege->canViewOptions();
 
-        $pagesize=FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
+        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $frmSearch = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $post = $frmSearch->getFormDataFromArray($data);
 
         $srch = Option::getSearchObject($this->adminLangId);
         $srch->joinTable(User::DB_TBL, 'LEFT JOIN', 'u.user_id = option_seller_id', 'u');
         if (!empty($post['keyword'])) {
-            $condition=$srch->addCondition('o.option_identifier', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('ol.option_name', 'like', '%'.$post['keyword'].'%', 'OR');
+            $condition = $srch->addCondition('o.option_identifier', 'like', '%' . $post['keyword'] . '%');
+            $condition->attachCondition('ol.option_name', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
 
         $srch->setPageNumber($page);
@@ -341,7 +342,7 @@ class OptionsController extends AdminBaseController
 
         if (!empty($post['keyword'])) {
             $cnd = $srch->addCondition('option_name', 'LIKE', '%' . $post['keyword'] . '%');
-            $cnd->attachCondition('option_identifier', 'LIKE', '%'. $post['keyword'] . '%', 'OR');
+            $cnd->attachCondition('option_identifier', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
         }
 
         /* $srch->setPageSize($pagesize); */
@@ -353,8 +354,8 @@ class OptionsController extends AdminBaseController
         foreach ($options as $key => $option) {
             $json[] = array(
             'id' => $key,
-            'name'      => strip_tags(html_entity_decode($option['option_name'], ENT_QUOTES, 'UTF-8')),
-            'option_identifier'    => strip_tags(html_entity_decode($option['option_identifier'], ENT_QUOTES, 'UTF-8'))
+            'name' => strip_tags(html_entity_decode($option['option_name'], ENT_QUOTES, 'UTF-8')),
+            'option_identifier' => strip_tags(html_entity_decode($option['option_identifier'], ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));

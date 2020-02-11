@@ -1,4 +1,5 @@
 <?php
+
 class DiscountCouponsController extends AdminBaseController
 {
     private $canView;
@@ -6,7 +7,7 @@ class DiscountCouponsController extends AdminBaseController
 
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup');
+        $ajaxCallArray = array('deleteRecord', 'form', 'langForm', 'search', 'setup', 'langSetup');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }
@@ -36,25 +37,25 @@ class DiscountCouponsController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
         /* $tagObj = new Tag(); */
         $srch = DiscountCoupons::getSearchObject($this->adminLangId, false);
 
         if (!empty($post['keyword'])) {
-            $cnd = $srch->addCondition('dc.coupon_identifier', 'like', '%'.$post['keyword'].'%');
-            $cnd->attachCondition('dc.coupon_code', 'like', '%'.$post['keyword'].'%');
-            $cnd->attachCondition('dc_l.coupon_title', 'like', '%'.$post['keyword'].'%');
+            $cnd = $srch->addCondition('dc.coupon_identifier', 'like', '%' . $post['keyword'] . '%');
+            $cnd->attachCondition('dc.coupon_code', 'like', '%' . $post['keyword'] . '%');
+            $cnd->attachCondition('dc_l.coupon_title', 'like', '%' . $post['keyword'] . '%');
         }
         if (!empty($post['type'])) {
             $srch->addCondition('dc.coupon_type', '=', $post['type']);
         }
-        $srch->addOrder('datediff(coupon_end_date,"'.date('Y-m-d').'")', 'DESC');
+        $srch->addOrder('datediff(coupon_end_date,"' . date('Y-m-d') . '")', 'DESC');
         /* $srch->addOrder('coupon_active','DESC'); */
         $srch->addOrder('coupon_id', 'DESC');
 
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -105,7 +106,7 @@ class DiscountCouponsController extends AdminBaseController
         $newTabLangId = 0;
         if ($coupon_id > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = DiscountCoupons::getAttributesByLangId($langId, $coupon_id)) {
                     $newTabLangId = $langId;
                     break;
@@ -140,10 +141,10 @@ class DiscountCouponsController extends AdminBaseController
         unset($post['coupon_id']);
         unset($post['lang_id']);
         $data = array(
-        'couponlang_lang_id'=>$lang_id,
-        'couponlang_coupon_id'=>$coupon_id,
-        'coupon_title'=>$post['coupon_title'],
-        'coupon_description'=>$post['coupon_description'],
+        'couponlang_lang_id' => $lang_id,
+        'couponlang_coupon_id' => $coupon_id,
+        'coupon_title' => $post['coupon_title'],
+        'coupon_description' => $post['coupon_description'],
         );
 
         $obj = new DiscountCoupons($coupon_id);
@@ -163,7 +164,7 @@ class DiscountCouponsController extends AdminBaseController
         
         $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach ($languages as $langId =>$langName) {
+        foreach ($languages as $langId => $langName) {
             if (!$row = DiscountCoupons::getAttributesByLangId($langId, $coupon_id)) {
                 $newTabLangId = $langId;
                 break;
@@ -200,10 +201,10 @@ class DiscountCouponsController extends AdminBaseController
             }
             $frm->fill($data);
         } else {
-            $frm->fill(array('coupon_id'=>$coupon_id));
+            $frm->fill(array('coupon_id' => $coupon_id));
         }
 
-        $this->set('coupon_type', (isset($data['coupon_type'])?$data['coupon_type']:DiscountCoupons::TYPE_DISCOUNT));
+        $this->set('coupon_type', (isset($data['coupon_type']) ? $data['coupon_type'] : DiscountCoupons::TYPE_DISCOUNT));
         $this->set('couponDiscountIn', isset($data['coupon_discount_in_percent']) ? $data['coupon_discount_in_percent'] : applicationConstants::PERCENTAGE);
         $this->set('languages', Language::getAllNames());
         $this->set('coupon_id', $coupon_id);
@@ -262,12 +263,12 @@ class DiscountCouponsController extends AdminBaseController
         $frmProduct = $this->getProductForm();
 
         $srch = DiscountCoupons::getSearchObject($this->adminLangId);
-        $srch->addMultipleFields(array('coupon_id', 'IFNULL(coupon_title,coupon_identifier) as coupon_name','coupon_code'));
+        $srch->addMultipleFields(array('coupon_id', 'IFNULL(coupon_title,coupon_identifier) as coupon_name', 'coupon_code'));
         $srch->addCondition('coupon_id', '=', $coupon_id);
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
 
-        $row['coupon_name'] = "<h3> ".Labels::getLabel('LBL_Coupon_Name', $this->adminLangId)." : ". $row['coupon_name']." | ".Labels::getLabel('LBL_Coupon_Code', $this->adminLangId)." : ".$row['coupon_code']."</h3>";
+        $row['coupon_name'] = "<h3> " . Labels::getLabel('LBL_Coupon_Name', $this->adminLangId) . " : " . $row['coupon_name'] . " | " . Labels::getLabel('LBL_Coupon_Code', $this->adminLangId) . " : " . $row['coupon_code'] . "</h3>";
         $frmProduct->fill($row);
         $this->set('coupon_id', $coupon_id);
         $this->set('couponData', $row);
@@ -287,12 +288,12 @@ class DiscountCouponsController extends AdminBaseController
         $frmCategory = $this->getCategoryForm();
 
         $srch = DiscountCoupons::getSearchObject($this->adminLangId);
-        $srch->addMultipleFields(array('coupon_id', 'IFNULL(coupon_title,coupon_identifier) as coupon_name','coupon_code'));
+        $srch->addMultipleFields(array('coupon_id', 'IFNULL(coupon_title,coupon_identifier) as coupon_name', 'coupon_code'));
         $srch->addCondition('coupon_id', '=', $coupon_id);
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
 
-        $row['coupon_name'] = "<h3> ".Labels::getLabel('LBL_Coupon_Name', $this->adminLangId)." : ". $row['coupon_name']." | ".Labels::getLabel('LBL_Coupon_Code', $this->adminLangId)." : ".$row['coupon_code']."</h3>";
+        $row['coupon_name'] = "<h3> " . Labels::getLabel('LBL_Coupon_Name', $this->adminLangId) . " : " . $row['coupon_name'] . " | " . Labels::getLabel('LBL_Coupon_Code', $this->adminLangId) . " : " . $row['coupon_code'] . "</h3>";
         $frmCategory->fill($row);
         $this->set('coupon_id', $coupon_id);
         $this->set('couponData', $row);
@@ -314,12 +315,12 @@ class DiscountCouponsController extends AdminBaseController
         $frmUser = $this->getDiscountUserForm();
 
         $srch = DiscountCoupons::getSearchObject($this->adminLangId);
-        $srch->addMultipleFields(array('coupon_id', 'IFNULL(coupon_title,coupon_identifier) as coupon_name','coupon_code'));
+        $srch->addMultipleFields(array('coupon_id', 'IFNULL(coupon_title,coupon_identifier) as coupon_name', 'coupon_code'));
         $srch->addCondition('coupon_id', '=', $coupon_id);
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
 
-        $row['coupon_name'] = "<h3> ".Labels::getLabel('LBL_Coupon_Name', $this->adminLangId)." : ". $row['coupon_name']." | ".Labels::getLabel('LBL_Coupon_Code', $this->adminLangId)." : ".$row['coupon_code']."</h3>";
+        $row['coupon_name'] = "<h3> " . Labels::getLabel('LBL_Coupon_Name', $this->adminLangId) . " : " . $row['coupon_name'] . " | " . Labels::getLabel('LBL_Coupon_Code', $this->adminLangId) . " : " . $row['coupon_code'] . "</h3>";
         $frmCategory->fill($row);
         $frmProduct->fill($row);
         $frmUser->fill($row);
@@ -342,12 +343,12 @@ class DiscountCouponsController extends AdminBaseController
         $frmPlan = $this->getPlanForm();
 
         $srch = DiscountCoupons::getSearchObject($this->adminLangId);
-        $srch->addMultipleFields(array('coupon_id', 'IFNULL(coupon_title,coupon_identifier) as coupon_name','coupon_code'));
+        $srch->addMultipleFields(array('coupon_id', 'IFNULL(coupon_title,coupon_identifier) as coupon_name', 'coupon_code'));
         $srch->addCondition('coupon_id', '=', $coupon_id);
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
 
-        $row['coupon_name'] = "<h3> ".Labels::getLabel('LBL_Coupon_Name', $this->adminLangId)." : ". $row['coupon_name']." | ".Labels::getLabel('LBL_Coupon_Code', $this->adminLangId)." : ".$row['coupon_code']."</h3>";
+        $row['coupon_name'] = "<h3> " . Labels::getLabel('LBL_Coupon_Name', $this->adminLangId) . " : " . $row['coupon_name'] . " | " . Labels::getLabel('LBL_Coupon_Code', $this->adminLangId) . " : " . $row['coupon_code'] . "</h3>";
 
         $this->set('coupon_id', $coupon_id);
         $this->set('couponData', $row);
@@ -359,7 +360,7 @@ class DiscountCouponsController extends AdminBaseController
     public function media($coupon_id = 0)
     {
         $coupon_id = FatUtility::int($coupon_id);
-        $couponData  = DiscountCoupons::getAttributesById($coupon_id);
+        $couponData = DiscountCoupons::getAttributesById($coupon_id);
 
         if (false == $couponData) {
             Message::addErrorMessage($this->str_invalid_request_id);
@@ -374,10 +375,10 @@ class DiscountCouponsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function images($coupon_id = 0, $lang_id=0)
+    public function images($coupon_id = 0, $lang_id = 0)
     {
         $coupon_id = FatUtility::int($coupon_id);
-        $couponData  = DiscountCoupons::getAttributesById($coupon_id);
+        $couponData = DiscountCoupons::getAttributesById($coupon_id);
 
         if (false == $couponData) {
             Message::addErrorMessage($this->str_invalid_request_id);
@@ -717,7 +718,7 @@ class DiscountCouponsController extends AdminBaseController
 
         $this->set('file', $_FILES['cropped_image']['name']);
         $this->set('coupon_id', $coupon_id);
-        $this->set('msg', $_FILES['cropped_image']['name'].' '.Labels::getLabel('MSG_Uploaded_Successfully.', $this->adminLangId));
+        $this->set('msg', $_FILES['cropped_image']['name'] . ' ' . Labels::getLabel('MSG_Uploaded_Successfully.', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -763,14 +764,14 @@ class DiscountCouponsController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
 
         $post = FatApp::getPostedData();
-        $page = (empty($post['page']) || $post['page'] <= 0)?1:$post['page'];
-        $page = (empty($page) || $page <= 0)?1:FatUtility::int($page);
+        $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : $post['page'];
+        $page = (empty($page) || $page <= 0) ? 1 : FatUtility::int($page);
 
         $srch = CouponHistory::getSearchObject();
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'user_id = couponhistory_user_id');
         $srch->joinTable(Credential::DB_TBL, 'LEFT OUTER JOIN', 'credential_user_id = user_id');
         $srch->addCondition('couponhistory_coupon_id', '=', $coupon_id);
-        $srch->addMultipleFields(array('couponhistory_id','couponhistory_coupon_id','couponhistory_order_id','couponhistory_user_id','couponhistory_amount','couponhistory_added_on','credential_username'));
+        $srch->addMultipleFields(array('couponhistory_id', 'couponhistory_coupon_id', 'couponhistory_order_id', 'couponhistory_user_id', 'couponhistory_amount', 'couponhistory_added_on', 'credential_username'));
         $srch->addOrder('couponhistory_added_on', 'DESC');
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -823,7 +824,7 @@ class DiscountCouponsController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Coupon_Type', $this->adminLangId), 'type', DiscountCoupons::getTypeArr($this->adminLangId, true), '', array(), '');
 
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
-        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('MSG_Clear_Search', $this->adminLangId), array('onclick'=>'clearSearch()'));
+        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('MSG_Clear_Search', $this->adminLangId), array('onclick' => 'clearSearch()'));
         $fld_submit->attachField($fld_cancel);
         return $frm;
     }
@@ -850,9 +851,9 @@ class DiscountCouponsController extends AdminBaseController
         $frm->addFloatField(Labels::getLabel('LBL_Min_Order_Value', $this->adminLangId), 'coupon_min_order_value')->requirements()->setFloatPositive();
         $frm->addFloatField(Labels::getLabel('LBL_Max_Discount_Value', $this->adminLangId), 'coupon_max_discount_value');
 
-        $frm->addDateField(Labels::getLabel('LBL_Date_From', $this->adminLangId), 'coupon_start_date', '', array('readonly' => 'readonly','class' => 'small dateTimeFld field--calender'));
+        $frm->addDateField(Labels::getLabel('LBL_Date_From', $this->adminLangId), 'coupon_start_date', '', array('readonly' => 'readonly', 'class' => 'small dateTimeFld field--calender'));
 
-        $fld = $frm->addDateField(Labels::getLabel('LBL_Date_To', $this->adminLangId), 'coupon_end_date', '', array('readonly' => 'readonly','class' => 'small dateTimeFld field--calender'));
+        $fld = $frm->addDateField(Labels::getLabel('LBL_Date_To', $this->adminLangId), 'coupon_end_date', '', array('readonly' => 'readonly', 'class' => 'small dateTimeFld field--calender'));
         $fld->requirements()->setCompareWith('coupon_start_date', 'ge', Labels::getLabel('LBL_Date_To', $this->adminLangId));
 
         $frm->addIntegerField(Labels::getLabel('LBL_Uses_Per_Coupon', $this->adminLangId), 'coupon_uses_count', 1);
@@ -926,7 +927,7 @@ class DiscountCouponsController extends AdminBaseController
         $frm->addHiddenField('', 'coupon_id', $coupon_id);
         $bannerTypeArr = applicationConstants::bannerTypeArr();
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', $bannerTypeArr, '', array(), '');
-        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'coupon_image', array('accept'=>'image/*', 'data-frm'=>'frmCouponMedia'));
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'coupon_image', array('accept' => 'image/*', 'data-frm' => 'frmCouponMedia'));
         return $frm;
     }
 
@@ -936,7 +937,7 @@ class DiscountCouponsController extends AdminBaseController
         $frm = new Form('frmCouponCategory');
         $frm->addHtml('', 'coupon_name', '');
         $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Add_Category', $this->adminLangId), 'category_name');
-        $fld2 = $frm->addHtml('', 'addNewCategoryLink', '<a target="_blank" href="'.CommonHelper::generateUrl('productCategories').'">'.Labels::getLabel('LBL_Category_Not_Found?_Click_here_to_add_new_category', $this->adminLangId).'</a>');
+        $fld2 = $frm->addHtml('', 'addNewCategoryLink', '<a target="_blank" href="' . CommonHelper::generateUrl('productCategories') . '">' . Labels::getLabel('LBL_Category_Not_Found?_Click_here_to_add_new_category', $this->adminLangId) . '</a>');
         $fld1->attachField($fld2);
         $frm->addHiddenField('', 'coupon_id');
         return $frm;
@@ -948,7 +949,7 @@ class DiscountCouponsController extends AdminBaseController
         $frm = new Form('frmCouponProduct');
         $frm->addHtml('', 'coupon_name', '');
         $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Add_Product', $this->adminLangId), 'product_name');
-        $fld2 = $frm->addHtml('', 'addNewProductLink', '<a target="_blank" href="'.CommonHelper::generateUrl('products').'">'.Labels::getLabel('LBL_Product_Not_Found?_Click_here_to_add_new_product', $this->adminLangId).'</a>');
+        $fld2 = $frm->addHtml('', 'addNewProductLink', '<a target="_blank" href="' . CommonHelper::generateUrl('products') . '">' . Labels::getLabel('LBL_Product_Not_Found?_Click_here_to_add_new_product', $this->adminLangId) . '</a>');
         $fld1->attachField($fld2);
         $frm->addHiddenField('', 'coupon_id');
         return $frm;
@@ -959,7 +960,7 @@ class DiscountCouponsController extends AdminBaseController
         $frm = new Form('frmCouponProduct');
         $frm->addHtml('', 'coupon_name', '');
         $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Add_Plan', $this->adminLangId), 'plan_name');
-        $fld2 = $frm->addHtml('', 'addNewPlanLink', '<br/><a target="_blank" href="'.CommonHelper::generateUrl('sellerPackages').'">'.Labels::getLabel('LBL_Plan_Not_Found?_Click_here_to_add_new_plan', $this->adminLangId).'</a>');
+        $fld2 = $frm->addHtml('', 'addNewPlanLink', '<br/><a target="_blank" href="' . CommonHelper::generateUrl('sellerPackages') . '">' . Labels::getLabel('LBL_Plan_Not_Found?_Click_here_to_add_new_plan', $this->adminLangId) . '</a>');
         $fld1->attachField($fld2);
         $frm->addHiddenField('', 'coupon_id');
         return $frm;

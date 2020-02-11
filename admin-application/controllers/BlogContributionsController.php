@@ -1,11 +1,12 @@
 <?php
+
 class BlogContributionsController extends AdminBaseController
 {
     private $canView;
     private $canEdit;
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','search','view','updateStatus');
+        $ajaxCallArray = array('deleteRecord', 'search', 'view', 'updateStatus');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die(Labels::getLabel('MSG_Invalid_Action', $this->adminLangId));
         }
@@ -41,19 +42,19 @@ class BlogContributionsController extends AdminBaseController
         $srch = BlogContribution::getSearchObject();
 
         if (!empty($post['keyword'])) {
-            $keywordCond =  $srch->addCondition('bcontributions_author_first_name', 'like', '%'.$post['keyword'].'%');
-            $keywordCond->attachCondition('bcontributions_author_last_name', 'like', '%'.$post['keyword'].'%');
-            $keywordCond->attachCondition('bcontributions_author_email', 'like', '%'.$post['keyword'].'%');
-            $keywordCond->attachCondition('bcontributions_author_phone', 'like', '%'.$post['keyword'].'%');
+            $keywordCond = $srch->addCondition('bcontributions_author_first_name', 'like', '%' . $post['keyword'] . '%');
+            $keywordCond->attachCondition('bcontributions_author_last_name', 'like', '%' . $post['keyword'] . '%');
+            $keywordCond->attachCondition('bcontributions_author_email', 'like', '%' . $post['keyword'] . '%');
+            $keywordCond->attachCondition('bcontributions_author_phone', 'like', '%' . $post['keyword'] . '%');
         }
 
-        if (isset($post['bcontributions_status']) && $post['bcontributions_status']!='') {
+        if (isset($post['bcontributions_status']) && $post['bcontributions_status'] != '') {
             $srch->addCondition('bcontributions_status', '=', $post['bcontributions_status']);
         }
-        if (isset($post['bcontributions_id']) && $post['bcontributions_id']!='') {
+        if (isset($post['bcontributions_id']) && $post['bcontributions_id'] != '') {
             $srch->addCondition('bcontributions_id', '=', $post['bcontributions_id']);
         }
-        $srch->addMultipleFields(array('*','concat(bcontributions_author_first_name," ",bcontributions_author_last_name) author_name'));
+        $srch->addMultipleFields(array('*', 'concat(bcontributions_author_first_name," ",bcontributions_author_last_name) author_name'));
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
         $srch->addOrder('bcontributions_id', 'DESC');
@@ -71,7 +72,7 @@ class BlogContributionsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function downloadAttachedFile($recordId, $recordSubid =0)
+    public function downloadAttachedFile($recordId, $recordSubid = 0)
     {
         $recordId = FatUtility::int($recordId);
 
@@ -220,7 +221,7 @@ class BlogContributionsController extends AdminBaseController
     {
         $bcontributions_id = FatUtility::int($bcontributions_id);
 
-        $frm = new Form('frmBlogContribution', array('id'=>'frmBlogContribution'));
+        $frm = new Form('frmBlogContribution', array('id' => 'frmBlogContribution'));
         $frm->addHiddenField('', 'bcontributions_id', $bcontributions_id);
         $statusArr = applicationConstants::getBlogContributionStatusArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Contribution_Status', $this->adminLangId), 'bcontributions_status', $statusArr, '', array(), '');
@@ -230,14 +231,14 @@ class BlogContributionsController extends AdminBaseController
 
     private function getSearchForm()
     {
-        $frm = new Form('frmSearch', array('id'=>'frmSearch'));
+        $frm = new Form('frmSearch', array('id' => 'frmSearch'));
 
-        $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '', array('class'=>'search-input'));
+        $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '', array('class' => 'search-input'));
         $statusArr = applicationConstants::getBlogContributionStatusArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Contribution_Status', $this->adminLangId), 'bcontributions_status', $statusArr, '', array(), 'Select');
         $frm->addHiddenField('', 'page');
         $frm->addHiddenField('', 'bcontributions_id');
-        $fld_submit=$frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_submit = $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;

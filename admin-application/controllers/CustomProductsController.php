@@ -1,4 +1,5 @@
 <?php
+
 class CustomProductsController extends AdminBaseController
 {
     private $canView;
@@ -31,8 +32,8 @@ class CustomProductsController extends AdminBaseController
         $srchForm = $this->catalogCustomProductRequestSearchForm();
 
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $post = $srchForm->getFormDataFromArray($data);
 
@@ -42,15 +43,15 @@ class CustomProductsController extends AdminBaseController
         $srch->addOrder('preq_added_on', 'desc');
 
         if (!empty($post['keyword'])) {
-            $cond = $srch->addCondition('preq.preq_content', 'like', '%'.$post['keyword'].'%');
-            $cond->attachCondition('preq_l.preq_lang_data', 'like', '%'.$post['keyword'].'%', 'OR');
-            $cond->attachCondition('u.user_name', 'like', '%'.$post['keyword'].'%', 'OR');
-            $cond->attachCondition('uc.credential_email', 'like', '%'.$post['keyword'].'%', 'OR');
-            $cond->attachCondition('uc.credential_username', 'like', '%'.$post['keyword'].'%', 'OR');
+            $cond = $srch->addCondition('preq.preq_content', 'like', '%' . $post['keyword'] . '%');
+            $cond->attachCondition('preq_l.preq_lang_data', 'like', '%' . $post['keyword'] . '%', 'OR');
+            $cond->attachCondition('u.user_name', 'like', '%' . $post['keyword'] . '%', 'OR');
+            $cond->attachCondition('uc.credential_email', 'like', '%' . $post['keyword'] . '%', 'OR');
+            $cond->attachCondition('uc.credential_username', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
 
         if (!empty($post['date_from'])) {
-            $srch->addCondition('preq.preq_added_on', '>=', $post['date_from']. ' 00:00:00');
+            $srch->addCondition('preq.preq_added_on', '>=', $post['date_from'] . ' 00:00:00');
         }
 
         if ($post['status'] > -1) {
@@ -58,7 +59,7 @@ class CustomProductsController extends AdminBaseController
         }
 
         if (!empty($post['date_to'])) {
-            $srch->addCondition('preq.preq_added_on', '<=', $post['date_to']. ' 23:59:59');
+            $srch->addCondition('preq.preq_added_on', '<=', $post['date_to'] . ' 23:59:59');
         }
         $srch->addOrder('preq.preq_added_on', 'DESC');
         $srch->setPageNumber($page);
@@ -67,26 +68,26 @@ class CustomProductsController extends AdminBaseController
         $rs = $srch->getResultSet();
         $records = array();
         while ($res = FatApp::getDb()->fetch($rs)) {
-            $content =     (!empty($res['preq_content']))?json_decode($res['preq_content'], true):array();
-            $langContent =     (!empty($res['preq_lang_data']))?json_decode($res['preq_lang_data'], true):array();
+            $content = (!empty($res['preq_content'])) ? json_decode($res['preq_content'], true) : array();
+            $langContent = (!empty($res['preq_lang_data'])) ? json_decode($res['preq_lang_data'], true) : array();
 
-            $res  = array_merge($res, $content);
+            $res = array_merge($res, $content);
             if (!empty($langContent)) {
-                $res  = array_merge($res, $langContent);
+                $res = array_merge($res, $langContent);
             }
-            $arr  = array(
-            'preq_id'=>$res['preq_id'],
-            'preq_user_id'=>$res['preq_user_id'],
-            'preq_added_on'=>$res['preq_added_on'],
-            'preq_status'=>$res['preq_status'],
-            'user_id'=>$res['user_id'],
-            'user_name'=>$res['user_name'],
-            'credential_username'=>$res['credential_username'],
-            'credential_email'=>$res['credential_email'],
-            'product_identifier'=>$res['product_identifier'],
-            'product_name'=>(!empty($res['product_name']))?$res['product_name']:'',
+            $arr = array(
+            'preq_id' => $res['preq_id'],
+            'preq_user_id' => $res['preq_user_id'],
+            'preq_added_on' => $res['preq_added_on'],
+            'preq_status' => $res['preq_status'],
+            'user_id' => $res['user_id'],
+            'user_name' => $res['user_name'],
+            'credential_username' => $res['credential_username'],
+            'credential_email' => $res['credential_email'],
+            'product_identifier' => $res['product_identifier'],
+            'product_name' => (!empty($res['product_name'])) ? $res['product_name'] : '',
             );
-            $records[]  =  $arr;
+            $records[] = $arr;
         }
 
         $this->set("arr_listing", $records);
@@ -109,19 +110,19 @@ class CustomProductsController extends AdminBaseController
         if (!$preqId) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
-        $productReqRow = ProductRequest::getAttributesById($preqId, array('preq_user_id','preq_prodcat_id'));
+        $productReqRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_prodcat_id'));
         $preq_prodcat_id = $productReqRow['preq_prodcat_id'];
 
         $customProductFrm = $this->getForm(0);
         $productOptions = array();
         $productTags = array();
         if ($preqId > 0) {
-            $row_data = ProductRequest::getAttributesById($preqId, array('preq_id', 'preq_user_id','preq_prodcat_id','preq_content','preq_status','preq_deleted','preq_added_on'));
+            $row_data = ProductRequest::getAttributesById($preqId, array('preq_id', 'preq_user_id', 'preq_prodcat_id', 'preq_content', 'preq_status', 'preq_deleted', 'preq_added_on'));
             $productData = json_decode($row_data['preq_content'], true);
             unset($row_data['preq_content']);
             $row_data = array_merge($row_data, $productData);
-            $productOptions = !empty($row_data['product_option'])?$row_data['product_option']:array();
-            $productTags = !(empty($row_data['product_tags']))?$row_data['product_tags']:array();
+            $productOptions = !empty($row_data['product_option']) ? $row_data['product_option'] : array();
+            $productTags = !(empty($row_data['product_tags'])) ? $row_data['product_tags'] : array();
 
             /*   */
 
@@ -173,9 +174,9 @@ class CustomProductsController extends AdminBaseController
             $data_to_be_save['product_weight_unit'] = 0;
         }
         $data = array(
-        'preq_user_id'=>$preq_user_id,
-        'preq_content'=>FatUtility::convertToJson($data_to_be_save),
-        'preq_status'=>ProductRequest::STATUS_PENDING,
+        'preq_user_id' => $preq_user_id,
+        'preq_content' => FatUtility::convertToJson($data_to_be_save),
+        'preq_status' => ProductRequest::STATUS_PENDING,
         );
 
         $prodReqObj->assignValues($data);
@@ -212,7 +213,7 @@ class CustomProductsController extends AdminBaseController
 
         $productReqRow = array_merge($productReqRow, json_decode($productReqRow['preq_content'], true));
 
-        if ($productReqRow['preq_sel_prod_data'] !='') {
+        if ($productReqRow['preq_sel_prod_data'] != '') {
             $productReqRow = array_merge($productReqRow, json_decode($productReqRow['preq_sel_prod_data'], true));
         }
 
@@ -286,7 +287,7 @@ class CustomProductsController extends AdminBaseController
         $productRow = array();
 
         if ($preqId) {
-            $productRow = ProductRequest::getAttributesById($preqId, array('preq_user_id','preq_prodcat_id','preq_content','preq_specifications'));
+            $productRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_prodcat_id', 'preq_content', 'preq_specifications'));
             $preqCatId = $productRow['preq_prodcat_id'];
             $productReqData = json_decode($productRow['preq_content'], true);
             // CommonHelper::printArray($productRow);
@@ -448,13 +449,13 @@ class CustomProductsController extends AdminBaseController
         unset($post['preq_id']);
         unset($post['lang_id']);
         unset($post['btn_submit']);
-		if (array_key_exists('auto_update_other_langs_data', $post)) {
-			unset($post['auto_update_other_langs_data']);
-		}
+        if (array_key_exists('auto_update_other_langs_data', $post)) {
+            unset($post['auto_update_other_langs_data']);
+        }
         $data_to_update = array(
-        'preqlang_preq_id'    =>    $preq_id,
-        'preqlang_lang_id'    =>    $lang_id,
-        'preq_lang_data'    =>    FatUtility::convertToJson($post),
+        'preqlang_preq_id' => $preq_id,
+        'preqlang_lang_id' => $lang_id,
+        'preq_lang_data' => FatUtility::convertToJson($post),
         );
 
         $prodObj = new ProductRequest($preq_id);
@@ -526,7 +527,7 @@ class CustomProductsController extends AdminBaseController
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
-        $preqId =  $post['preq_id'];
+        $preqId = $post['preq_id'];
         $status = $post['preq_status'];
         $update_withselprod = $post['preq_update_withselprod'];
 
@@ -534,7 +535,7 @@ class CustomProductsController extends AdminBaseController
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = preq.preq_user_id', 'u');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'c.credential_user_id = u.user_id', 'c');
         $srch->addCondition('preq_id', '=', $preqId);
-        $srch->addMultipleFields(array('preq.*','user_name','credential_email'));
+        $srch->addMultipleFields(array('preq.*', 'user_name', 'credential_email'));
         $srch->setPageSize(1);
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
@@ -553,7 +554,7 @@ class CustomProductsController extends AdminBaseController
         $db = FatApp::getDb();
         $db->startTransaction();
         $prodReqObj = new ProductRequest($preqId);
-        $updateData = array('preq_status'=>$status,'preq_comment'=>$post['preq_comment']);
+        $updateData = array('preq_status' => $status, 'preq_comment' => $post['preq_comment']);
         $prodReqObj->assignValues($updateData);
 
         if (!$prodReqObj->save()) {
@@ -566,25 +567,25 @@ class CustomProductsController extends AdminBaseController
             $data = array_merge($data, json_decode($data['preq_content'], true));
             $prodObj = new Product();
             $productData = array(
-            'product_identifier'=>isset($data['product_identifier'])?$data['product_identifier']:'',
-            'product_type'=>isset($data['product_type'])?$data['product_type']:'',
-            'product_model'=>isset($data['product_model'])?$data['product_model']:'',
-            'product_brand_id'=>isset($data['product_brand_id'])?$data['product_brand_id']:0,
+            'product_identifier' => isset($data['product_identifier']) ? $data['product_identifier'] : '',
+            'product_type' => isset($data['product_type']) ? $data['product_type'] : '',
+            'product_model' => isset($data['product_model']) ? $data['product_model'] : '',
+            'product_brand_id' => isset($data['product_brand_id']) ? $data['product_brand_id'] : 0,
             'product_added_by_admin_id' => applicationConstants::YES,
             /* 'product_seller_id'=>isset($data['preq_user_id'])?$data['preq_user_id']:0, */
-            'product_min_selling_price'=>isset($data['product_min_selling_price'])?$data['product_min_selling_price']:0,
-            'product_length'=>isset($data['product_length'])?$data['product_length']:0,
-            'product_width'=>isset($data['product_width'])?$data['product_width']:0,
-            'product_height'=>isset($data['product_height'])?$data['product_height']:0,
-            'product_dimension_unit'=>isset($data['product_dimension_unit'])?$data['product_dimension_unit']:0,
-            'product_weight'=>isset($data['product_weight'])?$data['product_weight']:0,
-            'product_weight_unit'=>isset($data['product_weight_unit'])?$data['product_weight_unit']:0,
-            'product_cod_enabled'=>isset($data['product_cod_enabled'])?$data['product_cod_enabled']:0,
-            'product_ship_free'=>isset($data['ps_free'])?$data['ps_free']:0,
-            'product_ship_country'=>isset($data['ps_from_country_id'])?$data['ps_from_country_id']:0,
-            'product_added_on'=>date('Y-m-d H:i:s'),
-            'product_featured' => isset($data['product_featured'])?$data['product_featured']:applicationConstants::NO,
-            'product_upc' => isset($data['product_upc'])?$data['product_upc']:applicationConstants::NO,
+            'product_min_selling_price' => isset($data['product_min_selling_price']) ? $data['product_min_selling_price'] : 0,
+            'product_length' => isset($data['product_length']) ? $data['product_length'] : 0,
+            'product_width' => isset($data['product_width']) ? $data['product_width'] : 0,
+            'product_height' => isset($data['product_height']) ? $data['product_height'] : 0,
+            'product_dimension_unit' => isset($data['product_dimension_unit']) ? $data['product_dimension_unit'] : 0,
+            'product_weight' => isset($data['product_weight']) ? $data['product_weight'] : 0,
+            'product_weight_unit' => isset($data['product_weight_unit']) ? $data['product_weight_unit'] : 0,
+            'product_cod_enabled' => isset($data['product_cod_enabled']) ? $data['product_cod_enabled'] : 0,
+            'product_ship_free' => isset($data['ps_free']) ? $data['ps_free'] : 0,
+            'product_ship_country' => isset($data['ps_from_country_id']) ? $data['ps_from_country_id'] : 0,
+            'product_added_on' => date('Y-m-d H:i:s'),
+            'product_featured' => isset($data['product_featured']) ? $data['product_featured'] : applicationConstants::NO,
+            'product_upc' => isset($data['product_upc']) ? $data['product_upc'] : applicationConstants::NO,
             'product_active' => applicationConstants::YES,
             'product_approved' => applicationConstants::YES,
             );
@@ -622,8 +623,8 @@ class CustomProductsController extends AdminBaseController
 
             /*Save Prodcut tax category [*/
             $prodTaxData = array(
-            'ptt_product_id'=>$product_id,
-            'ptt_taxcat_id'=>$data['ptt_taxcat_id'],
+            'ptt_product_id' => $product_id,
+            'ptt_taxcat_id' => $data['ptt_taxcat_id'],
             );
             $taxObj = new Tax();
             if (!$taxObj->addUpdateProductTaxCat($prodTaxData)) {
@@ -634,7 +635,7 @@ class CustomProductsController extends AdminBaseController
             /*]*/
 
             /* saving of product options[ */
-            $optons = isset($data['product_option'])?$data['product_option']:array();
+            $optons = isset($data['product_option']) ? $data['product_option'] : array();
             if (!empty($optons)) {
                 foreach ($optons as $option_id) {
                     if (!$prodObj->addUpdateProductOption($product_id, $option_id)) {
@@ -647,7 +648,7 @@ class CustomProductsController extends AdminBaseController
             /*]*/
 
             /* Saving of product tags[ */
-            $tags = isset($data['product_tags'])?$data['product_tags']:array();
+            $tags = isset($data['product_tags']) ? $data['product_tags'] : array();
             if (!empty($tags)) {
                 foreach ($tags as $tag_id) {
                     if (!$prodObj->addUpdateProductTag($product_id, $tag_id)) {
@@ -661,8 +662,8 @@ class CustomProductsController extends AdminBaseController
 
             /* Update Product seller shipping [*/
             $prodSellerShipArr = array(
-            'ps_from_country_id'=>$productData['product_ship_country'],
-            'ps_free'=>$productData['product_ship_free']
+            'ps_from_country_id' => $productData['product_ship_country'],
+            'ps_free' => $productData['product_ship_free']
             );
 
             if (!Product::addUpdateProductSellerShipping($product_id, $prodSellerShipArr, 0)) {
@@ -673,7 +674,7 @@ class CustomProductsController extends AdminBaseController
             /* ]*/
 
             /* Saving product shippings [ */
-            $shippingArr = isset($data['product_shipping'])?$data['product_shipping']:array();
+            $shippingArr = isset($data['product_shipping']) ? $data['product_shipping'] : array();
             if (!empty($shippingArr)) {
                 if (!Product::addUpdateProductShippingRates($product_id, $shippingArr, 0)) {
                     Message::addErrorMessage(FatApp::getDb()->getError());
@@ -697,12 +698,12 @@ class CustomProductsController extends AdminBaseController
                 }
 
                 $productLangData = array(
-                'productlang_product_id'=>$product_id,
-                'productlang_lang_id'=>$lang_id,
-                'product_name'=>isset($reqLangData['product_name']) ? $reqLangData['product_name'] : $data['product_identifier'],
-                'product_description'=>isset($reqLangData['product_description'])?$reqLangData['product_description']:'',
-                'product_youtube_video'=>isset($reqLangData['product_youtube_video'])?$reqLangData['product_youtube_video']:'',
-                'product_tags_string'=>'',
+                'productlang_product_id' => $product_id,
+                'productlang_lang_id' => $lang_id,
+                'product_name' => isset($reqLangData['product_name']) ? $reqLangData['product_name'] : $data['product_identifier'],
+                'product_description' => isset($reqLangData['product_description']) ? $reqLangData['product_description'] : '',
+                'product_youtube_video' => isset($reqLangData['product_youtube_video']) ? $reqLangData['product_youtube_video'] : '',
+                'product_tags_string' => '',
                 );
                 if (!$prodObj->updateLangData($lang_id, $productLangData)) {
                     Message::addErrorMessage($prodObj->getError());
@@ -745,9 +746,9 @@ class CustomProductsController extends AdminBaseController
                     $row = FatApp::getDb()->fetch($rs);
 
                     $upcData = array(
-                    'upc_code'=>$code,
-                    'upc_product_id'=>$product_id,
-                    'upc_options'=>$options,
+                    'upc_code' => $code,
+                    'upc_product_id' => $product_id,
+                    'upc_options' => $options,
                     );
 
                     if ($row && $row['upc_product_id'] == $product_id && $row['upc_options'] == $options) {
@@ -768,33 +769,33 @@ class CustomProductsController extends AdminBaseController
             /*]*/
 
             /* Updating images[*/
-            $where = array('smt'=>'afile_record_id = ? and afile_type = ?', 'vals'=>array($preqId,AttachedFile::FILETYPE_CUSTOM_PRODUCT_IMAGE));
+            $where = array('smt' => 'afile_record_id = ? and afile_type = ?', 'vals' => array($preqId, AttachedFile::FILETYPE_CUSTOM_PRODUCT_IMAGE));
 
-            $db->updateFromArray(AttachedFile::DB_TBL, array('afile_record_id'=>$product_id,'afile_type'=>AttachedFile::FILETYPE_PRODUCT_IMAGE), $where);
+            $db->updateFromArray(AttachedFile::DB_TBL, array('afile_record_id' => $product_id, 'afile_type' => AttachedFile::FILETYPE_PRODUCT_IMAGE), $where);
             /*]*/
 
-            $selProdData = isset($data['preq_sel_prod_data'])?json_decode($data['preq_sel_prod_data'], true):array();
+            $selProdData = isset($data['preq_sel_prod_data']) ? json_decode($data['preq_sel_prod_data'], true) : array();
             if ($update_withselprod && !empty($selProdData)) {
                 $updateSelProdData = array(
-                'selprod_user_id'=>isset($selProdData['preq_user_id'])?$selProdData['preq_user_id']:$data['preq_user_id'],
-                'selprod_product_id'=>$product_id,
-                'selprod_cost'=>isset($selProdData['selprod_cost'])?$selProdData['selprod_cost']:0,
-                'selprod_price'=>isset($selProdData['selprod_price'])?$selProdData['selprod_price']:0,
-                'selprod_stock'=>isset($selProdData['selprod_stock'])?$selProdData['selprod_stock']:0,
-                'selprod_min_order_qty'=>isset($selProdData['selprod_min_order_qty'])?$selProdData['selprod_min_order_qty']:0,
+                'selprod_user_id' => isset($selProdData['preq_user_id']) ? $selProdData['preq_user_id'] : $data['preq_user_id'],
+                'selprod_product_id' => $product_id,
+                'selprod_cost' => isset($selProdData['selprod_cost']) ? $selProdData['selprod_cost'] : 0,
+                'selprod_price' => isset($selProdData['selprod_price']) ? $selProdData['selprod_price'] : 0,
+                'selprod_stock' => isset($selProdData['selprod_stock']) ? $selProdData['selprod_stock'] : 0,
+                'selprod_min_order_qty' => isset($selProdData['selprod_min_order_qty']) ? $selProdData['selprod_min_order_qty'] : 0,
                 /* 'selprod_max_order_qty'=>isset($selProdData['selprod_min_order_qty'])?$selProdData['selprod_max_order_qty']:0, */
-                'selprod_subtract_stock'=>isset($selProdData['selprod_subtract_stock'])?$selProdData['selprod_subtract_stock']:0,
-                'selprod_track_inventory'=>isset($selProdData['selprod_track_inventory'])?$selProdData['selprod_track_inventory']:0,
-                'selprod_sku'=>isset($selProdData['selprod_sku'])?$selProdData['selprod_sku']:'',
-                'selprod_condition'=>isset($selProdData['selprod_condition'])?$selProdData['selprod_condition']:Product::CONDITION_NEW,
-                'selprod_available_from'=>isset($selProdData['selprod_available_from'])?$selProdData['selprod_available_from']:'',
-                'selprod_active'=>isset($selProdData['selprod_active'])?$selProdData['selprod_active']:'',
-                'selprod_cod_enabled'=>isset($selProdData['selprod_cod_enabled'])?$selProdData['selprod_cod_enabled']:'',
+                'selprod_subtract_stock' => isset($selProdData['selprod_subtract_stock']) ? $selProdData['selprod_subtract_stock'] : 0,
+                'selprod_track_inventory' => isset($selProdData['selprod_track_inventory']) ? $selProdData['selprod_track_inventory'] : 0,
+                'selprod_sku' => isset($selProdData['selprod_sku']) ? $selProdData['selprod_sku'] : '',
+                'selprod_condition' => isset($selProdData['selprod_condition']) ? $selProdData['selprod_condition'] : Product::CONDITION_NEW,
+                'selprod_available_from' => isset($selProdData['selprod_available_from']) ? $selProdData['selprod_available_from'] : '',
+                'selprod_active' => isset($selProdData['selprod_active']) ? $selProdData['selprod_active'] : '',
+                'selprod_cod_enabled' => isset($selProdData['selprod_cod_enabled']) ? $selProdData['selprod_cod_enabled'] : '',
                 );
 
                 $options = array();
 
-                $optionValueIdArr = (isset($selProdData['selprodoption_optionvalue_id']) && count($selProdData['selprodoption_optionvalue_id'])> 0)?$selProdData['selprodoption_optionvalue_id']:array();
+                $optionValueIdArr = (isset($selProdData['selprodoption_optionvalue_id']) && count($selProdData['selprodoption_optionvalue_id']) > 0) ? $selProdData['selprodoption_optionvalue_id'] : array();
                 foreach ($optionValueIdArr as $optionValueId) {
                     $row = OptionValue::getAttributesById($optionValueId, array('optionvalue_option_id'));
                     if ($row == false) {
@@ -806,7 +807,7 @@ class CustomProductsController extends AdminBaseController
                 asort($options);
 
 
-                $selProdCode = $product_id.'_'.implode('_', $options);
+                $selProdCode = $product_id . '_' . implode('_', $options);
                 $updateSelProdData['selprod_code'] = $selProdCode;
 
                 if (isset($data['selprod_track_inventory']) && $data['selprod_track_inventory'] == Product::INVENTORY_NOT_TRACK) {
@@ -839,14 +840,14 @@ class CustomProductsController extends AdminBaseController
 
                 /* Save url keyword [ */
                 $urlKeyword = strtolower(CommonHelper::createSlug($selProdData['selprod_url_keyword']));
-                $seoUrl =  CommonHelper::seoUrl($urlKeyword).'-'.$selprod_id;
-                $originalUrl = Product::PRODUCT_VIEW_ORGINAL_URL.$selprod_id;
+                $seoUrl = CommonHelper::seoUrl($urlKeyword) . '-' . $selprod_id;
+                $originalUrl = Product::PRODUCT_VIEW_ORGINAL_URL . $selprod_id;
                 $customUrl = UrlRewrite::getValidSeoUrl($seoUrl, $originalUrl);
                 $seoUrlKeyword = array(
-                'urlrewrite_original'=>$originalUrl,
-                'urlrewrite_custom'=>$customUrl
+                'urlrewrite_original' => $originalUrl,
+                'urlrewrite_custom' => $customUrl
                 );
-                FatApp::getDb()->insertFromArray(UrlRewrite::DB_TBL, $seoUrlKeyword, false, array(), array('urlrewrite_custom'=>$customUrl));
+                FatApp::getDb()->insertFromArray(UrlRewrite::DB_TBL, $seoUrlKeyword, false, array(), array('urlrewrite_custom' => $customUrl));
                 /*]*/
 
                 /* save options data, if any [ */
@@ -859,7 +860,7 @@ class CustomProductsController extends AdminBaseController
 
                 /* Seller product lang data [*/
                 $sellerProdObj = new SellerProduct($selprod_id);
-                foreach ($languages as $lang_id=>$langName) {
+                foreach ($languages as $lang_id => $langName) {
                     $reqLangData = ProductRequest::getAttributesByLangId($lang_id, $preqId);
                     if ($reqLangData == false) {
                         continue;
@@ -870,9 +871,9 @@ class CustomProductsController extends AdminBaseController
                         $reqLangData = array_merge($reqLangData, json_decode($reqLangData['preq_lang_data'], true));
                     }
                     $selProdLangData = array(
-                    'selprodlang_selprod_id'=>$selprod_id,
-                    'selprodlang_lang_id'=>$lang_id,
-                    'selprod_title'=>isset($reqLangData['selprod_title']) ? $reqLangData['selprod_title'] : isset($reqLangData['product_name']) ? $reqLangData['product_name'] : '','selprod_comments'=>isset($reqLangData['selprod_comments'])?$reqLangData['selprod_comments']:'',
+                    'selprodlang_selprod_id' => $selprod_id,
+                    'selprodlang_lang_id' => $lang_id,
+                    'selprod_title' => isset($reqLangData['selprod_title']) ? $reqLangData['selprod_title'] : isset($reqLangData['product_name']) ? $reqLangData['product_name'] : '', 'selprod_comments' => isset($reqLangData['selprod_comments']) ? $reqLangData['selprod_comments'] : '',
                     );
 
                     if (!$sellerProdObj->updateLangData($lang_id, $selProdLangData)) {
@@ -890,10 +891,10 @@ class CustomProductsController extends AdminBaseController
             }
 
             if (!empty($prodSpecData)) {
-                foreach ($prodSpecData['prod_spec_name'][CommonHelper::getLangId()] as $specKey=>$specval) {
+                foreach ($prodSpecData['prod_spec_name'][CommonHelper::getLangId()] as $specKey => $specval) {
                     $prodSpecObj = new ProdSpecification(0);
                     $languages = Language::getAllNames();
-                    foreach ($languages as $langId=>$langName) {
+                    foreach ($languages as $langId => $langName) {
                         $data_to_be_save['prodspec_product_id'] = $product_id;
 
                         $prodSpecObj->assignValues($data_to_be_save);
@@ -947,12 +948,12 @@ class CustomProductsController extends AdminBaseController
                 Message::addErrorMessage($this->str_invalid_request);
                 FatUtility::dieWithError(Message::getHtml());
             }
-            $prodcat_id    = $productReqRow['preq_prodcat_id'];
+            $prodcat_id = $productReqRow['preq_prodcat_id'];
             $upcCodeData = json_decode($productReqRow['preq_ean_upc_code'], true);
         }
         /* ] */
 
-        $productOptions =  ProductRequest::getProductReqOptions($preqId, $this->adminLangId, true);
+        $productOptions = ProductRequest::getProductReqOptions($preqId, $this->adminLangId, true);
         $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '_');
 
         $this->set('productOptions', $productOptions);
@@ -997,7 +998,7 @@ class CustomProductsController extends AdminBaseController
                 Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->adminLangId));
                 FatUtility::dieWithError(Message::getHtml());
             }
-            $prodcat_id    = $productReqRow['preq_prodcat_id'];
+            $prodcat_id = $productReqRow['preq_prodcat_id'];
         }
         /* ] */
 
@@ -1012,7 +1013,7 @@ class CustomProductsController extends AdminBaseController
         unset($post['fIsAjax']);
         $prodReqObj = new ProductRequest($preqId);
         $data = array(
-        'preq_ean_upc_code'=> str_replace('code', '', FatUtility::convertToJson($post))
+        'preq_ean_upc_code' => str_replace('code', '', FatUtility::convertToJson($post))
         );
 
         $prodReqObj->assignValues($data);
@@ -1049,8 +1050,8 @@ class CustomProductsController extends AdminBaseController
         $tags = $db->fetchAll($rs, 'tag_id');
         $li = '';
         foreach ($tags as $key => $tag) {
-            $li .= '<li id="product-tag' . $tag['tag_id'] . '"><span class="left "><a href="javascript:void(0)" title="Remove" onClick="removeProductTag('.$tag['tag_id'].');"><i class="icon ion-close remove_tag-js" data-tag-id="' . $tag['tag_id'] . '"></i></a></span>';
-            $li .= '<span class="left">' . $tag['tag_name'].' ('.$tag['tag_identifier'].')'.'<input type="hidden" value="'.$tag['tag_id'].'"  name="product_tags[]"></span></li>';
+            $li .= '<li id="product-tag' . $tag['tag_id'] . '"><span class="left "><a href="javascript:void(0)" title="Remove" onClick="removeProductTag(' . $tag['tag_id'] . ');"><i class="icon ion-close remove_tag-js" data-tag-id="' . $tag['tag_id'] . '"></i></a></span>';
+            $li .= '<span class="left">' . $tag['tag_name'] . ' (' . $tag['tag_identifier'] . ')' . '<input type="hidden" value="' . $tag['tag_id'] . '"  name="product_tags[]"></span></li>';
         }
         echo $li;
         exit;
@@ -1074,8 +1075,8 @@ class CustomProductsController extends AdminBaseController
         $options = $db->fetchAll($rs, 'option_id');
         $li = '';
         foreach ($options as $key => $option) {
-            $li .= '<li id="product-option' . $option['option_id'] . '"><span class="left" ><a href="javascript:void(0)" title="Remove" onClick="removeProductOption('.$option['option_id'].');"><i class="icon ion-close" data-option-id="' . $option['option_id'] . '"></i></a></span>';
-            $li .= '<span class="left">' . $option['option_name'].' ('.$option['option_identifier'].')'.'<input type="hidden" value="'.$option['option_id'].'"  name="product_option[]"></span></li>';
+            $li .= '<li id="product-option' . $option['option_id'] . '"><span class="left" ><a href="javascript:void(0)" title="Remove" onClick="removeProductOption(' . $option['option_id'] . ');"><i class="icon ion-close" data-option-id="' . $option['option_id'] . '"></i></a></span>';
+            $li .= '<span class="left">' . $option['option_name'] . ' (' . $option['option_identifier'] . ')' . '<input type="hidden" value="' . $option['option_id'] . '"  name="product_option[]"></span></li>';
         }
 
         echo $li;
@@ -1089,7 +1090,7 @@ class CustomProductsController extends AdminBaseController
         $preq_id = $post['preq_id'];
 
         $shipping_rates = array();
-        $productReqData = ProductRequest::getAttributesById($preq_id, array('preq_id','preq_user_id'));
+        $productReqData = ProductRequest::getAttributesById($preq_id, array('preq_id', 'preq_user_id'));
         $shipping_rates = ProductRequest::getProductShippingRates($preq_id, $this->adminLangId, 0, $productReqData['preq_user_id']);
         /* $shipping_rates = array();
         $productReqData = ProductRequest::getAttributesById($preq_id);
@@ -1145,10 +1146,10 @@ class CustomProductsController extends AdminBaseController
         $preqObj = new ProductRequest();
         $post = FatApp::getPostedData();
         $preq_id = FatUtility::int($post['preq_id']);
-        $imageIds=explode('-', $post['ids']);
-        $count=1;
+        $imageIds = explode('-', $post['ids']);
+        $count = 1;
         foreach ($imageIds as $row) {
-            $order[$count]=$row;
+            $order[$count] = $row;
             $count++;
         }
         if (!$preqObj->updateProdImagesOrder($preq_id, $order)) {
@@ -1216,8 +1217,8 @@ class CustomProductsController extends AdminBaseController
         $languagesAssocArr = Language::getAllNames();
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', array( 0 => Labels::getLabel('LBL_All_Languages', $this->adminLangId) ) + $languagesAssocArr, '', array(), '');
         $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_Photo(s):', $this->adminLangId), 'prod_image', array('id' => 'prod_image', 'multiple' => 'multiple'));
-        $fldImg->htmlBeforeField='<div class="filefield"><span class="filename"></span>';
-        $fldImg->htmlAfterField='<label class="filelabel">'.Labels::getLabel('LBL_Browse_File', $this->adminLangId).'</label></div><br/><small>'.Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500._You_can_upload_multiple_photos_from_here.', $this->adminLangId).'</small>';
+        $fldImg->htmlBeforeField = '<div class="filefield"><span class="filename"></span>';
+        $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->adminLangId) . '</label></div><br/><small>' . Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500._You_can_upload_multiple_photos_from_here.', $this->adminLangId) . '</small>';
         $frm->addHiddenField('', 'preq_id', $preq_id);
         return $frm;
     }
@@ -1231,7 +1232,7 @@ class CustomProductsController extends AdminBaseController
             if (!empty($reqData)) {
                 $reqData = json_decode($reqData['preq_content'], true);
             }
-            $productOptions =  isset($reqData['product_option'])?$reqData['product_option']:array();
+            $productOptions = isset($reqData['product_option']) ? $reqData['product_option'] : array();
             if (!empty($productOptions)) {
                 foreach ($productOptions as $optionId) {
                     $optionData = Option::getAttributesById($optionId, array('option_is_separate_images'));
@@ -1326,7 +1327,7 @@ class CustomProductsController extends AdminBaseController
                     if ('preqlang_lang_id' === $index) {
                         continue;
                     }
-                    $data[$langId]['prod_spec_name[' . $langId . '][' . $index . ']'] = $value; 
+                    $data[$langId]['prod_spec_name[' . $langId . '][' . $index . ']'] = $value;
                 }
             }
 
@@ -1336,7 +1337,7 @@ class CustomProductsController extends AdminBaseController
                     if ('preqlang_lang_id' === $index) {
                         continue;
                     }
-                    $data[$langId]['prod_spec_value[' . $langId . '][' . $index . ']'] = $value; 
+                    $data[$langId]['prod_spec_value[' . $langId . '][' . $index . ']'] = $value;
                 }
             }
             

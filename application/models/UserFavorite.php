@@ -1,4 +1,5 @@
 <?php
+
 class UserFavorite extends SearchBase
 {
     private $langId;
@@ -6,8 +7,8 @@ class UserFavorite extends SearchBase
     private $sellerUserJoined;
     private $sellerProductsJoined;
 
-    const DB_TBL = 'tbl_user_favourite_products';
-    const DB_TBL_PREFIX = 'ufp_';
+    public const DB_TBL = 'tbl_user_favourite_products';
+    public const DB_TBL_PREFIX = 'ufp_';
 
     public function __construct($langId = 0)
     {
@@ -18,7 +19,7 @@ class UserFavorite extends SearchBase
 
     public static function getUserFavouriteItemCount($userId = 0)
     {
-        $getFavouriteProducts = new SearchBase('('.UserFavoriteProductSearch::joinFavouriteUserProductsCount($userId).') as productCount');
+        $getFavouriteProducts = new SearchBase('(' . UserFavoriteProductSearch::joinFavouriteUserProductsCount($userId) . ') as productCount');
         $getFavouriteProducts->addfld('count(userFavProductcount_user_id) as totalFavouriteItems');
         $countFavouriteItemsRs = $getFavouriteProducts->getResultSet();
         $totalFavouriteItems = FatApp::getDb()->fetch($countFavouriteItemsRs, 'totalFavouriteItems');

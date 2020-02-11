@@ -1,4 +1,5 @@
 <?php
+
 class SocialMediaAuthController extends PluginBaseController
 {
     public function __construct($action)
@@ -8,7 +9,7 @@ class SocialMediaAuthController extends PluginBaseController
 
     protected function setErrorAndRedirect($message, $errRedirection = false)
     {
-        if (false === $errRedirection || true ===  MOBILE_APP_API_CALL) {
+        if (false === $errRedirection || true === MOBILE_APP_API_CALL) {
             LibHelper::dieJsonError($message);
         }
 
@@ -56,7 +57,7 @@ class SocialMediaAuthController extends PluginBaseController
             $this->setErrorMessage($userObj->getError());
         }
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $userId = $userInfo['user_id'];
             $userObj = new User($userId);
             if (!$token = $userObj->setMobileAppToken()) {
@@ -66,12 +67,22 @@ class SocialMediaAuthController extends PluginBaseController
             $this->set('userInfo', $userInfo);
             $this->_template->render(true, true, 'guest-user/login.php');
         }
+        
+        if (empty($email)) {
+            $message = Labels::getLabel('MSG_Please_Configure_Your_Email', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
+            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'configureEmail'));
+        }
+
         return $userInfo;
     }
 
     public function getListing()
     {
-        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN_API, $this->siteLangId);
+        $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN, $this->siteLangId);
         $this->set('data', ['socialLoginApis' => array_values($socialLoginApis)]);
         $this->_template->render();
     }

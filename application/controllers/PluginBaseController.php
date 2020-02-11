@@ -1,4 +1,5 @@
 <?php
+
 class PluginBaseController extends MyAppController
 {
     private $keyName;
@@ -34,7 +35,7 @@ class PluginBaseController extends MyAppController
             return ($this->plugin)::KEY_NAME;
         } catch (\Error $e) {
             $message = $e->getMessage();
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);

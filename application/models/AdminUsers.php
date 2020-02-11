@@ -1,8 +1,9 @@
 <?php
+
 class AdminUsers extends MyAppModel
 {
-    const DB_TBL = 'tbl_admin';
-    const DB_TBL_PREFIX = 'admin_';
+    public const DB_TBL = 'tbl_admin';
+    public const DB_TBL_PREFIX = 'admin_';
 
     public function __construct($adminId = 0)
     {
@@ -13,8 +14,8 @@ class AdminUsers extends MyAppModel
     public static function getSearchObject($isActive = true)
     {
         $srch = new SearchBase(static::DB_TBL);
-        if ($isActive==true) {
-            $srch->addCondition(static::DB_TBL_PREFIX.'active', '=', 1);
+        if ($isActive == true) {
+            $srch->addCondition(static::DB_TBL_PREFIX . 'active', '=', 1);
         }
         return $srch;
     }

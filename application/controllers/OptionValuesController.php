@@ -1,4 +1,5 @@
 <?php
+
 class OptionValuesController extends LoggedUserController
 {
     public function __construct($action)
@@ -10,7 +11,7 @@ class OptionValuesController extends LoggedUserController
     public function search()
     {
         $post = FatApp::getPostedData();
-        $option_id=FatUtility::int($post['option_id']);
+        $option_id = FatUtility::int($post['option_id']);
         if ($option_id <= 0) {
             FatUtility::dieWithError($this->str_invalid_request_id);
         }

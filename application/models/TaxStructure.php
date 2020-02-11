@@ -1,4 +1,5 @@
 <?php
+
 class TaxStructure extends MyAppModel
 {
     public const DB_TBL = 'tbl_tax_structure';
@@ -102,7 +103,7 @@ class TaxStructure extends MyAppModel
             );
         }
         $srch->addCondition('taxstro_taxstr_id', '=', $this->mainTableRecordId);
-        $srch->addMultipleFields(array('taxstr_id','taxstro_id','taxstro_taxstr_id', 'taxstro_interstate', 'taxstr_identifier','ifnull(taxstro_name, taxstro_name) as taxstro_name','taxstro_identifier'));
+        $srch->addMultipleFields(array('taxstr_id', 'taxstro_id', 'taxstro_taxstr_id', 'taxstro_interstate', 'taxstr_identifier', 'ifnull(taxstro_name, taxstro_name) as taxstro_name', 'taxstro_identifier'));
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetchAll($rs);
     }

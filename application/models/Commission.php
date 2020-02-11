@@ -1,9 +1,10 @@
 <?php
+
 class Commission extends MyAppModel
 {
-    const DB_TBL = 'tbl_commission_settings';
-    const DB_TBL_PREFIX = 'commsetting_';
-    const DB_TBL_HISTORY = 'tbl_commission_setting_history';
+    public const DB_TBL = 'tbl_commission_settings';
+    public const DB_TBL_PREFIX = 'commsetting_';
+    public const DB_TBL_HISTORY = 'tbl_commission_setting_history';
     private $db;
 
     public function __construct($id = 0)
@@ -21,7 +22,7 @@ class Commission extends MyAppModel
     {
         $srch = new SearchBase(static::DB_TBL, 'tcs');
 
-        $srch->addOrder('tcs.'.static::DB_TBL_PREFIX.'is_mandatory', 'DESC');
+        $srch->addOrder('tcs.' . static::DB_TBL_PREFIX . 'is_mandatory', 'DESC');
         return $srch;
     }
 
@@ -38,12 +39,12 @@ class Commission extends MyAppModel
         unset($data['commsetting_id']);
 
         $assignValues = array(
-        'commsetting_product_id' =>$data['commsetting_product_id'],
-        'commsetting_user_id' =>$data['commsetting_user_id'],
-        'commsetting_prodcat_id' =>$data['commsetting_prodcat_id'],
-        'commsetting_fees' =>$data['commsetting_fees'],
-        'commsetting_by_package' =>isset($data['commsetting_by_package'])?$data['commsetting_by_package']:0,
-        'commsetting_deleted' =>0,
+        'commsetting_product_id' => $data['commsetting_product_id'],
+        'commsetting_user_id' => $data['commsetting_user_id'],
+        'commsetting_prodcat_id' => $data['commsetting_prodcat_id'],
+        'commsetting_fees' => $data['commsetting_fees'],
+        'commsetting_by_package' => isset($data['commsetting_by_package']) ? $data['commsetting_by_package'] : 0,
+        'commsetting_deleted' => 0,
         );
 
         if ($this->mainTableRecordId > 0) {
@@ -61,14 +62,14 @@ class Commission extends MyAppModel
     {
         $data = Commission::getAttributesById($commissionId);
         $assignValues = array(
-        'csh_commsetting_id' =>$data['commsetting_id'],
-        'csh_commsetting_product_id' =>$data['commsetting_product_id'],
-        'csh_commsetting_user_id' =>$data['commsetting_user_id'],
-        'csh_commsetting_prodcat_id' =>$data['commsetting_prodcat_id'],
-        'csh_commsetting_fees' =>$data['commsetting_fees'],
-        'csh_commsetting_is_mandatory' =>$data['commsetting_is_mandatory'],
-        'csh_commsetting_deleted' =>$data['commsetting_deleted'],
-        'csh_added_on' =>date('Y-m-d H:i:s'),
+        'csh_commsetting_id' => $data['commsetting_id'],
+        'csh_commsetting_product_id' => $data['commsetting_product_id'],
+        'csh_commsetting_user_id' => $data['commsetting_user_id'],
+        'csh_commsetting_prodcat_id' => $data['commsetting_prodcat_id'],
+        'csh_commsetting_fees' => $data['commsetting_fees'],
+        'csh_commsetting_is_mandatory' => $data['commsetting_is_mandatory'],
+        'csh_commsetting_deleted' => $data['commsetting_deleted'],
+        'csh_added_on' => date('Y-m-d H:i:s'),
         );
         if ($this->db->insertFromArray(static::DB_TBL_HISTORY, $assignValues)) {
             return true;
@@ -85,10 +86,10 @@ class Commission extends MyAppModel
         $srch = self::getSearchObject();
 
         $srch->joinTable('tbl_products', 'LEFT OUTER JOIN', 'tcs.commsetting_product_id = tp.product_id', 'tp');
-        $srch->joinTable('tbl_products_lang', 'LEFT OUTER JOIN', 'tp_l.productlang_product_id = tp.product_id and tp_l.productlang_lang_id ='.$langId, 'tp_l');
+        $srch->joinTable('tbl_products_lang', 'LEFT OUTER JOIN', 'tp_l.productlang_product_id = tp.product_id and tp_l.productlang_lang_id =' . $langId, 'tp_l');
 
         $srch->joinTable('tbl_product_categories', 'LEFT OUTER JOIN', 'tpc.prodcat_id = tcs.commsetting_prodcat_id', 'tpc');
-        $srch->joinTable('tbl_product_categories_lang', 'LEFT OUTER JOIN', 'tpc_l.prodcatlang_prodcat_id = tpc.prodcat_id and tpc_l.prodcatlang_lang_id ='.$langId, 'tpc_l');
+        $srch->joinTable('tbl_product_categories_lang', 'LEFT OUTER JOIN', 'tpc_l.prodcatlang_prodcat_id = tpc.prodcat_id and tpc_l.prodcatlang_lang_id =' . $langId, 'tpc_l');
 
         $srch->joinTable('tbl_users', 'LEFT OUTER JOIN', 'tcs.commsetting_user_id = tu.user_id', 'tu');
         $srch->joinTable('tbl_user_credentials', 'LEFT OUTER JOIN', 'tuc.credential_user_id = tu.user_id', 'tuc');
@@ -114,10 +115,10 @@ class Commission extends MyAppModel
         $srch = self::getHistorySearchObject();
 
         $srch->joinTable('tbl_products', 'LEFT OUTER JOIN', 'tcsh.csh_commsetting_product_id = tp.product_id', 'tp');
-        $srch->joinTable('tbl_products_lang', 'LEFT OUTER JOIN', 'tp_l.productlang_product_id = tp.product_id and tp_l.productlang_lang_id ='.$langId, 'tp_l');
+        $srch->joinTable('tbl_products_lang', 'LEFT OUTER JOIN', 'tp_l.productlang_product_id = tp.product_id and tp_l.productlang_lang_id =' . $langId, 'tp_l');
 
         $srch->joinTable('tbl_product_categories', 'LEFT OUTER JOIN', 'tpc.prodcat_id = tcsh.csh_commsetting_prodcat_id', 'tpc');
-        $srch->joinTable('tbl_product_categories_lang', 'LEFT OUTER JOIN', 'tpc_l.prodcatlang_prodcat_id = tpc.prodcat_id and tpc_l.prodcatlang_lang_id ='.$langId, 'tpc_l');
+        $srch->joinTable('tbl_product_categories_lang', 'LEFT OUTER JOIN', 'tpc_l.prodcatlang_prodcat_id = tpc.prodcat_id and tpc_l.prodcatlang_lang_id =' . $langId, 'tpc_l');
 
         $srch->joinTable('tbl_users', 'LEFT OUTER JOIN', 'tcsh.csh_commsetting_user_id = tu.user_id', 'tu');
         $srch->joinTable('tbl_user_credentials', 'LEFT OUTER JOIN', 'tuc.credential_user_id = tu.user_id', 'tuc');

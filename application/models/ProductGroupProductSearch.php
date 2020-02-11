@@ -1,4 +1,5 @@
 <?php
+
 class ProductGroupProductSearch extends SearchBase
 {
     private $langId;
@@ -14,7 +15,7 @@ class ProductGroupProductSearch extends SearchBase
         $this->prodgroup_id = FatUtility::int($prodgroup_id);
 
         if ($this->prodgroup_id > 0) {
-            $this->addCondition(ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX.'prodgroup_id', '=', $prodgroup_id);
+            $this->addCondition(ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'prodgroup_id', '=', $prodgroup_id);
         }
 
         $this->addOrder('ptg.ptg_is_main_product', 'DESC');
@@ -34,10 +35,10 @@ class ProductGroupProductSearch extends SearchBase
         if ($this->langId) {
             $langId = $this->langId;
         }
-        $this->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', 'ptg.'.ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'selprod_id = sp.selprod_id', 'sp');
+        $this->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', 'ptg.' . ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'selprod_id = sp.selprod_id', 'sp');
 
         if ($langId) {
-            $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp.selprod_id = sp_l.selprodlang_selprod_id AND sp_l.selprodlang_lang_id = '.$langId, 'sp_l');
+            $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp.selprod_id = sp_l.selprodlang_selprod_id AND sp_l.selprodlang_lang_id = ' . $langId, 'sp_l');
         }
         $this->sellerProductsJoined = true;
     }
@@ -55,7 +56,7 @@ class ProductGroupProductSearch extends SearchBase
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'sp.selprod_product_id = p.product_id', 'p');
 
         if ($langId) {
-            $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = pl.productlang_product_id AND productlang_lang_id = '.$langId, 'p_l');
+            $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = pl.productlang_product_id AND productlang_lang_id = ' . $langId, 'p_l');
         }
 
         $this->productsJoined = true;
@@ -68,7 +69,7 @@ class ProductGroupProductSearch extends SearchBase
             $langId = $this->langId;
         }
 
-        $srch->joinTable(ProductGroup::DB_TBL, 'INNER JOIN', 'ptg.'.ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX.'prodgroup_id = pg.prodgroup_id', 'pg');
+        $srch->joinTable(ProductGroup::DB_TBL, 'INNER JOIN', 'ptg.' . ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'prodgroup_id = pg.prodgroup_id', 'pg');
     }
 
     public function joinShops()

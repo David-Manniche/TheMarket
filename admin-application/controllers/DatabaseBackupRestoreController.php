@@ -1,7 +1,7 @@
 <?php
+
 class DatabaseBackupRestoreController extends AdminBaseController
 {
-    
     public function __construct($action)
     {
         parent::__construct($action);
@@ -48,8 +48,8 @@ class DatabaseBackupRestoreController extends AdminBaseController
         $this->objPrivilege->canViewDatabaseBackupView();
         $settingsObj = new Settings();
         $files_array = $settingsObj->getDatabaseDirectoryFiles();
-        $this->set("arr_listing", $files_array);        
-        $this->_template->render(false, false);    
+        $this->set("arr_listing", $files_array);
+        $this->_template->render(false, false);
     }
     
     public function download($file)
@@ -76,7 +76,7 @@ class DatabaseBackupRestoreController extends AdminBaseController
             Message::addMessage(Labels::getLabel('LBL_Database_restored_successfully', $this->adminLangId));
         }
         $this->set('msg', Labels::getLabel('LBL_Database_restored_successfully', $this->adminLangId));
-        $this->_template->render(false, false, 'json-success.php');    
+        $this->_template->render(false, false, 'json-success.php');
     }
 
     public function delete($file)
@@ -88,12 +88,12 @@ class DatabaseBackupRestoreController extends AdminBaseController
             unlink(CONF_DB_BACKUP_DIRECTORY_FULL_PATH . $file);
         }
         $this->set('msg', Labels::getLabel('LBL_Database_deleted_successfully', $this->adminLangId));
-        $this->_template->render(false, false, 'json-success.php');    
+        $this->_template->render(false, false, 'json-success.php');
     }
 
     protected function getBackupForm()
     {
-        $frm = new Form('frmdatabaseBackup', array('id'=>'frmdatabaseBackup'));
+        $frm = new Form('frmdatabaseBackup', array('id' => 'frmdatabaseBackup'));
         $fld = $frm->addRequiredField(Labels::getLabel('LBL_File_Name', $this->adminLangId), 'name');
         $fld = $frm->addSubmitButton('', 'submit_backup', Labels::getLabel('LBL_Backup_on_Server', $this->adminLangId));
         return $frm;
@@ -101,10 +101,10 @@ class DatabaseBackupRestoreController extends AdminBaseController
 
     protected function getUploadForm()
     {
-        $frm = new Form('frmdatabaseUpload', array('id'=>'frmdatabaseUpload'));
-        $fld = $frm->addFileUpload(Labels::getLabel('LBL_DB_upload', $this->adminLangId), 'file', array('autocomplete'=>'off'));
+        $frm = new Form('frmdatabaseUpload', array('id' => 'frmdatabaseUpload'));
+        $fld = $frm->addFileUpload(Labels::getLabel('LBL_DB_upload', $this->adminLangId), 'file', array('autocomplete' => 'off'));
         $fld->html_before_field = '<div class="filefield"><span class="filename"></span>';
-        $fld->html_after_field = '<label class="filelabel">'.Labels::getLabel('LBL_Download_File', $this->adminLangId).'</label></div>';
+        $fld->html_after_field = '<label class="filelabel">' . Labels::getLabel('LBL_Download_File', $this->adminLangId) . '</label></div>';
         $fld->requirements()->setRequired();
         $frm->addSubmitButton('', 'submit_upload', Labels::getLabel('LBL_Upload_on_server', $this->adminLangId));
         return $frm;
@@ -118,11 +118,11 @@ class DatabaseBackupRestoreController extends AdminBaseController
             return false;
         }
         $fname = preg_replace('/[^a-zA-Z0-9\/\-\_\.]/', '', $name);
-        while (file_exists($dir.$fname)) {
+        while (file_exists($dir . $fname)) {
             /* $fname = rand(10, 999999).'_'.$fname; */
-            $fname = microtime().'_'.$fname;
+            $fname = microtime() . '_' . $fname;
         }
-        if (!copy($fl, $dir.$fname)) {
+        if (!copy($fl, $dir . $fname)) {
             Message::addErrorMessage(Labels::getLabel('LBL_Could_not_save_file', CommonHelper::getLangId()));
             return false;
         }

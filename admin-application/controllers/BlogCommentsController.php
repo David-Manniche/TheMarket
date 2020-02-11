@@ -1,11 +1,12 @@
 <?php
+
 class BlogCommentsController extends AdminBaseController
 {
     private $canView;
     private $canEdit;
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','search','view','updateStatus');
+        $ajaxCallArray = array('deleteRecord', 'search', 'view', 'updateStatus');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die(Labels::getLabel('MSG_Invalid_Action', $this->adminLangId));
         }
@@ -41,17 +42,17 @@ class BlogCommentsController extends AdminBaseController
         $srch = BlogComment::getSearchObject(true, $this->adminLangId);
 
         if (!empty($post['keyword'])) {
-            $keywordCond =  $srch->addCondition('bpcomment_author_name', 'like', '%'.$post['keyword'].'%');
-            $keywordCond->attachCondition('bpcomment_author_email', 'like', '%'.$post['keyword'].'%');
+            $keywordCond = $srch->addCondition('bpcomment_author_name', 'like', '%' . $post['keyword'] . '%');
+            $keywordCond->attachCondition('bpcomment_author_email', 'like', '%' . $post['keyword'] . '%');
         }
 
-        if (isset($post['bpcomment_approved']) && $post['bpcomment_approved']!='') {
+        if (isset($post['bpcomment_approved']) && $post['bpcomment_approved'] != '') {
             $srch->addCondition('bpcomment_approved', '=', $post['bpcomment_approved']);
         }
-        if (isset($post['bpcomment_id']) && $post['bpcomment_id']!='') {
+        if (isset($post['bpcomment_id']) && $post['bpcomment_id'] != '') {
             $srch->addCondition('bpcomment_id', '=', $post['bpcomment_id']);
         }
-        $srch->addMultipleFields(array('bpcomment_id','bpcomment_author_name','bpcomment_author_email','bpcomment_approved','bpcomment_added_on','post_id','ifnull(post_title,post_identifier) post_title'));
+        $srch->addMultipleFields(array('bpcomment_id', 'bpcomment_author_name', 'bpcomment_author_email', 'bpcomment_approved', 'bpcomment_added_on', 'post_id', 'ifnull(post_title,post_identifier) post_title'));
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
         $srch->addOrder('bpcomment_added_on', 'desc');
@@ -203,7 +204,7 @@ class BlogCommentsController extends AdminBaseController
     {
         $bpcomment_id = FatUtility::int($bpcomment_id);
 
-        $frm = new Form('frmBlogComment', array('id'=>'frmBlogComment'));
+        $frm = new Form('frmBlogComment', array('id' => 'frmBlogComment'));
         $frm->addHiddenField('', 'bpcomment_id', $bpcomment_id);
         $statusArr = applicationConstants::getBlogCommentStatusArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Comment_Status', $this->adminLangId), 'bpcomment_approved', $statusArr);
@@ -213,14 +214,14 @@ class BlogCommentsController extends AdminBaseController
 
     private function getSearchForm()
     {
-        $frm = new Form('frmSearch', array('id'=>'frmSearch'));
+        $frm = new Form('frmSearch', array('id' => 'frmSearch'));
 
-        $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '', array('class'=>'search-input'));
+        $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '', array('class' => 'search-input'));
         $statusArr = applicationConstants::getBlogCommentStatusArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Comment_Status', $this->adminLangId), 'bpcomment_approved', $statusArr, '', array(), 'Select');
         $frm->addHiddenField('', 'page');
         $frm->addHiddenField('', 'bpcomment_id');
-        $fld_submit=$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;

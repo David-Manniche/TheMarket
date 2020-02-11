@@ -1,4 +1,5 @@
 <?php
+
 class HomeController extends AdminBaseController
 {
     public function __construct($action)
@@ -28,9 +29,9 @@ class HomeController extends AdminBaseController
 
         // simple Caching with:
         phpFastCache::setup("storage", "files");
-        phpFastCache::setup("path", CONF_UPLOADS_PATH."caching");
+        phpFastCache::setup("path", CONF_UPLOADS_PATH . "caching");
         $cache = phpFastCache();
-        $dashboardInfo = $cache->get("dashboardInfo".$this->adminLangId);
+        $dashboardInfo = $cache->get("dashboardInfo" . $this->adminLangId);
 
         $dashboardInfo = array();
         if ($dashboardInfo == null) {
@@ -39,7 +40,7 @@ class HomeController extends AdminBaseController
                 $analytics = new Ykart_analytics($analyticArr);
                 $token = $analytics->getRefreshToken(FatApp::getConfig("CONF_ANALYTICS_ACCESS_TOKEN"));
 
-                $analytics->setAccessToken((isset($token['accessToken']))?$token['accessToken']:'');
+                $analytics->setAccessToken((isset($token['accessToken'])) ? $token['accessToken'] : '');
 
                 $accountId = $analytics->setAccountId(FatApp::getConfig("CONF_ANALYTICS_ID"));
                 if (!$accountId) {
@@ -57,29 +58,29 @@ class HomeController extends AdminBaseController
             if ($accountId) {
                 $statsInfo = $analytics->getVisitsByDate();
 
-                $chatStats=array();
+                $chatStats = array();
                 if (!empty($statsInfo['stats'])) {
-                    $chatStats = "[['".Labels::getLabel('LBL_Year', $this->adminLangId)."', '".Labels::getLabel('LBL_Today', $this->adminLangId)."','".Labels::getLabel('LBL_Weekly', $this->adminLangId)."','".Labels::getLabel('LBL_Last_Month', $this->adminLangId)."','".Labels::getLabel('LBL_Last_3_Month', $this->adminLangId)."'],";
+                    $chatStats = "[['" . Labels::getLabel('LBL_Year', $this->adminLangId) . "', '" . Labels::getLabel('LBL_Today', $this->adminLangId) . "','" . Labels::getLabel('LBL_Weekly', $this->adminLangId) . "','" . Labels::getLabel('LBL_Last_Month', $this->adminLangId) . "','" . Labels::getLabel('LBL_Last_3_Month', $this->adminLangId) . "'],";
                     foreach ($statsInfo['stats'] as $key => $val) {
                         if ($key == '') {
                             continue;
                         }
 
-                        $chatStats.="['".FatDate::format($key)."',";
-                        $chatStats.= isset($val['today']['visit'])?FatUtility::int($val['today']['visit']):0;
-                        $chatStats.=',';
-                        $chatStats.= isset($val['weekly']['visit'])?FatUtility::int($val['weekly']['visit']):0;
-                        $chatStats.=',';
-                        $chatStats.= isset($val['lastMonth']['visit'])?FatUtility::int($val['lastMonth']['visit']):0;
-                        $chatStats.=',';
-                        $chatStats.= isset($val['last3Month']['visit'])?FatUtility::int($val['last3Month']['visit']):0;
-                        $chatStats.=',';
+                        $chatStats .= "['" . FatDate::format($key) . "',";
+                        $chatStats .= isset($val['today']['visit']) ? FatUtility::int($val['today']['visit']) : 0;
+                        $chatStats .= ',';
+                        $chatStats .= isset($val['weekly']['visit']) ? FatUtility::int($val['weekly']['visit']) : 0;
+                        $chatStats .= ',';
+                        $chatStats .= isset($val['lastMonth']['visit']) ? FatUtility::int($val['lastMonth']['visit']) : 0;
+                        $chatStats .= ',';
+                        $chatStats .= isset($val['last3Month']['visit']) ? FatUtility::int($val['last3Month']['visit']) : 0;
+                        $chatStats .= ',';
                     }
                 }
                 $chatStats = rtrim($chatStats, ',');
-                $visits_chart_data = $chatStats.="]";
+                $visits_chart_data = $chatStats .= "]";
                 $visitCount = $statsInfo['result'];
-                foreach ($statsInfo['result'] as $key=>$val) {
+                foreach ($statsInfo['result'] as $key => $val) {
                     $visitCount[$key] = $val['totalsForAllResults'];
                 }
                 $socialVisits = $analytics->getSocialVisits();
@@ -87,9 +88,9 @@ class HomeController extends AdminBaseController
 
             $conversionStats = $statsObj->getConversionStats();
             $conversionChatData = "['Type','user',{ role: 'style' }],";
-            foreach ($conversionStats as $key=>$val) {
-                $key = Labels::getLabel('LBL_'.ucwords($key), $this->adminLangId);
-                $conversionChatData.="['".$key."', ".$val["count"].",'#AEC785'],";
+            foreach ($conversionStats as $key => $val) {
+                $key = Labels::getLabel('LBL_' . ucwords($key), $this->adminLangId);
+                $conversionChatData .= "['" . $key . "', " . $val["count"] . ",'#AEC785'],";
             }
 
             $conversionChatData = rtrim($conversionChatData, ',');
@@ -137,32 +138,32 @@ class HomeController extends AdminBaseController
             $dashboardInfo["stats"]["totalSales"] = $statsObj->getStats('total_sales');
 
 
-            if ($this->layoutDirection!='rtl') {
+            if ($this->layoutDirection != 'rtl') {
                 $dashboardInfo['productsChartData'] = array_reverse($productsChartData);
-                $dashboardInfo['salesChartData'] =  array_reverse($salesChartData);
-                $dashboardInfo['salesEarningsChartData']= array_reverse($salesEarningsChartData);
-                $dashboardInfo['signupsChartData'] =  array_reverse($signupsChartData);
-                $dashboardInfo['affiliateSignupsChartData'] =  array_reverse($affiliateSignupsChartData);
+                $dashboardInfo['salesChartData'] = array_reverse($salesChartData);
+                $dashboardInfo['salesEarningsChartData'] = array_reverse($salesEarningsChartData);
+                $dashboardInfo['signupsChartData'] = array_reverse($signupsChartData);
+                $dashboardInfo['affiliateSignupsChartData'] = array_reverse($affiliateSignupsChartData);
             } else {
                 $dashboardInfo['productsChartData'] = $productsChartData;
-                $dashboardInfo['salesChartData'] =   $salesChartData;
-                $dashboardInfo['salesEarningsChartData']= $salesEarningsChartData;
-                $dashboardInfo['signupsChartData'] =  $signupsChartData;
-                $dashboardInfo['affiliateSignupsChartData'] =  $affiliateSignupsChartData;
+                $dashboardInfo['salesChartData'] = $salesChartData;
+                $dashboardInfo['salesEarningsChartData'] = $salesEarningsChartData;
+                $dashboardInfo['signupsChartData'] = $signupsChartData;
+                $dashboardInfo['affiliateSignupsChartData'] = $affiliateSignupsChartData;
             }
 
             $dashboardInfo['topProducts'] = $statsObj->getTopProducts('YEARLY', $this->adminLangId, 10);
-            $dashboardInfo['visits_chart_data'] = isset($visits_chart_data)?rtrim($visits_chart_data, ','):'';
-            $dashboardInfo['visitsCount'] = (isset($visitCount))?$visitCount:'';
-            $dashboardInfo['socialVisits'] = isset($socialVisits)?$socialVisits:'';
+            $dashboardInfo['visits_chart_data'] = isset($visits_chart_data) ? rtrim($visits_chart_data, ',') : '';
+            $dashboardInfo['visitsCount'] = (isset($visitCount)) ? $visitCount : '';
+            $dashboardInfo['socialVisits'] = isset($socialVisits) ? $socialVisits : '';
             $dashboardInfo['conversionChatData'] = $conversionChatData;
             $dashboardInfo['conversionStats'] = $conversionStats;
 
-            $cache->set("dashboardInfo".$this->adminLangId, $dashboardInfo, 24*60*60);
+            $cache->set("dashboardInfo" . $this->adminLangId, $dashboardInfo, 24 * 60 * 60);
         }
 
         //$saleStats = Stats::getTotalSalesStats();
-        $this->_template->addJs(array('js/chartist.min.js','js/jquery.counterup.js','js/slick.min.js','js/enscroll-0.6.2.min.js'));
+        $this->_template->addJs(array('js/chartist.min.js', 'js/jquery.counterup.js', 'js/slick.min.js', 'js/enscroll-0.6.2.min.js'));
         $this->_template->addCss(array('css/chartist.css'));
 
         if (strpos($_SERVER['HTTP_USER_AGENT'], 'Trident/7.0; rv:11.0') !== false) {
@@ -283,7 +284,7 @@ class HomeController extends AdminBaseController
         $srch->addOrder('order_date_added', 'DESC');
         $srch->addCondition('order_type', '=', Orders::ORDER_PRODUCT);
         $srch->setPageSize($limit);
-        $srch->addMultipleFields(array('order_id','order_date_added', 'order_is_paid', 'buyer.user_name as buyer_user_name',  'order_net_amount'));
+        $srch->addMultipleFields(array('order_id', 'order_date_added', 'order_is_paid', 'buyer.user_name as buyer_user_name',  'order_net_amount'));
         $rs = $srch->getResultSet();
         $ordersList = FatApp::getDb()->fetchAll($rs);
         $dashboardInfo['recentOrders'] = $ordersList;
@@ -297,21 +298,21 @@ class HomeController extends AdminBaseController
         $post = FatApp::getPostedData();
         $type = $post['rtype'];
         //$type = 'visitors_stats';
-        $interval = isset($post['interval'])?$post['interval']:'';
+        $interval = isset($post['interval']) ? $post['interval'] : '';
         //$interval = 'yearly';
 
         include_once CONF_INSTALLATION_PATH . 'library/analytics/analyticsapi.php';
         $analyticArr = array(
-        'clientId'=>FatApp::getConfig("CONF_ANALYTICS_CLIENT_ID"),
-        'clientSecretKey'=>FatApp::getConfig("CONF_ANALYTICS_SECRET_KEY"),
-        'redirectUri'=>CommonHelper::generateFullUrl('configurations', 'redirect', array(), '', false),
-        'googleAnalyticsID'=>FatApp::getConfig("CONF_ANALYTICS_ID")
+        'clientId' => FatApp::getConfig("CONF_ANALYTICS_CLIENT_ID"),
+        'clientSecretKey' => FatApp::getConfig("CONF_ANALYTICS_SECRET_KEY"),
+        'redirectUri' => CommonHelper::generateFullUrl('configurations', 'redirect', array(), '', false),
+        'googleAnalyticsID' => FatApp::getConfig("CONF_ANALYTICS_ID")
         );
         phpFastCache::setup("storage", "files");
-        phpFastCache::setup("path", CONF_UPLOADS_PATH."caching");
+        phpFastCache::setup("path", CONF_UPLOADS_PATH . "caching");
         $cache = phpFastCache();
 
-        $result = $cache->get("dashboardInfo_".$type.'_'.$interval.'_'.$this->adminLangId);
+        $result = $cache->get("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId);
         if ($result == null) {
             if (strtoupper($type) == 'TOP_PRODUCTS') {
                 $statsObj = new Statistics();
@@ -353,7 +354,7 @@ class HomeController extends AdminBaseController
                 }
             }
 
-            $cache->set("dashboardInfo_".$type.'_'.$interval.'_'.$this->adminLangId, $result, 6*60*60);
+            $cache->set("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId, $result, 6 * 60 * 60);
         }
         $this->set('stats_type', strtoupper($type));
         $this->set('stats_info', $result);
@@ -362,7 +363,7 @@ class HomeController extends AdminBaseController
 
     public function clear()
     {
-        CommonHelper::recursiveDelete(CONF_UPLOADS_PATH."caching");
+        CommonHelper::recursiveDelete(CONF_UPLOADS_PATH . "caching");
         FatCache::clearAll();
         Message::addMessage(Labels::getLabel('LBL_Cache_has_been_cleared', $this->adminLangId));
         if (Labels::isAPCUcacheAvailable()) {
@@ -371,7 +372,7 @@ class HomeController extends AdminBaseController
 
         $languages = Language::getAllNames();
         foreach ($languages as $langId => $lang) {
-            $manifestFile = CONF_UPLOADS_PATH.'/manifest-'.$langId.'.json';
+            $manifestFile = CONF_UPLOADS_PATH . '/manifest-' . $langId . '.json';
             if (file_exists($manifestFile)) {
                 unlink($manifestFile);
             }
@@ -381,16 +382,16 @@ class HomeController extends AdminBaseController
     }
     public function setLanguage($langId = 0)
     {
-        $langId =  FatUtility::int($langId);
+        $langId = FatUtility::int($langId);
         if (0 < $langId) {
             $languages = Language::getAllNames();
             if (array_key_exists($langId, $languages)) {
-                setcookie('defaultAdminSiteLang', $langId, time()+3600*24*10, CONF_WEBROOT_FRONT_URL);
+                setcookie('defaultAdminSiteLang', $langId, time() + 3600 * 24 * 10, CONF_WEBROOT_FRONT_URL);
             }
             $this->set('msg', Labels::getLabel('Msg_Please_Wait_We_are_redirecting_you...', $this->adminLangId));
             $this->_template->render(false, false, 'json-success.php');
         }
-        Message::addErrorMessage(Labels::getLabel('MSG_Please_select_any_language', $this-adminLangId));
+        Message::addErrorMessage(Labels::getLabel('MSG_Please_select_any_language', $this - adminLangId));
         FatUtility::dieWithError(Message::getHtml());
     }
 }

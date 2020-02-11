@@ -1,13 +1,14 @@
 <?php
+
 class SelProdRating extends MyAppModel
 {
-    const DB_TBL = 'tbl_seller_product_rating';
-    const DB_TBL_PREFIX = '	sprating_';
+    public const DB_TBL = 'tbl_seller_product_rating';
+    public const DB_TBL_PREFIX = '	sprating_';
 
-    const TYPE_PRODUCT = 1;
-    const TYPE_SELLER_SHIPPING_QUALITY = 2;
-    const TYPE_SELLER_STOCK_AVAILABILITY = 3;
-    const TYPE_SELLER_PACKAGING_QUALITY = 4;
+    public const TYPE_PRODUCT = 1;
+    public const TYPE_SELLER_SHIPPING_QUALITY = 2;
+    public const TYPE_SELLER_STOCK_AVAILABILITY = 3;
+    public const TYPE_SELLER_PACKAGING_QUALITY = 4;
 
     public function __construct($id = 0)
     {
@@ -28,7 +29,7 @@ class SelProdRating extends MyAppModel
         }
 
         return array(
-        static::TYPE_PRODUCT=> Labels::getLabel('LBL_Product', $langId),
+        static::TYPE_PRODUCT => Labels::getLabel('LBL_Product', $langId),
         static::TYPE_SELLER_SHIPPING_QUALITY => Labels::getLabel('LBL_Rating_Type_Shipping', $langId),
         static::TYPE_SELLER_STOCK_AVAILABILITY => Labels::getLabel('LBL_Rating_Type_Stock_availabiity', $langId),
         static::TYPE_SELLER_PACKAGING_QUALITY => Labels::getLabel('LBL_Rating_Type_Package_Quality', $langId),
@@ -43,7 +44,7 @@ class SelProdRating extends MyAppModel
         $srch->joinSellerProducts();
         $srch->joinSelProdRating();
         $srch->addMultipleFields(array("ROUND(AVG(sprating_rating),2) as avg_rating"));
-        $srch->addCondition('sprating_rating_type', 'in', array(SelProdRating::TYPE_SELLER_SHIPPING_QUALITY , SelProdRating::TYPE_SELLER_STOCK_AVAILABILITY , SelProdRating::TYPE_SELLER_PACKAGING_QUALITY));
+        $srch->addCondition('sprating_rating_type', 'in', array(SelProdRating::TYPE_SELLER_SHIPPING_QUALITY, SelProdRating::TYPE_SELLER_STOCK_AVAILABILITY, SelProdRating::TYPE_SELLER_PACKAGING_QUALITY));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addCondition('spreview_seller_user_id', '=', $userId);

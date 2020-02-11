@@ -1,11 +1,12 @@
 <?php
+
 class UrlRewritingController extends AdminBaseController
 {
     private $canView;
     private $canEdit;
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','form','search','setup');
+        $ajaxCallArray = array('deleteRecord', 'form', 'search', 'setup');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }
@@ -33,14 +34,14 @@ class UrlRewritingController extends AdminBaseController
 
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
         $srch = UrlRewrite::getSearchObject($this->adminLangId);
 
         if (!empty($post['keyword'])) {
-            $condition = $srch->addCondition('ur.urlrewrite_original', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('ur.urlrewrite_custom', 'like', '%'.$post['keyword'].'%', 'OR');
+            $condition = $srch->addCondition('ur.urlrewrite_original', 'like', '%' . $post['keyword'] . '%');
+            $condition->attachCondition('ur.urlrewrite_custom', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
 
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
@@ -71,7 +72,7 @@ class UrlRewritingController extends AdminBaseController
         $urlrewrite_id = FatUtility::int($urlrewrite_id);
 
         $frm = $this->getForm();
-        $frm->fill(array('urlrewrite_id'=>$urlrewrite_id));
+        $frm->fill(array('urlrewrite_id' => $urlrewrite_id));
 
         if (0 < $urlrewrite_id) {
             $srch = UrlRewrite::getSearchObject();
@@ -81,8 +82,8 @@ class UrlRewritingController extends AdminBaseController
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
-            $urlRewriteData =  UrlRewrite::getAttributesById($urlrewrite_id);
-           // $customUrl  = explode("/", $urlRewriteData['urlrewrite_custom']);
+            $urlRewriteData = UrlRewrite::getAttributesById($urlrewrite_id);
+            // $customUrl  = explode("/", $urlRewriteData['urlrewrite_custom']);
             $data['urlrewrite_custom'] = $urlRewriteData['urlrewrite_custom'];
             $frm->fill($data);
         }
@@ -145,7 +146,7 @@ class UrlRewritingController extends AdminBaseController
             FatUtility::dieJsonError($this->str_invalid_request_id);
         }
 
-        $res =     UrlRewrite::getAttributesById($urlrewrite_id, array('urlrewrite_id'));
+        $res = UrlRewrite::getAttributesById($urlrewrite_id, array('urlrewrite_id'));
         if ($res == false) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieJsonError(Message::getHtml());
@@ -197,7 +198,7 @@ class UrlRewritingController extends AdminBaseController
         $frm = new Form('frmSearch');
         $f1 = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
-        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick'=>'clearSearch();'));
+        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick' => 'clearSearch();'));
         $fld_submit->attachField($fld_cancel);
         return $frm;
     }
@@ -211,7 +212,7 @@ class UrlRewritingController extends AdminBaseController
         $frm->addHiddenField('', 'urlrewrite_id');
         $frm->addRequiredField(Labels::getLabel('LBL_Original_URL', $this->adminLangId), 'urlrewrite_original');
         $fld = $frm->addRequiredField(Labels::getLabel('LBL_Custom_URL', $this->adminLangId), 'urlrewrite_custom');
-        $fld->htmlAfterField = '<small>'.Labels::getLabel('LBL_Example:_Custom_URL_Example', $this->adminLangId).'</small>';
+        $fld->htmlAfterField = '<small>' . Labels::getLabel('LBL_Example:_Custom_URL_Example', $this->adminLangId) . '</small>';
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }

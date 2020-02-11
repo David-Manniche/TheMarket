@@ -1,4 +1,5 @@
 <?php
+
 class ProdSpecification extends MyAppModel
 {
     public const DB_TBL = 'tbl_product_specifications';
@@ -12,20 +13,20 @@ class ProdSpecification extends MyAppModel
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
-        $this->db=FatApp::getDb();
+        $this->db = FatApp::getDb();
     }
     public static function getSearchObject($langId = 0, $bothLanguageData = true)
     {
         $srch = new SearchBase(static::DB_TBL, 'ps');
         $langQuery = '';
-        if ($langId  || $bothLanguageData) {
+        if ($langId || $bothLanguageData) {
             if (!$bothLanguageData) {
-                $langQuery= 'AND psl.prodspeclang_lang_id = ' . $langId;
+                $langQuery = 'AND psl.prodspeclang_lang_id = ' . $langId;
             }
             $srch->joinTable(
                 static::DB_TBL . '_lang',
                 'LEFT OUTER JOIN',
-                'psl.prodspeclang_prodspec_id = ps.prodspec_id '.$langQuery,
+                'psl.prodspeclang_prodspec_id = ps.prodspec_id ' . $langQuery,
                 'psl'
             );
         }
@@ -57,7 +58,7 @@ class ProdSpecification extends MyAppModel
 
     public static function getProdSpecification($prodSpecId, $productId, $langId = 0, $values = true)
     {
-        $srch= static::getSearchObject($langId, $values);
+        $srch = static::getSearchObject($langId, $values);
         if ($prodSpecId) {
             $srch->addCondition('ps.prodspec_id', '=', $prodSpecId);
         }

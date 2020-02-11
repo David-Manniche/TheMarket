@@ -1,4 +1,5 @@
 <?php
+
 class ProductSpecifics extends MyAppModel
 {
     public const DB_TBL = 'tbl_product_specifics';

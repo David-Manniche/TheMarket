@@ -1,4 +1,5 @@
 <?php
+
 class TransferbankPayController extends PaymentController
 {
     private $keyName = "TransferBank";
@@ -42,7 +43,7 @@ class TransferbankPayController extends PaymentController
             $cartObj = new Cart();
             $cartObj->clear();
             $cartObj->updateUserCart();
-            $comment  = Labels::getLabel('MSG_PAYMENT_INSTRUCTIONS', $this->siteLangId) . "\n\n";
+            $comment = Labels::getLabel('MSG_PAYMENT_INSTRUCTIONS', $this->siteLangId) . "\n\n";
             $comment .= $paymentSettings["bank_details"] . "\n\n";
             $comment .= Labels::getLabel('MSG_PAYMENT_NOTE', $this->siteLangId);
             $orderPaymentObj->addOrderPaymentComments($comment);

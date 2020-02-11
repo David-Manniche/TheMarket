@@ -1,4 +1,5 @@
 <?php
+
 class OptionValuesController extends AdminBaseController
 {
     private $canView;
@@ -6,7 +7,7 @@ class OptionValuesController extends AdminBaseController
 
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup');
+        $ajaxCallArray = array('deleteRecord', 'form', 'langForm', 'search', 'setup', 'langSetup');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }

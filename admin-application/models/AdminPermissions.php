@@ -1,8 +1,9 @@
 <?php
+
 class AdminPermissions extends MyAppModel
 {
-    const DB_TBL = 'tbl_admin_permissions';
-    const DB_TBL_PREFIX = 'admperm_';
+    public const DB_TBL = 'tbl_admin_permissions';
+    public const DB_TBL_PREFIX = 'admperm_';
 
     public function __construct($adminId = 0)
     {

@@ -1,10 +1,11 @@
 <?php
+
 class CcavenueSettingsController extends PaymentSettingsController
 {
     private $keyName = "Ccavenue";
     
     public function index()
-    {        
+    {
         $paymentSettings = $this->getPaymentSettings($this->keyName);
         $frm = $this->getForm();
         $frm->fill($paymentSettings);
@@ -16,12 +17,12 @@ class CcavenueSettingsController extends PaymentSettingsController
     public function setup()
     {
         $frm = $this->getForm();
-        $this->setUpPaymentSettings($frm, $this->keyName);        
+        $this->setUpPaymentSettings($frm, $this->keyName);
     }
     
-    private function getForm() 
-    {    
-        $frm = new Form('frmPaymentMethods');    
+    private function getForm()
+    {
+        $frm = new Form('frmPaymentMethods');
         $frm->addRequiredField(Labels::getLabel('LBL_Merchant_ID', $this->adminLangId), 'merchant_id');
         $frm->addRequiredField(Labels::getLabel('LBL_Access_Code', $this->adminLangId), 'access_code');
         $frm->addTextBox(Labels::getLabel('LBL_Working_Key', $this->adminLangId), 'working_key');

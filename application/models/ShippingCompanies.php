@@ -1,21 +1,22 @@
 <?php
+
 class ShippingCompanies extends MyAppModel
 {
-    const DB_TBL = 'tbl_shipping_company';
-    const DB_TBL_LANG = 'tbl_shipping_company_lang';
-    const DB_TBL_PREFIX = 'scompany_';
-    const DB_TBL_LANG_PREFIX = 'scompanylang_';
+    public const DB_TBL = 'tbl_shipping_company';
+    public const DB_TBL_LANG = 'tbl_shipping_company_lang';
+    public const DB_TBL_PREFIX = 'scompany_';
+    public const DB_TBL_LANG_PREFIX = 'scompanylang_';
 
 
-    const MANUAL_SHIPPING =1;
-    const SHIPSTATION_SHIPPING =2;
+    public const MANUAL_SHIPPING = 1;
+    public const SHIPSTATION_SHIPPING = 2;
 
     private $db;
 
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
-        $this->db=FatApp::getDb();
+        $this->db = FatApp::getDb();
     }
 
     public static function getSearchObject($isActive = true, $langId = 0)
@@ -24,19 +25,19 @@ class ShippingCompanies extends MyAppModel
 
         $srch = new SearchBase(static::DB_TBL, 'sc');
         if ($isActive == true) {
-            $srch->addCondition('sc.'.static::DB_TBL_PREFIX.'active', '=', applicationConstants::ACTIVE);
+            $srch->addCondition('sc.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
         }
 
         if ($langId > 0) {
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'sc_l.scompanylang_'.static::DB_TBL_PREFIX.'id = sc.'.static::DB_TBL_PREFIX.'id and sc_l.scompanylang_lang_id = '.$langId,
+                'sc_l.scompanylang_' . static::DB_TBL_PREFIX . 'id = sc.' . static::DB_TBL_PREFIX . 'id and sc_l.scompanylang_lang_id = ' . $langId,
                 'sc_l'
             );
         }
 
-        $srch->addOrder('sc.'.static::DB_TBL_PREFIX.'display_order', 'ASC');
+        $srch->addOrder('sc.' . static::DB_TBL_PREFIX . 'display_order', 'ASC');
         return $srch;
     }
 

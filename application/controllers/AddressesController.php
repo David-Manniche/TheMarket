@@ -1,4 +1,5 @@
 <?php
+
 class AddressesController extends LoggedUserController
 {
     public function __construct($action)
@@ -16,7 +17,7 @@ class AddressesController extends LoggedUserController
 
         if (empty($post)) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -26,7 +27,7 @@ class AddressesController extends LoggedUserController
         $ua_state_id = FatUtility::int($post['ua_state_id']);
         $post = $frm->getFormDataFromArray($post);
         if (false === $post) {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError(current($frm->getValidationErrors()));
             }
             Message::addErrorMessage(current($frm->getValidationErrors()));
@@ -44,7 +45,7 @@ class AddressesController extends LoggedUserController
 
         $addressObj->assignValues($data_to_be_save, true);
         if (!$addressObj->save()) {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($addressObj->getError());
             }
             Message::addErrorMessage($addressObj->getError());
@@ -60,7 +61,7 @@ class AddressesController extends LoggedUserController
 
 
         $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->siteLangId));
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->set('data', array('ua_id' => $ua_id));
             $this->_template->render();
         }
@@ -73,7 +74,7 @@ class AddressesController extends LoggedUserController
         $post = FatApp::getPostedData();
         if (empty($post)) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -82,7 +83,7 @@ class AddressesController extends LoggedUserController
         $ua_id = FatUtility::int($post['id']);
         $this->markAsDefault($ua_id);
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
         $this->set('msg', Labels::getLabel('LBL_Setup_Successful', $this->siteLangId));
@@ -93,7 +94,7 @@ class AddressesController extends LoggedUserController
     {
         if (1 > $ua_id) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -104,19 +105,19 @@ class AddressesController extends LoggedUserController
 
         if (empty($addressDetail)) {
             $message = Labels::getLabel('MSG_Invalid_request', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $updateArray = array('ua_is_default'=>0);
-        $whr = array('smt'=>'ua_user_id = ?', 'vals'=>array(UserAuthentication::getLoggedUserId()));
+        $updateArray = array('ua_is_default' => 0);
+        $whr = array('smt' => 'ua_user_id = ?', 'vals' => array(UserAuthentication::getLoggedUserId()));
 
         if (!FatApp::getDb()->updateFromArray(UserAddress::DB_TBL, $updateArray, $whr)) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -125,14 +126,14 @@ class AddressesController extends LoggedUserController
 
         $addressObj = new UserAddress($ua_id);
         $data = array(
-        'ua_id'=>$ua_id,
-        'ua_is_default'=>1,
-        'ua_user_id'=>UserAuthentication::getLoggedUserId(),
+        'ua_id' => $ua_id,
+        'ua_is_default' => 1,
+        'ua_user_id' => UserAuthentication::getLoggedUserId(),
         );
 
         $addressObj->assignValues($data, true);
         if (!$addressObj->save()) {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($addressObj->getError());
             }
             Message::addErrorMessage($addressObj->getError());
@@ -145,7 +146,7 @@ class AddressesController extends LoggedUserController
         $ua_id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
         if (1 > $ua_id) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -164,7 +165,7 @@ class AddressesController extends LoggedUserController
             LibHelper::dieJsonError($db->getError());
         }
         $msg = Labels::getLabel('MSG_Removed_Successfully', $this->siteLangId);
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->set('msg', $msg);
             $this->_template->render();
         }

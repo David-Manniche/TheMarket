@@ -1,4 +1,5 @@
 <?php
+
 require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/PayWithAmazon/Client.php';
 class AmazonPayController extends PaymentController
 {
@@ -18,10 +19,10 @@ class AmazonPayController extends PaymentController
     {
         $this->paymentSettings = $this->getPaymentSettings();
         $amazon = array(
-        'merchant_id'        => trim($this->paymentSettings['amazon_merchantId']),
-        'access_key'        => trim($this->paymentSettings['amazon_accessKey']),
-        'secret_key'        => trim($this->paymentSettings['amazon_secretKey']),
-        'client_id'            => trim($this->paymentSettings['amazon_clientId'])
+        'merchant_id' => trim($this->paymentSettings['amazon_merchantId']),
+        'access_key' => trim($this->paymentSettings['amazon_accessKey']),
+        'secret_key' => trim($this->paymentSettings['amazon_secretKey']),
+        'client_id' => trim($this->paymentSettings['amazon_clientId'])
         );
         $this->set('amazon', $amazon);
         if (!(strlen($amazon['merchant_id']) > 0 && strlen($amazon['access_key']) > 0 && strlen($amazon['secret_key']) > 0 && strlen($amazon['client_id']) > 0 && strlen(FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_STRING, '0')))) {
@@ -79,10 +80,10 @@ class AmazonPayController extends PaymentController
         }
         $this->paymentSettings = $this->getPaymentSettings();
         $config = array(
-        'merchant_id'        => trim($this->paymentSettings['amazon_merchantId']),
-        'access_key'        => trim($this->paymentSettings['amazon_accessKey']),
-        'secret_key'        => trim($this->paymentSettings['amazon_secretKey']),
-        'client_id'            => trim($this->paymentSettings['amazon_clientId'])
+        'merchant_id' => trim($this->paymentSettings['amazon_merchantId']),
+        'access_key' => trim($this->paymentSettings['amazon_accessKey']),
+        'secret_key' => trim($this->paymentSettings['amazon_secretKey']),
+        'client_id' => trim($this->paymentSettings['amazon_clientId'])
         );
         if (!(strlen($config['merchant_id']) > 0 && strlen($config['access_key']) > 0 && strlen($config['secret_key']) > 0 && strlen($config['client_id']) > 0)) {
             FatUtility::dieJsonError(Labels::getLabel('AMAZON_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId));
@@ -93,20 +94,20 @@ class AmazonPayController extends PaymentController
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
         if ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
             $this->currencyCode = strtolower($orderInfo["order_currency_code"]);
-            $config['region']        = 'us';
+            $config['region'] = 'us';
             $config['currency_Code'] = strtoupper($this->currencyCode);
-            $config['sandbox']       = (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == false);
+            $config['sandbox'] = (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == false);
             if (!class_exists('\PayWithAmazon\Client')) {
                 FatUtility::dieJsonError(Labels::getLabel('AMAZON_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId));
             }
             $client = new \PayWithAmazon\Client($config);
             $requestParameters = array();
-            $requestParameters['amount']            = $paymentAmount;
-            $requestParameters['currencyCode']     = strtoupper($this->currencyCode);
-            $requestParameters['seller_order_id']   = 'order-' . $orderId;
-            $requestParameters['seller_Id']         = null;
-            $requestParameters['platform_id']       = null;
-            $requestParameters['mws_auth_token']    = null;
+            $requestParameters['amount'] = $paymentAmount;
+            $requestParameters['currencyCode'] = strtoupper($this->currencyCode);
+            $requestParameters['seller_order_id'] = 'order-' . $orderId;
+            $requestParameters['seller_Id'] = null;
+            $requestParameters['platform_id'] = null;
+            $requestParameters['mws_auth_token'] = null;
             $requestParameters['amazon_order_reference_id'] = $postedData['orderReferenceId'];
             $response = $client->setOrderReferenceDetails($requestParameters);
             if ($client->success) {
@@ -132,10 +133,10 @@ class AmazonPayController extends PaymentController
         }
         $this->paymentSettings = $this->getPaymentSettings();
         $config = array(
-        'merchant_id'        => trim($this->paymentSettings['amazon_merchantId']),
-        'access_key'        => trim($this->paymentSettings['amazon_accessKey']),
-        'secret_key'        => trim($this->paymentSettings['amazon_secretKey']),
-        'client_id'            => trim($this->paymentSettings['amazon_clientId'])
+        'merchant_id' => trim($this->paymentSettings['amazon_merchantId']),
+        'access_key' => trim($this->paymentSettings['amazon_accessKey']),
+        'secret_key' => trim($this->paymentSettings['amazon_secretKey']),
+        'client_id' => trim($this->paymentSettings['amazon_clientId'])
         );
         if (!(strlen($config['merchant_id']) > 0 && strlen($config['access_key']) > 0 && strlen($config['secret_key']) > 0 && strlen($config['client_id']) > 0)) {
             FatUtility::dieJsonError(Labels::getLabel('AMAZON_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId));
@@ -146,9 +147,9 @@ class AmazonPayController extends PaymentController
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
         if ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
             $this->currencyCode = strtolower($orderInfo["order_currency_code"]);
-            $config['region']        = 'us';
+            $config['region'] = 'us';
             $config['currency_Code'] = strtoupper($this->currencyCode);
-            $config['sandbox']       = (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == false);
+            $config['sandbox'] = (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == false);
             if (!class_exists('\PayWithAmazon\Client')) {
                 FatUtility::dieJsonError(Labels::getLabel('AMAZON_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId));
             }
@@ -177,7 +178,7 @@ class AmazonPayController extends PaymentController
                         $response = $client->closeOrderReference(
                             array(
                             'amazon_order_reference_id' => $postedData['amazon_order_reference_id'],
-                            'cancelation_reason'        => 'My cancel reason.'
+                            'cancelation_reason' => 'My cancel reason.'
                             )
                         );
                         $responsearray['close'] = json_decode($response->toJson());

@@ -1,4 +1,5 @@
 <?php
+
 class AffiliateBaseController extends LoggedUserController
 {
     public function __construct($action)

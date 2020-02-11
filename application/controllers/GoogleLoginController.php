@@ -1,4 +1,5 @@
 <?php
+
 include_once CONF_INSTALLATION_PATH . 'library/GoogleAPI/vendor/autoload.php';
 
 class GoogleLoginController extends SocialMediaAuthController
@@ -30,7 +31,7 @@ class GoogleLoginController extends SocialMediaAuthController
     private function setupConfiguration()
     {
         $this->validateSettings();
-        $redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME);
+        $redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME, 'index', [], '', false);
         
         $this->client = new Google_Client();
         $this->client->setApplicationName(FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->siteLangId)); // Set your applicatio name
@@ -48,7 +49,7 @@ class GoogleLoginController extends SocialMediaAuthController
         $userType = FatApp::getPostedData('type', FatUtility::VAR_INT, User::USER_TYPE_BUYER);
         $accessToken = FatApp::getPostedData('accessToken', FatUtility::VAR_STRING, '');
         
-        if (true ===  MOBILE_APP_API_CALL && empty($accessToken)) {
+        if (true === MOBILE_APP_API_CALL && empty($accessToken)) {
             $message = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
             $this->setErrorAndRedirect($message, true);
         }

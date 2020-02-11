@@ -1,4 +1,5 @@
 <?php
+
 class CatalogRequestSearch extends SearchBase
 {
     private $langId;
@@ -16,7 +17,7 @@ class CatalogRequestSearch extends SearchBase
         $dateFrom = date('Y-m-d', strtotime($dateFrom));
 
         if ($dateFrom != '') {
-            $this->addCondition('scatrequest_date', '>=', $dateFrom. ' 00:00:00');
+            $this->addCondition('scatrequest_date', '>=', $dateFrom . ' 00:00:00');
         }
     }
 
@@ -26,7 +27,7 @@ class CatalogRequestSearch extends SearchBase
         $dateTo = date('Y-m-d', strtotime($dateTo));
 
         if ($dateTo != '') {
-            $this->addCondition('scatrequest_date', '<=', $dateTo. ' 23:59:59');
+            $this->addCondition('scatrequest_date', '<=', $dateTo . ' 23:59:59');
         }
     }
 }

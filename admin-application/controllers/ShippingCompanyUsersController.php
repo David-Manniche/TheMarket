@@ -1,4 +1,5 @@
 <?php
+
 class ShippingCompanyUsersController extends AdminBaseController
 {
     public function __construct($action)
@@ -95,7 +96,7 @@ class ShippingCompanyUsersController extends AdminBaseController
 
     public function Orders($shipping_company_user_id = 0)
     {
-        $shipping_company_user_id  = FatUtility::int($shipping_company_user_id);
+        $shipping_company_user_id = FatUtility::int($shipping_company_user_id);
         $userRow = User::getAttributesById($shipping_company_user_id);
 
         if (!$userRow || $userRow['user_is_shipping_company'] == applicationConstants::NO) {
@@ -193,7 +194,7 @@ class ShippingCompanyUsersController extends AdminBaseController
 
         $user_id = $userObj->getMainTableRecordId();
         if ($post['user_id'] <= 0) {
-            $post['user_password'] = $post['credential_username'].'@123';
+            $post['user_password'] = $post['credential_username'] . '@123';
             if (!$userObj->setLoginCredentials($post['credential_username'], $post['credential_email'], $post['user_password'], 1, 1)) {
                 Message::addErrorMessage(Labels::getLabel("MSG_LOGIN_CREDENTIALS_COULD_NOT_BE_SET", $this->adminLangId) . $userObj->getError());
                 FatUtility::dieWithError(Message::getHtml());
@@ -210,8 +211,8 @@ class ShippingCompanyUsersController extends AdminBaseController
         $pageSize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
 
         $post = FatApp::getPostedData();
-        $page = (empty($post['page']) || $post['page'] <= 0)?1:$post['page'];
-        $page = (empty($page) || $page <= 0)?1:FatUtility::int($page);
+        $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : $post['page'];
+        $page = (empty($page) || $page <= 0) ? 1 : FatUtility::int($page);
 
         $srch = Transactions::getSearchObject();
         $srch->addCondition('utxn.utxn_op_id', '=', $op_id);

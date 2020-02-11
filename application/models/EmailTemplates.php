@@ -1,11 +1,12 @@
 <?php
+
 class EmailTemplates extends MyAppModel
 {
-    const DB_TBL = 'tbl_email_templates';
-    const DB_TBL_PREFIX = 'etpl_';
+    public const DB_TBL = 'tbl_email_templates';
+    public const DB_TBL_PREFIX = 'etpl_';
 
-    const LOGO_RATIO_SQUARE = 1;
-    const LOGO_RATIO_RECTANGLE = 2;
+    public const LOGO_RATIO_SQUARE = 1;
+    public const LOGO_RATIO_RECTANGLE = 2;
 
     public function __construct($etplCode = '')
     {
@@ -53,7 +54,7 @@ class EmailTemplates extends MyAppModel
 
     public static function getSearchObject($langId = 0)
     {
-        $langId =  FatUtility::int($langId);
+        $langId = FatUtility::int($langId);
         if ($langId < 1) {
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
@@ -101,7 +102,7 @@ class EmailTemplates extends MyAppModel
         }
 
         $db = FatApp::getDb();
-        if (! $db->updateFromArray(
+        if (!$db->updateFromArray(
             static::DB_TBL,
             array(
             static::DB_TBL_PREFIX . 'status' => $v

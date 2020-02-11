@@ -1,7 +1,9 @@
-<?php class UserAddress extends MyAppModel
+<?php
+
+class UserAddress extends MyAppModel
 {
-    const DB_TBL = 'tbl_user_address';
-    const DB_TBL_PREFIX = 'ua_';
+    public const DB_TBL = 'tbl_user_address';
+    public const DB_TBL_PREFIX = 'ua_';
 
     public function __construct($ua_id = 0)
     {
@@ -44,9 +46,9 @@
         $srch->joinTable(States::DB_TBL, 'LEFT OUTER JOIN', 's.state_id = ua.ua_state_id', 's');
         $srch->addCondition('state_active', '=', applicationConstants::ACTIVE);
 
-        $srch->addMultipleFields(array('ua.*','state_code','country_code'));
+        $srch->addMultipleFields(array('ua.*', 'state_code', 'country_code'));
         if ($lang_id) {
-            $srch->joinTable(Countries::DB_TBL_LANG, 'LEFT OUTER JOIN', 'c.country_id = c_l.countrylang_country_id AND countrylang_lang_id = '.$lang_id, 'c_l');
+            $srch->joinTable(Countries::DB_TBL_LANG, 'LEFT OUTER JOIN', 'c.country_id = c_l.countrylang_country_id AND countrylang_lang_id = ' . $lang_id, 'c_l');
             $srch->addFld('IFNULL(country_name, country_code) as country_name');
 
             $srch->joinTable(States::DB_TBL_LANG, 'LEFT OUTER JOIN', 's.state_id = s_l.statelang_state_id AND s_l.statelang_lang_id = ' . $lang_id, 's_l');

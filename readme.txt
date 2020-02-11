@@ -29,6 +29,8 @@ Enhancements:
     => 66015 - Enhancement - Load filters data via ajax call for better performance.
     => 66684 - View more option for brands filter.
     => 69924 - Google reCatptcha upgraded to v3.
+    => 69749 - Implmented dynamic county and flag selection while entering phone number
+
 
 New Features:
     => Introduced Plugins for third party api's implementation.
@@ -77,3 +79,4 @@ Bugs:
     => 034376 - While entering data in RTL supported languages it is not getting entered in RTL mode.
     => 034350 - option name should get displayed on pop-up for which values are adding.
     => 034477 - Cropper JS white background issue
+    => 034354 - link to product is not there in admin for tags

@@ -1,10 +1,11 @@
 <?php
+
 class PayPalPayoutController extends PayoutBaseController
 {
     public const KEY_NAME = 'PayPalPayout';
     public static function reqFields()
     {
-        $reqFields =  [
+        $reqFields = [
                 'amount' => [
                     'type' => 'float',
                     'required' => true,
@@ -139,7 +140,7 @@ class PayPalPayoutController extends PayoutBaseController
 
         $this->set('msg', Labels::getLabel('MSG_Withdraw_request_placed_successfully', $this->siteLangId));
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
         $this->_template->render(false, false, 'json-success.php');

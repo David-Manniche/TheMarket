@@ -1,4 +1,5 @@
 <?php
+
 class ReportsController extends LoggedUserController
 {
     public function __construct($action)
@@ -107,9 +108,9 @@ class ReportsController extends LoggedUserController
             }
             $csvName = '';
             if ($topPerformed) {
-                $csvName = Labels::getLabel('LBL_Top_Performing_Products_Report', $this->siteLangId).date("Y-m-d").'.csv';
+                $csvName = Labels::getLabel('LBL_Top_Performing_Products_Report', $this->siteLangId) . date("Y-m-d") . '.csv';
             } else {
-                $csvName = Labels::getLabel('LBL_Most_Refunded_Products_Report', $this->siteLangId).date("Y-m-d").'.csv';
+                $csvName = Labels::getLabel('LBL_Most_Refunded_Products_Report', $this->siteLangId) . date("Y-m-d") . '.csv';
             }
             CommonHelper::convertToCsv($sheetData, $csvName, ',');
             exit;
@@ -163,9 +164,9 @@ class ReportsController extends LoggedUserController
 
         $srch = SellerProduct::getSearchObject($this->siteLangId);
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
-        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$this->siteLangId, 'p_l');
+        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->siteLangId, 'p_l');
         $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'p.product_brand_id = b.brand_id', 'b');
-        $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'b.brand_id = b_l.brandlang_brand_id AND b_l.brandlang_lang_id = '. $this->siteLangId, 'b_l');
+        $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'b.brand_id = b_l.brandlang_brand_id AND b_l.brandlang_lang_id = ' . $this->siteLangId, 'b_l');
         $srch->joinTable('(' . $uWsrch->getQuery() . ')', 'LEFT OUTER JOIN', 'tquwl.uwlp_selprod_id = sp.selprod_id', 'tquwl');
         $srch->addCondition('selprod_user_id', '=', $userId);
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
@@ -184,7 +185,7 @@ class ReportsController extends LoggedUserController
                 $arr = array( $row['product_name'], $row['selprod_title'], $row['brand_name'], $row['wishlist_user_counts'] );
                 array_push($sheetData, $arr);
             }
-            CommonHelper::convertToCsv($sheetData, Labels::getLabel('LBL_Most_Favorites_Products_Report', $this->siteLangId).date("Y-m-d").'.csv', ',');
+            CommonHelper::convertToCsv($sheetData, Labels::getLabel('LBL_Most_Favorites_Products_Report', $this->siteLangId) . date("Y-m-d") . '.csv', ',');
             exit;
         } else {
             $srch->setPageNumber($page);
@@ -239,7 +240,7 @@ class ReportsController extends LoggedUserController
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
         $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->siteLangId, 'p_l');
         $srch->joinTable(Brand::DB_TBL, 'INNER JOIN', 'p.product_brand_id = b.brand_id', 'b');
-        $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'b.brand_id = b_l.brandlang_brand_id  AND brandlang_lang_id = '.$this->siteLangId, 'b_l');
+        $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'b.brand_id = b_l.brandlang_brand_id  AND brandlang_lang_id = ' . $this->siteLangId, 'b_l');
         $srch->addCondition('selprod_user_id', '=', $loggedUserId);
         $srch->addCondition('selprod_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
@@ -268,7 +269,7 @@ class ReportsController extends LoggedUserController
                 $arr = array( $row['product_name'], $row['selprod_title'], $row['selprod_sku'], $row['brand_name'], $row['selprod_stock'] );
                 array_push($sheetData, $arr);
             }
-            CommonHelper::convertToCsv($sheetData, Labels::getLabel('LBL_Products_Inventory_Report', $this->siteLangId).date("Y-m-d").'.csv', ',');
+            CommonHelper::convertToCsv($sheetData, Labels::getLabel('LBL_Products_Inventory_Report', $this->siteLangId) . date("Y-m-d") . '.csv', ',');
             exit;
         } else {
             $srch->setPageNumber($page);
@@ -329,11 +330,11 @@ class ReportsController extends LoggedUserController
         /* ] */
 
         $srch = SellerProduct::getSearchObject($this->siteLangId);
-        $srch->joinTable('('. $orderProductSrch->getQuery() .')', 'INNER JOIN', 'sp.selprod_id = qryop.op_selprod_id', 'qryop');
+        $srch->joinTable('(' . $orderProductSrch->getQuery() . ')', 'INNER JOIN', 'sp.selprod_id = qryop.op_selprod_id', 'qryop');
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
         $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->siteLangId, 'p_l');
         $srch->joinTable(Brand::DB_TBL, 'INNER JOIN', 'p.product_brand_id = b.brand_id', 'b');
-        $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'b.brand_id = b_l.brandlang_brand_id  AND brandlang_lang_id = '.$this->siteLangId, 'b_l');
+        $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'b.brand_id = b_l.brandlang_brand_id  AND brandlang_lang_id = ' . $this->siteLangId, 'b_l');
         $srch->addCondition('selprod_user_id', '=', $loggedUserId);
         $srch->addOrder('selprod_active', 'DESC');
         $srch->addOrder('product_name');
@@ -355,13 +356,13 @@ class ReportsController extends LoggedUserController
             $srch->doNotLimitRecords();
             $rs = $srch->getResultSet();
             $sheetData = array();
-            $arr = array(Labels::getLabel('LBL_Product', $this->siteLangId),Labels::getLabel('LBL_Custom_title(if_any)', $this->siteLangId), Labels::getLabel('LBL_Brand', $this->siteLangId), Labels::getLabel('LBL_Stock_Available', $this->siteLangId), Labels::getLabel('LBL_Stock_on_order', $this->siteLangId),Labels::getLabel('LBL_Unit_Price', $this->siteLangId), Labels::getLabel('LBL_Total_Value(Stock_Available*unit_Price)', $this->siteLangId));
+            $arr = array(Labels::getLabel('LBL_Product', $this->siteLangId), Labels::getLabel('LBL_Custom_title(if_any)', $this->siteLangId), Labels::getLabel('LBL_Brand', $this->siteLangId), Labels::getLabel('LBL_Stock_Available', $this->siteLangId), Labels::getLabel('LBL_Stock_on_order', $this->siteLangId), Labels::getLabel('LBL_Unit_Price', $this->siteLangId), Labels::getLabel('LBL_Total_Value(Stock_Available*unit_Price)', $this->siteLangId));
             array_push($sheetData, $arr);
             /* while( $row = FatApp::getDb()->fetch($rs) ){
             $arr = array( $row['product_name'], $row['selprod_title'], $row['brand_name'], $row['selprod_stock'] );
             array_push($sheetData,$arr);
             } */
-            CommonHelper::convertToCsv($sheetData, Labels::getLabel('LBL_Products_Inventory_Report', $this->siteLangId).date("Y-m-d").'.csv', ',');
+            CommonHelper::convertToCsv($sheetData, Labels::getLabel('LBL_Products_Inventory_Report', $this->siteLangId) . date("Y-m-d") . '.csv', ',');
             exit;
         } else {
             $srch->setPageNumber($page);
@@ -389,7 +390,7 @@ class ReportsController extends LoggedUserController
         $frm->addTextBox('', 'keyword', '');
         $frm->addHiddenField('', 'page');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $langId));
-        $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $langId), array('onclick'=>'clearSearch();'));
+        $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $langId), array('onclick' => 'clearSearch();'));
         return $frm;
     }
 
@@ -399,7 +400,7 @@ class ReportsController extends LoggedUserController
         $frm->addTextBox('', 'keyword', '');
         $frm->addHiddenField('', 'page');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $langId));
-        $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $langId), array('onclick'=>'clearSearch();'));
+        $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $langId), array('onclick' => 'clearSearch();'));
         return $frm;
     }
 
@@ -444,19 +445,19 @@ class ReportsController extends LoggedUserController
         if (empty($orderDate)) {
             $date_from = FatApp::getPostedData('date_from', FatUtility::VAR_DATE, '');
             if (!empty($date_from)) {
-                $srch->addCondition('o.order_date_added', '>=', $date_from. ' 00:00:00');
+                $srch->addCondition('o.order_date_added', '>=', $date_from . ' 00:00:00');
             }
 
             $date_to = FatApp::getPostedData('date_to', FatUtility::VAR_DATE, '');
             if (!empty($date_to)) {
-                $srch->addCondition('o.order_date_added', '<=', $date_to. ' 23:59:59');
+                $srch->addCondition('o.order_date_added', '<=', $date_to . ' 23:59:59');
             }
             $srch->addGroupBy('DATE(o.order_date_added)');
         } else {
             $this->set('orderDate', $orderDate);
             $srch->addGroupBy('op_invoice_number');
-            $srch->addCondition('o.order_date_added', '>=', $orderDate. ' 00:00:00');
-            $srch->addCondition('o.order_date_added', '<=', $orderDate. ' 23:59:59');
+            $srch->addCondition('o.order_date_added', '>=', $orderDate . ' 00:00:00');
+            $srch->addCondition('o.order_date_added', '<=', $orderDate . ' 23:59:59');
             $srch->addFld(array('op_invoice_number'));
         }
         $srch->addCondition('op_selprod_user_id', '=', $loggedUserId);
@@ -488,7 +489,7 @@ class ReportsController extends LoggedUserController
             }
 
 
-            CommonHelper::convertToCsv($sheetData, Labels::getLabel('LBL_Sales_Report', $this->siteLangId).date("Y-m-d").'.csv', ',');
+            CommonHelper::convertToCsv($sheetData, Labels::getLabel('LBL_Sales_Report', $this->siteLangId) . date("Y-m-d") . '.csv', ',');
             exit;
         } else {
             $srch->setPageNumber($page);
@@ -519,7 +520,7 @@ class ReportsController extends LoggedUserController
             $frm->addDateField('', 'date_from', '', array('placeholder' => Labels::getLabel('LBL_Date_From', $this->siteLangId), 'readonly' => 'readonly', 'class' => 'small dateTimeFld field--calender' ));
             $frm->addDateField('', 'date_to', '', array('placeholder' => Labels::getLabel('LBL_Date_To', $this->siteLangId), 'readonly' => 'readonly', 'class' => 'small dateTimeFld field--calender'));
             $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->siteLangId));
-            $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId), array('onclick'=>'clearSearch();'));
+            $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId), array('onclick' => 'clearSearch();'));
         }
         return $frm;
     }

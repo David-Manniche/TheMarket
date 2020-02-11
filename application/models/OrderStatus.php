@@ -1,4 +1,5 @@
 <?php
+
 class orderStatus extends MyAppModel
 {
     public const DB_TBL = 'tbl_orders_status';
@@ -26,16 +27,16 @@ class orderStatus extends MyAppModel
         $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 'ostatus');
 
-        if ($isActive==true) {
-            $srch->addCondition('ostatus.'.static::DB_TBL_PREFIX.'is_active', '=', applicationConstants::ACTIVE);
+        if ($isActive == true) {
+            $srch->addCondition('ostatus.' . static::DB_TBL_PREFIX . 'is_active', '=', applicationConstants::ACTIVE);
         }
 
         if ($langId > 0) {
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'ostatus_l.'.static::DB_TBL_LANG_PREFIX.'orderstatus_id = ostatus.'.static::tblFld('id').' and
-			ostatus_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
+                'ostatus_l.' . static::DB_TBL_LANG_PREFIX . 'orderstatus_id = ostatus.' . static::tblFld('id') . ' and
+			ostatus_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 'ostatus_l'
             );
         }
@@ -58,8 +59,8 @@ class orderStatus extends MyAppModel
     public static function getOrderStatusTypeArr($langId)
     {
         return array(
-            Orders::ORDER_PRODUCT=>Labels::getLabel('LBL_Product', $langId),
-            Orders::ORDER_SUBSCRIPTION=>Labels::getLabel('LBL_Subscriptions', $langId),
+            Orders::ORDER_PRODUCT => Labels::getLabel('LBL_Product', $langId),
+            Orders::ORDER_SUBSCRIPTION => Labels::getLabel('LBL_Subscriptions', $langId),
         );
     }
 

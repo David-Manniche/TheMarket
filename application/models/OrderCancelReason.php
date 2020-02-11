@@ -1,10 +1,11 @@
 <?php
+
 class OrderCancelReason extends MyAppModel
 {
-    const DB_TBL = 'tbl_order_cancel_reasons';
-    const DB_TBL_PREFIX = 'ocreason_';
+    public const DB_TBL = 'tbl_order_cancel_reasons';
+    public const DB_TBL_PREFIX = 'ocreason_';
 
-    const DB_TBL_LANG = 'tbl_order_cancel_reasons_lang';
+    public const DB_TBL_LANG = 'tbl_order_cancel_reasons_lang';
 
     public function __construct($id = 0)
     {
@@ -34,7 +35,7 @@ class OrderCancelReason extends MyAppModel
         $srch = static::getSearchObject($langId);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('ocreason_id','IFNULL(ocreason_title,ocreason_identifier) as ocreason_title'));
+        $srch->addMultipleFields(array('ocreason_id', 'IFNULL(ocreason_title,ocreason_identifier) as ocreason_title'));
         $srch->addOrder('ocreason_title');
         $rs = $srch->getResultSet();
         return $row = FatApp::getDb()->fetchAllAssoc($rs);

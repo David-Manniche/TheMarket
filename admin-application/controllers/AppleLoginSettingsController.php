@@ -1,4 +1,5 @@
 <?php
+
 class AppleLoginSettingsController extends SocialLoginSettingsController
 {
     public static function getConfigurationKeys()

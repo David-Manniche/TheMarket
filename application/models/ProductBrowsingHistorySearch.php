@@ -1,4 +1,5 @@
 <?php
+
 class ProductBrowsingHistorySearch extends SearchBase
 {
     private $langId;

@@ -1,4 +1,5 @@
 <?php
+
 class TaxStructureController extends AdminBaseController
 {
     private $canView;
@@ -43,14 +44,14 @@ class TaxStructureController extends AdminBaseController
         if (0 < $taxStrId) {
             $srch = TaxStructure::getSearchObject($this->adminLangId);
             $srch->addCondition('taxstr_id', '=', $taxStrId);
-            $rs =  $srch->getResultSet();
+            $rs = $srch->getResultSet();
             $data = FatApp::getDb()->fetch($rs);
 
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
             $frm->fill($data);
-            $type =  $data['taxstr_type'];
+            $type = $data['taxstr_type'];
         }
 
         $this->set('type', $type);
@@ -75,7 +76,7 @@ class TaxStructureController extends AdminBaseController
     public function searchOptions($taxStrId)
     {
         $taxStructure = new TaxStructure($taxStrId);
-        $options =  $taxStructure->getOptions($this->adminLangId);
+        $options = $taxStructure->getOptions($this->adminLangId);
         $this->set('listing', $options);
 
         $this->canView = $this->objPrivilege->canViewTax($this->admin_id, true);
@@ -94,7 +95,7 @@ class TaxStructureController extends AdminBaseController
 
         if (0 < $taxstrOptionId) {
             $taxStructure = new TaxStructure($taxstrId);
-            $data =  $taxStructure->getOptionData($taxstrOptionId);
+            $data = $taxStructure->getOptionData($taxstrOptionId);
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
@@ -275,10 +276,10 @@ class TaxStructureController extends AdminBaseController
         $languages = Language::getAllNames();
         foreach ($languages as $langId => $langName) {
             $fld = $frm->addRequiredField(
-                Labels::getLabel('LBL_Tax_Option_Name',  $this->adminLangId).' '.$langName,
-                'taxstro_name'.$langId
+                Labels::getLabel('LBL_Tax_Option_Name', $this->adminLangId) . ' ' . $langName,
+                'taxstro_name' . $langId
             );
-            $fld->setWrapperAttribute('class', 'layout--'.Language::getLayoutDirection($langId));
+            $fld->setWrapperAttribute('class', 'layout--' . Language::getLayoutDirection($langId));
         }
         $typeArr = applicationConstants::getYesNoArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Interstate', $this->adminLangId), 'taxstro_interstate', $typeArr, '', array(), '');
@@ -312,14 +313,14 @@ class TaxStructureController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $taxstro_id = ($taxstro_id > 0)?$taxstro_id:FatApp::getDb()->getInsertId();
+        $taxstro_id = ($taxstro_id > 0) ? $taxstro_id : FatApp::getDb()->getInsertId();
 
         $languages = Language::getAllNames();
         foreach ($languages as $langId => $langName) {
             $data = array(
             'taxstrolang_taxstro_id' => $taxstro_id,
             'taxstrolang_lang_id' => $langId,
-            'taxstro_name' => $post['taxstro_name'.$langId],
+            'taxstro_name' => $post['taxstro_name' . $langId],
             );
 
             if (!$db->insertFromArray(TaxStructure::DB_TBL_OPTIONS_LANG, $data, false, array(), $data)) {

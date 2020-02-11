@@ -1,4 +1,5 @@
 <?php
+
 class BannerController extends MyAppController
 {
     public function index()
@@ -19,7 +20,7 @@ class BannerController extends MyAppController
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $srch->addCondition('banner_id', '=', $bannerId);
-        $srch->addMultipleFields(array('banner_id','banner_url','banner_type','banner_blocation_id','banner_record_id','blocation_promotion_cost','promotion_cpc'));
+        $srch->addMultipleFields(array('banner_id', 'banner_url', 'banner_type', 'banner_blocation_id', 'banner_record_id', 'blocation_promotion_cost', 'promotion_cpc'));
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
         if ($row == false) {
@@ -27,7 +28,7 @@ class BannerController extends MyAppController
             FatApp::redirectUser(CommonHelper::generateUrl('home'));
         }
 
-        $url  = str_replace('{SITEURL}', CommonHelper::generateFullUrl(), $row['banner_url']);
+        $url = str_replace('{SITEURL}', CommonHelper::generateFullUrl(), $row['banner_url']);
 
         $userId = 0;
         if (UserAuthentication::isUserLogged()) {
@@ -51,14 +52,14 @@ class BannerController extends MyAppController
                     );
                     FatApp::getDb()->insertFromArray(Promotion::DB_TBL_CLICKS, $promotionClickData, false, '', $promotionClickData);
 
-                    $clickId= FatApp::getDb()->getInsertId();
+                    $clickId = FatApp::getDb()->getInsertId();
 
                     $promotionClickChargesData = array(
 
                     'picharge_pclick_id' => $clickId,
-                    'picharge_datetime'  => date('Y-m-d H:i:s'),
+                    'picharge_datetime' => date('Y-m-d H:i:s'),
                     /* 'picharge_cost'  => $row['blocation_promotion_cost'], */
-                    'picharge_cost'  => $row['promotion_cpc'],
+                    'picharge_cost' => $row['promotion_cpc'],
 
                     );
 
@@ -67,11 +68,11 @@ class BannerController extends MyAppController
 
                     $promotionLogData = array(
                     'plog_promotion_id' => $row['banner_record_id'],
-                    'plog_date' =>  date('Y-m-d'),
-                    'plog_clicks' =>  1,
+                    'plog_date' => date('Y-m-d'),
+                    'plog_clicks' => 1,
                     );
 
-                    $onDuplicatePromotionLogData = array_merge($promotionLogData, array('plog_clicks'=>'mysql_func_plog_clicks+1'));
+                    $onDuplicatePromotionLogData = array_merge($promotionLogData, array('plog_clicks' => 'mysql_func_plog_clicks+1'));
                     FatApp::getDb()->insertFromArray(Promotion::DB_TBL_LOGS, $promotionLogData, true, array(), $onDuplicatePromotionLogData);
                     break;
             }
@@ -104,7 +105,7 @@ class BannerController extends MyAppController
         $bannerDimensions = BannerLocation::getDimensions(BannerLocation::HOME_PAGE_MIDDLE_BANNER, $screen);
         $w = 600;
         $h = 338;
-         /*Desktop default value need to update in DB*/
+        /*Desktop default value need to update in DB*/
         if (array_key_exists('blocation_banner_width', $bannerDimensions)) {
             $w = $bannerDimensions['blocation_banner_width'];
         }
@@ -119,7 +120,7 @@ class BannerController extends MyAppController
         $bannerDimensions = BannerLocation::getDimensions(BannerLocation::HOME_PAGE_BOTTOM_BANNER, $screen);
         $w = 600;
         $h = 198;
-         /*Desktop default value need to update in DB*/
+        /*Desktop default value need to update in DB*/
         if (array_key_exists('blocation_banner_width', $bannerDimensions)) {
             $w = $bannerDimensions['blocation_banner_width'];
         }
@@ -134,7 +135,7 @@ class BannerController extends MyAppController
         $bannerDimensions = BannerLocation::getDimensions(BannerLocation::PRODUCT_DETAIL_PAGE_BANNER, $screen);
         $w = 600;
         $h = 198;
-         /*Desktop default value need to update in DB*/
+        /*Desktop default value need to update in DB*/
         if (array_key_exists('blocation_banner_width', $bannerDimensions)) {
             $w = $bannerDimensions['blocation_banner_width'];
         }
@@ -155,7 +156,7 @@ class BannerController extends MyAppController
         $langId = FatUtility::int($langId);
 
         $fileRow = AttachedFile::getAttachment(AttachedFile::FILETYPE_BANNER, $bannerId, 0, $langId, true, $screen);
-        $image_name = isset($fileRow['afile_physical_path']) ?  $fileRow['afile_physical_path'] : '';
+        $image_name = isset($fileRow['afile_physical_path']) ? $fileRow['afile_physical_path'] : '';
         AttachedFile::displayImage($image_name, $w, $h, '', '', ImageResize::IMG_RESIZE_EXTRA_ADDSPACE, false, true, false);
     }
 
@@ -165,7 +166,7 @@ class BannerController extends MyAppController
         $langId = FatUtility::int($langId);
 
         $fileRow = AttachedFile::getAttachment(AttachedFile::FILETYPE_BANNER, $bannerId, 0, $langId, true, $screen);
-        $image_name = isset($fileRow['afile_physical_path']) ?  $fileRow['afile_physical_path'] : '';
+        $image_name = isset($fileRow['afile_physical_path']) ? $fileRow['afile_physical_path'] : '';
         AttachedFile::displayOriginalImage($image_name, '', '', true);
     }
 
@@ -218,7 +219,7 @@ class BannerController extends MyAppController
             return;
         }
 
-        $bannerDataCache =  FatCache::get('bannersCache'.$type.'_'.$langId, CONF_IMG_CACHE_TIME, '.txt');
+        $bannerDataCache = FatCache::get('bannersCache' . $type . '_' . $langId, CONF_IMG_CACHE_TIME, '.txt');
         if ($bannerDataCache) {
             return unserialize($bannerDataCache);
         }
@@ -244,13 +245,13 @@ class BannerController extends MyAppController
         $rs = $srch->getResultSet();
 
         return $bannerListing = $db->fetchAll($rs, 'banner_id');
-        FatCache::set('bannersCache'.$type.'_'.$langId, serialize($bannerListing), '.txt');
+        FatCache::set('bannersCache' . $type . '_' . $langId, serialize($bannerListing), '.txt');
     }
 
-    public function locationFrames($frameId, $sizeType='')
+    public function locationFrames($frameId, $sizeType = '')
     {
         $frameId = FatUtility::int($frameId);
-        if (1>$frameId) {
+        if (1 > $frameId) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_access', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }

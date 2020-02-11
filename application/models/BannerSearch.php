@@ -1,4 +1,5 @@
 <?php
+
 class BannerSearch extends SearchBase
 {
     private $langId;
@@ -75,7 +76,7 @@ class BannerSearch extends SearchBase
 
 
 
-        $this->joinTable(Promotion::DB_TBL, 'LEFT OUTER JOIN', 'pr.promotion_id = b.banner_record_id and b.banner_type = '.Banner::TYPE_PPC, 'pr');
+        $this->joinTable(Promotion::DB_TBL, 'LEFT OUTER JOIN', 'pr.promotion_id = b.banner_record_id and b.banner_type = ' . Banner::TYPE_PPC, 'pr');
         if ($langId > 0) {
             $this->joinTable(Promotion::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pr_l.promotionlang_promotion_id = pr.promotion_id AND pr_l.promotionlang_lang_id = ' . $langId, 'pr_l');
         }
@@ -104,15 +105,15 @@ class BannerSearch extends SearchBase
 
 
 
-        $this->addFld(array('if(b.banner_type = '.Banner::TYPE_PPC.',pr.promotion_start_date,b.banner_start_date) as start_date'));
+        $this->addFld(array('if(b.banner_type = ' . Banner::TYPE_PPC . ',pr.promotion_start_date,b.banner_start_date) as start_date'));
 
-        $this->addFld(array('if(b.banner_type = '.Banner::TYPE_PPC.',pr.promotion_end_date,b.banner_end_date) as end_date'));
+        $this->addFld(array('if(b.banner_type = ' . Banner::TYPE_PPC . ',pr.promotion_end_date,b.banner_end_date) as end_date'));
 
-        $this->addFld(array('if(b.banner_type = '.Banner::TYPE_PPC.',pr.promotion_start_time,b.banner_start_time) as start_time'));
-        $this->addFld(array('if(b.banner_type = '.Banner::TYPE_PPC.',pr.promotion_end_time,b.banner_end_time) as end_time'));
+        $this->addFld(array('if(b.banner_type = ' . Banner::TYPE_PPC . ',pr.promotion_start_time,b.banner_start_time) as start_time'));
+        $this->addFld(array('if(b.banner_type = ' . Banner::TYPE_PPC . ',pr.promotion_end_time,b.banner_end_time) as end_time'));
 
-        $this->addFld(array('if(b.banner_type = '.Banner::TYPE_PPC.',pr.promotion_duration,'.Promotion::DURATION_NOT_AVAILABALE.') as promotion_duration'));
-        $this->addFld(array('if(b.banner_type = '.Banner::TYPE_PPC.',pr.promotion_budget,-1) as promotion_budget'));
+        $this->addFld(array('if(b.banner_type = ' . Banner::TYPE_PPC . ',pr.promotion_duration,' . Promotion::DURATION_NOT_AVAILABALE . ') as promotion_duration'));
+        $this->addFld(array('if(b.banner_type = ' . Banner::TYPE_PPC . ',pr.promotion_budget,-1) as promotion_budget'));
 
 
 
@@ -156,7 +157,7 @@ class BannerSearch extends SearchBase
         $this->joinedUserWallet = true;
         $txnObj = new Transactions();
         $srch = $txnObj -> getSearchObject();
-        $srch->addMultipleFields(array('IFNULL(SUM(utxn.utxn_credit)-SUM(utxn.utxn_debit),0) AS userBalance','utxn_user_id'));
+        $srch->addMultipleFields(array('IFNULL(SUM(utxn.utxn_credit)-SUM(utxn.utxn_debit),0) AS userBalance', 'utxn_user_id'));
         $srch->doNotCalculateRecords();
         $srch->doNotlimitRecords();
         $srch->addCondition('utxn_status', '=', applicationConstants::ACTIVE);
@@ -176,17 +177,17 @@ class BannerSearch extends SearchBase
             trigger_error(Labels::getLabel('ERR_please_join_user_wallet', $langId), E_USER_ERROR);
         }
 
-        $this->addFld(array('IF(pr.promotion_id > 0, userBalance,'.FatApp::getConfig('CONF_PPC_MIN_WALLET_BALANCE').') AS userBalance'));
+        $this->addFld(array('IF(pr.promotion_id > 0, userBalance,' . FatApp::getConfig('CONF_PPC_MIN_WALLET_BALANCE') . ') AS userBalance'));
         $this->addHaving('userBalance', '>=', FatApp::getConfig('CONF_PPC_MIN_WALLET_BALANCE'));
     }
 
     public function joinBudget()
     {
         $srch = new SearchBase(Promotion::DB_TBL_ITEM_CHARGES, 'tpic');
-        $srch->joinTable(Promotion::DB_TBL_CLICKS, 'LEFT OUTER JOIN', 'tpc.'.Promotion::DB_TBL_CLICKS_PREFIX.'id = tpic.'.Promotion::DB_TBL_ITEM_CHARGES_PREFIX.'pclick_id', 'tpc');
+        $srch->joinTable(Promotion::DB_TBL_CLICKS, 'LEFT OUTER JOIN', 'tpc.' . Promotion::DB_TBL_CLICKS_PREFIX . 'id = tpic.' . Promotion::DB_TBL_ITEM_CHARGES_PREFIX . 'pclick_id', 'tpc');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addGroupBy('tpc.'.Promotion::DB_TBL_CLICKS_PREFIX.'promotion_id');
+        $srch->addGroupBy('tpc.' . Promotion::DB_TBL_CLICKS_PREFIX . 'promotion_id');
         $srch->addMultipleFields(
             array(
             'tpc.pclick_promotion_id',
@@ -202,7 +203,7 @@ class BannerSearch extends SearchBase
 
     public function joinAttachedFile()
     {
-        $this->joinTable(AttachedFile::DB_TBL, 'INNER  JOIN', 'af.afile_record_id = b.banner_id and afile_type ='.AttachedFile::FILETYPE_BANNER, 'af');
+        $this->joinTable(AttachedFile::DB_TBL, 'INNER  JOIN', 'af.afile_record_id = b.banner_id and afile_type =' . AttachedFile::FILETYPE_BANNER, 'af');
         $this-> addGroupBy('banner_id');
     }
 }

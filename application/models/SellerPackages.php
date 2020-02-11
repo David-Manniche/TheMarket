@@ -1,40 +1,41 @@
 <?php
+
 class SellerPackages extends MyAppModel
 {
-    const DB_TBL = 'tbl_seller_packages';
-    const DB_TBL_PREFIX = 'spackage_';
-    const DB_TBL_LANG = 'tbl_seller_packages_lang';
-    const DB_TBL_LANG_PREFIX = 'spackagelang_';
-    const FREE_TYPE = 1;
-    const PAID_TYPE = 2;
+    public const DB_TBL = 'tbl_seller_packages';
+    public const DB_TBL_PREFIX = 'spackage_';
+    public const DB_TBL_LANG = 'tbl_seller_packages_lang';
+    public const DB_TBL_LANG_PREFIX = 'spackagelang_';
+    public const FREE_TYPE = 1;
+    public const PAID_TYPE = 2;
 
-    const TYPE_FREQUENCY= 1;
-    const TYPE_UNLIMITED = 2;
+    public const TYPE_FREQUENCY = 1;
+    public const TYPE_UNLIMITED = 2;
 
-    const CLASS_ONE ='';
-    const CLASS_TWO ='two';
-    const CLASS_THREE ='three';
+    public const CLASS_ONE = '';
+    public const CLASS_TWO = 'two';
+    public const CLASS_THREE = 'three';
 
     private $db;
 
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
-        $this->db=FatApp::getDb();
+        $this->db = FatApp::getDb();
     }
 
     public static function getPackageClass()
     {
         return array(
-        '1'=>SellerPackages::CLASS_ONE,
-        '2'=>SellerPackages::CLASS_TWO,
-        '3'=>SellerPackages::CLASS_THREE,
-        '4'=>SellerPackages::CLASS_ONE,
-        '5'=>SellerPackages::CLASS_TWO,
-        '6'=>SellerPackages::CLASS_THREE,
-        '7'=>SellerPackages::CLASS_ONE,
-        '8'=>SellerPackages::CLASS_TWO,
-        '9'=>SellerPackages::CLASS_THREE,
+        '1' => SellerPackages::CLASS_ONE,
+        '2' => SellerPackages::CLASS_TWO,
+        '3' => SellerPackages::CLASS_THREE,
+        '4' => SellerPackages::CLASS_ONE,
+        '5' => SellerPackages::CLASS_TWO,
+        '6' => SellerPackages::CLASS_THREE,
+        '7' => SellerPackages::CLASS_ONE,
+        '8' => SellerPackages::CLASS_TWO,
+        '9' => SellerPackages::CLASS_THREE,
         );
     }
     public static function getSearchObject($langId = 0)
@@ -70,7 +71,7 @@ class SellerPackages extends MyAppModel
         $srch->joinTable(SellerPackagePlans::DB_TBL, 'INNER JOIN', 'sp.spackage_id =spp.spplan_spackage_id', 'spp');
         $srch->addMultipleFields(
             array(
-            "sp.spackage_id", "IFNULL( spl.spackage_name, sp.spackage_identifier ) as spackage_name","spackage_text","spackage_products_allowed","spackage_inventory_allowed","spackage_images_per_product","spackage_commission_rate","spackage_type")
+            "sp.spackage_id", "IFNULL( spl.spackage_name, sp.spackage_identifier ) as spackage_name", "spackage_text", "spackage_products_allowed", "spackage_inventory_allowed", "spackage_images_per_product", "spackage_commission_rate", "spackage_type")
         );
         $srch->addGroupBy('sp.spackage_id');
         $srch->addCondition('sp.spackage_active', '=', applicationConstants::YES);
@@ -88,14 +89,14 @@ class SellerPackages extends MyAppModel
     public static function getPackageTypes()
     {
         return array(
-        ''=>Labels::getLabel('LBL_Select_Plan', CommonHelper::getLangId()),
-        SellerPackages::FREE_TYPE=>Labels::getLabel('LBL_Free_Plan', CommonHelper::getLangId()),
-        SellerPackages::PAID_TYPE=>Labels::getLabel('LBL_Paid_Plan', CommonHelper::getLangId()),
+        '' => Labels::getLabel('LBL_Select_Plan', CommonHelper::getLangId()),
+        SellerPackages::FREE_TYPE => Labels::getLabel('LBL_Free_Plan', CommonHelper::getLangId()),
+        SellerPackages::PAID_TYPE => Labels::getLabel('LBL_Paid_Plan', CommonHelper::getLangId()),
         );
     }
     public static function getAllowedLimit($userId, $langId, $key = '')
     {
-        $columns = array("spackage_products_allowed","spackage_inventory_allowed","spackage_images_per_product");
+        $columns = array("spackage_products_allowed", "spackage_inventory_allowed", "spackage_images_per_product");
         $currentActivePlan = OrderSubscription:: getUserCurrentActivePlanDetails($langId, $userId, $columns);
         
         if (!empty($key)) {

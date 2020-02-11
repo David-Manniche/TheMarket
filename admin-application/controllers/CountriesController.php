@@ -1,4 +1,5 @@
 <?php
+
 class CountriesController extends AdminBaseController
 {
     private $canView;
@@ -27,7 +28,7 @@ class CountriesController extends AdminBaseController
     {
         $frm = new Form('frmSearch');
         $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
-        $fld_submit=$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;
@@ -40,7 +41,7 @@ class CountriesController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
         $srch = Countries::getSearchObject(false, $this->adminLangId);
@@ -48,11 +49,11 @@ class CountriesController extends AdminBaseController
         $srch->addFld('c.* , c_l.country_name');
         $srch->addOrder('country_name', 'ASC');
         if (!empty($post['keyword'])) {
-            $condition=$srch->addCondition('c.country_code', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('c_l.country_name', 'like', '%'.$post['keyword'].'%', 'OR');
+            $condition = $srch->addCondition('c.country_code', 'like', '%' . $post['keyword'] . '%');
+            $condition->attachCondition('c_l.country_name', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
 
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -77,12 +78,12 @@ class CountriesController extends AdminBaseController
     {
         $this->objPrivilege->canEditCountries();
 
-        $countryId =  FatUtility::int($countryId);
+        $countryId = FatUtility::int($countryId);
 
         $frm = $this->getForm($countryId);
 
         if (0 < $countryId) {
-            $data = Countries::getAttributesById($countryId, array('country_id','country_code','country_active','country_currency_id','country_language_id'));
+            $data = Countries::getAttributesById($countryId, array('country_id', 'country_code', 'country_active', 'country_currency_id', 'country_language_id'));
 
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
@@ -233,7 +234,7 @@ class CountriesController extends AdminBaseController
     private function getForm($countryId = 0)
     {
         $this->objPrivilege->canViewCountries();
-        $countryId =  FatUtility::int($countryId);
+        $countryId = FatUtility::int($countryId);
 
         $frm = new Form('frmCountry');
         $frm->addHiddenField('', 'country_id', $countryId);
@@ -243,7 +244,7 @@ class CountriesController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Currency', $this->adminLangId), 'country_currency_id', $currencyArr);
 
         $languageArr = Language::getAllNames();
-        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'country_language_id', array(0=>'Site Default')+$languageArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'country_language_id', array(0 => 'Site Default') + $languageArr, '', array(), '');
 
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
 
@@ -281,7 +282,7 @@ class CountriesController extends AdminBaseController
 
         $data = Countries::getAttributesById($countryId, array('country_active'));
 
-        if ($data==false) {
+        if ($data == false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }

@@ -1,4 +1,5 @@
 <?php
+
 class PayuIndiaPayController extends PaymentController
 {
     private $keyName = "PayuIndia";
@@ -45,7 +46,7 @@ class PayuIndiaPayController extends PaymentController
         foreach ($post as $key => $value) {
             $request .= '&' . $key . '=' . urlencode(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
         }
-        $orderId = (isset($post['udf1']))?$post['udf1']:0;
+        $orderId = (isset($post['udf1'])) ? $post['udf1'] : 0;
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
@@ -55,9 +56,9 @@ class PayuIndiaPayController extends PaymentController
             case 'success':
                 $receiver_match = (strtolower($post['key']) == strtolower($paymentSettings['merchant_id']));
                 $total_paid_match = ((float)$post['amount'] == (float)$paymentGatewayCharge);
-                $hash_string = $paymentSettings["salt"]."|".$post["status"]."||||||||||".$post["udf1"]."|".$post["email"]."|".$post["firstname"]."|".$post["productinfo"]."|".$post["amount"]."|".$post["txnid"]."|".$post["key"];
-                $reverse_hash=strtolower(hash('sha512', $hash_string));
-                $reverse_hash_match=($post['hash'] == $reverse_hash);
+                $hash_string = $paymentSettings["salt"] . "|" . $post["status"] . "||||||||||" . $post["udf1"] . "|" . $post["email"] . "|" . $post["firstname"] . "|" . $post["productinfo"] . "|" . $post["amount"] . "|" . $post["txnid"] . "|" . $post["key"];
+                $reverse_hash = strtolower(hash('sha512', $hash_string));
+                $reverse_hash_match = ($post['hash'] == $reverse_hash);
                 if ($receiver_match && $total_paid_match && $reverse_hash_match) {
                     $order_payment_status = 1;
                 }
@@ -72,7 +73,7 @@ class PayuIndiaPayController extends PaymentController
                 }
                 break;
             }
-            if ($order_payment_status==1) {
+            if ($order_payment_status == 1) {
                 $orderPaymentObj->addOrderPayment($paymentSettings["pmethod_name"], $post["mihpayid"], $paymentGatewayCharge, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $request);
                 FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
             } else {
@@ -97,7 +98,7 @@ class PayuIndiaPayController extends PaymentController
             $actionUrl = 'https://test.payu.in/_payment';
         }
 
-        $frm = new Form('frmPayuIndia', array('id'=>'frmPayuIndia','action'=>$actionUrl, 'class' =>"form form--normal"));
+        $frm = new Form('frmPayuIndia', array('id' => 'frmPayuIndia', 'action' => $actionUrl, 'class' => "form form--normal"));
 
         /* Retrieve Primary Info corresponding to your order */
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
@@ -128,11 +129,11 @@ class PayuIndiaPayController extends PaymentController
         $frm->addHiddenField('Furl', 'Furl', CommonHelper::generateFullUrl('PayuIndiaPay', 'callback'));
 
         $frm->addHiddenField('curl', 'curl', $cancelBtnUrl);
-        $key =  $paymentSettings["merchant_id"];
+        $key = $paymentSettings["merchant_id"];
         $amount = $paymentGatewayCharge;
         $salt = $paymentSettings["salt"];
         $udf1 = $orderId;
-        $Hash = hash('sha512', $key.'|'.$txnid.'|'.$paymentGatewayCharge.'|'.$orderPaymentGatewayDescription.'|'.$firstname.'|'.$email.'|'.$udf1.'||||||||||'.$salt);
+        $Hash = hash('sha512', $key . '|' . $txnid . '|' . $paymentGatewayCharge . '|' . $orderPaymentGatewayDescription . '|' . $firstname . '|' . $email . '|' . $udf1 . '||||||||||' . $salt);
         $frm->addHiddenField('hash', 'hash', $Hash);
         $frm->addHiddenField('udf1', 'udf1', $udf1);
         $frm->addHiddenField('Pg', 'Pg', 'CC');

@@ -1,4 +1,5 @@
 <?php
+
 class ShopReport extends MyAppModel
 {
     public const DB_TBL = 'tbl_shop_reports';
@@ -21,7 +22,7 @@ class ShopReport extends MyAppModel
     {
         if (empty($attr)) {
             $attr = ['sreport_id'];
-        } else if (is_string($attr)) {
+        } elseif (is_string($attr)) {
             $attr = [$attr];
         }
         

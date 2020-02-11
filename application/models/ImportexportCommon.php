@@ -1,15 +1,16 @@
 <?php
+
 class ImportexportCommon extends FatModel
 {
     protected $db;
     protected $CSVfileName;
 
-    const IMPORT_ERROR_LOG_PATH = CONF_UPLOADS_PATH.'import-error-log/';
+    public const IMPORT_ERROR_LOG_PATH = CONF_UPLOADS_PATH . 'import-error-log/';
 
-    const VALIDATE_POSITIVE_INT = 'positiveInt';
-    const VALIDATE_INT = 'int';
-    const VALIDATE_FLOAT = 'float';
-    const VALIDATE_NOT_NULL = 'notNull';
+    public const VALIDATE_POSITIVE_INT = 'positiveInt';
+    public const VALIDATE_INT = 'int';
+    public const VALIDATE_FLOAT = 'float';
+    public const VALIDATE_NOT_NULL = 'notNull';
 
     public function __construct($id = 0)
     {
@@ -21,7 +22,7 @@ class ImportexportCommon extends FatModel
 
     public function CSVFileName($fileName = '', $langId = 0)
     {
-        $langId =  FatUtility::int($langId);
+        $langId = FatUtility::int($langId);
         if (0 >= $langId) {
             $langId = CommonHelper::getLangId();
         }
@@ -30,7 +31,7 @@ class ImportexportCommon extends FatModel
 
         $fileName = empty($fileName) ? 'CSV_FILE' : $fileName;
 
-        return $fileName.'_'.$langData['language_code'].'_'.date("d-M-Y-His").mt_rand().'.csv';
+        return $fileName . '_' . $langData['language_code'] . '_' . date("d-M-Y-His") . mt_rand() . '.csv';
     }
 
     public function openCSVfileToWrite($fileName, $langId = 0, $errorLog = false, $headingsArr = array())
@@ -44,7 +45,7 @@ class ImportexportCommon extends FatModel
             if (!file_exists(self::IMPORT_ERROR_LOG_PATH)) {
                 mkdir(self::IMPORT_ERROR_LOG_PATH, 0777);
             }
-            $file = self::IMPORT_ERROR_LOG_PATH.$this->CSVfileName;
+            $file = self::IMPORT_ERROR_LOG_PATH . $this->CSVfileName;
             $headingsArr = array(
             Labels::getLabel('LBL_Row', $langId),
             Labels::getLabel('LBL_Column', $langId),
@@ -57,7 +58,7 @@ class ImportexportCommon extends FatModel
             $handle = fopen('php://memory', 'w');
         }
 
-        $langId =  FatUtility::int($langId);
+        $langId = FatUtility::int($langId);
         if (0 >= $langId) {
             $langId = CommonHelper::getLangId();
         }
@@ -74,9 +75,9 @@ class ImportexportCommon extends FatModel
         $importErrorLogFilesDir = ImportexportCommon::IMPORT_ERROR_LOG_PATH;
         $errorLogFiles = array_diff(scandir($importErrorLogFilesDir), array( '..', '.' ));
         foreach ($errorLogFiles as $fileName) {
-            $file = $importErrorLogFilesDir.$fileName;
+            $file = $importErrorLogFilesDir . $fileName;
             $modifiedOn = filemtime($file);
-            if ($modifiedOn <= strtotime('-'.$hoursBefore.' hour')) {
+            if ($modifiedOn <= strtotime('-' . $hoursBefore . ' hour')) {
                 unlink($file);
             }
         }
@@ -107,13 +108,13 @@ class ImportexportCommon extends FatModel
                     $errMsg = (0 >= FatUtility::int($columnValue)) ? Labels::getLabel("MSG_{column-name}_should_be_greater_than_0.", $langId) : false;
                     break;
                 case static::VALIDATE_NOT_NULL:
-                    $errMsg = ('' == $columnValue) ? Labels::getLabel("MSG_{column-name}_is_mandatory.", $langId) : false ;
+                    $errMsg = ('' == $columnValue) ? Labels::getLabel("MSG_{column-name}_is_mandatory.", $langId) : false;
                     break;
                 case static::VALIDATE_INT:
-                    $errMsg = (0 > FatUtility::int($columnValue)) ? Labels::getLabel("MSG_{column-name}_should_be_greater_than_equal_to_0.", $langId) : false ;
+                    $errMsg = (0 > FatUtility::int($columnValue)) ? Labels::getLabel("MSG_{column-name}_should_be_greater_than_equal_to_0.", $langId) : false;
                     break;
                 case static::VALIDATE_FLOAT:
-                    $errMsg = (0 > FatUtility::float($columnValue)) ? Labels::getLabel("MSG_{column-name}_should_be_greater_than_0.", $langId) : false ;
+                    $errMsg = (0 > FatUtility::float($columnValue)) ? Labels::getLabel("MSG_{column-name}_should_be_greater_than_0.", $langId) : false;
                     break;
             }
             return (false !== $errMsg) ? str_replace('{column-name}', $columnTitle, $errMsg) : $errMsg;
@@ -139,7 +140,7 @@ class ImportexportCommon extends FatModel
         return (isset($files['name'])
             && $files['error'] == 0
             && in_array(trim($files['type']), $csvValidMimes)
-            && $files['size']>0);
+            && $files['size'] > 0);
     }
 
     public function isDefaultSheetData($langId)
@@ -158,7 +159,7 @@ class ImportexportCommon extends FatModel
     public function displayDateTime($dt, $time = true)
     {
         try {
-            if (trim($dt)=='' || $dt=='0000-00-00' || $dt=='0000-00-00 00:00:00') {
+            if (trim($dt) == '' || $dt == '0000-00-00' || $dt == '0000-00-00 00:00:00') {
                 return;
             }
             if ($time == false) {
@@ -172,15 +173,15 @@ class ImportexportCommon extends FatModel
 
     public function getDateTime($dt, $time = true)
     {
-        $emptyDateArr=array('0000-00-00','0000-00-00 00:00:00','0000/00/00','0000/00/00 00:00:00','00/00/0000','00/00/0000 00:00:00','00/00/00','00/00/00 00:00:00');
-        if (trim($dt)=='' || in_array($dt, $emptyDateArr)) {
+        $emptyDateArr = array('0000-00-00', '0000-00-00 00:00:00', '0000/00/00', '0000/00/00 00:00:00', '00/00/0000', '00/00/0000 00:00:00', '00/00/00', '00/00/00 00:00:00');
+        if (trim($dt) == '' || in_array($dt, $emptyDateArr)) {
             return '0000-00-00';
         }
 
         try {
             $date = new DateTime($dt);
-            $timeStamp=$date->getTimestamp();
-            if ($time==false) {
+            $timeStamp = $date->getTimestamp();
+            if ($time == false) {
                 return date("Y-m-d", $timeStamp);
             }
             return date("Y-m-d H:i:s", $timeStamp);
@@ -919,8 +920,8 @@ class ImportexportCommon extends FatModel
         $keywordSrch = UrlRewrite::getSearchObject();
         $keywordSrch->doNotCalculateRecords();
         $keywordSrch->doNotLimitRecords();
-        $keywordSrch->addMultipleFields(array('urlrewrite_original','urlrewrite_custom'));
-        $keywordSrch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'original', 'like', $startingWith.'%');
+        $keywordSrch->addMultipleFields(array('urlrewrite_original', 'urlrewrite_custom'));
+        $keywordSrch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'original', 'like', $startingWith . '%');
         $keywordRs = $keywordSrch->getResultSet();
         $urlKeywords = $this->db->fetchAllAssoc($keywordRs, 'brand_identifier');
         return $urlKeywords;
@@ -929,28 +930,28 @@ class ImportexportCommon extends FatModel
     public function getSettingsArr($siteConfiguration = false)
     {
         return array(
-        'CONF_USE_BRAND_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_BRAND_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_CATEGORY_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_CATEGORY_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_PRODUCT_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_PRODUCT_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_USER_ID'=>false,
-        'CONF_USE_OPTION_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_OPTION_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_OPTION_VALUE_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_OPTION_VALUE_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_TAG_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_TAG_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_TAX_CATEOGRY_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_TAX_CATEOGRY_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_PRODUCT_TYPE_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_PRODUCT_TYPE_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_DIMENSION_UNIT_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_DIMENSION_UNIT_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_WEIGHT_UNIT_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_WEIGHT_UNIT_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_LANG_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_LANG_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_CURRENCY_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_CURRENCY_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_PROD_CONDITION_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_PROD_CONDITION_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_PERSENT_OR_FLAT_CONDITION_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_PERSENT_OR_FLAT_CONDITION_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_STATE_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_STATE_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_COUNTRY_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_COUNTRY_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_POLICY_POINT_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_POLICY_POINT_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_POLICY_POINT_TYPE_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_POLICY_POINT_TYPE_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_SHIPPING_COMPANY_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_SHIPPING_COMPANY_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_SHIPPING_DURATION_ID'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_SHIPPING_DURATION_ID', FatUtility::VAR_INT, 0):false,
-        'CONF_USE_O_OR_1'=>($siteConfiguration)?FatApp::getConfig('CONF_USE_O_OR_1', FatUtility::VAR_INT, 0):false,
+        'CONF_USE_BRAND_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_BRAND_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_CATEGORY_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_CATEGORY_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_PRODUCT_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_PRODUCT_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_USER_ID' => false,
+        'CONF_USE_OPTION_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_OPTION_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_OPTION_VALUE_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_OPTION_VALUE_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_TAG_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_TAG_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_TAX_CATEOGRY_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_TAX_CATEOGRY_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_PRODUCT_TYPE_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_PRODUCT_TYPE_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_DIMENSION_UNIT_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_DIMENSION_UNIT_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_WEIGHT_UNIT_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_WEIGHT_UNIT_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_LANG_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_LANG_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_CURRENCY_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_CURRENCY_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_PROD_CONDITION_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_PROD_CONDITION_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_PERSENT_OR_FLAT_CONDITION_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_PERSENT_OR_FLAT_CONDITION_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_STATE_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_STATE_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_COUNTRY_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_COUNTRY_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_POLICY_POINT_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_POLICY_POINT_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_POLICY_POINT_TYPE_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_POLICY_POINT_TYPE_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_SHIPPING_COMPANY_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_SHIPPING_COMPANY_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_SHIPPING_DURATION_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_SHIPPING_DURATION_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_O_OR_1' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_O_OR_1', FatUtility::VAR_INT, 0) : false,
         );
     }
 
@@ -966,7 +967,7 @@ class ImportexportCommon extends FatModel
         $srch->addCondition('impexp_setting_user_id', '=', $userId);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('impexp_setting_key','impexp_setting_value'));
+        $srch->addMultipleFields(array('impexp_setting_key', 'impexp_setting_value'));
         $rs = $srch->getResultSet();
         $row = $this->db->fetchAllAssoc($rs);
         if (!$row) {
@@ -987,12 +988,12 @@ class ImportexportCommon extends FatModel
         }
 
         if ($byId) {
-            $srch->addMultipleFields(array('prodcat_id','prodcat_identifier'));
+            $srch->addMultipleFields(array('prodcat_id', 'prodcat_identifier'));
             if ($catIdOrIdentifier) {
                 $srch->addCondition('prodcat_id', '=', $catIdOrIdentifier);
             }
         } else {
-            $srch->addMultipleFields(array('prodcat_identifier','prodcat_id'));
+            $srch->addMultipleFields(array('prodcat_identifier', 'prodcat_id'));
             if ($catIdOrIdentifier) {
                 $srch->addCondition('prodcat_identifier', '=', $catIdOrIdentifier);
             }
@@ -1013,12 +1014,12 @@ class ImportexportCommon extends FatModel
         }
 
         if ($byId) {
-            $srch->addMultipleFields(array('product_id','product_identifier'));
+            $srch->addMultipleFields(array('product_id', 'product_identifier'));
             if ($productIdOrIdentifier) {
                 $srch->addCondition('product_id', '=', $productIdOrIdentifier);
             }
         } else {
-            $srch->addMultipleFields(array('product_identifier','product_id'));
+            $srch->addMultipleFields(array('product_identifier', 'product_id'));
             if ($productIdOrIdentifier) {
                 $srch->addCondition('product_identifier', '=', $productIdOrIdentifier);
             }
@@ -1039,12 +1040,12 @@ class ImportexportCommon extends FatModel
         }
 
         if ($byId) {
-            $srch->addMultipleFields(array('user_id','credential_username'));
+            $srch->addMultipleFields(array('user_id', 'credential_username'));
             if ($userIdOrUsername) {
                 $srch->addCondition('user_id', '=', $userIdOrUsername);
             }
         } else {
-            $srch->addMultipleFields(array('credential_username','user_id'));
+            $srch->addMultipleFields(array('credential_username', 'user_id'));
             if ($userIdOrUsername) {
                 $srch->addCondition('credential_username', '=', $userIdOrUsername);
             }
@@ -1066,12 +1067,12 @@ class ImportexportCommon extends FatModel
         }
 
         if ($byId) {
-            $srch->addMultipleFields(array('taxcat_id','taxcat_identifier'));
+            $srch->addMultipleFields(array('taxcat_id', 'taxcat_identifier'));
             if ($taxCatIdOrIdentifier) {
                 $srch->addCondition('taxcat_id', '=', $taxCatIdOrIdentifier);
             }
         } else {
-            $srch->addMultipleFields(array('taxcat_identifier','taxcat_id'));
+            $srch->addMultipleFields(array('taxcat_identifier', 'taxcat_id'));
             if ($taxCatIdOrIdentifier) {
                 $srch->addCondition('taxcat_identifier', '=', $taxCatIdOrIdentifier);
             }
@@ -1104,12 +1105,12 @@ class ImportexportCommon extends FatModel
         }
 
         if ($byId) {
-            $srch->addMultipleFields(array('brand_id','brand_identifier'));
+            $srch->addMultipleFields(array('brand_id', 'brand_identifier'));
             if ($brandIdOrIdentifier) {
                 $srch->addCondition('brand_id', '=', $brandIdOrIdentifier);
             }
         } else {
-            $srch->addMultipleFields(array('brand_identifier','brand_id'));
+            $srch->addMultipleFields(array('brand_identifier', 'brand_id'));
             if ($brandIdOrIdentifier) {
                 $srch->addCondition('brand_identifier', '=', $brandIdOrIdentifier);
             }
@@ -1130,12 +1131,12 @@ class ImportexportCommon extends FatModel
         }
 
         if ($byId) {
-            $srch->addMultipleFields(array('taxcat_id','taxcat_identifier'));
+            $srch->addMultipleFields(array('taxcat_id', 'taxcat_identifier'));
             if ($taxCatIdOrIdentifier) {
                 $srch->addCondition('taxcat_id', '=', $taxCatIdOrIdentifier);
             }
         } else {
-            $srch->addMultipleFields(array('taxcat_identifier','taxcat_id'));
+            $srch->addMultipleFields(array('taxcat_identifier', 'taxcat_id'));
             if ($taxCatIdOrIdentifier) {
                 $srch->addCondition('taxcat_identifier', '=', $taxCatIdOrIdentifier);
             }
@@ -1156,12 +1157,12 @@ class ImportexportCommon extends FatModel
         }
 
         if ($byId) {
-            $srch->addMultipleFields(array('country_id','country_code'));
+            $srch->addMultipleFields(array('country_id', 'country_code'));
             if ($countryIdOrCode) {
                 $srch->addCondition('country_id', '=', $countryIdOrCode);
             }
         } else {
-            $srch->addMultipleFields(array('country_code','country_id'));
+            $srch->addMultipleFields(array('country_code', 'country_id'));
             if ($countryIdOrCode) {
                 $srch->addCondition('country_code', '=', $countryIdOrCode);
             }
@@ -1175,11 +1176,11 @@ class ImportexportCommon extends FatModel
         $srch = new SearchBase(Product::DB_TBL_PRODUCT_TO_CATEGORY, 'ptc');
         $srch->addCondition(Product::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX . 'product_id', '=', $productId);
 
-        $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', ProductCategory::DB_TBL_PREFIX.'id = ptc.'.Product::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'prodcat_id', 'cat');
+        $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', ProductCategory::DB_TBL_PREFIX . 'id = ptc.' . Product::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX . 'prodcat_id', 'cat');
         if ($byId) {
-            $srch->addMultipleFields(array(ProductCategory::DB_TBL_PREFIX.'id',ProductCategory::DB_TBL_PREFIX.'identifier'));
+            $srch->addMultipleFields(array(ProductCategory::DB_TBL_PREFIX . 'id', ProductCategory::DB_TBL_PREFIX . 'identifier'));
         } else {
-            $srch->addMultipleFields(array(ProductCategory::DB_TBL_PREFIX.'identifier',ProductCategory::DB_TBL_PREFIX.'id'));
+            $srch->addMultipleFields(array(ProductCategory::DB_TBL_PREFIX . 'identifier', ProductCategory::DB_TBL_PREFIX . 'id'));
         }
         $rs = $srch->getResultSet();
         $records = $this->db->fetchAllAssoc($rs);
@@ -1194,7 +1195,7 @@ class ImportexportCommon extends FatModel
         $srch = Option::getSearchObject(false, false);
         $srch->doNotCalculateRecords();
         if ($byId) {
-            $srch->addMultipleFields(array('option_id','option_identifier'));
+            $srch->addMultipleFields(array('option_id', 'option_identifier'));
             if ($optionIdOrIdentifier) {
                 $srch->setPageSize(1);
                 $srch->addCondition('option_id', '=', $optionIdOrIdentifier);
@@ -1202,7 +1203,7 @@ class ImportexportCommon extends FatModel
                 $srch->doNotLimitRecords();
             }
         } else {
-            $srch->addMultipleFields(array('option_identifier','option_id'));
+            $srch->addMultipleFields(array('option_identifier', 'option_id'));
             if ($optionIdOrIdentifier) {
                 $srch->setPageSize(1);
                 $srch->addCondition('option_identifier', '=', $optionIdOrIdentifier);
@@ -1221,7 +1222,7 @@ class ImportexportCommon extends FatModel
         $srch->addCondition('ov.optionvalue_option_id', '=', $optionId);
         $srch->doNotCalculateRecords();
         if ($byId) {
-            $srch->addMultipleFields(array('optionvalue_id','optionvalue_identifier'));
+            $srch->addMultipleFields(array('optionvalue_id', 'optionvalue_identifier'));
             if ($optionValueIdOrIdentifier) {
                 $srch->setPageSize(1);
                 $srch->addCondition('optionvalue_id', '=', $optionValueIdOrIdentifier);
@@ -1229,7 +1230,7 @@ class ImportexportCommon extends FatModel
                 $srch->doNotLimitRecords();
             }
         } else {
-            $srch->addMultipleFields(array('optionvalue_identifier','optionvalue_id'));
+            $srch->addMultipleFields(array('optionvalue_identifier', 'optionvalue_id'));
             if ($optionValueIdOrIdentifier) {
                 $srch->setPageSize(1);
                 $srch->addCondition('optionvalue_identifier', '=', $optionValueIdOrIdentifier);
@@ -1246,7 +1247,7 @@ class ImportexportCommon extends FatModel
         $srch = Tag::getSearchObject();
         $srch->doNotCalculateRecords();
         if ($byId) {
-            $srch->addMultipleFields(array('tag_id','tag_identifier'));
+            $srch->addMultipleFields(array('tag_id', 'tag_identifier'));
             if ($tagIdOrIdentifier) {
                 $srch->setPageSize(1);
                 $srch->addCondition('tag_id', '=', $tagIdOrIdentifier);
@@ -1254,7 +1255,7 @@ class ImportexportCommon extends FatModel
                 $srch->doNotLimitRecords();
             }
         } else {
-            $srch->addMultipleFields(array('tag_identifier','tag_id'));
+            $srch->addMultipleFields(array('tag_identifier', 'tag_id'));
             if ($tagIdOrIdentifier) {
                 $srch->setPageSize(1);
                 $srch->addCondition('tag_identifier', '=', $tagIdOrIdentifier);
@@ -1271,7 +1272,7 @@ class ImportexportCommon extends FatModel
         $srch = ShippingCompanies::getSearchObject(false);
         $srch->doNotCalculateRecords();
         if ($byId) {
-            $srch->addMultipleFields(array('scompany_id','scompany_identifier'));
+            $srch->addMultipleFields(array('scompany_id', 'scompany_identifier'));
             if ($scompanyIdOrIdentifier) {
                 $srch->setPageSize(1);
                 $srch->addCondition('scompany_id', '=', $scompanyIdOrIdentifier);
@@ -1279,7 +1280,7 @@ class ImportexportCommon extends FatModel
                 $srch->doNotLimitRecords();
             }
         } else {
-            $srch->addMultipleFields(array('scompany_identifier','scompany_id'));
+            $srch->addMultipleFields(array('scompany_identifier', 'scompany_id'));
             if ($scompanyIdOrIdentifier) {
                 $srch->setPageSize(1);
                 $srch->addCondition('scompany_identifier', '=', $scompanyIdOrIdentifier);
@@ -1296,7 +1297,7 @@ class ImportexportCommon extends FatModel
         $srch = ShippingDurations::getSearchObject(false, false);
         $srch->doNotCalculateRecords();
         if ($byId) {
-            $srch->addMultipleFields(array('sduration_id','sduration_identifier'));
+            $srch->addMultipleFields(array('sduration_id', 'sduration_identifier'));
             if ($durationIdOrIdentifier) {
                 $srch->setPageSize(1);
                 $srch->addCondition('sduration_id', '=', $durationIdOrIdentifier);
@@ -1304,7 +1305,7 @@ class ImportexportCommon extends FatModel
                 $srch->doNotLimitRecords();
             }
         } else {
-            $srch->addMultipleFields(array('sduration_identifier','sduration_id'));
+            $srch->addMultipleFields(array('sduration_identifier', 'sduration_id'));
             if ($durationIdOrIdentifier) {
                 $srch->setPageSize(1);
                 $srch->addCondition('sduration_identifier', '=', $durationIdOrIdentifier);
@@ -1321,7 +1322,7 @@ class ImportexportCommon extends FatModel
         $srch = PolicyPoint::getSearchObject(false, false);
         $srch->doNotCalculateRecords();
         if ($byId) {
-            $srch->addMultipleFields(array('ppoint_id','ppoint_identifier'));
+            $srch->addMultipleFields(array('ppoint_id', 'ppoint_identifier'));
             if ($policyPointIdOrIdentifier) {
                 $srch->setPageSize(1);
                 $srch->addCondition('ppoint_id', '=', $policyPointIdOrIdentifier);
@@ -1329,7 +1330,7 @@ class ImportexportCommon extends FatModel
                 $srch->doNotLimitRecords();
             }
         } else {
-            $srch->addMultipleFields(array('ppoint_identifier','ppoint_id'));
+            $srch->addMultipleFields(array('ppoint_identifier', 'ppoint_id'));
             if ($policyPointIdOrIdentifier) {
                 $srch->setPageSize(1);
                 $srch->addCondition('ppoint_identifier', '=', $policyPointIdOrIdentifier);
@@ -1369,11 +1370,11 @@ class ImportexportCommon extends FatModel
             if (!empty($row) && $row['product_seller_id'] == $userId) {
                 $productId = $row['product_id'];
                 $tempData = array(
-                'pti_product_id' =>$productId,
-                'pti_product_temp_id' =>$sellerTempId,
-                'pti_user_id' =>$userId,
+                'pti_product_id' => $productId,
+                'pti_product_temp_id' => $sellerTempId,
+                'pti_user_id' => $userId,
                 );
-                $this->db->deleteRecords(Importexport::DB_TBL_TEMP_PRODUCT_IDS, array('smt'=> 'pti_product_id = ? and pti_user_id = ?','vals' => array($productId,$userId) ));
+                $this->db->deleteRecords(Importexport::DB_TBL_TEMP_PRODUCT_IDS, array('smt' => 'pti_product_id = ? and pti_user_id = ?', 'vals' => array($productId, $userId) ));
                 $this->db->insertFromArray(Importexport::DB_TBL_TEMP_PRODUCT_IDS, $tempData, false, array(), $tempData);
             }
         }
@@ -1402,15 +1403,15 @@ class ImportexportCommon extends FatModel
         if (!empty($userTempIdData) && $userTempIdData['spti_selprod_temp_id'] == $sellerTempId) {
             $selprodId = $userTempIdData['spti_selprod_id'];
         } else {
-            $row = SellerProduct::getAttributesById($sellerTempId, array('selprod_id','selprod_user_id'));
+            $row = SellerProduct::getAttributesById($sellerTempId, array('selprod_id', 'selprod_user_id'));
             if (!empty($row) && $row['selprod_user_id'] == $userId) {
                 $selprodId = $row['selprod_id'];
                 $tempData = array(
-                'spti_selprod_id' =>$selprodId,
-                'spti_selprod_temp_id' =>$sellerTempId,
-                'spti_user_id' =>$userId,
+                'spti_selprod_id' => $selprodId,
+                'spti_selprod_temp_id' => $sellerTempId,
+                'spti_user_id' => $userId,
                 );
-                $this->db->deleteRecords(Importexport::DB_TBL_TEMP_SELPROD_IDS, array('smt'=> 'spti_selprod_id = ? and spti_user_id = ?','vals' => array($selprodId,$userId) ));
+                $this->db->deleteRecords(Importexport::DB_TBL_TEMP_SELPROD_IDS, array('smt' => 'spti_selprod_id = ? and spti_user_id = ?', 'vals' => array($selprodId, $userId) ));
                 $this->db->insertFromArray(Importexport::DB_TBL_TEMP_SELPROD_IDS, $tempData, false, array(), $tempData);
             }
         }

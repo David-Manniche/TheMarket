@@ -1,4 +1,5 @@
 <?php
+
 class Labels extends MyAppModel
 {
     public const DB_TBL = 'tbl_language_labels';
@@ -31,7 +32,7 @@ class Labels extends MyAppModel
 
     public static function getSearchObject($langId = 0, $attr = '')
     {
-        $langId =  FatUtility::int($langId);
+        $langId = FatUtility::int($langId);
 
         $srch = new SearchBase(static::DB_TBL, 'lbl');
         $srch->addOrder('lbl.' . static::DB_TBL_PREFIX . 'id', 'DESC');
@@ -64,7 +65,7 @@ class Labels extends MyAppModel
             return $lblKey;
         }
 
-        $type = ($type != static::TYPE_APP)?static::TYPE_WEB:static::TYPE_APP;
+        $type = ($type != static::TYPE_APP) ? static::TYPE_WEB : static::TYPE_APP;
 
         $langId = FatUtility::int($langId);
         if ($langId == 0) {
@@ -115,7 +116,7 @@ class Labels extends MyAppModel
             $srch->doNotLimitRecords();
 
             if ($lbl = $db->fetch($srch->getResultSet())) {
-                if (isset($lbl[static::DB_TBL_PREFIX . 'caption']) && $lbl[static::DB_TBL_PREFIX . 'caption']!='') {
+                if (isset($lbl[static::DB_TBL_PREFIX . 'caption']) && $lbl[static::DB_TBL_PREFIX . 'caption'] != '') {
                     $str = $lbl[static::DB_TBL_PREFIX . 'caption'];
                 } else {
                     $arr = explode(' ', ucwords(str_replace('_', ' ', strtolower($lblKey))));
@@ -136,7 +137,7 @@ class Labels extends MyAppModel
 
                 FatApp::getDB()->insertFromArray(static::DB_TBL, $assignValues, false, array(), $assignValues);
 
-                $labelsUpdatedAt = array('conf_name'=>'CONF_LANG_LABELS_UPDATED_AT','conf_val'=>time());
+                $labelsUpdatedAt = array('conf_name' => 'CONF_LANG_LABELS_UPDATED_AT', 'conf_val' => time());
                 FatApp::getDb()->insertFromArray('tbl_configurations', $labelsUpdatedAt, false, array(), $labelsUpdatedAt);
             }
         }
@@ -158,7 +159,7 @@ class Labels extends MyAppModel
             $languages[$langId] = Language::getAttributesById($langId, 'language_code', false);
         }
 
-        $jsonfile = CONF_UPLOADS_PATH.static::JSON_FILE_DIR_NAME.'/'.$type.'/'.$languages[$langId].'.json';
+        $jsonfile = CONF_UPLOADS_PATH . static::JSON_FILE_DIR_NAME . '/' . $type . '/' . $languages[$langId] . '.json';
         if (!file_exists($jsonfile)) {
             Labels::updateDataToFile($langId, $languages[$langId], $type);
         }
@@ -182,7 +183,7 @@ class Labels extends MyAppModel
             return false;
         }
 
-        $labelsUpdatedAt = array('conf_name'=>'CONF_LANG_LABELS_UPDATED_AT','conf_val'=>time());
+        $labelsUpdatedAt = array('conf_name' => 'CONF_LANG_LABELS_UPDATED_AT', 'conf_val' => time());
         FatApp::getDb()->insertFromArray('tbl_configurations', $labelsUpdatedAt, false, array(), $labelsUpdatedAt);
 
         $cacheAvailable = static::isAPCUcacheAvailable();
@@ -196,7 +197,7 @@ class Labels extends MyAppModel
 
     public static function isAPCUcacheAvailable()
     {
-        return $cacheAvailable = (extension_loaded('apcu') && ini_get('apcu.enabled')) ;
+        return $cacheAvailable = (extension_loaded('apcu') && ini_get('apcu.enabled'));
     }
 
     public static function getAPCUcacheKey($key, $langId)
@@ -221,7 +222,7 @@ class Labels extends MyAppModel
 
         $langFile = $path . $langCode . '.json';
         if (!file_exists($langFile) || (filemtime($langFile) < $lastLabelsUpdatedAt) || 1 > filesize($langFile) || $updateForceFully == true) {
-            $records = static::fetchAllAssoc($langId, array('label_key','label_caption'), $type);
+            $records = static::fetchAllAssoc($langId, array('label_key', 'label_caption'), $type);
             $records = empty($records) ? (object)array() : $records;
             if (!FatUtility::convertToJson($records, JSON_UNESCAPED_UNICODE)) {
                 return false;
@@ -238,7 +239,7 @@ class Labels extends MyAppModel
     public static function fetchAllAssoc($langId, $attr = '', $type = Labels::TYPE_WEB)
     {
         $srch = static::getSearchObject($langId, $attr);
-        $srch->joinTable('tbl_languages', 'inner join', 'label_lang_id = language_id and language_active = ' .applicationConstants::ACTIVE);
+        $srch->joinTable('tbl_languages', 'inner join', 'label_lang_id = language_id and language_active = ' . applicationConstants::ACTIVE);
         $srch->addCondition('label_type', '=', $type);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();

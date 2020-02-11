@@ -1,4 +1,5 @@
 <?php
+
 class AbusiveWordsController extends AdminBaseController
 {
     private $canView;
@@ -6,7 +7,7 @@ class AbusiveWordsController extends AdminBaseController
 
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','form','search','setup');
+        $ajaxCallArray = array('deleteRecord', 'form', 'search', 'setup');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die('Invalid Action.');
         }
@@ -34,17 +35,17 @@ class AbusiveWordsController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
         $srch = Abusive::getSearchObject();
-        $srch->joinTable('tbl_languages', 'inner join', 'abusive_lang_id = language_id and language_active = '.applicationConstants::ACTIVE);
+        $srch->joinTable('tbl_languages', 'inner join', 'abusive_lang_id = language_id and language_active = ' . applicationConstants::ACTIVE);
         $srch->addOrder('aw.' . Abusive::DB_TBL_PREFIX . 'lang_id', 'ASC');
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
 
         if (!empty($post['keyword'])) {
-            $cond = $srch->addCondition('aw.abusive_keyword', 'like', '%'.$post['keyword'].'%');
+            $cond = $srch->addCondition('aw.abusive_keyword', 'like', '%' . $post['keyword'] . '%');
         }
 
         if ($post['lang_id'] > 0) {
@@ -71,10 +72,10 @@ class AbusiveWordsController extends AdminBaseController
 
         $frm = $this->getForm($abusive_id);
 
-        $data = array('abusive_id'=>$abusive_id);
+        $data = array('abusive_id' => $abusive_id);
         if ($abusive_id > 0) {
-            $data =  Abusive::getAttributesById($abusive_id);
-            if ($data ==  false) {
+            $data = Abusive::getAttributesById($abusive_id);
+            if ($data == false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
         }
@@ -123,8 +124,8 @@ class AbusiveWordsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $data =  Abusive::getAttributesById($abusive_id);
-        if ($data ==  false) {
+        $data = Abusive::getAttributesById($abusive_id);
+        if ($data == false) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -146,7 +147,7 @@ class AbusiveWordsController extends AdminBaseController
         }
 
         foreach ($abusiveIdsArr as $abusiveId) {
-            $data =  Abusive::getAttributesById($abusiveId);
+            $data = Abusive::getAttributesById($abusiveId);
             if (1 > $abusiveId || false === $data) {
                 continue;
             }
@@ -178,7 +179,7 @@ class AbusiveWordsController extends AdminBaseController
         $frm = new Form('frmWordSearch');
         $f1 = $frm->addTextBox('Keyword', 'keyword', '');
         $languages = Language::getAllNames();
-        $frm->addSelectBox('Language', 'lang_id', array(0=>Labels::getLabel('LBL_Does_not_Matter', $this->adminLangId))+$languages, '', array(), '');
+        $frm->addSelectBox('Language', 'lang_id', array(0 => Labels::getLabel('LBL_Does_not_Matter', $this->adminLangId)) + $languages, '', array(), '');
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', 'Search');
         $fld_cancel = $frm->addButton("", "btn_clear", "Clear Search");
         $fld_submit->attachField($fld_cancel);

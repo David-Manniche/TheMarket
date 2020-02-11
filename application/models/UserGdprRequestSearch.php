@@ -1,4 +1,5 @@
 <?php
+
 class UserGdprRequestSearch extends SearchBase
 {
     public function __construct()

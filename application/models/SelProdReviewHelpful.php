@@ -1,11 +1,12 @@
 <?php
+
 class SelProdReviewHelpful extends MyAppModel
 {
-    const DB_TBL = 'tbl_seller_product_reviews_helpful';
-    const DB_TBL_PREFIX = 'sprh_';
+    public const DB_TBL = 'tbl_seller_product_reviews_helpful';
+    public const DB_TBL_PREFIX = 'sprh_';
 
-    const REVIEW_IS_HELPFUL = 1;
-    const REVIEW_IS_NOT_HELPFUL = 0;
+    public const REVIEW_IS_HELPFUL = 1;
+    public const REVIEW_IS_NOT_HELPFUL = 0;
 
     public function __construct($id = 0)
     {

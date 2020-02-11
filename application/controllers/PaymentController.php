@@ -1,4 +1,5 @@
 <?php
+
 abstract class PaymentController extends MyAppController
 {
     abstract protected function allowedCurrenciesArr();

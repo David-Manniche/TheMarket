@@ -1,4 +1,5 @@
 <?php
+
 class GoogleShoppingFeedSettingsController extends AdvertisementFeedSettingsController
 {
     public static function form($langId)

@@ -3,6 +3,10 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 $showLogInLink = isset($showLogInLink) ? $showLogInLink : true;
 $onSubmitFunctionName = isset($onSubmitFunctionName) ? $onSubmitFunctionName : false;
 
+if (isset($signUpWithPhone) && 0 < $signUpWithPhone) {
+    $onSubmitFunctionName = 'return registerWithPhone';
+}
+
 $registerFrm->setFormTagAttribute('action', CommonHelper::generateUrl('GuestUser', 'register'));
 
 if ($onSubmitFunctionName) {
@@ -17,7 +21,8 @@ $fldSubmit->addFieldTagAttribute('class', 'btn--block');
 $registerFrm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
 $registerFrm->developerTags['fld_default_col'] = 12;
 
-echo $registerFrm->getFormTag();  ?>
+echo $registerFrm->getFormTag();
+?>
 <div class="row">
     <div class="col-md-6">
         <div class="field-set">
@@ -34,15 +39,27 @@ echo $registerFrm->getFormTag();  ?>
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-12">
-        <div class="field-set">
-            <div class="field-wraper">
-                <div class="field_cover"><?php echo $registerFrm->getFieldHtml('user_email'); ?></div>
+<?php if (isset($signUpWithPhone) && 0 < $signUpWithPhone) { ?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="field-set">
+                <div class="field-wraper">
+                    <div class="field_cover"><?php echo $registerFrm->getFieldHtml('user_phone'); ?></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+<?php } else { ?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="field-set">
+                <div class="field-wraper">
+                    <div class="field_cover"><?php echo $registerFrm->getFieldHtml('user_email'); ?></div>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php } ?>
 <div class="row">
     <div class="col-md-6">
         <div class="field-set">
@@ -75,7 +92,7 @@ echo $registerFrm->getFormTag();  ?>
                     <i class="input-helper"></i>
                     <?php echo sprintf(
                         Labels::getLabel('LBL_I_agree_to_the_terms_conditions', $siteLangId),
-                        "<a target='_blank' href='$termsAndConditionsLinkHref'>".Labels::getLabel('LBL_Terms_Conditions', $siteLangId).'</a>'
+                        "<a target='_blank' href='$termsAndConditionsLinkHref'>" . Labels::getLabel('LBL_Terms_Conditions', $siteLangId) . '</a>'
                     ) ?>
                     </label>
                     <?php if ($registerFrm->getField('user_newsletter_signup')) { ?>
@@ -90,7 +107,7 @@ echo $registerFrm->getFormTag();  ?>
                         <i class="input-helper"></i>
                     </label>
                     <?php }
-                    if ($registerFrm->getField('isCheckOutPage')) {
+                    if ((!isset($signUpWithPhone) || 1 > $signUpWithPhone) && $registerFrm->getField('isCheckOutPage')) {
                         echo $registerFrm->getFieldHTML('isCheckOutPage');
                     } ?>
                 </div>
@@ -104,6 +121,7 @@ echo $registerFrm->getFormTag();  ?>
             <div class="field-wraper">
                 <div class="field_cover">
                     <?php echo $registerFrm->getFieldHTML('user_id') , $registerFrm->getFieldHTML('btn_submit'); ?>
+                    <?php echo (isset($signUpWithPhone) && 0 < $signUpWithPhone) ? $registerFrm->getFieldHTML('signUpWithPhone') : ''; ?>
                 </div>
             </div>
         </div>

@@ -1,10 +1,11 @@
 <?php
+
 include_once CONF_INSTALLATION_PATH . 'library/facebook-auth/autoload.php';
 
 // Include required libraries
-use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
+use Facebook\Facebook;
 
 class FacebookLoginController extends SocialMediaAuthController
 {
@@ -43,7 +44,7 @@ class FacebookLoginController extends SocialMediaAuthController
     private function getRequestUri()
     {
         $permissions = ['email', 'public_profile'];
-        return $this->helper->getLoginUrl(CommonHelper::generateFullUrl(static::KEY_NAME), $permissions);
+        return $this->helper->getLoginUrl(CommonHelper::generateFullUrl(static::KEY_NAME, 'index', [], '', false), $permissions);
     }
 
     private function verifyAccessToken($accessToken)

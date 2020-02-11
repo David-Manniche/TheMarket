@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 class CustomController extends MyAppController
 {
     public function contactUs()
@@ -22,16 +23,16 @@ class CustomController extends MyAppController
 
         if (false === $post) {
             $message = $frm->getValidationErrors();
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError(current($message));
             }
             Message::addErrorMessage($message);
             FatApp::redirectUser(CommonHelper::generateUrl('Custom', 'ContactUs'));
         }
 
-        if (false ===  MOBILE_APP_API_CALL && !CommonHelper::verifyCaptcha()) {
+        if (false === MOBILE_APP_API_CALL && !CommonHelper::verifyCaptcha()) {
             $message = Labels::getLabel('MSG_That_captcha_was_incorrect', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -48,7 +49,7 @@ class CustomController extends MyAppController
             $email = new EmailHandler();
             if (!$email->sendContactFormEmail($emailId, $this->siteLangId, $post)) {
                 $message = Labels::getLabel('MSG_email_not_sent_server_issue', $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     FatUtility::dieJsonError($message);
                 }
                 Message::addErrorMessage($message);
@@ -56,7 +57,7 @@ class CustomController extends MyAppController
                 Message::addMessage(Labels::getLabel('MSG_your_message_sent_successfully', $this->siteLangId));
             }
 
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 $this->set('msg', Labels::getLabel('MSG_your_message_sent_successfully', $this->siteLangId));
                 $this->_template->render();
             }
@@ -72,14 +73,14 @@ class CustomController extends MyAppController
         if (sizeof($cmsPagesToFaq) > 0 && is_array($cmsPagesToFaq)) {
             $contentPageSrch = ContentPage::getSearchObject($this->siteLangId);
             $contentPageSrch->addCondition('cpage_id', 'in', $cmsPagesToFaq);
-            $contentPageSrch->addMultipleFields(array('cpage_id','cpage_identifier','cpage_title'));
+            $contentPageSrch->addMultipleFields(array('cpage_id', 'cpage_identifier', 'cpage_title'));
             $rs = $contentPageSrch->getResultSet();
             $cpages = FatApp::getDb()->fetchAll($rs);
             $this->set('cpages', $cpages);
         }
 
         $srch = FaqCategory::getSearchObject($this->siteLangId);
-        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = ' . applicationConstants::ACTIVE . '  and faq_deleted = '.applicationConstants::NO);
+        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = ' . applicationConstants::ACTIVE . '  and faq_deleted = ' . applicationConstants::NO);
         $srch->joinTable('tbl_faqs_lang', 'LEFT OUTER JOIN', 'faqlang_faq_id = faq_id');
         $srch->addCondition('faqlang_lang_id', '=', $this->siteLangId);
         $srch->addCondition('faqcat_active', '=', applicationConstants::ACTIVE);
@@ -93,14 +94,14 @@ class CustomController extends MyAppController
         $this->_template->render();
     }
 
-    public function faqDetail($catId=0, $faqId=0)
+    public function faqDetail($catId = 0, $faqId = 0)
     {
         $cmsPagesToFaq = FatApp::getConfig('conf_cms_pages_to_faq_page');
         $cmsPagesToFaq = unserialize($cmsPagesToFaq);
         if (sizeof($cmsPagesToFaq) > 0 && is_array($cmsPagesToFaq)) {
             $contentPageSrch = ContentPage::getSearchObject($this->siteLangId);
             $contentPageSrch->addCondition('cpage_id', 'in', $cmsPagesToFaq);
-            $contentPageSrch->addMultipleFields(array('cpage_id','cpage_identifier','cpage_title'));
+            $contentPageSrch->addMultipleFields(array('cpage_id', 'cpage_identifier', 'cpage_title'));
             $rs = $contentPageSrch->getResultSet();
             $cpages = FatApp::getDb()->fetchAll($rs);
             $this->set('cpages', $cpages);
@@ -112,14 +113,14 @@ class CustomController extends MyAppController
         $this->_template->render();
     }
 
-    public function SearchFaqsDetail($catId=0, $faqId=0)
+    public function SearchFaqsDetail($catId = 0, $faqId = 0)
     {
         $searchFrm = $this->getSearchFaqForm();
         $faqMainCat = FatApp::getConfig("CONF_FAQ_PAGE_MAIN_CATEGORY");
 
         $post = $searchFrm->getFormDataFromArray(FatApp::getPostedData());
         $srch = FaqCategory::getSearchObject($this->siteLangId);
-        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id AND faq_active = '. applicationConstants::ACTIVE .'  AND faq_deleted = '.applicationConstants::NO);
+        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id AND faq_active = ' . applicationConstants::ACTIVE . '  AND faq_deleted = ' . applicationConstants::NO);
         $srch->joinTable('tbl_faqs_lang', 'LEFT OUTER JOIN', 'faqlang_faq_id = faq_id');
         $srch->addCondition('faqlang_lang_id', '=', $this->siteLangId);
         $srch->addCondition('faqcat_active', '=', applicationConstants::ACTIVE);
@@ -133,7 +134,7 @@ class CustomController extends MyAppController
         }
 
         $srch->setPageSize(1);
-        $qry= $srch->getQuery();
+        $qry = $srch->getQuery();
         // echo $qry; die;
         $question = FatApp::getPostedData('question', FatUtility::VAR_STRING, '');
         if (!empty($question)) {
@@ -171,7 +172,7 @@ class CustomController extends MyAppController
         if (!empty($catId) && $catId > 0) {
             $faqCatId = array( $catId );
         } elseif ($faqMainCat) {
-            $faqCatId=array($faqMainCat);
+            $faqCatId = array($faqMainCat);
         } else {
             $srchFAQCat = FaqCategory::getSearchObject($this->siteLangId);
             $srchFAQCat->setPageSize(1);
@@ -183,7 +184,7 @@ class CustomController extends MyAppController
         }
         $post = $searchFrm->getFormDataFromArray(FatApp::getPostedData());
         $srch = FaqCategory::getSearchObject($this->siteLangId);
-        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = '.applicationConstants::ACTIVE.'  and faq_deleted = '.applicationConstants::NO);
+        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = ' . applicationConstants::ACTIVE . '  and faq_deleted = ' . applicationConstants::NO);
         $srch->joinTable('tbl_faqs_lang', 'LEFT OUTER JOIN', 'faqlang_faq_id = faq_id');
         $srch->addCondition('faqlang_lang_id', '=', $this->siteLangId);
         $srch->addCondition('faqcat_active', '=', applicationConstants::ACTIVE);
@@ -225,13 +226,13 @@ class CustomController extends MyAppController
         $searchFrm = $this->getSearchFaqForm();
         $post = $searchFrm->getFormDataFromArray(FatApp::getPostedData());
         $srch = FaqCategory::getSearchObject($this->siteLangId);
-        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = ' . applicationConstants::ACTIVE . '  and faq_deleted = '.applicationConstants::NO);
+        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = ' . applicationConstants::ACTIVE . '  and faq_deleted = ' . applicationConstants::NO);
         $srch->joinTable('tbl_faqs_lang', 'LEFT OUTER JOIN', 'faqlang_faq_id = faq_id');
         $srch->addCondition('faqlang_lang_id', '=', $this->siteLangId);
         $srch->addCondition('faqcat_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('faqcat_type', '=', FaqCategory::FAQ_PAGE);
         $srch->setPageSize(1);
-        $qry= $srch->getQuery();
+        $qry = $srch->getQuery();
         // echo $qry; die;
         $question = FatApp::getPostedData('question', FatUtility::VAR_STRING, '');
         if (!empty($question)) {
@@ -247,7 +248,7 @@ class CustomController extends MyAppController
         $json['recordCount'] = $srch->recordCount();
 
         $srch->addGroupBy('faqcat_id');
-        $srch->addMultipleFields(array('IFNULL(faqcat_name, faqcat_identifier) as faqcat_name','faqcat_id'));
+        $srch->addMultipleFields(array('IFNULL(faqcat_name, faqcat_identifier) as faqcat_name', 'faqcat_id'));
         $srch->addFld('COUNT(*) AS faq_count');
         if (isset($srchCondition)) {
             $srchCondition->remove();
@@ -270,12 +271,12 @@ class CustomController extends MyAppController
         FatUtility::dieJsonSuccess($json);
     }
 
-    public function faqQuestionsPanel($catId=0)
+    public function faqQuestionsPanel($catId = 0)
     {
         $searchFrm = $this->getSearchFaqForm();
         $post = $searchFrm->getFormDataFromArray(FatApp::getPostedData());
         $srch = FaqCategory::getSearchObject($this->siteLangId);
-        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = '. applicationConstants::ACTIVE .'  and faq_deleted = '.applicationConstants::NO);
+        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = ' . applicationConstants::ACTIVE . '  and faq_deleted = ' . applicationConstants::NO);
         $srch->joinTable('tbl_faqs_lang', 'LEFT OUTER JOIN', 'faqlang_faq_id = faq_id');
         $srch->addCondition('faqlang_lang_id', '=', $this->siteLangId);
         $srch->addCondition('faqcat_active', '=', applicationConstants::ACTIVE);
@@ -304,7 +305,7 @@ class CustomController extends MyAppController
     {
         /* faqs[ */
         $srch = FaqCategory::getSearchObject($this->siteLangId);
-        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = '.applicationConstants::ACTIVE.'  and faq_featured = '.applicationConstants::YES.'  and faq_deleted = '.applicationConstants::NO);
+        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = ' . applicationConstants::ACTIVE . '  and faq_featured = ' . applicationConstants::YES . '  and faq_deleted = ' . applicationConstants::NO);
         $srch->joinTable('tbl_faqs_lang', 'LEFT OUTER JOIN', 'faqlang_faq_id = faq_id');
         $srch->addCondition('faqlang_lang_id', '=', $this->siteLangId);
         $srch->addCondition('faqcat_active', '=', applicationConstants::ACTIVE);
@@ -376,17 +377,17 @@ class CustomController extends MyAppController
             $rs = $srch->getResultSet();
             $records = FatApp::getDb()->fetch($rs);
 
-            $nodes[] = array('title'=>Labels::getLabel('LBL_Faq', $this->siteLangId), 'href'=>CommonHelper::generateUrl('custom', 'Faq'));
-            $nodes[] = array('title'=>$records['faqcat_name'] );
+            $nodes[] = array('title' => Labels::getLabel('LBL_Faq', $this->siteLangId), 'href' => CommonHelper::generateUrl('custom', 'Faq'));
+            $nodes[] = array('title' => $records['faqcat_name'] );
 
             break;
 
         case 'faq':
-            $nodes[] = array('title'=>Labels::getLabel('LBL_Faq', $this->siteLangId), 'href'=>CommonHelper::generateUrl('custom', 'Faq'));
+            $nodes[] = array('title' => Labels::getLabel('LBL_Faq', $this->siteLangId), 'href' => CommonHelper::generateUrl('custom', 'Faq'));
             break;
 
         default:
-            $nodes[] = array('title'=>FatUtility::camel2dashed($action));
+            $nodes[] = array('title' => FatUtility::camel2dashed($action));
             break;
         }
         return $nodes;
@@ -396,7 +397,7 @@ class CustomController extends MyAppController
     {
         $textMessage = sprintf(Labels::getLabel('MSG_customer_failure_order', $this->siteLangId), CommonHelper::generateUrl('custom', 'contactUs'));
         $this->set('textMessage', $textMessage);
-        if (FatApp::getConfig('CONF_MAINTAIN_CART_ON_PAYMENT_FAILURE', FatUtility::VAR_INT, applicationConstants::NO) && isset($_SESSION['cart_order_id']) &&  $_SESSION['cart_order_id']>0) {
+        if (FatApp::getConfig('CONF_MAINTAIN_CART_ON_PAYMENT_FAILURE', FatUtility::VAR_INT, applicationConstants::NO) && isset($_SESSION['cart_order_id']) && $_SESSION['cart_order_id'] > 0) {
             $cartOrderId = $_SESSION['cart_order_id'];
             $orderObj = new Orders();
             $orderDetail = $orderObj->getOrderById($cartOrderId);
@@ -404,7 +405,7 @@ class CustomController extends MyAppController
             $cartInfo = unserialize($orderDetail['order_cart_data']);
             unset($cartInfo['shopping_cart']);
 
-            FatApp::getDb()->deleteRecords('tbl_user_cart', array('smt'=>'`usercart_user_id`=? and `usercarrt_type`=?', 'vals'=>array(UserAuthentication::getLoggedUserId(),CART::TYPE_PRODUCT)));
+            FatApp::getDb()->deleteRecords('tbl_user_cart', array('smt' => '`usercart_user_id`=? and `usercarrt_type`=?', 'vals' => array(UserAuthentication::getLoggedUserId(), CART::TYPE_PRODUCT)));
             $cartObj = new Cart();
             foreach ($cartInfo as $key => $quantity) {
                 $keyDecoded = unserialize(base64_decode($key));
@@ -432,7 +433,7 @@ class CustomController extends MyAppController
     {
         /* echo FatApp::getConfig('CONF_MAINTAIN_CART_ON_PAYMENT_CANCEL',FatUtility::VAR_INT,applicationConstants::NO);
         echo $_SESSION['cart_order_id']; */
-        if (FatApp::getConfig('CONF_MAINTAIN_CART_ON_PAYMENT_CANCEL', FatUtility::VAR_INT, applicationConstants::NO)&& isset($_SESSION['cart_order_id']) &&  $_SESSION['cart_order_id']!='') {
+        if (FatApp::getConfig('CONF_MAINTAIN_CART_ON_PAYMENT_CANCEL', FatUtility::VAR_INT, applicationConstants::NO) && isset($_SESSION['cart_order_id']) && $_SESSION['cart_order_id'] != '') {
             $cartOrderId = $_SESSION['cart_order_id'];
             $orderObj = new Orders();
             $orderDetail = $orderObj->getOrderById($cartOrderId);
@@ -440,7 +441,7 @@ class CustomController extends MyAppController
             $cartInfo = unserialize($orderDetail['order_cart_data']);
             unset($cartInfo['shopping_cart']);
 
-            FatApp::getDb()->deleteRecords('tbl_user_cart', array('smt'=>'`usercart_user_id`=? and `usercarrt_type`=?', 'vals'=>array(UserAuthentication::getLoggedUserId(),CART::TYPE_PRODUCT)));
+            FatApp::getDb()->deleteRecords('tbl_user_cart', array('smt' => '`usercart_user_id`=? and `usercarrt_type`=?', 'vals' => array(UserAuthentication::getLoggedUserId(), CART::TYPE_PRODUCT)));
             $cartObj = new Cart();
             foreach ($cartInfo as $key => $quantity) {
                 $keyDecoded = unserialize(base64_decode($key));
@@ -455,7 +456,7 @@ class CustomController extends MyAppController
             }
             $cartObj->updateUserCart();
         }
-        if (isset($_SESSION['order_type']) &&  $_SESSION['order_type'] == Orders::ORDER_SUBSCRIPTION) {
+        if (isset($_SESSION['order_type']) && $_SESSION['order_type'] == Orders::ORDER_SUBSCRIPTION) {
             FatApp::redirectUser(CommonHelper::generateFullUrl('SubscriptionCheckout'));
         }
 
@@ -484,23 +485,23 @@ class CustomController extends MyAppController
         
         if ($orderInfo['order_type'] == Orders::ORDER_PRODUCT) {
             $searchReplaceArray = array(
-              '{account}' => '<a href="'.CommonHelper::generateUrl('buyer').'">'.Labels::getLabel('MSG_My_Account', $this->siteLangId).'</a>',
-              '{history}' => '<a href="'.CommonHelper::generateUrl('buyer', 'orders').'">'.Labels::getLabel('MSG_History', $this->siteLangId).'</a>',
-              '{contactus}' => '<a href="'.CommonHelper::generateUrl('custom', 'contactUs').'">'.Labels::getLabel('MSG_Store_Owner', $this->siteLangId).'</a>',
+              '{account}' => '<a href="' . CommonHelper::generateUrl('buyer') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
+              '{history}' => '<a href="' . CommonHelper::generateUrl('buyer', 'orders') . '">' . Labels::getLabel('MSG_History', $this->siteLangId) . '</a>',
+              '{contactus}' => '<a href="' . CommonHelper::generateUrl('custom', 'contactUs') . '">' . Labels::getLabel('MSG_Store_Owner', $this->siteLangId) . '</a>',
             );
             $textMessage = Labels::getLabel('MSG_customer_success_order_{account}_{history}_{contactus}', $this->siteLangId);
             $textMessage = str_replace(array_keys($searchReplaceArray), array_values($searchReplaceArray), $textMessage);
         } elseif ($orderInfo['order_type'] == Orders::ORDER_SUBSCRIPTION) {
             $searchReplaceArray = array(
-              '{account}' => '<a href="'.CommonHelper::generateUrl('seller').'">'.Labels::getLabel('MSG_My_Account', $this->siteLangId).'</a>',
-              '{subscription}' => '<a href="'.CommonHelper::generateUrl('seller', 'subscriptions').'">'.Labels::getLabel('MSG_My_Subscription', $this->siteLangId).'</a>',
+              '{account}' => '<a href="' . CommonHelper::generateUrl('seller') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
+              '{subscription}' => '<a href="' . CommonHelper::generateUrl('seller', 'subscriptions') . '">' . Labels::getLabel('MSG_My_Subscription', $this->siteLangId) . '</a>',
             );
             $textMessage = Labels::getLabel('MSG_subscription_success_order_{account}_{subscription}', $this->siteLangId);
             $textMessage = str_replace(array_keys($searchReplaceArray), array_values($searchReplaceArray), $textMessage);
         } elseif ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
             $searchReplaceArray = array(
-              '{account}' => '<a href="'.CommonHelper::generateUrl('account').'">'.Labels::getLabel('MSG_My_Account', $this->siteLangId).'</a>',
-              '{credits}' => '<a href="'.CommonHelper::generateUrl('account', 'credits').'">'.Labels::getLabel('MSG_My_Credits', $this->siteLangId).'</a>',
+              '{account}' => '<a href="' . CommonHelper::generateUrl('account') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
+              '{credits}' => '<a href="' . CommonHelper::generateUrl('account', 'credits') . '">' . Labels::getLabel('MSG_My_Credits', $this->siteLangId) . '</a>',
             );
             $textMessage = Labels::getLabel('MSG_wallet_success_order_{account}_{credits}', $this->siteLangId);
             $textMessage = str_replace(array_keys($searchReplaceArray), array_values($searchReplaceArray), $textMessage);
@@ -509,7 +510,7 @@ class CustomController extends MyAppController
         }
 
         if (!UserAuthentication::isUserLogged() && !UserAuthentication::isGuestUserLogged()) {
-            $textMessage = str_replace('{contactus}', '<a href="'.CommonHelper::generateUrl('custom', 'contactUs').'">'.Labels::getLabel('MSG_Store_Owner', $this->siteLangId).'</a>', Labels::getLabel('MSG_guest_success_order_{contactus}', $this->siteLangId));
+            $textMessage = str_replace('{contactus}', '<a href="' . CommonHelper::generateUrl('custom', 'contactUs') . '">' . Labels::getLabel('MSG_Store_Owner', $this->siteLangId) . '</a>', Labels::getLabel('MSG_guest_success_order_{contactus}', $this->siteLangId));
         }
 
         /* Clear cart upon successfull redirection from Payment gateway[ */
@@ -646,12 +647,12 @@ class CustomController extends MyAppController
         $cookieValue = array( 'data' => $row['user_referral_code'], 'creation_time' => time() );
         $cookieValue = serialize($cookieValue);
 
-        CommonHelper::setCookie('referrer_code_signup', $cookieValue, time()+3600*24*$cookieExpiryDays);
-        CommonHelper::setCookie('referrer_code_checkout', $row['user_referral_code'], time()+3600*24*$cookieExpiryDays);
+        CommonHelper::setCookie('referrer_code_signup', $cookieValue, time() + 3600 * 24 * $cookieExpiryDays);
+        CommonHelper::setCookie('referrer_code_checkout', $row['user_referral_code'], time() + 3600 * 24 * $cookieExpiryDays);
 
         /* setcookie( 'referrer_code_signup', $row['user_referral_code'], time()+3600*24*$cookieExpiryDays, CONF_WEBROOT_URL, '', false, true );
         setcookie( 'referrer_code_checkout', $row['user_referral_code'], time()+3600*24*$cookieExpiryDays, CONF_WEBROOT_URL, '', false, true ); */
-        FatApp::redirectUser('/'.$sharingUrl);
+        FatApp::redirectUser('/' . $sharingUrl);
     }
 
     private function getSearchFaqForm()
@@ -675,7 +676,7 @@ class CustomController extends MyAppController
         $frm->addRequiredField(Labels::getLabel('LBL_Your_Name', $this->siteLangId), 'name', '');
         $frm->addEmailField(Labels::getLabel('LBL_Your_Email', $this->siteLangId), 'email', '');
 
-        $fld_phn = $frm->addRequiredField(Labels::getLabel('LBL_Your_Phone', $this->siteLangId), 'phone', '', array('class'=>'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
+        $fld_phn = $frm->addRequiredField(Labels::getLabel('LBL_Your_Phone', $this->siteLangId), 'phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
         $fld_phn->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
         // $fld_phn->htmlAfterField='<small class="text--small">'.Labels::getLabel('LBL_e.g.', $this->siteLangId).': '.implode(', ', ValidateElement::PHONE_FORMATS).'</small>';
         $fld_phn->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
@@ -717,7 +718,7 @@ class CustomController extends MyAppController
 
     public function updateUserCookies()
     {
-        $_SESSION['cookies_enabled']= true;
+        $_SESSION['cookies_enabled'] = true;
         return true;
     }
 
@@ -733,7 +734,7 @@ class CustomController extends MyAppController
 
     public function downloadLogFile($fileName)
     {
-        AttachedFile::downloadAttachment('import-error-log/'.$fileName, $fileName);
+        AttachedFile::downloadAttachment('import-error-log/' . $fileName, $fileName);
     }
 
     public function deleteErrorLogFiles($hoursBefore = '4')

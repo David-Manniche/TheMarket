@@ -1,4 +1,5 @@
 <?php
+
 class PayoutBaseController extends PluginSettingController
 {
     protected $envoirment;
@@ -33,7 +34,7 @@ class PayoutBaseController extends PluginSettingController
         }
 
         $assignFields = array('withdrawal_status' => Transactions::WITHDRAWL_STATUS_PROCESSED);
-        if (!FatApp::getDb()->updateFromArray(User::DB_TBL_USR_WITHDRAWAL_REQ, $assignFields, array('smt' => 'withdrawal_id=?','vals' => array($recordId)))) {
+        if (!FatApp::getDb()->updateFromArray(User::DB_TBL_USR_WITHDRAWAL_REQ, $assignFields, array('smt' => 'withdrawal_id=?', 'vals' => array($recordId)))) {
             Message::addErrorMessage(FatApp::getDb()->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
