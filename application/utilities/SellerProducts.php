@@ -30,7 +30,7 @@ trait SellerProducts
     public function sellerProducts($product_id = 0)
     {
         $product_id = FatUtility::int($product_id);
-        if ($product_id) {
+        if (0 < $product_id) {
             $row = Product::getAttributesById($product_id, array('product_id'));
             if (!$row) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
