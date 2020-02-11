@@ -428,3 +428,4 @@ ALTER TABLE `tbl_collection_to_blogs`
 
 ALTER TABLE `tbl_collections` ADD `collection_for_web` TINYINT(1) NOT NULL AFTER `collection_display_media_only`, ADD `collection_for_app` TINYINT(1) NOT NULL AFTER `collection_for_web`;
 UPDATE `tbl_collections` SET `collection_for_web` = '1', `collection_for_app` = '1';
+-------------------TV-9.1.2.20200211-------------------

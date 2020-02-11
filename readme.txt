@@ -47,7 +47,7 @@ New Features:
 
 Bugs:
     => 034264 - Getting error (invalid data) while using upload bulk media feature in import export.
----------------------------------------------------------------------------------    
+-----------------------------TV-9.1.2.20200211----------------------------------------------------    
 
 Bugs:
     => 034406 - Plugin settings are not opening
@@ -69,3 +69,5 @@ Bugs:
     => 032857 - Collection name is not displaying after visiting shop collection
     => 69191 - PayPal Payout.
     => 70149 - Blog Collection.
+
+-----------------------------------------------------------

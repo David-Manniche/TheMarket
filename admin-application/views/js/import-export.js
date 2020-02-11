@@ -91,7 +91,7 @@
                     try {
                         var ans = $.parseJSON(t);                        
                         if (ans.status == 1) {
-                            reloadList();
+                            //reloadList();
                             $(document).trigger('close.facebox');
                             $(document).trigger('close.mbsmessage');
                             fcom.displaySuccessMessage(ans.msg);
@@ -103,11 +103,11 @@
 
                         if (typeof ans.CSVfileUrl !== 'undefined') {
                             location.href = ans.CSVfileUrl;
-                        } else {
+                        } /* else {
                             setTimeout(function() {
                                 location.reload();
                             }, 1000);
-                        }
+                        } */
                     } catch (exc) {
                         $(document).trigger('close.mbsmessage');
                         fcom.displayErrorMessage(t);
