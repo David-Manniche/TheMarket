@@ -7,10 +7,10 @@
             <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
             <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Promotions', $siteLangId);?></h2>
         </div>
-        <div class="content-header-right btn-group col-auto">
-            <div class="">
-                <a href="javascript:void(0)" onClick="promotionForm()" class="btn btn--primary btn-sm"><?php echo Labels::getLabel('LBL_Add_Promotion', $siteLangId);?></a>
-                <a href="javascript:void(0)" onClick="reloadList()" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_My_promotions', $siteLangId);?></a>
+        <div class="content-header-right col-auto">
+            <div class="btn-group">
+                <a href="javascript:void(0)" onClick="promotionForm()" class="btn btn--primary btn--sm "><?php echo Labels::getLabel('LBL_Add_Promotion', $siteLangId);?></a>
+                <a href="javascript:void(0)" onClick="reloadList()" class="btn btn--primary btn--sm "><?php echo Labels::getLabel('LBL_My_promotions', $siteLangId);?></a>
             </div>
         </div>
     </div>

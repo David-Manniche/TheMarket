@@ -133,6 +133,10 @@
         -webkit-animation: dropdown-menu-fade-in .3s ease 1, dropdown-menu-move-up .3s ease-out 1;
         animation: dropdown-menu-fade-in .3s ease 1, dropdown-menu-move-up .3s ease-out 1
     }
+	
+	&-right{#{$end-direction}: 0;
+    #{$start-direction}: auto;}
+	
 }
 
 
@@ -231,7 +235,10 @@
             cursor: pointer;
             -webkit-transition: all .3s;
             transition: all 0.3s;
+			font-size:0.85rem;
         }
     }
 
 }
+
+.box--scroller{ overflow-y: auto; max-height: 250px;}

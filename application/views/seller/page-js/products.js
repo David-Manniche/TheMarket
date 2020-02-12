@@ -63,7 +63,7 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 	productInstructions = function( type ){
 		$.facebox(function() {
 			fcom.ajax(fcom.makeUrl('Seller', 'productTooltipInstruction', [type]), '', function(t) {
-				$.facebox(t,'faceboxWidth catalog-bg');
+				$.facebox(t,'medium-fb-width catalog-bg');
 			});
 		});
 	};

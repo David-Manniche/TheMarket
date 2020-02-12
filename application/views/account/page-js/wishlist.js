@@ -206,7 +206,7 @@ $("document").ready(function(){
         if (false === moveToCart) {
             if( !confirm( langLbl.confirmDelete ) ){ return false; };
         }
-		fcom.updateWithAjax( fcom.makeUrl('Account', 'toggleProductFavoriteArr'), $('#favtlistForm').serialize(), function(ans){
+		fcom.updateWithAjax( fcom.makeUrl('Account', 'removeFromFavoriteArr'), $('#favtlistForm').serialize(), function(ans){
             if (false === moveToCart) {
                 viewFavouriteItems();
                 if( ans.status ){

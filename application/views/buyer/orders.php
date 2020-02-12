@@ -10,7 +10,7 @@ $keywordFld = $frmOrderSrch->getField('keyword');
 $keywordFld->setWrapperAttribute('class', 'col-lg-4');
 $keywordFld->developerTags['col'] = 4;
 $keywordFld->developerTags['noCaptionTag'] = true;
-/* $keywordFld->htmlAfterField = '<small class="text--small">'.Labels::getLabel('LBL_Buyer_account_orders_listing_search_form_keyword_help_txt', $siteLangId).'</small>'; */
+/* $keywordFld->htmlAfterField = '<small class="form-text text-muted">'.Labels::getLabel('LBL_Buyer_account_orders_listing_search_form_keyword_help_txt', $siteLangId).'</small>'; */
 
 $statusFld = $frmOrderSrch->getField('status');
 $statusFld->setWrapperAttribute('class', 'col-lg-4');

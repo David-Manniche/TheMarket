@@ -55,8 +55,8 @@
 
 					$newLineTxt = Labels::getLabel('LBL_Enter_Data_Separated_By_New_Line.', $siteLangId );
 				//	$returnPolicyTxt = Labels::getLabel('LBL_Product_Return_Policy_text',$siteLangId);
-					//$selprod_features_fld->htmlAfterField = '<span class="text--small">'. $newLineTxt .'</span>';
-					//$selprod_return_policy_fld->htmlAfterField  = '<span class="text--small">'. $newLineTxt .' '. $returnPolicyTxt .'</span>';
+					//$selprod_features_fld->htmlAfterField = '<span class="form-text text-muted">'. $newLineTxt .'</span>';
+					//$selprod_return_policy_fld->htmlAfterField  = '<span class="form-text text-muted">'. $newLineTxt .' '. $returnPolicyTxt .'</span>';
 
 					echo $frmSellerProdLangFrm->getFormHtml(); ?>
 				</div>

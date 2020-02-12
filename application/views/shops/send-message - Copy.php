@@ -11,7 +11,7 @@
 
 	$fromFldFieldWrapper = $fromFldHtml->appendElement('div', array('class' => 'field-wraper'));
 	$fromFldData = $loggedUserData['credential_username'].' (<em>'.$loggedUserData['user_name'].'</em>)';
-	$fromFldData .= '<br/><span class="text--small">'.Labels::getLabel('LBL_Contact_info_not_shared', $siteLangId).'</span>';
+	$fromFldData .= '<br/><span class="form-text text-muted">'.Labels::getLabel('LBL_Contact_info_not_shared', $siteLangId).'</span>';
 	$fromFldFieldWrapper->appendElement( 'div', array('class' => 'field_cover'), $fromFldData, true );
 
 	$fromFld->value = $fromFldHtml->getHtml();
