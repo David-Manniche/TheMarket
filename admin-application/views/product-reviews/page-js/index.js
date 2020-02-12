@@ -2,6 +2,9 @@ $(document).ready(function(){
 	searchProductReviews(document.frmSearch);
 	
 	$('input[name=\'reviewed_for\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {		
 			$.ajax({
 				url: fcom.makeUrl('Users', 'autoCompleteJson'),

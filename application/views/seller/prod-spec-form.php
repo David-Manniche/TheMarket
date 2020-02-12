@@ -61,6 +61,9 @@ $layout = Language::getLayoutDirection($langId);
 $(document).ready(function(){
     var langId = '<?php echo $langId; ?>';
     $('input[name="prodspec_group['+langId+']"]').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
         'source': function(request, response) {
             $.ajax({
                 url: fcom.makeUrl('Seller', 'prodSpecGroupAutoComplete'),

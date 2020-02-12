@@ -172,6 +172,9 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
     
     if (product_added_by_admin == 1 && totalProducts == 0) {
         $('input[name=\'selprod_user_shop_name\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('sellerProducts', 'autoCompleteUserShopName'),

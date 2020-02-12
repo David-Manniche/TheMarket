@@ -175,6 +175,9 @@
                 setTimeout(function(){ $('.suggestions').hide(); }, 500);
         });
         $('input[name="product_shipping[' + shipping_row + '][country_name]"]').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('products', 'countries_autocomplete'),
@@ -198,6 +201,9 @@
         });
 
         $('input[name="product_shipping[' + shipping_row + '][company_name]"]').autocomplete({
+                'classes': {
+                    "ui-autocomplete": "custom-ui-autocomplete"
+                },
                 'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('products', 'shippingCompanyAutocomplete'),
@@ -221,6 +227,9 @@
         });
 
         $('input[name="product_shipping[' + shipping_row + '][processing_time]"]').autocomplete({
+                'classes': {
+                    "ui-autocomplete": "custom-ui-autocomplete"
+                },
                 'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('products', 'shippingMethodDurationAutocomplete'),

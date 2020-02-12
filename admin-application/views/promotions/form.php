@@ -121,6 +121,9 @@ $("document").ready(function(){
 	$("select[name='promotion_type']").trigger('change');
 		
 	$('input[name=\'promotion_product\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('Promotions', 'autoCompleteSelprods',[$('input[name=\'promotion_user_id\']').val()]),

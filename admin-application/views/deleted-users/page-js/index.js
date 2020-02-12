@@ -7,6 +7,9 @@ $(document).ready(function(){
 	});
 	
 	$('input[name=\'keyword\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {		
 			$.ajax({
 				url: fcom.makeUrl('Users', 'autoCompleteJson'),

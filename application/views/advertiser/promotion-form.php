@@ -126,6 +126,9 @@ if (User::isSeller()) {
         $("select[name='promotion_type']").trigger('change');
 
         $('input[name=\'promotion_product\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('Advertiser', 'autoCompleteSelprods'),
@@ -139,7 +142,7 @@ if (User::isSeller()) {
                     },
                 });
             },
-            select: function (event, ui) {
+            'select': function (event, ui) {
                 $("input[name='promotion_record_id']").val(ui.item.id);
             }
         });

@@ -326,6 +326,9 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 <script type="text/javascript">
 $(document).ready(function(){
 	$('input[name=\'brand_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('brands', 'autoComplete'),
@@ -351,6 +354,9 @@ $(document).ready(function(){
     });
 
 	$('input[name=\'category_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
         'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('productCategories', 'links_autocomplete'),

@@ -2,6 +2,9 @@ $(document).ready(function(){
 	searchDiscountCouponsReport( document.frmDiscountCouponsReportSearch );
 	
 	$('input[name=\'keyword\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {	
 			$.ajax({
 				url: fcom.makeUrl('DiscountCouponsReport', 'autoCompleteJson'),

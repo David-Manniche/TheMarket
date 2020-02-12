@@ -28,6 +28,9 @@
 	$("document").ready(function(){
 		
 		$('input[name=\'brand_name\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
 			'source': function(request, response) {
 				/* fcom.ajax(fcom.makeUrl('brands', 'autoComplete'), {keyword:encodeURIComponent(request)}, function(json) {
 					response($.map(json, function(item) {
@@ -56,8 +59,10 @@
 		});
 		
 		$('input[name=\'tag_name\']').autocomplete({
+                'classes': {
+                    "ui-autocomplete": "custom-ui-autocomplete"
+                },
 				'source': function(request, response) {
-				
 					$.ajax({
 						url: fcom.makeUrl('sellerProducts', 'tagsAutoComplete'),
 						data: {keyword: request['term'],fIsAjax:1},

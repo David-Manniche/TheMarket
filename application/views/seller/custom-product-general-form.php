@@ -305,6 +305,9 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 <script type="text/javascript">
     $(document).ready(function() {
         $('input[name=\'brand_name\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('brands', 'autoComplete'),
@@ -321,7 +324,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                     },
                 });
             },
-            select: function (event, ui) {
+            'select': function (event, ui) {
                 $("input[name='product_brand_id']").val(ui.item.id);
             }
         });
@@ -333,6 +336,9 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
         });
 
         $('input[name=\'category_name\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('products', 'linksAutocomplete'),
@@ -349,7 +355,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                     },
                 });
             },
-            select: function (event, ui) {
+            'select': function (event, ui) {
                 $("input[name='ptc_prodcat_id']").val(ui.item.id);
             }
         });
