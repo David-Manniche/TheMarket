@@ -71,15 +71,15 @@ foreach ($vendorOrdersList as $sn=>$row){  /* CommonHelper::printArray($row); */
 
 				$innerLi=$innerUl->appendElement('li');
 				$innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('SellerOrders','view',array($row['op_id'])),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_View_Order_Detail',$adminLangId)),Labels::getLabel('LBL_View_Order_Detail',$adminLangId), true);
-
-				if($canEdit){
+    
+                $orderObj = new Orders($row['order_id']);
+                $notAllowedStatues = $orderObj->getNotAllowedOrderCancellationStatuses();
+				if(!in_array($row["op_status_id"], $notAllowedStatues) && $canEdit){
 					$innerLi=$innerUl->appendElement('li');
 					$innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('SellerOrders','CancelOrder',array($row['op_id'])),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Cancel_Order',$adminLangId)),Labels::getLabel('LBL_Cancel_Order',$adminLangId), true);
 
 					//$innerLi=$innerUl->appendElement('li');
 					//$innerLi->appendElement('a', array('href'=>'javascript:void(0)','onclick' => "cancelOrder('".$row['op_id']."')",'class'=>'button small green','title'=>Labels::getLabel('LBL_Cancel_Order',$adminLangId),'target'=>'_new'),Labels::getLabel('LBL_Cancel_Order',$adminLangId), true);
-
-
 				}
 			break;
 			default:
