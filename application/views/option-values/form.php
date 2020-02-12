@@ -17,7 +17,7 @@ $optionValueFrm->setFormTagAttribute('onsubmit', 'setUpOptionValues(this); retur
 $optionValueFrm->developerTags['colClassPrefix'] = 'col-md-';
 $optionValueFrm->developerTags['fld_default_col'] = 6;
 ?><div class="box__head">
-<h4><?php echo Labels::getLabel('LBL_CONFIGURE_OPTION_VALUES', $langId); ?></h4>
+<h4><?php echo isset($optionName) ? Labels::getLabel('LBL_CONFIGURE_OPTION_VALUES_FOR', $langId).' '.$optionName : Labels::getLabel('LBL_CONFIGURE_OPTION_VALUES', $langId); ?></h4>
 </div>
 <div class="box__body">
     <div class="form__subcontent">

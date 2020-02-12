@@ -24,8 +24,8 @@ cropImage = function(image, options, callback, inputBtn){
   var actions = document.getElementById('actions');
   var cropper = new Cropper(image, options);
   var originalImageURL = image.src;
-  var uploadedImageType = 'image/jpeg';
-  var uploadedImageName = 'cropped.jpg';
+  var uploadedImageType = 'image/png';
+  var uploadedImageName = 'cropped.png';
   var uploadedImageURL;
 
   actions.querySelector('.docs-buttons').onclick = function (event) {
@@ -88,13 +88,13 @@ cropImage = function(image, options, callback, inputBtn){
 			console.log(e.message);
 		  }
 
-		  if (uploadedImageType === 'image/jpeg') {
+		  /*if (uploadedImageType === 'image/jpeg') {
 			if (!data.option) {
 			  data.option = {};
 			}
 
 			data.option.fillColor = '#fff';
-		  }
+		  }*/
 
 		  break;
 	  }
