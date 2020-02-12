@@ -483,8 +483,8 @@ class ShopsController extends MyAppController
             FatApp::redirectUser(CommonHelper::generateUrl(''));
         }
         $this->shopDetail($shop_id);
-
-        $shopcolDetails = ShopCollection::getCollectionGeneralDetail($shop_id, $scollectionId);
+        
+        $shopcolDetails = ShopCollection::getCollectionGeneralDetail($shop_id, $scollectionId, $this->siteLangId);
 
         $frm = $this->getProductSearchForm();
 
@@ -503,12 +503,13 @@ class ShopsController extends MyAppController
 
         $fld = $frm->getField('sortBy');
         $fld->value = 'popularity_desc';
-        $fld->fldType ='hidden';
+        $fld->fldType = 'hidden';
         $frm->fill($get);
 
         $data = $this->getListingData($get);
 
         $arr = array(
+            'scollection_name' => $shopcolDetails['scollection_name'],
             'canonicalUrl' => CommonHelper::generateFullUrl('Shops', 'collection', array($shop_id, $scollectionId)),
             'productSearchPageType' => SavedSearchProduct::PAGE_SHOP,
             'recordId' => $shop_id,
@@ -656,12 +657,19 @@ class ShopsController extends MyAppController
         UserAuthentication::checkLogin();
         $db = FatApp::getDb();
         $shop_id = FatUtility::int($shop_id);
-
+        
         $shop = $this->getShopInfo($shop_id);
         if (!$shop) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Home'));
         }
+
+        $shopRepData = ShopReport::getReportDetail($shop['shop_id'], UserAuthentication::getLoggedUserId(), 'sreport_id');
+        if (!empty($shopRepData)) {
+            Message::addErrorMessage(Labels::getLabel('LBL_YOU_ALREADY_REPORTED_FOR_THIS_SHOP', $this->siteLangId));
+            FatApp::redirectUser(CommonHelper::generateUrl('Shops', 'View', array($shop_id)));
+        }
+
         $frm = $this->getReportSpamForm($this->siteLangId);
         $frm->fill(array( 'shop_id' => $shop_id ));
         $this->set('frm', $frm);
@@ -685,6 +693,11 @@ class ShopsController extends MyAppController
             LibHelper::dieJsonError(Labels::getLabel('LBL_Invalid_Shop', $this->siteLangId));
         }
 
+        $shopRepData = ShopReport::getReportDetail($shop_id, $loggedUserId, 'sreport_id');
+        if (!empty($shopRepData) && 0 < count($shopRepData)) {
+            LibHelper::dieJsonError(Labels::getLabel('LBL_YOU_ALREADY_REPORTED_FOR_THIS_SHOP', $this->siteLangId));
+        }
+
         $srch = new ShopSearch($this->siteLangId);
         $srch->setDefinedCriteria($this->siteLangId);
         $srch->joinSellerSubscription();
@@ -700,11 +713,11 @@ class ShopsController extends MyAppController
 
         $sReportObj = new ShopReport();
         $dataToSave = array(
-        'sreport_shop_id'            =>    $shop_id,
-        'sreport_reportreason_id'    =>    $post['sreport_reportreason_id'],
-        'sreport_message'            =>    $post['sreport_message'],
-        'sreport_user_id'            =>    $loggedUserId,
-        'sreport_added_on'            =>    date('Y-m-d H:i:s'),
+            'sreport_shop_id'            =>    $shop_id,
+            'sreport_reportreason_id'    =>    $post['sreport_reportreason_id'],
+            'sreport_message'            =>    $post['sreport_message'],
+            'sreport_user_id'            =>    $loggedUserId,
+            'sreport_added_on'            =>    date('Y-m-d H:i:s'),
         );
 
         $sReportObj->assignValues($dataToSave);
@@ -725,11 +738,11 @@ class ShopsController extends MyAppController
 
             //send notification to admin
             $notificationData = array(
-            'notification_record_type' => Notification::TYPE_SHOP,
-            'notification_record_id' => $shop_id,
-            'notification_user_id' => $loggedUserId,
-            'notification_label_key' => Notification::REPORT_SHOP_NOTIFICATION,
-            'notification_added_on' => date('Y-m-d H:i:s'),
+                'notification_record_type' => Notification::TYPE_SHOP,
+                'notification_record_id' => $shop_id,
+                'notification_user_id' => $loggedUserId,
+                'notification_label_key' => Notification::REPORT_SHOP_NOTIFICATION,
+                'notification_added_on' => date('Y-m-d H:i:s'),
             );
 
             if (!Notification::saveNotifications($notificationData)) {
@@ -744,6 +757,7 @@ class ShopsController extends MyAppController
         if (true ===  MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
+        $this->set('redirectUri', CommonHelper::generateUrl('Shops', 'View', [$shop_id]));
         $this->_template->render(false, false, 'json-success.php');
     }
 

@@ -154,7 +154,7 @@ class ProductCategoriesController extends AdminBaseController
             }
         }
 
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Create', $this->adminLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save', $this->adminLangId));
         $frm->addButton('', 'btn_discard', Labels::getLabel('LBL_Discard', $this->adminLangId));
         return $frm;
     }

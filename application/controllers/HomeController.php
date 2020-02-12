@@ -313,8 +313,8 @@ class HomeController extends MyAppController
             $cookieValue = array('data' => $row['user_referral_code'], 'creation_time' => time());
             $cookieValue = serialize($cookieValue);
 
-            CommonHelper::setCookie('referrer_code_signup', $cookieValue, time()+3600*24*$cookieExpiryDays);
-            CommonHelper::setCookie('referrer_code_checkout', $row['user_referral_code'], time()+3600*24*$cookieExpiryDays);
+            CommonHelper::setCookie('referrer_code_signup', $cookieValue, time() + 3600 * 24 * $cookieExpiryDays);
+            CommonHelper::setCookie('referrer_code_checkout', $row['user_referral_code'], time() + 3600 * 24 * $cookieExpiryDays);
         }
         FatApp::redirectUser(CommonHelper::generateUrl());
     }
@@ -324,7 +324,7 @@ class HomeController extends MyAppController
         $langId = $this->siteLangId;
 
         $apiCall = (true === MOBILE_APP_API_CALL) ? 1 : 0;
-        $collectionCache =  FatCache::get('collectionCache_'.$langId.'_'.$apiCall, CONF_HOME_PAGE_CACHE_TIME, '.txt');
+        $collectionCache =  FatCache::get('collectionCache_' . $langId . '_' . $apiCall, CONF_HOME_PAGE_CACHE_TIME, '.txt');
 
         if ($collectionCache) {
             return  unserialize($collectionCache);
@@ -441,6 +441,7 @@ class HomeController extends MyAppController
                     /* fetch Categories data[ */
                     $productCatSrchTempObj = clone $productCatSrchObj;
                     $productCatSrchTempObj->addCondition('prodcat_id', 'IN', array_keys($categoryIds));
+                    $productCatSrchTempObj->addCondition('prodcat_deleted', '=', applicationConstants::NO);
                     $rs = $productCatSrchTempObj->getResultSet();
                     /* ] */
                     if (true ===  MOBILE_APP_API_CALL) {
@@ -454,6 +455,7 @@ class HomeController extends MyAppController
                             /* fetch Sub-Categories[ */
                             $subCategorySrch = clone $productCatSrchObj;
                             $subCategorySrch->addCondition('prodcat_parent', '=', $catData['prodcat_id']);
+                            $subCategorySrch->addCondition('prodcat_deleted', '=', applicationConstants::NO);
                             $Catrs = $subCategorySrch->getResultSet();
 
                             if (true ===  MOBILE_APP_API_CALL) {

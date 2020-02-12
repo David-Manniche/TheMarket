@@ -40,7 +40,6 @@ class RazorpayPayController extends PaymentController
         $this->set('orderInfo', $orderInfo);
         $this->set('paymentSettings', $paymentSettings);
         $this->set('exculdeMainHeaderDiv', true);
-        $this->_template->addCss('css/payment.css');
         $this->_template->render(true, false);
     }
 

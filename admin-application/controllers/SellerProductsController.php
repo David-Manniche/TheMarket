@@ -904,7 +904,7 @@ class SellerProductsController extends AdminBaseController
         if (!empty($post['keyword'])) {
             $cnd = $srch->addCondition('product_name', 'LIKE', '%' . $post['keyword'] . '%');
             $cnd = $cnd->attachCondition('selprod_title', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
-            $cnd->attachCondition('product_identifier', 'LIKE', '%'. $post['keyword'] . '%', 'OR');
+            $cnd->attachCondition('product_identifier', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
         }
 
         if (!empty($post['selProdId']) && 0 < FatUtility::int($post['selProdId'])) {
@@ -922,18 +922,17 @@ class SellerProductsController extends AdminBaseController
         $srch->addOrder('selprod_active', 'DESC');
         $db = FatApp::getDb();
         $rs = $srch->getResultSet();
-        // echo  $srch->getQuery(); die;
         $products = array();
         if ($rs) {
             $products = $db->fetchAll($rs, 'id');
         }
         $json = array();
         foreach ($products as $key => $option) {
-            $userName = isset($option["credential_username"]) ? " | <b>".$option["credential_username"]."</b>" : '';
+            $userName = isset($option["credential_username"]) ? " | " . $option["credential_username"] : '';
             $json[] = array(
-            'id' => $key,
-            'name'      => strip_tags(html_entity_decode($option['product_name'], ENT_QUOTES, 'UTF-8')).$userName,
-            'product_identifier'    => strip_tags(html_entity_decode($option['product_identifier'], ENT_QUOTES, 'UTF-8'))
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($option['product_name'], ENT_QUOTES, 'UTF-8')) . $userName,
+                'product_identifier' => strip_tags(html_entity_decode($option['product_identifier'], ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));
@@ -3087,7 +3086,7 @@ class SellerProductsController extends AdminBaseController
 
     private function getUpsellProductsSearchForm()
     {
-        $frm = new Form('frmSearch', array('id'=>'frmSearch'));
+        $frm = new Form('frmSearch', array('id' => 'frmSearch'));
         $frm->setRequiredStarWith('caption');
         $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
@@ -3100,14 +3099,17 @@ class SellerProductsController extends AdminBaseController
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($post['selprod_id']);
         if (!UserPrivilege::canEditSellerProduct($selprod_id)) {
-            Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->adminLangId));
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieJsonError(Labels::getLabel("MSG_INVALID_ACCESS", $this->adminLangId));
         }
         if ($selprod_id <= 0) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
             FatApp::redirectUser($_SESSION['referer_page_url']);
         }
-        $upsellProducts = (isset($post['selected_products']))?$post['selected_products']:array();
+        if (!isset($post['selected_products']) || !is_array($post['selected_products']) || 1 > count($post['selected_products'])) {
+            FatUtility::dieJsonError(Labels::getLabel("MSG_MUST_SELECT_ATLEAST_ONE_PRODUCT_TO_BUY_TOGETHER", $this->adminLangId));
+        }
+
+        $upsellProducts = $post['selected_products'];
 
         $sellerProdObj  = new sellerProduct();
         /* saving of product Upsell Product[ */

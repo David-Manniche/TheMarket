@@ -3273,9 +3273,9 @@ class AccountController extends LoggedUserController
     private function getRequestDataForm()
     {
         $frm = new Form('frmRequestdata');
-        $frm->addTextBox(Labels::getLabel('LBL_Email', $this->siteLangId), 'credential_email', '', array('readonly'=>'readonly'));
-        $frm->addTextBox(Labels::getLabel('LBL_Name', $this->siteLangId), 'user_name', '', array('readonly'=>'readonly'));
-        $purposeFld = $frm->addTextArea(Labels::getLabel('LBL_Purpose_of_Request_Data', $this->siteLangId), 'ureq_purpose');
+        $frm->addTextBox(Labels::getLabel('LBL_Email', $this->siteLangId), 'credential_email', '', array('readonly' => 'readonly'));
+        $frm->addTextBox(Labels::getLabel('LBL_Name', $this->siteLangId), 'user_name', '', array('readonly' => 'readonly'));
+        $purposeFld = $frm->addTextArea(Labels::getLabel('LBL_PURPOSE_OF_REQUEST_DATA', $this->siteLangId), 'ureq_purpose');
         $purposeFld->requirements()->setRequired();
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Send_Request', $this->siteLangId));
         return $frm;

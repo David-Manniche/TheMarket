@@ -10,10 +10,10 @@
             <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" width="620">
                 <?php 
                     $paymentMethods = User::getAffiliatePaymentMethodArr($siteLangId);
-                    $payoutPlugins = Plugin::getNamesByType(Plugin::TYPE_PAYOUTS, $adminLangId);
+                    $payoutPlugins = Plugin::getNamesByType(Plugin::TYPE_PAYOUTS, $siteLangId);
                     $methodType = $paymentMethods + $payoutPlugins;
                 ?>
-                <?php echo $methodType[$data['withdrawal_payment_method']]; ?>
+                <?php echo isset($methodType[$data['withdrawal_payment_method']]) ? $methodType[$data['withdrawal_payment_method']] : Labels::getLabel('LBL_N/A', $siteLangId); ?>
             </td>
         </tr>
         <?php if ($data['withdrawal_payment_method'] == User::AFFILIATE_PAYMENT_METHOD_BANK) { ?>

@@ -185,8 +185,7 @@ $(document).ready(function () {
     resetToDefaultContent =  function(){
 		var agree  = confirm(langLbl.confirmReplaceCurrentToDefault);
 		if( !agree ){ return false; }
-		oUtil.obj.insertHTML($("#editor_default_content").html());
-		//oUtil.obj.putHTML( $("#editor_default_content").html() );
+		oUtil.obj.putHTML( $("#editor_default_content").html() );
 	};
 
     removeEmailLogo = function(lang_id) {

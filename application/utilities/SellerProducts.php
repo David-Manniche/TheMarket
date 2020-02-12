@@ -317,7 +317,7 @@ trait SellerProducts
         /* ] */
         $post['selprod_url_keyword'] = strtolower(CommonHelper::createSlug($post['selprod_url_keyword']));
 
-        if ($post['selprod_track_inventory'] == Product::INVENTORY_NOT_TRACK) {
+        if (isset($post['selprod_track_inventory']) && $post['selprod_track_inventory'] == Product::INVENTORY_NOT_TRACK) {
             $post['selprod_threshold_stock_level'] = 0;
         }
 
@@ -1743,10 +1743,10 @@ trait SellerProducts
         $frm = new Form('frmLinks', array('id'=>'frmLinks'));
 
         $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Buy_Together_Products', $this->siteLangId), 'products_buy_together');
-        $fld1->htmlAfterField= '<div class="row"><div class="col-md-12"><ul class="list-vertical" id="buy-together-products"></ul></div></div>';
+        $fld1->htmlAfterField = '<div class="row"><div class="col-md-12"><ul class="list-vertical" id="buy-together-products"></ul></div></div>';
 
         $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Related_Products', $this->siteLangId), 'products_related');
-        $fld1->htmlAfterField= '<div class="row"><div class="col-md-12"><ul class="list-vertical" id="related-products"></ul></div></div>';
+        $fld1->htmlAfterField = '<div class="row"><div class="col-md-12"><ul class="list-vertical" id="related-products"></ul></div></div>';
 
         $frm->addHiddenField('', 'selprod_id');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel("LBL_Save_Changes", $this->siteLangId));
@@ -1764,7 +1764,7 @@ trait SellerProducts
         if (!empty($post['keyword'])) {
             $cnd = $srch->addCondition('product_name', 'LIKE', '%' . $post['keyword'] . '%');
             $cnd = $cnd->attachCondition('selprod_title', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
-            $cnd->attachCondition('product_identifier', 'LIKE', '%'. $post['keyword'] . '%', 'OR');
+            $cnd->attachCondition('product_identifier', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
         }
 
         $srch->addCondition('selprod_user_id', '=', UserAuthentication::getLoggedUserId());
@@ -2578,10 +2578,7 @@ trait SellerProducts
             $srchFrm->addHiddenField('', 'selprod_id', $selProd_id);
             $srchFrm->fill(array('keyword'=>$productsTitle[$selProdId]));
         }
-
-        // $this->_template->addJs(array('js/tagify.min.js','js/tagify.polyfills.js'));
-        $this->_template->addCss(array('css/custom-tagify.css'));
-
+        
         $relProdFrm = $this->getRelatedProductsForm();
         $this->set("dataToEdit", $dataToEdit);
         $this->set("frmSearch", $srchFrm);
@@ -2746,9 +2743,6 @@ trait SellerProducts
             $srchFrm->addHiddenField('', 'selprod_id', $selProd_id);
             $srchFrm->fill(array('keyword'=>$productsTitle[$selProdId]));
         }
-
-        // $this->_template->addJs(array('js/tagify.min.js','js/tagify.polyfills.js'));
-        $this->_template->addCss(array('css/custom-tagify.css'));
 
         $relProdFrm = $this->getUpsellProductsForm();
         $this->set("dataToEdit", $dataToEdit);

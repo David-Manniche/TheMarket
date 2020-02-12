@@ -11,7 +11,7 @@
                         <tbody>
                             <tr>
                                 <td style="background:#<?php echo FatApp::getConfig('CONF_EMAIL_TEMPLATE_COLOR_CODE'.$langId, FatUtility::VAR_STRING, 'FF3A59'); ?>;padding:15px;"><div style="max-width:<?php echo (FatApp::getConfig('CONF_EMAIL_TEMPLATE_LOGO_RATIO', FatUtility::VAR_INT, 1) == EmailTemplates::LOGO_RATIO_SQUARE) ? '60px' : '150px'?>;"><a href="{website_url}">{Company_Logo}</a></div></td>
-                                <td style="text-align:right;">{social_media_icons}</td>
+                                <td style="background:#<?php echo FatApp::getConfig('CONF_EMAIL_TEMPLATE_COLOR_CODE'.$langId, FatUtility::VAR_STRING, 'FF3A59'); ?>;padding:15px;text-align:right;">{social_media_icons}</td>
                             </tr>
                         </tbody>
                     </table>

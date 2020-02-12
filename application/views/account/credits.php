@@ -59,42 +59,33 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                         </div>
                         <?php } ?>
                         <div class="cards-content pt-4 pl-4 pr-4">
-                                <div class="row">
-                                  <?php $srchFormDivWidth = $canAddMoneyToWallet ? '8' : '12'; ?>
-                                   <?php if ($canAddMoneyToWallet) { ?>
-                                    <div class="col-lg-3" id="credits-info">
-                                        <div class="replaced amount-added-box">
-                                            <h6 class="cards-title mb-2">
-                                            <?php echo Labels::getLabel('LBL_Enter_amount_to_be_Added'.'_['.CommonHelper::getDefaultCurrencySymbol().']', $siteLangId); ?></h6>
-                                            <div id="rechargeWalletDiv" class="cellright nopadding--bottom">
-                                                <?php
-                                                $frmRechargeWallet->setFormTagAttribute('onSubmit', 'setUpWalletRecharge(this); return false;');
-                                                $frmRechargeWallet->setFormTagAttribute('class', 'form');
-                                                $frmRechargeWallet->developerTags['colClassPrefix'] = 'col-md-';
-                                                $frmRechargeWallet->developerTags['fld_default_col'] = 12;
-                                                $frmRechargeWallet->setRequiredStarPosition(Form::FORM_REQUIRED_STAR_WITH_NONE);
+                            <div class="row">
+                                <div class="col-lg-9 mb-3 mb-lg-0" id="credits-info"></div>
+                                <?php $srchFormDivWidth = $canAddMoneyToWallet ? '8' : '12'; ?>
+                                <?php if ($canAddMoneyToWallet) { ?>
+                                <div class="col-lg-3">
+                                    <div class="replaced amount-added-box">
+                                        <h6 class="cards-title mb-2">
+                                        <?php echo Labels::getLabel('LBL_Enter_amount_to_be_Added'.'_['.CommonHelper::getDefaultCurrencySymbol().']', $siteLangId); ?></h6>
+                                        <div id="rechargeWalletDiv" class="cellright nopadding--bottom">
+                                            <?php
+                                            $frmRechargeWallet->setFormTagAttribute('onSubmit', 'setUpWalletRecharge(this); return false;');
+                                            $frmRechargeWallet->setFormTagAttribute('class', 'form');
+                                            $frmRechargeWallet->developerTags['colClassPrefix'] = 'col-md-';
+                                            $frmRechargeWallet->developerTags['fld_default_col'] = 12;
+                                            $frmRechargeWallet->setRequiredStarPosition(Form::FORM_REQUIRED_STAR_WITH_NONE);
 
-                                                $amountFld = $frmRechargeWallet->getField('amount');
-                                                $amountFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Enter_amount_to_be_Added', $siteLangId));
-                                                $amountFld->developerTags['noCaptionTag'] = true;
-                                                $buttonFld = $frmRechargeWallet->getField('btn_submit');
-                                                $buttonFld->setFieldTagAttribute('class', 'btn--block block-on-mobile');
-                                                $buttonFld->developerTags['noCaptionTag'] = true;
-                                                echo $frmRechargeWallet->getFormHtml(); ?>
-                                            </div>
+                                            $amountFld = $frmRechargeWallet->getField('amount');
+                                            $amountFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Enter_amount_to_be_Added', $siteLangId));
+                                            $amountFld->developerTags['noCaptionTag'] = true;
+                                            $buttonFld = $frmRechargeWallet->getField('btn_submit');
+                                            $buttonFld->setFieldTagAttribute('class', 'btn--block block-on-mobile');
+                                            $buttonFld->developerTags['noCaptionTag'] = true;
+                                            echo $frmRechargeWallet->getFormHtml(); ?>
                                         </div>
                                     </div>
-                                <?php } ?>
                                 </div>
-                                
-                                
-                            
-                            <div class="gap"></div>
-                            <?php //echo $balanceTotalBlocksDisplayed;?>
-                            
-                            <div class="row">
-                                
-                                
+                            <?php } ?>
                             </div>
                         </div>
                     </div>

@@ -9,6 +9,21 @@ if ($productData['product_added_by_admin_id'] == 1 && $totalProducts >0) {
 }
 $warrantyFld = $productFrm->getField('product_warranty');
 $warrantyFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_WARRANTY_IN_DAYS', $adminLangId) . ' </small>';
+
+$fld = $productFrm->getField('product_featured');
+$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+
+if($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
+$fld = $productFrm->getField('ps_free');
+$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+
+$fld = $productFrm->getField('product_cod_enabled');
+$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+}
+
 ?>
 <div class="row justify-content-center">
      <div class="col-md-12">

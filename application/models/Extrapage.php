@@ -1,51 +1,51 @@
 <?php
 class Extrapage extends MyAppModel
 {
-    const DB_TBL = 'tbl_extra_pages';
-    const DB_TBL_PREFIX = 'epage_';
+    public const DB_TBL = 'tbl_extra_pages';
+    public const DB_TBL_PREFIX = 'epage_';
 
-    const DB_TBL_LANG = 'tbl_extra_pages_lang';
-    const DB_TBL_LANG_PREFIX = 'epagelang_';
+    public const DB_TBL_LANG = 'tbl_extra_pages_lang';
+    public const DB_TBL_LANG_PREFIX = 'epagelang_';
 
-    const CONTACT_US_CONTENT_BLOCK = 1;
-    const LOGIN_PAGE_RIGHT_BLOCK = 13;
-    const REGISTRATION_PAGE_RIGHT_BLOCK = 14;
-    const FORGOT_PAGE_RIGHT_BLOCK = 15;
-    const SELLER_PAGE_BLOCK1 = 16;
-    const SELLER_PAGE_BLOCK2 = 17;
-    const SELLER_PAGE_BLOCK3 = 25;
-    const SELLER_BANNER_SLOGAN = 18;
-    const RESET_PAGE_RIGHT_BLOCK = 19;
-    const SUBSCRIPTION_PAGE_BLOCK = 20;
-    const ADVERTISER_BANNER_SLOGAN = 21;
-    const AFFILIATE_BANNER_SLOGAN = 22;
-    const CHECKOUT_PAGE_RIGHT_BLOCK = 23;
-    const SELLER_PAGE_FORM_TEXT = 24;
-    const FOOTER_TRUST_BANNERS = 26;
-    const CHECKOUT_PAGE_HEADER_BLOCK = 27;
+    public const CONTACT_US_CONTENT_BLOCK = 1;
+    public const LOGIN_PAGE_RIGHT_BLOCK = 13;
+    public const REGISTRATION_PAGE_RIGHT_BLOCK = 14;
+    public const FORGOT_PAGE_RIGHT_BLOCK = 15;
+    public const SELLER_PAGE_BLOCK1 = 16;
+    public const SELLER_PAGE_BLOCK2 = 17;
+    public const SELLER_PAGE_BLOCK3 = 25;
+    public const SELLER_BANNER_SLOGAN = 18;
+    public const RESET_PAGE_RIGHT_BLOCK = 19;
+    public const SUBSCRIPTION_PAGE_BLOCK = 20;
+    public const ADVERTISER_BANNER_SLOGAN = 21;
+    public const AFFILIATE_BANNER_SLOGAN = 22;
+    public const CHECKOUT_PAGE_RIGHT_BLOCK = 23;
+    public const SELLER_PAGE_FORM_TEXT = 24;
+    public const FOOTER_TRUST_BANNERS = 26;
+    public const CHECKOUT_PAGE_HEADER_BLOCK = 27;
 
-    const ADMIN_PRODUCTS_CATEGORIES_INSTRUCTIONS = 28;
-    const GENERAL_SETTINGS_INSTRUCTIONS = 29;
-    const ADMIN_BRANDS_INSTRUCTIONS = 30;
-    const ADMIN_OPTIONS_INSTRUCTIONS = 31;
-    const ADMIN_TAGS_INSTRUCTIONS = 32;
-    const ADMIN_COUNTRIES_MANAGEMENT_INSTRUCTIONS = 33;
-    const ADMIN_STATE_MANAGEMENT_INSTRUCTIONS = 34;
-    const ADMIN_CATALOG_MANAGEMENT_INSTRUCTIONS = 35;
-    const SELLER_CATALOG_MANAGEMENT_INSTRUCTIONS = 36;
-    const SELLER_GENERAL_SETTINGS_INSTRUCTIONS = 37;
-    const ADMIN_PRODUCT_INVENTORY_INSTRUCTIONS = 38;
-    const SELLER_PRODUCT_INVENTORY_INSTRUCTIONS = 39;
-    const PRODUCT_INVENTORY_UPDATE_INSTRUCTIONS = 40;
-    const MARKETPLACE_PRODUCT_INSTRUCTIONS = 41;
-    const SELLER_INVENTORY_INSTRUCTIONS = 42;
-    const PRODUCT_REQUEST_INSTRUCTIONS = 43;
-    const ADMIN_TYPE_POLICY_POINTS = 44;
+    public const ADMIN_PRODUCTS_CATEGORIES_INSTRUCTIONS = 28;
+    public const GENERAL_SETTINGS_INSTRUCTIONS = 29;
+    public const ADMIN_BRANDS_INSTRUCTIONS = 30;
+    public const ADMIN_OPTIONS_INSTRUCTIONS = 31;
+    public const ADMIN_TAGS_INSTRUCTIONS = 32;
+    public const ADMIN_COUNTRIES_MANAGEMENT_INSTRUCTIONS = 33;
+    public const ADMIN_STATE_MANAGEMENT_INSTRUCTIONS = 34;
+    public const ADMIN_CATALOG_MANAGEMENT_INSTRUCTIONS = 35;
+    public const SELLER_CATALOG_MANAGEMENT_INSTRUCTIONS = 36;
+    public const SELLER_GENERAL_SETTINGS_INSTRUCTIONS = 37;
+    public const ADMIN_PRODUCT_INVENTORY_INSTRUCTIONS = 38;
+    public const SELLER_PRODUCT_INVENTORY_INSTRUCTIONS = 39;
+    public const PRODUCT_INVENTORY_UPDATE_INSTRUCTIONS = 40;
+    public const MARKETPLACE_PRODUCT_INSTRUCTIONS = 41;
+    public const SELLER_INVENTORY_INSTRUCTIONS = 42;
+    public const PRODUCT_REQUEST_INSTRUCTIONS = 43;
+    public const ADMIN_TYPE_POLICY_POINTS = 44;
 
-    const CONTENT_PAGES = 0;
-    const CONTENT_IMPORT_INSTRUCTION = 1;
+    public const CONTENT_PAGES = 0;
+    public const CONTENT_IMPORT_INSTRUCTION = 1;
 
-    const REWRITE_URL_PREFIX = 'custom/view/';
+    public const REWRITE_URL_PREFIX = 'custom/view/';
 
     public function __construct($epageId = 0)
     {

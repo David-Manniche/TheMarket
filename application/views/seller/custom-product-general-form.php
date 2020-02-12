@@ -1,6 +1,11 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $productFrm->setFormTagAttribute('class', 'form form--horizontal');
 $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(false);');
+
+$fld = $productFrm->getField('auto_update_other_langs_data');
+$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+
 ?>
 <div class="row justify-content-center">
     <div class="col-md-12">
@@ -177,14 +182,14 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
                     <div class="field-set mb-0">
                         <div class="caption-wraper">
                             <label class="field_label">
-                                <?php $fld = $productFrm->getField('product_description['.$siteDefaultLangId.']');
+                                <?php $fld = $productFrm->getField('product_description_'.$siteDefaultLangId);
                                   echo $fld->getCaption();
                             ?>
                             </label>
                         </div>
                         <div class="field-wraper">
                             <div class="field_cover">
-                                <?php echo $productFrm->getFieldHtml('product_description['.$siteDefaultLangId.']'); ?>
+                                <?php echo $productFrm->getFieldHtml('product_description_'.$siteDefaultLangId); ?>
                             </div>
                         </div>
                     </div>
@@ -259,13 +264,13 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(f
                                         <div class="field-set">
                                             <div class="caption-wraper">
                                                 <label class="field_label">
-                                                    <?php  $fld = $productFrm->getField('product_description['.$langId.']');
+                                                    <?php  $fld = $productFrm->getField('product_description_'.$langId);
                                                     echo $fld->getCaption(); ?>
                                                 </label>
                                             </div>
                                             <div class="field-wraper">
                                                 <div class="field_cover">
-                                                    <?php echo $productFrm->getFieldHtml('product_description['.$langId.']'); ?>
+                                                    <?php echo $productFrm->getFieldHtml('product_description_'.$langId); ?>
                                                 </div>
                                             </div>
                                         </div>

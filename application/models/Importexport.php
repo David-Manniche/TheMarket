@@ -17,7 +17,7 @@ class Importexport extends ImportexportCommon
     public const TYPE_POLICY_POINTS = 10;
     public const TYPE_USERS = 11;
     public const TYPE_TAX_CATEGORY = 12;
-    public const TYPE_LANGUAGE_lABELS = 13;
+    public const TYPE_LANGUAGE_LABELS = 13;
     
 
     public const MAX_LIMIT = 1000;
@@ -56,14 +56,14 @@ class Importexport extends ImportexportCommon
                 $arr[static::TYPE_BRANDS] = Labels::getLabel('LBL_Brands', $langId);
                 $arr[static::TYPE_OPTIONS] = Labels::getLabel('LBL_Options', $langId);
                 $arr[static::TYPE_OPTION_VALUES] = Labels::getLabel('LBL_Option_Values', $langId);
-                $arr[static::TYPE_TAG] = Labels::getLabel('LBL_Tags', $langId);
+                //$arr[static::TYPE_TAG] = Labels::getLabel('LBL_Tags', $langId);
                 $arr[static::TYPE_COUNTRY] = Labels::getLabel('LBL_Countries', $langId);
                 $arr[static::TYPE_STATE] = Labels::getLabel('LBL_States', $langId);
                 //$arr[static::TYPE_POLICY_POINTS] = Labels::getLabel('LBL_Policy_Points', $langId);
                 $arr[static::TYPE_TAX_CATEGORY] = Labels::getLabel('LBL_Tax_Category', $langId);
                 if (!$sellerDashboard) {
                     $arr[static::TYPE_USERS] = Labels::getLabel('LBL_users', $langId);
-                    $arr[static::TYPE_LANGUAGE_lABELS] = Labels::getLabel('LBL_Language_Labels', $langId);
+                    $arr[static::TYPE_LANGUAGE_LABELS] = Labels::getLabel('LBL_Language_Labels', $langId);
                 }
                 break;
             case 'IMPORT':
@@ -74,10 +74,10 @@ class Importexport extends ImportexportCommon
                     $arr[static::TYPE_BRANDS] = Labels::getLabel('LBL_Brands', $langId);
                     $arr[static::TYPE_OPTIONS] = Labels::getLabel('LBL_Options', $langId);
                     $arr[static::TYPE_OPTION_VALUES] = Labels::getLabel('LBL_Option_Values', $langId);
-                    $arr[static::TYPE_TAG] = Labels::getLabel('LBL_Tags', $langId);
+                    //$arr[static::TYPE_TAG] = Labels::getLabel('LBL_Tags', $langId);
                     $arr[static::TYPE_COUNTRY] = Labels::getLabel('LBL_Countries', $langId);
                     $arr[static::TYPE_STATE] = Labels::getLabel('LBL_States', $langId);
-                    $arr[static::TYPE_LANGUAGE_lABELS] = Labels::getLabel('LBL_Language_Labels', $langId);
+                    $arr[static::TYPE_LANGUAGE_LABELS] = Labels::getLabel('LBL_Language_Labels', $langId);
                     //$arr[static::TYPE_POLICY_POINTS] = Labels::getLabel('LBL_Policy_Points', $langId);
                 }
                 break;
@@ -100,7 +100,7 @@ class Importexport extends ImportexportCommon
         $arr = array(
         static::PRODUCT_CATALOG=>Labels::getLabel('LBL_Product_Catalog', $langId),
         static::PRODUCT_OPTION=>Labels::getLabel('LBL_Product_Options', $langId),
-        static::PRODUCT_TAG=>Labels::getLabel('LBL_Product_Tags', $langId),
+        //static::PRODUCT_TAG=>Labels::getLabel('LBL_Product_Tags', $langId),
         static::PRODUCT_SPECIFICATION=>Labels::getLabel('LBL_Product_Specifications', $langId),
         static::PRODUCT_SHIPPING=>Labels::getLabel('LBL_Product_Shipping', $langId),
         );
@@ -117,7 +117,7 @@ class Importexport extends ImportexportCommon
         static::SELLER_PROD_VOLUME_DISCOUNT=>Labels::getLabel('LBL_Volume_Discount', $langId),
         static::SELLER_PROD_BUY_TOGTHER=>Labels::getLabel('LBL_Buy_togther', $langId),
         static::SELLER_PROD_RELATED_PRODUCT=>Labels::getLabel('LBL_Related_products', $langId),
-        static::SELLER_PROD_POLICY=>Labels::getLabel('LBL_Seller_Product_Policy', $langId),
+        //static::SELLER_PROD_POLICY=>Labels::getLabel('LBL_Seller_Product_Policy', $langId),
         );
         return $arr;
     }
@@ -1367,7 +1367,7 @@ class Importexport extends ImportexportCommon
         $taxCategoryArr = array();
         $countryArr = array();
         $userProdUploadLimit = $usersCrossedUploadLimit = array();
-
+        $userId = 0; 
         if (!$this->settings['CONF_USE_PRODUCT_TYPE_ID']) {
             $prodTypeIdentifierArr = Product::getProductTypes($langId);
             $prodTypeIdentifierArr = array_flip($prodTypeIdentifierArr);

@@ -1,6 +1,20 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
 $productFrm->setFormTagAttribute('class', 'form form--horizontal');
 $productFrm->setFormTagAttribute('onsubmit', 'setUpProductAttributes(this); return(false);');
+
+$fld = $productFrm->getField('product_featured');
+$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+
+if($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
+$fld = $productFrm->getField('ps_free');
+$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+
+$fld = $productFrm->getField('product_cod_enabled');
+$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+}
 ?>
 <div class="row justify-content-center">
      <div class="col-md-12">
