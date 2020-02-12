@@ -895,7 +895,7 @@ class AttachedFile extends MyAppModel
         $time = strtotime($dateTime);
         return ($time > 0) ? '?t=' . $time : '';
     }
-    
+
     public static function uploadErrorMessage($code, $langId)
     {
         switch ($code) {

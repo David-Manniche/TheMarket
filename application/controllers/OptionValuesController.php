@@ -104,10 +104,13 @@ class OptionValuesController extends LoggedUserController
                 Labels::getLabel('MSG_INVALID_REQUEST_ID', $this->siteLangId)
             );
         } else {
-            if (!$row = UserPrivilege::canSellerEditOption($option_id, $this->siteLangId)) {
+            $option = new Option();
+            if (!$row = $option->getOption($option_id)) {
                 Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
                 FatUtility::dieWithError(Message::getHtml());
             }
+            $optionName = (isset($row['option_name'])) ? $row['option_name'][$this->siteLangId] : $row['option_identifier'];
+            $this->set('optionName', $optionName);
         }
         $optionvalue_id = FatUtility::int($optionvalue_id);
         $optionValueFrm = $this->getForm($option_id, $optionvalue_id);
@@ -203,7 +206,7 @@ class OptionValuesController extends LoggedUserController
             );
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         if (!$optionValueObj->deleteRecord()) {
             Message::addErrorMessage($optionValueObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
@@ -230,7 +233,7 @@ class OptionValuesController extends LoggedUserController
             $this->_template->render(false, false, 'json-success.php');
         }
     }
-    
+
     public function getTranslatedData()
     {
         $dataToTranslate = FatApp::getPostedData('optionvalue_name1', FatUtility::VAR_STRING, '');

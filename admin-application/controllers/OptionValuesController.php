@@ -114,6 +114,15 @@ class OptionValuesController extends AdminBaseController
             FatUtility::dieWithError(
                 Labels::getLabel('MSG_INVALID_REQUEST_ID', $this->adminLangId)
             );
+        } else {
+            $option = new Option();
+            if (!$row = $option->getOption($option_id)) {
+                FatUtility::dieWithError(
+                    Labels::getLabel('MSG_INVALID_ACCESS', $this->adminLangId)
+                );
+            }
+            $optionName = (isset($row['option_name'])) ? $row['option_name'][$this->adminLangId] : $row['option_identifier'];
+            $this->set('optionName', $optionName);
         }
 
         $optionvalue_id = FatUtility::int($optionvalue_id);

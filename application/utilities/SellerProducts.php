@@ -30,7 +30,7 @@ trait SellerProducts
     public function sellerProducts($product_id = 0)
     {
         $product_id = FatUtility::int($product_id);
-        if ($product_id) {
+        if (0 < $product_id) {
             $row = Product::getAttributesById($product_id, array('product_id'));
             if (!$row) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
@@ -163,7 +163,8 @@ trait SellerProducts
             Message::addErrorMessage(Labels::getLabel("LBL_Please_Upgrade_your_package_to_add_new_products", $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        $productRow = Product::getAttributesById($product_id, array('product_active', 'product_seller_id', 'product_added_by_admin_id', 'product_cod_enabled', 'product_type', 'product_approved', 'product_min_selling_price'));
+
+        $productRow = Product::getProductDataById($this->siteLangId, $product_id, array('IFNULL(product_name, product_identifier) as product_name', 'product_active','product_seller_id','product_added_by_admin_id','product_cod_enabled','product_type','product_approved', 'product_min_selling_price'));
 
         if (!$productRow) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
@@ -231,12 +232,18 @@ trait SellerProducts
         if ('' === $returnAge || '' === $cancellationAge) {
             $sellerProductRow['use_shop_policy'] = 1;
         }
-        $languages = Language::getAllNames();
-        foreach ($languages as $langId => $langName) {
-            $langData = SellerProduct::getAttributesByLangId($langId, $selprod_id);
-            $sellerProductRow['selprod_title' . $langId] = $langData['selprod_title'];
-            $sellerProductRow['selprod_comments' . $langId] = $langData['selprod_comments'];
+
+        if ($selprod_id > 0) {
+            $languages = Language::getAllNames();
+            foreach ($languages as $langId => $langName) {
+                $langData = SellerProduct::getAttributesByLangId($langId, $selprod_id);
+                $sellerProductRow['selprod_title'.$langId] = $langData['selprod_title'];
+                $sellerProductRow['selprod_comments'.$langId] = $langData['selprod_comments'];
+            }
+        } else {
+            $sellerProductRow['selprod_title'.FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1)] = $productRow['product_name'];
         }
+
         $frmSellerProduct->fill($sellerProductRow);
         $shippedBySeller = 0;
         if (Product::isProductShippedBySeller($product_id, $productRow['product_seller_id'], UserAuthentication::getLoggedUserId())) {
@@ -1491,6 +1498,11 @@ trait SellerProducts
     {
         $selprod_id = FatUtility::int($selprod_id);
         $url_rewriting_id = FatUtility::int($url_rewriting_id);
+        
+        if ($custom_url == '') {
+            Message::addErrorMessage(Labels::getLabel("MSG_CUSTOM_URL_CAN'T_BE_EMPTY", $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
         if (!UserPrivilege::canEditSellerProduct($selprod_id)) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -2052,7 +2064,7 @@ trait SellerProducts
             $fld->requirements()->setRange($productData['product_min_selling_price'], 9999999999);
             $fld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Minimum_selling_price_for_this_product_is', $this->siteLangId) . ' ' . CommonHelper::displayMoneyFormat($productData['product_min_selling_price'], true, true));
 
-            $fld->htmlAfterField = '<small class="text--small">' . Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates', $this->siteLangId) . '</small> <br><small class="text--small">' . Labels::getLabel('LBL_Min_Selling_price', $this->siteLangId) . CommonHelper::displayMoneyFormat($productData['product_min_selling_price'], true, true) . '</small>';
+            $fld->htmlAfterField='<small class="text--small">'.Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates', $this->siteLangId).'</small> <small class="text--small">'.Labels::getLabel('LBL_Min_Selling_price', $this->siteLangId).' '. CommonHelper::displayMoneyFormat($productData['product_min_selling_price'], true, true).'</small>';
         }
         $frm->addIntegerField(Labels::getLabel('LBL_Quantity', $this->siteLangId), 'selprod_stock');
         $frm->addDateField(Labels::getLabel('LBL_Date_Available', $this->siteLangId), 'selprod_available_from', '', array('readonly' => 'readonly'))->requirements()->setRequired();
@@ -2579,7 +2591,7 @@ trait SellerProducts
             $srchFrm->addHiddenField('', 'selprod_id', $selProd_id);
             $srchFrm->fill(array('keyword' => $productsTitle[$selProdId]));
         }
-        
+
         $relProdFrm = $this->getRelatedProductsForm();
         $this->set("dataToEdit", $dataToEdit);
         $this->set("frmSearch", $srchFrm);

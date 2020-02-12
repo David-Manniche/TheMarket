@@ -2141,18 +2141,7 @@ class SellerController extends SellerBaseController
           } */
 
         $fileHandlerObj = new AttachedFile();
-        if (!$res = $fileHandlerObj->saveAttachment(
-            $_FILES['cropped_image']['tmp_name'],
-            $file_type,
-            $shop_id,
-            0,
-            $_FILES['cropped_image']['name'],
-            -1,
-            $unique_record,
-            $lang_id,
-            $slide_screen
-        )
-        ) {
+        if (!$res = $fileHandlerObj->saveAttachment($_FILES['cropped_image']['tmp_name'], $file_type, $shop_id, 0, $_FILES['cropped_image']['name'], -1, $unique_record, $lang_id, $slide_screen)) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }

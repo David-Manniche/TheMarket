@@ -974,6 +974,8 @@ class HomeController extends MyAppController
            'secondaryInverseThemeColor' => FatApp::getConfig('CONF_SECONDARY_INVERSE_APP_THEME_COLOR', FatUtility::VAR_STRING, ''),
         ];
 
+        $data['isWishlistEnable'] = FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1);
+
         $this->set('data', $data);
         $this->_template->render();
     }

@@ -11,7 +11,6 @@ class LoggedUserController extends MyAppController
         $userObj = new User(UserAuthentication::getLoggedUserId());
 
         $userInfo = $userObj->getUserInfo(array(), false, false);
-
         if (false == $userInfo || (!UserAuthentication::isGuestUserLogged() && $userInfo['credential_active'] != applicationConstants::ACTIVE)) {
             if (FatUtility::isAjaxCall()) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Session_seems_to_be_expired', CommonHelper::getLangId()));
@@ -52,7 +51,7 @@ class LoggedUserController extends MyAppController
         $status = SmsTemplate::getTpl(SmsTemplate::LOGIN, 0, 'stpl_status');
         $smsPluginStatus = (false != $active && !empty($active) && 0 < $status ? applicationConstants::YES : applicationConstants::NO);
         
-        if (false === $smsPluginStatus && empty($userInfo['credential_email'])) {
+        if ((empty($userInfo['user_phone']) || false === $smsPluginStatus) && empty($userInfo['credential_email'])) {
             $message = Labels::getLabel('MSG_Please_Configure_Your_Email', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);

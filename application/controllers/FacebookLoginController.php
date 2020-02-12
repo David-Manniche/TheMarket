@@ -44,7 +44,7 @@ class FacebookLoginController extends SocialMediaAuthController
     private function getRequestUri()
     {
         $permissions = ['email', 'public_profile'];
-        return $this->helper->getLoginUrl(CommonHelper::generateFullUrl(static::KEY_NAME), $permissions);
+        return $this->helper->getLoginUrl(CommonHelper::generateFullUrl(static::KEY_NAME, 'index', [], '', false), $permissions);
     }
 
     private function verifyAccessToken($accessToken)
