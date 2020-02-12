@@ -356,7 +356,7 @@ class GuestAdvertiserController extends MyAppController
         $fld1->requirements()->setRequired();
         $fld1->requirements()->setCompareWith('user_password', 'eq', Labels::getLabel('LBL_PASSWORD', $this->siteLangId));
 
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_SUBMIT', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SUBMIT', $this->siteLangId));
 
         return $frm;
     }

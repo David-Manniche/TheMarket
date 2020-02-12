@@ -2746,7 +2746,7 @@ class AccountController extends LoggedUserController
 
         $frm->addTextArea(Labels::getLabel('M_Bank_Address', $this->siteLangId), 'ub_bank_address', '');
         $frm->addHtml('bank_info_safety_text', 'bank_info_safety_text', '<span class="text--small">' . Labels::getLabel('Lbl_Your_Bank/Card_info_is_safe_with_us', $this->siteLangId) . '</span>');
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $this->siteLangId));
         return $frm;
     }
 
@@ -3200,7 +3200,7 @@ class AccountController extends LoggedUserController
         $frm = new Form('frmBankInfo');
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->siteLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Auto_Renew_Subscription', $this->siteLangId), 'user_autorenew_subscription', $activeInactiveArr, '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $this->siteLangId));
         return $frm;
     }
 
