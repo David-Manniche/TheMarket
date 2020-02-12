@@ -2123,46 +2123,25 @@ class AccountController extends LoggedUserController
         return true;
     }
 
-    private function toggleProductStatus($selprodId)
+    public function toggleProductStatus(int $selprodId, int $status)
     {
         $this->isValidSelProd($selprodId);
 
-        $loggedUserId = UserAuthentication::getLoggedUserId();
-        $db = FatApp::getDb();
-
-        $action = 'N'; //nothing happened
-        $srch = new UserFavoriteProductSearch();
-        $srch->doNotCalculateRecords();
-        $srch->doNotLimitRecords();
-        $srch->addCondition('ufp_user_id', '=', $loggedUserId);
-        $srch->addCondition('ufp_selprod_id', '=', $selprodId);
-        $rs = $srch->getResultSet();
-        if (!$row = $db->fetch($rs)) {
-            $prodObj = new Product();
-            if (!$prodObj->addUpdateUserFavoriteProduct($loggedUserId, $selprodId)) {
-                $message = Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId);
-                if (true === MOBILE_APP_API_CALL) {
-                    FatUtility::dieJsonError($message);
-                }
-                Message::addErrorMessage($message);
-                FatUtility::dieWithError(Message::getHtml());
-            }
-            $action = 'A'; //Added to favorite
-            $this->set('msg', Labels::getLabel('LBL_Product_has_been_marked_as_favourite_successfully', $this->siteLangId));
-        } else {
-            if (!$db->deleteRecords(Product::DB_TBL_PRODUCT_FAVORITE, array('smt' => 'ufp_user_id = ? AND ufp_selprod_id = ?', 'vals' => array($loggedUserId, $selprodId)))) {
-                $message = Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId);
-                if (true === MOBILE_APP_API_CALL) {
-                    FatUtility::dieJsonError($message);
-                }
-                Message::addErrorMessage($message);
-                FatUtility::dieWithError(Message::getHtml());
-            }
-            $action = 'R'; //Removed from favorite
-            $this->set('msg', Labels::getLabel('LBL_Product_has_been_removed_from_favourite_list', $this->siteLangId));
+        switch ($status) {
+            case applicationConstants::ACTIVE:
+                $this->markAsFavorite($selprodId, false);
+                $this->set('msg', Labels::getLabel('MSG_Product_has_been_marked_as_favourite_successfully', $this->siteLangId));
+                break;
+            case applicationConstants::INACTIVE:
+                $this->removeFromFavorite($selprodId, false);
+                $this->set('msg', Labels::getLabel('MSG_Product_has_been_removed_from_favourite_list', $this->siteLangId));
+                break;
+            default:
+                FatUtility::dieJsonError(Labels::getLabel('MSG_UNKNOWN_ACTION', $this->siteLangId));
+                break;
         }
 
-        $this->set('action', $action);
+        $this->_template->render();
     }
 
     public function markAsFavorite($selprodId, $renderView = true)
