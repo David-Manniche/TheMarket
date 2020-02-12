@@ -750,25 +750,38 @@ $(document).ready(function () {
 			});
 		});
 	}
-	toggleProductFavorite = function (product_id, el) {
+	
+	markAsFavorite = function (selProdId) {
 		if (isUserLogged() == 0) {
 			loginPopUpBox();
 			return false;
 		}
-		var data = 'product_id=' + product_id;
 		$.mbsmessage.close();
-		fcom.updateWithAjax(fcom.makeUrl('Account', 'toggleProductFavorite'), data, function (ans) {
+		fcom.updateWithAjax(fcom.makeUrl('Account', 'markAsFavorite', [selProdId]), '', function (ans) {
 			if (ans.status) {
-				if (ans.action == 'A') {
-					$(el).addClass("is-active");
-					$("[data-id=" + product_id + "]").addClass("is-active");
-					$("[data-id=" + product_id + "] span").attr('title', langLbl.RemoveProductFromFavourite);
-				} else if (ans.action == 'R') {
-					$("[data-id=" + product_id + "]").removeClass("is-active");
-					$("[data-id=" + product_id + "] span").attr('title', langLbl.AddProductToFavourite);
-				}
+				$("[data-id=" + selProdId + "]").addClass("is-active");
+				$("[data-id=" + selProdId + "]").attr("onclick", "removeFromFavorite(" + selProdId + ")");
+				$("[data-id=" + selProdId + "] span").attr('title', langLbl.RemoveProductFromFavourite);
 			}
 		});
+	};
+	
+	removeFromFavorite = function (selProdId, callbackFunction = false) {
+		if (isUserLogged() == 0) {
+			loginPopUpBox();
+			return false;
+		}
+		$.mbsmessage.close();
+		fcom.updateWithAjax(fcom.makeUrl('Account', 'removeFromFavorite', [selProdId]), '', function (ans) {
+			if (ans.status) {
+				$("[data-id=" + selProdId + "]").removeClass("is-active");
+				$("[data-id=" + selProdId + "]").attr("onclick", "markAsFavorite(" + selProdId + ")");
+				$("[data-id=" + selProdId + "] span").attr('title', langLbl.AddProductToFavourite);
+			}
+		});
+		if (callbackFunction !== false) {
+			window[callbackFunction]();
+		}
 	};
 
 	guestUserFrm = function () {
