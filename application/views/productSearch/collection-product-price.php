@@ -1,4 +1,4 @@
-  <div class="products__price"><?php echo CommonHelper::displayMoneyFormat($product['general']['theprice']); ?>
+  <div class="products__price"><?php echo CommonHelper::displayMoneyFormat($product['_source']['general']['theprice']); ?>
                   <?php if(isset($product['special_price_found'])){ ?>
                   <span class="products__price_old"> <?php echo CommonHelper::displayMoneyFormat($product['selprod_price']); ?></span>
                   <div class="product_off"><?php echo CommonHelper::showProductDiscountedText($product, $siteLangId); ?></div>

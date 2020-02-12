@@ -199,6 +199,7 @@ class ProductsController extends MyAppController
     {
         $db = FatApp::getDb();
         $headerFormParamsAssocArr = FilterHelper::getParamsAssocArr();
+		
         $categoryId = 0;
         if (array_key_exists('category', $headerFormParamsAssocArr)) {
             $categoryId = FatUtility::int($headerFormParamsAssocArr['category']);
@@ -210,7 +211,7 @@ class ProductsController extends MyAppController
             $keyword = $headerFormParamsAssocArr['keyword'];
             $langIdForKeywordSeach = $this->siteLangId;
         }
-
+		
         $cacheKey = FilterHelper::getCacheKey($this->siteLangId, $headerFormParamsAssocArr);
 
         $headerFormParamsAssocArr['doNotJoinSpecialPrice'] = true;
@@ -1665,7 +1666,7 @@ class ProductsController extends MyAppController
             'categoryId'=>$categoryId,
             'postedData'=>$get,
             'page'=>$page,
-            'pageCount'=>$srch->pages(),
+            'pageCount' => $srch->pages(),
             'pageSize'=>$pageSize,
             'recordCount'=>$srch->recordCount(),
             'siteLangId'=>$this->siteLangId

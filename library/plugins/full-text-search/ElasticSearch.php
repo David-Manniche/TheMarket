@@ -47,7 +47,7 @@ class ElasticSearch extends FullTextSearchBase
     *	@size => same as limit field in mysql
     */
 
-    public function search($queryData, $from = 0, $size = 12, $aggregation = false, $source = array(), $groupByField = null, $sort = array())
+    public function search($queryData, $from, $size, $aggregation = false, $source = array(), $groupByField = null, $sort = array())
     {
         $result = array();
         $params = [
@@ -71,11 +71,9 @@ class ElasticSearch extends FullTextSearchBase
                 'min_price' => [ 'min' => ['field' => 'general.theprice' ] ],
                 'max_price' => [ 'max' => ['field' => 'general.theprice' ] ]
             ];
-        }
-
+        }		
         try {
             $results = $this->client->search($params);
-			
         } catch (exception $e) {
 			
             $this->setErrorMessage($e);

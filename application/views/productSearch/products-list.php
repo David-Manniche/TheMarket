@@ -4,11 +4,11 @@ if ($products) {
     $showActionBtns = !empty($showActionBtns) ? $showActionBtns : false;
     foreach ($products as $product) {
 		
-        $productUrl = CommonHelper::generateUrl('Products', 'View', array($product['general']['selprod_id'])); ?> <div class="col-xl-3 col-lg-4 col-md-<?php echo (isset($colMdVal) && $colMdVal > 0)?$colMdVal:4; ?> mb-3">
+        $productUrl = CommonHelper::generateUrl('Products', 'View', array($product['_source']['general']['selprod_id'])); ?> <div class="col-xl-3 col-lg-4 col-md-<?php echo (isset($colMdVal) && $colMdVal > 0)?$colMdVal:4; ?> mb-3">
     <!--product tile-->
     <div class="products">
         <div class="products__quickview">
-            <a onClick='quickDetail(<?php echo $product['general']['selprod_id']; ?>)' class="modaal-inline-content">
+            <a onClick='quickDetail(<?php echo $product['_source']['general']['selprod_id']; ?>)' class="modaal-inline-content">
             <span class="svg-icon">
                 <svg class="svg">
                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#quick-view" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#quick-view"></use>
@@ -21,11 +21,11 @@ if ($products) {
         <div class="products__body"> 
             <?php $this->includeTemplate('_partial/collection-ui.php', array('product'=>$product,'siteLangId'=>$siteLangId, 'showActionBtns'=> $showActionBtns), false); ?> 
         <div class="products__img">
-                <?php $uploadedTime = AttachedFile::setTimeParam($product['general']['product_updated_on']);?> <a title="<?php echo $product['inventories'][0]['selprod_title']; ?>"
-                    href="<?php echo !isset($product['promotion_id'])? CommonHelper::generateUrl('Products', 'View', array($product['general']['selprod_id'])):CommonHelper::generateUrl('Products', 'track', array($product['promotion_record_id']))?>">
+                <?php $uploadedTime = AttachedFile::setTimeParam($product['_source']['general']['product_updated_on']);?> <a title="<?php echo $product['_source']['inventories'][0]['selprod_title']; ?>"
+                    href="<?php echo !isset($product['promotion_id'])? CommonHelper::generateUrl('Products', 'View', array($product['_source']['general']['selprod_id'])):CommonHelper::generateUrl('Products', 'track', array($product['promotion_record_id']))?>">
                     <img data-ratio="1:1 (500x500)"
-                        src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'product', array($product['general']['product_id'], "CLAYOUT3", $product['general']['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg'); ?>"
-                        alt="<?php echo $product['categories'][0]['prodcat_name']; ?>">
+                        src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'product', array($product['_source']['general']['product_id'], "CLAYOUT3", $product['_source']['general']['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg'); ?>"
+                        alt="<?php echo $product['_source']['categories'][0]['prodcat_name']; ?>">
                 </a>
             </div>
         </div>
@@ -35,10 +35,10 @@ if ($products) {
                     </svg></i> <span class="rate"><?php echo round($product['prod_rating'],1);?></span> <?php if(round($product['prod_rating'])==0 ){  ?> <span class="be-first"> <a
                         href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Be_the_first_to_review_this_product', $siteLangId); ?> </a> </span> <?php } ?> </div> <?php } */ ?>
                         <div class="products__category">
-                            <a href="<?php echo CommonHelper::generateUrl('Category', 'View', array($product['prodcat_id'])); ?>"><?php echo html_entity_decode($product['categories'][0]['prodcat_name'], ENT_QUOTES, 'UTF-8'); ?> </a>
+                            <a href="<?php echo CommonHelper::generateUrl('Category', 'View', array($product['prodcat_id'])); ?>"><?php echo html_entity_decode($product['_source']['categories'][0]['prodcat_name'], ENT_QUOTES, 'UTF-8'); ?> </a>
                         </div>
-            <div class="products__title"><a title="<?php echo $product['inventories'][0]['selprod_title']; ?>"
-                    href="<?php echo CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])); ?>"><?php echo (mb_strlen($product['inventories'][0]['selprod_title']) > 50) ? mb_substr($product['inventories'][0]['selprod_title'], 0, 50)."..." : $product['inventories'][0]['selprod_title']; ?>
+            <div class="products__title"><a title="<?php echo $product['_source']['inventories'][0]['selprod_title']; ?>"
+                    href="<?php echo CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])); ?>"><?php echo (mb_strlen($product['_source']['inventories'][0]['selprod_title']) > 50) ? mb_substr($product['_source']['inventories'][0]['selprod_title'], 0, 50)."..." : $product['_source']['inventories'][0]['selprod_title']; ?>
                 </a></div> <?php $this->includeTemplate('productSearch/collection-product-price.php', array('product'=> $product, 'siteLangId'=>$siteLangId), false); ?>
         </div>
     </div>    

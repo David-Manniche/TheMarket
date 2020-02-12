@@ -6,34 +6,47 @@ class FullTextSearch extends FatModel
     private $fullTextSearch;
     private $search;
     private $fields;
+	private $groupByFields;
+	private $sortField;
 
     /* public const SIZE = 50;
     public const SEARCHRESULTSIZE = 12; */
     
     public function __construct($langId)
     {
-        $langId = FatUtility::int($langId);
+        $this->langId = FatUtility::int($langId);
         if (1 > $langId) {
             trigger_error(Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId()), E_USER_ERROR);
         }
         
         $defaultPlugin = $this->getDefaultPlugin();
         if (false == $defaultPlugin) {
-            trigger_error(Labels::getLabel('LBL_PLUGIN_NOT_ACTIVATED', $this->$langId), E_USER_ERROR);
+            trigger_error(Labels::getLabel('LBL_PLUGIN_NOT_ACTIVATED', $this->langId), E_USER_ERROR);
         }
         
         require_once CONF_INSTALLATION_PATH . 'library/plugins/full-text-search/' . $defaultPlugin . '.php';
-        $this->fullTextSearch = new $defaultPlugin($this->$langId);
+        $this->fullTextSearch = new $defaultPlugin($this->langId);
         $this->pageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
-        $this->search = [];
-        $this->fields = [];
+        $this->search 	 = [];
+        $this->fields    = [];
+		$this->sortField = [];
     }
     
     public function setFields($arr = [])
     {
         $this->fields = $arr;
     }
-
+	
+	public function setSortFields($arr = [])
+	{
+		$this->sortField = $arr;
+	}
+	
+	public function setGroupByField($field)
+	{
+		$this->groupByFields = $field;
+	}
+	
     public function setPageNumber($page)
     {
         $this->page = FatUtility::int($page);
@@ -49,7 +62,6 @@ class FullTextSearch extends FatModel
         if (empty($keyword)) {
             return false;
         }
-        
         $textSearch = 	[ 'bool' =>
                             [ 'should'=>
                                 [
@@ -82,7 +94,15 @@ class FullTextSearch extends FatModel
                                 ]
                             ]
                         ];
-        array_push($this->search["must"], $textSearch);
+						
+		if(array_key_exists('must',$this->search))
+		{
+			array_push($this->search["must"], $textSearch);
+		}
+		else
+		{
+			$this->search["must"][0] = $textSearch;
+		}
     }
     
     public function addBrandConditions($brands = [])
@@ -95,21 +115,65 @@ class FullTextSearch extends FatModel
         foreach ($brands as $key => $brand) {
             $brandsFilters['bool']['should'][$key] = ['match' => ['brand.brand_id' => $brand ]];
         }
-        array_push($this->search["must"], $brandsFilters);
+		if(array_key_exists('must',$this->search))
+		{
+			array_push($this->search["must"], $brandsFilters);
+		}
+		else
+		{
+			$this->search["must"][0] = $brandsFilters;
+		}
         //array('brand.brand_id','brand.brand_name'), 'brand.brand_name', array('brand.brand_name.keyword' => 'asc')
     }
+	
+	public function addPriceFilters($minPrice,$maxPrice)
+	{
+		if(empty($minPrice) && empty($maxPrice))
+		{
+			return;
+		}
+		
+		$priceFilters['range'] = [
+								'general.theprice'=> [ 'gte' => $minPrice, 'lte' => $maxPrice ]
+							]; 
+							
+		if(array_key_exists('must',$this->search))
+		{
+			array_push($this->search["must"], $priceFilters);
+		}
+		else
+		{
+			$this->search["must"][0] = $priceFilters;
+		}
+	}
+	
+	public function addCategoryFilter($categoryId)
+	{
+		$categoryId = FatUtility::int($categoryId);
+		
+		if ($categoryId) 
+		{
+			$catCode = ProductCategory::getAttributesById($categoryId, 'prodcat_code');
+			$categoryFilter['wildcard'] = ['categories.prodcat_code'=> [ "value" => $catCode.'*',"boost"=> "2.0", "rewrite"=>"constant_score" ] ];
+			if(array_key_exists('must',$this->search))
+			{
+				array_push($this->search["must"], $categoryFilter);
+			}
+			else
+			{
+				$this->search["must"][0] = $categoryFilter;
+			}
+		}        
+	}
     
-    public function fetch($page, $aggregationPrice = false)
+    public function fetch($aggregationPrice = false)
     {
-        /* if (array_key_exists('keyword', $criteria)) {
-            $this->addKeywordCondition($criteria['keyword']);
-        }
-
-        if (array_key_exists('brand', $criteria)) {
-            $this->addBrandConditions($criteria['brand']);
-        } */
-        
-        return $this->fullTextSearch->search($this->search, $this->page, $this->pageSize, $aggregationPrice, $this->fields);
+        if(empty($this->search))
+		{
+			$this->search = array('match_all' => array());
+		}
+		
+        return $this->fullTextSearch->search($this->search, $this->page, $this->pageSize, $aggregationPrice, $this->fields, $this->groupByFields,$this->sortField);
     }
      
     
@@ -248,10 +312,10 @@ class FullTextSearch extends FatModel
     public static function insertOptions($productId, $langId)
     {
         $allOptions = array();
-        
+		
         $productId = FatUtility::int($productId);
         $langId = FatUtility::int($langId);
-        
+		
         $srch = new SearchBase(Product::DB_PRODUCT_TO_OPTION);
         $srch->addCondition(Product::DB_PRODUCT_TO_OPTION_PREFIX . 'product_id', '=', $productId);
         $srch->joinTable(OptionValue::DB_TBL, 'LEFT JOIN', Product::DB_PRODUCT_TO_OPTION_PREFIX . 'option_id = opval.'. OptionValue::DB_TBL_PREFIX .'option_id', 'opval');
