@@ -16001,7 +16001,7 @@ input:checked + .slider:before {
     display: flex; }
     .tabs ul li {
       display: inline-block;
-      margin-right: 2.5rem;
+      margin-right: 2rem;
       position: relative;
       white-space: nowrap;
       font-weight: 400;
@@ -16577,6 +16577,10 @@ a:hover, .shop-nav ul li.is--active a {
   line-height: 1.2;
   border-radius: 4px;
   padding: 0.8rem; }
+
+.docs-buttons {
+  display: flex;
+  justify-content: center; }
 
 .cards {
   -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.1);
@@ -30424,6 +30428,9 @@ input.sp-input {
     -webkit-padding-start: 0;
     -moz-padding-start: 0;
     padding-left: 0; } }
+.product-tag.scroll-y {
+  max-height: 250px; }
+
 .quick-view {
   height: 100%;
   z-index: 15;

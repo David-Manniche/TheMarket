@@ -1,10 +1,10 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php if(!empty($optionCombinations)){  ?>
-    <table width="100%" class="table table-bordered">                             
+    <table width="100%" class="table table-scroll">                             
         <thead>
             <tr>
                 <th width="70%"><?php echo Labels::getLabel('LBL_Variants',$adminLangId);?></th>
-                <th><?php echo Labels::getLabel('LBL_EAN/UPC_code',$adminLangId);?></th>									
+                <th width="30%"><?php echo Labels::getLabel('LBL_EAN/UPC_code',$adminLangId);?></th>									
             </tr>
         </thead>
         <tbody>
