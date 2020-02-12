@@ -4,7 +4,6 @@
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-8"> 
-                <h3 class="form__heading"><?php echo Labels::getLabel('LBL_Option_Groups', $siteLangId); ?></h3>
                  <div class="row">
                      <div class="col-md-12">
                          <div class="field-set">
@@ -37,8 +36,7 @@
                     $tagData[$key]['value'] = $data['tag_identifier'];
                 }
             ?>
-            <div class="col-md-4"> 
-                <h3 class="form__heading"><?php echo Labels::getLabel('LBL_Tags', $siteLangId); ?></h3>                              
+            <div class="col-md-4">                             
                 <div class="row">
                      <div class="col-md-12">
                          <div class="field-set">

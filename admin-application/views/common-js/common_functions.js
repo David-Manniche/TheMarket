@@ -683,6 +683,12 @@ $(document).ready(function() {
         if ($(".selectItem--js").length == $(".selectItem--js:checked").length) {
             $(".selectAll-js").prop("checked", true);
         }
+        
+        if ($(".selectItem--js:checked").length == 0) {
+            $(".toolbar-btn-js").addClass('d-none');
+        }else{
+            $(".toolbar-btn-js").removeClass('d-none');
+        }                
     });
 
 });
@@ -715,7 +721,7 @@ function getNotifications() {
     });
 }
 
-function selectAll(obj) {
+function selectAll(obj) {   
     $(".selectItem--js").each(function() {
         if (obj.prop("checked") == false) {
             $(this).prop("checked", false);
@@ -723,6 +729,12 @@ function selectAll(obj) {
             $(this).prop("checked", true);
         }
     });
+    
+    if ($(obj).prop("checked") == false) { 
+        $(".toolbar-btn-js").addClass('d-none');
+    }else{  
+        $(".toolbar-btn-js").removeClass('d-none');
+    }
 }
 
 function formAction(frm, callback) {

@@ -757,6 +757,7 @@ class ProductsController extends AdminBaseController
         }
         $imagesFrm = $this->getImagesFrm($productId, $this->adminLangId);
         $this->set('imagesFrm', $imagesFrm);
+        $this->set('productId', $productId);
         $this->_template->render(false, false);
     }
 
@@ -991,6 +992,7 @@ class ProductsController extends AdminBaseController
         $frm->addHiddenField('', 'product_brand_id');
         $frm->addHiddenField('', 'ptc_prodcat_id');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->adminLangId));
+        $frm->addButton("", "btn_discard", Labels::getLabel('LBL_Discard', $this->adminLangId), array('onclick' => 'goToProduct();'));
         return $frm;
     }
 
@@ -1095,6 +1097,7 @@ class ProductsController extends AdminBaseController
         $frm->addHiddenField('', 'product_seller_id');
         $frm->addHiddenField('', 'product_id', $productId);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->adminLangId));
+        $frm->addButton("", "btn_back", Labels::getLabel('LBL_Back', $this->adminLangId), array('onclick' => 'productInitialSetUpFrm('.$productId.');'));
         return $frm;
     }
 
@@ -1313,11 +1316,12 @@ class ProductsController extends AdminBaseController
             $weightFld->requirements()->setRange('0.01', '9999999999');
             /* ] */
         }
-        $frm->addTextBox(Labels::getLabel('LBL_Country_the_Product_is_being_shipped_from', $this->adminLangId), 'shipping_country');
+        $frm->addTextBox(Labels::getLabel('LBL_Country_of_Origin', $this->adminLangId), 'shipping_country');
         $frm->addHtml('', '', '<table id="tab_shipping" width="100%" class="table table-bordered"></table><div class="gap"></div>');
 
         $frm->addHiddenField('', 'ps_from_country_id');
-        $frm->addHiddenField('', 'product_id', $productId);
+        $frm->addHiddenField('', 'product_id', $productId);        
+        $frm->addButton("", "btn_back", Labels::getLabel('LBL_Back', $this->adminLangId), array('onclick' => 'productOptionsAndTag('.$productId.');'));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->adminLangId));
         return $frm;
     }

@@ -870,6 +870,7 @@ BUTTON SIZING
 	line-height: normal;
 	padding: 7px 10px 7px;
 	min-height: 1%;
+    margin:0 2px;
 }
 
 .btn-sm.themebtn.btn-default {
@@ -4394,6 +4395,7 @@ fieldset[disabled] .field_control.disabled {
 	-webkit-box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.06);
 	box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.06);
 	padding: 20px;
+    min-height:550px;
 }
 
 .togglehead {

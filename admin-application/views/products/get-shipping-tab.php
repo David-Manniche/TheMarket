@@ -4,11 +4,11 @@
 		<td colspan="2" class="nopadding"><table id="shipping" class="table">
 		<thead>
 		<tr>
-		<th width="17%"><?php echo Labels::getLabel('LBL_Ships_To',$adminLangId)?></th>
-		<th width="17%"><?php echo Labels::getLabel('LBL_Shipping_Company',$adminLangId)?></th>
-		<th width="17%"><?php echo Labels::getLabel('LBL_Processing_Time',$adminLangId)?></th>
-		<th width="25%"><?php echo Labels::getLabel('LBL_Cost',$adminLangId) .' ['.CommonHelper::getCurrencySymbol(true).']';?></th>
-		<th width="20%"><?php echo Labels::getLabel('LBL_Each_Additional_Item',$adminLangId).' ['.CommonHelper::getCurrencySymbol(true).']';?> </th>
+		<th width="20%"><?php echo Labels::getLabel('LBL_Destination_Country',$adminLangId)?></th>
+		<th width="25%"><?php echo Labels::getLabel('LBL_Company',$adminLangId)?></th>
+		<th width="39%"><?php echo Labels::getLabel('LBL_Service_Type',$adminLangId)?></th>
+		<th width="8%"><?php echo Labels::getLabel('LBL_Rate',$adminLangId) .' ['.CommonHelper::getCurrencySymbol(true).']';?></th>
+		<th width="8%"><?php echo Labels::getLabel('LBL_Additional_Per_Item',$adminLangId).' ['.CommonHelper::getCurrencySymbol(true).']';?> </th>
 		<th></th>
 		</tr>
 		</thead>
@@ -47,15 +47,15 @@
 			addShipping = function(){
 			
 				html  = '<tr id="shipping-row' + shipping_row + '">';
-				html += "  <td style='position: relative;'><input type='text' name='product_shipping[" + shipping_row + "][country_name]' value='' placeholder='<?php echo Labels::getLabel('LBL_Ships_To',$adminLangId)?>' /><input type='hidden' name='product_shipping[" + shipping_row + "][country_id]' value='' /></td>";
+				html += "  <td style='position: relative;'><input type='text' name='product_shipping[" + shipping_row + "][country_name]' value='' placeholder='<?php echo Labels::getLabel('LBL_Add_Destination_Country',$adminLangId)?>' /><input type='hidden' name='product_shipping[" + shipping_row + "][country_id]' value='' /></td>";
 				
-				html += "  <td style='position: relative;'><input type='text' name='product_shipping[" + shipping_row + "][company_name]' value='' placeholder='<?php echo Labels::getLabel('LBL_Shipping_Company',$adminLangId)?>' /><input type='hidden' name='product_shipping[" + shipping_row + "][company_id]' value='' /></td>";
+				html += "  <td style='position: relative;'><input type='text' name='product_shipping[" + shipping_row + "][company_name]' value='' placeholder='<?php echo Labels::getLabel('LBL_Add_Shipping_Company',$adminLangId)?>' /><input type='hidden' name='product_shipping[" + shipping_row + "][company_id]' value='' /></td>";
 				
-				html += "  <td style='position: relative;'><input type='text' name='product_shipping[" + shipping_row + "][processing_time]' value='' placeholder='<?php echo Labels::getLabel('LBL_Processing_Time',$adminLangId)?>' /><input type='hidden' name='product_shipping[" + shipping_row + "][processing_time_id]' value='' /></td>";
+				html += "  <td style='position: relative;'><input type='text' name='product_shipping[" + shipping_row + "][processing_time]' value='' placeholder='<?php echo Labels::getLabel('LBL_Add_Shipping_Service_Type',$adminLangId)?>' /><input type='hidden' name='product_shipping[" + shipping_row + "][processing_time_id]' value='' /></td>";
 				
-				html += "  <td><input type='text' name='product_shipping[" + shipping_row + "][cost]' value='' placeholder='<?php echo Labels::getLabel('LBL_Cost',$adminLangId)?>' /></td>";
+				html += "  <td><input type='text' name='product_shipping[" + shipping_row + "][cost]' value='' /></td>";
 				
-				html += "<td><input type='text' name='product_shipping[" + shipping_row + "][additional_cost]' value='' placeholder='<?php echo Labels::getLabel('LBL_Each_Additional_Item',$adminLangId)?>' /></td>";
+				html += "<td><input type='text' name='product_shipping[" + shipping_row + "][additional_cost]' value='' /></td>";
 				
 				html += "  <td><button type='button' class='btn btn--secondary ripplelink' title='<?php echo Labels::getLabel('LBL_Remove',$adminLangId)?>' onclick='removeShippingRow(" + shipping_row + ")' ><i class='ion-minus-round'></i></button></td>";
 				

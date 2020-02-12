@@ -46,12 +46,10 @@
             </li>
             <?php } ?>
         </ul>
-        <?php }else{ ?>
-        <ul class="list-inline">
-            <li><?php echo  Labels::getLabel('LBL_No_Records_Found', $adminLangId); ?></li>
-        </ul>
-        <?php } ?>
-    
+        <?php }else{ 
+                $this->includeTemplate('_partial/no-record-found.php', array('adminLangId'=>$adminLangId));
+            } 
+        ?>
     </div>
 </div>
 
