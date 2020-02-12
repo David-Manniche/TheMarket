@@ -227,6 +227,7 @@
 
     .wrapper {
         position: relative;
+        z-index: 1;
         max-width: 1530px;
         margin: 0 auto;
         border-radius: 10px;
@@ -279,14 +280,14 @@
 
         @include media-breakpoint-down(lg) {
             & {
-               margin-#{$start-direction}: 2rem;
+                margin-#{$start-direction}: 2rem;
 
             }
         }
-        
+
         @include media-breakpoint-down(sm) {
             & {
-               margin-#{$start-direction}: 0;
+                margin-#{$start-direction}: 0;
 
             }
         }
@@ -2107,6 +2108,7 @@ input.sp-input {
 
 
 @media only screen and (max-width: 1199px) {
+
     .sidebar,
     .header-dashboard {
         position: fixed;
