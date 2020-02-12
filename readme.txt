@@ -77,6 +77,10 @@ Bugs:
 
 Bugs:
     => 034376 - While entering data in RTL supported languages it is not getting entered in RTL mode.
+    => 034354 - link to product is not there in admin for tags
+    => 033034 - loader is there on address screen when user sign up through FB (number)
+    => 034470 - inventory> digital products> return option is there , which is not needed on digital items
+    => 034409 - Rename "Upsell Products" breadcrumb to "Buy Together Products" on seller product's buy together page.
+    => 034401 - Wrong count of listing on Buy Together and Related Products page in admin
     => 034350 - option name should get displayed on pop-up for which values are adding.
     => 034477 - Cropper JS white background issue
-    => 034354 - link to product is not there in admin for tags

@@ -280,7 +280,7 @@ class SellerProduct extends MyAppModel
         return true;
     }
 
-    public static function searchUpsellProducts($lang_id)
+    public static function searchUpsellProducts($lang_id, $attr = [])
     {
         $splPriceForDate = FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d');
         $srch = new SearchBase(static::DB_TBL_UPSELL_PRODUCTS);
@@ -312,8 +312,16 @@ class SellerProduct extends MyAppModel
         $srch->addCondition('brand.brand_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('brand.brand_deleted', '=', applicationConstants::NO);
 
-        $srch->addMultipleFields(array('upsell_sellerproduct_id', 'selprod_id', 'product_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'selprod_price', 'selprod_stock', 'IFNULL(product_identifier ,product_name) as product_name', 'product_identifier', 'selprod_product_id', 'CASE WHEN m.splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found',
-        'IFNULL(m.splprice_price, selprod_price) AS theprice', 'selprod_min_order_qty', 'product_image_updated_on'));
+        if (!empty($attr)) {
+            if (is_string($attr)) {
+                $srch->addFld($attr);
+            } else {
+                $srch->addMultipleFields($attr);
+            }
+        } else {
+            $srch->addMultipleFields(array('upsell_sellerproduct_id', 'selprod_id', 'product_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'selprod_price', 'selprod_stock', 'IFNULL(product_identifier ,product_name) as product_name', 'product_identifier', 'selprod_product_id', 'CASE WHEN m.splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found', 'IFNULL(m.splprice_price, selprod_price) AS theprice', 'selprod_min_order_qty', 'product_image_updated_on'));
+        }
+
         $srch->addCondition(Product::DB_TBL_PREFIX . 'active', '=', applicationConstants::YES);
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addCondition('product_deleted', '=', applicationConstants::NO);
@@ -723,7 +731,11 @@ class SellerProduct extends MyAppModel
         $srch->joinTable(Product::DB_TBL, 'LEFT JOIN', Product::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_PREFIX . 'product_id');
         $srch->joinTable(Product::DB_TBL . '_lang', 'LEFT JOIN', 'lang.productlang_product_id = ' . static::DB_TBL_LANG_PREFIX . 'selprod_id AND productlang_lang_id = ' . $lang_id, 'lang');
         if (!empty($criteria)) {
-            $srch->addMultipleFields($criteria);
+            if (is_string($criteria)) {
+                $srch->addFld($criteria);
+            } else {
+                $srch->addMultipleFields($criteria);
+            }
         } else {
             $srch->addMultipleFields(array('related_sellerproduct_id', 'selprod_id', 'IFNULL(product_identifier ,product_name) as product_name', 'IFNULL(selprod_title, IFNULL(product_name, product_identifier)) as selprod_title', 'product_identifier', 'selprod_price', 'product_image_updated_on'));
         }

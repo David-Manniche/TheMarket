@@ -2,7 +2,7 @@ $(document).ready(function(){
     $('.dvFocus-js').hide();
     searchRelatedProducts(document.frmSearch);
     $('#related-products').delegate('.remove_related', 'click', function() {
-        $(this).parents('li').remove();
+        $(this).closest('li').remove();
     });
 });
 $(document).on('mouseover', "ul.list-tags li span i", function(){
@@ -173,7 +173,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
 		if(typeof page==undefined || page == null){
 			page =1;
 		}
-		var frm = document.frmSearchSpecialPricePaging;
+		var frm = document.frmSearchRelatedProductsPaging;
 		$(frm.page).val(page);
 		searchRelatedProducts(frm);
 	}

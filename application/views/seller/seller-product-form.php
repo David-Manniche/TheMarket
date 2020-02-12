@@ -12,11 +12,11 @@
                 <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Inventory_Setup', $siteLangId); ?></h2>
             </div>
             <div class="col-auto">
-                
-                    <div class="btn-group">
-                        <a href="<?php echo CommonHelper::generateUrl('seller', 'products');?>" class="btn btn--primary btn--sm "><?php echo Labels::getLabel('LBL_Back_To_My_Inventory', $siteLangId)?></a>
-                    </div>
-                
+                <div class="btn-group">
+                    <a href="<?php echo CommonHelper::generateUrl('seller', 'products');?>" class="btn btn--primary btn--sm ">
+                    <?php echo Labels::getLabel('LBL_Back_To_My_Inventory', $siteLangId)?>
+                    </a>
+                </div>
             </div>
         </div>
         <div class="content-body">

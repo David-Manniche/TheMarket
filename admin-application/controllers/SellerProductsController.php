@@ -1556,6 +1556,8 @@ class SellerProductsController extends AdminBaseController
         $className = ucwords(implode(' ', $arr));
         if ($action == 'index') {
             $nodes[] = array('title' => $className);
+        } else if ($action == 'upsellProducts') {
+            $nodes[] = array('title' => Labels::getLabel('LBL_BUY_TOGETHER_PRODUCTS', $this->adminLangId));
         } else {
             $arr = explode('-', FatUtility::camel2dashed($action));
             $action = ucwords(implode(' ', $arr));
@@ -2893,30 +2895,41 @@ class SellerProductsController extends AdminBaseController
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
         $selProdId = FatApp::getPostedData('selprod_id', FatUtility::VAR_INT, 0);
         $keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
+        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
 
-        $srch = SellerProduct::searchRelatedProducts($this->adminLangId);
+        $db = FatApp::getDb();
 
+        $prodSrch = SellerProduct::searchRelatedProducts($this->adminLangId, 'related_sellerproduct_id');
         if ($keyword != '') {
-            $cnd = $srch->addCondition('product_name', 'like', "%$keyword%");
+            $cnd = $prodSrch->addCondition('product_name', 'like', "%$keyword%");
             $cnd->attachCondition('product_identifier', 'LIKE', '%' . $keyword . '%', 'OR');
         }
 
-        $srch->addFld('if(related_sellerproduct_id = ' . $selProdId . ', 1 , 0) as priority');
-        $srch->addOrder('priority', 'DESC');
-        $srch->setPageNumber($page);
-        $rs = $srch->getResultSet();
-        $db = FatApp::getDb();
+        $prodSrch->setPageNumber($page);
+        $prodSrch->setPageSize($pagesize);
+        $prodSrch->addGroupBy('related_sellerproduct_id');
+        $rs = $prodSrch->getResultSet();
         $relatedProds = $db->fetchAll($rs);
+
         $arrListing = array();
         foreach ($relatedProds as $key => $relatedProd) {
-            $arrListing[$relatedProd['related_sellerproduct_id']][$key] = $relatedProd;
+            $productId = $relatedProd['related_sellerproduct_id'];
+            $srch = SellerProduct::searchRelatedProducts($this->adminLangId);
+            $srch->addFld('if(related_sellerproduct_id = ' . $selProdId . ', 1 , 0) as priority');
+            $srch->addOrder('priority', 'DESC');
+            $srch->addCondition('related_sellerproduct_id', '=', $productId);
+            $srch->doNotCalculateRecords();
+            $srch->doNotLimitRecords();
+            $rs = $srch->getResultSet();
+            $arrListing[$productId] = $db->fetchAll($rs);
         }
+
         $this->set("arrListing", $arrListing);
 
         $this->set('page', $page);
-        $this->set('pageCount', $srch->pages());
+        $this->set('pageCount', $prodSrch->pages());
         $this->set('postedData', FatApp::getPostedData());
-        $this->set('recordCount', $srch->recordCount());
+        $this->set('recordCount', $prodSrch->recordCount());
         $this->set('pageSize', FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10));
         $this->_template->render(false, false);
     }
@@ -2935,15 +2948,16 @@ class SellerProductsController extends AdminBaseController
     {
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($post['selprod_id']);
-        if (!UserPrivilege::canEditSellerProduct($selprod_id)) {
-            Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->adminLangId));
-            FatUtility::dieJsonError(Message::getHtml());
-        }
         if ($selprod_id <= 0) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
             FatApp::redirectUser($_SESSION['referer_page_url']);
         }
-        $relatedProducts = (isset($post['selected_products'])) ? $post['selected_products'] : array();
+
+        if (!isset($post['selected_products']) || !is_array($post['selected_products']) || 1 > count($post['selected_products'])) {
+            FatUtility::dieJsonError(Labels::getLabel("MSG_MUST_SELECT_ATLEAST_ONE_PRODUCT_TO_BUY_TOGETHER", $this->adminLangId));
+        }
+        
+        $relatedProducts = $post['selected_products'];
         unset($post['selprod_id']);
         $sellerProdObj = new sellerProduct();
         if (!$sellerProdObj->addUpdateSellerRelatedProdcts($selprod_id, $relatedProducts)) {
@@ -3058,29 +3072,41 @@ class SellerProductsController extends AdminBaseController
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
         $selProdId = FatApp::getPostedData('selprod_id', FatUtility::VAR_INT, 0);
         $keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
+        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
 
-        $srch = SellerProduct::searchUpsellProducts($this->adminLangId);
+        $db = FatApp::getDb();
+
+        $prodSrch = SellerProduct::searchUpsellProducts($this->adminLangId, 'upsell_sellerproduct_id');
         if ($keyword != '') {
-            $cnd = $srch->addCondition('product_name', 'like', "%$keyword%");
+            $cnd = $prodSrch->addCondition('product_name', 'like', "%$keyword%");
             $cnd->attachCondition('product_identifier', 'LIKE', '%' . $keyword . '%', 'OR');
         }
-        $srch->addFld('if(upsell_sellerproduct_id = ' . $selProdId . ', 1 , 0) as priority');
-        $srch->addOrder('priority', 'DESC');
-        $srch->setPageNumber($page);
-        $rs = $srch->getResultSet();
-        $db = FatApp::getDb();
+        
+        $prodSrch->setPageNumber($page);
+        $prodSrch->setPageSize($pagesize);
+        $prodSrch->addGroupBy('upsell_sellerproduct_id');
+        $rs = $prodSrch->getResultSet();
         $upsellProds = $db->fetchAll($rs);
+
         $arrListing = array();
         foreach ($upsellProds as $key => $upsellProd) {
-            $arrListing[$upsellProd['upsell_sellerproduct_id']][$key] = $upsellProd;
+            $productId = $upsellProd['upsell_sellerproduct_id'];
+            $srch = SellerProduct::searchUpsellProducts($this->adminLangId);
+            $srch->addFld('if(upsell_sellerproduct_id = ' . $selProdId . ', 1 , 0) as priority');
+            $srch->addOrder('priority', 'DESC');
+            $srch->addCondition('upsell_sellerproduct_id', '=', $productId);
+            $srch->doNotCalculateRecords();
+            $srch->doNotLimitRecords();
+            $rs = $srch->getResultSet();
+            $arrListing[$productId] = $db->fetchAll($rs);
         }
 
         $this->set("arrListing", $arrListing);
 
         $this->set('page', $page);
-        $this->set('pageCount', $srch->pages());
+        $this->set('pageCount', $prodSrch->pages());
         $this->set('postedData', FatApp::getPostedData());
-        $this->set('recordCount', $srch->recordCount());
+        $this->set('recordCount', $prodSrch->recordCount());
         $this->set('pageSize', FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10));
         $this->_template->render(false, false);
     }
@@ -3099,9 +3125,6 @@ class SellerProductsController extends AdminBaseController
     {
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($post['selprod_id']);
-        if (!UserPrivilege::canEditSellerProduct($selprod_id)) {
-            FatUtility::dieJsonError(Labels::getLabel("MSG_INVALID_ACCESS", $this->adminLangId));
-        }
         if ($selprod_id <= 0) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
             FatApp::redirectUser($_SESSION['referer_page_url']);
