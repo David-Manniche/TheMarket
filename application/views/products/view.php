@@ -61,14 +61,16 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
 											<h2><?php echo $product['selprod_title'];?></h2>
 											 <div class="favourite-wrapper favourite-wrapper-detail ">
                                 <?php include(CONF_THEME_PATH.'_partial/collection-ui.php'); ?>
-                                <div class="share-button">
-                                    <a href="javascript:void(0)" class="social-toggle"><i class="icn">
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle no-after share-icon" href="javascript:void(0)"  data-toggle="dropdown">
+									<i class="icn">
                                             <svg class="svg">
                                                 <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#share" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#share"></use>
                                             </svg>
-                                        </i></a>
-                                    <div class="social-networks">
-                                        <ul>
+                                    </i>
+										</a>
+                                    <div class="dropdown-menu dropdown-menu-anim">
+                                        <ul class="social-sharing">
                                             <li class="social-facebook">
                                                 <a class="st-custom-button" data-network="facebook" data-url="<?php echo CommonHelper::generateFullUrl('Products', 'view', array($product['selprod_id'])); ?>/">
                                                     <i class="icn"><svg class="svg">

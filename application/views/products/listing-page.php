@@ -122,14 +122,15 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                         </div>
                         <?php } ?>
                         <div class="shop-btn-group">
-                            <div class="share-button">
-                                <a href="javascript:void(0)" class="social-toggle" title="<?php echo Labels::getLabel('Lbl_Share', $siteLangId); ?>"><i class="icn">
-                                        <svg class="svg">
+                            <div  class="dropdown">
+                                <a class="dropdown-toggle no-after share-icon" href="javascript:void(0)"  data-toggle="dropdown">
+								<i class="icn" title="<?php echo Labels::getLabel('Lbl_Share', $siteLangId); ?>">
+								<svg class="svg">
                                             <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#share" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#share"></use>
                                         </svg>
-                                    </i></a>
-                                <div class="social-networks">
-                                    <ul>
+                                </i></a>
+                                <div class="dropdown-menu dropdown-menu-anim">
+                                    <ul class="social-sharing">
                                         <li class="social-facebook">
                                             <a class="social-link st-custom-button" data-network="facebook" data-url="<?php echo CommonHelper::generateFullUrl('Shops', 'view', array($shop['shop_id'])); ?>/">
                                                 <i class="icn"><svg class="svg">

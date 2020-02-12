@@ -131,7 +131,7 @@ html.quick-view--open {
     width: 100%;
     padding: 1em;
     max-width: 450px;
-    min-height: 450px;
+    min-height: 430px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -506,12 +506,7 @@ html.quick-view--open {
             top: calc(50% - 3px);
         }
     }
-
-
 }
-
-
-
 .favourite-wrapper-detail {
     position: static;
     #{$end-direction}: 0;
@@ -519,16 +514,13 @@ html.quick-view--open {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
+    align-items: center;
     z-index: 1;
     margin-bottom: 0.5rem;
-    -webkit-box-align: start;
-    -ms-flex-align: start;
-    align-items: flex-start;
 
     .favourite {
         position: static;
-        margin-bottom: 5px;
-        margin-#{$end-direction}: 5px;
+        margin-#{$end-direction}: 0.5rem;
     }
 }
 
@@ -852,8 +844,10 @@ html.quick-view--open {
     height: 40px;
     line-height: normal;
     overflow: hidden;
-    
-    &-sm{ height: 30px;}
+
+    &-sm {
+        height: 30px;
+    }
 
 
 
@@ -892,7 +886,7 @@ html.quick-view--open {
         }
 
         .decrease {
-            border-#{$end-direction}: $border;            
+            border-#{$end-direction}: $border;
         }
 
     }
@@ -1181,44 +1175,53 @@ html.quick-view--open {
 
 .shop-btn-group {
     max-width: 350px;
-}
 
-.shop-btn-group .btn,
-.shop-btn-group .social-toggle {
-    display: inline-block;
-    width: 42px;
-    height: 42px;
-    border-radius: 4px;
-    margin: 2px;
-    vertical-align: top;
-    padding: 0;
-    min-width: 1%;
-    background-color: #fff !important;
-    border: $border !important;
+    .btn,
+    .share-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 4px;
+        margin: 2px;
+        padding: 0;
+        min-width: 1%;
+        background-color: #fff !important;
+        border: $border !important;
+    }
 
-}
+    .btn {
+        .icn {
+            svg {
+                width: 18px;
+                height: 18px;
+                fill: $brand-color;
+            }
+        }
 
-.shop-btn-group .btn .icn svg {
-    margin: 10px auto 0;
-    width: 18px;
-    height: 18px;
-    fill: $brand-color;
-}
+        &.is-active {
+            background: $brand-color !important;
+            border-color: $brand-color !important;
 
-.shop-btn-group .social-toggle .icn svg {
-    margin: -2px auto 0;
-    width: 16px;
-    height: 16px;
-    fill: $brand-color;
-}
+            .icn {
+                svg {
+                    fill: #fff;
+                }
+            }
+        }
+    }
 
-.shop-btn-group .btn.is-active {
-    background: $brand-color !important;
-    border-color: $brand-color !important;
-}
-
-.shop-btn-group .btn.is-active .icn svg {
-    fill: #fff;
+    .share-icon {
+        .icn {
+            svg {
+                margin: -2px auto 0;
+                width: 16px;
+                height: 16px;
+                fill: $brand-color;
+            }
+        }
+    }
 }
 
 .shop-profile {
@@ -1338,19 +1341,12 @@ html.quick-view--open {
     position: static;
 }
 
-.ft-products .products--layout .products__body .favourite {}
 
-
-
-
-.sold-by {
-    text-align: left;
+.sold-by {   
     background: rgba(0, 0, 0, 0.05);
 }
 
 .sold-by .products__rating {
-    -webkit-padding-start: 0;
-    -moz-padding-start: 0;
     padding-#{$start-direction}: 0;
     margin-bottom: 10px;
 }
@@ -1361,8 +1357,6 @@ html.quick-view--open {
 
 .sold-by .products__rating .svg {
     margin-top: -3px;
-    -webkit-margin-end: 0;
-    -moz-margin-end: 0;
     margin-#{$end-direction}: 0;
 }
 
@@ -1373,7 +1367,6 @@ html.quick-view--open {
 .sold-by .shop-logo {
     width: 100px;
     height: 100px;
-
     margin-#{$end-direction}: 15px;
     -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
@@ -1389,7 +1382,6 @@ html.quick-view--open {
     z-index: 2;
     top: 70%;
     #{$start-direction}: 50%;
-
     transform: translateX(-50% * $transform-direction);
     opacity: 0;
     visibility: hidden;
