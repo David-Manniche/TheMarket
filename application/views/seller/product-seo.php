@@ -54,7 +54,7 @@ $keywordFld->developerTags['noCaptionTag'] = true;
                             <div id="dvAlert">
                                 <div class="cards-message" role="alert">
                                     <div class="cards-message-icon"><i class="fas fa-exclamation-triangle"></i></div>
-                                    <div class="cards-message-text"><?php echo Labels::getLabel('Select_a_product_to_add_/_edit_SEO_related_data', $siteLangId); ?></div>
+                                    <div class="cards-message-text"><?php echo Labels::getLabel('LBL_Select_a_product_to_add_/_edit_SEO_related_data', $siteLangId); ?></div>
                                 </div>
                             </div>
                         </div>

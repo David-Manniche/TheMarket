@@ -7,8 +7,14 @@ $arr_flds = array(
 
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--orders'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
-foreach ($arr_flds as $val) {
-    $e = $th->appendElement('th', array(), $val);
+foreach ($arr_flds as $key => $val) {
+    if ($key == 'listserial') {
+        $e = $th->appendElement('th', array('width' => '5%'), $val);
+    } elseif ($key == 'product_identifier') {
+        $e = $th->appendElement('th', array('width' => '30%'), $val);
+    } else {
+        $e = $th->appendElement('th', array('width' => '65%'), $val);
+    }
 }
 $productsArr = array();
 $sr_no = ($page == 1) ? 0 : ($pageSize*($page-1));
@@ -42,15 +48,12 @@ foreach ($arr_listing as $sn => $row) {
         }
     }
 }
+echo $tbl->getHtml();
 if (count($arr_listing) == 0) {
-    $tbl->appendElement('tr', array('class' => 'noResult--js'))->appendElement(
-        'td',
-        array('colspan'=>count($arr_flds)),
-        Labels::getLabel('LBL_No_Record_Found', $siteLangId)
-    );
+    $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
+    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
 }
 
-echo $tbl->getHtml();
 $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmCatalogProductSearchPaging'));
 
