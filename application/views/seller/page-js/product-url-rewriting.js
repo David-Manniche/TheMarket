@@ -50,6 +50,10 @@ $(document).on('keyup', "input[name='keyword']", function(){
         var selprod_id =  $(this).attr('data-selprod_id');
         var url_rewriting_id =  $(this).attr('data-url_rewriting_id');
         var custom_url = $(this).val();
+        if(custom_url == ''){
+            $(this).addClass('error');
+            return false;
+        }
 		fcom.updateWithAjax(fcom.makeUrl('seller', 'setupCustomUrl', [selprod_id, url_rewriting_id, custom_url]), '', function(t) {
 			reloadList();
 		});

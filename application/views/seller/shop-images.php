@@ -4,7 +4,7 @@
     <div class="profile__pic">
         <img src="<?php echo CommonHelper::generateUrl('Image', $imageFunction, array($img['afile_record_id'], $img['afile_lang_id'], 'PREVIEW', $img['afile_id']));?>" alt="<?php echo Labels::getLabel('LBL_Shop_Banner', $siteLangId);?>">
     </div>
-    <small class="text--small"><?php echo $languages[$img['afile_lang_id']];?></small>
+    <small class="form-text text-muted"><?php echo $languages[$img['afile_lang_id']];?></small>
 
         <a class = "btn btn-outline-primary btn--sm" href="javascript:void(0);" onClick="removeShopImage(<?php echo $img['afile_id']; ?>,<?php echo $img['afile_lang_id']; ?>,'<?php echo $imageType; ?>',<?php echo $img['afile_screen']; ?>)"><?php echo Labels::getLabel('LBL_Remove', $siteLangId);?></a>
 

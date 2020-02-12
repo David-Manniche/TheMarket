@@ -1498,6 +1498,11 @@ trait SellerProducts
     {
         $selprod_id = FatUtility::int($selprod_id);
         $url_rewriting_id = FatUtility::int($url_rewriting_id);
+        
+        if ($custom_url == '') {
+            Message::addErrorMessage(Labels::getLabel("MSG_CUSTOM_URL_CAN'T_BE_EMPTY", $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
         if (!UserPrivilege::canEditSellerProduct($selprod_id)) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());

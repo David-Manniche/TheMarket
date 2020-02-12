@@ -4,13 +4,14 @@ $frm->setFormTagAttribute('onsubmit', 'setup(this); return(false);');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
 ?>
-<section class="section">
+<div id="cropperBox-js"></div>
+<section class="section"  id="mediaForm-js">
     <div class="sectionhead">
         <h4>
             <?php if (0 == $status) {
-                echo Labels::getLabel('LBL_ADD_NEW_CUSTOM_NOTIFICATION', $adminLangId); 
+                echo Labels::getLabel('LBL_ADD_NEW_CUSTOM_NOTIFICATION', $adminLangId);
             } else {
-                echo Labels::getLabel('LBL_NOTIFICATION_DETAIL', $adminLangId); 
+                echo Labels::getLabel('LBL_NOTIFICATION_DETAIL', $adminLangId);
             } ?>
         </h4>
     </div>
@@ -30,7 +31,7 @@ $frm->developerTags['fld_default_col'] = 12;
                 </li>
                 <li class="<?php echo 1 > $pNotificationId ? 'fat-inactive' : ''; ?>">
                     <a href="javascript:void(0)" <?php echo 0 < $pNotificationId ? 'onclick="addSelectedUsersForm(' . $pNotificationId . ');' : ''; ?>"><?php echo Labels::getLabel('LBL_SELECTED_USERS', $adminLangId); ?></a>
-                </li>   
+                </li>
             </ul>
             <div class="tabs_panel_wrap">
                 <div class="tabs_panel_wrap">

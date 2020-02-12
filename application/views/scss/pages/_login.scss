@@ -235,11 +235,10 @@
         font-size: calc(112.5% + 0.9vw);
     }
 
-    .forgot {
-        text-align: right;
-        font-size: 0.75em;
-    }
+
 }
+
+
 
 .or {
     display: block;
@@ -439,4 +438,9 @@
             vertical-align: middle;
         }
     }
+}
+
+.forgot {
+    text-align: right;
+    font-size: 0.75em;
 }

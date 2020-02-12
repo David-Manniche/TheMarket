@@ -29,7 +29,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                 <?php if (!empty(FatApp::getConfig("CONF_FACEBOOK_APP_ID")) && !empty(FatApp::getConfig("CONF_FACEBOOK_APP_SECRET"))) { ?>
                 <div class="share-earn-block">
                     <a id="facebook_btn" href="javascript:void(0);" class="box--share box--share-fb">
-					<i class="fa fa-facebook"></i>
+					<i class="icon fab fa-facebook-f"></i>
 					<div class="detail">
                         <h5><?php echo Labels::getLabel('L_Share_on', $siteLangId)?></h5>
                         <h2><?php echo Labels::getLabel('L_Facebook', $siteLangId)?></h2>
@@ -42,7 +42,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                 <?php if (false !== $twitterUrl) { ?>
                 <div class="share-earn-block">
                     <a class="box--share box--share-tw" id="twitter_btn" href="javascript:void(0);">
-					<i class="fa fa-twitter"></i>
+					<i class="icon fa fa-twitter"></i>
 					<div class="detail">	
 					
                         <h5><?php echo Labels::getLabel('L_Share_on', $siteLangId)?></h5>
@@ -55,7 +55,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                 <?php } ?>
                 <div class="share-earn-block">
                     <a class="showbutton box--share box--share-mail" href="javascript:void(0);"> 
-					<i class="fa fa-envelope"></i><div class="detail">
+					<i class="icon fa fa-envelope"></i><div class="detail">
 					
                         <h5><?php echo Labels::getLabel('L_Share_on', $siteLangId)?></h5>
                         <h2><?php echo Labels::getLabel('L_Email', $siteLangId)?></h2>

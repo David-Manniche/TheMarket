@@ -1052,7 +1052,7 @@
     .share-earn-block {
         padding-#{$end-direction}: 1rem;
         flex: 1;
-        min-width: 250px;
+        min-width: 350px;
 
         &:last-child {
             padding-#{$end-direction}: 0;
@@ -1093,11 +1093,11 @@
 
 
 
-    .fa {
+    .fa, .icon {
         margin: 0.4rem 0;
-        font-size: 3.5em;
-        flex: 0 0 80px;
-        max-width: 80px;
+        font-size: 2.5em;
+        flex: 0 0 60px;
+        max-width: 60px;
         text-align: center;
     }
 
@@ -1568,9 +1568,9 @@
         width: 100%;
         display: inline-block;
 
-        .label {
-            margin: 4px 0 0;
-            font-weight: 600;
+        .coupon-code {
+            margin-top:10px;
+             
         }
 
         p {
@@ -1798,9 +1798,8 @@
     }
 
     .item__pic {
-        margin-bottom: 0;
+        overflow: hidden;
         background: #fff;
-        margin: 0 auto;
         width: auto;
         border: $border;
         border-radius: 4px;
@@ -2126,7 +2125,7 @@ input.sp-input {
     }
 
     address {
-        margin: 1rem 0;
+        margin-bottom:1rem;
         min-height: 200px;
 
         @include media-breakpoint-down(md) {
@@ -2145,6 +2144,6 @@ input.sp-input {
 
 .actions_wishlist {
     margin: 0.5rem auto;
-    flex: 1;
-    justify-content: center;
+    display: flex;
+     
 }

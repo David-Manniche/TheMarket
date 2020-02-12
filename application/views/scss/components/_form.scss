@@ -134,7 +134,13 @@ input[type="file"] {
         background-color: #fff;
         background-repeat: no-repeat;
         background-position: calc(100% - 11px) center;
+
+        [dir="rtl"] & {
+            background-position: calc(0% - -11px) center;
+        }
     }
+
+
 
     textarea {
         resize: vertical;
@@ -196,8 +202,10 @@ input[type="file"] {
         display: block;
         width: 100%;
     }
-    
-    .text--small{ display: block;}
+
+    .text--small {
+        display: block;
+    }
 
 }
 
@@ -251,7 +259,7 @@ input[type="file"] {
     max-width: 150px;
 }
 
- 
+
 
 
 
@@ -283,5 +291,17 @@ form.custom-form {
 
     input[type="submit"] {
         margin: 0;
+    }
+}
+
+.form-otp {
+    .otp-row {
+        display: flex;
+        align-items: center;
+    }
+
+    .otp-col {
+        display: flex;
+        align-items: center;
     }
 }

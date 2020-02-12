@@ -11,7 +11,7 @@
     -webkit-box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.07);
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.07);
     z-index: 101;
-    text-align: center;
+
 }
 
 #mbsmessage .content,
@@ -156,21 +156,28 @@
     padding: 0;
 }
 
-.div_msg li {
-    font-weight: 300;
-    font-size: 1em;
-    position: relative;
-    padding: 0 0 5px 0;
-    color: inherit;
+.div_msg {
+    li {
+        font-weight: 300;
+        font-size: 1em;
+        position: relative;
+        padding: 0 0 10px 0;
+        color: inherit;
+
+        &:last-child {
+            padding-bottom: 0;
+        }
+
+        a {
+            font-weight: normal;
+            font-size: 13px;
+            text-decoration: none;
+            color: #fff;
+            cursor: default;
+        }
+    }
 }
 
-.div_msg li a {
-    font-weight: normal;
-    font-size: 13px;
-    text-decoration: none;
-    color: #fff;
-    cursor: default;
-}
 
 .div_info li:last-child,
 .div_error li:last-child,
@@ -196,7 +203,6 @@
 .errorlist li a {
     color: #f44336;
     font-size: 11px;
-    /*text-transform: uppercase;*/
     text-decoration: none;
 }
 

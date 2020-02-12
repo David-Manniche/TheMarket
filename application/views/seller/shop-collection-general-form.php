@@ -2,9 +2,9 @@
 <div class="col-lg-12 col-md-12">
     <div class="content-header row">
         <div class="col"><h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Collections', $siteLangId); ?></h5></div>
-        <div class="content-header-right btn-group col-auto">
-            <div class="form__group">
-                <a href="javascript:void(0)" onClick="shopCollections(this)" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Back_to_Collections', $siteLangId);?></a>
+        <div class="content-header-right col-auto">
+            <div class="btn-group">
+                <a href="javascript:void(0)" onClick="shopCollections(this)" class="btn btn--primary btn--sm"><?php echo Labels::getLabel('LBL_Back_to_Collections', $siteLangId);?></a>
             </div>
         </div>
     </div>
@@ -44,7 +44,7 @@
                         $urlFld = $colectionForm->getField('urlrewrite_custom');
                         $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
                         $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value,'".$baseUrl."','post')");
-                        $urlFld->htmlAfterField = "<small class='text--small'>" . CommonHelper::generateFullUrl('Shops', 'Collection', array($shop_id)).'</small>';
+                        $urlFld->htmlAfterField = "<small class='form-text text-muted'>" . CommonHelper::generateFullUrl('Shops', 'Collection', array($shop_id)).'</small>';
                         $IDFld = $colectionForm->getField('scollection_id');
                         $IDFld->setFieldTagAttribute('id', "scollection_id");
                         $identiFierFld = $colectionForm->getField('scollection_identifier');

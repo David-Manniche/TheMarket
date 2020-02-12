@@ -1,5 +1,6 @@
 html {
     font-size: 16px;
+    overflow-x: hidden;
 
     @include media-breakpoint-down(lg) {
         & {
@@ -24,7 +25,7 @@ html {
 body {
     font-family: $family-secondary;
     overflow-x: hidden;
-    
+
 }
 
 h1,
@@ -75,11 +76,12 @@ a:hover {
 }
 
 .divider,
-hr {
+{
     height: 1px;
     background: $border-color;
     margin: 15px 0;
 }
+hr {}
 
 .note {
     font-weight: 300;
@@ -154,7 +156,10 @@ hr {
     display: table;
     width: 100%;
 }
-.padding20{ padding: 20px;}
+
+.padding20 {
+    padding: 20px;
+}
 
 .align--center {
     margin: 0 auto;
@@ -214,4 +219,29 @@ hr {
         align-self: center;
 
     }
+}
+
+.coupon-code {
+    padding: 0.3rem 1.2rem;
+    border-radius: 2rem;
+    color: lighten($body-color, 50%);
+    border: dashed 1px $border-color;
+    display: inline-block;
+    font-weight: 600;
+}
+
+.profile-image {
+    .avtar {
+        margin: 0 auto;
+    }
+}
+
+.info-message {
+    background: #f9edbe;
+    border: 1px solid #f0c36d;
+    color: #6c6c6c;
+    font-size: 0.85em;
+    line-height: 1.2;
+    border-radius: 4px;
+    padding: 0.8rem;
 }
