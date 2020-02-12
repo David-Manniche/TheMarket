@@ -434,9 +434,9 @@ class MyAppController extends FatController
         $phnFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
 
         $frm->addHiddenField('', 'ua_id');
-        $fldCancel = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $siteLangId));
         $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $siteLangId));
-        $fldCancel->attachField($fldSubmit);
+        $fldCancel = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $siteLangId));
+        //$fldCancel->attachField($fldSubmit);
         return $frm;
     }
 

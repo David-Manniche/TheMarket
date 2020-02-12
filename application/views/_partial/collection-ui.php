@@ -60,14 +60,16 @@ if ($showAddToFavorite) { ?>
     }
 
     if (isset($productView) && true == $productView) { ?>
-        <div class="share-button">
-            <a href="#" class="social-toggle"><i class="icn">
+        <div class="dropdown">
+            <a class="dropdown-toggle no-after share-icon" href="javascript:void(0)"  data-toggle="dropdown">
+			<i class="icn">
                     <svg class="svg">
                         <use xlink:href="/yokartv8/images/retina/sprite.svg#share" href="/yokartv8/images/retina/sprite.svg#share"></use>
                     </svg>
-                </i></a>
-            <div class="social-networks">
-                <ul>
+            </i>
+			</a>
+            <div  class="dropdown-menu dropdown-menu-anim">
+                <ul class="social-sharing">
                     <li class="social-twitter">
                         <a href="https://www.twitter.com"><i class="icn">
                     <svg class="svg">

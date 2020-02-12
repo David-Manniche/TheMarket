@@ -360,24 +360,17 @@
 }
 
 .table--justify tr td:first-child {
-    -webkit-padding-start: 0;
-    -moz-padding-start: 0;
     padding-#{$start-direction}: 0;
 }
 
 .table--justify tr td:last-child {
-    -webkit-padding-end: 0;
-    -moz-padding-end: 0;
     padding-#{$end-direction}: 0;
-    text-align: right;
+    text-align: #{$end-direction};
 }
 
 .table td {
     position: relative;
 }
-
-
-
 
 .table .btn {
     margin: 2px;

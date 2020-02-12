@@ -68,7 +68,7 @@
 						</a>
 					</div>
 					<?php $this->includeTemplate('_partial/headerSearchFormArea.php'); ?>
-					<div class="cart dropdown" id="cartSummary">
+					<div class="cart dropdown" id="cartSummary" data-trigger="side-cart">
 						<?php $this->includeTemplate('_partial/headerWishListAndCartSummary.php'); ?>
 					</div>
 				</div>

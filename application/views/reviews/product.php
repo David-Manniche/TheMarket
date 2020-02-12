@@ -22,7 +22,7 @@
                 </div>
 
                 <div class="col-md-auto col-sm-auto"><a href="<?php echo CommonHelper::generateUrl('Products', 'view', array($product['selprod_id'])); ?>"
-                        class="btn btn--primary d-block"><?php echo Labels::getLabel('Lbl_Back_to_Product', $siteLangId); ?></a></div>
+                        class="btn btn--primary btn-sm"><?php echo Labels::getLabel('Lbl_Back_to_Product', $siteLangId); ?></a></div>
 
 
             </div>
