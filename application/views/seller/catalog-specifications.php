@@ -17,8 +17,8 @@ if (count($productSpecifications) > 0) {
             <div class="tablewrap">
                 <?php
                 $arr_flds = array(
-                    'prod_spec_name' => Labels::getLabel('LBL_Specification', $siteLangId),
-                    'prod_spec_value' => Labels::getLabel('LBL_Specification', $siteLangId),
+                    'prod_spec_name' => Labels::getLabel('LBL_Specification_Name', $siteLangId),
+                    'prod_spec_value' => Labels::getLabel('LBL_Specification_Value', $siteLangId),
                     'action' => Labels::getLabel('LBL_Action', $siteLangId)
                 );
 

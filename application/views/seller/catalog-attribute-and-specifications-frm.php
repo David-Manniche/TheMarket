@@ -17,7 +17,7 @@ $codFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
 $btnBackFld = $productFrm->getField('btn_back');
 $btnBackFld->setFieldTagAttribute('onClick', 'customCatalogProductForm('.$preqId.');');
-
+$btnBackFld->value = Labels::getLabel('LBL_Back', $siteLangId);
 ?>
 <div class="row justify-content-center">
     <div class="col-md-12">
