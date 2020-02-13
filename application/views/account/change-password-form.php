@@ -5,4 +5,6 @@ $frm->developerTags['colClassPrefix'] = 'col-xl-12 col-lg-12 col-md-';
 $frm->developerTags['fld_default_col'] = 12;
 $frm->setFormTagAttribute('autocomplete', 'off');
 $frm->setFormTagAttribute('onsubmit', 'updatePassword(this); return(false);');
+$fldSubmit = $frm->getField('btn_submit');
+$fldSubmit->developerTags['noCaptionTag'] = true;
 echo $frm->getFormHtml();

@@ -866,4 +866,9 @@ class UserAuthentication extends FatModel
         $affiliateSessionElementName = UserAuthentication::AFFILIATE_SESSION_ELEMENT_NAME;
         return isset($_SESSION[$affiliateSessionElementName][$key]) ? $_SESSION[$affiliateSessionElementName][$key] : false;
     }
+
+    public static function validateUserPhone(int $userId, string $phoneNumber): bool
+    {
+        return ($phoneNumber == User::getAttributesById($userId, 'user_phone'));
+    }
 }

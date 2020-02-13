@@ -566,3 +566,6 @@ UPDATE `tbl_users` SET `user_phone`= NULL WHERE user_phone = '';
 ALTER TABLE tbl_users ADD UNIQUE (user_phone);
 
 INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('LBL_RECOVER_PASSWORD_FORM_MSG',1,'Enter The Phone Number Associated With Your Account. An OTP will be sent to your registered number. Please use that OTP to reset your password.',1);
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'Lbl_Change_Email_/_password';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'MSG_Your_email_not_change_untill_you_confirm';
