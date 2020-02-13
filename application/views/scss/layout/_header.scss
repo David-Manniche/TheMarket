@@ -1,7 +1,9 @@
 .header {
-    position: fixed;
     position: sticky;
     position: -webkit-sticky;
+    position: -moz-sticky;
+    position: -ms-sticky;
+    position: -o-sticky;
     z-index: 10;
     top: 0;
     width: 100%;
@@ -404,7 +406,7 @@
     vertical-align: top;
     line-height: 36px;
     height: 36px;
-    
+
     border-#{$end-direction}: solid 1px $brand-color;
     font-size: 0.8em;
     cursor: pointer;

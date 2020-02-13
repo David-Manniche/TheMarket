@@ -13,10 +13,14 @@ $stateFld = $addressFrm->getField('ua_state_id');
 $stateFld->setFieldTagAttribute('id', 'ua_state_id');
 $cancelFld = $addressFrm->getField('btn_cancel');
 $cancelFld->setFieldTagAttribute('onclick', 'searchAddresses()');
-$cancelFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
-$cancelFld->developerTags['col'] = 12;
+$cancelFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
+$cancelFld->developerTags['col'] = 2;
+$cancelFld->developerTags['noCaptionTag'] = true;
+
 $submitFld = $addressFrm->getField('btn_submit');
-$submitFld->setFieldTagAttribute('class', 'btn btn--primary');
+$submitFld->setFieldTagAttribute('class', 'btn btn--primary btn-block');
+$submitFld->developerTags['col'] = 2;
+$submitFld->developerTags['noCaptionTag'] = true;
 ?>
 <!-- <div class="tabs tabs--small tabs--scroll clearfix">
     <ul>

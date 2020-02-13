@@ -360,24 +360,17 @@
 }
 
 .table--justify tr td:first-child {
-    -webkit-padding-start: 0;
-    -moz-padding-start: 0;
     padding-#{$start-direction}: 0;
 }
 
 .table--justify tr td:last-child {
-    -webkit-padding-end: 0;
-    -moz-padding-end: 0;
     padding-#{$end-direction}: 0;
-    text-align: right;
+    text-align: #{$end-direction};
 }
 
 .table td {
     position: relative;
 }
-
-
-
 
 .table .btn {
     margin: 2px;
@@ -408,4 +401,32 @@
     min-width: 100px;
     border-radius: 4px;
     overflow: hidden;
+}
+
+.table-fixed-header {
+    table-layout: fixed;
+    border-collapse: collapse;
+
+    thead {
+        background: black;
+        color: #fff;
+
+        tr {
+            display: block;
+        }
+    }
+
+    tbody {
+        display: block;
+        width: 100%;
+        overflow: auto;
+        height: 100px;
+    }
+
+    th,
+    td {
+        padding: 5px;
+        text-align: left;
+        width: 200px;
+    }
 }

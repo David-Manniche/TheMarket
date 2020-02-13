@@ -1,28 +1,34 @@
-.slider:before {
-    background-color: #fff;
-    bottom: 4px;
-    content: "";
-    height: 12px;
-    #{$start-direction}: 4px;
+.slick-dots {
+    padding: 0;
     position: absolute;
-    -webkit-transition: .4s;
-    transition: .4s;
-    width: 12px;
-}
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    text-align: center;
 
-input:checked + .slider {
-    background-color: #66bb6a;
-}
+    li {
+        vertical-align: middle;
+        display: inline-block;
+        margin: 0 3px;
+        width: 13px;
+        height: 3px;
+        border-radius: 1px;
+        cursor: pointer;
+        background: #d2d2d2;
+        -webkit-transition: all 0.5s ease-in-out;
+        transition: all 0.5s ease-in-out;
 
-input:checked + .slider:before {
-    -webkit-transform: translateX(22px);
-    transform: translateX(22px);
-}
+        button {
+            background: none;
+            border: none;
+            text-indent: -9999999px;
+        }
 
-.slider.round {
-    border-radius: 20px;
-}
-
-.slider.round:before {
-    border-radius: 50%;
+        &.slick-active {
+            background: var(--first-color);
+            width: 30px;
+            border-radius: 15px;
+        }
+    }
 }

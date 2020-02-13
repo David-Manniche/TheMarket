@@ -98,6 +98,7 @@
                         $btnSubmitFld = $frm->getField('btn_submit');
                         $btnSubmitFld->setFieldTagAttribute('class', 'btn--block');
                         $btnSubmitFld->value = Labels::getLabel('LBL_Create', $siteLangId);
+                        $btnSubmitFld->developerTags['noCaptionTag'] = true;
 
                         echo $frm->getFormHtml(); ?>
                 </div>

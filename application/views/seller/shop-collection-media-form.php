@@ -5,7 +5,7 @@
     $frm->developerTags['fld_default_col'] = 12;
 
     $fld = $frm->getField('collection_image');
-    $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+    $fld->addFieldTagAttribute('class', '');
     $fld->addFieldTagAttribute('onChange', 'collectionPopupImage(this)');
 ?>
 <div class="col-lg-12 col-md-12">

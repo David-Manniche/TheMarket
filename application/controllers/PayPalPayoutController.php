@@ -19,7 +19,10 @@ class PayPalPayoutController extends PayoutBaseController
     public function getRequestForm()
     {
         $data = User::getUserMeta(UserAuthentication::getLoggedUserId());
-        return $this->getForm(static::reqFields(), $data);
+        //return $this->getForm(static::reqFields(), $data);
+        $frm = $this->getFormObj(static::reqFields()); 
+        $this->set('frm', $frm);
+        $this->_template->render(false, false);
     }
 
     public static function formFields()

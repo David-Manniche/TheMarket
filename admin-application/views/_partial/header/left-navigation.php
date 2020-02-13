@@ -44,7 +44,7 @@
                     <?php } ?>
                     <?php
                     if ($objPrivilege->canViewProductCategories(AdminAuthentication::getLoggedAdminId(), true)) {?>
-                    <li><a href="<?php echo CommonHelper::generateUrl('ProductCategories');?>"><?php echo Labels::getLabel('LBL_Product_Categories', $adminLangId);?></a></li>
+                    <li><a href="<?php echo CommonHelper::generateUrl('ProductCategories');?>"><?php echo Labels::getLabel('LBL_Categories', $adminLangId);?></a></li>
                     <?php } ?>
                     <?php
                     if ($objPrivilege->canViewProducts(AdminAuthentication::getLoggedAdminId(), true)) {?>

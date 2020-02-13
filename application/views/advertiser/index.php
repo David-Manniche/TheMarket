@@ -151,7 +151,7 @@
                                         </td>
                                         <td>
                                             <ul class="actions">
-                                                <li><a  title="<?php echo Labels::getLabel('LBL_Analytics', $siteLangId); ?>"   href="<?php echo CommonHelper::generateUrl('advertiser', 'analytics', array($row['promotion_id'])); ?>"><i class="fa fa-file-text-o"></i></a></li>
+                                                <li><a  title="<?php echo Labels::getLabel('LBL_Analytics', $siteLangId); ?>"   href="<?php echo CommonHelper::generateUrl('advertiser', 'analytics', array($row['promotion_id'])); ?>"><i class="far fa-file-alt"></i></a></li>
                                             </ul>
                                         </td>
                                     </tr>

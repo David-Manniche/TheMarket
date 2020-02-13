@@ -76,11 +76,12 @@ a:hover {
 }
 
 .divider,
-{
+    {
     height: 1px;
     background: $border-color;
     margin: 15px 0;
 }
+
 hr {}
 
 .note {
@@ -244,4 +245,10 @@ hr {}
     line-height: 1.2;
     border-radius: 4px;
     padding: 0.8rem;
+}
+
+.docs-buttons {
+    display: flex;
+    
+    justify-content: center;
 }

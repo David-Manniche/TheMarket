@@ -4,7 +4,7 @@ if (UserAuthentication::isUserLogged()) {
     $user_is_buyer = User::getAttributesById(UserAuthentication::getLoggedUserId(), 'user_is_buyer');
 }
 if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
-    <a href="javascript:void(0)" data-trigger="side-cart">
+    <a href="javascript:void(0)">
         <span class="icn">
         <svg class="svg">
          <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#main-cart" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#main-cart"></use>

@@ -117,54 +117,6 @@
 <?php if (!isset($_SESSION['geo_location']) && FatApp::getConfig('CONF_GOOGLEMAP_API_KEY', FatUtility::VAR_STRING, '') != '') { ?>
 <script type="text/javascript" src='https://maps.google.com/maps/api/js?key=<?php echo FatApp::getConfig('CONF_GOOGLEMAP_API_KEY', FatUtility::VAR_STRING, '');?>&libraries=places'></script>
 
-
-<script>
-
-/* 
-STARTS triggers & toggles[
-
-data-trigger => value = target element id to be opened
-data-target-close => value = target element id to be closed
-data-close-on-click-outside => value 
-
-*/
-
-$('body').find('*[data-trigger]').click(function () {
-
-    var targetElmId = $(this).data('trigger');
-	var elmToggleClass = targetElmId + '--on';
-	if ($('body').hasClass(elmToggleClass)) {
-		$('body').removeClass(elmToggleClass);
-	} else {
-		$('body').addClass(elmToggleClass);
-	}
-});
-
-$('body').find('*[data-target-close]').click(function () {
-	var targetElmId = $(this).data('target-close');
-	$('body').toggleClass(targetElmId + '--on');
-});
-
-$('body').mouseup(function (event) {
-
-	if ($(event.target).data('trigger') != '' && typeof $(event.target).data('trigger') !== typeof undefined) {
-		event.preventDefault();
-		return;
-	}
-
-	$('body').find('*[data-close-on-click-outside]').each(function (idx, elm) {
-		var slctr = $(elm);
-		if (!slctr.is(event.target) && !$.contains(slctr[0], event.target)) {
-			$('body').removeClass(slctr.data('close-on-click-outside') + '--on');
-		}
-	});
-});
-
-/*
-] ENDS triggers & toggles
-*/
-
-</script>
 <script>
     window.onload = function() {
         var startPos;

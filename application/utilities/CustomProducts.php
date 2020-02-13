@@ -394,9 +394,12 @@ trait CustomProducts
         $imagesFrm = $this->getImagesFrm($product_id, $this->siteLangId);
 
         $imgTypesArr = $this->getSeparateImageOptions($product_id, $this->siteLangId);
-
+        
+        $productType = Product::getAttributesById($product_id, 'product_type');
+        
         $this->set('product_id', $product_id);
         $this->set('imagesFrm', $imagesFrm);
+        $this->set('productType', $productType);
         $this->_template->render(false, false);
     }
 
@@ -1926,6 +1929,7 @@ trait CustomProducts
         $this->set('productData', $productData);
         $this->set('siteDefaultLangId', $siteDefaultLangId);
         $this->set('otherLanguages', $languages);
+        $this->set('productId', $productId);
         $this->_template->render(false, false, 'seller/product-attribute-and-specifications-frm.php');
     }
 
@@ -2204,6 +2208,7 @@ trait CustomProducts
         }
         $productFrm->fill($productData);
         $this->set('productFrm', $productFrm);
+        $this->set('productId', $productId);
         $this->_template->render(false, false, 'seller/product-shipping-frm.php');
     }
 
