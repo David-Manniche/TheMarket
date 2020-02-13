@@ -320,16 +320,6 @@ $(document).ready(function(){
 $(document).ready(function(){
 	var debug = /*true ||*/ false;
 	var h = document.querySelector('.heart-wrapper-Js');
-    $(document).on('click', '.heart-wrapper-Js',function(){
-	/* $(document).delegate('.heart-wrapper-Js','click',function(){ */
-		var product_id= $(this).attr('data-id');
-		var callbackFunction = $(this).attr('data-callback');
-		toggleProductFavorite(product_id,$(this));
-		h = document.querySelector('heart-wrapper-Js');
-		if (typeof callbackFunction !== 'undefined' && callbackFunction !== false) {
-			window[callbackFunction]();
-		}
-	});
 
 /*   function toggleActivate(){
     h.classList.toggle('is-active');

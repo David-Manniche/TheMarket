@@ -495,7 +495,7 @@ class UserAuthentication extends FatModel
         return false;
     }
 
-    public static function logout()
+    public static function logout($fcmToken = '')
     {
         if (isset($_SESSION['access_token'])) {
             unset($_SESSION['access_token']);

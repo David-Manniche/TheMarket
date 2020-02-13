@@ -824,3 +824,5 @@ table.table-bordered tr:nth-child(odd) td {
     max-width: 50%;
 }
 
+
+.table-upc tbody.scroll-y{ max-height:250px; overflow-y:auto;}

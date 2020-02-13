@@ -5,6 +5,15 @@ $productFrm->setFormTagAttribute('onsubmit', 'setUpProduct(this); return(false);
 $fld = $productFrm->getField('auto_update_other_langs_data');
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+
+$btnDiscardFld = $productFrm->getField('btn_discard');
+if($prodCatId > 0){
+   $catNameFld = $productFrm->getField('category_name'); 
+   $catNameFld->addFieldTagAttribute('disabled', true);
+   $btnDiscardFld->addFieldTagAttribute('onClick', 'goToProductCategory()');   
+}else{
+   $btnDiscardFld->addFieldTagAttribute('onClick', 'goToProduct()');
+}   
 ?>
 <div class="row justify-content-center">
      <div class="col-md-12">
@@ -156,7 +165,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
          <?php $divLayout = Language::getLayoutDirection($siteDefaultLangId); ?>
          <div class="p-4 mb-4 bg-gray rounded layout--<?php echo $divLayout;?>">
              <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                      <div class="field-set">
                          <div class="caption-wraper">
                             <label class="field_label">
@@ -173,9 +182,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                          </div>
                      </div>
                  </div>
-             </div>
-             <div class="row">
-                <div class="col-md-12">
+                 <div class="col-md-6">
                      <div class="field-set">
                          <div class="caption-wraper">
                             <label class="field_label">
@@ -192,7 +199,6 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                      </div>
                  </div>
              </div>
-             
              <div class="row">
                  <div class="col-md-12">
                      <div class="field-set mb-0">
@@ -243,52 +249,52 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                  <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                  </span>
                  <div class="accordian_body accordiancontent" style="display: none;">
-                     <div class="row">
-                        <div class="col-md-12">
-                            <div class="field-set">
-                                <div class="caption-wraper">
-                                    <label class="field_label">
-                                    <?php  $fld = $productFrm->getField('product_name['.$langId.']');
-                                        echo $fld->getCaption(); ?>
-                                    </label>
+                    <div class="p-4 mb-4 bg-gray rounded">
+                         <div class="row">
+                            <div class="col-md-6">
+                                <div class="field-set">
+                                    <div class="caption-wraper">
+                                        <label class="field_label">
+                                        <?php  $fld = $productFrm->getField('product_name['.$langId.']');
+                                            echo $fld->getCaption(); ?>
+                                        </label>
+                                    </div>
+                                    <div class="field-wraper">
+                                        <div class="field_cover">
+                                        <?php echo $productFrm->getFieldHtml('product_name['.$langId.']'); ?>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="field-wraper">
-                                    <div class="field_cover">
-                                    <?php echo $productFrm->getFieldHtml('product_name['.$langId.']'); ?>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="field-set">
+                                    <div class="caption-wraper">
+                                        <label class="field_label">
+                                        <?php  $fld = $productFrm->getField('product_youtube_video['.$langId.']');
+                                            echo $fld->getCaption(); ?>
+                                        </label>
+                                    </div>
+                                    <div class="field-wraper">
+                                        <div class="field_cover">
+                                        <?php echo $productFrm->getFieldHtml('product_youtube_video['.$langId.']'); ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="field-set">
-                                <div class="caption-wraper">
-                                    <label class="field_label">
-                                    <?php  $fld = $productFrm->getField('product_youtube_video['.$langId.']');
-                                        echo $fld->getCaption(); ?>
-                                    </label>
-                                </div>
-                                <div class="field-wraper">
-                                    <div class="field_cover">
-                                    <?php echo $productFrm->getFieldHtml('product_youtube_video['.$langId.']'); ?>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="field-set">
+                                    <div class="caption-wraper">
+                                        <label class="field_label">
+                                        <?php  $fld = $productFrm->getField('product_description_'.$langId);
+                                            echo $fld->getCaption(); ?>
+                                        </label>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="field-set">
-                                <div class="caption-wraper">
-                                    <label class="field_label">
-                                    <?php  $fld = $productFrm->getField('product_description_'.$langId);
-                                        echo $fld->getCaption(); ?>
-                                    </label>
-                                </div>
-                                <div class="field-wraper">
-                                    <div class="field_cover">
-                                    <?php echo $productFrm->getFieldHtml('product_description_'.$langId); ?>
+                                    <div class="field-wraper">
+                                        <div class="field_cover">
+                                        <?php echo $productFrm->getFieldHtml('product_description_'.$langId); ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -301,7 +307,17 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
          }
          ?>
          <div class="row">
-             <div class="col-md-6">
+            <div class="col-md-6">
+                 <div class="field-set">
+                     <div class="caption-wraper"><label class="field_label"></label></div>
+                     <div class="field-wraper">
+                         <div class="field_cover">
+                         <?php echo $productFrm->getFieldHtml('btn_discard'); ?>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <div class="col-md-6 text-right">
                  <div class="field-set">
                      <div class="caption-wraper"><label class="field_label"></label></div>
                      <div class="field-wraper">
@@ -326,6 +342,9 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 <script type="text/javascript">
 $(document).ready(function(){
 	$('input[name=\'brand_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('brands', 'autoComplete'),
@@ -351,6 +370,9 @@ $(document).ready(function(){
     });
 
 	$('input[name=\'category_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
         'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('productCategories', 'links_autocomplete'),

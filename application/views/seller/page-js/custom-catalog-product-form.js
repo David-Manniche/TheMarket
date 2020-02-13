@@ -595,6 +595,9 @@ $(document).on('change', '.language-js', function () {
         });
 
         $('input[name="product_shipping[' + shipping_row + '][country_name]"]').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function (request, response) {
                 $.ajax({
                     url: fcom.makeUrl('seller', 'countries_autocomplete'),
@@ -618,6 +621,9 @@ $(document).on('change', '.language-js', function () {
         });
 
         $('input[name="product_shipping[' + shipping_row + '][company_name]"]').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function (request, response) {
                 $.ajax({
                     url: fcom.makeUrl('seller', 'shippingCompanyAutocomplete'),
@@ -641,6 +647,9 @@ $(document).on('change', '.language-js', function () {
         });
 
         $('input[name="product_shipping[' + shipping_row + '][processing_time]"]').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function (request, response) {
                 $.ajax({
                     url: fcom.makeUrl('seller', 'shippingMethodDurationAutocomplete'),

@@ -1014,8 +1014,17 @@ class GuestUserController extends MyAppController
     {
         UserAuthentication::logout();
         if (true === MOBILE_APP_API_CALL) {
+            $fcmToken = FatApp::getPostedData('fcmToken', FatUtility::VAR_STRING, '');
+            if (empty($fcmToken)) {
+                FatUtility::dieJSONError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+            }
+            $error = '';
+            if (false === User::removeFcmToken($this->appToken, $fcmToken, $error)) {
+                LibHelper::dieJsonError($error);
+            }
             $this->_template->render();
         }
+
         FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
     }
 

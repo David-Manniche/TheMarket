@@ -26,6 +26,9 @@
 		$(document).ready(function(){
 			/* Shipping Information */
 			$('input[name=\'shipping_country\']').autocomplete({
+                'classes': {
+                    "ui-autocomplete": "custom-ui-autocomplete"
+                },
 				'source': function(request, response) {
 					$.ajax({
 						url: fcom.makeUrl('seller', 'countries_autocomplete'),

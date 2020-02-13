@@ -204,7 +204,7 @@ class ConfigurationsController extends AdminBaseController
         }
 
         if (isset($post['CONF_USE_SSL']) && $post['CONF_USE_SSL'] == 1) {
-            if (!$this->is_ssl_enabled()) {
+            if (!$this->isSslEnabled()) {
                 if ($post['CONF_USE_SSL'] != FatApp::getConfig('CONF_USE_SSL')) {
                     Message::addErrorMessage(Labels::getLabel('MSG_SSL_NOT_INSTALLED_FOR_WEBSITE_Try_to_Save_data_without_Enabling_ssl', $this->adminLangId));
 

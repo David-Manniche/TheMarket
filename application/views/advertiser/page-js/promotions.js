@@ -156,7 +156,7 @@ $(document).on('change',"select[name='banner_blocation_id']",function(){
     popupImage = function(inputBtn){
 		if (inputBtn.files && inputBtn.files[0]) {
 	        fcom.ajax(fcom.makeUrl('Advertiser', 'imgCropper'), '', function(t) {
-	    		$.facebox(t,'faceboxWidth fbminwidth');
+	    		$.facebox(t,'faceboxWidth medium-fb-width');
 				var container = document.querySelector('.img-container');
                 var file = inputBtn.files[0];
                 $('#new-img').attr('src', URL.createObjectURL(file));

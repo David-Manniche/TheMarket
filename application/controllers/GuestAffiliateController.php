@@ -352,7 +352,7 @@ class GuestAffiliateController extends MyAppController
             $fld->requirements()->setRequired();
             $fld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Terms_Condition_is_mandatory.', $siteLangId));
 
-            $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Register', $siteLangId));
+            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Register', $siteLangId));
             $frm->setFormTagAttribute('onsubmit', 'setupAffiliateRegister(this); return(false);');
 
             break;
@@ -373,7 +373,7 @@ class GuestAffiliateController extends MyAppController
             $frm->addTextBox(Labels::getLabel('LBL_City', $this->siteLangId), 'user_city');
             $frm->addRequiredField(Labels::getLabel('LBL_Postalcode', $siteLangId), 'user_zip');
 
-            $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Register', $siteLangId));
+            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Register', $siteLangId));
             $frm->setFormTagAttribute('onsubmit', 'setupAffiliateRegister(this); return(false);');
 
             break;
@@ -393,7 +393,7 @@ class GuestAffiliateController extends MyAppController
             $fld = $frm->addTextBox(Labels::getLabel('LBL_PayPal_Email_Account', $siteLangId), 'uextra_paypal_email_id');
             $fld->requirements()->setEmail();
 
-            $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Register', $siteLangId));
+            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Register', $siteLangId));
             $frm->setFormTagAttribute('onsubmit', 'setupAffiliateRegister(this); return(false);');
 
             break;

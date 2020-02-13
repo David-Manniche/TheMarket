@@ -6,6 +6,7 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupcustomCatalogProduct(this); r
 $autoUpdateFld = $productFrm->getField('auto_update_other_langs_data');
 $autoUpdateFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $autoUpdateFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+
 ?>
 <div class="row justify-content-center">
     <div class="col-md-12">
@@ -333,6 +334,9 @@ echo $productFrm->getFieldHtml('btn_submit');
 <script type="text/javascript">
     $(document).ready(function () {
         $('input[name=\'brand_name\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function (request, response) {
                 $.ajax({
                     url: fcom.makeUrl('brands', 'autoComplete'),
@@ -358,6 +362,9 @@ echo $productFrm->getFieldHtml('btn_submit');
         });
 
         $('input[name=\'category_name\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function (request, response) {
                 $.ajax({
                     url: fcom.makeUrl('products', 'linksAutocomplete'),

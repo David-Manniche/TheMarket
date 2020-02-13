@@ -12,37 +12,37 @@
                         <input type="text"
                             name="product_shipping[<?php echo $shipping_row; ?>][country_name]"
                             value="<?php echo $shipping["pship_country"] != "1" ? $shipping["country_name"] : "&#8594;".Labels::getLabel('LBL_EveryWhere_Else', $siteLangId);?>"
-                            placeholder="<?php echo Labels::getLabel('LBL_Ships_To', $siteLangId)?>" >
+                            placeholder="<?php echo Labels::getLabel('LBL_Destination_Country', $siteLangId)?>" >
                     </div>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-2">
                     <div class="field-set">
                         <input type="hidden" name="product_shipping[<?php echo $shipping_row; ?>][company_id]" value="<?php echo $shipping["pship_company"]?>">
                         <input type="text" name="product_shipping[<?php echo $shipping_row; ?>][company_name]" value="<?php echo $shipping["scompany_name"]?>" placeholder="<?php echo Labels::getLabel('LBL_Shipping_Company', $siteLangId); ?>">
                     </div>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-lg-3">
                     <div class="field-set">
                         <input type="hidden" name="product_shipping[<?php echo $shipping_row; ?>][processing_time_id]" value="<?php echo $shipping['pship_duration']?>">
                         <input type="text" name="product_shipping[<?php echo $shipping_row; ?>][processing_time]" value="<?php echo ShippingDurations::getShippingDurationTitle($shipping, $siteLangId)?>"
-                        placeholder="<?php echo Labels::getLabel('LBL_Processing_Time', $siteLangId)?>">
+                        placeholder="<?php echo Labels::getLabel('LBL_Shipping_Service_Type', $siteLangId)?>">
                     </div>
                 </div>
                 <div class="col-lg-2">
                     <div class="field-set">
-                        <input type="text" name="product_shipping[<?php echo $shipping_row; ?>][cost]" value="<?php echo $shipping["pship_charges"]?>" placeholder="<?php echo Labels::getLabel('LBL_Cost', $siteLangId) .' ['.commonHelper::getDefaultCurrencySymbol().']';?>">
+                        <input type="text" name="product_shipping[<?php echo $shipping_row; ?>][cost]" value="<?php echo $shipping["pship_charges"]?>" placeholder="<?php echo Labels::getLabel('LBL_RATE', $siteLangId) .' ['.commonHelper::getDefaultCurrencySymbol().']';?>">
                     </div>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-lg-3">
                     <div class="field-set">
-                        <input type="text" name="product_shipping[<?php echo $shipping_row; ?>][additional_cost]" value="<?php echo $shipping["pship_additional_charges"]?>" placeholder="<?php echo Labels::getLabel('LBL_Each_Additional_Item', $siteLangId).' ['.commonHelper::getDefaultCurrencySymbol().']';?>">
-                    </div>
-                </div>
-                <div class="col-lg-1">
-                    <div class="field-set">
-                        <button type="button" onclick="removeShippingRow('<?php echo $shipping_row; ?>');" class="btn btn--secondary ripplelink" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId)?>">
-                            <i class="fa fa-minus"></i>
-                        </button>
+                        <div class="input-group">
+                            <input type="text" name="product_shipping[<?php echo $shipping_row; ?>][additional_cost]" value="<?php echo $shipping["pship_additional_charges"]?>" placeholder="<?php echo Labels::getLabel('LBL_Additional_Per_Item', $siteLangId).' ['.commonHelper::getDefaultCurrencySymbol().']';?>">
+                            <div class="input-group-append">
+                                <button type="button" onclick="removeShippingRow('<?php echo $shipping_row; ?>');" class="btn btn--secondary ripplelink" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId)?>">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -54,36 +54,36 @@
                 <div class="field-set">
                     <input type="hidden" name="product_shipping[0][pship_id]" value="" />
                     <input type="hidden" name="product_shipping[0][country_id]">
-                    <input type="text" name="product_shipping[0][country_name]" placeholder="<?php echo Labels::getLabel('LBL_Ships_To', $siteLangId)?>" />
+                    <input type="text" name="product_shipping[0][country_name]" placeholder="<?php echo Labels::getLabel('LBL_Destination_Country"', $siteLangId)?>" />
                 </div>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-2">
                 <div class="field-set">
                     <input type="hidden" name="product_shipping[0][company_id]">
                     <input type="text" name="product_shipping[0][company_name]" placeholder="<?php echo Labels::getLabel('LBL_Shipping_Company', $siteLangId)?>">
                 </div>
             </div>
-            <div class="col-lg-2">
+            <div class="col-lg-3">
                 <div class="field-set">
                     <input type="hidden" name="product_shipping[0][processing_time_id]">
-                    <input type="text" name="product_shipping[0][processing_time]" placeholder="<?php echo Labels::getLabel('LBL_Processing_Time', $siteLangId)?>">
+                    <input type="text" name="product_shipping[0][processing_time]" placeholder="<?php echo Labels::getLabel('LBL_Shipping_Service_Type', $siteLangId)?>">
                 </div>
             </div>
             <div class="col-lg-2">
                 <div class="field-set">
-                    <input type="text" name="product_shipping[0][cost]" placeholder="<?php echo Labels::getLabel('LBL_Cost', $siteLangId).' ['.commonHelper::getDefaultCurrencySymbol().']';?>">
+                    <input type="text" name="product_shipping[0][cost]" placeholder="<?php echo Labels::getLabel('LBL_RATE', $siteLangId).' ['.commonHelper::getDefaultCurrencySymbol().']';?>">
                 </div>
             </div>
-            <div class="col-lg-2">
+            <div class="col-lg-3">
                 <div class="field-set">
-                    <input type="text" name="product_shipping[0][additional_cost]" placeholder="<?php echo Labels::getLabel('LBL_Each_Additional_Item', $siteLangId).' ['.commonHelper::getDefaultCurrencySymbol().']';?>">
-                </div>
-            </div>
-            <div class="col-lg-1">
-                <div class="field-set">
-                    <button type="button" onclick="removeShippingRow('1')" class="btn btn--secondary ripplelink" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId)?>">
-                        <i class="fa fa-minus"></i>
-                    </button>
+                    <div class="input-group">
+                        <input type="text" name="product_shipping[0][additional_cost]" placeholder="<?php echo Labels::getLabel('LBL_Additional_Per_Item', $siteLangId).' ['.commonHelper::getDefaultCurrencySymbol().']';?>">
+                        <div class="input-group-append">
+                           <button type="button" onclick="removeShippingRow('1')" class="btn btn--secondary ripplelink" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId)?>">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

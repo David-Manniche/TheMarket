@@ -28,6 +28,9 @@ $frm->developerTags['fld_default_col'] = 12;
 <script type="text/javascript">
     $("document").ready(function() {
         $('input[name="blogs"]').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('BlogPosts', 'autocomplete'),

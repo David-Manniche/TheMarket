@@ -338,6 +338,9 @@
 			    setTimeout(function(){ $('.suggestions').hide(); }, 500);
 		});
 		$('input[name="product_shipping[' + shipping_row + '][country_name]"]').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
 			'source': function(request, response) {
 				$.ajax({
 					url: fcom.makeUrl('seller', 'countries_autocomplete'),
@@ -359,7 +362,10 @@
 
 
 		$('input[name="product_shipping[' + shipping_row + '][company_name]"]').autocomplete({
-				'source': function(request, response) {
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
+            'source': function(request, response) {
 				$.ajax({
 					url: fcom.makeUrl('seller', 'shippingCompanyAutocomplete'),
 					data: {keyword: request['term'],fIsAjax:1},
@@ -379,8 +385,10 @@
 		});
 
 		$('input[name="product_shipping[' + shipping_row + '][processing_time]"]').autocomplete({
-				'source': function(request, response) {
-
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
+            'source': function(request, response) {
 				$.ajax({
 					url: fcom.makeUrl('seller', 'shippingMethodDurationAutocomplete'),
 					data: {keyword: request['term'],fIsAjax:1},
@@ -764,7 +772,7 @@
             $(".erlist_specification_"+langId).show();
             return false;
         }        
-        $(".erlist_specification_"+langId).show();
+        $(".erlist_specification_"+langId).hide();
         var data = 'product_id='+productId+'&langId='+langId+'&prodSpecId='+prodSpecId+'&prodspec_name='+prodspec_name+'&prodspec_value='+prodspec_value+'&prodspec_group='+prodspec_group;
         fcom.updateWithAjax(fcom.makeUrl('Seller', 'setUpProductSpecifications'), data, function(t) {
             prodSpecificationsByLangId(langId);
@@ -978,6 +986,10 @@
             }
         });
 	}
+    
+    goToCatalog = function(){
+        window.location.href = fcom.makeUrl('seller', 'catalog');
+    }
 
 })();
 

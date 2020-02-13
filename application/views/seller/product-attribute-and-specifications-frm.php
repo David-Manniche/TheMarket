@@ -15,6 +15,9 @@ $fld = $productFrm->getField('product_cod_enabled');
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 }
+
+$btnBackFld = $productFrm->getField('btn_back');
+$btnBackFld->setFieldTagAttribute('onClick', 'customProductForm('.$productId.');');
 ?>
 <div class="row justify-content-center">
      <div class="col-md-12">
@@ -119,7 +122,17 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
          ?>
 
          <div class="row">
-             <div class="col-md-6">
+            <div class="col-md-6">
+                 <div class="field-set">
+                     <div class="caption-wraper"><label class="field_label"></label></div>
+                     <div class="field-wraper">
+                         <div class="field_cover">
+                         <?php  echo $productFrm->getFieldHtml('btn_back');?>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <div class="col-md-6 text-right">
                  <div class="field-set">
                      <div class="caption-wraper"><label class="field_label"></label></div>
                      <div class="field-wraper">

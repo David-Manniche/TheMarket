@@ -2,6 +2,9 @@ $(document).ready(function(){
 	searchTaxReport( document.frmTaxReportSearch );
 	
 	$('input[name=\'shop_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('Shops', 'autoComplete'),
@@ -21,6 +24,9 @@ $(document).ready(function(){
 	});
 	
 	$('input[name=\'user_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('Users', 'autoCompleteJson'),

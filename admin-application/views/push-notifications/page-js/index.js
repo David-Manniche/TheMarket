@@ -94,6 +94,9 @@ $(document).on("click", "ul#selectedUsersList-js .ion-close-round", function(){
         var buyers = $(userSelector).data("buyers");
         var sellers = $(userSelector).data("sellers");
         $(userSelector).autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('Users', 'autoCompleteJson'),

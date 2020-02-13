@@ -37,6 +37,9 @@ $("document").ready(function(){
 	<?php if( $polling_type == Polling::POLLING_TYPE_PRODUCTS ){?>
 	reloadLinkedProducts(<?php echo $polling_id; ?>);
 	$('input[name=\'product\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {
 			$.ajax({
 				url: '<?php echo CommonHelper::generateUrl('Products','autoComplete'); ?>',
@@ -57,6 +60,9 @@ $("document").ready(function(){
 	<?php } elseif( $polling_type == Polling::POLLING_TYPE_CATEGORY ){ ?>
 	reloadLinkedCategories(<?php echo $polling_id; ?>);
 	$('input[name=\'category\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {
 			$.ajax({
 				url: '<?php echo CommonHelper::generateUrl('ProductCategories','autoComplete'); ?>',

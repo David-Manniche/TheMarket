@@ -41,6 +41,9 @@ $("document").ready(function(){
 	reloadCouponProduct(<?php echo $coupon_id; ?>);
 	
 	$('input[name=\'product_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {			
 			$.ajax({
 				url: fcom.makeUrl('Products', 'autoComplete'),

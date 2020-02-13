@@ -39,6 +39,9 @@ $("document").ready(function(){
 	reloadCouponUser(<?php echo $coupon_id; ?>);
 	
 	$('input[name=\'user_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {			
 			$.ajax({
 				url: fcom.makeUrl('Users', 'autoCompleteJson'),

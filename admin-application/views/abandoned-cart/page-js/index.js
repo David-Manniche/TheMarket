@@ -2,6 +2,9 @@ $(document).ready(function(){
 	searchAbandonedCart(document.frmAbandonedCartSearch);
 	
 	$('input[name=\'user_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('Users', 'autoCompleteJson'),
@@ -27,6 +30,9 @@ $(document).ready(function(){
 	});
     
     $('input[name=\'seller_product\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('sellerProducts', 'autoComplete'),

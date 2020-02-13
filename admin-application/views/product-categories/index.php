@@ -25,21 +25,6 @@
                             <div class="sectionbody" id="total-block">
                             </div>
                         </section>
-                        <section class="section">
-                             <div class="sectionhead">
-                                 <h4><?php echo  Labels::getLabel('LBL_Category_Message_Title', $adminLangId); ?></h4>
-                             </div>
-                             <div class="sectionbody space ">
-                                 <div class="note">
-                                     <div class="note-icon">
-                                       <i class="fas fa-info-circle"></i>
-                                     </div>
-                                     <div class="note-text"><?php echo  Labels::getLabel('LBL_Category_Message_Info', $adminLangId); ?></div>
-                                 </div>
-
-
-                             </div>
-                         </section>
                     </div>
                 </div>
             </div>

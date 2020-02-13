@@ -85,7 +85,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $privateKey = $frm->addTextArea(Labels::getLabel('LBL_SERVICE_ACCOUNT_DETAIL', $this->siteLangId), 'service_account');
         $privateKey->requirements()->setRequired();
         $privateKey->htmlAfterField = $this->getPluginData('plugin_description');
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         return $frm;
     }
 

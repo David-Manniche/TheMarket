@@ -569,24 +569,28 @@ $(document).on('change','.collection-language-js',function(){
 
 function bindAutoComplete(){
 	var shopId = document.frmLinks1.shop_id.value;
-	$("input[name='scp_selprod_id']").autocomplete({'source': function(request, response) {
-        $.ajax({
-            url: fcom.makeUrl('Shops', 'autoCompleteProducts'),
-            data: {keyword: request['term'],fIsAjax:1,shopId:shopId},
-            dataType: 'json',
-            type: 'post',
-            success: function(json) {
-                response($.map(json, function(item) {
-                    return { label: item['name'] +'['+item['product_identifier'] +']',	value: item['name'] +'['+item['product_identifier'] +']', id: item['id']	};
-                }));
-            },
-        });
-    },
-    'select': function(event, ui) {
-        $('input[name=\'scp_selprod_id\']').val('');
-        $('#selprod-products' + ui.item.id).remove();
-        $('#selprod-products ul').append('<li id="selprod-products' + ui.item.id + '"><i class=" icon ion-close-round"></i> ' +ui.item.label + '<input type="hidden" name="product_ids[]" value="' + ui.item.id + '" /></li>');
-        return false;
-    }
+	$("input[name='scp_selprod_id']").autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
+        'source': function(request, response) {
+            $.ajax({
+                url: fcom.makeUrl('Shops', 'autoCompleteProducts'),
+                data: {keyword: request['term'],fIsAjax:1,shopId:shopId},
+                dataType: 'json',
+                type: 'post',
+                success: function(json) {
+                    response($.map(json, function(item) {
+                        return { label: item['name'] +'['+item['product_identifier'] +']',	value: item['name'] +'['+item['product_identifier'] +']', id: item['id']	};
+                    }));
+                },
+            });
+        },
+        'select': function(event, ui) {
+            $('input[name=\'scp_selprod_id\']').val('');
+            $('#selprod-products' + ui.item.id).remove();
+            $('#selprod-products ul').append('<li id="selprod-products' + ui.item.id + '"><i class=" icon ion-close-round"></i> ' +ui.item.label + '<input type="hidden" name="product_ids[]" value="' + ui.item.id + '" /></li>');
+            return false;
+        }
 	});
 }

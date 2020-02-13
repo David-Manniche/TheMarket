@@ -2,6 +2,9 @@ $(document).ready(function() {
     searchMessages(document.frmSearch);
 
     $('input[name=\'message_by\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
         'source': function(request, response) {
             $.ajax({
                 url: fcom.makeUrl('Users', 'autoCompleteJson'),
@@ -29,6 +32,9 @@ $(document).ready(function() {
     });
 
     $('input[name=\'message_to\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
         'source': function(request, response) {
             $.ajax({
                 url: fcom.makeUrl('Users', 'autoCompleteJson'),

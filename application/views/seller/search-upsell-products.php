@@ -43,19 +43,16 @@ foreach ($arrListing as $selProdId => $upsellProds) {
         }
     }
 }
-if (count($arrListing) == 0) {
-    $tbl->appendElement('tr', array('class' => 'noResult--js'))->appendElement(
-        'td',
-        array('colspan'=>count($arr_flds)),
-        Labels::getLabel('LBL_No_Record_Found', $siteLangId)
-    );
-}
 
+echo $tbl->getHtml();
+if (count($arrListing) == 0) {
+    $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
+    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
+}
 $frm = new Form('frmVolDiscountListing', array('id'=>'frmVolDiscountListing'));
 $frm->setFormTagAttribute('class', 'form');
 
-echo $frm->getFormTag();
-echo $tbl->getHtml(); ?>
+echo $frm->getFormTag(); ?>
 </form>
 <?php
 $postedData['page'] = $page;
