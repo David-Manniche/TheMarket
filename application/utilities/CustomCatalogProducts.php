@@ -1125,7 +1125,7 @@ trait CustomCatalogProducts
         }
 
         $preqProdCatId = FatUtility::int($post['ptc_prodcat_id']);
-        $autoUpdateOtherLangsData = FatUtility::int($post['auto_update_other_langs_data']);
+        $autoUpdateOtherLangsData = isset($post['auto_update_other_langs_data']) ? FatUtility::int($post['auto_update_other_langs_data']) : 0;
         $prodName = $post['product_name'];
         $prodYouTubeUrl = $post['product_youtube_video'];
         $languages = Language::getAllNames();
