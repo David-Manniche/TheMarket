@@ -15,10 +15,10 @@ $btnFld = $frm->getField('btn_submit');
 $btnFld->setFieldTagAttribute('class', 'btn--block');
 ?>
 
-<div class="form-side-inner">
+<div class="form-side-inner otpForm-js">
     <div class="section-head">
         <div class="section__heading">
-            <h2><?php echo Labels::getLabel('LBL_ONE_TYPE_PASSWORD?', $siteLangId);?></h2>
+            <h2 class='formTitle'><?php echo Labels::getLabel('LBL_ONE_TYPE_PASSWORD?', $siteLangId);?></h2>
             <p class="note"><?php echo Labels::getLabel('LBL_ENTER_THE_OTP_YOU_RECEIVED_ON_YOUR_PHONE_NUMBER', $siteLangId);?></p>
         </div>
     </div>
@@ -40,14 +40,16 @@ $btnFld->setFieldTagAttribute('class', 'btn--block');
                         <?php } ?>
                     </div>
                     <span class="note mb-2">
-                        <a href="javaScript:void(0)" onClick="resendOtp(<?php echo $userId; ?>, <?php echo applicationConstants::YES; ?>)">
+                        <a href="javaScript:void(0)" class="resendOtp-js" onClick="resendOtp(<?php echo $userId; ?>, <?php echo applicationConstants::YES; ?>)">
                             <?php echo Labels::getLabel('LBL_RESEND_OTP?', $siteLangId); ?>
                         </a>
                     </span>
-                    <?php 
-                        echo $frm->getFieldHtml('user_id');
-                        echo $frm->getFieldHtml('btn_submit');
-                    ?>
+                    <?php echo $frm->getFieldHtml('user_id'); ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <?php echo $frm->getFieldHtml('btn_submit'); ?>
+                        </div>
+                    </div>
                 </form>
                 <?php echo $frm->getExternalJs(); ?>
             </div>

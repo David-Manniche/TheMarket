@@ -1051,7 +1051,7 @@ class AccountController extends LoggedUserController
         $frm = $this->getProfileInfoForm();
 
         $post = FatApp::getPostedData();
-        $post['user_phone'] = !empty($post['user_phone']) ? ValidateElement::convertPhone($post['user_phone']) : '';
+        
         if (1 > count($post) && true === MOBILE_APP_API_CALL) {
             LibHelper::dieJsonError(Labels::getLabel("MSG_INVALID_REQUEST", $this->siteLangId));
         }
@@ -1079,9 +1079,8 @@ class AccountController extends LoggedUserController
         if ($post['user_dob'] == "0000-00-00" || $post['user_dob'] == "" || strtotime($post['user_dob']) == 0) {
             unset($post['user_dob']);
         }
-        unset($post['credential_username']);
-        unset($post['credential_email']);
 
+        unset($post['credential_username'], $post['credential_email'], $post['user_phone']);
 
         /* saving user extras[ */
         if (User::isAffiliate()) {
@@ -2776,7 +2775,7 @@ class AccountController extends LoggedUserController
         $conNewPwdReq->setCompareWith('new_password', 'eq');
         /* $conNewPwdReq->setCustomErrorMessage(Labels::getLabel('LBL_CONFIRM_PASSWORD_NOT_MATCHED',
         $this->siteLangId)); */
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
         return $frm;
     }
 
@@ -3448,5 +3447,115 @@ class AccountController extends LoggedUserController
         }
         $this->set('msg', Labels::getLabel('Msg_Successfully_Updated', $this->siteLangId));
         $this->_template->render();
+    }
+
+    public function changePhoneForm($updatePhnFrm = 0)
+    {
+        $phoneNumber = User::getAttributesById(UserAuthentication::getLoggedUserId(), 'user_phone');
+        $updatePhnFrm = empty($updatePhnFrm) ? empty($phoneNumber) ? 1 : 0 : $updatePhnFrm;
+
+        $frm = $this->getPhoneNumberForm();
+        if (1 > $updatePhnFrm && !empty($phoneNumber)) {
+            $frm->fill(['user_phone' => $phoneNumber]);
+            $phnFld = $frm->getField('user_phone');
+            $phnFld->setFieldTagAttribute('readonly', 'readonly');
+        }
+
+        $this->set('frm', $frm);
+        $this->set('updatePhnFrm', $updatePhnFrm);
+        $this->set('siteLangId', $this->siteLangId);
+        $this->_template->render(false, false, 'account/change-phone-form.php');
+    }
+
+    private function sendOtp(int $userId, string $phone)
+    {
+        $userObj = new User($userId);
+        $otp = $userObj->prepareUserPhoneOtp(true, $phone);
+        if (false == $otp) {
+            LibHelper::dieJsonError($userObj->getError());
+        }
+
+        $userData = $userObj->getUserInfo('user_name', false, false);
+
+        $obj = clone $userObj;
+        if (false === $obj->sendOtp($phone, $userData['user_name'], $otp, $this->siteLangId)) {
+            LibHelper::dieJsonError($obj->getError());
+        }
+        return true;
+    }
+    public function getOtp($updatePhnFrm = 0)
+    {
+        $frm = $this->getPhoneNumberForm();
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        if (false === $post) {
+            LibHelper::dieJsonError(current($frm->getValidationErrors()));
+        }
+
+        $userId = UserAuthentication::getLoggedUserId();
+        $phone = $post['user_phone'];
+        if (1 > $updatePhnFrm && false === UserAuthentication::validateUserPhone($userId, $phone)) {
+            LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_PHONE_NUMBER', $this->siteLangId));
+        }
+
+        $this->sendOtp($userId, $phone);
+
+        $otpFrm = $this->getOtpForm();
+        $otpFrm->fill(['user_id' => $userId]);
+        $this->set('frm', $otpFrm);
+        $this->_template->render(false, false, 'guest-user/otp-form.php');
+    }
+
+    public function validateOtp($updatePhnFrm = 0)
+    {
+        $otpFrm = $this->getOtpForm();
+        $post = $otpFrm->getFormDataFromArray(FatApp::getPostedData());
+        if (false === $post) {
+            LibHelper::dieJsonError(current($frm->getValidationErrors()));
+        }
+
+        if (!is_array($post['upv_otp']) || User::OTP_LENGTH != count($post['upv_otp'])) {
+            LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_OTP', $this->siteLangId));
+        }
+        $otp = implode("", $post['upv_otp']);
+
+        $userId = UserAuthentication::getLoggedUserId();
+        $obj = new User($userId);
+        $returnPhone = (0 < $updatePhnFrm) ? false : true;
+        $resp = $obj->verifyUserPhoneOtp($otp, false, $returnPhone);
+        if (false == $resp) {
+            LibHelper::dieJsonError($obj->getError());
+        }
+
+        if (0 < $updatePhnFrm) {
+            $this->changePhoneForm($updatePhnFrm);
+            exit;
+        }
+
+        $userObj = clone $obj;
+        $userObj->assignValues(['user_phone' => $resp]);
+        if (!$userObj->save()) {
+            $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
+            FatUtility::dieJsonError($message);
+        }
+        $this->set('msg', Labels::getLabel('MSG_UPDATED_SUCCESSFULLY', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+    
+    public function resendOtp(int $userId)
+    {
+        $phone = FatApp::getPostedData('user_phone', FatUtility::VAR_STRING, '');
+        $phone = (!empty($phone) && '+' != $phone[0] ? '+' . $phone : $phone);
+
+        if (!empty($phone)) {
+            $this->sendOtp($userId, $phone);
+        } else {
+            $userObj = new User($userId);
+            if (false == $userObj->resendOtp()) {
+                FatUtility::dieJsonError($userObj->getError());
+            }
+        }
+
+        $this->set('msg', Labels::getLabel('MSG_OTP_SENT!_PLEASE_CHECK_YOUR_PHONE.', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
     }
 }
