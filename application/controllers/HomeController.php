@@ -1009,7 +1009,7 @@ class HomeController extends MyAppController
             $srch->doNotCalculateRecords();
             $srch->setPageSize(1);
             $srch->addMultipleFields(array(
-                'IFNULL(meta_title, meta_identifier) as meta_title',
+                'meta_title',
                 'meta_keywords', 'meta_description', 'meta_other_meta_tags' ));
             
             $rs = $srch->getResultSet();
