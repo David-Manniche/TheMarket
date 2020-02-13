@@ -6,7 +6,7 @@ $frmSearch->developerTags['fld_default_col'] = 4;
 
 $keywordFld = $frmSearch->getField('keyword');
 $keywordFld->setWrapperAttribute('class', 'col-lg-4');
-$keywordFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_by_Product_Name', $siteLangId));
+$keywordFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_Product', $siteLangId));
 $keywordFld->developerTags['col'] = 4;
 $keywordFld->developerTags['noCaptionTag'] = true;
 ?>
@@ -16,7 +16,7 @@ $keywordFld->developerTags['noCaptionTag'] = true;
         <div class="content-header row">
             <div class="col">
                 <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
-                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Manage_SEO', $siteLangId); ?></h2>
+                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Meta_Tags', $siteLangId); ?></h2>
             </div>
         </div>
         <div class="content-body">
@@ -54,7 +54,7 @@ $keywordFld->developerTags['noCaptionTag'] = true;
                             <div id="dvAlert">
                                 <div class="cards-message" role="alert">
                                     <div class="cards-message-icon"><i class="fas fa-exclamation-triangle"></i></div>
-                                    <div class="cards-message-text"><?php echo Labels::getLabel('LBL_Select_a_product_to_add_/_edit_SEO_related_data', $siteLangId); ?></div>
+                                    <div class="cards-message-text"><?php echo Labels::getLabel('LBL_Select_a_product_to_add_/_edit_meta_tags_data', $siteLangId); ?></div>
                                 </div>
                             </div>
                         </div>

@@ -6,7 +6,7 @@ $frmSearch->developerTags['fld_default_col'] = 4;
 
 $keywordFld = $frmSearch->getField('keyword');
 $keywordFld->setWrapperAttribute('class', 'col-lg-4');
-$keywordFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_by_Product_Name', $siteLangId));
+$keywordFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_Product', $siteLangId));
 $keywordFld->developerTags['col'] = 4;
 $keywordFld->developerTags['noCaptionTag'] = true;
 ?>
@@ -16,7 +16,7 @@ $keywordFld->developerTags['noCaptionTag'] = true;
         <div class="content-header  row justify-content-between mb-3">
             <div class="col-md-auto">
                 <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
-                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Manage_URL_Rewriting', $siteLangId); ?></h2>
+                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_URL_Rewriting', $siteLangId); ?></h2>
             </div>
         </div>
         <div class="content-body">

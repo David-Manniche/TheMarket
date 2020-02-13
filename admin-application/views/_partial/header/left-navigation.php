@@ -230,6 +230,21 @@
             </li>
             <?php } ?>
             <?php if (
+                $objPrivilege->canViewMetaTags(AdminAuthentication::getLoggedAdminId(), true) ||
+                $objPrivilege->canViewUrlRewrite(AdminAuthentication::getLoggedAdminId(), true)
+                ) { ?>
+                <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_SEO', $adminLangId);?></a>
+                    <ul>
+                        <?php if ($objPrivilege->canViewMetaTags(AdminAuthentication::getLoggedAdminId(), true)) { ?>
+                            <li><a href="<?php echo CommonHelper::generateUrl('MetaTags'); ?>"><?php echo Labels::getLabel('LBL_Meta_Tags_Management', $adminLangId);?></a></li>
+                        <?php } ?>
+                        <?php if ($objPrivilege->canViewUrlRewrite(AdminAuthentication::getLoggedAdminId(), true)) { ?>
+                            <li><a href="<?php echo CommonHelper::generateUrl('UrlRewriting'); ?>"><?php echo Labels::getLabel('LBL_Url_Rewriting', $adminLangId);?></a></li>
+                        <?php } ?>
+                    </ul>
+                </li>
+            <?php } ?>
+            <?php if (
                 $objPrivilege->canViewShippingMethods(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewShippingCompanyUsers(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewShippingDurationLabels(AdminAuthentication::getLoggedAdminId(), true) ||
@@ -264,7 +279,7 @@
             <?php if ($objPrivilege->canViewPlugins(AdminAuthentication::getLoggedAdminId(), true)) {?>
                 <li><a href="<?php echo CommonHelper::generateUrl('Plugins'); ?>"><?php echo Labels::getLabel('LBL_PLUGINS', $adminLangId);?></a></li>
             <?php }?>
-            
+
             <!--Settings-->
             <?php if (
                 $objPrivilege->canViewGeneralSettings(AdminAuthentication::getLoggedAdminId(), true) ||
@@ -291,7 +306,7 @@
                             <li><a href="<?php echo CommonHelper::generateUrl('CurrencyManagement'); ?>"><?php echo Labels::getLabel('LBL_Currency_Management', $adminLangId);?></a></li>
                         <?php } ?>
                         <?php if ($objPrivilege->canViewTax(AdminAuthentication::getLoggedAdminId(), true)) {?>
-                            <li><a href="<?php echo CommonHelper::generateUrl('TaxStructure'); ?>"><?php echo Labels::getLabel('LBL_Tax_Structure',$adminLangId);?></a></li>
+                            <li><a href="<?php echo CommonHelper::generateUrl('TaxStructure'); ?>"><?php echo Labels::getLabel('LBL_Tax_Structure', $adminLangId);?></a></li>
                             <li><a href="<?php echo CommonHelper::generateUrl('Tax'); ?>"><?php echo Labels::getLabel('LBL_Sales_Tax', $adminLangId);?></a></li>
                         <?php } ?>
                         <?php if ($objPrivilege->canViewCommissionSettings(AdminAuthentication::getLoggedAdminId(), true)) {?>
@@ -322,7 +337,7 @@
                     <!--Mobile Application-->
             <?php if (
                 $objPrivilege->canViewPushNotification(AdminAuthentication::getLoggedAdminId(), true) ||
-                $objPrivilege->canViewAppThemeSettings(AdminAuthentication::getLoggedAdminId(), true) || 
+                $objPrivilege->canViewAppThemeSettings(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewSmsTemplate(AdminAuthentication::getLoggedAdminId(), true)
                 ) { ?>
                 <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_MOBILE_APPS', $adminLangId);?></a>
@@ -371,9 +386,9 @@
                     <?php if ($objPrivilege->canViewSellerOrders(AdminAuthentication::getLoggedAdminId(), true)) {?>
                         <li><a href="<?php echo CommonHelper::generateUrl('SellerOrders'); ?>"><?php echo Labels::getLabel('LBL_Seller_Orders', $adminLangId);?> <?php if (!empty($sellerOrderCount)) { ?><span class='badge'>(<?php echo $sellerOrderCount; ?>)</span><?php } ?></a></li>
                     <?php } ?>
-                    <?php if($objPrivilege->canViewAbandonedCart(AdminAuthentication::getLoggedAdminId(), true)){ ?>
-						<li><a href="<?php echo CommonHelper::generateUrl('AbandonedCart'); ?>"><?php echo Labels::getLabel('LBL_Abandoned_Cart',$adminLangId);?> </a></li>
-					<?php } ?>
+                    <?php if ($objPrivilege->canViewAbandonedCart(AdminAuthentication::getLoggedAdminId(), true)) { ?>
+                        <li><a href="<?php echo CommonHelper::generateUrl('AbandonedCart'); ?>"><?php echo Labels::getLabel('LBL_Abandoned_Cart', $adminLangId);?> </a></li>
+                    <?php } ?>
                     <?php if ($objPrivilege->canViewSubscriptionOrders(AdminAuthentication::getLoggedAdminId(), true)) {?>
                         <li><a href="<?php echo CommonHelper::generateUrl('SubscriptionOrders'); ?>"><?php echo Labels::getLabel('LBL_Subscription_Orders', $adminLangId);?> </a></li>
                     <?php } ?>
@@ -406,21 +421,18 @@
             <?php if ($objPrivilege->canViewPromotions(AdminAuthentication::getLoggedAdminId(), true)) { ?>
                 <li><a href="<?php echo CommonHelper::generateUrl('promotions'); ?>"><?php echo Labels::getLabel('LBL_PPC_Promotions_Management', $adminLangId);?></a></li>
             <?php } ?>
-            
-            <?php if($objPrivilege->canViewImportExport(AdminAuthentication::getLoggedAdminId(), true)){ ?>
-                <li><a href="<?php echo CommonHelper::generateUrl('ImportExport'); ?>"><?php echo Labels::getLabel('LBL_Import_Export',$adminLangId);?></a>
-                </li>
-			<?php } ?>
 
+            <?php if ($objPrivilege->canViewImportExport(AdminAuthentication::getLoggedAdminId(), true)) { ?>
+                <li><a href="<?php echo CommonHelper::generateUrl('ImportExport'); ?>"><?php echo Labels::getLabel('LBL_Import_Export', $adminLangId);?></a>
+                </li>
+            <?php } ?>
             <?php if (
                 $objPrivilege->canViewSuccessStories(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewLanguageLabels(AdminAuthentication::getLoggedAdminId(), true) ||
                 /* $objPrivilege->canViewHomePageElements(AdminAuthentication::getLoggedAdminId(), true) ||  */
                 $objPrivilege->canViewSlides(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewBanners(AdminAuthentication::getLoggedAdminId(), true) ||
-                $objPrivilege->canViewMetaTags(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewFaqCategories(AdminAuthentication::getLoggedAdminId(), true) ||
-                $objPrivilege->canViewUrlRewrite(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewThemeColor(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewProductTempImages(AdminAuthentication::getLoggedAdminId(), true)
                 ) { ?>
@@ -433,15 +445,8 @@
                     <?php /* if($objPrivilege->canViewHomePageElements(AdminAuthentication::getLoggedAdminId(), true)){?>
                     <li><a href="<?php echo CommonHelper::generateUrl('HomePageElements'); ?>">Home Page Elements</a></li>
                     <?php } */?>
-
-                    <?php if ($objPrivilege->canViewMetaTags(AdminAuthentication::getLoggedAdminId(), true)) { ?>
-                        <li><a href="<?php echo CommonHelper::generateUrl('MetaTags'); ?>"><?php echo Labels::getLabel('LBL_Meta_Tags_Management', $adminLangId);?></a></li>
-                    <?php } ?>
                     <?php if ($objPrivilege->canViewFaqCategories(AdminAuthentication::getLoggedAdminId(), true)) { ?>
                         <li><a href="<?php echo CommonHelper::generateUrl('FaqCategories'); ?>"><?php echo Labels::getLabel('LBL_FAQs', $adminLangId);?></a></li>
-                    <?php } ?>
-                    <?php if ($objPrivilege->canViewUrlRewrite(AdminAuthentication::getLoggedAdminId(), true)) { ?>
-                        <li><a href="<?php echo CommonHelper::generateUrl('UrlRewriting'); ?>"><?php echo Labels::getLabel('LBL_Url_Rewriting', $adminLangId);?></a></li>
                     <?php } ?>
                     <?php if ($objPrivilege->canViewThemeColor(AdminAuthentication::getLoggedAdminId(), true)) { ?>
                         <li><a href="<?php echo CommonHelper::generateUrl('ThemeColor'); ?>"><?php echo Labels::getLabel('LBL_Theme_Settings', $adminLangId);?></a></li>
@@ -573,11 +578,11 @@
             <?php } ?>
 
             <?php if ($objPrivilege->canViewSitemap(AdminAuthentication::getLoggedAdminId(), true)) { ?>
-                <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Sitemap',$adminLangId);?></a>
+                <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Sitemap', $adminLangId);?></a>
                     <ul>
-                        <li><a href="<?php echo CommonHelper::generateUrl('sitemap', 'generate'); ?>"><?php echo Labels::getLabel('LBL_Update_Sitemap',$adminLangId);?></a></li>
-                        <li><a href="<?php echo CommonHelper::generateFullUrl('custom', 'sitemap', array(), CONF_WEBROOT_FRONT_URL); ?>" target="_blank"><?php echo Labels::getLabel('LBL_View_HTML',$adminLangId);?></a></li>
-                        <li><a href="<?php echo CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL).'/sitemap.xml'; ?>" target="_blank"><?php echo Labels::getLabel('LBL_View_XML',$adminLangId);?></a></li>
+                        <li><a href="<?php echo CommonHelper::generateUrl('sitemap', 'generate'); ?>"><?php echo Labels::getLabel('LBL_Update_Sitemap', $adminLangId);?></a></li>
+                        <li><a href="<?php echo CommonHelper::generateFullUrl('custom', 'sitemap', array(), CONF_WEBROOT_FRONT_URL); ?>" target="_blank"><?php echo Labels::getLabel('LBL_View_HTML', $adminLangId);?></a></li>
+                        <li><a href="<?php echo CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL).'/sitemap.xml'; ?>" target="_blank"><?php echo Labels::getLabel('LBL_View_XML', $adminLangId);?></a></li>
                     </ul>
                 </li>
             <?php } ?>

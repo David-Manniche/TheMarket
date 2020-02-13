@@ -51,10 +51,12 @@ foreach ($arrListing as $sn => $row) {
         }
     }
 }
-echo $tbl->getHtml();
+
 if (count($arrListing) == 0) {
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
     $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
+} else {
+    echo $tbl->getHtml();
 }
 
 $frm = new Form('frmSeoListing', array('id'=>'frmSeoListing'));

@@ -64,16 +64,16 @@ $action = strtolower($action);
                 } ?>
             <li class="divider"></li>
             <li class="menu__item">
-                <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_Meta_Tags', $siteLangId);?></span></div>
+                <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_SEO', $siteLangId);?></span></div>
             </li>
             <li class="menu__item <?php echo ($controller == 'seller' && $action == 'productseo') ? 'is-active' : ''; ?>">
                 <div class="menu__item__inner">
-                    <a title="<?php echo Labels::getLabel('LBL_SEO', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'productSeo'); ?>">
+                    <a title="<?php echo Labels::getLabel('LBL_Meta_Tags', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'productSeo'); ?>">
                         <i class="icn shop"><svg class="svg">
                                 <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
                             </svg>
                         </i>
-                        <span class="menu-item__title"><?php echo Labels::getLabel('LBL_SEO', $siteLangId);?></span>
+                        <span class="menu-item__title"><?php echo Labels::getLabel('LBL_Meta_Tags', $siteLangId);?></span>
                     </a>
                 </div>
             </li>

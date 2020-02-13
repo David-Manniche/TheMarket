@@ -2,18 +2,18 @@
 <h5 class="cards-title mb-2"><?php echo SellerProduct::getProductDisplayTitle($selprodId, $siteLangId, false); ?></h5>
 <div class="form__subcontent">
     <?php
-        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
-        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
-        if (!empty($translatorSubscriptionKey) && $selprod_lang_id != $siteDefaultLangId) { ?>
-            <div class="row justify-content-end">
-                <div class="col-auto mb-4">
-                    <input class="btn btn-primary"
-                        type="button"
-                        value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $siteLangId); ?>"
-                        onClick="editProductMetaTagLangForm(<?php echo $selprodId; ?>, <?php echo $selprod_lang_id; ?>)">
-                </div>
+    $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+    $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+    if (!empty($translatorSubscriptionKey) && $selprod_lang_id != $siteDefaultLangId) { ?>
+        <div class="row justify-content-end">
+            <div class="col-auto mb-4">
+                <input class="btn btn-primary"
+                    type="button"
+                    value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $siteLangId); ?>"
+                    onClick="editProductMetaTagLangForm(<?php echo $selprodId; ?>, <?php echo $selprod_lang_id; ?>)">
             </div>
-        <?php } ?>
+        </div>
+    <?php } ?>
     <?php
     $productSeoLangForm->setFormTagAttribute('class', 'form form--horizontal layout--'.$formLayout);
     $productSeoLangForm->setFormTagAttribute('onsubmit', 'setupProductLangMetaTag(this, 0); return(false);');
@@ -28,7 +28,7 @@
     $mtagsFld = $productSeoLangForm->getField('meta_other_meta_tags');
     $mtagsFld->setfieldTagAttribute('class', "txtarea-height");
 
-    $nextBtn = $productSeoLangForm->getField('btn_next');    
+    $nextBtn = $productSeoLangForm->getField('btn_next');
     $nextBtn->developerTags['col'] = 3;
     $nextBtn->developerTags['noCaptionTag'] = true;
     end($languages);

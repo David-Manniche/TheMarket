@@ -16,7 +16,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             <?php $relProdFrm->setFormTagAttribute('onsubmit', 'setUpSellerProductLinks(this); return(false);');
                             $relProdFrm->setFormTagAttribute('class', 'form form--horizontal');
                             $prodFld = $relProdFrm->getField('product_name');
-                            $prodFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Select_Product', $siteLangId));
+                            $prodFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_Product', $siteLangId));
 
                             $relProdFld = $relProdFrm->getField('products_upsell');
                             $relProdFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Add_Buy_Together_Products', $siteLangId));

@@ -2,8 +2,8 @@
 $arr_flds = array(
     'listserial' => '#',
     'product_name' => Labels::getLabel('LBL_Product', $siteLangId),
-    'original' => Labels::getLabel('LBL_Original', $siteLangId),
-    'custom' => Labels::getLabel('LBL_Custom', $siteLangId),
+    'original' => Labels::getLabel('LBL_Original_URL', $siteLangId),
+    'custom' => Labels::getLabel('LBL_Custom_URL', $siteLangId),
 );
 
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered volDiscountList-js'));
