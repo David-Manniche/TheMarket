@@ -2,7 +2,7 @@
 $arr_flds = array(
     'listserial'=>'#',
     'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
-    'tags' => ''
+    'tags' => Labels::getLabel('LBL_Tags', $siteLangId)
 );
 
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--orders'));
@@ -48,10 +48,12 @@ foreach ($arr_listing as $sn => $row) {
         }
     }
 }
-echo $tbl->getHtml();
+
 if (count($arr_listing) == 0) {
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
     $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
+} else {
+    echo $tbl->getHtml();
 }
 
 $postedData['page'] = $page;
