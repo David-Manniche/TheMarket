@@ -4,6 +4,10 @@
         window.location.href = fcom.makeUrl('Products');
     }
     
+    goToProductCategory = function(){
+        window.location.href = fcom.makeUrl('productCategories');
+    }
+    
     displayProdInitialTab = function(){
         $(".tabs_panel").hide();
         $(".tabs_nav  > li > a").removeClass('active');
@@ -17,10 +21,10 @@
         $("#tabs_004").remove();
     }
 
-    productInitialSetUpFrm = function(productId){
+    productInitialSetUpFrm = function(productId, prodCatId){
         fcom.resetEditorInstance();        
 		var data = '';
-		fcom.ajax(fcom.makeUrl('Products','productInitialSetUpFrm',[productId]),data,function(res){
+		fcom.ajax(fcom.makeUrl('Products','productInitialSetUpFrm',[productId, prodCatId]),data,function(res){
             $(".tabs_panel").html('');
             $(".tabs_panel").hide();
             $(".tabs_nav  > li > a").removeClass('active');

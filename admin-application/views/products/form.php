@@ -60,7 +60,7 @@
     </div>
 </div>
 <script>
-productInitialSetUpFrm(<?php echo $productId; ?>);
+productInitialSetUpFrm(<?php echo $productId; ?>, <?php echo $prodCatId; ?>);
 var product_type =  '<?php echo $productType; ?>';
 var PRODUCT_TYPE_DIGITAL = '<?php echo Product::PRODUCT_TYPE_DIGITAL; ?>';
 if(product_type == PRODUCT_TYPE_DIGITAL){
