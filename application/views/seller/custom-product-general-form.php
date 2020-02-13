@@ -6,6 +6,8 @@ $fld = $productFrm->getField('auto_update_other_langs_data');
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
+$btnDiscardFld = $productFrm->getField('btn_discard');
+$btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');
 ?>
 <div class="row justify-content-center">
     <div class="col-md-12">
@@ -141,7 +143,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
         <?php $divLayout = Language::getLayoutDirection($siteDefaultLangId); ?>
         <div class="p-4 mb-4 bg-gray rounded layout--<?php echo $divLayout;?>">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="field-set">
                         <div class="caption-wraper">
                             <label class="field_label">
@@ -158,9 +160,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="field-set">
                         <div class="caption-wraper">
                             <label class="field_label">
@@ -226,7 +226,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                             </h6>
                             <div id="collapseOne" class="collapse collapse-js-<?php echo $langId; ?>" aria-labelledby="headingOne" data-parent="#specification-accordion">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <div class="field-set">
                                             <div class="caption-wraper">
                                                 <label class="field_label">
@@ -241,9 +241,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <div class="field-set">
                                             <div class="caption-wraper">
                                                 <label class="field_label">
@@ -284,6 +282,16 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
         } ?>
         <div class="row">
             <div class="col-md-6">
+                <div class="field-set">
+                    <div class="caption-wraper"><label class="field_label"></label></div>
+                    <div class="field-wraper">
+                        <div class="field_cover">
+                        <?php echo $productFrm->getFieldHtml('btn_discard'); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 text-right">
                 <div class="field-set">
                     <div class="caption-wraper"><label class="field_label"></label></div>
                     <div class="field-wraper">

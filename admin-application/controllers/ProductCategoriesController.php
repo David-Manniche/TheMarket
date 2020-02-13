@@ -112,24 +112,24 @@ class ProductCategoriesController extends AdminBaseController
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $frm = new Form('frmProdCategory');
         $frm->addHiddenField('', 'prodcat_id', $prodCatId);
-        $frm->addRequiredField(Labels::getLabel('LBL_Category_Name', $this->adminLangId), 'prodcat_name[' . $siteDefaultLangId . ']');
+        $frm->addRequiredField(Labels::getLabel('LBL_Name', $this->adminLangId), 'prodcat_name[' . $siteDefaultLangId . ']');
 
         $prodCat = new ProductCategory();
         $categoriesArr = $prodCat->getCategoriesForSelectBox($this->adminLangId, $prodCatId);
         $categories = array(0 => Labels::getLabel('LBL_Root_Category', $this->adminLangId)) + $prodCat->makeAssociativeArray($categoriesArr);
-        $frm->addSelectBox(Labels::getLabel('LBL_Category_Parent', $this->adminLangId), 'prodcat_parent', $categories, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Parent_Category', $this->adminLangId), 'prodcat_parent', $categories, '', array(), '');
 
-        $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
-        $frm->addRadioButtons(Labels::getLabel('LBL_Status', $this->adminLangId), 'prodcat_active', $activeInactiveArr, '1', array());
+        $yesNoArr = applicationConstants::getYesNoArr($this->adminLangId);
+        $frm->addRadioButtons(Labels::getLabel('LBL_Publish', $this->adminLangId), 'prodcat_active', $yesNoArr, '1', array());
 
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
         $langData = Language::getAllNames();
         unset($langData[$siteDefaultLangId]);
         if (!empty($translatorSubscriptionKey) && count($langData) > 0) {
-            $frm->addCheckBox(Labels::getLabel('LBL_Translate_For_Other_Languages', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+            $frm->addCheckBox(Labels::getLabel('LBL_Translate_To_Other_Languages', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
         foreach ($langData as $langId => $data) {
-            $frm->addTextBox(Labels::getLabel('LBL_Category_Name', $this->adminLangId), 'prodcat_name[' . $langId . ']');
+            $frm->addTextBox(Labels::getLabel('LBL_Name', $this->adminLangId), 'prodcat_name[' . $langId . ']');
         }
 
         $mediaLanguages = applicationConstants::bannerTypeArr();
@@ -144,7 +144,7 @@ class ProductCategoriesController extends AdminBaseController
 
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'banner_lang_id', $mediaLanguages, '', array(), '');
         $screenArr = applicationConstants::getDisplaysArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel("LBL_Display_For", $this->adminLangId), 'slide_screen', $screenArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel("LBL_Device", $this->adminLangId), 'slide_screen', $screenArr, '', array(), '');
         $frm->addHiddenField('', 'banner_file_type', AttachedFile::FILETYPE_CATEGORY_BANNER);
         $frm->addHiddenField('', 'banner_min_width');
         $frm->addHiddenField('', 'banner_min_height');

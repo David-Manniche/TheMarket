@@ -772,7 +772,7 @@
             $(".erlist_specification_"+langId).show();
             return false;
         }        
-        $(".erlist_specification_"+langId).show();
+        $(".erlist_specification_"+langId).hide();
         var data = 'product_id='+productId+'&langId='+langId+'&prodSpecId='+prodSpecId+'&prodspec_name='+prodspec_name+'&prodspec_value='+prodspec_value+'&prodspec_group='+prodspec_group;
         fcom.updateWithAjax(fcom.makeUrl('Seller', 'setUpProductSpecifications'), data, function(t) {
             prodSpecificationsByLangId(langId);
@@ -986,6 +986,10 @@
             }
         });
 	}
+    
+    goToCatalog = function(){
+        window.location.href = fcom.makeUrl('seller', 'catalog');
+    }
 
 })();
 

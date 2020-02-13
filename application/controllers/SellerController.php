@@ -4821,6 +4821,7 @@ class SellerController extends SellerBaseController
         $frm->addHiddenField('', 'preq_id', $preqId);
         $frm->addHiddenField('', 'product_brand_id');
         $frm->addHiddenField('', 'ptc_prodcat_id');
+        $frm->addButton('', 'btn_discard', Labels::getLabel('LBL_Discard', $this->siteLangId));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->siteLangId));
         return $frm;
     }
@@ -4855,6 +4856,7 @@ class SellerController extends SellerBaseController
         }
         $frm->addHiddenField('', 'product_id', $productId);
         $frm->addHiddenField('', 'preq_id', $preqId);
+        $frm->addButton('', 'btn_back', Labels::getLabel('LBL_Back', $this->siteLangId));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->siteLangId));
         return $frm;
     }
@@ -4903,6 +4905,7 @@ class SellerController extends SellerBaseController
         $frm->addHiddenField('', 'ps_from_country_id');
         $frm->addHiddenField('', 'product_id', $productId);
         $frm->addHiddenField('', 'preq_id', $preqId);
+        $frm->addButton('', 'btn_back', Labels::getLabel('LBL_Back', $this->siteLangId));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->siteLangId));
         return $frm;
     }

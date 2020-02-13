@@ -11,7 +11,7 @@ $arr_flds3 = array(
     'user_name'=>Labels::getLabel('LBL_User', $adminLangId),
     //'attrgrp_name'=>Labels::getLabel('LBL_Attribute_Group',$adminLangId),
     'product_added_on'=>Labels::getLabel('LBL_Date', $adminLangId),
-    'product_approved' => Labels::getLabel('LBL_Approval_Status', $adminLangId),
+    'product_approved' => Labels::getLabel('LBL_Status', $adminLangId),
     'product_active'=>Labels::getLabel('LBL_Publish', $adminLangId),
     'action'=>Labels::getLabel('', $adminLangId)
 );
@@ -91,7 +91,8 @@ foreach ($arr_listing as $sn => $row) {
     }
 }
 if (count($arr_listing) == 0) {
-    $tbl->appendElement('tr')->appendElement('td', array('colspan'=>count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
+    //$tbl->appendElement('tr')->appendElement('td', array('colspan'=>count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
+    $this->includeTemplate('_partial/no-record-found.php', array('adminLangId'=>$adminLangId));
 }
 
 $frm = new Form('frmProdListing', array('id'=>'frmProdListing'));

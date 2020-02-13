@@ -22,6 +22,12 @@ $weightUnitFld->developerTags['col'] = 6;
 $weightFld = $productFrm->getField('product_weight');
 $weightFld->developerTags['col'] = 6;
 
+$btnbackFld = $productFrm->getField('btn_back');
+$btnbackFld->developerTags['col'] = 6;
+
+$btnSubmitFld = $productFrm->getField('btn_submit');
+$btnSubmitFld->developerTags['col'] = 6;
+$btnSubmitFld->addWrapperAttribute('class', 'text-right');
 
 ?>
 <div class="row justify-content-center">
