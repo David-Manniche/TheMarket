@@ -480,7 +480,7 @@ class User extends MyAppModel
             if (is_array($attr)) {
                 $srch->addMultipleFields($attr);
             } elseif (is_string($attr)) {
-                $srch->addField($attr);
+                $srch->addFld($attr);
             }
         } else {
             $srch->addMultipleFields(
@@ -1410,11 +1410,11 @@ class User extends MyAppModel
         $db = FatApp::getDb();
         $dataToUpdate = [static::DB_TBL_CRED_PREFIX . 'verified' => $v];
         $condition = ['smt' => static::DB_TBL_CRED_PREFIX . 'user_id = ?', 'vals' => [$this->mainTableRecordId]];
+        
         if (!$db->updateFromArray(static::DB_TBL_CRED, $dataToUpdate, $condition)) {
             $this->error = $db->getError();
             return false;
         }
-        // You may want to send some email notification to user that his account is verified.
         return true;
     }
 
@@ -1577,7 +1577,7 @@ class User extends MyAppModel
         return false;
     }
 
-    public function verifyUserPhoneOtp($otp, $doLogin = false)
+    public function verifyUserPhoneOtp($otp, $doLogin = false, $returnPhone = false)
     {
         if (($this->mainTableRecordId < 1)) {
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST.', $this->commonLangId);
@@ -1593,7 +1593,7 @@ class User extends MyAppModel
         $emvSrch->addCondition(static::DB_TBL_UPV_PREFIX . 'user_id', '=', $this->mainTableRecordId);
         $emvSrch->addCondition(static::DB_TBL_UPV_PREFIX . 'otp', '=', $otp, 'AND');
 
-        $emvSrch->addFld(array(static::DB_TBL_UPV_PREFIX . 'user_id', static::DB_TBL_UPV_PREFIX . 'phone'));
+        $emvSrch->addMultipleFields(array(static::DB_TBL_UPV_PREFIX . 'user_id', static::DB_TBL_UPV_PREFIX . 'phone'));
 
         $rs = $emvSrch->getResultSet();
         if ($row = FatApp::getDb()->fetch($rs)) {
@@ -1607,7 +1607,7 @@ class User extends MyAppModel
                 $userInfo = $this->getUserInfo($attr);
                 $this->doLogin($userInfo['credential_username'], $userInfo['credential_password']);
             }
-            return true;
+            return (true == $returnPhone ? $row['upv_phone'] : true);
         } else {
             $this->error = Labels::getLabel('MSG_INVALID_OTP.', $this->commonLangId);
             return false;

@@ -569,3 +569,5 @@ INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`,
 
 UPDATE `tbl_language_labels` SET `label_caption`='Variant/Option' WHERE `label_key` = 'LBL_Variant/Option';
 INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('LBL_PUBLISH_INVENTORY',1,'Publish',1);
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'Lbl_Change_Email_/_password';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'MSG_Your_email_not_change_untill_you_confirm';

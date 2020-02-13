@@ -408,11 +408,9 @@
     border-collapse: collapse;
 
     thead {
-        background: black;
-        color: #fff;
 
         tr {
-            display: block;
+            display: table-row;
         }
     }
 
@@ -420,13 +418,34 @@
         display: block;
         width: 100%;
         overflow: auto;
-        height: 100px;
+        height: 350px;
     }
 
-    th,
-    td {
-        padding: 5px;
-        text-align: left;
-        width: 200px;
+    thead,
+    tbody tr,
+    tfoot {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+}
+
+.variants-wrap {
+    margin-top: 1rem;
+    border: $border;
+    border-radius: 4px;
+
+    table {
+        th {
+            font-weight: 600;
+        }
+
+        th,
+        td {
+            vertical-align: middle;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            border-bottom: $border;
+        }
     }
 }

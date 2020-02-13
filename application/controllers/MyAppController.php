@@ -542,7 +542,7 @@ class MyAppController extends FatController
             $curPwd->requirements()->setRequired();
         }
 
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
         return $frm;
     }
 
@@ -555,7 +555,7 @@ class MyAppController extends FatController
             $frm->addRequiredField('', 'upv_otp[' . $i . ']', '', $attr);
         }
         
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SUBMIT', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_VALIDATE', $this->siteLangId));
         return $frm;
     }
 
@@ -673,5 +673,14 @@ class MyAppController extends FatController
             return $translatedText;
         }
         FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+    }
+
+    protected function getPhoneNumberForm()
+    {
+        $frm = new Form('phoneNumberFrm');
+        $frm->addRequiredField(Labels::getLabel('LBL_PHONE_NUMBER', $this->siteLangId), 'user_phone', '', array('placeholder' => Labels::getLabel('LBL_PHONE_NUMBER_(INCLUDING_COUNTRY_CODE)', $this->siteLangId)));
+
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_GET_OTP', $this->siteLangId));
+        return $frm;
     }
 }
