@@ -3,4 +3,4 @@
 $tplFile = str_replace( CONF_APPLICATION_PATH, CONF_INSTALLATION_PATH.CONF_FRONT_END_APPLICATION_DIR, CONF_THEME_PATH );
 $tplFile .= '_partial/emails/email-footer.php';
 
-include_once $tplFile;
+include $tplFile;
