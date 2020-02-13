@@ -10595,7 +10595,7 @@ input[type="file"] {
   transition: -webkit-box-shadow 0.2s;
   transition: box-shadow 0.2s;
   transition: box-shadow 0.2s, -webkit-box-shadow 0.2s;
-  margin-right: 5px; }
+  /*margin-right: 5px;*/ }
 .form input[type="button"], .form input[type="reset"] {
   background: none;
   border-color: #ff3a59;
@@ -10673,6 +10673,41 @@ form.custom-form {
 .form-otp .otp-col {
   display: flex;
   align-items: center; }
+
+.input-group {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  width: 100%; }
+  .input-group input {
+    position: relative;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    width: 1%;
+    margin-bottom: 0; }
+    .input-group input:not(:first-child) {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0; }
+    .input-group input:not(:last-child) {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0; }
+
+.icon-group {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center; }
+  .icon-group .btn {
+    margin-left: 5px; }
 
 .ftshops {
   color: #fff; }
@@ -15995,21 +16030,32 @@ img.mfp-img {
 .table-fixed-header {
   table-layout: fixed;
   border-collapse: collapse; }
-  .table-fixed-header thead {
-    background: black;
-    color: #fff; }
-    .table-fixed-header thead tr {
-      display: block; }
+  .table-fixed-header thead tr {
+    display: table-row; }
   .table-fixed-header tbody {
     display: block;
     width: 100%;
     overflow: auto;
-    height: 100px; }
-  .table-fixed-header th,
-  .table-fixed-header td {
-    padding: 5px;
-    text-align: left;
-    width: 200px; }
+    height: 350px; }
+  .table-fixed-header thead,
+  .table-fixed-header tbody tr,
+  .table-fixed-header tfoot {
+    display: table;
+    width: 100%;
+    table-layout: fixed; }
+
+.variants-wrap {
+  margin-top: 1rem;
+  border: solid 1px #dee2e6;
+  border-radius: 4px; }
+  .variants-wrap table th {
+    font-weight: 600; }
+  .variants-wrap table th,
+  .variants-wrap table td {
+    vertical-align: middle;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    border-bottom: solid 1px #dee2e6; }
 
 .tabs {
   font-family: "Poppins", sans-serif;
