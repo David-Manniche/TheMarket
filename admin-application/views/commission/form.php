@@ -19,6 +19,9 @@ $fld->setWrapperAttribute('class', 'ui-front');
 <script type="text/javascript">
 $("document").ready(function(){
 	$('input[name=\'user_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {		
 			$.ajax({
 				url: fcom.makeUrl('Commission', 'userAutoComplete'),
@@ -38,6 +41,9 @@ $("document").ready(function(){
 	});
 	
 	$('input[name=\'product\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {			
 			$.ajax({
 				url: fcom.makeUrl('Commission', 'productAutoComplete'),

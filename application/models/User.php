@@ -2165,6 +2165,19 @@ class User extends MyAppModel
             return true;
         }
     }
+    public static function removeFcmToken($appToken, $fcmToken, &$error)
+    {
+        if (empty($appToken) || empty($fcmToken)) {
+            $error = Labels::getLabel('ERR_INVALID_REQUEST', CommonHelper::getLangId());
+            return false;
+        }
+        $db = FatApp::getDb();
+        if (!$db->deleteRecords(UserAuthentication::DB_TBL_USER_AUTH, ['smt' => 'uauth_fcm_id = ? and uauth_token = ?', 'vals' => [$fcmToken, $appToken]])) {
+            $error = $db->getError();
+            return false;
+        }
+        return true;
+    }
 
     public function setPushNotificationToken($appToken, $fcmDeviceId, $deviceOs = 0)
     {

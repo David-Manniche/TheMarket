@@ -349,6 +349,9 @@ $(document).on('change', '.language-js',function(){
 		});
 		
 		$('input[name=\'product_shipping[' + shipping_row + '][country_name]\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
 			'source': function(request, response) {
 				$.ajax({
 					url: fcom.makeUrl('products', 'countries_autocomplete'),
@@ -372,7 +375,10 @@ $(document).on('change', '.language-js',function(){
 		});
 		
 		$('input[name=\'product_shipping[' + shipping_row + '][company_name]\']').autocomplete({
-				'source': function(request, response) {
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
+            'source': function(request, response) {
 				$.ajax({
 					url: fcom.makeUrl('products', 'shippingCompanyAutocomplete'),
 					data: {keyword: request['term'],fIsAjax:1},
@@ -395,6 +401,9 @@ $(document).on('change', '.language-js',function(){
 		});
 		
 		$('input[name=\'product_shipping[' + shipping_row + '][processing_time]\']').autocomplete({
+                'classes': {
+                    "ui-autocomplete": "custom-ui-autocomplete"
+                },
 				'source': function(request, response) {
 				$.ajax({
 					url: fcom.makeUrl('products', 'shippingMethodDurationAutocomplete'),

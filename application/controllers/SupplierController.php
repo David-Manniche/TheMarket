@@ -640,7 +640,7 @@ class SupplierController extends MyAppController
                 $frm->addCheckBox(Labels::getLabel('LBL_Newsletter_Signup', $this->siteLangId), 'user_newsletter_signup', 1);
             }
         }
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_SUBMIT', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SUBMIT', $this->siteLangId));
 
         return $frm;
     }

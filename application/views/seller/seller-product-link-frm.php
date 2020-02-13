@@ -15,6 +15,9 @@
 <script type="text/javascript">
     $("document").ready(function() {
         $('input[name=\'products_buy_together\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 /* fcom.ajax(fcom.makeUrl('brands', 'autoComplete'), {keyword:encodeURIComponent(request)}, function(json) {
                 response($.map(json, function(item) {
@@ -53,6 +56,9 @@
             $(this).parent().remove();
         });
         $('input[name=\'products_related\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 /* fcom.ajax(fcom.makeUrl('brands', 'autoComplete'), {keyword:encodeURIComponent(request)}, function(json) {
                 response($.map(json, function(item) {

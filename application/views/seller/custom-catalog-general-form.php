@@ -333,6 +333,9 @@ echo $productFrm->getFieldHtml('btn_submit');
 <script type="text/javascript">
     $(document).ready(function () {
         $('input[name=\'brand_name\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function (request, response) {
                 $.ajax({
                     url: fcom.makeUrl('brands', 'autoComplete'),
@@ -358,6 +361,9 @@ echo $productFrm->getFieldHtml('btn_submit');
         });
 
         $('input[name=\'category_name\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function (request, response) {
                 $.ajax({
                     url: fcom.makeUrl('products', 'linksAutocomplete'),

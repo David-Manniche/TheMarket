@@ -69,14 +69,13 @@ $(document).ready(function(){
 		});
 	};
 
-	addToFavourite = function( key, product_id ){
+	addToFavourite = function( key, selProdId ){
 		if( isUserLogged() == 0 ){
 			loginPopUpBox();
 			return false;
 		}
-		var data = 'product_id='+product_id;
 		$.mbsmessage.close();
-		fcom.updateWithAjax(fcom.makeUrl('Account', 'toggleProductFavorite'), data, function(ans) {
+		fcom.updateWithAjax(fcom.makeUrl('Account', 'markAsFavorite', [selProdId]), '', function(ans) {
 			if( ans.status ){
 				removeFromCart( key );
 			}

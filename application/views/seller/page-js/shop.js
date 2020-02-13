@@ -627,6 +627,9 @@ $(document).on('change', '.collection-language-js', function() {
 
 function bindAutoComplete() {
     $("input[name='scp_selprod_id']").autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
         'source': function(request, response) {
             $.ajax({
                 url: fcom.makeUrl('seller', 'autoCompleteProducts'),

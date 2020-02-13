@@ -1,6 +1,9 @@
 $(document).ready(function() {
     searchFiles(document.frmSearch);
     $("input[name='user']").autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
         'source': function(request, response) {
             $.ajax({
                 url: fcom.makeUrl('UploadBulkImages', 'autoCompleteSellerJson'),

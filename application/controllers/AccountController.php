@@ -2094,15 +2094,14 @@ class AccountController extends LoggedUserController
         $this->_template->render(false, false);
     }
 
-    private function toggleProductStatus($selprodId)
+    private function isValidSelProd($selprodId)
     {
-        $loggedUserId = UserAuthentication::getLoggedUserId();
         $db = FatApp::getDb();
 
         $srch = new ProductSearch($this->siteLangId);
         $srch->setDefinedCriteria(0, 0, array(), false);
         $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(array( 'selprod_id'));
+        $srch->addMultipleFields(['selprod_id']);
         $srch->addCondition('selprod_id', '=', $selprodId);
         $srch->joinProductToCategory();
         $srch->joinShops();
@@ -2121,49 +2120,37 @@ class AccountController extends LoggedUserController
             Message::addErrorMessage($message);
             FatUtility::dieWithError(Message::getHtml());
         }
-
-        $action = 'N'; //nothing happened
-        $srch = new UserFavoriteProductSearch();
-        $srch->doNotCalculateRecords();
-        $srch->doNotLimitRecords();
-        $srch->addCondition('ufp_user_id', '=', $loggedUserId);
-        $srch->addCondition('ufp_selprod_id', '=', $selprodId);
-        $rs = $srch->getResultSet();
-        if (!$row = $db->fetch($rs)) {
-            $prodObj = new Product();
-            if (!$prodObj->addUpdateUserFavoriteProduct($loggedUserId, $selprodId)) {
-                $message = Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId);
-                if (true === MOBILE_APP_API_CALL) {
-                    FatUtility::dieJsonError($message);
-                }
-                Message::addErrorMessage($message);
-                FatUtility::dieWithError(Message::getHtml());
-            }
-            $action = 'A'; //Added to favorite
-            $this->set('msg', Labels::getLabel('LBL_Product_has_been_marked_as_favourite_successfully', $this->siteLangId));
-        } else {
-            if (!$db->deleteRecords(Product::DB_TBL_PRODUCT_FAVORITE, array('smt' => 'ufp_user_id = ? AND ufp_selprod_id = ?', 'vals' => array($loggedUserId, $selprodId)))) {
-                $message = Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId);
-                if (true === MOBILE_APP_API_CALL) {
-                    FatUtility::dieJsonError($message);
-                }
-                Message::addErrorMessage($message);
-                FatUtility::dieWithError(Message::getHtml());
-            }
-            $action = 'R'; //Removed from favorite
-            $this->set('msg', Labels::getLabel('LBL_Product_has_been_removed_from_favourite_list', $this->siteLangId));
-        }
-
-        $this->set('action', $action);
+        return true;
     }
 
-    public function toggleProductFavoriteArr()
+    public function toggleProductStatus(int $selprodId, int $status)
     {
-        $selprod_id_arr = FatApp::getPostedData('selprod_id');
-        $selprod_id_arr = !empty($selprod_id_arr) ? array_filter($selprod_id_arr) : array();
+        $this->isValidSelProd($selprodId);
 
-        if (empty($selprod_id_arr)) {
-            $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
+        switch ($status) {
+            case applicationConstants::ACTIVE:
+                $this->markAsFavorite($selprodId, false);
+                $this->set('msg', Labels::getLabel('MSG_Product_has_been_marked_as_favourite_successfully', $this->siteLangId));
+                break;
+            case applicationConstants::INACTIVE:
+                $this->removeFromFavorite($selprodId, false);
+                $this->set('msg', Labels::getLabel('MSG_Product_has_been_removed_from_favourite_list', $this->siteLangId));
+                break;
+            default:
+                FatUtility::dieJsonError(Labels::getLabel('MSG_UNKNOWN_ACTION', $this->siteLangId));
+                break;
+        }
+
+        $this->_template->render();
+    }
+
+    public function markAsFavorite($selprodId, $renderView = true)
+    {
+        $this->isValidSelProd($selprodId);
+        $loggedUserId = UserAuthentication::getLoggedUserId();
+        $prodObj = new Product();
+        if (!$prodObj->addUpdateUserFavoriteProduct($loggedUserId, $selprodId)) {
+            $message = Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
             }
@@ -2171,9 +2158,38 @@ class AccountController extends LoggedUserController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        foreach ($selprod_id_arr as $selprod_id) {
-            $this->toggleProductStatus($selprod_id);
+        if (false === $renderView) {
+            return true;
         }
+
+        $this->set('msg', Labels::getLabel('LBL_Product_has_been_marked_as_favourite_successfully', $this->siteLangId));
+        
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
+
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function removeFromFavorite($selprodId, $renderView = true)
+    {
+        $this->isValidSelProd($selprodId);
+        $db = FatApp::getDb();
+        $loggedUserId = UserAuthentication::getLoggedUserId();
+        if (!$db->deleteRecords(Product::DB_TBL_PRODUCT_FAVORITE, array('smt' => 'ufp_user_id = ? AND ufp_selprod_id = ?', 'vals' => array($loggedUserId, $selprodId)))) {
+            $message = Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                FatUtility::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        if (false === $renderView) {
+            return true;
+        }
+
+        $this->set('msg', Labels::getLabel('LBL_Product_has_been_removed_from_favourite_list', $this->siteLangId));
 
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
@@ -2182,12 +2198,24 @@ class AccountController extends LoggedUserController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function toggleProductFavorite()
+    public function removeFromFavoriteArr()
     {
-        $post = FatApp::getPostedData();
-        $selprodId = FatUtility::int($post['product_id']);
-        $this->toggleProductStatus($selprodId);
-        
+        $selprodIdsArr = (array) FatApp::getPostedData('selprod_id', FatUtility::VAR_INT);
+        if (empty($selprodIdsArr)) {
+            $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                FatUtility::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        foreach ($selprodIdsArr as $selprodId) {
+            $this->removeFromFavorite($selprodId, false);
+        }
+
+        $this->set('msg', Labels::getLabel('LBL_Product_has_been_removed_from_favourite_list', $this->siteLangId));
+
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
@@ -2718,7 +2746,7 @@ class AccountController extends LoggedUserController
 
         $frm->addTextArea(Labels::getLabel('M_Bank_Address', $this->siteLangId), 'ub_bank_address', '');
         $frm->addHtml('bank_info_safety_text', 'bank_info_safety_text', '<span class="text--small">' . Labels::getLabel('Lbl_Your_Bank/Card_info_is_safe_with_us', $this->siteLangId) . '</span>');
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $this->siteLangId));
         return $frm;
     }
 
@@ -3172,7 +3200,7 @@ class AccountController extends LoggedUserController
         $frm = new Form('frmBankInfo');
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->siteLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Auto_Renew_Subscription', $this->siteLangId), 'user_autorenew_subscription', $activeInactiveArr, '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $this->siteLangId));
         return $frm;
     }
 

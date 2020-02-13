@@ -146,6 +146,9 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
 
     $("document").ready(function() {
         $('input[name=\'brand_name\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('brands', 'autoComplete'),
@@ -176,6 +179,9 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
         });
 
         $('input[name=\'category_name\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('productCategories', 'links_autocomplete'),
@@ -202,6 +208,9 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
         });
 
         $('input[name=\'option_name\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('options', 'autoComplete'),
@@ -250,6 +259,9 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
         });
 
         $('input[name=\'tag_name\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('tags', 'autoComplete'),
@@ -307,6 +319,9 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
     $(document).ready(function() {
         /* Shipping Information */
         $('input[name=\'shipping_country\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
 
                 $.ajax({

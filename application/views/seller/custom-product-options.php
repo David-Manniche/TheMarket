@@ -24,6 +24,9 @@
 </div>
 <script>
     $('input[name=\'option_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
         'source': function(request, response) {
             $.ajax({
                 url: fcom.makeUrl('seller', 'autoCompleteOptions'),
@@ -40,7 +43,7 @@
                 },
             });
         },
-        select: function (event, ui) {
+        'select': function (event, ui) {
             updateProductOption(<?php echo $product_id;?>, ui.item.id);
         }
     });
