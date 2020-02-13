@@ -220,12 +220,12 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
             foreach ($otherLanguages as $langId => $data) {
                 $layout = Language::getLayoutDirection($langId); ?>
                 <div class="accordion layout--<?php echo $layout; ?>" id="specification-accordion">
-                    <ul class="list-group list-group-sm list-group-flush-y list-group-flush-x">
-                        <li>
-                            <h6 data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><span onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')"> <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?> </span>
+                  
+                            <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><span onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')"> <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?> </span>
                             </h6>
                             <div id="collapseOne" class="collapse collapse-js-<?php echo $langId; ?>" aria-labelledby="headingOne" data-parent="#specification-accordion">
-                                <div class="row">
+                             <div class="p-4 mb-4 bg-gray rounded ">
+							 <div class="row">
                                     <div class="col-md-12">
                                         <div class="field-set">
                                             <div class="caption-wraper">
@@ -277,8 +277,8 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                                     </div>
                                 </div>
                             </div>
-                        </li>
-                    </ul>
+							</div>
+                       
                 </div>
             <?php }
         } ?>

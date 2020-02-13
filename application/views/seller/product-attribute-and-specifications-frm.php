@@ -99,9 +99,8 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
             foreach($otherLanguages as $langId=>$data) { 
          ?>
          <div class="accordion" id="specification-accordion">
-		 <ul class="list-group list-group-sm list-group-flush-y list-group-flush-x">
-		 <li class="list-group-item">
-		 <h6 data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+		 
+		 <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                  <span onClick="displayOtherLangProdSpec(this,<?php echo $langId; ?>)">
                  <?php echo $data." "; echo Labels::getLabel('LBL_Language_Specification', $siteLangId); ?>
                  </span>
@@ -110,8 +109,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                      <div class="specifications-form-<?php echo $langId; ?>"></div>
                     <div class="specifications-list-<?php echo $langId; ?>"></div>
                  </div>
-				 </li>
-		 </ul>
+				 
              
          </div>
          <?php } 
