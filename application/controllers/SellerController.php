@@ -3547,7 +3547,6 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl());
         }
-        $this->_template->addCss(array('css/packages.css'), false);
         $includeFreeSubscription = OrderSubscription::canUserBuyFreeSubscription($this->siteLangId, UserAuthentication::getLoggedUserId());
         $packagesArr = SellerPackages::getSellerVisiblePackages($this->siteLangId, $includeFreeSubscription);
 

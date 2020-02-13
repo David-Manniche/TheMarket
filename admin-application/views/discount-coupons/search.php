@@ -115,19 +115,4 @@ echo FatUtility::createHiddenFormFromData ( $postedData, array (
 	'name' => 'frmCouponSearchPaging'
 ) );
 $pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'recordCount'=>$recordCount,'adminLangId'=>$adminLangId);
-$this->includeTemplate('_partial/pagination.php', $pagingArr,false);	
-?>
-
-<script type="text/javascript">
-var DISCOUNT_IN_PERCENTAGE = '<?php echo applicationConstants::PERCENTAGE; ?>';
-var DISCOUNT_IN_FLAT = '<?php echo applicationConstants::FLAT; ?>';
-
-function callCouponDiscountIn( val ){
-	if( val == DISCOUNT_IN_PERCENTAGE ){
-		$("#coupon_max_discount_value_div").show();
-	}
-	if( val == DISCOUNT_IN_FLAT ){
-		$("#coupon_max_discount_value_div").hide();
-	}
-}
-</script>
+$this->includeTemplate('_partial/pagination.php', $pagingArr,false);

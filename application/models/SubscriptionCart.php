@@ -252,7 +252,6 @@ class SubscriptionCart extends FatModel
             if ($couponInfo['coupon_discount_in_percent'] == applicationConstants::FLAT) {
                 $couponInfo['coupon_discount_value'] = min($couponInfo['coupon_discount_value'], $subTotal);
             }
-
             foreach ($this->getSubscription($this->scart_lang_id) as $product) {
                 $discount = 0;
 
@@ -278,10 +277,13 @@ class SubscriptionCart extends FatModel
             }
 
             // If discount greater than total
-            if ($discountTotal > $couponInfo['coupon_max_discount_value']) {
+            /*if ($discountTotal > $couponInfo['coupon_max_discount_value']) {
+                $discountTotal = $couponInfo['coupon_max_discount_value'];
+            }*/
+
+            if ($discountTotal > $couponInfo['coupon_max_discount_value'] && $couponInfo['coupon_discount_in_percent'] == applicationConstants::PERCENTAGE) {
                 $discountTotal = $couponInfo['coupon_max_discount_value'];
             }
-
             $selProdDiscountTotal = 0;
             $discountTypeArr = DiscountCoupons::getTypeArr($this->scart_lang_id);
 
@@ -312,8 +314,17 @@ class SubscriptionCart extends FatModel
             );
 
             // If discount greater than total
-            if ($selProdDiscountTotal > $couponInfo['coupon_max_discount_value']) {
+            /*if ($selProdDiscountTotal > $couponInfo['coupon_max_discount_value']) {
                 $selProdDiscountTotal = $couponInfo['coupon_max_discount_value'];
+            }*/
+            if ($couponInfo['coupon_discount_in_percent'] == applicationConstants::PERCENTAGE) {
+                if ($selProdDiscountTotal > $couponInfo['coupon_max_discount_value']) {
+                    $selProdDiscountTotal = $couponInfo['coupon_max_discount_value'];
+                }
+            } elseif ($couponInfo['coupon_discount_in_percent'] == applicationConstants::FLAT) {
+                if ($selProdDiscountTotal > $couponInfo["coupon_discount_value"]) {
+                    $selProdDiscountTotal = $couponInfo["coupon_discount_value"];
+                }
             }
 
             $couponData = array(

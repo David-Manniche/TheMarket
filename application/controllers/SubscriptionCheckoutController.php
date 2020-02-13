@@ -389,6 +389,7 @@ class SubscriptionCheckoutController extends MyAppController
     {
         //$this->scartObj->adjustPreviousPlan($this->siteLangId);
         $cartSummary = $this->scartObj->getSubscriptionCartFinancialSummary($this->siteLangId);
+        CommonHelper::printArray($cartSummary); die;
         $cartSubscription = $this->scartObj->getSubscription($this->siteLangId);
         $cartSubscription = current($cartSubscription);
         $this->set('spackage_type', $cartSubscription['spackage_type']);

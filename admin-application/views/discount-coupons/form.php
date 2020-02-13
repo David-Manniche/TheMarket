@@ -63,4 +63,15 @@ $(document).ready(function(){
 	callCouponTypePopulate( <?php echo $coupon_type;?>);
 	callCouponDiscountIn(<?php echo $couponDiscountIn; ?>);
 });
+var DISCOUNT_IN_PERCENTAGE = <?php echo applicationConstants::PERCENTAGE; ?>;
+var DISCOUNT_IN_FLAT = <?php echo applicationConstants::FLAT; ?>;
+
+function callCouponDiscountIn( val ){
+	if( val == DISCOUNT_IN_PERCENTAGE ){
+		$("#coupon_max_discount_value_div").show();
+	}
+	if( val == DISCOUNT_IN_FLAT ){
+		$("#coupon_max_discount_value_div").hide();
+	}
+}
 </script>
