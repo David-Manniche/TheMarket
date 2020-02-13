@@ -9,7 +9,7 @@ $autoUpdateFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper">
 
 $btnDiscardFld = $productFrm->getField('btn_discard');
 $btnDiscardFld->addFieldTagAttribute('onClick', 'goToCatalogRequest();');
-
+$btnDiscardFld->value = Labels::getLabel('LBL_Discard', $siteLangId);
 ?>
 <div class="row justify-content-center">
     <div class="col-md-12">
