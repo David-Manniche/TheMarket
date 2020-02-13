@@ -756,8 +756,10 @@ class ProductsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
         $imagesFrm = $this->getImagesFrm($productId, $this->adminLangId);
+        $productType = Product::getAttributesById($productId, 'product_type');
         $this->set('imagesFrm', $imagesFrm);
         $this->set('productId', $productId);
+        $this->set('productType', $productType);
         $this->_template->render(false, false);
     }
 

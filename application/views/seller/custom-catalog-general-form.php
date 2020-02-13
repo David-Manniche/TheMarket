@@ -6,6 +6,7 @@ $productFrm->setFormTagAttribute('onsubmit', 'setupcustomCatalogProduct(this); r
 $autoUpdateFld = $productFrm->getField('auto_update_other_langs_data');
 $autoUpdateFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $autoUpdateFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+
 ?>
 <div class="row justify-content-center">
     <div class="col-md-12">

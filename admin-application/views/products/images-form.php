@@ -64,7 +64,7 @@ $btnFinishFld->addWrapperAttribute('class', 'text-right'); */
                 <div class="caption-wraper"><label class="field_label"></label></div>
                 <div class="field-wraper">
                     <div class="field_cover">
-                        <input onclick="productShipping(<?php echo $productId; ?>);" type="button" name="btn_back" value="<?php echo Labels::getLabel('LBL_Back', $adminLangId); ?>">
+                        <input onclick="<?php if($productType == Product::PRODUCT_TYPE_PHYSICAL) { ?>productShipping(<?php echo $productId; ?>); <?php }else{ ?> productOptionsAndTag(<?php echo $productId; ?>); <?php }?>" type="button" name="btn_back" value="<?php echo Labels::getLabel('LBL_Back', $adminLangId); ?>">
                     </div>
                 </div>
             </div>

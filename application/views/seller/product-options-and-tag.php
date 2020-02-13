@@ -52,13 +52,23 @@
             </div> 
         </div>  
         <div class="row">
-             <div class="col-md-6">
+            <div class="col-md-6">
+                 <div class="field-set">
+                     <div class="caption-wraper"><label class="field_label"></label></div>
+                     <div class="field-wraper">
+                         <div class="field_cover">
+                            <input type="button" class="btn btn-outline-primary" onClick="productAttributeAndSpecificationsFrm(<?php echo $productId; ?>)" value="<?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>">
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <div class="col-md-6 text-right">
                  <div class="field-set">
                      <div class="caption-wraper"><label class="field_label"></label></div>
                      <div class="field-wraper">
                          <div class="field_cover">
                             <input type="hidden" name="product_id" value="<?php echo $productId; ?>">
-                            <input type="button" class="btn btn-primary" onClick= <?php if($productType == Product::PRODUCT_TYPE_DIGITAL) { ?> "productMedia(<?php echo $productId; ?>)" <?php }else{ ?> "productShipping(<?php echo $productId; ?>)" <?php  } ?> value="<?php echo Labels::getLabel('LBL_Next', $siteLangId); ?>">
+                            <input type="button" class="btn btn--primary" onClick= <?php if($productType == Product::PRODUCT_TYPE_DIGITAL) { ?> "productMedia(<?php echo $productId; ?>)" <?php }else{ ?> "productShipping(<?php echo $productId; ?>)" <?php  } ?> value="<?php echo Labels::getLabel('LBL_Save_And_Next', $siteLangId); ?>">
                          </div>
                      </div>
                  </div>
