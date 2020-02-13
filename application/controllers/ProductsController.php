@@ -36,7 +36,7 @@ class ProductsController extends MyAppController
         $frm = $this->getProductSearchForm($includeKeywordRelevancy);
 
         $get['join_price'] = 1;
-		
+        
         $arr = array();
 
         switch ($method) {
@@ -70,8 +70,8 @@ class ProductsController extends MyAppController
 
         $frm->fill($get);
         $data = $this->getListingData($get);
-		
-		
+        
+        
         $common = array(
             'frmProductSearch' => $frm,
             'recordId' => 0,
@@ -227,7 +227,7 @@ class ProductsController extends MyAppController
         /* Brand Filters Data[ */
         $brandsCheckedArr = FilterHelper::selectedBrands($headerFormParamsAssocArr);
         $brandsArr = FilterHelper::brands($prodSrchObj, $langIdForKeywordSeach, $headerFormParamsAssocArr, false, true);
-		
+        
         /* ] */
 
         /* {Can modify the logic fetch data directly from query . will implement later}
@@ -284,7 +284,7 @@ class ProductsController extends MyAppController
             $priceArr['minPrice'] = $filterDefaultMinValue;
             $priceArr['maxPrice'] = $filterDefaultMaxValue;
         }
-		
+        
         if (array_key_exists('price-min-range', $headerFormParamsAssocArr) && array_key_exists('price-max-range', $headerFormParamsAssocArr)) {
             $priceArr['minPrice'] = $headerFormParamsAssocArr['price-min-range'];
             $priceArr['maxPrice'] = $headerFormParamsAssocArr['price-max-range'];
@@ -295,7 +295,7 @@ class ProductsController extends MyAppController
             $priceArr['minPrice'] = CommonHelper::convertExistingToOtherCurrency($headerFormParamsAssocArr['currency_id'], $headerFormParamsAssocArr['price-min-range'], $this->siteCurrencyId, false);
             $priceArr['maxPrice'] = CommonHelper::convertExistingToOtherCurrency($headerFormParamsAssocArr['currency_id'], $headerFormParamsAssocArr['price-max-range'], $this->siteCurrencyId, false);
         }
-		
+        
         /* ] */
 
         /* Availability Filters[ */
@@ -748,7 +748,6 @@ class ProductsController extends MyAppController
         $this->setRecentlyViewedItem($selprod_id);
 
         if (false ===  MOBILE_APP_API_CALL) {
-
             $this->_template->addJs(array('js/slick.js','js/modaal.js','js/product-detail.js','js/responsive-img.min.js','js/xzoom.js','js/magnific-popup.js'));
         } else {
             $recentlyViewed  = FatApp::getPostedData('recentlyViewed');
@@ -1612,22 +1611,7 @@ class ProductsController extends MyAppController
     private function getListingData($get)
     {
         $db = FatApp::getDb();
-        /* to show searched category data[ */
-        $categoryId = null;
-        $category = array();
-        if (array_key_exists('category', $get)) {
-            $categoryId = FatUtility::int($get['category']);
-            if ($categoryId) {
-                $productCategorySearch = new ProductCategorySearch($this->siteLangId);
-                $productCategorySearch->addCondition('prodcat_id', '=', $categoryId);
-                $productCategorySearch->addMultipleFields(array('prodcat_id','COALESCE(prodcat_name, prodcat_identifier) as prodcat_name','prodcat_description','prodcat_code'));
-                $productCategorySearchRs = $productCategorySearch->getResultSet();
-                $category = $db->fetch($productCategorySearchRs);
-                $category['banner'] = AttachedFile::getAttachment(AttachedFile::FILETYPE_CATEGORY_BANNER, $categoryId);
-            }
-        }
-        /* ] */
-
+        
         $userId = 0;
         if (UserAuthentication::isUserLogged()) {
             $userId = UserAuthentication::getLoggedUserId();
@@ -1648,6 +1632,27 @@ class ProductsController extends MyAppController
                 $pageSize = FatApp::getConfig('CONF_ITEMS_PER_PAGE_CATALOG', FatUtility::VAR_INT, 10);
             }
         }
+
+        /* if (FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_FULL_TEXT_SEARCH, FatUtility::VAR_INT, 0)) {
+            $srch = FullTextSearch::getListingObj($get, $this->siteLangId, $userId);
+            $srch->setPageNumber($page);            
+        } */
+
+        /* to show searched category data[ */
+        $categoryId = null;
+        $category = array();
+        if (array_key_exists('category', $get)) {
+            $categoryId = FatUtility::int($get['category']);
+            if ($categoryId) {
+                $productCategorySearch = new ProductCategorySearch($this->siteLangId);
+                $productCategorySearch->addCondition('prodcat_id', '=', $categoryId);
+                $productCategorySearch->addMultipleFields(array('prodcat_id','COALESCE(prodcat_name, prodcat_identifier) as prodcat_name','prodcat_description','prodcat_code'));
+                $productCategorySearchRs = $productCategorySearch->getResultSet();
+                $category = $db->fetch($productCategorySearchRs);
+                $category['banner'] = AttachedFile::getAttachment(AttachedFile::FILETYPE_CATEGORY_BANNER, $categoryId);
+            }
+        }
+        /* ] */
 
         $srch = Product::getListingObj($get, $this->siteLangId, $userId);
         $srch->setPageNumber($page);

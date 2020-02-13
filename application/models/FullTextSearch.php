@@ -82,12 +82,19 @@ class FullTextSearch extends FatModel
         array_push($this->search["must"], $textSearch);
     }
     
-    public function addBrandConditions($brands = [])
+    public function addBrandConditions($brand)
     {
-        if (empty($brands)) {
-            return ;
+        if (is_numeric($brand)) {
+            $brands[] = $brand;
+        } elseif (is_array($brand) && 0 < count($brand)) {
+            $brands = array_filter(array_unique($brandId));
+        } else {
+            if (!empty($brand)) {
+                $brand = explode(",", $brand);
+                $brands = array_filter(array_unique($brand));
+            }
         }
-        
+
         $brandsFilters['bool']['should'] = array();
         foreach ($brands as $key => $brand) {
             $brandsFilters['bool']['should'][$key] = ['match' => ['brand.brand_id' => $brand ]];
@@ -569,7 +576,7 @@ class FullTextSearch extends FatModel
     
     private function getDefaultPlugin()
     {
-        $plugin = new Plugin(Plugin::TYPE_FULL_TEXT_SEARCH);
+        $plugin = new Plugin();
         $defaultPlugin = $plugin->getDefaultPluginData(Plugin::TYPE_FULL_TEXT_SEARCH, "plugin_code");
         if (0 > $defaultPlugin) {
             return false;
@@ -1031,4 +1038,22 @@ class FullTextSearch extends FatModel
         }
         return $discount;
     }*/
+
+    public static function getListingObj($criteria, $langId = 0, $userId = 0)
+    {
+        $srch =  new FullTextSearch($langId);
+            
+        if (array_key_exists('keyword', $criteria)) {
+            $srch->addKeywordCondition($criteria['keyword']);
+        }
+        
+        if (array_key_exists('brand', $criteria) && !empty($criteria['brand'])) {
+            if (true ===  MOBILE_APP_API_CALL) {
+                $criteria['brand'] = json_decode($criteria['brand'], true);
+            }
+            $srch->addBrandConditions($criteria['brand']);
+        }
+
+        return $srch;
+    }
 }
