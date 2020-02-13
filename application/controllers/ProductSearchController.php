@@ -12,7 +12,6 @@ class ProductSearchController extends MyAppController
 
 	public function search()
     {
-		
         $this->productsData(__FUNCTION__);
     }
 
@@ -21,11 +20,6 @@ class ProductSearchController extends MyAppController
 		$categoriesArr = array();
 		$db = FatApp::getDb();
         $headerFormParamsAssocArr = FilterHelper::getParamsAssocArr();
-		
-		//$fullTextSearch = new FullTextSearch($this->siteLangId);
-		
-		//$fullTextSearch->setPageNumber(0);
-		//$fullTextSearch->setPageSize(1000);
 		
 		$categoryId = 0;
 		if (array_key_exists('category', $headerFormParamsAssocArr)) {
@@ -160,7 +154,6 @@ class ProductSearchController extends MyAppController
 		$fullTextSearchObj->setPageSize(1000);
 		$brands = $fullTextSearchObj->fetch();
 		$brands = $this->removeElasticSourceIndex($brands,'brand');
-		
 		return $brands;
 	}
 	
@@ -286,22 +279,22 @@ class ProductSearchController extends MyAppController
 		if (array_key_exists('pageSize', $get))
 		{
 			$pageSize = FatUtility::int($get['pageSize']);
-            $this->fullTextSearch->setPageSize($pageSize);
         }
 		
-		$page = 0;
+		$page = 1;
         if (array_key_exists('page', $get)) {
             $page = FatUtility::int($get['page']);
-            if ($page < 2) {
-                $page = 0;
-            }
+			/*if ($page < 2) {
+                $page = 1;
+            }*/
         }
-		$this->fullTextSearch->setPageNumber($page);
+		$from =  ($page - 1) * $pageSize;
+		$this->fullTextSearch->setPageNumber($from);
+		$this->fullTextSearch->setPageSize($pageSize);
 		$this->fullTextSearch->setSortFields(array('general.product_id'=>array('order' => 'desc')));
 		$response = $this->fullTextSearch->fetch();
 		$products = $response['hits'];
 		$total = FatUtility::int($response['total']['value']);
-		//$products = $this->removeElasticSourceIndex($response);
 		$pageCount = $this->totalPageCount($total, $pageSize);
 		
 		$data = array(

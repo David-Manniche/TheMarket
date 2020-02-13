@@ -37,8 +37,8 @@ if ($products) {
                         <div class="products__category">
                             <a href="<?php echo CommonHelper::generateUrl('Category', 'View', array($product['prodcat_id'])); ?>"><?php echo html_entity_decode($product['_source']['categories'][0]['prodcat_name'], ENT_QUOTES, 'UTF-8'); ?> </a>
                         </div>
-            <div class="products__title"><a title="<?php echo $product['_source']['inventories'][0]['selprod_title']; ?>"
-                    href="<?php echo CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])); ?>"><?php echo (mb_strlen($product['_source']['inventories'][0]['selprod_title']) > 50) ? mb_substr($product['_source']['inventories'][0]['selprod_title'], 0, 50)."..." : $product['_source']['inventories'][0]['selprod_title']; ?>
+            <div class="products__title"><a title="<?php echo $product['_source']['general']['product_name']; ?>"
+                    href="<?php echo CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])); ?>"><?php echo (mb_strlen($product['_source']['inventories'][0]['selprod_title']) > 50) ? mb_substr($product['_source']['general']['product_name'], 0, 50)."..." : $product['_source']['general']['product_name']; ?>
                 </a></div> <?php $this->includeTemplate('productSearch/collection-product-price.php', array('product'=> $product, 'siteLangId'=>$siteLangId), false); ?>
         </div>
     </div>    
