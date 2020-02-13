@@ -2,7 +2,7 @@
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $layout = Language::getLayoutDirection($langId);
 ?>
-<div class="p-4 mb-4 bg-gray rounded layout--<?php echo $layout; ?>">
+<div class="p-4 mb-4 bg-gray rounded" dir="<?php echo $layout; ?>">
     <div class="row">
         <div class="col-md-4">
             <div class="field-set">

@@ -471,12 +471,16 @@ function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection, a
 				breakpoint: 480,
 				settings: {
 					slidesToShow: slidesToShowForDiffResolution[480],
+					arrows: false,
+					dots: true
 				}
                                 },
             {
 				breakpoint: 375,
 				settings: {
 					slidesToShow: slidesToShowForDiffResolution[375],
+					arrows: false,
+					dots: true
 				}
                                 }
                             ]

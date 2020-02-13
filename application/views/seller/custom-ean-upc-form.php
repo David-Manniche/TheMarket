@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php if(!empty($optionCombinations)){  ?>
-    <table width="100%" class="table table-bordered">                             
+    <table width="100%" class="table table-fixed-header">                             
         <thead>
             <tr>
                 <th width="70%"><?php echo Labels::getLabel('LBL_Variants',$siteLangId);?></th>	

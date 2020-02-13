@@ -93,7 +93,7 @@
                     <div class="comments rounded border" id="container--comments">
                         <h2><?php echo ($commentsCount)? sprintf(Labels::getLabel('Lbl_Comments(%s)', $siteLangId), $commentsCount):Labels::getLabel('Lbl_Comments', $siteLangId); ?></h2>
                         <div id="comments--listing"> </div>
-                        <div id="loadMoreCommentsBtnDiv"></div>
+                        <div class="text-center m-4" id="loadMoreCommentsBtnDiv"></div>
                     </div>
                     <?php } ?>
                     <?php if ($blogPostData['post_comment_opened'] && UserAuthentication::isUserLogged() && isset($postCommentFrm)) { ?>

@@ -55,7 +55,7 @@ $("document").ready(function(){
     <?php
     if (isset($products) && !empty($products)) {
         foreach ($products as $key => $val) { ?>
-        $('#selprod-products ul').append("<li id=\"selprod-products<?php echo $val['selprod_id'];?>\"><i class=\"remove_param fa fa-remove remove_link\"></i> <?php echo $val['product_name'];?>[<?php echo $val['product_identifier'];?>]<input type=\"hidden\"  name=\"product_ids[]\" value=\"<?php echo $val['selprod_id'];?>\" /></li>");
+        $('#selprod-products ul').append("<li id=\"selprod-products<?php echo $val['selprod_id'];?>\"> <?php echo $val['product_name'];?>[<?php echo $val['product_identifier'];?>] <i class=\"fa fa-times remove_param remove_link\"></i> <input type=\"hidden\"  name=\"product_ids[]\" value=\"<?php echo $val['selprod_id'];?>\" /></li>");
         <?php }
     } ?>
 

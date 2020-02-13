@@ -757,26 +757,39 @@ table.table-bordered tr:nth-child(odd) td {
 .sorting-actions {}
 
 
-.sortableListsOpener{
+.sortableListsOpener {
     float: left;
     background-position: center center;
     background-repeat: no-repeat;
     margin-right: 0px;
     position: absolute;
-    left:0;
+    left: 0;
     top: 0;
     font-size: 12px;
-    cursor: pointer;display:flex;
+    cursor: pointer;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
     justify-content: center;
 }
 
 
-.sortableListsOpener  .sort-icon{
-    width:30px;
-    height:45px;
-    display:flex;
+.sortableListsOpener .sort-icon {
+    width: 30px;
+    height: 45px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
     justify-content: center;
 }
 
@@ -813,16 +826,73 @@ table.table-bordered tr:nth-child(odd) td {
     margin: 0;
 }
 
-.section-height{ min-height:700px;}
+.section-height {
+    min-height: 700px;
+}
 
 
-.list-col-2{ display:flex; flex-wrap: wrap; }
+.list-col-2 {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
 
-.list-col-2 li   {-ms-flex: 0 0 50%;
+.list-col-2 li {
+    -ms-flex: 0 0 50%;
     -webkit-box-flex: 0;
     flex: 0 0 50%;
     max-width: 50%;
 }
+/**/
 
+
+.table-scroll {
+    display: block;
+    empty-cells: show;
+    border: 1px solid #ebedf2;
+}
+
+
+.table-scroll thead {
+    position: relative;
+    display: block;
+    width: 100%;
+
+}
+
+.table-scroll tbody {
+    /* Position */
+    display: block;
+    position: relative;
+    width: 100%;
+    overflow-y: scroll;
+    max-height: 250px;
+
+
+}
+
+.table-scroll tr {
+    width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.table-scroll td,
+.table-scroll th {
+    -ms-flex-preferred-size: 100%;
+    flex-basis: 100%;
+    -webkit-box-flex: 2;
+    -ms-flex-positive: 2;
+    flex-grow: 2;
+    display: block;
+    border:none;
+    border-radius: 0;
+    
+    
+}
 
 .table-upc tbody.scroll-y{ max-height:250px; overflow-y:auto;}
+
