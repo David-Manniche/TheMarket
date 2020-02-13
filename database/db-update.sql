@@ -566,3 +566,5 @@ UPDATE `tbl_users` SET `user_phone`= NULL WHERE user_phone = '';
 ALTER TABLE tbl_users ADD UNIQUE (user_phone);
 
 INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('LBL_RECOVER_PASSWORD_FORM_MSG',1,'Enter The Phone Number Associated With Your Account. An OTP will be sent to your registered number. Please use that OTP to reset your password.',1);
+
+UPDATE `tbl_email_templates` SET `etpl_name`='Guest Welcome Mail on Registration' WHERE `etpl_code` = 'guest_welcome_registration';
