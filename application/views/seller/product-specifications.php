@@ -1,6 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
+$layout = Language::getLayoutDirection($langId);
 if (count($productSpecifications) > 0){ ?>
-<div class="row">
+<div class="row" dir="<?php echo $layout; ?>">
     <div class="col-md-12">
         <div class="tablewrap">
         <?php 

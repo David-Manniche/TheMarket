@@ -599,13 +599,17 @@ trait CustomCatalogProducts
     {
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
-        $productReqRow = ProductRequest::getAttributesById($preqId, array('preq_user_id'));
+        $productReqRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_content'));
         if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
-
+        
+        $preqContent = $productReqRow['preq_content'];
+        $preqContentData = json_decode($preqContent, true);
         $imagesFrm = $this->getCustomProductImagesFrm($preqId, $this->siteLangId);
         $this->set('imagesFrm', $imagesFrm);
+        $this->set('preqId', $preqId);
+        $this->set('productType', $preqContentData['product_type']);
         $this->_template->render(false, false);
     }
 
@@ -1200,6 +1204,7 @@ trait CustomCatalogProducts
         $this->set('productType', $preqContentData['product_type']);
         $this->set('siteDefaultLangId', $siteDefaultLangId);
         $this->set('otherLanguages', $languages);
+        $this->set('preqId', $preqId);
         $this->_template->render(false, false, 'seller/catalog-attribute-and-specifications-frm.php');
     }
 
@@ -1378,6 +1383,7 @@ trait CustomCatalogProducts
 
         $this->set('productFrm', $productFrm);
         $this->set('productType', $preqContentData['product_type']);
+        $this->set('preqId', $preqId);
         $this->_template->render(false, false, 'seller/custom-catalog-shipping-frm.php');
     }
 
