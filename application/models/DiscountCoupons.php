@@ -677,7 +677,7 @@ AND couponlang_lang_id = ' . $langId,
         }
 
         // Products
-        $subscriptionData = array('product' => '');
+        $subscriptionData = array('product' => []);
         $subscriptions = $scartObj->getSubscription($langId);
 
 
