@@ -24227,9 +24227,7 @@ readers do not read off random characters that represent icons */
   top: 0;
   left: 0; }
 
-.img-container {
-  max-height: 350px;
-  position: relative; }
+
 
 .cropper-container {
   direction: ltr;
