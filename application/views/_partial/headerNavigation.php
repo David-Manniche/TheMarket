@@ -40,13 +40,15 @@
 
                             $href = $navUrl;
                             $navchild = '';
+                            $target = $link['nlink_target'];
                             if (0 < count($link['children'])) {
                                 $href = 'javascript:void(0)';
                                 $navchild = 'navchild';
+                                $target = '';
                             }
                             ?>
                 <li class="<?php echo $navchild; ?>">
-                    <a target="<?php echo $link['nlink_target']; ?>" data-org-url="<?php echo $OrgnavUrl; ?>" href="<?php echo $href; ?>"><?php echo $link['nlink_caption']; ?></a>
+                    <a target="<?php echo $target; ?>" data-org-url="<?php echo $OrgnavUrl; ?>" href="<?php echo $href; ?>"><?php echo $link['nlink_caption']; ?></a>
                             <?php if (isset($link['children']) && count($link['children']) > 0) { ?>
                     <span class="link__mobilenav"></span>
                     <div class="subnav">
