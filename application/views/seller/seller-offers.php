@@ -11,7 +11,7 @@
                 <!-- <div class="cards-header">
                     <h5 class="cards-title"><?php echo Labels::getLabel('LBL_My_Offers', $siteLangId); ?></h5>
                 </div> -->
-                <div class="cards-content pl-4 pr-4 mt-4">
+                <div class="cards-content mt-4">
                     <div id="listing" class="row"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?> </div>
                 </div>
             </div>

@@ -89,7 +89,7 @@ $cancelBtnFld->developerTags['col'] = 2;
                         <?php if(isset($message)){ ?>
                             <p class="highlighted-note"> <?php  echo $message;?> </p>
                         <?php }?>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <div class="replaced"> <?php echo $frmOrderSrch->getFormHtml(); ?> </div>
                             <span class="gap"></span>
                         </div>
@@ -101,7 +101,7 @@ $cancelBtnFld->developerTags['col'] = 2;
                     <div class="cards">
                         <div class="cards-header">
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <div id="ordersListing"><?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?></div>
                             <span class="gap"></span>
                         </div>

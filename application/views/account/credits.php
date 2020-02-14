@@ -58,7 +58,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                             <p class="note"><?php echo Labels::getLabel('MSG_Minimum_balance_Required_For_COD', $siteLangId).' : '. CommonHelper::displaymoneyformat($codMinWalletBalance);?></p>
                         </div>
                         <?php } ?>
-                        <div class="cards-content pt-4 pl-4 pr-4">
+                        <div class="cards-content pl-4 pr-4">
                             <div class="row">
                                 <div class="col-lg-9 mb-3 mb-lg-0" id="credits-info"></div>
                                 <?php $srchFormDivWidth = $canAddMoneyToWallet ? '8' : '12'; ?>
@@ -103,7 +103,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
             <div class="row">
                 <div class="col-md-12">
                                    <div class="cards">
-                                       <div class="cards-content pt-4 pl-4 pr-4">
+                                       <div class="cards-content pl-4 pr-4">
                                        <div class="replaced">
                                         <h5 class="cards-title mb-2"><?php echo Labels::getLabel('LBL_Search_Transactions', $siteLangId);?></h5>
                                         <?php
@@ -124,7 +124,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                 <div class="col-lg-12">
                     <div class="cards">
 
-                        <div class="cards-content pt-2 pl-4 pr-4 ">
+                        <div class="cards-content">
                             <div id="creditListing"><?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?></div>
                             <span class="gap"></span>
                         </div>

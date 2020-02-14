@@ -24,7 +24,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php');?>
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pt-3 pl-4 pr-4 pb-0">
+                        <div class="cards-content pb-0">
                             <div id="bindProductForm"></div>
                         </div>
                     </div>
@@ -33,7 +33,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php');?>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pl-4 pr-4 pt-4">
+                        <div class="cards-content">
                             <div class="row justify-content-between">
                                 <div class="col-auto"></div>
                                  <div class="col-auto">

@@ -15,7 +15,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-ar
                         <div class="cards-header">
                             <h5 class="cards-title "><?php echo Labels::getLabel('Lbl_UPDATE_EMAIL', $siteLangId);?></h5>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <div id="changeEmailFrmBlock"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?> </div>
                         </div>
                     </div>
@@ -25,7 +25,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-ar
                         <div class="cards-header">
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_UPDATE_PASSWORD', $siteLangId);?></h5>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <div id="changePassFrmBlock"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?> </div>
                         </div>
                     </div>
@@ -35,7 +35,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-ar
                         <div class="cards-header">
                             <h5 class="cards-title "><?php echo Labels::getLabel('Lbl_UPDATE_PHONE_NUMBER', $siteLangId);?></h5>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <div id="changePhoneNumberFrmBlock"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?> </div>
                         </div>
                     </div>

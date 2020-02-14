@@ -25,7 +25,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content pl-4 pr-4 ">
+                            <div class="cards-content ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -54,7 +54,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content pl-4 pr-4 ">
+                            <div class="cards-content ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -80,7 +80,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content pl-4 pr-4 ">
+                            <div class="cards-content ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -108,7 +108,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                 <a href="<?php echo CommonHelper::generateUrl('buyer', 'orders');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
                             <?php } ?> </div>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <table class="table table--orders js-scrollable ">
                                 <tbody>
                                     <tr class="">
@@ -198,7 +198,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Latest_Offers', $siteLangId);?></h5>
                             <div class="action"> <?php if (count($offers)>0) { ?> <a href="<?php echo CommonHelper::generateUrl('buyer', 'offers');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a> <?php }?> </div>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <table class="table table--orders js-scrollable ">
                                 <tbody>
                                     <tr class="">
@@ -244,7 +244,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                 <a href="<?php echo CommonHelper::generateUrl('buyer', 'orderReturnRequests');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
                             </div> <?php } ?>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <table class="table table--orders js-scrollable ">
                                 <tbody>
                                     <tr class="">
@@ -313,7 +313,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                 <a href="<?php echo CommonHelper::generateUrl('buyer', 'orderCancellationRequests');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
                             </div> <?php } ?>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <table class="table table--orders js-scrollable ">
                                 <tbody>
                                     <tr class="">

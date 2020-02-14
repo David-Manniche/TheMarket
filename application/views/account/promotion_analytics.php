@@ -42,7 +42,7 @@ $cancelBtnFld->developerTags['col'] = 3;
 				<h5 class="cards-title"><?php echo Labels::getLabel('LBL_Promotion_Analytics',$siteLangId); ?></h5>
 				<div class="padding20 fr">  <a href="<?php echo CommonHelper::generateUrl('account', 'promote')?>" class="btn small ">&laquo;&laquo; <?php echo Labels::getLabel('LBL_Back_To_Promotions',$siteLangId) ?></a></div>
 			</div>
-			<div class="cards-content pl-4 pr-4 ">
+			<div class="cards-content ">
 				<div class="darkgray-form">
 					<div class="tabs-form">
 					  <div class="tabz-content">

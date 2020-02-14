@@ -14,7 +14,7 @@
 					<div class="action">	<a href="javascript:void(0)" class="btn btn--primary btn--sm" title="<?php echo Labels::getLabel('LBL_Add/Create_New_Batch', $siteLangId); ?>" onclick="batchForm(0)"><?php echo Labels::getLabel('LBL_Add/Create_New_Batch', $siteLangId); ?> </a>
 					</div>
 				</div>
-				<div class="cards-content pl-4 pr-4 ">
+				<div class="cards-content ">
 					<div class="replaced">
 						<div class="search search--sort">
 							<div class="search__field">

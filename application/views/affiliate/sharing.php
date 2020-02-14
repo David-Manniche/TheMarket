@@ -27,7 +27,7 @@ $this->includeTemplate('_partial/affiliate/affiliateDashboardNavigation.php'); ?
 							</div>
 						</div>
 					
-					<div class="cards-content pl-4 pr-4 ">
+					<div class="cards-content ">
 						<ul class="grid--onethird grid--onethird-large">
 						  <?php if (!empty(FatApp::getConfig("CONF_FACEBOOK_APP_ID")) && !empty(FatApp::getConfig("CONF_FACEBOOK_APP_SECRET"))){ ?>
 						  <li> <a id="facebook_btn" href="javascript:void(0);" class="box--share box--share-fb"> <i class="fa fa-facebook"></i>

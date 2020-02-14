@@ -1024,6 +1024,8 @@
     @include media-breakpoint-down(sm) {
         & {
             margin: 0;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
 
         }
     }
@@ -1037,7 +1039,7 @@
         @include media-breakpoint-down(sm) {
             & {
                 margin: 1rem 0;
-                padding: 0;
+                padding:0 5px;
             }
         }
 
