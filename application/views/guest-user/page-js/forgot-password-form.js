@@ -1,17 +1,3 @@
-$(document).on('keyup', 'input.otpVal', function(e){
-    var element = '';
-   
-    /* 
-    # e.which = 8(Backspace)
-    */
-    if (8 != e.which && '' != $(this).val()) {
-        element = $(this).parent().nextAll();
-    } else {
-        element = $(this).parent().prevAll();
-    }
-    element.children("input.otpVal").eq(0).focus();
-});
-
 (function() {
 	forgot = function(frm, v) {
 		v.validate();
@@ -71,12 +57,18 @@ $(document).on('keyup', 'input.otpVal', function(e){
     resendOtp = function (userId, getOtpOnly = 0){
         $.systemMessage(langLbl.processing,'alert--process', false);
 		fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
-            t = $.parseJSON(t);
-            if(1 > t.status){
-                $.systemMessage(t.msg,'alert--danger', false);
+            try{
+				t = $.parseJSON(t);
+				if(typeof t.status != 'undefined' &&  1 > t.status){
+                    $.systemMessage(t.msg,'alert--danger', false);
+                } else {
+                    $.systemMessage(t.msg,'alert--success', false);
+                }
                 return false;
-            }
-            $.systemMessage(t.msg,'alert--success', false);
+			}
+			catch(exc){
+                $.systemMessage.close();
+			}
         });
         return false;
 	};

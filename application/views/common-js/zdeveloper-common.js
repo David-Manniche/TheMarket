@@ -78,6 +78,45 @@ $(document).ready(function () {
 	}
 });
 
+$(document).on('keyup', 'input.otpVal', function(e){
+    var element = '';
+   
+    /* 
+    # e.which = 8(Backspace)
+    */
+    if (8 != e.which && '' != $(this).val()) {
+        element = $(this).parent().nextAll();
+    } else {
+        element = $(this).parent().prevAll();
+    }
+    element.children("input.otpVal").eq(0).focus();
+});
+
+loginPopupOtp = function (userId, getOtpOnly = 0){
+    $.mbsmessage(langLbl.processing, false, 'alert--process');
+    fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
+        try{
+            t = $.parseJSON(t);
+            if(typeof t.status != 'undefined' &&  1 > t.status){
+                $.mbsmessage(t.msg, false, 'alert--danger');
+            } else {
+                $.mbsmessage(t.msg, true, 'alert--success');
+            }
+            return false;
+        }
+        catch(exc){
+            if (0 < $('#facebox .loginpopup').length) {
+                fcom.updateFaceboxContent(t, 'faceboxWidth loginpopup');
+            } else {
+                $('#sign-in').html(t);
+            }
+
+            $.mbsmessage.close();
+        }
+    });
+    return false;
+};
+
 function setCurrDateFordatePicker() {
 	$('.start_date_js').datepicker('option', {
 		minDate: new Date()

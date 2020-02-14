@@ -3,20 +3,6 @@ $(document).ready(function(){
 	configurePhoneForm();		
 });
 
-$(document).on('keyup', 'input.otpVal', function(e){
-    var element = '';
-   
-    /* 
-    # e.which = 8(Backspace)
-    */
-    if (8 != e.which && '' != $(this).val()) {
-        element = $(this).parent().nextAll();
-    } else {
-        element = $(this).parent().prevAll();
-    }
-    element.children("input.otpVal").eq(0).focus();
-});
-
 (function() {
 	var runningAjaxReq = false;
 	var dv = '#changeEmailFrmBlock';

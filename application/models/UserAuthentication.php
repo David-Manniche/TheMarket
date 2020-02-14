@@ -348,7 +348,7 @@ class UserAuthentication extends FatModel
 
                 $message = Labels::getLabel('MSG_THIS_PHONE_NUMBER_IS_NOT_VERIFIED_YET._DO_YOU_WANT_TO_CONTINUE?_{CONTINUE-BTN}', $this->commonLangId);
                 $replacements = [
-                    '{CONTINUE-BTN}' => '<a class="btn btn-outline-white" href="javascript:void(0);" onclick="resendOtp(' . $row['user_id'] . ', ' . applicationConstants::NO . ', ' . applicationConstants::YES . ')">' . Labels::getLabel('MSG_PROCEED', $this->commonLangId) . '</a>'
+                    '{CONTINUE-BTN}' => '<a class="btn btn-outline-white" href="javascript:void(0);" onclick="loginPopupOtp(' . $row['user_id'] . ', ' . applicationConstants::NO . ')">' . Labels::getLabel('MSG_PROCEED', $this->commonLangId) . '</a>'
                 ];
                 $phoneErrorMsg = CommonHelper::replaceStringData($message, $replacements);
 
