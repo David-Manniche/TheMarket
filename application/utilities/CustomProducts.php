@@ -315,6 +315,7 @@ trait CustomProducts
         $optionSrch->addCondition('selprod_product_id', '=', $productId);
         $optionSrch->addCondition('prodoption_option_id', '=', $optionId);
         $optionSrch->addCondition('selprodoption_option_id', '=', $optionId);
+        $optionSrch->addCondition('selprod_deleted', '=', applicationConstants::NO);
 
         $rs = $optionSrch->getResultSet();
         $db = FatApp::getDb();
