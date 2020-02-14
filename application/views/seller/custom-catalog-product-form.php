@@ -28,7 +28,7 @@
                     </li>
                     <li><a rel="tabs_003" class="tabs_003" href="javascript:void(0)">
                             <?php echo Labels::getLabel('LBL_Options_And_Tags', $siteLangId); ?>
-                            <i class="tabs-icon fa fa-info-circle"  data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_Add_Options_And_Tags', $siteLangId); ?>"></i>
+                            <i class="tabs-icon fa fa-info-circle"  data-toggle="tooltip"  title="<?php echo Labels::getLabel('LBL_Add_Options_And_Tags', $siteLangId); ?>"></i>
 
                         </a>
                     </li>

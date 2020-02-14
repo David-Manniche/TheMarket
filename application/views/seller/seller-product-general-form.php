@@ -197,9 +197,9 @@ $submitBtnFld->developerTags['col'] = 12;
                                             <th width="20%"><?php echo Labels::getLabel('LBL_Variant/Option', $siteLangId); ?></th>
                                             <?php }?>
                                             <th width="20%"><?php echo Labels::getLabel('LBL_Cost_Price', $siteLangId); ?></th>
-                                            <th width="20%"><?php echo Labels::getLabel('LBL_Selling_Price', $siteLangId); ?> <i class="far fa-question-circle tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates.', $siteLangId).' '.Labels::getLabel('LBL_Min_Selling_price', $siteLangId).' '. CommonHelper::displayMoneyFormat($productMinSellingPrice, true, true); ?></span></i></th>
+                                            <th width="20%"><?php echo Labels::getLabel('LBL_Selling_Price', $siteLangId); ?> <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates.', $siteLangId).' '.Labels::getLabel('LBL_Min_Selling_price', $siteLangId).' '. CommonHelper::displayMoneyFormat($productMinSellingPrice, true, true); ?>"></i></th>
                                             <th width="20%"><?php echo Labels::getLabel('LBL_Quantity', $siteLangId); ?></th>
-                                            <th width="20%"><?php echo Labels::getLabel('LBL_SKU', $siteLangId); ?> <i class="far fa-question-circle tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_Stock_Keeping_Unit', $siteLangId) ?></span></i></th>
+                                            <th width="20%"><?php echo Labels::getLabel('LBL_SKU', $siteLangId); ?> <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_Stock_Keeping_Unit', $siteLangId) ?>"></i></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -292,6 +292,9 @@ $submitBtnFld->developerTags['col'] = 12;
 </div>
 <?php echo FatUtility::createHiddenFormFromData(array('product_id' => $product_id), array('name' => 'frmSearchSellerProducts'));?>
 <script type="text/javascript">
+    
+    $('[data-toggle="tooltip"]').tooltip();
+    
     var PERCENTAGE = <?php echo applicationConstants::PERCENTAGE; ?>;
     var FLAT = <?php echo applicationConstants::FLAT; ?>;
     var CONF_PRODUCT_SKU_MANDATORY = <?php echo FatApp::getConfig("CONF_PRODUCT_SKU_MANDATORY", FatUtility::VAR_INT, 1); ?>;

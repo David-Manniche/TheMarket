@@ -37,26 +37,26 @@
             </table>
         </div>
         <div class="cartdetail__footer">
-            <table>
+            <table class="table--justify">
                 <tr>
-                    <td class="text-left"><?php echo Labels::getLabel('LBL_Sub_Total', $siteLangId);?></td>
-                    <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($scartSummary['cartTotal']);?></td>
+                    <td><?php echo Labels::getLabel('LBL_Sub_Total', $siteLangId);?></td>
+                    <td><?php echo CommonHelper::displayMoneyFormat($scartSummary['cartTotal']);?></td>
                 </tr>
                 <?php  if (!empty($scartSummary['cartAdjustableAmount'])) { ?>
                 <tr>
-                    <td class="text-left"><?php echo Labels::getLabel('LBL_Adjusted_Amount', $siteLangId); ?> </td>
-                    <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($scartSummary['cartAdjustableAmount']); ?></td>
+                    <td><?php echo Labels::getLabel('LBL_Adjusted_Amount', $siteLangId); ?> </td>
+                    <td><?php echo CommonHelper::displayMoneyFormat($scartSummary['cartAdjustableAmount']); ?></td>
                 </tr>
                 <?php } ?>
                 <?php if (!empty($scartSummary['cartDiscounts'])) { ?>
                 <tr>
-                    <td class="text-left"><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?></td>
-                    <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($scartSummary['cartDiscounts']['coupon_discount_total']); ?></td>
+                    <td><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?></td>
+                    <td><?php echo CommonHelper::displayMoneyFormat($scartSummary['cartDiscounts']['coupon_discount_total']); ?></td>
                 </tr>
                 <?php } ?>
                 <tr>
-                    <td class="text-left hightlighted"><?php echo Labels::getLabel('LBL_You_Pay', $siteLangId);?></td>
-                    <td class="text-right hightlighted">
+                    <td class="hightlighted"><?php echo Labels::getLabel('LBL_You_Pay', $siteLangId);?></td>
+                    <td class="hightlighted">
                         <?php echo $amount = CommonHelper::displayMoneyFormat($scartSummary['cartTotal']-$scartSummary['cartAdjustableAmount']-$scartSummary['cartDiscounts']['coupon_discount_total']);?></td>
 
 

@@ -16,7 +16,7 @@ $keywordFld->developerTags['noCaptionTag'] = true;
         <div class="content-header  row justify-content-between mb-3">
             <div class="col-md-auto">
                 <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
-                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Product_Tags', $siteLangId); ?><i class="far fa-question-circle tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_Tags_can_only_be_added_for_private_products', $siteLangId); ?></span></i></h2>
+                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Product_Tags', $siteLangId); ?><i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_Tags_can_only_be_added_for_private_products', $siteLangId); ?>"></i></h2>
             </div>
         </div>
         <div class="content-body">

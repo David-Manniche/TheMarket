@@ -79,15 +79,15 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
                 </tr>                
                 <?php if (0 < $cartSummary['cartVolumeDiscount']) { ?>
                     <tr>
-                        <td class="text-left"><?php echo Labels::getLabel('LBL_Volume_Discount', $siteLangId); ?></td>
-                        <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartVolumeDiscount']); ?></td>
+                        <td><?php echo Labels::getLabel('LBL_Volume_Discount', $siteLangId); ?></td>
+                        <td><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartVolumeDiscount']); ?></td>
                     </tr>
                 <?php } ?>
                 <?php if (isset($cartSummary['taxOptions'])){ 
                         foreach($cartSummary['taxOptions'] as $taxName => $taxVal){ ?>
                         <tr>
-                            <td class="text-left"><?php echo $taxName; ?></td>
-                            <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($taxVal); ?></td>
+                            <td><?php echo $taxName; ?></td>
+                            <td><?php echo CommonHelper::displayMoneyFormat($taxVal); ?></td>
                         </tr>
                       <?php   }
                      }?> 
