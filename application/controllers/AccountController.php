@@ -266,6 +266,7 @@ class AccountController extends LoggedUserController
     public function changeEmailPassword()
     {
         $this->set('siteLangId', $this->siteLangId);
+        $this->set('canSendSms', Plugin::canSendSms(SmsTemplate::LOGIN));
         $this->_template->render();
     }
 

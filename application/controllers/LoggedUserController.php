@@ -45,13 +45,8 @@ class LoggedUserController extends MyAppController
         if (UserAuthentication::getLoggedUserId() < 1) {
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'logout'));
         }
-
-        $obj = new Plugin();
-        $active = $obj->getDefaultPluginData(Plugin::TYPE_SMS_NOTIFICATION, 'plugin_active');
-        $status = SmsTemplate::getTpl(SmsTemplate::LOGIN, 0, 'stpl_status');
-        $smsPluginStatus = (false != $active && !empty($active) && 0 < $status ? applicationConstants::YES : applicationConstants::NO);
         
-        if ((empty($userInfo['user_phone']) || false === $smsPluginStatus) && empty($userInfo['credential_email'])) {
+        if ((empty($userInfo['user_phone']) || false === Plugin::canSendSms()) && empty($userInfo['credential_email'])) {
             $message = Labels::getLabel('MSG_Please_Configure_Your_Email', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);

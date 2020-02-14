@@ -34,14 +34,6 @@ class GuestUserController extends MyAppController
         $this->_template->render();
     }
 
-    private function getSmsPluginAndTemplateStatus()
-    {
-        $obj = new Plugin();
-        $active = $obj->getDefaultPluginData(Plugin::TYPE_SMS_NOTIFICATION, 'plugin_active');
-        $status = SmsTemplate::getTpl(SmsTemplate::LOGIN, 0, 'stpl_status');
-        return (false != $active && !empty($active) && 0 < $status ? applicationConstants::YES : applicationConstants::NO);
-    }
-
     public function registerFormDetail($isRegisterForm, $signUpWithPhone = 0)
     {
         $registerFrm = $this->getRegistrationForm(true, $signUpWithPhone);
@@ -61,9 +53,7 @@ class GuestUserController extends MyAppController
         );
         $isRegisterForm = FatUtility::int($isRegisterForm);
 
-        $smsPluginStatus = $this->getSmsPluginAndTemplateStatus();
-
-        $this->set('smsPluginStatus', $smsPluginStatus);
+        $this->set('smsPluginStatus', Plugin::canSendSms(SmsTemplate::LOGIN));
         $this->set('isRegisterForm', $isRegisterForm);
         $this->set('registerdata', $registerdata);
     }
@@ -624,9 +614,7 @@ class GuestUserController extends MyAppController
         $obj = new Extrapage();
         $pageData = $obj->getContentByPageType(Extrapage::FORGOT_PAGE_RIGHT_BLOCK, $this->siteLangId);
 
-        $smsPluginStatus = $this->getSmsPluginAndTemplateStatus();
-
-        $this->set('smsPluginStatus', $smsPluginStatus);
+        $this->set('smsPluginStatus', Plugin::canSendSms(SmsTemplate::LOGIN));
         $this->set('withPhone', $withPhone);
         $this->set('pageData', $pageData);
         $this->set('frm', $frm);

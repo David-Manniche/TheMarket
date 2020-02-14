@@ -357,7 +357,7 @@
                                 </a>
                             </li>
                         <?php } ?>
-                        <?php if ($objPrivilege->canViewSmsTemplate(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                        <?php if ($objPrivilege->canViewSmsTemplate(AdminAuthentication::getLoggedAdminId(), true) && Plugin::canSendSms()) {?>
                             <li>
                                 <a href="<?php echo CommonHelper::generateUrl('SmsTemplates'); ?>">
                                     <?php echo Labels::getLabel('LBL_SMS_TEMPLATE_MANAGEMENT', $adminLangId);?>
