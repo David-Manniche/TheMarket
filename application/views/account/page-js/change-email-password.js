@@ -76,6 +76,7 @@ $(document).ready(function(){
                 var phoneNumber = $(lastFormElement + " input[name='user_phone']").val();
 
                 $(lastFormElement).after(t);
+                $(".otpForm-js .form-side").removeClass('form-side');
                 $('.formTitle').remove();
 
                 var userId = $(lastFormElement + " input[name='user_id']").val();
