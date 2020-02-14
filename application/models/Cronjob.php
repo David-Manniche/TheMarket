@@ -203,6 +203,17 @@ class Cronjob extends FatModel
 
                 $obj = new DiscountCoupons($couponId);
                 $obj->updateLangData($langId, $langData);
+
+                $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_FIRST_PURCHASE_DISCOUNT_IMAGE, 0, 0, $langId);
+                if (!empty($file_row)) {
+                    unset($file_row['afile_id']);
+                    unset($file_row['afile_updated_at']);
+                    $file_row['afile_record_id'] = $couponId;
+                    $file_row['afile_type'] = AttachedFile::FILETYPE_DISCOUNT_COUPON_IMAGE;
+                    $attachedFile = new AttachedFile();
+                    $attachedFile->assignValues($file_row);
+                    $attachedFile->addNew(array(), $file_row);
+                }
             }
 
             $emailNotificationObj = new EmailHandler();

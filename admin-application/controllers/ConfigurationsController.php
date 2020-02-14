@@ -330,6 +330,7 @@ class ConfigurationsController extends AdminBaseController
             AttachedFile::FILETYPE_INVOICE_LOGO,
             AttachedFile::FILETYPE_APP_MAIN_SCREEN_IMAGE,
             AttachedFile::FILETYPE_APP_LOGO,
+            AttachedFile::FILETYPE_FIRST_PURCHASE_DISCOUNT_IMAGE,
         );
 
         if (!in_array($file_type, $allowedFileTypeArr)) {
@@ -1721,6 +1722,15 @@ class ConfigurationsController extends AdminBaseController
                 }
 
                 $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="invoice_logo" class="logoFiles-Js btn-xs" id="invoice_logo" data-min_width = "168" data-min_height = "37" data-file_type=' . AttachedFile::FILETYPE_INVOICE_LOGO . ' value="Upload file"><small>Dimensions 168*37</small></li>';
+
+                $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_First_Purchase_Discount_Image', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
+
+
+                if (AttachedFile::getAttachment(AttachedFile::FILETYPE_FIRST_PURCHASE_DISCOUNT_IMAGE, 0, 0, $langId)) {
+                    $ul->htmlAfterField .= '<img src="' . CommonHelper::generateFullUrl('Image', 'firstPurchaseCoupon', array($langId), CONF_WEBROOT_FRONT_URL) . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeFavicon(' . $langId . ')" ><i class="ion-close-round"></i></a>';
+                }
+
+                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="purchase_discount" class="logoFiles-Js btn-xs" id="purchase_discount" data-min_width = "120" data-min_height = "120" data-file_type=' . AttachedFile::FILETYPE_FIRST_PURCHASE_DISCOUNT_IMAGE . ' value="Upload file"><small>Dimensions 120*120</small></li>';
 
                 $ul->htmlAfterField .= '</ul>';
                 break;
