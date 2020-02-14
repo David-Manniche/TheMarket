@@ -1029,7 +1029,7 @@ function stylePhoneNumberFld() {
         }
         var iti = window.intlTelInput(input, {
             initialCountry:country,
-            utilsScript: "/intlTelInput/intlTelInput-utils.js"
+            // utilsScript: "/intlTelInput/intlTelInput-utils.js"
         });
         input.value = ('' != input.value ? input.value : "+" + iti.getSelectedCountryData().dialCode);
         input.addEventListener('countrychange', function(e) {
