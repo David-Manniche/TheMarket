@@ -23,7 +23,7 @@ $keywordFld->developerTags['noCaptionTag'] = true;
             <div class="row">
                 <div class="col-md-12">
                     <div class="cards">
-                        <div class="cards-content p-4">
+                        <div class="cards-content">
                             <div>
                                 <?php echo $frmSearch->getFormTag(); ?>
                                 <div class="row">

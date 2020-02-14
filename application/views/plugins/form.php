@@ -16,6 +16,6 @@ $submitBtnFld->attachField($cancelBtnFld);
 <div class="cards-header">
     <h5 class="cards-title"><?php echo $identifier ?> <?php echo Labels::getLabel('LBL_Form', $siteLangId); ?></h5>
 </div>
-<div class="cards-content pl-4 pr-4 ">
+<div class="cards-content ">
     <?php echo $frm->getFormHtml(); ?>
 </div>

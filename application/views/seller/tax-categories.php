@@ -39,7 +39,7 @@
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pt-4 pl-4 pr-4 pb-0">
+                        <div class="cards-content pb-0">
                             <div class="replaced">
                                 <div class="row">
                                     <div class="col-lg-8">
@@ -63,7 +63,7 @@
                 <div class="col-lg-12">
                     <div class="cards">
 
-                        <div class="cards-content pt-2 pl-4 pr-4 ">
+                        <div class="cards-content">
                             <div id="listing"><?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?></div>
 
                         </div>

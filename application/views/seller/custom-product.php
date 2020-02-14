@@ -41,7 +41,7 @@ $cancelBtnFld->developerTags['col'] = 2;
 						</div>
 					</div>
 				</div>
-				<div class="cards-content pl-4 pr-4 ">
+				<div class="cards-content ">
 					<div class="replaced">
 						<?php echo $frmSearchCustomProduct->getFormHtml(); ?>
 					</div>

@@ -42,7 +42,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true; ?>
                                     echo '<div class="btn-group"><a href="javascript:void(0)" onClick="exportProductsInventoryReport()" class="btn btn--secondary btn--sm btn--block">'.Labels::getLabel('LBL_Export', $siteLangId).'</a></div>';?>
                             </div>
                         </div>
-                        <div class="cards-content pl-4 pr-4 pb-0">
+                        <div class="cards-content pb-0">
 
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -65,7 +65,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true; ?>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pt-2 pl-4 pr-4 ">
+                        <div class="cards-content">
                             <div id="listingDiv"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?> </div>
                             <div class="gap"></div>
                         </div>
