@@ -35,13 +35,13 @@
                 </div>
                 <div class="col-lg-3">
                     <div class="field-set">
-                        <div class="input-group">
+                        <div class="icon-group">
                             <input type="text" name="product_shipping[<?php echo $shipping_row; ?>][additional_cost]" value="<?php echo $shipping["pship_additional_charges"]?>" placeholder="<?php echo Labels::getLabel('LBL_Additional_Per_Item', $siteLangId).' ['.commonHelper::getDefaultCurrencySymbol().']';?>">
-                            <div class="input-group-append">
+                            
                                 <button type="button" onclick="removeShippingRow('<?php echo $shipping_row; ?>');" class="btn btn--secondary ripplelink" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId)?>">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                            </div>
+                             
                         </div>
                     </div>
                 </div>
@@ -76,28 +76,23 @@
             </div>
             <div class="col-lg-3">
                 <div class="field-set">
-                    <div class="input-group">
+                    <div class="icon-group">
                         <input type="text" name="product_shipping[0][additional_cost]" placeholder="<?php echo Labels::getLabel('LBL_Additional_Per_Item', $siteLangId).' ['.commonHelper::getDefaultCurrencySymbol().']';?>">
-                        <div class="input-group-append">
+                         
                            <button type="button" onclick="removeShippingRow('1')" class="btn btn--secondary ripplelink" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId)?>">
                                 <i class="fa fa-minus"></i>
                             </button>
-                        </div>
+                         
                     </div>
                 </div>
             </div>
         </div>
     <?php } ?>
 </span>
-<div class="row align-items-center">
-    <div class="col-lg-2"></div>
-    <div class="col-lg-3"></div>
-    <div class="col-lg-2"></div>
-    <div class="col-lg-2"></div>
-    <div class="col-lg-2"></div>
-    <div class="col-lg-1">
+<div class="row align-items-center justify-content-end">
+     <div class="col-auto">
         <button type="button" class="btn btn--secondary ripplelink" title="<?php echo Labels::getLabel('LBL_Shipping', $siteLangId)?>" onclick="addShipping();">
-            <i class="fa fa-plus"></i>
+            <i class="fa fa-plus"></i> 
         </button>
     </div>
 </div>

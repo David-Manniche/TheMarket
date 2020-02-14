@@ -886,6 +886,10 @@ $(document).on('change', '.language-js', function () {
         fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupEanUpcCode',[preqId]), data, function(t) {
         });
     };
+    
+    goToCatalogRequest = function(){
+        window.location.href = fcom.makeUrl('seller', 'customCatalogProducts');
+    }
 
 })();
 

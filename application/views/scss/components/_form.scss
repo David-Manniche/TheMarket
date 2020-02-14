@@ -179,9 +179,7 @@ input[type="file"] {
             transition: -webkit-box-shadow 0.2s;
             transition: box-shadow 0.2s;
             transition: box-shadow 0.2s, -webkit-box-shadow 0.2s;
-
-
-            margin-#{$end-direction}: 5px;
+            /*margin-#{$end-direction}: 5px;*/
         }
 
         &[type="button"] {
@@ -304,4 +302,48 @@ form.custom-form {
         display: flex;
         align-items: center;
     }
+}
+
+.input-group {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    width: 100%;
+
+    input {
+        position: relative;
+        -webkit-box-flex: 1;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        width: 1%;
+        margin-bottom: 0;
+
+        &:not(:first-child) {
+            border-top-#{$start-direction}-radius: 0;
+            border-bottom-#{$start-direction}-radius: 0;
+        }
+
+        &:not(:last-child) {
+            border-top-#{$end-direction}-radius: 0;
+            border-bottom-#{$end-direction}-radius: 0;
+        }
+
+    }
+}
+
+.icon-group {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    
+    .btn { margin-#{$start-direction}:5px; }
 }

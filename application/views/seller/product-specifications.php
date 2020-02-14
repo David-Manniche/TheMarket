@@ -1,11 +1,12 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
+$layout = Language::getLayoutDirection($langId);
 if (count($productSpecifications) > 0){ ?>
-<div class="row">
+<div class="row" dir="<?php echo $layout; ?>">
     <div class="col-md-12">
         <div class="tablewrap">
         <?php 
             $arr_flds = array(
-                'prodspec_name' => Labels::getLabel('LBL_Specification_Text', $siteLangId),
+                'prodspec_name' => Labels::getLabel('LBL_Specification_Name', $siteLangId),
                 'prodspec_value' => Labels::getLabel('LBL_Specification_Value', $siteLangId),
                 'action' => Labels::getLabel('LBL_Action', $siteLangId)
             );

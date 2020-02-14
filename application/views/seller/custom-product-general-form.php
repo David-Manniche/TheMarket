@@ -219,14 +219,14 @@ $btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');
         if (!empty($otherLanguages)) {
             foreach ($otherLanguages as $langId => $data) {
                 $layout = Language::getLayoutDirection($langId); ?>
-                <div class="accordion layout--<?php echo $layout; ?>" id="specification-accordion">
+                <div class="accordion" id="specification-accordion">
 
                             <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><span onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')"> <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?> </span>
                             </h6>
                             <div id="collapseOne" class="collapse collapse-js-<?php echo $langId; ?>" aria-labelledby="headingOne" data-parent="#specification-accordion">
-                             <div class="p-4 mb-4 bg-gray rounded ">
+                             <div class="p-4 mb-4 bg-gray rounded" dir="<?php echo $layout; ?>">
 							 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <div class="field-set">
                                             <div class="caption-wraper">
                                                 <label class="field_label">
