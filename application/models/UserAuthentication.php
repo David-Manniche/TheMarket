@@ -344,7 +344,21 @@ class UserAuthentication extends FatModel
         }
         if (!$isAdmin) {
             if ($row['credential_verified'] != applicationConstants::YES) {
-                $this->error = str_replace("{clickhere}", '<a href="javascript:void(0)" onclick="resendVerificationLink(' . "'" . $username . "'" . ')">' . Labels::getLabel('LBL_Click_Here', $this->commonLangId) . '</a>', Labels::getLabel('MSG_Your_Account_verification_is_pending_{clickhere}', $this->commonLangId));
+                $emailErrorMsg = str_replace("{clickhere}", '<a href="javascript:void(0)" onclick="resendVerificationLink(' . "'" . $username . "'" . ')">' . Labels::getLabel('LBL_Click_Here', $this->commonLangId) . '</a>', Labels::getLabel('MSG_Your_Account_verification_is_pending_{clickhere}', $this->commonLangId));
+
+                $message = Labels::getLabel('MSG_THIS_PHONE_NUMBER_IS_NOT_VERIFIED_YET._DO_YOU_WANT_TO_CONTINUE?_{CONTINUE-BTN}', $this->commonLangId);
+                $replacements = [
+                    '{CONTINUE-BTN}' => '<a class="btn btn-outline-white" href="javascript:void(0);" onclick="resendOtp(' . $row['user_id'] . ', ' . applicationConstants::NO . ', ' . applicationConstants::YES . ')">' . Labels::getLabel('MSG_PROCEED', $this->commonLangId) . '</a>'
+                ];
+                $phoneErrorMsg = CommonHelper::replaceStringData($message, $replacements);
+
+                if (strtolower($row['credential_email']) === strtolower($username)) {
+                    $this->error = $emailErrorMsg;
+                } else if ($row['user_phone'] === $username) {
+                    $this->error = $phoneErrorMsg;
+                } else {
+                    $this->error = !empty($row['credential_email']) ? $emailErrorMsg : $phoneErrorMsg;
+                }
 
                 if (true === MOBILE_APP_API_CALL) {
                     $this->error = Labels::getLabel('MSG_Your_Account_verification_is_pending', $this->commonLangId);

@@ -49,21 +49,25 @@ $(document).on('keyup', 'input.otpVal', function(e){
         return false;
     };
     
-    resendOtp = function (userId, getOtpOnly = 0){
-        $.systemMessage(langLbl.processing,'alert--process', false);
+    resendOtp = function (userId, getOtpOnly = 0, moveToRegisterPage = 0){
+        $.mbsmessage(langLbl.processing, false, 'alert--process');
 		fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
             try{
 				t = $.parseJSON(t);
 				if(typeof t.status != 'undefined' &&  1 > t.status){
-                    $.systemMessage(t.msg,'alert--danger', false);
+                    $.mbsmessage(t.msg, false, 'alert--danger');
                 } else {
-                    $.systemMessage(t.msg,'alert--success', false);
+                    $.mbsmessage(t.msg, true, 'alert--success');
                 }
                 return false;
 			}
 			catch(exc){
-                $.systemMessage.close();
+                // $.systemMessage.close();
+                if (0 < moveToRegisterPage) {
+                    $('.js--register-btn').click();
+                }
                 $('#sign-up').html(t);
+                $.mbsmessage.close();
 			}
         });
         return false;
