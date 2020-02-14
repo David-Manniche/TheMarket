@@ -4,7 +4,7 @@
     <div class="content-wrapper content-space">
         <div class="content-body">
             <div class="cards">
-                <div class="cards-content p-4">
+                <div class="cards-content">
                     <div class="section-head section--head--center mt-4 mb-5">
                         <div class="section__heading">
                             <?php echo html_entity_decode($pageData['epage_content']);?>

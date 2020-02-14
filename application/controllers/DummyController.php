@@ -13,6 +13,11 @@ class DummyController extends MyAppController
         $product = Product::isAvailableForAddToStore(64, 11);
     }
 
+    public function firstTimeDiscount()
+    {
+        $product = Cronjob::firstTimeBuyerDiscount(29, 'O1581657176');
+    }
+
     public function createProcedures($printQuery = false)
     {
         $db = FatApp::getDb();
@@ -652,7 +657,7 @@ class DummyController extends MyAppController
             }
         }
     }
-    
+
     public function testEmail()
     {
         AbandonedCart::sendReminderAbandonedCart();

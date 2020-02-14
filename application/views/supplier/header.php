@@ -72,7 +72,10 @@ $this->includeTemplate('_partial/header/commonHeadBottom.php', $commonHeadData,f
             <div class="logo logo-supplier"> <a href="<?php echo CommonHelper::generateUrl(); ?>"><img src="<?php echo CommonHelper::generateFullUrl('Image','siteLogo',array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>"></a></div> 
 			
 			<div class="d-flex"><a class="seller_login_toggle" href="javascript:void(0)" data-trigger="yk-login--wrapper"><i class="fa fa-user-circle"></i></a> 
-			<a class="seller_nav_toggle" href="javascript:void(0)"  data-trigger="short-nav"><i class="fas fa-bars"></i></a>	</div>
+            <?php if( !empty( $seller_navigation_left ) ){ ?>
+                <a class="seller_nav_toggle" href="javascript:void(0)"  data-trigger="short-nav"><i class="fas fa-bars"></i></a>	
+            <?php } ?>
+            </div>
 			
           <div class="yk-login--wrapper" id="yk-login--wrapper" data-close-on-click-outside="yk-login--wrapper">
 		  	

@@ -12,7 +12,7 @@ var  productId  =  <?php echo $productId ;?>
 		</div>
 		<div class="content-body">
 			<div class="cards">
-				<div class="cards-content pl-4 pr-4 ">
+				<div class="cards-content ">
 					<div id="listing"></div>
 				</div>
 			</div>

@@ -8,7 +8,7 @@ $frm->setFormTagAttribute('onSubmit', 'uploadZip(); return false;');
 $variables = array('siteLangId'=>$siteLangId,'action'=>$action);
 $this->includeTemplate('import-export/_partial/top-navigation.php', $variables, false); ?>
 <div class="cards">
-    <div class="cards-content pt-3 pl-4 pr-4 pb-4">
+    <div class="cards-content">
         <div class="content-body">
             <div class="replaced">
                 <?php echo $frm->getFormHtml();  ?>

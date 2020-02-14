@@ -28,7 +28,7 @@ $langFld->setfieldTagAttribute('onChange', "shopLangForm(" . $shop_id . ", this.
 
 $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false); ?>
 <div class="cards">
-    <div class="cards-content pt-3 pl-4 pr-4 ">
+    <div class="cards-content ">
         <div class="tabs__content">
             <div class="row ">
                 <?php

@@ -24,7 +24,7 @@
                     </div>
                 <?php } ?>
             </div>
-            <div class="cards-content pl-4 pr-4 ">
+            <div class="cards-content ">
                
                      <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-6  mb-4">

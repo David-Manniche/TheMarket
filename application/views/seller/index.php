@@ -32,7 +32,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content pl-4 pr-4 ">
+                            <div class="cards-content ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -61,7 +61,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content pl-4 pr-4 ">
+                            <div class="cards-content ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -90,7 +90,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content pl-4 pr-4 ">
+                            <div class="cards-content ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -123,7 +123,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                 </svg>
                             </i>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <div class="stats">
                                 <div class="stats-number">
                                     <ul>
@@ -164,7 +164,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                 </svg>
                             </i>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <div class="stats">
                                 <div class="stats-number">
                                     <ul>
@@ -193,7 +193,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                 </svg>
                             </i>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <div class="stats">
                                 <div class="stats-number">
                                     <ul>
@@ -219,7 +219,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                         <div class="cards-header">
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Sales_Graph', $siteLangId);?></h5>
                         </div>
-                        <div class="cards-content pl-4 pr-4  graph"> <?php $this->includeTemplate('_partial/seller/sellerSalesGraph.php'); ?> </div>
+                        <div class="cards-content  graph"> <?php $this->includeTemplate('_partial/seller/sellerSalesGraph.php'); ?> </div>
                     </div>
                 </div>
                 <div class="col-xl-6 mb-4">
@@ -232,7 +232,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                 </div>
                             <?php } ?>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <table class="table table--orders js-scrollable ">
                                 <tbody>
                                     <tr class="">
@@ -324,7 +324,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                 </div>
                             <?php } ?>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <table class="table table--orders js-scrollable ">
                                 <tbody>
                                     <tr class="">
@@ -388,7 +388,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             </div>
                             <?php } ?>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <table class="table table--orders js-scrollable ">
                                 <tbody>
                                     <tr class="">
@@ -468,7 +468,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             </div>
                             <?php } ?>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <table class="table table--orders js-scrollable ">
                                 <tbody>
                                     <tr class="">

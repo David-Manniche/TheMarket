@@ -22,6 +22,6 @@ $cancelBtnFld->developerTags['col'] = 2;
 <div class="cards-header">
     <h5 class="cards-title"><?php echo Labels::getLabel('LBL_PayPal_Payout_Form', $siteLangId); ?></h5>
 </div>
-<div class="cards-content pl-4 pr-4 ">
+<div class="cards-content ">
     <?php echo $frm->getFormHtml(); ?>
 </div>

@@ -42,7 +42,7 @@ $submitBtnFld->developerTags['col'] = 12;
     <?php /* require_once('sellerCatalogProductTop.php'); */ ?>
 </div>
 <div class="cards">
-    <div class="cards-content pt-3 pl-4 pr-4 ">
+    <div class="cards-content ">
         <div class="tabs__content form">
             <div class="row">
                 <div class="col-md-12">

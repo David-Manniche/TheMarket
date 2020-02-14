@@ -14,7 +14,7 @@ $serviceAccInfo = isset($userData['service_account']) ? $userData['service_accou
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content p-4 d-flex justify-content-between align-items-center">
+                        <div class="cards-content d-flex justify-content-between align-items-center">
                             <h6 class="m-0">
                                 <?php echo Labels::getLabel('Lbl_MERCHANT_ID', $siteLangId);?> : 
                                 <?php echo $merchantId;
@@ -33,7 +33,7 @@ $serviceAccInfo = isset($userData['service_account']) ? $userData['service_accou
                 <div class="row mb-4">
                     <div class="col-lg-12">
                         <div class="cards">
-                            <div class="cards-content p-4 pb-0">
+                            <div class="cards-content pb-0">
                                 <h5 class="cards-title mb-3">
                                     <?php echo Labels::getLabel('LBL_BATCH_SETUP', $siteLangId); ?>
                                 </h5>
@@ -45,7 +45,7 @@ $serviceAccInfo = isset($userData['service_account']) ? $userData['service_accou
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="cards">
-                            <div class="cards-content pl-4 pr-4">
+                            <div class="cards-content">
                                 <div id="listing"></div>
                             </div>
                         </div>

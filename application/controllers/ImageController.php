@@ -815,6 +815,32 @@ class ImageController extends FatController
                 break;
             case 'NORMAL':
                 $w = 120;
+                $h = 120;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+            default:
+                $w = 600;
+                $h = 400;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+        }
+    }
+
+    public function firstPurchaseCoupon($lang_id = 0, $sizeType = '')
+    {
+        $lang_id = FatUtility::int($lang_id);
+        $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_FIRST_PURCHASE_DISCOUNT_IMAGE, 0, 0, $lang_id);
+        $image_name = isset($file_row['afile_physical_path']) ? $file_row['afile_physical_path'] : '';
+        $default_image = '';
+
+        switch (strtoupper($sizeType)) {
+            case 'THUMB':
+                $w = 100;
+                $h = 100;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+            case 'NORMAL':
+                $w = 120;
                 $h = 150;
                 AttachedFile::displayImage($image_name, $w, $h, $default_image);
                 break;

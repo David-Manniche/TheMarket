@@ -2,7 +2,7 @@
 $variables = array('siteLangId'=>$siteLangId,'action'=>$action);
 $this->includeTemplate('import-export/_partial/top-navigation.php',$variables,false); ?>
 <div class="cards">
-	<div class="cards-content pt-4 pl-4 pr-4 pb-4">
+	<div class="cards-content">
 		<div class="cms" id="exportFormBlock">
 			<?php
 				if( !empty($pageData['epage_content']) ){

@@ -2,7 +2,7 @@
 <div class="cards-header">
     <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Request_Withdrawal', $siteLangId);?></h5>
 </div>
-<div class="cards-content pl-4 pr-4 ">
+<div class="cards-content ">
     <?php $frm->setFormTagAttribute('class', 'form');
     if (User::isAffiliate()) {
         $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-';

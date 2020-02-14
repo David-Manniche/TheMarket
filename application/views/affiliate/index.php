@@ -23,7 +23,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content pl-4 pr-4 ">
+                            <div class="cards-content ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -53,7 +53,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content pl-4 pr-4 ">
+                            <div class="cards-content ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -77,7 +77,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                         <div class="cards-header">
                             <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Share_and_earn_commission_on_every_purchase', $siteLangId)?></h5>
                         </div>
-                        <div class="cards-content p-4 pr-4 ">
+                        <div class="cards-content ">
                             <div class="stats">
                                 <a href="javascript:void(0)" class="btn btn-outline-primary btn--sm" title="<?php echo $affiliateTrackingUrl; ?>" onclick="copy($(this))"><?php echo Labels::getLabel('LBL_Click_to_copy', $siteLangId)?></a>
                             </div>
@@ -120,7 +120,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                             <a href="<?php echo CommonHelper::generateUrl('account', 'profileInfo');?>" class="link"><?php echo Labels::getLabel('LBL_Edit', $siteLangId);?>  <i class="fa fa-pencil"></i></a>
                         </div>
                     </div>
-                    <div class="cards-content pl-4 pr-4 ">
+                    <div class="cards-content ">
                         <div class="tabs tabs--small   tabs--scroll clearfix setactive-js">
                             <ul>
                                 <li class="is-active"><a href="javascript:void(0);" onClick="personalInfo(this)"><?php echo Labels::getLabel('LBL_Personal', $siteLangId); ?></a></li>
@@ -138,7 +138,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                         <div class="cards-header">
                             <h4><?php echo Labels::getLabel('L_Invite_friends_through_email', $siteLangId)?></h4>
                         </div>
-						<div class="cards-content p-4"> <?php echo $sharingFrm->getFormHtml(); ?> <span class="ajax_message" id="custom_ajax"></span></div>
+						<div class="cards-content"> <?php echo $sharingFrm->getFormHtml(); ?> <span class="ajax_message" id="custom_ajax"></span></div>
 						
                     </div>
                 </div>
@@ -153,7 +153,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                             </div> <?php
     } ?>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <table class="table table--orders js-scrollable">
                                 <tbody>
                                     <tr class="">
@@ -211,7 +211,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                             </div> <?php
     } ?>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <table class="table table--orders js-scrollable ">
                                 <tbody>
                                     <tr class="">
