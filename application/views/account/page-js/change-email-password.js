@@ -120,7 +120,6 @@ $(document).on('keyup', 'input.otpVal', function(e){
 			}
 			catch(exc){
                 $.systemMessage.close();
-                $('#sign-up').html(t);
 			}
         });
         return false;

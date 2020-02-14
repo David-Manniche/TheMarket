@@ -8,6 +8,12 @@ $frm->setFormTagAttribute('onsubmit', 'updateEmail(this); return(false);');
 
 $fldSubmit = $frm->getField('btn_submit');
 $fldSubmit->developerTags['noCaptionTag'] = true;
-$fldSubmit->htmlAfterField ='<br/><small>' . Labels::getLabel('MSG_YOUR_EMAIL_WILL_NOT_CHANGE_UNTIL_YOU_VERIFY_YOUR_NEW_EMAIL_ADDRESS', $siteLangId) . '</small>';
+
+$str = '';
+if (isset($canSendSms) && true == $canSendSms) {
+    $str = '';
+}
+
+$fldSubmit->htmlAfterField = '<br/><small>' . Labels::getLabel('MSG_YOUR_EMAIL_WILL_NOT_CHANGE_UNTIL_YOU_VERIFY_YOUR_NEW_EMAIL_ADDRESS', $siteLangId) . '</small>';
 
 echo $frm->getFormHtml();

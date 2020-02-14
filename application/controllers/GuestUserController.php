@@ -934,6 +934,9 @@ class GuestUserController extends MyAppController
 
     public function configureEmail()
     {
+        $phoneNumber = User::getAttributesById(UserAuthentication::getLoggedUserId(), 'user_phone');
+        $canSendSms = (empty($phoneNumber) && Plugin::canSendSms(SmsTemplate::LOGIN));
+        $this->set('canSendSms', $canSendSms);
         $this->_template->render();
     }
 
@@ -943,7 +946,18 @@ class GuestUserController extends MyAppController
 
         $this->set('frm', $frm);
         $this->set('siteLangId', $this->siteLangId);
+        $this->set('canSendSms', Plugin::canSendSms(SmsTemplate::LOGIN));
         $this->_template->render(false, false, 'account/change-email-form.php');
+    }
+
+    public function configurePhoneForm()
+    {
+        $frm = $this->getPhoneNumberForm();
+
+        $this->set('frm', $frm);
+        $this->set('updatePhnFrm', applicationConstants::YES);
+        $this->set('siteLangId', $this->siteLangId);
+        $this->_template->render(false, false, 'account/change-phone-form.php');
     }
 
     public function updateEmail()

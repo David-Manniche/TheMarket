@@ -1979,7 +1979,7 @@ trait SellerProducts
         $this->deleteSellerProduct($selprod_id);
 
         FatUtility::dieJsonSuccess(
-            Labels::getLabel('MSG_RECORD_DELETED_SUCCESSFULLY', FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG'))
+            Labels::getLabel('MSG_RECORD_DELETED_SUCCESSFULLY', $this->siteLangId)
         );
     }
 
@@ -1988,7 +1988,7 @@ trait SellerProducts
         $selprod_id = FatUtility::int($selprod_id);
         if (1 > $selprod_id) {
             Message::addErrorMessage(
-                Labels::getLabel('MSG_INVALID_REQUEST_ID', FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG'))
+                Labels::getLabel('MSG_INVALID_REQUEST_ID', $this->siteLangId)
             );
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -1996,7 +1996,7 @@ trait SellerProducts
         $selprodObj = new SellerProduct($selprod_id);
         if (!$selprodObj->deleteSellerProduct($selprod_id)) {
             Message::addErrorMessage(
-                Labels::getLabel('MSG_INVALID_REQUEST_ID', FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG'))
+                Labels::getLabel('MSG_INVALID_REQUEST_ID', $this->siteLangId)
             );
             FatUtility::dieJsonError(Message::getHtml());
         }
