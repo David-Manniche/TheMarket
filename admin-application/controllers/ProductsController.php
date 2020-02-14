@@ -1016,6 +1016,14 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
+        if($post['product_brand_id'] < 1){
+            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Brand_From_List', $this->adminLangId)); 
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        if($post['ptc_prodcat_id'] < 1){
+            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Category_From_List', $this->adminLangId)); 
+            FatUtility::dieWithError(Message::getHtml());
+        }
 
         $prod = new Product($productId);
         if (!$prod->saveProductData($post)) {

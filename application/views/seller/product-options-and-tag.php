@@ -3,7 +3,7 @@
 <div class="row justify-content-center">
     <div class="col-md-12">
         <div class="row">
-            <div class="col-md-8"> 
+            <div class="col-md-6"> 
                  <div class="row">
                      <div class="col-md-12">
                          <div class="field-set">
@@ -36,7 +36,7 @@
                     $tagData[$key]['value'] = $data['tag_identifier'];
                 }
             ?>
-            <div class="col-md-4">                             
+            <div class="col-md-6">                             
                 <div class="row">
                      <div class="col-md-12">
                          <div class="field-set">
