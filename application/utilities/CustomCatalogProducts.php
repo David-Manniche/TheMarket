@@ -1118,6 +1118,15 @@ trait CustomCatalogProducts
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
+        if($post['product_brand_id'] < 1){
+            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Brand_From_List', $this->siteLangId)); 
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        if($post['ptc_prodcat_id'] < 1){
+            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Category_From_List', $this->siteLangId)); 
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        
         $prodContent = array();
         if ($preqId > 0) {
             $productRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_status', 'preq_content'));
