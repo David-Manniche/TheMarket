@@ -7634,13 +7634,14 @@ a.text-dark:hover, .shop-nav ul li.is--active a.text-dark, a.text-dark:focus {
     background: #ff3a59;
     transition: all 300ms linear 0s;
     -webkit-transition: all 300ms linear 0s;
-    -ms-transition: all 300ms linear 0s; }
+    -ms-transition: all 300ms linear 0s;
+    font-size: 0.775em; }
     .header .top-bar a {
-      color: inherit; }
+      color: inherit;
+      padding: 8px 0.8rem; }
     .header .top-bar .slogan {
       line-height: 1;
       color: inherit;
-      font-size: 0.775em;
       padding: 8px 0; }
     .header .top-bar .short-links {
       display: -webkit-box;
@@ -7681,8 +7682,6 @@ a.text-dark:hover, .shop-nav ul li.is--active a.text-dark, a.text-dark:focus {
           .header .top-bar .short-links > ul > li > .dropdown > a {
             color: inherit;
             display: block;
-            font-size: 0.775em;
-            padding: 8px 0.8rem;
             line-height: 1;
             text-decoration: none;
             display: -webkit-box;
@@ -14779,7 +14778,7 @@ img.mfp-img {
 .slick-dots {
   padding: 0;
   position: absolute;
-  bottom: 10px;
+  bottom: 0;
   left: 0;
   right: 0;
   margin: 0 auto;
@@ -16056,6 +16055,8 @@ img.mfp-img {
     padding: 0.5rem 1rem;
     font-size: 0.85rem;
     border-bottom: solid 1px #dee2e6; }
+  .variants-wrap table tr:last-child td {
+    border-bottom: none; }
 
 .tabs {
   font-family: "Poppins", sans-serif;
@@ -16082,7 +16083,7 @@ img.mfp-img {
       margin-left: 2rem;
       position: relative;
       white-space: nowrap;
-      font-size: 0.8rem; }
+      font-size: 0.9rem; }
       .tabs ul li:first-child {
         margin-right: 0;
         padding-right: 0; }
@@ -16690,6 +16691,8 @@ a:hover, .shop-nav ul li.is--active a {
       font-size: 1.1rem; }
       .cards .cards-header .cards-title a {
         color: #212529; }
+  .cards .cards-content {
+    padding: 1.5rem; }
 
 .toggle-switch {
   display: inline-block;
@@ -29726,7 +29729,9 @@ max-height: 408px;*/ }
   margin-bottom: 1rem; }
   @media (max-width: 767.98px) {
     .widget-scroll {
-      margin: 0; } }
+      margin: 0;
+      margin-bottom: 10px;
+      padding-bottom: 10px; } }
   .widget-scroll .widget-stats {
     padding-left: 15px;
     padding-right: 15px;
@@ -29735,7 +29740,7 @@ max-height: 408px;*/ }
     @media (max-width: 767.98px) {
       .widget-scroll .widget-stats {
         margin: 1rem 0;
-        padding: 0; } }
+        padding: 0 5px; } }
     .widget-scroll .widget-stats .icn svg {
       width: 34px;
       height: 34px;

@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');?>
-<div class="cards-content p-4">
+<div class="cards-content">
 	<div class="tabs tabs-sm tabs--scroll clearfix">
 		<ul>
 			<li class="is-active"><a href="javascript:void(0)" onClick="socialPlatformForm(<?php echo $splatform_id;?>);"><?php echo Labels::getLabel('LBL_General', $siteLangId); ?></a></li>

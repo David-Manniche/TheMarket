@@ -1,4 +1,4 @@
-<div class="cards-content pl-4 pr-4 ">
+<div class="cards-content ">
 <?php $arr_flds = array(
         'listserial'=>Labels::getLabel('LBL_Sr._no.', $siteLangId),
         'splatform_identifier'=>Labels::getLabel('LBL_Title', $siteLangId),

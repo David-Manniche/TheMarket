@@ -89,7 +89,8 @@ $(document).ready(function () {
         fcom.ajax(fcom.makeUrl('SmsTemplates', action), data, function (res) {
             var ans = $.parseJSON(res);
             if (ans.status == 1) {
-                $(obj).toggleClass("active");
+                action = 'makeActive' == action ? 'makeInActive' : 'makeActive';
+                $(obj).toggleClass("active").removeAttr('onclick').attr('onclick', action + '(this)');
                 fcom.displaySuccessMessage(ans.msg);
             } else {
                 fcom.displayErrorMessage(ans.msg);

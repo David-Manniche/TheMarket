@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="cards-content pl-4 pr-4 ">
+<div class="cards-content ">
     <div class="">
         <div class="tabs tabs-sm tabs--scroll clearfix">
             <ul>

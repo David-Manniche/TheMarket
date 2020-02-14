@@ -4,7 +4,7 @@
             <h2>
                 <?php echo Labels::getLabel('LBL_Create_Your_Account_For_Sign_Up', $siteLangId);?>
                 <span class="note">
-                    <?php if (isset($registerdata['signUpWithPhone']) && 0 < $smsPluginStatus) {
+                    <?php if (isset($registerdata['signUpWithPhone']) && true === $smsPluginStatus) {
                             if (0 == $registerdata['signUpWithPhone']) { ?>
                                 <a href="javaScript:void(0)" onClick="signUpWithPhone()"><?php echo Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $siteLangId); ?></a>
                             <?php } else { ?>

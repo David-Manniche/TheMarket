@@ -37,7 +37,7 @@ if (0 < $withPhone) {
                                         } else {
                                             echo Labels::getLabel('LBL_RECOVER_PASSWORD_FORM_MSG', $siteLangId);
                                         } ?>
-                                        <?php if (isset($smsPluginStatus)) {
+                                        <?php if (isset($smsPluginStatus) && true === $smsPluginStatus) {
                                                 if (isset($withPhone) && 1 > $withPhone) { ?>
                                                     <a href="javaScript:void(0)" onClick="forgotPwdForm(<?php echo applicationConstants::YES; ?>)">
                                                         <?php echo Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $siteLangId); ?>
@@ -53,7 +53,6 @@ if (0 < $withPhone) {
                             </div>
 							<div class="row justify-content-center">
 							<div class="col-md-6">
-							
                             <?php
                             $frm->setFormTagAttribute('class', 'form form--normal');
                             $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';

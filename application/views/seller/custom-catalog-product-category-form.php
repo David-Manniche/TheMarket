@@ -22,7 +22,7 @@ $cancelBtnFld->setWrapperAttribute('class', 'col-sm-3');
 $cancelBtnFld->developerTags['col'] = 2;
 $cancelBtnFld->developerTags['noCaptionTag'] = true; ?>
 <div class="cards">
-    <div class="cards-content p-4 ">
+    <div class="cards-content ">
         <?php echo $frm->getFormHtml(); ?>
         <div class="search-form"></div>
         <h5><?php echo Labels::getLabel('Lbl_Select_Your_Product_category', $siteLangId);?></h5>

@@ -7,7 +7,7 @@
         </div>
         <div class="content-body">
             <div class="cards">                
-                <div class="cards-content p-4">
+                <div class="cards-content">
                     <div class="" id="SearchesListingDiv"></div>                    
                     <div id="loadMoreBtnDiv"></div>
                 </div>

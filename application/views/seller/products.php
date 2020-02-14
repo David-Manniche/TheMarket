@@ -33,7 +33,7 @@
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pt-4 pl-4 pr-4 pb-0">
+                        <div class="cards-content pb-0">
                             <div class="replaced">
                                 <div class="row">
                                     <div class="col-lg-8">
@@ -58,7 +58,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pl-4 pr-4 pt-4">
+                        <div class="cards-content">
                             <div class="row justify-content-between align-items-center">
                                 <div class="col-auto">
                                 </div>

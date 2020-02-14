@@ -6,7 +6,7 @@ if (count($productSpecifications) > 0){ ?>
         <div class="tablewrap">
         <?php 
             $arr_flds = array(
-                'prodspec_name' => Labels::getLabel('LBL_Specification_Text', $siteLangId),
+                'prodspec_name' => Labels::getLabel('LBL_Specification_Name', $siteLangId),
                 'prodspec_value' => Labels::getLabel('LBL_Specification_Value', $siteLangId),
                 'action' => Labels::getLabel('LBL_Action', $siteLangId)
             );

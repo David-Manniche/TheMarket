@@ -19,7 +19,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                         <div class="cards-header">
                             <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Share_with_your_friends_and_you_both_earn_reward_points', $siteLangId)?></h5>
                         </div>
-                        <div class="cards-content p-4 pr-4 ">
+                        <div class="cards-content ">
                             <div class="stats">
                                 <a href="javascript:void(0)" class="btn btn-outline-primary btn--sm" title="<?php echo $referralTrackingUrl; ?>" onclick="copy($(this))"><?php echo Labels::getLabel('LBL_Click_to_copy', $siteLangId)?></a>
                             </div>
@@ -71,7 +71,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                         <div class="cards-header">
                             <h4><?php echo Labels::getLabel('L_Invite_friends_through_email', $siteLangId)?></h4>
                         </div>
-						<div class="cards-content p-4"> <?php echo $sharingFrm->getFormHtml(); ?> <span class="ajax_message" id="custom_ajax"></span></div>
+						<div class="cards-content"> <?php echo $sharingFrm->getFormHtml(); ?> <span class="ajax_message" id="custom_ajax"></span></div>
                     </div>
                 </div>
             </div>

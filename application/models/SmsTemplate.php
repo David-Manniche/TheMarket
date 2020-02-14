@@ -67,7 +67,6 @@ class SmsTemplate extends MyAppModel
         }
 
         $data = $db->fetch($rs);
-
         if (!empty($attr) && is_string($attr)) {
             return isset($data[$attr]) ? $data[$attr] : '';
         }

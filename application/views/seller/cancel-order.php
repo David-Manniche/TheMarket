@@ -13,7 +13,7 @@
                     <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Order_Details', $siteLangId);?></h5>
                     <div class="btn-group"><a href="<?php echo CommonHelper::generateUrl('Seller', 'sales');?>" class="btn btn--primary btn--sm"><?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId);?></a></div>
                 </div>
-                <div class="cards-content pl-4 pr-4 ">
+                <div class="cards-content ">
                     <div class="box__body">
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-6">
