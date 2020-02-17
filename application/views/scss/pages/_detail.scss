@@ -323,8 +323,6 @@ html.quick-view--open {
 .detail-page {
     position: relative;
 
-
-
     &:after {
         content: "";
         position: absolute;
@@ -339,7 +337,7 @@ html.quick-view--open {
 
 
 .detail-wrapper {
-    border-radius: 4px;
+    border-radius: 4px 4px 0 0;
     border: $border;
     background: #fff;
 
@@ -361,7 +359,7 @@ html.quick-view--open {
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
-    align-items: center;
+    /*align-items: center;*/
 
     @include media-breakpoint-down(lg) {
         & {
@@ -409,12 +407,12 @@ html.quick-view--open {
     }
 }
 
-
 .slider-nav {
     position: relative;
     padding: 0;
     /* margin-#{$end-direction}: 2rem;*/
     width: 90px;
+    overflow: hidden;
 
     @include media-breakpoint-down(lg) {
         & {
@@ -461,7 +459,7 @@ html.quick-view--open {
         padding: 0;
         border: none;
         transform: rotate(90deg);
-        background: $gray-light;
+        /*background: $gray-light;*/
         border-radius: 4px;
         -webkit-box-shadow: none;
         box-shadow: none;
@@ -479,14 +477,12 @@ html.quick-view--open {
     }
 
     .slick-prev {
-
-
         &:after {
-            border-#{$end-direction}: 2px solid #000;
+            border-right: 2px solid #000;
             border-bottom: 2px solid #000;
             width: 16px;
             height: 16px;
-            #{$start-direction}: calc(50% - 3px);
+            #{$start-direction}: calc(50% - 0px);
             top: calc(50% - 3px);
             /*-webkit-transform: rotate(-135deg);
             transform: rotate(-135deg);*/
@@ -495,10 +491,8 @@ html.quick-view--open {
 
 
     .slick-next {
-
-
         &:after {
-            border-#{$end-direction}: 2px solid #000;
+            border-right: 2px solid #000;
             border-bottom: 2px solid #000;
             width: 16px;
             height: 16px;
@@ -507,6 +501,7 @@ html.quick-view--open {
         }
     }
 }
+
 .favourite-wrapper-detail {
     position: static;
     #{$end-direction}: 0;
@@ -1259,73 +1254,103 @@ html.quick-view--open {
     font-size: 0.875rem;
 }
 
-.nav-detail ul {
-    display: -webkit-box;
-    display: -ms-flexbox;
+.nav-detail {
+    border: $border;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    background: #fff;
     display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
+    justify-content: center;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 156px;
+    z-index: 1;
 
+    @include media-breakpoint-down(lg) {
+        & {
+            top: 70px;
+        }
+    }
+
+
+    ul {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+
+        li {
+            padding: 0 20px;
+
+            a {
+                color: inherit;
+                display: block;
+                overflow: hidden;
+                padding: 1.5rem 0px;
+                position: relative;
+                text-align: center;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                line-height: 1;
+                font-weight: 400;
+
+                &:after,
+                &:before {
+                    content: "";
+                    background: transparent;
+                    height: 2px;
+                    width: 0;
+                    position: absolute;
+                    bottom: 0;
+                    -webkit-transition: 0.4s all ease;
+                    transition: 0.4s all ease;
+                }
+
+                &:before {
+                    #{$end-direction}: 50%;
+                }
+
+                &:after {
+                    #{$start-direction}: 50%;
+                }
+
+                &.is-active {
+                    color: $brand-color;
+
+                    &:after {
+                        #{$start-direction}: 0;
+                        width: 50%;
+                        background: $brand-color;
+                    }
+
+                    &:before {
+                        #{$end-direction}: 0;
+                        width: 50%;
+                        background: $brand-color;
+                    }
+                }
+
+                &:hover {
+
+                    &:after {
+                        #{$start-direction}: 0;
+                        width: 50%;
+                        background: $brand-color;
+                    }
+
+                    &:before {
+                        #{$end-direction}: 0;
+                        width: 50%;
+                        background: $brand-color;
+                    }
+                }
+
+            }
+        }
+    }
 }
 
-.nav-detail ul li {
-    padding: 0 20px;
-}
-
-.nav-detail ul li:first-child {
-    /*padding-#{$start-direction}: 0;*/
-}
-
-.nav-detail ul li a {
-    color: inherit;
-    display: block;
-    overflow: hidden;
-    padding: 1.5rem 0px;
-    position: relative;
-    text-align: center;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    line-height: 1;
-    font-weight: 400;
-}
-
-.nav-detail ul li a:after,
-.nav-detail ul li a:before {
-    content: "";
-    background: transparent;
-    height: 2px;
-    width: 0;
-    position: absolute;
-    bottom: 0;
-    -webkit-transition: 0.4s all ease;
-    transition: 0.4s all ease;
-}
-
-.nav-detail ul li a::before {
-    #{$end-direction}: 50%;
-}
-
-.nav-detail ul li a::after {
-    #{$start-direction}: 50%;
-}
-
-.nav-detail ul li > a.is-active {
-    color: $brand-color;
-}
-
-.nav-detail ul li a:hover::before,
-.nav-detail ul li > a.is-active:before {
-    #{$end-direction}: 0;
-    width: 50%;
-    background: $brand-color;
-}
-
-.nav-detail ul li a:hover::after,
-.nav-detail ul li > a.is-active:after {
-    #{$start-direction}: 0;
-    width: 50%;
-    background: $brand-color;
-}
 
 
 .product-detail-quickview .products__price {
@@ -1342,7 +1367,7 @@ html.quick-view--open {
 }
 
 
-.sold-by {   
+.sold-by {
     background: rgba(0, 0, 0, 0.05);
 }
 
