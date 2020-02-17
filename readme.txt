@@ -84,3 +84,4 @@ Bugs:
     => 034401 - Wrong count of listing on Buy Together and Related Products page in admin
     => 034350 - option name should get displayed on pop-up for which values are adding.
     => 034477 - Cropper JS white background issue
+    => 034555 - Undefined offset error on listing of withdrawal requests.

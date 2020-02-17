@@ -65,7 +65,8 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'withdrawal_payment_method':
                 $methodType = $paymentMethods + $payoutPlugins;
-                $td->appendElement('plaintext', array(), $methodType[$row[$key]]);
+                $methodName = (isset($row[$key]) && isset($methodType[$row[$key]]) ? $methodType[$row[$key]] : Labels::getLabel('LBL_N/A', $adminLangId));
+                $td->appendElement('plaintext', array(), $methodName);
                 if (!in_array($row[$key], array_keys($paymentMethods)) && in_array($row[$key], array_keys($payoutPlugins))) {
                     $pluginKeyName =  '"' . Plugin::getAttributesById($row[$key], 'plugin_code') . '",';
                 }
