@@ -3542,8 +3542,9 @@ class AccountController extends LoggedUserController
         $this->_template->render(false, false, 'json-success.php');
     }
     
-    public function resendOtp(int $userId)
+    public function resendOtp()
     {
+        $userId = UserAuthentication::getLoggedUserId();
         $phone = FatApp::getPostedData('user_phone', FatUtility::VAR_STRING, '');
         $phone = (!empty($phone) && '+' != $phone[0] ? '+' . $phone : $phone);
 
@@ -3557,6 +3558,9 @@ class AccountController extends LoggedUserController
         }
 
         $this->set('msg', Labels::getLabel('MSG_OTP_SENT!_PLEASE_CHECK_YOUR_PHONE.', $this->siteLangId));
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
         $this->_template->render(false, false, 'json-success.php');
     }
 }
