@@ -339,7 +339,8 @@ class GuestUserController extends MyAppController
         $post['user_verify'] = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
         
         $userObj = new User();
-        if (!$userObj->saveUserData($post)) {
+        $returnUserId = (true == MOBILE_APP_API_CALL && 0 < $signUpWithPhone ? true : false);
+        if (!$userId = $userObj->saveUserData($post, false, $returnUserId)) {
             $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
             if (0 < $signUpWithPhone) {
                 $row = $userObj->checkUserByPhoneOrUserName($post['user_username'], $post['user_phone']);
@@ -384,7 +385,12 @@ class GuestUserController extends MyAppController
         }
 
         if (true === MOBILE_APP_API_CALL) {
-            $this->set('msg', Labels::getLabel('LBL_Registeration_Successfull', $this->siteLangId));
+            if (0 < $signUpWithPhone) {
+                $this->set('data', ['userId' => $userId]);
+                $this->set('msg', Labels::getLabel('MSG_OTP_SENT!_PLEASE_CHECK_YOUR_PHONE.', $this->siteLangId));
+            } else {
+                $this->set('msg', Labels::getLabel('LBL_REGISTERATION_SUCCESSFULL', $this->siteLangId));
+            }
             $this->_template->render();
         }
 
@@ -411,15 +417,28 @@ class GuestUserController extends MyAppController
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
 
-        if (!is_array($post['upv_otp']) || User::OTP_LENGTH != count($post['upv_otp'])) {
-            LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_OTP', $this->siteLangId));
+        if (true === MOBILE_APP_API_CALL) {
+            if (User::OTP_LENGTH != strlen($post['upv_otp'])) {
+                LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_OTP', $this->siteLangId));
+            }
+            $otp = $post['upv_otp'];
+        } else {
+            if (!is_array($post['upv_otp']) || User::OTP_LENGTH != count($post['upv_otp'])) {
+                LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_OTP', $this->siteLangId));
+            }
+            $otp = implode("", $post['upv_otp']);
         }
-        $otp = implode("", $post['upv_otp']);
 
         $userId = FatApp::getPostedData('user_id', FatUtility::VAR_INT, 0);
         $obj = new User($userId);
         if (false == $obj->verifyUserPhoneOtp($otp, true)) {
             LibHelper::dieJsonError($obj->getError());
+        }
+
+        $this->set('msg', Labels::getLabel("MSG_OTP_MATCHED", $this->siteLangId));
+
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
         }
 
         if (0 < $recoverPwd) {
@@ -430,10 +449,8 @@ class GuestUserController extends MyAppController
         } else {
             $redirectUrl = isset($_SESSION['referer_page_url']) ? $_SESSION['referer_page_url'] : CommonHelper::generateUrl('Account');
         }
-
         unset($_SESSION[UserAuthentication::TEMP_SESSION_ELEMENT_NAME]);
         $this->set('redirectUrl', $redirectUrl);
-        $this->set('msg', Labels::getLabel("MSG_OTP_MATCHED", $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 

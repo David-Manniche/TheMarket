@@ -2262,7 +2262,7 @@ class User extends MyAppModel
         FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_img_updated_on' => date('Y-m-d  H:i:s')), $where);
     }
       
-    public function saveUserData($postedData, $socialUser = false)
+    public function saveUserData($postedData, $socialUser = false, $returnUserId = false)
     {
         $db = FatApp::getDb();
         $db->startTransaction();
@@ -2351,7 +2351,7 @@ class User extends MyAppModel
         }
         
         $this->setUpRewardEntry($this->getMainTableRecordId(), $this->commonLangId, $referrerCodeSignup, $affiliateReferrerCodeSignup);
-        return true;
+        return true === $returnUserId ? $this->getMainTableRecordId() : true;
     }
     
     
