@@ -927,8 +927,12 @@ class GuestUserController extends MyAppController
             FatUtility::dieJsonError($userObj->getError());
         }
 
+        $getOtpOnly = (true === MOBILE_APP_API_CALL) ? applicationConstants::YES : $getOtpOnly;
         if (0 < $getOtpOnly) {
             $this->set('msg', Labels::getLabel('MSG_OTP_SENT!_PLEASE_CHECK_YOUR_PHONE.', $this->siteLangId));
+            if (true === MOBILE_APP_API_CALL) {
+                $this->_template->render();
+            }
             $this->_template->render(false, false, 'json-success.php');
         }
         $this->otpForm($userId);
