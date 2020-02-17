@@ -2354,6 +2354,7 @@ class User extends MyAppModel
         return true;
     }
     
+    
     public function validateUserForRegistration($userName, $userEmail, $userPhone = '')
     {
         if (empty($userPhone)) {
@@ -2361,6 +2362,11 @@ class User extends MyAppModel
         } else {
             $row = $this->checkUserByPhoneOrUserName($userName, $userPhone);
         }
+
+        if (empty($row)) {
+            return true;
+        }
+
         if ($row['credential_username'] == $userName) {
             $this->error = Labels::getLabel('MSG_DUPLICATE_USERNAME', $this->commonLangId);
             return false;
@@ -2368,7 +2374,7 @@ class User extends MyAppModel
         if (empty($userPhone) && $row['credential_email'] == $userEmail) {
             $this->error = Labels::getLabel('MSG_DUPLICATE_EMAIL', $this->commonLangId);
             return false;
-        } elseif ($row['user_phone'] == $userPhone) {
+        } elseif (!empty($userPhone) && $row['user_phone'] == $userPhone) {
             $this->error = Labels::getLabel('MSG_DUPLICATE_PHONE.', $this->commonLangId);
             if ($row['credential_verified'] == applicationConstants::NO) {
                 $this->error .= ' ' . Labels::getLabel('MSG_THIS_PHONE_NUMBER_IS_NOT_VERIFIED_YET._DO_YOU_WANT_TO_CONTINUE?_{CONTINUE-BTN}', $this->commonLangId);
