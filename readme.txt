@@ -85,3 +85,4 @@ Bugs:
     => 034350 - option name should get displayed on pop-up for which values are adding.
     => 034477 - Cropper JS white background issue
     => 034555 - Undefined offset error on listing of withdrawal requests.
+    => 034505 - while creating collection> on entering data in basic tab and saving it's not moving to language tab
