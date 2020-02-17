@@ -87,3 +87,4 @@ Bugs:
     => 034555 - Undefined offset error on listing of withdrawal requests.
     => 034505 - while creating collection> on entering data in basic tab and saving it's not moving to language tab
     => 034475 - Pagination is not working  properly on Seller > Catalog list.
+    => 034608 - when user adds item to cart and turns back from payment gateway then quantity get doubles.
