@@ -112,7 +112,7 @@ class User extends MyAppModel
     public const DEVICE_OS_ANDROID = 1;
     public const DEVICE_OS_IOS = 2;
 
-    public const OTP_LENGTH = 6;
+    public const OTP_LENGTH = 4;
     public const OTP_AGE = 15; //IN MINUTES
 
     public function __construct($userId = 0)
@@ -1591,12 +1591,17 @@ class User extends MyAppModel
 
         $emvSrch = new SearchBase(static::DB_TBL_USER_PHONE_VER);
         $emvSrch->addCondition(static::DB_TBL_UPV_PREFIX . 'user_id', '=', $this->mainTableRecordId);
-        $emvSrch->addCondition(static::DB_TBL_UPV_PREFIX . 'otp', '=', $otp, 'AND');
+        $emvSrch->addCondition(static::DB_TBL_UPV_PREFIX . 'otp', '=', $otp);
 
-        $emvSrch->addMultipleFields(array(static::DB_TBL_UPV_PREFIX . 'user_id', static::DB_TBL_UPV_PREFIX . 'phone'));
+        $emvSrch->addMultipleFields(array(static::DB_TBL_UPV_PREFIX . 'user_id', static::DB_TBL_UPV_PREFIX . 'phone', static::DB_TBL_UPV_PREFIX . 'expired_on'));
 
         $rs = $emvSrch->getResultSet();
         if ($row = FatApp::getDb()->fetch($rs)) {
+            if (strtotime($row[static::DB_TBL_UPV_PREFIX . 'expired_on']) < time()) {
+                $this->error = Labels::getLabel('MSG_OTP_EXPIRED.', $this->commonLangId);
+                return false;
+            }
+
             $this->deletePhoneOtp($this->mainTableRecordId);
             $this->verifyAccount(applicationConstants::YES);
             if (true === $doLogin) {
