@@ -71,6 +71,11 @@
          color: #fff;
      }
 
+     &.btn--white {
+         background: #fff;
+         color: #000;
+     }
+
      &.btn-outline-primary {
          background: none;
          border-color: $brand-color;
@@ -81,6 +86,12 @@
          background: none;
          border-color: $secondary-color;
          color: $secondary-color;
+     }
+
+     &.btn-outline-white {
+         background: none;
+         border-color: #fff;
+         color: #fff;
      }
 
      &.btn--block {
@@ -115,7 +126,8 @@
      border-bottom-#{$start-direction}-radius: 0;
  }
 
- button:focus, .btn:focus {
+ button:focus,
+ .btn:focus {
      outline: none;
      box-shadow: none !important;
  }

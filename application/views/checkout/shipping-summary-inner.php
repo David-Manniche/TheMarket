@@ -128,9 +128,9 @@ $shippingapi_idFld->developerTags['col'] = 6;
                                     }
                                 }
                                 $courierProviders = CommonHelper::createDropDownFromArray('data[' . md5($product['key']) . ']['."shipping_carrier".']', $shipStationCarrierList, $carrierCode, 'class="custom-select custom-select-sm shipping-select  courier_carriers" onChange="loadShippingCarriers(this);"  data-product-key=\'' . md5($product['key']) . '\'', '');
-                                $serviceProviders = CommonHelper::createDropDownFromArray('data[' . md5($product['key']) . ']['."shipping_services".']', $servicesList, $selectedService, 'class="courier_services "  ', '');
+                                $serviceProviders = CommonHelper::createDropDownFromArray('data[' . md5($product['key']) . ']['."shipping_services".']', $servicesList, $selectedService, 'class="custom-select custom-select-sm courier_services "  ', '');
                             }
-                            $select_shipping_options = CommonHelper:: createDropDownFromArray('data[' . md5($product['key']) . ']['."shipping_locations".']', $shipping_options[$product['product_id']], isset($product["pship_id"])?$product["pship_id"]:'', '', ''); ?>
+                            $select_shipping_options = CommonHelper:: createDropDownFromArray('data[' . md5($product['key']) . ']['."shipping_locations".']', $shipping_options[$product['product_id']], isset($product["pship_id"])?$product["pship_id"]:'', 'class="custom-select custom-select-sm"', ''); ?>
                                 <?php Labels::getLabel('M_Select_Shipping', $siteLangId) ?>
                                 <ul class="shipping-selectors">
                                     <?php
@@ -165,7 +165,8 @@ $shippingapi_idFld->developerTags['col'] = 6;
                                         <div class="services_loader"></div>
                                         <div class="api_shipping_rates_not_found-html-div-js"></div>
                                         <div class="api_shipping_rates_found-js">
-                                            <?php echo Labels::getLabel('M_Select_Shipping_Carrier', $siteLangId) ?><?php echo $serviceProviders ?>
+                                            <p><?php echo Labels::getLabel('M_Select_Shipping_Carrier', $siteLangId) ?></p>
+											<?php echo $serviceProviders ?>
                                         </div>
                                     </li>
 
@@ -178,7 +179,7 @@ $shippingapi_idFld->developerTags['col'] = 6;
                             <td width="10%">
 							<span class="item__price"><?php echo CommonHelper::displayMoneyFormat($product['theprice']*$product['quantity']); ?> </span>
                                 <?php if ($product['special_price_found']) { ?>
-                            <span class="item__price text-nowrap"><?php echo CommonHelper::showProductDiscountedText($product, $siteLangId); ?></span>
+                            <span class="item__price_off text-nowrap"><?php echo CommonHelper::showProductDiscountedText($product, $siteLangId); ?></span>
                                 <?php } ?>
                             </td>
                             <td width="10%">

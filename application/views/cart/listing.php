@@ -141,7 +141,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                         </tr>
                         <?php }?>
                         <tr>
-                            <td class=" hightlighted"><?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?></td>
+                            <td class="hightlighted"><?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?></td>
                             <td class="hightlighted"><?php echo CommonHelper::displayMoneyFormat($netChargeAmt); ?></td>
                         </tr>
                         <tr>

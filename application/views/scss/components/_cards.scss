@@ -35,7 +35,13 @@
                 color: $body-color;
             }
         }
+
+        & ~ .cards-content {
+            padding-top: 0;
+        }
     }
 
-    .cards-content { padding:1.5rem;}
+    .cards-content {
+        padding: 1.5rem;
+    }
 }
