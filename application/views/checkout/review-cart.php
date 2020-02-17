@@ -58,7 +58,7 @@
                             <span class="text--normal text--normal-secondary"><?php echo CommonHelper::showProductDiscountedText($product, $siteLangId); ?></span>
                             <?php } ?>
                         </td>
-                        <td class="text-right">
+                        <td>
                             <a href="javascript:void(0)" onclick="cart.remove('<?php echo md5($product['key']); ?>','checkout')" class="icons-wrapper"><i class="icn"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#bin" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#bin"></use>
                                     </svg></i></a>
@@ -76,42 +76,42 @@
             </table>
         </div>
         <div class="cartdetail__footer">
-            <table>
+            <table  class="table--justify">
                 <tr>
-                    <td class="text-left"><?php echo Labels::getLabel('LBL_Sub_Total', $siteLangId); ?></td>
-                    <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTotal']); ?></td>
+                    <td><?php echo Labels::getLabel('LBL_Sub_Total', $siteLangId); ?></td>
+                    <td><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTotal']); ?></td>
                 </tr>
                 <?php if ($cartSummary['shippingTotal']) { ?>
                 <tr>
-                    <td class="text-left"><?php echo Labels::getLabel('LBL_Delivery_Charges', $siteLangId); ?></td>
-                    <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($cartSummary['shippingTotal']); ?></td>
+                    <td><?php echo Labels::getLabel('LBL_Delivery_Charges', $siteLangId); ?></td>
+                    <td><?php echo CommonHelper::displayMoneyFormat($cartSummary['shippingTotal']); ?></td>
                 </tr>
                 <?php } ?>
                 <tr>
-                    <td class="text-left"><?php echo Labels::getLabel('LBL_Tax', $siteLangId); ?></td>
-                    <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTaxTotal']); ?></td>
+                    <td><?php echo Labels::getLabel('LBL_Tax', $siteLangId); ?></td>
+                    <td><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTaxTotal']); ?></td>
                 </tr>
                 <?php if (!empty($cartSummary['cartRewardPoints'])) {
              $appliedRewardPointsDiscount = CommonHelper::convertRewardPointToCurrency($cartSummary['cartRewardPoints']); ?>
                 <tr>
-                    <td class="text-left"><?php echo Labels::getLabel('LBL_Reward_point_discount', $siteLangId); ?></td>
-                    <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($appliedRewardPointsDiscount); ?></td>
+                    <td><?php echo Labels::getLabel('LBL_Reward_point_discount', $siteLangId); ?></td>
+                    <td><?php echo CommonHelper::displayMoneyFormat($appliedRewardPointsDiscount); ?></td>
                 </tr>
                 <?php
          } ?>
                 <?php if (!empty($cartSummary['cartDiscounts'])) {?>
                 <tr>
-                    <td class="text-left"><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?></td>
-                    <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartDiscounts']['coupon_discount_total']); ?></td>
+                    <td><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?></td>
+                    <td><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartDiscounts']['coupon_discount_total']); ?></td>
                 </tr>
                 <?php } ?>
                 <tr>
-                    <td class="text-left hightlighted"><?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?></td>
-                    <td class="text-right hightlighted"><?php echo CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount']); ?></td>
+                    <td class="hightlighted"><?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?></td>
+                    <td class="hightlighted"><?php echo CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount']); ?></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td class="text-right"><a href="javascript:void(0)" onClick="loadPaymentSummary();" class="btn btn-outline-primary ripplelink block-on-mobile"><?php echo Labels::getLabel('LBL_Proceed_To_Pay', $siteLangId); ?> </a></td>
+                    <td><a href="javascript:void(0)" onClick="loadPaymentSummary();" class="btn btn-outline-primary ripplelink block-on-mobile"><?php echo Labels::getLabel('LBL_Proceed_To_Pay', $siteLangId); ?> </a></td>
                 </tr>
             </table>
         </div>

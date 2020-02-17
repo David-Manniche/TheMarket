@@ -1,16 +1,3 @@
-$(document).on('keyup', 'input.otpVal', function(e){
-    var element = '';
-   
-    /* 
-    # e.which = 8(Backspace)
-    */
-    if (8 != e.which && '' != $(this).val()) {
-        element = $(this).parent().nextAll();
-    } else {
-        element = $(this).parent().prevAll();
-    }
-    element.children("input.otpVal").eq(0).focus();
-});
 (function() {
 	signUpWithPhone = function() {
         fcom.ajax(fcom.makeUrl( 'GuestUser', 'signUpWithPhone'), '', function(t) {
@@ -50,20 +37,20 @@ $(document).on('keyup', 'input.otpVal', function(e){
     };
     
     resendOtp = function (userId, getOtpOnly = 0){
-        $.systemMessage(langLbl.processing,'alert--process', false);
+        $.mbsmessage(langLbl.processing, false, 'alert--process');
 		fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
             try{
 				t = $.parseJSON(t);
 				if(typeof t.status != 'undefined' &&  1 > t.status){
-                    $.systemMessage(t.msg,'alert--danger', false);
+                    $.mbsmessage(t.msg, false, 'alert--danger');
                 } else {
-                    $.systemMessage(t.msg,'alert--success', false);
+                    $.mbsmessage(t.msg, true, 'alert--success');
                 }
                 return false;
 			}
 			catch(exc){
-                $.systemMessage.close();
                 $('#sign-up').html(t);
+                $.mbsmessage.close();
 			}
         });
         return false;

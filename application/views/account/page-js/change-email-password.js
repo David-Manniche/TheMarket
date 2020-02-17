@@ -4,20 +4,6 @@ $(document).ready(function(){
     changePhoneNumberForm();
 });
 
-$(document).on('keyup', 'input.otpVal', function(e){
-    var element = '';
-   
-    /* 
-    # e.which = 8(Backspace)
-    */
-    if (8 != e.which && '' != $(this).val()) {
-        element = $(this).parent().nextAll();
-    } else {
-        element = $(this).parent().prevAll();
-    }
-    element.children("input.otpVal").eq(0).focus();
-});
-
 (function() {
 	var runningAjaxReq = false;
 	var passdv = '#changePassFrmBlock';
@@ -90,6 +76,7 @@ $(document).on('keyup', 'input.otpVal', function(e){
                 var phoneNumber = $(lastFormElement + " input[name='user_phone']").val();
 
                 $(lastFormElement).after(t);
+                $(".otpForm-js .form-side").removeClass('form-side');
                 $('.formTitle').remove();
 
                 var userId = $(lastFormElement + " input[name='user_id']").val();

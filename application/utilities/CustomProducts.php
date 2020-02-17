@@ -315,6 +315,7 @@ trait CustomProducts
         $optionSrch->addCondition('selprod_product_id', '=', $productId);
         $optionSrch->addCondition('prodoption_option_id', '=', $optionId);
         $optionSrch->addCondition('selprodoption_option_id', '=', $optionId);
+        $optionSrch->addCondition('selprod_deleted', '=', applicationConstants::NO);
 
         $rs = $optionSrch->getResultSet();
         $db = FatApp::getDb();
@@ -1853,6 +1854,16 @@ trait CustomProducts
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
+        
+        if($post['product_brand_id'] < 1){
+            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Brand_From_List', $this->siteLangId)); 
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        if($post['ptc_prodcat_id'] < 1){
+            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Category_From_List', $this->siteLangId)); 
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        
         if ($productId > 0) {
             $prodSellerId = Product::getAttributesById($productId, 'product_seller_id');
             if ($prodSellerId != UserAuthentication::getLoggedUserId()) {

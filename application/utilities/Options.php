@@ -314,7 +314,7 @@ trait Options
 
     public function autoCompleteOptions()
     {
-        $pagesize = 10;
+        //$pagesize = 10;
         $post = FatApp::getPostedData();
         $userId = UserAuthentication::getLoggedUserId();
         $srch = Option::getSearchObject($this->siteLangId);
@@ -333,7 +333,7 @@ trait Options
             $cnd->attachCondition('option_identifier', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
         }
 
-        $srch->setPageSize($pagesize);
+        //$srch->setPageSize($pagesize);
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $options = $db->fetchAll($rs, 'option_id');

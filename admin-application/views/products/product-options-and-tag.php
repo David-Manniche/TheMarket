@@ -68,9 +68,9 @@
                  <div class="field-set">
                      <div class="caption-wraper"><label class="field_label"></label></div>
                      <div class="field-wraper">
-                         <div class="field_cover">
+                         <div class="field_cover web_form">
                             <input type="hidden" name="product_id" value="<?php echo $productId; ?>">
-                            <input type="button" class="btn btn-primary" onClick= <?php if($productType == Product::PRODUCT_TYPE_DIGITAL) { ?> "productMedia(<?php echo $productId; ?>)" <?php }else{ ?> "productShipping(<?php echo $productId; ?>)" <?php  } ?> value="<?php echo Labels::getLabel('LBL_Save_And_Next', $adminLangId); ?>">
+                            <input type="submit" class="btn btn-primary" onClick= <?php if($productType == Product::PRODUCT_TYPE_DIGITAL) { ?> "productMedia(<?php echo $productId; ?>)" <?php }else{ ?> "productShipping(<?php echo $productId; ?>)" <?php  } ?> value="<?php echo Labels::getLabel('LBL_Save_And_Next', $adminLangId); ?>">
                          </div>
                      </div>
                  </div>

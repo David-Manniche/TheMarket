@@ -359,8 +359,7 @@
 				$('input[name="product_shipping[' + shipping_row + '][country_id]"]').val(ui.item.id);
             }
 		});
-
-
+        
 		$('input[name="product_shipping[' + shipping_row + '][company_name]"]').autocomplete({
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
@@ -383,7 +382,7 @@
                 $('input[name="product_shipping[' + shipping_row + '][company_id]"]').val(ui.item.id);
             }
 		});
-
+        
 		$('input[name="product_shipping[' + shipping_row + '][processing_time]"]').autocomplete({
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"

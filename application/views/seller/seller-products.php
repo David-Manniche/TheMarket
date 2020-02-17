@@ -59,7 +59,7 @@ foreach ($arrListing as $sn => $row) {
             case 'selprod_stock':
                 $td->appendElement('plaintext', array(), $row[$key], true);
                 if ($row['selprod_track_inventory'] && ($row['selprod_stock']  <= $row['selprod_threshold_stock_level'])) {
-                    $td->appendElement('plaintext', array(), " <i class='fa fa-question-circle-o tooltip tooltip--right spn_must_field'><span class='hovertxt'>". Labels::getLabel('MSG_Product_stock_qty_below_or_equal_to_threshold_level', $siteLangId)."</span></i>", true);
+                    $td->appendElement('plaintext', array(), " <i  class='fa fa-info-circle spn_must_field' data-toggle='tooltip' data-placement='top' title='Labels::getLabel('MSG_Product_stock_qty_below_or_equal_to_threshold_level', $siteLangId).'></i>", true);
                 }
                 break;
             case 'selprod_available_from':

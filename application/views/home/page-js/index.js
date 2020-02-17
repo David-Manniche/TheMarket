@@ -171,3 +171,32 @@ $(".tabs--flat-js li").click(function () {
 });
 
 });
+resendOtp = function (userId, getOtpOnly = 0){
+    $.mbsmessage(langLbl.processing, false, 'alert--process');
+    fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
+        try{
+            t = $.parseJSON(t);
+            if(typeof t.status != 'undefined' &&  1 > t.status){
+                $.mbsmessage(t.msg, false, 'alert--danger');
+            } else {
+                $.mbsmessage(t.msg, true, 'alert--success');
+            }
+            return false;
+        }
+        catch(exc){
+            $.mbsmessage.close();
+        }
+    });
+    return false;
+};
+
+validateOtp = function (frm){
+    if (!$(frm).validate()) return;	
+    var data = fcom.frmData(frm);
+    fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'validateOtp'), data, function(t) {						
+        if (1 == t.status) {
+            window.location.href = t.redirectUrl;
+        }
+    });	
+    return false;
+};
