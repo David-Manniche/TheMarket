@@ -2,9 +2,12 @@
 
 class ProductSearchController extends MyAppController
 {
+	private $fullTextSearch;
+	
 	public function __construct($action)
     {
         parent::__construct($action);
+		
     }
 
 	public function search()
@@ -14,43 +17,43 @@ class ProductSearchController extends MyAppController
 
 	public function filters()
     {
+		$categoriesArr = array();
 		$db = FatApp::getDb();
         $headerFormParamsAssocArr = FilterHelper::getParamsAssocArr();
+		
 		$categoryId = 0;
-        if (array_key_exists('category', $headerFormParamsAssocArr)) {
+		if (array_key_exists('category', $headerFormParamsAssocArr)) {
             $categoryId = FatUtility::int($headerFormParamsAssocArr['category']);
         }
+		
 		$keyword = '';
         $langIdForKeywordSeach = 0;
         if (array_key_exists('keyword', $headerFormParamsAssocArr) && !empty($headerFormParamsAssocArr['keyword'])) {
             $keyword = $headerFormParamsAssocArr['keyword'];
             $langIdForKeywordSeach = $this->siteLangId;
+			//$this->fullTextSearch->addKeywordCondition($keyword);
         }
-
-		/* Brand Filters Data[ */
-			$brandsCheckedArr = FilterHelper::selectedBrands($headerFormParamsAssocArr);
-			$brandWithAggregations = FullTextSearch::getSearchBrands($headerFormParamsAssocArr,$this->siteLangId);
-			$brandsArr = $this->removeElasticSourceIndex($brandWithAggregations['hits'],'brand');
-        /* ] */
 		
-		/* Categories Data[ */
-        $categoriesArr = array();
-        if (empty($keyword)) {            
-            //$categoriesArr =  FilterHelper::getCategories($this->siteLangId, $categoryId, $prodSrchObj, $cacheKey);
-			
-        }
-        /* ] */
+		$fullTextSearch = $this->getFilterSearchObj($headerFormParamsAssocArr);
+		
+		/* Brand Filters Data[ */
+		$brandsCheckedArr = FilterHelper::selectedBrands($headerFormParamsAssocArr);
+		$brandsArr = $this->getBrands($fullTextSearch);
+		/* ] */
+		
+		/* Category Filters Data[ */
+			$categoriesArr = $this->getCategories($fullTextSearch);
+		/* ] */
 		
 		/* Price Filters [ */
 		
 			unset($headerFormParamsAssocArr['doNotJoinSpecialPrice']);
 			$priceArr = array();
+			$priceArr = $this->getPrice($fullTextSearch);
 			$priceInFilter = false;
-			$priceArr['minPrice'] = $brandWithAggregations['aggregations']['min_price']['value'];
-			$priceArr['maxPrice'] = $brandWithAggregations['aggregations']['max_price']['value'];
 			
-			$filterDefaultMinValue = $brandWithAggregations['aggregations']['min_price']['value'];
-			$filterDefaultMaxValue = $brandWithAggregations['aggregations']['max_price']['value'];
+			$filterDefaultMinValue = $priceArr['minPrice'];
+			$filterDefaultMaxValue = $priceArr['maxPrice'];
 			
 			if ($this->siteCurrencyId != FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1) || (array_key_exists('currency_id', $headerFormParamsAssocArr) && $headerFormParamsAssocArr['currency_id'] != $this->siteCurrencyId)) {
 				$filterDefaultMinValue = CommonHelper::displayMoneyFormat($brandWithAggregations['aggregations']['min_price']['value'], false, false, false);
@@ -70,7 +73,6 @@ class ProductSearchController extends MyAppController
 			}
 			
 		/* Price Filters ] */
-		
 		
 
 		$productFiltersArr = array();
@@ -111,11 +113,72 @@ class ProductSearchController extends MyAppController
         echo $this->_template->render(false, false, 'productSearch/filters.php', true);
         exit;
 	}
+	
+	private function getCategories($fullTextSearchObj)
+	{
+		$fullTextSearchObj->setPageNumber(0);
+		$fullTextSearchObj->setPageSize(1000);
+		$fullTextSearchObj->setFields(array('categories.prodcat_id','categories.prodcat_code','categories.prodcat_name','categories.prodcat_ordercode'));
+		$categories = $fullTextSearchObj->fetch();
+		$categories = $this->removeElasticSourceIndex($categories,'categories');
+		
+		$filterCategory = array();
+		if(isset($categories) && !empty($categories))
+		{
+			foreach($categories as $key =>$category)
+			{
+				foreach($category as $catCode)
+				{
+					$filterCategory[ $catCode['prodcat_code'] ] = $catCode['prodcat_name'];
+					/*explode('-',$catCode['prodcat_code']);
+					$filterCategory[ $catCode['prodcat_id'] ][$key]['prodcat_code'] = $catCode['prodcat_code'];
+					$filterCategory[ $catCode['prodcat_id'] ][$key]['prodcat_name'] = $catCode['prodcat_name'];
+					$filterCategory[ $catCode['prodcat_id'] ][$key]['prodcat_ordercode'] = $catCode['prodcat_ordercode'];*/
+					
+				}
+			}
+		}
+		//asort($filterCategory);
+		
+		return $categories;
+	}
+	
+	private function getBrands($fullTextSearchObj)
+	{
+		$brandSorting = array('brand.brand_name.keyword' => array('order'=>'asc'));
+		
+		$fullTextSearchObj->setFields(array('brand.brand_id','brand.brand_name'));
+		$fullTextSearchObj->setSortFields( $brandSorting );
+		$fullTextSearchObj->setGroupByField('brand.brand_name');
+		$fullTextSearchObj->setPageNumber(0);
+		$fullTextSearchObj->setPageSize(1000);
+		$brands = $fullTextSearchObj->fetch();
+		$brands = $this->removeElasticSourceIndex($brands,'brand');
+		return $brands;
+	}
+	
+	private function getPrice($fullTextSearch)
+	{
+		$priceArr = array();
+		$fullTextSearch->setFields(array('general.product_id'));
+		$fullTextSearch->setPageNumber(0);
+		$fullTextSearch->setPageSize(1000);
+		$price = $this->fullTextSearch->fetch(true);
+		
+		if(array_key_exists('aggregations',$price))
+		{
+			$priceArr['minPrice'] = $price['aggregations']['min_price']['value'];
+			$priceArr['maxPrice'] = $price['aggregations']['max_price']['value'];
+		}
+		
+		return $priceArr;
+	}
 
 	private function productsData($method)
     {
         $db = FatApp::getDb();
         $get = Product::convertArrToSrchFiltersAssocArr(FatApp::getParameters());
+		
         $includeKeywordRelevancy = false;
         $keyword = '';
         if (array_key_exists('keyword', $get)) {
@@ -186,7 +249,90 @@ class ProductSearchController extends MyAppController
         $this->_template->render(true, true, 'productSearch/index.php');
     }
 
-	private function removeElasticSourceIndex($dataValues,$filterKey=null)
+	
+
+	private function getListingData($get)
+    {
+		$categoryId = null;
+		$category = array();
+		$this->fullTextSearch = new FullTextSearch($this->siteLangId);
+		
+		if (array_key_exists('keyword', $get)) {
+			$this->fullTextSearch->addKeywordCondition($get['keyword']);
+        }
+		
+		if (array_key_exists('brand', $get)) {
+			$this->fullTextSearch->addBrandConditions($get['brand']);
+		}
+		
+		if( array_key_exists('price-min-range',$get) && array_key_exists('price-max-range',$get) )
+		{
+			$this->fullTextSearch->addPriceFilters($get['price-min-range'], $get['price-max-range']);
+		}
+		
+		if( array_key_exists('category',$get) )
+		{
+			$this->fullTextSearch->addCategoryFilter($get['category']);
+		}
+		
+		$pageSize = FatApp::getConfig('CONF_ITEMS_PER_PAGE_CATALOG', FatUtility::VAR_INT, 10);
+		if (array_key_exists('pageSize', $get))
+		{
+			$pageSize = FatUtility::int($get['pageSize']);
+        }
+		
+		$page = 1;
+        if (array_key_exists('page', $get)) {
+            $page = FatUtility::int($get['page']);
+			/*if ($page < 2) {
+                $page = 1;
+            }*/
+        }
+		$from =  ($page - 1) * $pageSize;
+		$this->fullTextSearch->setPageNumber($from);
+		$this->fullTextSearch->setPageSize($pageSize);
+		$this->fullTextSearch->setSortFields(array('general.product_id'=>array('order' => 'desc')));
+		$response = $this->fullTextSearch->fetch();
+		$products = $response['hits'];
+		$total = FatUtility::int($response['total']['value']);
+		$pageCount = $this->totalPageCount($total, $pageSize);
+		
+		$data = array(
+            'products' => $products,
+            'category' => $category,
+            'categoryId' => $categoryId,
+            'postedData' => $get,
+            'page' => $page,
+            'pageCount' => $pageCount,
+            'pageSize' =>  $pageSize,
+            'recordCount'=> $total,
+            'siteLangId'=> $this->siteLangId
+        );
+		return $data;
+	}
+	
+	
+	public function getFilterSearchObj($criteria)
+	{
+		$this->fullTextSearch = new FullTextSearch($this->siteLangId);
+		
+		if (array_key_exists('keyword', $criteria)) {
+			$this->fullTextSearch->addKeywordCondition($criteria['keyword']);
+        }
+		
+		if (array_key_exists('brand', $criteria)) {
+			$this->fullTextSearch->addBrandConditions($criteria['brand']);
+		}
+		return $this->fullTextSearch;
+	}
+	
+
+	private function totalPageCount($total, $pageSize)
+	{
+		return ceil($total/$pageSize);
+	}
+	
+	private function removeElasticSourceIndex($dataValues, $filterKey = null)
 	{
 		$returnData = array();
 		foreach($dataValues['hits'] as $key => $value)
@@ -203,57 +349,5 @@ class ProductSearchController extends MyAppController
 		}
 		return $returnData;
 	}
-
-	private function getListingData($get)
-    {
-		$categoryId = null;
-		$category = array();
-		$page = 1;
-		if (array_key_exists('page', $get)) {
-            $page = FatUtility::int($get['page']);
-            if ($page < 2) {
-                $page = 1;
-            }
-        }
-
-		$response = FullTextSearch::search($get,1,$page);
-
-		$total = FatUtility::int($response['total']['value']);
-
-		$products = $this->removeElasticSourceIndex($response);
-
-		$pageSize = FatApp::getConfig('CONF_ITEMS_PER_PAGE_CATALOG', FatUtility::VAR_INT, 10);
-
-		if (array_key_exists('pageSize', $get))
-		{
-            $pageSize = FatUtility::int($get['pageSize']);
-            if (0 >= $pageSize) {
-                $pageSize = FatApp::getConfig('CONF_ITEMS_PER_PAGE_CATALOG', FatUtility::VAR_INT, 10);
-            }
-        }
-
-
-
-		$pageCount = $this->totalPagesCount($total,$pageSize);
-
-		$data = array(
-            'products' => $products,
-            'category' => $category,
-            'categoryId' => $categoryId,
-            'postedData' => $get,
-            'page' => $page,
-            'pageCount' => $pageCount,
-            'pageSize' =>  $pageSize,
-            'recordCount'=> $total,
-            'siteLangId'=> $this->siteLangId
-        );
-		return $data;
-	}
-
-	private function totalPagesCount($total,$pageSize)
-	{
-		return ceil($total/$pageSize);
-	}
-
 
 }

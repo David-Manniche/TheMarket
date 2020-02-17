@@ -4919,6 +4919,7 @@ class Importexport extends ImportexportCommon
                     }
 
                     if (true === $invalid) {
+                        $errorInRow = true;
                         $errMsg = str_replace('{column-name}', $columnTitle, Labels::getLabel("MSG_Invalid_{column-name}.", $langId));
                         CommonHelper::writeToCSVFile($this->CSVfileObj, array( $rowIndex, ($colIndex + 1), $errMsg ));
                     } else {

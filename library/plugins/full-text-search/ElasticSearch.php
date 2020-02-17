@@ -47,7 +47,7 @@ class ElasticSearch extends FullTextSearchBase
     *	@size => same as limit field in mysql
     */
 
-    public function search($queryData, $from = 0, $size = 12, $aggregation = false, $source = array(), $groupByField = null, $sort = array())
+    public function search($queryData, $from, $size, $aggregation = false, $source = array(), $groupByField = null, $sort = array())
     {
         $result = array();
         $params = [
@@ -72,21 +72,17 @@ class ElasticSearch extends FullTextSearchBase
                 'max_price' => [ 'max' => ['field' => 'general.theprice' ] ]
             ];
         }
-
         try {
             $results = $this->client->search($params);
-			
         } catch (exception $e) {
-			
             $this->setErrorMessage($e);
             return false;
         }
-		
-		if($aggregation)
-		{
-			return $results;
-		}
-		return array_key_exists('hits',$results) ? $results['hits'] : $results;
+        
+        if ($aggregation) {
+            return $results;
+        }
+        return array_key_exists('hits', $results) ? $results['hits'] : $results;
     }
     
 
@@ -244,6 +240,7 @@ class ElasticSearch extends FullTextSearchBase
         try {
             $response = $this->client->get($params);
         } catch (exception $e) {
+            $this->setErrorMessage($e);
             return false;
         }
         return true;
@@ -342,6 +339,6 @@ class ElasticSearch extends FullTextSearchBase
     private function setErrorMessage($e)
     {
         $error = json_decode($e->getMessage(), true);
-        $this->error = array_key_exists('reason', $error['error']) ? $error['error']['reason'] : "error";
+        $this->error = isset($error['error']['reason']) ? $error['error']['reason'] : "error";
     }
 }

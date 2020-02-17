@@ -99,60 +99,7 @@ class ProductsController extends MyAppController
 
     private function getFilterSearchObj($langId, $headerFormParamsAssocArr)
     {
-        $langId = FatUtility::int($langId);
-        $post = FatApp::getPostedData();
-
-        $prodSrchObj = new ProductSearch($langId);
-        /*
-        $prodSrchObj->setDefinedCriteria(0, 0, $headerFormParamsAssocArr, true);
-        $prodSrchObj->joinProductToCategory();
-        $prodSrchObj->joinSellerSubscription(0, false, true);
-        $prodSrchObj->addSubscriptionValidCondition();*/
-        $prodSrchObj->joinSellerProducts(0, '', $headerFormParamsAssocArr, true);
-        $prodSrchObj->unsetDefaultLangForJoins();
-        $prodSrchObj->joinSellers();
-        $prodSrchObj->joinShops($langId);
-        $prodSrchObj->joinShopCountry();
-        $prodSrchObj->joinShopState();
-        $prodSrchObj->joinBrands($langId);
-        $prodSrchObj->joinProductToCategory($langId);
-        $prodSrchObj->joinSellerSubscription(0, false, true);
-        $prodSrchObj->addSubscriptionValidCondition();
-
-        $categoryId = 0;
-        $categoriesArr = array();
-        if (array_key_exists('category', $post)) {
-            $prodSrchObj->addCategoryCondition($post['category']);
-            $categoryId = FatUtility::int($post['category']);
-        }
-
-        $shopId = FatApp::getPostedData('shop_id', FatUtility::VAR_INT, 0);
-        if (0 < $shopId) {
-            $prodSrchObj->addShopIdCondition($shopId);
-        }
-
-        $topProducts = FatApp::getPostedData('top_products', FatUtility::VAR_INT, 0);
-        if (0 < $topProducts) {
-            $prodSrchObj->joinProductRating();
-            $prodSrchObj->addCondition('prod_rating', '>=', 3);
-        }
-
-        $brandId = FatApp::getPostedData('brand_id', FatUtility::VAR_INT, 0);
-        if (0 < $brandId) {
-            $prodSrchObj->addBrandCondition($brandId);
-        }
-
-        $featured = FatApp::getPostedData('featured', FatUtility::VAR_INT, 0);
-        if (0 < $featured) {
-            $prodSrchObj->addCondition('product_featured', '=', applicationConstants::YES);
-        }
-
-        $keyword = '';
-        if (array_key_exists('keyword', $headerFormParamsAssocArr) && !empty($headerFormParamsAssocArr['keyword'])) {
-            $keyword = $headerFormParamsAssocArr['keyword'];
-            $prodSrchObj->addKeywordSearch($keyword, false, false);
-        }
-        return $prodSrchObj;
+        return FilterHelper::getSearchObj($langId, $headerFormParamsAssocArr);
     }
 
     public function brandFilters()
@@ -199,6 +146,7 @@ class ProductsController extends MyAppController
     {
         $db = FatApp::getDb();
         $headerFormParamsAssocArr = FilterHelper::getParamsAssocArr();
+        
         $categoryId = 0;
         if (array_key_exists('category', $headerFormParamsAssocArr)) {
             $categoryId = FatUtility::int($headerFormParamsAssocArr['category']);
@@ -210,7 +158,7 @@ class ProductsController extends MyAppController
             $keyword = $headerFormParamsAssocArr['keyword'];
             $langIdForKeywordSeach = $this->siteLangId;
         }
-
+        
         $cacheKey = FilterHelper::getCacheKey($this->siteLangId, $headerFormParamsAssocArr);
 
         $headerFormParamsAssocArr['doNotJoinSpecialPrice'] = true;
@@ -226,8 +174,7 @@ class ProductsController extends MyAppController
 
         /* Brand Filters Data[ */
         $brandsCheckedArr = FilterHelper::selectedBrands($headerFormParamsAssocArr);
-        $brandsArr = FilterHelper::brands($prodSrchObj, $langIdForKeywordSeach, $headerFormParamsAssocArr, false, true);
-        
+        $brandsArr = FilterHelper::brands($prodSrchObj, $this->siteLangId, $headerFormParamsAssocArr, false, true);
         /* ] */
 
         /* {Can modify the logic fetch data directly from query . will implement later}
@@ -262,17 +209,7 @@ class ProductsController extends MyAppController
         /* ] */
 
         /* Price Filters[ */
-        unset($headerFormParamsAssocArr['doNotJoinSpecialPrice']);
-        $priceSrch = $this->getFilterSearchObj($langIdForKeywordSeach, $headerFormParamsAssocArr);
-        $priceSrch->doNotLimitRecords();
-        $priceSrch->doNotCalculateRecords();
-        $priceSrch->addMultipleFields(array('MIN(theprice) as minPrice', 'MAX(theprice) as maxPrice'));
-        $qry = $priceSrch->getQuery();
-        $qry .= ' having minPrice IS NOT NULL AND maxPrice IS NOT NULL';
-        //echo $priceSrch->getQuery();
-        //$priceRs = $priceSrch->getResultSet();
-        $priceRs = $db->query($qry);
-        $priceArr = $db->fetch($priceRs);
+        $priceArr = FilterHelper::getPrice($headerFormParamsAssocArr, $this->siteLangId);
 
         $priceInFilter = false;
         $filterDefaultMinValue = $priceArr['minPrice'];
@@ -1633,10 +1570,30 @@ class ProductsController extends MyAppController
             }
         }
 
-        /* if (FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_FULL_TEXT_SEARCH, FatUtility::VAR_INT, 0)) {
+        if (FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_FULL_TEXT_SEARCH, FatUtility::VAR_INT, 0)) {
             $srch = FullTextSearch::getListingObj($get, $this->siteLangId, $userId);
-            $srch->setPageNumber($page);            
-        } */
+            $page = ($page - 1) * $pageSize;
+            $srch->setPageNumber($page);
+            $srch->setPageSize($pageSize);
+            $srch->setSortFields(array('general.product_id'=>array('order' => 'desc')));
+            $records = $srch->fetch();
+            $products = [];
+            foreach ($records['hits'] as $record) {
+                //CommonHelper::printArray($record['_source']);exit;
+                $tempArr = array('in_stock' => 1, 'selprod_title' => $record['_source']['general']['product_name'], 'special_price_found' => 0);
+                $products[] = array_merge($record['_source']['general'], $record['_source']['brand'], $tempArr, current($record['_source']['categories']));
+            }
+        } else {
+            $srch = Product::getListingObj($get, $this->siteLangId, $userId);
+            $srch->setPageNumber($page);
+            if ($pageSize) {
+                $srch->setPageSize($pageSize);
+            }
+            // echo $srch->getQuery();exit;
+            $rs = $srch->getResultSet();
+            $db = FatApp::getDb();
+            $products = $db->fetchAll($rs);
+        }
 
         /* to show searched category data[ */
         $categoryId = null;
@@ -1654,23 +1611,13 @@ class ProductsController extends MyAppController
         }
         /* ] */
 
-        $srch = Product::getListingObj($get, $this->siteLangId, $userId);
-        $srch->setPageNumber($page);
-        if ($pageSize) {
-            $srch->setPageSize($pageSize);
-        }
-        // echo $srch->getQuery();exit;
-        $rs = $srch->getResultSet();
-        $db = FatApp::getDb();
-        $products = $db->fetchAll($rs);
-
         $data = array(
             'products'=>$products,
             'category'=>$category,
             'categoryId'=>$categoryId,
             'postedData'=>$get,
             'page'=>$page,
-            'pageCount'=>$srch->pages(),
+            'pageCount' => $srch->pages(),
             'pageSize'=>$pageSize,
             'recordCount'=>$srch->recordCount(),
             'siteLangId'=>$this->siteLangId
