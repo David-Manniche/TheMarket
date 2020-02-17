@@ -572,3 +572,5 @@ INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`,
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'Lbl_Change_Email_/_password';
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'MSG_Your_email_not_change_untill_you_confirm';
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'Lbl_Change_Email';
+
+-----------------TV-9.1.3.20200217--------

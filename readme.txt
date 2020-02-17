@@ -73,7 +73,7 @@ Bugs:
     => 70149 - Blog Collection.
     => 034467 - SEO and Url rewriting fatal error while accessing
 
------------------------------------------------------------
+-----------------------------TV-9.1.3.20200217------------------------------
 
 Bugs:
     => 034376 - While entering data in RTL supported languages it is not getting entered in RTL mode.
