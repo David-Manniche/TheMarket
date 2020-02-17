@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-    'listserial'=>'Sr.',
+    'listserial' => 'Sr.',
     'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
     //'attrgrp_name' => Labels::getLabel('LBL_Attribute_Group', $siteLangId),
     'product_model' => Labels::getLabel('LBL_Model', $siteLangId),
@@ -9,13 +9,13 @@ $arr_flds = array(
     'product_shipped_by' => Labels::getLabel('LBL_Shipped_by_me', $siteLangId),
     'action' => Labels::getLabel('LBL_Action', $siteLangId)
 );
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--orders'));
+$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--orders'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);
 }
 
-$sr_no = ($page == 1) ? 0 : ($pageSize*($page-1));
+$sr_no = ($page == 1) ? 0 : ($pageSize * ($page - 1));
 foreach ($arr_listing as $sn => $row) {
     $sr_no++;
     $tr = $tbl->appendElement('tr', array('class' => ''));
@@ -28,7 +28,7 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'product_identifier':
                 $td->appendElement('plaintext', array(), $row['product_name'] . '<br>', true);
-                $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
+                $td->appendElement('plaintext', array(), '(' . $row[$key] . ')', true);
                 break;
             case 'attrgrp_name':
                 $td->appendElement('plaintext', array(), CommonHelper::displayNotApplicable($siteLangId, $row[$key]), true);
@@ -127,6 +127,9 @@ if (count($arr_listing) == 0) {
     $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'linkArr'=>$linkArr,'message'=>$message));
 }
 
+if (!isset($postedData['type']) || '' == $postedData['type']) {
+    $postedData['type'] = -1;
+}
 
 $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmCatalogProductSearchPaging'));
