@@ -4351,6 +4351,7 @@ fieldset[disabled] .field_control.disabled {
 	position: relative;
 	border: 1px solid rgba(0, 0, 0, 0.06);
 	border-bottom: none;
+    text-decoration: none;
 }
 
 .tabs_nav > li > a:after {
