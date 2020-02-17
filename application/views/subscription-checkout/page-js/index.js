@@ -64,6 +64,7 @@ $("document").ready(function(){
 		// getReviewSCart();
 		$(sCartReviewDiv).removeClass("is-current");
 		loadPaymentSummary();
+		loadFinancialSummary();
 	});
 	$(document).on('click',".reviewOrder",function(){
 		loadSubscriptionCartReviewDiv();

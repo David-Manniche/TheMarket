@@ -16,7 +16,7 @@ if (0 < $withPhone) {
                     </div>
                 </div>
                 <div class="col-md-auto col-sm-auto">
-                    <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="btn btn--primary d-block">
+                    <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="btn btn-outline-white btn-sm d-block">
                         <?php echo Labels::getLabel('LBL_Back_to_Login', $siteLangId);?>
                     </a>
                 </div>
@@ -27,7 +27,7 @@ if (0 < $withPhone) {
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-6 <?php echo (empty($pageData)) ? '' : '';?>">
-                    <div class="bg-gray rounded p-4">
+                    <div class="bg-gray rounded p-4 text-center">
                         <div id="otpFom">
                             <div class="section-head">
                                 <div class="section__heading">
@@ -76,17 +76,19 @@ if (0 < $withPhone) {
                             $frmFld->developerTags['noCaptionTag'] = true;
                             echo $frm->getFormHtml(); ?>
                         </div>
-                        <p class="text--dark"><?php echo Labels::getLabel('LBL_Back_to_login', $siteLangId);?>
+                        
+                    </div><p class="text--dark"><?php echo Labels::getLabel('LBL_Back_to_login', $siteLangId);?>
                             <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="link">
                                 <?php echo Labels::getLabel('LBL_Click_Here', $siteLangId);?>
                             </a>
                         </p>
-                    </div>
                    
-                </div>
-				
+                </div>				
+            </div>			
+        </div>
+        
             </div>
-			 <?php if (!empty($pageData)) {
+             <?php if (!empty($pageData)) {
                         $this->includeTemplate('_partial/GuestUserRightPanel.php', $pageData, false);
                     } ?>
         </div>

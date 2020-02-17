@@ -600,10 +600,29 @@ AND couponlang_lang_id = ' . $langId,
 
         $status = true;
         $currDate = date('Y-m-d');
+        
+        $scartObj = new SubscriptionCart();
+        $subscriptions = $scartObj->getSubscription($langId);
+        foreach ($subscriptions as $product) {
+            $spplan_id = $product['spplan_id'];
+        }
+        /* Coupon Products[ */
+        $cPlanSrch = new SearchBase(DiscountCoupons::DB_TBL_COUPON_TO_PLAN);
+        $cPlanSrch->doNotCalculateRecords();
+        $cPlanSrch->doNotLimitRecords();
+        $cPlanSrch->addGroupBy('ctplan_coupon_id');
+        $cPlanSrch->addMultipleFields(array('ctplan_coupon_id', 'GROUP_CONCAT(ctplan_spplan_id) as grouped_coupon_plans'));
+        /* ] */
 
         $srch = static::getSearchObject($langId);
-        $srch->addMultipleFields(array('dc.*', 'IFNULL(dc_l.coupon_title,dc.coupon_identifier) as coupon_title'));
-
+        $srch->joinTable('(' . $cPlanSrch->getQuery() . ')', 'LEFT OUTER JOIN', 'dc.coupon_id = ctp.ctplan_coupon_id', 'ctp');
+        $srch->addMultipleFields(array('dc.*', 'IFNULL(dc_l.coupon_title,dc.coupon_identifier) as coupon_title','ctp.grouped_coupon_plans'));
+        
+        /* checking current coupon is valid for current subscription plan[ */
+        $directCondtion1 = ' (grouped_coupon_plans IS NULL) ';
+        $directCondtion2 = ' ( grouped_coupon_plans IS NOT NULL AND ( FIND_IN_SET(' . $spplan_id . ', grouped_coupon_plans) ) ) ';
+        $srch->addDirectCondition("(" . $directCondtion1 . ' OR ( ' . $directCondtion2 . ' )' . " )", 'AND');
+        /* ] */
         $srch->addCondition('coupon_code', '=', $code);
         $srch->addCondition('coupon_type', '=', static::TYPE_SELLER_PACKAGE);
 
@@ -614,12 +633,10 @@ AND couponlang_lang_id = ' . $langId,
         $cnd1->attachCondition('coupon_end_date', '>=', $currDate, 'OR');
         $rs = $srch->getResultSet();
         $couponData = FatApp::getDb()->fetch($rs);
-
         if ($couponData == false) {
             return false;
         }
 
-        $scartObj = new SubscriptionCart();
         $cartSubTotal = $scartObj->getSubTotal($langId);
 
         if ($couponData['coupon_min_order_value'] > $cartSubTotal) {
@@ -678,8 +695,6 @@ AND couponlang_lang_id = ' . $langId,
 
         // Products
         $subscriptionData = array('product' => []);
-        $subscriptions = $scartObj->getSubscription($langId);
-
 
         if ($userSpecificCoupon) {
             foreach ($subscriptions as $product) {

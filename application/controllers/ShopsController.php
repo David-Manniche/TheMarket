@@ -14,7 +14,7 @@ class ShopsController extends MyAppController
         $searchForm = $this->getShopSearchForm($this->siteLangId);
         $this->set('searchForm', $searchForm);
         $this->_template->addJs('js/slick.min.js');
-         
+
         $this->_template->render();
     }
 
@@ -193,7 +193,7 @@ class ShopsController extends MyAppController
         if (array_key_exists('sort', $get)) {
             $get['sortOrder'] = $get['sort'];
         }
-        
+
         $includeShopData = true;
         if (array_key_exists('includeShopData', $get) && 1 > FatUtility::int($get['includeShopData'])) {
             $includeShopData = false;
@@ -243,7 +243,7 @@ class ShopsController extends MyAppController
         }
 
         $this->set('data', $data);
-        
+
         if (false === MOBILE_APP_API_CALL) {
             $this->includeProductPageJsCss();
             $this->_template->addJs(array('js/slick.min.js', 'js/responsive-img.min.js', 'js/shop-nav.js', 'js/jquery.colourbrightness.min.js'));
@@ -337,7 +337,7 @@ class ShopsController extends MyAppController
         $this->set('shopRating', SelProdRating::getSellerRating($shop['shop_user_id']));
         $this->set('shopTotalReviews', SelProdReview::getSellerTotalReviews($shop['shop_user_id']));
 
-        $description = trim(CommonHelper::subStringByWords(strip_tags(CommonHelper::renderHtml($shop['shop_description'], true)), 500));
+        $description = trim(CommonHelper::subStringByWords(strip_tags(CommonHelper::renderHtml($shop['shop_description']['description'], true)), 500));
         $description .= ' - ' . Labels::getLabel('LBL_See_more_at', $this->siteLangId) . ": " . CommonHelper::getCurrUrl();
 
         if ($shop) {
@@ -362,7 +362,7 @@ class ShopsController extends MyAppController
             $socialPlatforms = $db->fetchAll($rs);
             $this->set('socialPlatforms', $socialPlatforms);
         }
-        
+
         $collection_data = ShopCollection::getShopCollectionsDetail($shop_id, $this->siteLangId);
         $this->set('collectionData', $collection_data);
         $this->set('layoutTemplate', 'shop');
@@ -385,7 +385,7 @@ class ShopsController extends MyAppController
                 $collectionData[$key]['shopCollectionImage'] = CommonHelper::generateFullUrl('Image', 'shopCollectionImage', array($collection['scollection_id'], $this->siteLangId, 'SHOP'));
             }
         }
-        
+
         $this->set('data', ['shopCollectionDetail' => $collectionData]);
         $this->_template->render();
     }
@@ -446,7 +446,7 @@ class ShopsController extends MyAppController
 
         $this->includeProductPageJsCss();
         $this->_template->addJs('js/slick.min.js');
-       
+
         $this->_template->addJs('js/shop-nav.js');
         $this->_template->addJs('js/jquery.colourbrightness.min.js');
         $this->_template->render(true, true, 'shops/view.php');
@@ -483,7 +483,7 @@ class ShopsController extends MyAppController
             FatApp::redirectUser(CommonHelper::generateUrl(''));
         }
         $this->shopDetail($shop_id);
-        
+
         $shopcolDetails = ShopCollection::getCollectionGeneralDetail($shop_id, $scollectionId, $this->siteLangId);
 
         $frm = $this->getProductSearchForm();
@@ -522,7 +522,7 @@ class ShopsController extends MyAppController
 
         $data = array_merge($data, $arr);
         $this->set('data', $data);
-        
+
         if (false === MOBILE_APP_API_CALL) {
             $this->includeProductPageJsCss();
             $this->_template->addJs('js/slick.min.js');
@@ -657,7 +657,7 @@ class ShopsController extends MyAppController
         UserAuthentication::checkLogin();
         $db = FatApp::getDb();
         $shop_id = FatUtility::int($shop_id);
-        
+
         $shop = $this->getShopInfo($shop_id);
         if (!$shop) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
@@ -879,6 +879,10 @@ class ShopsController extends MyAppController
     }
     private function shopPoliciesData($shop)
     {
+        $shop['shop_description'] = empty($shop['shop_description']) ? (object) array() : array(
+            'title' => Labels::getLabel('LBL_Shop_Description', $this->siteLangId),
+            'description' => $shop['shop_description'],
+        );
         $shop['shop_payment_policy'] = empty($shop['shop_payment_policy']) ? (object) array() : array(
             'title' => Labels::getLabel('LBL_PAYMENT_POLICY', $this->siteLangId),
             'description' => $shop['shop_payment_policy'],

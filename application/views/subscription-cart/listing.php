@@ -41,18 +41,18 @@
 </table>
 <div class="cart-footer">
   <div class="cartdetail__footer">
-    <table>
+    <table  class="table--justify">
       <tbody>
         <tr>
-          <td class="text-left"><?php echo Labels::getLabel('LBL_Total', $siteLangId); ?></td>
-          <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTotal']); ?></td>
+          <td><?php echo Labels::getLabel('LBL_Total', $siteLangId); ?></td>
+          <td><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTotal']); ?></td>
         </tr>
         <tr>
-          <td class="text-left hightlighted"><?php echo Labels::getLabel('LBL_You_Pay', $siteLangId); ?></td>
-          <td class="text-right hightlighted"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTotal']); ?></td>
+          <td class="hightlighted"><?php echo Labels::getLabel('LBL_You_Pay', $siteLangId); ?></td>
+          <td class="hightlighted"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTotal']); ?></td>
         </tr>
         <tr>
-          <td colspan="2" class="text-right"><a href="<?php echo CommonHelper::generateUrl('SubscriptionCheckout'); ?>" class="btn btn-outline-primary ripplelink"><?php echo Labels::getLabel('LBL_Proceed_to_Pay', $siteLangId); ?> </a></td>
+          <td colspan="2"><a href="<?php echo CommonHelper::generateUrl('SubscriptionCheckout'); ?>" class="btn btn-outline-primary ripplelink"><?php echo Labels::getLabel('LBL_Proceed_to_Pay', $siteLangId); ?> </a></td>
         </tr>
       </tbody>
     </table>

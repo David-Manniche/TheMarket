@@ -8,13 +8,6 @@ class SocialPlatform extends MyAppModel
     public const DB_TBL_LANG = 'tbl_social_platforms_lang';
     public const DB_TBL_LANG_PREFIX = 'splatformlang_';
 
-    // public const ICON_CSS_FB_CLASS = 'fa-facebook';
-    // public const ICON_CSS_TWITTER_CLASS = 'fa-twitter';
-    // public const ICON_CSS_YOUTUBE_CLASS = 'fa-youtube';
-    // public const ICON_CSS_INSTAGRAM_CLASS = 'fa-instagram';
-    // public const ICON_CSS_GOOGLE_PLUS_CLASS = 'fa-google-plus';
-    // public const ICON_CSS_PINTEREST_CLASS = 'fa-pinterest-p';
-
     public const ICON_CSS_FB_CLASS = 'facebook';
     public const ICON_CSS_TWITTER_CLASS = 'twitter';
     public const ICON_CSS_YOUTUBE_CLASS = 'youtube';
@@ -64,5 +57,26 @@ class SocialPlatform extends MyAppModel
             static::ICON_CSS_GOOGLE_PLUS_CLASS => Labels::getLabel('LBL_Google_Icon', $langId),
             static::ICON_CSS_PINTEREST_CLASS => Labels::getLabel('LBL_Pinterest_Icon', $langId),
         ];
+    }
+
+    public static function getAvailableIconsArr($userId, $langId)
+    {
+        $userId = FatUtility::int($userId);
+        $langId = FatUtility::int($langId);
+        if ($langId < 1) {
+            $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
+        }
+        $iconsArr = static::getIconArr($langId);
+
+        $srch = static::getSearchObject();
+        $srch->addFld('splatform_icon_class');
+        $srch->doNotCalculateRecords();
+        $srch->addCondition('splatform_user_id', '=', $userId);
+        $rs = $srch->getResultSet();
+        $records = FatApp::getDb()->fetchAll($rs);
+        foreach ($records as $row) {
+            unset($iconsArr[$row['splatform_icon_class']]);
+        }
+        return $iconsArr;
     }
 }

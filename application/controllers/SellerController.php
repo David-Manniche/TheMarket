@@ -2813,7 +2813,7 @@ class SellerController extends SellerBaseController
     {
         $userId = UserAuthentication::getLoggedUserId();
         $splatform_id = FatUtility::int($splatform_id);
-        $frm = $this->getSocialPlatformForm();
+        $frm = $this->getSocialPlatformForm($splatform_id);
 
         if (0 < $splatform_id) {
             $data = SocialPlatform::getAttributesById($splatform_id);
@@ -3278,13 +3278,21 @@ class SellerController extends SellerBaseController
         return $frm;
     }
 
-    private function getSocialPlatformForm()
+    private function getSocialPlatformForm($splatform_id = 0)
     {
+        if ($splatform_id > 0) {
+            $iconsArr = SocialPlatform::getIconArr($this->siteLangId);
+        } else {
+            $iconsArr = SocialPlatform::getAvailableIconsArr(UserAuthentication::getLoggedUserId(), $this->siteLangId);
+        }
         $frm = new Form('frmSocialPlatform');
-        $frm->addHiddenField('', 'splatform_id', 0);
+        $frm->addHiddenField('', 'splatform_id', $splatform_id);
         $frm->addRequiredField(Labels::getLabel('Lbl_Identifier', $this->siteLangId), 'splatform_identifier');
         $frm->addRequiredField(Labels::getLabel('Lbl_URL', $this->siteLangId), 'splatform_url');
-        $frm->addSelectBox(Labels::getLabel('Lbl_Icon_Type_from_CSS', $this->siteLangId), 'splatform_icon_class', SocialPlatform::getIconArr($this->siteLangId), '', array(), Labels::getLabel('Lbl_Select', $this->siteLangId));
+        $fld = $frm->addSelectBox(Labels::getLabel('Lbl_Icon_Type_from_CSS', $this->siteLangId), 'splatform_icon_class', $iconsArr, '', array(), Labels::getLabel('Lbl_Select', $this->siteLangId));
+        if ($splatform_id > 0) {
+            $fld->setFieldTagAttribute('disabled', 'disabled');
+        }
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->siteLangId);
         $frm->addSelectBox(Labels::getLabel('Lbl_Status', $this->siteLangId), 'splatform_active', $activeInactiveArr, '', array(), '');
 
