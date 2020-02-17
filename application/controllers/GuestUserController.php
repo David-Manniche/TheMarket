@@ -411,36 +411,8 @@ class GuestUserController extends MyAppController
 
     public function validateOtp($recoverPwd = 0)
     {
-        $frm = $this->getOtpForm();
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-        if (false === $post) {
-            FatUtility::dieJsonError(current($frm->getValidationErrors()));
-        }
-
-        if (true === MOBILE_APP_API_CALL) {
-            if (User::OTP_LENGTH != strlen($post['upv_otp'])) {
-                LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_OTP', $this->siteLangId));
-            }
-            $otp = $post['upv_otp'];
-        } else {
-            if (!is_array($post['upv_otp']) || User::OTP_LENGTH != count($post['upv_otp'])) {
-                LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_OTP', $this->siteLangId));
-            }
-            $otp = implode("", $post['upv_otp']);
-        }
-
+        $this->validateOtpApi();
         $userId = FatApp::getPostedData('user_id', FatUtility::VAR_INT, 0);
-        $obj = new User($userId);
-        if (false == $obj->verifyUserPhoneOtp($otp, true)) {
-            LibHelper::dieJsonError($obj->getError());
-        }
-
-        $this->set('msg', Labels::getLabel("MSG_OTP_MATCHED", $this->siteLangId));
-
-        if (true === MOBILE_APP_API_CALL) {
-            $this->_template->render();
-        }
-
         if (0 < $recoverPwd) {
             $obj = new UserAuthentication();
             $record = $obj->getUserResetPwdToken($userId);

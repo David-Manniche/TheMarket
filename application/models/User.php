@@ -1612,7 +1612,7 @@ class User extends MyAppModel
                 $userInfo = $this->getUserInfo($attr);
                 $this->doLogin($userInfo['credential_username'], $userInfo['credential_password']);
             }
-            return (true == $returnPhone ? $row['upv_phone'] : true);
+            return (true == $returnPhone && !empty($row['upv_phone']) ? $row['upv_phone'] : true);
         } else {
             $this->error = Labels::getLabel('MSG_INVALID_OTP.', $this->commonLangId);
             return false;

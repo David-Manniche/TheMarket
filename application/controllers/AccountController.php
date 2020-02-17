@@ -3500,6 +3500,10 @@ class AccountController extends LoggedUserController
 
         $this->sendOtp($userId, $phone);
 
+        $this->set('msg', Labels::getLabel('MSG_OTP_SENT!_PLEASE_CHECK_YOUR_PHONE.', $this->siteLangId));
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
         $otpFrm = $this->getOtpForm();
         $otpFrm->fill(['user_id' => $userId]);
         $this->set('frm', $otpFrm);
@@ -3508,37 +3512,14 @@ class AccountController extends LoggedUserController
 
     public function validateOtp($updatePhnFrm = 0)
     {
-        $otpFrm = $this->getOtpForm();
-        $post = $otpFrm->getFormDataFromArray(FatApp::getPostedData());
-        if (false === $post) {
-            LibHelper::dieJsonError(current($frm->getValidationErrors()));
-        }
-
-        if (!is_array($post['upv_otp']) || User::OTP_LENGTH != count($post['upv_otp'])) {
-            LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_OTP', $this->siteLangId));
-        }
-        $otp = implode("", $post['upv_otp']);
-
-        $userId = UserAuthentication::getLoggedUserId();
-        $obj = new User($userId);
-        $returnPhone = (0 < $updatePhnFrm) ? false : true;
-        $resp = $obj->verifyUserPhoneOtp($otp, false, $returnPhone);
-        if (false == $resp) {
-            LibHelper::dieJsonError($obj->getError());
-        }
+        $updateToDb = (1 > $updatePhnFrm ? 1 : 0);
+        $this->validateOtpApi($updateToDb);
 
         if (0 < $updatePhnFrm) {
             $this->changePhoneForm($updatePhnFrm);
             exit;
         }
-
-        $userObj = clone $obj;
-        $userObj->assignValues(['user_phone' => $resp]);
-        if (!$userObj->save()) {
-            $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
-            FatUtility::dieJsonError($message);
-        }
-        $this->set('msg', Labels::getLabel('MSG_UPDATED_SUCCESSFULLY', $this->siteLangId));
+        
         $this->_template->render(false, false, 'json-success.php');
     }
     
