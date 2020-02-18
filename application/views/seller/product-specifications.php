@@ -8,14 +8,15 @@ if (count($productSpecifications) > 0){ ?>
             $arr_flds = array(
                 'prodspec_name' => Labels::getLabel('LBL_Specification_Name', $siteLangId),
                 'prodspec_value' => Labels::getLabel('LBL_Specification_Value', $siteLangId),
+                'prodspec_group' => Labels::getLabel('LBL_Specification_Group', $siteLangId),
                 'action' => Labels::getLabel('LBL_Action', $siteLangId)
             );
            
             $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
             $th = $tbl->appendElement('thead')->appendElement('tr');
             foreach ($arr_flds as $key=>$val) {
-                if($key == 'prodspec_name' || $key == 'prodspec_value'){
-                    $e = $th->appendElement('th', array('width'=>'40%'), $val);
+                if($key == 'prodspec_name' || $key == 'prodspec_value' || $key == 'prodspec_group'){
+                    $e = $th->appendElement('th', array('width'=>'27%'), $val);
                 }else{
                     $e = $th->appendElement('th', array(), $val);
                 }                
@@ -26,12 +27,6 @@ if (count($productSpecifications) > 0){ ?>
                     foreach ($arr_flds as $key=>$val){
                         $td = $tr->appendElement('td');
                         switch ($key){
-                            case 'prodspec_name':                        
-                                $td->appendElement('plaintext', array(),$specification[$key],true);
-                            break; 
-                            case 'prodspec_value':                        
-                                $td->appendElement('plaintext', array(),$specification[$key],true);
-                            break;
                             case 'action':       
                                  $prodSpecId = $specification['prodspec_id'];
                                  $ul = $td->appendElement('ul', array('class' => 'actions'));

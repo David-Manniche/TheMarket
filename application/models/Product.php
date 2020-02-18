@@ -1814,7 +1814,8 @@ END,   special_price_found ) as special_price_found'
             array(
                 static::DB_PRODUCT_SPECIFICATION_PREFIX . 'id',
                 static::DB_PRODUCT_SPECIFICATION_PREFIX . 'name',
-                static::DB_PRODUCT_SPECIFICATION_PREFIX . 'value'
+                static::DB_PRODUCT_SPECIFICATION_PREFIX . 'value',
+                static::DB_PRODUCT_SPECIFICATION_PREFIX . 'group'
             )
         );
         $rs = $srch->getResultSet();
