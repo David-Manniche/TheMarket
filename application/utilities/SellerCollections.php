@@ -185,7 +185,8 @@ trait SellerCollections
         if ($collection_id > 0) {
             $languages = Language::getAllNames();
             foreach ($languages as $langId => $langName) {
-                if (!$row = ShopCollection::getAttributesByLangId($langId, $shop_id)) {
+                $row = ShopCollection::getAttributesByLangId($langId, $collection_id);
+                if (!$row) {
                     $newTabLangId = $langId;
                     break;
                 }
@@ -194,7 +195,6 @@ trait SellerCollections
             $collection_id = $record->getMainTableRecordId();
             $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
-
         $this->set('msg', Labels::getLabel('LBL_Setup_Successful', $this->siteLangId));
         $this->set('collection_id', $collection_id);
         $this->set('langId', $newTabLangId);

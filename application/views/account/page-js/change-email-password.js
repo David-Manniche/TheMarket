@@ -95,7 +95,7 @@ $(document).ready(function(){
     resendOtp = function (userId, phone = ''){
         var postparam = (1 == phone) ? '' : "user_phone=" + phone;
         $.systemMessage(langLbl.processing, 'alert--process', false);
-		fcom.ajax(fcom.makeUrl('Account', 'resendOtp', [userId]), postparam, function(t) {
+		fcom.ajax(fcom.makeUrl('Account', 'resendOtp'), postparam, function(t) {
             try{
 				t = $.parseJSON(t);
 				if(typeof t.status != 'undefined' &&  1 > t.status){

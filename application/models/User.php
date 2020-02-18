@@ -112,7 +112,7 @@ class User extends MyAppModel
     public const DEVICE_OS_ANDROID = 1;
     public const DEVICE_OS_IOS = 2;
 
-    public const OTP_LENGTH = 6;
+    public const OTP_LENGTH = 4;
     public const OTP_AGE = 15; //IN MINUTES
 
     public function __construct($userId = 0)
@@ -1591,12 +1591,17 @@ class User extends MyAppModel
 
         $emvSrch = new SearchBase(static::DB_TBL_USER_PHONE_VER);
         $emvSrch->addCondition(static::DB_TBL_UPV_PREFIX . 'user_id', '=', $this->mainTableRecordId);
-        $emvSrch->addCondition(static::DB_TBL_UPV_PREFIX . 'otp', '=', $otp, 'AND');
+        $emvSrch->addCondition(static::DB_TBL_UPV_PREFIX . 'otp', '=', $otp);
 
-        $emvSrch->addMultipleFields(array(static::DB_TBL_UPV_PREFIX . 'user_id', static::DB_TBL_UPV_PREFIX . 'phone'));
+        $emvSrch->addMultipleFields(array(static::DB_TBL_UPV_PREFIX . 'user_id', static::DB_TBL_UPV_PREFIX . 'phone', static::DB_TBL_UPV_PREFIX . 'expired_on'));
 
         $rs = $emvSrch->getResultSet();
         if ($row = FatApp::getDb()->fetch($rs)) {
+            if (strtotime($row[static::DB_TBL_UPV_PREFIX . 'expired_on']) < time()) {
+                $this->error = Labels::getLabel('MSG_OTP_EXPIRED.', $this->commonLangId);
+                return false;
+            }
+
             $this->deletePhoneOtp($this->mainTableRecordId);
             $this->verifyAccount(applicationConstants::YES);
             if (true === $doLogin) {
@@ -1607,7 +1612,7 @@ class User extends MyAppModel
                 $userInfo = $this->getUserInfo($attr);
                 $this->doLogin($userInfo['credential_username'], $userInfo['credential_password']);
             }
-            return (true == $returnPhone ? $row['upv_phone'] : true);
+            return (true == $returnPhone && !empty($row['upv_phone']) ? $row['upv_phone'] : true);
         } else {
             $this->error = Labels::getLabel('MSG_INVALID_OTP.', $this->commonLangId);
             return false;
@@ -2262,7 +2267,7 @@ class User extends MyAppModel
         FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_img_updated_on' => date('Y-m-d  H:i:s')), $where);
     }
       
-    public function saveUserData($postedData, $socialUser = false)
+    public function saveUserData($postedData, $socialUser = false, $returnUserId = false)
     {
         $db = FatApp::getDb();
         $db->startTransaction();
@@ -2351,8 +2356,9 @@ class User extends MyAppModel
         }
         
         $this->setUpRewardEntry($this->getMainTableRecordId(), $this->commonLangId, $referrerCodeSignup, $affiliateReferrerCodeSignup);
-        return true;
+        return true === $returnUserId ? $this->getMainTableRecordId() : true;
     }
+    
     
     public function validateUserForRegistration($userName, $userEmail, $userPhone = '')
     {
@@ -2361,6 +2367,11 @@ class User extends MyAppModel
         } else {
             $row = $this->checkUserByPhoneOrUserName($userName, $userPhone);
         }
+
+        if (empty($row)) {
+            return true;
+        }
+
         if ($row['credential_username'] == $userName) {
             $this->error = Labels::getLabel('MSG_DUPLICATE_USERNAME', $this->commonLangId);
             return false;
@@ -2368,7 +2379,7 @@ class User extends MyAppModel
         if (empty($userPhone) && $row['credential_email'] == $userEmail) {
             $this->error = Labels::getLabel('MSG_DUPLICATE_EMAIL', $this->commonLangId);
             return false;
-        } elseif ($row['user_phone'] == $userPhone) {
+        } elseif (!empty($userPhone) && $row['user_phone'] == $userPhone) {
             $this->error = Labels::getLabel('MSG_DUPLICATE_PHONE.', $this->commonLangId);
             if ($row['credential_verified'] == applicationConstants::NO) {
                 $this->error .= ' ' . Labels::getLabel('MSG_THIS_PHONE_NUMBER_IS_NOT_VERIFIED_YET._DO_YOU_WANT_TO_CONTINUE?_{CONTINUE-BTN}', $this->commonLangId);

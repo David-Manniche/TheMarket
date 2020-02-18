@@ -539,7 +539,8 @@ class Product extends MyAppModel
         $product_id = FatUtility::convertToType($product_id, FatUtility::VAR_INT);
         $lang_id = FatUtility::convertToType($lang_id, FatUtility::VAR_INT);
         $sellerId = FatUtility::convertToType($sellerId, FatUtility::VAR_INT);
-        if (!$product_id || !$lang_id || !$sellerId) {
+        //if (!$product_id || !$lang_id || !$sellerId) {
+        if (!$product_id || !$lang_id) {
             //trigger_error(Labels::getLabel("ERR_Arguments_not_specified.",$this->commonLangId), E_USER_ERROR);
             return false;
         }
@@ -1441,7 +1442,7 @@ END,   special_price_found ) as special_price_found'
             $minPriceRange = floor($criteria['min_price_range']);
         }
         //currency_id
-        if (!empty($minPriceRange)) {
+        if (!empty($minPriceRange) && isset($criteria['currency_id'])) {
             $min_price_range_default_currency = CommonHelper::convertExistingToOtherCurrency($criteria['currency_id'], $minPriceRange, FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1), false);
             //$min_price_range_default_currency =  CommonHelper::getDefaultCurrencyValue($minPriceRange, false, false);
             $srch->addHaving('theprice', '>=', $min_price_range_default_currency);

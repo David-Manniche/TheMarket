@@ -440,8 +440,12 @@ class CustomController extends MyAppController
 
             $cartInfo = unserialize($orderDetail['order_cart_data']);
             unset($cartInfo['shopping_cart']);
+            $db = FatApp::getDb();
+            if (!$db->deleteRecords('tbl_user_cart', array('smt' => '`usercart_user_id`=? and `usercart_type`=?', 'vals' => array(UserAuthentication::getLoggedUserId(), CART::TYPE_PRODUCT)))) {
+                Message::addErrorMessage($db->getError());
+                FatApp::redirectUser(CommonHelper::generateFullUrl('Checkout'));
+            }
 
-            FatApp::getDb()->deleteRecords('tbl_user_cart', array('smt' => '`usercart_user_id`=? and `usercarrt_type`=?', 'vals' => array(UserAuthentication::getLoggedUserId(), CART::TYPE_PRODUCT)));
             $cartObj = new Cart();
             foreach ($cartInfo as $key => $quantity) {
                 $keyDecoded = unserialize(base64_decode($key));
