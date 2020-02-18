@@ -11,9 +11,9 @@
                         <li><a <?php echo ($preqId) ? "onClick='productForm( " . $preqId . ", 0 );'" : ""; ?>
                                 href="javascript:void(0);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
                         </li>
-                        <li><a <?php echo ($preqId) ? "onClick='sellerProductForm(" . $preqId . ");'" : ""; ?>
+                        <?php /* <li><a <?php echo ($preqId) ? "onClick='sellerProductForm(" . $preqId . ");'" : ""; ?>
                                 href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Inventory/Info', $adminLangId); ?></a>
-                        </li>
+                        </li> */ ?>
                         <li><a class="active" <?php echo ($preqId) ? "onclick='customCatalogSpecifications( " . $preqId . " );'" : ""; ?>
                                 href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Specifications', $adminLangId);?></a>
                         </li>
