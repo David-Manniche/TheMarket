@@ -296,8 +296,8 @@ class CommissionController extends AdminBaseController
             $arrCategories = $prodCatObj->getCategoriesForSelectBox($this->adminLangId);
             $categories = $prodCatObj->makeAssociativeArray($arrCategories);
             $frm->addSelectBox(Labels::getLabel('LBL_Category', $this->adminLangId), 'commsetting_prodcat_id', array( '' => 'Does not Matter' ) + $categories, '', array(), '');
-
-            $frm->addTextBox(Labels::getLabel('LBL_Seller', $this->adminLangId), 'user_name');
+            $fld =$frm->addTextBox(Labels::getLabel('LBL_Seller', $this->adminLangId), 'user_name');
+            $fld->setWrapperAttribute('class', 'ui-front');
             $frm->addTextBox(Labels::getLabel('LBL_Product', $this->adminLangId), 'product');
 
             $frm->addHiddenField('', 'commsetting_user_id', 0);
