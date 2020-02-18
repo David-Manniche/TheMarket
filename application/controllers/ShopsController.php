@@ -337,7 +337,7 @@ class ShopsController extends MyAppController
         $this->set('shopRating', SelProdRating::getSellerRating($shop['shop_user_id']));
         $this->set('shopTotalReviews', SelProdReview::getSellerTotalReviews($shop['shop_user_id']));
 
-        $description = trim(CommonHelper::subStringByWords(strip_tags(CommonHelper::renderHtml($shop['shop_description']['description'], true)), 500));
+        $description = trim(CommonHelper::subStringByWords(strip_tags(CommonHelper::renderHtml($shop['shop_description'], true)), 500));
         $description .= ' - ' . Labels::getLabel('LBL_See_more_at', $this->siteLangId) . ": " . CommonHelper::getCurrUrl();
 
         if ($shop) {
@@ -879,7 +879,7 @@ class ShopsController extends MyAppController
     }
     private function shopPoliciesData($shop)
     {
-        $shop['shop_description'] = empty($shop['shop_description']) ? (object) array() : array(
+        $shop['description'] = empty($shop['shop_description']) ? (object) array() : array(
             'title' => Labels::getLabel('LBL_Shop_Description', $this->siteLangId),
             'description' => $shop['shop_description'],
         );
