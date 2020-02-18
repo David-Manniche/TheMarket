@@ -1331,7 +1331,6 @@ $(document).ready(function () {
     */
 
     $('body').find('*[data-trigger]').click(function () {
-
         var targetElmId = $(this).data('trigger');
         var elmToggleClass = targetElmId + '--on';
         if ($('body').hasClass(elmToggleClass)) {

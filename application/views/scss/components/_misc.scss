@@ -249,6 +249,13 @@ hr {}
 
 .docs-buttons {
     display: flex;
-    
+
     justify-content: center;
 }
+
+.custom-ui-autocomplete {
+    max-height: 300px;
+    overflow: auto;
+}
+.container-fluid{ max-width: none;}
+.strikethrough{ text-decoration: line-through;}

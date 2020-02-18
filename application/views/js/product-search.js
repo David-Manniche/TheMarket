@@ -191,25 +191,7 @@ $(document).ready(function(){
 		$(".block__body-js").show();
 	}
 
-	/******** function for left filters mobile  ****************/
-	$(document).on('click', '.btn--filter', function() {
-		$(this).toggleClass("is-active");
-		var el = $("html");
-		if(el.hasClass('filter__show')) el.removeClass("filter__show");
-		else el.addClass('filter__show');
-		return false;
-	});
-
-	$(document).on('click', 'html,.overlay--filter', function() {
-		if($('html').hasClass('filter__show')){
-			$('.btn--filter').removeClass("is-active");
-			$('html').removeClass('filter__show');
-		}
-	});
-
-	$(document).on('click', '.filters', function(e) {
-		e.stopPropagation();
-	});
+	 
 
 	$(document).on('mouseover', '.bfilter-js li', function() {	
 		$('.brandList-js').addClass('filter-directory_disabled');

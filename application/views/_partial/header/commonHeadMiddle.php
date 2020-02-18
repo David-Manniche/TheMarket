@@ -33,17 +33,36 @@ if ($canonicalUrl == '') {
 <link rel="canonical" href="<?php echo $canonicalUrl;?>" />        
 <style>
     :root {
-        --first-color: #<?php echo $themeDetail['tcolor_first_color']; ?>;
-        --second-color: #<?php echo $themeDetail['tcolor_second_color']; ?>;
-        --third-color: #<?php echo $themeDetail['tcolor_third_color']; ?>;
-        --txt-color: #<?php echo $themeDetail['tcolor_text_color']; ?>;
-        --txt-color-light: #<?php echo $themeDetail['tcolor_text_light_color']; ?>;
-        --border-color: #<?php echo $themeDetail['tcolor_border_first_color']; ?>;
-        --border-color-second: #<?php echo $themeDetail['tcolor_border_second_color'];?>;
-        --second-btn-color: #<?php echo $themeDetail['tcolor_second_btn_color'];  ?>;
-        --header-txt-color: #<?php echo $themeDetail['tcolor_header_text_color']; ?>;
-        --body-color: #525252;
+        
+        --brand-color:#<?php echo $themeDetail['tcolor_first_color']; ?>;
+        --brand-color-inverse:;
+        
+        --primary-color: #<?php echo $themeDetail['tcolor_first_color']; ?>;
+        --primary-color-inverse:;       
+
+        --secondary-color:#6DCDEF;
+        --secondary-color-inverse:#fff;
+
+        --third-color: ;
+        --third-color-inverse:;
+
+        --body-color:#525252;
+
+        --dark-color: ;
+        --light-color: ;
+
+        --gray-color: #f8f8f8;
         --gray-light: #f8f8f8;
+
+
+        --border-color:#<?php echo $themeDetail['tcolor_border_first_color']; ?>;
+        --border-dark-color:;
+        --border-light-color:;
+
+        --font-color:;
+        --font-color2:;
+        
+     
     }
 </style>
 <script type="text/javascript">

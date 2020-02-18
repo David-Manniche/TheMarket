@@ -4,7 +4,7 @@ if (UserAuthentication::isUserLogged()) {
     $user_is_buyer = User::getAttributesById(UserAuthentication::getLoggedUserId(), 'user_is_buyer');
 }
 if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
-    <a href="javascript:void(0)">
+    <a href="javascript:void(0)" data-trigger-cart="side-cart">
         <span class="icn">
         <svg class="svg">
          <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#main-cart" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#main-cart"></use>
@@ -16,8 +16,8 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
             <?php /* } */ ?>
         </span>
     </a>
-    <div class="side-cart" id="side-cart" data-close-on-click-outside="side-cart">
-        <a href="javascript:void(0)" class="close-layer" data-target-close="side-cart"></a>
+    <div class="side-cart" id="side-cart" data-close-on-click-outside-cart="side-cart">
+        <a href="javascript:void(0)" class="close-layer" data-target-close-cart="side-cart"></a>
         <?php if ($totalCartItems>0) { ?>
         <div class="cartdetail__body" data-simplebar>
             <div class="short-detail">
@@ -109,6 +109,41 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
         <?php } ?>
     </div>
 <?php } ?>
+
+<script type="text/javascript">
+$(document).ready(function () {
+    
+    $('body').find('*[data-trigger-cart]').click(function () {
+        var targetElmId = $(this).data('trigger-cart');
+        var elmToggleClass = targetElmId + '--on';
+        if ($('body').hasClass(elmToggleClass)) {
+            $('body').removeClass(elmToggleClass);
+        } else {
+            $('body').addClass(elmToggleClass);
+        }
+    });
+
+    $('body').find('*[data-target-close-cart]').click(function () {
+        var targetElmId = $(this).data('target-close-cart');
+        $('body').toggleClass(targetElmId + '--on');
+    });
+
+    $('body').mouseup(function (event) {
+        if ($(event.target).data('triggerCart') != '' && typeof $(event.target).data('triggerCart') !== typeof undefined) {
+            event.preventDefault();
+            return;
+        }
+
+        $('body').find('*[data-close-on-click-outside-cart]').each(function (idx, elm) {
+            var slctr = $(elm);
+            if (!slctr.is(event.target) && !$.contains(slctr[0], event.target)) {
+                $('body').removeClass(slctr.data('close-on-click-outside-cart') + '--on');
+            }
+        });
+    });
+
+});
+</script>
  
 
 
