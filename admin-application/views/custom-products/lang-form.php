@@ -15,9 +15,9 @@ $langFld->setfieldTagAttribute('onChange', "productLangForm(" . $preqId . ", thi
                 <li><a <?php echo (0 < $preqId) ? "onclick='productForm( " . $preqId . ", 0 );'" : ""; ?>
                         href="javascript:void(0);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
                 </li>
-                <li><a <?php echo (0 < $preqId) ? "onclick='sellerProductForm(" . $preqId . ");'" : ""; ?>
+                <?php /* <li><a <?php echo (0 < $preqId) ? "onclick='sellerProductForm(" . $preqId . ");'" : ""; ?>
                         href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Inventory/Info', $adminLangId); ?></a>
-                </li>
+                </li> */ ?>
                 <li><a <?php echo (0 < $preqId) ? "onclick='customCatalogSpecifications( " . $preqId . " );'" : ""; ?>
                         href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Specifications', $adminLangId);?></a>
                 </li>

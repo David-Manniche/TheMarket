@@ -1272,7 +1272,7 @@ class ProductsController extends AdminBaseController
         $rs = $srch->getResultSet();
         $upcCodeData = FatApp::getDb()->fetchAll($rs, 'upc_options');
         $productOptions = Product::getProductOptions($productId, $this->adminLangId, true);
-        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '_');
+        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '|');
 
         $this->set('productOptions', $productOptions);
         $this->set('optionCombinations', $optionCombinations);
