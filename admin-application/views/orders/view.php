@@ -307,7 +307,7 @@ if ($order['order_reward_point_used'] > 0) {
                     </div>
                 </section>
                 <?php } ?>
-            <?php if (!empty($order['order_deleted'])) {?>
+            <?php if (!$order['order_deleted']) {?>
                 <?php if (!empty($order['payments'])) {?>
                 <section class="section">
                     <div class="sectionhead">

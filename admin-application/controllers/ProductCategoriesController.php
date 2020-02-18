@@ -201,11 +201,11 @@ class ProductCategoriesController extends AdminBaseController
         $prodcat_id = FatUtility::int($prodcat_id);
         $lang_id = FatUtility::int($lang_id);
         $catIcons = $catBanners = array();
-        if ($imageType == 'icon') {
+        if ($imageType=='icon') {
             $catIcons = AttachedFile::getAttachment(AttachedFile::FILETYPE_CATEGORY_ICON, $prodcat_id, 0, $lang_id, false);
             $this->set('images', $catIcons);
             $this->set('imageFunction', 'icon');
-        } elseif ($imageType == 'banner') {
+        } elseif ($imageType=='banner') {
             $catBanners = AttachedFile::getAttachment(AttachedFile::FILETYPE_CATEGORY_BANNER, $prodcat_id, 0, $lang_id, false, $slide_screen);
             $this->set('images', $catBanners);
             $this->set('imageFunction', 'banner');
@@ -219,12 +219,12 @@ class ProductCategoriesController extends AdminBaseController
     public function setUpCatImages()
     {
         $this->objPrivilege->canEditProductCategories();
-        $post = FatApp::getPostedData();
         $file_type = FatApp::getPostedData('file_type', FatUtility::VAR_INT, 0);
         $prodcat_id = FatApp::getPostedData('prodcat_id', FatUtility::VAR_INT, 0);
         $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
         $slide_screen = FatApp::getPostedData('slide_screen', FatUtility::VAR_INT, 0);
-        if (!$file_type || !$prodcat_id) {
+        $afileId = FatApp::getPostedData('afile_id', FatUtility::VAR_INT, 0);
+        if (!$file_type) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -241,7 +241,9 @@ class ProductCategoriesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $fileHandlerObj = new AttachedFile();
+        ProductCategory:: deleteImagesWithOutCategoryId($file_type);
+
+        $fileHandlerObj = new AttachedFile($afileId);
         if (!$res = $fileHandlerObj->saveImage(
             $_FILES['cropped_image']['tmp_name'],
             $file_type,
@@ -249,20 +251,18 @@ class ProductCategoriesController extends AdminBaseController
             0,
             $_FILES['cropped_image']['name'],
             -1,
-            $unique_record = true,
+            $unique_record = false,
             $lang_id,
             $_FILES['cropped_image']['type'],
             $slide_screen
-        )
-        ) {
+        )) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
-            // FatUtility::dieJsonError($fileHandlerObj->getError());
         }
         ProductCategory::setImageUpdatedOn($prodcat_id);
         $this->set('file', $_FILES['cropped_image']['name']);
         $this->set('prodcat_id', $prodcat_id);
-        $this->set('msg', $_FILES['cropped_image']['name'] . ' ' . Labels::getLabel('LBL_Uploaded_Successfully', $this->adminLangId));
+        $this->set('msg', $_FILES['cropped_image']['name'].' '.Labels::getLabel('LBL_Uploaded_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -276,9 +276,9 @@ class ProductCategoriesController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        if ($imageType == 'icon') {
+        if ($imageType=='icon') {
             $fileType = AttachedFile::FILETYPE_CATEGORY_ICON;
-        } elseif ($imageType == 'banner') {
+        } elseif ($imageType=='banner') {
             $fileType = AttachedFile::FILETYPE_CATEGORY_BANNER;
         }
         $fileHandlerObj = new AttachedFile();

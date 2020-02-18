@@ -9,7 +9,7 @@
                     <?php if ($img) {
                         echo '<img src = "'.CommonHelper::generateUrl('Image', 'SocialPlatform', array($row['splatform_id'])).'"/>';
                     } elseif ($row['splatform_icon_class'] != '') { ?>
-                        <i class="fa fa-<?php echo $row['splatform_icon_class']; ?>"></i>
+                        <i class="fab fa-<?php echo $row['splatform_icon_class']; ?>"></i>
                 <?php } ?>
                 </a></li>
             <?php

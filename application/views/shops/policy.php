@@ -20,16 +20,16 @@ $shopPolicyArr = array(
         $this->includeTemplate('shops/templates/'.$template_id.'.php', $variables, false);
     ?>
 
-    <?php if ($shop['shop_description'] != '' || $shop['shop_payment_policy'] != '' || $shop['shop_delivery_policy'] != '' || $shop['shop_refund_policy'] != '' || $shop['shop_additional_info'] != '' ||  $shop['shop_seller_info'] != '') { ?>
+    <?php if ($shop['description'] != '' || $shop['shop_payment_policy'] != '' || $shop['shop_delivery_policy'] != '' || $shop['shop_refund_policy'] != '' || $shop['shop_additional_info'] != '' ||  $shop['shop_seller_info'] != '') { ?>
     <section class="section">
         <div class="container">
             <div class="row">
               <div class="col-lg-12 col-md-12 col-sm-12  col-xs-12">
 
-                <?php if (!empty(array_filter((array)$shop['shop_description']))) { ?>
+                <?php if (!empty(array_filter((array)$shop['description']))) { ?>
                   <div class="cms">
-                      <h4><?php echo $shop['shop_description']['title']; ?></h4>
-                      <p><?php echo nl2br($shop['shop_description']['description']); ?></p>
+                      <h4><?php echo $shop['description']['title']; ?></h4>
+                      <p><?php echo nl2br($shop['description']['description']); ?></p>
                   </div>
                 <?php } ?>
                   <div class="gap"></div>
