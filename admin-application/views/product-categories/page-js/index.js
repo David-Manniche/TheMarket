@@ -254,10 +254,12 @@ $(document).ready(function(){
 		var slideScreen = 0;
 		var prodcatId = $("[name='prodcat_id']").val();
 		if(frmName == 'frmCategoryIcon'){
+			var afileId = $("#icon-image-listing li").attr('id');
 			var langId = $("[name='icon_lang_id']").val();
 			var fileType = $("[name='icon_file_type']").val();
 			var imageType = 'icon';
 		} else {
+			var afileId = $("#banner-image-listing li").attr('id');
 			var langId = $("[name='banner_lang_id']").val();
 			var fileType = $("[name='banner_file_type']").val();
 			slideScreen = $("[name='slide_screen']").val();
@@ -267,6 +269,7 @@ $(document).ready(function(){
         formData.append('slide_screen', slideScreen);
         formData.append('lang_id', langId);
         formData.append('file_type', fileType);
+		formData.append('afile_id', afileId);
         $.ajax({
             url: fcom.makeUrl('ProductCategories', 'setUpCatImages'),
             type: 'post',
