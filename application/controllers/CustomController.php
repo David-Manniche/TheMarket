@@ -397,7 +397,7 @@ class CustomController extends MyAppController
     {
         $textMessage = sprintf(Labels::getLabel('MSG_customer_failure_order', $this->siteLangId), CommonHelper::generateUrl('custom', 'contactUs'));
         $this->set('textMessage', $textMessage);
-        if (FatApp::getConfig('CONF_MAINTAIN_CART_ON_PAYMENT_FAILURE', FatUtility::VAR_INT, applicationConstants::NO) && isset($_SESSION['cart_order_id']) && $_SESSION['cart_order_id'] > 0) {
+        if (!FatApp::getConfig('CONF_MAINTAIN_CART_ON_PAYMENT_FAILURE', FatUtility::VAR_INT, applicationConstants::NO) && isset($_SESSION['cart_order_id']) && $_SESSION['cart_order_id'] != '') {
             $cartOrderId = $_SESSION['cart_order_id'];
             $orderObj = new Orders();
             $orderDetail = $orderObj->getOrderById($cartOrderId);
@@ -405,8 +405,12 @@ class CustomController extends MyAppController
             $cartInfo = unserialize($orderDetail['order_cart_data']);
             unset($cartInfo['shopping_cart']);
 
-            FatApp::getDb()->deleteRecords('tbl_user_cart', array('smt' => '`usercart_user_id`=? and `usercarrt_type`=?', 'vals' => array(UserAuthentication::getLoggedUserId(), CART::TYPE_PRODUCT)));
-            $cartObj = new Cart();
+            $db = FatApp::getDb();
+            if (!$db->deleteRecords('tbl_user_cart', array('smt' => '`usercart_user_id`=? and `usercart_type`=?', 'vals' => array(UserAuthentication::getLoggedUserId(), CART::TYPE_PRODUCT)))) {
+                Message::addErrorMessage($db->getError());
+                FatApp::redirectUser(CommonHelper::generateFullUrl('Checkout'));
+            }
+            /* $cartObj = new Cart();
             foreach ($cartInfo as $key => $quantity) {
                 $keyDecoded = unserialize(base64_decode($key));
 
@@ -418,7 +422,7 @@ class CustomController extends MyAppController
                 }
                 $cartObj->add($selprod_id, $quantity);
             }
-            $cartObj->updateUserCart();
+            $cartObj->updateUserCart(); */
         }
         $this->set('textMessage', $textMessage);
         if (CommonHelper::isAppUser()) {
@@ -433,7 +437,7 @@ class CustomController extends MyAppController
     {
         /* echo FatApp::getConfig('CONF_MAINTAIN_CART_ON_PAYMENT_CANCEL',FatUtility::VAR_INT,applicationConstants::NO);
         echo $_SESSION['cart_order_id']; */
-        if (FatApp::getConfig('CONF_MAINTAIN_CART_ON_PAYMENT_CANCEL', FatUtility::VAR_INT, applicationConstants::NO) && isset($_SESSION['cart_order_id']) && $_SESSION['cart_order_id'] != '') {
+        if (!FatApp::getConfig('CONF_MAINTAIN_CART_ON_PAYMENT_CANCEL', FatUtility::VAR_INT, applicationConstants::NO) && isset($_SESSION['cart_order_id']) && $_SESSION['cart_order_id'] != '') {
             $cartOrderId = $_SESSION['cart_order_id'];
             $orderObj = new Orders();
             $orderDetail = $orderObj->getOrderById($cartOrderId);
@@ -446,7 +450,7 @@ class CustomController extends MyAppController
                 FatApp::redirectUser(CommonHelper::generateFullUrl('Checkout'));
             }
 
-            $cartObj = new Cart();
+            /* $cartObj = new Cart();
             foreach ($cartInfo as $key => $quantity) {
                 $keyDecoded = unserialize(base64_decode($key));
 
@@ -458,7 +462,7 @@ class CustomController extends MyAppController
                 }
                 $cartObj->add($selprod_id, $quantity);
             }
-            $cartObj->updateUserCart();
+            $cartObj->updateUserCart(); */
         }
         if (isset($_SESSION['order_type']) && $_SESSION['order_type'] == Orders::ORDER_SUBSCRIPTION) {
             FatApp::redirectUser(CommonHelper::generateFullUrl('SubscriptionCheckout'));
