@@ -706,12 +706,12 @@ class MyAppController extends FatController
             }
             $otp = implode("", $post['upv_otp']);
         }
-        
-        $userId = UserAuthentication::getLoggedUserId(true);
-        $userId = 1 > $userId ?  FatApp::getPostedData('user_id', FatUtility::VAR_INT, 0) : $userId;
+
+        $userId = FatApp::getPostedData('user_id', FatUtility::VAR_INT, 0);
+        $userId = 1 > $userId ?  UserAuthentication::getLoggedUserId(true) : $userId;
 
         $obj = new User($userId);
-        $resp = $obj->verifyUserPhoneOtp($otp, !UserAuthentication::isUserLogged(), true);
+        $resp = $obj->verifyUserPhoneOtp($otp, (false === MOBILE_APP_API_CALL && !UserAuthentication::isUserLogged()), true);
         if (false == $resp) {
             LibHelper::dieJsonError($obj->getError());
         }
@@ -722,12 +722,23 @@ class MyAppController extends FatController
             $userObj = clone $obj;
             $userObj->assignValues(['user_phone' => $resp]);
             if (!$userObj->save()) {
-                FatUtility::dieJsonError($userObj->getError());
+                LibHelper::dieJsonError($userObj->getError());
             }
             $this->set('msg', Labels::getLabel('MSG_UPDATED_SUCCESSFULLY', $this->siteLangId));
         }
 
         if (true === MOBILE_APP_API_CALL) {
+            if (!UserAuthentication::isUserLogged()) {
+                $uObj = new User($userId);
+                if (!$token = $uObj->setMobileAppToken()) {
+                    LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+                }
+
+                $userInfo = $uObj->getUserInfo(array('user_name', 'user_id', 'user_phone', 'credential_email'), true, true, true);
+                $data = array_merge(['token' => $token], $userInfo);
+                $this->set('data', $data);
+            }
+
             $this->_template->render();
         }
     }
