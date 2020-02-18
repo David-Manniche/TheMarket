@@ -88,3 +88,4 @@ Bugs:
     => 034505 - while creating collection> on entering data in basic tab and saving it's not moving to language tab
     => 034475 - Pagination is not working  properly on Seller > Catalog list.
     => 034608 - when user adds item to cart and turns back from payment gateway then quantity get doubles.
+    => 034661 - Unable to save buy together and related products.

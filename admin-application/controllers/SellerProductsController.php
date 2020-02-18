@@ -2959,7 +2959,7 @@ class SellerProductsController extends AdminBaseController
         
         $relatedProducts = $post['selected_products'];
         unset($post['selprod_id']);
-        $sellerProdObj = new sellerProduct();
+        $sellerProdObj = new SellerProduct();
         if (!$sellerProdObj->addUpdateSellerRelatedProdcts($selprod_id, $relatedProducts)) {
             Message::addErrorMessage($sellerProdObj->getError());
             FatApp::redirectUser($_SESSION['referer_page_url']);
@@ -3135,7 +3135,7 @@ class SellerProductsController extends AdminBaseController
 
         $upsellProducts = $post['selected_products'];
 
-        $sellerProdObj = new sellerProduct();
+        $sellerProdObj = new SellerProduct();
         /* saving of product Upsell Product[ */
         if (!$sellerProdObj->addUpdateSellerUpsellProducts($selprod_id, $upsellProducts)) {
             Message::addErrorMessage($sellerProdObj->getError());
