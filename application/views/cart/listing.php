@@ -48,16 +48,16 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 
                             </div>
                             <div class="base-price">
-                                <div class="base-price-line"><span>Selling Price:</span><span class="item__price_selling"><?php echo CommonHelper::displayMoneyFormat($product['theprice']); ?></span>
+                                <div class="base-price-line"><span><?php echo Labels::getLabel('LBL_Selling_Price', $siteLangId); ?>:</span><span class="item__price_selling"><?php echo CommonHelper::displayMoneyFormat($product['theprice']); ?></span>
                                 </div>
-                                <div class="base-price-line"><span>Subtotal: </span> <span class="item__price_total"><?php echo CommonHelper::displayMoneyFormat($product['total']); ?> </span></div>
+                                <div class="base-price-line"><span><?php echo Labels::getLabel('LBL_Subtotal', $siteLangId); ?>: </span> <span class="item__price_total"><?php echo CommonHelper::displayMoneyFormat($product['total']); ?> </span></div>
                             </div></div>
                         </div>
                     </div>
                     <div class="cart-list-footer">
                         <div class="row">
                             <div class="col-auto">
-                                <a href="javascript:void(0)" class="" onclick="cart.remove('<?php echo md5($product['key']); ?>','cart')" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId); ?>">Remove</a></div>
+                                <a href="javascript:void(0)" class="" onclick="cart.remove('<?php echo md5($product['key']); ?>','cart')" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId); ?>"><?php echo Labels::getLabel('LBL_Remove', $siteLangId); ?></a></div>
 
                             <div class="col">
                                 <?php
