@@ -50,16 +50,17 @@ class PushNotification extends MyAppModel
         ];
     }
 
-    private static function getDeviceTokensData($recordId, $buyers, $sellers, $joinNotificationUsers = true)
+    private static function getDeviceTokensData($recordId, $buyers, $sellers, $userAuthType, $joinNotificationUsers = true)
     {
         $buyers = FatUtility::int($buyers);
         $sellers = FatUtility::int($sellers);
+        $userAuthType = FatUtility::int($userAuthType);
 
         if (1 > $buyers && 1 > $sellers) {
             return false;
         }
-        $obj = static::getSearchObject($joinNotificationUsers);
-        $obj->doNotCalculateRecords();
+        $srch = static::getSearchObject($joinNotificationUsers);
+        $srch->doNotCalculateRecords();
         if (true === $joinNotificationUsers) {
             $joinUsers = 'pnu.pntu_user_id = u.user_id';
         } else {
@@ -74,60 +75,82 @@ class PushNotification extends MyAppModel
             }
         }
 
-        $obj->joinTable(User::DB_TBL, 'INNER JOIN', $joinUsers, 'u');
-        $obj->joinTable(User::DB_TBL_CRED, 'INNER JOIN', 'uc.' . User::DB_TBL_CRED_PREFIX . 'user_id = u.user_id', 'uc');
-        $obj->joinTable(UserAuthentication::DB_TBL_USER_AUTH, 'INNER JOIN', 'uauth.uauth_user_id = u.user_id', 'uauth');
+        $joinUserAuth = '';
+        switch ($userAuthType) {
+            case User::AUTH_TYPE_BOTH:
+                $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', $joinUsers, 'u');
+                $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.' . User::DB_TBL_CRED_PREFIX . 'user_id = u.user_id', 'uc');
+                $joinUserAuth .= 'uauth.uauth_user_id = u.user_id OR uauth.uauth_user_id = 0';
+                break;
+            case User::AUTH_TYPE_GUEST:
+                $joinUserAuth .= 'uauth.uauth_user_id = 0';
+                break;
+            case User::AUTH_TYPE_REGISTERED:
+                $srch->joinTable(User::DB_TBL, 'INNER JOIN', $joinUsers, 'u');
+                $srch->joinTable(User::DB_TBL_CRED, 'INNER JOIN', 'uc.' . User::DB_TBL_CRED_PREFIX . 'user_id = u.user_id', 'uc');
+                $joinUserAuth .= 'uauth.uauth_user_id = u.user_id';
+                break;
+            
+            default:
+                return false;
+                break;
+        }
 
-        $obj->addCondition(static::DB_TBL_PREFIX . 'id', '=', $recordId);
-        $obj->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'active', '=', applicationConstants::YES);
-        $obj->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'verified', '=', applicationConstants::YES);
+        $srch->joinTable(UserAuthentication::DB_TBL_USER_AUTH, 'INNER JOIN', $joinUserAuth, 'uauth');
+
+        $srch->addCondition(static::DB_TBL_PREFIX . 'id', '=', $recordId);
+        $srch->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'active', '=', applicationConstants::YES);
+        $srch->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'verified', '=', applicationConstants::YES);
         
         if (0 < $buyers) {
-            $cnd = $obj->addCondition('u.' . User::DB_TBL_PREFIX . 'is_buyer', '=', applicationConstants::YES);
+            $cnd = $srch->addCondition('u.' . User::DB_TBL_PREFIX . 'is_buyer', '=', applicationConstants::YES);
         }
         
         if (0 < $sellers) {
             if (0 < $buyers) {
                 $cnd->attachCondition('u.' . User::DB_TBL_PREFIX . 'is_supplier', '=', applicationConstants::YES);
             } else {
-                $obj->addCondition('u.' . User::DB_TBL_PREFIX . 'is_supplier', '=', applicationConstants::YES);
+                $srch->addCondition('u.' . User::DB_TBL_PREFIX . 'is_supplier', '=', applicationConstants::YES);
             }
         }
 
-        $obj->addDirectCondition("IF(
+        $srch->addDirectCondition("IF(
                 pnotification_device_os = " . User::DEVICE_OS_BOTH . ",
                 (uauth.`uauth_device_os` = " . User::DEVICE_OS_ANDROID . " OR uauth.`uauth_device_os` = " . User::DEVICE_OS_IOS . "),
                 (uauth.`uauth_device_os` = pnotification_device_os)
             )");
 
-        $obj->addCondition('uauth_fcm_id', '!=', '');
-        $obj->addCondition('uauth_last_access', '>=', date('Y-m-d H:i:s', strtotime("-7 DAYS")));
-        $obj->addCondition('uauth_user_id', '>', 'mysql_func_pnotification_till_user_id', 'AND', true);
+        $srch->addCondition('uauth_fcm_id', '!=', '');
+        $srch->addCondition('uauth_last_access', '>=', date('Y-m-d H:i:s', strtotime("-7 DAYS")));
+        $srch->addCondition('uauth_last_access', '>', 'mysql_func_pnotification_uauth_last_access', 'AND', true);
 
-        $obj->addMultipleFields(['uauth_user_id', 'uauth_fcm_id', 'uauth_device_os']);
-        $obj->addOrder('uauth_user_id', 'ASC');
-        $rs = $obj->getResultSet();
+        $srch->addMultipleFields(['uauth_last_access', 'uauth_fcm_id', 'uauth_device_os']);
+        $srch->addOrder('uauth_last_access', 'ASC');
+        $rs = $srch->getResultSet();
         $tokenData = FatApp::getDb()->fetchAll($rs);
         $lastToken = end($tokenData);
-        $lastUserId = $lastToken['uauth_user_id'];
+        $lastUserAccessTime = $lastToken['uauth_last_access'];
         
         $deviceTokens = [];
         foreach ($tokenData as $data) {
             $deviceTokens[$data['uauth_device_os']][] = $data['uauth_fcm_id'];
         }
         return [
-            'lastUserId' => $lastUserId,
+            'lastUserAccessTime' => $lastUserAccessTime,
             'deviceTokens' => $deviceTokens
         ];
     }
 
-    private static function updateDetail($recordId, $status, $lastExecutedUserId)
+    private static function updateDetail(int $recordId, int $status, string $lastUserAccessTime = ''): bool
     {
         $dataToSave = [
             'pnotification_id' => $recordId,
-            'pnotification_status' => $status,
-            'pnotification_till_user_id' => $lastExecutedUserId
+            'pnotification_status' => $status
         ];
+        
+        if (!empty($lastUserAccessTime)) {
+            $dataToSave['pnotification_uauth_last_access'] = $lastUserAccessTime;
+        }
 
         $dataToUpdateOnDuplicate = $dataToSave;
         unset($dataToUpdateOnDuplicate['pnotification_id']);
@@ -135,6 +158,7 @@ class PushNotification extends MyAppModel
             // $this->error = Labels::getLabel("MSG_UNABLE_TO_UPDATE!", CommonHelper::getLangId());
             return false;
         }
+        return true;
     }
 
     public static function send()
@@ -163,7 +187,6 @@ class PushNotification extends MyAppModel
         $srch = static::getSearchObject();
         $srch->addMultipleFields(['*', '(CASE WHEN (' . $srchU->getQuery() . ') > 0 THEN 1 ELSE 0 END) AS pnotification_user_linked']);
         $srch->addCondition(static::DB_TBL_PREFIX . 'status', '!=', static::STATUS_COMPLETED);
-        $srch->addCondition(static::DB_TBL_PREFIX . 'till_user_id', '!=', -1);
         $srch->addCondition('pnotification_notified_on', '<', 'mysql_func_NOW()', 'AND', true);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
@@ -177,15 +200,16 @@ class PushNotification extends MyAppModel
             $recordId = $notificationDetail[static::DB_TBL_PREFIX . 'id'];
             $buyers = $notificationDetail['pnotification_for_buyer'];
             $sellers = $notificationDetail['pnotification_for_seller'];
+            $userAuthType = $notificationDetail['pnotification_user_auth_type'];
 
             $joinNotificationUsers = (0 < $notificationDetail['pnotification_user_linked']) ? true : false;
             
-            $data = static::getDeviceTokensData($recordId, $buyers, $sellers, $joinNotificationUsers);
+            $data = static::getDeviceTokensData($recordId, $buyers, $sellers, $userAuthType, $joinNotificationUsers);
             $deviceTokens = $data['deviceTokens'];
-            $lastUserId = $data['lastUserId'];
+            $lastUserAccessTime = $data['lastUserAccessTime'];
             
             if (empty($deviceTokens) || 1 > count($deviceTokens)) {
-                static::updateDetail($recordId, static::STATUS_COMPLETED, -1);
+                static::updateDetail($recordId, static::STATUS_COMPLETED);
                 continue;
             }
 
@@ -218,9 +242,9 @@ class PushNotification extends MyAppModel
             }
 
             if (true === $joinNotificationUsers) {
-                static::updateDetail($recordId, static::STATUS_COMPLETED, -1);
+                static::updateDetail($recordId, static::STATUS_COMPLETED);
             } else {
-                static::updateDetail($recordId, static::STATUS_PROCESSING, $lastUserId);
+                static::updateDetail($recordId, static::STATUS_PROCESSING, $lastUserAccessTime);
             }
             // return $response;
         }
