@@ -1169,8 +1169,8 @@ class ImageController extends FatController
 
         switch (strtoupper($sizeType)) {
             case 'THUMB':
-                $w = 100;
-                $h = 100;
+                $w = 150;
+                $h = 45;
                 AttachedFile::displayImage($image_name, $w, $h);
                 break;
             case 'COLLECTION_PAGE':
