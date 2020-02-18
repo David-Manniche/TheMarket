@@ -456,7 +456,6 @@ class UserAuthentication extends FatModel
         if ($db->insertFromArray(static::DB_TBL_USER_AUTH, $values)) {
             return true;
         }
-
         return false;
     }
 

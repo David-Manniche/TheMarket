@@ -169,15 +169,22 @@ class GuestUserController extends MyAppController
 
     public function setUserPushNotificationToken()
     {
-        $fcmDeviceId = FatApp::getPostedData('deviceToken', FatUtility::VAR_STRING, '');
+        $fcmToken = FatApp::getPostedData('deviceToken', FatUtility::VAR_STRING, '');
         $deviceOs = FatApp::getPostedData('deviceOs', FatUtility::VAR_INT, 0);
-        if (empty($fcmDeviceId)) {
+        if (empty($fcmToken)) {
             FatUtility::dieJSONError(Labels::getLabel('Msg_Invalid_Request', $this->siteLangId));
         }
-        $userId = UserAuthentication::getLoggedUserId();
-        $uObj = new User($userId);
-        if (!$uObj->setPushNotificationToken($this->appToken, $fcmDeviceId, $deviceOs)) {
-            FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+
+        if (!UserAuthentication::isUserLogged()) {
+            if (!User::setGuestFcmToken($this->getAppTempUserId(), $fcmToken, $deviceOs)) {
+                FatUtility::dieJsonError(Labels::getLabel('MSG_UNABLE_TO_UPDATE.', $this->siteLangId));
+            }
+        } else {
+            $userId = UserAuthentication::getLoggedUserId();
+            $uObj = new User($userId);
+            if (!$uObj->setPushNotificationToken($this->appToken, $fcmToken, $deviceOs)) {
+                FatUtility::dieJsonError(Labels::getLabel('MSG_UNABLE_TO_UPDATE', $this->siteLangId));
+            }
         }
         $this->set('msg', Labels::getLabel('Msg_Successfully_Updated', $this->siteLangId));
         $this->_template->render();
@@ -1013,10 +1020,14 @@ class GuestUserController extends MyAppController
             if (empty($fcmToken)) {
                 FatUtility::dieJSONError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
             }
-            $error = '';
-            if (false === User::removeFcmToken($this->appToken, $fcmToken, $error)) {
-                LibHelper::dieJsonError($error);
+
+            $values = User::getUserAuthFcmFormattedData($fcmToken, null, session_id());
+            $values['uauth_token'] = '';
+            $where = array('smt' => 'uauth_fcm_id = ?', 'vals' => [$fcmToken]);
+            if (!UserAuthentication::updateFcmDeviceToken($values, $where)) {
+                LibHelper::dieJsonError(Labels::getLabel('MSG_UNABLE_TO_UPDATE_FCM_TOKEN', $this->siteLangId));
             }
+
             $this->_template->render();
         }
 
