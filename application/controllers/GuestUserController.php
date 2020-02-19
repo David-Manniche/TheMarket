@@ -176,7 +176,7 @@ class GuestUserController extends MyAppController
         }
 
         if (!UserAuthentication::isUserLogged()) {
-            if (!User::setGuestFcmToken($fcmToken, $deviceOs)) {
+            if (!User::setGuestFcmToken($fcmToken, $deviceOs, $this->getAppTempUserId())) {
                 FatUtility::dieJsonError(Labels::getLabel('MSG_UNABLE_TO_UPDATE.', $this->siteLangId));
             }
         } else {
@@ -1022,7 +1022,6 @@ class GuestUserController extends MyAppController
             }
 
             $values = User::getUserAuthFcmFormattedData($fcmToken, null, applicationConstants::NO);
-            $values['uauth_token'] = '';
             $where = array('smt' => 'uauth_fcm_id = ?', 'vals' => [$fcmToken]);
             if (!UserAuthentication::updateFcmDeviceToken($values, $where)) {
                 LibHelper::dieJsonError(Labels::getLabel('MSG_UNABLE_TO_UPDATE_FCM_TOKEN', $this->siteLangId));

@@ -2253,9 +2253,9 @@ class User extends MyAppModel
         return UserAuthentication::updateFcmDeviceToken($values, $where);
     }
 
-    public static function setGuestFcmToken(string $fcmToken, int $deviceOs): bool
+    public static function setGuestFcmToken(string $fcmToken, int $deviceOs, string $appToken): bool
     {
-        $data = static::getUserAuthFcmFormattedData($fcmToken, $deviceOs);
+        $data = static::getUserAuthFcmFormattedData($fcmToken, $deviceOs, null, $appToken);
         return UserAuthentication::saveLoginToken($data);
     }
 

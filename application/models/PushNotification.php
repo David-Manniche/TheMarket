@@ -99,18 +99,21 @@ class PushNotification extends MyAppModel
         $srch->joinTable(UserAuthentication::DB_TBL_USER_AUTH, 'INNER JOIN', $joinUserAuth, 'uauth');
 
         $srch->addCondition(static::DB_TBL_PREFIX . 'id', '=', $recordId);
-        $srch->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'active', '=', applicationConstants::YES);
-        $srch->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'verified', '=', applicationConstants::YES);
+
+        if (User::AUTH_TYPE_GUEST != $userAuthType) {
+            $srch->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'active', '=', applicationConstants::YES);
+            $srch->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'verified', '=', applicationConstants::YES);
         
-        if (0 < $buyers) {
-            $cnd = $srch->addCondition('u.' . User::DB_TBL_PREFIX . 'is_buyer', '=', applicationConstants::YES);
-        }
-        
-        if (0 < $sellers) {
             if (0 < $buyers) {
-                $cnd->attachCondition('u.' . User::DB_TBL_PREFIX . 'is_supplier', '=', applicationConstants::YES);
-            } else {
-                $srch->addCondition('u.' . User::DB_TBL_PREFIX . 'is_supplier', '=', applicationConstants::YES);
+                $cnd = $srch->addCondition('u.' . User::DB_TBL_PREFIX . 'is_buyer', '=', applicationConstants::YES);
+            }
+        
+            if (0 < $sellers) {
+                if (0 < $buyers) {
+                    $cnd->attachCondition('u.' . User::DB_TBL_PREFIX . 'is_supplier', '=', applicationConstants::YES);
+                } else {
+                    $srch->addCondition('u.' . User::DB_TBL_PREFIX . 'is_supplier', '=', applicationConstants::YES);
+                }
             }
         }
 
@@ -127,6 +130,7 @@ class PushNotification extends MyAppModel
         $srch->addMultipleFields(['uauth_last_access', 'uauth_fcm_id', 'uauth_device_os']);
         $srch->addOrder('uauth_last_access', 'ASC');
         $rs = $srch->getResultSet();
+        echo FatApp::getDb()->getError();
         $tokenData = FatApp::getDb()->fetchAll($rs);
         $lastToken = end($tokenData);
         $lastUserAccessTime = $lastToken['uauth_last_access'];
