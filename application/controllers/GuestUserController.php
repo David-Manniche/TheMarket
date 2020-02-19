@@ -169,15 +169,22 @@ class GuestUserController extends MyAppController
 
     public function setUserPushNotificationToken()
     {
-        $fcmDeviceId = FatApp::getPostedData('deviceToken', FatUtility::VAR_STRING, '');
+        $fcmToken = FatApp::getPostedData('deviceToken', FatUtility::VAR_STRING, '');
         $deviceOs = FatApp::getPostedData('deviceOs', FatUtility::VAR_INT, 0);
-        if (empty($fcmDeviceId)) {
+        if (empty($fcmToken)) {
             FatUtility::dieJSONError(Labels::getLabel('Msg_Invalid_Request', $this->siteLangId));
         }
-        $userId = UserAuthentication::getLoggedUserId();
-        $uObj = new User($userId);
-        if (!$uObj->setPushNotificationToken($this->appToken, $fcmDeviceId, $deviceOs)) {
-            FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+
+        if (!UserAuthentication::isUserLogged()) {
+            if (!User::setGuestFcmToken($fcmToken, $deviceOs)) {
+                FatUtility::dieJsonError(Labels::getLabel('MSG_UNABLE_TO_UPDATE.', $this->siteLangId));
+            }
+        } else {
+            $userId = UserAuthentication::getLoggedUserId();
+            $uObj = new User($userId);
+            if (!$uObj->setPushNotificationToken($this->appToken, $fcmToken, $deviceOs)) {
+                FatUtility::dieJsonError(Labels::getLabel('MSG_UNABLE_TO_UPDATE', $this->siteLangId));
+            }
         }
         $this->set('msg', Labels::getLabel('Msg_Successfully_Updated', $this->siteLangId));
         $this->_template->render();
@@ -411,36 +418,8 @@ class GuestUserController extends MyAppController
 
     public function validateOtp($recoverPwd = 0)
     {
-        $frm = $this->getOtpForm();
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-        if (false === $post) {
-            FatUtility::dieJsonError(current($frm->getValidationErrors()));
-        }
-
-        if (true === MOBILE_APP_API_CALL) {
-            if (User::OTP_LENGTH != strlen($post['upv_otp'])) {
-                LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_OTP', $this->siteLangId));
-            }
-            $otp = $post['upv_otp'];
-        } else {
-            if (!is_array($post['upv_otp']) || User::OTP_LENGTH != count($post['upv_otp'])) {
-                LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_OTP', $this->siteLangId));
-            }
-            $otp = implode("", $post['upv_otp']);
-        }
-
+        $this->validateOtpApi();
         $userId = FatApp::getPostedData('user_id', FatUtility::VAR_INT, 0);
-        $obj = new User($userId);
-        if (false == $obj->verifyUserPhoneOtp($otp, true)) {
-            LibHelper::dieJsonError($obj->getError());
-        }
-
-        $this->set('msg', Labels::getLabel("MSG_OTP_MATCHED", $this->siteLangId));
-
-        if (true === MOBILE_APP_API_CALL) {
-            $this->_template->render();
-        }
-
         if (0 < $recoverPwd) {
             $obj = new UserAuthentication();
             $record = $obj->getUserResetPwdToken($userId);
@@ -1041,10 +1020,14 @@ class GuestUserController extends MyAppController
             if (empty($fcmToken)) {
                 FatUtility::dieJSONError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
             }
-            $error = '';
-            if (false === User::removeFcmToken($this->appToken, $fcmToken, $error)) {
-                LibHelper::dieJsonError($error);
+
+            $values = User::getUserAuthFcmFormattedData($fcmToken, null, applicationConstants::NO);
+            $values['uauth_token'] = '';
+            $where = array('smt' => 'uauth_fcm_id = ?', 'vals' => [$fcmToken]);
+            if (!UserAuthentication::updateFcmDeviceToken($values, $where)) {
+                LibHelper::dieJsonError(Labels::getLabel('MSG_UNABLE_TO_UPDATE_FCM_TOKEN', $this->siteLangId));
             }
+
             $this->_template->render();
         }
 

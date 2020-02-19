@@ -539,7 +539,8 @@ class Product extends MyAppModel
         $product_id = FatUtility::convertToType($product_id, FatUtility::VAR_INT);
         $lang_id = FatUtility::convertToType($lang_id, FatUtility::VAR_INT);
         $sellerId = FatUtility::convertToType($sellerId, FatUtility::VAR_INT);
-        if (!$product_id || !$lang_id || !$sellerId) {
+        //if (!$product_id || !$lang_id || !$sellerId) {
+        if (!$product_id || !$lang_id) {
             //trigger_error(Labels::getLabel("ERR_Arguments_not_specified.",$this->commonLangId), E_USER_ERROR);
             return false;
         }
@@ -1813,7 +1814,8 @@ END,   special_price_found ) as special_price_found'
             array(
                 static::DB_PRODUCT_SPECIFICATION_PREFIX . 'id',
                 static::DB_PRODUCT_SPECIFICATION_PREFIX . 'name',
-                static::DB_PRODUCT_SPECIFICATION_PREFIX . 'value'
+                static::DB_PRODUCT_SPECIFICATION_PREFIX . 'value',
+                static::DB_PRODUCT_SPECIFICATION_PREFIX . 'group'
             )
         );
         $rs = $srch->getResultSet();

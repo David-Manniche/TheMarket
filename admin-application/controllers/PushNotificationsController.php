@@ -133,6 +133,8 @@ class PushNotificationsController extends AdminBaseController
 
         // $frm->addCheckBox(Labels::getLabel('LBL_NOTIFY_TO_BUYERS', $this->adminLangId), 'pnotification_for_buyer', 1, [], false, 0);
         // $frm->addCheckBox(Labels::getLabel('LBL_NOTIFY_TO_SELLER', $this->adminLangId), 'pnotification_for_seller', 1, [], false, 0);
+        $userAuthType = $frm->addSelectBox(Labels::getLabel('LBL_USER_AUTH_TYPE', $this->adminLangId), 'pnotification_user_auth_type', User::getUserAuthTypeArr($this->adminLangId));
+        $userAuthType->requirements()->setRequired(true);
 
         if (0 == $status) {
             $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->adminLangId));
@@ -183,14 +185,18 @@ class PushNotificationsController extends AdminBaseController
         $frm = $this->form();
         $pNotificationId = FatUtility::int($pNotificationId);
         $status = 0;
+        $registeredUsers = 0;
         if (0 < $pNotificationId) {
             $data = PushNotification::getAttributesById($pNotificationId);
             $status = $data['pnotification_status'];
             $frm = $this->form($data['pnotification_status']);
+            $registeredUsers = $data['pnotification_for_buyer'];
+            $data['registered_users'] = $registeredUsers;
             $frm->fill($data);
         }
         $this->set('status', $status);
         $this->set('pNotificationId', $pNotificationId);
+        $this->set('registeredUsers', $registeredUsers);
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
@@ -262,7 +268,7 @@ class PushNotificationsController extends AdminBaseController
             FatUtility::dieJsonError(Labels::getLabel("LBL_INVALID_REQUEST", $this->adminLangId));
         }
         $data = PushNotification::getAttributesById($pNotificationId);
-        unset($data['pnotification_id'], $data['pnotification_status'], $data['pnotification_till_user_id']);
+        unset($data['pnotification_id'], $data['pnotification_status'], $data['pnotification_uauth_last_access']);
         $db = FatApp::getDb();
         if (!$db->insertFromArray(PushNotification::DB_TBL, $data, true, array(), $data)) {
             FatUtility::dieJsonError($db->getError());

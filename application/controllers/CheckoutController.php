@@ -824,7 +824,7 @@ class CheckoutController extends MyAppController
         return $langSpecificProductInfo = FatApp::getDb()->fetch($langProdRs);
     }
 
-    public function PaymentSummary()
+    public function paymentSummary()
     {
         if (true === MOBILE_APP_API_CALL) {
             $payFromWallet = FatApp::getPostedData('payFromWallet', Fatutility::VAR_INT, 0);
@@ -856,7 +856,7 @@ class CheckoutController extends MyAppController
         $pmSrch->doNotCalculateRecords();
         $pmSrch->doNotLimitRecords();
         $pmSrch->addMultipleFields(array('pmethod_id', 'IFNULL(pmethod_name, pmethod_identifier) as pmethod_name', 'pmethod_code', 'pmethod_description'));
-        
+
         if (!$cartSummary["isCodEnabled"] || ($cartSummary['cartWalletSelected'] && $userWalletBalance < $cartSummary['orderNetAmount'])) {
             $pmSrch->addCondition('pmethod_code', '!=', 'CashOnDelivery');
         }
@@ -1211,7 +1211,7 @@ class CheckoutController extends MyAppController
                 if(FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER',FatUtility::VAR_INT,0)){
                 $taxCollectedBySeller = applicationConstants::YES;
                 } */
-                
+
                 $orderData['products'][CART::CART_KEY_PREFIX_PRODUCT . $productInfo['selprod_id']] = array(
                     'op_selprod_id' => $productInfo['selprod_id'],
                     'op_is_batch' => 0,

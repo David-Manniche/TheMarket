@@ -50,9 +50,12 @@
             background: $secondary-color;
             color: #fff;
             fill: #fff;
+            cursor: pointer;
 
             .icn {
                 fill: inherit;
+                position: relative;
+                z-index: -1;
 
                 svg {
                     width: 1rem;
@@ -650,8 +653,41 @@
 
 .select-all {
     @include media-breakpoint-down(sm) {
-        & {
-            
+        & {}
+    }
+}
+
+
+
+.shop-slider {
+    .item {
+        position: relative;
+        max-width: 610px;
+        margin: 0 15px;
+
+        img {
+            border-radius: 4px;
+        }
+    }
+
+    figure {
+        margin: 0;
+    }
+
+    .overlay-content {
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 2px;
+        position: absolute;
+        bottom: 10px;         
+        #{$end-direction}: 10px;
+        padding: 1rem;
+        text-align: left;
+        /*max-width: 210px;*/
+        font-weight: 400;
+
+        h4 {
+            font-size: 1rem;
+
         }
     }
 }

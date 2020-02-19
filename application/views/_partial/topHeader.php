@@ -2,7 +2,7 @@
 	<div class="outdated-inner">
 		<div class="outdated-messages">
 			<h2>The browser you are using is not supported. Some critical security features are not available for your browser version.</h2>
-			<p>We want you to have the best possible experience with FATbit. For this you'll need to use a supported browser and upgrade to the latest version. </p>
+			<p>We want you to have the best possible experience with <?php echo FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, FatUtility::VAR_STRING, '');?>. For this you'll need to use a supported browser and upgrade to the latest version. </p>
 			<ul class="list-browser">
 				<li><a href="https://www.google.com/chrome" target="_blank" rel="noopener noreferrer"><i class="icn chrome"></i>
 						<p><strong>Chrome</strong><br>
@@ -68,7 +68,7 @@
 						</a>
 					</div>
 					<?php $this->includeTemplate('_partial/headerSearchFormArea.php'); ?>
-					<div class="cart dropdown" id="cartSummary" data-trigger="side-cart">
+					<div class="cart dropdown" id="cartSummary">
 						<?php $this->includeTemplate('_partial/headerWishListAndCartSummary.php'); ?>
 					</div>
 				</div>

@@ -11,6 +11,7 @@ if (0 != $status) {
         $formField->setFieldTagAttribute('disabled', 'disabled');
     }
 }
+
 ?>
 <section class="section">
     <div class="sectionhead">
@@ -34,8 +35,8 @@ if (0 != $status) {
                         <?php echo Labels::getLabel('LBL_MEDIA', $adminLangId); ?>
                     </a>
                 </li>
-                <li class="<?php echo 1 > $pNotificationId ? 'fat-inactive' : ''; ?>">
-                    <a href="javascript:void(0)" onclick="<?php echo 0 < $pNotificationId ? 'addSelectedUsersForm(' . $pNotificationId . ')' : ''; ?>"><?php echo Labels::getLabel('LBL_SELECTED_USERS', $adminLangId); ?></a>
+                <li class="<?php echo 1 > $pNotificationId || 1 > $registeredUsers ? 'fat-inactive' : ''; ?>">
+                    <a href="javascript:void(0)" onclick="<?php echo 0 < $pNotificationId && 0 < $registeredUsers ? 'addSelectedUsersForm(' . $pNotificationId . ')' : ''; ?>"><?php echo Labels::getLabel('LBL_SELECTED_USERS', $adminLangId); ?></a>
                 </li>   
             </ul>
             <div class="tabs_panel_wrap">

@@ -78,7 +78,8 @@ $(document).on('change', '.language-js',function(){
 		fcom.updateWithAjax(fcom.makeUrl('CustomProducts', 'setup'), data, function(t) {				
 			reloadList();				
 			if (t.preq_id > 0) {
-				sellerProductForm(t.preq_id);
+				//sellerProductForm(t.preq_id);
+                customCatalogSpecifications(t.preq_id);
 				return ;
 			}
 			$(document).trigger('close.facebox');

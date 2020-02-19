@@ -1293,6 +1293,7 @@ trait CustomCatalogProducts
         if (!empty($specifications['prod_spec_name'][$langId]) && !empty($specifications['prod_spec_value'][$langId])) {
             $productSpecifications['prod_spec_name'] = $specifications['prod_spec_name'][$langId];
             $productSpecifications['prod_spec_value'] = $specifications['prod_spec_value'][$langId];
+            $productSpecifications['prod_spec_group'] = $specifications['prod_spec_group'][$langId];
         }
         $this->set('productSpecifications', $productSpecifications);
         $this->set('langId', $langId);
@@ -1606,7 +1607,7 @@ trait CustomCatalogProducts
         $optionCombinations = array();
         $productOptions = ProductRequest::getProductReqOptions($preqId, $this->siteLangId, true);
         if (!empty($productOptions)) {
-            $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues');
+            $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '|');
         }
         $this->set('upcCodeData', $upcCodeData);
         $this->set('optionCombinations', $optionCombinations);

@@ -119,12 +119,39 @@ class AbandonedCart extends MyAppModel
         $srch->addMultipleFields(array('ch.*', 'user_name', 'selprod_product_id', 'selprod_title'));
         $srch->addOrder(static::DB_TBL_PREFIX . 'added_on', 'DESC');
         $srch->setPageNumber($page);
-        $srch->setPageSize($this->setPageSize());
+        $srch->setPageSize($this->setPageSize()); 
         $rs = $srch->getResultSet();
         $this->totalRecords = $srch->recordCount();
         $this->totalPages = $srch->pages();
         $this->pageSize = $this->setPageSize();
         return FatApp::getDb()->fetchAll($rs);
+    }
+    
+    public function getCartRecoveredTotal($userId = 0, $selProdId = 0, $dateFrom = '', $dateTo = '')
+    {
+        $srch = new AbandonedCartSearch();
+        $srch->joinUsers();
+        $srch->joinSellerProducts($this->commonLangId);
+        if ($userId > 0) {
+            $srch->addCondition(static::DB_TBL_PREFIX . 'user_id', '=', $userId);
+        }
+        if ($selProdId > 0) {
+            $srch->addCondition(static::DB_TBL_PREFIX . 'selprod_id', '=', $selProdId);
+        }
+        if (!empty($dateFrom)) {
+            $srch->addCondition(static::DB_TBL_PREFIX . 'added_on', '>=', $dateFrom . ' 00:00:00');
+        }
+        if (!empty($dateTo)) {
+            $srch->addCondition(static::DB_TBL_PREFIX . 'added_on', '<=', $dateTo . ' 23:59:59');
+        }
+        $srch->addActionCondition(static::ACTION_PURCHASED);
+        $cnd = $srch->addCondition(static::DB_TBL_PREFIX . 'email_count', '>', 0);
+        $cnd->attachCondition(static::DB_TBL_PREFIX . 'discount_notification', '>', 0);
+        $srch->addMultipleFields(array('sum(abandonedcart_amount) as amount'));
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $rs = $srch->getResultSet();        
+        return FatApp::getDb()->fetch($rs);
     }
     
     public function getAbandonedCartProducts($page = 1)

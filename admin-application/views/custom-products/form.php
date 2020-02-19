@@ -96,11 +96,12 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
                                 <?php echo Labels::getLabel('LBL_General', $adminLangId); ?>
                             </a>
                         </li>
+                        <?php /*
                         <li><a <?php echo ($preqId) ? "onClick='sellerProductForm(" . $preqId . ");'" : ""; ?>
                                 href="javascript:void(0);">
                                 <?php echo Labels::getLabel('LBL_Inventory/Info', $adminLangId); ?>
                             </a>
-                        </li>
+                        </li> */ ?>
                         <li>
                             <a <?php echo (0 < $preqId) ? "onclick='customCatalogSpecifications( " . $preqId . " );'" : ""; ?>
                                 href="javascript:void(0);">

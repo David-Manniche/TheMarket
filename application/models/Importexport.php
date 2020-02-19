@@ -101,7 +101,7 @@ class Importexport extends ImportexportCommon
         $arr = array(
         static::PRODUCT_CATALOG => Labels::getLabel('LBL_Product_Catalog', $langId),
         static::PRODUCT_OPTION => Labels::getLabel('LBL_Product_Options', $langId),
-        static::PRODUCT_TAG => Labels::getLabel('LBL_Product_Tags', $langId),
+        //static::PRODUCT_TAG => Labels::getLabel('LBL_Product_Tags', $langId),
         static::PRODUCT_SPECIFICATION => Labels::getLabel('LBL_Product_Specifications', $langId),
         static::PRODUCT_SHIPPING => Labels::getLabel('LBL_Product_Shipping', $langId),
         );
@@ -118,7 +118,7 @@ class Importexport extends ImportexportCommon
         static::SELLER_PROD_VOLUME_DISCOUNT => Labels::getLabel('LBL_Volume_Discount', $langId),
         static::SELLER_PROD_BUY_TOGTHER => Labels::getLabel('LBL_Buy_togther', $langId),
         static::SELLER_PROD_RELATED_PRODUCT => Labels::getLabel('LBL_Related_products', $langId),
-        static::SELLER_PROD_POLICY => Labels::getLabel('LBL_Seller_Product_Policy', $langId),
+        //static::SELLER_PROD_POLICY => Labels::getLabel('LBL_Seller_Product_Policy', $langId),
         );
         return $arr;
     }

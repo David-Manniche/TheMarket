@@ -1,17 +1,17 @@
 .certified-bar {
     background: $gray-light;
     border-top: $border;
-    border-bottom: $border;
+    
 
     ul {
         display: flex;
-        flex-wrap: nowrap;
-        overflow-x: auto;
+        flex-wrap: nowrap;        
         justify-content: center;
 
         @include media-breakpoint-down(lg) {
             & {
                 justify-content: flex-start;
+				overflow-x: auto;
             }
         }
 

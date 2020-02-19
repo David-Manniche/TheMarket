@@ -686,4 +686,60 @@ class MyAppController extends FatController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_GET_OTP', $this->siteLangId));
         return $frm;
     }
+
+    public function validateOtpApi($updateToDb = 0)
+    {
+        $updateToDb = FatUtility::int($updateToDb);
+        $otpFrm = $this->getOtpForm();
+        $post = $otpFrm->getFormDataFromArray(FatApp::getPostedData());
+        if (false === $post) {
+            LibHelper::dieJsonError(current($frm->getValidationErrors()));
+        }
+        if (true === MOBILE_APP_API_CALL) {
+            if (User::OTP_LENGTH != strlen($post['upv_otp'])) {
+                LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_OTP', $this->siteLangId));
+            }
+            $otp = $post['upv_otp'];
+        } else {
+            if (!is_array($post['upv_otp']) || User::OTP_LENGTH != count($post['upv_otp'])) {
+                LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_OTP', $this->siteLangId));
+            }
+            $otp = implode("", $post['upv_otp']);
+        }
+
+        $userId = FatApp::getPostedData('user_id', FatUtility::VAR_INT, 0);
+        $userId = 1 > $userId ?  UserAuthentication::getLoggedUserId(true) : $userId;
+
+        $obj = new User($userId);
+        $resp = $obj->verifyUserPhoneOtp($otp, (false === MOBILE_APP_API_CALL && !UserAuthentication::isUserLogged()), true);
+        if (false == $resp) {
+            LibHelper::dieJsonError($obj->getError());
+        }
+
+        $this->set('msg', Labels::getLabel('MSG_OTP_MATCHED.', $this->siteLangId));
+
+        if (0 < $updateToDb) {
+            $userObj = clone $obj;
+            $userObj->assignValues(['user_phone' => $resp]);
+            if (!$userObj->save()) {
+                LibHelper::dieJsonError($userObj->getError());
+            }
+            $this->set('msg', Labels::getLabel('MSG_UPDATED_SUCCESSFULLY', $this->siteLangId));
+        }
+
+        if (true === MOBILE_APP_API_CALL) {
+            if (!UserAuthentication::isUserLogged()) {
+                $uObj = new User($userId);
+                if (!$token = $uObj->setMobileAppToken()) {
+                    LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+                }
+
+                $userInfo = $uObj->getUserInfo(array('user_name', 'user_id', 'user_phone', 'credential_email'), true, true, true);
+                $data = array_merge(['token' => $token], $userInfo);
+                $this->set('data', $data);
+            }
+
+            $this->_template->render();
+        }
+    }
 }

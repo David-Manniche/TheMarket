@@ -72,33 +72,26 @@
                             ?>
 						</div>
 						<div class="sectionbody">
-							<div class="tablewrap">
-                                    
-                                    <div class="tabs_nav_container responsive flat">
-                                        <ul class="tabs_nav">
-                                            <li>
-                                                <a href="javascript:void(0);" onclick="submitForm(1);">
-                                                    <?php echo Labels::getLabel('LBL_In_Cart', $adminLangId); ?>                            
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" onclick="submitForm(2);">
-                                                    <?php echo Labels::getLabel('LBL_Removed_From_Cart', $adminLangId); ?>                               
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" onclick="submitForm(3);">
-                                                    <?php echo Labels::getLabel('LBL_Cart_Recoverd', $adminLangId); ?>                                
-                                                </a>
-                                            </li>
-                                        </ul>
-                                        <div class="tabs_panel_wrap">
-                                            <div class="tabs_panel">
-                                                
-                                           </div>
-                                        </div>
-                                    </div>
-                                    
+							<div class="tablewrap"> 
+                                <div class="tabs_nav_container responsive flat">
+                                    <ul class="tabs_nav tabs_nav-js">
+                                        <li>
+                                            <a href="javascript:void(0);" onclick="submitForm(1);">
+                                                <?php echo Labels::getLabel('LBL_Abandoned_Cart', $adminLangId); ?>                            
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);" onclick="submitForm(2);">
+                                                <?php echo Labels::getLabel('LBL_Removed_From_Cart', $adminLangId); ?>                               
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);" onclick="submitForm(3);">
+                                                <?php echo Labels::getLabel('LBL_Cart_Recoverd', $adminLangId); ?>                                
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>                                    
 								<div id="abandonedCartListing">
 									<?php echo Labels::getLabel('LBL_Processing...',$adminLangId); ?>
 								</div>
