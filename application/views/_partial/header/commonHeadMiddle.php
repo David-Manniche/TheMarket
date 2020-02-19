@@ -33,17 +33,16 @@ if ($canonicalUrl == '') {
 <link rel="canonical" href="<?php echo $canonicalUrl;?>" />        
 <style>
     :root {
-        
         --brand-color:#<?php echo $themeDetail['tcolor_first_color']; ?>;
         --brand-color-inverse:;
         
         --primary-color: #<?php echo $themeDetail['tcolor_first_color']; ?>;
         --primary-color-inverse:;       
 
-        --secondary-color:#6DCDEF;
+        --secondary-color:#<?php echo $themeDetail['tcolor_second_color']; ?>;
         --secondary-color-inverse:#fff;
 
-        --third-color: ;
+        --third-color: #<?php echo $themeDetail['tcolor_third_color']; ?>;
         --third-color-inverse:;
 
         --body-color:#525252;
@@ -56,13 +55,11 @@ if ($canonicalUrl == '') {
 
 
         --border-color:#<?php echo $themeDetail['tcolor_border_first_color']; ?>;
-        --border-dark-color:;
-        --border-light-color:;
+        --border-dark-color:#<?php echo $themeDetail['tcolor_border_second_color'];?>;
+        --border-light-color:#<?php echo $themeDetail['tcolor_border_second_color'];?>;
 
-        --font-color:;
-        --font-color2:;
-        
-     
+        --font-color:#<?php echo $themeDetail['tcolor_text_color']; ?>;
+        --font-color2:#<?php echo $themeDetail['tcolor_text_light_color']; ?>;
     }
 </style>
 <script type="text/javascript">
