@@ -297,7 +297,7 @@ html.quick-view--open {
 }
 
 .section--fill {
-    background: $secondary-color;
+    background: $secondary-color; color:$secondary-color-inverse;
 }
 
 .section--fill .section-head {
@@ -1064,7 +1064,7 @@ html.quick-view--open {
     color: $body-color;
     font-size: 1em;
     font-weight: 600;
-    /* font-family: $family-primary;*/
+     font-family: $family-primary;
     opacity: 1;
     -webkit-transition: opacity 0.25s;
     transition: opacity 0.25s;
@@ -1321,13 +1321,13 @@ html.quick-view--open {
                     &:after {
                         #{$start-direction}: 0;
                         width: 50%;
-                        background: $brand-color;
+                        background: $brand-color; color:$brand-color-inverse;
                     }
 
                     &:before {
                         #{$end-direction}: 0;
                         width: 50%;
-                        background: $brand-color;
+                        background: $brand-color; color:$brand-color-inverse;
                     }
                 }
 
@@ -1336,13 +1336,13 @@ html.quick-view--open {
                     &:after {
                         #{$start-direction}: 0;
                         width: 50%;
-                        background: $brand-color;
+                        background: $brand-color; color:$brand-color-inverse;
                     }
 
                     &:before {
                         #{$end-direction}: 0;
                         width: 50%;
-                        background: $brand-color;
+                        background: $brand-color; color:$brand-color-inverse;
                     }
                 }
 
@@ -1453,7 +1453,7 @@ html.quick-view--open {
 
 .icn-quickview {
     margin: 0 auto;
-    background: $brand-color;
+    background: $brand-color; color:$brand-color-inverse;
     border-radius: 50%;
     width: 2.5rem;
     height: 2.5rem;

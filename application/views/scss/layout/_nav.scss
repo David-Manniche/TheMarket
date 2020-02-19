@@ -64,13 +64,13 @@
                 &:after {
                     #{$start-direction}: 0;
                     width: 50%;
-                    background: $brand-color;
+                    background: $brand-color; color:$brand-color-inverse;
                 }
 
                 &:after {
                     #{$end-direction}: 0;
                     width: 50%;
-                    background: $brand-color;
+                    background: $brand-color; color:$brand-color-inverse;
                 }
             }
 
@@ -81,13 +81,13 @@
                 &:after {
                     #{$start-direction}: 0;
                     width: 50%;
-                    background: $brand-color;
+                    background: $brand-color; color:$brand-color-inverse;
                 }
 
                 &:before {
                     #{$end-direction}: 0;
                     width: 50%;
-                    background: $brand-color;
+                    background: $brand-color; color:$brand-color-inverse;
                 }
 
             }
@@ -278,7 +278,7 @@
                     }
 
                     &:before {
-                        background: $brand-color;
+                        background: $brand-color; color:$brand-color-inverse;
                         bottom: 0px;
                         content: "";
                         height: 1px;

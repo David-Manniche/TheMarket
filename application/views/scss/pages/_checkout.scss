@@ -145,9 +145,9 @@
 
                 &.inprogress {
                     &:before {
-                        background: $secondary-color;
+                        background: $secondary-color; color:$secondary-color-inverse;
                         border-color: $secondary-color;
-                        color: #fff;
+                       
                     }
 
                     > span {
@@ -272,14 +272,14 @@
 .nav-checkout ul li.is--active a:after {
     #{$start-direction}: 0;
     width: 50%;
-    background: $brand-color;
+    background: $brand-color; color:$brand-color-inverse;
 }
 
 .nav-checkout ul li a:hover:before,
 .nav-checkout ul li.is--active a:before {
     #{$end-direction}: 0;
     width: 50%;
-    background: $brand-color;
+    background: $brand-color; color:$brand-color-inverse;
 }
 
 .body--checkout {}
@@ -387,8 +387,8 @@
 }
 
 .btn-action .action:hover {
-    background: $brand-color;
-    color: #fff;
+    background: $brand-color; color:$brand-color-inverse;
+  
     border: solid 1px $brand-color;
 }
 
@@ -785,7 +785,7 @@
 
         .is--active {
             &:before {
-                background: $brand-color;
+                background: $brand-color; color:$brand-color-inverse;
             }
         }
     }
@@ -831,7 +831,7 @@
 .txt-order-summary {
     text-align: center;
     border-radius: 4px;
-    /*	background: $brand-color;*/
+    /*	background: $brand-color; color:$brand-color-inverse;*/
     padding: 15px 10px;
     color: #000;
     font-weight: 600;
@@ -918,7 +918,7 @@
 .tabz--checkout-login ul li:after {
     /*content: "";*/
     bottom: 0;
-    background: $brand-color;
+    background: $brand-color; color:$brand-color-inverse;
     height: 2px;
     position: absolute;
     z-index: 12;
@@ -934,7 +934,7 @@
 
 .tabz--checkout-login ul li.is-active:after {
     position: absolute;
-    background: $brand-color;
+    background: $brand-color; color:$brand-color-inverse;
 }
 
 .tabz--checkout-login ul li.is-active:after {
