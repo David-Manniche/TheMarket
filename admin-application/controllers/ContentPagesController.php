@@ -20,6 +20,9 @@ class ContentPagesController extends AdminBaseController
     {
         $this->objPrivilege->canViewContentPages();
         $frmSearch = $this->getSearchForm();
+        $this->_template->addCss('css/cropper.css');
+        $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
         $this->set('includeEditor', true);
         $this->set('frmSearch', $frmSearch);
         $this->_template->render();
@@ -181,7 +184,7 @@ class ContentPagesController extends AdminBaseController
             $srch->doNotLimitRecords();
             $srch->addMultipleFields(array("cpblocklang_text", 'cpblocklang_block_id'));
             $srch->addCondition('cpblocklang_cpage_id', '=', $cpage_id);
-            
+
             if (0 < $autoFillLangData) {
                 $srch->addCondition('cpblocklang_lang_id', '=', FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
             } else {
@@ -269,7 +272,7 @@ class ContentPagesController extends AdminBaseController
                 }
             }
         }
-        
+
         $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
         if (0 < $autoUpdateOtherLangsData) {
             $updateLangDataobj = new TranslateLangData(ContentPage::DB_TBL_LANG);
@@ -278,7 +281,7 @@ class ContentPagesController extends AdminBaseController
                 FatUtility::dieWithError(Message::getHtml());
             }
         }
-        
+
         $newTabLangId = 0;
         $languages = Language::getAllNames();
         foreach ($languages as $langId => $langName) {
@@ -423,21 +426,25 @@ class ContentPagesController extends AdminBaseController
         $frm->addRequiredField(Labels::getLabel('LBL_Page_Title', $this->adminLangId), 'cpage_title');
         if ($cpage_layout == ContentPage::CONTENT_PAGE_LAYOUT1_TYPE) {
             $bannerTypeArr = applicationConstants::bannerTypeArr();
-            $fld = $frm->addButton(
+            /*$frm->addButton(
                 Labels::getLabel('LBL_Backgroud_Image', $this->adminLangId),
                 'cpage_bg_image',
                 Labels::getLabel('LBL_Upload_Image', $this->adminLangId),
                 array('class' => 'bgImageFile-Js', 'id' => 'cpage_bg_image', 'data-file_type' => AttachedFile::FILETYPE_CPAGE_BACKGROUND_IMAGE, 'data-frm' => 'frmBlock')
-            );
+            );*/
+            $frm->addFileUpload(Labels::getLabel('LBL_Backgroud_Image', $this->adminLangId), 'cpage_bg_image', array('accept' => 'image/*', 'data-frm' => 'frmBlockLang'));
             $frm->addTextBox(Labels::getLabel('LBL_Background_Image_Title', $this->adminLangId), 'cpage_image_title');
             $frm->addTextarea(Labels::getLabel('LBL_Background_Image_Description', $this->adminLangId), 'cpage_image_content');
             for ($i = 1; $i <= ContentPage::CONTENT_PAGE_LAYOUT1_BLOCK_COUNT; $i++) {
                 $frm->addHtmlEditor(Labels::getLabel('LBL_Content_Block_' . $i, $this->adminLangId), 'cpblock_content_block_' . $i);
             }
+            $frm->addHiddenField('', 'min_width', 1300);
+            $frm->addHiddenField('', 'min_height', 400);
+            $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_CPAGE_BACKGROUND_IMAGE);
         } else {
             $frm->addHtmlEditor(Labels::getLabel('LBL_Page_Content', $this->adminLangId), 'cpage_content');
         }
-        
+
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
@@ -467,22 +474,22 @@ class ContentPagesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('LBL_Please_Select_A_File', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
 
         $fileHandlerObj = new AttachedFile();
         if (!$res = $fileHandlerObj->saveImage(
-            $_FILES['file']['tmp_name'],
+            $_FILES['cropped_image']['tmp_name'],
             $file_type,
             $cpage_id,
             0,
-            $_FILES['file']['name'],
+            $_FILES['cropped_image']['name'],
             -1,
             $unique_record = true,
             $lang_id,
-            $_FILES['file']['type']
+            $_FILES['cropped_image']['type']
         )
         ) {
             Message::addErrorMessage($fileHandlerObj->getError());
@@ -490,11 +497,11 @@ class ContentPagesController extends AdminBaseController
             // FatUtility::dieJsonError($fileHandlerObj->getError());
         }
 
-        $this->set('file', $_FILES['file']['name']);
+        $this->set('file', $_FILES['cropped_image']['name']);
         $this->set('cpage_id', $cpage_id);
         $this->set('cpage_layout', $cpage_layout);
         $this->set('lang_id', $lang_id);
-        $this->set('msg', $_FILES['file']['name'] . ' ' . Labels::getLabel('LBL_Uploaded_Successfully', $this->adminLangId));
+        $this->set('msg', $_FILES['cropped_image']['name'] . ' ' . Labels::getLabel('LBL_Uploaded_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 

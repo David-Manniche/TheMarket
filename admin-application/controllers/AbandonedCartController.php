@@ -51,6 +51,12 @@ class AbandonedCartController extends AdminBaseController
         $this->set('recordCount', $abandonedCart->recordCount());
         $this->set('pageCount', $abandonedCart->pages());
         $this->set('postedData', $postedData);
+        $totCartRecovered = 0;
+        if($action == AbandonedCart::ACTION_PURCHASED){
+            $cartRecovered = $abandonedCart->getCartRecoveredTotal($userId, $selProdId, $dateFrom, $dateTo); 
+            $totCartRecovered = $cartRecovered['amount'];
+        }        
+        $this->set('totCartRecovered', $totCartRecovered);        
         $this->_template->render(false, false);
     }
     

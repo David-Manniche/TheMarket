@@ -824,7 +824,7 @@ class CheckoutController extends MyAppController
         return $langSpecificProductInfo = FatApp::getDb()->fetch($langProdRs);
     }
 
-    public function PaymentSummary()
+    public function paymentSummary()
     {
         if (true === MOBILE_APP_API_CALL) {
             $payFromWallet = FatApp::getPostedData('payFromWallet', Fatutility::VAR_INT, 0);

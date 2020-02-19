@@ -13,14 +13,15 @@
             foreach($optionCombinations as $optionValueId=>$optionValue){
                 $arr = explode('|',$optionValue);
                 $key = str_replace('|',',',$optionValueId); 
-                $variant = '';
+                $variant = $optionValue;
+                /* $variant = '';
                 foreach($arr as $key2=>$val){	
                     if($key2 == 0){
                         $variant = $val;
                     }else{
                         $variant = $variant." / ".$val;
                     }						
-                } 
+                }  */
                 $count++;
             ?>
             <tr>

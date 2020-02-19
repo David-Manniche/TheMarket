@@ -2134,7 +2134,7 @@ trait CustomProducts
             FatUtility::dieWithError(Message::getHtml());
         }
         $productOptions = Product::getProductOptions($productId, $this->siteLangId, true);
-        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '_');
+        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '|');
         $this->set('optionCombinations', $optionCombinations);
         $this->set('productId', $productId);
         $this->_template->render(false, false);

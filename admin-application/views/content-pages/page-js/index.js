@@ -165,6 +165,79 @@ $(document).ready(function() {
         $("#frmContentPgListing").attr("action",fcom.makeUrl('ContentPages','deleteSelected')).submit();
     };
 
+    popupImage = function(inputBtn){
+		if (inputBtn.files && inputBtn.files[0]) {
+	        fcom.ajax(fcom.makeUrl('ContentPages', 'imgCropper'), '', function(t) {
+				$('#cropperBox-js').html(t);
+                $('#cropperBox-js').css("display", "block");
+				$("#mediaForm-js").css("display", "none");
+				var container = document.querySelector('.img-container');
+                var file = inputBtn.files[0];
+                $('#new-img').attr('src', URL.createObjectURL(file));
+	    		var image = container.getElementsByTagName('img').item(0);
+	            var minWidth = document.frmBlockLang.min_width.value;
+	            var minHeight = document.frmBlockLang.min_height.value;
+	    		var options = {
+	                aspectRatio: 16 / 5,
+	                data: {
+	                    width: minWidth,
+	                    height: minHeight,
+	                },
+	                minCropBoxWidth: minWidth,
+	                minCropBoxHeight: minHeight,
+	                toggleDragModeOnDblclick: false,
+		        };
+				$(inputBtn).val('');
+	    		return cropImage(image, options, 'uploadBgImage', inputBtn);
+	    	});
+		}
+	};
+
+    uploadBgImage = function(formData){
+        var lang_id = document.frmBlockLang.lang_id.value;
+        var cpage_id = document.frmBlockLang.cpage_id.value;
+        var cpage_layout = document.frmBlockLang.cpage_layout.value;
+        var file_type = document.frmBlockLang.file_type.value;
+        formData.append('lang_id', lang_id);
+        formData.append('cpage_id', cpage_id);
+        formData.append('cpage_layout', cpage_layout);
+        formData.append('file_type', file_type);
+        $.ajax({
+            url: fcom.makeUrl('ContentPages', 'setUpBgImage'),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+            complete: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+            success: function(ans) {
+                fcom.displaySuccessMessage(ans.msg);
+                /* addLangForm(ans.cpage_id, ans.lang_id, ans.cpage_layout); */
+                /* addForm(cpage_id); */
+                /* '<img src=""> <a href="javascript:void(0);" onclick="removeBgImage(1,1,1)" class="remove--img"><i class="ion-close-round"></i></a>';
+                fcom.makeUrl('Questionnaires', 'generateLink', [questionnaireId]);
+                generateUrl('cart', 'cart_summary');
+                */
+                $(".temp-hide").show();
+                var dt = new Date();
+                var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+                $(".uploaded--image").html('<img src="' + fcom.makeUrl('image', 'cpageBackgroundImage', [ans.cpage_id, ans.lang_id, 'THUMB'], SITE_ROOT_URL) + '?' + time + '"> <a href="javascript:void(0);" onclick="removeBgImage(' + [ans.cpage_id, ans.lang_id, ans.cpage_layout] + ')" class="remove--img"><i class="ion-close-round"></i></a>');
+                fcom.displaySuccessMessage(ans.msg);
+                $('#cropperBox-js').css("display", "none");
+				$("#mediaForm-js").css("display", "block");
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+        });
+	}
+
 })();
 
 (function() {
@@ -172,67 +245,3 @@ $(document).ready(function() {
         $.facebox('<img width="800px;" src="' + str + '">');
     }
 })();
-
-
-$(document).on('click', '.bgImageFile-Js', function() {
-    var node = this;
-    $('#form-upload').remove();
-    var formName = $(node).attr('data-frm');
-
-    var lang_id = document.frmBlockLang.lang_id.value;
-    var cpage_id = document.frmBlockLang.cpage_id.value;
-    var cpage_layout = document.frmBlockLang.cpage_layout.value;
-
-    var fileType = $(node).attr('data-file_type');
-
-    var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-    frm = frm.concat('<input type="file" name="file" />');
-    frm = frm.concat('<input type="hidden" name="file_type" value="' + fileType + '">');
-    frm = frm.concat('<input type="hidden" name="cpage_id" value="' + cpage_id + '">');
-    frm = frm.concat('<input type="hidden" name="lang_id" value="' + lang_id + '">');
-    frm = frm.concat('<input type="hidden" name="cpage_layout" value="' + cpage_layout + '">');
-    frm = frm.concat('</form>');
-    $('body').prepend(frm);
-    $('#form-upload input[name=\'file\']').trigger('click');
-    if (typeof timer != 'undefined') {
-        clearInterval(timer);
-    }
-    timer = setInterval(function() {
-        if ($('#form-upload input[name=\'file\']').val() != '') {
-            clearInterval(timer);
-            $val = $(node).val();
-            $.ajax({
-                url: fcom.makeUrl('ContentPages', 'setUpBgImage'),
-                type: 'post',
-                dataType: 'json',
-                data: new FormData($('#form-upload')[0]),
-                cache: false,
-                contentType: false,
-                processData: false,
-                beforeSend: function() {
-                    $(node).val('Loading');
-                },
-                complete: function() {
-                    $(node).val($val);
-                },
-                success: function(ans) {
-                    fcom.displaySuccessMessage(ans.msg);
-                    /* addLangForm(ans.cpage_id, ans.lang_id, ans.cpage_layout); */
-                    /* addForm(cpage_id); */
-                    /* '<img src=""> <a href="javascript:void(0);" onclick="removeBgImage(1,1,1)" class="remove--img"><i class="ion-close-round"></i></a>';
-                    fcom.makeUrl('Questionnaires', 'generateLink', [questionnaireId]);
-                    generateUrl('cart', 'cart_summary');
-                    */
-                    $(".temp-hide").show();
-                    var dt = new Date();
-                    var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
-                    $(".uploaded--image").html('<img src="' + fcom.makeUrl('image', 'cpageBackgroundImage', [ans.cpage_id, ans.lang_id, 'THUMB'], SITE_ROOT_URL) + '?' + time + '"> <a href="javascript:void(0);" onclick="removeBgImage(' + [ans.cpage_id, ans.lang_id, ans.cpage_layout] + ')" class="remove--img"><i class="ion-close-round"></i></a>');
-                    fcom.displaySuccessMessage(ans.msg);
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-                }
-            });
-        }
-    }, 500);
-});
