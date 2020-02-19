@@ -5,7 +5,7 @@ class MyAppController extends FatController
     public $app_user = array();
     public $appToken = '';
     public $themeDetail = '';
-    
+
     public function __construct($action)
     {
         parent::__construct($action);
@@ -29,7 +29,7 @@ class MyAppController extends FatController
         $this->siteLangId = CommonHelper::getLangId();
         $this->siteLangCode = CommonHelper::getLangCode();
         $this->siteCurrencyId = CommonHelper::getCurrencyId();
-        
+
         $this->app_user['temp_user_id'] = 0;
         if (true === MOBILE_APP_API_CALL) {
             $this->setApiVariables();
@@ -142,7 +142,12 @@ class MyAppController extends FatController
         if (CommonHelper::isThemePreview() && isset($_SESSION['preview_theme'])) {
             $themeId = $_SESSION['preview_theme'];
         }
-        $this->themeDetail = ThemeColor::getAttributesById($themeId);
+        $themeDetail = array();
+        $themeColors = ThemeColor::getThemeColorsById($themeId);
+        foreach ($themeColors as $tColor) {
+            $themeDetail[$tColor['tcolor_key']] = $tColor['tcolor_value'];
+        }
+        $this->themeDetail = $themeDetail;
         $currencySymbolLeft = CommonHelper::getCurrencySymbolLeft();
         $currencySymbolRight = CommonHelper::getCurrencySymbolRight();
 
@@ -367,7 +372,7 @@ class MyAppController extends FatController
                 $fld->setUnique('tbl_user_credentials', 'credential_email', 'credential_user_id', 'user_id', 'user_id');
             }
         }
-        
+
         $fld = $frm->addPasswordField(Labels::getLabel('LBL_PASSWORD', $siteLangId), 'user_password', '', array('placeholder' => Labels::getLabel('LBL_PASSWORD', $siteLangId)));
         $fld->requirements()->setRequired();
         $fld->requirements()->setRegularExpressionToValidate(ValidateElement::PASSWORD_REGEX);
@@ -638,7 +643,7 @@ class MyAppController extends FatController
         if (empty($get) || !array_key_exists('ttk', $get)) {
             return;
         }
-      
+
         $ttk = ($get['ttk'] != '') ? $get['ttk'] : '';
 
         if (strlen($ttk) != UserAuthentication::TOKEN_LENGTH) {
