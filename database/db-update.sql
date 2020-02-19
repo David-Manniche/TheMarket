@@ -606,7 +606,8 @@ INSERT INTO `tbl_theme` (`theme_id`, `theme_name`, `theme_display_order`, `theme
 (12, 'Green - Third', 0, 0),
 (13, 'Yellow - First', 0, 0),
 (14, 'Yellow - Second', 0, 0),
-(15, 'Yellow - Third', 0, 0);
+(15, 'Yellow - Third', 0, 0),
+(16, 'Copy of Red - First', 0, 1);
 
 ALTER TABLE `tbl_theme`
   ADD PRIMARY KEY (`theme_id`);
