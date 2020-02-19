@@ -358,9 +358,8 @@
 
         input {
             &[type="submit"] {
-                background: $secondary-color;
-                color: #fff;
-                text-transform: uppercase;
+                background: $secondary-color; color:$secondary-color-inverse;
+                            text-transform: uppercase;
                 font-size: 1em;
                 border: none;
                 display: block;

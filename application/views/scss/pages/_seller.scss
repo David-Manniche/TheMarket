@@ -305,9 +305,9 @@
 }
 
 .simple-price {
-    background: $secondary-color;
+    background: $secondary-color; color:$secondary-color-inverse;
     text-align: center;
-    color: #fff;
+    
 }
 
 .pricing-structure {
@@ -411,7 +411,7 @@
                 &:after {
                     content: "";
                     bottom: 0;
-                    background: $brand-color;
+                    background: $brand-color; color:$brand-color-inverse;
                     height: 2px;
                     width: 0;
                     position: absolute;

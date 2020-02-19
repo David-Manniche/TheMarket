@@ -76,7 +76,7 @@
                 &:after {
                     content: "";
                     position: absolute;
-                    background: $brand-color;
+                    background: $brand-color; color:$brand-color-inverse;
                     #{$end-direction}: 0;
                 }
             }

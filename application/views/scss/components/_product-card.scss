@@ -301,7 +301,7 @@
             > span {
                 display: block;
                 width: 2.5rem;
-                background: $brand-color;
+                background: $brand-color; color:$brand-color-inverse;
                 border-radius: 50%;
                 height: 2.5rem;
                 cursor: pointer;
@@ -336,7 +336,7 @@
     }
 
     > ul > li.is-active > span {
-        background: $secondary-color;
+        background: $secondary-color; color:$secondary-color-inverse;
     }
 }
 
@@ -470,7 +470,7 @@
 
         .link {
             &:after {
-                background: $brand-color;
+                background: $brand-color; color:$brand-color-inverse;
             }
         }
     }
@@ -637,8 +637,8 @@
                 background: #f0f0f0;
 
                 &:hover {
-                    background: $brand-color;
-                    color: #fff;
+                    background: $brand-color; color:$brand-color-inverse;
+                   
                 }
             }
 
@@ -651,11 +651,11 @@
 
 
             &:hover {
-                background: $brand-color;
+                background: $brand-color; color:$brand-color-inverse;
                 border-color: $brand-color;
-                color: #fff;
+                
                 text-decoration: none !important;
-                fill: #fff;
+                fill:$brand-color-inverse;
 
                 .svg {
                     fill: inherit;

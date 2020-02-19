@@ -34,16 +34,16 @@ if ($canonicalUrl == '') {
 <style>
     :root {
         --brand-color:#<?php echo $themeDetail['tcolor_first_color']; ?>;
-        --brand-color-inverse:;
+        --brand-color-inverse:#fff;
         
         --primary-color: #<?php echo $themeDetail['tcolor_first_color']; ?>;
-        --primary-color-inverse:;       
+        --primary-color-inverse:#fff;       
 
         --secondary-color:#<?php echo $themeDetail['tcolor_second_color']; ?>;
         --secondary-color-inverse:#fff;
 
         --third-color: #<?php echo $themeDetail['tcolor_third_color']; ?>;
-        --third-color-inverse:;
+        --third-color-inverse:#fff;
 
         --body-color:#525252;
 
