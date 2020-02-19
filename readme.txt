@@ -89,3 +89,4 @@ Bugs:
     => 034475 - Pagination is not working  properly on Seller > Catalog list.
     => 034608 - when user adds item to cart and turns back from payment gateway then quantity get doubles.
     => 034661 - Unable to save buy together and related products.
+--------------------TV-9.1.3.20200219------------------------------
