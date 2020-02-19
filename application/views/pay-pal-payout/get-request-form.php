@@ -10,6 +10,7 @@ $amountFld->developerTags['col'] = 2;
 
 $submitBtnFld = $frm->getField('btn_submit');
 $submitBtnFld->developerTags['col'] = 2;
+$submitBtnFld->value = Labels::getLabel('LBL_Save', $siteLangId);
 $submitBtnFld->setFieldTagAttribute('class', 'btn btn--primary btn--block');  
 
 $frm->addButton("", "btn_cancel", Labels::getLabel("LBL_Cancel", $siteLangId));

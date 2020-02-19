@@ -409,8 +409,11 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                 <?php include(CONF_THEME_PATH.'_partial/product/shipping-rates.php');?>
 
                 <?php $youtube_embed_code = CommonHelper::parseYoutubeUrl($product["product_youtube_video"]); ?>
-                <div class="row justify-content-center">
-                    <div class="col-md-7">
+                
+
+
+            </div>
+			 
                         <div class="nav-detail nav-detail-js">
                             <ul>
                                 <?php if (count($productSpecifications)>0) {?>
@@ -433,11 +436,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                 <?php }?>
                             </ul>
                         </div>
-                    </div>
-                </div>
-
-
-            </div>
+                  
             <section class="section">
                 <div class="row justify-content-center">
                     <div class="col-xl-7">
@@ -647,15 +646,19 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
 
         $(".nav-scroll-js").click(function(event) {
             event.preventDefault();
-            var full_url = this.href;
+            var full_url = this.href; 
             var parts = full_url.split("#");
-            var trgt = parts[1];
-            var target_offset = $("#" + trgt).offset();
+            var trgt = parts[1];   
+            /* var target_offset = $("#" + trgt).offset();
 
             var target_top = target_offset.top - $('#header').height();
             $('html, body').animate({
                 scrollTop: target_top
+            }, 800); */
+			$('html, body').animate({ 
+                scrollTop: $("#" + trgt).offset().top 
             }, 800);
+			
         });
         $('.nav-detail-js li a').click(function() {
             $('.nav-detail-js li a').removeClass('is-active');
