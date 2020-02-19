@@ -1,3 +1,6 @@
+New Features:
+    => 70795 - Avalara Tax API
+
 -----------------------TV-9.1.2.20200131-------------------------------
 Bugs:
     => Added shipping information in vendor order email.

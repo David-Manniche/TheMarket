@@ -662,4 +662,67 @@ class DummyController extends MyAppController
     {
         AbandonedCart::sendReminderAbandonedCart();
     }
+    
+    public function testavalaratax(){
+        require_once CONF_PLUGIN_DIR . '/tax/avalaratax/Avalaratax.php';
+
+        
+        
+        $itemsArr = [];
+        
+        $item = [
+              'amount' => 100,
+              'quantity' => 2,
+              'itemCode' => 100,
+              'taxCode' => 'P0000000',
+              'isDigital' => 1,            
+        ];
+        array_push($itemsArr, $item);
+        
+        $shippingItems = [];
+        
+        //???
+        $shippingItem = [
+            'amount' => 12,
+            'quantity' => 1,
+            'itemCode' => 'Shipping-100',    // ??? 
+            'taxCode' => 'FR',
+        ];
+        array_push($shippingItems, $shippingItem);      
+        
+            
+        $fromAddress = array(
+            'line1' => '424 E Palm Canyon Dr',
+            'line2' => '',
+            'city' => 'Palm Springs',
+            'state' => 'CA',
+            'postalCode' => '92264-8806',
+            'country' => 'US',
+        );
+
+        $toAddress = array(
+            'line1' => '5711 W Century Blvd',
+            'line2' => '',
+            'city' =>'Los Angeles',
+            'state' => 'CA',
+            'postalCode' => '90045',
+            'country' => 'US',
+        );    
+        
+        
+        $avalaraObj = new Avalaratax(1);
+        $taxRates =  $avalaraObj->setCustomerCode(1250)   
+            ->setDiscountAmount(10) 
+            ->setFromAddress($fromAddress['line1'],$fromAddress['line2'],'',$fromAddress['city'],$fromAddress['state'],$fromAddress['postalCode'],$fromAddress['country']) 
+            ->setToAddress($toAddress['line1'],$toAddress['line2'],$toAddress['city'],$toAddress['state'],$toAddress['postalCode'],$toAddress['country'])
+            ->setProducts($item)
+            ->setProductsShipping($shippingItem)
+            ->setInvoiceId("S-100-1")
+            ->setInvoiceDate("2020-01-11")
+            ->getRates();
+        
+        var_dump($taxRates);
+        
+        
+    }
 }

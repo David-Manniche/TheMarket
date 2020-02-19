@@ -574,3 +574,11 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` = 'MSG_Your_email_not_change
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'Lbl_Change_Email';
 
 ALTER TABLE `tbl_user_auth_token` CHANGE `uauth_user_id` `uauth_user_id` VARCHAR(100) NOT NULL;
+
+-- [Avalara Tax API--------
+INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES (NULL, 'Avalara Tax', '7', 'AvalaraTax', '1', '9');
+INSERT INTO `tbl_plugins_lang` (`pluginlang_plugin_id`, `pluginlang_lang_id`, `plugin_name`, `plugin_description`) VALUES
+(11, 1, 'Avalara Tax', '<a href=\"https://developer.avalara.com/api-reference/avatax/rest/v2/\">https://developer.avalara.com/api-reference/avatax/rest/v2/</a>'),
+(11, 2, 'ضريبة أفالارا', '<a href=\"https://developer.avalara.com/api-reference/avatax/rest/v2/\">https://developer.avalara.com/api-reference/avatax/rest/v2/</a>');
+
+-- Avalara Tax API ]-------

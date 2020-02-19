@@ -13,12 +13,14 @@ class Plugin extends MyAppModel
     public const TYPE_PAYOUTS = 4;
     public const TYPE_ADVERTISEMENT_FEED = 5;
     public const TYPE_SMS_NOTIFICATION = 6;
+    public const TYPE_TAX = 7;
 
     public const HAVING_KINGPIN = [
         self::TYPE_CURRENCY,
         self::TYPE_PUSH_NOTIFICATION,
         self::TYPE_ADVERTISEMENT_FEED,
-        self::TYPE_SMS_NOTIFICATION
+        self::TYPE_SMS_NOTIFICATION,
+        self::TYPE_TAX    
     ];
 
     public const ATTRS = [
@@ -113,6 +115,7 @@ class Plugin extends MyAppModel
             static::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT', $langId),
             static::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
             static::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
+            static::TYPE_TAX => Labels::getLabel('LBL_Tax', $langId),
         ];
     }
 
