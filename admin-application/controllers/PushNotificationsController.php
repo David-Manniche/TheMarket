@@ -185,18 +185,17 @@ class PushNotificationsController extends AdminBaseController
         $frm = $this->form();
         $pNotificationId = FatUtility::int($pNotificationId);
         $status = 0;
-        $registeredUsers = 0;
+        $userAuthType = '';
         if (0 < $pNotificationId) {
             $data = PushNotification::getAttributesById($pNotificationId);
             $status = $data['pnotification_status'];
             $frm = $this->form($data['pnotification_status']);
-            $registeredUsers = $data['pnotification_for_buyer'];
-            $data['registered_users'] = $registeredUsers;
+            $userAuthType = $data['pnotification_user_auth_type'];
             $frm->fill($data);
         }
         $this->set('status', $status);
         $this->set('pNotificationId', $pNotificationId);
-        $this->set('registeredUsers', $registeredUsers);
+        $this->set('userAuthType', $userAuthType);
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
