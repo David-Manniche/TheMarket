@@ -26,7 +26,7 @@
         }
 
         &.slick-active {
-            background: var(--first-color);
+            background:$brand-color;
             width: 30px;
             border-radius: 15px;
         }

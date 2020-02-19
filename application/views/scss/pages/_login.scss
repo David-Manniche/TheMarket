@@ -441,6 +441,6 @@
 }
 
 .forgot {
-    text-align: right;
+    text-align: #{$end-direction};
     font-size: 0.75em;
 }

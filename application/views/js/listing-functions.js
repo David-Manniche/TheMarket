@@ -12,28 +12,7 @@ $(document).ready(function() {
         }
     });
 
-    /* for left filters  */
-    $('.link__filter').click(function() {
-        $(this).toggleClass("active");
-        var el = $("body");
-        if (el.hasClass('filter__show')) el.removeClass("filter__show");
-        else el.addClass('filter__show');
-        return false;
-    });
-
-    $('body').click(function() {
-        if ($('body').hasClass('filter__show')) {
-            $('.link__filter').removeClass("active");
-            $('body').removeClass('filter__show');
-        }
-    });
-
-    $('.filter__overlay').click(function() {
-        if ($('body').hasClass('filter__show')) {
-            $('.link__filter').removeClass("active");
-            $('body').removeClass('filter__show');
-        }
-    });
+     
 
     $('.productFilters-js').click(function(e) {
         e.stopPropagation();
