@@ -14,33 +14,32 @@ $img_fld = $imagesFrm->getField('prod_image');
 $img_fld->setFieldTagAttribute('onchange', 'setupCustomCatalogProductImages(); return false;'); 
 ?>
 
-<div class="row justify-content-center">
-     <div class="col-md-12">     
+<div class="tabs_data">
+    <div class="tabs_body">     
         <?php echo $imagesFrm->getFormHtml(); ?>
         <div id="imageupload_div"></div>
-        
-        <div class="row">
-            <div class="col-md-6">
-                <div class="field-set">
-                    <div class="caption-wraper"><label class="field_label"></label></div>
-                    <div class="field-wraper">
-                        <div class="field_cover">
-                            <input onclick="<?php if($productType == Product::PRODUCT_TYPE_PHYSICAL) { ?>productShipping(<?php echo $preqId; ?>); <?php }else{ ?> productOptionsAndTag(<?php echo $preqId; ?>); <?php }?>" class="btn btn-outline-primary" type="button" name="btn_back" value="<?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 text-right">
-                <div class="field-set">
-                    <div class="caption-wraper"><label class="field_label"></label></div>
-                    <div class="field-wraper">
-                        <div class="field_cover">
-                            <input onclick="goToCatalogRequest();" type="button" class="btn btn--primary" name="btn_Finish" value="<?php echo Labels::getLabel('LBL_Finish', $siteLangId); ?>">
-                        </div>
+    </div>
+    <div class="row tabs_footer">
+        <div class="col-md-6">
+            <div class="field-set">
+                <div class="caption-wraper"><label class="field_label"></label></div>
+                <div class="field-wraper">
+                    <div class="field_cover">
+                        <input onclick="<?php if($productType == Product::PRODUCT_TYPE_PHYSICAL) { ?>productShipping(<?php echo $preqId; ?>); <?php }else{ ?> productOptionsAndTag(<?php echo $preqId; ?>); <?php }?>" class="btn btn-outline-primary" type="button" name="btn_back" value="<?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>">
                     </div>
                 </div>
             </div>
         </div>
-  </div>
+        <div class="col-md-6 text-right">
+            <div class="field-set">
+                <div class="caption-wraper"><label class="field_label"></label></div>
+                <div class="field-wraper">
+                    <div class="field_cover">
+                        <input onclick="goToCatalogRequest();" type="button" class="btn btn--primary" name="btn_Finish" value="<?php echo Labels::getLabel('LBL_Finish', $siteLangId); ?>">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 

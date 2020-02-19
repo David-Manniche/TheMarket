@@ -156,19 +156,23 @@ class ProductsController extends AdminBaseController
         $this->objPrivilege->canEditProducts();
         $post = FatApp::getPostedData();
         if (false === $post) {
-            Message::addErrorMessage($this->str_invalid_request);
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError($this->str_invalid_request);
         }
         $product_id = FatUtility::int($post['product_id']);
         $option_id = FatUtility::int($post['option_id']);
         if (!$product_id || !$option_id) {
-            Message::addErrorMessage($this->str_invalid_request);
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError($this->str_invalid_request);
         }
+        
+        $productOptions = Product::getProductOptions($product_id, $this->adminLangId, false, 1);
+        $optionSeparateImage = Option::getAttributesById($option_id, 'option_is_separate_images');
+        if(count($productOptions) > 0 && $optionSeparateImage == 1){
+            FatUtility::dieJsonError(Labels::getLabel('LBL_you_have_already_added_option_having_separate_image', $this->adminLangId));
+        }
+        
         $prodObj = new Product();
         if (!$prodObj->addUpdateProductOption($product_id, $option_id)) {
-            Message::addErrorMessage(Labels::getLabel($prodObj->getError(), $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError($prodObj->getError());
         }
         Product::updateMinPrices($product_id);
         $this->set('msg', Labels::getLabel('LBL_Record_Updated_Successfully', $this->adminLangId));
