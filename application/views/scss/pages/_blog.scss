@@ -194,7 +194,7 @@
     position: relative;
 
     &:after {
-        background: $secondary-color;
+        background: $secondary-color; color:$secondary-color-inverse;
         height: 176px;
         width: 100%;
         top: 0;
@@ -669,8 +669,8 @@
 .right-side-bar {}
 
 .blog-subscribers-inner {
-    background: $brand-color;
-    color: #fff;
+    background: $brand-color; color:$brand-color-inverse;
+    
 
     h3 {
         color: inherit;
@@ -744,8 +744,8 @@
 
         &.is--active {
             a {
-                color: #fff;
-                background: $secondary-color;
+                
+                background: $secondary-color; color:$secondary-color-inverse;
             }
         }
     }
@@ -821,9 +821,9 @@
 }
 
 .pagination-blog li.selected a {
-    background: $secondary-color;
+    background: $secondary-color; color:$secondary-color-inverse;
     border-color: transparent;
-    color: #fff;
+    
 }
 
 

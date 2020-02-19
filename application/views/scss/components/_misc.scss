@@ -93,13 +93,12 @@ hr {}
 /*Bg*/
 .bg--primary-color,
 .bg-primary {
-    color: #fff;
-    background: $brand-color;
+    
+    background: $brand-color; color:$brand-color-inverse;
 }
 
-.bg-second {
-    color: #fff;
-    background: $secondary-color;
+.bg-second {     
+    background: $secondary-color; color:$secondary-color-inverse;
 }
 
 .bg-white {

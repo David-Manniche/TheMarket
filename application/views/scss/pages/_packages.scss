@@ -38,19 +38,19 @@
 }
 
 .packages-box .box.two .box-inner {
-    background: $brand-color;
+    background: $brand-color; color:$brand-color-inverse;
 }
 
 .packages-box .box.two .after-box h3 {
-    background: $brand-color;
+    background: $brand-color; color:$brand-color-inverse;
 }
 
 .packages-box .box.three .box-inner {
-    background: $secondary-color;
+    background: $secondary-color; color:$secondary-color-inverse;
 }
 
 .packages-box .box.three .after-box h3 {
-    background: $secondary-color;
+    background: $secondary-color; color:$secondary-color-inverse;
 }
 
 .packages-box .name {
@@ -58,7 +58,7 @@
     color: #fff;
     font-size: 1.5em;
     line-height: 1.5;
-   /* font-family: $family-primary;*/
+    font-family: $family-primary;
 }
 
 .packages-box .name span {
@@ -74,7 +74,7 @@
     font-size: 1.1em;
     font-weight: 400;
     line-height: 1.5;
-   /* font-family: $family-primary;*/
+    font-family: $family-primary;
 }
 
 .packages-box .valid sup {

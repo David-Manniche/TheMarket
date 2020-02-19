@@ -8,7 +8,9 @@
         $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-';
         $frm->developerTags['fld_default_col'] = 12;
     } else {
-        $frm->developerTags['colClassPrefix'] = 'col-lg-6 col-md-';
+        //$frm->developerTags['colClassPrefix'] = 'col-lg-6 col-md-';
+        //$frm->developerTags['fld_default_col'] = 6;
+        $frm->developerTags['colClassPrefix'] = 'col-md-';
         $frm->developerTags['fld_default_col'] = 6;
     }
 
@@ -45,10 +47,16 @@
     }
 
     $submitBtnFld = $frm->getField('btn_submit');
+    $submitBtnFld->setFieldTagAttribute('class', 'btn btn--primary btn-block');
+    $submitBtnFld->setWrapperAttribute('class', 'col-6 col-lg-2');
+    $submitBtnFld->developerTags['col'] = 3;
+
     $cancelBtnFld = $frm->getField('btn_cancel');
     $cancelBtnFld->setFieldTagAttribute('onClick', 'closeForm()');
-    $cancelBtnFld->setFieldTagAttribute('class', 'btn-outline-primary');
-    $submitBtnFld->attachField($cancelBtnFld);
+    $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
+    $cancelBtnFld->setWrapperAttribute('class', 'col-6 col-lg-2');
+    $cancelBtnFld->developerTags['col'] = 3;
+    //$submitBtnFld->attachField($cancelBtnFld);
 
     echo $frm->getFormHtml();?> </div>
     <?php if (User::isAffiliate()) { ?>

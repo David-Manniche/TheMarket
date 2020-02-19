@@ -167,14 +167,14 @@ input[type="file"] {
             height: 2.5rem;
             vertical-align: middle;
             text-align: center;
-            background: $brand-color;
+            background: $brand-color; color:$brand-color-inverse;
             font-size: 0.875rem;
             font-weight: 500;
             line-height: 2.375rem;
             overflow: hidden;
             outline: none;
             cursor: pointer;
-            color: #fff;
+           
             -webkit-transition: -webkit-box-shadow 0.2s;
             transition: -webkit-box-shadow 0.2s;
             transition: box-shadow 0.2s;
