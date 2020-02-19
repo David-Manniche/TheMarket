@@ -29,8 +29,8 @@ $frm->developerTags['fld_default_col'] = 12;
                         <?php echo Labels::getLabel('LBL_MEDIA', $adminLangId); ?>
                     </a>
                 </li>
-                <li class="<?php echo 1 > $pNotificationId ? 'fat-inactive' : ''; ?>">
-                    <a href="javascript:void(0)" <?php echo 0 < $pNotificationId ? 'onclick="addSelectedUsersForm(' . $pNotificationId . ');' : ''; ?>"><?php echo Labels::getLabel('LBL_SELECTED_USERS', $adminLangId); ?></a>
+                <li class="<?php echo 1 > $pNotificationId || User::AUTH_TYPE_GUEST == $userAuthType ? 'fat-inactive' : ''; ?>">
+                    <a href="javascript:void(0)" <?php echo 0 < $pNotificationId || User::AUTH_TYPE_GUEST != $userAuthType ? 'onclick="addSelectedUsersForm(' . $pNotificationId . ');' : ''; ?>"><?php echo Labels::getLabel('LBL_SELECTED_USERS', $adminLangId); ?></a>
                 </li>
             </ul>
             <div class="tabs_panel_wrap">

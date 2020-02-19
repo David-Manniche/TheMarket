@@ -575,3 +575,4 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` = 'Lbl_Change_Email';
 
 ALTER TABLE `tbl_push_notifications` ADD `pnotification_user_auth_type` TINYINT(1) NOT NULL AFTER `pnotification_for_seller`;
 ALTER TABLE `tbl_push_notifications` CHANGE `pnotification_till_user_id` `pnotification_uauth_last_access` DATETIME NOT NULL;
+ALTER TABLE `tbl_user_auth_token` ADD `uauth_user_type` TINYINT(1) NOT NULL AFTER `uauth_device_os`;

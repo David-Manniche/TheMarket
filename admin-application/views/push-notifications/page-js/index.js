@@ -110,6 +110,7 @@ $(document).on("click", "ul#selectedUsersList-js .ion-close-round", function(){
                     type: 'post',
                     success: function(json) {
                         response($.map(json, function(item) {
+                            console.log(item);
                             return {
                                 label: item['name'] + '(' + item['username'] + ')',
                                 value: item['username'],
