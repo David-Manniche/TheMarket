@@ -118,7 +118,7 @@
             background: #9b9a9a;
 
             &:hover {
-                background: $brand-color;
+                background: $brand-color; color:$brand-color-inverse;
             }
 
         }

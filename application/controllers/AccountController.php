@@ -392,7 +392,13 @@ class AccountController extends LoggedUserController
             }
         }
         $txnObj = new Transactions();
+		
+		$payoutPlugins = Plugin::getNamesWithCode(Plugin::TYPE_PAYOUTS, $this->siteLangId);
         $accountSummary = $txnObj->getTransactionSummary($userId);
+		$payouts = [-1 => Labels::getLabel("LBL_BANK_PAYOUT", $this->siteLangId)] + $payoutPlugins;
+
+        $this->set('payouts', $payouts);
+        $this->set('userWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId()));
         $this->set('codMinWalletBalance', $codMinWalletBalance);
         $this->set('frmSrch', $frm);
         $this->set('accountSummary', $accountSummary);
@@ -403,11 +409,7 @@ class AccountController extends LoggedUserController
 
     public function creditsInfo()
     {
-        $payoutPlugins = Plugin::getNamesWithCode(Plugin::TYPE_PAYOUTS, $this->siteLangId);
-        $payouts = [-1 => Labels::getLabel("LBL_BANK_PAYOUT", $this->siteLangId)] + $payoutPlugins;
-
-        $this->set('payouts', $payouts);
-        $this->set('userWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId()));
+		$this->set('userWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId()));
         $this->set('userTotalWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId(), false, false));
         $this->set('promotionWalletToBeCharged', Promotion::getPromotionWalleToBeCharged(UserAuthentication::getLoggedUserId()));
         $this->set('withdrawlRequestAmount', User::getUserWithdrawnRequestAmount(UserAuthentication::getLoggedUserId()));
@@ -3209,7 +3211,7 @@ class AccountController extends LoggedUserController
         $frm = new Form('frmRechargeWallet');
         $fld = $frm->addFloatField('', 'amount');
         //$fld->requirements()->setRequired();
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Add_Money_to_wallet', $langId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Add_Credits', $langId));
         return $frm;
     }
 

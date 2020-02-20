@@ -32,7 +32,9 @@
         <div class="headerwrap">
             <div class="one_third_grid"></div>
             <div class="one_third_grid">
-            	<div class="text-center"><a href="<?php   echo CommonHelper::generateUrl('ThemeColor','activateThemeColor',array($theme)); ?>" class="themebtn btn-default btn-sm"><?php echo Labels::getLabel('LBL_Activate_Theme',$adminLangId);?></a></div>
+            	<div class="text-center">
+                <a href="<?php   echo CommonHelper::generateUrl('ThemeColor','activateThemeColor',array($theme)); ?>" class="themebtn btn-default btn-sm"><?php echo Labels::getLabel('LBL_Activate_Theme',$adminLangId);?></a>
+                <a href="<?php   echo CommonHelper::generateUrl('ThemeColor'); ?>" class="themebtn btn-default btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Themes',$adminLangId);?></a></div>
             </div>
             <div class="one_third_grid"></div>
         </div>          

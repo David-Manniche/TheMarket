@@ -19,11 +19,11 @@
 }
 
 .label.label--success {
-    background: $brand-color;
+    background: $brand-color; color:$brand-color-inverse;
 }
 
 .label.label--primary {
-    background: $brand-color;
+    background: $brand-color; color:$brand-color-inverse;
 }
 
 .label.label--info {

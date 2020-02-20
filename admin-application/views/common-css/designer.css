@@ -898,3 +898,17 @@ table.table-bordered tr:nth-child(odd) td {
 
 .table-upc tbody.scroll-y{ max-height:250px; overflow-y:auto;}
 
+/**/
+.tabs_panel{    
+    height: 100%;
+    min-height: inherit;
+}
+.tabs_data{    
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: inherit;
+}
+.tabs_data .tabs_body{ 
+    flex:1 1 auto;
+}

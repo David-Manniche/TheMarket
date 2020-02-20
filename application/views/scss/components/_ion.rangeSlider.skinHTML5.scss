@@ -39,7 +39,7 @@
 .irs-bar {
     height: 6px;
     top: 35px;
-    background: $brand-color;
+    background: $brand-color; color:$brand-color-inverse;
     /*  background: linear-gradient(to top, rgba(66,139,202,1) 0%,rgba(127,195,232,1) 100%);  W3C */
 }
 

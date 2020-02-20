@@ -104,7 +104,7 @@
                 }
 
                 &:before {
-                    background: $brand-color;
+                    background: $brand-color; color:$brand-color-inverse;
                     bottom: 0px;
                     content: "";
                     height: 1px;
@@ -296,15 +296,14 @@
 
 .sub-form input[type="submit"] {
     font-size: 1em;
-    background: $brand-color;
+    background: $brand-color; color:$brand-color-inverse;
     height: 2.5rem;
     width: 100%;
     max-width: 136px;
     line-height: 1.2;
     padding: 5px 15px;
     margin: 0;
-    border: none;
-    color: #fff;
+    border: none;    
     vertical-align: top;
     font-weight: 300;
     border-radius: 0px 2px 2px 0px;
