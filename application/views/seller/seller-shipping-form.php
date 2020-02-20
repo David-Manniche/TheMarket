@@ -8,14 +8,23 @@
 	$shippingFrm->setFormTagAttribute('onsubmit', 'setupSellerShipping(this); return(false);');
 	$countryFld = $shippingFrm->getField('shipping_country');
 
-	$shippingFrm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
+	$shippingFrm->developerTags['colClassPrefix'] = 'col-md-';
     $shippingFrm->developerTags['fld_default_col'] = 12;
 	$countryFld = $shippingFrm->getField('shipping_country');
 	$countryFld->setWrapperAttribute('class','col-md-6');
-	$submitFld = $shippingFrm->getField('btn_submit');
+	
+    $submitFld = $shippingFrm->getField('btn_submit');
+    $submitFld->developerTags['col'] = 2;
+    $submitFld->setWrapperAttribute('class','col-6');
+    $submitFld->setFieldTagAttribute('class','btn btn-primary btn-block');
+    
 	$cancelFld = $shippingFrm->getField('btn_cancel');
 	$cancelFld->setFieldTagAttribute('onClick','searchCatalogProducts()');
-	$submitFld->attachField($cancelFld);
+    $cancelFld->developerTags['col'] = 2;
+    $cancelFld->setWrapperAttribute('class','col-6');
+    $cancelFld->setFieldTagAttribute('class','btn btn-outline-primary btn-block');
+	//$submitFld->attachField($cancelFld);
+    
 	echo $shippingFrm->getFormHTML();
 	?>
 		<script >
