@@ -355,6 +355,7 @@ class UserAuthentication extends FatModel
                 if (strtolower($row['credential_email']) === strtolower($username)) {
                     $this->error = $emailErrorMsg;
                 } else if ($row['user_phone'] === $username) {
+                    $json['userId'] = $row['user_id'];
                     $this->error = $phoneErrorMsg;
                 } else {
                     $this->error = !empty($row['credential_email']) ? $emailErrorMsg : $phoneErrorMsg;
