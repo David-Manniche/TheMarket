@@ -1526,7 +1526,7 @@ class User extends MyAppModel
         }
     }
 
-    public function prepareUserPhoneOtp($newOtp = false, $phone = '')
+    public function prepareUserPhoneOtp($newOtp = false, $dialCode = '', $phone = 0)
     {
         if (($this->mainTableRecordId < 1)) {
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST.', $this->commonLangId);
@@ -1544,6 +1544,7 @@ class User extends MyAppModel
         $data = [
             static::DB_TBL_UPV_PREFIX . 'user_id' => $this->mainTableRecordId,
             static::DB_TBL_UPV_PREFIX . 'otp' => $otp,
+            static::DB_TBL_UPV_PREFIX . 'dial_code' => trim($dialCode),
             static::DB_TBL_UPV_PREFIX . 'phone' => trim($phone),
             static::DB_TBL_UPV_PREFIX . 'expired_on' => date('Y-m-d H:i:s', strtotime("+" . self::OTP_AGE . " minutes", time())),
         ];
@@ -1588,7 +1589,7 @@ class User extends MyAppModel
         return false;
     }
 
-    public function verifyUserPhoneOtp($otp, $doLogin = false, $returnPhone = false)
+    public function verifyUserPhoneOtp($otp, $doLogin = false, $returnRow = false)
     {
         if (($this->mainTableRecordId < 1)) {
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST.', $this->commonLangId);
@@ -1604,7 +1605,7 @@ class User extends MyAppModel
         $emvSrch->addCondition(static::DB_TBL_UPV_PREFIX . 'user_id', '=', $this->mainTableRecordId);
         $emvSrch->addCondition(static::DB_TBL_UPV_PREFIX . 'otp', '=', $otp);
 
-        $emvSrch->addMultipleFields(array(static::DB_TBL_UPV_PREFIX . 'user_id', static::DB_TBL_UPV_PREFIX . 'phone', static::DB_TBL_UPV_PREFIX . 'expired_on'));
+        $emvSrch->addMultipleFields(array(static::DB_TBL_UPV_PREFIX . 'user_id', static::DB_TBL_UPV_PREFIX . 'dial_code', static::DB_TBL_UPV_PREFIX . 'phone', static::DB_TBL_UPV_PREFIX . 'expired_on'));
 
         $rs = $emvSrch->getResultSet();
         if ($row = FatApp::getDb()->fetch($rs)) {
@@ -1613,8 +1614,9 @@ class User extends MyAppModel
                 return false;
             }
 
-            $this->deletePhoneOtp($this->mainTableRecordId);
+            // $this->deletePhoneOtp($this->mainTableRecordId);
             $this->verifyAccount(applicationConstants::YES);
+            
             if (true === $doLogin) {
                 $attr = [
                     'credential_username',
@@ -1623,7 +1625,7 @@ class User extends MyAppModel
                 $userInfo = $this->getUserInfo($attr);
                 $this->doLogin($userInfo['credential_username'], $userInfo['credential_password']);
             }
-            return (true == $returnPhone && !empty($row['upv_phone']) ? $row['upv_phone'] : true);
+            return (true == $returnRow) ? $row : true;
         } else {
             $this->error = Labels::getLabel('MSG_INVALID_OTP.', $this->commonLangId);
             return false;
@@ -1700,8 +1702,8 @@ class User extends MyAppModel
         if (false === $otp) {
             return false;
         }
-        $phone = isset($data['user_phone']) ? $data['user_phone'] : '';
-        $user_name = isset($data['user_name']) ? $data['user_name'] : Labels::getLabel('LBL_USER', $langId);
+        $phone = !empty($data['user_dial_code']) && !empty($data['user_phone']) ? trim($data['user_dial_code']) . trim($data['user_phone']) : '';
+        $user_name = !empty($data['user_name']) ? $data['user_name'] : Labels::getLabel('LBL_USER', $langId);
         
         return $this->sendOtp($phone, $user_name, $otp, $langId);
     }
@@ -1728,7 +1730,7 @@ class User extends MyAppModel
             return false;
         }
         
-        $attr = ['user_name', 'user_phone'];
+        $attr = ['user_name', 'user_dial_code', 'user_phone'];
         $userData = $this->getUserInfo($attr, false, false);
         return $this->userPhoneVerification($userData, $this->commonLangId);
     }

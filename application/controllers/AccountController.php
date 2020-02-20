@@ -3454,32 +3454,34 @@ class AccountController extends LoggedUserController
 
     public function changePhoneForm($updatePhnFrm = 0)
     {
-        $phoneNumber = User::getAttributesById(UserAuthentication::getLoggedUserId(), 'user_phone');
-        $updatePhnFrm = empty($updatePhnFrm) ? empty($phoneNumber) ? 1 : 0 : $updatePhnFrm;
+        $phData = User::getAttributesById(UserAuthentication::getLoggedUserId(), ['user_dial_code', 'user_phone']);
+        $updatePhnFrm = empty($updatePhnFrm) ? empty($phData['user_phone']) ? 1 : 0 : $updatePhnFrm;
 
         $frm = $this->getPhoneNumberForm();
-        if (1 > $updatePhnFrm && !empty($phoneNumber)) {
-            $frm->fill(['user_phone' => $phoneNumber]);
+        if (1 > $updatePhnFrm && !empty($phData['user_phone'])) {
+            $frm->fill(['user_phone' => $phData['user_phone']]);
             $phnFld = $frm->getField('user_phone');
             $phnFld->setFieldTagAttribute('readonly', 'readonly');
         }
-
+        $dialCode = isset($phData['user_dial_code']) && !empty($phData['user_dial_code']) ? $phData['user_dial_code'] : '';
+        $this->set('dialCode', $dialCode);
         $this->set('frm', $frm);
         $this->set('updatePhnFrm', $updatePhnFrm);
         $this->set('siteLangId', $this->siteLangId);
         $this->_template->render(false, false, 'account/change-phone-form.php');
     }
 
-    private function sendOtp(int $userId, string $phone)
+    private function sendOtp(int $userId, string $dialCode, int $phone)
     {
         $userObj = new User($userId);
-        $otp = $userObj->prepareUserPhoneOtp(true, $phone);
+        $dialCode = !empty($dialCode) & '+' != $dialCode[0] ? '+' . $dialCode : $dialCode;
+        $otp = $userObj->prepareUserPhoneOtp(true, $dialCode, $phone);
         if (false == $otp) {
             LibHelper::dieJsonError($userObj->getError());
         }
 
         $userData = $userObj->getUserInfo('user_name', false, false);
-
+        $phone = $dialCode . $phone;
         $obj = clone $userObj;
         if (false === $obj->sendOtp($phone, $userData['user_name'], $otp, $this->siteLangId)) {
             LibHelper::dieJsonError($obj->getError());
@@ -3489,18 +3491,25 @@ class AccountController extends LoggedUserController
     public function getOtp($updatePhnFrm = 0)
     {
         $frm = $this->getPhoneNumberForm();
+       
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
             LibHelper::dieJsonError(current($frm->getValidationErrors()));
         }
+         
+        $dialCode = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
+        if (!empty($post['user_phone']) && empty($dialCode)) {
+            $message = Labels::getLabel("MSG_INVALID_PHONE_NUMBER", $this->siteLangId);
+            LibHelper::exitWithError($message, false, true);
+            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
+        }
 
         $userId = UserAuthentication::getLoggedUserId();
-        $phone = $post['user_phone'];
+        $phone = trim($post['user_phone']);
         if (1 > $updatePhnFrm && false === UserAuthentication::validateUserPhone($userId, $phone)) {
             LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_PHONE_NUMBER', $this->siteLangId));
         }
-
-        $this->sendOtp($userId, $phone);
+        $this->sendOtp($userId, trim($dialCode), $phone);
 
         $this->set('msg', Labels::getLabel('MSG_OTP_SENT!_PLEASE_CHECK_YOUR_PHONE.', $this->siteLangId));
         if (true === MOBILE_APP_API_CALL) {
@@ -3528,11 +3537,11 @@ class AccountController extends LoggedUserController
     public function resendOtp()
     {
         $userId = UserAuthentication::getLoggedUserId();
-        $phone = FatApp::getPostedData('user_phone', FatUtility::VAR_STRING, '');
-        $phone = (!empty($phone) && '+' != $phone[0] ? '+' . $phone : $phone);
+        $dialCode = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
+        $phone = FatApp::getPostedData('user_phone', FatUtility::VAR_INT, 0);
 
         if (!empty($phone)) {
-            $this->sendOtp($userId, $phone);
+            $this->sendOtp($userId, $dialCode, $phone);
         } else {
             $userObj = new User($userId);
             if (false == $userObj->resendOtp()) {

@@ -127,6 +127,8 @@ class MyAppController extends FatController
         'unknownPrimaryLanguageField' => Labels::getLabel('LBL_PRIMARY_LANGUAGE_FIELD_IS_NOT_SET.', $this->siteLangId),
         'invalidRequest' => Labels::getLabel('LBL_INVALID_REQUEST', $this->siteLangId),
         'defaultCountryCode' => $defaultCountryCode,
+        'withUsernameOrEmail' => Labels::getLabel('LBL_WITH_USERNAME_OR_EMAIL_?', $this->siteLangId),
+        'withPhoneNumber' => Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $this->siteLangId),
         );
 
         $languages = Language::getAllNames(false);
@@ -340,7 +342,7 @@ class MyAppController extends FatController
             $userName = 'login@dummyid.com';
             $pass = 'kanwar@123';
         }
-        $fld = $frm->addRequiredField(Labels::getLabel('LBL_USERNAME_OR_EMAIL_OR_PHONE', $siteLangId), 'username', $userName, array('placeholder' => Labels::getLabel('LBL_USERNAME_OR_EMAIL_OR_PHONE', $siteLangId)));
+        $fld = $frm->addRequiredField(Labels::getLabel('LBL_USERNAME_OR_EMAIL', $siteLangId), 'username', $userName, array('placeholder' => Labels::getLabel('LBL_USERNAME_OR_EMAIL', $siteLangId), 'data-alt-placeholder' => Labels::getLabel('LBL_PHONE_NUMBER', $siteLangId)));
         $pwd = $frm->addPasswordField(Labels::getLabel('LBL_Password', $siteLangId), 'password', $pass, array('placeholder' => Labels::getLabel('LBL_Password', $siteLangId)));
         $pwd->requirements()->setRequired();
         $frm->addCheckbox(Labels::getLabel('LBL_Remember_Me', $siteLangId), 'remember_me', 1, array(), '', 0);
@@ -365,7 +367,7 @@ class MyAppController extends FatController
 
         if (0 < $signUpWithPhone) {
             $frm->addHiddenField('', 'signUpWithPhone', 1);
-            $frm->addRequiredField(Labels::getLabel('LBL_PHONE_NUMBER', $siteLangId), 'user_phone', '', array('placeholder' => Labels::getLabel('LBL_PHONE_NUMBER_(INCLUDING_COUNTRY_CODE)', $siteLangId)));
+            $frm->addRequiredField(Labels::getLabel('LBL_PHONE_NUMBER', $siteLangId), 'user_phone', '', array('placeholder' => Labels::getLabel('LBL_PHONE_NUMBER', $siteLangId)));
         } else {
             $fld = $frm->addEmailField(Labels::getLabel('LBL_EMAIL', $siteLangId), 'user_email', '', array('placeholder' => Labels::getLabel('LBL_EMAIL', $siteLangId)));
             if (false === MOBILE_APP_API_CALL) {
@@ -686,7 +688,7 @@ class MyAppController extends FatController
     protected function getPhoneNumberForm()
     {
         $frm = new Form('phoneNumberFrm');
-        $frm->addRequiredField(Labels::getLabel('LBL_PHONE_NUMBER', $this->siteLangId), 'user_phone', '', array('placeholder' => Labels::getLabel('LBL_PHONE_NUMBER_(INCLUDING_COUNTRY_CODE)', $this->siteLangId)));
+        $frm->addRequiredField(Labels::getLabel('LBL_PHONE_NUMBER', $this->siteLangId), 'user_phone', '', array('placeholder' => Labels::getLabel('LBL_PHONE_NUMBER', $this->siteLangId)));
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_GET_OTP', $this->siteLangId));
         return $frm;
@@ -725,7 +727,7 @@ class MyAppController extends FatController
 
         if (0 < $updateToDb) {
             $userObj = clone $obj;
-            $userObj->assignValues(['user_phone' => $resp]);
+            $userObj->assignValues(['user_dial_code' => $resp['upv_dial_code'], 'user_phone' => $resp['upv_phone']]);
             if (!$userObj->save()) {
                 LibHelper::dieJsonError($userObj->getError());
             }

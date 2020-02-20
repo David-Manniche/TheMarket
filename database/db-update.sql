@@ -881,3 +881,12 @@ INSERT INTO `tbl_theme_colors` (`tcolor_theme_id`, `tcolor_key`, `tcolor_value`)
 
 ALTER TABLE `tbl_theme_colors`
   ADD UNIQUE KEY `tcolor_theme_id` (`tcolor_theme_id`,`tcolor_key`);
+
+ALTER TABLE `tbl_users` ADD `user_dial_code` VARCHAR(10) NOT NULL AFTER `user_name`;
+ALTER TABLE `tbl_users` CHANGE `user_phone` `user_phone` BIGINT NULL DEFAULT NULL;
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_USERNAME_OR_EMAIL_OR_PHONE';
+ALTER TABLE `tbl_user_phone_verification` ADD `upv_dial_code` VARCHAR(10) NOT NULL AFTER `upv_otp`;
+ALTER TABLE `tbl_user_phone_verification` CHANGE `upv_phone` `upv_phone` BIGINT NOT NULL;
+
+ALTER TABLE `tbl_users` DROP INDEX `user_phone`;
+ALTER TABLE `tbl_users` ADD UNIQUE (`user_dial_code`, `user_phone`);

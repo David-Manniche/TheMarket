@@ -39,7 +39,12 @@
                 <div class="form-side-inner">
                     <div class="section-head">
                         <div class="section__heading">
-                            <h2><?php echo Labels::getLabel('LBL_Sign_In_to_your_account', $siteLangId);?></h2>
+                            <h2>
+                                <?php echo Labels::getLabel('LBL_Sign_In_to_your_account', $siteLangId);?>
+                                <span class="note">
+                                    <a href="javaScript:void(0)" onClick="signInWithPhone(this, true)"><?php echo Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $siteLangId); ?></a>
+                                </span>
+                            </h2>
                         </div>
                     </div>
                     <?php $this->includeTemplate('guest-user/loginPageTemplate.php', $loginData, false); ?>
