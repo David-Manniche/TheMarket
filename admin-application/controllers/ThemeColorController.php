@@ -174,7 +174,7 @@ class ThemeColorController extends AdminBaseController
             $dataToUpdateOnDuplicate = $dataToSave;
             unset($dataToUpdateOnDuplicate['uextra_user_id']);
             if (!FatApp::getDb()->insertFromArray(ThemeColor::DB_TBL_COLORS, $dataToSave, false, array(), $dataToUpdateOnDuplicate)) {
-                $message = Labels::getLabel("LBL_Details_could_not_be_saved!", $this->siteLangId);
+                $message = Labels::getLabel("LBL_Details_could_not_be_saved!", $this->adminLangId);
                 if (true === MOBILE_APP_API_CALL) {
                     FatUtility::dieJsonError($message);
                 }
