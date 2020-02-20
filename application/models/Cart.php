@@ -823,17 +823,17 @@ class Cart extends FatModel
     }
 
     public function remove($key)
-    {
+    { 
         $this->products = array();
         $cartProducts = $this->getProducts($this->cart_lang_id);
         $found = false;
         if (is_array($cartProducts)) {
             foreach ($cartProducts as $cartKey => $product) {
-                if ($key == 'all' || (md5($product['key']) == $key && !$product['is_batch'])) {
+                if ( ($key == 'all' || (md5($product['key']) == $key) && !$product['is_batch'])) {
                     $found = true;
                     unset($this->SYSTEM_ARR['cart'][$cartKey]);
                     $this->updateTempStockHold($product['selprod_id'], 0, 0);
-                    if (md5($product['key']) == $key && !$product['is_batch']) {
+                    if ( ($key == 'all' || md5($product['key']) == $key) && !$product['is_batch']) {
                         if (is_numeric($this->cart_user_id) && $this->cart_user_id > 0) {
                             AbandonedCart::saveAbandonedCart($this->cart_user_id, $product['selprod_id'], $product['quantity'], AbandonedCart::ACTION_DELETED);
                         }
@@ -1585,7 +1585,15 @@ class Cart extends FatModel
     /* ] */
 
     public function clear()
-    {
+    {  
+        $cartProducts = $this->getProducts($this->cart_lang_id);
+        if (is_array($cartProducts)) {
+            foreach ($cartProducts as $cartKey => $product) {
+                if (is_numeric($this->cart_user_id) && $this->cart_user_id > 0) {
+                    AbandonedCart::saveAbandonedCart($this->cart_user_id, $product['selprod_id'], $product['quantity'], AbandonedCart::ACTION_DELETED);
+                }
+            }
+        }
         $this->products = array();
         $this->SYSTEM_ARR['cart'] = array();
         $this->SYSTEM_ARR['shopping_cart'] = array();
