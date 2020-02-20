@@ -202,6 +202,10 @@
         });
 
         function loadTab(tabObj) {
+            if( isUserLogged() == 0 ){
+                loginPopUpBox();
+                return false;
+            }
             if (!tabObj || !tabObj.length) {
                 return;
             }

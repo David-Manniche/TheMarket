@@ -294,6 +294,16 @@ $(document).on('change','.language-js',function(){
 			$.facebox(t,'faceboxWidth');
 		});
 	};
+    
+    callCouponDiscountIn = function(val, DISCOUNT_IN_PERCENTAGE, DISCOUNT_IN_FLAT){
+        if( val == DISCOUNT_IN_PERCENTAGE ){
+            $("#coupon_max_discount_value_div").show();
+        }
+        if( val == DISCOUNT_IN_FLAT ){
+            $("#coupon_max_discount_value_div").hide();
+        }
+    };
+
 	callCouponTypePopulate = function(val){
 		if( val == 1 ){
 			//if cms Page

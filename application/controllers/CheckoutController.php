@@ -1401,7 +1401,7 @@ class CheckoutController extends MyAppController
         return $paymentMethod;
     }
 
-    public function PaymentTab($order_id, $pmethod_id)
+    public function paymentTab($order_id, $pmethod_id)
     {
         $pmethod_id = FatUtility::int($pmethod_id);
         if (!$pmethod_id) {

@@ -336,7 +336,6 @@
             top: -5px;
             text-align: center;
             border-radius: 50%;
-            color: #fff;
             font-size: 0.75rem;
             width: 20px;
             height: 20px;
@@ -349,7 +348,7 @@
             -webkit-box-pack: center;
             -ms-flex-pack: center;
             justify-content: center;
-            background: $brand-color;
+            background: $brand-color; color:$brand-color-inverse;
         }
     }
 
@@ -506,12 +505,12 @@
 
     .dropdown__target-head {
         padding: 15px;
-        background: $brand-color;
+        background: $brand-color; color:$brand-color-inverse;
     }
 
     .dropdown__target-head p {
         margin: 6px 0 0;
-        color: #fff;
+        color:inherit;
         font-size: 0.9em;
     }
 
@@ -789,8 +788,7 @@
                 .msg-count {
                     text-align: center;
                     border-radius: 50%;
-                    color: #fff;
-                    font-size: 0.75rem;
+                                       font-size: 0.75rem;
                     width: 20px;
                     height: 20px;
                     display: -webkit-box;
@@ -802,7 +800,7 @@
                     -webkit-box-pack: center;
                     -ms-flex-pack: center;
                     justify-content: center;
-                    background: $brand-color;
+                    background: $brand-color; color:$brand-color-inverse;
                 }
             }
 
@@ -960,6 +958,12 @@
             color: $body-color;
             font-size: 2rem;
             font-weight: 300;
+
+            i {
+                font-size: 1rem;
+                margin-#{$start-direction}: 5px;
+                
+            }
         }
     }
 
@@ -1039,7 +1043,7 @@
         @include media-breakpoint-down(sm) {
             & {
                 margin: 1rem 0;
-                padding:0 5px;
+                padding: 0 5px;
             }
         }
 
@@ -1167,10 +1171,10 @@
 
         li {
             color: $body-color;
-            width: 50%;
+            flex: auto;
 
             .total {
-                text-transform: uppercase;
+
                 font-size: 0.9em;
             }
 
@@ -1186,7 +1190,7 @@
 
 
 .balancebox {
-    min-height: 141px;
+
 
     h2 {
         margin-top: 10px;
@@ -1194,7 +1198,7 @@
 
     p {
         margin-bottom: 0;
-        text-transform: uppercase;
+
         font-size: 0.9em;
     }
 
@@ -1319,9 +1323,9 @@
 .dashboard-togles {
     position: relative;
     display: block;
-    background: $secondary-color;
+    background: $secondary-color; color:$secondary-color-inverse;
     padding: 5px 0 5px 10px;
-    color: #fff;
+   
     border-radius: 4px;
 
     > a {
@@ -1738,12 +1742,12 @@
         &.is-active {
             a {
                 border-color: $brand-color;
-                background: $brand-color;
-                color: #fff;
+                background: $brand-color; color:$brand-color-inverse;
+                
 
                 &:before {
                     content: "\f058";
-                    color: #fff;
+                   color:$brand-color-inverse
                 }
             }
         }
@@ -1971,11 +1975,11 @@
             }
 
             &.is-active {
-                background: $brand-color;
+                background: $brand-color; color:$brand-color-inverse;
 
 
                 > a {
-                    color: #fff;
+                   color:$brand-color-inverse
 
                 }
             }
@@ -2162,11 +2166,11 @@ input.sp-input {
 
 .product-tag {
     &.scroll-y {
-        max-height: 250px;
+        max-height: 100px;
     }
 }
 
-.variants{
+.variants {
     &.scroll-y {
         max-height: 250px;
     }

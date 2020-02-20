@@ -1483,22 +1483,36 @@ trait CustomCatalogProducts
         $optionId = FatApp::getPostedData('option_id', FatUtility::VAR_INT, 0);
         $prodReqData = ProductRequest::getAttributesById($preqId);
         if ($prodReqData['preq_user_id'] != UserAuthentication::getLoggedUserId() || $prodReqData['preq_status'] != ProductRequest::STATUS_PENDING) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
         if ($preqId < 1 || $optionId < 0) {
-            Message::addErrorMessage($this->str_invalid_request);
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
         }
 
         $prodContent = json_decode($prodReqData['preq_content'], true);
+        
+        $separateImageOptionAdded = false;
+        if(!empty($prodContent['product_option'])){
+            foreach($prodContent['product_option'] as $option){
+                $optionWithImage = Option::getAttributesById($option, 'option_is_separate_images');
+                if($optionWithImage == 1){
+                    $separateImageOptionAdded = true;
+                    break;
+                }
+            }
+        }
+        $optionSeparateImage = Option::getAttributesById($optionId, 'option_is_separate_images');
+        if($separateImageOptionAdded == true && $optionSeparateImage == 1){
+            FatUtility::dieJsonError(Labels::getLabel('LBL_you_have_already_added_option_having_separate_image', $this->siteLangId));
+        }
+        
+        
         $prodContent['product_option'][] = $optionId;
         $data['preq_content'] = FatUtility::convertToJson($prodContent);
         $prodReq = new ProductRequest($preqId);
         $prodReq->assignValues($data);
         if (!$prodReq->save()) {
-            Message::addErrorMessage($prodReq->getError());
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError($prodReq->getError());
         }
         $this->set('msg', Labels::getLabel('LBL_Option_updated_successfully', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');

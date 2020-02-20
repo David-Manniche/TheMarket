@@ -854,31 +854,32 @@ class ImageController extends FatController
 
     public function favicon($lang_id = 0, $sizeType = '')
     {
-        /* $recordId = 0;
-        $file_row = AttachedFile::getAttachment( AttachedFile::FILETYPE_FAVICON, $recordId );
-        $image_name = isset($file_row['afile_physical_path']) ?  $file_row['afile_physical_path'] : '';
+        $lang_id = FatUtility::int($lang_id);
+        $recordId = 0;
+        $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_FAVICON, $recordId, 0, $lang_id);
+        $image_name = isset($file_row['afile_physical_path']) ? $file_row['afile_physical_path'] : '';
         $default_image = '';
 
-        $uploadedFilePath = $file_row['afile_physical_path'];
-        echo $uploadedFilePath; die();
-        return $uploadedFilePath; */
-
-        /* switch( strtoupper($sizeType) ){
-        case 'THUMB':
-        $w = 100;
-        $h = 100;
-        AttachedFile::displayImage( $image_name, $w, $h, $default_image );
-        break;
-        default:
-        $h = 0;
-        $w = 0;
-        AttachedFile::displayImage( $image_name, $w, $h, $default_image );
-        break;
-        } */
-
-        if ($file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_FAVICON, 0, 0, $lang_id, false)) {
-            $image_name = isset($file_row['afile_physical_path']) ? $file_row['afile_physical_path'] : '';
-            AttachedFile::displayOriginalImage($image_name);
+        switch (strtoupper($sizeType)) {
+            case 'MINI':
+                $w = 72;
+                $h = 72;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+            case 'SMALL':
+                $w = 114;
+                $h = 114;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+            default:
+                $arr = explode('-', $sizeType);
+                if (count($arr) > 0) {
+                    list($w, $h) = $arr;
+                    AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                } else {
+                    AttachedFile::displayOriginalImage($image_name, $default_image);
+                }
+                break;
         }
     }
 

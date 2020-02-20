@@ -1,5 +1,5 @@
 <link rel="shortcut icon"
-        href="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'favicon', array($siteLangId)), CONF_IMG_CACHE_TIME, '.png'); ?>">
+    href="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'favicon', array($siteLangId)), CONF_IMG_CACHE_TIME, '.png'); ?>">
 <link rel="apple-touch-icon"
     href="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId)), CONF_IMG_CACHE_TIME, '.png'); ?>">
 <link rel="apple-touch-icon" sizes="57x57"
@@ -19,47 +19,48 @@
 <link rel="apple-touch-icon" sizes="152x152"
     href="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '152-152')), CONF_IMG_CACHE_TIME, '.png'); ?>">
 <link rel="apple-touch-icon" sizes="180x180"
-    href="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '180-180')), CONF_IMG_CACHE_TIME, '.png'); ?>">        
-<link rel="icon" type="image/png" sizes="192x192" href="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '192-192')), CONF_IMG_CACHE_TIME, '.png'); ?>">
-<link rel="icon" type="image/png" sizes="32x32" href="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '32-32')), CONF_IMG_CACHE_TIME, '.png'); ?>">
-<link rel="icon" type="image/png" sizes="96x96" href="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '96-96')), CONF_IMG_CACHE_TIME, '.png'); ?>">
-<link rel="icon" type="image/png" sizes="16x16" href="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '16-16')), CONF_IMG_CACHE_TIME, '.png'); ?>">
+    href="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '180-180')), CONF_IMG_CACHE_TIME, '.png'); ?>">
+<link rel="icon" type="image/png" sizes="192x192" href="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'favicon', array($siteLangId, '192-192')), CONF_IMG_CACHE_TIME, '.png'); ?>">
+<link rel="icon" type="image/png" sizes="32x32" href="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'favicon', array($siteLangId, '32-32')), CONF_IMG_CACHE_TIME, '.png'); ?>">
+<link rel="icon" type="image/png" sizes="96x96" href="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'favicon', array($siteLangId, '96-96')), CONF_IMG_CACHE_TIME, '.png'); ?>">
+<link rel="icon" type="image/png" sizes="16x16" href="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'favicon', array($siteLangId, '16-16')), CONF_IMG_CACHE_TIME, '.png'); ?>">
+
 <link rel="manifest" href="<?php echo CommonHelper::generateUrl('Home', 'pwaManifest'); ?>">
 <?php
 if ($canonicalUrl == '') {
     $canonicalUrl = CommonHelper::generateFullUrl($controllerName, FatApp::getAction(), !empty(FatApp::getParameters()) ? FatApp::getParameters() : array());
 }
 ?>
-<link rel="canonical" href="<?php echo $canonicalUrl;?>" />        
+<link rel="canonical" href="<?php echo $canonicalUrl;?>" />
 <style>
     :root {
-        --brand-color:#<?php echo $themeDetail['tcolor_first_color']; ?>;
-        --brand-color-inverse:;
-        
-        --primary-color: #<?php echo $themeDetail['tcolor_first_color']; ?>;
-        --primary-color-inverse:;       
+        --brand-color:#<?php echo $themeDetail['tcolor_brand_color']; ?>;
+        --brand-color-inverse:#<?php echo $themeDetail['tcolor_brand_color_inverse']; ?>;
 
-        --secondary-color:#<?php echo $themeDetail['tcolor_second_color']; ?>;
-        --secondary-color-inverse:#fff;
+        --primary-color: #<?php echo $themeDetail['tcolor_primary_color']; ?>;
+        --primary-color-inverse:#<?php echo $themeDetail['tcolor_primary_color_inverse']; ?>;
+
+        --secondary-color:#<?php echo $themeDetail['tcolor_secondary_color']; ?>;
+        --secondary-color-inverse:#<?php echo $themeDetail['tcolor_secondary_color_inverse']; ?>;
 
         --third-color: #<?php echo $themeDetail['tcolor_third_color']; ?>;
-        --third-color-inverse:;
+        --third-color-inverse:#<?php echo $themeDetail['tcolor_third_color_inverse']; ?>;
 
-        --body-color:#525252;
+        --body-color:#<?php echo $themeDetail['tcolor_body_color']; ?>;
 
         --dark-color: ;
         --light-color: ;
 
-        --gray-color: #f8f8f8;
-        --gray-light: #f8f8f8;
+        --gray-color:#<?php echo $themeDetail['tcolor_grey_color']; ?>;
+        --gray-light:#<?php echo $themeDetail['tcolor_grey_light_color']; ?>;
 
 
-        --border-color:#<?php echo $themeDetail['tcolor_border_first_color']; ?>;
-        --border-dark-color:#<?php echo $themeDetail['tcolor_border_second_color'];?>;
-        --border-light-color:#<?php echo $themeDetail['tcolor_border_second_color'];?>;
+        --border-color:#<?php echo $themeDetail['tcolor_border_color']; ?>;
+        --border-dark-color:#<?php echo $themeDetail['tcolor_border_dark_color'];?>;
+        --border-light-color:#<?php echo $themeDetail['tcolor_border_light_color'];?>;
 
-        --font-color:#<?php echo $themeDetail['tcolor_text_color']; ?>;
-        --font-color2:#<?php echo $themeDetail['tcolor_text_light_color']; ?>;
+        --font-color:#<?php echo $themeDetail['tcolor_font_color']; ?>;
+        --font-color2:#<?php echo $themeDetail['tcolor_font_secondary_color']; ?>;
     }
 </style>
 <script type="text/javascript">
@@ -94,7 +95,7 @@ if (Message::getMessageCount() || Message::getErrorCount() || Message::getDialog
 <?php }
 
 $pixelId = FatApp::getConfig("CONF_FACEBOOK_PIXEL_ID", FatUtility::VAR_STRING, '');
-if ('' != $pixelId) { ?>        
+if ('' != $pixelId) { ?>
         !function(f,b,e,v,n,t,s)
         {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
         n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -104,8 +105,8 @@ if ('' != $pixelId) { ?>
         s.parentNode.insertBefore(t,s)}(window, document,'script',
         'https://connect.facebook.net/en_US/fbevents.js');
         fbq('init', '<?php echo $pixelId;?>');
-        fbq('track', 'PageView'); 
-        var fbPixel = true;       
+        fbq('track', 'PageView');
+        var fbPixel = true;
 <?php } ?>
 </script>
 <?php if ('' !=  $pixelId) {  ?>

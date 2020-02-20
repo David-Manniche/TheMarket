@@ -5,7 +5,7 @@ if(!empty($arrListing)){?>
 	  <?php foreach ($arrListing as $sn => $row){ ?>
 		<li>
 			<div class="detail-side">
-				<div class="heading3"><?php echo ucfirst($row['pssearch_name']); ?></div>
+				<h6><?php echo ucfirst($row['pssearch_name']); ?></h6>
 				<div class="heading5">
 					<?php
 						$str = '';
@@ -24,10 +24,10 @@ if(!empty($arrListing)){?>
 					echo rtrim($str,'|');
 					?>
 				</div>
-				<div class="date"><?php echo FatDate::format($row['pssearch_added_on']); ?></div>
+				<p class="date"><?php echo FatDate::format($row['pssearch_added_on']); ?></p>
 			</div>
 			<div class="results-side">
-				<div class="">
+				<div class="btn-group">
 					<a href="<?php echo html_entity_decode($row['search_url']);?>" class="btn btn--primary btn--sm"><?php echo Labels::getLabel('LBL_View_results', $siteLangId); ?></a>
 					<a href="javascript:void(0)" onclick="deleteSavedSearch(<?php echo $row['pssearch_id'];?>)" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Delete', $siteLangId); ?></a>
 				</div>

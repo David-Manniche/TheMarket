@@ -419,22 +419,24 @@
 
 	}
 
-	updateProductOption = function (product_id, option_id){
+	updateProductOption = function (product_id, option_id, e){
 		fcom.ajax(fcom.makeUrl('Seller', 'updateProductOption'), 'product_id='+product_id+'&option_id='+option_id, function(t) {
-			//$.mbsmessage.close();
-			//reloadProductOptions(product_id);
             var ans = $.parseJSON(t);
             if( ans.status == 1 ){
                 upcListing(product_id); 
-                $.mbsmessage(ans.msg, true, 'alert--success');
-            }
+                $.systemMessage(ans.msg, 'alert--success');
+            }else{
+                var tagifyId = e.detail.tag.__tagifyId;
+                $('[__tagifyid='+tagifyId+']').remove();
+                $.systemMessage(ans.msg,'alert--danger');
+            }      
 		});
 	}
 
 	removeProductOption = function( product_id,option_id){
 		fcom.ajax(fcom.makeUrl('Seller', 'checkOptionLinkedToInventory'), 'product_id='+product_id+'&option_id='+option_id, function(t) {
 			ans = jQuery.parseJSON(t);
-			if( ans.status != true ){
+			if( ans.status != true ){       
 				var agree = alert(ans.msg);
                 return false;
 			}
