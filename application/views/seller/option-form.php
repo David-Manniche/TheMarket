@@ -13,13 +13,11 @@
 			<div class="section__action"> <a href="javascript:void(0)" class="btn btn--primary btn--sm ripplelink"
   			onClick="optionValueForm(<?php echo $option_id;?>,0)";><?php echo Labels::getLabel('LBL_ADD_NEW',$langId);?></a> </div>
 		</div>
-	  <div class="sectionbody">
-		<div class="tablewrap">
-		  <div id="optionValueListing">
-
-		  </div>
-		</div>
-	  </div>
+        <div class="sectionbody">
+            <div class="tablewrap">
+                <div id="optionValueListing"></div>
+            </div>
+        </div>
 	</section>
 	</div>
 </div>
