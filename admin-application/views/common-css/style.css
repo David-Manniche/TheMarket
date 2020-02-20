@@ -4049,7 +4049,7 @@ select {
 .field_label {
 	position: relative;
 	font-weight: 400;
-	pointer-events: none;
+	/*pointer-events: none;*/
 	/* IE 9 */
 	-webkit-transition: all 200ms ease 0s;
 	/* Chrome, Safari, Opera */

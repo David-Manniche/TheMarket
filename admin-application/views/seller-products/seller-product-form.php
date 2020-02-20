@@ -87,12 +87,12 @@
                          </div>
                          <div class="row">
                              <div class="selprod_threshold_stock_level_fld col-md-6">
-                                 <div class="field-set">
-                                     <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_threshold_stock_level')->getCaption(); ?> <i class="far fa-question-circle tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_Alert_stock_level_hint_info', $siteLangId); ?></span></i></label></div>
-                                     <div class="field-wraper">
-                                         <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_threshold_stock_level'); ?></div>
-                                     </div>
-                                 </div>
+                                <div class="field-set">
+                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_threshold_stock_level')->getCaption(); ?> <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_Alert_stock_level_hint_info', $adminLangId); ?>"></i></label></div>
+                                    <div class="field-wraper">
+                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_threshold_stock_level'); ?></div>
+                                    </div>
+                                </div>
                              </div>
                              <div class="col-md-6">
                                  <div class="field-set">
@@ -198,11 +198,9 @@
                                              <th width="20%"><?php echo Labels::getLabel('LBL_Variant/Option', $adminLangId); ?></th>
                                             <?php } ?>
                                              <th width="20%"><?php echo Labels::getLabel('LBL_Cost_Price', $adminLangId); ?></th>
-                                             <th width="20%"><?php echo Labels::getLabel('LBL_Selling_Price', $adminLangId); ?>
-                                                 <i data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates.', $adminLangId).' '.Labels::getLabel('LBL_Min_Selling_price', $adminLangId).' '. CommonHelper::displayMoneyFormat($productMinSellingPrice, true, true); ?>" class="fa fa-question-circle-o tooltip tooltip--right"></i>
-                                             </th>
+                                             <th width="20%"><?php echo Labels::getLabel('LBL_Selling_Price', $adminLangId); ?> <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates.', $adminLangId).' '.Labels::getLabel('LBL_Min_Selling_price', $adminLangId).' '. CommonHelper::displayMoneyFormat($productMinSellingPrice, true, true); ?>"></i></th>
                                              <th width="20%"><?php echo Labels::getLabel('LBL_Quantity', $adminLangId); ?></th>
-                                             <th width="20%"><?php echo Labels::getLabel('LBL_SKU', $adminLangId); ?> <i data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_Stock_Keeping_Unit', $adminLangId) ?>" class="fa fa-question-circle-o tooltip tooltip--right"></i>
+                                             <th width="20%"><?php echo Labels::getLabel('LBL_SKU', $adminLangId); ?> <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_Stock_Keeping_Unit', $adminLangId) ?>"></i></th>
                                          </tr>
                                      </thead>
                                      <tbody>
@@ -285,6 +283,7 @@
     </div>
 </section>
 <script type="text/javascript">
+    $('[data-toggle="tooltip"]').tooltip();
     $("document").ready(function() {
         var addedByAdmin = <?php echo $product_added_by_admin; ?> ;
         var
@@ -316,10 +315,4 @@
             }
         });
     });
-
-
-
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
 </script>

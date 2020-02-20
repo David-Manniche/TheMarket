@@ -86,7 +86,7 @@ $submitBtnFld->developerTags['col'] = 12;
                         <div class="row">
                             <div class="selprod_threshold_stock_level_fld col-md-6">
                                 <div class="field-set">
-                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_threshold_stock_level')->getCaption(); ?> <i class="far fa-question-circle tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_Alert_stock_level_hint_info', $siteLangId); ?></span></i></label></div>
+                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_threshold_stock_level')->getCaption(); ?> <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_Alert_stock_level_hint_info', $siteLangId); ?>"></i></label></div>
                                     <div class="field-wraper">
                                         <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_threshold_stock_level'); ?></div>
                                     </div>
