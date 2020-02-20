@@ -2,26 +2,28 @@
     $frmSearch->setFormTagAttribute('class', 'form');
     $frmSearch->setFormTagAttribute('onsubmit', 'searchVolumeDiscountProducts(this); return(false);');
     $frmSearch->developerTags['colClassPrefix'] = 'col-md-';
-    $frmSearch->developerTags['fld_default_col'] = 4;
+    $frmSearch->developerTags['fld_default_col'] = 12;
 
     $keywordFld = $frmSearch->getField('keyword');
 if (0 < $selProd_id) {
     $keywordFld->setFieldTagAttribute('readonly', 'readonly');
 }
-    $keywordFld->setWrapperAttribute('class', 'col-lg-4');
+    //$keywordFld->setWrapperAttribute('class', 'col-lg-6');
     $keywordFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_by_keyword', $siteLangId));
-    $keywordFld->developerTags['col'] = 4;
+    $keywordFld->developerTags['col'] = 8;
     $keywordFld->developerTags['noCaptionTag'] = true;
 
     $submitBtnFld = $frmSearch->getField('btn_submit');
-    $submitBtnFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
+    $submitBtnFld->setFieldTagAttribute('class', 'btn btn--primary btn--block');
     $submitBtnFld->setWrapperAttribute('class', (0 < $selProd_id ? 'd-none' : ''));
+    $submitBtnFld->setWrapperAttribute('class', 'col-6');
     $submitBtnFld->developerTags['col'] = 2;
     $submitBtnFld->developerTags['noCaptionTag'] = true;
 
     $cancelBtnFld = $frmSearch->getField('btn_clear');
-    $cancelBtnFld->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary ');
+    $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn--block');
     $cancelBtnFld->setFieldTagAttribute('onclick', 'clearSearch('.$selProd_id.');');
+    $cancelBtnFld->setWrapperAttribute('class', 'col-6');
     $cancelBtnFld->developerTags['col'] = 2;
     $cancelBtnFld->developerTags['noCaptionTag'] = true;
 
