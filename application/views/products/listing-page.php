@@ -231,9 +231,9 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                             <h4>
                                 <?php echo isset($scollection_name) && !empty($scollection_name) ? $scollection_name : '';?>
                                 <span class="hide_on_no_product">
-                                    <small class="text-muted" id="total_records">
-                                        <?php echo $recordCount . ' ' . Labels::getLabel('LBL_ITEM(S)', $siteLangId); ?>
-                                    </small>
+                                    <small class="text-muted">
+										<span id="total_records"><?php echo $recordCount; ?></span> <?php echo Labels::getLabel('LBL_ITEM(S)', $siteLangId);?>
+									</small>
                                 </span>
                             </h4>
                         </div>

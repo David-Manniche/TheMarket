@@ -96,3 +96,5 @@ Bugs:
     => 034770 - In Table scroll popup "Scrollable" label must be display in arabic language is selected
     => 034326 - While search products linked with tags by typing product name ajax got stuck
     => 034638 - On product detail page> when user clicks on tabs then page is not scrolling to particular section
+    => 034540 - Innova editor full width issue
+    => 034472 - In products listing> count is displaying with text and on applying filter only count stays
