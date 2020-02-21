@@ -1,4 +1,5 @@
 <?php
+
 class Transactions extends MyAppModel
 {
     public const DB_TBL = 'tbl_user_transactions';
@@ -184,7 +185,7 @@ class Transactions extends MyAppModel
             $srch->addCondition('mysql_func_DATE(utxn.utxn_date)', '=', $date, 'AND', true);
         }
 
-        $srch->addMultipleFields(array('IFNULL(SUM(utxn.utxn_credit),0) AS total_earned','IFNULL(SUM(utxn.utxn_debit),0) AS total_used'));
+        $srch->addMultipleFields(array('IFNULL(SUM(utxn.utxn_credit),0) AS total_earned', 'IFNULL(SUM(utxn.utxn_debit),0) AS total_used'));
         $srch->doNotCalculateRecords();
         $srch->doNotlimitRecords();
         $srch->addCondition('utxn_status', '=', applicationConstants::ACTIVE);
@@ -194,13 +195,13 @@ class Transactions extends MyAppModel
             return $row;
         }
 
-        return array('total_earned'=>0,'total_used'=>0);
+        return array('total_earned' => 0, 'total_used' => 0);
     }
 
     public static function formatTransactionNumber($txnId)
     {
         $newValue = str_pad($txnId, 7, '0', STR_PAD_LEFT);
-        $newValue = "TN"."-".$newValue;
+        $newValue = "TN" . "-" . $newValue;
         return $newValue;
     }
 
@@ -216,7 +217,7 @@ class Transactions extends MyAppModel
         $balSrch = static::getSearchObject();
         $balSrch->doNotCalculateRecords();
         $balSrch->doNotLimitRecords();
-        $balSrch->addMultipleFields(array('utxn.*',"utxn_credit - utxn_debit as bal"));
+        $balSrch->addMultipleFields(array('utxn.*', "utxn_credit - utxn_debit as bal"));
         $balSrch->addCondition('utxn_user_id', '=', $userId);
         $balSrch->addCondition('utxn_status', '=', applicationConstants::ACTIVE);
         $qryUserPointsBalance = $balSrch->getQuery();
@@ -224,7 +225,7 @@ class Transactions extends MyAppModel
         $srch = static::getSearchObject();
         $srch->joinTable('(' . $qryUserPointsBalance . ')', 'JOIN', 'tqupb.utxn_id <= utxn.utxn_id', 'tqupb');
 
-        $srch->addMultipleFields(array('utxn.*', "SUM(tqupb.bal) balance", "IF(utxn.utxn_credit > 0, ".static::CREDIT_TYPE.", ".static::DEBIT_TYPE.") as txnPaymentType"));
+        $srch->addMultipleFields(array('utxn.*', "SUM(tqupb.bal) balance", "IF(utxn.utxn_credit > 0, " . static::CREDIT_TYPE . ", " . static::DEBIT_TYPE . ") as txnPaymentType"));
         $srch->addCondition('utxn.utxn_user_id', '=', $userId);
         $srch->addGroupBy('utxn.utxn_id');
         $srch->addOrder('utxn_id', 'DESC');

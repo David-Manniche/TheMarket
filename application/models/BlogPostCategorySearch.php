@@ -1,4 +1,5 @@
 <?php
+
 class BlogPostCategorySearch extends SearchBase
 {
     private $langId;

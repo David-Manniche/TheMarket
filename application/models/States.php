@@ -1,16 +1,17 @@
 <?php
+
 class States extends MyAppModel
 {
-    const DB_TBL = 'tbl_states';
-    const DB_TBL_PREFIX = 'state_';
+    public const DB_TBL = 'tbl_states';
+    public const DB_TBL_PREFIX = 'state_';
 
-    const DB_TBL_LANG = 'tbl_states_lang';
-    const DB_TBL_LANG_PREFIX = 'statelang_';
+    public const DB_TBL_LANG = 'tbl_states_lang';
+    public const DB_TBL_LANG_PREFIX = 'statelang_';
 
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
-        $this->db=FatApp::getDb();
+        $this->db = FatApp::getDb();
     }
 
     public static function getSearchObject($isActive = true, $langId = 0)
@@ -18,16 +19,16 @@ class States extends MyAppModel
         $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 'st');
 
-        if ($isActive==true) {
-            $srch->addCondition('st.'.static::DB_TBL_PREFIX.'active', '=', applicationConstants::ACTIVE);
+        if ($isActive == true) {
+            $srch->addCondition('st.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
         }
 
         if ($langId > 0) {
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'st_l.'.static::DB_TBL_LANG_PREFIX.'state_id = st.'.static::tblFld('id').' and
-			st_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
+                'st_l.' . static::DB_TBL_LANG_PREFIX . 'state_id = st.' . static::tblFld('id') . ' and
+			st_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 'st_l'
             );
         }

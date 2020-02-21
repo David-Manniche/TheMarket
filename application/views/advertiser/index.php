@@ -20,7 +20,7 @@
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content pl-4 pr-4 ">
+                            <div class="cards-content ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -49,7 +49,7 @@
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content pl-4 pr-4 ">
+                            <div class="cards-content ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -79,7 +79,7 @@
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content pl-4 pr-4 ">
+                            <div class="cards-content ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -110,7 +110,7 @@
                             </div>
                             <?php } ?>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <table class="table table--orders js-scrollable">
                                 <tbody>
                                     <tr class="">
@@ -151,7 +151,7 @@
                                         </td>
                                         <td>
                                             <ul class="actions">
-                                                <li><a  title="<?php echo Labels::getLabel('LBL_Analytics', $siteLangId); ?>"   href="<?php echo CommonHelper::generateUrl('advertiser', 'analytics', array($row['promotion_id'])); ?>"><i class="fa fa-file-text-o"></i></a></li>
+                                                <li><a  title="<?php echo Labels::getLabel('LBL_Analytics', $siteLangId); ?>"   href="<?php echo CommonHelper::generateUrl('advertiser', 'analytics', array($row['promotion_id'])); ?>"><i class="far fa-file-alt"></i></a></li>
                                             </ul>
                                         </td>
                                     </tr>
@@ -186,7 +186,7 @@
                             </div>
                             <?php } ?>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <table class="table table--orders js-scrollable">
                                 <tbody>
                                     <tr class="">

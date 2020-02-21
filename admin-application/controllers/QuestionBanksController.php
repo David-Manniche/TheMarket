@@ -1,28 +1,29 @@
 <?php
+
 class QuestionBanksController extends AdminBaseController
 {
     private $canView;
-    private $canEdit;    
+    private $canEdit;
     
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup');
-        if(!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
+        $ajaxCallArray = array('deleteRecord', 'form', 'langForm', 'search', 'setup', 'langSetup');
+        if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
-        } 
+        }
         parent::__construct($action);
         $this->admin_id = AdminAuthentication::getLoggedAdminId();
         $this->canView = $this->objPrivilege->canViewQuestionBanks($this->admin_id, true);
         $this->canEdit = $this->objPrivilege->canEditQuestionBanks($this->admin_id, true);
         $this->set("canView", $this->canView);
-        $this->set("canEdit", $this->canEdit);        
+        $this->set("canEdit", $this->canEdit);
     }
     
     public function index()
     {
         $this->objPrivilege->canViewQuestionBanks();
-        $frmSearch = $this->getSearchForm();                    
-        $this->set("frmSearch", $frmSearch);    
+        $frmSearch = $this->getSearchForm();
+        $this->set("frmSearch", $frmSearch);
         $this->_template->render();
     }
     
@@ -30,10 +31,10 @@ class QuestionBanksController extends AdminBaseController
     {
         $this->objPrivilege->canViewQuestionBanks();
         
-        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);                
+        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
         
         $srch = QuestionBanks::getSearchObject($this->adminLangId, false);
@@ -41,21 +42,21 @@ class QuestionBanksController extends AdminBaseController
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
         
-        if(!empty($post['keyword'])) {
-            $cond = $srch->addCondition('qb_l.qbank_name', 'like', '%'.$post['keyword'].'%');
-            $cond->attachCondition('qb.qbank_identifier', 'like', '%'.$post['keyword'].'%');
+        if (!empty($post['keyword'])) {
+            $cond = $srch->addCondition('qb_l.qbank_name', 'like', '%' . $post['keyword'] . '%');
+            $cond->attachCondition('qb.qbank_identifier', 'like', '%' . $post['keyword'] . '%');
         }
         $srch->addOrder('qb.qbank_active', 'desc');
         $srch->addOrder('qb_l.' . QuestionBanks::DB_TBL_PREFIX . 'name', 'ASC');
         $rs = $srch->getResultSet();
-        $records = FatApp::getDb()->fetchAll($rs, 'qbank_id');    
+        $records = FatApp::getDb()->fetchAll($rs, 'qbank_id');
         
         $this->set("arr_listing", $records);
         $this->set('pageCount', $srch->pages());
         $this->set('recordCount', $srch->recordCount());
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
-        $this->set('postedData', $post);                        
+        $this->set('postedData', $post);
         $this->_template->render(false, false);
     }
     
@@ -68,7 +69,7 @@ class QuestionBanksController extends AdminBaseController
         
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());    
+            FatUtility::dieJsonError(Message::getHtml());
         }
 
         $qbank_id = $post['qbank_id'];
@@ -82,50 +83,50 @@ class QuestionBanksController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         
-        $newTabLangId=0;    
-        if($qbank_id > 0) {
+        $newTabLangId = 0;
+        if ($qbank_id > 0) {
             $qbankId = $qbank_id;
-            $languages = Language::getAllNames();    
-            foreach($languages as $langId =>$langName ){            
-                if(!$row = QuestionBanks::getAttributesByLangId($langId, $qbank_id)) {
+            $languages = Language::getAllNames();
+            foreach ($languages as $langId => $langName) {
+                if (!$row = QuestionBanks::getAttributesByLangId($langId, $qbank_id)) {
                     $newTabLangId = $langId;
                     break;
-                }            
-            }    
-        }else{
+                }
+            }
+        } else {
             $qbankId = $record->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);    
-        }    
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+        }
         
         
         $this->set('msg', $this->str_setup_successful);
         $this->set('qbankId', $qbankId);
-        $this->set('langId', $newTabLangId); 
+        $this->set('langId', $newTabLangId);
         $this->_template->render(false, false, 'json-success.php');
     }
     
     public function form($qbank_id)
-    {    
+    {
         $this->objPrivilege->canViewQuestionBanks();
         
         $qbank_id = FatUtility::int($qbank_id);
         
-        $frm = $this->getForm();        
+        $frm = $this->getForm();
         
-        $data = array('qbank_id'=>$qbank_id);
-        if($qbank_id > 0) {
-            $data =  QuestionBanks::getAttributesById($qbank_id);            
-            if($data ==  false) {
+        $data = array('qbank_id' => $qbank_id);
+        if ($qbank_id > 0) {
+            $data = QuestionBanks::getAttributesById($qbank_id);
+            if ($data == false) {
                 FatUtility::dieWithError($this->str_invalid_request);
-            }            
-        }    
+            }
+        }
         
         $frm->fill($data);
         
-        $this->set('qbank_id', $qbank_id);        
+        $this->set('qbank_id', $qbank_id);
         $this->set('frm', $frm);
-        $this->set('languages', Language::getAllNames());        
-        $this->_template->render(false, false);    
+        $this->set('languages', Language::getAllNames());
+        $this->_template->render(false, false);
     }
     
     public function setupLang()
@@ -136,9 +137,9 @@ class QuestionBanksController extends AdminBaseController
         $qbank_id = $post['qbank_id'];
         $lang_id = $post['lang_id'];
         
-        if($qbank_id == 0 || $lang_id == 0) {
+        if ($qbank_id == 0 || $lang_id == 0) {
             Message::addErrorMessage($this->str_invalid_request_id);
-            FatUtility::dieWithError(Message::getHtml());    
+            FatUtility::dieWithError(Message::getHtml());
         }
         
         $frm = $this->getLangForm($qbank_id, $lang_id);
@@ -146,15 +147,15 @@ class QuestionBanksController extends AdminBaseController
         unset($post['qbank_id']);
         unset($post['lang_id']);
         $data = array(
-        'qbanklang_lang_id'=>$lang_id,
-        'qbanklang_qbank_id'=>$qbank_id,
-        'qbank_name'=>$post['qbank_name']
+        'qbanklang_lang_id' => $lang_id,
+        'qbanklang_qbank_id' => $qbank_id,
+        'qbank_name' => $post['qbank_name']
         );
         
-        $obj = new QuestionBanks($qbank_id);    
-        if(!$obj->updateLangData($lang_id, $data)) {
+        $obj = new QuestionBanks($qbank_id);
+        if (!$obj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($obj->getError());
-            FatUtility::dieWithError(Message::getHtml());                
+            FatUtility::dieWithError(Message::getHtml());
         }
         
         $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
@@ -166,13 +167,13 @@ class QuestionBanksController extends AdminBaseController
             }
         }
 
-        $newTabLangId = 0;    
-        $languages = Language::getAllNames();    
-        foreach($languages as $langId =>$langName ){            
-            if(!$row = QuestionBanks::getAttributesByLangId($langId, $qbank_id)) {
+        $newTabLangId = 0;
+        $languages = Language::getAllNames();
+        foreach ($languages as $langId => $langName) {
+            if (!$row = QuestionBanks::getAttributesByLangId($langId, $qbank_id)) {
                 $newTabLangId = $langId;
                 break;
-            }            
+            }
         }
         
         $this->set('msg', $this->str_setup_successful);
@@ -188,7 +189,7 @@ class QuestionBanksController extends AdminBaseController
         $qbank_id = FatUtility::int($qbank_id);
         $lang_id = FatUtility::int($lang_id);
         
-        if($qbank_id == 0 || $lang_id == 0) {
+        if ($qbank_id == 0 || $lang_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
         
@@ -202,11 +203,11 @@ class QuestionBanksController extends AdminBaseController
             }
             $langData = current($translatedData);
         } else {
-            $langData = QuestionBanks::getAttributesByLangId($lang_id, $qbank_id);        
+            $langData = QuestionBanks::getAttributesByLangId($lang_id, $qbank_id);
         }
         
-        if($langData ) {
-            $langFrm->fill($langData);            
+        if ($langData) {
+            $langFrm->fill($langData);
         }
         
         $this->set('languages', Language::getAllNames());
@@ -214,7 +215,7 @@ class QuestionBanksController extends AdminBaseController
         $this->set('qbank_lang_id', $lang_id);
         $this->set('langFrm', $langFrm);
         $this->set('formLayout', Language::getLayoutDirection($lang_id));
-        $this->_template->render(false, false);    
+        $this->_template->render(false, false);
     }
     
     public function deleteRecord()
@@ -222,58 +223,57 @@ class QuestionBanksController extends AdminBaseController
         $this->objPrivilege->canEditQuestionBanks();
         
         $qbank_id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
-        if($qbank_id < 1) {
+        if ($qbank_id < 1) {
             FatUtility::dieJsonError($this->str_invalid_request_id);
         }
 
-        $data = QuestionBanks::getAttributesById($qbank_id);        
-        if($data == false) {
+        $data = QuestionBanks::getAttributesById($qbank_id);
+        if ($data == false) {
             Message::addErrorMessage($this->str_invalid_request_id);
-            FatUtility::dieJsonError(Message::getHtml());    
+            FatUtility::dieJsonError(Message::getHtml());
         }
         
         $obj = new QuestionBanks($qbank_id);
         $obj->assignValues(array(QuestionBanks::tblFld('deleted') => 1));
-        if(!$obj->save()) {
+        if (!$obj->save()) {
             Message::addErrorMessage($obj->getError());
-            FatUtility::dieJsonError(Message::getHtml());        
+            FatUtility::dieJsonError(Message::getHtml());
         }
         
-        FatUtility::dieJsonSuccess($this->str_delete_record);    
+        FatUtility::dieJsonSuccess($this->str_delete_record);
     }
     
     private function getSearchForm()
     {
         $this->objPrivilege->canViewQuestionBanks();
-        $frm = new Form('frmQuestionBankSearch');        
-        $f1 = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '');        
+        $frm = new Form('frmQuestionBankSearch');
+        $f1 = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '');
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
-        $fld_submit->attachField($fld_cancel);        
+        $fld_submit->attachField($fld_cancel);
         return $frm;
     }
     
     private function getForm($qbank_id = 0)
     {
-        
-        $this->objPrivilege->canViewQuestionBanks();        
+        $this->objPrivilege->canViewQuestionBanks();
         $qbank_id = FatUtility::int($qbank_id);
         
-        $frm = new Form('frmQuestionBank');        
+        $frm = new Form('frmQuestionBank');
         $frm->addHiddenField('', 'qbank_id', 0);
         $frm->addRequiredField(Labels::getLabel('LBL_Identifier', $this->adminLangId), 'qbank_identifier');
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'qbank_active', $activeInactiveArr);                
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));        
+        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'qbank_active', $activeInactiveArr);
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
     
-    private function getLangForm($qbank_id = 0,$lang_id = 0)
-    {            
-        $frm = new Form('frmQuestionBankLang');        
+    private function getLangForm($qbank_id = 0, $lang_id = 0)
+    {
+        $frm = new Form('frmQuestionBankLang');
         $frm->addHiddenField('', 'qbank_id', $qbank_id);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
-        $frm->addRequiredField(Labels::getLabel('LBL_Question_Bank_Name', $this->adminLangId), 'qbank_name');     
+        $frm->addRequiredField(Labels::getLabel('LBL_Question_Bank_Name', $this->adminLangId), 'qbank_name');
 
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
@@ -285,4 +285,4 @@ class QuestionBanksController extends AdminBaseController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;
     }
-}    
+}

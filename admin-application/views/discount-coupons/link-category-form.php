@@ -38,6 +38,9 @@ $("document").ready(function(){
 	reloadCouponCategory(<?php echo $coupon_id; ?>);
 	
 	$('input[name=\'category_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {			
 			$.ajax({
 				url: fcom.makeUrl('ProductCategories', 'autoComplete'),

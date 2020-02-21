@@ -1,4 +1,5 @@
 <?php
+
 class Shop extends MyAppModel
 {
     public const DB_TBL = 'tbl_shops';
@@ -137,11 +138,11 @@ class Shop extends MyAppModel
         $shopId = FatUtility::int($shopId);
         $userId = FatUtility::int($userId);
         
-        if($userId < 1 && $shopId < 1){
+        if ($userId < 1 && $shopId < 1) {
             return false;
         }
         
-        $shopDetails = self::getAttributesByUserId($userId, array('shop_active','shop_id'), false);
+        $shopDetails = self::getAttributesByUserId($userId, array('shop_active', 'shop_id'), false);
 
         if (!false == $shopDetails && $shopDetails['shop_active'] != applicationConstants::ACTIVE) {
             return false;
@@ -176,7 +177,7 @@ class Shop extends MyAppModel
         $srch->joinProductToCategory($siteLangId);
 
         $srch->addCondition('selprod_user_id', '=', $userId);
-        if ($shopId >0) {
+        if ($shopId > 0) {
             $srch->addCondition('shop_id', '=', $shopId);
         }
 
@@ -184,7 +185,7 @@ class Shop extends MyAppModel
             $srch->addCondition('prodcat_id', '=', $prodcat_id);
         }
         $srch->addGroupBy('prodcat_id');
-        $srch->addMultipleFields(array('prodcat_id','ifnull(prodcat_name,prodcat_identifier) as prodcat_name','shop_id'));
+        $srch->addMultipleFields(array('prodcat_id', 'ifnull(prodcat_name,prodcat_identifier) as prodcat_name', 'shop_id'));
         return $srch;
     }
 
@@ -209,8 +210,8 @@ class Shop extends MyAppModel
         $db = FatApp::getDb();
         $srch = static::getSearchObject($isActive, $langId);
         $srch->addCondition(static::tblFld('id'), '=', $shop_id);
-        $srch->joinTable(States::DB_TBL, 'LEFT JOIN', 's.shop_state_id=ss.state_id and ss.state_active='.applicationConstants::ACTIVE, 'ss');
-        $srch->joinTable(Countries::DB_TBL, 'LEFT JOIN', 's.shop_country_id=sc.country_id and sc.country_active='.applicationConstants::ACTIVE, 'sc');
+        $srch->joinTable(States::DB_TBL, 'LEFT JOIN', 's.shop_state_id=ss.state_id and ss.state_active=' . applicationConstants::ACTIVE, 'ss');
+        $srch->joinTable(Countries::DB_TBL, 'LEFT JOIN', 's.shop_country_id=sc.country_id and sc.country_active=' . applicationConstants::ACTIVE, 'sc');
         if ($isActive) {
             $srch->addCondition('s.shop_active', '=', $isActive);
         }
@@ -237,7 +238,7 @@ class Shop extends MyAppModel
     public static function getShopUrl($shopId = 0, $attr = array())
     {
         $db = FatApp::getDb();
-        $shopOriginalUrl ='shops/view/'.$shopId;
+        $shopOriginalUrl = 'shops/view/' . $shopId;
         $urlSrch = UrlRewrite::getSearchObject();
         $urlSrch->doNotCalculateRecords();
         $urlSrch->doNotLimitRecords();
@@ -284,33 +285,33 @@ class Shop extends MyAppModel
 
         switch (strtolower($type)) {
             case 'top-products':
-                $originalUrl = Shop::SHOP_TOP_PRODUCTS_ORGINAL_URL.$this->mainTableRecordId;
+                $originalUrl = Shop::SHOP_TOP_PRODUCTS_ORGINAL_URL . $this->mainTableRecordId;
                 $seoUrl = preg_replace('/-top-products$/', '', $seoUrl);
-                $seoUrl.=  '-top-products';
+                $seoUrl .= '-top-products';
                 break;
             case 'reviews':
-                $originalUrl = Shop::SHOP_REVIEWS_ORGINAL_URL.$this->mainTableRecordId;
+                $originalUrl = Shop::SHOP_REVIEWS_ORGINAL_URL . $this->mainTableRecordId;
                 $seoUrl = preg_replace('/-reviews$/', '', $seoUrl);
-                $seoUrl.= '-reviews';
+                $seoUrl .= '-reviews';
                 break;
             case 'contact':
-                $originalUrl = Shop::SHOP_SEND_MESSAGE_ORGINAL_URL.$this->mainTableRecordId;
+                $originalUrl = Shop::SHOP_SEND_MESSAGE_ORGINAL_URL . $this->mainTableRecordId;
                 $seoUrl = preg_replace('/-contact$/', '', $seoUrl);
-                $seoUrl.=  '-contact';
+                $seoUrl .= '-contact';
                 break;
             case 'policy':
-                $originalUrl = Shop::SHOP_POLICY_ORGINAL_URL.$this->mainTableRecordId;
+                $originalUrl = Shop::SHOP_POLICY_ORGINAL_URL . $this->mainTableRecordId;
                 $seoUrl = preg_replace('/-policy$/', '', $seoUrl);
-                $seoUrl.=  '-policy';
+                $seoUrl .= '-policy';
                 break;
             case 'collection':
-                $originalUrl = Shop::SHOP_COLLECTION_ORGINAL_URL.$this->mainTableRecordId;
+                $originalUrl = Shop::SHOP_COLLECTION_ORGINAL_URL . $this->mainTableRecordId;
                 $shopUrl = static::getShopUrl($this->mainTableRecordId, 'urlrewrite_custom');
-                $seoUrl = preg_replace('/-'.$shopUrl.'$/', '', $seoUrl);
-                $seoUrl.=  '-'.$shopUrl;
+                $seoUrl = preg_replace('/-' . $shopUrl . '$/', '', $seoUrl);
+                $seoUrl .= '-' . $shopUrl;
                 break;
             default:
-                $originalUrl = Shop::SHOP_VIEW_ORGINAL_URL.$this->mainTableRecordId;
+                $originalUrl = Shop::SHOP_VIEW_ORGINAL_URL . $this->mainTableRecordId;
                 break;
         }
 

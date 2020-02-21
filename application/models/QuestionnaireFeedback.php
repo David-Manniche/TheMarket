@@ -1,9 +1,10 @@
 <?php
+
 class QuestionnaireFeedback extends MyAppModel
 {
-    const DB_TBL = 'tbl_questionnaire_feedback';
-    const DB_TBL_QUESTION_TO_ANSWERS = 'tbl_question_to_answers';
-    const DB_TBL_PREFIX = 'qfeedback_';
+    public const DB_TBL = 'tbl_questionnaire_feedback';
+    public const DB_TBL_QUESTION_TO_ANSWERS = 'tbl_question_to_answers';
+    public const DB_TBL_PREFIX = 'qfeedback_';
 
     private $db;
 

@@ -2,6 +2,9 @@ $(document).ready(function(){
 	searchProductsReport( document.frmProductsReportSearch );
 	
 	$('input[name=\'shop_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('Shops', 'autoComplete'),
@@ -21,6 +24,9 @@ $(document).ready(function(){
 	});
 	
 	$('input[name=\'brand_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('Brands', 'autoComplete'),

@@ -1,4 +1,5 @@
 <?php
+
 class PluginSetting
 {
     private $error;
@@ -89,7 +90,7 @@ class PluginSetting
         foreach ($pluginSettings as $val) {
             $pluginSettingArr[$val[ static::DB_TBL_PREFIX . "key"]] = $val[ static::DB_TBL_PREFIX . "value"];
         }
-        $pluginSettingArr['plugin_name'] = !empty($settingsData['plugin_name']) ? $settingsData['plugin_name'] : $settingsData['plugin_identifier'] ;
+        $pluginSettingArr['plugin_name'] = !empty($settingsData['plugin_name']) ? $settingsData['plugin_name'] : $settingsData['plugin_identifier'];
         return array_merge($pluginSettingArr, $settingsData);
     }
 
@@ -148,7 +149,7 @@ class PluginSetting
             }
         }
 
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
         return $frm;
     }
 

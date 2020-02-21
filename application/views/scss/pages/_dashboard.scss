@@ -227,6 +227,7 @@
 
     .wrapper {
         position: relative;
+        z-index: 1;
         max-width: 1530px;
         margin: 0 auto;
         border-radius: 10px;
@@ -259,6 +260,15 @@
     transition: padding 0.5s ease-in-out;
     border-bottom: $border;
 
+
+    @include media-breakpoint-down(xl) {
+        & {
+            padding-#{$start-direction}: 70px;
+        }
+    }
+
+
+
     .sidebar-is-expanded & {
         -webkit-padding-start: 280px;
         -moz-padding-start: 280px;
@@ -266,11 +276,16 @@
     }
 
     .dashboard-user {
-        -webkit-margin-start: 50px;
-        -moz-margin-start: 50px;
-        margin-#{$start-direction}: 50px;
+        margin-#{$start-direction}: 3.125rem;
 
         @include media-breakpoint-down(lg) {
+            & {
+                margin-#{$start-direction}: 2rem;
+
+            }
+        }
+
+        @include media-breakpoint-down(sm) {
             & {
                 margin-#{$start-direction}: 0;
 
@@ -321,7 +336,6 @@
             top: -5px;
             text-align: center;
             border-radius: 50%;
-            color: #fff;
             font-size: 0.75rem;
             width: 20px;
             height: 20px;
@@ -334,7 +348,7 @@
             -webkit-box-pack: center;
             -ms-flex-pack: center;
             justify-content: center;
-            background: $brand-color;
+            background: $brand-color; color:$brand-color-inverse;
         }
     }
 
@@ -491,12 +505,12 @@
 
     .dropdown__target-head {
         padding: 15px;
-        background: $brand-color;
+        background: $brand-color; color:$brand-color-inverse;
     }
 
     .dropdown__target-head p {
         margin: 6px 0 0;
-        color: #fff;
+        color:inherit;
         font-size: 0.9em;
     }
 
@@ -774,8 +788,7 @@
                 .msg-count {
                     text-align: center;
                     border-radius: 50%;
-                    color: #fff;
-                    font-size: 0.75rem;
+                                       font-size: 0.75rem;
                     width: 20px;
                     height: 20px;
                     display: -webkit-box;
@@ -787,7 +800,7 @@
                     -webkit-box-pack: center;
                     -ms-flex-pack: center;
                     justify-content: center;
-                    background: $brand-color;
+                    background: $brand-color; color:$brand-color-inverse;
                 }
             }
 
@@ -938,13 +951,19 @@
 
 
         [class*="col-"] {
-           /* margin: 0.5rem 0;*/
+            /* margin: 0.5rem 0;*/
         }
 
         .content-header-title {
             color: $body-color;
             font-size: 2rem;
             font-weight: 300;
+
+            i {
+                font-size: 1rem;
+                margin-#{$start-direction}: 5px;
+                
+            }
         }
     }
 
@@ -1009,6 +1028,8 @@
     @include media-breakpoint-down(sm) {
         & {
             margin: 0;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
 
         }
     }
@@ -1022,7 +1043,7 @@
         @include media-breakpoint-down(sm) {
             & {
                 margin: 1rem 0;
-                padding: 0;
+                padding: 0 5px;
             }
         }
 
@@ -1052,7 +1073,7 @@
     .share-earn-block {
         padding-#{$end-direction}: 1rem;
         flex: 1;
-        min-width: 250px;
+        min-width: 350px;
 
         &:last-child {
             padding-#{$end-direction}: 0;
@@ -1093,11 +1114,12 @@
 
 
 
-    .fa {
+    .fa,
+    .icon {
         margin: 0.4rem 0;
-        font-size: 3.5em;
-        flex: 0 0 80px;
-        max-width: 80px;
+        font-size: 2.5em;
+        flex: 0 0 60px;
+        max-width: 60px;
         text-align: center;
     }
 
@@ -1149,10 +1171,10 @@
 
         li {
             color: $body-color;
-            width: 50%;
+            flex: auto;
 
             .total {
-                text-transform: uppercase;
+
                 font-size: 0.9em;
             }
 
@@ -1168,7 +1190,7 @@
 
 
 .balancebox {
-    min-height: 141px;
+
 
     h2 {
         margin-top: 10px;
@@ -1176,7 +1198,7 @@
 
     p {
         margin-bottom: 0;
-        text-transform: uppercase;
+
         font-size: 0.9em;
     }
 
@@ -1301,9 +1323,9 @@
 .dashboard-togles {
     position: relative;
     display: block;
-    background: $secondary-color;
+    background: $secondary-color; color:$secondary-color-inverse;
     padding: 5px 0 5px 10px;
-    color: #fff;
+   
     border-radius: 4px;
 
     > a {
@@ -1568,9 +1590,9 @@
         width: 100%;
         display: inline-block;
 
-        .label {
-            margin: 4px 0 0;
-            font-weight: 600;
+        .coupon-code {
+            margin-top: 10px;
+
         }
 
         p {
@@ -1720,12 +1742,12 @@
         &.is-active {
             a {
                 border-color: $brand-color;
-                background: $brand-color;
-                color: #fff;
+                background: $brand-color; color:$brand-color-inverse;
+                
 
                 &:before {
                     content: "\f058";
-                    color: #fff;
+                   color:$brand-color-inverse
                 }
             }
         }
@@ -1798,9 +1820,8 @@
     }
 
     .item__pic {
-        margin-bottom: 0;
+        overflow: hidden;
         background: #fff;
-        margin: 0 auto;
         width: auto;
         border: $border;
         border-radius: 4px;
@@ -1954,11 +1975,11 @@
             }
 
             &.is-active {
-                background: $brand-color;
+                background: $brand-color; color:$brand-color-inverse;
 
 
                 > a {
-                    color: #fff;
+                   color:$brand-color-inverse
 
                 }
             }
@@ -2055,13 +2076,42 @@ input.sp-input {
     width: 110px !important;
 }
 
-@media only screen and (max-width: 1399px) {
+.address-block {
+    border: $border;
+    padding: 1rem;
+    border-radius: 4px;
+    display: block;
+    height: 100%;
 
-    .header-dashboard {
-        padding-#{$start-direction}: 70px;
+    .radio {
+        float: $end-direction;
     }
 
+    address {
+        margin-bottom: 1rem;
+        min-height: 200px;
+
+        @include media-breakpoint-down(md) {
+            & {
+                min-height: inherit;
+            }
+        }
+
+
+        p {
+            font-size: 0.88rem;
+            color: lighten($body-color, 20%);
+        }
+    }
 }
+
+.actions_wishlist {
+    margin: 0.5rem auto;
+    display: flex;
+
+}
+
+
 
 @media only screen and (max-width: 1199px) {
 
@@ -2077,7 +2127,6 @@ input.sp-input {
 
     }
 
-
     .header-dashboard {
         -webkit-padding-end: 30px;
         -moz-padding-end: 30px;
@@ -2087,6 +2136,7 @@ input.sp-input {
 }
 
 @media only screen and (max-width:1080px) {
+
     .sidebar-is-expanded .header-dashboard {
         padding-#{$start-direction}: 20px;
     }
@@ -2114,37 +2164,14 @@ input.sp-input {
 
 }
 
-.address-block {
-    border: $border;
-    padding: 1rem;
-    border-radius: 4px;
-    display: block;
-    height: 100%;
-
-    .radio {
-        float: $end-direction;
-    }
-
-    address {
-        margin: 1rem 0;
-        min-height: 200px;
-
-        @include media-breakpoint-down(md) {
-            & {
-                min-height: inherit;
-            }
-        }
-
-
-        p {
-            font-size: 0.88rem;
-            color: lighten($body-color, 20%);
-        }
+.product-tag {
+    &.scroll-y {
+        max-height: 100px;
     }
 }
 
-.actions_wishlist {
-    margin: 0.5rem auto;
-    flex: 1;
-    justify-content: center;
+.variants {
+    &.scroll-y {
+        max-height: 250px;
+    }
 }

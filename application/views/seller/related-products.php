@@ -12,11 +12,11 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pt-4 pl-4 pr-4 pb-0">
+                        <div class="cards-content pb-0">
                             <?php $relProdFrm->setFormTagAttribute('onsubmit', 'setUpSellerProductLinks(this); return(false);');
                             $relProdFrm->setFormTagAttribute('class', 'form form--horizontal');
                             $prodFld = $relProdFrm->getField('product_name');
-                            $prodFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Select_Product', $siteLangId));
+                            $prodFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_Product', $siteLangId));
 
                             $relProdFld = $relProdFrm->getField('products_related');
                             $relProdFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Add_Related_Products', $siteLangId));
@@ -65,7 +65,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pt-2 pl-4 pr-4 pb-4">
+                        <div class="cards-content">
                             <div id="listing">
                                 <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>

@@ -1,7 +1,8 @@
 <?php
+
 class Cronjob extends FatModel
 {
-    const DB_TBL_CONFIGURATION = 'tbl_configurations';
+    public const DB_TBL_CONFIGURATION = 'tbl_configurations';
 
     public function __construct()
     {
@@ -10,7 +11,7 @@ class Cronjob extends FatModel
 
     public static function productRecommendation()
     {
-        $limit = 25 ;
+        $limit = 25;
 
         $srch = RecommendationActivityBrowsing::getSearchObject();
         $srch->doNotCalculateRecords();
@@ -25,7 +26,7 @@ class Cronjob extends FatModel
             $srch = RecommendationActivityBrowsing::getSearchObject();
             $srch->doNotCalculateRecords();
             $srch->setPageSize($limit);
-            $srch->addMultipleFields(array('sum(rab_weightage) as weightage','rab_session_id','rab_user_id','rab_record_id','rab_record_type','rab_weightage_key'));
+            $srch->addMultipleFields(array('sum(rab_weightage) as weightage', 'rab_session_id', 'rab_user_id', 'rab_record_id', 'rab_record_type', 'rab_weightage_key'));
             $srch->addCondition('rab_session_id', '=', $val['rab_session_id']);
             $srch->addCondition('rab_user_id', '=', $val['rab_user_id']);
             $srch->addCondition('rab_record_type', '=', $val['rab_record_type']);
@@ -37,7 +38,7 @@ class Cronjob extends FatModel
             $recommendedProdRes = FatApp::getDb()->fetchAll($rs, 'rab_record_id');
             //var_dump($recommendedProdRes);
 
-            $relatedTagProdQuery  = FatApp::getDb()->query("select tptot.ptt_product_id as product_id,tptot.ptt_tag_id as tag_id from (select ptt.ptt_tag_id from tbl_product_to_tags ptt where ptt.ptt_product_id = '".(int)$val['rab_record_id']."') as tptt Left outer join tbl_product_to_tags tptot on (tptot.ptt_tag_id = tptt.ptt_tag_id) where tptot.ptt_product_id != '".(int)$val['rab_record_id']."' group by tptot.ptt_product_id");
+            $relatedTagProdQuery = FatApp::getDb()->query("select tptot.ptt_product_id as product_id,tptot.ptt_tag_id as tag_id from (select ptt.ptt_tag_id from tbl_product_to_tags ptt where ptt.ptt_product_id = '" . (int)$val['rab_record_id'] . "') as tptt Left outer join tbl_product_to_tags tptot on (tptot.ptt_tag_id = tptt.ptt_tag_id) where tptot.ptt_product_id != '" . (int)$val['rab_record_id'] . "' group by tptot.ptt_product_id");
             $relatedTagProdArr = FatApp::getDb()->fetchAll($relatedTagProdQuery, 'product_id');
 
             //var_dump($relatedTagProdArr);
@@ -46,44 +47,44 @@ class Cronjob extends FatModel
                 /*Tag Product Recommendation*/
                 if (array_key_exists($prodId, $relatedTagProdArr)) {
                     $tagProd = array(
-                    'tpr_tag_id'=>$relatedTagProdArr[$prodId]['tag_id'],
-                    'tpr_product_id'=>$prodId,
-                    'tpr_weightage'=>$recommendedProd['weightage'],
+                    'tpr_tag_id' => $relatedTagProdArr[$prodId]['tag_id'],
+                    'tpr_product_id' => $prodId,
+                    'tpr_weightage' => $recommendedProd['weightage'],
                     );
-                    $onDuplicateKeyTagProdUpdate = array_merge($tagProd, array('tpr_weightage'=>'mysql_func_tpr_weightage + '.$recommendedProd['weightage']));
+                    $onDuplicateKeyTagProdUpdate = array_merge($tagProd, array('tpr_weightage' => 'mysql_func_tpr_weightage + ' . $recommendedProd['weightage']));
                     FatApp::getDb()->insertFromArray('tbl_tag_product_recommendation', $tagProd, true, array(), $onDuplicateKeyTagProdUpdate);
 
                     $tagProd = array(
-                    'tpr_tag_id'=>$relatedTagProdArr[$prodId]['tag_id'],
-                    'tpr_product_id'=>$val['rab_record_id'],
-                    'tpr_weightage'=>$recommendedProd['weightage'],
+                    'tpr_tag_id' => $relatedTagProdArr[$prodId]['tag_id'],
+                    'tpr_product_id' => $val['rab_record_id'],
+                    'tpr_weightage' => $recommendedProd['weightage'],
                     );
-                    $onDuplicateKeyTagProdUpdate = array_merge($tagProd, array('tpr_weightage'=>'mysql_func_tpr_weightage + '.$recommendedProd['weightage']));
+                    $onDuplicateKeyTagProdUpdate = array_merge($tagProd, array('tpr_weightage' => 'mysql_func_tpr_weightage + ' . $recommendedProd['weightage']));
                     FatApp::getDb()->insertFromArray('tbl_tag_product_recommendation', $tagProd, true, array(), $onDuplicateKeyTagProdUpdate);
                 //echo FatApp::getDb()->getError();
                 } else {
                     /*User Product Recommendation*/
                     $userProdRecommendation = array(
-                    'upr_user_id'=>$val['rab_user_id'],
-                    'upr_product_id'=>$prodId,
-                    'upr_weightage'=>$recommendedProd['weightage']
+                    'upr_user_id' => $val['rab_user_id'],
+                    'upr_product_id' => $prodId,
+                    'upr_weightage' => $recommendedProd['weightage']
                     );
-                    $onDuplicateKeyUserProdRecommendationUpdate = array_merge($userProdRecommendation, array('upr_weightage'=>'mysql_func_upr_weightage + '.$recommendedProd['weightage']));
+                    $onDuplicateKeyUserProdRecommendationUpdate = array_merge($userProdRecommendation, array('upr_weightage' => 'mysql_func_upr_weightage + ' . $recommendedProd['weightage']));
                     FatApp::getDb()->insertFromArray('tbl_user_product_recommendation', $userProdRecommendation, true, array(), $onDuplicateKeyUserProdRecommendationUpdate);
                     //echo FatApp::getDb()->getError();
                 }
 
                 /*Product Product Recommendation*/
                 $prodRecommendation = array(
-                'ppr_viewing_product_id'=>$prodId,
-                'ppr_recommended_product_id'=>$val['rab_record_id'],
-                'ppr_weightage'=>$recommendedProd['weightage']
+                'ppr_viewing_product_id' => $prodId,
+                'ppr_recommended_product_id' => $val['rab_record_id'],
+                'ppr_weightage' => $recommendedProd['weightage']
                 );
-                $onDuplicateKeyProdRecommendationUpdate = array_merge($prodRecommendation, array('ppr_weightage'=>'mysql_func_ppr_weightage + '.$recommendedProd['weightage']));
+                $onDuplicateKeyProdRecommendationUpdate = array_merge($prodRecommendation, array('ppr_weightage' => 'mysql_func_ppr_weightage + ' . $recommendedProd['weightage']));
                 FatApp::getDb()->insertFromArray('tbl_product_product_recommendation', $prodRecommendation, true, array(), $onDuplicateKeyProdRecommendationUpdate);
                 //echo FatApp::getDb()->getError();
             }
-            FatApp::getDb()->deleteRecords(RecommendationActivityBrowsing::DB_TBL, array('smt'=>'rab_session_id = ? and rab_record_type = ?', 'vals'=>array($val['rab_session_id'],SmartUserActivityBrowsing::TYPE_PRODUCT)));
+            FatApp::getDb()->deleteRecords(RecommendationActivityBrowsing::DB_TBL, array('smt' => 'rab_session_id = ? and rab_record_type = ?', 'vals' => array($val['rab_session_id'], SmartUserActivityBrowsing::TYPE_PRODUCT)));
             //echo FatApp::getDb()->getError();
         }
         return Labels::getLabel('MSG_Success', FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1));
@@ -92,14 +93,14 @@ class Cronjob extends FatModel
     public static function remindBuyerForPendingReviews()
     {
         /* completed orders => orders which are pending feedback */
-        $resendReminderInterval  =  FatApp::getConfig('CONF_REVIEW_REMINDER_INTERVAL', FatUtility::VAR_INT, 15);
+        $resendReminderInterval = FatApp::getConfig('CONF_REVIEW_REMINDER_INTERVAL', FatUtility::VAR_INT, 15);
 
         $srch = new OrderProductSearch(0, true);
         $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")));
         $srch->joinTable('tbl_seller_product_reviews', 'left outer join', 'o.order_id = spr.spreview_order_id and ((op.op_selprod_id = spr.spreview_selprod_id and op.op_is_batch = 0) || (op.op_batch_selprod_id = spr.spreview_selprod_id and op.op_is_batch = 1))', 'spr');
         $srch->addCondition('spr.spreview_id', 'is', 'mysql_func_null', 'and', true);
-        $srch->addDirectCondition("(op.op_sent_review_reminder =  ".applicationConstants::NO." or ( op.op_sent_review_reminder = ".applicationConstants::YES." AND op.op_review_reminder_count = 1 AND Date_add(op_sent_last_reminder, INTERVAL ".$resendReminderInterval." day) = '".date('Y-m-d')."'))");
-        $srch->addMultipleFields(array('op_id','order_language_id'));
+        $srch->addDirectCondition("(op.op_sent_review_reminder =  " . applicationConstants::NO . " or ( op.op_sent_review_reminder = " . applicationConstants::YES . " AND op.op_review_reminder_count = 1 AND Date_add(op_sent_last_reminder, INTERVAL " . $resendReminderInterval . " day) = '" . date('Y-m-d') . "'))");
+        $srch->addMultipleFields(array('op_id', 'order_language_id'));
 
         $orderProductsNotReviewedYet = FatApp::getDb()->fetchAll($srch->getResultSet());
         if (empty($orderProductsNotReviewedYet)) {
@@ -112,8 +113,8 @@ class Cronjob extends FatModel
 
             if (!FatApp::getDb()->updateFromArray(
                 OrderProduct::DB_TBL,
-                array('op_sent_review_reminder' => applicationConstants::YES,'op_sent_last_reminder'=>date('Y-m-d'),'op_review_reminder_count'=>'mysql_func_op_review_reminder_count + 1'),
-                array('smt' => 'op_id = ?','vals' => array($orderProduct['op_id'])),
+                array('op_sent_review_reminder' => applicationConstants::YES, 'op_sent_last_reminder' => date('Y-m-d'), 'op_review_reminder_count' => 'mysql_func_op_review_reminder_count + 1'),
+                array('smt' => 'op_id = ?', 'vals' => array($orderProduct['op_id'])),
                 true
             )) {
                 return FatApp::getDb()->getError();
@@ -133,10 +134,10 @@ class Cronjob extends FatModel
         if (!FatApp::getConfig('CONF_ENABLE_FIRST_TIME_BUYER_DISCOUNT')) {
             return Labels::getLabel('MSG_First_time_buyer_discount_module_is_disabled', FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1));
         }
-        $userId =  FatUtility::int($userId);
+        $userId = FatUtility::int($userId);
 
         $orderSrch = new OrderSearch();
-        $orderSrch->addMultipleFields(array('order_language_id','order_date_added'));
+        $orderSrch->addMultipleFields(array('order_language_id', 'order_date_added'));
         $orderSrch->addCondition('order_id', '=', $orderId);
         $orderSrch->addCondition('order_user_id', '=', $userId);
         $orderRs = $orderSrch->getResultSet();
@@ -166,21 +167,21 @@ class Cronjob extends FatModel
 
         $defaultLangId = $orderData['order_language_id'];
         $couponData = array(
-        'coupon_identifier'=>Labels::getLabel('LBL_Discount_On_First_Purchase', $defaultLangId),
-        'coupon_type'=>DiscountCoupons::TYPE_DISCOUNT,
-        'coupon_code'=>uniqid().base64_encode($userId),
-        'coupon_discount_in_percent'=>FatApp::getConfig('CONF_FIRST_TIME_BUYER_COUPON_IN_PERCENT'),
-        'coupon_min_order_value'=>FatApp::getConfig('CONF_FIRST_TIME_BUYER_COUPON_MIN_ORDER_VALUE'),
-        'coupon_discount_value'=>FatApp::getConfig('CONF_FIRST_TIME_BUYER_COUPON_DISCOUNT_VALUE'),
-        'coupon_max_discount_value'=>FatApp::getConfig('CONF_FIRST_TIME_BUYER_COUPON_MAX_DISCOUNT_VALUE'),
-        'coupon_start_date'=>date('Y-m-d'),
-        'coupon_uses_count'=>1,
-        'coupon_uses_coustomer'=>1,
-        'coupon_active'=>applicationConstants::ACTIVE,
+        'coupon_identifier' => Labels::getLabel('LBL_Discount_On_First_Purchase', $defaultLangId),
+        'coupon_type' => DiscountCoupons::TYPE_DISCOUNT,
+        'coupon_code' => uniqid() . base64_encode($userId),
+        'coupon_discount_in_percent' => FatApp::getConfig('CONF_FIRST_TIME_BUYER_COUPON_IN_PERCENT'),
+        'coupon_min_order_value' => FatApp::getConfig('CONF_FIRST_TIME_BUYER_COUPON_MIN_ORDER_VALUE'),
+        'coupon_discount_value' => FatApp::getConfig('CONF_FIRST_TIME_BUYER_COUPON_DISCOUNT_VALUE'),
+        'coupon_max_discount_value' => FatApp::getConfig('CONF_FIRST_TIME_BUYER_COUPON_MAX_DISCOUNT_VALUE'),
+        'coupon_start_date' => date('Y-m-d'),
+        'coupon_uses_count' => 1,
+        'coupon_uses_coustomer' => 1,
+        'coupon_active' => applicationConstants::ACTIVE,
         );
         if ($couponValidaity > 0) {
-            $expiryDate = date('Y-m-d', strtotime(date('Y-m-d').' +'.$couponValidaity.'days'));
-            $couponData['coupon_end_date'] = $expiryDate ;
+            $expiryDate = date('Y-m-d', strtotime(date('Y-m-d') . ' +' . $couponValidaity . 'days'));
+            $couponData['coupon_end_date'] = $expiryDate;
         }
 
         $record = new DiscountCoupons();
@@ -195,13 +196,24 @@ class Cronjob extends FatModel
             $languages = Language::getAllNames();
             foreach ($languages as $langId => $langName) {
                 $langData = array(
-                'coupon_title'=>Labels::getLabel('LBL_Discount_On_First_Purchase', $langId),
-                'couponlang_coupon_id'=>$couponId,
-                'couponlang_lang_id'=>$langId
+                'coupon_title' => Labels::getLabel('LBL_Discount_On_First_Purchase', $langId),
+                'couponlang_coupon_id' => $couponId,
+                'couponlang_lang_id' => $langId
                 );
 
                 $obj = new DiscountCoupons($couponId);
                 $obj->updateLangData($langId, $langData);
+
+                $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_FIRST_PURCHASE_DISCOUNT_IMAGE, 0, 0, $langId);
+                if (!empty($file_row)) {
+                    unset($file_row['afile_id']);
+                    unset($file_row['afile_updated_at']);
+                    $file_row['afile_record_id'] = $couponId;
+                    $file_row['afile_type'] = AttachedFile::FILETYPE_DISCOUNT_COUPON_IMAGE;
+                    $attachedFile = new AttachedFile();
+                    $attachedFile->assignValues($file_row);
+                    $attachedFile->addNew(array(), $file_row);
+                }
             }
 
             $emailNotificationObj = new EmailHandler();
@@ -220,9 +232,9 @@ class Cronjob extends FatModel
         $currentDay = date('d');
 
         if (FatApp::getConfig("CONF_CRON_BIRTHDAY_REWARD_DAY", FatUtility::VAR_INT, 0) != $currentDay) {
-            $conArr = array('CONF_CRON_BIRTHDAY_REWARD_DAY'=>$currentDay,'CONF_CRON_BIRTHDAY_REWARD_LAST_EXECUTED_USERID'=>0);
+            $conArr = array('CONF_CRON_BIRTHDAY_REWARD_DAY' => $currentDay, 'CONF_CRON_BIRTHDAY_REWARD_LAST_EXECUTED_USERID' => 0);
             foreach ($conArr as $key => $val) {
-                $assignValues = array('conf_name'=>$key,'conf_val'=>$val);
+                $assignValues = array('conf_name' => $key, 'conf_val' => $val);
                 FatApp::getDb()->insertFromArray(
                     static::DB_TBL_CONFIGURATION,
                     $assignValues,
@@ -234,13 +246,13 @@ class Cronjob extends FatModel
         }
 
         $srch = User::getSearchObject();
-        $srch->joinTable(Credential::DB_TBL, 'LEFT OUTER JOIN', 'uc.'.Credential::DB_TBL_PREFIX.'user_id = u.user_id', 'uc');
+        $srch->joinTable(Credential::DB_TBL, 'LEFT OUTER JOIN', 'uc.' . Credential::DB_TBL_PREFIX . 'user_id = u.user_id', 'uc');
         $srch->addCondition('uc.credential_active', '=', applicationConstants::YES);
         $srch->addCondition('uc.credential_verified', '=', applicationConstants::YES);
         $srch->addCondition('u.user_is_buyer', '=', applicationConstants::YES);
         $srch->addCondition('u.user_id', '>', FatApp::getConfig("CONF_CRON_BIRTHDAY_REWARD_LAST_EXECUTED_USERID"));
         $srch->addCondition("mysql_func_DATE_FORMAT(user_dob,'%m-%d')", '=', "mysql_func_DATE_FORMAT(NOW(),'%m-%d')", 'AND', true);
-        $srch->addMultipleFields(array('u.user_id','u.user_dob','u.user_name'));
+        $srch->addMultipleFields(array('u.user_id', 'u.user_dob', 'u.user_name'));
         //$srch->addCondition('mysql_func_MONTH(user_dob)','=','mysql_func_MONTH(NOW())','AND',true);
         //$srch->addCondition('mysql_func_DAY(user_dob)','=','mysql_func_DAY(NOW())','AND',true);
         $rs = $srch->getResultSet();
@@ -250,22 +262,22 @@ class Cronjob extends FatModel
         }
 
         $urpComments = Labels::getLabel("LBL_Earned_Reward_Points_On_Birthday", FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1));
-        $expiryDate = date('Y-m-d', strtotime(date('Y-m-d').' +'.FatApp::getConfig('CONF_BIRTHDAY_REWARD_POINTS_VALIDITY').'days'));
+        $expiryDate = date('Y-m-d', strtotime(date('Y-m-d') . ' +' . FatApp::getConfig('CONF_BIRTHDAY_REWARD_POINTS_VALIDITY') . 'days'));
         foreach ($row as $userId => $user) {
             $rewardsRecord = new UserRewards();
             $rewardsRecord->assignValues(
                 array(
-                'urp_user_id'    => $userId,
-                'urp_points'    =>    FatApp::getConfig('CONF_BIRTHDAY_REWARD_POINTS'),
-                'urp_comments'    =>    $urpComments,
-                'urp_used'        =>    0,
-                'urp_date_expiry'    =>    $expiryDate
+                'urp_user_id' => $userId,
+                'urp_points' => FatApp::getConfig('CONF_BIRTHDAY_REWARD_POINTS'),
+                'urp_comments' => $urpComments,
+                'urp_used' => 0,
+                'urp_date_expiry' => $expiryDate
                 )
             );
             if ($rewardsRecord->save()) {
                 $urpId = $rewardsRecord->getMainTableRecordId();
 
-                $assignValues = array('conf_name'=>'CONF_CRON_BIRTHDAY_REWARD_LAST_EXECUTED_USERID','conf_val'=>$userId);
+                $assignValues = array('conf_name' => 'CONF_CRON_BIRTHDAY_REWARD_LAST_EXECUTED_USERID', 'conf_val' => $userId);
                 FatApp::getDb()->insertFromArray(
                     static::DB_TBL_CONFIGURATION,
                     $assignValues,
@@ -301,7 +313,7 @@ class Cronjob extends FatModel
         $res = FatApp::getDb()->fetch($rs);
 
         if (!$res == false) {
-            return ;
+            return;
         }
 
         $srch = new OrderSearch();
@@ -318,7 +330,7 @@ class Cronjob extends FatModel
 
         $srch = RewardsOnPurchase::getSearchObject();
         $srch->addCondition('rop_purchase_upto', '<=', $row['order_net_amount']);
-        $srch->addMultipleFields(array('rop_purchase_upto','rop_reward_point'));
+        $srch->addMultipleFields(array('rop_purchase_upto', 'rop_reward_point'));
         $srch->addOrder('rop_purchase_upto', 'desc');
         $srch->setPageSize(1);
         $rs = $srch->getResultSet();
@@ -330,16 +342,16 @@ class Cronjob extends FatModel
         }
 
         $urpComments = Labels::getLabel("LBL_Earned_Reward_Points_On_Purchase.", FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1));
-        $expiryDate = date('Y-m-d', strtotime(date('Y-m-d').' +'.FatApp::getConfig('CONF_REWARDS_VALIDITY_ON_PURCHASE').'days'));
+        $expiryDate = date('Y-m-d', strtotime(date('Y-m-d') . ' +' . FatApp::getConfig('CONF_REWARDS_VALIDITY_ON_PURCHASE') . 'days'));
 
         $rewardsRecord = new UserRewards();
         $rewardsRecord->assignValues(
             array(
-            'urp_user_id'            => $row['order_user_id'],
-            'urp_points'    =>    $rewardPoint['rop_reward_point'],
-            'urp_comments'    =>    $urpComments,
-            'urp_used'        =>    0,
-            'urp_date_expiry'    =>    $expiryDate
+            'urp_user_id' => $row['order_user_id'],
+            'urp_points' => $rewardPoint['rop_reward_point'],
+            'urp_comments' => $urpComments,
+            'urp_used' => 0,
+            'urp_date_expiry' => $expiryDate
             )
         );
         if ($rewardsRecord->save()) {
@@ -362,14 +374,14 @@ class Cronjob extends FatModel
             return Labels::getLabel('MSG_Module_Disabled', FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1));
         }
 
-        $prevYear = date('Y')-1;
-        $startDate = $prevYear.'-01-01';
-        $endDate = $prevYear.'-12-31';
+        $prevYear = date('Y') - 1;
+        $startDate = $prevYear . '-01-01';
+        $endDate = $prevYear . '-12-31';
 
         if (FatApp::getConfig("CONF_CRON_BUYING_YEAR", FatUtility::VAR_INT, 0) != $prevYear) {
-            $conArr = array('CONF_CRON_BUYING_YEAR'=>$prevYear,'CONF_CRON_BUYING_YEAR_LAST_EXE_USERID'=>0);
+            $conArr = array('CONF_CRON_BUYING_YEAR' => $prevYear, 'CONF_CRON_BUYING_YEAR_LAST_EXE_USERID' => 0);
             foreach ($conArr as $key => $val) {
-                $assignValues = array('conf_name'=>$key,'conf_val'=>$val);
+                $assignValues = array('conf_name' => $key, 'conf_val' => $val);
                 FatApp::getDb()->insertFromArray(
                     static::DB_TBL_CONFIGURATION,
                     $assignValues,
@@ -388,9 +400,9 @@ class Cronjob extends FatModel
         $srch->addCondition('order_is_paid', '=', ORDERS::ORDER_IS_PAID);
         $srch->addStatusCondition(array($statusArr));
         $srch->addCondition('order_user_id', '>', FatApp::getConfig("CONF_CRON_BUYING_YEAR_LAST_EXE_USERID"));
-        $srch->addCondition('op_completion_date', '>=', $startDate.' 00:00:00');
-        $srch->addCondition('op_completion_date', '<=', $endDate.' 23:59:59');
-        $srch->addMultipleFields(array('order_user_id','sum(((op_qty - op_refund_qty)*op_unit_price) - op_refund_amount) as buyingPrice'));
+        $srch->addCondition('op_completion_date', '>=', $startDate . ' 00:00:00');
+        $srch->addCondition('op_completion_date', '<=', $endDate . ' 23:59:59');
+        $srch->addMultipleFields(array('order_user_id', 'sum(((op_qty - op_refund_qty)*op_unit_price) - op_refund_amount) as buyingPrice'));
         $srch->addGroupBy('order_user_id');
         $srch->addOrder('order_user_id', 'ASC');
         $srch->setPageSize(50);
@@ -404,22 +416,22 @@ class Cronjob extends FatModel
         }
 
         $urpComments = Labels::getLabel("LBL_Earned_Reward_Points_On_Last_Year_Buying.", FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1));
-        $expiryDate = date('Y-m-d', strtotime(date('Y-m-d').' +'.FatApp::getConfig('CONF_BUYING_IN_AN_YEAR_REWARD_POINTS_VALIDITY').'days'));
+        $expiryDate = date('Y-m-d', strtotime(date('Y-m-d') . ' +' . FatApp::getConfig('CONF_BUYING_IN_AN_YEAR_REWARD_POINTS_VALIDITY') . 'days'));
         foreach ($row as $userId => $user) {
             $rewardsRecord = new UserRewards();
             $rewardsRecord->assignValues(
                 array(
-                'urp_user_id'            => $userId,
-                'urp_points'    =>    FatApp::getConfig('CONF_BUYING_IN_AN_YEAR_REWARD_POINTS'),
-                'urp_comments'    =>    $urpComments,
-                'urp_used'        =>    0,
-                'urp_date_expiry'    =>    $expiryDate
+                'urp_user_id' => $userId,
+                'urp_points' => FatApp::getConfig('CONF_BUYING_IN_AN_YEAR_REWARD_POINTS'),
+                'urp_comments' => $urpComments,
+                'urp_used' => 0,
+                'urp_date_expiry' => $expiryDate
                 )
             );
             if ($rewardsRecord->save()) {
                 $urpId = $rewardsRecord->getMainTableRecordId();
 
-                $assignValues = array('conf_name'=>'CONF_CRON_BUYING_YEAR_LAST_EXE_USERID','conf_val'=>$userId);
+                $assignValues = array('conf_name' => 'CONF_CRON_BUYING_YEAR_LAST_EXE_USERID', 'conf_val' => $userId);
                 FatApp::getDb()->insertFromArray(
                     static::DB_TBL_CONFIGURATION,
                     $assignValues,
@@ -442,9 +454,9 @@ class Cronjob extends FatModel
         $prmSrch->joinPromotionCharge();
         $prmSrch->addGroupBy('promotion_id');
         $prmSrch->addLastChargeCondition();
-        $prmSrch->addMultipleFields(array('promotion_id','promotion_user_id ',"IFNULL(MAX(pcharge_end_piclick_id),0) as end_click_id","IFNULL(MAX(pcharge_end_date),'0000-00-00') as charge_till_date"));
+        $prmSrch->addMultipleFields(array('promotion_id', 'promotion_user_id ', "IFNULL(MAX(pcharge_end_piclick_id),0) as end_click_id", "IFNULL(MAX(pcharge_end_date),'0000-00-00') as charge_till_date"));
         $rs = $prmSrch->getResultSet();
-        $promotions =FatApp::getDb()->fetchAll($rs);
+        $promotions = FatApp::getDb()->fetchAll($rs);
 
         $prmObj = new Promotion();
         foreach ($promotions as $pKey => $pVal) {
@@ -455,13 +467,13 @@ class Cronjob extends FatModel
             $prChargeSummary->addCondition('promotion_id', '=', $promotionId);
             $prChargeSummary->addCondition('picharge_id', '>', $pVal['end_click_id']);
             $prChargeSummary->addMultipleFields(
-                array("sum(picharge_cost) as total_cost","min(picharge_id) as start_click_id","max(picharge_id) as end_click_id","MIN(picharge_datetime) as start_click_date",
-                "MAX(picharge_datetime) as end_click_date",    "count(picharge_id) as total_clicks",)
+                array("sum(picharge_cost) as total_cost", "min(picharge_id) as start_click_id", "max(picharge_id) as end_click_id", "MIN(picharge_datetime) as start_click_date",
+                "MAX(picharge_datetime) as end_click_date",    "count(picharge_id) as total_clicks", )
             );
             $prChargeSummary->addGroupBy('pclick_promotion_id');
 
             $rs = $prChargeSummary->getResultSet();
-            $promotionClicks =FatApp::getDb()->fetch($rs);
+            $promotionClicks = FatApp::getDb()->fetch($rs);
 
             if ($promotionClicks) {
                 // Get User Wallet Balance
@@ -479,16 +491,16 @@ class Cronjob extends FatModel
                 }
 
 
-                if ($promotionClicks['total_cost']>0) {
+                if ($promotionClicks['total_cost'] > 0) {
                     $data = array(
-                    'user_id'=>$pVal['promotion_user_id'],
-                    'promotion_id'=>$promotionId,
-                    'total_cost'=>$promotionClicks['total_cost'],
-                    'total_clicks'=>$promotionClicks['total_clicks'],
-                    'start_click_id'=>$promotionClicks['start_click_id'],
-                    'end_click_id'=>$promotionClicks['end_click_id'],
-                    'start_click_date'=>$promotionClicks['start_click_date'],
-                    'end_click_date'=>$promotionClicks['end_click_date'],
+                    'user_id' => $pVal['promotion_user_id'],
+                    'promotion_id' => $promotionId,
+                    'total_cost' => $promotionClicks['total_cost'],
+                    'total_clicks' => $promotionClicks['total_clicks'],
+                    'start_click_id' => $promotionClicks['start_click_id'],
+                    'end_click_id' => $promotionClicks['end_click_id'],
+                    'start_click_date' => $promotionClicks['start_click_date'],
+                    'end_click_date' => $promotionClicks['end_click_date'],
                     );
 
                     $prmObj->addUpdatePromotionCharges($data, FatApp::getConfig('CONF_DEFAULT_SITE_LANG'));
@@ -506,9 +518,9 @@ class Cronjob extends FatModel
         }
         $currentDay = date('d');
         if (FatApp::getConfig("CONF_CRON_SUBSCRIPTION_REMINDER_DAY", FatUtility::VAR_INT, 0) != $currentDay) {
-            $conArr = array('CONF_CRON_SUBSCRIPTION_REMINDER_DAY'=>$currentDay,'CONF_CRON_SUBSCRIPTION_REMINDER_LAST_EXECUTED_USERID'=>0);
+            $conArr = array('CONF_CRON_SUBSCRIPTION_REMINDER_DAY' => $currentDay, 'CONF_CRON_SUBSCRIPTION_REMINDER_LAST_EXECUTED_USERID' => 0);
             foreach ($conArr as $key => $val) {
-                $assignValues = array('conf_name'=>$key,'conf_val'=>$val);
+                $assignValues = array('conf_name' => $key, 'conf_val' => $val);
                 FatApp::getDb()->insertFromArray(
                     static::DB_TBL_CONFIGURATION,
                     $assignValues,
@@ -521,13 +533,13 @@ class Cronjob extends FatModel
 
         $subscriptionList = OrderSubscription::getSubscriptionEndingList(true);
 
-        if (!empty($subscriptionList) && count($subscriptionList)>0) {
+        if (!empty($subscriptionList) && count($subscriptionList) > 0) {
             foreach ($subscriptionList as $subscriber) {
                 $userId = $subscriber['user_id'];
                 $ossubs_id = $subscriber['ossubs_id'];
                 $emailObj = new EmailHandler();
                 $emailObj->sendSubscriptionReminderEmail($subscriber['order_language_id'], $subscriber);
-                $assignValues = array('conf_name'=>'CONF_CRON_SUBSCRIPTION_REMINDER_LAST_EXECUTED_USERID','conf_val'=>$userId);
+                $assignValues = array('conf_name' => 'CONF_CRON_SUBSCRIPTION_REMINDER_LAST_EXECUTED_USERID', 'conf_val' => $userId);
                 FatApp::getDb()->insertFromArray(
                     static::DB_TBL_CONFIGURATION,
                     $assignValues,
@@ -545,8 +557,8 @@ class Cronjob extends FatModel
         if (!FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) {
             return;
         }
-        $statusArr  = Orders::getActiveSubscriptionStatusArr();
-        $endDate  = date("Y-m-d");
+        $statusArr = Orders::getActiveSubscriptionStatusArr();
+        $endDate = date("Y-m-d");
         $srch = new OrderSubscriptionSearch();
         $srch->joinOrders();
         $srch->joinOrderUser();
@@ -556,7 +568,7 @@ class Cronjob extends FatModel
         $srch->addCondition('ossubs_till_date', '!=', '0000-00-00');
         $srch->addCondition('ossubs_type', '=', SellerPackages::PAID_TYPE);
         $srch->addCondition('user_autorenew_subscription', '=', 1);
-        $srch->addMultipleFields(array('order_user_id','order_language_id','order_language_code','order_currency_id','order_id','ossubs_id','ossubs_type','ossubs_price','ossubs_images_allowed','ossubs_products_allowed','ossubs_plan_id','ossubs_interval','ossubs_frequency','ossubs_commission'));
+        $srch->addMultipleFields(array('order_user_id', 'order_language_id', 'order_language_code', 'order_currency_id', 'order_id', 'ossubs_id', 'ossubs_type', 'ossubs_price', 'ossubs_images_allowed', 'ossubs_products_allowed', 'ossubs_plan_id', 'ossubs_interval', 'ossubs_frequency', 'ossubs_commission'));
         /* $srch->addGroupBy('order_user_id');  */
         $srch->addOrder('ossubs_id', 'desc');
 
@@ -570,7 +582,7 @@ class Cronjob extends FatModel
             $userId = $activeSub['order_user_id'];
             $userBalance = User::getUserBalance($userId);
 
-            if ($userBalance<$activeSub['ossubs_price']) {
+            if ($userBalance < $activeSub['ossubs_price']) {
                 $emailObj = new EmailHandler();
                 $emailObj->sendLowBalanceSubscriptionNotification($activeSub['order_language_id'], $userId, $activeSub['ossubs_price']);
                 break;
@@ -580,7 +592,7 @@ class Cronjob extends FatModel
 
             $orderData = array();
             /* add Order Data[ */
-            $order_id =  false;
+            $order_id = false;
 
 
             $orderData['order_id'] = $order_id;
@@ -596,8 +608,8 @@ class Cronjob extends FatModel
 
             /* order extras[ */
             $orderData['extra'] = array(
-            'oextra_order_id'    =>    $order_id,
-            'order_ip_address'    =>    $_SERVER['REMOTE_ADDR']
+            'oextra_order_id' => $order_id,
+            'order_ip_address' => $_SERVER['REMOTE_ADDR']
             );
 
             if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -622,16 +634,16 @@ class Cronjob extends FatModel
             /* ] */
 
             /* $languageRow = Language::getAttributesById($activeSub['order_language_id']); */
-            $orderData['order_language_id'] =  $activeSub['order_language_id'];
-            $orderData['order_language_code'] =  $activeSub['order_language_code'];
+            $orderData['order_language_id'] = $activeSub['order_language_id'];
+            $orderData['order_language_code'] = $activeSub['order_language_code'];
 
             $currencyRow = Currency::getAttributesById($activeSub['order_currency_id']);
-            $orderData['order_currency_id'] =  $activeSub['order_currency_id'];
-            $orderData['order_currency_code'] =  $currencyRow['currency_code'];
-            $orderData['order_currency_value'] =  $currencyRow['currency_value'];
+            $orderData['order_currency_id'] = $activeSub['order_currency_id'];
+            $orderData['order_currency_code'] = $currencyRow['currency_code'];
+            $orderData['order_currency_value'] = $currencyRow['currency_value'];
 
-            $orderData['order_user_comments'] =  '';
-            $orderData['order_admin_comments'] =  '';
+            $orderData['order_user_comments'] = '';
+            $orderData['order_admin_comments'] = '';
 
             $orderData['order_reward_point_used'] = 0;
             $orderData['order_reward_point_value'] = 0;
@@ -661,47 +673,47 @@ class Cronjob extends FatModel
 
 
                 $subscriptionLangData[$lang_id] = array(
-                'ossubslang_lang_id'    =>    $lang_id,
-                'ossubs_subscription_name'    =>    $op_subscription_title,
+                'ossubslang_lang_id' => $lang_id,
+                'ossubs_subscription_name' => $op_subscription_title,
                 );
             }
 
-            $orderData['subscriptions'][SubscriptionCart::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT.$activeSub['ossubs_plan_id']] = array(
+            $orderData['subscriptions'][SubscriptionCart::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT . $activeSub['ossubs_plan_id']] = array(
 
 
-            OrderSubscription::DB_TBL_PREFIX.'price'        =>    $activeSub['ossubs_price'],
-            OrderSubscription::DB_TBL_PREFIX.'images_allowed'        =>    $activeSub['ossubs_images_allowed'],
-            OrderSubscription::DB_TBL_PREFIX.'products_allowed'        =>    $activeSub['ossubs_products_allowed'],
-            OrderSubscription::DB_TBL_PREFIX.'plan_id'        =>    $activeSub['ossubs_plan_id'],
-            OrderSubscription::DB_TBL_PREFIX.'type'        =>    $activeSub['ossubs_type'],
-            OrderSubscription::DB_TBL_PREFIX.'interval'        =>    $activeSub['ossubs_interval'],
-            OrderSubscription::DB_TBL_PREFIX.'frequency'        =>    $activeSub['ossubs_frequency'],
-            OrderSubscription::DB_TBL_PREFIX.'commission'        =>    $activeSub['ossubs_commission'],
-            OrderSubscription::DB_TBL_PREFIX.'status_id'        =>    FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS"),
-            'subscriptionsLangData'    =>    $subscriptionLangData,
+            OrderSubscription::DB_TBL_PREFIX . 'price' => $activeSub['ossubs_price'],
+            OrderSubscription::DB_TBL_PREFIX . 'images_allowed' => $activeSub['ossubs_images_allowed'],
+            OrderSubscription::DB_TBL_PREFIX . 'products_allowed' => $activeSub['ossubs_products_allowed'],
+            OrderSubscription::DB_TBL_PREFIX . 'plan_id' => $activeSub['ossubs_plan_id'],
+            OrderSubscription::DB_TBL_PREFIX . 'type' => $activeSub['ossubs_type'],
+            OrderSubscription::DB_TBL_PREFIX . 'interval' => $activeSub['ossubs_interval'],
+            OrderSubscription::DB_TBL_PREFIX . 'frequency' => $activeSub['ossubs_frequency'],
+            OrderSubscription::DB_TBL_PREFIX . 'commission' => $activeSub['ossubs_commission'],
+            OrderSubscription::DB_TBL_PREFIX . 'status_id' => FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS"),
+            'subscriptionsLangData' => $subscriptionLangData,
             );
 
-            $adjustAmount=0;
+            $adjustAmount = 0;
             $discount = 0;
             $rewardPoints = 0;
             $usedRewardPoint = 0;
 
             //CommonHelper::printArray($cartSubscription); die();
-            $orderData['subscrCharges'][SubscriptionCart::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT.$activeSub['ossubs_plan_id']] = array(
+            $orderData['subscrCharges'][SubscriptionCart::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT . $activeSub['ossubs_plan_id']] = array(
 
-            OrderProduct::CHARGE_TYPE_DISCOUNT =>array(
+            OrderProduct::CHARGE_TYPE_DISCOUNT => array(
             'amount' => 0 /*[Should be negative value]*/
             ),
-            OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT =>array(
+            OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT => array(
             'amount' => 0 /*[Should be negative value]*/
             ),
-            OrderProduct::CHARGE_TYPE_ADJUST_SUBSCRIPTION_PRICE =>array(
+            OrderProduct::CHARGE_TYPE_ADJUST_SUBSCRIPTION_PRICE => array(
             'amount' => 0 /*[Should be negative value]*/
             ),
             );
             /* [ Add order Type[ */
-            $orderData['order_type']= Orders::ORDER_SUBSCRIPTION;
-            $orderData['order_renew']= 1;
+            $orderData['order_type'] = Orders::ORDER_SUBSCRIPTION;
+            $orderData['order_renew'] = 1;
             /* ] */
             $orderObj = new Orders();
 
@@ -717,7 +729,7 @@ class Cronjob extends FatModel
     {
         $row = AttachedFile::getTempImages(150);
         if ($row == false) {
-            return ;
+            return;
         }
 
         foreach ($row as $val) {
@@ -729,7 +741,7 @@ class Cronjob extends FatModel
             $imgArr = array(
             'afile_downloaded' => applicationConstants::YES
             );
-            $where = array('smt' => 'afile_id = ?','vals' => array($val['afile_id']));
+            $where = array('smt' => 'afile_id = ?', 'vals' => array($val['afile_id']));
             FatApp::getDb()->updateFromArray(AttachedFile::DB_TBL_TEMP, $imgArr, $where);
         }
 
@@ -738,13 +750,13 @@ class Cronjob extends FatModel
 
     public static function remindBuyerForProductsInCart()
     {
-        $sentCartReminderCount  =  FatApp::getConfig('CONF_SENT_CART_REMINDER_COUNT', FatUtility::VAR_INT, 2);
-        $buyerReminderInterval  =  FatApp::getConfig('CONF_REMINDER_INTERVAL_PRODUCTS_IN_CART', FatUtility::VAR_INT, 15);
+        $sentCartReminderCount = FatApp::getConfig('CONF_SENT_CART_REMINDER_COUNT', FatUtility::VAR_INT, 2);
+        $buyerReminderInterval = FatApp::getConfig('CONF_REMINDER_INTERVAL_PRODUCTS_IN_CART', FatUtility::VAR_INT, 15);
 
         $srch = new SearchBase('tbl_user_cart', 'uc');
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = usercart_user_id', 'u');
-        $srch->joinTable(Credential::DB_TBL, 'LEFT OUTER JOIN', 'ucr.'.Credential::DB_TBL_PREFIX.'user_id = u.user_id', 'ucr');
-        $srch->addMultipleFields(array('uc.*','user_name','credential_email'));
+        $srch->joinTable(Credential::DB_TBL, 'LEFT OUTER JOIN', 'ucr.' . Credential::DB_TBL_PREFIX . 'user_id = u.user_id', 'ucr');
+        $srch->addMultipleFields(array('uc.*', 'user_name', 'credential_email'));
         $srch->addCondition('ucr.credential_active', '=', applicationConstants::YES);
         $srch->addCondition('ucr.credential_verified', '=', applicationConstants::YES);
         $srch->addCondition('u.user_is_buyer', '=', applicationConstants::YES);
@@ -769,7 +781,7 @@ class Cronjob extends FatModel
 
             $email = new EmailHandler();
             if (!$email->remindBuyerForCartItems(FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1), $data)) {
-                return $val['usercart_user_id'].' - '.Labels::getLabel("MSG_ERROR_IN_SENDING_REMINDER_EMAIL_TO_BUYER", FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1));
+                return $val['usercart_user_id'] . ' - ' . Labels::getLabel("MSG_ERROR_IN_SENDING_REMINDER_EMAIL_TO_BUYER", FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1));
             }
 
 
@@ -781,13 +793,13 @@ class Cronjob extends FatModel
 
     public static function remindBuyerForProductsInWishlist()
     {
-        $sentWishListReminderCount  =  FatApp::getConfig('CONF_SENT_WISHLIST_REMINDER_COUNT', FatUtility::VAR_INT, 2);
-        $buyerReminderInterval  =  FatApp::getConfig('CONF_REMINDER_INTERVAL_PRODUCTS_IN_WISHLIST', FatUtility::VAR_INT, 15);
+        $sentWishListReminderCount = FatApp::getConfig('CONF_SENT_WISHLIST_REMINDER_COUNT', FatUtility::VAR_INT, 2);
+        $buyerReminderInterval = FatApp::getConfig('CONF_REMINDER_INTERVAL_PRODUCTS_IN_WISHLIST', FatUtility::VAR_INT, 15);
 
         $srch = new UserWishListProductSearch(FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1));
         $srch->joinWishLists();
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = uwlist_user_id', 'u');
-        $srch->joinTable(Credential::DB_TBL, 'LEFT OUTER JOIN', 'ucr.'.Credential::DB_TBL_PREFIX.'user_id = u.user_id', 'ucr');
+        $srch->joinTable(Credential::DB_TBL, 'LEFT OUTER JOIN', 'ucr.' . Credential::DB_TBL_PREFIX . 'user_id = u.user_id', 'ucr');
         $srch->joinSellerProducts();
         $srch->joinProducts();
         $srch->joinSellers();
@@ -795,7 +807,7 @@ class Cronjob extends FatModel
         $srch->joinProductToCategory();
         $srch->joinSellerSubscription(FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1), true);
         $srch->addSubscriptionValidCondition();
-        $srch->addMultipleFields(array('uwlp.*','u.user_id','u.user_name','ucr.credential_email'));
+        $srch->addMultipleFields(array('uwlp.*', 'u.user_id', 'u.user_name', 'ucr.credential_email'));
         $srch->addCondition('ucr.credential_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('ucr.credential_verified', '=', applicationConstants::YES);
         $srch->addCondition('u.user_is_buyer', '=', applicationConstants::YES);
@@ -814,10 +826,10 @@ class Cronjob extends FatModel
 
             $email = new EmailHandler();
             if (!$email->remindBuyerForWishlistItems(FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1), $data)) {
-                return $val['user_id'].' - '.Labels::getLabel("MSG_ERROR_IN_SENDING_REMINDER_EMAIL_TO_BUYER", FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1));
+                return $val['user_id'] . ' - ' . Labels::getLabel("MSG_ERROR_IN_SENDING_REMINDER_EMAIL_TO_BUYER", FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1));
             }
 
-            if (!FatApp::getDb()->query('UPDATE tbl_user_wish_list_products uwlp, tbl_user_wish_lists uwl SET uwlp.uwlp_sent_reminder = uwlp_sent_reminder + 1, uwlp.uwlp_reminder_date = NOW() WHERE uwl.uwlist_user_id = '.$val['user_id'])) {
+            if (!FatApp::getDb()->query('UPDATE tbl_user_wish_list_products uwlp, tbl_user_wish_lists uwl SET uwlp.uwlp_sent_reminder = uwlp_sent_reminder + 1, uwlp.uwlp_reminder_date = NOW() WHERE uwl.uwlist_user_id = ' . $val['user_id'])) {
                 return Labels::getLabel("MSG_Can_not_be_updated", FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1));
             }
         }

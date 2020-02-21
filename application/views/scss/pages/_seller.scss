@@ -14,7 +14,7 @@
 
     .seller-login {
         display: flex;
-        align-items: center;
+
         padding: 0.5rem 0;
 
 
@@ -27,8 +27,6 @@
 
         .field-set {
             margin-bottom: 0;
-
-
             margin-#{$start-direction}: 10px;
 
             @include media-breakpoint-down(md) {
@@ -45,11 +43,22 @@
                 }
             }
 
+
+            input {
+                height: 2rem;
+                line-height: 2rem;
+                font-size: 0.8rem;
+
+                &[type="submit"] {
+                    font-weight: 600;
+                    text-transform: uppercase;
+                }
+            }
         }
 
 
-
         .forgot {
+            margin-top: 5px;
             margin-#{$start-direction}: 10px;
         }
     }
@@ -296,9 +305,9 @@
 }
 
 .simple-price {
-    background: $secondary-color;
+    background: $secondary-color; color:$secondary-color-inverse;
     text-align: center;
-    color: #fff;
+    
 }
 
 .pricing-structure {
@@ -402,7 +411,7 @@
                 &:after {
                     content: "";
                     bottom: 0;
-                    background: $brand-color;
+                    background: $brand-color; color:$brand-color-inverse;
                     height: 2px;
                     width: 0;
                     position: absolute;
@@ -482,14 +491,14 @@
             max-width: 25%;
             padding: 0 1rem;
             vertical-align: top;
-            
-              @include media-breakpoint-down(md) {
-            & {
-                 flex: auto;
-                max-width: inherit;
+
+            @include media-breakpoint-down(md) {
+                & {
+                    flex: auto;
+                    max-width: inherit;
+                }
             }
-        }
-            
+
         }
     }
 

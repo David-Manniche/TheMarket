@@ -1,4 +1,5 @@
 <?php
+
 class GuestAffiliateController extends MyAppController
 {
     public function __construct($action)
@@ -8,7 +9,7 @@ class GuestAffiliateController extends MyAppController
 
     public function index()
     {
-        if (UserAuthentication::isUserLogged() && (User::isAffiliate()  || User::isSigningUpAffiliate())) {
+        if (UserAuthentication::isUserLogged() && (User::isAffiliate() || User::isSigningUpAffiliate())) {
             FatApp::redirectUser(CommonHelper::generateUrl('affiliate'));
         }
 
@@ -96,7 +97,7 @@ class GuestAffiliateController extends MyAppController
             }
 
             if (FatApp::getConfig('CONF_NOTIFY_ADMIN_AFFILIATE_REGISTRATION', FatUtility::VAR_INT, 1) == 1) {
-                if(!$userObj->notifyAdminRegistration($post, $this->siteLangId)){
+                if (!$userObj->notifyAdminRegistration($post, $this->siteLangId)) {
                     Message::addErrorMessage(Labels::getLabel("MSG_NOTIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId));
                     $db->rollbackTransaction();
                     if (FatUtility::isAjaxCall()) {
@@ -143,9 +144,9 @@ class GuestAffiliateController extends MyAppController
         case UserAuthentication::AFFILIATE_REG_STEP2:
             /* saving user extras[ */
             $dataToSave = array(
-            'uextra_user_id'        =>    $user_id,
-            'uextra_company_name'    =>    $post['uextra_company_name'],
-            'uextra_website'        =>    CommonHelper::processUrlString($post['uextra_website'])
+            'uextra_user_id' => $user_id,
+            'uextra_company_name' => $post['uextra_company_name'],
+            'uextra_website' => CommonHelper::processUrlString($post['uextra_website'])
             );
             $dataToUpdateOnDuplicate = $dataToSave;
             unset($dataToUpdateOnDuplicate['uextra_user_id']);
@@ -160,12 +161,12 @@ class GuestAffiliateController extends MyAppController
 
             /* Saving User Adrress[ */
             $dataToSave = array(
-            'user_address1'    => $post['user_address1'],
-            'user_address2'    =>    $post['user_address2'],
-            'user_country_id'    =>    $post['user_country_id'],
-            'user_state_id'    =>    $post['user_state_id'],
-            'user_city'        =>    $post['user_city'],
-            'user_zip'        =>    $post['user_zip']
+            'user_address1' => $post['user_address1'],
+            'user_address2' => $post['user_address2'],
+            'user_country_id' => $post['user_country_id'],
+            'user_state_id' => $post['user_state_id'],
+            'user_city' => $post['user_city'],
+            'user_zip' => $post['user_zip']
             );
             $userObj->assignValues($dataToSave);
             if (!$userObj->save()) {
@@ -198,11 +199,11 @@ class GuestAffiliateController extends MyAppController
         case UserAuthentication::AFFILIATE_REG_STEP3:
             /* saving user extras[ */
             $dataToSave = array(
-            'uextra_user_id'    =>    $user_id,
-            'uextra_tax_id'        =>    $post['uextra_tax_id'],
-            'uextra_payment_method'    =>    $post['uextra_payment_method'],
-            'uextra_cheque_payee_name'=>$post['uextra_cheque_payee_name'],
-            'uextra_paypal_email_id'=>    $post['uextra_paypal_email_id'],
+            'uextra_user_id' => $user_id,
+            'uextra_tax_id' => $post['uextra_tax_id'],
+            'uextra_payment_method' => $post['uextra_payment_method'],
+            'uextra_cheque_payee_name' => $post['uextra_cheque_payee_name'],
+            'uextra_paypal_email_id' => $post['uextra_paypal_email_id'],
             );
             $dataToUpdateOnDuplicate = $dataToSave;
             unset($dataToUpdateOnDuplicate['uextra_user_id']);
@@ -217,11 +218,11 @@ class GuestAffiliateController extends MyAppController
 
             /* saving user bank details[ */
             $bankInfoData = array(
-            'ub_bank_name'        =>    $post['ub_bank_name'],
-            'ub_account_holder_name'    =>    $post['ub_account_holder_name'],
-            'ub_account_number'=>    $post['ub_account_number'],
-            'ub_ifsc_swift_code'    => $post['ub_ifsc_swift_code'],
-            'ub_bank_address'        => $post['ub_bank_address'],
+            'ub_bank_name' => $post['ub_bank_name'],
+            'ub_account_holder_name' => $post['ub_account_holder_name'],
+            'ub_account_number' => $post['ub_account_number'],
+            'ub_ifsc_swift_code' => $post['ub_ifsc_swift_code'],
+            'ub_bank_address' => $post['ub_bank_address'],
             );
             if (!$userObj->updateBankInfo($bankInfoData)) {
                 Message::addErrorMessage($userObj->getError());
@@ -243,7 +244,7 @@ class GuestAffiliateController extends MyAppController
 
         if (FatUtility::isAjaxCall()) {
             $msg = str_replace(" ", "_", $msg);
-            $this->set('msg', Labels::getLabel('LBL_'.$msg.'_Saved', $this->siteLangId));
+            $this->set('msg', Labels::getLabel('LBL_' . $msg . '_Saved', $this->siteLangId));
             //$this->set( 'redirectUrl', $redirectUrl );
             $this->set('affiliate_register_step_number', UserAuthentication::getSessionAffiliateByKey('affiliate_register_step_number'));
             $this->_template->render(false, false, 'json-success.php');
@@ -277,7 +278,7 @@ class GuestAffiliateController extends MyAppController
         case UserAuthentication::AFFILIATE_REG_STEP2:
             $frmData = array();
             $userExtraData = User::getUserExtraData($user_id, array('uextra_company_name', 'uextra_website'));
-            $userExtraData = (empty($userExtraData)) ? array(): $userExtraData;
+            $userExtraData = (empty($userExtraData)) ? array() : $userExtraData;
             $userData = User::getAttributesById($user_id, array( 'user_address1', 'user_address2', 'user_country_id', 'user_state_id', 'user_city', 'user_zip' ));
             $this->set('stateId', $userData['user_state_id']);
             $frmData = array_merge($userExtraData, $userData);
@@ -288,9 +289,9 @@ class GuestAffiliateController extends MyAppController
             $userObj = new User($user_id);
             $userBankInfoData = $userObj->getUserBankInfo();
             $userExtraData = User::getUserExtraData($user_id, array('uextra_cheque_payee_name', 'uextra_paypal_email_id', 'uextra_payment_method'));
-            $userExtraData = (empty($userExtraData)) ? array(): $userExtraData;
-            $userBankInfoData = (empty($userBankInfoData)) ? array(): $userBankInfoData;
-            $uextra_payment_method = (isset($userExtraData['uextra_payment_method']) && $userExtraData['uextra_payment_method'] >0) ? $userExtraData['uextra_payment_method'] : User::AFFILIATE_PAYMENT_METHOD_CHEQUE;
+            $userExtraData = (empty($userExtraData)) ? array() : $userExtraData;
+            $userBankInfoData = (empty($userBankInfoData)) ? array() : $userBankInfoData;
+            $uextra_payment_method = (isset($userExtraData['uextra_payment_method']) && $userExtraData['uextra_payment_method'] > 0) ? $userExtraData['uextra_payment_method'] : User::AFFILIATE_PAYMENT_METHOD_CHEQUE;
             $frmData = array_merge($userExtraData, $userBankInfoData, array('uextra_payment_method' => $uextra_payment_method));
             $registerForm->fill($frmData);
             $this->set('userExtraData', $userExtraData);
@@ -320,7 +321,7 @@ class GuestAffiliateController extends MyAppController
         switch ($registeration_step_number) {
         case UserAuthentication::AFFILIATE_REG_STEP1:
 
-            $frm->addHiddenField('', 'user_id', 0, array('id'=>'user_id'));
+            $frm->addHiddenField('', 'user_id', 0, array('id' => 'user_id'));
 
             $fld = $frm->addTextBox(Labels::getLabel('LBL_USERNAME', $siteLangId), 'user_username');
             $fld->setUnique('tbl_user_credentials', 'credential_username', 'credential_user_id', 'user_id', 'user_id');
@@ -332,7 +333,7 @@ class GuestAffiliateController extends MyAppController
 
             $frm->addRequiredField(Labels::getLabel('LBL_NAME', $siteLangId), 'user_name');
 
-            $phoneFld = $frm->addRequiredField(Labels::getLabel('LBL_Phone', $siteLangId), 'user_phone', '', array('class'=>'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
+            $phoneFld = $frm->addRequiredField(Labels::getLabel('LBL_Phone', $siteLangId), 'user_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
             $phoneFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
 
             $fld = $frm->addPasswordField(Labels::getLabel('LBL_PASSWORD', $siteLangId), 'user_password');
@@ -351,7 +352,7 @@ class GuestAffiliateController extends MyAppController
             $fld->requirements()->setRequired();
             $fld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Terms_Condition_is_mandatory.', $siteLangId));
 
-            $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Register', $siteLangId));
+            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Register', $siteLangId));
             $frm->setFormTagAttribute('onsubmit', 'setupAffiliateRegister(this); return(false);');
 
             break;
@@ -372,7 +373,7 @@ class GuestAffiliateController extends MyAppController
             $frm->addTextBox(Labels::getLabel('LBL_City', $this->siteLangId), 'user_city');
             $frm->addRequiredField(Labels::getLabel('LBL_Postalcode', $siteLangId), 'user_zip');
 
-            $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Register', $siteLangId));
+            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Register', $siteLangId));
             $frm->setFormTagAttribute('onsubmit', 'setupAffiliateRegister(this); return(false);');
 
             break;
@@ -392,7 +393,7 @@ class GuestAffiliateController extends MyAppController
             $fld = $frm->addTextBox(Labels::getLabel('LBL_PayPal_Email_Account', $siteLangId), 'uextra_paypal_email_id');
             $fld->requirements()->setEmail();
 
-            $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Register', $siteLangId));
+            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Register', $siteLangId));
             $frm->setFormTagAttribute('onsubmit', 'setupAffiliateRegister(this); return(false);');
 
             break;

@@ -1,4 +1,5 @@
 <?php
+
 class SearchItem extends MyAppModel
 {
     public function __construct()
@@ -11,10 +12,10 @@ class SearchItem extends MyAppModel
         $keyword = str_replace('mysql_func_', 'mysql_func ', $data['keyword']);
 
         $assign_fields = array(
-        'searchitem_keyword'=>$keyword,
-        'searchitem_date'=>date('Y-m-d'),
+        'searchitem_keyword' => $keyword,
+        'searchitem_date' => date('Y-m-d'),
         );
-        $onDuplicateKeyUpdate = array_merge($assign_fields, array('searchitem_count'=>'mysql_func_searchitem_count+1'));
+        $onDuplicateKeyUpdate = array_merge($assign_fields, array('searchitem_count' => 'mysql_func_searchitem_count+1'));
         $this->db->insertFromArray('tbl_search_items', $assign_fields, true, array(), $onDuplicateKeyUpdate);
     }
 
@@ -50,7 +51,7 @@ class SearchItem extends MyAppModel
             foreach ($arr as $key => $val) {
                 $firstDashPosition = strpos($val, '-');
                 $keyString = strtolower(substr($val, 0, $firstDashPosition));
-                $valueString = substr($val, $firstDashPosition+1);
+                $valueString = substr($val, $firstDashPosition + 1);
 
                 switch ($keyString) {
                     case 'price_min_range':
@@ -59,7 +60,7 @@ class SearchItem extends MyAppModel
                         break;
                     case 'price':
                         $lastOccurenceDashPosition = strripos($valueString, '-');
-                        $arr_url_params[$keyString.'-'.substr($valueString, 0, $lastOccurenceDashPosition)] = substr($valueString, $lastOccurenceDashPosition+1);
+                        $arr_url_params[$keyString . '-' . substr($valueString, 0, $lastOccurenceDashPosition)] = substr($valueString, $lastOccurenceDashPosition + 1);
                         break;
                     case 'currency':
                         $arr_url_params['currency_id'] = $valueString;
@@ -93,11 +94,11 @@ class SearchItem extends MyAppModel
                     case 'prodcat':
                     case 'optionvalue':
                     case 'condition':
-                        $dashPosition =strpos($valueString, '-');
+                        $dashPosition = strpos($valueString, '-');
                         $id = substr($valueString, 0, $dashPosition);
-                        $valueString = substr($valueString, $dashPosition+1);
+                        $valueString = substr($valueString, $dashPosition + 1);
                         if (!array_key_exists($keyString, $arr_url_params)) {
-                            $arr_url_params[$keyString] = array() ;
+                            $arr_url_params[$keyString] = array();
                         }
                         if (!in_array($id, $arr_url_params[$keyString])) {
                             array_push($arr_url_params[$keyString], $id);

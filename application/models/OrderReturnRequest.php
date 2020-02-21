@@ -1,4 +1,5 @@
 <?php
+
 class OrderReturnRequest extends MyAppModel
 {
     public const DB_TBL = 'tbl_order_return_requests';
@@ -87,13 +88,13 @@ class OrderReturnRequest extends MyAppModel
             $this->error = $db->getError();
             return false;
         }
-        $orrmsg_msg = str_replace('{website_name}', FatApp::getConfig('CONF_WEBSITE_NAME_'.$langId), Labels::getLabel('LBL_Return_Request_Escalated_to', $langId));
+        $orrmsg_msg = str_replace('{website_name}', FatApp::getConfig('CONF_WEBSITE_NAME_' . $langId), Labels::getLabel('LBL_Return_Request_Escalated_to', $langId));
         $dataToSave = array(
         'orrmsg_orrequest_id' => $orrequest_id,
         'orrmsg_from_user_id' => $user_id,
         'orrmsg_msg' => $orrmsg_msg,
         'orrmsg_date' => date('Y-m-d H:i:s'),
-        'orrmsg_deleted'    => 0,
+        'orrmsg_deleted' => 0,
         );
         if (!$db->insertFromArray(OrderReturnRequestMessage::DB_TBL, $dataToSave)) {
             $this->error = $db->getError();
@@ -128,7 +129,7 @@ class OrderReturnRequest extends MyAppModel
         'orrmsg_from_user_id' => $user_id,
         'orrmsg_msg' => $orrmsg_msg,
         'orrmsg_date' => date('Y-m-d H:i:s'),
-        'orrmsg_deleted'    => 0,
+        'orrmsg_deleted' => 0,
         );
 
         if (!$user_id && AdminAuthentication::isAdminLogged()) {
@@ -163,7 +164,7 @@ class OrderReturnRequest extends MyAppModel
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addCondition('orrequest_id', '=', $orrequest_id);
-        $srch->addMultipleFields(array('orrequest_id', 'orrequest_op_id', 'orrequest_qty','orrequest_type', 'op_commission_percentage', 'op_affiliate_commission_percentage', 'op_qty','order_language_id', 'op_shop_owner_name', 'op_unit_price','op_other_charges','op_commission_include_shipping','op_tax_collected_by_seller','op_commission_include_tax','op_free_ship_upto','op_actual_shipping_charges'));
+        $srch->addMultipleFields(array('orrequest_id', 'orrequest_op_id', 'orrequest_qty', 'orrequest_type', 'op_commission_percentage', 'op_affiliate_commission_percentage', 'op_qty', 'order_language_id', 'op_shop_owner_name', 'op_unit_price', 'op_other_charges', 'op_commission_include_shipping', 'op_tax_collected_by_seller', 'op_commission_include_tax', 'op_free_ship_upto', 'op_actual_shipping_charges'));
         $rs = $srch->getResultSet();
         $requestRow = $db->fetch($rs);
 
@@ -179,7 +180,7 @@ class OrderReturnRequest extends MyAppModel
         $orderLangId = $requestRow['order_language_id'];
 
         $db->startTransaction();
-        $dataToUpdate = array( 'orrequest_status' => static::RETURN_REQUEST_STATUS_REFUNDED ,'orrequest_refund_in_wallet' => $moveRefundInWallet,'orrequest_admin_comment' => $adminComment);
+        $dataToUpdate = array( 'orrequest_status' => static::RETURN_REQUEST_STATUS_REFUNDED, 'orrequest_refund_in_wallet' => $moveRefundInWallet, 'orrequest_admin_comment' => $adminComment);
         $whereArr = array( 'smt' => 'orrequest_id = ?', 'vals' => array( $requestRow['orrequest_id'] ) );
         if (!$db->updateFromArray(static::DB_TBL, $dataToUpdate, $whereArr)) {
             $this->error = $db->getError();
@@ -189,7 +190,7 @@ class OrderReturnRequest extends MyAppModel
 
         $approved_by_person_name = $requestRow['op_shop_owner_name'];
         if (!$user_id && AdminAuthentication::isAdminLogged()) {
-            $approved_by_person_name = FatApp::getConfig('CONF_WEBSITE_NAME_'.$orderLangId);
+            $approved_by_person_name = FatApp::getConfig('CONF_WEBSITE_NAME_' . $orderLangId);
         }
         $orrmsg_msg = str_replace("{approved_by_person_name}", $approved_by_person_name, Labels::getLabel('LBL_Return_Request_Approved_By', $orderLangId));
         $dataToSave = array(
@@ -197,7 +198,7 @@ class OrderReturnRequest extends MyAppModel
         'orrmsg_from_user_id' => $user_id,
         'orrmsg_msg' => $orrmsg_msg,
         'orrmsg_date' => date('Y-m-d H:i:s'),
-        'orrmsg_deleted'    => 0,
+        'orrmsg_deleted' => 0,
         );
 
         if (!$user_id && AdminAuthentication::isAdminLogged()) {
@@ -228,7 +229,7 @@ class OrderReturnRequest extends MyAppModel
         }
         $approvedByLabel = sprintf(Labels::getLabel('MSG_Approved_Return_Request', $orderLangId), $requestRow['op_shop_owner_name']);
         if (!$user_id && AdminAuthentication::isAdminLogged()) {
-            $approvedByLabel = sprintf(Labels::getLabel('MSG_Approved_Return_Request', $orderLangId), FatApp::getConfig('CONF_WEBSITE_NAME_'.$orderLangId));
+            $approvedByLabel = sprintf(Labels::getLabel('MSG_Approved_Return_Request', $orderLangId), FatApp::getConfig('CONF_WEBSITE_NAME_' . $orderLangId));
         }
         $oObj->addChildProductOrderHistory($requestRow['orrequest_op_id'], $orderLangId, FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS"), $approvedByLabel, 1, '', 0, $moveRefundInWallet);
         $db->commitTransaction();

@@ -1,8 +1,9 @@
 <?php
+
 class SellerProductSpecialPrice extends MyAppModel
 {
-    const DB_TBL = 'tbl_product_special_prices';
-    const DB_TBL_PREFIX = 'splprice_';
+    public const DB_TBL = 'tbl_product_special_prices';
+    public const DB_TBL_PREFIX = 'splprice_';
 
     public function __construct($id = 0)
     {

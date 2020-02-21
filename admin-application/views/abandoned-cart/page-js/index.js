@@ -2,6 +2,9 @@ $(document).ready(function(){
 	searchAbandonedCart(document.frmAbandonedCartSearch);
 	
 	$('input[name=\'user_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('Users', 'autoCompleteJson'),
@@ -27,6 +30,9 @@ $(document).ready(function(){
 	});
     
     $('input[name=\'seller_product\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('sellerProducts', 'autoComplete'),
@@ -76,7 +82,7 @@ $(document).ready(function(){
 		}
 		dv.html(fcom.getLoader());
 		fcom.ajax(fcom.makeUrl('AbandonedCart','search'),data,function(res){
-			dv.html(res);
+			dv.html(res);            
 		});
 	};
     
@@ -97,6 +103,8 @@ $(document).ready(function(){
 	clearAbandonedCartSearch = function(){
         document.frmAbandonedCartSearch.abandonedcart_user_id.value = '';
 		document.frmAbandonedCartSearch.abandonedcart_selprod_id.value = '';
+        document.frmAbandonedCartSearch.abandonedcart_action.value = ''; 
+        $(".tabs_nav-js > li > a").removeClass('active');
         document.frmAbandonedCartSearch.reset();
 		searchAbandonedCart(document.frmAbandonedCartSearch);
 	};

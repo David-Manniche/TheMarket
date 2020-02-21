@@ -13,12 +13,11 @@
 
 .faqlist {
     position: relative;
-}
 
-.faqlist .js--highlightText {
-    background: #fbf9c9;
+    .js--highlightText {
+        background: #fbf9c9;
+    }
 }
-
 
 .faqsearch .faq-input {
     margin-top: 1rem;
@@ -38,8 +37,6 @@
     font-weight: 400;
     margin: -1px 0;
     padding: 1.5rem 0;
-    -webkit-padding-end: 25px;
-    -moz-padding-end: 25px;
     padding-#{$end-direction}: 25px;
     position: relative;
     display: -webkit-box;
@@ -51,113 +48,97 @@
     border-top: $border;
     border-bottom: $border;
     position: relative;
+    white-space: normal;
+
+    &:after {
+        position: absolute;
+        #{$end-direction}: 0;
+        transform: rotate(-90deg);
+    }
+
+    &:hover {
+        color: $brand-color;
+    }
 }
 
-.filterDiv:hover {
-    color: $brand-color;
-}
 
-.filterDiv:after {
-    font-family: FontAwesome;
-    content: "";
-    font-size: 11px;
-    font-weight: 300;
-    line-height: 30px;
-    border-radius: 50%;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    color: inherit;
-    -webkit-margin-start: 1rem;
-    -moz-margin-start: 1rem;
-    margin-#{$start-direction}: 1rem;
-    -webkit-transition: all 0.1s ease;
-    transition: all 0.1s ease;
-    -webkit-transform-origin: center;
-    transform-origin: center;
-    position: absolute;
-    #{$end-direction}: 0;
-    top: 27px;
-    width: 20px;
-    height: 20px;
-}
 
 .filterDiv.faqclose:after {
-    -webkit-transform: rotateZ(90deg);
-    transform: rotateZ(90deg);
+
+    transform: rotate(0deg);
 }
 
 
 div.faqanswer {
-     margin: 0;
+    margin: 0;
     line-height: 1.8em;
     border-radius: 4px;
     /*margin-#{$start-direction}: 3rem;
 	border: $border;*/
     display: none;
+
+    p {
+        margin: 0;
+        padding: 1rem 0;
+    }
 }
 
-div.faqanswer p {
-    margin: 0;
-    padding: 1rem 0;
+
+.faq-filters {
+    a {
+        border: $border;
+        border-radius: 4px;
+        margin: 5px 0;
+        padding: 0.5rem;
+        color: $body-color;
+        font-size: 0.8rem;
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
+
+        &:after {
+            position: absolute;
+            top: 0;
+            #{$end-direction}: 0;
+            content: "";
+            width: 0;
+            height: 0;
+            border-top: 10px solid $brand-color;
+            border-#{$start-direction}: 10px solid transparent;
+        }
+
+        &.is--active {
+            background: $brand-color; color:$brand-color-inverse;
+           
+            border-color: $brand-color;
+        }
+    }
 }
 
-.faq-filters a {
-    border: $border;
-    border-radius: 4px;
-    margin: 5px 0;
-    padding: 0.5rem;
-    color: $body-color;
-    font-size: 0.8rem;
-    display: inline-block;
-    position: relative;
-    overflow: hidden;
-}
 
-.faq-filters a:after {
-    position: absolute;
-    top: 0;
-    #{$end-direction}: 0;
-    content: "";
-    width: 0;
-    height: 0;
-    border-top: 10px solid $brand-color;
-    border-#{$start-direction}: 10px solid transparent;
-}
 
-.faq-filters a.is--active {
-    background: $brand-color;
-    color: #fff;
-    border-color: $brand-color;
-}
 .browsed-box {
     border: $border;
     padding: 20px;
     margin-bottom: 20px;
-}
 
-.browsed-box:hover {
-    background: #ededed;
-}
+    &:hover {
+        background: #ededed;
+    }
 
-.browsed-box .category-q {
-    color: $body-color;
-    text-transform: uppercase;
-    font-weight: 600;
-    min-height: 43px;
-}
+    .category-q {
+        color: $body-color;
+        text-transform: uppercase;
+        font-weight: 600;
+        min-height: 43px;
+    }
 
-.browsed-box a.btn--link {
-    margin: 10px 0;
-    display: inline-block;
-}
+    a.btn--link {
+        margin: 10px 0;
+        display: inline-block;
+    }
 
-.browsed-box a.btn--link .svg-icn svg path {
-    fill: $brand-color;
+    a.btn--link .svg-icn svg path {
+        fill: $brand-color;
+    }
 }

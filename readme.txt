@@ -8,7 +8,7 @@ Bugs:
     => 032501-User default image is blurred.
     => 033061 - Getting error on login with Apple
     => 033089 - Social Account not getting logged in if email is not updated in db
-    => 033084 - Payment pending orders cannot be cancelled or removed from the system.
+    => 033084 - Payment pending orders cannot be canceled or removed from the system.
     => Safari Browser layout issue.
     => 033975 - when user places bank withdrawal request then getting error in email
     => 033974 - getting error on withdrawing amount from affiliate account using bank pay
@@ -17,7 +17,7 @@ Bugs:
     => 033955 - withdrawing amount less than allowed withdrawal
     => keyword search with & keyword.
     => 66015-1115873 Allowed uppercased extension in media upload.
-    
+
 
 Enhancements:
     => 68474 - Library and code updated to handle 3-D secure payments through Omise Payment Gateway.
@@ -29,6 +29,8 @@ Enhancements:
     => 66015 - Enhancement - Load filters data via ajax call for better performance.
     => 66684 - View more option for brands filter.
     => 69924 - Google reCatptcha upgraded to v3.
+    => 69749 - Implmented dynamic county and flag selection while entering phone number
+
 
 New Features:
     => Introduced Plugins for third party api's implementation.
@@ -42,12 +44,12 @@ New Features:
     => PWA compliance.
     => 69879 - Facebook Pixel
     => 69217 - Google Shopping Feed Integration
-    => 69191 PayPal Payout.
+    => 69191  - PayPal Payout.
 -----------------------TV-9.1.2.20200205-------------------------------
 
 Bugs:
     => 034264 - Getting error (invalid data) while using upload bulk media feature in import export.
----------------------------------------------------------------------------------    
+-----------------------------TV-9.1.2.20200211----------------------------------------------------
 
 Bugs:
     => 034406 - Plugin settings are not opening
@@ -67,3 +69,24 @@ Bugs:
     => 034290 - Some labels are not there in admin for front end
     => 032866 - Shop is getting reported multiple times
     => 032857 - Collection name is not displaying after visiting shop collection
+    => 69191 - PayPal Payout.
+    => 70149 - Blog Collection.
+    => 034467 - SEO and Url rewriting fatal error while accessing
+
+-----------------------------TV-9.1.3.20200217------------------------------
+
+Bugs:
+    => 034376 - While entering data in RTL supported languages it is not getting entered in RTL mode.
+    => 034354 - link to product is not there in admin for tags
+    => 033034 - loader is there on address screen when user sign up through FB (number)
+    => 034470 - inventory> digital products> return option is there , which is not needed on digital items
+    => 034409 - Rename "Upsell Products" breadcrumb to "Buy Together Products" on seller product's buy together page.
+    => 034401 - Wrong count of listing on Buy Together and Related Products page in admin
+    => 034350 - option name should get displayed on pop-up for which values are adding.
+    => 034477 - Cropper JS white background issue
+    => 034555 - Undefined offset error on listing of withdrawal requests.
+    => 034505 - while creating collection> on entering data in basic tab and saving it's not moving to language tab
+    => 034475 - Pagination is not working  properly on Seller > Catalog list.
+    => 034608 - when user adds item to cart and turns back from payment gateway then quantity get doubles.
+    => 034661 - Unable to save buy together and related products.
+--------------------TV-9.1.3.20200219------------------------------

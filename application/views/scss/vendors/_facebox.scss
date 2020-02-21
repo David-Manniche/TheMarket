@@ -132,7 +132,7 @@
 
 #facebox .content.productQuickView {
     width: 900px;
-    padding: 0 15px;
+    padding: 0;
 }
 
 #facebox .content.collection-ui-popup {
@@ -156,7 +156,7 @@
 #facebox .close {
     position: absolute;
     top: 0;
-    right: 0;
+    #{$end-direction}: 0;
     padding: 0px;
     width: 30px;
     height: 30px;

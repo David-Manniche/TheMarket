@@ -1,4 +1,5 @@
 <?php
+
 class AdsBatch extends MyAppModel
 {
     public const DB_TBL = 'tbl_ads_batches';
@@ -39,7 +40,7 @@ class AdsBatch extends MyAppModel
             $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
             $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $langId, 'p_l');
             $srch->joinTable(Brand::DB_TBL, 'LEFT JOIN', 'b.brand_id = p.product_brand_id', 'b');
-            $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT JOIN', 'b_l.brandlang_brand_id = b.brand_id AND b_l.brandlang_lang_id = '.$langId, 'b_l');
+            $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT JOIN', 'b_l.brandlang_brand_id = b.brand_id AND b_l.brandlang_lang_id = ' . $langId, 'b_l');
         }
 
         return $srch;

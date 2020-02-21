@@ -6,6 +6,8 @@ $fld = $productFrm->getField('auto_update_other_langs_data');
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
+$btnDiscardFld = $productFrm->getField('btn_discard');
+$btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');
 ?>
 <div class="row justify-content-center">
     <div class="col-md-12">
@@ -141,7 +143,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
         <?php $divLayout = Language::getLayoutDirection($siteDefaultLangId); ?>
         <div class="p-4 mb-4 bg-gray rounded layout--<?php echo $divLayout;?>">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="field-set">
                         <div class="caption-wraper">
                             <label class="field_label">
@@ -158,9 +160,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="field-set">
                         <div class="caption-wraper">
                             <label class="field_label">
@@ -219,14 +219,14 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
         if (!empty($otherLanguages)) {
             foreach ($otherLanguages as $langId => $data) {
                 $layout = Language::getLayoutDirection($langId); ?>
-                <div class="accordion layout--<?php echo $layout; ?>" id="specification-accordion">
-                    <ul class="list-group list-group-sm list-group-flush-y list-group-flush-x">
-                        <li>
-                            <h6 data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><span onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')"> <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?> </span>
+                <div class="accordion" id="specification-accordion">
+
+                            <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><span onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')"> <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?> </span>
                             </h6>
                             <div id="collapseOne" class="collapse collapse-js-<?php echo $langId; ?>" aria-labelledby="headingOne" data-parent="#specification-accordion">
-                                <div class="row">
-                                    <div class="col-md-12">
+                             <div class="p-4 mb-4 bg-gray rounded" dir="<?php echo $layout; ?>">
+							 <div class="row">
+                                    <div class="col-md-6">
                                         <div class="field-set">
                                             <div class="caption-wraper">
                                                 <label class="field_label">
@@ -241,9 +241,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <div class="field-set">
                                             <div class="caption-wraper">
                                                 <label class="field_label">
@@ -277,13 +275,23 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                                     </div>
                                 </div>
                             </div>
-                        </li>
-                    </ul>
+							</div>
+
                 </div>
             <?php }
         } ?>
         <div class="row">
             <div class="col-md-6">
+                <div class="field-set">
+                    <div class="caption-wraper"><label class="field_label"></label></div>
+                    <div class="field-wraper">
+                        <div class="field_cover">
+                        <?php echo $productFrm->getFieldHtml('btn_discard'); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 text-right">
                 <div class="field-set">
                     <div class="caption-wraper"><label class="field_label"></label></div>
                     <div class="field-wraper">
@@ -305,6 +313,9 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 <script type="text/javascript">
     $(document).ready(function() {
         $('input[name=\'brand_name\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('brands', 'autoComplete'),
@@ -321,7 +332,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                     },
                 });
             },
-            select: function (event, ui) {
+            'select': function (event, ui) {
                 $("input[name='product_brand_id']").val(ui.item.id);
             }
         });
@@ -333,6 +344,9 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
         });
 
         $('input[name=\'category_name\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('products', 'linksAutocomplete'),
@@ -349,7 +363,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                     },
                 });
             },
-            select: function (event, ui) {
+            'select': function (event, ui) {
                 $("input[name='ptc_prodcat_id']").val(ui.item.id);
             }
         });

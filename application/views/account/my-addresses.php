@@ -17,7 +17,7 @@
         </div>
         <div class="content-body">
             <div class="cards">
-                <div class="cards-content p-4">
+                <div class="cards-content">
                     <div id="listing"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?> </div>
                 </div>
             </div>

@@ -12,7 +12,8 @@ $(document).ready(function(){
 		$("#tab-myaccount").parents().children().removeClass("is-active");
 		$("#tab-myaccount").addClass("is-active");
 		fcom.ajax(fcom.makeUrl('Account', 'profileInfoForm'), '', function(t) {
-			$(dv).html(t);
+            $(dv).html(t);
+            stylePhoneNumberFld();
 		});
 	};
 

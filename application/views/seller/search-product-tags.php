@@ -2,13 +2,19 @@
 $arr_flds = array(
     'listserial'=>'#',
     'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
-    'tags' => ''
+    'tags' => Labels::getLabel('LBL_Tags', $siteLangId)
 );
 
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--orders'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
-foreach ($arr_flds as $val) {
-    $e = $th->appendElement('th', array(), $val);
+foreach ($arr_flds as $key => $val) {
+    if ($key == 'listserial') {
+        $e = $th->appendElement('th', array('width' => '5%'), $val);
+    } elseif ($key == 'product_identifier') {
+        $e = $th->appendElement('th', array('width' => '30%'), $val);
+    } else {
+        $e = $th->appendElement('th', array('width' => '65%'), $val);
+    }
 }
 $productsArr = array();
 $sr_no = ($page == 1) ? 0 : ($pageSize*($page-1));
@@ -34,7 +40,7 @@ foreach ($arr_listing as $sn => $row) {
                     $tagData[$key]['value'] = $data['tag_identifier'];
                 }
                 $encodedData = json_encode($tagData);
-                $td->appendElement('plaintext', array(), "<div class='product-tag' id='product".$row['product_id']."'><input class='tag_name' type='text' name='tag_name".$row['product_id']."' value='".$encodedData."' data-product_id='".$row['product_id']."'></div>", true);
+                $td->appendElement('plaintext', array(), "<div class='product-tag scroll-y' id='product".$row['product_id']."' data-simplebar><input class='tag_name' type='text' name='tag_name".$row['product_id']."' value='".$encodedData."' data-product_id='".$row['product_id']."'></div>", true);
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);
@@ -42,15 +48,14 @@ foreach ($arr_listing as $sn => $row) {
         }
     }
 }
+
 if (count($arr_listing) == 0) {
-    $tbl->appendElement('tr', array('class' => 'noResult--js'))->appendElement(
-        'td',
-        array('colspan'=>count($arr_flds)),
-        Labels::getLabel('LBL_No_Record_Found', $siteLangId)
-    );
+    $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
+    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
+} else {
+    echo $tbl->getHtml();
 }
 
-echo $tbl->getHtml();
 $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmCatalogProductSearchPaging'));
 

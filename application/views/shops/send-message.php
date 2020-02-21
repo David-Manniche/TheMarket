@@ -13,7 +13,7 @@
 
 	$fromFldFieldWrapper = $fromFldHtml->appendElement('div', array('class' => 'field-wraper'));
 	$fromFldData = $loggedUserData['credential_username'].' (<em>'.$loggedUserData['user_name'].'</em>)';
-	$fromFldData .= '<br/><span class="text--small">'.Labels::getLabel('LBL_Contact_info_not_shared', $siteLangId).'</span>';
+	$fromFldData .= '<br/><span class="form-text text-muted">'.Labels::getLabel('LBL_Contact_info_not_shared', $siteLangId).'</span>';
 	$fromFldFieldWrapper->appendElement( 'div', array('class' => 'field_cover'), $fromFldData, true );
 
 	$fromFld->value = $fromFldHtml->getHtml();
@@ -65,7 +65,7 @@
             
           </div>
           <div class="col-md-auto col-sm-auto">
-          	<a href="<?php echo CommonHelper::generateUrl('Shops', 'View', array($shop['shop_id'])); ?>" class="btn btn--primary d-block"><?php echo Labels::getLabel('LBL_Back_to_Shop', $siteLangId); ?></a>
+          	<a href="<?php echo CommonHelper::generateUrl('Shops', 'View', array($shop['shop_id'])); ?>" class="btn btn--primary btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Shop', $siteLangId); ?></a>
            </div>
         </div>
       </div>

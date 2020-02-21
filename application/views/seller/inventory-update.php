@@ -9,7 +9,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
         </div>
         <div class="content-body">
             <div class="cards">
-                <div class="cards-content p-4">
+                <div class="cards-content">
                     <div id="productInventory"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?> </div>
                     <div class="cms mt-4">
                         <?php if (!empty($pageData['epage_content'])) { ?>

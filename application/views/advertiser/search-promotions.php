@@ -69,8 +69,8 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $str, true);
                 break;
             case 'promotion_time':
-                $str = Labels::getLabel('LBL_Start_Time', $siteLangId).' : '.date("G:i", strtotime($row['promotion_start_time'])).'<br>';
-                $str.= Labels::getLabel('LBL_End_Time', $siteLangId).' : '.date("G:i", strtotime($row['promotion_end_time']));
+                $str = "<span class='text-nowrap'>".Labels::getLabel('LBL_Start_Time', $siteLangId).' : '.date("G:i", strtotime($row['promotion_start_time']))."</span><br>";
+                $str.= "<span  class='text-nowrap'>".Labels::getLabel('LBL_End_Time', $siteLangId).' : '.date("G:i", strtotime($row['promotion_end_time']))."</span>";
 
                 $td->appendElement('plaintext', array(), $str, true);
                 break;
@@ -94,7 +94,7 @@ foreach ($arr_listing as $sn => $row) {
                         array(
                         'href'=>CommonHelper::generateUrl('advertiser', 'analytics', array($row['promotion_id'])),
                         'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Analytics', $siteLangId)),
-                        '<i class="fa fa-file-text-o"></i>',
+                        '<i class="far fa-file-alt"></i>',
                         true
                     );
 

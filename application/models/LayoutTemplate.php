@@ -1,12 +1,13 @@
 <?php
+
 class LayoutTemplate extends MyAppModel
 {
-    const DB_TBL = 'tbl_layout_templates';
-    const DB_TBL_PREFIX = 'ltemplate_';
+    public const DB_TBL = 'tbl_layout_templates';
+    public const DB_TBL_PREFIX = 'ltemplate_';
 
-    const LAYOUTTYPE_SHOP = 1;
+    public const LAYOUTTYPE_SHOP = 1;
 
-    const LAYOUTTYPE_SHOP_IMAGE_PATH = 'template-layouts/';
+    public const LAYOUTTYPE_SHOP_IMAGE_PATH = 'template-layouts/';
 
     public function __construct($userId = 0)
     {

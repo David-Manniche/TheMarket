@@ -19,7 +19,7 @@ foreach ($arr_listing as $sn => $row) {
         $td = $tr->appendElement('td');
         switch ($key) {
             case 'dragdrop':
-                $td->appendElement('i', array('class' => 'fa fa-arrows'));
+                $td->appendElement('i', array('class' => 'fas fa-arrows-alt'));
                 $td->setAttribute("class", 'dragHandle');
                 break;
             case 'optionvalue_identifier':

@@ -1,4 +1,5 @@
 <?php
+
 class Collections extends MyAppModel
 {
     public const DB_TBL = 'tbl_collections';
@@ -13,6 +14,9 @@ class Collections extends MyAppModel
     public const DB_TBL_COLLECTION_TO_BRANDS = 'tbl_collection_to_brands';
     public const DB_TBL_COLLECTION_TO_BRANDS_PREFIX = 'ctpb_';
 
+    public const DB_TBL_COLLECTION_TO_BLOGS = 'tbl_collection_to_blogs';
+    public const DB_TBL_COLLECTION_TO_BLOGS_PREFIX = 'ctb_';
+
     public const DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES = 'tbl_collection_to_product_categories';
     public const DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX = 'ctpc_';
 
@@ -23,6 +27,7 @@ class Collections extends MyAppModel
     public const COLLECTION_TYPE_CATEGORY = 2;
     public const COLLECTION_TYPE_SHOP = 3;
     public const COLLECTION_TYPE_BRAND = 4;
+    public const COLLECTION_TYPE_BLOG = 5;
 
     public const TYPE_PRODUCT_LAYOUT1 = 1;
     public const TYPE_PRODUCT_LAYOUT2 = 2;
@@ -31,6 +36,7 @@ class Collections extends MyAppModel
     public const TYPE_CATEGORY_LAYOUT2 = 5;
     public const TYPE_SHOP_LAYOUT1 = 6;
     public const TYPE_BRAND_LAYOUT1 = 7;
+    public const TYPE_BLOG_LAYOUT1 = 8;
 
     public const LIMIT_PRODUCT_LAYOUT1 = 12;
     public const LIMIT_PRODUCT_LAYOUT2 = 6;
@@ -39,14 +45,16 @@ class Collections extends MyAppModel
     public const LIMIT_CATEGORY_LAYOUT2 = 4;
     public const LIMIT_SHOP_LAYOUT1 = 4;
     public const LIMIT_BRAND_LAYOUT1 = 5;
+    public const LIMIT_BLOG_LAYOUT1 = 3;
 
     public const COLLECTION_CRITERIA_PRICE_LOW_TO_HIGH = 1;
     public const COLLECTION_CRITERIA_PRICE_HIGH_TO_LOW = 2;
 
     public const COLLECTION_WITHOUT_MEDIA = [
-            Collections::COLLECTION_TYPE_SHOP,
-            Collections::COLLECTION_TYPE_BRAND
-        ];
+        self::COLLECTION_TYPE_SHOP,
+        self::COLLECTION_TYPE_BRAND,
+        self::COLLECTION_TYPE_BLOG,
+    ];
 
     public function __construct($id = 0)
     {
@@ -84,12 +92,13 @@ class Collections extends MyAppModel
             trigger_error(Labels::getLabel('MSG_Language_Id_not_specified.', $langId), E_USER_ERROR);
             return false;
         }
-        return array(
-        self::COLLECTION_TYPE_PRODUCT => Labels::getLabel('LBL_Product', $langId),
-        self::COLLECTION_TYPE_CATEGORY => Labels::getLabel('LBL_Category', $langId),
-        self::COLLECTION_TYPE_SHOP => Labels::getLabel('LBL_Shop', $langId),
-        self::COLLECTION_TYPE_BRAND => Labels::getLabel('LBL_Brand', $langId),
-        );
+        return [
+            self::COLLECTION_TYPE_PRODUCT => Labels::getLabel('LBL_Product', $langId),
+            self::COLLECTION_TYPE_CATEGORY => Labels::getLabel('LBL_Category', $langId),
+            self::COLLECTION_TYPE_SHOP => Labels::getLabel('LBL_Shop', $langId),
+            self::COLLECTION_TYPE_BRAND => Labels::getLabel('LBL_Brand', $langId),
+            self::COLLECTION_TYPE_BLOG => Labels::getLabel('LBL_BLOG', $langId),
+        ];
     }
 
     public static function getLayoutTypeArr($langId = 0)
@@ -100,23 +109,24 @@ class Collections extends MyAppModel
             return false;
         }
 
-        return array(
-        self::TYPE_PRODUCT_LAYOUT1 => Labels::getLabel('LBL_Product_Layout1', $langId),
-        self::TYPE_PRODUCT_LAYOUT2 => Labels::getLabel('LBL_Product_Layout2', $langId),
-        self::TYPE_PRODUCT_LAYOUT3 => Labels::getLabel('LBL_Product_Layout3', $langId),
-        self::TYPE_CATEGORY_LAYOUT1 => Labels::getLabel('LBL_Category_Layout1', $langId),
-        self::TYPE_CATEGORY_LAYOUT2 => Labels::getLabel('LBL_Category_Layout2', $langId),
-        self::TYPE_SHOP_LAYOUT1 => Labels::getLabel('LBL_Shop_Layout1', $langId),
-        self::TYPE_BRAND_LAYOUT1 => Labels::getLabel('LBL_Brand_Layout1', $langId),
-        );
+        return [
+            self::TYPE_PRODUCT_LAYOUT1 => Labels::getLabel('LBL_Product_Layout1', $langId),
+            self::TYPE_PRODUCT_LAYOUT2 => Labels::getLabel('LBL_Product_Layout2', $langId),
+            self::TYPE_PRODUCT_LAYOUT3 => Labels::getLabel('LBL_Product_Layout3', $langId),
+            self::TYPE_CATEGORY_LAYOUT1 => Labels::getLabel('LBL_Category_Layout1', $langId),
+            self::TYPE_CATEGORY_LAYOUT2 => Labels::getLabel('LBL_Category_Layout2', $langId),
+            self::TYPE_SHOP_LAYOUT1 => Labels::getLabel('LBL_Shop_Layout1', $langId),
+            self::TYPE_BRAND_LAYOUT1 => Labels::getLabel('LBL_Brand_Layout1', $langId),
+            self::TYPE_BLOG_LAYOUT1 => Labels::getLabel('LBL_BLOG_LAYOUT1', $langId),
+        ];
     }
 
     public static function getCriteria()
     {
-        return array(
-        static::COLLECTION_CRITERIA_PRICE_LOW_TO_HIGH=>"Price Low to High",
-        static::COLLECTION_CRITERIA_PRICE_HIGH_TO_LOW=>"Price High to Low",
-        );
+        return [
+            static::COLLECTION_CRITERIA_PRICE_LOW_TO_HIGH => "Price Low to High",
+            static::COLLECTION_CRITERIA_PRICE_HIGH_TO_LOW => "Price High to Low",
+        ];
     }
 
     public function addUpdateCollectionSelProd($collection_id, $selprod_id)
@@ -129,8 +139,8 @@ class Collections extends MyAppModel
         }
         $record = new TableRecord(static::DB_TBL_COLLECTION_TO_SELPROD);
         $to_save_arr = array();
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX.'collection_id'] = $collection_id;
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX.'selprod_id'] = $selprod_id;
+        $to_save_arr[static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'collection_id'] = $collection_id;
+        $to_save_arr[static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'selprod_id'] = $selprod_id;
         $record->assignValues($to_save_arr);
         if (!$record->addNew(array(), $to_save_arr)) {
             $this->error = $record->getError();
@@ -149,8 +159,8 @@ class Collections extends MyAppModel
         }
         $record = new TableRecord(static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES);
         $to_save_arr = array();
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX.'collection_id'] = $collection_id;
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX.'prodcat_id'] = $prodcat_id;
+        $to_save_arr[static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'collection_id'] = $collection_id;
+        $to_save_arr[static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'prodcat_id'] = $prodcat_id;
         $record->assignValues($to_save_arr);
         if (!$record->addNew(array(), $to_save_arr)) {
             $this->error = $record->getError();
@@ -169,8 +179,8 @@ class Collections extends MyAppModel
         }
         $record = new TableRecord(static::DB_TBL_COLLECTION_TO_SHOPS);
         $to_save_arr = array();
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX.'collection_id'] = $collection_id;
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX.'shop_id'] = $shop_id;
+        $to_save_arr[static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'collection_id'] = $collection_id;
+        $to_save_arr[static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'shop_id'] = $shop_id;
         $record->assignValues($to_save_arr);
         if (!$record->addNew(array(), $to_save_arr)) {
             $this->error = $record->getError();
@@ -193,6 +203,26 @@ class Collections extends MyAppModel
         $brandData[static::DB_TBL_COLLECTION_TO_BRANDS_PREFIX . 'brand_id'] = $brandId;
         $record->assignValues($brandData);
         if (!$record->addNew(array(), $brandData)) {
+            $this->error = $record->getError();
+            return false;
+        }
+        return true;
+    }
+
+    public function addUpdateCollectionBlogs($collectionId, $blogPostId)
+    {
+        $blogPostId = FatUtility::int($blogPostId);
+        $collectionId = FatUtility::int($collectionId);
+        if (!$blogPostId || !$collectionId) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        $record = new TableRecord(static::DB_TBL_COLLECTION_TO_BLOGS);
+
+        $blogData[static::DB_TBL_COLLECTION_TO_BLOGS_PREFIX . 'collection_id'] = $collectionId;
+        $blogData[static::DB_TBL_COLLECTION_TO_BLOGS_PREFIX . 'post_id'] = $blogPostId;
+        $record->assignValues($blogData);
+        if (!$record->addNew(array(), $blogData)) {
             $this->error = $record->getError();
             return false;
         }
@@ -230,12 +260,12 @@ class Collections extends MyAppModel
 
         $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_SELPROD);
         $srch->addCondition(static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'collection_id', '=', $collection_id);
-        $srch->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', SellerProduct::DB_TBL_PREFIX.'id = '.static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX.'selprod_id');
-        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', SellerProduct::DB_TBL_PREFIX.'product_id = '.Product::DB_TBL_PREFIX.'id');
+        $srch->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', SellerProduct::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'selprod_id');
+        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', SellerProduct::DB_TBL_PREFIX . 'product_id = ' . Product::DB_TBL_PREFIX . 'id');
 
-        $srch->joinTable(SellerProduct::DB_TBL.'_lang', 'LEFT JOIN', 'lang.selprodlang_selprod_id = ' . SellerProduct::DB_TBL_PREFIX.'id AND selprodlang_lang_id = '.$lang_id, 'lang');
+        $srch->joinTable(SellerProduct::DB_TBL . '_lang', 'LEFT JOIN', 'lang.selprodlang_selprod_id = ' . SellerProduct::DB_TBL_PREFIX . 'id AND selprodlang_lang_id = ' . $lang_id, 'lang');
 
-        $srch->addMultipleFields(array('selprod_id','IFNULL(selprod_title,product_identifier) as selprod_title'));
+        $srch->addMultipleFields(array('selprod_id', 'IFNULL(selprod_title,product_identifier) as selprod_title'));
 
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
@@ -255,7 +285,7 @@ class Collections extends MyAppModel
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
-        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_SELPROD, array('smt'=> static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX.'collection_id = ? AND '.static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'selprod_id = ?','vals' => array($collection_id, $selprod_id) ))) {
+        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_SELPROD, array('smt' => static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'collection_id = ? AND ' . static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'selprod_id = ?', 'vals' => array($collection_id, $selprod_id) ))) {
             $this->error = $db->getError();
             return false;
         }
@@ -272,7 +302,7 @@ class Collections extends MyAppModel
             ;
             return false;
         }
-        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES, array('smt'=> static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX.'collection_id = ? AND '.static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'prodcat_id = ?','vals' => array($collection_id, $prodcat_id) ))) {
+        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES, array('smt' => static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'collection_id = ? AND ' . static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'prodcat_id = ?', 'vals' => array($collection_id, $prodcat_id) ))) {
             $this->error = $db->getError();
             return false;
         }
@@ -289,7 +319,7 @@ class Collections extends MyAppModel
             ;
             return false;
         }
-        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_SHOPS, array('smt'=> static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX.'collection_id = ? AND '.static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'shop_id = ?','vals' => array($collection_id, $shop_id) ))) {
+        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_SHOPS, array('smt' => static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'collection_id = ? AND ' . static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'shop_id = ?', 'vals' => array($collection_id, $shop_id) ))) {
             $this->error = $db->getError();
             return false;
         }
@@ -313,6 +343,23 @@ class Collections extends MyAppModel
         return true;
     }
 
+    public function removeCollectionBlogs($collectionId, $blogPostId)
+    {
+        $db = FatApp::getDb();
+        $collection_id = FatUtility::int($collectionId);
+        $blogPostId = FatUtility::int($blogPostId);
+        if (!$collectionId || !$blogPostId) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            ;
+            return false;
+        }
+        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_BLOGS, array('smt' => static::DB_TBL_COLLECTION_TO_BLOGS_PREFIX . 'collection_id = ? AND ' . static::DB_TBL_COLLECTION_TO_BLOGS_PREFIX . 'post_id = ?', 'vals' => array($collectionId, $blogPostId)))) {
+            $this->error = $db->getError();
+            return false;
+        }
+        return true;
+    }
+
     public function canRecordMarkDelete($collection_id)
     {
         $srch = static::getSearchObject(false);
@@ -321,7 +368,7 @@ class Collections extends MyAppModel
         $srch->addFld('collection_id');
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
-        if (!empty($row) && $row['collection_id']==$collection_id) {
+        if (!empty($row) && $row['collection_id'] == $collection_id) {
             return true;
         }
         return false;
@@ -340,15 +387,15 @@ class Collections extends MyAppModel
         $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES);
         $srch->doNotLimitRecords();
         $srch->doNotCalculateRecords();
-        $srch->addCondition(static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX. 'collection_id', '=', $collection_id);
+        $srch->addCondition(static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'collection_id', '=', $collection_id);
 
-        $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', ProductCategory::DB_TBL_PREFIX .'id = ' . static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX.'prodcat_id');
+        $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', ProductCategory::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'prodcat_id');
 
         $srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT JOIN', 'lang.prodcatlang_prodcat_id = ' . ProductCategory::DB_TBL_PREFIX . 'id AND prodcatlang_lang_id = ' . $lang_id, 'lang');
         $srch->addMultipleFields(array('prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name'));
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
-        $data =  $db->fetchAll($rs);
+        $data = $db->fetchAll($rs);
         return $data;
     }
 
@@ -365,16 +412,16 @@ class Collections extends MyAppModel
         $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_SHOPS);
         $srch->doNotLimitRecords();
         $srch->doNotCalculateRecords();
-        $srch->addCondition(static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX. 'collection_id', '=', $collection_id);
+        $srch->addCondition(static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'collection_id', '=', $collection_id);
 
-        $srch->joinTable(Shop::DB_TBL, 'INNER JOIN', Shop::DB_TBL_PREFIX .'id = ' . static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX.'shop_id');
+        $srch->joinTable(Shop::DB_TBL, 'INNER JOIN', Shop::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'shop_id');
 
         $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT JOIN', 'lang.shoplang_shop_id = ' . Shop::DB_TBL_PREFIX . 'id AND shoplang_lang_id = ' . $lang_id, 'lang');
         $srch->addMultipleFields(array('shop_id', 'IFNULL(shop_name, shop_identifier) as shop_name'));
         $rs = $srch->getResultSet();
 
         $db = FatApp::getDb();
-        $data =  $db->fetchAll($rs);
+        $data = $db->fetchAll($rs);
         return $data;
     }
 
@@ -399,6 +446,31 @@ class Collections extends MyAppModel
         $srch->addMultipleFields(array('brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name'));
         $rs = $srch->getResultSet();
 
+        $db = FatApp::getDb();
+        $data = $db->fetchAll($rs);
+        return $data;
+    }
+
+    public static function getBlogs($collectionId, $langId)
+    {
+        $collectionId = FatUtility::convertToType($collectionId, FatUtility::VAR_INT);
+
+        $langId = FatUtility::convertToType($langId, FatUtility::VAR_INT);
+        if (!$collectionId || !$langId) {
+            trigger_error(Labels::getLabel("ERR_Arguments_not_specified.", $langId), E_USER_ERROR);
+            return false;
+        }
+
+        $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_BLOGS);
+        $srch->doNotLimitRecords();
+        $srch->doNotCalculateRecords();
+        $srch->addCondition(static::DB_TBL_COLLECTION_TO_BLOGS_PREFIX . 'collection_id', '=', $collectionId);
+
+        $srch->joinTable(BlogPost::DB_TBL, 'INNER JOIN', BlogPost::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_BLOGS_PREFIX . 'post_id');
+
+        $srch->joinTable(BlogPost::DB_TBL_LANG, 'LEFT JOIN', 'lang.postlang_post_id = ' . BlogPost::DB_TBL_PREFIX . 'id AND postlang_lang_id = ' . $langId, 'lang');
+        $srch->addMultipleFields(array('post_id', 'IFNULL(post_title, post_identifier) as post_title'));
+        $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $data = $db->fetchAll($rs);
         return $data;

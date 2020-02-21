@@ -1,4 +1,5 @@
 <?php
+
 class TopCategoriesReportController extends AdminBaseController
 {
     private $canView;
@@ -22,7 +23,7 @@ class TopCategoriesReportController extends AdminBaseController
         $this->_template->render();
     }
 
-    public function search( $export = false )
+    public function search($export = false)
     {
         $this->objPrivilege->canViewPerformanceReport();
         $db = FatApp::getDb();
@@ -79,7 +80,7 @@ class TopCategoriesReportController extends AdminBaseController
         $srch->addOrder('totSoldQty', $orderBy);
         $srch->addOrder('prodcat_name');
         
-        if($export == 'export' ) {
+        if ($export == 'export') {
             /* Cat Tree Structure Assoc Arr[ */
             $catObj = new ProductCategory();
             $catTreeAssocArr = $catObj->getProdCatTreeStructure(0, $this->adminLangId, '', 0, '', false, false, true);
@@ -87,16 +88,18 @@ class TopCategoriesReportController extends AdminBaseController
 
             $rs = $srch->getResultSet();
             $sheetData = array();
-            $arr = array(Labels::getLabel('LBL_Category', $this->adminLangId),Labels::getLabel('LBL_Sold_Quantity', $this->adminLangId), Labels::getLabel('LBL_Favorites', $this->adminLangId));
+            $arr = array(Labels::getLabel('LBL_Category', $this->adminLangId), Labels::getLabel('LBL_Sold_Quantity', $this->adminLangId), Labels::getLabel('LBL_Favorites', $this->adminLangId));
             array_push($sheetData, $arr);
-            while( $row = $db->fetch($rs) ){
+            while ($row = $db->fetch($rs)) {
                 $arr = array( $catTreeAssocArr[$row['prodcat_id']], $row['totSoldQty'], $row['wishlistUserCounts'] );
                 array_push($sheetData, $arr);
             }
-            if($orderBy == "DESC" ) {
-                CommonHelper::convertToCsv($sheetData, 'Top_Categories_Report_'.date("d-M-Y").'.csv', ','); exit;
+            if ($orderBy == "DESC") {
+                CommonHelper::convertToCsv($sheetData, 'Top_Categories_Report_' . date("d-M-Y") . '.csv', ',');
+                exit;
             } else {
-                CommonHelper::convertToCsv($sheetData, 'Bad_Categories_Report_'.date("d-M-Y").'.csv', ','); exit;
+                CommonHelper::convertToCsv($sheetData, 'Bad_Categories_Report_' . date("d-M-Y") . '.csv', ',');
+                exit;
             }
         } else {
             /* Cat Tree Structure Assoc Arr[ */
@@ -129,9 +132,8 @@ class TopCategoriesReportController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Record_Per_Page', $this->adminLangId), 'pagesize', array( 10 => '10', 20 => '20', 30 => '30', 50 => '50'), '', array(), '');
         $frm->addHiddenField('', 'order_by', 'DESC');
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
-        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick'=>'clearSearch();'));
+        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick' => 'clearSearch();'));
         $fld_submit->attachField($fld_cancel);
         return $frm;
     }
 }
-?>

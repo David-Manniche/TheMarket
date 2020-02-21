@@ -1,7 +1,9 @@
 .header {
-    position: fixed;
     position: sticky;
     position: -webkit-sticky;
+    position: -moz-sticky;
+    position: -ms-sticky;
+    position: -o-sticky;
     z-index: 10;
     top: 0;
     width: 100%;
@@ -12,21 +14,23 @@
 
     .top-bar {
         padding: 0;
-        fill: #fff;
-        color: #fff;
-        background: $brand-color;
+        fill: #fff;        
+        background: $brand-color; 
+		color:$brand-color-inverse;
         transition: all 300ms linear 0s;
         -webkit-transition: all 300ms linear 0s;
         -ms-transition: all 300ms linear 0s;
+        font-size: 0.775em;
 
         a {
             color: inherit;
+            padding: 8px 0.8rem;
         }
 
         .slogan {
             line-height: 1;
             color: inherit;
-            font-size: 0.775em;
+
             padding: 8px 0;
         }
 
@@ -83,8 +87,7 @@
                         > a {
                             color: inherit;
                             display: block;
-                            font-size: 0.775em;
-                            padding: 8px 0.8rem;
+
                             line-height: 1;
                             text-decoration: none;
                             display: -webkit-box;
@@ -404,7 +407,7 @@
     vertical-align: top;
     line-height: 36px;
     height: 36px;
-    
+
     border-#{$end-direction}: solid 1px $brand-color;
     font-size: 0.8em;
     cursor: pointer;
@@ -564,9 +567,9 @@
             z-index: 0;
             bottom: 13px;
             #{$start-direction}: 30px;
-            color: #fff;
+            
             border: solid 1px $brand-color;
-            background: $brand-color;
+            background: $brand-color; color:$brand-color-inverse;
             font-size: 0.8em;
             text-align: center;
             vertical-align: middle;

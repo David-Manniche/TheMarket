@@ -1,4 +1,5 @@
 <?php
+
 class EbsPayController extends PaymentController
 {
     private $keyName = "ebs";
@@ -21,7 +22,7 @@ class EbsPayController extends PaymentController
 
         $this->paymentSettings = $this->getPaymentSettings();
         $ebs = array(
-        'account_id'      => trim($this->paymentSettings['accountId']),
+        'account_id' => trim($this->paymentSettings['accountId']),
         'secret_key' => trim($this->paymentSettings['secretKey'])
         );
         $this->set('ebs', $ebs);

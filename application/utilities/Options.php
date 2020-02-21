@@ -1,4 +1,5 @@
 <?php
+
 trait Options
 {
     public function options()
@@ -12,28 +13,28 @@ trait Options
 
     private function getSearchForm()
     {
-        $frm = new Form('frmOptionSearch', array('id'=>'frmOptionSearch'));
+        $frm = new Form('frmOptionSearch', array('id' => 'frmOptionSearch'));
         $frm->addTextBox('', 'keyword');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->siteLangId));
-        $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $this->siteLangId), array('onclick'=>'clearOptionSearch();'));
+        $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $this->siteLangId), array('onclick' => 'clearOptionSearch();'));
         return $frm;
     }
 
     public function searchOptions()
     {
-        $pagesize=FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
+        $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
         $frmSearch = $this->getSearchForm();
 
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $post = $frmSearch->getFormDataFromArray($data);
         $userId = UserAuthentication::getLoggedUserId();
         $srch = Option::getSearchObject($this->siteLangId);
         if (!empty($post['keyword'])) {
-            $condition=$srch->addCondition('o.option_identifier', 'like', '%'.$post['keyword'].'%');
-            $condition->attachCondition('ol.option_name', 'like', '%'.$post['keyword'].'%', 'OR');
+            $condition = $srch->addCondition('o.option_identifier', 'like', '%' . $post['keyword'] . '%');
+            $condition->attachCondition('ol.option_name', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
         $srch->addCondition('o.option_seller_id', '=', $userId);
         $srch->setPageNumber($page);
@@ -65,7 +66,7 @@ trait Options
         }
 
         $option_id = FatUtility::int($post['option_id']);
-        if ($option_id>0) {
+        if ($option_id > 0) {
             UserPrivilege::canSellerEditOption($option_id, $this->siteLangId);
         }
         unset($post['option_id']);
@@ -84,13 +85,13 @@ trait Options
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $option_id = ($option_id > 0)?$option_id:$optionObj->getMainTableRecordId();
+        $option_id = ($option_id > 0) ? $option_id : $optionObj->getMainTableRecordId();
 
-        $option_type=FatUtility::int($post['option_type']);
+        $option_type = FatUtility::int($post['option_type']);
 
         if (in_array($option_type, Option::ignoreOptionValues())) {
             $optionValueObj = new OptionValue();
-            $arr=$optionValueObj->getAtttibutesByOptionId($option_id, array('optionvalue_id'));
+            $arr = $optionValueObj->getAtttibutesByOptionId($option_id, array('optionvalue_id'));
             foreach ($arr as $val) {
                 $optionValueObj = new OptionValue($val['optionvalue_id']);
                 $optionValueObj->deleteRecord(true);
@@ -98,11 +99,11 @@ trait Options
         }
 
         $languages = Language::getAllNames();
-        foreach ($languages as $langId=>$langName) {
-            $data=array(
+        foreach ($languages as $langId => $langName) {
+            $data = array(
             'optionlang_lang_id' => $langId,
             'optionlang_option_id' => $option_id,
-            'option_name' => $post['option_name'.$langId],
+            'option_name' => $post['option_name' . $langId],
             );
 
             if (!$optionObj->updateLangData($langId, $data)) {
@@ -119,7 +120,7 @@ trait Options
     public function optionForm($option_id = 0)
     {
         $option_id = FatUtility::int($option_id);
-        if ($option_id>0) {
+        if ($option_id > 0) {
             UserPrivilege::canSellerEditOption($option_id, $this->siteLangId);
         }
         $hideListBox = false;
@@ -231,7 +232,7 @@ trait Options
 
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('BTN_SAVE_CHANGES', $this->siteLangId));
         if (isset($product_id) && $product_id > 0) {
-            $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('BTN_CANCEL', $this->siteLangId), array('onClick'=>'productOptionsForm('.$product_id.')'));
+            $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('BTN_CANCEL', $this->siteLangId), array('onClick' => 'productOptionsForm(' . $product_id . ')'));
             $fld_submit->attachField($fld_cancel);
         }
 
@@ -313,7 +314,7 @@ trait Options
 
     public function autoCompleteOptions()
     {
-        $pagesize = 10;
+        //$pagesize = 10;
         $post = FatApp::getPostedData();
         $userId = UserAuthentication::getLoggedUserId();
         $srch = Option::getSearchObject($this->siteLangId);
@@ -328,11 +329,11 @@ trait Options
         $srch->addMultipleFields(array('option_id, option_name, option_identifier'));
 
         if (!empty($post['keyword'])) {
-            $cnd = $srch->addCondition('option_name', 'LIKE', '%' . $post['keyword']. '%');
-            $cnd->attachCondition('option_identifier', 'LIKE', '%'. $post['keyword'] . '%', 'OR');
+            $cnd = $srch->addCondition('option_name', 'LIKE', '%' . $post['keyword'] . '%');
+            $cnd->attachCondition('option_identifier', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
         }
 
-        $srch->setPageSize($pagesize);
+        //$srch->setPageSize($pagesize);
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $options = $db->fetchAll($rs, 'option_id');
@@ -341,8 +342,8 @@ trait Options
         foreach ($options as $key => $option) {
             $json[] = array(
             'id' => $key,
-            'name'      => strip_tags(html_entity_decode($option['option_name'], ENT_QUOTES, 'UTF-8')),
-            'option_identifier'    => strip_tags(html_entity_decode($option['option_identifier'], ENT_QUOTES, 'UTF-8'))
+            'name' => strip_tags(html_entity_decode($option['option_name'], ENT_QUOTES, 'UTF-8')),
+            'option_identifier' => strip_tags(html_entity_decode($option['option_identifier'], ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));

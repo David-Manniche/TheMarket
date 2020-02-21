@@ -9,7 +9,7 @@ $(document).ready(function () {
         e.preventDefault();
         return false;
     });
-
+	$('[data-toggle="tooltip"]').tooltip();
 	/*$(document).on('keydown', 'input.phone-js', function(e) {
         var key = e.which || e.charCode || e.keyCode || 0;
         $phone = $(this);
@@ -310,10 +310,10 @@ $(document).ready(function () {
     /* $(document).click(function(event) {
     	$('ul.dropdown-menu').hide();
     }); */
-    
+
     autofillLangData = function (autoFillBtn, frm) {
         var actionUrl = autoFillBtn.data('action');
-        
+
         var defaultLangField = $('input.defaultLang', frm);
         if (1 > defaultLangField.length) {
             $.systemMessage(langLbl.unknownPrimaryLanguageField, 'alert--danger');
@@ -343,12 +343,12 @@ $(document).ready(function () {
                     $.each(values, function(selector, value) {
                         $("input.langField_" + langId + "[name='" + selector + "']").val(value);
                     });
-                }); 
+                });
                 $.systemMessage.close();
             });
         }
     }
-    
+	$('[data-toggle="tooltip"]').tooltip();
 })(jQuery);
 
 function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection) {
@@ -498,7 +498,6 @@ function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection) {
     }
 
 })();
-
 function isJson(str) {
     try {
         var json = JSON.parse(str);

@@ -78,7 +78,8 @@ $(document).on('change', '.language-js',function(){
 		fcom.updateWithAjax(fcom.makeUrl('CustomProducts', 'setup'), data, function(t) {				
 			reloadList();				
 			if (t.preq_id > 0) {
-				sellerProductForm(t.preq_id);
+				//sellerProductForm(t.preq_id);
+                customCatalogSpecifications(t.preq_id);
 				return ;
 			}
 			$(document).trigger('close.facebox');
@@ -349,6 +350,9 @@ $(document).on('change', '.language-js',function(){
 		});
 		
 		$('input[name=\'product_shipping[' + shipping_row + '][country_name]\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
 			'source': function(request, response) {
 				$.ajax({
 					url: fcom.makeUrl('products', 'countries_autocomplete'),
@@ -372,7 +376,10 @@ $(document).on('change', '.language-js',function(){
 		});
 		
 		$('input[name=\'product_shipping[' + shipping_row + '][company_name]\']').autocomplete({
-				'source': function(request, response) {
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
+            'source': function(request, response) {
 				$.ajax({
 					url: fcom.makeUrl('products', 'shippingCompanyAutocomplete'),
 					data: {keyword: request['term'],fIsAjax:1},
@@ -395,6 +402,9 @@ $(document).on('change', '.language-js',function(){
 		});
 		
 		$('input[name=\'product_shipping[' + shipping_row + '][processing_time]\']').autocomplete({
+                'classes': {
+                    "ui-autocomplete": "custom-ui-autocomplete"
+                },
 				'source': function(request, response) {
 				$.ajax({
 					url: fcom.makeUrl('products', 'shippingMethodDurationAutocomplete'),

@@ -3,7 +3,7 @@
     <?php require_once('sellerCatalogProductTop.php');?>
 </div>
 <div class="cards">
-<div class="cards-content pt-3 pl-4 pr-4 ">	
+<div class="cards-content ">	
 	<div class="tabs__content form">
 		<div class="row">
 			<div class="col-md-12">
@@ -55,8 +55,8 @@
 
 					$newLineTxt = Labels::getLabel('LBL_Enter_Data_Separated_By_New_Line.', $siteLangId );
 				//	$returnPolicyTxt = Labels::getLabel('LBL_Product_Return_Policy_text',$siteLangId);
-					//$selprod_features_fld->htmlAfterField = '<span class="text--small">'. $newLineTxt .'</span>';
-					//$selprod_return_policy_fld->htmlAfterField  = '<span class="text--small">'. $newLineTxt .' '. $returnPolicyTxt .'</span>';
+					//$selprod_features_fld->htmlAfterField = '<span class="form-text text-muted">'. $newLineTxt .'</span>';
+					//$selprod_return_policy_fld->htmlAfterField  = '<span class="form-text text-muted">'. $newLineTxt .' '. $returnPolicyTxt .'</span>';
 
 					echo $frmSellerProdLangFrm->getFormHtml(); ?>
 				</div>

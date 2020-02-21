@@ -2,26 +2,28 @@
     $frmSearch->setFormTagAttribute('class', 'form');
     $frmSearch->setFormTagAttribute('onsubmit', 'searchVolumeDiscountProducts(this); return(false);');
     $frmSearch->developerTags['colClassPrefix'] = 'col-md-';
-    $frmSearch->developerTags['fld_default_col'] = 4;
+    $frmSearch->developerTags['fld_default_col'] = 12;
 
     $keywordFld = $frmSearch->getField('keyword');
 if (0 < $selProd_id) {
     $keywordFld->setFieldTagAttribute('readonly', 'readonly');
 }
-    $keywordFld->setWrapperAttribute('class', 'col-lg-4');
+    //$keywordFld->setWrapperAttribute('class', 'col-lg-6');
     $keywordFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_by_keyword', $siteLangId));
-    $keywordFld->developerTags['col'] = 4;
+    $keywordFld->developerTags['col'] = 8;
     $keywordFld->developerTags['noCaptionTag'] = true;
 
     $submitBtnFld = $frmSearch->getField('btn_submit');
-    $submitBtnFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
+    $submitBtnFld->setFieldTagAttribute('class', 'btn btn--primary btn--block');
     $submitBtnFld->setWrapperAttribute('class', (0 < $selProd_id ? 'd-none' : ''));
+    $submitBtnFld->setWrapperAttribute('class', 'col-6');
     $submitBtnFld->developerTags['col'] = 2;
     $submitBtnFld->developerTags['noCaptionTag'] = true;
 
     $cancelBtnFld = $frmSearch->getField('btn_clear');
-    $cancelBtnFld->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary ');
+    $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn--block');
     $cancelBtnFld->setFieldTagAttribute('onclick', 'clearSearch('.$selProd_id.');');
+    $cancelBtnFld->setWrapperAttribute('class', 'col-6');
     $cancelBtnFld->developerTags['col'] = 2;
     $cancelBtnFld->developerTags['noCaptionTag'] = true;
 
@@ -39,7 +41,7 @@ if (0 < $selProd_id) {
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pt-4 pl-4 pr-4 pb-0">
+                        <div class="cards-content pb-0">
                             <div class="replaced">
                                 <?php echo $frmSearch->getFormHtml(); ?>
                             </div>
@@ -59,7 +61,7 @@ if (0 < $selProd_id) {
                             $this->includeTemplate('seller/add-volume-discount-form.php', array('siteLangId' => $siteLangId), false);
                         }
                         ?>
-                        <div class="cards-content pl-4 pr-4">
+                        <div class="cards-content">
                             <div class="row justify-content-between">
                                 <div class="col-auto"></div>
                                  <div class="col-auto">

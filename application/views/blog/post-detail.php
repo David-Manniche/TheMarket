@@ -9,8 +9,7 @@
                         <?php if (!empty($post_images)) { ?>
                         <div class="post__pic">
                             <?php foreach ($post_images as $post_image) { ?>
-                            <div class="item"><img data-ratio="16:9" src="<?php echo FatUtility::generateUrl('image', 'blogPostFront', array($post_image['afile_record_id'], $post_image['afile_lang_id'], "LAYOUT1", 0, $post_image['afile_id']), CONF_WEBROOT_FRONT_URL); ?>"
-                                    alt="<?php echo $post_image['afile_name']; ?>"></div>
+                            <div class="item"><img data-ratio="16:9" src="<?php echo FatUtility::generateUrl('image', 'blogPostFront', array($post_image['afile_record_id'], $post_image['afile_lang_id'], "LAYOUT1", 0, $post_image['afile_id']), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo $post_image['afile_name']; ?>"></div>
                             <?php } ?>
                         </div>
                         <?php } ?>
@@ -27,20 +26,22 @@
                                         echo Labels::getLabel('Lbl_in', $siteLangId);
                                         foreach ($categories as $id => $name) {
                                             if ($name == end($categories)) { ?>
-                                                <a href="<?php echo CommonHelper::generateUrl('Blog', 'category', array($id)); ?>" class="text--dark"><?php echo $name; ?></a>
-                                                <?php break;
+                                    <a href="<?php echo CommonHelper::generateUrl('Blog', 'category', array($id)); ?>" class="text--dark"><?php echo $name; ?></a>
+                                    <?php break;
                                             } ?>
-                                            <a href="<?php echo CommonHelper::generateUrl('Blog', 'category', array($id)); ?>" class="text--dark"><?php echo $name; ?></a>,
-                                        <?php }
+                                    <a href="<?php echo CommonHelper::generateUrl('Blog', 'category', array($id)); ?>" class="text--dark"><?php echo $name; ?></a>,
+                                    <?php }
                                     } ?></span>
-                                <div class="share-button share-button--static-horizontal justify-content-start">
-                                    <a href="javascript:void(0)" class="social-toggle"><i class="icn">
+
+
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle no-after share-icon" href="javascript:void(0)"  data-toggle="dropdown"><i class="icn">
                                             <svg class="svg">
                                                 <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#share" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#share"></use>
                                             </svg>
                                         </i></a>
-                                    <div class="social-networks">
-                                        <ul>
+                                    <div class="dropdown-menu dropdown-menu-anim">
+                                        <ul class="social-sharing">
                                             <li class="social-facebook">
                                                 <a class="social-link st-custom-button" data-network="facebook" data-url="<?php echo CommonHelper::generateFullUrl('Blog', 'postDetail', array($blogPostData['post_id'])); ?>/">
                                                     <i class="icn"><svg class="svg">
@@ -72,12 +73,13 @@
                                         </ul>
                                     </div>
                                 </div>
+                                
                             </div>
                             <?php /*<ul class="likes-count">
                                 <!--<li><i class="icn-like"><img src="<?php echo CONF_WEBROOT_URL; ?>images/eye.svg"></i>500 Views</li>-->
-                                <?php if ($blogPostData['post_comment_opened']) { ?>
-                                <li><i class="icn-msg"><img src="<?php echo CONF_WEBROOT_URL; ?>images/comments.svg"></i><?php echo $commentsCount,' ',Labels::getLabel('Lbl_Comments', $siteLangId); ?></li>
-                                <?php  } ?>
+                            <?php if ($blogPostData['post_comment_opened']) { ?>
+                            <li><i class="icn-msg"><img src="<?php echo CONF_WEBROOT_URL; ?>images/comments.svg"></i><?php echo $commentsCount,' ',Labels::getLabel('Lbl_Comments', $siteLangId); ?></li>
+                            <?php  } ?>
                             </ul>*/ ?>
                         </div>
                         <div class="divider"></div>
@@ -86,16 +88,16 @@
                         </div>
                     </div>
                     <?php if ($blogPostData['post_comment_opened']) { ?>
-                        <?php echo $srchCommentsFrm->getFormHtml(); ?>
-                        <div class="gap"></div>
-                        <div class="comments rounded border" id="container--comments">
-                            <h2><?php echo ($commentsCount)? sprintf(Labels::getLabel('Lbl_Comments(%s)', $siteLangId), $commentsCount):Labels::getLabel('Lbl_Comments', $siteLangId); ?></h2>
-                            <div id="comments--listing"> </div>
-                            <div id="loadMoreCommentsBtnDiv"></div>
-                        </div>
+                    <?php echo $srchCommentsFrm->getFormHtml(); ?>
+                    <div class="gap"></div>
+                    <div class="comments rounded border" id="container--comments">
+                        <h2><?php echo ($commentsCount)? sprintf(Labels::getLabel('Lbl_Comments(%s)', $siteLangId), $commentsCount):Labels::getLabel('Lbl_Comments', $siteLangId); ?></h2>
+                        <div id="comments--listing"> </div>
+                        <div class="text-center m-4" id="loadMoreCommentsBtnDiv"></div>
+                    </div>
                     <?php } ?>
                     <?php if ($blogPostData['post_comment_opened'] && UserAuthentication::isUserLogged() && isset($postCommentFrm)) { ?>
-                     <div class="gap"></div>
+                    <div class="gap"></div>
                     <div id="respond" class="comment-respond rounded">
                         <h2><?php echo Labels::getLabel('Lbl_Leave_A_Comment', $siteLangId); ?></h2>
                         <?php
@@ -116,9 +118,9 @@
                         $commentFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Message', $siteLangId));
                         echo $postCommentFrm->getFormHtml(); ?>
                     </div>
-                   
+
                     <?php }?>
-                    
+
                 </div>
             </div>
             <div class="col-xl-3 col-lg-4">

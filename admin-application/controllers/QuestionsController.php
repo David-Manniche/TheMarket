@@ -1,4 +1,5 @@
 <?php
+
 class QuestionsController extends AdminBaseController
 {
     private $canView;
@@ -6,10 +7,10 @@ class QuestionsController extends AdminBaseController
     
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup');
-        if(!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
+        $ajaxCallArray = array('deleteRecord', 'form', 'langForm', 'search', 'setup', 'langSetup');
+        if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
-        } 
+        }
         parent::__construct($action);
         $this->admin_id = AdminAuthentication::getLoggedAdminId();
         $this->canView = $this->objPrivilege->canViewQuestions($this->admin_id, true);
@@ -18,29 +19,28 @@ class QuestionsController extends AdminBaseController
         $this->set("canEdit", $this->canEdit);
     }
     
-    public function getBreadcrumbNodes($action) 
+    public function getBreadcrumbNodes($action)
     {
         $nodes = array();
         $parameters = FatApp::getParameters();
-        switch($action)
-        {
+        switch ($action) {
         case 'index':
-            $nodes[] = array('title'=>Labels::getLabel('LBL_Question_Banks', $this->adminLangId), 'href'=>CommonHelper::generateUrl('QuestionBanks'));
-            $nodes[] = array('title'=>Labels::getLabel('LBL_Question', $this->adminLangId));
+            $nodes[] = array('title' => Labels::getLabel('LBL_Question_Banks', $this->adminLangId), 'href' => CommonHelper::generateUrl('QuestionBanks'));
+            $nodes[] = array('title' => Labels::getLabel('LBL_Question', $this->adminLangId));
             break;
         }
         return $nodes;
     }
     
     public function index($qbank_id = 0)
-    {        
+    {
         $this->objPrivilege->canViewQuestions();
         $qbank_id = FatUtility::int($qbank_id);
         
         $frmSearch = $this->getSearchForm();
-        $frmSearch->getField('qbank_id')->value = $qbank_id ;
-        $this->set("qbank_id", $qbank_id);    
-        $this->set("frmSearch", $frmSearch);    
+        $frmSearch->getField('qbank_id')->value = $qbank_id;
+        $this->set("qbank_id", $qbank_id);
+        $this->set("frmSearch", $frmSearch);
         $this->_template->render();
     }
     
@@ -51,7 +51,7 @@ class QuestionsController extends AdminBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
         
         $srch = Questions::getSearchObject($this->adminLangId, false);
@@ -59,12 +59,12 @@ class QuestionsController extends AdminBaseController
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
         
-        if($qbank_id = FatUtility::int($post['qbank_id'])) {
+        if ($qbank_id = FatUtility::int($post['qbank_id'])) {
             $srch->addCondition('question_qbank_id', '=', $qbank_id);
         }
-        if(!empty($post['keyword'])) {
-            $cond = $srch->addCondition('q_l.question_title', 'like', '%'.$post['keyword'].'%');
-            $cond->attachCondition('q.question_identifier', 'like', '%'.$post['keyword'].'%');
+        if (!empty($post['keyword'])) {
+            $cond = $srch->addCondition('q_l.question_title', 'like', '%' . $post['keyword'] . '%');
+            $cond->attachCondition('q.question_identifier', 'like', '%' . $post['keyword'] . '%');
         }
         $srch->addOrder('q.question_active', 'desc');
         $srch->addOrder('q_l.' . Questions::DB_TBL_PREFIX . 'title', 'ASC');
@@ -90,7 +90,7 @@ class QuestionsController extends AdminBaseController
         
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());    
+            FatUtility::dieJsonError(Message::getHtml());
         }
 
         $question_id = $post['question_id'];
@@ -104,43 +104,43 @@ class QuestionsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         
-        $newTabLangId=0;    
-        if($question_id > 0) {
+        $newTabLangId = 0;
+        if ($question_id > 0) {
             $questionId = $question_id;
-            $languages = Language::getAllNames();    
-            foreach($languages as $langId =>$langName ){            
-                if(!$row = Questions::getAttributesByLangId($langId, $question_id)) {
+            $languages = Language::getAllNames();
+            foreach ($languages as $langId => $langName) {
+                if (!$row = Questions::getAttributesByLangId($langId, $question_id)) {
                     $newTabLangId = $langId;
                     break;
-                }            
-            }    
-        }else{
+                }
+            }
+        } else {
             $questionId = $record->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);    
-        }    
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+        }
         
         
         $this->set('msg', $this->str_setup_successful);
         $this->set('questionId', $questionId);
-        $this->set('langId', $newTabLangId); 
+        $this->set('langId', $newTabLangId);
         $this->_template->render(false, false, 'json-success.php');
     }
     
-    public function form($qbank_id,$question_id)
-    {    
+    public function form($qbank_id, $question_id)
+    {
         $this->objPrivilege->canViewQuestions();
         
         $question_id = FatUtility::int($question_id);
         
         $frm = $this->getForm($qbank_id);
         
-        $data = array('question_id'=>$question_id);
-        if($question_id > 0) {
-            $data =  Questions::getAttributesById($question_id);
-            if($data ==  false) {
+        $data = array('question_id' => $question_id);
+        if ($question_id > 0) {
+            $data = Questions::getAttributesById($question_id);
+            if ($data == false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
-        }    
+        }
         
         $frm->fill($data);
         
@@ -148,7 +148,7 @@ class QuestionsController extends AdminBaseController
         $this->set('question_id', $question_id);
         $this->set('frm', $frm);
         $this->set('languages', Language::getAllNames());
-        $this->_template->render(false, false);    
+        $this->_template->render(false, false);
     }
     
     public function setupLang()
@@ -159,9 +159,9 @@ class QuestionsController extends AdminBaseController
         $question_id = $post['question_id'];
         $lang_id = $post['lang_id'];
         
-        if($question_id == 0 || $lang_id == 0) {
+        if ($question_id == 0 || $lang_id == 0) {
             Message::addErrorMessage($this->str_invalid_request_id);
-            FatUtility::dieWithError(Message::getHtml());    
+            FatUtility::dieWithError(Message::getHtml());
         }
         
         $frm = $this->getLangForm($question_id, $lang_id);
@@ -169,25 +169,25 @@ class QuestionsController extends AdminBaseController
         unset($post['question_id']);
         unset($post['lang_id']);
         $data = array(
-        'questionlang_lang_id'=>$lang_id,
-        'questionlang_question_id'=>$question_id,
-        'question_title'=>$post['question_title']
+        'questionlang_lang_id' => $lang_id,
+        'questionlang_question_id' => $question_id,
+        'question_title' => $post['question_title']
         );
         
-        if(!empty($post['question_options'])) {
+        if (!empty($post['question_options'])) {
             $data['question_options'] = $post['question_options'];
         }
         
         $obj = new Questions($question_id);
-        if(!$obj->updateLangData($lang_id, $data)) {
+        if (!$obj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($obj->getError());
-            FatUtility::dieWithError(Message::getHtml());        
+            FatUtility::dieWithError(Message::getHtml());
         }
 
-        $newTabLangId = 0;    
+        $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach($languages as $langId =>$langName ){
-            if(!$row = Questions::getAttributesByLangId($langId, $question_id)) {
+        foreach ($languages as $langId => $langName) {
+            if (!$row = Questions::getAttributesByLangId($langId, $question_id)) {
                 $newTabLangId = $langId;
                 break;
             }
@@ -206,7 +206,7 @@ class QuestionsController extends AdminBaseController
         $question_id = FatUtility::int($question_id);
         $lang_id = FatUtility::int($lang_id);
         
-        if($question_id == 0 || $lang_id == 0) {
+        if ($question_id == 0 || $lang_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
         
@@ -214,8 +214,8 @@ class QuestionsController extends AdminBaseController
         $langData = Questions::getAttributesByLangId($lang_id, $question_id);
         $questData = Questions::getAttributesById($question_id);
         
-        if($langData ) {
-            $langFrm->fill($langData);    
+        if ($langData) {
+            $langFrm->fill($langData);
         }
         
         $this->set('languages', Language::getAllNames());
@@ -224,7 +224,7 @@ class QuestionsController extends AdminBaseController
         $this->set('question_lang_id', $lang_id);
         $this->set('langFrm', $langFrm);
         $this->set('formLayout', Language::getLayoutDirection($lang_id));
-        $this->_template->render(false, false);    
+        $this->_template->render(false, false);
     }
     
     public function deleteRecord()
@@ -232,24 +232,24 @@ class QuestionsController extends AdminBaseController
         $this->objPrivilege->canEditQuestions();
         
         $question_id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
-        if($question_id < 1) {
+        if ($question_id < 1) {
             FatUtility::dieJsonError($this->str_invalid_request_id);
         }
 
         $data = Questions::getAttributesById($question_id);
-        if($data == false) {
+        if ($data == false) {
             Message::addErrorMessage($this->str_invalid_request_id);
-            FatUtility::dieJsonError(Message::getHtml());    
+            FatUtility::dieJsonError(Message::getHtml());
         }
         
         $obj = new Questions($question_id);
         $obj->assignValues(array(Questions::tblFld('deleted') => 1));
-        if(!$obj->save()) {
+        if (!$obj->save()) {
             Message::addErrorMessage($obj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
         
-        FatUtility::dieJsonSuccess($this->str_delete_record);    
+        FatUtility::dieJsonSuccess($this->str_delete_record);
     }
     
     private function getForm($qbank_id)
@@ -273,9 +273,8 @@ class QuestionsController extends AdminBaseController
         return $frm;
     }
     
-    private function getLangForm($question_id = 0,$lang_id = 0)
+    private function getLangForm($question_id = 0, $lang_id = 0)
     {
-        
         $question_id = FatUtility::int($question_id);
         $questData = Questions::getAttributesById($question_id);
         
@@ -283,7 +282,7 @@ class QuestionsController extends AdminBaseController
         $frm->addHiddenField('', 'question_id', $question_id);
         $frm->addHiddenField('', 'lang_id', $lang_id);
         $frm->addRequiredField(Labels::getLabel('LBL_Question_Title', $this->adminLangId), 'question_title');
-        if($questData['question_type'] == Questions::TYPE_SINGLE_CHOICE || $questData['question_type'] == Questions::TYPE_MULTIPLE_CHOICE ) {
+        if ($questData['question_type'] == Questions::TYPE_SINGLE_CHOICE || $questData['question_type'] == Questions::TYPE_MULTIPLE_CHOICE) {
             $fld = $frm->addTextarea(Labels::getLabel('LBL_Question_Options', $this->adminLangId), 'question_options');
             $fld->requirements()->setRequired();
             $fld->htmlAfterField = Labels::getLabel('LBL_Enter_each_option_in_a_new_line.', $this->adminLangId);
@@ -303,5 +302,4 @@ class QuestionsController extends AdminBaseController
         $fld_submit->attachField($fld_cancel);
         return $frm;
     }
-    
 }

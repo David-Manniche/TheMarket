@@ -6,99 +6,42 @@ $(document).on("click", "ul#selectedUsersList-js .ion-close-round", function(){
     unlinkUser($(this).siblings('.userId').val(), this);
 });
 
-$(document).on('click','.uploadFile-Js',function(){
-	var node = this;
-	$('#form-upload').remove();
-
-    var fileType = $(node).attr('data-file_type');
-    var pNotificationId = $(node).attr('data-pnotification_id');
-
-	var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-	frm = frm.concat('<input type="file" name="file" />');
-	frm = frm.concat('<input type="hidden" name="pnotification_id" value="' + pNotificationId + '"/>');
-    frm = frm.concat('<input type="hidden" name="file_type" value="' + fileType + '">');
-	frm = frm.concat('</form>');
-	$( 'body' ).prepend( frm );
-	$('#form-upload input[name=\'file\']').trigger('click');
-	if ( typeof timer != 'undefined' ) {
-		clearInterval(timer);
-	}
-	timer = setInterval(function() {
-		if ($('#form-upload input[name=\'file\']').val() != '') {
-			clearInterval(timer);
-			$val = $(node).val();
-			$.ajax({
-				url: fcom.makeUrl('PushNotifications', 'uploadMedia'),
-				type: 'post',
-				dataType: 'json',
-				data: new FormData($('#form-upload')[0]),
-				cache: false,
-				contentType: false,
-				processData: false,
-				beforeSend: function() {
-					$(node).val('Loading');
-				},
-				complete: function() {
-					$(node).val($val);
-				},
-				success: function(ans) {
-						$('.text-danger').remove();
-						$('#input-field').html(ans.msg);
-						if( ans.status == true ){
-							$('#input-field').removeClass('text-danger');
-							$('#input-field').addClass('text-success');
-							$('#form-upload').remove();
-                            getMediaForm(pNotificationId);
-						}else{
-							$('#input-field').removeClass('text-success');
-                            $('#input-field').addClass('text-danger');
-                            $.systemMessage(ans.msg,'alert--danger',true);
-                        }
-					},
-					error: function(xhr, ajaxOptions, thrownError) {
-						alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-					}
-				});
-		}
-	}, 500);
-});
-
 (function() {
 	var currentPage = 1;
-	
-	goToSearchPage = function(page) {	
+
+	goToSearchPage = function(page) {
 		if(typeof page == undefined || page == null){
 			page = 1;
-		}		
-		var frm = document.frmSearchPaging;		
+		}
+		var frm = document.frmSearchPaging;
 		$(frm.page).val(page);
 		listPushNotification(frm);
-    };	
+    };
 
     clearSearch = function(){
         document.frmSearch.reset();
         listPushNotification(document.frmSearch);
     };
-	
+
 	listPushNotification = function(form, page){
 		if (!page) {
 			page = currentPage;
 		}
-		currentPage = page;	
-		
+		currentPage = page;
+
 		var data = '';
 		if (form) {
 			data = fcom.frmData(form);
 		}
-			
+
 		$("#listing").html(fcom.getLoader());
-		
+
 		fcom.ajax(fcom.makeUrl('PushNotifications','search'),data,function(res){
 			$("#listing").html(res);
 		});
 		$('.check-all').prop('checked', false);
     };
-    
+
     brandForm = function(id) {
 		fcom.displayProcessing();
 		var frm = document.frmBrandSearchPaging;
@@ -106,7 +49,7 @@ $(document).on('click','.uploadFile-Js',function(){
             fcom.updateFaceboxContent(t);
         });
     };
-    
+
     addNotificationForm = function(pNotificationId){
         fcom.ajax(fcom.makeUrl('PushNotifications', 'addNotificationForm', [pNotificationId]), '', function(t) {
             fcom.updateFaceboxContent(t);
@@ -117,7 +60,7 @@ $(document).on('click','.uploadFile-Js',function(){
            });
         });
     };
-    
+
     clone = function(pNotificationId){
         if(!confirm(langLbl.cloneNotification)){
             return false;
@@ -132,7 +75,7 @@ $(document).on('click','.uploadFile-Js',function(){
            });
         });
     };
-    
+
     getMediaForm = function(pNotificationId){
         fcom.ajax(fcom.makeUrl('PushNotifications', 'addMediaForm', [pNotificationId]), '', function(t) {
             fcom.updateFaceboxContent(t);
@@ -151,6 +94,9 @@ $(document).on('click','.uploadFile-Js',function(){
         var buyers = $(userSelector).data("buyers");
         var sellers = $(userSelector).data("sellers");
         $(userSelector).autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('Users', 'autoCompleteJson'),
@@ -164,6 +110,7 @@ $(document).on('click','.uploadFile-Js',function(){
                     type: 'post',
                     success: function(json) {
                         response($.map(json, function(item) {
+                            console.log(item);
                             return {
                                 label: item['name'] + '(' + item['username'] + ')',
                                 value: item['username'],
@@ -222,7 +169,7 @@ $(document).on('click','.uploadFile-Js',function(){
             $(obj).parent().remove();
         });
     };
-    
+
     removeImage = function(pNotificationId) {
         if (!confirm(langLbl.confirmDeleteImage)) {
             return;
@@ -231,4 +178,75 @@ $(document).on('click','.uploadFile-Js',function(){
             getMediaForm(pNotificationId);
         });
     };
+
+    popupImage = function(inputBtn){
+		if (inputBtn.files && inputBtn.files[0]) {
+	        fcom.ajax(fcom.makeUrl('Shops', 'imgCropper'), '', function(t) {
+				$('#cropperBox-js').html(t);
+				$("#mediaForm-js").css("display", "none");
+				var container = document.querySelector('.img-container');
+				var file = inputBtn.files[0];
+				$('#new-img').attr('src', URL.createObjectURL(file));
+	    		var image = container.getElementsByTagName('img').item(0);
+	    		var options = {
+	                aspectRatio: 4 / 1,
+	                data: {
+	                    width: 1000,
+	                    height: 250,
+	                },
+	                minCropBoxWidth: 1000,
+	                minCropBoxHeight: 250,
+	                toggleDragModeOnDblclick: false,
+		        };
+				$(inputBtn).val('');
+    	  		return cropImage(image, options, 'uploadImage', inputBtn);
+	    	});
+		}
+	};
+
+    uploadImage = function(formData){
+        var node = this;
+        $('#form-upload').remove();
+
+		var pNotificationId = document.frmPushNotificationMedia.pnotification_id.value;
+        var fileType = document.frmPushNotificationMedia.file_type.value;
+
+        formData.append('pnotification_id', pNotificationId);
+        formData.append('file_type', fileType);
+        $.ajax({
+            url: fcom.makeUrl('PushNotifications', 'uploadMedia'),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $(node).val('Loading');
+            },
+            complete: function() {
+                /* $(node).val($val); */
+            },
+			success: function(ans) {
+				$.mbsmessage.close();
+				$.systemMessage.close();
+				$('.text-danger').remove();
+                $('#input-field').html(ans.msg);
+                if( ans.status == true ){
+                    $('#input-field').removeClass('text-danger');
+                    $('#input-field').addClass('text-success');
+                    $('#form-upload').remove();
+                    getMediaForm(pNotificationId);
+                }else{
+                    $('#input-field').removeClass('text-success');
+                    $('#input-field').addClass('text-danger');
+                    $.systemMessage(ans.msg,'alert--danger',true);
+                }
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+        });
+	}
+
 })();

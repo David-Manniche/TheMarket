@@ -19,6 +19,9 @@ $frm->setFormTagAttribute('onsubmit', 'updateProfileInfo(this); return(false);')
 $usernameFld = $frm->getField('credential_username');
 $usernameFld->setFieldTagAttribute('disabled', 'disabled');
 
+$phoneFld = $frm->getField('user_phone');
+$phoneFld->setFieldTagAttribute('disabled', 'disabled');
+
 $userDobFld = $frm->getField('user_dob');
 if (!empty($data['user_dob']) && $data['user_dob'] != '0000-00-00') {
     $userDobFld->setFieldTagAttribute('disabled', 'disabled');
@@ -46,10 +49,8 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
     <div class="col-xl-4">
         <div class="row">
             <div class="col-xl-12 col-lg-6 mb-4">
-			<div class=" bg-gray rounded p-4">
-                <div class="row align-items-center" id="profileImageFrmBlock">
-                    <div class="col-auto">
-                        <div class="avtar avtar--large">
+			<div class=" bg-gray rounded p-4 text-center profile-image" id="profileImageFrmBlock">
+                        <div class="avtar avtar--large mb-4 ">
                             <?php
                                 $userId = UserAuthentication::getLoggedUserId();
                                 $userImgUpdatedOn = User::getAttributesById($userId, 'user_updated_on');
@@ -61,9 +62,8 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
                             <!--img src="<?php /* echo CommonHelper::generateUrl('Account', 'userProfileImage', array(UserAuthentication::getLoggedUserId(), 'croped', true)).'?t='.time(); ?>"
                                 alt="<?php echo Labels::getLabel('LBL_Profile_Image', $siteLangId); */?>"-->
                         </div>
-                    </div>
-                    <div class="col">
-                        <div class="btn-group">
+						
+						  <div class="btn-group">
                             <?php echo $imgFrm->getFormTag(); ?>
                             <?php if ($mode == 'Edit') { ?>
                                 <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="popupImage()"><?php echo Labels::getLabel('LBL_Change', $siteLangId);?></a>
@@ -80,8 +80,9 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
                             <?php echo $imgFrm->getExternalJS();?>
                             <div id="dispMessage"></div>
                         </div>
-                    </div>
-                </div>
+                    
+                    
+                 
 				    </div>
             </div>
             <div class="col-xl-12 col-lg-6 mb-4">

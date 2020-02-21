@@ -1,4 +1,5 @@
 <?php
+
 class Common
 {
     public static function headerWishListAndCartSummary($template)
@@ -77,7 +78,7 @@ class Common
             $userId = UserAuthentication::getLoggedUserId();
             $userImgUpdatedOn = User::getAttributesById($userId, 'user_updated_on');
             $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
-            $profileImage = FatCache::getCachedUrl(CommonHelper::generateUrl('Account', 'userProfileImage', array($userId,'croped',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+            $profileImage = FatCache::getCachedUrl(CommonHelper::generateUrl('Account', 'userProfileImage', array($userId, 'croped', true)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
             $template->set('userName', ucfirst(CommonHelper::getUserFirstName(UserAuthentication::getLoggedUserAttribute('user_name'))));
             $template->set('userEmail', UserAuthentication::getLoggedUserAttribute('user_email'));
             $template->set('profilePicUrl', $profileImage);
@@ -88,7 +89,7 @@ class Common
     {
         $siteLangId = CommonHelper::getLangId();
         $headerSrchFrm = static::getSiteSearchForm();
-        $headerSrchFrm->setFormTagAttribute('onSubmit', 'submitSiteSearch(this, '.FatApp::getConfig('CONF_ITEMS_PER_PAGE_CATALOG', FatUtility::VAR_INT, 10).'); return(false);');
+        $headerSrchFrm->setFormTagAttribute('onSubmit', 'submitSiteSearch(this, ' . FatApp::getConfig('CONF_ITEMS_PER_PAGE_CATALOG', FatUtility::VAR_INT, 10) . '); return(false);');
 
         /* to fill the posted data to form[ */
         $paramsArr = FatApp::getParameters();
@@ -96,20 +97,20 @@ class Common
         $headerSrchFrm->fill($paramsAssocArr);
         /* ] */
 
-        $headerRootCatArr =  FatCache::get('headerRootCatArr'.$siteLangId, CONF_HOME_PAGE_CACHE_TIME, '.txt');
+        $headerRootCatArr = FatCache::get('headerRootCatArr' . $siteLangId, CONF_HOME_PAGE_CACHE_TIME, '.txt');
         if ($headerRootCatArr) {
             $categoriesArr = unserialize($headerRootCatArr);
         } else {
             /* SubQuery, Category have products[ */
             $prodSrchObj = new ProductSearch();
-            $prodSrchObj->setDefinedCriteria(0 , 0, array('doNotJoinSpecialPrice'=>true));
+            $prodSrchObj->setDefinedCriteria(0, 0, array('doNotJoinSpecialPrice' => true));
             $prodSrchObj->joinProductToCategory($siteLangId);
             $prodSrchObj->doNotCalculateRecords();
             $prodSrchObj->doNotLimitRecords();
             $prodSrchObj->joinSellerSubscription($siteLangId, true);
             $prodSrchObj->addSubscriptionValidCondition();
             $prodSrchObj->addGroupBy('prodcat_id');
-            $prodSrchObj->addMultipleFields(array('prodcat_code AS prodrootcat_code','count(selprod_id) as productCounts', 'prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'prodcat_parent'));
+            $prodSrchObj->addMultipleFields(array('prodcat_code AS prodrootcat_code', 'count(selprod_id) as productCounts', 'prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'prodcat_parent'));
 
             $rs = $prodSrchObj->getResultSet();
 
@@ -142,7 +143,7 @@ class Common
             }
         }
 
-        FatCache::set('headerRootCatArr'.$siteLangId, serialize($categoriesArr), '.txt');
+        FatCache::set('headerRootCatArr' . $siteLangId, serialize($categoriesArr), '.txt');
 
         $template->set('categoriesArr', $categoriesArr);
         $template->set('headerSrchFrm', $headerSrchFrm);
@@ -272,7 +273,7 @@ class Common
         $srch->joinThreadMessage();
         $srch->joinMessagePostedFromUser();
         $srch->joinMessagePostedToUser();
-        $srch->addMultipleFields(array('tth.*','ttm.message_id','ttm.message_text','ttm.message_date','ttm.message_is_unread'));
+        $srch->addMultipleFields(array('tth.*', 'ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread'));
         $srch->addCondition('ttm.message_deleted', '=', 0);
         //$cnd = $srch->addCondition('ttm.message_from','=',$userId);
         $srch->addCondition('ttm.message_to', '=', $userId);
@@ -354,8 +355,8 @@ class Common
     {
         $frm = new Form('frmPoll');
         $frm->addHiddenField('', 'pollfeedback_polling_id', $pollId);
-        $frm->addRadioButtons('', 'pollfeedback_response_type', Polling::getPollingResponseTypeArr($langId), '1', array('class'=>'listing--vertical listing--vertical-chcek'), array());
-        $submitBtn = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('Lbl_Vote', $langId), array('class'=>'btn btn--primary poll--link-js'));
+        $frm->addRadioButtons('', 'pollfeedback_response_type', Polling::getPollingResponseTypeArr($langId), '1', array('class' => 'listing--vertical listing--vertical-chcek'), array());
+        $submitBtn = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('Lbl_Vote', $langId), array('class' => 'btn btn--primary poll--link-js'));
         /* $viewResultsFld = $frm->addHTML('View Results', 'btn_view_results','<a href="javascript:void(0)" class="link--underline view--link-js" >'.Labels::getLabel('Lbl_View_Results',$langId).'</a>');
         $submitBtn->attachField($viewResultsFld); */
         return $frm;

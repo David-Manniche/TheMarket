@@ -1,4 +1,5 @@
 <?php
+
 class Currency extends MyAppModel
 {
     public const DB_TBL = 'tbl_currency';
@@ -59,7 +60,7 @@ class Currency extends MyAppModel
     public static function getCurrencyAssoc($langId)
     {
         $langId = FatUtility::int($langId);
-        $srch = self::getListingObj($langId, array('currency_id','currency_code'));
+        $srch = self::getListingObj($langId, array('currency_id', 'currency_code'));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
@@ -109,7 +110,7 @@ class Currency extends MyAppModel
 
     public function getCurrencyConverterApi()
     {
-        $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . PLUGIN::TYPE_CURRENCY_API, FatUtility::VAR_INT, 0);
+        $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . PLUGIN::TYPE_CURRENCY, FatUtility::VAR_INT, 0);
         if (empty($defaultCurrConvAPI)) {
             $this->error = Labels::getLabel('MSG_DEFAULT_CURRENCY_CONVERTER_NOT_DEFINED', CommonHelper::getLangId());
             return false;

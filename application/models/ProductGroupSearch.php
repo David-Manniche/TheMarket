@@ -1,4 +1,5 @@
 <?php
+
 class ProductGroupSearch extends SearchBase
 {
     private $langId;

@@ -1,4 +1,5 @@
 <?php
+
 class ShopReportSearch extends SearchBase
 {
     private $langId;
@@ -25,7 +26,7 @@ class ShopReportSearch extends SearchBase
         }
 
         if ($langId) {
-            $this->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = shop_l.shoplang_shop_id AND shoplang_lang_id = '.$langId, 'shop_l');
+            $this->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = shop_l.shoplang_shop_id AND shoplang_lang_id = ' . $langId, 'shop_l');
         }
     }
 }

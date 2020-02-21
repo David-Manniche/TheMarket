@@ -7,10 +7,10 @@
             <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
             <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Promotions', $siteLangId);?></h2>
         </div>
-        <div class="content-header-right btn-group col-auto">
-            <div class="">
-                <a href="javascript:void(0)" onClick="promotionForm()" class="btn btn--primary btn-sm"><?php echo Labels::getLabel('LBL_Add_Promotion', $siteLangId);?></a>
-                <a href="javascript:void(0)" onClick="reloadList()" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_My_promotions', $siteLangId);?></a>
+        <div class="content-header-right col-auto">
+            <div class="btn-group">
+                <a href="javascript:void(0)" onClick="promotionForm()" class="btn btn--primary btn--sm "><?php echo Labels::getLabel('LBL_Add_Promotion', $siteLangId);?></a>
+                <a href="javascript:void(0)" onClick="reloadList()" class="btn btn--primary btn--sm "><?php echo Labels::getLabel('LBL_My_promotions', $siteLangId);?></a>
             </div>
         </div>
     </div>
@@ -22,7 +22,7 @@
                         <!-- <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Promotions', $siteLangId);?></h5> -->
                         <p class="note"><?php echo Labels::getLabel('MSG_Minimum_balance_Required_For_Promotions', $siteLangId).' : '. CommonHelper::displaymoneyformat(FatApp::getConfig('CONF_PPC_MIN_WALLET_BALANCE'));?></p>
                     </div>
-                    <div class="cards-content pl-4 pr-4 ">
+                    <div class="cards-content ">
                         <div id="promotionForm">
                             <div class="replaced formshowhide-js">
                                 <?php
@@ -83,7 +83,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="cards">                    
-                    <div class="cards-content pt-2 pl-4 pr-4 ">
+                    <div class="cards-content">
                         <div id="listing">
                             <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                         </div>

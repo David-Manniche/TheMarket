@@ -1,7 +1,7 @@
 <?php
+
 class ShippingSettingsController extends AdminBaseController
 {
-    
     public function getShippingSettings($keyName)
     {
         $shipObj = new ShippingSettings($keyName);
@@ -9,19 +9,18 @@ class ShippingSettingsController extends AdminBaseController
         
         if (!$shippingSettings) {
             Message::addErrorMessage($shipObj->getError());
-            FatUtility::dieJsonError(Message::getHtml());    
+            FatUtility::dieJsonError(Message::getHtml());
         }
         return $shippingSettings;
     }
     
     public function setUpShippingSettings($frm, $keyName)
     {
-        
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         
-        if (false === $post) {            
+        if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());    
+            FatUtility::dieJsonError(Message::getHtml());
         }
         
         $shipObj = new ShippingSettings($keyName);
@@ -29,13 +28,13 @@ class ShippingSettingsController extends AdminBaseController
         
         if (!$shippingSettings) {
             Message::addErrorMessage($shipObj->getError());
-            FatUtility::dieWithError(Message::getHtml());    
+            FatUtility::dieWithError(Message::getHtml());
         }
-        //To Validate Credentails	
+        //To Validate Credentails
         
         include_once CONF_INSTALLATION_PATH . 'library/APIs/shipstatation/ship.class.php';
         $apiKey = $post['shipstation_api_key'];
-        $apiSecret = $post['shipstation_api_secret_key']; 
+        $apiSecret = $post['shipstation_api_secret_key'];
         $Ship = new Ship();
         if (!$Ship->validateShipstationAccount($apiKey, $apiSecret)) {
             Message::addErrorMessage($Ship->getError());
@@ -43,9 +42,9 @@ class ShippingSettingsController extends AdminBaseController
         }
 
         $psObj = new ShippingSettings($keyName);
-        if(!$psObj->saveSettings($post)) {
+        if (!$psObj->saveSettings($post)) {
             Message::addErrorMessage($psObj->getError());
-            FatUtility::dieWithError(Message::getHtml());    
+            FatUtility::dieWithError(Message::getHtml());
         }
         
         $this->set('msg', $this->str_setup_successful);

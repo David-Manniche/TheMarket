@@ -10,7 +10,7 @@ $keywordFld = $frmOrderSrch->getField('keyword');
 $keywordFld->setWrapperAttribute('class', 'col-lg-4');
 $keywordFld->developerTags['col'] = 4;
 $keywordFld->developerTags['noCaptionTag'] = true;
-/* $keywordFld->htmlAfterField = '<small class="text--small">'.Labels::getLabel('LBL_Buyer_account_orders_listing_search_form_keyword_help_txt', $siteLangId).'</small>'; */
+/* $keywordFld->htmlAfterField = '<small class="form-text text-muted">'.Labels::getLabel('LBL_Buyer_account_orders_listing_search_form_keyword_help_txt', $siteLangId).'</small>'; */
 
 $statusFld = $frmOrderSrch->getField('status');
 $statusFld->setWrapperAttribute('class', 'col-lg-4');
@@ -62,7 +62,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pt-4 pl-4 pr-4 pb-0">
+                        <div class="cards-content pb-0">
                             <div class="replaced">
                                 <?php echo $frmOrderSrch->getFormHtml(); ?>
                             </div>
@@ -73,7 +73,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
             <div class="row">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pt-2 pl-4 pr-4 ">
+                        <div class="cards-content">
                             <div id="ordersListing"></div>
                             <span class="gap"></span>
                         </div>

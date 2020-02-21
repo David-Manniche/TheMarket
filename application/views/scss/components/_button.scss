@@ -58,16 +58,24 @@
  }
 
  .btn {
+     margin: 0;
+     font-size: 0.875rem;
+     line-height: 26px;
 
 
      &.btn--primary {
-         background: $brand-color;
-         color: #fff;
+         background: $brand-color; color:$brand-color-inverse;
+         
      }
 
      &.btn--secondary {
-         background: $secondary-color;
-         color: #fff;
+         background: $secondary-color; color:$secondary-color-inverse;
+         
+     }
+
+     &.btn--white {
+         background: #fff;
+         color: #000;
      }
 
      &.btn-outline-primary {
@@ -80,6 +88,12 @@
          background: none;
          border-color: $secondary-color;
          color: $secondary-color;
+     }
+
+     &.btn-outline-white {
+         background: none;
+         border-color: #fff;
+         color: #fff;
      }
 
      &.btn--block {
@@ -99,41 +113,56 @@
      &.btn--lg {}
 
      &.btn--xl {}
-
-
  }
 
 
+ .btn-group > .btn:not(:last-child):not(.dropdown-toggle),
+ .btn-group > .btn-group:not(:last-child) > .btn {
+     border-top-#{$end-direction}-radius: 0;
+     border-bottom-#{$end-direction}-radius: 0;
+ }
+
+ .btn-group > .btn:not(:first-child),
+ .btn-group > .btn-group:not(:first-child) > .btn {
+     border-top-#{$start-direction}-radius: 0;
+     border-bottom-#{$start-direction}-radius: 0;
+ }
+
+ button:focus,
+ .btn:focus {
+     outline: none;
+     box-shadow: none !important;
+ }
 
  a.link {
      color: $brand-color;
      position: relative;
      font-size: 0.875rem;
- }
 
- a.link:hover {}
+     &:after {
+         content: "";
+         position: absolute;
+         height: 1px;
+         bottom: -2px;
+         #{$start-direction}: 0;
+         #{$end-direction}: 0;
+         background: $brand-color; color:$brand-color-inverse;
+         -webkit-transform-origin: bottom left;
+         transform-origin: bottom left;
+         -webkit-transform: scaleX(1);
+         transform: scaleX(1);
+         transition: -webkit-transform .3s ease-in-out;
+         -webkit-transition: -webkit-transform .3s ease-in-out;
+         transition: transform .3s ease-in-out;
+         transition: transform .3s ease-in-out, -webkit-transform .3s ease-in-out;
+     }
 
- a.link:after {
-     content: "";
-     position: absolute;
-     height: 1px;
-     bottom: -2px;
-     #{$start-direction}: 0;
-     #{$end-direction}: 0;
-     background: $brand-color;
-     -webkit-transform-origin: bottom left;
-     transform-origin: bottom left;
-     -webkit-transform: scaleX(1);
-     transform: scaleX(1);
-     transition: -webkit-transform .3s ease-in-out;
-     -webkit-transition: -webkit-transform .3s ease-in-out;
-     transition: transform .3s ease-in-out;
-     transition: transform .3s ease-in-out, -webkit-transform .3s ease-in-out;
- }
-
- .link:hover:after {
-     -webkit-transform: scaleX(0);
-     transform: scaleX(0);
-     -webkit-transform-origin: bottom right;
-     transform-origin: bottom right;
+     &:hover {
+         &:after {
+             -webkit-transform: scaleX(0);
+             transform: scaleX(0);
+             -webkit-transform-origin: bottom right;
+             transform-origin: bottom right;
+         }
+     }
  }

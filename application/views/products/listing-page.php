@@ -122,14 +122,15 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                         </div>
                         <?php } ?>
                         <div class="shop-btn-group">
-                            <div class="share-button">
-                                <a href="javascript:void(0)" class="social-toggle" title="<?php echo Labels::getLabel('Lbl_Share', $siteLangId); ?>"><i class="icn">
-                                        <svg class="svg">
+                            <div  class="dropdown">
+                                <a class="dropdown-toggle no-after share-icon" href="javascript:void(0)"  data-toggle="dropdown">
+								<i class="icn" title="<?php echo Labels::getLabel('Lbl_Share', $siteLangId); ?>">
+								<svg class="svg">
                                             <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#share" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#share"></use>
                                         </svg>
-                                    </i></a>
-                                <div class="social-networks">
-                                    <ul>
+                                </i></a>
+                                <div class="dropdown-menu dropdown-menu-anim">
+                                    <ul class="social-sharing">
                                         <li class="social-facebook">
                                             <a class="social-link st-custom-button" data-network="facebook" data-url="<?php echo CommonHelper::generateFullUrl('Shops', 'view', array($shop['shop_id'])); ?>/">
                                                 <i class="icn"><svg class="svg">
@@ -177,8 +178,8 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                                 $showMoreButtons = false;
                             } ?>
                             <?php if ($showMoreButtons) { 
-								$shopRepData = ShopReport::getReportDetail($shop['shop_id'], UserAuthentication::getLoggedUserId(), 'sreport_id');
-							if (empty($shopRepData)) { ?>
+								$shopRepData = ShopReport::getReportDetail($shop['shop_id'], UserAuthentication::getLoggedUserId(true), 'sreport_id');
+							if (false === UserAuthentication::isUserLogged() || empty($shopRepData)) { ?>
 								<a href="<?php echo CommonHelper::generateUrl('Shops', 'ReportSpam', array($shop['shop_id'])); ?>" title="<?php echo Labels::getLabel('Lbl_Report_Spam', $siteLangId); ?>" class="btn btn--primary btn--sm"><i
                                     class="icn"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#report" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#report"></use>
@@ -231,7 +232,7 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                                 <?php echo isset($scollection_name) && !empty($scollection_name) ? $scollection_name : '';?>
                                 <span class="hide_on_no_product">
                                     <small class="text-muted" id="total_records">
-                                        <?php echo $recordCount;?> <?php echo Labels::getLabel('LBL_ITEM(S)', $siteLangId); ?>
+                                        <?php echo $recordCount . ' ' . Labels::getLabel('LBL_ITEM(S)', $siteLangId); ?>
                                     </small>
                                 </span>
                             </h4>

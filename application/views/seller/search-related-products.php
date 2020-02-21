@@ -35,7 +35,7 @@ foreach ($arrListing as $selProdId => $relatedProds) {
                 $ul = $td->appendElement("ul", array("class"=>"list-tags"));
                 foreach ($relatedProds as $relatedProd) {
                     $li = $ul->appendElement("li");
-                    $li->appendElement('plaintext', array(), '<span>'.$relatedProd['selprod_title'].' <i class="remove_buyTogether remove_param fal fa-times" onClick="deleteSelprodRelatedProduct('.$selProdId.', '.$relatedProd['selprod_id'].')"></i></span>', true);
+                    $li->appendElement('plaintext', array(), '<span>'.$relatedProd['selprod_title'].' <i class="remove_buyTogether remove_param fa fa-times" onClick="deleteSelprodRelatedProduct('.$selProdId.', '.$relatedProd['selprod_id'].')"></i></span>', true);
                     $li->appendElement('plaintext', array(), '<input type="hidden" name="product_related[]" value="'.$relatedProd['selprod_id'].'">', true);
                 }
                 break;
@@ -44,19 +44,17 @@ foreach ($arrListing as $selProdId => $relatedProds) {
         }
     }
 }
+
+echo $tbl->getHtml();
 if (count($arrListing) == 0) {
-    $tbl->appendElement('tr', array('class' => 'noResult--js'))->appendElement(
-        'td',
-        array('colspan'=>count($arr_flds)),
-        Labels::getLabel('LBL_No_Record_Found', $siteLangId)
-    );
+    $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
+    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
 }
 
 $frm = new Form('frmVolDiscountListing', array('id'=>'frmVolDiscountListing'));
 $frm->setFormTagAttribute('class', 'form');
 
-echo $frm->getFormTag();
-echo $tbl->getHtml(); ?>
+echo $frm->getFormTag(); ?>
 </form>
 <?php
 $postedData['page'] = $page;

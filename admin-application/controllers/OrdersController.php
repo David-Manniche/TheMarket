@@ -1,4 +1,5 @@
 <?php
+
 class OrdersController extends AdminBaseController
 {
     public function __construct($action)
@@ -64,7 +65,7 @@ class OrdersController extends AdminBaseController
         $srch->setPageNumber($page);
         $srch->setPageSize($pageSize);
 
-        $srch->addMultipleFields(array('order_id','order_date_added', 'order_is_paid', 'order_status', 'buyer.user_id', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'order_net_amount', 'order_wallet_amount_charge', 'order_pmethod_id', 'IFNULL(pmethod_name, pmethod_identifier) as pmethod_name','pmethod_code', 'order_is_wallet_selected', 'order_deleted'));
+        $srch->addMultipleFields(array('order_id', 'order_date_added', 'order_is_paid', 'order_status', 'buyer.user_id', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'order_net_amount', 'order_wallet_amount_charge', 'order_pmethod_id', 'IFNULL(pmethod_name, pmethod_identifier) as pmethod_name', 'pmethod_code', 'order_is_wallet_selected', 'order_deleted'));
 
         $keyword = FatApp::getPostedData('keyword', null, '');
         if (!empty($keyword)) {
@@ -136,8 +137,8 @@ class OrdersController extends AdminBaseController
         $srch->doNotLimitRecords();
         $srch->joinOrderBuyerUser();
         $srch->addMultipleFields(
-            array('order_id','order_user_id', 'order_date_added', 'order_is_paid','order_tax_charged', 'order_site_commission',
-            'order_reward_point_value','order_volume_discount_total','buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email','buyer.user_phone as buyer_phone', 'order_net_amount', 'order_shippingapi_name', 'order_pmethod_id', 'ifnull(pmethod_name,pmethod_identifier)as pmethod_name','order_discount_total','pmethod_code','order_is_wallet_selected','order_reward_point_used')
+            array('order_id', 'order_user_id', 'order_date_added', 'order_is_paid', 'order_tax_charged', 'order_site_commission',
+            'order_reward_point_value', 'order_volume_discount_total', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'buyer.user_phone as buyer_phone', 'order_net_amount', 'order_shippingapi_name', 'order_pmethod_id', 'ifnull(pmethod_name,pmethod_identifier)as pmethod_name', 'order_discount_total', 'pmethod_code', 'order_is_wallet_selected', 'order_reward_point_used', 'order_deleted')
         );
         $srch->addCondition('order_id', '=', $order_id);
         $srch->addCondition('order_type', '=', Orders::ORDER_PRODUCT);
@@ -160,7 +161,7 @@ class OrdersController extends AdminBaseController
             array('op_id', 'op_invoice_number', 'op_selprod_title', 'op_product_name',
             'op_qty', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model',
             'op_shop_name', 'op_shop_owner_name', 'op_shop_owner_email', 'op_shop_owner_phone', 'op_unit_price',
-            'totCombinedOrders as totOrders', 'op_shipping_duration_name', 'op_shipping_durations',  'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name','op_other_charges', 'op_product_tax_options')
+            'totCombinedOrders as totOrders', 'op_shipping_duration_name', 'op_shipping_durations',  'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_other_charges', 'op_product_tax_options')
         );
 
         $opRs = $opSrch->getResultSet();
@@ -246,7 +247,7 @@ class OrdersController extends AdminBaseController
     {
         $this->objPrivilege->canEditOrders();
 
-        $orderObj =  new Orders();
+        $orderObj = new Orders();
         $order = $orderObj->getOrderById($order_id);
 
         if ($order == false) {
@@ -274,7 +275,7 @@ class OrdersController extends AdminBaseController
     {
         $this->objPrivilege->canEditOrders();
 
-        $orderObj =  new Orders();
+        $orderObj = new Orders();
         $order = $orderObj->getOrderById($order_id);
 
         if ($order == false) {
@@ -284,7 +285,7 @@ class OrdersController extends AdminBaseController
 
         if (!$order["order_is_paid"]) {
             $updateArray = array( 'order_deleted' => applicationConstants::YES );
-            $whr = array('smt'=>'order_id = ?', 'vals'=> array($order_id));
+            $whr = array('smt' => 'order_id = ?', 'vals' => array($order_id));
 
             if (!FatApp::getDb()->updateFromArray(Orders::DB_TBL, $updateArray, $whr)) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->adminLangId));
@@ -311,11 +312,11 @@ class OrdersController extends AdminBaseController
     private function getOrderSearchForm($langId, $deletedOrders = false)
     {
         $currency_id = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
-        $currencyData = Currency::getAttributesById($currency_id, array('currency_code','currency_symbol_left','currency_symbol_right'));
+        $currencyData = Currency::getAttributesById($currency_id, array('currency_code', 'currency_symbol_left', 'currency_symbol_right'));
         $currencySymbol = ($currencyData['currency_symbol_left'] != '') ? $currencyData['currency_symbol_left'] : $currencyData['currency_symbol_right'];
 
         $frm = new Form('frmOrderSearch');
-        $keyword = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '', array('id'=>'keyword', 'autocomplete'=>'off'));
+        $keyword = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '', array('id' => 'keyword', 'autocomplete' => 'off'));
 
         $frm->addTextBox(Labels::getLabel('LBL_Buyer', $this->adminLangId), 'buyer', '');
 
@@ -323,7 +324,7 @@ class OrdersController extends AdminBaseController
 
         $frm->addDateField('', 'date_from', '', array('placeholder' => 'Date From', 'readonly' => 'readonly' ));
         $frm->addDateField('', 'date_to', '', array('placeholder' => 'Date To', 'readonly' => 'readonly' ));
-        $frm->addTextBox('', 'price_from', '', array('placeholder' => 'Order From'.' [' . $currencySymbol . ']' ));
+        $frm->addTextBox('', 'price_from', '', array('placeholder' => 'Order From' . ' [' . $currencySymbol . ']' ));
         $frm->addTextBox('', 'price_to', '', array('placeholder' => 'Order To [' . $currencySymbol . ']' ));
 
         $frm->addHiddenField('', 'page');

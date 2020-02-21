@@ -1,4 +1,5 @@
 <?php
+
 class MyAppModel extends FatModel
 {
     /**
@@ -244,8 +245,8 @@ class MyAppModel extends FatModel
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $prefix = substr(static::DB_TBL_PREFIX, 0, -1);
-        $srch->addCondition('ln.'.$prefix . 'lang_' . static::DB_TBL_PREFIX . 'id', '=', $recordId);
-        $srch->addCondition('ln.'.$prefix . 'lang_lang_id', '=', FatUtility::int($langId));
+        $srch->addCondition('ln.' . $prefix . 'lang_' . static::DB_TBL_PREFIX . 'id', '=', $recordId);
+        $srch->addCondition('ln.' . $prefix . 'lang_lang_id', '=', FatUtility::int($langId));
 
         if (null != $attr) {
             if (is_array($attr)) {
@@ -274,7 +275,7 @@ class MyAppModel extends FatModel
         $db = FatApp::getDb();
         $srch = new SearchBase(static::DB_TBL . '_lang', 'ln');
         $prefix = substr(static::DB_TBL_PREFIX, 0, -1);
-        $srch->addCondition('ln.'.$prefix . 'lang_' . static::DB_TBL_PREFIX . 'id', '=', $recordId);
+        $srch->addCondition('ln.' . $prefix . 'lang_' . static::DB_TBL_PREFIX . 'id', '=', $recordId);
         if (null != $attr) {
             if (is_array($attr)) {
                 $srch->addMultipleFields($attr);
@@ -323,7 +324,7 @@ class MyAppModel extends FatModel
     public function save()
     {
         if (0 < $this->mainTableRecordId) {
-            $result = $this->objMainTableRecord->update(array('smt'=>$this->mainTableIdField . ' = ?', 'vals'=>array($this->mainTableRecordId)));
+            $result = $this->objMainTableRecord->update(array('smt' => $this->mainTableIdField . ' = ?', 'vals' => array($this->mainTableRecordId)));
         } else {
             $result = $this->objMainTableRecord->addNew();
             if ($result) {

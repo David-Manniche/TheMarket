@@ -1,9 +1,10 @@
 <?php
+
 class AffiliateCommission extends MyAppModel
 {
-    const DB_TBL = 'tbl_affiliate_commission_settings';
-    const DB_TBL_HISTORY = 'tbl_affiliate_commission_setting_history';
-    const DB_TBL_PREFIX = 'afcommsetting_';
+    public const DB_TBL = 'tbl_affiliate_commission_settings';
+    public const DB_TBL_HISTORY = 'tbl_affiliate_commission_setting_history';
+    public const DB_TBL_PREFIX = 'afcommsetting_';
     private $db;
 
     public function __construct($id = 0)
@@ -40,15 +41,15 @@ class AffiliateCommission extends MyAppModel
 
         $categoryArrCondition = '';
         if (!empty($catIds)) {
-            $categoryArrCondition = " AND afcommsetting_prodcat_id IN (".implode(",", $catIds).")";
+            $categoryArrCondition = " AND afcommsetting_prodcat_id IN (" . implode(",", $catIds) . ")";
         }
 
         $sql = "SELECT afcommsetting_fees,
 		CASE
-			WHEN afcommsetting_prodcat_id > 0 ".$categoryArrCondition." THEN 1
+			WHEN afcommsetting_prodcat_id > 0 " . $categoryArrCondition . " THEN 1
 			WHEN afcommsetting_prodcat_id = 0 THEN 2
 		END
-		AS matches FROM ".static::DB_TBL." where afcommsetting_user_id = " . $affiliateUserId . " or afcommsetting_user_id = 0
+		AS matches FROM " . static::DB_TBL . " where afcommsetting_user_id = " . $affiliateUserId . " or afcommsetting_user_id = 0
 		ORDER BY matches ASC, afcommsetting_user_id DESC, afcommsetting_fees DESC LIMIT 0,1";
 
         $rs = FatApp::getDb()->query($sql);
@@ -63,12 +64,12 @@ class AffiliateCommission extends MyAppModel
     {
         $data = AffiliateCommission::getAttributesById($commissionId);
         $assignValues = array(
-        'acsh_afcommsetting_id' =>$data['afcommsetting_id'],
-        'acsh_afcommsetting_prodcat_id' =>$data['afcommsetting_prodcat_id'],
-        'acsh_afcommsetting_user_id' =>$data['afcommsetting_user_id'],
-        'acsh_afcommsetting_fees' =>$data['afcommsetting_fees'],
-        'acsh_afcommsetting_is_mandatory' =>$data['afcommsetting_is_mandatory'],
-        'acsh_added_on' =>date('Y-m-d H:i:s'),
+        'acsh_afcommsetting_id' => $data['afcommsetting_id'],
+        'acsh_afcommsetting_prodcat_id' => $data['afcommsetting_prodcat_id'],
+        'acsh_afcommsetting_user_id' => $data['afcommsetting_user_id'],
+        'acsh_afcommsetting_fees' => $data['afcommsetting_fees'],
+        'acsh_afcommsetting_is_mandatory' => $data['afcommsetting_is_mandatory'],
+        'acsh_added_on' => date('Y-m-d H:i:s'),
         );
         if ($this->db->insertFromArray(static::DB_TBL_HISTORY, $assignValues)) {
             return true;
@@ -85,7 +86,7 @@ class AffiliateCommission extends MyAppModel
         $srch = self::getHistorySearchObject();
 
         $srch->joinTable(ProductCategory::DB_TBL, 'LEFT OUTER JOIN', 'tpc.prodcat_id = tacsh.acsh_afcommsetting_prodcat_id', 'tpc');
-        $srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'tpc_l.prodcatlang_prodcat_id = tpc.prodcat_id and tpc_l.prodcatlang_lang_id ='.$langId, 'tpc_l');
+        $srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'tpc_l.prodcatlang_prodcat_id = tpc.prodcat_id and tpc_l.prodcatlang_lang_id =' . $langId, 'tpc_l');
 
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'tacsh.acsh_afcommsetting_user_id = tu.user_id', 'tu');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tuc.credential_user_id = tu.user_id', 'tuc');

@@ -1,13 +1,14 @@
 <?php
+
 class SmartWeightageSettings extends MyAppModel
 {
-    const DB_TBL = 'tbl_smart_weightage_settings';
-    const DB_TBL_PREFIX = 'swsetting_';
+    public const DB_TBL = 'tbl_smart_weightage_settings';
+    public const DB_TBL_PREFIX = 'swsetting_';
     private $db;
 
-    const PRODUCT_VIEW = 1;
-    const PRODUCT_ORDER_PAID = 2;
-    const PRODUCT_TIME_SPENT = 3;
+    public const PRODUCT_VIEW = 1;
+    public const PRODUCT_ORDER_PAID = 2;
+    public const PRODUCT_TIME_SPENT = 3;
     /* const PRODUCT_CART = 2;
     const PRODUCT_CART_REMOVE = 3;
     const PRODUCT_FAVORITE = 4;
@@ -35,7 +36,7 @@ class SmartWeightageSettings extends MyAppModel
     public static function getWeightageAssoc()
     {
         $srch = static::getSearchObject();
-        $srch->addMultipleFields(array('swsetting_key','swsetting_weightage'));
+        $srch->addMultipleFields(array('swsetting_key', 'swsetting_weightage'));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();

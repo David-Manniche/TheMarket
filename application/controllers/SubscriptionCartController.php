@@ -1,4 +1,5 @@
 <?php
+
 class SubscriptionCartController extends MyAppController
 {
     public function __construct($action)
@@ -14,7 +15,7 @@ class SubscriptionCartController extends MyAppController
     {
         $sCartObj = new SubscriptionCart();
         $subscriptionArr = $sCartObj->getSubscription($this->siteLangId);
-        if (count($subscriptionArr)==0) {
+        if (count($subscriptionArr) == 0) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('seller', 'packages'));
         }
@@ -55,8 +56,8 @@ class SubscriptionCartController extends MyAppController
         }
 
         $srch = new SellerPackagePlansSearch($this->siteLangId);
-        $srch->addCondition(SellerPackagePlans::DB_TBL_PREFIX.'active', '=', applicationConstants::ACTIVE);
-        $srch->addCondition(SellerPackagePlans::DB_TBL_PREFIX.'id', '=', $spplan_id);
+        $srch->addCondition(SellerPackagePlans::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
+        $srch->addCondition(SellerPackagePlans::DB_TBL_PREFIX . 'id', '=', $spplan_id);
         $srch->addMultipleFields(
             array(
             'spplan_id' )
@@ -98,7 +99,7 @@ class SubscriptionCartController extends MyAppController
     {
         $langId = FatUtility::int($langId);
         $frm = new Form('frmPromoCoupons');
-        $frm->addTextBox(Labels::getLabel('LBL_Coupon_code', $langId), 'coupon_code', '', array('placeholder'=>Labels::getLabel('LBL_Enter_Your_code', $langId)));
+        $frm->addTextBox(Labels::getLabel('LBL_Coupon_code', $langId), 'coupon_code', '', array('placeholder' => Labels::getLabel('LBL_Enter_Your_code', $langId)));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Apply', $langId));
         return $frm;
     }

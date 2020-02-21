@@ -4,11 +4,11 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 */
 class RestoreSystemController extends MyAppController
 {
-    const CONF_FILE = 'public/settings.php';
-    const BACKUP_FILE = CONF_INSTALLATION_PATH."restore/database/db.sql";
-    const DATABASE_FIRST = CONF_RESTORE_DB_INSTANCE_1;
-    const DATABASE_SECOND = CONF_RESTORE_DB_INSTANCE_2;
-    const RESTORE_TIME_INTERVAL_HOURS = 4;
+    public const CONF_FILE = 'public/settings.php';
+    public const BACKUP_FILE = CONF_INSTALLATION_PATH . "restore/database/db.sql";
+    public const DATABASE_FIRST = CONF_RESTORE_DB_INSTANCE_1;
+    public const DATABASE_SECOND = CONF_RESTORE_DB_INSTANCE_2;
+    public const RESTORE_TIME_INTERVAL_HOURS = 4;
 
     public function index()
     {
@@ -22,12 +22,12 @@ class RestoreSystemController extends MyAppController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $dateTime = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s').' +'.static::RESTORE_TIME_INTERVAL_HOURS.' hours'));
+        $dateTime = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') . ' +' . static::RESTORE_TIME_INTERVAL_HOURS . ' hours'));
         $restoreTime = FatApp::getConfig('CONF_RESTORE_SCHEDULE_TIME', FatUtility::VAR_STRING, $dateTime);
 
-        if (strtotime($restoreTime) >= strtotime(date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s').' +1 min')))) {
+        if (strtotime($restoreTime) >= strtotime(date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') . ' +1 min')))) {
             // $this->resetRestoreTime(CONF_DB_NAME);
-            Message::addErrorMessage('Auto restore scheduled on '.$restoreTime);
+            Message::addErrorMessage('Auto restore scheduled on ' . $restoreTime);
             FatUtility::dieJsonError(Message::getHtml());
         }
 
@@ -68,24 +68,24 @@ class RestoreSystemController extends MyAppController
 
     private function createRestoreProcessFile()
     {
-        $f = fopen(CONF_UPLOADS_PATH.'database-restore-progress.txt', 'w');
+        $f = fopen(CONF_UPLOADS_PATH . 'database-restore-progress.txt', 'w');
         $rs = fwrite($f, time());
         fclose($f);
     }
 
     private function unlinkRestoreProcessFile()
     {
-        @unlink(CONF_UPLOADS_PATH.'database-restore-progress.txt');
+        @unlink(CONF_UPLOADS_PATH . 'database-restore-progress.txt');
     }
 
     private function getAnotherDbName()
     {
-        return (CONF_DB_NAME == static::DATABASE_FIRST)?static::DATABASE_SECOND:static::DATABASE_FIRST;
+        return (CONF_DB_NAME == static::DATABASE_FIRST) ? static::DATABASE_SECOND : static::DATABASE_FIRST;
     }
 
     private function isRestoredSuccessfully()
     {
-        $databasename = (CONF_DB_NAME == static::DATABASE_FIRST)?static::DATABASE_SECOND:static::DATABASE_FIRST;
+        $databasename = (CONF_DB_NAME == static::DATABASE_FIRST) ? static::DATABASE_SECOND : static::DATABASE_FIRST;
 
         $mysqli = new mysqli(CONF_DB_SERVER, CONF_DB_USER, CONF_DB_PASS, $databasename);
 
@@ -104,7 +104,7 @@ class RestoreSystemController extends MyAppController
 
     private function resetUserUploads()
     {
-        $source = CONF_INSTALLATION_PATH."restore/user-uploads";
+        $source = CONF_INSTALLATION_PATH . "restore/user-uploads";
         $target = CONF_UPLOADS_PATH;
         $this->fullCopy($source, $target);
     }
@@ -112,13 +112,13 @@ class RestoreSystemController extends MyAppController
     private function resetRestoreTime($databasename = '')
     {
         if (empty($databasename)) {
-            $databasename = (CONF_DB_NAME == static::DATABASE_FIRST)?static::DATABASE_SECOND:static::DATABASE_FIRST;
+            $databasename = (CONF_DB_NAME == static::DATABASE_FIRST) ? static::DATABASE_SECOND : static::DATABASE_FIRST;
         }
 
         $mysqli = new mysqli(CONF_DB_SERVER, CONF_DB_USER, CONF_DB_PASS, $databasename);
-        $date = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s').' +'.static::RESTORE_TIME_INTERVAL_HOURS.' hours'));
-        $sql = "UPDATE `tbl_configurations` set `conf_val` = '".$date."' where `conf_name` = 'CONF_RESTORE_SCHEDULE_TIME'";
-        $mysqli->query($sql);        
+        $date = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') . ' +' . static::RESTORE_TIME_INTERVAL_HOURS . ' hours'));
+        $sql = "UPDATE `tbl_configurations` set `conf_val` = '" . $date . "' where `conf_name` = 'CONF_RESTORE_SCHEDULE_TIME'";
+        $mysqli->query($sql);
     }
 
     private function restoreDatabase($databasename)
@@ -136,11 +136,11 @@ class RestoreSystemController extends MyAppController
         $sql = "SHOW TABLES FROM $databasename";
         if ($rs = $mysqli->query($sql)) {
             while ($row = $rs->fetch_array()) {
-                $tableName=$row["Tables_in_".$databasename];
+                $tableName = $row["Tables_in_" . $databasename];
                 $mysqli->query("DROP TABLE $databasename.$tableName");
             }
         }
-        $cmd ="mysql --user=" . $dbUser . " --password='" . $dbPassword . "' " . $databasename . " < " . $backupFile;
+        $cmd = "mysql --user=" . $dbUser . " --password='" . $dbPassword . "' " . $databasename . " < " . $backupFile;
         exec($cmd . " > /dev/null &");
     }
 
@@ -149,10 +149,10 @@ class RestoreSystemController extends MyAppController
         $admin = 'admin/';
         $settings_file = CONF_INSTALLATION_PATH . static::CONF_FILE;
 
-        $output  = '<?php' . "\n";
+        $output = '<?php' . "\n";
         $output .= '// DB' . "\n";
         $output .= 'define(\'CONF_WEBROOT_FRONTEND\', \'' . addslashes(CONF_WEBROOT_URL) . '\');' . "\n";
-        $output .= 'define(\'CONF_WEBROOT_BACKEND\', \'' . addslashes(CONF_WEBROOT_URL) .$admin. '\');' . "\n";
+        $output .= 'define(\'CONF_WEBROOT_BACKEND\', \'' . addslashes(CONF_WEBROOT_URL) . $admin . '\');' . "\n";
         $output .= 'define(\'CONF_DB_SERVER\', \'' . addslashes($hostName) . '\');' . "\n";
         $output .= 'define(\'CONF_DB_USER\', \'' . addslashes($userName) . '\');' . "\n";
         $output .= 'define(\'CONF_DB_PASS\', \'' . addslashes(html_entity_decode($password, ENT_QUOTES, 'UTF-8')) . '\');' . "\n";
@@ -167,7 +167,7 @@ class RestoreSystemController extends MyAppController
         if (is_file($str)) {
             return @unlink($str);
         } elseif (is_dir($str)) {
-            $scan = glob(rtrim($str, '/').'/*');
+            $scan = glob(rtrim($str, '/') . '/*');
             foreach ($scan as $index => $path) {
                 $this->recursiveDelete($path);
             }

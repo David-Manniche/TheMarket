@@ -1,17 +1,18 @@
 <?php
+
 class Navigations extends MyAppModel
 {
-    const DB_TBL = 'tbl_navigations';
-    const DB_TBL_PREFIX = 'nav_';
+    public const DB_TBL = 'tbl_navigations';
+    public const DB_TBL_PREFIX = 'nav_';
 
-    const DB_TBL_LANG = 'tbl_navigations_lang';
-    const DB_TBL_LANG_PREFIX = 'navlang_';
+    public const DB_TBL_LANG = 'tbl_navigations_lang';
+    public const DB_TBL_LANG_PREFIX = 'navlang_';
 
-    const NAVTYPE_FOOTER = 1;
-    const NAVTYPE_TOP_HEADER = 2;
-    const NAVTYPE_HEADER = 3;
-    const NAVTYPE_SELLER_LEFT = 4;
-    const NAVTYPE_SELLER_RIGHT = 5;
+    public const NAVTYPE_FOOTER = 1;
+    public const NAVTYPE_TOP_HEADER = 2;
+    public const NAVTYPE_HEADER = 3;
+    public const NAVTYPE_SELLER_LEFT = 4;
+    public const NAVTYPE_SELLER_RIGHT = 5;
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
@@ -26,18 +27,18 @@ class Navigations extends MyAppModel
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'nav_l.'.static::DB_TBL_LANG_PREFIX.'nav_id = nav.'.static::tblFld('id').' and
-			nav_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
+                'nav_l.' . static::DB_TBL_LANG_PREFIX . 'nav_id = nav.' . static::tblFld('id') . ' and
+			nav_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 'nav_l'
             );
         }
 
         if ($isActive == true) {
-            $srch->addCondition('nav.'.static::DB_TBL_PREFIX.'active', '=', 1);
+            $srch->addCondition('nav.' . static::DB_TBL_PREFIX . 'active', '=', 1);
         }
 
         if ($isDeleted == false) {
-            $srch->addCondition('nav.'.static::DB_TBL_PREFIX.'deleted', '=', 0);
+            $srch->addCondition('nav.' . static::DB_TBL_PREFIX . 'deleted', '=', 0);
         }
 
         return $srch;
@@ -65,7 +66,7 @@ class Navigations extends MyAppModel
 
     public function updateContent($data = array())
     {
-        if (! ($this->mainTableRecordId > 0)) {
+        if (!($this->mainTableRecordId > 0)) {
             $this->error = Labels::getLabel('MSG_Invalid_Request', $this->commonLangId);
             return false;
         }
@@ -74,8 +75,8 @@ class Navigations extends MyAppModel
         unset($data['nav_id']);
 
         $assignValues = array(
-        'nav_identifier'=>$data['nav_identifier'],
-        'nav_active'=>$data['nav_active'],
+        'nav_identifier' => $data['nav_identifier'],
+        'nav_active' => $data['nav_active'],
         );
 
         if (!FatApp::getDb()->updateFromArray(

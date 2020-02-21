@@ -115,3 +115,47 @@
     width: 100%;
     padding: 0 0 0 74px;
 }
+
+
+.inline-images {
+    display: flex;
+    flex-wrap: wrap;
+
+    li {
+        padding: 1rem;
+        border: $border;
+        border-radius: 4px;
+        position: relative;
+        font-size: 0.8rem;
+        position: relative;
+        color: $body-color;
+        margin-#{$end-direction}: 0.5rem;
+        margin-bottom: 10px;
+
+        &:last-child {
+            margin-#{$end-direction}: 0;
+        }
+        
+        img{ display: block; margin: auto;}
+
+        .deleteLink {
+            position: absolute;
+            z-index: 1;
+            top: 10px;
+            #{$end-direction}: 10px;
+            color: inherit;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            &:hover{ background: $body-color; color: #fff;}
+        }
+
+        p {
+            margin: 0;
+        }
+    }
+}

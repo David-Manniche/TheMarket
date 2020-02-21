@@ -25,7 +25,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content pl-4 pr-4 ">
+                            <div class="cards-content ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -54,7 +54,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content pl-4 pr-4 ">
+                            <div class="cards-content ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -80,7 +80,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content pl-4 pr-4 ">
+                            <div class="cards-content ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -108,7 +108,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                 <a href="<?php echo CommonHelper::generateUrl('buyer', 'orders');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
                             <?php } ?> </div>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <table class="table table--orders js-scrollable ">
                                 <tbody>
                                     <tr class="">
@@ -198,7 +198,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Latest_Offers', $siteLangId);?></h5>
                             <div class="action"> <?php if (count($offers)>0) { ?> <a href="<?php echo CommonHelper::generateUrl('buyer', 'offers');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a> <?php }?> </div>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <table class="table table--orders js-scrollable ">
                                 <tbody>
                                     <tr class="">
@@ -216,7 +216,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                             <div class="item__description">
                                                 <div class="item__title"><?php echo $discountValue; ?> <?php echo Labels::getLabel('LBL_OFF', $siteLangId); ?></div>
                                                 <div class="item__title"><?php echo ($row['coupon_title'] == '')?$row['coupon_identifier']:$row['coupon_title']; ?></div>
-                                                <span class="label label--success "><?php echo $row['coupon_code']; ?></span>
+                                                <span class="coupon-code"><?php echo $row['coupon_code']; ?></span>
                                             </div>
                                         </td>
                                         <td><?php echo FatDate::format($row['coupon_end_date']); ?></td>
@@ -244,7 +244,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                 <a href="<?php echo CommonHelper::generateUrl('buyer', 'orderReturnRequests');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
                             </div> <?php } ?>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <table class="table table--orders js-scrollable ">
                                 <tbody>
                                     <tr class="">
@@ -313,7 +313,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                 <a href="<?php echo CommonHelper::generateUrl('buyer', 'orderCancellationRequests');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
                             </div> <?php } ?>
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <table class="table table--orders js-scrollable ">
                                 <tbody>
                                     <tr class="">

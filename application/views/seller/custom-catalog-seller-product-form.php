@@ -2,7 +2,7 @@
     <?php require_once(CONF_THEME_PATH.'_partial/seller/customCatalogProductNavigationLinks.php'); ?>
 </div>
 <div class="cards">
-    <div class="cards-content pt-3 pl-4 pr-4">
+    <div class="cards-content">
         <div class="row">
             <div class="col-md-12">
                 <div class="form__subcontent">
@@ -21,11 +21,11 @@
                     $cancelBtn->setFieldTagAttribute('class','btn btn--secondary btn--sm'); */
 
                     $selprod_threshold_stock_levelFld = $frmSellerProduct->getField('selprod_threshold_stock_level');
-                    $selprod_threshold_stock_levelFld->htmlAfterField = '<small class="text--small">'.Labels::getLabel('LBL_Alert_stock_level_hint_info', $siteLangId). '</small>';
+                    $selprod_threshold_stock_levelFld->htmlAfterField = '<small class="form-text text-muted">'.Labels::getLabel('LBL_Alert_stock_level_hint_info', $siteLangId). '</small>';
                     $selprod_threshold_stock_levelFld->setWrapperAttribute('class', 'selprod_threshold_stock_level_fld');
                     $urlFld = $frmSellerProduct->getField('selprod_url_keyword');
                     $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
-                    $urlFld->htmlAfterField = "<small class='text--small'>".Labels::getLabel('LBL_Example:', $siteLangId) . ' ' . CommonHelper::generateFullUrl('yourKeyword').'</small>';
+                    $urlFld->htmlAfterField = "<small class='form-text text-muted'>".Labels::getLabel('LBL_Example:', $siteLangId) . ' ' . CommonHelper::generateFullUrl('yourKeyword').'</small>';
                     /* $selprodCodEnabledFld = $frmSellerProduct->getField('selprod_cod_enabled');
                     $selprodCodEnabledFld->setWrapperAttribute( 'class' , 'selprod_cod_enabled_fld'); */
                     // $frmSellerProduct->getField('selprod_price')->addFieldtagAttribute('placeholder', CommonHelper::getPlaceholderForAmtField($siteLangId));

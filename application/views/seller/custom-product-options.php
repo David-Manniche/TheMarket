@@ -3,7 +3,7 @@
     <?php require_once(CONF_THEME_PATH.'seller/sellerCustomProductTop.php');?>
 </div>
 <div class="cards">
-    <div class="cards-content pt-3 pl-4 pr-4 ">
+    <div class="cards-content ">
         <div class="tabs__content">
             <div class="row row">
                 <div class="col-md-12">
@@ -24,6 +24,9 @@
 </div>
 <script>
     $('input[name=\'option_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
         'source': function(request, response) {
             $.ajax({
                 url: fcom.makeUrl('seller', 'autoCompleteOptions'),
@@ -40,7 +43,7 @@
                 },
             });
         },
-        select: function (event, ui) {
+        'select': function (event, ui) {
             updateProductOption(<?php echo $product_id;?>, ui.item.id);
         }
     });

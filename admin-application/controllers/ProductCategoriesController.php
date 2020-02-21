@@ -1,4 +1,5 @@
 <?php
+
 class ProductCategoriesController extends AdminBaseController
 {
     public function __construct($action)
@@ -86,10 +87,10 @@ class ProductCategoriesController extends AdminBaseController
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
-            $langData = ProductCategory::getLangDataArr($prodCatId, array(ProductCategory::DB_TBL_LANG_PREFIX.'lang_id', ProductCategory::DB_TBL_PREFIX.'name'));
+            $langData = ProductCategory::getLangDataArr($prodCatId, array(ProductCategory::DB_TBL_LANG_PREFIX . 'lang_id', ProductCategory::DB_TBL_PREFIX . 'name'));
             $catNameArr = array();
             foreach ($langData as $value) {
-                $catNameArr[ProductCategory::DB_TBL_PREFIX.'name'][$value[ProductCategory::DB_TBL_LANG_PREFIX.'lang_id']] = $value[ProductCategory::DB_TBL_PREFIX.'name'];
+                $catNameArr[ProductCategory::DB_TBL_PREFIX . 'name'][$value[ProductCategory::DB_TBL_LANG_PREFIX . 'lang_id']] = $value[ProductCategory::DB_TBL_PREFIX . 'name'];
             }
             $data = array_merge($data, $catNameArr);
             $prodCatFrm->fill($data);
@@ -111,24 +112,24 @@ class ProductCategoriesController extends AdminBaseController
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $frm = new Form('frmProdCategory');
         $frm->addHiddenField('', 'prodcat_id', $prodCatId);
-        $frm->addRequiredField(Labels::getLabel('LBL_Category_Name', $this->adminLangId), 'prodcat_name['.$siteDefaultLangId.']');
+        $frm->addRequiredField(Labels::getLabel('LBL_Name', $this->adminLangId), 'prodcat_name[' . $siteDefaultLangId . ']');
 
         $prodCat = new ProductCategory();
         $categoriesArr = $prodCat->getCategoriesForSelectBox($this->adminLangId, $prodCatId);
         $categories = array(0 => Labels::getLabel('LBL_Root_Category', $this->adminLangId)) + $prodCat->makeAssociativeArray($categoriesArr);
-        $frm->addSelectBox(Labels::getLabel('LBL_Category_Parent', $this->adminLangId), 'prodcat_parent', $categories, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Parent_Category', $this->adminLangId), 'prodcat_parent', $categories, '', array(), '');
 
-        $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
-        $frm->addRadioButtons(Labels::getLabel('LBL_Status', $this->adminLangId), 'prodcat_active', $activeInactiveArr, '1', array());
+        $yesNoArr = applicationConstants::getYesNoArr($this->adminLangId);
+        $frm->addRadioButtons(Labels::getLabel('LBL_Publish', $this->adminLangId), 'prodcat_active', $yesNoArr, '1', array());
 
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
         $langData = Language::getAllNames();
         unset($langData[$siteDefaultLangId]);
         if (!empty($translatorSubscriptionKey) && count($langData) > 0) {
-            $frm->addCheckBox(Labels::getLabel('LBL_Translate_For_Other_Languages', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+            $frm->addCheckBox(Labels::getLabel('LBL_Translate_To_Other_Languages', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
-        foreach ($langData as $langId=>$data) {
-            $frm->addTextBox(Labels::getLabel('LBL_Category_Name', $this->adminLangId), 'prodcat_name['.$langId.']');
+        foreach ($langData as $langId => $data) {
+            $frm->addTextBox(Labels::getLabel('LBL_Name', $this->adminLangId), 'prodcat_name[' . $langId . ']');
         }
 
         $mediaLanguages = applicationConstants::bannerTypeArr();
@@ -136,21 +137,21 @@ class ProductCategoriesController extends AdminBaseController
         $frm->addHiddenField('', 'icon_file_type', AttachedFile::FILETYPE_CATEGORY_ICON);
         $frm->addHiddenField('', 'logo_min_width');
         $frm->addHiddenField('', 'logo_min_height');
-        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'cat_icon', array('accept'=>'image/*', 'data-frm'=>'frmCategoryIcon'));
-        foreach($mediaLanguages as $key=>$data){
-            $frm->addHiddenField('', 'cat_icon_image_id['.$key.']');
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'cat_icon', array('accept' => 'image/*', 'data-frm' => 'frmCategoryIcon'));
+        foreach ($mediaLanguages as $key => $data) {
+            $frm->addHiddenField('', 'cat_icon_image_id[' . $key . ']');
         }
 
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'banner_lang_id', $mediaLanguages, '', array(), '');
         $screenArr = applicationConstants::getDisplaysArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel("LBL_Display_For", $this->adminLangId), 'slide_screen', $screenArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel("LBL_Device", $this->adminLangId), 'slide_screen', $screenArr, '', array(), '');
         $frm->addHiddenField('', 'banner_file_type', AttachedFile::FILETYPE_CATEGORY_BANNER);
         $frm->addHiddenField('', 'banner_min_width');
         $frm->addHiddenField('', 'banner_min_height');
-        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'cat_banner', array('accept'=>'image/*', 'data-frm'=>'frmCategoryBanner'));
-        foreach($mediaLanguages as $key=>$data){
-            foreach($screenArr as $key1=>$screen){
-                $frm->addHiddenField('', 'cat_banner_image_id['.$key.'_'.$key1.']');
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'cat_banner', array('accept' => 'image/*', 'data-frm' => 'frmCategoryBanner'));
+        foreach ($mediaLanguages as $key => $data) {
+            foreach ($screenArr as $key1 => $screen) {
+                $frm->addHiddenField('', 'cat_banner_image_id[' . $key . '_' . $key1 . ']');
             }
         }
 
@@ -218,12 +219,12 @@ class ProductCategoriesController extends AdminBaseController
     public function setUpCatImages()
     {
         $this->objPrivilege->canEditProductCategories();
-        $post = FatApp::getPostedData();
         $file_type = FatApp::getPostedData('file_type', FatUtility::VAR_INT, 0);
         $prodcat_id = FatApp::getPostedData('prodcat_id', FatUtility::VAR_INT, 0);
         $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
         $slide_screen = FatApp::getPostedData('slide_screen', FatUtility::VAR_INT, 0);
-        if (!$file_type || !$prodcat_id) {
+        $afileId = FatApp::getPostedData('afile_id', FatUtility::VAR_INT, 0);
+        if (!$file_type) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -240,7 +241,9 @@ class ProductCategoriesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $fileHandlerObj = new AttachedFile();
+        ProductCategory:: deleteImagesWithOutCategoryId($file_type);
+
+        $fileHandlerObj = new AttachedFile($afileId);
         if (!$res = $fileHandlerObj->saveImage(
             $_FILES['cropped_image']['tmp_name'],
             $file_type,
@@ -248,15 +251,13 @@ class ProductCategoriesController extends AdminBaseController
             0,
             $_FILES['cropped_image']['name'],
             -1,
-            $unique_record = true,
+            $unique_record = false,
             $lang_id,
             $_FILES['cropped_image']['type'],
             $slide_screen
-        )
-        ) {
+        )) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
-            // FatUtility::dieJsonError($fileHandlerObj->getError());
         }
         ProductCategory::setImageUpdatedOn($prodcat_id);
         $this->set('file', $_FILES['cropped_image']['name']);
@@ -354,7 +355,7 @@ class ProductCategoriesController extends AdminBaseController
         switch ($action) {
             case 'index':
             case 'form':
-                $nodes[] = array('title'=>Labels::getLabel('LBL_Categories', $this->adminLangId), 'href'=>CommonHelper::generateUrl('ProductCategories'));
+                $nodes[] = array('title' => Labels::getLabel('LBL_Categories', $this->adminLangId), 'href' => CommonHelper::generateUrl('ProductCategories'));
         }
         return $nodes;
     }
@@ -366,11 +367,11 @@ class ProductCategoriesController extends AdminBaseController
         $prodCateObj = new ProductCategory();
         $categories = $prodCateObj->getProdCatAutoSuggest($search_keyword, 10, $this->adminLangId);
         $json = array();
-        $matches=$categories;
+        $matches = $categories;
         foreach ($matches as $key => $val) {
             $json[] = array(
             'prodcat_id' => $key,
-            'prodcat_identifier'      => strip_tags(html_entity_decode($val, ENT_QUOTES, 'UTF-8'))
+            'prodcat_identifier' => strip_tags(html_entity_decode($val, ENT_QUOTES, 'UTF-8'))
             );
         }
         echo json_encode($json);
@@ -384,8 +385,8 @@ class ProductCategoriesController extends AdminBaseController
         $json = array();
         foreach ($arr_options as $key => $product) {
             $json[] = array(
-            'id'     => $key,
-            'name'  => strip_tags(html_entity_decode($product, ENT_QUOTES, 'UTF-8'))
+            'id' => $key,
+            'name' => strip_tags(html_entity_decode($product, ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));

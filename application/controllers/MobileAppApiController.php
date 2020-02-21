@@ -1,4 +1,5 @@
 <?php
+
 class MobileAppApiController extends MyAppController
 {
     public function __construct($action)
@@ -11,9 +12,9 @@ class MobileAppApiController extends MyAppController
         $this->appToken = '';
 
         if (array_key_exists('HTTP_X_TOKEN', $_SERVER) && !empty($_SERVER['HTTP_X_TOKEN'])) {
-            $this->appToken = ($_SERVER['HTTP_X_TOKEN'] != '')?$_SERVER['HTTP_X_TOKEN']:'';
+            $this->appToken = ($_SERVER['HTTP_X_TOKEN'] != '') ? $_SERVER['HTTP_X_TOKEN'] : '';
         } elseif (('1.0' == MOBILE_APP_API_VERSION || $action == 'send_to_web' || empty($this->appToken)) && array_key_exists('_token', $post)) {
-            $this->appToken = ($post['_token']!='')?$post['_token']:'';
+            $this->appToken = ($post['_token'] != '') ? $post['_token'] : '';
         }
 
         $this->app_user['temp_user_id'] = 0;
@@ -23,14 +24,14 @@ class MobileAppApiController extends MyAppController
 
         if ($this->appToken) {
             if (!UserAuthentication::isUserLogged('', $this->appToken)) {
-                $arr = array('status'=>-1,'msg'=>Labels::getLabel('L_Invalid_Token', $this->siteLangId));
+                $arr = array('status' => -1, 'msg' => Labels::getLabel('L_Invalid_Token', $this->siteLangId));
                 die(FatUtility::convertToJson($arr, JSON_UNESCAPED_UNICODE));
             }
 
             $userId = UserAuthentication::getLoggedUserId();
             $userObj = new User($userId);
             if (!$row = $userObj->getProfileData()) {
-                $arr = array('status'=>-1,'msg'=>Labels::getLabel('L_Invalid_Token', $this->siteLangId));
+                $arr = array('status' => -1, 'msg' => Labels::getLabel('L_Invalid_Token', $this->siteLangId));
                 die(FatUtility::convertToJson($arr, JSON_UNESCAPED_UNICODE));
             }
             $this->app_user = $row;
@@ -48,7 +49,7 @@ class MobileAppApiController extends MyAppController
         }
 
         $currencyRow = Currency::getAttributesById($this->siteCurrencyId);
-        $this->currencySymbol = !empty($currencyRow['currency_symbol_left'])?$currencyRow['currency_symbol_left']:$currencyRow['currency_symbol_right'];
+        $this->currencySymbol = !empty($currencyRow['currency_symbol_left']) ? $currencyRow['currency_symbol_left'] : $currencyRow['currency_symbol_right'];
         CommonHelper::initCommonVariables();
 
         $public_api_requests = array(
@@ -87,11 +88,11 @@ class MobileAppApiController extends MyAppController
                                         'language_labels'
                                     );
         if (MOBILE_APP_API_VERSION > '1.1') {
-            $public_api_requests = array_merge($public_api_requests, array('add_to_cart','remove_cart_item','update_cart_qty','get_cart_details'));
+            $public_api_requests = array_merge($public_api_requests, array('add_to_cart', 'remove_cart_item', 'update_cart_qty', 'get_cart_details'));
         }
 
         if (!in_array($action, $public_api_requests)) {
-            if (!isset($this->app_user["user_id"]) || (!$this->app_user["user_id"]>0)) {
+            if (!isset($this->app_user["user_id"]) || (!$this->app_user["user_id"] > 0)) {
                 FatUtility::dieJsonError(Labels::getLabel('L_MOBILE_Please_login_or_login_again', $this->siteLangId));
             }
         }
@@ -125,10 +126,10 @@ class MobileAppApiController extends MyAppController
                     //$arrStr[$key] = preg_replace('/[\x1F\x7F]/u', '', $val);
                     $arrStr[$key] = preg_replace('/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/', '', $val);
                 } else {
-                    $arrStr[$key] =  $val;
+                    $arrStr[$key] = $val;
                 }
             } else {
-                $arrStr[$key]= $this->cleanArray($val);
+                $arrStr[$key] = $this->cleanArray($val);
             }
         }
         return $arrStr;
@@ -154,7 +155,7 @@ class MobileAppApiController extends MyAppController
                 $arrLanguage[] = $language;
             }
         }
-        die($this->json_encode_unicode(array('status'=>1, 'languages'=>$arrLanguage)));
+        die($this->json_encode_unicode(array('status' => 1, 'languages' => $arrLanguage)));
     }
 
     public function currencies()
@@ -162,18 +163,18 @@ class MobileAppApiController extends MyAppController
         $cObj = Currency::getSearchObject($this->siteLangId, true);
         $cObj->addMultipleFields(
             array(
-            'currency_id','currency_code','IFNULL(curr_l.currency_name,curr.currency_code) as currency_name'
+            'currency_id', 'currency_code', 'IFNULL(curr_l.currency_name,curr.currency_code) as currency_name'
             )
         );
         $rs = $cObj->getResultSet();
         $currencies = $this->db->fetchAll($rs);
-        die($this->json_encode_unicode(array('status'=>1, 'currencies'=>$currencies)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencies' => $currencies)));
     }
 
     public function language_labels()
     {
         $srch = Labels::getSearchObject();
-        $srch->joinTable('tbl_languages', 'inner join', 'label_lang_id = language_id and language_active = ' .applicationConstants::ACTIVE);
+        $srch->joinTable('tbl_languages', 'inner join', 'label_lang_id = language_id and language_active = ' . applicationConstants::ACTIVE);
         $srch->addOrder('lbl.' . Labels::DB_TBL_PREFIX . 'lang_id', 'ASC');
         $srch->addGroupBy('lbl.' . Labels::DB_TBL_PREFIX . 'key');
         $srch->doNotCalculateRecords();
@@ -181,7 +182,7 @@ class MobileAppApiController extends MyAppController
         $srch->addCondition('lbl.label_lang_id', '=', $this->siteLangId);
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
-        die($this->json_encode_unicode(array('status'=>1, 'records'=>$records)));
+        die($this->json_encode_unicode(array('status' => 1, 'records' => $records)));
     }
 
     public function home()
@@ -202,7 +203,7 @@ class MobileAppApiController extends MyAppController
         $productSrchObj->addMultipleFields(
             array('product_id', 'selprod_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
             'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
-            'theprice', 'selprod_price','selprod_stock', 'selprod_condition','prodcat_id','IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','ifnull(sq_sprating.prod_rating,0) prod_rating ','ifnull(sq_sprating.totReviews,0) totReviews','selprod_sold_count','ufp_id','IF(ufp_id > 0, 1, 0) as isfavorite','selprod_min_order_qty')
+            'theprice', 'selprod_price', 'selprod_stock', 'selprod_condition', 'prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'ifnull(sq_sprating.prod_rating,0) prod_rating ', 'ifnull(sq_sprating.totReviews,0) totReviews', 'selprod_sold_count', 'ufp_id', 'IF(ufp_id > 0, 1, 0) as isfavorite', 'selprod_min_order_qty')
         );
         $orderBy = 'ASC';
 
@@ -211,7 +212,7 @@ class MobileAppApiController extends MyAppController
         //$collectionCache =  FatCache::get('collectionCache',CONF_HOME_PAGE_CACHE_TIME,'.txt');
         $collectionCache = false;
         if ($collectionCache) {
-            $collections  = unserialize($collectionCache);
+            $collections = unserialize($collectionCache);
         } else {
             $srch = new CollectionSearch($this->siteLangId);
             $srch->doNotCalculateRecords();
@@ -220,7 +221,7 @@ class MobileAppApiController extends MyAppController
             $srch->addMultipleFields(
                 array('collection_id', 'IFNULL(collection_name, collection_identifier) as collection_name',
                 'IFNULL( collection_description, "" ) as collection_description', 'IFNULL(collection_link_caption, "") as collection_link_caption',
-                'collection_link_url', 'collection_layout_type', 'collection_type', 'collection_criteria','collection_child_records','collection_primary_records' )
+                'collection_link_url', 'collection_layout_type', 'collection_type', 'collection_criteria', 'collection_child_records', 'collection_primary_records' )
             );
             $rs = $srch->getResultSet();
             $collectionsDbArr = $this->db->fetchAll($rs, 'collection_id');
@@ -228,7 +229,7 @@ class MobileAppApiController extends MyAppController
             $productCatSrchObj = ProductCategory::getSearchObject(false, $this->siteLangId);
             $productCatSrchObj->doNotCalculateRecords();
             /* $productCatSrchObj->setPageSize(4); */
-            $productCatSrchObj->addMultipleFields(array('prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','prodcat_description'));
+            $productCatSrchObj->addMultipleFields(array('prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'prodcat_description'));
 
             $collections = array();
             if (MOBILE_APP_API_VERSION < '1.3') {
@@ -290,10 +291,10 @@ class MobileAppApiController extends MyAppController
                             $home_collection_products = array();
                             foreach ($collection_products as $skey => $sval) {
                                 $arr_product_val = array(
-                                "discounted_text"=>CommonHelper::showProductDiscountedText($sval, $this->siteLangId),
-                                "image_url"=>CommonHelper::generateFullUrl('image', 'product', array($sval['product_id'], "MEDIUM", $sval['selprod_id'], 0, $this->siteLangId)),
-                                "currency_selprod_price"=>CommonHelper::displayMoneyFormat($sval['selprod_price'], true, false, false),
-                                "currency_theprice"=>CommonHelper::displayMoneyFormat($sval['theprice'], true, false, false),
+                                "discounted_text" => CommonHelper::showProductDiscountedText($sval, $this->siteLangId),
+                                "image_url" => CommonHelper::generateFullUrl('image', 'product', array($sval['product_id'], "MEDIUM", $sval['selprod_id'], 0, $this->siteLangId)),
+                                "currency_selprod_price" => CommonHelper::displayMoneyFormat($sval['selprod_price'], true, false, false),
+                                "currency_theprice" => CommonHelper::displayMoneyFormat($sval['theprice'], true, false, false),
                                 );
                                 $home_collection_products[] = array_merge($sval, $arr_product_val);
                                 //$home_collection_products[] = array_merge($sval, array("image_url"=>CommonHelper::generateFullUrl('image','product', array($sval['product_id'], "MEDIUM", $sval['selprod_id'], 0, $this->siteLangId))));
@@ -340,7 +341,7 @@ class MobileAppApiController extends MyAppController
                             $collection_categories = $this->db->fetchAll($rs);
                             $home_collection_categories = array();
                             foreach ($collection_categories as $skey => $sval) {
-                                $home_collection_categories[] = array_merge($sval, array("image_url"=>CommonHelper::generateFullUrl('category', 'icon', array($sval['prodcat_id'],$this->siteLangId))));
+                                $home_collection_categories[] = array_merge($sval, array("image_url" => CommonHelper::generateFullUrl('category', 'icon', array($sval['prodcat_id'], $this->siteLangId))));
                             }
 
                             if (MOBILE_APP_API_VERSION < '1.3') {
@@ -366,7 +367,7 @@ class MobileAppApiController extends MyAppController
                             $shopObj = clone $shopSearchObj;
                             $shopObj->joinSellerSubscription();
                             $shopObj->addCondition('shop_id', 'IN', array_keys($shopIds));
-                            $shopObj->addMultipleFields(array( 'shop_id','shop_user_id','shop_name','country_name','state_name'));
+                            $shopObj->addMultipleFields(array( 'shop_id', 'shop_user_id', 'shop_name', 'country_name', 'state_name'));
                             $rs = $shopObj->getResultSet();
                             if (MOBILE_APP_API_VERSION < '1.3') {
                                 $collections[$collection['collection_layout_type']][$collection['collection_id']] = $collection;
@@ -396,13 +397,13 @@ class MobileAppApiController extends MyAppController
                                     $rating = SelProdRating::getSellerRating($shopsData['shop_user_id']);
                                 }
                                 $shopsData['rating'] = $rating;
-                                $shopsData['shop_logo']=CommonHelper::generateFullUrl('image', 'shopLogo', array($shopsData['shop_id'], $this->siteLangId));
-                                $shopsData['shop_banner']=CommonHelper::generateFullUrl('image', 'shopBanner', array($shopsData['shop_id'], $this->siteLangId));
+                                $shopsData['shop_logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', array($shopsData['shop_id'], $this->siteLangId));
+                                $shopsData['shop_banner'] = CommonHelper::generateFullUrl('image', 'shopBanner', array($shopsData['shop_id'], $this->siteLangId));
 
                                 if (MOBILE_APP_API_VERSION < '1.3') {
-                                    $collections[$collection['collection_layout_type']][$collection['collection_id']]['shops'][$shopsData['shop_id']]['shopData']=$shopsData;
+                                    $collections[$collection['collection_layout_type']][$collection['collection_id']]['shops'][$shopsData['shop_id']]['shopData'] = $shopsData;
                                 } else {
-                                    $collections[$i]['shops'][$shopsData['shop_id']]['shopData']=$shopsData;
+                                    $collections[$i]['shops'][$shopsData['shop_id']]['shopData'] = $shopsData;
                                 }
 
 
@@ -411,10 +412,10 @@ class MobileAppApiController extends MyAppController
                                 $home_collectionProds = array();
                                 foreach ($collectionProds as $pkey => $pval) {
                                     $arr_product_val = array(
-                                    "discounted_text"=>CommonHelper::showProductDiscountedText($pval, $this->siteLangId),
-                                    "image_url"=>CommonHelper::generateFullUrl('image', 'product', array($pval['product_id'], "MEDIUM", $pval['selprod_id'], 0, $this->siteLangId)),
-                                    "currency_selprod_price"=>CommonHelper::displayMoneyFormat($pval['selprod_price'], true, false, false),
-                                    "currency_theprice"=>CommonHelper::displayMoneyFormat($pval['theprice'], true, false, false),
+                                    "discounted_text" => CommonHelper::showProductDiscountedText($pval, $this->siteLangId),
+                                    "image_url" => CommonHelper::generateFullUrl('image', 'product', array($pval['product_id'], "MEDIUM", $pval['selprod_id'], 0, $this->siteLangId)),
+                                    "currency_selprod_price" => CommonHelper::displayMoneyFormat($pval['selprod_price'], true, false, false),
+                                    "currency_theprice" => CommonHelper::displayMoneyFormat($pval['theprice'], true, false, false),
                                     );
                                     $home_collectionProds[] = array_merge($pval, $arr_product_val);
 
@@ -464,23 +465,23 @@ class MobileAppApiController extends MyAppController
         $srchSlide->joinBudget();
         $srchSlide->joinAttachedFile();
         $srchSlide->addMultipleFields(
-            array('slide_id','slide_record_id','slide_type','IFNULL(promotion_name, promotion_identifier) as promotion_name,IFNULL(slide_title, slide_identifier) as slide_title',
-            'slide_target', 'slide_url','promotion_id' ,'daily_cost','weekly_cost','monthly_cost','total_cost', )
+            array('slide_id', 'slide_record_id', 'slide_type', 'IFNULL(promotion_name, promotion_identifier) as promotion_name,IFNULL(slide_title, slide_identifier) as slide_title',
+            'slide_target', 'slide_url', 'promotion_id', 'daily_cost', 'weekly_cost', 'monthly_cost', 'total_cost', )
         );
 
         $slidesPageSize = FatApp::getConfig('CONF_PPC_SLIDES_HOME_PAGE', FatUtility::VAR_INT, 2);
         $slides = array();
         if ($slidesPageSize) {
-            $srch = new SearchBase('('.$srchSlide->getQuery().') as t');
+            $srch = new SearchBase('(' . $srchSlide->getQuery() . ') as t');
             $srch->addDirectCondition(
                 '((CASE
-					WHEN promotion_duration='.Promotion::DAILY.' THEN promotion_budget > COALESCE(daily_cost,0)
-					WHEN promotion_duration='.Promotion::WEEKLY.' THEN promotion_budget > COALESCE(weekly_cost,0)
-					WHEN promotion_duration='.Promotion::MONTHLY.' THEN promotion_budget > COALESCE(monthly_cost,0)
-					WHEN promotion_duration='.Promotion::DURATION_NOT_AVAILABALE.' THEN promotion_budget = -1
+					WHEN promotion_duration=' . Promotion::DAILY . ' THEN promotion_budget > COALESCE(daily_cost,0)
+					WHEN promotion_duration=' . Promotion::WEEKLY . ' THEN promotion_budget > COALESCE(weekly_cost,0)
+					WHEN promotion_duration=' . Promotion::MONTHLY . ' THEN promotion_budget > COALESCE(monthly_cost,0)
+					WHEN promotion_duration=' . Promotion::DURATION_NOT_AVAILABALE . ' THEN promotion_budget = -1
 				  END ) )'
             );
-            $srch->addMultipleFields(array('slide_id','slide_type','slide_record_id','slide_url','slide_target','slide_title','promotion_id'));
+            $srch->addMultipleFields(array('slide_id', 'slide_type', 'slide_record_id', 'slide_url', 'slide_target', 'slide_title', 'promotion_id'));
             $srch->setPageSize($slidesPageSize);
             //$srchSlide->addOrder( Slides::DB_TBL_PREFIX . 'display_order');
             $srch->addOrder('', 'rand()');
@@ -489,7 +490,7 @@ class MobileAppApiController extends MyAppController
             $slides = $this->db->fetchAll($rs, 'slide_id');
             $home_slides = array();
             foreach ($slides as $key => $val) {
-                $home_slides[] = array_merge($val, array("image_url"=>CommonHelper::generateFullUrl('Image', 'slide', array($val['slide_id'],applicationConstants::SCREEN_MOBILE,$this->siteLangId))));
+                $home_slides[] = array_merge($val, array("image_url" => CommonHelper::generateFullUrl('Image', 'slide', array($val['slide_id'], applicationConstants::SCREEN_MOBILE, $this->siteLangId))));
             }
         }
         /* ] */
@@ -510,22 +511,22 @@ class MobileAppApiController extends MyAppController
                 $srch->addMinimiumWalletbalanceCondition();
                 $srch->addSkipExpiredPromotionAndBannerCondition();
                 $srch->joinBudget();
-                $srch->addMultipleFields(array('banner_id','banner_blocation_id','banner_type','banner_record_id','banner_url','banner_target','banner_title','promotion_id' ,'daily_cost','weekly_cost','monthly_cost','total_cost', ));
+                $srch->addMultipleFields(array('banner_id', 'banner_blocation_id', 'banner_type', 'banner_record_id', 'banner_url', 'banner_target', 'banner_title', 'promotion_id', 'daily_cost', 'weekly_cost', 'monthly_cost', 'total_cost', ));
                 $srch->doNotCalculateRecords();
                 $srch->joinAttachedFile();
                 $srch->addCondition('banner_blocation_id', '=', $val['blocation_id']);
 
-                $srch = new SearchBase('('.$srch->getQuery().') as t');
+                $srch = new SearchBase('(' . $srch->getQuery() . ') as t');
                 $srch->doNotCalculateRecords();
                 $srch->addDirectCondition(
                     '((CASE
-					WHEN promotion_duration='.Promotion::DAILY.' THEN promotion_budget > COALESCE(daily_cost,0)
-					WHEN promotion_duration='.Promotion::WEEKLY.' THEN promotion_budget > COALESCE(weekly_cost,0)
-					WHEN promotion_duration='.Promotion::MONTHLY.' THEN promotion_budget > COALESCE(monthly_cost,0)
-					WHEN promotion_duration='.Promotion::DURATION_NOT_AVAILABALE.' THEN promotion_budget = -1
+					WHEN promotion_duration=' . Promotion::DAILY . ' THEN promotion_budget > COALESCE(daily_cost,0)
+					WHEN promotion_duration=' . Promotion::WEEKLY . ' THEN promotion_budget > COALESCE(weekly_cost,0)
+					WHEN promotion_duration=' . Promotion::MONTHLY . ' THEN promotion_budget > COALESCE(monthly_cost,0)
+					WHEN promotion_duration=' . Promotion::DURATION_NOT_AVAILABALE . ' THEN promotion_budget = -1
 				  END ) )'
                 );
-                $srch->addMultipleFields(array('banner_id','banner_blocation_id','banner_type','banner_record_id','banner_url','banner_target','banner_title','promotion_id'));
+                $srch->addMultipleFields(array('banner_id', 'banner_blocation_id', 'banner_type', 'banner_record_id', 'banner_url', 'banner_target', 'banner_title', 'promotion_id'));
                 //die($srch->getquery());
                 if ($val['blocation_banner_count'] > 0) {
                     $srch->setPageSize($val['blocation_banner_count']);
@@ -536,7 +537,7 @@ class MobileAppApiController extends MyAppController
 
                 $home_banners = array();
                 foreach ($bannerListing as $bkey => $bval) {
-                    $home_banners[] = array_merge($bval, array("image_url"=>CommonHelper::generateFullUrl('Banner', 'HomePageAfterFirstLayout', array($bval['banner_id'], $this->siteLangId))));
+                    $home_banners[] = array_merge($bval, array("image_url" => CommonHelper::generateFullUrl('Banner', 'HomePageAfterFirstLayout', array($bval['banner_id'], $this->siteLangId))));
                 }
                 $banners[$val['blocation_key']]['banners'] = $home_banners;
                 //commonhelper::printarray($banners[$val['blocation_key']]['banners']);
@@ -550,7 +551,7 @@ class MobileAppApiController extends MyAppController
         $shopPageSize = FatApp::getConfig('CONF_PPC_SHOPS_HOME_PAGE', FatUtility::VAR_INT, 2);
         if ($shopPageSize) {
             /* For Shops */
-            $shopObj  = clone $promotionObj;
+            $shopObj = clone $promotionObj;
             $shopObj->setDefinedCriteria();
             $shopObj->joinActiveUser();
             $shopObj->joinShops();
@@ -575,24 +576,24 @@ class MobileAppApiController extends MyAppController
                 $productShopSrchTempObj->addGroupBy('selprod_product_id');
                 $productShopSrchTempObj->setPageSize(2);
                 $Prs = $productShopSrchTempObj->getResultSet();
-                $shops['shop_logo']=CommonHelper::generateFullUrl('image', 'shopLogo', array($shops['shop_id'], $this->siteLangId));
-                $shops['shop_banner']=CommonHelper::generateFullUrl('image', 'shopBanner', array($shops['shop_id'], $this->siteLangId));
-                $sponsoredShops['shops'][$shops['shop_id']]['shopData']=$shops;
-                $sponsoredShops['shops'][$shops['shop_id']]['shopData']['promotion_id']=$shops['promotion_id'];
+                $shops['shop_logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', array($shops['shop_id'], $this->siteLangId));
+                $shops['shop_banner'] = CommonHelper::generateFullUrl('image', 'shopBanner', array($shops['shop_id'], $this->siteLangId));
+                $sponsoredShops['shops'][$shops['shop_id']]['shopData'] = $shops;
+                $sponsoredShops['shops'][$shops['shop_id']]['shopData']['promotion_id'] = $shops['promotion_id'];
                 if (!FatApp::getConfig("CONF_ALLOW_REVIEWS", FatUtility::VAR_INT, 0)) {
                     $rating = 0;
                 } else {
                     $rating = SelProdRating::getSellerRating($shops['shop_user_id']);
                 }
-                $sponsoredShops['rating'][$shops['shop_id']] =  $rating;
+                $sponsoredShops['rating'][$shops['shop_id']] = $rating;
                 $sponsoredShops_products = $this->db->fetchAll($Prs);
                 $home_sponsoredShops_products = array();
                 foreach ($sponsoredShops_products as $skey => $sval) {
                     $arr_product_val = array(
-                      "discounted_text"=>CommonHelper::showProductDiscountedText($sval, $this->siteLangId),
-                      "image_url"=>CommonHelper::generateFullUrl('image', 'product', array($sval['product_id'], "MEDIUM", $sval['selprod_id'], 0, $this->siteLangId)),
-                      "currency_selprod_price"=>CommonHelper::displayMoneyFormat($sval['selprod_price'], true, false, false),
-                      "currency_theprice"=>CommonHelper::displayMoneyFormat($sval['theprice'], true, false, false),
+                      "discounted_text" => CommonHelper::showProductDiscountedText($sval, $this->siteLangId),
+                      "image_url" => CommonHelper::generateFullUrl('image', 'product', array($sval['product_id'], "MEDIUM", $sval['selprod_id'], 0, $this->siteLangId)),
+                      "currency_selprod_price" => CommonHelper::displayMoneyFormat($sval['selprod_price'], true, false, false),
+                      "currency_theprice" => CommonHelper::displayMoneyFormat($sval['theprice'], true, false, false),
                                         );
                     $home_sponsoredShops_products[] = array_merge($sval, $arr_product_val);
                 }
@@ -604,7 +605,7 @@ class MobileAppApiController extends MyAppController
 
         /* For Products */
 
-        $prodObj  = clone $promotionObj;
+        $prodObj = clone $promotionObj;
         $prodObj->joinProducts();
         $prodObj->joinShops();
         $prodObj->addPromotionTypeCondition(Promotion::TYPE_PRODUCT);
@@ -615,13 +616,13 @@ class MobileAppApiController extends MyAppController
         $prodObj->joinBudget();
         $prodObj->addBudgetCondition();
         $prodObj->doNotCalculateRecords();
-        $prodObj->addMultipleFields(array('selprod_id as proSelProdId','promotion_id','promotion_record_id'));
+        $prodObj->addMultipleFields(array('selprod_id as proSelProdId', 'promotion_id', 'promotion_record_id'));
         $productPageSize = FatApp::getConfig('CONF_PPC_PRODUCTS_HOME_PAGE', FatUtility::VAR_INT, 4);
-        $sponsoredProds =  array();
+        $sponsoredProds = array();
         if ($productPageSize) {
             $productSrchSponObj = clone $productSrchObj;
-            $productSrchSponObj->joinTable('(' . $prodObj->getQuery().') ', 'INNER JOIN', 'selprod_id = ppr.proSelProdId ', 'ppr');
-            $productSrchSponObj->addFld(array('promotion_id','promotion_record_id'));
+            $productSrchSponObj->joinTable('(' . $prodObj->getQuery() . ') ', 'INNER JOIN', 'selprod_id = ppr.proSelProdId ', 'ppr');
+            $productSrchSponObj->addFld(array('promotion_id', 'promotion_record_id'));
             $productSrchSponObj->addOrder('theprice', $orderBy);
             $productSrchSponObj->joinSellers();
             $productSrchSponObj->joinSellerSubscription($this->siteLangId);
@@ -633,10 +634,10 @@ class MobileAppApiController extends MyAppController
             $home_sponsoredProds = array();
             foreach ($sponsoredProds as $skey => $sval) {
                 $arr_product_val = array(
-                "discounted_text"=>CommonHelper::showProductDiscountedText($sval, $this->siteLangId),
-                "image_url"=>CommonHelper::generateFullUrl('image', 'product', array($sval['product_id'], "MEDIUM", $sval['selprod_id'], 0, $this->siteLangId)),
-                "currency_selprod_price"=>CommonHelper::displayMoneyFormat($sval['selprod_price'], true, false, false),
-                "currency_theprice"=>CommonHelper::displayMoneyFormat($sval['theprice'], true, false, false),
+                "discounted_text" => CommonHelper::showProductDiscountedText($sval, $this->siteLangId),
+                "image_url" => CommonHelper::generateFullUrl('image', 'product', array($sval['product_id'], "MEDIUM", $sval['selprod_id'], 0, $this->siteLangId)),
+                "currency_selprod_price" => CommonHelper::displayMoneyFormat($sval['selprod_price'], true, false, false),
+                "currency_theprice" => CommonHelper::displayMoneyFormat($sval['theprice'], true, false, false),
                                         );
 
                 $home_sponsoredProds[] = array_merge($sval, $arr_product_val);
@@ -651,25 +652,25 @@ class MobileAppApiController extends MyAppController
         $api_home_page_elements['banners'] = $banners;
         $api_home_page_elements['collections'] = $collections;
 
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_home_page_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_home_page_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function get_category_structure()
     {
-        $productCategory = new productCategory;
+        $productCategory = new productCategory();
         $prodSrchObj = new ProductCategorySearch($this->siteLangId);
         $categoriesArr = ProductCategory::getProdCatParentChildWiseArr($this->siteLangId, 0, true, false, false, $prodSrchObj, true);
         //echo "<prE>";print_r($categoriesArr);
-        $categoriesDataArr = $productCategory ->getCategoryTreeArr($this->siteLangId, $categoriesArr, array( 'prodcat_id', 'IFNULL(prodcat_name,prodcat_identifier ) as prodcat_name','substr(GETCATCODE(prodcat_id),1,6) AS prodrootcat_code', 'prodcat_content_block','prodcat_active','prodcat_parent','GETCATCODE(prodcat_id) as prodcat_code'));
+        $categoriesDataArr = $productCategory ->getCategoryTreeArr($this->siteLangId, $categoriesArr, array( 'prodcat_id', 'IFNULL(prodcat_name,prodcat_identifier ) as prodcat_name', 'substr(GETCATCODE(prodcat_id),1,6) AS prodrootcat_code', 'prodcat_content_block', 'prodcat_active', 'prodcat_parent', 'GETCATCODE(prodcat_id) as prodcat_code'));
 
         //$categoriesDataArr = ProductCategory::getProdCatParentChildWiseArr( $this->siteLangId,0, true, false, false, false,true );
 
         $categoriesDataArr = $this->resetKeyValues(array_values($categoriesDataArr));
         if (empty($categoriesDataArr)) {
-            $categoriesDataArr =  array();
+            $categoriesDataArr = array();
         }
 
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$categoriesDataArr,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $categoriesDataArr, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     private function resetKeyValues($arr)
@@ -707,7 +708,7 @@ class MobileAppApiController extends MyAppController
 
 
         /* to show searched category data[ */
-        $catSrch->addMultipleFields(array('prodcat_id','IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','prodcat_description','GETCATCODE(prodcat_id) AS prodcat_code'));
+        $catSrch->addMultipleFields(array('prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'prodcat_description', 'GETCATCODE(prodcat_id) AS prodcat_code'));
         $catSrchRs = $catSrch->getResultSet();
         $categoryData = $this->db->fetch($catSrchRs);
 
@@ -739,8 +740,8 @@ class MobileAppApiController extends MyAppController
 
 
         $brandsArr = array();
-        $conditionsArr  = array();
-        $priceArr  = array();
+        $conditionsArr = array();
+        $priceArr = array();
 
         /* Categories Data[ */
         $catSrch = clone $prodSrchObj;
@@ -749,7 +750,7 @@ class MobileAppApiController extends MyAppController
 
         //var_dump($categoriesDataArr); die;
 
-        $productCategory = new ProductCategory;
+        $productCategory = new ProductCategory();
         $categoriesArr = $productCategory ->getCategoryTreeArr($this->siteLangId, $categoriesDataArr);
 
 
@@ -776,14 +777,14 @@ class MobileAppApiController extends MyAppController
         if ($category_id && ProductCategory::isLastChildCategory($category_id)) {
             $selProdCodeSrch = clone $prodSrchObj;
             $selProdCodeSrch->addGroupBy('selprod_code');
-            $selProdCodeSrch->addMultipleFields(array('product_id','selprod_code'));
+            $selProdCodeSrch->addMultipleFields(array('product_id', 'selprod_code'));
             $selProdCodeRs = $selProdCodeSrch->getResultSet();
             $selProdCodeArr = $this->db->fetchAll($selProdCodeRs);
 
             if (!empty($selProdCodeArr)) {
                 foreach ($selProdCodeArr as $val) {
                     $optionsVal = SellerProduct::getSellerProductOptionsBySelProdCode($val['selprod_code'], $this->siteLangId, true);
-                    $options = $options+$optionsVal;
+                    $options = $options + $optionsVal;
                 }
             }
         }
@@ -791,10 +792,10 @@ class MobileAppApiController extends MyAppController
         usort(
             $options,
             function ($a, $b) {
-                if ($a['optionvalue_id']==$b['optionvalue_id']) {
+                if ($a['optionvalue_id'] == $b['optionvalue_id']) {
                     return 0;
                 }
-                return ($a['optionvalue_id']<$b['optionvalue_id'])?-1:1;
+                return ($a['optionvalue_id'] < $b['optionvalue_id']) ? -1 : 1;
             }
         );
 
@@ -842,30 +843,30 @@ class MobileAppApiController extends MyAppController
             /* $priceArrCurrency = array_map( function( $item ){ return CommonHelper::displayMoneyFormat( $item, true, false ,false ); } , $priceArr );
             $priceArrCurrency['minPrice']=floor($priceArrCurrency['minPrice']);
             $priceArrCurrency['maxPrice']=ceil($priceArrCurrency['maxPrice']);  */
-            $priceArrCurrency['minPrice']= floor(CommonHelper::displayMoneyFormat($priceArr['minPrice'], false, false, false));
-            $priceArrCurrency['maxPrice']= ceil(CommonHelper::displayMoneyFormat($priceArr['maxPrice'], false, false, false));
+            $priceArrCurrency['minPrice'] = floor(CommonHelper::displayMoneyFormat($priceArr['minPrice'], false, false, false));
+            $priceArrCurrency['maxPrice'] = ceil(CommonHelper::displayMoneyFormat($priceArr['maxPrice'], false, false, false));
         }
 
 
         $productFiltersArr = array(
-        'categoriesArr'            =>    $categoriesArr,
+        'categoriesArr' => $categoriesArr,
         //    'categoryDataArr'        =>    $categoryFilterData,
-        'brandsArr'                =>    $brandsArr,
-        'conditionsArr'            =>    $conditionsArr,
-        'priceArr'                =>    $priceArr,
-        'priceArrCurrency'        =>    $priceArrCurrency,
-        'options'                =>    $options,
-        'siteLangId'            =>    $this->siteLangId,
+        'brandsArr' => $brandsArr,
+        'conditionsArr' => $conditionsArr,
+        'priceArr' => $priceArr,
+        'priceArrCurrency' => $priceArrCurrency,
+        'options' => $options,
+        'siteLangId' => $this->siteLangId,
         );
 
 
         /*commonhelper::printarray($categoryData);
         die();*/
         //CommonHelper::printArray(array('status'=>1 ,'data'=>$api_home_page_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->user_details['favItems'],'unread_messages'=>$this->user_details['unreadMessages']));
-        $api_category_page_elements = array('categoryData'=>$categoryData,'product_filters'=>$productFiltersArr);
+        $api_category_page_elements = array('categoryData' => $categoryData, 'product_filters' => $productFiltersArr);
         //commonhelper::printarray($api_category_page_elements);
         //die();
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_category_page_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_category_page_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function get_products()
@@ -881,7 +882,7 @@ class MobileAppApiController extends MyAppController
         $srch = new ProductSearch($this->siteLangId);
 
         $collection_product_id = FatApp::getPostedData('collection_product_id', FatUtility::VAR_INT, 0);
-        $criteria = array('collection_product_id'=>$collection_product_id);
+        $criteria = array('collection_product_id' => $collection_product_id);
 
         $keyword = FatApp::getPostedData('keyword', null, '');
         $criteria['keyword'] = $keyword;
@@ -918,7 +919,7 @@ class MobileAppApiController extends MyAppController
         $selProdReviewObj->doNotLimitRecords();
         $selProdReviewObj->addGroupBy('spr.spreview_product_id');
         $selProdReviewObj->addCondition('spr.spreview_status', '=', SelProdReview::STATUS_APPROVED);
-        $selProdReviewObj->addMultipleFields(array('spr.spreview_selprod_id',"ROUND(AVG(sprating_rating),2) as prod_rating","count(spreview_id) as totReviews"));
+        $selProdReviewObj->addMultipleFields(array('spr.spreview_selprod_id', "ROUND(AVG(sprating_rating),2) as prod_rating", "count(spreview_id) as totReviews"));
         $selProdRviewSubQuery = $selProdReviewObj->getQuery();
         $srch->joinTable('(' . $selProdRviewSubQuery . ')', 'LEFT OUTER JOIN', 'sq_sprating.spreview_selprod_id = selprod_id', 'sq_sprating');
 
@@ -930,7 +931,7 @@ class MobileAppApiController extends MyAppController
             'selprod_id', 'selprod_user_id',  'selprod_code', 'selprod_stock', 'selprod_condition', 'selprod_price', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
             'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type', 'splprice_start_date', 'splprice_end_date',
             'brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name', 'brand_short_description', 'user_name', 'IF(selprod_stock > 0, 1, 0) AS in_stock',
-            'selprod_sold_count','selprod_return_policy', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist','ifnull(prod_rating,0) prod_rating','ifnull(sq_sprating.totReviews,0) totReviews','IF(ufp_id > 0, 1, 0) as isfavorite','selprod_min_order_qty'
+            'selprod_sold_count', 'selprod_return_policy', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist', 'ifnull(prod_rating,0) prod_rating', 'ifnull(sq_sprating.totReviews,0) totReviews', 'IF(ufp_id > 0, 1, 0) as isfavorite', 'selprod_min_order_qty'
             )
         );
 
@@ -960,10 +961,10 @@ class MobileAppApiController extends MyAppController
 
         if (!empty($keyword)) {
             $srch->addKeywordSearch($keyword);
-            $srch->addFld('if(selprod_title LIKE '.FatApp::getDb()->quoteVariable('%'.$keyword.'%').',  1,   0  ) as keywordmatched');
-            $srch->addFld('if(selprod_title LIKE '.FatApp::getDb()->quoteVariable('%'.$keyword.'%').',  IFNULL(splprice_price, selprod_price),   theprice ) as theprice');
+            $srch->addFld('if(selprod_title LIKE ' . FatApp::getDb()->quoteVariable('%' . $keyword . '%') . ',  1,   0  ) as keywordmatched');
+            $srch->addFld('if(selprod_title LIKE ' . FatApp::getDb()->quoteVariable('%' . $keyword . '%') . ',  IFNULL(splprice_price, selprod_price),   theprice ) as theprice');
             $srch->addFld(
-                'if(selprod_title LIKE '.FatApp::getDb()->quoteVariable('%'.$keyword.'%').',  CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1
+                'if(selprod_title LIKE ' . FatApp::getDb()->quoteVariable('%' . $keyword . '%') . ',  CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1
                 END,   special_price_found ) as special_price_found'
             );
         } else {
@@ -993,13 +994,13 @@ class MobileAppApiController extends MyAppController
 
         $min_price_range = FatApp::getPostedData('min_price_range', null, '');
         if (!empty($min_price_range)) {
-            $min_price_range_default_currency =  CommonHelper::getDefaultCurrencyValue($min_price_range, false, false);
+            $min_price_range_default_currency = CommonHelper::getDefaultCurrencyValue($min_price_range, false, false);
             $srch->addCondition('theprice', '>=', $min_price_range_default_currency);
         }
 
         $max_price_range = FatApp::getPostedData('max_price_range', null, '');
         if (!empty($max_price_range)) {
-            $max_price_range_default_currency =  CommonHelper::getDefaultCurrencyValue($max_price_range, false, false);
+            $max_price_range_default_currency = CommonHelper::getDefaultCurrencyValue($max_price_range, false, false);
             $srch->addCondition('theprice', '<=', $max_price_range_default_currency);
         }
 
@@ -1011,7 +1012,7 @@ class MobileAppApiController extends MyAppController
         $srch->addOrder('in_stock', 'DESC');
         $sortBy = FatApp::getPostedData('sort_by', null, 'popularity');
         $sortOrder = FatApp::getPostedData('sort_order', null, 'asc');
-        if (!in_array($sortOrder, array('asc','desc'))) {
+        if (!in_array($sortOrder, array('asc', 'desc'))) {
             $sortOrder = 'asc';
         }
 
@@ -1057,17 +1058,17 @@ class MobileAppApiController extends MyAppController
             foreach ($productsList as &$product) {
                 $moreSellerSrch = clone $prodSrchObj;
                 $moreSellerSrch->addMoreSellerCriteria($product['selprod_code'], $product['selprod_user_id']);
-                $moreSellerSrch->addMultipleFields(array('count(selprod_id) as totalSellersCount','MIN(theprice) as theprice','special_price_found'));
+                $moreSellerSrch->addMultipleFields(array('count(selprod_id) as totalSellersCount', 'MIN(theprice) as theprice', 'special_price_found'));
                 $moreSellerSrch->addGroupBy('selprod_code');
                 $moreSellerRs = $moreSellerSrch->getResultSet();
                 $moreSellerRow = $db->fetch($moreSellerRs);
                 $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($product['product_id'], "MEDIUM", $product['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-                $product['discounted_text'] =  CommonHelper::showProductDiscountedText($product, $this->siteLangId);
+                $product['discounted_text'] = CommonHelper::showProductDiscountedText($product, $this->siteLangId);
 
-                $product['product_image'] =  $mainImgUrl;
-                $product['moreSellerData'] =  ($moreSellerRow) ? $moreSellerRow : array();
+                $product['product_image'] = $mainImgUrl;
+                $product['moreSellerData'] = ($moreSellerRow) ? $moreSellerRow : array();
                 $product['selprod_return_policies'] = SellerProduct::getSelprodPolicies($product['selprod_id'], PolicyPoint::PPOINT_TYPE_RETURN, $this->siteLangId, $limit = 2);
-                $product['selprod_warranty_policies'] =  SellerProduct::getSelprodPolicies($product['selprod_id'], PolicyPoint::PPOINT_TYPE_WARRANTY, $this->siteLangId);
+                $product['selprod_warranty_policies'] = SellerProduct::getSelprodPolicies($product['selprod_id'], PolicyPoint::PPOINT_TYPE_WARRANTY, $this->siteLangId);
                 $product['currency_selprod_price'] = CommonHelper::displayMoneyFormat($product['selprod_price'], true, false, false);
                 $product['currency_theprice'] = CommonHelper::displayMoneyFormat($product['theprice'], true, false, false);
             }
@@ -1076,15 +1077,15 @@ class MobileAppApiController extends MyAppController
         $sortByArr = array( 'price_asc' => Labels::getLabel('LBL_Price_(Low_to_High)', $this->siteLangId), 'price_desc' => Labels::getLabel('LBL_Price_(High_to_Low)', $this->siteLangId), 'popularity_desc' => Labels::getLabel('LBL_Sort_by_Popularity', $this->siteLangId), 'rating_desc' => Labels::getLabel('LBL_Sort_by_Rating', $this->siteLangId) );
         $count = 0;
         foreach ($sortByArr as $key => $val) {
-            $getSortArr[$count]['key']= $key;
-            $getSortArr[$count]['value']= $val;
+            $getSortArr[$count]['key'] = $key;
+            $getSortArr[$count]['value'] = $val;
             $count++;
         }
-        $api_products_elements = array('products'=>$productsList,'total_pages'=>$srch->pages(),'page'=>$page,'total_records'=>$srch->recordCount(),'sortByArr'=>$getSortArr);
+        $api_products_elements = array('products' => $productsList, 'total_pages' => $srch->pages(), 'page' => $page, 'total_records' => $srch->recordCount(), 'sortByArr' => $getSortArr);
 
         //commonhelper::printarray($api_products_elements);
         //die();
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_products_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_products_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function get_image()
@@ -1099,14 +1100,14 @@ class MobileAppApiController extends MyAppController
                 break;
             case 'SLIDE':
                 $slide_id = FatApp::getPostedData('slide_id', null, '');
-                $image_url = CommonHelper::generateFullUrl('Image', 'slide', array($slide_id,0,$this->siteLangId));
+                $image_url = CommonHelper::generateFullUrl('Image', 'slide', array($slide_id, 0, $this->siteLangId));
                 break;
             case 'BANNER':
                 $banner_id = FatApp::getPostedData('banner_id', null, '');
                 $image_url = CommonHelper::generateFullUrl('Banner', 'HomePageAfterFirstLayout', array($banner_id, $this->siteLangId));
                 break;
         }
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$image_url)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $image_url)));
     }
 
     public function relatedProductsById($ids = array())
@@ -1127,7 +1128,7 @@ class MobileAppApiController extends MyAppController
                 array(
                 'product_id', 'IFNULL(product_name, product_identifier) as product_name', 'prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'ifnull(sq_sprating.prod_rating,0) prod_rating ', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
                 'selprod_id', 'selprod_condition', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'theprice',
-                'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type','selprod_sold_count','ufp_id','selprod_price')
+                'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type', 'selprod_sold_count', 'ufp_id', 'selprod_price')
             );
             $productRs = $prodSrch->getResultSet();
             $Products = FatApp::getDb()->fetchAll($productRs, 'selprod_id');
@@ -1183,17 +1184,17 @@ class MobileAppApiController extends MyAppController
         $selProdReviewObj->doNotLimitRecords();
         $selProdReviewObj->addGroupBy('spr.spreview_product_id');
         $selProdReviewObj->addCondition('spr.spreview_status', '=', SelProdReview::STATUS_APPROVED);
-        $selProdReviewObj->addMultipleFields(array('spr.spreview_selprod_id','spr.spreview_product_id',"ROUND(AVG(sprating_rating),2) as prod_rating","count(spreview_id) as totReviews"));
+        $selProdReviewObj->addMultipleFields(array('spr.spreview_selprod_id', 'spr.spreview_product_id', "ROUND(AVG(sprating_rating),2) as prod_rating", "count(spreview_id) as totReviews"));
         $selProdRviewSubQuery = $selProdReviewObj->getQuery();
         $prodSrch->joinTable('(' . $selProdRviewSubQuery . ')', 'LEFT OUTER JOIN', 'sq_sprating.spreview_product_id = product_id', 'sq_sprating');
 
         $prodSrch->addMultipleFields(
             array(
-            'product_id','product_identifier', 'IFNULL(product_name,product_identifier) as product_name', 'product_seller_id', 'ufp_id', 'product_model','product_type', 'IFNULL(prodcat_name,prodcat_identifier) as prodcat_name', 'product_upc', 'product_isbn', 'product_short_description', 'product_description',
-            'selprod_id', 'selprod_user_id', 'selprod_code', 'selprod_condition', 'selprod_price', 'special_price_found','splprice_start_date', 'splprice_end_date', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'selprod_warranty', 'selprod_return_policy','selprodComments',
-            'theprice', 'selprod_stock' , 'selprod_threshold_stock_level', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name', 'brand_short_description', 'user_name',
-            'shop_id', 'shop_name', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist','ifnull(sq_sprating.prod_rating,0) prod_rating ','ifnull(sq_sprating.totReviews,0) totReviews',
-            'splprice_display_dis_type', 'splprice_display_dis_val', 'splprice_display_list_price', 'product_attrgrp_id', 'product_youtube_video', 'product_cod_enabled', 'selprod_cod_enabled','IF(ufp_id > 0, 1, 0) as isfavorite','selprod_min_order_qty')
+            'product_id', 'product_identifier', 'IFNULL(product_name,product_identifier) as product_name', 'product_seller_id', 'ufp_id', 'product_model', 'product_type', 'IFNULL(prodcat_name,prodcat_identifier) as prodcat_name', 'product_upc', 'product_isbn', 'product_short_description', 'product_description',
+            'selprod_id', 'selprod_user_id', 'selprod_code', 'selprod_condition', 'selprod_price', 'special_price_found', 'splprice_start_date', 'splprice_end_date', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'selprod_warranty', 'selprod_return_policy', 'selprodComments',
+            'theprice', 'selprod_stock', 'selprod_threshold_stock_level', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name', 'brand_short_description', 'user_name',
+            'shop_id', 'shop_name', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist', 'ifnull(sq_sprating.prod_rating,0) prod_rating ', 'ifnull(sq_sprating.totReviews,0) totReviews',
+            'splprice_display_dis_type', 'splprice_display_dis_val', 'splprice_display_list_price', 'product_attrgrp_id', 'product_youtube_video', 'product_cod_enabled', 'selprod_cod_enabled', 'IF(ufp_id > 0, 1, 0) as isfavorite', 'selprod_min_order_qty')
         );
 
 
@@ -1211,11 +1212,11 @@ class MobileAppApiController extends MyAppController
 
         /* over all catalog product reviews */
         $selProdReviewObj->addCondition('spreview_product_id', '=', $product['product_id']);
-        $selProdReviewObj->addMultipleFields(array('count(spreview_postedby_user_id) totReviews','sum(if(sprating_rating=1,1,0)) rated_1','sum(if(sprating_rating=2,1,0)) rated_2','sum(if(sprating_rating=3,1,0)) rated_3','sum(if(sprating_rating=4,1,0)) rated_4','sum(if(sprating_rating=5,1,0)) rated_5'));
+        $selProdReviewObj->addMultipleFields(array('count(spreview_postedby_user_id) totReviews', 'sum(if(sprating_rating=1,1,0)) rated_1', 'sum(if(sprating_rating=2,1,0)) rated_2', 'sum(if(sprating_rating=3,1,0)) rated_3', 'sum(if(sprating_rating=4,1,0)) rated_4', 'sum(if(sprating_rating=5,1,0)) rated_5'));
         $reviews = FatApp::getDb()->fetch($selProdReviewObj->getResultSet());
         $this->set('reviews', $reviews);
         $subscription = false;
-        $allowed_images =-1;
+        $allowed_images = -1;
         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) {
             $currentPlanData = OrderSubscription::getUserCurrentActivePlanDetails($this->siteLangId, $product['selprod_user_id'], array('ossubs_images_allowed'));
             $allowed_images = $currentPlanData['ossubs_images_allowed'];
@@ -1228,7 +1229,7 @@ class MobileAppApiController extends MyAppController
         /* Current Product option Values[ */
         $options = SellerProduct::getSellerProductOptions($selprod_id, false);
         $productSelectedOptionValues = array();
-        $productGroupImages= array();
+        $productGroupImages = array();
         if ($options) {
             foreach ($options as $op) {
                 $images = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_PRODUCT_IMAGE, $product['product_id'], $op['selprodoption_optionvalue_id'], $this->siteLangId, true, '', $allowed_images);
@@ -1252,12 +1253,12 @@ class MobileAppApiController extends MyAppController
         $product['selectedOptionValues'] = $productSelectedOptionValues;
         /* ] */
 
-        if (isset($allowed_images) && $allowed_images >0) {
-            $universal_allowed_images_count = $allowed_images  - count($productImagesArr);
+        if (isset($allowed_images) && $allowed_images > 0) {
+            $universal_allowed_images_count = $allowed_images - count($productImagesArr);
         }
 
         $productUniversalImagesArr = array();
-        if (empty($productGroupImages) ||  !$subscription || isset($universal_allowed_images_count)) {
+        if (empty($productGroupImages) || !$subscription || isset($universal_allowed_images_count)) {
             $universalImages = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_PRODUCT_IMAGE, $product['product_id'], -1, $this->siteLangId, true, '');
             /* CommonHelper::printArray($universalImages); die; */
             if ($universalImages) {
@@ -1266,7 +1267,7 @@ class MobileAppApiController extends MyAppController
 
                     $productUniversalImagesArr = $images;
 
-                    $universal_allowed_images_count = $universal_allowed_images_count  - count($productUniversalImagesArr);
+                    $universal_allowed_images_count = $universal_allowed_images_count - count($productUniversalImagesArr);
                 } elseif (!$subscription) {
                     $productUniversalImagesArr = $universalImages;
                 }
@@ -1286,7 +1287,7 @@ class MobileAppApiController extends MyAppController
         $productGalleryImagesArr = array();
         foreach ($productGroupImages as $image) {
             $mainImgUrl = CommonHelper::generateFullUrl('Image', 'product', array($image['afile_record_id'], 'MEDIUM', 0, $image['afile_id'] ));
-            $productGalleryImagesArr[] = array_merge($image, array('image_url'=>$mainImgUrl));
+            $productGalleryImagesArr[] = array_merge($image, array('image_url' => $mainImgUrl));
         }
         /*commonhelper::printarray($productGalleryImagesArr);
         die();*/
@@ -1324,7 +1325,7 @@ class MobileAppApiController extends MyAppController
 
         if ($product['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
             $shippingRates = array();
-            $shippingDetails  = array();
+            $shippingDetails = array();
         }
 
         if ($shippingRates) {
@@ -1345,7 +1346,7 @@ class MobileAppApiController extends MyAppController
         $moreSellerSrch = clone $prodSrchObj;
         //$moreSellerSrch->setDefinedCriteria();
         $moreSellerSrch->addMoreSellerCriteria($product['selprod_code']);
-        $moreSellerSrch->addMultipleFields(array( 'selprod_id', 'selprod_user_id', 'selprod_price', 'special_price_found', 'theprice', 'shop_id', 'shop_name' ,'IF(selprod_stock > 0, 1, 0) AS in_stock'));
+        $moreSellerSrch->addMultipleFields(array( 'selprod_id', 'selprod_user_id', 'selprod_price', 'special_price_found', 'theprice', 'shop_id', 'shop_name', 'IF(selprod_stock > 0, 1, 0) AS in_stock'));
         $moreSellerSrch->addHaving('in_stock', '>', 0);
         $moreSellerSrch->addOrder('theprice');
         $moreSellerSrch->addGroupBy('shop_id');
@@ -1362,8 +1363,8 @@ class MobileAppApiController extends MyAppController
         $product['moreSellersArr'] = $moreSellersArr;
         /* ] */
 
-        $product['selprod_return_policies'] =  SellerProduct::getSelprodPolicies($product['selprod_id'], PolicyPoint::PPOINT_TYPE_RETURN, $this->siteLangId);
-        $product['selprod_warranty_policies'] =  SellerProduct::getSelprodPolicies($product['selprod_id'], PolicyPoint::PPOINT_TYPE_WARRANTY, $this->siteLangId);
+        $product['selprod_return_policies'] = SellerProduct::getSelprodPolicies($product['selprod_id'], PolicyPoint::PPOINT_TYPE_RETURN, $this->siteLangId);
+        $product['selprod_warranty_policies'] = SellerProduct::getSelprodPolicies($product['selprod_id'], PolicyPoint::PPOINT_TYPE_WARRANTY, $this->siteLangId);
         /* $productImagesArr = array(); */
 
 
@@ -1383,7 +1384,7 @@ class MobileAppApiController extends MyAppController
         $optionSrchObj->addCondition('product_id', '=', $product['product_id']);
 
         $optionSrch = clone $optionSrchObj;
-        $optionSrch->joinTable(Option::DB_TBL.'_lang', 'LEFT OUTER JOIN', 'op.option_id = op_l.optionlang_option_id AND op_l.optionlang_lang_id = '. $this->siteLangId, 'op_l');
+        $optionSrch->joinTable(Option::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'op.option_id = op_l.optionlang_option_id AND op_l.optionlang_lang_id = ' . $this->siteLangId, 'op_l');
         $optionSrch->addMultipleFields(array(  'option_id', 'option_is_color', 'ifNULL(option_name,option_identifier) as option_name' ));
         $optionSrch->addCondition('option_id', '!=', 'NULL');
         $optionSrch->addGroupBy('option_id');
@@ -1394,10 +1395,10 @@ class MobileAppApiController extends MyAppController
         if ($optionRows) {
             foreach ($optionRows as &$option) {
                 $optionValueSrch = clone $optionSrchObj;
-                $optionValueSrch->joinTable(OptionValue::DB_TBL.'_lang', 'LEFT OUTER JOIN', 'opval.optionvalue_id = opval_l.optionvaluelang_optionvalue_id AND opval_l.optionvaluelang_lang_id = '. $this->siteLangId, 'opval_l');
+                $optionValueSrch->joinTable(OptionValue::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'opval.optionvalue_id = opval_l.optionvaluelang_optionvalue_id AND opval_l.optionvaluelang_lang_id = ' . $this->siteLangId, 'opval_l');
                 $optionValueSrch->addCondition('product_id', '=', $product['product_id']);
                 $optionValueSrch->addCondition('option_id', '=', $option['option_id']);
-                $optionValueSrch->addMultipleFields(array( 'IFNULL(product_name, product_identifier) as product_name','selprod_id','selprod_user_id','selprod_code','option_id','ifNULL(optionvalue_name,optionvalue_identifier) as optionvalue_name ', 'theprice', 'optionvalue_id','optionvalue_color_code'));
+                $optionValueSrch->addMultipleFields(array( 'IFNULL(product_name, product_identifier) as product_name', 'selprod_id', 'selprod_user_id', 'selprod_code', 'option_id', 'ifNULL(optionvalue_name,optionvalue_identifier) as optionvalue_name ', 'theprice', 'optionvalue_id', 'optionvalue_color_code'));
                 $optionValueSrch->addGroupBy('optionvalue_id');
                 $optionValueRs = $optionValueSrch->getResultSet();
                 $optionValueRows = FatApp::getDb()->fetchAll($optionValueRs, 'optionvalue_id');
@@ -1411,8 +1412,8 @@ class MobileAppApiController extends MyAppController
         $specSrchObj->doNotCalculateRecords();
         $specSrchObj->doNotLimitRecords();
         $specSrchObj->joinTable(Product::DB_PRODUCT_SPECIFICATION, 'LEFT OUTER JOIN', 'product_id = tcps.prodspec_product_id', 'tcps');
-        $specSrchObj->joinTable(Product::DB_PRODUCT_LANG_SPECIFICATION, 'INNER JOIN', 'tcps.prodspec_id = tcpsl.prodspeclang_prodspec_id and   prodspeclang_lang_id  = '.$this->siteLangId, 'tcpsl');
-        $specSrchObj->addMultipleFields(array('prodspec_id','prodspec_name','prodspec_value'));
+        $specSrchObj->joinTable(Product::DB_PRODUCT_LANG_SPECIFICATION, 'INNER JOIN', 'tcps.prodspec_id = tcpsl.prodspeclang_prodspec_id and   prodspeclang_lang_id  = ' . $this->siteLangId, 'tcpsl');
+        $specSrchObj->addMultipleFields(array('prodspec_id', 'prodspec_name', 'prodspec_value'));
         $specSrchObj->addGroupBy('prodspec_id');
         $specSrchObj->addCondition('prodspec_product_id', '=', $product['product_id']);
         $specSrchObjRs = $specSrchObj->getResultSet();
@@ -1422,17 +1423,17 @@ class MobileAppApiController extends MyAppController
 
 
         if ($product) {
-            $product['discounted_text'] =  CommonHelper::showProductDiscountedText($product, $this->siteLangId);
+            $product['discounted_text'] = CommonHelper::showProductDiscountedText($product, $this->siteLangId);
             $product['currency_selprod_price'] = CommonHelper::displayMoneyFormat($product['selprod_price'], true, false, false);
             $product['currency_theprice'] = CommonHelper::displayMoneyFormat($product['theprice'], true, false, false);
-            $title  = $product['product_name'];
+            $title = $product['product_name'];
 
             if ($product['selprod_title']) {
                 $title = $product['selprod_title'];
             }
 
             $product_description = trim(CommonHelper::subStringByWords(strip_tags(CommonHelper::renderHtml($product["product_description"], true)), 500));
-            $product_description .= ' - '.Labels::getLabel('LBL_See_more_at', $this->siteLangId).": ".CommonHelper::getCurrUrl();
+            $product_description .= ' - ' . Labels::getLabel('LBL_See_more_at', $this->siteLangId) . ": " . CommonHelper::getCurrUrl();
 
             $productImageUrl = '';
             /* $productImageUrl = FatUtility::generateFullUrl('Image','product', array($product['product_id'],'', $product['selprod_id'],0,$this->siteLangId )); */
@@ -1457,11 +1458,11 @@ class MobileAppApiController extends MyAppController
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addMultipleFields(
             array(
-            'product_id','prodcat_id','ufp_id','substring_index(group_concat(IFNULL(prodcat_name, prodcat_identifier) ORDER BY IFNULL(prodcat_name, prodcat_identifier) ASC SEPARATOR "," ) , ",", 1) as prodcat_name', 'IFNULL(product_name, product_identifier) as product_name', 'product_model', 'product_short_description',
+            'product_id', 'prodcat_id', 'ufp_id', 'substring_index(group_concat(IFNULL(prodcat_name, prodcat_identifier) ORDER BY IFNULL(prodcat_name, prodcat_identifier) ASC SEPARATOR "," ) , ",", 1) as prodcat_name', 'IFNULL(product_name, product_identifier) as product_name', 'product_model', 'product_short_description',
             'selprod_id', 'selprod_user_id',  'selprod_code', 'selprod_stock', 'selprod_condition', 'selprod_price', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
-            'special_price_found','splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
+            'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
             'theprice', 'brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name', 'brand_short_description', 'user_name',
-            'IF(selprod_stock > 0, 1, 0) AS in_stock','selprod_sold_count','selprod_return_policy', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist','ifnull(prod_rating,0) prod_rating','IF(ufp_id > 0, 1, 0) as isfavorite','selprod_min_order_qty'
+            'IF(selprod_stock > 0, 1, 0) AS in_stock', 'selprod_sold_count', 'selprod_return_policy', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist', 'ifnull(prod_rating,0) prod_rating', 'IF(ufp_id > 0, 1, 0) as isfavorite', 'selprod_min_order_qty'
                  )
         );
 
@@ -1484,15 +1485,15 @@ class MobileAppApiController extends MyAppController
 							) as set2
 							";
         if ($loggedUserId) {
-            $recommendedProductsQuery.= " union
+            $recommendedProductsQuery .= " union
 							select rec_product_id , weightage from
 							(
 								SELECT upr_product_id as rec_product_id , upr_weightage as weightage from tbl_user_product_recommendation
 								where upr_user_id = $loggedUserId order by upr_weightage desc limit 5
-							) as set3 " ;
+							) as set3 ";
         }
 
-        $recommendedProductsQuery.= ")";
+        $recommendedProductsQuery .= ")";
 
         //    $srch->joinTable("$recommendedProductsQuery" , 'inner join' , 'rs1.rec_product_id = product_id' , 'rs1' );
         $srch->addGroupBy('product_id');
@@ -1516,7 +1517,7 @@ class MobileAppApiController extends MyAppController
         $selProdReviewObj->doNotLimitRecords();
         $selProdReviewObj->addGroupBy('spr.spreview_product_id');
         $selProdReviewObj->addCondition('spr.spreview_status', '=', SelProdReview::STATUS_APPROVED);
-        $selProdReviewObj->addMultipleFields(array('spr.spreview_selprod_id',"ROUND(AVG(sprating_rating),2) as prod_rating"));
+        $selProdReviewObj->addMultipleFields(array('spr.spreview_selprod_id', "ROUND(AVG(sprating_rating),2) as prod_rating"));
         $selProdRviewSubQuery = $selProdReviewObj->getQuery();
         $srch->joinTable('(' . $selProdRviewSubQuery . ')', 'LEFT OUTER JOIN', 'sq_sprating.spreview_selprod_id = selprod_id', 'sq_sprating');
         $srch->setPageSize(5);
@@ -1524,18 +1525,18 @@ class MobileAppApiController extends MyAppController
         //echo $srch->getQuery();exit;
         $recommendedProducts = FatApp::getDb()->fetchAll($srch->getResultSet());
         $pd_recommendedProducts = array();
-        foreach ($recommendedProducts as $pkey=>$pval) {
+        foreach ($recommendedProducts as $pkey => $pval) {
             $arr = array(
-            "currency_selprod_price"=>CommonHelper::displayMoneyFormat($pval['selprod_price'], true, false, false),
-            "currency_theprice"=>CommonHelper::displayMoneyFormat($pval['theprice'], true, false, false),
-            "discounted_text"=>CommonHelper::showProductDiscountedText($pval, $this->siteLangId),
-            "image_url"=>CommonHelper::generateFullUrl('image', 'product', array($pval['product_id'], "MEDIUM", $pval['selprod_id'], 0, $this->siteLangId)));
+            "currency_selprod_price" => CommonHelper::displayMoneyFormat($pval['selprod_price'], true, false, false),
+            "currency_theprice" => CommonHelper::displayMoneyFormat($pval['theprice'], true, false, false),
+            "discounted_text" => CommonHelper::showProductDiscountedText($pval, $this->siteLangId),
+            "image_url" => CommonHelper::generateFullUrl('image', 'product', array($pval['product_id'], "MEDIUM", $pval['selprod_id'], 0, $this->siteLangId)));
             $pd_recommendedProducts[] = array_merge($pval, $arr);
         }
 
 
         $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($product['product_id'], "MEDIUM", $product['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-        $product['product_image'] =  $mainImgUrl;
+        $product['product_image'] = $mainImgUrl;
 
         /* ]  */
 
@@ -1547,9 +1548,9 @@ class MobileAppApiController extends MyAppController
         $productGroups = $sellerProductObj->getGroupsToProduct($this->siteLangId);
         if ($productGroups) {
             foreach ($productGroups as $key => &$pg) {
-                $srch = new ProductSearch($this->siteLangId, ProductGroup::DB_PRODUCT_TO_GROUP, ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX.'product_id');
+                $srch = new ProductSearch($this->siteLangId, ProductGroup::DB_PRODUCT_TO_GROUP, ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'product_id');
                 $srch->setBatchProductsCriteria();
-                $srch->addCondition(ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX.'prodgroup_id', '=', $pg['ptg_prodgroup_id']);
+                $srch->addCondition(ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'prodgroup_id', '=', $pg['ptg_prodgroup_id']);
                 $srch->addMultipleFields(array( 'selprod_id', 'product_id', 'selprod_stock', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'IFNULL(splprice_price, selprod_price) AS theprice', 'CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found' ));
                 $rs = $srch->getResultSet();
                 $pg_products = FatApp::getDb()->fetchAll($rs);
@@ -1565,8 +1566,8 @@ class MobileAppApiController extends MyAppController
                 $pg['products'] = $pg_products;
             }
         }
-        $criteria='selprod_id';
-        $sellerObj=new SellerProduct();
+        $criteria = 'selprod_id';
+        $sellerObj = new SellerProduct();
 
 
         $productCustomSrchObj = new ProductSearch($this->siteLangId);
@@ -1594,11 +1595,11 @@ class MobileAppApiController extends MyAppController
         $productCustomSrchObj->addMultipleFields(
             array('product_id', 'selprod_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
             'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
-            'theprice', 'selprod_price','selprod_stock', 'selprod_condition','prodcat_id','IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','ifnull(sq_sprating.prod_rating,0) prod_rating ','ifnull(sq_sprating.totReviews,0) totReviews','selprod_sold_count','ufp_id','IF(ufp_id > 0, 1, 0) as isfavorite','selprod_min_order_qty')
+            'theprice', 'selprod_price', 'selprod_stock', 'selprod_condition', 'prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'ifnull(sq_sprating.prod_rating,0) prod_rating ', 'ifnull(sq_sprating.totReviews,0) totReviews', 'selprod_sold_count', 'ufp_id', 'IF(ufp_id > 0, 1, 0) as isfavorite', 'selprod_min_order_qty')
         );
 
         $srch = new SearchBase(SellerProduct::DB_TBL_UPSELL_PRODUCTS);
-        $srch->joinTable('(' . $productCustomSrchObj->getQuery() . ')', 'INNER JOIN', SellerProduct::DB_TBL_UPSELL_PRODUCTS_PREFIX.'recommend_sellerproduct_id = selprod_id', 'pCust');
+        $srch->joinTable('(' . $productCustomSrchObj->getQuery() . ')', 'INNER JOIN', SellerProduct::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'recommend_sellerproduct_id = selprod_id', 'pCust');
         $srch->addCondition(SellerProduct::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'sellerproduct_id', '=', $product['selprod_id']);
         //die($srch->getquery());
         $rs = $srch->getResultSet();
@@ -1607,8 +1608,8 @@ class MobileAppApiController extends MyAppController
         if ($upsellProducts) {
             foreach ($upsellProducts as &$upsellProduct) {
                 $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($upsellProduct['product_id'], "MEDIUM", $upsellProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-                $upsellProduct['discounted_text'] =  CommonHelper::showProductDiscountedText($upsellProduct, $this->siteLangId);
-                $upsellProduct['product_image'] =  $mainImgUrl;
+                $upsellProduct['discounted_text'] = CommonHelper::showProductDiscountedText($upsellProduct, $this->siteLangId);
+                $upsellProduct['product_image'] = $mainImgUrl;
                 $upsellProduct['currency_selprod_price'] = CommonHelper::displayMoneyFormat($upsellProduct['selprod_price'], true, false, false);
                 $upsellProduct['currency_theprice'] = CommonHelper::displayMoneyFormat($upsellProduct['theprice'], true, false, false);
             }
@@ -1620,15 +1621,15 @@ class MobileAppApiController extends MyAppController
         //$relatedProducts=$sellerObj->getRelatedProducts($this->siteLangId, $product['selprod_id'], $criteria);
 
         $srch = new SearchBase(SellerProduct::DB_TBL_RELATED_PRODUCTS);
-        $srch->joinTable('(' . $productCustomSrchObj->getQuery() . ')', 'INNER JOIN', SellerProduct::DB_TBL_RELATED_PRODUCTS_PREFIX.'recommend_sellerproduct_id = selprod_id', 'pCust');
+        $srch->joinTable('(' . $productCustomSrchObj->getQuery() . ')', 'INNER JOIN', SellerProduct::DB_TBL_RELATED_PRODUCTS_PREFIX . 'recommend_sellerproduct_id = selprod_id', 'pCust');
         $srch->addCondition(SellerProduct::DB_TBL_RELATED_PRODUCTS_PREFIX . 'sellerproduct_id', '=', $product['selprod_id']);
         $rs = $srch->getResultSet();
         $relatedProducts = FatApp::getDb()->fetchAll($rs);
         if ($relatedProducts) {
             foreach ($relatedProducts as &$relatedProduct) {
                 $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($relatedProduct['product_id'], "MEDIUM", $relatedProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-                $relatedProduct['discounted_text'] =  CommonHelper::showProductDiscountedText($relatedProduct, $this->siteLangId);
-                $relatedProduct['product_image'] =  $mainImgUrl;
+                $relatedProduct['discounted_text'] = CommonHelper::showProductDiscountedText($relatedProduct, $this->siteLangId);
+                $relatedProduct['product_image'] = $mainImgUrl;
                 $relatedProduct['currency_selprod_price'] = CommonHelper::displayMoneyFormat($relatedProduct['selprod_price'], true, false, false);
                 $relatedProduct['currency_theprice'] = CommonHelper::displayMoneyFormat($relatedProduct['theprice'], true, false, false);
             }
@@ -1640,14 +1641,14 @@ class MobileAppApiController extends MyAppController
         $srch->setDefinedCriteria($this->siteLangId);
         $srch->doNotCalculateRecords();
         $srch->addMultipleFields(
-            array( 'shop_id','shop_user_id','shop_ltemplate_id', 'shop_created_on', 'ifNULL(shop_name,shop_identifier)as shop_name', 'shop_description',
+            array( 'shop_id', 'shop_user_id', 'shop_ltemplate_id', 'shop_created_on', 'ifNULL(shop_name,shop_identifier)as shop_name', 'shop_description',
             'ifNULL(shop_country_l.country_name,shop_country.country_code) as shop_country_name', 'ifNULL(shop_state_l.state_name,state_identifier) as shop_state_name', 'shop_city' )
         );
         $srch->addCondition('shop_id', '=', $product['shop_id']);
         $shopRs = $srch->getResultSet();
         $shop = FatApp::getDb()->fetch($shopRs);
-        $shop['shop_logo']=CommonHelper::generateFullUrl('image', 'shopLogo', array($shop['shop_id'], $this->siteLangId));
-        $shop['shop_banner']=CommonHelper::generateFullUrl('image', 'shopBanner', array($shop['shop_id'], $this->siteLangId));
+        $shop['shop_logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', array($shop['shop_id'], $this->siteLangId));
+        $shop['shop_banner'] = CommonHelper::generateFullUrl('image', 'shopBanner', array($shop['shop_id'], $this->siteLangId));
 
 
         if (!FatApp::getConfig("CONF_ALLOW_REVIEWS", FatUtility::VAR_INT, 0)) {
@@ -1674,7 +1675,7 @@ class MobileAppApiController extends MyAppController
             $srch->addMinimiumWalletbalanceCondition();
             $srch->addSkipExpiredPromotionAndBannerCondition();
             $srch->joinBudget();
-            $srch->addMultipleFields(array('banner_id','banner_blocation_id','banner_type','banner_record_id','banner_url','banner_target','banner_title','promotion_id' ,'daily_cost','weekly_cost','monthly_cost','total_cost', ));
+            $srch->addMultipleFields(array('banner_id', 'banner_blocation_id', 'banner_type', 'banner_record_id', 'banner_url', 'banner_target', 'banner_title', 'promotion_id', 'daily_cost', 'weekly_cost', 'monthly_cost', 'total_cost', ));
             $srch->addOrder('', 'rand()');
             $srch->doNotCalculateRecords();
 
@@ -1684,22 +1685,22 @@ class MobileAppApiController extends MyAppController
             $srch->addCondition('banner_blocation_id', '=', $val['blocation_id']);
 
 
-            $srch = new SearchBase('('.$srch->getQuery().') as t');
+            $srch = new SearchBase('(' . $srch->getQuery() . ') as t');
             $srch->doNotCalculateRecords();
             $srch->addDirectCondition(
                 '((CASE
-					WHEN promotion_duration='.Promotion::DAILY.' THEN promotion_budget > COALESCE(daily_cost,0)
-					WHEN promotion_duration='.Promotion::WEEKLY.' THEN promotion_budget > COALESCE(weekly_cost,0)
-					WHEN promotion_duration='.Promotion::MONTHLY.' THEN promotion_budget > COALESCE(monthly_cost,0)
-					WHEN promotion_duration='.Promotion::DURATION_NOT_AVAILABALE.' THEN promotion_budget = -1
+					WHEN promotion_duration=' . Promotion::DAILY . ' THEN promotion_budget > COALESCE(daily_cost,0)
+					WHEN promotion_duration=' . Promotion::WEEKLY . ' THEN promotion_budget > COALESCE(weekly_cost,0)
+					WHEN promotion_duration=' . Promotion::MONTHLY . ' THEN promotion_budget > COALESCE(monthly_cost,0)
+					WHEN promotion_duration=' . Promotion::DURATION_NOT_AVAILABALE . ' THEN promotion_budget = -1
 				  END ) )'
             );
-            $srch->addMultipleFields(array('banner_id','banner_blocation_id','banner_type','banner_record_id','banner_url','banner_target','banner_title','promotion_id' ,'userBalance','daily_cost','weekly_cost','monthly_cost','total_cost','promotion_budget' ,'promotion_duration'));
+            $srch->addMultipleFields(array('banner_id', 'banner_blocation_id', 'banner_type', 'banner_record_id', 'banner_url', 'banner_target', 'banner_title', 'promotion_id', 'userBalance', 'daily_cost', 'weekly_cost', 'monthly_cost', 'total_cost', 'promotion_budget', 'promotion_duration'));
             $rs = $srch->getResultSet();
             $bannerListing = FatApp::getDb()->fetchAll($rs, 'banner_id');
 
-            foreach ($bannerListing as $bkey=>$bval) {
-                $product_bannerListing[] = array_merge($val, $bval, array("image_url"=>CommonHelper::generateFullUrl('Banner', 'HomePageAfterFirstLayout', array($bval['banner_id'], $this->siteLangId))));
+            foreach ($bannerListing as $bkey => $bval) {
+                $product_bannerListing[] = array_merge($val, $bval, array("image_url" => CommonHelper::generateFullUrl('Banner', 'HomePageAfterFirstLayout', array($bval['banner_id'], $this->siteLangId))));
             }
 
             $banners[$val['blocation_key']]['banners'] = $product_bannerListing;
@@ -1744,7 +1745,7 @@ class MobileAppApiController extends MyAppController
         $api_product_detail_elements['volumeDiscountRows'] = $volumeDiscountRows;
         //commonhelper::printarray($api_product_detail_elements);
         //die();
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_product_detail_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_product_detail_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function product_description($seller_product_id)
@@ -1762,7 +1763,7 @@ class MobileAppApiController extends MyAppController
         //die($prodSrchObj->getquery());
         $productRs = $prodSrchObj->getResultSet();
         $product = FatApp::getDb()->fetch($productRs);
-        echo str_replace('/editor/editor-image/', FatUtility::generateFullUrl().'editor/editor-image/', $product["product_description"]);
+        echo str_replace('/editor/editor-image/', FatUtility::generateFullUrl() . 'editor/editor-image/', $product["product_description"]);
     }
 
     public function product_reviews($selprod_id)
@@ -1771,7 +1772,7 @@ class MobileAppApiController extends MyAppController
         $productId = SellerProduct::getAttributesById($selprod_id, 'selprod_product_id', false);
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
         $orderBy = FatApp::getPostedData('orderBy', FatUtility::VAR_STRING, 'most_recent');
-        $page = ($page)? $page : 1;
+        $page = ($page) ? $page : 1;
         $pageSize = FatApp::getPostedData('pageSize', FatUtility::VAR_INT, FatApp::getConfig('CONF_ITEMS_PER_PAGE_CATALOG', FatUtility::VAR_INT, 10));
         $srch = new SelProdReviewSearch();
         $srch->joinSelProdRating();
@@ -1780,14 +1781,14 @@ class MobileAppApiController extends MyAppController
         $srch->addCondition('sprating_rating_type', '=', SelProdRating::TYPE_PRODUCT);
         $srch->addCondition('spr.spreview_product_id', '=', $productId);
         $srch->addCondition('spr.spreview_status', '=', SelProdReview::STATUS_APPROVED);
-        $srch->addMultipleFields(array('spreview_id','spreview_selprod_id',"ROUND(AVG(sprating_rating),2) as prod_rating" ,'spreview_title','spreview_description','spreview_posted_on','spreview_postedby_user_id','user_name','group_concat(case when sprh_helpful = 1 then concat(sprh_user_id,"~",1) else concat(sprh_user_id,"~",0) end ) usersMarked' ,'sum(if(sprh_helpful = 1 , 1 ,0)) as helpful' ,'sum(if(sprh_helpful = 0 , 1 ,0)) as notHelpful','count(sprh_spreview_id) as countUsersMarked' ));
+        $srch->addMultipleFields(array('spreview_id', 'spreview_selprod_id', "ROUND(AVG(sprating_rating),2) as prod_rating", 'spreview_title', 'spreview_description', 'spreview_posted_on', 'spreview_postedby_user_id', 'user_name', 'group_concat(case when sprh_helpful = 1 then concat(sprh_user_id,"~",1) else concat(sprh_user_id,"~",0) end ) usersMarked', 'sum(if(sprh_helpful = 1 , 1 ,0)) as helpful', 'sum(if(sprh_helpful = 0 , 1 ,0)) as notHelpful', 'count(sprh_spreview_id) as countUsersMarked' ));
         $srch->addGroupBy('spr.spreview_id');
 
         $srch->setPageNumber($page);
         $srch->setPageSize($pageSize);
 
         switch ($orderBy) {
-            case 'most_helpful':
+            case 'most_helpful' :
                 $srch->addOrder('helpful', 'desc');
                 break;
             default:
@@ -1797,10 +1798,10 @@ class MobileAppApiController extends MyAppController
         $records = FatApp::getDb()->fetchAll($srch->getResultSet());
 
 
-        $api_products_reviews_elements = array('reviews'=>$records,'total_pages'=>$srch->pages(),'page'=>$page,'total_records'=>$srch->recordCount());
+        $api_products_reviews_elements = array('reviews' => $records, 'total_pages' => $srch->pages(), 'page' => $page, 'total_records' => $srch->recordCount());
         //CommonHelper::printArray($api_products_reviews_elements);
 
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_products_reviews_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_products_reviews_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function change_password()
@@ -1815,12 +1816,12 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('MSG_New_Password_Confirm_Password_does_not_match', $this->siteLangId));
         }
 
-        if (! ValidateElement::password($new_password)) {
+        if (!ValidateElement::password($new_password)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->siteLangId));
         }
 
         $userObj = new User($loggedUserId);
-        $srch = $userObj->getUserSearchObj(array('user_id','credential_password'));
+        $srch = $userObj->getUserSearchObj(array('user_id', 'credential_password'));
         $rs = $srch->getResultSet();
 
         if (!$rs) {
@@ -1841,7 +1842,7 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('MSG_Password_could_not_be_set', $this->siteLangId));
         }
 
-        $res=array('status'=>1,'msg'=>Labels::getLabel('MSG_Password_changed_successfully', $this->siteLangId));
+        $res = array('status' => 1, 'msg' => Labels::getLabel('MSG_Password_changed_successfully', $this->siteLangId));
         die($this->json_encode_unicode($res));
     }
 
@@ -1859,7 +1860,7 @@ class MobileAppApiController extends MyAppController
         $srch->joinTable(
             "($countriesDbView)",
             'LEFT OUTER JOIN',
-            'u.'.User::DB_TBL_PREFIX.'country_id = c.'.Countries::tblFld('id'),
+            'u.' . User::DB_TBL_PREFIX . 'country_id = c.' . Countries::tblFld('id'),
             'c'
         );
 
@@ -1871,46 +1872,46 @@ class MobileAppApiController extends MyAppController
         $srch->joinTable(
             "($stateDbView)",
             'LEFT OUTER JOIN',
-            'u.'.User::DB_TBL_PREFIX.'state_id = st.'.States::tblFld('id'),
+            'u.' . User::DB_TBL_PREFIX . 'state_id = st.' . States::tblFld('id'),
             'st'
         );
 
 
-        $srch->addMultipleFields(array('u.*','c.country_name','st.state_name'));
+        $srch->addMultipleFields(array('u.*', 'c.country_name', 'st.state_name'));
         $rs = $srch->getResultSet();
         $user = FatApp::getDb()->fetch($rs, 'user_id');
         //commonhelper::printarray($user);
         //die();
-        $arr=array();
+        $arr = array();
         if (!empty($user)) {
             $arr = array(
-            'user_id'=>$user['user_id'],
-            'user_image'=>CommonHelper::generateFullUrl('Image', 'user', array($user['user_id'],'ORIGINAL')),
-            'name'=>$user['user_name'],
-            'email'=>$user['credential_email'],
-            'username'=>$user['credential_username'],
-            'phone'=>FatUtility::convertToType($user['user_phone'], FatUtility::VAR_STRING),
-            'dob'=>$user['user_dob'],
-            'city'=>$user['user_city'],
-            'country_id'=>$user['user_country_id'],
-            'country'=>$user['country_name'],
-            'state_id'=>$user['user_state_id'],
-            'state'=>$user['state_name'],
-            'company'=>$user['user_company'],
-            'profile_info'=>$user['user_profile_info'],
-            'address_1'=>$user['user_address1'],
-            'address_2'=>$user['user_address2'],
-            'postcode'=>$user['user_zip'],
-            'is_buyer'=>$user['user_is_buyer'],
-            'is_supplier'=>$user['user_is_supplier'],
-            'is_advertiser'=>$user['user_is_advertiser'],
-            'is_affiliate'=>$user['user_is_affiliate'],
-            'reg_date'=>$user['user_regdate'],
-            'products_services'=>$user['user_products_services'],
+            'user_id' => $user['user_id'],
+            'user_image' => CommonHelper::generateFullUrl('Image', 'user', array($user['user_id'], 'ORIGINAL')),
+            'name' => $user['user_name'],
+            'email' => $user['credential_email'],
+            'username' => $user['credential_username'],
+            'phone' => FatUtility::convertToType($user['user_phone'], FatUtility::VAR_STRING),
+            'dob' => $user['user_dob'],
+            'city' => $user['user_city'],
+            'country_id' => $user['user_country_id'],
+            'country' => $user['country_name'],
+            'state_id' => $user['user_state_id'],
+            'state' => $user['state_name'],
+            'company' => $user['user_company'],
+            'profile_info' => $user['user_profile_info'],
+            'address_1' => $user['user_address1'],
+            'address_2' => $user['user_address2'],
+            'postcode' => $user['user_zip'],
+            'is_buyer' => $user['user_is_buyer'],
+            'is_supplier' => $user['user_is_supplier'],
+            'is_advertiser' => $user['user_is_advertiser'],
+            'is_affiliate' => $user['user_is_affiliate'],
+            'reg_date' => $user['user_regdate'],
+            'products_services' => $user['user_products_services'],
             );
         }
 
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$arr,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount), true));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $arr, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount), true));
     }
 
     public function remove_profile_image()
@@ -1930,7 +1931,7 @@ class MobileAppApiController extends MyAppController
         if (!$fileHandlerObj->deleteFile(AttachedFile::FILETYPE_USER_PROFILE_CROPED_IMAGE, $userId)) {
             FatUtility::dieJsonError($fileHandlerObj->getError());
         }
-        $res=array('status'=>1,'msg'=>Labels::getLabel('MSG_File_deleted_successfully', $this->siteLangId));
+        $res = array('status' => 1, 'msg' => Labels::getLabel('MSG_File_deleted_successfully', $this->siteLangId));
         die($this->json_encode_unicode($res));
     }
 
@@ -1963,7 +1964,7 @@ class MobileAppApiController extends MyAppController
                 )
             );
 
-            $imageUrl = CommonHelper::generateFullUrl('Image', 'user', array($userId,'ORIGINAL'));
+            $imageUrl = CommonHelper::generateFullUrl('Image', 'user', array($userId, 'ORIGINAL'));
         }
 
         if ($post['action'] == "avatar") {
@@ -1977,18 +1978,18 @@ class MobileAppApiController extends MyAppController
             }
 
             $data = json_decode(stripslashes($post['img_data']));
-            CommonHelper::crop($data, CONF_UPLOADS_PATH .$res, $this->siteLangId);
-            $imageUrl = FatUtility::generateFullUrl('Image', 'user', array($userId,'croped',true));
+            CommonHelper::crop($data, CONF_UPLOADS_PATH . $res, $this->siteLangId);
+            $imageUrl = FatUtility::generateFullUrl('Image', 'user', array($userId, 'croped', true));
         }
 
-        $res=array('status'=>1,'msg'=>Labels::getLabel('MSG_File_uploaded_successfully', $this->siteLangId),'image'=>$imageUrl);
+        $res = array('status' => 1, 'msg' => Labels::getLabel('MSG_File_uploaded_successfully', $this->siteLangId), 'image' => $imageUrl);
         die($this->json_encode_unicode($res));
     }
 
     public function update_profile_info()
     {
         $userId = $this->getAppLoggedUserId();
-        $user_is_affiliate = isset($this->app_user["user_is_affiliate"])?$this->app_user["user_is_affiliate"]:0;
+        $user_is_affiliate = isset($this->app_user["user_is_affiliate"]) ? $this->app_user["user_is_affiliate"] : 0;
 
         $post = FatApp::getPostedData();
         if (empty($post)) {
@@ -2010,9 +2011,9 @@ class MobileAppApiController extends MyAppController
         /* saving user extras[ */
         if ($user_is_affiliate) {
             $dataToSave = array(
-            'uextra_user_id'        =>    $userId,
-            'uextra_company_name'    =>    $post['uextra_company_name'],
-            'uextra_website'        =>    CommonHelper::processUrlString($post['uextra_website'])
+            'uextra_user_id' => $userId,
+            'uextra_company_name' => $post['uextra_company_name'],
+            'uextra_website' => CommonHelper::processUrlString($post['uextra_website'])
             );
             $dataToUpdateOnDuplicate = $dataToSave;
             unset($dataToUpdateOnDuplicate['uextra_user_id']);
@@ -2028,7 +2029,7 @@ class MobileAppApiController extends MyAppController
         if (!$userObj->save()) {
             FatUtility::dieJsonError($userObj->getError());
         }
-        $res=array('status'=>1,'msg'=>Labels::getLabel('MSG_Setup_successful', $this->siteLangId));
+        $res = array('status' => 1, 'msg' => Labels::getLabel('MSG_Setup_successful', $this->siteLangId));
         die($this->json_encode_unicode($res));
     }
 
@@ -2045,16 +2046,16 @@ class MobileAppApiController extends MyAppController
         }
 
         $userObj = new User();
-        $srch = $userObj->getUserSearchObj(array('user_id','credential_email','credential_username'));
-        $condition=$srch->addCondition('credential_username', '=', $post['user_username']);
+        $srch = $userObj->getUserSearchObj(array('user_id', 'credential_email', 'credential_username'));
+        $condition = $srch->addCondition('credential_username', '=', $post['user_username']);
         $condition->attachCondition('credential_email', '=', $post['user_email'], 'OR');
         //die($srch->getquery());
         $rs = $srch->getResultSet();
         $row = $db->fetch($rs);
         if ($row) {
-            if ($row['credential_username']==$post['user_username']) {
+            if ($row['credential_username'] == $post['user_username']) {
                 FatUtility::dieJsonError(sprintf(Labels::getLabel('M_ERROR_DUPLICATE_USERNAME', $this->siteLangId), $row['credential_username']));
-            } elseif ($row['credential_email']==$post['user_email']) {
+            } elseif ($row['credential_email'] == $post['user_email']) {
                 FatUtility::dieJsonError(sprintf(Labels::getLabel('M_ERROR_DUPLICATE_EMAIL', $this->siteLangId), $row['credential_email']));
             }
         }
@@ -2072,7 +2073,7 @@ class MobileAppApiController extends MyAppController
         $userObj->assignValues($post);
         if (!$userObj->save()) {
             $db->rollbackTransaction();
-            FatUtility::dieJsonError(Labels::getLabel('MSG_USER_COULD_NOT_BE_SET', $this->siteLangId). $userObj->getError());
+            FatUtility::dieJsonError(Labels::getLabel('MSG_USER_COULD_NOT_BE_SET', $this->siteLangId) . $userObj->getError());
         }
 
         if (!$userObj->setMobileAppToken()) {
@@ -2080,7 +2081,7 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
 
-        $active = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1) ? 0: 1;
+        $active = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
         $verify = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
 
 
@@ -2088,7 +2089,7 @@ class MobileAppApiController extends MyAppController
 
         if (!$userObj->setLoginCredentials($post['user_username'], $post['user_email'], $post['user_password'], $active, $verify)) {
             $db->rollbackTransaction();
-            FatUtility::dieJsonError(Labels::getLabel('MSG_LOGIN_CREDENTIALS_COULD_NOT_BE_SET', $this->siteLangId). $userObj->getError());
+            FatUtility::dieJsonError(Labels::getLabel('MSG_LOGIN_CREDENTIALS_COULD_NOT_BE_SET', $this->siteLangId) . $userObj->getError());
         }
 
         $userObj->setUpRewardEntry($userObj->getMainTableRecordId(), $this->siteLangId);
@@ -2100,7 +2101,7 @@ class MobileAppApiController extends MyAppController
             $api_key = FatApp::getConfig("CONF_MAILCHIMP_KEY");
             $list_id = FatApp::getConfig("CONF_MAILCHIMP_LIST_ID");
             if ($api_key == '' || $list_id == '') {
-                FatUtility::dieJsonError(Labels::getLabel("LBL_Newsletter_is_not_configured_yet,_Please_contact_admin", $this->siteLangId). $userObj->getError());
+                FatUtility::dieJsonError(Labels::getLabel("LBL_Newsletter_is_not_configured_yet,_Please_contact_admin", $this->siteLangId) . $userObj->getError());
             }
 
             $MailchimpObj = new Mailchimp($api_key);
@@ -2118,12 +2119,12 @@ class MobileAppApiController extends MyAppController
             }
         }
 
-        $confAutoLoginRegisteration = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION')?0:FatApp::getConfig('CONF_AUTO_LOGIN_REGISTRATION', FatUtility::VAR_INT, 1);
+        $confAutoLoginRegisteration = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION') ? 0 : FatApp::getConfig('CONF_AUTO_LOGIN_REGISTRATION', FatUtility::VAR_INT, 1);
 
         $userInfo = array();
         $resultArr = array();
         $userId = $userObj->getMainTableRecordId();
-        $emailNotArr = array_merge($post, array("user_id"=>$userId));
+        $emailNotArr = array_merge($post, array("user_id" => $userId));
         if (FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) /* && !$isCheckOutPage */) {
             if (!$userObj->userEmailVerification($emailNotArr, $this->siteLangId)) {
                 $db->rollbackTransaction();
@@ -2144,8 +2145,8 @@ class MobileAppApiController extends MyAppController
                 if (!$authentication->login(FatApp::getPostedData('user_username'), FatApp::getPostedData('user_password'), $_SERVER['REMOTE_ADDR'])) {
                     FatUtility::dieJsonError(Labels::getLabel($authentication->getError(), $this->siteLangId));
                 }
-                $userInfo = $userObj->getUserInfo(array('user_app_access_token','user_id','user_name'), true, true);
-                $userInfoArr = array('token'=>$userInfo["user_app_access_token"],'user_id'=>$userInfo["user_id"], 'user_name'=>$userInfo["user_name"]);
+                $userInfo = $userObj->getUserInfo(array('user_app_access_token', 'user_id', 'user_name'), true, true);
+                $userInfoArr = array('token' => $userInfo["user_app_access_token"], 'user_id' => $userInfo["user_id"], 'user_name' => $userInfo["user_name"]);
             }
         }
         //CommonHelper::printArray($userObj);
@@ -2153,7 +2154,7 @@ class MobileAppApiController extends MyAppController
 
         $db->commitTransaction();
 
-        $arr = array('status'=>1,'msg'=>Labels::getLabel('LBL_Registeration_Successfull', $this->siteLangId),'auto_login'=>$confAutoLoginRegisteration);
+        $arr = array('status' => 1, 'msg' => Labels::getLabel('LBL_Registeration_Successfull', $this->siteLangId), 'auto_login' => $confAutoLoginRegisteration);
         if (!empty($userInfoArr)) {
             $arr = array_merge($arr, $userInfoArr);
         }
@@ -2178,14 +2179,14 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
 
-        $userInfo = $uObj->getUserInfo(array('user_name','user_id'), true, true);
+        $userInfo = $uObj->getUserInfo(array('user_name', 'user_id'), true, true);
 
         $arr = array(
-        'status'=>1,
-        'token'=>$generatedToken,
-        'user_name'=>$userInfo["user_name"],
-        'user_id'=>$userInfo["user_id"],
-        'user_image'=>CommonHelper::generateFullUrl('image', 'user', array($userInfo['user_id'],'thumb',1))
+        'status' => 1,
+        'token' => $generatedToken,
+        'user_name' => $userInfo["user_name"],
+        'user_id' => $userInfo["user_id"],
+        'user_image' => CommonHelper::generateFullUrl('image', 'user', array($userInfo['user_id'], 'thumb', 1))
         );
         die($this->json_encode_unicode($arr));
     }
@@ -2194,7 +2195,7 @@ class MobileAppApiController extends MyAppController
     {
         UserAuthentication::logout();
         $arr = array(
-        'status'=>1,
+        'status' => 1,
         );
         die($this->json_encode_unicode($arr));
     }
@@ -2230,7 +2231,7 @@ class MobileAppApiController extends MyAppController
         }
 
         $db->commitTransaction();
-        $arr=array('status'=>1,'msg'=>Labels::getLabel("MSG_YOUR_PASSWORD_RESET_INSTRUCTIONS_TO_YOUR_EMAIL", $this->siteLangId));
+        $arr = array('status' => 1, 'msg' => Labels::getLabel("MSG_YOUR_PASSWORD_RESET_INSTRUCTIONS_TO_YOUR_EMAIL", $this->siteLangId));
         die($this->json_encode_unicode($arr));
     }
 
@@ -2250,7 +2251,7 @@ class MobileAppApiController extends MyAppController
         $facebook->setAccessToken($post['fb_token']);
         $user = $facebook->getUser();
         if (!$user) {
-            $arr=array('status'=>0, 'msg'=>"Invalid Token");
+            $arr = array('status' => 0, 'msg' => "Invalid Token");
         }
         try {
             // Proceed knowing you have a logged in user who's authenticated.
@@ -2271,7 +2272,7 @@ class MobileAppApiController extends MyAppController
 
         $db = FatApp::getDb();
         $userObj = new User();
-        $srch = $userObj->getUserSearchObj(array('user_id','user_facebook_id','credential_email','credential_active'));
+        $srch = $userObj->getUserSearchObj(array('user_id', 'user_facebook_id', 'credential_email', 'credential_active'));
         if (!empty($facebookEmail)) {
             $srch->addCondition('credential_email', '=', $facebookEmail);
         } else {
@@ -2289,8 +2290,8 @@ class MobileAppApiController extends MyAppController
                 FatUtility::dieJsonError(Labels::getLabel($userObj->getError(), $this->siteLangId));
             }
         } else {
-            $user_is_supplier = (FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1))?0:1;
-            $user_is_advertiser = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1))?0:1;
+            $user_is_supplier = (FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0 : 1;
+            $user_is_advertiser = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0 : 1;
 
             $db->startTransaction();
 
@@ -2307,7 +2308,7 @@ class MobileAppApiController extends MyAppController
                 FatUtility::dieJsonError(Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->siteLangId) . $userObj->getError());
             }
 
-            $username = str_replace(" ", "", $facebookName).$userFacebookId;
+            $username = str_replace(" ", "", $facebookName) . $userFacebookId;
 
             if (!$userObj->setLoginCredentials($username, $facebookEmail, uniqid(), 1, 1)) {
                 $db->rollbackTransaction();
@@ -2330,8 +2331,8 @@ class MobileAppApiController extends MyAppController
             $db->commitTransaction();
             $userObj->setUpRewardEntry($userObj->getMainTableRecordId(), $this->siteLangId);
         }
-        $userInfo = $userObj->getUserInfo(array('user_facebook_id','user_preferred_dashboard','credential_username','credential_password'));
-        if (!$userInfo || ($userInfo && $userInfo['user_facebook_id']!= $userFacebookId)) {
+        $userInfo = $userObj->getUserInfo(array('user_facebook_id', 'user_preferred_dashboard', 'credential_username', 'credential_password'));
+        if (!$userInfo || ($userInfo && $userInfo['user_facebook_id'] != $userFacebookId)) {
             FatUtility::dieJsonError(Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->siteLangId));
         }
         $authentication = new UserAuthentication();
@@ -2342,9 +2343,9 @@ class MobileAppApiController extends MyAppController
         if (!$token = $userObj->setMobileAppToken()) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
-        $userInfo = $userObj->getUserInfo(array('user_id','user_name'), true, true);
-        $arr=array('status'=>1,'token'=>$token, 'user_name'=>$userInfo["user_name"],'user_id'=>$userInfo["user_id"],
-        'user_image'=>CommonHelper::generateFullUrl('image', 'user', array($userInfo['user_id'],'ORIGINAL')));
+        $userInfo = $userObj->getUserInfo(array('user_id', 'user_name'), true, true);
+        $arr = array('status' => 1, 'token' => $token, 'user_name' => $userInfo["user_name"], 'user_id' => $userInfo["user_id"],
+        'user_image' => CommonHelper::generateFullUrl('image', 'user', array($userInfo['user_id'], 'ORIGINAL')));
         die($this->json_encode_unicode($arr));
     }
 
@@ -2357,17 +2358,17 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
 
-        $userObj=new User();
+        $userObj = new User();
         if (isset($post['gp_token'])) {
-            $content=@file_get_contents($gplus_url = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=".$post['gp_token']);
-            $me=json_decode($content);
-            if ($me!=null) {
+            $content = @file_get_contents($gplus_url = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=" . $post['gp_token']);
+            $me = json_decode($content);
+            if ($me != null) {
                 $userGoogleplusEmail = filter_var($me->email, FILTER_SANITIZE_EMAIL); // get the USER EMAIL ADDRESS using OAuth2
                 $userGoogleplusId = $me->id;
                 $userGoogleplusName = $me->name;
                 if (isset($userGoogleplusEmail) && (!empty($userGoogleplusEmail))) {
                     $userObj = new User();
-                    $srch = $userObj->getUserSearchObj(array('user_id','credential_email','credential_active'));
+                    $srch = $userObj->getUserSearchObj(array('user_id', 'credential_email', 'credential_active'));
                     $srch->addCondition('credential_email', '=', $userGoogleplusEmail);
                     $rs = $srch->getResultSet();
                     $row = $db->fetch($rs);
@@ -2384,8 +2385,8 @@ class MobileAppApiController extends MyAppController
                             FatUtility::dieJsonError(Labels::getLabel($userObj->getError(), $this->siteLangId));
                         }
                     } else {
-                        $user_is_supplier = (FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0: 1;
-                        $user_is_advertiser = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0: 1;
+                        $user_is_supplier = (FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0 : 1;
+                        $user_is_advertiser = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0 : 1;
 
                         $db->startTransaction();
 
@@ -2402,15 +2403,15 @@ class MobileAppApiController extends MyAppController
                             $db->rollbackTransaction();
                             FatUtility::dieJsonError(Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->siteLangId) . $userObj->getError());
                         }
-                        $username = str_replace(" ", "", $userGoogleplusName).$userGoogleplusId;
+                        $username = str_replace(" ", "", $userGoogleplusName) . $userGoogleplusId;
                         if (!$userObj->setLoginCredentials($username, $userGoogleplusEmail, uniqid(), 1, 1)) {
                             $db->rollbackTransaction();
                         }
                         $db->commitTransaction();
                         $userObj->setUpRewardEntry($userObj->getMainTableRecordId(), $this->siteLangId);
                     }
-                    $userInfo = $userObj->getUserInfo(array('user_googleplus_id','user_preferred_dashboard','credential_username','credential_password'));
-                    if (!$userInfo || ($userInfo && $userInfo['user_googleplus_id']!= $userGoogleplusId)) {
+                    $userInfo = $userObj->getUserInfo(array('user_googleplus_id', 'user_preferred_dashboard', 'credential_username', 'credential_password'));
+                    if (!$userInfo || ($userInfo && $userInfo['user_googleplus_id'] != $userGoogleplusId)) {
                         FatUtility::dieJsonError(Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->siteLangId));
                     }
                     $authentication = new UserAuthentication();
@@ -2421,16 +2422,16 @@ class MobileAppApiController extends MyAppController
                     if (!$token = $userObj->setMobileAppToken()) {
                         FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
                     }
-                    $userInfo = $userObj->getUserInfo(array('user_id','user_name'), true, true);
-                    $arr=array('status'=>1,'token'=>$token, 'user_name'=>$userInfo["user_name"],'user_id'=>$userInfo["user_id"],
-                    'user_image'=>CommonHelper::generateFullUrl('image', 'user', array($userInfo['user_id'],'ORIGINAL')));
+                    $userInfo = $userObj->getUserInfo(array('user_id', 'user_name'), true, true);
+                    $arr = array('status' => 1, 'token' => $token, 'user_name' => $userInfo["user_name"], 'user_id' => $userInfo["user_id"],
+                    'user_image' => CommonHelper::generateFullUrl('image', 'user', array($userInfo['user_id'], 'ORIGINAL')));
                     die($this->json_encode_unicode($arr));
                 }
             } else {
-                $arr=array('status'=>0, 'msg'=>"Something wrong with this token, not returning user's email.");
+                $arr = array('status' => 0, 'msg' => "Something wrong with this token, not returning user's email.");
             }
         } else {
-            $arr=array('status'=>0, 'msg'=>"Invalid Token");
+            $arr = array('status' => 0, 'msg' => "Invalid Token");
         }
         die($this->json_encode_unicode($arr));
     }
@@ -2447,20 +2448,20 @@ class MobileAppApiController extends MyAppController
         $srch->joinMessagePostedFromUser();
         $srch->joinMessagePostedToUser();
         $srch->joinThreadStartedByUser();
-        $srch->addMultipleFields(array('tth.*','ttm.message_id','ttm.message_text','ttm.message_date','ttm.message_is_unread','ttm.message_to'));
+        $srch->addMultipleFields(array('tth.*', 'ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread', 'ttm.message_to'));
         $srch->addCondition('ttm.message_deleted', '=', 0);
         $cnd = $srch->addCondition('ttm.message_from', '=', $userId);
         $cnd->attachCondition('ttm.message_to', '=', $userId, 'OR');
         $srch->addOrder('message_id', 'DESC');
         $srch->addGroupBy('ttm.message_thread_id');
         /* die($srch->getQuery()); */
-        if (isset($post['keyword']) && $post['keyword']!='') {
-            $cnd = $srch->addCondition('tth.thread_subject', 'like', "%".$post['keyword']."%");
-            $cnd->attachCondition('tfr.user_name', 'like', "%".$post['keyword']."%", 'OR');
-            $cnd->attachCondition('tfr_c.credential_username', 'like', "%".$post['keyword']."%", 'OR');
+        if (isset($post['keyword']) && $post['keyword'] != '') {
+            $cnd = $srch->addCondition('tth.thread_subject', 'like', "%" . $post['keyword'] . "%");
+            $cnd->attachCondition('tfr.user_name', 'like', "%" . $post['keyword'] . "%", 'OR');
+            $cnd->attachCondition('tfr_c.credential_username', 'like', "%" . $post['keyword'] . "%", 'OR');
         }
 
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -2468,17 +2469,17 @@ class MobileAppApiController extends MyAppController
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
         $message_records = array();
-        foreach ($records as $mkey=>$mval) {
-            $profile_images_arr=  array(
-             "message_from_profile_url"=>CommonHelper::generateFullUrl('image', 'user', array($mval['message_from_user_id'],'thumb',1)),
-             "message_to_profile_url"=>CommonHelper::generateFullUrl('image', 'user', array($mval['message_to_user_id'],'thumb',1)),
-             "message_timestamp"=>strtotime($mval['message_date'])
+        foreach ($records as $mkey => $mval) {
+            $profile_images_arr = array(
+             "message_from_profile_url" => CommonHelper::generateFullUrl('image', 'user', array($mval['message_from_user_id'], 'thumb', 1)),
+             "message_to_profile_url" => CommonHelper::generateFullUrl('image', 'user', array($mval['message_to_user_id'], 'thumb', 1)),
+             "message_timestamp" => strtotime($mval['message_date'])
                                         );
             $message_records[] = array_merge($mval, $profile_images_arr);
         }
 
-        $api_message_elements = array('messages'=>$message_records,'total_pages'=>$srch->pages(),'page'=>$page,'total_records'=>$srch->recordCount());
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_message_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        $api_message_elements = array('messages' => $message_records, 'total_pages' => $srch->pages(), 'page' => $page, 'total_records' => $srch->recordCount());
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_message_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function view_thread_messages()
@@ -2487,9 +2488,9 @@ class MobileAppApiController extends MyAppController
         $db = FatApp::getDb();
         $post = FatApp::getPostedData();
         //$post['thread_id']=3;
-        $arr=array();
+        $arr = array();
         $page = 1;
-        $pagesize=$this->pagesize;
+        $pagesize = $this->pagesize;
         if ((empty($post)) || (empty($post['thread_id']))) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
@@ -2506,7 +2507,7 @@ class MobileAppApiController extends MyAppController
         $srch->joinShops();
         $srch->joinOrderProducts();
         $srch->joinOrderProductStatus();
-        $srch->addMultipleFields(array('tth.*','ttm.message_id','top.op_invoice_number','message_text','message_date'));
+        $srch->addMultipleFields(array('tth.*', 'ttm.message_id', 'top.op_invoice_number', 'message_text', 'message_date'));
         //$srch->addMultipleFields(array('tth.*','ttm.message_id','ttm.message_text','ttm.message_date','ttm.message_is_unread'));
         $srch->addCondition('ttm.message_deleted', '=', 0);
         $srch->addCondition('tth.thread_id', '=', $threadId);
@@ -2532,18 +2533,18 @@ class MobileAppApiController extends MyAppController
         }
         $thread_message_records = array();
         if (!empty($threadDetails)) {
-            foreach ($threadDetails as $mkey=>$mval) {
-                $profile_images_arr =  array(
-                 "message_from_profile_url"=>CommonHelper::generateFullUrl('image', 'user', array($mval['message_from_user_id'],'ORIGINAL')),
-                 "message_to_profile_url"=>CommonHelper::generateFullUrl('image', 'user', array($mval['message_to_user_id'],'ORIGINAL')),
-                 "message_timestamp"=>strtotime($mval['message_date'])
+            foreach ($threadDetails as $mkey => $mval) {
+                $profile_images_arr = array(
+                 "message_from_profile_url" => CommonHelper::generateFullUrl('image', 'user', array($mval['message_from_user_id'], 'ORIGINAL')),
+                 "message_to_profile_url" => CommonHelper::generateFullUrl('image', 'user', array($mval['message_to_user_id'], 'ORIGINAL')),
+                 "message_timestamp" => strtotime($mval['message_date'])
                                 );
                 $thread_message_records[] = array_merge($mval, $profile_images_arr);
             }
         }
 
-        $api_thread_elements = array('thread_details'=>$thread_message_records,'thread_types'=>Thread::getThreadTypeArr($this->siteLangId));
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_thread_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        $api_thread_elements = array('thread_details' => $thread_message_records, 'thread_types' => Thread::getThreadTypeArr($this->siteLangId));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_thread_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function send_thread_message()
@@ -2555,7 +2556,7 @@ class MobileAppApiController extends MyAppController
         if (empty($post)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
-        $threadId =  FatUtility::int($post['message_thread_id']);
+        $threadId = FatUtility::int($post['message_thread_id']);
         /*
         $messageId =  FatUtility::int($post['message_id']);
 
@@ -2586,15 +2587,15 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
 
-        $messageSendTo = ($threadDetails['message_from_user_id'] == $userId)?$threadDetails['message_to_user_id']:$threadDetails['message_from_user_id'];
+        $messageSendTo = ($threadDetails['message_from_user_id'] == $userId) ? $threadDetails['message_to_user_id'] : $threadDetails['message_from_user_id'];
 
         $data = array(
-        'message_thread_id'=>$threadId,
-        'message_from'=>$userId,
-        'message_to'=>$messageSendTo,
-        'message_text'=>$post['message_text'],
-        'message_date'=>date('Y-m-d H:i:s'),
-        'message_is_unread'=>1
+        'message_thread_id' => $threadId,
+        'message_from' => $userId,
+        'message_to' => $messageSendTo,
+        'message_text' => $post['message_text'],
+        'message_date' => date('Y-m-d H:i:s'),
+        'message_is_unread' => 1
         );
 
         $tObj = new Thread();
@@ -2609,9 +2610,9 @@ class MobileAppApiController extends MyAppController
         }
         unset($data['message_is_unread']);
         $userObj = new User($userId);
-        $userInfo = $userObj->getUserInfo(array('user_id','user_name'), true, true);
-        $data['message_from_name'] =  $userInfo['user_name'];
-        $arr = array('status'=>1,'msg'=>Labels::getLabel("MSG_Message_Submitted_Successfully", $this->siteLangId),'data'=>$data);
+        $userInfo = $userObj->getUserInfo(array('user_id', 'user_name'), true, true);
+        $data['message_from_name'] = $userInfo['user_name'];
+        $arr = array('status' => 1, 'msg' => Labels::getLabel("MSG_Message_Submitted_Successfully", $this->siteLangId), 'data' => $data);
         die($this->json_encode_unicode($arr));
     }
 
@@ -2619,7 +2620,7 @@ class MobileAppApiController extends MyAppController
     {
         $userId = $this->getAppLoggedUserId();
         $addresses = UserAddress::getUserAddresses($userId, $this->siteLangId);
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$addresses,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $addresses, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function save_address()
@@ -2645,10 +2646,10 @@ class MobileAppApiController extends MyAppController
         if (!$addressObj->save()) {
             FatUtility::dieJsonError($addressObj->getError());
         }
-        if (0<=$ua_id) {
+        if (0 <= $ua_id) {
             $ua_id = $addressObj->getMainTableRecordId();
         }
-        $arr=array('status'=>1,'msg'=>Labels::getLabel("LBL_Setup_Successful", $this->siteLangId));
+        $arr = array('status' => 1, 'msg' => Labels::getLabel("LBL_Setup_Successful", $this->siteLangId));
         die($this->json_encode_unicode($arr));
     }
 
@@ -2664,7 +2665,7 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
 
-        $data =  UserAddress::getUserAddresses($userId, $this->siteLangId, 0, $ua_id);
+        $data = UserAddress::getUserAddresses($userId, $this->siteLangId, 0, $ua_id);
         if ($data === false) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
@@ -2673,7 +2674,7 @@ class MobileAppApiController extends MyAppController
         if (!$addressObj->deleteRecord()) {
             FatUtility::dieJsonError($addressObj->getError());
         }
-        $arr=array('status'=>1,'msg'=>Labels::getLabel("MSG_Deleted_successfully", $this->siteLangId));
+        $arr = array('status' => 1, 'msg' => Labels::getLabel("MSG_Deleted_successfully", $this->siteLangId));
         die($this->json_encode_unicode($arr));
     }
 
@@ -2689,13 +2690,13 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
 
-        $data =  UserAddress::getUserAddresses($userId, $this->siteLangId, 0, $ua_id);
+        $data = UserAddress::getUserAddresses($userId, $this->siteLangId, 0, $ua_id);
         if ($data === false) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
 
-        $updateArray = array( 'ua_is_default'=>0);
-        $whr = array('smt'=>'ua_user_id = ?', 'vals'=>array($userId));
+        $updateArray = array( 'ua_is_default' => 0);
+        $whr = array('smt' => 'ua_user_id = ?', 'vals' => array($userId));
 
         if (!FatApp::getDb()->updateFromArray(UserAddress::DB_TBL, $updateArray, $whr)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
@@ -2703,16 +2704,16 @@ class MobileAppApiController extends MyAppController
         //die('TT');
         $addressObj = new UserAddress($ua_id);
         $data = array(
-        'ua_id'=>$ua_id,
-        'ua_is_default'=>1,
-        'ua_user_id'=>$userId,
+        'ua_id' => $ua_id,
+        'ua_is_default' => 1,
+        'ua_user_id' => $userId,
         );
 
         $addressObj->assignValues($data, true);
         if (!$addressObj->save()) {
             FatUtility::dieJsonError($addressObj->getError());
         }
-        $arr=array('status'=>1,'msg'=>Labels::getLabel("MSG_Address_Updated_Successfully", $this->siteLangId));
+        $arr = array('status' => 1, 'msg' => Labels::getLabel("MSG_Address_Updated_Successfully", $this->siteLangId));
         die($this->json_encode_unicode($arr));
     }
 
@@ -2752,7 +2753,7 @@ class MobileAppApiController extends MyAppController
         $productSrchObj->addMultipleFields(
             array('product_id', 'selprod_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
             'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
-            'theprice', 'selprod_price','selprod_stock', 'selprod_condition','prodcat_id','IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','ifnull(sq_sprating.prod_rating,0) prod_rating ','ifnull(sq_sprating.totReviews,0) totReviews','selprod_sold_count','ufp_id','IF(ufp_id > 0, 1, 0) as isfavorite','selprod_min_order_qty')
+            'theprice', 'selprod_price', 'selprod_stock', 'selprod_condition', 'prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'ifnull(sq_sprating.prod_rating,0) prod_rating ', 'ifnull(sq_sprating.totReviews,0) totReviews', 'selprod_sold_count', 'ufp_id', 'IF(ufp_id > 0, 1, 0) as isfavorite', 'selprod_min_order_qty')
         );
 
         $srch = new UserFavoriteProductSearch();
@@ -2767,13 +2768,13 @@ class MobileAppApiController extends MyAppController
         if ($favoriteProducts) {
             foreach ($favoriteProducts as &$favoriteProduct) {
                 $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($favoriteProduct['product_id'], "MEDIUM", $favoriteProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-                $favoriteProduct['discounted_text'] =  CommonHelper::showProductDiscountedText($favoriteProduct, $this->siteLangId);
-                $favoriteProduct['product_image'] =  $mainImgUrl;
+                $favoriteProduct['discounted_text'] = CommonHelper::showProductDiscountedText($favoriteProduct, $this->siteLangId);
+                $favoriteProduct['product_image'] = $mainImgUrl;
                 $favoriteProduct['currency_selprod_price'] = CommonHelper::displayMoneyFormat($favoriteProduct['selprod_price'], true, false, false);
                 $favoriteProduct['currency_theprice'] = CommonHelper::displayMoneyFormat($favoriteProduct['theprice'], true, false, false);
             }
         }
-        $arr=array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$favoriteProducts);
+        $arr = array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $favoriteProducts);
         die($this->json_encode_unicode($arr));
     }
 
@@ -2781,7 +2782,7 @@ class MobileAppApiController extends MyAppController
     {
         $userId = $this->getAppLoggedUserId();
         $wishLists = UserWishList::getUserWishLists($userId, false);
-        $arr=array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$wishLists);
+        $arr = array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $wishLists);
         die($this->json_encode_unicode($arr));
     }
 
@@ -2822,7 +2823,7 @@ class MobileAppApiController extends MyAppController
         $productSrchObj->addMultipleFields(
             array('product_id', 'selprod_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
             'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
-            'theprice', 'selprod_price','selprod_stock', 'selprod_condition','prodcat_id','IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','ifnull(sq_sprating.prod_rating,0) prod_rating ','ifnull(sq_sprating.totReviews,0) totReviews','selprod_sold_count','ufp_id','IF(ufp_id > 0, 1, 0) as isfavorite','selprod_min_order_qty')
+            'theprice', 'selprod_price', 'selprod_stock', 'selprod_condition', 'prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'ifnull(sq_sprating.prod_rating,0) prod_rating ', 'ifnull(sq_sprating.totReviews,0) totReviews', 'selprod_sold_count', 'ufp_id', 'IF(ufp_id > 0, 1, 0) as isfavorite', 'selprod_min_order_qty')
         );
 
         $srch = new UserWishListProductSearch($this->siteLangId);
@@ -2839,8 +2840,8 @@ class MobileAppApiController extends MyAppController
         if ($wishListProducts) {
             foreach ($wishListProducts as &$wishlistProduct) {
                 $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($wishlistProduct['product_id'], "MEDIUM", $wishlistProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-                $wishlistProduct['discounted_text'] =  CommonHelper::showProductDiscountedText($wishlistProduct, $this->siteLangId);
-                $wishlistProduct['product_image'] =  $mainImgUrl;
+                $wishlistProduct['discounted_text'] = CommonHelper::showProductDiscountedText($wishlistProduct, $this->siteLangId);
+                $wishlistProduct['product_image'] = $mainImgUrl;
                 $wishlistProduct['currency_selprod_price'] = CommonHelper::displayMoneyFormat($wishlistProduct['selprod_price'], true, false, false);
                 $wishlistProduct['currency_theprice'] = CommonHelper::displayMoneyFormat($wishlistProduct['theprice'], true, false, false);
             }
@@ -2849,7 +2850,7 @@ class MobileAppApiController extends MyAppController
         $wishlist['products'] = $wishListProducts;
         $wishlist['total_records'] = $srch->recordCount();
         $wishlist['total_pages'] = $srch->pages();
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$wishlist,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $wishlist, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function add_to_cart()
@@ -2861,7 +2862,7 @@ class MobileAppApiController extends MyAppController
         if (empty($post)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
-        if ($userId>0) {
+        if ($userId > 0) {
             $user_is_buyer = User::getAttributesById($userId, 'user_is_buyer');
             if (!$user_is_buyer) {
                 FatUtility::dieJsonError(Labels::getLabel('MSG_Please_login_with_buyer_account_to_add_products_to_cart', $this->siteLangId));
@@ -2873,12 +2874,12 @@ class MobileAppApiController extends MyAppController
         $selprod_id = FatApp::getPostedData('selprod_id', FatUtility::VAR_INT, ''); //FatUtility::int($post['selprod_id']);
         $quantity = FatApp::getPostedData('quantity', FatUtility::VAR_INT, '1'); //FatUtility::int($post['quantity']);
 
-        $productsToAdd  = isset($post['addons'])?$post['addons']:array();
+        $productsToAdd = isset($post['addons']) ? $post['addons'] : array();
         $productsToAdd[$selprod_id] = $quantity;
         //print_r($productsToAdd);
         //die();
         $ProductAdded = false;
-        foreach ($productsToAdd as $productId =>$quantity) {
+        foreach ($productsToAdd as $productId => $quantity) {
             if ($productId <= 0) {
                 FatUtility::dieJsonError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
             }
@@ -2887,7 +2888,7 @@ class MobileAppApiController extends MyAppController
             $srch->addCondition('pricetbl.selprod_id', '=', $productId);
             $srch->addMultipleFields(
                 array(
-                'selprod_id','selprod_code', 'selprod_min_order_qty', 'selprod_stock', 'product_name' )
+                'selprod_id', 'selprod_code', 'selprod_min_order_qty', 'selprod_stock', 'product_name' )
             );
             //die($srch->getquery());
             $rs = $srch->getResultSet();
@@ -2902,7 +2903,7 @@ class MobileAppApiController extends MyAppController
             /* cannot add, out of stock products in cart[ */
 
             if ($sellerProductRow['selprod_stock'] <= 0) {
-                if ($productId!=$selprod_id) {
+                if ($productId != $selprod_id) {
                     FatUtility::dieJsonError(sprintf(Labels::getLabel('LBL_Out_of_Stock_Products_cannot_be_added_to_cart_%s', $this->siteLangId), FatUtility::decodeHtmlEntities($sellerProductRow['product_name'])));
                 } else {
                     FatUtility::dieJsonError(sprintf(Labels::getLabel('LBL_Out_of_Stock_Products_cannot_be_added_to_cart_%s', $this->siteLangId), FatUtility::decodeHtmlEntities($sellerProductRow['product_name'])));
@@ -2916,7 +2917,7 @@ class MobileAppApiController extends MyAppController
                 $productAdd = false;
                 $str = Labels::getLabel('LBL_Please_add_minimum_{minimumquantity}', $this->siteLangId);
                 $str = str_replace("{minimumquantity}", $minimum_quantity, $str);
-                FatUtility::dieJsonError($str." ".FatUtility::decodeHtmlEntities($sellerProductRow['product_name']));
+                FatUtility::dieJsonError($str . " " . FatUtility::decodeHtmlEntities($sellerProductRow['product_name']));
             }
             /* ] */
 
@@ -2926,7 +2927,7 @@ class MobileAppApiController extends MyAppController
             /* cannot add quantity more than stock of the product[ */
             $selprod_stock = $sellerProductRow['selprod_stock'] - Product::tempHoldStockCount($productId);
             if ($quantity > $selprod_stock) {
-                FatUtility::dieJsonError(Labels::getLabel('MSG_Requested_quantity_more_than_stock_available', $this->siteLangId)." ". $selprod_stock." " .FatUtility::decodeHtmlEntities($sellerProductRow['product_name']));
+                FatUtility::dieJsonError(Labels::getLabel('MSG_Requested_quantity_more_than_stock_available', $this->siteLangId) . " " . $selprod_stock . " " . FatUtility::decodeHtmlEntities($sellerProductRow['product_name']));
             }
             /* ] */
             if ($productAdd) {
@@ -2936,7 +2937,7 @@ class MobileAppApiController extends MyAppController
             }
         }
 
-        die($this->json_encode_unicode(array('status'=>1, 'msg'=>Labels::getLabel("MSG_Added_to_cart", $this->siteLangId), 'cart_count'=>$cartObj->countProducts(),'temp_user_id'=>$this->app_user['temp_user_id'])));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel("MSG_Added_to_cart", $this->siteLangId), 'cart_count' => $cartObj->countProducts(), 'temp_user_id' => $this->app_user['temp_user_id'])));
     }
 
     public function remove_cart_item()
@@ -2953,7 +2954,7 @@ class MobileAppApiController extends MyAppController
         if (!$cartObj->remove(md5($post['key']))) {
             FatUtility::dieJsonError($cartObj->getError());
         }
-        die($this->json_encode_unicode(array('status'=>1, 'msg'=>Labels::getLabel("MSG_Item_removed_successfully", $this->siteLangId), 'cart_count'=>$cartObj->countProducts())));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel("MSG_Item_removed_successfully", $this->siteLangId), 'cart_count' => $cartObj->countProducts())));
     }
 
     public function update_cart_qty()
@@ -2977,7 +2978,7 @@ class MobileAppApiController extends MyAppController
         if (!empty($cartObj->getWarning())) {
             FatUtility::dieJsonError($cartObj->getWarning());
         }
-        die($this->json_encode_unicode(array('status'=>1, 'msg'=>Labels::getLabel("MSG_cart_updated_successfully", $this->siteLangId), 'cart_count'=>$cartObj->countProducts())));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel("MSG_cart_updated_successfully", $this->siteLangId), 'cart_count' => $cartObj->countProducts())));
     }
 
     public function apply_promo_code()
@@ -3002,16 +3003,16 @@ class MobileAppApiController extends MyAppController
         }
 
         $holdCouponData = array(
-        'couponhold_coupon_id'=>$couponInfo['coupon_id'],
-        'couponhold_user_id'=>$loggedUserId,
-        'couponhold_added_on'=>date('Y-m-d H:i:s'),
+        'couponhold_coupon_id' => $couponInfo['coupon_id'],
+        'couponhold_user_id' => $loggedUserId,
+        'couponhold_added_on' => date('Y-m-d H:i:s'),
         );
 
         if (!FatApp::getDb()->insertFromArray(DiscountCoupons::DB_TBL_COUPON_HOLD, $holdCouponData, true, array(), $holdCouponData)) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_Action_Trying_Perform_Not_Valid', $this->siteLangId));
         }
 
-        die($this->json_encode_unicode(array('status'=>1, 'msg'=>Labels::getLabel("MSG_cart_discount_coupon_applied", $this->siteLangId), 'cart_count'=>$cartObj->countProducts())));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel("MSG_cart_discount_coupon_applied", $this->siteLangId), 'cart_count' => $cartObj->countProducts())));
     }
 
     public function remove_promo_code()
@@ -3021,7 +3022,7 @@ class MobileAppApiController extends MyAppController
         if (!$cartObj->removeCartDiscountCoupon()) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_Action_Trying_Perform_Not_Valid', $this->siteLangId));
         }
-        die($this->json_encode_unicode(array('status'=>1, 'msg'=>Labels::getLabel("MSG_cart_discount_coupon_removed", $this->siteLangId), 'cart_count'=>$cartObj->countProducts())));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel("MSG_cart_discount_coupon_removed", $this->siteLangId), 'cart_count' => $cartObj->countProducts())));
     }
 
     public function apply_reward_points()
@@ -3059,7 +3060,7 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('LBL_Action_Trying_Perform_Not_Valid', $this->siteLangId));
         }
 
-        die($this->json_encode_unicode(array('status'=>1, 'msg'=>Labels::getLabel("MSG_Used_Reward_point", $this->siteLangId).'-'.$rewardPoints, 'cart_count'=>$cartObj->countProducts())));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel("MSG_Used_Reward_point", $this->siteLangId) . '-' . $rewardPoints, 'cart_count' => $cartObj->countProducts())));
     }
 
     public function remove_reward_points()
@@ -3069,7 +3070,7 @@ class MobileAppApiController extends MyAppController
         if (!$cartObj->removeUsedRewardPoints($loggedUserId)) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_Action_Trying_Perform_Not_Valid', $this->siteLangId));
         }
-        die($this->json_encode_unicode(array('status'=>1, 'msg'=>Labels::getLabel("MSG_used_reward_point_removed", $this->siteLangId), 'cart_count'=>$cartObj->countProducts())));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel("MSG_used_reward_point_removed", $this->siteLangId), 'cart_count' => $cartObj->countProducts())));
     }
 
     public function update_wallet($apply_wallet)
@@ -3079,8 +3080,8 @@ class MobileAppApiController extends MyAppController
         if (!$cartObj->updateCartWalletOption($apply_wallet)) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_Action_Trying_Perform_Not_Valid', $this->siteLangId));
         }
-        $wallet_msg = $apply_wallet?Labels::getLabel("MSG_Wallet_Selected_Successfully", $this->siteLangId):Labels::getLabel("MSG_Wallet_Removed_Successfully", $this->siteLangId);
-        die($this->json_encode_unicode(array('status'=>1, 'msg'=>$wallet_msg, 'cart_count'=>$cartObj->countProducts())));
+        $wallet_msg = $apply_wallet ? Labels::getLabel("MSG_Wallet_Selected_Successfully", $this->siteLangId) : Labels::getLabel("MSG_Wallet_Removed_Successfully", $this->siteLangId);
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => $wallet_msg, 'cart_count' => $cartObj->countProducts())));
     }
 
     public function update_cart_billing_address()
@@ -3104,7 +3105,7 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('LBL_Action_Trying_Perform_Not_Valid', $this->siteLangId));
         }
 
-        die($this->json_encode_unicode(array('status'=>1, 'msg'=>Labels::getLabel("LBL_Cart_Billing_Address_Updated_Successfully", $this->siteLangId), 'cart_count'=>$cartObj->countProducts())));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel("LBL_Cart_Billing_Address_Updated_Successfully", $this->siteLangId), 'cart_count' => $cartObj->countProducts())));
     }
 
     public function update_cart_shipping_address()
@@ -3127,7 +3128,7 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('LBL_Action_Trying_Perform_Not_Valid', $this->siteLangId));
         }
 
-        die($this->json_encode_unicode(array('status'=>1, 'msg'=>Labels::getLabel("LBL_Cart_Shipping_Address_Updated_Successfully", $this->siteLangId), 'cart_count'=>$cartObj->countProducts())));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel("LBL_Cart_Shipping_Address_Updated_Successfully", $this->siteLangId), 'cart_count' => $cartObj->countProducts())));
     }
 
     public function get_cart_details()
@@ -3140,7 +3141,7 @@ class MobileAppApiController extends MyAppController
         $cartObj = new Cart($loggedUserId, 0, $this->app_user['temp_user_id']);
         $productsArr = $cartObj->getProducts($this->siteLangId);
         $cartProductsArr = array();
-        foreach ($productsArr as $ckey=>$cval) {
+        foreach ($productsArr as $ckey => $cval) {
             $product['image_url'] = CommonHelper::generateFullUrl('image', 'product', array($cval['product_id'], "", $cval['selprod_id'], 0, $this->siteLangId));
             $product['currency_selprod_price'] = CommonHelper::displayMoneyFormat($cval['selprod_price'], true, false, false);
             $product['currency_theprice'] = CommonHelper::displayMoneyFormat($cval['theprice'], true, false, false);
@@ -3159,13 +3160,13 @@ class MobileAppApiController extends MyAppController
 
         $BillingAddressDetail = array();
         $billing_address_id = $cartObj->getCartBillingAddress();
-        if ($billing_address_id>0) {
+        if ($billing_address_id > 0) {
             $BillingAddressDetail = UserAddress::getUserAddresses($loggedUserId, 0, 0, $billing_address_id);
         }
 
         $ShippingddressDetail = array();
         $shipping_address_id = $cartObj->getCartShippingAddress();
-        if ($shipping_address_id>0) {
+        if ($shipping_address_id > 0) {
             $ShippingddressDetail = UserAddress::getUserAddresses($loggedUserId, 0, 0, $shipping_address_id);
         }
 
@@ -3178,20 +3179,20 @@ class MobileAppApiController extends MyAppController
         $cart_summary['cartSummary'] = $cartSummaryArr;
         $cart_summary['cart_selected_billing_address'] = $BillingAddressDetail;
         $cart_summary['cart_selected_shipping_address'] = $ShippingddressDetail;
-        $cart_summary['hasPhysicalProduct']= $cartHasPhysicalProduct;
-        $cart_summary['isShippingSameAsBilling']= $cartObj->getShippingAddressSameAsBilling();
-        $cart_summary['selected_billing_address_id']= $cartObj->getCartBillingAddress();
-        $cart_summary['selected_shipping_address_id']= $cartObj->getCartShippingAddress();
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$cart_summary,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        $cart_summary['hasPhysicalProduct'] = $cartHasPhysicalProduct;
+        $cart_summary['isShippingSameAsBilling'] = $cartObj->getShippingAddressSameAsBilling();
+        $cart_summary['selected_billing_address_id'] = $cartObj->getCartBillingAddress();
+        $cart_summary['selected_shipping_address_id'] = $cartObj->getCartShippingAddress();
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $cart_summary, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function has_stock($keyValue)
     {
         $loggedUserId = $this->getAppLoggedUserId();
         $stock = false;
-        $cartObj=new cart($loggedUserId);
+        $cartObj = new cart($loggedUserId);
         foreach ($cartObj->getProducts($this->siteLangId) as $product) {
-            if ($product['key']!=$keyValue) {
+            if ($product['key'] != $keyValue) {
                 continue;
             }
             if ($product['in_stock']) {
@@ -3199,16 +3200,16 @@ class MobileAppApiController extends MyAppController
                 break;
             }
         }
-        die($this->json_encode_unicode(array('status'=>1,'in_stock'=>$stock,'cart_count'=>$this->cart_items,'unread_messages'=>$this->user_details['unreadMessages'],'unread_notifications'=>$this->user_details['unreadNotifications'], 'cart'=>$cart), JSON_FORCE_OBJECT));
+        die($this->json_encode_unicode(array('status' => 1, 'in_stock' => $stock, 'cart_count' => $this->cart_items, 'unread_messages' => $this->user_details['unreadMessages'], 'unread_notifications' => $this->user_details['unreadNotifications'], 'cart' => $cart), JSON_FORCE_OBJECT));
     }
 
     public function shipping_summary()
     {
         $user_id = $this->getAppLoggedUserId();
         $cartObj = new Cart($user_id);
-        $cart_products=$cartObj->getProducts($this->siteLangId);
+        $cart_products = $cartObj->getProducts($this->siteLangId);
 
-        if (count($cart_products)==0) {
+        if (count($cart_products) == 0) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_Your_Cart_is_empty', $this->siteLangId));
         }
 
@@ -3224,12 +3225,12 @@ class MobileAppApiController extends MyAppController
 
 
         /* ] */
-        foreach ($cart_products as $cartkey=>$cartval) {
-            $cart_products[$cartkey]['pship_id']= 0;
-            $shipBy=0;
+        foreach ($cart_products as $cartkey => $cartval) {
+            $cart_products[$cartkey]['pship_id'] = 0;
+            $shipBy = 0;
 
             if ($cart_products[$cartkey]['psbs_user_id']) {
-                $shipBy =$cart_products[$cartkey]['psbs_user_id'];
+                $shipBy = $cart_products[$cartkey]['psbs_user_id'];
             }
             $shipping_options = Product::getProductShippingRates($cartval['product_id'], $this->siteLangId, $shippingAddressDetail['ua_country_id'], $shipBy);
 
@@ -3242,14 +3243,14 @@ class MobileAppApiController extends MyAppController
 
             $free_shipping_options = Product::getProductFreeShippingAvailabilty($cartval['product_id'], $this->siteLangId, $shippingAddressDetail['ua_country_id'], $shipBy);
 
-            $cart_products[$cartkey]['is_shipping_selected'] =  isset($productSelectedShippingMethodsArr['product'][$cartval['selprod_id']])?$productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['mshipapi_id']:false;
-            if ($cart_products[$cartkey]['is_shipping_selected'] && $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['mshipapi_id']== SHIPPINGMETHODS::SHIPSTATION_SHIPPING) {
-                $cart_products[$cartkey]['selected_shipping_option']=$productSelectedShippingMethodsArr['product'][$cartval['selprod_id']];
-            } elseif ($cart_products[$cartkey]['is_shipping_selected'] && $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['mshipapi_id']== SHIPPINGMETHODS::MANUAL_SHIPPING) {
-                $cart_products[$cartkey]['pship_id']=$productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['pship_id'];
+            $cart_products[$cartkey]['is_shipping_selected'] = isset($productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]) ? $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['mshipapi_id'] : false;
+            if ($cart_products[$cartkey]['is_shipping_selected'] && $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['mshipapi_id'] == SHIPPINGMETHODS::SHIPSTATION_SHIPPING) {
+                $cart_products[$cartkey]['selected_shipping_option'] = $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']];
+            } elseif ($cart_products[$cartkey]['is_shipping_selected'] && $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['mshipapi_id'] == SHIPPINGMETHODS::MANUAL_SHIPPING) {
+                $cart_products[$cartkey]['pship_id'] = $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['pship_id'];
             }
-            $cart_products[$cartkey]['manual_shipping_rates']=$shipping_options;
-            $cart_products[$cartkey]['shipping_free_availbilty']=$free_shipping_options;
+            $cart_products[$cartkey]['manual_shipping_rates'] = $shipping_options;
+            $cart_products[$cartkey]['shipping_free_availbilty'] = $free_shipping_options;
             $cart_products[$cartkey]['image_url'] = CommonHelper::generateFullUrl('image', 'product', array($cartval['product_id'], "MEDIUM", $cartval['selprod_id'], 0, $this->siteLangId));
 
             $cart_products[$cartkey]['currency_theprice'] = CommonHelper::displayMoneyFormat($cartval['theprice'], true, false, false);
@@ -3265,7 +3266,7 @@ class MobileAppApiController extends MyAppController
             $cartSummaryArr[$key] = CommonHelper::displayMoneyFormat($value, true, false, false);
         }
 
-        $selectedProductShippingMethods  = $cartObj->getProductShippingMethod();
+        $selectedProductShippingMethods = $cartObj->getProductShippingMethod();
         if ($selectedProductShippingMethods) {
             foreach ($selectedProductShippingMethods['product'] as &$selectedProductShippingMethod) {
                 $selectedProductShippingMethod['currency_mshipapi_cost'] = CommonHelper::displayMoneyFormat($selectedProductShippingMethod['mshipapi_cost'], true, false, false);
@@ -3282,11 +3283,11 @@ class MobileAppApiController extends MyAppController
         $cart_shipping_summary['shipStationCarrierList'] = $cartObj->shipStationCarrierList();
         $cart_shipping_summary['shippingMethods'] = $shippingMethods;
         $cart_shipping_summary['products'] = $cart_products;
-        $cart_shipping_summary['cartSummary']= $cartSummaryArr;
-        $cart_shipping_summary['shippingAddressDetail']= UserAddress::getUserAddresses($user_id, $this->siteLangId, 0, $cartObj->getCartShippingAddress());
-        $cart_shipping_summary['selectedProductShippingMethod']= $selectedProductShippingMethods;
+        $cart_shipping_summary['cartSummary'] = $cartSummaryArr;
+        $cart_shipping_summary['shippingAddressDetail'] = UserAddress::getUserAddresses($user_id, $this->siteLangId, 0, $cartObj->getCartShippingAddress());
+        $cart_shipping_summary['selectedProductShippingMethod'] = $selectedProductShippingMethods;
 
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$cart_shipping_summary,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $cart_shipping_summary, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function get_carrier_services_list()
@@ -3302,7 +3303,7 @@ class MobileAppApiController extends MyAppController
         $user_id = $this->getAppLoggedUserId();
         $cartObj = new Cart($user_id);
         $carrierList = $cartObj->getCarrierShipmentServicesList($product_key, $carrier_id, $this->siteLangId);
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$carrierList,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $carrierList, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function setup_shipping_method()
@@ -3317,10 +3318,10 @@ class MobileAppApiController extends MyAppController
         if (empty($post['product_key']) || empty($post['seller_product_id']) || empty($post['shipping_type'])) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
-        if (($post['shipping_type']==1) && (empty($post['shipping_location']))) {
+        if (($post['shipping_type'] == 1) && (empty($post['shipping_location']))) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
-        if (($post['shipping_type']==2) && (empty($post['shipping_service']) || empty($post['shipping_carrier']))) {
+        if (($post['shipping_type'] == 2) && (empty($post['shipping_service']) || empty($post['shipping_carrier']))) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
         $user_id = $this->getAppLoggedUserId();
@@ -3335,8 +3336,8 @@ class MobileAppApiController extends MyAppController
         $shipping_service = $post['shipping_service'];
         $cartProducts = $cartObj->getProducts($this->siteLangId);
         $cartProductArray = array();
-        foreach ($cartProducts as $cartkey=>$cartval) {
-            if ($cartval["key"]==$product_key) {
+        foreach ($cartProducts as $cartkey => $cartval) {
+            if ($cartval["key"] == $product_key) {
                 $cartProductArray = $cartval;
                 break;
             }
@@ -3347,7 +3348,7 @@ class MobileAppApiController extends MyAppController
 
         $parent_product_id = $cartProductArray['product_id'];
 
-        $shipBy=0;
+        $shipBy = 0;
         if ($cartProductArray['psbs_user_id']) {
             $shipBy = $cartProductArray['psbs_user_id'];
         }
@@ -3356,8 +3357,8 @@ class MobileAppApiController extends MyAppController
         $shippingAddressDetail = UserAddress::getUserAddresses($user_id, $this->siteLangId, 0, $cartObj->getCartShippingAddress());
 
         /* ] */
-        $sn= 0;
-        $json= array();
+        $sn = 0;
+        $json = array();
         if (!empty($cartProducts)) {
             $shipping_address = UserAddress::getUserAddresses($user_id, $this->siteLangId);
             //die($seller_product_id."#".$shippingAddressDetail['ua_country_id']);
@@ -3378,41 +3379,41 @@ class MobileAppApiController extends MyAppController
             $prodSrch->addCondition('selprod_deleted', '=', applicationConstants::NO);
 
             $prodSrch->addCondition('selprod_id', '=', $seller_product_id);
-            $prodSrch->addMultipleFields(array('selprod_id','product_seller_id','psbs_user_id as shippedBySellerId'));
+            $prodSrch->addMultipleFields(array('selprod_id', 'product_seller_id', 'psbs_user_id as shippedBySellerId'));
             $productRs = $prodSrch->getResultSet();
             $product = FatApp::getDb()->fetch($productRs);
             /* ] */
 
-            if (isset($productKey) && ($shipping_type ==  ShippingCompanies::MANUAL_SHIPPING) &&  !empty($shipping_location)) {
+            if (isset($productKey) && ($shipping_type == ShippingCompanies::MANUAL_SHIPPING) && !empty($shipping_location)) {
                 foreach ($shipping_options as $shipOption) {
                     //echo $shipOption['pship_id']."#".$shipping_location."<br/>";
-                    if ($shipOption['pship_id']==$shipping_location) {
+                    if ($shipOption['pship_id'] == $shipping_location) {
                         $productToShippingMethods['product'][$seller_product_id] = array(
-                        'selprod_id'    =>    $product['selprod_id'],
-                        'pship_id'    =>    $shipping_location,
-                        'sduration_id'    =>    $shipOption['sduration_id'],
+                        'selprod_id' => $product['selprod_id'],
+                        'pship_id' => $shipping_location,
+                        'sduration_id' => $shipOption['sduration_id'],
                         'sduration_name' => $shipOption['sduration_name'],
                         'sduration_from' => $shipOption['sduration_from'],
                         'sduration_to' => $shipOption['sduration_to'],
                         'sduration_days_or_weeks' => $shipOption['sduration_days_or_weeks'],
-                        'mshipapi_id'    =>    $shipping_type,
-                        'mshipcompany_id'    =>    $shipOption['scompanylang_scompany_id'],
-                        'mshipcompany_name'    =>    $shipOption['scompany_name'],
-                        'shipped_by_seller'    =>    Product::isShippedBySeller($cartval['selprod_user_id'], $product['product_seller_id'], $product['shippedBySellerId']),
-                        'mshipapi_cost' =>  ($free_shipping_options == 0)? ($shipOption['pship_charges'] + ($shipOption['pship_additional_charges'] * ($cartval['quantity'] -1))) : 0 ,
+                        'mshipapi_id' => $shipping_type,
+                        'mshipcompany_id' => $shipOption['scompanylang_scompany_id'],
+                        'mshipcompany_name' => $shipOption['scompany_name'],
+                        'shipped_by_seller' => Product::isShippedBySeller($cartval['selprod_user_id'], $product['product_seller_id'], $product['shippedBySellerId']),
+                        'mshipapi_cost' => ($free_shipping_options == 0) ? ($shipOption['pship_charges'] + ($shipOption['pship_additional_charges'] * ($cartval['quantity'] - 1))) : 0,
                         );
                     }
                 }
-            } elseif (isset($productKey) && ($shipping_type ==  ShippingCompanies::SHIPSTATION_SHIPPING) && !empty($shipping_service)) {
+            } elseif (isset($productKey) && ($shipping_type == ShippingCompanies::SHIPSTATION_SHIPPING) && !empty($shipping_service)) {
                 list($carrier_name, $carrier_price) = explode("-", $shipping_service);
                 $productToShippingMethods['product'][$seller_product_id] = array(
-                 'selprod_id'    =>    $cartval['selprod_id'],
-                 'mshipapi_id'    =>    $shipping_type,
-                 'mshipcompany_name'    =>    ($carrier_name),
-                 'mshipapi_cost' =>  $carrier_price ,
-                 'mshipapi_key' =>  $shipping_service ,
-                 'mshipapi_label' =>  str_replace("_", " ", $shipping_service) ,
-                 'shipped_by_seller'    =>    Product::isShippedBySeller($cartval['selprod_user_id'], $product['product_seller_id'], $product['shippedBySellerId']),
+                 'selprod_id' => $cartval['selprod_id'],
+                 'mshipapi_id' => $shipping_type,
+                 'mshipcompany_name' => ($carrier_name),
+                 'mshipapi_cost' => $carrier_price,
+                 'mshipapi_key' => $shipping_service,
+                 'mshipapi_label' => str_replace("_", " ", $shipping_service),
+                 'shipped_by_seller' => Product::isShippedBySeller($cartval['selprod_user_id'], $product['product_seller_id'], $product['shippedBySellerId']),
                 );
             } else {
                 FatUtility::dieJsonError(sprintf(Labels::getLabel('M_Shipping_Info_Required_for_%s', $this->siteLangId), htmlentities($cartval['product_name'])));
@@ -3428,7 +3429,7 @@ class MobileAppApiController extends MyAppController
                 FatUtility::dieJsonError(Labels::getLabel('MSG_Shipping_Method_is_not_selected_on_products_in_cart', $this->siteLangId));
             }
         }
-        die($this->json_encode_unicode(array('status'=>1, 'msg'=>Labels::getLabel("MSG_Shipping_Method_selected_successfully", $this->siteLangId), 'cart_count'=>$cartObj->countProducts())));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel("MSG_Shipping_Method_selected_successfully", $this->siteLangId), 'cart_count' => $cartObj->countProducts())));
     }
 
     public function check_shipping_method_cart()
@@ -3438,7 +3439,7 @@ class MobileAppApiController extends MyAppController
         if (!$cartObj->isProductShippingMethodSet()) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_Shipping_Method_is_not_selected_on_products_in_cart', $this->siteLangId));
         }
-        die($this->json_encode_unicode(array('status'=>1, 'msg'=>Labels::getLabel("MSG_Yes", $this->siteLangId), 'cart_count'=>$cartObj->countProducts())));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel("MSG_Yes", $this->siteLangId), 'cart_count' => $cartObj->countProducts())));
     }
 
     public function getShippingMethods($langId)
@@ -3466,11 +3467,11 @@ class MobileAppApiController extends MyAppController
         }
         $threadObj = new Thread();
         $threadDataToSave = array(
-        'thread_subject'    =>    $post['thread_subject'],
-        'thread_started_by' =>    $loggedUserId,
-        'thread_start_date'    =>    date('Y-m-d H:i:s'),
-        'thread_type'        =>    Thread::THREAD_TYPE_SHOP,
-        'thread_record_id'    =>    $shop_id,
+        'thread_subject' => $post['thread_subject'],
+        'thread_started_by' => $loggedUserId,
+        'thread_start_date' => date('Y-m-d H:i:s'),
+        'thread_type' => Thread::THREAD_TYPE_SHOP,
+        'thread_record_id' => $shop_id,
         );
 
         $threadObj->assignValues($threadDataToSave);
@@ -3481,13 +3482,13 @@ class MobileAppApiController extends MyAppController
         $thread_id = $threadObj->getMainTableRecordId();
 
         $threadMsgDataToSave = array(
-        'message_thread_id'    =>    $thread_id,
-        'message_from'        =>    $loggedUserId,
-        'message_to'        =>    $shop['shop_user_id'],
-        'message_text'        =>    $post['message_text'],
-        'message_date'        =>    date('Y-m-d H:i:s'),
-        'message_is_unread'    =>    1,
-        'message_deleted'    =>    0
+        'message_thread_id' => $thread_id,
+        'message_from' => $loggedUserId,
+        'message_to' => $shop['shop_user_id'],
+        'message_text' => $post['message_text'],
+        'message_date' => date('Y-m-d H:i:s'),
+        'message_is_unread' => 1,
+        'message_deleted' => 0
         );
         if (!$message_id = $threadObj->addThreadMessages($threadMsgDataToSave)) {
             FatUtility::dieJsonError(Labels::getLabel($threadObj->getError(), $this->siteLangId));
@@ -3497,7 +3498,7 @@ class MobileAppApiController extends MyAppController
             $emailObj = new EmailHandler();
             $emailObj->SendMessageNotification($message_id, $this->siteLangId);
         }
-        die($this->json_encode_unicode(array('status'=>1, 'msg'=>Labels::getLabel("MSG_Message_Submitted_Successfully", $this->siteLangId))));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel("MSG_Message_Submitted_Successfully", $this->siteLangId))));
     }
 
     public function get_shops()
@@ -3530,7 +3531,7 @@ class MobileAppApiController extends MyAppController
         $srch->joinSellerSubscription();
         $srch->joinTable('(' . $prodShopSrch->getQuery() . ')', 'INNER JOIN', 'stemp.shop_id = s.shop_id', 'stemp');
 
-        $collection_id =  FatApp::getPostedData('collection_id', FatUtility::VAR_INT, 0);
+        $collection_id = FatApp::getPostedData('collection_id', FatUtility::VAR_INT, 0);
 
         if ($collection_id) {
             $srch->joinTable(Collections::DB_TBL_COLLECTION_TO_SHOPS, 'INNER JOIN', 'cts.ctps_shop_id = s.shop_id', 'cts');
@@ -3541,13 +3542,13 @@ class MobileAppApiController extends MyAppController
         $favSrchObj = new UserFavoriteShopSearch();
         $favSrchObj->doNotCalculateRecords();
         $favSrchObj->doNotLimitRecords();
-        $favSrchObj->addMultipleFields(array('ufs_shop_id','ufs_id'));
+        $favSrchObj->addMultipleFields(array('ufs_shop_id', 'ufs_id'));
         $favSrchObj->addCondition('ufs_user_id', '=', $loggedUserId);
-        $srch->joinTable('('. $favSrchObj->getQuery() . ')', 'LEFT OUTER JOIN', 'ufs_shop_id = s.shop_id', 'ufs');
+        $srch->joinTable('(' . $favSrchObj->getQuery() . ')', 'LEFT OUTER JOIN', 'ufs_shop_id = s.shop_id', 'ufs');
         /* ] */
 
         $srch->addMultipleFields(
-            array( 's.shop_id','shop_user_id','shop_ltemplate_id', 'shop_created_on', 'shop_name', 'shop_description',
+            array( 's.shop_id', 'shop_user_id', 'shop_ltemplate_id', 'shop_created_on', 'shop_name', 'shop_description',
             'shop_country_l.country_name as country_name', 'shop_state_l.state_name as state_name', 'shop_city',
             'IFNULL(ufs.ufs_id, 0) as is_favorite' )
         );
@@ -3562,7 +3563,7 @@ class MobileAppApiController extends MyAppController
             $srch->addHaving('is_favorite', '>', 0);
         }
 
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -3599,13 +3600,13 @@ class MobileAppApiController extends MyAppController
         $productCustomSrchObj->addMultipleFields(
             array('product_id', 'selprod_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
             'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
-            'theprice', 'selprod_price','selprod_stock', 'selprod_condition','prodcat_id','IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','ifnull(sq_sprating.prod_rating,0) prod_rating ','ifnull(sq_sprating.totReviews,0) totReviews','selprod_sold_count','ufp_id','IF(ufp_id > 0, 1, 0) as isfavorite','selprod_min_order_qty')
+            'theprice', 'selprod_price', 'selprod_stock', 'selprod_condition', 'prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'ifnull(sq_sprating.prod_rating,0) prod_rating ', 'ifnull(sq_sprating.totReviews,0) totReviews', 'selprod_sold_count', 'ufp_id', 'IF(ufp_id > 0, 1, 0) as isfavorite', 'selprod_min_order_qty')
         );
 
 
         $productCustomSrchObj->setPageSize($totalProdCountToDisplay);
         $shopsArr = array();
-        $cnt=0;
+        $cnt = 0;
         foreach ($allShops as $val) {
             $prodSrch = clone $productCustomSrchObj;
             $prodSrch->addShopIdCondition($val['shop_id']);
@@ -3619,8 +3620,8 @@ class MobileAppApiController extends MyAppController
             $shopProducts = $db->fetchAll($prodRs);
             foreach ($shopProducts as &$shopProduct) {
                 $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($shopProduct['product_id'], "MEDIUM", $shopProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-                $shopProduct['discounted_text'] =  CommonHelper::showProductDiscountedText($shopProduct, $this->siteLangId);
-                $shopProduct['product_image'] =  $mainImgUrl;
+                $shopProduct['discounted_text'] = CommonHelper::showProductDiscountedText($shopProduct, $this->siteLangId);
+                $shopProduct['product_image'] = $mainImgUrl;
                 $shopProduct['currency_selprod_price'] = CommonHelper::displayMoneyFormat($shopProduct['selprod_price'], true, false, false);
                 $shopProduct['currency_theprice'] = CommonHelper::displayMoneyFormat($shopProduct['theprice'], true, false, false);
             }
@@ -3634,10 +3635,10 @@ class MobileAppApiController extends MyAppController
             //die();
             $cnt++;
         }
-        $api_shops_elements = array('shops'=>$shopsArr,'total_pages'=>$srch->pages(),'page'=>$page,'total_records'=>$srch->recordCount());
+        $api_shops_elements = array('shops' => $shopsArr, 'total_pages' => $srch->pages(), 'page' => $page, 'total_records' => $srch->recordCount());
         //commonhelper::printarray($api_shops_elements);
         //die();
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_shops_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_shops_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function get_brands()
@@ -3674,7 +3675,7 @@ class MobileAppApiController extends MyAppController
         $srch->addCondition('brand_id', 'in', $brandMainRootArr);
 
 
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -3712,13 +3713,13 @@ class MobileAppApiController extends MyAppController
         $productCustomSrchObj->addMultipleFields(
             array('product_id', 'selprod_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
             'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
-            'theprice', 'selprod_price','selprod_stock', 'selprod_condition','prodcat_id','IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','ifnull(sq_sprating.prod_rating,0) prod_rating ','ifnull(sq_sprating.totReviews,0) totReviews','selprod_sold_count','ufp_id','IF(ufp_id > 0, 1, 0) as isfavorite','selprod_min_order_qty')
+            'theprice', 'selprod_price', 'selprod_stock', 'selprod_condition', 'prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'ifnull(sq_sprating.prod_rating,0) prod_rating ', 'ifnull(sq_sprating.totReviews,0) totReviews', 'selprod_sold_count', 'ufp_id', 'IF(ufp_id > 0, 1, 0) as isfavorite', 'selprod_min_order_qty')
         );
 
 
         $productCustomSrchObj->setPageSize($totalProdCountToDisplay);
         $brandsArr = array();
-        $cnt=0;
+        $cnt = 0;
         foreach ($allBrands as $val) {
             $prodSrch = clone $productCustomSrchObj;
             $prodSrch->addBrandCondition($val['brand_id']);
@@ -3729,8 +3730,8 @@ class MobileAppApiController extends MyAppController
 
             foreach ($brandProducts as &$brandProduct) {
                 $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($brandProduct['product_id'], "MEDIUM", $brandProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-                $brandProduct['discounted_text'] =  CommonHelper::showProductDiscountedText($brandProduct, $this->siteLangId);
-                $brandProduct['product_image'] =  $mainImgUrl;
+                $brandProduct['discounted_text'] = CommonHelper::showProductDiscountedText($brandProduct, $this->siteLangId);
+                $brandProduct['product_image'] = $mainImgUrl;
                 $brandProduct['currency_selprod_price'] = CommonHelper::displayMoneyFormat($brandProduct['selprod_price'], true, false, false);
                 $brandProduct['currency_theprice'] = CommonHelper::displayMoneyFormat($brandProduct['theprice'], true, false, false);
             }
@@ -3741,8 +3742,8 @@ class MobileAppApiController extends MyAppController
             $allBrands[$val['brand_id']]['products'] = $db->fetchAll( $prodRs);
             $allBrands[$val['brand_id']]['totalProducts'] = $prodSrch->recordCount();*/
         }
-        $api_brands_elements = array('brands'=>$brandsArr,'total_pages'=>$srch->pages(),'page'=>$page,'total_records'=>$srch->recordCount());
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_brands_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        $api_brands_elements = array('brands' => $brandsArr, 'total_pages' => $srch->pages(), 'page' => $page, 'total_records' => $srch->recordCount());
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_brands_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function shop_detail($shop_id)
@@ -3761,27 +3762,27 @@ class MobileAppApiController extends MyAppController
         $favSrchObj = new UserFavoriteShopSearch();
         $favSrchObj->doNotCalculateRecords();
         $favSrchObj->doNotLimitRecords();
-        $favSrchObj->addMultipleFields(array('ufs_shop_id','ufs_id'));
+        $favSrchObj->addMultipleFields(array('ufs_shop_id', 'ufs_id'));
         $favSrchObj->addCondition('ufs_user_id', '=', $loggedUserId);
         $favSrchObj->addCondition('ufs_shop_id', '=', $shop_id);
-        $srch->joinTable('('. $favSrchObj->getQuery() . ')', 'LEFT OUTER JOIN', 'ufs_shop_id = shop_id', 'ufs');
+        $srch->joinTable('(' . $favSrchObj->getQuery() . ')', 'LEFT OUTER JOIN', 'ufs_shop_id = shop_id', 'ufs');
         /* ] */
 
         $srch->addMultipleFields(
-            array( 'shop_id','tu.user_name','shop_user_id','shop_ltemplate_id', 'shop_created_on', 'shop_name', 'shop_description',
+            array( 'shop_id', 'tu.user_name', 'shop_user_id', 'shop_ltemplate_id', 'shop_created_on', 'shop_name', 'shop_description',
             'shop_country_l.country_name as shop_country_name', 'shop_state_l.state_name as shop_state_name', 'shop_city',
             'IFNULL(ufs.ufs_id, 0) as is_favorite' )
         );
         $srch->addCondition('shop_id', '=', $shop_id);
-        $srch->addMultipleFields(array('shop_payment_policy', 'shop_delivery_policy','shop_refund_policy','shop_additional_info','shop_seller_info'));
+        $srch->addMultipleFields(array('shop_payment_policy', 'shop_delivery_policy', 'shop_refund_policy', 'shop_additional_info', 'shop_seller_info'));
         //echo $srch->getQuery();
         $shopRs = $srch->getResultSet();
         $shop = $db->fetch($shopRs);
         if (!$shop) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
-        $shop['logo']=CommonHelper::generateFullUrl('image', 'shopLogo', array($shop['shop_id'], $this->siteLangId));
-        $shop['banner']=CommonHelper::generateFullUrl('image', 'shopBanner', array($shop['shop_id'], $this->siteLangId));
+        $shop['logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', array($shop['shop_id'], $this->siteLangId));
+        $shop['banner'] = CommonHelper::generateFullUrl('image', 'shopBanner', array($shop['shop_id'], $this->siteLangId));
         $prodSrchObj = new ProductSearch($this->siteLangId);
         $prodSrchObj->setDefinedCriteria();
         $prodSrchObj->joinSellerSubscription();
@@ -3797,8 +3798,8 @@ class MobileAppApiController extends MyAppController
         $catSrch = clone $prodSrchObj;
         $catSrch->addGroupBy('prodcat_id');
 
-        $productCatObj = new ProductCategory;
-        $productCategories =  $productCatObj->getCategoriesForSelectBox($this->siteLangId);
+        $productCatObj = new ProductCategory();
+        $productCategories = $productCatObj->getCategoriesForSelectBox($this->siteLangId);
 
         $categoriesArr = ProductCategory::getProdCatParentChildWiseArr($this->siteLangId, 0, false, false, false, $catSrch, true);
 
@@ -3853,23 +3854,23 @@ class MobileAppApiController extends MyAppController
             /* $priceArrCurrency = array_map( function( $item ){ return CommonHelper::displayMoneyFormat( $item, true, false ,false ); } , $priceArr );
             $priceArrCurrency['minPrice']=floor($priceArrCurrency['minPrice']);
             $priceArrCurrency['maxPrice']=ceil($priceArrCurrency['maxPrice']); */
-            $priceArrCurrency['minPrice']= floor(CommonHelper::displayMoneyFormat($priceArr['minPrice'], false, false, false));
-            $priceArrCurrency['maxPrice']= ceil(CommonHelper::displayMoneyFormat($priceArr['maxPrice'], false, false, false));
+            $priceArrCurrency['minPrice'] = floor(CommonHelper::displayMoneyFormat($priceArr['minPrice'], false, false, false));
+            $priceArrCurrency['maxPrice'] = ceil(CommonHelper::displayMoneyFormat($priceArr['maxPrice'], false, false, false));
         }
         //commonhelper::printarray($priceArrCurrency);
         //die();
         /* ] */
 
         $productFiltersArr = array(
-        'categoriesArr'        =>    $categoriesArr,
-        'productCategories'        =>    $productCategories,
-        'shopCatFilters'        =>    true,
-        'brandsArr'            =>    $brandsArr,
-        'CategoryCheckedArr' =>array(),
-        'conditionsArr'        =>    $conditionsArr,
-        'priceArr'            =>    $priceArr,
-        'priceArrCurrency'    =>    $priceArrCurrency,
-        'siteLangId'        =>    $this->siteLangId
+        'categoriesArr' => $categoriesArr,
+        'productCategories' => $productCategories,
+        'shopCatFilters' => true,
+        'brandsArr' => $brandsArr,
+        'CategoryCheckedArr' => array(),
+        'conditionsArr' => $conditionsArr,
+        'priceArr' => $priceArr,
+        'priceArrCurrency' => $priceArrCurrency,
+        'siteLangId' => $this->siteLangId
         );
 
         $srchCat = Shop::getUserShopProdCategoriesObj($shop['shop_user_id'], $this->siteLangId, $shop['shop_id'], 0);
@@ -3885,7 +3886,7 @@ class MobileAppApiController extends MyAppController
         $api_shop_detail_elements['shopCategories'] = $shopCategories;
         /*commonhelper::printarray($api_shop_detail_elements);
         die();*/
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_shop_detail_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_shop_detail_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function shop_reviews($shop_id)
@@ -3906,7 +3907,7 @@ class MobileAppApiController extends MyAppController
         $srch->setDefinedCriteria($this->siteLangId);
         $srch->doNotCalculateRecords();
         $srch->addMultipleFields(
-            array( 'shop_id','shop_user_id','shop_ltemplate_id', 'shop_created_on', 'shop_name', 'shop_description',
+            array( 'shop_id', 'shop_user_id', 'shop_ltemplate_id', 'shop_created_on', 'shop_name', 'shop_description',
             'shop_country_l.country_name as shop_country_name', 'shop_state_l.state_name as shop_state_name', 'shop_city' )
         );
         $srch->addCondition('shop_id', '=', $shop_id);
@@ -3934,8 +3935,8 @@ class MobileAppApiController extends MyAppController
 
         $selProdRatingSrch = SelProdRating::getSearchObj();
         $selProdRatingSrch->doNotCalculateRecords();
-        $selProdRatingSrch->addMultipleFields(array('sprating_spreview_id','round(avg(sprating_rating),2) seller_rating'));
-        $selProdRatingSrch->addCondition('sprating_rating_type', 'in', array(SelProdRating::TYPE_SELLER_SHIPPING_QUALITY , SelProdRating::TYPE_SELLER_STOCK_AVAILABILITY , SelProdRating::TYPE_SELLER_PACKAGING_QUALITY));
+        $selProdRatingSrch->addMultipleFields(array('sprating_spreview_id', 'round(avg(sprating_rating),2) seller_rating'));
+        $selProdRatingSrch->addCondition('sprating_rating_type', 'in', array(SelProdRating::TYPE_SELLER_SHIPPING_QUALITY, SelProdRating::TYPE_SELLER_STOCK_AVAILABILITY, SelProdRating::TYPE_SELLER_PACKAGING_QUALITY));
         $selProdRatingSrch->addGroupBy('sprating_spreview_id');
         $spratingQuery = $selProdRatingSrch->getQuery();
 
@@ -3946,7 +3947,7 @@ class MobileAppApiController extends MyAppController
 
         $srch->addCondition('spr.spreview_seller_user_id', '=', $sellerId);
         $srch->addCondition('spr.spreview_status', '=', SelProdReview::STATUS_APPROVED);
-        $srch->addMultipleFields(array('spreview_id','spreview_seller_user_id',"ROUND(AVG(seller_rating),2) as shop_rating" ,'spreview_title','spreview_description','spreview_posted_on','spreview_postedby_user_id','user_name','group_concat(case when sprh_helpful = 1 then concat(sprh_user_id,"~",1) else concat(sprh_user_id,"~",0) end ) usersMarked' ,'sum(if(sprh_helpful = 1 , 1 ,0)) as helpful' ,'sum(if(sprh_helpful = 0 , 1 ,0)) as notHelpful','count(sprh_spreview_id) as countUsersMarked' ));
+        $srch->addMultipleFields(array('spreview_id', 'spreview_seller_user_id', "ROUND(AVG(seller_rating),2) as shop_rating", 'spreview_title', 'spreview_description', 'spreview_posted_on', 'spreview_postedby_user_id', 'user_name', 'group_concat(case when sprh_helpful = 1 then concat(sprh_user_id,"~",1) else concat(sprh_user_id,"~",0) end ) usersMarked', 'sum(if(sprh_helpful = 1 , 1 ,0)) as helpful', 'sum(if(sprh_helpful = 0 , 1 ,0)) as notHelpful', 'count(sprh_spreview_id) as countUsersMarked' ));
         $srch->addGroupBy('spr.spreview_id');
 
         $srch->setPageNumber($page);
@@ -3964,10 +3965,10 @@ class MobileAppApiController extends MyAppController
         $records = FatApp::getDb()->fetchAll($srch->getResultSet());
         //$this->set('reviewsList',$records);
 
-        $api_shop_reviews_elements = array('shop'=>$shop,'reviews'=>$records,'total_pages'=>$srch->pages(),'total_records'=>$srch->recordCount());
+        $api_shop_reviews_elements = array('shop' => $shop, 'reviews' => $records, 'total_pages' => $srch->pages(), 'total_records' => $srch->recordCount());
         //CommonHelper::printArray($api_shop_reviews_elements);
         //die();
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_shop_reviews_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_shop_reviews_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function countries()
@@ -3975,9 +3976,9 @@ class MobileAppApiController extends MyAppController
         $countryObj = new Countries();
         $countriesArr = $countryObj->getCountriesArr($this->siteLangId);
         foreach ($countriesArr as $key => $val) {
-            $arr_country[]=array("id"=>$key,'name'=>$val);
+            $arr_country[] = array("id" => $key, 'name' => $val);
         }
-        die($this->json_encode_unicode(array('status'=>1, 'countries'=>$arr_country)));
+        die($this->json_encode_unicode(array('status' => 1, 'countries' => $arr_country)));
     }
 
     public function get_states($countryId)
@@ -3987,9 +3988,9 @@ class MobileAppApiController extends MyAppController
         $statesArr = $stateObj->getStatesByCountryId($countryId, $this->siteLangId);
         $arr_states = [];
         foreach ($statesArr as $key => $val) {
-            $arr_states[]=array("id"=>$key,'name'=>$val);
+            $arr_states[] = array("id" => $key, 'name' => $val);
         }
-        die($this->json_encode_unicode(array('status'=>1, 'states'=>$arr_states)));
+        die($this->json_encode_unicode(array('status' => 1, 'states' => $arr_states)));
     }
 
     public function bank_info()
@@ -4000,11 +4001,11 @@ class MobileAppApiController extends MyAppController
 
         $defaultCurrencyId = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
         $currencyRow = Currency::getAttributesById($defaultCurrencyId);
-        $defaultCurrencySymbol = !empty($currencyRow['currency_symbol_left'])?$currencyRow['currency_symbol_left']:$currencyRow['currency_symbol_right'];
+        $defaultCurrencySymbol = !empty($currencyRow['currency_symbol_left']) ? $currencyRow['currency_symbol_left'] : $currencyRow['currency_symbol_right'];
 
         $userWalletBalance = User::getUserBalance($loggedUserId);
 
-        die($this->json_encode_unicode(array('status'=>1,'defaultCurrencySymbol'=>$defaultCurrencySymbol,'userWalletBalance'=>$userWalletBalance,'bank_details'=> $bankinfo)));
+        die($this->json_encode_unicode(array('status' => 1, 'defaultCurrencySymbol' => $defaultCurrencySymbol, 'userWalletBalance' => $userWalletBalance, 'bank_details' => $bankinfo)));
     }
 
     public function update_bank_info()
@@ -4018,7 +4019,7 @@ class MobileAppApiController extends MyAppController
         if (!$userObj->updateBankInfo($post)) {
             FatUtility::dieJsonError(Labels::getLabel($userObj->getError(), $this->siteLangId));
         }
-        die($this->json_encode_unicode(array('status'=>1,'msg'=>  Labels::getLabel('MSG_Setup_successful', $this->siteLangId))));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel('MSG_Setup_successful', $this->siteLangId))));
     }
 
     public function credits()
@@ -4033,7 +4034,7 @@ class MobileAppApiController extends MyAppController
         $balSrch = Transactions::getSearchObject();
         $balSrch->doNotCalculateRecords();
         $balSrch->doNotLimitRecords();
-        $balSrch->addMultipleFields(array('utxn.*',"utxn_credit - utxn_debit as bal"));
+        $balSrch->addMultipleFields(array('utxn.*', "utxn_credit - utxn_debit as bal"));
         $balSrch->addCondition('utxn_user_id', '=', $userId);
         $balSrch->addCondition('utxn_status', '=', applicationConstants::ACTIVE);
         $qryUserPointsBalance = $balSrch->getQuery();
@@ -4041,7 +4042,7 @@ class MobileAppApiController extends MyAppController
 
         $srch = Transactions::getSearchObject();
         $srch->joinTable('(' . $qryUserPointsBalance . ')', 'JOIN', 'tqupb.utxn_id <= utxn.utxn_id', 'tqupb');
-        $srch->addMultipleFields(array('utxn.*',"SUM(tqupb.bal) balance"));
+        $srch->addMultipleFields(array('utxn.*', "SUM(tqupb.bal) balance"));
         $srch->addCondition('utxn.utxn_user_id', '=', $userId);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -4053,10 +4054,10 @@ class MobileAppApiController extends MyAppController
 
         $keyword = FatApp::getPostedData('keyword', null, '');
         if (!empty($keyword)) {
-            $cond = $srch->addCondition('utxn.utxn_order_id', 'like', '%'.$keyword.'%');
-            $cond->attachCondition('utxn.utxn_op_id', 'like', '%'.$keyword.'%', 'OR');
-            $cond->attachCondition('utxn.utxn_comments', 'like', '%'.$keyword.'%', 'OR');
-            $cond->attachCondition('concat("TN-" ,lpad( utxn.`utxn_id`,7,0))', 'like', '%'.$keyword.'%', 'OR', true);
+            $cond = $srch->addCondition('utxn.utxn_order_id', 'like', '%' . $keyword . '%');
+            $cond->attachCondition('utxn.utxn_op_id', 'like', '%' . $keyword . '%', 'OR');
+            $cond->attachCondition('utxn.utxn_comments', 'like', '%' . $keyword . '%', 'OR');
+            $cond->attachCondition('concat("TN-" ,lpad( utxn.`utxn_id`,7,0))', 'like', '%' . $keyword . '%', 'OR', true);
         }
 
         $fromDate = FatApp::getPostedData('date_from', FatUtility::VAR_DATE, '');
@@ -4071,7 +4072,7 @@ class MobileAppApiController extends MyAppController
 
         if ($debit_credit_type > 0) {
             switch ($debit_credit_type) {
-                case Transactions::CREDIT_TYPE:
+                case Transactions::CREDIT_TYPE :
                     $srch->addCondition('utxn.utxn_credit', '>', '0');
                     $srch->addCondition('utxn.utxn_debit', '=', '0');
                     break;
@@ -4095,10 +4096,10 @@ class MobileAppApiController extends MyAppController
         }
 
         $userBalance = CommonHelper::displayMoneyFormat(User::getUserBalance($userId), true, false, false);
-        $api_credits_elements = array('records'=>$records,'total_pages'=>$srch->pages(),'total_records'=>$srch->recordCount(),'statusArr'=>Transactions::getStatusArr($this->siteLangId),'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'userBalance'=>$userBalance);
+        $api_credits_elements = array('records' => $records, 'total_pages' => $srch->pages(), 'total_records' => $srch->recordCount(), 'statusArr' => Transactions::getStatusArr($this->siteLangId), 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'userBalance' => $userBalance);
         //commonhelper::printarray($api_credits_elements);
         //die();
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=> $api_credits_elements)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_credits_elements)));
     }
 
     public function reward_points()
@@ -4109,22 +4110,22 @@ class MobileAppApiController extends MyAppController
         if ($page < 2) {
             $page = 1;
         }
-        $srch = new UserRewardSearch;
+        $srch = new UserRewardSearch();
         $srch->joinUser();
         $srch->addCondition('urp.urp_user_id', '=', $userId);
         $srch->addOrder('urp.urp_date_added', 'DESC');
         $srch->addOrder('urp.urp_id', 'DESC');
-        $srch->addMultipleFields(array('urp.*','uc.credential_username'));
+        $srch->addMultipleFields(array('urp.*', 'uc.credential_username'));
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
-        $page = (empty($page) || $page <= 0)?1:$page;
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
         $totalRewardPoints = UserRewardBreakup::rewardPointBalance($userId);
         $totalRewardPointsCurrency = CommonHelper::displayMoneyFormat(CommonHelper::convertRewardPointToCurrency($totalRewardPoints), true, false, false);
-        $api_reward_points_elements = array('records'=>$records,'total_pages'=>$srch->pages(),'total_records'=>$srch->recordCount(),'totalRewardPoints'=>$totalRewardPoints,'totalRewardPointsCurrency'=>$totalRewardPointsCurrency);
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=> $api_reward_points_elements)));
+        $api_reward_points_elements = array('records' => $records, 'total_pages' => $srch->pages(), 'total_records' => $srch->recordCount(), 'totalRewardPoints' => $totalRewardPoints, 'totalRewardPointsCurrency' => $totalRewardPointsCurrency);
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_reward_points_elements)));
     }
 
     public function share_earn_url()
@@ -4140,14 +4141,14 @@ class MobileAppApiController extends MyAppController
         }
 
         $referralTrackingUrl = CommonHelper::referralTrackingUrl($userInfo['user_referral_code']);
-        die($this->json_encode_unicode(array('status'=>1,'data'=> $referralTrackingUrl)));
+        die($this->json_encode_unicode(array('status' => 1, 'data' => $referralTrackingUrl)));
     }
 
     public function offers()
     {
         $userId = $this->getAppLoggedUserId();
         $offers = DiscountCoupons::getUserCoupons($userId, $this->siteLangId);
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=> $offers)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $offers)));
     }
 
     public function create_wish_list()
@@ -4169,7 +4170,7 @@ class MobileAppApiController extends MyAppController
         $uwlp_uwlist_id = $wListObj->getMainTableRecordId();
         /* ] */
         $successMsg = Labels::getLabel('LBL_WishList_Created_Successfully', $this->siteLangId);
-        die($this->json_encode_unicode(array('status'=>1,'msh'=> $successMsg)));
+        die($this->json_encode_unicode(array('status' => 1, 'msh' => $successMsg)));
     }
 
     public function delete_wishlist()
@@ -4191,7 +4192,7 @@ class MobileAppApiController extends MyAppController
         }
         $obj = new UserWishList();
         $obj->deleteWishList($row['uwlist_id']);
-        die($this->json_encode_unicode(array('status'=>1,'msh'=> Labels::getLabel('LBL_Wishlist_deleted_successfully', $this->siteLangId))));
+        die($this->json_encode_unicode(array('status' => 1, 'msh' => Labels::getLabel('LBL_Wishlist_deleted_successfully', $this->siteLangId))));
     }
 
     public function change_email()
@@ -4210,7 +4211,7 @@ class MobileAppApiController extends MyAppController
         }
 
         $userObj = new User($loggedUserId);
-        $srch = $userObj->getUserSearchObj(array('user_id','credential_password','credential_email','user_name'));
+        $srch = $userObj->getUserSearchObj(array('user_id', 'credential_password', 'credential_email', 'user_name'));
         $rs = $srch->getResultSet();
         if (!$rs) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
@@ -4234,7 +4235,7 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('MSG_ERROR_IN_SENDING_VERFICATION_EMAIL', $this->siteLangId));
         }
 
-        $res=array('status'=>1,'msg'=>Labels::getLabel('MSG_CHANGE_EMAIL_REQUEST_SENT_SUCCESSFULLY', $this->siteLangId));
+        $res = array('status' => 1, 'msg' => Labels::getLabel('MSG_CHANGE_EMAIL_REQUEST_SENT_SUCCESSFULLY', $this->siteLangId));
         die($this->json_encode_unicode($res));
     }
 
@@ -4251,7 +4252,7 @@ class MobileAppApiController extends MyAppController
         $ocSrch = new SearchBase(OrderProduct::DB_TBL_CHARGES, 'opc');
         $ocSrch->doNotCalculateRecords();
         $ocSrch->doNotLimitRecords();
-        $ocSrch->addMultipleFields(array('opcharge_op_id','sum(opcharge_amount) as op_other_charges'));
+        $ocSrch->addMultipleFields(array('opcharge_op_id', 'sum(opcharge_amount) as op_other_charges'));
         $ocSrch->addGroupBy('opc.opcharge_op_id');
         $qryOtherCharges = $ocSrch->getQuery();
 
@@ -4266,8 +4267,8 @@ class MobileAppApiController extends MyAppController
         $srch->setPageSize($pagesize);
         $srch->addMultipleFields(
             array('order_id', 'order_user_id', 'order_date_added', 'order_net_amount', 'op_invoice_number',
-            'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id','op_other_charges','op_unit_price',
-            'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name','order_pmethod_id','order_status','pmethod_name','op_selprod_id','selprod_product_id')
+            'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_other_charges', 'op_unit_price',
+            'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'order_pmethod_id', 'order_status', 'pmethod_name', 'op_selprod_id', 'selprod_product_id')
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');
@@ -4317,7 +4318,7 @@ class MobileAppApiController extends MyAppController
             $charges = $oObj->getOrderProductChargesArr($order['op_id']);
             $order['charges'] = $charges;
             $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($order['selprod_product_id'], "MEDIUM", $order['op_selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-            $order['product_image'] =  $mainImgUrl;
+            $order['product_image'] = $mainImgUrl;
             if (in_array($order["op_status_id"], SelProdReview::getBuyerAllowedOrderReviewStatuses()) && FatApp::getConfig("CONF_ALLOW_REVIEWS", FatUtility::VAR_INT, 0)) {
                 $eligible_for_feedback = 1;
             }
@@ -4332,9 +4333,9 @@ class MobileAppApiController extends MyAppController
             if (in_array($order["op_status_id"], $getBuyerAllowedOrderReturnStatuses)) {
                 $eligible_for_return_refund = 1;
             }
-            $order['eligible_for_feedback'] =  $eligible_for_feedback;
-            $order['eligible_for_cancellation'] =  $eligible_for_cancellation;
-            $order['eligible_for_return_refund'] =  $eligible_for_return_refund;
+            $order['eligible_for_feedback'] = $eligible_for_feedback;
+            $order['eligible_for_cancellation'] = $eligible_for_cancellation;
+            $order['eligible_for_return_refund'] = $eligible_for_return_refund;
 
             $order['currency_op_other_charges'] = CommonHelper::displayMoneyFormat($order['op_other_charges'], true, false, false);
             $order['currency_op_unit_price'] = CommonHelper::displayMoneyFormat($order['op_unit_price'], true, false, false);
@@ -4343,8 +4344,8 @@ class MobileAppApiController extends MyAppController
 
 
 
-        $api_orders_elements = array('orders'=>$orders,'total_pages'=>$srch->pages(),'page'=>$page,'total_records'=>$srch->recordCount());
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_orders_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        $api_orders_elements = array('orders' => $orders, 'total_pages' => $srch->pages(), 'page' => $page, 'total_records' => $srch->recordCount());
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_orders_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function view_buyer_order($orderId, $opId = 0)
@@ -4397,12 +4398,12 @@ class MobileAppApiController extends MyAppController
         $rs = $srch->getResultSet();
 
         $childOrderDetail = FatApp::getDb()->fetchAll($rs, 'op_id');
-        $orderCartTotal = 0 ;
-        $orderShippingCharges = 0 ;
+        $orderCartTotal = 0;
+        $orderShippingCharges = 0;
         foreach ($childOrderDetail as $opID => $val) {
             $childOrderDetail[$opID]['charges'] = $orderDetail['charges'][$opID];
             $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($val['selprod_product_id'], "MEDIUM", $val['op_selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-            $childOrderDetail[$opID]['product_image'] =  $mainImgUrl;
+            $childOrderDetail[$opID]['product_image'] = $mainImgUrl;
 
             $childOrder = $childOrderDetail[$opID];
             $childOrderDetail[$opID]['shipping'] = CommonHelper::orderProductAmount($childOrder, 'shipping');
@@ -4441,9 +4442,9 @@ class MobileAppApiController extends MyAppController
             $orderShippingCharges = $orderShippingCharges + CommonHelper::orderProductAmount($childOrder, 'shipping');
         }
         $orderDetail['combined_order_cart_total'] = $orderCartTotal;
-        $orderDetail['combined_order_cart_shipping_total']=$orderShippingCharges;
-        $orderDetail['currency_combined_order_cart_total']=CommonHelper::displayMoneyFormat($orderCartTotal, true, false, false);
-        $orderDetail['currency_combined_order_cart_shipping_total']=CommonHelper::displayMoneyFormat($orderShippingCharges, true, false, false);
+        $orderDetail['combined_order_cart_shipping_total'] = $orderShippingCharges;
+        $orderDetail['currency_combined_order_cart_total'] = CommonHelper::displayMoneyFormat($orderCartTotal, true, false, false);
+        $orderDetail['currency_combined_order_cart_shipping_total'] = CommonHelper::displayMoneyFormat($orderShippingCharges, true, false, false);
 
 
 
@@ -4460,24 +4461,24 @@ class MobileAppApiController extends MyAppController
 
         $address = $orderObj->getOrderAddresses($orderDetail['order_id']);
         $orderDetail['billingAddress'] = $address[Orders::BILLING_ADDRESS_TYPE];
-        $orderDetail['shippingAddress'] = (!empty($address[Orders::SHIPPING_ADDRESS_TYPE]))?$address[Orders::SHIPPING_ADDRESS_TYPE]:array();
+        $orderDetail['shippingAddress'] = (!empty($address[Orders::SHIPPING_ADDRESS_TYPE])) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : array();
         if ($opId > 0) {
-            $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("op_id"=>$childOrderDetail['op_id']));
+            $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("op_id" => $childOrderDetail['op_id']));
         } else {
-            $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("order_id"=>$orderDetail['order_id']));
-            $orderDetail['payments'] = $orderObj->getOrderPayments(array("order_id"=>$orderDetail['order_id']));
+            $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("order_id" => $orderDetail['order_id']));
+            $orderDetail['payments'] = $orderObj->getOrderPayments(array("order_id" => $orderDetail['order_id']));
         }
         $childOrderDetailCharges = $orderDetail['charges'];
         $api_orders_elements = array(
-                                    'orderDetail'=>$orderDetail,
-                                    'child_order_detail'=>$childOrderDetail,
-                                    'orderStatuses'=>$orderStatuses,
-                                    'isCombinedOrder'=>!$primaryOrderDisplay,
-                                    'yesNoArr'=>applicationConstants::getYesNoArr($this->siteLangId),
+                                    'orderDetail' => $orderDetail,
+                                    'child_order_detail' => $childOrderDetail,
+                                    'orderStatuses' => $orderStatuses,
+                                    'isCombinedOrder' => !$primaryOrderDisplay,
+                                    'yesNoArr' => applicationConstants::getYesNoArr($this->siteLangId),
                                     );
         //commonhelper::printarray($api_orders_elements);
         //die();
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_orders_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_orders_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function buyer_dashboard()
@@ -4488,7 +4489,7 @@ class MobileAppApiController extends MyAppController
         $ocSrch = new SearchBase(OrderProduct::DB_TBL_CHARGES, 'opc');
         $ocSrch->doNotCalculateRecords();
         $ocSrch->doNotLimitRecords();
-        $ocSrch->addMultipleFields(array('opcharge_op_id','sum(opcharge_amount) as op_other_charges'));
+        $ocSrch->addMultipleFields(array('opcharge_op_id', 'sum(opcharge_amount) as op_other_charges'));
         $ocSrch->addGroupBy('opc.opcharge_op_id');
         $qryOtherCharges = $ocSrch->getQuery();
 
@@ -4505,7 +4506,7 @@ class MobileAppApiController extends MyAppController
         $srch->setPageSize(5);
 
         $srch->addMultipleFields(
-            array('order_id', 'order_user_id','op_selprod_id','op_is_batch','selprod_product_id','order_date_added', 'order_net_amount', 'op_invoice_number','totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_product_type', 'op_status_id', 'op_id','op_qty','op_selprod_options', 'op_brand_name', 'op_shop_name','op_other_charges','op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name')
+            array('order_id', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_product_type', 'op_status_id', 'op_id', 'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name')
         );
         $rs = $srch->getResultSet();
         $orders = FatApp::getDb()->fetchAll($rs);
@@ -4556,18 +4557,18 @@ class MobileAppApiController extends MyAppController
         /*]*/
 
         $api_buyer_dashboard_elements = array(
-                                        'profile_data'=>$user->getProfileData(),
-                                        'orders'=>$orders,
-                                        'ordersCount'=>$srch->recordCount(),
-                                        'totalFavouriteItems'=>$totalFavouriteItems,
-                                        'totalWishlistItems'=>$totalWishlistItems,
-                                        'yesterdayOrderCount'=>FatUtility::int($ordersStats['yesterdayOrderCount']),
-                                        'todayUnreadMessageCount'=>$todayUnreadMessageCount,
-                                        'totalMessageCount'=>$totalMessageCount,
-                                        'userBalance'=>commonHelper::displayMoneyFormat(User::getUserBalance($userId), true, false, false)
+                                        'profile_data' => $user->getProfileData(),
+                                        'orders' => $orders,
+                                        'ordersCount' => $srch->recordCount(),
+                                        'totalFavouriteItems' => $totalFavouriteItems,
+                                        'totalWishlistItems' => $totalWishlistItems,
+                                        'yesterdayOrderCount' => FatUtility::int($ordersStats['yesterdayOrderCount']),
+                                        'todayUnreadMessageCount' => $todayUnreadMessageCount,
+                                        'totalMessageCount' => $totalMessageCount,
+                                        'userBalance' => commonHelper::displayMoneyFormat(User::getUserBalance($userId), true, false, false)
                                         );
 
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_buyer_dashboard_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_buyer_dashboard_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function seller_dashboard()
@@ -4578,7 +4579,7 @@ class MobileAppApiController extends MyAppController
         $ocSrch = new SearchBase(OrderProduct::DB_TBL_CHARGES, 'opc');
         $ocSrch->doNotCalculateRecords();
         $ocSrch->doNotLimitRecords();
-        $ocSrch->addMultipleFields(array('opcharge_op_id','sum(opcharge_amount) as op_other_charges'));
+        $ocSrch->addMultipleFields(array('opcharge_op_id', 'sum(opcharge_amount) as op_other_charges'));
         $ocSrch->addGroupBy('opc.opcharge_op_id');
         $qryOtherCharges = $ocSrch->getQuery();
 
@@ -4595,7 +4596,7 @@ class MobileAppApiController extends MyAppController
         $srch->setPageSize(5);
 
         $srch->addMultipleFields(
-            array('order_id', 'order_user_id','op_selprod_id','op_is_batch','selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number','totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id','op_qty','op_selprod_options','op_status_id', 'op_brand_name', 'op_shop_name','op_other_charges','op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name')
+            array('order_id', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_status_id', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name')
         );
 
         $rs = $srch->getResultSet();
@@ -4646,7 +4647,7 @@ class MobileAppApiController extends MyAppController
         $orderSrch->addSellerCompletedOrdersStats(false, false, 'totalSold');
         $orderSrch->addGroupBy('op_selprod_user_id');
         $orderSrch->addCondition('op_selprod_user_id', '=', $userId);
-        $orderSrch->addMultipleFields(array('yesterdayOrderCount' ,'yesterdaySoldCount','totalSoldCount','totalSoldSales' ));
+        $orderSrch->addMultipleFields(array('yesterdayOrderCount', 'yesterdaySoldCount', 'totalSoldCount', 'totalSoldSales' ));
         $rs = $orderSrch->getResultSet();
         $ordersStats = FatApp::getDb()->fetch($rs);
         /* ]*/
@@ -4666,13 +4667,13 @@ class MobileAppApiController extends MyAppController
 
 
 
-            $latestOrder = OrderSubscription::getUserCurrentActivePlanDetails($this->siteLangId, $userId, array('ossubs_till_date','ossubs_id','ossubs_products_allowed'));
+            $latestOrder = OrderSubscription::getUserCurrentActivePlanDetails($this->siteLangId, $userId, array('ossubs_till_date', 'ossubs_id', 'ossubs_products_allowed'));
 
-            $pendingDaysForCurrentPlan=0;
-            $remainingAllowedProducts=0;
+            $pendingDaysForCurrentPlan = 0;
+            $remainingAllowedProducts = 0;
             if ($latestOrder) {
-                $pendingDaysForCurrentPlan=FatDate::diff(date("Y-m-d"), $latestOrder['ossubs_till_date']);
-                $totalProducts  =  $products->getTotalProductsAddedByUser($userId);
+                $pendingDaysForCurrentPlan = FatDate::diff(date("Y-m-d"), $latestOrder['ossubs_till_date']);
+                $totalProducts = $products->getTotalProductsAddedByUser($userId);
                 $remainingAllowedProducts = $latestOrder['ossubs_products_allowed'] - $totalProducts;
                 $this->set('subscriptionTillDate', $latestOrder['ossubs_till_date']);
             }
@@ -4685,20 +4686,20 @@ class MobileAppApiController extends MyAppController
 
 
         $api_seller_dashboard_elements = array(
-                                        'profile_data'=>$user->getProfileData(),
-                                        'orders'=>$orders,
-                                        'ordersCount'=>$srch->recordCount(),
-                                        'totalSoldCount'=>FatUtility::int($ordersStats['totalSoldCount']),
-                                        'totalSoldSales'=>FatUtility::float($ordersStats['totalSoldSales']),
-                                        'yesterdayOrderCount'=>FatUtility::int($ordersStats['yesterdayOrderCount']),
-                                        'todayUnreadMessageCount'=>$todayUnreadMessageCount,
-                                        'totalMessageCount'=>$totalMessageCount,
-                                        'userBalance'=>commonHelper::displayMoneyFormat(User::getUserBalance($userId), true, false, false),
-                                        'notAllowedStatues'=>$notAllowedStatues,
-                                        'dashboardStats'=>Stats::getUserSales($userId)
+                                        'profile_data' => $user->getProfileData(),
+                                        'orders' => $orders,
+                                        'ordersCount' => $srch->recordCount(),
+                                        'totalSoldCount' => FatUtility::int($ordersStats['totalSoldCount']),
+                                        'totalSoldSales' => FatUtility::float($ordersStats['totalSoldSales']),
+                                        'yesterdayOrderCount' => FatUtility::int($ordersStats['yesterdayOrderCount']),
+                                        'todayUnreadMessageCount' => $todayUnreadMessageCount,
+                                        'totalMessageCount' => $totalMessageCount,
+                                        'userBalance' => commonHelper::displayMoneyFormat(User::getUserBalance($userId), true, false, false),
+                                        'notAllowedStatues' => $notAllowedStatues,
+                                        'dashboardStats' => Stats::getUserSales($userId)
                                         );
 
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_seller_dashboard_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_seller_dashboard_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function buyer_order_cancellation_reasons()
@@ -4706,11 +4707,11 @@ class MobileAppApiController extends MyAppController
         $orderCancelReasonsArr = OrderCancelReason::getOrderCancelReasonArr($this->siteLangId);
         $count = 0;
         foreach ($orderCancelReasonsArr as $key => $val) {
-            $cancelReasonsArr[$count]['key']= $key;
-            $cancelReasonsArr[$count]['value']= $val;
+            $cancelReasonsArr[$count]['key'] = $key;
+            $cancelReasonsArr[$count]['value'] = $val;
             $count++;
         }
-        die($this->json_encode_unicode(array('status'=>1, 'reasons'=>$cancelReasonsArr)));
+        die($this->json_encode_unicode(array('status' => 1, 'reasons' => $cancelReasonsArr)));
     }
 
     public function get_order_return_request_paramters($op_id)
@@ -4719,8 +4720,8 @@ class MobileAppApiController extends MyAppController
         $orderReturnReasonsArr = OrderReturnReason::getOrderReturnReasonArr($this->siteLangId);
         $count = 0;
         foreach ($orderReturnReasonsArr as $key => $val) {
-            $returnReasonsArr[$count]['key']= $key;
-            $returnReasonsArr[$count]['value']= $val;
+            $returnReasonsArr[$count]['key'] = $key;
+            $returnReasonsArr[$count]['value'] = $val;
             $count++;
         }
         $srch = new OrderProductSearch($this->siteLangId, true);
@@ -4728,14 +4729,14 @@ class MobileAppApiController extends MyAppController
         $srch->addCondition('order_user_id', '=', $user_id);
         $srch->addCondition('op_id', '=', $op_id);
         $srch->addOrder("op_id", "DESC");
-        $srch->addMultipleFields(array('op_status_id', 'op_id', 'op_qty','op_product_type'));
+        $srch->addMultipleFields(array('op_status_id', 'op_id', 'op_qty', 'op_product_type'));
         $rs = $srch->getResultSet();
         $opDetail = FatApp::getDb()->fetch($rs);
         if (!$opDetail || CommonHelper::isMultidimArray($opDetail)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
 
-        die($this->json_encode_unicode(array('status'=>1, 'max_qty'=>$opDetail['op_qty'],'type'=>OrderReturnRequest::RETURN_REQUEST_TYPE_REFUND, 'reasons'=>$returnReasonsArr)));
+        die($this->json_encode_unicode(array('status' => 1, 'max_qty' => $opDetail['op_qty'], 'type' => OrderReturnRequest::RETURN_REQUEST_TYPE_REFUND, 'reasons' => $returnReasonsArr)));
         //getOrderReturnRequestForm
     }
 
@@ -4766,12 +4767,12 @@ class MobileAppApiController extends MyAppController
 
         $ocrequest_date_from = FatApp::getPostedData('ocrequest_date_from', FatUtility::VAR_DATE, '');
         if (!empty($ocrequest_date_from)) {
-            $srch->addCondition('ocrequest_date', '>=', $ocrequest_date_from. ' 00:00:00');
+            $srch->addCondition('ocrequest_date', '>=', $ocrequest_date_from . ' 00:00:00');
         }
 
         $ocrequest_date_to = FatApp::getPostedData('ocrequest_date_to', FatUtility::VAR_DATE, '');
         if (!empty($ocrequest_date_to)) {
-            $srch->addCondition('ocrequest_date', '<=', $ocrequest_date_to. ' 23:59:59');
+            $srch->addCondition('ocrequest_date', '<=', $ocrequest_date_to . ' 23:59:59');
         }
 
         $ocrequest_status = FatApp::getPostedData('ocrequest_status', null, '-1');
@@ -4783,9 +4784,9 @@ class MobileAppApiController extends MyAppController
         $rs = $srch->getResultSet();
         $requests = FatApp::getDb()->fetchAll($rs);
 
-        $api_cancellation_requests_elements = array('requests'=>$requests,'total_pages'=>$srch->pages(),'total_records'=>$srch->recordCount(),'OrderCancelRequestStatusArr'=>OrderCancelRequest::getRequestStatusArr($this->siteLangId));
+        $api_cancellation_requests_elements = array('requests' => $requests, 'total_pages' => $srch->pages(), 'total_records' => $srch->recordCount(), 'OrderCancelRequestStatusArr' => OrderCancelRequest::getRequestStatusArr($this->siteLangId));
 
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_cancellation_requests_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_cancellation_requests_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function submit_order_cancellation_request()
@@ -4829,12 +4830,12 @@ class MobileAppApiController extends MyAppController
         }
 
         $dataToSave = array(
-        'ocrequest_user_id'    =>    $user_id,
-        'ocrequest_op_id'    =>    $opDetail['op_id'],
-        'ocrequest_ocreason_id'    =>    FatUtility::int($post['ocrequest_ocreason_id']),
-        'ocrequest_message'        =>    $post['ocrequest_message'],
-        'ocrequest_date'        =>    date('Y-m-d H:i:s'),
-        'ocrequest_status'        =>    OrderCancelRequest::CANCELLATION_REQUEST_STATUS_PENDING
+        'ocrequest_user_id' => $user_id,
+        'ocrequest_op_id' => $opDetail['op_id'],
+        'ocrequest_ocreason_id' => FatUtility::int($post['ocrequest_ocreason_id']),
+        'ocrequest_message' => $post['ocrequest_message'],
+        'ocrequest_date' => date('Y-m-d H:i:s'),
+        'ocrequest_status' => OrderCancelRequest::CANCELLATION_REQUEST_STATUS_PENDING
         );
 
         $oCRequestObj = new OrderCancelRequest();
@@ -4851,7 +4852,7 @@ class MobileAppApiController extends MyAppController
         if (!$emailObj->sendOrderCancellationNotification($ocrequest_id, $this->siteLangId)) {
             FatUtility::dieJsonError($emailObj->getError());
         }
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'msg'=>Labels::getLabel('MSG_Your_cancellation_request_submitted', $this->siteLangId))));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'msg' => Labels::getLabel('MSG_Your_cancellation_request_submitted', $this->siteLangId))));
     }
 
     public function buyer_order_return_requests()
@@ -4873,7 +4874,7 @@ class MobileAppApiController extends MyAppController
         $srch->setPageSize($pagesize);
         $srch->addMultipleFields(
             array( 'orrequest_id', 'orrequest_user_id', 'orrequest_qty', 'orrequest_type', 'orrequest_reference', 'orrequest_date', 'orrequest_status',
-            'op_invoice_number', 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model','op_selprod_id','selprod_product_id')
+            'op_invoice_number', 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_selprod_id', 'selprod_product_id')
         );
 
         $srch->addOrder('orrequest_date', 'DESC');
@@ -4881,13 +4882,13 @@ class MobileAppApiController extends MyAppController
         $keyword = FatApp::getPostedData('keyword', null, '');
         if (!empty($keyword)) {
             $cnd = $srch->addCondition('op_invoice_number', '=', $keyword);
-            $cnd->attachCondition('op_selprod_title', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('op_product_name', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('op_brand_name', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('op_selprod_options', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('op_selprod_sku', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('op_product_model', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('orrequest_reference', 'LIKE', '%'.$keyword.'%', 'OR');
+            $cnd->attachCondition('op_selprod_title', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('op_product_name', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('op_brand_name', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('op_selprod_options', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('op_selprod_sku', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('op_product_model', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('orrequest_reference', 'LIKE', '%' . $keyword . '%', 'OR');
         }
 
         $orrequest_status = FatApp::getPostedData('orrequest_status', null, '-1');
@@ -4898,12 +4899,12 @@ class MobileAppApiController extends MyAppController
 
         $orrequest_date_from = FatApp::getPostedData('orrequest_date_from', FatUtility::VAR_DATE, '');
         if (!empty($orrequest_date_from)) {
-            $srch->addCondition('orrequest_date', '>=', $orrequest_date_from. ' 00:00:00');
+            $srch->addCondition('orrequest_date', '>=', $orrequest_date_from . ' 00:00:00');
         }
 
         $orrequest_date_to = FatApp::getPostedData('orrequest_date_to', FatUtility::VAR_DATE, '');
         if (!empty($orrequest_date_to)) {
-            $srch->addCondition('orrequest_date', '<=', $orrequest_date_to. ' 23:59:59');
+            $srch->addCondition('orrequest_date', '<=', $orrequest_date_to . ' 23:59:59');
         }
         //die($srch->getquery());
         $rs = $srch->getResultSet();
@@ -4911,7 +4912,7 @@ class MobileAppApiController extends MyAppController
 
         foreach ($requests as &$request) {
             $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($request['op_selprod_id'], "MEDIUM", $request['selprod_product_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-            $request['product_image'] =  $mainImgUrl;
+            $request['product_image'] = $mainImgUrl;
         }
 
         //commonhelper::printarray($requests);
@@ -4920,22 +4921,22 @@ class MobileAppApiController extends MyAppController
         $returnRequestTypeArr = OrderReturnRequest::getRequestTypeArr($this->siteLangId);
         $count = 0;
         foreach ($returnRequestTypeArr as $key => $val) {
-            $returnRequestTypeDispArr[$count]['key']= $key;
-            $returnRequestTypeDispArr[$count]['value']= $val;
+            $returnRequestTypeDispArr[$count]['key'] = $key;
+            $returnRequestTypeDispArr[$count]['value'] = $val;
             $count++;
         }
 
         $api_return_requests_elements = array(
-                                                    'requests'=>$requests,
-                                                    'total_pages'=>$srch->pages(),
-                                                    'total_records'=>$srch->recordCount(),
-                                                    'returnRequestTypeArr'=>$returnRequestTypeDispArr,
-                                                    'OrderReturnRequestStatusArr'=>OrderReturnRequest::getRequestStatusArr($this->siteLangId),
-                                                    'sellerPage'=>false,
-                                                    'buyerPage'=>true
+                                                    'requests' => $requests,
+                                                    'total_pages' => $srch->pages(),
+                                                    'total_records' => $srch->recordCount(),
+                                                    'returnRequestTypeArr' => $returnRequestTypeDispArr,
+                                                    'OrderReturnRequestStatusArr' => OrderReturnRequest::getRequestStatusArr($this->siteLangId),
+                                                    'sellerPage' => false,
+                                                    'buyerPage' => true
                                                     );
 
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_return_requests_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_return_requests_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function view_order_return_request($orrequest_id)
@@ -4954,10 +4955,10 @@ class MobileAppApiController extends MyAppController
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addMultipleFields(
-            array( 'orrequest_id','orrequest_op_id', 'orrequest_user_id', 'orrequest_qty', 'orrequest_type',
+            array( 'orrequest_id', 'orrequest_op_id', 'orrequest_user_id', 'orrequest_qty', 'orrequest_type',
             'orrequest_date', 'orrequest_status', 'orrequest_reference', 'op_invoice_number', 'op_selprod_title', 'op_product_name',
-            'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model','op_qty',
-            'op_unit_price', 'op_selprod_user_id', 'IFNULL(orreason_title, orreason_identifier) as orreason_title','op_shop_id', 'op_shop_name', 'op_shop_owner_name', 'order_tax_charged','op_other_charges','op_refund_amount','op_commission_percentage','op_affiliate_commission_percentage','op_commission_include_tax','op_tax_collected_by_seller','op_commission_include_shipping','op_free_ship_upto','op_actual_shipping_charges')
+            'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_qty',
+            'op_unit_price', 'op_selprod_user_id', 'IFNULL(orreason_title, orreason_identifier) as orreason_title', 'op_shop_id', 'op_shop_name', 'op_shop_owner_name', 'order_tax_charged', 'op_other_charges', 'op_refund_amount', 'op_commission_percentage', 'op_affiliate_commission_percentage', 'op_commission_include_tax', 'op_tax_collected_by_seller', 'op_commission_include_shipping', 'op_free_ship_upto', 'op_actual_shipping_charges')
         );
 
         $rs = $srch->getResultSet();
@@ -4996,24 +4997,24 @@ class MobileAppApiController extends MyAppController
 
         $count = 0;
         foreach ($returnRequestTypeArr as $key => $val) {
-            $returnRequestTypeDispArr[$count]['key']= $key;
-            $returnRequestTypeDispArr[$count]['value']= $val;
+            $returnRequestTypeDispArr[$count]['key'] = $key;
+            $returnRequestTypeDispArr[$count]['value'] = $val;
             $count++;
         }
 
         $api_view_return_requests_elements = array(
-                                                    'canEscalateRequest'=>$canEscalateRequest,
-                                                    'canWithdrawRequest'=>$canWithdrawRequest,
-                                                    'request'=>$request,
-                                                    'vendorReturnAddress'=>$vendorReturnAddress,
-                                                    'returnRequestTypeArr'=>$returnRequestTypeDispArr,
-                                                    'requestRequestStatusArr'=>OrderReturnRequest::getRequestStatusArr($this->siteLangId) ,
-                                                    'logged_user_name'=>$user['user_name'],
-                                                    'logged_user_id'=>$user_id
+                                                    'canEscalateRequest' => $canEscalateRequest,
+                                                    'canWithdrawRequest' => $canWithdrawRequest,
+                                                    'request' => $request,
+                                                    'vendorReturnAddress' => $vendorReturnAddress,
+                                                    'returnRequestTypeArr' => $returnRequestTypeDispArr,
+                                                    'requestRequestStatusArr' => OrderReturnRequest::getRequestStatusArr($this->siteLangId),
+                                                    'logged_user_name' => $user['user_name'],
+                                                    'logged_user_id' => $user_id
                                                     );
         //commonhelper::printarray($api_view_return_requests_elements);
         //die();
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_view_return_requests_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_view_return_requests_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function view_order_return_request_messages($orrequest_id)
@@ -5043,12 +5044,12 @@ class MobileAppApiController extends MyAppController
         $messagesList = FatApp::getDb()->fetchAll($rs);
 
         $message_records = array();
-        foreach ($messagesList as $mkey=>$mval) {
-            $arr = array_merge($mval, array("message_timestamp"=>strtotime($mval['orrmsg_date'])));
+        foreach ($messagesList as $mkey => $mval) {
+            $arr = array_merge($mval, array("message_timestamp" => strtotime($mval['orrmsg_date'])));
             array_unshift($message_records, $arr);
         }
 
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'messagesList'=>$message_records,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'messagesList' => $message_records, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function withdraw_order_return_request($orrequest_id)
@@ -5086,7 +5087,7 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel($emailNotificationObj->getError(), $this->siteLangId));
         }
         /* ] */
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'msg'=> Labels::getLabel('MSG_Request_Withdrawn', $this->siteLangId) ,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'msg' => Labels::getLabel('MSG_Request_Withdrawn', $this->siteLangId), 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function submit_order_return_request($id)
@@ -5138,16 +5139,16 @@ class MobileAppApiController extends MyAppController
         }
 
 
-        $reference_number = $user_id.'-'.time();
+        $reference_number = $user_id . '-' . time();
         $returnRequestDataToSave = array(
-        'orrequest_user_id'            =>    $user_id,
-        'orrequest_reference'        =>    $reference_number,
-        'orrequest_op_id'            =>    $opDetail['op_id'],
-        'orrequest_qty'                =>    FatUtility::int($post['orrequest_qty']),
-        'orrequest_returnreason_id'    =>    FatUtility::int($post['orrequest_returnreason_id']),
-        'orrequest_type'            =>    FatUtility::int($post['orrequest_type']),
-        'orrequest_date'            =>    date('Y-m-d H:i:s'),
-        'orrequest_status'            =>    OrderReturnRequest::RETURN_REQUEST_STATUS_PENDING
+        'orrequest_user_id' => $user_id,
+        'orrequest_reference' => $reference_number,
+        'orrequest_op_id' => $opDetail['op_id'],
+        'orrequest_qty' => FatUtility::int($post['orrequest_qty']),
+        'orrequest_returnreason_id' => FatUtility::int($post['orrequest_returnreason_id']),
+        'orrequest_type' => FatUtility::int($post['orrequest_type']),
+        'orrequest_date' => date('Y-m-d H:i:s'),
+        'orrequest_status' => OrderReturnRequest::RETURN_REQUEST_STATUS_PENDING
         );
 
         $oReturnRequestObj = new OrderReturnRequest();
@@ -5184,10 +5185,10 @@ class MobileAppApiController extends MyAppController
 
         /* save return request message[ */
         $returnRequestMsgDataToSave = array(
-        'orrmsg_orrequest_id'    =>    $orrequest_id,
-        'orrmsg_from_user_id'    =>    $user_id,
-        'orrmsg_msg'            =>    $post['orrmsg_msg'],
-        'orrmsg_date'            =>    date('Y-m-d H:i:s'),
+        'orrmsg_orrequest_id' => $orrequest_id,
+        'orrmsg_from_user_id' => $user_id,
+        'orrmsg_msg' => $post['orrmsg_msg'],
+        'orrmsg_date' => date('Y-m-d H:i:s'),
         );
 
         $oReturnRequestMsgObj = new OrderReturnRequestMessage();
@@ -5214,7 +5215,7 @@ class MobileAppApiController extends MyAppController
         /* ] */
 
         /* ] */
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'msg'=> Labels::getLabel('MSG_Your_return_request_submitted', $this->siteLangId) ,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'msg' => Labels::getLabel('MSG_Your_return_request_submitted', $this->siteLangId), 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function submit_order_feedback($id)
@@ -5225,7 +5226,7 @@ class MobileAppApiController extends MyAppController
         /*$review_rating = array("1"=>4,"2"=>3,"3"=>3,"4"=>5);
         $post = array('review_rating'=>$review_rating,"title"=>"A","description"=>"D");
         */
-        if ((1 > $op_id) ||  empty($post['review_rating']) || empty($post['title']) || empty($post['description'])) {
+        if ((1 > $op_id) || empty($post['review_rating']) || empty($post['title']) || empty($post['description'])) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
 
@@ -5234,7 +5235,7 @@ class MobileAppApiController extends MyAppController
         $srch->addCondition('order_user_id', '=', $user_id);
         $srch->addCondition('op_id', '=', $op_id);
         $srch->addOrder("op_id", "DESC");
-        $srch->addMultipleFields(array('op_status_id', 'op_selprod_user_id', 'op_selprod_code','op_order_id','op_selprod_id','op_is_batch','op_batch_selprod_id'));
+        $srch->addMultipleFields(array('op_status_id', 'op_selprod_user_id', 'op_selprod_code', 'op_order_id', 'op_selprod_id', 'op_is_batch', 'op_batch_selprod_id'));
 
         $rs = $srch->getResultSet();
         $opDetail = FatApp::getDb()->fetch($rs);
@@ -5270,8 +5271,8 @@ class MobileAppApiController extends MyAppController
         $enteredAbusiveWordsArr = array();
         if (!Abusive::validateContent(FatApp::getPostedData('spreview_description', FatUtility::VAR_STRING, ''), $enteredAbusiveWordsArr)) {
             if (!empty($enteredAbusiveWordsArr)) {
-                $errStr =  Labels::getLabel("LBL_Word_{abusiveword}_is/are_not_allowed_to_post", $this->siteLangId);
-                $errStr = str_replace("{abusiveword}", '"'.implode(", ", $enteredAbusiveWordsArr).'"', $errStr);
+                $errStr = Labels::getLabel("LBL_Word_{abusiveword}_is/are_not_allowed_to_post", $this->siteLangId);
+                $errStr = str_replace("{abusiveword}", '"' . implode(", ", $enteredAbusiveWordsArr) . '"', $errStr);
                 FatUtility::dieJsonError($errStr);
             }
         }
@@ -5305,7 +5306,7 @@ class MobileAppApiController extends MyAppController
 
         $post['spreview_seller_user_id'] = $sellerId;
         $post['spreview_order_id'] = $opDetail['op_order_id'];
-        $post['spreview_product_id'] = $productId ;
+        $post['spreview_product_id'] = $productId;
         $post['spreview_selprod_id'] = $selProdId;
         $post['spreview_selprod_code'] = $selProdCode;
         $post['spreview_postedby_user_id'] = $user_id;
@@ -5331,7 +5332,7 @@ class MobileAppApiController extends MyAppController
         foreach ($ratingsPosted as $ratingAspect => $ratingValue) {
             if (isset($ratingAspects[$ratingAspect])) {
                 $selProdRating = new SelProdRating();
-                $ratingRow = array('sprating_spreview_id' => $spreviewId, 'sprating_rating_type'=> $ratingAspect ,'sprating_rating' => $ratingValue);
+                $ratingRow = array('sprating_spreview_id' => $spreviewId, 'sprating_rating_type' => $ratingAspect, 'sprating_rating' => $ratingValue);
                 $selProdRating->assignValues($ratingRow);
                 if (!$selProdRating->save()) {
                     $db->rollbackTransaction();
@@ -5354,7 +5355,7 @@ class MobileAppApiController extends MyAppController
             $emailNotificationObj->sendAdminAbusiveReviewNotification($spreviewId, $this->siteLangId);
         }
 
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'msg'=> Labels::getLabel('MSG_Feedback_Submitted_Successfully', $this->siteLangId) ,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'msg' => Labels::getLabel('MSG_Feedback_Submitted_Successfully', $this->siteLangId), 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function seller_orders()
@@ -5370,7 +5371,7 @@ class MobileAppApiController extends MyAppController
         $ocSrch = new SearchBase(OrderProduct::DB_TBL_CHARGES, 'opc');
         $ocSrch->doNotCalculateRecords();
         $ocSrch->doNotLimitRecords();
-        $ocSrch->addMultipleFields(array('opcharge_op_id','sum(opcharge_amount) as op_other_charges'));
+        $ocSrch->addMultipleFields(array('opcharge_op_id', 'sum(opcharge_amount) as op_other_charges'));
         $ocSrch->addGroupBy('opc.opcharge_op_id');
         $qryOtherCharges = $ocSrch->getQuery();
 
@@ -5386,7 +5387,7 @@ class MobileAppApiController extends MyAppController
         $srch->setPageSize($pagesize);
 
         $srch->addMultipleFields(
-            array('order_id', 'order_user_id','op_selprod_id','op_is_batch','selprod_product_id','order_date_added', 'order_net_amount', 'op_invoice_number','totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id','op_qty','op_selprod_options', 'op_brand_name', 'op_shop_name','op_other_charges','op_unit_price','op_tax_collected_by_seller','op_selprod_user_id','opshipping_by_seller_user_id','orderstatus_id','IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name')
+            array('order_id', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_id', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name')
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');
@@ -5453,15 +5454,15 @@ class MobileAppApiController extends MyAppController
         $orderStatuses = Orders::getOrderProductStatusArr($this->siteLangId);
         $count = 0;
         foreach ($orderStatuses as $key => $val) {
-            $orderStsArr[$count]['key']= $key;
-            $orderStsArr[$count]['value']= $val;
+            $orderStsArr[$count]['key'] = $key;
+            $orderStsArr[$count]['value'] = $val;
             $count++;
         }
 
-        $api_orders_elements = array('orders'=>$orders,'orderStatuses'=>$orderStsArr,'total_pages'=>$srch->pages(),'page'=>$page,'total_records'=>$srch->recordCount());
+        $api_orders_elements = array('orders' => $orders, 'orderStatuses' => $orderStsArr, 'total_pages' => $srch->pages(), 'page' => $page, 'total_records' => $srch->recordCount());
         //commonhelper::printarray($api_orders_elements);
         //die();
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_orders_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount), true));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_orders_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount), true));
     }
 
     public function view_seller_order($op_id)
@@ -5497,7 +5498,7 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
 
-        $paymentMethodName = ($orderDetail['pmethod_name'] !='')?$orderDetail['pmethod_name']:$orderDetail['pmethod_identifier'];
+        $paymentMethodName = ($orderDetail['pmethod_name'] != '') ? $orderDetail['pmethod_name'] : $orderDetail['pmethod_identifier'];
         if ($orderDetail['order_pmethod_id'] > 0 && $orderDetail['order_is_wallet_selected'] > 0) {
             $paymentMethodName .= ' + ';
         }
@@ -5505,7 +5506,7 @@ class MobileAppApiController extends MyAppController
         if ($orderDetail['order_is_wallet_selected'] > 0) {
             $paymentMethodName .= Labels::getLabel("LBL_Wallet", $this->siteLangId);
         }
-        $orderDetail['pmethod_name']= $paymentMethodName;
+        $orderDetail['pmethod_name'] = $paymentMethodName;
 
         $codOrder = false;
         if (strtolower($orderDetail['pmethod_code']) == 'cashondelivery') {
@@ -5535,8 +5536,8 @@ class MobileAppApiController extends MyAppController
             if (!array_key_exists($key, $allowedStatuses)) {
                 continue;
             }
-            $orderStsArr[$count]['key']= $key;
-            $orderStsArr[$count]['value']= $val;
+            $orderStsArr[$count]['key'] = $key;
+            $orderStsArr[$count]['value'] = $val;
             $count++;
         }
 
@@ -5567,12 +5568,12 @@ class MobileAppApiController extends MyAppController
 
 
         $address = $orderObj->getOrderAddresses($orderDetail['op_order_id']);
-        $orderDetail['billingAddress'] = (isset($address[Orders::BILLING_ADDRESS_TYPE]))?$address[Orders::BILLING_ADDRESS_TYPE]:(object)array();
-        $orderDetail['shippingAddress'] = (isset($address[Orders::SHIPPING_ADDRESS_TYPE]))?$address[Orders::SHIPPING_ADDRESS_TYPE]:(object)array();
+        $orderDetail['billingAddress'] = (isset($address[Orders::BILLING_ADDRESS_TYPE])) ? $address[Orders::BILLING_ADDRESS_TYPE] : (object)array();
+        $orderDetail['shippingAddress'] = (isset($address[Orders::SHIPPING_ADDRESS_TYPE])) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : (object)array();
 
-        $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("op_id"=>$op_id,'seller_id'=>$userId));
+        $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("op_id" => $op_id, 'seller_id' => $userId));
 
-        $data = array('op_id'=>$op_id , 'op_status_id' => $orderDetail['op_status_id']);
+        $data = array('op_id' => $op_id, 'op_status_id' => $orderDetail['op_status_id']);
 
 
         $shippedBySeller = applicationConstants::NO;
@@ -5581,30 +5582,30 @@ class MobileAppApiController extends MyAppController
         }
         $orderDetail['cart_total'] = CommonHelper::orderProductAmount($orderDetail, 'CART_TOTAL');
         $orderDetail['currency_cart_total'] = CommonHelper::displayMoneyFormat($orderDetail['cart_total'], true, false, false);
-        $orderDetail['shipping'] = $shippedBySeller?CommonHelper::orderProductAmount($orderDetail, 'SHIPPING'):0;
+        $orderDetail['shipping'] = $shippedBySeller ? CommonHelper::orderProductAmount($orderDetail, 'SHIPPING') : 0;
         $orderDetail['currency_shipping'] = CommonHelper::displayMoneyFormat($orderDetail['shipping'], true, false, false);
-        $orderDetail['tax'] = $orderDetail['op_tax_collected_by_seller']?CommonHelper::orderProductAmount($orderDetail, 'TAX'):0;
+        $orderDetail['tax'] = $orderDetail['op_tax_collected_by_seller'] ? CommonHelper::orderProductAmount($orderDetail, 'TAX') : 0;
         $orderDetail['currency_tax'] = CommonHelper::displayMoneyFormat($orderDetail['tax'], true, false, false);
-        $orderDetail['volume_discount'] = $orderDetail['op_tax_collected_by_seller']?CommonHelper::orderProductAmount($orderDetail, 'VOLUME_DISCOUNT'):0;
+        $orderDetail['volume_discount'] = $orderDetail['op_tax_collected_by_seller'] ? CommonHelper::orderProductAmount($orderDetail, 'VOLUME_DISCOUNT') : 0;
         $orderDetail['currency_volume_discount'] = CommonHelper::displayMoneyFormat($orderDetail['volume_discount'], true, false, false);
         $orderDetail['net_amount'] = CommonHelper::orderProductAmount($orderDetail, 'netamount', false, USER::USER_TYPE_SELLER);
         $orderDetail['currency_net_amount'] = CommonHelper::displayMoneyFormat($orderDetail['net_amount'], true, false, false);
-        $orderDetail['order_date_updated'] = ($orderDetail['order_date_updated'] == '0000-00-00 00:00:00')?$orderDetail['order_date_added']:$orderDetail['order_date_updated'];
+        $orderDetail['order_date_updated'] = ($orderDetail['order_date_updated'] == '0000-00-00 00:00:00') ? $orderDetail['order_date_added'] : $orderDetail['order_date_updated'];
 
         $displayForm = 0;
         if (in_array($orderDetail['op_status_id'], $processingStatuses)) {
             $displayForm = 1;
         }
 
-        $api_orders_elements = array('orderDetail'=>$orderDetail,'orderStatuses'=>$orderStsArr,'shippedBySeller'=>$shippedBySeller,'displayForm'=>$displayForm,'yesNoArr'=>applicationConstants::getYesNoArr($this->siteLangId));
+        $api_orders_elements = array('orderDetail' => $orderDetail, 'orderStatuses' => $orderStsArr, 'shippedBySeller' => $shippedBySeller, 'displayForm' => $displayForm, 'yesNoArr' => applicationConstants::getYesNoArr($this->siteLangId));
 
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_orders_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_orders_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function view_subscription_order($ossubs_id)
     {
         $userId = $this->getAppLoggedUserId();
-        $op_id =  FatUtility::int($ossubs_id);
+        $op_id = FatUtility::int($ossubs_id);
         if (1 > $ossubs_id) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
@@ -5622,9 +5623,9 @@ class MobileAppApiController extends MyAppController
         }
         $charges = $orderObj->getOrderProductChargesArr($op_id);
         $orderDetail['charges'] = $charges;
-        $data = array('ossubs_id'=>$ossubs_id , 'ossubs_status_id' => $orderDetail['ossubs_status_id']);
-        $api_orders_elements = array('orderDetail'=>$orderDetail,'orderStatuses'=>$orderStatuses,'yesNoArr'=>applicationConstants::getYesNoArr($this->siteLangId));
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_orders_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        $data = array('ossubs_id' => $ossubs_id, 'ossubs_status_id' => $orderDetail['ossubs_status_id']);
+        $api_orders_elements = array('orderDetail' => $orderDetail, 'orderStatuses' => $orderStatuses, 'yesNoArr' => applicationConstants::getYesNoArr($this->siteLangId));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_orders_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function change_order_status($op_id)
@@ -5666,7 +5667,7 @@ class MobileAppApiController extends MyAppController
         } else {
             FatUtility::dieJsonError(Labels::getLabel('M_ERROR_INVALID_REQUEST', $this->siteLangId));
         }
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>Labels::getLabel('MSG_Updated_Successfully', $this->siteLangId))));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => Labels::getLabel('MSG_Updated_Successfully', $this->siteLangId))));
     }
 
     public function seller_cancel_order($op_id)
@@ -5706,7 +5707,7 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('MSG_ERROR_INVALID_REQUEST', $this->siteLangId));
         }
 
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>Labels::getLabel('MSG_Updated_Successfully', $this->siteLangId))));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => Labels::getLabel('MSG_Updated_Successfully', $this->siteLangId))));
     }
 
     public function seller_subscription_orders()
@@ -5723,7 +5724,7 @@ class MobileAppApiController extends MyAppController
         $ocSrch->doNotCalculateRecords();
         $ocSrch->doNotLimitRecords();
         $ocSrch->addCondition('opcharge_order_type', '=', Orders::ORDER_SUBSCRIPTION);
-        $ocSrch->addMultipleFields(array('opcharge_op_id','sum(opcharge_amount) as op_other_charges'));
+        $ocSrch->addMultipleFields(array('opcharge_op_id', 'sum(opcharge_amount) as op_other_charges'));
         $ocSrch->addGroupBy('opc.opcharge_op_id');
         $qryOtherCharges = $ocSrch->getQuery();
 
@@ -5739,7 +5740,7 @@ class MobileAppApiController extends MyAppController
         $srch->setPageSize($pagesize);
 
         $srch->addMultipleFields(
-            array('order_id', 'order_user_id','user_autorenew_subscription','ossubs_id','ossubs_type','ossubs_plan_id','order_date_added', 'order_net_amount', 'ossubs_invoice_number','ossubs_subscription_name',  'ossubs_id', 'op_other_charges','ossubs_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name','ossubs_interval','ossubs_frequency','ossubs_till_date','ossubs_status_id','ossubs_from_date','order_language_id')
+            array('order_id', 'order_user_id', 'user_autorenew_subscription', 'ossubs_id', 'ossubs_type', 'ossubs_plan_id', 'order_date_added', 'order_net_amount', 'ossubs_invoice_number', 'ossubs_subscription_name',  'ossubs_id', 'op_other_charges', 'ossubs_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'ossubs_interval', 'ossubs_frequency', 'ossubs_till_date', 'ossubs_status_id', 'ossubs_from_date', 'order_language_id')
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');
@@ -5787,8 +5788,8 @@ class MobileAppApiController extends MyAppController
         }
         $orderStatuses = Orders::getOrderSubscriptionStatusArr($this->siteLangId);
 
-        $api_orders_elements = array('orders'=>$orders,'total_pages'=>$srch->pages(),'page'=>$page,'total_records'=>$srch->recordCount(),'orderStatuses'=>$orderStatuses);
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_orders_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        $api_orders_elements = array('orders' => $orders, 'total_pages' => $srch->pages(), 'page' => $page, 'total_records' => $srch->recordCount(), 'orderStatuses' => $orderStatuses);
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_orders_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function submit_return_order_request_message($orrmsg_orrequest_id)
@@ -5825,10 +5826,10 @@ class MobileAppApiController extends MyAppController
 
         /* save return request message[ */
         $returnRequestMsgDataToSave = array(
-        'orrmsg_orrequest_id'    =>    $requestRow['orrequest_id'],
-        'orrmsg_from_user_id'    =>    $user_id,
-        'orrmsg_msg'            =>    $post['msg'],
-        'orrmsg_date'            =>    date('Y-m-d H:i:s'),
+        'orrmsg_orrequest_id' => $requestRow['orrequest_id'],
+        'orrmsg_from_user_id' => $user_id,
+        'orrmsg_msg' => $post['msg'],
+        'orrmsg_date' => date('Y-m-d H:i:s'),
         );
         $oReturnRequestMsgObj = new OrderReturnRequestMessage();
         $oReturnRequestMsgObj->assignValues($returnRequestMsgDataToSave, true);
@@ -5849,10 +5850,10 @@ class MobileAppApiController extends MyAppController
         /* ] */
 
         $userObj = new User($user_id);
-        $userInfo = $userObj->getUserInfo(array('user_id','user_name'), true, true);
-        $returnRequestMsgDataToSave['msg_user_name'] =  $userInfo['user_name'];
+        $userInfo = $userObj->getUserInfo(array('user_id', 'user_name'), true, true);
+        $returnRequestMsgDataToSave['msg_user_name'] = $userInfo['user_name'];
 
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'msg_data'=>$returnRequestMsgDataToSave,'data'=>Labels::getLabel('MSG_Message_Submitted_Successfully!', $this->siteLangId))));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'msg_data' => $returnRequestMsgDataToSave, 'data' => Labels::getLabel('MSG_Message_Submitted_Successfully!', $this->siteLangId))));
     }
 
     public function approve_order_return_request($orrequest_id)
@@ -5894,7 +5895,7 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel($emailNotificationObj->getError(), $this->siteLangId));
         }
         /* ] */
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>Labels::getLabel('MSG_Request_Approved_Refund', $this->siteLangId))));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => Labels::getLabel('MSG_Request_Approved_Refund', $this->siteLangId))));
     }
 
     public function seller_view_order_return_request($orrequest_id)
@@ -5916,10 +5917,10 @@ class MobileAppApiController extends MyAppController
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addMultipleFields(
-            array( 'orrequest_id','orrequest_op_id', 'orrequest_user_id', 'orrequest_qty', 'orrequest_type',
-            'orrequest_date', 'orrequest_status','orrequest_reference',  'op_invoice_number', 'op_selprod_title', 'op_product_name',
+            array( 'orrequest_id', 'orrequest_op_id', 'orrequest_user_id', 'orrequest_qty', 'orrequest_type',
+            'orrequest_date', 'orrequest_status', 'orrequest_reference',  'op_invoice_number', 'op_selprod_title', 'op_product_name',
             'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_qty',
-            'op_unit_price', 'op_selprod_user_id', 'IFNULL(orreason_title, orreason_identifier) as orreason_title','op_shop_id', 'op_shop_name', 'op_shop_owner_name', 'buyer.user_name as buyer_name','order_tax_charged','op_other_charges','op_refund_shipping','op_refund_amount','op_commission_percentage','op_affiliate_commission_percentage','op_commission_include_tax','op_commission_include_shipping','op_free_ship_upto','op_actual_shipping_charges')
+            'op_unit_price', 'op_selprod_user_id', 'IFNULL(orreason_title, orreason_identifier) as orreason_title', 'op_shop_id', 'op_shop_name', 'op_shop_owner_name', 'buyer.user_name as buyer_name', 'order_tax_charged', 'op_other_charges', 'op_refund_shipping', 'op_refund_amount', 'op_commission_percentage', 'op_affiliate_commission_percentage', 'op_commission_include_tax', 'op_commission_include_shipping', 'op_free_ship_upto', 'op_actual_shipping_charges')
         );
 
         $rs = $srch->getResultSet();
@@ -5955,7 +5956,7 @@ class MobileAppApiController extends MyAppController
         }
 
         if ($attachedFile = AttachedFile::getAttachment(AttachedFile::FILETYPE_BUYER_RETURN_PRODUCT, $orrequest_id)) {
-            if (file_exists(CONF_UPLOADS_PATH.$attachedFile['afile_physical_path'])) {
+            if (file_exists(CONF_UPLOADS_PATH . $attachedFile['afile_physical_path'])) {
                 $this->set('attachedFile', $attachedFile);
             }
         }
@@ -5968,21 +5969,21 @@ class MobileAppApiController extends MyAppController
         $returnRequestTypeArr = OrderReturnRequest::getRequestTypeArr($this->siteLangId);
         $count = 0;
         foreach ($returnRequestTypeArr as $key => $val) {
-            $returnRequestTypeDispArr[$count]['key']= $key;
-            $returnRequestTypeDispArr[$count]['value']= $val;
+            $returnRequestTypeDispArr[$count]['key'] = $key;
+            $returnRequestTypeDispArr[$count]['value'] = $val;
             $count++;
         }
 
-        $return_request['canEscalateRequest'] = ($canEscalateRequest)?1:0;
-        $return_request['canApproveReturnRequest'] = ($canApproveReturnRequest)?1:0;
+        $return_request['canEscalateRequest'] = ($canEscalateRequest) ? 1 : 0;
+        $return_request['canApproveReturnRequest'] = ($canApproveReturnRequest) ? 1 : 0;
         $return_request['request'] = $request;
         $return_request['vendorReturnAddress'] = $vendorReturnAddress;
-        $return_request['returnRequestTypeArr']= $returnRequestTypeDispArr;
-        $return_request['requestRequestStatusArr']= OrderReturnRequest::getRequestStatusArr($this->siteLangId);
-        $return_request['logged_user_name']= $user['user_name'];
-        $return_request['logged_user_id']= $this->getAppLoggedUserId();
+        $return_request['returnRequestTypeArr'] = $returnRequestTypeDispArr;
+        $return_request['requestRequestStatusArr'] = OrderReturnRequest::getRequestStatusArr($this->siteLangId);
+        $return_request['logged_user_name'] = $user['user_name'];
+        $return_request['logged_user_id'] = $this->getAppLoggedUserId();
 
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$return_request,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $return_request, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function downloadAttachedFileForReturn($recordId, $recordSubid = 0)
@@ -5997,7 +5998,7 @@ class MobileAppApiController extends MyAppController
         if (false == $file_row) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
         }
-        if (!file_exists(CONF_UPLOADS_PATH.$file_row['afile_physical_path'])) {
+        if (!file_exists(CONF_UPLOADS_PATH . $file_row['afile_physical_path'])) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_File_not_found', $this->siteLangId));
         }
 
@@ -6024,7 +6025,7 @@ class MobileAppApiController extends MyAppController
         $srch->setPageSize($pagesize);
         $srch->addMultipleFields(
             array( 'orrequest_id', 'orrequest_user_id', 'orrequest_qty', 'orrequest_type', 'orrequest_reference', 'orrequest_date', 'orrequest_status',
-            'op_invoice_number', 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model','op_selprod_id','selprod_product_id')
+            'op_invoice_number', 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_selprod_id', 'selprod_product_id')
         );
         $srch->addOrder('orrequest_date', 'DESC');
         //die($srch->getquery());
@@ -6032,13 +6033,13 @@ class MobileAppApiController extends MyAppController
         if (!empty($keyword)) {
             $cnd = $srch->addCondition('op_invoice_number', '=', $keyword);
             $cnd->attachCondition('op_order_id', '=', $keyword);
-            $cnd->attachCondition('op_selprod_title', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('op_product_name', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('op_brand_name', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('op_selprod_options', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('op_selprod_sku', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('op_product_model', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('orrequest_reference', 'LIKE', '%'.$keyword.'%', 'OR');
+            $cnd->attachCondition('op_selprod_title', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('op_product_name', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('op_brand_name', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('op_selprod_options', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('op_selprod_sku', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('op_product_model', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('orrequest_reference', 'LIKE', '%' . $keyword . '%', 'OR');
         }
 
         $orrequest_status = FatApp::getPostedData('orrequest_status', null, '-1');
@@ -6055,12 +6056,12 @@ class MobileAppApiController extends MyAppController
 
         $orrequest_date_from = FatApp::getPostedData('orrequest_date_from', FatUtility::VAR_DATE, '');
         if (!empty($orrequest_date_from)) {
-            $srch->addCondition('orrequest_date', '>=', $orrequest_date_from. ' 00:00:00');
+            $srch->addCondition('orrequest_date', '>=', $orrequest_date_from . ' 00:00:00');
         }
 
         $orrequest_date_to = FatApp::getPostedData('orrequest_date_to', FatUtility::VAR_DATE, '');
         if (!empty($orrequest_date_to)) {
-            $srch->addCondition('orrequest_date', '<=', $orrequest_date_to. ' 23:59:59');
+            $srch->addCondition('orrequest_date', '<=', $orrequest_date_to . ' 23:59:59');
         }
 
         //echo $srch->getQuery(); die();
@@ -6069,27 +6070,27 @@ class MobileAppApiController extends MyAppController
 
         foreach ($requests as &$request) {
             $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($request['selprod_product_id'], "MEDIUM", $request['op_selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-            $request['product_image'] =  $mainImgUrl;
+            $request['product_image'] = $mainImgUrl;
         }
 
         $returnRequestTypeArr = OrderReturnRequest::getRequestTypeArr($this->siteLangId);
         $count = 0;
         foreach ($returnRequestTypeArr as $key => $val) {
-            $returnRequestTypeDispArr[$count]['key']= $key;
-            $returnRequestTypeDispArr[$count]['value']= $val;
+            $returnRequestTypeDispArr[$count]['key'] = $key;
+            $returnRequestTypeDispArr[$count]['value'] = $val;
             $count++;
         }
 
         $api_return_requests_elements = array(
-                                            'requests'=>$requests,
-                                            'total_pages'=>$srch->pages(),
-                                            'total_records'=>$srch->recordCount(),
-                                            'returnRequestTypeArr'=>$returnRequestTypeDispArr,
-                                            'OrderReturnRequestStatusArr'=>OrderReturnRequest::getRequestStatusArr($this->siteLangId),
-                                            'sellerPage'=>true,
-                                            'buyerPage'=>false
+                                            'requests' => $requests,
+                                            'total_pages' => $srch->pages(),
+                                            'total_records' => $srch->recordCount(),
+                                            'returnRequestTypeArr' => $returnRequestTypeDispArr,
+                                            'OrderReturnRequestStatusArr' => OrderReturnRequest::getRequestStatusArr($this->siteLangId),
+                                            'sellerPage' => true,
+                                            'buyerPage' => false
                                         );
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_return_requests_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount), true));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_return_requests_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount), true));
     }
 
     public function seller_order_cancellation_requests()
@@ -6119,12 +6120,12 @@ class MobileAppApiController extends MyAppController
 
         $ocrequest_date_from = FatApp::getPostedData('ocrequest_date_from', FatUtility::VAR_DATE, '');
         if (!empty($ocrequest_date_from)) {
-            $srch->addCondition('ocrequest_date', '>=', $ocrequest_date_from. ' 00:00:00');
+            $srch->addCondition('ocrequest_date', '>=', $ocrequest_date_from . ' 00:00:00');
         }
 
         $ocrequest_date_to = FatApp::getPostedData('ocrequest_date_to', FatUtility::VAR_DATE, '');
         if (!empty($ocrequest_date_to)) {
-            $srch->addCondition('ocrequest_date', '<=', $ocrequest_date_to. ' 23:59:59');
+            $srch->addCondition('ocrequest_date', '<=', $ocrequest_date_to . ' 23:59:59');
         }
 
         //$ocrequest_status = $post['ocrequest_status'];
@@ -6137,8 +6138,8 @@ class MobileAppApiController extends MyAppController
         $rs = $srch->getResultSet();
         $requests = FatApp::getDb()->fetchAll($rs);
 
-        $api_cancellation_requests_elements = array('requests'=>$requests,'total_pages'=>$srch->pages(),'total_records'=>$srch->recordCount(),'OrderCancelRequestStatusArr'=>OrderCancelRequest::getRequestStatusArr($this->siteLangId));
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_cancellation_requests_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        $api_cancellation_requests_elements = array('requests' => $requests, 'total_pages' => $srch->pages(), 'total_records' => $srch->recordCount(), 'OrderCancelRequestStatusArr' => OrderCancelRequest::getRequestStatusArr($this->siteLangId));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_cancellation_requests_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function seller_products_autocomplete()
@@ -6152,7 +6153,7 @@ class MobileAppApiController extends MyAppController
         $srch = SellerProduct::getSearchObject($this->siteLangId);
         $srch->doNotCalculateRecords();
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
-        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.$this->siteLangId, 'p_l');
+        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->siteLangId, 'p_l');
         $srch->addCondition('selprod_user_id', '=', $userId);
         $srch->addCondition('sp.selprod_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('p.product_active', '=', applicationConstants::ACTIVE);
@@ -6181,7 +6182,7 @@ class MobileAppApiController extends MyAppController
                     $variantStr .= ' (';
                     $counter = 1;
                     foreach ($options as $op) {
-                        $variantStr .= $op['option_name'].': '.$op['optionvalue_name'];
+                        $variantStr .= $op['option_name'] . ': ' . $op['optionvalue_name'];
                         if ($counter != count($options)) {
                             $variantStr .= ', ';
                         }
@@ -6190,12 +6191,12 @@ class MobileAppApiController extends MyAppController
                     $variantStr .= ' )';
                 }
                 $json[] = array(
-                'id'    =>    $selprod_id,
-                'value'    =>    strip_tags(html_entity_decode($variantStr, ENT_QUOTES, 'UTF-8')),
+                'id' => $selprod_id,
+                'value' => strip_tags(html_entity_decode($variantStr, ENT_QUOTES, 'UTF-8')),
                 );
             }
         }
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'suggestions' => $json)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'suggestions' => $json)));
     }
 
     public function toggle_auto_renewal_subscription()
@@ -6207,14 +6208,14 @@ class MobileAppApiController extends MyAppController
         } else {
             $status = applicationConstants::ON;
         }
-        $dataToUpdate = array('user_autorenew_subscription'=>$status);
+        $dataToUpdate = array('user_autorenew_subscription' => $status);
         $record = new User($userId);
         $record->assignValues($dataToUpdate);
 
         if (!$record->save()) {
             FatUtility::dieJsonError(Labels::getLabel('M_Unable_to_Process_the_request,Please_try_later', $this->siteLangId));
         }
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>Labels::getLabel('M_Settings_updated_successfully', $this->siteLangId))));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => Labels::getLabel('M_Settings_updated_successfully', $this->siteLangId))));
     }
 
     public function toggleProductFavorite($selprod_id)
@@ -6232,7 +6233,7 @@ class MobileAppApiController extends MyAppController
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
 
         $productRs = $srch->getResultSet();
-        $product= $db->fetch($productRs);
+        $product = $db->fetch($productRs);
 
         if (!$product) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
@@ -6251,13 +6252,13 @@ class MobileAppApiController extends MyAppController
                 FatUtility::dieJsonError(Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId));
             }
             $action = 'A'; //Added to favorite
-            die($this->json_encode_unicode(array('status'=>1,'msg'=>Labels::getLabel('LBL_Product_has_been_marked_as_favourite_successfully', $this->siteLangId))));
+            die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel('LBL_Product_has_been_marked_as_favourite_successfully', $this->siteLangId))));
         } else {
-            if (!$db->deleteRecords(Product::DB_TBL_PRODUCT_FAVORITE, array('smt'=>'ufp_user_id = ? AND ufp_selprod_id = ?', 'vals'=>array($loggedUserId, $product_id)))) {
+            if (!$db->deleteRecords(Product::DB_TBL_PRODUCT_FAVORITE, array('smt' => 'ufp_user_id = ? AND ufp_selprod_id = ?', 'vals' => array($loggedUserId, $product_id)))) {
                 FatUtility::dieJsonError(Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId));
             }
             $action = 'R'; //Removed from favorite
-            die($this->json_encode_unicode(array('status'=>1,'msg'=>Labels::getLabel('LBL_Product_has_been_removed_from_favourite_list', $this->siteLangId))));
+            die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel('LBL_Product_has_been_removed_from_favourite_list', $this->siteLangId))));
         }
     }
 
@@ -6272,7 +6273,7 @@ class MobileAppApiController extends MyAppController
         $srch->setDefinedCriteria($this->siteLangId);
         $srch->doNotCalculateRecords();
         $srch->addMultipleFields(
-            array( 'shop_id','shop_user_id','shop_ltemplate_id', 'shop_created_on', 'shop_name', 'shop_description',
+            array( 'shop_id', 'shop_user_id', 'shop_ltemplate_id', 'shop_created_on', 'shop_name', 'shop_description',
             'shop_country_l.country_name as shop_country_name', 'shop_state_l.state_name as shop_state_name', 'shop_city' )
         );
         $srch->addCondition('shop_id', '=', $shop_id);
@@ -6297,13 +6298,13 @@ class MobileAppApiController extends MyAppController
                 FatUtility::dieJsonError(Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId));
             }
             $action = 'A'; //Added to favorite
-            die($this->json_encode_unicode(array('status'=>1,'action'=>$action,'msg'=>Labels::getLabel('LBL_Shop_is_marked_as_favoutite', $this->siteLangId))));
+            die($this->json_encode_unicode(array('status' => 1, 'action' => $action, 'msg' => Labels::getLabel('LBL_Shop_is_marked_as_favoutite', $this->siteLangId))));
         } else {
-            if (!$db->deleteRecords(Shop::DB_TBL_SHOP_FAVORITE, array('smt'=>'ufs_user_id = ? AND ufs_shop_id = ?', 'vals'=>array($loggedUserId, $shop_id)))) {
+            if (!$db->deleteRecords(Shop::DB_TBL_SHOP_FAVORITE, array('smt' => 'ufs_user_id = ? AND ufs_shop_id = ?', 'vals' => array($loggedUserId, $shop_id)))) {
                 FatUtility::dieJsonError(Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId));
             }
             $action = 'R'; //Removed from favorite
-            die($this->json_encode_unicode(array('status'=>1,'action'=>$action,'msg'=>Labels::getLabel('LBL_Shop_has_been_removed_from_your_favourite_list', $this->siteLangId))));
+            die($this->json_encode_unicode(array('status' => 1, 'action' => $action, 'msg' => Labels::getLabel('LBL_Shop_has_been_removed_from_your_favourite_list', $this->siteLangId))));
         }
     }
 
@@ -6337,14 +6338,14 @@ class MobileAppApiController extends MyAppController
                 FatUtility::dieJsonError(Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId));
             }
             $action = 'A'; //Added to wishlist
-            die($this->json_encode_unicode(array('status'=>1,'msg'=>Labels::getLabel('LBL_Product_Added_in_list_successfully', $this->siteLangId))));
+            die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel('LBL_Product_Added_in_list_successfully', $this->siteLangId))));
         } else {
-            if (!$db->deleteRecords(UserWishList::DB_TBL_LIST_PRODUCTS, array('smt'=>'uwlp_uwlist_id = ? AND uwlp_selprod_id = ?', 'vals'=>array($wish_list_id, $selprod_id)))) {
+            if (!$db->deleteRecords(UserWishList::DB_TBL_LIST_PRODUCTS, array('smt' => 'uwlp_uwlist_id = ? AND uwlp_selprod_id = ?', 'vals' => array($wish_list_id, $selprod_id)))) {
                 Message::addErrorMessage(Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId));
                 FatUtility::dieWithError(Message::getHtml());
             }
             $action = 'R'; //Removed from wishlist
-            die($this->json_encode_unicode(array('status'=>1,'msg'=>Labels::getLabel('LBL_Product_Removed_from_list_successfully', $this->siteLangId))));
+            die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel('LBL_Product_Removed_from_list_successfully', $this->siteLangId))));
         }
     }
 
@@ -6357,16 +6358,16 @@ class MobileAppApiController extends MyAppController
         $srch->doNotLimitRecords();
         $srch->addMultipleFields(array('tag_id', 'IFNULL(tag_name, tag_identifier) as tag_name'));
         $srch->addOrder('tag_name');
-        $srch->addCondition('tag_name', 'LIKE', '%'.urldecode($post["keyword"]).'%');
+        $srch->addCondition('tag_name', 'LIKE', '%' . urldecode($post["keyword"]) . '%');
         $rs = $srch->getResultSet();
         $tags = FatApp::getDb()->fetchAll($rs);
 
         foreach ($tags as $key => $tag) {
             $json[] = array(
-            'value'     => strip_tags(html_entity_decode($tag['tag_name'], ENT_QUOTES, 'UTF-8')),
+            'value' => strip_tags(html_entity_decode($tag['tag_name'], ENT_QUOTES, 'UTF-8')),
             );
         }
-        die($this->json_encode_unicode(array('status'=>1,'suggestions'=>$json)));
+        die($this->json_encode_unicode(array('status' => 1, 'suggestions' => $json)));
     }
 
     public function faq($catId = '')
@@ -6381,7 +6382,7 @@ class MobileAppApiController extends MyAppController
         if (!empty($catId) && $catId > 0) {
             $faqCatId = array( $catId );
         } elseif ($faqMainCat) {
-            $faqCatId=array($faqMainCat);
+            $faqCatId = array($faqMainCat);
         } else {
             $srchFAQCat = FaqCategory::getSearchObject($this->siteLangId);
             $srchFAQCat->setPageSize(1);
@@ -6392,7 +6393,7 @@ class MobileAppApiController extends MyAppController
             $faqCatId = FatApp::getDb()->fetch($rs, 'faqcat_id');
         }
         $srch = FaqCategory::getSearchObject($this->siteLangId);
-        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = '.applicationConstants::ACTIVE.'  and faq_deleted = '.applicationConstants::NO);
+        $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = ' . applicationConstants::ACTIVE . '  and faq_deleted = ' . applicationConstants::NO);
         $srch->joinTable('tbl_faqs_lang', 'LEFT OUTER JOIN', 'faqlang_faq_id = faq_id');
         $srch->addCondition('faqlang_lang_id', '=', $this->siteLangId);
         $srch->addCondition('faqcat_active', '=', applicationConstants::ACTIVE);
@@ -6417,15 +6418,15 @@ class MobileAppApiController extends MyAppController
         $records = FatApp::getDb()->fetchAll($rs);
         //commonhelper::printarray($records);
 
-        $api_faq_elements = array('faqs'=>$records,'total_pages'=>$srch->pages(),'total_records'=>$srch->recordCount());
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_faq_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        $api_faq_elements = array('faqs' => $records, 'total_pages' => $srch->pages(), 'total_records' => $srch->recordCount());
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_faq_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function contactus()
     {
         $obj = new Extrapage();
         $pageData = $obj->getContentByPageType(Extrapage::CONTACT_US_CONTENT_BLOCK, $this->siteLangId);
-        die($this->json_encode_unicode(array('status'=>1,'page_content'=>$pageData)));
+        die($this->json_encode_unicode(array('status' => 1, 'page_content' => $pageData)));
     }
 
     public function contactsubmit()
@@ -6447,7 +6448,7 @@ class MobileAppApiController extends MyAppController
                 $msg = Labels::getLabel('MSG_your_message_sent_successfully', $this->siteLangId);
             }
         }
-        die($this->json_encode_unicode(array('status'=>1,'msg'=>$msg)));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => $msg)));
     }
 
     public function requestWithdrawal()
@@ -6456,8 +6457,8 @@ class MobileAppApiController extends MyAppController
         $userId = $this->getAppLoggedUserId();
         $balance = User::getUserBalance($userId);
         $lastWithdrawal = User::getUserLastWithdrawalRequest($userId);
-        if ($lastWithdrawal && (strtotime($lastWithdrawal["withdrawal_request_date"] . "+".FatApp::getConfig("CONF_MIN_INTERVAL_WITHDRAW_REQUESTS")." days") - time()) > 0) {
-            $nextWithdrawalDate = date('d M,Y', strtotime($lastWithdrawal["withdrawal_request_date"] . "+".FatApp::getConfig("CONF_MIN_INTERVAL_WITHDRAW_REQUESTS")." days"));
+        if ($lastWithdrawal && (strtotime($lastWithdrawal["withdrawal_request_date"] . "+" . FatApp::getConfig("CONF_MIN_INTERVAL_WITHDRAW_REQUESTS") . " days") - time()) > 0) {
+            $nextWithdrawalDate = date('d M,Y', strtotime($lastWithdrawal["withdrawal_request_date"] . "+" . FatApp::getConfig("CONF_MIN_INTERVAL_WITHDRAW_REQUESTS") . " days"));
             FatUtility::dieJsonError(sprintf(Labels::getLabel('MSG_Withdrawal_Request_Date', $this->siteLangId), FatDate::format($lastWithdrawal["withdrawal_request_date"]), FatDate::format($nextWithdrawalDate), FatApp::getConfig("CONF_MIN_INTERVAL_WITHDRAW_REQUESTS")));
         }
 
@@ -6490,7 +6491,7 @@ class MobileAppApiController extends MyAppController
 
         $withdrawal_payment_method = FatApp::getPostedData('uextra_payment_method', FatUtility::VAR_INT, 0);
 
-        $withdrawal_payment_method = ($withdrawal_payment_method > 0 && array_key_exists($withdrawal_payment_method, User::getAffiliatePaymentMethodArr($this->siteLangId))) ? $withdrawal_payment_method  : User::AFFILIATE_PAYMENT_METHOD_BANK;
+        $withdrawal_payment_method = ($withdrawal_payment_method > 0 && array_key_exists($withdrawal_payment_method, User::getAffiliatePaymentMethodArr($this->siteLangId))) ? $withdrawal_payment_method : User::AFFILIATE_PAYMENT_METHOD_BANK;
         $withdrawal_cheque_payee_name = '';
         $withdrawal_paypal_email_id = '';
         $withdrawal_bank = '';
@@ -6532,7 +6533,7 @@ class MobileAppApiController extends MyAppController
 
         $post['withdrawal_comments'] = $withdrawal_comments;
 
-        if (!$withdrawRequestId = $userObj->addWithdrawalRequest(array_merge($post, array("ub_user_id"=>$userId)), $this->siteLangId)) {
+        if (!$withdrawRequestId = $userObj->addWithdrawalRequest(array_merge($post, array("ub_user_id" => $userId)), $this->siteLangId)) {
             FatUtility::dieJsonError($userObj->getError());
         }
 
@@ -6540,16 +6541,16 @@ class MobileAppApiController extends MyAppController
         if (!$emailNotificationObj->sendWithdrawRequestNotification($withdrawRequestId, $this->siteLangId, "A")) {
             FatUtility::dieJsonError(Labels::getLabel($emailNotificationObj->getError(), $this->siteLangId));
         }
-        die($this->json_encode_unicode(array('status'=>1,'msg'=>Labels::getLabel('MSG_Withdraw_request_placed_successfully', $this->siteLangId))));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel('MSG_Withdraw_request_placed_successfully', $this->siteLangId))));
     }
 
     public function get_temp_token()
     {
         $user_id = $this->getAppLoggedUserId();
-        $uObj=new User($user_id);
+        $uObj = new User($user_id);
         $temp_token = substr(md5(rand(1, 99999) . microtime()), 1, 25);
         if ($uObj->createUserTempToken($temp_token)) {
-            die($this->json_encode_unicode(array('status'=>1, 'tkn'=>$temp_token)));
+            die($this->json_encode_unicode(array('status' => 1, 'tkn' => $temp_token)));
         } else {
             FatUtility::dieJSONError($uObj->getError());
         }
@@ -6567,25 +6568,25 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
         }
         $user_id = $this->getAppLoggedUserId();
-        $uObj=new User($user_id);
+        $uObj = new User($user_id);
         if (isset($post['ttkn'])) {
-            $temp_token=$post['ttkn'];
+            $temp_token = $post['ttkn'];
             if (strlen($temp_token) != 25) {
                 FatUtility::dieJSONError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
             }
             if (!$user_temp_token_data = $uObj->validateAPITempToken($temp_token)) {
                 FatUtility::dieJSONError(Labels::getLabel('LBL_Invalid_Temp_Token', $this->siteLangId));
             }
-            if (!$user = $uObj->getUserInfo(array('credential_username','credential_password','user_id'), true, true)) {
+            if (!$user = $uObj->getUserInfo(array('credential_username', 'credential_password', 'user_id'), true, true)) {
                 FatUtility::dieJSONError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
             }
             $authentication = new UserAuthentication();
             if ($authentication->login($user['credential_username'], $user['credential_password'], $_SERVER['REMOTE_ADDR'], false)) {
                 if ($uObj->deleteUserAPITempToken()) {
                     if ($is_wallet) {
-                        FatApp::redirectUser(CommonHelper::generateUrl('WalletPay', 'Recharge', array($order_id,'api',$this->siteLangId,$this->siteCurrencyId)));
+                        FatApp::redirectUser(CommonHelper::generateUrl('WalletPay', 'Recharge', array($order_id, 'api', $this->siteLangId, $this->siteCurrencyId)));
                     } else {
-                        FatApp::redirectUser(CommonHelper::generateUrl('checkout', 'index', array('api',$this->siteLangId,$this->siteCurrencyId)));
+                        FatApp::redirectUser(CommonHelper::generateUrl('checkout', 'index', array('api', $this->siteLangId, $this->siteCurrencyId)));
                     }
                 }
             }
@@ -6659,8 +6660,8 @@ class MobileAppApiController extends MyAppController
         $catSrch->addGroupBy('prodcat_code');
         //$categoriesArr = productCategory::getProdCatParentChildWiseArr( $this->siteLangId, 0, true, false, false, $catSrch );
 
-        $productCatObj = new ProductCategory;
-        $productCategories =  $productCatObj->getCategoriesForSelectBox($this->siteLangId);
+        $productCatObj = new ProductCategory();
+        $productCategories = $productCatObj->getCategoriesForSelectBox($this->siteLangId);
 
         $categoriesArr = ProductCategory::getProdCatParentChildWiseArr($this->siteLangId, 0, false, false, false, $catSrch, true);
 
@@ -6675,14 +6676,14 @@ class MobileAppApiController extends MyAppController
         /* ] */
 
         $productFiltersArr = array(
-        'categoriesArr'        =>    $categoriesArr,
-        'productCategories'        =>    $productCategories,
-        'shopCatFilters'        =>    true,
-        'brandsArr'            =>    $brandsArr,
-        'brandsCheckedArr'    =>    array($brandId),
-        'conditionsArr'        =>    $conditionsArr,
-        'priceArr'            =>    $priceArr,
-        'siteLangId'        =>    $this->siteLangId
+        'categoriesArr' => $categoriesArr,
+        'productCategories' => $productCategories,
+        'shopCatFilters' => true,
+        'brandsArr' => $brandsArr,
+        'brandsCheckedArr' => array($brandId),
+        'conditionsArr' => $conditionsArr,
+        'priceArr' => $priceArr,
+        'siteLangId' => $this->siteLangId
         );
 
         $brandData = array();
@@ -6693,10 +6694,10 @@ class MobileAppApiController extends MyAppController
         /*commonhelper::printarray($categoryData);
         die();*/
         //CommonHelper::printArray(array('status'=>1 ,'data'=>$api_home_page_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->user_details['favItems'],'unread_messages'=>$this->user_details['unreadMessages']));
-        $api_brand_page_elements = array('brandData'=>$brandData,'product_filters'=>$productFiltersArr);
+        $api_brand_page_elements = array('brandData' => $brandData, 'product_filters' => $productFiltersArr);
         //commonhelper::printarray($api_brand_page_elements);
         //die();
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=>$api_brand_page_elements,'cart_count'=>$this->cart_items,'fav_count'=>$this->totalFavouriteItems,'unread_messages'=>$this->totalUnreadMessageCount)));
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_brand_page_elements, 'cart_count' => $this->cart_items, 'fav_count' => $this->totalFavouriteItems, 'unread_messages' => $this->totalUnreadMessageCount)));
     }
 
     public function EscalateOrderReturnRequest($orrequest_id)
@@ -6719,8 +6720,8 @@ class MobileAppApiController extends MyAppController
         if (!$request || $request['orrequest_id'] != $orrequest_id) {
             FatUtility::dieJSONError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
-        $userObj=new User($user_id);
-        $user = $userObj->getUserInfo(array('credential_username','credential_password','user_preferred_dashboard'), false, false);
+        $userObj = new User($user_id);
+        $user = $userObj->getUserInfo(array('credential_username', 'credential_password', 'user_preferred_dashboard'), false, false);
         if (!$user) {
             FatUtility::dieJSONError($this->str_invalid_request);
         }
@@ -6748,7 +6749,7 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJSONError(Labels::getLabel($emailNotificationObj->getError(), $this->siteLangId));
         }
         /* ] */
-        die($this->json_encode_unicode(array('status'=>1,'msg'=>Labels::getLabel('MSG_Your_request_sent', $this->siteLangId))));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel('MSG_Your_request_sent', $this->siteLangId))));
     }
 
     public function markReviewHelpful($reviewId)
@@ -6760,11 +6761,11 @@ class MobileAppApiController extends MyAppController
         }
         $userId = $this->getAppLoggedUserId();
         $tblRecObj = new SelProdReviewHelpful();
-        $tblRecObj->assignValues(array('sprh_spreview_id'=>$reviewId , 'sprh_user_id'=>$userId, 'sprh_helpful'=>$isHelpful));
-        if (!$tblRecObj->addNew(array(), array('sprh_helpful'=>$isHelpful))) {
+        $tblRecObj->assignValues(array('sprh_spreview_id' => $reviewId, 'sprh_user_id' => $userId, 'sprh_helpful' => $isHelpful));
+        if (!$tblRecObj->addNew(array(), array('sprh_helpful' => $isHelpful))) {
             FatUtility::dieJSONError($tblRecObj->getError());
         }
-        die($this->json_encode_unicode(array('status'=>1,'msg'=>Labels::getLabel('Msg_Successfully_Updated', $this->siteLangId))));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel('Msg_Successfully_Updated', $this->siteLangId))));
     }
 
     public function report_shop_spam_reasons()
@@ -6772,11 +6773,11 @@ class MobileAppApiController extends MyAppController
         $orderCancelReasonsArr = ShopReportReason::getReportReasonArr($this->siteLangId);
         $count = 0;
         foreach ($orderCancelReasonsArr as $key => $val) {
-            $cancelReasonsArr[$count]['key']= $key;
-            $cancelReasonsArr[$count]['value']= $val;
+            $cancelReasonsArr[$count]['key'] = $key;
+            $cancelReasonsArr[$count]['value'] = $val;
             $count++;
         }
-        die($this->json_encode_unicode(array('status'=>1, 'reasons'=>$cancelReasonsArr)));
+        die($this->json_encode_unicode(array('status' => 1, 'reasons' => $cancelReasonsArr)));
     }
 
     public function submitShopReportSpam($shop_id)
@@ -6802,11 +6803,11 @@ class MobileAppApiController extends MyAppController
 
         $sReportObj = new ShopReport();
         $dataToSave = array(
-        'sreport_shop_id'            =>    $shop_id,
-        'sreport_reportreason_id'    =>    $post['sreport_reportreason_id'],
-        'sreport_message'            =>    $post['sreport_message'],
-        'sreport_user_id'            =>    $loggedUserId,
-        'sreport_added_on'            =>    date('Y-m-d H:i:s'),
+        'sreport_shop_id' => $shop_id,
+        'sreport_reportreason_id' => $post['sreport_reportreason_id'],
+        'sreport_message' => $post['sreport_message'],
+        'sreport_user_id' => $loggedUserId,
+        'sreport_added_on' => date('Y-m-d H:i:s'),
         );
 
         $sReportObj->assignValues($dataToSave);
@@ -6829,7 +6830,7 @@ class MobileAppApiController extends MyAppController
         /* ] */
 
         $sucessMsg = Labels::getLabel('MSG_Your_report_sent_review!', $this->siteLangId);
-        die($this->json_encode_unicode(array('status'=>1,'msg'=>$sucessMsg)));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => $sucessMsg)));
     }
 
     public function shopinfo($shop_id)
@@ -6839,7 +6840,7 @@ class MobileAppApiController extends MyAppController
         if (!$shop) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
-        die($this->json_encode_unicode(array('status'=>1, 'data'=>$shop)));
+        die($this->json_encode_unicode(array('status' => 1, 'data' => $shop)));
     }
 
     public function setUpWalletRecharge()
@@ -6859,7 +6860,7 @@ class MobileAppApiController extends MyAppController
         }
         $orderData = array();
         $order_id = isset($_SESSION['wallet_recharge_cart']["order_id"]) ? $_SESSION['wallet_recharge_cart']["order_id"] : false;
-        $orderData['order_type']= Orders::ORDER_WALLET_RECHARGE;
+        $orderData['order_type'] = Orders::ORDER_WALLET_RECHARGE;
 
         $orderData['userAddresses'] = array(); //No Need of it
         $orderData['order_id'] = $order_id;
@@ -6869,8 +6870,8 @@ class MobileAppApiController extends MyAppController
 
         /* order extras[ */
         $orderData['extra'] = array(
-        'oextra_order_id'    =>    $order_id,
-        'order_ip_address'    =>    $_SERVER['REMOTE_ADDR']
+        'oextra_order_id' => $order_id,
+        'order_ip_address' => $_SERVER['REMOTE_ADDR']
         );
 
         if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -6895,16 +6896,16 @@ class MobileAppApiController extends MyAppController
         /* ] */
 
         $languageRow = Language::getAttributesById($this->siteLangId);
-        $orderData['order_language_id'] =  $languageRow['language_id'];
-        $orderData['order_language_code'] =  $languageRow['language_code'];
+        $orderData['order_language_id'] = $languageRow['language_id'];
+        $orderData['order_language_code'] = $languageRow['language_code'];
 
         $currencyRow = Currency::getAttributesById($this->siteCurrencyId);
-        $orderData['order_currency_id'] =  $currencyRow['currency_id'];
-        $orderData['order_currency_code'] =  $currencyRow['currency_code'];
-        $orderData['order_currency_value'] =  $currencyRow['currency_value'];
+        $orderData['order_currency_id'] = $currencyRow['currency_id'];
+        $orderData['order_currency_code'] = $currencyRow['currency_code'];
+        $orderData['order_currency_value'] = $currencyRow['currency_value'];
 
-        $orderData['order_user_comments'] =  '';
-        $orderData['order_admin_comments'] =  '';
+        $orderData['order_user_comments'] = '';
+        $orderData['order_admin_comments'] = '';
 
         $orderData['order_shippingapi_id'] = 0;
         $orderData['order_shippingapi_code'] = '';
@@ -6920,7 +6921,7 @@ class MobileAppApiController extends MyAppController
         } else {
             FatUtility::dieJSONError($orderObj->getError());
         }
-        die($this->json_encode_unicode(array('status'=>1, 'order_id'=>$order_id)));
+        die($this->json_encode_unicode(array('status' => 1, 'order_id' => $order_id)));
         /*$this->set( 'redirectUrl', CommonHelper::generateUrl('WalletPay', 'Recharge', array($order_id)) );
         $this->set('msg', Labels::getLabel('MSG_Redirecting',$this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');*/
@@ -6934,10 +6935,10 @@ class MobileAppApiController extends MyAppController
         die(
             $this->json_encode_unicode(
                 array(
-                'status'=>1,
-                'title'=>$cpage['cpage_title'],
-                'content'=>$cpage['cpage_content'],
-                'web_url'=>CommonHelper::generateFullUrl('Cms', 'view', array($cpage['cpage_id'],true)),
+                'status' => 1,
+                'title' => $cpage['cpage_title'],
+                'content' => $cpage['cpage_content'],
+                'web_url' => CommonHelper::generateFullUrl('Cms', 'view', array($cpage['cpage_id'], true)),
                 )
             )
         );
@@ -6951,10 +6952,10 @@ class MobileAppApiController extends MyAppController
         die(
             $this->json_encode_unicode(
                 array(
-                'status'=>1,
-                'title'=>$cpage['cpage_title'],
-                'content'=>$cpage['cpage_content'],
-                'web_url'=>CommonHelper::generateFullUrl('Cms', 'view', array($cpage['cpage_id'])),
+                'status' => 1,
+                'title' => $cpage['cpage_title'],
+                'content' => $cpage['cpage_content'],
+                'web_url' => CommonHelper::generateFullUrl('Cms', 'view', array($cpage['cpage_id'])),
                 )
             )
         );
@@ -6968,10 +6969,10 @@ class MobileAppApiController extends MyAppController
         die(
             $this->json_encode_unicode(
                 array(
-                'status'=>1,
-                'title'=>$cpage['cpage_title'],
-                'content'=>$cpage['cpage_content'],
-                'web_url'=>CommonHelper::generateFullUrl('Cms', 'view', array($cpage['cpage_id'])),
+                'status' => 1,
+                'title' => $cpage['cpage_title'],
+                'content' => $cpage['cpage_content'],
+                'web_url' => CommonHelper::generateFullUrl('Cms', 'view', array($cpage['cpage_id'])),
                 )
             )
         );
@@ -6983,11 +6984,11 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJSONError(Labels::getLabel('Msg_Invalid_Request', $this->siteLangId));
         }
         $userId = $this->getAppLoggedUserId();
-        $uObj= new User($userId);
+        $uObj = new User($userId);
         if (!$uObj->setPushNotificationToken($this->appToken, $fcmDeviceId)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
-        die($this->json_encode_unicode(array('status'=>1,'msg'=>Labels::getLabel('Msg_Successfully_Updated', $this->siteLangId))));
+        die($this->json_encode_unicode(array('status' => 1, 'msg' => Labels::getLabel('Msg_Successfully_Updated', $this->siteLangId))));
     }
 
     public function markNotificationRead($notificationId)
@@ -7008,7 +7009,7 @@ class MobileAppApiController extends MyAppController
         }
         $nObj = new Notifications();
         if ($nObj->readUserNotification($notificationId, $userId)) {
-            die(json_encode(array('status'=>1, 'msg'=>Labels::getLabel('Msg_Successfully_Updated', $this->siteLangId))));
+            die(json_encode(array('status' => 1, 'msg' => Labels::getLabel('Msg_Successfully_Updated', $this->siteLangId))));
         } else {
             FatUtility::dieJsonError(Labels::getLabel('M_ERROR_INVALID_REQUEST', $this->siteLangId));
         }
@@ -7028,8 +7029,8 @@ class MobileAppApiController extends MyAppController
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
 
-        $api_notification_elements = array('records'=>$records,'total_pages'=>$srch->pages(),'total_records'=>$srch->recordCount());
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=> $api_notification_elements)));
+        $api_notification_elements = array('records' => $records, 'total_pages' => $srch->pages(), 'total_records' => $srch->recordCount());
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $api_notification_elements)));
     }
 
     public function downloads()
@@ -7042,7 +7043,7 @@ class MobileAppApiController extends MyAppController
         $srch->joinOrderUser();
         $srch->joinDigitalDownloads();
         $srch->addDigitalDownloadCondition();
-        $srch->addMultipleFields(array('op_selprod_id','selprod_product_id','op_id','op_invoice_number','order_user_id','op_product_type','order_date_added','op_qty','op_status_id','op_selprod_max_download_times','op_selprod_download_validity_in_days','opa.*'));
+        $srch->addMultipleFields(array('op_selprod_id', 'selprod_product_id', 'op_id', 'op_invoice_number', 'order_user_id', 'op_product_type', 'order_date_added', 'op_qty', 'op_status_id', 'op_selprod_max_download_times', 'op_selprod_download_validity_in_days', 'opa.*'));
         $srch->setPageNumber($page);
         $srch->addCondition('order_user_id', '=', $userId);
         $srch->addOrder('order_date_added', 'desc');
@@ -7057,8 +7058,8 @@ class MobileAppApiController extends MyAppController
         $rs = $srch->getResultSet();
         $downloads = FatApp::getDb()->fetchAll($rs);
         $digitalDownloads = Orders::digitalDownloadFormat($downloads, $this->siteLangId);
-        $api_download_elements = array('records'=>$digitalDownloads,'total_pages'=>$srch->pages(),'total_records'=>$srch->recordCount());
-        die($this->json_encode_unicode(array('status'=>1,'currencySymbol'=>$this->currencySymbol,'unread_notifications'=>$this->totalUnreadNotificationCount,'data'=> $digitalDownloads)));
+        $api_download_elements = array('records' => $digitalDownloads, 'total_pages' => $srch->pages(), 'total_records' => $srch->recordCount());
+        die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $digitalDownloads)));
     }
 
     public function downloadDigitalFile($aFileId, $recordId = 0)
@@ -7073,7 +7074,7 @@ class MobileAppApiController extends MyAppController
 
         $digitalDownloads = Orders::getOrderProductDigitalDownloads($recordId, $aFileId);
 
-        if ($digitalDownloads == false || empty($digitalDownloads) || $digitalDownloads[0]['order_user_id']!= $userId) {
+        if ($digitalDownloads == false || empty($digitalDownloads) || $digitalDownloads[0]['order_user_id'] != $userId) {
             dieJsonError(Utilities::getLabel('MSG_INVALID_ACCESS', $this->siteLangId));
         }
 
@@ -7083,7 +7084,7 @@ class MobileAppApiController extends MyAppController
             dieJsonError(Utilities::getLabel('MSG_Not_available_to_download', $this->siteLangId));
         }
 
-        if (!file_exists(CONF_UPLOADS_PATH.$res['afile_physical_path'])) {
+        if (!file_exists(CONF_UPLOADS_PATH . $res['afile_physical_path'])) {
             dieJsonError(Utilities::getLabel('LBL_File_not_found', $this->siteLangId));
         }
 
@@ -7101,9 +7102,9 @@ class MobileAppApiController extends MyAppController
         $srch->doNotCalculateRecords();
 
         $srch->addMultipleFields(
-            array( 'shop_id','shop_user_id','shop_ltemplate_id', 'shop_created_on', 'shop_name', 'shop_description',
+            array( 'shop_id', 'shop_user_id', 'shop_ltemplate_id', 'shop_created_on', 'shop_name', 'shop_description',
             'shop_payment_policy', 'shop_delivery_policy', 'shop_refund_policy', 'shop_additional_info', 'shop_seller_info',
-            'shop_country_l.country_name as shop_country_name', 'shop_state_l.state_name as shop_state_name', 'shop_city','u.user_name as shop_owner_name', 'u_cred.credential_username as shop_owner_username' )
+            'shop_country_l.country_name as shop_country_name', 'shop_state_l.state_name as shop_state_name', 'shop_city', 'u.user_name as shop_owner_name', 'u_cred.credential_username as shop_owner_username' )
         );
 
         $srch->addCondition('shop_id', '=', $shop_id);
@@ -7113,6 +7114,6 @@ class MobileAppApiController extends MyAppController
 
     private function getAppLoggedUserId()
     {
-        return isset($this->app_user["user_id"])?$this->app_user["user_id"]:0;
+        return isset($this->app_user["user_id"]) ? $this->app_user["user_id"] : 0;
     }
 }

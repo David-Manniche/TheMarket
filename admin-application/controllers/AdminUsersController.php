@@ -1,4 +1,5 @@
 <?php
+
 class AdminUsersController extends AdminBaseController
 {
     private $canView;
@@ -120,7 +121,7 @@ class AdminUsersController extends AdminBaseController
     {
         $this->objPrivilege->canViewAdminUsers();
 
-        $adminId =  FatUtility::int($adminId);
+        $adminId = FatUtility::int($adminId);
 
         $frm = $this->getForm($adminId);
 
@@ -177,7 +178,7 @@ class AdminUsersController extends AdminBaseController
     public function changePassword($adminId = 0)
     {
         $this->objPrivilege->canViewAdminUsers();
-        $adminId =  FatUtility::int($adminId);
+        $adminId = FatUtility::int($adminId);
         $frm = $this->getChangePasswordForm($adminId);
 
         if (0 >= $adminId) {
@@ -242,14 +243,14 @@ class AdminUsersController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $data = AdminUsers::getAttributesById($adminId, array('admin_id','admin_active'));
+        $data = AdminUsers::getAttributesById($adminId, array('admin_id', 'admin_active'));
 
-        if ($data==false) {
+        if ($data == false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $status=($data['admin_active'] == applicationConstants::ACTIVE)?0:1;
+        $status = ($data['admin_active'] == applicationConstants::ACTIVE) ? 0 : 1;
 
         $this->updateAdminUserStatus($adminId, $status);
 
@@ -300,7 +301,7 @@ class AdminUsersController extends AdminBaseController
     {
         $this->objPrivilege->canViewAdminPermissions();
         $adminId = FatUtility::int($adminId);
-        if (1 > $adminId || $adminId==1 || $adminId==$this->admin_id) {
+        if (1 > $adminId || $adminId == 1 || $adminId == $this->admin_id) {
             Message::addErrorMessage($this->str_invalid_request);
             FatApp::redirectUser(CommonHelper::generateUrl('adminUsers'));
         }
@@ -310,7 +311,7 @@ class AdminUsersController extends AdminBaseController
         $data = AdminUsers::getAttributesById($adminId);
 
 
-        $frm->fill(array('admin_id'=>$adminId));
+        $frm->fill(array('admin_id' => $adminId));
 
         $this->set('admin_id', $adminId);
         $this->set('frm', $frm);
@@ -356,9 +357,9 @@ class AdminUsersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         $data = array(
-        'admperm_admin_id'=>$adminId,
-        'admperm_section_id'=>$moduleId,
-        'admperm_value'=>$permission,
+        'admperm_admin_id' => $adminId,
+        'admperm_section_id' => $moduleId,
+        'admperm_value' => $permission,
         );
         $obj = new AdminUsers();
         if ($moduleId == 0) {
@@ -394,23 +395,23 @@ class AdminUsersController extends AdminBaseController
     private function getForm($adminId = 0)
     {
         $this->objPrivilege->canViewAdminUsers();
-        $adminId =  FatUtility::int($adminId);
+        $adminId = FatUtility::int($adminId);
 
         $frm = new Form('frmAdminUser');
         $frm->addHiddenField('', 'admin_id', $adminId);
         $frm->addRequiredField(Labels::getLabel('LBL_Full_Name', $this->adminLangId), 'admin_name');
-        $fld = $frm->addTextBox(Labels::getLabel('LBL_Username', $this->adminLangId), 'admin_username', '', array('id'=>'admin_username'));
-        $fld->setUnique(AdminUsers::DB_TBL, AdminUsers::DB_TBL_PREFIX.'username', 'admin_id', 'admin_id', 'admin_id');
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_Username', $this->adminLangId), 'admin_username', '', array('id' => 'admin_username'));
+        $fld->setUnique(AdminUsers::DB_TBL, AdminUsers::DB_TBL_PREFIX . 'username', 'admin_id', 'admin_id', 'admin_id');
         $fld->requirements()->setRequired();
         $fld->requirements()->setUsername();
-        $emailFld = $frm->addRequiredField(Labels::getLabel('LBL_Email', $this->adminLangId), 'admin_email', '', array('id'=>'admin_username'));
-        $emailFld->setUnique(AdminUsers::DB_TBL, AdminUsers::DB_TBL_PREFIX.'email', 'admin_id', 'admin_id', 'admin_id');
+        $emailFld = $frm->addRequiredField(Labels::getLabel('LBL_Email', $this->adminLangId), 'admin_email', '', array('id' => 'admin_username'));
+        $emailFld->setUnique(AdminUsers::DB_TBL, AdminUsers::DB_TBL_PREFIX . 'email', 'admin_id', 'admin_id', 'admin_id');
 
         if ($adminId == 0) {
-            $fld=$frm->addPasswordField(Labels::getLabel('LBL_Password', $this->adminLangId), 'password');
+            $fld = $frm->addPasswordField(Labels::getLabel('LBL_Password', $this->adminLangId), 'password');
             $fld->requirements()->setRequired();
             $fld->requirements()->setPassword();
-            $fld=$frm->addPasswordField(Labels::getLabel('LBL_Confirm_Password', $this->adminLangId), 'confirm_password');
+            $fld = $frm->addPasswordField(Labels::getLabel('LBL_Confirm_Password', $this->adminLangId), 'confirm_password');
             $fld->requirements()->setRequired();
             $fld->requirements()->setCompareWith('password', 'eq', '');
         }
@@ -431,20 +432,20 @@ class AdminUsersController extends AdminBaseController
         $permissionArr = AdminPrivilege::getPermissionArr();
         $frm = new Form('frmAllAccess');
         $frm->setFormTagAttribute('class', 'web_form form_horizontal');
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Select_permission_for_all_modules', $this->adminLangId), 'permissionForAll', $permissionArr, '', array('class'=>'permissionForAll'), Labels::getLabel('LBL_Select', $this->adminLangId));
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Select_permission_for_all_modules', $this->adminLangId), 'permissionForAll', $permissionArr, '', array('class' => 'permissionForAll'), Labels::getLabel('LBL_Select', $this->adminLangId));
         $fld->requirements()->setRequired();
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Apply_to_All', $this->adminLangId), array('onclick'=>'updatePermission(0);return false;'));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Apply_to_All', $this->adminLangId), array('onclick' => 'updatePermission(0);return false;'));
         return $frm;
     }
 
     private function getChangePasswordForm($adminId)
     {
-        $frm=new Form('frmAdminUserChangePassword');
+        $frm = new Form('frmAdminUserChangePassword');
         $frm->addHiddenField('', 'admin_id', $adminId);
-        $fld=$frm->addPasswordField(Labels::getLabel('LBL_New_Password', $this->adminLangId), 'password');
+        $fld = $frm->addPasswordField(Labels::getLabel('LBL_New_Password', $this->adminLangId), 'password');
         $fld->requirements()->setRequired(true);
         $fld->requirements()->setLength(4, 20);
-        $fld=$frm->addPasswordField(Labels::getLabel('LBL_Confirm_Password', $this->adminLangId), 'confirm_password');
+        $fld = $frm->addPasswordField(Labels::getLabel('LBL_Confirm_Password', $this->adminLangId), 'confirm_password');
         $fld->requirements()->setRequired();
         $fld->requirements()->setCompareWith('password', 'eq', '');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));

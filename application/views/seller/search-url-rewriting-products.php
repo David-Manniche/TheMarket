@@ -2,8 +2,8 @@
 $arr_flds = array(
     'listserial' => '#',
     'product_name' => Labels::getLabel('LBL_Product', $siteLangId),
-    'original' => Labels::getLabel('LBL_Original', $siteLangId),
-    'custom' => Labels::getLabel('LBL_Custom', $siteLangId),
+    'original' => Labels::getLabel('LBL_Original_URL', $siteLangId),
+    'custom' => Labels::getLabel('LBL_Custom_URL', $siteLangId),
 );
 
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered volDiscountList-js'));
@@ -54,19 +54,16 @@ foreach ($arrListing as $sn => $row) {
         }
     }
 }
+echo $tbl->getHtml();
 if (count($arrListing) == 0) {
-    $tbl->appendElement('tr', array('class' => 'noResult--js'))->appendElement(
-        'td',
-        array('colspan'=>count($arr_flds)),
-        Labels::getLabel('LBL_No_Record_Found', $siteLangId)
-    );
+    $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
+    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
 }
 
 $frm = new Form('frmSeoListing', array('id'=>'frmSeoListing'));
 $frm->setFormTagAttribute('class', 'form');
 
-echo $frm->getFormTag();
-echo $tbl->getHtml(); ?>
+echo $frm->getFormTag(); ?>
 </form>
 <?php
 $postedData['page'] = $page;

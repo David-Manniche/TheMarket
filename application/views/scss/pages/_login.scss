@@ -235,11 +235,10 @@
         font-size: calc(112.5% + 0.9vw);
     }
 
-    .forgot {
-        text-align: right;
-        font-size: 0.75em;
-    }
+
 }
+
+
 
 .or {
     display: block;
@@ -359,9 +358,8 @@
 
         input {
             &[type="submit"] {
-                background: $secondary-color;
-                color: #fff;
-                text-transform: uppercase;
+                background: $secondary-color; color:$secondary-color-inverse;
+                            text-transform: uppercase;
                 font-size: 1em;
                 border: none;
                 display: block;
@@ -439,4 +437,9 @@
             vertical-align: middle;
         }
     }
+}
+
+.forgot {
+    text-align: #{$end-direction};
+    font-size: 0.75em;
 }

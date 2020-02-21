@@ -10,7 +10,13 @@ $arr_flds = array(
 	'action' => Labels::getLabel('LBL_Action',$adminLangId),
 );
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered table-responsive'));
-$th = $tbl->appendElement('thead')->appendElement('tr');
+
+if( $totCartRecovered > 0 ){
+    $th = $tbl->appendElement('tr');
+    $th->appendElement('td', array('class' => 'text-right', 'colspan' => '7'), Labels::getLabel('LBL_Cart_Recovered_Amount',$adminLangId).": <strong>".CommonHelper::displayMoneyFormat($totCartRecovered)."</strong>", true);
+}
+
+$th = $tbl->appendElement('tr');
 /* foreach ($arr_flds as $val) {
 	$e = $th->appendElement('th', array(), $val);
 } */

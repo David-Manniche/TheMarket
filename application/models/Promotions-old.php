@@ -1,20 +1,21 @@
 <?php
+
 class Promotions extends MyAppModel
 {
-    const DB_TBL = 'tbl_promotions';
-    const DB_TBL_PREFIX = 'promotion_';
-    const DB_TBL_LANG ='tbl_promotions_lang';
-    const DB_TBL_LANG_PREFIX ='promotionlang_';
-    const DB_TBL_LOGS ='tbl_promotions_logs';
-    const DB_TBL_LOGS_PREFIX ='lprom_';
-    const DB_TBL_CLICKS = 'tbl_promotions_clicks' ;
-    const DB_TBL_CLICKS_PREFIX ='pclick_';
-    const DB_TBL_CHARGES = 'tbl_promotions_charges' ;
-    const DB_TBL_CHARGES_PREFIX ='pcharge_';
+    public const DB_TBL = 'tbl_promotions';
+    public const DB_TBL_PREFIX = 'promotion_';
+    public const DB_TBL_LANG = 'tbl_promotions_lang';
+    public const DB_TBL_LANG_PREFIX = 'promotionlang_';
+    public const DB_TBL_LOGS = 'tbl_promotions_logs';
+    public const DB_TBL_LOGS_PREFIX = 'lprom_';
+    public const DB_TBL_CLICKS = 'tbl_promotions_clicks';
+    public const DB_TBL_CLICKS_PREFIX = 'pclick_';
+    public const DB_TBL_CHARGES = 'tbl_promotions_charges';
+    public const DB_TBL_CHARGES_PREFIX = 'pcharge_';
 
-    const PROMOTE_BANNER =3;
-    const PROMOTE_SHOP =2;
-    const PROMOTE_PRODUCT =1;
+    public const PROMOTE_BANNER = 3;
+    public const PROMOTE_SHOP = 2;
+    public const PROMOTE_PRODUCT = 1;
 
     private $langId = 0;
     public function __construct($id = 0)
@@ -61,7 +62,7 @@ class Promotions extends MyAppModel
         'promotion_end_date' => $data['promotion_end_date'],
         'promotion_start_time' => $data['promotion_start_time'],
         'promotion_end_time' => $data['promotion_end_time'],
-        'promotion_status' => intval(1) ,
+        'promotion_status' => intval(1),
         );
         if (isset($data['promotion_banner_position']) && $data['promotion_banner_position'] != '') {
             $assign_fields['promotion_banner_position'] = $data['promotion_banner_position'];
@@ -215,7 +216,7 @@ class Promotions extends MyAppModel
         $srch->joinTable('(' . $qry_user_balance . ')', 'LEFT OUTER JOIN', 'u.user_id = tqub.utxn_user_id', 'tqub');
         $srch->joinTable('tbl_products', 'LEFT OUTER JOIN', 'tp.promotion_product_id = p.product_id and tp.promotion_type=1', 'p');
         $srch->joinTable('tbl_shops', 'LEFT OUTER JOIN', 'tp.promotion_shop_id = s.shop_id and tp.promotion_type=2', 's');
-        $srch->joinTable('tbl_promotions_lang', 'LEFT OUTER JOIN', 'tp.promotion_id = tpl.promotionlang_promotion_id and tpl.promotionlang_lang_id='.$this->langId, 'tpl');
+        $srch->joinTable('tbl_promotions_lang', 'LEFT OUTER JOIN', 'tp.promotion_id = tpl.promotionlang_promotion_id and tpl.promotionlang_lang_id=' . $this->langId, 'tpl');
         $srch->joinTable('(' . $qry_promotion_logs . ')', 'LEFT OUTER JOIN', 'tp.promotion_id = tqpl.lprom_id', 'tqpl');
         $srch->addCondition('promotion_is_deleted', '=', applicationConstants::NO);
 
@@ -243,14 +244,14 @@ class Promotions extends MyAppModel
                     $srch->addCondition('promotion_banner_position', '=', $val);
                     break;
                 case 'date_from':
-                    $srch->addDirectCondition("('".FatApp::getDb()->quoteVariable($val)."' BETWEEN promotion_start_date and promotion_end_date)");
+                    $srch->addDirectCondition("('" . FatApp::getDb()->quoteVariable($val) . "' BETWEEN promotion_start_date and promotion_end_date)");
                     break;
                 case 'date_to':
-                    $srch->addDirectCondition("('".FatApp::getDb()->quoteVariable($val)."' BETWEEN promotion_start_date and promotion_end_date)");
+                    $srch->addDirectCondition("('" . FatApp::getDb()->quoteVariable($val) . "' BETWEEN promotion_start_date and promotion_end_date)");
                     break;
                 case 'date_interval':
                     $arr = explode("~", $val);
-                    $srch->addDirectCondition("((promotion_start_date BETWEEN ".FatApp::getDb()->quoteVariable($arr[0])." and ".FatApp::getDb()->quoteVariable($arr[1]).") OR (promotion_end_date BETWEEN ".FatApp::getDb()->quoteVariable($arr[0])." and '".FatApp::getDb()->quoteVariable($arr[1])."'))");
+                    $srch->addDirectCondition("((promotion_start_date BETWEEN " . FatApp::getDb()->quoteVariable($arr[0]) . " and " . FatApp::getDb()->quoteVariable($arr[1]) . ") OR (promotion_end_date BETWEEN " . FatApp::getDb()->quoteVariable($arr[0]) . " and '" . FatApp::getDb()->quoteVariable($arr[1]) . "'))");
                     break;
                 case 'impressions_from':
                     $srch->addCondition('totImpressions', '>=', intval($val));
@@ -385,7 +386,7 @@ class Promotions extends MyAppModel
         $promotion_id = str_replace('mysql_func_', 'mysql_func ', $data['promotion_id']);
         $assign_fields = array(
         'lprom_id' => $promotion_id,
-        'lprom_date' => date('Y-m-d') ,
+        'lprom_date' => date('Y-m-d'),
         );
         $onDuplicateKeyUpdate = array_merge(
             $assign_fields,
@@ -422,7 +423,7 @@ class Promotions extends MyAppModel
         $record = new TableRecord(static::DB_TBL_CLICKS);
         $record->assignValues($assign_fields);
         if ($record->addNew(array('IGNORE'))) {
-            return FatApp::getDb()->insert_id()>0?true:false;
+            return FatApp::getDb()->insert_id() > 0 ? true : false;
         }
         return false;
     }

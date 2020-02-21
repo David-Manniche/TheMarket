@@ -18,7 +18,7 @@
 							<a href="<?php echo CommonHelper::generateUrl('advertiser','promotions');?>" class="btn btn--primary btn--sm"><?php echo Labels::getLabel('LBL_My_promotions',$siteLangId);?></a>
 						</div>
 					</div>
-					<div class="cards-content pl-4 pr-4 ">
+					<div class="cards-content ">
 						<div class="replaced">
 						<?php 
 							$searchForm->setFormTagAttribute('class', 'form');

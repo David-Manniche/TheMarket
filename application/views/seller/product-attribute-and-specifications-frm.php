@@ -15,6 +15,9 @@ $fld = $productFrm->getField('product_cod_enabled');
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 }
+
+$btnBackFld = $productFrm->getField('btn_back');
+$btnBackFld->setFieldTagAttribute('onClick', 'customProductForm('.$productId.');');
 ?>
 <div class="row justify-content-center">
      <div class="col-md-12">
@@ -99,9 +102,8 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
             foreach($otherLanguages as $langId=>$data) { 
          ?>
          <div class="accordion" id="specification-accordion">
-		 <ul class="list-group list-group-sm list-group-flush-y list-group-flush-x">
-		 <li class="list-group-item">
-		 <h6 data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+		 
+		 <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                  <span onClick="displayOtherLangProdSpec(this,<?php echo $langId; ?>)">
                  <?php echo $data." "; echo Labels::getLabel('LBL_Language_Specification', $siteLangId); ?>
                  </span>
@@ -110,8 +112,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                      <div class="specifications-form-<?php echo $langId; ?>"></div>
                     <div class="specifications-list-<?php echo $langId; ?>"></div>
                  </div>
-				 </li>
-		 </ul>
+				 
              
          </div>
          <?php } 
@@ -119,7 +120,17 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
          ?>
 
          <div class="row">
-             <div class="col-md-6">
+            <div class="col-md-6">
+                 <div class="field-set">
+                     <div class="caption-wraper"><label class="field_label"></label></div>
+                     <div class="field-wraper">
+                         <div class="field_cover">
+                         <?php  echo $productFrm->getFieldHtml('btn_back');?>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <div class="col-md-6 text-right">
                  <div class="field-set">
                      <div class="caption-wraper"><label class="field_label"></label></div>
                      <div class="field-wraper">

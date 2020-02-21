@@ -15,7 +15,7 @@ $coupon_max_discount_value_fld = $frm->getField('coupon_max_discount_value');
 $coupon_max_discount_value_fld->setWrapperAttribute('id', 'coupon_max_discount_value_div');
 
 $coupon_discount_in_percent_fld = $frm->getField('coupon_discount_in_percent');
-$coupon_discount_in_percent_fld->addFieldTagAttribute('onChange', 'callCouponDiscountIn(this.value); ');
+$coupon_discount_in_percent_fld->addFieldTagAttribute('onChange', 'callCouponDiscountIn(this.value, '.applicationConstants::PERCENTAGE.', '.applicationConstants::FLAT.'); ');
 
 $cvalid_fld = $frm->getField('coupon_valid_for');
 $cvalid_fld->setWrapperAttribute('id', 'coupon_validfor_div');
@@ -61,6 +61,7 @@ $cType_fld->requirements()->addOnChangerequirementUpdate(DiscountCoupons::TYPE_S
 <script type="text/javascript">
 $(document).ready(function(){
 	callCouponTypePopulate( <?php echo $coupon_type;?>);
-	callCouponDiscountIn(<?php echo $couponDiscountIn; ?>);
+	callCouponDiscountIn(<?php echo $couponDiscountIn; ?>, <?php echo applicationConstants::PERCENTAGE; ?>, <?php echo applicationConstants::FLAT; ?>);
 });
+
 </script>

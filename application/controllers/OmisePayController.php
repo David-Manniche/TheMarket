@@ -1,4 +1,5 @@
 <?php
+
 require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/omise/lib/Omise.php';
 
 class OmisePayController extends PaymentController
@@ -29,7 +30,7 @@ class OmisePayController extends PaymentController
 
     private function getPaymentForm($orderId)
     {
-        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm','action' => CommonHelper::generateUrl('OmisePay', 'send', array($orderId)), 'class' => "form form--normal"));
+        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => CommonHelper::generateUrl('OmisePay', 'send', array($orderId)), 'class' => "form form--normal"));
         $frm->addRequiredField(Labels::getLabel('LBL_ENTER_CREDIT_CARD_NUMBER', $this->siteLangId), 'cc_number');
         $frm->addRequiredField(Labels::getLabel('LBL_CARD_HOLDER_NAME', $this->siteLangId), 'cc_owner');
         $data['months'] = applicationConstants::getMonthsArr($this->siteLangId);
@@ -96,36 +97,36 @@ class OmisePayController extends PaymentController
                 $token = OmiseToken::create(
                     array(
                     'card' => array(
-                    'name'                 => $post['cc_owner'],
-                    'number'            => str_replace(' ', '', $post['cc_number']),
-                    'expiration_month'  => $post['cc_expire_date_month'],
-                    'expiration_year'   => $post['cc_expire_date_year'],
-                    'city'              => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_city'], ENT_QUOTES, 'UTF-8'),
-                    'city'              => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_city'], ENT_QUOTES, 'UTF-8'),
-                    'postal_code'       => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_postcode'], ENT_QUOTES, 'UTF-8'),
-                    'security_code'     => $post['cc_cvv'],
-                    'livemode'            => $livemode
+                    'name' => $post['cc_owner'],
+                    'number' => str_replace(' ', '', $post['cc_number']),
+                    'expiration_month' => $post['cc_expire_date_month'],
+                    'expiration_year' => $post['cc_expire_date_year'],
+                    'city' => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_city'], ENT_QUOTES, 'UTF-8'),
+                    'city' => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_city'], ENT_QUOTES, 'UTF-8'),
+                    'postal_code' => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_postcode'], ENT_QUOTES, 'UTF-8'),
+                    'security_code' => $post['cc_cvv'],
+                    'livemode' => $livemode
                     ))
                 );
                 $token_ref = $token->offsetGet('id');
                 $customer = OmiseCustomer::create(
                     array(
-                    'email'         => $orderInfo['customer_email'],
+                    'email' => $orderInfo['customer_email'],
                     'description' => $orderInfo['customer_name'] . ' (id: ' . $orderInfo['customer_id'] . ')',
-                    'card'         => $token_ref,
-                    'livemode'    => $livemode
+                    'card' => $token_ref,
+                    'livemode' => $livemode
                     )
                 );
                 $response = OmiseCharge::create(
                     array(
-                    'amount'      => $orderActualPaid,
-                    'currency'    => 'thb', /* $orderInfo["order_currency_code"], */
+                    'amount' => $orderActualPaid,
+                    'currency' => 'thb', /* $orderInfo["order_currency_code"], */
                     'description' => 'Order-' . $orderId,
-                    'ip'          => $_SERVER['REMOTE_ADDR'],
-                    'customer'    => $customer->offsetGet('id'),
+                    'ip' => $_SERVER['REMOTE_ADDR'],
+                    'customer' => $customer->offsetGet('id'),
                     // 'card'        => $token_ref,
-                    'livemode'      => $livemode,
-                    'return_uri'      => CommonHelper::generateFullUrl('OmisePay', 'success', array($orderId))
+                    'livemode' => $livemode,
+                    'return_uri' => CommonHelper::generateFullUrl('OmisePay', 'success', array($orderId))
                     )
                 );
                 if (!$response) {

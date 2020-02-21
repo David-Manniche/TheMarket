@@ -2,6 +2,7 @@
     $canCancelOrder = true;
     $canReturnRefund = true;
     $canReviewOrders = false;
+    $canSubmitFeedback = false;
 if (true == $primaryOrder) {
     if ($childOrderDetail['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
         $canCancelOrder = (in_array($childOrderDetail["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses(true)));
@@ -14,8 +15,9 @@ if (true == $primaryOrder) {
     if (in_array($childOrderDetail["op_status_id"], SelProdReview::getBuyerAllowedOrderReviewStatuses())) {
         $canReviewOrders = true;
     }
+
+    $canSubmitFeedback = Orders::canSubmitFeedback($childOrderDetail['order_user_id'], $childOrderDetail['order_id'], $childOrderDetail['op_selprod_id']);
 }
-$canSubmitFeedback = Orders::canSubmitFeedback($childOrderDetail['order_user_id'], $childOrderDetail['order_id'], $childOrderDetail['op_selprod_id']);
 
 ?> <?php if (!$print) {
     ?> <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <?php
@@ -72,7 +74,7 @@ $canSubmitFeedback = Orders::canSubmitFeedback($childOrderDetail['order_user_id'
                     </div> <?php
                     } ?>
                 </div>
-                <div class="cards-content pl-4 pr-4 ">
+                <div class="cards-content ">
                     <?php if ($primaryOrder) { ?>
                         <div class="row">
                         <div class="col-lg-6 col-md-6 mb-4">

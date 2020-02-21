@@ -85,7 +85,7 @@ if ($totReviews) {
             </div>
             <?php if ($canSubmitFeedback) { ?>
             <div class="col-md-4">
-                <div class="box box--white shadow rounded p-3 have-you">
+                <div class="box box--white rounded p-3 have-you">
                     <h5><?php echo Labels::getLabel('Lbl_Share_your_thoughts', $siteLangId); ?></h5>
                     <p><?php echo Labels::getLabel('Lbl_With_other_customers', $siteLangId); ?></p>
                     <a class="btn btn--primary btn-sm" href="<?php echo CommonHelper::generateUrl('Reviews', 'write', array($product_id)); ?>"><?php echo Labels::getLabel('Lbl_Write_a_Review', $siteLangId); ?></a>
@@ -103,7 +103,7 @@ if ($totReviews) {
             <div class="col-md-6">
                 <a href="javascript:void(0);" class="btn btn--primary d-block" data-sort='most_recent' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Recent', $siteLangId); ?></a>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 mt-2 mt-md-0">
                 <a href="javascript:void(0);" class="btn btn--secondary d-block btn-outline-primary" data-sort='most_helpful' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Helpful', $siteLangId); ?> </a>
             </div>
         </div>

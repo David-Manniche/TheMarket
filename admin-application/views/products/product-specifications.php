@@ -5,15 +5,17 @@ if (count($productSpecifications) > 0){ ?>
         <div class="tablewrap">
         <?php 
             $arr_flds = array(
-                'prodspec_name' => Labels::getLabel('LBL_Specification', $adminLangId),
-                'action' => Labels::getLabel('LBL_Action', $adminLangId)
+                'prodspec_name' => Labels::getLabel('LBL_Specification_Name', $adminLangId),
+                'prodspec_value' => Labels::getLabel('LBL_Specification_Value', $adminLangId),
+                'prodspec_group' => Labels::getLabel('LBL_Specification_Group', $adminLangId),
+                'action' => Labels::getLabel('', $adminLangId)
             );
            
             $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-bordered'));
             $th = $tbl->appendElement('thead')->appendElement('tr');
             foreach ($arr_flds as $key=>$val) {
-                if($key == 'prodspec_name'){
-                    $e = $th->appendElement('th', array('width'=>'80%'), $val);
+                if($key == 'prodspec_name' || $key == 'prodspec_value' || $key == 'prodspec_group'){
+                    $e = $th->appendElement('th', array('width'=>'30%'), $val);
                 }else{
                     $e = $th->appendElement('th', array(), $val);
                 }                
@@ -24,9 +26,6 @@ if (count($productSpecifications) > 0){ ?>
                     foreach ($arr_flds as $key=>$val){
                         $td = $tr->appendElement('td');
                         switch ($key){
-                            case 'prodspec_name':                        
-                                $td->appendElement('plaintext', array(),$specification[$key].": ".$specification['prodspec_value'],true);
-                            break; 
                             case 'action':       
                                  $prodSpecId = $specification['prodspec_id'];
                                  $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-sm btn-clean btn-icon btn-icon-md','title'=>Labels::getLabel('LBL_Edit',$adminLangId), 'onClick' => 'prodSpecificationSection('.$langId.','.$prodSpecId.')'), '<i class="fa fa-edit"></i>', true );

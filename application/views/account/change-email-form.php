@@ -7,6 +7,13 @@ $frm->setFormTagAttribute('autocomplete', 'off');
 $frm->setFormTagAttribute('onsubmit', 'updateEmail(this); return(false);');
 
 $fldSubmit = $frm->getField('btn_submit');
-$fldSubmit->htmlAfterField ='<br/><small>'.Labels::getLabel('MSG_Your_email_not_change_untill_you_confirm', $siteLangId).'</small>';
+$fldSubmit->developerTags['noCaptionTag'] = true;
+
+$str = '';
+if (isset($canSendSms) && true == $canSendSms) {
+    $str = '';
+}
+
+$fldSubmit->htmlAfterField = '<br/><small>' . Labels::getLabel('MSG_YOUR_EMAIL_WILL_NOT_CHANGE_UNTIL_YOU_VERIFY_YOUR_NEW_EMAIL_ADDRESS', $siteLangId) . '</small>';
 
 echo $frm->getFormHtml();

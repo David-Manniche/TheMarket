@@ -51,19 +51,18 @@ foreach ($arrListing as $sn => $row) {
         }
     }
 }
+
 if (count($arrListing) == 0) {
-    $tbl->appendElement('tr', array('class' => 'noResult--js'))->appendElement(
-        'td',
-        array('colspan'=>count($arr_flds)),
-        Labels::getLabel('LBL_No_Record_Found', $siteLangId)
-    );
+    $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
+    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
+} else {
+    echo $tbl->getHtml();
 }
 
 $frm = new Form('frmSeoListing', array('id'=>'frmSeoListing'));
 $frm->setFormTagAttribute('class', 'form');
 
-echo $frm->getFormTag();
-echo $tbl->getHtml(); ?>
+echo $frm->getFormTag(); ?>
 </form>
 <?php
 $postedData['page'] = $page;

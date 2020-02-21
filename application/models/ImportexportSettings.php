@@ -1,8 +1,9 @@
 <?php
+
 class ImportexportSettings extends MyAppModel
 {
-    const DB_TBL = 'tbl_import_export_settings';
-    const DB_TBL_PREFIX = 'setting_';
+    public const DB_TBL = 'tbl_import_export_settings';
+    public const DB_TBL_PREFIX = 'setting_';
     protected $db;
 
     public function __construct($settingId = 0)
@@ -66,6 +67,6 @@ class ImportexportSettings extends MyAppModel
 
     public function deleteSetting($code, $shopId)
     {
-        FatApp::getDb()->deleteRecords(static::DB_TBL, array( 'smt'=>'setting_code = ? and setting_shop_id = ?', 'vals'=>array( $code , $shopId ) ));
+        FatApp::getDb()->deleteRecords(static::DB_TBL, array( 'smt' => 'setting_code = ? and setting_shop_id = ?', 'vals' => array( $code, $shopId ) ));
     }
 }

@@ -49,8 +49,6 @@ $("document").ready(function(){
 		});
 	};
 	getReviewSCart= function(){
-
-
 		$(sCartReviewDiv).find('.section-head').attr('onClick','loadCartReviewDiv()');
 		$(sCartReviewDiv).html( fcom.getLoader());
 		$(paymentDiv).html('<div class="selected-panel">4. Make payment</div>');
@@ -61,9 +59,13 @@ $("document").ready(function(){
 		});
 	};
 	$(document).on('click',".confirmReview",function(){
-		// getReviewSCart();
+		if( isUserLogged() == 0 ){
+			loginPopUpBox();
+			return false;
+		}
 		$(sCartReviewDiv).removeClass("is-current");
 		loadPaymentSummary();
+		loadFinancialSummary();
 	});
 	$(document).on('click',".reviewOrder",function(){
 		loadSubscriptionCartReviewDiv();
@@ -86,17 +88,16 @@ $("document").ready(function(){
 		});
 	};
 	loadFinancialSummary= function(){
-
-
 		$(financialSummary).html( fcom.getLoader() );
-
 		fcom.ajax(fcom.makeUrl('SubscriptionCheckout', 'getFinancialSummary'), '', function(ans) {
 			$(financialSummary).html(ans);
-
-
 		});
 	}
 	walletSelection = function(el){
+		if( isUserLogged() == 0 ){
+			loginPopUpBox();
+			return false;
+		}
 		var wallet = ( $(el).is(":checked") ) ? 1 : 0;
 		var data = 'payFromWallet=' + wallet;
 		fcom.ajax(fcom.makeUrl('SubscriptionCheckout', 'walletSelection'), data, function(ans) {
@@ -186,15 +187,15 @@ $("document").ready(function(){
  	}
 	$(document).on('click','.coupon-input',function(){
 		if( isUserLogged() == 0 ){
-			$.mbsmessage(langLbl.userNotLogged,true,'alert--danger alert');
-		}else {
-			$.facebox(function() {
-				fcom.ajax(fcom.makeUrl('SubscriptionCheckout','getCouponForm'), '', function(t){
-					$.facebox(t,'faceboxWidth');
-					$("input[name='coupon_code']").focus();
-				});
-			});
+			loginPopUpBox();
+			return false;
 		}
+		$.facebox(function() {
+			fcom.ajax(fcom.makeUrl('SubscriptionCheckout','getCouponForm'), '', function(t){
+				$.facebox(t,'faceboxWidth');
+				$("input[name='coupon_code']").focus();
+			});
+		});
 	});
 
 })();

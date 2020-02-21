@@ -1,21 +1,22 @@
 <?php
+
 class SentEmailsController extends AdminBaseController
 {
     public function __construct($action)
-    {        
-        parent::__construct($action);                
+    {
+        parent::__construct($action);
     }
     
-    public function index() 
+    public function index()
     {
         $frm = $this->sentEmailSearchForm();
-        $this->set('srchFrm', $frm);             
+        $this->set('srchFrm', $frm);
         $this->_template->render();
     }
     
     public function search()
     {
-        if(!FatUtility::isAjaxCall()) {
+        if (!FatUtility::isAjaxCall()) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
         $srchFrm = $this->sentEmailSearchForm();
@@ -40,9 +41,9 @@ class SentEmailsController extends AdminBaseController
         $this->_template->render(false, false);
     }
     
-    function view($id)
+    public function view($id)
     {
-        $row_data =  SentEmail::getAttributesById($id);
+        $row_data = SentEmail::getAttributesById($id);
         $this->set('data', $row_data);
         $this->_template->render();
     }
@@ -55,4 +56,3 @@ class SentEmailsController extends AdminBaseController
         return $frm;
     }
 }
-?>

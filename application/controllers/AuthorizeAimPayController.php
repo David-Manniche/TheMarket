@@ -1,4 +1,5 @@
 <?php
+
 require CONF_INSTALLATION_PATH . 'library/payment-plugins/AuthorizeNet/autoload.php';
 use net\authorize\api\contract\v1 as AnetAPI;
 use net\authorize\api\controller as AnetController;
@@ -62,14 +63,14 @@ class AuthorizeAimPayController extends PaymentController
     public function checkCardType()
     {
         $post = FatApp::getPostedData();
-        $res=ValidateElement::ccNumber($post['cc']);
+        $res = ValidateElement::ccNumber($post['cc']);
         echo json_encode($res);
         exit;
     }
 
     private function getPaymentForm($orderId = '')
     {
-        $frm = new Form('frmPaymentForm', array('id'=>'frmPaymentForm','action'=>CommonHelper::generateUrl('AuthorizeAimPay', 'send', array($orderId)), 'class' =>"form form--normal"));
+        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => CommonHelper::generateUrl('AuthorizeAimPay', 'send', array($orderId)), 'class' => "form form--normal"));
         $frm->addRequiredField(Labels::getLabel('LBL_ENTER_CREDIT_CARD_NUMBER', $this->siteLangId), 'cc_number');
         $frm->addRequiredField(Labels::getLabel('LBL_CARD_HOLDER_NAME', $this->siteLangId), 'cc_owner');
         $data['months'] = applicationConstants::getMonthsArr($this->siteLangId);
@@ -88,8 +89,8 @@ class AuthorizeAimPayController extends PaymentController
 
     public function send($orderId)
     {
-        $pmObj=new PaymentSettings($this->keyName);
-        $paymentSettings=$pmObj->getPaymentSettings();
+        $pmObj = new PaymentSettings($this->keyName);
+        $paymentSettings = $pmObj->getPaymentSettings();
 
         $frm = $this->getPaymentForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
@@ -101,7 +102,7 @@ class AuthorizeAimPayController extends PaymentController
         $invalidCardDetail = false;
         if (date('Y') == $post['cc_expire_date_year'] && date('m') > $post['cc_expire_date_month']) {
             $invalidCardDetail = true;
-        } else if (date('Y') > $post['cc_expire_date_year']) {
+        } elseif (date('Y') > $post['cc_expire_date_year']) {
             $invalidCardDetail = true;
         }
 
@@ -110,7 +111,7 @@ class AuthorizeAimPayController extends PaymentController
             FatUtility::dieJsonError($message);
         }
 
-        $orderPaymentObj=new OrderPayment($orderId, $this->siteLangId);
+        $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         /* Retrieve Payment to charge corresponding to your order */
         $orderPaymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
 
@@ -132,7 +133,7 @@ class AuthorizeAimPayController extends PaymentController
             $creditCard = new AnetAPI\CreditCardType();
             $creditCard->setCardNumber(str_replace(' ', '', $post['cc_number']));
 
-            $creditCard->setExpirationDate($post['cc_expire_date_year'] ."-".$post['cc_expire_date_month']);
+            $creditCard->setExpirationDate($post['cc_expire_date_year'] . "-" . $post['cc_expire_date_month']);
             $creditCard->setCardCode($post['cc_cvv']);
 
             // Add the payment data to a paymentType object
@@ -186,7 +187,7 @@ class AuthorizeAimPayController extends PaymentController
             // Create the controller and get the response
             $controller = new AnetController\CreateTransactionController($request);
 
-            $actionUrl = (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true)?static::PRODUCTION:static::SANDBOX;
+            $actionUrl = (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) ? static::PRODUCTION : static::SANDBOX;
             $response = $controller->executeWithApiResponse($actionUrl);
 
             if ($response != null) {
@@ -198,19 +199,19 @@ class AuthorizeAimPayController extends PaymentController
 
                     if ($tresponse != null && $tresponse->getMessages() != null) {
                         $str = Labels::getLabel("Successfully created transaction with Transaction ID: {txn-id}", $this->siteLangId);
-                        $message = str_replace("{txn-id}", $tresponse->getTransId(), $str). "\n";
+                        $message = str_replace("{txn-id}", $tresponse->getTransId(), $str) . "\n";
 
                         $str = Labels::getLabel("Transaction Response Code: {txn-resp-code}", $this->siteLangId);
-                        $decription = str_replace("{txn-resp-code}", $tresponse->getResponseCode(), $str). "\n";
+                        $decription = str_replace("{txn-resp-code}", $tresponse->getResponseCode(), $str) . "\n";
 
                         $str = Labels::getLabel("Message Code: {msg-code}", $this->siteLangId);
-                        $decription .= str_replace("{msg-code}", $tresponse->getMessages()[0]->getCode(), $str). "\n";
+                        $decription .= str_replace("{msg-code}", $tresponse->getMessages()[0]->getCode(), $str) . "\n";
 
                         $str = Labels::getLabel("Auth Code: {auth-code}", $this->siteLangId);
-                        $decription .= str_replace("{auth-code}", $tresponse->getAuthCode(), $str). "\n";
+                        $decription .= str_replace("{auth-code}", $tresponse->getAuthCode(), $str) . "\n";
 
                         $str = Labels::getLabel("Description: {description}", $this->siteLangId);
-                        $decription .= str_replace("{description}", $tresponse->getMessages()[0]->getDescription(), $str). "\n";
+                        $decription .= str_replace("{description}", $tresponse->getMessages()[0]->getDescription(), $str) . "\n";
 
                         if (!$orderPaymentObj->addOrderPayment($paymentSettings["pmethod_name"], $tresponse->getTransId(), $orderPaymentAmount, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message)) {
                             $json['error'] = Labels::getLabel('MSS_Transaction_Failed', $this->siteLangId);
@@ -220,7 +221,7 @@ class AuthorizeAimPayController extends PaymentController
                             $json['redirect'] = CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
                         }
                     } else {
-                        $json['errorMsg'] =  Labels::getLabel('Transaction Failed', $this->siteLangId);
+                        $json['errorMsg'] = Labels::getLabel('Transaction Failed', $this->siteLangId);
                         if ($tresponse->getErrors() != null) {
                             $json['error'] = $tresponse->getErrors()[0]->getErrorText();
                             $json['errorCode'] = $tresponse->getErrors()[0]->getErrorCode();
@@ -228,7 +229,7 @@ class AuthorizeAimPayController extends PaymentController
                     }
                     // Or, print errors if the API request wasn't successful
                 } else {
-                    $json['errorMsg'] =  Labels::getLabel('MSG_Transaction Failed', $this->siteLangId);
+                    $json['errorMsg'] = Labels::getLabel('MSG_Transaction Failed', $this->siteLangId);
                     $tresponse = $response->getTransactionResponse();
                     if ($tresponse != null && $tresponse->getErrors() != null) {
                         $json['error'] = $tresponse->getErrors()[0]->getErrorText();

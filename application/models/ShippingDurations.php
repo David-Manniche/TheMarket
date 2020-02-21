@@ -1,28 +1,29 @@
 <?php
+
 class ShippingDurations extends MyAppModel
 {
-    const DB_TBL = 'tbl_shipping_durations';
-    const DB_TBL_PREFIX = 'sduration_';
+    public const DB_TBL = 'tbl_shipping_durations';
+    public const DB_TBL_PREFIX = 'sduration_';
 
-    const DB_TBL_LANG = 'tbl_shipping_durations_lang';
-    const DB_TBL_PREFIX_LANG = 'sdurationlang_';
+    public const DB_TBL_LANG = 'tbl_shipping_durations_lang';
+    public const DB_TBL_PREFIX_LANG = 'sdurationlang_';
 
-    const SHIPPING_DURATION_DAYS = 1;
-    const SHIPPING_DURATION_WEEK = 2;
+    public const SHIPPING_DURATION_DAYS = 1;
+    public const SHIPPING_DURATION_WEEK = 2;
 
     private $db;
 
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
-        $this->db=FatApp::getDb();
+        $this->db = FatApp::getDb();
     }
 
     public static function getSearchObject($langId = 0, $isDeleted = true)
     {
         $srch = new SearchBase(static::DB_TBL, 'sd');
         if ($isDeleted == true) {
-            $srch->addCondition('sd.'.static::DB_TBL_PREFIX.'deleted', '=', applicationConstants::NO);
+            $srch->addCondition('sd.' . static::DB_TBL_PREFIX . 'deleted', '=', applicationConstants::NO);
         }
 
         if ($langId > 0) {
@@ -42,7 +43,7 @@ class ShippingDurations extends MyAppModel
         if ($langId == 0) {
             trigger_error(Labels::getLabel('MSG_Language_Id_not_specified.', $langId), E_USER_ERROR);
         }
-        $arr=array(
+        $arr = array(
         static::SHIPPING_DURATION_DAYS => Labels::getLabel('LBL_Business_Days', $langId),
         static::SHIPPING_DURATION_WEEK => Labels::getLabel('LBL_Weeks', $langId),
         );
@@ -72,7 +73,7 @@ class ShippingDurations extends MyAppModel
 
     public function getShippingDurationAssoc($langId)
     {
-        $srch = $this->getListingObj($langId, array('sduration_id','sduration_name'));
+        $srch = $this->getListingObj($langId, array('sduration_id', 'sduration_name'));
         $rs = $srch->getResultSet();
         $durationArr = FatApp::getDb()->fetchAllAssoc($rs);
         return $durationArr;
@@ -81,11 +82,11 @@ class ShippingDurations extends MyAppModel
     public function canRecordMarkDelete($id)
     {
         $srch = self::getSearchObject();
-        $srch->addCondition('sd.'.static::DB_TBL_PREFIX.'id', '=', $id);
-        $srch->addFld('sd.'.static::DB_TBL_PREFIX.'id');
+        $srch->addCondition('sd.' . static::DB_TBL_PREFIX . 'id', '=', $id);
+        $srch->addFld('sd.' . static::DB_TBL_PREFIX . 'id');
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
-        if (!empty($row) && $row[static::DB_TBL_PREFIX.'id']==$id) {
+        if (!empty($row) && $row[static::DB_TBL_PREFIX . 'id'] == $id) {
             return true;
         }
         return false;
@@ -105,8 +106,8 @@ class ShippingDurations extends MyAppModel
         $str = Labels::getLabel('LBL_Shipping_Duration_Range_Label', $siteLangId);
 
         $replacementArr = array(
-        '{from}'    =>    $sdurationRow['sduration_from'],
-        '{to}'        =>    $sdurationRow['sduration_to'],
+        '{from}' => $sdurationRow['sduration_from'],
+        '{to}' => $sdurationRow['sduration_to'],
         '{day_or_week}' => $day_or_week
         );
         foreach ($replacementArr as $key => $val) {

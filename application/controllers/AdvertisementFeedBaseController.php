@@ -1,4 +1,5 @@
 <?php
+
 class AdvertisementFeedBaseController extends SellerPluginBaseController
 {
     private $keyName;

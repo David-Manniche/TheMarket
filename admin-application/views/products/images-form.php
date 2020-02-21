@@ -4,23 +4,31 @@ $imagesFrm->setFormTagAttribute('id', 'imageFrm');
 $imagesFrm->developerTags['colClassPrefix'] = 'col-md-';
 $imagesFrm->developerTags['fld_default_col'] = 6;
 
-$imgFld = $imagesFrm->getField('prod_image');
-$imgFld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
-$imgFld->addFieldTagAttribute('onChange', 'popupImage(this)');
-$imgFld->htmlBeforeField='<span class="filename"></span>';
-$imgFld->htmlAfterField='<br/><small>'.Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500._You_can_upload_multiple_photos_from_here.', $adminLangId).'</small>';
-
 $optionFld = $imagesFrm->getField('option_id');
 $optionFld->addFieldTagAttribute('class', 'option-js');
 
 $langFld = $imagesFrm->getField('lang_id');
 $langFld->addFieldTagAttribute('class', 'language-js');
 
-?>
-<div class="row justify-content-center">
-     <div class="col-md-12">
-         <?php echo $imagesFrm->getFormHtml(); ?>
+$imgFld = $imagesFrm->getField('prod_image');
+$imgFld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+$imgFld->addFieldTagAttribute('onChange', 'popupImage(this)');
+$imgFld->htmlBeforeField='<span class="filename"></span>';
+$imgFld->htmlAfterField='<br/><small>'.Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500._You_can_upload_multiple_photos_from_here.', $adminLangId).'</small>';
 
+/*$btnbackFld = $imagesFrm->getField('btn_back');
+$btnbackFld->developerTags['col'] = 6;
+
+$btnFinishFld = $imagesFrm->getField('btn_finish');
+$btnFinishFld->developerTags['col'] = 6;
+$btnFinishFld->addWrapperAttribute('class', 'text-right'); */
+
+?>
+
+
+<div class="tabs_data">
+     <div class="tabs_body">
+         <?php echo $imagesFrm->getFormHtml(); ?>
          <div id="imageupload_div" class="padd15">
             <?php if (!empty($product_images)) { ?>
             <ul class="grids--onefifth ui-sortable" id="<?php if ($canEdit) { ?>sortable<?php } ?>">
@@ -50,9 +58,32 @@ $langFld->addFieldTagAttribute('class', 'language-js');
             </ul>
             <?php } ?>
         </div>
-
-     </div>
+    </div>
+        
+    <div class="row web_form tabs_footer">
+        <div class="col-md-6">
+            <div class="field-set">
+                <div class="caption-wraper"><label class="field_label"></label></div>
+                <div class="field-wraper">
+                    <div class="field_cover">
+                        <input onclick="<?php if($productType == Product::PRODUCT_TYPE_PHYSICAL) { ?>productShipping(<?php echo $productId; ?>); <?php }else{ ?> productOptionsAndTag(<?php echo $productId; ?>); <?php }?>" type="button" name="btn_back" value="<?php echo Labels::getLabel('LBL_Back', $adminLangId); ?>">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 text-right">
+            <div class="field-set">
+                <div class="caption-wraper"><label class="field_label"></label></div>
+                <div class="field-wraper">
+                    <div class="field_cover">
+                        <input onclick="goToProduct();" type="submit" name="btn_Finish" value="<?php echo Labels::getLabel('LBL_Finish', $adminLangId); ?>">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 
 <script type="text/javascript">
 var aspectRatio = 1 / 1;

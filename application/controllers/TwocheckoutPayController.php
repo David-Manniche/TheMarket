@@ -12,8 +12,8 @@
  */
 class TwocheckoutPayController extends PaymentController
 {
-    private $keyName        =    "Twocheckout";
-    private $paymentType    =     ""; //holds two values HOSTED or API
+    private $keyName = "Twocheckout";
+    private $paymentType = ""; //holds two values HOSTED or API
 
     protected function allowedCurrenciesArr()
     {
@@ -89,7 +89,7 @@ class TwocheckoutPayController extends PaymentController
                 $message .= 'Merchant Order Id: ' . $post['merchant_order_id'] . "\n";
                 $message .= 'Pay Method: ' . $post['pay_method'] . "\n";
                 $message .= 'Description: ' . $post['li_0_name'] . "\n";
-                $message .= 'Hash Match: ' . 'Keys matched' .  "\n";
+                $message .= 'Hash Match: ' . 'Keys matched' . "\n";
                 /* Recording Payment in DB */
                 $orderPaymentObj->addOrderPayment($paymentSettings["pmethod_name"], $post['invoice_id'], $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $message);
                 /* End Recording Payment in DB */
@@ -121,7 +121,7 @@ class TwocheckoutPayController extends PaymentController
             "total" => $order_actual_paid,
             "billingAddr" => array(
             "name" => FatUtility::decodeHtmlEntities($orderInfo['customer_name'], ENT_QUOTES, 'UTF-8'),
-            "addrLine1" => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_address_1'], ENT_QUOTES, 'UTF-8').' '.FatUtility::decodeHtmlEntities($orderInfo['customer_billing_address_2'], ENT_QUOTES, 'UTF-8'),
+            "addrLine1" => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_address_1'], ENT_QUOTES, 'UTF-8') . ' ' . FatUtility::decodeHtmlEntities($orderInfo['customer_billing_address_2'], ENT_QUOTES, 'UTF-8'),
             "city" => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_city'], ENT_QUOTES, 'UTF-8'),
             "state" => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_state'], ENT_QUOTES, 'UTF-8'),
             "zipCode" => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_postcode'], ENT_QUOTES, 'UTF-8'),
@@ -141,16 +141,16 @@ class TwocheckoutPayController extends PaymentController
             )
             );
             if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) {
-                $url = 'https://www.2checkout.com/checkout/api/1/'.$paymentSettings['sellerId'].'/rs/authService';
+                $url = 'https://www.2checkout.com/checkout/api/1/' . $paymentSettings['sellerId'] . '/rs/authService';
             } elseif (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == false) {
-                $url = 'https://sandbox.2checkout.com/checkout/api/1/'.$paymentSettings['sellerId'].'/rs/authService';
+                $url = 'https://sandbox.2checkout.com/checkout/api/1/' . $paymentSettings['sellerId'] . '/rs/authService';
             }
             $params['sellerId'] = $paymentSettings['sellerId'];
             $params['privateKey'] = $paymentSettings['privateKey'];
 
             $curl = curl_init($url);
             $params = json_encode($params);
-            $header = array("content-type:application/json","content-length:".strlen($params));
+            $header = array("content-type:application/json", "content-length:" . strlen($params));
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -164,9 +164,9 @@ class TwocheckoutPayController extends PaymentController
                 $json['error'] = 'CURL ERROR: ' . curl_errno($curl) . '::' . curl_error($curl);
             } elseif ($result) {
                 $object = json_decode($result, true);
-                $result_array=array();
-                foreach ($object as $member=>$data) {
-                    $result_array[$member]=$data;
+                $result_array = array();
+                foreach ($object as $member => $data) {
+                    $result_array[$member] = $data;
                 }
                 /**
                 "validationErrors": null,
@@ -184,20 +184,20 @@ class TwocheckoutPayController extends PaymentController
                 $message = '';
                 if (!is_null($response)) {
                     $errors = $response['errors'];
-                    $validationErrors = !empty($response['validationErrors'])?$response['validationErrors']:''; // '' or null
+                    $validationErrors = !empty($response['validationErrors']) ? $response['validationErrors'] : ''; // '' or null
                     if (is_null($errors)) {
                         $responseCode = $response['responseCode']; //APPROVED : Code indicating the result of the authorization attempt.
                         $responseMsg = $response['responseMsg'];//Message indicating the result of the authorization attempt.
                         $orderNumber = $response['orderNumber'];//2Checkout Order Number
                         $merchantOrderId = $response['merchantOrderId'];//must be equal to order id sent
                         $transactionId = $response['transactionId'];//2Checkout Invoice ID
-                        $message .= 'Response Code: '.$responseCode. "\n";
-                        $message .= 'Order Number: '.$orderNumber. "\n";
-                        $message .= 'Merchant Order Id: '.$merchantOrderId. "\n";
-                        $message .= 'Transaction Id: '.$transactionId. "\n";
-                        $message .= 'Payment Method: 2Checkout API'. "\n";
-                        $message .= 'Response Message: '.$responseMsg. "\n";
-                        if ($responseCode=='APPROVED') {
+                        $message .= 'Response Code: ' . $responseCode . "\n";
+                        $message .= 'Order Number: ' . $orderNumber . "\n";
+                        $message .= 'Merchant Order Id: ' . $merchantOrderId . "\n";
+                        $message .= 'Transaction Id: ' . $transactionId . "\n";
+                        $message .= 'Payment Method: 2Checkout API' . "\n";
+                        $message .= 'Response Message: ' . $responseMsg . "\n";
+                        if ($responseCode == 'APPROVED') {
                             /* Recording Payment in DB */
                             $orderPaymentObj->addOrderPayment($paymentSettings["pmethod_name"], $transactionId, $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $message);
                             $json['redirect'] = CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
@@ -249,12 +249,12 @@ class TwocheckoutPayController extends PaymentController
         } else {
             $actionUrl = 'https://sandbox.2checkout.com/checkout/purchase';
         }
-        $frm = new Form('frmTwoCheckout', array('id'=>'frmTwoCheckout','action'=>$actionUrl, 'class' =>"form form--normal"));
+        $frm = new Form('frmTwoCheckout', array('id' => 'frmTwoCheckout', 'action' => $actionUrl, 'class' => "form form--normal"));
 
         $frm->addHiddenField('sid', 'sid', $paymentSettings["sellerId"]);
         $frm->addHiddenField('mode', 'mode', '2CO');//it should always be 2CO (We're using hosted payment approach)
         $txnid = $orderInfo["invoice"];
-        $frm->addHiddenField('li_0_name', 'li_0_name', 'Payment for Order - Invoice #'.$txnid);
+        $frm->addHiddenField('li_0_name', 'li_0_name', 'Payment for Order - Invoice #' . $txnid);
         $frm->addHiddenField('li_0_price', 'li_0_price', $payment_gateway_charge);
         $frm->addHiddenField('li_0_product_id', 'li_0_product_id', $orderId);//in our case it is order id
         $frm->addHiddenField('li_0_tangible', 'li_0_tangible', 'N');//no need of charging or calculating shipping as we have already handled the same at our end.
@@ -290,7 +290,7 @@ class TwocheckoutPayController extends PaymentController
 
     private function getAPICheckoutForm($paymentSettings, $orderId)
     {
-        $frm = new Form('frmTwoCheckout', array('id'=>'frmTwoCheckout','action'=>CommonHelper::generateUrl('TwocheckoutPay', 'send', array($orderId)), 'class' =>"form form--normal"));
+        $frm = new Form('frmTwoCheckout', array('id' => 'frmTwoCheckout', 'action' => CommonHelper::generateUrl('TwocheckoutPay', 'send', array($orderId)), 'class' => "form form--normal"));
 
         $frm->addRequiredField(Labels::getLabel('LBL_ENTER_CREDIT_CARD_NUMBER', $this->siteLangId), 'ccNo');
         $frm->addHiddenField('', 'token', '');

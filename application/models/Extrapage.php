@@ -1,4 +1,5 @@
 <?php
+
 class Extrapage extends MyAppModel
 {
     public const DB_TBL = 'tbl_extra_pages';
@@ -60,8 +61,8 @@ class Extrapage extends MyAppModel
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'ep_l.'.static::DB_TBL_LANG_PREFIX.'epage_id = ep.'.static::tblFld('id').' and
-			ep_l.'.static::DB_TBL_LANG_PREFIX.'lang_id = '.$langId,
+                'ep_l.' . static::DB_TBL_LANG_PREFIX . 'epage_id = ep.' . static::tblFld('id') . ' and
+			ep_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 'ep_l'
             );
         }
@@ -98,7 +99,7 @@ class Extrapage extends MyAppModel
 
     public function updatePageContent($data = array())
     {
-        if (! ($this->mainTableRecordId > 0)) {
+        if (!($this->mainTableRecordId > 0)) {
             $this->error = Labels::getLabel('MSG_Invalid_Request', $this->commonLangId);
             return false;
         }
@@ -165,9 +166,9 @@ class Extrapage extends MyAppModel
             return false;
         }
 
-        $originalUrl = static::REWRITE_URL_PREFIX.$this->mainTableRecordId;
+        $originalUrl = static::REWRITE_URL_PREFIX . $this->mainTableRecordId;
 
-        $seoUrl =  CommonHelper::seoUrl($keyword);
+        $seoUrl = CommonHelper::seoUrl($keyword);
 
         $customUrl = UrlRewrite::getValidSeoUrl($seoUrl, $originalUrl, $this->mainTableRecordId);
 

@@ -1,4 +1,5 @@
 <?php
+
 require_once CONF_INSTALLATION_PATH . 'library/APIs/twitteroauth-master/autoload.php';
 use Abraham\TwitterOAuth\TwitterOAuth;
 
@@ -18,7 +19,7 @@ class BuyerController extends BuyerBaseController
         $ocSrch = new SearchBase(OrderProduct::DB_TBL_CHARGES, 'opc');
         $ocSrch->doNotCalculateRecords();
         $ocSrch->doNotLimitRecords();
-        $ocSrch->addMultipleFields(array('opcharge_op_id','sum(opcharge_amount) as op_other_charges'));
+        $ocSrch->addMultipleFields(array('opcharge_op_id', 'sum(opcharge_amount) as op_other_charges'));
         $ocSrch->addGroupBy('opc.opcharge_op_id');
         $qryOtherCharges = $ocSrch->getQuery();
 
@@ -35,7 +36,7 @@ class BuyerController extends BuyerBaseController
         $srch->setPageSize(applicationConstants::DASHBOARD_PAGE_SIZE);
 
         $srch->addMultipleFields(
-            array('order_id', 'order_user_id','op_selprod_id','op_is_batch','selprod_product_id','order_date_added', 'order_net_amount', 'op_invoice_number','totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_product_type', 'op_status_id', 'op_id','op_qty','op_selprod_options', 'op_brand_name', 'op_shop_name','op_other_charges','op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name')
+            array('order_id', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_product_type', 'op_status_id', 'op_id', 'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name')
         );
         $rs = $srch->getResultSet();
         $orders = FatApp::getDb()->fetchAll($rs);
@@ -128,7 +129,7 @@ class BuyerController extends BuyerBaseController
     {
         if (!$orderId) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -140,7 +141,7 @@ class BuyerController extends BuyerBaseController
             $opOrderId = OrderProduct::getAttributesById($opId, 'op_order_id');
             if ($orderId != $opOrderId) {
                 $message = Labels::getLabel('MSG_Invalid_Order', $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($message);
                 }
                 Message::addErrorMessage($message);
@@ -157,7 +158,7 @@ class BuyerController extends BuyerBaseController
         $orderDetail = $orderObj->getOrderById($orderId, $this->siteLangId);
         if (!$orderDetail || ($orderDetail && $orderDetail['order_user_id'] != $userId)) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -177,17 +178,17 @@ class BuyerController extends BuyerBaseController
 
 
         if (0 < $opId) {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 $srch->joinTable(SelProdReview::DB_TBL, 'LEFT OUTER JOIN', 'o.order_id = spr.spreview_order_id and op.op_selprod_id = spr.spreview_selprod_id', 'spr');
                 $srch->joinTable(SelProdRating::DB_TBL, 'LEFT OUTER JOIN', 'sprating.sprating_spreview_id = spr.spreview_id', 'sprating');
-                $srch->addFld(array('*','IFNULL(ROUND(AVG(sprating_rating),2),0) as prod_rating'));
+                $srch->addFld(array('*', 'IFNULL(ROUND(AVG(sprating_rating),2),0) as prod_rating'));
             }
             $srch->addCondition('op_id', '=', $opId);
             $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")));
             $primaryOrderDisplay = true;
         }
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $srch->joinTable(
                 OrderReturnRequest::DB_TBL,
                 'LEFT OUTER JOIN',
@@ -200,7 +201,7 @@ class BuyerController extends BuyerBaseController
                 'ocr.ocrequest_op_id = op.op_id',
                 'ocr'
             );
-            $srch->addFld(array('*','IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request'));
+            $srch->addFld(array('*', 'IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request'));
         }
 
         $rs = $srch->getResultSet();
@@ -220,7 +221,7 @@ class BuyerController extends BuyerBaseController
 
         if (empty($childOrderDetail) || 1 > count($childOrderDetail)) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -229,13 +230,13 @@ class BuyerController extends BuyerBaseController
 
         $address = $orderObj->getOrderAddresses($orderDetail['order_id']);
         $orderDetail['billingAddress'] = $address[Orders::BILLING_ADDRESS_TYPE];
-        $orderDetail['shippingAddress'] = (!empty($address[Orders::SHIPPING_ADDRESS_TYPE]))?$address[Orders::SHIPPING_ADDRESS_TYPE]:array();
+        $orderDetail['shippingAddress'] = (!empty($address[Orders::SHIPPING_ADDRESS_TYPE])) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : array();
         if ($opId > 0) {
-            $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("op_id"=>$childOrderDetail['op_id']));
+            $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("op_id" => $childOrderDetail['op_id']));
         } else {
-            $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("order_id"=>$orderDetail['order_id']));
-            $payments = $orderObj->getOrderPayments(array("order_id"=>$orderDetail['order_id']));
-            if (true ===  MOBILE_APP_API_CALL) {
+            $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("order_id" => $orderDetail['order_id']));
+            $payments = $orderObj->getOrderPayments(array("order_id" => $orderDetail['order_id']));
+            if (true === MOBILE_APP_API_CALL) {
                 $payments = array_values($payments);
             }
             $orderDetail['payments'] = $payments;
@@ -263,14 +264,14 @@ class BuyerController extends BuyerBaseController
         $this->set('yesNoArr', applicationConstants::getYesNoArr($this->siteLangId));
 
 
-        $urlParts = array($orderId,$opId);
+        $urlParts = array($orderId, $opId);
         $this->set('urlParts', $urlParts);
         if ($print !== false) {
             $print = true;
         }
         $this->set('print', $print);
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->set('opId', $opId);
         }
 
@@ -290,7 +291,7 @@ class BuyerController extends BuyerBaseController
 
         $digitalDownloads = Orders::getOrderProductDigitalDownloads($recordId, $aFileId);
 
-        if ($digitalDownloads == false || empty($digitalDownloads) || $digitalDownloads[0]['order_user_id']!= $userId) {
+        if ($digitalDownloads == false || empty($digitalDownloads) || $digitalDownloads[0]['order_user_id'] != $userId) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Buyer', 'MyDownloads'));
         }
@@ -302,7 +303,7 @@ class BuyerController extends BuyerBaseController
             FatApp::redirectUser(CommonHelper::generateUrl('Buyer', 'MyDownloads'));
         }
 
-        if (!file_exists(CONF_UPLOADS_PATH.$res['afile_physical_path'])) {
+        if (!file_exists(CONF_UPLOADS_PATH . $res['afile_physical_path'])) {
             Message::addErrorMessage(Labels::getLabel('LBL_File_not_found', $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Buyer', 'MyDownloads'));
         }
@@ -324,7 +325,7 @@ class BuyerController extends BuyerBaseController
         }
 
         $digitalDownloadLinks = Orders::getOrderProductDigitalDownloadLinks($opId, $linkId);
-        if ($digitalDownloadLinks == false || empty($digitalDownloadLinks) || $digitalDownloadLinks[0]['order_user_id']!= $userId) {
+        if ($digitalDownloadLinks == false || empty($digitalDownloadLinks) || $digitalDownloadLinks[0]['order_user_id'] != $userId) {
             $message = Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId);
             LibHelper::dieJsonError($message);
         }
@@ -334,7 +335,7 @@ class BuyerController extends BuyerBaseController
             LibHelper::dieJsonError($message);
         }
         OrderProductDigitalLinks::updateDownloadCount($linkId);
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->set('data', ['link' => trim($res['opddl_downloadable_link'])]);
             $this->_template->render();
         }
@@ -397,7 +398,7 @@ class BuyerController extends BuyerBaseController
         $ocSrch = new SearchBase(OrderProduct::DB_TBL_CHARGES, 'opc');
         $ocSrch->doNotCalculateRecords();
         $ocSrch->doNotLimitRecords();
-        $ocSrch->addMultipleFields(array('opcharge_op_id','sum(opcharge_amount) as op_other_charges'));
+        $ocSrch->addMultipleFields(array('opcharge_op_id', 'sum(opcharge_amount) as op_other_charges'));
         $ocSrch->addGroupBy('opc.opcharge_op_id');
         $qryOtherCharges = $ocSrch->getQuery();
 
@@ -420,7 +421,7 @@ class BuyerController extends BuyerBaseController
             'ocr'
         );
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $srch->joinSellerProducts();
             $srch->addfld('selprod_product_id');
         }
@@ -432,8 +433,8 @@ class BuyerController extends BuyerBaseController
         $srch->setPageSize($pagesize);
         $srch->addMultipleFields(
             array('order_id', 'order_user_id', 'order_date_added', 'order_net_amount', 'op_invoice_number',
-            'totCombinedOrders as totOrders', 'op_selprod_id', 'op_selprod_title', 'op_product_name', 'op_id','op_other_charges','op_unit_price',
-            'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name','order_pmethod_id','order_status','pmethod_name', 'IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request', 'orderstatus_color_code', 'COALESCE(sps.selprod_return_age, ss.shop_return_age) as return_age', 'COALESCE(sps.selprod_cancellation_age, ss.shop_cancellation_age) as cancellation_age')
+            'totCombinedOrders as totOrders', 'op_selprod_id', 'op_selprod_title', 'op_product_name', 'op_id', 'op_other_charges', 'op_unit_price',
+            'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'order_pmethod_id', 'order_status', 'pmethod_name', 'IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request', 'orderstatus_color_code', 'COALESCE(sps.selprod_return_age, ss.shop_return_age) as return_age', 'COALESCE(sps.selprod_cancellation_age, ss.shop_cancellation_age) as cancellation_age')
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');
@@ -486,7 +487,7 @@ class BuyerController extends BuyerBaseController
         $this->set('recordCount', $srch->recordCount());
         $this->set('postedData', $post);
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
         $this->_template->render(false, false);
@@ -511,7 +512,7 @@ class BuyerController extends BuyerBaseController
         $srch->joinDigitalDownloads();
         $srch->addDigitalDownloadCondition();
         $srch->addMultipleFields(array('op_id', 'op_selprod_id', 'op_invoice_number', 'order_user_id', 'op_product_type', 'order_date_added', 'op_qty', 'op_status_id', 'op_selprod_max_download_times', 'op_selprod_download_validity_in_days', 'opa.*'));
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $srch->joinSellerProducts($this->siteLangId);
             $srch->addFld(array('selprod_product_id'));
         }
@@ -540,7 +541,7 @@ class BuyerController extends BuyerBaseController
         $this->set('postedData', $post);
         $this->set('languages', Language::getAllNames());
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
 
@@ -586,7 +587,7 @@ class BuyerController extends BuyerBaseController
         $this->set('postedData', $post);
         $this->set('languages', Language::getAllNames());
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
 
@@ -603,7 +604,7 @@ class BuyerController extends BuyerBaseController
         $srch->addCondition('order_user_id', '=', $user_id);
         $srch->addCondition('op_id', '=', $op_id);
         $srch->addOrder("op_id", "DESC");
-        $srch->addMultipleFields(array('op_status_id', 'op_id','op_product_type'));
+        $srch->addMultipleFields(array('op_status_id', 'op_id', 'op_product_type'));
         $rs = $srch->getResultSet();
         $opDetail = FatApp::getDb()->fetch($rs);
         if (!$opDetail || CommonHelper::isMultidimArray($opDetail)) {
@@ -656,11 +657,11 @@ class BuyerController extends BuyerBaseController
         $orderCancelReasonsArr = OrderCancelReason::getOrderCancelReasonArr($this->siteLangId);
         $count = 0;
         foreach ($orderCancelReasonsArr as $key => $val) {
-            $cancelReasonsArr[$count]['key']= $key;
-            $cancelReasonsArr[$count]['value']= $val;
+            $cancelReasonsArr[$count]['key'] = $key;
+            $cancelReasonsArr[$count]['value'] = $val;
             $count++;
         }
-        $this->set('data', array('reasons' =>$cancelReasonsArr));
+        $this->set('data', array('reasons' => $cancelReasonsArr));
         $this->_template->render();
     }
 
@@ -673,8 +674,8 @@ class BuyerController extends BuyerBaseController
         $orderReturnReasonsArr = OrderReturnReason::getOrderReturnReasonArr($this->siteLangId);
         $count = 0;
         foreach ($orderReturnReasonsArr as $key => $val) {
-            $returnReasonsArr[$count]['key']= $key;
-            $returnReasonsArr[$count]['value']= $val;
+            $returnReasonsArr[$count]['key'] = $key;
+            $returnReasonsArr[$count]['value'] = $val;
             $count++;
         }
         $srch = new OrderProductSearch($this->siteLangId, true);
@@ -682,7 +683,7 @@ class BuyerController extends BuyerBaseController
         $srch->addCondition('order_user_id', '=', $user_id);
         $srch->addCondition('op_id', '=', $op_id);
         $srch->addOrder("op_id", "DESC");
-        $srch->addMultipleFields(array('op_status_id', 'op_id', 'op_qty','op_product_type'));
+        $srch->addMultipleFields(array('op_status_id', 'op_id', 'op_qty', 'op_product_type'));
         $rs = $srch->getResultSet();
         $opDetail = FatApp::getDb()->fetch($rs);
         if (!$opDetail || CommonHelper::isMultidimArray($opDetail)) {
@@ -698,7 +699,7 @@ class BuyerController extends BuyerBaseController
         $frm = $this->getOrderCancelRequestForm($this->siteLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError(current($frm->getValidationErrors()));
             }
             Message::addErrorMessage(current($frm->getValidationErrors()));
@@ -716,7 +717,7 @@ class BuyerController extends BuyerBaseController
         $opDetail = FatApp::getDb()->fetch($rs);
         if (!$opDetail || CommonHelper::isMultidimArray($opDetail)) {
             $message = Labels::getLabel('MSG_ERROR_INVALID_ACCESS', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -726,7 +727,7 @@ class BuyerController extends BuyerBaseController
         if ($opDetail["op_product_type"] == Product::PRODUCT_TYPE_DIGITAL) {
             if (!in_array($opDetail["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses(true))) {
                 $message = Labels::getLabel('MSG_Order_Cancellation_cannot_placed', $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($message);
                 }
                 Message::addErrorMessage($message);
@@ -735,7 +736,7 @@ class BuyerController extends BuyerBaseController
         } else {
             if (!in_array($opDetail["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses())) {
                 $message = Labels::getLabel('MSG_Order_Cancellation_cannot_placed', $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($message);
                 }
                 Message::addErrorMessage($message);
@@ -745,7 +746,7 @@ class BuyerController extends BuyerBaseController
 
         if (!in_array($opDetail["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses())) {
             $message = Labels::getLabel('MSG_Order_Cancellation_cannot_placed', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -759,7 +760,7 @@ class BuyerController extends BuyerBaseController
         $ocRequestRs = $ocRequestSrch->getResultSet();
         if (FatApp::getDb()->fetch($ocRequestRs)) {
             $message = Labels::getLabel('MSG_You_have_already_sent_the_cancellation_request_for_this_order', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -767,12 +768,12 @@ class BuyerController extends BuyerBaseController
         }
 
         $dataToSave = array(
-        'ocrequest_user_id'    =>    $user_id,
-        'ocrequest_op_id'    =>    $opDetail['op_id'],
-        'ocrequest_ocreason_id'    =>    FatUtility::int($post['ocrequest_ocreason_id']),
-        'ocrequest_message'        =>    $post['ocrequest_message'],
-        'ocrequest_date'        =>    date('Y-m-d H:i:s'),
-        'ocrequest_status'        =>    OrderCancelRequest::CANCELLATION_REQUEST_STATUS_PENDING
+        'ocrequest_user_id' => $user_id,
+        'ocrequest_op_id' => $opDetail['op_id'],
+        'ocrequest_ocreason_id' => FatUtility::int($post['ocrequest_ocreason_id']),
+        'ocrequest_message' => $post['ocrequest_message'],
+        'ocrequest_date' => date('Y-m-d H:i:s'),
+        'ocrequest_status' => OrderCancelRequest::CANCELLATION_REQUEST_STATUS_PENDING
         );
 
         $oCRequestObj = new OrderCancelRequest();
@@ -786,7 +787,7 @@ class BuyerController extends BuyerBaseController
         $ocrequest_id = $oCRequestObj->getMainTableRecordId();
         if (!$ocrequest_id) {
             $message = Labels::getLabel('MSG_Something_went_wrong,_please_contact_admin', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -795,7 +796,7 @@ class BuyerController extends BuyerBaseController
 
         $emailObj = new EmailHandler();
         if (!$emailObj->sendOrderCancellationNotification($ocrequest_id, $this->siteLangId)) {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($emailObj->getError());
             }
             Message::addErrorMessage($emailObj->getError());
@@ -813,7 +814,7 @@ class BuyerController extends BuyerBaseController
 
         if (!Notification::saveNotifications($notificationData)) {
             $message = Labels::getLabel('MSG_NOTIFICATION_COULD_NOT_BE_SENT', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($emailObj->getError());
             }
             Message::addErrorMessage($message);
@@ -821,7 +822,7 @@ class BuyerController extends BuyerBaseController
         }
 
         $msg = Labels::getLabel('MSG_Your_cancellation_request_submitted', $this->siteLangId);
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->set('msg', $msg);
             $this->_template->render();
         }
@@ -849,9 +850,9 @@ class BuyerController extends BuyerBaseController
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $srch->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', 'selprod_id = op_selprod_id');
-            $srch->joinTable(SellerProduct::DB_TBL_LANG, 'INNER JOIN', 'selprod_id = selprodlang_selprod_id AND selprodlang_lang_id = '.$this->siteLangId);
+            $srch->joinTable(SellerProduct::DB_TBL_LANG, 'INNER JOIN', 'selprod_id = selprodlang_selprod_id AND selprodlang_lang_id = ' . $this->siteLangId);
             $srch->addFld(array('selprod_product_id', 'selprod_title'));
         }
 
@@ -862,12 +863,12 @@ class BuyerController extends BuyerBaseController
 
         $ocrequest_date_from = $post['ocrequest_date_from'];
         if (!empty($ocrequest_date_from)) {
-            $srch->addCondition('ocrequest_date', '>=', $ocrequest_date_from. ' 00:00:00');
+            $srch->addCondition('ocrequest_date', '>=', $ocrequest_date_from . ' 00:00:00');
         }
 
         $ocrequest_date_to = $post['ocrequest_date_to'];
         if (!empty($ocrequest_date_to)) {
-            $srch->addCondition('ocrequest_date', '<=', $ocrequest_date_to. ' 23:59:59');
+            $srch->addCondition('ocrequest_date', '<=', $ocrequest_date_to . ' 23:59:59');
         }
 
         /* $ocrequest_status = $post['ocrequest_status'];
@@ -888,7 +889,7 @@ class BuyerController extends BuyerBaseController
         $this->set('postedData', $post);
         $this->set('OrderCancelRequestStatusArr', OrderCancelRequest::getRequestStatusArr($this->siteLangId));
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
 
@@ -929,11 +930,11 @@ class BuyerController extends BuyerBaseController
             'op_invoice_number', 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model')
         );
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $srch->joinTable(OrderReturnReason::DB_TBL, 'LEFT JOIN', 'orrequest_returnreason_id = orreason_id');
-            $srch->joinTable(OrderReturnReason::DB_TBL_LANG, 'LEFT JOIN', 'orreasonlang_orreason_id = orreason_id AND orreasonlang_lang_id  = '.$this->siteLangId);
+            $srch->joinTable(OrderReturnReason::DB_TBL_LANG, 'LEFT JOIN', 'orreasonlang_orreason_id = orreason_id AND orreasonlang_lang_id  = ' . $this->siteLangId);
             $srch->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', 'selprod_id = op_selprod_id');
-            $srch->joinTable(SellerProduct::DB_TBL_LANG, 'INNER JOIN', 'selprod_id = selprodlang_selprod_id AND selprodlang_lang_id = '.$this->siteLangId);
+            $srch->joinTable(SellerProduct::DB_TBL_LANG, 'INNER JOIN', 'selprod_id = selprodlang_selprod_id AND selprodlang_lang_id = ' . $this->siteLangId);
             $srch->addFld(array('selprod_product_id', 'selprod_title', 'IFNULL(orreason_title, orreason_identifier) as requestReason'));
         }
 
@@ -942,13 +943,13 @@ class BuyerController extends BuyerBaseController
         $keyword = $post['keyword'];
         if (!empty($keyword)) {
             $cnd = $srch->addCondition('op_invoice_number', '=', $keyword);
-            $cnd->attachCondition('op_selprod_title', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('op_product_name', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('op_brand_name', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('op_selprod_options', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('op_selprod_sku', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('op_product_model', 'LIKE', '%'.$keyword.'%', 'OR');
-            $cnd->attachCondition('orrequest_reference', 'LIKE', '%'.$keyword.'%', 'OR');
+            $cnd->attachCondition('op_selprod_title', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('op_product_name', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('op_brand_name', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('op_selprod_options', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('op_selprod_sku', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('op_product_model', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('orrequest_reference', 'LIKE', '%' . $keyword . '%', 'OR');
         }
 
         $orrequest_status = FatApp::getPostedData('orrequest_status', null, '-1');
@@ -959,12 +960,12 @@ class BuyerController extends BuyerBaseController
 
         $orrequest_date_from = $post['orrequest_date_from'];
         if (!empty($orrequest_date_from)) {
-            $srch->addCondition('orrequest_date', '>=', $orrequest_date_from. ' 00:00:00');
+            $srch->addCondition('orrequest_date', '>=', $orrequest_date_from . ' 00:00:00');
         }
 
         $orrequest_date_to = $post['orrequest_date_to'];
         if (!empty($orrequest_date_to)) {
-            $srch->addCondition('orrequest_date', '<=', $orrequest_date_to. ' 23:59:59');
+            $srch->addCondition('orrequest_date', '<=', $orrequest_date_to . ' 23:59:59');
         }
 
         $rs = $srch->getResultSet();
@@ -980,7 +981,7 @@ class BuyerController extends BuyerBaseController
         $this->set('postedData', $post);
         $this->set('returnRequestTypeArr', OrderReturnRequest::getRequestTypeArr($this->siteLangId));
         $this->set('OrderReturnRequestStatusArr', OrderReturnRequest::getRequestStatusArr($this->siteLangId));
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
         $this->_template->render(false, false);
@@ -1017,17 +1018,17 @@ class BuyerController extends BuyerBaseController
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addMultipleFields(
-            array( 'orrequest_id','orrequest_op_id', 'orrequest_user_id', 'orrequest_qty', 'orrequest_type',
+            array( 'orrequest_id', 'orrequest_op_id', 'orrequest_user_id', 'orrequest_qty', 'orrequest_type',
             'orrequest_date', 'orrequest_status', 'orrequest_reference', 'op_invoice_number', 'op_selprod_title', 'op_product_name',
-            'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model','op_qty',
+            'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_qty',
             'op_unit_price', 'op_selprod_user_id', 'IFNULL(orreason_title, orreason_identifier) as orreason_title',
-            'op_shop_id', 'op_shop_name', 'op_shop_owner_name', 'order_tax_charged','op_other_charges','op_refund_amount','op_commission_percentage','op_affiliate_commission_percentage','op_commission_include_tax','op_commission_include_shipping','op_free_ship_upto','op_actual_shipping_charges')
+            'op_shop_id', 'op_shop_name', 'op_shop_owner_name', 'order_tax_charged', 'op_other_charges', 'op_refund_amount', 'op_commission_percentage', 'op_affiliate_commission_percentage', 'op_commission_include_tax', 'op_commission_include_shipping', 'op_free_ship_upto', 'op_actual_shipping_charges')
         );
         $rs = $srch->getResultSet();
         $request = FatApp::getDb()->fetch($rs);
         if (!$request) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -1080,7 +1081,7 @@ class BuyerController extends BuyerBaseController
         $this->_template->render();
     }
 
-    public function downloadAttachedFileForReturn($recordId, $recordSubid =0)
+    public function downloadAttachedFileForReturn($recordId, $recordSubid = 0)
     {
         $recordId = FatUtility::int($recordId);
 
@@ -1122,7 +1123,7 @@ class BuyerController extends BuyerBaseController
         $request = FatApp::getDb()->fetch($rs);
         if (!$request) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -1132,7 +1133,7 @@ class BuyerController extends BuyerBaseController
         $orrObj = new OrderReturnRequest();
         if (!$orrObj->withdrawRequest($request['orrequest_id'], $user_id, $this->siteLangId, $request['op_id'], $request['order_language_id'])) {
             $message = Labels::getLabel($orrObj->getError(), $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -1143,7 +1144,7 @@ class BuyerController extends BuyerBaseController
         $emailNotificationObj = new EmailHandler();
         if (!$emailNotificationObj->sendOrderReturnRequestStatusChangeNotification($request['orrequest_id'], $this->siteLangId)) {
             $message = Labels::getLabel($emailNotificationObj->getError(), $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -1164,7 +1165,7 @@ class BuyerController extends BuyerBaseController
             $message = Labels::getLabel('MSG_NOTIFICATION_COULD_NOT_BE_SENT', $this->siteLangId);
             LibHelper::dieJsonError($message);
         }
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
         Message::addMessage(Labels::getLabel('MSG_Request_Withdrawn', $this->siteLangId));
@@ -1219,7 +1220,7 @@ class BuyerController extends BuyerBaseController
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
             $message = current($frm->getValidationErrors());
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -1242,7 +1243,7 @@ class BuyerController extends BuyerBaseController
         $requestRow = FatApp::getDb()->fetch($rs);
         if (!$requestRow) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -1251,7 +1252,7 @@ class BuyerController extends BuyerBaseController
 
         if ($requestRow['orrequest_status'] == OrderReturnRequest::RETURN_REQUEST_STATUS_REFUNDED || $requestRow['orrequest_status'] == OrderReturnRequest::RETURN_REQUEST_STATUS_WITHDRAWN) {
             $message = Labels::getLabel('MSG_Message_cannot_be_posted_now,_as_order_is_refunded_or_withdrawn.', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -1260,16 +1261,16 @@ class BuyerController extends BuyerBaseController
 
         /* save return request message[ */
         $returnRequestMsgDataToSave = array(
-        'orrmsg_orrequest_id'    =>    $requestRow['orrequest_id'],
-        'orrmsg_from_user_id'    =>    $user_id,
-        'orrmsg_msg'            =>    $post['orrmsg_msg'],
-        'orrmsg_date'            =>    date('Y-m-d H:i:s'),
+        'orrmsg_orrequest_id' => $requestRow['orrequest_id'],
+        'orrmsg_from_user_id' => $user_id,
+        'orrmsg_msg' => $post['orrmsg_msg'],
+        'orrmsg_date' => date('Y-m-d H:i:s'),
         );
         $oReturnRequestMsgObj = new OrderReturnRequestMessage();
         $oReturnRequestMsgObj->assignValues($returnRequestMsgDataToSave);
         if (!$oReturnRequestMsgObj->save()) {
             $message = $oReturnRequestMsgObj->getError();
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -1278,7 +1279,7 @@ class BuyerController extends BuyerBaseController
         $orrmsg_id = $oReturnRequestMsgObj->getMainTableRecordId();
         if (!$orrmsg_id) {
             $message = Labels::getLabel('MSG_Something_went_wrong,_please_contact_admin', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -1290,7 +1291,7 @@ class BuyerController extends BuyerBaseController
         $emailNotificationObj = new EmailHandler();
         if (!$emailNotificationObj->sendReturnRequestMessageNotification($orrmsg_id, $this->siteLangId)) {
             $message = $emailNotificationObj->getError();
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -1309,7 +1310,7 @@ class BuyerController extends BuyerBaseController
 
         if (!Notification::saveNotifications($notificationData)) {
             $message = Labels::getLabel('MSG_NOTIFICATION_COULD_NOT_BE_SENT', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -1318,7 +1319,7 @@ class BuyerController extends BuyerBaseController
 
         $this->set('orrmsg_orrequest_id', $orrmsg_orrequest_id);
         $this->set('msg', Labels::getLabel('MSG_Message_Submitted_Successfully!', $this->siteLangId));
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
         $this->_template->render(false, false, 'json-success.php');
@@ -1404,7 +1405,7 @@ class BuyerController extends BuyerBaseController
         $opId = FatApp::getPostedData('op_id', FatUtility::VAR_INT, 0);
         if (1 > $opId) {
             $message = Labels::getLabel('MSG_ERROR_INVALID_ACCESS', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -1418,13 +1419,13 @@ class BuyerController extends BuyerBaseController
         $srch->addCondition('order_user_id', '=', $userId);
         $srch->addCondition('op_id', '=', $opId);
         $srch->addOrder("op_id", "DESC");
-        $srch->addMultipleFields(array('op_status_id', 'op_selprod_user_id', 'op_selprod_code','op_order_id','op_selprod_id','op_is_batch','op_batch_selprod_id'));
+        $srch->addMultipleFields(array('op_status_id', 'op_selprod_user_id', 'op_selprod_code', 'op_order_id', 'op_selprod_id', 'op_is_batch', 'op_batch_selprod_id'));
         $rs = $srch->getResultSet();
         $opDetail = FatApp::getDb()->fetch($rs);
 
         if (!$opDetail || CommonHelper::isMultidimArray($opDetail) || !(FatApp::getConfig("CONF_ALLOW_REVIEWS", FatUtility::VAR_INT, 0))) {
             $message = Labels::getLabel('MSG_ERROR_INVALID_ACCESS', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -1440,7 +1441,7 @@ class BuyerController extends BuyerBaseController
 
         if (1 > FatUtility::int($selProdId)) {
             $message = Labels::getLabel('MSG_ERROR_INVALID_ACCESS', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -1456,7 +1457,7 @@ class BuyerController extends BuyerBaseController
                 $statusNames[] = $orderStatuses[$status];
             }
             $message = sprintf(Labels::getLabel('MSG_Feedback_can_be_placed_', $this->siteLangId), implode(',', $statusNames));
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -1468,9 +1469,9 @@ class BuyerController extends BuyerBaseController
         $enteredAbusiveWordsArr = array();
         if (!Abusive::validateContent(FatApp::getPostedData('spreview_description', FatUtility::VAR_STRING, ''), $enteredAbusiveWordsArr)) {
             if (!empty($enteredAbusiveWordsArr)) {
-                $errStr =  Labels::getLabel("LBL_Word_{abusiveword}_is/are_not_allowed_to_post", $this->siteLangId);
-                $errStr = str_replace("{abusiveword}", '"'.implode(", ", $enteredAbusiveWordsArr).'"', $errStr);
-                if (true ===  MOBILE_APP_API_CALL) {
+                $errStr = Labels::getLabel("LBL_Word_{abusiveword}_is/are_not_allowed_to_post", $this->siteLangId);
+                $errStr = str_replace("{abusiveword}", '"' . implode(", ", $enteredAbusiveWordsArr) . '"', $errStr);
+                if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($errStr);
                 }
                 Message::addErrorMessage($errStr);
@@ -1495,7 +1496,7 @@ class BuyerController extends BuyerBaseController
 
         if (!$canSubmitFeedback) {
             $message = Labels::getLabel('MSG_Already_submitted_order_feedback', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -1505,7 +1506,7 @@ class BuyerController extends BuyerBaseController
         $frm = $this->getOrderFeedbackForm($opId, $this->siteLangId);
         $post = FatApp::getPostedData();
 
-        if (false ===  MOBILE_APP_API_CALL) {
+        if (false === MOBILE_APP_API_CALL) {
             $post = $frm->getFormDataFromArray($post);
             if (false === $post) {
                 Message::addErrorMessage($frm->getValidationErrors());
@@ -1516,7 +1517,7 @@ class BuyerController extends BuyerBaseController
 
         $post['spreview_seller_user_id'] = $sellerId;
         $post['spreview_order_id'] = $opDetail['op_order_id'];
-        $post['spreview_product_id'] = $productId ;
+        $post['spreview_product_id'] = $productId;
         $post['spreview_selprod_id'] = $selProdId;
         $post['spreview_selprod_code'] = $selProdCode;
         $post['spreview_postedby_user_id'] = $userId;
@@ -1534,7 +1535,7 @@ class BuyerController extends BuyerBaseController
         if (!$selProdReview->save()) {
             $db->rollbackTransaction();
             $this->orderFeedback($opId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($selProdReview->getError());
             }
             Message::addErrorMessage($selProdReview->getError());
@@ -1546,13 +1547,13 @@ class BuyerController extends BuyerBaseController
         foreach ($ratingsPosted as $ratingAspect => $ratingValue) {
             if (isset($ratingAspects[$ratingAspect])) {
                 $selProdRating = new SelProdRating();
-                $ratingRow = array('sprating_spreview_id' => $spreviewId, 'sprating_rating_type'=> $ratingAspect ,'sprating_rating' => $ratingValue);
+                $ratingRow = array('sprating_spreview_id' => $spreviewId, 'sprating_rating_type' => $ratingAspect, 'sprating_rating' => $ratingValue);
                 $selProdRating->assignValues($ratingRow);
                 if (!$selProdRating->save()) {
                     Message::addErrorMessage($selProdRating->getError());
                     $db->rollbackTransaction();
                     $this->orderFeedback($opId);
-                    if (true ===  MOBILE_APP_API_CALL) {
+                    if (true === MOBILE_APP_API_CALL) {
                         LibHelper::dieJsonError($selProdRating->getError());
                     }
                     return true;
@@ -1586,7 +1587,7 @@ class BuyerController extends BuyerBaseController
                 $message = Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->siteLangId);
                 Message::addErrorMessage($message);
                 $this->orderFeedback($opId);
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($message);
                 }
                 return true;
@@ -1604,13 +1605,13 @@ class BuyerController extends BuyerBaseController
                 $message = Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->siteLangId);
                 Message::addErrorMessage($message);
                 $this->orderFeedback($opId);
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($message);
                 }
                 return true;
             }
         }
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
         Message::addMessage(Labels::getLabel('MSG_Feedback_Submitted_Successfully', $this->siteLangId));
@@ -1639,7 +1640,7 @@ class BuyerController extends BuyerBaseController
         $srch->addCondition('order_user_id', '=', $user_id);
         $srch->addCondition('op_id', '=', $op_id);
         $srch->addOrder("op_id", "DESC");
-        $srch->addMultipleFields(array('op_status_id', 'op_id', 'op_qty','op_product_type'));
+        $srch->addMultipleFields(array('op_status_id', 'op_id', 'op_qty', 'op_product_type'));
         $rs = $srch->getResultSet();
         $opDetail = FatApp::getDb()->fetch($rs);
 
@@ -1710,7 +1711,7 @@ class BuyerController extends BuyerBaseController
         $srch->addCondition('order_user_id', '=', $user_id);
         $srch->addCondition('op_id', '=', $op_id);
         $srch->addOrder("op_id", "DESC");
-        $srch->addMultipleFields(array('order_language_id', 'op_status_id', 'op_id', 'op_qty', 'op_product_type','op_unit_price','opcharge_amount'));
+        $srch->addMultipleFields(array('order_language_id', 'op_status_id', 'op_id', 'op_qty', 'op_product_type', 'op_unit_price', 'opcharge_amount'));
         $rs = $srch->getResultSet();
         $opDetail = FatApp::getDb()->fetch($rs);
 
@@ -1722,7 +1723,7 @@ class BuyerController extends BuyerBaseController
         $frm = $this->getOrderReturnRequestForm($this->siteLangId, $opDetail);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError(current($frm->getValidationErrors()));
             }
             Message::addErrorMessage(current($frm->getValidationErrors()));
@@ -1732,12 +1733,12 @@ class BuyerController extends BuyerBaseController
         if (abs($opDetail['opcharge_amount']) > 0) {
             $orrequestQty = FatUtility::int($post['orrequest_qty']);
 
-            $volumeDiscountPerItem = abs($opDetail['opcharge_amount'])/$opDetail['op_qty'];
-            $amtChargeBackToBuyer = ($opDetail['op_qty'] - $orrequestQty)*$volumeDiscountPerItem;
+            $volumeDiscountPerItem = abs($opDetail['opcharge_amount']) / $opDetail['op_qty'];
+            $amtChargeBackToBuyer = ($opDetail['op_qty'] - $orrequestQty) * $volumeDiscountPerItem;
 
             $pricePerItemCharged = $opDetail['op_unit_price'] - $volumeDiscountPerItem;
 
-            if ($amtChargeBackToBuyer > ($opDetail['op_unit_price'] - $volumeDiscountPerItem)*abs($orrequestQty)) {
+            if ($amtChargeBackToBuyer > ($opDetail['op_unit_price'] - $volumeDiscountPerItem) * abs($orrequestQty)) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Order_not_eligible_for_partial_qty_refund', $this->siteLangId));
                 FatUtility::dieJsonError(Message::getHtml());
             }
@@ -1772,16 +1773,16 @@ class BuyerController extends BuyerBaseController
         }
 
 
-        $reference_number = $user_id.'-'.time();
+        $reference_number = $user_id . '-' . time();
         $returnRequestDataToSave = array(
-        'orrequest_user_id'            =>    $user_id,
-        'orrequest_reference'        =>    $reference_number,
-        'orrequest_op_id'            =>    $opDetail['op_id'],
-        'orrequest_qty'                =>    FatUtility::int($post['orrequest_qty']),
-        'orrequest_returnreason_id'    =>    FatUtility::int($post['orrequest_returnreason_id']),
-        'orrequest_type'            =>    FatUtility::int($post['orrequest_type']),
-        'orrequest_date'            =>    date('Y-m-d H:i:s'),
-        'orrequest_status'            =>    OrderReturnRequest::RETURN_REQUEST_STATUS_PENDING
+        'orrequest_user_id' => $user_id,
+        'orrequest_reference' => $reference_number,
+        'orrequest_op_id' => $opDetail['op_id'],
+        'orrequest_qty' => FatUtility::int($post['orrequest_qty']),
+        'orrequest_returnreason_id' => FatUtility::int($post['orrequest_returnreason_id']),
+        'orrequest_type' => FatUtility::int($post['orrequest_type']),
+        'orrequest_date' => date('Y-m-d H:i:s'),
+        'orrequest_status' => OrderReturnRequest::RETURN_REQUEST_STATUS_PENDING
         );
         $oReturnRequestObj = new OrderReturnRequest();
         $oReturnRequestObj->assignValues($returnRequestDataToSave);
@@ -1803,7 +1804,7 @@ class BuyerController extends BuyerBaseController
 
             if (filesize($uploadedFile) > 10240000) {
                 $message = Labels::getLabel('MSG_Please_upload_file_size_less_than_10MB', $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($message);
                 }
                 Message::addErrorMessage($message);
@@ -1812,7 +1813,7 @@ class BuyerController extends BuyerBaseController
 
             if (getimagesize($uploadedFile) === false && in_array($uploadedFileExt, array('.zip'))) {
                 $message = Labels::getLabel('MSG_Only_Image_extensions_and_zip_is_allowed', $this->siteLangId);
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($message);
                 }
                 Message::addErrorMessage($message);
@@ -1821,7 +1822,7 @@ class BuyerController extends BuyerBaseController
 
             $fileHandlerObj = new AttachedFile();
             if (!$res = $fileHandlerObj->saveAttachment($_FILES['file']['tmp_name'], AttachedFile::FILETYPE_BUYER_RETURN_PRODUCT, $orrequest_id, 0, $_FILES['file']['name'], -1, true)) {
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($fileHandlerObj->getError());
                 }
                 Message::addErrorMessage($fileHandlerObj->getError());
@@ -1833,16 +1834,16 @@ class BuyerController extends BuyerBaseController
 
         /* save return request message[ */
         $returnRequestMsgDataToSave = array(
-        'orrmsg_orrequest_id'    =>    $orrequest_id,
-        'orrmsg_from_user_id'    =>    $user_id,
-        'orrmsg_msg'            =>    $post['orrmsg_msg'],
-        'orrmsg_date'            =>    date('Y-m-d H:i:s'),
+        'orrmsg_orrequest_id' => $orrequest_id,
+        'orrmsg_from_user_id' => $user_id,
+        'orrmsg_msg' => $post['orrmsg_msg'],
+        'orrmsg_date' => date('Y-m-d H:i:s'),
         );
 
         $oReturnRequestMsgObj = new OrderReturnRequestMessage();
         $oReturnRequestMsgObj->assignValues($returnRequestMsgDataToSave);
         if (!$oReturnRequestMsgObj->save()) {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($oReturnRequestMsgObj->getError());
             }
             Message::addErrorMessage($oReturnRequestMsgObj->getError());
@@ -1863,7 +1864,7 @@ class BuyerController extends BuyerBaseController
         /* sending of email notification[ */
         $emailNotificationObj = new EmailHandler();
         if (!$emailNotificationObj->sendOrderReturnRequestNotification($orrmsg_id, $opDetail['order_language_id'])) {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($oReturnRequestMsgObj->getError());
             }
             Message::addErrorMessage($emailNotificationObj->getError());
@@ -1889,7 +1890,7 @@ class BuyerController extends BuyerBaseController
         }
 
         $msg = Labels::getLabel('MSG_Your_return_request_submitted', $this->siteLangId);
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->set('msg', $msg);
             $this->_template->render();
         }
@@ -1901,7 +1902,7 @@ class BuyerController extends BuyerBaseController
     public function rewardPoints($convertReward = '')
     {
         $frm = $this->getRewardPointSearchForm($this->siteLangId);
-        $frm->fill(array('convertReward'=>$convertReward));
+        $frm->fill(array('convertReward' => $convertReward));
         $this->set('frmSrch', $frm);
 
         $userId = UserAuthentication::getLoggedUserId();
@@ -1937,12 +1938,12 @@ class BuyerController extends BuyerBaseController
             $page = 1;
         }
         $pagesize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
-        $srch = new UserRewardSearch;
+        $srch = new UserRewardSearch();
         $srch->joinUser();
         $srch->addCondition('urp.urp_user_id', '=', $userId);
         $srch->addOrder('urp.urp_date_added', 'DESC');
         $srch->addOrder('urp.urp_id', 'DESC');
-        $srch->addMultipleFields(array('urp.*','uc.credential_username'));
+        $srch->addMultipleFields(array('urp.*', 'uc.credential_username'));
 
         if ($convertReward == 'coupon') {
             $srch->addCondition('urp.urp_used', '=', 0);
@@ -1966,7 +1967,7 @@ class BuyerController extends BuyerBaseController
         $this->set('pageSize', $pagesize);
         $this->set('postedData', $post);
         $this->set('convertReward', $convertReward);
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
         $this->_template->render(false, false);
@@ -1984,7 +1985,7 @@ class BuyerController extends BuyerBaseController
 
         $rewardOptions = str_replace('|', ',', rtrim($post['rewardOptions'], '|'));
 
-        $srch = new UserRewardSearch;
+        $srch = new UserRewardSearch();
         $srch->joinUser();
         $srch->addCondition('urp.urp_user_id', '=', $userId);
         $srch->addCondition('urp_id', 'in', array($rewardOptions));
@@ -1995,7 +1996,7 @@ class BuyerController extends BuyerBaseController
         $srch->addOrder('urp.urp_id', 'DESC');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('sum(urp_points) as totalRewardPoints','min(urp.urp_date_expiry) as expiredOn'));
+        $srch->addMultipleFields(array('sum(urp_points) as totalRewardPoints', 'min(urp.urp_date_expiry) as expiredOn'));
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetch($rs);
 
@@ -2013,18 +2014,18 @@ class BuyerController extends BuyerBaseController
         $db->startTransaction();
 
         $couponData = array(
-        'coupon_type'=>DiscountCoupons::TYPE_DISCOUNT,
-        'coupon_identifier'=> Labels::getLabel('LBL_Generated_From_Reward_Point', $this->siteLangId),
-        'coupon_code'=>uniqid(),
-        'coupon_min_order_value'=>1,
-        'coupon_discount_in_percent'=>applicationConstants::PERCENTAGE,
-        'coupon_discount_value'=>CommonHelper::convertRewardPointToCurrency($records['totalRewardPoints']),
-        'coupon_max_discount_value'=>CommonHelper::convertRewardPointToCurrency($records['totalRewardPoints']),
-        'coupon_start_date'=>date('Y-m-d'),
-        'coupon_end_date'=>$records['expiredOn'],
-        'coupon_uses_count'=>1,
-        'coupon_uses_coustomer'=>1,
-        'coupon_active'=>applicationConstants::ACTIVE,
+        'coupon_type' => DiscountCoupons::TYPE_DISCOUNT,
+        'coupon_identifier' => Labels::getLabel('LBL_Generated_From_Reward_Point', $this->siteLangId),
+        'coupon_code' => uniqid(),
+        'coupon_min_order_value' => 1,
+        'coupon_discount_in_percent' => applicationConstants::PERCENTAGE,
+        'coupon_discount_value' => CommonHelper::convertRewardPointToCurrency($records['totalRewardPoints']),
+        'coupon_max_discount_value' => CommonHelper::convertRewardPointToCurrency($records['totalRewardPoints']),
+        'coupon_start_date' => date('Y-m-d'),
+        'coupon_end_date' => $records['expiredOn'],
+        'coupon_uses_count' => 1,
+        'coupon_uses_coustomer' => 1,
+        'coupon_active' => applicationConstants::ACTIVE,
         );
         $couponObj = new DiscountCoupons();
         $couponObj->assignValues($couponData);
@@ -2053,7 +2054,7 @@ class BuyerController extends BuyerBaseController
             $rewardsRecord = new UserRewards($urp_id);
             $rewardsRecord->assignValues(
                 array(
-                'urp_used'        =>    1,
+                'urp_used' => 1,
                 )
             );
             if (!$rewardsRecord->save()) {
@@ -2081,13 +2082,13 @@ class BuyerController extends BuyerBaseController
         if ($offers) {
             $this->set('offers', $offers);
         } else {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 $this->set('offers', array());
             } else {
                 $this->set('noRecordsHtml', $this->_template->render(false, false, '_partial/no-record-found.php', true));
             }
         }
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
         $this->_template->render(false, false, 'buyer/search-offers.php');
@@ -2112,24 +2113,24 @@ class BuyerController extends BuyerBaseController
 
             $info = $twitteroauth->get('account/verify_credentials', array("include_entities" => false));
             $anchor_tag = CommonHelper::referralTrackingUrl(UserAuthentication::getLoggedUserAttribute('user_referral_code'));
-            $urlapi = "http://tinyurl.com/api-create.php?url=".$anchor_tag;
+            $urlapi = "http://tinyurl.com/api-create.php?url=" . $anchor_tag;
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $urlapi);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             $shorturl = curl_exec($ch);
             curl_close($ch);
-            $anchor_length=strlen($shorturl);
+            $anchor_length = strlen($shorturl);
 
             //$message = substr($shorturl." Twitter Message will go here ",0,(140-$anchor_length-6));
-            $message = substr($shorturl." ".sprintf(FatApp::getConfig("CONF_SOCIAL_FEED_TWITTER_POST_TITLE".$this->siteLangId), FatApp::getConfig("CONF_WEBSITE_NAME_".$this->siteLangId)), 0, 134-$anchor_length);
+            $message = substr($shorturl . " " . sprintf(FatApp::getConfig("CONF_SOCIAL_FEED_TWITTER_POST_TITLE" . $this->siteLangId), FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId)), 0, 134 - $anchor_length);
 
             $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_SOCIAL_FEED_IMAGE, 0, 0, $this->siteLangId);
             $error = false;
             $postMedia = false;
             if (!empty($file_row)) {
-                $image_path = isset($file_row['afile_physical_path']) ?  $file_row['afile_physical_path'] : '';
-                $image_path = CONF_UPLOADS_PATH.$image_path;
-                if (filesize($image_path) <= (5*1000000)) { /*Max 5mb size image can be uploaded by Twitter*/
+                $image_path = isset($file_row['afile_physical_path']) ? $file_row['afile_physical_path'] : '';
+                $image_path = CONF_UPLOADS_PATH . $image_path;
+                if (filesize($image_path) <= (5 * 1000000)) { /*Max 5mb size image can be uploaded by Twitter*/
                     $handle = fopen($image_path, 'rb');
                     $image = fread($handle, filesize($image_path));
                     fclose($handle);
@@ -2137,7 +2138,7 @@ class BuyerController extends BuyerBaseController
                     try {
                         $result = $twitteroauth->upload('media/upload', array('media' => $image_path));
                         if ($twitteroauth->getLastHttpCode() == 200) {
-                            $parameters = array('Name' => FatApp::getConfig("CONF_WEBSITE_NAME_".$this->siteLangId), 'status' => $message, 'media_ids' => $result->media_id_string);
+                            $parameters = array('Name' => FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId), 'status' => $message, 'media_ids' => $result->media_id_string);
                             try {
                                 $post = $twitteroauth->post('statuses/update', $parameters);
                                 $postMedia = true;
@@ -2153,7 +2154,7 @@ class BuyerController extends BuyerBaseController
             }
 
             if (!$postMedia) {
-                $parameters = array('Name' => FatApp::getConfig("CONF_WEBSITE_NAME_".$this->siteLangId), 'status' => $message);
+                $parameters = array('Name' => FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId), 'status' => $message);
                 try {
                     $post = $twitteroauth->post('statuses/update', $parameters, false);
                 } catch (exception $e) {
@@ -2181,8 +2182,8 @@ class BuyerController extends BuyerBaseController
             // Let's get the user's info
             $twitter_info = $twitteroauth->get('account/verify_credentials');
             //$twitter_info->id
-            $anchor_tag=CommonHelper::referralTrackingUrl(UserAuthentication::getLoggedUserAttribute('user_referral_code'));
-            $urlapi = "http://tinyurl.com/api-create.php?url=".$anchor_tag;
+            $anchor_tag = CommonHelper::referralTrackingUrl(UserAuthentication::getLoggedUserAttribute('user_referral_code'));
+            $urlapi = "http://tinyurl.com/api-create.php?url=" . $anchor_tag;
             /***
  * activate cURL for URL shortening
 ***/
@@ -2192,23 +2193,23 @@ class BuyerController extends BuyerBaseController
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             $shorturl = curl_exec($ch);
             curl_close($ch);
-            $anchor_length=strlen($shorturl);
+            $anchor_length = strlen($shorturl);
             //$message = substr($shorturl." Twitter Message will go here ",0,(140-$anchor_length-6));
-            $message = substr($shorturl." ".sprintf(FatApp::getConfig("CONF_SOCIAL_FEED_TWITTER_POST_TITLE".$this->siteLangId), FatApp::getConfig("CONF_WEBSITE_NAME_".$this->siteLangId)), 0, 134-$anchor_length);
+            $message = substr($shorturl . " " . sprintf(FatApp::getConfig("CONF_SOCIAL_FEED_TWITTER_POST_TITLE" . $this->siteLangId), FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId)), 0, 134 - $anchor_length);
             $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_SOCIAL_FEED_IMAGE, 0, 0, $this->siteLangId);
-            $post='';
+            $post = '';
             if (!empty($file_row)) {
-                $image_path = isset($file_row['afile_physical_path']) ?  $file_row['afile_physical_path'] : '';
-                $image_path = CONF_UPLOADS_PATH.$image_path;
+                $image_path = isset($file_row['afile_physical_path']) ? $file_row['afile_physical_path'] : '';
+                $image_path = CONF_UPLOADS_PATH . $image_path;
                 $handle = fopen($image_path, 'rb');
                 $image = fread($handle, filesize($image_path));
                 fclose($handle);
                 /* $parameters = array('media[]' => "{$image};type=image/jpeg;filename={$image_path}",'status' => $message);
                 $post = $twitteroauth->post('statuses/update_with_media', $parameters, true); */
-                $parameters = array('media_type'=>'image/jpeg','media'=>$image);
+                $parameters = array('media_type' => 'image/jpeg', 'media' => $image);
                 $post = $twitteroauth->post('media/upload', $parameters, true);
             } else {
-                $parameters = array('Name' => FatApp::getConfig("CONF_WEBSITE_NAME_".$this->siteLangId), 'status' => $message);
+                $parameters = array('Name' => FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId), 'status' => $message);
                 $post = $twitteroauth->post('statuses/update', $parameters, false);
             }
             $this->set('errors', isset($post->errors) ? $post->errors : '');
@@ -2227,7 +2228,7 @@ class BuyerController extends BuyerBaseController
             CommonHelper::redirectUserReferer();
         }
 
-        $get_twitter_url = $_SESSION["TWITTER_URL"]=CommonHelper::generateFullUrl('Buyer', 'twitterCallback');
+        $get_twitter_url = $_SESSION["TWITTER_URL"] = CommonHelper::generateFullUrl('Buyer', 'twitterCallback');
 
         try {
             $twitteroauth = new TwitterOAuth(FatApp::getConfig("CONF_TWITTER_API_KEY"), FatApp::getConfig("CONF_TWITTER_API_SECRET"));
@@ -2256,11 +2257,11 @@ class BuyerController extends BuyerBaseController
             Message::addErrorMessage($err);
             FatUtility::dieJsonError(Message::getHtml());
         }
-        $email = CommonHelper::multipleExplode(array(",",";","\t","\n"), trim($post["email"], ","));
+        $email = CommonHelper::multipleExplode(array(",", ";", "\t", "\n"), trim($post["email"], ","));
         $email = array_unique($email);
         if (count($email) && !empty($email)) {
             $email = array_unique($email);
-            $personalMessage = empty($post['message'])?"":"<b>".Labels::getLabel('Lbl_Personal_Message_From_Sender', $this->siteLangId).":</b> ".nl2br($post['message']);
+            $personalMessage = empty($post['message']) ? "" : "<b>" . Labels::getLabel('Lbl_Personal_Message_From_Sender', $this->siteLangId) . ":</b> " . nl2br($post['message']);
             $emailNotificationObj = new EmailHandler();
             foreach ($email as $email_id) {
                 $email_id = trim($email_id);
@@ -2288,8 +2289,8 @@ class BuyerController extends BuyerBaseController
     {
         $langId = FatUtility::int($langId);
         $frm = new Form('frmShareEarn');
-        $fld=$frm->addTextArea(Labels::getLabel('L_Friends_Email', $langId), 'email');
-        $fld->htmlAfterField=' <small>('.Labels::getLabel('L_Use_commas_separate_emails', $langId).')</small>';
+        $fld = $frm->addTextArea(Labels::getLabel('L_Friends_Email', $langId), 'email');
+        $fld->htmlAfterField = ' <small>(' . Labels::getLabel('L_Use_commas_separate_emails', $langId) . ')</small>';
         $fld->requirements()->setRequired();
         $frm->addTextArea(Labels::getLabel('L_Personal_Message', $langId), 'message');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('L_Invite_Your_Friends', $langId));
@@ -2311,18 +2312,18 @@ class BuyerController extends BuyerBaseController
     private function getOrderSearchForm($langId)
     {
         $currency_id = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
-        $currencyData = Currency::getAttributesById($currency_id, array('currency_code','currency_symbol_left','currency_symbol_right'));
+        $currencyData = Currency::getAttributesById($currency_id, array('currency_code', 'currency_symbol_left', 'currency_symbol_right'));
         $currencySymbol = ($currencyData['currency_symbol_left'] != '') ? $currencyData['currency_symbol_left'] : $currencyData['currency_symbol_right'];
 
         $frm = new Form('frmOrderSrch');
         $frm->addTextBox('', 'keyword', '', array('placeholder' => Labels::getLabel('LBL_Keyword', $langId) ));
         $frm->addSelectBox('', 'status', Orders::getOrderProductStatusArr($langId, unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS"))), '', array(), Labels::getLabel('LBL_Status', $langId));
-        $frm->addDateField('', 'date_from', '', array('placeholder' => Labels::getLabel('LBL_Date_From', $langId),'readonly'=>'readonly' ));
-        $frm->addDateField('', 'date_to', '', array('placeholder' => Labels::getLabel('LBL_Date_To', $langId),'readonly'=>'readonly' ));
-        $frm->addTextBox('', 'price_from', '', array('placeholder' => Labels::getLabel('LBL_Price_Min', $langId).' ['.$currencySymbol.']' ));
-        $frm->addTextBox('', 'price_to', '', array('placeholder' => Labels::getLabel('LBL_Price_Max', $langId).' ['.$currencySymbol.']' ));
+        $frm->addDateField('', 'date_from', '', array('placeholder' => Labels::getLabel('LBL_Date_From', $langId), 'readonly' => 'readonly' ));
+        $frm->addDateField('', 'date_to', '', array('placeholder' => Labels::getLabel('LBL_Date_To', $langId), 'readonly' => 'readonly' ));
+        $frm->addTextBox('', 'price_from', '', array('placeholder' => Labels::getLabel('LBL_Price_Min', $langId) . ' [' . $currencySymbol . ']' ));
+        $frm->addTextBox('', 'price_to', '', array('placeholder' => Labels::getLabel('LBL_Price_Max', $langId) . ' [' . $currencySymbol . ']' ));
         $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $langId));
-        $fldCancel = $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $langId), array('onclick'=>'clearSearch();'));
+        $fldCancel = $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $langId), array('onclick' => 'clearSearch();'));
         $frm->addHiddenField('', 'page');
         //$fldSubmit->attachField($fldCancel);
         return $frm;
@@ -2333,7 +2334,7 @@ class BuyerController extends BuyerBaseController
         $frm = new Form('frmSrch');
         $frm->addTextBox('', 'keyword', '', array('placeholder' => Labels::getLabel('LBL_Keyword', $langId) ));
         $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $langId));
-        $fldCancel = $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $langId), array('onclick'=>'clearSearch();'));
+        $fldCancel = $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $langId), array('onclick' => 'clearSearch();'));
         $frm->addHiddenField('', 'page');
         return $frm;
     }
@@ -2374,9 +2375,9 @@ class BuyerController extends BuyerBaseController
         // For now untill $requestTypeArr having single value
         $frm->addHiddenField('', 'orrequest_type', OrderReturnRequest::RETURN_REQUEST_TYPE_REFUND);
 
-        $fileFld = $frm->addFileUpload(Labels::getLabel('LBL_Upload_Images', $langId), 'file', array('accept'=>'image/*,.zip'));
-        $fileFld->htmlBeforeField='<div class="filefield"><span class="filename"></span>';
-        $fileFld->htmlAfterField = '<label class="filelabel">'.Labels::getLabel('LBL_Browse_File', $this->siteLangId).'</label></div><span class="note">' .Labels::getLabel('MSG_Only_Image_extensions_and_zip_is_allowed', $this->siteLangId) .'</span>' ;
+        $fileFld = $frm->addFileUpload(Labels::getLabel('LBL_Upload_Images', $langId), 'file', array('accept' => 'image/*,.zip'));
+        $fileFld->htmlBeforeField = '<div class="filefield"><span class="filename"></span>';
+        $fileFld->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->siteLangId) . '</label></div><span class="note">' . Labels::getLabel('MSG_Only_Image_extensions_and_zip_is_allowed', $this->siteLangId) . '</span>';
         $frm->addTextArea(Labels::getLabel('LBL_Comments', $langId), 'orrmsg_msg')->requirements()->setRequired();
         $frm->addHiddenField('', 'op_id');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Send_Request', $langId));
@@ -2390,7 +2391,7 @@ class BuyerController extends BuyerBaseController
 
         $ratingAspects = SelProdRating::getRatingAspectsArr($langId);
         foreach ($ratingAspects as $aspectVal => $aspectLabel) {
-            $fld=$frm->addSelectBox($aspectLabel, "review_rating[$aspectVal]", array("1"=>"1","2"=>"2","3"=>"3","4"=>"4","5"=>"5"), "", array('class'=>"star-rating"), Labels::getLabel('L_Rate', $langId));
+            $fld = $frm->addSelectBox($aspectLabel, "review_rating[$aspectVal]", array("1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5"), "", array('class' => "star-rating"), Labels::getLabel('L_Rate', $langId));
             $fld->requirements()->setRequired(true);
             $fld->setWrapperAttribute('class', 'rating-f');
         }
@@ -2413,7 +2414,7 @@ class BuyerController extends BuyerBaseController
         }
 
 
-        include_once CONF_INSTALLATION_PATH.'library/Fbapi.php';
+        include_once CONF_INSTALLATION_PATH . 'library/Fbapi.php';
 
         $config = array(
         'app_id' => FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, ''),
@@ -2434,7 +2435,7 @@ class BuyerController extends BuyerBaseController
             FatApp::redirectUser($redirectUrl);
         }
 
-        if (! isset($accessToken)) {
+        if (!isset($accessToken)) {
             if ($helper->getError()) {
                 Message::addErrorMessage($helper->getErrorDescription());
             //Message::addErrorMessage($helper->getErrorReason());
@@ -2445,7 +2446,7 @@ class BuyerController extends BuyerBaseController
             // The OAuth 2.0 client handler helps us manage access tokens
             $oAuth2Client = $fbObj->getOAuth2Client();
 
-            if (! $accessToken->isLongLived()) {
+            if (!$accessToken->isLongLived()) {
                 try {
                     $accessToken = $oAuth2Client->getLongLivedAccessToken($accessToken);
                 } catch (Facebook\Exceptions\FacebookSDKException $e) {
@@ -2455,13 +2456,13 @@ class BuyerController extends BuyerBaseController
             }
 
             $fbAccessToken = $accessToken->getValue();
-			
-            unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_code']);
-            unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_access_token']);
-            unset($_SESSION['fb_'.FatApp::getConfig("CONF_FACEBOOK_APP_ID").'_user_id']);
+            
+            unset($_SESSION['fb_' . FatApp::getConfig("CONF_FACEBOOK_APP_ID") . '_code']);
+            unset($_SESSION['fb_' . FatApp::getConfig("CONF_FACEBOOK_APP_ID") . '_access_token']);
+            unset($_SESSION['fb_' . FatApp::getConfig("CONF_FACEBOOK_APP_ID") . '_user_id']);
 
             $userObj = new User($userId);
-            $userData = array('user_fb_access_token'=>$fbAccessToken);
+            $userData = array('user_fb_access_token' => $fbAccessToken);
             $userObj->assignValues($userData);
             if (!$userObj->save()) {
                 Message::addErrorMessage(Labels::getLabel("MSG_Token_COULD_NOT_BE_SET", $this->siteLangId) . $userObj->getError());
@@ -2474,7 +2475,7 @@ class BuyerController extends BuyerBaseController
     {
         if (!$orderId) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -2487,7 +2488,7 @@ class BuyerController extends BuyerBaseController
         $orderDetail = $orderObj->getOrderById($orderId, $this->siteLangId);
         if (!$orderDetail || ($orderDetail && $orderDetail['order_user_id'] != $userId)) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -2516,7 +2517,7 @@ class BuyerController extends BuyerBaseController
 
         if ($outOfStock) {
             $message = Labels::getLabel('MSG_Product_not_available_or_out_of_stock_so_removed_from_cart_listing', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 $error['status'] = 0;
                 $error['msg'] = strip_tags($message);
                 $error['cartItemsCount'] = $this->cartItemsCount;
@@ -2530,7 +2531,7 @@ class BuyerController extends BuyerBaseController
         $cartObj->removeCartDiscountCoupon();
         $cartObj->removeProductShippingMethod();
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
 
@@ -2623,7 +2624,7 @@ class BuyerController extends BuyerBaseController
 
         $referralTrackingUrl = CommonHelper::referralTrackingUrl($userInfo['user_referral_code']);
 
-        $this->set('data', array('trackingUrl'=>$referralTrackingUrl));
+        $this->set('data', array('trackingUrl' => $referralTrackingUrl));
         $this->_template->render();
     }
     public function orderReceipt($orderId)

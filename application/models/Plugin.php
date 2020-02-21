@@ -1,4 +1,5 @@
 <?php
+
 class Plugin extends MyAppModel
 {
     public const DB_TBL = 'tbl_plugins';
@@ -6,15 +7,20 @@ class Plugin extends MyAppModel
     public const DB_TBL_PREFIX = 'plugin_';
     public const DB_TBL_LANG_PREFIX = 'pluginlang_';
 
-    public const TYPE_CURRENCY_API = 1;
-    public const TYPE_SOCIAL_LOGIN_API = 2;
-    public const TYPE_PUSH_NOTIFICATION_API = 3;
-    public const TYPE_FULL_TEXT_SEARCH = 6;
+    public const TYPE_CURRENCY = 1;
+    public const TYPE_SOCIAL_LOGIN = 2;
+    public const TYPE_PUSH_NOTIFICATION = 3;
+    public const TYPE_PAYOUTS = 4;
+    public const TYPE_ADVERTISEMENT_FEED = 5;
+    public const TYPE_SMS_NOTIFICATION = 6;
+    public const TYPE_FULL_TEXT_SEARCH = 7;
 
     /* Define here :  if system can not activate multiple plugins for a same feature*/
     public const HAVING_KINGPIN = [
-        self::TYPE_CURRENCY_API,
-        self::TYPE_PUSH_NOTIFICATION_API,
+        self::TYPE_CURRENCY,
+        self::TYPE_PUSH_NOTIFICATION,
+        self::TYPE_ADVERTISEMENT_FEED,
+        self::TYPE_SMS_NOTIFICATION
         self::TYPE_FULL_TEXT_SEARCH
     ];
 
@@ -25,8 +31,6 @@ class Plugin extends MyAppModel
         'COALESCE(plg_l.' . self::DB_TBL_PREFIX . 'name, plg.' . self::DB_TBL_PREFIX . 'identifier) as plugin_name',
         self::DB_TBL_PREFIX . 'active',
     ];
-
-    public const TYPE_PAYOUTS = 4;
 
     private $db;
 
@@ -106,9 +110,12 @@ class Plugin extends MyAppModel
     public static function getTypeArr($langId)
     {
         return [
-            static::TYPE_CURRENCY_API => Labels::getLabel('LBL_CURRENCY', $langId),
-            static::TYPE_SOCIAL_LOGIN_API => Labels::getLabel('LBL_SOCIAL_LOGIN', $langId),
-            static::TYPE_PUSH_NOTIFICATION_API => Labels::getLabel('LBL_PUSH_NOTIFICATION', $langId),
+            static::TYPE_CURRENCY => Labels::getLabel('LBL_CURRENCY', $langId),
+            static::TYPE_SOCIAL_LOGIN => Labels::getLabel('LBL_SOCIAL_LOGIN', $langId),
+            static::TYPE_PUSH_NOTIFICATION => Labels::getLabel('LBL_PUSH_NOTIFICATION', $langId),
+            static::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT', $langId),
+            static::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
+            static::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
             static::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_Full_TEXT_SEARCH', $langId)
         ];
     }
@@ -179,7 +186,7 @@ class Plugin extends MyAppModel
 
     public static function getSocialLoginPluginsStatus($langId)
     {
-        $srch = static::pluginTypeSrchObj(static::TYPE_SOCIAL_LOGIN_API, $langId);
+        $srch = static::pluginTypeSrchObj(static::TYPE_SOCIAL_LOGIN, $langId);
         $srch->addMultipleFields(
             [
                 'plg.' . static::DB_TBL_PREFIX . 'code',
@@ -202,23 +209,31 @@ class Plugin extends MyAppModel
             $this->error = Labels::getLabel('MSG_INVALID_PLUGIN_TYPE', CommonHelper::getLangId());
             return false;
         }
-        $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . $pluginType, FatUtility::VAR_INT, 0);
-        if (1 > $defaultCurrConvAPI) {
-            $this->error = Labels::getLabel('MSG_ADVERTISEMENT_PLUGIN_NOT_FOUND', CommonHelper::getLangId());
+        $kingPin = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . $pluginType, FatUtility::VAR_INT, 0);
+        if (1 > $kingPin) {
+            $this->error = Labels::getLabel('MSG_PLUGIN_NOT_FOUND', CommonHelper::getLangId());
             return false;
         }
 
         if (0 < $langId) {
             $customCols = !empty($attr) ? true : false;
             $srch = static::pluginTypeSrchObj($pluginType, $langId, $customCols, true);
+
             if (!empty($attr)) {
-                if (is_string($attr) && 'plugin_name' == $attr) {
-                    $col = 'COALESCE(plg_l.' . static::DB_TBL_PREFIX . 'name, plg.' . static::DB_TBL_PREFIX . 'identifier) as plugin_name';
-                    $srch->addFld($col);
-                } else {
-                    $srch->addMultipleFields($attr);
+                switch ($attr) {
+                    case is_string($attr):
+                        if ('plugin_name' == $attr) {
+                            $attr = 'COALESCE(plg_l.' . static::DB_TBL_PREFIX . 'name, plg.' . static::DB_TBL_PREFIX . 'identifier) as plugin_name';
+                        }
+                        $srch->addFld($attr);
+                        break;
+                    
+                    default:
+                        $srch->addMultipleFields($attr);
+                        break;
                 }
             }
+
             $rs = $srch->getResultSet();
             $result = FatApp::getDb()->fetch($rs);
             if (is_string($attr)) {
@@ -226,6 +241,13 @@ class Plugin extends MyAppModel
             }
             return $result;
         }
-        return Plugin::getAttributesById($defaultCurrConvAPI, $attr);
+        return Plugin::getAttributesById($kingPin, $attr);
+    }
+
+    public static function canSendSms(string $tpl = ''): bool
+    {
+        $active = (new self())->getDefaultPluginData(Plugin::TYPE_SMS_NOTIFICATION, 'plugin_active');
+        $status = empty($tpl) ? 1 : SmsTemplate::getTpl($tpl, 0, 'stpl_status');
+        return (false != $active && !empty($active) && 0 < $status);
     }
 }

@@ -1,10 +1,9 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 
-<div class="row justify-content-center">
-    <div class="col-md-12">
+<div class="tabs_data">
+    <div class="tabs_body">
         <div class="row">
             <div class="col-md-8">
-                <h3 class="form__heading"><?php echo Labels::getLabel('LBL_Option_Groups', $siteLangId); ?></h3>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="field-set">
@@ -38,7 +37,6 @@
             }
             ?>
             <div class="col-md-4">
-                <h3 class="form__heading"><?php echo Labels::getLabel('LBL_Tags', $siteLangId); ?></h3>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="field-set">
@@ -53,20 +51,30 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="field-set">
-                    <div class="caption-wraper"><label class="field_label"></label></div>
-                    <div class="field-wraper">
-                        <div class="field_cover">
-                            <input type="hidden" name="preq_id" value="<?php echo $preqId; ?>">
-                            <input type="button" class="btn btn-primary" onClick= <?php if ($productType == Product::PRODUCT_TYPE_DIGITAL) { ?> "productMedia(<?php echo $productId; ?>)" <?php } else { ?> "productShipping(<?php echo $preqId; ?>)" <?php } ?> value="<?php echo Labels::getLabel('LBL_Next', $siteLangId); ?>">
-                        </div>
+    </div>
+    <div class="row tabs_footer">
+        <div class="col-md-6 text-align">
+            <div class="field-set">
+                <div class="caption-wraper"><label class="field_label"></label></div>
+                <div class="field-wraper">
+                    <div class="field_cover">
+                        <input type="button" class="btn btn-outline-primary" onClick= "productAttributeAndSpecificationsFrm(<?php echo $preqId; ?>)" value="<?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>">
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+        <div class="col-md-6 text-right">
+            <div class="field-set">
+                <div class="caption-wraper"><label class="field_label"></label></div>
+                <div class="field-wraper">
+                    <div class="field_cover">
+                        <input type="hidden" name="preq_id" value="<?php echo $preqId; ?>">
+                        <input type="button" class="btn btn--primary" onClick= "<?php if ($productType == Product::PRODUCT_TYPE_DIGITAL) { ?> productMedia(<?php echo $productId; ?>) <?php } else { ?> productShipping(<?php echo $preqId; ?>) <?php } ?>" value="<?php echo Labels::getLabel('LBL_Save_And_Next', $siteLangId); ?>">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
 </div>
 
 <script type="text/javascript">
@@ -128,7 +136,7 @@
                 var tagifyId = e.detail.tag.__tagifyId;
                 $('[__tagifyid=' + tagifyId + ']').remove();
             } else {
-                updateProductOption(preq_id, option_id);
+                updateProductOption(preq_id, option_id, e);
             }
         }
 

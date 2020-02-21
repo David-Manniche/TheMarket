@@ -7,7 +7,7 @@ $frmOrderSrch->setFormTagAttribute('class', 'form');
 $keywordFld = $frmOrderSrch->getField('keyword');
 $keywordFld->setWrapperAttribute('class','col-lg-4');
 $keywordFld->developerTags['col'] = 4;
-/* $keywordFld->htmlAfterField = '<small class="text--small">'.Labels::getLabel('LBL_Buyer_account_orders_listing_search_form_keyword_help_txt', $siteLangId).'</small>'; */
+/* $keywordFld->htmlAfterField = '<small class="form-text text-muted">'.Labels::getLabel('LBL_Buyer_account_orders_listing_search_form_keyword_help_txt', $siteLangId).'</small>'; */
 
 /* $statusFld = $frmOrderSrch->getField('status');
 $statusFld->setWrapperAttribute('class','col-sm-6');
@@ -89,7 +89,7 @@ $cancelBtnFld->developerTags['col'] = 2;
                         <?php if(isset($message)){ ?>
                             <p class="highlighted-note"> <?php  echo $message;?> </p>
                         <?php }?>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <div class="replaced"> <?php echo $frmOrderSrch->getFormHtml(); ?> </div>
                             <span class="gap"></span>
                         </div>
@@ -101,7 +101,7 @@ $cancelBtnFld->developerTags['col'] = 2;
                     <div class="cards">
                         <div class="cards-header">
                         </div>
-                        <div class="cards-content pl-4 pr-4 ">
+                        <div class="cards-content ">
                             <div id="ordersListing"><?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?></div>
                             <span class="gap"></span>
                         </div>

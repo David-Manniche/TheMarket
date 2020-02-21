@@ -12,7 +12,7 @@
         <div class="row mb-4">
             <div class="col-lg-12">
                 <div class="cards">
-                    <div class="cards-content p-4">
+                    <div class="cards-content">
                         <div class="tabs tabs--small tabs--scroll clearfix">
                             <ul>
                                 <li class="is-active"><a href="javascript:void(0);" onclick="searchBuyerDownloads('', this)"><?php echo Labels::getLabel('LBL_Downloadable_Files', $siteLangId); ?></a></li>

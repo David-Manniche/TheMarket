@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');  
 $layout = Language::getLayoutDirection($langId);
 ?>
-<div class="p-4 mb-4 bg-gray rounded layout--<?php echo $layout; ?>">
+<div class="p-4 mb-4 bg-gray rounded" dir="<?php echo $layout; ?>">
      <div class="row">
         <div class="col-md-4">
              <div class="field-set">
@@ -45,10 +45,12 @@ $layout = Language::getLayoutDirection($langId);
          </div>
          <div class="col-md-2">
              <div class="field-set">
-                 <div class="caption-wraper"></div>
+                 <div class="caption-wraper">
+                    <label class="field_label"></label>
+                 </div>
                  <div class="field-wraper">
                     <div class="field_cover">
-                    <button type="button" class="btn btn-primary" onClick="saveSpecification(<?php echo $langId; ?>, <?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_id']; } ?>)"><?php echo Labels::getLabel('LBL_Add', $siteLangId) ?></button></div>
+                    <button type="button" class="btn btn-outline-primary btn-block" onClick="saveSpecification(<?php echo $langId; ?>, <?php if(!empty($prodSpecData)) { echo $prodSpecData[0]['prodspec_id']; } ?>)"><?php echo Labels::getLabel('LBL_Add', $siteLangId) ?></button></div>
                  </div>
              </div>
          </div>
@@ -59,6 +61,9 @@ $layout = Language::getLayoutDirection($langId);
 $(document).ready(function(){
     var langId = '<?php echo $langId; ?>';
     $('input[name="prodspec_group['+langId+']"]').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
         'source': function(request, response) {
             $.ajax({
                 url: fcom.makeUrl('Seller', 'prodSpecGroupAutoComplete'),

@@ -1,4 +1,5 @@
 <?php
+
 class Product extends MyAppModel
 {
     public const DB_TBL = 'tbl_products';
@@ -299,7 +300,7 @@ class Product extends MyAppModel
 
     public static function getProductDataById($langId = 0, $productId = 0, $attr = array())
     {
-        $srch  = self::getSearchObject($langId);
+        $srch = self::getSearchObject($langId);
         $srch->addCondition('product_id', '=', $productId);
         $srch->doNotLimitRecords(true);
         $srch->doNotCalculateRecords(true);
@@ -345,7 +346,7 @@ class Product extends MyAppModel
                 if (FatUtility::int($id) < 1) {
                     continue;
                 }
-                FatApp::getDb()->updateFromArray('tbl_attached_files', array('afile_display_order' => $i), array('smt' => 'afile_type = ? AND afile_record_id = ? AND afile_id = ?','vals' => array(AttachedFile::FILETYPE_PRODUCT_IMAGE, $product_id, $id)));
+                FatApp::getDb()->updateFromArray('tbl_attached_files', array('afile_display_order' => $i), array('smt' => 'afile_type = ? AND afile_record_id = ? AND afile_id = ?', 'vals' => array(AttachedFile::FILETYPE_PRODUCT_IMAGE, $product_id, $id)));
             }
             return true;
         }
@@ -359,7 +360,7 @@ class Product extends MyAppModel
             return false;
         }
 
-        FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_CATEGORY, array('smt' => static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX . 'product_id = ?','vals' => array($product_id) ));
+        FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_CATEGORY, array('smt' => static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX . 'product_id = ?', 'vals' => array($product_id) ));
         if (empty($categories)) {
             return true;
         }
@@ -479,37 +480,37 @@ class Product extends MyAppModel
             return false;
         }
         $srch = new SearchBase(static::DB_PRODUCT_TO_SHIP, 'tpsr');
-        $srch->joinTable(Countries::DB_TBL_LANG, 'LEFT JOIN', 'tpsr.'.static::DB_PRODUCT_TO_SHIP_PREFIX.'country=tc.'.Countries::DB_TBL_LANG_PREFIX.'country_id and tc.'.Countries::DB_TBL_LANG_PREFIX.'lang_id='.$lang_id, 'tc');
+        $srch->joinTable(Countries::DB_TBL_LANG, 'LEFT JOIN', 'tpsr.' . static::DB_PRODUCT_TO_SHIP_PREFIX . 'country=tc.' . Countries::DB_TBL_LANG_PREFIX . 'country_id and tc.' . Countries::DB_TBL_LANG_PREFIX . 'lang_id=' . $lang_id, 'tc');
         $srch->joinTable(ShippingCompanies::DB_TBL, 'LEFT JOIN', 'tpsr.pship_company=sc.scompany_id ', 'sc');
-        $srch->joinTable(ShippingCompanies::DB_TBL_LANG, 'LEFT JOIN', 'tpsr.pship_company=tsc.scompanylang_scompany_id and tsc.'.ShippingCompanies::DB_TBL_LANG_PREFIX.'lang_id='.$lang_id, 'tsc');
-        $srch->joinTable(ShippingDurations::DB_TBL_LANG, 'LEFT JOIN', 'tpsr.pship_duration=tsd.sdurationlang_sduration_id  and tsd.'.ShippingDurations::DB_TBL_PREFIX_LANG.'lang_id='.$lang_id, 'tsd');
+        $srch->joinTable(ShippingCompanies::DB_TBL_LANG, 'LEFT JOIN', 'tpsr.pship_company=tsc.scompanylang_scompany_id and tsc.' . ShippingCompanies::DB_TBL_LANG_PREFIX . 'lang_id=' . $lang_id, 'tsc');
+        $srch->joinTable(ShippingDurations::DB_TBL_LANG, 'LEFT JOIN', 'tpsr.pship_duration=tsd.sdurationlang_sduration_id  and tsd.' . ShippingDurations::DB_TBL_PREFIX_LANG . 'lang_id=' . $lang_id, 'tsd');
         $srch->joinTable(ShippingDurations::DB_TBL, 'LEFT JOIN', 'tpsr.pship_duration=ts.sduration_id and sduration_deleted =0 ', 'ts');
-        $srch->addCondition('tpsr.'.static::DB_PRODUCT_TO_SHIP_PREFIX.'prod_id', '=', intval($product_id));
+        $srch->addCondition('tpsr.' . static::DB_PRODUCT_TO_SHIP_PREFIX . 'prod_id', '=', intval($product_id));
         if ($country_id > 0) {
-            $srch->addDirectCondition('( tpsr.'.static::DB_PRODUCT_TO_SHIP_PREFIX.'country ='. intval($country_id) .' OR '.'tpsr.'.static::DB_PRODUCT_TO_SHIP_PREFIX.'country =-1 )');
+            $srch->addDirectCondition('( tpsr.' . static::DB_PRODUCT_TO_SHIP_PREFIX . 'country =' . intval($country_id) . ' OR ' . 'tpsr.' . static::DB_PRODUCT_TO_SHIP_PREFIX . 'country =-1 )');
         }
-        $srch ->addCondition('tpsr.'.static::DB_PRODUCT_TO_SHIP_PREFIX.'user_id', '=', $sellerId);
+        $srch ->addCondition('tpsr.' . static::DB_PRODUCT_TO_SHIP_PREFIX . 'user_id', '=', $sellerId);
 
-        $srch->addOrder('(tpsr.'.static::DB_PRODUCT_TO_SHIP_PREFIX.'country = -1),country_name');
+        $srch->addOrder('(tpsr.' . static::DB_PRODUCT_TO_SHIP_PREFIX . 'country = -1),country_name');
         $srch->addMultipleFields(
             array(
-                static::DB_PRODUCT_TO_SHIP_PREFIX.'id',
-                static::DB_PRODUCT_TO_SHIP_PREFIX.'country',
-                static::DB_PRODUCT_TO_SHIP_PREFIX.'user_id',
-                static::DB_PRODUCT_TO_SHIP_PREFIX.'company',
-                static::DB_PRODUCT_TO_SHIP_PREFIX.'duration',
-                static::DB_PRODUCT_TO_SHIP_PREFIX.'charges',
-                static::DB_PRODUCT_TO_SHIP_PREFIX.'additional_charges',
-                'IFNULL('.Countries::DB_TBL_PREFIX.'name','\''.Labels::getLabel('LBL_Everywhere_Else', $lang_id).'\') as country_name',
-                'ifNull('.ShippingCompanies::DB_TBL_PREFIX.'name',ShippingCompanies::DB_TBL_PREFIX.'identifier) as '.ShippingCompanies::DB_TBL_PREFIX.'name',
-                ShippingCompanies::DB_TBL_PREFIX.'id',
-                ShippingCompanies::DB_TBL_LANG_PREFIX.'scompany_id',
-                ShippingDurations::DB_TBL_PREFIX.'name',
-                ShippingDurations::DB_TBL_PREFIX.'id',
-                ShippingDurations::DB_TBL_PREFIX.'from',
-                ShippingDurations::DB_TBL_PREFIX.'identifier ',
-                ShippingDurations::DB_TBL_PREFIX.'to',
-                ShippingDurations::DB_TBL_PREFIX.'days_or_weeks',
+                static::DB_PRODUCT_TO_SHIP_PREFIX . 'id',
+                static::DB_PRODUCT_TO_SHIP_PREFIX . 'country',
+                static::DB_PRODUCT_TO_SHIP_PREFIX . 'user_id',
+                static::DB_PRODUCT_TO_SHIP_PREFIX . 'company',
+                static::DB_PRODUCT_TO_SHIP_PREFIX . 'duration',
+                static::DB_PRODUCT_TO_SHIP_PREFIX . 'charges',
+                static::DB_PRODUCT_TO_SHIP_PREFIX . 'additional_charges',
+                'IFNULL(' . Countries::DB_TBL_PREFIX . 'name', '\'' . Labels::getLabel('LBL_Everywhere_Else', $lang_id) . '\') as country_name',
+                'ifNull(' . ShippingCompanies::DB_TBL_PREFIX . 'name', ShippingCompanies::DB_TBL_PREFIX . 'identifier) as ' . ShippingCompanies::DB_TBL_PREFIX . 'name',
+                ShippingCompanies::DB_TBL_PREFIX . 'id',
+                ShippingCompanies::DB_TBL_LANG_PREFIX . 'scompany_id',
+                ShippingDurations::DB_TBL_PREFIX . 'name',
+                ShippingDurations::DB_TBL_PREFIX . 'id',
+                ShippingDurations::DB_TBL_PREFIX . 'from',
+                ShippingDurations::DB_TBL_PREFIX . 'identifier ',
+                ShippingDurations::DB_TBL_PREFIX . 'to',
+                ShippingDurations::DB_TBL_PREFIX . 'days_or_weeks',
             )
         );
 
@@ -523,7 +524,7 @@ class Product extends MyAppModel
         /* echo $srch->getQuery();die; */
         $row = FatApp::getDb()->fetchAll($rs);
 
-        if ($row==false) {
+        if ($row == false) {
             return array();
         } else {
             return $row;
@@ -535,18 +536,19 @@ class Product extends MyAppModel
         $product_id = FatUtility::convertToType($product_id, FatUtility::VAR_INT);
         $lang_id = FatUtility::convertToType($lang_id, FatUtility::VAR_INT);
         $sellerId = FatUtility::convertToType($sellerId, FatUtility::VAR_INT);
-        if (!$product_id || !$lang_id || !$sellerId) {
+        //if (!$product_id || !$lang_id || !$sellerId) {
+        if (!$product_id || !$lang_id) {
             //trigger_error(Labels::getLabel("ERR_Arguments_not_specified.",$this->commonLangId), E_USER_ERROR);
             return false;
         }
         $srch = new SearchBase(static::DB_TBL_PRODUCT_SHIPPING, 'tps');
-        $srch->joinTable(Countries::DB_TBL_LANG, 'LEFT JOIN', 'tps.'.static::DB_TBL_PRODUCT_SHIPPING_PREFIX.'from_country_id=tc.'.Countries::DB_TBL_LANG_PREFIX.'country_id and tc.'.Countries::DB_TBL_LANG_PREFIX.'lang_id='.$lang_id, 'tc');
-        $srch->addCondition('tps.'.static::DB_TBL_PRODUCT_SHIPPING_PREFIX.'product_id', '=', intval($product_id));
+        $srch->joinTable(Countries::DB_TBL_LANG, 'LEFT JOIN', 'tps.' . static::DB_TBL_PRODUCT_SHIPPING_PREFIX . 'from_country_id=tc.' . Countries::DB_TBL_LANG_PREFIX . 'country_id and tc.' . Countries::DB_TBL_LANG_PREFIX . 'lang_id=' . $lang_id, 'tc');
+        $srch->addCondition('tps.' . static::DB_TBL_PRODUCT_SHIPPING_PREFIX . 'product_id', '=', intval($product_id));
 
-        $srch ->addCondition('tps.'.static::DB_TBL_PRODUCT_SHIPPING_PREFIX.'user_id', '=', $sellerId);
+        $srch ->addCondition('tps.' . static::DB_TBL_PRODUCT_SHIPPING_PREFIX . 'user_id', '=', $sellerId);
         $srch->addFld(
             array(
-                static::DB_TBL_PRODUCT_SHIPPING_PREFIX.'free'
+                static::DB_TBL_PRODUCT_SHIPPING_PREFIX . 'free'
             )
         );
 
@@ -556,7 +558,7 @@ class Product extends MyAppModel
         $row = FatApp::getDb()->fetch($rs);
 
         if ($row) {
-            return $row[static::DB_TBL_PRODUCT_SHIPPING_PREFIX.'free'];
+            return $row[static::DB_TBL_PRODUCT_SHIPPING_PREFIX . 'free'];
         }
         return 0;
     }
@@ -589,11 +591,11 @@ class Product extends MyAppModel
 
         $srch = new SearchBase(static::DB_PRODUCT_TO_OPTION);
         $srch->addCondition(static::DB_PRODUCT_TO_OPTION_PREFIX . 'product_id', '=', $product_id);
-        $srch->joinTable(Option::DB_TBL, 'INNER JOIN', Option::DB_TBL_PREFIX.'id = '.static::DB_PRODUCT_TO_OPTION_PREFIX.'option_id');
+        $srch->joinTable(Option::DB_TBL, 'INNER JOIN', Option::DB_TBL_PREFIX . 'id = ' . static::DB_PRODUCT_TO_OPTION_PREFIX . 'option_id');
 
-        $srch->joinTable(Option::DB_TBL.'_lang', 'LEFT JOIN', 'lang.optionlang_option_id = ' . Option::DB_TBL_PREFIX.'id AND optionlang_lang_id = '.$lang_id, 'lang');
+        $srch->joinTable(Option::DB_TBL . '_lang', 'LEFT JOIN', 'lang.optionlang_option_id = ' . Option::DB_TBL_PREFIX . 'id AND optionlang_lang_id = ' . $lang_id, 'lang');
 
-        $srch->addMultipleFields(array('option_id','option_name','option_identifier'));
+        $srch->addMultipleFields(array('option_id', 'option_name', 'option_identifier'));
 
         if ($option_is_separate_images) {
             $srch->addCondition('option_is_separate_images', '=', applicationConstants::YES);
@@ -625,18 +627,18 @@ class Product extends MyAppModel
         foreach ($languages as $langId => $langName) {
             $srch = new SearchBase(static::DB_PRODUCT_SPECIFICATION);
             $srch->addCondition(static::DB_PRODUCT_SPECIFICATION_PREFIX . 'product_id', '=', $product_id);
-            $srch->joinTable(static::DB_PRODUCT_LANG_SPECIFICATION, 'LEFT JOIN', static::DB_PRODUCT_SPECIFICATION_PREFIX.'id = '.static::DB_PRODUCT_LANG_SPECIFICATION_PREFIX.'prodspec_id and '.static::DB_PRODUCT_LANG_SPECIFICATION_PREFIX.'lang_id ='.$langId);
+            $srch->joinTable(static::DB_PRODUCT_LANG_SPECIFICATION, 'LEFT JOIN', static::DB_PRODUCT_SPECIFICATION_PREFIX . 'id = ' . static::DB_PRODUCT_LANG_SPECIFICATION_PREFIX . 'prodspec_id and ' . static::DB_PRODUCT_LANG_SPECIFICATION_PREFIX . 'lang_id =' . $langId);
             $srch->addMultipleFields(
                 array(
-                static::DB_PRODUCT_SPECIFICATION_PREFIX.'id',
-                static::DB_PRODUCT_SPECIFICATION_PREFIX.'name',
-                static::DB_PRODUCT_SPECIFICATION_PREFIX.'value'
+                static::DB_PRODUCT_SPECIFICATION_PREFIX . 'id',
+                static::DB_PRODUCT_SPECIFICATION_PREFIX . 'name',
+                static::DB_PRODUCT_SPECIFICATION_PREFIX . 'value'
                 )
             );
             $rs = $srch->getResultSet();
             $row = FatApp::getDb()->fetchAll($rs);
             foreach ($row as $resRow) {
-                $data[$resRow[static::DB_PRODUCT_SPECIFICATION_PREFIX.'id']][$langId]=$resRow ;
+                $data[$resRow[static::DB_PRODUCT_SPECIFICATION_PREFIX . 'id']][$langId] = $resRow;
             }
         }
 
@@ -654,11 +656,11 @@ class Product extends MyAppModel
 
         $srch = new SearchBase(static::DB_PRODUCT_TO_TAG);
         $srch->addCondition(static::DB_PRODUCT_TO_TAG_PREFIX . 'product_id', '=', $product_id);
-        $srch->joinTable(Tag::DB_TBL, 'INNER JOIN', Tag::DB_TBL_PREFIX.'id = '.static::DB_PRODUCT_TO_TAG_PREFIX.'tag_id');
+        $srch->joinTable(Tag::DB_TBL, 'INNER JOIN', Tag::DB_TBL_PREFIX . 'id = ' . static::DB_PRODUCT_TO_TAG_PREFIX . 'tag_id');
         $srch->addMultipleFields(array('tag_id', 'tag_identifier'));
 
         if ($lang_id) {
-            $srch->joinTable(Tag::DB_TBL.'_lang', 'LEFT JOIN', 'lang.taglang_tag_id = ' . Tag::DB_TBL_PREFIX.'id AND taglang_lang_id = '.$lang_id, 'lang');
+            $srch->joinTable(Tag::DB_TBL . '_lang', 'LEFT JOIN', 'lang.taglang_tag_id = ' . Tag::DB_TBL_PREFIX . 'id AND taglang_lang_id = ' . $lang_id, 'lang');
             $srch->addFld('tag_name');
         }
 
@@ -681,7 +683,7 @@ class Product extends MyAppModel
         $srch = new SearchBase(static::DB_PRODUCT_TO_TAG);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addCondition(static::DB_PRODUCT_TO_TAG_PREFIX.'tag_id', '=', $tagId);
+        $srch->addCondition(static::DB_PRODUCT_TO_TAG_PREFIX . 'tag_id', '=', $tagId);
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetchAll($rs);
     }
@@ -694,8 +696,8 @@ class Product extends MyAppModel
             trigger_error(Labels::getLabel('ERR_Invalid_Arguments!', $lang_id), E_USER_ERROR);
         }
         $srch = new SearchBase(OptionValue::DB_TBL);
-        $srch->joinTable(OptionValue::DB_TBL.'_lang', 'LEFT JOIN', 'lang.optionvaluelang_optionvalue_id = ' . OptionValue::DB_TBL_PREFIX.'id AND optionvaluelang_lang_id = '.$lang_id, 'lang');
-        $srch->addCondition(OptionValue::DB_TBL_PREFIX.'option_id', '=', $option_id);
+        $srch->joinTable(OptionValue::DB_TBL . '_lang', 'LEFT JOIN', 'lang.optionvaluelang_optionvalue_id = ' . OptionValue::DB_TBL_PREFIX . 'id AND optionvaluelang_lang_id = ' . $lang_id, 'lang');
+        $srch->addCondition(OptionValue::DB_TBL_PREFIX . 'option_id', '=', $option_id);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addOrder('optionvalue_display_order');
@@ -710,7 +712,7 @@ class Product extends MyAppModel
     {
         $srch = new SearchBase(static::DB_TBL_PRODUCT_TO_CATEGORY, 'ptc');
         $srch->addCondition(static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX . 'product_id', '=', $product_id);
-        $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', ProductCategory::DB_TBL_PREFIX.'id = ptc.'.static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'prodcat_id', 'cat');
+        $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', ProductCategory::DB_TBL_PREFIX . 'id = ptc.' . static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX . 'prodcat_id', 'cat');
         $srch->addMultipleFields(array('prodcat_id'));
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs, 'prodcat_id');
@@ -769,14 +771,14 @@ class Product extends MyAppModel
         $selectedOptions[$option_id] = $optionvalue_id;
         sort($selectedOptions);
 
-        $selprod_code = $product_id.'_'.implode('_', $selectedOptions);
+        $selprod_code = $product_id . '_' . implode('_', $selectedOptions);
 
         $prodSrchObj = new ProductSearch();
         $prodSrchObj->setDefinedCriteria();
         $prodSrchObj->joinProductToCategory();
         $prodSrchObj->doNotCalculateRecords();
         $prodSrchObj->addCondition('selprod_id', '!=', $selprod_id);
-        $prodSrchObj->addMultipleFields(array('product_id','selprod_id','theprice'));
+        $prodSrchObj->addMultipleFields(array('product_id', 'selprod_id', 'theprice'));
         $prodSrchObj->addCondition('product_id', '=', $product_id);
 
         $prodSrch = clone $prodSrchObj;
@@ -793,12 +795,12 @@ class Product extends MyAppModel
             }
             return CommonHelper::generateUrl('Products', 'view', array($product['selprod_id']));
         } else {
-            $prodSrch2 =  new ProductSearch(CommonHelper::getLangId());
+            $prodSrch2 = new ProductSearch(CommonHelper::getLangId());
             $prodSrch2->doNotCalculateRecords();
             $prodSrch2->setDefinedCriteria();
             $prodSrch2->addCondition('selprod_id', '!=', $selprod_id);
             $prodSrch2->addCondition('product_id', '=', $product_id);
-            $prodSrch2->addCondition('selprod_code', 'LIKE', '%_'.$optionvalue_id.'%');
+            $prodSrch2->addCondition('selprod_code', 'LIKE', '%_' . $optionvalue_id . '%');
             $prodSrch2->addMultipleFields(array('selprod_id', 'special_price_found', 'theprice'));
             $prodSrch2->setPageSize(1);
             $prodSrch2->addOrder('theprice', 'ASC');
@@ -809,7 +811,7 @@ class Product extends MyAppModel
                 if ($returnId) {
                     return $product['selprod_id'];
                 }
-                return CommonHelper::generateUrl('Products', 'view', array($product['selprod_id']))."::";
+                return CommonHelper::generateUrl('Products', 'view', array($product['selprod_id'])) . "::";
             } else {
                 return false;
             }
@@ -870,7 +872,7 @@ class Product extends MyAppModel
         $assignFields['rab_weightage'] = $eventWeightage;
         $assignFields['rab_last_action_datetime'] = date('Y-m-d H:i:s');
 
-        $onDuplicateKeyUpdate = array_merge($assignFields, array('rab_weightage'=>'mysql_func_rab_weightage + '.$eventWeightage));
+        $onDuplicateKeyUpdate = array_merge($assignFields, array('rab_weightage' => 'mysql_func_rab_weightage + ' . $eventWeightage));
 
         FatApp::getDb()->insertFromArray('tbl_recommendation_activity_browsing', $assignFields, true, array(), $onDuplicateKeyUpdate);
     }
@@ -989,9 +991,9 @@ class Product extends MyAppModel
             return false;
         }
         $srch = MetaTag::getSearchObject();
-        $srch->addCondition(MetaTag::DB_TBL_PREFIX.'record_id', '=', $selProductId);
-        $srch->addCondition(MetaTag::DB_TBL_PREFIX.'controller', '=', 'Products');
-        $srch->addCondition(MetaTag::DB_TBL_PREFIX.'action', '=', 'view');
+        $srch->addCondition(MetaTag::DB_TBL_PREFIX . 'record_id', '=', $selProductId);
+        $srch->addCondition(MetaTag::DB_TBL_PREFIX . 'controller', '=', 'Products');
+        $srch->addCondition(MetaTag::DB_TBL_PREFIX . 'action', '=', 'view');
         $srch->addMultipleFields(array('meta_id'));
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetch($rs);
@@ -1023,7 +1025,7 @@ class Product extends MyAppModel
     {
         $srch = SellerProduct::getSearchObject(CommonHelper::getLangId());
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
-        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = '.CommonHelper::getLangId(), 'p_l');
+        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . CommonHelper::getLangId(), 'p_l');
         $srch->addOrder('product_name');
         $srch->addCondition('selprod_user_id', '=', $user_id);
         $srch->addCondition('selprod_deleted', '=', 0);
@@ -1050,7 +1052,7 @@ class Product extends MyAppModel
         if (empty($shippingDetails)) {
             return;
         } else {
-            return FatUtility::decodeHtmlEntities('<em><strong>'.$shippingDetails['country_name'].'</em></strong> '.Labels::getLabel('LBL_by', $langId).' <strong>'.$shippingDetails['scompany_name'].'</strong> '.Labels::getLabel('LBL_in', $langId).' '.ShippingDurations::getShippingDurationTitle($shippingDetails, $langId));
+            return FatUtility::decodeHtmlEntities('<em><strong>' . $shippingDetails['country_name'] . '</em></strong> ' . Labels::getLabel('LBL_by', $langId) . ' <strong>' . $shippingDetails['scompany_name'] . '</strong> ' . Labels::getLabel('LBL_in', $langId) . ' ' . ShippingDurations::getShippingDurationTitle($shippingDetails, $langId));
         }
     }
 
@@ -1075,7 +1077,7 @@ class Product extends MyAppModel
         }
         $db = FatApp::getDb();
 
-        $srch->addMultipleFields(array('selprod_id','selprod_deleted'));
+        $srch->addMultipleFields(array('selprod_id', 'selprod_deleted'));
         $rs = $srch->getResultSet();
         $row = $db->fetch($rs);
 
@@ -1141,10 +1143,10 @@ class Product extends MyAppModel
     public static function addUpdateProductSellerShipping($product_id, $data_to_be_save, $userId)
     {
         $productSellerShiping = array();
-        $productSellerShiping['ps_product_id']= $product_id;
-        $productSellerShiping['ps_user_id']= $userId;
-        $productSellerShiping['ps_from_country_id']= $data_to_be_save['ps_from_country_id'];
-        $productSellerShiping['ps_free']=  $data_to_be_save['ps_free'];
+        $productSellerShiping['ps_product_id'] = $product_id;
+        $productSellerShiping['ps_user_id'] = $userId;
+        $productSellerShiping['ps_from_country_id'] = $data_to_be_save['ps_from_country_id'];
+        $productSellerShiping['ps_free'] = $data_to_be_save['ps_free'];
         if (!FatApp::getDb()->insertFromArray(PRODUCT::DB_TBL_PRODUCT_SHIPPING, $productSellerShiping, false, array(), $productSellerShiping)) {
             return false;
         }
@@ -1163,13 +1165,13 @@ class Product extends MyAppModel
         foreach ($data as $key => $val) {
             if (isset($val["country_id"]) && ($val["country_id"] > 0 || $val["country_id"] == -1) && $val["company_id"] > 0 && $val["processing_time_id"] > 0) {
                 $prodShipData = array(
-                'pship_prod_id'=>$product_id,
-                'pship_country'=>(isset($val["country_id"]) && FatUtility::int($val["country_id"]))?FatUtility::int($val["country_id"]):0,
-                'pship_user_id'=>$userId,
-                'pship_company'=>(isset($val["company_id"]) && FatUtility::int($val["company_id"]))?FatUtility::int($val["company_id"]):0,
-                'pship_duration'=>(isset($val["processing_time_id"]) && FatUtility::int($val["processing_time_id"]))?FatUtility::int($val["processing_time_id"]):0,
-                'pship_charges'=>(1 > FatUtility::float($val["cost"]) ? 0 : FatUtility::float($val["cost"])),
-                'pship_additional_charges'=>FatUtility::float($val["additional_cost"]),
+                'pship_prod_id' => $product_id,
+                'pship_country' => (isset($val["country_id"]) && FatUtility::int($val["country_id"])) ? FatUtility::int($val["country_id"]) : 0,
+                'pship_user_id' => $userId,
+                'pship_company' => (isset($val["company_id"]) && FatUtility::int($val["company_id"])) ? FatUtility::int($val["company_id"]) : 0,
+                'pship_duration' => (isset($val["processing_time_id"]) && FatUtility::int($val["processing_time_id"])) ? FatUtility::int($val["processing_time_id"]) : 0,
+                'pship_charges' => (1 > FatUtility::float($val["cost"]) ? 0 : FatUtility::float($val["cost"])),
+                'pship_additional_charges' => FatUtility::float($val["additional_cost"]),
                 );
 
                 if (!FatApp::getDb()->insertFromArray(ShippingApi::DB_TBL_PRODUCT_SHIPPING_RATES, $prodShipData, false, array(), $prodShipData)) {
@@ -1188,7 +1190,7 @@ class Product extends MyAppModel
         $product_id = FatUtility::int($product_id);
         $userId = FatUtility::int($userId);
 
-        if (!$db->deleteRecords(ShippingApi::DB_TBL_PRODUCT_SHIPPING_RATES, array('smt'=> ShippingApi::DB_TBL_PRODUCT_SHIPPING_RATES_PREFIX.'prod_id = ? and '.ShippingApi::DB_TBL_PRODUCT_SHIPPING_RATES_PREFIX.'user_id = ?','vals' => array($product_id,$userId)))) {
+        if (!$db->deleteRecords(ShippingApi::DB_TBL_PRODUCT_SHIPPING_RATES, array('smt' => ShippingApi::DB_TBL_PRODUCT_SHIPPING_RATES_PREFIX . 'prod_id = ? and ' . ShippingApi::DB_TBL_PRODUCT_SHIPPING_RATES_PREFIX . 'user_id = ?', 'vals' => array($product_id, $userId)))) {
             // $this->error = $db->getError();
             return false;
         }
@@ -1261,7 +1263,7 @@ class Product extends MyAppModel
         $prodSrch->joinProductToCategory();
         $prodSrch->joinSellerSubscription();
         $prodSrch->addSubscriptionValidCondition();
-        $prodSrch->addMultipleFields(array('selprod_id','product_id'));
+        $prodSrch->addMultipleFields(array('selprod_id', 'product_id'));
         $prodSrch->addCondition('selprod_id', '=', $selprod_id);
         $prodSrch->doNotLimitRecords();
         $productRs = $prodSrch->getResultSet();
@@ -1291,13 +1293,13 @@ class Product extends MyAppModel
             $keyword = $criteria['keyword'];
         }
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $criteria['optionvalue'] = !empty($criteria['optionvalue']) ? json_decode($criteria['optionvalue'], true) : '';
         }
 
         $shop_id = 0;
         if (array_key_exists('shop_id', $criteria)) {
-            $shop_id =  FatUtility::int($criteria['shop_id']);
+            $shop_id = FatUtility::int($criteria['shop_id']);
         }
 
         //$srch->setDefinedCriteria($join_price, 0, $criteria, true);
@@ -1315,7 +1317,7 @@ class Product extends MyAppModel
         /* to check current product is in wish list or not[ */
         if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::NO) {
             $srch->joinFavouriteProducts($userId);
-            $srch->addFld('ufp_id');
+            $srch->addFld('IFNULL(ufp_id, 0) as ufp_id');
         } else {
             $srch->joinUserWishListProducts($userId);
             $srch->addFld('COALESCE(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist');
@@ -1326,13 +1328,13 @@ class Product extends MyAppModel
             'selprod_id', 'selprod_user_id',  'selprod_code', 'selprod_stock', 'selprod_condition', 'selprod_price', 'COALESCE(selprod_title  ,COALESCE(product_name, product_identifier)) as selprod_title',
             'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type', 'splprice_start_date', 'splprice_end_date',
             'brand_id', 'COALESCE(brand_name, brand_identifier) as brand_name', 'user_name', 'IF(selprod_stock > 0, 1, 0) AS in_stock',
-            'selprod_sold_count','selprod_return_policy',/* 'ifnull(sq_sprating.totReviews,0) totReviews','IF(ufp_id > 0, 1, 0) as isfavorite', */'selprod_min_order_qty'
+            'selprod_sold_count', 'selprod_return_policy', /* 'ifnull(sq_sprating.totReviews,0) totReviews','IF(ufp_id > 0, 1, 0) as isfavorite', */'selprod_min_order_qty'
             )
         );
 
         $includeRating = false;
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $includeRating = true;
         }
 
@@ -1362,7 +1364,7 @@ class Product extends MyAppModel
             $selProdReviewObj->doNotLimitRecords();
             $selProdReviewObj->addGroupBy('spr.spreview_product_id');
             $selProdReviewObj->addCondition('spr.spreview_status', '=', SelProdReview::STATUS_APPROVED);
-            $selProdReviewObj->addMultipleFields(array('spr.spreview_selprod_id','spr.spreview_product_id',"ROUND(AVG(sprating_rating),2) as prod_rating"));
+            $selProdReviewObj->addMultipleFields(array('spr.spreview_selprod_id', 'spr.spreview_product_id', "ROUND(AVG(sprating_rating),2) as prod_rating"));
             $selProdRviewSubQuery = $selProdReviewObj->getQuery();
             /*$srch->joinTable('(' . $selProdRviewSubQuery . ')', 'LEFT OUTER JOIN', 'sq_sprating.spreview_selprod_id = selprod_id', 'sq_sprating');*/
             $srch->joinTable('(' . $selProdRviewSubQuery . ')', 'LEFT OUTER JOIN', 'sq_sprating.spreview_product_id = product_id', 'sq_sprating');
@@ -1375,7 +1377,7 @@ class Product extends MyAppModel
         }
 
         if (array_key_exists('prodcat', $criteria)) {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 $criteria['prodcat'] = json_decode($criteria['prodcat'], true);
             }
             $srch->addCategoryCondition($criteria['prodcat']);
@@ -1387,7 +1389,7 @@ class Product extends MyAppModel
 
 
         if (array_key_exists('collection_id', $criteria)) {
-            $collection_id =  FatUtility::int($criteria['collection_id']);
+            $collection_id = FatUtility::int($criteria['collection_id']);
             if (0 < $collection_id) {
                 $srch->addCollectionIdCondition($collection_id);
             }
@@ -1395,10 +1397,10 @@ class Product extends MyAppModel
 
         if (!empty($keyword)) {
             $srch->addKeywordSearch($keyword);
-            $srch->addFld('if(selprod_title LIKE '.FatApp::getDb()->quoteVariable('%'.$keyword.'%').',  1,   0  ) as keywordmatched');
-            $srch->addFld('if(selprod_title LIKE '.FatApp::getDb()->quoteVariable('%'.$keyword.'%').',  IFNULL(splprice_price, selprod_price),   theprice ) as theprice');
+            $srch->addFld('if(selprod_title LIKE ' . FatApp::getDb()->quoteVariable('%' . $keyword . '%') . ',  1,   0  ) as keywordmatched');
+            $srch->addFld('if(selprod_title LIKE ' . FatApp::getDb()->quoteVariable('%' . $keyword . '%') . ',  IFNULL(splprice_price, selprod_price),   theprice ) as theprice');
             $srch->addFld(
-                'if(selprod_title LIKE '.FatApp::getDb()->quoteVariable('%'.$keyword.'%').',  CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1
+                'if(selprod_title LIKE ' . FatApp::getDb()->quoteVariable('%' . $keyword . '%') . ',  CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1
 END,   special_price_found ) as special_price_found'
             );
             $sortBy = 'keyword_relevancy';
@@ -1410,7 +1412,7 @@ END,   special_price_found ) as special_price_found'
 
         if (array_key_exists('brand', $criteria)) {
             if (!empty($criteria['brand'])) {
-                if (true ===  MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL) {
                     $criteria['brand'] = json_decode($criteria['brand'], true);
                 }
                 $srch->addBrandCondition($criteria['brand']);
@@ -1424,7 +1426,7 @@ END,   special_price_found ) as special_price_found'
         }
 
         if (array_key_exists('condition', $criteria)) {
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 $criteria['condition'] = json_decode($criteria['condition'], true);
             }
             $condition = is_array($criteria['condition']) ? array_filter($criteria['condition']) : $criteria['condition'];
@@ -1444,7 +1446,7 @@ END,   special_price_found ) as special_price_found'
             $minPriceRange = floor($criteria['min_price_range']);
         }
         //currency_id
-        if (!empty($minPriceRange)) {
+        if (!empty($minPriceRange) && isset($criteria['currency_id'])) {
             $min_price_range_default_currency = CommonHelper::convertExistingToOtherCurrency($criteria['currency_id'], $minPriceRange, FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1), false);
             //$min_price_range_default_currency =  CommonHelper::getDefaultCurrencyValue($minPriceRange, false, false);
             $srch->addHaving('theprice', '>=', $min_price_range_default_currency);
@@ -1487,11 +1489,11 @@ END,   special_price_found ) as special_price_found'
             $sortBy = isset($sortByArr[0]) ? $sortByArr[0] : $sortBy;
             $sortOrder = isset($sortByArr[1]) ? $sortByArr[1] : $sortOrder;
 
-            if (!in_array($sortOrder, array('asc','desc'))) {
+            if (!in_array($sortOrder, array('asc', 'desc'))) {
                 $sortOrder = 'asc';
             }
 
-            if (!in_array($sortBy, array('keyword','price','popularity','rating', 'discounted'))) {
+            if (!in_array($sortBy, array('keyword', 'price', 'popularity', 'rating', 'discounted'))) {
                 $sortOrder = 'keyword_relevancy';
             }
 
@@ -1579,7 +1581,7 @@ END,   special_price_found ) as special_price_found'
         $productId = FatUtility::int($productId);
 
         if (0 < $shopId) {
-            $criteria = array('shop_id'=>$shopId );
+            $criteria = array('shop_id' => $shopId );
         }/* else {
             $shop = Shop::getAttributesByUserId($sellerId);
             if (!empty($shop) && array_key_exists('shop_id', $shop)) {
@@ -1588,7 +1590,7 @@ END,   special_price_found ) as special_price_found'
         }*/
 
         if (0 < $brandId) {
-            $criteria = array('brand_id'=>$brandId );
+            $criteria = array('brand_id' => $brandId );
         }
 
         $srch = new ProductSearch();
@@ -1597,7 +1599,7 @@ END,   special_price_found ) as special_price_found'
         $srch->joinSellerSubscription(0, false, true);
         $srch->addSubscriptionValidCondition();
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
-        $srch->addMultipleFields(array('product_id','selprod_id','theprice','IFNULL(splprice_id, 0) as splprice_id'));
+        $srch->addMultipleFields(array('product_id', 'selprod_id', 'theprice', 'IFNULL(splprice_id, 0) as splprice_id'));
         $srch->doNotLimitRecords();
         $srch->doNotCalculateRecords();
         $srch->addGroupBy('product_id');
@@ -1611,17 +1613,17 @@ END,   special_price_found ) as special_price_found'
 
         $tmpQry = $srch->getQuery();
 
-        $qry = "INSERT INTO ".static::DB_PRODUCT_MIN_PRICE." (pmp_product_id, pmp_selprod_id, pmp_min_price, pmp_splprice_id) SELECT * FROM (".$tmpQry.") AS t ON DUPLICATE KEY UPDATE pmp_selprod_id = t.selprod_id, pmp_min_price = t.theprice, pmp_splprice_id = t.splprice_id";
+        $qry = "INSERT INTO " . static::DB_PRODUCT_MIN_PRICE . " (pmp_product_id, pmp_selprod_id, pmp_min_price, pmp_splprice_id) SELECT * FROM (" . $tmpQry . ") AS t ON DUPLICATE KEY UPDATE pmp_selprod_id = t.selprod_id, pmp_min_price = t.theprice, pmp_splprice_id = t.splprice_id";
 
         FatApp::getDb()->query($qry);
-        $query = "DELETE m FROM ".static::DB_PRODUCT_MIN_PRICE." m LEFT OUTER JOIN (".$tmpQry.") ON pmp_product_id = selprod_product_id WHERE m.pmp_product_id IS NULL";
+        $query = "DELETE m FROM " . static::DB_PRODUCT_MIN_PRICE . " m LEFT OUTER JOIN (" . $tmpQry . ") ON pmp_product_id = selprod_product_id WHERE m.pmp_product_id IS NULL";
         FatApp::getDb()->query($query);
     }
 
     public static function getProductsCount()
     {
         $srch = static::getSearchObject();
-        $srch->addFld('COUNT('.static::DB_TBL_PREFIX.'id) as total_products');
+        $srch->addFld('COUNT(' . static::DB_TBL_PREFIX . 'id) as total_products');
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetch($rs);
     }
@@ -1654,15 +1656,15 @@ END,   special_price_found ) as special_price_found'
         }
 
         $autoUpdateOtherLangsData = isset($langData['auto_update_other_langs_data']) ? FatUtility::int($langData['auto_update_other_langs_data']) : 0;
-        foreach ($langData['product_name'] as $langId=>$prodName) {
+        foreach ($langData['product_name'] as $langId => $prodName) {
             if (empty($prodName) && $autoUpdateOtherLangsData > 0) {
                 $this->saveTranslatedProductLangData($langId);
             } elseif (!empty($prodName)) {
                 $data = array(
-                     static::DB_TBL_LANG_PREFIX .'product_id' => $this->mainTableRecordId,
-                     static::DB_TBL_LANG_PREFIX .'lang_id' => $langId,
+                     static::DB_TBL_LANG_PREFIX . 'product_id' => $this->mainTableRecordId,
+                     static::DB_TBL_LANG_PREFIX . 'lang_id' => $langId,
                     'product_name' => $prodName,
-                    'product_description' => $langData['product_description_'.$langId],
+                    'product_description' => $langData['product_description_' . $langId],
                     'product_youtube_video' => $langData['product_youtube_video'][$langId],
                 );
                 if (!$this->updateLangData($langId, $data)) {
@@ -1715,12 +1717,12 @@ END,   special_price_found ) as special_price_found'
             return false;
         }
 
-        FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_CATEGORY, array('smt'=> static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'product_id = ?', 'vals' => array($this->mainTableRecordId)));
+        FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_CATEGORY, array('smt' => static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX . 'product_id = ?', 'vals' => array($this->mainTableRecordId)));
 
         $record = new TableRecord(static::DB_TBL_PRODUCT_TO_CATEGORY);
         $data = array(
-            static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'product_id' => $this->mainTableRecordId,
-            static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'prodcat_id' => $categoryId
+            static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX . 'product_id' => $this->mainTableRecordId,
+            static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX . 'prodcat_id' => $categoryId
         );
         $record->assignValues($data);
         if (!$record->addNew(array(), $data)) {
@@ -1809,14 +1811,15 @@ END,   special_price_found ) as special_price_found'
             return false;
         }
         $srch = new SearchBase(static::DB_PRODUCT_SPECIFICATION);
-        $srch->joinTable(static::DB_PRODUCT_LANG_SPECIFICATION, 'LEFT JOIN', static::DB_PRODUCT_SPECIFICATION_PREFIX.'id = '.static::DB_PRODUCT_LANG_SPECIFICATION_PREFIX.'prodspec_id');
+        $srch->joinTable(static::DB_PRODUCT_LANG_SPECIFICATION, 'LEFT JOIN', static::DB_PRODUCT_SPECIFICATION_PREFIX . 'id = ' . static::DB_PRODUCT_LANG_SPECIFICATION_PREFIX . 'prodspec_id');
         $srch->addCondition(static::DB_PRODUCT_SPECIFICATION_PREFIX . 'product_id', '=', $this->mainTableRecordId);
-        $srch->addCondition(static::DB_PRODUCT_LANG_SPECIFICATION_PREFIX.'lang_id', '=', $langId);
+        $srch->addCondition(static::DB_PRODUCT_LANG_SPECIFICATION_PREFIX . 'lang_id', '=', $langId);
         $srch->addMultipleFields(
             array(
-                static::DB_PRODUCT_SPECIFICATION_PREFIX.'id',
-                static::DB_PRODUCT_SPECIFICATION_PREFIX.'name',
-                static::DB_PRODUCT_SPECIFICATION_PREFIX.'value'
+                static::DB_PRODUCT_SPECIFICATION_PREFIX . 'id',
+                static::DB_PRODUCT_SPECIFICATION_PREFIX . 'name',
+                static::DB_PRODUCT_SPECIFICATION_PREFIX . 'value',
+                static::DB_PRODUCT_SPECIFICATION_PREFIX . 'group'
             )
         );
         $rs = $srch->getResultSet();

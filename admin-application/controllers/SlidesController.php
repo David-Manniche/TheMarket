@@ -1,4 +1,5 @@
 <?php
+
 class SlidesController extends AdminBaseController
 {
     private $canView;
@@ -19,7 +20,7 @@ class SlidesController extends AdminBaseController
         $this->objPrivilege->canViewSlides();
         $this->_template->addCss('css/cropper.css');
         $this->_template->addJs('js/cropper.js');
-        $this->_template->addJs('js/cropper-main.js');        
+        $this->_template->addJs('js/cropper-main.js');
         $this->_template->render();
     }
 
@@ -39,7 +40,7 @@ class SlidesController extends AdminBaseController
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
 
-        $arrListing =array();
+        $arrListing = array();
         if ($rs) {
             $arrListing = FatApp::getDb()->fetchAll($rs);
         }
@@ -180,9 +181,9 @@ class SlidesController extends AdminBaseController
         unset($post['slide_id']);
         unset($post['lang_id']);
         $data = array(
-        'slidelang_slide_id'=>$slide_id,
-        'slidelang_lang_id'=>$lang_id,
-        'slide_title'=>$post['slide_title']
+        'slidelang_slide_id' => $slide_id,
+        'slidelang_lang_id' => $lang_id,
+        'slide_title' => $post['slide_title']
         );
 
         $slideObj = new Slides($slide_id);
@@ -345,8 +346,8 @@ class SlidesController extends AdminBaseController
         $fileName = $_FILES['cropped_image']['name'];
         $this->set('file', $fileName);
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
-        $fileName = strlen($fileName) > 10 ? substr($fileName, 0, 10).'.'.$ext : $fileName;
-        $this->set('msg', $fileName.' '.Labels::getLabel('MSG_File_uploaded_successfully', $this->adminLangId));
+        $fileName = strlen($fileName) > 10 ? substr($fileName, 0, 10) . '.' . $ext : $fileName;
+        $this->set('msg', $fileName . ' ' . Labels::getLabel('MSG_File_uploaded_successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -532,7 +533,7 @@ class SlidesController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel("LBL_Display_For", $this->adminLangId), 'slide_screen', $screenArr, '', array(), '');
         $frm->addHiddenField('', 'banner_min_width');
         $frm->addHiddenField('', 'banner_min_height');
-        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'slide_image', array('accept'=>'image/*', 'data-frm'=>'frmSlideMedia'));
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'slide_image', array('accept' => 'image/*', 'data-frm' => 'frmSlideMedia'));
         return $frm;
     }
 

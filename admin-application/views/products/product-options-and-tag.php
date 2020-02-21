@@ -1,7 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-
-<div class="row justify-content-center mt-5">
-    <div class="col-md-12">
+<div class="tabs_data mt-5">
+    <div class="tabs_body">
         <div class="row">
             <div class="col-md-8"> 
                 <h3 class="form__heading"><?php echo Labels::getLabel('LBL_Option_Groups', $adminLangId); ?></h3>
@@ -53,22 +52,32 @@
                  </div> 
             </div> 
         </div>  
-        <div class="row">
-             <div class="col-md-6">
-                 <div class="field-set">
-                     <div class="caption-wraper"><label class="field_label"></label></div>
-                     <div class="field-wraper">
-                         <div class="field_cover">
-                            <input type="hidden" name="product_id" value="<?php echo $productId; ?>">
-                            <input type="button" class="btn btn-primary" onClick= <?php if($productType == Product::PRODUCT_TYPE_DIGITAL) { ?> "productMedia(<?php echo $productId; ?>)" <?php }else{ ?> "productShipping(<?php echo $productId; ?>)" <?php  } ?> value="<?php echo Labels::getLabel('LBL_Next', $adminLangId); ?>">
-                         </div>
+    </div>
+
+    <div class="row tabs_footer">
+        <div class="col-md-6">
+             <div class="field-set">
+                 <div class="caption-wraper"><label class="field_label"></label></div>
+                 <div class="field-wraper">
+                     <div class="field_cover web_form">
+                        <input onclick="productAttributeAndSpecificationsFrm(<?php echo $productId; ?>);" type="button" name="btn_back" value="Back">                         .
                      </div>
                  </div>
              </div>
          </div>
-    </div>
+         <div class="col-md-6 text-right">
+             <div class="field-set">
+                 <div class="caption-wraper"><label class="field_label"></label></div>
+                 <div class="field-wraper">
+                     <div class="field_cover web_form">
+                        <input type="hidden" name="product_id" value="<?php echo $productId; ?>">
+                        <input type="submit" class="btn btn-primary" onClick= <?php if($productType == Product::PRODUCT_TYPE_DIGITAL) { ?> "productMedia(<?php echo $productId; ?>)" <?php }else{ ?> "productShipping(<?php echo $productId; ?>)" <?php  } ?> value="<?php echo Labels::getLabel('LBL_Save_And_Next', $adminLangId); ?>">
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
 </div>
-
 <script type="text/javascript">
 
 $("document").ready(function() {   
@@ -127,11 +136,19 @@ $("document").ready(function() {
         var option_id = e.detail.tag.id; 
         if(option_id == ''){
             var tagifyId = e.detail.tag.__tagifyId;
-             $('[__tagifyid='+tagifyId+']').remove();
+            $('[__tagifyid='+tagifyId+']').remove();
         }else{
-            fcom.updateWithAjax(fcom.makeUrl('Products', 'updateProductOption'), 'product_id='+product_id+'&option_id='+option_id, function(t) {
-                upcListing(product_id);
-            });
+            fcom.ajax(fcom.makeUrl('Products', 'updateProductOption'), 'product_id='+product_id+'&option_id='+option_id, function(t) {
+                var rsp = $.parseJSON(t);                 
+                if(rsp.status == 1){
+                    $.systemMessage(rsp.msg,'alert--success');
+                    upcListing(product_id);
+                }else{ 
+                    var tagifyId = e.detail.tag.__tagifyId;
+                    $('[__tagifyid='+tagifyId+']').remove();
+                    $.systemMessage(rsp.msg,'alert--danger');
+                } 
+            });            
         }        
     }
 

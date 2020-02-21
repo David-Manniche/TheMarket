@@ -1,4 +1,5 @@
 <?php
+
 class CashOnDeliveryPayController extends MyAppController
 {
     private $keyName = "CashOnDelivery";

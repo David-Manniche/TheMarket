@@ -301,7 +301,7 @@
             > span {
                 display: block;
                 width: 2.5rem;
-                background: $brand-color;
+                background: $brand-color; color:$brand-color-inverse;
                 border-radius: 50%;
                 height: 2.5rem;
                 cursor: pointer;
@@ -309,7 +309,7 @@
         }
     }
 
-    .social-toggle {
+    .share-icon {
         margin-bottom: 15px;
     }
 
@@ -336,7 +336,7 @@
     }
 
     > ul > li.is-active > span {
-        background: $secondary-color;
+        background: $secondary-color; color:$secondary-color-inverse;
     }
 }
 
@@ -382,6 +382,10 @@
         -webkit-box-pack: start;
         -ms-flex-pack: start;
         justify-content: flex-start;
+    }
+
+    .icn {
+        margin-#{$end-direction}:5px;
     }
 
     .rate {
@@ -466,7 +470,7 @@
 
         .link {
             &:after {
-                background: $brand-color;
+                background: $brand-color; color:$brand-color-inverse;
             }
         }
     }
@@ -492,6 +496,7 @@
     top: 50%;
     z-index: 1;
     font-weight: 700;
+    transform: translateY(-50%);
 
     &.tag--soldout-small {
         padding: 9px 7px;
@@ -503,8 +508,8 @@
 
 
 .item__pic {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     border: $border;
     border-radius: 4px;
     margin: 0;
@@ -578,7 +583,13 @@
 
 }
 
+.item__price {
+    font-weight: 600;
+}
 
+.item__price_off {
+    color: $primary-color;
+}
 
 .actions {
     display: flex;
@@ -591,10 +602,6 @@
             flex-wrap: wrap;
         }
     }
-
-
-
-
 
     li {
         display: inline-block;
@@ -624,23 +631,41 @@
             -ms-flex-pack: center;
             justify-content: center;
 
-            &:hover {
-                background: $brand-color;
-                border-color: $brand-color;
-                color: #fff;
-                text-decoration: none !important;
-            }
-
             &.icn-highlighted {
                 border: none;
                 color: $brand-color;
                 background: #f0f0f0;
 
                 &:hover {
-                    background: $brand-color;
-                    color: #fff;
+                    background: $brand-color; color:$brand-color-inverse;
+                   
                 }
             }
+
+            .svg {
+                width: 16px;
+                height: 16px;
+                display: block;
+                fill: inherit;
+            }
+
+
+            &:hover {
+                background: $brand-color; color:$brand-color-inverse;
+                border-color: $brand-color;
+                
+                text-decoration: none !important;
+                fill:$brand-color-inverse;
+
+                .svg {
+                    fill: inherit;
+
+                }
+            }
+
+
+
+
         }
     }
 

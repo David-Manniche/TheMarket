@@ -17,7 +17,7 @@ if ('' === $returnAgeFld->value || '' === $cancellationAgeFld->value) {
 $urlFld = $frmSellerProduct->getField('selprod_url_keyword');
 $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
 $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value, $selprod_id, 'post')");
-$urlFld->htmlAfterField = "<small class='text--small'>" . CommonHelper::generateFullUrl('Products', 'View', array($selprod_id), '/').'</small>';
+$urlFld->htmlAfterField = "<small class='form-text text-muted'>" . CommonHelper::generateFullUrl('Products', 'View', array($selprod_id), '/').'</small>';
 
 $fld = $frmSellerProduct->getField('selprod_subtract_stock');
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
@@ -42,7 +42,7 @@ $submitBtnFld->developerTags['col'] = 12;
     <?php /* require_once('sellerCatalogProductTop.php'); */ ?>
 </div>
 <div class="cards">
-    <div class="cards-content pt-3 pl-4 pr-4 ">
+    <div class="cards-content ">
         <div class="tabs__content form">
             <div class="row">
                 <div class="col-md-12">
@@ -86,7 +86,7 @@ $submitBtnFld->developerTags['col'] = 12;
                         <div class="row">
                             <div class="selprod_threshold_stock_level_fld col-md-6">
                                 <div class="field-set">
-                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_threshold_stock_level')->getCaption(); ?> <i class="far fa-question-circle tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_Alert_stock_level_hint_info', $siteLangId); ?></span></i></label></div>
+                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_threshold_stock_level')->getCaption(); ?> <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_Alert_stock_level_hint_info', $siteLangId); ?>"></i></label></div>
                                     <div class="field-wraper">
                                         <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_threshold_stock_level'); ?></div>
                                     </div>
@@ -140,45 +140,44 @@ $submitBtnFld->developerTags['col'] = 12;
                                 </div>
                             </div>
                         </div>
-
-                        <div class="row">
-                            <?php if ($product_type == Product::PRODUCT_TYPE_PHYSICAL) { ?>
-                            <div class="col-md-6">
-                                <div class="field-set">
-                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_condition')->getCaption(); ?><span class="spn_must_field">*</span></label></div>
-                                    <div class="field-wraper">
-                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_condition'); ?></div>
+                        <?php if ($product_type == Product::PRODUCT_TYPE_PHYSICAL) { ?>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="field-set">
+                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_condition')->getCaption(); ?><span class="spn_must_field">*</span></label></div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_condition'); ?></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="field-set">
+                                        <div class="caption-wraper"><label class="field_label"></label></div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('use_shop_policy'); ?></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <?php } ?>
-                            <div class="col-md-6">
-                                <div class="field-set">
-                                    <div class="caption-wraper"><label class="field_label"></label></div>
-                                    <div class="field-wraper">
-                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('use_shop_policy'); ?></div>
+                            <div class="row use-shop-policy <?php echo $hidden; ?>">
+                                <div class="col-md-6">
+                                    <div class="field-set">
+                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_return_age')->getCaption(); ?></label></div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_return_age'); ?></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="field-set">
+                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_cancellation_age')->getCaption(); ?></label></div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_cancellation_age'); ?></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row use-shop-policy <?php echo $hidden; ?>">
-                            <div class="col-md-6">
-                                <div class="field-set">
-                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_return_age')->getCaption(); ?></label></div>
-                                    <div class="field-wraper">
-                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_return_age'); ?></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="field-set">
-                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_cancellation_age')->getCaption(); ?></label></div>
-                                    <div class="field-wraper">
-                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_cancellation_age'); ?></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <?php } ?>
                         <div class="row">
                             <div class="selprod_cod_enabled_fld col-md-6">
                                 <div class="field-set">
@@ -198,9 +197,9 @@ $submitBtnFld->developerTags['col'] = 12;
                                             <th width="20%"><?php echo Labels::getLabel('LBL_Variant/Option', $siteLangId); ?></th>
                                             <?php }?>
                                             <th width="20%"><?php echo Labels::getLabel('LBL_Cost_Price', $siteLangId); ?></th>
-                                            <th width="20%"><?php echo Labels::getLabel('LBL_Selling_Price', $siteLangId); ?> <i class="far fa-question-circle tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates.', $siteLangId).' '.Labels::getLabel('LBL_Min_Selling_price', $siteLangId).' '. CommonHelper::displayMoneyFormat($productMinSellingPrice, true, true); ?></span></i></th>
+                                            <th width="20%"><?php echo Labels::getLabel('LBL_Selling_Price', $siteLangId); ?> <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates.', $siteLangId).' '.Labels::getLabel('LBL_Min_Selling_price', $siteLangId).' '. CommonHelper::displayMoneyFormat($productMinSellingPrice, true, true); ?>"></i></th>
                                             <th width="20%"><?php echo Labels::getLabel('LBL_Quantity', $siteLangId); ?></th>
-                                            <th width="20%"><?php echo Labels::getLabel('LBL_SKU', $siteLangId); ?> <i class="far fa-question-circle tooltip tooltip--right"><span class="hovertxt"><?php echo Labels::getLabel('LBL_Stock_Keeping_Unit', $siteLangId) ?></span></i></th>
+                                            <th width="20%"><?php echo Labels::getLabel('LBL_SKU', $siteLangId); ?> <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_Stock_Keeping_Unit', $siteLangId) ?>"></i></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -293,6 +292,9 @@ $submitBtnFld->developerTags['col'] = 12;
 </div>
 <?php echo FatUtility::createHiddenFormFromData(array('product_id' => $product_id), array('name' => 'frmSearchSellerProducts'));?>
 <script type="text/javascript">
+    
+    $('[data-toggle="tooltip"]').tooltip();
+    
     var PERCENTAGE = <?php echo applicationConstants::PERCENTAGE; ?>;
     var FLAT = <?php echo applicationConstants::FLAT; ?>;
     var CONF_PRODUCT_SKU_MANDATORY = <?php echo FatApp::getConfig("CONF_PRODUCT_SKU_MANDATORY", FatUtility::VAR_INT, 1); ?>;

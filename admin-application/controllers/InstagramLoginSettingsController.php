@@ -1,4 +1,5 @@
 <?php
+
 class InstagramLoginSettingsController extends SocialLoginSettingsController
 {
     public static function getConfigurationKeys()

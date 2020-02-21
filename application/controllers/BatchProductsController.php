@@ -1,4 +1,5 @@
 <?php
+
 class BatchProductsController extends LoggedUserController
 {
     public function __construct($action)
@@ -96,11 +97,11 @@ class BatchProductsController extends LoggedUserController
         /* ] */
 
         $prodGroupObj = new ProductGroup($prodgroup_id);
-        $dataToSaveArr  = array(
-        'prodgroup_identifier'    =>    $post['prodgroup_identifier'],
-        'prodgroup_price'        =>    $post['prodgroup_price'],
-        'prodgroup_active'        =>    $post['prodgroup_active'],
-        'prodgroup_user_id'        =>    $userId
+        $dataToSaveArr = array(
+        'prodgroup_identifier' => $post['prodgroup_identifier'],
+        'prodgroup_price' => $post['prodgroup_price'],
+        'prodgroup_active' => $post['prodgroup_active'],
+        'prodgroup_user_id' => $userId
         );
         $prodGroupObj->assignValues($dataToSaveArr);
 
@@ -112,7 +113,7 @@ class BatchProductsController extends LoggedUserController
         $newTabLangId = 0;
         if ($prodgroup_id > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = ProductGroup::getAttributesByLangId($langId, $prodgroup_id)) {
                     $newTabLangId = $langId;
                     break;
@@ -169,10 +170,10 @@ class BatchProductsController extends LoggedUserController
         /* ] */
 
         $prodGroupObj = new ProductGroup($prodgroup_id);
-        $dataToSaveArr  = array(
-        'prodgrouplang_prodgroup_id'    =>    $prodgroup_id,
-        'prodgrouplang_lang_id'            =>    $lang_id,
-        'prodgroup_name'                =>    $post['prodgroup_name']
+        $dataToSaveArr = array(
+        'prodgrouplang_prodgroup_id' => $prodgroup_id,
+        'prodgrouplang_lang_id' => $lang_id,
+        'prodgroup_name' => $post['prodgroup_name']
         );
 
         if (!$prodGroupObj->updateLangData($lang_id, $dataToSaveArr)) {
@@ -519,7 +520,7 @@ class BatchProductsController extends LoggedUserController
         $frm->addHiddenField('', 'prodgroup_id', $prodgroup_id);
         $frm->addSelectBox('Language', 'lang_id', Language::getAllNames(), '', array(), '');
 
-        $fld =  $frm->addButton('', 'prodgroup_image', Labels::getLabel('LBL_Upload_File', $lang_id), array('class'=>'prodgroup-Js btn btn--primary btn--sm', 'id' => 'prodgroup_image', 'data-prodgroup_id' => $prodgroup_id ));
+        $fld = $frm->addButton('', 'prodgroup_image', Labels::getLabel('LBL_Upload_File', $lang_id), array('class' => 'prodgroup-Js btn btn--primary btn--sm', 'id' => 'prodgroup_image', 'data-prodgroup_id' => $prodgroup_id ));
         return $frm;
     }
 
@@ -528,7 +529,7 @@ class BatchProductsController extends LoggedUserController
         $frm = new Form('frmBatch');
         $frm->addHiddenField('', 'prodgroup_id');
         $frm->addTextBox(Labels::getLabel('LBL_Identifier', $lang_id), 'prodgroup_identifier')->requirements()->setRequired();
-        $frm->addFloatField(Labels::getLabel('LBL_Batch_Price', $lang_id).CommonHelper::concatCurrencySymbolWithAmtLbl(), 'prodgroup_price');
+        $frm->addFloatField(Labels::getLabel('LBL_Batch_Price', $lang_id) . CommonHelper::concatCurrencySymbolWithAmtLbl(), 'prodgroup_price');
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $lang_id), 'prodgroup_active', applicationConstants::getActiveInactiveArr($lang_id), '', array(), '')->requirements()->setRequired();
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Submit', $lang_id));
         return $frm;

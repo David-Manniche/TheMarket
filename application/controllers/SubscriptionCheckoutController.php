@@ -1,4 +1,5 @@
 <?php
+
 class SubscriptionCheckoutController extends MyAppController
 {
     private $cartObj;
@@ -68,8 +69,8 @@ class SubscriptionCheckoutController extends MyAppController
     public function login()
     {
         $loginFormData = array(
-        'frm'             => $this->getLoginForm(),
-        'siteLangId'    => $this->siteLangId,
+        'frm' => $this->getLoginForm(),
+        'siteLangId' => $this->siteLangId,
         'showSignUpLink' => false,
         'onSubmitFunctionName' => 'setUpLogin'
         );
@@ -88,11 +89,11 @@ class SubscriptionCheckoutController extends MyAppController
         $signUpFrm->addHiddenField('', 'isCheckOutPage', 1);
 
         $signUpFormData = array(
-        'frm'            =>    $signUpFrm,
-        'siteLangId'    =>    $this->siteLangId,
+        'frm' => $signUpFrm,
+        'siteLangId' => $this->siteLangId,
         'showLogInLink' => false,
-        'onSubmitFunctionName'        =>    'setUpRegisteration',
-        'termsAndConditionsLinkHref'=> $termsAndConditionsLinkHref,
+        'onSubmitFunctionName' => 'setUpRegisteration',
+        'termsAndConditionsLinkHref' => $termsAndConditionsLinkHref,
         );
 
         $this->set('signUpFormData', $signUpFormData);
@@ -134,7 +135,7 @@ class SubscriptionCheckoutController extends MyAppController
         $prodSrch->joinPackage();
 
         $prodSrch->addCondition('spplan_id', '=', $spplan_id);
-        $fields = array( 'spplan_id','spplan_price' ,'spackage_images_per_product','spackage_type','spackage_products_allowed','spackage_inventory_allowed','spplan_interval','spplan_frequency','spackage_commission_rate' );
+        $fields = array( 'spplan_id', 'spplan_price', 'spackage_images_per_product', 'spackage_type', 'spackage_products_allowed', 'spackage_inventory_allowed', 'spplan_interval', 'spplan_frequency', 'spackage_commission_rate' );
         $prodSrch->addMultipleFields($fields);
         $rs = $prodSrch->getResultSet();
         return $subscriptionInfo = FatApp::getDb()->fetch($rs);
@@ -181,7 +182,7 @@ class SubscriptionCheckoutController extends MyAppController
         /* add Order Data[ */
         $order_id = isset($_SESSION['subscription_shopping_cart']["order_id"]) ? $_SESSION['subscription_shopping_cart']["order_id"] : false;
 
-        $userId =  UserAuthentication::getLoggedUserId();
+        $userId = UserAuthentication::getLoggedUserId();
         $orderData['order_id'] = $order_id;
         $orderData['order_user_id'] = $userId;
         /* $orderData['order_user_name'] = $userDataArr['user_name'];
@@ -190,12 +191,12 @@ class SubscriptionCheckoutController extends MyAppController
         $orderData['order_is_paid'] = Orders::ORDER_IS_PENDING;
         $orderData['order_date_added'] = date('Y-m-d H:i:s');
         $orderData['order_type'] = Orders::ORDER_SUBSCRIPTION;
-        $orderData['order_renew']= 0;
+        $orderData['order_renew'] = 0;
 
         /* order extras[ */
         $orderData['extra'] = array(
-        'oextra_order_id'    =>    $order_id,
-        'order_ip_address'    =>    $_SERVER['REMOTE_ADDR']
+        'oextra_order_id' => $order_id,
+        'order_ip_address' => $_SERVER['REMOTE_ADDR']
         );
 
         if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -220,16 +221,16 @@ class SubscriptionCheckoutController extends MyAppController
         /* ] */
 
         $languageRow = Language::getAttributesById($this->siteLangId);
-        $orderData['order_language_id'] =  $languageRow['language_id'];
-        $orderData['order_language_code'] =  $languageRow['language_code'];
+        $orderData['order_language_id'] = $languageRow['language_id'];
+        $orderData['order_language_code'] = $languageRow['language_code'];
 
         $currencyRow = Currency::getAttributesById($this->siteCurrencyId);
-        $orderData['order_currency_id'] =  $currencyRow['currency_id'];
-        $orderData['order_currency_code'] =  $currencyRow['currency_code'];
-        $orderData['order_currency_value'] =  $currencyRow['currency_value'];
+        $orderData['order_currency_id'] = $currencyRow['currency_id'];
+        $orderData['order_currency_code'] = $currencyRow['currency_code'];
+        $orderData['order_currency_value'] = $currencyRow['currency_value'];
 
-        $orderData['order_user_comments'] =  '';
-        $orderData['order_admin_comments'] =  '';
+        $orderData['order_user_comments'] = '';
+        $orderData['order_admin_comments'] = '';
 
         if (!empty($cartSummary["cartDiscounts"])) {
             $orderData['order_discount_coupon_code'] = $cartSummary["cartDiscounts"]["coupon_code"];
@@ -259,7 +260,7 @@ class SubscriptionCheckoutController extends MyAppController
 
         $orderData['subscriptions'] = array();
         $orderData['subscrCharges'] = array();
-        $subscriptionType ='';
+        $subscriptionType = '';
         if ($cartSubscription) {
             foreach ($cartSubscription as $cartSubscription) {
                 $subscriptionInfo = $this->getCartSubscriptionInfo($cartSubscription['spplan_id']);
@@ -274,25 +275,25 @@ class SubscriptionCheckoutController extends MyAppController
                     }
                     $op_subscription_title = ($langSpecificsubscriptionInfo['spackage_name'] != '') ? $langSpecificsubscriptionInfo['spackage_name'] : '';
                     $subscriptionLangData[$lang_id] = array(
-                    OrderSubscription::DB_TBL_LANG_PREFIX.'lang_id'    =>    $lang_id,
-                    'ossubs_subscription_name'    =>    $langSpecificsubscriptionInfo['spackage_name'],
+                    OrderSubscription::DB_TBL_LANG_PREFIX . 'lang_id' => $lang_id,
+                    'ossubs_subscription_name' => $langSpecificsubscriptionInfo['spackage_name'],
                     );
                 }
-                $orderData['subscriptions'][SUBSCRIPTIONCART::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT.$subscriptionInfo['spplan_id']] = array(
-                OrderSubscription::DB_TBL_PREFIX.'price'        =>    $subscriptionInfo['spplan_price'],
-                OrderSubscription::DB_TBL_PREFIX.'images_allowed'        =>    $subscriptionInfo['spackage_images_per_product'],
-                OrderSubscription::DB_TBL_PREFIX.'products_allowed'        =>    $subscriptionInfo['spackage_products_allowed'],
-                OrderSubscription::DB_TBL_PREFIX.'inventory_allowed'        =>    $subscriptionInfo['spackage_inventory_allowed'],
-                OrderSubscription::DB_TBL_PREFIX.'type'        =>    $subscriptionInfo['spackage_type'],
-                OrderSubscription::DB_TBL_PREFIX.'plan_id'        =>    $subscriptionInfo['spplan_id'],
-                OrderSubscription::DB_TBL_PREFIX.'interval'        =>    $subscriptionInfo['spplan_interval'],
-                OrderSubscription::DB_TBL_PREFIX.'frequency'        =>    $subscriptionInfo['spplan_frequency'],
-                OrderSubscription::DB_TBL_PREFIX.'commission'        =>    $subscriptionInfo['spackage_commission_rate'],
-                OrderSubscription::DB_TBL_PREFIX.'status_id'        =>    FatApp::getConfig("CONF_DEFAULT_SUBSCRIPTION_ORDER_STATUS"),
-                'subscriptionsLangData'    =>    $subscriptionLangData,
+                $orderData['subscriptions'][SUBSCRIPTIONCART::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT . $subscriptionInfo['spplan_id']] = array(
+                OrderSubscription::DB_TBL_PREFIX . 'price' => $subscriptionInfo['spplan_price'],
+                OrderSubscription::DB_TBL_PREFIX . 'images_allowed' => $subscriptionInfo['spackage_images_per_product'],
+                OrderSubscription::DB_TBL_PREFIX . 'products_allowed' => $subscriptionInfo['spackage_products_allowed'],
+                OrderSubscription::DB_TBL_PREFIX . 'inventory_allowed' => $subscriptionInfo['spackage_inventory_allowed'],
+                OrderSubscription::DB_TBL_PREFIX . 'type' => $subscriptionInfo['spackage_type'],
+                OrderSubscription::DB_TBL_PREFIX . 'plan_id' => $subscriptionInfo['spplan_id'],
+                OrderSubscription::DB_TBL_PREFIX . 'interval' => $subscriptionInfo['spplan_interval'],
+                OrderSubscription::DB_TBL_PREFIX . 'frequency' => $subscriptionInfo['spplan_frequency'],
+                OrderSubscription::DB_TBL_PREFIX . 'commission' => $subscriptionInfo['spackage_commission_rate'],
+                OrderSubscription::DB_TBL_PREFIX . 'status_id' => FatApp::getConfig("CONF_DEFAULT_SUBSCRIPTION_ORDER_STATUS"),
+                'subscriptionsLangData' => $subscriptionLangData,
                 );
                 $subscriptionType = $subscriptionInfo['spackage_type'];
-                $adjustedAmount=0;
+                $adjustedAmount = 0;
                 if (FatApp::getConfig('CONF_ENABLE_ADJUST_AMOUNT_CHANGE_PLAN')) {
                     $adjustedAmount = $cartSummary["cartAdjustableAmount"];
                 }
@@ -307,25 +308,25 @@ class SubscriptionCheckoutController extends MyAppController
                 $rewardPoints = $orderData['order_reward_point_value'];
                 $usedRewardPoint = 0;
                 if ($rewardPoints > 0) {
-                    $selProdAmount = ($cartSubscription['spplan_price'])  - $discount -$adjustedAmount ;
-                    $usedRewardPoint = round((($rewardPoints * $selProdAmount)/($orderData['order_net_amount']+$rewardPoints)), 2);
+                    $selProdAmount = ($cartSubscription['spplan_price']) - $discount - $adjustedAmount;
+                    $usedRewardPoint = round((($rewardPoints * $selProdAmount) / ($orderData['order_net_amount'] + $rewardPoints)), 2);
                 }
                 //CommonHelper::printArray($cartSubscription); die();
-                $orderData['subscrCharges'][SubscriptionCart::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT.$subscriptionInfo['spplan_id']] = array(
+                $orderData['subscrCharges'][SubscriptionCart::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT . $subscriptionInfo['spplan_id']] = array(
 
-                OrderProduct::CHARGE_TYPE_DISCOUNT =>array(
+                OrderProduct::CHARGE_TYPE_DISCOUNT => array(
                 'amount' => -$discount /*[Should be negative value]*/
                 ),
 
-                OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT =>array(
+                OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT => array(
                 'amount' => -$usedRewardPoint /*[Should be negative value]*/
                 ),
-                OrderProduct::CHARGE_TYPE_ADJUST_SUBSCRIPTION_PRICE =>array(
+                OrderProduct::CHARGE_TYPE_ADJUST_SUBSCRIPTION_PRICE => array(
                 'amount' => -$adjustedAmount /*[Should be negative value]*/
                 ),
                 );
                 /* [ Add order Type[ */
-                $orderData['order_type']= Orders::ORDER_SUBSCRIPTION;
+                $orderData['order_type'] = Orders::ORDER_SUBSCRIPTION;
                 /* ] */
             }
         }
@@ -364,7 +365,7 @@ class SubscriptionCheckoutController extends MyAppController
             $WalletPaymentForm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Pay_Now', $this->siteLangId));
         }
 
-        if ($cartSummary['orderNetAmount']==0 || $cartSummary['orderNetAmount']==0) {
+        if ($cartSummary['orderNetAmount'] == 0 || $cartSummary['orderNetAmount'] == 0) {
             $confirmPaymentFrm->addFormTagAttribute('action', CommonHelper::generateUrl('ConfirmPay', 'Charge', array($order_id)));
             $confirmPaymentFrm->fill(array('order_id' => $order_id));
             $confirmPaymentFrm->setFormTagAttribute('onsubmit', 'confirmOrder(this); return(false);');
@@ -435,7 +436,7 @@ class SubscriptionCheckoutController extends MyAppController
         }
 
         $frm = $this->getPaymentTabForm($this->siteLangId, $paymentMethod['pmethod_code']);
-        $controller = $paymentMethod['pmethod_code'].'Pay';
+        $controller = $paymentMethod['pmethod_code'] . 'Pay';
         $frm->setFormTagAttribute('action', CommonHelper::generateUrl($controller, 'charge', array($orderInfo['order_id'])));
         $frm->fill(
             array(
@@ -500,7 +501,7 @@ class SubscriptionCheckoutController extends MyAppController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $this->set('msg', Labels::getLabel("MSG_Used_Reward_point", $this->siteLangId).'-'.$rewardPoints);
+        $this->set('msg', Labels::getLabel("MSG_Used_Reward_point", $this->siteLangId) . '-' . $rewardPoints);
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -584,7 +585,7 @@ class SubscriptionCheckoutController extends MyAppController
 
         $paymentMethodRow = PaymentMethods::getAttributesById($pmethod_id);
 
-        if (!$paymentMethodRow || $paymentMethodRow['pmethod_active'] != applicationConstants::ACTIVE  && $cartSummary['orderPaymentGatewayCharges']>0) {
+        if (!$paymentMethodRow || $paymentMethodRow['pmethod_active'] != applicationConstants::ACTIVE && $cartSummary['orderPaymentGatewayCharges'] > 0) {
             Message::addErrorMessage(Labels::getLabel("LBL_Invalid_Payment_method,_Please_contact_Webadmin.", $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -643,7 +644,7 @@ class SubscriptionCheckoutController extends MyAppController
     {
         $langId = FatUtility::int($langId);
         $frm = new Form('frmRewards');
-        $frm->addTextBox(Labels::getLabel('LBL_Reward_Points', $langId), 'redeem_rewards', '', array('placeholder'=>Labels::getLabel('LBL_Use_Reward_Point', $langId)));
+        $frm->addTextBox(Labels::getLabel('LBL_Reward_Points', $langId), 'redeem_rewards', '', array('placeholder' => Labels::getLabel('LBL_Use_Reward_Point', $langId)));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Apply', $langId));
         return $frm;
     }
@@ -668,7 +669,7 @@ class SubscriptionCheckoutController extends MyAppController
     public function getCouponForm()
     {
         $currDate = date('Y-m-d');
-        $interval = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s').' - 15 minute'));
+        $interval = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') . ' - 15 minute'));
         $loggedUserId = UserAuthentication::getLoggedUserId();
 
         $cartObj = new SubscriptionCart();
@@ -678,7 +679,7 @@ class SubscriptionCheckoutController extends MyAppController
         $cHistorySrch = CouponHistory::getSearchObject();
         $cHistorySrch->doNotLimitRecords();
         $cHistorySrch->doNotCalculateRecords();
-        $cHistorySrch->addMultipleFields(array('couponhistory_coupon_id','couponhistory_id'));
+        $cHistorySrch->addMultipleFields(array('couponhistory_coupon_id', 'couponhistory_id'));
         /* ] */
 
         /* coupon User History[ */
@@ -711,20 +712,20 @@ class SubscriptionCheckoutController extends MyAppController
         $cPlanSrch->doNotCalculateRecords();
         $cPlanSrch->doNotLimitRecords();
         $cPlanSrch->addGroupBy('ctplan_coupon_id');
-        $cPlanSrch->addMultipleFields(array('ctplan_coupon_id','GROUP_CONCAT(ctplan_spplan_id) as grouped_coupon_plans'));
+        $cPlanSrch->addMultipleFields(array('ctplan_coupon_id', 'GROUP_CONCAT(ctplan_spplan_id) as grouped_coupon_plans'));
         /* ] */
 
         $srch = DiscountCoupons::getSearchObject($this->siteLangId);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
 
-        $srch->joinTable('('.$cHistorySrch->getQuery().')', 'LEFT OUTER JOIN', 'coupon_history.couponhistory_coupon_id = dc.coupon_id', 'coupon_history');
-        $srch->joinTable('('.$cHoldSrch->getQuery().')', 'LEFT OUTER JOIN', 'dc.coupon_id = coupon_hold.couponhold_coupon_id', 'coupon_hold');
+        $srch->joinTable('(' . $cHistorySrch->getQuery() . ')', 'LEFT OUTER JOIN', 'coupon_history.couponhistory_coupon_id = dc.coupon_id', 'coupon_history');
+        $srch->joinTable('(' . $cHoldSrch->getQuery() . ')', 'LEFT OUTER JOIN', 'dc.coupon_id = coupon_hold.couponhold_coupon_id', 'coupon_hold');
         //$srch->joinTable( '('.$cUsersSrch->getQuery().')', 'LEFT OUTER JOIN', 'dc.coupon_id = ctu.ctu_coupon_id', 'ctu' );
 
-        $srch->joinTable('('. $userCouponHistorySrch->getQuery() .')', 'LEFT OUTER JOIN', 'dc.coupon_id = user_coupon_history.couponhistory_coupon_id', 'user_coupon_history');
+        $srch->joinTable('(' . $userCouponHistorySrch->getQuery() . ')', 'LEFT OUTER JOIN', 'dc.coupon_id = user_coupon_history.couponhistory_coupon_id', 'user_coupon_history');
 
-        $srch->joinTable('('.$cPlanSrch->getQuery().')', 'LEFT OUTER JOIN', 'dc.coupon_id = ctplan.ctplan_coupon_id', 'ctplan');
+        $srch->joinTable('(' . $cPlanSrch->getQuery() . ')', 'LEFT OUTER JOIN', 'dc.coupon_id = ctplan.ctplan_coupon_id', 'ctplan');
 
         $srch->addCondition('coupon_type', '=', DiscountCoupons::TYPE_SELLER_PACKAGE);
         $cnd = $srch->addCondition('coupon_start_date', '=', '0000-00-00', 'AND');
@@ -740,7 +741,7 @@ class SubscriptionCheckoutController extends MyAppController
         $cartSubscription = $this->scartObj->getSubscription($this->siteLangId);
 
         foreach ($cartSubscription as $cartSubscription) {
-            $srch->addDirectCondition('IF(grouped_coupon_plans != "NULL", FIND_IN_SET('.$cartSubscription['spplan_id'].', grouped_coupon_plans), 1 = 1 )');
+            $srch->addDirectCondition('IF(grouped_coupon_plans != "NULL", FIND_IN_SET(' . $cartSubscription['spplan_id'] . ', grouped_coupon_plans), 1 = 1 )');
         }
         /* ] */
 
@@ -763,7 +764,7 @@ class SubscriptionCheckoutController extends MyAppController
     {
         $langId = FatUtility::int($langId);
         $frm = new Form('frmPromoCoupons');
-        $fld = $frm->addTextBox(Labels::getLabel('LBL_Coupon_code', $langId), 'coupon_code', '', array('placeholder'=>Labels::getLabel('LBL_Enter_Your_code', $langId)));
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_Coupon_code', $langId), 'coupon_code', '', array('placeholder' => Labels::getLabel('LBL_Enter_Your_code', $langId)));
         $fld->requirements()->setRequired();
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Apply', $langId));
         return $frm;
@@ -801,9 +802,9 @@ class SubscriptionCheckoutController extends MyAppController
         }
 
         $holdCouponData = array(
-        'couponhold_coupon_id'=>$couponInfo['coupon_id'],
-        'couponhold_user_id'=>UserAuthentication::getLoggedUserId(),
-        'couponhold_added_on'=>date('Y-m-d H:i:s'),
+        'couponhold_coupon_id' => $couponInfo['coupon_id'],
+        'couponhold_user_id' => UserAuthentication::getLoggedUserId(),
+        'couponhold_added_on' => date('Y-m-d H:i:s'),
         );
 
         if (!FatApp::getDb()->insertFromArray(DiscountCoupons::DB_TBL_COUPON_HOLD, $holdCouponData, true, array(), $holdCouponData)) {
@@ -829,10 +830,10 @@ class SubscriptionCheckoutController extends MyAppController
     {
         $this->_template->render(false, false);
     }
-    public function renewSubscriptionOrder($ossubs_id  = 0)
+    public function renewSubscriptionOrder($ossubs_id = 0)
     {
-        $statusArr  = Orders::getActiveSubscriptionStatusArr();
-        $endDate  = date("Y-m-d");
+        $statusArr = Orders::getActiveSubscriptionStatusArr();
+        $endDate = date("Y-m-d");
         $srch = new OrderSubscriptionSearch();
         $srch->joinOrders();
         $srch->joinOrderUser();
@@ -844,14 +845,14 @@ class SubscriptionCheckoutController extends MyAppController
         $srch->addCondition('ossubs_till_date', '<=', $endDate);
         $srch->addCondition('ossubs_till_date', '!=', '0000-00-00');
         $srch->addCondition('user_autorenew_subscription', '!=', 1);
-        $srch->addMultipleFields(array('order_user_id','order_id','ossubs_id','ossubs_type','ossubs_price','ossubs_images_allowed','ossubs_products_allowed','ossubs_inventory_allowed','ossubs_plan_id','ossubs_interval','ossubs_frequency','ossubs_commission'));
+        $srch->addMultipleFields(array('order_user_id', 'order_id', 'ossubs_id', 'ossubs_type', 'ossubs_price', 'ossubs_images_allowed', 'ossubs_products_allowed', 'ossubs_inventory_allowed', 'ossubs_plan_id', 'ossubs_interval', 'ossubs_frequency', 'ossubs_commission'));
         /* $srch->addGroupBy('order_user_id');  */
         $srch->addOrder('ossubs_id', 'desc');
 
         $rs = $srch->getResultSet();
         $activeSub = FatApp::getDb()->fetch($rs, 'ossubs_id');
 
-        if (empty($activeSub) && count($activeSub)==0) {
+        if (empty($activeSub) && count($activeSub) == 0) {
             Message::addErrorMessage(Labels::getLabel("MSG_Subscription_is_not_active", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'subscriptions'));
         }
@@ -859,8 +860,8 @@ class SubscriptionCheckoutController extends MyAppController
         $userId = $activeSub['order_user_id'];
         $userBalance = User::getUserBalance($userId);
 
-        if ($userBalance<$activeSub['ossubs_price']) {
-            $low_bal_msg = str_replace("{clickhere}", '<a href="'.CommonHelper::generateUrl('account', 'credits').'">'.Labels::getLabel('LBL_Click_Here', $this->siteLangId).'</a>', Labels::getLabel('MSG_Please_Maintain_your_wallet_balance_to_renew_subscription_{clickhere}', $this->siteLangId));
+        if ($userBalance < $activeSub['ossubs_price']) {
+            $low_bal_msg = str_replace("{clickhere}", '<a href="' . CommonHelper::generateUrl('account', 'credits') . '">' . Labels::getLabel('LBL_Click_Here', $this->siteLangId) . '</a>', Labels::getLabel('MSG_Please_Maintain_your_wallet_balance_to_renew_subscription_{clickhere}', $this->siteLangId));
 
             Message::addErrorMessage($low_bal_msg);
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'subscriptions'));
@@ -868,7 +869,7 @@ class SubscriptionCheckoutController extends MyAppController
 
         $orderData = array();
         /* add Order Data[ */
-        $order_id =  false;
+        $order_id = false;
         $orderData['order_id'] = $order_id;
         $orderData['order_user_id'] = $userId;
         /* $orderData['order_user_name'] = $userDataArr['user_name'];
@@ -882,8 +883,8 @@ class SubscriptionCheckoutController extends MyAppController
 
         /* order extras[ */
         $orderData['extra'] = array(
-        'oextra_order_id'    =>    $order_id,
-        'order_ip_address'    =>    $_SERVER['REMOTE_ADDR']
+        'oextra_order_id' => $order_id,
+        'order_ip_address' => $_SERVER['REMOTE_ADDR']
         );
 
         if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -908,16 +909,16 @@ class SubscriptionCheckoutController extends MyAppController
         /* ] */
 
         $languageRow = Language::getAttributesById($this->siteLangId);
-        $orderData['order_language_id'] =  $languageRow['language_id'];
-        $orderData['order_language_code'] =  $languageRow['language_code'];
+        $orderData['order_language_id'] = $languageRow['language_id'];
+        $orderData['order_language_code'] = $languageRow['language_code'];
 
         $currencyRow = Currency::getAttributesById($this->siteCurrencyId);
-        $orderData['order_currency_id'] =  $currencyRow['currency_id'];
-        $orderData['order_currency_code'] =  $currencyRow['currency_code'];
-        $orderData['order_currency_value'] =  $currencyRow['currency_value'];
+        $orderData['order_currency_id'] = $currencyRow['currency_id'];
+        $orderData['order_currency_code'] = $currencyRow['currency_code'];
+        $orderData['order_currency_value'] = $currencyRow['currency_value'];
 
-        $orderData['order_user_comments'] =  '';
-        $orderData['order_admin_comments'] =  '';
+        $orderData['order_user_comments'] = '';
+        $orderData['order_admin_comments'] = '';
 
         $orderData['order_reward_point_used'] = 0;
         $orderData['order_reward_point_value'] = 0;
@@ -951,47 +952,47 @@ class SubscriptionCheckoutController extends MyAppController
 
 
             $subscriptionLangData[$lang_id] = array(
-            'ossubslang_lang_id'    =>    $lang_id,
-            'ossubs_subscription_name'    =>    $op_subscription_title,
+            'ossubslang_lang_id' => $lang_id,
+            'ossubs_subscription_name' => $op_subscription_title,
 
 
             );
         }
 
-        $orderData['subscriptions'][SubscriptionCart::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT.$activeSub['ossubs_plan_id']] = array(
+        $orderData['subscriptions'][SubscriptionCart::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT . $activeSub['ossubs_plan_id']] = array(
 
 
-         OrderSubscription::DB_TBL_PREFIX.'price'        =>    $activeSub['ossubs_price'],
-         OrderSubscription::DB_TBL_PREFIX.'images_allowed'        =>    $activeSub['ossubs_images_allowed'],
-         OrderSubscription::DB_TBL_PREFIX.'products_allowed'        =>    $activeSub['ossubs_products_allowed'],
-         OrderSubscription::DB_TBL_PREFIX.'inventory_allowed'        =>    $activeSub['ossubs_inventory_allowed'],
-         OrderSubscription::DB_TBL_PREFIX.'plan_id'        =>    $activeSub['ossubs_plan_id'],
-         OrderSubscription::DB_TBL_PREFIX.'type'        =>    $activeSub['ossubs_type'],
-         OrderSubscription::DB_TBL_PREFIX.'interval'        =>    $activeSub['ossubs_interval'],
-         OrderSubscription::DB_TBL_PREFIX.'frequency'        =>    $activeSub['ossubs_frequency'],
-         OrderSubscription::DB_TBL_PREFIX.'commission'        =>    $activeSub['ossubs_commission'],
-         OrderSubscription::DB_TBL_PREFIX.'status_id'        =>    FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS"),
+         OrderSubscription::DB_TBL_PREFIX . 'price' => $activeSub['ossubs_price'],
+         OrderSubscription::DB_TBL_PREFIX . 'images_allowed' => $activeSub['ossubs_images_allowed'],
+         OrderSubscription::DB_TBL_PREFIX . 'products_allowed' => $activeSub['ossubs_products_allowed'],
+         OrderSubscription::DB_TBL_PREFIX . 'inventory_allowed' => $activeSub['ossubs_inventory_allowed'],
+         OrderSubscription::DB_TBL_PREFIX . 'plan_id' => $activeSub['ossubs_plan_id'],
+         OrderSubscription::DB_TBL_PREFIX . 'type' => $activeSub['ossubs_type'],
+         OrderSubscription::DB_TBL_PREFIX . 'interval' => $activeSub['ossubs_interval'],
+         OrderSubscription::DB_TBL_PREFIX . 'frequency' => $activeSub['ossubs_frequency'],
+         OrderSubscription::DB_TBL_PREFIX . 'commission' => $activeSub['ossubs_commission'],
+         OrderSubscription::DB_TBL_PREFIX . 'status_id' => FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS"),
 
-         'subscriptionsLangData'    =>    $subscriptionLangData,
+         'subscriptionsLangData' => $subscriptionLangData,
         );
 
-        $adjustAmount=0;
+        $adjustAmount = 0;
         $discount = 0;
         $rewardPoints = 0;
         $usedRewardPoint = 0;
 
         //CommonHelper::printArray($cartSubscription); die();
-        $orderData['subscrCharges'][SubscriptionCart::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT.$activeSub['ossubs_plan_id']] = array(
+        $orderData['subscrCharges'][SubscriptionCart::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT . $activeSub['ossubs_plan_id']] = array(
 
-         OrderProduct::CHARGE_TYPE_DISCOUNT =>array(
+         OrderProduct::CHARGE_TYPE_DISCOUNT => array(
           'amount' => 0 /*[Should be negative value]*/
          ),
 
 
-         OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT =>array(
+         OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT => array(
           'amount' => 0 /*[Should be negative value]*/
          ),
-         OrderProduct::CHARGE_TYPE_ADJUST_SUBSCRIPTION_PRICE =>array(
+         OrderProduct::CHARGE_TYPE_ADJUST_SUBSCRIPTION_PRICE => array(
           'amount' => 0 /*[Should be negative value]*/
          ),
 
@@ -999,8 +1000,8 @@ class SubscriptionCheckoutController extends MyAppController
 
         );
         /* [ Add order Type[ */
-        $orderData['order_type']= Orders::ORDER_SUBSCRIPTION;
-        $orderData['order_renew']= 1;
+        $orderData['order_type'] = Orders::ORDER_SUBSCRIPTION;
+        $orderData['order_renew'] = 1;
 
         /* ] */
         $orderObj = new Orders();

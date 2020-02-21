@@ -22,7 +22,14 @@ $weightUnitFld->developerTags['col'] = 6;
 $weightFld = $productFrm->getField('product_weight');
 $weightFld->developerTags['col'] = 6;
 
+$btnBackFld = $productFrm->getField('btn_back');
+$btnBackFld->developerTags['col'] = 6;
+$btnBackFld->setFieldTagAttribute('onClick','productOptionsAndTag('.$preqId.');');
+$btnBackFld->value = Labels::getLabel('LBL_Back', $siteLangId);
 
+$btnSubmitFld = $productFrm->getField('btn_submit');
+$btnSubmitFld->developerTags['col'] = 6;
+$btnSubmitFld->setWrapperAttribute('class','text-right');
 ?>
 <div class="row justify-content-center">
      <div class="col-md-12">
@@ -33,6 +40,9 @@ $weightFld->developerTags['col'] = 6;
 <script type="text/javascript">
 $(document).ready(function(){
     $('input[name=\'shipping_country\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
         'source': function(request, response) {
             $.ajax({
                 url: fcom.makeUrl('Seller', 'countries_autocomplete'),

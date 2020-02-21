@@ -36,6 +36,9 @@ $("document").ready(function(){
 	reloadCouponPlan(<?php echo $coupon_id; ?>);
 	
 	$('input[name=\'plan_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {			
 			$.ajax({
 				url: fcom.makeUrl('SellerPackages', 'autoComplete'),

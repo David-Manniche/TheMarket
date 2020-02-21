@@ -6,7 +6,7 @@ $frmOrderReturnRequestsSrch->developerTags['fld_default_col'] = 12;
 
 $keywordFld = $frmOrderReturnRequestsSrch->getField('keyword');
 $keywordFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Keyword', $siteLangId));
-$keywordFld->htmlAfterField = '<small class="text--small">'.Labels::getLabel('LBL_Search_in_Order_Id/Invoice_number,_Product_Name,_Brand_Name,_SKU,_Model', $siteLangId).'</small>';
+$keywordFld->htmlAfterField = '<small class="form-text text-muted">'.Labels::getLabel('LBL_Search_in_Order_Id/Invoice_number,_Product_Name,_Brand_Name,_SKU,_Model', $siteLangId).'</small>';
 $keywordFld->setWrapperAttribute('class', 'col-lg-6');
 $keywordFld->developerTags['col'] = 6;
 $keywordFld->developerTags['noCaptionTag'] = true;
@@ -62,7 +62,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
         <div class="row mb-4">
             <div class="col-lg-12">
                 <div class="cards">
-                    <div class="cards-content pt-4 pl-4 pr-4 pb-0">
+                    <div class="cards-content pb-0">
                         <div class="replaced">
                             <?php
                             $submitFld = $frmOrderReturnRequestsSrch->getField('btn_submit');
@@ -81,7 +81,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
         <div class="row">
             <div class="col-lg-12">
                 <div class="cards">
-                    <div class="cards-content pt-2 pl-4 pr-4">
+                    <div class="cards-content">
                         <div id="returnOrderRequestsListing"></div>
                     </div>
                 </div>

@@ -1,4 +1,5 @@
 <?php
+
 class WithdrawalRequestsController extends AdminBaseController
 {
     private $canView;
@@ -47,7 +48,7 @@ class WithdrawalRequestsController extends AdminBaseController
         $srch->addOrder('withdrawal_id', 'DESC');
         $srch->joinTable(User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC, 'LEFT JOIN', User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC_PREFIX . 'withdrawal_id = tuwr.withdrawal_id');
         $srch->addMultipleFields(
-            array('tuwr.*', 'GROUP_CONCAT(CONCAT(`uwrs_key`, ":", `uwrs_value`)) as payout_detail' ,'user_name','credential_email as user_email','credential_username as user_username',
+            array('tuwr.*', 'GROUP_CONCAT(CONCAT(`uwrs_key`, ":", `uwrs_value`)) as payout_detail', 'user_name', 'credential_email as user_email', 'credential_username as user_username',
             'user_balance', 'user_is_buyer', 'user_is_supplier', 'user_is_advertiser', 'user_is_affiliate')
         );
         
@@ -73,7 +74,7 @@ class WithdrawalRequestsController extends AdminBaseController
         }
         
         if ($post['date_from']) {
-            $srch->addCondition('tuwr.withdrawal_request_date', '>=', $post['date_from'] .  ' 00:00:00');
+            $srch->addCondition('tuwr.withdrawal_request_date', '>=', $post['date_from'] . ' 00:00:00');
         }
         
         if ($post['date_to']) {
@@ -149,7 +150,7 @@ class WithdrawalRequestsController extends AdminBaseController
         }
         
         $assignFields = array('withdrawal_status' => $status);
-        if (!FatApp::getDb()->updateFromArray(User::DB_TBL_USR_WITHDRAWAL_REQ, $assignFields, array('smt' => 'withdrawal_id=?','vals' => array($withdrawalId)))) {
+        if (!FatApp::getDb()->updateFromArray(User::DB_TBL_USR_WITHDRAWAL_REQ, $assignFields, array('smt' => 'withdrawal_id=?', 'vals' => array($withdrawalId)))) {
             Message::addErrorMessage(FatApp::getDb()->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -163,7 +164,7 @@ class WithdrawalRequestsController extends AdminBaseController
         $rs = FatApp::getDb()->updateFromArray(
             Transactions::DB_TBL,
             array("utxn_status" => Transactions::STATUS_COMPLETED),
-            array('smt' => 'utxn_withdrawal_id=?','vals' => array($withdrawalId))
+            array('smt' => 'utxn_withdrawal_id=?', 'vals' => array($withdrawalId))
         );
         
         if ($status == Transactions::WITHDRAWL_STATUS_DECLINED) {
@@ -195,16 +196,16 @@ class WithdrawalRequestsController extends AdminBaseController
         $frm->addTextBox(Labels::getLabel('LBL_To', $this->adminLangId) . ' [' . $this->siteDefaultCurrencyCode . ']', 'maxprice')->requirements()->setFloatPositive(true);
         
         $statusArr = Transactions::getWithdrawlStatusArr($langId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'status', array('-1'=>'Does not matter')+$statusArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'status', array('-1' => 'Does not matter') + $statusArr, '', array(), '');
         
-        $frm->addDateField(Labels::getLabel('LBL_Date_From', $this->adminLangId), 'date_from', '', array( 'readonly'=>'readonly', 'class'=>'field--calender' ));
-        $frm->addDateField(Labels::getLabel('LBL_Date_To', $this->adminLangId), 'date_to', '', array( 'readonly'=>'readonly', 'class'=>'field--calender' ));
+        $frm->addDateField(Labels::getLabel('LBL_Date_From', $this->adminLangId), 'date_from', '', array( 'readonly' => 'readonly', 'class' => 'field--calender' ));
+        $frm->addDateField(Labels::getLabel('LBL_Date_To', $this->adminLangId), 'date_to', '', array( 'readonly' => 'readonly', 'class' => 'field--calender' ));
         
         $arr_options2 = array('-1' => Labels::getLabel('LBL_Does_Not_Matter', $this->adminLangId)) + User::getUserTypesArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_User_Type', $this->adminLangId), 'type', $arr_options2, -1, array(), '');
         $frm->addHiddenField('', 'withdrawal_id', '');
-        $fld_submit=$frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
-        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick'=>'clearTagSearch();'));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick' => 'clearTagSearch();'));
         $fld_submit->attachField($fld_cancel);
         return $frm;
     }
@@ -222,7 +223,7 @@ class WithdrawalRequestsController extends AdminBaseController
         foreach ($pluginSettings as $val) {
             $pluginSettingArr[$val[ static::DB_TBL_PREFIX . "key"]] = $val[ static::DB_TBL_PREFIX . "value"];
         }
-        $pluginSettingArr['plugin_name'] = $settingsData['plugin_identifier'] ;
+        $pluginSettingArr['plugin_name'] = $settingsData['plugin_identifier'];
         return array_merge($pluginSettingArr, $settingsData);
     }
 }

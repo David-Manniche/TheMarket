@@ -1,4 +1,5 @@
 <?php
+
 class SellerPluginBaseController extends SellerBaseController
 {
     public function __construct($action)
@@ -11,8 +12,8 @@ class SellerPluginBaseController extends SellerBaseController
         try {
             $keyName = get_called_class()::KEY_NAME;
         } catch (\Error $e) {
-            $message = 'ERR - ' . $e->getMessage();
-            if (true ===  MOBILE_APP_API_CALL) {
+            $message = $e->getMessage();
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);

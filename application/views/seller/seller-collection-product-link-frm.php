@@ -2,9 +2,9 @@
 <div class="col-lg-12 col-md-12">
     <div class="content-header row">
         <div class="col"><h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Collections', $siteLangId); ?></h5></div>
-        <div class="content-header-right btn-group col-auto">
-            <div class="form__group">
-                <a href="javascript:void(0)" onClick="shopCollections(this)" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Back_to_Collections', $siteLangId);?></a>
+        <div class="content-header-right col-auto">
+            <div class="btn-group">
+                <a href="javascript:void(0)" onClick="shopCollections(this)" class="btn btn--primary btn--sm"><?php echo Labels::getLabel('LBL_Back_to_Collections', $siteLangId);?></a>
             </div>
         </div>
     </div>
@@ -55,7 +55,7 @@ $("document").ready(function(){
     <?php
     if (isset($products) && !empty($products)) {
         foreach ($products as $key => $val) { ?>
-        $('#selprod-products ul').append("<li id=\"selprod-products<?php echo $val['selprod_id'];?>\"><i class=\"remove_param fa fa-remove remove_link\"></i> <?php echo $val['product_name'];?>[<?php echo $val['product_identifier'];?>]<input type=\"hidden\"  name=\"product_ids[]\" value=\"<?php echo $val['selprod_id'];?>\" /></li>");
+        $('#selprod-products ul').append("<li id=\"selprod-products<?php echo $val['selprod_id'];?>\"> <?php echo $val['product_name'];?>[<?php echo $val['product_identifier'];?>] <i class=\"fa fa-times remove_param remove_link\"></i> <input type=\"hidden\"  name=\"product_ids[]\" value=\"<?php echo $val['selprod_id'];?>\" /></li>");
         <?php }
     } ?>
 

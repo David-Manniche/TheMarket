@@ -1,10 +1,11 @@
 <?php
+
 class Cron extends MyAppModel
 {
-    const DB_TBL = 'tbl_cron_schedules';
-    const DB_TBL_PREFIX = 'cron_';
+    public const DB_TBL = 'tbl_cron_schedules';
+    public const DB_TBL_PREFIX = 'cron_';
 
-    const DB_TBL_LOG = 'tbl_cron_log';
+    public const DB_TBL_LOG = 'tbl_cron_log';
 
     public function __construct($cronId = 0)
     {
@@ -48,8 +49,8 @@ class Cron extends MyAppModel
         FatApp::getDb()->insertFromArray(
             static::DB_TBL_LOG,
             array(
-            'cronlog_cron_id'=>$this->mainTableRecordId,
-            'cronlog_started_at'=>date('Y-m-d H:i:s'),
+            'cronlog_cron_id' => $this->mainTableRecordId,
+            'cronlog_started_at' => date('Y-m-d H:i:s'),
             )
         );
 

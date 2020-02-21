@@ -595,6 +595,9 @@ $(document).on('change', '.language-js', function () {
         });
 
         $('input[name="product_shipping[' + shipping_row + '][country_name]"]').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function (request, response) {
                 $.ajax({
                     url: fcom.makeUrl('seller', 'countries_autocomplete'),
@@ -618,6 +621,9 @@ $(document).on('change', '.language-js', function () {
         });
 
         $('input[name="product_shipping[' + shipping_row + '][company_name]"]').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function (request, response) {
                 $.ajax({
                     url: fcom.makeUrl('seller', 'shippingCompanyAutocomplete'),
@@ -641,6 +647,9 @@ $(document).on('change', '.language-js', function () {
         });
 
         $('input[name="product_shipping[' + shipping_row + '][processing_time]"]').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function (request, response) {
                 $.ajax({
                     url: fcom.makeUrl('seller', 'shippingMethodDurationAutocomplete'),
@@ -840,12 +849,16 @@ $(document).on('change', '.language-js', function () {
 		});
     }
 
-    updateProductOption = function (preq_id, option_id){
+    updateProductOption = function (preq_id, option_id, e){
 		fcom.ajax(fcom.makeUrl('Seller', 'updateCustomCatalogOption'), 'preq_id='+preq_id+'&option_id='+option_id, function(t) {
             var ans = $.parseJSON(t);
             if( ans.status == 1 ){
                 upcListing(preq_id);
                 $.mbsmessage(ans.msg, true, 'alert--success');
+            }else{
+                var tagifyId = e.detail.tag.__tagifyId;
+                $('[__tagifyid='+tagifyId+']').remove();
+                $.systemMessage(ans.msg, 'alert--danger');
             }
 		});
 	}
@@ -877,6 +890,10 @@ $(document).on('change', '.language-js', function () {
         fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupEanUpcCode',[preqId]), data, function(t) {
         });
     };
+    
+    goToCatalogRequest = function(){
+        window.location.href = fcom.makeUrl('seller', 'customCatalogProducts');
+    }
 
 })();
 

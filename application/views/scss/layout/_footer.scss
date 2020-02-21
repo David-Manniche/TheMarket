@@ -2,9 +2,11 @@
     color: $body-color;
     background: #fff;
     border-top: 1px solid #ddd;
-    
-    .container{ position: relative;}
-    
+
+    .container {
+        position: relative;
+    }
+
 
     p {
         color: #717171;
@@ -39,7 +41,7 @@
                 &:before {
                     position: absolute;
                     #{$end-direction}: 15px;
-                    top: 18px;
+                    top: 13px;
                     width: 10px;
                     height: 10px;
                     content: "";
@@ -92,8 +94,8 @@
 
                 &:hover {
                     color: $brand-color;
-                    
-                    
+
+
                     margin-#{$start-direction}: 10px;
 
                     &:before {
@@ -102,7 +104,7 @@
                 }
 
                 &:before {
-                    background: $brand-color;
+                    background: $brand-color; color:$brand-color-inverse;
                     bottom: 0px;
                     content: "";
                     height: 1px;
@@ -145,74 +147,78 @@
 .upperContent-footer {
     border-bottom: $border;
     border-top: $border;
+
+    ul {
+        display: table;
+        width: 100%;
+
+        li {
+            text-align: center;
+            vertical-align: top;
+            display: table-cell;
+            padding: 25px 15px;
+            -webkit-border-start: $border;
+            -moz-border-start: $border;
+            border-#{$start-direction}: $border;
+
+            &:first-child {
+                -webkit-border-start: none;
+                -moz-border-start: none;
+                border-#{$start-direction}: none;
+            }
+        }
+    }
+
+    h3 {
+        font-size: 1em;
+        color: $body-color;
+        margin: 5px auto;
+        padding: 0;
+        text-transform: uppercase;
+    }
+
+    p {
+        font-size: 0.8em;
+        line-height: 1.5;
+        color: #a4a3a3;
+        max-width: 200px;
+        margin: 0 auto 20px !important;
+    }
+
+    .individualTupple {
+        margin: 0 auto;
+
+        img {
+            max-width: 50px;
+            height: auto;
+            margin: 0 auto;
+            display: inline-block;
+            opacity: 0.40;
+            margin-bottom: 10px;
+        }
+
+    }
 }
 
-.upperContent-footer ul {
-    display: table;
-    width: 100%;
+.newsletter {
+    h4 {
+        color: $body-color;
+        font-size: 1em;
+        font-weight: 500;
+        padding: 5px 0;
+        font-family: $family-primary;
+        margin-bottom: 15px;
+
+        p {
+            margin: 0;
+            color: #4b4a4a;
+            font-weight: 300;
+            font-size: 0.875em;
+            margin-bottom: 10px;
+        }
+    }
 }
 
-.upperContent-footer ul li {
-    text-align: center;
-    vertical-align: top;
-    display: table-cell;
-    padding: 25px 15px;
-    -webkit-border-start: $border;
-    -moz-border-start: $border;
-    border-#{$start-direction}: $border;
-}
-
-.upperContent-footer ul li:first-child {
-    -webkit-border-start: none;
-    -moz-border-start: none;
-    border-#{$start-direction}: none;
-}
-
-.upperContent-footer .individualTupple {
-    margin: 0 auto;
-}
-
-.upperContent-footer .individualTupple img {
-    max-width: 50px;
-    height: auto;
-    margin: 0 auto;
-    display: inline-block;
-    opacity: 0.40;
-    margin-bottom: 10px;
-}
-
-.upperContent-footer h3 {
-    font-size: 1em;
-    color: $body-color;
-    margin: 5px auto;
-    padding: 0;
-    text-transform: uppercase;
-}
-
-.upperContent-footer p {
-    font-size: 0.8em;
-    line-height: 1.5;
-    color: #a4a3a3;
-    max-width: 200px;
-    margin: 0 auto 20px !important;
-}
-
-.newsletter h4 {
-    color: $body-color;
-    font-size: 1em;
-    font-weight: 500;
-    padding: 5px 0;
-    font-family: $family-primary;
-    margin-bottom: 15px;
-}
-
-.newsletter p {
-    margin: 0;
-    color: #4b4a4a;
-    font-weight: 300;
-    font-size: 0.875em;
-    margin-bottom: 10px;
-}
 
 .contact-info {
     display: -webkit-box;
@@ -221,38 +227,35 @@
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
+
+    li {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        margin: 10px 0;
+        margin-#{$end-direction}: 20px;
+        font-size: 0.875em;
+        font-weight: 300;
+        color: #000;
+        align-items: center;
+
+        i {
+            margin-#{$end-direction}: 8px;
+
+            img {
+                max-width: 15px;
+                max-height: 15px;
+            }
+        }
+
+        a {
+            color: inherit;
+        }
+    }
 }
-
-.contact-info li {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    margin: 10px 0;    
-    margin-#{$end-direction}: 20px;
-    font-size: 0.875em;
-    font-weight: 300;
-    color: #000;
-    align-items: center;
-}
-
-.contact-info li i {
-    
-    margin-#{$end-direction}: 8px;
-}
-
-.contact-info li i img {
-    max-width: 15px;
-    max-height: 15px;
-}
-
-.contact-info li a {
-    color: inherit;
-}
-
-
 
 .subscription {
     padding: 30px 2.5rem;
@@ -283,7 +286,7 @@
     font-size: 0.8em;
     padding: 5px 10px;
     margin: 0;
-    
+
     margin-#{$end-direction}: -3px;
     border: $border;
     border-radius: 2px 0 2px 2px;
@@ -293,15 +296,14 @@
 
 .sub-form input[type="submit"] {
     font-size: 1em;
-    background: $brand-color;
+    background: $brand-color; color:$brand-color-inverse;
     height: 2.5rem;
     width: 100%;
     max-width: 136px;
     line-height: 1.2;
     padding: 5px 15px;
     margin: 0;
-    border: none;
-    color: #fff;
+    border: none;    
     vertical-align: top;
     font-weight: 300;
     border-radius: 0px 2px 2px 0px;
@@ -318,7 +320,7 @@
 
 .social li {
     display: inline-block;
-    
+
     margin-#{$end-direction}: 8px;
     vertical-align: top;
 }
@@ -426,4 +428,18 @@
     font-size: 0.875em;
     padding: 0px 10px;
     color: #545454;
+}
+
+.store-button {
+    a {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .icn {
+        width: 1.2rem;
+        height: auto;
+        display: inline-block;
+        margin-#{$end-direction}: 0.5rem;
+    }
 }

@@ -15,10 +15,13 @@ $codFld = $productFrm->getField('product_cod_enabled');
 $codFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $codFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
+$btnBackFld = $productFrm->getField('btn_back');
+$btnBackFld->setFieldTagAttribute('onClick', 'customCatalogProductForm('.$preqId.');');
+$btnBackFld->value = Labels::getLabel('LBL_Back', $siteLangId);
 ?>
 <div class="row justify-content-center">
     <div class="col-md-12">
-<?php echo $productFrm->getFormTag(); ?>
+        <?php echo $productFrm->getFormTag(); ?>
         <div class="row">
             <div class="col-md-6">
                 <div class="field-set">
@@ -31,11 +34,11 @@ $codFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                         </label>
                         <?php if (FatApp::getConfig("CONF_PRODUCT_MODEL_MANDATORY", FatUtility::VAR_INT, 1)) { ?>
                             <span class="spn_must_field">*</span>
-<?php } ?>
+                        <?php } ?>
                     </div>
                     <div class="field-wraper">
                         <div class="field_cover">
-<?php echo $productFrm->getFieldHtml('product_model'); ?>
+                        <?php echo $productFrm->getFieldHtml('product_model'); ?>
                         </div>
                     </div>
                 </div>
@@ -53,7 +56,7 @@ $codFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                     </div>
                     <div class="field-wraper">
                         <div class="field_cover">
-<?php echo $productFrm->getFieldHtml('product_warranty'); ?>
+                        <?php echo $productFrm->getFieldHtml('product_warranty'); ?>
                         </div>
                     </div>
                 </div>
@@ -65,18 +68,18 @@ $codFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                     <div class="caption-wraper"></div>
                     <div class="field-wraper">
                         <div class="field_cover">
-<?php echo $productFrm->getFieldHtml('product_featured'); ?>
+                        <?php echo $productFrm->getFieldHtml('product_featured'); ?>
                         </div>
                     </div>
                 </div>
             </div>
-<?php if ($productType == Product::PRODUCT_TYPE_PHYSICAL) { ?>
+                <?php if ($productType == Product::PRODUCT_TYPE_PHYSICAL) { ?>
                 <div class="col-md-4">
                     <div class="field-set">
                         <div class="caption-wraper"></div>
                         <div class="field-wraper">
                             <div class="field_cover">
-    <?php echo $productFrm->getFieldHtml('ps_free'); ?>
+                            <?php echo $productFrm->getFieldHtml('ps_free'); ?>
                             </div>
                         </div>
                     </div>
@@ -86,12 +89,12 @@ $codFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                         <div class="caption-wraper"></div>
                         <div class="field-wraper">
                             <div class="field_cover">
-    <?php echo $productFrm->getFieldHtml('product_cod_enabled'); ?>
+                            <?php echo $productFrm->getFieldHtml('product_cod_enabled'); ?>
                             </div>
                         </div>
                     </div>
                 </div>
-<?php } ?>
+                <?php } ?>
         </div>
         <div class="specifications-form-<?php echo $siteDefaultLangId; ?>"></div>
         <div class="specifications-list-<?php echo $siteDefaultLangId; ?>"></div>
@@ -101,9 +104,8 @@ $codFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
             foreach ($otherLanguages as $langId => $data) {
                 ?>
                 <div class="accordion" id="specification-accordion">
-                    <ul class="list-group list-group-sm list-group-flush-y list-group-flush-x">
-                        <li class="list-group-item">
-                            <h6 data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                   
+                            <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                 <span onClick="displayOtherLangProdSpec(this,<?php echo $langId; ?>)">
         <?php echo $data . " ";
         echo Labels::getLabel('LBL_Language_Specification', $siteLangId); ?>
@@ -113,14 +115,13 @@ $codFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                                 <div class="specifications-form-<?php echo $langId; ?>"></div>
                                 <div class="specifications-list-<?php echo $langId; ?>"></div>
                             </div>
-                        </li>
-                    </ul>
+                        
 
                 </div>
-    <?php
-    }
-}
-?>
+            <?php
+            }
+        }
+        ?>
 
         <div class="row">
             <div class="col-md-6">
@@ -128,17 +129,27 @@ $codFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                     <div class="caption-wraper"><label class="field_label"></label></div>
                     <div class="field-wraper">
                         <div class="field_cover">
-<?php
-echo $productFrm->getFieldHtml('preq_id');
-echo $productFrm->getFieldHtml('btn_submit');
-?>
+                        <?php  echo $productFrm->getFieldHtml('btn_back');?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 text-right">
+                <div class="field-set">
+                    <div class="caption-wraper"><label class="field_label"></label></div>
+                    <div class="field-wraper">
+                        <div class="field_cover">
+                        <?php
+                        echo $productFrm->getFieldHtml('preq_id');
+                        echo $productFrm->getFieldHtml('btn_submit');
+                        ?>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         </form>
-<?php echo $productFrm->getExternalJS(); ?>
+        <?php echo $productFrm->getExternalJS(); ?>
     </div>
 </div>
 

@@ -20,6 +20,9 @@ $fld->setWrapperAttribute('class', 'ui-front');
 <script type="text/javascript">
 $("document").ready(function(){
 	$('input[name=\'affiliate_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('Users', 'autoCompleteJson'),

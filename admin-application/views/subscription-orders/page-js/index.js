@@ -2,6 +2,9 @@ $(document).ready(function(){
 	searchSubscriptionOrders(document.frmSubscriptionOrderSearch);
 	
 	$('input[name=\'buyer\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('Users', 'autoCompleteJson'),

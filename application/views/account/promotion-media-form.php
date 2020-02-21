@@ -25,7 +25,7 @@
 				<div id="mediaResponse"></div>
 				<div class="col-md-6">
 					<div class="preview">
-					  <small class="text--small"><?php echo Labels::getLabel('MSG_Upload_Promotion_Media_text',$siteLangId); ?></small>
+					  <small class="form-text text-muted"><?php echo Labels::getLabel('MSG_Upload_Promotion_Media_text',$siteLangId); ?></small>
 						<?php echo $promotionMediaFrm->getFormHtml();?>
 						<?php foreach($bannerAttachments as $img){?>
 

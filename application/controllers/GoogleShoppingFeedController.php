@@ -1,4 +1,5 @@
 <?php
+
 include_once CONF_INSTALLATION_PATH . 'library/GoogleAPI/vendor/autoload.php';
 
 class GoogleShoppingFeedController extends AdvertisementFeedBaseController
@@ -84,7 +85,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $privateKey = $frm->addTextArea(Labels::getLabel('LBL_SERVICE_ACCOUNT_DETAIL', $this->siteLangId), 'service_account');
         $privateKey->requirements()->setRequired();
         $privateKey->htmlAfterField = $this->getPluginData('plugin_description');
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         return $frm;
     }
 
@@ -252,7 +253,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         
         $productId = SellerProduct::getAttributesById($post['abprod_selprod_id'], 'selprod_product_id');
         $productIdentifier = strtoupper(Product::getAttributesById($productId, 'product_identifier'));
-        $productIdentifier = explode(' ', $productIdentifier) ;
+        $productIdentifier = explode(' ', $productIdentifier);
         $post['abprod_item_group_identifier'] = $productIdentifier[0] . $productId;
 
         unset($post['btn_submit'], $post['product_name'], $post['btn_clear'], $post['google_product_category']);

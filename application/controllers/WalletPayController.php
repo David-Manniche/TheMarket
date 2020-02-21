@@ -1,4 +1,5 @@
 <?php
+
 class WalletPayController extends MyAppController
 {
     public function __construct($action)
@@ -11,9 +12,9 @@ class WalletPayController extends MyAppController
     {
         $isAjaxCall = FatUtility::isAjaxCall();
 
-        if (!$orderId || ((isset($_SESSION['shopping_cart']) && $orderId != $_SESSION['shopping_cart']["order_id"])&& (isset($_SESSION['subscription_shopping_cart']))  && $orderId != $_SESSION['subscription_shopping_cart']["order_id"])) {
+        if (!$orderId || ((isset($_SESSION['shopping_cart']) && $orderId != $_SESSION['shopping_cart']["order_id"]) && (isset($_SESSION['subscription_shopping_cart'])) && $orderId != $_SESSION['subscription_shopping_cart']["order_id"])) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -25,7 +26,7 @@ class WalletPayController extends MyAppController
 
         if (!UserAuthentication::isUserLogged() && !UserAuthentication::isGuestUserLogged()) {
             $message = Labels::getLabel('MSG_Your_Session_seems_to_be_expired.', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -53,7 +54,7 @@ class WalletPayController extends MyAppController
         $orderInfo = FatApp::getDb()->fetch($rs);
         if (!$orderInfo) {
             $message = Labels::getLabel('MSG_Invalid_Access.', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -79,7 +80,7 @@ class WalletPayController extends MyAppController
             $cartObj->updateUserCart();
         }
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->set('msg', Labels::getLabel("MSG_Payment_from_wallet_made_successfully", $this->siteLangId));
             $this->_template->render();
         }
@@ -94,21 +95,21 @@ class WalletPayController extends MyAppController
 
     public function Recharge($orderId, $appParam = '', $appLang = '1', $appCurrency = '1')
     {
-        if ($appParam == 'api' && false ===  MOBILE_APP_API_CALL) {
-            $langId =  FatUtility::int($appLang);
+        if ($appParam == 'api' && false === MOBILE_APP_API_CALL) {
+            $langId = FatUtility::int($appLang);
             if (0 < $langId) {
                 $languages = Language::getAllNames();
                 if (array_key_exists($langId, $languages)) {
-                    setcookie('defaultSiteLang', $langId, time()+3600*24*10, CONF_WEBROOT_URL);
+                    setcookie('defaultSiteLang', $langId, time() + 3600 * 24 * 10, CONF_WEBROOT_URL);
                 }
             }
 
-            $currencyId =  FatUtility::int($appCurrency);
+            $currencyId = FatUtility::int($appCurrency);
             $currencyObj = new Currency();
             if (0 < $currencyId) {
                 $currencies = Currency::getCurrencyAssoc($this->siteLangId);
                 if (array_key_exists($currencyId, $currencies)) {
-                    setcookie('defaultSiteCurrency', $currencyId, time()+3600*24*10, CONF_WEBROOT_URL);
+                    setcookie('defaultSiteCurrency', $currencyId, time() + 3600 * 24 * 10, CONF_WEBROOT_URL);
                 }
             }
             commonhelper::setAppUser();
@@ -119,7 +120,7 @@ class WalletPayController extends MyAppController
 
         if (!UserAuthentication::isUserLogged()) {
             $message = Labels::getLabel('MSG_Your_Session_seems_to_be_expired', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -130,7 +131,7 @@ class WalletPayController extends MyAppController
         }
         if ($orderId == '' || ((isset($_SESSION['wallet_recharge_cart']) && !empty($_SESSION['wallet_recharge_cart']) && $orderId != $_SESSION['wallet_recharge_cart']["order_id"]))) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -154,7 +155,7 @@ class WalletPayController extends MyAppController
         $orderInfo = FatApp::getDb()->fetch($rs);
         if (!$orderInfo) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
@@ -178,7 +179,7 @@ class WalletPayController extends MyAppController
         $this->set('excludePaymentGatewaysArr', $excludePaymentGatewaysArr);
         $this->set('headerData', $headerData);
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
         $this->_template->render(true, true);
@@ -348,7 +349,7 @@ class WalletPayController extends MyAppController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if (strtolower($paymentMethodRow['pmethod_code']) == 'cashondelivery' && FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '')!= '' && FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '')!= '') {
+        if (strtolower($paymentMethodRow['pmethod_code']) == 'cashondelivery' && FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '') != '' && FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '') != '') {
             if (!CommonHelper::verifyCaptcha()) {
                 Message::addErrorMessage(Labels::getLabel('MSG_That_captcha_was_incorrect', $this->siteLangId));
                 FatUtility::dieWithError(Message::getHtml());

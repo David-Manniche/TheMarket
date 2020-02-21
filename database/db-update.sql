@@ -1,4 +1,3 @@
-
 ALTER TABLE `tbl_currency` DROP `currency_is_default`;
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Google_Plus_Login';
@@ -317,11 +316,6 @@ INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `et
 ('withdrawal_request_approved_declined', 1, 'Withdrawal Request Approved/Declined Email for User', 'Fund Withdrawal Request {request_status} on {website_name}', '<table>\r\n    <tr>\r\n        <td style=\"background:#ff3a59;\">\r\n            <!--\r\n            page title start here\r\n            -->\r\n               \r\n            <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                <tbody>\r\n                    <tr>\r\n                        <td style=\"background:#fff;padding:20px 0 10px; text-align:center;\">\r\n                            <h4 style=\"font-weight:normal; text-transform:uppercase; color:#999;margin:0; padding:10px 0; font-size:18px;\">Updated</h4>\r\n                            <h2 style=\"margin:0; font-size:34px; padding:0;\">Withdrawal Request Status</h2></td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n            <!--\r\n            page title end here\r\n            -->\r\n               </td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            <!--\r\n            page body start here\r\n            -->\r\n               \r\n            <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                <tbody>\r\n                    <tr>\r\n                        <td style=\"background:#fff;padding:0 30px; text-align:center; color:#999;vertical-align:top;\">\r\n                            <table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                                <tbody>\r\n                                    <tr>\r\n                                        <td style=\"padding:20px 0 30px;\"><strong style=\"font-size:18px;color:#333;\">Dear {user_name}</strong><br />\r\n                                                                                          Your fund withdrawal request {request_id} of {request_amount} has been {request_status} on <a href=\"{website_url}\">{website_name}</a>.</td>\r\n                                    </tr>\r\n                                    \r\n                                </tbody>\r\n                            </table></td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n            <!--\r\n            page body end here\r\n            -->\r\n               </td>\r\n    </tr>\r\n</table>', '{user_name} Name of the email receiver<br />\r\n{request_id} Withdrawal Request ID<br />\r\n{request_amount} Withdrawal Request Amount.<br />\r\n{request_status} New Withdrawal Request Status<br />\r\n{website_name} Name of the website\r\n{social_media_icons} <br>\r\n{contact_us_url} <br>', 1),
 ('new_seller_approved_admin', 1, 'New Seller Approval - Admin', 'New Seller Approval on {website_name}', '<table>\r\n    <tr>\r\n        <td style=\"background:#ff3a59;\">\r\n            <!--\r\n            page title start here\r\n            -->\r\n               \r\n            <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                <tbody>\r\n                    <tr>\r\n                        <td style=\"background:#fff;padding:20px 0 10px; text-align:center;\">\r\n                            <h4 style=\"font-weight:normal; text-transform:uppercase; color:#999;margin:0; padding:10px 0; font-size:18px;\">Seller Approved</h4>\r\n                            <h2 style=\"margin:0; font-size:34px; padding:0;\">Seller Approval</h2></td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n            <!--\r\n            page title end here\r\n            -->\r\n               </td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            <!--\r\n            page body start here\r\n            -->\r\n               \r\n            <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                <tbody>\r\n                    <tr>\r\n                        <td style=\"background:#fff;padding:0 30px; text-align:center; color:#999;vertical-align:top;\">\r\n                            <table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                                <tbody>\r\n                                    <tr>\r\n                                        <td style=\"padding:20px 0 30px;\"><strong style=\"font-size:18px;color:#333;\">Dear Admin </strong><br />\r\n                                            <span style=\"color: rgb(153, 153, 153); font-family: Arial; text-align: center; background-color: rgb(255, 255, 255);\">New seller has been registered on</span> <a href=\"{website_url}\">{website_name}</a>. Please find the details below:</td>\r\n                                    </tr>\r\n                                    <tr>\r\n                                        <td style=\"padding:20px 0 30px;\">\r\n                                            <table style=\"border:1px solid #ddd; border-collapse:collapse;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\r\n                                                <tbody>\r\n                                                    <tr>\r\n                                                        <td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Reference Number</td>\r\n                                                        <td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{reference_number}</td>\r\n                                                    </tr>                                                        \r\n                                                    <tr>\r\n                                                        <td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Username<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span></td>\r\n                                                        <td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{username}</td>\r\n                                                    </tr>  \r\n                                                    <tr>\r\n                                                        <td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Email</td>\r\n                                                        <td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{email}</td>\r\n                                                    </tr> \r\n                                                    <tr>\r\n                                                        <td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Name</td>\r\n                                                        <td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{name}</td>\r\n                                                    </tr>                                                        \r\n                                                </tbody>\r\n                                            </table></td>\r\n                                    </tr>\r\n                                    \r\n                                </tbody>\r\n                            </table></td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n            <!--\r\n            page body end here\r\n            -->\r\n               </td>\r\n    </tr>\r\n</table>', '{website_name} Name of the website<br />\r\n{username} \r\n\r\nUsername of the person registered<br />\r\n{email} Email Address of the person registered<br />\r\n{name} Name of the person sent request<br />\r\n{reference_number} \r\n\r\nReference Number of the request<br />\r\n{social_media_icons} <br>\r\n{contact_us_url} <br>\r\n', 1);
 
-INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `etpl_subject`, `etpl_body`, `etpl_replacements`, `etpl_status`) VALUES
-('abandoned_cart_deleted_discount_notification', 1, 'Abandoned Cart Deleted Discount Notification', 'Abandoned Cart Deleted Discount Notification', '<table>\r\n    <tr>\r\n        <td style=\"background:#ff3a59;\">\r\n            <!--\r\n            page title start here\r\n            -->\r\n\r\n            <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                <tbody>\r\n                    <tr>\r\n                        <td style=\"background:#fff;padding:20px 0 10px; text-align:center;\">\r\n                            <h4 style=\"font-weight:normal; text-transform:uppercase; color:#999;margin:0; padding:10px 0; font-size:18px;\"></h4>\r\n                            <h2 style=\"margin:0; color: #999999; font-size:16px; text-transform: uppercase;padding:0;\">Dear {user_full_name}</h2>\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n            <!--\r\n            page title end here\r\n            -->\r\n        </td>\r\n    </tr>\r\n    \r\n    <tr>\r\n        <td>\r\n            <!--\r\n            page body start here\r\n            -->\r\n\r\n            <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                <tbody>\r\n                    <tr>\r\n                        <td style=\"background:#fff;padding:0 20px; text-align:center; color:#999;vertical-align:top;\">\r\n                            <table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                                <tbody>\r\n                                    <tr>\r\n                                        <td style=\"padding:0 10px; line-height:1.3; text-align:center; color:#333333;vertical-align:top; font-size: 30px;\">We noticed you removed <span style=\"text-decoration: underline;\">{product_name}</span> from your cart.</td>\r\n                                    </tr> \r\n                                       \r\n                                       <tr>\r\n                                           <td style=\"padding:20px 0 10px 10px; line-height:1.3; text-align:center; color:#999999;vertical-align:top; font-size:16px;\">Just for you : Get <span style=\"color:#333; font-weight: bold;\">{discount}</span> off on your order with code <span style=\"color:#333; font-weight: bold;\">{coupon_code}.</span>\r\n                                           \r\n                                               <a href=\"{checkout_now}\" style=\"background: #ff3a59;border:none; border-radius: 4px; color: #fff; cursor: pointer;margin:10px 0 0 0;width: auto; font-weight: normal; padding: 10px 20px; display: inline-block; \">Check out now </a></td>\r\n                                    </tr>\r\n                                </tbody>\r\n                            </table>\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n            <!--\r\n            page body end here\r\n            -->\r\n        </td>\r\n    </tr>\r\n</table>', '{user_full_name} Name of the email receiver<br>\r\n{website_name} Name of our website<br>\r\n{website_url} URL of our website<br>\r\n{social_media_icons} <br>\r\n{contact_us_url} <br>\r\n{discount} <br>\r\n{coupon_code} <br>\r\n{checkout_now} <br>', 1),
-('abandoned_cart_discount_notification', 1, 'Abandoned Cart Discount Notification', 'Abandoned Cart Discount Notification', '<table>\r\n     <tr>\r\n        <td style=\"background:#ff3a59;\">\r\n            <!--\r\n            page title start here\r\n            -->\r\n            <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                <tbody>\r\n                    <tr>\r\n                        <td style=\"background:#fff;padding:20px 0 10px; text-align:center;\">\r\n                            <h4 style=\"font-weight:normal; text-transform:uppercase; color:#999;margin:0; padding:10px 0; font-size:18px;\"></h4>\r\n                            <h2 style=\"margin:0; color: #999999; font-size:16px; text-transform: uppercase;padding:0;\">Dear {user_full_name}</h2>\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n            <!--\r\n            page title end here\r\n            -->\r\n        </td>\r\n    </tr>\r\n    \r\n    <tr>\r\n        <td>\r\n            <!--\r\n            page body start here\r\n            -->\r\n\r\n            <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                <tbody>\r\n                    <tr>\r\n                        <td style=\"background:#fff;padding:0 20px; text-align:center; color:#999;vertical-align:top;\">\r\n                            <table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                                <tbody>\r\n                                    <tr>\r\n                                        <td style=\"padding:0 10px; line-height:1.3; text-align:center; color:#333333;vertical-align:top; font-size: 30px;\">Finish your order before your items sell out!</td>\r\n                                    </tr>   \r\n                                   <tr>\r\n                                       <td style=\"padding:20px 0 10px 10px; line-height:1.3; text-align:center; color:#999999;vertical-align:top; font-size:16px;\">Just for you : Get <span style=\"color:#333; font-weight: bold;\">{discount} OFF</span> off on your order with code <span style=\"color:#333; font-weight: bold;\">{coupon_code}.</span>\r\n                                       \r\n                                       <a href=\"{checkout_now}\" style=\"background: #ff3a59;border:none; border-radius: 4px; color: #fff; cursor: pointer;margin:10px 0 0 0;width: auto; font-weight: normal; padding: 10px 20px; display: inline-block;\">Check out now </a></td>\r\n                                    </tr>\r\n                                    <tr>\r\n                                        <td style=\"padding:30px 0;\">\r\n                                            <table>\r\n                                                <tr>\r\n                                                    <td style=\"padding-right: 25px;\"><img style=\"border: solid 1px #ececec; padding: 10px; border-radius: 4px;\" src=\"{product_image}\"></td>\r\n                                                    <td style=\"text-align: left;\">\r\n                                                        <span style=\"font-size: 20px; font-weight:normal; color:#999999; \">{product_name}</span>\r\n                                                         <span style=\"font-size: 14px; font-weight: bold; color:#000000; display: block; padding: 20px 0;\">{product_price}</span>\r\n                                                    </td>\r\n                                                </tr>\r\n                                            </table>\r\n\r\n                                        </td>\r\n                                    </tr>\r\n                                </tbody>\r\n                            </table>\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        <!--\r\n        page body end here\r\n        -->\r\n        </td>\r\n    </tr>\r\n</table>', '{user_full_name} Name of the email receiver<br>\r\n{website_name} Name of our website<br>\r\n{website_url} URL of our website<br>\r\n{social_media_icons} <br>\r\n{contact_us_url} <br>\r\n{discount} <br>\r\n{coupon_code} <br>\r\n{checkout_now} <br>\r\n{product_image} <br>\r\n{product_name} <br>\r\n{product_price}<br>', 1),
-('abandoned_cart_email', 1, 'Abandoned Cart Email', 'Abandoned Cart Email', '<table>\r\n    <tr>\r\n        <td style=\"background:#ff3a59;\">\r\n            <!--\r\n            page title start here\r\n            -->\r\n\r\n            <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                <tbody>\r\n                    <tr>\r\n                        <td style=\"background:#fff;padding:20px 0 10px; text-align:center;\">\r\n                            <h4 style=\"font-weight:normal; text-transform:uppercase; color:#999;margin:0; padding:10px 0; font-size:18px;\"></h4>\r\n                            <h2 style=\"margin:0; color: #999999; font-size:16px; text-transform: uppercase;padding:0;\">Dear {user_full_name}</h2>\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n            <!--\r\n            page title end here\r\n            -->\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            <!--\r\n            page body start here\r\n            -->\r\n\r\n            <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                <tbody>\r\n                    <tr>\r\n                        <td style=\"background:#fff;padding:0 20px; text-align:center; color:#999;vertical-align:top;\">\r\n                            <table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                                <tbody>\r\n                                    <tr>\r\n                                        <td style=\"padding:0 10px; line-height:1.3; text-align:center; color:#333333;vertical-align:top; font-size: 30px;\">We noticed you left something behind!</td>\r\n                                    </tr>\r\n                                    <tr>\r\n                                        <td style=\"padding:30px 0;\">\r\n                                        <table>{product_detail_table}</table>\r\n                                        </td>\r\n                                    </tr>\r\n                                </tbody>\r\n                            </table>\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n            <!--\r\n            page body end here\r\n            -->\r\n               </td>\r\n    </tr>\r\n</table>', '{user_full_name} Name of the email receiver<br>\r\n{website_name} Name of our website<br>\r\n{website_url} URL of our website<br>\r\n{social_media_icons} <br>\r\n{contact_us_url} <br>\r\n{product_detail_table} <br/>', 1);
-
 INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES ('CONF_EMAIL_TEMPLATE_FOOTER_HTML1', '<table>        \r\n	<tbody>            \r\n		<tr style=\"background:#fff;padding:0 30px; text-align:center; color:#999;vertical-align:top;\">                \r\n			<td style=\"padding:30px 0;\">Get in touch if you have any questions regarding our Services.<br />\r\n				                    Feel free to contact us 24/7. We are here to help.<br />\r\n				                    <br />\r\n				                    All the best,<br />\r\n				                    The {website_name} Team<br />\r\n				                    </td>            \r\n		</tr>            \r\n		<tr>            \r\n			<td>                \r\n				<!--\r\n				page footer start here\r\n				-->\r\n				                \r\n				<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"height:30px;\"></td>                        \r\n						</tr>                        \r\n						<tr>                            \r\n							<td style=\"background:rgba(0,0,0,0.04);padding:0 30px; text-align:center; color:#999;vertical-align:top;\">                                \r\n								<table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">                                    \r\n									<tbody>                                        \r\n										<tr>                                            \r\n											<td style=\"padding:30px 0; font-size:20px; color:#000;\">Need more help?<br />\r\n												                                                 <a href=\"{contact_us_url}\" style=\"color:#ff3a59;\">We are here, ready to talk</a></td>                                        \r\n										</tr>                                    \r\n									</tbody>                                \r\n								</table></td>                        \r\n						</tr>                        \r\n						<tr>                            \r\n							<td style=\"padding:0; color:#999;vertical-align:top; line-height:20px;\">                                \r\n								<table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">                                    \r\n									<tbody>                                        \r\n										<tr>                                            \r\n											<td style=\"padding:20px 0 30px; text-align:center; font-size:13px; color:#999;\">{website_name} Inc.\r\n                                                \r\n												<!--\r\n												if these emails get annoying, please feel free to  <a href=\"#\" style=\"text-decoration:underline; color:#666;\">unsubscribe</a>.\r\n												-->\r\n												                                                </td>                                        \r\n										</tr>                                    \r\n									</tbody>                                \r\n								</table></td>                        \r\n						</tr>                        \r\n						<tr>                            \r\n							<td style=\"padding:0; height:50px;\"></td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>                \r\n				<!--\r\n				page footer end here\r\n				-->\r\n				                   </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', ''), ('CONF_EMAIL_TEMPLATE_COLOR_CODE1', 'ff3a59', '');
 INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES ('CONF_TAX_STRUCTURE', 1, '');
 
@@ -451,3 +445,476 @@ INSERT INTO `tbl_language_labels` (`label_id`, `label_key`, `label_lang_id`, `la
 
 INSERT INTO `tbl_extra_pages` (`epage_id`, `epage_identifier`, `epage_type`, `epage_content_for`, `epage_active`, `epage_default`, `epage_default_content`) VALUES (NULL, 'Marketplace Product Instructions', '41', '0', '1', '0', '<div class=\"delivery-term-data-inner\">\r\n                <div class=\"heading\">Products<span>All the information you need regarding this page</span></div>\r\n                <ul class=\"\">\r\n                    <li>\r\n                        This page lists all the marketplace products added by admin and seller.\r\n                        Marketplace products are of two types:-\r\n                        <ul>\r\n                            <li><strong>System Products</strong>: Available to all sellers and any seller can add to their own store.</li>\r\n                            <li><strong>My Products</strong>: Available only for you. No other seller can add to their own store.</li>\r\n                        </ul>\r\n                    </li>\r\n                    <li>On clicking \"<strong>Add Product</strong>\" button, seller can add new product to marketplace products.</li>\r\n                    <li>On click of \"<strong>Add to Store</strong>\" the seller can pick the product and add the products to his store inventory.</li>\r\n                </ul>\r\n            </div>'), (NULL, 'Seller Inventory Instructions', '42', '0', '1', '0', '<div class=\"delivery-term-data-inner\">\r\n                    <div class=\"heading\">Store Inventory<span>All the information you need regarding this page</span></div>\r\n                    <ul>\r\n                        <li>This tab lists all the products available to your front end store.</li>\r\n                        <li>For each product variant, separate copy need to be created by seller either from Marketplace product tab or clone product icon.</li>\r\n                        <li>To add new product to your store inventory, seller will have to pick the products from the marketplace products tabs from \"Add to Store\" button</li>\r\n                    </ul>\r\n                </div>'), (NULL, 'Product Request Instructions', '43', '0', '1', '0', '<div class=\"delivery-term-data-inner\">\r\n                    <div class=\"heading\">Requested Products<span>All the information you need regarding this page</span></div>\r\n                    <ul>\r\n                        <li>This tab lists all the products requested by seller to the admin which are not available in the marketplace products.</li>\r\n                        <li>On admin approval, the product will be added to the marketplace products and to the seller inventory.</li>\r\n                    </ul>\r\n                </div>');
 ALTER TABLE tbl_shop_reports ADD UNIQUE (sreport_shop_id, sreport_user_id);
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_CURRENCY_API';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_SOCIAL_LOGIN_API';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_PUSH_NOTIFICATION_API';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_ADVERTISEMENT_FEED_API';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_PAYOUT_API';
+
+CREATE TABLE `tbl_collection_to_blogs` (
+  `ctb_collection_id` int(11) NOT NULL,
+  `ctb_post_id` int(11) NOT NULL,
+  `ctb_display_order` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `tbl_collection_to_blogs`
+  ADD PRIMARY KEY (`ctb_collection_id`,`ctb_post_id`);
+
+ALTER TABLE `tbl_collections` ADD `collection_for_web` TINYINT(1) NOT NULL AFTER `collection_display_media_only`, ADD `collection_for_app` TINYINT(1) NOT NULL AFTER `collection_for_web`;
+UPDATE `tbl_collections` SET `collection_for_web` = '1', `collection_for_app` = '1';
+-------------------TV-9.1.2.20200211-------------------
+
+INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES (NULL, 'Twilio Sms Notification', '6', 'TwilioSms', '1', '8');
+
+CREATE TABLE `tbl_sms_archives` (
+  `smsarchive_id` varchar(255) NOT NULL,
+  `smsarchive_to` varchar(255) NOT NULL,
+  `smsarchive_tpl_name` varchar(255) NOT NULL,
+  `smsarchive_body` text NOT NULL,
+  `smsarchive_sent_on` datetime NOT NULL,
+  `smsarchive_status` int(11) NOT NULL,
+  `smsarchive_response` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_sms_archives`
+--
+ALTER TABLE `tbl_sms_archives`
+  ADD PRIMARY KEY (`smsarchive_id`);
+
+ALTER TABLE `tbl_sms_archives` CHANGE `smsarchive_id` `smsarchive_id` INT(255) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `tbl_sms_archives` ADD `smsarchive_response_id` VARCHAR(255) NOT NULL AFTER `smsarchive_id`;
+ALTER TABLE `tbl_sms_archives` CHANGE `smsarchive_id` `smsarchive_id` INT(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `tbl_sms_archives` CHANGE `smsarchive_status` `smsarchive_status` VARCHAR(255) NOT NULL;
+
+--
+-- Table structure for table `tbl_sms_templates`
+--
+
+CREATE TABLE `tbl_sms_templates` (
+  `stpl_code` varchar(50) NOT NULL,
+  `stpl_lang_id` int(11) NOT NULL,
+  `stpl_name` varchar(100) NOT NULL,
+  `stpl_body` varchar(160) NOT NULL,
+  `stpl_replacements` text NOT NULL,
+  `stpl_status` tinyint(1) NOT NULL DEFAULT '1'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_sms_templates`
+--
+ALTER TABLE `tbl_sms_templates`
+  ADD PRIMARY KEY (`stpl_code`,`stpl_lang_id`);
+
+CREATE TABLE `tbl_user_phone_verification` ( `upv_user_id` INT(11) NOT NULL ,  `upv_otp` INT(6) NOT NULL ,  `upv_phone` VARCHAR(25) NOT NULL ,  `upv_expired_on` DATETIME NOT NULL ) ENGINE = InnoDB;
+ALTER TABLE tbl_user_phone_verification ADD PRIMARY KEY (`upv_user_id`);
+
+UPDATE `tbl_email_templates` SET `etpl_replacements` = '{website_name} Name of the website<br /> {username} Username of the person registered<br /> {email} Email Address of the person registered<br />{phone} Phone number of the person registered<br /> {name} Name of the person registered<br /> {user_type} Type of the User registered<br /> {social_media_icons} <br> {contact_us_url} <br>' WHERE `tbl_email_templates`.`etpl_code` = 'new_registration_admin' AND `tbl_email_templates`.`etpl_lang_id` = 1;
+
+UPDATE `tbl_email_templates` SET `etpl_replacements` = '{website_name} Name of the website<br />\r\n{username} Username of the person registered<br />\r\n{email} Email Address of the person registered<br />\r\n{phone} Phone Number of the person registered<br />\r\n{name} Name of the person registered<br />\r\n{social_media_icons} <br>\r\n{contact_us_url} <br>' WHERE `tbl_email_templates`.`etpl_code` = 'new_affiliate_registration_admin' AND `tbl_email_templates`.`etpl_lang_id` = 1;
+
+ALTER TABLE `tbl_sms_templates` CHANGE `stpl_body` `stpl_body` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
+INSERT INTO `tbl_sms_templates` (`stpl_code`, `stpl_lang_id`, `stpl_name`, `stpl_body`, `stpl_replacements`, `stpl_status`) VALUES
+('LOGIN',1,'login', 'Hello {USER_NAME},\r\n{OTP} is the OTP for account verification.\r\n\r\n{SITE_NAME} Team', '[{"title":"Name", "variable":"{USER_NAME}"},{"title":"Otp", "variable":"{OTP}"},{"title":"Site Name", "variable":"{SITE_NAME}"}]', 1),
+('WITHDRAWAL_REQUEST_STATUS_UPDATE',1,'Withdrawal Request Status Update', 'Hello {USER},\r\nYour fund withdrawal request {REQUEST_ID} of {REQUEST_AMOUNT} has been {REQUEST_STATUS}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Request Id", "variable":"{REQUEST_ID}"},{"title":"Request Amount", "variable":"{REQUEST_AMOUNT}"},{"title":"Request Status", "variable":"{REQUEST_STATUS}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('WITHDRAWAL_REQUEST_RECEIVED_ADMIN',1,'Withdrawal Request Received Admin', 'Hello Admin,\r\n{USER} has submitted a withdrawl request {REQUESTID} for {CURRENCY_CODE}{AMOUNT}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Requestid", "variable":"{REQUESTID}"},{"title":"Currency", "variable":"{CURRENCY_CODE},{"title":"Amount", "variable":"{AMOUNT}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('WELCOME_SMS_NOTIFICATION',1,'Welcome Sms Notification', 'Hello {USER},\r\nThank you for signing up at {SITE_URL}.\r\nWe are thrilled to have you aboard! Please access your account for exciting deals & offers.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Website Domain", "variable":"{SITE_URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('WELCOME_SMS_GUEST',1,'Welcome Sms Guest', 'Hello {USER},\r\nYour account has been created with us. Next time you shop with us, log in using your phone number for a faster checkout at {SITE_URL}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Website Domain", "variable":"{SITE_URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('NEW_ORDER_SELLER',1,'New Order Seller', 'Hello {SELLER},\r\nA new order {ORDER_ID} is received. Please access the orders tab in you account for more options.\r\n{URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller", "variable":"{SELLER}"},{"title":"Order Id", "variable":"{ORDER_ID}"},{"title":"Url", "variable":"{URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('NEW_DIGITAL_ORDER_SELLER',1,'New Digital Order Seller', 'Hello {SELLER},\r\nA new order {ORDER_ID} is received. Please access the orders tab in you account for more options.\r\n{URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller", "variable":"{SELLER}"},{"title":"Order Id", "variable":"{ORDER_ID}"},{"title":"Url", "variable":"{URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('PASSWORD_UPDATED',1,'Password Updated', 'Hello {USER},\r\nYour password has been changed successfully.\r\nPlease click on the link below to Login to your account.\r\n{URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Url", "variable":"{URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('NEW_EMAIL_FROM_ADMIN',1,'New Email From Admin', 'Hello {USER},\r\nYou have a new email from\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('LOW_INVENTORY_NOTIFICATION',1,'Low Inventory Notification', 'Hello {SELLER},\r\nYour product {PROD_TITLE} is low on inventory. Please visit your dashboard to update stock quantity.\r\n{URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller", "variable":"{SELLER}"},{"title":"Prod Title", "variable":"{PROD_TITLE}"},{"title":"Url", "variable":"{URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('TEST_SMS_NOTIFICATION',1,'Test Sms Notification', 'This is the test SMS.\r\n\r\n{SITE_NAME} Team', '[{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('CUSTOM_CATALOG_STATUS_UPDATE',1,'Custom Catalog Status Update', 'Hello {SELLER_SHOP},\r\nYour catalog approval request for {PRODUCT_TITLE} has been {NEW_REQUEST_STATUS}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{SELLER_SHOP}"},{"title":"Product Title", "variable":"{PRODUCT_TITLE}"},{"title":"New Request Status", "variable":"{NEW_REQUEST_STATUS}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('SUBSCTIPTION_AUTO_RENEW_NOTIFICATION',1,'Subsctiption Auto Renew Notification', 'Hello {SELLER_SHOP},\r\nYour Subscription plan will expire in the next 2 days. Please maintain minimum wallet balance for auto-renew of the plan at {WEB_DOMAIN}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{SELLER_SHOP}"},{"title":"Web Domain", "variable":"{WEB_DOMAIN}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('SUBSCRIPTION_EXPIRATION_NOTIFICATION',1,'Subscription Expiration Notification', 'Hello {SELLER_SHOP},\r\nYour Subscription plan will expire in th next 2 days. Please purchase preferred plan to continue your subscription on {SITE_URL}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{SELLER_SHOP}"},{"title":"Website Domain", "variable":"{SITE_URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('NEW_MESSAGE_RECEIVED',1,'New Message Received', 'Hello {USER},\r\n{USERNAME} has sent you a message on {SITE_NAME}.\r\n{URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Username", "variable":"{USERNAME}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Url", "variable":"{URL}"}]', 1),
+('PRIVATE_PRODUCT_REQUEST_STATUS',1,'Private Product Request Status', 'Hello {SELLER_SHOP},\r\nYour request for approval of {PRIVATE_PRODUCT} has been {NEW_REQUEST_STATUS}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{SELLER_SHOP}"},{"title":"Private Product", "variable":"{PRIVATE_PRODUCT}"},{"title":"New Request Status", "variable":"{NEW_REQUEST_STATUS}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('BRAND_REQUEST_STATUS_UPDATE',1,'Brand Request Status Update', 'Hello {SELLER_SHOP},\r\nYour request for approving {BRAND} has been {NEW_REQUEST_STATUS}\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{SELLER_SHOP}"},{"title":"Brand", "variable":"{BRAND}"},{"title":"New Request Status", "variable":"{NEW_REQUEST_STATUS}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('BRAND_REQUEST',1,'Brand Request', 'Hello Admin,\r\n{SELLER_SHOP} has requested a new brand by the name of {BRAND_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{SELLER_SHOP}"},{"title":"Brand Name", "variable":"{BRAND_NAME}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('REWARD_POINTS_TRANSCTION',1,'Reward Points Transction', 'Hello {USER},\r\n{REWARD_POINTS_AMOUNT} reward points have been {DEBITED/credited } to your account. Reward points balance is {REWARD_POINT_BALANCE}\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Reward Points Amount", "variable":"{REWARD_POINTS_AMOUNT}"},{"title":"Debited", "variable":"{DEBITED/"},{"title":"Reward Point Balance", "variable":"{REWARD_POINT_BALANCE}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('RETURN_REQUEST_STATUS',1,'Return Request Status', 'Hello {USER},\r\nYour return request for {PRODUCT} with return request reference number {REQUEST_NUMBER} has been {RETURN_REQUEST_STATUS}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Product", "variable":"{PRODUCT}"},{"title":"Request Number", "variable":"{REQUEST_NUMBER}"},{"title":"Return Request Status", "variable":"{RETURN_REQUEST_STATUS}"},{"title":"Website", "variable":"{WEBSITE}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('NEW_MESSAGE_RETURN_REQUEST',1,'New Message Return Request', 'Hello {USER},\r\nYou have a new message from {USERNAME} on return request for {PRODUCT} with reference number {REQUEST_NUMBER} at {SITE_NAME}\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Username", "variable":"{USERNAME}"},{"title":"Product", "variable":"{PRODUCT}"},{"title":"Request Number", "variable":"{REQUEST_NUMBER}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('REPORT_SHOP',1,'Report Shop', 'Hello Admin,\r\n{USER} has reported {SELLER_SHOP} on {SITE_NAME}.\r\n{URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Seller Shop", "variable":"{SELLER_SHOP}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Url", "variable":"{URL}"}]', 1),
+('SUBSCRIPTION_RENEWED_SELLER',1,'Subscription Renewed', 'Hello {SELLER_SHOP},\r\nYour subscription has been renewed vide \r\nOrder Invoice Number {INVOICE_NUMBER} at {SITE_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{SELLER_SHOP}"},{"title":"Invoice Number", "variable":"{INVOICE_NUMBER}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('FAVORITE_WISHLIST_ITEMS_NOTIFICATION',1,'Favorite Wishlist Items Notification', 'Hello {USER},\r\nYou have some items in your {FAVORITES/WISHLIST}. Visit {URL} to purchase now.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Favorites/Wishlist", "variable":"{FAVORITES/WISHLIST"},{"title":"Url", "variable":"{URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('CART_ITEM_NOTIFICATION',1,'Cart Item Notification', 'Hello {USER},\r\nYou left some items in your cart.\r\nProceed to checkout, before stocks last.\r\n{URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Url", "variable":"{URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('PROMOTION_STATUS_UPDATE',1,'Promotion Status Update', 'Hello {USER},\r\nYour promotion {PROMOTION name} request has been {NEW_REQUEST_STATUS}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Promotion", "variable":"{PROMOTION "},{"title":"New Request Status", "variable":"{NEW_REQUEST_STATUS}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('RETURN_REQUEST_FOR_SELLER',1,'Return Request For Seller', 'Hello {SELLER_SHOP},\r\nA return request has been submitted against order {ORDER_ID}.\r\n{URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{SELLER_SHOP}"},{"title":"Order Id", "variable":"{ORDER_ID}"},{"title":"Url", "variable":"{URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('PASSWORD_CHANGED',1,'Password Changed', 'Hello {USER},\r\nYou have successfully changed your password.\r\nPlease login to your Account using the new password.\r\n{URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Url", "variable":"{URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('ORDER_CANCELLATION_REQUETS',1,'Order Cancellation Requets', 'Hello {USER},\r\n{BUYER} has submitted an Order Cancellation Request corresponding to Order Id {ORDER_NUMBER}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Buyer", "variable":"{BUYER}"},{"title":"Order Number", "variable":"{ORDER_NUMBER}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('SUBSCRIPTION_PLAN_PAYMENT_STATUS',1,'Subscription Plan Payment Status', 'Hello {SELLER_SHOP},\r\nPayment status for subscription plan has been updated to {ORDER_STATUS} for Invoice Number - {INVOICE_NUMBER} at {SITE_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{SELLER_SHOP}"},{"title":"Order Status", "variable":"{ORDER_STATUS}"},{"title":"Invoice Number", "variable":"{INVOICE_NUMBER}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('SELLER_APPROVAL_REQUEST',1,'Seller Approval Request', 'Hello Admin,\r\nA new seller approval request is received.\r\nSeller details:\r\nReference Number: {REF_NUMBER}\r\nUsername {USERNAME}\r\nEmail {EMAIL}\r\nName {USER_NAME}\r\n\r\n{SITE_NAME} Team', '[{"title":"Ref Number", "variable":"{REF_NUMBER}"},{"title":"Username", "variable":"{USERNAME}"},{"title":"Email", "variable":"{EMAIL}"},{"title":"Name", "variable":"{USER_NAME}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('NEW_SELLER_REGISRATION',1,'New Seller Regisration', 'Hello Admin,\r\nA new seller has registered on {SITE_NAME}.\r\nSeller Details:\r\nReference Number {REFERENCE_NUMBER}\r\nUsername {USERNAME}\r\nEmail {EMAIL}\r\nName {USER_NAME}\r\n\r\n{SITE_NAME} Team', '[{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Reference Number", "variable":"{REFERENCE_NUMBER}"},{"title":"Username", "variable":"{USERNAME}"},{"title":"Email", "variable":"{EMAIL}"},{"title":"Name", "variable":"{USER_NAME}"}]', 1),
+('USER_REGISTRATION',1,'User Registration', 'Hello Admin,\r\nA new user has registered on {SITE_NAME}.\r\nUser details:\r\nUsername {USERNAME}\r\nEmail {EMAIL}\r\nName {USER_NAME}\r\nType {USER_TYPE}\r\n\r\n{SITE_NAME} Team', '[{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Username", "variable":"{USERNAME}"},{"title":"Email", "variable":"{EMAIL}"},{"title":"Name", "variable":"{USER_NAME}"},{"title":"User Type", "variable":"{USER_TYPE}"}]', 1),
+('CUSTOM_CATALOG_REQUEST',1,'Custom Catalog Request', 'Hello Admin,\r\nA new Catalog request by the name of {CATALOG_NAME} is received on {SITE_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Catalog Name", "variable":"{CATALOG_NAME}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('AFFILIATE_USER_SIGN_UP',1,'Affiliate User Sign Up', 'Hello Admin,\r\nA new affiliate user has registered on {SITE_NAME}.\r\nAffiliate user details:\r\nUsername {USERNAME}\r\nEmail {EMAIL}\r\nName {USER_NAME}\r\n\r\n{SITE_NAME} Team', '[{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Username", "variable":"{USERNAME}"},{"title":"Email", "variable":"{EMAIL}"},{"title":"Name", "variable":"{USER_NAME}"}]', 1),
+('LOW_BALANCE_PROMOTIONS',1,'Low Balance Promotions', 'Hello {USER},\r\nPlease maintain your wallet balance to keep Promotions Working.\r\nBalance required - {REQUIRED_BALANCE}\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Required Balance", "variable":"{REQUIRED_BALANCE}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('LOW_BALANCE_SUBSCRIPTION',1,'Low Balance Subscription', 'Hello {USER},\r\nPlease maintain your wallet balance to Continue Seller Services.\r\nBalance required - {REQUIRED_BALANCE}\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Required Balance", "variable":"{REQUIRED_BALANCE}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('INVITE_A_FRIEND',1,'Invite A Friend', 'Hello {USER_FULL_NAME} has invited you to join them on {SITE_NAME} and enjoy Amazing Discounts.\r\nClick the link to accept the invitation:\r\n{URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{USER_FULL_NAME}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Url", "variable":"{URL}"}]', 1),
+('GDPR_REQUEST',1,'Gdpr Request', 'Hello {USER},\r\nYour Request for {REQUEST_TYPE} under GDPR has been completed on {SITE_NAME}\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Request Type", "variable":"{REQUEST_TYPE}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('FORGOT_PASSWORD_USERS',1,'Forgot Password Users', 'Hello {USER},\r\nIt seems that you have used forgot password option at {SITE_NAME}.\r\nClick the link to reset your password. Valid for next 24 hours only.\r\n{URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Url", "variable":"{URL}"}]', 1),
+('FORGOT_PASSWORD_ADMIN',1,'Forgot Password Admin', 'Hello {ADMIN_USER},\r\nIt seems that you have used forgot password option at {SITE_NAME}.\r\nPlease click the link to change your password.\r\n{URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"Admin User", "variable":"{ADMIN_USER}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Url", "variable":"{URL}"}]', 1),
+('FAILED_LOGIN_ATTEMPT',1,'Failed Login Attempt', 'Hello {USER},\r\nAre you facing problems logging in at {WEB}?\r\nUse the forgot password feature to reset your password.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Web", "variable":"{WEBSITE}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('EMAIL_VERIFICATION_NEW_EMAIL',1,'Email Verification New Email', 'Hello {USER},\r\nYou have used change email option at {WEBSITE}.\r\nYou need to confirm your email to get your account activated with this email address.\r\n{URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Website", "variable":"{WEBSITE}"},{"title":"Url", "variable":"{URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('VERIFICATION_NEW_EMAIL',1,'Verification New Email', 'Hello {USER},\r\nThank you for registering at {SITE_NAME}.\r\nConfirm your email by clicking the link {URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Url", "variable":"{URL}"}]', 1),
+('EMAIL_CHANGED_CONFIRMATION',1,'Email Changed Confirmation', 'Hello {USER},\r\nYour Email Address has been changed to {NEW_EMAIL} at {SITE_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"New Email", "variable":"{NEW_EMAIL}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('EMAIL_CHANGE_OLD_EMAIL',1,'Email Change Old Email', 'Hello {USER},\r\nIt seems that you have requested to change email to {NEW_EMAIL} at {SITE_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"New Email", "variable":"{NEW_EMAIL}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('DISCOUNT_COUPON',1,'Discount Coupon', 'Hello {USER},\r\nUse {DISCOUNT_COUPON} on your next purchase at{SITE_NAME} to get %{AMOUNT} off.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Discount Coupon", "variable":"{DISCOUNT_COUPON}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Amount", "variable":"{AMOUNT}"}]', 1),
+('DATA_REQUEST',1,'Data Request', 'Hello Admin,\r\nData request has been placed by {USER_FULL_NAME}\r\nPurpose of request: {UREQ_PURPOSE}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{USER_FULL_NAME}"},{"title":"Ureq Purpose", "variable":"{UREQ_PURPOSE}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('CUSTOMER_ORDER_NOTIFICATION',1,'Customer Order Notification', 'Hello {USER},\r\nThank you for placing an order on {SITE_NAME}. Your order {ORDER_ID} has been received and will be processed once payment has been confirmed.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Order Id", "variable":"{ORDER_ID}"}]', 1),
+('CUTOMER_ORDER_NOTIFICTION_DIGITAL',1,'Cutomer Order Notifiction Digital', 'Hello {USER},\r\nThank you for placing a digital order on {SITE_NAME}. Your order {ORDER_ID} has been received and will be processed.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Order Id", "variable":"{ORDER_ID}"}]', 1),
+('TRANSACTION_ALERT',1,'Transaction Alert', 'Hello {USER},\r\nAmount {CURRENCY_CODE} {AMOUNT} has been {TXN_TYPE} from your virtual wallet vide transaction id {TXN_ID}\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Currency", "variable":"{CURRENCY_CODE}"},{"title":"Amount", "variable":"{AMOUNT}"},{"title":"Txn Type", "variable":"{TXN_TYPE}"},{"title":"Txn Id", "variable":"{TXN_ID}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('CONTACT_US',1,'Contact Us', 'Hello Admin,\r\nA new query has been submitted by {USER} on {SITE_NAME}\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('ORDER_STATUS_UPDATE',1,'Order Status Update', 'Hello {USER},\r\nYour order status for Order ID {ORDER_ID} with {PRODUCT} has been changed to {NEW_ORDER_STATUS} at {SITE_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Order Id", "variable":"{ORDER_ID}"},{"title":"Product", "variable":"{PRODUCT}"},{"title":"New Order Status", "variable":"{NEW_ORDER_STATUS}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('CANCELLATION_REQUEST_UPDATE',1,'Cancellation Request Update', 'Hello {USER},\r\nYour order cancellation request for invoice # {INVOICE_NUMBER} has been {REQUEST_STATUS} on {SITE_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Invoice Number", "variable":"{INVOICE_NUMBER}"},{"title":"Request Status", "variable":"{REQUEST_STATUS}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('SUBSCRIPTION_CANCELLED',1,'Subscription Cancelled', 'Hello {SELLER_SHOP},\r\nYour subscription plan {SPACKAGE_NAME} has been cancelled.\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{SELLER_SHOP}"},{"title":"Spackage Name", "variable":"{SPACKAGE_NAME}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('SELLER_APPROVAL_REQUEST_STATUS',1,'Seller Approval Request Status', 'Hello {USER_FULL_NAME},\r\nYour seller approval request with reference number {REF_NUM} has been {NEW_REQUEST_STATUS}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{USER_FULL_NAME}"},{"title":"Ref Num", "variable":"{REF_NUM}"},{"title":"New Request Status", "variable":"{NEW_REQUEST_STATUS}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('ORDER_PAYMENT_STATUS',1,'Order Payment Status', 'Hello {USER},\r\nPayment status for order # {ORDER_ID} has been changed to {NEW_ORDER_STATUS}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Order Id", "variable":"{ORDER_ID}"},{"title":"New Order Status", "variable":"{NEW_ORDER_STATUS}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('COD',1,'cod', 'Hello {USER},\r\nOrder# {ORDER_ID} has been placed with payment status as COD on {WEBSITE}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Order Id", "variable":"{ORDER_ID}"},{"title":"Website", "variable":"{WEBSITE}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('PRODUCT_REVIEW',1,'Product Review', 'Hello {USER},\r\nThank you for shopping with {SITE_NAME}. Please share your feedback about your experience.\r\n{URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Url", "variable":"{URL}"}]', 1),
+('BLOG_CONTRIBUTION_STATUS',1,'Blog Contribution Status', 'Hello {USER},\r\nYour blog contribution posted on {DATE} for {WEBSITE} has been {NEW_STATUS}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Date", "variable":"{DATE}"},{"title":"Website", "variable":"{WEBSITE}"},{"title":"New Status", "variable":"{NEW_STATUS}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('BLOG_COMMENT_STATUS',1,'Blog Comment Status', 'Hello {USER},\r\nYour Comment for the blog post "{POST_TITLE}", posted on {DATETIME} has been {NEW_STATUS} at {SITE_NAME}.\r\n\r\n{SITE_NAME} Team',  '[{"title":"User", "variable":"{USER}"},{"title":"Post Title", "variable":"{POST_TITLE}"},{"title":"Datetime", "variable":"{DATETIME}"},{"title":"New Status", "variable":"{NEW_STATUS}"},{"title":"Website Name", "variable":"{WEBSITSITE_NAMEE_NAME}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('PROMOTION_APPROVAL',1,'Promotion Approval', 'Hello Admin,\r\nA new promotion request "{PROMOTION_NAME}" has been submitted by {USER_FULL_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Promotion Name", "variable":"{PROMOTION_NAME}"},{"title":"User Full Name", "variable":"{USER_FULL_NAME}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('AFFILIATE_REGISTRATION',1,'Affiliate Registration', 'Hello {USER},\r\nThank you for signing up at {SITE_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('AFFILIATE_INVITATION',1,'Affiliate Invitation', 'Hello Friend,\r\nThis is an invitation from {USER} to join them on {SITE_NAME} and enjoy Amazing Discounts.\r\nClick the link to accept this invitation:\r\n{URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{USER}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Url", "variable":"{URL}"}]', 1),
+('ORDER_RECEIVED',1,'Order Received', 'Hello Admin,\r\nA new order has been received on your site with Order Invoice Number {ORDER_INVOICE_NUMBER}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Order Invoice Number", "variable":"{ORDER_INVOICE_NUMBER}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('SUBSCRIPTION_RENEWED',1,'Subscription Renewed', 'Hello Admin,\r\nSubscription plan has been auto-renewed on {WEBSITE} with Order Number {ORDER_NUMBER}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Website", "variable":"{WEBSITE}"},{"title":"Order Number", "variable":"{ORDER_NUMBER}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('PAYMENT_STATUS_UPDATE',1,'Payment Status Update', 'Hello Admin,\r\nPayment status for Order {ORDER_ID} has been changed to {NEW_ORDER_STATUS}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Order Id", "variable":"{ORDER_ID}"},{"title":"New Order Status", "variable":"{NEW_ORDER_STATUS}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('COD_ORDER_PAYMENT_STATUS',1,'Cod Order Payment Status', 'Hello Admin,\r\n{COD} order has been placed with Order Invoice Number - {INVOICE_NUMBER}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Cod", "variable":"{COD}"},{"title":"Invoice Number", "variable":"{INVOICE_NUMBER}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('SUBSCRIPTION_PACKAGE_PURCHASED',1,'Subscription Package Purchased', 'Hello Admin,\r\nNew subscription package purchased by {SELLER shop} for an amount {CURRENCY_CODE} {AMOUNT} with Order ID {ORDER id}\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller", "variable":"{SELLER "},{"title":"Currency", "variable":"{CURRENCY_CODE}"},{"title":"Amount", "variable":"{AMOUNT}"},{"title":"Order Id", "variable":"{ORDER_ID}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+('PRODUCT_REVIEW_REPORTED',1,'Product Review Reported', 'Hello Admin,\r\n{USER_FULL_NAME} has posted an abusive review at {SITE_NAME}.\r\n{URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{USER_FULL_NAME}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Url", "variable":"{URL}"}]', 1);
+
+ALTER TABLE `tbl_users` CHANGE `user_phone` `user_phone` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+UPDATE `tbl_users` SET `user_phone`= NULL WHERE user_phone = '';
+ALTER TABLE tbl_users ADD UNIQUE (user_phone);
+
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('LBL_RECOVER_PASSWORD_FORM_MSG',1,'Enter The Phone Number Associated With Your Account. An OTP will be sent to your registered number. Please use that OTP to reset your password.',1);
+
+UPDATE `tbl_language_labels` SET `label_caption`='Variant/Option' WHERE `label_key` = 'LBL_Variant/Option';
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('LBL_PUBLISH_INVENTORY',1,'Publish',1);
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'Lbl_Change_Email_/_password';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'MSG_Your_email_not_change_untill_you_confirm';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'Lbl_Change_Email';
+
+ALTER TABLE `tbl_push_notifications` ADD `pnotification_user_auth_type` TINYINT(1) NOT NULL AFTER `pnotification_for_seller`;
+ALTER TABLE `tbl_push_notifications` CHANGE `pnotification_till_user_id` `pnotification_uauth_last_access` DATETIME NOT NULL;
+
+-------------------TV-9.1.3.20200219--------------------------
+ALTER TABLE `tbl_user_auth_token` ADD `uauth_user_type` TINYINT(1) NOT NULL AFTER `uauth_device_os`;
+
+DROP TABLE `tbl_theme`;
+DROP TABLE `tbl_theme_lang`;
+DROP TABLE `tbl_theme_colors`;
+DROP TABLE `tbl_theme_colors_lang`;
+
+
+CREATE TABLE `tbl_theme` (
+  `theme_id` int(11) NOT NULL,
+  `theme_name` varchar(250) NOT NULL,
+  `theme_display_order` int(11) NOT NULL,
+  `theme_added_by` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `tbl_theme` (`theme_id`, `theme_name`, `theme_display_order`, `theme_added_by`) VALUES
+(1, 'Red - First', 0, 0),
+(2, 'Red - Second', 0, 0),
+(3, 'Watusi', 0, 0),
+(4, 'Tahiti Gold', 0, 0),
+(5, 'Submarine', 0, 0),
+(6, 'Red - Third', 0, 0),
+(7, 'Blue - First', 0, 0),
+(8, 'Blue - Second', 0, 0),
+(9, 'Blue - Third', 0, 0),
+(10, 'Green - First', 0, 0),
+(11, 'Green - Second', 0, 0),
+(12, 'Green - Third', 0, 0),
+(13, 'Yellow - First', 0, 0),
+(14, 'Yellow - Second', 0, 0),
+(15, 'Yellow - Third', 0, 0),
+(16, 'Copy of Red - First', 0, 1);
+
+ALTER TABLE `tbl_theme`
+  ADD PRIMARY KEY (`theme_id`);
+
+ALTER TABLE `tbl_theme`
+  MODIFY `theme_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+CREATE TABLE `tbl_theme_colors` (
+  `tcolor_theme_id` int(11) NOT NULL,
+  `tcolor_key` varchar(50) NOT NULL,
+  `tcolor_value` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `tbl_theme_colors` (`tcolor_theme_id`, `tcolor_key`, `tcolor_value`) VALUES
+(1, 'tcolor_body_color', '525252'),
+(1, 'tcolor_border_color', 'E8E7EA'),
+(1, 'tcolor_border_dark_color', 'FFFFFF'),
+(1, 'tcolor_border_light_color', 'FFFFFF'),
+(1, 'tcolor_brand_color', 'FF3A59'),
+(1, 'tcolor_brand_color_inverse', 'FFFFFF'),
+(1, 'tcolor_font_color', '333333'),
+(1, 'tcolor_font_secondary_color', '999999'),
+(1, 'tcolor_grey_color', 'f8f8f8'),
+(1, 'tcolor_grey_light_color', 'f8f8f8'),
+(1, 'tcolor_primary_color', 'FF3A59'),
+(1, 'tcolor_primary_color_inverse', 'FFFFFF'),
+(1, 'tcolor_secondary_color', '6DCDEF'),
+(1, 'tcolor_secondary_color_inverse', 'FFFFFF'),
+(1, 'tcolor_third_color', 'FFFFFF'),
+(1, 'tcolor_third_color_inverse', 'FFFFFF'),
+(2, 'tcolor_body_color', '525252'),
+(2, 'tcolor_border_color', '446655'),
+(2, 'tcolor_border_dark_color', 'FFFFFF'),
+(2, 'tcolor_border_light_color', 'FFFFFF'),
+(2, 'tcolor_brand_color', 'F44336'),
+(2, 'tcolor_brand_color_inverse', 'FFFFFF'),
+(2, 'tcolor_font_color', '465436'),
+(2, 'tcolor_font_secondary_color', 'FFFFFF'),
+(2, 'tcolor_grey_color', 'f8f8f8'),
+(2, 'tcolor_grey_light_color', 'f8f8f8'),
+(2, 'tcolor_primary_color', 'F44336'),
+(2, 'tcolor_primary_color_inverse', 'FFFFFF'),
+(2, 'tcolor_secondary_color', 'FFFFFF'),
+(2, 'tcolor_secondary_color_inverse', 'FFFFFF'),
+(2, 'tcolor_third_color', 'FFFFFF'),
+(2, 'tcolor_third_color_inverse', 'FFFFFF'),
+(3, 'tcolor_body_color', '525252'),
+(3, 'tcolor_border_color', '446655'),
+(3, 'tcolor_border_dark_color', 'FFFFFF'),
+(3, 'tcolor_border_light_color', 'FFFFFF'),
+(3, 'tcolor_brand_color', 'F6C7B7'),
+(3, 'tcolor_brand_color_inverse', 'FFFFFF'),
+(3, 'tcolor_font_color', '465436'),
+(3, 'tcolor_font_secondary_color', 'FFFFFF'),
+(3, 'tcolor_grey_color', 'f8f8f8'),
+(3, 'tcolor_grey_light_color', 'f8f8f8'),
+(3, 'tcolor_primary_color', 'F6C7B7'),
+(3, 'tcolor_primary_color_inverse', 'FFFFFF'),
+(3, 'tcolor_secondary_color', 'FFFFFF'),
+(3, 'tcolor_secondary_color_inverse', 'FFFFFF'),
+(3, 'tcolor_third_color', 'FFFFFF'),
+(3, 'tcolor_third_color_inverse', 'FFFFFF'),
+(4, 'tcolor_body_color', '525252'),
+(4, 'tcolor_border_color', 'DCDCDC'),
+(4, 'tcolor_border_dark_color', 'FFFFFF'),
+(4, 'tcolor_border_light_color', 'FFFFFF'),
+(4, 'tcolor_brand_color', 'E67E22'),
+(4, 'tcolor_brand_color_inverse', 'FFFFFF'),
+(4, 'tcolor_font_color', '333333'),
+(4, 'tcolor_font_secondary_color', '999999'),
+(4, 'tcolor_grey_color', 'f8f8f8'),
+(4, 'tcolor_grey_light_color', 'f8f8f8'),
+(4, 'tcolor_primary_color', 'E67E22'),
+(4, 'tcolor_primary_color_inverse', 'FFFFFF'),
+(4, 'tcolor_secondary_color', 'E74C3C'),
+(4, 'tcolor_secondary_color_inverse', 'FFFFFF'),
+(4, 'tcolor_third_color', 'FFFFFF'),
+(4, 'tcolor_third_color_inverse', 'FFFFFF'),
+(5, 'tcolor_body_color', '525252'),
+(5, 'tcolor_border_color', '446655'),
+(5, 'tcolor_border_dark_color', 'FFFFFF'),
+(5, 'tcolor_border_light_color', 'FFFFFF'),
+(5, 'tcolor_brand_color', '95A5A6'),
+(5, 'tcolor_brand_color_inverse', 'FFFFFF'),
+(5, 'tcolor_font_color', '465436'),
+(5, 'tcolor_font_secondary_color', 'FFFFFF'),
+(5, 'tcolor_grey_color', 'f8f8f8'),
+(5, 'tcolor_grey_light_color', 'f8f8f8'),
+(5, 'tcolor_primary_color', '95A5A6'),
+(5, 'tcolor_primary_color_inverse', 'FFFFFF'),
+(5, 'tcolor_secondary_color', 'FFFFFF'),
+(5, 'tcolor_secondary_color_inverse', 'FFFFFF'),
+(5, 'tcolor_third_color', 'FFFFFF'),
+(5, 'tcolor_third_color_inverse', 'FFFFFF'),
+(6, 'tcolor_body_color', '525252'),
+(6, 'tcolor_border_color', 'DCDCDC'),
+(6, 'tcolor_border_dark_color', 'FFFFFF'),
+(6, 'tcolor_border_light_color', 'FFFFFF'),
+(6, 'tcolor_brand_color', 'DC0028'),
+(6, 'tcolor_brand_color_inverse', 'FFFFFF'),
+(6, 'tcolor_font_color', '333333'),
+(6, 'tcolor_font_secondary_color', '999999'),
+(6, 'tcolor_grey_color', 'f8f8f8'),
+(6, 'tcolor_grey_light_color', 'f8f8f8'),
+(6, 'tcolor_primary_color', 'DC0028'),
+(6, 'tcolor_primary_color_inverse', 'FFFFFF'),
+(6, 'tcolor_secondary_color', '2D9FF3'),
+(6, 'tcolor_secondary_color_inverse', 'FFFFFF'),
+(6, 'tcolor_third_color', 'FFFFFF'),
+(6, 'tcolor_third_color_inverse', 'FFFFFF'),
+(7, 'tcolor_body_color', '525252'),
+(7, 'tcolor_border_color', 'DCDCDC'),
+(7, 'tcolor_border_dark_color', 'FFFFFF'),
+(7, 'tcolor_border_light_color', 'FFFFFF'),
+(7, 'tcolor_brand_color', '1A8FE3'),
+(7, 'tcolor_brand_color_inverse', 'FFFFFF'),
+(7, 'tcolor_font_color', '333333'),
+(7, 'tcolor_font_secondary_color', '999999'),
+(7, 'tcolor_grey_color', 'f8f8f8'),
+(7, 'tcolor_grey_light_color', 'f8f8f8'),
+(7, 'tcolor_primary_color', '1A8FE3'),
+(7, 'tcolor_primary_color_inverse', 'FFFFFF'),
+(7, 'tcolor_secondary_color', '2D9FF3'),
+(7, 'tcolor_secondary_color_inverse', 'FFFFFF'),
+(7, 'tcolor_third_color', 'FFFFFF'),
+(7, 'tcolor_third_color_inverse', 'FFFFFF'),
+(8, 'tcolor_body_color', '525252'),
+(8, 'tcolor_border_color', 'DCDCDC'),
+(8, 'tcolor_border_dark_color', 'FFFFFF'),
+(8, 'tcolor_border_light_color', 'FFFFFF'),
+(8, 'tcolor_brand_color', '007DC6'),
+(8, 'tcolor_brand_color_inverse', 'FFFFFF'),
+(8, 'tcolor_font_color', '333333'),
+(8, 'tcolor_font_secondary_color', '999999'),
+(8, 'tcolor_grey_color', 'f8f8f8'),
+(8, 'tcolor_grey_light_color', 'f8f8f8'),
+(8, 'tcolor_primary_color', '007DC6'),
+(8, 'tcolor_primary_color_inverse', 'FFFFFF'),
+(8, 'tcolor_secondary_color', '2D9FF3'),
+(8, 'tcolor_secondary_color_inverse', 'FFFFFF'),
+(8, 'tcolor_third_color', 'FFFFFF'),
+(8, 'tcolor_third_color_inverse', 'FFFFFF'),
+(9, 'tcolor_body_color', '525252'),
+(9, 'tcolor_border_color', 'DCDCDC'),
+(9, 'tcolor_border_dark_color', 'FFFFFF'),
+(9, 'tcolor_border_light_color', 'FFFFFF'),
+(9, 'tcolor_brand_color', '003B64'),
+(9, 'tcolor_brand_color_inverse', 'FFFFFF'),
+(9, 'tcolor_font_color', '333333'),
+(9, 'tcolor_font_secondary_color', '999999'),
+(9, 'tcolor_grey_color', 'f8f8f8'),
+(9, 'tcolor_grey_light_color', 'f8f8f8'),
+(9, 'tcolor_primary_color', '003B64'),
+(9, 'tcolor_primary_color_inverse', 'FFFFFF'),
+(9, 'tcolor_secondary_color', '2D9FF3'),
+(9, 'tcolor_secondary_color_inverse', 'FFFFFF'),
+(9, 'tcolor_third_color', 'FFFFFF'),
+(9, 'tcolor_third_color_inverse', 'FFFFFF'),
+(10, 'tcolor_body_color', '525252'),
+(10, 'tcolor_border_color', 'DCDCDC'),
+(10, 'tcolor_border_dark_color', 'FFFFFF'),
+(10, 'tcolor_border_light_color', 'FFFFFF'),
+(10, 'tcolor_brand_color', '6BC452'),
+(10, 'tcolor_brand_color_inverse', 'FFFFFF'),
+(10, 'tcolor_font_color', '333333'),
+(10, 'tcolor_font_secondary_color', '999999'),
+(10, 'tcolor_grey_color', 'f8f8f8'),
+(10, 'tcolor_grey_light_color', 'f8f8f8'),
+(10, 'tcolor_primary_color', '6BC452'),
+(10, 'tcolor_primary_color_inverse', 'FFFFFF'),
+(10, 'tcolor_secondary_color', '2D9FF3'),
+(10, 'tcolor_secondary_color_inverse', 'FFFFFF'),
+(10, 'tcolor_third_color', 'FFFFFF'),
+(10, 'tcolor_third_color_inverse', 'FFFFFF'),
+(11, 'tcolor_body_color', '525252'),
+(11, 'tcolor_border_color', 'DCDCDC'),
+(11, 'tcolor_border_dark_color', 'FFFFFF'),
+(11, 'tcolor_border_light_color', 'FFFFFF'),
+(11, 'tcolor_brand_color', '00C853'),
+(11, 'tcolor_brand_color_inverse', 'FFFFFF'),
+(11, 'tcolor_font_color', '333333'),
+(11, 'tcolor_font_secondary_color', '999999'),
+(11, 'tcolor_grey_color', 'f8f8f8'),
+(11, 'tcolor_grey_light_color', 'f8f8f8'),
+(11, 'tcolor_primary_color', '00C853'),
+(11, 'tcolor_primary_color_inverse', 'FFFFFF'),
+(11, 'tcolor_secondary_color', '2D9FF3'),
+(11, 'tcolor_secondary_color_inverse', 'FFFFFF'),
+(11, 'tcolor_third_color', 'FFFFFF'),
+(11, 'tcolor_third_color_inverse', 'FFFFFF'),
+(12, 'tcolor_body_color', '525252'),
+(12, 'tcolor_border_color', 'DCDCDC'),
+(12, 'tcolor_border_dark_color', 'FFFFFF'),
+(12, 'tcolor_border_light_color', 'FFFFFF'),
+(12, 'tcolor_brand_color', '14C06E'),
+(12, 'tcolor_brand_color_inverse', 'FFFFFF'),
+(12, 'tcolor_font_color', '333333'),
+(12, 'tcolor_font_secondary_color', '999999'),
+(12, 'tcolor_grey_color', 'f8f8f8'),
+(12, 'tcolor_grey_light_color', 'f8f8f8'),
+(12, 'tcolor_primary_color', '14C06E'),
+(12, 'tcolor_primary_color_inverse', 'FFFFFF'),
+(12, 'tcolor_secondary_color', '2D9FF3'),
+(12, 'tcolor_secondary_color_inverse', 'FFFFFF'),
+(12, 'tcolor_third_color', 'FFFFFF'),
+(12, 'tcolor_third_color_inverse', 'FFFFFF'),
+(13, 'tcolor_body_color', '525252'),
+(13, 'tcolor_border_color', 'DCDCDC'),
+(13, 'tcolor_border_dark_color', 'FFFFFF'),
+(13, 'tcolor_border_light_color', 'FFFFFF'),
+(13, 'tcolor_brand_color', 'FFEB3B'),
+(13, 'tcolor_brand_color_inverse', 'FFFFFF'),
+(13, 'tcolor_font_color', '333333'),
+(13, 'tcolor_font_secondary_color', '999999'),
+(13, 'tcolor_grey_color', 'f8f8f8'),
+(13, 'tcolor_grey_light_color', 'f8f8f8'),
+(13, 'tcolor_primary_color', 'FFEB3B'),
+(13, 'tcolor_primary_color_inverse', 'FFFFFF'),
+(13, 'tcolor_secondary_color', '2D9FF3'),
+(13, 'tcolor_secondary_color_inverse', 'FFFFFF'),
+(13, 'tcolor_third_color', 'FFFFFF'),
+(13, 'tcolor_third_color_inverse', 'FFFFFF'),
+(14, 'tcolor_body_color', '525252'),
+(14, 'tcolor_border_color', 'DCDCDC'),
+(14, 'tcolor_border_dark_color', 'FFFFFF'),
+(14, 'tcolor_border_light_color', 'FFFFFF'),
+(14, 'tcolor_brand_color', 'FFEA00'),
+(14, 'tcolor_brand_color_inverse', 'FFFFFF'),
+(14, 'tcolor_font_color', '333333'),
+(14, 'tcolor_font_secondary_color', '999999'),
+(14, 'tcolor_grey_color', 'f8f8f8'),
+(14, 'tcolor_grey_light_color', 'f8f8f8'),
+(14, 'tcolor_primary_color', 'FFEA00'),
+(14, 'tcolor_primary_color_inverse', 'FFFFFF'),
+(14, 'tcolor_secondary_color', '2D9FF3'),
+(14, 'tcolor_secondary_color_inverse', 'FFFFFF'),
+(14, 'tcolor_third_color', 'FFFFFF'),
+(14, 'tcolor_third_color_inverse', 'FFFFFF'),
+(15, 'tcolor_body_color', '525252'),
+(15, 'tcolor_border_color', 'DCDCDC'),
+(15, 'tcolor_border_dark_color', 'FFFFFF'),
+(15, 'tcolor_border_light_color', 'FFFFFF'),
+(15, 'tcolor_brand_color', 'FFD600'),
+(15, 'tcolor_brand_color_inverse', 'FFFFFF'),
+(15, 'tcolor_font_color', '333333'),
+(15, 'tcolor_font_secondary_color', '999999'),
+(15, 'tcolor_grey_color', 'f8f8f8'),
+(15, 'tcolor_grey_light_color', 'f8f8f8'),
+(15, 'tcolor_primary_color', 'FFD600'),
+(15, 'tcolor_primary_color_inverse', 'FFFFFF'),
+(15, 'tcolor_secondary_color', '2D9FF3'),
+(15, 'tcolor_secondary_color_inverse', 'FFFFFF'),
+(15, 'tcolor_third_color', 'FFFFFF'),
+(15, 'tcolor_third_color_inverse', 'FFFFFF'),
+(16, 'tcolor_body_color', '525252'),
+(16, 'tcolor_border_color', 'E8E7EA'),
+(16, 'tcolor_border_dark_color', 'FFFFFF'),
+(16, 'tcolor_border_light_color', 'FFFFFF'),
+(16, 'tcolor_brand_color', 'FF3A59'),
+(16, 'tcolor_brand_color_inverse', 'FFFFFF'),
+(16, 'tcolor_font_color', '333333'),
+(16, 'tcolor_font_secondary_color', '999999'),
+(16, 'tcolor_grey_color', 'f8f8f8'),
+(16, 'tcolor_grey_light_color', 'f8f8f8'),
+(16, 'tcolor_primary_color', 'FF3A59'),
+(16, 'tcolor_primary_color_inverse', 'FFFFFF'),
+(16, 'tcolor_secondary_color', '6DCDEF'),
+(16, 'tcolor_secondary_color_inverse', 'FFFFFF'),
+(16, 'tcolor_third_color', 'FFFFFF'),
+(16, 'tcolor_third_color_inverse', 'FFFFFF');
+
+ALTER TABLE `tbl_theme_colors`
+  ADD UNIQUE KEY `tcolor_theme_id` (`tcolor_theme_id`,`tcolor_key`);

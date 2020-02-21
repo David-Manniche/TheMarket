@@ -11,5 +11,5 @@
     <?php if (!UserAuthentication::isUserLogged() || (UserAuthentication::isUserLogged() && ((User::isBuyer()) || (User::isSeller() )) && (UserAuthentication::getLoggedUserId() != $shop_user_id))) { ?>
     <li class="<?php echo $action == 'sendMessage' ? 'is--active' : '' ?>"><a href="<?php echo CommonHelper::generateUrl('shops', 'sendMessage', array($shop_id));?>" class="ripplelink"><?php echo Labels::getLabel('LBL_SHOP_CONTACT', $siteLangId); ?></a></li>
     <?php } ?>
-    <li class="<?php echo $action == 'policy' ? 'is--active' : '' ?>"><a href="<?php echo CommonHelper::generateUrl('shops', 'policy', array($shop_id));?>" class="ripplelink"><?php echo Labels::getLabel('LBL_SHOP_POLICY', $siteLangId); ?></a></li>
+    <li class="<?php echo $action == 'policy' ? 'is--active' : '' ?>"><a href="<?php echo CommonHelper::generateUrl('shops', 'policy', array($shop_id));?>" class="ripplelink"><?php echo Labels::getLabel('LBL_SHOP_DETAILS', $siteLangId); ?></a></li>
 </ul>

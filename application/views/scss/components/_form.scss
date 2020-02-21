@@ -134,7 +134,13 @@ input[type="file"] {
         background-color: #fff;
         background-repeat: no-repeat;
         background-position: calc(100% - 11px) center;
+
+        [dir="rtl"] & {
+            background-position: calc(0% - -11px) center;
+        }
     }
+
+
 
     textarea {
         resize: vertical;
@@ -161,21 +167,19 @@ input[type="file"] {
             height: 2.5rem;
             vertical-align: middle;
             text-align: center;
-            background: $brand-color;
+            background: $brand-color; color:$brand-color-inverse;
             font-size: 0.875rem;
             font-weight: 500;
             line-height: 2.375rem;
             overflow: hidden;
             outline: none;
             cursor: pointer;
-            color: #fff;
+           
             -webkit-transition: -webkit-box-shadow 0.2s;
             transition: -webkit-box-shadow 0.2s;
             transition: box-shadow 0.2s;
             transition: box-shadow 0.2s, -webkit-box-shadow 0.2s;
-
-
-            margin-#{$end-direction}: 5px;
+            /*margin-#{$end-direction}: 5px;*/
         }
 
         &[type="button"] {
@@ -196,8 +200,10 @@ input[type="file"] {
         display: block;
         width: 100%;
     }
-    
-    .text--small{ display: block;}
+
+    .text--small {
+        display: block;
+    }
 
 }
 
@@ -251,7 +257,7 @@ input[type="file"] {
     max-width: 150px;
 }
 
- 
+
 
 
 
@@ -284,4 +290,60 @@ form.custom-form {
     input[type="submit"] {
         margin: 0;
     }
+}
+
+.form-otp {
+    .otp-row {
+        display: flex;
+        align-items: center;
+    }
+
+    .otp-col {
+        display: flex;
+        align-items: center;
+    }
+}
+
+.input-group {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    width: 100%;
+
+    input {
+        position: relative;
+        -webkit-box-flex: 1;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        width: 1%;
+        margin-bottom: 0;
+
+        &:not(:first-child) {
+            border-top-#{$start-direction}-radius: 0;
+            border-bottom-#{$start-direction}-radius: 0;
+        }
+
+        &:not(:last-child) {
+            border-top-#{$end-direction}-radius: 0;
+            border-bottom-#{$end-direction}-radius: 0;
+        }
+
+    }
+}
+
+.icon-group {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    
+    .btn { margin-#{$start-direction}:5px; }
 }

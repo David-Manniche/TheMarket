@@ -3,7 +3,7 @@
     <?php require_once(CONF_THEME_PATH.'seller/sellerCustomProductTop.php');?>
 </div>
 <div class="cards">
-    <div class="cards-content pt-3 pl-4 pr-4 ">
+    <div class="cards-content ">
         <div class="tabs__content">
             <div class="row row">
                 <div class="col-md-12">
@@ -32,6 +32,9 @@
     $("document").ready(function() {
 
         $('input[name=\'brand_name\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 /* fcom.ajax(fcom.makeUrl('brands', 'autoComplete'), {keyword:encodeURIComponent(request)}, function(json) {
                     response($.map(json, function(item) {
@@ -41,7 +44,7 @@
                 $.ajax({
                     url: fcom.makeUrl('brands', 'autoComplete'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1
                     },
                     dataType: 'json',
@@ -67,12 +70,15 @@
         });
 
         $('input[name=\'tag_name\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
 
                 $.ajax({
                     url: fcom.makeUrl('seller', 'tagsAutoComplete'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1
                     },
                     dataType: 'json',
@@ -107,6 +113,9 @@
         <?php } ?>
 
         $('input[name=\'choose_links\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 /* fcom.ajax(fcom.makeUrl('brands', 'autoComplete'), {keyword:encodeURIComponent(request)}, function(json) {
                     response($.map(json, function(item) {
@@ -117,7 +126,7 @@
                 $.ajax({
                     url: fcom.makeUrl('products', 'linksAutocomplete'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1
                     },
                     dataType: 'json',

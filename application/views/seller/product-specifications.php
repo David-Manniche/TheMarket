@@ -1,19 +1,22 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
+$layout = Language::getLayoutDirection($langId);
 if (count($productSpecifications) > 0){ ?>
-<div class="row">
+<div class="row" dir="<?php echo $layout; ?>">
     <div class="col-md-12">
         <div class="tablewrap">
         <?php 
             $arr_flds = array(
-                'prodspec_name' => Labels::getLabel('LBL_Specification', $siteLangId),
+                'prodspec_name' => Labels::getLabel('LBL_Specification_Name', $siteLangId),
+                'prodspec_value' => Labels::getLabel('LBL_Specification_Value', $siteLangId),
+                'prodspec_group' => Labels::getLabel('LBL_Specification_Group', $siteLangId),
                 'action' => Labels::getLabel('LBL_Action', $siteLangId)
             );
            
-            $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-bordered'));
+            $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
             $th = $tbl->appendElement('thead')->appendElement('tr');
             foreach ($arr_flds as $key=>$val) {
-                if($key == 'prodspec_name'){
-                    $e = $th->appendElement('th', array('width'=>'80%'), $val);
+                if($key == 'prodspec_name' || $key == 'prodspec_value' || $key == 'prodspec_group'){
+                    $e = $th->appendElement('th', array('width'=>'27%'), $val);
                 }else{
                     $e = $th->appendElement('th', array(), $val);
                 }                
@@ -24,13 +27,14 @@ if (count($productSpecifications) > 0){ ?>
                     foreach ($arr_flds as $key=>$val){
                         $td = $tr->appendElement('td');
                         switch ($key){
-                            case 'prodspec_name':                        
-                                $td->appendElement('plaintext', array(),$specification[$key].": ".$specification['prodspec_value'],true);
-                            break; 
                             case 'action':       
                                  $prodSpecId = $specification['prodspec_id'];
-                                 $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-sm btn-clean btn-icon btn-icon-md','title'=>Labels::getLabel('LBL_Edit',$siteLangId), 'onClick' => 'prodSpecificationSection('.$langId.','.$prodSpecId.')'), '<i class="fa fa-edit"></i>', true );
-                                 $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-sm btn-clean btn-icon btn-icon-md','title'=>Labels::getLabel('LBL_Delete',$siteLangId) , 'onClick' => 'deleteProdSpec('.$prodSpecId.','.$langId.')'), '<i class="fa fa-trash"></i>', true );
+                                 $ul = $td->appendElement('ul', array('class' => 'actions'));
+                                 $li = $ul->appendElement('li');
+                                 $li->appendElement('a', array('href'=>'javascript:void(0)', 'title'=>Labels::getLabel('LBL_Edit',$siteLangId), 'onClick' => 'prodSpecificationSection('.$langId.','.$prodSpecId.')'), '<i class="fa fa-edit"></i>', true );
+                                 
+                                 $lia = $li->appendElement('li');
+                                 $lia->appendElement('a', array('href'=>'javascript:void(0)', 'title'=>Labels::getLabel('LBL_Delete',$siteLangId) , 'onClick' => 'deleteProdSpec('.$prodSpecId.','.$langId.')'), '<i class="fa fa-trash"></i>', true );
                             break;
                             default:
                                 $td->appendElement('plaintext', array(), $specification[$key], true);

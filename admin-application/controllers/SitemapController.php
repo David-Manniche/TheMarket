@@ -1,10 +1,9 @@
 <?php
+
 class SitemapController extends AdminBaseController
 {
-
     public function generate()
     {
-
         $this->startSitemapXml();
 
 
@@ -121,8 +120,8 @@ class SitemapController extends AdminBaseController
         }
         echo "
 			<url>
-				<loc>".$url."</loc>
-                <lastmod>".date('Y-m-d')."</lastmod>
+				<loc>" . $url . "</loc>
+                <lastmod>" . date('Y-m-d') . "</lastmod>
                 <changefreq>weekly</changefreq>
                 <priority>0.8</priority>
 			</url>";
@@ -136,7 +135,7 @@ class SitemapController extends AdminBaseController
         echo '</urlset>' . "\n";
         $contents = ob_get_clean();
         $rs = '';
-        CommonHelper::writeFile('sitemap/list_'.$sitemapListInc.'.xml', $contents, $rs);
+        CommonHelper::writeFile('sitemap/list_' . $sitemapListInc . '.xml', $contents, $rs);
     }
 
     private function writeSitemapIndex()
@@ -145,8 +144,8 @@ class SitemapController extends AdminBaseController
         ob_start();
         echo "<?xml version='1.0' encoding='UTF-8'?>
 		<sitemapindex xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd' xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>\n";
-        for ($i=1; $i <= $sitemapListInc; $i++) {
-            echo "<sitemap><loc>".CommonHelper::getUrlScheme()."/sitemap/list_".$i.".xml</loc></sitemap>\n";
+        for ($i = 1; $i <= $sitemapListInc; $i++) {
+            echo "<sitemap><loc>" . CommonHelper::getUrlScheme() . "/sitemap/list_" . $i . ".xml</loc></sitemap>\n";
         }
         echo "</sitemapindex>";
         $contents = ob_get_clean();

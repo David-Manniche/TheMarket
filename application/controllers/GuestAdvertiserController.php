@@ -1,4 +1,5 @@
 <?php
+
 class GuestAdvertiserController extends MyAppController
 {
     public function __construct($action)
@@ -127,8 +128,8 @@ class GuestAdvertiserController extends MyAppController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $active = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1)?0:1;
-        $verify = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1)?0:1;
+        $active = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
+        $verify = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
 
         if (!$userObj->setLoginCredentials($post['user_username'], $post['user_email'], $post['user_password'], $active, $verify)) {
             Message::addErrorMessage(Labels::getLabel("MSG_LOGIN_CREDENTIALS_COULD_NOT_BE_SET", $this->siteLangId) . $userObj->getError());
@@ -287,7 +288,7 @@ class GuestAdvertiserController extends MyAppController
         }
 
         $userObj = new User($userId);
-        $userdata = $userObj->getUserInfo(array('credential_active','credential_verified'), false, false);
+        $userdata = $userObj->getUserInfo(array('credential_active', 'credential_verified'), false, false);
 
         if (false == $userdata) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
@@ -331,7 +332,7 @@ class GuestAdvertiserController extends MyAppController
     {
         $frm = new Form('frm');
 
-        $frm->addHiddenField('', 'user_id', 0, array('id'=>'user_id'));
+        $frm->addHiddenField('', 'user_id', 0, array('id' => 'user_id'));
 
         $fld = $frm->addTextBox(Labels::getLabel('LBL_USERNAME', $this->siteLangId), 'user_username');
         $fld->setUnique('tbl_user_credentials', 'credential_username', 'credential_user_id', 'user_id', 'user_id');
@@ -343,7 +344,7 @@ class GuestAdvertiserController extends MyAppController
 
         $frm->addRequiredField(Labels::getLabel('LBL_NAME', $this->siteLangId), 'user_name');
 
-        $phnFld = $frm->addRequiredField(Labels::getLabel('LBL_PHONE', $this->siteLangId), 'user_phone', '', array('class'=>'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
+        $phnFld = $frm->addRequiredField(Labels::getLabel('LBL_PHONE', $this->siteLangId), 'user_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
         $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
 
         $fld = $frm->addPasswordField(Labels::getLabel('LBL_PASSWORD', $this->siteLangId), 'user_password');
@@ -355,7 +356,7 @@ class GuestAdvertiserController extends MyAppController
         $fld1->requirements()->setRequired();
         $fld1->requirements()->setCompareWith('user_password', 'eq', Labels::getLabel('LBL_PASSWORD', $this->siteLangId));
 
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_SUBMIT', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SUBMIT', $this->siteLangId));
 
         return $frm;
     }
@@ -367,7 +368,7 @@ class GuestAdvertiserController extends MyAppController
         $frm->setFormTagAttribute("class", "form invalid");
         $frm->addTextBox(Labels::getLabel('LBL_Company', $this->siteLangId), 'user_company', '');
         $fld = $frm->addTextArea(Labels::getLabel('LBL_Brief_Profile', $this->siteLangId), 'user_profile_info', '');
-        $fld->htmlAfterField ='<br/><small class="text--small">'.Labels::getLabel('MSG_Please_tell_us_something_about_yourself', $this->siteLangId).'</small>';
+        $fld->htmlAfterField = '<br/><small class="text--small">' . Labels::getLabel('MSG_Please_tell_us_something_about_yourself', $this->siteLangId) . '</small>';
         $fld = $frm->addTextArea(Labels::getLabel('LBL_Products/services_you_wish_to_advertise?', $this->siteLangId), 'user_products_services', '');
         $frm->addHiddenField('', 'user_name');
         $frm->addHiddenField('', 'user_phone');

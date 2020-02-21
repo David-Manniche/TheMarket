@@ -1,4 +1,5 @@
 <?php
+
 class HomeController extends MyAppController
 {
     public function index()
@@ -20,7 +21,7 @@ class HomeController extends MyAppController
         $this->set('collections', $collections);
         $this->set('isWishlistEnable', FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1));
 
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $orderProducts['pendingForReviews'] = array();
             if (0 < $loggedUserId && (FatApp::getConfig('CONF_ALLOW_REVIEWS', FatUtility::VAR_INT, 0))) {
                 $orderProducts['pendingForReviews'] = OrderProduct::pendingForReviews($loggedUserId, $this->siteLangId);
@@ -49,7 +50,7 @@ class HomeController extends MyAppController
             $cacheKey = $this->siteLangId . '-' . $this->siteCurrencyId;
 
             /*[ As all layout in sequence so added in one cache]*/
-            $homePageFirstLayout =  FatCache::get('homePageFirstLayout' . $cacheKey, CONF_HOME_PAGE_CACHE_TIME, '.txt');
+            $homePageFirstLayout = FatCache::get('homePageFirstLayout' . $cacheKey, CONF_HOME_PAGE_CACHE_TIME, '.txt');
             if (!$homePageFirstLayout) {
                 $homePageProdLayout1 = '';
                 if (isset($collections[Collections::TYPE_PRODUCT_LAYOUT1])) {
@@ -67,39 +68,39 @@ class HomeController extends MyAppController
                     $homePageCatLayout1 = $tpl->render(false, false, '_partial/collection/category-layout-1.php', true, true);
                 }
 
-                $homePageFirstLayout = $homePageProdLayout1.$homePageCatLayout1;
-                FatCache::set('homePageFirstLayout'.$cacheKey, $homePageFirstLayout, '.txt');
+                $homePageFirstLayout = $homePageProdLayout1 . $homePageCatLayout1;
+                FatCache::set('homePageFirstLayout' . $cacheKey, $homePageFirstLayout, '.txt');
             }
 
             $this->set('homePageFirstLayout', $homePageFirstLayout);
             /*]*/
 
             /* Product Layout2[ */
-            $homePageProdLayout2 =  FatCache::get('homePageProdLayout2'.$cacheKey, CONF_HOME_PAGE_CACHE_TIME, '.txt');
+            $homePageProdLayout2 = FatCache::get('homePageProdLayout2' . $cacheKey, CONF_HOME_PAGE_CACHE_TIME, '.txt');
             if (!$homePageProdLayout2 && (isset($collections[Collections::TYPE_PRODUCT_LAYOUT2]))) {
                 $tpl = new FatTemplate('', '');
                 $tpl->set('siteLangId', $this->siteLangId);
                 $tpl->set('collections', $collections[Collections::TYPE_PRODUCT_LAYOUT2]);
                 $homePageProdLayout2 = $tpl->render(false, false, '_partial/collection/product-layout-2.php', true, true);
-                FatCache::set('homePageProdLayout2'.$cacheKey, $homePageProdLayout2, '.txt');
+                FatCache::set('homePageProdLayout2' . $cacheKey, $homePageProdLayout2, '.txt');
             }
             $this->set('homePageProdLayout2', $homePageProdLayout2);
             /* ] */
 
             /* Shop Layout1[ */
-            $homePageShopLayout1 =  FatCache::get('homePageShopLayout1'.$cacheKey, CONF_HOME_PAGE_CACHE_TIME, '.txt');
+            $homePageShopLayout1 = FatCache::get('homePageShopLayout1' . $cacheKey, CONF_HOME_PAGE_CACHE_TIME, '.txt');
             if (!$homePageShopLayout1 && (isset($collections[Collections::TYPE_SHOP_LAYOUT1]))) {
                 $tpl = new FatTemplate('', '');
                 $tpl->set('siteLangId', $this->siteLangId);
                 $tpl->set('collections', $collections[Collections::TYPE_SHOP_LAYOUT1]);
                 $homePageShopLayout1 = $tpl->render(false, false, '_partial/collection/shop-layout-1.php', true, true);
-                FatCache::set('homePageShopLayout1'.$cacheKey, $homePageShopLayout1, '.txt');
+                FatCache::set('homePageShopLayout1' . $cacheKey, $homePageShopLayout1, '.txt');
             }
             $this->set('homePageShopLayout1', $homePageShopLayout1);
             /* ] */
 
             /*[ As all layout in sequence so added in one cache]*/
-            $homePageFooterLayout =  FatCache::get('homePageFooterLayout'.$cacheKey, CONF_HOME_PAGE_CACHE_TIME, '.txt');
+            $homePageFooterLayout = FatCache::get('homePageFooterLayout' . $cacheKey, CONF_HOME_PAGE_CACHE_TIME, '.txt');
             if (!$homePageFooterLayout) {
                 $homePageCatLayout2 = '';
                 if (isset($collections[Collections::TYPE_CATEGORY_LAYOUT2])) {
@@ -125,8 +126,16 @@ class HomeController extends MyAppController
                     $homePageBrandLayout1 = $tpl->render(false, false, '_partial/collection/brand-layout-1.php', true, true);
                 }
 
-                $homePageFooterLayout = $homePageCatLayout2.$homePageProdLayout3.$homePageBrandLayout1;
-                FatCache::set('homePageFooterLayout'.$cacheKey, $homePageFooterLayout, '.txt');
+                $homePageBlogLayout1 = '';
+                if (isset($collections[Collections::TYPE_BLOG_LAYOUT1])) {
+                    $tpl = new FatTemplate('', '');
+                    $tpl->set('siteLangId', $this->siteLangId);
+                    $tpl->set('collections', $collections[Collections::TYPE_BLOG_LAYOUT1]);
+                    $homePageBlogLayout1 = $tpl->render(false, false, '_partial/collection/blog-layout-1.php', true, true);
+                }
+
+                $homePageFooterLayout = $homePageCatLayout2 . $homePageProdLayout3 . $homePageBrandLayout1 . $homePageBlogLayout1;
+                FatCache::set('homePageFooterLayout' . $cacheKey, $homePageFooterLayout, '.txt');
             }
             $this->set('homePageFooterLayout', $homePageFooterLayout);
         }
@@ -149,7 +158,7 @@ class HomeController extends MyAppController
 
         if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::NO) {
             $productSrchObj->joinFavouriteProducts($loggedUserId);
-            $productSrchObj->addFld('ufp_id');
+            $productSrchObj->addFld('IFNULL(ufp_id, 0) as ufp_id');
         } else {
             $productSrchObj->joinUserWishListProducts($loggedUserId);
             $productSrchObj->addFld('IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist');
@@ -181,11 +190,11 @@ class HomeController extends MyAppController
             die('Invalid Action.');
         }
 
-        $langId =  FatUtility::int($langId);
+        $langId = FatUtility::int($langId);
         if (0 < $langId) {
             $languages = Language::getAllNames();
             if (array_key_exists($langId, $languages)) {
-                setcookie('defaultSiteLang', $langId, time()+3600*24*10, CONF_WEBROOT_URL);
+                setcookie('defaultSiteLang', $langId, time() + 3600 * 24 * 10, CONF_WEBROOT_URL);
             }
         }
     }
@@ -195,7 +204,7 @@ class HomeController extends MyAppController
         $cObj = Currency::getSearchObject($this->siteLangId, true);
         $cObj->addMultipleFields(
             array(
-            'currency_id','currency_code','IFNULL(curr_l.currency_name,curr.currency_code) as currency_name'
+            'currency_id', 'currency_code', 'IFNULL(curr_l.currency_name,curr.currency_code) as currency_name'
             )
         );
         $rs = $cObj->getResultSet();
@@ -210,12 +219,12 @@ class HomeController extends MyAppController
             die('Invalid Action.');
         }
 
-        $currencyId =  FatUtility::int($currencyId);
+        $currencyId = FatUtility::int($currencyId);
         $currencyObj = new Currency();
         if (0 < $currencyId) {
             $currencies = Currency::getCurrencyAssoc($this->siteLangId);
             if (array_key_exists($currencyId, $currencies)) {
-                setcookie('defaultSiteCurrency', $currencyId, time()+3600*24*10, CONF_WEBROOT_URL);
+                setcookie('defaultSiteCurrency', $currencyId, time() + 3600 * 24 * 10, CONF_WEBROOT_URL);
             }
         }
     }
@@ -265,10 +274,10 @@ class HomeController extends MyAppController
     public function updateSettingByCurrentLocation($countryCode = '')
     {
         if (!$countryCode) {
-            return ;
+            return;
         }
 
-        $row = Countries::getCountryByCode($countryCode, array('country_code','country_id','country_currency_id','country_language_id'));
+        $row = Countries::getCountryByCode($countryCode, array('country_code', 'country_id', 'country_currency_id', 'country_language_id'));
         if ($row == false) {
             return false;
         }
@@ -292,7 +301,7 @@ class HomeController extends MyAppController
 
             $cookieValue = array('data' => $row['user_referral_code'], 'creation_time' => time());
             $cookieValue = serialize($cookieValue);
-            CommonHelper::setCookie('affiliate_referrer_code_signup', $cookieValue, time()+3600*24*$cookieExpiryDays);
+            CommonHelper::setCookie('affiliate_referrer_code_signup', $cookieValue, time() + 3600 * 24 * $cookieExpiryDays);
         }
         FatApp::redirectUser(CommonHelper::generateUrl());
     }
@@ -324,7 +333,7 @@ class HomeController extends MyAppController
         $langId = $this->siteLangId;
 
         $apiCall = (true === MOBILE_APP_API_CALL) ? 1 : 0;
-        $collectionCache =  FatCache::get('collectionCache_' . $langId . '_' . $apiCall, CONF_HOME_PAGE_CACHE_TIME, '.txt');
+        $collectionCache = FatCache::get('collectionCache_' . $langId . '_' . $apiCall, CONF_HOME_PAGE_CACHE_TIME, '.txt');
 
         if ($collectionCache) {
             return  unserialize($collectionCache);
@@ -336,7 +345,11 @@ class HomeController extends MyAppController
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addOrder('collection_display_order', 'ASC');
-        $srch->addMultipleFields(array('collection_id', 'IFNULL(collection_name,collection_identifier) as collection_name','IFNULL( collection_description, "" ) as collection_description','IFNULL(collection_link_caption, "") as collection_link_caption','collection_link_url', 'collection_layout_type','collection_type','collection_criteria','collection_child_records','collection_primary_records', 'collection_display_media_only'));
+        $srch->addMultipleFields(array('collection_id', 'IFNULL(collection_name,collection_identifier) as collection_name', 'IFNULL( collection_description, "" ) as collection_description', 'IFNULL(collection_link_caption, "") as collection_link_caption', 'collection_link_url', 'collection_layout_type', 'collection_type', 'collection_criteria', 'collection_child_records', 'collection_primary_records', 'collection_display_media_only', 'collection_for_app', 'collection_for_web'));
+
+        $applicableForCol = (true === MOBILE_APP_API_CALL) ? 'collection_for_app' : 'collection_for_web';
+        $srch->addCondition($applicableForCol, '=', applicationConstants::YES);
+
         $rs = $srch->getResultSet();
         $collectionsArr = $db->fetchAll($rs, 'collection_id');
         if (empty($collectionsArr)) {
@@ -346,7 +359,7 @@ class HomeController extends MyAppController
 
         $productCatSrchObj = ProductCategory::getSearchObject(false, $langId);
         $productCatSrchObj->doNotCalculateRecords();
-        $productCatSrchObj->addMultipleFields(array('prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','prodcat_description'));
+        $productCatSrchObj->addMultipleFields(array('prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'prodcat_description'));
 
         $collectionObj = new CollectionSearch();
         $i = 0;
@@ -355,11 +368,11 @@ class HomeController extends MyAppController
                 continue;
             }
 
-            if (true ===  MOBILE_APP_API_CALL && 0 < $collection['collection_display_media_only'] && !in_array($collection['collection_type'], Collections::COLLECTION_WITHOUT_MEDIA)) {
+            if (true === MOBILE_APP_API_CALL && 0 < $collection['collection_display_media_only'] && !in_array($collection['collection_type'], Collections::COLLECTION_WITHOUT_MEDIA)) {
                 $imgUpdatedOn = Collections::getAttributesById($collection_id, 'collection_img_updated_on');
                 $uploadedTime = AttachedFile::setTimeParam($imgUpdatedOn);
 
-                $collection['collection_image'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'collectionReal', array( $collection_id, $langId,  'ORIGINAL', AttachedFile::FILETYPE_COLLECTION_IMAGE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                $collection['collection_image'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'collectionReal', array( $collection_id, $langId,  'ORIGINAL', AttachedFile::FILETYPE_COLLECTION_IMAGE)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 $collections[] = $collection;
                 $i++;
                 continue;
@@ -386,7 +399,7 @@ class HomeController extends MyAppController
                     }
 
                     $productSrchTempObj = clone $productSrchObj;
-                    if (true ===  MOBILE_APP_API_CALL) {
+                    if (true === MOBILE_APP_API_CALL) {
                         $productSrchTempObj->joinProductRating();
                         $productSrchTempObj->addFld('IFNULL(prod_rating, 0) as prod_rating');
                     }
@@ -399,7 +412,7 @@ class HomeController extends MyAppController
                     $productSrchTempObj->setPageSize($collection['collection_primary_records']);
                     $rs = $productSrchTempObj->getResultSet();
 
-                    if (true ===  MOBILE_APP_API_CALL) {
+                    if (true === MOBILE_APP_API_CALL) {
                         $collections[$i] = $collection;
                         $collections[$i]['products'] = $db->fetchAll($rs);
                         $collections[$i]['totProducts'] = $productSrchTempObj->recordCount();
@@ -414,7 +427,7 @@ class HomeController extends MyAppController
                     break;
 
                 case Collections::COLLECTION_TYPE_CATEGORY:
-                    if (true ===  MOBILE_APP_API_CALL && Collections::TYPE_CATEGORY_LAYOUT2 == $collection['collection_layout_type']) {
+                    if (true === MOBILE_APP_API_CALL && Collections::TYPE_CATEGORY_LAYOUT2 == $collection['collection_layout_type']) {
                         continue 2;
                     }
                     $tempObj = clone $collectionObj;
@@ -444,7 +457,7 @@ class HomeController extends MyAppController
                     $productCatSrchTempObj->addCondition('prodcat_deleted', '=', applicationConstants::NO);
                     $rs = $productCatSrchTempObj->getResultSet();
                     /* ] */
-                    if (true ===  MOBILE_APP_API_CALL) {
+                    if (true === MOBILE_APP_API_CALL) {
                         $collections[$i] = $collection;
                     } else {
                         $collections[$collection['collection_layout_type']][$collection['collection_id']] = $collection;
@@ -458,7 +471,7 @@ class HomeController extends MyAppController
                             $subCategorySrch->addCondition('prodcat_deleted', '=', applicationConstants::NO);
                             $Catrs = $subCategorySrch->getResultSet();
 
-                            if (true ===  MOBILE_APP_API_CALL) {
+                            if (true === MOBILE_APP_API_CALL) {
                                 $collections[$i]['categories'][$counter] = $catData;
                             // $collections[$i]['categories'][$counter]['subCategories'] = $db->fetchAll($Catrs);
                             } else {
@@ -480,7 +493,7 @@ class HomeController extends MyAppController
                             if ($productShopSrchTempObj->recordCount() == 0) {
                                 continue;
                             }
-                            if (true ===  MOBILE_APP_API_CALL) {
+                            if (true === MOBILE_APP_API_CALL) {
                                 $collections[$i]['categories'][$counter] = $catData;
                             // $collections[$i]['categories'][$counter]['products'] = $db->fetchAll($Prs);
                             } else {
@@ -491,7 +504,7 @@ class HomeController extends MyAppController
                             $counter++;
                         }
                     }
-                    if (true ===  MOBILE_APP_API_CALL) {
+                    if (true === MOBILE_APP_API_CALL) {
                         $collections[$i]['totCategories'] = $tempObj->recordCount();
                     } else {
                         $collections[$collection['collection_layout_type']][$collection['collection_id']]['totCategories'] = $tempObj->recordCount();
@@ -515,13 +528,13 @@ class HomeController extends MyAppController
                     $shopObj->setDefinedCriteria($langId);
                     $shopObj->joinSellerSubscription();
                     $shopObj->addCondition('shop_id', 'IN', array_keys($shopIds));
-                    if (false ===  MOBILE_APP_API_CALL) {
+                    if (false === MOBILE_APP_API_CALL) {
                         $shopObj->setPageSize($collection['collection_primary_records']);
                     }
-                    $shopObj->addMultipleFields(array( 'shop_id','shop_user_id','IFNULL(shop_name, shop_identifier) as shop_name','IFNULL(country_name, country_code) as country_name','IFNULL(state_name, state_identifier) as state_name'));
+                    $shopObj->addMultipleFields(array( 'shop_id', 'shop_user_id', 'IFNULL(shop_name, shop_identifier) as shop_name', 'IFNULL(country_name, country_code) as country_name', 'IFNULL(state_name, state_identifier) as state_name'));
                     $rs = $shopObj->getResultSet();
 
-                    if (true ===  MOBILE_APP_API_CALL) {
+                    if (true === MOBILE_APP_API_CALL) {
                         $collections[$i] = $collection;
                         $collections[$i]['totShops'] = $shopObj->recordCount();
                     } else {
@@ -544,14 +557,14 @@ class HomeController extends MyAppController
                             $rating = SelProdRating::getSellerRating($shopsData['shop_user_id']);
                         }
 
-                        if (true ===  MOBILE_APP_API_CALL) {
+                        if (true === MOBILE_APP_API_CALL) {
                             $collections[$i]['shops'][$counter] = $shopsData;
 
-                            $collections[$i]['shops'][$counter]['rating'] =  $rating;
+                            $collections[$i]['shops'][$counter]['rating'] = $rating;
                         } else {
                             $collections[$collection['collection_layout_type']][$collection['collection_id']]['shops'][$shopsData['shop_id']]['shopData'] = $shopsData;
 
-                            $collections[$collection['collection_layout_type']][$collection['collection_id']]['rating'][$shopsData['shop_id']] =  $rating;
+                            $collections[$collection['collection_layout_type']][$collection['collection_id']]['rating'][$shopsData['shop_id']] = $rating;
                         }
 
 
@@ -577,14 +590,14 @@ class HomeController extends MyAppController
                     /* fetch Brand data[ */
                     $brandSearchObj = Brand::getSearchObject($langId, true, true);
                     $brandSearchTempObj = clone $brandSearchObj;
-                    $brandSearchTempObj->addMultipleFields(array('brand_id','IFNULL(brand_name, brand_identifier) as brand_name'));
+                    $brandSearchTempObj->addMultipleFields(array('brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name'));
                     $brandSearchTempObj->addCondition('brand_id', 'IN', array_keys($brandIds));
-                    if (false ===  MOBILE_APP_API_CALL) {
+                    if (false === MOBILE_APP_API_CALL) {
                         $brandSearchTempObj->setPageSize($collection['collection_primary_records']);
                     }
                     $rs = $brandSearchTempObj->getResultSet();
                     /* ] */
-                    if (true ===  MOBILE_APP_API_CALL) {
+                    if (true === MOBILE_APP_API_CALL) {
                         $collections[$i] = $collection;
                         $collections[$i]['totBrands'] = $brandSearchTempObj->recordCount();
                         $collections[$i]['brands'] = $db->fetchAll($rs);
@@ -595,6 +608,56 @@ class HomeController extends MyAppController
                     }
 
                     unset($brandSearchTempObj);
+                    unset($tempObj);
+                    break;
+                case Collections::COLLECTION_TYPE_BLOG:
+                    $tempObj = clone $collectionObj;
+                    $tempObj->addCondition('collection_id', '=', $collection_id);
+                    $tempObj->joinCollectionBlogs();
+                    $tempObj->addMultipleFields(array('ctb_post_id'));
+                    $tempObj->addCondition('ctb_post_id', '!=', 'NULL');
+                    $rs = $tempObj->getResultSet();
+                    $blogPostIds = $db->fetchAll($rs, 'ctb_post_id');
+                    if (empty($blogPostIds)) {
+                        continue 2;
+                    }
+
+                    /* fetch Blog data[ */
+                    $attr = [
+                        'post_id',
+                        'post_author_name',
+                        'IFNULL(post_title, post_identifier) as post_title',
+                        'post_updated_on',
+                        'post_updated_on',
+                        'group_concat(IFNULL(bpcategory_name, bpcategory_identifier) SEPARATOR "~") categoryNames',
+                        'post_short_description',
+                        'post_description'
+                    ];
+                    $blogSearchObj = BlogPost::getSearchObject($langId, true, true);
+                    $blogSearchTempObj = clone $blogSearchObj;
+                    $blogSearchTempObj->addMultipleFields($attr);
+                    $blogSearchTempObj->addCondition('post_id', 'IN', array_keys($blogPostIds));
+                    if (false === MOBILE_APP_API_CALL) {
+                        $blogSearchTempObj->setPageSize($collection['collection_primary_records']);
+                    }
+                    $blogSearchTempObj->addGroupBy('post_id');
+                    $rs = $blogSearchTempObj->getResultSet();
+                    $blogPostsDetail = $db->fetchAll($rs);
+                    /* ] */
+                    if (true === MOBILE_APP_API_CALL) {
+                        array_walk($blogPostsDetail, function (&$value, &$key) {
+                            $value['post_image'] = CommonHelper::generateFullUrl('Image', 'blogPostFront', array($value['post_id'], $this->siteLangId, ''));
+                        });
+                        $collections[$i] = $collection;
+                        $collections[$i]['totBlogs'] = $blogSearchTempObj->recordCount();
+                        $collections[$i]['blogs'] = $blogPostsDetail;
+                    } else {
+                        $collections[$collection['collection_layout_type']][$collection['collection_id']] = $collection;
+                        $collections[$collection['collection_layout_type']][$collection['collection_id']]['totBlogs'] = $blogSearchTempObj->recordCount();
+                        $collections[$collection['collection_layout_type']][$collection['collection_id']]['blogs'] = $blogPostsDetail;
+                    }
+
+                    unset($blogSearchTempObj);
                     unset($tempObj);
                     break;
             }
@@ -619,7 +682,7 @@ class HomeController extends MyAppController
         $srchSlide->addSkipExpiredPromotionAndSlideCondition();
         $srchSlide->joinBudget();
         $srchSlide->joinAttachedFile();
-        $srchSlide->addMultipleFields(array('slide_id','slide_record_id', 'slide_type','IFNULL(promotion_name, promotion_identifier) as promotion_name,IFNULL(slide_title, slide_identifier) as slide_title','slide_target','slide_url','promotion_id','daily_cost','weekly_cost','monthly_cost','total_cost','slide_img_updated_on'));
+        $srchSlide->addMultipleFields(array('slide_id', 'slide_record_id', 'slide_type', 'IFNULL(promotion_name, promotion_identifier) as promotion_name,IFNULL(slide_title, slide_identifier) as slide_title', 'slide_target', 'slide_url', 'promotion_id', 'daily_cost', 'weekly_cost', 'monthly_cost', 'total_cost', 'slide_img_updated_on'));
 
         $totalSlidesPageSize = FatApp::getConfig('CONF_TOTAL_SLIDES_HOME_PAGE', FatUtility::VAR_INT, 4);
         $ppcSlidesPageSize = FatApp::getConfig('CONF_PPC_SLIDES_HOME_PAGE', FatUtility::VAR_INT, 4);
@@ -628,11 +691,11 @@ class HomeController extends MyAppController
         $adminSlides = array();
 
         $slidesSrch = new SearchBase('(' . $srchSlide->getQuery() . ') as t');
-        $slidesSrch->addMultipleFields(array('slide_id','slide_type','slide_record_id','slide_url','slide_target','slide_title','promotion_id','userBalance','daily_cost','weekly_cost','monthly_cost','total_cost','promotion_budget' ,'promotion_duration','slide_img_updated_on'));
+        $slidesSrch->addMultipleFields(array('slide_id', 'slide_type', 'slide_record_id', 'slide_url', 'slide_target', 'slide_title', 'promotion_id', 'userBalance', 'daily_cost', 'weekly_cost', 'monthly_cost', 'total_cost', 'promotion_budget', 'promotion_duration', 'slide_img_updated_on'));
         $slidesSrch->addOrder('', 'rand()');
 
         if (0 < $ppcSlidesPageSize) {
-            $ppcSrch  = clone $slidesSrch;
+            $ppcSrch = clone $slidesSrch;
             $ppcSrch->addDirectCondition(
                 '((CASE
 					WHEN promotion_duration=' . Promotion::DAILY . ' THEN promotion_budget > COALESCE(daily_cost,0)
@@ -651,7 +714,7 @@ class HomeController extends MyAppController
         $ppcSlidesCount = count($ppcSlides);
         if ($totalSlidesPageSize > $ppcSlidesCount) {
             $totalSlidesPageSize = $totalSlidesPageSize - $ppcSlidesCount;
-            $adminSlideSrch  = clone $slidesSrch;
+            $adminSlideSrch = clone $slidesSrch;
             $adminSlideSrch->addCondition('slide_type', '=', Slides::TYPE_SLIDE);
             $adminSlideSrch->setPageSize($totalSlidesPageSize);
             $slideRs = $adminSlideSrch->getResultSet();
@@ -665,14 +728,14 @@ class HomeController extends MyAppController
     private function getBanners()
     {
         $langId = $this->siteLangId;
-        $top_banners =  BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_TOP_BANNER, $langId);
+        $top_banners = BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_TOP_BANNER, $langId);
         $middle_banners = array();
         $pageSize = 0;
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $pageSize = BannerLocation::MOBILE_API_BANNER_PAGESIZE;
-            $middle_banners =  BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_MIDDLE_BANNER, $langId, $pageSize);
+            $middle_banners = BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_MIDDLE_BANNER, $langId, $pageSize);
         }
-        $bottom_banners =  BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_BOTTOM_BANNER, $langId, $pageSize);
+        $bottom_banners = BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_BOTTOM_BANNER, $langId, $pageSize);
         $banners = array_merge($top_banners, $middle_banners, $bottom_banners);
         return $banners;
     }
@@ -688,7 +751,7 @@ class HomeController extends MyAppController
         $sponsoredShops = array();
         $db = FatApp::getDb();
 
-        $shopObj  = new PromotionSearch($langId);
+        $shopObj = new PromotionSearch($langId);
         $shopObj->setDefinedCriteria();
         $shopObj->joinActiveUser();
         $shopObj->joinShops($langId, true, true);
@@ -708,7 +771,7 @@ class HomeController extends MyAppController
             /* fetch Shop data[ */
             $productShopSrchTempObj = clone $productSrchObj;
 
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 $productShopSrchTempObj->joinProductRating();
                 $productShopSrchTempObj->addFld('IFNULL(prod_rating, 0) as prod_rating');
             }
@@ -724,7 +787,7 @@ class HomeController extends MyAppController
                 $rating = SelProdRating::getSellerRating($shops['shop_user_id']);
             }
 
-            if (true ===  MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL) {
                 $sponsoredShops[$i]['shopData'] = $shops;
                 $sponsoredShops[$i]['shopData']['promotion_id'] = $shops['promotion_id'];
                 $sponsoredShops[$i]['shopData']['rating'] = $rating;
@@ -735,7 +798,7 @@ class HomeController extends MyAppController
                 $sponsoredShops['shops'][$shops['shop_id']]['shopData'] = $shops;
                 $sponsoredShops['shops'][$shops['shop_id']]['shopData']['promotion_id'] = $shops['promotion_id'];
 
-                $sponsoredShops['rating'][$shops['shop_id']] =  $rating;
+                $sponsoredShops['rating'][$shops['shop_id']] = $rating;
                 $sponsoredShops['shops'][$shops['shop_id']]['products'] = $db->fetchAll($Prs);
             }
             /* ] */
@@ -747,7 +810,7 @@ class HomeController extends MyAppController
     private function getSponsoredProductsObj($productSrchObj)
     {
         $langId = $this->siteLangId;
-        $prodObj  = new PromotionSearch($langId);
+        $prodObj = new PromotionSearch($langId);
         $prodObj->joinProducts();
         $prodObj->joinShops();
         $prodObj->addPromotionTypeCondition(Promotion::TYPE_PRODUCT);
@@ -758,11 +821,11 @@ class HomeController extends MyAppController
         $prodObj->joinBudget();
         $prodObj->addBudgetCondition();
         $prodObj->doNotCalculateRecords();
-        $prodObj->addMultipleFields(array('selprod_id as proSelProdId','promotion_id','promotion_record_id'));
+        $prodObj->addMultipleFields(array('selprod_id as proSelProdId', 'promotion_id', 'promotion_record_id'));
 
         $productSrchSponObj = clone $productSrchObj;
-        $productSrchSponObj->joinTable('(' . $prodObj->getQuery().') ', 'INNER JOIN', 'selprod_id = ppr.proSelProdId ', 'ppr');
-        $productSrchSponObj->addFld(array('promotion_id','promotion_record_id'));
+        $productSrchSponObj->joinTable('(' . $prodObj->getQuery() . ') ', 'INNER JOIN', 'selprod_id = ppr.proSelProdId ', 'ppr');
+        $productSrchSponObj->addFld(array('promotion_id', 'promotion_record_id'));
         $productSrchSponObj->addOrder('theprice', 'ASC');
         $productSrchSponObj->joinSellers();
         $productSrchSponObj->joinSellerSubscription($langId);
@@ -774,7 +837,7 @@ class HomeController extends MyAppController
     // For Home Page
     private function getSponsoredProducts($productSrchObj)
     {
-        $productPageSize = (true ===  MOBILE_APP_API_CALL) ? 4 : FatApp::getConfig('CONF_PPC_PRODUCTS_HOME_PAGE', FatUtility::VAR_INT, 6);
+        $productPageSize = (true === MOBILE_APP_API_CALL) ? 4 : FatApp::getConfig('CONF_PPC_PRODUCTS_HOME_PAGE', FatUtility::VAR_INT, 6);
 
         if (1 > $productPageSize) {
             return array();
@@ -782,7 +845,7 @@ class HomeController extends MyAppController
 
         $db = FatApp::getDb();
         $productSrchSponObj = $this->getSponsoredProductsObj($productSrchObj);
-        if (true ===  MOBILE_APP_API_CALL) {
+        if (true === MOBILE_APP_API_CALL) {
             $productSrchSponObj->joinProductRating();
             $productSrchSponObj->addFld('IFNULL(prod_rating, 0) as prod_rating');
         }
@@ -850,7 +913,7 @@ class HomeController extends MyAppController
                     $message = Labels::getLabel('MSG_Slide_id_is_mandatory.', $this->siteLangId);
                     FatUtility::dieJsonError($message);
                 }
-                $image_url = CommonHelper::generateFullUrl('Image', 'slide', array($slide_id,0,$this->siteLangId));
+                $image_url = CommonHelper::generateFullUrl('Image', 'slide', array($slide_id, 0, $this->siteLangId));
                 break;
             case 'BANNER':
                 $banner_id = FatApp::getPostedData('banner_id', null, 0);
@@ -898,7 +961,8 @@ class HomeController extends MyAppController
         $langCode = Language::getAttributesById($this->siteLangId, 'language_code', false);
 
         $data['languageLabels'] = [
-           'languageCode' => $langCode,
+           'language_code' => $langCode,
+           'language_layout_direction' => Language::getLayoutDirection($this->siteLangId),
            'downloadUrl' => CommonHelper::generateFullUrl('Home', 'languageLabels', array(1, $this->siteLangId)),
            'langLabelUpdatedAt' => FatApp::getConfig('CONF_LANG_LABELS_UPDATED_AT', FatUtility::VAR_INT, time())
         ];
@@ -909,6 +973,8 @@ class HomeController extends MyAppController
            'secondaryThemeColor' => FatApp::getConfig('CONF_SECONDARY_APP_THEME_COLOR', FatUtility::VAR_STRING, ''),
            'secondaryInverseThemeColor' => FatApp::getConfig('CONF_SECONDARY_INVERSE_APP_THEME_COLOR', FatUtility::VAR_STRING, ''),
         ];
+
+        $data['isWishlistEnable'] = FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1);
 
         $this->set('data', $data);
         $this->_template->render();
@@ -929,7 +995,7 @@ class HomeController extends MyAppController
     {
         $manifestFile = CONF_UPLOADS_PATH . '/manifest-' . $this->siteLangId . '.json';
         if (!file_exists($manifestFile)) {
-            $iconsArr = [36,48,57,60,70,72,76,96,114,120,144,192,152,180,150,310,512 ];
+            $iconsArr = [36, 48, 57, 60, 70, 72, 76, 96, 114, 120, 144, 192, 152, 180, 150, 310, 512 ];
             $websiteName = FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->siteLangId, FatUtility::VAR_STRING, '');
 
             $srch = new MetaTagSearch($this->siteLangId);
@@ -943,11 +1009,11 @@ class HomeController extends MyAppController
             $srch->doNotCalculateRecords();
             $srch->setPageSize(1);
             $srch->addMultipleFields(array(
-                'IFNULL(meta_title, meta_identifier) as meta_title',
+                'meta_title',
                 'meta_keywords', 'meta_description', 'meta_other_meta_tags' ));
             
             $rs = $srch->getResultSet();
-            $metas = FatApp::getDb()->fetch($rs) ;
+            $metas = FatApp::getDb()->fetch($rs);
             $arr = array(
                 "name" => $websiteName,
                 "short_name" => $websiteName,
@@ -963,8 +1029,8 @@ class HomeController extends MyAppController
                 $icons = [
                     'src' => $iconUrl,
                     'sizes' => $val . 'x' . $val,
-                    'type' =>   'image/png'
-                ]       ;
+                    'type' => 'image/png'
+                ];
                 $arr['icons'][] = $icons;
             }
             file_put_contents($manifestFile, FatUtility::convertToJson($arr, JSON_UNESCAPED_UNICODE));

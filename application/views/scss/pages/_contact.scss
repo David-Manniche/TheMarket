@@ -1,7 +1,7 @@
 
 .bg-contact {
     position: relative;
-    background: $secondary-color;
+    background: $secondary-color; color:$secondary-color-inverse;
 
 
 }
@@ -70,7 +70,7 @@
 }
 
 .contact-address {
-    background: $secondary-color;
+    background: $secondary-color; color:$secondary-color-inverse;
     position: relative;
 }
 
@@ -88,11 +88,11 @@
 }
 
 .contact-phones {
-    background: $secondary-color;
+    background: $secondary-color; color:$secondary-color-inverse;
 }
 
 .contact-email {
-    background: $secondary-color;
+    background: $secondary-color; color:$secondary-color-inverse;
 }
 
 .g-map {

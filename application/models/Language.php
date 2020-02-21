@@ -1,4 +1,5 @@
 <?php
+
 class Language extends MyAppModel
 {
     public const DB_TBL = 'tbl_languages';
@@ -66,7 +67,7 @@ class Language extends MyAppModel
         $srch->addMultipleFields(array(static::tblFld('id'), static::tblFld('code')));
         $row = FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
         if ($withDefaultValue) {
-            return array(0=>'Universal')+$row;
+            return array(0 => 'Universal') + $row;
         }
         return $row;
     }

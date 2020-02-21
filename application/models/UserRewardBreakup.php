@@ -1,8 +1,9 @@
 <?php
+
 class UserRewardBreakup extends MyAppModel
 {
-    const DB_TBL = 'tbl_user_reward_point_breakup';
-    const DB_TBL_PREFIX = 'urpbreakup_';
+    public const DB_TBL = 'tbl_user_reward_point_breakup';
+    public const DB_TBL_PREFIX = 'urpbreakup_';
 
     public function __construct($id = 0)
     {
@@ -12,7 +13,7 @@ class UserRewardBreakup extends MyAppModel
 
     public static function getSearchObject()
     {
-        $srch =  new SearchBase(static::DB_TBL, 'urpb');
+        $srch = new SearchBase(static::DB_TBL, 'urpb');
         return $srch;
     }
 
@@ -50,7 +51,7 @@ class UserRewardBreakup extends MyAppModel
         $cnd = $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PENDING);
         $cnd->attachCondition('pmethod_code', '=', 'CashOnDelivery');
         $srch->addCondition('op.op_status_id', '=', FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS"));
-        $date = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s'). ' - 2 hours'));
+        $date = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') . ' - 2 hours'));
         //$srch->addDirectCondition('DATE(o.order_date_added) = DATE(NOW())');
         $srch->addCondition('o.order_date_added', '>=', $date);
         $srch->addMultipleFields(array('sum(order_reward_point_used) as usedRewards'));

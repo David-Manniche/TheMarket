@@ -338,6 +338,9 @@
 			    setTimeout(function(){ $('.suggestions').hide(); }, 500);
 		});
 		$('input[name="product_shipping[' + shipping_row + '][country_name]"]').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
 			'source': function(request, response) {
 				$.ajax({
 					url: fcom.makeUrl('seller', 'countries_autocomplete'),
@@ -356,10 +359,12 @@
 				$('input[name="product_shipping[' + shipping_row + '][country_id]"]').val(ui.item.id);
             }
 		});
-
-
+        
 		$('input[name="product_shipping[' + shipping_row + '][company_name]"]').autocomplete({
-				'source': function(request, response) {
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
+            'source': function(request, response) {
 				$.ajax({
 					url: fcom.makeUrl('seller', 'shippingCompanyAutocomplete'),
 					data: {keyword: request['term'],fIsAjax:1},
@@ -377,10 +382,12 @@
                 $('input[name="product_shipping[' + shipping_row + '][company_id]"]').val(ui.item.id);
             }
 		});
-
+        
 		$('input[name="product_shipping[' + shipping_row + '][processing_time]"]').autocomplete({
-				'source': function(request, response) {
-
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
+            'source': function(request, response) {
 				$.ajax({
 					url: fcom.makeUrl('seller', 'shippingMethodDurationAutocomplete'),
 					data: {keyword: request['term'],fIsAjax:1},
@@ -412,22 +419,24 @@
 
 	}
 
-	updateProductOption = function (product_id, option_id){
+	updateProductOption = function (product_id, option_id, e){
 		fcom.ajax(fcom.makeUrl('Seller', 'updateProductOption'), 'product_id='+product_id+'&option_id='+option_id, function(t) {
-			//$.mbsmessage.close();
-			//reloadProductOptions(product_id);
             var ans = $.parseJSON(t);
             if( ans.status == 1 ){
                 upcListing(product_id); 
-                $.mbsmessage(ans.msg, true, 'alert--success');
-            }
+                $.systemMessage(ans.msg, 'alert--success');
+            }else{
+                var tagifyId = e.detail.tag.__tagifyId;
+                $('[__tagifyid='+tagifyId+']').remove();
+                $.systemMessage(ans.msg,'alert--danger');
+            }      
 		});
 	}
 
 	removeProductOption = function( product_id,option_id){
 		fcom.ajax(fcom.makeUrl('Seller', 'checkOptionLinkedToInventory'), 'product_id='+product_id+'&option_id='+option_id, function(t) {
 			ans = jQuery.parseJSON(t);
-			if( ans.status != true ){
+			if( ans.status != true ){       
 				var agree = alert(ans.msg);
                 return false;
 			}
@@ -764,7 +773,7 @@
             $(".erlist_specification_"+langId).show();
             return false;
         }        
-        $(".erlist_specification_"+langId).show();
+        $(".erlist_specification_"+langId).hide();
         var data = 'product_id='+productId+'&langId='+langId+'&prodSpecId='+prodSpecId+'&prodspec_name='+prodspec_name+'&prodspec_value='+prodspec_value+'&prodspec_group='+prodspec_group;
         fcom.updateWithAjax(fcom.makeUrl('Seller', 'setUpProductSpecifications'), data, function(t) {
             prodSpecificationsByLangId(langId);
@@ -978,6 +987,10 @@
             }
         });
 	}
+    
+    goToCatalog = function(){
+        window.location.href = fcom.makeUrl('seller', 'catalog');
+    }
 
 })();
 

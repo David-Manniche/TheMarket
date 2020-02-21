@@ -1,4 +1,5 @@
 <?php
+
 class TestimonialsController extends MyAppController
 {
     public function __construct($action)
@@ -18,7 +19,7 @@ class TestimonialsController extends MyAppController
         $pageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
 
         $srch = Testimonial::getSearchObject($this->siteLangId, true);
-        $srch->addMultipleFields(array('t.*' , 't_l.testimonial_title' , 't_l.testimonial_text'));
+        $srch->addMultipleFields(array('t.*', 't_l.testimonial_title', 't_l.testimonial_text'));
         $srch->addCondition('testimoniallang_testimonial_id', 'is not', 'mysql_func_null', 'and', true);
         $srch->addOrder('testimonial_added_on', 'desc');
         $srch->setPageSize($pageSize);

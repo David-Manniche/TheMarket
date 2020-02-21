@@ -1,8 +1,9 @@
 <?php
+
 class PollFeedback extends MyAppModel
 {
-    const DB_TBL = 'tbl_polling_feedback';
-    const DB_TBL_PREFIX = 'pollfeedback_';
+    public const DB_TBL = 'tbl_polling_feedback';
+    public const DB_TBL_PREFIX = 'pollfeedback_';
 
     private $db;
 

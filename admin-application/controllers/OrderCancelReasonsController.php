@@ -1,4 +1,5 @@
 <?php
+
 class OrderCancelReasonsController extends AdminBaseController
 {
     private $canView;
@@ -6,7 +7,7 @@ class OrderCancelReasonsController extends AdminBaseController
 
     public function __construct($action)
     {
-        $ajaxCallArray = array('deleteRecord','form','langForm','search','setup','langSetup');
+        $ajaxCallArray = array('deleteRecord', 'form', 'langForm', 'search', 'setup', 'langSetup');
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }
@@ -30,7 +31,7 @@ class OrderCancelReasonsController extends AdminBaseController
 
         $srch = OrderCancelReason::getSearchObject($this->adminLangId);
 
-        $srch->addMultipleFields(array('ocreason.*' , 'ocreason_l.ocreason_title'));
+        $srch->addMultipleFields(array('ocreason.*', 'ocreason_l.ocreason_title'));
         $srch->addOrder('ocreason_id', 'DESC');
         $rs = $srch->getResultSet();
         $records = array();
@@ -48,12 +49,12 @@ class OrderCancelReasonsController extends AdminBaseController
     {
         $this->objPrivilege->canViewOrderCancelReasons();
 
-        $reasonId =  FatUtility::int($reasonId);
+        $reasonId = FatUtility::int($reasonId);
 
         $frm = $this->getForm($reasonId);
 
         if (0 < $reasonId) {
-            $data = OrderCancelReason::getAttributesById($reasonId, array('ocreason_id','ocreason_identifier'));
+            $data = OrderCancelReason::getAttributesById($reasonId, array('ocreason_id', 'ocreason_identifier'));
 
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
@@ -88,10 +89,10 @@ class OrderCancelReasonsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $newTabLangId=0;
-        if ($reasonId>0) {
+        $newTabLangId = 0;
+        if ($reasonId > 0) {
             $languages = Language::getAllNames();
-            foreach ($languages as $langId =>$langName) {
+            foreach ($languages as $langId => $langName) {
                 if (!$row = OrderCancelReason::getAttributesByLangId($langId, $reasonId)) {
                     $newTabLangId = $langId;
                     break;
@@ -99,7 +100,7 @@ class OrderCancelReasonsController extends AdminBaseController
             }
         } else {
             $reasonId = $record->getMainTableRecordId();
-            $newTabLangId=FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
         $this->set('msg', $this->str_setup_successful);
         $this->set('reasonId', $reasonId);
@@ -161,9 +162,9 @@ class OrderCancelReasonsController extends AdminBaseController
         unset($post['lang_id']);
 
         $data = array(
-        'ocreasonlang_lang_id'=>$lang_id,
-        'ocreasonlang_ocreason_id'=>$reasonId,
-        'ocreason_title'=>$post['ocreason_title'],
+        'ocreasonlang_lang_id' => $lang_id,
+        'ocreasonlang_ocreason_id' => $reasonId,
+        'ocreason_title' => $post['ocreason_title'],
         // 'ocreason_description'=>$post['ocreason_description']
         );
 
@@ -185,7 +186,7 @@ class OrderCancelReasonsController extends AdminBaseController
 
         $newTabLangId = 0;
         $languages = Language::getAllNames();
-        foreach ($languages as $langId =>$langName) {
+        foreach ($languages as $langId => $langName) {
             if (!$row = OrderCancelReason::getAttributesByLangId($langId, $reasonId)) {
                 $newTabLangId = $langId;
                 break;
@@ -201,7 +202,7 @@ class OrderCancelReasonsController extends AdminBaseController
     private function getForm($reasonId = 0)
     {
         $this->objPrivilege->canViewOrderCancelReasons();
-        $reasonId =  FatUtility::int($reasonId);
+        $reasonId = FatUtility::int($reasonId);
 
         $frm = new Form('frmOrderCancelReason');
         $frm->addHiddenField('', 'ocreason_id', $reasonId);

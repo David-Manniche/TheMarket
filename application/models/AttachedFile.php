@@ -1,4 +1,5 @@
 <?php
+
 class AttachedFile extends MyAppModel
 {
     public const DB_TBL = 'tbl_attached_files';
@@ -66,12 +67,13 @@ class AttachedFile extends MyAppModel
     public const FILETYPE_APP_MAIN_SCREEN_IMAGE = 55;
     public const FILETYPE_APP_LOGO = 56;
     public const FILETYPE_PUSH_NOTIFICATION_IMAGE = 57;
+    public const FILETYPE_FIRST_PURCHASE_DISCOUNT_IMAGE = 58;
 
     public const APP_IMAGE_WIDTH = 640;
     public const APP_IMAGE_HEIGHT = 480;
 
-    const RATIO_TYPE_SQUARE = 1;
-    const RATIO_TYPE_RECTANGULAR = 2;
+    public const RATIO_TYPE_SQUARE = 1;
+    public const RATIO_TYPE_RECTANGULAR = 2;
 
     public function __construct($fileId = 0)
     {
@@ -84,7 +86,7 @@ class AttachedFile extends MyAppModel
     public static function returnBytes($val)
     {
         $val = trim($val);
-        $last = strtolower($val[strlen($val)-1]);
+        $last = strtolower($val[strlen($val) - 1]);
         $size = Fatutility::int($val);
         switch ($last) {
             case 'g':
@@ -125,11 +127,11 @@ class AttachedFile extends MyAppModel
     public static function getFileTypeArray($langId)
     {
         return $arr = array(
-        static::FILETYPE_PRODCAT_IMAGE=>Labels::getLabel('LBL_Product_Category_Image', $langId),
-        static::FILETYPE_CATEGORY_ICON=>Labels::getLabel('LBL_Category_Icon', $langId),
-        static::FILETYPE_CATEGORY_IMAGE=>Labels::getLabel('LBL_Category_Image', $langId),
-        static::FILETYPE_CATEGORY_BANNER=>Labels::getLabel('LBL_Category_Banner', $langId),
-        static::FILETYPE_CATEGORY_BANNER_SELLER=>Labels::getLabel('LBL_Category_Banner_Seller', $langId),
+        static::FILETYPE_PRODCAT_IMAGE => Labels::getLabel('LBL_Product_Category_Image', $langId),
+        static::FILETYPE_CATEGORY_ICON => Labels::getLabel('LBL_Category_Icon', $langId),
+        static::FILETYPE_CATEGORY_IMAGE => Labels::getLabel('LBL_Category_Image', $langId),
+        static::FILETYPE_CATEGORY_BANNER => Labels::getLabel('LBL_Category_Banner', $langId),
+        static::FILETYPE_CATEGORY_BANNER_SELLER => Labels::getLabel('LBL_Category_Banner_Seller', $langId),
         );
         return $arr;
     }
@@ -137,8 +139,8 @@ class AttachedFile extends MyAppModel
     public static function getRatioTypeArray($langId)
     {
         return $arr = array(
-        static::RATIO_TYPE_SQUARE=>Labels::getLabel('LBL_1*1', $langId),
-        static::RATIO_TYPE_RECTANGULAR=>Labels::getLabel('LBL_16*5', $langId)
+        static::RATIO_TYPE_SQUARE => Labels::getLabel('LBL_1*1', $langId),
+        static::RATIO_TYPE_RECTANGULAR => Labels::getLabel('LBL_16*5', $langId)
         );
         return $arr;
     }
@@ -192,7 +194,7 @@ class AttachedFile extends MyAppModel
             $srch->addCondition('afile_record_subid', '=', $recordSubid);
         }
 
-        if ($recordId==0) {
+        if ($recordId == 0) {
             $srch->addOrder('afile_id', 'desc');
             $srch->addOrder('afile_display_order');
         } else {
@@ -269,9 +271,9 @@ class AttachedFile extends MyAppModel
         /* creation of folder date wise [ */
         $date_wise_path = date('Y') . '/' . date('m') . '/';
         /* ] */
-        $path  = $path . $date_wise_path;
+        $path = $path . $date_wise_path;
 
-        $saveName = time() . '-' .preg_replace('/[^a-zA-Z0-9]/', '', $name) ;
+        $saveName = time() . '-' . preg_replace('/[^a-zA-Z0-9]/', '', $name);
 
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
@@ -307,9 +309,9 @@ class AttachedFile extends MyAppModel
         /* creation of folder date wise [ */
         $date_wise_path = date('Y') . '/' . date('m') . '/';
         /* ] */
-        $path  = $path . $date_wise_path;
+        $path = $path . $date_wise_path;
 
-        $saveName = time() . '-' .preg_replace('/[^a-zA-Z0-9]/', '', $name) ;
+        $saveName = time() . '-' . preg_replace('/[^a-zA-Z0-9]/', '', $name);
 
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
@@ -333,11 +335,11 @@ class AttachedFile extends MyAppModel
     {
         $this->assignValues(
             array(
-            'afile_type'=>$fileType,
-            'afile_record_id'=>$recordId,
-            'afile_record_subid'=>$recordSubid,
-            'afile_physical_path'=>$fileLoc,
-            'afile_name'=>$name,
+            'afile_type' => $fileType,
+            'afile_record_id' => $recordId,
+            'afile_record_subid' => $recordSubid,
+            'afile_physical_path' => $fileLoc,
+            'afile_name' => $name,
             'afile_lang_id' => $langId,
             'afile_screen' => $screen
             )
@@ -403,7 +405,7 @@ class AttachedFile extends MyAppModel
 
     public function saveImage($fl, $fileType, $recordId, $recordSubid, $name, $displayOrder = 0, $uniqueRecord = false, $lang_id = 0, $mimeType = '', $screen = 0)
     {
-        if (getimagesize($fl) === false && $mimeType !='image/svg+xml') {
+        if (getimagesize($fl) === false && $mimeType != 'image/svg+xml') {
             $this->error = Labels::getLabel('MSG_UNRECOGNISED_IMAGE_FILE', $this->commonLangId);
             return false;
         }
@@ -450,7 +452,7 @@ class AttachedFile extends MyAppModel
         $fileMimeType = mime_content_type($imagePath);
         if (strpos($_SERVER['REQUEST_URI'], '?t=') === false) {
             $filemtime = filemtime($imagePath);
-            $_SERVER['REQUEST_URI'] = rtrim($_SERVER['REQUEST_URI'], '/').'/?t='.$filemtime;
+            $_SERVER['REQUEST_URI'] = rtrim($_SERVER['REQUEST_URI'], '/') . '/?t=' . $filemtime;
         }
 
         static::setHeaders();
@@ -492,9 +494,9 @@ class AttachedFile extends MyAppModel
 
         if ($apply_watermark && !empty($imagePath)) {
             $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_WATERMARK_IMAGE, 0, 0, CommonHelper::getLangId());
-            $wtrmrk_file = isset($file_row['afile_physical_path']) ?  $file_row['afile_physical_path'] : '';
+            $wtrmrk_file = isset($file_row['afile_physical_path']) ? $file_row['afile_physical_path'] : '';
             if (!empty($wtrmrk_file)) {
-                $wtrmrk_file = $uploadedFilePath.$wtrmrk_file;
+                $wtrmrk_file = $uploadedFilePath . $wtrmrk_file;
                 $ext_watermark = substr($wtrmrk_file, -3);
                 $imageInfo = getimagesize($wtrmrk_file);
                 $OriginalImageInfo = getimagesize($imagePath);
@@ -502,7 +504,7 @@ class AttachedFile extends MyAppModel
                 $img_h = $h;
                 $wtrmrk_w = $imageInfo[0];
                 $wtrmrk_h = $imageInfo[1];
-                $img->setWaterMark($wtrmrk_file, $img_w-$wtrmrk_w-20, $img_h-$wtrmrk_h-20);
+                $img->setWaterMark($wtrmrk_file, $img_w - $wtrmrk_w - 20, $img_h - $wtrmrk_h - 20);
                 $fileMimeType = 'image/png';
             }
         }
@@ -549,7 +551,7 @@ class AttachedFile extends MyAppModel
     public static function setContentType($fileMimeType)
     {
         if ($fileMimeType != '') {
-            header("content-type: ".$fileMimeType);
+            header("content-type: " . $fileMimeType);
         } else {
             header("content-type: image/jpeg");
         }
@@ -571,8 +573,8 @@ class AttachedFile extends MyAppModel
 
     public static function getDefaultImage($image_name, $width, $height, $useCache = false)
     {
-        $file_extension = substr($image_name, strlen($image_name)-3, strlen($image_name));
-        if ($file_extension=="svg") {
+        $file_extension = substr($image_name, strlen($image_name) - 3, strlen($image_name));
+        if ($file_extension == "svg") {
             header("Content-type: image/svg+xml");
             static::setLastModified($image_name);
             // $image_name = static::setDimensions($image_name, $width, $height);
@@ -588,11 +590,11 @@ class AttachedFile extends MyAppModel
         if ($no_image == '') {
             $no_image = 'images/defaults/no_image.jpg';
         } else {
-            $no_image = 'images/defaults/'. $no_image;
+            $no_image = 'images/defaults/' . $no_image;
         }
 
-        if (trim($uploadedFilePath)!='') {
-            $uploadedFilePath = CONF_UPLOADS_PATH.$uploadedFilePath;
+        if (trim($uploadedFilePath) != '') {
+            $uploadedFilePath = CONF_UPLOADS_PATH . $uploadedFilePath;
         } else {
             $uploadedFilePath = CONF_UPLOADS_PATH;
         }
@@ -608,7 +610,7 @@ class AttachedFile extends MyAppModel
         $fileMimeType = mime_content_type($imagePath);
         if (strpos($_SERVER['REQUEST_URI'], '?t=') === false) {
             $filemtime = filemtime($imagePath);
-            $_SERVER['REQUEST_URI'] = rtrim($_SERVER['REQUEST_URI'], '/').'/?t='.$filemtime;
+            $_SERVER['REQUEST_URI'] = rtrim($_SERVER['REQUEST_URI'], '/') . '/?t=' . $filemtime;
         }
 
         static::setHeaders();
@@ -628,7 +630,7 @@ class AttachedFile extends MyAppModel
         try {
             static::setLastModified($imagePath);
             static::setContentType($fileMimeType);
-            $fileContent =  file_get_contents($imagePath);
+            $fileContent = file_get_contents($imagePath);
             if (CONF_USE_FAT_CACHE && $cache) {
                 FatCache::set($_SERVER['REQUEST_URI'], $fileContent, '.jpg');
                 static::loadImage($fileContent, $imagePath);
@@ -649,8 +651,8 @@ class AttachedFile extends MyAppModel
     public static function updateDownloadCount($aFileId = 0)
     {
         $aFileId = FatUtility::int($aFileId);
-        $digitalFile = array('afile_downloaded_times'=>'mysql_func_afile_downloaded_times+1');
-        $where = array('smt'=>'afile_id = ?', 'vals'=>array($aFileId));
+        $digitalFile = array('afile_downloaded_times' => 'mysql_func_afile_downloaded_times+1');
+        $where = array('smt' => 'afile_id = ?', 'vals' => array($aFileId));
         $db = FatApp::getDb();
         if (!$db->updateFromArray(static::DB_TBL, $digitalFile, $where, true)) {
             return false;
@@ -665,7 +667,7 @@ class AttachedFile extends MyAppModel
         if (!empty($image_name) && file_exists(CONF_UPLOADS_PATH . $image_name)) {
             $image_name = CONF_UPLOADS_PATH . $image_name;
             header("Content-type: application/octet-stream");
-            header('Content-Disposition: attachement; filename="'.basename($downloadFileName).'"');
+            header('Content-Disposition: attachement; filename="' . basename($downloadFileName) . '"');
             header('Content-Length: ' . filesize($image_name));
             readfile($image_name);
         }
@@ -692,7 +694,7 @@ class AttachedFile extends MyAppModel
     public static function getImageName($url, $arr = array())
     {
         if (empty($arr)) {
-            return ;
+            return;
         }
 
         $imageName = '';
@@ -713,7 +715,7 @@ class AttachedFile extends MyAppModel
     public static function uploadTempImage($imgFileContent, $url, $arr = array())
     {
         if (empty($arr)) {
-            return ;
+            return;
         }
 
         $name = substr(preg_replace('/[^a-zA-Z0-9\/\-\_\.]/', '', basename($url)), 50);
@@ -736,7 +738,7 @@ class AttachedFile extends MyAppModel
         /* creation of folder date wise [ */
         $date_wise_path = date('Y') . '/' . date('m') . '/';
         /* ] */
-        $path  = $path . $date_wise_path;
+        $path = $path . $date_wise_path;
 
         // $saveName = time() . '-' . preg_replace('/[^a-zA-Z0-9]/', '', $name);
         $saveName = time() . '-' . substr(preg_replace('/[^a-zA-Z0-9]/', '', $name), -12);
@@ -751,7 +753,7 @@ class AttachedFile extends MyAppModel
         $localfile = $path . $saveName;
         $res = file_put_contents($localfile, $imgFileContent);
         if (!$res) {
-            return ;
+            return;
         }
 
         $fileType = $arr['afile_type'];
@@ -760,15 +762,15 @@ class AttachedFile extends MyAppModel
         $langId = $arr['afile_lang_id'];
         $screen = $arr['afile_screen'];
         $data = array(
-        'afile_type'=>$fileType,
-        'afile_record_id'=>$recordId,
-        'afile_record_subid'=>$recordSubid,
-        'afile_physical_path'=>$date_wise_path . $saveName,
-        'afile_lang_id'=>$langId,
-        'afile_screen'=>$arr['afile_screen'],
-        'afile_display_order'=>$arr['afile_display_order'],
-        'afile_name'=>$name,
-        'afile_updated_at'=>date('Y-m-d H:i:s'),
+        'afile_type' => $fileType,
+        'afile_record_id' => $recordId,
+        'afile_record_subid' => $recordSubid,
+        'afile_physical_path' => $date_wise_path . $saveName,
+        'afile_lang_id' => $langId,
+        'afile_screen' => $arr['afile_screen'],
+        'afile_display_order' => $arr['afile_display_order'],
+        'afile_name' => $name,
+        'afile_updated_at' => date('Y-m-d H:i:s'),
         );
 
         $db = FatApp::getDb();
@@ -788,7 +790,7 @@ class AttachedFile extends MyAppModel
 
     public static function isValidImageUrl($url)
     {
-        if (getimagesize($url)!== false) {
+        if (getimagesize($url) !== false) {
             return true;
         }
         return false;
@@ -838,7 +840,7 @@ class AttachedFile extends MyAppModel
         ];
         //if (!in_array($fileType, $allowedFileTypes) && (!$fileType || !$recordId)) {
         // Remove condition of $recordId for handle all data of add/edit product category in single form
-        if (!in_array($fileType, $allowedFileTypes) && !$fileType) {          
+        if (!in_array($fileType, $allowedFileTypes) && !$fileType) {
             $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->commonLangId);
             return false;
         }
@@ -846,23 +848,23 @@ class AttachedFile extends MyAppModel
         /* default will delete all files of requested recordId */
         $smt1 = 'afile_type = ? AND afile_record_id = ?';
         $dataArr1 = array($fileType, $recordId);
-        $deleteStatementArr = array('smt'=>'afile_type = ? AND afile_record_id = ?', 'vals'=>array($fileType, $recordId));
+        $deleteStatementArr = array('smt' => 'afile_type = ? AND afile_record_id = ?', 'vals' => array($fileType, $recordId));
 
         if ($record_subid > 0) {
-            $deleteStatementArr = array('smt'=>'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ?', 'vals'=>array($fileType, $recordId, $record_subid));
+            $deleteStatementArr = array('smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ?', 'vals' => array($fileType, $recordId, $record_subid));
         }
 
         if ($langId != -1) {
             /* delete lang Specific file */
-            $deleteStatementArr = array('smt'=>'afile_type = ? AND afile_record_id = ? AND afile_lang_id = ? AND afile_screen = ?', 'vals'=>array($fileType, $recordId, $langId, $screen));
+            $deleteStatementArr = array('smt' => 'afile_type = ? AND afile_record_id = ? AND afile_lang_id = ? AND afile_screen = ?', 'vals' => array($fileType, $recordId, $langId, $screen));
             if ($record_subid > 0) {
-                $deleteStatementArr = array('smt'=>'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ?', 'vals'=>array($fileType, $recordId, $record_subid, $langId));
+                $deleteStatementArr = array('smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ?', 'vals' => array($fileType, $recordId, $record_subid, $langId));
             }
         }
 
         if ($fileId) {
             /* delete single file */
-            $deleteStatementArr = array('smt'=>'afile_type = ? AND afile_record_id = ? AND afile_id=?', 'vals'=>array($fileType, $recordId, $fileId));
+            $deleteStatementArr = array('smt' => 'afile_type = ? AND afile_record_id = ? AND afile_id=?', 'vals' => array($fileType, $recordId, $fileId));
         }
 
         $db = FatApp::getDb();
@@ -892,9 +894,9 @@ class AttachedFile extends MyAppModel
     public static function setTimeParam($dateTime)
     {
         $time = strtotime($dateTime);
-        return ($time > 0) ? '?t=' . $time : '' ;
+        return ($time > 0) ? '?t=' . $time : '';
     }
-    
+
     public static function uploadErrorMessage($code, $langId)
     {
         switch ($code) {

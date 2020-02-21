@@ -1,10 +1,11 @@
 <?php
+
 class Promotion extends MyAppModel
 {
     public const DB_TBL = 'tbl_promotions';
     public const DB_TBL_PREFIX = 'promotion_';
 
-    public const DB_TBL_LANG ='tbl_promotions_lang';
+    public const DB_TBL_LANG = 'tbl_promotions_lang';
 
     public const DB_TBL_CLICKS = 'tbl_promotions_clicks';
     public const DB_TBL_CLICKS_PREFIX = 'pclick_';
@@ -69,9 +70,9 @@ class Promotion extends MyAppModel
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
 
-        $arr  = array(
-        static::TYPE_BANNER=>Labels::getLabel('LBL_Banner', $langId),
-        static::TYPE_SLIDES=>Labels::getLabel('LBL_Slides', $langId),
+        $arr = array(
+        static::TYPE_BANNER => Labels::getLabel('LBL_Banner', $langId),
+        static::TYPE_SLIDES => Labels::getLabel('LBL_Slides', $langId),
         );
 
         if ($displayAdvertiserOnly) {
@@ -79,26 +80,26 @@ class Promotion extends MyAppModel
         }
 
         return array(
-        static::TYPE_SHOP=>Labels::getLabel('LBL_Shop', $langId),
-        static::TYPE_PRODUCT=>Labels::getLabel('LBL_Product', $langId),
-        static::TYPE_BANNER=>Labels::getLabel('LBL_Banner', $langId),
-        static::TYPE_SLIDES=>Labels::getLabel('LBL_Slides', $langId),
+        static::TYPE_SHOP => Labels::getLabel('LBL_Shop', $langId),
+        static::TYPE_PRODUCT => Labels::getLabel('LBL_Product', $langId),
+        static::TYPE_BANNER => Labels::getLabel('LBL_Banner', $langId),
+        static::TYPE_SLIDES => Labels::getLabel('LBL_Slides', $langId),
         );
     }
 
     public static function updateImpressionData($promotionId = 0)
     {
         if (1 > $promotionId) {
-            return ;
+            return;
         }
 
         $bannerLogData = array(
         'plog_promotion_id' => $promotionId,
-        'plog_date' =>  date('Y-m-d'),
-        'plog_impressions' =>  1,
+        'plog_date' => date('Y-m-d'),
+        'plog_impressions' => 1,
         );
 
-        $onDuplicateBannerLogData = array_merge($bannerLogData, array('plog_impressions'=>'mysql_func_plog_impressions+1'));
+        $onDuplicateBannerLogData = array_merge($bannerLogData, array('plog_impressions' => 'mysql_func_plog_impressions+1'));
         FatApp::getDb()->insertFromArray(static::DB_TBL_LOGS, $bannerLogData, true, array(), $onDuplicateBannerLogData);
     }
 
@@ -135,8 +136,8 @@ class Promotion extends MyAppModel
             return array();
         }
         $srch = new SearchBase(Promotion::DB_TBL_CHARGES, 'tpc');
-        $srch->addCondition('tpc.'.Promotion::DB_TBL_CHARGES_PREFIX.'promotion_id', '=', $promotionId);
-        $srch->addOrder('tpc.'.Promotion::DB_TBL_CHARGES_PREFIX.'id', 'desc');
+        $srch->addCondition('tpc.' . Promotion::DB_TBL_CHARGES_PREFIX . 'promotion_id', '=', $promotionId);
+        $srch->addOrder('tpc.' . Promotion::DB_TBL_CHARGES_PREFIX . 'id', 'desc');
 
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
@@ -150,7 +151,7 @@ class Promotion extends MyAppModel
     public static function getTotalChargedAmount($userId, $active = false)
     {
         $srch = new SearchBase(Promotion::DB_TBL_CHARGES, 'tpc');
-        $srch->addCondition('tpc.'.Promotion::DB_TBL_CHARGES_PREFIX.'user_id', '=', $userId);
+        $srch->addCondition('tpc.' . Promotion::DB_TBL_CHARGES_PREFIX . 'user_id', '=', $userId);
         $srch->addFld("SUM(pcharge_charged_amount) totChargedAmount");
         if ($active) {
             $srch->joinTable(Promotion::DB_TBL, 'LEFT JOIN', 'tpc. pcharge_promotion_id=p.promotion_id', 'p');
@@ -170,7 +171,7 @@ class Promotion extends MyAppModel
         $pchargeUserId = FatUtility::int($data['user_id']);
         $pchargePromotionId = FatUtility::int($data['promotion_id']);
         $chargedAmount = $data['total_cost'];
-        if (($pchargeUserId < 1) || ($pchargePromotionId <1) || ($chargedAmount <=0)) {
+        if (($pchargeUserId < 1) || ($pchargePromotionId < 1) || ($chargedAmount <= 0)) {
             return array();
         }
 
@@ -229,11 +230,11 @@ class Promotion extends MyAppModel
     public static function isUserClickCountable($userId, $promotionId, $ip, $session)
     {
         $srch = new SearchBase(PROMOTION::DB_TBL_CLICKS);
-        $srch->addCondition(PROMOTION::DB_TBL_CLICKS_PREFIX.'promotion_id', '=', $promotionId);
-        $srch->addCondition(PROMOTION::DB_TBL_CLICKS_PREFIX.'user_id', '=', $userId);
-        $srch->addCondition(PROMOTION::DB_TBL_CLICKS_PREFIX.'datetime', '>=', date('Y-m-d H:i:s', strtotime("-".FatApp::getConfig('CONF_PPC_CLICK_COUNT_TIME_INTERVAL') ." Minute")));
-        $srch->addCondition(PROMOTION::DB_TBL_CLICKS_PREFIX.'ip', '=', $ip);
-        $srch->addCondition(PROMOTION::DB_TBL_CLICKS_PREFIX.'session_id', '=', $session);
+        $srch->addCondition(PROMOTION::DB_TBL_CLICKS_PREFIX . 'promotion_id', '=', $promotionId);
+        $srch->addCondition(PROMOTION::DB_TBL_CLICKS_PREFIX . 'user_id', '=', $userId);
+        $srch->addCondition(PROMOTION::DB_TBL_CLICKS_PREFIX . 'datetime', '>=', date('Y-m-d H:i:s', strtotime("-" . FatApp::getConfig('CONF_PPC_CLICK_COUNT_TIME_INTERVAL') . " Minute")));
+        $srch->addCondition(PROMOTION::DB_TBL_CLICKS_PREFIX . 'ip', '=', $ip);
+        $srch->addCondition(PROMOTION::DB_TBL_CLICKS_PREFIX . 'session_id', '=', $session);
 
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
@@ -264,9 +265,9 @@ class Promotion extends MyAppModel
         $prmSrch->addGroupBy('promotion_id');
         $prmSrch->addCondition('pr.promotion_user_id', '=', $user_id);
         //$prmSrch->addLastChargeCondition();
-        $prmSrch->addMultipleFields(array('promotion_id','promotion_user_id ',"IFNULL(MAX(pcharge_end_piclick_id),0) as end_click_id","IFNULL(MAX(pcharge_end_date),'0000-00-00') as charge_till_date"));
+        $prmSrch->addMultipleFields(array('promotion_id', 'promotion_user_id ', "IFNULL(MAX(pcharge_end_piclick_id),0) as end_click_id", "IFNULL(MAX(pcharge_end_date),'0000-00-00') as charge_till_date"));
         $rs = $prmSrch->getResultSet();
-        $promotions =FatApp::getDb()->fetchAll($rs);
+        $promotions = FatApp::getDb()->fetchAll($rs);
 
 
 
@@ -280,12 +281,12 @@ class Promotion extends MyAppModel
             $prChargeSummary->addCondition('promotion_id', '=', $promotionId);
             $prChargeSummary->addCondition('picharge_id', '>', $pVal['end_click_id']);
             $prChargeSummary->addMultipleFields(
-                array("sum(picharge_cost) as total_cost","min(picharge_id) as start_click_id","max(picharge_id) as end_click_id","MIN(picharge_datetime) as start_click_date",
-                "MAX(picharge_datetime) as end_click_date",    "count(picharge_id) as total_clicks",)
+                array("sum(picharge_cost) as total_cost", "min(picharge_id) as start_click_id", "max(picharge_id) as end_click_id", "MIN(picharge_datetime) as start_click_date",
+                "MAX(picharge_datetime) as end_click_date",    "count(picharge_id) as total_clicks", )
             );
             $prChargeSummary->addGroupBy('pclick_promotion_id');
             $rs = $prChargeSummary->getResultSet();
-            $promotionClicks =FatApp::getDb()->fetch($rs);
+            $promotionClicks = FatApp::getDb()->fetch($rs);
 
 
             if ($promotionClicks) {

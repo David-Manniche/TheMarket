@@ -11,6 +11,9 @@ $(document).ready(function(){
     searchProducts(document.frmSearch);
 
     $("input[name='product_seller']").autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
         'source': function(request, response) {
             if( '' != request ){
                 $.ajax({

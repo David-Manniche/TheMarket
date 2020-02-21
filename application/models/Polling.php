@@ -1,19 +1,20 @@
 <?php
+
 class Polling extends MyAppModel
 {
-    const DB_TBL = 'tbl_polling';
-    const DB_TBL_PREFIX = 'polling_';
-    const DB_TBL_LANG = 'tbl_polling_lang';
-    const DB_TBL_POLLING_TO_PRODUCTS = 'tbl_polling_to_products';
-    const DB_TBL_POLLING_TO_CATEGORY = 'tbl_polling_to_category';
+    public const DB_TBL = 'tbl_polling';
+    public const DB_TBL_PREFIX = 'polling_';
+    public const DB_TBL_LANG = 'tbl_polling_lang';
+    public const DB_TBL_POLLING_TO_PRODUCTS = 'tbl_polling_to_products';
+    public const DB_TBL_POLLING_TO_CATEGORY = 'tbl_polling_to_category';
 
-    const POLLING_TYPE_PRODUCTS = 1;
-    const POLLING_TYPE_CATEGORY = 2;
-    const POLLING_TYPE_GENERIC = 3;
+    public const POLLING_TYPE_PRODUCTS = 1;
+    public const POLLING_TYPE_CATEGORY = 2;
+    public const POLLING_TYPE_GENERIC = 3;
 
-    const RESPONSE_TYPE_YES = 1;
-    const RESPONSE_TYPE_NO = 2;
-    const RESPONSE_TYPE_MAY_BE = 3;
+    public const RESPONSE_TYPE_YES = 1;
+    public const RESPONSE_TYPE_NO = 2;
+    public const RESPONSE_TYPE_MAY_BE = 3;
 
     public function __construct($id = 0)
     {
@@ -36,7 +37,7 @@ class Polling extends MyAppModel
         if ($includeResultCount) {
             $srchFeedback = PollFeedback::getSearchObject();
             $srchFeedback->addGroupby('pollfeedback_polling_id');
-            $srchFeedback->addMultipleFields(array('pollfeedback_polling_id','sum(if(pollfeedback_response_type=1,1,0)) count_yes','sum(if(pollfeedback_response_type=2,1,0)) count_no','sum(if(pollfeedback_response_type=3,1,0)) count_maybe'));
+            $srchFeedback->addMultipleFields(array('pollfeedback_polling_id', 'sum(if(pollfeedback_response_type=1,1,0)) count_yes', 'sum(if(pollfeedback_response_type=2,1,0)) count_no', 'sum(if(pollfeedback_response_type=3,1,0)) count_maybe'));
             $srchFeedback->doNotCalculateRecords();
             $srchFeedback->doNotLimitRecords();
             $pollFeedbackQuery = $srchFeedback->getQuery();
@@ -83,10 +84,10 @@ class Polling extends MyAppModel
         $srch->joinTable(self::DB_TBL_POLLING_TO_CATEGORY, 'inner join', 'ptc_polling_id = polling_id');
         $srch->joinTable(ProductCategory::DB_TBL, 'inner join', 'ptc_prodcat_id = prodcat_id');
         if (!empty($langId)) {
-            $srch->joinTable(ProductCategory::DB_TBL_LANG, 'left outer join', 'prodcatlang_prodcat_id = prodcat_id and prodcatlang_lang_id = '.$langId);
+            $srch->joinTable(ProductCategory::DB_TBL_LANG, 'left outer join', 'prodcatlang_prodcat_id = prodcat_id and prodcatlang_lang_id = ' . $langId);
         }
         $srch->addCondition('polling_id', '=', $pollingId);
-        $srch->addMultipleFields(array('prodcat_id' , 'prodcat_identifier','prodcat_name'));
+        $srch->addMultipleFields(array('prodcat_id', 'prodcat_identifier', 'prodcat_name'));
         return FatApp::getDb()->fetchAll($srch->getResultset());
     }
 
@@ -96,10 +97,10 @@ class Polling extends MyAppModel
         $srch->joinTable(self::DB_TBL_POLLING_TO_PRODUCTS, 'inner join', 'ptp_polling_id = polling_id');
         $srch->joinTable(Product::DB_TBL, 'inner join', 'ptp_product_id = product_id');
         if (!empty($langId)) {
-            $srch->joinTable(Product::DB_TBL_LANG, 'left outer join', 'productlang_product_id = product_id and productlang_lang_id = '.$langId);
+            $srch->joinTable(Product::DB_TBL_LANG, 'left outer join', 'productlang_product_id = product_id and productlang_lang_id = ' . $langId);
         }
         $srch->addCondition('polling_id', '=', $pollingId);
-        $srch->addMultipleFields(array('product_id' , 'IFNULL(product_name,product_identifier) as product_name'));
+        $srch->addMultipleFields(array('product_id', 'IFNULL(product_name,product_identifier) as product_name'));
         return FatApp::getDb()->fetchAll($srch->getResultset());
     }
 
@@ -132,7 +133,7 @@ class Polling extends MyAppModel
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
-        if (!$db->deleteRecords(static::DB_TBL_POLLING_TO_CATEGORY, array('smt'=> 'ptc_polling_id = ? AND ptc_prodcat_id = ?','vals' => array($polling_id, $prodcat_id) ))) {
+        if (!$db->deleteRecords(static::DB_TBL_POLLING_TO_CATEGORY, array('smt' => 'ptc_polling_id = ? AND ptc_prodcat_id = ?', 'vals' => array($polling_id, $prodcat_id) ))) {
             $this->error = $db->getError();
             return false;
         }
@@ -168,7 +169,7 @@ class Polling extends MyAppModel
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
-        if (!$db->deleteRecords(static::DB_TBL_POLLING_TO_PRODUCTS, array('smt'=> 'ptp_polling_id = ? AND ptp_product_id = ?','vals' => array($polling_id, $product_id) ))) {
+        if (!$db->deleteRecords(static::DB_TBL_POLLING_TO_PRODUCTS, array('smt' => 'ptp_polling_id = ? AND ptp_product_id = ?', 'vals' => array($polling_id, $product_id) ))) {
             $this->error = $db->getError();
             return false;
         }
@@ -195,11 +196,11 @@ class Polling extends MyAppModel
     {
         $langId = FatUtility::int($langId);
         $productId = FatUtility::int($productId);
-        if ($langId <= 0 || $productId <=0) {
+        if ($langId <= 0 || $productId <= 0) {
             // throw error
         }
         $pollSrch = static::getSearchObject($langId);
-        $pollSrch->joinTable(static::DB_TBL_POLLING_TO_PRODUCTS, 'inner join', 'ptp_polling_id = polling_id and ptp_product_id ='.$productId);
+        $pollSrch->joinTable(static::DB_TBL_POLLING_TO_PRODUCTS, 'inner join', 'ptp_polling_id = polling_id and ptp_product_id =' . $productId);
         $pollSrch->addCondition('polling_type', '=', static::POLLING_TYPE_PRODUCTS);
         $pollSrch->addCondition('polling_start_date', '<=', date('Y-m-d'));
         $pollSrch->addCondition('polling_end_date', '>=', date('Y-m-d'));
@@ -213,11 +214,11 @@ class Polling extends MyAppModel
     {
         $langId = FatUtility::int($langId);
         $prodcatId = FatUtility::int($prodcatId);
-        if ($langId <= 0 || $prodcatId <=0) {
+        if ($langId <= 0 || $prodcatId <= 0) {
             // throw error
         }
         $pollSrch = static::getSearchObject($langId);
-        $pollSrch->joinTable(static::DB_TBL_POLLING_TO_CATEGORY, 'inner join', 'ptc_polling_id = polling_id and ptc_prodcat_id ='.$prodcatId);
+        $pollSrch->joinTable(static::DB_TBL_POLLING_TO_CATEGORY, 'inner join', 'ptc_polling_id = polling_id and ptc_prodcat_id =' . $prodcatId);
         $pollSrch->addCondition('polling_type', '=', static::POLLING_TYPE_CATEGORY);
         $pollSrch->addCondition('polling_start_date', '<=', date('Y-m-d'));
         $pollSrch->addCondition('polling_end_date', '>=', date('Y-m-d'));

@@ -16,7 +16,7 @@
         <li  data-heading="OR"><a href="<?php echo CommonHelper::generateUrl('seller','catalog',array(1));?>"><i class="icn fa fa-camera-retro"></i>
           <p><?php echo Labels::getLabel('LBL_Search_and_add_Products_from_marketplace',$siteLangId);?></p>
           <span><?php echo Labels::getLabel('LBL_Search_and_pick_to_sell_products_from_existing_marketplace_products',$siteLangId);?></span> </a> </li>
-        <li  data-heading="OR"><a href="<?php echo CommonHelper::generateUrl('ImportExport','index'); ?>"><i class="icn fa fa-file-text-o"></i>
+        <li  data-heading="OR"><a href="<?php echo CommonHelper::generateUrl('ImportExport','index'); ?>"><i class="far fa-file-alt"></i>
           <p><?php echo Labels::getLabel('LBL_Import_Export',$siteLangId);?></p>
           <span><?php echo Labels::getLabel('LBL_Import_Export_Existing_Data',$siteLangId);?></span> </a></li>
       </ul>
