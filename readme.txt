@@ -92,4 +92,5 @@ Bugs:
     => 034729 - Getting error on side bar on login with advertiser account
     => 034656 - when user jumps to product list from tags then even after resetting filter all products are not listing
     => 034474 - Shop name should be there in shop report listing.
-    => 034473 - On reporting shop> getting invalid request with success message 
+    => 034473 - On reporting shop> getting invalid request with success message
+    => 034770 - In Table scroll popup "Scrollable" label must be display in arabic language is selected
