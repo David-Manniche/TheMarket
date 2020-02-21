@@ -877,3 +877,4 @@ INSERT INTO `tbl_theme_colors` (`tcolor_theme_id`, `tcolor_key`, `tcolor_value`)
 
 ALTER TABLE `tbl_theme_colors`
   ADD UNIQUE KEY `tcolor_theme_id` (`tcolor_theme_id`,`tcolor_key`);
+-------------TV-9.1.3.20200221-----------

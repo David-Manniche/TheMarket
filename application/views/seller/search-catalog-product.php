@@ -1,4 +1,6 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
+<?php
+
+defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
     'listserial' => 'Sr.',
     'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
@@ -47,11 +49,11 @@ foreach ($arr_listing as $sn => $row) {
                     $active = 'checked';
                 }
 
-                $str =  Labels::getLabel('LBL_N/A', $siteLangId);
+                $str = Labels::getLabel('LBL_N/A', $siteLangId);
                 if (!$row['product_seller_id'] && $row['product_type'] != Product::PRODUCT_TYPE_DIGITAL) {
-                    $statucAct = (!$row['psbs_user_id']) ? 'setShippedBySeller('.$row['product_id'].')' : 'setShippedByAdmin('.$row['product_id'].')' ;
+                    $statucAct = (!$row['psbs_user_id']) ? 'setShippedBySeller(' . $row['product_id'] . ')' : 'setShippedByAdmin(' . $row['product_id'] . ')';
 
-                    $str = '<label class="toggle-switch" for="switch'.$row['product_id'].'"><input '.$active.' type="checkbox" id="switch'.$row['product_id'].'" onclick="'.$statucAct.'"/><div class="slider round"></div></label>';
+                    $str = '<label class="toggle-switch" for="switch' . $row['product_id'] . '"><input ' . $active . ' type="checkbox" id="switch' . $row['product_id'] . '" onclick="' . $statucAct . '"/><div class="slider round"></div></label>';
                 }
                 $td->appendElement('plaintext', array(), $str, true);
                 break;
@@ -61,13 +63,13 @@ foreach ($arr_listing as $sn => $row) {
                     $canAddToStore = false;
                 }
                 $available = Product::availableForAddToStore($row['product_id'], UserAuthentication::getLoggedUserId());
-                $ul = $td->appendElement("ul", array('class'=>'actions'), '', true);
+                $ul = $td->appendElement("ul", array('class' => 'actions'), '', true);
 
                 if ($available) {
                     $li = $ul->appendElement("li");
                     $li->appendElement(
                         'a',
-                        array('href'=>'javascript:void(0)', 'class'=>($canAddToStore) ? 'icn-highlighted' : 'icn-highlighted disabled', 'onClick' => 'checkIfAvailableForInventory('.$row['product_id'].')', 'title'=>Labels::getLabel('LBL_Add_To_Store', $siteLangId), true),
+                        array('href' => 'javascript:void(0)', 'class' => ($canAddToStore) ? 'icn-highlighted' : 'icn-highlighted disabled', 'onClick' => 'checkIfAvailableForInventory(' . $row['product_id'] . ')', 'title' => Labels::getLabel('LBL_Add_To_Store', $siteLangId), true),
                         '<i class="fa fa-plus-square"></i>',
                         true
                     );
@@ -75,15 +77,15 @@ foreach ($arr_listing as $sn => $row) {
                 
                 if (0 != $row['product_seller_id']) {
                     $li = $ul->appendElement("li");
-                    $li->appendElement('a', array( 'class'=>'', 'title'=>Labels::getLabel('LBL_Edit', $siteLangId),"href"=>CommonHelper::generateUrl('seller', 'customProductForm', array($row['product_id']))), '<i class="fa fa-edit"></i>', true);
+                    $li->appendElement('a', array( 'class' => '', 'title' => Labels::getLabel('LBL_Edit', $siteLangId), "href" => CommonHelper::generateUrl('seller', 'customProductForm', array($row['product_id']))), '<i class="fa fa-edit"></i>', true);
 
                     $li = $ul->appendElement("li");
-                    $li->appendElement("a", array('title' => Labels::getLabel('LBL_Product_Images', $siteLangId), 'onclick' => 'customProductImages('.$row['product_id'].')', 'href'=>'javascript:void(0)'), '<i class="fas fa-images"></i>', true);
+                    $li->appendElement("a", array('title' => Labels::getLabel('LBL_Product_Images', $siteLangId), 'onclick' => 'customProductImages(' . $row['product_id'] . ')', 'href' => 'javascript:void(0)'), '<i class="fas fa-images"></i>', true);
                 }
                 
                 if ($row['product_added_by_admin_id'] && $row['psbs_user_id'] && $row['product_type'] == PRODUCT::PRODUCT_TYPE_PHYSICAL) {
                     $li = $ul->appendElement("li");
-                    $li->appendElement("a", array('title' => Labels::getLabel('LBL_Edit_Shipping', $siteLangId), 'onclick' => 'sellerShippingForm('.$row['product_id'].')', 'href'=>'javascript:void(0)'), '<i class="fa fa-truck"></i>', true);
+                    $li->appendElement("a", array('title' => Labels::getLabel('LBL_Edit_Shipping', $siteLangId), 'onclick' => 'sellerShippingForm(' . $row['product_id'] . ')', 'href' => 'javascript:void(0)'), '<i class="fa fa-truck"></i>', true);
                 }
                 
                 $hasInventory = Product::hasInventory($row['product_id'], UserAuthentication::getLoggedUserId());
@@ -91,7 +93,7 @@ foreach ($arr_listing as $sn => $row) {
                     $li = $ul->appendElement("li");
                     $li->appendElement(
                         'a',
-                        array('href'=>'javascript:void(0)', 'onclick'=>'sellerProducts('.$row['product_id'].')', 'class'=>'','title'=>Labels::getLabel('LBL_View_Inventories', $siteLangId), true),
+                        array('href' => 'javascript:void(0)', 'onclick' => 'sellerProducts(' . $row['product_id'] . ')', 'class' => '', 'title' => Labels::getLabel('LBL_View_Inventories', $siteLangId), true),
                         '<i class="fas fa-clipboard-list"></i>',
                         true
                     );
@@ -100,7 +102,7 @@ foreach ($arr_listing as $sn => $row) {
                 $li = $ul->appendElement("li");
                 $li->appendElement(
                     'a',
-                    array('href'=>'javascript:void(0)', 'onclick'=>'catalogInfo('.$row['product_id'].')', 'class'=>'','title'=>Labels::getLabel('LBL_product_Info', $siteLangId), true),
+                    array('href' => 'javascript:void(0)', 'onclick' => 'catalogInfo(' . $row['product_id'] . ')', 'class' => '', 'title' => Labels::getLabel('LBL_product_Info', $siteLangId), true),
                     '<i class="fa fa-eye"></i>',
                     true
                 );
@@ -118,13 +120,13 @@ if (count($arr_listing) == 0) {
     $linkArr = array();
     if (User::canAddCustomProductAvailableToAllSellers()) {
         $linkArr = array(
-        0=>array(
-            'href'=>CommonHelper::generateUrl('Seller', 'CustomCatalogProductForm'),
-            'label'=>Labels::getLabel('LBL_Request_New_Product', $siteLangId),
+        0 => array(
+            'href' => CommonHelper::generateUrl('Seller', 'CustomCatalogProductForm'),
+            'label' => Labels::getLabel('LBL_Request_New_Product', $siteLangId),
             )
         );
     }
-    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'linkArr'=>$linkArr,'message'=>$message));
+    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId' => $siteLangId, 'linkArr' => $linkArr, 'message' => $message));
 }
 
 if (!isset($postedData['type']) || '' == $postedData['type']) {
@@ -134,5 +136,5 @@ if (!isset($postedData['type']) || '' == $postedData['type']) {
 $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmCatalogProductSearchPaging'));
 
-$pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'callBackJsFunc' => 'goToCatalogProductSearchPage');
+$pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'callBackJsFunc' => 'goToCatalogProductSearchPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
