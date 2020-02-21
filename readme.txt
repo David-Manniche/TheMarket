@@ -91,3 +91,4 @@ Bugs:
     => 034661 - Unable to save buy together and related products.
     => 034729 - Getting error on side bar on login with advertiser account
     => 034656 - when user jumps to product list from tags then even after resetting filter all products are not listing
+    => 034474 - Shop name should be there in shop report listing.

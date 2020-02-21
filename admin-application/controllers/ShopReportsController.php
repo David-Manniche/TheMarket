@@ -43,12 +43,14 @@ class ShopReportsController extends AdminBaseController
 
         $srch = ShopReport::getSearchObject($this->adminLangId);
         $srch->joinTable('tbl_users', 'INNER JOIN', 'u.user_id = sreport.sreport_user_id', 'u');
+        $srch->joinTable('tbl_shops', 'INNER JOIN', 's.shop_id = sreport.sreport_shop_id', 's');
+        $srch->joinTable('tbl_shops_lang', 'INNER JOIN', 'sl.shoplang_shop_id = s.shop_id AND sl.shoplang_lang_id = ' . $this->adminLangId, 'sl');
         $srch->joinTable('(' . $result_report_reasons . ')', 'LEFT OUTER JOIN', 'reportreason.reportreason_id = sreport.sreport_reportreason_id', 'reportreason');
 
         if ($shopId > 0) {
             $srch->addCondition('sreport.sreport_shop_id', '=', $shopId);
         }
-        $srch->addMultipleFields(array('sreport.*', 'u.user_name', 'reportreason.reportreason_title'));
+        $srch->addMultipleFields(array('sreport.*', 'COALESCE(shop_name, shop_identifier) as shop_name', 'u.user_name', 'reportreason.reportreason_title'));
 
         $rs = $srch->getResultSet();
         $records = array();
