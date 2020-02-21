@@ -2,10 +2,10 @@ $(document).ready(function(){
     searchCatalogProducts(document.frmSearchCatalogProduct);
 });
 
-$(document).on('keyup', "input[name='keyword']", function(){
+/* $(document).on('keyup', "input[name='keyword']", function(){
     var parentForm = $(this).closest('form');
     parentForm.submit();
-});
+}); */
 
 (function() {
 	var dv = '#listing';

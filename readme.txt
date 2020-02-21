@@ -94,3 +94,4 @@ Bugs:
     => 034474 - Shop name should be there in shop report listing.
     => 034473 - On reporting shop> getting invalid request with success message
     => 034770 - In Table scroll popup "Scrollable" label must be display in arabic language is selected
+    => 034326 - While search products linked with tags by typing product name ajax got stuck
