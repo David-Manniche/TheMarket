@@ -2,9 +2,8 @@
 
 require_once CONF_INSTALLATION_PATH . 'library/avalara/autoload.php';
 
-use Twilio\Rest\Client;
-
-class Avalaratax extends TaxBase {
+class Avalaratax extends TaxBase
+{
 
     public const KEY_NAME = 'AvalaraTax';
 
@@ -17,13 +16,13 @@ class Avalaratax extends TaxBase {
     private $_products = [];
     private $_productsShipping = [];
     private $_customerCode;
-    private $_exemptionCode;
     private $_discountAmount;
     private $_invoiceId;
     private $_taxApiResponse;
     private $_invoiceDate;
 
-    public function __construct($langId) {
+    public function __construct($langId)
+    {
         $this->langId = FatUtility::int($langId);
         if (1 > $this->langId) {
             $this->langId = CommonHelper::getLangId();
@@ -34,174 +33,130 @@ class Avalaratax extends TaxBase {
         $this->validateSettings();
 
         $this->_client = new Avalara\AvaTaxClient(FatApp::getConfig('CONF_WEBSITE_NAME_' . $langId), FatApp::getConfig('CONF_YOKART_VERSION'), $_SERVER['HTTP_HOST'], $this->settings['environment']);
-        $this->_client->withCatchExceptions(false);
-
         $this->_client->withLicenseKey($this->settings['account_number'], $this->settings['license_key']);
+        $this->_client->withCatchExceptions(false);
         $this->_companyCode = $this->settings['company_code'];
+     
     }
 
-    private function validateSettings() {
-
+    private function validateSettings()
+    {
         $requiredKeyArr = ['account_number', 'commit_transaction', 'company_code', 'environment', 'license_key'];
         foreach ($requiredKeyArr as $key) {
             if (!array_key_exists($key, $this->settings)) {
-                $this->error = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->langId);
-                return false;
+                throw new Exception(Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->langId));
             }
         }
     }
 
-    public function checkCredentials() {
-
+    public function checkCredentials($account_number, $license_key)
+    {
+        $this->_client->withLicenseKey($account_number, $license_key);
         $p = $this->_client->ping();
         return $p->authenticated;
     }
 
-    public function getRates($createTxn = false) {
+    public function getRates($fromAddress, $toAddress, $itemsArr, $shippingItem, $userId)
+    {
 
-        $formatedTax = [];
-        
-        
-        
+        try {
+            $this->setFromAddress($fromAddress)
+                    ->setToAddress($toAddress)
+                    ->setProducts($itemsArr)
+                    ->setProductsShipping($shippingItem)
+                    ->setCustomerCode($userId);
 
-        $taxes = $this->calculateTaxes($createTxn);
-
-
-        if ($taxes) {
-            foreach ($taxes->lines as $line) {
-                $taxDetails = [];
-                foreach ($line->details as $lineTaxdetail) {
-                    $taxName = 'L_' . str_replace(' ', '_', $lineTaxdetail->taxName);
-                    if (isset($taxDetails[$taxName])) {
-                        $taxDetails[$taxName] += $lineTaxdetail->tax;
-                    } else {
-                        $taxDetails[$taxName] = $lineTaxdetail->tax;
-                    }
-                }
-                $formatedTax[$line->itemCode] = array(
-                    'tax' => $line->tax,
-                    'taxDetails' => $taxDetails,
-                );
-            }
+            $taxes = $this->calculateTaxes();
+        } catch (\Exception $e) {
+       
+            return [
+                'status' => false,
+                'msg' => Labels::getLabel($e->getMessage(),$this->langId),
+            ];
         }
-
-        return $formatedTax;
-
-
 
         return [
             'status' => true,
-            'msg' => Labels::getLabel("MSG_SUCCESS", $this->langId),            
-            'data' => $formatedTax
+            'msg' => Labels::getLabel("MSG_SUCCESS", $this->langId),
+            'data' => $this->formatTaxes($taxes)
         ];
     }
 
-    public function validateAddress($line1, $line2, $line3, $city, $state, $postalCode, $country) {
-
-        $addrResult = $this->checkAddress($line1, $line2, $line3, $city, $state, $postalCode, $country);
-
-        if (!$addrResult) {          
-            return false;
-        }
-
-        if (!isset($addrResult->messages)) {
-            return true;
-        }
-        return false;
-    }
-
-    public function getSuggestedAddress($line1, $line2, $line3, $city, $state, $postalCode, $country) {
-
-        $addrResult = $this->checkAddress($line1, $line2, $line3, $city, $state, $postalCode, $country);
-
-        if (!$addrResult) {         
-            return false;
-        }
-
-        if (isset($addrResult->messages)) {
-            $this->error = current($addrResult->messages);
-            return false;
-        }
-
-        return isset($addrResult->validatedAddresses) ? $addrResult->validatedAddresses : [];
-    }
-
-    private function checkAddress($line1, $line2, $line3, $city, $state, $postalCode, $country) {
-
-
+    public function createInvoice($fromAddress, $toAddress, $itemsArr, $shippingItem, $userId, $invoiceDate, $InvoiceNo)
+    {
         try {
-            $addressInfoObj = new Avalara\AddressValidationInfo();
-            $addressInfoObj->line1 = $line1;
-            $addressInfoObj->line2 = $line2;
-            $addressInfoObj->line3 = $line3;
-            $addressInfoObj->city = $city;
-            $addressInfoObj->region = $state;
-            $addressInfoObj->country = $country;
-            $addressInfoObj->postalCode = $postalCode;
-            if (!empty($latitude)) {
-                $addressInfoObj->latitude = $latitude;
-            }
+            $this->setFromAddress($fromAddress)
+                    ->setToAddress($toAddress)
+                    ->setProducts($itemsArr)
+                    ->setProductsShipping($shippingItem)
+                    ->setCustomerCode($userId)
+                    ->setInvoiceId($InvoiceNo)
+                    ->setInvoiceDate($invoiceDate);
 
-            if (!empty($longitude)) {
-                $addressInfoObj->longitude = $longitude;
-            }
-
-            $response = $this->_client->resolveAddressPost($addressInfoObj);
-
-            return $response;
+            $taxes = $this->calculateTaxes(true);
         } catch (\Exception $e) {
-            $this->error = "E_Avalara_Error:" . $e->getMessage();
-            return false;
+            
+            
+            return [
+                'status' => false,
+                'msg' => Labels::getLabel($e->getMessage(),$this->langId),
+            ];
         }
+
+        return [
+            'status' => true,
+            'msg' => Labels::getLabel("MSG_SUCCESS", $this->langId),
+            'data' => $this->formatTaxes($taxes)
+        ];
     }
 
-    public function setFromAddress($line1, $line2, $line3, $city, $region, $postalCode, $country) {
-        if (empty($line1) || empty($city) || empty($region) || empty($postalCode) || empty($country)) {
-            throw new Exception("E_Avalara_Error:_Invalid_From_Address");
+    private function setFromAddress($address)
+    {
+        if (!$this->validateAddressArrKeys($address)) {
+            throw new Exception("E_Avalara_Error:_Invalid_From_Address_keys");
         }
-        $this->_fromAddress = [
-            'line1' => $line1,
-            'line2' => $line2,
-            'line3' => $line3,
-            'city' => $city,
-            'region' => $region,
-            'postalCode' => $postalCode,
-            'country' => $country
-        ];
+        $this->_fromAddress = $address;
 
         return $this;
     }
 
-    public function setToAddress($line1, $line2, $city, $region, $postalCode, $country) {
-        if (empty($line1) || empty($city) || empty($region) || empty($postalCode) || empty($country)) {
-            throw new Exception("E_Avalara_Error:_Invalid_To_Address");
+    private function setToAddress($address)
+    {
+
+
+        if (!$this->validateAddressArrKeys($address)) {
+            throw new Exception("E_Avalara_Error:_Invalid_To_Address_keys");
         }
-        $this->_toAddress = [
-            'line1' => $line1,
-            'line2' => $line2,
-            'city' => $city,
-            'region' => $region,
-            'postalCode' => $postalCode,
-            'country' => $country
-        ];
+
+        $this->_toAddress = $address;
+
         return $this;
     }
 
-    public function setProducts($products) {
-        // need to check array?
+    private function setProducts($products)
+    {
+        if (!$this->validateitemArrKeys(current($products))) {
+            throw new Exception("E_Avalara_Error:_Invalid_To_Product_Keys");
+        }
+
         $this->_products = $products;
 
         return $this;
     }
 
-    public function setProductsShipping($productsShipping) {
-        // need to check array?
+    private function setProductsShipping($productsShipping)
+    {
+        if (!$this->validateitemArrKeys(current($productsShipping))) {
+            throw new Exception("E_Avalara_Error:_Invalid_To_Product_Shipping_keys");
+        }
+
         $this->_productsShipping = $productsShipping;
 
         return $this;
     }
 
-    public function setCustomerCode($customerCode) {
+    private function setCustomerCode($customerCode)
+    {
         /**
          *      * @param string        $customerCode  The customer code for this transaction
          */
@@ -209,64 +164,44 @@ class Avalaratax extends TaxBase {
         return $this;
     }
 
-    public function setDiscountAmount($discount) {
+    private function setDiscountAmount($discount)
+    {
         $this->_discountAmount = floatval($discount);
         return $this;
     }
 
-    public function setInvoiceId($invoiceId) {
+    private function setInvoiceId($invoiceId)
+    {
+        if (empty($invoiceId)) {
+            throw new Exception("E_Avalara_Error:_Invoice_Id_Empty");
+        }
         $this->_invoiceId = $invoiceId;
         return $this;
     }
 
-    public function setInvoiceDate($invoiceDate) {
-        $this->_invoiceDate = $invoiceDate;
+    private function setInvoiceDate($invoiceDate)
+    {
+        if (empty($invoiceDate)) {
+            throw new Exception("E_Avalara_Error:_Invoice_Date_Empty");
+        }
+        $this->_invoiceDate = date(DATE_W3C, strtotime($invoiceDate));
         return $this;
     }
-
-//
-//    public function getTaxes($createTxn = false) {
-//
-//        $formatedTax = [];
-//
-//        $taxes = $this->calculateTaxes($createTxn);
-//
-//
-//        if ($taxes) {
-//            foreach ($taxes->lines as $line) {
-//                $taxDetails = [];
-//                foreach ($line->details as $lineTaxdetail) {
-//                    $taxName = 'L_' . str_replace(' ', '_', $lineTaxdetail->taxName);
-//                    if (isset($taxDetails[$taxName])) {
-//                        $taxDetails[$taxName] += $lineTaxdetail->tax;
-//                    } else {
-//                        $taxDetails[$taxName] = $lineTaxdetail->tax;
-//                    }
-//                }
-//                $formatedTax[$line->itemCode] = array(
-//                    'tax' => $line->tax,
-//                    'taxDetails' => $taxDetails,
-//                );
-//            }
-//        }
-//
-//        return $formatedTax;
-//    }
 
     /**
 
      * @param string        $createTxn    If true is a permanent document and is recorded in AvaTax
      * @param string|null   $txnDate      The datetime of the transaction, defaults to current time when null (Format: Y-m-d)
      */
-    private function calculateTaxes($createTxn = false) {
-
+    private function calculateTaxes($createTxn = false)
+    {
         $invoiceType = Avalara\DocumentType::C_SALESORDER;
 
         if ($createTxn) {
             $invoiceType = Avalara\DocumentType::C_SALESINVOICE;
         }
 
-        if (empty($this->_customerCode)) {            
+        if (empty($this->_customerCode)) {
             throw new Exception('E_Avalara_Error:_CustomerCode_Is_Not_Set');
         }
 
@@ -282,32 +217,39 @@ class Avalaratax extends TaxBase {
             throw new Exception('E_Avalara_Error:_To_Address_Is_Not_Set');
         }
 
-        try {
-
+            
             $tb = new Avalara\TransactionBuilder($this->_client, $this->_companyCode, $invoiceType, $this->_customerCode, $this->_invoiceDate);
             if ($this->settings['commit_transaction'] == 1) {
                 $tb->withCommit();
             }
 
-            foreach ($this->_products as $itemKey => $product) {
-                $tb->withLine($product['amount'], $product['quantity'], $product['itemCode'], $product['taxCode']);
-                if(!empty($this->_discountAmount)){
+            foreach ($this->_products as $itemKey => $item) {
+                $tb->withLine($item['amount'], $item['quantity'], $item['itemCode'], $item['taxCode']);
+                if (!empty($this->_discountAmount)) {
                     $tb->withItemDiscount(true);
-                }                        
-                
-                $fromAddress = $this->_fromAddress;
-                $toAddress = $this->_toAddress;
-                
-                if ($product['isDigital'] == 1) {
-                    /*
-                    * To address will be seller address for tax calulation in case of digital
-                    */
-                    $toAddress = $fromAddress;
                 }
 
-                $tb->withLineAddress(Avalara\TransactionAddressType::C_SHIPFROM, $fromAddress['line1'], $fromAddress['line2'], null, $fromAddress['city'], $fromAddress['region'], $fromAddress['postalCode'], $fromAddress['country'])
-                        ->withLineAddress(Avalara\TransactionAddressType::C_SHIPTO, $toAddress['line1'], $toAddress['line2'], null, $toAddress['city'], $toAddress['region'], $toAddress['postalCode'], $toAddress['country']);
+                $fromAddress = $this->_fromAddress;
+                $toAddress = $this->_toAddress;
+
+                $tb->withLineAddress(Avalara\TransactionAddressType::C_SHIPFROM, $fromAddress['line1'], $fromAddress['line2'], null, $fromAddress['city'], $fromAddress['state'], $fromAddress['postalCode'], $fromAddress['country'])
+                        ->withLineAddress(Avalara\TransactionAddressType::C_SHIPTO, $toAddress['line1'], $toAddress['line2'], null, $toAddress['city'], $toAddress['state'], $toAddress['postalCode'], $toAddress['country']);
             }
+
+
+            foreach ($this->_productsShipping as $itemKey => $item) {
+                $tb->withLine($item['amount'], $item['quantity'], $item['itemCode'], $item['taxCode']);
+                if (!empty($this->_discountAmount)) {
+                    $tb->withItemDiscount(true);
+                }
+
+                $fromAddress = $this->_fromAddress;
+                $toAddress = $this->_toAddress;
+
+                $tb->withLineAddress(Avalara\TransactionAddressType::C_SHIPFROM, $fromAddress['line1'], $fromAddress['line2'], null, $fromAddress['city'], $fromAddress['state'], $fromAddress['postalCode'], $fromAddress['country'])
+                        ->withLineAddress(Avalara\TransactionAddressType::C_SHIPTO, $toAddress['line1'], $toAddress['line2'], null, $toAddress['city'], $toAddress['state'], $toAddress['postalCode'], $toAddress['country']);
+            }
+
 
             if (0 < $this->_discountAmount) {
                 $tb->withDiscountAmount($this->_discountAmount);
@@ -316,16 +258,13 @@ class Avalaratax extends TaxBase {
             if (!empty($this->_invoiceId)) {
                 $tb->withTransactionCode($this->_invoiceId);
             }
-
-            $this->_taxApiResponse = $tb->create();
-
+            $this->_taxApiResponse = $tb->create();           
             return $this->_taxApiResponse;
-        } catch (\Exception $e) {
-            throw new Exception('E_Avalara_Error:_' . $e->getMessage());
-        }
+       
     }
 
-    public function withLicenseKey($accountId, $licenseKey) {
+    private function withLicenseKey($accountId, $licenseKey)
+    {
         if (empty($accountId) || empty($licenseKey)) {
             throw new Exception('E_Avalara_Error:_AccountId_and_licenseKey_are_mandatory_fields!');
         }
@@ -333,7 +272,8 @@ class Avalaratax extends TaxBase {
         return $this;
     }
 
-    public function withSecurity($username, $password) {
+    private function withSecurity($username, $password)
+    {
         if (empty($username) || empty($password)) {
             throw new Exception('E_Avalara_Error:_Username_and-password_are_mandatory_fields!');
         }
@@ -341,8 +281,51 @@ class Avalaratax extends TaxBase {
         return $this;
     }
 
-    public function getTaxApiActualResponse() {
+    public function getTaxApiActualResponse()
+    {
         return $this->_taxApiResponse;
+    }
+
+    private function validateAddressArrKeys($address)
+    {
+        if (!is_array($address)) {
+            return false;
+        }
+
+        $requiredKeys = ['line1', 'line2', 'city', 'state', 'postalCode', 'country'];
+        return !array_diff($requiredKeys, array_keys($address));
+    }
+
+    private function validateitemArrKeys($item)
+    {
+        if (!is_array($item)) {
+            return false;
+        }
+        $requiredKeys = ['amount', 'quantity', 'itemCode', 'taxCode'];
+
+        return !array_diff($requiredKeys, array_keys($item));
+    }
+
+    private function formatTaxes($taxes)
+    {
+        $formatedTax = [];
+        foreach ($taxes->lines as $line) {
+            $taxDetails = [];
+            foreach ($line->details as $lineTaxdetail) {
+                $taxName = $lineTaxdetail->taxName;
+                if (isset($taxDetails[$taxName])) {
+                    $taxDetails[$taxName] += $lineTaxdetail->tax;
+                } else {
+                    $taxDetails[$taxName] = $lineTaxdetail->tax;
+                }
+            }
+            $formatedTax[$line->itemCode] = array(
+                'tax' => $line->tax,
+                'taxDetails' => $taxDetails,
+            );
+        }
+
+        return $formatedTax;
     }
 
 }

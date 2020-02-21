@@ -2,4 +2,5 @@
 
 class TaxSettingsController extends PluginSettingController
 {
+    
 }

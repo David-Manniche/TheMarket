@@ -1,9 +1,9 @@
 <?php
 
-class AvalaraTaxSettingsController extends TaxSettingsController {
-
-    public static function form($langId) {
-
+class AvalaraTaxSettingsController extends TaxSettingsController
+{
+    public static function form($langId)
+    {
         $frm = new Form('frmAvalaraTax');
         $frm->addTextBox(Labels::getLabel('LBL_Account_Number', $langId), 'account_number')->requirements()->setRequired(true);
         $frm->addTextBox(Labels::getLabel('LBL_License_Key', $langId), 'license_key')->requirements()->setRequired(true);
@@ -12,7 +12,5 @@ class AvalaraTaxSettingsController extends TaxSettingsController {
         $frm->addRadioButtons(Labels::getLabel('LBL_Environment', $langId), 'environment', ['sandbox' => 'Sandbox', 'production' => 'Production'], 'sandbox')->requirements()->setRequired(true);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
         return $frm;
-        
     }
-
 }

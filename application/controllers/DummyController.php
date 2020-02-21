@@ -664,8 +664,21 @@ class DummyController extends MyAppController
     }
     
     public function testavalaratax(){
+     
         require_once CONF_PLUGIN_DIR . '/tax/avalaratax/Avalaratax.php';
-
+    ini_set('display_errors', 1);
+   ini_set('display_startup_errors', 1);
+   error_reporting(E_ALL);
+        
+        
+//        $item = [
+//              'amount' => 100,
+//              'quantity' => 2,
+//              'itemCode' => 100,
+//              'taxCode' => 'P0000000',
+//              'isDigital' => 1,    
+//              'shippingAmount'=> 10
+//        ];
         
         
         $itemsArr = [];
@@ -674,8 +687,7 @@ class DummyController extends MyAppController
               'amount' => 100,
               'quantity' => 2,
               'itemCode' => 100,
-              'taxCode' => 'P0000000',
-              'isDigital' => 1,            
+              'taxCode' => 'P0000000',                
         ];
         array_push($itemsArr, $item);
         
@@ -690,13 +702,13 @@ class DummyController extends MyAppController
         ];
         array_push($shippingItems, $shippingItem);      
         
-            
+       
         $fromAddress = array(
-            'line1' => '424 E Palm Canyon Dr',
+            'line1' => '424 E vasvPavsvslm vvCavvnyon Dr',
             'line2' => '',
-            'city' => 'Palm Springs',
+            'city' => 'Palasvm Springs',
             'state' => 'CA',
-            'postalCode' => '92264-8806',
+            'postalCode' => '92asv264-8806',
             'country' => 'US',
         );
 
@@ -710,19 +722,17 @@ class DummyController extends MyAppController
         );    
         
         
-        $avalaraObj = new Avalaratax(1);
-        $taxRates =  $avalaraObj->setCustomerCode(1250)   
-            ->setDiscountAmount(10) 
-            ->setFromAddress($fromAddress['line1'],$fromAddress['line2'],'',$fromAddress['city'],$fromAddress['state'],$fromAddress['postalCode'],$fromAddress['country']) 
-            ->setToAddress($toAddress['line1'],$toAddress['line2'],$toAddress['city'],$toAddress['state'],$toAddress['postalCode'],$toAddress['country'])
-            ->setProducts($item)
-            ->setProductsShipping($shippingItem)
-            ->setInvoiceId("S-100-1")
-            ->setInvoiceDate("2020-01-11")
-            ->getRates();
+        $avalaraObj = new Avalaratax(1); 
+        $txRates = $avalaraObj->getRates($fromAddress , $toAddress,$itemsArr ,$shippingItems,1);
+
         
-        var_dump($taxRates);
-        
+        //$taxRates1 = $avalaraObj->createInvoice($fromAddress , $toAddress,$itemsArr ,$shippingItems,100,'2019-10-11','S-1000');
+     
+        echo('<pre>' . json_encode($txRates, JSON_PRETTY_PRINT) . '</pre>');
+      // echo('<pre>' . json_encode($taxRates1, JSON_PRETTY_PRINT) . '</pre>');
+        die(); 
         
     }
+    
+    
 }
