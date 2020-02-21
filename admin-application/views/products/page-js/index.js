@@ -81,6 +81,7 @@ $(document).ready(function(){
     clearSearch = function(){
         document.frmSearch.reset();
         document.frmSearch.product_seller_id.value = '';
+        document.frmSearch.product_id.value = '';
         document.frmSearch.prodcat_id.value = -1;
         searchProducts(document.frmSearch);
     };

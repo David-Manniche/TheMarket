@@ -90,3 +90,4 @@ Bugs:
     => 034608 - when user adds item to cart and turns back from payment gateway then quantity get doubles.
     => 034661 - Unable to save buy together and related products.
     => 034729 - Getting error on side bar on login with advertiser account
+    => 034656 - when user jumps to product list from tags then even after resetting filter all products are not listing
