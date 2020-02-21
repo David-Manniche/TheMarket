@@ -31,6 +31,7 @@
             $("#tabs_001").show();
             $("a[rel='tabs_001']").addClass('active');
             $("#tabs_001").html(res);
+			fcom.resetEditorWidth();
 		});
 	};
 
@@ -399,6 +400,7 @@
     };
 
     translateData = function(item, defaultLang, toLangId){ 
+		fcom.setEditorLayout(toLangId);
         var autoTranslate = $("input[name='auto_update_other_langs_data']:checked").length;
         var prodName = $("input[name='product_name["+defaultLang+"]']").val();
         //var prodDesc = $("[name='product_description["+defaultLang+"]']").val();

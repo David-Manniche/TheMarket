@@ -103,12 +103,25 @@ $(document).ready(function () {
                 oUtil.arrEditor = [];
             }
         },
+		
+		resetEditorWidth: function(width = "100%") {
+            if (typeof oUtil != 'undefined') {
+                (oUtil.arrEditor).forEach(function (input) {
+					var oEdit1 = eval(input);
+					$("#idArea" + oEdit1.oName).attr("width", width);
+				});
+            }
+        },
 
         setEditorLayout: function(lang_id) {
             var editors = oUtil.arrEditor;
             layout = langLbl['language' + lang_id];
             for (x in editors) {
-                $('#idContent' + editors[x]).contents().find("body").css('direction', layout);
+				var oEdit1 = eval(editors[x]);
+				if ($('#idArea' + oEdit1.oName).parents(".layout--rtl").length){
+					$('#idContent' + editors[x]).contents().find("body").css('direction', layout);
+					$('#idArea' + oEdit1.oName + ' td[dir="ltr"]').attr('dir', layout);
+				}
             }
         },
 
