@@ -5,9 +5,9 @@ if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
     ob_start();
 }
 
-ini_set('display_errors', (CONF_DEVELOPMENT_MODE)?1:1);
+ini_set('display_errors', (CONF_DEVELOPMENT_MODE)?1:0);
 
-error_reporting(E_ALL);
+error_reporting((CONF_DEVELOPMENT_MODE)?E_ALL:E_ALL & ~E_NOTICE & ~E_WARNING);
 
 require_once CONF_INSTALLATION_PATH . 'library/autoloader.php';
 

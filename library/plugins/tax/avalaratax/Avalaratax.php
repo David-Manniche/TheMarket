@@ -4,7 +4,6 @@ require_once CONF_INSTALLATION_PATH . 'library/avalara/autoload.php';
 
 class Avalaratax extends TaxBase
 {
-
     public const KEY_NAME = 'AvalaraTax';
 
     private $settings = [];
@@ -16,10 +15,11 @@ class Avalaratax extends TaxBase
     private $_products = [];
     private $_productsShipping = [];
     private $_customerCode;
-    private $_discountAmount;
     private $_invoiceId;
     private $_taxApiResponse;
     private $_invoiceDate;
+    
+    //const TAX_TYPES = ['COUNTY TAX','STATE TAX','CITY TAX','SPECIAL TAX'];
 
     public function __construct($langId)
     {
@@ -36,17 +36,6 @@ class Avalaratax extends TaxBase
         $this->_client->withLicenseKey($this->settings['account_number'], $this->settings['license_key']);
         $this->_client->withCatchExceptions(false);
         $this->_companyCode = $this->settings['company_code'];
-     
-    }
-
-    private function validateSettings()
-    {
-        $requiredKeyArr = ['account_number', 'commit_transaction', 'company_code', 'environment', 'license_key'];
-        foreach ($requiredKeyArr as $key) {
-            if (!array_key_exists($key, $this->settings)) {
-                throw new Exception(Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->langId));
-            }
-        }
     }
 
     public function checkCredentials($account_number, $license_key)
@@ -58,7 +47,6 @@ class Avalaratax extends TaxBase
 
     public function getRates($fromAddress, $toAddress, $itemsArr, $shippingItem, $userId)
     {
-
         try {
             $this->setFromAddress($fromAddress)
                     ->setToAddress($toAddress)
@@ -68,10 +56,9 @@ class Avalaratax extends TaxBase
 
             $taxes = $this->calculateTaxes();
         } catch (\Exception $e) {
-       
             return [
                 'status' => false,
-                'msg' => Labels::getLabel($e->getMessage(),$this->langId),
+                'msg' => Labels::getLabel($e->getMessage(), $this->langId),
             ];
         }
 
@@ -89,17 +76,15 @@ class Avalaratax extends TaxBase
                     ->setToAddress($toAddress)
                     ->setProducts($itemsArr)
                     ->setProductsShipping($shippingItem)
-                    ->setCustomerCode($userId)
+                    //->setCustomerCode($userId)
                     ->setInvoiceId($InvoiceNo)
                     ->setInvoiceDate($invoiceDate);
 
             $taxes = $this->calculateTaxes(true);
         } catch (\Exception $e) {
-            
-            
             return [
                 'status' => false,
-                'msg' => Labels::getLabel($e->getMessage(),$this->langId),
+                'msg' => Labels::getLabel($e->getMessage(), $this->langId),
             ];
         }
 
@@ -108,6 +93,46 @@ class Avalaratax extends TaxBase
             'msg' => Labels::getLabel("MSG_SUCCESS", $this->langId),
             'data' => $this->formatTaxes($taxes)
         ];
+    }
+
+    /*
+     * @param string $filter A filter statement to identify specific records to retrieve. For more information on filtering, see [Filtering in REST](http://developer.avalara.com/avatax/filtering-in-rest/).
+     * @param int $pageSize If nonzero, return no more than this number of results. Used with `$pageNumber` to provide pagination for large datasets. Unless otherwise specified, the maximum number of records that can be returned from an API call is 1,000 records.
+     * @param int $pageNumber If nonzero, skip this number of results before returning data. Used with `$pageSize` to provide pagination for large datasets.
+     * @param string $orderBy A comma separated list of sort statements in the format `(fieldname) [ASC|DESC]`, for example `id ASC`.
+     */
+
+    public function getCodes($filter = null, $pageSize = null, $pageNumber = null, $orderBy = null)
+    {
+        if (!empty($filter)) {
+            $filter = "description contains '$filter' or taxCode contains '$filter'";
+        }
+        try {
+            return [
+                'status' => true,
+                'data' => (array) $this->_client->listTaxCodes($filter, $pageSize, $pageNumber, $orderBy)
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => false,
+                'msg' => $e->getMessage()                    
+            ];
+        }
+    }
+
+    public function getTaxApiActualResponse()
+    {
+        return $this->_taxApiResponse;
+    }
+
+    private function validateSettings()
+    {
+        $requiredKeyArr = ['account_number', 'commit_transaction', 'company_code', 'environment', 'license_key'];
+        foreach ($requiredKeyArr as $key) {
+            if (!array_key_exists($key, $this->settings)) {
+                throw new Exception(Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->langId));
+            }
+        }
     }
 
     private function setFromAddress($address)
@@ -122,8 +147,6 @@ class Avalaratax extends TaxBase
 
     private function setToAddress($address)
     {
-
-
         if (!$this->validateAddressArrKeys($address)) {
             throw new Exception("E_Avalara_Error:_Invalid_To_Address_keys");
         }
@@ -136,7 +159,7 @@ class Avalaratax extends TaxBase
     private function setProducts($products)
     {
         if (!$this->validateitemArrKeys(current($products))) {
-            throw new Exception("E_Avalara_Error:_Invalid_To_Product_Keys");
+            throw new Exception("E_Avalara_Error:_Invalid_To_Product_Array_Keys");
         }
 
         $this->_products = $products;
@@ -147,7 +170,7 @@ class Avalaratax extends TaxBase
     private function setProductsShipping($productsShipping)
     {
         if (!$this->validateitemArrKeys(current($productsShipping))) {
-            throw new Exception("E_Avalara_Error:_Invalid_To_Product_Shipping_keys");
+            throw new Exception("E_Avalara_Error:_Invalid_To_Product_Shipping_Array_keys");
         }
 
         $this->_productsShipping = $productsShipping;
@@ -161,12 +184,6 @@ class Avalaratax extends TaxBase
          *      * @param string        $customerCode  The customer code for this transaction
          */
         $this->_customerCode = $customerCode;
-        return $this;
-    }
-
-    private function setDiscountAmount($discount)
-    {
-        $this->_discountAmount = floatval($discount);
         return $this;
     }
 
@@ -217,7 +234,7 @@ class Avalaratax extends TaxBase
             throw new Exception('E_Avalara_Error:_To_Address_Is_Not_Set');
         }
 
-            
+        try {
             $tb = new Avalara\TransactionBuilder($this->_client, $this->_companyCode, $invoiceType, $this->_customerCode, $this->_invoiceDate);
             if ($this->settings['commit_transaction'] == 1) {
                 $tb->withCommit();
@@ -225,9 +242,7 @@ class Avalaratax extends TaxBase
 
             foreach ($this->_products as $itemKey => $item) {
                 $tb->withLine($item['amount'], $item['quantity'], $item['itemCode'], $item['taxCode']);
-                if (!empty($this->_discountAmount)) {
-                    $tb->withItemDiscount(true);
-                }
+                $tb->withLineDescription(Labels::getLabel('LBL_Product', $this->langId));
 
                 $fromAddress = $this->_fromAddress;
                 $toAddress = $this->_toAddress;
@@ -239,9 +254,7 @@ class Avalaratax extends TaxBase
 
             foreach ($this->_productsShipping as $itemKey => $item) {
                 $tb->withLine($item['amount'], $item['quantity'], $item['itemCode'], $item['taxCode']);
-                if (!empty($this->_discountAmount)) {
-                    $tb->withItemDiscount(true);
-                }
+                $tb->withLineDescription(Labels::getLabel('LBL_Shipping', $this->langId));
 
                 $fromAddress = $this->_fromAddress;
                 $toAddress = $this->_toAddress;
@@ -250,17 +263,17 @@ class Avalaratax extends TaxBase
                         ->withLineAddress(Avalara\TransactionAddressType::C_SHIPTO, $toAddress['line1'], $toAddress['line2'], null, $toAddress['city'], $toAddress['state'], $toAddress['postalCode'], $toAddress['country']);
             }
 
-
-            if (0 < $this->_discountAmount) {
-                $tb->withDiscountAmount($this->_discountAmount);
-            }
-
             if (!empty($this->_invoiceId)) {
                 $tb->withTransactionCode($this->_invoiceId);
             }
-            $this->_taxApiResponse = $tb->create();           
+            
+            $this->_taxApiResponse = $tb->create();
+            
             return $this->_taxApiResponse;
-       
+        } catch (\Exception $e) {
+            $errorMsgObj = json_decode($e->getResponse()->getBody()->getContents());
+            throw new Exception('E_Avalara_Error:_' . str_replace(" ", "_", $errorMsgObj->error->message));
+        }
     }
 
     private function withLicenseKey($accountId, $licenseKey)
@@ -279,11 +292,6 @@ class Avalaratax extends TaxBase
         }
         $this->_client->withSecurity($username, $password);
         return $this;
-    }
-
-    public function getTaxApiActualResponse()
-    {
-        return $this->_taxApiResponse;
     }
 
     private function validateAddressArrKeys($address)
@@ -327,5 +335,4 @@ class Avalaratax extends TaxBase
 
         return $formatedTax;
     }
-
 }
