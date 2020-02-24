@@ -101,3 +101,4 @@ Bugs:
     => 034472 - In products listing> count is displaying with text and on applying filter only count stays
 ------------TV-9.1.3.20200221------------------
     => 034804 - Hide save search button if no record found after applying filters on shop page product search.
+    => 034803 - Change no record found design for product search listing on shop or global search.
