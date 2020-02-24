@@ -563,8 +563,14 @@ function updatePriceFilter(minPrice,maxPrice,addPriceFilter){
 		var currUrl = getSearchQueryUrl(true);
 		fcom.ajax(currUrl, data, function(res){
 			$('#productsList').html(res);			
-			var frm = document.frmProductSearchPaging;
-			$('#total_records').html($(frm.recordDisplayCount).val());				
+            var frm = document.frmProductSearchPaging;
+            var recordCount = parseInt($(frm.recordDisplayCount).val());
+            $('#total_records').html(recordCount);	
+            if (1 > recordCount) {
+                $('.saveSearch-js').hide();
+            } else {
+                $('.saveSearch-js').show();
+            }
 		});
 		window.history.pushState('','',currUrl);
 		//window.location.href = getSearchQueryUrl(true);
