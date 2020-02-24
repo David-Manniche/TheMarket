@@ -113,4 +113,5 @@ Bugs:
     => 034788 - Vol discount rows are not getting removed from frontend.
     => 034574 - Fixed shop collection page filters issue.
     => 034494 - Keyword search with special character.
-    
+    => 034787 - Special price list rows are not getting removed from frontend.
+    => 034784 - Add minimum min qty of volume discount validation message while adding from frontend.
