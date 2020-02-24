@@ -556,11 +556,12 @@ function updatePriceFilter(minPrice,maxPrice,addPriceFilter){
 		});
 	};
 
-	reloadProductListing = function(frm){
+	reloadProductListing = function(frm){ 
 		$('#productsList').html(fcom.getLoader());
 		getSetSelectedOptionsUrl(frm);
 		var data = fcom.frmData(frm);		
 		var currUrl = getSearchQueryUrl(true);
+		console.log(currUrl);		
 		fcom.ajax(currUrl, data, function(res){
 			$('#productsList').html(res);			
 			var frm = document.frmProductSearchPaging;
