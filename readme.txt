@@ -111,3 +111,4 @@ Bugs:
     => 034794 - Getting error! if inventory is added from form for which it's already added (in different window).
     => 034791 - When vol discount (100%) and discount coupon are applied together then getting division by zero error occured.
     => 034789 - While adding inventory 0 is acceptable for minimum purchase qty.
+    => 034788 - Vol discount rows are not getting removed from frontend.

@@ -157,7 +157,8 @@ $(document).on('blur', ".js--volDiscountCol", function(){
                 volDisRow.siblings('.divider:first').remove();
                 volDisRow.remove();
             }
-		});
+            searchVolumeDiscountProducts(document.frmSearch);
+        });
 		return false;
 	};
     showElement = function(currObj, value){
