@@ -1364,7 +1364,9 @@ $(document).ready(function () {
     ] ENDS triggers & toggles
     */
 
-    $('[data-toggle="tooltip"]').tooltip();
+		$('[data-toggle="tooltip"]').tooltip({
+		   container: 'body'
+		});
 
 
 });

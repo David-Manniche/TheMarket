@@ -9,8 +9,8 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
             </div>
             <div class="col-auto">
                 <div class="btn-group">
-                    <a class="btn btn--secondary btn--sm" href="javascript:void(0)" onclick="truncateDataRequestPopup()"><?php echo Labels::getLabel('LBL_Request_to_remove_my_data', $siteLangId); ?></a>
-                    <a class="btn btn-outline-secondary btn--sm" href="javascript:void(0)" onclick="requestData()"><?php echo Labels::getLabel('LBL_Request_My_Data', $siteLangId); ?></a>
+                    <a class="btn btn-outline-primary btn--sm" href="javascript:void(0)" onclick="truncateDataRequestPopup()"><?php echo Labels::getLabel('LBL_Request_to_remove_my_data', $siteLangId); ?></a>
+                    <a class="btn btn-outline-primary btn--sm" href="javascript:void(0)" onclick="requestData()"><?php echo Labels::getLabel('LBL_Request_My_Data', $siteLangId); ?></a>
                     <?php if ($showSellerActivateButton) { ?>
                         <a href="<?php echo CommonHelper::generateUrl('Seller'); ?>"
                             class="btn btn--primary btn--sm panel__head_action"

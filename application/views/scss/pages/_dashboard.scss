@@ -348,7 +348,8 @@
             -webkit-box-pack: center;
             -ms-flex-pack: center;
             justify-content: center;
-            background: $brand-color; color:$brand-color-inverse;
+            background: $brand-color;
+            color: $brand-color-inverse;
         }
     }
 
@@ -505,12 +506,13 @@
 
     .dropdown__target-head {
         padding: 15px;
-        background: $brand-color; color:$brand-color-inverse;
+        background: $brand-color;
+        color: $brand-color-inverse;
     }
 
     .dropdown__target-head p {
         margin: 6px 0 0;
-        color:inherit;
+        color: inherit;
         font-size: 0.9em;
     }
 
@@ -788,7 +790,7 @@
                 .msg-count {
                     text-align: center;
                     border-radius: 50%;
-                                       font-size: 0.75rem;
+                    font-size: 0.75rem;
                     width: 20px;
                     height: 20px;
                     display: -webkit-box;
@@ -800,7 +802,8 @@
                     -webkit-box-pack: center;
                     -ms-flex-pack: center;
                     justify-content: center;
-                    background: $brand-color; color:$brand-color-inverse;
+                    background: $brand-color;
+                    color: $brand-color-inverse;
                 }
             }
 
@@ -962,7 +965,7 @@
             i {
                 font-size: 1rem;
                 margin-#{$start-direction}: 5px;
-                
+
             }
         }
     }
@@ -1323,9 +1326,10 @@
 .dashboard-togles {
     position: relative;
     display: block;
-    background: $secondary-color; color:$secondary-color-inverse;
+    background: $secondary-color;
+    color: $secondary-color-inverse;
     padding: 5px 0 5px 10px;
-   
+
     border-radius: 4px;
 
     > a {
@@ -1742,12 +1746,13 @@
         &.is-active {
             a {
                 border-color: $brand-color;
-                background: $brand-color; color:$brand-color-inverse;
-                
+                background: $brand-color;
+                color: $brand-color-inverse;
+
 
                 &:before {
                     content: "\f058";
-                   color:$brand-color-inverse
+                    color: $brand-color-inverse
                 }
             }
         }
@@ -1975,12 +1980,12 @@
             }
 
             &.is-active {
-                background: $brand-color; color:$brand-color-inverse;
+                background: $brand-color;
+                color: $brand-color-inverse;
 
 
                 > a {
-                   color:$brand-color-inverse
-
+                    color: $brand-color-inverse
                 }
             }
 
@@ -2174,4 +2179,9 @@ input.sp-input {
     &.scroll-y {
         max-height: 250px;
     }
+}
+
+.tagify__tag__removeBtn {
+    margin-#{$start-direction}: -4.66667px;
+    margin-#{$end-direction}: 4.66667px;
 }
