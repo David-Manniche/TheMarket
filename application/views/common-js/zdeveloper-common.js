@@ -1297,10 +1297,18 @@ $(document).ready(function () {
 
 /* Scroll Hint */
 $(document).ready(function () {
-    new ScrollHint('.table');
+    new ScrollHint('.table', {
+	  i18n: {
+		scrollable: langLbl.scrollable
+	  }
+	});
 });
 $(document).ajaxComplete(function () {
-    new ScrollHint('.table:not(.scroll-hint)');
+    new ScrollHint('.table:not(.scroll-hint)', {
+	  i18n: {
+		scrollable: langLbl.scrollable
+	  }
+	});
 
     //Remove scrolling on table with hand icon
     if (0 < $('div.block--empty').length && 0 < $('div.scroll-hint-icon-wrap').length) {

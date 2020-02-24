@@ -722,13 +722,13 @@ class ShopsController extends MyAppController
 
         $sReportObj->assignValues($dataToSave);
         if (!$sReportObj->save()) {
-            FatUtility::dieWithError(strip_tags(Labels::getLabel($sReportObj->getError(), $this->siteLangId)));
+            FatUtility::dieJsonError(strip_tags(Labels::getLabel($sReportObj->getError(), $this->siteLangId)));
         }
 
         $sreport_id = $sReportObj->getMainTableRecordId();
 
         if (!$sreport_id) {
-            FatUtility::dieWithError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
+            FatUtility::dieJsonError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
         }
 
         /* email notification[ */
@@ -746,7 +746,7 @@ class ShopsController extends MyAppController
             );
 
             if (!Notification::saveNotifications($notificationData)) {
-                FatUtility::dieWithError(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->siteLangId));
+                FatUtility::dieJsonError(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->siteLangId));
             }
         }
         /* ] */

@@ -73,7 +73,7 @@ Bugs:
     => 70149 - Blog Collection.
     => 034467 - SEO and Url rewriting fatal error while accessing
 
------------------------------------------------------------
+-----------------------------TV-9.1.3.20200217------------------------------
 
 Bugs:
     => 034376 - While entering data in RTL supported languages it is not getting entered in RTL mode.
@@ -89,3 +89,14 @@ Bugs:
     => 034475 - Pagination is not working  properly on Seller > Catalog list.
     => 034608 - when user adds item to cart and turns back from payment gateway then quantity get doubles.
     => 034661 - Unable to save buy together and related products.
+--------------------TV-9.1.3.20200219------------------------------
+    => 034729 - Getting error on side bar on login with advertiser account
+    => 034656 - when user jumps to product list from tags then even after resetting filter all products are not listing
+    => 034474 - Shop name should be there in shop report listing.
+    => 034473 - On reporting shop> getting invalid request with success message
+    => 034770 - In Table scroll popup "Scrollable" label must be display in arabic language is selected
+    => 034326 - While search products linked with tags by typing product name ajax got stuck
+    => 034638 - On product detail page> when user clicks on tabs then page is not scrolling to particular section
+    => 034540 - Innova editor full width issue
+    => 034472 - In products listing> count is displaying with text and on applying filter only count stays
+------------TV-9.1.3.20200221------------------
