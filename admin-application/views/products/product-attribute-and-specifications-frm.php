@@ -126,13 +126,14 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
          <?php 
          if(!empty($otherLanguages)){ 
             foreach($otherLanguages as $langId=>$data) { 
+                $layout = Language::getLayoutDirection($langId);
          ?>
          <div class="accordians_container accordians_container-categories mt-5">
              <div class="accordian_panel">
                  <span class="accordian_title accordianhead" onClick="displayOtherLangProdSpec(this,<?php echo $langId; ?>)">
                  <?php echo $data." "; echo Labels::getLabel('LBL_Language_Specification', $adminLangId); ?>
                  </span>
-                 <div class="accordian_body accordiancontent" style="display: none;">
+                 <div class="accordian_body accordiancontent p-0 layout--<?php echo $layout; ?>" style="display: none;">
                      <div class="specifications-form-<?php echo $langId; ?>"></div>
                     <div class="specifications-list-<?php echo $langId; ?>"></div>
                  </div>

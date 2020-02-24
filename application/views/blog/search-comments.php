@@ -2,7 +2,7 @@
 <?php if ($commentsCount) { ?>
 <div class="comment even">
     <?php foreach ($blogPostComments as $comment) { ?>
-        <article>
+        <div class="comments-wrap">
             <div class="comment-meta comment-author">
                 <img alt="" src="<?php echo CommonHelper::generateUrl('image', 'user', array($comment['bpcomment_user_id'], "THUMB",1), CONF_WEBROOT_FRONT_URL); ?>" class="avatar avatar-60 photo" width="60" height="60">
                 <div class="comment-by">
@@ -15,7 +15,7 @@
                         <a rel="nofollow" class="comment-reply-link" href="#comment-3712" onclick="return addComment.moveForm( &quot;comment-3712&quot;, &quot;3712&quot;, &quot;respond&quot;, &quot;4666&quot; )" aria-label="Reply to FATbit Chef">Reply</a> </div>-->
                 </div>
             </div>
-        </article>
+        </div>
     <?php }
     echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmSearchCommentsPaging')); ?>
 </div>
