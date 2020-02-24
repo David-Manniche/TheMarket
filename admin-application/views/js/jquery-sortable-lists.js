@@ -697,6 +697,10 @@
 
 				if ( state.oEl )
 				{ 
+                    /* [ custom work by developer */
+                    var catId = $(oEl).attr('id');
+                    displaySubCategories(this, catId);
+                    /* ] */
 					open( oEl ); // TODO:animation??? .children('ul,ol').css('display', 'block');
 				}
 			}
