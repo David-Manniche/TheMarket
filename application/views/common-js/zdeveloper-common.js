@@ -941,9 +941,11 @@ $(document).ready(function () {
         cart.update(key, page);
     });
 
-    $(document).on("change", '.productQty-js', function () {
+    $(document).on("keyup", '.productQty-js', function () {
         if ($(this).val() > $(this).parent().data('stock')) {
             val = $(this).parent().data('stock');
+			var message = langLbl.quantityAdjusted.replace(/{qty}/g, val);
+			$.mbsmessage( message, '', 'alert--success');
             $(this).parent().parent('div').find('.increase-js').addClass('not-allowed');
             $(this).parent().parent('div').find('.decrease-js').removeClass('not-allowed');
         } else if ($(this).val() <= 0) {
