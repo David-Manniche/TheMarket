@@ -114,3 +114,4 @@ Bugs:
     => 034574 - Fixed shop collection page filters issue.
     => 034494 - Keyword search with special character.
     
+-----------------------TV-9.1.3.20200223---------------
