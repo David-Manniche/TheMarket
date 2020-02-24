@@ -108,3 +108,4 @@ Bugs:
     => 034803 - Change no record found design for product search listing on shop or global search.
     => 034801 - Message needs to be corrected if quantity is added more than available.
     => 034795 - While purchasing item using wallet. Below "Remaining Wallet Balance" message is stick with currency icon.
+    => 034794 - Getting error! if inventory is added from form for which it's already added (in different window).
