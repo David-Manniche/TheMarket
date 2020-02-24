@@ -203,7 +203,7 @@ class ShopsController extends MyAppController
 
         $data = $this->getListingData($get, $includeShopData);
         if (false === MOBILE_APP_API_CALL) {
-            $frm = $this->getProductSearchForm();
+            $frm = $this->getProductSearchForm(); 
             $frm->fill($get);
 
             $arr = array(

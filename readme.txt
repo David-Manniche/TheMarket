@@ -101,3 +101,5 @@ Bugs:
     => 034472 - In products listing> count is displaying with text and on applying filter only count stays
 ------------TV-9.1.3.20200221------------------
     => 034574 - Fixed shop collection page filters issue.
+    => 034494 - Keyword search with special character.
+    

@@ -422,6 +422,7 @@ function getSearchQueryUrl(includeBaseUrl){
 	var keyword = $("input[id=keyword]").val();
 	if(keyword !=''){
 		delete searchArr['keyword'];
+		keyword = encodeURIComponent(keyword);
 		url = url +setQueryParamSeperator(url)+'keyword'+valueSeperator+keyword.replace(/_/g,'-');
 	}
 
