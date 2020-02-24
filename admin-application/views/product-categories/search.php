@@ -33,9 +33,9 @@
                                 <i class="switch-handles <?php echo $statusClass;?> clickable"></i>
                             </label>
                             <?php if ($canEdit) { ?> 
-                            <a href="<?php echo commonHelper::generateUrl('Products', 'form', array(0,$row['prodcat_id'])); ?>" title="<?php echo  Labels::getLabel('LBL_Add_Product', $adminLangId); ?>" class="btn btn-clean btn-sm btn-icon"><i class="fas fa-plus clickable"></i></a>
-                            <a href="javascript:void(0);" onClick="categoryForm(<?php echo $row['prodcat_id']; ?>)" title="<?php echo  Labels::getLabel('LBL_Edit', $adminLangId); ?>" class="btn btn-clean btn-sm btn-icon"><i class="far fa-edit clickable"></i></a>
-                            <a href="javascript::void(0)" title="<?php echo  Labels::getLabel('LBL_Delete', $adminLangId); ?>" onclick = "deleteRecord(<?php echo $row['prodcat_id']; ?>)" class="btn btn-clean btn-sm btn-icon"><i class="fa fa-trash clickable"></i></a>
+                            <button onClick="goToProduct(<?php echo $row['prodcat_id']; ?>)" title="<?php echo  Labels::getLabel('LBL_Add_Product', $adminLangId); ?>" class="btn btn-clean btn-sm btn-icon clickable"><i class="fas fa-plus clickable"></i></button>
+                            <button  onClick="categoryForm(<?php echo $row['prodcat_id']; ?>)" title="<?php echo  Labels::getLabel('LBL_Edit', $adminLangId); ?>" class="btn btn-clean btn-sm btn-icon clickable"><i class="far fa-edit clickable"></i></button>
+                            <button title="<?php echo  Labels::getLabel('LBL_Delete', $adminLangId); ?>" onclick = "deleteRecord(<?php echo $row['prodcat_id']; ?>)" class="btn btn-clean btn-sm btn-icon clickable"><i class="fa fa-trash clickable"></i></button>
                             <?php } ?>
                         </div>
                     </div>

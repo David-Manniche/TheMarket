@@ -90,6 +90,8 @@ Bugs:
     => 034608 - when user adds item to cart and turns back from payment gateway then quantity get doubles.
     => 034661 - Unable to save buy together and related products.
 --------------------TV-9.1.3.20200219------------------------------
+Bugs:
+
     => 034729 - Getting error on side bar on login with advertiser account
     => 034656 - when user jumps to product list from tags then even after resetting filter all products are not listing
     => 034474 - Shop name should be there in shop report listing.
@@ -100,3 +102,15 @@ Bugs:
     => 034540 - Innova editor full width issue
     => 034472 - In products listing> count is displaying with text and on applying filter only count stays
 ------------TV-9.1.3.20200221------------------
+Bugs:
+    => 034804 - Hide save search button if no record found after applying filters on shop page product search.
+    => 034803 - Change no record found design for product search listing on shop or global search.
+    => 034801 - Message needs to be corrected if quantity is added more than available.
+    => 034795 - While purchasing item using wallet. Below "Remaining Wallet Balance" message is stick with currency icon.
+    => 034794 - Getting error! if inventory is added from form for which it's already added (in different window).
+    => 034791 - When vol discount (100%) and discount coupon are applied together then getting division by zero error occured.
+    => 034789 - While adding inventory 0 is acceptable for minimum purchase qty.
+    => 034788 - Vol discount rows are not getting removed from frontend.
+    => 034574 - Fixed shop collection page filters issue.
+    => 034494 - Keyword search with special character.
+    

@@ -13,8 +13,14 @@ $th = $thead->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $key => $val) {
     if ('select_all' == $key) {
         $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input title="'.$val.'" type="checkbox" onclick="selectAll($(this))" class="selectAll-js"><i class="input-helper"></i></label>', true);
-    } else {
-        $th->appendElement('th', array(), $val);
+    } else if('listserial' == $key){
+        $th->appendElement('th', array('width' => '5%'), $val);
+    } else if('product_name' == $key){
+        $th->appendElement('th', array('width' => '25%'), $val);
+    } else if('original' == $key){
+        $th->appendElement('th', array('width' => '30%'), $val);
+    } else if('custom' == $key){
+        $th->appendElement('th', array('width' => '40%'), $val);
     }
 }
 if ($page ==1) {
@@ -46,7 +52,7 @@ foreach ($arrListing as $sn => $row) {
                 break;
             case 'custom':
                 $post = "post";
-                $td->appendElement('plaintext', array(), '<input type="text" name="custom_url" onkeyup = "getSlugUrl(this,this.value, '.$selProdId.', \''.$post.'\')" value="'.$row['urlrewrite_custom'].'" data-selprod_id="'.$selProdId.'" data-url_rewriting_id="'.$row['urlrewrite_id'].'"><small class="text--small">'.CommonHelper::generateFullUrl('Products', 'View', array($selProdId), '/').'</small>', true);
+                $td->appendElement('plaintext', array(), '<input type="text" name="custom_url" onkeyup = "getSlugUrl(this,this.value, '.$selProdId.', \''.$post.'\')" value="'.$row['urlrewrite_custom'].'" data-selprod_id="'.$selProdId.'" data-url_rewriting_id="'.$row['urlrewrite_id'].'"><span class="form-text text-muted ">'.CommonHelper::generateFullUrl('Products', 'View', array($selProdId), '/').'</span>', true);
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);

@@ -418,13 +418,16 @@ trait SellerProducts
 
         $data_to_be_save = $post;
         $useShopPolicy = FatApp::getPostedData('use_shop_policy', FatUtility::VAR_INT, 0);
+        $error = false;
+        
         foreach ($optionCombinations as $optionKey => $optionValue) {
             /* Check if product already added for this option [ */
             $selProdCode = $post['selprod_code'] . $optionKey;
             $selProdAvailable = Product::isSellProdAvailableForUser($selProdCode, $this->siteLangId, UserAuthentication::getLoggedUserId());
-
             if (!empty($selProdAvailable)) {
                 if (!$selProdAvailable['selprod_deleted']) {
+                    $error = true;
+                    Message::addErrorMessage($optionValue . ' ' . Labels::getLabel('MSG_ALREADY_ADDED', $this->siteLangId));
                     continue;
                 }
                 $data_to_be_save['selprod_deleted'] = applicationConstants::NO;
@@ -507,9 +510,13 @@ trait SellerProducts
 
             $productId = SellerProduct::getAttributesById($selprod_id, 'selprod_product_id', false);
             Product::updateMinPrices($productId);
+            $this->set('selprod_id', $selprod_id);
         }
 
-        $this->set('selprod_id', $selprod_id);
+        if ($error) {
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
         $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }

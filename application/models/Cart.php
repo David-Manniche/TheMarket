@@ -1393,7 +1393,11 @@ class Cart extends FatModel
                         $selProdDiscountTotal += $totalSelProdDiscount;
                         $discountedProdGroupIds[$cartProduct['prodgroup_id']] = round($totalSelProdDiscount,2); */
                     } else {
-                        $totalSelProdDiscount = round(($discountTotal * ($cartProduct['total'] - $cartProduct['volume_discount_total'])) / ($subTotal - $cartVolumeDiscount), 2);
+                        $balTotal = ($subTotal - $cartVolumeDiscount);
+                        $balTotal = 1 > $balTotal ? 1 : $balTotal;
+
+                        $totalSelProdDiscount = 1 > $discountTotal ? 0 : round(($discountTotal * ($cartProduct['total'] - $cartProduct['volume_discount_total'])) / $balTotal, 2);
+                        
                         $selProdDiscountTotal += $totalSelProdDiscount;
                         $discountedSelProdIds[$cartProduct['selprod_id']] = round($totalSelProdDiscount, 2);
                     }
@@ -1408,7 +1412,10 @@ class Cart extends FatModel
                         } */
                     } else {
                         if (in_array($cartProduct['product_id'], $couponInfo['grouped_coupon_products'])) {
-                            $totalSelProdDiscount = round(($discountTotal * ($cartProduct['total'] - $cartProduct['volume_discount_total'])) / ($subTotal - $cartVolumeDiscount), 2);
+                            $balTotal = ($subTotal - $cartVolumeDiscount);
+                            $balTotal = 1 > $balTotal ? 1 : $balTotal;
+
+                            $totalSelProdDiscount = 1 > $discountTotal ? 0 : round(($discountTotal * ($cartProduct['total'] - $cartProduct['volume_discount_total'])) / $balTotal, 2);
                             $selProdDiscountTotal += $totalSelProdDiscount;
                             $discountedSelProdIds[$cartProduct['selprod_id']] = round($totalSelProdDiscount, 2);
                         }
