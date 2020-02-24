@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-    'select_all'=>Labels::getLabel('LBL_Select_all', $siteLangId),
+    'select_all' => Labels::getLabel('LBL_Select_all', $siteLangId),
     'product_name' => Labels::getLabel('LBL_Name', $siteLangId),
     'splprice_start_date' => Labels::getLabel('LBL_Start_Date', $siteLangId),
     'splprice_end_date' => Labels::getLabel('LBL_End_Date', $siteLangId),
@@ -8,11 +8,11 @@ $arr_flds = array(
     'action' => Labels::getLabel('LBL_Action', $siteLangId),
 );
 
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table splPriceList-js'));
+$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table splPriceList-js'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $column => $lblTitle) {
     if ('select_all' == $column) {
-        $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input title="'.$lblTitle.'" type="checkbox" onclick="selectAll($(this))" class="selectAll-js"><i class="input-helper"></i></label>', true);
+        $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input title="' . $lblTitle . '" type="checkbox" onclick="selectAll($(this))" class="selectAll-js"><i class="input-helper"></i></label>', true);
     } else {
         $th->appendElement('th', array(), $lblTitle);
     }
@@ -22,13 +22,13 @@ foreach ($arrListing as $sn => $row) {
     $tr = $tbl->appendElement('tr', array());
     $splPriceId = $row['splprice_id'];
     $selProdId = $row['selprod_id'];
-    $editListingFrm = new Form('editListingFrm-'.$splPriceId, array('id'=>'editListingFrm-'.$splPriceId));
+    $editListingFrm = new Form('editListingFrm-' . $splPriceId, array('id' => 'editListingFrm-' . $splPriceId));
     foreach ($arr_flds as $column => $lblTitle) {
-        $tr->setAttribute('id', 'row-'.$splPriceId);
+        $tr->setAttribute('id', 'row-' . $splPriceId);
         $td = $tr->appendElement('td');
         switch ($column) {
             case 'select_all':
-                $td->appendElement('plaintext', array(), '<label class="checkbox"><input class="selectItem--js" type="checkbox" name="selprod_ids['.$splPriceId.']" value='.$selProdId.'><i class="input-helper"></i></label>', true);
+                $td->appendElement('plaintext', array(), '<label class="checkbox"><input class="selectItem--js" type="checkbox" name="selprod_ids[' . $splPriceId . ']" value=' . $selProdId . '><i class="input-helper"></i></label>', true);
                 break;
             case 'product_name':
                 // last Param of getProductDisplayTitle function used to get title in html form.
@@ -44,7 +44,7 @@ foreach ($arrListing as $sn => $row) {
                     'data-selprodid' => $selProdId,
                     'data-id' => $splPriceId,
                     'data-oldval' => $date,
-                    'id' => $column.'-'.$splPriceId,
+                    'id' => $column . '-' . $splPriceId,
                     'class' => 'date_js js--splPriceCol hidden sp-input',
                 );
                 $editListingFrm->addDateField($lblTitle, $column, $date, $attr);
@@ -53,18 +53,18 @@ foreach ($arrListing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $editListingFrm->getFieldHtml($column), true);
                 break;
             case 'splprice_price':
-                $input = '<input type="text" data-id="'.$splPriceId.'" value="'.$row[$column].'" data-selprodid="'.$selProdId.'" name="'.$column.'" data-oldval="'.$row[$column].'" data-displayoldval="'.CommonHelper::displayMoneyFormat($row[$column], true, true).'" class="js--splPriceCol hidden sp-input"/>';
+                $input = '<input type="text" data-id="' . $splPriceId . '" value="' . $row[$column] . '" data-selprodid="' . $selProdId . '" name="' . $column . '" data-oldval="' . $row[$column] . '" data-displayoldval="' . CommonHelper::displayMoneyFormat($row[$column], true, true) . '" class="js--splPriceCol hidden sp-input"/>';
                 $td->appendElement('div', array("class" => 'js--editCol edit-hover', "title" => Labels::getLabel('LBL_Click_To_Edit', $siteLangId)), CommonHelper::displayMoneyFormat($row[$column], true, true), true);
                 $td->appendElement('plaintext', array(), $input, true);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"), '', true);
+                $ul = $td->appendElement("ul", array("class" => "actions actions--centered"), '', true);
 
                 $li = $ul->appendElement('li');
                 $li->appendElement(
                     'a',
-                    array('href'=>'javascript:void(0)', 'class'=>'',
-                    'title'=>Labels::getLabel('LBL_Delete', $siteLangId),"onclick"=>"deleteSellerProductSpecialPrice(".$splPriceId.")"),
+                    array('href' => 'javascript:void(0)', 'class' => '',
+                    'title' => Labels::getLabel('LBL_Delete', $siteLangId), "onclick" => "deleteSellerProductSpecialPrice(" . $splPriceId . ")"),
                     '<i class="fa fa-trash"></i>',
                     true
                 );
@@ -75,20 +75,23 @@ foreach ($arrListing as $sn => $row) {
         }
     }
 }
-echo $tbl->getHtml();
-if (count($arrListing) == 0) {
-    $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
-    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
-}
 
-$frm = new Form('frmSplPriceListing', array('id'=>'frmSplPriceListing'));
+$frm = new Form('frmSplPriceListing', array('id' => 'frmSplPriceListing'));
 $frm->setFormTagAttribute('class', 'form');
 
-echo $frm->getFormTag(); ?>
+echo $frm->getFormTag(); 
+echo $tbl->getHtml();
+?>
 </form>
 <?php
+
+if (count($arrListing) == 0) {
+    $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
+    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId' => $siteLangId, 'message' => $message));
+}
+
 $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmSearchSpecialPricePaging'));
 
-$pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'recordCount'=>$recordCount,'callBackJsFunc' => 'goToSearchPage','adminLangId'=>$siteLangId);
+$pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'callBackJsFunc' => 'goToSearchPage', 'adminLangId' => $siteLangId);
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
