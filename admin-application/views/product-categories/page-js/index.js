@@ -100,7 +100,11 @@ $(document).ready(function(){
 		});
 		$.systemMessage.close();
 	};
-
+    
+    goToProduct = function(prodCatId){
+        window.location.href = fcom.makeUrl('Products', 'form', [0,prodCatId]);
+    };
+    
     displaySubCategories = function(obj, catId = 0){
         if(catId > 0 ){
             var prodCatId = catId;
@@ -108,18 +112,23 @@ $(document).ready(function(){
             var prodCatId = $(obj).parent().parent().parent().attr('id');
         }
 
-        if($("#"+prodCatId).hasClass('no-children')){
+        /* if($("#"+prodCatId).hasClass('no-children')){
             return false;
-        }
+        } */
 
         if($("#"+prodCatId+ ' ul li.child-category').length){
-            $("#"+prodCatId+ ' ul').show();
+            $("#"+prodCatId+ ' ul:first').show();
             togglePlusMinus(prodCatId);
             return false;
         }
 
         fcom.ajax(fcom.makeUrl('productCategories','getSubCategories'), 'prodCatId='+prodCatId, function(res){
-            $("#"+prodCatId).append('<ul>'+res+'</ul>');
+            //$("#"+prodCatId).append('<ul>'+res+'</ul>');
+            if($("#"+prodCatId).children('ul').length){
+                $("#"+prodCatId).children('ul').append(res);
+            }else{
+                $("#"+prodCatId).append('<ul>'+res+'</ul>');
+            }
             if(catId == 0){
                 togglePlusMinus(prodCatId);
             }
@@ -130,12 +139,15 @@ $(document).ready(function(){
         $("#"+prodCatId).children( 'div' ).children( '.sortableListsOpener' ).remove();
         if($("#"+prodCatId).hasClass('sortableListsClosed')){
             $("#"+prodCatId).removeClass('sortableListsClosed').addClass('sortableListsOpen');
-            $("#"+prodCatId).children( 'div' ).append('<span class="sortableListsOpener" ><i class="fa fa-minus clickable sort-icon" onClick="hideItems(this)"></i></span>');
+            $("#"+prodCatId).children( 'div' ).append('<span class="sortableListsOpener" ><i class="fa fa-minus clickable sort-icon" onClick="hideItems(this)"></i></span>');  
         }else{
             $("#"+prodCatId).removeClass('sortableListsOpen').addClass('sortableListsClosed');
-            $("#"+prodCatId).children( 'div' ).append('<span class="sortableListsOpener" ><i class="fa fa-plus c3 clickable sort-icon" onClick="displaySubCategories(this)"></i></span>');
-
+            $("#"+prodCatId).children( 'div' ).append('<span class="sortableListsOpener" ><i class="fa fa-plus c3 clickable sort-icon" onClick="displaySubCategories(this)"></i></span>');  
         }
+        
+        $("#"+prodCatId+ ' > ul:first > li:has(> ul)').children( 'div' ).children( '.sortableListsOpener' ).remove();
+        $("#"+prodCatId+ ' > ul:first > li:has(> ul)').removeClass('sortableListsOpen').addClass('sortableListsClosed');
+        $("#"+prodCatId+ ' > ul:first > li:has(> ul)').children( 'div' ).append('<span class="sortableListsOpener" ><i class="fa fa-plus c3 clickable sort-icon" onClick="displaySubCategories(this)"></i></span>');
    }
 
    hideItems = function(obj){
