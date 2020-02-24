@@ -1,7 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
-$layout = Language::getLayoutDirection($langId);
 ?>
-<div class="web_form p-4 mb-4 bg-gray rounded layout--<?php echo $layout; ?>">
+<div class="web_form p-4 mb-4 bg-gray rounded">
      <div class="row">
         <div class="col-md-4">
              <div class="field-set">
