@@ -941,9 +941,11 @@ $(document).ready(function () {
         cart.update(key, page);
     });
 
-    $(document).on("change", '.productQty-js', function () {
+    $(document).on("keyup", '.productQty-js', function () {
         if ($(this).val() > $(this).parent().data('stock')) {
             val = $(this).parent().data('stock');
+			var message = langLbl.quantityAdjusted.replace(/{qty}/g, val);
+			$.mbsmessage( message, '', 'alert--success');
             $(this).parent().parent('div').find('.increase-js').addClass('not-allowed');
             $(this).parent().parent('div').find('.decrease-js').removeClass('not-allowed');
         } else if ($(this).val() <= 0) {
@@ -1297,10 +1299,18 @@ $(document).ready(function () {
 
 /* Scroll Hint */
 $(document).ready(function () {
-    new ScrollHint('.table');
+    new ScrollHint('.table', {
+	  i18n: {
+		scrollable: langLbl.scrollable
+	  }
+	});
 });
 $(document).ajaxComplete(function () {
-    new ScrollHint('.table:not(.scroll-hint)');
+    new ScrollHint('.table:not(.scroll-hint)', {
+	  i18n: {
+		scrollable: langLbl.scrollable
+	  }
+	});
 
     //Remove scrolling on table with hand icon
     if (0 < $('div.block--empty').length && 0 < $('div.scroll-hint-icon-wrap').length) {
@@ -1364,7 +1374,9 @@ $(document).ready(function () {
     ] ENDS triggers & toggles
     */
 
-    $('[data-toggle="tooltip"]').tooltip();
+		$('[data-toggle="tooltip"]').tooltip({
+		   container: 'body'
+		});
 
 
 });

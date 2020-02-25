@@ -412,8 +412,10 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                 
 
 
-            </div>
-			 
+            </div>		
+						<!-- Don't remove scrollUpTo-js span -->
+						<span id="scrollUpTo-js"></span>
+						<!-- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -->
                         <div class="nav-detail nav-detail-js">
                             <ul>
                                 <?php if (count($productSpecifications)>0) {?>
@@ -656,7 +658,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                 scrollTop: target_top
             }, 800); */
 			$('html, body').animate({ 
-                scrollTop: $("#" + trgt).offset().top 
+                scrollTop: parseInt($("#" + trgt).position().top) + parseInt($("#scrollUpTo-js").position().top)
             }, 800);
 			
         });

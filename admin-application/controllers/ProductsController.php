@@ -8,7 +8,7 @@ class ProductsController extends AdminBaseController
         $this->objPrivilege->canViewProducts();
     }
 
-    public function index()
+    public function index($prodCatId = 0)
     {
         $data = FatApp::getPostedData();
         $srchFrm = $this->getSearchForm();
@@ -17,9 +17,12 @@ class ProductsController extends AdminBaseController
             unset($data['id']);
             $srchFrm->fill($data);
         }
+        $prodCatId = FatUtility::int($prodCatId);
+        if($prodCatId > 0){
+            $srchFrm->fill(array('prodcat_id' => $prodCatId));
+        }
+                
         $this->set("frmSearch", $srchFrm);
-        $this->_template->addJs('js/jscolor.js');
-        $this->_template->addJs('js/import-export.js');
         $this->set('canEdit', $this->objPrivilege->canEditProducts(0, true));
         $this->_template->render();
     }

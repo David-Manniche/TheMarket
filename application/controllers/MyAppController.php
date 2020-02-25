@@ -127,6 +127,8 @@ class MyAppController extends FatController
         'unknownPrimaryLanguageField' => Labels::getLabel('LBL_PRIMARY_LANGUAGE_FIELD_IS_NOT_SET.', $this->siteLangId),
         'invalidRequest' => Labels::getLabel('LBL_INVALID_REQUEST', $this->siteLangId),
         'defaultCountryCode' => $defaultCountryCode,
+        'scrollable' => Labels::getLabel('LBL_SCROLLABLE', $this->siteLangId),
+        'quantityAdjusted' => Labels::getLabel('MSG_MAX_QUANTITY_THAT_CAN_BE_PURCHASED_IS_{QTY}._SO,_YOUR_REQUESTED_QUANTITY_IS_ADJUSTED_TO_{QTY}.', $this->siteLangId),
         );
 
         $languages = Language::getAllNames(false);

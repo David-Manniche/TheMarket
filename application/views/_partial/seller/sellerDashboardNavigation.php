@@ -44,7 +44,7 @@ $action = strtolower($action);
                 <li class="menu__item <?php echo ($controller == 'seller' && $action == 'producttags') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Product_Tags', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'productTags'); ?>">
                     <i class="icn shop"><svg class="svg">
-                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
+                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#product-tags" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#product-tags"></use>
                         </svg>
                     </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Product_Tags', $siteLangId);?></span></a></div>
                 </li>
@@ -70,7 +70,7 @@ $action = strtolower($action);
                 <div class="menu__item__inner">
                     <a title="<?php echo Labels::getLabel('LBL_Meta_Tags', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'productSeo'); ?>">
                         <i class="icn shop"><svg class="svg">
-                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#meta-tags" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#meta-tags"></use>
                             </svg>
                         </i>
                         <span class="menu-item__title"><?php echo Labels::getLabel('LBL_Meta_Tags', $siteLangId);?></span>
@@ -80,7 +80,7 @@ $action = strtolower($action);
             <li class="menu__item <?php echo ($controller == 'seller' && $action == 'producturlrewriting') ? 'is-active' : ''; ?>">
                 <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_URL_Rewriting', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'productUrlRewriting'); ?>">
                 <i class="icn shop"><svg class="svg">
-                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
+                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#url-rewriting" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#url-rewriting"></use>
                     </svg>
                 </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_URL_Rewriting', $siteLangId);?></span></a></div>
             </li>
@@ -92,7 +92,7 @@ $action = strtolower($action);
                 <div class="menu__item__inner">
                     <a title="<?php echo Labels::getLabel('LBL_Special_Price', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'specialPrice'); ?>">
                         <i class="icn shop"><svg class="svg">
-                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#special-price" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#special-price"></use>
                             </svg>
                         </i>
                         <span class="menu-item__title"><?php echo Labels::getLabel('LBL_Special_Price', $siteLangId);?></span>
@@ -102,21 +102,21 @@ $action = strtolower($action);
             <li class="menu__item <?php echo ($controller == 'seller' && $action == 'volumediscount') ? 'is-active' : ''; ?>">
                 <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Volume_Discount', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'volumeDiscount'); ?>">
                 <i class="icn shop"><svg class="svg">
-                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
+                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#volume-discount" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#volume-discount"></use>
                     </svg>
                 </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Volume_Discount', $siteLangId);?></span></a></div>
             </li>
             <li class="menu__item <?php echo ($controller == 'seller' && $action == 'upsellproducts') ? 'is-active' : ''; ?>">
                 <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Buy_Together_Products', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'upsellProducts'); ?>">
                 <i class="icn shop"><svg class="svg">
-                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
+                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#buy-together-products" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#buy-together-products"></use>
                     </svg>
                 </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Buy_Together_Products', $siteLangId);?></span></a></div>
             </li>
             <li class="menu__item <?php echo ($controller == 'seller' && $action == 'relatedproducts') ? 'is-active' : ''; ?>">
                 <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Related_Products', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'RelatedProducts'); ?>">
                 <i class="icn shop"><svg class="svg">
-                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
+                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#related-products" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#related-products"></use>
                     </svg>
                 </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Related_Products', $siteLangId);?></span></a></div>
             </li>

@@ -40,7 +40,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                 $submitFld->setWrapperAttribute('class', 'col-lg-2');
                                 $submitFld->developerTags['col'] = 2;
 
-                                $fldClear= $frmSearchCatalogProduct->getField('btn_clear');
+                                $fldClear = $frmSearchCatalogProduct->getField('btn_clear');
                                 $fldClear->setFieldTagAttribute('onclick', 'clearSearch()');
                                 $fldClear->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
                                 $fldClear->setWrapperAttribute('class', 'col-lg-2');
@@ -53,7 +53,6 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                 echo $frmSearchCatalogProduct->getFormHtml();
                                 ?>
                             </div>
-
                         </div>
                     </div>
                 </div>

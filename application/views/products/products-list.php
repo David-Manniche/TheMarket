@@ -49,13 +49,14 @@ if ($products) {
         $searchFunction =  $pagingFunc;
     }
 
-    $postedData['page'] = (isset($page)) ? $page:1;
+    $postedData['page'] = (isset($page)) ? $page : 1;
     $postedData['recordDisplayCount'] = $recordCount;
     echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmProductSearchPaging','id' => 'frmProductSearchPaging'));
-    $pagingArr = array('pageCount'=>$pageCount,'page'=>$postedData['page'],'recordCount'=>$recordCount, 'callBackJsFunc' => $searchFunction);
+    $pagingArr = array('pageCount' => $pageCount,'page' => $postedData['page'],'recordCount' => $recordCount, 'callBackJsFunc' => $searchFunction);
     $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
 } else {
     $arr['recordDisplayCount'] = $recordCount;
     echo FatUtility::createHiddenFormFromData($arr, array('name' => 'frmProductSearchPaging','id' => 'frmProductSearchPaging'));
-    echo Labels::getLabel('LBL_No_record_found!', $siteLangId);
+    $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
+    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId' => $siteLangId, 'message' => $message));
 }

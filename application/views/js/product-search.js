@@ -421,6 +421,7 @@ function getSearchQueryUrl(includeBaseUrl){
 	var keyword = $("input[id=keyword]").val();
 	if(keyword !=''){
 		delete searchArr['keyword'];
+		keyword = encodeURIComponent(keyword);
 		url = url +setQueryParamSeperator(url)+'keyword'+valueSeperator+keyword.replace(/_/g,'-');
 	}
 
@@ -555,15 +556,22 @@ function updatePriceFilter(minPrice,maxPrice,addPriceFilter){
 		});
 	};
 
-	reloadProductListing = function(frm){
+	reloadProductListing = function(frm){ 
 		$('#productsList').html(fcom.getLoader());
 		getSetSelectedOptionsUrl(frm);
 		var data = fcom.frmData(frm);		
 		var currUrl = getSearchQueryUrl(true);
+		console.log(currUrl);		
 		fcom.ajax(currUrl, data, function(res){
 			$('#productsList').html(res);			
-			var frm = document.frmProductSearchPaging;
-			$('#total_records').html($(frm.recordDisplayCount).val());				
+            var frm = document.frmProductSearchPaging;
+            var recordCount = parseInt($(frm.recordDisplayCount).val());
+            $('#total_records').html(recordCount);	
+            if (1 > recordCount) {
+                $('.saveSearch-js').hide();
+            } else {
+                $('.saveSearch-js').show();
+            }
 		});
 		window.history.pushState('','',currUrl);
 		//window.location.href = getSearchQueryUrl(true);

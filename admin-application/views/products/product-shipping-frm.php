@@ -59,13 +59,15 @@ $(document).ready(function(){
                 },
             });
         },
-        select: function(item) {
+        select: function(event, ui) {
             $('input[name=\'ps_from_country_id\']').val(ui.item.id);
         }
     });
 
-    $('input[name=\'shipping_country\']').keyup(function(){
-        $('input[name=\'ps_from_country_id\']').val('');
+    $(document).on("change", "input[name='shipping_country']", function(){
+        if ( 0 == $(this).val() ) {
+            $("input[name='ps_from_country_id']").val('');
+        }
     });
 });
 </script>

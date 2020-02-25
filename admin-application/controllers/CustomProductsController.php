@@ -955,7 +955,7 @@ class CustomProductsController extends AdminBaseController
         /* ] */
 
         $productOptions = ProductRequest::getProductReqOptions($preqId, $this->adminLangId, true);
-        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '_');
+        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '|');
 
         $this->set('productOptions', $productOptions);
         $this->set('optionCombinations', $optionCombinations);

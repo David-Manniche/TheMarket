@@ -25,6 +25,10 @@ class SellerProduct extends MyAppModel
 
 	public const DB_TBL_EXTERNAL_RELATIONS = 'tbl_seller_product_external_relations';
 	public const DB_TBL_EXTERNAL_RELATIONS_PREFIX = 'sperel_';
+    public const MAX_RANGE_OF_MINIMUM_PURCHANGE_QTY = 9999;
+    
+    public const VOL_DISCOUNT_MIN_QTY = 2;
+    public const VOL_DISCOUNT_MAX_QTY = 9999;
 
     public function __construct($id = 0)
     {
@@ -989,7 +993,7 @@ class SellerProduct extends MyAppModel
         $frm->addHiddenField('', 'voldiscount_selprod_id', 0);
         $frm->addHiddenField('', 'voldiscount_id', 0);
         $qtyFld = $frm->addIntegerField(Labels::getLabel("LBL_Minimum_Quantity", $langId), 'voldiscount_min_qty');
-        $qtyFld->requirements()->setPositive();
+        $qtyFld->requirements()->setRange(self::VOL_DISCOUNT_MIN_QTY, self::VOL_DISCOUNT_MAX_QTY);
         $discountFld = $frm->addFloatField(Labels::getLabel("LBL_Discount_in_(%)", $langId), "voldiscount_percentage");
         $discountFld->requirements()->setPositive();
         $fld1 = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
