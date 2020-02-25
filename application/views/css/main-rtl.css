@@ -16705,7 +16705,8 @@ a:hover, .shop-nav ul li.is--active a {
 
 .custom-ui-autocomplete {
   max-height: 300px;
-  overflow: auto; }
+  overflow: inherit;
+  overflow-y: auto; }
 
 .container-fluid {
   max-width: none; }
