@@ -105,7 +105,8 @@ class GuestUserController extends MyAppController
             $userInfo = $uObj->getUserInfo(array('user_name', 'user_id', 'user_dial_code', 'user_phone', 'credential_email'), true, true, true);
             $userInfo['token'] = $token;
 
-            $this->set('data', $userInfo);
+            $this->set('token', $token);
+            $this->set('userInfo', $userInfo);
             $this->_template->render();
         }
 
