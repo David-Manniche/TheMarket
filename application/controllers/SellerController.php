@@ -739,7 +739,6 @@ class SellerController extends SellerBaseController
 
         $this->_template->addJs('js/tagify.min.js');
         $this->_template->addJs('js/tagify.polyfills.min.js');
-        $this->_template->addCss('css/tagify.css');
 
         $frmSearchCatalogProduct = $this->getCatalogProductSearchForm();
         $this->set("frmSearch", $frmSearchCatalogProduct);

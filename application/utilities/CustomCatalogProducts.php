@@ -1059,7 +1059,6 @@ trait CustomCatalogProducts
         $this->set('preqId', $preqId);
         $this->_template->addJs('js/tagify.min.js');
         $this->_template->addJs('js/tagify.polyfills.min.js');
-        $this->_template->addCss('css/tagify.css');
         $this->set('includeEditor', true);
         $this->_template->render();
     }
