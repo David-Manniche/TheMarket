@@ -81,12 +81,17 @@ class Tax extends MyAppModel
         $srch->addCondition('taxcat_deleted', '=', 0);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(
-            array(
-            'taxcat_id',
-            'IFNULL(taxcat_name,taxcat_identifier)as taxcat_name'
-            )
-        );
+        
+        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX, FatUtility::VAR_INT, 0);
+        $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active'); 
+        
+        $srch->addFld('taxcat_id'); 
+        if ($defaultTaxApiIsActive) {
+            $srch->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');
+            $srch->addCondition('taxcat_plugin_id', '=', $defaultTaxApi);
+        }else{
+            $srch->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name'); 
+        }       
 
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetchAllAssoc($rs);
@@ -175,7 +180,9 @@ class Tax extends MyAppModel
         'taxcat_identifier' => $data['taxcat_identifier'],
         'taxcat_active' => $data['taxcat_active'],
         'taxcat_deleted' => 0,
-        'taxcat_last_updated' => date('Y-m-d H:i:s')
+        'taxcat_last_updated' => date('Y-m-d H:i:s'),
+        'taxcat_code' => $data['taxcat_code'],
+        'taxcat_plugin_id' => $data['taxcat_plugin_id'],   
         );
 
         if ($this->mainTableRecordId > 0) {

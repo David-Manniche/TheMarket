@@ -576,6 +576,10 @@ INSERT INTO `tbl_plugins_lang` (`pluginlang_plugin_id`, `pluginlang_lang_id`, `p
 (11, 1, 'Avalara Tax', '<a href=\"https://developer.avalara.com/api-reference/avatax/rest/v2/\">https://developer.avalara.com/api-reference/avatax/rest/v2/</a>'),
 (11, 2, 'ضريبة أفالارا', '<a href=\"https://developer.avalara.com/api-reference/avatax/rest/v2/\">https://developer.avalara.com/api-reference/avatax/rest/v2/</a>');
 
+ALTER TABLE `tbl_tax_categories` ADD `taxcat_code` VARCHAR(50) NOT NULL AFTER `taxcat_identifier`;
+ALTER TABLE `tbl_tax_categories` ADD `taxcat_plugin_id` INT NOT NULL AFTER `tbl_tax_code`;
+ALTER TABLE `tbl_tax_categories` ADD UNIQUE( `taxcat_identifier`, `taxcat_plugin_id`);
+
 -- Avalara Tax API ]-------
 ALTER TABLE `tbl_push_notifications` ADD `pnotification_user_auth_type` TINYINT(1) NOT NULL AFTER `pnotification_for_seller`;
 ALTER TABLE `tbl_push_notifications` CHANGE `pnotification_till_user_id` `pnotification_uauth_last_access` DATETIME NOT NULL;

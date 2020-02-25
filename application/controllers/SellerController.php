@@ -1345,8 +1345,16 @@ class SellerController extends SellerBaseController
             $cnd = $srch->addCondition('t.taxcat_identifier', 'like', '%' . $post['keyword'] . '%');
             $cnd->attachCondition('t_l.taxcat_name', 'like', '%' . $post['keyword'] . '%');
         }
+        
+        
+        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX, FatUtility::VAR_INT, 0);       
+        $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active'); 
+        
+        if ($defaultTaxApiIsActive) {
+            $srch->addCondition('taxcat_plugin_id', '=', $defaultTaxApi); 
+        }
 
-        $srch->addMultipleFields(array('taxcat_id', 'IFNULL(taxcat_name,taxcat_identifier) as taxcat_name'));
+        $srch->addMultipleFields(array('taxcat_id', 'IFNULL(taxcat_name,taxcat_identifier) as taxcat_name','taxcat_code'));
         $srch->addCondition('taxcat_deleted', '=', 0);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -1372,6 +1380,7 @@ class SellerController extends SellerBaseController
                 $records[$tcatId]['default'] = $defaultTaxValues;
                 $records[$tcatId]['taxcat_name'] = $val['taxcat_name'];
                 $records[$tcatId]['taxcat_id'] = $val['taxcat_id'];
+                $records[$tcatId]['taxcat_code'] = $val['taxcat_code'];
                 //$records[$tcatId]['taxval_seller_user_id'] = $userId;
             }
         }
@@ -1383,11 +1392,19 @@ class SellerController extends SellerBaseController
         $this->set('pageSize', $pagesize);
         $this->set('postedData', $post);
         $this->set('userId', $userId);
+        $this->set('defaultTaxApiIsActive', $defaultTaxApiIsActive);
         $this->_template->render(false, false);
     }
 
     public function changeTaxRates($taxcat_id)
     {
+        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX, FatUtility::VAR_INT, 0);       
+        $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
+        
+        if ($defaultTaxApiIsActive) {
+            FatUtility::dieWithError($this->str_invalid_request);
+        }
+        
         $taxcat_id = FatUtility::int($taxcat_id);
 
         $frm = $this->getchangeTaxRatesForm($this->siteLangId);
@@ -1427,6 +1444,14 @@ class SellerController extends SellerBaseController
 
     public function setUpTaxRates()
     {
+        
+        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX, FatUtility::VAR_INT, 0);       
+        $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
+        
+        if ($defaultTaxApiIsActive) {
+            FatUtility::dieWithError($this->str_invalid_request);
+        }
+        
         $frm = $this->getchangeTaxRatesForm($this->siteLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 

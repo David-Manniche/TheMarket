@@ -1,12 +1,19 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?> <?php
 $arr_flds = array(
-        'select_all'=>Labels::getLabel('LBL_Select_all', $adminLangId),
-        'listserial'=>Labels::getLabel('LBL_Sr._No', $adminLangId),
-        'taxcat_identifier'=>Labels::getLabel('LBL_Tax_Category_Name', $adminLangId),
-        'taxval_value'=>Labels::getLabel('LBL_Value', $adminLangId),
-        'taxcat_active'=>Labels::getLabel('LBL_Status', $adminLangId),
-        'action' => Labels::getLabel('LBL_Action', $adminLangId),
-    );
+    'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
+    'listserial' => Labels::getLabel('LBL_Sr._No', $adminLangId),
+    'taxcat_identifier' => Labels::getLabel('LBL_Tax_Category_Name', $adminLangId),
+);
+
+if ($defaultTaxApiIsActive) {
+    $arr_flds['taxcat_code'] = Labels::getLabel('LBL_Tax_Code', $adminLangId);
+} else {
+    $arr_flds['taxval_value'] = Labels::getLabel('LBL_Value', $adminLangId);
+}
+
+$arr_flds['taxcat_active'] = Labels::getLabel('LBL_Status', $adminLangId);
+$arr_flds['action'] = Labels::getLabel('LBL_Action', $adminLangId);
+
 
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
