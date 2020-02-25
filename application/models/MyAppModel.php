@@ -312,18 +312,7 @@ class MyAppModel extends FatModel
         }
 
         $db = FatApp::getDb();
-        if (!$db->updateFromArray(
-            static::DB_TBL,
-            array(
-            static::DB_TBL_PREFIX . 'active' => $v
-            ),
-            array(
-            'smt' => static::DB_TBL_PREFIX . 'id = ?',
-            'vals' => array(
-                        $this->mainTableRecordId
-            )
-            )
-        )) {
+        if (!$db->updateFromArray(static::DB_TBL, [static::DB_TBL_PREFIX . 'active' => $v], ['smt' => static::DB_TBL_PREFIX . 'id = ?', 'vals' => [$this->mainTableRecordId]])) {
             $this->error = $db->getError();
             return false;
         }
