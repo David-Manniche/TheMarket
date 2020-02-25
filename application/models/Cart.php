@@ -241,7 +241,7 @@ class Cart extends FatModel
 
                 $sellerProductRow = $this->getSellerProductData($selprod_id, $quantity, $siteLangId, $loggedUserId);
                 if (!$sellerProductRow) {
-                    $this->removeCartKey($key);
+                    $this->removeCartKey($key, $selprod_id, $quantity);
                     continue;
                 }
 
@@ -342,7 +342,7 @@ class Cart extends FatModel
 
                     /* echo "<pre>"; var_dump($sellerProductRow); */
                     if (!$sellerProductRow) {
-                        $this->removeCartKey($key);
+                        $this->removeCartKey($key, $selprod_id, $quantity);
                         continue;
                     }
                     $this->products[$key] = $sellerProductRow;
@@ -814,8 +814,11 @@ class Cart extends FatModel
         return $sellerProductRow;
     }
 
-    public function removeCartKey($key)
+    public function removeCartKey($key, $selProdId, $quantity)
     {
+        if (is_numeric($this->cart_user_id) && $this->cart_user_id > 0) {
+            AbandonedCart::saveAbandonedCart($this->cart_user_id, $selProdId, $quantity, AbandonedCart::ACTION_DELETED);
+        }
         unset($this->products[$key]);
         unset($this->SYSTEM_ARR['cart'][$key]);
         $this->updateUserCart();
