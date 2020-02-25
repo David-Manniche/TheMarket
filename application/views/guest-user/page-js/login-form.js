@@ -1,14 +1,4 @@
 (function() {
-	signInWithPhone = function(obj, flag) {
-        var inputElement = $("form[name='frmLogin'] input[name='username']");
-        var altPlaceHolder = inputElement.attr('data-alt-placeholder');
-        var placeHolder = inputElement.attr('placeholder')
-        inputElement.attr({'placeholder': altPlaceHolder, 'data-alt-placeholder': placeHolder});
-        var objLbl = 0 < flag ? langLbl.withUsernameOrEmail : langLbl.withPhoneNumber;
-        $(obj).attr('onclick', 'signInWithPhone(this, ' + (!flag) + ')').text(objLbl)
-        stylePhoneNumberFld("username", (!flag));
-    };
-
 	signUpWithPhone = function() {
         fcom.ajax(fcom.makeUrl( 'GuestUser', 'signUpWithPhone'), '', function(t) {
             $('#sign-up').html(t);

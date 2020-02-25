@@ -9,7 +9,7 @@ class SmsTemplatesController extends AdminBaseController
         parent::__construct($action);
         $this->objPrivilege->canViewSmsTemplate();
         $this->admin_id = AdminAuthentication::getLoggedAdminId();
-        if (false === Plugin::canSendSms()) {
+        if (false === SmsArchive::canSendSms()) {
             $message = Labels::getLabel("MSG_NO_SMS_PLUGIN_CONFIGURED", $this->adminLangId);
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);

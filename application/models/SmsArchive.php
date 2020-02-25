@@ -82,4 +82,11 @@ class SmsArchive extends MyAppModel
         }
         return true;
     }
+
+    public static function canSendSms(string $tpl = ''): bool
+    {
+        $active = (new Plugin())->getDefaultPluginData(Plugin::TYPE_SMS_NOTIFICATION, 'plugin_active');
+        $status = empty($tpl) ? 1 : SmsTemplate::getTpl($tpl, 0, 'stpl_status');
+        return (false != $active && !empty($active) && 0 < $status);
+    }
 }

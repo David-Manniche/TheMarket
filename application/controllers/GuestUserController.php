@@ -53,7 +53,7 @@ class GuestUserController extends MyAppController
         );
         $isRegisterForm = FatUtility::int($isRegisterForm);
 
-        $this->set('smsPluginStatus', Plugin::canSendSms(SmsTemplate::LOGIN));
+        $this->set('smsPluginStatus', SmsArchive::canSendSms(SmsTemplate::LOGIN));
         $this->set('isRegisterForm', $isRegisterForm);
         $this->set('registerdata', $registerdata);
     }
@@ -275,6 +275,7 @@ class GuestUserController extends MyAppController
             'siteLangId' => $this->siteLangId,
             'socialLoginApis' => $socialLoginApis,
             'includeGuestLogin' => $includeGuestLogin,
+            'smsPluginStatus' => SmsArchive::canSendSms(SmsTemplate::LOGIN),
         );
         $this->set('data', $data);
         $this->_template->render(false, false);
@@ -625,7 +626,7 @@ class GuestUserController extends MyAppController
         $obj = new Extrapage();
         $pageData = $obj->getContentByPageType(Extrapage::FORGOT_PAGE_RIGHT_BLOCK, $this->siteLangId);
 
-        $this->set('smsPluginStatus', Plugin::canSendSms(SmsTemplate::LOGIN));
+        $this->set('smsPluginStatus', SmsArchive::canSendSms(SmsTemplate::LOGIN));
         $this->set('withPhone', $withPhone);
         $this->set('pageData', $pageData);
         $this->set('frm', $frm);
@@ -951,7 +952,7 @@ class GuestUserController extends MyAppController
     public function configureEmail()
     {
         $phoneNumber = User::getAttributesById(UserAuthentication::getLoggedUserId(), 'user_phone');
-        $canSendSms = (empty($phoneNumber) && Plugin::canSendSms(SmsTemplate::LOGIN));
+        $canSendSms = (empty($phoneNumber) && SmsArchive::canSendSms(SmsTemplate::LOGIN));
         $this->set('canSendSms', $canSendSms);
         $this->_template->render();
     }
@@ -962,7 +963,7 @@ class GuestUserController extends MyAppController
 
         $this->set('frm', $frm);
         $this->set('siteLangId', $this->siteLangId);
-        $this->set('canSendSms', Plugin::canSendSms(SmsTemplate::LOGIN));
+        $this->set('canSendSms', SmsArchive::canSendSms(SmsTemplate::LOGIN));
         $this->_template->render(false, false, 'account/change-email-form.php');
     }
 

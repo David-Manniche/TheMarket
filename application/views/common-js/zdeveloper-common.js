@@ -904,9 +904,20 @@ $(document).ready(function () {
         }
     }
 
+    signInWithPhone = function(obj, flag) {
+        var form = $(obj).data('form');
+        var formElement = ('undefined' != typeof form) ? 'form[name="' + form + '"]' : 'form';
+        var inputElement  = $(formElement + " input[name='username']");
+        var altPlaceHolder = inputElement.attr('data-alt-placeholder');
+        var placeHolder = inputElement.attr('placeholder')
+        inputElement.attr({'placeholder': altPlaceHolder, 'data-alt-placeholder': placeHolder});
+        var objLbl = 0 < flag ? langLbl.withUsernameOrEmail : langLbl.withPhoneNumber;
+        $(obj).attr('onclick', 'signInWithPhone(this, ' + (!flag) + ')').text(objLbl)
+        stylePhoneNumberFld(formElement + " input[name='username']", (!flag));
+    };
+
     $(".sign-in-popup-js").click(function () {
         openSignInForm();
-
     });
 
     $(".cc-cookie-accept-js").click(function () {
@@ -1058,8 +1069,8 @@ function quickDetail(selprod_id) {
     });
 }
 
-function stylePhoneNumberFld(elementName = 'user_phone', destroy = false) {
-    var inputList = document.querySelectorAll("input[name='" + elementName + "']");
+function stylePhoneNumberFld(element = "input[name='user_phone']", destroy = false) {
+    var inputList = document.querySelectorAll(element);
     var country = '' == langLbl.defaultCountryCode ? 'in' : langLbl.defaultCountryCode;
 
     inputList.forEach(function (input) {
@@ -1067,8 +1078,6 @@ function stylePhoneNumberFld(elementName = 'user_phone', destroy = false) {
             $('.iti').replaceWith(input);
             $(input).removeAttr('style');
         } else {
-            var value = input.value;
-            console.log(input);
             var iti = window.intlTelInput(input, {
                 separateDialCode: true,
                 initialCountry: country,
