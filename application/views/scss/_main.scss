@@ -10,7 +10,6 @@
 @import 'layout/nav';
 @import 'layout/footer';
 
-
 @import 'components/accordion';
 @import 'components/tagify';
 @import 'components/auto-complete';
@@ -67,6 +66,7 @@
 @import 'components/misc';
 @import 'components/cards';
 @import 'components/switch';
+@import 'components/print';
 
 @import 'vendors/animate';
 @import 'vendors/fontawesome';
@@ -78,6 +78,7 @@
 @import 'vendors/simplebar';
 @import 'vendors/slick';
 @import 'vendors/xzoom';
+@import 'vendors/_tagify';
 
 
 @import 'pages/offline';

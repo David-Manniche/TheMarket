@@ -5,7 +5,7 @@ class MyAppController extends FatController
     public $app_user = array();
     public $appToken = '';
     public $themeDetail = '';
-    
+
     public function __construct($action)
     {
         parent::__construct($action);
@@ -29,7 +29,7 @@ class MyAppController extends FatController
         $this->siteLangId = CommonHelper::getLangId();
         $this->siteLangCode = CommonHelper::getLangCode();
         $this->siteCurrencyId = CommonHelper::getCurrencyId();
-        
+
         $this->app_user['temp_user_id'] = 0;
         if (true === MOBILE_APP_API_CALL) {
             $this->setApiVariables();
@@ -127,6 +127,8 @@ class MyAppController extends FatController
         'unknownPrimaryLanguageField' => Labels::getLabel('LBL_PRIMARY_LANGUAGE_FIELD_IS_NOT_SET.', $this->siteLangId),
         'invalidRequest' => Labels::getLabel('LBL_INVALID_REQUEST', $this->siteLangId),
         'defaultCountryCode' => $defaultCountryCode,
+        'scrollable' => Labels::getLabel('LBL_SCROLLABLE', $this->siteLangId),
+        'quantityAdjusted' => Labels::getLabel('MSG_MAX_QUANTITY_THAT_CAN_BE_PURCHASED_IS_{QTY}._SO,_YOUR_REQUESTED_QUANTITY_IS_ADJUSTED_TO_{QTY}.', $this->siteLangId),
         );
 
         $languages = Language::getAllNames(false);
@@ -142,7 +144,12 @@ class MyAppController extends FatController
         if (CommonHelper::isThemePreview() && isset($_SESSION['preview_theme'])) {
             $themeId = $_SESSION['preview_theme'];
         }
-        $this->themeDetail = ThemeColor::getAttributesById($themeId);
+        $themeDetail = array();
+        $themeColors = ThemeColor::getThemeColorsById($themeId);
+        foreach ($themeColors as $tColor) {
+            $themeDetail[$tColor['tcolor_key']] = $tColor['tcolor_value'];
+        }
+        $this->themeDetail = $themeDetail;
         $currencySymbolLeft = CommonHelper::getCurrencySymbolLeft();
         $currencySymbolRight = CommonHelper::getCurrencySymbolRight();
 
@@ -367,7 +374,7 @@ class MyAppController extends FatController
                 $fld->setUnique('tbl_user_credentials', 'credential_email', 'credential_user_id', 'user_id', 'user_id');
             }
         }
-        
+
         $fld = $frm->addPasswordField(Labels::getLabel('LBL_PASSWORD', $siteLangId), 'user_password', '', array('placeholder' => Labels::getLabel('LBL_PASSWORD', $siteLangId)));
         $fld->requirements()->setRequired();
         $fld->requirements()->setRegularExpressionToValidate(ValidateElement::PASSWORD_REGEX);
@@ -638,7 +645,7 @@ class MyAppController extends FatController
         if (empty($get) || !array_key_exists('ttk', $get)) {
             return;
         }
-      
+
         $ttk = ($get['ttk'] != '') ? $get['ttk'] : '';
 
         if (strlen($ttk) != UserAuthentication::TOKEN_LENGTH) {

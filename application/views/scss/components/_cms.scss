@@ -404,7 +404,7 @@
         &.is-active {
             a {
                 &:before {
-                    background: $brand-color;
+                    background: $brand-color; color:$brand-color-inverse;
                     border-color: $brand-color;
                 }
 

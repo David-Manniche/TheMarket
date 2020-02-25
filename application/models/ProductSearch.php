@@ -603,8 +603,8 @@ class ProductSearch extends SearchBase
         if (false === $obj) {
             $obj = $this;
         }
-
-        $keyword = urldecode($keyword);
+        
+        //$keyword = urldecode($keyword);
         $cnd = $obj->addCondition('product_isbn', 'LIKE', '%' . $keyword . '%');
         $cnd->attachCondition('product_upc', 'LIKE', '%' . $keyword . '%');
         /*$cnd->attachCondition('selprod_title', 'LIKE', '%' . $keyword . '%');

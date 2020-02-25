@@ -849,12 +849,16 @@ $(document).on('change', '.language-js', function () {
 		});
     }
 
-    updateProductOption = function (preq_id, option_id){
+    updateProductOption = function (preq_id, option_id, e){
 		fcom.ajax(fcom.makeUrl('Seller', 'updateCustomCatalogOption'), 'preq_id='+preq_id+'&option_id='+option_id, function(t) {
             var ans = $.parseJSON(t);
             if( ans.status == 1 ){
                 upcListing(preq_id);
                 $.mbsmessage(ans.msg, true, 'alert--success');
+            }else{
+                var tagifyId = e.detail.tag.__tagifyId;
+                $('[__tagifyid='+tagifyId+']').remove();
+                $.systemMessage(ans.msg, 'alert--danger');
             }
 		});
 	}

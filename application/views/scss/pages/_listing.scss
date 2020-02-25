@@ -47,12 +47,15 @@
             border: none;
             box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
             padding: 0;
-            background: $secondary-color;
-            color: #fff;
-            fill: #fff;
+            background: $secondary-color; color:$secondary-color-inverse;
+            
+            fill: $secondary-color-inverse;
+            cursor: pointer;
 
             .icn {
                 fill: inherit;
+                position: relative;
+                z-index: -1;
 
                 svg {
                     width: 1rem;
@@ -160,7 +163,7 @@
 }
 
 .divider--filters:after {
-    background: $brand-color;
+    background: $brand-color; color:$brand-color-inverse;
     width: 30px;
     height: 2px;
     content: "";
@@ -221,7 +224,7 @@
 
 .scroll__handle {
     width: 4px;
-    background: $brand-color;
+    background: $brand-color; color:$brand-color-inverse;
     margin: 0 0 0 3px;
     border-radius: 4px;
     -webkit-transition: width 250ms;
@@ -650,8 +653,41 @@
 
 .select-all {
     @include media-breakpoint-down(sm) {
-        & {
-            
+        & {}
+    }
+}
+
+
+
+.shop-slider {
+    .item {
+        position: relative;
+        max-width: 610px;
+        margin: 0 15px;
+
+        img {
+            border-radius: 4px;
+        }
+    }
+
+    figure {
+        margin: 0;
+    }
+
+    .overlay-content {
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 2px;
+        position: absolute;
+        bottom: 10px;         
+        #{$end-direction}: 10px;
+        padding: 1rem;
+        text-align: left;
+        /*max-width: 210px;*/
+        font-weight: 400;
+
+        h4 {
+            font-size: 1rem;
+
         }
     }
 }

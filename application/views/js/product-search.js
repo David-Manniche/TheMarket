@@ -191,25 +191,7 @@ $(document).ready(function(){
 		$(".block__body-js").show();
 	}
 
-	/******** function for left filters mobile  ****************/
-	$(document).on('click', '.btn--filter', function() {
-		$(this).toggleClass("is-active");
-		var el = $("html");
-		if(el.hasClass('filter__show')) el.removeClass("filter__show");
-		else el.addClass('filter__show');
-		return false;
-	});
-
-	$(document).on('click', 'html,.overlay--filter', function() {
-		if($('html').hasClass('filter__show')){
-			$('.btn--filter').removeClass("is-active");
-			$('html').removeClass('filter__show');
-		}
-	});
-
-	$(document).on('click', '.filters', function(e) {
-		e.stopPropagation();
-	});
+	 
 
 	$(document).on('mouseover', '.bfilter-js li', function() {	
 		$('.brandList-js').addClass('filter-directory_disabled');
@@ -440,6 +422,7 @@ function getSearchQueryUrl(includeBaseUrl){
 	var keyword = $("input[id=keyword]").val();
 	if(keyword !=''){
 		delete searchArr['keyword'];
+		keyword = encodeURIComponent(keyword);
 		url = url +setQueryParamSeperator(url)+'keyword'+valueSeperator+keyword.replace(/_/g,'-');
 	}
 
@@ -574,15 +557,22 @@ function updatePriceFilter(minPrice,maxPrice,addPriceFilter){
 		});
 	};
 
-	reloadProductListing = function(frm){
+	reloadProductListing = function(frm){ 
 		$('#productsList').html(fcom.getLoader());
 		getSetSelectedOptionsUrl(frm);
 		var data = fcom.frmData(frm);		
 		var currUrl = getSearchQueryUrl(true);
+		console.log(currUrl);		
 		fcom.ajax(currUrl, data, function(res){
 			$('#productsList').html(res);			
-			var frm = document.frmProductSearchPaging;
-			$('#total_records').html($(frm.recordDisplayCount).val());				
+            var frm = document.frmProductSearchPaging;
+            var recordCount = parseInt($(frm.recordDisplayCount).val());
+            $('#total_records').html(recordCount);	
+            if (1 > recordCount) {
+                $('.saveSearch-js').hide();
+            } else {
+                $('.saveSearch-js').show();
+            }
 		});
 		window.history.pushState('','',currUrl);
 		//window.location.href = getSearchQueryUrl(true);

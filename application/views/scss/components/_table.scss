@@ -359,14 +359,19 @@
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-.table--justify tr td:first-child {
-    padding-#{$start-direction}: 0;
+.table--justify {
+    tr {
+        td {
+            &:first-child {
+                padding-#{$start-direction}: 0;
+            }
+            &:last-child{padding-#{$end-direction}: 0;
+    text-align: #{$end-direction};}
+        }
+    }
 }
 
-.table--justify tr td:last-child {
-    padding-#{$end-direction}: 0;
-    text-align: #{$end-direction};
-}
+ 
 
 .table td {
     position: relative;

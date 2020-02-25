@@ -195,6 +195,7 @@
 
     &:after {
         background: $secondary-color;
+        color: $secondary-color-inverse;
         height: 176px;
         width: 100%;
         top: 0;
@@ -211,7 +212,6 @@
 
 
 .posted-content {
-
 
     margin-#{$end-direction}: 2.5rem;
 
@@ -590,9 +590,8 @@
         font-weight: 600;
         font-size: 1.5rem;
         color: $body-color;
-        margin: 2rem 1.5rem;
-        margin-bottom: 2rem;
-        margin-bottom: 0;
+        margin: 1.5rem 2rem;
+
     }
 
     &:last-child {
@@ -620,18 +619,21 @@
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    border-bottom:$border;
+    border-top: $border;
+
+
+
+    .avatar {
+        border-radius: 50%;
+        overflow: hidden;
+        width: 78px;
+        height: 78px;
+        min-width: 78px;
+        box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.1);
+        margin-#{$end-direction}: 2rem;
+    }
 }
 
-.comment-meta .avatar {
-    border-radius: 50%;
-    overflow: hidden;
-    width: 78px;
-    height: 78px;
-    min-width: 78px;
-    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.1);
-    margin-#{$end-direction}: 2rem;
-}
 
 .comment-by {
     -webkit-box-flex: 1;
@@ -654,7 +656,7 @@
 
 
 .comment-content {
-    margin: 10rem 0 0 0;
+    margin: 1rem 0 0 0;
 
     p {
         margin: 0;
@@ -670,7 +672,8 @@
 
 .blog-subscribers-inner {
     background: $brand-color;
-    color: #fff;
+    color: $brand-color-inverse;
+
 
     h3 {
         color: inherit;
@@ -744,8 +747,9 @@
 
         &.is--active {
             a {
-                color: #fff;
+
                 background: $secondary-color;
+                color: $secondary-color-inverse;
             }
         }
     }
@@ -822,8 +826,9 @@
 
 .pagination-blog li.selected a {
     background: $secondary-color;
+    color: $secondary-color-inverse;
     border-color: transparent;
-    color: #fff;
+
 }
 
 

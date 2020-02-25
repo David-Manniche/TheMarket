@@ -76,10 +76,10 @@
                                         </div>
                                         <p class="note">
                                             <i>
-                                                <?php echo Labels::getLabel('LBL_Remaining_wallet_balance', $siteLangId);
+                                                <?php
                                                 $remainingWalletBalance = ($userWalletBalance - $cartSummary['orderNetAmount']);
                                                 $remainingWalletBalance = ($remainingWalletBalance < 0) ? 0 : $remainingWalletBalance;
-                                                echo CommonHelper::displayMoneyFormat($remainingWalletBalance); ?>
+                                                echo Labels::getLabel('LBL_Remaining_wallet_balance', $siteLangId) . ' ' . CommonHelper::displayMoneyFormat($remainingWalletBalance); ?>
                                             </i>
                                         </p>
                                     </li>
@@ -202,6 +202,10 @@
         });
 
         function loadTab(tabObj) {
+            if( isUserLogged() == 0 ){
+                loginPopUpBox();
+                return false;
+            }
             if (!tabObj || !tabObj.length) {
                 return;
             }

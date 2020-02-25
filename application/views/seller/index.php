@@ -9,13 +9,13 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
             <div class="col-auto">
                 <div class="btn-group">
                     <?php if (!Shop::isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) { ?>
-                        <a href="<?php echo  CommonHelper::generateUrl('Seller', 'shop'); ?>" class="btn btn--secondary btn--sm">
+                        <a href="<?php echo  CommonHelper::generateUrl('Seller', 'shop'); ?>" class="btn btn-outline-primary btn--sm">
                             <?php echo Labels::getLabel('LBL_Create_Shop', $siteLangId); ?>
                         </a>
                     <?php } ?>
-                    <a href="<?php echo CommonHelper::generateUrl('seller', 'customProductForm');?>" class="btn btn--secondary btn--sm"><?php echo Labels::getLabel('LBL_Add_new_catalog', $siteLangId);?></a>
-                    <a href="<?php echo CommonHelper::generateUrl('seller', 'catalog');?>" class="btn btn--secondary btn--sm"><?php echo Labels::getLabel('LBL_My_products', $siteLangId);?></a>
-                    <a href="<?php echo CommonHelper::generateUrl('seller', 'products');?>" class="btn btn--secondary btn--sm"><?php echo Labels::getLabel('LBL_My_store_inventory', $siteLangId);?></a>
+                    <a href="<?php echo CommonHelper::generateUrl('seller', 'customProductForm');?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Add_new_catalog', $siteLangId);?></a>
+                    <a href="<?php echo CommonHelper::generateUrl('seller', 'catalog');?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_My_products', $siteLangId);?></a>
+                    <a href="<?php echo CommonHelper::generateUrl('seller', 'products');?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_My_store_inventory', $siteLangId);?></a>
                 </div>
             </div>
         </div>

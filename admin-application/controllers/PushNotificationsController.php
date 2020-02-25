@@ -118,6 +118,10 @@ class PushNotificationsController extends AdminBaseController
         $frm->addHiddenField('', 'pnotification_id');
 
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'pnotification_lang_id', Language::getAllNames(), $this->adminLangId, array(), '');
+        
+        $userAuthType = $frm->addSelectBox(Labels::getLabel('LBL_USER_AUTH_TYPE', $this->adminLangId), 'pnotification_user_auth_type', User::getUserAuthTypeArr($this->adminLangId));
+        $userAuthType->requirements()->setRequired(true);
+        $userAuthType->htmlAfterField = '<small>' . Labels::getLabel('LBL_YOU_CAN_CLONE_TO_SEND_THIS_NOTIFICATION_TO_OTHER_USER_AUTH_TYPE', $this->adminLangId) . '</small>';
 
         $frm->addRequiredField(Labels::getLabel('LBL_TITLE', $this->adminLangId), 'pnotification_title');
         $fld = $frm->addTextArea(Labels::getLabel('LBL_BODY', $this->adminLangId), 'pnotification_description');
@@ -183,14 +187,17 @@ class PushNotificationsController extends AdminBaseController
         $frm = $this->form();
         $pNotificationId = FatUtility::int($pNotificationId);
         $status = 0;
+        $userAuthType = '';
         if (0 < $pNotificationId) {
             $data = PushNotification::getAttributesById($pNotificationId);
             $status = $data['pnotification_status'];
             $frm = $this->form($data['pnotification_status']);
+            $userAuthType = $data['pnotification_user_auth_type'];
             $frm->fill($data);
         }
         $this->set('status', $status);
         $this->set('pNotificationId', $pNotificationId);
+        $this->set('userAuthType', $userAuthType);
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
@@ -202,13 +209,14 @@ class PushNotificationsController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
-        $status = PushNotification::getAttributesById($pNotificationId, 'pnotification_status');
-
+        $data = PushNotification::getAttributesById($pNotificationId, ['pnotification_status', 'pnotification_user_auth_type']);
+        
         $this->objPrivilege->canEditPushNotification();
-        $mediaFrm = $this->getMediaForm($pNotificationId, $status);
-        $this->set('status', $status);
+        $mediaFrm = $this->getMediaForm($pNotificationId, $data['pnotification_status']);
+        $this->set('status', $data['pnotification_status']);
         $this->set('languages', Language::getAllNames());
         $this->set('pNotificationId', $pNotificationId);
+        $this->set('userAuthType', $data['pnotification_user_auth_type']);
         $this->set('formLayout', Language::getLayoutDirection($this->adminLangId));
         $this->set('frm', $mediaFrm);
         $this->_template->render(false, false);
@@ -262,7 +270,7 @@ class PushNotificationsController extends AdminBaseController
             FatUtility::dieJsonError(Labels::getLabel("LBL_INVALID_REQUEST", $this->adminLangId));
         }
         $data = PushNotification::getAttributesById($pNotificationId);
-        unset($data['pnotification_id'], $data['pnotification_status'], $data['pnotification_till_user_id']);
+        unset($data['pnotification_id'], $data['pnotification_status'], $data['pnotification_uauth_last_access']);
         $db = FatApp::getDb();
         if (!$db->insertFromArray(PushNotification::DB_TBL, $data, true, array(), $data)) {
             FatUtility::dieJsonError($db->getError());
@@ -273,8 +281,8 @@ class PushNotificationsController extends AdminBaseController
 
         $frm = $this->form();
         $frm->fill($data);
-
         $this->set('pNotificationId', $recordId);
+        $this->set('userAuthType', $data['pnotification_user_auth_type']);
         $this->set('frm', $frm);
         $this->set('status', 0);
         $this->_template->render(false, false, 'push-notifications/add-notification-form.php');
@@ -287,11 +295,15 @@ class PushNotificationsController extends AdminBaseController
         if (1 > $pNotificationId) {
             FatUtility::dieJsonError(Labels::getLabel("LBL_INVALID_REQUEST", $this->adminLangId));
         }
-        $status = PushNotification::getAttributesById($pNotificationId, 'pnotification_status');
-        $frm = $this->selectedUsersform($status);
+        $data = PushNotification::getAttributesById($pNotificationId, ['pnotification_status', 'pnotification_user_auth_type']);
+        if (User::AUTH_TYPE_GUEST == $data['pnotification_user_auth_type']) {
+            FatUtility::dieJsonError(Labels::getLabel("LBL_NOT_ALLOWED", $this->adminLangId));
+        }
+
+        $frm = $this->selectedUsersform($data['pnotification_status']);
         $frm->fill(['pnotification_id' => $pNotificationId]);
         $srch = PushNotification::getSearchObject(true);
-        $srch->addMultipleFields(['pnotification_id', 'pntu_user_id', 'user_name', 'credential_username']);
+        $srch->addMultipleFields(['pnotification_id', 'pntu_user_id', 'user_name', 'credential_username', 'pnotification_user_auth_type']);
         $srch->joinTable('tbl_users', 'INNER JOIN', 'pntu_user_id = tu.user_id', 'tu');
         $srch->joinTable('tbl_user_credentials', 'INNER JOIN', 'tu.user_id = tuc.credential_user_id', 'tuc');
         $srch->addCondition('pnotification_id', "=", $pNotificationId);
@@ -302,7 +314,7 @@ class PushNotificationsController extends AdminBaseController
         }
         $this->set('notifyTo', PushNotification::getAttributesById($pNotificationId, ['pnotification_for_buyer', 'pnotification_for_seller']));
         $this->set('pNotificationId', $pNotificationId);
-        $this->set('status', $status);
+        $this->set('status', $data['pnotification_status']);
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }

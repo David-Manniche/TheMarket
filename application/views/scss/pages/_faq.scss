@@ -108,8 +108,8 @@ div.faqanswer {
         }
 
         &.is--active {
-            background: $brand-color;
-            color: #fff;
+            background: $brand-color; color:$brand-color-inverse;
+           
             border-color: $brand-color;
         }
     }

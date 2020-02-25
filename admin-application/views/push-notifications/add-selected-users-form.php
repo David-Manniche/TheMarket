@@ -7,6 +7,7 @@ $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
 
 $usersFld = $frm->getField('users');
+$usersFld->setWrapperAttribute('class', 'ui-front');
 $usersFld->addFieldTagAttribute('data-buyers', $notifyTo['pnotification_for_buyer']);
 $usersFld->addFieldTagAttribute('data-sellers', $notifyTo['pnotification_for_seller']);
 ?>

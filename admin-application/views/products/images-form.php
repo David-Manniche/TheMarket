@@ -24,10 +24,11 @@ $btnFinishFld->developerTags['col'] = 6;
 $btnFinishFld->addWrapperAttribute('class', 'text-right'); */
 
 ?>
-<div class="row justify-content-center">
-     <div class="col-md-12">
-         <?php echo $imagesFrm->getFormHtml(); ?>
 
+
+<div class="tabs_data">
+     <div class="tabs_body">
+         <?php echo $imagesFrm->getFormHtml(); ?>
          <div id="imageupload_div" class="padd15">
             <?php if (!empty($product_images)) { ?>
             <ul class="grids--onefifth ui-sortable" id="<?php if ($canEdit) { ?>sortable<?php } ?>">
@@ -57,8 +58,9 @@ $btnFinishFld->addWrapperAttribute('class', 'text-right'); */
             </ul>
             <?php } ?>
         </div>
+    </div>
         
-    <div class="row web_form">
+    <div class="row web_form tabs_footer">
         <div class="col-md-6">
             <div class="field-set">
                 <div class="caption-wraper"><label class="field_label"></label></div>
@@ -81,6 +83,7 @@ $btnFinishFld->addWrapperAttribute('class', 'text-right'); */
         </div>
     </div>
 </div>
+
 
 <script type="text/javascript">
 var aspectRatio = 1 / 1;

@@ -823,17 +823,17 @@ class Cart extends FatModel
     }
 
     public function remove($key)
-    {
+    { 
         $this->products = array();
         $cartProducts = $this->getProducts($this->cart_lang_id);
         $found = false;
         if (is_array($cartProducts)) {
             foreach ($cartProducts as $cartKey => $product) {
-                if ($key == 'all' || (md5($product['key']) == $key && !$product['is_batch'])) {
+                if ( ($key == 'all' || (md5($product['key']) == $key) && !$product['is_batch'])) {
                     $found = true;
                     unset($this->SYSTEM_ARR['cart'][$cartKey]);
                     $this->updateTempStockHold($product['selprod_id'], 0, 0);
-                    if (md5($product['key']) == $key && !$product['is_batch']) {
+                    if ( ($key == 'all' || md5($product['key']) == $key) && !$product['is_batch']) {
                         if (is_numeric($this->cart_user_id) && $this->cart_user_id > 0) {
                             AbandonedCart::saveAbandonedCart($this->cart_user_id, $product['selprod_id'], $product['quantity'], AbandonedCart::ACTION_DELETED);
                         }
@@ -1393,7 +1393,11 @@ class Cart extends FatModel
                         $selProdDiscountTotal += $totalSelProdDiscount;
                         $discountedProdGroupIds[$cartProduct['prodgroup_id']] = round($totalSelProdDiscount,2); */
                     } else {
-                        $totalSelProdDiscount = round(($discountTotal * ($cartProduct['total'] - $cartProduct['volume_discount_total'])) / ($subTotal - $cartVolumeDiscount), 2);
+                        $balTotal = ($subTotal - $cartVolumeDiscount);
+                        $balTotal = 1 > $balTotal ? 1 : $balTotal;
+
+                        $totalSelProdDiscount = 1 > $discountTotal ? 0 : round(($discountTotal * ($cartProduct['total'] - $cartProduct['volume_discount_total'])) / $balTotal, 2);
+                        
                         $selProdDiscountTotal += $totalSelProdDiscount;
                         $discountedSelProdIds[$cartProduct['selprod_id']] = round($totalSelProdDiscount, 2);
                     }
@@ -1408,7 +1412,10 @@ class Cart extends FatModel
                         } */
                     } else {
                         if (in_array($cartProduct['product_id'], $couponInfo['grouped_coupon_products'])) {
-                            $totalSelProdDiscount = round(($discountTotal * ($cartProduct['total'] - $cartProduct['volume_discount_total'])) / ($subTotal - $cartVolumeDiscount), 2);
+                            $balTotal = ($subTotal - $cartVolumeDiscount);
+                            $balTotal = 1 > $balTotal ? 1 : $balTotal;
+
+                            $totalSelProdDiscount = 1 > $discountTotal ? 0 : round(($discountTotal * ($cartProduct['total'] - $cartProduct['volume_discount_total'])) / $balTotal, 2);
                             $selProdDiscountTotal += $totalSelProdDiscount;
                             $discountedSelProdIds[$cartProduct['selprod_id']] = round($totalSelProdDiscount, 2);
                         }
@@ -1585,7 +1592,15 @@ class Cart extends FatModel
     /* ] */
 
     public function clear()
-    {
+    {  
+        $cartProducts = $this->getProducts($this->cart_lang_id);
+        if (is_array($cartProducts)) {
+            foreach ($cartProducts as $cartKey => $product) {
+                if (is_numeric($this->cart_user_id) && $this->cart_user_id > 0) {
+                    AbandonedCart::saveAbandonedCart($this->cart_user_id, $product['selprod_id'], $product['quantity'], AbandonedCart::ACTION_DELETED);
+                }
+            }
+        }
         $this->products = array();
         $this->SYSTEM_ARR['cart'] = array();
         $this->SYSTEM_ARR['shopping_cart'] = array();

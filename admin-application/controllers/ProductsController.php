@@ -8,7 +8,7 @@ class ProductsController extends AdminBaseController
         $this->objPrivilege->canViewProducts();
     }
 
-    public function index()
+    public function index($prodCatId = 0)
     {
         $data = FatApp::getPostedData();
         $srchFrm = $this->getSearchForm();
@@ -17,10 +17,12 @@ class ProductsController extends AdminBaseController
             unset($data['id']);
             $srchFrm->fill($data);
         }
-
+        $prodCatId = FatUtility::int($prodCatId);
+        if($prodCatId > 0){
+            $srchFrm->fill(array('prodcat_id' => $prodCatId));
+        }
+                
         $this->set("frmSearch", $srchFrm);
-        $this->_template->addJs('js/jscolor.js');
-        $this->_template->addJs('js/import-export.js');
         $this->set('canEdit', $this->objPrivilege->canEditProducts(0, true));
         $this->_template->render();
     }
@@ -156,19 +158,23 @@ class ProductsController extends AdminBaseController
         $this->objPrivilege->canEditProducts();
         $post = FatApp::getPostedData();
         if (false === $post) {
-            Message::addErrorMessage($this->str_invalid_request);
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError($this->str_invalid_request);
         }
         $product_id = FatUtility::int($post['product_id']);
         $option_id = FatUtility::int($post['option_id']);
         if (!$product_id || !$option_id) {
-            Message::addErrorMessage($this->str_invalid_request);
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError($this->str_invalid_request);
         }
+        
+        $productOptions = Product::getProductOptions($product_id, $this->adminLangId, false, 1);
+        $optionSeparateImage = Option::getAttributesById($option_id, 'option_is_separate_images');
+        if(count($productOptions) > 0 && $optionSeparateImage == 1){
+            FatUtility::dieJsonError(Labels::getLabel('LBL_you_have_already_added_option_having_separate_image', $this->adminLangId));
+        }
+        
         $prodObj = new Product();
         if (!$prodObj->addUpdateProductOption($product_id, $option_id)) {
-            Message::addErrorMessage(Labels::getLabel($prodObj->getError(), $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError($prodObj->getError());
         }
         Product::updateMinPrices($product_id);
         $this->set('msg', Labels::getLabel('LBL_Record_Updated_Successfully', $this->adminLangId));
@@ -1272,7 +1278,7 @@ class ProductsController extends AdminBaseController
         $rs = $srch->getResultSet();
         $upcCodeData = FatApp::getDb()->fetchAll($rs, 'upc_options');
         $productOptions = Product::getProductOptions($productId, $this->adminLangId, true);
-        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '_');
+        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '|');
 
         $this->set('productOptions', $productOptions);
         $this->set('optionCombinations', $optionCombinations);

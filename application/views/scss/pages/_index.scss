@@ -5,7 +5,7 @@
 
     @include media-breakpoint-up(xl) {
         & {
-            overflow: visible !important;
+            /*overflow: visible !important;*/
 
         }
     }
@@ -101,7 +101,7 @@
             }
 
             &.slick-active {
-                background: $brand-color;
+                background: $brand-color; color:$brand-color-inverse;
                 width: 30px;
                 border-radius: 15px;
             }

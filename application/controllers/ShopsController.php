@@ -203,7 +203,7 @@ class ShopsController extends MyAppController
 
         $data = $this->getListingData($get, $includeShopData);
         if (false === MOBILE_APP_API_CALL) {
-            $frm = $this->getProductSearchForm();
+            $frm = $this->getProductSearchForm(); 
             $frm->fill($get);
 
             $arr = array(
@@ -444,6 +444,17 @@ class ShopsController extends MyAppController
         $data = array_merge($data, $arr);
         $this->set('data', $data);
 
+        if (FatUtility::isAjaxCall()) {
+            $this->set('products', $data['products']);
+            $this->set('page', $data['page']);
+            $this->set('pageCount', $data['pageCount']);
+            $this->set('postedData', $get);
+            $this->set('recordCount', $data['recordCount']);
+            $this->set('siteLangId', $this->siteLangId);
+            echo $this->_template->render(false, false, 'products/products-list.php', true);
+            exit;
+        }
+
         $this->includeProductPageJsCss();
         $this->_template->addJs('js/slick.min.js');
 
@@ -522,6 +533,17 @@ class ShopsController extends MyAppController
 
         $data = array_merge($data, $arr);
         $this->set('data', $data);
+
+        if (FatUtility::isAjaxCall()) {
+            $this->set('products', $data['products']);
+            $this->set('page', $data['page']);
+            $this->set('pageCount', $data['pageCount']);
+            $this->set('postedData', $get);
+            $this->set('recordCount', $data['recordCount']);
+            $this->set('siteLangId', $this->siteLangId);
+            echo $this->_template->render(false, false, 'products/products-list.php', true);
+            exit;
+        }
 
         if (false === MOBILE_APP_API_CALL) {
             $this->includeProductPageJsCss();
@@ -722,13 +744,13 @@ class ShopsController extends MyAppController
 
         $sReportObj->assignValues($dataToSave);
         if (!$sReportObj->save()) {
-            FatUtility::dieWithError(strip_tags(Labels::getLabel($sReportObj->getError(), $this->siteLangId)));
+            FatUtility::dieJsonError(strip_tags(Labels::getLabel($sReportObj->getError(), $this->siteLangId)));
         }
 
         $sreport_id = $sReportObj->getMainTableRecordId();
 
         if (!$sreport_id) {
-            FatUtility::dieWithError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
+            FatUtility::dieJsonError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
         }
 
         /* email notification[ */
@@ -746,7 +768,7 @@ class ShopsController extends MyAppController
             );
 
             if (!Notification::saveNotifications($notificationData)) {
-                FatUtility::dieWithError(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->siteLangId));
+                FatUtility::dieJsonError(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->siteLangId));
             }
         }
         /* ] */

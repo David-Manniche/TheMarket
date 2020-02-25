@@ -265,22 +265,25 @@ trait CustomProducts
         $option_id = FatUtility::int($post['option_id']);
 
         if (!$product_id || !$option_id) {
-            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
         }
         if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
-            FatUtility::dieWithError(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
+            FatUtility::dieJsonError(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
         }
 
         if (!UserPrivilege::canSellerEditCustomProduct($product_id)) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
-
+        
+        $productOptions = Product::getProductOptions($product_id, $this->siteLangId, false, 1);
+        $optionSeparateImage = Option::getAttributesById($option_id, 'option_is_separate_images');
+        if(count($productOptions) > 0 && $optionSeparateImage == 1){
+            FatUtility::dieJsonError(Labels::getLabel('LBL_you_have_already_added_option_having_separate_image', $this->siteLangId));
+        }
+        
         $prodObj = new Product();
         if (!$prodObj->addUpdateProductOption($product_id, $option_id)) {
-            Message::addErrorMessage(Labels::getLabel($prodObj->getError(), FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 1)));
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError($prodObj->getError());
         }
         Product::updateMinPrices($product_id);
         $this->set('msg', Labels::getLabel('LBL_Option_Updated_Successfully', $this->siteLangId));
@@ -1755,7 +1758,6 @@ trait CustomProducts
         $this->set('productType', $productType);
         $this->_template->addJs('js/tagify.min.js');
         $this->_template->addJs('js/tagify.polyfills.min.js');
-        $this->_template->addCss('css/tagify.css');
         $this->set("includeEditor", true);
         $this->_template->render();
     }
@@ -2134,7 +2136,7 @@ trait CustomProducts
             FatUtility::dieWithError(Message::getHtml());
         }
         $productOptions = Product::getProductOptions($productId, $this->siteLangId, true);
-        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '_');
+        $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '|');
         $this->set('optionCombinations', $optionCombinations);
         $this->set('productId', $productId);
         $this->_template->render(false, false);

@@ -9,7 +9,7 @@ $(document).ready(function () {
         e.preventDefault();
         return false;
     });
-
+	$('[data-toggle="tooltip"]').tooltip();
 	/*$(document).on('keydown', 'input.phone-js', function(e) {
         var key = e.which || e.charCode || e.keyCode || 0;
         $phone = $(this);
@@ -103,12 +103,25 @@ $(document).ready(function () {
                 oUtil.arrEditor = [];
             }
         },
+		
+		resetEditorWidth: function(width = "100%") {
+            if (typeof oUtil != 'undefined') {
+                (oUtil.arrEditor).forEach(function (input) {
+					var oEdit1 = eval(input);
+					$("#idArea" + oEdit1.oName).attr("width", width);
+				});
+            }
+        },
 
         setEditorLayout: function(lang_id) {
             var editors = oUtil.arrEditor;
             layout = langLbl['language' + lang_id];
             for (x in editors) {
-                $('#idContent' + editors[x]).contents().find("body").css('direction', layout);
+				var oEdit1 = eval(editors[x]);
+				if ($('#idArea' + oEdit1.oName).parents(".layout--rtl").length){
+					$('#idContent' + editors[x]).contents().find("body").css('direction', layout);
+					$('#idArea' + oEdit1.oName + ' td[dir="ltr"]').attr('dir', layout);
+				}
             }
         },
 
@@ -310,10 +323,10 @@ $(document).ready(function () {
     /* $(document).click(function(event) {
     	$('ul.dropdown-menu').hide();
     }); */
-    
+
     autofillLangData = function (autoFillBtn, frm) {
         var actionUrl = autoFillBtn.data('action');
-        
+
         var defaultLangField = $('input.defaultLang', frm);
         if (1 > defaultLangField.length) {
             $.systemMessage(langLbl.unknownPrimaryLanguageField, 'alert--danger');
@@ -343,12 +356,12 @@ $(document).ready(function () {
                     $.each(values, function(selector, value) {
                         $("input.langField_" + langId + "[name='" + selector + "']").val(value);
                     });
-                }); 
+                });
                 $.systemMessage.close();
             });
         }
     }
-    
+	$('[data-toggle="tooltip"]').tooltip();
 })(jQuery);
 
 function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection) {
@@ -498,7 +511,6 @@ function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection) {
     }
 
 })();
-
 function isJson(str) {
     try {
         var json = JSON.parse(str);

@@ -6,7 +6,7 @@ $blockLangFrm->developerTags['fld_default_col'] = 12;
 if ($cpage_layout == ContentPage::CONTENT_PAGE_LAYOUT1_TYPE) {
     $fld = $blockLangFrm->getField('cpage_bg_image');
     $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
-
+    $fld->addFieldTagAttribute('onChange', 'popupImage(this)');
     $preferredDimensionsStr = '<small class="text--small"> ' . Labels::getLabel('LBL_This_will_be_displayed_on_your_cms_Page.', $adminLangId) . ' ' . sprintf(Labels::getLabel('LBL_Preferred_Dimensions', $adminLangId), '1300*400') . '</small>';
 
     $htmlAfterField = $preferredDimensionsStr;
@@ -25,8 +25,8 @@ if ($cpage_layout == ContentPage::CONTENT_PAGE_LAYOUT1_TYPE) {
 $langFld = $blockLangFrm->getField('lang_id');
 $langFld->setfieldTagAttribute('onChange', "addLangForm(" . $cpage_id . ", this.value, " . $cpage_layout . ");");
 ?>
-
-<section class="section">
+<div id="cropperBox-js"></div>
+<section class="section" id="mediaForm-js">
     <div class="sectionhead">
         <h4><?php echo Labels::getLabel('LBL_Content_Pages_Setup', $adminLangId); ?>
         </h4>
@@ -51,16 +51,16 @@ $langFld->setfieldTagAttribute('onChange', "addLangForm(" . $cpage_id . ", this.
                         <?php
                         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
                         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
-                        if (!empty($translatorSubscriptionKey) && $cpage_lang_id != $siteDefaultLangId) { ?> 
-                            <div class="row justify-content-end"> 
+                        if (!empty($translatorSubscriptionKey) && $cpage_lang_id != $siteDefaultLangId) { ?>
+                            <div class="row justify-content-end">
                                 <div class="col-auto mb-4">
-                                    <input class="btn btn-primary" 
-                                        type="button" 
-                                        value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>" 
+                                    <input class="btn btn-primary"
+                                        type="button"
+                                        value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>"
                                         onClick="addLangForm(<?php echo $cpage_id; ?>, <?php echo $cpage_lang_id; ?>, <?php echo $cpage_layout?>, 1)">
                                 </div>
                             </div>
-                        <?php } ?> 
+                        <?php } ?>
                         <div class="tabs_panel">
                             <?php
                                 echo $blockLangFrm->getFormTag();

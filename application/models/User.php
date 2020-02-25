@@ -115,6 +115,9 @@ class User extends MyAppModel
     public const OTP_LENGTH = 4;
     public const OTP_AGE = 15; //IN MINUTES
 
+    public const AUTH_TYPE_GUEST = 1;
+    public const AUTH_TYPE_REGISTERED = 2;
+
     public function __construct($userId = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $userId);
@@ -145,6 +148,14 @@ class User extends MyAppModel
             self::DEVICE_OS_BOTH => Labels::getLabel('LBL_BOTH_OS', $langId),
             self::DEVICE_OS_ANDROID => Labels::getLabel('LBL_ANDROID', $langId),
             self::DEVICE_OS_IOS => Labels::getLabel('LBL_IOS', $langId),
+        ];
+    }
+
+    public static function getUserAuthTypeArr($langId)
+    {
+        return [
+            self::AUTH_TYPE_GUEST => Labels::getLabel('LBL_GUEST', $langId),
+            self::AUTH_TYPE_REGISTERED => Labels::getLabel('LBL_REGISTERED', $langId),
         ];
     }
 
@@ -2181,10 +2192,13 @@ class User extends MyAppModel
         return isset($row['uauth_user_id']) ? $row['uauth_user_id'] : '';
     }
 
-    public static function getUserAuthFcmFormattedData(string $fcmToken, int $deviceOs = null, string $mainTableRecordId = '', string $appToken = '')
+    public static function getUserAuthFcmFormattedData(int $userType, string $fcmToken, int $deviceOs = null, int $mainTableRecordId = null, string $appToken = '')
     {
         $expiry = strtotime("+7 DAYS");
+        $userType = 1 > $userType ? User::USER_TYPE_BUYER : $userType;
+
         $data = [
+            'uauth_user_type' => $userType,
             'uauth_expiry' => date('Y-m-d H:i:s', $expiry),
             'uauth_browser' => CommonHelper::userAgent(),
             'uauth_fcm_id' => $fcmToken,
@@ -2192,11 +2206,11 @@ class User extends MyAppModel
             'uauth_last_ip' => CommonHelper::getClientIp(),
         ];
         
-        if (null != $deviceOs) {
+        if (null !== $deviceOs) {
             $data['uauth_device_os'] = $deviceOs;
         }
 
-        if (!empty($mainTableRecordId)) {
+        if (null !== $mainTableRecordId) {
             $data['uauth_user_id'] = $mainTableRecordId;
         }
 
@@ -2206,7 +2220,7 @@ class User extends MyAppModel
         return $data;
     }
 
-    public function setPushNotificationToken($appToken, $fcmDeviceId, $deviceOs = 0)
+    public function setPushNotificationToken($appToken, $fcmDeviceId, $userType = User::USER_TYPE_BUYER, $deviceOs = 0)
     {
         if (($this->mainTableRecordId < 1)) {
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
@@ -2224,7 +2238,7 @@ class User extends MyAppModel
                 'vals' => array($fcmDeviceId, $appToken)
                 ]
             );
-            $values = static::getUserAuthFcmFormattedData($fcmDeviceId, $deviceOs);
+            $values = static::getUserAuthFcmFormattedData($userType, $fcmDeviceId, $deviceOs);
             $where = array('smt' => 'uauth_user_id = ? and uauth_token = ?', 'vals' => array((int)$this->mainTableRecordId, $appToken));
         } else {
             FatApp::getDb()->deleteRecords(
@@ -2234,15 +2248,15 @@ class User extends MyAppModel
                 'vals' => array($appToken)
                 ]
             );
-            $values = static::getUserAuthFcmFormattedData($fcmDeviceId, $deviceOs, (int)$this->mainTableRecordId, $appToken);
+            $values = static::getUserAuthFcmFormattedData($userType, $fcmDeviceId, $deviceOs, (int)$this->mainTableRecordId, $appToken);
             $where = array('smt' => 'uauth_fcm_id = ?', 'vals' => [$fcmDeviceId]);
         }
         return UserAuthentication::updateFcmDeviceToken($values, $where);
     }
 
-    public static function setGuestFcmToken(string $tempUserId, string $fcmToken, int $deviceOs): bool
+    public static function setGuestFcmToken(int $userType, string $fcmToken, int $deviceOs, string $appToken): bool
     {
-        $data = static::getUserAuthFcmFormattedData($fcmToken, $deviceOs, $tempUserId);
+        $data = static::getUserAuthFcmFormattedData($userType, $fcmToken, $deviceOs, null, $appToken);
         return UserAuthentication::saveLoginToken($data);
     }
 

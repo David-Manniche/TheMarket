@@ -46,7 +46,11 @@ $(document).ready(function(){
 
 	optionValueListing = function(optionId){
 		if(optionId == 0 ) { $('#showHideContainer').addClass('hide'); return ;}
-		var dv =$('#optionValueListing');
+        if($("#optionValueListing").length == 0) {
+            var dv =$('#optionValuesListing');
+        }else{
+            var dv =$('#optionValueListing');
+        }
 		dv.html('Loading....');
 		var data = 'option_id='+optionId;
 		fcom.ajax(fcom.makeUrl('OptionValues','search'),data,function(res){
@@ -59,6 +63,7 @@ $(document).ready(function(){
 		var dv = $('#loadForm');
 		fcom.ajax(fcom.makeUrl('OptionValues', 'form', [optionId,id]), '', function(t) {
 			dv.html(t);
+            optionValueListing(optionId);
 			jscolor.installByClassName('jscolor');
 		});
 	};
@@ -69,7 +74,6 @@ $(document).ready(function(){
 		fcom.updateWithAjax(fcom.makeUrl('OptionValues', 'setup'), data, function(t) {
 			$.mbsmessage.close();
 			if (t.optionId > 0 ) {
-				optionValueListing(t.optionId);
 				optionValueForm(t.optionId,0);
 				return ;
 			}
