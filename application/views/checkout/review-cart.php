@@ -8,7 +8,7 @@
     <div class="review-wrapper">
         <?php if ($cartHasDigitalProduct && $cartHasPhysicalProduct) { ?>
         <div class="">
-            <div class="tabs tabs--small tabs--scroll clearfix setactive-js">
+            <div class="tabs  setactive-js">
                 <ul>
                     <li class="is-active "><a rel="physical_product_tab" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Tab_Physical_Product', $siteLangId); ?></a></li>
                     <li class="digitalProdTab-js"><a rel="digital_product_tab" href="javascript:void(0)" class=""><?php echo Labels::getLabel('LBL_Tab_Digital_Product', $siteLangId); ?></a></li>

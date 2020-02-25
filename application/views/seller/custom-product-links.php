@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');  ?>
-<div class="tabs tabs--small tabs--scroll clearfix">
+<div class="tabs">
     <?php require_once(CONF_THEME_PATH.'seller/sellerCustomProductTop.php');?>
 </div>
 <div class="cards">

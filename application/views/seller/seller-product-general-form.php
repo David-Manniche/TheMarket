@@ -35,13 +35,14 @@ $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
 $submitBtnFld = $frmSellerProduct->getField('btn_submit');
-$submitBtnFld->setFieldTagAttribute('class', 'btn btn--primary');
+$submitBtnFld->setFieldTagAttribute('class', 'btn btn--primary btn-block');
+$submitBtnFld->developerTags['col'] = 12;
 
 $cancelBtnFld = $frmSellerProduct->getField('btn_cancel');
-$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
-$submitBtnFld->developerTags['col'] = 12;
+$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
+
 ?>
-<div class="tabs tabs--small tabs--scroll clearfix">
+<div class="tabs ">
     <?php /* require_once('sellerCatalogProductTop.php'); */ ?>
 </div>
 <div class="cards">
@@ -297,12 +298,22 @@ $submitBtnFld->developerTags['col'] = 12;
                         </div>
                         <?php } ?>
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-6 col-md-3">
                                 <div class="field-set">
                                     <div class="caption-wraper"><label class="field_label"></label></div>
                                     <div class="field-wraper">
                                         <div class="field_cover">
                                             <?php echo $frmSellerProduct->getFieldHtml('btn_submit'); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="field-set">
+                                    <div class="caption-wraper"><label class="field_label"></label></div>
+                                    <div class="field-wraper">
+                                        <div class="field_cover">
+                                            <?php echo $frmSellerProduct->getFieldHtml('btn_cancel'); ?>
                                         </div>
                                     </div>
                                 </div>

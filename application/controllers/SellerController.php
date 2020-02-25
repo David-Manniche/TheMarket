@@ -4132,7 +4132,7 @@ class SellerController extends SellerBaseController
         $fld1 = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         if ($type != 'CUSTOM_CATALOG') {
             $fld2 = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $this->siteLangId), array('onClick' => 'cancelForm(this)'));
-            $fld1->attachField($fld2);
+            //$fld1->attachField($fld2);
         }
         return $frm;
     }
