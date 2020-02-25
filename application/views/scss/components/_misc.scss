@@ -253,8 +253,9 @@ hr {}
 }
 
 .custom-ui-autocomplete {
-    max-height: 300px;
-    overflow: auto;
+    max-height:300px;
+	overflow:inherit;
+    overflow-y:auto;
 }
 .container-fluid{ max-width: none;}
 .strikethrough{ text-decoration: line-through;}

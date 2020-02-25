@@ -4,8 +4,11 @@ if ($selprod_id > 0 || empty($productOptions)) {
 } else {
     $frmSellerProduct->setFormTagAttribute('onsubmit', 'setUpMultipleSellerProducts(this); return(false);');
 }
-$frmSellerProduct->setFormTagAttribute('class', 'form form--horizontal');
-
+$siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+$frmSellerProduct->setFormTagAttribute('class', 'form form--horizontal layout--'.Language::getLayoutDirection($siteDefaultLangId));
+$autoUpdateFld = $frmSellerProduct->getField('auto_update_other_langs_data');
+$autoUpdateFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+$autoUpdateFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 $returnAgeFld = $frmSellerProduct->getField('selprod_return_age');
 $cancellationAgeFld = $frmSellerProduct->getField('selprod_cancellation_age');
 $returnAge = FatUtility::int($returnAgeFld->value);
@@ -51,10 +54,10 @@ $submitBtnFld->developerTags['col'] = 12;
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="field-set">
-                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_title'.FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1))->getCaption(); ?><span
+                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_title'.$siteDefaultLangId)->getCaption(); ?><span
                                                 class="spn_must_field">*</span></label></div>
                                     <div class="field-wraper">
-                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_title'.FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1)); ?></div>
+                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_title'.$siteDefaultLangId); ?></div>
                                     </div>
                                 </div>
                             </div>
@@ -231,33 +234,58 @@ $submitBtnFld->developerTags['col'] = 12;
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="field-set">
-                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_comments'.FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1))->getCaption(); ?></label></div>
+                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_comments'.$siteDefaultLangId)->getCaption(); ?></label></div>
                                     <div class="field-wraper">
-                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_comments'.FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1)); ?></div>
+                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_comments'.$siteDefaultLangId); ?></div>
                                     </div>
                                 </div>
-                                <?php $languages = Language::getAllNames();
-                                unset($languages[FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1)]);
-                                foreach ($languages as $langId => $langName) { ?>
-                                    <div class="acc">
-                                        <div class="js-acc-triger acc-triger">
-                                            <h6><?php echo Labels::getLabel('LBL_Inventory_Data_for', $siteLangId) ?> <?php echo $langName;?></h6>
+                            </div>
+                        </div>
+                        <?php
+                        $languages = Language::getAllNames();
+                        unset($languages[$siteDefaultLangId]);
+                        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+                        if (!empty($translatorSubscriptionKey) && count($languages) > 0) { ?>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="field-set mb-0">
+                                    <div class="caption-wraper"></div>
+                                    <div class="field-wraper">
+                                        <div class="field_cover">
+                                            <?php echo $frmSellerProduct->getFieldHtml('auto_update_other_langs_data'); ?>
                                         </div>
-                                        <div class="acc-data" style="display: none;">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="field-set">
-                                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_title'.$langId)->getCaption(); ?></label></div>
-                                                        <div class="field-wraper">
-                                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_title'.$langId); ?></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php } ?>
+                        <?php if(count($languages) > 0) { ?>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <?php foreach ($languages as $langId => $langName) {
+                                    $layout = Language::getLayoutDirection($langId); ?>
+                                    <div class="accordion" id="specification-accordion">
+                                        <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><span onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
+                                                <?php echo Labels::getLabel('LBL_Inventory_Data_for', $siteLangId) ?> <?php echo $langName;?>
+                                            </span>
+                                        </h6>
+                                        <div id="collapseOne" class="collapse collapse-js-<?php echo $langId; ?>" aria-labelledby="headingOne" data-parent="#specification-accordion">
+                                            <div class="p-4 mb-4 bg-gray rounded" dir="<?php echo $layout; ?>">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="field-set">
+                                                            <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_title'.$langId)->getCaption(); ?></label></div>
+                                                            <div class="field-wraper">
+                                                                <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_title'.$langId); ?></div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-md-12">
-                                                    <div class="field-set">
-                                                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_comments'.$langId)->getCaption(); ?></label></div>
-                                                        <div class="field-wraper">
-                                                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_comments'.$langId); ?></div>
+                                                    <div class="col-md-12">
+                                                        <div class="field-set">
+                                                            <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_comments'.$langId)->getCaption(); ?></label></div>
+                                                            <div class="field-wraper">
+                                                                <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_comments'.$langId); ?></div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -267,6 +295,7 @@ $submitBtnFld->developerTags['col'] = 12;
                                 <?php } ?>
                             </div>
                         </div>
+                        <?php } ?>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="field-set">
@@ -292,9 +321,9 @@ $submitBtnFld->developerTags['col'] = 12;
 </div>
 <?php echo FatUtility::createHiddenFormFromData(array('product_id' => $product_id), array('name' => 'frmSearchSellerProducts'));?>
 <script type="text/javascript">
-    
+
     $('[data-toggle="tooltip"]').tooltip();
-    
+
     var PERCENTAGE = <?php echo applicationConstants::PERCENTAGE; ?>;
     var FLAT = <?php echo applicationConstants::FLAT; ?>;
     var CONF_PRODUCT_SKU_MANDATORY = <?php echo FatApp::getConfig("CONF_PRODUCT_SKU_MANDATORY", FatUtility::VAR_INT, 1); ?>;

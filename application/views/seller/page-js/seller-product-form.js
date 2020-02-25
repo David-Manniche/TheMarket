@@ -43,6 +43,23 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 			});
 	};
 
+	translateData = function (item, defaultLang, toLangId) {
+        var autoTranslate = $("input[name='auto_update_other_langs_data']:checked").length;
+        var prodName = $("input[name='selprod_title" + defaultLang + "']").val();
+		var prodDesc = $("textarea[name='selprod_comments" + defaultLang + "']").val();
+        var alreadyOpen = $('.collapse-js-' + toLangId).hasClass('show');
+        if (autoTranslate == 0 || prodName == "" || alreadyOpen == true) {
+            return false;
+        }
+        var data = "product_name=" + prodName + '&product_description=' + prodDesc + "&toLangId=" + toLangId;
+        fcom.updateWithAjax(fcom.makeUrl('Seller', 'translatedProductData'), data, function (t) {
+            if (t.status == 1) {
+                $("input[name='selprod_title" + toLangId + "']").val(t.productName);
+				$("textarea[name='selprod_comments" + toLangId + "']").val(t.productDesc);
+            }
+        });
+    }
+
 	setUpSellerProduct = function(frm){
 		if (!$(frm).validate()) return;
         events.customizeProduct();

@@ -739,7 +739,6 @@ class SellerController extends SellerBaseController
 
         $this->_template->addJs('js/tagify.min.js');
         $this->_template->addJs('js/tagify.polyfills.min.js');
-        $this->_template->addCss('css/tagify.css');
 
         $frmSearchCatalogProduct = $this->getCatalogProductSearchForm();
         $this->set("frmSearch", $frmSearchCatalogProduct);
@@ -3965,7 +3964,7 @@ class SellerController extends SellerBaseController
 
         $defaultProductCond = '';
         $frm = new Form('frmSellerProduct');
-        
+
         if ($type == 'CUSTOM_CATALOG') {
             $reqData = ProductRequest::getAttributesById($product_id, array('preq_content'));
             $productData = array_merge($reqData, json_decode($reqData['preq_content'], true));
@@ -4116,8 +4115,13 @@ class SellerController extends SellerBaseController
         }
         $frm->addTextArea(Labels::getLabel('LBL_Any_Extra_Comment_for_buyer', $this->siteLangId), 'selprod_comments' . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
 
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
         $languages = Language::getAllNames();
         unset($languages[FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1)]);
+        if (!empty($translatorSubscriptionKey) && count($languages) > 0) {
+            $frm->addCheckBox(Labels::getLabel('LBL_Translate_To_Other_Languages', $this->siteLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+
         foreach ($languages as $langId => $langName) {
             $frm->addTextBox(Labels::getLabel('LBL_Title', $this->siteLangId), 'selprod_title' . $langId);
             $frm->addTextArea(Labels::getLabel('LBL_Any_Extra_Comment_for_buyer', $this->siteLangId), 'selprod_comments' . $langId);
