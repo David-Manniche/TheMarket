@@ -90,7 +90,7 @@ $btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');
                 <div class="field-set">
                     <div class="caption-wraper">
                         <label class="field_label">
-                            <?php $fld = $productFrm->getField('ptt_taxcat_id');
+                            <?php $fld = $productFrm->getField('taxcat_name');
                               echo $fld->getCaption();
                             ?>
                         </label>
@@ -98,7 +98,7 @@ $btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');
                     </div>
                     <div class="field-wraper">
                         <div class="field_cover">
-                            <?php echo $productFrm->getFieldHtml('ptt_taxcat_id'); ?>
+                            <?php echo $productFrm->getFieldHtml('taxcat_name'); ?>
                         </div>
                     </div>
                 </div>
@@ -300,6 +300,7 @@ $btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');
                         echo $productFrm->getFieldHtml('product_id');
                         echo $productFrm->getFieldHtml('product_brand_id');
                         echo $productFrm->getFieldHtml('ptc_prodcat_id');
+                        echo $productFrm->getFieldHtml('ptt_taxcat_id');
                         echo $productFrm->getFieldHtml('btn_submit'); ?>
                         </div>
                     </div>
@@ -371,6 +372,28 @@ $btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');
         $('input[name=\'category_name\']').change(function() {
             if ($(this).val() == '') {
                 $("input[name='ptc_prodcat_id']").val(0);
+            }
+        });
+        
+        $('input[name=\'taxcat_name\']').autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
+            'source': function(request, response) {
+                    $.ajax({
+                            url: fcom.makeUrl('products', 'autoCompleteTaxCategories'),
+                            data: {keyword: request['term'],fIsAjax:1},
+                            dataType: 'json',
+                            type: 'post',
+                            success: function(json) {
+                                    response($.map(json, function(item) {
+                                            return { label: item['name'], value: item['name'], id: item['id'] };
+                                    }));
+                            },
+                    });
+            },
+            select: function(event, ui) {
+                    $('input[name=\'ptt_taxcat_id\']').val(ui.item.id);
             }
         });
     });

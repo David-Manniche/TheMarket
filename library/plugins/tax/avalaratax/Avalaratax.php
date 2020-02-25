@@ -31,8 +31,10 @@ class Avalaratax extends TaxBase
         $this->settings = $this->getSettings();
 
         $this->validateSettings();
+        
+        $environment = FatUtility::int($this->settings['environment']) == 1 ? 'production' : 'sandbox';
 
-        $this->_client = new Avalara\AvaTaxClient(FatApp::getConfig('CONF_WEBSITE_NAME_' . $langId), FatApp::getConfig('CONF_YOKART_VERSION'), $_SERVER['HTTP_HOST'], $this->settings['environment']);
+        $this->_client = new Avalara\AvaTaxClient(FatApp::getConfig('CONF_WEBSITE_NAME_' . $langId), FatApp::getConfig('CONF_YOKART_VERSION'), $_SERVER['HTTP_HOST'], $environment);
         $this->_client->withLicenseKey($this->settings['account_number'], $this->settings['license_key']);
         $this->_client->withCatchExceptions(false);
         $this->_companyCode = $this->settings['company_code'];
@@ -236,7 +238,7 @@ class Avalaratax extends TaxBase
 
         try {
             $tb = new Avalara\TransactionBuilder($this->_client, $this->_companyCode, $invoiceType, $this->_customerCode, $this->_invoiceDate);
-            if ($this->settings['commit_transaction'] == 1) {
+            if (FatUtility::int($this->settings['commit_transaction']) == 1) {
                 $tb->withCommit();
             }
 

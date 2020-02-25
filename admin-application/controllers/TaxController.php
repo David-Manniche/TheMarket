@@ -488,6 +488,43 @@ class TaxController extends AdminBaseController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
+    
+    public function autoCompleteTaxCategories()
+    {
+        $pagesize = 10;
+        $post = FatApp::getPostedData();
+        $this->objPrivilege->canViewTax();
+        $srch = Tax::getSearchObject($this->adminLangId,true);
+        $srch->addCondition('taxcat_deleted', '=', 0);
+        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX, FatUtility::VAR_INT, 0);
+        $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active'); 
+        
+        $srch->addFld('taxcat_id'); 
+        if ($defaultTaxApiIsActive) {
+            $srch->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');
+            $srch->addCondition('taxcat_plugin_id', '=', $defaultTaxApi);
+        }else{
+            $srch->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name'); 
+        }       
+
+        if (!empty($post['keyword'])) {
+            $srch->addCondition('taxcat_name', 'LIKE', '%' . $post['keyword'] . '%')
+            ->attachCondition('taxcat_identifier', 'LIKE', '%' . $post['keyword'] . '%')
+            ->attachCondition('taxcat_code', 'LIKE', '%' . $post['keyword'] . '%');
+        }
+        $srch->setPageSize($pagesize);
+        $rs = $srch->getResultSet();
+        $db = FatApp::getDb();
+        $taxCategories = $db->fetchAll($rs, 'taxcat_id');
+        $json = array();
+        foreach ($taxCategories as $key => $taxCategory) {
+            $json[] = array(
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($taxCategory['taxcat_name'], ENT_QUOTES, 'UTF-8'))
+            );
+        }
+        die(json_encode($json));     
+    }
 
 
     /* public function getCombinedValues($value)

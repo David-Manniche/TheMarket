@@ -4845,9 +4845,7 @@ class SellerController extends SellerBaseController
             $frm->addCheckBox(Labels::getLabel('LBL_Translate_To_Other_Languages', $this->siteLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
 
-        $taxCategories = Tax::getSaleTaxCatArr($this->siteLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Tax_Category', $this->siteLangId), 'ptt_taxcat_id', $taxCategories, '', array(), Labels::getLabel('LBL_Select', $this->siteLangId))->requirements()->setRequired(true);
-
+        $frm->addRequiredField(Labels::getLabel('LBL_Tax_Category', $this->siteLangId), 'taxcat_name'); 
         $fldMinSelPrice = $frm->addFloatField(Labels::getLabel('LBL_Minimum_Selling_Price', $this->siteLangId) . ' [' . CommonHelper::getCurrencySymbol(true) . ']', 'product_min_selling_price', '');
         $fldMinSelPrice->requirements()->setPositive();
 
@@ -4857,6 +4855,7 @@ class SellerController extends SellerBaseController
         $frm->addHiddenField('', 'preq_id', $preqId);
         $frm->addHiddenField('', 'product_brand_id');
         $frm->addHiddenField('', 'ptc_prodcat_id');
+        $frm->addHiddenField('', 'ptt_taxcat_id');
         $frm->addButton('', 'btn_discard', Labels::getLabel('LBL_Discard', $this->siteLangId));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->siteLangId));
         return $frm;
