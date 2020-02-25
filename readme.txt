@@ -115,3 +115,5 @@ Bugs:
     => 034494 - Keyword search with special character.
     
 -----------------------TV-9.1.3.20200223---------------
+    => 034787 - Special price list rows are not getting removed from frontend.
+    => 034784 - Add minimum min qty of volume discount validation message while adding from frontend.

@@ -25,4 +25,5 @@ $optionValueFrm->developerTags['fld_default_col'] = 6;
         echo $optionValueFrm->getFormHtml();
         ?>
     </div>
+    <div id="optionValuesListing"></div>
 </div>
