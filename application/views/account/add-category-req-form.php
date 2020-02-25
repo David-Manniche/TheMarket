@@ -11,7 +11,7 @@ $identifierFld->setFieldTagAttribute('id',CategoryRequest::DB_TBL_PREFIX.'id');
   <h4><?php echo Labels::getLabel('LBL_Request_New_category',$langId); ?></h4>
 </div>
 <div class="box__body">
-  <div class="tabs tabs--small clearfix">
+  <div class="tabs">
     <ul>
       <li class="is-active" ><a href="javascript:void(0)" onclick="addCategoryReqForm(<?php echo $categoryReqId; ?>);"><?php echo Labels::getLabel('LBL_Basic', $siteLangId);?></a></li>
         <li class="<?php echo (0 == $categoryReqId) ? 'fat-inactive' : ''; ?>">

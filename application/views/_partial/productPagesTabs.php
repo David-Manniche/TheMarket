@@ -1,6 +1,6 @@
  
     <div class="col-auto">
-        <div class="tabs tabs--small clearfix">
+        <div class="tabs">
             <ul>
                 <li class="<?php echo ($controllerName == 'seller' && $action == 'catalog') ? 'is-active' : ''; ?>">
                     <a href="<?php echo CommonHelper::generateUrl('seller', 'catalog');?>">

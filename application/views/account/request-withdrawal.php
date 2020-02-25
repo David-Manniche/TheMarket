@@ -4,13 +4,10 @@
 </div>
 <div class="cards-content ">
     <?php $frm->setFormTagAttribute('class', 'form');
+    $frm->developerTags['colClassPrefix'] = 'col-md-';
     if (User::isAffiliate()) {
-        $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-';
         $frm->developerTags['fld_default_col'] = 12;
     } else {
-        //$frm->developerTags['colClassPrefix'] = 'col-lg-6 col-md-';
-        //$frm->developerTags['fld_default_col'] = 6;
-        $frm->developerTags['colClassPrefix'] = 'col-md-';
         $frm->developerTags['fld_default_col'] = 6;
     }
 

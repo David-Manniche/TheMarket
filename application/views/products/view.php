@@ -543,22 +543,27 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                             foreach ($slideArr as $slideScreen) {
                                 switch ($slideScreen['afile_screen']) {
                                     case applicationConstants::SCREEN_MOBILE:
-                                        $mobile_url = '<736:' .CommonHelper::generateUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).",";
+                                        $mobile_url = CommonHelper::generateUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).",";
                                         break;
                                     case applicationConstants::SCREEN_IPAD:
-                                        $tablet_url = ' >768:' .CommonHelper::generateUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_IPAD)).",";
+                                        $tablet_url = CommonHelper::generateUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_IPAD)).",";
                                         break;
                                     case applicationConstants::SCREEN_DESKTOP:
-                                        $desktop_url = ' >1025:' .CommonHelper::generateUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_DESKTOP)).",";
+                                        $desktop_url = CommonHelper::generateUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_DESKTOP)).",";
                                         break;
                                 }
                             }
                         } ?>
                     <div class="col-md-6 mb-3 mb-md-0">
                         <div class="banner-ppc"><a href="<?php echo CommonHelper::generateUrl('Banner', 'url', array($val['banner_id'])); ?>" target="<?php echo $val['banner_target']; ?>" title="<?php echo $val['banner_title']; ?>"
-                                class="advertise__block"><img data-ratio="10:3" data-src-base="" data-src-base2x="" data-src="<?php echo $mobile_url  . $tablet_url  . $desktop_url; ?>"
-                                    src="<?php echo CommonHelper::generateUrl('Banner', 'productDetailPageBanner', array($val['banner_id'],$siteLangId,applicationConstants::SCREEN_DESKTOP)); ?>" alt="<?php echo $val['banner_title']; ?>"
-                                    class="img-responsive"></a></div>
+                                class="advertise__block">
+								<picture>
+									<source data-aspect-ratio="4:3" srcset="<?php echo $mobile_url; ?>" media="(max-width: 767px)">
+									<source data-aspect-ratio="4:3" srcset="<?php echo $tablet_url; ?>" media="(max-width: 1024px)">
+									<source data-aspect-ratio="4:1" srcset="<?php echo $desktop_url; ?>">
+									<img data-aspect-ratio="4:1" srcset="<?php echo $desktop_url; ?>" alt="">
+								</picture>
+								</a></div>
                     </div>
                     <?php } ?>
                     </div>
