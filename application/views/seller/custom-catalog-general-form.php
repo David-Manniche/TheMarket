@@ -300,7 +300,7 @@ $btnDiscardFld->value = Labels::getLabel('LBL_Discard', $siteLangId);
         }
         ?>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-6">
                 <div class="field-set">
                     <div class="caption-wraper"><label class="field_label"></label></div>
                     <div class="field-wraper">
@@ -310,7 +310,7 @@ $btnDiscardFld->value = Labels::getLabel('LBL_Discard', $siteLangId);
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 text-right">
+            <div class="col-6 text-right">
                 <div class="field-set">
                     <div class="caption-wraper"><label class="field_label"></label></div>
                     <div class="field-wraper">
