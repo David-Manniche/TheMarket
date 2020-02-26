@@ -89,3 +89,4 @@ Bugs:
     => 034475 - Pagination is not working  properly on Seller > Catalog list.
     => 034608 - when user adds item to cart and turns back from payment gateway then quantity get doubles.
     => 034661 - Unable to save buy together and related products.
+    => 034897 - Getting error while applying category filters on shop product page - APP.
