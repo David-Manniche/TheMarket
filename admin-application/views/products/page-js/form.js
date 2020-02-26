@@ -21,8 +21,7 @@
         $("#tabs_004").remove();
     }
 
-    productInitialSetUpFrm = function(productId, prodCatId){
-        fcom.resetEditorInstance();        
+    productInitialSetUpFrm = function(productId, prodCatId){      
 		var data = '';
 		fcom.ajax(fcom.makeUrl('Products','productInitialSetUpFrm',[productId, prodCatId]),data,function(res){
             $(".tabs_panel").html('');
@@ -400,7 +399,6 @@
     };
 
     translateData = function(item, defaultLang, toLangId){ 
-		fcom.setEditorLayout(toLangId);
         var autoTranslate = $("input[name='auto_update_other_langs_data']:checked").length;
         var prodName = $("input[name='product_name["+defaultLang+"]']").val();
         //var prodDesc = $("[name='product_description["+defaultLang+"]']").val();

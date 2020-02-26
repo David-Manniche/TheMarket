@@ -624,6 +624,16 @@ function defaultSetUpLogin(frm, v) {
                 oUtil.arrEditor = [];
             }
         },
+        
+        resetEditorWidth: function(width = "100%") {
+            if (typeof oUtil != 'undefined') {
+                (oUtil.arrEditor).forEach(function (input) {
+					var oEdit1 = eval(input);
+					$("#idArea" + oEdit1.oName).attr("width", width);
+				});
+            }
+        },
+        
         setEditorLayout: function (lang_id) {
             if (extendEditorJs == true) {
                 var editors = oUtil.arrEditor;
@@ -1375,7 +1385,7 @@ $(document).ready(function () {
     */
 
 		$('[data-toggle="tooltip"]').tooltip({
-		   container: 'body'
+		   container: '.tabs'
 		});
 
 

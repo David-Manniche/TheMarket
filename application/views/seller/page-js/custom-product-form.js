@@ -703,7 +703,7 @@
         }
     }   
     
-    customProductForm = function( productId ){
+    customProductForm = function( productId ){  
 		fcom.ajax(fcom.makeUrl('Seller', 'customProductGeneralForm', [ productId]), '', function(t) {
             $(".tabs_panel").html('');
             $(".tabs_panel").hide();
@@ -711,6 +711,7 @@
             $("#tabs_001").show();                    
             $("a[rel='tabs_001']").parent().addClass('is-active');
             $("#tabs_001").html(t);
+            fcom.resetEditorWidth();
 		});
 	};
     

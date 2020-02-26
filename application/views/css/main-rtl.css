@@ -16114,18 +16114,19 @@ img.mfp-img {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -ms-flex-wrap: nowrap;
-  flex-wrap: nowrap;
+  position: relative;
   width: 100%;
   color: #4e5862; }
-  @media (max-width: 991.98px) {
-    .tabs {
-      overflow-x: auto;
-      overflow-y: hidden; } }
   .tabs ul {
     display: -webkit-box;
     display: -ms-flexbox;
-    display: flex; }
+    display: flex;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap; }
+    @media (max-width: 991.98px) {
+      .tabs ul {
+        overflow-x: auto;
+        overflow-y: hidden; } }
     .tabs ul li {
       display: inline-block;
       margin-left: 2rem;

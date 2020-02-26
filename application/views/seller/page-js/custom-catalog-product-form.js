@@ -718,6 +718,7 @@ $(document).on('change', '.language-js', function () {
             $("#tabs_001").show();
             $("a[rel='tabs_001']").parent().addClass('is-active');
             $("#tabs_001").html(t);
+            fcom.resetEditorWidth();
         });
     };
 
