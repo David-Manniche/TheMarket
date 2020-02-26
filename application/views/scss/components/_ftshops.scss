@@ -325,7 +325,7 @@
         .products__footer {
             padding: 20px;
             width: calc(100% - 150px);
-            text-align: left;
+            text-align: #{$start-direction};
 
             .products__title {
                 -webkit-padding-start: 0;

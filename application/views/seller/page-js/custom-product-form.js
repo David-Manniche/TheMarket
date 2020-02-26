@@ -703,7 +703,7 @@
         }
     }   
     
-    customProductForm = function( productId ){
+    customProductForm = function( productId ){  
 		fcom.ajax(fcom.makeUrl('Seller', 'customProductGeneralForm', [ productId]), '', function(t) {
             $(".tabs_panel").html('');
             $(".tabs_panel").hide();
@@ -711,6 +711,7 @@
             $("#tabs_001").show();                    
             $("a[rel='tabs_001']").parent().addClass('is-active');
             $("#tabs_001").html(t);
+            fcom.resetEditorWidth();
 		});
 	};
     
@@ -917,8 +918,9 @@
             if(t.status == 1){
                 $("input[name='product_name["+toLangId+"]']").val(t.productName);
                 //$("[name='product_description["+toLangId+"]']").val(t.productDesc);
-                var oEdit1 = eval(oUtil.arrEditor[1]);
+                var oEdit1 = eval(oUtil.arrEditor[toLangId - 1]);
                 oEdit1.putHTML(t.productDesc);
+                $('#idContent' + oUtil.arrEditor[toLangId - 1]).contents().find("body").css('direction', langLbl['language' + toLangId]);
             }
         }); 
     }

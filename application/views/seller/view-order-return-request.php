@@ -12,7 +12,7 @@
                 <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_View_Order_Return_Request', $siteLangId).': <span class="number">' . $request['orrequest_reference'].'</span>' ; ?></h2>
             </div>
             <div class="col-auto">
-                <div class="btn-group"><a href="<?php echo CommonHelper::generateUrl('Seller', 'orderReturnRequests'); ?>" class="btn btn--primary btn--sm"><?php echo Labels::getLabel('LBL_Back_To_Return_Requests', $siteLangId); ?></a></div>
+                <div class="btn-group"><a href="<?php echo CommonHelper::generateUrl('Seller', 'orderReturnRequests'); ?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Back_To_Return_Requests', $siteLangId); ?></a></div>
             </div>
         </div>
         <div class="content-body">
@@ -20,10 +20,10 @@
                 <div class="cards-header">
                     <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Request_Details', $siteLangId); ?></h5>
                     <div class="btn-group"><?php if ($canEscalateRequest) { ?>
-                            <a class="btn btn--primary ripplelink btn--sm" onClick="javascript: return confirm('<?php echo Labels::getLabel('MSG_Do_you_want_to_proceed?', $siteLangId); ?>')" href="<?php echo CommonHelper::generateUrl('Account', 'EscalateOrderReturnRequest', array($request['orrequest_id'])); ?>"><?php echo str_replace("{website_name}", FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId), Labels::getLabel('LBL_Escalate_to', $siteLangId)); ?></a>
+                            <a class="btn btn-outline-primary btn--sm ripplelink" onClick="javascript: return confirm('<?php echo Labels::getLabel('MSG_Do_you_want_to_proceed?', $siteLangId); ?>')" href="<?php echo CommonHelper::generateUrl('Account', 'EscalateOrderReturnRequest', array($request['orrequest_id'])); ?>"><?php echo str_replace("{website_name}", FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId), Labels::getLabel('LBL_Escalate_to', $siteLangId)); ?></a>
                             <?php } ?>
                             <?php if ($canApproveReturnRequest) { ?>
-                            <a class="btn btn-outline-primary ripplelink btn--sm" onClick="javascript: return confirm('<?php echo Labels::getLabel('MSG_Do_you_want_to_proceed?', $siteLangId); ?>')" href="<?php echo CommonHelper::generateUrl('Seller', 'approveOrderReturnRequest', array($request['orrequest_id'])); ?>"><?php echo Labels::getLabel('LBL_Approve_Refund', $siteLangId); ?></a>
+                            <a class="btn btn-outline-primary btn--sm ripplelink" onClick="javascript: return confirm('<?php echo Labels::getLabel('MSG_Do_you_want_to_proceed?', $siteLangId); ?>')" href="<?php echo CommonHelper::generateUrl('Seller', 'approveOrderReturnRequest', array($request['orrequest_id'])); ?>"><?php echo Labels::getLabel('LBL_Approve_Refund', $siteLangId); ?></a>
                             <?php } ?>
                     </div>
                 </div>
