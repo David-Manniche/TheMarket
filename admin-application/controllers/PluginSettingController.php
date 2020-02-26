@@ -43,10 +43,10 @@ class PluginSettingController extends AdminBaseController
     public function index()
     {
         $this->setFormObj();
-        $pluginSetting = new PluginSetting();
-        $settings = $pluginSetting->getConfDataByCode($this->keyName, '', $this->adminLangId);
+        $pluginSetting = new PluginSetting(0, $this->keyName);
+        $settings = $pluginSetting->get();
         if (false === $settings) {
-            Message::addErrorMessage($pluginSetting->getError());
+            Message::addErrorMessage(Labels::getLabel('LBL_SETTINGS_NOT_AVALIABLE_FOR_THIS_PLUGIN', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
         $this->frmObj->fill($settings);
@@ -65,10 +65,9 @@ class PluginSettingController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         
-        $pluginId = $post["plugin_id"];
-        $pluginSetting = new PluginSetting($pluginId);
-        if (!$pluginSetting->saveSettings($post)) {
-            Message::addErrorMessage($plugin->getError());
+        $pluginSetting = new PluginSetting($post["plugin_id"]);
+        if (!$pluginSetting->save($post)) {
+            Message::addErrorMessage(Labels::getLabel($plugin->getError()));
             FatUtility::dieWithError(Message::getHtml());
         }
         $this->set('msg', $this->str_setup_successful);
@@ -91,7 +90,7 @@ class PluginSettingController extends AdminBaseController
             return false;
         }
         if (isset($frm)) {
-            $frm = PluginSetting::setupForm($frm, $this->adminLangId);
+            $frm = PluginSetting::addKeyFields($frm);
         } else {
             $frm = PluginSetting::getForm($requirements, $this->adminLangId);
         }

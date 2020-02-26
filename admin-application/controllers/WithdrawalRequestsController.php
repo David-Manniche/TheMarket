@@ -209,10 +209,4 @@ class WithdrawalRequestsController extends AdminBaseController
         $fld_submit->attachField($fld_cancel);
         return $frm;
     }
-
-    public static function getConfDataByCode($keyName)
-    {
-        $pluginSetting = new PluginSetting();
-        return $pluginSetting->getConfDataByCode($keyName);
-    }
 }

@@ -37,13 +37,15 @@ class PluginBaseController extends MyAppController
         }
         $keyName = $this->getKeyName();
         $frm = PluginSetting::getForm($fields, $this->siteLangId);
-        $pluginSetting = new PluginSetting();
-        $settings = $pluginSetting->getConfDataByCode($keyName, ['plugin_identifier']);
+
+        $pluginSetting = new PluginSetting(0, $keyName);
+        $settings = $pluginSetting->get($this->siteLangId);
+
         if (false === $settings) {
             LibHelper::dieJsonError($pluginSetting->getError());
         }
 
-        $this->identifier = isset($settings['plugin_identifier']) ? $settings['plugin_identifier'] : '';
+        $this->identifier = $settings['plugin_identifier'];
         $frm->fill(['plugin_id' => $settings['plugin_id'], 'keyName' => $keyName]);
         return $frm;
     }
