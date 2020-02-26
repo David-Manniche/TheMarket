@@ -14,7 +14,7 @@ $langFld->setfieldTagAttribute('onChange', "addBrandReqLangForm(" . $brandReqId 
 </div>
 
 <div class="box__body">
-    <div class="tabs tabs--small tabs--scroll clearfix">
+    <div class="tabs">
         <ul>
             <li><a href="javascript:void(0)" onclick="addBrandReqForm(<?php echo $brandReqId ?>);"><?php echo Labels::getLabel('LBL_Basic', $siteLangId);?></a></li>
             <?php $inactive=($brandReqId==0) ? ' fat-inactive' : ''; ?>

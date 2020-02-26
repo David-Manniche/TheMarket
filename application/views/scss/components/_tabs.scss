@@ -76,7 +76,8 @@
                 &:after {
                     content: "";
                     position: absolute;
-                    background: $brand-color; color:$brand-color-inverse;
+                    background: $brand-color;
+                    color: $brand-color-inverse;
                     #{$end-direction}: 0;
                 }
             }
@@ -102,10 +103,19 @@
     margin: 2rem 0 0;
 }
 
-.tabs__content {
+.tabs_panel {
     min-height: 500px;
 }
 
+.tabs_data {
+    min-height: inherit;
+    display: flex;
+    flex-direction: column;
+
+    .tabs_body {
+        flex: 1 1 auto;
+    }
+}
 
 .tabs--switcher {
     display: inline-block;

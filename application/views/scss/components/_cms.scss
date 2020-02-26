@@ -109,7 +109,7 @@
 }
 
 .section-head .section__heading {
-    font-size: 2em;
+    font-size: 2rem;
     color: $body-color;
     display: inline-block;
     font-family: $family-primary;
@@ -132,6 +132,8 @@
     font-size: 0.875rem;
     text-align: center;
 }
+
+.section-head .section__heading h2 > span.search-results{  font-size: 2rem; display: inherit;}
 
 .section-head .section__action {
     -webkit-margin-start: 1rem;

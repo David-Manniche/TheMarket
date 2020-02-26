@@ -26,7 +26,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                 <div class="col-lg-12">
                     <div class="cards">
                         <div class="cards-content ">
-                            <div class="tabs tabs--small tabs--scroll clearfix">
+                            <div class="tabs ">
                                 <ul class="tabs-js">
                                     <li class="is-active" id="tab-myaccount">
                                         <a href="javascript:void(0);" onClick="profileInfoForm()">

@@ -749,7 +749,7 @@ class ProductsController extends MyAppController
         $this->setRecentlyViewedItem($selprod_id);
 
         if (false === MOBILE_APP_API_CALL) {
-            $this->_template->addJs(array('js/slick.js', 'js/modaal.js', 'js/product-detail.js', 'js/responsive-img.min.js', 'js/xzoom.js', 'js/magnific-popup.js'));
+            $this->_template->addJs(array('js/slick.js', 'js/modaal.js', 'js/product-detail.js', 'js/xzoom.js', 'js/magnific-popup.js'));
         } else {
             $recentlyViewed = FatApp::getPostedData('recentlyViewed');
             $recentlyViewed = is_array($recentlyViewed) && 0 < count($recentlyViewed) ? FatUtility::int($recentlyViewed) : array();

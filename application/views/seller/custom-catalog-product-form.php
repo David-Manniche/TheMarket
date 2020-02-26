@@ -52,7 +52,7 @@
             </div>   
 
             <div class="cards">
-                <div class="cards-content pb-0">
+                <div class="cards-content">
                     <div class="tabs__content">
                         <div id="tabs_001" class="tabs_panel" style="display: block;"></div>
                         <div id="tabs_002" class="tabs_panel" style="display: none;"> </div>
