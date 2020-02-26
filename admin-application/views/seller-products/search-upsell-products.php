@@ -34,7 +34,7 @@ foreach ($arrListing as $selProdId => $upsellProds) {
                 $ul = $td->appendElement("ul", array("class"=>"list-tags"));
                 foreach ($upsellProds as $upsellProd) {
                     $li = $ul->appendElement("li");
-                    $li->appendElement('plaintext', array(), '<span>'.$upsellProd['selprod_title'].' <i class="remove_buyTogether remove_param fal fa-times" onClick="deleteSelprodUpsellProduct('.$selProdId.', '.$upsellProd['selprod_id'].')"></i></span>', true);
+                    $li->appendElement('plaintext', array(), '<span>'.$upsellProd['selprod_title'].' <i class="remove_buyTogether remove_param fas fa-times" onClick="deleteSelprodUpsellProduct('.$selProdId.', '.$upsellProd['selprod_id'].')"></i></span>', true);
                     $li->appendElement('plaintext', array(), '<input type="hidden" name="product_upsell[]" value="'.$upsellProd['selprod_id'].'">', true);
                 }
                 break;
