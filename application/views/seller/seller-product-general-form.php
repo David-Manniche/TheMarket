@@ -20,7 +20,7 @@ if ('' === $returnAgeFld->value || '' === $cancellationAgeFld->value) {
 $urlFld = $frmSellerProduct->getField('selprod_url_keyword');
 $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
 $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value, $selprod_id, 'post')");
-$urlFld->htmlAfterField = "<small class='form-text text-muted'>" . CommonHelper::generateFullUrl('Products', 'View', array($selprod_id), '/').'</small>';
+$urlFld->htmlAfterField = "<span class='form-text text-muted'>" . CommonHelper::generateFullUrl('Products', 'View', array($selprod_id), '/').'</span>';
 
 $fld = $frmSellerProduct->getField('selprod_subtract_stock');
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
@@ -36,10 +36,11 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
 $submitBtnFld = $frmSellerProduct->getField('btn_submit');
 $submitBtnFld->setFieldTagAttribute('class', 'btn btn--primary');
+$submitBtnFld->developerTags['col'] = 12;
 
 $cancelBtnFld = $frmSellerProduct->getField('btn_cancel');
 $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
-$submitBtnFld->developerTags['col'] = 12;
+
 ?>
 <div class="row">
     <div class="col-md-12">
@@ -258,7 +259,7 @@ $submitBtnFld->developerTags['col'] = 12;
                 <div class="col-md-12">
                     <?php foreach ($languages as $langId => $langName) {
                         $layout = Language::getLayoutDirection($langId); ?>
-                        <div class="accordion" id="specification-accordion">
+                        <div class="accordion mt-4" id="specification-accordion">
                             <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><span onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
                                     <?php echo Labels::getLabel('LBL_Inventory_Data_for', $siteLangId) ?> <?php echo $langName;?>
                                 </span>
@@ -291,7 +292,17 @@ $submitBtnFld->developerTags['col'] = 12;
             </div>
             <?php } ?>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
+                    <div class="field-set">
+                        <div class="caption-wraper"><label class="field_label"></label></div>
+                        <div class="field-wraper">
+                            <div class="field_cover">
+                                <?php echo $frmSellerProduct->getFieldHtml('btn_cancel'); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 text-right">
                     <div class="field-set">
                         <div class="caption-wraper"><label class="field_label"></label></div>
                         <div class="field-wraper">

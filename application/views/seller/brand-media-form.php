@@ -30,7 +30,7 @@ $fld->htmlAfterField = $htmlAfterField;
       <h4><?php echo Labels::getLabel('LBL_Request_New_Brand', $siteLangId); ?></h4>
     </div>
     <div class="box__body">
-      <div class="tabs tabs--small tabs--scroll clearfix">
+      <div class="tabs ">
         <ul>
             <li><a href="javascript:void(0)" onclick="addBrandReqForm(<?php echo $brandReqId ?>);"><?php echo Labels::getLabel('LBL_Basic', $siteLangId);?></a></li>
             <li class="<?php echo (0 == $brandReqId) ? 'fat-inactive' : ''; ?>">

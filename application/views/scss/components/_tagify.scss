@@ -31,7 +31,7 @@
     li {
         display: inline-block;
         margin-#{$end-direction}: 5px;
-         
+
 
         span {
             background-color: $gray-light;
@@ -89,4 +89,8 @@
 
 .tagify {
     font-size: 0.8rem;
+
+    .tagify__tag {
+        margin: 5px;
+    }
 }

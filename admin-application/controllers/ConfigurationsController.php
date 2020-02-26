@@ -672,7 +672,7 @@ class ConfigurationsController extends AdminBaseController
                 $fld4->htmlAfterField = '<br><small>' . Labels::getLabel("LBL_On_enabling_this_feature,_Seller_can_request_to_add_product_on_catalog",$this->adminLangId) . '</small>'; */
 
                 $fld4 = $frm->addCheckBox(
-                    Labels::getLabel("LBL_Allow_Sellers_to_request_products_which_is_availble_to_all_sellers", $this->adminLangId),
+                    Labels::getLabel("LBL_ALLOW_SELLERS_TO_REQUEST_PRODUCTS_WHICH_IS_AVAILABLE_TO_ALL_SELLERS", $this->adminLangId),
                     'CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT',
                     1,
                     array(),

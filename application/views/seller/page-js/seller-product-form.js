@@ -213,6 +213,10 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 		});
 	}
 
+	gotToProucts = function(){
+        window.location.href = fcom.makeUrl('seller', 'Products');
+    }
+
 })();
 
 $(document).on('click', '.tabs_001', function(){

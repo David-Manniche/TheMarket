@@ -2,16 +2,18 @@
 $arr_flds = [
     'dragdrop' => '',
     'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
-    'listserial' => Labels::getLabel('LBL_Sr._No', $adminLangId),
+    'listserial' => '#',
     'plugin_identifier' => Labels::getLabel('LBL_PLUGIN', $adminLangId),
-    // 'plugin_type' => Labels::getLabel('LBL_Type', $adminLangId),
     'plugin_active' => Labels::getLabel('LBL_Status', $adminLangId),
-    'action' => Labels::getLabel('LBL_Action', $adminLangId),
+    'action' => '',
 ];
 $allPlugins = $arr_listing;
 $pluginType = (array_shift($allPlugins))['plugin_type'];
 if (!$canEdit || 2 > count($arr_listing) || in_array($pluginType, Plugin::HAVING_KINGPIN)) {
     unset($arr_flds['dragdrop']);
+    if (in_array($pluginType, Plugin::HAVING_KINGPIN)) {
+        unset($arr_flds['select_all']);
+    }
 }
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--hovered table-responsive','id' => 'plugin'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
@@ -56,10 +58,6 @@ foreach ($arr_listing as $sn => $row) {
                     $td->appendElement('plaintext', array(), $row[$key] . $htm, true);
                 }
                 break;
-            case 'plugin_type':
-                $pluginType = isset($pluginTypes[$row[$key]]) ? $pluginTypes[$row[$key]] : Labels::getLabel('LBL_N/A', $adminLangId);
-                $td->appendElement('plaintext', array(), $pluginType, true);
-                break;
             case 'plugin_active':
                 $active = "active";
                 if (!$row['plugin_active']) {
@@ -74,7 +72,7 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'action':
                 $ul = $td->appendElement("ul", array("class" => "actions actions--centered"));
-                if ($canEdit) {
+                if ($canEdit && applicationConstants::ACTIVE == $row['plugin_active'] && (!in_array($pluginType, Plugin::HAVING_KINGPIN) || $row['plugin_id'] == $row['conf_val'])) {
                     $li = $ul->appendElement("li", array('class' => 'droplink'));
                     $li->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green','title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
                     $innerDiv = $li->appendElement('div', array('class' => 'dropwrap'));
@@ -101,12 +99,13 @@ $frm = new Form('frmPluginListing', array('id' => 'frmPluginListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('plugins', 'toggleBulkStatuses'));
-$frm->addHiddenField('', 'status');?>
+$frm->addHiddenField('', 'status');
+$frm->addHiddenField('', 'plugin_type', $pluginType);?>
 <section class="section">
     <div class="sectionhead">
         <h4><?php echo CommonHelper::replaceStringData(Labels::getLabel('LBL_{PLUGINNAME}_PLUGINS', $adminLangId), ['{PLUGINNAME}' =>  $pluginTypes[$type]]); ?> </h4>
         <?php
-        if ($canEdit) {
+        if ($canEdit && !in_array($pluginType, Plugin::HAVING_KINGPIN)) {
             $ul = new HtmlElement("ul", array("class" => "actions actions--centered"));
             $li = $ul->appendElement("li", array('class' => 'droplink'));
 
@@ -129,6 +128,7 @@ $frm->addHiddenField('', 'status');?>
             <?php
             echo $frm->getFormTag();
             echo $frm->getFieldHtml('status');
+            echo $frm->getFieldHtml('plugin_type');
             echo $tbl->getHtml(); ?>
             </form>
         </div>
