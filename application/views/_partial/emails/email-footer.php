@@ -1,4 +1,4 @@
-    <table>
+    <table width="100%" align="center" cellpadding="0" cellspacing="0">
         <tbody>
             <tr style="background:#fff;padding:0 30px; text-align:center; color:#999;vertical-align:top;">
                 <td style="padding:30px 0;">Get in touch in you have any questions regarding our Services.<br />
@@ -10,11 +10,9 @@
             </tr>
             <tr>
             <td>
-                <!--
-                page footer start here
-                -->
+                <!--page footer start here-->
 
-                <table width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+                <table width="100%" align="center" cellpadding="0" cellspacing="0">
                     <tbody>
                         <tr>
                             <td style="height:30px;"></td>
@@ -49,9 +47,8 @@
                         </tr>
                     </tbody>
                 </table>
-                <!--
-                page footer end here
-                -->
+                <!--page footer end here-->
+            </div>
                    </td>
         </tr>
     </tbody>
