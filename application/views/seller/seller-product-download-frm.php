@@ -12,7 +12,7 @@ $selprodDownloadFrm->developerTags['fld_default_col'] = 4; ?>
                 $downloadableFileFld->setFieldTagAttribute('onchange', 'setUpSellerProductDownloads('.applicationConstants::DIGITAL_DOWNLOAD_FILE.', '.$product_id.','.$key.'); return false;');
                 $submitButton = $selprodDownloadFrm->getField('btn_submit'.$key);
                 $submitButton->setFieldTagAttribute('onClick', 'setUpSellerProductDownloads('.applicationConstants::DIGITAL_DOWNLOAD_FILE.', '.$product_id.','.$key.'); return false;'); ?>
-                <div class="p-4 mb-4 bg-gray rounded">
+                <div class="p-4 mb-4 border rounded">
                     <h6><?php echo Labels::getLabel('LBL_Add_downloads_for', $siteLangId).' '.str_replace("_", " | ", $val); ?></h6>
                     <div class="row">
                         <div class="col-md-4">
@@ -67,7 +67,7 @@ $selprodDownloadFrm->developerTags['fld_default_col'] = 4; ?>
                             'action' => Labels::getLabel('LBL_Action', $siteLangId),
                         );
 
-                        $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--orders'));
+                        $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
                         $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
                         foreach ($arr_flds as $val) {
                             $e = $th->appendElement('th', array(), $val);
