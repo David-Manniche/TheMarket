@@ -519,20 +519,20 @@
     table {
         border-collapse: collapse;
         width: auto;
+		 text-align: #{$start-direction};
 
         th {
-            border: solid 1px #CDCDCD;
+            border:$border;
             padding: 5px 10px;
-            vertical-align: top;
-            text-align: left;
+            vertical-align: top;            
             color: $secondary-color;
         }
 
         td {
-            border: solid 1px #CDCDCD;
+            border:$border;
             padding: 5px 10px;
             vertical-align: top;
-            text-align: left;
+             
 
             strong {
                 font-weight: 600;
@@ -540,7 +540,7 @@
         }
 
         p {
-            text-align: left;
+            
             padding: 0px;
         }
     }

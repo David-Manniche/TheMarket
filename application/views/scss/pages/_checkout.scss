@@ -603,7 +603,7 @@
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
-    text-align: right;
+    text-align: #{$end-direction};
     font-weight: 600;
     color: inherit;
 }
@@ -752,7 +752,7 @@
 }
 
 .selected-panel-action {
-    text-align: right;
+    text-align: #{$end-direction};
 }
 
 .apply--coupon--form {

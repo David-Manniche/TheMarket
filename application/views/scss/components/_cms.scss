@@ -313,11 +313,8 @@
     }
 
     .remove_buyTogether {
-
-
         margin-#{$end-direction}: 10px;
         cursor: pointer;
-
         &:hover {
             color: $brand-color
         }
@@ -328,7 +325,6 @@
         display: block;
         overflow: hidden;
         position: relative;
-        text-align: left;
         font-size: 0.9em;
         font-weight: 400;
         display: -webkit-box;
@@ -346,8 +342,6 @@
     img {
         display: inline-block;
         vertical-align: middle;
-
-
         margin-#{$end-direction}: 5px;
     }
 

@@ -1385,7 +1385,7 @@ $(document).ready(function () {
     */
 
 		$('[data-toggle="tooltip"]').tooltip({
-		   container: '.tabs'
+		   container: 'body, .tabs'
 		});
 
 

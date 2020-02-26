@@ -232,13 +232,13 @@ $btnDiscardFld->value = Labels::getLabel('LBL_Discard', $siteLangId);
             foreach ($otherLanguages as $langId => $data) {
                 $layout = Language::getLayoutDirection($langId);
         ?>
-        <div class="accordion" id="specification-accordion">
-            <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><span onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
+        <div class="accordion my-4" id="specification-accordion-<?php echo $langId; ?>">
+            <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapse-<?php echo $langId; ?>" aria-expanded="true" aria-controls="collapse-<?php echo $langId; ?>"><span onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
                     <?php echo $data . " ";
         echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
                 </span>
             </h6>
-            <div id="collapseOne" class="collapse collapse-js-<?php echo $langId; ?>" aria-labelledby="headingOne" data-parent="#specification-accordion">
+            <div id="collapse-<?php echo $langId; ?>" class="collapse collapse-js-<?php echo $langId; ?>" aria-labelledby="headingOne" data-parent="#specification-accordion-<?php echo $langId; ?>">
                 <div class="p-4 mb-4 bg-gray rounded" dir="<?php echo $layout; ?>">
                     <div class="row">
                         <div class="col-md-6">

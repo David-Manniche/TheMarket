@@ -243,7 +243,7 @@ if($prodCatId > 0){
             foreach($otherLanguages as $langId=>$data) { 
                 $layout = Language::getLayoutDirection($langId);
          ?>
-         <div class="accordians_container accordians_container-categories mt-5">
+         <div class="accordians_container accordians_container-categories my-3">
              <div class="accordian_panel">
                  <span class="accordian_title accordianhead" id="collapse_<?php echo $langId; ?>" onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
                  <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>

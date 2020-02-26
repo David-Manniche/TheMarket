@@ -101,7 +101,7 @@
             #{$end-direction}: 15px;
             top: 15px;
             font-size: 0.8em;
-            text-align: right;
+            text-align: #{$end-direction};
             border-radius: 2px;
             z-index: 1;
 

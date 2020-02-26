@@ -119,7 +119,7 @@
     left: 0;
     background: #000;
     width: 100%;
-    text-align: left;
+    text-align: #{$start-direction};
 }
 
 .xzoom-caption span {
