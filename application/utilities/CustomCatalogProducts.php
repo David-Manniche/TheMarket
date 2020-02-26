@@ -1663,4 +1663,11 @@ trait CustomCatalogProducts
         $this->set('msg', Labels::getLabel('LBL_ean/upc_code_added_successfully', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
+    
+    public function productRequestApprovalButton($preqId)
+    {
+        $preqId = FatUtility::int($preqId);
+        $this->set('preqId', $preqId);
+        $this->_template->render(false, false);
+    }
 }
