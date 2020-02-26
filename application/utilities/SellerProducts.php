@@ -346,6 +346,9 @@ trait SellerProducts
         $post = $this->validatePostedData(FatApp::getPostedData());
         $selprod_id = FatUtility::int($post['selprod_id']);
 
+        if ($selprod_id > 0) {
+            unset($post['selprod_code']);
+        }
         $data_to_be_save = $post;
         $sellerProdObj = new SellerProduct($selprod_id);
         $sellerProdObj->assignValues($data_to_be_save);
