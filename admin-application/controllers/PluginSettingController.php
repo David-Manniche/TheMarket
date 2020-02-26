@@ -2,6 +2,8 @@
 
 class PluginSettingController extends AdminBaseController
 {
+    use PluginHelper;
+
     protected $keyName;
     protected $frmObj;
     protected $pluginSettingObj;
@@ -41,13 +43,14 @@ class PluginSettingController extends AdminBaseController
     public function index()
     {
         $this->setFormObj();
-        $pluginSetting = PluginSetting::getConfDataByCode($this->keyName);
-        if (false === $pluginSetting) {
-            Message::addErrorMessage(Labels::getLabel('LBL_SETTINGS_NOT_AVALIABLE_FOR_THIS_PLUGIN', $this->adminLangId));
+        $pluginSetting = new PluginSetting();
+        $settings = $pluginSetting->getConfDataByCode($this->keyName, '', $this->adminLangId);
+        if (false === $settings) {
+            Message::addErrorMessage($pluginSetting->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        $this->frmObj->fill($pluginSetting);
-        $identifier = isset($pluginSetting['plugin_identifier']) ? $pluginSetting['plugin_identifier'] : '';
+        $this->frmObj->fill($settings);
+        $identifier = isset($settings['plugin_identifier']) ? $settings['plugin_identifier'] : '';
         $this->set('frm', $this->frmObj);
         $this->set('identifier', $identifier);
         $this->_template->render(false, false, 'plugins/settings.php');
@@ -62,8 +65,9 @@ class PluginSettingController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         
-        $obj = new PluginSetting();
-        if (!$obj->save($post)) {
+        $pluginId = $post["plugin_id"];
+        $pluginSetting = new PluginSetting($pluginId);
+        if (!$pluginSetting->saveSettings($post)) {
             Message::addErrorMessage($plugin->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -93,19 +97,5 @@ class PluginSettingController extends AdminBaseController
         }
         $frm->fill(['keyName' => $this->keyName]);
         return $frm;
-    }
-
-    public function getSettings()
-    {
-        try {
-            $keyName = get_called_class()::KEY_NAME;
-        } catch (\Error $e) {
-            $message = 'ERR - ' . $e->getMessage();
-            LibHelper::dieJsonError($message);
-        }
-        if (empty($keyName)) {
-            LibHelper::dieJsonError(Labels::getLabel('LBL_INVALID_KEY_NAME', $this->adminLangId));
-        }
-        return PluginSetting::getConfDataByCode($keyName);
     }
 }
