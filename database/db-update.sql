@@ -570,22 +570,6 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` = 'Lbl_Change_Email';
 
 ALTER TABLE `tbl_user_auth_token` CHANGE `uauth_user_id` `uauth_user_id` VARCHAR(100) NOT NULL;
 
--- [Avalara Tax API--------
-INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES (NULL, 'Avalara Tax', '7', 'AvalaraTax', '1', '9');
-INSERT INTO `tbl_plugins_lang` (`pluginlang_plugin_id`, `pluginlang_lang_id`, `plugin_name`, `plugin_description`) VALUES
-(11, 1, 'Avalara Tax', '<a href=\"https://developer.avalara.com/api-reference/avatax/rest/v2/\">https://developer.avalara.com/api-reference/avatax/rest/v2/</a>'),
-(11, 2, 'ضريبة أفالارا', '<a href=\"https://developer.avalara.com/api-reference/avatax/rest/v2/\">https://developer.avalara.com/api-reference/avatax/rest/v2/</a>');
-
-ALTER TABLE `tbl_tax_categories` ADD `taxcat_code` VARCHAR(50) NOT NULL AFTER `taxcat_identifier`;
-ALTER TABLE `tbl_tax_categories` ADD `taxcat_plugin_id` INT NOT NULL AFTER `taxcat_code`;
-
-ALTER TABLE tbl_tax_categories DROP INDEX saletaxcat_identifier;
-ALTER TABLE tbl_tax_categories DROP INDEX taxcat_identifier;
-ALTER TABLE `tbl_tax_categories` ADD UNIQUE( `taxcat_identifier`, `taxcat_plugin_id`);
-
-
--- Avalara Tax API ]-------
-
 
 ALTER TABLE `tbl_push_notifications` ADD `pnotification_user_auth_type` TINYINT(1) NOT NULL AFTER `pnotification_for_seller`;
 ALTER TABLE `tbl_push_notifications` CHANGE `pnotification_till_user_id` `pnotification_uauth_last_access` DATETIME NOT NULL;
@@ -897,3 +881,20 @@ INSERT INTO `tbl_theme_colors` (`tcolor_theme_id`, `tcolor_key`, `tcolor_value`)
 ALTER TABLE `tbl_theme_colors`
   ADD UNIQUE KEY `tcolor_theme_id` (`tcolor_theme_id`,`tcolor_key`);
 -------------TV-9.1.3.20200221-----------
+
+
+-- [Avalara Tax API--------
+INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES (NULL, 'Avalara Tax', '7', 'AvalaraTax', '1', '9');
+INSERT INTO `tbl_plugins_lang` (`pluginlang_plugin_id`, `pluginlang_lang_id`, `plugin_name`, `plugin_description`) VALUES
+(11, 1, 'Avalara Tax', '<a href=\"https://developer.avalara.com/api-reference/avatax/rest/v2/\">https://developer.avalara.com/api-reference/avatax/rest/v2/</a>'),
+(11, 2, 'ضريبة أفالارا', '<a href=\"https://developer.avalara.com/api-reference/avatax/rest/v2/\">https://developer.avalara.com/api-reference/avatax/rest/v2/</a>');
+
+ALTER TABLE `tbl_tax_categories` ADD `taxcat_code` VARCHAR(50) NOT NULL AFTER `taxcat_identifier`;
+ALTER TABLE `tbl_tax_categories` ADD `taxcat_plugin_id` INT NOT NULL AFTER `taxcat_code`;
+
+ALTER TABLE tbl_tax_categories DROP INDEX saletaxcat_identifier;
+ALTER TABLE tbl_tax_categories DROP INDEX taxcat_identifier;
+ALTER TABLE `tbl_tax_categories` ADD UNIQUE( `taxcat_identifier`, `taxcat_plugin_id`);
+
+
+-- Avalara Tax API ]-------

@@ -18,8 +18,6 @@ class Avalaratax extends TaxBase
     private $_invoiceId;
     private $_taxApiResponse;
     private $_invoiceDate;
-    
-    //const TAX_TYPES = ['COUNTY TAX','STATE TAX','CITY TAX','SPECIAL TAX'];
 
     public function __construct($langId)
     {
@@ -31,7 +29,7 @@ class Avalaratax extends TaxBase
         $this->settings = $this->getSettings();
 
         $this->validateSettings();
-        
+
         $environment = FatUtility::int($this->settings['environment']) == 1 ? 'production' : 'sandbox';
 
         $this->_client = new Avalara\AvaTaxClient(FatApp::getConfig('CONF_WEBSITE_NAME_' . $langId), FatApp::getConfig('CONF_YOKART_VERSION'), $_SERVER['HTTP_HOST'], $environment);
@@ -109,15 +107,29 @@ class Avalaratax extends TaxBase
         if (!empty($filter)) {
             $filter = "description contains '$filter' or taxCode contains '$filter'";
         }
+
+        $codesArr = $this->_client->listTaxCodes($filter, $pageSize, $pageNumber, $orderBy);
+
+        $formatedCodesArr = [];
+        if (!empty($codesArr)) {
+            foreach ($codesArr->value as $code) {
+                $formatedCodesArr[$code->id] = array(
+                    'taxCode' => $code->taxCode,
+                    'description' => $code->description,
+                    'parentTaxCode' => $code->parentTaxCode ?? null,
+                );
+            }
+        }
+
         try {
             return [
                 'status' => true,
-                'data' => (array) $this->_client->listTaxCodes($filter, $pageSize, $pageNumber, $orderBy)
+                'data' => $formatedCodesArr
             ];
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'msg' => $e->getMessage()                    
+                'msg' => $e->getMessage()
             ];
         }
     }
@@ -268,9 +280,9 @@ class Avalaratax extends TaxBase
             if (!empty($this->_invoiceId)) {
                 $tb->withTransactionCode($this->_invoiceId);
             }
-            
+
             $this->_taxApiResponse = $tb->create();
-            
+
             return $this->_taxApiResponse;
         } catch (\Exception $e) {
             $errorMsgObj = json_decode($e->getResponse()->getBody()->getContents());
