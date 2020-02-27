@@ -15,8 +15,10 @@ $fldSubmit->developerTags['noCaptionTag'] = true;
 $fldSubmit->htmlAfterField = '<br/><small>' . Labels::getLabel('MSG_YOUR_PHONE_NUMBER_WILL_NOT_CHANGE_UNTIL_YOU_VERIFY_YOUR_NEW_NUMBER', $siteLangId) . '</small>';
 
 echo $frm->getFormHtml();
-?>
-<script>
-    var dialCode = '<?php echo str_replace("+", "", $dialCode); ?>';
-    langLbl.defaultCountryCode = getCountryIso2CodeFromDialCode(dialCode);
-</script>
+
+if (isset($dialCode) && !empty($dialCode)) { ?>
+    <script>
+        var dialCode = '<?php echo str_replace("+", "", $dialCode); ?>';
+        langLbl.defaultCountryCode = getCountryIso2CodeFromDialCode(dialCode);
+    </script>
+<?php } ?>

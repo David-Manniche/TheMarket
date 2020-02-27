@@ -970,8 +970,11 @@ class GuestUserController extends MyAppController
 
     public function configurePhoneForm()
     {
+        $phData = User::getAttributesById(UserAuthentication::getLoggedUserId(), ['user_dial_code', 'user_phone']);
         $frm = $this->getPhoneNumberForm();
-
+        
+        $dialCode = isset($phData['user_dial_code']) && !empty($phData['user_dial_code']) ? $phData['user_dial_code'] : '';
+        $this->set('dialCode', $dialCode);
         $this->set('frm', $frm);
         $this->set('updatePhnFrm', applicationConstants::YES);
         $this->set('siteLangId', $this->siteLangId);
