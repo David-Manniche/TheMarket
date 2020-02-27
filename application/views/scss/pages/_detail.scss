@@ -63,6 +63,7 @@ html.quick-view--open {
 .product-gallery {
     position: relative;
     max-width: 100%;
+    padding: 1rem;
 
     .slick-arrow {
         background: #5c5c5c;
@@ -182,6 +183,39 @@ html.quick-view--open {
 .product-content {
     margin: 0 auto;
     max-width: 550px;
+}
+
+.dropdown-options {
+    .dropdown-toggle {
+        width: 100%;
+        text-align:#{$start-direction};
+
+        &:after {
+            float: #{$end-direction};
+            margin-top: 12px;
+        }
+    }
+
+    span {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .colors {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-#{$end-direction}: 5px;
+        -webkit-box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.30);
+        box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.30);
+    }
+
+    .is-active {
+        background: $gray-color;
+        color: $body-color;
+    }
 }
 
 .options-name {

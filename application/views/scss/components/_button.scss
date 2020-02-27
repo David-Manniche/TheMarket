@@ -95,6 +95,12 @@
          border-color: #fff;
          color: #fff;
      }
+     
+     &.btn-outline-gray {
+         background: none;
+         border-color:$border-color;
+         color: $body-color;
+     }
 
      &.btn--block {
          display: block;
