@@ -1594,16 +1594,19 @@ class Cart extends FatModel
     }
     /* ] */
 
-    public function clear()
+    public function clear($includeAbandonedCart = false)
     {  
-        $cartProducts = $this->getProducts($this->cart_lang_id);
-        if (is_array($cartProducts)) {
-            foreach ($cartProducts as $cartKey => $product) {
-                if (is_numeric($this->cart_user_id) && $this->cart_user_id > 0) {
-                    AbandonedCart::saveAbandonedCart($this->cart_user_id, $product['selprod_id'], $product['quantity'], AbandonedCart::ACTION_DELETED);
+        if($includeAbandonedCart == true){
+            $cartProducts = $this->getProducts($this->cart_lang_id);
+            if (is_array($cartProducts)) {
+                foreach ($cartProducts as $cartKey => $product) {
+                    if (is_numeric($this->cart_user_id) && $this->cart_user_id > 0) {
+                        AbandonedCart::saveAbandonedCart($this->cart_user_id, $product['selprod_id'], $product['quantity'], AbandonedCart::ACTION_DELETED);
+                    }
                 }
             }
         }
+        
         $this->products = array();
         $this->SYSTEM_ARR['cart'] = array();
         $this->SYSTEM_ARR['shopping_cart'] = array();
