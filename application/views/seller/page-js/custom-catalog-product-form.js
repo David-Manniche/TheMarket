@@ -692,7 +692,6 @@ $(document).on('change', '.language-js', function () {
     translateData = function (item, defaultLang, toLangId) {
         var autoTranslate = $("input[name='auto_update_other_langs_data']:checked").length;
         var prodName = $("input[name='product_name[" + defaultLang + "]']").val();
-        //var prodDesc = $("[name='product_description[" + defaultLang + "]']").val();
         var oEdit = eval(oUtil.arrEditor[0]);
         var prodDesc = oEdit.getTextBody();
         
@@ -704,10 +703,11 @@ $(document).on('change', '.language-js', function () {
         fcom.updateWithAjax(fcom.makeUrl('Seller', 'translatedProductData'), data, function (t) {
             if (t.status == 1) {
                 $("input[name='product_name[" + toLangId + "]']").val(t.productName);
-                //$("[name='product_description[" + toLangId + "]']").val(t.productDesc);
                 var oEdit1 = eval(oUtil.arrEditor[toLangId - 1]);
                 oEdit1.putHTML(t.productDesc);
-                $('#idContent' + oUtil.arrEditor[toLangId - 1]).contents().find("body").css('direction', langLbl['language' + toLangId]);
+                var layout = langLbl['language' + toLangId];
+                $('#idContent' + oUtil.arrEditor[toLangId - 1]).contents().find("body").css('direction', layout);
+                $('#idArea' + oUtil.arrEditor[toLangId - 1] + ' td[dir="ltr"]').attr('dir', layout);
             }
         });
     }
@@ -731,6 +731,13 @@ $(document).on('change', '.language-js', function () {
             $("#tabs_001").html(t);
             displaySubmitApprovalButton(id);
             fcom.resetEditorWidth();
+            var editors = oUtil.arrEditor;
+            for (x in editors) {                 
+                var oEdit1 = eval(editors[x]);
+                var layout = langLbl['language' + (parseInt(x) + parseInt(1))];
+                $('#idContent' + editors[x]).contents().find("body").css('direction', layout);
+                $('#idArea' + oEdit1.oName + ' td[dir="ltr"]').attr('dir', layout);
+            }
         });
     };
 
