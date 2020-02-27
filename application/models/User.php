@@ -1698,13 +1698,14 @@ class User extends MyAppModel
     
     public function userPhoneVerification($data, $langId)
     {
-        $otp = $this->prepareUserPhoneOtp();
+        $dialCode = !empty($data['user_dial_code']) ? trim($data['user_dial_code']) : '';
+        $phone = !empty($dialCode) && !empty($data['user_phone']) ? $dialCode . trim($data['user_phone']) : '';
+        $user_name = !empty($data['user_name']) ? $data['user_name'] : Labels::getLabel('LBL_USER', $langId);
+        
+        $otp = $this->prepareUserPhoneOtp(false, $dialCode, $phone);
         if (false === $otp) {
             return false;
         }
-        $phone = !empty($data['user_dial_code']) && !empty($data['user_phone']) ? trim($data['user_dial_code']) . trim($data['user_phone']) : '';
-        $user_name = !empty($data['user_name']) ? $data['user_name'] : Labels::getLabel('LBL_USER', $langId);
-        
         return $this->sendOtp($phone, $user_name, $otp, $langId);
     }
 
@@ -1720,11 +1721,14 @@ class User extends MyAppModel
             '{OTP}' => $otp,
             '{USER_NAME}' => $user_name
         ];
-        
         $smsArchive = new SmsArchive();
         $smsArchive->toPhone($phone);
         $smsArchive->setTemplate($langId, SmsTemplate::LOGIN, $replacements);
-        return $smsArchive->send();
+        if (!$smsArchive->send()) {
+            $this->error = $smsArchive->getError();
+            return false;
+        }
+        return true;
     }
 
     public function resendOtp()

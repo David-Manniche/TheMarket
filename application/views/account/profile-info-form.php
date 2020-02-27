@@ -34,7 +34,7 @@ $emailFld->setFieldTagAttribute('disabled', 'disabled');
 
 $countryFld = $frm->getField('user_country_id');
 $countryFld->setFieldTagAttribute('id', 'user_country_id');
-$countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,'.$stateId.',\'#user_state_id\')');
+$countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,' . $stateId . ',\'#user_state_id\')');
 
 $stateFld = $frm->getField('user_state_id');
 $stateFld->setFieldTagAttribute('id', 'user_state_id');
@@ -119,3 +119,10 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
         });
     });
 </script>
+
+<?php if (isset($data['user_dial_code']) && !empty($data['user_dial_code'])) { ?>
+    <script>
+        var dialCode = '<?php echo str_replace("+", "", $data['user_dial_code']); ?>';
+        langLbl.defaultCountryCode = getCountryIso2CodeFromDialCode(dialCode);
+    </script>
+<?php } ?>

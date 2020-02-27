@@ -936,9 +936,7 @@ class AccountController extends LoggedUserController
         $srch->addMultipleFields(array('u.*'));
         $rs = $srch->getResultSet();
         $data = FatApp::getDb()->fetch($rs, 'user_id');
-        if (empty($data['user_phone'])) {
-            $data['user_phone'] = '';
-        }
+
         if (User::isAffiliate()) {
             $userExtraData = User::getUserExtraData($userId, array('uextra_company_name', 'uextra_website'));
             $userExtraData = ($userExtraData) ? $userExtraData : array();
