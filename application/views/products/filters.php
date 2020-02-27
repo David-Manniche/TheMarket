@@ -161,6 +161,7 @@ if (isset($prodcat_code)) {
 <div class="widgets__heading filter-head-js"><?php echo Labels::getLabel('LBL_Price', $siteLangId).' ('.(CommonHelper::getCurrencySymbolRight()?CommonHelper::getCurrencySymbolRight():CommonHelper::getCurrencySymbolLeft()).')'; ?> </div>
 <div class="filter-content toggle-target">
     <div class="prices " id="perform_price">
+        <div id="slider"></div>
         <input type="text" value="<?php echo floor($filterDefaultMinValue); ?>-<?php echo ceil($filterDefaultMaxValue); ?>" name="price_range" id="price_range" />
         <input type="hidden" value="<?php echo floor($filterDefaultMinValue); ?>" name="filterDefaultMinValue" id="filterDefaultMinValue" />
         <input type="hidden" value="<?php echo ceil($filterDefaultMaxValue); ?>" name="filterDefaultMaxValue" id="filterDefaultMaxValue" />
@@ -313,8 +314,7 @@ if (isset($prodcat_code)) {
             $("document").ready(function() {
                 var min = 0;
                 var max = 0;
-                <?php if (isset($priceArr) && $priceArr) {
-            ?>
+                <?php if (isset($priceArr) && $priceArr) { ?>
                 var range,
                     min = Math.floor(<?php echo $filterDefaultMinValue; ?>),
                     max = Math.floor(<?php echo $filterDefaultMaxValue; ?>),
@@ -328,7 +328,40 @@ if (isset($prodcat_code)) {
                     $to.prop("value", to);
                 };
 
-                $("#price_range").ionRangeSlider({
+                var config = {
+                    start: [min, max],
+                    step: 100,
+                    range: {
+                        'min': [min],
+                        'max': [max]
+                    },
+                    connect: true,
+                    /* rtl: true */
+                };
+
+                var slider = document.getElementById('slider');
+                noUiSlider.create(slider, config);
+
+                slider.noUiSlider.on('change', function (values, handle) {
+                    var minMaxArr = $("#price_range").val().split('-');
+                    if (minMaxArr.length == 2) {
+                        addPricefilter(true);
+                    }
+                });
+
+                slider.noUiSlider.on('update', function (values, handle) {
+                    var value = values[handle];
+                    /* handle return 0,1(min hanle and max handle) in RTL it return opposite */
+                    if (handle) {
+                        to = value;
+                    } else {
+                        from = value;
+                    }
+                    $("#price_range").val(from + '-' + to);
+                    updateValues();
+                });
+
+                /* $("#price_range").ionRangeSlider({
                     hide_min_max: true,
                     hide_from_to: true,
                     keyboard: true,
@@ -341,8 +374,8 @@ if (isset($prodcat_code)) {
                     prettify_separator: ',',
                     grid: true,
                     // grid_num: 1,
-                    prefix: '<?php echo $currencySymbolLeft; ?>',
-                    postfix: '<?php echo $currencySymbolRight; ?>',
+                    prefix: '<?php /* echo $currencySymbolLeft; */ ?>',
+                    postfix: '<?php /* echo  $currencySymbolRight; */ ?>',
 
                     input_values_separator: '-',
                     onFinish: function() {
@@ -362,15 +395,17 @@ if (isset($prodcat_code)) {
                         updateValues();
                         // addPricefilter(true);
                     }
-                });
+                }); */
 
-                range = $range.data("ionRangeSlider");
+                /* range = $range.data("ionRangeSlider"); */
 
                 var updateRange = function() {
-                    range.update({
+                    slider.noUiSlider.set([from, to]);
+
+                    /* range.update({
                         from: from,
                         to: to
-                    });
+                    }); */
                     addPricefilter();
                 };
 
