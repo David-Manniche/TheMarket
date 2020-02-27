@@ -51,7 +51,7 @@ $shopPolicyArr = array(
                 <?php if (!empty(array_filter((array)$shop['shop_refund_policy']))) { ?>
                   <div class="cms">
                     <h4> <?php echo $shop['shop_refund_policy']['title']; ?></h4>
-                    <p> <?php echo nl2br($shop['shop_refund_policy']['title']); ?> </p>
+                    <p> <?php echo nl2br($shop['shop_refund_policy']['description']); ?> </p>
                   </div>
                 <?php } ?>
 
