@@ -337,7 +337,7 @@ class CartController extends MyAppController
         $key = $post['key'];
 
         if ('all' == $key) {
-            $cartObj->clear();
+            $cartObj->clear(true);
             $cartObj->updateUserCart();
         } else {
             if (true === MOBILE_APP_API_CALL) {
