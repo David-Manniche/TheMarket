@@ -33,7 +33,6 @@ $clearFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
                         <div class="cards-content">
                             <div>
                                 <?php echo $frmSearch->getFormTag(); ?>
-                               
                                     <div class="row">
                                         <div class="col-12 col-md-8">
                                             <div class="field-set"><?php echo $frmSearch->getFieldHTML('keyword');?></div>
@@ -46,7 +45,6 @@ $clearFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
                                         </div>
                                     </div>
                                     <div class='dvFocus-js'></div>
-                                 
                                 </form>
                                 <?php echo $frmSearch->getExternalJS(); ?>
                             </div>
