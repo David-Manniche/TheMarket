@@ -83,7 +83,7 @@
                 display: block;
                 overflow: hidden;
                 position: relative;
-                text-align: left;
+                text-align: #{$start-direction};
                 font-size: 0.875em;
                 font-weight: 400;
                 padding: 10px;

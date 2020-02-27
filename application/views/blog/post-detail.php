@@ -35,7 +35,7 @@
 
 
                                 <div class="dropdown">
-                                    <a class="dropdown-toggle no-after share-icon" href="javascript:void(0)"  data-toggle="dropdown"><i class="icn">
+                                    <a class="dropdown-toggle no-after share-icon" href="javascript:void(0)"   data-toggle="dropdown"><i class="icn">
                                             <svg class="svg">
                                                 <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#share" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#share"></use>
                                             </svg>

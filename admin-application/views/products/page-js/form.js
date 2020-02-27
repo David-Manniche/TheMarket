@@ -21,8 +21,7 @@
         $("#tabs_004").remove();
     }
 
-    productInitialSetUpFrm = function(productId, prodCatId){
-        fcom.resetEditorInstance();        
+    productInitialSetUpFrm = function(productId, prodCatId){      
 		var data = '';
 		fcom.ajax(fcom.makeUrl('Products','productInitialSetUpFrm',[productId, prodCatId]),data,function(res){
             $(".tabs_panel").html('');
@@ -400,7 +399,6 @@
     };
 
     translateData = function(item, defaultLang, toLangId){ 
-		fcom.setEditorLayout(toLangId);
         var autoTranslate = $("input[name='auto_update_other_langs_data']:checked").length;
         var prodName = $("input[name='product_name["+defaultLang+"]']").val();
         //var prodDesc = $("[name='product_description["+defaultLang+"]']").val();
@@ -416,8 +414,9 @@
             if(t.status == 1){
                 $("input[name='product_name["+toLangId+"]']").val(t.productName);
                 //$("[name='product_description["+toLangId+"]']").val(t.productDesc);
-                var oEdit1 = eval(oUtil.arrEditor[1]);
+                var oEdit1 = eval(oUtil.arrEditor[toLangId - 1]);
                 oEdit1.putHTML(t.productDesc);
+                $('#idContent' + oUtil.arrEditor[toLangId - 1]).contents().find("body").css('direction', langLbl['language' + toLangId]);
             }
         });
     }

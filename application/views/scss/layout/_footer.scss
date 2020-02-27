@@ -123,7 +123,7 @@
     }
 
     .payment {
-        text-align: right;
+        text-align: #{$end-direction};
 
         @include media-breakpoint-down(lg) {
             & {

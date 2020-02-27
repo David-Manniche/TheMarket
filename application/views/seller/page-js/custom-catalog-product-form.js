@@ -111,6 +111,7 @@ $(document).on('change', '.language-js', function () {
             $("a[rel='tabs_005']").parent().addClass('is-active');
             $("#tabs_005").html(t);
             productImages(preqId);
+            displaySubmitApprovalButton(preqId);
            // fcom.scrollToTop(dv);
         });
     };
@@ -704,12 +705,22 @@ $(document).on('change', '.language-js', function () {
             if (t.status == 1) {
                 $("input[name='product_name[" + toLangId + "]']").val(t.productName);
                 //$("[name='product_description[" + toLangId + "]']").val(t.productDesc);
-                var oEdit1 = eval(oUtil.arrEditor[1]);
+                var oEdit1 = eval(oUtil.arrEditor[toLangId - 1]);
                 oEdit1.putHTML(t.productDesc);
+                $('#idContent' + oUtil.arrEditor[toLangId - 1]).contents().find("body").css('direction', langLbl['language' + toLangId]);
             }
         });
     }
-
+    
+    displaySubmitApprovalButton = function (id) {
+        if( id < 1 ){
+            return false;
+        }
+        fcom.ajax(fcom.makeUrl('Seller', 'productRequestApprovalButton', [id]), '', function (rsp) {
+            $(".js-approval-btn").html(rsp);
+        });        
+    }
+    
     customCatalogProductForm = function (id) {
         fcom.ajax(fcom.makeUrl('Seller', 'customCatalogGeneralForm', [id]), '', function (t) {
             $(".tabs_panel").html('');
@@ -718,6 +729,8 @@ $(document).on('change', '.language-js', function () {
             $("#tabs_001").show();
             $("a[rel='tabs_001']").parent().addClass('is-active');
             $("#tabs_001").html(t);
+            displaySubmitApprovalButton(id);
+            fcom.resetEditorWidth();
         });
     };
 
@@ -735,15 +748,16 @@ $(document).on('change', '.language-js', function () {
         });
     };
 
-    productAttributeAndSpecificationsFrm = function ($preqId) {
+    productAttributeAndSpecificationsFrm = function (preqId) {
         var data = '';
-        fcom.ajax(fcom.makeUrl('Seller', 'productAttributeAndSpecifications', [$preqId]), data, function (res) {
+        fcom.ajax(fcom.makeUrl('Seller', 'productAttributeAndSpecifications', [preqId]), data, function (res) {
             $(".tabs_panel").html('');
             $(".tabs_panel").hide();
             $(".tabs_nav-js  > li").removeClass('is-active');
             $("#tabs_002").show();
             $("a[rel='tabs_002']").parent().addClass('is-active');
             $("#tabs_002").html(res);
+            displaySubmitApprovalButton(preqId);
         });
     }
 
@@ -819,6 +833,7 @@ $(document).on('change', '.language-js', function () {
             $("a[rel='tabs_004']").parent().addClass('is-active');
             $("#tabs_004").html(res);
             addShippingTab(preqId);
+            displaySubmitApprovalButton(preqId);
 		});
     }
 
@@ -846,6 +861,7 @@ $(document).on('change', '.language-js', function () {
             $("#tabs_003").show();
             $("a[rel='tabs_003']").parent().addClass('is-active');
             $("#tabs_003").html(res);
+            displaySubmitApprovalButton(preqId);
 		});
     }
 

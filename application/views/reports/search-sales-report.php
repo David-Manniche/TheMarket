@@ -69,7 +69,7 @@ if( count($arrListing) == 0 ){
 } else {
 	echo '<div class="box__head"><div class="btn-group">';
 	if(!empty($orderDate)){
-		echo '<a href="'.CommonHelper::generateUrl('Reports','SalesReport').'" class="btn btn--primary btn--sm">'.Labels::getLabel('LBL_Back',$siteLangId).'</a>';
+		echo '<a href="'.CommonHelper::generateUrl('Reports','SalesReport').'" class="btn btn-outline-primary btn--sm">'.Labels::getLabel('LBL_Back',$siteLangId).'</a>';
 	}
 	echo '</div></div>';
     echo $tbl->getHtml();
