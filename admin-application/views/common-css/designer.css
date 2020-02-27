@@ -951,3 +951,8 @@ table.table-bordered tr:nth-child(odd) td {
     color: #fff;
     background-color: #212529;
 }
+
+.custom-ui-autocomplete {
+  max-height: 300px;
+  overflow: hidden;  
+  overflow-y: auto; }
