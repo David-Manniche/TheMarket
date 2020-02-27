@@ -118,3 +118,5 @@ Bugs:
 
     => 034783 - Seller inventory listing on clicking add volume discount and special price getting message printed in transparent strip.
     => 034780 - When stock subtraction reaches the available quantity then in inventory listing there is info icon message is not displaying relevant message.
+    
+    => 034738 - Product categories thumb image is displaying very small even smaller than remove button.
