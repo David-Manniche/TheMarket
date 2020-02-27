@@ -155,6 +155,54 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                     $selectedOptionColor = $option['values'][$selectedOptionsArr[$key]]['optionvalue_color_code']; ?>
                                         <div class="col-md-6 mb-3">
                                             <div class="h6"><?php echo $option['option_name']; ?></div>
+											
+											<div class="dropdown dropdown-options">
+                                                <button class="btn btn-outline-gray dropdown-toggle" type="button" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
+													<span>
+                                                    <?php if ($option['option_is_color']) { ?>
+														<span class="colors" style="background-color:#<?php echo $selectedOptionColor; ?>;"></span>
+                                                    <?php } ?>
+                                                    <?php echo $selectedOptionValue; ?>
+													</span>
+												</button>
+                                                <?php if ($option['values']) { ?>
+												<div class="dropdown-menu dropdown-menu-anim">
+													<ul class="nav nav-block">
+														<?php foreach ($option['values'] as $opVal) {
+													$isAvailable = true;
+													if (in_array($opVal['optionvalue_id'], $product['selectedOptionValues'])) {
+														$optionUrl = CommonHelper::generateUrl('Products', 'view', array($product['selprod_id']));
+													} else {
+														$optionUrl = Product::generateProductOptionsUrl($product['selprod_id'], $selectedOptionsArr, $option['option_id'], $opVal['optionvalue_id'], $product['product_id']);
+														$optionUrlArr = explode("::", $optionUrl);
+														if (is_array($optionUrlArr) && count($optionUrlArr) == 2) {
+															$optionUrl = $optionUrlArr[0];
+															$isAvailable = false;
+														}
+													} ?>
+														<li class="nav__item <?php echo (in_array($opVal['optionvalue_id'], $product['selectedOptionValues'])) ? ' is-active' : ' ';
+												echo (!$optionUrl) ? ' is-disabled' : '';
+												echo (!$isAvailable) ? 'not--available':''; ?>">
+															<?php if ($option['option_is_color'] && $opVal['optionvalue_color_code'] != '') { ?>
+															<a optionValueId="<?php echo $opVal['optionvalue_id']; ?>" selectedOptionValues="<?php echo implode("_", $selectedOptionsArr); ?>" title="<?php echo $opVal['optionvalue_name'];
+														echo (!$isAvailable) ? ' '.Labels::getLabel('LBL_Not_Available', $siteLangId) : ''; ?>" class="dropdown-item nav__link <?php echo (!$option['option_is_color']) ? 'selector__link' : '';
+														echo (in_array($opVal['optionvalue_id'], $product['selectedOptionValues'])) ? ' ' : ' '; echo (!$optionUrl) ? ' is-disabled' : '';  ?>" href="<?php echo ($optionUrl) ? $optionUrl : 'javascript:void(0)'; ?>"> <span class="colors"
+																	style="background-color:#<?php echo $opVal['optionvalue_color_code']; ?>;"></span><?php echo $opVal['optionvalue_name'];?></a>
+															<?php } else { ?>
+															<a optionValueId="<?php echo $opVal['optionvalue_id']; ?>" selectedOptionValues="<?php echo implode("_", $selectedOptionsArr); ?>" title="<?php echo $opVal['optionvalue_name'];
+														echo (!$isAvailable) ? ' '.Labels::getLabel('LBL_Not_Available', $siteLangId) : ''; ?>" class="dropdown-item nav__link <?php echo (in_array($opVal['optionvalue_id'], $product['selectedOptionValues'])) ? '' : ' '; echo (!$optionUrl) ? ' is-disabled' : ''; ?>"
+																href="<?php echo ($optionUrl) ? $optionUrl : 'javascript:void(0)'; ?>">
+																<?php echo $opVal['optionvalue_name'];  ?> </a>
+															<?php } ?>
+														</li>
+														<?php } ?>
+													</ul>
+												</div>
+                                                <?php } ?>
+                                            </div>
+											
+											
+											<?php /*
                                             <div class="js-wrap-drop wrap-drop" id="js-wrap-drop<?php echo $count; ?>">
                                                 <span>
                                                     <?php if ($option['option_is_color']) { ?>
@@ -195,7 +243,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                                     <?php } ?>
                                                 </ul>
                                                 <?php } ?>
-                                            </div>
+                                            </div> */ ?>
                                         </div>
                                         <?php $count++;
                                     } ?>

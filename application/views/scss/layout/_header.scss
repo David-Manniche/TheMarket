@@ -437,14 +437,15 @@
     background-position: center;
     background-color: $brand-color;
     border: none;
+    border-radius: 0;
     cursor: pointer;
     color: #fff;
     font-size: 0;
-    font-weight: 300;
+    font-weight: 300;    
     -webkit-transition: all ease .3s;
     transition: all ease .3s;
 
-    &:hover {}
+    &:hover{}
 
 
     @include media-breakpoint-down(lg) {
