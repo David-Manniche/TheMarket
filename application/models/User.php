@@ -94,6 +94,7 @@ class User extends MyAppModel
     public const USER_INFO_ATTR = [
         'user_id',
         'user_name',
+        'user_dial_code',
         'user_phone',
         'credential_email',
         'user_registered_initially_for',
@@ -498,6 +499,7 @@ class User extends MyAppModel
                 array(
                 'u.' . static::DB_TBL_PREFIX . 'id',
                 'u.' . static::DB_TBL_PREFIX . 'name',
+                'u.' . static::DB_TBL_PREFIX . 'dial_code',
                 'u.' . static::DB_TBL_PREFIX . 'phone',
                 'u.' . static::DB_TBL_PREFIX . 'profile_info',
                 'u.' . static::DB_TBL_PREFIX . 'regdate',

@@ -890,3 +890,4 @@ ALTER TABLE `tbl_user_phone_verification` CHANGE `upv_phone` `upv_phone` BIGINT 
 
 ALTER TABLE `tbl_users` DROP INDEX `user_phone`;
 ALTER TABLE `tbl_users` ADD UNIQUE (`user_dial_code`, `user_phone`);
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'MSG_Please_Configure_Your_Email';
