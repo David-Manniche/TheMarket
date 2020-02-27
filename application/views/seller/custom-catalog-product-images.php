@@ -20,7 +20,7 @@ $img_fld->setFieldTagAttribute('onchange', 'setupCustomCatalogProductImages(); r
         <div id="imageupload_div"></div>
     </div>
     <div class="row tabs_footer">
-        <div class="col-md-6">
+        <div class="col-6">
             <div class="field-set">
                 <div class="caption-wraper"><label class="field_label"></label></div>
                 <div class="field-wraper">
@@ -30,7 +30,7 @@ $img_fld->setFieldTagAttribute('onchange', 'setupCustomCatalogProductImages(); r
                 </div>
             </div>
         </div>
-        <div class="col-md-6 text-right">
+        <div class="col-6 text-right">
             <div class="field-set">
                 <div class="caption-wraper"><label class="field_label"></label></div>
                 <div class="field-wraper">

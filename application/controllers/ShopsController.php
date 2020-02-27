@@ -246,7 +246,7 @@ class ShopsController extends MyAppController
 
         if (false === MOBILE_APP_API_CALL) {
             $this->includeProductPageJsCss();
-            $this->_template->addJs(array('js/slick.min.js', 'js/responsive-img.min.js', 'js/shop-nav.js', 'js/jquery.colourbrightness.min.js'));
+            $this->_template->addJs(array('js/slick.min.js', 'js/shop-nav.js', 'js/jquery.colourbrightness.min.js'));
         }
 
         $this->_template->render();
@@ -332,7 +332,7 @@ class ShopsController extends MyAppController
                 $this->_template->addCss('shops/templates/page-css/'.SHOP::TEMPLATE_ONE.'.css');
             break;
         } */
-        $this->_template->addCss('shops/templates/page-css/' . SHOP::TEMPLATE_ONE . '.css');
+        /* $this->_template->addCss('shops/templates/page-css/' . SHOP::TEMPLATE_ONE . '.css'); */
         $this->set('shop', $this->shopPoliciesData($shop));
         $this->set('shopRating', SelProdRating::getSellerRating($shop['shop_user_id']));
         $this->set('shopTotalReviews', SelProdReview::getSellerTotalReviews($shop['shop_user_id']));

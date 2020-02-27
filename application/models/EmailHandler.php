@@ -871,10 +871,10 @@ class EmailHandler extends FatModel
             $orderVendors = $orderObj->getChildOrders(array("order" => $orderId), $orderDetail['order_type'], $orderDetail['order_language_id']);
             foreach ($orderVendors as $key => $val) :
                 $shippingHanldedBySeller = CommonHelper::canAvailShippingChargesBySeller($val['op_selprod_user_id'], $val['opshipping_by_seller_user_id']);
-               
+
             $taxOptions = json_decode($val['op_product_tax_options'], true);
             $val['taxOptions'] = $taxOptions;
-               
+
             $tpl = new FatTemplate('', '');
             //$tpl->set('orderInfo', $orderDetail);
             $tpl->set('orderProducts', $val);
@@ -2241,7 +2241,7 @@ class EmailHandler extends FatModel
         return array(
         '{website_name}' => FatApp::getConfig('CONF_WEBSITE_NAME_' . $langId),
         '{website_url}' => CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL),
-        '{Company_Logo}' => '<img src="' . CommonHelper::generateFullUrl('Image', 'emailLogo', array($langId), CONF_WEBROOT_FRONT_URL) . '" />',
+        '{Company_Logo}' => '<img style="max-width:150px" src="' . CommonHelper::generateFullUrl('Image', 'emailLogo', array($langId), CONF_WEBROOT_FRONT_URL) . '" />',
         '{current_date}' => date('M d, Y'),
         '{social_media_icons}' => $social_media_icons,
         '{contact_us_url}' => CommonHelper::generateFullUrl('custom', 'contactUs', array(), CONF_WEBROOT_FRONT_URL),

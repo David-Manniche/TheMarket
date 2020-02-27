@@ -52,6 +52,14 @@ a:hover {
     text-decoration: none;
 }
 
+.text-left {
+    text-align: #{$start-direction} !important;
+}
+
+.text-right {
+    text-align: #{$end-direction} !important;
+}
+
 .-color-light {
     opacity: 0.6;
 }
@@ -93,12 +101,14 @@ hr {}
 /*Bg*/
 .bg--primary-color,
 .bg-primary {
-    
-    background: $brand-color; color:$brand-color-inverse;
+
+    background: $brand-color;
+    color: $brand-color-inverse;
 }
 
-.bg-second {     
-    background: $secondary-color; color:$secondary-color-inverse;
+.bg-second {
+    background: $secondary-color;
+    color: $secondary-color-inverse;
 }
 
 .bg-white {
@@ -254,7 +264,14 @@ hr {}
 
 .custom-ui-autocomplete {
     max-height: 300px;
-    overflow: auto;
+    overflow: inherit;
+    overflow-y: auto;
 }
-.container-fluid{ max-width: none;}
-.strikethrough{ text-decoration: line-through;}
+
+.container-fluid {
+    max-width: none;
+}
+
+.strikethrough {
+    text-decoration: line-through;
+}

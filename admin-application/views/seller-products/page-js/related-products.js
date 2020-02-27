@@ -28,7 +28,11 @@ $(document).on('keyup', "input[name='product_name']", function(){
             return;
         }
         currObj.siblings('ul.dropdown-menu').remove();
-        currObj.autocomplete({'source': function(request, response) {
+        currObj.autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
+            'source': function(request, response) {
         		$.ajax({
         			url: fcom.makeUrl('SellerProducts', 'autoCompleteProducts'),
         			data: {fIsAjax:1,keyword:currObj.val()},
@@ -49,7 +53,7 @@ $(document).on('keyup', "input[name='product_name']", function(){
                     $('#related-products').empty();
                     for (var key in ans.relatedProducts) {
                         $('#related-products').append(
-                            "<li id=productRelated"+ans.relatedProducts[key]['selprod_id']+"><span>"+ans.relatedProducts[key]['selprod_title']+" ["+ans.relatedProducts[key]['product_identifier']+"]<i class=\"remove_related remove_param fal fa-times\"></i></span><input type=\"hidden\" name=\"selected_products[]\" value="+ans.relatedProducts[key]['selprod_id']+" /></li>"
+                            "<li id=productRelated"+ans.relatedProducts[key]['selprod_id']+"><span>"+ans.relatedProducts[key]['selprod_title']+" ["+ans.relatedProducts[key]['product_identifier']+"]<i class=\"remove_related remove_param fas fa-times\"></i></span><input type=\"hidden\" name=\"selected_products[]\" value="+ans.relatedProducts[key]['selprod_id']+" /></li>"
                         );
                     }
                 });
@@ -74,7 +78,10 @@ $(document).on('keyup', "input[name='products_related']", function(){
     if(selprod_id != 0) {
         currObj.siblings('ul.dropdown-menu').remove();
         currObj.autocomplete({
-            autoFocus: true,
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
+            'autoFocus': true,
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('SellerProducts', 'autoCompleteProducts'),
@@ -100,7 +107,7 @@ $(document).on('keyup', "input[name='products_related']", function(){
             select: function(event, ui) {
                 $('input[name=\'products_related\']').val('');
                 $('#productRelated' + ui.item.id).remove();
-                $('#related-products').append('<li id="productRelated' + ui.item.id + '"><span> ' + ui.item.label + '<i class="remove_related remove_param fal fa-times"></i></span><input type="hidden" name="selected_products[]" value="' + ui.item.id + '" /></li>');
+                $('#related-products').append('<li id="productRelated' + ui.item.id + '"><span> ' + ui.item.label + '<i class="remove_related remove_param fas fa-times"></i></span><input type="hidden" name="selected_products[]" value="' + ui.item.id + '" /></li>');
                 return false;
             }
         });

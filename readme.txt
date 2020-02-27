@@ -115,3 +115,6 @@ Bugs:
     => 034494 - Keyword search with special character.
     => 034787 - Special price list rows are not getting removed from frontend.
     => 034784 - Add minimum min qty of volume discount validation message while adding from frontend.
+
+    => 034783 - Seller inventory listing on clicking add volume discount and special price getting message printed in transparent strip.
+    => 034780 - When stock subtraction reaches the available quantity then in inventory listing there is info icon message is not displaying relevant message.

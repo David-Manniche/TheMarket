@@ -24,7 +24,7 @@ if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) 
             <div class="cards">
                 <div class="cards-content">
                     <div class="box__body">
-                        <div class="tabs tabs--small tabs--scroll clearfix">
+                        <div class="tabs ">
                             <ul>
                                 <li class="is-active" id="tab-wishlist">
                                     <a onClick="<?php echo $function; ?>" href="javascript:void(0);">

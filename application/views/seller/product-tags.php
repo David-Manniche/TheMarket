@@ -10,8 +10,12 @@ $keywordFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_Pr
 $keywordFld->developerTags['col'] = 4;
 $keywordFld->developerTags['noCaptionTag'] = true;
 
+$submitFld = $frmSearch->getField('btn_submit');
+$submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block');
+
 $clearFld = $frmSearch->getField('btn_clear');
 $clearFld->setFieldTagAttribute('onclick', 'clearSearch()');
+$clearFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
 ?>
 <?php $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
@@ -29,20 +33,20 @@ $clearFld->setFieldTagAttribute('onclick', 'clearSearch()');
                         <div class="cards-content">
                             <div>
                                 <?php echo $frmSearch->getFormTag(); ?>
-                                <div class="field-set">
+                               
                                     <div class="row">
-                                        <div class="col-md-10">
-                                            <?php echo $frmSearch->getFieldHTML('keyword');?>
+                                        <div class="col-12 col-md-8">
+                                            <div class="field-set"><?php echo $frmSearch->getFieldHTML('keyword');?></div>
                                         </div>
-                                        <div class="col-md-2">
-                                            <?php 
-                                                echo $frmSearch->getFieldHTML('btn_submit');
-                                                echo $frmSearch->getFieldHTML('btn_clear');
-                                            ?>
+                                        <div class="col-6 col-md-2">
+                                            <div class="field-set"><?php echo $frmSearch->getFieldHTML('btn_submit'); ?></div>
+                                        </div>
+                                        <div class="col-6 col-md-2">
+                                            <div class="field-set"><?php echo $frmSearch->getFieldHTML('btn_clear');?></div>
                                         </div>
                                     </div>
                                     <div class='dvFocus-js'></div>
-                                </div>
+                                 
                                 </form>
                                 <?php echo $frmSearch->getExternalJS(); ?>
                             </div>

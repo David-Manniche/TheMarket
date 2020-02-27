@@ -116,13 +116,13 @@ foreach ($arrListing as $sn => $row) {
                         true
                     ); */
 
-                    $innerLiLinks = $innerUl->appendElement("li");
+                    /* $innerLiLinks = $innerUl->appendElement("li");
                     $innerLiLinks->appendElement(
                         'a',
                         array('href'=>'javascript:void(0)', 'class'=>'', 'title'=>Labels::getLabel('LBL_Links', $adminLangId),"onclick"=>"sellerProductLinkFrm(".$row['selprod_id'].")"),
                         Labels::getLabel('LBL_Links', $adminLangId),
                         true
-                    );
+                    ); */
                     
                     if ($row['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
                         $innerLiDownload = $innerUl->appendElement("li");

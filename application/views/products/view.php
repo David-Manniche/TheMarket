@@ -409,10 +409,10 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                 <?php include(CONF_THEME_PATH.'_partial/product/shipping-rates.php');?>
 
                 <?php $youtube_embed_code = CommonHelper::parseYoutubeUrl($product["product_youtube_video"]); ?>
-                
 
 
-            </div>		
+
+            </div>
 						<!-- Don't remove scrollUpTo-js span -->
 						<span id="scrollUpTo-js"></span>
 						<!-- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -->
@@ -438,7 +438,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                 <?php }?>
                             </ul>
                         </div>
-                  
+
             <section class="section">
                 <div class="row justify-content-center">
                     <div class="col-xl-7">
@@ -453,7 +453,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                 <tbody>
                                     <?php foreach ($productSpecifications as $key => $specification) { ?>
                                     <tr>
-                                        <th><?php echo $specification['prodspec_name']." :" ;?></th>
+                                        <th><?php echo $specification['prodspec_name'].":" ;?></th>
                                         <td><?php echo html_entity_decode($specification['prodspec_value'], ENT_QUOTES, 'utf-8') ; ?></td>
                                     </tr>
                                     <?php } ?>
@@ -543,22 +543,27 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                             foreach ($slideArr as $slideScreen) {
                                 switch ($slideScreen['afile_screen']) {
                                     case applicationConstants::SCREEN_MOBILE:
-                                        $mobile_url = '<736:' .CommonHelper::generateUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).",";
+                                        $mobile_url = CommonHelper::generateUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).",";
                                         break;
                                     case applicationConstants::SCREEN_IPAD:
-                                        $tablet_url = ' >768:' .CommonHelper::generateUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_IPAD)).",";
+                                        $tablet_url = CommonHelper::generateUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_IPAD)).",";
                                         break;
                                     case applicationConstants::SCREEN_DESKTOP:
-                                        $desktop_url = ' >1025:' .CommonHelper::generateUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_DESKTOP)).",";
+                                        $desktop_url = CommonHelper::generateUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_DESKTOP)).",";
                                         break;
                                 }
                             }
                         } ?>
                     <div class="col-md-6 mb-3 mb-md-0">
                         <div class="banner-ppc"><a href="<?php echo CommonHelper::generateUrl('Banner', 'url', array($val['banner_id'])); ?>" target="<?php echo $val['banner_target']; ?>" title="<?php echo $val['banner_title']; ?>"
-                                class="advertise__block"><img data-ratio="10:3" data-src-base="" data-src-base2x="" data-src="<?php echo $mobile_url  . $tablet_url  . $desktop_url; ?>"
-                                    src="<?php echo CommonHelper::generateUrl('Banner', 'productDetailPageBanner', array($val['banner_id'],$siteLangId,applicationConstants::SCREEN_DESKTOP)); ?>" alt="<?php echo $val['banner_title']; ?>"
-                                    class="img-responsive"></a></div>
+                                class="advertise__block">
+								<picture>
+									<source data-aspect-ratio="4:3" srcset="<?php echo $mobile_url; ?>" media="(max-width: 767px)">
+									<source data-aspect-ratio="4:3" srcset="<?php echo $tablet_url; ?>" media="(max-width: 1024px)">
+									<source data-aspect-ratio="4:1" srcset="<?php echo $desktop_url; ?>">
+									<img data-aspect-ratio="4:1" srcset="<?php echo $desktop_url; ?>" alt="">
+								</picture>
+								</a></div>
                     </div>
                     <?php } ?>
                     </div>
@@ -648,19 +653,19 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
 
         $(".nav-scroll-js").click(function(event) {
             event.preventDefault();
-            var full_url = this.href; 
+            var full_url = this.href;
             var parts = full_url.split("#");
-            var trgt = parts[1];   
+            var trgt = parts[1];
             /* var target_offset = $("#" + trgt).offset();
 
             var target_top = target_offset.top - $('#header').height();
             $('html, body').animate({
                 scrollTop: target_top
             }, 800); */
-			$('html, body').animate({ 
+			$('html, body').animate({
                 scrollTop: parseInt($("#" + trgt).position().top) + parseInt($("#scrollUpTo-js").position().top)
             }, 800);
-			
+
         });
         $('.nav-detail-js li a').click(function() {
             $('.nav-detail-js li a').removeClass('is-active');
