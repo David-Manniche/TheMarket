@@ -1221,7 +1221,7 @@ class SellerController extends SellerBaseController
         $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
 
         //$srch = Product::getSearchObject($this->siteLangId);
-        $srch = new ProductSearch($this->siteLangId, null, null, false, false);
+        $srch = new ProductSearch($this->siteLangId, null, null, true, true, true);
         $srch->joinProductShippedBySeller(UserAuthentication::getLoggedUserId());
         $srch->joinTable(AttributeGroup::DB_TBL, 'LEFT OUTER JOIN', 'product_attrgrp_id = attrgrp_id', 'attrgrp');
         $srch->joinTable(UpcCode::DB_TBL, 'LEFT OUTER JOIN', 'upc_product_id = product_id', 'upc');
@@ -4131,7 +4131,7 @@ class SellerController extends SellerBaseController
         $frm->addHiddenField('', 'selprod_id', $selprod_id);
         $fld1 = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         if ($type != 'CUSTOM_CATALOG') {
-            $fld2 = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $this->siteLangId), array('onClick' => 'cancelForm(this)'));
+            $fld2 = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Discard', $this->siteLangId), array('onClick' => 'gotToProucts()'));
             //$fld1->attachField($fld2);
         }
         return $frm;

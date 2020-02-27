@@ -409,10 +409,10 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                 <?php include(CONF_THEME_PATH.'_partial/product/shipping-rates.php');?>
 
                 <?php $youtube_embed_code = CommonHelper::parseYoutubeUrl($product["product_youtube_video"]); ?>
-                
 
 
-            </div>		
+
+            </div>
 						<!-- Don't remove scrollUpTo-js span -->
 						<span id="scrollUpTo-js"></span>
 						<!-- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -->
@@ -438,7 +438,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                 <?php }?>
                             </ul>
                         </div>
-                  
+
             <section class="section">
                 <div class="row justify-content-center">
                     <div class="col-xl-7">
@@ -453,7 +453,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                 <tbody>
                                     <?php foreach ($productSpecifications as $key => $specification) { ?>
                                     <tr>
-                                        <th><?php echo $specification['prodspec_name']." :" ;?></th>
+                                        <th><?php echo $specification['prodspec_name'].":" ;?></th>
                                         <td><?php echo html_entity_decode($specification['prodspec_value'], ENT_QUOTES, 'utf-8') ; ?></td>
                                     </tr>
                                     <?php } ?>
@@ -653,19 +653,19 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
 
         $(".nav-scroll-js").click(function(event) {
             event.preventDefault();
-            var full_url = this.href; 
+            var full_url = this.href;
             var parts = full_url.split("#");
-            var trgt = parts[1];   
+            var trgt = parts[1];
             /* var target_offset = $("#" + trgt).offset();
 
             var target_top = target_offset.top - $('#header').height();
             $('html, body').animate({
                 scrollTop: target_top
             }, 800); */
-			$('html, body').animate({ 
+			$('html, body').animate({
                 scrollTop: parseInt($("#" + trgt).position().top) + parseInt($("#scrollUpTo-js").position().top)
             }, 800);
-			
+
         });
         $('.nav-detail-js li a').click(function() {
             $('.nav-detail-js li a').removeClass('is-active');
