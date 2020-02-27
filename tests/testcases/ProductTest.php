@@ -100,5 +100,181 @@ class ProductTest extends TestCase
         );
     }
     
+    /**
+     * @dataProvider setProductSellerShipping
+     */
+    public function testSaveProductSellerShipping( $mainTableRecordId, $prodSellerId, $psFree, $psCountryId, $expected )
+    {
+        $prod = new Product();    
+        $prod->setMainTableRecordId( $mainTableRecordId );
+        $result = $prod->saveProductSellerShipping($prodSellerId, $psFree, $psCountryId);
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function setProductSellerShipping()
+    {  
+        return array(
+            array(0, 0, 0, 0, 0, false), //Invalid Data
+            array(140, 0, 1, 0, true), //Valid Data            
+        );
+    }
+    
+    /**
+     * @dataProvider setProductSpecifications
+     */
+    public function testSaveProductSpecifications( $mainTableRecordId, $prodSpecId, $langId, $prodSpecName, $prodSpecValue, $prodSpecGroup, $expected )
+    {
+        $prod = new Product();    
+        $prod->setMainTableRecordId( $mainTableRecordId );
+        $result = $prod->saveProductSpecifications($prodSpecId, $langId, $prodSpecName, $prodSpecValue, $prodSpecGroup);
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function setProductSpecifications()
+    {  
+        return array(
+            array(0, 0, 1, 'test name', 'test value', 'test group', false), //Invalid product id
+            array(140, 0, 0, 'test name', 'test value', 'test group', false), //Invalid lang id
+            array(140, 0, 1, '', 'test value', 'test group', false), //invalid product specification name
+            array(140, 0, 1, 'test name', '', 'test group', false), //invalid product specification value
+            array(140, 0, 1, 'test name', 'test value', 'test group', true), //Add specification
+            array(140, 343, 1, 'test update name', 'test update value', 'test update group', true), //update specification 
+        );
+    }
+    
+    /**
+     * @dataProvider dataProdSpecificationsByLangId
+     */
+    public function testGetProdSpecificationsByLangId( $mainTableRecordId, $langId, $expected )
+    {
+        $prod = new Product();    
+        $prod->setMainTableRecordId( $mainTableRecordId );
+        $result = $prod->getProdSpecificationsByLangId($langId);
+        $this->$expected($result);
+    }
+    
+    public function dataProdSpecificationsByLangId()
+    {  
+        return array(
+            array(0, 1, 'assertFalse'), //Invalid product id
+            array(140, 0, 'assertFalse'), //Invalid lang id
+            array(140, 1, 'assertIsArray'), //Valid data
+        );
+    }
+    
+    /**
+     * @dataProvider dataProductSpecificsDetails
+     */
+    public function testGetProductSpecificsDetails( $productId, $expected )
+    {
+        $result = Product::getProductSpecificsDetails($productId);
+        $this->$expected($result);
+    }
+    
+    public function dataProductSpecificsDetails()
+    {  
+        return array(
+            array(0, 'assertFalse'), //Invalid product id
+            array(140, 'assertEmpty'), //Valid data with no record
+            array(124, 'assertIsArray'), //Valid data having records
+        );
+    }
+    
+    /**
+     * @dataProvider dataAddUpdateProductOption
+     */
+    public function testAddUpdateProductOption( $productId, $optionId, $expected )
+    {
+        $prod = new Product();
+        $result = $prod->addUpdateProductOption($productId, $optionId);
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function dataAddUpdateProductOption()
+    {  
+        return array(
+            array(0, 42, false), //Invalid product id
+            array(140, 0, false), //Invalid option id
+            array(140, 42, true), //Valid data
+        );
+    }
+    
+    /**
+     * @dataProvider dataRemoveProductOption
+     */
+    public function testRemoveProductOption( $productId, $optionId, $expected )
+    {
+        $prod = new Product();
+        $result = $prod->removeProductOption($productId, $optionId);
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function dataRemoveProductOption()
+    {  
+        return array(
+            array(0, 42, false), //Invalid product id
+            array(140, 0, false), //Invalid option id
+            array(140, 42, true), //Valid data
+        );
+    }
+    
+    /**
+     * @dataProvider dataAddUpdateProductTag
+     */
+    public function testAddUpdateProductTag( $productId, $tagId, $expected )
+    {
+        $prod = new Product();
+        $result = $prod->addUpdateProductTag($productId, $tagId);
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function dataAddUpdateProductTag()
+    {  
+        return array(
+            array(0, 54, false), //Invalid product id
+            array(140, 0, false), //Invalid tag id
+            array(140, 54, true), //Valid data
+        );
+    }
+    
+    /**
+     * @dataProvider dataRemoveProductTag
+     */
+    public function testRemoveProductTag( $productId, $tagId, $expected )
+    { 
+        $prod = new Product();
+        $result = $prod->removeProductTag($productId, $tagId);
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function dataRemoveProductTag()
+    {  
+        return array(
+            array(0, 54, false), //Invalid product id
+            array(140, 0, false), //Invalid tag id
+            array(140, 54, true), //Valid data
+        );
+    }
+    
+    /**
+     * @dataProvider dataAddUpdateProductShippingRates
+     */
+    public function testAddUpdateProductShippingRates( $productId, $data, $userId, $expected )
+    {
+        $result = Product::addUpdateProductShippingRates( $productId, $data, $userId );
+        $this->assertEquals($expected, $result);
+    }
+    
+    public function dataAddUpdateProductShippingRates()
+    {  
+        $data = array('country_id' =>'', 'company_id' => '', 'processing_time_id' => '', 'cost' => '', 'additional_cost' => '');
+        
+        return array(
+            array(0, $data, 0, false), //Invalid product id
+
+        );
+    }
+    
+    
     
 }
