@@ -126,4 +126,4 @@ Bugs:
 -------------------------TV-9.1.3.20200226----------
 Bugs:    
     => 034738 - Product categories thumb image is displaying very small even smaller than remove button.
--------------------------TV-9.1.3.20200227----------
+-------------------------TV-9.1.3.20200228----------

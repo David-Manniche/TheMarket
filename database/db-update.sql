@@ -944,4 +944,4 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 	</tbody>
 </table>', '');
 UPDATE tbl_email_templates SET etpl_body = REPLACE(etpl_body, '<table>', '<table width="100%" align="center" cellpadding="0" cellspacing="0">') WHERE etpl_body like '<table>%';
----------------TV-9.1.3.20200227---------------------------
+---------------TV-9.1.3.20200228---------------------------
