@@ -21,6 +21,8 @@ class CustomProductsController extends AdminBaseController
         $this->objPrivilege->canViewCustomProductRequests();
         $frmSearch = $this->catalogCustomProductRequestSearchForm();
         $this->set('frmSearch', $frmSearch);
+        $this->_template->addJs(array('js/cropper.js', 'js/cropper-main.js'));
+        $this->_template->addCss('css/cropper.css');
         $this->_template->render();
     }
 
@@ -1173,12 +1175,12 @@ class CustomProductsController extends AdminBaseController
         $option_id = FatUtility::int($post['option_id']);
         $lang_id = FatUtility::int($post['lang_id']);
 
-        if (!is_uploaded_file($_FILES['prod_image']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('LBL_Please_Select_A_File', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
         $fileHandlerObj = new AttachedFile();
-        if (!$res = $fileHandlerObj->saveImage($_FILES['prod_image']['tmp_name'], AttachedFile::FILETYPE_CUSTOM_PRODUCT_IMAGE, $preq_id, $option_id, $_FILES['prod_image']['name'], -1, $unique_record = false, $lang_id)
+        if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], AttachedFile::FILETYPE_CUSTOM_PRODUCT_IMAGE, $preq_id, $option_id, $_FILES['cropped_image']['name'], -1, $unique_record = false, $lang_id)
         ) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
@@ -1216,9 +1218,11 @@ class CustomProductsController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Image_File_Type', $this->adminLangId), 'option_id', $imgTypesArr, 0, array(), '');
         $languagesAssocArr = Language::getAllNames();
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', array( 0 => Labels::getLabel('LBL_All_Languages', $this->adminLangId) ) + $languagesAssocArr, '', array(), '');
-        $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_Photo(s):', $this->adminLangId), 'prod_image', array('id' => 'prod_image', 'multiple' => 'multiple'));
+        $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_Photo(s):', $this->adminLangId), 'prod_image', array('id' => 'prod_image'));
         $fldImg->htmlBeforeField = '<div class="filefield"><span class="filename"></span>';
-        $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->adminLangId) . '</label></div><br/><small>' . Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500._You_can_upload_multiple_photos_from_here.', $this->adminLangId) . '</small>';
+        $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->adminLangId) . '</label></div><br/><small>' . Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500', $this->adminLangId) . '</small>';
+        $frm->addHiddenField('', 'min_width', 500);
+        $frm->addHiddenField('', 'min_height', 500);
         $frm->addHiddenField('', 'preq_id', $preq_id);
         return $frm;
     }

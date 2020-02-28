@@ -1,19 +1,18 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $imagesFrm->setFormTagAttribute('id', 'frmCustomProductImage');
 $imagesFrm->setFormTagAttribute('class', 'form form-horizontal');
 $imagesFrm->developerTags['colClassPrefix'] = 'col-md-';
 $imagesFrm->developerTags['fld_default_col'] = 6;
-    
-$optionFld = $imagesFrm->getField('option_id');	
-$optionFld->addFieldTagAttribute('class','option-js');
 
-$langFld = $imagesFrm->getField('lang_id');	
-$langFld->addFieldTagAttribute('class','language-js');
+$optionFld = $imagesFrm->getField('option_id');
+$optionFld->addFieldTagAttribute('class', 'option-js');
+
+$langFld = $imagesFrm->getField('lang_id');
+$langFld->addFieldTagAttribute('class', 'language-js');
 
 $img_fld = $imagesFrm->getField('prod_image');
-$img_fld->setFieldTagAttribute( 'onchange','setupCustomProductImages(); return false;');
+$img_fld->addFieldTagAttribute('onChange', 'popupImage(this)');
 ?>
-
 <div class="tabs_data">
      <div class="tabs_body">
         <?php echo $imagesFrm->getFormHtml(); ?>
@@ -25,7 +24,12 @@ $img_fld->setFieldTagAttribute( 'onchange','setupCustomProductImages(); return f
                 <div class="caption-wraper"><label class="field_label"></label></div>
                 <div class="field-wraper">
                     <div class="field_cover">
-                        <input onclick="<?php if($productType == Product::PRODUCT_TYPE_PHYSICAL) { ?>productShipping(<?php echo $product_id; ?>); <?php }else{ ?> productOptionsAndTag(<?php echo $product_id; ?>); <?php }?>" class="btn btn-outline-primary" type="button" name="btn_back" value="<?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>">
+                        <input onclick="
+                        <?php if ($productType == Product::PRODUCT_TYPE_PHYSICAL) { ?>
+                            productShipping(<?php echo $product_id; ?>);
+                        <?php } else { ?>
+                            productOptionsAndTag(<?php echo $product_id; ?>);
+                        <?php }?>" class="btn btn-outline-primary" type="button" name="btn_back" value="<?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>">
                     </div>
                 </div>
             </div>
