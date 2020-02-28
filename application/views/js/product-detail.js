@@ -64,6 +64,11 @@ $(document).ready(function(){
 			// $(this).siblings().children('.js-wrap-drop').addClass('active');
 		});
     });
+	
+	$(".dropdown-menu li a").click(function(){ 
+	  var selText = $(this).html(); 
+	  $(this).parents('.dropdown').find('.dropdown-toggle').html(selText);
+	});
 
 });
 
