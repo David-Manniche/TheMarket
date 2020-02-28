@@ -267,11 +267,12 @@ class ProductTest extends TestCase
     
     public function dataAddUpdateProductShippingRates()
     {  
-        $data = array('country_id' =>'', 'company_id' => '', 'processing_time_id' => '', 'cost' => '', 'additional_cost' => '');
+        $data = array(array('country_id' =>'156', 'company_id' =>'1', 'processing_time_id' => '2', 'cost' => '250', 'additional_cost' => '25'));
         
         return array(
-            array(0, $data, 0, false), //Invalid product id
-
+            array(0, array(), 0, false), //Invalid product id with empty data
+            array(140, array(), 0, false), //Valid product id with empty data
+            array(140, $data, 0, true), //Valid product id with data
         );
     }
     
