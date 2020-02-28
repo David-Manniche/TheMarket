@@ -296,10 +296,7 @@
 		if (inputBtn.files && inputBtn.files[0]) {
 	        fcom.ajax(fcom.makeUrl('Products', 'imgCropper'), '', function(t) {
 				$.facebox(t,'faceboxWidth');
-				var container = document.querySelector('.img-container');
                 var file = inputBtn.files[0];
-                $('#new-img').attr('src', URL.createObjectURL(file));
-	    		var image = container.getElementsByTagName('img').item(0);
 	            var minWidth = document.imageFrm.min_width.value;
 	            var minHeight = document.imageFrm.min_height.value;
 	    		var options = {
@@ -313,7 +310,7 @@
 	                toggleDragModeOnDblclick: false,
 		        };
 				$(inputBtn).val('');
-		    	return cropImage(image, options, 'uploadImages', inputBtn);
+		    	return cropImage(file, options, 'uploadImages', inputBtn);
 	    	});
 		}
 	};

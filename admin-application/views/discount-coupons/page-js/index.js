@@ -351,10 +351,7 @@ $(document).on('change','.language-js',function(){
 	        fcom.ajax(fcom.makeUrl('DiscountCoupons', 'imgCropper'), '', function(t) {
 				$('#cropperBox-js').html(t);
 				$("#mediaForm-js").css("display", "none");
-				var container = document.querySelector('.img-container');
                 var file = inputBtn.files[0];
-                $('#new-img').attr('src', URL.createObjectURL(file));
-	    		var image = container.getElementsByTagName('img').item(0);
 	    		var options = {
 	                aspectRatio:  1 / 1,
 	                data: {
@@ -366,7 +363,7 @@ $(document).on('change','.language-js',function(){
 	                toggleDragModeOnDblclick: false,
 		        };
 				$(inputBtn).val('');
-				return cropImage(image, options, 'uploadImage', inputBtn);
+				return cropImage(file, options, 'uploadImage', inputBtn);
 	    	});
 		}
 	};
