@@ -46,7 +46,8 @@ class LoggedUserController extends MyAppController
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'logout'));
         }
 
-        if ('getotp' != strtolower($action) && (empty($userInfo['user_phone']) || false === SmsArchive::canSendSms()) && empty($userInfo['credential_email'])) {
+        $allowedActions = ['getotp', 'resendotp', 'validateotp'];
+        if (!in_array(strtolower($action), $allowedActions) && (empty($userInfo['user_phone']) || false === SmsArchive::canSendSms()) && empty($userInfo['credential_email'])) {
             $message = Labels::getLabel('MSG_PLEASE_CONFIGURE_YOUR_EMAIL_OR_PHONE', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
