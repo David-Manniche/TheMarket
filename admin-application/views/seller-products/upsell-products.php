@@ -64,7 +64,7 @@
                 <!--<div class="col-sm-12">-->
                 <section class="section">
                     <div class="sectionhead">
-                        <h4><?php echo Labels::getLabel('LBL_Related_Products_List', $adminLangId); ?> </h4>
+                        <h4><?php echo Labels::getLabel('LBL_Buy_Together_Products_List', $adminLangId); ?> </h4>
                     </div>
                     <div class="sectionbody">
                         <div class="tablewrap" >

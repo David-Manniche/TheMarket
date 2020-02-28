@@ -251,10 +251,7 @@ $(document).ready(function() {
 		if (inputBtn.files && inputBtn.files[0]) {
 	        fcom.ajax(fcom.makeUrl('Configurations', 'imgCropper'), '', function(t) {
 				$.facebox(t,'faceboxWidth medium-fb-width');
-				var container = document.querySelector('.img-container');
                 var file = inputBtn.files[0];
-                $('#new-img').attr('src', URL.createObjectURL(file));
-	    		var image = container.getElementsByTagName('img').item(0);
                 var minWidth = $(inputBtn).attr('data-min_width');
                 var minHeight = $(inputBtn).attr('data-min_height');
                 /*if(minWidth == minHeight){
@@ -273,7 +270,7 @@ $(document).ready(function() {
 	                toggleDragModeOnDblclick: false,
 		        };
 				$(inputBtn).val('');
-    	  		return cropImage(image, options, 'uploadConfImages', inputBtn);
+    	  		return cropImage(file, options, 'uploadConfImages', inputBtn);
 	    	});
 		}
 	};

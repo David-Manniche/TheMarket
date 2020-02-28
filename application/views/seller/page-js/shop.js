@@ -449,10 +449,7 @@ $(document).on('change', '.collection-language-js', function() {
         if (inputBtn.files && inputBtn.files[0]) {
             fcom.ajax(fcom.makeUrl('Seller', 'imgCropper'), '', function(t) {
         		$.facebox(t,'faceboxWidth medium-fb-width');
-                var container = document.querySelector('.img-container');
                 var file = inputBtn.files[0];
-                $('#new-img').attr('src', URL.createObjectURL(file));
-        		var image = container.getElementsByTagName('img').item(0);
                 var minWidth = document.frmShopBanner.banner_min_width.value;
                 var minHeight = document.frmShopBanner.banner_min_height.value;
         		var options = {
@@ -466,7 +463,7 @@ $(document).on('change', '.collection-language-js', function() {
                     toggleDragModeOnDblclick: false,
     	        };
                 $(inputBtn).val('');
-                return cropImage(image, options, 'uploadShopImages', inputBtn);
+                return cropImage(file, options, 'uploadShopImages', inputBtn);
         	});
         }
 	};
@@ -475,10 +472,7 @@ $(document).on('change', '.collection-language-js', function() {
         if (inputBtn.files && inputBtn.files[0]) {
             fcom.ajax(fcom.makeUrl('Seller', 'imgCropper'), '', function(t) {
         		$.facebox(t,'faceboxWidth medium-fb-width');
-                var container = document.querySelector('.img-container');
                 var file = inputBtn.files[0];
-                $('#new-img').attr('src', URL.createObjectURL(file));
-        		var image = container.getElementsByTagName('img').item(0);
                 var minWidth = document.frmShopLogo.logo_min_width.value;
                 var minHeight = document.frmShopLogo.logo_min_height.value;
     			if(minWidth == minHeight){
@@ -497,7 +491,7 @@ $(document).on('change', '.collection-language-js', function() {
                     toggleDragModeOnDblclick: false,
     	        };
                 $(inputBtn).val('');
-    	        return cropImage(image, options, 'uploadShopImages', inputBtn);
+    	        return cropImage(file, options, 'uploadShopImages', inputBtn);
         	});
         }
 	};
@@ -560,10 +554,7 @@ $(document).on('change', '.collection-language-js', function() {
         if (inputBtn.files && inputBtn.files[0]) {
             fcom.ajax(fcom.makeUrl('Seller', 'imgCropper'), '', function(t) {
         		$.facebox(t,'faceboxWidth medium-fb-width');
-                var container = document.querySelector('.img-container');
                 var file = inputBtn.files[0];
-                $('#new-img').attr('src', URL.createObjectURL(file));
-        		var image = container.getElementsByTagName('img').item(0);
         		var options = {
                     aspectRatio: 16 / 9,
                     data: {
@@ -575,7 +566,7 @@ $(document).on('change', '.collection-language-js', function() {
                     toggleDragModeOnDblclick: false,
     	        };
                 $(inputBtn).val('');
-                return cropImage(image, options, 'uploadCollectionImage', inputBtn);
+                return cropImage(file, options, 'uploadCollectionImage', inputBtn);
         	});
         }
 	};

@@ -405,10 +405,7 @@ $(document).ready(function() {
             fcom.ajax(fcom.makeUrl('Collections', 'imgCropper'), '', function(t) {
     			$('#cropperBox-js').html(t);
     			$("#mediaForm-js").css("display", "none");
-                var container = document.querySelector('.img-container');
                 var file = inputBtn.files[0];
-                $('#new-img').attr('src', URL.createObjectURL(file));
-        		var image = container.getElementsByTagName('img').item(0);
                 var minWidth = document.frmCollectionMedia.min_width.value;
                 var minHeight = document.frmCollectionMedia.min_height.value;
         		var options = {
@@ -422,7 +419,7 @@ $(document).ready(function() {
                     toggleDragModeOnDblclick: false,
     	        };
                 $(inputBtn).val('');
-                return cropImage(image, options, 'uploadImages', inputBtn);
+                return cropImage(file, options, 'uploadImages', inputBtn);
         	});
         }
 	};

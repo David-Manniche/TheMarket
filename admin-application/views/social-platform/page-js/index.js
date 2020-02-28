@@ -151,10 +151,7 @@ $(document).ready(function() {
             fcom.ajax(fcom.makeUrl('SocialPlatform', 'imgCropper'), '', function(t) {
                 $('#cropperBox-js').html(t);
 				$("#mediaForm-js").css("display", "none");
-                var container = document.querySelector('.img-container');
                 var file = inputBtn.files[0];
-                $('#new-img').attr('src', URL.createObjectURL(file));
-        		var image = container.getElementsByTagName('img').item(0);
         		var options = {
                     aspectRatio: 1 / 1,
                     minCropBoxWidth: 30,
@@ -162,7 +159,7 @@ $(document).ready(function() {
                     toggleDragModeOnDblclick: false,
     	        };
                 $(inputBtn).val('');
-    	        return cropImage(image, options, 'uploadImage', inputBtn);
+    	        return cropImage(file, options, 'uploadImage', inputBtn);
         	});
         }
 	};

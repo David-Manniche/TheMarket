@@ -20,12 +20,25 @@ systemImgCropper = function(url, aspectRatio, callback, inputBtn){
 	}
 };
 
-cropImage = function(image, options, callback, inputBtn){
+cropImage = function(file, options, callback, inputBtn){
+	var uploadedImageType ='';
+  	var container = document.querySelector('.img-container');
+  	if (/^image\/\w+/.test(file.type)) {
+	    uploadedImageType = file.type;
+	    var uploadedImageName = file.name;
+		$('#new-img').attr('src', URL.createObjectURL(file));
+		var image = container.getElementsByTagName('img').item(0);
+ 	} else if(typeof file.src != 'undefined') {
+		var image = file;
+		var uploadedImageType = 'image/png';
+	    var uploadedImageName = 'cropped.png';
+ 	} else {
+		window.alert('Please choose an image file.');
+ 	}
+
   var actions = document.getElementById('actions');
   var cropper = new Cropper(image, options);
   var originalImageURL = image.src;
-  var uploadedImageType = 'image/png';
-  var uploadedImageName = 'cropped.png';
   var uploadedImageURL;
 
   actions.querySelector('.docs-buttons').onclick = function (event) {
@@ -85,16 +98,16 @@ cropImage = function(image, options, callback, inputBtn){
 		  try {
 			data.option = JSON.parse(data.option);
 		  } catch (e) {
-			console.log(e.message);
+			/*console.log(e.message);*/
 		  }
 
-		  /*if (uploadedImageType === 'image/jpeg') {
+		  if (uploadedImageType === 'image/jpeg') {
 			if (!data.option) {
 			  data.option = {};
 			}
 
 			data.option.fillColor = '#fff';
-		  }*/
+		  }
 
 		  break;
 	  }
@@ -120,15 +133,15 @@ cropImage = function(image, options, callback, inputBtn){
 			canvas = cropper.clear().getCroppedCanvas();
 			canvas.toBlob(function (blob) {
 				formData.append('org_image', blob, 'org'+uploadedImageName);
-			}, uploadedImageType);
-			result.toBlob(function (blob) {
-                formData.append('cropped_image', blob, uploadedImageName);
-                formData.append("action", "avatar");
-				if(inputBtn){
-					var frmName = $(inputBtn).attr('data-frm')
-					formData.append("frmName", frmName);
-				}
-				window[callback](formData);
+				result.toBlob(function (blobs) {
+	                formData.append('cropped_image', blobs, uploadedImageName);
+	                formData.append("action", "avatar");
+					if(inputBtn){
+						var frmName = $(inputBtn).attr('data-frm')
+						formData.append("frmName", frmName);
+					}
+					window[callback](formData);
+				}, uploadedImageType);
 			}, uploadedImageType);
 		  }
 
