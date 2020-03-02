@@ -435,8 +435,8 @@ trait SellerProducts
             $selProdAvailable = Product::isSellProdAvailableForUser($selProdCode, $this->siteLangId, UserAuthentication::getLoggedUserId());
             if (!empty($selProdAvailable)) {
                 if (!$selProdAvailable['selprod_deleted']) {
-                    $error = true;
-                    Message::addErrorMessage($optionValue . ' ' . Labels::getLabel('MSG_ALREADY_ADDED', $this->siteLangId));
+                    /*$error = true;
+                    Message::addErrorMessage($optionValue . ' ' . Labels::getLabel('MSG_ALREADY_ADDED', $this->siteLangId));*/
                     continue;
                 }
                 $data_to_be_save['selprod_deleted'] = applicationConstants::NO;
@@ -1360,7 +1360,7 @@ trait SellerProducts
 
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
-    
+
         $languages = Language::getAllNames();
         if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId && count($languages) > 1) {
             $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->siteLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
@@ -1598,7 +1598,7 @@ trait SellerProducts
             /* ] */
         }
         if ($selprod_id > 0) {
-            $currentOption[$selprod_id] = $savedOptions[$selprod_id];
+            $currentOption[$selprod_id] = (array_key_exists($selprod_id, $savedOptions)) ? $savedOptions[$selprod_id] : '';
             $savedOptions = $currentOption;
         }
         $frm = new Form('frmDownload');
@@ -1646,7 +1646,7 @@ trait SellerProducts
             /* ] */
         }
         if ($selprod_id > 0) {
-            $currentOption[$selprod_id] = $savedOptions[$selprod_id];
+            $currentOption[$selprod_id] = (array_key_exists($selprod_id, $savedOptions)) ? $savedOptions[$selprod_id] : '';
             $savedOptions = $currentOption;
         }
         foreach ($savedOptions as $key => $val) {
