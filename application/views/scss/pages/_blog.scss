@@ -313,10 +313,8 @@
             margin: 0;
             margin-#{$end-direction}: -3px;
             border: none;
-
             color: $body-color;
             vertical-align: top;
-
             border-top-#{$start-direction}-radius: 50px;
             border-bottom-#{$start-direction}-radius: 50px;
         }

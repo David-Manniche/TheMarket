@@ -3,13 +3,22 @@ $getOrgUrl = (CONF_DEVELOPMENT_MODE) ? true : false;
 if (!$isUserLogged) {
     if (UserAuthentication::isGuestUserLogged()) { ?>
         <li>
-            <a href="javascript:void(0)">
-                <?php echo Labels::getLabel('LBL_Hi,', $siteLangId).' '.User::getAttributesById(UserAuthentication::getLoggedUserId(), "user_name"); ?>
-            </a>
-        </li>
-        <li class="logout"><a
-        data-org-url="<?php echo CommonHelper::generateUrl('GuestUser', 'logout', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo CommonHelper::generateUrl('GuestUser', 'logout'); ?>"><?php echo Labels::getLabel('LBL_Logout', $siteLangId); ?></a>
-        </li> <?php
+			<div class="dropdown">
+				<a href="javascript:void(0)" class="dropdown-toggle no-after" data-toggle="dropdown"><span class="icn icn-txt"><?php echo Labels::getLabel('LBL_Hi,', $siteLangId).' '.User::getAttributesById(UserAuthentication::getLoggedUserId(), "user_name"); ?></span></a>
+				<div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim" aria-labelledby="dropdownMenuButton">    
+					<ul class="nav nav-block">
+						<?php $userName = User::getAttributesById(UserAuthentication::getLoggedUserId(), "user_name"); ?>
+						<li class="nav__item">
+							<a class="dropdown-item nav__link" href="<?php echo CommonHelper::generateUrl('account', 'profileInfo'); ?>">
+								<?php echo Labels::getLabel('LBL_Hi,', $siteLangId).' '.$userName; ?>
+							</a>
+						</li>
+						<li class="nav__item logout"><a class="dropdown-item nav__link" data-org-url="<?php echo CommonHelper::generateUrl('GuestUser', 'logout', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo CommonHelper::generateUrl('GuestUser', 'logout'); ?>"><?php echo Labels::getLabel('LBL_Logout', $siteLangId); ?>
+						</a></li>
+					</ul>
+				</div>
+			</div>
+        </li><?php
     } else {
         ?> <li> 
 		<div class="dropdown dropdown--user"><a href="javascript:void(0)" class="sign-in sign-in-popup-js"><i class="icn icn--login"><svg class="svg">

@@ -42,7 +42,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true; ?>
                                     echo '<div class="btn-group"><a href="javascript:void(0)" onClick="exportProductsInventoryReport()" class="btn btn--secondary btn--sm btn--block">'.Labels::getLabel('LBL_Export', $siteLangId).'</a></div>';?>
                             </div>
                         </div>
-                        <div class="cards-content pb-0">
+                        <div class="cards-content">
                         <?php echo $frmSrch->getFormHtml(); ?>
                         </div>
                     </div>
