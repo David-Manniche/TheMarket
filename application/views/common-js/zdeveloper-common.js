@@ -975,6 +975,9 @@ $(document).ready(function () {
     });
 
     $(document).on("click", '.decrease-js', function () {
+        if($(this).hasClass('not-allowed')){
+            return false;
+        }
         $(this).siblings('.not-allowed').removeClass('not-allowed');
         var rval = $(this).parent().parent('div').find('input').val();
         if (isNaN(rval)) {
@@ -983,13 +986,14 @@ $(document).ready(function () {
         }
         var key = $(this).parent().parent('div').find('input').attr('data-key');
         var page = $(this).parent().parent('div').find('input').attr('data-page');
-
+        var minQty = $(this).parent().parent('div').find('input').attr('data-min-qty');
+        var minVal = (minQty > 1) ? minQty : 1;
         val = parseInt(rval) - 1;
-        if (val <= 1) {
-            val = 1;
+        if (val <= minVal) {
+            val = minVal;
             $(this).addClass('not-allowed');
         }
-        if ($(this).hasClass('not-allowed') && rval <= 1) {
+        if ($(this).hasClass('not-allowed') && rval <= minVal) {
             return false;
         }
         $(this).parent().parent('div').find('input').val(val);
