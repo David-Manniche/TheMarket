@@ -200,7 +200,7 @@ if (isset($prodcat_code)) {
           } ?>><i class="input-helper"></i><?php echo $brand['brand_name']; ?> </label></li>
         <?php
       } ?>
-    </ul>    
+    </ul>
 </div>
 <?php if(count($brandsArr) >= 10){?>
 <div class="py-3">
@@ -299,148 +299,152 @@ if (isset($prodcat_code)) {
         </ul>
     </div>
 </div>-->
-        <!-- ] -->
-        <script language="javascript">
-            var catCodeArr = <?php echo json_encode($catCodeArr); ?>;
-            $.each(catCodeArr, function(key, value) {
-                if ($("ul li a[data-id='" + value + "']").parent().find('span')) {
-                    $("ul li a[data-id='" + value + "']").parent().find('span:first').addClass('is--active');
-                    $("ul li a[data-id='" + value + "']").parent().find('ul:first').css('display', 'block');
+<!-- ] -->
+<script language="javascript">
+    var catCodeArr = <?php echo json_encode($catCodeArr); ?>;
+    $.each(catCodeArr, function(key, value) {
+        if ($("ul li a[data-id='" + value + "']").parent().find('span')) {
+            $("ul li a[data-id='" + value + "']").parent().find('span:first').addClass('is--active');
+            $("ul li a[data-id='" + value + "']").parent().find('ul:first').css('display', 'block');
+        }
+
+    });
+
+    $("document").ready(function() {
+        var min = 0;
+        var max = 0;
+        <?php if (isset($priceArr) && $priceArr) { ?>
+        var range,
+            min = Math.floor(<?php echo $filterDefaultMinValue; ?>),
+            max = Math.floor(<?php echo $filterDefaultMaxValue; ?>),
+            from,
+            to;
+        var $from = $('input[name="priceFilterMinValue"]');
+        var $to = $('input[name="priceFilterMaxValue"]');
+        var $range = $("#price_range");
+        var updateValues = function() {
+            $from.prop("value", from);
+            $to.prop("value", to);
+        };
+
+        $("#price_range").ionRangeSlider({
+            hide_min_max: true,
+            hide_from_to: true,
+            keyboard: true,
+            min: min,
+            max: max,
+            from: min,
+            to: max,
+            type: 'double',
+            prettify_enabled: true,
+            prettify_separator: ',',
+            grid: true,
+            // grid_num: 1,
+            prefix: '<?php echo $currencySymbolLeft; ?>',
+            postfix: '<?php echo $currencySymbolRight; ?>',
+
+            input_values_separator: '-',
+            onFinish: function() {
+                var minMaxArr = $("#price_range").val().split('-');
+                if (minMaxArr.length == 2) {
+                    var min = Number(minMaxArr[0]);
+                    var max = Number(minMaxArr[1]);
+                    $('input[name="priceFilterMinValue"]').val(min);
+                    $('input[name="priceFilterMaxValue"]').val(max);
+                    addPricefilter(true);
+                    //return searchProducts(document.frmProductSearch);
                 }
+            },
+            onChange: function(data) {
+                from = data.from;
+                to = data.to;
+                updateValues();
+                // addPricefilter(true);
+            }
+        });
 
+        range = $range.data("ionRangeSlider");
+
+        var updateRange = function() {
+            range.update({
+                from: from,
+                to: to
             });
+            addPricefilter();
+        };
 
-            $("document").ready(function() {
-                var min = 0;
-                var max = 0;
-                <?php if (isset($priceArr) && $priceArr) {
-            ?>
-                var range,
-                    min = Math.floor(<?php echo $filterDefaultMinValue; ?>),
-                    max = Math.floor(<?php echo $filterDefaultMaxValue; ?>),
-                    from,
-                    to;
-                var $from = $('input[name="priceFilterMinValue"]');
-                var $to = $('input[name="priceFilterMaxValue"]');
-                var $range = $("#price_range");
-                var updateValues = function() {
-                    $from.prop("value", from);
-                    $to.prop("value", to);
-                };
+        $from.on("change", function() {
+            from = $(this).prop("value");
+            if (!$.isNumeric(from)) {
+                from = 0;
+            }
+            if (from < min) {
+                from = min;
+            }
+            if (from > max) {
+                from = max;
+            }
+            updateValues();
+            updateRange();
+        });
 
-                $("#price_range").ionRangeSlider({
-                    hide_min_max: true,
-                    hide_from_to: true,
-                    keyboard: true,
-                    min: min,
-                    max: max,
-                    from: min,
-                    to: max,
-                    type: 'double',
-                    prettify_enabled: true,
-                    prettify_separator: ',',
-                    grid: true,
-                    // grid_num: 1,
-                    prefix: '<?php echo $currencySymbolLeft; ?>',
-                    postfix: '<?php echo $currencySymbolRight; ?>',
+        $to.on("change", function() {
+            to = $(this).prop("value");
+            if (!$.isNumeric(to)) {
+                to = 0;
+            }
+            if (to > max) {
+                to = max;
+            }
+            if (to < min) {
+                to = min;
+            }
+            updateValues();
+            updateRange();
+        });
+        <?php } ?>
 
-                    input_values_separator: '-',
-                    onFinish: function() {
-                        var minMaxArr = $("#price_range").val().split('-');
-                        if (minMaxArr.length == 2) {
-                            var min = Number(minMaxArr[0]);
-                            var max = Number(minMaxArr[1]);
-                            $('input[name="priceFilterMinValue"]').val(min);
-                            $('input[name="priceFilterMaxValue"]').val(max);
-                            addPricefilter(true);
-                            //return searchProducts(document.frmProductSearch);
-                        }
-                    },
-                    onChange: function(data) {
-                        from = data.from;
-                        to = data.to;
-                        updateValues();
-                        // addPricefilter(true);
-                    }
-                });
+        /* left side filters scroll bar[ */
+        <?php /* if( isset($brandsArr) && $brandsArr && count($brandsArr) > 5 ){ */
+        /* code is here, becoz brands section has defined height, and looking bad when there are less brands in the box, so, added this to avoid height */ ?>
 
-                range = $range.data("ionRangeSlider");
+        <?php if (true === $shopCatFilters) { ?>
+            // new SimpleBar(document.getElementById('accordian'));
+        <?php } ?>
+        var x = document.getElementsByClassName("scrollbar-filters");
+        var i;
+        for (i = 0; i < x.length; i++) {
+            new SimpleBar(x[i]);
+        }
+        /* ] */
 
-                var updateRange = function() {
-                    range.update({
-                        from: from,
-                        to: to
-                    });
-                    addPricefilter();
-                };
+        /* left side filters expand-collapse functionality [ */
+        $('.span--expand').bind('click', function() {
+            $(this).parent('li.level').toggleClass('is-active');
+            $(this).toggleClass('is--active');
+            $(this).next('ul').toggle("");
+        });
+        $('.span--expand').click();
+        /* ] */
 
-                $from.on("change", function() {
-                    from = $(this).prop("value");
-                    if (!$.isNumeric(from)) {
-                        from = 0;
-                    }
-                    if (from < min) {
-                        from = min;
-                    }
-                    if (from > max) {
-                        from = max;
-                    }
-                    updateValues();
-                    updateRange();
-                });
+        updatePriceFilter(<?php echo floor($priceArr['minPrice']);?>, <?php echo ceil($priceArr['maxPrice']);?>);
+        
+        if ('rtl' == langLbl.layoutDirection && 0 < $("[data-simplebar]").length) {
+            $("[data-simplebar]").attr('data-simplebar-direction', 'rtl');
+        }
 
-                $to.on("change", function() {
-                    to = $(this).prop("value");
-                    if (!$.isNumeric(to)) {
-                        to = 0;
-                    }
-                    if (to > max) {
-                        to = max;
-                    }
-                    if (to < min) {
-                        to = min;
-                    }
-                    updateValues();
-                    updateRange();
-                });
-                <?php } ?>
+    });
 
-                /* left side filters scroll bar[ */
-                <?php /* if( isset($brandsArr) && $brandsArr && count($brandsArr) > 5 ){ */
-/* code is here, becoz brands section has defined height, and looking bad when there are less brands in the box, so, added this to avoid height */ ?>
+    $("#accordian li span.acc-trigger").click(function() {
+        var link = $(this);
+        var closest_ul = link.siblings("ul");
 
-                <?php if (true === $shopCatFilters) { ?>
-                    // new SimpleBar(document.getElementById('accordian'));
-                <?php } ?>
-                var x = document.getElementsByClassName("scrollbar-filters");
-                var i;
-                for (i = 0; i < x.length; i++) {
-                    new SimpleBar(x[i]);
-                }
-                /* ] */
-
-                /* left side filters expand-collapse functionality [ */
-                $('.span--expand').bind('click', function() {
-                    $(this).parent('li.level').toggleClass('is-active');
-                    $(this).toggleClass('is--active');
-                    $(this).next('ul').toggle("");
-                });
-                $('.span--expand').click();
-                /* ] */
-
-                updatePriceFilter(<?php echo floor($priceArr['minPrice']);?>, <?php echo ceil($priceArr['maxPrice']);?>);
-            });
-
-            $("#accordian li span.acc-trigger").click(function() {
-                var link = $(this);
-                var closest_ul = link.siblings("ul");
-
-                if (link.hasClass("is--active")) {
-                    closest_ul.slideUp();
-                    link.removeClass("is--active");
-                } else {
-                    closest_ul.slideDown();
-                    link.addClass("is--active");
-                }
-            });
-        </script>
+        if (link.hasClass("is--active")) {
+            closest_ul.slideUp();
+            link.removeClass("is--active");
+        } else {
+            closest_ul.slideDown();
+            link.addClass("is--active");
+        }
+    });
+</script>
