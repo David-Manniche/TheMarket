@@ -132,12 +132,13 @@ $(document).on('blur', ".js--splPriceCol:not(.date_js)", function(){
                     }
                     frm.reset();
                 }
-                document.getElementById('frmSplPriceListing').reset()
+                document.getElementById('frmSplPriceListing').reset();
                 $('table.splPriceList-js tbody').prepend(t.data);
                 $('.date_js').datepicker('option', {minDate: new Date()});
                 if (0 < $('.noResult--js').length) {
                     $('.noResult--js').remove();
                 }
+                searchSpecialPriceProducts(document.frmSearch);
             }
 			$(document).trigger('close.facebox');
             if (0 < frm.addMultiple.value) {
