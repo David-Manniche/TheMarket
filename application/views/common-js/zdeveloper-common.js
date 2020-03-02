@@ -768,33 +768,54 @@ function defaultSetUpLogin(frm, v) {
 
 
 $(document).ready(function () {
-    /*if (typeof $.fn.autocomplete_advanced !== typeof undefined) {
-    	$('#header_search_keyword').autocomplete_advanced({
-    		appendTo: ".main-search__field",
-    		minChars: 2,
-    		autoSelectFirst: false,
-    		lookup: function (query, done) {
-    			$.ajax({
-    				url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
-    				data: {
-    					keyword: encodeURIComponent(query)
-    				},
-    				dataType: 'json',
-    				type: 'post',
-    				success: function (json) {
-    					done(json);
-    					// $('.autocomplete-suggestions').appendTo('.form__cover');
-    					// $('.autocomplete-suggestions').insertAfter( "#header_search_keyword" );
-    				}
-    			});
-    		},
-    		triggerSelectOnValidInput: false,
-    		onSelect: function (suggestion) {
-    			submitSiteSearch(document.frmSiteSearch);
-    			//alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
-    		}
-    	});
-    }*/
+    $('#header_search_keyword').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
+		'source': function(request, response) {
+			$.ajax({
+				url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
+				data: {keyword: encodeURIComponent(request['term']), fIsAjax:1},
+				dataType: 'json',
+				type: 'post',
+				success: function(json) {
+					response($.map(json, function(item) {
+						return { label: item['value'], value: item['value'], name: item['value'] };
+					}));
+				},
+			});
+		},
+		select: function (event, ui) {
+			submitSiteSearch(document.frmSiteSearch);
+		}
+	});
+    /* if (typeof $.fn.autocomplete_advanced !== typeof undefined) {
+		$('#header_search_keyword').autocomplete_advanced({
+			appendTo: ".main-search__field",
+			minChars: 2,
+			autoSelectFirst: false,
+			lookup: function (query, done) {
+				$.ajax({
+					url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
+					data: {
+						keyword: encodeURIComponent(query)
+					},
+					dataType: 'json',
+					type: 'post',
+					success: function (json) {
+						done(json);
+						// $('.autocomplete-suggestions').appendTo('.form__cover');
+						// $('.autocomplete-suggestions').insertAfter( "#header_search_keyword" );
+					}
+				});
+			},
+			triggerSelectOnValidInput: false,
+			onSelect: function (suggestion) {
+				submitSiteSearch(document.frmSiteSearch);
+				//alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+			}
+		});
+	} */
 
     if ($('.system_message').find('.div_error').length > 0 || $('.system_message').find('.div_msg').length > 0 || $('.system_message').find('.div_info').length > 0 || $('.system_message').find('.div_msg_dialog').length > 0) {
         $('.system_message').show();

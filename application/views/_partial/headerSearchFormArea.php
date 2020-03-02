@@ -35,7 +35,7 @@
 						</div>					 
 				</div>				
 			</div>
-			<div class="main-search__field"><?php echo $headerSrchFrm->getFieldHTML('keyword'); ?></div>
+			<div class="main-search__field ui-front"><?php echo $headerSrchFrm->getFieldHTML('keyword'); ?></div>
 			<?php echo $headerSrchFrm->getFieldHTML('category'); ?>
 			<?php echo $headerSrchFrm->getFieldHTML('btnSiteSrchSubmit'); ?>
 		</form>
