@@ -943,3 +943,6 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 	</tbody>
 </table>', '');
 UPDATE tbl_email_templates SET etpl_body = REPLACE(etpl_body, '<table>', '<table width="100%" align="center" cellpadding="0" cellspacing="0">') WHERE etpl_body like '<table>%';
+
+
+UPDATE `tbl_cron_schedules` SET `cron_command` = 'AbandonedCart/sendReminderAbandonedCart' WHERE `tbl_cron_schedules`.`cron_id` = 13;
