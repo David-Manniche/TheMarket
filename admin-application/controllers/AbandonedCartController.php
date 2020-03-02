@@ -91,11 +91,28 @@ class AbandonedCartController extends AdminBaseController
         
         $abandonedCart = new AbandonedCart($abandonedcartId);
         if (!$abandonedCart->sendDiscountEmail($couponId)) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Email_Not_Sent', $this->adminLangId));
+            Message::addErrorMessage($abandonedCart->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
         $abandonedCart->updateDiscountNotification();
         $this->set('msg', Labels::getLabel('MSG_Email_Sent_Successful', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
+    
+    public function validateProductForNotification($productId)
+    {
+        $productId = FatUtility::int($productId);
+        if ( $productId < 1 ) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request', $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        
+        $product = AbandonedCart::validateProductForNotification($productId);
+        if(empty($product)){
+            Message::addErrorMessage(Labels::getLabel('MSG_Product_is_either_deleted/disabled_or_out_of_stock', $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        $this->_template->render(false, false, 'json-success.php');
+    }
+    
 }
