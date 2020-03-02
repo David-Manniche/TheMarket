@@ -294,7 +294,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                             <ul class="actions">
                                                 <li><a title="<?php echo Labels::getLabel('LBL_View_Order', $siteLangId); ?>" href="<?php echo $orderDetailUrl; ?>"><i class="fa fa-eye"></i></a></li>
                                                 <?php if (!in_array($row["op_status_id"], $notAllowedStatues)) { ?>
-                                                    <li><a href="<?php echo CommonHelper::generateUrl('seller', 'cancelOrder', array($row['op_id'])); ?>" title="<?php echo Labels::getLabel('LBL_Cancel_Order', $siteLangId); ?>"><i class="fa fa-close"></i></a></li>
+                                                    <li><a href="<?php echo CommonHelper::generateUrl('seller', 'cancelOrder', array($row['op_id'])); ?>" title="<?php echo Labels::getLabel('LBL_Cancel_Order', $siteLangId); ?>"><i class="fas fa-times"></i></a></li>
                                                 <?php } ?>
                                             </ul>
                                         </td>
