@@ -264,6 +264,7 @@ $(document).ready(function(){
 		fcom.displayProcessing();
 		fcom.ajax(fcom.makeUrl('SellerProducts', 'sellerProductDownloadFrm', [ selprod_id, type ]), '', function(t) {
 			fcom.updateFaceboxContent(t);
+			$("select[name='download_type']").trigger('change');
 		});
 	};
 
