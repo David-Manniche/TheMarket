@@ -768,7 +768,7 @@ function defaultSetUpLogin(frm, v) {
 
 
 $(document).ready(function () {
-    $('#header_search_keyword').autocomplete({
+    /* $('#header_search_keyword').autocomplete({
         'classes': {
             "ui-autocomplete": "custom-ui-autocomplete"
         },
@@ -788,7 +788,79 @@ $(document).ready(function () {
 		select: function (event, ui) {
 			submitSiteSearch(document.frmSiteSearch);
 		}
-	});
+	}); */
+    
+    
+    var $elem = $('#header_search_keyword').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
+		'source': function(request, response) {
+			$.ajax({
+				url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
+				data: {keyword: encodeURIComponent(request['term']), fIsAjax:1},
+				dataType: 'json',
+				type: 'post',
+				success: function(json) {
+					response($.map(json, function(item) {
+						return { label: item['value'], value: item['value'] };
+					}));
+				},
+			});
+		},
+		select: function (event, ui) {
+            $(document.frmSiteSearch.keyword).val(ui.item.label);
+            submitSiteSearch(document.frmSiteSearch);
+		}
+	}),
+    elemAutocomplete = $elem.data("ui-autocomplete") || $elem.data("autocomplete");
+    if (elemAutocomplete) {
+        elemAutocomplete._renderItem = function (ul, item) {
+            var newText = String(item.value).replace(
+                    new RegExp(this.term, "gi"),
+                    "<strong>$&</strong>");
+
+            return $("<li></li>")
+                .data("item.autocomplete", item)
+                .append("<div>" + newText + "</div>")
+                .appendTo(ul);
+        };
+    }
+
+
+    /* $('#header_search_keyword').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
+		'source': function(request, response) {
+			$.ajax({
+				url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
+				data: {keyword: encodeURIComponent(request['term']), fIsAjax:1},
+				dataType: 'json',
+				type: 'post',
+				success: function(json) {
+					response($.map(json, function(item) {
+						return { label: item['value'], value: item['value'], name: item['value'] };
+					}));
+				},
+			});
+		},
+		select: function (event, ui) {
+			submitSiteSearch(document.frmSiteSearch);
+		}
+	})
+    .data("autocomplete")._renderItem = function (ul, item) {
+        var newText = String(item.value).replace(
+                new RegExp(this.term, "gi"),
+                "<span class='ui-state-highlight'>$&</span>");
+
+        return $("<li></li>")
+            .data("item.autocomplete", item)
+            .append("<div>" + newText + "</div>")
+            .appendTo(ul);
+    }; */
+    
+    
     /* if (typeof $.fn.autocomplete_advanced !== typeof undefined) {
 		$('#header_search_keyword').autocomplete_advanced({
 			appendTo: ".main-search__field",
