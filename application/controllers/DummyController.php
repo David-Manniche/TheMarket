@@ -662,4 +662,12 @@ class DummyController extends MyAppController
     {
         AbandonedCart::sendReminderAbandonedCart();
     }
+
+    public function send()
+    {
+        $error = '';
+        $resp = PushNotification::send($error);
+        echo $error;
+        CommonHelper::printArray($resp);
+    }
 }
