@@ -101,7 +101,7 @@ input[type="file"] {
 
 .form {
     .field-set {
-        margin: 0 0 1.5rem;
+        margin: 0.7rem 0;
     }
 
     .form__cover {
@@ -167,14 +167,15 @@ input[type="file"] {
             height: 2.5rem;
             vertical-align: middle;
             text-align: center;
-            background: $brand-color; color:$brand-color-inverse;
+            background: $brand-color;
+            color: $brand-color-inverse;
             font-size: 0.875rem;
             font-weight: 500;
             line-height: 2.375rem;
             overflow: hidden;
             outline: none;
             cursor: pointer;
-           
+
             -webkit-transition: -webkit-box-shadow 0.2s;
             transition: -webkit-box-shadow 0.2s;
             transition: box-shadow 0.2s;
@@ -187,6 +188,11 @@ input[type="file"] {
             background: none;
             border-color: $brand-color;
             color: $brand-color;
+
+            &.btn--primary {
+                background: $brand-color;
+                color: $brand-color-inverse;
+            }
         }
 
         &[type="reset"] {
@@ -206,8 +212,6 @@ input[type="file"] {
     }
 
 }
-
-
 
 .note-messages {
     font-size: 13px;
@@ -344,6 +348,8 @@ form.custom-form {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    
-    .btn { margin-#{$start-direction}:5px; }
+
+    .btn {
+        margin-#{$start-direction}: 5px;
+    }
 }

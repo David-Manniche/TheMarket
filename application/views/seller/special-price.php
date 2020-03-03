@@ -63,7 +63,7 @@ if (0 < $selProd_id) {
                             <div class="row justify-content-between">
                                 <div class="col-auto"></div>
                                  <div class="col-auto">
-                                    <div class="action">
+                                    <div class="btn-group">
                                         <a class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Delete_Special_Price', $siteLangId); ?>" onclick="deleteSpecialPriceRows()" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Delete_Special_Price', $siteLangId); ?></a>
                                     </div>
                                 </div>
@@ -71,7 +71,7 @@ if (0 < $selProd_id) {
                             <div id="listing">
                                 <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>
-                            <span class="gap"></span>
+                             
                         </div>
                     </div>
                 </div>
