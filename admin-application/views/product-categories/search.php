@@ -78,15 +78,22 @@
          },
          onChange: function(cEl)
          {
-            var catId =  $( cEl ).attr('id');
-            $("#"+catId).parent('ul').addClass('append-ul'); 
-            var parentCatId = $( cEl ).parent('ul').parent('li').attr('id');     
+            $("#js-cat-section").addClass('overlay-blur');
+            var catId =  $( cEl ).attr('id'); 
+            var parentCatId = $( cEl ).parent('ul').parent('li').attr('id');
+            displaySubCategories(cEl, parentCatId);
+            $("#"+catId).parent('ul').addClass('append-ul');
+            
             var catOrder = [] ;               
             $($( cEl ).parent().children()).each(function(i){               
                 catOrder[i+1] = $(this).attr('id');
-            })       
+            })   
+            
             var data = "catId="+catId+"&parentCatId="+parentCatId+"&catOrder="+JSON.stringify(catOrder);
-            fcom.updateWithAjax(fcom.makeUrl('productCategories','updateOrder'), data, function(res){ });
+            fcom.updateWithAjax(fcom.makeUrl('productCategories','updateOrder'), data, function(res){ 
+                $("#js-cat-section").removeClass('overlay-blur');
+            });
+            
          },
          opener: {
              active: true,

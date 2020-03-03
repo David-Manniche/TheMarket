@@ -165,7 +165,7 @@
 						close( li );
 					}
 					else
-					{ 
+					{   
 						open( li );
 					}
 				}
@@ -579,7 +579,7 @@
 					showOnTopPlus( e, oEl, 7 > relY );  // Last bool param express if hint insert outside/inside
 				}
 				else if ( oElH - 14 < relY )  // Inserting on bottom
-				{   
+				{
 					showOnBottomPlus( e, oEl, oElH - 7 < relY );
 				}
 			}
@@ -644,7 +644,7 @@
 				}
 
 				if ( state.oEl )
-				{   
+				{  
 					open( oEl ); // TODO:animation??? .children('ul,ol').css('display', 'block');
 				}
 
@@ -765,7 +765,7 @@
 				}
 
 				if ( state.oEl )
-				{
+				{   
 					open( oEl); // TODO: animation???
 				}
 
@@ -815,10 +815,10 @@
 				}
 
 				if ( state.oEl )
-				{     
+				{   
                     /* [ custom work by developer */
-                    var catId = $(oEl).attr('id');
-                    displaySubCategories(this, catId);
+                    // catId = $(oEl).attr('id');  
+                    //displaySubCategories(this, catId);
                     /* ] */
                     
 					open( oEl ); // TODO: animation??? 
@@ -850,7 +850,7 @@
 		 * @desc Handles opening nested lists
 		 * @param li
 		 */
-		function open( li, showCategories = 0 )
+		function open( li )
 		{ 
             li.removeClass( 'sortableListsClosed' ).addClass( 'sortableListsOpen' );
 			li.children( setting.listSelector ).css( 'display', 'block' );
