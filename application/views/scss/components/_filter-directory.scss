@@ -14,14 +14,29 @@
         padding: 0 0 1rem 0;
         margin-bottom: 1rem;
 
+
+        @include media-breakpoint-down(md) {
+            & {
+                flex-direction: column;
+            }
+        }
+
+
         .filter-directory_search_input {
-            -webkit-margin-end: 1rem;
-            -moz-margin-end: 1rem;
-            margin-inline-end: 1rem;
+            margin-#{$end-direction}: 1rem;
             -webkit-box-flex: 0;
             -ms-flex: 0 0 170px;
             flex: 0 0 170px;
             max-width: 170px;
+
+            @include media-breakpoint-down(md) {
+                & {
+                    margin: 0;
+                    margin-bottom: 1rem;
+                    flex: auto;
+                    max-width: none;
+                }
+            }
         }
 
         .filter-directory_indices {
@@ -33,6 +48,18 @@
             -webkit-box-flex: 1;
             -ms-flex: 1;
             flex: 1;
+            flex-direction: row;
+            flex-wrap: nowrap;
+
+
+            @include media-breakpoint-down(md) {
+                & {
+                    justify-content: flex-start;
+                    overflow-x: auto;
+                    width: 100%;
+
+                }
+            }
 
             li {
                 font-size: 0.8rem;

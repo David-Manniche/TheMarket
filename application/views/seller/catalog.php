@@ -10,7 +10,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pb-0">
+                        <div class="cards-content">
                             <div class="replaced">
                                 <?php
                                 $frmSearchCatalogProduct->setFormTagAttribute('id', 'frmSearchCatalogProduct');

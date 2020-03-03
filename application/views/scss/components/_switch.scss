@@ -22,7 +22,7 @@
          background-color: #ccc;
          bottom: 0;
          cursor: pointer;
-         #{$start-direction}: 0;
+         left: 0;
          position: absolute;
          right: 0;
          top: 0;
@@ -32,9 +32,9 @@
          &:before {
              background-color: #fff;
              bottom: 4px;
+             left: 4px;
              content: "";
-             height: 12px;
-             #{$start-direction}: 4px;
+             height: 12px;             
              position: absolute;
              -webkit-transition: .4s;
              transition: .4s;
