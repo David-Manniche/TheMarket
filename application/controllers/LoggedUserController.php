@@ -48,7 +48,11 @@ class LoggedUserController extends MyAppController
 
         /* Thease actions are used while configuring Phone from "Configure Email/Phone Page". */
         $allowedActions = ['getotp', 'resendotp', 'validateotp'];
-        if (!in_array(strtolower($action), $allowedActions) && (empty($userInfo['user_phone']) || true === SmsArchive::canSendSms()) && empty($userInfo['credential_email'])) {
+        $addPhoneValidaion = true;
+        if (true == SmsArchive::canSendSms()) {
+            $addPhoneValidaion = empty($userInfo['user_phone']) ? true : false;
+        }
+        if (!in_array(strtolower($action), $allowedActions) && empty($userInfo['user_phone']) && empty($userInfo['credential_email'])) {
             if (true == SmsArchive::canSendSms()) {
                 $message = Labels::getLabel('MSG_PLEASE_CONFIGURE_YOUR_EMAIL_OR_PHONE', $this->siteLangId);
             } else {

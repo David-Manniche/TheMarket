@@ -59,6 +59,7 @@ $(document).ready(function(){
 	getOtp = function (frm, updateToDbFrm = 0){
 		if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
+        $(frm.btn_submit).attr('disabled', 'disabled');
         $.systemMessage(langLbl.processing,'alert--process', false);
 		fcom.ajax(fcom.makeUrl( 'Account', 'getOtp', [updateToDbFrm]), data, function(t) {
             try{
@@ -121,12 +122,14 @@ $(document).ready(function(){
     validateOtp = function (frm, updateToDbFrm = 1){
 		if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
+        $(frm.btn_submit).attr('disabled', 'disabled');
         $.systemMessage(langLbl.processing,'alert--process', false);
 		fcom.ajax(fcom.makeUrl( 'Account', 'validateOtp', [updateToDbFrm]), data, function(t) {
             try{
 				t = $.parseJSON(t);
 				if(typeof t.status != 'undefined' &&  1 > t.status){
                     $.systemMessage(t.msg,'alert--danger', false);
+                    $(frm.btn_submit).removeAttr('disabled');
                 } else {
                     $.systemMessage(t.msg,'alert--success', false);
                     changePhoneNumberForm();

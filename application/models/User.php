@@ -1528,15 +1528,11 @@ class User extends MyAppModel
         }
     }
 
-    public function prepareUserPhoneOtp($newOtp = false, $countryIso = '', $dialCode = '', $phone = 0)
+    public function prepareUserPhoneOtp($countryIso = '', $dialCode = '', $phone = 0)
     {
         if (($this->mainTableRecordId < 1)) {
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST.', $this->commonLangId);
             return false;
-        }
-
-        if (true === $newOtp) {
-            $this->deletePhoneOtp($this->mainTableRecordId);
         }
 
         $min = pow(10, self::OTP_LENGTH - 1);
@@ -1706,7 +1702,7 @@ class User extends MyAppModel
         $phone = !empty($dialCode) && !empty($data['user_phone']) ? $dialCode . trim($data['user_phone']) : '';
         $user_name = !empty($data['user_name']) ? $data['user_name'] : Labels::getLabel('LBL_USER', $langId);
         
-        $otp = $this->prepareUserPhoneOtp(false, $countryIso, $dialCode, $phone);
+        $otp = $this->prepareUserPhoneOtp($countryIso, $dialCode, $phone);
         if (false === $otp) {
             return false;
         }
