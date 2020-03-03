@@ -53,7 +53,7 @@ class GuestUserController extends MyAppController
         );
         $isRegisterForm = FatUtility::int($isRegisterForm);
 
-        $this->set('smsPluginStatus', Plugin::canSendSms(SmsTemplate::LOGIN));
+        $this->set('smsPluginStatus', SmsArchive::canSendSms(SmsTemplate::LOGIN));
         $this->set('isRegisterForm', $isRegisterForm);
         $this->set('registerdata', $registerdata);
     }
@@ -81,8 +81,13 @@ class GuestUserController extends MyAppController
         if (true === MOBILE_APP_API_CALL && 1 > $userType) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
+        $userName = FatApp::getPostedData('username');
+        $dialCode = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
+        if (!empty($dialCode)) {
+            $userName = trim($dialCode) . trim($userName);
+        }
 
-        if (!$authentication->login(FatApp::getPostedData('username'), FatApp::getPostedData('password'), $_SERVER['REMOTE_ADDR'], true, false, $this->app_user['temp_user_id'], $userType)) {
+        if (!$authentication->login($userName, FatApp::getPostedData('password'), $_SERVER['REMOTE_ADDR'], true, false, $this->app_user['temp_user_id'], $userType)) {
             $message = Labels::getLabel($authentication->getError(), $this->siteLangId);
             FatUtility::dieJsonError($message);
         }
@@ -97,7 +102,8 @@ class GuestUserController extends MyAppController
                 FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
             }
 
-            $userInfo = $uObj->getUserInfo(array('user_name', 'user_id', 'user_phone', 'credential_email'), true, true, true);
+            $userInfo = $uObj->getUserInfo(array('user_name', 'user_id', 'user_dial_code', 'user_phone', 'credential_email'), true, true, true);
+            $userInfo['token'] = $token;
 
             $this->set('token', $token);
             $this->set('userInfo', $userInfo);
@@ -270,6 +276,7 @@ class GuestUserController extends MyAppController
             'siteLangId' => $this->siteLangId,
             'socialLoginApis' => $socialLoginApis,
             'includeGuestLogin' => $includeGuestLogin,
+            'smsPluginStatus' => SmsArchive::canSendSms(SmsTemplate::LOGIN),
         );
         $this->set('data', $data);
         $this->_template->render(false, false);
@@ -337,7 +344,17 @@ class GuestUserController extends MyAppController
             LibHelper::exitWithError($message, false, true);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
         }
-        
+
+        $dialCode = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
+        $countryIso = FatApp::getPostedData('user_country_iso', FatUtility::VAR_STRING, '');
+        if (!empty($post['user_phone']) && (empty($dialCode) || empty($countryIso))) {
+            $message = Labels::getLabel("MSG_INVALID_PHONE_NUMBER", $this->siteLangId);
+            LibHelper::exitWithError($message, false, true);
+            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
+        }
+
+        $post['user_dial_code'] = $dialCode;
+        $post['user_phone'] = isset($post['user_phone']) ? FatUtility::int(str_replace($post['user_dial_code'], "", $post['user_phone'])) : null;
         $post['user_is_buyer'] = User::USER_TYPE_BUYER;
         $post['user_preferred_dashboard'] = User::USER_BUYER_DASHBOARD;
         $post['user_registered_initially_for'] = User::USER_TYPE_BUYER;
@@ -361,6 +378,11 @@ class GuestUserController extends MyAppController
 
             LibHelper::exitWithError($message, false, true);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
+        }
+
+        if (false === $userObj->updateUserMeta('user_country_iso', $countryIso)) {
+            LibHelper::exitWithError($user->getError(), false, true);
+            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
         }
 
         if (1 > $signUpWithPhone && !FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1)) {
@@ -611,7 +633,7 @@ class GuestUserController extends MyAppController
         $obj = new Extrapage();
         $pageData = $obj->getContentByPageType(Extrapage::FORGOT_PAGE_RIGHT_BLOCK, $this->siteLangId);
 
-        $this->set('smsPluginStatus', Plugin::canSendSms(SmsTemplate::LOGIN));
+        $this->set('smsPluginStatus', SmsArchive::canSendSms(SmsTemplate::LOGIN));
         $this->set('withPhone', $withPhone);
         $this->set('pageData', $pageData);
         $this->set('frm', $frm);
@@ -646,8 +668,9 @@ class GuestUserController extends MyAppController
                 FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'forgotPasswordForm'));
             }
         }
-
-        $user = (0 < $withPhone) ? $post['user_phone'] : $post['user_email_username'];
+        $dialCode = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
+        $countryIso = FatApp::getPostedData('user_country_iso', FatUtility::VAR_STRING, '');
+        $user = (0 < $withPhone) ? $dialCode . trim($post['user_phone']) : $post['user_email_username'];
 
         $userAuthObj = new UserAuthentication();
         if (0 < $withPhone) {
@@ -712,6 +735,8 @@ class GuestUserController extends MyAppController
         if ($checkVerificationRow['credential_verified'] == applicationConstants::NO) {
             $error = false;
             if (0 < $withPhone) {
+                $row['user_country_iso'] = $countryIso;
+                $row['user_dial_code'] = $dialCode;
                 $row['user_phone'] = $post['user_phone'];
                 if (!$userObj->userPhoneVerification($row, $this->siteLangId)) {
                     $message = !empty($userObj->getError()) ? $userObj->getError() : Labels::getLabel("ERR_ERROR_IN_SENDING_VERFICATION_SMS", $this->siteLangId);
@@ -936,7 +961,7 @@ class GuestUserController extends MyAppController
     public function configureEmail()
     {
         $phoneNumber = User::getAttributesById(UserAuthentication::getLoggedUserId(), 'user_phone');
-        $canSendSms = (empty($phoneNumber) && Plugin::canSendSms(SmsTemplate::LOGIN));
+        $canSendSms = (empty($phoneNumber) && SmsArchive::canSendSms(SmsTemplate::LOGIN));
         $this->set('canSendSms', $canSendSms);
         $this->_template->render();
     }
@@ -947,14 +972,17 @@ class GuestUserController extends MyAppController
 
         $this->set('frm', $frm);
         $this->set('siteLangId', $this->siteLangId);
-        $this->set('canSendSms', Plugin::canSendSms(SmsTemplate::LOGIN));
+        $this->set('canSendSms', SmsArchive::canSendSms(SmsTemplate::LOGIN));
         $this->_template->render(false, false, 'account/change-email-form.php');
     }
 
     public function configurePhoneForm()
     {
+        $phData = User::getAttributesById(UserAuthentication::getLoggedUserId(), ['user_dial_code', 'user_phone']);
         $frm = $this->getPhoneNumberForm();
-
+        
+        $dialCode = isset($phData['user_dial_code']) && !empty($phData['user_dial_code']) ? $phData['user_dial_code'] : '';
+        $this->set('dialCode', $dialCode);
         $this->set('frm', $frm);
         $this->set('updatePhnFrm', applicationConstants::YES);
         $this->set('siteLangId', $this->siteLangId);
@@ -1042,7 +1070,7 @@ class GuestUserController extends MyAppController
         if (1 > $withPhone) {
             $frm->addRequiredField(Labels::getLabel('LBL_Username_or_email', $this->siteLangId), 'user_email_username');
         } else {
-            $frm->addRequiredField(Labels::getLabel('LBL_PHONE_NUMBER', $this->siteLangId), 'user_phone', '', array('placeholder' => Labels::getLabel('LBL_PHONE_NUMBER_(INCLUDING_COUNTRY_CODE)', $this->siteLangId)));
+            $frm->addRequiredField(Labels::getLabel('LBL_PHONE_NUMBER', $this->siteLangId), 'user_phone', '', array('placeholder' => Labels::getLabel('LBL_PHONE_NUMBER', $this->siteLangId)));
         }
 
         CommonHelper::addCaptchaField($frm);

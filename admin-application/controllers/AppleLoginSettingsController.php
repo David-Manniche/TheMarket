@@ -6,7 +6,7 @@ class AppleLoginSettingsController extends SocialLoginSettingsController
     {
         return [
                 'client_id' => [
-                    'type' => 'string',
+                    'type' => PluginSetting::TYPE_STRING,
                     'required' => true,
                     'label' => "Client ID / Service ID",
                 ]

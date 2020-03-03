@@ -34,7 +34,7 @@ $emailFld->setFieldTagAttribute('disabled', 'disabled');
 
 $countryFld = $frm->getField('user_country_id');
 $countryFld->setFieldTagAttribute('id', 'user_country_id');
-$countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,'.$stateId.',\'#user_state_id\')');
+$countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,' . $stateId . ',\'#user_state_id\')');
 
 $stateFld = $frm->getField('user_state_id');
 $stateFld->setFieldTagAttribute('id', 'user_state_id');
@@ -119,3 +119,9 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
         });
     });
 </script>
+<?php 
+if (isset($countryIso) && !empty($countryIso)) { ?>
+    <script>
+        langLbl.defaultCountryCode = '<?php echo $countryIso; ?>';
+    </script>
+<?php } ?>
