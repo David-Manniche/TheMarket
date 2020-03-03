@@ -111,10 +111,12 @@ $(document).ready(function(){
     
     
     discountNotification = function(abandonedcart_id, user_id, product_id){
-        addCouponForm(0);
-        abandonedcartId = abandonedcart_id;
-        userId = user_id;
-        productId = product_id;
+        fcom.updateWithAjax(fcom.makeUrl('AbandonedCart', 'validateProductForNotification', [product_id]), '', function(t) {  
+            addCouponForm(0);
+            abandonedcartId = abandonedcart_id;
+            userId = user_id;
+            productId = product_id;
+		});
     }
     
     

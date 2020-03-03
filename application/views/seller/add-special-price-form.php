@@ -35,7 +35,7 @@ if (!empty($data) && 0 < count($data)) {
     $frm->fill($data);
 }
 ?>
-<div class="cards-content pb-0">
+<div class="cards-content">
     <div class="replaced">
         <?php
         echo $frm->getFormTag();

@@ -13,7 +13,7 @@ $selprodDownloadFrm->developerTags['fld_default_col'] = 4; ?>
                 $submitButton = $selprodDownloadFrm->getField('btn_submit'.$key);
                 $submitButton->setFieldTagAttribute('onClick', 'setUpSellerProductDownloads('.applicationConstants::DIGITAL_DOWNLOAD_FILE.', '.$product_id.','.$key.'); return false;'); ?>
                 <div class="p-4 mb-4 border rounded">
-                    <h6><?php echo Labels::getLabel('LBL_Add_downloads_for', $siteLangId).' '.str_replace("_", " | ", $val); ?></h6>
+                    <h6><?php echo ($val !== '') ? Labels::getLabel('LBL_Add_downloads_for', $siteLangId).' '.str_replace("_", " | ", $val) : '' ?></h6>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="field-set">

@@ -172,10 +172,10 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                             <ul class="actions">
                                                 <li><a title="<?php echo Labels::getLabel('LBL_View_Order', $siteLangId); ?>" href="<?php echo $orderDetailUrl; ?>"><i class="fa fa-eye"></i></a></li> <?php if ($canCancelOrder) { ?> <li><a
                                                         href="<?php echo CommonHelper::generateUrl('buyer', 'orderCancellationRequest', array($row['op_id']));?>" title="<?php echo Labels::getLabel('LBL_Cancel_Order', $siteLangId);?>"><i
-                                                            class="fa fa-close"></i></a></li> <?php } ?> <?php if ($canSubmitFeedback && $isValidForReview) {?> <li><a
+                                                            class="fas fa-times"></i></a></li> <?php } ?> <?php if ($canSubmitFeedback && $isValidForReview) {?> <li><a
                                                         href="<?php echo CommonHelper::generateUrl('Buyer', 'orderFeedback', array($row['op_id']));?>" title="<?php echo Labels::getLabel('LBL_Feedback', $siteLangId);?>"><i class="fa fa-star"></i></a>
                                                 </li> <?php } ?> <?php if ($canReturnRefund) { ?> <li><a href="<?php echo CommonHelper::generateUrl('Buyer', 'orderReturnRequest', array($row['op_id']));?>"
-                                                        title="<?php echo Labels::getLabel('LBL_Refund', $siteLangId);?>"><i class="fa fa-dollar"></i></a></li> <?php } ?>
+                                                        title="<?php echo Labels::getLabel('LBL_Refund', $siteLangId);?>"><i class="fas fa-dollar-sign"></i></a></li> <?php } ?>
                                             </ul>
                                         </td>
                                     </tr> <?php }

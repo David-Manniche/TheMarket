@@ -103,8 +103,10 @@
             <?php if ($product['in_stock']) {
                 echo $frmBuyProduct->getFormTag();
                 $qtyField =  $frmBuyProduct->getField('quantity');
+                $qtyField->value = $product['selprod_min_order_qty'];
                 $qtyField->addFieldTagAttribute('class', 'qty-input cartQtyTextBox productQty-js');
                 $qtyField->addFieldTagAttribute('data-page', 'product-view');
+                $qtyField->addFieldTagAttribute('data-min-qty', $product['selprod_min_order_qty']);
                 /* $fld = $frmBuyProduct->getField('btnAddToCart');
                 $fld->addFieldTagAttribute('class','quickView'); */
                 $qtyFieldName =  $qtyField->getCaption(); ?>
@@ -112,7 +114,7 @@
                     <label class="h6"><?php echo $qtyFieldName; ?></label>
                     <div class="qty-wrapper">
                         <div class="quantity" data-stock="<?php echo $product['selprod_stock']; ?>">
-                            <span class="decrease decrease-js">-</span>
+                            <span class="decrease decrease-js not-allowed">-</span>
                             <div class="qty-input-wrapper" data-stock="<?php echo $product['selprod_stock']; ?>">
                                 <?php echo $frmBuyProduct->getFieldHtml('quantity'); ?>
                             </div>

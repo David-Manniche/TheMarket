@@ -259,7 +259,63 @@ $(document).on('change', '.language-js', function () {
         });
     };
 
-    setupCustomCatalogProductImages = function () {
+    popupImage = function(inputBtn){
+		if (inputBtn.files && inputBtn.files[0]) {
+	        fcom.ajax(fcom.makeUrl('Seller', 'imgCropper'), '', function(t) {
+				$.facebox(t,'faceboxWidth');
+                var file = inputBtn.files[0];
+	            var minWidth = document.imageFrm.min_width.value;
+	            var minHeight = document.imageFrm.min_height.value;
+	    		var options = {
+	                aspectRatio: 1 / 1,
+	                data: {
+	                    width: minWidth,
+	                    height: minHeight,
+	                },
+	                minCropBoxWidth: minWidth,
+	                minCropBoxHeight: minHeight,
+	                toggleDragModeOnDblclick: false,
+		        };
+				$(inputBtn).val('');
+		    	return cropImage(file, options, 'uploadImages', inputBtn);
+	    	});
+		}
+	};
+
+    uploadImages = function(formData){
+		var preq_id = document.imageFrm.preq_id.value;
+        var option_id = document.imageFrm.option_id.value;
+        var lang_id = document.imageFrm.lang_id.value;
+        formData.append('preq_id', preq_id);
+        formData.append('option_id', option_id);
+        formData.append('lang_id', lang_id);
+        $.ajax({
+            url : fcom.makeUrl('Seller', 'setupCustomCatalogProductImages'),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+            complete: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+			success: function(ans) {
+                $.mbsmessage(ans.msg, true, 'alert--success');
+                productImages($('#frmCustomCatalogProductImage input[name=preq_id]').val(), $('.option').val(), $('.language').val());
+				$('#prod_image').val('');
+				$(document).trigger('close.facebox');
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+        });
+	}
+
+    /*setupCustomCatalogProductImages = function () {
         var data = new FormData(  );
         $inputs = $('#frmCustomCatalogProductImage input[type=text],#frmCustomCatalogProductImage select,#frmCustomCatalogProductImage input[type=hidden]');
         $inputs.each(function () {
@@ -286,7 +342,7 @@ $(document).on('change', '.language-js', function () {
                 }
             });
         });
-    };
+    };*/
 
     deleteCustomProductImage = function (preqId, image_id) {
         var agree = confirm(langLbl.confirmDelete);
@@ -694,7 +750,7 @@ $(document).on('change', '.language-js', function () {
         var prodName = $("input[name='product_name[" + defaultLang + "]']").val();
         var oEdit = eval(oUtil.arrEditor[0]);
         var prodDesc = oEdit.getTextBody();
-        
+
         var alreadyOpen = $('.collapse-js-' + toLangId).hasClass('show');
         if (autoTranslate == 0 || prodName == "" || alreadyOpen == true) {
             return false;
@@ -711,16 +767,16 @@ $(document).on('change', '.language-js', function () {
             }
         });
     }
-    
+
     displaySubmitApprovalButton = function (id) {
         if( id < 1 ){
             return false;
         }
         fcom.ajax(fcom.makeUrl('Seller', 'productRequestApprovalButton', [id]), '', function (rsp) {
             $(".js-approval-btn").html(rsp);
-        });        
+        });
     }
-    
+
     customCatalogProductForm = function (id) {
         fcom.ajax(fcom.makeUrl('Seller', 'customCatalogGeneralForm', [id]), '', function (t) {
             $(".tabs_panel").html('');
@@ -732,7 +788,7 @@ $(document).on('change', '.language-js', function () {
             displaySubmitApprovalButton(id);
             fcom.resetEditorWidth();
             var editors = oUtil.arrEditor;
-            for (x in editors) {                 
+            for (x in editors) {
                 var oEdit1 = eval(editors[x]);
                 var layout = langLbl['language' + (parseInt(x) + parseInt(1))];
                 $('#idContent' + editors[x]).contents().find("body").css('direction', layout);
@@ -913,7 +969,7 @@ $(document).on('change', '.language-js', function () {
         fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupEanUpcCode',[preqId]), data, function(t) {
         });
     };
-    
+
     goToCatalogRequest = function(){
         window.location.href = fcom.makeUrl('seller', 'customCatalogProducts');
     }

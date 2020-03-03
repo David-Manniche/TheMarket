@@ -74,7 +74,7 @@ foreach ($orders as $sn => $order) {
                         'a',
                         array('href'=> CommonHelper::generateUrl('seller', 'cancelOrder', array($order['op_id'])), 'class'=>'',
                         'title'=>Labels::getLabel('LBL_Cancel_Order', $siteLangId)),
-                        '<i class="fa fa-close"></i>',
+                        '<i class="fas fa-times"></i>',
                         true
                     );
                 }

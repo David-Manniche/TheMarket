@@ -31,7 +31,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true; ?> <?php $this->includeTemp
                 <div class="col-lg-12">
                     <div class="cards">
 
-                        <div class="cards-content pb-0">
+                        <div class="cards-content">
                                 <div class="replaced">
                                     <div class="row">
                                         <div class="col-lg-6"> <?php

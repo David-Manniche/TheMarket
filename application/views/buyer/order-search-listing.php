@@ -109,7 +109,7 @@ foreach ($orders as $sn => $order) {
                         'a',
                         array('href'=> $opCancelUrl, 'class'=>'',
                         'title'=>Labels::getLabel('LBL_Cancel_Order', $siteLangId)),
-                        '<i class="fa fa-close"></i>',
+                        '<i class="fas fa-times"></i>',
                         true
                     );
                 }
@@ -133,7 +133,7 @@ foreach ($orders as $sn => $order) {
                         'a',
                         array('href'=> $opRefundRequestUrl, 'class'=>'',
                         'title'=>Labels::getLabel('LBL_Refund', $siteLangId)),
-                        '<i class="fa fa-dollar"></i>',
+                        '<i class="fas fa-dollar-sign"></i>',
                         true
                     );
                 }

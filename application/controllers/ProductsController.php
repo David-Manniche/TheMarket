@@ -1089,10 +1089,10 @@ class ProductsController extends MyAppController
     public function searchProducttagsAutocomplete()
     {
         $keyword = FatApp::getPostedData("keyword");
-        $srch = Tag::getSearchObject($this->siteLangId);
+        $srch = Tag::getSearchObject();
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('COALESCE(tag_name, tag_identifier) as value'));
+        $srch->addMultipleFields(array('COALESCE(tag_identifier) as value'));
         $srch->addOrder("LOCATE('" . urldecode($keyword) . "',value)");
         $srch->addGroupby('value');
         $srch->addHaving('value', 'LIKE', '%' . urldecode($keyword) . '%');
@@ -1103,8 +1103,14 @@ class ProductsController extends MyAppController
             $this->set('suggestions', $tags);
             $this->_template->render();
         }
-
-        die(json_encode(array('suggestions' => $tags)));
+        $json = array();
+        foreach ($tags as $key => $tag) {
+            $json[] = array(
+            'value' => strip_tags(html_entity_decode($tag['value'], ENT_QUOTES, 'UTF-8'))
+            );
+        }
+        die(json_encode($json));
+        /* die(json_encode(array('suggestions' => $tags))); */
     }
 
     public function getBreadcrumbNodes($action)
@@ -1435,7 +1441,7 @@ class ProductsController extends MyAppController
             $prodSrch->addFld('COALESCE(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist');
         }
 
-        $prodSrch->addMultipleFields(array('product_id', 'product_identifier', 'COALESCE(product_name,product_identifier) as product_name', 'product_seller_id', 'product_model', 'product_type', 'prodcat_id', 'COALESCE(prodcat_name,prodcat_identifier) as prodcat_name', 'product_upc', 'product_isbn', 'product_short_description', 'product_description', 'selprod_id', 'selprod_user_id', 'selprod_code', 'selprod_condition', 'selprod_price', 'special_price_found', 'splprice_start_date', 'splprice_end_date', 'COALESCE(selprod_title,product_name, product_identifier) as selprod_title', 'selprod_warranty', 'selprod_return_policy', 'selprodComments', 'theprice', 'selprod_stock', 'selprod_threshold_stock_level', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand_id', 'COALESCE(brand_name, brand_identifier) as brand_name', 'brand_short_description', 'user_name', 'shop_id', 'shop_name', 'splprice_display_dis_type', 'splprice_display_dis_val', 'splprice_display_list_price', 'product_attrgrp_id', 'product_youtube_video', 'product_cod_enabled', 'selprod_cod_enabled', 'selprod_available_from'));
+        $prodSrch->addMultipleFields(array('product_id', 'product_identifier', 'COALESCE(product_name,product_identifier) as product_name', 'product_seller_id', 'product_model', 'product_type', 'prodcat_id', 'COALESCE(prodcat_name,prodcat_identifier) as prodcat_name', 'product_upc', 'product_isbn', 'product_short_description', 'product_description', 'selprod_id', 'selprod_user_id', 'selprod_code', 'selprod_condition', 'selprod_price', 'special_price_found', 'splprice_start_date', 'splprice_end_date', 'COALESCE(selprod_title,product_name, product_identifier) as selprod_title', 'selprod_warranty', 'selprod_return_policy', 'selprodComments', 'theprice', 'selprod_stock', 'selprod_threshold_stock_level', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand_id', 'COALESCE(brand_name, brand_identifier) as brand_name', 'brand_short_description', 'user_name', 'shop_id', 'shop_name', 'splprice_display_dis_type', 'splprice_display_dis_val', 'splprice_display_list_price', 'product_attrgrp_id', 'product_youtube_video', 'product_cod_enabled', 'selprod_cod_enabled', 'selprod_available_from', 'selprod_min_order_qty'));
         /* echo $selprod_id; die; */
         $productRs = $prodSrch->getResultSet();
         $product = FatApp::getDb()->fetch($productRs);
