@@ -3499,18 +3499,17 @@ class AccountController extends LoggedUserController
          
         $dialCode = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
         $countryIso = FatApp::getPostedData('user_country_iso', FatUtility::VAR_STRING, '');
-        if (!empty($post['user_phone']) && empty($dialCode)) {
-            $message = Labels::getLabel("MSG_INVALID_PHONE_NUMBER", $this->siteLangId);
-            LibHelper::exitWithError($message, false, true);
-            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
+        $phoneNumber = FatUtility::int($post['user_phone']);
+        if (empty($phoneNumber) || (!empty($phoneNumber) && empty($dialCode))) {
+            $message = Labels::getLabel("MSG_INVALID_PHONE_NUMBER_FORMAT", $this->siteLangId);
+            LibHelper::dieJsonError($message);
         }
 
         $userId = UserAuthentication::getLoggedUserId();
-        $phone = trim($post['user_phone']);
-        if (1 > $updatePhnFrm && false === UserAuthentication::validateUserPhone($userId, $phone)) {
+        if (1 > $updatePhnFrm && false === UserAuthentication::validateUserPhone($userId, $phoneNumber)) {
             LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_PHONE_NUMBER', $this->siteLangId));
         }
-        $this->sendOtp($userId, trim($countryIso), trim($dialCode), $phone);
+        $this->sendOtp($userId, trim($countryIso), trim($dialCode), $phoneNumber);
 
         $this->set('msg', Labels::getLabel('MSG_OTP_SENT!_PLEASE_CHECK_YOUR_PHONE.', $this->siteLangId));
         if (true === MOBILE_APP_API_CALL) {
