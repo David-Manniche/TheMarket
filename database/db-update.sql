@@ -372,11 +372,11 @@ DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_FONT_COLOR
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BUTTON_BACKGROUND_COLOR';
 DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_BACKGROUND_COLOR';
 ALTER TABLE `tbl_meta_tags` DROP `meta_identifier`;
----------TV-9.1.2.20200131 -----------------------
+-- -------TV-9.1.2.20200131 -----------------------
 
 ALTER TABLE `tbl_product_specifications_lang` ADD `prodspec_group` VARCHAR(255) NOT NULL AFTER `prodspec_value`;
 
---------------TV-9.1.2.20200205------------
+-- ------------TV-9.1.2.20200205------------
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_TRUNCATE_REQUEST_APPROVAL_WILL_DELETE_ALL_YOUR_DATA._TRUNCATE_ANYWAY?';
 INSERT INTO `tbl_language_labels` (`label_id`, `label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES (NULL, 'LBL_TRUNCATE_REQUEST_APPROVAL_WILL_DELETE_ALL_YOUR_DATA._TRUNCATE_ANYWAY?', '1', 'Truncate Request Approval Will Delete All Your Data. Truncate Anyway?', '1'), (NULL, 'LBL_TRUNCATE_REQUEST_APPROVAL_WILL_DELETE_ALL_YOUR_DATA._TRUNCATE_ANYWAY?', '2', 'الموافقة على طلب الاقتطاع ستحذف جميع بياناتك. اقتطاع على أي حال؟', '1');
@@ -422,7 +422,7 @@ ALTER TABLE `tbl_collection_to_blogs`
 
 ALTER TABLE `tbl_collections` ADD `collection_for_web` TINYINT(1) NOT NULL AFTER `collection_display_media_only`, ADD `collection_for_app` TINYINT(1) NOT NULL AFTER `collection_for_web`;
 UPDATE `tbl_collections` SET `collection_for_web` = '1', `collection_for_app` = '1';
--------------------TV-9.1.2.20200211-------------------
+-- -----------------TV-9.1.2.20200211-------------------
 
 INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES (NULL, 'Twilio Sms Notification', '6', 'TwilioSms', '1', '8');
 
@@ -571,7 +571,7 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` = 'Lbl_Change_Email';
 ALTER TABLE `tbl_push_notifications` ADD `pnotification_user_auth_type` TINYINT(1) NOT NULL AFTER `pnotification_for_seller`;
 ALTER TABLE `tbl_push_notifications` CHANGE `pnotification_till_user_id` `pnotification_uauth_last_access` DATETIME NOT NULL;
 
--------------------TV-9.1.3.20200219--------------------------
+-- -----------------TV-9.1.3.20200219--------------------------
 ALTER TABLE `tbl_user_auth_token` ADD `uauth_user_type` TINYINT(1) NOT NULL AFTER `uauth_device_os`;
 
 DROP TABLE `tbl_theme`;
@@ -877,10 +877,10 @@ INSERT INTO `tbl_theme_colors` (`tcolor_theme_id`, `tcolor_key`, `tcolor_value`)
 
 ALTER TABLE `tbl_theme_colors`
   ADD UNIQUE KEY `tcolor_theme_id` (`tcolor_theme_id`,`tcolor_key`);
--------------TV-9.1.3.20200221-----------
+-- -----------TV-9.1.3.20200221-----------
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_Allow_Sellers_to_request_products_which_is_availble_to_all_sellers';
-----------------TV-9.1.3.20200226----------
+-- --------------TV-9.1.3.20200226----------
 
 DELETE FROM `tbl_configurations` WHERE `conf_name` like 'CONF_EMAIL_TEMPLATE_FOOTER_HTML%';
 
@@ -944,7 +944,7 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 	</tbody>
 </table>', '');
 UPDATE tbl_email_templates SET etpl_body = REPLACE(etpl_body, '<table>', '<table width="100%" align="center" cellpadding="0" cellspacing="0">') WHERE etpl_body like '<table>%';
----------------TV-9.1.3.20200228---------------------------
+-- -------------TV-9.1.3.20200228---------------------------
 
 
 UPDATE `tbl_cron_schedules` SET `cron_command` = 'AbandonedCart/sendReminderAbandonedCart' WHERE `tbl_cron_schedules`.`cron_id` = 13;
