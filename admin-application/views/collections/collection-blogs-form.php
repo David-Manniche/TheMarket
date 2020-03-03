@@ -3,6 +3,9 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->setFormTagAttribute('class', 'web_form form_horizontal');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
+
+$fld = $frm->getField('blogs');
+$fld->setWrapperAttribute('class', 'ui-front');
 ?>
 <section class="section">
     <div class="sectionhead">
@@ -35,7 +38,7 @@ $frm->developerTags['fld_default_col'] = 12;
                 $.ajax({
                     url: fcom.makeUrl('BlogPosts', 'autocomplete'),
                     data: {
-                        keyword: request,
+                        keyword: request['term'],
                         fIsAjax: 1
                     },
                     dataType: 'json',
