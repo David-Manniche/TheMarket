@@ -68,8 +68,8 @@ class SocialMediaAuthController extends PluginBaseController
             $this->_template->render(true, true, 'guest-user/login.php');
         }
         
-        if (empty($email)) {
-            $message = Labels::getLabel('MSG_Please_Configure_Your_Email', $this->siteLangId);
+        if (empty($email) && empty($userInfo['user_phone'])) {
+            $message = Labels::getLabel('MSG_PLEASE_CONFIGURE_YOUR_EMAIL_OR_PHONE', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }

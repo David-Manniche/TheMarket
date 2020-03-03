@@ -89,6 +89,7 @@ Bugs:
     => 034475 - Pagination is not working  properly on Seller > Catalog list.
     => 034608 - when user adds item to cart and turns back from payment gateway then quantity get doubles.
     => 034661 - Unable to save buy together and related products.
+
 --------------------TV-9.1.3.20200219------------------------------
 Bugs:
 
@@ -101,7 +102,9 @@ Bugs:
     => 034638 - On product detail page> when user clicks on tabs then page is not scrolling to particular section
     => 034540 - Innova editor full width issue
     => 034472 - In products listing> count is displaying with text and on applying filter only count stays
+
 ------------TV-9.1.3.20200221------------------
+
 Bugs:
     => 034804 - Hide save search button if no record found after applying filters on shop page product search.
     => 034803 - Change no record found design for product search listing on shop or global search.
@@ -123,7 +126,13 @@ Bugs:
 Bugs:
     => 034783 - Seller inventory listing on clicking add volume discount and special price getting message printed in transparent strip.
     => 034780 - When stock subtraction reaches the available quantity then in inventory listing there is info icon message is not displaying relevant message.
+
 -------------------------TV-9.1.3.20200226----------
+
 Bugs:    
     => 034738 - Product categories thumb image is displaying very small even smaller than remove button.
+
 -------------------------TV-9.1.3.20200228----------
+
+Bugs:
+    => 034897 - Getting error while applying category filters on shop product page - APP.

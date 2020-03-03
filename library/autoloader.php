@@ -4,7 +4,7 @@ function fatAutoLoader($className)
     if (strpos($className, '\\') !== false) {
         $arr = explode('\\', $className);
         $className = end($arr);
-    } 
+    }
 
     if (file_exists(CONF_CORE_LIB_PATH . $className . '.class.php')) {
         require_once CONF_CORE_LIB_PATH . $className . '.class.php';

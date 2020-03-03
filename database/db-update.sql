@@ -948,3 +948,15 @@ UPDATE tbl_email_templates SET etpl_body = REPLACE(etpl_body, '<table>', '<table
 
 
 UPDATE `tbl_cron_schedules` SET `cron_command` = 'AbandonedCart/sendReminderAbandonedCart' WHERE `tbl_cron_schedules`.`cron_id` = 13;
+
+ALTER TABLE `tbl_users` ADD `user_dial_code` VARCHAR(10) NOT NULL AFTER `user_name`;
+ALTER TABLE `tbl_users` CHANGE `user_phone` `user_phone` BIGINT NULL DEFAULT NULL;
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_USERNAME_OR_EMAIL_OR_PHONE';
+ALTER TABLE `tbl_user_phone_verification` ADD `upv_dial_code` VARCHAR(10) NOT NULL AFTER `upv_otp`;
+ALTER TABLE `tbl_user_phone_verification` CHANGE `upv_phone` `upv_phone` BIGINT NOT NULL;
+
+ALTER TABLE `tbl_users` DROP INDEX `user_phone`;
+ALTER TABLE `tbl_users` ADD UNIQUE (`user_dial_code`, `user_phone`);
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'MSG_Please_Configure_Your_Email';
+
+ALTER TABLE `tbl_user_phone_verification` ADD `upv_country_iso` VARCHAR(10) NOT NULL AFTER `upv_otp`;
