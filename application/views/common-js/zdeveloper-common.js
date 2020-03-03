@@ -768,33 +768,126 @@ function defaultSetUpLogin(frm, v) {
 
 
 $(document).ready(function () {
-    /*if (typeof $.fn.autocomplete_advanced !== typeof undefined) {
-    	$('#header_search_keyword').autocomplete_advanced({
-    		appendTo: ".main-search__field",
-    		minChars: 2,
-    		autoSelectFirst: false,
-    		lookup: function (query, done) {
-    			$.ajax({
-    				url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
-    				data: {
-    					keyword: encodeURIComponent(query)
-    				},
-    				dataType: 'json',
-    				type: 'post',
-    				success: function (json) {
-    					done(json);
-    					// $('.autocomplete-suggestions').appendTo('.form__cover');
-    					// $('.autocomplete-suggestions').insertAfter( "#header_search_keyword" );
-    				}
-    			});
-    		},
-    		triggerSelectOnValidInput: false,
-    		onSelect: function (suggestion) {
-    			submitSiteSearch(document.frmSiteSearch);
-    			//alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
-    		}
-    	});
-    }*/
+    /* $('#header_search_keyword').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
+		'source': function(request, response) {
+			$.ajax({
+				url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
+				data: {keyword: encodeURIComponent(request['term']), fIsAjax:1},
+				dataType: 'json',
+				type: 'post',
+				success: function(json) {
+					response($.map(json, function(item) {
+						return { label: item['value'], value: item['value'], name: item['value'] };
+					}));
+				},
+			});
+		},
+		select: function (event, ui) {
+			submitSiteSearch(document.frmSiteSearch);
+		}
+	}); */
+    
+    
+    var $elem = $('#header_search_keyword').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
+		'source': function(request, response) {
+			$.ajax({
+				url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
+				data: {keyword: encodeURIComponent(request['term']), fIsAjax:1},
+				dataType: 'json',
+				type: 'post',
+				success: function(json) {
+					response($.map(json, function(item) {
+						return { label: item['value'], value: item['value'] };
+					}));
+				},
+			});
+		},
+		select: function (event, ui) {
+            $(document.frmSiteSearch.keyword).val(ui.item.label);
+            submitSiteSearch(document.frmSiteSearch);
+		}
+	}),
+    elemAutocomplete = $elem.data("ui-autocomplete") || $elem.data("autocomplete");
+    if (elemAutocomplete) {
+        elemAutocomplete._renderItem = function (ul, item) {
+            var newText = String(item.value).replace(
+                    new RegExp(this.term, "gi"),
+                    "<strong>$&</strong>");
+
+            return $("<li></li>")
+                .data("item.autocomplete", item)
+                .append("<div>" + newText + "</div>")
+                .appendTo(ul);
+        };
+    }
+
+
+    /* $('#header_search_keyword').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
+		'source': function(request, response) {
+			$.ajax({
+				url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
+				data: {keyword: encodeURIComponent(request['term']), fIsAjax:1},
+				dataType: 'json',
+				type: 'post',
+				success: function(json) {
+					response($.map(json, function(item) {
+						return { label: item['value'], value: item['value'], name: item['value'] };
+					}));
+				},
+			});
+		},
+		select: function (event, ui) {
+			submitSiteSearch(document.frmSiteSearch);
+		}
+	})
+    .data("autocomplete")._renderItem = function (ul, item) {
+        var newText = String(item.value).replace(
+                new RegExp(this.term, "gi"),
+                "<span class='ui-state-highlight'>$&</span>");
+
+        return $("<li></li>")
+            .data("item.autocomplete", item)
+            .append("<div>" + newText + "</div>")
+            .appendTo(ul);
+    }; */
+    
+    
+    /* if (typeof $.fn.autocomplete_advanced !== typeof undefined) {
+		$('#header_search_keyword').autocomplete_advanced({
+			appendTo: ".main-search__field",
+			minChars: 2,
+			autoSelectFirst: false,
+			lookup: function (query, done) {
+				$.ajax({
+					url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
+					data: {
+						keyword: encodeURIComponent(query)
+					},
+					dataType: 'json',
+					type: 'post',
+					success: function (json) {
+						done(json);
+						// $('.autocomplete-suggestions').appendTo('.form__cover');
+						// $('.autocomplete-suggestions').insertAfter( "#header_search_keyword" );
+					}
+				});
+			},
+			triggerSelectOnValidInput: false,
+			onSelect: function (suggestion) {
+				submitSiteSearch(document.frmSiteSearch);
+				//alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+			}
+		});
+	} */
 
     if ($('.system_message').find('.div_error').length > 0 || $('.system_message').find('.div_msg').length > 0 || $('.system_message').find('.div_info').length > 0 || $('.system_message').find('.div_msg_dialog').length > 0) {
         $('.system_message').show();
@@ -914,9 +1007,20 @@ $(document).ready(function () {
         }
     }
 
+    signInWithPhone = function(obj, flag) {
+        var form = $(obj).data('form');
+        var formElement = ('undefined' != typeof form) ? 'form[name="' + form + '"]' : 'form';
+        var inputElement  = $(formElement + " input[name='username']");
+        var altPlaceHolder = inputElement.attr('data-alt-placeholder');
+        var placeHolder = inputElement.attr('placeholder')
+        inputElement.attr({'placeholder': altPlaceHolder, 'data-alt-placeholder': placeHolder});
+        var objLbl = 0 < flag ? langLbl.withUsernameOrEmail : langLbl.withPhoneNumber;
+        $(obj).attr('onclick', 'signInWithPhone(this, ' + (!flag) + ')').text(objLbl)
+        stylePhoneNumberFld(formElement + " input[name='username']", (!flag));
+    };
+
     $(".sign-in-popup-js").click(function () {
         openSignInForm();
-
     });
 
     $(".cc-cookie-accept-js").click(function () {
@@ -975,6 +1079,9 @@ $(document).ready(function () {
     });
 
     $(document).on("click", '.decrease-js', function () {
+        if($(this).hasClass('not-allowed')){
+            return false;
+        }
         $(this).siblings('.not-allowed').removeClass('not-allowed');
         var rval = $(this).parent().parent('div').find('input').val();
         if (isNaN(rval)) {
@@ -983,13 +1090,14 @@ $(document).ready(function () {
         }
         var key = $(this).parent().parent('div').find('input').attr('data-key');
         var page = $(this).parent().parent('div').find('input').attr('data-page');
-
+        var minQty = $(this).parent().parent('div').find('input').attr('data-min-qty');
+        var minVal = (minQty > 1) ? minQty : 1;
         val = parseInt(rval) - 1;
-        if (val <= 1) {
-            val = 1;
+        if (val <= minVal) {
+            val = minVal;
             $(this).addClass('not-allowed');
         }
-        if ($(this).hasClass('not-allowed') && rval <= 1) {
+        if ($(this).hasClass('not-allowed') && rval <= minVal) {
             return false;
         }
         $(this).parent().parent('div').find('input').val(val);
@@ -1070,25 +1178,46 @@ function quickDetail(selprod_id) {
     });
 }
 
-function stylePhoneNumberFld() {
-    var inputList = document.querySelectorAll("input[name='user_phone']");
-
+function stylePhoneNumberFld(element = "input[name='user_phone']", destroy = false) {
+    var inputList = document.querySelectorAll(element);
+    var country = '' == langLbl.defaultCountryCode ? 'in' : langLbl.defaultCountryCode;
+    console.log(country);
     inputList.forEach(function (input) {
-        var country = langLbl.defaultCountryCode;
-        if ('' == country) {
-            country = 'in';
+        if (true == destroy) {
+            $('.iti').replaceWith(input);
+            $(input).removeAttr('style');
+        } else {
+            var iti = window.intlTelInput(input, {
+                separateDialCode: true,
+                initialCountry: country,
+                // utilsScript: "/intlTelInput/intlTelInput-utils.js"
+            });
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'user_dial_code',
+                value: "+" + iti.getSelectedCountryData().dialCode
+            }).insertAfter(input);
+
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'user_country_iso',
+                value: iti.getSelectedCountryData().iso2
+            }).insertAfter(input);
+
+            input.addEventListener('countrychange', function (e) {
+                if (typeof iti.getSelectedCountryData().dialCode !== 'undefined') {
+                    input.closest('form').user_dial_code.value = "+" + iti.getSelectedCountryData().dialCode;
+                    input.closest('form').user_country_iso.value = iti.getSelectedCountryData().iso2;
+                }
+            });
         }
-        var iti = window.intlTelInput(input, {
-            initialCountry: country,
-            // utilsScript: "/intlTelInput/intlTelInput-utils.js"
-        });
-        input.value = ('' != input.value ? input.value : "+" + iti.getSelectedCountryData().dialCode);
-        input.addEventListener('countrychange', function (e) {
-            if (typeof iti.getSelectedCountryData().dialCode !== 'undefined') {
-                input.value = "+" + iti.getSelectedCountryData().dialCode;
-            }
-        });
     });
+}
+
+function getCountryIso2CodeFromDialCode(dialCode) {
+    var countriesData = window.intlTelInputGlobals.getCountryData();
+    var countryData = countriesData.filter(function (country) { return country.dialCode == dialCode });
+    return countryData[0].iso2;
 }
 
 

@@ -372,11 +372,11 @@ DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_FONT_COLOR
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BUTTON_BACKGROUND_COLOR';
 DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_BACKGROUND_COLOR';
 ALTER TABLE `tbl_meta_tags` DROP `meta_identifier`;
----------TV-9.1.2.20200131 -----------------------
+-- -------TV-9.1.2.20200131 -----------------------
 
 ALTER TABLE `tbl_product_specifications_lang` ADD `prodspec_group` VARCHAR(255) NOT NULL AFTER `prodspec_value`;
 
---------------TV-9.1.2.20200205------------
+-- ------------TV-9.1.2.20200205------------
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_TRUNCATE_REQUEST_APPROVAL_WILL_DELETE_ALL_YOUR_DATA._TRUNCATE_ANYWAY?';
 INSERT INTO `tbl_language_labels` (`label_id`, `label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES (NULL, 'LBL_TRUNCATE_REQUEST_APPROVAL_WILL_DELETE_ALL_YOUR_DATA._TRUNCATE_ANYWAY?', '1', 'Truncate Request Approval Will Delete All Your Data. Truncate Anyway?', '1'), (NULL, 'LBL_TRUNCATE_REQUEST_APPROVAL_WILL_DELETE_ALL_YOUR_DATA._TRUNCATE_ANYWAY?', '2', 'الموافقة على طلب الاقتطاع ستحذف جميع بياناتك. اقتطاع على أي حال؟', '1');
@@ -422,7 +422,7 @@ ALTER TABLE `tbl_collection_to_blogs`
 
 ALTER TABLE `tbl_collections` ADD `collection_for_web` TINYINT(1) NOT NULL AFTER `collection_display_media_only`, ADD `collection_for_app` TINYINT(1) NOT NULL AFTER `collection_for_web`;
 UPDATE `tbl_collections` SET `collection_for_web` = '1', `collection_for_app` = '1';
--------------------TV-9.1.2.20200211-------------------
+-- -----------------TV-9.1.2.20200211-------------------
 
 INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES (NULL, 'Twilio Sms Notification', '6', 'TwilioSms', '1', '8');
 
@@ -571,7 +571,7 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` = 'Lbl_Change_Email';
 ALTER TABLE `tbl_push_notifications` ADD `pnotification_user_auth_type` TINYINT(1) NOT NULL AFTER `pnotification_for_seller`;
 ALTER TABLE `tbl_push_notifications` CHANGE `pnotification_till_user_id` `pnotification_uauth_last_access` DATETIME NOT NULL;
 
--------------------TV-9.1.3.20200219--------------------------
+-- -----------------TV-9.1.3.20200219--------------------------
 ALTER TABLE `tbl_user_auth_token` ADD `uauth_user_type` TINYINT(1) NOT NULL AFTER `uauth_device_os`;
 
 DROP TABLE `tbl_theme`;
@@ -877,9 +877,10 @@ INSERT INTO `tbl_theme_colors` (`tcolor_theme_id`, `tcolor_key`, `tcolor_value`)
 
 ALTER TABLE `tbl_theme_colors`
   ADD UNIQUE KEY `tcolor_theme_id` (`tcolor_theme_id`,`tcolor_key`);
--------------TV-9.1.3.20200221-----------
+-- -----------TV-9.1.3.20200221-----------
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_Allow_Sellers_to_request_products_which_is_availble_to_all_sellers';
+-- --------------TV-9.1.3.20200226----------
 
 DELETE FROM `tbl_configurations` WHERE `conf_name` like 'CONF_EMAIL_TEMPLATE_FOOTER_HTML%';
 
@@ -943,10 +944,22 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 	</tbody>
 </table>', '');
 UPDATE tbl_email_templates SET etpl_body = REPLACE(etpl_body, '<table>', '<table width="100%" align="center" cellpadding="0" cellspacing="0">') WHERE etpl_body like '<table>%';
+-- -------------TV-9.1.3.20200228---------------------------
+
+ALTER TABLE `tbl_users` ADD `user_dial_code` VARCHAR(10) NOT NULL AFTER `user_name`;
+ALTER TABLE `tbl_users` CHANGE `user_phone` `user_phone` BIGINT NULL DEFAULT NULL;
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_USERNAME_OR_EMAIL_OR_PHONE';
+ALTER TABLE `tbl_user_phone_verification` ADD `upv_dial_code` VARCHAR(10) NOT NULL AFTER `upv_otp`;
+ALTER TABLE `tbl_user_phone_verification` CHANGE `upv_phone` `upv_phone` BIGINT NOT NULL;
+
+ALTER TABLE `tbl_users` DROP INDEX `user_phone`;
+ALTER TABLE `tbl_users` ADD UNIQUE (`user_dial_code`, `user_phone`);
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'MSG_Please_Configure_Your_Email';
+
+ALTER TABLE `tbl_user_phone_verification` ADD `upv_country_iso` VARCHAR(10) NOT NULL AFTER `upv_otp`;
 
 
 UPDATE `tbl_cron_schedules` SET `cron_command` = 'AbandonedCart/sendReminderAbandonedCart' WHERE `tbl_cron_schedules`.`cron_id` = 13;
-
 
 INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `etpl_subject`, `etpl_body`, `etpl_replacements`, `etpl_status`) VALUES ('abandoned_cart_email', '1', 'Abandoned Cart Email', 'Abandoned Cart Email', '<div style=\"margin:0; padding:0;background: #ecf0f1;\">\r\n	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" bgcolor=\"#ecf0f1\" style=\"font-family:Arial; color:#333; line-height:26px;\">\r\n		<tbody>\r\n			<tr>\r\n				<td style=\"background:#ff3a59;padding:30px 0 10px;\">\r\n					<!--\r\n					header start here\r\n					-->\r\n					   \r\n					<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n						<tbody>\r\n							<tr>\r\n								<td><a href=\"{website_url}\">{Company_Logo}</a></td>\r\n								<td style=\"text-align:right;\">{social_media_icons}</td>\r\n							</tr>\r\n						</tbody>\r\n					</table>\r\n					<!--\r\n					header end here\r\n					-->\r\n					   </td>\r\n			</tr>\r\n            \r\n            <tr>\r\n                <td style=\"background:#ff3a59;\">\r\n                    <!--\r\n                    page title start here\r\n                    -->\r\n\r\n                    <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                        <tbody>\r\n                            <tr>\r\n                                <td style=\"background:#fff;padding:20px 0 10px; text-align:center;\">\r\n                                    <h4 style=\"font-weight:normal; text-transform:uppercase; color:#999;margin:0; padding:10px 0; font-size:18px;\"></h4>\r\n                                    <h2 style=\"margin:0; color: #999999; font-size:16px; text-transform: uppercase;padding:0;\">Dear {user_full_name}</h2>\r\n                                </td>\r\n                            </tr>\r\n                        </tbody>\r\n                    </table>\r\n                    <!--\r\n                    page title end here\r\n                    -->\r\n                </td>\r\n            </tr>\r\n            \r\n            <tr>\r\n                <td>\r\n                    <!--\r\n                    page body start here\r\n                    -->\r\n\r\n                    <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                        <tbody>\r\n                            <tr>\r\n                                <td style=\"background:#fff;padding:0 20px; text-align:center; color:#999;vertical-align:top;\">\r\n                                    <table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                                        <tbody>\r\n                                            <tr>\r\n                                                <td style=\"padding:0 10px; line-height:1.3; text-align:center; color:#333333;vertical-align:top; font-size: 30px;\">We noticed you left something behind!</td>\r\n                                            </tr>\r\n                                            <tr>\r\n                                                <td style=\"padding:30px 0;\">\r\n                                                <table>{product_detail_table}</table>\r\n                                                </td>\r\n                                            </tr>\r\n                                            <!--\r\n                                            section footer\r\n                                            -->\r\n\r\n                                            <tr>\r\n                                                <td style=\"padding:30px 0;border-top:1px solid #ddd;\">Get in touch in you have any questions regarding our Services.<br />\r\n													Feel free to contact us 24/7. We are here to help.<br />\r\n													<br />\r\n													All the best,<br />\r\n													The {website_name} Team<br />\r\n                                                </td>\r\n                                            </tr>\r\n                                            <!--\r\n                                            section footer\r\n                                            -->\r\n\r\n                                        </tbody>\r\n                                    </table>\r\n                                </td>\r\n                            </tr>\r\n                        </tbody>\r\n                    </table>\r\n                    <!--\r\n                    page body end here\r\n                    -->\r\n                </td>\r\n            </tr>\r\n\r\n			<tr>\r\n				<td>\r\n					<!--\r\n					page footer start here\r\n					-->\r\n					   \r\n					<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n						<tbody>\r\n							<tr>\r\n								<td style=\"height:30px;\"></td>\r\n							</tr>\r\n							<tr>\r\n								<td style=\"background:rgba(0,0,0,0.04);padding:0 30px; text-align:center; color:#999;vertical-align:top;\">\r\n									<table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n										<tbody>\r\n											<tr>\r\n												<td style=\"padding:30px 0; font-size:20px; color:#000;\">Need more help?<br />\r\n													 <a href=\"{contact_us_url}\" style=\"color:#ff3a59;\">We are here, ready to talk</a></td>\r\n											</tr>\r\n										</tbody>\r\n									</table></td>\r\n							</tr>\r\n							<tr>\r\n								<td style=\"padding:0; color:#999;vertical-align:top; line-height:20px;\">\r\n									<table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n										<tbody>\r\n											<tr>\r\n												<td style=\"padding:20px 0 30px; text-align:center; font-size:13px; color:#999;\"><br />\r\n													<br />\r\n													{website_name} Inc.\r\n													<!--\r\n													if these emails get annoying, please feel free to  <a href=\"#\" style=\"text-decoration:underline; color:#666;\">unsubscribe</a>.\r\n													-->\r\n													</td>\r\n											</tr>\r\n										</tbody>\r\n									</table></td>\r\n							</tr>\r\n							<tr>\r\n								<td style=\"padding:0; height:50px;\"></td>\r\n							</tr>\r\n						</tbody>\r\n					</table>\r\n					<!--\r\n					page footer end here\r\n					-->\r\n					   </td>\r\n			</tr>\r\n		</tbody>\r\n	</table></div>', '{user_full_name} Name of the email receiver<br>\r\n{website_name} Name of our website<br>\r\n{website_url} URL of our website<br>\r\n{social_media_icons} <br>\r\n{contact_us_url} <br>\r\n{product_detail_table} <br/>', '1');
 

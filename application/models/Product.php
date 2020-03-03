@@ -1455,7 +1455,7 @@ END,   special_price_found ) as special_price_found'
             $maxPriceRange = ceil($criteria['max_price_range']);
         }
 
-        if (!empty($maxPriceRange)) {
+        if (!empty($maxPriceRange) && isset($criteria['currency_id'])) {
             $max_price_range_default_currency = CommonHelper::convertExistingToOtherCurrency($criteria['currency_id'], $maxPriceRange, FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1), false);
             //$max_price_range_default_currency =  CommonHelper::getDefaultCurrencyValue($maxPriceRange, false, false);
             $srch->addHaving('theprice', '<=', $max_price_range_default_currency);

@@ -29,12 +29,12 @@ class PayPalPayoutController extends PayoutBaseController
     {
         return [
             'email' => [
-                'type' => 'string',
+                'type' => PluginSetting::TYPE_STRING,
                 'required' => false,
                 'label' => "Email Id",
             ],
             'paypal_id' => [
-                'type' => 'string',
+                'type' => PluginSetting::TYPE_STRING,
                 'required' => false,
                 'label' => "PayPal Id",
             ],
