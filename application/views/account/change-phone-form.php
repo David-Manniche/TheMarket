@@ -16,9 +16,8 @@ $fldSubmit->htmlAfterField = '<br/><small>' . Labels::getLabel('MSG_YOUR_PHONE_N
 
 echo $frm->getFormHtml();
 
-if (isset($dialCode) && !empty($dialCode)) { ?>
+if (isset($countryIso) && !empty($countryIso)) { ?>
     <script>
-        var dialCode = '<?php echo str_replace("+", "", $dialCode); ?>';
-        langLbl.defaultCountryCode = getCountryIso2CodeFromDialCode(dialCode);
+        langLbl.defaultCountryCode = '<?php echo $countryIso; ?>';
     </script>
 <?php } ?>

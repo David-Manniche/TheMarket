@@ -13,6 +13,7 @@ $(document).ready(function(){
 		$("#tab-myaccount").addClass("is-active");
 		fcom.ajax(fcom.makeUrl('Account', 'profileInfoForm'), '', function(t) {
             $(dv).html(t);
+            console.log(langLbl.defaultCountryCode);
             stylePhoneNumberFld();
 		});
 	};

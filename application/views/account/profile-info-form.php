@@ -119,10 +119,9 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
         });
     });
 </script>
-
-<?php if (isset($data['user_dial_code']) && !empty($data['user_dial_code'])) { ?>
+<?php 
+if (isset($countryIso) && !empty($countryIso)) { ?>
     <script>
-        var dialCode = '<?php echo str_replace("+", "", $data['user_dial_code']); ?>';
-        langLbl.defaultCountryCode = getCountryIso2CodeFromDialCode(dialCode);
+        langLbl.defaultCountryCode = '<?php echo $countryIso; ?>';
     </script>
 <?php } ?>

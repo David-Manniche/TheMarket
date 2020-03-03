@@ -73,6 +73,7 @@ $(document).ready(function(){
                 var lastFormElement = phoneNumberdv + ' form:last';
                 var resendOtpElement = lastFormElement + " .resendOtp-js";
                 $(lastFormElement + ' [name="btn_submit"]').closest("div.row").remove();
+                var countryIso = $(lastFormElement + " input[name='user_country_iso']").val();
                 var dialCode = $(lastFormElement + " input[name='user_dial_code']").val();
                 var phoneNumber = $(lastFormElement + " input[name='user_phone']").val();
                 
@@ -89,7 +90,7 @@ $(document).ready(function(){
                     $(phoneNumberdv + " form:last").attr('onsubmit', 'return validateOtp(this, 0);');
 
                     var resendOtpElement = lastFormElement + " .resendOtp-js";
-                    resendFunction = 'resendOtp(' + userId + ', "' + dialCode + '","' + phoneNumber + '")';
+                    resendFunction = 'resendOtp(' + userId + ', "' + countryIso + '", "' + dialCode + '","' + phoneNumber + '")';
                 }
                 $(resendOtpElement).removeAttr('onclick').attr('onclick', resendFunction);
 			}
@@ -97,8 +98,8 @@ $(document).ready(function(){
         return false;
     };
     
-    resendOtp = function (userId, dialCode = '',phone = ''){
-        var postparam = (1 == phone) ? '' : "user_dial_code="+dialCode+"&user_phone=" + phone;
+    resendOtp = function (userId, countryIso = '', dialCode = '',phone = ''){
+        var postparam = (1 == phone) ? '' : "user_country_iso="+countryIso+"&user_dial_code="+dialCode+"&user_phone=" + phone;
         $.systemMessage(langLbl.processing, 'alert--process', false);
 		fcom.ajax(fcom.makeUrl('Account', 'resendOtp'), postparam, function(t) {
             try{

@@ -1072,7 +1072,7 @@ function quickDetail(selprod_id) {
 function stylePhoneNumberFld(element = "input[name='user_phone']", destroy = false) {
     var inputList = document.querySelectorAll(element);
     var country = '' == langLbl.defaultCountryCode ? 'in' : langLbl.defaultCountryCode;
-
+    console.log(country);
     inputList.forEach(function (input) {
         if (true == destroy) {
             $('.iti').replaceWith(input);
@@ -1089,9 +1089,16 @@ function stylePhoneNumberFld(element = "input[name='user_phone']", destroy = fal
                 value: "+" + iti.getSelectedCountryData().dialCode
             }).insertAfter(input);
 
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'user_country_iso',
+                value: iti.getSelectedCountryData().iso2
+            }).insertAfter(input);
+
             input.addEventListener('countrychange', function (e) {
                 if (typeof iti.getSelectedCountryData().dialCode !== 'undefined') {
                     input.closest('form').user_dial_code.value = "+" + iti.getSelectedCountryData().dialCode;
+                    input.closest('form').user_country_iso.value = iti.getSelectedCountryData().iso2;
                 }
             });
         }

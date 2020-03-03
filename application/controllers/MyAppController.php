@@ -731,6 +731,11 @@ class MyAppController extends FatController
             if (!$userObj->save()) {
                 LibHelper::dieJsonError($userObj->getError());
             }
+
+            $userObj = clone $obj;
+            if (false === $userObj->updateUserMeta('user_country_iso', $resp['upv_country_iso'])) {
+                LibHelper::dieJsonError($userObj->getError());
+            }
             $this->set('msg', Labels::getLabel('MSG_UPDATED_SUCCESSFULLY', $this->siteLangId));
         }
 

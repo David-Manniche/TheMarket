@@ -346,7 +346,8 @@ class GuestUserController extends MyAppController
         }
 
         $dialCode = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
-        if (!empty($post['user_phone']) && empty($dialCode)) {
+        $countryIso = FatApp::getPostedData('user_country_iso', FatUtility::VAR_STRING, '');
+        if (!empty($post['user_phone']) && (empty($dialCode) || empty($countryIso))) {
             $message = Labels::getLabel("MSG_INVALID_PHONE_NUMBER", $this->siteLangId);
             LibHelper::exitWithError($message, false, true);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
@@ -377,6 +378,11 @@ class GuestUserController extends MyAppController
 
             LibHelper::exitWithError($message, false, true);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
+        }
+
+        if (false === $userObj->updateUserMeta('user_country_iso', $countryIso)) {
+            LibHelper::exitWithError($user->getError(), false, true);
+            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
         }
 
         if (1 > $signUpWithPhone && !FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1)) {
@@ -663,6 +669,7 @@ class GuestUserController extends MyAppController
             }
         }
         $dialCode = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
+        $countryIso = FatApp::getPostedData('user_country_iso', FatUtility::VAR_STRING, '');
         $user = (0 < $withPhone) ? $dialCode . trim($post['user_phone']) : $post['user_email_username'];
 
         $userAuthObj = new UserAuthentication();
@@ -728,6 +735,7 @@ class GuestUserController extends MyAppController
         if ($checkVerificationRow['credential_verified'] == applicationConstants::NO) {
             $error = false;
             if (0 < $withPhone) {
+                $row['user_country_iso'] = $countryIso;
                 $row['user_dial_code'] = $dialCode;
                 $row['user_phone'] = $post['user_phone'];
                 if (!$userObj->userPhoneVerification($row, $this->siteLangId)) {
