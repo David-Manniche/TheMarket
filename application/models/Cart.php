@@ -139,9 +139,8 @@ class Cart extends FatModel
         } else {
             $this->updateTempStockHold($selprod_id, $this->SYSTEM_ARR['cart'][$key]);
         }
-
+        $this->removeCartDiscountCoupon();
         $this->updateUserCart();
-
         if (is_numeric($this->cart_user_id) && $this->cart_user_id > 0) {
             AbandonedCart::saveAbandonedCart($this->cart_user_id, $selprod_id, $this->SYSTEM_ARR['cart'][$key], AbandonedCart::ACTION_ADDED);
         }
