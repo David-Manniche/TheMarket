@@ -111,24 +111,25 @@ $(document).ready(function(){
         }else{
             var prodCatId = $(obj).parent().parent().parent().attr('id');
         }
-
-        /* if($("#"+prodCatId).hasClass('no-children')){
-            return false;
-        } */
-
-        if($("#"+prodCatId+ ' ul li.child-category').length){
+        
+        //if($("#"+prodCatId+ ' ul li.child-category').length){      
+        if( $("#"+prodCatId+ ' ul.append-ul').length ){
             $("#"+prodCatId+ ' ul:first').show();
             togglePlusMinus(prodCatId);
             return false;
         }
+        
+        if($("#"+prodCatId).hasClass('no-children')){   
+            return false;
+        }
 
         fcom.ajax(fcom.makeUrl('productCategories','getSubCategories'), 'prodCatId='+prodCatId, function(res){
-            //$("#"+prodCatId).append('<ul>'+res+'</ul>');
-            if($("#"+prodCatId).children('ul').length){
+            /* if($("#"+prodCatId).children('ul').length){
                 $("#"+prodCatId).children('ul').append(res);
             }else{
                 $("#"+prodCatId).append('<ul>'+res+'</ul>');
-            }
+            } */
+            $("#"+prodCatId).append('<ul class="append-ul">'+res+'</ul>');
             if(catId == 0){
                 togglePlusMinus(prodCatId);
             }

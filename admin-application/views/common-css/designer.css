@@ -956,3 +956,17 @@ table.table-bordered tr:nth-child(odd) td {
   max-height: 300px;
   overflow: hidden;  
   overflow-y: auto; }
+
+.overlay-blur{position:relative; cursor: none;}
+.overlay-blur:after{  left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    position:absolute;
+    content:"";
+    opacity: 0.2;    
+    filter: blur(4px);
+    -o-filter: blur(4px);
+    -ms-filter: blur(4px);
+    -moz-filter: blur(4px);
+    -webkit-filter: blur(4px);}
