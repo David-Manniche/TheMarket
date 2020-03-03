@@ -30,9 +30,20 @@ class CheckoutController extends MyAppController
             $userObj = new User(UserAuthentication::getLoggedUserId());
             $userInfo = $userObj->getUserInfo(array(), false, false);
             if (empty($userInfo['user_phone']) && empty($userInfo['credential_email'])) {
-                $message = Labels::getLabel('MSG_Please_Configure_Your_Email', $this->siteLangId);
+                if (true == SmsArchive::canSendSms()) {
+                    $message = Labels::getLabel('MSG_PLEASE_CONFIGURE_YOUR_EMAIL_OR_PHONE', $this->siteLangId);
+                } else {
+                    $message = Labels::getLabel('MSG_PLEASE_CONFIGURE_YOUR_EMAIL', $this->siteLangId);
+                }
                 if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($message);
+                }
+
+                if (FatUtility::isAjaxCall()) {
+                    $json['status'] = applicationConstants::NO;
+                    $json['msg'] = $message;
+                    $json['url'] = CommonHelper::generateUrl('GuestUser', 'configureEmail');
+                    LibHelper::dieJsonError($json);
                 }
                 Message::addErrorMessage($message);
                 FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'configureEmail'));

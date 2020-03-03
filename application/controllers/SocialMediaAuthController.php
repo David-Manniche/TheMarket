@@ -69,7 +69,11 @@ class SocialMediaAuthController extends PluginBaseController
         }
         
         if (empty($email) && empty($userInfo['user_phone'])) {
-            $message = Labels::getLabel('MSG_PLEASE_CONFIGURE_YOUR_EMAIL_OR_PHONE', $this->siteLangId);
+            if (true == SmsArchive::canSendSms()) {
+                $message = Labels::getLabel('MSG_PLEASE_CONFIGURE_YOUR_EMAIL_OR_PHONE', $this->siteLangId);
+            } else {
+                $message = Labels::getLabel('MSG_PLEASE_CONFIGURE_YOUR_EMAIL', $this->siteLangId);
+            }
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
