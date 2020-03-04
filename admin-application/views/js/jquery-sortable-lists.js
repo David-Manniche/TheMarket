@@ -816,11 +816,6 @@
 
 				if ( state.oEl )
 				{   
-                    /* [ custom work by developer */
-                    // catId = $(oEl).attr('id');  
-                    //displaySubCategories(this, catId);
-                    /* ] */
-                    
 					open( oEl ); // TODO: animation??? 
 				}
 
@@ -852,14 +847,18 @@
 		 */
 		function open( li )
 		{ 
-            li.removeClass( 'sortableListsClosed' ).addClass( 'sortableListsOpen' );
-			li.children( setting.listSelector ).css( 'display', 'block' );
-
+            //li.removeClass( 'sortableListsClosed' ).addClass( 'sortableListsOpen' );            
+			li.children( setting.listSelector).css( 'display', 'block' );
 			var opener = li.children( 'div' ).children( '.sortableListsOpener' ).first();
-
-			if ( setting.opener.as == 'html' )
-			{          
+            
+            if(li.children( setting.listSelector+".append-ul").length){  
+                li.removeClass( 'sortableListsClosed' ).addClass( 'sortableListsOpen' ); 
                 opener.html( setting.opener.close );
+            }
+            
+			if ( setting.opener.as == 'html' )
+			{       
+                //opener.html( setting.opener.close );
 			}
 			else if ( setting.opener.as == 'class' )
 			{

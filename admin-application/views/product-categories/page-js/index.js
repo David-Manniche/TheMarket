@@ -105,38 +105,40 @@ $(document).ready(function(){
         window.location.href = fcom.makeUrl('Products', 'form', [0,prodCatId]);
     };
     
-    displaySubCategories = function(obj, catId = 0){
+    displaySubCategories = function(obj, catId = 0, data){
         if(catId > 0 ){
             var prodCatId = catId;
         }else{
             var prodCatId = $(obj).parent().parent().parent().attr('id');
         }
-        
-        //if($("#"+prodCatId+ ' ul li.child-category').length){      
+             
         if( $("#"+prodCatId+ ' ul.append-ul').length ){
             $("#"+prodCatId+ ' ul:first').show();
-            togglePlusMinus(prodCatId);
+            if(catId == 0){ 
+                togglePlusMinus(prodCatId);
+            }
+            if(catId > 0){
+                updateCatOrder(data);
+            }
             return false;
         }
         
-        if($("#"+prodCatId).hasClass('no-children')){   
-            return false;
-        }
-
         fcom.ajax(fcom.makeUrl('productCategories','getSubCategories'), 'prodCatId='+prodCatId, function(res){
-            /* if($("#"+prodCatId).children('ul').length){
-                $("#"+prodCatId).children('ul').append(res);
+            if($("#"+prodCatId).children('ul.append-ul').length){
+                $("#"+prodCatId).children('ul.append-ul').append(res);
             }else{
-                $("#"+prodCatId).append('<ul>'+res+'</ul>');
-            } */
-            $("#"+prodCatId).append('<ul class="append-ul">'+res+'</ul>');
+                $("#"+prodCatId).append('<ul class="append-ul">'+res+'</ul>');
+            }
             if(catId == 0){
                 togglePlusMinus(prodCatId);
+            }
+            if(catId > 0){
+                updateCatOrder(data);
             }
         });
     }
 
-   togglePlusMinus = function(prodCatId){
+    togglePlusMinus = function(prodCatId){
         $("#"+prodCatId).children( 'div' ).children( '.sortableListsOpener' ).remove();
         if($("#"+prodCatId).hasClass('sortableListsClosed')){
             $("#"+prodCatId).removeClass('sortableListsClosed').addClass('sortableListsOpen');
@@ -157,6 +159,12 @@ $(document).ready(function(){
         $("#"+prodCatId).removeClass('sortableListsOpen').addClass('sortableListsClosed');
         var icon = $("#"+prodCatId).children( 'div' ).children( '.sortableListsOpener' ).remove();
         $("#"+prodCatId).children( 'div' ).append('<span class="sortableListsOpener" ><i class="fa fa-plus c3 clickable sort-icon" onClick="displaySubCategories(this)"></i></span>');
+   }
+   
+   updateCatOrder = function(data){
+        fcom.updateWithAjax(fcom.makeUrl('productCategories','updateOrder'), data, function(res){ 
+            $("#js-cat-section").removeClass('overlay-blur');
+        });
    }
 
    categoryImages = function(prodCatId,imageType,slide_screen,lang_id){
