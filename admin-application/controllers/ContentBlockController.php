@@ -59,25 +59,29 @@ class ContentBlockController extends AdminBaseController
 
     public function search($importInstructions = 0)
     {
-        $this->objPrivilege->canViewContentBlocks();
+        $importInstructions = FatUtility::int($importInstructions);
+        if (0 < $importInstructions) {
+            $this->objPrivilege->canViewImportInstructions();
+            $this->canView = $this->objPrivilege->canViewImportInstructions($this->admin_id, true);
+            $this->canEdit = $this->objPrivilege->canEditImportInstructions($this->admin_id, true);
+        } else {
+            $this->objPrivilege->canViewContentBlocks();
+            $this->canView = $this->objPrivilege->canViewContentBlocks($this->admin_id, true);
+            $this->canEdit = $this->objPrivilege->canEditContentBlocks($this->admin_id, true);
+        }
 
         $srch = Extrapage::getSearchObject($this->adminLangId, false);
-
-        $importInstructions = FatUtility::int($importInstructions);
         $srch->addCondition('epage_content_for', '=', $importInstructions);
-
         $srch->addOrder('epage_active', 'DESC');
         $srch->addOrder('epage_id', 'DESC');
         $rs = $srch->getResultSet();
-
         $records = FatApp::getDb()->fetchAll($rs);
 
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
         $this->set("activeInactiveArr", $activeInactiveArr);
         $this->set("arr_listing", $records);
 
-        $this->canView = $this->objPrivilege->canViewContentBlocks($this->admin_id, true);
-        $this->canEdit = $this->objPrivilege->canEditContentBlocks($this->admin_id, true);
+
         $this->set("canView", $this->canView);
         $this->set("canEdit", $this->canEdit);
         $this->set("importInstructions", $importInstructions);
@@ -171,8 +175,6 @@ class ContentBlockController extends AdminBaseController
 
     public function langForm($epage_id = 0, $lang_id = 0, $autoFillLangData = 0)
     {
-        $this->objPrivilege->canViewContentBlocks();
-
         $epage_id = FatUtility::int($epage_id);
         $lang_id = FatUtility::int($lang_id);
 
@@ -222,7 +224,6 @@ class ContentBlockController extends AdminBaseController
 
     public function langSetup()
     {
-        $this->objPrivilege->canEditContentBlocks();
         $post = FatApp::getPostedData();
         $epage_id = FatUtility::int($post['epage_id']);
         $lang_id = FatUtility::int($post['lang_id']);
@@ -251,7 +252,7 @@ class ContentBlockController extends AdminBaseController
             Message::addErrorMessage($epageObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
         if (0 < $autoUpdateOtherLangsData) {
             $updateLangDataobj = new TranslateLangData(Extrapage::DB_TBL_LANG);
@@ -451,14 +452,14 @@ class ContentBlockController extends AdminBaseController
         }
 
         $frm->addHtmlEditor(Labels::getLabel('LBL_Page_Content', $this->adminLangId), 'epage_content');
-        
+
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
         if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
             $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
-        
+
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;
     }
