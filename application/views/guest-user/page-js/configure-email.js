@@ -71,7 +71,8 @@ $(document).ready(function(){
                     resendFunction = 'resendOtp(' + userId + ', "' + countryIso + '", "' + dialCode + '","' + phoneNumber + '")';
                 }
                 $(resendOtpElement).removeAttr('onclick').attr('onclick', resendFunction);
-			}
+            }
+            startOtpInterval();
         });
         return false;
     };
@@ -80,6 +81,7 @@ $(document).ready(function(){
         var postparam = (1 == phone) ? '' : "user_country_iso="+countryIso+"&user_dial_code="+dialCode+"&user_phone=" + phone;
         $.systemMessage(langLbl.processing, 'alert--process', false);
 		fcom.ajax(fcom.makeUrl('Account', 'resendOtp'), postparam, function(t) {
+            startOtpInterval();
             try{
 				t = $.parseJSON(t);
 				if(typeof t.status != 'undefined' &&  1 > t.status){

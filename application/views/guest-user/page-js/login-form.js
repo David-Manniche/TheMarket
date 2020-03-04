@@ -19,6 +19,7 @@
             if (1 == t.status) {
                 fcom.ajax(fcom.makeUrl( 'GuestUser', 'otpForm'), '', function(t) {
                     $('#sign-up').html(t);
+                    startOtpInterval();
                 });
             }
         });	
@@ -45,13 +46,15 @@
                     $.mbsmessage(t.msg, false, 'alert--danger');
                 } else {
                     $.mbsmessage(t.msg, true, 'alert--success');
+                    startOtpInterval();
                 }
                 return false;
 			}
 			catch(exc){
                 $('#sign-up').html(t);
                 $.mbsmessage.close();
-			}
+            }
+            startOtpInterval();
         });
         return false;
 	};

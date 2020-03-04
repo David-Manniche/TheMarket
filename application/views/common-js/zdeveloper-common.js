@@ -92,6 +92,23 @@ $(document).on('keyup', 'input.otpVal', function(e){
     element.children("input.otpVal").eq(0).focus();
 });
 
+startOtpInterval = function () {
+    var element = $(".intervalTimer-js");
+    var counter = langLbl.otpInterval;
+    element.parent().parent().show();
+    element.text(counter);
+    $('.resendOtp-js').addClass('d-none');
+    var interval = setInterval(function(){
+        counter--;
+        if (counter === 0) {
+            clearInterval(interval);
+            $('.resendOtp-js').removeClass('d-none');
+            element.parent().parent().hide();
+        }
+        element.text(counter);
+    }, 1000);
+}
+
 loginPopupOtp = function (userId, getOtpOnly = 0){
     $.mbsmessage(langLbl.processing, false, 'alert--process');
     fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
@@ -113,6 +130,7 @@ loginPopupOtp = function (userId, getOtpOnly = 0){
 
             $.mbsmessage.close();
         }
+        startOtpInterval();
     });
     return false;
 };

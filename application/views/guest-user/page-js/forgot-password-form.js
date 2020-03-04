@@ -38,7 +38,8 @@
 			catch(exc){
                 $('#otpFom').html(t);
                 $.systemMessage.close();
-			}
+            }
+            startOtpInterval();
         });
         return false;
     };
@@ -57,6 +58,7 @@
     resendOtp = function (userId, getOtpOnly = 0){
         $.systemMessage(langLbl.processing,'alert--process', false);
 		fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
+            startOtpInterval();
             try{
 				t = $.parseJSON(t);
 				if(typeof t.status != 'undefined' &&  1 > t.status){

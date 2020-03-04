@@ -3494,7 +3494,7 @@ class AccountController extends LoggedUserController
        
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
-            LibHelper::dieJsonError(current($frm->getValidationErrors()));
+            LibHelper::exitWithError(current($frm->getValidationErrors()));
         }
          
         $dialCode = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
@@ -3502,12 +3502,12 @@ class AccountController extends LoggedUserController
         $phoneNumber = FatUtility::int($post['user_phone']);
         if (empty($phoneNumber) || (!empty($phoneNumber) && empty($dialCode))) {
             $message = Labels::getLabel("MSG_INVALID_PHONE_NUMBER_FORMAT", $this->siteLangId);
-            LibHelper::dieJsonError($message);
+            LibHelper::exitWithError($message);
         }
 
         $userId = UserAuthentication::getLoggedUserId();
         if (1 > $updatePhnFrm && false === UserAuthentication::validateUserPhone($userId, $phoneNumber)) {
-            LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_PHONE_NUMBER', $this->siteLangId));
+            LibHelper::exitWithError(Labels::getLabel('MSG_INVALID_PHONE_NUMBER', $this->siteLangId));
         }
         $this->sendOtp($userId, trim($countryIso), trim($dialCode), $phoneNumber);
 
@@ -3515,10 +3515,12 @@ class AccountController extends LoggedUserController
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
+        
         $otpFrm = $this->getOtpForm();
         $otpFrm->fill(['user_id' => $userId]);
         $this->set('frm', $otpFrm);
         $this->_template->render(false, false, 'guest-user/otp-form.php');
+        
     }
 
     public function validateOtp($updatePhnFrm = 0)

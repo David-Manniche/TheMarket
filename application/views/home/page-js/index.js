@@ -174,6 +174,7 @@ $(".tabs--flat-js li").click(function () {
 resendOtp = function (userId, getOtpOnly = 0){
     $.mbsmessage(langLbl.processing, false, 'alert--process');
     fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
+        startOtpInterval();
         try{
             t = $.parseJSON(t);
             if(typeof t.status != 'undefined' &&  1 > t.status){
