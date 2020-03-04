@@ -323,4 +323,7 @@ select {
 }
 
 
-.accordian_title:before{ right: auto; left: 15px;}
+.accordian_title:before {
+    right: auto;
+    left: 15px;
+}

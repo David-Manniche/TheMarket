@@ -129,14 +129,13 @@
             > span {
                 display: block;
                 font-size: 0.875rem;
-                text-align: center;
-
-                .search-results {
-                    font-size: 2rem;
-                    display: inherit;
-                }
+                text-align: center;        
 
             }
+			.search-results {
+                    font-size: 2rem;
+                    display: inline-block;
+                }
         }
 
         p {
