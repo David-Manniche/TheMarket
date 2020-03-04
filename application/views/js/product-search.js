@@ -506,10 +506,11 @@ function addPricefilter(reloadPage){
 	searchArr['price_min_range'] = $("input[name=priceFilterMinValue]").val();
 	searchArr['price_max_range'] = $("input[name=priceFilterMaxValue]").val();
 	searchArr['currency'] = langLbl.siteCurrencyId;
-	var frm = document.frmProductSearch;
+	var frm = document.frmProductSearch;	
 	if(reloadPage){
 		reloadProductListing(frm);
 	}
+	showSelectedFilters();
 	//searchProducts(frm,0,0,1,1);
 }
 function removePriceFilter(reloadPage){
@@ -526,6 +527,7 @@ function removePriceFilter(reloadPage){
 	}
 	//searchProducts(frm,0,0,1,1);
 	$('.price').remove();
+	showSelectedFilters();
 }
 
 function updatePriceFilter(minPrice,maxPrice,addPriceFilter){

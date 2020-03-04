@@ -143,3 +143,4 @@ Bugs:
 Bug :
     => 034773 -  Restrict keyword search up to 80 character.
     => 034493 - Price range slider added check to validate min/max price.
+    => 034259 - After applying filter> reset button is not listing until we refresh page manually.
