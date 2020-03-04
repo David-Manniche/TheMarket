@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class='page'>
+<div class='page' id="js-cat-section">
     <div class='container container-fluid'>
         <div class="row">
             <div class="col-lg-12 col-md-12 space">

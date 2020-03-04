@@ -971,6 +971,27 @@ table.table-bordered tr:nth-child(odd) td {
 .custom-ui-autocomplete {
   max-height: 200px;
   overflow: hidden;  
-  overflow-y: auto; }
+  overflow-y: auto; 
+}
 
-/**/
+.overlay-blur{
+    position:relative; 
+    cursor: none;
+}
+.overlay-blur:after{  
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    content: "";
+    opacity: 0.9;
+    filter: blur(4px);
+    -o-filter: blur(4px);
+    -ms-filter: blur(4px);
+    -moz-filter: blur(4px);
+    -webkit-filter: blur(4px);
+    background: #fff;
+    z-index: 1;
+}
+
