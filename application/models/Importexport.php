@@ -19,7 +19,7 @@ class Importexport extends ImportexportCommon
     public const TYPE_USERS = 11;
     public const TYPE_TAX_CATEGORY = 12;
     public const TYPE_LANGUAGE_LABELS = 13;
-    
+
 
     public const MAX_LIMIT = 1000;
 
@@ -1368,7 +1368,7 @@ class Importexport extends ImportexportCommon
         $taxCategoryArr = array();
         $countryArr = array();
         $userProdUploadLimit = $usersCrossedUploadLimit = array();
-        $userId = 0; 
+        $userId = 0;
         if (!$this->settings['CONF_USE_PRODUCT_TYPE_ID']) {
             $prodTypeIdentifierArr = Product::getProductTypes($langId);
             $prodTypeIdentifierArr = array_flip($prodTypeIdentifierArr);
@@ -2080,7 +2080,7 @@ class Importexport extends ImportexportCommon
         $srch = Product::getSearchObject();
         $srch->joinTable(Product::DB_PRODUCT_SPECIFICATION, 'INNER JOIN', Product::DB_TBL_PREFIX . 'id = ' . Product::DB_PRODUCT_SPECIFICATION_PREFIX . 'product_id');
         $srch->joinTable(Product::DB_PRODUCT_LANG_SPECIFICATION, 'LEFT OUTER JOIN', Product::DB_PRODUCT_SPECIFICATION_PREFIX . 'id = ' . Product::DB_PRODUCT_LANG_SPECIFICATION_PREFIX . 'prodspec_id');
-        $srch->addMultipleFields(array('prodspec_id', 'prodspeclang_lang_id', 'prodspec_name', 'prodspec_value', 'product_id', 'product_identifier'));
+        $srch->addMultipleFields(array('prodspec_id', 'prodspeclang_lang_id', 'prodspec_name', 'prodspec_value', 'prodspec_group', 'product_id', 'product_identifier'));
         $srch->joinTable(Language::DB_TBL, 'INNER JOIN', 'language_id = prodspeclang_lang_id');
         $srch->doNotCalculateRecords();
         if ($userId) {
@@ -2202,7 +2202,7 @@ class Importexport extends ImportexportCommon
                         $errMsg = str_replace('{column-name}', $columnTitle, Labels::getLabel("MSG_Invalid_{column-name}.", $langId));
                         CommonHelper::writeToCSVFile($this->CSVfileObj, array( $rowIndex, ($colIndex + 1), $errMsg ));
                     } else {
-                        if (in_array($columnKey, array( 'prodspeclang_lang_id', 'prodspec_name', 'prodspec_value' ))) {
+                        if (in_array($columnKey, array( 'prodspeclang_lang_id', 'prodspec_name', 'prodspec_value', 'prodspec_group' ))) {
                             $prodSpecLangArr[$columnKey] = $colValue;
                         } else {
                             $prodSpecArr[$columnKey] = $colValue;
