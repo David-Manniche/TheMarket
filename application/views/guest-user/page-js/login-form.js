@@ -19,6 +19,7 @@
             if (1 == t.status) {
                 fcom.ajax(fcom.makeUrl( 'GuestUser', 'otpForm'), '', function(t) {
                     $('#sign-up').html(t);
+                    startOtpInterval();
                 });
             }
         });	
@@ -39,19 +40,14 @@
     resendOtp = function (userId, getOtpOnly = 0){
         $.mbsmessage(langLbl.processing, false, 'alert--process');
 		fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
-            try{
-				t = $.parseJSON(t);
-				if(typeof t.status != 'undefined' &&  1 > t.status){
-                    $.mbsmessage(t.msg, false, 'alert--danger');
-                } else {
-                    $.mbsmessage(t.msg, true, 'alert--success');
-                }
-                return false;
-			}
-			catch(exc){
-                $('#sign-up').html(t);
-                $.mbsmessage.close();
-			}
+            t = $.parseJSON(t);
+            if(typeof t.status != 'undefined' &&  1 > t.status){
+                $.mbsmessage(t.msg, false, 'alert--danger');
+                return false
+            }
+            $.mbsmessage(t.msg, false, 'alert--success');
+            var parent = 0 < $('#facebox .loginpopup').length ? '.loginpopup' : '';
+            startOtpInterval(parent);
         });
         return false;
 	};
