@@ -131,6 +131,7 @@ class MyAppController extends FatController
         'quantityAdjusted' => Labels::getLabel('MSG_MAX_QUANTITY_THAT_CAN_BE_PURCHASED_IS_{QTY}._SO,_YOUR_REQUESTED_QUANTITY_IS_ADJUSTED_TO_{QTY}.', $this->siteLangId),
         'withUsernameOrEmail' => Labels::getLabel('LBL_WITH_USERNAME_OR_EMAIL_?', $this->siteLangId),
         'withPhoneNumber' => Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $this->siteLangId),
+        'otpInterval' => User::OTP_INTERVAL,
         );
 
         $languages = Language::getAllNames(false);
@@ -696,7 +697,7 @@ class MyAppController extends FatController
         return $frm;
     }
 
-    public function validateOtpApi($updateToDb = 0)
+    public function validateOtpApi($updateToDb = 0, $doLogin = true)
     {
         $updateToDb = FatUtility::int($updateToDb);
         $otpFrm = $this->getOtpForm();
@@ -720,7 +721,7 @@ class MyAppController extends FatController
         $userId = 1 > $userId ?  UserAuthentication::getLoggedUserId(true) : $userId;
 
         $obj = new User($userId);
-        $resp = $obj->verifyUserPhoneOtp($otp, (false === MOBILE_APP_API_CALL && !UserAuthentication::isUserLogged()), true);
+        $resp = $obj->verifyUserPhoneOtp($otp, ($doLogin && false === MOBILE_APP_API_CALL && !UserAuthentication::isUserLogged()), true);
         if (false == $resp) {
             LibHelper::dieJsonError($obj->getError());
         }
