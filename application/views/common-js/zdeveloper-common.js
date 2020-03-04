@@ -1181,7 +1181,6 @@ function quickDetail(selprod_id) {
 function stylePhoneNumberFld(element = "input[name='user_phone']", destroy = false) {
     var inputList = document.querySelectorAll(element);
     var country = '' == langLbl.defaultCountryCode ? 'in' : langLbl.defaultCountryCode;
-    console.log(country);
     inputList.forEach(function (input) {
         if (true == destroy) {
             $('.iti').replaceWith(input);

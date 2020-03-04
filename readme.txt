@@ -136,3 +136,5 @@ Bugs:
 
 Bugs:
     => 034897 - Getting error while applying category filters on shop product page - APP.
+    => 035097 - Configure Email/Phone page loaded in popup when user press "I Have A Coupon" button.
+    => 035093 - Getting multiple otp fields by clicking get otp button continuesly.

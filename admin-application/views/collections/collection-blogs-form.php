@@ -45,16 +45,17 @@ $fld->setWrapperAttribute('class', 'ui-front');
                     type: 'post',
                     success: function(json) {
                         response($.map(json, function(item) {
-                            return {
-                                label: item['name'],
-                                value: item['id']
-                            };
+                            return { label: item['name'], value: item['name'], id: item['id'] };
                         }));
                     },
                 });
             },
-            'select': function(item) {
-                updateCollectionBlogs(<?php echo $collection_id; ?> , item['value']);
+            'select': function(event, ul) {
+                updateCollectionBlogs(<?php echo $collection_id; ?> , ul.item.id);
+                $(document).ajaxComplete(function() {
+                    $('input[name="blogs"]').val('');
+                });
+
             }
         });
     });

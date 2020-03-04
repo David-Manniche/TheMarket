@@ -3475,7 +3475,7 @@ class AccountController extends LoggedUserController
     {
         $userObj = new User($userId);
         $dialCode = !empty($dialCode) & '+' != $dialCode[0] ? '+' . $dialCode : $dialCode;
-        $otp = $userObj->prepareUserPhoneOtp(true, $countryIso, $dialCode, $phone);
+        $otp = $userObj->prepareUserPhoneOtp($countryIso, $dialCode, $phone);
         if (false == $otp) {
             LibHelper::dieJsonError($userObj->getError());
         }
