@@ -974,3 +974,9 @@ table.table-bordered tr:nth-child(odd) td {
   overflow-y: auto; }
 
 /**/
+
+.focused-div {
+    height: auto;
+    cursor: text;
+    font-size: 0.9em;
+}
