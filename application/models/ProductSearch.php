@@ -604,6 +604,7 @@ class ProductSearch extends SearchBase
             $obj = $this;
         }
         
+        $keywordLength = mb_strlen($keyword);
         //$keyword = urldecode($keyword);
         $cnd = $obj->addCondition('product_isbn', 'LIKE', '%' . $keyword . '%');
         $cnd->attachCondition('product_upc', 'LIKE', '%' . $keyword . '%');
@@ -625,12 +626,14 @@ class ProductSearch extends SearchBase
         }
        
         if (count($arr_keywords) > 0) {
-            foreach ($arr_keywords as $value) {
-                $cnd->attachCondition('product_tags_string', 'LIKE', '%' . $value . '%');
-                $cnd->attachCondition('selprod_title', 'LIKE', '%' . $value . '%');
-                $cnd->attachCondition('product_name', 'LIKE', '%' . $value . '%');
-                $cnd->attachCondition('brand_name', 'LIKE', '%' . $value . '%');
-                $cnd->attachCondition('prodcat_name', 'LIKE', '%' . $value . '%');
+            if ($keywordLength <= 80) {
+                foreach ($arr_keywords as $value) {
+                    $cnd->attachCondition('product_tags_string', 'LIKE', '%' . $value . '%');
+                    $cnd->attachCondition('selprod_title', 'LIKE', '%' . $value . '%');
+                    $cnd->attachCondition('product_name', 'LIKE', '%' . $value . '%');
+                    $cnd->attachCondition('brand_name', 'LIKE', '%' . $value . '%');
+                    $cnd->attachCondition('prodcat_name', 'LIKE', '%' . $value . '%');
+                }
             }
             $strKeyword = FatApp::getDb()->quoteVariable('%' . $keyword . '%');
             if ($useRelevancy === true) {

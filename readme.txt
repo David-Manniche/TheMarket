@@ -140,3 +140,6 @@ Bugs:
     => 035093 - Getting multiple otp fields by clicking get otp button continuesly.
 
 ===================TV-9.1.3.20200303==================
+Bug :
+    => 034773 -  Restrict keyword search up to 80 character.
+    
