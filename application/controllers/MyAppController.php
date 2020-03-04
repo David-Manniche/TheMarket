@@ -697,7 +697,7 @@ class MyAppController extends FatController
         return $frm;
     }
 
-    public function validateOtpApi($updateToDb = 0)
+    public function validateOtpApi($updateToDb = 0, $doLogin = true)
     {
         $updateToDb = FatUtility::int($updateToDb);
         $otpFrm = $this->getOtpForm();
@@ -721,7 +721,7 @@ class MyAppController extends FatController
         $userId = 1 > $userId ?  UserAuthentication::getLoggedUserId(true) : $userId;
 
         $obj = new User($userId);
-        $resp = $obj->verifyUserPhoneOtp($otp, (false === MOBILE_APP_API_CALL && !UserAuthentication::isUserLogged()), true);
+        $resp = $obj->verifyUserPhoneOtp($otp, ($doLogin && false === MOBILE_APP_API_CALL && !UserAuthentication::isUserLogged()), true);
         if (false == $resp) {
             LibHelper::dieJsonError($obj->getError());
         }

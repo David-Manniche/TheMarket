@@ -3468,7 +3468,8 @@ class AccountController extends LoggedUserController
         $this->set('frm', $frm);
         $this->set('updatePhnFrm', $updatePhnFrm);
         $this->set('siteLangId', $this->siteLangId);
-        $this->_template->render(false, false, 'account/change-phone-form.php');
+        $json['html'] = $this->_template->render(false, false, 'account/change-phone-form.php', true, false);
+        FatUtility::dieJsonSuccess($json);
     }
 
     private function sendOtp(int $userId, string $countryIso, string $dialCode, int $phone)
@@ -3494,7 +3495,7 @@ class AccountController extends LoggedUserController
        
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
-            LibHelper::exitWithError(current($frm->getValidationErrors()));
+            LibHelper::dieJsonError(current($frm->getValidationErrors()));
         }
          
         $dialCode = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
@@ -3502,12 +3503,12 @@ class AccountController extends LoggedUserController
         $phoneNumber = FatUtility::int($post['user_phone']);
         if (empty($phoneNumber) || (!empty($phoneNumber) && empty($dialCode))) {
             $message = Labels::getLabel("MSG_INVALID_PHONE_NUMBER_FORMAT", $this->siteLangId);
-            LibHelper::exitWithError($message);
+            LibHelper::dieJsonError($message);
         }
 
         $userId = UserAuthentication::getLoggedUserId();
         if (1 > $updatePhnFrm && false === UserAuthentication::validateUserPhone($userId, $phoneNumber)) {
-            LibHelper::exitWithError(Labels::getLabel('MSG_INVALID_PHONE_NUMBER', $this->siteLangId));
+            LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_PHONE_NUMBER', $this->siteLangId));
         }
         $this->sendOtp($userId, trim($countryIso), trim($dialCode), $phoneNumber);
 
@@ -3519,8 +3520,8 @@ class AccountController extends LoggedUserController
         $otpFrm = $this->getOtpForm();
         $otpFrm->fill(['user_id' => $userId]);
         $this->set('frm', $otpFrm);
-        $this->_template->render(false, false, 'guest-user/otp-form.php');
-        
+        $json['html'] = $this->_template->render(false, false, 'guest-user/otp-form.php', true, false);
+        FatUtility::dieJsonSuccess($json);
     }
 
     public function validateOtp($updatePhnFrm = 0)

@@ -28,17 +28,13 @@
         var data = fcom.frmData(frm);
         $.systemMessage(langLbl.processing,'alert--process', false);
 		fcom.ajax(frm.action, data, function(t) {
-            try{
-				t = $.parseJSON(t);
-				if(typeof t.status != 'undefined' &&  1 > t.status){
-                    $.systemMessage(t.msg,'alert--danger', false);
-                    return false;
-                }
-			}
-			catch(exc){
-                $('#otpFom').html(t);
-                $.systemMessage.close();
+            t = $.parseJSON(t);
+            if(1 > t.status){
+                $.systemMessage(t.msg,'alert--danger', false);
+                return false;
             }
+            $.systemMessage.close();
+            $('#otpFom').html(t.html);
             startOtpInterval();
         });
         return false;
@@ -58,19 +54,13 @@
     resendOtp = function (userId, getOtpOnly = 0){
         $.systemMessage(langLbl.processing,'alert--process', false);
 		fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
-            startOtpInterval();
-            try{
-				t = $.parseJSON(t);
-				if(typeof t.status != 'undefined' &&  1 > t.status){
-                    $.systemMessage(t.msg,'alert--danger', false);
-                } else {
-                    $.systemMessage(t.msg,'alert--success', false);
-                }
+            t = $.parseJSON(t);
+            if(typeof t.status != 'undefined' &&  1 > t.status){
+                $.systemMessage(t.msg,'alert--danger', false);
                 return false;
-			}
-			catch(exc){
-                $.systemMessage.close();
-			}
+            }
+            $.systemMessage(t.msg,'alert--success', false);
+            startOtpInterval();
         });
         return false;
 	};

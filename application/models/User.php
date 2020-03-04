@@ -1539,7 +1539,7 @@ class User extends MyAppModel
             $applicableUpto =  (strtotime($row[static::DB_TBL_UPV_PREFIX . 'expired_on']) + self::OTP_INTERVAL);
             $now = strtotime("+" . self::OTP_AGE . " minutes", time());
             if ($applicableUpto >= $now) {
-                $msg = Labels::getLabel('MSG_PLEASE_WAIT_FOR_{SECONDS}_TO_RESEND.', $this->commonLangId);
+                $msg = Labels::getLabel('LBL_PLEASE_WAIT_{SECONDS}_SECONDS_TO_RESEND.', $this->commonLangId);
                 $this->error = CommonHelper::replaceStringData($msg, ['{SECONDS}' => ($applicableUpto - $now)]);
                 return false;
             }
@@ -1718,14 +1718,15 @@ class User extends MyAppModel
     {
         $countryIso = !empty($data['user_country_iso']) ? trim($data['user_country_iso']) : '';
         $dialCode = !empty($data['user_dial_code']) ? trim($data['user_dial_code']) : '';
-        $phone = !empty($dialCode) && !empty($data['user_phone']) ? $dialCode . trim($data['user_phone']) : '';
+        $phone = !empty($data['user_phone']) ? trim($data['user_phone']) : '';
+        $phoneWithDial = $dialCode . $phone;
         $user_name = !empty($data['user_name']) ? $data['user_name'] : Labels::getLabel('LBL_USER', $langId);
         
         $otp = $this->prepareUserPhoneOtp($countryIso, $dialCode, $phone);
         if (false === $otp) {
             return false;
         }
-        return $this->sendOtp($phone, $user_name, $otp, $langId);
+        return $this->sendOtp($phoneWithDial, $user_name, $otp, $langId);
     }
 
     public function sendOtp($phone, $user_name, $otp, $langId)
