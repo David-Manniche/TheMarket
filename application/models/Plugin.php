@@ -12,15 +12,15 @@ class Plugin extends MyAppModel
     public const TYPE_PUSH_NOTIFICATION = 3;
     public const TYPE_PAYOUTS = 4;
     public const TYPE_ADVERTISEMENT_FEED = 5;
-    public const TYPE_SMS_NOTIFICATION = 6;
-    public const TYPE_FULL_TEXT_SEARCH = 7;
+    public const TYPE_SMS_NOTIFICATION = 7;
+    public const TYPE_FULL_TEXT_SEARCH = 6;
 
     /* Define here :  if system can not activate multiple plugins for a same feature*/
     public const HAVING_KINGPIN = [
         self::TYPE_CURRENCY,
         self::TYPE_PUSH_NOTIFICATION,
         self::TYPE_ADVERTISEMENT_FEED,
-        self::TYPE_SMS_NOTIFICATION
+        self::TYPE_SMS_NOTIFICATION,
         self::TYPE_FULL_TEXT_SEARCH
     ];
 

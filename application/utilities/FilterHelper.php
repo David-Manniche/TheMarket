@@ -137,7 +137,7 @@ class FilterHelper extends FatUtility
             $srch->setPageSize($pageSize);
             $srch->setSortFields(array('brand.brand_name.keyword' => array('order'=>'asc')));
             $srch->setGroupByField('brand.brand_name');
-            return FullTextSearch::convertToSystemData($srch->fetch(), 'brand');
+            return $srch->convertToSystemData($srch->fetch(), 'brand');
         }
 
         $brandSrch = clone $prodSrchObj;

@@ -9,12 +9,12 @@ class ElasticSearchSettingsController extends FullTextSearchSettingsController
                     'required' => true,
                     'label' => "Elastic Search host Url",
                 ],
-				'username' => [
+                'username' => [
                     'type' => 'string',
                     'required' => false,
                     'label' => "Elastic Search username",
                 ],
-				'password' => [
+                'password' => [
                     'type' => 'string',
                     'required' => false,
                     'label' => "Elastic Search password",

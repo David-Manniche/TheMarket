@@ -1049,7 +1049,7 @@ class ProductsController extends MyAppController
         $nodes = array();
         $parameters = FatApp::getParameters();
         switch ($action) {
-            case 'view' :
+            case 'view':
                 if (isset($parameters[0]) && FatUtility::int($parameters[0]) > 0) {
                     $selprod_id = FatUtility::int($parameters[0]);
                     if ($selprod_id) {
@@ -1576,13 +1576,21 @@ class ProductsController extends MyAppController
             $page = ($page - 1) * $pageSize;
             $srch->setPageNumber($page);
             $srch->setPageSize($pageSize);
-            $srch->setSortFields(array('general.product_id'=>array('order' => 'desc')));
+            //$srch->setSortFields(array('general.product_id'=>array('order' => 'desc')));
             $records = $srch->fetch();
             $products = [];
+
+            //@todo Fetch from elastic server    
+            if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::NO) {
+                $arr = array('ufp_id' => 0);
+            } else {
+                $arr = array('is_in_any_wishlist' => 0);
+            }
+
             foreach ($records['hits'] as $record) {
-                //CommonHelper::printArray($record['_source']);exit;
+                //@todo Fetch from elastic server
                 $tempArr = array('in_stock' => 1, 'selprod_title' => $record['_source']['general']['product_name'], 'special_price_found' => 0);
-                $products[] = array_merge($record['_source']['general'], $record['_source']['brand'], $tempArr, current($record['_source']['categories']));
+                $products[] = array_merge($record['_source']['general'], $record['_source']['brand'], $tempArr, current($record['_source']['categories']), $arr);
             }
         } else {
             $srch = Product::getListingObj($get, $this->siteLangId, $userId);

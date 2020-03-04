@@ -2,12 +2,6 @@
 class FullTextSearch extends FatModel
 {
     private $langId;
-    private $pageSize;
-    private $fullTextSearch;
-    private $search;
-    private $fields;
-    private $groupByFields;
-    private $sortField;
     private $results;
 
     public const LIMIT = 50;
@@ -23,163 +17,6 @@ class FullTextSearch extends FatModel
         if (false == $defaultPlugin) {
             trigger_error(Labels::getLabel('LBL_PLUGIN_NOT_ACTIVATED', $this->langId), E_USER_ERROR);
         }
-
-        require_once CONF_INSTALLATION_PATH . 'library/plugins/full-text-search/' . $defaultPlugin . '.php';
-        $this->fullTextSearch = new $defaultPlugin($this->langId);
-        $this->pageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
-        $this->search 	 = [];
-        $this->fields    = [];
-        $this->sortField = [];
-    }
-
-    public function setFields($arr = [])
-    {
-        $this->fields = $arr;
-    }
-
-    public function setSortFields($arr = [])
-    {
-        $this->sortField = $arr;
-    }
-
-    public function setGroupByField($field)
-    {
-        $this->groupByFields = $field;
-    }
-
-    public function setPageNumber($page)
-    {
-        $this->page = FatUtility::int($page);
-        /* if (0 <  $this->page) {
-            $this->page = ($this->page - 1) * $this->pageSize;
-        } */
-    }
-
-    public function setPageSize($pageSize)
-    {
-        $this->pageSize = FatUtility::int($pageSize);
-    }
-    /* [ Search Function Start */
-
-    public function addKeywordCondition($keyword)
-    {
-        if (empty($keyword)) {
-            return false;
-        }
-        $textSearch = 	[ 'bool' =>
-                            [ 'should'=>
-                                [
-                                    /* [ product general fields */
-                                    ['match' => ['general.product_name' => $keyword ]  ],
-                                    ['match' => ['general.product_model' => $keyword ] ],
-                                    ['match' => ['general.product_description' => $keyword ] ],
-                                    ['match' => ['general.product_tags_string' => $keyword ] ],
-                                    /*  product general fields ] */
-
-                                    /* [ inventory fields */
-                                    ['match' => ['inventories.selprod_title' => $keyword ] ],
-                                    ['match' => ['inventories.selprod_sku' => $keyword ] ],
-                                    /*  inventory fields ] */
-
-                                    /* [ brands fields */
-                                    ['match' => ['brand.brand_name' => ['query' => $keyword , 'fuzziness'=> '1' ] ] ],
-                                    ['match' => ['brand_short_description' => $keyword ] ],
-                                    /*  brands fields ] */
-
-                                    /* [ categories fields */
-                                    ['match' => ['categories.prodcat_identifier' => ['query' => $keyword , 'fuzziness' => '1' ] ] ],
-                                    ['match' => ['categories.prodcat_name' => $keyword ] ],
-                                    /*  categories fields ] */
-
-                                    /* [ options fields */
-                                    ['match' => ['options.optionvalue_identifier' => ['query' => $keyword , 'fuzziness' => '1' ] ] ],
-                                    ['match' => ['options.optionvalue_name' => ['query' => $keyword , 'fuzziness' => '1' ] ] ],
-                                    /*  options fields ] */
-                                ]
-                            ]
-                        ];
-
-        if (array_key_exists('must', $this->search)) {
-            array_push($this->search["must"], $textSearch);
-        } else {
-            $this->search["must"][0] = $textSearch;
-        }
-    }
-    
-    public function addBrandConditions($brand)
-    {
-        if (is_numeric($brand)) {
-            $brands[] = $brand;
-        } elseif (is_array($brand) && 0 < count($brand)) {
-            $brands = array_filter(array_unique($brand));
-        } else {
-            if (!empty($brand)) {
-                $brand = explode(",", $brand);
-                $brands = array_filter(array_unique($brand));
-            }
-        }
-
-        $brandsFilters['bool']['should'] = array();
-        foreach ($brands as $key => $brand) {
-            $brandsFilters['bool']['should'][$key] = ['match' => ['brand.brand_id' => $brand ]];
-        }
-        if (array_key_exists('must', $this->search)) {
-            array_push($this->search["must"], $brandsFilters);
-        } else {
-            $this->search["must"][0] = $brandsFilters;
-        }
-        //array('brand.brand_id','brand.brand_name'), 'brand.brand_name', array('brand.brand_name.keyword' => 'asc')
-    }
-
-    public function addPriceFilters($minPrice, $maxPrice)
-    {
-        if (empty($minPrice) && empty($maxPrice)) {
-            return;
-        }
-        $priceFilters['range'] = [
-                        'general.theprice'=> [ 'gte' => $minPrice, 'lte' => $maxPrice ]
-                    ];
-
-        if (array_key_exists('must', $this->search)) {
-            array_push($this->search["must"], $priceFilters);
-        } else {
-            $this->search["must"][0] = $priceFilters;
-        }
-    }
-
-    public function addCategoryFilter($categoryId)
-    {
-        $categoryId = FatUtility::int($categoryId);
-
-        if ($categoryId) {
-            $catCode = ProductCategory::getAttributesById($categoryId, 'prodcat_code');
-            $categoryFilter['wildcard'] = ['categories.prodcat_code'=> [ "value" => $catCode.'*',"boost"=> "2.0", "rewrite"=>"constant_score" ] ];
-            if (array_key_exists('must', $this->search)) {
-                array_push($this->search["must"], $categoryFilter);
-            } else {
-                $this->search["must"][0] = $categoryFilter;
-            }
-        }
-    }
-
-    public function fetch($aggregationPrice = false)
-    {
-        if (empty($this->search)) {
-            $this->search = ['match_all' => []];
-        }
-
-        return $this->results =  $this->fullTextSearch->search($this->search, $this->page, $this->pageSize, $aggregationPrice, $this->fields, $this->groupByFields, $this->sortField);
-    }
-    /*  Search Function End ] */
-
-    public function recordCount()
-    {
-        return $this->results['total']['value'];
-    }
-
-    public function pages()
-    {
-        return $this->page;
     }
 
     /* [ UpdatedRecordLog Insert and Update Functions  Start */
@@ -516,7 +353,7 @@ class FullTextSearch extends FatModel
             $srch->doNotCalculateRecords();
 
             if (1 > $productId) {
-                //$srch->setPageSize(FatUtility::int(self::LIMIT));                
+                //$srch->setPageSize(FatUtility::int(self::LIMIT));
                 $srch->doNotLimitRecords();
             } else {
                 $srch->addCondition(Product::DB_TBL_PREFIX . 'id', '=', $productId);
@@ -901,9 +738,23 @@ class FullTextSearch extends FatModel
         return true;
     }*/
 
-    public static function getListingObj($criteria, $langId = 0, $userId = 0)
+
+    
+
+    public static function getListingObj($criteria, $langId, $userId = 0)
     {
-        $srch =  new FullTextSearch($langId);
+        $langId = FatUtility::int($langId);
+        if (1 > $langId) {
+            trigger_error(Labels::getLabel('LBL_INVALID_REQUEST', $langId), E_USER_ERROR);
+        }
+
+        $defaultPlugin = (new self($langId))->getDefaultPlugin();
+        if (!$defaultPlugin) {
+            trigger_error(Labels::getLabel('LBL_INVALID_REQUEST', $langId), E_USER_ERROR);
+        }
+
+        require_once CONF_INSTALLATION_PATH . 'library/plugins/full-text-search/' . $defaultPlugin . '.php';
+        $srch = new $defaultPlugin($langId);
             
         if (array_key_exists('keyword', $criteria)) {
             $srch->addKeywordCondition($criteria['keyword']);
@@ -916,19 +767,112 @@ class FullTextSearch extends FatModel
             $srch->addBrandConditions($criteria['brand']);
         }
 
-        return $srch;
-    }
-
-    public static function convertToSystemData($response, $filterKey = '')
-    {
-        $result = [];
-        foreach ($response['hits'] as $key => $value) {
-            if (empty($filterKey)) {
-                $result[$key] = $value['_source'];
-            } else {
-                $result[$key] = $value['_source'][$filterKey];
+        if (array_key_exists('category', $criteria)) {
+            $srch->addCategoryCondition($criteria['category']);
+        }
+       
+        if (array_key_exists('shop_id', $criteria)) {
+            $shop_id = FatUtility::int($criteria['shop_id']);
+            $srch->addShopIdCondition($shop_id);
+        }
+        
+        if (array_key_exists('optionvalue', $criteria)) {
+            if (!empty($criteria['optionvalue'])) {
+                $srch->addOptionCondition($criteria['optionvalue']);
             }
         }
-        return $result;
+        
+        if (array_key_exists('condition', $criteria)) {
+            if (true === MOBILE_APP_API_CALL) {
+                $criteria['condition'] = json_decode($criteria['condition'], true);
+            }
+            $condition = is_array($criteria['condition']) ? array_filter($criteria['condition']) : $criteria['condition'];
+            $srch->addConditionCondition($condition);
+        }
+
+        if (array_key_exists('out_of_stock', $criteria)) {
+            if (!empty($criteria['out_of_stock']) && $criteria['out_of_stock'] == 1) {
+                $srch->excludeOutOfStockProducts();
+            }
+        }
+
+        $minPriceRange = '';
+        if (array_key_exists('price-min-range', $criteria)) {
+            $minPriceRange = floor($criteria['price-min-range']);
+        } elseif (array_key_exists('min_price_range', $criteria)) {
+            $minPriceRange = floor($criteria['min_price_range']);
+        }
+                
+        if (!empty($minPriceRange) && isset($criteria['currency_id'])) {
+            $$minPriceRange = CommonHelper::convertExistingToOtherCurrency($criteria['currency_id'], $minPriceRange, FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1), false);
+        }
+
+        $maxPriceRange = '';
+        if (array_key_exists('price-max-range', $criteria)) {
+            $maxPriceRange = ceil($criteria['price-max-range']);
+        } elseif (array_key_exists('max_price_range', $criteria)) {
+            $maxPriceRange = ceil($criteria['max_price_range']);
+        }
+
+        if (!empty($maxPriceRange)) {
+            $maxPriceRange = CommonHelper::convertExistingToOtherCurrency($criteria['currency_id'], $maxPriceRange, FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1), false);
+        }
+        
+        $srch->addPriceFilters($minPriceRange, $maxPriceRange);
+
+        if (array_key_exists('featured', $criteria)) {
+            $featured = FatUtility::int($criteria['featured']);
+            if (0 < $featured) {
+                $srch->addFeaturedProdCondition();
+            }
+        }
+
+        if (array_key_exists('sortBy', $criteria)) {
+            $sortBy = $criteria['sortBy'];
+        }
+
+        $sortOrder = 'asc';
+        if (array_key_exists('sortOrder', $criteria)) {
+            $sortOrder = $criteria['sortOrder'];
+        }
+
+        $sortFields = [];
+
+        if (!empty($sortBy)) {
+            $sortByArr = explode("_", $sortBy);
+            $sortBy = isset($sortByArr[0]) ? $sortByArr[0] : $sortBy;
+            $sortOrder = isset($sortByArr[1]) ? $sortByArr[1] : $sortOrder;
+
+            if (!in_array($sortOrder, array('asc', 'desc'))) {
+                $sortOrder = 'asc';
+            }
+
+            if (!in_array($sortBy, array('keyword', 'price', 'popularity', 'rating', 'discounted'))) {
+                $sortOrder = 'keyword_relevancy';
+            }
+
+            switch ($sortBy) {
+                case 'price':
+                    $sortFields = array('general.theprice' => array('order' => $sortOrder));
+                    break;
+                case 'popularity':
+                    $sortFields = array('inventories.selprod_sold_count' => array('order' => $sortOrder));
+                    break;
+               /*  case 'discounted':
+                    $srch->addFld('ROUND(((selprod_price - theprice)*100)/selprod_price) as discountedValue');
+                    $srch->addOrder('discountedValue', 'DESC');
+                    break; */
+                case 'rating':
+                    $sortFields = array('general.product_rating' => array('order' => $sortOrder));
+                    break;
+                default:
+                   // $srch->addOrder('keyword_relevancy', 'DESC');
+                    break;
+            }
+        }
+
+        $srch->setSortFields($sortFields);
+
+        return $srch;
     }
 }

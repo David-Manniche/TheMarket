@@ -8,7 +8,12 @@ class ElasticSearch extends FullTextSearchBase
 {
     private $client;
     private $indexName;
+    private $search;
+    private $fields;
+    private $sortField;
+    private $groupByFields;
     public $error = false;
+
     const KEY_NAME = "ElasticSearch";
     const INDEX_PREFIX = "yk-products-";
 
@@ -35,7 +40,307 @@ class ElasticSearch extends FullTextSearchBase
              ->setElasticCloudId($settings['host'])
              ->setBasicAuthentication($settings['username'], $settings['password'])
              ->build();
+
+        $this->pageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
+        $this->search = [];
+        $this->fields = [];
+        $this->sortField = [];
     }
+
+    public function addKeywordCondition($keyword)
+    {
+        if (empty($keyword)) {
+            return false;
+        }
+        
+        $textSearch = 	[ 'bool' =>
+                            [ 'should'=>
+                                [
+                                    /* [ product general fields */
+                                    ['match' => ['general.product_name' => $keyword ]  ],
+                                    ['match' => ['general.product_model' => $keyword ] ],
+                                    ['match' => ['general.product_description' => $keyword ] ],
+                                    ['match' => ['general.product_tags_string' => $keyword ] ],
+                                    /*  product general fields ] */
+
+                                    /* [ inventory fields */
+                                    ['match' => ['inventories.selprod_title' => $keyword ] ],
+                                    ['match' => ['inventories.selprod_sku' => $keyword ] ],
+                                    /*  inventory fields ] */
+
+                                    /* [ brands fields */
+                                    ['match' => ['brand.brand_name' => ['query' => $keyword , 'fuzziness'=> '1' ] ] ],
+                                    ['match' => ['brand_short_description' => $keyword ] ],
+                                    /*  brands fields ] */
+
+                                    /* [ categories fields */
+                                    ['match' => ['categories.prodcat_identifier' => ['query' => $keyword , 'fuzziness' => '1' ] ] ],
+                                    ['match' => ['categories.prodcat_name' => $keyword ] ],
+                                    /*  categories fields ] */
+
+                                    /* [ options fields */
+                                    ['match' => ['options.optionvalue_identifier' => ['query' => $keyword , 'fuzziness' => '1' ] ] ],
+                                    ['match' => ['options.optionvalue_name' => ['query' => $keyword , 'fuzziness' => '1' ] ] ],
+                                    /*  options fields ] */
+                                ]
+                            ]
+                        ];
+
+        if (array_key_exists('must', $this->search)) {
+            array_push($this->search["must"], $textSearch);
+        } else {
+            $this->search["must"][0] = $textSearch;
+        }
+    }
+
+    public function addBrandConditions($brand)
+    {
+        if (is_numeric($brand)) {
+            $brands[] = $brand;
+        } elseif (is_array($brand) && 0 < count($brand)) {
+            $brands = array_filter(array_unique($brand));
+        } else {
+            if (!empty($brand)) {
+                $brand = explode(",", $brand);
+                $brands = array_filter(array_unique($brand));
+            }
+        }
+
+        $brandsFilters['bool']['should'] = array();
+        foreach ($brands as $key => $brand) {
+            if (1 > $brand) {
+                continue;
+            }
+            $brandsFilters['bool']['should'][$key] = ['match' => ['brand.brand_id' => $brand ]];
+        }
+        if (array_key_exists('must', $this->search)) {
+            array_push($this->search["must"], $brandsFilters);
+        } else {
+            $this->search["must"][0] = $brandsFilters;
+        }
+        //array('brand.brand_id','brand.brand_name'), 'brand.brand_name', array('brand.brand_name.keyword' => 'asc')
+    }
+
+    public function addCategoryCondition($category)
+    {
+        if (is_numeric($category)) {
+            $categories[] = $category;
+        } elseif (is_array($category) && 0 < count($category)) {
+            $categories = array_filter(array_unique($category));
+        } else {
+            if (!empty($category)) {
+                $category = explode(",", $category);
+                $categories = array_filter(array_unique($category));
+            }
+        }
+        
+        $categoryFilter['bool']['should'] = array();
+        foreach ($categories as $key => $category) {
+            if (1 > $category) {
+                continue;
+            }
+            $categoryFilter['bool']['should'][$key] = [
+                'wildcard' =>  [
+                    'categories.prodcat_code' => [
+                         "value" => '*' . str_pad($category, 6, 0, STR_PAD_LEFT) . '*'
+                        ]
+                    ]
+                ];
+        }
+
+        if (array_key_exists('must', $this->search)) {
+            array_push($this->search["must"], $categoryFilter);
+        } else {
+            $this->search["must"][0] = $categoryFilter;
+        }
+
+    }
+
+    public function addShopIdCondition($shopId)
+    {
+        $shopId = FatUtility::int($shopId);
+        if (1 > $shopId) {
+            return ;
+        }
+
+        $shopFilter['bool']['must'] = [
+            'match' =>  [
+                'inventories.shop.shop_id' => $shopId
+                ]
+            ];
+
+        if (array_key_exists('must', $this->search)) {
+            array_push($this->search["must"], $shopFilter);
+        } else {
+            $this->search["must"][0] = $shopFilter;
+        }
+    }
+
+    public function addOptionCondition($option)
+    {
+        if (is_numeric($option)) {
+            $options[] = $option;
+        } elseif (is_array($option) && 0 < count($option)) {
+            $options = array_filter(array_unique($option));
+        } else {
+            if (!empty($option)) {
+                $option = explode(",", $option);
+                $options = array_filter(array_unique($option));
+            }
+        }
+
+        $optionsFilters['bool']['should'] = array();
+        foreach ($options as $key => $option) {
+            if (1 > $option) {
+                continue;
+            }
+            $optionsFilters['bool']['should'][$key] = ['match' => ['options.optionvalue_id' => $option ]];
+        }
+        if (array_key_exists('must', $this->search)) {
+            array_push($this->search["must"], $optionsFilters);
+        } else {
+            $this->search["must"][0] = $optionsFilters;
+        }
+    }
+
+    public function addConditionCondition($condition)
+    {
+        if (is_numeric($condition)) {
+            $conditions[] = $condition;
+        } elseif (is_array($condition) && 0 < count($condition)) {
+            $conditions = array_filter(array_unique($condition));
+        } else {
+            if (!empty($condition)) {
+                $condition = explode(",", $condition);
+                $conditions = array_filter(array_unique($condition));
+            }
+        }
+
+        $conditionsFilters['bool']['should'] = array();
+        foreach ($conditions as $key => $condition) {
+            if (1 > $condition) {
+                continue;
+            }
+            $conditionsFilters['bool']['should'][$key] = ['match' => ['inventories.selprod_condition' => $condition ]];
+        }
+        if (array_key_exists('must', $this->search)) {
+            array_push($this->search["must"], $conditionsFilters);
+        } else {
+            $this->search["must"][0] = $conditionsFilters;
+        }
+    }
+    
+    public function excludeOutOfStockProducts()
+    {
+        //@todo based on in_stock
+    }
+
+    public function addFeaturedProdCondition(){
+        
+        $filter['bool']['must'] = [
+            'match' =>  [
+                'general.product_featured' => 1
+                ]
+            ];
+
+        if (array_key_exists('must', $this->search)) {
+            array_push($this->search["must"], $filter);
+        } else {
+            $this->search["must"][0] = $filter;
+        }
+    }
+
+    public function addPriceFilters($minPrice, $maxPrice)
+    {
+        if (empty($minPrice) && empty($maxPrice)) {
+            return;
+        }
+        $priceFilters['range'] = [
+                        'general.theprice'=> [ 'gte' => $minPrice, 'lte' => $maxPrice ]
+                    ];
+
+        if (array_key_exists('must', $this->search)) {
+            array_push($this->search["must"], $priceFilters);
+        } else {
+            $this->search["must"][0] = $priceFilters;
+        }
+    }
+
+    public function addCategoryFilter($categoryId)
+    {
+        $categoryId = FatUtility::int($categoryId);
+
+        if ($categoryId) {
+            $catCode = ProductCategory::getAttributesById($categoryId, 'prodcat_code');
+            $categoryFilter['wildcard'] = ['categories.prodcat_code'=> [ "value" => $catCode.'*',"boost"=> "2.0", "rewrite"=>"constant_score" ] ];
+            if (array_key_exists('must', $this->search)) {
+                array_push($this->search["must"], $categoryFilter);
+            } else {
+                $this->search["must"][0] = $categoryFilter;
+            }
+        }
+    }
+
+    public function convertToSystemData($response, $filterKey = '')
+    {
+        $result = [];
+        foreach ($response['hits'] as $key => $value) {
+            if (empty($filterKey)) {
+                $result[$key] = $value['_source'];
+            } else {
+                $result[$key] = $value['_source'][$filterKey];
+            }
+        }
+        return $result;
+    }
+
+    public function fetch($aggregationPrice = false)
+    {
+        if (empty($this->search)) {
+            $this->search = ['match_all' => []];
+        }
+
+        return $this->results =  $this->search($this->search, $this->page, $this->pageSize, $aggregationPrice, $this->fields, $this->groupByFields, $this->sortField);
+    }
+
+    public function setPageNumber($page)
+    {
+        $this->page = FatUtility::int($page);
+        /* if (0 <  $this->page) {
+            $this->page = ($this->page - 1) * $this->pageSize;
+        } */
+    }
+
+    public function setFields($arr = [])
+    {
+        $this->fields = $arr;
+    }
+
+    public function setSortFields($arr = [])
+    {
+        $this->sortField = $arr;
+    }
+
+    public function setGroupByField($field)
+    {
+        $this->groupByFields = $field;
+    }
+
+    public function setPageSize($pageSize)
+    {
+        $this->pageSize = FatUtility::int($pageSize);
+    }
+
+    public function recordCount()
+    {
+        return $this->results['total']['value'];
+    }
+
+    public function pages()
+    {
+        return $this->page;
+    }
+    
     
     /* Parameter Name
     *	@queryData => Pass the query data
@@ -47,7 +352,7 @@ class ElasticSearch extends FullTextSearchBase
     *	@size => same as limit field in mysql
     */
 
-    public function search($queryData, $from, $size, $aggregation = false, $source = array(), $groupByField = null, $sort = array())
+    private function search($queryData, $from, $size, $aggregation = false, $source = array(), $groupByField = null, $sort = array())
     {
         $result = array();
         $params = [
@@ -82,6 +387,7 @@ class ElasticSearch extends FullTextSearchBase
         if ($aggregation) {
             return $results;
         }
+
         return array_key_exists('hits', $results) ? $results['hits'] : $results;
     }
     
