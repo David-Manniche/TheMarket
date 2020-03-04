@@ -9,12 +9,6 @@
     font-weight: normal;
     border-radius: 4px;
 
-    .list-tag-wrapper {
-        max-height: 133px;
-        overflow-x: auto;
-    }
-
-
     input {
         &[type="text"] {
             border: none;
@@ -94,3 +88,10 @@
         margin: 5px;
     }
 }
+
+.list-tag-wrapper {
+    max-height: 133px;
+    overflow-x: auto;
+}
+
+ 

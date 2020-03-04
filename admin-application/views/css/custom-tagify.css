@@ -1,6 +1,6 @@
 .custom-tagify {
     background-color: #fff;
-    border: 1px solid var(--border-color);
+    border: 1px solid #eee;
     height: auto;
     padding: 0;
     width: 100%;
@@ -10,7 +10,11 @@
     font-weight: normal;
     border-radius: 4px;
 }
-.list-tag-wrapper{ max-height:133px; overflow-x: auto;}
+
+.list-tag-wrapper {
+    max-height: 133px;
+    overflow-x: auto;
+}
 
 .custom-tagify .list-tags {
     display: -webkit-box;
@@ -27,11 +31,11 @@
 .custom-tagify .list-tags li {
     padding: 0;
     margin: 0;
-    -webkit-margin-end:5px;
-    -moz-margin-end:5px;
-    margin-inline-end:5px;
+    -webkit-margin-end: 5px;
+    -moz-margin-end: 5px;
+    margin-inline-end: 5px;
 }
 
 .custom-tagify input[type="text"] {
-   /* border: none;*/
+    border: none;
 }

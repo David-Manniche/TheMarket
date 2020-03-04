@@ -32,7 +32,8 @@ foreach ($arrListing as $selProdId => $relatedProds) {
                 $td->appendElement('plaintext', array(), $productName, true);
                 break;
             case 'related_products':
-                $ul = $td->appendElement("ul", array("class"=>"list-tags"));
+                $div = $td->appendElement('div', array("class"=>"list-tag-wrapper", "data-scroll-height"=>"150", "data-simplebar" => ""));
+                $ul = $div->appendElement("ul", array("class"=>"list-tags"));
                 foreach ($relatedProds as $relatedProd) {
                     $li = $ul->appendElement("li");
                     $li->appendElement('plaintext', array(), '<span>'.$relatedProd['selprod_title'].' <i class="remove_buyTogether remove_param fa fa-times" onClick="deleteSelprodRelatedProduct('.$selProdId.', '.$relatedProd['selprod_id'].')"></i></span>', true);
