@@ -142,4 +142,4 @@ Bugs:
 ===================TV-9.1.3.20200303==================
 Bug :
     => 034773 -  Restrict keyword search up to 80 character.
-    
+    => 034493 - Price range slider added check to validate min/max price.

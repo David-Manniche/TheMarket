@@ -333,7 +333,6 @@ class DummyController extends MyAppController
 
     public function index()
     {
-        echo strlen('contrary to popular belief, lorem ipsum not simply random text'); exit;
     }
 
 
