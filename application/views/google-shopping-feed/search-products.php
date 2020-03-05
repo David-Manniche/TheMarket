@@ -8,7 +8,7 @@ $arr_flds = [
     'adsbatch_name' => Labels::getLabel('LBL_BATCH', $siteLangId),
     'action' => Labels::getLabel('LBL_Action', $siteLangId),
 ];
-if (!$canEdit) {
+if (1 > count($arrListing)) {
     unset($arr_flds['select_all']);
 }
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--hovered table-responsive js-scrollable scroll-hint','id' => 'plugin'));

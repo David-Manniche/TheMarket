@@ -7,7 +7,7 @@ $arr_flds = array(
     'splprice_price' => Labels::getLabel('LBL_Special_Price', $siteLangId),
     'action' => Labels::getLabel('LBL_Action', $siteLangId),
 );
-if (!$canEdit) {
+if (1 > count($arrListing)) {
     unset($arr_flds['select_all']);
 }
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table splPriceList-js'));

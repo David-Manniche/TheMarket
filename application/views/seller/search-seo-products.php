@@ -3,7 +3,7 @@ $arr_flds = array(
     'listserial' => '#',
     'product_name' => Labels::getLabel('LBL_Product', $siteLangId),
 );
-if (!$canEdit) {
+if (1 > count($arrListing)) {
     unset($arr_flds['select_all']);
 }
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered volDiscountList-js'));
