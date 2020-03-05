@@ -72,4 +72,6 @@ define('CONF_WEBROOT_FRONTEND', '/');
 define('CONF_WEBROOT_URL', CONF_WEBROOT_FRONTEND);
 define('MOBILE_APP_API_CALL', false);
 
+define('CONF_PLUGIN_DIR', CONF_INSTALLATION_PATH . 'library/plugins/');
+
 require_once CONF_INSTALLATION_PATH . 'library/autoloader.php';
