@@ -92,7 +92,7 @@
                 <p><?php echo Labels::getLabel('LBL_Shipping_Rates', $siteLangId);?>
                     <a href="#shipRates" rel="facebox"><i class="fa fa-question-circle"></i></a></p>
                 <div id="shipRates" style="display:none">
-                    <div class="delivery-term-data-inner">
+                    <div>
                         <?php
                                 $arr_flds = array(
                                     'country_name'=> Labels::getLabel('LBL_Ship_to', $siteLangId),
