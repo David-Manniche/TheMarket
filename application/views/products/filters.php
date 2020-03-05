@@ -197,7 +197,7 @@ if (isset($prodcat_code)) {
           ?>
         <li><label class="checkbox brand" id="brand_<?php echo $brand['brand_id']; ?>"><input name="brands" data-id="brand_<?php echo $brand['brand_id']; ?>" value="<?php echo $brand['brand_id']; ?>" data-title="<?php echo $brand['brand_name']; ?>" type="checkbox" <?php if (in_array($brand['brand_id'], $brandsCheckedArr)) {
               echo "checked='true'";
-          } ?>><i class="input-helper"></i><?php echo $brand['brand_name']; ?> </label></li>
+          } ?>><i class="input-helper"></i><span class="lb-txt"><?php echo $brand['brand_name']; ?></span> </label></li>
         <?php
       } ?>
     </ul>

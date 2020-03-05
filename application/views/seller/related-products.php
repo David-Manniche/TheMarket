@@ -40,7 +40,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                         <div class="field-wraper">
                                             <div class="field_cover custom-tagify">
                                                 <?php echo $relProdFrm->getFieldHTML('products_related');?>
-                                                <div class="list-tag-wrapper"><ul class="list-tags" id="related-products"></ul></div>
+                                                <div class="list-tag-wrapper" data-scroll-height="150" data-simplebar><ul class="list-tags" id="related-products"></ul></div>
                                             </div>
                                         </div>
                                     </div>

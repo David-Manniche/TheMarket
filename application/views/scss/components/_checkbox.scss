@@ -37,6 +37,11 @@
     margin: 0;
     font-size: 0.875rem;
     line-height: 20px;
+    cursor: pointer;
+
+    &.brand {
+        display: flex;
+    }
 }
 
 .checkbox input,
@@ -53,6 +58,8 @@
     #{$start-direction}: 0;
     height: 20px;
     width: 20px;
+    flex: 0 0 20px;
+    max-width: 20px;    
     -webkit-transition: all 0.15s ease-out 0s;
     transition: all 0.15s ease-out 0s;
     border: 1px solid #ddd;
@@ -60,8 +67,6 @@
     color: #fff;
     cursor: pointer;
     display: inline-block;
-    
-    
     margin-#{$end-direction}: 0.5rem;
     outline: none;
     position: relative;
@@ -72,7 +77,8 @@
 
 .checkbox input:checked,
 .radio input:checked {
-    background: $brand-color; color:$brand-color-inverse;
+    background: $brand-color;
+    color: $brand-color-inverse;
 }
 
 .checkbox input:checked::before,
@@ -80,7 +86,7 @@
     height: 12px;
     width: 7px;
     position: absolute;
-    content: '';    
+    content: '';
     display: inline-block;
     font-size: 16px;
     text-align: center;
@@ -99,7 +105,8 @@
 .radio input:checked::after {
     -webkit-animation: click-wave 0.65s;
     animation: click-wave 0.65s;
-    background: $brand-color; color:$brand-color-inverse;
+    background: $brand-color;
+    color: $brand-color-inverse;
     content: '';
     display: block;
     position: relative;
@@ -124,19 +131,6 @@
 
 
 /*toggles*/
-.toggle-switch {
-    display: inline-block;
-    height: 20px;
-    position: relative;
-    width: 42px;
-}
-
-.toggle-switch input {
-    display: none;
-}
-
-
-
 .switch-links {
     text-align: center;
     margin: 0px auto;
@@ -156,12 +150,12 @@
 
 .switch-links a:first-child {
     float: left;
-    
+
     margin-#{$end-direction}: 10px;
 }
 
-.switch-links a:last-child {   
-    
+.switch-links a:last-child {
+
     margin-#{$start-direction}: 10px;
     float: right;
 }
@@ -188,7 +182,8 @@
 }
 
 .switch-button:after {
-    background: $brand-color; color:$brand-color-inverse;
+    background: $brand-color;
+    color: $brand-color-inverse;
     width: 18px;
     height: 18px;
     display: block;

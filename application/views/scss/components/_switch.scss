@@ -3,6 +3,8 @@
      height: 20px;
      position: relative;
      width: 42px;
+	 min-width:42px;
+     flex: 0 0 42px;
 
      input {
          display: none;

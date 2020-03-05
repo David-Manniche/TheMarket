@@ -994,4 +994,9 @@ table.table-bordered tr:nth-child(odd) td {
     background: #fff;
     z-index: 1;
 }
-
+/**/
+.focused-div {
+    height: auto;
+    cursor: text;
+    font-size: 0.9em;
+}
