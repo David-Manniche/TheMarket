@@ -22,6 +22,9 @@ class RestoreSystemController extends MyAppController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
+        $assignValues = array('conf_name' => 'CONF_TIMEZONE', 'conf_val' => 'Asia/Kolkata');
+        FatApp::getDb()->insertFromArray('tbl_configurations', $assignValues, false, array(), $assignValues);
+       
         $dateTime = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') . ' +' . static::RESTORE_TIME_INTERVAL_HOURS . ' hours'));
         $restoreTime = FatApp::getConfig('CONF_RESTORE_SCHEDULE_TIME', FatUtility::VAR_STRING, $dateTime);
 
