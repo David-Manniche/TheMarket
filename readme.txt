@@ -144,3 +144,4 @@ Bugs:
 Bugs: 
     => 035105 - Wrong import instructions heading
     => 035102 - Select row(checkbox) should not be displayed if readonly permission allowed to sub admin for any page in backend.
+    => 035033 - If product available date is of future then no need to display select option(checkbox) in wishlist.
