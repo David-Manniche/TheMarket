@@ -44,6 +44,12 @@ $btnFld->setFieldTagAttribute('class', 'btn--block');
                             <a href="javaScript:void(0)" class="resendOtp-js" onClick="resendOtp(<?php echo $userId; ?>, <?php echo applicationConstants::YES; ?>)">
                                 <?php echo Labels::getLabel('LBL_RESEND_OTP?', $siteLangId); ?>
                             </a>
+                            <small>
+                                <?php
+                                    $msg = Labels::getLabel('LBL_PLEASE_WAIT_{SECONDS}_SECONDS_TO_RESEND', $siteLangId);
+                                    echo CommonHelper::replaceStringData($msg, ['{SECONDS}' => '<b><span class="intervalTimer-js">' . User::OTP_INTERVAL . '</span></b>']);
+                                ?>
+                            </small>
                         </span>
                         <?php echo $frm->getFieldHtml('user_id'); ?>
                         <div class="row">

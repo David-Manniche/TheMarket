@@ -442,7 +442,7 @@ class GuestUserController extends MyAppController
 
     public function validateOtp($recoverPwd = 0)
     {
-        $this->validateOtpApi();
+        $this->validateOtpApi(0, false);
         $userId = FatApp::getPostedData('user_id', FatUtility::VAR_INT, 0);
         if (0 < $recoverPwd) {
             $obj = new UserAuthentication();
@@ -795,16 +795,14 @@ class GuestUserController extends MyAppController
             $this->set('msg', $message);
             if (true === MOBILE_APP_API_CALL) {
                 $this->_template->render();
-            } else {
-                if (0 < $withPhone) {
-                    $frm = $this->getOtpForm();
-                    $frm->fill(['user_id' => $row['user_id']]);
-                    $this->set('frm', $frm);
-                    $this->_template->render(false, false, 'guest-user/otp-form.php');
-                } else {
-                    $this->_template->render(false, false, 'json-success.php');
-                }
+            } else if (0 < $withPhone) {
+                $frm = $this->getOtpForm();
+                $frm->fill(['user_id' => $row['user_id']]);
+                $this->set('frm', $frm);
+                $json['html'] = $this->_template->render(false, false, 'guest-user/otp-form.php', true, false);
+                FatUtility::dieJsonSuccess($json);
             }
+            $this->_template->render(false, false, 'json-success.php');
             exit;
         }
 
@@ -956,7 +954,8 @@ class GuestUserController extends MyAppController
         $frm = $this->getOtpForm();
         $frm->fill(['user_id' => $userId]);
         $this->set('frm', $frm);
-        $this->_template->render(false, false, 'guest-user/otp-form.php');
+        $json['html'] = $this->_template->render(false, false, 'guest-user/otp-form.php', true, false);
+        FatUtility::dieJsonSuccess($json);
     }
 
     public function configureEmail()

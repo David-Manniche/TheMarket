@@ -23,7 +23,7 @@ class PluginSettingController extends AdminBaseController
             try {
                 $this->keyName = get_called_class()::KEY_NAME;
             } catch (\Error $e) {
-                $message = 'ERR - ' . $e->getMessage();
+                $message = $e->getMessage();
                 LibHelper::dieJsonError($message);
             }
             if (empty($this->keyName)) {
@@ -81,7 +81,7 @@ class PluginSettingController extends AdminBaseController
             $requirements = $class::getConfigurationKeys();
         } catch (\Error $e) {
             if (false == method_exists($class, 'form')) {
-                FatUtility::dieJsonError('ERR - ' . $e->getMessage());
+                FatUtility::dieJsonError($e->getMessage());
             }
             $frm = $class::form($this->adminLangId);
         }
