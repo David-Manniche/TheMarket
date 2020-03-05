@@ -123,6 +123,7 @@ $(document).ready(function(){
             t = $.parseJSON(t);
             if(1 > t.status){
                 $.systemMessage(t.msg,'alert--danger', false);
+                invalidOtpField();
                 $(frm.btn_submit).removeAttr('disabled');
                 return false;
             } else if ('undefined' != typeof t.html) {
