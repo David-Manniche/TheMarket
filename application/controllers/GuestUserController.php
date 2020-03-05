@@ -440,9 +440,9 @@ class GuestUserController extends MyAppController
         FatApp::redirectUser($redirectUrl);
     }
 
-    public function validateOtp($recoverPwd = 0)
+    public function validateOtp($recoverPwd = 0, $forgotPw = false)
     {
-        $this->validateOtpApi(0, false);
+        $this->validateOtpApi(0, (!$forgotPw));
         $userId = FatApp::getPostedData('user_id', FatUtility::VAR_INT, 0);
         if (0 < $recoverPwd) {
             $obj = new UserAuthentication();

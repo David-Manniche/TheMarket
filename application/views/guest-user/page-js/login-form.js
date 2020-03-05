@@ -18,7 +18,12 @@
 		fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'register'), data, function(t) {
             if (1 == t.status) {
                 fcom.ajax(fcom.makeUrl( 'GuestUser', 'otpForm'), '', function(t) {
-                    $('#sign-up').html(t);
+                    t = $.parseJSON(t);
+                    if(1 > t.status){
+                        $.systemMessage(t.msg,'alert--danger', false);
+                        return false;
+                    }
+                    $('#sign-up').html(t.html);
                     startOtpInterval();
                 });
             }

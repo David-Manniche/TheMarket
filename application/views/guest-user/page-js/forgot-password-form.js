@@ -43,7 +43,7 @@
     validateOtp = function (frm){
 		if (!$(frm).validate()) return;	
 		var data = fcom.frmData(frm);
-		fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'validateOtp', [1]), data, function(t) {						
+		fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'validateOtp', [1, 1]), data, function(t) {						
             if (1 == t.status) {
                 window.location.href = t.redirectUrl;
             }
