@@ -8,6 +8,7 @@ class SellerController extends SellerBaseController
     use SellerProducts;
     use SellerCollections;
     use CustomCatalogProducts;
+    use SellerUsers;
 
     public function __construct($action)
     {
