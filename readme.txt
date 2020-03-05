@@ -143,3 +143,6 @@ Bugs:
 
 Bugs: 
     => 035105 - Wrong import instructions heading
+    
+New Features:
+    => 71188 - Add setting for making brand field optional

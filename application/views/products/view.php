@@ -120,7 +120,9 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                             <?php } ?>
                                         </div>
                                     </div>
+                                    <?php if(!empty($product['brand_name'])) { ?>
                                     <div class="brand-data"><span class="txt-gray-light"><?php echo Labels::getLabel('LBL_Brand', $siteLangId); ?>:</span> <?php echo $product['brand_name'];?></div>
+                                    <?php } ?>
                                     <div class="col products__price"><?php echo CommonHelper::displayMoneyFormat($product['theprice']); ?>
                                         <?php if ($product['special_price_found']) { ?>
                                         <span class="products__price_old"><?php echo CommonHelper::displayMoneyFormat($product['selprod_price']); ?></span>

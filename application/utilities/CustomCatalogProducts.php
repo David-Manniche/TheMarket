@@ -1118,7 +1118,7 @@ trait CustomCatalogProducts
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
-        if($post['product_brand_id'] < 1){
+        if($post['product_brand_id'] < 1 && FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)){
             Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Brand_From_List', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }

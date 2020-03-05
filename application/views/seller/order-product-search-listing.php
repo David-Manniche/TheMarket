@@ -38,9 +38,15 @@ foreach ($orders as $sn => $order) {
                 }
                 $txt .= '<div class="item__sub_title">'.$order['op_product_name'].'</div>';
 
-                $txt .= '<div class="item__brand">'.Labels::getLabel('LBL_Brand', $siteLangId).': '.$order['op_brand_name'];
+                $txt .= '<div class="item__brand">';
+                if( !empty($order['op_brand_name']) ){
+                   $txt .=  Labels::getLabel('LBL_Brand', $siteLangId).': '.$order['op_brand_name'];
+                }
+                if( !empty($order['op_brand_name']) && !empty($order['op_selprod_options']) ){
+                    $txt .= ' | ' ;
+                }
                 if ($order['op_selprod_options'] != '') {
-                    $txt .= ' | ' . $order['op_selprod_options'];
+                    $txt .= $order['op_selprod_options'];
                 }
                 $txt .= '</div>';
                  $txt .= '</div>';

@@ -190,9 +190,15 @@
                                 $txt .= $order['op_selprod_title'].'<br/>';
                             }
                             $txt .= $order['op_product_name'];
-                            $txt .= '<br/>'.Labels::getLabel('LBL_Brand', $adminLangId).':  '.$order['op_brand_name'];
+                            $txt .= '<br/>';
+                            if( !empty($order['op_brand_name']) ){
+                               $txt .=  Labels::getLabel('LBL_Brand', $adminLangId).': '.$order['op_brand_name'];
+                            }
+                            if( !empty($order['op_brand_name']) && !empty($order['op_selprod_options']) ){
+                                $txt .= ' | ' ;
+                            }
                             if ($order['op_selprod_options'] != '') {
-                                $txt .= ' | ' . $order['op_selprod_options'];
+                                $txt .= $order['op_selprod_options'];
                             }
                             if ($order['op_selprod_sku'] != '') {
                                 $txt .= '<br/>'.Labels::getLabel('LBL_SKU', $adminLangId).':   ' . $order['op_selprod_sku'];
