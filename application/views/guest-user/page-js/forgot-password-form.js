@@ -48,6 +48,7 @@
                 window.location.href = t.redirectUrl;
             }
         });	
+        invalidOtpField();
         return false;
     };
 

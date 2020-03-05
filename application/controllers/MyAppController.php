@@ -565,7 +565,7 @@ class MyAppController extends FatController
         } else {
             $attr = ['maxlength' => 1, 'size' => 1];
             for ($i = 0; $i < User::OTP_LENGTH; $i++) {
-                $frm->addRequiredField('', 'upv_otp[' . $i . ']', '', $attr);
+                $frm->addTextBox('', 'upv_otp[' . $i . ']', '', $attr);
             }
         }
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_VALIDATE', $this->siteLangId));
