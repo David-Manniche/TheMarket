@@ -24,13 +24,12 @@
             'scollection_active'=>Labels::getLabel('LBL_Status', $siteLangId),
             'action' => Labels::getLabel('LBL_Action', $siteLangId),
         );
-        if (count($arr_listing) > 0) {
+        if (count($arr_listing) > 0 && $canEdit) {
             $arr_flds = array_merge(
                 array('select_all'=>Labels::getLabel('LBL_Select_all', $siteLangId)),
                 $arr_flds
                 );
         }
-
     $tbl = new HtmlElement(
         'table',
         array('width'=>'100%', 'class'=>'table table--orders','id'=>'options')

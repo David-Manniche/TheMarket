@@ -33,6 +33,7 @@ $frmSearch->developerTags['fld_default_col'] = 4;
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_PUSH_NOTIFICATION_LIST', $adminLangId); ?> </h4>
                         <?php
+                        if ($canEdit) {
                             $ul = new HtmlElement("ul", array("class" => "actions actions--centered"));
                             $li = $ul->appendElement("li", array('class' => 'droplink'));
 
@@ -40,14 +41,13 @@ $frmSearch->developerTags['fld_default_col'] = 4;
                             $innerDiv = $li->appendElement('div', array('class' => 'dropwrap'));
                             $innerUl = $innerDiv->appendElement('ul', array('class' => 'linksvertical'));
 
-                        if ($canEdit) {
                             $innerLi = $innerUl->appendElement('li');
                             $innerLi->appendElement('a', ['href' => 'javascript:void(0)',
                                                             'class' => 'button small green',
                                                             'title' => Labels::getLabel('LBL_ADD_NEW', $adminLangId),
                                                             "onclick" => "addNotificationForm(0)"], Labels::getLabel('LBL_ADD_NEW', $adminLangId), true);
+                                                            echo $ul->getHtml();
                         }
-                        echo $ul->getHtml();
                         ?>
                     </div>
                     <div class="sectionbody">

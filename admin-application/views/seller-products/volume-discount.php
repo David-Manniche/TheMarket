@@ -52,8 +52,8 @@ if (0 < $selProd_id) {
 
                             $innerLi=$innerUl->appendElement('li');
                             $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Remove_Volume_Discount', $adminLangId),"onclick"=>"deleteVolumeDiscountRows()"), Labels::getLabel('LBL_Remove_Volume_Discount', $adminLangId), true);
-                        }
                             echo $ul->getHtml();
+                        }
                         ?>
                     </div>
                     <div class="sectionbody">

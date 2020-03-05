@@ -6,7 +6,9 @@ $arr_flds = array(
     'voldiscount_percentage' => Labels::getLabel('LBL_Discount', $siteLangId) . ' (%)',
     'action' => Labels::getLabel('LBL_Action', $siteLangId),
 );
-
+if (!$canEdit) {
+    unset($arr_flds['select_all']);
+}
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--hovered volDiscountList-js'));
 $thead = $tbl->appendElement('thead');
 $th = $thead->appendElement('tr', array('class' => ''));

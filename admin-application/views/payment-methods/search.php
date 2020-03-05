@@ -9,6 +9,7 @@ $arr_flds = array(
     );
 if (!$canEdit) {
     unset($arr_flds['dragdrop']);
+    unset($arr_flds['select_all']);
 }
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered table-responsive','id'=>'paymentMethod'));
 $th = $tbl->appendElement('thead')->appendElement('tr');

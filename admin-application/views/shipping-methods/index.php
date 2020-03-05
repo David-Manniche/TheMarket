@@ -31,8 +31,8 @@
 
                             $innerLi=$innerUl->appendElement('li');
                             $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Deactivate', $adminLangId),"onclick"=>"toggleBulkStatues(0)"), Labels::getLabel('LBL_Deactivate', $adminLangId), true);
+                            echo $ul->getHtml();
                         }
-                        echo $ul->getHtml();
                         ?>
                     </div>
                     <div class="sectionbody">

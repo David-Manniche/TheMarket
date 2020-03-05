@@ -5,7 +5,9 @@ $arr_flds = array(
     'original' => Labels::getLabel('LBL_Original_URL', $siteLangId),
     'custom' => Labels::getLabel('LBL_Custom_URL', $siteLangId),
 );
-
+if (!$canEdit) {
+    unset($arr_flds['select_all']);
+}
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered volDiscountList-js'));
 $thead = $tbl->appendElement('thead');
 $th = $thead->appendElement('tr', array('class' => ''));

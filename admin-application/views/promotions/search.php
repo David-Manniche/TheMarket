@@ -14,6 +14,9 @@ $arr_flds = array(
         'promotion_approved'=>Labels::getLabel('LBL_Approved', $adminLangId),
         'action' => Labels::getLabel('LBL_Action', $adminLangId),
     );
+    if (!$canEdit) {
+        unset($arr_flds['select_all']);
+    }
 $tbl = new HtmlElement(
     'table',
     array('width'=>'100%', 'class'=>'table table--hovered table-responsive','id'=>'promotions')

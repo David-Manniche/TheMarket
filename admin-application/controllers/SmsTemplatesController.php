@@ -23,7 +23,7 @@ class SmsTemplatesController extends AdminBaseController
     {
         $frmSearch = $this->getSearchForm();
         $this->set("frmSearch", $frmSearch);
-        $this->set("canEdit", $this->objPrivilege->canViewSmsTemplate($this->admin_id, true));
+        $this->set("canEdit", $this->objPrivilege->canEditSmsTemplate($this->admin_id, true));
         $this->_template->addJs('js/jscolor.js');
         $this->_template->render();
     }
@@ -95,7 +95,7 @@ class SmsTemplatesController extends AdminBaseController
         $this->set('pageSize', $pagesize);
         $this->set('postedData', $post);
         $this->set('langId', $this->adminLangId);
-        $this->set("canEdit", $this->objPrivilege->canViewSmsTemplate($this->admin_id, true));
+        $this->set("canEdit", $this->objPrivilege->canEditSmsTemplate($this->admin_id, true));
         $this->_template->render(false, false);
     }
 

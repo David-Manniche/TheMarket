@@ -4,6 +4,9 @@ $arr_flds = array(
         'option_identifier'=>Labels::getLabel('LBL_Option_Name', $siteLangId),
         'action' => Labels::getLabel('LBL_Action', $siteLangId),
     );
+    if (!$canEdit) {
+        unset($arr_flds['select_all']);
+    }
 if (count($arr_listing) > 0) {
     $arr_flds = array_merge(array('select_all'=>Labels::getLabel('LBL_Select_all', $siteLangId)), $arr_flds);
 }

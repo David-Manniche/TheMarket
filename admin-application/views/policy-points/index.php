@@ -14,12 +14,6 @@
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_Policy_Points_Listing', $adminLangId); ?></h4>
                         <?php
-                            $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
-                            $li = $ul->appendElement("li", array('class'=>'droplink'));
-                            $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                            $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                            $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-
                         /* if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canView) {
                             $innerLiExport=$innerUl->appendElement('li');
                             $innerLiExport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Export', $adminLangId),"onclick"=>"addExportForm(".Importexport::TYPE_POLICY_POINTS.")"), Labels::getLabel('LBL_Export', $adminLangId), true);
@@ -30,6 +24,12 @@
                         } */
 
                         if ($canEdit) {
+                            $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
+                            $li = $ul->appendElement("li", array('class'=>'droplink'));
+                            $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
+                            $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
+                            $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
+
                             $innerLi=$innerUl->appendElement('li');
                             $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Activate', $adminLangId),"onclick"=>"toggleBulkStatues(1)"), Labels::getLabel('LBL_Activate', $adminLangId), true);
 
@@ -41,8 +41,8 @@
 
                             $innerLiAddCat=$innerUl->appendElement('li');
                             $innerLiAddCat->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Add_Policy_Point', $adminLangId),"onclick"=>"addPolicyPointForm(0)"), Labels::getLabel('LBL_Add_Policy_Point', $adminLangId), true);
+                            echo $ul->getHtml();
                         }
-                        echo $ul->getHtml();
                         ?>
                     </div>
                     <div class="sectionbody">
