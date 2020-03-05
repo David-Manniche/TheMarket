@@ -15508,7 +15508,7 @@ img.mfp-img {
   border-color: #F00 !important; }
 
 .errorlist {
-  margin: 0;
+  margin: 3px 0;
   list-style: none;
   padding: 2px 10px 4px;
   position: relative;
@@ -31513,11 +31513,9 @@ max-height: 408px;*/ }
       width: 34px;
       height: 34px;
       fill: var(--brand-color) !important; }
-    .widget-scroll .widget-stats a {
-      color: inherit; }
     .widget-scroll .widget-stats .cards,
     .widget-scroll .widget-stats .box--share {
-      min-height: 170px; }
+      min-height: 188px; }
 
 .share-earn {
   display: flex;
@@ -33285,7 +33283,7 @@ html.quick-view--open {
   justify-content: center;
   position: -webkit-sticky;
   position: sticky;
-  top: 156px;
+  top: 146px;
   z-index: 1; }
   @media (max-width: 1199.98px) {
     .nav-detail {
@@ -34568,6 +34566,14 @@ div.faqanswer {
 .forgot {
   text-align: left;
   font-size: 0.75em; }
+
+.otp-heading {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1; }
+  .otp-heading a.otp-link {
+    font-size: 0.8rem; }
 
 /*package page**/
 .banner-over-txt {

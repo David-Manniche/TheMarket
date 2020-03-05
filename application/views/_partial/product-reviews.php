@@ -38,7 +38,7 @@ if ($totReviews) {
 <?php if($canSubmitFeedback || $totReviews > 0) { ?>
 <div class="row mt-5">
     <?php if ($canSubmitFeedback) { ?>
-    <div class="<?php echo ($totReviews > 0) ? 'col-auto' : ''; ?>">
+    <div class="col-auto <?php echo ($totReviews > 0) ? 'col-auto' : ''; ?>">
         <a onClick="rateAndReviewProduct(<?php echo $product_id; ?>)" href="javascript:void(0)" class="btn btn--primary <?php echo ($totReviews > 0) ? 'btn--block' : '' ; ?>"><?php echo Labels::getLabel('Lbl_Add_Review', $siteLangId); ?></a>
     </div>
     <?php } ?>

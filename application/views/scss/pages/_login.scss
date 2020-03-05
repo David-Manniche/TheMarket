@@ -358,8 +358,9 @@
 
         input {
             &[type="submit"] {
-                background: $secondary-color; color:$secondary-color-inverse;
-                            text-transform: uppercase;
+                background: $secondary-color;
+                color: $secondary-color-inverse;
+                text-transform: uppercase;
                 font-size: 1em;
                 border: none;
                 display: block;
@@ -442,4 +443,16 @@
 .forgot {
     text-align: #{$end-direction};
     font-size: 0.75em;
+}
+
+.otp-heading {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+
+    a.otp-link {
+        font-size: 0.8rem;
+
+    }
 }
