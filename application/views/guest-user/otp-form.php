@@ -19,8 +19,8 @@ $btnFld->setFieldTagAttribute('class', 'btn--block');
     <div class="form-side">
         <div class="section-head">
             <div class="section__heading">
-                <h2 class='formTitle'><?php echo Labels::getLabel('LBL_ONE_TYPE_PASSWORD?', $siteLangId);?></h2>
-                <p class="note"><?php echo Labels::getLabel('LBL_ENTER_THE_OTP_YOU_RECEIVED_ON_YOUR_PHONE_NUMBER', $siteLangId);?></p>
+                <h2 class="formTitle-js"><?php echo Labels::getLabel('LBL_ONE_TYPE_PASSWORD?', $siteLangId);?></h2>
+                <span class="form-text text-muted"><?php echo Labels::getLabel('LBL_ENTER_THE_OTP_YOU_RECEIVED_ON_YOUR_PHONE_NUMBER', $siteLangId);?></span>
             </div>
         </div>
         <div class="section-body">
@@ -53,7 +53,7 @@ $btnFld->setFieldTagAttribute('class', 'btn--block');
                         </span>
                         <?php echo $frm->getFieldHtml('user_id'); ?>
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col">
                                 <?php echo $frm->getFieldHtml('btn_submit'); ?>
                             </div>
                         </div>

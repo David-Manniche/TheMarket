@@ -60,7 +60,7 @@ $(document).ready(function(){
             var phoneNumber = $(lastFormElement + " input[name='user_phone']").val();
 
             $(lastFormElement).after(t.html);
-            $('.formTitle').remove();
+            $('.formTitle-js').remove();
 
             var resendFunction = 'resendOtp()';
             if (0 < updateToDbFrm) {
