@@ -149,3 +149,8 @@ Bugs:
     => 035029 - Favorite list pagination is not working.
     => 035036 - If multiple items added to cart from wishlist or favorite list a long message is displayed on cart page with each item name.
     => 034953 - Vol discount & Special Price, select all option shouldn't be there when there is no data.
+
+    
+New Features:
+    => 71188 - Add setting for making brand field optional
+

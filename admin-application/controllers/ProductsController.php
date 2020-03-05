@@ -965,7 +965,10 @@ class ProductsController extends AdminBaseController
         $frm = new Form('frmProductIntialSetUp');
         $frm->addRequiredField(Labels::getLabel('LBL_Product_Identifier', $this->adminLangId), 'product_identifier');
         $frm->addSelectBox(Labels::getLabel('LBL_Product_Type', $this->adminLangId), 'product_type', Product::getProductTypes($this->adminLangId), Product::PRODUCT_TYPE_PHYSICAL, array(), '');
-        $frm->addRequiredField(Labels::getLabel('LBL_Brand', $this->adminLangId), 'brand_name');
+        $brandFld = $frm->addTextBox(Labels::getLabel('LBL_Brand', $this->adminLangId), 'brand_name');
+        if (FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) {
+            $brandFld->requirements()->setRequired();
+        }
         if($prodCatId > 0){
             $prodCat = new ProductCategory();
             $selectedCatName = $prodCat->getParentTreeStructure($prodCatId, 0, '', $this->adminLangId);
@@ -1022,7 +1025,7 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
-        if($post['product_brand_id'] < 1){
+        if($post['product_brand_id'] < 1 && FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)){
             Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Brand_From_List', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }

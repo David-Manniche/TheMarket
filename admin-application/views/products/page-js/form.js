@@ -43,12 +43,12 @@
 
     setUpProduct = function(frm) {  
         //if (!$(frm).validate()) return;
-        var getFrm = $('#tabs_001 form')[0];
+        var getFrm = $('#tabs_001 form')[0];    
         var validator = $(getFrm).validation({errordisplay: 3});
-        validator.validate();
+        validator.validate();       
         if (!validator.isValid()) return;
         //var data = fcom.frmData(frm);
-        var data = fcom.frmData(getFrm);
+        var data = fcom.frmData(getFrm);   
         fcom.updateWithAjax(fcom.makeUrl('Products', 'setUpProduct'), data, function(t) {
             productAttributeAndSpecificationsFrm(t.productId);
             if(t.productType == PRODUCT_TYPE_DIGITAL){

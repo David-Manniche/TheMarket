@@ -1208,7 +1208,7 @@ class CheckoutController extends MyAppController
                     'op_product_name' => $langSpecificProductInfo['product_name'],
                     'op_selprod_title' => $op_selprod_title,
                     'op_selprod_options' => $op_selprod_options,
-                    'op_brand_name' => $langSpecificProductInfo['brand_name'],
+                    'op_brand_name' => !empty($langSpecificProductInfo['brand_name']) ? $langSpecificProductInfo['brand_name'] : '',
                     'op_shop_name' => $langSpecificProductInfo['shop_name'],
                     'op_shipping_duration_name' => $sduration_name,
                     'op_shipping_durations' => $shippingDurationTitle,
