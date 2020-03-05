@@ -145,3 +145,5 @@ Bug :
     => 034493 - Price range slider added check to validate min/max price.
     => 034259 - After applying filter> reset button is not listing until we refresh page manually.
     => 035105 - Wrong import instructions heading
+
+====================TV-9.1.3.20200305==================
