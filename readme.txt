@@ -146,3 +146,4 @@ Bugs:
     => 035102 - Select row(checkbox) should not be displayed if readonly permission allowed to sub admin for any page in backend.
     => 035033 - If product available date is of future then no need to display select option(checkbox) in wishlist.
     => 035030 - If select all checkbox is pressed and all options are displaying, while visiting to next page all options are still displayed and select all checkbox still checked.
+    => 035029 - Favorite list pagination is not working.

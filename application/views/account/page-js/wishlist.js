@@ -141,10 +141,10 @@ $("document").ready(function(){
 	}
 
 	goToFavouriteListingSearchPage = function(page){
-		if(typeof page==undefined || page == null){
+		if(typeof page=='undefined' || page == null){
 			page =1;
 		}
-		 var frm = document.frmProductSearchPaging;
+		 var frm = document.favtlistForm;
 		$(frm.page).val(page);
 
 		searchFavouriteListItems( frm, 0,page );
