@@ -99,6 +99,7 @@ $(document).ready(function(){
     };
     
     resendOtp = function (countryIso = '', dialCode = '',phone = ''){
+        clearInterval(otpIntervalObj);
         var postparam = (1 == phone) ? '' : "user_country_iso="+countryIso+"&user_dial_code="+dialCode+"&user_phone=" + phone;
         $.systemMessage(langLbl.processing, 'alert--process', false);
 		fcom.ajax(fcom.makeUrl('Account', 'resendOtp'), postparam, function(t) {
@@ -124,12 +125,16 @@ $(document).ready(function(){
                 $.systemMessage(t.msg,'alert--danger', false);
                 $(frm.btn_submit).removeAttr('disabled');
                 return false;
+            } else if ('undefined' != typeof t.html) {
+                $.systemMessage.close();
+                $(phoneNumberdv + " .otpForm-js").remove();
+                var lastFormElement = phoneNumberdv + ' form:last';
+                $(lastFormElement).after(t.html);
+                stylePhoneNumberFld();
+            } else {
+                $.systemMessage(t.msg,'alert--success', false);
+                changePhoneNumberForm();
             }
-            $.systemMessage.close();
-            $(phoneNumberdv + " .otpForm-js").remove();
-            var lastFormElement = phoneNumberdv + ' form:last';
-            $(lastFormElement).after(t.html);
-            stylePhoneNumberFld();
         });
         return false;
     };

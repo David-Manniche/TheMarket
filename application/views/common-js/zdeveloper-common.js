@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(function () {    
     setTimeout(function () {
         $('body').addClass('loaded');
     }, 1000);
@@ -92,23 +92,27 @@ $(document).on('keyup', 'input.otpVal', function(e){
     element.children("input.otpVal").eq(0).focus();
 });
 
+var otpIntervalObj;
 startOtpInterval = function (parent = '') {
-    return true;
-    /* var parent = '' != parent ? parent + ' ' : '';
+    if ('undefined' != typeof otpIntervalObj) {
+        clearInterval(otpIntervalObj);
+    }
+
+    var parent = '' != parent ? parent + ' ' : '';
     var element = $(parent + ".intervalTimer-js");
     var counter = langLbl.otpInterval;
     element.parent().parent().show();
     element.text(counter);
     $(parent + '.resendOtp-js').addClass('d-none');
-    var interval = setInterval(function(){
+    otpIntervalObj = setInterval(function(){
         counter--;
         if (counter === 0) {
-            clearInterval(interval);
+            clearInterval(otpIntervalObj);
             $(parent + '.resendOtp-js').removeClass('d-none');
             element.parent().parent().hide();
         }
         element.text(counter);
-    }, 1000); */
+    }, 1000);
 }
 
 loginPopupOtp = function (userId, getOtpOnly = 0){
