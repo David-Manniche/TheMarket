@@ -147,3 +147,4 @@ Bugs:
     => 035033 - If product available date is of future then no need to display select option(checkbox) in wishlist.
     => 035030 - If select all checkbox is pressed and all options are displaying, while visiting to next page all options are still displayed and select all checkbox still checked.
     => 035029 - Favorite list pagination is not working.
+    => 035036 - If multiple items added to cart from wishlist or favorite list a long message is displayed on cart page with each item name.
