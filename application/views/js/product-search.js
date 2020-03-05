@@ -286,7 +286,8 @@ function brandFilters(){
 	var brands= getSelectedBrands();		
 	if ( brands.length ){
 		data=data+"&brand="+[brands];
-	}	
+	}
+    $('body').removeClass('collection-sidebar--on');
 	$.facebox(function() {
 		fcom.ajax(url, data, function(ans){
 		$.facebox(ans,'faceboxWidth');

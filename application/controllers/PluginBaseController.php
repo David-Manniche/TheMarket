@@ -35,9 +35,8 @@ class PluginBaseController extends MyAppController
         if (!is_array($fields)) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_INVALID_FORM_FIELDS', $this->siteLangId));
         }
-        $keyName = $this->getKeyName();
         $frm = PluginSetting::getForm($fields, $this->siteLangId);
-
+        $keyName = (get_called_class())::KEY_NAME;
         $pluginSetting = new PluginSetting(0, $keyName);
         $settings = $pluginSetting->get($this->siteLangId);
 

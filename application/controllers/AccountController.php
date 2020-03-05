@@ -3468,7 +3468,8 @@ class AccountController extends LoggedUserController
         $this->set('frm', $frm);
         $this->set('updatePhnFrm', $updatePhnFrm);
         $this->set('siteLangId', $this->siteLangId);
-        $this->_template->render(false, false, 'account/change-phone-form.php');
+        $json['html'] = $this->_template->render(false, false, 'account/change-phone-form.php', true, false);
+        FatUtility::dieJsonSuccess($json);
     }
 
     private function sendOtp(int $userId, string $countryIso, string $dialCode, int $phone)
@@ -3515,10 +3516,12 @@ class AccountController extends LoggedUserController
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
+        
         $otpFrm = $this->getOtpForm();
         $otpFrm->fill(['user_id' => $userId]);
         $this->set('frm', $otpFrm);
-        $this->_template->render(false, false, 'guest-user/otp-form.php');
+        $json['html'] = $this->_template->render(false, false, 'guest-user/otp-form.php', true, false);
+        FatUtility::dieJsonSuccess($json);
     }
 
     public function validateOtp($updatePhnFrm = 0)

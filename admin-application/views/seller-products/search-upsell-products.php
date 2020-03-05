@@ -27,11 +27,12 @@ foreach ($arrListing as $selProdId => $upsellProds) {
                 break;
             case 'product_name':
                 // last Param of getProductDisplayTitle function used to get title in html form.
-                $productName = SellerProduct::getProductDisplayTitle($selProdId, $adminLangId, true);
+                $productName = SellerProduct::getProductDisplayTitle($selProdId, $adminLangId, true).'<br>'.Labels::getLabel('LBL_Seller', $adminLangId).': '.$upsellProds['credential_username'];
                 $td->appendElement('plaintext', array(), $productName, true);
                 break;
             case 'upsell_products':
                 $ul = $td->appendElement("ul", array("class"=>"list-tags"));
+                unset($upsellProds['credential_username']);
                 foreach ($upsellProds as $upsellProd) {
                     $li = $ul->appendElement("li");
                     $li->appendElement('plaintext', array(), '<span>'.$upsellProd['selprod_title'].' <i class="remove_buyTogether remove_param fas fa-times" onClick="deleteSelprodUpsellProduct('.$selProdId.', '.$upsellProd['selprod_id'].')"></i></span>', true);

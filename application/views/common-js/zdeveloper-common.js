@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(function () {    
     setTimeout(function () {
         $('body').addClass('loaded');
     }, 1000);
@@ -92,27 +92,46 @@ $(document).on('keyup', 'input.otpVal', function(e){
     element.children("input.otpVal").eq(0).focus();
 });
 
+var otpIntervalObj;
+startOtpInterval = function (parent = '') {
+    if ('undefined' != typeof otpIntervalObj) {
+        clearInterval(otpIntervalObj);
+    }
+
+    var parent = '' != parent ? parent + ' ' : '';
+    var element = $(parent + ".intervalTimer-js");
+    var counter = langLbl.otpInterval;
+    element.parent().parent().show();
+    element.text(counter);
+    $(parent + '.resendOtp-js').addClass('d-none');
+    otpIntervalObj = setInterval(function(){
+        counter--;
+        if (counter === 0) {
+            clearInterval(otpIntervalObj);
+            $(parent + '.resendOtp-js').removeClass('d-none');
+            element.parent().parent().hide();
+        }
+        element.text(counter);
+    }, 1000);
+}
+
 loginPopupOtp = function (userId, getOtpOnly = 0){
     $.mbsmessage(langLbl.processing, false, 'alert--process');
     fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
-        try{
-            t = $.parseJSON(t);
-            if(typeof t.status != 'undefined' &&  1 > t.status){
-                $.mbsmessage(t.msg, false, 'alert--danger');
-            } else {
-                $.mbsmessage(t.msg, true, 'alert--success');
-            }
+        t = $.parseJSON(t);
+        if(1 > t.status){
+            $.mbsmessage(t.msg, false, 'alert--danger');
             return false;
         }
-        catch(exc){
-            if (0 < $('#facebox .loginpopup').length) {
-                fcom.updateFaceboxContent(t, 'faceboxWidth loginpopup');
-            } else {
-                $('#sign-in').html(t);
-            }
-
-            $.mbsmessage.close();
+        $.mbsmessage.close();
+        var parent = '';
+        if (0 < $('#facebox .loginpopup').length) {
+            fcom.updateFaceboxContent(t.html, 'faceboxWidth loginpopup');
+            var parent = '.loginpopup';
+        } else {
+            $('#sign-in').html(t.html);
         }
+        startOtpInterval(parent);
     });
     return false;
 };

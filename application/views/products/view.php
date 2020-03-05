@@ -274,7 +274,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                     $qtyFieldName =  $qtyField->getCaption();
                                     if (strtotime($product['selprod_available_from'])<= strtotime(FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d'))) { ?>
                                     <div class="row align-items-end">
-                                        <div class="col-xl-4 col-lg-5 col-md-5 mb-2">
+                                        <div class="col-xl-4 mb-2">
                                             <div class="form__group form__group-select">
                                                 <label class="h6"><?php echo $qtyFieldName; ?></label>
                                                 <div class="qty-wrapper">
@@ -288,7 +288,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xl-8 col-lg-7 col-md-7 mb-2">
+                                        <div class="col-xl-8 mb-2">
                                             <label class="h6">&nbsp;</label>
                                             <div class="buy-group">
                                                 <?php if (strtotime($product['selprod_available_from']) <= strtotime(FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d'))) {
@@ -329,24 +329,24 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                 if (isset($volumeDiscountRows) && !empty($volumeDiscountRows) && $product['in_stock']) { ?>
                                 <div class="gap"></div>
                                 <div class="h6"><?php echo Labels::getLabel('LBL_Wholesale_Price_(Piece)', $siteLangId); ?>:</div>
-                                <ul class="<?php echo (count($volumeDiscountRows) > 1) ? 'js--discount-slider' : ''; ?> discount-slider" dir="<?php echo CommonHelper::getLayoutDirection(); ?>">
+                                <div class="<?php echo (count($volumeDiscountRows) > 1) ? 'js--discount-slider' : ''; ?> discount-slider" dir="<?php echo CommonHelper::getLayoutDirection(); ?>">
                                     <?php foreach ($volumeDiscountRows as $volumeDiscountRow) {
                                             $volumeDiscount = $product['theprice'] * ($volumeDiscountRow['voldiscount_percentage'] / 100);
                                             $price = ($product['theprice'] - $volumeDiscount); ?>
-                                            <li>
+                                            <div class="item">
                                                 <div class="qty__value"><?php echo($volumeDiscountRow['voldiscount_min_qty']); ?> <?php echo Labels::getLabel('LBL_Or_more', $siteLangId); ?>
                                                     (<?php echo $volumeDiscountRow['voldiscount_percentage'].'%'; ?>) <span class="item__price"><?php echo CommonHelper::displayMoneyFormat($price); ?> /
                                                         <?php echo Labels::getLabel('LBL_Product', $siteLangId); ?></span></div>
-                                            </li>
+                                            </div>
                                     <?php } ?>
-                                </ul>
+                                </div>
                                 <script type="text/javascript">
                                     $("document").ready(function() {
                                         $('.js--discount-slider').slick(getSlickSliderSettings(2, 1, langLbl.layoutDirection, false, {
                                             1199: 2,
                                             1023: 2,
-                                            767: 1,
-                                            480: 1
+                                            767:2,
+                                            480: 2
                                         }));
                                     });
                                 </script>
