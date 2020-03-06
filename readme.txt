@@ -163,3 +163,5 @@ Bug:
     
 New Features:
     => 71188 - Add setting for making brand field optional
+
+===================TV-9.1.3.20200306==================
