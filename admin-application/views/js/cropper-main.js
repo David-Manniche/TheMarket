@@ -140,6 +140,10 @@ cropImage = function(file, options, callback, inputBtn){
 						var frmName = $(inputBtn).attr('data-frm')
 						formData.append("frmName", frmName);
 					}
+                    var fileType = $(inputBtn).attr('data-file_type');
+					if (typeof fileType !== typeof undefined && fileType !== false) {
+						formData.append("file_type", fileType);
+					}
 					window[callback](formData);
 				}, uploadedImageType);
 			}, uploadedImageType);

@@ -140,7 +140,7 @@ class AttachedFile extends MyAppModel
     {
         return $arr = array(
         static::RATIO_TYPE_SQUARE => Labels::getLabel('LBL_1*1', $langId),
-        static::RATIO_TYPE_RECTANGULAR => Labels::getLabel('LBL_16*5', $langId)
+        static::RATIO_TYPE_RECTANGULAR => Labels::getLabel('LBL_16*9', $langId)
         );
         return $arr;
     }
