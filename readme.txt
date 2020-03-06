@@ -152,6 +152,7 @@ Bugs:
     => 035180 - User retain On guest affiliate page if logged in with buyer/seller account.
     => 035131 - On guest advertiser registeration user phone validation added on first tab.
     => 034947 - If product name contains "&" then under vol discount & special price it's displaying "&amp" when select through seller products page.
+    => 035118 - Invalid email address is accepting while guest login.
 
 New Features:
     => 71188 - Add setting for making brand field optional
