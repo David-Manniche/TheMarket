@@ -108,7 +108,7 @@ if (count($arr_listing) == 0) {
     $tbl->appendElement('tr')->appendElement('td', array('colspan'=>count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
 }
 $frm = new Form('frmBlogPostCatListing', array('id'=>'frmBlogPostCatListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('BlogPostCategories', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');

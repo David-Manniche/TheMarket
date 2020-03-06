@@ -74,7 +74,7 @@ if (count($arr_listing) == 0) {
 }
 
 $frm = new Form('frmShpDurationListing', array('id'=>'frmShpDurationListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->addHiddenField('', 'status');
 

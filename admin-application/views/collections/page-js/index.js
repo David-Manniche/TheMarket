@@ -370,14 +370,6 @@ $(document).ready(function() {
         }
     };
 
-	toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmCollectionListing input[name='status']").val(status);
-        $("#frmCollectionListing").submit();
-    };
-
     deleteSelected = function(){
         if(!confirm(langLbl.confirmDelete)){
             return false;

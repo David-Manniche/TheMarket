@@ -9,7 +9,7 @@ $arr_flds = array(
         'bpcomment_added_on' => Labels::getLabel('LBL_Posted_On', $adminLangId),
         'action' => Labels::getLabel('LBL_Action', $adminLangId),
     );
-    if (!$canEdit) {
+    if (!$canEdit || empty($arr_listing)) {
         unset($arr_flds['select_all']);
     }
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered','id'=>'post'));
@@ -75,7 +75,7 @@ if (count($arr_listing) == 0) {
 }
 
 $frm = new Form('frmBlogCmtsListing', array('id'=>'frmBlogCmtsListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->addHiddenField('', 'status');
 

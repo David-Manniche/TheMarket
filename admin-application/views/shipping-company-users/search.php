@@ -75,7 +75,7 @@ if (count($arr_listing) == 0) {
 }
 
 $frm = new Form('frmShpCompUsrListing', array('id'=>'frmShpCompUsrListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadUserList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Users', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');

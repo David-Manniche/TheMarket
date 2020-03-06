@@ -64,17 +64,23 @@
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_Deleted_Orders_List', $adminLangId); ?> </h4>
                         <?php
-                            $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
-                            $li = $ul->appendElement("li", array('class'=>'droplink'));
-                            $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-
-                            $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                            $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Back_to_Orders', $adminLangId), "onclick"=>"backToOrders()"), Labels::getLabel('LBL_Back_to_Orders', $adminLangId), true);
-
-                            echo $ul->getHtml();
+                            $data = [
+                                'adminLangId' => $adminLangId,
+                                'statusButtons' => false,
+                                'deleteButton' => false,
+                                'otherButtons' => [
+                                    [
+                                        'attr' => [
+                                            'href' => 'javascript:void(0)',
+                                            'onclick' => 'backToOrders()',
+                                            'title' => Labels::getLabel('LBL_Back_to_Orders', $adminLangId)
+                                        ],
+                                        'label' => '<i class="fas fa-arrow-left"></i>'
+                                    ],
+                                ]
+                            ];
+        
+                            $this->includeTemplate('_partial/action-buttons.php', $data, false);
                         ?>
                     </div>
                     <div class="sectionbody">

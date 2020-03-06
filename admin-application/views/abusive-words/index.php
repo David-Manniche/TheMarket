@@ -35,20 +35,24 @@
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_Abusive_Keyword_List', $adminLangId); ?> </h4>
                         <?php
-                            $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
-                            $li = $ul->appendElement("li", array('class'=>'droplink'));
-                            $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Add_Keyword', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                            $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                            $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Add_Keyword', $adminLangId),"onclick"=>"abusiveKeywordForm(0)"), Labels::getLabel('LBL_Add_Keyword', $adminLangId), true);
-
-                        if ($canEdit) {
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteSelected()"), Labels::getLabel('LBL_Delete', $adminLangId), true);
-                        }
-
-                            echo $ul->getHtml();
+                            if ($canEdit) {
+                                $data = [
+                                    'adminLangId' => $adminLangId,
+                                    'statusButtons' => false,
+                                    'otherButtons' => [
+                                        [
+                                            'attr' => [
+                                                'href' => 'javascript:void(0)',
+                                                'onclick' => 'abusiveKeywordForm(0)',
+                                                'title' => Labels::getLabel('LBL_Add_Keyword', $adminLangId)
+                                            ],
+                                            'label' => '<i class="fas fa-plus"></i>'
+                                        ],
+                                    ]
+                                ];
+            
+                                $this->includeTemplate('_partial/action-buttons.php', $data, false);
+                            }
                         ?>
                     </div>
                     <div class="sectionbody">

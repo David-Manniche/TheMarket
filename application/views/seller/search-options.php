@@ -90,7 +90,7 @@ foreach ($arr_listing as $sn => $row) {
     }
 }
 $frm = new Form('frmOptionListing', array('id'=>'frmOptionListing'));
-$frm->setFormTagAttribute('class', 'form');
+$frm->setFormTagAttribute('class', 'form actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Seller', 'bulkOptionsDelete'));
 $frm->addHiddenField('', 'status');

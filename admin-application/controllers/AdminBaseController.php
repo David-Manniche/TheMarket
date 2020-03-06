@@ -143,6 +143,7 @@ class AdminBaseController extends FatController
         'cloneNotification' => Labels::getLabel('LBL_DO_YOU_REALLY_WANT_TO_CLONE?', $this->adminLangId),
         'clonedNotification' => Labels::getLabel('LBL_NOTIFICATION_CLONED_SUCCESSFULLY', $this->adminLangId),
         'confirmRemoveBlog' => Labels::getLabel('LBL_Do_you_want_to_remove_this_blog', $this->adminLangId),
+        'actionButtonsClass' => Labels::getLabel('LBL_PLEASE_ADD_"actionButtons-js"_CLASS_TO_FORM_TO_PERFORM_ACTION', $this->adminLangId),
         );
 
         $languages = Language::getAllNames(false);

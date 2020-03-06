@@ -117,14 +117,6 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 		loadSellerProducts(frm);
 	};
 
-	toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmSellerProductsListing input[name='status']").val(status);
-        $("#frmSellerProductsListing").submit();
-    };
-
 	toggleSellerProductStatus = function(e,obj){
 		if(!confirm(langLbl.confirmUpdateStatus)){
 			e.preventDefault();

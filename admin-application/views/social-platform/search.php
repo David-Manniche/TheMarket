@@ -7,7 +7,7 @@ $arr_flds = array(
     'splatform_active' => Labels::getLabel('LBL_Status', $adminLangId),
     'action' => Labels::getLabel('LBL_Action', $adminLangId),
 );
-if (!$canEdit) {
+if (!$canEdit || empty($arr_listing)) {
     unset($arr_flds['select_all']);
 }
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive'));
@@ -83,7 +83,7 @@ if (count($arr_listing) == 0) {
     $tbl->appendElement('tr')->appendElement('td', array('colspan'=>count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
 }
 $frm = new Form('frmSocialPlatformListing', array('id'=>'frmSocialPlatformListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('SocialPlatform', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');

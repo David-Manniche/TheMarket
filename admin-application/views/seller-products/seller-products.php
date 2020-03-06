@@ -161,7 +161,7 @@ if (count($arrListing) == 0) {
 }
 
 $frm = new Form('frmSelProdListing', array('id'=>'frmSelProdListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('SellerProducts', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');

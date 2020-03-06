@@ -130,15 +130,7 @@ $(document).ready(function() {
             }
         });
     };
-
-	toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmSocialPlatformListing input[name='status']").val(status);
-        $("#frmSocialPlatformListing").submit();
-    };
-
+    
     deleteSelected = function(){
         if(!confirm(langLbl.confirmDelete)){
             return false;

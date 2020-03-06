@@ -9,7 +9,7 @@ $arr_flds = array(
     'slide_active'    => Labels::getLabel('LBL_Status', $adminLangId),
     'action'    =>    Labels::getLabel('LBL_Action', $adminLangId),
     );
-if (!$canEdit) {
+if (!$canEdit || empty($arrListing)) {
     unset($arr_flds['dragdrop']);
     unset($arr_flds['select_all']);
 }
@@ -104,7 +104,7 @@ if (count($arrListing) == 0) {
 }
 
 $frm = new Form('frmSlidesListing', array('id'=>'frmSlidesListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Slides', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');

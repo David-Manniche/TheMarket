@@ -38,28 +38,33 @@
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('Lbl_Collection_Listing', $adminLangId);?></h4>
                         <?php
-                        $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
-                         $li = $ul->appendElement("li", array('class'=>'droplink'));
-                        $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                        $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                        $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-
+                        $data = [
+                            'statusButtons' => $canEdit,
+                            'deleteButton' => $canEdit,
+                            'adminLangId' => $adminLangId
+                        ];
+                        
                         if ($canEdit) {
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Activate', $adminLangId),"onclick"=>"toggleBulkStatues(1)"), Labels::getLabel('LBL_Activate', $adminLangId), true);
-
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Deactivate', $adminLangId),"onclick"=>"toggleBulkStatues(0)"), Labels::getLabel('LBL_Deactivate', $adminLangId), true);
-
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteSelected()"), Labels::getLabel('LBL_Delete', $adminLangId), true);
-                            
-                            $innerLiCollectionForm=$innerUl->appendElement('li');
-                            $innerLiCollectionForm->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('Lbl_Add_Collection', $adminLangId),"onclick"=>"addCollectionForm(0)"), Labels::getLabel('Lbl_Add_Collection', $adminLangId), true);
+                            $data['otherButtons'][] = [
+                                'attr' => [
+                                    'href' => 'javascript:void(0)',
+                                    'onclick' => 'addCollectionForm(0)',
+                                    'title' => Labels::getLabel('Lbl_Add_Collection', $adminLangId)
+                                ],
+                                'label' => '<i class="fas fa-plus"></i>'
+                            ];
                         }
-                        $innerLiAddCollectionLayouts=$innerUl->appendElement('li'); $innerLiAddCollectionLayouts->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel(
-                        'Lbl_Collection_Layouts_Instructions', $adminLangId), "onclick"=>"collectionLayouts()"), Labels::getLabel('Lbl_Collection_Layouts_Instructions', $adminLangId), true);
-                        echo $ul->getHtml();
+
+                        $data['otherButtons'][] = [
+                            'attr' => [
+                                'href' => 'javascript:void(0)',
+                                'onclick' => 'collectionLayouts()',
+                                'title' => Labels::getLabel('Lbl_Banner_Layouts_Instructions', $adminLangId)
+                            ],
+                            'label' => '<i class="fas fa-file-image"></i>'
+                        ];
+    
+                        $this->includeTemplate('_partial/action-buttons.php', $data, false);
                         ?>
                     </div>
                     <div class="sectionbody">

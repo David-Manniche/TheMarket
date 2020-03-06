@@ -370,14 +370,6 @@ $(document).on('change','.collection-language-js',function(){
 		$("#frmCollectionsListing").submit();
 	};
 
-	toggleBulkStatues = function(status){
-		if(!confirm(langLbl.confirmUpdateStatus)){
-			return false;
-		}
-		$("#frmShopListing input[name='status']").val(status);
-		$("#frmShopListing").submit();
-	};
-
 	bannerPopupImage = function(inputBtn){
 		if (inputBtn.files && inputBtn.files[0]) {
 	        fcom.ajax(fcom.makeUrl('Shops', 'imgCropper'), '', function(t) {

@@ -96,7 +96,7 @@ if (count($arr_listing) == 0) {
 }
 
 $frm = new Form('frmPluginListing', array('id' => 'frmPluginListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('plugins', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');
@@ -106,20 +106,12 @@ $frm->addHiddenField('', 'plugin_type', $pluginType);?>
         <h4><?php echo CommonHelper::replaceStringData(Labels::getLabel('LBL_{PLUGINNAME}_PLUGINS', $adminLangId), ['{PLUGINNAME}' =>  $pluginTypes[$type]]); ?> </h4>
         <?php
         if ($canEdit && !in_array($pluginType, Plugin::HAVING_KINGPIN)) {
-            $ul = new HtmlElement("ul", array("class" => "actions actions--centered"));
-            $li = $ul->appendElement("li", array('class' => 'droplink'));
+            $data = [
+                'adminLangId' => $adminLangId,
+                'deleteButton' => false
+            ];
 
-            $li->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-            $innerDiv = $li->appendElement('div', array('class' => 'dropwrap'));
-            $innerUl = $innerDiv->appendElement('ul', array('class' => 'linksvertical'));
-            
-            $innerLi = $innerUl->appendElement('li');
-            $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Activate', $adminLangId), "onclick" => "toggleBulkStatues(1)"), Labels::getLabel('LBL_Activate', $adminLangId), true);
-
-            $innerLi = $innerUl->appendElement('li');
-            $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Deactivate', $adminLangId), "onclick" => "toggleBulkStatues(0)"), Labels::getLabel('LBL_Deactivate', $adminLangId), true);
-
-            echo $ul->getHtml();
+            $this->includeTemplate('_partial/action-buttons.php', $data, false);
         }
         ?>
     </div>

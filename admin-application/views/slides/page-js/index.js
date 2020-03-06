@@ -155,14 +155,6 @@ $(document).on('change','.prefDimensions-js',function(){
 		});
 	};
 
-	toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmSlidesListing input[name='status']").val(status);
-        $("#frmSlidesListing").submit();
-    };
-
     deleteSelected = function(){
         if(!confirm(langLbl.confirmDelete)){
             return false;

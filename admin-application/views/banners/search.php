@@ -83,7 +83,7 @@ if (count($arr_listing) == 0) {
 }
 
 $frm = new Form('frmBannersLocListing', array('id'=>'frmBannersLocListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Banners', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');

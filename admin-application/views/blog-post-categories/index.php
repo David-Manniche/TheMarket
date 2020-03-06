@@ -31,30 +31,25 @@
                 <section class="section">
                     <div class="sectionhead">
                         <h4>Blog Post Category List </h4>
-                        <?php if ($canEdit) {
-                            $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
-                            $li = $ul->appendElement("li", array('class'=>'droplink'));
-                            $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                            $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                            $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-
-                            if ($canEdit) {
-                                $innerLi=$innerUl->appendElement('li');
-                                $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Activate', $adminLangId),"onclick"=>"toggleBulkStatues(1)"), Labels::getLabel('LBL_Activate', $adminLangId), true);
-
-                                $innerLi=$innerUl->appendElement('li');
-                                $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Deactivate', $adminLangId),"onclick"=>"toggleBulkStatues(0)"), Labels::getLabel('LBL_Deactivate', $adminLangId), true);
-
-                                $innerLi=$innerUl->appendElement('li');
-                                $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteSelected()"), Labels::getLabel('LBL_Delete', $adminLangId), true);
-                            }
-
-                            $innerLiAddCat=$innerUl->appendElement('li');
-                            $innerLiAddCat->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Add_Blog_Post_Category', $adminLangId),"onclick"=>"addCategoryForm(0)"), Labels::getLabel('LBL_Add_Blog_Post_Category', $adminLangId), true);
-
-                            echo $ul->getHtml();
-                            /*<a href="javascript:void(0)" class="themebtn btn-default btn-sm" onClick="addCategoryForm(0)";>Add Blog Post Category</a>*/
-                        } ?>
+                        <?php
+                        if ($canEdit) {
+                            $data = [
+                                    'adminLangId' => $adminLangId,
+                                    'otherButtons' => [
+                                        [
+                                            'attr' => [
+                                                'href' => 'javascript:void(0)',
+                                                'onclick' => 'addCategoryForm(0)',
+                                                'title' => Labels::getLabel('LBL_Add_Blog_Post_Category', $adminLangId)
+                                            ],
+                                            'label' => '<i class="fas fa-plus"></i>'
+                                        ]
+                                    ]
+                                ];
+    
+                            $this->includeTemplate('_partial/action-buttons.php', $data, false);
+                        }
+                        ?>
                     </div>
                     <div class="sectionbody">
                         <div class="tablewrap">

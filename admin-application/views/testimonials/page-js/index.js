@@ -152,14 +152,6 @@ $(document).ready(function() {
         });
     };
 
-	toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmTestimonialListing input[name='status']").val(status);
-        $("#frmTestimonialListing").submit();
-    };
-
     clearSearch = function() {
         document.frmSearch.reset();
         searchTestimonial(document.frmSearch);

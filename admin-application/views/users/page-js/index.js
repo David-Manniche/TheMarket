@@ -415,14 +415,6 @@ $(document).ready(function() {
         document.location.href = fcom.makeUrl('deletedUsers');
     };
 
-	toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmUsersListing input[name='status']").val(status);
-        $("#frmUsersListing").submit();
-    };
-
     deleteSelected = function(){
         if(!confirm(langLbl.confirmDelete)){
             return false;
