@@ -116,12 +116,12 @@ Bugs:
     => 034788 - Vol discount rows are not getting removed from frontend.
     => 034574 - Fixed shop collection page filters issue.
     => 034494 - Keyword search with special character.
-    
+
 -----------------------TV-9.1.3.20200223---------------
 Bugs:
     => 034787 - Special price list rows are not getting removed from frontend.
     => 034784 - Add minimum min qty of volume discount validation message while adding from frontend.
-    
+
 ------------------TV-9.1.3.20200225-------------------
 Bugs:
     => 034783 - Seller inventory listing on clicking add volume discount and special price getting message printed in transparent strip.
@@ -129,7 +129,7 @@ Bugs:
 
 -------------------------TV-9.1.3.20200226----------
 
-Bugs:    
+Bugs:
     => 034738 - Product categories thumb image is displaying very small even smaller than remove button.
 
 -------------------------TV-9.1.3.20200228----------
@@ -141,7 +141,7 @@ Bugs:
 
 ===================TV-9.1.3.20200303==================
 
-Bugs: 
+Bugs:
     => 035105 - Wrong import instructions heading
     => 035102 - Select row(checkbox) should not be displayed if readonly permission allowed to sub admin for any page in backend.
     => 035033 - If product available date is of future then no need to display select option(checkbox) in wishlist.
@@ -149,8 +149,7 @@ Bugs:
     => 035029 - Favorite list pagination is not working.
     => 035036 - If multiple items added to cart from wishlist or favorite list a long message is displayed on cart page with each item name.
     => 034953 - Vol discount & Special Price, select all option shouldn't be there when there is no data.
+    => 035206 - admin> settings> email template settings> cropper is not there
 
-    
 New Features:
     => 71188 - Add setting for making brand field optional
-
