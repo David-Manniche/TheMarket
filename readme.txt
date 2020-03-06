@@ -150,3 +150,4 @@ Bug :
 Bug: 
     => 034874 - first time discount coupon validation updates 
     => 035172 - When search with %%% keyword and use filters.
+    => 035212 - Special character handling in export csv file.
