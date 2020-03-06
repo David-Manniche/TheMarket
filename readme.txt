@@ -151,7 +151,8 @@ Bugs:
     => 034953 - Vol discount & Special Price, select all option shouldn't be there when there is no data.
     => 035180 - User retain On guest affiliate page if logged in with buyer/seller account.
     => 035131 - On guest advertiser registeration user phone validation added on first tab.
-    
+    => 034947 - If product name contains "&" then under vol discount & special price it's displaying "&amp" when select through seller products page.
+
 New Features:
     => 71188 - Add setting for making brand field optional
 
