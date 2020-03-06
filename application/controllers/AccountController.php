@@ -1077,6 +1077,10 @@ class AccountController extends LoggedUserController
             unset($post['user_id']);
         }
 
+        if (isset($post['user_phone'])) {
+            unset($post['user_phone']);
+        }
+
         if ($post['user_dob'] == "0000-00-00" || $post['user_dob'] == "" || strtotime($post['user_dob']) == 0) {
             unset($post['user_dob']);
         }
@@ -2688,7 +2692,7 @@ class AccountController extends LoggedUserController
         $frm->addTextBox(Labels::getLabel('LBL_Email', $this->siteLangId), 'credential_email', '');
         $frm->addRequiredField(Labels::getLabel('LBL_Customer_Name', $this->siteLangId), 'user_name');
         $frm->addDateField(Labels::getLabel('LBL_Date_Of_Birth', $this->siteLangId), 'user_dob', '', array('readonly' => 'readonly'));
-        $phoneFld = $frm->addRequiredField(Labels::getLabel('LBL_Phone', $this->siteLangId), 'user_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
+        $phoneFld = $frm->addTextBox(Labels::getLabel('LBL_Phone', $this->siteLangId), 'user_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
         // $phoneFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
         // $phoneFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
         // $phoneFld->htmlAfterField='<small class="text--small">'.Labels::getLabel('LBL_e.g.', $this->siteLangId).': '.implode(', ', ValidateElement::PHONE_FORMATS).'</small>';
