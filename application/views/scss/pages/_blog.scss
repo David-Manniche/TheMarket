@@ -147,29 +147,20 @@
 
             .article__date {
                 color: lighten($body-color, 50%);
-                
+
             }
         }
 
         .article-title {
             margin-bottom: 1rem;
-            font-weight: 400;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .article-des {
-
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-
+            line-height: 1.5;
+            font-weight: 600;
+            font-size: 1.25rem;
         }
 
         a {
             color: inherit;
+            text-decoration: none;
 
             &:hover {
                 text-decoration: underline;
@@ -218,9 +209,8 @@
     }
 
     .post_title {
-        color: inherit;
         line-height: 1.5;
-        font-weight: 600;
+        font-weight:600;
         font-size: 1.25rem;
         margin-bottom: 1rem;
         color: $body-color;

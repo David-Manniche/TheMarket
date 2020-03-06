@@ -7715,7 +7715,6 @@ a.text-dark:hover, .shop-nav ul li.is--active a.text-dark, a.text-dark:focus {
     width: 150px;
     max-height: 60px;
     margin: 0px 0;
-    -ms-margin-left: 2rem;
     margin-left: 2rem;
     display: -webkit-box;
     display: -ms-flexbox;
@@ -7727,6 +7726,10 @@ a.text-dark:hover, .shop-nav ul li.is--active a.text-dark, a.text-dark:focus {
       .header .logo {
         margin: 0 auto;
         max-width: 100px; } }
+    .header .logo img[data-ratio="16:9"] {
+      max-width: 150px; }
+    .header .logo img[data-ratio="1:1"] {
+      max-width: 60px; }
   .header .last-bar {
     border-top: solid 1px #dee2e6; }
     @media (max-width: 1199.98px) {
@@ -8527,6 +8530,8 @@ a.text-dark:hover, .shop-nav ul li.is--active a.text-dark, a.text-dark:focus {
       display: inline-block; }
   .footer .bottom-footer {
     padding-top: 1rem; }
+    .captcha .footer .bottom-footer {
+      padding-bottom: 80px; }
 
 .upperContent-footer {
   border-bottom: solid 1px #dee2e6;
@@ -8664,6 +8669,9 @@ a.text-dark:hover, .shop-nav ul li.is--active a.text-dark, a.text-dark:focus {
   .social ul {
     padding: 0;
     display: flex; }
+    @media (max-width: 991.98px) {
+      .social ul {
+        justify-content: center; } }
     .social ul li {
       display: flex;
       align-items: center;
@@ -8756,7 +8764,7 @@ a.text-dark:hover, .shop-nav ul li.is--active a.text-dark, a.text-dark:focus {
 .copyright {
   text-align: center;
   font-size: 0.875em;
-  padding: 0px 10px;
+  padding: 10px 10px;
   color: #545454; }
 
 .store-button a {
@@ -28760,17 +28768,12 @@ a.ui-button:active,
       color: #9ba5ae; }
   .post .article-inner .article-title {
     margin-bottom: 1rem;
-    font-weight: 400;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; }
-  .post .article-inner .article-des {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical; }
+    line-height: 1.5;
+    font-weight: 600;
+    font-size: 1.25rem; }
   .post .article-inner a {
-    color: inherit; }
+    color: inherit;
+    text-decoration: none; }
     .post .article-inner a:hover, .post .article-inner .shop-nav ul li.is--active a, .shop-nav ul li.is--active .post .article-inner a {
       text-decoration: underline;
       color: inherit; }
@@ -28801,7 +28804,6 @@ a.ui-button:active,
     margin-bottom: 8px;
     margin-left: 8px; }
   .post .post_title {
-    color: inherit;
     line-height: 1.5;
     font-weight: 600;
     font-size: 1.25rem;
@@ -34580,11 +34582,10 @@ div.faqanswer {
 
 .otp-heading {
   display: flex !important;
-  align-items: center;
-  justify-content: space-between;
-  flex: 1; }
+  flex-direction: column; }
   .otp-heading a.otp-link {
-    font-size: 0.8rem; }
+    font-size: 0.8rem;
+    color: var(--primary-color); }
 
 /*package page**/
 .banner-over-txt {

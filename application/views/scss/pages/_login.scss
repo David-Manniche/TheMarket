@@ -475,12 +475,12 @@
 
 .otp-heading {
     display: flex !important;
-    align-items: center;
-    justify-content: space-between;
-    flex: 1;
+    flex-direction: column;
+
 
     a.otp-link {
         font-size: 0.8rem;
+        color: $primary-color;
 
     }
 }

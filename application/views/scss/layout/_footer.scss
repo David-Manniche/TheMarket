@@ -139,6 +139,11 @@
 
     .bottom-footer {
         padding-top: 1rem;
+
+        .captcha & {
+            padding-bottom: 80px;
+
+        }
     }
 
 }
@@ -320,6 +325,14 @@
         display: flex;
 
 
+        @include media-breakpoint-down(md) {
+            & {
+                justify-content: center;
+
+            }
+        }
+
+
         li {
             display: flex;
             align-items: center;
@@ -446,7 +459,7 @@
 .copyright {
     text-align: center;
     font-size: 0.875em;
-    padding: 0px 10px;
+    padding:10px 10px;
     color: #545454;
 }
 
