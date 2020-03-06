@@ -147,3 +147,5 @@ Bug :
     => 035105 - Wrong import instructions heading
 
 ====================TV-9.1.3.20200305==================
+Bug: 
+    => 034874 - first time discount coupon validation updates 
