@@ -83,7 +83,7 @@ $(document).ready(function(){
             }
             $(lastFormElement).after(t.html);
             $(".otpForm-js .form-side").removeClass('form-side');
-            $('.formTitle').remove();
+            $('.formTitle-js').remove();
 
             var resendFunction = 'resendOtp()';
             if (0 < updateToDbFrm) {

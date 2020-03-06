@@ -234,11 +234,7 @@
         font-weight: 600;
         font-size: calc(112.5% + 0.9vw);
     }
-
-
 }
-
-
 
 .or {
     display: block;
@@ -268,6 +264,38 @@
     &:before {
         #{$end-direction}: 0;
     }
+
+    &-vertical {
+        height: 100%;
+        max-height: 200px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+
+        &:after,
+        &:before {
+            width: 1px;
+            height: 70px;
+            top: auto;
+            left: 50%;
+        }
+
+        &:after {
+            top: 0;
+        }
+
+        &:before {
+            bottom: 0;
+        }
+    }
+}
+
+.or-wrap {
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .other-option {
