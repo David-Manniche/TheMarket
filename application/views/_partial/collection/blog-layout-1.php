@@ -3,7 +3,7 @@ if (isset($collections) && count($collections)) {
     /* blog listing design [ */
     foreach ($collections as $collection_id => $row) {
         if (isset($row['blogs']) && count($row['blogs'])) { ?>
-            <section class="section bg-gray">
+            <section class="section ">
                 <div class="container">
                     <div class="section-head">
                         <?php echo (isset($row['collection_name']) && $row['collection_name'] != '') ? ' <div class="section__heading"><h2>' . $row['collection_name'] . '</h2></div>' : ''; ?>
@@ -15,18 +15,17 @@ if (isset($collections) && count($collections)) {
                                 </a>
                             </div>
                         <?php } ?>
-                    </div>
-                    <section class="section blog-area">
-                        <div class="container">
+                    </div>                    
+                        
                             <div class="row">
                                 <?php foreach ($row['blogs'] as $blog) { ?>
                                     <div class="col-md-4">
-                                        <div class="blog-item">
-                                            <div class="article-img">
+                                        <div class="post">
+                                            <div class="post_media">
                                                 <a href="#" class="animate-scale">
                                                     <picture>
                                                         <img data-ratio="16:9"
-                                                        src="<?php echo CommonHelper::generateFullUrl('Image', 'blogPostFront', array($blog['post_id'], $siteLangId, '')); ?>"
+                                                        src="<?php echo CommonHelper::generateFullUrl('Image', 'blogPostFront', array($blog['post_id'], $siteLangId, 'FEATURED')); ?>"
                                                         alt="<?php echo $blog['post_title']; ?>"
                                                         title="<?php echo $blog['post_title']; ?>">
                                                     </picture>
@@ -43,14 +42,15 @@ if (isset($collections) && count($collections)) {
                                                 <div class="article-des">
                                                     <?php echo FatUtility::decodeHtmlEntities($blog['post_description']); ?>
                                                 </div>
-                                                <a class="readmore-button btn btn-outline-primary btn--sm" href="<?php echo CommonHelper::generateUrl('Blog', 'postDetail', array($blog['post_id'])); ?>"><?php echo Labels::getLabel('LBL_READ_MORE', $siteLangId); ?></a>
+												                                               
                                             </div>
+											<a class="readmore-button link" href="<?php echo CommonHelper::generateUrl('Blog', 'postDetail', array($blog['post_id'])); ?>"><?php echo Labels::getLabel('LBL_READ_MORE', $siteLangId); ?></a>
                                         </div>
                                     </div>
                                 <?php } ?>
                             </div>
-                        </div>
-                    </section>
+                         
+                     
                 </div>
             </section>
     <?php }

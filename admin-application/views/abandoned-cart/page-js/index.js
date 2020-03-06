@@ -154,7 +154,7 @@ $(document).ready(function(){
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('DiscountCoupons', 'setup'), data, function(t) {  
             updateCouponUser(t.couponId, userId);
-            updateCouponProduct(t.couponId, productId);
+            //updateCouponProduct(t.couponId, productId);
 			sendDiscountNotification(abandonedcartId, t.couponId);
             $(document).trigger('close.facebox');
 		});
@@ -166,11 +166,11 @@ $(document).ready(function(){
 		});
 	};
     
-    updateCouponProduct = function(couponId,productId){
+    /*updateCouponProduct = function(couponId,productId){
 		var data = 'coupon_id='+couponId+'&product_id='+productId;
 		fcom.updateWithAjax(fcom.makeUrl('DiscountCoupons', 'updateCouponProduct'), data, function(t) {		
 		});
-	};
+	};*/
 
     sendDiscountNotification = function(abandonedcartId, couponId){
         var data = 'abandonedcartId='+abandonedcartId+'&couponId='+couponId;
