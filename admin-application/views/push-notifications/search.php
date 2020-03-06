@@ -44,6 +44,11 @@ $arr_flds = [
         ]
     ]
 ];
+
+if (!$canEdit) {
+    unset($arr_flds['action']);
+}
+        
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 
