@@ -62,7 +62,7 @@ foreach ($arrListing as $sn => $row) {
 
                 $li->appendElement(
                     'a',
-                    array('href' => CommonHelper::generateUrl('seller', 'sellerUserForm', array($row['user_id'])), 'title' => Labels::getLabel('LBL_Edit', $siteLangId)),
+                    array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit', $siteLangId), "onclick"=>"addUserForm(".$row['user_id'].")"),
                     '<i class="fa fa-edit"></i>',
                     true
                 );
