@@ -149,3 +149,4 @@ Bug :
 ====================TV-9.1.3.20200305==================
 Bug: 
     => 034874 - first time discount coupon validation updates 
+    => 035172 - When search with %%% keyword and use filters.
