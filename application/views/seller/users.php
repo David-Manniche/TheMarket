@@ -31,15 +31,9 @@
                 <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
                 <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Seller_Users', $siteLangId); ?></h2>
             </div>
-            <div class="col-auto">
-                <div class="btn-group">
-                    <a class="btn btn-outline-primary btn--sm" title="<?php echo Labels::getLabel('LBL_Add_User', $siteLangId); ?>" onclick="optionForm(0)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Add_User', $siteLangId); ?></a>
-                    <a class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Delete', $siteLangId); ?>" onclick="deleteOptions()" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Delete', $siteLangId); ?></a>
-                </div>
-            </div>
         </div>
         <div class="content-body">
-            <div class="row mb-4">
+            <div class="row mb-4 hideDiv-js">
                 <div class="col-lg-12">
                     <div class="cards">
                         <div class="cards-content">
@@ -65,7 +59,20 @@
                 <div class="col-lg-12">
                     <div class="cards">
                         <div class="cards-content">
-                            <div id="listing"></div>
+                            <div class="row justify-content-between align-items-center hideDiv-js">
+                                <div class="col-auto">
+                                </div>
+                                <div class="col-auto">
+                                    <div class="btn-group">
+                                        <a class="btn btn-outline-primary btn--sm" title="<?php echo Labels::getLabel('LBL_Add_User', $siteLangId); ?>" onclick="addUserForm(0)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Add_User', $siteLangId); ?></a>
+                                        <a class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Activate', $siteLangId); ?>" onclick="toggleBulkStatues(1)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Activate', $siteLangId); ?></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="listing">
+                                <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
+                            </div>
+                            <span class="gap"></span>
                         </div>
                     </div>
                 </div>

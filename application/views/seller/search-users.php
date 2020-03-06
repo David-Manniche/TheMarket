@@ -21,10 +21,8 @@ foreach ($arr_flds as $key => $val) {
     }
 }
 $sr_no = 0;
-if (!$user_id) {
-    if ($page > 1) {
-        $sr_no = ($page - 1) * $pageSize;
-    }
+if ($page > 1) {
+    $sr_no = ($page - 1) * $pageSize;
 }
 foreach ($arrListing as $sn => $row) {
     $sr_no++;
@@ -55,7 +53,7 @@ foreach ($arrListing as $sn => $row) {
 
                 $li->appendElement(
                     'a',
-                    array('href' => CommonHelper::generateUrl('seller', 'sellerUserChangePassword', array($row['user_id'])), 'title' => Labels::getLabel('LBL_Change_Password', $siteLangId)),
+                    array('href' => 'javascript:void(0)', 'title' => Labels::getLabel('LBL_Change_Password', $siteLangId), "onclick"=>"userPasswordForm(".$row['user_id'].")"),
                     '<i class="fas fa-key"></i>',
                     true
                 );
@@ -67,13 +65,13 @@ foreach ($arrListing as $sn => $row) {
                     true
                 );
 
-                $li = $ul->appendElement("li");
+                /*$li = $ul->appendElement("li");
                 $li->appendElement(
                     'a',
                     array('href' => 'javascript:void(0)', 'title' => Labels::getLabel('LBL_Delete', $siteLangId), "onclick" => "sellerUserDelete(" . $row['user_id'] . ")"),
                     '<i class="fa fa-trash"></i>',
                     true
-                );
+                );*/
 
                 $li = $ul->appendElement("li");
                 $li->appendElement(
@@ -106,9 +104,7 @@ if (count($arrListing) == 0) {
     echo $tbl->getHtml(); ?> </form> <?php
 }
 
-if (!$user_id) {
-    $postedData['page'] = $page;
-    echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmUserSearchPaging'));
-    $pagingArr = array('pageCount' => $pageCount, 'page' => $page,'recordCount' => $recordCount, 'callBackJsFunc' => 'goToUserSearchPage');
-    $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
-}
+$postedData['page'] = $page;
+echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmUserSearchPaging'));
+$pagingArr = array('pageCount' => $pageCount, 'page' => $page,'recordCount' => $recordCount, 'callBackJsFunc' => 'goToUserSearchPage');
+$this->includeTemplate('_partial/pagination.php', $pagingArr, false);
