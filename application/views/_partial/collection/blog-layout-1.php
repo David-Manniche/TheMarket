@@ -40,7 +40,7 @@ if (isset($collections) && count($collections)) {
                                                 <span>
                                                 <?php 
                                                     $title = !empty($blog['post_title']) ? $blog['post_title'] : $blog['post_identifier'];
-                                                    echo mb_strimwidth($title, 0, applicationConstants::BLOG_CHARACTER_LENGTH, '...'); 
+                                                    echo mb_strimwidth($title, 0, applicationConstants::BLOG_TITLE_CHARACTER_LENGTH, '...'); 
                                                 ?>
                                                 </span>
                                             </a>
