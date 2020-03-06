@@ -1,7 +1,7 @@
 <?php
 $controller = strtolower($controller);
 $action = strtolower($action);
-?> <div class="sidebar no-print">
+?> <sidebar class="sidebar no-print">
     <div class="logo-wrapper"> <?php
         if (CommonHelper::isThemePreview() && isset($_SESSION['preview_theme'])) {
             $logoUrl = CommonHelper::generateUrl('home', 'index');
@@ -12,7 +12,7 @@ $action = strtolower($action);
                     alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>"></a></div>
         <?php 
             $isOpened = '';
-            if (!empty(FatUtility::int($_COOKIE['openSidebar'])) && array_key_exists('screenWidth', $_COOKIE) && applicationConstants::MOBILE_SCREEN_WIDTH < FatUtility::int($_COOKIE['screenWidth'])){
+            if (isset($_COOKIE['openSidebar']) && !empty(FatUtility::int($_COOKIE['openSidebar'])) && array_key_exists('screenWidth', $_COOKIE) && applicationConstants::MOBILE_SCREEN_WIDTH < FatUtility::int($_COOKIE['screenWidth'])){
                 $isOpened = 'is-opened';
             }
         ?>
@@ -67,4 +67,4 @@ $action = strtolower($action);
             </ul>
         </nav>
     </div>
-</div>
+</sidebar>

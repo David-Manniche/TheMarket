@@ -2,7 +2,7 @@
 $frm->setFormTagAttribute('id', 'profileInfoFrm');
 $frm->setFormTagAttribute('class', 'form');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
-$frm->developerTags['fld_default_col'] = 4;
+$frm->developerTags['fld_default_col'] = 6;
 
 $fld = $frm->getField('user_profile_info');
 $fld->developerTags['col'] = 6;
@@ -38,6 +38,9 @@ $countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,' . $
 
 $stateFld = $frm->getField('user_state_id');
 $stateFld->setFieldTagAttribute('id', 'user_state_id');
+
+$userCompFld = $frm->getField('user_company');
+$userCompFld->developerTags['col'] = 12;
 
 
 $imgFrm->setFormTagAttribute('action', CommonHelper::generateUrl('Account', 'uploadProfileImage'));

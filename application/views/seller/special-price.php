@@ -19,7 +19,7 @@ if (0 < $selProd_id) {
     $submitBtnFld->developerTags['noCaptionTag'] = true;
 
     $cancelBtnFld = $frmSearch->getField('btn_clear');
-    $cancelBtnFld->setFieldTagAttribute('onclick', 'clearSearch('.$selProd_id.');');
+    $cancelBtnFld->setFieldTagAttribute('onclick', 'clearSearch(' . $selProd_id . ');');
     $cancelBtnFld->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
     $cancelBtnFld->setWrapperAttribute('class', 'col-6');
     $cancelBtnFld->developerTags['col'] = 2;

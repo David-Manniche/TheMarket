@@ -60,7 +60,7 @@ $(document).ready(function(){
             var phoneNumber = $(lastFormElement + " input[name='user_phone']").val();
 
             $(lastFormElement).after(t.html);
-            $('.formTitle').remove();
+            $('.formTitle-js').remove();
 
             var resendFunction = 'resendOtp()';
             if (0 < updateToDbFrm) {
@@ -95,8 +95,10 @@ $(document).ready(function(){
         $.systemMessage(langLbl.processing,'alert--process', false);
 		fcom.ajax(fcom.makeUrl( 'Account', 'validateOtp', [updateToDbFrm]), data, function(t) {
             t = $.parseJSON(t);
-            if(typeof t.status != 'undefined' &&  1 > t.status){
+            if(1 > t.status){
                 $.systemMessage(t.msg,'alert--danger', false);
+                invalidOtpField();
+                return false;
             }
             $.systemMessage.close();
             location.href = fcom.makeUrl();

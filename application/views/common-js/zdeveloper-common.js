@@ -79,6 +79,10 @@ $(document).ready(function () {
 });
 
 $(document).on('keyup', 'input.otpVal', function(e){
+    if ('' != $(this).val()) {
+        $(this).removeClass('is-invalid');
+    }
+
     var element = '';
    
     /* 
@@ -91,6 +95,16 @@ $(document).on('keyup', 'input.otpVal', function(e){
     }
     element.children("input.otpVal").eq(0).focus();
 });
+
+invalidOtpField = function () {
+    $("input.otpVal").val('').addClass('is-invalid').attr('onkeyup', 'checkEmpty($(this))');
+}
+
+checkEmpty = function (element) {
+    if ('' == element.val()) {
+        element.addClass('is-invalid');
+    }
+}
 
 var otpIntervalObj;
 startOtpInterval = function (parent = '') {
