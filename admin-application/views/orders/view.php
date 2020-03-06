@@ -105,9 +105,15 @@ if ($order['order_reward_point_used'] > 0) {
                                     $txt .= $op['op_selprod_title'].'<br/>';
                                 }
                                 $txt .= $op['op_product_name'];
-                                $txt .= '<br/>'.Labels::getLabel('LBL_Brand', $adminLangId).': '.$op['op_brand_name'];
+                                $txt .= '<br/>';
+                                if( !empty($op['op_brand_name']) ){
+                                   $txt .=  Labels::getLabel('LBL_Brand', $adminLangId).': '.$op['op_brand_name'];
+                                }
+                                if( !empty($op['op_brand_name']) && !empty($op['op_selprod_options']) ){
+                                    $txt .= ' | ' ;
+                                }
                                 if ($op['op_selprod_options'] != '') {
-                                    $txt .= ' | ' . $op['op_selprod_options'];
+                                    $txt .= $op['op_selprod_options'];
                                 }
                                 if ($op['op_selprod_sku'] != '') {
                                     $txt .= '<br/>'.Labels::getLabel('LBL_SKU', $adminLangId).': ' . $op['op_selprod_sku'];

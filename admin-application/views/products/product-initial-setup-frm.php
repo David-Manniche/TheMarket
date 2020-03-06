@@ -63,7 +63,9 @@ if($prodCatId > 0){
                               echo $fld->getCaption();
                             ?>
                         </label>
+                        <?php if (FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) { ?>
                         <span class="spn_must_field">*</span>
+                        <?php } ?>
                      </div>
                      <div class="field-wraper">
                          <div class="field_cover">

@@ -18,13 +18,13 @@
                         <h4><?php echo Labels::getLabel('LBL_Currency_Listing', $adminLangId); ?>
                         </h4>
                         <?php
+                        if ($canEdit) {
                             $ul = new HtmlElement("ul", array("class" => "actions actions--centered"));
                             $li = $ul->appendElement("li", array('class' => 'droplink'));
                             $li->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Add_Currency', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
                             $innerDiv = $li->appendElement('div', array('class' => 'dropwrap'));
                             $innerUl = $innerDiv->appendElement('ul', array('class' => 'linksvertical'));
 
-                        if ($canEdit) {
                             $innerLi = $innerUl->appendElement('li');
                             $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Activate', $adminLangId), "onclick" => "toggleBulkStatues(1)"), Labels::getLabel('LBL_Activate', $adminLangId), true);
 
@@ -41,8 +41,8 @@
                                 $innerLi = $innerUl->appendElement('li');
                                 $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green','title' => Labels::getLabel('LBL_Update_Currency', $adminLangId), "onclick" => "updateCurrencyRates('" . $currencyConverter . "')"), Labels::getLabel('LBL_Update_Currency', $adminLangId), true);
                             }
-                        }
                             echo $ul->getHtml();
+                        }
                         ?>
                     </div>
                     <div class="sectionbody">

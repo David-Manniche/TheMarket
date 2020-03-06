@@ -61,7 +61,9 @@ $btnDiscardFld->value = Labels::getLabel('LBL_Discard', $siteLangId);
                             $fld = $productFrm->getField('brand_name');
                             echo $fld->getCaption();
                             ?>
+                            <?php if (FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) { ?>
                             <span class="spn_must_field">*</span>
+                            <?php } ?>
                         </label>
                         <small><a class="form-text text-muted" href="javascript:void(0)" onClick="addBrandReqForm(0);"><?php echo Labels::getLabel('LBL_Request_For_Brand', $siteLangId) ; ?></a></small>
                     </div>

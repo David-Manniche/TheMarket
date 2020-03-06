@@ -9,7 +9,9 @@ $arr_flds = array(
     'splprice_price' => Labels::getLabel('LBL_Special_Price', $adminLangId),
     'action' => Labels::getLabel('LBL_Action', $adminLangId),
 );
-
+if (!$canEdit) {
+    unset($arr_flds['select_all']);
+}
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered splPriceList-js'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => 'hide--mobile'));
 foreach ($arr_flds as $column => $lblTitle) {

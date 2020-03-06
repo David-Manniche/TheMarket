@@ -8,6 +8,9 @@ $arr_flds = array(
         'commsetting_fees'=>Labels::getLabel('LBL_Fees_[%]', $adminLangId),
         'action' => Labels::getLabel('LBL_Action', $adminLangId),
     );
+    if (!$canEdit) {
+        unset($arr_flds['select_all']);
+    }
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $key => $val) {

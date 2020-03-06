@@ -156,10 +156,10 @@ class ProductSearch extends SearchBase
             $srch->doNotLimitRecords();
             $srch->doNotCalculateRecords();
             $srch->addMultipleFields(array('pmp_product_id', 'pmp_selprod_id', 'pmp_min_price as theprice', 'pmp_splprice_id', 'if(pmp_splprice_id,1,0) as special_price_found'));
-            $tmpQry = $srch->getQuery();
+            $tmpQry = $srch->getQuery();    
             $this->joinTable('(' . $tmpQry . ')', 'INNER JOIN', 'pricetbl.pmp_product_id = msellprod.selprod_product_id and msellprod.selprod_id = pricetbl.pmp_selprod_id', 'pricetbl');
             $this->joinTable(SellerProduct::DB_TBL_SELLER_PROD_SPCL_PRICE, 'LEFT OUTER JOIN', 'msplpric.splprice_selprod_id = pricetbl.pmp_selprod_id and pricetbl.pmp_splprice_id = msplpric.splprice_id', 'msplpric');
-        } else {
+        } else {    
             $this->joinBasedOnPriceCondition($splPriceForDate, $criteria, $checkAvailableFrom);
         }
         // $this->joinBasedOnPriceCondition($splPriceForDate, $criteria, $checkAvailableFrom);
@@ -198,7 +198,13 @@ class ProductSearch extends SearchBase
         $srch->joinTable(Shop::DB_TBL, 'INNER JOIN', 'ts.shop_user_id = tu.user_id and ts.shop_active = ' . applicationConstants::YES . ' AND ts.shop_supplier_display_status = ' . applicationConstants::YES . $shopCondition, 'ts');
         $srch->joinTable(Countries::DB_TBL, 'INNER JOIN', 'tcn.country_id = ts.shop_country_id and tcn.country_active = ' . applicationConstants::YES, 'tcn');
         $srch->joinTable(States::DB_TBL, 'INNER JOIN', 'tst.state_id = ts.shop_state_id and tst.state_active = ' . applicationConstants::YES, 'tst');
-        $srch->joinTable(Brand::DB_TBL, 'INNER JOIN', 'tb.brand_id = tp.product_brand_id and tb.brand_active = ' . applicationConstants::YES . ' and tb.brand_deleted = ' . applicationConstants::NO, 'tb');
+        
+        if( FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1) ){
+            $srch->joinTable(Brand::DB_TBL, 'INNER JOIN', 'tb.brand_id = tp.product_brand_id and tb.brand_active = ' . applicationConstants::YES . ' and tb.brand_deleted = ' . applicationConstants::NO, 'tb');
+        }else{
+            $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'tb.brand_id = tp.product_brand_id', 'tb');
+        }
+        
         $srch->joinTable(Product::DB_TBL_PRODUCT_TO_CATEGORY, 'INNER JOIN', 'tptc.ptc_product_id = tp.product_id', 'tptc');
         $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', 'tc.prodcat_id = tptc.ptc_prodcat_id and tc.prodcat_active = ' . applicationConstants::YES . ' and tc.prodcat_deleted = ' . applicationConstants::NO, 'tc');
         /*$srch->addMultipleFields(array('selprod_product_id','MIN(COALESCE(splprice_price, selprod_price)) AS theprice','(CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1 END) AS special_price_found'));*/
@@ -471,16 +477,16 @@ class ProductSearch extends SearchBase
         if ($this->langId && 1 > $langId) {
             $langId = $this->langId;
         }
-        $join = ($useInnerJoin) ? 'INNER JOIN' : 'LEFT OUTER JOIN';
+        $join = ( $useInnerJoin && FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1) ) ? 'INNER JOIN' : 'LEFT OUTER JOIN';
 
         $brandActiveCondition = '';
-        if ($isActive) {
+        if ($isActive && FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) {
             $brandActiveCondition = 'and brand.brand_active = ' . applicationConstants::ACTIVE;
             $this->addCondition('brand.brand_active', '=', applicationConstants::ACTIVE);
         }
 
         $brandDeletedCondition = '';
-        if ($isDeleted) {
+        if ($isDeleted && FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) {
             $brandDeletedCondition = 'and brand.brand_deleted = ' . applicationConstants::NO;
             $this->addCondition('brand.brand_deleted', '=', applicationConstants::NO);
         }

@@ -84,8 +84,10 @@ class applicationConstants
     public const URL_TYPE_SIGN_IN = 8;
     public const URL_TYPE_REGISTER = 9;
     public const URL_TYPE_CMS = 10;
+    public const URL_TYPE_BLOG = 11;
 
     public const SMS_CHARACTER_LENGTH = 160;
+    public const BLOG_TITLE_CHARACTER_LENGTH = 70; /* Used for home page collection.*/
 
     public static function getWeightUnitsArr($langId)
     {

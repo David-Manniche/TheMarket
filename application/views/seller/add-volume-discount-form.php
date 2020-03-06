@@ -21,6 +21,7 @@
     $frm->addSubmitButton('', 'btn_update', Labels::getLabel('LBL_Save', $siteLangId), array('class'=>'btn--block btn btn--primary'));
 
 if (!empty($data) && 0 < count($data)) {
+    $data['product_name'] = isset($data['product_name']) ? html_entity_decode($data['product_name'], ENT_QUOTES, 'UTF-8') : '';
     $prodName->setFieldTagAttribute('readonly', 'readonly');
     $frm->fill($data);
 }

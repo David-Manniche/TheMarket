@@ -11,7 +11,7 @@ $allPlugins = $arr_listing;
 $pluginType = (array_shift($allPlugins))['plugin_type'];
 if (!$canEdit || 2 > count($arr_listing) || in_array($pluginType, Plugin::HAVING_KINGPIN)) {
     unset($arr_flds['dragdrop']);
-    if (in_array($pluginType, Plugin::HAVING_KINGPIN)) {
+    if (!$canEdit || in_array($pluginType, Plugin::HAVING_KINGPIN)) {
         unset($arr_flds['select_all']);
     }
 }

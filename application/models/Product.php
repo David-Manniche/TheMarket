@@ -1299,7 +1299,7 @@ class Product extends MyAppModel
         }
 
         //$srch->setDefinedCriteria($join_price, 0, $criteria, true);
-        $srch->joinForPrice('', $criteria, true);
+        $srch->joinForPrice('', $criteria, true);   
         $srch->unsetDefaultLangForJoins();
         $srch->joinSellers();
         $srch->joinShops($langId, true, true, $shop_id);

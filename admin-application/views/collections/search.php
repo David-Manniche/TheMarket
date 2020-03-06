@@ -12,6 +12,7 @@ $arr_flds = array(
 
 if (!$canEdit || $collection_layout_type == -1) {
     unset($arr_flds['dragdrop']);
+    unset($arr_flds['select_all']);
 }
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table-responsive table--hovered','id' => 'collectionList'));
 $th = $tbl->appendElement('thead')->appendElement('tr');

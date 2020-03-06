@@ -33,6 +33,7 @@
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_Shipping_Duration_List', $adminLangId); ?> </h4>
                         <?php
+                        if ($canEdit) {
                             $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
                             $li = $ul->appendElement("li", array('class'=>'droplink'));
                             $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Add_New', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
@@ -41,11 +42,10 @@
                             $innerLi=$innerUl->appendElement('li');
                             $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Add_New', $adminLangId),"onclick"=>"shippingDurationForm(0)"), Labels::getLabel('LBL_Add_New', $adminLangId), true);
 
-                        if ($canEdit) {
                             $innerLi=$innerUl->appendElement('li');
                             $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteSelected()"), Labels::getLabel('LBL_Delete', $adminLangId), true);
-                        }
                             echo $ul->getHtml();
+                        }
                         ?>
                     </div>
                     <div class="sectionbody">

@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="row equal-height">
-                    <div class="col-md-6">
+                    <div class="col-md-<?php echo ($canEdit) ? 6 : 12; ?>">
                         <section class="section">
                             <div class="sectionhead">
                                 <h4><?php echo Labels::getLabel('LBL_SMS_TEMPLATE_LISTS', $adminLangId); ?></h4>
@@ -67,13 +67,15 @@
                             </div>
                         </section>
                     </div>
-                    <div class="col-md-6">
-                        <div id="templateDetail">
-                            <section class="section">
-                                <div class="sectionbody space"></div>
-                            </section>
-                        <div>
+                    <?php if ($canEdit) { ?>
+                        <div class="col-md-6">
+                            <div id="templateDetail">
+                                <section class="section">
+                                    <div class="sectionbody space"></div>
+                                </section>
+                            <div>
                     </div>
+                    <?php } ?>
                 </div>
             </div>
         </div>

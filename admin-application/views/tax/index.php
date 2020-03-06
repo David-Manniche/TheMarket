@@ -32,17 +32,17 @@
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_Tax_List', $adminLangId); ?> </h4>
                         <?php
-                                $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
-                                $li = $ul->appendElement("li", array('class'=>'droplink'));
-                                $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                                $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                                $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
                         /* if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0) && $canView) {
                             $innerLi=$innerUl->appendElement('li');
                             $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Export', $adminLangId),"onclick"=>"exportForm(".Importexport::TYPE_TAX_CATEGORY.")"), Labels::getLabel('LBL_Export', $adminLangId), true);
                         } */
 
                         if ($canEdit) {
+                            $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
+                            $li = $ul->appendElement("li", array('class'=>'droplink'));
+                            $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
+                            $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
+                            $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
                             $innerLi=$innerUl->appendElement('li');
                             $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Activate', $adminLangId),"onclick"=>"toggleBulkStatues(1)"), Labels::getLabel('LBL_Activate', $adminLangId), true);
 
@@ -54,8 +54,8 @@
 
                             $innerLi=$innerUl->appendElement('li');
                             $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteSelected()"), Labels::getLabel('LBL_Delete', $adminLangId), true);
+                            echo $ul->getHtml();
                         }
-                                echo $ul->getHtml();
                         ?>
                     </div>
                     <div class="sectionbody">

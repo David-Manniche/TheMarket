@@ -6,6 +6,9 @@ $arr_flds = array(
         'stpl_status' => Labels::getLabel('LBL_Status', $adminLangId),
         // 'action' => Labels::getLabel('LBL_Action', $adminLangId),
     );
+if (!$canEdit) {
+    unset($arr_flds['select_all']);
+}
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table-responsive'));
 
 $th = $tbl->appendElement('thead')->appendElement('tr');

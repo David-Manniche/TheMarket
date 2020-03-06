@@ -8,9 +8,7 @@ if (count($arr_listing) == 0) {
         'product_identifier'=>Labels::getLabel('LBL_Name', $adminLangId)
     );
 
-    $arr_flds2 = array();
-
-    $arr_flds3 = array(
+    $arr_flds2 = array(
         'user_name'=>Labels::getLabel('LBL_User', $adminLangId),
         //'attrgrp_name'=>Labels::getLabel('LBL_Attribute_Group',$adminLangId),
         'product_added_on'=>Labels::getLabel('LBL_Date', $adminLangId),
@@ -18,8 +16,10 @@ if (count($arr_listing) == 0) {
         'product_active'=>Labels::getLabel('LBL_Publish', $adminLangId),
         'action'=>Labels::getLabel('', $adminLangId)
     );
-    $arr_flds = $arr_flds1 + $arr_flds2 + $arr_flds3;
-
+    $arr_flds = $arr_flds1 + $arr_flds2;
+    if (!$canEdit) {
+        unset($arr_flds['select_all']);
+    }
     $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered'));
     $th = $tbl->appendElement('thead')->appendElement('tr');
     foreach ($arr_flds as $key => $val) {

@@ -1077,6 +1077,10 @@ class AccountController extends LoggedUserController
             unset($post['user_id']);
         }
 
+        if (isset($post['user_phone'])) {
+            unset($post['user_phone']);
+        }
+
         if ($post['user_dob'] == "0000-00-00" || $post['user_dob'] == "" || strtotime($post['user_dob']) == 0) {
             unset($post['user_dob']);
         }
@@ -1719,7 +1723,7 @@ class AccountController extends LoggedUserController
             'product_id', 'prodcat_id', 'IFNULL(ufp_id, 0) as ufp_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'product_image_updated_on',
             'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand.brand_id', 'product_model',
             'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(splprice_price, selprod_price) AS theprice', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
-            'CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found', 'selprod_price', 'selprod_user_id', 'selprod_code', 'selprod_sold_count', 'selprod_condition', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist', 'IFNULL(uwlp.uwlp_uwlist_id, 0) as uwlp_uwlist_id', 'ifnull(prod_rating,0) prod_rating', 'selprod_min_order_qty')
+            'CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found', 'selprod_price', 'selprod_user_id', 'selprod_code', 'selprod_sold_count', 'selprod_condition', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist', 'IFNULL(uwlp.uwlp_uwlist_id, 0) as uwlp_uwlist_id', 'ifnull(prod_rating,0) prod_rating', 'selprod_min_order_qty', 'selprod_available_from')
         );
         $srch->addOrder('uwlp_added_on', 'DESC');
         $rs = $srch->getResultSet();
@@ -1839,7 +1843,7 @@ class AccountController extends LoggedUserController
             'product_id', 'prodcat_id', 'IFNULL(ufp_id, 0) as ufp_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'product_image_updated_on',
             'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand.brand_id', 'product_model',
             'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(splprice_price, selprod_price) AS theprice', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
-            'CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found', 'selprod_price', 'selprod_user_id', 'selprod_code', 'selprod_condition', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist', 'ifnull(prod_rating,0) prod_rating', 'selprod_sold_count', 'selprod_min_order_qty')
+            'CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found', 'selprod_price', 'selprod_user_id', 'selprod_code', 'selprod_condition', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist', 'ifnull(prod_rating,0) prod_rating', 'selprod_sold_count', 'selprod_min_order_qty', 'selprod_available_from')
         );
 
         $srch->addOrder('ufp_id', 'desc');
@@ -1860,7 +1864,6 @@ class AccountController extends LoggedUserController
         $product['moreSellerData'] =  ($moreSellerRow) ? $moreSellerRow : array();
         }
         } */
-
         $this->set('products', $products);
         $this->set('showProductShortDescription', false);
         $this->set('showProductReturnPolicy', false);
@@ -2689,7 +2692,7 @@ class AccountController extends LoggedUserController
         $frm->addTextBox(Labels::getLabel('LBL_Email', $this->siteLangId), 'credential_email', '');
         $frm->addRequiredField(Labels::getLabel('LBL_Customer_Name', $this->siteLangId), 'user_name');
         $frm->addDateField(Labels::getLabel('LBL_Date_Of_Birth', $this->siteLangId), 'user_dob', '', array('readonly' => 'readonly'));
-        $phoneFld = $frm->addRequiredField(Labels::getLabel('LBL_Phone', $this->siteLangId), 'user_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
+        $phoneFld = $frm->addTextBox(Labels::getLabel('LBL_Phone', $this->siteLangId), 'user_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
         // $phoneFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
         // $phoneFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
         // $phoneFld->htmlAfterField='<small class="text--small">'.Labels::getLabel('LBL_e.g.', $this->siteLangId).': '.implode(', ', ValidateElement::PHONE_FORMATS).'</small>';

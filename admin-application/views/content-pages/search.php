@@ -5,6 +5,9 @@ $arr_flds = array(
         'cpage_identifier'=>Labels::getLabel('LBL_Title', $adminLangId),
         'action' => Labels::getLabel('LBL_Action', $adminLangId),
     );
+    if (!$canEdit) {
+        unset($arr_flds['select_all']);
+    }
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 

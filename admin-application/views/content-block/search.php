@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array();
-if (1 > $importInstructions) {
+if (1 > $importInstructions && $canEdit) {
     $arr_flds['select_all'] = Labels::getLabel('LBL_Select_all', $adminLangId);
 }
 

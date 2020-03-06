@@ -15,7 +15,7 @@ if ($showAddToFavorite) { ?>
     <?php if (true ==  $showActionBtns) { ?>
         <div class="actions_wishlist">
             <ul class="actions">
-                <?php if ($product['in_stock']) { ?>
+                <?php if ($product['in_stock'] &&  time() >= strtotime($product['selprod_available_from'])) { ?>
                 <li>
                      <label class="checkbox">
                             <input type="checkbox" name='selprod_id[]' class="selectItem--js" value="<?php echo $product['selprod_id']; ?>"/>

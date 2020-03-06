@@ -146,28 +146,32 @@ html.quick-view--open {
     justify-content: space-between;
 }
 
-.products-reviews {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    border: solid 1px #323232;
-    border-radius: 4px;
-    padding: 0.5rem;
-    min-width: 110px;
+.product-description-inner {
+    .products-reviews {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        border: solid 1px #323232;
+        border-radius: 4px;
+        padding: 0.5rem;
+        min-width: 110px;
 
-    @include media-breakpoint-down(md) {
-        & {
-            margin: 1rem 0;
+        @include media-breakpoint-down(md) {
+            & {
+                margin: 1rem 0;
+            }
         }
     }
 }
+
+
 
 .buy-group {
     display: -webkit-box;
@@ -1326,7 +1330,7 @@ html.quick-view--open {
     justify-content: center;
     position: -webkit-sticky;
     position: sticky;
-    top: 156px;
+    top: 146px;
     z-index: 1;
 
     @include media-breakpoint-down(lg) {

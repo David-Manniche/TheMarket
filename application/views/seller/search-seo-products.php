@@ -3,7 +3,9 @@ $arr_flds = array(
     'listserial' => '#',
     'product_name' => Labels::getLabel('LBL_Product', $siteLangId),
 );
-
+if (1 > count($arrListing)) {
+    unset($arr_flds['select_all']);
+}
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered volDiscountList-js'));
 $thead = $tbl->appendElement('thead');
 $th = $thead->appendElement('tr', array('class' => ''));

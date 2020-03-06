@@ -103,7 +103,7 @@ if ($totReviews) {
             <div class="col-auto">
                 <a href="javascript:void(0);" class="btn btn--primary " data-sort='most_recent' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Recent', $siteLangId); ?></a>
             </div>
-            <div class="col mt-2 mt-md-0">
+            <div class="col">
                 <a href="javascript:void(0);" class="btn btn-outline-primary" data-sort='most_helpful' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Helpful', $siteLangId); ?> </a>
             </div>
         </div>
