@@ -1,7 +1,8 @@
 <?php
+
 class CheckuniqueController
 {
-    const DB_TBL = 'tbl_unique_check_failed_attempt';
+    public const DB_TBL = 'tbl_unique_check_failed_attempt';
     public function check()
     {
         $db = FatApp::getDb();
@@ -11,8 +12,8 @@ class CheckuniqueController
             FatUtility::dieJsonError('Attempt to check unique exceeded!');
         }
 
-        $post=FatApp::getPostedData();
-        $expr='/^[a-zA-Z0-9_]+$/';
+        $post = FatApp::getPostedData();
+        $expr = '/^[a-zA-Z0-9_]+$/';
         if (!preg_match($expr, $post['tbl']) || !preg_match($expr, $post['tbl_fld']) || !preg_match($expr, $post['tbl_key'])) {
             $this->logFailedAttempt(CommonHelper::getClientIp());
             FatUtility::dieJsonError('Invalid Request');
@@ -24,24 +25,26 @@ class CheckuniqueController
         );
         foreach ($allowedFor as $val) {
             switch ($val) {
+                case User::DB_TBL:
+                case User::DB_TBL_PREFIX . 'phone':
                 case User::DB_TBL_CRED:
-                case User::DB_TBL_CRED_PREFIX.'username':
-                case User::DB_TBL_CRED_PREFIX.'email':
+                case User::DB_TBL_CRED_PREFIX . 'username':
+                case User::DB_TBL_CRED_PREFIX . 'email':
                 case ShippingDurations::DB_TBL:
-                case ShippingDurations::DB_TBL_PREFIX.'identifier':
+                case ShippingDurations::DB_TBL_PREFIX . 'identifier':
                 case DiscountCoupons::DB_TBL:
-                case DiscountCoupons::DB_TBL_PREFIX.'code':
+                case DiscountCoupons::DB_TBL_PREFIX . 'code':
                 case Navigations::DB_TBL:
-                case Navigations::DB_TBL_PREFIX.'identifier':
+                case Navigations::DB_TBL_PREFIX . 'identifier':
                 case SocialPlatform::DB_TBL:
-                case SocialPlatform::DB_TBL_PREFIX.'identifier':
+                case SocialPlatform::DB_TBL_PREFIX . 'identifier':
                 case Brand::DB_TBL:
-                case Brand::DB_TBL_PREFIX.'identifier':
+                case Brand::DB_TBL_PREFIX . 'identifier':
                 case 'tbl_admin':
                 case 'admin_username':
                 case 'admin_email':
                 case Slides::DB_TBL:
-                case Slides::DB_TBL_PREFIX.'identifier':
+                case Slides::DB_TBL_PREFIX . 'identifier':
                     break;
                 default:
                     $this->logFailedAttempt(CommonHelper::getClientIp());
@@ -50,17 +53,17 @@ class CheckuniqueController
             }
         }
 
-        $srch=new SearchBase(FatApp::getPostedData('tbl', FatUtility::VAR_STRING));
+        $srch = new SearchBase(FatApp::getPostedData('tbl', FatUtility::VAR_STRING));
         $srch->addCondition(FatApp::getPostedData('tbl_fld', FatUtility::VAR_STRING), '=', FatApp::getPostedData('val', FatUtility::VAR_STRING));
         $srch->addCondition(FatApp::getPostedData('tbl_key', FatUtility::VAR_STRING), '!=', FatApp::getPostedData('key_val', FatUtility::VAR_STRING));
 
-        $operators=array(
-                'eq'=>'=',
-                'ne'=>'!=',
-                'gt'=>'>',
-                'ge'=>'>=',
-                'lt'=>'<',
-                'le'=>'<='
+        $operators = array(
+                'eq' => '=',
+                'ne' => '!=',
+                'gt' => '>',
+                'ge' => '>=',
+                'lt' => '<',
+                'le' => '<='
         );
 
         if (is_array(FatApp::getPostedData('constraints'))) {
@@ -73,20 +76,19 @@ class CheckuniqueController
             }
         }
 
-        $rs=$srch->getResultSet();
-
+        $rs = $srch->getResultSet();
         if ($db->totalRecords($rs) > 0) {
             $arr = array(
                     'status' => 0,
                     'existing_value' => ''
             );
             if (FatApp::getPostedData('key_val') != '' && FatApp::getPostedData('key_val', FatUtility::VAR_STRING) != '0') {
-                $srch=new SearchBase(FatApp::getPostedData('tbl'));
+                $srch = new SearchBase(FatApp::getPostedData('tbl'));
                 $srch->addCondition(FatApp::getPostedData('tbl_key'), '=', FatApp::getPostedData('key_val'));
                 $srch->addFld(FatApp::getPostedData('tbl_fld'));
-                $rs=$srch->getResultSet();
-                if ($row=$db->fetch($rs)) {
-                    $arr['existing_value']=$row[$post['tbl_fld']];
+                $rs = $srch->getResultSet();
+                if ($row = $db->fetch($rs)) {
+                    $arr['existing_value'] = $row[$post['tbl_fld']];
                 }
             }
             $this->logFailedAttempt(CommonHelper::getClientIp());
@@ -126,8 +128,8 @@ class CheckuniqueController
         }
 
         $db->insertFromArray(self::DB_TBL, array(
-                'ucfattempt_ip'=>$ip,
-                'ucfattempt_time'=>date('Y-m-d H:i:s')
+                'ucfattempt_ip' => $ip,
+                'ucfattempt_time' => date('Y-m-d H:i:s')
         ));
 
         // For improvement, we can send an email about the failed attempt here.

@@ -9,7 +9,7 @@ class GuestAffiliateController extends MyAppController
 
     public function index()
     {
-        if (UserAuthentication::isUserLogged() && (User::isAffiliate() || User::isSigningUpAffiliate())) {
+        if ((UserAuthentication::isUserLogged() && (User::isAffiliate() || User::isSigningUpAffiliate()) ) || (UserAuthentication::isUserLogged() && !User::isSigningUpAffiliate())) {
             FatApp::redirectUser(CommonHelper::generateUrl('affiliate'));
         }
 
