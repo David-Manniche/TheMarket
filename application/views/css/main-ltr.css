@@ -7726,8 +7726,6 @@ a.text-dark:hover, .shop-nav ul li.is--active a.text-dark, a.text-dark:focus {
       .header .logo {
         margin: 0 auto;
         max-width: 100px; } }
-    .header .logo img[data-ratio="16:9"] {
-      max-width: 150px; }
     .header .logo img[data-ratio="1:1"] {
       max-width: 60px; }
   .header .last-bar {
@@ -34361,7 +34359,6 @@ div.faqanswer {
         overflow: inherit;
         position: static;
         transform: none;
-        width: auto;
         height: auto;
         max-width: 350px;
         opacity: 1;
