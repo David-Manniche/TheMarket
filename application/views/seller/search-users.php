@@ -49,16 +49,16 @@ foreach ($arrListing as $sn => $row) {
                 break;
             case 'action':
                 $ul = $td->appendElement("ul", array("class" => "actions"), '', true);
-                
-				$li = $ul->appendElement("li");
+
+                $li = $ul->appendElement("li");
                 $li->appendElement(
                     'a',
                     array('href' => 'javascript:void(0)', 'title' => Labels::getLabel('LBL_Change_Password', $siteLangId), "onclick"=>"userPasswordForm(".$row['user_id'].")"),
                     '<i class="fas fa-key"></i>',
                     true
                 );
-				
-				$li = $ul->appendElement("li");
+
+                $li = $ul->appendElement("li");
                 $li->appendElement(
                     'a',
                     array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit', $siteLangId), "onclick"=>"addUserForm(".$row['user_id'].")"),
@@ -77,7 +77,7 @@ foreach ($arrListing as $sn => $row) {
                 $li = $ul->appendElement("li");
                 $li->appendElement(
                     'a',
-                    array('href' => 'javascript:void(0)', 'title' => Labels::getLabel('LBL_Permissions', $siteLangId), "onclick" => "sellerUserPermissions(" . $row['user_id'] . ")"),
+                    array('href' => CommonHelper::generateUrl('Seller', 'SellerPermissions', array($row['user_id'])), 'title' => Labels::getLabel('LBL_Permissions', $siteLangId)),
                     '<i class="fa fa-lock"></i>',
                     true
                 );

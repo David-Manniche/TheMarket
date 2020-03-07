@@ -1319,7 +1319,7 @@ class User extends MyAppModel
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
             return false;
         }
-		
+
 		if (null != $password) {
 			if (!ValidateElement::password($password)) {
 				$this->error = Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->commonLangId);
@@ -1336,7 +1336,7 @@ class User extends MyAppModel
 		if (null != $password) {
 			$arrFlds[static::DB_TBL_CRED_PREFIX . 'password'] = UserAuthentication::encryptPassword($password);
 		}
-		
+
         if (null != $active) {
             $arrFlds [static::DB_TBL_CRED_PREFIX . 'active'] = $active;
         }
@@ -2747,5 +2747,47 @@ class User extends MyAppModel
         } else {
             $this->error = $rewardsRecord->getError();
         }
+    }
+
+    public static function getSellerPermissions($selperm_user_id = 0)
+    {
+        $srch = new SearchBase('tbl_seller_permissions');
+        $srch->addCondition('selperm_user_id', '=', $selperm_user_id);
+        $rs = $srch->getResultSet();
+        $row = FatApp::getDb()->fetchAll($rs, 'selperm_section_id');
+        if (!empty($row)) {
+            return $row;
+        }
+        return false;
+    }
+
+    public function updatePermissions($siteLangId, $assignValues = array(), $updateAll = false)
+    {
+        if ($updateAll) {
+            $permissionModules = SellerPrivilege::getPermissionModulesArr($siteLangId);
+            foreach ($permissionModules as $key => $val) {
+                $assignValues['selperm_section_id'] = $key;
+                if (!FatApp::getDb()->insertFromArray(
+                    'tbl_seller_permissions',
+                    $assignValues,
+                    false,
+                    array(),
+                    $assignValues
+                )) {
+                    return false;
+                }
+            }
+        } else {
+            if (!FatApp::getDb()->insertFromArray(
+                'tbl_seller_permissions',
+                $assignValues,
+                false,
+                array(),
+                $assignValues
+            )) {
+                return false;
+            }
+        }
+        return true;
     }
 }
