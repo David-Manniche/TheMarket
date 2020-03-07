@@ -142,7 +142,7 @@
                     </svg>
                 </i>
                 <p><?php echo Labels::getLabel('LBL_Cash_on_delivery_is_available', $siteLangId);?>
-                    <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('MSG_Cash_on_delivery_available._Choose_from_payment_options', $siteLangId);?>
+                    <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" data-container="body" title="<?php echo Labels::getLabel('MSG_Cash_on_delivery_available._Choose_from_payment_options', $siteLangId);?>
                         "></i></p>
             </div>
         </li>

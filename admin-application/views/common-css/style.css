@@ -3309,9 +3309,7 @@ body.toggled-right .rightoverlay {
     vertical-align: middle;
     padding: 0 0 0 20px;
     height: 20px;
-    -webkit-margin-end: 5px;
-    -moz-margin-end: 5px;
-    margin-inline-end: 5px;
+    margin-right: 5px;
 }
 
 .checkbox input,
@@ -4207,9 +4205,7 @@ fieldset[disabled] .field_control.disabled {
     vertical-align: middle;
     border: none;
     color: #fff;
-    -webkit-margin-end: 10px;
-    -moz-margin-end: 10px;
-    margin-inline-end: 10px;
+    margin-right: 10px;
     line-height: normal;
     background: rgb(45, 200, 239);
     background: -webkit-gradient(linear, left top, left bottom, from(rgba(45, 200, 239, 1)), to(rgba(84, 209, 241, 1)));
@@ -9206,12 +9202,7 @@ body.page--front .page__cell #footer {
     display: inline-block;
     background: #fff;
     vertical-align: top;
-
-    -webkit-margin-end: 20px;
-
-    -moz-margin-end: 20px;
-
-    margin-inline-end: 20px;
+    margin-right: 20px;
     -webkit-transition: 0.5s all ease-in-out;
     transition: 0.5s all ease-in-out;
 }

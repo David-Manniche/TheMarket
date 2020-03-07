@@ -87,7 +87,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
 				if (!empty(FatApp::getConfig("CONF_FACEBOOK_APP_ID")) && !empty(FatApp::getConfig("CONF_FACEBOOK_APP_SECRET"))) {
     ?> <div class="widget widget-stats">
                     <a id="facebook_btn" href="javascript:void(0);" class="box--share box--share-fb">
-                        <i class="fa fa-facebook"></i>
+                        <i class="icon fab fa-facebook-f"></i>
                         <div class="detail">
                             <h5><?php echo Labels::getLabel('L_Share_on', $siteLangId)?></h5>
                             <h2><?php echo Labels::getLabel('L_Facebook', $siteLangId)?></h2>
@@ -99,7 +99,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
 } ?> <?php if (false !== $twitterUrl) {
         ?> <div class="widget widget-stats">
                     <a class="box--share box--share-tw" id="twitter_btn" href="javascript:void(0);">
-                        <i class="fa fa-twitter"></i>
+                        <i class="icon fa fa-twitter"></i>
                         <div class="detail">
                             <h5><?php echo Labels::getLabel('L_Share_on', $siteLangId)?></h5>
                             <h2><?php echo Labels::getLabel('L_Twitter', $siteLangId)?></h2>

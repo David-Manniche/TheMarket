@@ -34,7 +34,7 @@ $this->includeTemplate('_partial/affiliate/affiliateDashboardNavigation.php'); ?
                                 <?php if (!empty(FatApp::getConfig("CONF_FACEBOOK_APP_ID")) && !empty(FatApp::getConfig("CONF_FACEBOOK_APP_SECRET"))){ ?>
                                 <li>
                                     <a id="facebook_btn" href="javascript:void(0);" class="box--share box--share-fb">
-                                        <i class="fa fa-facebook"></i>
+                                        <i class="fab fa-facebook-f"></i>
                                         <div class="detail">
                                             <h5><?php echo Labels::getLabel('L_Share_on',$siteLangId)?></h5>
                                             <h2><?php echo Labels::getLabel('L_Facebook',$siteLangId)?></h2>

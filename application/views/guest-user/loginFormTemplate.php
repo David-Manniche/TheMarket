@@ -25,15 +25,13 @@
     <div class="login-wrapper">
         <div class="form-side">
             <div class="section-head  section--head--center">
-                <div class="section__heading">
+                <div class="section__heading otp-heading">
                     <h2>
                         <?php echo Labels::getLabel('LBL_Login', $siteLangId);?>
                         <?php if (isset($smsPluginStatus) && true === $smsPluginStatus) { ?>
-                            <span class="note">
-                                <a href="javaScript:void(0)" data-form="formLoginPage" onClick="signInWithPhone(this, true)"><?php echo Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $siteLangId); ?></a>
-                            </span>
                         <?php } ?>
                     </h2>
+                     <a class="otp-link" href="javaScript:void(0)" data-form="formLoginPage" onClick="signInWithPhone(this, true)"><?php echo Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $siteLangId); ?></a>
                 </div>
             </div>
             <?php echo $loginFrm->getFormTag(); ?>
