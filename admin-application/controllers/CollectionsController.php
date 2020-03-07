@@ -666,7 +666,7 @@ class CollectionsController extends AdminBaseController
             FatUtility::dieWithError($message);
         }
 
-        $blogPostId = FatUtility::int($post['post_id']);
+        $blogPostId = FatApp::getPostedData('post_id', FatUtility::VAR_INT, 0);
         if (!$collectionId || !$blogPostId) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
         }
