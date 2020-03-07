@@ -21,13 +21,13 @@
                     <ul class="tabs_nav-js">
                         <li>
                             <a class="tabs_001" rel="tabs_001" href="javascript:void(0)">
-                                <?php echo Labels::getLabel('LBL_Initial_Setup', $siteLangId); ?> <i class="tabs-icon fa fa-info-circle"  data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_Setup_Basic_Details', $siteLangId); ?>">
+                                <?php echo Labels::getLabel('LBL_Initial_Setup', $siteLangId); ?> <i class="tabs-icon fa fa-info-circle"  data-toggle="tooltip" data-placement="right" title="<?php echo Labels::getLabel('LBL_Setup_Basic_Details', $siteLangId); ?>">
                                 </i>
                             </a>
                         </li>
                         <li><a rel="tabs_002" class="tabs_002" href="javascript:void(0)">
                             <?php echo Labels::getLabel('LBL_Downloads', $siteLangId); ?>
-                            <i class="tabs-icon fa fa-info-circle"  data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_Downloadable_files/Links', $siteLangId); ?>"></i></a>
+                            <i class="tabs-icon fa fa-info-circle"  data-toggle="tooltip" data-placement="right" title="<?php echo Labels::getLabel('LBL_Downloadable_files/Links', $siteLangId); ?>"></i></a>
                         </li>
                     </ul>
                 </div>

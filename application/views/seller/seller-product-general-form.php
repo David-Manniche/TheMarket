@@ -84,7 +84,7 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
             <div class="row">
                 <div class="selprod_threshold_stock_level_fld col-md-6">
                     <div class="field-set">
-                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_threshold_stock_level')->getCaption(); ?> <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_Alert_stock_level_hint_info', $siteLangId); ?>"></i></label></div>
+                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_threshold_stock_level')->getCaption(); ?> <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo Labels::getLabel('LBL_Alert_stock_level_hint_info', $siteLangId); ?>"></i></label></div>
                         <div class="field-wraper">
                             <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_threshold_stock_level'); ?></div>
                         </div>
@@ -195,9 +195,9 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
                                 <th width="20%"><?php echo Labels::getLabel('LBL_Variant/Option', $siteLangId); ?></th>
                                 <?php }?>
                                 <th width="20%"><?php echo Labels::getLabel('LBL_Cost_Price', $siteLangId); ?></th>
-                                <th width="20%"><?php echo Labels::getLabel('LBL_Selling_Price', $siteLangId); ?> <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates.', $siteLangId).' '.Labels::getLabel('LBL_Min_Selling_price', $siteLangId).' '. CommonHelper::displayMoneyFormat($productMinSellingPrice, true, true); ?>"></i></th>
+                                <th width="20%"><?php echo Labels::getLabel('LBL_Selling_Price', $siteLangId); ?> <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates.', $siteLangId).' '.Labels::getLabel('LBL_Min_Selling_price', $siteLangId).' '. CommonHelper::displayMoneyFormat($productMinSellingPrice, true, true); ?>"></i></th>
                                 <th width="20%"><?php echo Labels::getLabel('LBL_Quantity', $siteLangId); ?></th>
-                                <th width="20%"><?php echo Labels::getLabel('LBL_SKU', $siteLangId); ?> <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_Stock_Keeping_Unit', $siteLangId) ?>"></i></th>
+                                <th width="20%"><?php echo Labels::getLabel('LBL_SKU', $siteLangId); ?> <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo Labels::getLabel('LBL_Stock_Keeping_Unit', $siteLangId) ?>"></i></th>
                             </tr>
                         </thead>
                         <tbody>

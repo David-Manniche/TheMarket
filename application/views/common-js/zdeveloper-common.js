@@ -1543,11 +1543,11 @@ $(document).ready(function () {
 
     /*
     ] ENDS triggers & toggles
+	
     */
+	$("body").tooltip({ selector: '[data-toggle=tooltip]' });
 
-		$('[data-toggle="tooltip"]').tooltip({
-		   container: 'body, .tabs'
-		});
+		 
 
 
 });
