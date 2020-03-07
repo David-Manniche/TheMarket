@@ -17,6 +17,7 @@ $(document).ready(function(){
 		}
 		$(dv).html(fcom.getLoader());
 		fcom.ajax(fcom.makeUrl('Seller','searchUsers'),data,function(res){
+			showFormActionsBtns();
 			$(dv).html(res);
 			$('.hideDiv-js').removeClass('d-none');
 		});
@@ -46,10 +47,10 @@ $(document).ready(function(){
 		});
 	};
 
-	setupUserPassword = function( frm ) {
+	updateUserPassword = function( frm ) {
 		if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);
-		fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupUserPassword'), data, function(t) {
+		fcom.updateWithAjax(fcom.makeUrl('Seller', 'updateUserPassword'), data, function(t) {
 			$.mbsmessage.close();
 			reloadList();
 		});

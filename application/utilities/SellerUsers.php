@@ -56,14 +56,18 @@ trait SellerUsers
         $fld = $frm->addEmailField(Labels::getLabel('LBL_User_Email', $this->siteLangId), 'user_email', '');
         $fld->setUnique('tbl_user_credentials', 'credential_email', 'credential_user_id', 'user_id', 'user_id');
         $frm->addRequiredField(Labels::getLabel('LBL_Phone', $this->siteLangId), 'user_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
-        $fld = $frm->addPasswordField(Labels::getLabel('LBL_PASSWORD', $this->siteLangId), 'user_password');
-        $fld->requirements()->setRequired();
-        $fld->requirements()->setRegularExpressionToValidate(ValidateElement::PASSWORD_REGEX);
-        $fld->requirements()->setCustomErrorMessage(Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->siteLangId));
-        $fld1 = $frm->addPasswordField(Labels::getLabel('LBL_CONFIRM_PASSWORD', $this->siteLangId), 'password1');
-        $fld1->requirements()->setRequired();
-        $fld1->requirements()->setCompareWith('user_password', 'eq', Labels::getLabel('LBL_PASSWORD', $this->siteLangId));
-        $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->siteLangId);
+        
+		if ($user_id == 0) {
+			$fld = $frm->addPasswordField(Labels::getLabel('LBL_PASSWORD', $this->siteLangId), 'user_password');
+			$fld->requirements()->setRequired();
+			$fld->requirements()->setRegularExpressionToValidate(ValidateElement::PASSWORD_REGEX);
+			$fld->requirements()->setCustomErrorMessage(Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->siteLangId));
+			$fld1 = $frm->addPasswordField(Labels::getLabel('LBL_CONFIRM_PASSWORD', $this->siteLangId), 'password1');
+			$fld1->requirements()->setRequired();
+			$fld1->requirements()->setCompareWith('user_password', 'eq', Labels::getLabel('LBL_PASSWORD', $this->siteLangId));
+		}
+		
+		$activeInactiveArr = applicationConstants::getActiveInactiveArr($this->siteLangId);
         $frm->addSelectBox(Labels::getLabel('Lbl_Status', $this->siteLangId), 'user_active', $activeInactiveArr, '', array(), '');
         $countryObj = new Countries();
         $countriesArr = $countryObj->getCountriesArr($this->siteLangId);
@@ -81,7 +85,7 @@ trait SellerUsers
     {
         $userId = FatUtility::int($userId);
         $frm = $this->getSubUserForm($userId);
-
+		$stateId = 0;
         if (0 < $userId) {
             $srch = User::getSearchObject(true);
             $srch->addMultipleFields(array('user_id', 'user_parent', 'user_name', 'user_phone', 'user_country_id', 'user_state_id', 'user_city', 'credential_username', 'credential_email', 'credential_active'));
@@ -97,9 +101,11 @@ trait SellerUsers
             $data['user_email'] = $data['credential_email'];
             $data['user_active'] = $data['credential_active'];
             $frm->fill($data);
+			$stateId = $data['user_state_id'];
         }
 
         $this->set('frm', $frm);
+		$this->set('stateId', $stateId);
         $this->set('siteLangId', $this->siteLangId);
         $this->set('language', Language::getAllNames());
         $this->_template->render(false, false);
@@ -107,20 +113,22 @@ trait SellerUsers
 
     public function setupSubUser()
     {
+		$post = FatApp::getPostedData();
+		
+		$userId = $post['user_id'];
+		$user_state_id = FatUtility::int($post['user_state_id']);
         $frm = $this->getSubUserForm($userId);
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieWithError(Message::getHtml());
         }
-        $userId = $post['user_id'];
         if (0 < $userId) {
             $user = new User($userId);
             $srch = $user->getUserSearchObj();
             $rs = $srch->getResultSet();
             $userData = FatApp::getDb()->fetch($rs);
-            if (!$userData || $userData['user_parent'] != UserAuthentication::getLoggedUserId()) {
+            if (empty($userData) || $userData['user_parent'] != UserAuthentication::getLoggedUserId()) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
                 FatUtility::dieWithError(Message::getHtml());
             }
@@ -144,8 +152,9 @@ trait SellerUsers
         $post['user_active'] = 1;
         $post['user_verify'] = 1;
         $post['user_parent'] = UserAuthentication::getLoggedUserId();
-
-        $db = FatApp::getDb();
+		$post['user_state_id'] = $user_state_id;
+        
+		$db = FatApp::getDb();
         $db->startTransaction();
         $userObj = new User($userId);
         $userObj->assignValues($post);
@@ -154,8 +163,9 @@ trait SellerUsers
             $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
             FatUtility::dieWithError($message);
         }
-
-        if (!$this->setLoginCredentials($post['user_username'], $email, $post['user_password'], $post['user_active'], $post['user_verify'])) {
+		
+		$password = (0 < $userId) ? null : $post['user_password'];
+        if (!$userObj->setLoginCredentials($post['user_username'], $post['user_email'], $password, $post['user_active'], $post['user_verify'])) {
             $db->rollbackTransaction();
             $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
             FatUtility::dieWithError($message);
@@ -179,7 +189,7 @@ trait SellerUsers
         $srch = $user->getUserSearchObj();
         $rs = $srch->getResultSet();
         $userData = FatApp::getDb()->fetch($rs);
-        if (!$userData || $userData['user_parent'] != UserAuthentication::getLoggedUserId()) {
+        if (empty($userData) || $userData['user_parent'] != UserAuthentication::getLoggedUserId()) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -192,10 +202,8 @@ trait SellerUsers
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function toggleSellerUserBulkStatuses()
+    public function toggleSellerUserStatus()
     {
-        $this->objPrivilege->canEditUsers();
-
         $status = FatApp::getPostedData('status', FatUtility::VAR_INT, -1);
         $userIdsArr = FatUtility::int(FatApp::getPostedData('user_ids'));
         if (empty($userIdsArr) || -1 == $status) {
@@ -211,7 +219,7 @@ trait SellerUsers
 
             $this->updateUserStatus($userId, $status);
         }
-        $this->set('msg', $this->str_update_record);
+        $this->set('msg', Labels::getLabel('MSG_Status_changed_Successfully', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -276,35 +284,41 @@ trait SellerUsers
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
         return $frm;
     }
-
-    public function updateUserPassword($userId)
+	
+	public function updateUserPassword()
     {
-        $pwdFrm = $this->getChangePasswordForm();
-        $post = $pwdFrm->getFormDataFromArray(FatApp::getPostedData());
+		$post = FatApp::getPostedData();
+		$userId = $post['user_id'];
+        $frm = $this->getChangePasswordForm($userId);
 
-        if ($post === false) {
-            $message = Labels::getLabel(current($pwdFrm->getValidationErrors()), $this->siteLangId);
-            FatUtility::dieJsonError($message);
+        if (false === $post) {
+            Message::addErrorMessage(current($frm->getValidationErrors()));
+            FatUtility::dieWithError(Message::getHtml());
         }
-
-        $userObj = new User($userId);
-        $srch = $userObj->getUserSearchObj(array('user_id'));
-        $srch->addCondition('user_parent', '=', UserAuthentication::getLoggedUserId());
-        $rs = $srch->getResultSet();
-
-        $data = FatApp::getDb()->fetch($rs, 'user_id');
-
-        if ($data === false) {
-            $message = Labels::getLabel('MSG_Invalid_User', $this->siteLangId);
-            FatUtility::dieJsonError($message);
+		
+        $user = new User($userId);
+		$srch = $user->getUserSearchObj();
+		$rs = $srch->getResultSet();
+		$userData = FatApp::getDb()->fetch($rs);
+		if (empty($userData) || $userData['user_parent'] != UserAuthentication::getLoggedUserId()) {
+			Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
+			FatUtility::dieWithError(Message::getHtml());
+		}
+		
+        $password = $post['new_password'];
+        $encryptedPassword = UserAuthentication::encryptPassword($password);
+		
+		$arrFlds['credential_password'] = $encryptedPassword;
+		
+		$record = new TableRecord(User::DB_TBL_CRED);
+		$record->setFldValue('credential_user_id', $userId);
+        $record->assignValues($arrFlds);
+        if (!$record->addNew(array(), $arrFlds)) {
+            Message::addErrorMessage($record->getError());
+            FatUtility::dieWithError(Message::getHtml());
         }
-
-        if (!$userObj->setLoginPassword($post['new_password'])) {
-            $message = Labels::getLabel('MSG_Password_could_not_be_set', $this->siteLangId) . $userObj->getError();
-            FatUtility::dieJsonError($message);
-        }
-
-        $this->set('msg', Labels::getLabel('MSG_Password_changed_successfully', $this->siteLangId));
+		
+        $this->set('msg', Labels::getLabel('LBL_Password_Updated_Successful', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 }

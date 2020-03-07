@@ -1313,26 +1313,30 @@ class User extends MyAppModel
         return true;
     }
 
-    public function setLoginCredentials($username, $email, $password, $active = null, $verified = null)
+    public function setLoginCredentials($username, $email, $password = null, $active = null, $verified = null)
     {
         if (!($this->mainTableRecordId > 0)) {
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
             return false;
         }
-
-        if (!ValidateElement::password($password)) {
-            $this->error = Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->commonLangId);
-            return false;
-        }
+		
+		if (null != $password) {
+			if (!ValidateElement::password($password)) {
+				$this->error = Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->commonLangId);
+				return false;
+			}
+		}
 
         $email = (empty($email)) ? null : $email;
         $record = new TableRecord(static::DB_TBL_CRED);
         $arrFlds = array(
             static::DB_TBL_CRED_PREFIX . 'username' => $username,
             static::DB_TBL_CRED_PREFIX . 'email' => $email,
-            static::DB_TBL_CRED_PREFIX . 'password' => UserAuthentication::encryptPassword($password)
         );
-
+		if (null != $password) {
+			$arrFlds[static::DB_TBL_CRED_PREFIX . 'password'] = UserAuthentication::encryptPassword($password);
+		}
+		
         if (null != $active) {
             $arrFlds [static::DB_TBL_CRED_PREFIX . 'active'] = $active;
         }
