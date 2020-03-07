@@ -14,8 +14,10 @@ class SellerBaseController extends LoggedUserController
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('account'));
         }
-
-        if (!User::canAccessSupplierDashboard() || !User::isSellerVerified(UserAuthentication::getLoggedUserId())) {
+        $userData = User::getAttributesById(UserAuthentication::getLoggedUserId());
+        $userId = (0 < $userData['user_parent']) ? $userData['user_parent'] : UserAuthentication::getLoggedUserId();
+    
+        if (!User::canAccessSupplierDashboard() || !User::isSellerVerified($userId)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Account', 'supplierApprovalForm'));
         }
         $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] = 'S';
