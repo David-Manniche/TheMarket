@@ -147,10 +147,9 @@
             & {
                 overflow: inherit;
                 position: static;
-                transform: none;
-                width: auto;
+                transform: none;                
                 height: auto;
-                max-width: 350px;
+                max-width: 350px; 
                 opacity: 1;
                 padding: 2rem;
             }
@@ -475,12 +474,12 @@
 
 .otp-heading {
     display: flex !important;
-    align-items: center;
-    justify-content: space-between;
-    flex: 1;
+    flex-direction: column;
+
 
     a.otp-link {
         font-size: 0.8rem;
+        color: $primary-color;
 
     }
 }

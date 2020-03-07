@@ -129,13 +129,14 @@
             > span {
                 display: block;
                 font-size: 0.875rem;
-                text-align: center;        
+                text-align: center;
 
             }
-			.search-results {
-                    font-size: 2rem;
-                    display: inline-block;
-                }
+
+            .search-results {
+                font-size: 2rem;
+                display: inline-block;
+            }
         }
 
         p {
@@ -560,30 +561,30 @@
 
 
 .links--inline {
-    color: #999999;
-    display: inline-block;
+    color: $body-color;
+    display: flex;
     width: 100%;
+
+    li {
+        font-size: 0.875rem;
+        padding-bottom: 5px;
+        padding-#{$end-direction}: 1rem; 
+
+        a {
+            color: inherit;
+
+            &:hover {
+                color: inherit;
+                text-decoration: underline;
+            }
+        }
+
+        .fa {
+            margin: 0 5px 0 0;
+        }
+    }
 }
 
-.links--inline li {
-    display: inline-block;
-    font-size: 1em;
-    padding: 0 5px 4px 0;
-    vertical-align: top;
-}
-
-.links--inline li a {
-    color: inherit;
-}
-
-.links--inline li a:hover {
-    color: #000;
-    text-decoration: underline;
-}
-
-.links--inline li .fa {
-    margin: 0 5px 0 0;
-}
 
 .heading1 {
     color: $body-color;
