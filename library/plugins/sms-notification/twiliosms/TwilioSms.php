@@ -33,12 +33,6 @@ class TwilioSms extends SmsNotificationBase
     
     public function send($to, $body)
     {
-        return [
-            'status' => true,
-            'msg' => Labels::getLabel("MSG_SUCCESS", $this->langId),
-            'response_id' => mt_rand(),
-            'data' => '[]'
-        ];
         if (empty($to) || empty($body)) {
             return [
                 'status' => false,
