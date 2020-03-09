@@ -36,16 +36,41 @@ class EmailHandler extends FatModel
         return $row;
     }
 
+    private function sendSms()
+    {
+        $this->langId = 1 > $this->langId ? $this->commonLangId : $this->langId;
+        if (empty($this->phone) || empty($this->tpl) || empty($this->replacements)) {
+            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->langId);
+            return false;
+        }
+        $smsArchive = new SmsArchive();
+        $smsArchive->toPhone($this->phone);
+        $smsArchive->setTemplate($this->langId, $this->tpl, $this->replacements);
+        if (!$smsArchive->send()) {
+            $this->error = $smsArchive->getError();
+            return false;
+        }
+        return true;
+    }
+
+    // Send sms to Admin.
+    public function sendSmsToAdmin($replacements)
+    {
+        $this->phone = FatApp::getConfig('CONF_SITE_PHONE');
+        $this->replacements = $replacements;
+        return $this->sendSms();
+    }
+
     // Send mail to super Admin, Sub Admin and additonal alert emails.
     public function sendMailToAdminAndAdditionalEmails($tpl, $arrReplacements, $additonalAlerts = 1, $onlySuperAdmin = 0, $langId = 0)
     {
         $langId = FatUtility::int($langId);
 
         if (1 > $langId) {
-            $langId = FatApp::getConfig('conf_default_site_lang');
+            $langId = $this->commonLangId;
         }
         if (empty($tpl) || empty($arrReplacements)) {
-            $this->error = 'Invalid Request!! Failed to send mail to admins.';
+            $this->error = Labels::getLabel('MSG_INVALID_REQUEST!!_FAILED_TO_SEND_MAIL_TO_ADMINS.', $langId);
             return false;
         }
         $onlySuperAdmin = FatUtility::int($onlySuperAdmin);

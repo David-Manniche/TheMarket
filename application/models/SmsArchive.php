@@ -23,6 +23,11 @@ class SmsArchive extends MyAppModel
             $this->langId = Commonhelper::getLangId();
         }
 
+        if (false == static::canSendSms($tpl)) {
+            $this->error = Labels::getLabel("MSG_UNABLE_TO_SEND_SMS", $this->langId);
+            return false;
+        }
+
         $tplData = SmsTemplate::getTpl($this->tpl, $this->langId);
         if (1 > $tplData['stpl_status']) {
             $this->error = Labels::getLabel("MSG_TEMPLATE_NOT_ACTIVE", $this->langId);
