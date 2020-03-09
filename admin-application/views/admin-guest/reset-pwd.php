@@ -7,7 +7,13 @@ defined( 'SYSTEM_INIT' ) or die( 'Invalid Usage.' );
         <div class="container container-fluid container--narrow">
 		
 			  <div class="box box--white">
-                    <figure class="logo"><img src="<?php echo CommonHelper::generateUrl('Image','siteAdminLogo', array(  $adminLangId)); ?>" alt=""></figure>
+                    <figure class="logo">
+                        <?php
+                        $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_ADMIN_LOGO, 0, 0, $adminLangId, false);
+                        $aspectRatioArr = AttachedFile::getRatioTypeArray($adminLangId);
+                        ?>
+                        <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo CommonHelper::generateUrl('Image','siteAdminLogo', array(  $adminLangId)); ?>" alt="">
+                    </figure>
                    
                    <div class="-align-center">
                        <h3><?php echo Labels::getLabel('LBL_Reset_Password',CommonHelper::getLangId()); ?> </h3>

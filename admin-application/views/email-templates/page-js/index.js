@@ -230,9 +230,11 @@ $(document).ready(function () {
         var frmName = formData.get("frmName");
         var langId = document.frmEtplSettingsForm.lang_id.value;
         var fileType = document.frmEtplSettingsForm.file_type.value;
+        var ratio_type = $('.prefRatio-js:checked').val();;
 
         formData.append('lang_id', langId);
         formData.append('file_type', fileType);
+        formData.append('ratio_type', ratio_type);
         $.ajax({
             url: fcom.makeUrl('EmailTemplates', 'uploadLogo'),
             type: 'post',

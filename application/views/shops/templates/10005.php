@@ -71,7 +71,13 @@
 </section>
 <section class="section">
     <div class="shop-logo-wrapper">
-        <div class="shop-logo"><img src="<?php echo CommonHelper::generateUrl('image','shopLogo',array($shop['shop_id'],$siteLangId,'SMALL')); ?>" alt="<?php echo $shop['shop_name']; ?>"></div>
+        <div class="shop-logo">
+            <?php
+            $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_SHOP_LOGO, $shop['shop_id'], 0, 0, false);
+            $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
+            ?>
+            <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo CommonHelper::generateUrl('image','shopLogo',array($shop['shop_id'],$siteLangId,'SMALL')); ?>" alt="<?php echo $shop['shop_name']; ?>">
+        </div>
     </div>
 </section>
 <section class="shop-nav-wrapper">

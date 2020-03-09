@@ -9,7 +9,13 @@
     <div class="page__cell">
         <div class="container container-fluid container--narrow">
             <div class="box box--white">
-                <figure class="logo"><img title="<?php echo FatApp::getConfig("CONF_WEBSITE_NAME_".$adminLangId);?>" src="<?php echo CommonHelper::generateUrl('Image','siteAdminLogo', array(  $adminLangId)); ?>" alt="<?php echo FatApp::getConfig("CONF_WEBSITE_NAME_".$adminLangId);?>"></figure>
+                <figure class="logo">
+                    <?php
+                    $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_ADMIN_LOGO, 0, 0, $adminLangId, false);
+                    $aspectRatioArr = AttachedFile::getRatioTypeArray($adminLangId);
+                    ?>
+                    <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> title="<?php echo FatApp::getConfig("CONF_WEBSITE_NAME_".$adminLangId);?>" src="<?php echo CommonHelper::generateUrl('Image','siteAdminLogo', array(  $adminLangId)); ?>" alt="<?php echo FatApp::getConfig("CONF_WEBSITE_NAME_".$adminLangId);?>">
+                </figure>
                    
                     <div class="box__centered box__centered--form">
                          	<?php echo $frm->getFormTag(); ?>
