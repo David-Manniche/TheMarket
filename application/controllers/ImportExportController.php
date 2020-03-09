@@ -12,7 +12,7 @@ class ImportExportController extends SellerBaseController
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
         }
-        $this->sellerPrivilege->canViewImportExport();
+        $this->userPrivilege->canViewImportExport();
     }
 
     public function index()

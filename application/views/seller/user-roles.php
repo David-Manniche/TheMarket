@@ -1,11 +1,11 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <form class="form">
     <div class="row">
-    <?php foreach ($arrListing as $title => $arrList) { ?>
+    <?php foreach ($arrListing as $key => $arrList) { ?>
         <div class="col-xl-6 col-md-12 mb-4">
             <div class="cards">
                 <div class="cards-header">
-                    <h5 class="cards-title "><?php echo $title; ?></h5>
+                    <h5 class="cards-title "><?php echo $modulesArr[$key]; ?></h5>
                 </div>
                 <div class="cards-content ">
                     <?php $arr_flds = array(
@@ -34,16 +34,16 @@
                                     $td->appendElement('plaintext', array(), $row, true);
                                 break;
                                 case 'permission':
-                                    $listing = SellerPrivilege::getPermissionArr($siteLangId);
+                                    $listing = UserPrivilege::getPermissionArr($siteLangId);
                                     $options = '';
                                     foreach ($listing as $key => $list) {
-                                        if (in_array($sn, SellerPrivilege::getWriteOnlyPermissionModulesArr())
-                                            && $key == SellerPrivilege::PRIVILEGE_READ) {
+                                        if (in_array($sn, UserPrivilege::getWriteOnlyPermissionModulesArr())
+                                            && $key == UserPrivilege::PRIVILEGE_READ) {
                                             continue;
                                         }
 
                                         $selected = '';
-                                        if (isset($userData[$sn]) && !empty($userData[$sn]) && $userData[$sn]['selperm_value'] == $key) {
+                                        if (isset($userData[$sn]) && !empty($userData[$sn]) && $userData[$sn]['userperm_value'] == $key) {
                                             $selected = 'selected';
                                         }
                                         $options.= "<option value=".$key." ".$selected.">".$list."</option>";

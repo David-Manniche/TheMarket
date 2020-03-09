@@ -132,7 +132,7 @@ class User extends MyAppModel
             'user_regdate', 'user_id'
             )
         );
-        
+
         if (0 < $this->parentId) {
             $this->addCondition('user_parent', '=', $this->parentId);
         }
@@ -1388,9 +1388,13 @@ class User extends MyAppModel
         return true;
     }
 
-    public function setLoginPassword($password)
+    public function setLoginPassword($password, $userId = 0)
     {
-        if (!($this->mainTableRecordId > 0)) {
+        $userId = FatUtility::int($userId);
+        if (0 >= $userId) {
+            $userId = $this->mainTableRecordId;
+        }
+        if (!($userId > 0)) {
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
             return false;
         }
@@ -1398,7 +1402,7 @@ class User extends MyAppModel
         $arrFlds = array(
         static::DB_TBL_CRED_PREFIX . 'password' => UserAuthentication::encryptPassword($password)
         );
-        $record->setFldValue(static::DB_TBL_CRED_PREFIX . 'user_id', $this->mainTableRecordId);
+        $record->setFldValue(static::DB_TBL_CRED_PREFIX . 'user_id', $userId);
         $record->assignValues($arrFlds);
         if (!$record->addNew(array(), $arrFlds)) {
             $this->error = $record->getError();
@@ -2761,47 +2765,5 @@ class User extends MyAppModel
         } else {
             $this->error = $rewardsRecord->getError();
         }
-    }
-
-    public static function getSellerPermissions($selperm_user_id = 0)
-    {
-        $srch = new SearchBase('tbl_seller_permissions');
-        $srch->addCondition('selperm_user_id', '=', $selperm_user_id);
-        $rs = $srch->getResultSet();
-        $row = FatApp::getDb()->fetchAll($rs, 'selperm_section_id');
-        if (!empty($row)) {
-            return $row;
-        }
-        return false;
-    }
-
-    public function updatePermissions($siteLangId, $assignValues = array(), $updateAll = false)
-    {
-        if ($updateAll) {
-            $permissionModules = SellerPrivilege::getPermissionModulesArr($siteLangId);
-            foreach ($permissionModules as $key => $val) {
-                $assignValues['selperm_section_id'] = $key;
-                if (!FatApp::getDb()->insertFromArray(
-                    'tbl_seller_permissions',
-                    $assignValues,
-                    false,
-                    array(),
-                    $assignValues
-                )) {
-                    return false;
-                }
-            }
-        } else {
-            if (!FatApp::getDb()->insertFromArray(
-                'tbl_seller_permissions',
-                $assignValues,
-                false,
-                array(),
-                $assignValues
-            )) {
-                return false;
-            }
-        }
-        return true;
     }
 }

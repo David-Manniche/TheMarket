@@ -23,11 +23,10 @@ $(document).ready(function(){
 	
 	updatePermission = function(moduleId,permission){
 		if(1 > moduleId) {
-			if(!(permission = $('.permissionForAll').val()))
+			if(!(permission = $('input name=["permissionForAll"]').val()))
 			{
 				return false;
 			}
-			
 		}
 	
 		data = fcom.frmData(document.frmPrmSrchFrm);				

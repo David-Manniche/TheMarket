@@ -27,6 +27,6 @@ class SellerBaseController extends LoggedUserController
         
         $this->set('bodyClass', 'is--dashboard');
 
-        $this->sellerPrivilege = SellerPrivilege::getInstance();
+        $this->userPrivilege = UserPrivilege::getInstance();
     }
 }

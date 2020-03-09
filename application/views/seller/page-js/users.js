@@ -86,7 +86,8 @@ $(document).ready(function(){
 		if( userId < 1 ){
 			return false;
 		}
-		data='userId='+userId;
+		var status = (obj.hasAttribute('checked')) ? 0 : 1;
+		data='userId='+userId+'&status='+status;
 		fcom.ajax(fcom.makeUrl('Seller','changeUserStatus'),data,function(res){
 			var ans = $.parseJSON(res);
 			if( ans.status == 1 ){

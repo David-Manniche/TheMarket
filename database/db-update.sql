@@ -968,5 +968,5 @@ INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `et
 -- -----------TV-9.1.3.20200303-----------------
 
 ALTER TABLE `tbl_users` ADD `user_parent` INT NOT NULL AFTER `user_is_supplier`;
-CREATE TABLE `tbl_seller_permissions` ( `selperm_user_id` int(11) NOT NULL, `selperm_section_id` int(11) NOT NULL, `selperm_value` int(11) NOT NULL ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-ALTER TABLE `tbl_seller_permissions` ADD PRIMARY KEY (`selperm_user_id`,`selperm_section_id`);
+CREATE TABLE `tbl_user_permissions` ( `userperm_user_id` int(11) NOT NULL, `userperm_section_id` int(11) NOT NULL, `userperm_value` int(11) NOT NULL ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `tbl_user_permissions` ADD PRIMARY KEY (`userperm_user_id`,`userperm_section_id`);
