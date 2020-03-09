@@ -168,16 +168,8 @@ $(document).on('change','.prefDimensions-js',function(){
 				fcom.displayErrorMessage(ans.msg);
 			}
 		});
-	};
-
-	toggleBulkStatues = function(status){
-		if(!confirm(langLbl.confirmUpdateStatus)){
-			return false;
-		}
-		$("#frmBrandListing input[name='status']").val(status);
-		$("#frmBrandListing").submit();
-	};
-
+    };
+    
 	deleteSelected = function(){
 		if(!confirm(langLbl.confirmDelete)){
 			return false;

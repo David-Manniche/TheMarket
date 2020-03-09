@@ -6,10 +6,10 @@ $arr_flds = array(
         'categories' => Labels::getLabel('LBL_Category', $adminLangId),
         'post_published_on' => Labels::getLabel('LBL_Published_Date', $adminLangId),
         'post_published' => Labels::getLabel('LBL_Post_Status', $adminLangId),
-        'action' => Labels::getLabel('LBL_Action', $adminLangId),
+        'action' => '',
     );
     if (!$canEdit) {
-        unset($arr_flds['select_all']);
+        unset($arr_flds['select_all'], $arr_flds['action']);
     }
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered','id'=>'post'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
@@ -67,16 +67,9 @@ foreach ($arr_listing as $sn => $row) {
                 }
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
                 if ($canEdit) {
-                    $li = $ul->appendElement("li", array('class'=>'droplink'));
-                    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                    $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                    $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                    $innerLiEdit=$innerUl->appendElement('li');
-                    $innerLiEdit->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addBlogPostForm(".$row['post_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
-                    $innerLiDelete=$innerUl->appendElement('li');
-                    $innerLiDelete->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['post_id'].")"), Labels::getLabel('LBL_Delete', $adminLangId), true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addBlogPostForm(".$row['post_id'].")"), "<i class='ion-edit icon'></i>", true);
+                    $td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['post_id'].")"), "<i class='ion-android-delete icon'></i>", true);
                 }
                 break;
             default:
@@ -90,7 +83,7 @@ if (count($arr_listing) == 0) {
 }
 
 $frm = new Form('frmBlogPostListing', array('id'=>'frmBlogPostListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->addHiddenField('', 'status');
 

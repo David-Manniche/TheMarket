@@ -14,10 +14,8 @@ $(document).ready(function(){
 		$(frm.page).val(page);
 		searchSalesReport(frm);
 	};
-	redirectBack=function(redirecrt){
-
-	var url=	SITE_ROOT_URL +''+redirecrt;
-	window.location=url;
+	redirectBack = function(redirecrt){
+        window.location = redirecrt;
 	}
 	reloadList = function() {
 		var frm = document.frmSalesReportSearchPaging;

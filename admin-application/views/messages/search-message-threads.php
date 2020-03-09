@@ -5,7 +5,7 @@ $arr_flds = array(
         'thread_subject' => Labels::getLabel('LBL_Subject', $adminLangId),
         'message_text' => Labels::getLabel('LBL_Message', $adminLangId),
         'message_date' => Labels::getLabel('LBL_Date', $adminLangId),
-        'action' => Labels::getLabel('LBL_Action', $adminLangId),
+        'action' => '',
     );
 
 $tbl = new HtmlElement('table', array('class'=>'table table-responsive table--hovered','id'=>'post'));
@@ -45,15 +45,7 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('span', array('class'=>'date'), FatDate::format($row['message_date'], true));
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
-
-                $li = $ul->appendElement("li", array('class'=>'droplink'));
-                $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_View', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-
-                $innerLi=$innerUl->appendElement('li');
-                $innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('Messages', 'view', array($row['thread_id'])),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_View', $adminLangId)), Labels::getLabel('LBL_View', $adminLangId), true);
+                $td->appendElement('a', array('href'=>CommonHelper::generateUrl('Messages', 'view', array($row['thread_id'])),'class'=>'btn btn-clean btn-icon','title'=>Labels::getLabel('LBL_View', $adminLangId)), "<i class='ion-eye'></i>", true);
 
                 break;
             default:

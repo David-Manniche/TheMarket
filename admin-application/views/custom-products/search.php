@@ -6,8 +6,12 @@ $arr_flds = array(
 	'credential_username' => Labels::getLabel('LBL_User', $adminLangId),	
 	'preq_added_on' => Labels::getLabel('LBL_Added_on', $adminLangId),	
 	'preq_status' => Labels::getLabel('LBL_Status', $adminLangId),	
-	'action' => Labels::getLabel('LBL_Action', $adminLangId)
+	'action' => ''
 );
+if (!$canEdit) {
+    unset($arr_flds['action']);
+}
+        
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr',array('class' => 'hide--mobile'));
 foreach ($arr_flds as $val) {
@@ -37,25 +41,16 @@ foreach ($arr_listing as $sn => $row){
 			break;						
 			case 'action':
 				if($row['preq_status']!= ProductRequest::STATUS_APPROVED){
-				$ul = $td->appendElement("ul",array("class"=>"actions actions--centered"));
-				$li = $ul->appendElement("li",array('class'=>'droplink'));
 				
-				$li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit',$adminLangId)),'<i class="ion-android-more-horizontal icon"></i>', true);
-				$innerDiv = $li->appendElement('div',array('class'=>'dropwrap'));
-				$innerUl = $innerDiv->appendElement('ul',array('class'=>'linksvertical'));
+				$td->appendElement('a', array('href'=>'javascript:void(0)', "onclick"=>"addProductForm(".$row['preq_id'].")", 'class'=>'btn btn-clean btn-icon','title'=>Labels::getLabel('LBL_Edit',$adminLangId)),
+				"<i class='ion-edit icon'></i>", true);
 				
-				$innerLiLinks = $innerUl->appendElement("li");
-				$innerLiLinks->appendElement('a', array('href'=>'javascript:void(0)', "onclick"=>"addProductForm(".$row['preq_id'].")", 'class'=>'','title'=>Labels::getLabel('LBL_Edit',$adminLangId)),
-				Labels::getLabel('LBL_Edit',$adminLangId), true);
-				
-				$innerLiLinks = $innerUl->appendElement("li");
-				$innerLiLinks->appendElement('a', array('href'=>'javascript:void(0)', "onclick"=>"productImagesForm(".$row['preq_id'].")", 'class'=>'','title'=>Labels::getLabel('LBL_Images',$adminLangId)),
-				Labels::getLabel('LBL_Images',$adminLangId), true);
+				$td->appendElement('a', array('href'=>'javascript:void(0)', "onclick"=>"productImagesForm(".$row['preq_id'].")", 'class'=>'btn btn-clean btn-icon','title'=>Labels::getLabel('LBL_Images',$adminLangId)),
+				"<i class='far fa-images'></i>", true);
 
-				$innerLiLinks = $innerUl->appendElement("li");
-				$innerLiLinks->appendElement("a", array('title' => Labels::getLabel('LBL_Change_Status',$adminLangId),
-				'onclick' => 'updateStatusForm('.$row['preq_id'].')','href'=>'javascript:void(0)'),
-				Labels::getLabel('LBL_Change_Status',$adminLangId), true);		
+				$td->appendElement("a", array('title' => Labels::getLabel('LBL_Change_Status',$adminLangId),
+				'onclick' => 'updateStatusForm('.$row['preq_id'].')','href'=>'javascript:void(0)', 'class' => 'btn btn-clean btn-icon'),
+				"<i class='fas fa-toggle-off'></i>", true);		
 				}				
 			break;
 			default:

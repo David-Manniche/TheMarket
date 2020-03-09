@@ -24,24 +24,17 @@
                         } */
 
                         if ($canEdit) {
-                            $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
-                            $li = $ul->appendElement("li", array('class'=>'droplink'));
-                            $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                            $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                            $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Activate', $adminLangId),"onclick"=>"toggleBulkStatues(1)"), Labels::getLabel('LBL_Activate', $adminLangId), true);
-
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Deactivate', $adminLangId),"onclick"=>"toggleBulkStatues(0)"), Labels::getLabel('LBL_Deactivate', $adminLangId), true);
-
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteSelected()"), Labels::getLabel('LBL_Delete', $adminLangId), true);
-
-                            $innerLiAddCat=$innerUl->appendElement('li');
-                            $innerLiAddCat->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Add_Policy_Point', $adminLangId),"onclick"=>"addPolicyPointForm(0)"), Labels::getLabel('LBL_Add_Policy_Point', $adminLangId), true);
-                            echo $ul->getHtml();
+                            $otherButtons = [
+                                [
+                                    'attr' => [
+                                        'href' => 'javascript:void(0)',
+                                        'onclick' => 'addPolicyPointForm(0)',
+                                        'title' => Labels::getLabel('LBL_Add_Policy_Point', $adminLangId),
+                                    ],
+                                    'label' => '<i class="fas fa-plus"></i>'
+                                ],
+                            ];
+                            $this->includeTemplate('_partial/action-buttons.php', ['otherButtons' => $otherButtons, 'adminLangId' => $adminLangId], false);
                         }
                         ?>
                     </div>

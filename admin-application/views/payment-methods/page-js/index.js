@@ -110,13 +110,6 @@ $(document).ready(function() {
 			}
 		});
     };
-    toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmPayMethodListing input[name='status']").val(status);
-        $("#frmPayMethodListing").submit();
-    };
 
     popupImage = function(inputBtn){
         if (inputBtn.files && inputBtn.files[0]) {

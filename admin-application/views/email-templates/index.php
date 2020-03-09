@@ -32,24 +32,24 @@
                 <section class="section">
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_Email_Template_Lists', $adminLangId); ?> </h4>
-                        <?php if ($canEdit) {
-                            $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
-                            $li = $ul->appendElement("li", array('class'=>'droplink'));
-
-                            $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                            $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                            $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Activate', $adminLangId),"onclick"=>"toggleBulkStatues(1)"), Labels::getLabel('LBL_Activate', $adminLangId), true);
-
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Deactivate', $adminLangId),"onclick"=>"toggleBulkStatues(0)"), Labels::getLabel('LBL_Deactivate', $adminLangId), true);
-
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Settings', $adminLangId),"onclick"=>"settingsForm(".$adminLangId.")"), Labels::getLabel('LBL_Settings', $adminLangId), true);
-
-                            echo $ul->getHtml();
+                        <?php
+                        if ($canEdit) {
+                            $data = [
+                                'adminLangId' => $adminLangId,
+                                'deleteButton' => false,
+                                'otherButtons' => [
+                                    [
+                                        'attr' => [
+                                            'href' => 'javascript:void(0)',
+                                            'onclick' => 'settingsForm(' . $adminLangId . ')',
+                                            'title' => Labels::getLabel('LBL_Settings', $adminLangId)
+                                        ],
+                                        'label' => '<i class="fas fa-cog"></i>'
+                                    ],
+                                ]
+                            ];
+        
+                            $this->includeTemplate('_partial/action-buttons.php', $data, false);
                         } ?>
                     </div>
                     <div class="sectionbody">

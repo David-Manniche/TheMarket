@@ -103,12 +103,4 @@ $(document).ready(function () {
         document.frmStplsSearch.reset();
         searchStpls(document.frmStplsSearch);
     };
-
-    toggleBulkStatues = function (status) {
-        if (!confirm(langLbl.confirmUpdateStatus)) {
-            return false;
-        }
-        $("#frmSmsTempListing input[name='status']").val(status);
-        $("#frmSmsTempListing").submit();
-    };
 })();

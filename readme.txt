@@ -160,6 +160,8 @@ Bug:
     => 034947 - If product name contains "&" then under vol discount & special price it's displaying "&amp" when select through seller products page.
     => 035118 - Invalid email address is accepting while guest login.
     => 035206 - admin> settings> email template settings> cropper is not there
+    => 034808 - All action button should listed above all listings in admin.
+    => 035214 - Add review button should not be displayed on product detail page if that item is not bought by current logged in user.
     
 New Features:
     => 71188 - Add setting for making brand field optional

@@ -119,7 +119,7 @@ if (count($arrListing) == 0) {
     //$this->includeTemplate('_partial/no-record-found.php' , array('siteLangId'=>$siteLangId));
 } else {
     $frm = new Form('frmSellerProductsListing', array('id' => 'frmSellerProductsListing'));
-    $frm->setFormTagAttribute('class', 'form');
+    $frm->setFormTagAttribute('class', 'form actionButtons-js');
     $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
     // $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Seller', 'deleteBulkSellerProducts'));
     $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Seller', 'toggleBulkStatuses'));

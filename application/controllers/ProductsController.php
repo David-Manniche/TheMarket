@@ -707,7 +707,7 @@ class ProductsController extends MyAppController
         $canSubmitFeedback = true;
         if ($loggedUserId) {
             $orderProduct = SelProdReview::getProductOrderId($product['product_id'], $loggedUserId);
-            if (!Orders::canSubmitFeedback($loggedUserId, $orderProduct['op_order_id'], $selprod_id)) {
+            if (empty($orderProduct) || (isset($orderProduct['op_order_id']) && !Orders::canSubmitFeedback($loggedUserId, $orderProduct['op_order_id'], $selprod_id))) {
                 $canSubmitFeedback = false;
             }
         }

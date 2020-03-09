@@ -140,12 +140,4 @@ $(document).ready(function() {
         });
     };
 
-	toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmSellerPkgListing input[name='status']").val(status);
-        $("#frmSellerPkgListing").submit();
-    };
-
 })();

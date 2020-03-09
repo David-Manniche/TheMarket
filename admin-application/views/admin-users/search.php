@@ -6,11 +6,11 @@ $arr_flds = array(
         'admin_username' => Labels::getLabel('LBL_Username', $adminLangId),
         'admin_email' => Labels::getLabel('LBL_Email', $adminLangId),
         'admin_active' => Labels::getLabel('LBL_Status', $adminLangId),
-        'action' => Labels::getLabel('LBL_Action', $adminLangId),
+        'action' => '',
     );
 
 if (!$canEdit) {
-    unset($arr_flds['select_all']);
+    unset($arr_flds['select_all'], $arr_flds['action']);
 }
 
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table-responsive'));
@@ -38,26 +38,13 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class" => "actions actions--centered"));
                 if ($canEdit) {
-                    $li = $ul->appendElement("li", array('class' => 'droplink'));
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "editAdminUserForm(" . $row['admin_id'] . ")"), "<i class='ion-edit icon'></i>", true);
 
-                    if ($row['admin_id'] > 1 || $adminLoggedInId == 1) {
-                        $li->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                    }
-                    $innerDiv = $li->appendElement('div', array('class' => 'dropwrap'));
-                    $innerUl = $innerDiv->appendElement('ul', array('class' => 'linksvertical'));
-
-                    $innerLi = $innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "editAdminUserForm(" . $row['admin_id'] . ")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
-
-                    $innerLi = $innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Change_Password', $adminLangId), "onclick" => "changePasswordForm(" . $row['admin_id'] . ")"), Labels::getLabel('LBL_Change_Password', $adminLangId), true);
-
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-icon', 'title' => Labels::getLabel('LBL_Change_Password', $adminLangId), "onclick" => "changePasswordForm(" . $row['admin_id'] . ")"), "<i class='ion-locked icon'></i>", true);
 
                     if ($row['admin_id'] > 1 && $row['admin_id'] != $adminLoggedInId) {
-                        $innerLi = $innerUl->appendElement('li');
-                        $innerLi->appendElement('a', array('href' => CommonHelper::generateUrl('AdminUsers', 'permissions', array($row['admin_id'])), 'class' => 'button small green redirect--js', 'title' => Labels::getLabel('LBL_Permissions', $adminLangId)), Labels::getLabel('LBL_Permissions', $adminLangId), true);
+                        $td->appendElement('a', array('href' => CommonHelper::generateUrl('AdminUsers', 'permissions', array($row['admin_id'])), 'class' => 'btn btn-clean btn-icon', 'title' => Labels::getLabel('LBL_Permissions', $adminLangId)), '<i class="fas fa-gavel"></i>', true);
                     }
                 }
                 break;
@@ -86,7 +73,7 @@ if (count($arr_listing) == 0) {
 }
 
 $frm = new Form('frmAdmUsersListing', array('id' => 'frmAdmUsersListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('AdminUsers', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');
