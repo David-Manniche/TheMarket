@@ -163,7 +163,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
     } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table table--orders js-scrollable">
+                            <table class="table">
                                 <tbody>
                                     <tr class="">
                                         <th width="40%"><?php echo Labels::getLabel('LBL_User_Detail', $siteLangId);?></th>
@@ -221,7 +221,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
     } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table table--orders js-scrollable ">
+                            <table class="table ">
                                 <tbody>
                                     <tr class="">
                                         <th width="30%"><?php echo Labels::getLabel('LBL_Txn._Detail', $siteLangId);?></th>

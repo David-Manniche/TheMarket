@@ -15756,6 +15756,9 @@ img.mfp-img {
     .table {
       white-space: nowrap;
       display: block; } }
+  @media (max-width: 991.98px) {
+    .table {
+      min-height: 130px; } }
   .table tr:last-child td {
     border-bottom: none; }
   .table tr td:first-child {
@@ -35268,8 +35271,8 @@ body {
 
 .shop-information .shop-logo {
   border-radius: 50%;
-  width: 170px;
-  height: 170px;
+  width: 150px;
+  height: 150px;
   margin: 0 auto;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -35280,10 +35283,14 @@ body {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 0;
   margin-bottom: 1rem;
   background: #fff;
   overflow: hidden; }
+  .shop-information .shop-logo img[data-ratio="16:9"] {
+    max-height: 84px; }
+  .shop-information .shop-logo img[data-ratio="1:1"] {
+    max-width: 100%; }
 .shop-information .shop-info {
   padding: 0;
   text-align: center; }

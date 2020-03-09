@@ -66,7 +66,7 @@
 
 
                 <?php if (!empty($request)) { ?>
-                <table class="table table--orders">
+                <table class="table">
                     <tbody>
                         <tr class="">
                             <th width="15%"><?php echo Labels::getLabel('LBL_ID', $siteLangId); ?></th>
@@ -107,7 +107,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <table class="table table--orders">
+                <table class="table">
                     <tbody>
                         <tr class="">
                             <th width="20%"><?php echo Labels::getLabel('LBL_Reason', $siteLangId); ?></th>

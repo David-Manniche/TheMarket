@@ -67,8 +67,8 @@
 .shop-information {
     .shop-logo {
         border-radius: 50%;
-        width: 170px;
-        height: 170px;
+        width: 150px;
+        height: 150px;
         margin: 0 auto;
         display: -webkit-box;
         display: -ms-flexbox;
@@ -79,10 +79,17 @@
         -webkit-box-pack: center;
         -ms-flex-pack: center;
         justify-content: center;
-        padding: 1rem;
+        padding: 0;
         margin-bottom: 1rem;
         background: #fff;
         overflow: hidden;
+
+        img {
+            &[data-ratio="16:9"] { max-height: 84px;}
+            &[data-ratio="1:1"] {
+                max-width: 100%;
+            }
+        }
     }
 
     .shop-info {
@@ -100,7 +107,8 @@
         .shop-name {
             margin-bottom: 1rem;
 
-            span { display: block;
+            span {
+                display: block;
                 font-size: 0.775rem;
                 color: lighten($body-color, 50%);
             }
@@ -118,7 +126,8 @@
             background: #9b9a9a;
 
             &:hover {
-                background: $brand-color; color:$brand-color-inverse;
+                background: $brand-color;
+                color: $brand-color-inverse;
             }
 
         }

@@ -7,7 +7,7 @@ $arr_flds = array(
     'action'    =>    Labels::getLabel('LBL_Action', $siteLangId),
 );
 
-$tbl = new HtmlElement('table', array('class'=>'table table--orders'));
+$tbl = new HtmlElement('table', array('class'=>'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);

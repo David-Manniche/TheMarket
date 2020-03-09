@@ -104,7 +104,7 @@ if (!$print) {
                         </div>
                     </div>
 
-                    <table class="table table--orders">
+                    <table class="table">
                         <tbody>
                             <tr class="">
                                 <th><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>

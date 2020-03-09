@@ -17,7 +17,7 @@
         </div>
         <?php }?>
         <div class="short-detail">
-            <table class="table cart--full js-scrollable">
+            <table class="table cart--full">
                 <tbody>
                     <?php
         if (count($products)) {
