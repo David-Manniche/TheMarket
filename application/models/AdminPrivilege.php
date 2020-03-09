@@ -255,6 +255,7 @@ class AdminPrivilege
         static::SECTION_SMS_TEMPLATE => Labels::getLabel('MSG_SMS_TEMPLATE', CommonHelper::getLangId()),
         
         static::SECTION_ABUSIVE_WORDS => Labels::getLabel('MSG_Abusive_Words',CommonHelper::getLangId()),
+        static::SECTION_SUBSCRIPTION_ORDERS => Labels::getLabel('MSG_Subscription_Orders',CommonHelper::getLangId()),
             
         /* static::SECTION_Languages => Labels::getLabel('MSG_Languages',CommonHelper::getLangId()),
         static::SECTION_Languages => Labels::getLabel('MSG_Order_Status',CommonHelper::getLangId()), */
@@ -1419,6 +1420,11 @@ class AdminPrivilege
     public function canViewAbandonedCart($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_ABANDONED_CART, static::PRIVILEGE_READ, $returnResult);
+    }
+    
+    public function canEditAbandonedCart($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_ABANDONED_CART, static::PRIVILEGE_WRITE, $returnResult);
     }
 
     public function canViewAdvertisements($adminId = 0, $returnResult = false)

@@ -8,9 +8,11 @@ $arr_flds += array(
         'listserial'=>Labels::getLabel('LBL_Sr_no.', $adminLangId),
         'epage_identifier'=>Labels::getLabel('LBL_Title', $adminLangId),
         'epage_active'=>Labels::getLabel('LBL_Status', $adminLangId),
-        'action' => Labels::getLabel('LBL_Action', $adminLangId),
+        'action' => '',
     );
-    
+ if (!$canEdit) {
+    unset($arr_flds['select_all'], $arr_flds['action']);
+}    
 if (!empty($importInstructions)) {
     unset($arr_flds['epage_active']);
 }
@@ -61,16 +63,8 @@ foreach ($arr_listing as $sn => $row) {
 
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
-
                 if ($canEdit) {
-                    $li = $ul->appendElement("li", array('class'=>'droplink'));
-                    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                    $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                    $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                    $innerLiEdit=$innerUl->appendElement('li');
-
-                    $innerLiEdit->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addBlockFormNew(".$row['epage_id'].",".$adminLangId.")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addBlockFormNew(".$row['epage_id'].",".$adminLangId.")"), "<i class='ion-edit icon'></i>", true);
                 }
                 break;
             default:
