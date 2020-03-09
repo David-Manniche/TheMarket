@@ -537,7 +537,7 @@ class CustomProductsController extends AdminBaseController
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = preq.preq_user_id', 'u');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'c.credential_user_id = u.user_id', 'c');
         $srch->addCondition('preq_id', '=', $preqId);
-        $srch->addMultipleFields(array('preq.*', 'user_name', 'credential_email'));
+        $srch->addMultipleFields(array('preq.*', 'user_name', 'credential_email', 'user_dial_code', 'user_phone'));
         $srch->setPageSize(1);
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();

@@ -577,9 +577,11 @@ class User extends MyAppModel
             array(
             'u.' . static::DB_TBL_PREFIX . 'id',
             'u.' . static::DB_TBL_PREFIX . 'name',
+            'u.' . static::DB_TBL_PREFIX . 'dial_code',
+            'u.' . static::DB_TBL_PREFIX . 'phone',
             'uc.' . static::DB_TBL_CRED_PREFIX . 'username',
             'uc.' . static::DB_TBL_CRED_PREFIX . 'email',
-                            )
+            )
         );
         return $srch;
     }
@@ -1089,9 +1091,11 @@ class User extends MyAppModel
             array(
             'u.' . static::DB_TBL_PREFIX . 'id',
             'u.' . static::DB_TBL_PREFIX . 'name',
+            'u.' . static::DB_TBL_PREFIX . 'dial_code',
+            'u.' . static::DB_TBL_PREFIX . 'phone',
             'uc.' . static::DB_TBL_CRED_PREFIX . 'username',
             'uc.' . static::DB_TBL_CRED_PREFIX . 'email',
-                            )
+            )
         );
         return $srch;
     }
@@ -1110,7 +1114,7 @@ class User extends MyAppModel
         $data = array(
             'reference_number' => $data['scatrequest_reference'],
             'request_title' => $data['scatrequest_title'],
-        'request_content' => $data['scatrequest_content'],
+            'request_content' => $data['scatrequest_content'],
         );
         $email = new EmailHandler();
 
@@ -1681,11 +1685,12 @@ class User extends MyAppModel
     public function notifyAdminRegistration($data, $langId)
     {
         $userType = isset($data['user_registered_initially_for']) ? $data['user_registered_initially_for'] : '';
+        $phone = !empty($data['user_phone']) ? $data['user_dial_code'] . $data['user_phone'] : '';
         $data = array(
                     'user_name' => $data['user_name'],
                     'user_username' => $data['user_username'],
                     'user_email' => isset($data['user_email']) ? $data['user_email'] : '',
-                    'user_phone' => isset($data['user_phone']) ? $data['user_phone'] : '',
+                    'user_phone' => $phone,
                     'user_type' => $userType,
                 );
         $email = new EmailHandler();
@@ -1767,10 +1772,11 @@ class User extends MyAppModel
     public function guestUserWelcomeEmail($data, $langId)
     {
         $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
-
+        $phone = !empty($data['user_phone']) ? $data['user_dial_code'] . $data['user_phone'] : '';
         $data = array(
             'user_name' => $data['user_name'],
             'user_email' => $data['user_email'],
+            'user_phone' => $phone,
             'link' => $link,
         );
 
@@ -1786,9 +1792,11 @@ class User extends MyAppModel
 
     public function userWelcomeEmailRegistration($data, $link, $langId)
     {
+        $phone = !empty($data['user_phone']) ? $data['user_dial_code'] . $data['user_phone'] : '';
         $data = array(
                     'user_name' => $data['user_name'],
                     'user_email' => $data['user_email'],
+                    'user_phone' => $phone,
                     'link' => $link,
                 );
                 
@@ -2675,6 +2683,10 @@ class User extends MyAppModel
 
         $userData['user_username'] = $username;
         $userData['user_email'] = $email;
+        
+        $uData = self::getAttributesById($userId, ['user_dial_code', 'user_phone']);
+        $userData = array_merge($userData, $uData);
+
         if (FatApp::getConfig('CONF_NOTIFY_ADMIN_REGISTRATION', FatUtility::VAR_INT, 1)) {
             if (!$this->notifyAdminRegistration($userData, $this->commonLangId)) {
                 $this->error = Labels::getLabel("MSG_NOTIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->commonLangId);
@@ -2688,9 +2700,10 @@ class User extends MyAppModel
             $data['user_name'] = $username;
 
             //ToDO::Change login link to contact us link
-            $data['link'] = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
-            $userEmailObj = new User($userId);
-            if (!$this->userWelcomeEmailRegistration($userEmailObj, $data, $this->commonLangId)) {
+            $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
+            $data = array_merge($data, $uData);
+            
+            if (!$this->userWelcomeEmailRegistration($data, $link, $this->commonLangId)) {
                 $this->error = Labels::getLabel("MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT", $this->commonLangId);
                 $db->rollbackTransaction();
                 return false;

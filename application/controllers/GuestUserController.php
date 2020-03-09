@@ -582,7 +582,7 @@ class GuestUserController extends MyAppController
         }
 
 
-        $srchUser = $usr->getUserSearchObj(array('u.user_name', 'uc.credential_email'));
+        $srchUser = $usr->getUserSearchObj(array('u.user_name', 'u.user_dial_Code', 'u.user_phone', 'uc.credential_email'));
         $srchUser->addCondition('u.user_id', '=', $userId);
         $srchUser->doNotCalculateRecords();
         $srchUser->doNotLimitRecords();
@@ -596,7 +596,8 @@ class GuestUserController extends MyAppController
 
         $email = new EmailHandler();
         $currentEmail = $data['credential_email'];
-        if (!empty($currentEmail) && !$email->sendEmailChangedNotification($this->siteLangId, array('user_name' => $data['user_name'], 'user_email' => $data['credential_email'], 'user_new_email' => $newUserEmail))) {
+        $phone = !empty($data['user_phone']) ? $data['user_dial_code'] . $data['user_phone'] : '';
+        if (!empty($currentEmail) && !$email->sendEmailChangedNotification($this->siteLangId, array('user_name' => $data['user_name'], 'user_email' => $data['credential_email'], 'user_new_email' => $newUserEmail, 'user_phone' => $phone))) {
             Message::addErrorMessage(Labels::getLabel("MSG_UNABLE_TO_SEND_EMAIL_CHANGE_NOTIFICATION", $this->siteLangId) . $userObj->getError());
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
         }
@@ -764,6 +765,8 @@ class GuestUserController extends MyAppController
 
         if (1 > $withPhone) {
             $email = new EmailHandler();
+            $uData = User::getAttributesById($row['user_id'], ['user_dial_code', 'user_phone']);
+            $row = array_merge($row, $uData);
             if (!$email->sendForgotPasswordLinkEmail($this->siteLangId, $row)) {
                 $db->rollbackTransaction();
                 $message = Labels::getLabel("MSG_ERROR_IN_SENDING_PASSWORD_RESET_LINK_EMAIL", $this->siteLangId);
@@ -912,7 +915,7 @@ class GuestUserController extends MyAppController
         $email = new EmailHandler();
 
         $userObj = new User($userId);
-        $row = $userObj->getUserInfo(array(User::tblFld('name'), User::DB_TBL_CRED_PREFIX . 'email'), '', false);
+        $row = $userObj->getUserInfo(array(User::tblFld('name'), User::DB_TBL_CRED_PREFIX . 'email', 'user_dial_code', 'user_phone'), '', false);
         $row['link'] = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
         $email->sendResetPasswordConfirmationEmail($this->siteLangId, $row);
 
@@ -1005,7 +1008,7 @@ class GuestUserController extends MyAppController
         }
 
         $userObj = new User(UserAuthentication::getLoggedUserId());
-        $srch = $userObj->getUserSearchObj(array('user_id', 'credential_email', 'user_name'));
+        $srch = $userObj->getUserSearchObj(array('user_id', 'credential_email', 'user_name', 'user_dial_code', 'user_phone'));
         $rs = $srch->getResultSet();
 
         if (!$rs) {
@@ -1023,9 +1026,10 @@ class GuestUserController extends MyAppController
         Message::addErrorMessage(Labels::getLabel('MSG_YOUR_CURRENT_PASSWORD_MIS_MATCHED',$this->siteLangId));
         FatUtility::dieJsonError( Message::getHtml() );
         } */
-
+        $phone = !empty($data['user_phone']) ? $data['user_dial_code'] . $data['user_phone'] : '';
         $arr = array(
             'user_name' => $data['user_name'],
+            'user_phone' => $phone,
             'user_email' => $post['new_email']
         );
 

@@ -2225,6 +2225,9 @@ class MobileAppApiController extends MyAppController
         }
         $row['link'] = FatUtility::generateFullUrl('GuestUser', 'resetPassword', array($row['user_id'], $token));
         $email = new EmailHandler();
+        
+        $uData = User::getAttributesById($row['user_id'], ['user_dial_code', 'user_phone']);
+        $row = array_merge($row, $uData);
         if (!$email->sendForgotPasswordLinkEmail($this->siteLangId, $row)) {
             $db->rollbackTransaction();
             FatUtility::dieJsonError(Labels::getLabel("MSG_ERROR_IN_SENDING_PASSWORD_RESET_LINK_EMAIL", $this->siteLangId));

@@ -594,6 +594,7 @@ class MyAppController extends FatController
         if (!$configureEmail) {
             $dataArr = array(
             'user_name' => $data['user_name'],
+            'user_phone' => $data['user_phone'],
             'link' => $link,
             'user_new_email' => $data['user_new_email'],
             'user_email' => $data['user_email'],
