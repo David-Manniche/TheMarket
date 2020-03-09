@@ -2,7 +2,7 @@
 
 trait SellerUsers
 {
-    protected function getUserSearchForm($user_id = 0)
+    protected function getUserSearchForm()
     {
         $frm = new Form('frmSearch');
         $frm->addTextBox('', 'keyword', '', array('id' => 'keyword'));
@@ -20,19 +20,19 @@ trait SellerUsers
 
     public function searchUsers()
     {
-        $srch = User::getSearchObject(true);
-        $srch->addMultipleFields(array('user_id', 'user_name', 'credential_username', 'credential_email', 'credential_active'));
-        $srch->addCondition('user_parent', '=', UserAuthentication::getLoggedUserId());
+        $srch = User::getSearchObject(true, UserAuthentication::getLoggedUserId());
+        $srch->addMultipleFields(array('user_id', 'user_name', 'credential_username', 'credential_email', 'credential_active'));       
         if ($keyword = FatApp::getPostedData('keyword')) {
-            $cnd = $srch->addCondition('user_name', 'like', "%$keyword%");
-            $cnd->attachCondition('credential_username', 'LIKE', "%$keyword%");
-            $cnd->attachCondition('credential_email', 'LIKE', "%$keyword%");
+            $cnd = $srch->addCondition('user_name', 'like', '%' . $keyword . '%');
+            $cnd->attachCondition('credential_username', 'LIKE', '%' . $keyword . '%');
+            $cnd->attachCondition('credential_email', 'LIKE', '%' . $keyword . '%');
         }
         $pageSize = FatApp::getConfig('CONF_PAGE_SIZE');
         $post = FatApp::getPostedData();
-        $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : $post['page'];
+        $page =  FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
+       /*  $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : $post['page'];
         $page = (empty($page) || $page <= 0) ? 1 : $page;
-        $page = FatUtility::int($page);
+        $page = FatUtility::int($page); */
 
         $srch->setPageNumber($page);
         $srch->setPageSize($pageSize);
@@ -93,14 +93,12 @@ trait SellerUsers
         $frm = $this->getSubUserForm($userId);
         $stateId = 0;
         if (0 < $userId) {
-            $srch = User::getSearchObject(true);
+            $srch = User::getSearchObject(true, UserAuthentication::getLoggedUserId());
             $srch->addMultipleFields(array('user_id', 'user_parent', 'user_name', 'user_phone', 'user_country_id', 'user_state_id', 'user_city', 'credential_username', 'credential_email', 'credential_active'));
-            $srch->addCondition('user_parent', '=', UserAuthentication::getLoggedUserId());
             $srch->addCondition('user_id', '=', $userId);
-            $srch->addCondition('user_deleted', '=', applicationConstants::NO);
             $rs = $srch->getResultSet();
             $data = FatApp::getDb()->fetch($rs);
-            if ($data === false || $data['user_parent'] != UserAuthentication::getLoggedUserId()) {
+            if ($data === false) {
                 FatUtility::dieWithError(Labels::getLabel("LBL_INVALID_REQUEST", $this->siteLangId));
             }
             $data['user_username'] = $data['credential_username'];
@@ -245,17 +243,15 @@ trait SellerUsers
         $userId = FatUtility::int($userId);
         $frm = $this->getChangePasswordForm($userId);
 
-        $userObj = new User($userId);
-        $srch = $userObj->getUserSearchObj(array('user_id'));
-        $srch->addCondition('user_parent', '=', UserAuthentication::getLoggedUserId());
+        /* $srch = User::getSearchObject(true, UserAuthentication::getLoggedUserId());
+        $srch->addFld('user_id');
         $rs = $srch->getResultSet();
-
         $data = FatApp::getDb()->fetch($rs, 'user_id');
 
         if ($data === false) {
             $message = Labels::getLabel('MSG_Invalid_User', $this->siteLangId);
             FatUtility::dieJsonError($message);
-        }
+        } */
 
         $this->set('frm', $frm);
         $this->_template->render(false, false);
@@ -339,7 +335,7 @@ trait SellerUsers
     {
         $userId = FatUtility::int($userId);
         $userData = User::getAttributesById($userId);
-        if (empty($userData) || $userId == UserAuthentication::getLoggedUserId()) {
+        if (empty($userData) || $userId == UserAuthentication::getLoggedUserId() || $userData['user_parent'] != UserAuthentication::getLoggedUserId()) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('seller', 'users'));
         }
@@ -382,7 +378,7 @@ trait SellerUsers
 
         $userId = FatUtility::int($post['user_id']);
         $userData = User::getAttributesById($userId);
-        if (empty($userData) || $userId == UserAuthentication::getLoggedUserId()) {
+        if (empty($userData) || $userId == UserAuthentication::getLoggedUserId() || $userData['user_parent'] != UserAuthentication::getLoggedUserId()) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }

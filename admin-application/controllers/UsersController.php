@@ -133,7 +133,7 @@ class UsersController extends AdminBaseController
     {
         $this->objPrivilege->canEditUsers();
         $userObj = new User($userId);
-        $user = $userObj->getUserInfo(array('credential_username', 'credential_password', 'user_preferred_dashboard'), false, false);
+        $user = $userObj->getUserInfo(array('credential_username', 'credential_password', 'user_preferred_dashboard'), false, false);       
         if (!$user) {
             Message::addErrorMessage($this->str_invalid_request);
             FatApp::redirectUser(CommonHelper::generateUrl('Users'));

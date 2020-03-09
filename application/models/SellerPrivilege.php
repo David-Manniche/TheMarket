@@ -1,5 +1,4 @@
 <?php
-
 class SellerPrivilege
 {
     public const SECTION_SHOP = 1;
@@ -53,96 +52,96 @@ class SellerPrivilege
         return ($userData['user_parent'] == 0) ? true : false;
     }
 
-    public static function getPermissionArr($siteLangId)
+    public static function getPermissionArr($langId)
     {
         $arr = array(
-        static::PRIVILEGE_NONE => Labels::getLabel('LBL_None', $siteLangId),
-        static::PRIVILEGE_READ => Labels::getLabel('LBL_Read_Only', $siteLangId),
-        static::PRIVILEGE_WRITE => Labels::getLabel('LBL_Read_and_Write', $siteLangId)
+        static::PRIVILEGE_NONE => Labels::getLabel('LBL_None', $langId),
+        static::PRIVILEGE_READ => Labels::getLabel('LBL_Read_Only', $langId),
+        static::PRIVILEGE_WRITE => Labels::getLabel('LBL_Read_and_Write', $langId)
         );
         return $arr;
     }
 
-    public static function getPermissionModulesArr($siteLangId)
+    public static function getPermissionModulesArr($langId)
     {
         $arr = array(
-            static::SECTION_SELLER_DASHBOARD => Labels::getLabel('LBL_Seller_Dashboard', $siteLangId),
-            static::SECTION_SHOP => Labels::getLabel('LBL_Shop', $siteLangId),
-            static::SECTION_PRODUCTS => Labels::getLabel('LBL_Products', $siteLangId),
-            static::SECTION_PRODUCT_TAGS => Labels::getLabel('LBL_Product_Tags', $siteLangId),
-            static::SECTION_IMPORT_EXPORT => Labels::getLabel('LBL_Import_Export', $siteLangId),
-            static::SECTION_META_TAGS => Labels::getLabel('LBL_Meta_Tags', $siteLangId),
-            static::SECTION_URL_REWRITING => Labels::getLabel('LBL_Url_Rewriting', $siteLangId),
-            static::SECTION_SPECIAL_PRICE => Labels::getLabel('LBL_Special_Price', $siteLangId),
-            static::SECTION_VOLUME_DISCOUNT => Labels::getLabel('LBL_Volume_Discount', $siteLangId),
-            static::SECTION_BUY_TOGETHER_PRODUCTS => Labels::getLabel('LBL_Buy_Together_Products', $siteLangId),
-            static::SECTION_RELATED_PRODUCTS => Labels::getLabel('LBL_Related_Products', $siteLangId),
-            static::SECTION_SALES => Labels::getLabel('LBL_Sales', $siteLangId),
-            static::SECTION_CANCELLATION_REQUESTS => Labels::getLabel('LBL_Cancellation_Requests', $siteLangId),
-            static::SECTION_RETURN_REQUESTS => Labels::getLabel('LBL_Return_Requests', $siteLangId),
-            static::SECTION_TAX_CATEGORY => Labels::getLabel('LBL_Tax_Category', $siteLangId),
-            static::SECTION_PRODUCT_OPTIONS => Labels::getLabel('LBL_Product_Options', $siteLangId),
-            static::SECTION_SOCIAL_PLATFORMS => Labels::getLabel('LBL_Manage_Social_Platforms', $siteLangId),
-            static::SECTION_MESSAGES => Labels::getLabel('LBL_Messages', $siteLangId),
-            static::SECTION_CREDITS => Labels::getLabel('LBL_Credits', $siteLangId),
-            static::SECTION_SALES_REPORT => Labels::getLabel('LBL_Sales_Report', $siteLangId),
-            static::SECTION_PERFORMANCE_REPORT => Labels::getLabel('LBL_Product_Performance_Report', $siteLangId),
-            static::SECTION_INVENTORY_REPORT => Labels::getLabel('LBL_Inventory_Report', $siteLangId),
-            static::SECTION_UPLOAD_BULK_IMAGES => Labels::getLabel('LBL_Upload_Bulk_Images', $siteLangId),
-            static:: SECTION_PROMOTIONS => Labels::getLabel('LBL_Promotions', $siteLangId),
-            static:: SECTION_PROMOTION_CHARGES => Labels::getLabel('LBL_Promotion_Charges', $siteLangId)
+            static::SECTION_SELLER_DASHBOARD => Labels::getLabel('LBL_Seller_Dashboard', $langId),
+            static::SECTION_SHOP => Labels::getLabel('LBL_Shop', $langId),
+            static::SECTION_PRODUCTS => Labels::getLabel('LBL_Products', $langId),
+            static::SECTION_PRODUCT_TAGS => Labels::getLabel('LBL_Product_Tags', $langId),
+            static::SECTION_IMPORT_EXPORT => Labels::getLabel('LBL_Import_Export', $langId),
+            static::SECTION_META_TAGS => Labels::getLabel('LBL_Meta_Tags', $langId),
+            static::SECTION_URL_REWRITING => Labels::getLabel('LBL_Url_Rewriting', $langId),
+            static::SECTION_SPECIAL_PRICE => Labels::getLabel('LBL_Special_Price', $langId),
+            static::SECTION_VOLUME_DISCOUNT => Labels::getLabel('LBL_Volume_Discount', $langId),
+            static::SECTION_BUY_TOGETHER_PRODUCTS => Labels::getLabel('LBL_Buy_Together_Products', $langId),
+            static::SECTION_RELATED_PRODUCTS => Labels::getLabel('LBL_Related_Products', $langId),
+            static::SECTION_SALES => Labels::getLabel('LBL_Sales', $langId),
+            static::SECTION_CANCELLATION_REQUESTS => Labels::getLabel('LBL_Cancellation_Requests', $langId),
+            static::SECTION_RETURN_REQUESTS => Labels::getLabel('LBL_Return_Requests', $langId),
+            static::SECTION_TAX_CATEGORY => Labels::getLabel('LBL_Tax_Category', $langId),
+            static::SECTION_PRODUCT_OPTIONS => Labels::getLabel('LBL_Product_Options', $langId),
+            static::SECTION_SOCIAL_PLATFORMS => Labels::getLabel('LBL_Manage_Social_Platforms', $langId),
+            static::SECTION_MESSAGES => Labels::getLabel('LBL_Messages', $langId),
+            static::SECTION_CREDITS => Labels::getLabel('LBL_Credits', $langId),
+            static::SECTION_SALES_REPORT => Labels::getLabel('LBL_Sales_Report', $langId),
+            static::SECTION_PERFORMANCE_REPORT => Labels::getLabel('LBL_Product_Performance_Report', $langId),
+            static::SECTION_INVENTORY_REPORT => Labels::getLabel('LBL_Inventory_Report', $langId),
+            static::SECTION_UPLOAD_BULK_IMAGES => Labels::getLabel('LBL_Upload_Bulk_Images', $langId),
+            static:: SECTION_PROMOTIONS => Labels::getLabel('LBL_Promotions', $langId),
+            static:: SECTION_PROMOTION_CHARGES => Labels::getLabel('LBL_Promotion_Charges', $langId)
         );
         return $arr;
     }
-
-    public static function getModuleSpecificPermissionArr($siteLangId)
+   
+    public static function getModuleSpecificPermissionArr($langId)
     {
         $arr = array(
-            Labels::getLabel('LBL_Shop', $siteLangId) =>
+            Labels::getLabel('LBL_Shop', $langId) =>
                 array(
-                    static::SECTION_SHOP => Labels::getLabel('LBL_Shop', $siteLangId),
-                    static::SECTION_PRODUCTS => Labels::getLabel('LBL_Products', $siteLangId),
-                    static::SECTION_PRODUCT_TAGS => Labels::getLabel('LBL_Product_Tags', $siteLangId),
-                    static::SECTION_PRODUCT_OPTIONS => Labels::getLabel('LBL_Product_Options', $siteLangId),
-                    static::SECTION_TAX_CATEGORY => Labels::getLabel('LBL_Tax_Categories', $siteLangId),
+                    static::SECTION_SHOP => Labels::getLabel('LBL_Shop', $langId),
+                    static::SECTION_PRODUCTS => Labels::getLabel('LBL_Products', $langId),
+                    static::SECTION_PRODUCT_TAGS => Labels::getLabel('LBL_Product_Tags', $langId),
+                    static::SECTION_PRODUCT_OPTIONS => Labels::getLabel('LBL_Product_Options', $langId),
+                    static::SECTION_TAX_CATEGORY => Labels::getLabel('LBL_Tax_Categories', $langId),
                 ),
-            Labels::getLabel('LBL_PROMOTIONS', $siteLangId) =>
+            Labels::getLabel('LBL_PROMOTIONS', $langId) =>
                 array(
-                    static::SECTION_SPECIAL_PRICE => Labels::getLabel('LBL_Special_Price', $siteLangId),
-                    static::SECTION_VOLUME_DISCOUNT => Labels::getLabel('LBL_Volume_Discount', $siteLangId),
-                    static::SECTION_BUY_TOGETHER_PRODUCTS => Labels::getLabel('LBL_Buy_Together_Products', $siteLangId),
-                    static::SECTION_RELATED_PRODUCTS => Labels::getLabel('LBL_Related_Products', $siteLangId)
+                    static::SECTION_SPECIAL_PRICE => Labels::getLabel('LBL_Special_Price', $langId),
+                    static::SECTION_VOLUME_DISCOUNT => Labels::getLabel('LBL_Volume_Discount', $langId),
+                    static::SECTION_BUY_TOGETHER_PRODUCTS => Labels::getLabel('LBL_Buy_Together_Products', $langId),
+                    static::SECTION_RELATED_PRODUCTS => Labels::getLabel('LBL_Related_Products', $langId)
                 ),
-            Labels::getLabel('LBL_ORDERS', $siteLangId) =>
+            Labels::getLabel('LBL_ORDERS', $langId) =>
                 array(
-                    static::SECTION_SALES => Labels::getLabel('LBL_Sales', $siteLangId),
-                    static::SECTION_CANCELLATION_REQUESTS => Labels::getLabel('LBL_Cancellation_Requests', $siteLangId),
-                    static::SECTION_RETURN_REQUESTS => Labels::getLabel('LBL_Return_Requests', $siteLangId),
+                    static::SECTION_SALES => Labels::getLabel('LBL_Sales', $langId),
+                    static::SECTION_CANCELLATION_REQUESTS => Labels::getLabel('LBL_Cancellation_Requests', $langId),
+                    static::SECTION_RETURN_REQUESTS => Labels::getLabel('LBL_Return_Requests', $langId),
                 ),
-            Labels::getLabel('LBL_SEO', $siteLangId) =>
+            Labels::getLabel('LBL_SEO', $langId) =>
                 array(
-                    static::SECTION_META_TAGS => Labels::getLabel('LBL_Meta_Tags', $siteLangId),
-                    static::SECTION_URL_REWRITING => Labels::getLabel('LBL_Url_Rewriting', $siteLangId)
+                    static::SECTION_META_TAGS => Labels::getLabel('LBL_Meta_Tags', $langId),
+                    static::SECTION_URL_REWRITING => Labels::getLabel('LBL_Url_Rewriting', $langId)
                 ),
-            Labels::getLabel('LBL_REPORTS', $siteLangId) =>
+            Labels::getLabel('LBL_REPORTS', $langId) =>
                 array(
-                    static::SECTION_SALES_REPORT => Labels::getLabel('LBL_Sales_Report', $siteLangId),
-                    static::SECTION_PERFORMANCE_REPORT => Labels::getLabel('LBL_Product_Performance_Report', $siteLangId),
-                    static::SECTION_INVENTORY_REPORT => Labels::getLabel('LBL_Inventory_Report', $siteLangId),
+                    static::SECTION_SALES_REPORT => Labels::getLabel('LBL_Sales_Report', $langId),
+                    static::SECTION_PERFORMANCE_REPORT => Labels::getLabel('LBL_Product_Performance_Report', $langId),
+                    static::SECTION_INVENTORY_REPORT => Labels::getLabel('LBL_Inventory_Report', $langId),
                 ),
-            Labels::getLabel('LBL_ACCOUNT', $siteLangId) =>
+            Labels::getLabel('LBL_ACCOUNT', $langId) =>
                 array(
-                    static::SECTION_MESSAGES => Labels::getLabel('LBL_Messages', $siteLangId),
-                    static::SECTION_CREDITS => Labels::getLabel('LBL_Credits', $siteLangId)
+                    static::SECTION_MESSAGES => Labels::getLabel('LBL_Messages', $langId),
+                    static::SECTION_CREDITS => Labels::getLabel('LBL_Credits', $langId)
                 ),
-            Labels::getLabel('LBL_Advertisement', $siteLangId) =>
+            Labels::getLabel('LBL_Advertisement', $langId) =>
                 array(
-                    static::SECTION_PROMOTIONS => Labels::getLabel('LBL_Promotions', $siteLangId),
-                    static::SECTION_PROMOTION_CHARGES => Labels::getLabel('LBL_Promotion_Charges', $siteLangId)
+                    static::SECTION_PROMOTIONS => Labels::getLabel('LBL_Promotions', $langId),
+                    static::SECTION_PROMOTION_CHARGES => Labels::getLabel('LBL_Promotion_Charges', $langId)
                 ),
-            Labels::getLabel('LBL_IMPORT_EXPORT', $siteLangId) =>
+            Labels::getLabel('LBL_IMPORT_EXPORT', $langId) =>
                 array(
-                    static::SECTION_IMPORT_EXPORT => Labels::getLabel('LBL_Import_Export', $siteLangId),
+                    static::SECTION_IMPORT_EXPORT => Labels::getLabel('LBL_Import_Export', $langId),
                 ),
             );
         return $arr;
@@ -195,12 +194,12 @@ class SellerPrivilege
         $this->loadedPermissions[$sellerId][$secId] = $level;
     }
 
-    private function checkPermission($sellerId, $secId, $level, $siteLangId, $returnResult = false)
+    private function checkPermission($sellerId, $secId, $level, $returnResult = false)
     {
         $db = FatApp::getDb();
 
         if (!in_array($level, array(1, 2))) {
-            trigger_error(Labels::getLabel('LBL_Invalid_permission_level_checked', $siteLangId) . ' ' . $level, E_USER_ERROR);
+            trigger_error(Labels::getLabel('LBL_Invalid_permission_level_checked', CommonHelper::getLangId()) . ' ' . $level, E_USER_ERROR);
         }
 
         $sellerId = FatUtility::convertToType($sellerId, FatUtility::VAR_INT);
@@ -208,23 +207,24 @@ class SellerPrivilege
             $sellerId = UserAuthentication::getLoggedUserId();
         }
 
-        if (isset($this->loadedPermissions[$sellerId][$secId])) {
-            if ($level <= $this->loadedPermissions[$sellerId][$secId]) {
-                return true;
-            }
-            return $this->returnFalseOrDie($returnResult, $siteLangId);
-        }
-
         if ($this->isUserSuperSeller($sellerId)) {
             return true;
         }
 
-        $user = new User($userId);
+        if (isset($this->loadedPermissions[$sellerId][$secId])) {
+            if ($level <= $this->loadedPermissions[$sellerId][$secId]) {
+                return true;
+            }
+            return $this->returnFalseOrDie($returnResult, CommonHelper::getLangId());
+        }
+
+        $user = new User($sellerId);
         $srch = $user->getUserSearchObj();
+        $srch->addCondition('credential_active', '=', applicationConstants::ACTIVE);
         $rs = $srch->getResultSet();
         $userData = FatApp::getDb()->fetch($rs);
-        if (empty($userData) || $userData['credential_active'] != applicationConstants::ACTIVE) {
-            FatUtility::dieWithError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
+        if (empty($userData)) {
+            return $this->returnFalseOrDie($returnResult, CommonHelper::getLangId());
         }
 
         $rs = $db->query(
@@ -233,7 +233,7 @@ class SellerPrivilege
         );
         if (!$row = $db->fetch($rs)) {
             $this->cacheLoadedPermission($sellerId, $secId, static::PRIVILEGE_NONE);
-            return $this->returnFalseOrDie($returnResult, $siteLangId);
+            return $this->returnFalseOrDie($returnResult, CommonHelper::getLangId());
         }
 
         $permissionLevel = $row['selperm_value'];
@@ -241,22 +241,22 @@ class SellerPrivilege
         $this->cacheLoadedPermission($sellerId, $secId, $permissionLevel);
 
         if ($level > $permissionLevel) {
-            return $this->returnFalseOrDie($returnResult, $siteLangId);
+            return $this->returnFalseOrDie($returnResult, CommonHelper::getLangId());
         }
 
         return (true);
     }
 
-    private function returnFalseOrDie($returnResult, $siteLangId, $msg = '')
+    private function returnFalseOrDie($returnResult, $msg = '')
     {
         if ($returnResult) {
             return (false);
         }
-        Message::addErrorMessage(Labels::getLabel('LBL_Unauthorized_Access!', $siteLangId));
+        Message::addErrorMessage(Labels::getLabel('LBL_Unauthorized_Access!', CommonHelper::getLangId()));
         if ($msg == '') {
             $msg = Message::getHtml();
         }
-        FatUtility::dieWithError($msg);
+        LibHelper::exitWithError($msg);
     }
 
     public function clearPermissionCache($sellerId)

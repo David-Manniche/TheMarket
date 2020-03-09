@@ -179,7 +179,7 @@ class UserAuthentication extends FatModel
     public function guestLogin($useremail, $name, $ip)
     {
         $db = FatApp::getDb();
-        $srch = User::getSearchObject(true, false);
+        $srch = User::getSearchObject(true, 0, false);
         $srch->addCondition('credential_email', '=', $useremail);
         $rs = $srch->getResultSet();
         $row = $db->fetch($rs);
@@ -252,7 +252,7 @@ class UserAuthentication extends FatModel
 
         $db->commitTransaction();
 
-        $srch = User::getSearchObject(true, false);
+        $srch = User::getSearchObject(true, 0, false);
         $srch->addCondition('credential_email', '=', $useremail);
         $rs = $srch->getResultSet();
         if (!$row = $db->fetch($rs)) {
@@ -278,7 +278,7 @@ class UserAuthentication extends FatModel
     {
         $db = FatApp::getDb();
         if ($this->isBruteForceAttempt($ip, $username)) {
-            $userSrch = User::getSearchObject(true, false);
+            $userSrch = User::getSearchObject(true, 0, false);
             $userSrch->addCondition('credential_username', '=', $username);
             $userRs = $userSrch->getResultSet();
 
@@ -295,7 +295,7 @@ class UserAuthentication extends FatModel
             $password = UserAuthentication::encryptPassword($password);
         }
 
-        $srch = User::getSearchObject(true, false);
+        $srch = User::getSearchObject(true, 0, false);
         $condition = $srch->addCondition('credential_username', '=', $username);
         $condition->attachCondition('credential_email', '=', $username, 'OR');
         $condition->attachCondition('mysql_func_CONCAT(user_dial_code, user_phone)', '=', $username, 'OR', true);

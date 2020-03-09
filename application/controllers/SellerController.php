@@ -12,7 +12,7 @@ class SellerController extends SellerBaseController
 
     public function __construct($action)
     {
-        parent::__construct($action);
+        parent::__construct($action);        
     }
 
     public function index()

@@ -120,14 +120,22 @@ class User extends MyAppModel
     public const AUTH_TYPE_GUEST = 1;
     public const AUTH_TYPE_REGISTERED = 2;
 
-    public function __construct($userId = 0)
+    public $parentId = 0;
+
+    public function __construct($userId = 0, $parentId = 0)
     {
+        $this->parentId = FatUtility::int($parentId);
+
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $userId);
         $this->objMainTableRecord->setSensitiveFields(
             array(
             'user_regdate', 'user_id'
             )
         );
+        
+        if (0 < $this->parentId) {
+            $this->addCondition('user_parent', '=', $this->parentId);
+        }
     }
 
     public static function getUserTypesArr($langId)
@@ -175,11 +183,17 @@ class User extends MyAppModel
         );
     }
 
-    public static function getSearchObject($joinUserCredentials = false, $skipDeleted = true)
+    public static function getSearchObject($joinUserCredentials = false, $parentId = 0, $skipDeleted = true)
     {
+        $parentId = FatUtility::int($parentId);
+
         $srch = new SearchBase(static::DB_TBL, 'u');
         if ($skipDeleted == true) {
             $srch->addCondition('user_deleted', '=', applicationConstants::NO);
+        }
+
+        if (0 < $parentId) {
+            $srch->addCondition('user_parent', '=', $parentId);
         }
 
         if ($joinUserCredentials) {
@@ -483,7 +497,7 @@ class User extends MyAppModel
 
     public function getUserSearchObj($attr = null, $joinUserCredentials = true, $skipDeleted = true)
     {
-        $srch = static::getSearchObject($joinUserCredentials, $skipDeleted);
+        $srch = static::getSearchObject($joinUserCredentials, 0, $skipDeleted);
 
         if ($this->mainTableRecordId > 0) {
             $srch->addCondition('u.' . static::DB_TBL_PREFIX . 'id', '=', $this->mainTableRecordId);
@@ -1320,12 +1334,12 @@ class User extends MyAppModel
             return false;
         }
 
-		if (null != $password) {
-			if (!ValidateElement::password($password)) {
-				$this->error = Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->commonLangId);
-				return false;
-			}
-		}
+        if (null != $password) {
+            if (!ValidateElement::password($password)) {
+                $this->error = Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->commonLangId);
+                return false;
+            }
+        }
 
         $email = (empty($email)) ? null : $email;
         $record = new TableRecord(static::DB_TBL_CRED);
@@ -1333,9 +1347,9 @@ class User extends MyAppModel
             static::DB_TBL_CRED_PREFIX . 'username' => $username,
             static::DB_TBL_CRED_PREFIX . 'email' => $email,
         );
-		if (null != $password) {
-			$arrFlds[static::DB_TBL_CRED_PREFIX . 'password'] = UserAuthentication::encryptPassword($password);
-		}
+        if (null != $password) {
+            $arrFlds[static::DB_TBL_CRED_PREFIX . 'password'] = UserAuthentication::encryptPassword($password);
+        }
 
         if (null != $active) {
             $arrFlds [static::DB_TBL_CRED_PREFIX . 'active'] = $active;
