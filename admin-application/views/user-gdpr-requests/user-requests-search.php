@@ -70,13 +70,13 @@ foreach ($arr_listing as $sn=>$row){
 						$innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Truncate_User_Data',$adminLangId),"onclick"=>"truncateUserData(".$row['user_id'].",".$row['ureq_id'].")"),Labels::getLabel('LBL_Truncate_User_Data',$adminLangId), true);
 					}
 					
-					if( $row['ureq_type'] == UserGdprRequest::TYPE_DATA_REQUEST ){
+					//if( $row['ureq_type'] == UserGdprRequest::TYPE_DATA_REQUEST ){
 						$innerLi=$innerUl->appendElement('li');
 						$innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Change_Status_To_Complete',$adminLangId),"onclick"=>"updateRequestStatus(".$row['ureq_id'].",".UserGdprRequest::STATUS_COMPLETE.")"),Labels::getLabel('LBL_Complete',$adminLangId), true);
 						
 						$innerLi=$innerUl->appendElement('li');
 						$innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_View_Purpose',$adminLangId),"onclick"=>"viewRequestPurpose(".$row['ureq_id'].")"),Labels::getLabel('LBL_View_Purpose',$adminLangId), true);
-					}
+					//}
 					
 						/* $innerLi=$innerUl->appendElement('li');
 						$innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Delete_Request',$adminLangId),"onclick"=>"deleteUserRequest(".$row['ureq_id'].")"),Labels::getLabel('LBL_Delete_Request',$adminLangId), true); */

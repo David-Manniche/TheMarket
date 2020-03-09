@@ -5,10 +5,10 @@ $arr_flds = array(
     'emptycartitem_identifier' => Labels::getLabel('LBL_Title', $adminLangId),
     'emptycartitem_url' => Labels::getLabel('LBL_URL', $adminLangId),
     'emptycartitem_active' => Labels::getLabel('LBL_Status', $adminLangId),
-    'action' => Labels::getLabel('LBL_Action', $adminLangId),
+    'action' => '',
     );
     if (!$canEdit) {
-        unset($arr_flds['select_all']);
+        unset($arr_flds['select_all'], $arr_flds['action']);
     }
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
@@ -59,20 +59,9 @@ foreach ($arrListing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $str, true);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
                 if ($canEdit) {
-                    $li = $ul->appendElement("li", array('class'=>'droplink'));
-
-
-                    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                    $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                    $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                    $innerLiEdit=$innerUl->appendElement('li');
-
-                    $innerLiEdit->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addEmptyCartItemForm(".$row['emptycartitem_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
-
-                    $innerLiDelete = $innerUl->appendElement("li");
-                    $innerLiDelete->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['emptycartitem_id'].")"), Labels::getLabel('LBL_Delete', $adminLangId), true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addEmptyCartItemForm(".$row['emptycartitem_id'].")"), "<i class='ion-edit icon'></i>", true);
+                    $td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['emptycartitem_id'].")"), "<i class='ion-android-delete icon'></i>", true);
                 }
                 break;
             default:

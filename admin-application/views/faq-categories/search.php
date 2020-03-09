@@ -8,8 +8,7 @@ $arr_flds = array(
         'action' => Labels::getLabel('LBL_Action', $adminLangId) ,
     );
 if (!$canEdit) {
-    unset($arr_flds['dragdrop']);
-    unset($arr_flds['select_all']);
+    unset($arr_flds['dragdrop'], $arr_flds['select_all'], $arr_flds['action']);
 }
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive','id'=>'faqcat'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
@@ -70,38 +69,17 @@ foreach ($arr_listing as $sn => $row) {
                     $td->appendElement('plaintext', array(), $str, true);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
-                $li = $ul->appendElement("li", array('class'=>'droplink'));
-
-                $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                      $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                      $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                      $innerLiEdit=$innerUl->appendElement('li');
-
-
-
                 if ($canEdit) {
-                    $innerLiEdit=$innerUl->appendElement('li');
-
-                    //$li = $ul->appendElement("li");
-                    $innerLiEdit->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addFaqCatForm(".$row['faqcat_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addFaqCatForm(".$row['faqcat_id'].")"), "<i class='ion-edit icon'></i>", true);
                 }
 
                 if ($canViewFaq) {
-                    $innerLiFaqListing=$innerUl->appendElement('li');
-
-                    //$li = $ul->appendElement("li");
-
                     $url=CommonHelper::generateUrl('Faq', 'index', array($row['faqcat_id']));
-
-                    $innerLiFaqListing->appendElement('a', array('href'=>'javascript:void(0)','onclick'=>'redirectUrl("'.$url.'")', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_FAQ_Listing', $adminLangId)), Labels::getLabel('LBL_FAQ_Listing', $adminLangId), true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)','onclick'=>'redirectUrl("'.$url.'")', 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_FAQ_Listing', $adminLangId)), "<i class='ion-chatboxes icon'></i>", true);
                 }
 
                 if ($canEdit) {
-                    $innerLiDelete=$innerUl->appendElement('li');
-
-                    //$li = $ul->appendElement("li");
-                    $innerLiDelete->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['faqcat_id'].")"), Labels::getLabel('LBL_Delete', $adminLangId), true);
+                    $td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['faqcat_id'].")"), "<i class='ion-android-delete icon'></i>", true);
                 }
                 break;
             default:

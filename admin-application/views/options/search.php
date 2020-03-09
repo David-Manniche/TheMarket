@@ -5,10 +5,10 @@
             'listserial'=>Labels::getLabel('LBL_Sr_no.', $adminLangId),
             'option_identifier'=>Labels::getLabel('LBL_Option_Name', $adminLangId),
             'user_name'=>Labels::getLabel('LBL_Added_By', $adminLangId),
-            'action' => Labels::getLabel('LBL_Action', $adminLangId),
+            'action' => '',
         );
         if (!$canEdit) {
-            unset($arr_flds['select_all']);
+            unset($arr_flds['select_all'], $arr_flds['action']);
         }
     $tbl = new HtmlElement(
         'table',
@@ -56,25 +56,18 @@
                     }
                     break;
                 case 'action':
-                    $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
                     if ($canEdit) {
-                        $li = $ul->appendElement("li", array('class'=>'droplink'));
-                        $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                        $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                        $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                        $innerLiEdit=$innerUl->appendElement('li');
-                        $innerLiEdit->appendElement('a', array(
+                        $td->appendElement('a', array(
                             'href'=>'javascript:void(0)',
-                            'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),
-                            "onclick"=>"addOptionFormNew(".$row['option_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
+                            'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),
+                            "onclick"=>"addOptionFormNew(".$row['option_id'].")"), "<i class='ion-edit icon'></i>", true);
 
-                        $innerLiDelete = $innerUl->appendElement("li");
-                        $innerLiDelete->appendElement(
+                        $td->appendElement(
                             'a',
                             array(
-                            'href'=>"javascript:void(0)", 'class'=>'button small green',
+                            'href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-icon',
                             'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteOptionRecord(".$row['option_id'].")"),
-                            Labels::getLabel('LBL_Delete', $adminLangId),
+                            "<i class='ion-android-delete icon'></i>",
                             true
                         );
                     }
