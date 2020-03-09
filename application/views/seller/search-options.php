@@ -11,7 +11,7 @@ if (count($arr_listing) > 0) {
 
 $tbl = new HtmlElement(
     'table',
-    array('width'=>'100%', 'class'=>'table table--orders','id'=>'options')
+    array('width'=>'100%', 'class'=>'table','id'=>'options')
 );
 
 $th = $tbl->appendElement('thead')->appendElement('tr');

@@ -16,7 +16,7 @@
         'action' => Labels::getLabel('LBL_Action', $siteLangId),
     );
 
-    $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--orders'));
+    $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
     $th = $tbl->appendElement('thead')->appendElement('tr');
     foreach ($arr_flds as $val) {
         $e = $th->appendElement('th', array(), $val);

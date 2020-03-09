@@ -7,7 +7,7 @@
 <div class="box box--white box--radius p-4">
     <div class="review-wrapper">
         <div class="short-detail">
-            <table class="table cart--full js-scrollable">
+            <table class="table cart--full">
                 <tbody>
                 <?php if (count($subscriptions)) {
                     foreach ($subscriptions as $subscription) { ?>
