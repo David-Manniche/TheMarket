@@ -1156,7 +1156,20 @@ $(document).ready(function () {
         this.value = this.value.replace(/\s/g, "");
     });
 
+    $(document).on("submit", "form", function() {
+        moveErrorAfterIti()
+    });
+
+    $(document).on("keyup", "form .iti input[data-intl-tel-input-id]", function() {
+        moveErrorAfterIti();
+    });
 });
+
+function moveErrorAfterIti() {
+    if (0 < $(".iti .errorlist").length) {
+        $(".iti .errorlist").detach().insertAfter('.iti');
+    }
+}
 
 function isUserLogged() {
     var isUserLogged = 0;
