@@ -98,7 +98,16 @@ class FilterHelper extends FatUtility
         //$brandSrch->addFld('count(selprod_id) as totalProducts');
         /* ] */
         $brandRs = $brandSrch->getResultSet();
-        return FatApp::getDb()->fetchAll($brandRs);
+        $brands = FatApp::getDb()->fetchAll($brandRs);
+        
+        if (count($brands) > 0 && !FatApp::getConfig('CONF_PRODUCT_BRAND_MANDATORY', FatUtility::VAR_INT, 0)) {
+            array_push($brands, array(
+                'brand_id' => '-1',
+                'brand_name' => Labels::getLabel('LBL_Unbranded', CommonHelper::getLangId()),
+                'priority' => 9999
+            ));
+        }
+        return $brands;
     }
 
     public static function getCategories($langId, $categoryId, $prodSrchObj, $cacheKey)

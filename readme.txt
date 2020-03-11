@@ -167,3 +167,5 @@ New Features:
     => 71188 - Add setting for making brand field optional
 
 ===================TV-9.1.3.20200306==================
+Bug : 
+    => 035273 - Display un-branded filter option when brand is not mandatory.

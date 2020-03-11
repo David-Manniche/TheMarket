@@ -199,6 +199,9 @@ if (isset($prodcat_code)) {
 <div class="scrollbar-filters" id="scrollbar-filters">
     <ul class="list-vertical brandFilter-js">
         <?php foreach ($brandsArr as $brand) {
+            if ($brand['brand_id'] == null) {
+                continue;
+            }
           ?>
         <li><label class="checkbox brand" id="brand_<?php echo $brand['brand_id']; ?>"><input name="brands" data-id="brand_<?php echo $brand['brand_id']; ?>" value="<?php echo $brand['brand_id']; ?>" data-title="<?php echo $brand['brand_name']; ?>" type="checkbox" <?php if (in_array($brand['brand_id'], $brandsCheckedArr)) {
               echo "checked='true'";
