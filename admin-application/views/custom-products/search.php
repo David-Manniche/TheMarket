@@ -42,14 +42,14 @@ foreach ($arr_listing as $sn => $row){
 			case 'action':
 				if($row['preq_status']!= ProductRequest::STATUS_APPROVED){
 				
-				$td->appendElement('a', array('href'=>'javascript:void(0)', "onclick"=>"addProductForm(".$row['preq_id'].")", 'class'=>'btn btn-clean btn-icon','title'=>Labels::getLabel('LBL_Edit',$adminLangId)),
-				"<i class='ion-edit icon'></i>", true);
+				$td->appendElement('a', array('href'=>'javascript:void(0)', "onclick"=>"addProductForm(".$row['preq_id'].")", 'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Edit',$adminLangId)),
+				"<i class='far fa-edit icon'></i>", true);
 				
-				$td->appendElement('a', array('href'=>'javascript:void(0)', "onclick"=>"productImagesForm(".$row['preq_id'].")", 'class'=>'btn btn-clean btn-icon','title'=>Labels::getLabel('LBL_Images',$adminLangId)),
+				$td->appendElement('a', array('href'=>'javascript:void(0)', "onclick"=>"productImagesForm(".$row['preq_id'].")", 'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Images',$adminLangId)),
 				"<i class='far fa-images'></i>", true);
 
 				$td->appendElement("a", array('title' => Labels::getLabel('LBL_Change_Status',$adminLangId),
-				'onclick' => 'updateStatusForm('.$row['preq_id'].')','href'=>'javascript:void(0)', 'class' => 'btn btn-clean btn-icon'),
+				'onclick' => 'updateStatusForm('.$row['preq_id'].')','href'=>'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon'),
 				"<i class='fas fa-toggle-off'></i>", true);		
 				}				
 			break;

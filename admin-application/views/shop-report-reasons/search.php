@@ -39,17 +39,17 @@ foreach ($arr_listing as $sn => $row) {
                 if ($canEdit) {
                     $td->appendElement(
                         'a',
-                        array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-icon',
+                        array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon',
                         'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"editReasonFormNew(".$row['reportreason_id'].")"),
-                        "<i class='ion-edit icon'></i>",
+                        "<i class='far fa-edit icon'></i>",
                         true
                     );
 
                     $td->appendElement(
                         'a',
-                        array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-icon',
+                        array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon',
                         'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['reportreason_id'].")"),
-                        "<i class='ion-android-delete icon'></i>",
+                        "<i class='fa fa-trash  icon'></i>",
                         true
                     );
                 }

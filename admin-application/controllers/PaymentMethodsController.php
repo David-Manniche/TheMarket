@@ -207,7 +207,9 @@ class PaymentMethodsController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_Please_select_a_file', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-
+        
+        $aspectRatio = FatApp::getPostedData('ratio_type', FatUtility::VAR_INT, 0);
+        
         $fileHandlerObj = new AttachedFile();
 
         if (!$res = $fileHandlerObj->saveAttachment(
@@ -217,7 +219,10 @@ class PaymentMethodsController extends AdminBaseController
             0,
             $_FILES['cropped_image']['name'],
             -1,
-            true
+            true,
+            0,
+            0,
+            $aspectRatio
         )
         ) {
             Message::addErrorMessage($fileHandlerObj->getError());

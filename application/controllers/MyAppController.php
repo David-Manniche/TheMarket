@@ -594,6 +594,7 @@ class MyAppController extends FatController
         if (!$configureEmail) {
             $dataArr = array(
             'user_name' => $data['user_name'],
+            'user_phone' => $data['user_phone'],
             'link' => $link,
             'user_new_email' => $data['user_new_email'],
             'user_email' => $data['user_email'],
@@ -702,6 +703,9 @@ class MyAppController extends FatController
     public function validateOtpApi($updateToDb = 0, $doLogin = true)
     {
         $updateToDb = FatUtility::int($updateToDb);
+        $recoverPwd = FatApp::getPostedData('recoverPwd', FatUtility::VAR_INT, 0);
+        $doLogin = 0 < $recoverPwd ? false : $doLogin;
+
         $otpFrm = $this->getOtpForm();
         $post = $otpFrm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
@@ -729,6 +733,14 @@ class MyAppController extends FatController
         }
 
         $this->set('msg', Labels::getLabel('MSG_OTP_MATCHED.', $this->siteLangId));
+
+        if (0 < $recoverPwd && true === MOBILE_APP_API_CALL) {
+            $obj = new UserAuthentication();
+            $record = $obj->getUserResetPwdToken($userId);
+            $token = $record['uprr_token'];
+            $this->set('data', ['token' => $token]);
+            $this->_template->render();
+        }
 
         if (0 < $updateToDb) {
             $userObj = clone $obj;

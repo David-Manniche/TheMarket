@@ -157,33 +157,36 @@ if (isset($prodcat_code)) {
 <!-- ] -->
 
 <!--Price Filters[ -->
-<?php if (isset($priceArr) && $priceArr) {
-      ?>
+<?php if (isset($priceArr) && $priceArr) { ?>
 <div class="divider--filters"></div>
 <div class="widgets__heading filter-head-js"><?php echo Labels::getLabel('LBL_Price', $siteLangId).' ('.(CommonHelper::getCurrencySymbolRight()?CommonHelper::getCurrencySymbolRight():CommonHelper::getCurrencySymbolLeft()).')'; ?> </div>
 <div class="widgets-data">
-<div class="filter-content toggle-target">
-    <div class="prices " id="perform_price">
-        <input type="text" value="<?php echo floor($filterDefaultMinValue); ?>-<?php echo ceil($filterDefaultMaxValue); ?>" name="price_range" id="price_range" />
-        <input type="hidden" value="<?php echo floor($filterDefaultMinValue); ?>" name="filterDefaultMinValue" id="filterDefaultMinValue" />
-        <input type="hidden" value="<?php echo ceil($filterDefaultMaxValue); ?>" name="filterDefaultMaxValue" id="filterDefaultMaxValue" />
-    </div>
-    <div class="clear"></div>
-    <div class="slide__fields form">
-        <div class="price-input">
-            <div class="price-text-box">
-                <input class="input-filter " value="<?php echo floor($priceArr['minPrice']); ?>" name="priceFilterMinValue" type="text">
-                <span class="rsText"><?php echo CommonHelper::getCurrencySymbolRight()?CommonHelper::getCurrencySymbolRight():CommonHelper::getCurrencySymbolLeft(); ?></span> </div>
+    <div class="filter-content toggle-target">
+        <div class="prices " id="perform_price">
+            <div id="rangeSlider"></div>
+            <?php /* <input type="text" class='d-none' value="<?php echo floor($filterDefaultMinValue); ?>-<?php echo ceil($filterDefaultMaxValue); ?>" name="price_range" id="price_range" /> */ ?>
+            <input type="hidden" value="<?php echo floor($filterDefaultMinValue); ?>" name="filterDefaultMinValue" id="filterDefaultMinValue" />
+            <input type="hidden" value="<?php echo ceil($filterDefaultMaxValue); ?>" name="filterDefaultMaxValue" id="filterDefaultMaxValue" />
         </div>
-        <span class="dash"> - </span>
-        <div class="price-input">
-            <div class="price-text-box">
-                <input value="<?php echo ceil($priceArr['maxPrice']); ?>" class="input-filter form-control " name="priceFilterMaxValue" type="text">
-                <span class="rsText"><?php echo CommonHelper::getCurrencySymbolRight()?CommonHelper::getCurrencySymbolRight():CommonHelper::getCurrencySymbolLeft(); ?></span> </div>
+        <div class="clear"></div>
+        <div class="slide__fields form">
+            <?php $symbol = CommonHelper::getCurrencySymbolRight() ? CommonHelper::getCurrencySymbolRight() : CommonHelper::getCurrencySymbolLeft(); ?>
+            <div class="price-input">
+                <div class="price-text-box">
+                    <input class="input-filter " value="<?php echo floor($priceArr['minPrice']); ?>" name="priceFilterMinValue" type="text">
+                    <span class="rsText"><?php echo $symbol; ?></span>
+                </div>
+            </div>
+            <span class="dash"> - </span>
+            <div class="price-input">
+                <div class="price-text-box">
+                    <input value="<?php echo ceil($priceArr['maxPrice']); ?>" class="input-filter form-control " name="priceFilterMaxValue" type="text">
+                    <span class="rsText"><?php echo $symbol; ?></span>
+                </div>
+            </div>
         </div>
+        <!--<input value="GO" class="btn " name="toVal" type="submit">-->
     </div>
-    <!--<input value="GO" class="btn " name="toVal" type="submit">-->
-</div>
 </div>
 
 <?php
@@ -321,104 +324,97 @@ if (isset($prodcat_code)) {
         }
 
     });
-
+    
     $("document").ready(function() {
         var min = 0;
         var max = 0;
         <?php if (isset($priceArr) && $priceArr) { ?>
-        var range,
-            min = Math.floor(<?php echo $filterDefaultMinValue; ?>),
-            max = Math.floor(<?php echo $filterDefaultMaxValue; ?>),
-            from,
-            to;
-        var $from = $('input[name="priceFilterMinValue"]');
-        var $to = $('input[name="priceFilterMaxValue"]');
-        var $range = $("#price_range");
-        var updateValues = function() {
-            $from.prop("value", from);
-            $to.prop("value", to);
-        };
+            var range,
+                min = Math.floor(<?php echo $filterDefaultMinValue; ?>),
+                max = Math.floor(<?php echo $filterDefaultMaxValue; ?>),
+                from,
+                to;
+            var $from = $('input[name="priceFilterMinValue"]');
+            var $to = $('input[name="priceFilterMaxValue"]');
+            /* var $range = $("#price_range"); */
+            var updateValues = function() {
+                $from.prop("value", from);
+                $to.prop("value", to);
+            };
 
-        $("#price_range").ionRangeSlider({
-            hide_min_max: true,
-            hide_from_to: true,
-            keyboard: true,
-            min: min,
-            max: max,
-            from: min,
-            to: max,
-            type: 'double',
-            prettify_enabled: true,
-            prettify_separator: ',',
-            grid: true,
-            // grid_num: 1,
-            prefix: '<?php echo $currencySymbolLeft; ?>',
-            postfix: '<?php echo $currencySymbolRight; ?>',
-
-            input_values_separator: '-',
-            onFinish: function() {
-                var minMaxArr = $("#price_range").val().split('-');
-                if (minMaxArr.length == 2) {
-                    var min = Number(minMaxArr[0]);
-                    var max = Number(minMaxArr[1]);
-                    $('input[name="priceFilterMinValue"]').val(min);
-                    $('input[name="priceFilterMaxValue"]').val(max);
-                    addPricefilter(true);
-                    //return searchProducts(document.frmProductSearch);
+            var step = max/4;
+            const len = Math.floor((max - min) / step) + 1;
+            var steps = Array(len).fill().map((_, idx) => min + (idx * step));
+            steps.push(max);
+            var rangeSlider = document.getElementById('rangeSlider');
+            noUiSlider.create(rangeSlider, {
+                start: [min, max],
+                step: 100,
+                range: {
+                    'min': [min],
+                    'max': [max]
+                },
+                connect: true,
+                direction: '<?php echo $layoutDirection; ?>',
+                pips: {
+                    mode: 'values',
+                    values: steps,
+                    density: 4
                 }
-            },
-            onChange: function(data) {
-                from = data.from;
-                to = data.to;
-                updateValues();
-                // addPricefilter(true);
-            }
-        });
-
-        range = $range.data("ionRangeSlider");
-
-        var updateRange = function() {
-            range.update({
-                from: from,
-                to: to
             });
-            addPricefilter();
-        };
 
-        $from.on("change", function() {
-            from = $(this).prop("value");
-            if (!$.isNumeric(from)) {
-                from = 0;
-            }
-            if (from < min) {
-                from = min;
-            }
-            if (from > max) {
-                from = max;
-            }
-            updateValues();
-            updateRange();
-        });
+            rangeSlider.noUiSlider.on('change', function (values, handle) {
+                addPricefilter(true);
+            });
 
-        $to.on("change", function() {
-            to = $(this).prop("value");
-            if (!$.isNumeric(to)) {
-                to = 0;
-            }
-            if (to > max) {
-                to = max;
-            }
-            if (to < min) {
-                to = min;
-            }
-            updateValues();
-            updateRange();
-        });
+            rangeSlider.noUiSlider.on('update', function (values, handle) {
+                var value = values[handle];
+                /* handle return 0,1(min hanle and max handle) in RTL it return opposite */
+                if (handle) {
+                    to = value;
+                } else {
+                    from = value;
+                }
+                updateValues();
+            });
+
+            var updateRange = function() {
+                rangeSlider.noUiSlider.set([from, to]);
+                addPricefilter();
+            };
+
+            $from.on("change", function() {
+                from = $(this).prop("value");
+                if (!$.isNumeric(from)) {
+                    from = 0;
+                }
+                if (from < min) {
+                    from = min;
+                }
+                if (from > max) {
+                    from = max;
+                }
+                updateValues();
+                updateRange();
+            });
+
+            $to.on("change", function() {
+                to = $(this).prop("value");
+                if (!$.isNumeric(to)) {
+                    to = 0;
+                }
+                if (to > max) {
+                    to = max;
+                }
+                if (to < min) {
+                    to = min;
+                }
+                updateValues();
+                updateRange();
+            });
         <?php } ?>
 
         /* left side filters scroll bar[ */
-        <?php /* if( isset($brandsArr) && $brandsArr && count($brandsArr) > 5 ){ */
-        /* code is here, becoz brands section has defined height, and looking bad when there are less brands in the box, so, added this to avoid height */ ?>
 
         <?php if (true === $shopCatFilters) { ?>
             // new SimpleBar(document.getElementById('accordian'));
@@ -444,7 +440,6 @@ if (isset($prodcat_code)) {
         if ('rtl' == langLbl.layoutDirection && 0 < $("[data-simplebar]").length) {
             $("[data-simplebar]").attr('data-simplebar-direction', 'rtl');
         }
-
     });
 
     $("#accordian li span.acc-trigger").click(function() {

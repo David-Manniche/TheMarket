@@ -4,6 +4,7 @@ $brandLogoFrm->developerTags['colClassPrefix'] = 'col-md-';
 $brandLogoFrm->developerTags['fld_default_col'] = 12;
 $ratioFld = $brandLogoFrm->getField('ratio_type');
 $ratioFld->addFieldTagAttribute('class', 'prefRatio-js');
+$ratioFld->addOptionListTagAttribute('class', 'list-inline');
 $logoFld = $brandLogoFrm->getField('logo');
 $logoFld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
 $logoFld->addFieldTagAttribute('onChange', 'logoPopupImage(this)');

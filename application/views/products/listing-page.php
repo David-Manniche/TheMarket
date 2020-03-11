@@ -109,7 +109,15 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
             <sidebar class="col flex-grow-0 collection-sidebar" id="collection-sidebar" data-close-on-click-outside="collection-sidebar">
                 <?php if (isset($shop)) { ?>
                 <div class="bg-gray rounded shop-information p-4">
-                    <div class="shop-logo"><img data-ratio="1:1 (150x150)" src="<?php echo CommonHelper::generateUrl('image', 'shopLogo', array($shop['shop_id'], $siteLangId, 'SMALL')); ?>" alt="<?php echo $shop['shop_name']; ?>"></div>
+
+                    <div class="shop-logo">
+                        <?php   
+                        $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_SHOP_LOGO, $shop['shop_id'], 0, 0, false);
+                        $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
+                        ?>
+                        <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo CommonHelper::generateUrl('image', 'shopLogo', array($shop['shop_id'], $siteLangId, 'SMALL')); ?>" alt="<?php echo $shop['shop_name']; ?>">
+                    </div>
+
                     <div class="shop-info">
                         <div class="shop-name">
                             <h5>
@@ -217,7 +225,11 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                 <?php if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                     ?> <div class="brands-block-wrapper">
                     <div class="brands-block">
-                        <img src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'brand', array($postedData['brand_id'] , $siteLangId, 'COLLECTION_PAGE')), CONF_IMG_CACHE_TIME, '.jpg'); ?>">
+                        <?php
+                        $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_BRAND_LOGO, $postedData['brand_id'], 0, 0, false);
+                        $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
+                        ?>
+                        <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'brand', array($postedData['brand_id'] , $siteLangId, 'COLLECTION_PAGE')), CONF_IMG_CACHE_TIME, '.jpg'); ?>">
                     </div>
                 </div> <?php
                 } ?>

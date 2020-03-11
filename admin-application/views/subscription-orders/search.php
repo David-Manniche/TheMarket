@@ -60,7 +60,7 @@ foreach ($ordersList as $sn=>$row){
 				$td->appendElement('span', array('class'=>'label '.$cls), Orders::getOrderPaymentStatusArr($adminLangId)[$row[$key]] );
 			break;
 			case 'action':
-				$td->appendElement('a', array('href'=>CommonHelper::generateUrl('SubscriptionOrders','view',array($row['order_id'])),'class'=>'btn btn-clean btn-icon','title'=>Labels::getLabel('LBL_View_Order_Detail',$adminLangId)),"<i class='ion-eye icon'></i>", true);
+				$td->appendElement('a', array('href'=>CommonHelper::generateUrl('SubscriptionOrders','view',array($row['order_id'])),'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_View_Order_Detail',$adminLangId)),"<i class='far fa-eye icon'></i>", true);
 			break;
 			default:
 				$td->appendElement('plaintext', array(), $row[$key], true);

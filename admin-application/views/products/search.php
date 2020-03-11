@@ -82,9 +82,9 @@ if (count($arr_listing) == 0) {
                     break;
                 case 'action':
                         if($canEdit){
-                            $td->appendElement('a', array('href'=> CommonHelper::generateUrl('Products','form',array($row['product_id'])), 'class'=>'btn btn-clean  btn-icon', 'title'=> Labels::getLabel('LBL_Edit',$adminLangId)),'<i class="ion-edit icon"></i>', true);
+                            $td->appendElement('a', array('href'=> CommonHelper::generateUrl('Products','form',array($row['product_id'])), 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=> Labels::getLabel('LBL_Edit',$adminLangId)),'<i class="far fa-edit icon"></i>', true);
                             
-                            $td->appendElement('a', array('href'=>"javascript:;", 'class'=>'btn btn-clean  btn-icon', 'title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteProduct(".$row['product_id'].")"),'<i class="ion-android-delete icon"></i>', true);
+                            $td->appendElement('a', array('href'=>"javascript:;", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteProduct(".$row['product_id'].")"),'<i class="fa fa-trash  icon"></i>', true);
                         }
                     break;
                 default:

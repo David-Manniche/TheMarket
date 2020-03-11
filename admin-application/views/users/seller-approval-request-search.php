@@ -39,10 +39,10 @@ foreach ($arr_listing as $sn=>$row){
 			break;	
 			case 'action':
 				if($canViewSellerApprovalRequests){												
-					$td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-icon','title'=>Labels::getLabel('LBL_View',$adminLangId),"onclick"=>"viewSellerRequest(".$row['usuprequest_id'].")"),"<i class='ion-eye icon'></i>", true);							
+					$td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_View',$adminLangId),"onclick"=>"viewSellerRequest(".$row['usuprequest_id'].")"),"<i class='far fa-eye icon'></i>", true);							
 				}
 				if($canEditSellerApprovalRequests && $row['usuprequest_status'] == User::SUPPLIER_REQUEST_PENDING){						
-					$td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-icon','title'=>Labels::getLabel('LBL_Change_Status',$adminLangId),"onclick"=>"updateSellerRequestForm(".$row['usuprequest_id'].")"),'<i class="fas fa-toggle-off"></i>', true);							
+					$td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Change_Status',$adminLangId),"onclick"=>"updateSellerRequestForm(".$row['usuprequest_id'].")"),'<i class="fas fa-toggle-off"></i>', true);							
 				}
 			break;
 			default:

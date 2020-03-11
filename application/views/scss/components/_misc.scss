@@ -20,7 +20,15 @@ html {
         }
     }
 
+    &.pop-on {
+        overflow: hidden;
+    }
+
+
+
 }
+
+
 
 body {
     font-family: $family-secondary;
@@ -297,7 +305,3 @@ hr {}
     text-decoration: line-through;
 }
 
-.is-invalid {
-    border-color: red;
-}
- 

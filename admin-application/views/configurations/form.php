@@ -98,4 +98,19 @@ switch ($frmType) {
     $(document).ready(function(){
         getCountryStates($( "#user_country_id" ).val(),<?php echo FatApp::getConfig('CONF_STATE', FatUtility::VAR_INT, 1);?>,'#user_state_id');
     });
+    
+    var ratioTypeSquare = <?php echo AttachedFile::RATIO_TYPE_SQUARE; ?>;
+
+    $(document).on('change','.prefRatio-js',function(){
+        var inputElement = $(this).parents('.list-inline').next('input');   
+        var selectedVal = $(this).val(); console.log(selectedVal);
+        if(selectedVal == ratioTypeSquare)
+        {
+            inputElement.attr('data-min_width', 150)
+            inputElement.attr('data-min_height', 150)
+        } else {
+           inputElement.attr('data-min_width', 150)
+           inputElement.attr('data-min_height', 85)
+        }
+    });
 </script>

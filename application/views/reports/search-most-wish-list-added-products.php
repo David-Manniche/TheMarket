@@ -4,7 +4,7 @@ $arr_flds = array(
 	'wishlist_user_counts'	=>	Labels::getLabel('LBL_User_Counts', $siteLangId)
 );
 
-$tbl = new HtmlElement('table', array('class'=>'table table--orders'));
+$tbl = new HtmlElement('table', array('class'=>'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr',array('class' => ''));
 foreach ($arr_flds as $val) {
 	$e = $th->appendElement('th', array(), $val);

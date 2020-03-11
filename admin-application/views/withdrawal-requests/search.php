@@ -116,8 +116,8 @@ foreach ($arr_listing as $sn => $row) {
             case 'action':
                 if ($canEdit && $row['withdrawal_status'] == Transactions::STATUS_PENDING) {
                     $approveAction = empty($pluginKeyName) ? 'updateStatus' : 'requestOutside';
-                    $td->appendElement('a', array('href' => 'javascript:void(0)','class' => 'btn btn-clean btn-icon', 'title' => Labels::getLabel('LBL_Approve', $adminLangId),"onclick" => $approveAction . "(" . $pluginKeyName . $row['withdrawal_id'] . "," . Transactions::WITHDRAWL_STATUS_APPROVED . " , 'approve' )"), "<i class='far fa-thumbs-up'></i>", true);                    
-                    $td->appendElement('a', array('href' => 'javascript:void(0)','class' => 'btn btn-clean btn-icon', 'title' => Labels::getLabel('LBL_Decline', $adminLangId),"onclick" => "updateStatus(" . $row['withdrawal_id'] . "," . Transactions::WITHDRAWL_STATUS_DECLINED . " , 'decline' )"), "<i class='far fa-thumbs-down'></i>", true);
+                    $td->appendElement('a', array('href' => 'javascript:void(0)','class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Approve', $adminLangId),"onclick" => $approveAction . "(" . $pluginKeyName . $row['withdrawal_id'] . "," . Transactions::WITHDRAWL_STATUS_APPROVED . " , 'approve' )"), "<i class='far fa-thumbs-up'></i>", true);                    
+                    $td->appendElement('a', array('href' => 'javascript:void(0)','class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Decline', $adminLangId),"onclick" => "updateStatus(" . $row['withdrawal_id'] . "," . Transactions::WITHDRAWL_STATUS_DECLINED . " , 'decline' )"), "<i class='far fa-thumbs-down'></i>", true);
                 }
                 break;
             default:

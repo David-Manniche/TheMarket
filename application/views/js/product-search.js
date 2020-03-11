@@ -548,13 +548,13 @@ function updatePriceFilter(minPrice,maxPrice,addPriceFilter){
 		addPricefilter();
 	}
 
-	var frm = document.frmProductSearch;
+	/*var frm = document.frmProductSearch;
 	var $range = $("#price_range");
-	range = $range.data("ionRangeSlider");
+	range = $range.data("ionRangeSlider"); */
 	updateRange(minPrice,maxPrice);
-    if (typeof range !== 'undefined'){
+    /* if (typeof range !== 'undefined'){
         range.reset();
-    }
+    } */
 }
 
 (function() {

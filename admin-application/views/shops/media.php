@@ -4,6 +4,7 @@ $shopLogoFrm->developerTags['colClassPrefix'] = 'col-md-';
 $shopLogoFrm->developerTags['fld_default_col'] = 12;
 $ratioFld = $shopLogoFrm->getField('ratio_type');
 $ratioFld->addFieldTagAttribute('class', 'prefRatio-js');
+$ratioFld->addOptionListTagAttribute('class', 'list-inline');
 $fld = $shopLogoFrm->getField('shop_logo');
 $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
 $fld->addFieldTagAttribute('onChange', 'logoPopupImage(this)');

@@ -205,7 +205,7 @@ class OrderSubscription extends MyAppModel
 
         $srch->addCondition('ossubs_till_date', '!=', '0000-00-00');
         /* $srch->addCondition('user_autorenew_subscription','=',1); */
-        $srch->addMultipleFields(array('user_id', 'ossubs_id', 'ossubs_type', 'user_name', 'credential_email', 'order_language_id'));
+        $srch->addMultipleFields(array('user_id', 'ossubs_id', 'ossubs_type', 'user_name', 'user_dial_code', 'user_phone', 'credential_email', 'order_language_id'));
         /* $srch->addGroupBy('order_user_id');  */
         $srch->addOrder('ossubs_id', 'desc');
         if ($lastUserIdCond) {

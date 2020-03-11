@@ -91,16 +91,16 @@ foreach ($arrListing as $sn => $row) {
                 break;
             case 'action':
                 if ($canEdit) {
-                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean  btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId), "onclick"=>"addSellerProductForm(" . $row['selprod_product_id'] . ",".$row['selprod_id'].")"), "<i class='ion-edit icon'></i>", true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId), "onclick"=>"addSellerProductForm(" . $row['selprod_product_id'] . ",".$row['selprod_id'].")"), "<i class='far fa-edit icon'></i>", true);
                     if ($row['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
                         $td->appendElement(
                             'a',
-                            array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean  btn-icon', 'title'=>Labels::getLabel('LBL_Downloads', $adminLangId),"onclick"=>"sellerProductDownloadFrm(".$row['selprod_id'].")"),
+                            array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Downloads', $adminLangId),"onclick"=>"sellerProductDownloadFrm(".$row['selprod_id'].")"),
                             "<i class='ion-archive'></i>",
                             true
                         );
                     }
-                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean  btn-icon', 'title'=>Labels::getLabel('LBL_Delete_Product', $adminLangId), "onclick"=>"sellerProductDelete(".$row['selprod_id'].")"), "<i class='ion-android-delete icon'></i>",true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Delete_Product', $adminLangId), "onclick"=>"sellerProductDelete(".$row['selprod_id'].")"), "<i class='fa fa-trash  icon'></i>",true);
                 }
                 break;
             default:

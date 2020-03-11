@@ -82,7 +82,7 @@
 				select: function(event, ui) {
                     $('input[name=\'tag_name\']').val('');
                     $('#product-tag' + ui.item.id).remove();
-                    $('#product-tag').append("<li id='product-tag" + ui.item.id + "'><i class='remove_tag remove_param ion-android-delete icon'></i> " + ui.item.label + "<input type='hidden' name='product_tag[]' value='" + ui.item.id + "' /></li>");	
+                    $('#product-tag').append("<li id='product-tag" + ui.item.id + "'><i class='remove_tag remove_param fa fa-trash  icon'></i> " + ui.item.label + "<input type='hidden' name='product_tag[]' value='" + ui.item.id + "' /></li>");	
 				}
 			});
 			
@@ -94,7 +94,7 @@
 			
 			?>
 		
-			$('#product-tag').append("<li id='product-tag<?php echo $val["tag_id"];?>'><i class='remove_tag remove_param ion-android-delete icon'></i> <?php echo $val["tag_identifier"];?><input type='hidden' name='product_tag[]' value='<?php echo $val["tag_id"];?>' /></li>");
+			$('#product-tag').append("<li id='product-tag<?php echo $val["tag_id"];?>'><i class='remove_tag remove_param fa fa-trash  icon'></i> <?php echo $val["tag_identifier"];?><input type='hidden' name='product_tag[]' value='<?php echo $val["tag_id"];?>' /></li>");
 		<?php } ?>
 		
 		

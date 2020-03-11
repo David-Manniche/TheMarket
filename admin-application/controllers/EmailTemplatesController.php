@@ -338,7 +338,8 @@ class EmailTemplatesController extends AdminBaseController
         $fld->addFieldTagAttribute('class', 'jscolor');
 
         $ratioArr = AttachedFile::getRatioTypeArray($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Logo_Ratio', $this->adminLangId), 'CONF_EMAIL_TEMPLATE_LOGO_RATIO', $ratioArr, AttachedFile::RATIO_TYPE_SQUARE, array(), '');
+        //$frm->addSelectBox(Labels::getLabel('LBL_Logo_Ratio', $this->adminLangId), 'CONF_EMAIL_TEMPLATE_LOGO_RATIO', $ratioArr, AttachedFile::RATIO_TYPE_SQUARE, array(), '');
+        $frm->addRadioButtons(Labels::getLabel('LBL_Logo_Ratio', $this->adminLangId), 'CONF_EMAIL_TEMPLATE_LOGO_RATIO', $ratioArr, AttachedFile::RATIO_TYPE_SQUARE);
         $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_EMAIL_LOGO);
         $frm->addHiddenField('', 'logo_min_width');
         $frm->addHiddenField('', 'logo_min_height');
@@ -357,6 +358,7 @@ class EmailTemplatesController extends AdminBaseController
         $post = FatApp::getPostedData();
         $file_type = FatApp::getPostedData('file_type', FatUtility::VAR_INT, 0);
         $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
+        $aspectRatio = FatApp::getPostedData('ratio_type', FatUtility::VAR_INT, 0);
 
         if (!$file_type) {
             Message::addErrorMessage($this->str_invalid_request);
@@ -376,7 +378,7 @@ class EmailTemplatesController extends AdminBaseController
         }
 
         $fileHandlerObj = new AttachedFile();
-        if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], $file_type, 0, 0, $_FILES['cropped_image']['name'], -1, true, $lang_id)) {
+        if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], $file_type, 0, 0, $_FILES['cropped_image']['name'], -1, true, $lang_id, '', 0, $aspectRatio)) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }

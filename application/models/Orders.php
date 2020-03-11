@@ -962,13 +962,13 @@ class Orders extends MyAppModel
         if (isset($criteria['seller_id'])) {
             $srch->joinTable('tbl_users', 'LEFT OUTER JOIN', 's.user_id = torp.op_selprod_user_id', 's');
             $srch->joinTable('tbl_user_credentials', 'LEFT OUTER JOIN', 'sc.credential_user_id = s.user_id', 'sc');
-            $srch->addMultipleFields(array('s.user_name as seller_name', 'sc.credential_email as seller_email'));
+            $srch->addMultipleFields(array('s.user_name as seller_name', 'sc.credential_email as seller_email', 'CONCAT(s.user_dial_code, s.user_phone) as seller_phone',));
         }
 
         if (isset($criteria['buyer_id'])) {
             $srch->joinTable('tbl_users', 'LEFT OUTER JOIN', 'b.user_id = tor.order_user_id', 'b');
             $srch->joinTable('tbl_user_credentials', 'LEFT OUTER JOIN', 'bc.credential_user_id = b.user_id', 'bc');
-            $srch->addMultipleFields(array('b.user_name as buyer_name', 'bc.credential_email as buyer_email'));
+            $srch->addMultipleFields(array('b.user_name as buyer_name', 'CONCAT(b.user_dial_code, b.user_phone) as buyer_phone', 'bc.credential_email as buyer_email'));
         }
 
         $srch->addMultipleFields(array('tosh.*', 'tor.order_is_paid', 'order_language_id', 'torp.*', 'torp.op_id' ));

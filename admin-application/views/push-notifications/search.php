@@ -116,11 +116,11 @@ foreach ($arr_listing as $sn => $row) {
             case 'action':
                 if ($canEdit) {
                     if (PushNotification::STATUS_PENDING == $row['pnotification_status']) {
-                        $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-icon', 'title' => Labels::getLabel('LBL_EDIT', $adminLangId), "onclick" => "addNotificationForm(" . $row['pnotification_id'] . ")"), "<i class='ion-edit icon'></i>", true);
+                        $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_EDIT', $adminLangId), "onclick" => "addNotificationForm(" . $row['pnotification_id'] . ")"), "<i class='far fa-edit icon'></i>", true);
                     } elseif (PushNotification::STATUS_PENDING != $row['pnotification_status']) {
-                        $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-icon', 'title' => Labels::getLabel('LBL_VIEW', $adminLangId), "onclick" => "addNotificationForm(" . $row['pnotification_id'] . ")"), "<i class='ion-eye icon'></i>", true);
+                        $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_VIEW', $adminLangId), "onclick" => "addNotificationForm(" . $row['pnotification_id'] . ")"), "<i class='far fa-eye icon'></i>", true);
                     }
-                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-icon', 'title' => Labels::getLabel('LBL_CLONE', $adminLangId), "onclick" => "clone(" . $row['pnotification_id'] . ")"), "<i class='ion-ios-photos icon'></i>", true);
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_CLONE', $adminLangId), "onclick" => "clone(" . $row['pnotification_id'] . ")"), "<i class='ion-ios-photos icon'></i>", true);
                 } 
                 break;
         }

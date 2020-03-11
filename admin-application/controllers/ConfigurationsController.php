@@ -309,6 +309,7 @@ class ConfigurationsController extends AdminBaseController
         }
         $file_type = FatApp::getPostedData('file_type', FatUtility::VAR_INT, 0);
         $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
+        $aspectRatio = FatApp::getPostedData('ratio_type', FatUtility::VAR_INT, 0);
 
         if (!$file_type) {
             Message::addErrorMessage($this->str_invalid_request);
@@ -344,7 +345,7 @@ class ConfigurationsController extends AdminBaseController
         }
 
         $fileHandlerObj = new AttachedFile();
-        if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], $file_type, 0, 0, $_FILES['cropped_image']['name'], -1, true, $lang_id)) {
+        if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], $file_type, 0, 0, $_FILES['cropped_image']['name'], -1, true, $lang_id, '', 0, $aspectRatio)) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -1596,7 +1597,7 @@ class ConfigurationsController extends AdminBaseController
     {
         $frm = new Form('frmConfiguration');
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $langId, array(), '');
-
+              
         switch ($type) {
             case Configurations::FORM_GENERAL:
                 $frm->addTextBox(Labels::getLabel("LBL_Site_Name", $this->adminLangId), 'CONF_WEBSITE_NAME_' . $langId);
@@ -1622,6 +1623,8 @@ class ConfigurationsController extends AdminBaseController
                 break;
 
             case Configurations::FORM_MEDIA:
+                $ratioArr = AttachedFile::getRatioTypeArray($this->adminLangId);
+                
                 $ul = $frm->addHtml('', 'MediaGrids', '<ul class="grids--onethird">');
 
                 $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_Admin_Logo', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
@@ -1630,8 +1633,17 @@ class ConfigurationsController extends AdminBaseController
                     $ul->htmlAfterField .= '<img src="' . CommonHelper::generateFullUrl('Image', 'siteAdminLogo', array($langId)) . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeSiteAdminLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
-                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="admin_logo" id="admin_logo" data-min_width = "142" data-min_height = "45" data-file_type=' . AttachedFile::FILETYPE_ADMIN_LOGO . ' value="Upload file"><small>Dimensions 142*45</small></li>';
-
+                $ul->htmlAfterField .= ' </div></div>';
+                
+                $ul->htmlAfterField .= '<ul class="list-inline">';
+                foreach($ratioArr as $key=>$data){ 
+                    $checked = ($key == 1) ? $checked = "checked = checked" : '';
+                    $name = 'ratio_type_'.AttachedFile::FILETYPE_ADMIN_LOGO;
+                    $ul->htmlAfterField .="<li><label><span class='radio'><input class='prefRatio-js' type='radio' name='".$name."' value='".$key."' $checked><i class='input-helper'></i></span>".$data."</label></li>";
+                }
+                $ul->htmlAfterField .='</ul>';
+                
+                $ul->htmlAfterField .= '<input type="file" onChange="popupImage(this)" name="admin_logo" id="admin_logo" data-min_width = "150" data-min_height = "150" data-file_type=' . AttachedFile::FILETYPE_ADMIN_LOGO . ' value="Upload file"></li>';
 
                 $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_Desktop_Logo', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
 
@@ -1642,8 +1654,18 @@ class ConfigurationsController extends AdminBaseController
 
                 /*$ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="front_logo" id="front_logo" data-min_width = "168" data-min_height = "37" data-file_type=' . AttachedFile::FILETYPE_FRONT_LOGO . ' value="Upload file"><small>Dimensions 168*37</small></li>';*/
 
-                $ul->htmlAfterField .= ' </div></div><input onchange="popupImage(this)" data-frm="frmShopLogo" data-min_height="45" data-min_width="142" data-file_type='.AttachedFile::FILETYPE_FRONT_LOGO.' title="Upload" type="file" name="front_logo" value=""><small>Dimensions 168*37</small></li>';
-
+                $ul->htmlAfterField .= ' </div></div>';
+                
+                $ul->htmlAfterField .= '<ul class="list-inline">';
+                foreach($ratioArr as $key=>$data){ 
+                    $checked = ($key == 1) ? $checked = "checked = checked" : '';
+                    $name = 'ratio_type_'.AttachedFile::FILETYPE_FRONT_LOGO;
+                    $ul->htmlAfterField .="<li><label><span class='radio'><input class='prefRatio-js' type='radio' name='".$name."' value='".$key."' $checked><i class='input-helper'></i></span>".$data."</label></li>";
+                }
+                $ul->htmlAfterField .='</ul>';
+                
+                $ul->htmlAfterField .= '<input onchange="popupImage(this)" data-frm="frmShopLogo" data-min_height="150" data-min_width="150" data-file_type='.AttachedFile::FILETYPE_FRONT_LOGO.' title="Upload" type="file" name="front_logo" value=""></li>';
+                
                 /*$frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'front_logo', array('accept' => 'image/*', 'onChange' => 'popupImage(this)', 'data-frm' => 'frmShopLogo', 'data-min_height' => '45', 'data-min_width' => '142', 'data-file_type' => AttachedFile::FILETYPE_FRONT_LOGO));*/
 
                 /*$ul->htmlAfterField .= '<li>'.Labels::getLabel('LBL_Select_Email_Template_Logo', $this->adminLangId).'<div class="logoWrap"><div class="uploaded--image">';
@@ -1684,8 +1706,17 @@ class ConfigurationsController extends AdminBaseController
                     $ul->htmlAfterField .= '<img src="' . CommonHelper::generateFullUrl('Image', 'paymentPageLogo', array($langId, 'THUMB'), CONF_WEBROOT_FRONT_URL) . '"><a  class="remove--img" href="javascript:void(0);" onclick="removePaymentPageLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
-                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="payment_page_logo" id="payment_page_logo" data-min_width = "168" data-min_height = "37" data-file_type=' . AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO . ' value="Upload file"><small>Dimensions 168*37</small></li>';
-
+                $ul->htmlAfterField .= ' </div></div>';
+                
+                $ul->htmlAfterField .= '<ul class="list-inline">';
+                foreach($ratioArr as $key=>$data){ 
+                    $checked = ($key == 1) ? $checked = "checked = checked" : '';
+                    $name = 'ratio_type_'.AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO;
+                    $ul->htmlAfterField .="<li><label><span class='radio'><input class='prefRatio-js' type='radio' name='".$name."' value='".$key."' $checked><i class='input-helper'></i></span>".$data."</label></li>";
+                }
+                $ul->htmlAfterField .='</ul>';
+                
+                $ul->htmlAfterField .='<input type="file" onChange="popupImage(this)" name="payment_page_logo" id="payment_page_logo" data-min_width = "150" data-min_height = "150" data-file_type=' . AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO . ' value="Upload file"></li>';
 
                 $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_Watermark_Image', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
 
@@ -1741,8 +1772,18 @@ class ConfigurationsController extends AdminBaseController
                     $ul->htmlAfterField .= '<img src="' . CommonHelper::generateFullUrl('Image', 'invoiceLogo', array($langId, 'THUMB'), CONF_WEBROOT_FRONT_URL) . '"><a  class="remove--img" href="javascript:void(0);" onclick="removeInvoiceLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
-                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="invoice_logo" id="invoice_logo" data-min_width = "168" data-min_height = "37" data-file_type=' . AttachedFile::FILETYPE_INVOICE_LOGO . ' value="Upload file"><small>Dimensions 168*37</small></li>';
-
+                $ul->htmlAfterField .= ' </div></div>';
+                
+                $ul->htmlAfterField .= '<ul class="list-inline">';
+                foreach($ratioArr as $key=>$data){ 
+                    $checked = ($key == 1) ? $checked = "checked = checked" : '';
+                    $name = 'ratio_type_'.AttachedFile::FILETYPE_INVOICE_LOGO;
+                    $ul->htmlAfterField .="<li><label><span class='radio'><input class='prefRatio-js' type='radio' name='".$name."' value='".$key."' $checked><i class='input-helper'></i></span>".$data."</label></li>";
+                }
+                $ul->htmlAfterField .='</ul>';
+                
+                $ul->htmlAfterField .='<input type="file" onChange="popupImage(this)" name="invoice_logo" id="invoice_logo" data-min_width = "150" data-min_height = "150" data-file_type=' . AttachedFile::FILETYPE_INVOICE_LOGO . ' value="Upload file"></li>';
+                
                 $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_First_Purchase_Discount_Image', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
 
 

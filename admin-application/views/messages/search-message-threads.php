@@ -45,7 +45,7 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('span', array('class'=>'date'), FatDate::format($row['message_date'], true));
                 break;
             case 'action':
-                $td->appendElement('a', array('href'=>CommonHelper::generateUrl('Messages', 'view', array($row['thread_id'])),'class'=>'btn btn-clean btn-icon','title'=>Labels::getLabel('LBL_View', $adminLangId)), "<i class='ion-eye'></i>", true);
+                $td->appendElement('a', array('href'=>CommonHelper::generateUrl('Messages', 'view', array($row['thread_id'])),'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_View', $adminLangId)), "<i class='ion-eye'></i>", true);
 
                 break;
             default:
