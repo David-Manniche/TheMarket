@@ -723,6 +723,8 @@ class GuestUserController extends MyAppController
             Message::addErrorMessage($message);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'forgotPasswordForm'));
         }
+        $row['link'] = CommonHelper::generateFullUrl('GuestUser', 'resetPassword', array($row['user_id'], $token));
+        $row['user_email'] = $row['credential_email'];
 
         /*Send verification email if email not verified[*/
         $srch = new SearchBase('tbl_user_credentials');
@@ -744,8 +746,6 @@ class GuestUserController extends MyAppController
                 }
                 $notVerified = true;
             } else {
-                $row['link'] = CommonHelper::generateFullUrl('GuestUser', 'resetPassword', array($row['user_id'], $token));
-                $row['user_email'] = $row['credential_email'];
                 if (!$userObj->userEmailVerification($row, $this->siteLangId)) {
                     $message = Labels::getLabel("MSG_VERIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId);
                     $error = true;
@@ -793,6 +793,9 @@ class GuestUserController extends MyAppController
         if (true === MOBILE_APP_API_CALL || FatUtility::isAjaxCall()) {
             $this->set('msg', $message);
             if (true === MOBILE_APP_API_CALL) {
+                if (0 < $withPhone) {
+                    $this->set('data', ['user_id' => $row['user_id']]);
+                }
                 $this->_template->render();
             } else if (0 < $withPhone) {
                 $frm = $this->getOtpForm();
