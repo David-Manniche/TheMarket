@@ -49,7 +49,7 @@ foreach ($arr_listing as $sn=>$row){
 				if($canEdit){
 					$li = $ul->appendElement("li");
 					$li->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),
-						"onclick"=>"questionnaireForm(".$row['questionnaire_id'].")"),'<i class="ion-edit icon"></i>', true);
+						"onclick"=>"questionnaireForm(".$row['questionnaire_id'].")"),'<i class="far fa-edit icon"></i>', true);
 					$li = $ul->appendElement("li");
 					$li->appendElement('a', array('href'=>CommonHelper::generateUrl('Questionnaires','questions',array($row['questionnaire_id'])),'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Link_Questions',$adminLangId)),
 						'<i class="ion-levels icon"></i>', true);
@@ -60,11 +60,11 @@ foreach ($arr_listing as $sn=>$row){
 					$li = $ul->appendElement("li");
 					$li->appendElement('a', array(
 						'href'=>CommonHelper::generateUrl('Questionnaires','viewReport',array($row['questionnaire_id'])), 'class'=>'button small green','title'=>Labels::getLabel('LBL_View_Report',$adminLangId)),
-						'<i class="ion-eye icon"></i>', true);
+						'<i class="far fa-eye icon"></i>', true);
 					$li = $ul->appendElement("li");
 					$li->appendElement('a', array(
 						'href'=>"javascript:void(0)", 'class'=>'button small green','title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteRecord(".$row['questionnaire_id'].")"),
-						'<i class="ion-android-delete icon"></i>', true);
+						'<i class="fa fa-trash  icon"></i>', true);
 				}
 			break;
 			default:

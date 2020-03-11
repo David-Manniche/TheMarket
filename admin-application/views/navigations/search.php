@@ -70,9 +70,9 @@
                         break;
                     case 'action':
                         if ($canEdit) {
-                            $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addFormNew(".$row['nav_id'].")"), "<i class='ion-edit icon'></i>", true);
+                            $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addFormNew(".$row['nav_id'].")"), "<i class='far fa-edit icon'></i>", true);
                         }
-                        $td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Pages', $adminLangId),"onclick"=>"pages(".$row['nav_id'].")"), "<i class='ion-ios-paper icon'></i>", true);
+                        $td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Pages', $adminLangId),"onclick"=>"pages(".$row['nav_id'].")"), "<i class='ion-ios-paper icon'></i>", true);
                         break;
                     default:
                         $td->appendElement('plaintext', array(), $row[$key], true);

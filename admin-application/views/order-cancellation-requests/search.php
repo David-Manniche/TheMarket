@@ -57,7 +57,7 @@ foreach ($arrListing as $sn=>$row){
 			break;
 			case 'action':
 				if( $canEdit && $row['ocrequest_status'] == OrderCancelRequest::CANCELLATION_REQUEST_STATUS_PENDING ){
-					$td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-icon','title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"updateStatusForm(".$row['ocrequest_id'].")"),"<i class='ion-edit icon'></i>", true);						
+					$td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"updateStatusForm(".$row['ocrequest_id'].")"),"<i class='far fa-edit icon'></i>", true);						
 				}
 			break;
 			default:

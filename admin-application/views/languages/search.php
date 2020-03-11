@@ -31,7 +31,7 @@ foreach ($arr_listing as $sn=>$row){
 				if($canEdit){
 					$li = $ul->appendElement("li");
 					$li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 
-					'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"editLanguageForm(".$row['language_id'].")"),'<i class="ion-edit icon"></i>', 
+					'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"editLanguageForm(".$row['language_id'].")"),'<i class="far fa-edit icon"></i>', 
 					true);				
 				}
 			break;

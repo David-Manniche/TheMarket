@@ -30,8 +30,8 @@ foreach ($arr_listing as $sn=>$row){
 			break;
 			case 'action':
 				if($canEdit){
-					$td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-icon', 
-					'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"editMetaTagLangForm($metaId,".FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1).",'$metaType',$recordId)"),"<i class='ion-edit icon'></i>", 
+					$td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 
+					'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"editMetaTagLangForm($metaId,".FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1).",'$metaType',$recordId)"),"<i class='far fa-edit icon'></i>", 
 					true);
 				}
 			break;

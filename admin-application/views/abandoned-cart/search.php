@@ -59,7 +59,7 @@ foreach ($records as $sn=>$row){
 			case 'action':
                 if ($canEdit) {
                     if($row['abandonedcart_action'] < AbandonedCart::ACTION_PURCHASED && $row[AbandonedCart::DB_TBL_PREFIX.'discount_notification'] == 0){                        
-                        $td->appendElement('a', array('href'=>'javascript:void(0);', 'onclick'=>'discountNotification('.$row['abandonedcart_id'].','.$row['abandonedcart_user_id'].','.$row['selprod_product_id'].')', 'class'=>'btn btn-clean btn-icon','title'=>Labels::getLabel('LBL_Send_Discount_Notification',$adminLangId)),'<i class="fas fa-percent"></i>', true);
+                        $td->appendElement('a', array('href'=>'javascript:void(0);', 'onclick'=>'discountNotification('.$row['abandonedcart_id'].','.$row['abandonedcart_user_id'].','.$row['selprod_product_id'].')', 'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Send_Discount_Notification',$adminLangId)),'<i class="fas fa-percent"></i>', true);
                     }
                 }
                 

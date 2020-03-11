@@ -39,12 +39,12 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'action':
                 if ($canEdit) {
-                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "editAdminUserForm(" . $row['admin_id'] . ")"), "<i class='ion-edit icon'></i>", true);
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "editAdminUserForm(" . $row['admin_id'] . ")"), "<i class='far fa-edit icon'></i>", true);
 
-                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-icon', 'title' => Labels::getLabel('LBL_Change_Password', $adminLangId), "onclick" => "changePasswordForm(" . $row['admin_id'] . ")"), "<i class='ion-locked icon'></i>", true);
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Change_Password', $adminLangId), "onclick" => "changePasswordForm(" . $row['admin_id'] . ")"), "<i class='ion-locked icon'></i>", true);
 
                     if ($row['admin_id'] > 1 && $row['admin_id'] != $adminLoggedInId) {
-                        $td->appendElement('a', array('href' => CommonHelper::generateUrl('AdminUsers', 'permissions', array($row['admin_id'])), 'class' => 'btn btn-clean btn-icon', 'title' => Labels::getLabel('LBL_Permissions', $adminLangId)), '<i class="fas fa-gavel"></i>', true);
+                        $td->appendElement('a', array('href' => CommonHelper::generateUrl('AdminUsers', 'permissions', array($row['admin_id'])), 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Permissions', $adminLangId)), '<i class="fas fa-gavel"></i>', true);
                     }
                 }
                 break;

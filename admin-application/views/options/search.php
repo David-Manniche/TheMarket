@@ -59,15 +59,15 @@
                     if ($canEdit) {
                         $td->appendElement('a', array(
                             'href'=>'javascript:void(0)',
-                            'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),
-                            "onclick"=>"addOptionFormNew(".$row['option_id'].")"), "<i class='ion-edit icon'></i>", true);
+                            'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),
+                            "onclick"=>"addOptionFormNew(".$row['option_id'].")"), "<i class='far fa-edit icon'></i>", true);
 
                         $td->appendElement(
                             'a',
                             array(
-                            'href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-icon',
+                            'href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-sm btn-icon',
                             'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteOptionRecord(".$row['option_id'].")"),
-                            "<i class='ion-android-delete icon'></i>",
+                            "<i class='fa fa-trash  icon'></i>",
                             true
                         );
                     }
