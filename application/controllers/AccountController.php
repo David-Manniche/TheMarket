@@ -1254,7 +1254,7 @@ class AccountController extends LoggedUserController
         }
 
         $userObj = new User(UserAuthentication::getLoggedUserId());
-        $srch = $userObj->getUserSearchObj(array('user_id', 'credential_password', 'credential_email', 'user_name'));
+        $srch = $userObj->getUserSearchObj(array('user_id', 'credential_password', 'credential_email', 'user_name', 'user_dial_code', 'user_phone'));
         $rs = $srch->getResultSet();
 
         if (!$rs) {
@@ -1273,9 +1273,10 @@ class AccountController extends LoggedUserController
             $message = Labels::getLabel('MSG_YOUR_CURRENT_PASSWORD_MIS_MATCHED', $this->siteLangId);
             FatUtility::dieJsonError($message);
         }
-
+        $phone = !empty($data['user_phone']) ? $data['user_dial_code'] . $data['user_phone'] : '';
         $arr = array(
         'user_name' => $data['user_name'],
+        'user_phone' => $phone,
         'user_email' => $data['credential_email'],
         'user_new_email' => $post['new_email']
         );
@@ -2795,8 +2796,8 @@ class AccountController extends LoggedUserController
         $data = array(
             'user_name' => $userData['user_name'],
             'username' => $userData['credential_username'],
-        'user_email' => $userData['credential_email'],
-        'reference_number' => $data['reference'],
+            'user_email' => $userData['credential_email'],
+            'reference_number' => $data['reference'],
         );
 
         $email = new EmailHandler();

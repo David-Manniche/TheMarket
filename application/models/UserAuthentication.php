@@ -223,6 +223,7 @@ class UserAuthentication extends FatModel
             $this->error = Labels::getLabel("MSG_USER_COULD_NOT_BE_SET", $this->commonLangId) . $userObj->getError();
             return false;
         }
+        $userId = $userObj->getMainTableRecordId();
 
         $active = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
         $verify = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
@@ -243,6 +244,10 @@ class UserAuthentication extends FatModel
         }
 
         if (FatApp::getConfig('CONF_WELCOME_EMAIL_REGISTRATION', FatUtility::VAR_INT, 1)) {
+
+            $uData = User::getAttributesById($userId, ['user_dial_code', 'user_phone']);
+            $data['user_phone'] = !empty($uData['user_phone']) ? $uData['user_dial_code'] . $uData['user_phone'] : '';
+
             if (!$userObj->guestUserWelcomeEmail($data, $this->commonLangId)) {
                 $this->error = Labels::getLabel("MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT", $this->commonLangId);
                 $db->rollbackTransaction();
