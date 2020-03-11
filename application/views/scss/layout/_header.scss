@@ -137,9 +137,8 @@
     }
 
     .logo {
-        width: 150px;
-        max-height: 60px;
-        margin: 0px 0;
+        width: 120px;
+        margin: 10px 0;
         margin-#{$end-direction}: 2rem;
         display: -webkit-box;
         display: -ms-flexbox;
@@ -157,7 +156,9 @@
         }
 
         img {
-            &[data-ratio="16:9"] {}
+            &[data-ratio="16:9"] {
+                max-width: 120px;
+            }
 
             &[data-ratio="1:1"] {
                 max-width: 60px;

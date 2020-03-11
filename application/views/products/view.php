@@ -714,6 +714,9 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
             $('.nav-detail-js li a').removeClass('is-active');
             $(this).addClass('is-active');
         });
+        
+        var headerHeight = $("#header").height(); 
+        $(".nav-detail-js").css('top', headerHeight);
 
     });
 </script>
