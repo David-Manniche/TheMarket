@@ -370,6 +370,7 @@ class ProductsController extends MyAppController
         $this->set('availability', $availability);
         $availabilityArr = (true === MOBILE_APP_API_CALL) ? array_values($availabilityArr) : $availabilityArr;
         $this->set('availabilityArr', $availabilityArr);
+        $this->set('layoutDirection', CommonHelper::getLayoutDirection());
 
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
