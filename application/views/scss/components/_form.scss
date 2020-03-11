@@ -200,6 +200,10 @@ input[type="file"] {
 
         }
 
+        &.is-invalid {
+            border-color: red;
+        }
+
     }
 
     .btn--block {

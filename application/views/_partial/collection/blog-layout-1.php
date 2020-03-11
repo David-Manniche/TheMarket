@@ -18,7 +18,7 @@ if (isset($collections) && count($collections)) {
                     </div>    
                     <div class="row">
                         <?php foreach ($row['blogs'] as $blog) { ?>
-                            <div class="col-md-4">
+                            <div class="col-md-4 mb-4 mb-md-0">
                                 <div class="post">
                                     <div class="post_media">
                                         <a href="#" class="animate-scale">
