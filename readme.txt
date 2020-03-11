@@ -160,6 +160,7 @@ Bugs:
     => 035334 - On product reviews page when filter applied "review for" for any non existing user review result displayed No result found then by clicking Clear search result not revert back to default lising.
     => 035333 - Getting alert while editing user in admin.
     => 035211 - Error message merged with iti html element while validating phone number field and message not diaplying properly.
+    => 035199 - when seller is not allowed to add products or request catalog then option shouldn't be there in seller account
 
 New Features:
     => 71188 - Add setting for making brand field optional
