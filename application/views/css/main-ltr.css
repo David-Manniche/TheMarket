@@ -8001,22 +8001,22 @@ a.text-dark:hover, .shop-nav ul li.is--active a.text-dark, a.text-dark:focus {
     .cart .icn-txt strong {
       display: block;
       font-weight: 300; }
-    .cart .icn-txt .cartQuantity {
-      border-radius: 50%;
-      width: 22px;
-      height: 22px;
-      display: block;
-      position: absolute;
-      z-index: 0;
-      bottom: 13px;
-      left: 30px;
-      border: solid 1px var(--brand-color);
-      background: var(--brand-color);
-      color: var(--brand-color-inverse);
-      font-size: 0.8em;
-      text-align: center;
-      vertical-align: middle;
-      line-height: 20px; }
+  .cart .cartQuantity {
+    border-radius: 50%;
+    width: 1rem;
+    height: 1rem;
+    display: block;
+    position: absolute;
+    z-index: 0;
+    bottom: 13px;
+    left: 30px;
+    border: solid 1px var(--brand-color);
+    background: var(--brand-color);
+    color: var(--brand-color-inverse);
+    font-size: 0.7rem;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 0.9rem; }
 
 .close-layer {
   z-index: 2;
@@ -10626,6 +10626,8 @@ input[type="file"] {
   .form input[type="button"].btn--primary, .form input.btn--primary[type="reset"] {
     background: var(--brand-color);
     color: var(--brand-color-inverse); }
+.form input.is-invalid {
+  border-color: red; }
 .form .btn--block {
   display: block;
   width: 100%; }
@@ -15758,7 +15760,7 @@ img.mfp-img {
       display: block; } }
   @media (max-width: 991.98px) {
     .table {
-      min-height: 130px; } }
+      min-height: 170px; } }
   .table tr:last-child td {
     border-bottom: none; }
   .table tr td:first-child {
@@ -16534,6 +16536,8 @@ html {
   @media (max-width: 767.98px) {
     html {
       font-size: 13px; } }
+  html.pop-on {
+    overflow: hidden; }
 
 body {
   font-family: "Open Sans", sans-serif; }
@@ -16742,9 +16746,6 @@ a:hover, .shop-nav ul li.is--active a {
 
 .strikethrough {
   text-decoration: line-through; }
-
-.is-invalid {
-  border-color: red; }
 
 .cards {
   -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.1);
