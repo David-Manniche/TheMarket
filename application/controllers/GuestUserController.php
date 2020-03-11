@@ -881,15 +881,13 @@ class GuestUserController extends MyAppController
         $token = FatApp::getPostedData('token', FatUtility::VAR_STRING);
 
         if ($userId < 1 && strlen(trim($token)) < 20) {
-            Message::addErrorMessage(Labels::getLabel('MSG_REQUEST_IS_INVALID_OR_EXPIRED', $this->siteLangId));
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieJsonError(Labels::getLabel('MSG_REQUEST_IS_INVALID_OR_EXPIRED', $this->siteLangId));
         }
         $frm = $this->getResetPwdForm($userId, $token);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
         if ($post == false) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
 
         /* if (! ValidateElement::password($post['new_pwd'])) {
@@ -900,15 +898,13 @@ class GuestUserController extends MyAppController
         $userAuthObj = new UserAuthentication();
 
         if (!$userAuthObj->checkResetLink($userId, trim($token), 'submit')) {
-            Message::addErrorMessage($userAuthObj->getError());
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieJsonError($userAuthObj->getError());
         }
 
         //$pwd = UserAuthentication::encryptPassword($newPwd);
 
         if (!$userAuthObj->resetUserPassword($userId, $newPwd)) {
-            Message::addErrorMessage($userAuthObj->getError());
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieJsonError($userAuthObj->getError());
         }
 
         $email = new EmailHandler();
@@ -922,6 +918,9 @@ class GuestUserController extends MyAppController
         FatUtility::dieJsonError( Message::getHtml() ); */
 
         $this->set('msg', Labels::getLabel('MSG_PASSWORD_CHANGED_SUCCESSFULLY', $this->siteLangId));
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
         $this->_template->render(false, false, 'json-success.php');
     }
     
