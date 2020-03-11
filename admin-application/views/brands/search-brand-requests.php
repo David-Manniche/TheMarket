@@ -66,7 +66,7 @@ foreach ($arr_listing as $sn=>$row){
 			break;
 			case 'action':
 				if($canEdit){
-                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"addBrandRequestForm(".$row['brand_id'].")"),"<i class='ion-edit icon'></i>", true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"addBrandRequestForm(".$row['brand_id'].")"),"<i class='far fa-edit icon'></i>", true);
 				}
 			break;
 			default:

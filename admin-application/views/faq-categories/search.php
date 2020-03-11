@@ -70,16 +70,16 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'action':
                 if ($canEdit) {
-                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addFaqCatForm(".$row['faqcat_id'].")"), "<i class='ion-edit icon'></i>", true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addFaqCatForm(".$row['faqcat_id'].")"), "<i class='far fa-edit icon'></i>", true);
                 }
 
                 if ($canViewFaq) {
                     $url=CommonHelper::generateUrl('Faq', 'index', array($row['faqcat_id']));
-                    $td->appendElement('a', array('href'=>'javascript:void(0)','onclick'=>'redirectUrl("'.$url.'")', 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_FAQ_Listing', $adminLangId)), "<i class='ion-chatboxes icon'></i>", true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)','onclick'=>'redirectUrl("'.$url.'")', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_FAQ_Listing', $adminLangId)), "<i class='ion-chatboxes icon'></i>", true);
                 }
 
                 if ($canEdit) {
-                    $td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['faqcat_id'].")"), "<i class='ion-android-delete icon'></i>", true);
+                    $td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['faqcat_id'].")"), "<i class='fa fa-trash  icon'></i>", true);
                 }
                 break;
             default:
