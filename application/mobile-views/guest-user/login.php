@@ -1,6 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 
 $userImage = [
+    'token' => $token,
     'user_image' => (!empty($userInfo['user_id']) ? CommonHelper::generateFullUrl('image', 'user', array($userInfo['user_id'],'ORIGINAL')) : '')
 ];
 $data = array_merge($userInfo, $userImage);
