@@ -100,7 +100,7 @@ class FilterHelper extends FatUtility
         $brandRs = $brandSrch->getResultSet();
         $brands = FatApp::getDb()->fetchAll($brandRs);
         
-        if (count($brands) > 0 && !FatApp::getConfig('CONF_PRODUCT_BRAND_MANDATORY', FatUtility::VAR_INT, 0)) {
+        if (count($brands) > 0 && !FatApp::getConfig('CONF_PRODUCT_BRAND_MANDATORY', FatUtility::VAR_INT, 0) && in_array(null, array_column($brands, 'brand_id'))) {
             array_push($brands, array(
                 'brand_id' => '-1',
                 'brand_name' => Labels::getLabel('LBL_Unbranded', CommonHelper::getLangId()),
