@@ -392,7 +392,7 @@ class AccountController extends LoggedUserController
             }
         }
         $txnObj = new Transactions();
-		
+
 		$payoutPlugins = Plugin::getNamesWithCode(Plugin::TYPE_PAYOUTS, $this->siteLangId);
         $accountSummary = $txnObj->getTransactionSummary($userId);
 		$payouts = [-1 => Labels::getLabel("LBL_BANK_PAYOUT", $this->siteLangId)] + $payoutPlugins;
@@ -844,7 +844,7 @@ class AccountController extends LoggedUserController
             $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
 
             $hasDigitalProducts = 0;
-            
+
             $srch = Product::getSearchObject();
             $srch->addMultipleFields(['product_id']);
             $srch->addCondition('product_type', '=', Product::PRODUCT_TYPE_DIGITAL);
@@ -864,7 +864,7 @@ class AccountController extends LoggedUserController
             $this->set('hasDigitalProducts', $hasDigitalProducts);
             $this->_template->render();
         }
-        
+
         $this->_template->addJs('js/jquery.form.js');
         $this->_template->addJs('js/cropper.js');
         $this->_template->addJs('js/cropper-main.js');
@@ -1052,7 +1052,7 @@ class AccountController extends LoggedUserController
         $frm = $this->getProfileInfoForm();
 
         $post = FatApp::getPostedData();
-        
+
         if (1 > count($post) && true === MOBILE_APP_API_CALL) {
             LibHelper::dieJsonError(Labels::getLabel("MSG_INVALID_REQUEST", $this->siteLangId));
         }
@@ -2162,7 +2162,7 @@ class AccountController extends LoggedUserController
         }
 
         $this->set('msg', Labels::getLabel('LBL_Product_has_been_marked_as_favourite_successfully', $this->siteLangId));
-        
+
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
@@ -2224,6 +2224,7 @@ class AccountController extends LoggedUserController
 
     public function messages()
     {
+        $this->userPrivilege->canViewMessages(UserAuthentication::getLoggedUserId());
         $frm = $this->getMessageSearchForm($this->siteLangId);
         $this->set('frmSrch', $frm);
         $this->_template->render();
@@ -2231,7 +2232,7 @@ class AccountController extends LoggedUserController
 
     public function messageSearch()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
         $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
 
@@ -2273,7 +2274,7 @@ class AccountController extends LoggedUserController
                  "message_from_profile_url" => FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'user', array($mval['message_from_user_id'], 'thumb', 1)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg'),
                  "message_to_profile_url" => FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'user', array($mval['message_to_user_id'], 'thumb', 1)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg'),
                  "message_timestamp" => strtotime($mval['message_date'])
-                                            );
+                );
                 $message_records[] = array_merge($mval, $profile_images_arr);
             }
             $records = $message_records;
@@ -2283,7 +2284,7 @@ class AccountController extends LoggedUserController
         $this->set("arr_listing", $records);
         $this->set('pageCount', $srch->pages());
         $this->set('recordCount', $srch->recordCount());
-        $this->set('loggedUserId', UserAuthentication::getLoggedUserId());
+        $this->set('loggedUserId', $this->userParentId);
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
         $this->set('postedData', $post);
@@ -2296,9 +2297,10 @@ class AccountController extends LoggedUserController
 
     public function viewMessages($threadId, $messageId = 0)
     {
+        $this->userPrivilege->canViewMessages(UserAuthentication::getLoggedUserId());
         $threadId = FatUtility::int($threadId);
         $messageId = FatUtility::int($messageId);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         if (1 > $threadId) {
             $message = Labels::getLabel('MSG_INVALID_ACCESS', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
@@ -2374,7 +2376,7 @@ class AccountController extends LoggedUserController
             $this->set('frmSrch', $frmSrch);
             $this->set('frm', $frm);
         }
-
+        $this->set('canEditMessages', $this->userPrivilege->canEditMessages(UserAuthentication::getLoggedUserId(), true));
         $this->set('threadDetails', $threadDetails);
         $this->set('threadTypeArr', Thread::getThreadTypeArr($this->siteLangId));
         $this->set('loggedUserId', $userId);
@@ -2387,7 +2389,7 @@ class AccountController extends LoggedUserController
 
     public function threadMessageSearch()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $post = FatApp::getPostedData();
         $threadId = empty($post['thread_id']) ? 0 : FatUtility::int($post['thread_id']);
 
@@ -2457,7 +2459,7 @@ class AccountController extends LoggedUserController
 
     public function sendMessage()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $frm = $this->sendMessageForm($this->siteLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
@@ -3491,12 +3493,12 @@ class AccountController extends LoggedUserController
     public function getOtp($updatePhnFrm = 0)
     {
         $frm = $this->getPhoneNumberForm();
-       
+
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
             LibHelper::dieJsonError(current($frm->getValidationErrors()));
         }
-         
+
         $dialCode = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
         $countryIso = FatApp::getPostedData('user_country_iso', FatUtility::VAR_STRING, '');
         $phoneNumber = FatUtility::int($post['user_phone']);
@@ -3515,7 +3517,7 @@ class AccountController extends LoggedUserController
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
-        
+
         $otpFrm = $this->getOtpForm();
         $otpFrm->fill(['user_id' => $userId]);
         $this->set('frm', $otpFrm);
@@ -3532,10 +3534,10 @@ class AccountController extends LoggedUserController
             $this->changePhoneForm($updatePhnFrm);
             exit;
         }
-        
+
         $this->_template->render(false, false, 'json-success.php');
     }
-    
+
     public function resendOtp()
     {
         $userId = UserAuthentication::getLoggedUserId();

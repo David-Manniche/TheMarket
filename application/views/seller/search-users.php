@@ -77,7 +77,7 @@ foreach ($arrListing as $sn => $row) {
                 $li = $ul->appendElement("li");
                 $li->appendElement(
                     'a',
-                    array('href' => CommonHelper::generateUrl('Seller', 'SellerPermissions', array($row['user_id'])), 'title' => Labels::getLabel('LBL_Permissions', $siteLangId)),
+                    array('href' => CommonHelper::generateUrl('Seller', 'UserPermissions', array($row['user_id'])), 'title' => Labels::getLabel('LBL_Permissions', $siteLangId)),
                     '<i class="fa fa-lock"></i>',
                     true
                 );

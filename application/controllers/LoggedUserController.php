@@ -2,6 +2,7 @@
 
 class LoggedUserController extends MyAppController
 {
+    public $userParentId = 0 ;
     public function __construct($action)
     {
         parent::__construct($action);
@@ -65,6 +66,8 @@ class LoggedUserController extends MyAppController
             Message::addErrorMessage($message);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'configureEmail'));
         }
+        $userData = User::getAttributesById(UserAuthentication::getLoggedUserId());
+        $this->userParentId = (0 < $userData['user_parent']) ? $userData['user_parent'] : UserAuthentication::getLoggedUserId();
 
         $this->initCommonValues();
     }
@@ -72,6 +75,8 @@ class LoggedUserController extends MyAppController
     private function initCommonValues()
     {
         $this->set('isUserDashboard', true);
+        $this->userPrivilege = UserPrivilege::getInstance();
+        $this->set('userPrivilege', $this->userPrivilege);
     }
 
     protected function getOrderCancellationRequestsSearchForm($langId)

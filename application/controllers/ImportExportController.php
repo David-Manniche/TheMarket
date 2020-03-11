@@ -5,10 +5,10 @@ class ImportExportController extends SellerBaseController
     public function __construct($action)
     {
         parent::__construct($action);
-        if (!Shop::isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
+        if (!Shop::isShopActive($this->userParentId, 0, true)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
         }
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
         }
@@ -29,7 +29,7 @@ class ImportExportController extends SellerBaseController
         $batchCount = FatApp::getPostedData('batch_count', FatUtility::VAR_INT, 0);
         $batchNumber = FatApp::getPostedData('batch_number', FatUtility::VAR_INT, 1);
         $sheetType = FatApp::getPostedData('sheet_type', FatUtility::VAR_INT, 0);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         if (1 > $langId) {
             $langId = CommonHelper::getLangId();
@@ -70,6 +70,7 @@ class ImportExportController extends SellerBaseController
 
     public function importData($actionType)
     {
+        $this->userPrivilege->canEditImportExport();
         if (!is_uploaded_file($_FILES['import_file']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('LBL_Please_Select_A_CSV_File', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -83,7 +84,7 @@ class ImportExportController extends SellerBaseController
         }
 
         $sheetType = FatApp::getPostedData('sheet_type', FatUtility::VAR_INT, 0);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         $obj->import($actionType, $langId, $sheetType, $userId);
     }
@@ -97,7 +98,7 @@ class ImportExportController extends SellerBaseController
         $endId = FatApp::getPostedData('end_id', FatUtility::VAR_INT, 0);
         $batchCount = FatApp::getPostedData('batch_count', FatUtility::VAR_INT, 0);
         $batchNumber = FatApp::getPostedData('batch_number', FatUtility::VAR_INT, 1);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         $obj = new Importexport();
 
@@ -138,7 +139,7 @@ class ImportExportController extends SellerBaseController
     public function importMedia($actionType)
     {
         $post = FatApp::getPostedData();
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $langId = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
 
         if (!is_uploaded_file($_FILES['import_file']['tmp_name'])) {
@@ -290,7 +291,8 @@ class ImportExportController extends SellerBaseController
     public function import()
     {
         $frm = $this->getImportForm($this->siteLangId);
-
+        $this->set('canEditImportExport', $this->userPrivilege->canEditImportExport(0, true));
+        $this->set('canUploadBulkImages', $this->userPrivilege->canUploadBulkImages(0, true));
         $this->set('action', 'import');
         $this->set('frm', $frm);
         $this->set('sitelangId', $this->siteLangId);
@@ -300,7 +302,8 @@ class ImportExportController extends SellerBaseController
     public function export()
     {
         $frm = $this->getExportForm($this->siteLangId);
-
+        $this->set('canEditImportExport', $this->userPrivilege->canEditImportExport(0, true));
+        $this->set('canUploadBulkImages', $this->userPrivilege->canUploadBulkImages(0, true));
         $this->set('action', 'export');
         $this->set('frm', $frm);
         $this->_template->render(false, false, 'import-export/export.php');
@@ -311,6 +314,8 @@ class ImportExportController extends SellerBaseController
         $langId = $this->siteLangId;
         $obj = new Extrapage();
         $pageData = $obj->getContentByPageType(Extrapage::SELLER_GENERAL_SETTINGS_INSTRUCTIONS, $langId);
+        $this->set('canEditImportExport', $this->userPrivilege->canEditImportExport(0, true));
+        $this->set('canUploadBulkImages', $this->userPrivilege->canUploadBulkImages(0, true));
         $this->set('pageData', $pageData);
         $this->set('action', 'generalInstructions');
         $this->_template->render(false, false, 'import-export/general-instructions.php');
@@ -318,7 +323,8 @@ class ImportExportController extends SellerBaseController
     public function bulkMedia()
     {
         $frm = $this->getBulkMediaUploadForm($this->siteLangId);
-
+        $this->set('canEditImportExport', $this->userPrivilege->canEditImportExport(0, true));
+        $this->set('canUploadBulkImages', $this->userPrivilege->canUploadBulkImages(0, true));
         $this->set('action', 'bulkMedia');
         $this->set('frm', $frm);
         $this->_template->render(false, false, 'import-export/bulk-media.php');
@@ -340,6 +346,7 @@ class ImportExportController extends SellerBaseController
 
     public function updateSettings()
     {
+        $this->userPrivilege->canEditImportExport();
         $frm = $this->getSettingForm($this->siteLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
@@ -348,7 +355,7 @@ class ImportExportController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $obj = new Importexport();
         $settingArr = $obj->getSettingsArr();
 
@@ -368,13 +375,14 @@ class ImportExportController extends SellerBaseController
     public function settings()
     {
         $frm = $this->getSettingForm($this->siteLangId);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         $obj = new Importexport();
         $settingArr = $obj->getSettings($userId);
 
         $frm->fill($settingArr);
-
+        $this->set('canEditImportExport', $this->userPrivilege->canEditImportExport(0, true));
+        $this->set('canUploadBulkImages', $this->userPrivilege->canUploadBulkImages(0, true));
         $this->set('frm', $frm);
         $this->set('action', 'settings');
         $this->_template->render(false, false, 'import-export/settings.php');
@@ -623,17 +631,18 @@ class ImportExportController extends SellerBaseController
 
     public function uploadBulkMedia()
     {
+        $this->userPrivilege->canUploadBulkImages();
         if ($_FILES['bulk_images']['error'] !== UPLOAD_ERR_OK) {
             $message = AttachedFile::uploadErrorMessage($_FILES['bulk_images']['error'], $this->siteLangId);
             Message::addErrorMessage($message);
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $fileName = $_FILES['bulk_images']['name'];
         $tmpName = $_FILES['bulk_images']['tmp_name'];
 
         $uploadBulkImgobj = new UploadBulkImages();
-        $savedFile = $uploadBulkImgobj->upload($fileName, $tmpName, UserAuthentication::getLoggedUserId());
+        $savedFile = $uploadBulkImgobj->upload($fileName, $tmpName, $this->userParentId);
         if (false === $savedFile) {
             Message::addErrorMessage($uploadBulkImgobj->getError());
             FatUtility::dieJsonError(Message::getHtml());
@@ -654,6 +663,7 @@ class ImportExportController extends SellerBaseController
 
     public function uploadedBulkMediaList()
     {
+        $this->userPrivilege->canUploadBulkImages();
         $db = FatApp::getDb();
         $post = FatApp::getPostedData();
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : intval($post['page']);
@@ -661,7 +671,7 @@ class ImportExportController extends SellerBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
 
         $obj = new UploadBulkImages();
-        $srch = $obj->bulkMediaFileObject(UserAuthentication::getLoggedUserId());
+        $srch = $obj->bulkMediaFileObject($this->userParentId);
 
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -683,7 +693,7 @@ class ImportExportController extends SellerBaseController
     {
         $db = FatApp::getDb();
         $obj = new UploadBulkImages();
-        $srch = $obj->bulkMediaFileObject(UserAuthentication::getLoggedUserId());
+        $srch = $obj->bulkMediaFileObject($this->userParentId);
         $srch->addCondition('afile_physical_path', '=', base64_decode($directory));
         $srch->setPageSize(1);
         $rs = $srch->getResultSet();

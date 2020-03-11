@@ -33,7 +33,7 @@ class UserPermission extends MyAppModel
     public function updatePermissions($siteLangId, $assignValues = array(), $updateAll = false)
     {
         if ($updateAll) {
-            $permissionModules = UserPrivilege::getPermissionModulesArr($siteLangId);
+            $permissionModules = UserPrivilege::getSellerPermissionModulesArr($siteLangId);
             foreach ($permissionModules as $key => $val) {
                 $assignValues['userperm_section_id'] = $key;                
                 if (!FatApp::getDb()->insertFromArray(

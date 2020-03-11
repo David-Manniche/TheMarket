@@ -126,7 +126,10 @@ class Navigation
         if (!false == $shopDetails) {
             $shop_id = $shopDetails['shop_id'];
         }
-
+        $userData = User::getAttributesById(UserAuthentication::getLoggedUserId());
+        $userParentId = (0 < $userData['user_parent']) ? $userData['user_parent'] : UserAuthentication::getLoggedUserId();
+        $template->set('userParentId', $userParentId);
+        $template->set('userPrivilege', UserPrivilege::getInstance());
         $template->set('shop_id', $shop_id);
         $template->set('isShopActive', Shop::isShopActive($userId));
         $template->set('siteLangId', $siteLangId);

@@ -366,6 +366,11 @@ class User extends MyAppModel
             return true;
         }
 
+        $userData = User::getAttributesById(UserAuthentication::getLoggedUserId());
+        if (0 < $userData['user_parent']) {
+            return false;
+        }
+
         if (!FatApp::getConfig('CONF_ACTIVATE_SEPARATE_SIGNUP_FORM', FatUtility::VAR_INT, 1) && self::isBuyer()) {
             return true;
         }

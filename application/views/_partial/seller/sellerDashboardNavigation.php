@@ -1,30 +1,37 @@
 <?php
 $controller = strtolower($controller);
-$action = strtolower($action);
-?> <div class="sidebar no-print">
+$action = strtolower($action); ?>
+<div class="sidebar no-print">
     <div class="logo-wrapper"> <?php
-        if (CommonHelper::isThemePreview() && isset($_SESSION['preview_theme'])) {
-            $logoUrl = CommonHelper::generateUrl('home', 'index');
-        } else {
-            $logoUrl = CommonHelper::generateUrl();
-        }
-        ?> <div class="logo-dashboard"><a href="<?php echo $logoUrl; ?>"><img src="<?php echo CommonHelper::generateFullUrl('Image', 'siteLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>"
+    if (CommonHelper::isThemePreview() && isset($_SESSION['preview_theme'])) {
+        $logoUrl = CommonHelper::generateUrl('home', 'index');
+    } else {
+        $logoUrl = CommonHelper::generateUrl();
+    } ?> <div class="logo-dashboard"><a href="<?php echo $logoUrl; ?>"><img src="<?php echo CommonHelper::generateFullUrl('Image', 'siteLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>"
                     alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>"></a></div>
 
-        <?php
-            $isOpened = '';
-            if (array_key_exists('openSidebar', $_COOKIE) && !empty(FatUtility::int($_COOKIE['openSidebar'])) && array_key_exists('screenWidth', $_COOKIE) && applicationConstants::MOBILE_SCREEN_WIDTH < FatUtility::int($_COOKIE['screenWidth'])){
-                $isOpened = 'is-opened';
-            }
-        ?>
+        <?php $isOpened = '';
+        if (array_key_exists('openSidebar', $_COOKIE) && !empty(FatUtility::int($_COOKIE['openSidebar'])) && array_key_exists('screenWidth', $_COOKIE) && applicationConstants::MOBILE_SCREEN_WIDTH < FatUtility::int($_COOKIE['screenWidth'])) {
+            $isOpened = 'is-opened';
+        } ?>
         <div class="js-hamburger hamburger-toggle <?php echo $isOpened; ?>"><span class="bar-top"></span><span class="bar-mid"></span><span class="bar-bot"></span></div>
     </div>
     <div class="sidebar__content custom-scrollbar" data-simplebar>
         <nav class="dashboard-menu">
             <ul>
+            <?php
+                if (
+                $userPrivilege->canViewShop(UserAuthentication::getLoggedUserId(), true) ||
+                $userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId(), true) ||
+                $userPrivilege->canViewProductTags(UserAuthentication::getLoggedUserId(), true) ||
+                $userPrivilege->canViewProductOptions(UserAuthentication::getLoggedUserId(), true) ||
+                $userPrivilege->canViewTaxCategory(UserAuthentication::getLoggedUserId(), true) ||
+                $userPrivilege->canViewSocialPlatforms(UserAuthentication::getLoggedUserId(), true)
+            ) { ?>
                 <li class="menu__item">
                     <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_Shop', $siteLangId);?></span></div>
                 </li>
+                <?php if ($userPrivilege->canViewShop(UserAuthentication::getLoggedUserId(), true)) { ?>
                 <li class="menu__item <?php echo ($controller == 'seller' && $action == 'shop') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Manage_Shop', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'shop'); ?>">
                             <i class="icn shop"><svg class="svg">
@@ -32,8 +39,10 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Manage_Shop', $siteLangId);?></span></a></div>
                 </li>
+                <?php } ?>
                 <!-- <li class="menu__item"><div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_View_Shop', $siteLangId); ?>" target="_blank" href="<?php echo CommonHelper::generateUrl('Shops', 'view', array($shop_id)); ?>"><i class="icn shop"><svg class="svg"><use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-view-shop" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-view-shop"></use></svg>
                    </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_View_Shop', $siteLangId); ?></span></a></    div></li> -->
+                <?php if ($userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId(), true)) { ?>
                 <li
                     class="menu__item <?php echo ($controller == 'seller' && ($action == 'customcatalogproductform' || $action == 'customproductform'|| $action == 'catalog' || $action == 'products' || $action == 'customcatalogproducts')) ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Products', $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('seller', 'catalog'); ?>"><i class="icn shop"><svg class="svg">
@@ -41,7 +50,8 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Products', $siteLangId); ?></span></a></div>
                 </li>
-                <?php if (User::canAddCustomProduct()) { ?>
+                <?php } ?>
+                <?php if (User::canAddCustomProduct() && $userPrivilege->canViewProductTags(UserAuthentication::getLoggedUserId(), true)) { ?>
                 <li class="menu__item <?php echo ($controller == 'seller' && $action == 'producttags') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Product_Tags', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'productTags'); ?>">
                     <i class="icn shop"><svg class="svg">
@@ -50,6 +60,7 @@ $action = strtolower($action);
                     </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Product_Tags', $siteLangId);?></span></a></div>
                 </li>
                 <?php }?>
+                <?php if ($userPrivilege->canViewProductOptions(UserAuthentication::getLoggedUserId(), true)) { ?>
                 <li class="menu__item <?php echo ($controller == 'seller' && $action == 'options') ? 'is-active' : ''; ?>">
                 <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Product_Options', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'options'); ?>">
                         <i class="icn shop"><svg class="svg">
@@ -57,6 +68,8 @@ $action = strtolower($action);
                             </svg>
                         </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Product_Options', $siteLangId);?></span></a></div>
                 </li>
+                <?php }?>
+                <?php if ($userPrivilege->canViewTaxCategory(UserAuthentication::getLoggedUserId(), true)) { ?>
                 <li class="menu__item <?php echo ($controller == 'seller' && $action == 'taxcategories') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Tax_Categories', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'taxCategories'); ?>">
                             <i class="icn shop"><svg class="svg">
@@ -64,6 +77,8 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Tax_Categories', $siteLangId);?></span></a></div>
                 </li>
+                <?php }?>
+                <?php if ($userPrivilege->canViewSocialPlatforms(UserAuthentication::getLoggedUserId(), true)) { ?>
                 <li class="menu__item <?php echo ($controller == 'seller' && $action == 'socialplatforms') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Manage_Social_Platforms', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'socialPlatforms'); ?>">
                             <i class="icn shop"><svg class="svg">
@@ -71,10 +86,18 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Manage_Social_Platforms', $siteLangId);?></span></a></div>
                 </li>
-            <li class="divider"></li>
-             <li class="menu__item">
+                <?php }?>
+                <li class="divider"></li>
+            <?php }?>
+            <?php if (
+                $userPrivilege->canViewSales(UserAuthentication::getLoggedUserId(), true) ||
+                $userPrivilege->canViewCancellationRequests(UserAuthentication::getLoggedUserId(), true) ||
+                $userPrivilege->canViewReturnRequests(UserAuthentication::getLoggedUserId(), true)
+            ) { ?>
+                <li class="menu__item">
                     <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_Sales', $siteLangId);?></span></div>
                 </li>
+                <?php if ($userPrivilege->canViewSales(UserAuthentication::getLoggedUserId(), true)) { ?>
                 <li class="menu__item <?php echo ($controller == 'seller' && $action == 'sales') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Orders', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'Sales'); ?>">
                             <i class="icn shop"><svg class="svg">
@@ -82,13 +105,17 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Orders', $siteLangId);?></span></a></div>
                 </li>
-                <li class="menu__item <?php echo ($controller == 'seller' && $action == 'ordercancellationrequests') ? 'is-active' : ''; ?>">
+                <?php }?>
+                <?php if ($userPrivilege->canViewCancellationRequests(UserAuthentication::getLoggedUserId(), true)) { ?>
+                <li class="menu__item <?php echo ($controller == 'seller' && $action == 'ordercancellationrequests') ? 'is-active' : ''?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Order_Cancellation_Requests', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'orderCancellationRequests'); ?>">
                             <i class="icn shop"><svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-cancellation-request" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-cancellation-request"></use>
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel("LBL_Order_Cancellation_Requests", $siteLangId); ?></span></a></div>
                 </li>
+                <?php }?>
+                <?php if ($userPrivilege->canViewReturnRequests(UserAuthentication::getLoggedUserId(), true)) { ?>
                 <li class="menu__item <?php echo ($controller == 'seller' && ($action == 'orderreturnrequests' || $action == 'vieworderreturnrequest')) ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Order_Return_Requests', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'orderReturnRequests'); ?>">
                             <i class="icn shop"><svg class="svg">
@@ -96,10 +123,19 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel("LBL_Order_Return_Requests", $siteLangId); ?></span></a></div>
                 </li>
+                <?php }?>
                 <li class="divider"></li>
+            <?php } ?>
+            <?php if (
+                $userPrivilege->canViewSpecialPrice(UserAuthentication::getLoggedUserId(), true) ||
+                $userPrivilege->canViewVolumeDiscount(UserAuthentication::getLoggedUserId(), true) ||
+                $userPrivilege->canViewBuyTogetherProducts(UserAuthentication::getLoggedUserId(), true) ||
+                $userPrivilege->canViewRelatedProducts(UserAuthentication::getLoggedUserId(), true)
+            ) { ?>
             <li class="menu__item">
                 <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_Promotions', $siteLangId);?></span></div>
             </li>
+            <?php if ($userPrivilege->canViewSpecialPrice(UserAuthentication::getLoggedUserId(), true)) { ?>
             <li class="menu__item <?php echo ($controller == 'seller' && $action == 'specialprice') ? 'is-active' : ''; ?>">
                 <div class="menu__item__inner">
                     <a title="<?php echo Labels::getLabel('LBL_Special_Price', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'specialPrice'); ?>">
@@ -111,6 +147,8 @@ $action = strtolower($action);
                     </a>
                 </div>
             </li>
+            <?php }?>
+            <?php if ($userPrivilege->canViewVolumeDiscount(UserAuthentication::getLoggedUserId(), true)) { ?>
             <li class="menu__item <?php echo ($controller == 'seller' && $action == 'volumediscount') ? 'is-active' : ''; ?>">
                 <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Volume_Discount', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'volumeDiscount'); ?>">
                 <i class="icn shop"><svg class="svg">
@@ -118,6 +156,8 @@ $action = strtolower($action);
                     </svg>
                 </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Volume_Discount', $siteLangId);?></span></a></div>
             </li>
+            <?php } ?>
+            <?php if ($userPrivilege->canViewBuyTogetherProducts(UserAuthentication::getLoggedUserId(), true)) { ?>
             <li class="menu__item <?php echo ($controller == 'seller' && $action == 'upsellproducts') ? 'is-active' : ''; ?>">
                 <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Buy_Together_Products', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'upsellProducts'); ?>">
                 <i class="icn shop"><svg class="svg">
@@ -125,6 +165,8 @@ $action = strtolower($action);
                     </svg>
                 </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Buy_Together_Products', $siteLangId);?></span></a></div>
             </li>
+            <?php }?>
+            <?php if ($userPrivilege->canViewRelatedProducts(UserAuthentication::getLoggedUserId(), true)) { ?>
             <li class="menu__item <?php echo ($controller == 'seller' && $action == 'relatedproducts') ? 'is-active' : ''; ?>">
                 <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Related_Products', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'RelatedProducts'); ?>">
                 <i class="icn shop"><svg class="svg">
@@ -132,10 +174,11 @@ $action = strtolower($action);
                     </svg>
                 </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Related_Products', $siteLangId);?></span></a></div>
             </li>
+            <?php }?>
             <?php
             $obj = new Plugin();
             $pluginData = $obj->getDefaultPluginData(Plugin::TYPE_ADVERTISEMENT_FEED, null, $siteLangId);
-            if (false !== $pluginData && 0 < $pluginData['plugin_active']) { ?>
+            if (false !== $pluginData && 0 < $pluginData['plugin_active'] && $userPrivilege->canViewPromotions(UserAuthentication::getLoggedUserId(), true)) { ?>
                 <li class="menu__item <?php echo ($controller == strtolower($pluginData['plugin_code'])) ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">
                         <a title="<?php echo $pluginData['plugin_name'];?>" href="<?php echo CommonHelper::generateUrl($pluginData['plugin_code']); ?>">
@@ -150,9 +193,15 @@ $action = strtolower($action);
                 </li>
             <?php } ?>
             <li class="divider"></li>
+            <?php }?>
+            <?php if (
+                $userPrivilege->canViewMetaTags(UserAuthentication::getLoggedUserId(), true) ||
+                $userPrivilege->canViewUrlRewriting(UserAuthentication::getLoggedUserId(), true)
+            ) { ?>
             <li class="menu__item">
                 <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_SEO', $siteLangId);?></span></div>
             </li>
+            <?php if ($userPrivilege->canViewMetaTags(UserAuthentication::getLoggedUserId(), true)) { ?>
             <li class="menu__item <?php echo ($controller == 'seller' && $action == 'productseo') ? 'is-active' : ''; ?>">
                 <div class="menu__item__inner">
                     <a title="<?php echo Labels::getLabel('LBL_Meta_Tags', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'productSeo'); ?>">
@@ -164,6 +213,8 @@ $action = strtolower($action);
                     </a>
                 </div>
             </li>
+            <?php } ?>
+            <?php if ($userPrivilege->canViewUrlRewriting(UserAuthentication::getLoggedUserId(), true)) { ?>
             <li class="menu__item <?php echo ($controller == 'seller' && $action == 'producturlrewriting') ? 'is-active' : ''; ?>">
                 <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_URL_Rewriting', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'productUrlRewriting'); ?>">
                 <i class="icn shop"><svg class="svg">
@@ -171,39 +222,45 @@ $action = strtolower($action);
                     </svg>
                 </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_URL_Rewriting', $siteLangId);?></span></a></div>
             </li>
+            <?php } ?>
             <li class="divider"></li>
-                <?php if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) { ?>
-                    <li class="menu__item">
-                    <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_Subscription', $siteLangId); ?></span></div>
-                    </li>
-                    <li class="menu__item <?php echo ($controller == 'seller' && ($action == 'subscriptions' || $action == 'viewsubscriptionorder')) ? 'is-active' : ''; ?>">
-                        <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_My_Subscriptions', $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Seller', 'subscriptions'); ?>">
-                                <i class="icn shop"><svg class="svg">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-my-subscriptions" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-my-subscriptions"></use>
-                                    </svg>
-                                </i><span class="menu-item__title"><?php echo Labels::getLabel("LBL_My_Subscriptions", $siteLangId); ?></span></a></div>
-                    </li>
-                    <li class="menu__item <?php echo ($controller == 'seller' && ($action == 'packages')) ? 'is-active' : ''; ?>">
-                        <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Subscription_Packages', $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('seller', 'Packages'); ?>">
-                                <i class="icn shop"><svg class="svg">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-subscription-packages" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-subscription-packages"></use>
-                                    </svg>
-                                </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Subscription_Packages', $siteLangId); ?></span></a></div>
-                    </li>
-
-                    <li class="menu__item <?php echo ($controller == 'seller' && ($action == 'selleroffers')) ? 'is-active' : ''; ?>">
-                        <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Subscription_Offers', $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('seller', 'SellerOffers'); ?>">
-                                <i class="icn shop"><svg class="svg">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
-                                    </svg>
-                                </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Subscription_Offers', $siteLangId); ?></span></a></div>
-                    </li>
-
-                    <li class="divider"></li>
-                <?php } ?>
+            <?php }?>
+            <?php if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) { ?>
+            <li class="menu__item">
+            <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_Subscription', $siteLangId); ?></span></div>
+            </li>
+            <li class="menu__item <?php echo ($controller == 'seller' && ($action == 'subscriptions' || $action == 'viewsubscriptionorder')) ? 'is-active' : ''; ?>">
+                <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_My_Subscriptions', $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Seller', 'subscriptions'); ?>">
+                        <i class="icn shop"><svg class="svg">
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-my-subscriptions" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-my-subscriptions"></use>
+                            </svg>
+                        </i><span class="menu-item__title"><?php echo Labels::getLabel("LBL_My_Subscriptions", $siteLangId); ?></span></a></div>
+            </li>
+            <li class="menu__item <?php echo ($controller == 'seller' && ($action == 'packages')) ? 'is-active' : ''; ?>">
+                <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Subscription_Packages', $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('seller', 'Packages'); ?>">
+                        <i class="icn shop"><svg class="svg">
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-subscription-packages" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-subscription-packages"></use>
+                            </svg>
+                        </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Subscription_Packages', $siteLangId); ?></span></a></div>
+            </li>
+            <li class="menu__item <?php echo ($controller == 'seller' && ($action == 'selleroffers')) ? 'is-active' : ''; ?>">
+                <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Subscription_Offers', $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('seller', 'SellerOffers'); ?>">
+                        <i class="icn shop"><svg class="svg">
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
+                            </svg>
+                        </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Subscription_Offers', $siteLangId); ?></span></a></div>
+            </li>
+            <li class="divider"></li>
+            <?php } ?>
+            <?php if (
+                $userPrivilege->canViewSalesReport(UserAuthentication::getLoggedUserId(), true) ||
+                $userPrivilege->canViewPerformanceReport(UserAuthentication::getLoggedUserId(), true) ||
+                $userPrivilege->canViewInventoryReport(UserAuthentication::getLoggedUserId(), true)
+            ) { ?>
                 <li class="menu__item">
                     <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel("LBL_Reports", $siteLangId); ?></span></div>
                 </li>
+                <?php if ($userPrivilege->canViewSalesReport(UserAuthentication::getLoggedUserId(), true)) { ?>
                 <li class="menu__item <?php echo ($controller == 'reports' && $action == 'salesreport') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Sales_Report', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Reports', 'SalesReport'); ?>">
                             <i class="icn shop"><svg class="svg">
@@ -211,6 +268,8 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Sales_Report', $siteLangId); ?></span></a></div>
                 </li>
+                <?php }?>
+                <?php if ($userPrivilege->canViewPerformanceReport(UserAuthentication::getLoggedUserId(), true)) { ?>
                 <li class="menu__item <?php echo ($controller == 'reports' && $action == 'productsperformance') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Products_Performance', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Reports', 'ProductsPerformance'); ?>">
                             <i class="icn shop"><svg class="svg">
@@ -218,6 +277,8 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Products_Performance', $siteLangId); ?></span></a></div>
                 </li>
+                <?php }?>
+                <?php if ($userPrivilege->canViewInventoryReport(UserAuthentication::getLoggedUserId(), true)) { ?>
                 <li class="menu__item <?php echo ($controller == 'reports' && $action == 'productsinventory') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Products_Inventory', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Reports', 'productsInventory'); ?>">
                             <i class="icn shop"><svg class="svg">
@@ -232,7 +293,9 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Products_Inventory_Stock_Status', $siteLangId); ?></span></a></div>
                 </li>
+                <?php }?>
                 <li class="divider"></li>
+            <?php } ?>
                 <li class="menu__item">
                     <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel("LBL_Profile", $siteLangId); ?></span></div>
                 </li>
@@ -243,6 +306,7 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel("LBL_My_Account", $siteLangId); ?></span></a></div>
                 </li>
+                <?php if($userParentId == UserAuthentication::getLoggedUserId()) { ?>
                 <li class="menu__item <?php echo ($controller == 'seller' && $action == 'users') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Sub_Users', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'Users'); ?>">
                             <i class="icn shop"><svg class="svg">
@@ -250,16 +314,20 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel("LBL_Sub_Users", $siteLangId); ?></span></a></div>
                 </li>
+                <?php } ?>
+                <?php if ($userPrivilege->canViewMessages(UserAuthentication::getLoggedUserId(), true)) { ?>
                 <li class="menu__item <?php echo ($controller == 'account' && $action == 'messages') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Messages', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Account', 'Messages'); ?>">
                             <i class="icn shop"><svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-messages" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-messages"></use>
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel("LBL_Messages", $siteLangId); ?>
-                <?php if ($todayUnreadMessageCount > 0) { ?>
-                    <span class="msg-count"><?php echo ($todayUnreadMessageCount < 9) ? $todayUnreadMessageCount : '9+' ; ?></span>
-                <?php } ?></span></a></div>
+                            <?php if ($todayUnreadMessageCount > 0) { ?>
+                            <span class="msg-count"><?php echo ($todayUnreadMessageCount < 9) ? $todayUnreadMessageCount : '9+' ; ?></span>
+                            <?php } ?></span></a></div>
                 </li>
+                <?php }?>
+                <?php if ($userPrivilege->canViewCredits(UserAuthentication::getLoggedUserId(), true)) { ?>
                 <li class="menu__item <?php echo ($controller == 'account' && $action == 'credits') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_My_Credits', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Account', 'credits');?>">
                             <i class="icn shop"><svg class="svg">
@@ -267,6 +335,7 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_My_Credits', $siteLangId);?></span></a></div>
                 </li>
+                <?php } ?>
                 <li class="menu__item <?php echo ($controller == 'account' && $action == 'changeemailpassword') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_UPDATE_CREDENTIALS', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Account', 'changeEmailPassword');?>">
                             <i class="icn shop"><svg class="svg">
@@ -274,6 +343,7 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_UPDATE_CREDENTIALS', $siteLangId);?></span></a></div>
                 </li>
+                <?php if ($userPrivilege->canViewImportExport(UserAuthentication::getLoggedUserId(), true)) { ?>
                 <li class="divider"></li>
                 <li class="menu__item">
                     <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_Import_Export', $siteLangId);?></span></div>
@@ -284,14 +354,15 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Inventory_Update', $siteLangId); ?></span></a></div>
                 </li>
-                <?php if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0)) { ?>
-                    <li class="menu__item <?php echo ($controller == 'importexport' && ($action == 'index')) ? 'is-active' : ''; ?>">
-                    <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Import_Export', $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('ImportExport', 'index'); ?>"><i class="icn shop"><svg class="svg">
-                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-import-export" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-import-export"></use>
-                                </svg>
-                            </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Import_Export', $siteLangId); ?></span></a></div>
-                    </li> <?php
-                } ?>
+                    <?php if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0)) { ?>
+                        <li class="menu__item <?php echo ($controller == 'importexport' && ($action == 'index')) ? 'is-active' : ''; ?>">
+                        <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Import_Export', $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('ImportExport', 'index'); ?>"><i class="icn shop"><svg class="svg">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-import-export" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-import-export"></use>
+                                    </svg>
+                                </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Import_Export', $siteLangId); ?></span></a></div>
+                        </li> <?php
+                    } ?>
+                <?php } ?>
                 <?php $this->includeTemplate('_partial/dashboardLanguageArea.php'); ?>
             </ul>
         </nav>

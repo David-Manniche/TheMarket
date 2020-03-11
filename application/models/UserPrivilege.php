@@ -170,6 +170,7 @@ class UserPrivilege
             static::MODULE_IMPORT_EXPORT =>
                 array(
                     static::SECTION_IMPORT_EXPORT => Labels::getLabel('LBL_Import_Export', $langId),
+                    static::SECTION_UPLOAD_BULK_IMAGES => Labels::getLabel('LBL_Upload_Bulk_Images', $langId)
                 ),
             );
         return $arr;
@@ -201,7 +202,7 @@ class UserPrivilege
         }
         /* ] */
 
-        $srch = new SearchBase('tbl_seller_permissions');
+        $srch = UserPermission::getSearchObject();
         $srch->addCondition('userperm_user_id', '=', $sellerId);
         if (0 < $sectionId) {
             $srch->addCondition('userperm_section_id', '=', $sectionId);
@@ -255,10 +256,13 @@ class UserPrivilege
             return $this->returnFalseOrDie($returnResult, CommonHelper::getLangId());
         }
 
-        $rs = $db->query(
-            "SELECT userperm_value FROM tbl_seller_permissions WHERE
-                userperm_user_id = " . $sellerId . " AND userperm_section_id = " . $secId
-        );
+        $srch = UserPermission::getSearchObject();
+        $srch->addCondition('userperm_user_id', '=', $sellerId);
+        $srch->addCondition('userperm_section_id', '=', $secId);
+
+        $srch->addFld('userperm_value');
+        $rs = $srch->getResultSet();
+        
         if (!$row = $db->fetch($rs)) {
             $this->cacheLoadedPermission($sellerId, $secId, static::PRIVILEGE_NONE);
             return $this->returnFalseOrDie($returnResult, CommonHelper::getLangId());

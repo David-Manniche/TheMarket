@@ -30,9 +30,6 @@ trait SellerUsers
         $pageSize = FatApp::getConfig('CONF_PAGE_SIZE');
         $post = FatApp::getPostedData();
         $page =  FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
-       /*  $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : $post['page'];
-        $page = (empty($page) || $page <= 0) ? 1 : $page;
-        $page = FatUtility::int($page); */
 
         $srch->setPageNumber($page);
         $srch->setPageSize($pageSize);
@@ -378,7 +375,7 @@ trait SellerUsers
                 FatUtility::dieJsonError(Message::getHtml());
             }
         } else {
-            $permissionModules = UserPrivilege::getPermissionModulesArr($this->siteLangId);
+            $permissionModules = UserPrivilege::getSellerPermissionModulesArr($this->siteLangId);
             $permissionArr = UserPrivilege::getPermissionArr($this->siteLangId);
             if (!array_key_exists($moduleId, $permissionModules) || !array_key_exists($permission, $permissionArr)) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request1', $this->siteLangId));

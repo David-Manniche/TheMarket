@@ -21,7 +21,8 @@
                                         echo Labels::getLabel('LBL_Amount', $siteLangId);
                                     } elseif ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_PRODUCT) {
                                         echo Labels::getLabel('LBL_Price', $siteLangId);
-                                    }?></th>
+                                    }?>
+                                </th>
                                 <th>
                                     <?php if ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_ORDER_PRODUCT) {
                                         echo Labels::getLabel('LBL_Status', $siteLangId) ;
@@ -47,56 +48,50 @@
                                         <?php if ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_ORDER_PRODUCT) {
                                             ?> <?php
                                         } elseif ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_SHOP) {
-                                            ?> <?php
-                                        } elseif ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_PRODUCT) { ?>
-                                            <p><?php echo CommonHelper::displayMoneyFormat($threadDetails['selprod_price']); ?></p>
-                                        <?php } ?>
+                                                ?> <?php
+                                            } elseif ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_PRODUCT) { ?>
+                                                <p><?php echo CommonHelper::displayMoneyFormat($threadDetails['selprod_price']); ?></p>
+                                            <?php } ?>
                                     </span>
                                 </td>
-                                <td><?php if ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_ORDER_PRODUCT) {
+                                <td>
+                                    <?php if ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_ORDER_PRODUCT) {
                                         echo $threadDetails["orders_status_name"];
                                     } ?>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    
+
                 </div>
             </div>
             <div class="gap"></div><div class="gap"></div>
-            
             <div class="cards">
                 <div class="cards-content">
-                   
-                    
                     <?php echo $frmSrch->getFormHtml();?> <div id="loadMoreBtnDiv"></div>
                     <div id="messageListing" class="messages-list">
-                        <ul>
-                        
-                        </ul>
+                        <ul></ul>
                     </div>
-                    <div class="messages-list">
-                        <ul>
-                            <li>
-                                <div class="msg_db">
-                                    <img src="<?php echo CommonHelper::generateUrl('Image', 'user', array($loggedUserId,'thumb',true));?>" alt="<?php echo $loggedUserName; ?>">
-                                </div>
-                                <div class="msg__desc">
-                                    <span class="msg__title"><?php echo $loggedUserName;?></span> <?php
-                                   $frm->setFormTagAttribute('onSubmit', 'sendMessage(this); return false;');
-                                   $frm->setFormTagAttribute('class', 'form');
-                                   $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
-                                   $frm->developerTags['fld_default_col'] = 12;
-                                   echo $frm->getFormHtml(); ?> </div>
-                            </li>
-                        </ul>
-                    </div>
-                    
+                    <?php if($canEditMessages) { ?>
+                        <div class="messages-list">
+                            <ul>
+                                <li>
+                                    <div class="msg_db">
+                                        <img src="<?php echo CommonHelper::generateUrl('Image', 'user', array($loggedUserId,'thumb',true));?>" alt="<?php echo $loggedUserName; ?>">
+                                    </div>
+                                    <div class="msg__desc">
+                                        <span class="msg__title"><?php echo $loggedUserName;?></span> <?php
+                                       $frm->setFormTagAttribute('onSubmit', 'sendMessage(this); return false;');
+                                       $frm->setFormTagAttribute('class', 'form');
+                                       $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
+                                       $frm->developerTags['fld_default_col'] = 12;
+                                       echo $frm->getFormHtml(); ?> </div>
+                                </li>
+                            </ul>
+                        </div>
+                    <?php } ?>
                 </div>
-                
             </div>
-            
-            
         </div>
     </div>
 </main>
