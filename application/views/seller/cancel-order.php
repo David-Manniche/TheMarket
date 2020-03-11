@@ -40,7 +40,7 @@
                             </div>
                         </div>
                         <div class="gap"></div>
-                        <table class="table table--orders">
+                        <table class="table">
                             <tbody>
                                 <tr class="">
                                     <th colspan="2"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>

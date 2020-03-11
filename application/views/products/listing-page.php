@@ -109,6 +109,7 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
             <sidebar class="col flex-grow-0 collection-sidebar" id="collection-sidebar" data-close-on-click-outside="collection-sidebar">
                 <?php if (isset($shop)) { ?>
                 <div class="bg-gray rounded shop-information p-4">
+
                     <div class="shop-logo">
                         <?php   
                         $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_SHOP_LOGO, $shop['shop_id'], 0, 0, false);
@@ -116,6 +117,7 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                         ?>
                         <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo CommonHelper::generateUrl('image', 'shopLogo', array($shop['shop_id'], $siteLangId, 'SMALL')); ?>" alt="<?php echo $shop['shop_name']; ?>">
                     </div>
+
                     <div class="shop-info">
                         <div class="shop-name">
                             <h5>

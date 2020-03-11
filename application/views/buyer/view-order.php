@@ -362,7 +362,7 @@ if (true == $primaryOrder) {
                                     ?> <span class="gap"></span>
                     <div class="section--repeated">
                         <h5><?php echo Labels::getLabel('LBL_Payment_History', $siteLangId); ?></h5>
-                        <table class="table table--orders">
+                        <table class="table">
                             <tbody>
                                 <tr class="">
                                     <th><?php echo Labels::getLabel('LBL_Date_Added', $siteLangId); ?></th>

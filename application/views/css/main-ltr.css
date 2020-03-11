@@ -8001,22 +8001,22 @@ a.text-dark:hover, .shop-nav ul li.is--active a.text-dark, a.text-dark:focus {
     .cart .icn-txt strong {
       display: block;
       font-weight: 300; }
-    .cart .icn-txt .cartQuantity {
-      border-radius: 50%;
-      width: 22px;
-      height: 22px;
-      display: block;
-      position: absolute;
-      z-index: 0;
-      bottom: 13px;
-      left: 30px;
-      border: solid 1px var(--brand-color);
-      background: var(--brand-color);
-      color: var(--brand-color-inverse);
-      font-size: 0.8em;
-      text-align: center;
-      vertical-align: middle;
-      line-height: 20px; }
+  .cart .cartQuantity {
+    border-radius: 50%;
+    width: 1rem;
+    height: 1rem;
+    display: block;
+    position: absolute;
+    z-index: 0;
+    bottom: 13px;
+    left: 30px;
+    border: solid 1px var(--brand-color);
+    background: var(--brand-color);
+    color: var(--brand-color-inverse);
+    font-size: 0.7rem;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 0.9rem; }
 
 .close-layer {
   z-index: 2;
@@ -10626,6 +10626,8 @@ input[type="file"] {
   .form input[type="button"].btn--primary, .form input.btn--primary[type="reset"] {
     background: var(--brand-color);
     color: var(--brand-color-inverse); }
+.form input.is-invalid {
+  border-color: red; }
 .form .btn--block {
   display: block;
   width: 100%; }
@@ -15756,6 +15758,9 @@ img.mfp-img {
     .table {
       white-space: nowrap;
       display: block; } }
+  @media (max-width: 991.98px) {
+    .table {
+      min-height: 170px; } }
   .table tr:last-child td {
     border-bottom: none; }
   .table tr td:first-child {
@@ -16531,6 +16536,8 @@ html {
   @media (max-width: 767.98px) {
     html {
       font-size: 13px; } }
+  html.pop-on {
+    overflow: hidden; }
 
 body {
   font-family: "Open Sans", sans-serif; }
@@ -16739,9 +16746,6 @@ a:hover, .shop-nav ul li.is--active a {
 
 .strikethrough {
   text-decoration: line-through; }
-
-.is-invalid {
-  border-color: red; }
 
 .cards {
   -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.1);
@@ -35268,8 +35272,8 @@ body {
 
 .shop-information .shop-logo {
   border-radius: 50%;
-  width: 170px;
-  height: 170px;
+  width: 150px;
+  height: 150px;
   margin: 0 auto;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -35280,10 +35284,14 @@ body {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 0;
   margin-bottom: 1rem;
   background: #fff;
   overflow: hidden; }
+  .shop-information .shop-logo img[data-ratio="16:9"] {
+    max-height: 84px; }
+  .shop-information .shop-logo img[data-ratio="1:1"] {
+    max-width: 100%; }
 .shop-information .shop-info {
   padding: 0;
   text-align: center; }

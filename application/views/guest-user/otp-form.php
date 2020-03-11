@@ -20,7 +20,7 @@ $btnFld->setFieldTagAttribute('class', 'btn--block');
         <div class="section-head">
             <div class="section__heading">
                 <h2 class="formTitle-js"><?php echo Labels::getLabel('LBL_ONE_TYPE_PASSWORD?', $siteLangId);?></h2>
-                <span class="form-text text-muted"><?php echo Labels::getLabel('LBL_ENTER_THE_OTP_YOU_RECEIVED_ON_YOUR_PHONE_NUMBER', $siteLangId);?></span>
+                <p><?php echo Labels::getLabel('LBL_ENTER_THE_OTP_YOU_RECEIVED_ON_YOUR_PHONE_NUMBER', $siteLangId);?></p>
             </div>
         </div>
         <div class="section-body">
@@ -40,8 +40,8 @@ $btnFld->setFieldTagAttribute('class', 'btn--block');
                                 </div>
                             <?php } ?>
                         </div>
-                        <span class="note mb-2">
-                            <a href="javaScript:void(0)" class="resendOtp-js d-none" onClick="resendOtp(<?php echo $userId; ?>, <?php echo applicationConstants::YES; ?>)">
+                        <div class="my-3">
+                            <a href="javaScript:void(0)" class="link resendOtp-js d-none" onClick="resendOtp(<?php echo $userId; ?>, <?php echo applicationConstants::YES; ?>)">
                                 <?php echo Labels::getLabel('LBL_RESEND_OTP?', $siteLangId); ?>
                             </a>
                             <small>
@@ -50,7 +50,7 @@ $btnFld->setFieldTagAttribute('class', 'btn--block');
                                     echo CommonHelper::replaceStringData($msg, ['{SECONDS}' => '<b><span class="intervalTimer-js">' . User::OTP_INTERVAL . '</span></b>']);
                                 ?>
                             </small>
-                        </span>
+                        </div>
                         <?php echo $frm->getFieldHtml('user_id'); ?>
                         <div class="row">
                             <div class="col">
