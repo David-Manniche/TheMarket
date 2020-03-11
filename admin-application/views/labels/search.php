@@ -43,9 +43,9 @@ foreach ($arr_listing as $sn => $row) {
                         'a',
                         array(
                         'href'=>'javascript:void(0)',
-                        'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),
+                        'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),
                         "onclick"=>"labelsForm('".$row['label_id']."', '".$row['label_type']."')"),
-                        "<i class='ion-edit icon'></i>",
+                        "<i class='far fa-edit icon'></i>",
                         true
                     );
                 }

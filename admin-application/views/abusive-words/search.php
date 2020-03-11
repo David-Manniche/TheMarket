@@ -38,8 +38,8 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'action':
                 if ($canEdit) {
-                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "abusiveKeywordForm(" . $row['abusive_id'] . ")"), "<i class='ion-edit icon'></i>", true);
-                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-icon', 'title' => Labels::getLabel('LBL_Delete', $adminLangId), "onclick" => "removeKeyword(" . $row['abusive_id'] . ")"), "<i class='ion-android-delete icon'></i>", true);
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "abusiveKeywordForm(" . $row['abusive_id'] . ")"), "<i class='far fa-edit icon'></i>", true);
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Delete', $adminLangId), "onclick" => "removeKeyword(" . $row['abusive_id'] . ")"), "<i class='fa fa-trash  icon'></i>", true);
                 }
                 break;
             default:

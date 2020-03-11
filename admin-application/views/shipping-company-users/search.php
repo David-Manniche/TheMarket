@@ -48,11 +48,11 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'action':
                 if ($canEdit) {
-                    $td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-icon','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"userForm(".$row['user_id'].")"), "<i class='ion-edit icon'></i>", true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"userForm(".$row['user_id'].")"), "<i class='far fa-edit icon'></i>", true);
 
-                    $td->appendElement('a', array('href'=>CommonHelper::generateUrl('ShippingCompanyUsers', 'Orders', array($row['user_id'])),'class'=>'btn btn-clean btn-icon','title'=>Labels::getLabel('LBL_Assigned_COD_Orders', $adminLangId)), "<i class='ion-cash icon'></i>", true);
+                    $td->appendElement('a', array('href'=>CommonHelper::generateUrl('ShippingCompanyUsers', 'Orders', array($row['user_id'])),'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Assigned_COD_Orders', $adminLangId)), "<i class='ion-cash icon'></i>", true);
 
-                    $td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-icon','title'=>Labels::getLabel('LBL_Transactions', $adminLangId),"onclick"=>"transactions(".$row['user_id'].")"), "<i class='ion-arrow-swap icon'></i>", true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Transactions', $adminLangId),"onclick"=>"transactions(".$row['user_id'].")"), "<i class='ion-arrow-swap icon'></i>", true);
                 }
                 break;
             default:

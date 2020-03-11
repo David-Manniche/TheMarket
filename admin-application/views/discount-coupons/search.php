@@ -80,11 +80,11 @@ foreach ($arr_listing as $sn=>$row){
 					}else{
 						$linkFuncName = 'addCouponLinkPlanForm';
 					}
-                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"addCouponFormNew(".$row['coupon_id'].")"),"<i class='ion-edit icon'></i>", true);
-                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Links',$adminLangId),"onclick"=>"$linkFuncName(".$row['coupon_id'].")"),"<i class='ion-link'></i>", true); 
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"addCouponFormNew(".$row['coupon_id'].")"),"<i class='far fa-edit icon'></i>", true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Links',$adminLangId),"onclick"=>"$linkFuncName(".$row['coupon_id'].")"),"<i class='ion-link'></i>", true); 
                 }   
                 if($canView){
-                    $td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_History',$adminLangId),"onclick"=>"couponHistory(".$row['coupon_id'].")"),"<i class='ion-ios-clock'></i>", true);
+                    $td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_History',$adminLangId),"onclick"=>"couponHistory(".$row['coupon_id'].")"),"<i class='ion-ios-clock'></i>", true);
                 }
             break;
 			default:

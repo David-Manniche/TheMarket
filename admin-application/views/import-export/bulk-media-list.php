@@ -46,8 +46,8 @@ foreach ($records as $sn => $row) {
                 break;
             case 'action':
                 if ($canEdit) {
-                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"removeDir('".base64_encode(AttachedFile::FILETYPE_BULK_IMAGES_PATH . $row['afile_physical_path'])."')"), "<i class='ion-android-delete icon'></i>", true);
-                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Download', $adminLangId),"onclick"=>"downloadPathsFile('".base64_encode($fullPath)."')"), "<i class='ion-android-download icon'></i>", true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"removeDir('".base64_encode(AttachedFile::FILETYPE_BULK_IMAGES_PATH . $row['afile_physical_path'])."')"), "<i class='fa fa-trash  icon'></i>", true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Download', $adminLangId),"onclick"=>"downloadPathsFile('".base64_encode($fullPath)."')"), "<i class='ion-android-download icon'></i>", true);
                 }
                 break;
             default:

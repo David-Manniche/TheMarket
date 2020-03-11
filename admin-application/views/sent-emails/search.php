@@ -32,7 +32,7 @@ foreach ($arr_listing as $sn=>$row){
 				$li = $ul->appendElement("li");
 				$li->appendElement('a', array('href'=>CommonHelper::generateUrl('SentEmails','view',
 				array($row['emailarchive_id'])), 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_View_Details',$adminLangId)),
-				'<i class="ion-eye icon"></i>',true);
+				'<i class="far fa-eye icon"></i>',true);
 			break;
 			default:
 				$td->appendElement('plaintext', array(), $row[$key], true);

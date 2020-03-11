@@ -79,13 +79,13 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'action':
                 if ($canEdit) {
-                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addCategoryForm(".$row['bpcategory_id'].")"), "<i class='ion-edit icon'></i>", true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addCategoryForm(".$row['bpcategory_id'].")"), "<i class='far fa-edit icon'></i>", true);
 
                     if ($row['child_count'] > 0) {
                         /* $li = $ul->appendElement("li");
                         $li->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Content_Block',$adminLangId),"onclick"=>"contentBlock(".$row['bpcategory_id'].")"),'<i class="ion-grid icon"></i>', true); */
                     }
-                    $td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-icon', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['bpcategory_id'].")"), "<i class='ion-android-delete icon'></i>", true);
+                    $td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['bpcategory_id'].")"), "<i class='fa fa-trash  icon'></i>", true);
                 }
                 break;
             default:

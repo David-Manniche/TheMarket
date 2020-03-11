@@ -46,7 +46,7 @@ foreach ($arr_listing as $sn=>$row){
 			case 'action':
 				$ul = $td->appendElement("ul",array("class"=>"actions"));
 				$li = $ul->appendElement("li");
-				$li->appendElement('a', array( 'href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_View_Report',$adminLangId),"onclick"=>"viewFeedback(".$row['qfeedback_id']."); return false;" ),	'<i class="ion-eye icon"></i>', true);
+				$li->appendElement('a', array( 'href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_View_Report',$adminLangId),"onclick"=>"viewFeedback(".$row['qfeedback_id']."); return false;" ),	'<i class="far fa-eye icon"></i>', true);
 			break;
 			default:
 				$td->appendElement('plaintext', array(), $row[$key], true);
