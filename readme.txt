@@ -156,6 +156,7 @@ Bugs:
     => 035206 - admin> settings> email template settings> cropper is not there
     => 034808 - All action button should listed above all listings in admin.
     => 035214 - Add review button should not be displayed on product detail page if that item is not bought by current logged in user.
+    => 035345 - If more than 1 page comments are posted on blog detail page then with load more button Login link is displaying with each result displayed after clicking it.
     
 New Features:
     => 71188 - Add setting for making brand field optional
