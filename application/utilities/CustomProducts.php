@@ -1434,7 +1434,9 @@ trait CustomProducts
             Message::addErrorMessage(Labels::getLabel('MSG_Please_Select_A_File', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-
+        
+        $aspectRatio = FatApp::getPostedData('ratio_type', FatUtility::VAR_INT, 0);
+        
         $fileHandlerObj = new AttachedFile();
         $fileHandlerObj->deleteFile($fileHandlerObj::FILETYPE_BRAND_LOGO, $brand_id, 0, 0, $lang_id);
 
@@ -1446,7 +1448,9 @@ trait CustomProducts
             $_FILES['cropped_image']['name'],
             -1,
             $unique_record = false,
-            $lang_id
+            $lang_id,
+            0,
+            $aspectRatio
         )
         ) {
             Message::addErrorMessage($fileHandlerObj->getError());

@@ -502,16 +502,19 @@ $(document).on('change', '.collection-language-js', function() {
             var langId = document.frmShopLogo.lang_id.value;
             var fileType = document.frmShopLogo.file_type.value;
             var imageType = 'logo';
+            var ratio_type = $('input[name="ratio_type"]:checked').val();
         } else {
             var langId = document.frmShopBanner.lang_id.value;
             var slideScreen = document.frmShopBanner.slide_screen.value;
             var fileType = document.frmShopBanner.file_type.value;
             var imageType = 'banner';
+            var ratio_type = 0;
         }
 
         formData.append('slide_screen', slideScreen);
         formData.append('lang_id', langId);
         formData.append('file_type', fileType);
+        formData.append('ratio_type', ratio_type);
         $.ajax({
             url: fcom.makeUrl('Seller', 'uploadShopImages'),
             type: 'post',

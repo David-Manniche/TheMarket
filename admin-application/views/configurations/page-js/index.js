@@ -278,9 +278,12 @@ $(document).ready(function() {
 	uploadConfImages = function(formData){
         var langId = document.frmConfiguration.lang_id.value;
         var formType = document.frmConfiguration.form_type.value;
+        var fldName = "ratio_type_"+formData.get('file_type');
+        var ratio_type = $('input[name="'+fldName+'"]:checked').val();
 
         formData.append('lang_id', langId);
         formData.append('form_type', formType);
+        formData.append('ratio_type', ratio_type);
         $.ajax({
             url: fcom.makeUrl('Configurations', 'uploadMedia'),
             type: 'post',

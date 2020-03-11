@@ -237,18 +237,21 @@ $(document).on('change','.prefDimensions-js',function(){
             var langId = document.frmBrandLogo.lang_id.value;
             var fileType = document.frmBrandLogo.file_type.value;
             var imageType = 'logo';
+            var ratio_type = $('input[name="ratio_type"]:checked').val();
         } else {
 			var brandId = document.frmBrandImage.brand_id.value;
             var langId = document.frmBrandImage.lang_id.value;
             var slideScreen = document.frmBrandImage.slide_screen.value;
             var fileType = document.frmBrandImage.file_type.value;
             var imageType = 'banner';
+            var ratio_type = 0;
         }
 
 		formData.append('brand_id', brandId);
         formData.append('slide_screen', slideScreen);
         formData.append('lang_id', langId);
         formData.append('file_type', fileType);
+        formData.append('ratio_type', ratio_type);
         $.ajax({
             url: fcom.makeUrl('Brands', 'uploadMedia'),
             type: 'post',

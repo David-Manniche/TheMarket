@@ -3,7 +3,15 @@
 	<header id="header" class="no-print">
         <div class="headerwrap">
             <div class="one_third_grid"><a href="javascript:void(0);" class="menutrigger"><span></span></a></div>
-            <div class="one_third_grid logo"><a href="<?php echo CommonHelper::generateUrl('home'); ?>"><img src="<?php echo CommonHelper::generateUrl('Image','siteAdminLogo', array( $adminLangId )); ?>" alt=""></a></div>
+            <div class="one_third_grid logo">
+                <?php
+                $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_ADMIN_LOGO, 0, 0, $adminLangId, false);
+                $aspectRatioArr = AttachedFile::getRatioTypeArray($adminLangId);
+                ?>
+                <a href="<?php echo CommonHelper::generateUrl('home'); ?>">
+                    <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo CommonHelper::generateUrl('Image','siteAdminLogo', array( $adminLangId )); ?>" alt="">
+                </a>
+            </div>
             <div class="one_third_grid">
                 <ul class="iconmenus">
                     <li class="viewstore">
