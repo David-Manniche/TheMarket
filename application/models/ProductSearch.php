@@ -670,7 +670,7 @@ class ProductSearch extends SearchBase
     public function addBrandCondition($brand)
     {
         //@todo enhancements
-        if (FatApp::getConfig('CONF_PRODUCT_BRAND_MANDATORY', FatUtility::VAR_INT, 0) == 1) {
+        if (FatApp::getConfig('CONF_PRODUCT_BRAND_MANDATORY', FatUtility::VAR_INT, 1) == 1) {
             if (is_numeric($brand)) {
                 $brandId = FatUtility::int($brand);
                 $this->addCondition('brand_id', '=', $brandId);

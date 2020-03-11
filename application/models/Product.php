@@ -99,7 +99,6 @@ class Product extends MyAppModel
         $arr = array(
         ImportexportCommon::VALIDATE_POSITIVE_INT => array(
         'product_id',
-        'product_brand_id',
         'category_Id',
         'tax_category_id',
         'product_min_selling_price',
@@ -109,7 +108,6 @@ class Product extends MyAppModel
         'product_identifier',
         'credential_username',
         'category_indentifier',
-        'brand_identifier',
         'product_type_identifier',
         'tax_category_identifier'
         ),
@@ -119,6 +117,11 @@ class Product extends MyAppModel
         'product_ship_free',
         ),
         );
+
+        if (FatApp::getConfig('CONF_PRODUCT_BRAND_MANDATORY', FatUtility::VAR_INT, 1)) {
+            $arr[ImportexportCommon::VALIDATE_POSITIVE_INT][] = 'product_brand_id';
+            $arr[ImportexportCommon::VALIDATE_NOT_NULL][] = 'brand_identifier';
+        }
 
         if (FatApp::getConfig('CONF_PRODUCT_DIMENSIONS_ENABLE', FatUtility::VAR_INT, 0) && $prodType == PRODUCT::PRODUCT_TYPE_PHYSICAL) {
             $physical = array(
@@ -1299,7 +1302,7 @@ class Product extends MyAppModel
         }
 
         //$srch->setDefinedCriteria($join_price, 0, $criteria, true);
-        $srch->joinForPrice('', $criteria, true);   
+        $srch->joinForPrice('', $criteria, true);
         $srch->unsetDefaultLangForJoins();
         $srch->joinSellers();
         $srch->joinShops($langId, true, true, $shop_id);

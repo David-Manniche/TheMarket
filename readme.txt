@@ -169,3 +169,4 @@ New Features:
 ===================TV-9.1.3.20200306==================
 Bug : 
     => 035273 - Display un-branded filter option when brand is not mandatory.
+    => 035315 - Brand mandatory for import/export based on settings.
