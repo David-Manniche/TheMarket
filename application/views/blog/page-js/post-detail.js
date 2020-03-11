@@ -84,9 +84,12 @@ $(document).on('click',".link--post-comment-form",function(){
 				$(dv).append(ans.html);
 			} else {
 				$(dv).html(ans.html);
-			}
-
-			$("#loadMoreCommentsBtnDiv").html( ans.loadMoreBtnHtml );
+            }
+            
+            $("#loadMoreCommentsBtnDiv").html( ans.loadMoreBtnHtml );
+            if (1 < $(".commentBox-js").length) {
+                $(".commentBox-js:not(:last)").remove();
+            }
 		});
 	};
 

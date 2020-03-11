@@ -4,6 +4,12 @@ trait Options
 {
     public function options()
     {
+        $canRequest = FatApp::getConfig('CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0);
+        $canRequestCustomProd = FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0);
+        if (1 > $canRequest || 1 > $canRequestCustomProd) {
+            FatApp::redirectUser(CommonHelper::generateUrl('Seller'));
+        }
+        
         $frmSearch = $this->getSearchForm();
         $this->set("frmSearch", $frmSearch);
         $this->_template->addJs('js/jscolor.js');
