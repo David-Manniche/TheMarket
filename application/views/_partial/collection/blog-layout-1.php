@@ -21,7 +21,7 @@ if (isset($collections) && count($collections)) {
                             <div class="col-md-4 mb-4 mb-md-0">
                                 <div class="post">
                                     <div class="post_media">
-                                        <a href="#" class="animate-scale">
+                                        <a href="<?php echo CommonHelper::generateUrl('Blog', 'postDetail', array($blog['post_id'])); ?>" class="animate-scale">
                                             <picture>
                                                 <img data-ratio="16:9"
                                                 src="<?php echo CommonHelper::generateFullUrl('Image', 'blogPostFront', array($blog['post_id'], $siteLangId, 'FEATURED')); ?>"
