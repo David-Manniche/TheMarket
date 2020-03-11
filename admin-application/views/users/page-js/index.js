@@ -379,7 +379,6 @@ $(document).ready(function() {
     };
 
     getCountryStates = function(countryId, stateId, dv) {
-        alert(stateId);
         fcom.displayProcessing();
         fcom.ajax(fcom.makeUrl('Users', 'getStates', [countryId, stateId]), '', function(res) {
             $(dv).empty();
