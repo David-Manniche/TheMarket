@@ -140,8 +140,14 @@ Bugs:
     => 035093 - Getting multiple otp fields by clicking get otp button continuesly.
 
 ===================TV-9.1.3.20200303==================
-
-Bugs:
+Bug: 
+    => 034874 - first time discount coupon validation updates 
+    => 035172 - When search with %%% keyword and use filters.
+    => 035212 - Special character handling in export csv file.
+    => 034773 -  Restrict keyword search up to 80 character.
+    => 034493 - Price range slider added check to validate min/max price.
+    => 034259 - After applying filter> reset button is not listing until we refresh page manually.
+    => 035105 - Wrong import instructions heading
     => 035105 - Wrong import instructions heading
     => 035102 - Select row(checkbox) should not be displayed if readonly permission allowed to sub admin for any page in backend.
     => 035033 - If product available date is of future then no need to display select option(checkbox) in wishlist.
@@ -164,3 +170,8 @@ Bugs:
 
 New Features:
     => 71188 - Add setting for making brand field optional
+
+===================TV-9.1.3.20200306==================
+Bug : 
+    => 035273 - Display un-branded filter option when brand is not mandatory.
+    => 035315 - Brand mandatory for import/export based on settings.

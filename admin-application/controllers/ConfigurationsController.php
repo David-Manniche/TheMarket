@@ -1409,12 +1409,26 @@ class ConfigurationsController extends AdminBaseController
                 );
 
                 $percentageFlatArr = applicationConstants::getPercentageFlatArr($this->adminLangId);
-                $frm->addSelectBox(Labels::getLabel("LBL_Discount_in", $this->adminLangId), 'CONF_FIRST_TIME_BUYER_COUPON_IN_PERCENT', $percentageFlatArr, '', array(), '');
-                $percentageFlatArr = applicationConstants::getPercentageFlatArr($this->adminLangId);
-                $frm->addTextBox(Labels::getLabel("LBL_Discount_value", $this->adminLangId), 'CONF_FIRST_TIME_BUYER_COUPON_DISCOUNT_VALUE');
-
+                $disType = $frm->addSelectBox(Labels::getLabel("LBL_Discount_in", $this->adminLangId), 'CONF_FIRST_TIME_BUYER_COUPON_IN_PERCENT', $percentageFlatArr, '', array(), '');
+                
+                $fld =  $frm->addTextBox(Labels::getLabel("LBL_Discount_value", $this->adminLangId), 'CONF_FIRST_TIME_BUYER_COUPON_DISCOUNT_VALUE');
+                $fld->requirements()->setPositive();
+                
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Minimum_order_value", $this->adminLangId), 'CONF_FIRST_TIME_BUYER_COUPON_MIN_ORDER_VALUE');
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_Minimum_order_value_on_which_the_coupon_can_be_applied.", $this->adminLangId) . "</small>";
+                $fld->requirements()->setPositive();
+                               
+                /* $disValueUnReqObj = new FormFieldRequirement('CONF_FIRST_TIME_BUYER_COUPON_DISCOUNT_VALUE', Labels::getLabel("LBL_Discount_value", $this->adminLangId));
+                $disValueUnReqObj->setRequired(true);
+
+                $disValueReqObj = new FormFieldRequirement('CONF_FIRST_TIME_BUYER_COUPON_DISCOUNT_VALUE', Labels::getLabel("LBL_Discount_value", $this->adminLangId));
+                $disValueReqObj->setRequired(true);
+                $disValueReqObj->setCompareWith('CONF_FIRST_TIME_BUYER_COUPON_MIN_ORDER_VALUE', 'lt', Labels::getLabel("LBL_Minimum_order_value", $this->adminLangId));
+                $disValueReqObj->setCustomErrorMessage(Labels::getLabel("LBL_Discount_value_must_be_less_then_min_order_value", $this->adminLangId));
+
+                $disType->requirements()->addOnChangerequirementUpdate(applicationConstants::FLAT, 'eq', 'CONF_FIRST_TIME_BUYER_COUPON_IN_PERCENT', $disValueReqObj);
+                $disType->requirements()->addOnChangerequirementUpdate(applicationConstants::FLAT, 'ne', 'CONF_FIRST_TIME_BUYER_COUPON_IN_PERCENT', $disValueUnReqObj); */
+              
 
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Max_Discount_Value", $this->adminLangId), 'CONF_FIRST_TIME_BUYER_COUPON_MAX_DISCOUNT_VALUE');
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_Max_discount_value_user_can_get_by_using_this_coupon.", $this->adminLangId) . "</small>";

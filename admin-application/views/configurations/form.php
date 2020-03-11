@@ -52,8 +52,8 @@ switch ($frmType) {
         break;    
 
     case Configurations::FORM_DISCOUNT:
-        $discountValue = $frm->getField('CONF_FIRST_TIME_BUYER_COUPON_DISCOUNT_VALUE');
-        $discountValue->requirements()->setRange(0, $record['CONF_FIRST_TIME_BUYER_COUPON_MIN_ORDER_VALUE']);
+        /* $discountValue = $frm->getField('CONF_FIRST_TIME_BUYER_COUPON_DISCOUNT_VALUE');
+        $discountValue->requirements()->setRange(0, $record['CONF_FIRST_TIME_BUYER_COUPON_MIN_ORDER_VALUE']); */
         break;
 }
 

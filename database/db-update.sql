@@ -969,6 +969,7 @@ INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `et
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_Sign_In_to_your_account';
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_Create_Your_Account_For_Sign_Up';
+-- TV-9.1.3.20200306-----------------------------
 
 ALTER TABLE `tbl_attached_files` ADD `afile_aspect_ratio` INT(11) NOT NULL AFTER `afile_name`;
 
