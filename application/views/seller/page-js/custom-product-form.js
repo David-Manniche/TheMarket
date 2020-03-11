@@ -1020,8 +1020,10 @@
     uploadBrandLogo = function(formData){
 		var brandId = document.frmBrandMedia.brand_id.value;
 		var langId = document.frmBrandMedia.brand_lang_id.value;
+        var ratio_type = $('input[name="ratio_type"]:checked').val();
         formData.append('brand_id', brandId);
         formData.append('lang_id', langId);
+        formData.append('ratio_type', ratio_type);
         $.ajax({
             url: fcom.makeUrl('Seller', 'uploadLogo'),
             type: 'post',

@@ -15,6 +15,8 @@ $edFld->developerTags['col'] = 12;
 
 $ratioFld = $settingFrm->getField('CONF_EMAIL_TEMPLATE_LOGO_RATIO');
 $ratioFld->addFieldTagAttribute('class', 'prefRatio-js');
+$ratioFld->addOptionListTagAttribute('class', 'list-inline');
+
 $fld = $settingFrm->getField('email_logo');
 $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
 $fld->addFieldTagAttribute('onChange', 'popupImage(this)');

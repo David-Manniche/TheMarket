@@ -142,7 +142,9 @@ $(document).ready(function() {
 
 	uploadImages = function(formData){
         var pmethod_id = document.frmGateway.pmethod_id.value;
+        var ratio_type = $('input[name="ratio_type"]:checked').val(); 
         formData.append('pmethod_id', pmethod_id);
+        formData.append('ratio_type', ratio_type);
         $.ajax({
             url: fcom.makeUrl('PaymentMethods', 'uploadIcon',[pmethod_id]),
             type: 'post',
