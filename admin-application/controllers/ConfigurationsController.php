@@ -1629,7 +1629,7 @@ class ConfigurationsController extends AdminBaseController
                 }
                 $ul->htmlAfterField .='</ul>';
                 
-                $ul->htmlAfterField .= '<input type="file" onChange="popupImage(this)" name="admin_logo" id="admin_logo" data-min_width = "142" data-min_height = "45" data-file_type=' . AttachedFile::FILETYPE_ADMIN_LOGO . ' value="Upload file"><small>Dimensions 142*45</small></li>';
+                $ul->htmlAfterField .= '<input type="file" onChange="popupImage(this)" name="admin_logo" id="admin_logo" data-min_width = "150" data-min_height = "150" data-file_type=' . AttachedFile::FILETYPE_ADMIN_LOGO . ' value="Upload file"></li>';
 
                 $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_Desktop_Logo', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
 
@@ -1650,7 +1650,7 @@ class ConfigurationsController extends AdminBaseController
                 }
                 $ul->htmlAfterField .='</ul>';
                 
-                $ul->htmlAfterField .= '<input onchange="popupImage(this)" data-frm="frmShopLogo" data-min_height="45" data-min_width="142" data-file_type='.AttachedFile::FILETYPE_FRONT_LOGO.' title="Upload" type="file" name="front_logo" value=""><small>Dimensions 168*37</small></li>';
+                $ul->htmlAfterField .= '<input onchange="popupImage(this)" data-frm="frmShopLogo" data-min_height="150" data-min_width="150" data-file_type='.AttachedFile::FILETYPE_FRONT_LOGO.' title="Upload" type="file" name="front_logo" value=""></li>';
                 
                 /*$frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'front_logo', array('accept' => 'image/*', 'onChange' => 'popupImage(this)', 'data-frm' => 'frmShopLogo', 'data-min_height' => '45', 'data-min_width' => '142', 'data-file_type' => AttachedFile::FILETYPE_FRONT_LOGO));*/
 
@@ -1702,7 +1702,7 @@ class ConfigurationsController extends AdminBaseController
                 }
                 $ul->htmlAfterField .='</ul>';
                 
-                $ul->htmlAfterField .='<input type="file" onChange="popupImage(this)" name="payment_page_logo" id="payment_page_logo" data-min_width = "168" data-min_height = "37" data-file_type=' . AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO . ' value="Upload file"><small>Dimensions 168*37</small></li>';
+                $ul->htmlAfterField .='<input type="file" onChange="popupImage(this)" name="payment_page_logo" id="payment_page_logo" data-min_width = "150" data-min_height = "150" data-file_type=' . AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO . ' value="Upload file"></li>';
 
                 $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_Watermark_Image', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
 
@@ -1768,7 +1768,7 @@ class ConfigurationsController extends AdminBaseController
                 }
                 $ul->htmlAfterField .='</ul>';
                 
-                $ul->htmlAfterField .='<input type="file" onChange="popupImage(this)" name="invoice_logo" id="invoice_logo" data-min_width = "168" data-min_height = "37" data-file_type=' . AttachedFile::FILETYPE_INVOICE_LOGO . ' value="Upload file"><small>Dimensions 168*37</small></li>';
+                $ul->htmlAfterField .='<input type="file" onChange="popupImage(this)" name="invoice_logo" id="invoice_logo" data-min_width = "150" data-min_height = "150" data-file_type=' . AttachedFile::FILETYPE_INVOICE_LOGO . ' value="Upload file"></li>';
                 
                 $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_First_Purchase_Discount_Image', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
 
