@@ -10,6 +10,9 @@ class Cart extends FatModel
     public const CART_KEY_PREFIX_BATCH = 'SB_'; /* SB stands for Seller Batch/Combo Product */
     public const TYPE_PRODUCT = 1;
     public const TYPE_SUBSCRIPTION = 2;
+
+    public const CART_MAX_DISPLAY_QTY = 9;
+
     public function __construct($user_id = 0, $langId = 0, $tempCartUserId = 0)
     {
         parent::__construct();

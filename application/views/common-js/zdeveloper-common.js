@@ -1466,6 +1466,9 @@ $("document").ready(function () {
             if ($btn.hasClass("quickView") == true) {
                 $(document).trigger('close.facebox');
             }
+			if (9 < ans.total) {
+				ans.total = '9+';
+			}
             $('span.cartQuantity').html(ans.total);
             $('#cartSummary').load(fcom.makeUrl('cart', 'getCartSummary'));
         });
