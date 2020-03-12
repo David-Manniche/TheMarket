@@ -183,3 +183,4 @@ Bug :
 Bug : 
     => #035283 - for non branded product- if return request is raised then getting blank for brand
     => #035276 - if product is not binded with brand then in emails (order)> getting blank in front of brand 
+    => #035335 - admin> order detail page> back button is in toggle instead of direct button as in system
