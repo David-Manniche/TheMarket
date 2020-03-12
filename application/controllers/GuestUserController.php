@@ -710,12 +710,13 @@ class GuestUserController extends MyAppController
         $token = UserAuthentication::encryptPassword(FatUtility::getRandomString(20));
         $row['token'] = $token;
         
-        $userAuthObj->deleteOldPasswordResetRequest();
+        $recordId = 0 < $withPhone ? $row['user_id'] : 0;
+        $userAuthObj->deleteOldPasswordResetRequest($recordId);
         
         $db = FatApp::getDb();
         $db->startTransaction();
         // commonHelper::printArray($row); die;
-        if (1 > $withPhone && !$userAuthObj->addPasswordResetRequest($row)) {
+        if (!$userAuthObj->addPasswordResetRequest($row)) {
             $db->rollbackTransaction();
             $message = Labels::getLabel($userAuthObj->getError(), $this->siteLangId);
             if (true === MOBILE_APP_API_CALL || FatUtility::isAjaxCall()) {
