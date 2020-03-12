@@ -603,7 +603,7 @@ class CustomProductsController extends AdminBaseController
             
             $prodSepc = [
                 'ps_product_id' => $product_id,
-                'product_warranty' => $data['product_warranty']
+                'product_warranty' => isset($data['product_warranty']) ? $data['product_warranty'] : 0
             ];
 
             $productSpecificsObj = new ProductSpecifics($product_id);
@@ -893,7 +893,7 @@ class CustomProductsController extends AdminBaseController
             }
 
             if (!empty($prodSpecData)) {
-                foreach ($prodSpecData['prod_spec_name'][CommonHelper::getLangId()] as $specKey => $specval) {
+                /*foreach ($prodSpecData['prod_spec_name'][CommonHelper::getLangId()] as $specKey => $specval) {
                     $prodSpecObj = new ProdSpecification(0);
                     $languages = Language::getAllNames();
                     foreach ($languages as $langId => $langName) {
@@ -915,7 +915,19 @@ class CustomProductsController extends AdminBaseController
                             FatUtility::dieWithError(Message::getHtml());
                         }
                     }
-                }
+                } */
+                $languages = Language::getAllNames();
+                foreach ($languages as $langId => $langName) {
+                    if(!empty($prodSpecData['prod_spec_name'][$langId])){
+                        foreach ($prodSpecData['prod_spec_name'][$langId] as $specKey => $specval) {
+                            $prod = new Product($product_id);
+                            if (!$prod->saveProductSpecifications(0, $langId, $prodSpecData['prod_spec_name'][$langId][$specKey], $prodSpecData['prod_spec_value'][$langId][$specKey], $prodSpecData['prod_spec_group'][$langId][$specKey])) {
+                                Message::addErrorMessage($prod->getError());
+                                FatUtility::dieWithError(Message::getHtml());
+                            }  
+                        }  
+                    }
+                }                  
             }
             /*]*/
         }
