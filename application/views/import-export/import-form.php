@@ -2,7 +2,7 @@
 $frm->setFormTagAttribute('class', 'form form--horizontal');
 $frm->developerTags['colClassPrefix'] = 'col-lg-6 col-md-';
 $frm->developerTags['fld_default_col'] = 6;
-$frm->setFormTagAttribute('onSubmit', 'importFile("importData",'.$actionType.'); return false;');
+$frm->setFormTagAttribute('onSubmit', 'importFile("importData",' . $actionType . '); return false;');
 ?>
 <div class="tabs tabs-sm tabs--scroll clearfix">
     <ul>
