@@ -188,3 +188,4 @@ Bug :
     => 035343 - Enable facebook and google from configuration settings options removed as they moved to plugin module.
     => 035344 - Extra Social login keys which are not being used anymore are removed.
     => 035342 - admin> email settings> on updating email logo it's not reflecting instantly
+    => 035291 - admin> request catalog> shipped to country "rate" field displaying only character while amount is in two digits
