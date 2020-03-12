@@ -1116,3 +1116,5 @@ INSERT INTO `tbl_sms_templates` (`stpl_code`, `stpl_lang_id`, `stpl_name`, `stpl
 ('admin_notification_abusive_review_posted', 1, 'Product Review Reported', 'Hello Admin,\r\n{user_full_name} has posted an abusive review at {SITE_NAME}.\r\n{SITE_URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Site Url", "variable":"{SITE_URL}"}]', 1); 
 
 -- ---------------------TV-9.1.3.20200312--------------------
+
+DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_ENABLE_GOOGLE_LOGIN' OR `conf_name` = 'CONF_ENABLE_FACEBOOK_LOGIN';
