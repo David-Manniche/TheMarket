@@ -31,6 +31,7 @@
             t = $.parseJSON(t);
             if(1 > t.status){
                 $.systemMessage(t.msg,'alert--danger', false);
+                googleCaptcha();
                 return false;
             }
             $.systemMessage.close();
