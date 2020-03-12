@@ -334,7 +334,7 @@
 
 .filter-content {
     margin: 0;
-    overflow: hidden;
+     
     -webkit-transition: height 0.3s ease 0s;
     transition: height 0.3s ease 0s;
 }
@@ -384,7 +384,8 @@
 }
 
 .prices {
-    padding-bottom: 10px;
+    padding-bottom: 60px;
+	font-size:0.8rem;
 }
 
 .slide__fields {
