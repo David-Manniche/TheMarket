@@ -175,3 +175,7 @@ New Features:
 Bug : 
     => 035273 - Display un-branded filter option when brand is not mandatory.
     => 035315 - Brand mandatory for import/export based on settings.
+    
+    
+Bug : 
+    => #035283 - for non branded product- if return request is raised then getting blank for brand

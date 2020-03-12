@@ -40,9 +40,14 @@ foreach ($requests as $sn => $row) {
                     $txt .= '<div class="item__title">'.$row['op_selprod_title'].'</div>';
                 }
                 $txt .= '<div class="item__sub_title">'.$row['op_product_name'].'</div>';
-                $txt .= '<div class="item__brand">'.Labels::getLabel('LBL_Brand', $siteLangId).': '.$row['op_brand_name'];
+                if(!empty($row['op_brand_name'])){
+                    $txt .= '<div class="item__brand">'.Labels::getLabel('LBL_Brand', $siteLangId).': '.$row['op_brand_name'];
+                }
+                if( !empty($row['op_brand_name']) && !empty($row['op_selprod_options']) ){
+                    $txt .= ' | ' ;
+                }
                 if ($row['op_selprod_options'] != '') {
-                    $txt .= ' | ' . $row['op_selprod_options'];
+                    $txt .= $row['op_selprod_options'];
                 }
                 $txt .='</div>';
                 if ($row['op_selprod_sku'] != '') {
