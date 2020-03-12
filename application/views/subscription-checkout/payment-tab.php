@@ -31,6 +31,6 @@ $secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRIN
 if (!empty($siteKey) && !empty($secretKey) && 'cashondelivery' == strtolower($paymentMethod['pmethod_code'])) {?>
     <script src='https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>'></script>
     <script>
-		googleCaptcha('<?php echo $siteKey; ?>');
+        googleCaptcha();
     </script>
 <?php } ?>
