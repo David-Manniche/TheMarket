@@ -84,6 +84,7 @@ if (!empty($data) && 0 < count($data)) {
                 </div>
             </div>
         </form>
+        <?php echo $frm->getExternalJs(); ?>
     </div>
 </div>
 <div class="divider"></div>
