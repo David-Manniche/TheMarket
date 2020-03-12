@@ -60,7 +60,11 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
 
         $str .= '<tr>
             <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">
-            <a href="'.$prodOrBatchUrl.'" style="font-size:13px; color:#333;">'.$val["op_product_name"].'</a><br/>'.Labels::getLabel('Lbl_Brand', $siteLangId).':'.$val["op_brand_name"].'<br/>'.Labels::getLabel('Lbl_Sold_By', $siteLangId).':'.$val["op_shop_name"].'<br/>'.$options.'
+            <a href="'.$prodOrBatchUrl.'" style="font-size:13px; color:#333;">'.$val["op_product_name"].'</a>';
+            if(!empty($val["op_brand_name"])){
+                $str .='<br/>'.Labels::getLabel('Lbl_Brand', $siteLangId).':'.$val["op_brand_name"];
+            }
+            $str .='<br/>'.Labels::getLabel('Lbl_Sold_By', $siteLangId).':'.$val["op_shop_name"].'<br/>'.$options.'
             </td>
             <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">'.$val['op_qty'].'</td>
             <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($val["op_unit_price"]).'</td>
