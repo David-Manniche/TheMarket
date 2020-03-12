@@ -47,7 +47,7 @@
                         <!--<a href="javascript:void(0)" class="themebtn btn-default btn-sm" onClick="importForm(<?php echo Importexport::TYPE_OPTION_VALUES; ?>)";><?php echo Labels::getLabel('LBL_Import_Option_Value', $adminLangId); ?></a>-->
                         <?php } */
                         if ($canEdit) {
-                            $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
+                            /*$ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
                             $li = $ul->appendElement("li", array('class'=>'droplink'));
                             $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
                                 $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
@@ -58,7 +58,27 @@
                             
                             $innerLiAddCat=$innerUl->appendElement('li');
                             $innerLiAddCat->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Add_New_Option', $adminLangId),"onclick"=>"addOptionFormNew(0)"), Labels::getLabel('LBL_Add_New_Option', $adminLangId), true);
-                            echo $ul->getHtml(); 
+                            echo $ul->getHtml(); */
+                            
+                            $data = [
+                                'adminLangId' => $adminLangId,
+                                'statusButtons' => false,
+                                'deleteButton' => true,
+                                'otherButtons' => [
+                                    [
+                                        'attr' => [
+                                            'href' => 'javascript:void(0)',
+                                            'onclick' => 'addOptionFormNew(0)',
+                                            'title' => Labels::getLabel('LBL_Add_New_Option', $adminLangId)
+                                        ],
+                                        'label' => '<i class="fas fa-plus"></i>'
+                                    ],
+                                ]
+                            ];
+        
+                            $this->includeTemplate('_partial/action-buttons.php', $data, false);
+                            
+                            
                         } ?>
                     </div>
                     <div class="sectionbody">

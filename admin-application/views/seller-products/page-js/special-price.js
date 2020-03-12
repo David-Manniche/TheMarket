@@ -155,6 +155,7 @@ $(document).on('blur', ".js--splPriceCol:not(.date_js)", function(){
         });
 	};
     updateSpecialPriceRow = function(frm, selProd_id){
+        if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('SellerProducts', 'updateSpecialPriceRow'), data, function(t) {
             if(t.status == true){
