@@ -186,3 +186,4 @@ Bug :
     => #035335 - admin> order detail page> back button is in toggle instead of direct button as in system
     => #035329 - admin> options> toggle is still there instead of publish/unpublish button 
     => #035294 - admin>special price> on selecting name and amount it adds product with default dates
+    => #035342 - admin> email settings> on updating email logo it's not reflecting instantly
