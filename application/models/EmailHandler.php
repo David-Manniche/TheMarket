@@ -591,7 +591,7 @@ class EmailHandler extends FatModel
         '{user_full_name}' => $d['user_name'],
         '{request_comments}' => $catalogRequestComments,
         '{new_request_status}' => $statusArr[$d['preq_status']],
-        '{prod_title}' => isset($d['preq_content']) ? (json_decode($d['preq_content']))['product_identifier'] : '',
+        '{prod_title}' => isset($d['preq_content']) ? (json_decode($d['preq_content'], true))['product_identifier'] : '',
         );
 
         if (!self::sendMailTpl($d['credential_email'], $tpl, $langId, $vars)) {

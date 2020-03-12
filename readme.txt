@@ -188,3 +188,4 @@ Bug :
     => 035343 - Enable facebook and google from configuration settings options removed as they moved to plugin module.
     => 035344 - Extra Social login keys which are not being used anymore are removed.
     => 035355 - Country code and Phoner number are overlapping in phone number field having country code as dropdown.
+    => 035342 - admin> email settings> on updating email logo it's not reflecting instantly
