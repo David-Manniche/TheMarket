@@ -177,3 +177,8 @@ Bug :
     => 035315 - Brand mandatory for import/export based on settings.
     => 035200 - Bulk media option shouldn't be there when seller is not allowed to add product or request catalog and Export Seller products media not required.
 ===================TV-9.1.3.20200312==================
+
+    
+    
+Bug : 
+    => #035283 - for non branded product- if return request is raised then getting blank for brand

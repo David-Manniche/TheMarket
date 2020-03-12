@@ -87,7 +87,9 @@
                                         <?php } else { ?>
                                         <div class="item__title" title="<?php echo $request['op_product_name']; ?>"><?php echo $request['op_product_name']; ?></div>
                                         <?php } ?>
+                                    <?php if(!empty($request['op_brand_name'])) {?>
                                     <div class="item__brand"><?php echo Labels::getLabel('LBL_Brand', $siteLangId); ?>: <?php echo $request['op_brand_name']; ?></div>
+                                    <?php } ?>
                                     <?php
                                     if ($request['op_selprod_options'] != '') { ?>
                                         <div class="item__specification"><?php echo $request['op_selprod_options']; ?></div>
