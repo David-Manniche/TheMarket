@@ -1114,3 +1114,5 @@ INSERT INTO `tbl_sms_templates` (`stpl_code`, `stpl_lang_id`, `stpl_name`, `stpl
 ('new_subscription_purchase_admin', 1, 'Subscription Package Purchased', 'Hello Admin,\r\nNew subscription package purchased by {user_full_name} for an amount {amount} with Order ID {invoice_number}\r\n\r\n{SITE_NAME} Team', '[{"title":"Full Name", "variable":"{user_full_name}"},{"title":"Amount", "variable":"{amount}"},{"title":"Order Id", "variable":"{invoice_number}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
 
 ('admin_notification_abusive_review_posted', 1, 'Product Review Reported', 'Hello Admin,\r\n{user_full_name} has posted an abusive review at {SITE_NAME}.\r\n{SITE_URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Site Url", "variable":"{SITE_URL}"}]', 1); 
+
+-- ---------------------TV-9.1.3.20200312--------------------
