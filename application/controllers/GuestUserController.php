@@ -698,7 +698,7 @@ class GuestUserController extends MyAppController
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'forgotPasswordForm'));
         }
 
-        if ($userAuthObj->checkUserPwdResetRequest($row['user_id'])) {
+        if (1 > $withPhone && $userAuthObj->checkUserPwdResetRequest($row['user_id'])) {
             $message = Labels::getLabel($userAuthObj->getError(), $this->siteLangId);
             if (true === MOBILE_APP_API_CALL || FatUtility::isAjaxCall()) {
                 FatUtility::dieJsonError($message);
@@ -709,13 +709,13 @@ class GuestUserController extends MyAppController
 
         $token = UserAuthentication::encryptPassword(FatUtility::getRandomString(20));
         $row['token'] = $token;
-
+        
         $userAuthObj->deleteOldPasswordResetRequest();
-
+        
         $db = FatApp::getDb();
         $db->startTransaction();
         // commonHelper::printArray($row); die;
-        if (!$userAuthObj->addPasswordResetRequest($row)) {
+        if (1 > $withPhone && !$userAuthObj->addPasswordResetRequest($row)) {
             $db->rollbackTransaction();
             $message = Labels::getLabel($userAuthObj->getError(), $this->siteLangId);
             if (true === MOBILE_APP_API_CALL || FatUtility::isAjaxCall()) {

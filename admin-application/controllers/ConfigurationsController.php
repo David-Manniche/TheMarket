@@ -787,26 +787,6 @@ class ConfigurationsController extends AdminBaseController
                 );
                 $fld11->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_On_enabling_this_feature,_buyers_will_be_able_to_see_Seller_tab", $this->adminLangId) . "</small>";
 
-                $fld11 = $frm->addCheckBox(
-                    Labels::getLabel("LBL_Enable_facebook_Login", $this->adminLangId),
-                    'CONF_ENABLE_FACEBOOK_LOGIN',
-                    1,
-                    array(),
-                    false,
-                    0
-                );
-                $fld11->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_On_enabling_this_feature,users_will_be_able_to_login_using_facebook_account._Please_define_settings_for_facebook_login_if_enabled_under_\"Third_Party_APIs\"_Tab", $this->adminLangId) . "</small>";
-
-                $fld11 = $frm->addCheckBox(
-                    Labels::getLabel("LBL_GOOGLE_LOGIN", $this->adminLangId),
-                    'CONF_ENABLE_GOOGLE_LOGIN',
-                    1,
-                    array(),
-                    false,
-                    0
-                );
-                $fld11->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_On_enabling_this_feature,users_will_be_able_to_login_using_google_account._Please_define_settings_for_google_plus_login_if_enabled_under_\"Third_Party_APIs\"_Tab", $this->adminLangId) . "</small>";
-
                 $fld = $frm->addIntegerField(Labels::getLabel("LBL_Max_Seller_Request_Attempts", $this->adminLangId), 'CONF_MAX_SUPPLIER_REQUEST_ATTEMPT', '');
                 $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_Maximum_seller_request_attempts_allowed", $this->adminLangId) . "</small>";
 
@@ -1227,29 +1207,6 @@ class ConfigurationsController extends AdminBaseController
                 break;
 
             case Configurations::FORM_THIRD_PARTY_API:
-                $fld = $frm->addTextBox(Labels::getLabel("LBL_Facebook_APP_ID", $this->adminLangId), 'CONF_FACEBOOK_APP_ID');
-                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_application_ID_used_in_login_and_post.", $this->adminLangId) . "</small>";
-
-                $fld = $frm->addTextBox(Labels::getLabel("LBL_Facebook_App_Secret", $this->adminLangId), 'CONF_FACEBOOK_APP_SECRET');
-                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_Facebook_secret_key_used_for_authentication_and_other_Facebook_related_plugins_support.", $this->adminLangId) . "</small>";
-
-                $fld = $frm->addTextBox(Labels::getLabel("LBL_FACEBOOK_PIXEL_ID", $this->adminLangId), 'CONF_FACEBOOK_PIXEL_ID');
-                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_THIS_IS_THE_FACEBOOK_PIXEL_ID_USED_IN_TRACK_EVENTS.", $this->adminLangId) . "</small>";
-
-                $fld = $frm->addTextBox(Labels::getLabel("LBL_Twitter_APP_KEY", $this->adminLangId), 'CONF_TWITTER_API_KEY');
-                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_application_ID_used_in_post.", $this->adminLangId) . "</small>";
-
-                $fld = $frm->addTextBox(Labels::getLabel("LBL_Twitter_App_Secret", $this->adminLangId), 'CONF_TWITTER_API_SECRET');
-                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_Twitter_secret_key_used_for_authentication_and_other_Twitter_related_plugins_support.", $this->adminLangId) . "</small>";
-
-                $fld = $frm->addTextBox(Labels::getLabel("LBL_Google_Developer_Key", $this->adminLangId), 'CONF_GOOGLEPLUS_DEVELOPER_KEY');
-                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_google_developer_key.", $this->adminLangId) . "</small>";
-
-                $fld = $frm->addTextBox(Labels::getLabel("LBL_Google_Client_ID", $this->adminLangId), 'CONF_GOOGLEPLUS_CLIENT_ID');
-                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_google_Client_Id_used_to_Login.", $this->adminLangId) . "</small>";
-
-                $fld = $frm->addTextBox(Labels::getLabel("LBL_Google_Client_Secret", $this->adminLangId), 'CONF_GOOGLEPLUS_CLIENT_SECRET');
-                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_Google_client_secret_key_used_for_authentication.", $this->adminLangId) . "</small>";
 
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Google_Push_Notification_API_KEY", $this->adminLangId), 'CONF_GOOGLE_PUSH_NOTIFICATION_API_KEY');
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_api_key_used_in_push_notifications.", $this->adminLangId) . "</small>";
@@ -1612,12 +1569,29 @@ class ConfigurationsController extends AdminBaseController
 
             case Configurations::FORM_SHARING:
                 $frm->addHtml('', 'ShareAndEarn', '<h3>' . Labels::getLabel('LBL_Share_and_Earn_Settings', $this->adminLangId) . '</h3>');
+				
+				$fld = $frm->addTextBox(Labels::getLabel("LBL_Facebook_APP_ID", $this->adminLangId), 'CONF_FACEBOOK_APP_ID');
+                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_application_ID_used_in_login_and_post.", $this->adminLangId) . "</small>";
+
+                $fld = $frm->addTextBox(Labels::getLabel("LBL_Facebook_App_Secret", $this->adminLangId), 'CONF_FACEBOOK_APP_SECRET');
+                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_Facebook_secret_key_used_for_authentication_and_other_Facebook_related_plugins_support.", $this->adminLangId) . "</small>";
+
+                $fld = $frm->addTextBox(Labels::getLabel("LBL_FACEBOOK_PIXEL_ID", $this->adminLangId), 'CONF_FACEBOOK_PIXEL_ID');
+                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_THIS_IS_THE_FACEBOOK_PIXEL_ID_USED_IN_TRACK_EVENTS.", $this->adminLangId) . "</small>";                
+				
                 $fld = $frm->addTextbox(Labels::getLabel("LBL_Facebook_Post_Title", $this->adminLangId), 'CONF_SOCIAL_FEED_FACEBOOK_POST_TITLE_' . $langId);
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_title_shared_on_facebook", $this->adminLangId) . "</small>";
                 $fld = $frm->addTextbox(Labels::getLabel("LBL_Facebook_Post_Caption", $this->adminLangId), 'CONF_SOCIAL_FEED_FACEBOOK_POST_CAPTION_' . $langId);
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_caption_shared_on_facebook", $this->adminLangId) . "</small>";
                 $fld = $frm->addTextarea(Labels::getLabel("LBL_Facebook_Post_Description", $this->adminLangId), 'CONF_SOCIAL_FEED_FACEBOOK_POST_DESCRIPTION_' . $langId);
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_description_shared_on_facebook", $this->adminLangId) . "</small>";
+				
+				$fld = $frm->addTextBox(Labels::getLabel("LBL_Twitter_APP_KEY", $this->adminLangId), 'CONF_TWITTER_API_KEY');
+                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_application_ID_used_in_post.", $this->adminLangId) . "</small>";
+
+                $fld = $frm->addTextBox(Labels::getLabel("LBL_Twitter_App_Secret", $this->adminLangId), 'CONF_TWITTER_API_SECRET');
+                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_Twitter_secret_key_used_for_authentication_and_other_Twitter_related_plugins_support.", $this->adminLangId) . "</small>";
+				
                 $fld = $frm->addTextarea(Labels::getLabel("LBL_Twitter_Post_Description", $this->adminLangId), 'CONF_SOCIAL_FEED_TWITTER_POST_TITLE' . $langId);
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_description_shared_on_twitter", $this->adminLangId) . "</small>";
                 break;

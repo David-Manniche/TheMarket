@@ -178,12 +178,13 @@ Bug :
     => 035200 - Bulk media option shouldn't be there when seller is not allowed to add product or request catalog and Export Seller products media not required.
 ===================TV-9.1.3.20200312==================
 
-    
-    
 Bug : 
-    => #035283 - for non branded product- if return request is raised then getting blank for brand
-    => #035276 - if product is not binded with brand then in emails (order)> getting blank in front of brand 
-    => #035335 - admin> order detail page> back button is in toggle instead of direct button as in system
-    => #035329 - admin> options> toggle is still there instead of publish/unpublish button 
-    => #035294 - admin>special price> on selecting name and amount it adds product with default dates
-    => #035342 - admin> email settings> on updating email logo it's not reflecting instantly
+    => 035130 - Send request button text should be in center on Affiliate, Account credits page while withdrawal request through Bank Payout.
+    => 035283 - for non branded product- if return request is raised then getting blank for brand
+    => 035276 - if product is not binded with brand then in emails (order)> getting blank in front of brand 
+    => 035335 - admin> order detail page> back button is in toggle instead of direct button as in system
+    => 035329 - admin> options> toggle is still there instead of publish/unpublish button 
+    => 035294 - admin>special price> on selecting name and amount it adds product with default dates
+    => 035343 - Enable facebook and google from configuration settings options removed as they moved to plugin module.
+    => 035344 - Extra Social login keys which are not being used anymore are removed.
+    => 035342 - admin> email settings> on updating email logo it's not reflecting instantly

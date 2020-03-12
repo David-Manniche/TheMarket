@@ -132,6 +132,7 @@ class MyAppController extends FatController
         'withUsernameOrEmail' => Labels::getLabel('LBL_WITH_USERNAME_OR_EMAIL_?', $this->siteLangId),
         'withPhoneNumber' => Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $this->siteLangId),
         'otpInterval' => User::OTP_INTERVAL,
+        'captchaSiteKey' => FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, ''),
         );
 
         $languages = Language::getAllNames(false);

@@ -87,8 +87,8 @@ $fld->developerTags['col'] = 12;
 $siteKey = FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '');
 $secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '');
 if (!empty($siteKey) && !empty($secretKey)) {?>
-<script src='https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>'></script>
-<script>
-    googleCaptcha('<?php echo $siteKey; ?>');
-</script>
+    <script src='https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>'></script>
+    <script>
+        googleCaptcha();
+    </script>
 <?php } ?>

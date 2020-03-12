@@ -21,8 +21,12 @@ if (in_array($actionType, $actionTypeArr)) {
     $rangeTypeFld = $frm->getField('export_data_range');
     $rangeTypeFld->setfieldTagAttribute('onchange', "showHideExtraFld(this.value," . Importexport::BY_ID_RANGE . "," . Importexport::BY_BATCHES . ");");
 }
+$tabsAllowedFor = [
+    Importexport::TYPE_PRODUCTS,
+    Importexport::TYPE_BRANDS
+];
 ?>
-<?php if ($actionType != Importexport::TYPE_SELLER_PRODUCTS) { ?>
+<?php if (in_array($actionType, $tabsAllowedFor)) { ?>
     <div class="tabs tabs-sm tabs--scroll clearfix">
         <ul>
             <li class="is-active"><a class="is-active" href="javascript:void(0);"
