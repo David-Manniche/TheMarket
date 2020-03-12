@@ -15,6 +15,30 @@ $("document").ready(function(){
 	/* Product Main image to be static on scroll par a particular window scroll range[ */
 
 	$(window).scroll(function(){
+        var scrollTop = $(window).scrollTop();
+
+        var descTab = ($('.nav-detail-js a[href="#description"]').offset().top) - scrollTop;
+        var descDist = (($("#description").offset().top) - scrollTop) - descTab;
+
+        var shpPolTab = ($('.nav-detail-js a[href="#shop-policies"]').offset().top) - scrollTop;
+        var shpPolDist = (($("#shop-policies").offset().top) - scrollTop) - shpPolTab;
+
+        var ratingsTab = ($('.nav-detail-js a[href="#itemRatings"]').offset().top) - scrollTop;
+        var ratingsDist = (($("#itemRatings").offset().top) - scrollTop) - ratingsTab;
+
+        if (100 > descDist && 100 < shpPolDist) {
+            $(".nav-scroll-js").removeClass('is-active');
+            $('a[href="#description"]').addClass('is-active');
+        } else if (100 > shpPolDist && 100 < ratingsDist) {
+            $(".nav-scroll-js").removeClass('is-active');
+            $('a[href="#shop-policies"]').addClass('is-active');
+        } else if (100 > ratingsDist && 0 < (ratingsDist + $("#itemRatings").height())) {
+            $(".nav-scroll-js").removeClass('is-active');
+            $('a[href="#itemRatings"]').addClass('is-active');
+        } else {
+            $(".nav-scroll-js").removeClass('is-active');
+        }
+        // console.log((itemRatingsFromTop - aItemRatingsFromTop));
 
 	/*		var prodDetailHeight = $('.product-detail').height();
 			var dv = $("#img-static");
