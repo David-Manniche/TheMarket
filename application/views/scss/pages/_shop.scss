@@ -66,10 +66,9 @@
 
 .shop-information {
     .shop-logo {
-        border-radius: 50%;
-        width: 150px;
-        height: 150px;
+        width: 200px;
         margin: 0 auto;
+        margin-bottom: 1rem;
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
@@ -79,15 +78,19 @@
         -webkit-box-pack: center;
         -ms-flex-pack: center;
         justify-content: center;
-        padding: 0;
-        margin-bottom: 1rem;
-        background: #fff;
+        
         overflow: hidden;
 
         img {
-            &[data-ratio="16:9"] { max-height: 84px;}
+            padding: 10px;
+            background: #fff;
+
+
+            &[data-ratio="16:9"] {}
+
             &[data-ratio="1:1"] {
-                max-width: 100%;
+                max-width: 150px;
+                border-radius: 50%;
             }
         }
     }

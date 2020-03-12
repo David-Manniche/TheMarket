@@ -16,7 +16,7 @@ if (0 < $withPhone) {
                     </div>
                 </div>
                 <div class="col-md-auto col-sm-auto">
-                    <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="btn btn-outline-white btn-sm d-block">
+                    <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="btn btn-outline-white btn-sm">
                         <?php echo Labels::getLabel('LBL_Back_to_Login', $siteLangId);?>
                     </a>
                 </div>

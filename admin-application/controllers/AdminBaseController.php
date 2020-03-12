@@ -333,7 +333,11 @@ class AdminBaseController extends FatController
         $pTypeFld = $frm->addSelectBox(Labels::getLabel('LBL_Product_Type', $this->adminLangId), 'product_type', Product::getProductTypes($langId), Product::PRODUCT_TYPE_PHYSICAL, array('id' => 'product_type'), '');
 
         if ($type == 'REQUESTED_CATALOG_PRODUCT') {
-            $fld = $frm->addRequiredField(Labels::getLabel('LBL_Brand/Manfacturer', $this->adminLangId), 'brand_name');
+            $brandFld = $frm->addTextBox(Labels::getLabel('LBL_Brand/Manfacturer', $this->adminLangId), 'brand_name');
+            if (FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) {
+                $brandFld->requirements()->setRequired();
+            }
+            
             //$fld1 = $frm->addTextBox(Labels::getLabel('LBL_Category',$this->adminLangId),'category_name');
 
             $frm->addHiddenField('', 'product_brand_id');

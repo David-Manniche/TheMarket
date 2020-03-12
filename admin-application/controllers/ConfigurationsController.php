@@ -1625,9 +1625,9 @@ class ConfigurationsController extends AdminBaseController
             case Configurations::FORM_MEDIA:
                 $ratioArr = AttachedFile::getRatioTypeArray($this->adminLangId);
                 
-                $ul = $frm->addHtml('', 'MediaGrids', '<ul class="grids--onethird">');
+                $ul = $frm->addHtml('', 'MediaGrids', '<div class="row">');
 
-                $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_Admin_Logo', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
+                $ul->htmlAfterField .= '<div class="col-md-4 mb-5"> <h3>' . Labels::getLabel('LBL_Select_Admin_Logo', $this->adminLangId) . ' </h3> <div class="logoWrap"><div class="uploaded--image">';
 
                 if (AttachedFile::getAttachment(AttachedFile::FILETYPE_ADMIN_LOGO, 0, 0, $langId)) {
                     $ul->htmlAfterField .= '<img src="' . CommonHelper::generateFullUrl('Image', 'siteAdminLogo', array($langId)) . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeSiteAdminLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
@@ -1643,9 +1643,9 @@ class ConfigurationsController extends AdminBaseController
                 }
                 $ul->htmlAfterField .='</ul>';
                 
-                $ul->htmlAfterField .= '<input type="file" onChange="popupImage(this)" name="admin_logo" id="admin_logo" data-min_width = "150" data-min_height = "150" data-file_type=' . AttachedFile::FILETYPE_ADMIN_LOGO . ' value="Upload file"></li>';
+                $ul->htmlAfterField .= '<input type="file" onChange="popupImage(this)" name="admin_logo" id="admin_logo" data-min_width = "150" data-min_height = "150" data-file_type=' . AttachedFile::FILETYPE_ADMIN_LOGO . ' value="Upload file"></div>';
 
-                $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_Desktop_Logo', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
+                $ul->htmlAfterField .= '<div class="col-md-4 mb-5">  <h3>' . Labels::getLabel('LBL_Select_Desktop_Logo', $this->adminLangId) . '</h3> <div class="logoWrap"><div class="uploaded--image">';
 
 
                 if (AttachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, 0, 0, $langId)) {
@@ -1664,7 +1664,7 @@ class ConfigurationsController extends AdminBaseController
                 }
                 $ul->htmlAfterField .='</ul>';
                 
-                $ul->htmlAfterField .= '<input onchange="popupImage(this)" data-frm="frmShopLogo" data-min_height="150" data-min_width="150" data-file_type='.AttachedFile::FILETYPE_FRONT_LOGO.' title="Upload" type="file" name="front_logo" value=""></li>';
+                $ul->htmlAfterField .= '<input onchange="popupImage(this)" data-frm="frmShopLogo" data-min_height="150" data-min_width="150" data-file_type='.AttachedFile::FILETYPE_FRONT_LOGO.' title="Upload" type="file" name="front_logo" value=""></div>';
                 
                 /*$frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'front_logo', array('accept' => 'image/*', 'onChange' => 'popupImage(this)', 'data-frm' => 'frmShopLogo', 'data-min_height' => '45', 'data-min_width' => '142', 'data-file_type' => AttachedFile::FILETYPE_FRONT_LOGO));*/
 
@@ -1678,28 +1678,28 @@ class ConfigurationsController extends AdminBaseController
                 $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="email_logo" id="email_logo" data-min_width = "168" data-min_height = "37" data-file_type='.AttachedFile::FILETYPE_EMAIL_LOGO.' value="Upload file"><small>Dimensions 168*37</small></li>';*/
 
 
-                $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_Website_Favicon', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
+                $ul->htmlAfterField .= '<div class="col-md-4 mb-5"> <h3>' . Labels::getLabel('LBL_Select_Website_Favicon', $this->adminLangId) . '</h3> <div class="logoWrap"><div class="uploaded--image">';
 
 
                 if (AttachedFile::getAttachment(AttachedFile::FILETYPE_FAVICON, 0, 0, $langId)) {
                     $ul->htmlAfterField .= '<img src="' . CommonHelper::generateFullUrl('Image', 'favicon', array($langId), CONF_WEBROOT_FRONT_URL) . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeFavicon(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
-                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="favicon" id="favicon" data-min_width = "16" data-min_height = "16" data-file_type=' . AttachedFile::FILETYPE_FAVICON . ' value="Upload file"></li>';
+                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="favicon" id="favicon" data-min_width = "16" data-min_height = "16" data-file_type=' . AttachedFile::FILETYPE_FAVICON . ' value="Upload file"></div>';
 
 
-                $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_Social_Feed_Image', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
+                $ul->htmlAfterField .= '<div class="col-md-4 mb-5"> <h3>' . Labels::getLabel('LBL_Select_Social_Feed_Image', $this->adminLangId) . '</h3> <div class="logoWrap"><div class="uploaded--image">';
 
 
                 if (AttachedFile::getAttachment(AttachedFile::FILETYPE_SOCIAL_FEED_IMAGE, 0, 0, $langId)) {
                     $ul->htmlAfterField .= '<img src="' . CommonHelper::generateFullUrl('Image', 'socialFeed', array($langId, 'THUMB'), CONF_WEBROOT_FRONT_URL) . '"><a  class="remove--img" href="javascript:void(0);" onclick="removeSocialFeedImage(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
-                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="social_feed_image" id="social_feed_image" data-min_width = "160" data-min_height = "240" data-file_type=' . AttachedFile::FILETYPE_SOCIAL_FEED_IMAGE . ' value="Upload file"><small>Dimensions 160*240</small></li>';
+                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="social_feed_image" id="social_feed_image" data-min_width = "160" data-min_height = "240" data-file_type=' . AttachedFile::FILETYPE_SOCIAL_FEED_IMAGE . ' value="Upload file"><small>Dimensions 160*240</small></div>';
 
 
 
-                $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_Payment_Page_Logo', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
+                $ul->htmlAfterField .= '<div class="col-md-4 mb-5"> <h3>' . Labels::getLabel('LBL_Select_Payment_Page_Logo', $this->adminLangId) . '</h3> <div class="logoWrap"><div class="uploaded--image">';
 
 
                 if (AttachedFile::getAttachment(AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO, 0, 0, $langId)) {
@@ -1716,36 +1716,36 @@ class ConfigurationsController extends AdminBaseController
                 }
                 $ul->htmlAfterField .='</ul>';
                 
-                $ul->htmlAfterField .='<input type="file" onChange="popupImage(this)" name="payment_page_logo" id="payment_page_logo" data-min_width = "150" data-min_height = "150" data-file_type=' . AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO . ' value="Upload file"></li>';
+                $ul->htmlAfterField .='<input type="file" onChange="popupImage(this)" name="payment_page_logo" id="payment_page_logo" data-min_width = "150" data-min_height = "150" data-file_type=' . AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO . ' value="Upload file"></div>';
 
-                $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_Watermark_Image', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
+                $ul->htmlAfterField .= '<div class="col-md-4 mb-5"> <h3>' . Labels::getLabel('LBL_Select_Watermark_Image', $this->adminLangId) . '</h3><div class="logoWrap"><div class="uploaded--image">';
 
 
                 if (AttachedFile::getAttachment(AttachedFile::FILETYPE_WATERMARK_IMAGE, 0, 0, $langId)) {
                     $ul->htmlAfterField .= '<img src="' . CommonHelper::generateFullUrl('Image', 'watermarkImage', array($langId, 'THUMB'), CONF_WEBROOT_FRONT_URL) . '"><a  class="remove--img" href="javascript:void(0);" onclick="removeWatermarkImage(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
-                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="watermark_image" id="watermark_image" data-min_width = "168" data-min_height = "37" data-file_type=' . AttachedFile::FILETYPE_WATERMARK_IMAGE . ' value="Upload file"><small>Dimensions 168*37</small></li>';
+                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="watermark_image" id="watermark_image" data-min_width = "168" data-min_height = "37" data-file_type=' . AttachedFile::FILETYPE_WATERMARK_IMAGE . ' value="Upload file"><small>Dimensions 168*37</small></div>';
 
 
-                $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_Apple_Touch_Icon', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
+                $ul->htmlAfterField .= '<div class="col-md-4  mb-5"> <h3>' . Labels::getLabel('LBL_Select_Apple_Touch_Icon', $this->adminLangId) . '</h3> <div class="logoWrap"><div class="uploaded--image">';
 
 
                 if (AttachedFile::getAttachment(AttachedFile::FILETYPE_APPLE_TOUCH_ICON, 0, 0, $langId)) {
                     $ul->htmlAfterField .= '<img src="' . CommonHelper::generateFullUrl('Image', 'appleTouchIcon', array($langId, 'THUMB'), CONF_WEBROOT_FRONT_URL) . '"><a  class="remove--img" href="javascript:void(0);" onclick="removeAppleTouchIcon(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
-                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="apple_touch_icon" id="apple_touch_icon" data-min_width = "152" data-min_height = "152" data-file_type=' . AttachedFile::FILETYPE_APPLE_TOUCH_ICON . ' value="Upload file"></li>';
+                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="apple_touch_icon" id="apple_touch_icon" data-min_width = "152" data-min_height = "152" data-file_type=' . AttachedFile::FILETYPE_APPLE_TOUCH_ICON . ' value="Upload file"></div>';
 
 
-                $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_Mobile_Logo', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
+                $ul->htmlAfterField .= '<div class="col-md-4 mb-5"> <h3>' . Labels::getLabel('LBL_Select_Mobile_Logo', $this->adminLangId) . '</h3> <div class="logoWrap"><div class="uploaded--image">';
 
 
                 if (AttachedFile::getAttachment(AttachedFile::FILETYPE_MOBILE_LOGO, 0, 0, $langId)) {
                     $ul->htmlAfterField .= '<img src="' . CommonHelper::generateFullUrl('Image', 'mobileLogo', array($langId, 'THUMB'), CONF_WEBROOT_FRONT_URL) . '"><a  class="remove--img" href="javascript:void(0);" onclick="removeMobileLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
-                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="mobile_logo" id="mobile_logo" data-min_width = "168" data-min_height = "37" data-file_type=' . AttachedFile::FILETYPE_MOBILE_LOGO . ' value="Upload file"><small>Dimensions 168*37</small></li>';
+                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="mobile_logo" id="mobile_logo" data-min_width = "168" data-min_height = "37" data-file_type=' . AttachedFile::FILETYPE_MOBILE_LOGO . ' value="Upload file"><small>Dimensions 168*37</small></div>';
                 //
                 // $ul->htmlAfterField .= '<li>'.Labels::getLabel('LBL_Select_Categories_Background_Image', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
                 //
@@ -1765,7 +1765,7 @@ class ConfigurationsController extends AdminBaseController
                 //
                 // $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="brand_collection" id="brand_collection" data-file_type='.AttachedFile::FILETYPE_BRAND_COLLECTION_BG_IMAGE.' value="Upload file"><small>Dimensions 1000*1000</small></li>';
 
-                $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_Invoice_Logo', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
+                $ul->htmlAfterField .= '<div class="col-md-4 mb-5"> <h3>' . Labels::getLabel('LBL_Select_Invoice_Logo', $this->adminLangId) . '</h3> <div class="logoWrap"><div class="uploaded--image">';
 
 
                 if (AttachedFile::getAttachment(AttachedFile::FILETYPE_INVOICE_LOGO, 0, 0, $langId)) {
@@ -1782,18 +1782,18 @@ class ConfigurationsController extends AdminBaseController
                 }
                 $ul->htmlAfterField .='</ul>';
                 
-                $ul->htmlAfterField .='<input type="file" onChange="popupImage(this)" name="invoice_logo" id="invoice_logo" data-min_width = "150" data-min_height = "150" data-file_type=' . AttachedFile::FILETYPE_INVOICE_LOGO . ' value="Upload file"></li>';
+                $ul->htmlAfterField .='<input type="file" onChange="popupImage(this)" name="invoice_logo" id="invoice_logo" data-min_width = "150" data-min_height = "150" data-file_type=' . AttachedFile::FILETYPE_INVOICE_LOGO . ' value="Upload file"></div>';
                 
-                $ul->htmlAfterField .= '<li>' . Labels::getLabel('LBL_Select_First_Purchase_Discount_Image', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
+                $ul->htmlAfterField .= '<div class="col-md-4 mb-5"> <h3>' . Labels::getLabel('LBL_Select_First_Purchase_Discount_Image', $this->adminLangId) . '</h3> <div class="logoWrap"><div class="uploaded--image">';
 
 
                 if (AttachedFile::getAttachment(AttachedFile::FILETYPE_FIRST_PURCHASE_DISCOUNT_IMAGE, 0, 0, $langId)) {
                     $ul->htmlAfterField .= '<img src="' . CommonHelper::generateFullUrl('Image', 'firstPurchaseCoupon', array($langId), CONF_WEBROOT_FRONT_URL) . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeFavicon(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
-                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="purchase_discount" id="purchase_discount" data-min_width = "120" data-min_height = "120" data-file_type=' . AttachedFile::FILETYPE_FIRST_PURCHASE_DISCOUNT_IMAGE . ' value="Upload file"><small>Dimensions 120*120</small></li>';
+                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="purchase_discount" id="purchase_discount" data-min_width = "120" data-min_height = "120" data-file_type=' . AttachedFile::FILETYPE_FIRST_PURCHASE_DISCOUNT_IMAGE . ' value="Upload file"><small>Dimensions 120*120</small></div>';
 
-                $ul->htmlAfterField .= '</ul>';
+                $ul->htmlAfterField .= '</div>';
                 break;
 
             case Configurations::FORM_PPC:

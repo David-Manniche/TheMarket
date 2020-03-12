@@ -207,7 +207,7 @@ class ThemeColorController extends AdminBaseController
         $frm->addRequiredField(Labels::getLabel('LBL_Theme_Name', $this->adminLangId), 'theme_name');
         $themeColors = ThemeColor::getThemeColorsById($themeId);
         foreach ($themeColors as $tColor) {
-            $frm->addRequiredField(Labels::getLabel($tColor['tcolor_key'], $this->adminLangId), $tColor['tcolor_key']);
+            $frm->addRequiredField(Labels::getLabel($tColor['tcolor_key'], $this->adminLangId), $tColor['tcolor_key'])->addFieldTagAttribute('class', 'jscolor');            
         }
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
