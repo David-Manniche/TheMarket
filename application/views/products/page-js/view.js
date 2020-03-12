@@ -26,13 +26,13 @@ $("document").ready(function(){
         var ratingsTab = ($('.nav-detail-js a[href="#itemRatings"]').offset().top) - scrollTop;
         var ratingsDist = (($("#itemRatings").offset().top) - scrollTop) - ratingsTab;
 
-        if (100 > descDist && 100 < shpPolDist) {
+        if (170 > descTab && 130 > descDist && 130 < shpPolDist) {
             $(".nav-scroll-js").removeClass('is-active');
             $('a[href="#description"]').addClass('is-active');
-        } else if (100 > shpPolDist && 100 < ratingsDist) {
+        } else if (130 > shpPolDist && 130 < ratingsDist) {
             $(".nav-scroll-js").removeClass('is-active');
             $('a[href="#shop-policies"]').addClass('is-active');
-        } else if (100 > ratingsDist && 0 < (ratingsDist + $("#itemRatings").height())) {
+        } else if (130 > ratingsDist && 0 < (ratingsDist + $("#itemRatings").height())) {
             $(".nav-scroll-js").removeClass('is-active');
             $('a[href="#itemRatings"]').addClass('is-active');
         } else {
