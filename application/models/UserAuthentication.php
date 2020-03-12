@@ -739,10 +739,16 @@ class UserAuthentication extends FatModel
         return true;
     }
 
-    public function deleteOldPasswordResetRequest()
+    public function deleteOldPasswordResetRequest($userId = 0)
     {
+        $userId = FatUtility::int($userId);
         $db = FatApp::getDb();
-        if (!$db->deleteRecords(static::DB_TBL_USER_PRR, array('smt' => static::DB_TBL_UPR_PREFIX . 'expiry < ?', 'vals' => array(date('Y-m-d H:i:s'))))) {
+        if (0 < $userId) {
+            $condition = array('smt' => static::DB_TBL_UPR_PREFIX . 'user_id = ?', 'vals' => array($userId));
+        } else {
+            $condition = array('smt' => static::DB_TBL_UPR_PREFIX . 'expiry < ?', 'vals' => array(date('Y-m-d H:i:s')));
+        }
+        if (!$db->deleteRecords(static::DB_TBL_USER_PRR, $condition)) {
             $this->error = $db->getError();
             return false;
         }

@@ -187,5 +187,6 @@ Bug :
     => 035294 - admin>special price> on selecting name and amount it adds product with default dates
     => 035343 - Enable facebook and google from configuration settings options removed as they moved to plugin module.
     => 035344 - Extra Social login keys which are not being used anymore are removed.
+    => 035355 - Country code and Phoner number are overlapping in phone number field having country code as dropdown.
     => 035342 - admin> email settings> on updating email logo it's not reflecting instantly
     => 035291 - admin> request catalog> shipped to country "rate" field displaying only character while amount is in two digits
