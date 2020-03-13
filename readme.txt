@@ -191,3 +191,4 @@ Bug :
     => 035342 - admin> email settings> on updating email logo it's not reflecting instantly
     => 035291 - admin> request catalog> shipped to country "rate" field displaying only character while amount is in two digits
     => 035358 - seller> options> attribute> buttons are merging with each other on 1366x768 resolution
+===================TV-9.1.3.20200313==================

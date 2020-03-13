@@ -1118,3 +1118,4 @@ INSERT INTO `tbl_sms_templates` (`stpl_code`, `stpl_lang_id`, `stpl_name`, `stpl
 -- ---------------------TV-9.1.3.20200312--------------------
 
 DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_ENABLE_GOOGLE_LOGIN' OR `conf_name` = 'CONF_ENABLE_FACEBOOK_LOGIN' OR `conf_name` = 'CONF_GOOGLEPLUS_DEVELOPER_KEY' OR `conf_name` = 'CONF_GOOGLEPLUS_CLIENT_ID' OR `conf_name` = 'CONF_GOOGLEPLUS_CLIENT_SECRET';
+-- ---------------------TV-9.1.3.20200313----------------------
