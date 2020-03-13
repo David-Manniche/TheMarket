@@ -184,7 +184,7 @@ $(document).on('change','.collection-language-js',function(){
 			searchShopCollections(shop_id);
 		});
 	};
-	deleteSelectedCollection = function(){
+	deleteSelected = function(){
         if(!confirm(langLbl.confirmDelete)){
             return false;
         }

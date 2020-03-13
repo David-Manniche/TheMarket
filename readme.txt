@@ -196,3 +196,4 @@ Bug :
 Bug :
     => 035392 - While updating inventory, error log added to cvs file and get downloaded after completion.
     => 035399 - After moving from Subscription package to setting page of particular subscription back button is not working.
+    => 035398 - While editing shop from listing, moved to collections tab and select all and facebox close, all listing is getting checked and action button is displaying.
