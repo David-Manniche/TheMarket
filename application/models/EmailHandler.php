@@ -917,7 +917,7 @@ class EmailHandler extends FatModel
         return true;
     }
 
-    public function newOrderVendor($orderId, $langId = 0)
+    public function newOrderVendor($orderId, $langId = 0, $codOrder = 0)
     {
         $langId = FatApp::getConfig('conf_default_site_lang');
         $orderObj = new Orders();
@@ -964,14 +964,17 @@ class EmailHandler extends FatModel
                             '{order_user_email}' => $userInfo['credential_email'],
                             '{order_id}' => $orderId,
                             );
-
-                if ($val['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
-                    $tpl = "vendor_digital_order_email";
-                    self::sendMailTpl($val["op_shop_owner_email"], $tpl, $langId, $arrReplacements);
-                } else {
-                    $tpl = "vendor_order_email";
-                    self::sendMailTpl($val["op_shop_owner_email"], "vendor_order_email", $langId, $arrReplacements);
+                
+                if($codOrder == 1){
+                    $tpl = "vendor_cod_order_email";
+                }else{
+                    if ($val['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
+                        $tpl = "vendor_digital_order_email";
+                    } else {
+                        $tpl = "vendor_order_email";
+                    }
                 }
+                self::sendMailTpl($val["op_shop_owner_email"], $tpl, $langId, $arrReplacements);
 
                 $phone = !empty($userInfo['user_phone']) ? $userInfo['user_dial_code'] . $userInfo['user_phone'] : '';
                 $this->sendSms($tpl, $phone, $arrReplacements, $langId);

@@ -1191,6 +1191,7 @@ class Orders extends MyAppModel
             $emailNotify = $emailObj->orderPaymentUpdateBuyerAdmin($orderId);
         } elseif ($orderInfo['order_pmethod_id'] == PaymentSettings::CASH_ON_DELIVERY) {
             $emailNotify = $emailObj->cashOnDeliveryOrderUpdateBuyerAdmin($orderId);
+            $emailObj->newOrderVendor($orderId, 0, 1);
         }
 
         // If order Payment status is 0 then becomes greater than 0 mail to Vendors and Update Child Order Status to Paid & Give Referral Reward Points
