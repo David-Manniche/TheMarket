@@ -31,7 +31,7 @@
                         <?php if (isset($smsPluginStatus) && true === $smsPluginStatus) { ?>
                         <?php } ?>
                     </h2>
-                     <a class="otp-link" href="javaScript:void(0)" data-form="formLoginPage" onClick="signInWithPhone(this, true)"><?php echo Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $siteLangId); ?></a>
+                     <a class="otp-link" href="javaScript:void(0)" data-form="formLoginPage" onClick="signInWithPhone(this, true)"><?php echo Labels::getLabel('LBL_USE_PHONE_NUMBER_INSTEAD', $siteLangId); ?></a>
                 </div>
             </div>
             <?php echo $loginFrm->getFormTag(); ?>
@@ -86,7 +86,7 @@
             <?php if ($showSignUpLink) { ?>
                 <div class="row justify-content-center">
                     <div class="col-auto text-center">
-                        <a class="link" href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)); ?>"><?php echo sprintf(Labels::getLabel('LBL_Not_Register_Yet?', $siteLangId), FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId));?></a>
+                        <a class="link" href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)); ?>"><?php echo sprintf(Labels::getLabel('LBL_Not_Registered_Yet?', $siteLangId), FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId));?></a>
                     </div>
                     <?php if (isset($includeGuestLogin) && 'true' == $includeGuestLogin) {?>
                     <div class="col-auto text-center">

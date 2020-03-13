@@ -62,12 +62,10 @@
                     </div>
                     <?php if ($canEdit) { ?>
                         <div class="col-md-6">
-                            <div id="templateDetail">
-                                <section class="section">
-                                    <div class="sectionbody space"></div>
-                                </section>
-                            <div>
-                    </div>
+							<section class="section" id="templateDetail">
+								<div class="sectionbody space"></div>
+							</section>
+						</div>
                     <?php } ?>
                 </div>
             </div>

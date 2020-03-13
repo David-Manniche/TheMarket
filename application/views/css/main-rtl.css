@@ -10662,7 +10662,10 @@ form.custom-form {
   align-items: center; }
 .form-otp .otp-col {
   display: flex;
-  align-items: center; }
+  align-items: center;
+  flex: 1; }
+  .form-otp .otp-col input {
+    text-align: center; }
 
 .input-group {
   position: relative;
@@ -16709,6 +16712,14 @@ a:hover, .shop-nav ul li.is--active a {
 .strikethrough {
   text-decoration: line-through; }
 
+.cursor-pointer {
+  cursor: pointer; }
+
+.alert-aligned {
+  height: 100%;
+  display: flex;
+  align-items: center; }
+
 .cards {
   -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.1);
   box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.1);
@@ -16741,7 +16752,8 @@ a:hover, .shop-nav ul li.is--active a {
     .cards .cards-header ~ .cards-content {
       padding-top: 0; }
   .cards .cards-content {
-    padding: 1.5rem; }
+    padding: 1.5rem;
+    height: inherit; }
 
 .toggle-switch {
   display: inline-block;
@@ -34851,7 +34863,9 @@ div.faqanswer {
 
 .otp-heading {
   display: flex !important;
-  flex-direction: column; }
+  justify-content: space-between;
+  align-items: center;
+  flex: 1; }
   .otp-heading a.otp-link {
     font-size: 0.8rem;
     color: var(--primary-color); }
