@@ -199,3 +199,4 @@ Bug :
     => 035290 - admin> request catalog> edit> shipping country field text is differing from shipped to font 
     => 035288 - while adding catalog shipping> suggestion list should appear on click (as working earlier) instead of typing
     => 035292 - on adding inventory for requested catalog> getting invalid request and inventory getting created
+    => 035295 - while adding vol discount> min qty allowed should be 2 

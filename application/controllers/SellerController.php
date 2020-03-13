@@ -4945,4 +4945,17 @@ class SellerController extends SellerBaseController
         $this->set('msg', Labels::getLabel('LBL_Product_Data_Translated_Successful', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
+    public function compareWithInventoryMinPurchase()
+    {
+        $selProdId = FatApp::getPostedData('selProdId', FatUtility::VAR_INT, 0);
+        $qty = FatApp::getPostedData('qty', FatUtility::VAR_INT, 0);
+        if ( $selProdId < 1 ){
+            FatUtility::dieJsonError(Labels::getLabel('MSG_Please_choose_product', $this->siteLangId));
+        }
+        $minPurchaseQty = SellerProduct::getAttributesById($selProdId, 'selprod_min_order_qty');
+        if ( $qty < $minPurchaseQty){
+            FatUtility::dieJsonError(Labels::getLabel('MSG_Quantity_cannot_be_less_than_the_Minimum_Order_Quantity', $this->siteLangId) . ': ' . $minPurchaseQty);
+        }        
+        $this->_template->render(false, false, 'json-success.php');
+    }
 }
