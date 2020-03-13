@@ -44,12 +44,15 @@
     validateOtp = function (frm){
 		if (!$(frm).validate()) return;	
 		var data = fcom.frmData(frm);
-		fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'validateOtp', [1, 1]), data, function(t) {						
+		fcom.ajax(fcom.makeUrl('GuestUser', 'validateOtp', [1, 1]), data, function(t) {	
+            t = $.parseJSON(t);					
             if (1 == t.status) {
                 window.location.href = t.redirectUrl;
+                return false;
+            } else {
+                invalidOtpField();
             }
         });	
-        invalidOtpField();
         return false;
     };
 
