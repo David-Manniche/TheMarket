@@ -197,3 +197,4 @@ Bug :
     => 034810 - for special price and volume discount> on click of name (from list) it should get enabled in edit mode
     => 035397 - while purchasing digital item> on shipping summary step> NA need not to be there
     => 035290 - admin> request catalog> edit> shipping country field text is differing from shipped to font 
+    => 035288 - while adding catalog shipping> suggestion list should appear on click (as working earlier) instead of typing

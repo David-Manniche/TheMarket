@@ -338,6 +338,7 @@
 			    setTimeout(function(){ $('.suggestions').hide(); }, 500);
 		});
 		$('input[name="product_shipping[' + shipping_row + '][country_name]"]').autocomplete({
+            minLength: 0,
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
             },
@@ -358,9 +359,12 @@
                 $('input[name="product_shipping[' + shipping_row + '][country_name]"]').val(ui.item.label);
 				$('input[name="product_shipping[' + shipping_row + '][country_id]"]').val(ui.item.id);
             }
-		});
+		}).focus(function() {
+            $(this).autocomplete("search", $(this).val());
+        });
 
 		$('input[name="product_shipping[' + shipping_row + '][company_name]"]').autocomplete({
+            minLength: 0,
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
             },
@@ -381,9 +385,12 @@
                 $('input[name="product_shipping[' + shipping_row + '][company_name]"]').val(ui.item.label);
                 $('input[name="product_shipping[' + shipping_row + '][company_id]"]').val(ui.item.id);
             }
-		});
+		}).focus(function() {
+            $(this).autocomplete("search", $(this).val());
+        });
 
 		$('input[name="product_shipping[' + shipping_row + '][processing_time]"]').autocomplete({
+            minLength: 0,
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
             },
@@ -404,7 +411,9 @@
                 $('input[name="product_shipping[' + shipping_row + '][processing_time]"]').val(ui.item.label);
                 $('input[name="product_shipping[' + shipping_row + '][processing_time_id]"]').val(ui.item.id);
             }
-		});
+		}).focus(function() {
+            $(this).autocomplete("search", $(this).val());
+        });
 	}
 
  /*  End of  Product shipping  */
