@@ -181,3 +181,21 @@ $(document).on('keyup', "input[name='products_related']", function(){
 		});
 	};
 })();
+
+$(document).on('click', ".js-product-edit", function(){
+    var selProdId = $(this).attr('row-id');
+    var prodHtml = $(this).children('.js-prod-name').html(); 
+    var prodName = prodHtml.split('<br>');
+    
+    fcom.ajax(fcom.makeUrl('Seller', 'getRelatedProductsList', [selProdId]), '', function(t) {
+        var ans = $.parseJSON(t);
+        $("input[name='selprod_id']").val(selProdId); 
+        $("input[name='product_name']").val(prodName[0]); 
+        $('#related-products').empty();
+        for (var key in ans.relatedProducts) {
+            $('#related-products').append(
+                "<li id=productRelated"+ans.relatedProducts[key]['selprod_id']+"><span>"+ans.relatedProducts[key]['selprod_title']+" ["+ans.relatedProducts[key]['product_identifier']+"]<i class=\"remove_related remove_param fas fa-times\"></i></span><input type=\"hidden\" name=\"selected_products[]\" value="+ans.relatedProducts[key]['selprod_id']+" /></li>"
+            );
+        }
+    });
+});
