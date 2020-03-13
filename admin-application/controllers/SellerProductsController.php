@@ -2955,7 +2955,7 @@ class SellerProductsController extends AdminBaseController
         }
 
         if (!isset($post['selected_products']) || !is_array($post['selected_products']) || 1 > count($post['selected_products'])) {
-            FatUtility::dieJsonError(Labels::getLabel("MSG_MUST_SELECT_ATLEAST_ONE_PRODUCT_TO_BUY_TOGETHER", $this->adminLangId));
+            FatUtility::dieJsonError(Labels::getLabel("MSG_MUST_SELECT_ATLEAST_ONE_PRODUCT_TO_RELATED_PRODUCTS", $this->adminLangId));
         }
 
         $relatedProducts = $post['selected_products'];

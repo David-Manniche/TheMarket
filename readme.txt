@@ -204,3 +204,4 @@ Bug :
     => 035288 - while adding catalog shipping> suggestion list should appear on click (as working earlier) instead of typing
     => 035292 - on adding inventory for requested catalog> getting invalid request and inventory getting created
     => 035295 - while adding vol discount> min qty allowed should be 2 
+    => 034393 - Getting invalid request on saving data without selecting product in related products and buy together
