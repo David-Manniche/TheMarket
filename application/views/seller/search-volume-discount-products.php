@@ -3,10 +3,12 @@ $arr_flds = array(
     'select_all' => Labels::getLabel('LBL_Select_all', $siteLangId),
     'product_name' => Labels::getLabel('LBL_Name', $siteLangId),
     'voldiscount_min_qty' => Labels::getLabel('LBL_Minimum_Quantity', $siteLangId),
-    'voldiscount_percentage' => Labels::getLabel('LBL_Discount', $siteLangId) . ' (%)',
-    'action' => Labels::getLabel('LBL_Action', $siteLangId),
+    'voldiscount_percentage' => Labels::getLabel('LBL_Discount', $siteLangId) . ' (%)'
 );
-if (1 > count($arrListing)) {
+if ($canEdit) {
+    $arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId);
+}
+if (!$canEdit || 1 > count($arrListing)) {
     unset($arr_flds['select_all']);
 }
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--hovered volDiscountList-js'));

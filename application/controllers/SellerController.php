@@ -17,7 +17,7 @@ class SellerController extends SellerBaseController
 
     public function index()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $user = new User($userId);
         $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] = 'S';
 
@@ -155,6 +155,7 @@ class SellerController extends SellerBaseController
 
     public function sales()
     {
+        $this->userPrivilege->canViewSales(UserAuthentication::getLoggedUserId());
         $frmOrderSrch = $this->getOrderSearchForm($this->siteLangId);
         $this->set('frmOrderSrch', $frmOrderSrch);
         $this->_template->render(true, true);
@@ -167,7 +168,7 @@ class SellerController extends SellerBaseController
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : FatUtility::int($post['page']);
         $pagesize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
 
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         $ocSrch = new SearchBase(OrderProduct::DB_TBL_CHARGES, 'opc');
         $ocSrch->doNotCalculateRecords();
@@ -233,7 +234,7 @@ class SellerController extends SellerBaseController
             $charges = $oObj->getOrderProductChargesArr($order['op_id']);
             $order['charges'] = $charges;
         }
-
+        $this->set('canEdit', $this->userPrivilege->canEditSales(UserAuthentication::getLoggedUserId(), true));
         $this->set('orders', $orders);
         $this->set('page', $page);
         $this->set('pageCount', $srch->pages());
@@ -273,7 +274,7 @@ class SellerController extends SellerBaseController
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : FatUtility::int($post['page']);
         $pagesize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
 
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         $ocSrch = new SearchBase(OrderProduct::DB_TBL_CHARGES, 'opc');
         $ocSrch->doNotCalculateRecords();
@@ -353,6 +354,7 @@ class SellerController extends SellerBaseController
 
     public function viewOrder($op_id, $print = false)
     {
+        $this->userPrivilege->canViewSales(UserAuthentication::getLoggedUserId());
         $op_id = FatUtility::int($op_id);
         if (1 > $op_id) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
@@ -362,7 +364,7 @@ class SellerController extends SellerBaseController
         $orderObj = new Orders();
 
         $orderStatuses = Orders::getOrderProductStatusArr($this->siteLangId);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         $srch = new OrderProductSearch($this->siteLangId, true, true);
         $srch->joinPaymentMethod();
@@ -445,6 +447,7 @@ class SellerController extends SellerBaseController
         if ($print) {
             $print = true;
         }
+        $this->set('canEdit', $this->userPrivilege->canEditSales(UserAuthentication::getLoggedUserId(), true));
         $this->set('print', $print);
         $urlParts = array_filter(FatApp::getParameters());
         $this->set('urlParts', $urlParts);
@@ -462,7 +465,7 @@ class SellerController extends SellerBaseController
         $orderObj = new Orders();
 
         $orderStatuses = Orders::getOrderSubscriptionStatusArr($this->siteLangId);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         $srch = new OrderSubscriptionSearch($this->siteLangId, true, true);
 
@@ -496,6 +499,7 @@ class SellerController extends SellerBaseController
 
     public function changeOrderStatus()
     {
+        $this->userPrivilege->canEditSales(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         if (!isset($post['op_id'])) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
@@ -519,7 +523,7 @@ class SellerController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $loggedUserId = UserAuthentication::getLoggedUserId();
+        $loggedUserId = $this->userParentId;
 
         $orderObj = new Orders();
 
@@ -600,7 +604,8 @@ class SellerController extends SellerBaseController
 
     public function cancelOrder($op_id)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $this->userPrivilege->canEditSales(UserAuthentication::getLoggedUserId());
+        $userId = $this->userParentId;
 
         $op_id = FatUtility::int($op_id);
         if (1 > $op_id) {
@@ -660,6 +665,7 @@ class SellerController extends SellerBaseController
 
     public function cancelReason()
     {
+        $this->userPrivilege->canEditSales(UserAuthentication::getLoggedUserId());
         $frm = $this->getOrderCancelForm($this->siteLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
@@ -674,7 +680,7 @@ class SellerController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         $orderObj = new Orders();
         $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses();
@@ -713,12 +719,13 @@ class SellerController extends SellerBaseController
 
     public function catalog($displayDefaultListing = false)
     {
+        $this->userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId());
         $displayDefaultListing = FatUtility::int($displayDefaultListing);
 
-        if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
+        if (!$this->isShopActive($this->userParentId, 0, true)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
         }
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
         }
@@ -734,7 +741,8 @@ class SellerController extends SellerBaseController
 
     public function productTags()
     {
-        if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
+        $this->userPrivilege->canViewProductTags(UserAuthentication::getLoggedUserId());
+        if (!$this->isShopActive($this->userParentId, 0, true)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
         }
 
@@ -748,7 +756,8 @@ class SellerController extends SellerBaseController
 
     public function requestedCatalog()
     {
-        if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        if (!$this->isShopActive($this->userParentId, 0, true)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
         }
         if (!User::canRequestProduct()) {
@@ -768,7 +777,7 @@ class SellerController extends SellerBaseController
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : intval($post['page']);
         $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
 
-        $cRequestObj = new User(UserAuthentication::getLoggedUserId());
+        $cRequestObj = new User($this->userParentId);
         $srch = $cRequestObj->getUserCatalogRequestsObj();
         $srch->addMultipleFields(
             array(
@@ -816,7 +825,7 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         $frm = $this->addNewCatalogRequestForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
@@ -905,9 +914,9 @@ class SellerController extends SellerBaseController
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
         }
 
-        $cRequestObj = new User(UserAuthentication::getLoggedUserId());
+        $cRequestObj = new User($this->userParentId);
         $srch = $cRequestObj->getUserCatalogRequestsObj($scatrequest_id);
-        $srch->addCondition('tucr.scatrequest_user_id', '=', UserAuthentication::getLoggedUserId());
+        $srch->addCondition('tucr.scatrequest_user_id', '=', $this->userParentId);
         $srch->addMultipleFields(array('scatrequest_id', 'scatrequest_title', 'scatrequest_content', 'scatrequest_comments', 'scatrequest_reference'));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
@@ -943,7 +952,7 @@ class SellerController extends SellerBaseController
         $this->set('requestId', $requestId);
 
         $this->set('frm', $frm);
-        $this->set('logged_user_id', UserAuthentication::getLoggedUserId());
+        $this->set('logged_user_id', $this->userParentId);
         $this->set('logged_user_name', UserAuthentication::getLoggedUserAttribute('user_name'));
 
         $searchFrm = $this->getCatalogRequestMessageSearchForm();
@@ -1030,7 +1039,7 @@ class SellerController extends SellerBaseController
         /* save catalog request message[ */
         $dataToSave = array(
             'scatrequestmsg_scatrequest_id' => $requestRow['scatrequest_id'],
-            'scatrequestmsg_from_user_id' => UserAuthentication::getLoggedUserId(),
+            'scatrequestmsg_from_user_id' => $this->userParentId,
             'scatrequestmsg_from_admin_id' => 0,
             'scatrequestmsg_msg' => $post['message'],
             'scatrequestmsg_date' => date('Y-m-d H:i:s'),
@@ -1060,7 +1069,7 @@ class SellerController extends SellerBaseController
         $notificationData = array(
             'notification_record_type' => Notification::TYPE_CATALOG_REQUEST,
             'notification_record_id' => $scatrequestmsg_id,
-            'notification_user_id' => UserAuthentication::getLoggedUserId(),
+            'notification_user_id' => $this->userParentId,
             'notification_label_key' => Notification::CATALOG_REQUEST_MESSAGE_NOTIFICATION,
             'notification_added_on' => date('Y-m-d H:i:s'),
         );
@@ -1086,9 +1095,9 @@ class SellerController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $cRequestObj = new User(UserAuthentication::getLoggedUserId());
+        $cRequestObj = new User($this->userParentId);
         $srch = $cRequestObj->getUserCatalogRequestsObj($scatrequest_id);
-        $srch->addCondition('tucr.scatrequest_user_id', '=', UserAuthentication::getLoggedUserId());
+        $srch->addCondition('tucr.scatrequest_user_id', '=', $this->userParentId);
         $srch->addCondition('tucr.scatrequest_status', '=', 0);
         $srch->addMultipleFields(array('scatrequest_id', 'scatrequest_status'));
         $srch->doNotCalculateRecords();
@@ -1123,7 +1132,7 @@ class SellerController extends SellerBaseController
 
         //$srch = Product::getSearchObject($this->siteLangId);
         $srch = new ProductSearch($this->siteLangId, null, null, false, false);
-        $srch->joinProductShippedBySeller(UserAuthentication::getLoggedUserId());
+        $srch->joinProductShippedBySeller($this->userParentId);
         $srch->joinTable(AttributeGroup::DB_TBL, 'LEFT OUTER JOIN', 'product_attrgrp_id = attrgrp_id', 'attrgrp');
         $srch->joinTable(UpcCode::DB_TBL, 'LEFT OUTER JOIN', 'upc_product_id = product_id', 'upc');
 
@@ -1131,7 +1140,7 @@ class SellerController extends SellerBaseController
           $cnd->attachCondition( 'product_added_by_admin_id', '=', applicationConstants::YES,'OR');
 
           if( User::canAddCustomProduct() ){
-          $cnd->attachCondition('product_seller_id', '=', UserAuthentication::getLoggedUserId(),'OR');
+          $cnd->attachCondition('product_seller_id', '=', $this->userParentId,'OR');
           } */
         $srch->addDirectCondition(
             '((CASE
@@ -1140,7 +1149,7 @@ class SellerController extends SellerBaseController
                     END ) )'
         );
         if (User::canAddCustomProduct()) {
-            $srch->addDirectCondition('((product_seller_id = 0 AND product_added_by_admin_id = ' . applicationConstants::YES . ') OR product_seller_id = ' . UserAuthentication::getLoggedUserId() . ')');
+            $srch->addDirectCondition('((product_seller_id = 0 AND product_added_by_admin_id = ' . applicationConstants::YES . ') OR product_seller_id = ' . $this->userParentId . ')');
         } else {
             $cnd = $srch->addCondition('product_seller_id', '=', 0);
             $cnd->attachCondition('product_added_by_admin_id', '=', applicationConstants::YES, 'AND');
@@ -1223,10 +1232,10 @@ class SellerController extends SellerBaseController
 
         //$srch = Product::getSearchObject($this->siteLangId);
         $srch = new ProductSearch($this->siteLangId, null, null, true, true, true);
-        $srch->joinProductShippedBySeller(UserAuthentication::getLoggedUserId());
+        $srch->joinProductShippedBySeller($this->userParentId);
         $srch->joinTable(AttributeGroup::DB_TBL, 'LEFT OUTER JOIN', 'product_attrgrp_id = attrgrp_id', 'attrgrp');
         $srch->joinTable(UpcCode::DB_TBL, 'LEFT OUTER JOIN', 'upc_product_id = product_id', 'upc');
-        $srch->addCondition('product_seller_id', '=', UserAuthentication::getLoggedUserId());
+        $srch->addCondition('product_seller_id', '=', $this->userParentId);
         $srch->addDirectCondition(
             '((CASE
                     WHEN product_seller_id = 0 THEN product_active = 1
@@ -1234,7 +1243,7 @@ class SellerController extends SellerBaseController
                     END ) )'
         );
         if (User::canAddCustomProduct()) {
-            $srch->addDirectCondition('((product_seller_id = 0 AND product_added_by_admin_id = ' . applicationConstants::YES . ') OR product_seller_id = ' . UserAuthentication::getLoggedUserId() . ')');
+            $srch->addDirectCondition('((product_seller_id = 0 AND product_added_by_admin_id = ' . applicationConstants::YES . ') OR product_seller_id = ' . $this->userParentId . ')');
         } else {
             $cnd = $srch->addCondition('product_seller_id', '=', 0);
             $cnd->attachCondition('product_added_by_admin_id', '=', applicationConstants::YES, 'AND');
@@ -1278,6 +1287,7 @@ class SellerController extends SellerBaseController
         unset($post['page']);
         $frmSearchCatalogProduct->fill($post);
         $this->set("frmSearchCatalogProduct", $frmSearchCatalogProduct);
+        $this->set('canEdit', $this->userPrivilege->canEditProductTags(UserAuthentication::getLoggedUserId(), true));
         $this->_template->render(false, false);
     }
 
@@ -1291,7 +1301,7 @@ class SellerController extends SellerBaseController
 
         $product_id = FatUtility::int($post['product_id']);
         $shippedBy = $post['shippedBy'];
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         if (1 > $product_id && 1 > $userId) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
@@ -1322,6 +1332,7 @@ class SellerController extends SellerBaseController
 
     public function taxCategories()
     {
+        $this->userPrivilege->canViewTaxCategory(UserAuthentication::getLoggedUserId());
         $frmSearch = $this->getTaxCatSearchForm($this->siteLangId);
         $this->set("frmSearch", $frmSearch);
         $this->_template->render(true, true);
@@ -1329,8 +1340,8 @@ class SellerController extends SellerBaseController
 
     public function searchTaxCategories()
     {
-        //echo UserAuthentication::getLoggedUserId();
-        $userId = UserAuthentication::getLoggedUserId();
+        //echo $this->userParentId;
+        $userId = $this->userParentId;
         $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
         $frmSearch = $this->getTaxCatSearchForm($this->siteLangId);
 
@@ -1376,7 +1387,7 @@ class SellerController extends SellerBaseController
                 //$records[$tcatId]['taxval_seller_user_id'] = $userId;
             }
         }
-
+        $this->set('canEdit', $this->userPrivilege->canEditTaxCategory(UserAuthentication::getLoggedUserId(), true));
         $this->set("arr_listing", $records);
         $this->set('pageCount', $srch->pages());
         $this->set('recordCount', $srch->recordCount());
@@ -1399,7 +1410,7 @@ class SellerController extends SellerBaseController
         $srch->joinTable(
             Tax::DB_TBL_VALUES,
             'LEFT OUTER JOIN',
-            'tv.taxval_taxcat_id = t.taxcat_id AND taxval_seller_user_id = ' . UserAuthentication::getLoggedUserId(),
+            'tv.taxval_taxcat_id = t.taxcat_id AND taxval_seller_user_id = ' . $this->userParentId,
             'tv'
         );
         $srch->addCondition('taxcat_id', '=', $taxcat_id);
@@ -1422,12 +1433,13 @@ class SellerController extends SellerBaseController
         // $frm->fill($taxValues+array('taxcat_id'=>$taxcat_id));
 
         $this->set('frm', $frm);
-        $this->set('userId', UserAuthentication::getLoggedUserId());
+        $this->set('userId', $this->userParentId);
         $this->_template->render(false, false);
     }
 
     public function setUpTaxRates()
     {
+        $this->userPrivilege->canEditTaxCategory(UserAuthentication::getLoggedUserId());
         $frm = $this->getchangeTaxRatesForm($this->siteLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
@@ -1456,7 +1468,7 @@ class SellerController extends SellerBaseController
 
         $data = array(
             'taxval_taxcat_id' => $taxcat_id,
-            'taxval_seller_user_id' => UserAuthentication::getLoggedUserId(),
+            'taxval_seller_user_id' => $this->userParentId,
             'taxval_is_percent' => $post['taxval_is_percent'],
             'taxval_value' => $post['taxval_value'],
             'taxval_options' => FatUtility::convertToJson($taxvalOptions),
@@ -1475,12 +1487,13 @@ class SellerController extends SellerBaseController
 
     public function shop($tab = '', $subTab = '')
     {
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        $this->userPrivilege->canViewShop(UserAuthentication::getLoggedUserId());
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
         }
         $this->_template->addJs('js/jscolor.js');
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $shopDetails = Shop::getAttributesByUserId($userId, array('shop_id'), false);
 
         $shop_id = 0;
@@ -1514,7 +1527,7 @@ class SellerController extends SellerBaseController
 
     public function shopForm()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $shopDetails = Shop::getAttributesByUserId($userId, null, false);
         if (!false == $shopDetails && $shopDetails['shop_active'] != applicationConstants::ACTIVE) {
             Message::addErrorMessage(Labels::getLabel('MSG_Your_shop_deactivated_contact_admin', $this->siteLangId));
@@ -1562,7 +1575,7 @@ class SellerController extends SellerBaseController
 
     public function shopMediaForm()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $shopDetails = Shop::getAttributesByUserId($userId, null, false);
 
         if (!false == $shopDetails && $shopDetails['shop_active'] != applicationConstants::ACTIVE) {
@@ -1600,7 +1613,7 @@ class SellerController extends SellerBaseController
 
     public function shopImages($imageType, $lang_id = 0, $slide_screen = 0)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $shopDetails = Shop::getAttributesByUserId($userId, null, false);
 
         if (!false == $shopDetails && $shopDetails['shop_active'] != applicationConstants::ACTIVE) {
@@ -1650,7 +1663,7 @@ class SellerController extends SellerBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         $shopDetails = Shop::getAttributesByUserId($userId, null, false);
 
@@ -1695,7 +1708,7 @@ class SellerController extends SellerBaseController
 
     public function shopThemeColor()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $shopDetails = Shop::getAttributesByUserId($userId, null, false);
 
         if (false == $shopDetails) {
@@ -1747,7 +1760,7 @@ class SellerController extends SellerBaseController
 
     public function setupThemeColor()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         if (!$this->isShopActive($userId)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Your_shop_deactivated_contact_admin', $this->siteLangId));
@@ -1795,7 +1808,7 @@ class SellerController extends SellerBaseController
 
     public function resetDefaultThemeColor()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         if (!$this->isShopActive($userId)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Your_shop_deactivated_contact_admin', $this->siteLangId));
@@ -1812,7 +1825,7 @@ class SellerController extends SellerBaseController
 
     public function shopTemplate()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $shopDetails = Shop::getAttributesByUserId($userId, null, false);
 
         if (false == $shopDetails) {
@@ -1843,7 +1856,7 @@ class SellerController extends SellerBaseController
 
     public function setTemplate($ltemplate_id)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $ltemplate_id = FatUtility::int($ltemplate_id);
         if (1 > $ltemplate_id) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
@@ -1884,7 +1897,8 @@ class SellerController extends SellerBaseController
 
     public function setupShop()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
+        $userId = $this->userParentId;
 
         if (!$this->isShopActive($userId)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Your_shop_deactivated_contact_admin', $this->siteLangId));
@@ -1992,7 +2006,8 @@ class SellerController extends SellerBaseController
 
     public function setupShopLang()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
+        $userId = $this->userParentId;
 
         if (!$this->isShopActive($userId)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Your_shop_deactivated_contact_admin', $this->siteLangId));
@@ -2098,7 +2113,12 @@ class SellerController extends SellerBaseController
 
     public function uploadShopImages()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        if (!$this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId(), true)) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Unauthorized_Access!', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $userId = $this->userParentId;
 
         if (!$shopDetails = $this->isShopActive($userId, 0, true)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Your_shop_deactivated_contact_admin', $this->siteLangId));
@@ -2158,7 +2178,8 @@ class SellerController extends SellerBaseController
 
     public function removeShopImage($banner_id, $langId, $imageType, $slide_screen = 0)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
+        $userId = $this->userParentId;
         $langId = FatUtility::int($langId);
 
         if (!$shopDetails = $this->isShopActive($userId, 0, true)) {
@@ -2197,7 +2218,7 @@ class SellerController extends SellerBaseController
 
     public function addCategoryBanner($prodCatId)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $prodCatId = FatUtility::int($prodCatId);
 
         if (1 > $prodCatId) {
@@ -2243,7 +2264,7 @@ class SellerController extends SellerBaseController
     }
 
     /* public function categoryBannerLangForm( $prodCatId, $langId ){
-      $userId = UserAuthentication::getLoggedUserId();
+      $userId = $this->userParentId;
       $prodCatId = FatUtility::int($prodCatId);
       $langId = FatUtility::int($langId);
 
@@ -2288,7 +2309,7 @@ class SellerController extends SellerBaseController
 
     public function setUpCategoryBanner()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $post = FatApp::getPostedData();
 
         $prodCatId = FatApp::getPostedData('prodcat_id', FatUtility::VAR_INT, 0);
@@ -2354,7 +2375,7 @@ class SellerController extends SellerBaseController
 
     public function removeCategoryBanner($prodCatId, $langId)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $prodCatId = FatUtility::int($prodCatId);
         $langId = FatUtility::int($langId);
 
@@ -2386,7 +2407,7 @@ class SellerController extends SellerBaseController
 
     public function searchCategoryBanners()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         $post = FatApp::getPostedData();
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : intval($post['page']);
@@ -2425,6 +2446,7 @@ class SellerController extends SellerBaseController
 
     public function orderCancellationRequests()
     {
+        $this->userPrivilege->canViewCancellationRequests(UserAuthentication::getLoggedUserId());
         $frm = $this->getOrderCancellationRequestsSearchForm($this->siteLangId);
         $this->set('frmOrderCancellationRequestsSrch', $frm);
         $this->_template->render(true, true);
@@ -2432,6 +2454,7 @@ class SellerController extends SellerBaseController
 
     public function orderCancellationRequestSearch()
     {
+        $this->userPrivilege->canViewCancellationRequests(UserAuthentication::getLoggedUserId());
         $frm = $this->getOrderCancellationRequestsSearchForm($this->siteLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : FatUtility::int($post['page']);
@@ -2481,7 +2504,7 @@ class SellerController extends SellerBaseController
         $srch->joinOrderProducts();
         $srch->joinOrderCancelReasons();
         $srch->joinOrders();
-        $srch->addCondition('op_selprod_user_id', '=', UserAuthentication::getLoggedUserId());
+        $srch->addCondition('op_selprod_user_id', '=', $this->userParentId);
         $srch->addMultipleFields(array('ocrequest_id', 'ocrequest_date', 'ocrequest_status', 'order_id', 'op_invoice_number', 'op_id', 'IFNULL(ocreason_title, ocreason_identifier) as ocreason_title', 'ocrequest_message', 'op_selprod_title', 'op_product_name', 'op_selprod_id', 'op_is_batch'));
         $srch->addOrder('ocrequest_date', 'DESC');
         return $srch;
@@ -2489,6 +2512,7 @@ class SellerController extends SellerBaseController
 
     public function orderReturnRequests()
     {
+        $this->userPrivilege->canViewReturnRequests(UserAuthentication::getLoggedUserId());
         $frm = $this->getOrderReturnRequestsSearchForm($this->siteLangId);
         $this->set('frmOrderReturnRequestsSrch', $frm);
         $this->_template->render(true, true);
@@ -2496,10 +2520,11 @@ class SellerController extends SellerBaseController
 
     public function orderReturnRequestSearch()
     {
+        $this->userPrivilege->canViewReturnRequests(UserAuthentication::getLoggedUserId());
         $frm = $this->getOrderReturnRequestsSearchForm($this->siteLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : FatUtility::int($post['page']);
-        $user_id = UserAuthentication::getLoggedUserId();
+        $user_id = $this->userParentId;
         $keyword = $post['keyword'];
         $orrequest_date_from = $post['orrequest_date_from'];
         $orrequest_date_to = $post['orrequest_date_to'];
@@ -2565,7 +2590,7 @@ class SellerController extends SellerBaseController
     {
         $srch = new OrderReturnRequestSearch($this->siteLangId);
         $srch->joinOrderProducts();
-        $srch->addCondition('op_selprod_user_id', '=', UserAuthentication::getLoggedUserId());
+        $srch->addCondition('op_selprod_user_id', '=', $this->userParentId);
 
         $srch->addMultipleFields(
             array('orrequest_id', 'orrequest_user_id', 'orrequest_qty', 'orrequest_type', 'orrequest_reference', 'orrequest_date', 'orrequest_status',
@@ -2602,8 +2627,9 @@ class SellerController extends SellerBaseController
 
     public function viewOrderReturnRequest($orrequest_id)
     {
+        $this->userPrivilege->canViewReturnRequests(UserAuthentication::getLoggedUserId());
         $orrequest_id = FatUtility::int($orrequest_id);
-        $user_id = UserAuthentication::getLoggedUserId();
+        $user_id = $this->userParentId;
 
         $srch = new OrderReturnRequestSearch($this->siteLangId);
         $srch->joinOrderProducts();
@@ -2661,7 +2687,7 @@ class SellerController extends SellerBaseController
                 $this->set('attachedFile', $attachedFile);
             }
         }
-
+        $this->set('canEdit', $this->userPrivilege->canEditReturnRequests(UserAuthentication::getLoggedUserId(), true));
         $this->set('frmMsg', $frm);
         $this->set('canEscalateRequest', $canEscalateRequest);
         $this->set('canApproveReturnRequest', $canApproveReturnRequest);
@@ -2671,14 +2697,14 @@ class SellerController extends SellerBaseController
         $this->set('returnRequestTypeArr', OrderReturnRequest::getRequestTypeArr($this->siteLangId));
         $this->set('requestRequestStatusArr', OrderReturnRequest::getRequestStatusArr($this->siteLangId));
         $this->set('logged_user_name', UserAuthentication::getLoggedUserAttribute('user_name'));
-        $this->set('logged_user_id', UserAuthentication::getLoggedUserId());
+        $this->set('logged_user_id', $this->userParentId);
         $this->_template->render(true, true);
     }
 
     public function approveOrderReturnRequest($orrequest_id)
     {
         $orrequest_id = FatUtility::int($orrequest_id);
-        $user_id = UserAuthentication::getLoggedUserId();
+        $user_id = $this->userParentId;
 
         $srch = new OrderReturnRequestSearch($this->siteLangId);
         $srch->joinOrderProducts();
@@ -2733,7 +2759,7 @@ class SellerController extends SellerBaseController
         }
 
         $orrmsg_orrequest_id = FatUtility::int($orrmsg_orrequest_id);
-        $user_id = UserAuthentication::getLoggedUserId();
+        $user_id = $this->userParentId;
 
         $srch = new OrderReturnRequestSearch($this->siteLangId);
         $srch->addCondition('orrequest_id', '=', $orrmsg_orrequest_id);
@@ -2791,14 +2817,14 @@ class SellerController extends SellerBaseController
 
     public function socialPlatforms()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $this->set('siteLangId', $this->siteLangId);
         $this->_template->render(true, true);
     }
 
     public function socialPlatformSearch()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $srch = SocialPlatform::getSearchObject($this->siteLangId);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
@@ -2811,7 +2837,7 @@ class SellerController extends SellerBaseController
 
     public function socialPlatformForm($splatform_id = 0)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $splatform_id = FatUtility::int($splatform_id);
         $frm = $this->getSocialPlatformForm($splatform_id);
 
@@ -2843,7 +2869,7 @@ class SellerController extends SellerBaseController
         $splatform_id = $post['splatform_id'];
         unset($post['splatform_id']);
         $data_to_be_save = $post;
-        $data_to_be_save['splatform_user_id'] = UserAuthentication::getLoggedUserId();
+        $data_to_be_save['splatform_user_id'] = $this->userParentId;
 
         $recordObj = new SocialPlatform($splatform_id);
         $recordObj->assignValues($data_to_be_save, true);
@@ -2957,7 +2983,7 @@ class SellerController extends SellerBaseController
 
     public function deleteSocialPlatform()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $splatformId = FatApp::getPostedData('splatformId', FatUtility::VAR_INT, 0);
         if ($splatformId < 1) {
             Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Access", $this->siteLangId));
@@ -2986,7 +3012,7 @@ class SellerController extends SellerBaseController
 
     public function sellerProductsAutoComplete()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $pageSize = FatApp::getConfig('CONF_PAGE_SIZE');
         $db = FatApp::getDb();
         $json = array();
@@ -3046,7 +3072,7 @@ class SellerController extends SellerBaseController
 
     public function InventoryUpdate()
     {
-        if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
+        if (!$this->isShopActive($this->userParentId, 0, true)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
         }
         $extraPage = new Extrapage();
@@ -3056,7 +3082,7 @@ class SellerController extends SellerBaseController
         $this->_template->render(true, true);
     }
 
-    public function InventoryUpdateForm()
+    public function inventoryUpdateForm()
     {
         $frm = $this->getInventoryUpdateForm($this->siteLangId);
 
@@ -3068,7 +3094,7 @@ class SellerController extends SellerBaseController
     {
         $frm = $this->getInventoryUpdateForm($this->siteLangId);
         $post = FatApp::getPostedData();
-        $loggedUserId = UserAuthentication::getLoggedUserId();
+        $loggedUserId = $this->userParentId;
         $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
         if (!isset($_FILES['file'])) {
             /* Message::addErrorMessage(Labels::getLabel('MSG_Invalid_File_Upload',$this->siteLangId)); */
@@ -3149,7 +3175,7 @@ class SellerController extends SellerBaseController
         $srch = SellerProduct::getSearchObject($this->siteLangId);
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
         $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->siteLangId, 'p_l');
-        $srch->addCondition('selprod_user_id', '=', UserAuthentication::getLoggedUserId());
+        $srch->addCondition('selprod_user_id', '=', $this->userParentId);
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addCondition('selprod_active', '=', applicationConstants::ACTIVE);
         $srch->addOrder('product_name');
@@ -3283,7 +3309,7 @@ class SellerController extends SellerBaseController
         if ($splatform_id > 0) {
             $iconsArr = SocialPlatform::getIconArr($this->siteLangId);
         } else {
-            $iconsArr = SocialPlatform::getAvailableIconsArr(UserAuthentication::getLoggedUserId(), $this->siteLangId);
+            $iconsArr = SocialPlatform::getAvailableIconsArr($this->userParentId, $this->siteLangId);
         }
         $frm = new Form('frmSocialPlatform');
         $frm->addHiddenField('', 'splatform_id', $splatform_id);
@@ -3555,11 +3581,11 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl());
         }
-        $includeFreeSubscription = OrderSubscription::canUserBuyFreeSubscription($this->siteLangId, UserAuthentication::getLoggedUserId());
+        $includeFreeSubscription = OrderSubscription::canUserBuyFreeSubscription($this->siteLangId, $this->userParentId);
         $packagesArr = SellerPackages::getSellerVisiblePackages($this->siteLangId, $includeFreeSubscription);
 
         $currentActivePlanId = 0;
-        $currentPlanData = OrderSubscription::getUserCurrentActivePlanDetails($this->siteLangId, UserAuthentication::getLoggedUserId(), array(OrderSubscription::DB_TBL_PREFIX . 'plan_id'));
+        $currentPlanData = OrderSubscription::getUserCurrentActivePlanDetails($this->siteLangId, $this->userParentId, array(OrderSubscription::DB_TBL_PREFIX . 'plan_id'));
         $currentActivePlanId = $currentPlanData[OrderSubscription::DB_TBL_PREFIX . 'plan_id'];
 
         foreach ($packagesArr as $key => $package) {
@@ -3586,10 +3612,10 @@ class SellerController extends SellerBaseController
             );
             FatApp::redirectUser(CommonHelper::generateUrl('account'));
         }
-        $currentActivePlan = OrderSubscription:: getUserCurrentActivePlanDetails($this->siteLangId, UserAuthentication::getLoggedUserId(), array(OrderSubscription::DB_TBL_PREFIX . 'till_date', OrderSubscription::DB_TBL_PREFIX . 'price', OrderSubscription::DB_TBL_PREFIX . 'type'));
+        $currentActivePlan = OrderSubscription:: getUserCurrentActivePlanDetails($this->siteLangId, $this->userParentId, array(OrderSubscription::DB_TBL_PREFIX . 'till_date', OrderSubscription::DB_TBL_PREFIX . 'price', OrderSubscription::DB_TBL_PREFIX . 'type'));
 
         $frmOrderSrch = $this->getSubscriptionOrderSearchForm($this->siteLangId);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $autoRenew = User::getAttributesById($userId, 'user_autorenew_subscription');
 
         $this->set('currentActivePlan', $currentActivePlan);
@@ -3624,7 +3650,7 @@ class SellerController extends SellerBaseController
         }
         $shipping_rates = array();
         $post = FatApp::getPostedData();
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         //$shipping_rates = Products::getProductShippingRates();
         $this->set('siteLangId', $this->siteLangId);
@@ -3716,7 +3742,7 @@ class SellerController extends SellerBaseController
 
     public function toggleAutoRenewalSubscription()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $status = User::getAttributesById($userId, 'user_autorenew_subscription');
         if ($status) {
             $status = applicationConstants::OFF;
@@ -4068,7 +4094,7 @@ class SellerController extends SellerBaseController
                     foreach ($optionCombinations as $optionKey => $optionValue) {
                         /* Check if product already added for this option [ */
                         $selProdCode = $product_id . '_' . $optionKey;
-                        $selProdAvailable = Product::isSellProdAvailableForUser($selProdCode, $this->siteLangId, UserAuthentication::getLoggedUserId());
+                        $selProdAvailable = Product::isSellProdAvailableForUser($selProdCode, $this->siteLangId, $this->userParentId);
                         if (!empty($selProdAvailable) && !$selProdAvailable['selprod_deleted']) {
                             continue;
                         }
@@ -4159,7 +4185,7 @@ class SellerController extends SellerBaseController
         $product = FatApp::getDb()->fetch($productRs);
         /* ] */
 
-        $taxData = Tax::getTaxCatByProductId($product_id, UserAuthentication::getLoggedUserId(), $this->siteLangId, array('ptt_taxcat_id'));
+        $taxData = Tax::getTaxCatByProductId($product_id, $this->userParentId, $this->siteLangId, array('ptt_taxcat_id'));
         if (!empty($taxData)) {
             $product = array_merge($product, $taxData);
         }
@@ -4188,7 +4214,7 @@ class SellerController extends SellerBaseController
 
     public function returnAddress()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $userObj = new User($userId);
         $data = $userObj->getUserReturnAddress($this->siteLangId);
         $this->set('info', $data);
@@ -4197,7 +4223,7 @@ class SellerController extends SellerBaseController
 
     public function returnAddressForm()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         $frm = $this->getReturnAddressForm();
         $stateId = 0;
@@ -4235,7 +4261,8 @@ class SellerController extends SellerBaseController
 
     public function setReturnAddress()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
+        $userId = $this->userParentId;
 
         $post = FatApp::getPostedData();
         $ura_state_id = FatUtility::int($post['ura_state_id']);
@@ -4262,7 +4289,7 @@ class SellerController extends SellerBaseController
     public function returnAddressLangForm($langId, $autoFillLangData = 0)
     {
         $langId = FatUtility::int($langId);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $userId = FatUtility::int($userId);
 
         if (1 > $langId || 1 > $userId) {
@@ -4316,9 +4343,10 @@ class SellerController extends SellerBaseController
 
     public function setReturnAddressLang()
     {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $lang_id = $post['lang_id'];
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         if ($userId == 0 || $lang_id == 0) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
@@ -4430,7 +4458,7 @@ class SellerController extends SellerBaseController
 
     public function searchSellerOffers()
     {
-        $offers = DiscountCoupons::getUserCoupons(UserAuthentication::getLoggedUserId(), $this->siteLangId, DiscountCoupons::TYPE_SELLER_PACKAGE);
+        $offers = DiscountCoupons::getUserCoupons($this->userParentId, $this->siteLangId, DiscountCoupons::TYPE_SELLER_PACKAGE);
 
         if ($offers) {
             $this->set('offers', $offers);
@@ -4448,6 +4476,7 @@ class SellerController extends SellerBaseController
 
     public function specialPrice($selProd_id = 0)
     {
+        $this->userPrivilege->canViewSpecialPrice(UserAuthentication::getLoggedUserId());
         $selProd_id = FatUtility::int($selProd_id);
 
         if (0 < $selProd_id || 0 > $selProd_id) {
@@ -4494,7 +4523,8 @@ class SellerController extends SellerBaseController
 
     public function searchSpecialPriceProducts()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $this->userPrivilege->canViewSpecialPrice(UserAuthentication::getLoggedUserId());
+        $userId = $this->userParentId;
         $post = FatApp::getPostedData();
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
         $selProdId = FatApp::getPostedData('selprod_id', FatUtility::VAR_INT, 0);
@@ -4508,7 +4538,7 @@ class SellerController extends SellerBaseController
         $arrListing = $db->fetchAll($rs);
 
         $this->set("arrListing", $arrListing);
-
+        $this->set('canEdit', $this->userPrivilege->canEditSpecialPrice(UserAuthentication::getLoggedUserId(), true));
         $this->set('page', $page);
         $this->set('pageCount', $srch->pages());
         $this->set('postedData', $post);
@@ -4529,6 +4559,7 @@ class SellerController extends SellerBaseController
 
     public function updateSpecialPriceRow()
     {
+        $this->userPrivilege->canEditSpecialPrice(UserAuthentication::getLoggedUserId());
         $data = FatApp::getPostedData();
         if (empty($data)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
@@ -4554,7 +4585,8 @@ class SellerController extends SellerBaseController
 
     private function updateSelProdSplPrice($post, $return = false)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $this->userPrivilege->canEditSpecialPrice(UserAuthentication::getLoggedUserId());
+        $userId = $this->userParentId;
         $selprod_id = !empty($post['splprice_selprod_id']) ? FatUtility::int($post['splprice_selprod_id']) : 0;
         $splprice_id = !empty($post['splprice_id']) ? FatUtility::int($post['splprice_id']) : 0;
 
@@ -4594,10 +4626,10 @@ class SellerController extends SellerBaseController
 
         $smt = 'splprice_selprod_id = ? AND ';
         $smt .= '(
-                                ((splprice_start_date between ? AND ?) OR (splprice_end_date between ? AND ?))
-                                OR
-                                ((? BETWEEN splprice_start_date AND splprice_end_date) OR (? BETWEEN  splprice_start_date AND splprice_end_date))
-                            )';
+            ((splprice_start_date between ? AND ?) OR (splprice_end_date between ? AND ?))
+            OR
+            ((? BETWEEN splprice_start_date AND splprice_end_date) OR (? BETWEEN  splprice_start_date AND splprice_end_date))
+        )';
         $smtValues = array(
             $selprod_id,
             $post['splprice_start_date'],
@@ -4649,6 +4681,7 @@ class SellerController extends SellerBaseController
 
     public function updateSpecialPriceColValue()
     {
+        $this->userPrivilege->canEditSpecialPrice(UserAuthentication::getLoggedUserId());
         $splPriceId = FatApp::getPostedData('splprice_id', FatUtility::VAR_INT, 0);
         if (1 > $splPriceId) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
@@ -4695,6 +4728,7 @@ class SellerController extends SellerBaseController
 
     public function deleteSellerProductSpecialPrice()
     {
+        $this->userPrivilege->canEditSpecialPrice(UserAuthentication::getLoggedUserId());
         $splPriceId = FatApp::getPostedData('splprice_id', FatUtility::VAR_INT, 0);
         if (1 > $splPriceId) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
@@ -4711,6 +4745,7 @@ class SellerController extends SellerBaseController
 
     public function deleteSpecialPriceRows()
     {
+        $this->userPrivilege->canEditSpecialPrice(UserAuthentication::getLoggedUserId());
         $splpriceIdArr = FatApp::getPostedData('selprod_ids');
         $splpriceIds = FatUtility::int($splpriceIdArr);
         foreach ($splpriceIds as $splPriceId => $selProdId) {
@@ -4724,7 +4759,8 @@ class SellerController extends SellerBaseController
 
     private function deleteSpecialPrice($splPriceId, $selProdId)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $this->userPrivilege->canEditSpecialPrice(UserAuthentication::getLoggedUserId());
+        $userId = $this->userParentId;
         $sellerProdObj = new SellerProduct($selProdId);
         if (!$sellerProdObj->deleteSellerProductSpecialPrice($splPriceId, $selProdId, $userId)) {
             FatUtility::dieWithError(Labels::getLabel($sellerProdObj->getError(), $this->siteLangId));
@@ -4735,7 +4771,7 @@ class SellerController extends SellerBaseController
     public function checkIfAvailableForInventory($productId)
     {
         $productId = FatUtility::int($productId);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         if (0 == $productId) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
         }

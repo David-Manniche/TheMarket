@@ -297,7 +297,7 @@ class AdminUsersController extends AdminBaseController
         }
     }
 
-    public function userPermissions($adminId = 0)
+    public function permissions($adminId = 0)
     {
         $this->objPrivilege->canViewAdminPermissions();
         $adminId = FatUtility::int($adminId);
@@ -428,7 +428,8 @@ class AdminUsersController extends AdminBaseController
 
     private function getAllAccessForm()
     {
-        $permissionArr = SellerPrivilege::getPermissionArr();
+        $this->objPrivilege->canViewAdminUsers();
+        $permissionArr = AdminPrivilege::getPermissionArr();
         $frm = new Form('frmAllAccess');
         $frm->setFormTagAttribute('class', 'web_form form_horizontal');
         $fld = $frm->addSelectBox(Labels::getLabel('LBL_Select_permission_for_all_modules', $this->adminLangId), 'permissionForAll', $permissionArr, '', array('class' => 'permissionForAll'), Labels::getLabel('LBL_Select', $this->adminLangId));

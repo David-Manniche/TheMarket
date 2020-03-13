@@ -848,6 +848,7 @@ trait SellerProducts
 
     public function resetCatTaxRates($taxcat_id)
     {
+        $this->userPrivilege->canEditTaxCategory(UserAuthentication::getLoggedUserId());
         $taxcat_id = FatUtility::int($taxcat_id);
         $userId = $this->userParentId;
 
@@ -2417,6 +2418,7 @@ trait SellerProducts
 
     public function volumeDiscount($selProd_id = 0)
     {
+        $this->userPrivilege->canViewVolumeDiscount(UserAuthentication::getLoggedUserId());
         $selProd_id = FatUtility::int($selProd_id);
         if (0 < $selProd_id || 0 > $selProd_id) {
             $selProd_id = SellerProduct::getAttributesByID($selProd_id, 'selprod_id', false);
@@ -2461,6 +2463,7 @@ trait SellerProducts
 
     public function searchVolumeDiscountProducts()
     {
+        $this->userPrivilege->canViewVolumeDiscount(UserAuthentication::getLoggedUserId());
         $userId = $this->userParentId;
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
         $selProdId = FatApp::getPostedData('selprod_id', FatUtility::VAR_INT, 0);
@@ -2476,7 +2479,7 @@ trait SellerProducts
         $arrListing = $db->fetchAll($rs);
 
         $this->set("arrListing", $arrListing);
-
+        $this->set('canEdit', $this->userPrivilege->canEditVolumeDiscount(UserAuthentication::getLoggedUserId(), true));
         $this->set('page', $page);
         $this->set('pageCount', $srch->pages());
         $this->set('postedData', FatApp::getPostedData());
@@ -2497,6 +2500,7 @@ trait SellerProducts
 
     public function updateVolumeDiscountRow()
     {
+        $this->userPrivilege->canEditVolumeDiscount(UserAuthentication::getLoggedUserId());
         $data = FatApp::getPostedData();
 
         if (empty($data)) {
@@ -2530,6 +2534,7 @@ trait SellerProducts
 
     public function updateVolumeDiscountColValue()
     {
+        $this->userPrivilege->canEditVolumeDiscount(UserAuthentication::getLoggedUserId());
         $userId = $this->userParentId;
         $volDiscountId = FatApp::getPostedData('voldiscount_id', FatUtility::VAR_INT, 0);
         if (1 > $volDiscountId) {
@@ -2603,6 +2608,7 @@ trait SellerProducts
 
     public function relatedProducts($selProd_id = 0)
     {
+        $this->userPrivilege->canViewReturnRequests(UserAuthentication::getLoggedUserId());
         $selProd_id = FatUtility::int($selProd_id);
         if (0 < $selProd_id || 0 > $selProd_id) {
             $selProd_id = SellerProduct::getAttributesByID($selProd_id, 'selprod_id', false);
@@ -2650,6 +2656,7 @@ trait SellerProducts
 
     public function searchRelatedProducts()
     {
+        $this->userPrivilege->canViewRelatedProducts(UserAuthentication::getLoggedUserId());
         $userId = $this->userParentId;
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
         $selProdId = FatApp::getPostedData('selprod_id', FatUtility::VAR_INT, 0);
@@ -2674,7 +2681,7 @@ trait SellerProducts
             $arrListing[$relatedProd['related_sellerproduct_id']][$key] = $relatedProd;
         }
         $this->set("arrListing", $arrListing);
-
+        $this->set('canEdit', $this->userPrivilege->canEditRelatedProducts(UserAuthentication::getLoggedUserId(), true));
         $this->set('page', $page);
         $this->set('pageCount', $srch->pages());
         $this->set('postedData', FatApp::getPostedData());
@@ -2695,6 +2702,7 @@ trait SellerProducts
 
     public function setupRelatedProduct()
     {
+        $this->userPrivilege->canEditRelatedProducts(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($post['selprod_id']);
         if (!UserPrivilege::canEditSellerProduct($selprod_id)) {
@@ -2719,6 +2727,7 @@ trait SellerProducts
 
     public function deleteSelprodRelatedProduct($selprod_id, $relprod_id)
     {
+        $this->userPrivilege->canEditRelatedProducts(UserAuthentication::getLoggedUserId());
         $selprod_id = FatUtility::int($selprod_id);
         $relprod_id = FatUtility::int($relprod_id);
         if (!$selprod_id || !$relprod_id) {
@@ -2768,6 +2777,7 @@ trait SellerProducts
 
     public function upsellProducts($selProd_id = 0)
     {
+        $this->userPrivilege->canViewBuyTogetherProducts(UserAuthentication::getLoggedUserId());
         $selProd_id = FatUtility::int($selProd_id);
         if (0 < $selProd_id || 0 > $selProd_id) {
             $selProd_id = SellerProduct::getAttributesByID($selProd_id, 'selprod_id', false);
@@ -2815,6 +2825,7 @@ trait SellerProducts
 
     public function searchUpsellProducts()
     {
+        $this->userPrivilege->canViewBuyTogetherProducts(UserAuthentication::getLoggedUserId());
         $userId = $this->userParentId;
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
         $selProdId = FatApp::getPostedData('selprod_id', FatUtility::VAR_INT, 0);
@@ -2839,7 +2850,7 @@ trait SellerProducts
         }
 
         $this->set("arrListing", $arrListing);
-
+        $this->set('canEdit', $this->userPrivilege->canEditBuyTogetherProducts(UserAuthentication::getLoggedUserId(), true));
         $this->set('page', $page);
         $this->set('pageCount', $srch->pages());
         $this->set('postedData', FatApp::getPostedData());
@@ -2860,6 +2871,7 @@ trait SellerProducts
 
     public function setupUpsellProduct()
     {
+        $this->userPrivilege->canEditBuyTogetherProducts(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($post['selprod_id']);
         if (!UserPrivilege::canEditSellerProduct($selprod_id)) {
@@ -2886,6 +2898,7 @@ trait SellerProducts
 
     public function deleteSelprodUpsellProduct($selprod_id, $relprod_id)
     {
+        $this->userPrivilege->canEditBuyTogetherProducts(UserAuthentication::getLoggedUserId());
         $selprod_id = FatUtility::int($selprod_id);
         $relprod_id = FatUtility::int($relprod_id);
         if (!$selprod_id || !$relprod_id) {

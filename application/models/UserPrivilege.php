@@ -244,7 +244,7 @@ class UserPrivilege
             if ($level <= $this->loadedPermissions[$sellerId][$secId]) {
                 return true;
             }
-            return $this->returnFalseOrDie($returnResult, CommonHelper::getLangId());
+            return $this->returnFalseOrDie($returnResult);
         }
 
         $user = new User($sellerId);
@@ -253,7 +253,7 @@ class UserPrivilege
         $rs = $srch->getResultSet();
         $userData = FatApp::getDb()->fetch($rs);
         if (empty($userData)) {
-            return $this->returnFalseOrDie($returnResult, CommonHelper::getLangId());
+            return $this->returnFalseOrDie($returnResult);
         }
 
         $srch = UserPermission::getSearchObject();
@@ -262,10 +262,10 @@ class UserPrivilege
 
         $srch->addFld('userperm_value');
         $rs = $srch->getResultSet();
-        
+
         if (!$row = $db->fetch($rs)) {
             $this->cacheLoadedPermission($sellerId, $secId, static::PRIVILEGE_NONE);
-            return $this->returnFalseOrDie($returnResult, CommonHelper::getLangId());
+            return $this->returnFalseOrDie($returnResult);
         }
 
         $permissionLevel = $row['userperm_value'];
@@ -273,7 +273,7 @@ class UserPrivilege
         $this->cacheLoadedPermission($sellerId, $secId, $permissionLevel);
 
         if ($level > $permissionLevel) {
-            return $this->returnFalseOrDie($returnResult, CommonHelper::getLangId());
+            return $this->returnFalseOrDie($returnResult);
         }
 
         return (true);

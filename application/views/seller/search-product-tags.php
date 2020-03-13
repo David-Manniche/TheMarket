@@ -39,8 +39,9 @@ foreach ($arr_listing as $sn => $row) {
                     $tagData[$key]['id'] = $data['tag_id'];
                     $tagData[$key]['value'] = $data['tag_identifier'];
                 }
+                $readOnly = (!$canEdit) ? 'readonly' : '';
                 $encodedData = json_encode($tagData);
-                $td->appendElement('plaintext', array(), "<div class='product-tag scroll-y' id='product".$row['product_id']."' data-simplebar><input class='tag_name' type='text' name='tag_name".$row['product_id']."' value='".$encodedData."' data-product_id='".$row['product_id']."'></div>", true);
+                $td->appendElement('plaintext', array(), "<div class='product-tag scroll-y' id='product".$row['product_id']."' data-simplebar><input ".$readOnly." class='tag_name' type='text' name='tag_name".$row['product_id']."' value='".$encodedData."' data-product_id='".$row['product_id']."'></div>", true);
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);

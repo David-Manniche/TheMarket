@@ -4,6 +4,7 @@ trait Options
 {
     public function options()
     {
+        $this->userPrivilege->canViewProductOptions(UserAuthentication::getLoggedUserId());
         $frmSearch = $this->getSearchForm();
         $this->set("frmSearch", $frmSearch);
         $this->_template->addJs('js/jscolor.js');
@@ -30,7 +31,7 @@ trait Options
         $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $post = $frmSearch->getFormDataFromArray($data);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $srch = Option::getSearchObject($this->siteLangId);
         if (!empty($post['keyword'])) {
             $condition = $srch->addCondition('o.option_identifier', 'like', '%' . $post['keyword'] . '%');
@@ -44,6 +45,7 @@ trait Options
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
 
+        $this->set('canEdit', $this->userPrivilege->canEditProductOptions(UserAuthentication::getLoggedUserId(), true));
         $this->set("ignoreOptionValues", Option::ignoreOptionValues());
         $this->set("arr_listing", $records);
         $this->set('pageCount', $srch->pages());
@@ -57,6 +59,7 @@ trait Options
 
     public function setupOptions()
     {
+        $this->userPrivilege->canEditProductOptions(UserAuthentication::getLoggedUserId());
         $frm = $this->getForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
@@ -76,7 +79,7 @@ trait Options
         $displayOrder = $optionObj->getMaxOrder();
         $post['option_display_order'] = $displayOrder;
         } */
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $post['option_seller_id'] = $userId;
         $optionObj->assignValues($post);
         if (!$optionObj->save()) {
@@ -254,6 +257,7 @@ trait Options
 
     public function bulkOptionsDelete()
     {
+        $this->userPrivilege->canEditProductOptions(UserAuthentication::getLoggedUserId());
         $optionId_arr = FatApp::getPostedData('option_id');
         if (is_array($optionId_arr) && count($optionId_arr)) {
             foreach ($optionId_arr as $option_id) {
@@ -270,6 +274,7 @@ trait Options
 
     public function deleteSellerOption()
     {
+        $this->userPrivilege->canEditProductOptions(UserAuthentication::getLoggedUserId());
         $option_id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
         $this->deleteOption($option_id);
 
@@ -280,6 +285,7 @@ trait Options
 
     private function deleteOption($option_id)
     {
+        $this->userPrivilege->canEditProductOptions(UserAuthentication::getLoggedUserId());
         if ($option_id < 1 || empty($option_id)) {
             Message::addErrorMessage(
                 Labels::getLabel('MSG_INVALID_REQUEST_ID', $this->siteLangId)
@@ -316,7 +322,7 @@ trait Options
     {
         //$pagesize = 10;
         $post = FatApp::getPostedData();
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $srch = Option::getSearchObject($this->siteLangId);
         $srch->addOrder('option_identifier');
 
