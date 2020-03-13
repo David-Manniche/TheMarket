@@ -208,3 +208,4 @@ Bug :
 
 Bug : 
     => 034393 - Getting invalid request on saving data without selecting product in related products and buy together
+    => 035404 - seller is not getting email when order is on COD
