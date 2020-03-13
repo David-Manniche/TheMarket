@@ -7,13 +7,16 @@
     $startDate = $frm->getField('splprice_start_date');
     $startDate->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Price_Start_Date', $adminLangId));
     $startDate->setFieldTagAttribute('class', 'date_js');
+    $startDate->setFieldTagAttribute('disabled', 'disabled');
 
     $endDate = $frm->getField('splprice_end_date');
     $endDate->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Price_End_Date', $adminLangId));
     $endDate->setFieldTagAttribute('class', 'date_js');
-
+    $endDate->setFieldTagAttribute('disabled', 'disabled');
+    
     $splPrice = $frm->getField('splprice_price');
     $splPrice->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Special_Price', $adminLangId));
+    $splPrice->setFieldTagAttribute('disabled', 'disabled');
 
     $frm->setFormTagAttribute('class', 'web_form');
     $frm->setFormTagAttribute('onsubmit', 'updateSpecialPriceRow(this, '.$selProdId.'); return(false);');
