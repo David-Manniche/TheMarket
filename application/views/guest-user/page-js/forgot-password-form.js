@@ -47,6 +47,7 @@
 		fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'validateOtp', [1, 1]), data, function(t) {						
             if (1 == t.status) {
                 window.location.href = t.redirectUrl;
+				return false;
             }
         });	
         invalidOtpField();

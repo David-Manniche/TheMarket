@@ -305,3 +305,13 @@ hr {}
     text-decoration: line-through;
 }
 
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.alert-aligned {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}

@@ -43,7 +43,7 @@
                                 <?php echo Labels::getLabel('LBL_Sign_In', $siteLangId);?>                                
                             </h2>
                             <?php if (isset($smsPluginStatus) && true === $smsPluginStatus) { ?>                                     
-                                        <a class="otp-link" href="javaScript:void(0)"  data-form="frmLogin" onClick="signInWithPhone(this, true)"><?php echo Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $siteLangId); ?></a>
+                                        <a class="otp-link" href="javaScript:void(0)"  data-form="frmLogin" onClick="signInWithPhone(this, true)"><?php echo Labels::getLabel('LBL_USE_PHONE_NUMBER_INSTEAD', $siteLangId); ?></a>
                                      
                              <?php } ?>
                         </div>
