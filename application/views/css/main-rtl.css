@@ -35274,6 +35274,7 @@ body {
 .shop-information .shop-logo {
   width: 200px;
   margin: 0 auto;
+  margin-bottom: 1rem;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -35283,7 +35284,6 @@ body {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
-  margin-bottom: 1rem;
   overflow: hidden; }
   .shop-information .shop-logo img {
     padding: 10px;
