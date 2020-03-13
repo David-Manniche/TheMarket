@@ -175,7 +175,7 @@ class OptionValuesController extends LoggedUserController
             array('onclick' => 'optionForm(' . $option_id . ');')
         );
 
-        $fld->attachField($fld_cancel);
+        //$fld->attachField($fld_cancel);
         return $frm;
     }
 
