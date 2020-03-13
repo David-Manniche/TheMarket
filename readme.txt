@@ -192,3 +192,6 @@ Bug :
     => 035291 - admin> request catalog> shipped to country "rate" field displaying only character while amount is in two digits
     => 035358 - seller> options> attribute> buttons are merging with each other on 1366x768 resolution
 ===================TV-9.1.3.20200313==================
+
+Bug :
+    => 035392 - While updating inventory, error log added to cvs file and get downloaded after completion.

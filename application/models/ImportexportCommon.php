@@ -3,7 +3,7 @@
 class ImportexportCommon extends FatModel
 {
     protected $db;
-    protected $CSVfileName;
+    public $CSVfileName;
 
     public const IMPORT_ERROR_LOG_PATH = CONF_UPLOADS_PATH . 'import-error-log/';
 
