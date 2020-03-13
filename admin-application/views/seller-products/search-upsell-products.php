@@ -20,14 +20,18 @@ foreach ($arrListing as $selProdId => $upsellProds) {
     $tr = $tbl->appendElement('tr', array());
     foreach ($arr_flds as $key => $val) {
         $tr->setAttribute('id', 'row-'.$selProdId);
-        $td = $tr->appendElement('td');
+        if($key == 'product_name'){
+            $td = $tr->appendElement('td', array('class' => 'js-product-edit pointer', 'row-id' => $selProdId, 'title' => Labels::getLabel('LBL_Click_Here_For_Edit', $adminLangId)));
+        }else{
+            $td = $tr->appendElement('td');
+        }
         switch ($key) {
             case 'select_all':
                 $td->appendElement('plaintext', array(), '<label class="checkbox"><input class="selectItem--js" type="checkbox" name="selprod_ids['.$selProdId.']" value='.$selProdId.'><i class="input-helper"></i></label>', true);
                 break;
             case 'product_name':
                 // last Param of getProductDisplayTitle function used to get title in html form.
-                $productName = SellerProduct::getProductDisplayTitle($selProdId, $adminLangId, true).'<br>'.Labels::getLabel('LBL_Seller', $adminLangId).': '.$upsellProds['credential_username'];
+                $productName = "<span class='js-prod-name'>".SellerProduct::getProductDisplayTitle($selProdId, $adminLangId, true).'</span><br>'.Labels::getLabel('LBL_Seller', $adminLangId).': <span class="js-seller-name">'.$upsellProds['credential_username']."</span>";
                 $td->appendElement('plaintext', array(), $productName, true);
                 break;
             case 'upsell_products':

@@ -73,7 +73,7 @@ if (0 < $selProd_id) {
                             <div id="listing">
                                 <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>
-                            <span class="gap"></span>
+                            
                         </div>
                     </div>
                 </div>

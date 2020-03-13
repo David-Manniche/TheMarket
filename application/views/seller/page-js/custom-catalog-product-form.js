@@ -652,6 +652,7 @@ $(document).on('change', '.language-js', function () {
         });
 
         $('input[name="product_shipping[' + shipping_row + '][country_name]"]').autocomplete({
+            minLength: 0,
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
             },
@@ -675,9 +676,12 @@ $(document).on('change', '.language-js', function () {
             'select': function (event, ui) {
                 $('input[name="product_shipping[' + shipping_row + '][country_id]"]').val(ui.item.id);
             }
+        }).focus(function() {
+            $(this).autocomplete("search", $(this).val());
         });
 
         $('input[name="product_shipping[' + shipping_row + '][company_name]"]').autocomplete({
+            minLength: 0,
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
             },
@@ -701,9 +705,12 @@ $(document).on('change', '.language-js', function () {
             'select': function (event, ui) {
                 $('input[name="product_shipping[' + shipping_row + '][company_id]"]').val(ui.item.id);
             }
+        }).focus(function() {
+            $(this).autocomplete("search", $(this).val());
         });
 
         $('input[name="product_shipping[' + shipping_row + '][processing_time]"]').autocomplete({
+            minLength: 0,
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
             },
@@ -727,6 +734,8 @@ $(document).on('change', '.language-js', function () {
             'select': function (event, ui) {
                 $('input[name="product_shipping[' + shipping_row + '][processing_time_id]"]').val(ui.item.id);
             }
+        }).focus(function() {
+            $(this).autocomplete("search", $(this).val());
         });
     }
     /*  End of  Product shipping  */

@@ -182,7 +182,7 @@
         });
     }
 
-    shippingautocomplete = function(shipping_row) {
+    shippingautocomplete = function(shipping_row) { 
         $('input[name="product_shipping[' + shipping_row + '][country_name]"]').focusout(function() {
                 setTimeout(function(){ $('.suggestions').hide(); }, 500);
         });
@@ -195,6 +195,7 @@
                 setTimeout(function(){ $('.suggestions').hide(); }, 500);
         });
         $('input[name="product_shipping[' + shipping_row + '][country_name]"]').autocomplete({
+            minLength: 0,
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
             },
@@ -218,9 +219,12 @@
             select: function(event, ui) {
                 $('input[name="product_shipping[' + shipping_row + '][country_id]"]').val(ui.item.id);
             }
+        }).focus(function() {
+            $(this).autocomplete("search", $(this).val());
         });
 
         $('input[name="product_shipping[' + shipping_row + '][company_name]"]').autocomplete({
+                minLength: 0,
                 'classes': {
                     "ui-autocomplete": "custom-ui-autocomplete"
                 },
@@ -244,9 +248,12 @@
             select: function(event, ui) {
                 $('input[name="product_shipping[' + shipping_row + '][company_id]"]').val(ui.item.id);
             }
+        }).focus(function() {
+            $(this).autocomplete("search", $(this).val());
         });
 
         $('input[name="product_shipping[' + shipping_row + '][processing_time]"]').autocomplete({
+                minLength: 0,
                 'classes': {
                     "ui-autocomplete": "custom-ui-autocomplete"
                 },
@@ -270,6 +277,8 @@
             select: function(event, ui) {
                 $('input[name="product_shipping[' + shipping_row + '][processing_time_id]"]').val(ui.item.id);
             }
+        }).focus(function() {
+            $(this).autocomplete("search", $(this).val());
         });
     };
 

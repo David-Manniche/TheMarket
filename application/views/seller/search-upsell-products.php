@@ -5,7 +5,7 @@ $arr_flds = array(
     'upsell_products' => Labels::getLabel('LBL_Buy_Together_Products', $siteLangId)
 );
 
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered volDiscountList-js'));
+$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table volDiscountList-js'));
 $thead = $tbl->appendElement('thead');
 $th = $thead->appendElement('tr', array('class' => ''));
 
@@ -20,14 +20,18 @@ foreach ($arrListing as $selProdId => $upsellProds) {
     $tr = $tbl->appendElement('tr', array());
     foreach ($arr_flds as $key => $val) {
         $tr->setAttribute('id', 'row-'.$selProdId);
-        $td = $tr->appendElement('td');
+        if($key == 'product_name'){
+            $td = $tr->appendElement('td', array('class' => 'js-product-edit cursor-pointer', 'row-id' => $selProdId, 'title' => Labels::getLabel('LBL_Click_Here_For_Edit', $siteLangId)));
+        }else{
+            $td = $tr->appendElement('td');
+        }
         switch ($key) {
             case 'select_all':
                 $td->appendElement('plaintext', array(), '<label class="checkbox"><input class="selectItem--js" type="checkbox" name="selprod_ids['.$selProdId.']" value='.$selProdId.'><i class="input-helper"></i></label>', true);
                 break;
             case 'product_name':
                 // last Param of getProductDisplayTitle function used to get title in html form.
-                $productName = SellerProduct::getProductDisplayTitle($selProdId, $siteLangId, true);
+                $productName = "<span class='js-prod-name'>".SellerProduct::getProductDisplayTitle($selProdId, $siteLangId, true)."</span>";
                 $td->appendElement('plaintext', array(), $productName, true);
                 break;
             case 'upsell_products':

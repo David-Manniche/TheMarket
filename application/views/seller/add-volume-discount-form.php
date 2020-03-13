@@ -7,9 +7,12 @@
 
     $minQty = $frm->getField('voldiscount_min_qty');
     $minQty->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Add_Minimum_Quantity', $siteLangId));
+    $minQty->setFieldTagAttribute('disabled', 'disabled');
+    $minQty->setFieldTagAttribute('class', 'js-voldiscount_min_qty');
 
     $disPerc = $frm->getField('voldiscount_percentage');
     $disPerc->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Add_Discount_Percentage', $siteLangId));
+    $disPerc->setFieldTagAttribute('disabled', 'disabled');
 
     $frm->setFormTagAttribute('class', 'form');
     $frm->setFormTagAttribute('id', 'frmAddVolumeDiscount-'.$selProdId);

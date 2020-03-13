@@ -1008,3 +1008,7 @@ table.table-bordered tr:nth-child(odd) td {
     background-color: #6c757d;
     border-color: #6c757d;
 }
+
+.pointer {
+    cursor: pointer;
+}

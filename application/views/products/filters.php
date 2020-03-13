@@ -173,14 +173,14 @@ if (isset($prodcat_code)) {
             <?php $symbol = CommonHelper::getCurrencySymbolRight() ? CommonHelper::getCurrencySymbolRight() : CommonHelper::getCurrencySymbolLeft(); ?>
             <div class="price-input">
                 <div class="price-text-box">
-                    <input class="input-filter " value="<?php echo floor($priceArr['minPrice']); ?>" name="priceFilterMinValue" type="text">
+                    <input class="input-filter form-control" value="<?php echo floor($priceArr['minPrice']); ?>" name="priceFilterMinValue" type="text">
                     <span class="rsText"><?php echo $symbol; ?></span>
                 </div>
             </div>
             <span class="dash"> - </span>
             <div class="price-input">
                 <div class="price-text-box">
-                    <input value="<?php echo ceil($priceArr['maxPrice']); ?>" class="input-filter form-control " name="priceFilterMaxValue" type="text">
+                    <input value="<?php echo ceil($priceArr['maxPrice']); ?>" class="input-filter form-control" name="priceFilterMaxValue" type="text">
                     <span class="rsText"><?php echo $symbol; ?></span>
                 </div>
             </div>

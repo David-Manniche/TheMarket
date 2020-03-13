@@ -198,3 +198,9 @@ Bug :
     => 035399 - After moving from Subscription package to setting page of particular subscription back button is not working.
     => 035398 - While editing shop from listing, moved to collections tab and select all and facebox close, all listing is getting checked and action button is displaying.
     => 035395 - On collection tab of manage shop page getting error.
+    => 034810 - for special price and volume discount> on click of name (from list) it should get enabled in edit mode
+    => 035397 - while purchasing digital item> on shipping summary step> NA need not to be there
+    => 035290 - admin> request catalog> edit> shipping country field text is differing from shipped to font 
+    => 035288 - while adding catalog shipping> suggestion list should appear on click (as working earlier) instead of typing
+    => 035292 - on adding inventory for requested catalog> getting invalid request and inventory getting created
+    => 035295 - while adding vol discount> min qty allowed should be 2 

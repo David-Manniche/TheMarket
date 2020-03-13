@@ -7,9 +7,11 @@
 
     $minQty = $frm->getField('voldiscount_min_qty');
     $minQty->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Add_Minimum_Quantity', $adminLangId));
+    $minQty->setFieldTagAttribute('disabled', 'disabled');
 
     $disPerc = $frm->getField('voldiscount_percentage');
     $disPerc->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Add_Discount_Percentage', $adminLangId));
+    $disPerc->setFieldTagAttribute('disabled', 'disabled');
 
     $frm->setFormTagAttribute('class', 'web_form');
     $frm->setFormTagAttribute('id', 'frmAddVolumeDiscount-'.$selProdId);
@@ -65,6 +67,7 @@ if (!empty($data) && 0 < count($data)) {
                 </div>
             </div>
         </form>
+        <?php echo $frm->getExternalJs(); ?>
     </div>
 </div>
 <div class="divider"></div>

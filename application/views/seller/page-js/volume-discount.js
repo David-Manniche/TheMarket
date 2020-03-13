@@ -22,10 +22,28 @@ $(document).on('keyup', "input[name='product_name']", function(){
         	select: function (event, ui) {
                 $("#"+parentForm+" input[name='voldiscount_selprod_id']").val(ui.item.id);
                 currObj.val( ui.item.label );
+                $("input[name='voldiscount_min_qty']").removeAttr('disabled');
+                $("input[name='voldiscount_percentage']").removeAttr('disabled');
         	}
         });
     }else{
         $("#"+parentForm+" input[name='voldiscount_selprod_id']").val('');
+        $("input[name='voldiscount_min_qty']").attr('disabled', 'disabled').val('');
+        $("input[name='voldiscount_percentage']").attr('disabled', 'disabled').val('');
+    }
+});
+
+$(document).on('blur', ".js-voldiscount_min_qty", function(){
+    var qty = $(this).val();
+    var selProdId = $("input[name='voldiscount_selprod_id']").val();
+    if(selProdId > 0){
+        var data = 'selProdId='+selProdId+"&qty="+qty;
+        fcom.ajax(fcom.makeUrl('Seller', 'compareWithInventoryMinPurchase'), data, function(t) {
+            var ans = $.parseJSON(t);
+            if( ans.status != 1 ){
+                $.systemMessage(ans.msg, 'alert--danger');
+            }
+        });
     }
 });
 
