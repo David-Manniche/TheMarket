@@ -195,3 +195,4 @@ Bug :
 
 Bug :
     => 034810 - for special price and volume discount> on click of name (from list) it should get enabled in edit mode
+    => 035397 - while purchasing digital item> on shipping summary step> NA need not to be there
