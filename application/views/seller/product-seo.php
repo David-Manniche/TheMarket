@@ -58,7 +58,7 @@ $clearFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
                     <div class="cards">
                         <div class="cards-content">
                             <div id="dvForm"></div>
-                            <div id="dvAlert">
+                            <div class="alert-aligned" id="dvAlert">
                                 <div class="cards-message" role="alert">
                                     <div class="cards-message-icon"><i class="fas fa-exclamation-triangle"></i></div>
                                     <div class="cards-message-text"><?php echo Labels::getLabel('LBL_Select_a_product_to_add_/_edit_meta_tags_data', $siteLangId); ?></div>

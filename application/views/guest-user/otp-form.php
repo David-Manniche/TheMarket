@@ -19,7 +19,7 @@ $btnFld->setFieldTagAttribute('class', 'btn--block');
     <div class="form-side">
         <div class="section-head">
             <div class="section__heading">
-                <h2 class="formTitle-js"><?php echo Labels::getLabel('LBL_ONE_TYPE_PASSWORD?', $siteLangId);?></h2>
+                <h2 class="formTitle-js"><?php echo Labels::getLabel('LBL_VERIFY_YOUR_PHONE_NUMBER', $siteLangId);?></h2>
                 <p><?php echo Labels::getLabel('LBL_ENTER_THE_OTP_YOU_RECEIVED_ON_YOUR_PHONE_NUMBER', $siteLangId);?></p>
             </div>
         </div>
@@ -42,7 +42,7 @@ $btnFld->setFieldTagAttribute('class', 'btn--block');
                         </div>
                         <div class="my-3">
                             <a href="javaScript:void(0)" class="link resendOtp-js d-none" onClick="resendOtp(<?php echo $userId; ?>, <?php echo applicationConstants::YES; ?>)">
-                                <?php echo Labels::getLabel('LBL_RESEND_OTP?', $siteLangId); ?>
+                                <?php echo Labels::getLabel('LBL_RESEND_OTP', $siteLangId); ?>
                             </a>
                             <small>
                                 <?php

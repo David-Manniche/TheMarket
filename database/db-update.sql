@@ -1121,3 +1121,5 @@ DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_ENABLE_GOOGLE_LOGIN' 
 -- ---------------------TV-9.1.3.20200313----------------------
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_Uploaded_file_seems_to_be_empty,_please_upload_a_valid_file_or_records_skipped';
+
+UPDATE `tbl_language_labels` SET `label_caption` = 'Enter The Phone Number Associated With Your Account. An OTP will be sent to your registered number.' WHERE `tbl_language_labels`.`label_key` = 'LBL_RECOVER_PASSWORD_FORM_MSG';

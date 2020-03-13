@@ -40,11 +40,11 @@ if (0 < $withPhone) {
                                         <?php if (isset($smsPluginStatus) && true === $smsPluginStatus) {
                                                 if (isset($withPhone) && 1 > $withPhone) { ?>
                                                     <a href="javaScript:void(0)" onClick="forgotPwdForm(<?php echo applicationConstants::YES; ?>)">
-                                                        <?php echo Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $siteLangId); ?>
+                                                        <?php echo Labels::getLabel('LBL_USE_PHONE_NUMBER_INSTEAD', $siteLangId); ?>
                                                     </a>
                                                 <?php } else { ?>
                                                     <a href="javaScript:void(0)" onClick="forgotPwdForm(<?php echo applicationConstants::NO; ?>)">
-                                                        <?php echo Labels::getLabel('LBL_WITH_EMAIL_?', $siteLangId); ?>
+                                                        <?php echo Labels::getLabel('LBL_USE_EMAIL_INSTEAD', $siteLangId); ?>
                                                     </a>
                                                 <?php } ?>
                                         <?php } ?>

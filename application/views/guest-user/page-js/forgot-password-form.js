@@ -48,7 +48,6 @@
             t = $.parseJSON(t);					
             if (1 == t.status) {
                 window.location.href = t.redirectUrl;
-                return false;
             } else {
                 invalidOtpField();
             }
