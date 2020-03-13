@@ -130,7 +130,7 @@ class ProductsController extends MyAppController
 
         $brandFilter = FatCache::get('brandFilter' . $cacheKey, CONF_FILTER_CACHE_TIME, '.txt');
         if (!$brandFilter) {
-            $brandsArr = FilterHelper::brands($prodSrchObj, $langIdForKeywordSeach, $post, true);
+            $brandsArr = FilterHelper::brands($prodSrchObj, $this->siteLangId, $post, true);
             FatCache::set('brandFilter' . $cacheKey, serialize($brandsArr), '.txt');
         } else {
             $brandsArr = unserialize($brandFilter);
@@ -1576,21 +1576,47 @@ class ProductsController extends MyAppController
             $page = ($page - 1) * $pageSize;
             $srch->setPageNumber($page);
             $srch->setPageSize($pageSize);
-            //$srch->setSortFields(array('general.product_id'=>array('order' => 'desc')));
             $records = $srch->fetch();
             $products = [];
+            
+            if (isset($records['hits']) && count($records['hits']) > 0) {
+                foreach ($records['hits'] as $record) {
+                    if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::NO) {
+                        $arr = array('ufp_id' => 0);
+                        $favSrch = new UserFavoriteProductSearch();
+                        $favSrch->addCondition('ufp_user_id', '=', $userId);
+                        $favSrch->addCondition('ufp_selprod_id', '=', $record['_source']['general']['selprod_id']);
+                        $favSrch->doNotCalculateRecords();
+                        $favSrch->setPageSize(1);
+                        $favSrch->addGroupBy('selprod_id');
+                        $rs = $favSrch->getResultSet();
+                        $wishListProd = $db->fetch($rs);
+                        if (!empty($wishListProd) && $wishListProd['ufp_id']) {
+                            $arr = array('ufp_id' => $wishListProd['ufp_id']);
+                        }
+                    } else {
+                        $arr = array('is_in_any_wishlist' => 0);
+                        $wislistPSrchObj = new UserWishListProductSearch();
+                        $wislistPSrchObj->joinWishLists();
+                        $wislistPSrchObj->doNotCalculateRecords();
+                        $wislistPSrchObj->setPageSize(1);
+                        $wislistPSrchObj->addCondition('uwlist_user_id', '=', $userId);
+                        $wislistPSrchObj->addMultipleFields(array('uwlp_selprod_id', 'uwlp_uwlist_id'));
+                        $wislistPSrchObj->addCondition('uwlp_selprod_id', '=', $record['_source']['general']['selprod_id']);
+                        $rs = $wislistPSrchObj->getResultSet();
+                        $wishListProd = $db->fetch($rs);
+                        if (!empty($wishListProd) && $wishListProd['uwlp_uwlist_id']) {
+                            $arr = array('is_in_any_wishlist' => 1);
+                        }
+                    }
 
-            //@todo Fetch from elastic server    
-            if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::NO) {
-                $arr = array('ufp_id' => 0);
-            } else {
-                $arr = array('is_in_any_wishlist' => 0);
-            }
+                    $arr['selprod_title'] = $record['_source']['general']['selprod_title'];
+                    if (empty($arr['selprod_title']) && isset($record['_source']['general']['product_name'])) {
+                        $arr['selprod_title'] = $record['_source']['general']['product_name'];
+                    }
 
-            foreach ($records['hits'] as $record) {
-                //@todo Fetch from elastic server
-                $tempArr = array('in_stock' => 1, 'selprod_title' => $record['_source']['general']['product_name'], 'special_price_found' => 0);
-                $products[] = array_merge($record['_source']['general'], $record['_source']['brand'], $tempArr, current($record['_source']['categories']), $arr);
+                    $products[] = array_merge($record['_source']['general'], $record['_source']['brand'], current($record['_source']['categories']), $arr);
+                }
             }
         } else {
             $srch = Product::getListingObj($get, $this->siteLangId, $userId);

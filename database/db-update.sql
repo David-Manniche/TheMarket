@@ -383,42 +383,6 @@ ALTER TABLE `tbl_brands` ADD `brand_updated_on` DATETIME NOT NULL DEFAULT CURREN
 ALTER TABLE `tbl_users` CHANGE `user_img_updated_on` `user_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE `tbl_countries` ADD `country_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `country_language_id`;
 ALTER TABLE `tbl_states` ADD `state_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `state_active`;
-
---
--- Table structure for table `tbl_updated_record_log`
---
-
-CREATE TABLE `tbl_updated_record_log` (
-  `urlog_id` bigint(15) NOT NULL,
-  `urlog_record_id` int(11) NOT NULL,
-  `urlog_subrecord_id` int(11) NOT NULL,
-  `urlog_record_type` int(11) NOT NULL,
-  `urlog_added_on` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `tbl_updated_record_log`
---
-ALTER TABLE `tbl_updated_record_log`
-  ADD PRIMARY KEY (`urlog_id`),
-  ADD UNIQUE KEY `urlog_record_id` (`urlog_record_id`,`urlog_subrecord_id`,`urlog_record_type`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `tbl_updated_record_log`
---
-ALTER TABLE `tbl_updated_record_log`
-  MODIFY `urlog_id` bigint(15) NOT NULL AUTO_INCREMENT;
-
-
-
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_TRUNCATE_REQUEST_APPROVAL_WILL_DELETE_ALL_YOUR_DATA._TRUNCATE_ANYWAY?';
 INSERT INTO `tbl_language_labels` (`label_id`, `label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES (NULL, 'LBL_TRUNCATE_REQUEST_APPROVAL_WILL_DELETE_ALL_YOUR_DATA._TRUNCATE_ANYWAY?', '1', 'Truncate Request Approval Will Delete All Your Data. Truncate Anyway?', '1'), (NULL, 'LBL_TRUNCATE_REQUEST_APPROVAL_WILL_DELETE_ALL_YOUR_DATA._TRUNCATE_ANYWAY?', '2', 'الموافقة على طلب الاقتطاع ستحذف جميع بياناتك. اقتطاع على أي حال؟', '1');
 
@@ -919,3 +883,42 @@ INSERT INTO `tbl_theme_colors` (`tcolor_theme_id`, `tcolor_key`, `tcolor_value`)
 ALTER TABLE `tbl_theme_colors`
   ADD UNIQUE KEY `tcolor_theme_id` (`tcolor_theme_id`,`tcolor_key`);
 -------------TV-9.1.3.20200221-----------
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_updated_record_log`
+--
+DROP TABLE IF EXISTS `tbl_updated_record_log`;  
+CREATE TABLE `tbl_updated_record_log` (
+  `urlog_id` bigint(15) NOT NULL,
+  `urlog_record_id` int(11) NOT NULL,
+  `urlog_subrecord_id` int(11) NOT NULL,
+  `urlog_record_type` int(11) NOT NULL,
+  `urlog_added_on` datetime NOT NULL,
+  `urlog_executed` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_updated_record_log`
+--
+ALTER TABLE `tbl_updated_record_log`
+  ADD PRIMARY KEY (`urlog_id`),
+  ADD UNIQUE KEY `urlog_record_id` (`urlog_record_id`,`urlog_subrecord_id`,`urlog_record_type`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `tbl_updated_record_log`
+--
+ALTER TABLE `tbl_updated_record_log`
+  MODIFY `urlog_id` bigint(15) NOT NULL AUTO_INCREMENT;
+
+INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Full Text Search', '7', 'ElasticSearch', '0', '7');
+
+INSERT INTO `tbl_cron_schedules` (`cron_id`, `cron_name`, `cron_command`, `cron_duration`, `cron_active`) VALUES (NULL, 'Full text search', 'FullTextSearch/setup', '1440', '1');

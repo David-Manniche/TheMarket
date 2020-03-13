@@ -10,7 +10,8 @@ class FullTextSearch extends FatModel
     {
         $this->langId = FatUtility::int($langId);
         if (1 > $langId) {
-            trigger_error(Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId()), E_USER_ERROR);
+            $this->langId = CommonHelper::getLangId();
+            //trigger_error(Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId()), E_USER_ERROR);
         }
 
         $defaultPlugin = $this->getDefaultPlugin();
@@ -21,10 +22,20 @@ class FullTextSearch extends FatModel
 
     /* [ UpdatedRecordLog Insert and Update Functions  Start */
 
-    public static function updateLastProcessedRecord($lastProcessedRecordTime)
+    public static function updateLastProcessedRecord($type, $recordId, $subRecordId)
     {
-        $labelsUpdatedAt = array('conf_name' => 'CONF_FULL_TEXT_SEARCH_LAST_PROCESSED','conf_val' => $lastProcessedRecordTime);
-        FatApp::getDb()->insertFromArray('tbl_configurations', $labelsUpdatedAt, false, array(), $labelsUpdatedAt);
+        /*  $labelsUpdatedAt = array('conf_name' => 'CONF_FULL_TEXT_SEARCH_LAST_PROCESSED','conf_val' => $lastProcessedRecordTime);
+         FatApp::getDb()->insertFromArray('tbl_configurations', $labelsUpdatedAt, false, array(), $labelsUpdatedAt); */
+        FatApp::getDb()->updateFromArray(
+            UpdatedRecordLog::DB_TBL,
+            array(
+                UpdatedRecordLog::DB_TBL_PREFIX . 'executed' => 1
+            ),
+            array(
+            'smt' => UpdatedRecordLog::DB_TBL_PREFIX . 'record_type = ? and ' . UpdatedRecordLog::DB_TBL_PREFIX . 'record_id = ?  and ' . UpdatedRecordLog::DB_TBL_PREFIX . 'subrecord_id = ?',
+            'vals' => array($type, $recordId, $subRecordId)
+            )
+        );
     }
 
     public static function updateQueue($data)
@@ -49,10 +60,12 @@ class FullTextSearch extends FatModel
         $srch->doNotCalculateRecords();
         //$srch->doNotLimitRecords();
         $srch->setPageSize(100);
-        $srch->addCondition(UpdatedRecordLog::DB_TBL_PREFIX . 'added_on', '>', FatApp::getConfig('CONF_FULL_TEXT_SEARCH_LAST_PROCESSED', FatUtility::VAR_STRING, ''));
+        $srch->addCondition(UpdatedRecordLog::DB_TBL_PREFIX . 'executed', '!=', 1);
         $srch->addOrder(UpdatedRecordLog::DB_TBL_PREFIX . 'added_on', 'asc');
+        //$srch->addCondition(UpdatedRecordLog::DB_TBL_PREFIX . 'type', '=', 8);
         $rs = $srch->getResultSet();
         $record = FatApp::getDb()->fetchAll($rs);
+       
         
         if (empty($record)) {
             return false;
@@ -60,56 +73,52 @@ class FullTextSearch extends FatModel
 
         foreach ($record as $row) {
             $recordId = $row[UpdatedRecordLog::DB_TBL_PREFIX . 'record_id'];
-            switch ($row[UpdatedRecordLog::DB_TBL_PREFIX . 'record_type']) {
+            $type = $row[UpdatedRecordLog::DB_TBL_PREFIX . 'record_type'];
+            $subRecordId = 0;
+
+            switch ($type) {
                 case UpdatedRecordLog::TYPE_SHOP:
                     if (!static::updateShopProductsQueue($recordId)) {
                         return false;
                     }
-                    static::updateLastProcessedRecord($row['urlog_added_on']);
                     break;
                 case UpdatedRecordLog::TYPE_USER:
                     if (!static::updateUserProductsQueue($recordId)) {
                         return false;
                     }
-                    static::updateLastProcessedRecord($row['urlog_added_on']);
                     break;
                 case UpdatedRecordLog::TYPE_CATEGORY:
                     if (!static::updateCategoryProductsQueue($recordId)) {
                         return false;
                     }
-                    static::updateLastProcessedRecord($row['urlog_added_on']);
                     break;
                 case UpdatedRecordLog::TYPE_BRAND:
                     if (!static::updateBrandProductsQueue($recordId)) {
                         return false;
                     }
-                    static::updateLastProcessedRecord($row['urlog_added_on']);
                     break;
                 case UpdatedRecordLog::TYPE_COUNTRY:
                     if (!static::updateCountryProductsQueue($recordId)) {
                         return false;
                     }
-                    static::updateLastProcessedRecord($row['urlog_added_on']);
                     break;
                 case UpdatedRecordLog::TYPE_STATE:
                     if (!static::updateStateProductsQueue($recordId)) {
                         return false;
                     }
-                    static::updateLastProcessedRecord($row['urlog_added_on']);
                     break;
                 case UpdatedRecordLog::TYPE_PRODUCT:
                     if (!static::updateProducts($recordId)) {
                         return false;
                     }
-                    static::updateLastProcessedRecord($row['urlog_added_on']);
                     break;
                 case UpdatedRecordLog::TYPE_INVENTORY:
                     if (!static::updateProductInventory($recordId)) {
                         return false;
                     }
-                    static::updateLastProcessedRecord($row['urlog_added_on']);
                     break;
             }
+            static::updateLastProcessedRecord($type, $recordId, $subRecordId);
         }
     }
 
@@ -134,6 +143,7 @@ class FullTextSearch extends FatModel
                 'urlog_record_id' => $record['product_id'],
                 'urlog_subrecord_id' => 0,
                 'urlog_record_type' => UpdatedRecordLog::TYPE_PRODUCT,
+                'urlog_executed' => 0,
                 'urlog_added_on' => date('Y-m-d H:i:s')
             ];
             if (!static::updateQueue($data)) {
@@ -165,6 +175,7 @@ class FullTextSearch extends FatModel
                 'urlog_record_id' => $record['product_id'],
                 'urlog_subrecord_id' => 0,
                 'urlog_record_type' => UpdatedRecordLog::TYPE_PRODUCT,
+                'urlog_executed' => 0,
                 //'urlog_record_type' => UpdatedRecordLog::TYPE_INVENTORY,
                 'urlog_added_on' => date('Y-m-d H:i:s')
             ];
@@ -194,6 +205,7 @@ class FullTextSearch extends FatModel
                 'urlog_record_id' => $record['product_id'],
                 'urlog_subrecord_id' => 0,
                 'urlog_record_type' => UpdatedRecordLog::TYPE_PRODUCT,
+                'urlog_executed' => 0,
                 'urlog_added_on' => date('Y-m-d H:i:s')
             ];
             if (!static::updateQueue($data)) {
@@ -222,6 +234,7 @@ class FullTextSearch extends FatModel
                 'urlog_record_id' => $record['product_id'],
                 'urlog_subrecord_id' => 0,
                 'urlog_record_type' => UpdatedRecordLog::TYPE_PRODUCT,
+                'urlog_executed' => 0,
                 'urlog_added_on' => date('Y-m-d H:i:s')
             ];
             if (!static::updateQueue($data)) {
@@ -253,6 +266,7 @@ class FullTextSearch extends FatModel
                 'urlog_record_id' => $record['product_id'],
                 'urlog_subrecord_id' => 0,
                 'urlog_record_type' => UpdatedRecordLog::TYPE_PRODUCT,
+                'urlog_executed' => 0,
                 'urlog_added_on' => date('Y-m-d H:i:s')
             ];
             if (!static::updateQueue($data)) {
@@ -284,6 +298,7 @@ class FullTextSearch extends FatModel
                 'urlog_record_id' => $record['product_id'],
                 'urlog_subrecord_id' => 0,
                 'urlog_record_type' => UpdatedRecordLog::TYPE_PRODUCT,
+                'urlog_executed' => 0,
                 'urlog_added_on' => date('Y-m-d H:i:s')
             ];
             if (!static::updateQueue($data)) {
@@ -343,12 +358,12 @@ class FullTextSearch extends FatModel
         foreach ($languages as $langId => $language) {
             $langId = FatUtility::int($langId);
             $srch = new ProductSearch($langId);
-            $srch->setDefinedCriteria(1, 0, array(), false);
+            $srch->setDefinedCriteria(1, 0, array(), false, true);
             $srch->joinProductToCategory();
             $srch->joinSellerSubscription();
             $srch->addSubscriptionValidCondition();
             $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
-            $srch->addMultipleFields(array('product_id','product_name', 'product_type', 'product_model', 'product_seller_id', 'product_updated_on', 'product_active', 'product_approved', 'product_upc', 'product_isbn', 'product_ship_country', 'product_ship_free', 'product_cod_enabled', 'product_short_description', 'product_description', 'product_tags_string', 'theprice', 'selprod_id','prod_rating as product_rating', 'brand_id','brand_name','brand_short_description','brand_active'));
+            $srch->addMultipleFields(array('product_id','product_name', 'product_type', 'product_model', 'product_seller_id', 'product_updated_on', 'product_active', 'product_approved', 'product_upc', 'product_isbn', 'product_ship_country', 'product_ship_free', 'product_cod_enabled', 'product_short_description', 'product_description', 'product_tags_string', 'theprice', 'selprod_id','selprod_price','selprod_title','ROUND(((selprod_price - theprice)*100)/selprod_price) as discountedValue','special_price_found','if(selprod_stock > 0, 1, 0) as in_stock','prod_rating as product_rating', 'brand_id','brand_name','brand_short_description','brand_active'));
             $srch->joinProductRating();
             $srch->doNotCalculateRecords();
 
@@ -359,10 +374,11 @@ class FullTextSearch extends FatModel
                 $srch->addCondition(Product::DB_TBL_PREFIX . 'id', '=', $productId);
                 $srch->setPageSize(1);
             }
-
+            
             $rs    = $srch->getResultSet();
             $products = FatApp::getDb()->fetchAll($srch->getResultSet());
-                        
+            
+            require_once CONF_INSTALLATION_PATH . 'library/plugins/full-text-search/' . $defaultPlugin . '.php';
             $fullTextSearch = new $defaultPlugin($langId);
 
             if (empty($products)) {
@@ -439,6 +455,7 @@ class FullTextSearch extends FatModel
             return false;
         }
         
+        require_once CONF_INSTALLATION_PATH . 'library/plugins/full-text-search/' . $defaultPlugin . '.php';
         $fullTextSearch = new $defaultPlugin($langId);
         
         $srch  = SellerProduct::getSearchObject($langId);
@@ -564,6 +581,7 @@ class FullTextSearch extends FatModel
                 return false;
             }
         }
+        
 
         foreach ($languages as $langId => $language) {
             $srch = new ProductSearch($langId);
@@ -584,6 +602,7 @@ class FullTextSearch extends FatModel
             $sellerProducts = FatApp::getDb()->fetchAll($rs);
             
             if (null == $fullTextSearch) {
+                require_once CONF_INSTALLATION_PATH . 'library/plugins/full-text-search/' . $defaultPlugin . '.php';
                 $fullTextSearch = new $defaultPlugin($langId);
             }
 
@@ -687,6 +706,7 @@ class FullTextSearch extends FatModel
                 return false;
             }
 
+            require_once CONF_INSTALLATION_PATH . 'library/plugins/full-text-search/' . $defaultPlugin . '.php';
             $fullTextSearch = new $defaultPlugin($langId);
             $srch = new ProductSearch($langId);
             $srch->addMultipleFields(array('theprice', 'selprod_id'));
@@ -739,7 +759,10 @@ class FullTextSearch extends FatModel
     }*/
 
 
-    
+    public static function logError()
+    {
+        //@toDo
+    }
 
     public static function getListingObj($criteria, $langId, $userId = 0)
     {
@@ -858,10 +881,9 @@ class FullTextSearch extends FatModel
                 case 'popularity':
                     $sortFields = array('inventories.selprod_sold_count' => array('order' => $sortOrder));
                     break;
-               /*  case 'discounted':
-                    $srch->addFld('ROUND(((selprod_price - theprice)*100)/selprod_price) as discountedValue');
-                    $srch->addOrder('discountedValue', 'DESC');
-                    break; */
+                case 'discounted':
+                    $sortFields = array('general.discountedValue' => array('order' => $sortOrder));
+                    break;
                 case 'rating':
                     $sortFields = array('general.product_rating' => array('order' => $sortOrder));
                     break;

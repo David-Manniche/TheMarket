@@ -428,6 +428,7 @@ class MyAppModel extends FatModel
             'urlog_record_id' => $this->mainTableRecordId,
             'urlog_subrecord_id' => 0,
             'urlog_record_type' => $typeArr[$prefix],
+            'urlog_executed' => 0,
             'urlog_added_on' => date('Y-m-d H:i:s')
         ];
         FatApp::getDb()->insertFromArray(UpdatedRecordLog::DB_TBL, $data, false, array(), $data);

@@ -148,9 +148,7 @@ class FilterHelper extends FatUtility
             $brandSrch->setPageSize($pageSize);
         }
 
-        if (array_key_exists('keyword', $post) && !empty($post['keyword'])) {
-            $brandSrch->joinBrandsLang($langId);
-        }
+        $brandSrch->joinBrandsLang($langId);
         $brandSrch->addGroupBy('brand.brand_id');
         $brandSrch->addMultipleFields(array( 'brand.brand_id', 'COALESCE(tb_l.brand_name,brand.brand_identifier) as brand_name'));
         if ($brandId) {
