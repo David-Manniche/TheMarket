@@ -23,7 +23,7 @@ if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1))
         
     $heightFld = $customProductFrm->getField('product_height');
     $heightFld->setWrapperAttribute('class', 'product_height_fld');
-    $heightFld->htmlAfterField = '<small>' . Labels::getLabel('LBL_Note:_Used_for_Shipping_Calculation.', $adminLangId) . '<small>';
+    $heightFld->htmlAfterField = '<small>' . Labels::getLabel('LBL_Note:_Used_for_Shipping_Calculation.', $adminLangId) . '</small>';
 
     $dimensionUnitFld = $customProductFrm->getField('product_dimension_unit');
     $dimensionUnitFld->setWrapperAttribute('class', 'product_dimension_unit_fld');
