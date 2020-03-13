@@ -1,15 +1,23 @@
 <?php
 $controller = strtolower($controller);
 $action = strtolower($action);
-?> <div class="sidebar no-print">
+?> <sidebar class="sidebar no-print">
     <div class="logo-wrapper"> <?php
         if (CommonHelper::isThemePreview() && isset($_SESSION['preview_theme'])) {
             $logoUrl = CommonHelper::generateUrl('home', 'index');
         } else {
             $logoUrl = CommonHelper::generateUrl();
-        }
-        ?> <div class="logo-dashboard"><a href="<?php echo $logoUrl; ?>"><img src="<?php echo CommonHelper::generateFullUrl('Image', 'siteLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>"
-                    alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>"></a></div>
+        }   
+        ?> 
+        <?php
+        $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, 0, 0, $siteLangId, false);
+        $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
+        ?>
+        <div class="logo-dashboard">
+            <a href="<?php echo $logoUrl; ?>">
+                <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo CommonHelper::generateFullUrl('Image', 'siteLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>">
+            </a>
+        </div>
 
         <?php
             $isOpened = '';
@@ -41,6 +49,7 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Products', $siteLangId); ?></span></a></div>
                 </li>
+                <?php if (User::canAddCustomProduct()) { ?>
                 <li class="menu__item <?php echo ($controller == 'seller' && $action == 'producttags') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Product_Tags', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'productTags'); ?>">
                     <i class="icn shop"><svg class="svg">
@@ -48,6 +57,7 @@ $action = strtolower($action);
                         </svg>
                     </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Product_Tags', $siteLangId);?></span></a></div>
                 </li>
+                <?php }?>
                 <li class="menu__item <?php echo ($controller == 'seller' && ($action == 'inventoryupdate')) ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Inventory_Update', $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('seller', 'InventoryUpdate'); ?>"><i class="icn shop"><svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-inventory-update" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-inventory-update"></use>
@@ -173,13 +183,18 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Tax_Category', $siteLangId);?></span></a></div>
                 </li>
-                <li class="menu__item <?php echo ($controller == 'seller' && $action == 'options') ? 'is-active' : ''; ?>">
-                    <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Options', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'options'); ?>">
-                            <i class="icn shop"><svg class="svg">
-                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-options" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-options"></use>
-                                </svg>
-                            </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Options', $siteLangId);?></span></a></div>
-                </li>
+                <?php
+                    $canRequest = FatApp::getConfig('CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0);
+                    $canRequestCustomProd = FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0);
+                if (0 < $canRequest && 0 < $canRequestCustomProd) { ?>
+                    <li class="menu__item <?php echo ($controller == 'seller' && $action == 'options') ? 'is-active' : ''; ?>">
+                        <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Options', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'options'); ?>">
+                                <i class="icn shop"><svg class="svg">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-options" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-options"></use>
+                                    </svg>
+                                </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Options', $siteLangId);?></span></a></div>
+                    </li>
+                <?php } ?>
                 <li class="menu__item <?php echo ($controller == 'seller' && $action == 'socialplatforms') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Manage_Social_Platforms', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'socialPlatforms'); ?>">
                             <i class="icn shop"><svg class="svg">
@@ -287,4 +302,4 @@ $action = strtolower($action);
             </ul>
         </nav>
     </div>
-</div>
+</sidebar>

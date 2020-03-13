@@ -264,6 +264,7 @@ $(document).ready(function(){
 		fcom.displayProcessing();
 		fcom.ajax(fcom.makeUrl('SellerProducts', 'sellerProductDownloadFrm', [ selprod_id, type ]), '', function(t) {
 			fcom.updateFaceboxContent(t);
+			$("select[name='download_type']").trigger('change');
 		});
 	};
 
@@ -456,14 +457,6 @@ $(document).ready(function(){
 				fcom.displayErrorMessage(ans.msg);
 			}
 		});
-	};
-
-	toggleBulkStatues = function(status){
-		if(!confirm(langLbl.confirmUpdateStatus)){
-			return false;
-		}
-		$("#frmSelProdListing input[name='status']").val(status);
-		$("#frmSelProdListing").submit();
 	};
 
 	deleteSelected = function(){

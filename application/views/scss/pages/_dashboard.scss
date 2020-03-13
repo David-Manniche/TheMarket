@@ -1056,13 +1056,11 @@
             fill: $brand-color !important;
         }
 
-        a {
-            color: inherit;
-        }
+       
 
         .cards,
         .box--share {
-            min-height: 170px;
+            min-height: 188px;
         }
     }
 
@@ -1732,7 +1730,7 @@
             background: #fff;
 
             &:before {
-                font-family: 'FontAwesome';
+                font-family: 'Font Awesome 5 Free';
                 font-size: 1.3em;
                 color: rgba(0, 0, 0, 0.1);
                 content: "\f111";

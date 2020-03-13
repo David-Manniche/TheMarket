@@ -3,43 +3,44 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 
 $frmOrderSrch->setFormTagAttribute('onSubmit','searchOrders(this); return false;');
 $frmOrderSrch->setFormTagAttribute('class', 'form');
+$frmOrderSrch->developerTags['colClassPrefix'] = 'col-lg-';
+$frmOrderSrch->developerTags['fld_default_col'] = 4;
 
 $keywordFld = $frmOrderSrch->getField('keyword');
-$keywordFld->setWrapperAttribute('class','col-lg-4');
 $keywordFld->developerTags['col'] = 4;
+$keywordFld->developerTags['noCaptionTag'] = true;
 /* $keywordFld->htmlAfterField = '<small class="form-text text-muted">'.Labels::getLabel('LBL_Buyer_account_orders_listing_search_form_keyword_help_txt', $siteLangId).'</small>'; */
 
 /* $statusFld = $frmOrderSrch->getField('status');
-$statusFld->setWrapperAttribute('class','col-sm-6');
 $statusFld->developerTags['col'] = 4; */
 
 $dateFromFld = $frmOrderSrch->getField('date_from');
 $dateFromFld->setFieldTagAttribute('class','field--calender');
-$dateFromFld->setWrapperAttribute('class','col-lg-2');
 $dateFromFld->developerTags['col'] = 2;
+$dateFromFld->developerTags['noCaptionTag'] = true;
 
 $dateToFld = $frmOrderSrch->getField('date_to');
 $dateToFld->setFieldTagAttribute('class','field--calender');
-$dateToFld->setWrapperAttribute('class','col-lg-2');
 $dateToFld->developerTags['col'] = 2;
+$dateToFld->developerTags['noCaptionTag'] = true;
 
 /* $priceFromFld = $frmOrderSrch->getField('price_from');
-$priceFromFld->setWrapperAttribute('class','col-sm-6');
 $priceFromFld->developerTags['col'] = 2;
 
 $priceToFld = $frmOrderSrch->getField('price_to');
-$priceToFld->setWrapperAttribute('class','col-sm-6');
 $priceToFld->developerTags['col'] = 2; */
 
 $submitBtnFld = $frmOrderSrch->getField('btn_submit');
 $submitBtnFld->setFieldTagAttribute('class','btn--block');
-$submitBtnFld->setWrapperAttribute('class','col-lg-2 ');
 $submitBtnFld->developerTags['col'] = 2;
+$submitBtnFld->setWrapperAttribute('class','col-6');
+$submitBtnFld->developerTags['noCaptionTag'] = true;
 
 $cancelBtnFld = $frmOrderSrch->getField('btn_clear');
 $cancelBtnFld->setFieldTagAttribute('class','btn btn-outline-primary btn--block');
-$cancelBtnFld->setWrapperAttribute('class','col-lg-2 ');
 $cancelBtnFld->developerTags['col'] = 2;
+$cancelBtnFld->setWrapperAttribute('class','col-6');
+$cancelBtnFld->developerTags['noCaptionTag'] = true;
 ?> <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
         <div class="content-header row">
@@ -71,7 +72,7 @@ $cancelBtnFld->developerTags['col'] = 2;
                                             ?> <?php
                                 }
                                         }
-                                    ?> <div class="auto-renew">
+                                    ?> <div class="auto-renew text-right">
                                 <p><?php echo Labels::getLabel('LBL_AutoRenew_Subscription', $siteLangId); ?></p>
                                     <?php
                                      $active = "";
@@ -90,8 +91,7 @@ $cancelBtnFld->developerTags['col'] = 2;
                             <p class="highlighted-note"> <?php  echo $message;?> </p>
                         <?php }?>
                         <div class="cards-content ">
-                            <div class="replaced"> <?php echo $frmOrderSrch->getFormHtml(); ?> </div>
-                            <span class="gap"></span>
+                            <?php echo $frmOrderSrch->getFormHtml(); ?>
                         </div>
                     </div>
                 </div>

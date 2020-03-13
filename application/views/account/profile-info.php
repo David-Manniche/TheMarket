@@ -12,11 +12,11 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                     <a class="btn btn-outline-primary btn--sm" href="javascript:void(0)" onclick="truncateDataRequestPopup()"><?php echo Labels::getLabel('LBL_Request_to_remove_my_data', $siteLangId); ?></a>
                     <a class="btn btn-outline-primary btn--sm" href="javascript:void(0)" onclick="requestData()"><?php echo Labels::getLabel('LBL_Request_My_Data', $siteLangId); ?></a>
                     <?php if ($showSellerActivateButton) { ?>
-                        <a href="<?php echo CommonHelper::generateUrl('Seller'); ?>"
-                            class="btn btn--primary btn--sm panel__head_action"
+                    <a href="<?php echo CommonHelper::generateUrl('Seller'); ?>"
+                            class="btn btn-outline-primary btn--sm panel__head_action"
                             title="<?php echo Labels::getLabel('LBL_Activate_Seller_Account', $siteLangId); ?>">
                             <strong> <?php echo Labels::getLabel('LBL_Activate_Seller_Account', $siteLangId); ?></strong>
-                        </a>
+                    </a>
                     <?php } ?>
                 </div>
             </div>
@@ -26,7 +26,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                 <div class="col-lg-12">
                     <div class="cards">
                         <div class="cards-content ">
-                            <div class="tabs tabs--small tabs--scroll clearfix">
+                            <div class="tabs ">
                                 <ul class="tabs-js">
                                     <li class="is-active" id="tab-myaccount">
                                         <a href="javascript:void(0);" onClick="profileInfoForm()">
@@ -56,7 +56,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                             </div>
                             <div id="profileInfoFrmBlock"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>
-                            <span class="gap"></span>
+                             
                         </div>
                     </div>
                 </div>

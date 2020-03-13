@@ -28,28 +28,35 @@
                 </section>
                 <section class="section">
                     <div class="sectionhead">
-                        <h4><?php echo Labels::getLabel('LBL_Language_labels_List', $adminLangId); ?> </h4> <?php
-
-                            $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
-                            $li = $ul->appendElement("li", array('class'=>'droplink'));
-                            $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                            $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                            $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                        /*if ($canEdit) {
-                             $innerLiImport=$innerUl->appendElement('li');
-                             $innerLiImport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Import', $adminLangId),"onclick"=>"importLabels(0)"), Labels::getLabel('LBL_Import', $adminLangId), true);
-                        }
-                        if ($canView) {
-                            $innerLiImport=$innerUl->appendElement('li');
-                            $innerLiImport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Export', $adminLangId),"onclick"=>"exportLabels(0)"), Labels::getLabel('LBL_Export', $adminLangId), true); 
-                        }*/ 
-
-                        $innerLiImport=$innerUl->appendElement('li');
-                        $innerLiImport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_UPDATE_WEB_LABEL_FILE', $adminLangId),"onclick"=>"updateFile()"), Labels::getLabel('LBL_UPDATE_WEB_LABEL_FILE', $adminLangId), true);
-                        $innerLiImport=$innerUl->appendElement('li');
-                        $innerLiImport->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_UPDATE_APP_LABEL_FILE', $adminLangId),"onclick"=>"updateFile(".Labels::TYPE_APP.")"), Labels::getLabel('LBL_UPDATE_APP_LABEL_FILE', $adminLangId), true);
-
-                        echo $ul->getHtml(); ?>
+                        <h4><?php echo Labels::getLabel('LBL_Language_labels_List', $adminLangId); ?> </h4>
+                        <?php
+                        if ($canEdit) {
+                            $data = [
+                                'adminLangId' => $adminLangId,
+                                'statusButtons' => false,
+                                'deleteButton' => false,
+                                'otherButtons' => [
+                                    [
+                                        'attr' => [
+                                            'href' => 'javascript:void(0)',
+                                            'onclick' => 'updateFile()',
+                                            'title' => Labels::getLabel('LBL_UPDATE_WEB_LABEL_FILE', $adminLangId)
+                                        ],
+                                        'label' => '<i class="fas fa-laptop-code"></i>'
+                                    ],
+                                    [
+                                        'attr' => [
+                                            'href' => 'javascript:void(0)',
+                                            'onclick' => "updateFile(" . Labels::TYPE_APP . ")",
+                                            'title' => Labels::getLabel('LBL_UPDATE_APP_LABEL_FILE', $adminLangId)
+                                        ],
+                                        'label' => '<i class="fas fa-mobile-alt"></i>'
+                                    ],
+                                ]
+                            ];
+        
+                            $this->includeTemplate('_partial/action-buttons.php', $data, false);
+                        } ?>
                     </div>
                     <div class="sectionbody">
                         <div class="tablewrap">

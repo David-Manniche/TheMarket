@@ -9,7 +9,7 @@ class SmsTemplatesController extends AdminBaseController
         parent::__construct($action);
         $this->objPrivilege->canViewSmsTemplate();
         $this->admin_id = AdminAuthentication::getLoggedAdminId();
-        if (false === Plugin::canSendSms()) {
+        if (false === SmsArchive::canSendSms()) {
             $message = Labels::getLabel("MSG_NO_SMS_PLUGIN_CONFIGURED", $this->adminLangId);
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
@@ -23,7 +23,7 @@ class SmsTemplatesController extends AdminBaseController
     {
         $frmSearch = $this->getSearchForm();
         $this->set("frmSearch", $frmSearch);
-        $this->set("canEdit", $this->objPrivilege->canViewSmsTemplate($this->admin_id, true));
+        $this->set("canEdit", $this->objPrivilege->canEditSmsTemplate($this->admin_id, true));
         $this->_template->addJs('js/jscolor.js');
         $this->_template->render();
     }
@@ -95,7 +95,7 @@ class SmsTemplatesController extends AdminBaseController
         $this->set('pageSize', $pagesize);
         $this->set('postedData', $post);
         $this->set('langId', $this->adminLangId);
-        $this->set("canEdit", $this->objPrivilege->canViewSmsTemplate($this->admin_id, true));
+        $this->set("canEdit", $this->objPrivilege->canEditSmsTemplate($this->admin_id, true));
         $this->_template->render(false, false);
     }
 

@@ -151,7 +151,11 @@
                                         <a href="<?php echo CommonHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $val['pmethod_id'])); ?>">
                                             <div class="payment-box">
                                                 <i class="payment-icn">
-                                                    <img src="<?php echo CommonHelper::generateUrl('Image', 'paymentMethod', array($val['pmethod_id'],'SMALL')); ?>" alt="">
+                                                    <?php
+                                                    $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PAYMENT_METHOD, $val['pmethod_id'], 0, 0, false);
+                                                    $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
+                                                    ?>
+                                                    <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo CommonHelper::generateUrl('Image', 'paymentMethod', array($val['pmethod_id'],'SMALL')); ?>" alt="">
                                                 </i>
                                                 <span><?php echo $val['pmethod_name']; ?></span>
                                             </div>

@@ -1,7 +1,7 @@
 <?php  defined('SYSTEM_INIT') or die('Invalid Usage.'); 
 $inactive = (0 == $shop_id) ? 'fat-inactive' : '';
 ?>
-<div class="tabs tabs--small tabs--scroll clearfix">
+<div class="tabs ">
     <ul class="arrowTabs">
         <li
             class="<?php echo !empty($action) && $action == 'shopForm' ? 'is-active' : '';?>">

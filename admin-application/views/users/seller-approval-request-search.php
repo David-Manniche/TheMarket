@@ -7,7 +7,7 @@ $arr_flds = array(
 		'user_details'=>Labels::getLabel('LBL_Username/Email',$adminLangId),			
 		'usuprequest_date'=>Labels::getLabel('LBL_Requested_On',$adminLangId),			
 		'status'=>Labels::getLabel('LBL_Status',$adminLangId),			
-		'action' => Labels::getLabel('LBL_Action',$adminLangId),
+		'action' => '',
 	);
 $tbl = new HtmlElement('table', 
 array('width'=>'100%', 'class'=>'table table-responsive'));
@@ -38,19 +38,11 @@ foreach ($arr_listing as $sn=>$row){
 				
 			break;	
 			case 'action':
-				$ul = $td->appendElement("ul",array("class"=>"actions actions--centered"));
 				if($canViewSellerApprovalRequests){												
-					$li = $ul->appendElement("li",array('class'=>'droplink'));						
-    			    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit',$adminLangId)),'<i class="ion-android-more-horizontal icon"></i>', true);
-					$innerDiv=$li->appendElement('div',array('class'=>'dropwrap'));	
-					$innerUl=$innerDiv->appendElement('ul',array('class'=>'linksvertical'));
-              		
-					$innerLi=$innerUl->appendElement('li');
-					$innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_View',$adminLangId),"onclick"=>"viewSellerRequest(".$row['usuprequest_id'].")"),Labels::getLabel('LBL_View',$adminLangId), true);							
+					$td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_View',$adminLangId),"onclick"=>"viewSellerRequest(".$row['usuprequest_id'].")"),"<i class='far fa-eye icon'></i>", true);							
 				}
 				if($canEditSellerApprovalRequests && $row['usuprequest_status'] == User::SUPPLIER_REQUEST_PENDING){						
-					$innerLi=$innerUl->appendElement('li');
-					$innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Change_Status',$adminLangId),"onclick"=>"updateSellerRequestForm(".$row['usuprequest_id'].")"),Labels::getLabel('LBL_Change_Status',$adminLangId), true);							
+					$td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Change_Status',$adminLangId),"onclick"=>"updateSellerRequestForm(".$row['usuprequest_id'].")"),'<i class="fas fa-toggle-off"></i>', true);							
 				}
 			break;
 			default:

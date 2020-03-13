@@ -6,17 +6,17 @@ class GoogleLoginSettingsController extends SocialLoginSettingsController
     {
         return [
                 'client_id' => [
-                    'type' => 'string',
+                    'type' => PluginSetting::TYPE_STRING,
                     'required' => true,
                     'label' => "Client ID",
                 ],
                 'client_secret' => [
-                    'type' => 'string',
+                    'type' => PluginSetting::TYPE_STRING,
                     'required' => true,
                     'label' => "Client Secret",
                 ],
                 'developer_key' => [
-                    'type' => 'string',
+                    'type' => PluginSetting::TYPE_STRING,
                     'required' => true,
                     'label' => "Developer Key",
                 ],

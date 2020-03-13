@@ -4,8 +4,11 @@ $arr_flds = array(
         'listserial'=> Labels::getLabel('LBL_Sr._No', $adminLangId),
         'urlrewrite_original'=> Labels::getLabel('LBL_Original', $adminLangId),
         'urlrewrite_custom'=>Labels::getLabel('LBL_Custom', $adminLangId),
-        'action' => Labels::getLabel('LBL_Action', $adminLangId),
+        'action' => '',
     );
+    if (!$canEdit) {
+        unset($arr_flds['select_all'], $arr_flds['action']);
+    }
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $key => $val) {
@@ -32,23 +35,9 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
             case 'action':
-                //$ul = $td->appendElement("ul",array("class"=>"actions"));
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
-                $li = $ul->appendElement("li", array('class'=>'droplink'));
-
-                $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                      $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                      $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-
                 if ($canEdit) {
-                    $innerLiEdit=$innerUl->appendElement('li');
-
-                    //$li = $ul->appendElement("li");
-                    $innerLiEdit->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"urlForm(".$row['urlrewrite_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
-                    $innerLiDelete=$innerUl->appendElement('li');
-
-                    //$li = $ul->appendElement("li");
-                    $innerLiDelete->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['urlrewrite_id'].")"), Labels::getLabel('LBL_Delete', $adminLangId), true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"urlForm(".$row['urlrewrite_id'].")"), "<i class='far fa-edit icon'></i>", true);
+                    $td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['urlrewrite_id'].")"), "<i class='fa fa-trash  icon'></i>", true);
                 }
                 break;
             default:
@@ -62,7 +51,7 @@ if (count($arr_listing) == 0) {
 }
 
 $frm = new Form('frmUrlRewritingListing', array('id'=>'frmUrlRewritingListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('UrlRewriting', 'deleteSelected'));
 $frm->addHiddenField('', 'status');

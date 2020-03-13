@@ -33,8 +33,8 @@ $(document).ready(function(){
                 obj.val = opt.text();
                 obj.index = opt.index();
                 obj.placeholder.text(obj.val);
-                opt.siblings().removeClass('selected');
-                opt.filter(':contains("' + obj.val + '")').addClass('selected');
+                opt.siblings().removeClass('is-active');
+                opt.filter(':contains("' + obj.val + '")').addClass('is-active');
                 var link = opt.filter(':contains("' + obj.val + '")').find('a').attr('href');
                 window.location.replace(link);
             }).change();
@@ -64,6 +64,11 @@ $(document).ready(function(){
 			// $(this).siblings().children('.js-wrap-drop').addClass('active');
 		});
     });
+	
+	$(".dropdown-menu li a").click(function(){ 
+	  var selText = $(this).html(); 
+	  $(this).parents('.dropdown').find('.dropdown-toggle').html(selText);
+	});
 
 });
 

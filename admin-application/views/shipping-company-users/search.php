@@ -5,8 +5,11 @@ $arr_flds = array(
         'credential_username'=>Labels::getLabel('LBL_Username', $adminLangId),
         'user_name'=>Labels::getLabel('LBL_Name', $adminLangId),
         'credential_active'=>Labels::getLabel('LBL_Status', $adminLangId),
-        'action' => Labels::getLabel('LBL_Action', $adminLangId),
+        'action' => '',
     );
+    if (!$canEdit) {
+        unset($arr_flds['select_all'], $arr_flds['action']);
+    }
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $key => $val) {
@@ -44,21 +47,12 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $str, true);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
                 if ($canEdit) {
-                    $li = $ul->appendElement("li", array('class'=>'droplink'));
-                    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                    $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                    $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
+                    $td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"userForm(".$row['user_id'].")"), "<i class='far fa-edit icon'></i>", true);
 
-                    $innerLi=$innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"userForm(".$row['user_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
+                    $td->appendElement('a', array('href'=>CommonHelper::generateUrl('ShippingCompanyUsers', 'Orders', array($row['user_id'])),'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Assigned_COD_Orders', $adminLangId)), "<i class='ion-cash icon'></i>", true);
 
-                    $innerLi=$innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('ShippingCompanyUsers', 'Orders', array($row['user_id'])),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Assigned_COD_Orders', $adminLangId)), Labels::getLabel('LBL_Assigned_COD_Orders', $adminLangId), true);
-
-                    $innerLi=$innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Transactions', $adminLangId),"onclick"=>"transactions(".$row['user_id'].")"), Labels::getLabel('LBL_Transactions', $adminLangId), true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Transactions', $adminLangId),"onclick"=>"transactions(".$row['user_id'].")"), "<i class='ion-arrow-swap icon'></i>", true);
                 }
                 break;
             default:
@@ -72,7 +66,7 @@ if (count($arr_listing) == 0) {
 }
 
 $frm = new Form('frmShpCompUsrListing', array('id'=>'frmShpCompUsrListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadUserList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Users', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');

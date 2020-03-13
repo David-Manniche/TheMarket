@@ -63,7 +63,9 @@ if($prodCatId > 0){
                               echo $fld->getCaption();
                             ?>
                         </label>
+                        <?php if (FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) { ?>
                         <span class="spn_must_field">*</span>
+                        <?php } ?>
                      </div>
                      <div class="field-wraper">
                          <div class="field_cover">
@@ -243,12 +245,12 @@ if($prodCatId > 0){
             foreach($otherLanguages as $langId=>$data) { 
                 $layout = Language::getLayoutDirection($langId);
          ?>
-         <div class="accordians_container accordians_container-categories mt-5 layout--<?php echo $layout; ?>">
+         <div class="accordians_container accordians_container-categories my-3">
              <div class="accordian_panel">
                  <span class="accordian_title accordianhead" id="collapse_<?php echo $langId; ?>" onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
                  <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
                  </span>
-                 <div class="accordian_body accordiancontent" style="display: none;">
+                 <div class="accordian_body accordiancontent layout--<?php echo $layout; ?>" style="display: none;">
                     <div class="p-4 mb-4 bg-gray rounded">
                          <div class="row">
                             <div class="col-md-6">

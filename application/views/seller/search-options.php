@@ -4,13 +4,14 @@ $arr_flds = array(
         'option_identifier'=>Labels::getLabel('LBL_Option_Name', $siteLangId),
         'action' => Labels::getLabel('LBL_Action', $siteLangId),
     );
+	
 if (count($arr_listing) > 0) {
     $arr_flds = array_merge(array('select_all'=>Labels::getLabel('LBL_Select_all', $siteLangId)), $arr_flds);
 }
 
 $tbl = new HtmlElement(
     'table',
-    array('width'=>'100%', 'class'=>'table table--orders','id'=>'options')
+    array('width'=>'100%', 'class'=>'table','id'=>'options')
 );
 
 $th = $tbl->appendElement('thead')->appendElement('tr');
@@ -89,7 +90,7 @@ foreach ($arr_listing as $sn => $row) {
     }
 }
 $frm = new Form('frmOptionListing', array('id'=>'frmOptionListing'));
-$frm->setFormTagAttribute('class', 'form');
+$frm->setFormTagAttribute('class', 'form actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Seller', 'bulkOptionsDelete'));
 $frm->addHiddenField('', 'status');

@@ -9,7 +9,7 @@ $arr_flds = array(
     'utxn_status'    =>    Labels::getLabel('LBL_Status', $siteLangId),
 );
 
-$tbl = new HtmlElement('table', array('class'=>'table table--orders'));
+$tbl = new HtmlElement('table', array('class'=>'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);

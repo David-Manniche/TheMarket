@@ -12,7 +12,7 @@ $langFld->setfieldTagAttribute('onChange', "addTagLangForm(" . $tag_id . ", this
 </div>
 
 <div class="box__body">
-    <div class="tabs tabs--small tabs--scroll clearfix">
+    <div class="tabs ">
         <ul>
             <li><a class="active" href="javascript:void(0)" onclick="addTagForm(<?php echo $tag_id ?>);"><?php echo Labels::getLabel('LBL_Basic', $siteLangId);?></a></li>
             <?php $inactive = ($tag_id==0)?'fat-inactive':'';?>

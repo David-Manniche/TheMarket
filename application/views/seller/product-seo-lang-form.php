@@ -28,16 +28,12 @@
     $mtagsFld = $productSeoLangForm->getField('meta_other_meta_tags');
     $mtagsFld->setfieldTagAttribute('class', "txtarea-height");
 
-    $nextBtn = $productSeoLangForm->getField('btn_next');    
+    $nextBtn = $productSeoLangForm->getField('btn_next');
     $nextBtn->developerTags['col'] = 4;
-    $nextBtn->setfieldTagAttribute('class', "btn btn-primary btn-block");
+    $nextBtn->setfieldTagAttribute('class', "btn btn--primary btn-block");
+    $nextBtn->setfieldTagAttribute('onClick', "setupProductLangMetaTag(this.closest('form'), 0)");
     $nextBtn->setWrapperAttribute('class', "col-6");
-
     $nextBtn->developerTags['noCaptionTag'] = true;
-    end($languages);
-    if (key($languages) == $selprod_lang_id) {
-        $nextBtn->value = Labels::getLabel("LBL_Save_&_Back", $siteLangId);
-    }
 
     $exitBtn = $productSeoLangForm->getField('btn_exit');
     $exitBtn->setfieldTagAttribute('class', "btn btn-outline-primary btn-block");
@@ -45,5 +41,12 @@
     $exitBtn->developerTags['col'] = 4;
     $exitBtn->setWrapperAttribute('class', "col-6");
     $exitBtn->developerTags['noCaptionTag'] = true;
+
+    end($languages);
+    if (key($languages) == $selprod_lang_id) {
+        $nextBtn->value = Labels::getLabel("LBL_Save", $siteLangId);
+        $nextBtn->setfieldTagAttribute('class', "btn btn-outline-primary btn-block");
+        $exitBtn->setfieldTagAttribute('class', "btn btn--primary btn-block");
+    }
     echo $productSeoLangForm->getFormHtml(); ?>
 </div>

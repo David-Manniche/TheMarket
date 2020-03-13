@@ -38,7 +38,7 @@ if (isset($prodcat_code)) {
 } ?>
 <!--Filters[ -->
 <div class="widgets-head">
-    <div class="widgets__heading filter-head-js"><?php echo Labels::getLabel('LBL_FILTERS', $siteLangId);?>
+    <div class="widgets__heading filter-head-js"><h6 class="m-0"><?php echo Labels::getLabel('LBL_FILTERS', $siteLangId);?></h6>
         <a href="javascript:void(0)" class="resetAll link" id="resetAll" onClick="resetListingFilter()"><?php echo Labels::getLabel('LBL_Reset_All', $siteLangId);?></a>
     </div>
 </div>
@@ -53,7 +53,8 @@ if (isset($prodcat_code)) {
 <div class="widgets__heading filter-head-js"><?php echo Labels::getLabel('LBL_Categories', $siteLangId); ?> </div>
 <?php if (!$shopCatFilters) {
             ?>
-<div id="accordian" class="cat-accordion toggle-target scrollbar-filters">
+<div class="widgets-data">
+<div id="accordian" class="cat-accordion toggle-target scrollbar-filters">  
     <ul class="">
         <?php foreach ($categoriesArr as $cat) {
                 $catUrl = CommonHelper::generateUrl('category', 'view', array($cat['prodcat_id'])); ?>
@@ -114,6 +115,7 @@ if (isset($prodcat_code)) {
     </ul>
     <!--<a onClick="alert('Pending')" class="btn btn--link ripplelink"><?php echo Labels::getLabel('LBL_View_more', $siteLangId); ?> </a> -->
 </div>
+</div>
 <?php
         } else { //Work in Progress?>
 <div class="brands-list toggle-target scrollbar-filters" id="scrollbar-filters">
@@ -155,32 +157,36 @@ if (isset($prodcat_code)) {
 <!-- ] -->
 
 <!--Price Filters[ -->
-
-<?php if (isset($priceArr) && $priceArr) {
-      ?>
+<?php if (isset($priceArr) && $priceArr) { ?>
 <div class="divider--filters"></div>
 <div class="widgets__heading filter-head-js"><?php echo Labels::getLabel('LBL_Price', $siteLangId).' ('.(CommonHelper::getCurrencySymbolRight()?CommonHelper::getCurrencySymbolRight():CommonHelper::getCurrencySymbolLeft()).')'; ?> </div>
-<div class="filter-content toggle-target">
-    <div class="prices " id="perform_price">
-        <input type="text" value="<?php echo floor($filterDefaultMinValue); ?>-<?php echo ceil($filterDefaultMaxValue); ?>" name="price_range" id="price_range" />
-        <input type="hidden" value="<?php echo floor($filterDefaultMinValue); ?>" name="filterDefaultMinValue" id="filterDefaultMinValue" />
-        <input type="hidden" value="<?php echo ceil($filterDefaultMaxValue); ?>" name="filterDefaultMaxValue" id="filterDefaultMaxValue" />
-    </div>
-    <div class="clear"></div>
-    <div class="slide__fields form">
-        <div class="price-input">
-            <div class="price-text-box">
-                <input class="input-filter " value="<?php echo floor($priceArr['minPrice']); ?>" name="priceFilterMinValue" type="text">
-                <span class="rsText"><?php echo CommonHelper::getCurrencySymbolRight()?CommonHelper::getCurrencySymbolRight():CommonHelper::getCurrencySymbolLeft(); ?></span> </div>
+<div class="widgets-data">
+    <div class="filter-content toggle-target">
+        <div class="prices " id="perform_price">
+            <div id="rangeSlider"></div>
+            <?php /* <input type="text" class='d-none' value="<?php echo floor($filterDefaultMinValue); ?>-<?php echo ceil($filterDefaultMaxValue); ?>" name="price_range" id="price_range" /> */ ?>
+            <input type="hidden" value="<?php echo floor($filterDefaultMinValue); ?>" name="filterDefaultMinValue" id="filterDefaultMinValue" />
+            <input type="hidden" value="<?php echo ceil($filterDefaultMaxValue); ?>" name="filterDefaultMaxValue" id="filterDefaultMaxValue" />
         </div>
-        <span class="dash"> - </span>
-        <div class="price-input">
-            <div class="price-text-box">
-                <input value="<?php echo ceil($priceArr['maxPrice']); ?>" class="input-filter form-control " name="priceFilterMaxValue" type="text">
-                <span class="rsText"><?php echo CommonHelper::getCurrencySymbolRight()?CommonHelper::getCurrencySymbolRight():CommonHelper::getCurrencySymbolLeft(); ?></span> </div>
+        <div class="clear"></div>
+        <div class="slide__fields form">
+            <?php $symbol = CommonHelper::getCurrencySymbolRight() ? CommonHelper::getCurrencySymbolRight() : CommonHelper::getCurrencySymbolLeft(); ?>
+            <div class="price-input">
+                <div class="price-text-box">
+                    <input class="input-filter form-control" value="<?php echo floor($priceArr['minPrice']); ?>" name="priceFilterMinValue" type="text">
+                    <span class="rsText"><?php echo $symbol; ?></span>
+                </div>
+            </div>
+            <span class="dash"> - </span>
+            <div class="price-input">
+                <div class="price-text-box">
+                    <input value="<?php echo ceil($priceArr['maxPrice']); ?>" class="input-filter form-control" name="priceFilterMaxValue" type="text">
+                    <span class="rsText"><?php echo $symbol; ?></span>
+                </div>
+            </div>
         </div>
+        <!--<input value="GO" class="btn " name="toVal" type="submit">-->
     </div>
-    <!--<input value="GO" class="btn " name="toVal" type="submit">-->
 </div>
 
 <?php
@@ -192,16 +198,21 @@ if (isset($prodcat_code)) {
       $brandsCheckedArr = (isset($brandsCheckedArr) && !empty($brandsCheckedArr))? $brandsCheckedArr : array(); ?>
 <div class="divider--filters"></div>
 <div class="widgets__heading filter-head-js"><?php echo Labels::getLabel('LBL_Brand', $siteLangId); ?></div>
+<div class="widgets-data">
 <div class="scrollbar-filters" id="scrollbar-filters">
     <ul class="list-vertical brandFilter-js">
         <?php foreach ($brandsArr as $brand) {
+            if ($brand['brand_id'] == null) {
+                continue;
+            }
           ?>
         <li><label class="checkbox brand" id="brand_<?php echo $brand['brand_id']; ?>"><input name="brands" data-id="brand_<?php echo $brand['brand_id']; ?>" value="<?php echo $brand['brand_id']; ?>" data-title="<?php echo $brand['brand_name']; ?>" type="checkbox" <?php if (in_array($brand['brand_id'], $brandsCheckedArr)) {
               echo "checked='true'";
-          } ?>><i class="input-helper"></i><?php echo $brand['brand_name']; ?> </label></li>
+          } ?>><i class="input-helper"></i><span class="lb-txt"><?php echo $brand['brand_name']; ?></span> </label></li>
         <?php
       } ?>
-    </ul>    
+    </ul>
+</div>
 </div>
 <?php if(count($brandsArr) >= 10){?>
 <div class="py-3">
@@ -233,8 +244,9 @@ if (isset($prodcat_code)) {
                         echo "</ul></div>";
                     }
                     $optionName = ($optionRow['option_name']) ? $optionRow['option_name'] : $optionRow['option_identifier']; ?>
-<div class="divider--filters"></div><div class="widgets__heading filter-head-js"><?php echo ($optionRow['option_name']) ? $optionRow['option_name'] : $optionRow['option_identifier']; ?></div>
-<div>
+<div class="divider--filters"></div>
+<div class="widgets__heading filter-head-js"><?php echo ($optionRow['option_name']) ? $optionRow['option_name'] : $optionRow['option_identifier']; ?></div>
+<div class="widgets-data">
     <ul class="list-vertical"><?php
                 }
                 $optionValueId = $optionRow['option_id'].'_'.$optionRow['optionvalue_id'];
@@ -255,7 +267,7 @@ if (isset($prodcat_code)) {
             $conditionsCheckedArr = (isset($conditionsCheckedArr) && !empty($conditionsCheckedArr))? $conditionsCheckedArr : array(); ?>
             <div class="divider--filters"></div>
         <div class="widgets__heading filter-head-js"><?php echo Labels::getLabel('LBL_Condition', $siteLangId); ?></div>
-        <div>
+        <div class="widgets-data">
             <ul class="list-vertical">
                 <?php foreach ($conditionsArr as $condition) {
                 if ($condition['selprod_condition']==0) {
@@ -280,12 +292,14 @@ if (isset($prodcat_code)) {
         $availability = isset($availability)?$availability:0;?>
         <div class="divider--filters"></div>
         <div class="widgets__heading filter-head-js"><?php echo Labels::getLabel('LBL_Availability', $siteLangId);?></div>
-        <div class="selected-filters toggle-target">
+        <div class="widgets-data">
+		<div class="selected-filters toggle-target">
             <ul class="listing--vertical listing--vertical-chcek">
                 <li><label class="checkbox availability" id="availability_1"><input name="out_of_stock" value="1" type="checkbox" <?php if ($availability == 1) {
             echo "checked='true'";
         }?>><i class="input-helper"></i><?php echo Labels::getLabel('LBL_Exclude_out_of_stock', $siteLangId); ?> </label></li>
             </ul>
+        </div>
         </div>
     <?php }?>
         <!-- ] -->
@@ -300,148 +314,144 @@ if (isset($prodcat_code)) {
         </ul>
     </div>
 </div>-->
-        <!-- ] -->
-        <script language="javascript">
-            var catCodeArr = <?php echo json_encode($catCodeArr); ?>;
-            $.each(catCodeArr, function(key, value) {
-                if ($("ul li a[data-id='" + value + "']").parent().find('span')) {
-                    $("ul li a[data-id='" + value + "']").parent().find('span:first').addClass('is--active');
-                    $("ul li a[data-id='" + value + "']").parent().find('ul:first').css('display', 'block');
-                }
+<!-- ] -->
+<script language="javascript">
+    var catCodeArr = <?php echo json_encode($catCodeArr); ?>;
+    $.each(catCodeArr, function(key, value) {
+        if ($("ul li a[data-id='" + value + "']").parent().find('span')) {
+            $("ul li a[data-id='" + value + "']").parent().find('span:first').addClass('is--active');
+            $("ul li a[data-id='" + value + "']").parent().find('ul:first').css('display', 'block');
+        }
 
+    });
+    
+    $("document").ready(function() {
+        var min = 0;
+        var max = 0;
+        <?php if (isset($priceArr) && $priceArr) { ?>
+            var range,
+                min = Math.floor(<?php echo $filterDefaultMinValue; ?>),
+                max = Math.floor(<?php echo $filterDefaultMaxValue; ?>),
+                from,
+                to;
+            var $from = $('input[name="priceFilterMinValue"]');
+            var $to = $('input[name="priceFilterMaxValue"]');
+            /* var $range = $("#price_range"); */
+            var updateValues = function() {
+                $from.prop("value", from);
+                $to.prop("value", to);
+            };
+
+            var step = max/4;
+            const len = Math.floor((max - min) / step) + 1;
+            var steps = Array(len).fill().map((_, idx) => min + (idx * step));
+            steps.push(max);
+            var rangeSlider = document.getElementById('rangeSlider');
+            noUiSlider.create(rangeSlider, {
+                start: [min, max],
+                step: 100,
+                range: {
+                    'min': [min],
+                    'max': [max]
+                },
+                connect: true,
+                direction: '<?php echo $layoutDirection; ?>',
+                pips: {
+                    mode: 'values',
+                    values: steps,
+                    density: 4
+                }
             });
 
-            $("document").ready(function() {
-                var min = 0;
-                var max = 0;
-                <?php if (isset($priceArr) && $priceArr) {
-            ?>
-                var range,
-                    min = Math.floor(<?php echo $filterDefaultMinValue; ?>),
-                    max = Math.floor(<?php echo $filterDefaultMaxValue; ?>),
-                    from,
-                    to;
-                var $from = $('input[name="priceFilterMinValue"]');
-                var $to = $('input[name="priceFilterMaxValue"]');
-                var $range = $("#price_range");
-                var updateValues = function() {
-                    $from.prop("value", from);
-                    $to.prop("value", to);
-                };
-
-                $("#price_range").ionRangeSlider({
-                    hide_min_max: true,
-                    hide_from_to: true,
-                    keyboard: true,
-                    min: min,
-                    max: max,
-                    from: min,
-                    to: max,
-                    type: 'double',
-                    prettify_enabled: true,
-                    prettify_separator: ',',
-                    grid: true,
-                    // grid_num: 1,
-                    prefix: '<?php echo $currencySymbolLeft; ?>',
-                    postfix: '<?php echo $currencySymbolRight; ?>',
-
-                    input_values_separator: '-',
-                    onFinish: function() {
-                        var minMaxArr = $("#price_range").val().split('-');
-                        if (minMaxArr.length == 2) {
-                            var min = Number(minMaxArr[0]);
-                            var max = Number(minMaxArr[1]);
-                            $('input[name="priceFilterMinValue"]').val(min);
-                            $('input[name="priceFilterMaxValue"]').val(max);
-                            addPricefilter(true);
-                            //return searchProducts(document.frmProductSearch);
-                        }
-                    },
-                    onChange: function(data) {
-                        from = data.from;
-                        to = data.to;
-                        updateValues();
-                        // addPricefilter(true);
-                    }
-                });
-
-                range = $range.data("ionRangeSlider");
-
-                var updateRange = function() {
-                    range.update({
-                        from: from,
-                        to: to
-                    });
-                    addPricefilter();
-                };
-
-                $from.on("change", function() {
-                    from = $(this).prop("value");
-                    if (!$.isNumeric(from)) {
-                        from = 0;
-                    }
-                    if (from < min) {
-                        from = min;
-                    }
-                    if (from > max) {
-                        from = max;
-                    }
-                    updateValues();
-                    updateRange();
-                });
-
-                $to.on("change", function() {
-                    to = $(this).prop("value");
-                    if (!$.isNumeric(to)) {
-                        to = 0;
-                    }
-                    if (to > max) {
-                        to = max;
-                    }
-                    if (to < min) {
-                        to = min;
-                    }
-                    updateValues();
-                    updateRange();
-                });
-                <?php } ?>
-
-                /* left side filters scroll bar[ */
-                <?php /* if( isset($brandsArr) && $brandsArr && count($brandsArr) > 5 ){ */
-/* code is here, becoz brands section has defined height, and looking bad when there are less brands in the box, so, added this to avoid height */ ?>
-
-                <?php if (true === $shopCatFilters) { ?>
-                    // new SimpleBar(document.getElementById('accordian'));
-                <?php } ?>
-                var x = document.getElementsByClassName("scrollbar-filters");
-                var i;
-                for (i = 0; i < x.length; i++) {
-                    new SimpleBar(x[i]);
-                }
-                /* ] */
-
-                /* left side filters expand-collapse functionality [ */
-                $('.span--expand').bind('click', function() {
-                    $(this).parent('li.level').toggleClass('is-active');
-                    $(this).toggleClass('is--active');
-                    $(this).next('ul').toggle("");
-                });
-                $('.span--expand').click();
-                /* ] */
-
-                updatePriceFilter(<?php echo floor($priceArr['minPrice']);?>, <?php echo ceil($priceArr['maxPrice']);?>);
+            rangeSlider.noUiSlider.on('change', function (values, handle) {
+                addPricefilter(true);
             });
 
-            $("#accordian li span.acc-trigger").click(function() {
-                var link = $(this);
-                var closest_ul = link.siblings("ul");
-
-                if (link.hasClass("is--active")) {
-                    closest_ul.slideUp();
-                    link.removeClass("is--active");
+            rangeSlider.noUiSlider.on('update', function (values, handle) {
+                var value = values[handle];
+                /* handle return 0,1(min hanle and max handle) in RTL it return opposite */
+                if (handle) {
+                    to = value;
                 } else {
-                    closest_ul.slideDown();
-                    link.addClass("is--active");
+                    from = value;
                 }
+                updateValues();
             });
-        </script>
+
+            var updateRange = function() {
+                rangeSlider.noUiSlider.set([from, to]);
+                addPricefilter();
+            };
+
+            $from.on("change", function() {
+                from = $(this).prop("value");
+                if (!$.isNumeric(from)) {
+                    from = 0;
+                }
+                if (from < min) {
+                    from = min;
+                }
+                if (from > max) {
+                    from = max;
+                }
+                updateValues();
+                updateRange();
+            });
+
+            $to.on("change", function() {
+                to = $(this).prop("value");
+                if (!$.isNumeric(to)) {
+                    to = 0;
+                }
+                if (to > max) {
+                    to = max;
+                }
+                if (to < min) {
+                    to = min;
+                }
+                updateValues();
+                updateRange();
+            });
+        <?php } ?>
+
+        /* left side filters scroll bar[ */
+
+        <?php if (true === $shopCatFilters) { ?>
+            // new SimpleBar(document.getElementById('accordian'));
+        <?php } ?>
+        var x = document.getElementsByClassName("scrollbar-filters");
+        var i;
+        for (i = 0; i < x.length; i++) {
+            new SimpleBar(x[i]);
+        }
+        /* ] */
+
+        /* left side filters expand-collapse functionality [ */
+        $('.span--expand').bind('click', function() {
+            $(this).parent('li.level').toggleClass('is-active');
+            $(this).toggleClass('is--active');
+            $(this).next('ul').toggle("");
+        });
+        $('.span--expand').click();
+        /* ] */
+
+        updatePriceFilter(<?php echo floor($priceArr['minPrice']);?>, <?php echo ceil($priceArr['maxPrice']);?>);
+        
+        if ('rtl' == langLbl.layoutDirection && 0 < $("[data-simplebar]").length) {
+            $("[data-simplebar]").attr('data-simplebar-direction', 'rtl');
+        }
+    });
+
+    $("#accordian li span.acc-trigger").click(function() {
+        var link = $(this);
+        var closest_ul = link.siblings("ul");
+
+        if (link.hasClass("is--active")) {
+            closest_ul.slideUp();
+            link.removeClass("is--active");
+        } else {
+            closest_ul.slideDown();
+            link.addClass("is--active");
+        }
+    });
+</script>

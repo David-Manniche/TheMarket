@@ -41,7 +41,7 @@ if (0 < $selProd_id) {
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pb-0">
+                        <div class="cards-content">
                             <div class="replaced">
                                 <?php echo $frmSearch->getFormHtml(); ?>
                             </div>
@@ -73,7 +73,7 @@ if (0 < $selProd_id) {
                             <div id="listing">
                                 <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>
-                            <span class="gap"></span>
+                            
                         </div>
                     </div>
                 </div>

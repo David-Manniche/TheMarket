@@ -427,7 +427,7 @@ ALTER TABLE `tbl_collection_to_blogs`
 
 ALTER TABLE `tbl_collections` ADD `collection_for_web` TINYINT(1) NOT NULL AFTER `collection_display_media_only`, ADD `collection_for_app` TINYINT(1) NOT NULL AFTER `collection_for_web`;
 UPDATE `tbl_collections` SET `collection_for_web` = '1', `collection_for_app` = '1';
--------------------TV-9.1.2.20200211-------------------
+-- -----------------TV-9.1.2.20200211-------------------
 
 INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES (NULL, 'Twilio Sms Notification', '6', 'TwilioSms', '1', '8');
 
@@ -576,7 +576,7 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` = 'Lbl_Change_Email';
 ALTER TABLE `tbl_push_notifications` ADD `pnotification_user_auth_type` TINYINT(1) NOT NULL AFTER `pnotification_for_seller`;
 ALTER TABLE `tbl_push_notifications` CHANGE `pnotification_till_user_id` `pnotification_uauth_last_access` DATETIME NOT NULL;
 
--------------------TV-9.1.3.20200219--------------------------
+-- -----------------TV-9.1.3.20200219--------------------------
 ALTER TABLE `tbl_user_auth_token` ADD `uauth_user_type` TINYINT(1) NOT NULL AFTER `uauth_device_os`;
 
 DROP TABLE `tbl_theme`;
@@ -882,8 +882,248 @@ INSERT INTO `tbl_theme_colors` (`tcolor_theme_id`, `tcolor_key`, `tcolor_value`)
 
 ALTER TABLE `tbl_theme_colors`
   ADD UNIQUE KEY `tcolor_theme_id` (`tcolor_theme_id`,`tcolor_key`);
--------------TV-9.1.3.20200221-----------
--- --------------------------------------------------------
+-- -----------TV-9.1.3.20200221-----------
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_Allow_Sellers_to_request_products_which_is_availble_to_all_sellers';
+-- --------------TV-9.1.3.20200226----------
+
+DELETE FROM `tbl_configurations` WHERE `conf_name` like 'CONF_EMAIL_TEMPLATE_FOOTER_HTML%';
+
+INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES ('CONF_EMAIL_TEMPLATE_FOOTER_HTML1', '<table width="100%" align="center" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr style="background:#fff;padding:0 30px; text-align:center; color:#999;vertical-align:top;">
+			<td style="padding:30px 0;">Get in touch in you have any questions regarding our Services.<br />
+				                    Feel free to contact us 24/7. We are here to help.<br />
+				                    <br />
+				                    All the best,<br />
+				                    The {website_name} Team<br />
+				                    </td>
+		</tr>
+		<tr>
+			<td>
+				<!--
+				page footer start here
+				-->
+
+				<table width="100%" align="center" cellpadding="0" cellspacing="0">
+					<tbody>
+						<tr>
+							<td style="height:30px;"></td>
+						</tr>
+						<tr>
+							<td style="background:rgba(0,0,0,0.04);padding:0 30px; text-align:center; color:#999;vertical-align:top;">
+								<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+									<tbody>
+										<tr>
+											<td style="padding:30px 0; font-size:20px; color:#000;">Need more help?<br />
+												                                                 <a href="{contact_us_url}" style="color:#ff3a59;">We are here, ready to talk</a></td>
+										</tr>
+									</tbody>
+								</table></td>
+						</tr>
+						<tr>
+							<td style="padding:0; color:#999;vertical-align:top; line-height:20px;">
+								<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+									<tbody>
+										<tr>
+											<td style="padding:20px 0 30px; text-align:center; font-size:13px; color:#999;">{website_name} Inc.
+
+												<!--
+												if these emails get annoying, please feel free to  <a href="#" style="text-decoration:underline; color:#666;">unsubscribe</a>.
+												-->
+                                            </td>
+										</tr>
+									</tbody>
+								</table></td>
+						</tr>
+						<tr>
+							<td style="padding:0; height:50px;"></td>
+						</tr>
+					</tbody>
+				</table>
+				<!--
+				page footer end here
+				-->
+                </td>
+		</tr>
+	</tbody>
+</table>', '');
+UPDATE tbl_email_templates SET etpl_body = REPLACE(etpl_body, '<table>', '<table width="100%" align="center" cellpadding="0" cellspacing="0">') WHERE etpl_body like '<table>%';
+-- -------------TV-9.1.3.20200228---------------------------
+
+ALTER TABLE `tbl_users` ADD `user_dial_code` VARCHAR(10) NOT NULL AFTER `user_name`;
+ALTER TABLE `tbl_users` CHANGE `user_phone` `user_phone` BIGINT NULL DEFAULT NULL;
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_USERNAME_OR_EMAIL_OR_PHONE';
+ALTER TABLE `tbl_user_phone_verification` ADD `upv_dial_code` VARCHAR(10) NOT NULL AFTER `upv_otp`;
+ALTER TABLE `tbl_user_phone_verification` CHANGE `upv_phone` `upv_phone` BIGINT NOT NULL;
+
+ALTER TABLE `tbl_users` DROP INDEX `user_phone`;
+ALTER TABLE `tbl_users` ADD UNIQUE (`user_dial_code`, `user_phone`);
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'MSG_Please_Configure_Your_Email';
+
+ALTER TABLE `tbl_user_phone_verification` ADD `upv_country_iso` VARCHAR(10) NOT NULL AFTER `upv_otp`;
+
+
+UPDATE `tbl_cron_schedules` SET `cron_command` = 'AbandonedCart/sendReminderAbandonedCart' WHERE `tbl_cron_schedules`.`cron_id` = 13;
+
+INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `etpl_subject`, `etpl_body`, `etpl_replacements`, `etpl_status`) VALUES ('abandoned_cart_email', '1', 'Abandoned Cart Email', 'Abandoned Cart Email', '<div style=\"margin:0; padding:0;background: #ecf0f1;\">\r\n	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" bgcolor=\"#ecf0f1\" style=\"font-family:Arial; color:#333; line-height:26px;\">\r\n		<tbody>\r\n			<tr>\r\n				<td style=\"background:#ff3a59;padding:30px 0 10px;\">\r\n					<!--\r\n					header start here\r\n					-->\r\n					   \r\n					<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n						<tbody>\r\n							<tr>\r\n								<td><a href=\"{website_url}\">{Company_Logo}</a></td>\r\n								<td style=\"text-align:right;\">{social_media_icons}</td>\r\n							</tr>\r\n						</tbody>\r\n					</table>\r\n					<!--\r\n					header end here\r\n					-->\r\n					   </td>\r\n			</tr>\r\n            \r\n            <tr>\r\n                <td style=\"background:#ff3a59;\">\r\n                    <!--\r\n                    page title start here\r\n                    -->\r\n\r\n                    <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                        <tbody>\r\n                            <tr>\r\n                                <td style=\"background:#fff;padding:20px 0 10px; text-align:center;\">\r\n                                    <h4 style=\"font-weight:normal; text-transform:uppercase; color:#999;margin:0; padding:10px 0; font-size:18px;\"></h4>\r\n                                    <h2 style=\"margin:0; color: #999999; font-size:16px; text-transform: uppercase;padding:0;\">Dear {user_full_name}</h2>\r\n                                </td>\r\n                            </tr>\r\n                        </tbody>\r\n                    </table>\r\n                    <!--\r\n                    page title end here\r\n                    -->\r\n                </td>\r\n            </tr>\r\n            \r\n            <tr>\r\n                <td>\r\n                    <!--\r\n                    page body start here\r\n                    -->\r\n\r\n                    <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                        <tbody>\r\n                            <tr>\r\n                                <td style=\"background:#fff;padding:0 20px; text-align:center; color:#999;vertical-align:top;\">\r\n                                    <table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                                        <tbody>\r\n                                            <tr>\r\n                                                <td style=\"padding:0 10px; line-height:1.3; text-align:center; color:#333333;vertical-align:top; font-size: 30px;\">We noticed you left something behind!</td>\r\n                                            </tr>\r\n                                            <tr>\r\n                                                <td style=\"padding:30px 0;\">\r\n                                                <table>{product_detail_table}</table>\r\n                                                </td>\r\n                                            </tr>\r\n                                            <!--\r\n                                            section footer\r\n                                            -->\r\n\r\n                                            <tr>\r\n                                                <td style=\"padding:30px 0;border-top:1px solid #ddd;\">Get in touch in you have any questions regarding our Services.<br />\r\n													Feel free to contact us 24/7. We are here to help.<br />\r\n													<br />\r\n													All the best,<br />\r\n													The {website_name} Team<br />\r\n                                                </td>\r\n                                            </tr>\r\n                                            <!--\r\n                                            section footer\r\n                                            -->\r\n\r\n                                        </tbody>\r\n                                    </table>\r\n                                </td>\r\n                            </tr>\r\n                        </tbody>\r\n                    </table>\r\n                    <!--\r\n                    page body end here\r\n                    -->\r\n                </td>\r\n            </tr>\r\n\r\n			<tr>\r\n				<td>\r\n					<!--\r\n					page footer start here\r\n					-->\r\n					   \r\n					<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n						<tbody>\r\n							<tr>\r\n								<td style=\"height:30px;\"></td>\r\n							</tr>\r\n							<tr>\r\n								<td style=\"background:rgba(0,0,0,0.04);padding:0 30px; text-align:center; color:#999;vertical-align:top;\">\r\n									<table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n										<tbody>\r\n											<tr>\r\n												<td style=\"padding:30px 0; font-size:20px; color:#000;\">Need more help?<br />\r\n													 <a href=\"{contact_us_url}\" style=\"color:#ff3a59;\">We are here, ready to talk</a></td>\r\n											</tr>\r\n										</tbody>\r\n									</table></td>\r\n							</tr>\r\n							<tr>\r\n								<td style=\"padding:0; color:#999;vertical-align:top; line-height:20px;\">\r\n									<table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n										<tbody>\r\n											<tr>\r\n												<td style=\"padding:20px 0 30px; text-align:center; font-size:13px; color:#999;\"><br />\r\n													<br />\r\n													{website_name} Inc.\r\n													<!--\r\n													if these emails get annoying, please feel free to  <a href=\"#\" style=\"text-decoration:underline; color:#666;\">unsubscribe</a>.\r\n													-->\r\n													</td>\r\n											</tr>\r\n										</tbody>\r\n									</table></td>\r\n							</tr>\r\n							<tr>\r\n								<td style=\"padding:0; height:50px;\"></td>\r\n							</tr>\r\n						</tbody>\r\n					</table>\r\n					<!--\r\n					page footer end here\r\n					-->\r\n					   </td>\r\n			</tr>\r\n		</tbody>\r\n	</table></div>', '{user_full_name} Name of the email receiver<br>\r\n{website_name} Name of our website<br>\r\n{website_url} URL of our website<br>\r\n{social_media_icons} <br>\r\n{contact_us_url} <br>\r\n{product_detail_table} <br/>', '1');
+
+INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `etpl_subject`, `etpl_body`, `etpl_replacements`, `etpl_status`) VALUES ('abandoned_cart_discount_notification', '1', 'Abandoned Cart Discount Notification', 'Abandoned Cart Discount Notification', '<div style=\"margin:0; padding:0;background: #ecf0f1;\">\r\n	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" bgcolor=\"#ecf0f1\" style=\"font-family:Arial; color:#333; line-height:26px;\">\r\n		<tbody>\r\n			<tr>\r\n				<td style=\"background:#ff3a59;padding:30px 0 10px;\">\r\n					<!--\r\n					header start here\r\n					-->\r\n					   \r\n					<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n						<tbody>\r\n							<tr>\r\n								<td><a href=\"{website_url}\">{Company_Logo}</a></td>\r\n								<td style=\"text-align:right;\">{social_media_icons}</td>\r\n							</tr>\r\n						</tbody>\r\n					</table>\r\n					<!--\r\n					header end here\r\n					-->\r\n					   </td>\r\n			</tr>\r\n            \r\n             <tr>\r\n                <td style=\"background:#ff3a59;\">\r\n                    <!--\r\n                    page title start here\r\n                    -->\r\n                    <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                        <tbody>\r\n                            <tr>\r\n                                <td style=\"background:#fff;padding:20px 0 10px; text-align:center;\">\r\n                                    <h4 style=\"font-weight:normal; text-transform:uppercase; color:#999;margin:0; padding:10px 0; font-size:18px;\"></h4>\r\n                                    <h2 style=\"margin:0; color: #999999; font-size:16px; text-transform: uppercase;padding:0;\">Dear {user_full_name}</h2>\r\n                                </td>\r\n                            </tr>\r\n                        </tbody>\r\n                    </table>\r\n                    <!--\r\n                    page title end here\r\n                    -->\r\n                </td>\r\n            </tr>\r\n            \r\n            <tr>\r\n                <td>\r\n                    <!--\r\n                    page body start here\r\n                    -->\r\n\r\n                    <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                        <tbody>\r\n                            <tr>\r\n                                <td style=\"background:#fff;padding:0 20px; text-align:center; color:#999;vertical-align:top;\">\r\n                                    <table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                                        <tbody>\r\n                                            <tr>\r\n                                                <td style=\"padding:0 10px; line-height:1.3; text-align:center; color:#333333;vertical-align:top; font-size: 30px;\">Finish your order before your items sell out!</td>\r\n                                            </tr> \r\n                                               \r\n                                               <tr>\r\n                                                   <td style=\"padding:20px 0 10px 10px; line-height:1.3; text-align:center; color:#999999;vertical-align:top; font-size:16px;\">Just for you : Get <span style=\"color:#333; font-weight: bold;\">{discount} OFF</span> off on your order with code <span style=\"color:#333; font-weight: bold;\">{coupon_code}.</span>\r\n                                                   \r\n                                                       <a href=\"{checkout_now}\" style=\"background: #ff3a59;border:none; border-radius: 4px; color: #fff; cursor: pointer;margin:10px 0 0 0;width: auto; font-weight: normal; padding: 10px 20px; display: inline-block;\">Check out now </a></td>\r\n                                            </tr>\r\n                                            <tr>\r\n                                                <td style=\"padding:30px 0;\">\r\n                                                    <table>\r\n                                                        <tr>\r\n                                                            <td style=\"padding-right: 25px;\"><img style=\"border: solid 1px #ececec; padding: 10px; border-radius: 4px;\" src=\"{product_image}\"></td>\r\n                                                            <td style="text-align: left;">\r\n                                                                <span style=\"font-size: 20px; font-weight:normal; color:#999999; \">{product_name}</span>\r\n                                                                 <span style=\"font-size: 14px; font-weight: bold; color:#000000; display: block; padding: 20px 0;\">{product_price}</span>\r\n                                                            </td>\r\n                                                        </tr>\r\n                                                    </table>\r\n\r\n                                                </td>\r\n                                            </tr>\r\n                                            <!--\r\n                                            section footer\r\n                                            -->\r\n\r\n                                            <tr>\r\n                                                <td style=\"padding:30px 0;border-top:1px solid #ddd;\">Get in touch in you have any questions regarding our Services.<br />\r\n													Feel free to contact us 24/7. We are here to help.<br />\r\n													<br />\r\n													All the best,<br />\r\n													The {website_name} Team<br />\r\n                                                </td>\r\n                                            </tr>\r\n                                            <!--\r\n                                            section footer\r\n                                            -->\r\n\r\n                                        </tbody>\r\n                                    </table>\r\n                                </td>\r\n                            </tr>\r\n                        </tbody>\r\n                    </table>\r\n                    <!--\r\n                    page body end here\r\n                    -->\r\n                </td>\r\n            </tr>\r\n        \r\n			<tr>\r\n				<td>\r\n					<!--\r\n					page footer start here\r\n					-->\r\n					   \r\n					<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n						<tbody>\r\n							<tr>\r\n								<td style=\"height:30px;\"></td>\r\n							</tr>\r\n							<tr>\r\n								<td style=\"background:rgba(0,0,0,0.04);padding:0 30px; text-align:center; color:#999;vertical-align:top;\">\r\n									<table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n										<tbody>\r\n											<tr>\r\n												<td style=\"padding:30px 0; font-size:20px; color:#000;\">Need more help?<br />\r\n													 <a href=\"{contact_us_url}\" style=\"color:#ff3a59;\">We are here, ready to talk</a></td>\r\n											</tr>\r\n										</tbody>\r\n									</table></td>\r\n							</tr>\r\n							<tr>\r\n								<td style=\"padding:0; color:#999;vertical-align:top; line-height:20px;\">\r\n									<table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n										<tbody>\r\n											<tr>\r\n												<td style=\"padding:20px 0 30px; text-align:center; font-size:13px; color:#999;\"><br />\r\n													<br />\r\n													{website_name} Inc.\r\n													<!--\r\n													if these emails get annoying, please feel free to  <a href=\"#\" style=\"text-decoration:underline; color:#666;\">unsubscribe</a>.\r\n													-->\r\n													</td>\r\n											</tr>\r\n										</tbody>\r\n									</table></td>\r\n							</tr>\r\n							<tr>\r\n								<td style=\"padding:0; height:50px;\"></td>\r\n							</tr>\r\n						</tbody>\r\n					</table>\r\n					<!--\r\n					page footer end here\r\n					-->\r\n					   </td>\r\n			</tr>\r\n		</tbody>\r\n	</table></div>', '{user_full_name} Name of the email receiver<br>\r\n{website_name} Name of our website<br>\r\n{website_url} URL of our website<br>\r\n{social_media_icons} <br>\r\n{contact_us_url} <br>\r\n{discount} <br>\r\n{coupon_code} <br>\r\n{checkout_now} <br>\r\n{product_image} <br>\r\n{product_name} <br>\r\n{product_price}<br>', '1');
+
+-- -----------TV-9.1.3.20200303-----------------
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_Sign_In_to_your_account';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_Create_Your_Account_For_Sign_Up';
+-- TV-9.1.3.20200306-----------------------------
+
+ALTER TABLE `tbl_attached_files` ADD `afile_aspect_ratio` INT(11) NOT NULL AFTER `afile_name`;
+
+TRUNCATE TABLE `tbl_sms_templates`;
+
+INSERT INTO `tbl_sms_templates` (`stpl_code`, `stpl_lang_id`, `stpl_name`, `stpl_body`, `stpl_replacements`, `stpl_status`) VALUES
+('LOGIN', 1, 'login', 'Hello {USER_NAME},\r\n{OTP} is the OTP for account verification.\r\n\r\n{SITE_NAME} Team', '[{"title":"Name", "variable":"{USER_NAME}"},{"title":"Otp", "variable":"{OTP}"},{"title":"Site Name", "variable":"{SITE_NAME}"}]', 1),
+
+('withdrawal_request_approved_declined', 1, 'Withdrawal Request Status Update', 'Hello {user_name},\r\nYour fund withdrawal request {request_id} of {request_amount} has been {request_status}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{user_name}"},{"title":"Request Id", "variable":"{request_id}"},{"title":"Request Amount", "variable":"{request_amount}"},{"title":"Request Status", "variable":"{request_status}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('withdrawal_request_admin', 1, 'Withdrawal Request Received Admin', 'Hello Admin,\r\n{username} has submitted a withdrawl request {request_id} for {request_amount}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{username}"},{"title":"Request Id", "variable":"{request_id}"},{"title":"Amount", "variable":"{request_amount}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('welcome_registration', 1, 'Welcome Sms Notification', 'Hello {name},\r\nThank you for signing up at {SITE_URL}.\r\nWe are thrilled to have you aboard! Please access your account for exciting deals & offers.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{name}"},{"title":"Website Domain", "variable":"{SITE_URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('guest_welcome_registration', 1, 'Welcome Sms Guest', 'Hello {name},\r\nYour account has been created with us. Next time you shop with us, log in using your phone number for a faster checkout at {SITE_URL}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User", "variable":"{name}"},{"title":"Website Domain", "variable":"{SITE_URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('vendor_order_email', 1, 'New Order Seller', 'Hello {vendor_name},\r\nA new order {order_id} is received. Please access the orders tab in you account for more options.\r\n{SITE_URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller", "variable":"{vendor_name}"},{"title":"Order Id", "variable":"{order_id}"},{"title":"Site Url", "variable":"{SITE_URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('vendor_digital_order_email', 1, 'New Digital Order Seller', 'Hello {vendor_name},\r\nA new order {order_id} is received. Please access the orders tab in you account for more options.\r\n{SITE_URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller", "variable":"{vendor_name}"},{"title":"Order Id", "variable":"{order_id}"},{"title":"Site Url", "variable":"{SITE_URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('user_admin_password_changed_successfully', 1, 'Password Updated', 'Hello {user_full_name},\r\nYour password has been changed successfully.\r\nPlease click on the link below to Login to your account.\r\n{SITE_URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Site Url", "variable":"{SITE_URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('user_send_email', 1, 'New Email From Admin', 'Hello {full_name},\r\nYou have a new email from\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{full_name}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('threshold_notification_vendor', 1, 'Low Inventory Notification', 'Hello {user_name},\r\nYour product {prod_title} is low on inventory. Please visit your dashboard to update stock quantity.\r\n{SITE_URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Name", "variable":"{user_name}"},{"title":"Prod Title", "variable":"{prod_title}"},{"title":"Site Url", "variable":"{SITE_URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('TEST_SMS_NOTIFICATION', 1, 'Test Sms Notification', 'This is the test SMS.\r\n\r\n{SITE_NAME} Team', '[{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('seller_custom_catalog_request_status_change', 1, 'Custom Catalog Status Update', 'Hello {user_full_name},\r\nYour catalog approval request for {prod_title} has been {new_request_status}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Product Title", "variable":"{prod_title}"},{"title":"New Request Status", "variable":"{new_request_status}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('subscription_reminder_email', 1, 'Subsctiption Auto Renew Notification', 'Hello {user_full_name},\r\nYour Subscription plan will expire in the next 2 days. Please maintain minimum wallet balance for auto-renew of the plan at {SITE_URL}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{user_full_name}"},{"title":"Web Domain", "variable":"{SITE_URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('subscription_free_package_reminder_email', 1, 'Subscription Expiration Notification', 'Hello {user_full_name},\r\nYour Subscription plan will expire in th next 2 days. Please purchase preferred plan to continue your subscription on {SITE_URL}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{user_full_name}"},{"title":"Website Domain", "variable":"{SITE_URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('send_message', 1, 'New Message Received', 'Hello {user_full_name},\r\n{username} has sent you a message on {SITE_NAME}.\r\n{SITE_URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Username", "variable":"{username}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Site Url", "variable":"{SITE_URL}"}]', 1),
+
+('seller_catalog_request_status_change', 1, 'Private Product Request Status', 'Hello {user_full_name},\r\nYour request for approval of {reference_number} has been {new_request_status}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{user_full_name}"},{"title":"Reference Number", "variable":"{reference_number}"},{"title":"New Request Status", "variable":"{new_request_status}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('seller_brand_request_status_change', 1, 'Brand Request Status Update', 'Hello {user_full_name},\r\nYour request for approving {brand_name} has been {new_request_status}\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{user_full_name}"},{"title":"Brand Name", "variable":"{brand_name}"},{"title":"New Request Status", "variable":"{new_request_status}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('seller_brand_request_admin_email', 1, 'Brand Request', 'Hello Admin,\r\n{user_full_name} has requested a new brand by the name of {brand_name}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{user_full_name}"},{"title":"Brand Name", "variable":"{brand_name}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('reward_points_credited_debited', 1, 'Reward Points Transction', 'Hello {user_name},\r\n{reward_points} reward points have been {debit_credit_type} to your account. Reward points balance is {reward_point_balance}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Reward Points", "variable":"{reward_points}"},{"title":"Debited", "variable":"{debit_credit_type"},{"title":"Reward Point Balance", "variable":"{reward_point_balance}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('return_request_status_change_notification', 1, 'Return Request Status', 'Hello {user_full_name},\r\nYour return request for product with return request reference number {request_number} has been {new_status_name}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Request Number", "variable":"{request_number}"},{"title":"Return Request Status", "variable":"{new_status_name}"},{"title":"Website", "variable":"{SITE_NAME}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('return_request_message_user', 1, 'New Message Return Request', 'Hello {user_full_name},\r\nYou have a new message from {username} on return request for {prod_title} with reference number {request_number} at {SITE_NAME}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Username", "variable":"{username}"},{"title":"Product", "variable":"{prod_title}"},{"title":"Request Number", "variable":"{request_number}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('report_shop', 1, 'Report Shop', 'Hello Admin,\r\n{username} has reported {shop_name} on {SITE_NAME}.\r\n{SITE_URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Name", "variable":"{username}"},{"title":"Seller Shop", "variable":"{shop_name}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Site Url", "variable":"{SITE_URL}"}]', 1),
+
+('subscription_renew_user', 1, 'Subscription Renewed', 'Hello {user_full_name},\r\nYour subscription has been renewed vide \r\nOrder Invoice Number {invoice_number} at {SITE_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{user_full_name}"},{"title":"Invoice Number", "variable":"{invoice_number}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('reminder_for_items_in_wishlist', 1, 'Favorite Wishlist Items Notification', 'Hello {user_full_name},\r\nYou have some items in your {products_in_wishlist_format}. Visit {SITE_URL} to purchase now.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Favorites/Wishlist", "variable":"{products_in_wishlist_format}"},{"title":"Site Url", "variable":"{SITE_URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('reminder_for_items_in_cart', 1, 'Cart Item Notification', 'Hello {user_full_name},\r\nYou left some items in your cart.\r\nProceed to checkout, before stocks last.\r\n{SITE_URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Site Url", "variable":"{SITE_URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('promotion_request_status_change', 1, 'Promotion Status Update', 'Hello {user_full_name},\r\nYour promotion {promotion_name} request has been {new_request_status}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Promotion Name", "variable":"{promotion_name}"},{"title":"New Request Status", "variable":"{new_request_status}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('product_return', 1, 'Return Request For Seller', 'Hello {user_name},\r\nA return request has been submitted against order {child_order_invoice_number}.\r\n{SITE_URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{user_full_name}"},{"title":"Child Order Invoice Number", "variable":"{child_order_invoice_number}"},{"title":"Site Url", "variable":"{SITE_URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('password_changed_successfully', 1, 'Password Changed', 'Hello {full_name},\r\nYou have successfully changed your password.\r\nPlease login to your Account using the new password.\r\n{SITE_URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"Full Name", "variable":"{full_name}"},{"title":"Site Url", "variable":"{SITE_URL}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('order_cancellation_notification', 1, 'Order Cancellation Requets', 'Hello {user_name},\r\n{username} has submitted an Order Cancellation Request corresponding to Order Id {invoice_number}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Buyer Username", "variable":"{username}"},{"title":"Order Invoice Number", "variable":"{invoice_number}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('new_subscription_purchase', 1, 'Subscription Plan Payment Status', 'Hello {Seller_Shop},\r\nPayment status for subscription plan has been updated to {order_status} for Invoice Number - {invoice_number} at {SITE_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{user_full_name}"},{"title":"Order Status", "variable":"{order_status}"},{"title":"Invoice Number", "variable":"{invoice_number}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('new_supplier_approval_admin', 1, 'Seller Approval Request', 'Hello Admin,\r\nA new seller approval request is received.\r\nSeller details:\r\nReference Number: {reference_number}\r\nUsername {username}\r\nEmail {email}\r\nName {name}\r\n\r\n{SITE_NAME} Team', '[{"title":"Ref Number", "variable":"{reference_number}"},{"title":"Username", "variable":"{username}"},{"title":"Email", "variable":"{email}"},{"title":"Name", "variable":"{name}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('new_seller_approved_admin', 1, 'New Seller Regisration', 'Hello Admin,\r\nA new seller has registered on {SITE_NAME}.\r\nSeller Details:\r\nReference Number {reference_number}\r\nUsername {username}\r\nEmail {email}\r\nName {name}\r\n\r\n{SITE_NAME} Team', '[{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Reference Number", "variable":"{reference_number}"},{"title":"Username", "variable":"{username}"},{"title":"Email", "variable":"{email}"},{"title":"Name", "variable":"{name}"}]', 1),
+
+('new_registration_admin', 1, 'User Registration', 'Hello Admin,\r\nA new user has registered on {SITE_NAME}.\r\nUser details:\r\nUsername {username}\r\nEmail {email}\r\nName {name}\r\nType {user_type}\r\n\r\n{SITE_NAME} Team', '[{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Username", "variable":"{username}"},{"title":"Email", "variable":"{email}"},{"title":"Name", "variable":"{name}"},{"title":"User Type", "variable":"{user_type}"}]', 1),
+
+('new_custom_catalog_request_admin', 1, 'Custom Catalog Request', 'Hello Admin,\r\nA new Catalog request by the name of {request_title} is received on {SITE_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Catalog Name", "variable":"{request_title}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('new_affiliate_registration_admin', 1, 'Affiliate User Sign Up', 'Hello Admin,\r\nA new affiliate user has registered on {SITE_NAME}.\r\nAffiliate user details:\r\nUsername {username}\r\nEmail {email}\r\nName {name}\r\n\r\n{SITE_NAME} Team', '[{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Username", "variable":"{username}"},{"title":"Email", "variable":"{email}"},{"title":"Name", "variable":"{name}"}]', 1),
+
+('low_balance_promotional_email', 1, 'Low Balance Promotions', 'Hello {user_full_name},\r\nPlease maintain your wallet balance to keep Promotions Working.\r\nBalance required - {requiredBalance}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Required Balance", "variable":"{requiredBalance}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('low_balance_subscription_email', 1, 'Low Balance Subscription', 'Hello {user_full_name},\r\nPlease maintain your wallet balance to Continue Seller Services.\r\nBalance required - {requiredBalance}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Required Balance", "variable":"{requiredBalance}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('share_earn_invitation_email', 1, 'Invite A Friend', 'Hello {user_full_name} has invited you to join them on {SITE_NAME} and enjoy Amazing Discounts.\r\nClick the link to accept the invitation:\r\n{tracking_url}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Tracking Url", "variable":"{tracking_url}"}]', 1),
+
+('gdpr_request_status_update_notification_to_user', 1, 'Gdpr Request', 'Hello {username},\r\nYour Request for {request_type} under GDPR has been completed on {SITE_NAME}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Name", "variable":"{username}"},{"title":"Request Type", "variable":"{request_type}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('forgot_password', 1, 'Forgot Password Users', 'Hello {user_full_name},\r\nIt seems that you have used forgot password option at {SITE_NAME}.\r\nClick the link to reset your password. Valid for next 24 hours only.\r\n{reset_url}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Site Url", "variable":"{reset_url}"}]', 1),
+
+('admin_forgot_password', 1, 'Forgot Password Admin', 'Hello {user_full_name},\r\nIt seems that you have used forgot password option at {SITE_NAME}.\r\nPlease click the link to change your password.\r\n{reset_url}\r\n\r\n{SITE_NAME} Team', '[{"title":"Admin User", "variable":"{user_full_name}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Site Url", "variable":"{reset_url}"}]', 1),
+
+('failed_login_attempt', 1, 'Failed Login Attempt', 'Hello {user_full_name},\r\nAre you facing problems logging in at {SITE_NAME}?\r\nUse the forgot password feature to reset your password.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('user_email_verification', 1, 'Email Verification New Email', 'Hello {user_full_name},\r\nYou have used change email option at {SITE_NAME}.\r\nYou need to confirm your email to get your account activated with this email address.\r\n{verification_url}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"}, {"title":"Verification Url", "variable":"{verification_url}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('user_signup_verification', 1, 'Verification New Email', 'Hello {user_full_name},\r\nThank you for registering at {SITE_NAME}.\r\nConfirm your email by clicking the link {verification_url}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Verification Url", "variable":"{verification_url}"}]', 1),
+
+('user_email_changed_notification', 1, 'Email Changed Confirmation', 'Hello {user_full_name},\r\nYour Email Address has been changed to {new_email} at {SITE_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"New Email", "variable":"{new_email}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('user_change_email_request_notification', 1, 'Email Change Old Email', 'Hello {user_full_name},\r\nIt seems that you have requested to change email to {new_email} at {SITE_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"New Email", "variable":"{new_email}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('user_discount_coupon_notification', 1, 'Discount Coupon', 'Hello {user_name},\r\nUse {coupon_code} on your next purchase at{SITE_NAME} to get %{discount_value} off.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Name", "variable":"{user_name}"},{"title":"Coupon Code", "variable":"{coupon_code}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Discount Value", "variable":"{discount_value}"}]', 1),
+
+('data_request_notification_to_admin', 1, 'Data Request', 'Hello Admin,\r\nData request has been placed by {user_full_name}\r\nPurpose of request: {ureq_purpose}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Ureq Purpose", "variable":"{ureq_purpose}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('customer_order_email', 1, 'Customer Order Notification', 'Hello {user_full_name},\r\nThank you for placing an order on {SITE_NAME}. Your order {order_invoice_number} has been received and will be processed once payment has been confirmed.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Order Invoice Number", "variable":"{order_invoice_number}"}]', 1),
+
+('customer_digital_order_email', 1, 'Cutomer Order Notifiction Digital', 'Hello {user_full_name},\r\nThank you for placing a digital order on {SITE_NAME}. Your order {order_id} has been received and will be processed.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Order Id", "variable":"{order_id}"}]', 1),
+
+('account_credited_debited', 1, 'Transaction Alert', 'Hello {user_name},\r\nAmount {txn_amount} has been {txn_type} from your virtual wallet vide transaction id {txn_id}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Name", "variable":"{user_name}"},{"title":"Txn. Amount", "variable":"{txn_amount}"},{"title":"Txn. Type", "variable":"{txn_type}"},{"title":"Txn Id", "variable":"{txn_id}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('contact_us', 1, 'Contact Us', 'Hello Admin,\r\nA new query has been submitted by {name} on {SITE_NAME}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Name", "variable":"{name}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('child_order_status_change', 1, 'Order Status Update', 'Hello {user_full_name},\r\nYour order status for Order ID {invoice_number} has been changed to {new_order_status} at {SITE_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Invoice Number", "variable":"{invoice_number}"},{"title":"New Order Status", "variable":"{new_order_status}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('cancellation_request_approved_declined', 1, 'Cancellation Request Update', 'Hello {user_name},\r\nYour order cancellation request for invoice # {invoice_number} has been {request_status} on {SITE_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Name", "variable":"{user_name}"},{"title":"Invoice Number", "variable":"{invoice_number}"},{"title":"Request Status", "variable":"{request_status}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('cancel_subscription_email', 1, 'Subscription Cancelled', 'Hello {user_full_name},\r\nYour subscription plan {spackage_name} has been cancelled.\r\n\r\n{SITE_NAME} Team', '[{"title":"Seller Shop", "variable":"{user_full_name}"},{"title":"Spackage Name", "variable":"{spackage_name}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('supplier_request_status_change_buyer', 1, 'Seller Approval Request Status', 'Hello {user_full_name},\r\nYour seller approval request with reference number {reference_number} has been {new_request_status}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Ref Num", "variable":"{reference_number}"},{"title":"New Request Status", "variable":"{new_request_status}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('primary_order_payment_status_change_buyer', 1, 'Order Payment Status', 'Hello {user_full_name},\r\nPayment status for order #{invoice_number} has been changed to {new_order_status}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Invoice Number", "variable":"{invoice_number}"},{"title":"New Order Status", "variable":"{new_order_status}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('primary_order_payment_status_buyer', 1, 'cod', 'Hello {user_full_name},\r\nOrder #{invoice_number} has been placed with payment status as COD on {SITE_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Invoice Number", "variable":"{invoice_number}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('buyer_notification_review_order_product', 1, 'Product Review', 'Hello {user_full_name},\r\nThank you for shopping with {SITE_NAME}. Please share your feedback about your experience.\r\n{SITE_URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Site Url", "variable":"{SITE_URL}"}]', 1),
+
+('blog_contribution_status_changed', 1, 'Blog Contribution Status', 'Hello {user_full_name},\r\nYour blog contribution posted on {posted_on_datetime} for {SITE_NAME} has been {new_status}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Datetime", "variable":"{posted_on_datetime}"},{"title":"New Status", "variable":"{new_status}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('blog_comment_status_changed', 1, 'Blog Comment Status', 'Hello {user_full_name},\r\nYour Comment for the blog post "{post_title}", posted on {posted_on_datetime} has been {new_status} at {SITE_NAME}.\r\n\r\n{SITE_NAME} Team',  '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Post Title", "variable":"{post_title}"},{"title":"Datetime", "variable":"{posted_on_datetime}"},{"title":"New Status", "variable":"{new_status}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1 ),
+('promotion_approval_required_to_admin', 1, 'Promotion Approval', 'Hello Admin,\r\nA new promotion request "{promotion_name}" has been submitted by {user_full_name}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Promotion Name", "variable":"{promotion_name}"},{"title":"User Full Name", "variable":"{user_full_name}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('affiliate_welcome_registration', 1, 'Affiliate Registration', 'Hello {name},\r\nThank you for signing up at {SITE_NAME}.\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{name}"},{"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('affiliate_share_invitation_email', 1, 'Affiliate Invitation', 'Hello Friend,\r\nThis is an invitation from {user_full_name} to join them on {SITE_NAME} and enjoy Amazing Discounts.\r\nClick the link to accept this invitation:\r\n{tracking_url}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Tracking Url", "variable":"{tracking_url}"}]', 1),
+
+('admin_order_email', 1, 'Order Received', 'Hello Admin,\r\nA new order has been received on your site with Order Invoice Number {order_invoice_number}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Order Invoice Number", "variable":"{order_invoice_number}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('subscription_renew_admin', 1, 'Subscription Renewed', 'Hello Admin,\r\nSubscription plan has been auto-renewed on {SITE_NAME} with Order Number {invoice_number}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Website", "variable":"{SITE_NAME}"},{"title":"Invoice Number", "variable":"{invoice_number}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('primary_order_payment_status_change_admin', 1, 'Payment Status Update', 'Hello Admin,\r\nPayment status for Order {invoice_number} has been changed to {new_order_status}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Invoice Number", "variable":"{invoice_number}"},{"title":"New Order Status", "variable":"{new_order_status}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('primary_order_payment_status_admin', 1, 'Cod Order Payment Status', 'Hello Admin,\r\n{order_payment_method} order has been placed with Order Invoice Number - {invoice_number}.\r\n\r\n{SITE_NAME} Team', '[{"title":"Payment Method", "variable":"{order_payment_method}"},{"title":"Invoice Number", "variable":"{invoice_number}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('new_subscription_purchase_admin', 1, 'Subscription Package Purchased', 'Hello Admin,\r\nNew subscription package purchased by {user_full_name} for an amount {amount} with Order ID {invoice_number}\r\n\r\n{SITE_NAME} Team', '[{"title":"Full Name", "variable":"{user_full_name}"},{"title":"Amount", "variable":"{amount}"},{"title":"Order Id", "variable":"{invoice_number}"}, {"title":"Website Name", "variable":"{SITE_NAME}"}]', 1),
+
+('admin_notification_abusive_review_posted', 1, 'Product Review Reported', 'Hello Admin,\r\n{user_full_name} has posted an abusive review at {SITE_NAME}.\r\n{SITE_URL}\r\n\r\n{SITE_NAME} Team', '[{"title":"User Full Name", "variable":"{user_full_name}"},{"title":"Website Name", "variable":"{SITE_NAME}"},{"title":"Site Url", "variable":"{SITE_URL}"}]', 1); 
+
+-- ---------------------TV-9.1.3.20200312--------------------
+
+DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_ENABLE_GOOGLE_LOGIN' OR `conf_name` = 'CONF_ENABLE_FACEBOOK_LOGIN' OR `conf_name` = 'CONF_GOOGLEPLUS_DEVELOPER_KEY' OR `conf_name` = 'CONF_GOOGLEPLUS_CLIENT_ID' OR `conf_name` = 'CONF_GOOGLEPLUS_CLIENT_SECRET';
+-- ---------------------TV-9.1.3.20200313----------------------
 
 --
 -- Table structure for table `tbl_updated_record_log`

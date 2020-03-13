@@ -184,12 +184,12 @@ class AbandonedCart extends MyAppModel
         $couponData = DiscountCoupons::getAttributesById($couponId);
         $srch = new AbandonedCartSearch();
         $srch->joinUsers(true);
-        $srch->joinSellerProducts($this->commonLangId);
+        $srch->joinSellerProducts($this->commonLangId);           
         $srch->addCondition(static::DB_TBL_PREFIX . 'id', '=', $this->mainTableRecordId);
-        $srch->addMultipleFields(array('abandonedcart_action', 'user_id', 'user_name', 'credential_email', 'selprod_id', 'selprod_product_id', 'selprod_title', 'selprod_price'));
-        $rs = $srch->getResultSet();
+        $srch->addMultipleFields(array('abandonedcart_action', 'user.user_id', 'user.user_name', 'user_cred.credential_email', 'selprod_id', 'selprod_product_id', 'selprod_title', 'selprod_price'));
+        $rs = $srch->getResultSet(); 
         $abandonedData = FatApp::getDb()->fetch($rs);
-   
+
         $discount = ($couponData['coupon_discount_in_percent'] == applicationConstants::PERCENTAGE) ? $couponData['coupon_discount_value'] . '%' : CommonHelper::displayMoneyFormat($couponData['coupon_discount_value']);
         $arrReplacements = array(
             '{user_full_name}' => trim($abandonedData['user_name']),
@@ -210,6 +210,7 @@ class AbandonedCart extends MyAppModel
             $tpl = "abandoned_cart_deleted_discount_notification";
         }
         if (!EmailHandler::sendMailTpl($abandonedData['credential_email'], $tpl, $this->commonLangId, $arrReplacements)) {
+            $this->error = Labels::getLabel('MSG_Email_Not_Sent', $this->commonLangId);
             return false;
         }
         return true;
@@ -224,7 +225,7 @@ class AbandonedCart extends MyAppModel
     }
     
     public static function sendReminderAbandonedCart()
-    {
+    { 
         $langId = FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1);
         $srch = new AbandonedCartSearch();
         $srch->joinUsers(true);
@@ -244,6 +245,11 @@ class AbandonedCart extends MyAppModel
         $productHtml = "";
         $abandonedCartIds = array();
         foreach ($records as $key => $data) {
+            $product = static::validateProductForNotification($data['selprod_product_id']);
+            if(empty($product)){
+                continue;
+            }
+            
             if ($prevUserId == 0 || $prevUserId == $data['user_id']) {
                 $prevUserId = $data['user_id'];
             } else {
@@ -302,6 +308,20 @@ class AbandonedCart extends MyAppModel
         return true;
     }
     
+    public static function validateProductForNotification($productId)
+    {
+        $productId = FatUtility::int($productId);
+        $prodSrch = new ProductSearch(CommonHelper::getLangId());
+        $prodSrch->setDefinedCriteria(0, 0, array(), false);
+        $prodSrch->joinProductToCategory();
+        $prodSrch->joinSellerSubscription();
+        $prodSrch->addSubscriptionValidCondition();
+        $prodSrch->addCondition('product_id', '=', $productId);
+        $prodSrch->addFld('product_id');
+        $productRs = $prodSrch->getResultSet();
+        return FatApp::getDb()->fetch($productRs);
+    }
+
     public function recordCount()
     {
         return $this->totalRecords;

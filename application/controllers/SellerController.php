@@ -739,7 +739,6 @@ class SellerController extends SellerBaseController
 
         $this->_template->addJs('js/tagify.min.js');
         $this->_template->addJs('js/tagify.polyfills.min.js');
-        $this->_template->addCss('css/tagify.css');
 
         $frmSearchCatalogProduct = $this->getCatalogProductSearchForm();
         $this->set("frmSearch", $frmSearchCatalogProduct);
@@ -1222,7 +1221,7 @@ class SellerController extends SellerBaseController
         $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
 
         //$srch = Product::getSearchObject($this->siteLangId);
-        $srch = new ProductSearch($this->siteLangId, null, null, false, false);
+        $srch = new ProductSearch($this->siteLangId, null, null, true, true, true);
         $srch->joinProductShippedBySeller(UserAuthentication::getLoggedUserId());
         $srch->joinTable(AttributeGroup::DB_TBL, 'LEFT OUTER JOIN', 'product_attrgrp_id = attrgrp_id', 'attrgrp');
         $srch->joinTable(UpcCode::DB_TBL, 'LEFT OUTER JOIN', 'upc_product_id = product_id', 'upc');
@@ -2119,6 +2118,7 @@ class SellerController extends SellerBaseController
         $file_type = FatApp::getPostedData('file_type', FatUtility::VAR_INT, 0);
         $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
         $slide_screen = FatApp::getPostedData('slide_screen', FatUtility::VAR_INT, 0);
+        $aspectRatio = FatApp::getPostedData('ratio_type', FatUtility::VAR_INT, 0);
         if (!$file_type) {
             Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -2141,7 +2141,7 @@ class SellerController extends SellerBaseController
           } */
 
         $fileHandlerObj = new AttachedFile();
-        if (!$res = $fileHandlerObj->saveAttachment($_FILES['cropped_image']['tmp_name'], $file_type, $shop_id, 0, $_FILES['cropped_image']['name'], -1, $unique_record, $lang_id, $slide_screen)) {
+        if (!$res = $fileHandlerObj->saveAttachment($_FILES['cropped_image']['tmp_name'], $file_type, $shop_id, 0, $_FILES['cropped_image']['name'], -1, $unique_record, $lang_id, $slide_screen, $aspectRatio)) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -4132,8 +4132,8 @@ class SellerController extends SellerBaseController
         $frm->addHiddenField('', 'selprod_id', $selprod_id);
         $fld1 = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         if ($type != 'CUSTOM_CATALOG') {
-            $fld2 = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $this->siteLangId), array('onClick' => 'cancelForm(this)'));
-            $fld1->attachField($fld2);
+            $fld2 = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Discard', $this->siteLangId), array('onClick' => 'gotToProucts()'));
+            //$fld1->attachField($fld2);
         }
         return $frm;
     }
@@ -4799,7 +4799,10 @@ class SellerController extends SellerBaseController
         $frm = new Form('frmProductIntialSetUp');
         $frm->addRequiredField(Labels::getLabel('LBL_Product_Identifier', $this->siteLangId), 'product_identifier');
         $frm->addSelectBox(Labels::getLabel('LBL_Product_Type', $this->siteLangId), 'product_type', Product::getProductTypes($this->siteLangId), Product::PRODUCT_TYPE_PHYSICAL, array(), '');
-        $frm->addRequiredField(Labels::getLabel('LBL_Brand', $this->siteLangId), 'brand_name');
+        $brandFld = $frm->addTextBox(Labels::getLabel('LBL_Brand', $this->siteLangId), 'brand_name');
+        if (FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) {
+            $brandFld->requirements()->setRequired();
+        }
         $frm->addRequiredField(Labels::getLabel('LBL_Category', $this->siteLangId), 'category_name');
 
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);

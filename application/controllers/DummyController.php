@@ -566,37 +566,11 @@ class DummyController extends MyAppController
         AbandonedCart::sendReminderAbandonedCart();
     }
 
-    public function notify()
+    public function send()
     {
-        PushNotification::send();
-    }
-
-    public function checking()
-    {
-        
-        //FullTextSearch::insertSellerProduct(6);
-        //echo "done";
-        //FullTextSearch::insertSellerProduct(6);
-        FullTextSearch::setup();
-        echo "done";
-        die;
-        /*$searchCondition = array(
-            'keyword'  => 'phone',
-            'category' => '109',
-            //'brand'    => array(),
-        );*/
-        //$response = FullTextSearch::insertProduct();
-        /*if(!$response){
-            echo 'not done proper'; die;
-        }
-        echo "done sucessfully";
-        die;*/
-    }
-    
-    public function updateMinPrice()
-    {
-        FullTextSearch::updateGeneralMinPrice(6);
-        echo "price successfully updated";
-        die;
+        $error = '';
+        $resp = PushNotification::send($error);
+        echo $error;
+        CommonHelper::printArray($resp);
     }
 }

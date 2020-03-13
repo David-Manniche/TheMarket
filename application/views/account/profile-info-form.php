@@ -2,7 +2,7 @@
 $frm->setFormTagAttribute('id', 'profileInfoFrm');
 $frm->setFormTagAttribute('class', 'form');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
-$frm->developerTags['fld_default_col'] = 4;
+$frm->developerTags['fld_default_col'] = 6;
 
 $fld = $frm->getField('user_profile_info');
 $fld->developerTags['col'] = 6;
@@ -34,10 +34,13 @@ $emailFld->setFieldTagAttribute('disabled', 'disabled');
 
 $countryFld = $frm->getField('user_country_id');
 $countryFld->setFieldTagAttribute('id', 'user_country_id');
-$countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,'.$stateId.',\'#user_state_id\')');
+$countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,' . $stateId . ',\'#user_state_id\')');
 
 $stateFld = $frm->getField('user_state_id');
 $stateFld->setFieldTagAttribute('id', 'user_state_id');
+
+$userCompFld = $frm->getField('user_company');
+$userCompFld->developerTags['col'] = 12;
 
 
 $imgFrm->setFormTagAttribute('action', CommonHelper::generateUrl('Account', 'uploadProfileImage'));
@@ -119,3 +122,9 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
         });
     });
 </script>
+<?php 
+if (isset($countryIso) && !empty($countryIso)) { ?>
+    <script>
+        langLbl.defaultCountryCode = '<?php echo $countryIso; ?>';
+    </script>
+<?php } ?>

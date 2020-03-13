@@ -5,7 +5,7 @@ $arr_flds = array(
     'tags' => Labels::getLabel('LBL_Tags', $siteLangId)
 );
 
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--orders'));
+$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $key => $val) {
     if ($key == 'listserial') {
@@ -50,8 +50,8 @@ foreach ($arr_listing as $sn => $row) {
 }
 
 if (count($arr_listing) == 0) {
-    $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
-    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
+    $message = Labels::getLabel('LBL_You_need_to_create_private_products_in_order_to_add_tags', $siteLangId);
+    $this->includeTemplate('_partial/no-record-found-with-info.php', array('siteLangId'=>$siteLangId,'message'=>$message));
 } else {
     echo $tbl->getHtml();
 }

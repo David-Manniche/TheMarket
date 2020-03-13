@@ -107,10 +107,7 @@ $(document).ready(function(){
 			if(inputBtn.files && inputBtn.files[0]){
 				fcom.ajax(fcom.makeUrl('Account', 'imgCropper'), '', function(t) {
 					$.facebox(t,'faceboxWidth fbminwidth');
-					var container = document.querySelector('.img-container');
 					var file = inputBtn.files[0];
-					$('#new-img').attr('src', URL.createObjectURL(file));
-					var image = container.getElementsByTagName('img').item(0);
 					var options = {
 					aspectRatio: 1 / 1,
 					preview: '.img-preview',
@@ -119,7 +116,7 @@ $(document).ready(function(){
 					}
 				  };
 				  $(inputBtn).val('');
-				  return cropImage(image, options, 'saveProfileImage', inputBtn);
+				  return cropImage(file, options, 'saveProfileImage', inputBtn);
 				});
 			}
 		} else {
@@ -138,7 +135,7 @@ $(document).ready(function(){
 			});
 		}
 	};
-
+    
 	saveProfileImage = function(formData){
 		$.ajax({
 			url: fcom.makeUrl('Account', 'uploadProfileImage'),

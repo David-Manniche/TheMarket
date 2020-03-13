@@ -5,8 +5,13 @@ $arr_flds = array(
 		'user_name'=>Labels::getLabel('LBL_Requested_BY',$adminLangId),
 		'brand_logo'=>Labels::getLabel('LBL_Logo',$adminLangId),
 		'brand_identifier'=>Labels::getLabel('LBL_Brand_Name',$adminLangId),
-		'action' => Labels::getLabel('LBL_Action',$adminLangId),
+		'action' => '',
 	);
+
+if (!$canEdit) {
+    unset($arr_flds['action']);
+}
+
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $key => $val) {
@@ -60,16 +65,8 @@ foreach ($arr_listing as $sn=>$row){
 					$td->appendElement('plaintext', array(), $str,true);
 			break;
 			case 'action':
-				$ul = $td->appendElement("ul",array("class"=>"actions actions--centered"));
-				$li = $ul->appendElement("li",array('class'=>'droplink'));
-            		    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit',$adminLangId)),'<i class="ion-android-more-horizontal icon"></i>', true);
-                     		$innerDiv=$li->appendElement('div',array('class'=>'dropwrap'));
-                     		$innerUl=$innerDiv->appendElement('ul',array('class'=>'linksvertical'));
 				if($canEdit){
-					$innerLiEdit = $innerUl->appendElement("li");
-					$innerLiEdit->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"addBrandRequestForm(".$row['brand_id'].")"),Labels::getLabel('LBL_Edit',$adminLangId), true);
-
-
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"addBrandRequestForm(".$row['brand_id'].")"),"<i class='far fa-edit icon'></i>", true);
 				}
 			break;
 			default:

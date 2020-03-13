@@ -145,9 +145,10 @@
 
                 &.inprogress {
                     &:before {
-                        background: $secondary-color; color:$secondary-color-inverse;
+                        background: $secondary-color;
+                        color: $secondary-color-inverse;
                         border-color: $secondary-color;
-                       
+
                     }
 
                     > span {
@@ -199,6 +200,18 @@
 
     &:first-child {
         margin: 0;
+    }
+
+    .shipping-seller {
+        border-radius: 4px;
+        background:$gray-light;
+        padding: 0.5rem;
+    }
+
+    .shipping-seller-title {
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
     }
 }
 
@@ -272,14 +285,16 @@
 .nav-checkout ul li.is--active a:after {
     #{$start-direction}: 0;
     width: 50%;
-    background: $brand-color; color:$brand-color-inverse;
+    background: $brand-color;
+    color: $brand-color-inverse;
 }
 
 .nav-checkout ul li a:hover:before,
 .nav-checkout ul li.is--active a:before {
     #{$end-direction}: 0;
     width: 50%;
-    background: $brand-color; color:$brand-color-inverse;
+    background: $brand-color;
+    color: $brand-color-inverse;
 }
 
 .body--checkout {}
@@ -387,8 +402,9 @@
 }
 
 .btn-action .action:hover {
-    background: $brand-color; color:$brand-color-inverse;
-  
+    background: $brand-color;
+    color: $brand-color-inverse;
+
     border: solid 1px $brand-color;
 }
 
@@ -603,7 +619,7 @@
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
-    text-align: right;
+    text-align: #{$end-direction};
     font-weight: 600;
     color: inherit;
 }
@@ -639,6 +655,7 @@
 
 .scrollbar-order-list {
     max-height: 408px;
+    padding-#{$end-direction}: 20px;
 }
 
 .summary-order-list {
@@ -752,7 +769,7 @@
 }
 
 .selected-panel-action {
-    text-align: right;
+    text-align: #{$end-direction};
 }
 
 .apply--coupon--form {
@@ -785,7 +802,8 @@
 
         .is--active {
             &:before {
-                background: $brand-color; color:$brand-color-inverse;
+                background: $brand-color;
+                color: $brand-color-inverse;
             }
         }
     }
@@ -918,7 +936,8 @@
 .tabz--checkout-login ul li:after {
     /*content: "";*/
     bottom: 0;
-    background: $brand-color; color:$brand-color-inverse;
+    background: $brand-color;
+    color: $brand-color-inverse;
     height: 2px;
     position: absolute;
     z-index: 12;
@@ -934,7 +953,8 @@
 
 .tabz--checkout-login ul li.is-active:after {
     position: absolute;
-    background: $brand-color; color:$brand-color-inverse;
+    background: $brand-color;
+    color: $brand-color-inverse;
 }
 
 .tabz--checkout-login ul li.is-active:after {
@@ -1077,11 +1097,7 @@
     border-bottom: none;
 }
 
-.shipping-seller-title {
-    font-weight: 600;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-}
+
 
 .shipping-address {
     line-height: 1.8;

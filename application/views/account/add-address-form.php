@@ -22,7 +22,7 @@ $submitFld->setFieldTagAttribute('class', 'btn btn--primary btn-block');
 $submitFld->developerTags['col'] = 2;
 $submitFld->developerTags['noCaptionTag'] = true;
 ?>
-<!-- <div class="tabs tabs--small tabs--scroll clearfix">
+<!-- <div class="tabs">
     <ul>
         <li>
             <a href="javascript:void(0);" onClick="searchAddresses()"><?php echo Labels::getLabel('LBL_My_Addresses', $siteLangId);?></a>

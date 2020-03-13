@@ -21,21 +21,26 @@ foreach ($arrListing as $selProdId => $relatedProds) {
     $tr = $tbl->appendElement('tr', array());
     foreach ($arr_flds as $key => $val) {
         $tr->setAttribute('id', 'row-'.$selProdId);
-        $td = $tr->appendElement('td');
+        if($key == 'product_name'){
+            $td = $tr->appendElement('td', array('class' => 'js-product-edit pointer', 'row-id' => $selProdId, 'title' => Labels::getLabel('LBL_Click_Here_For_Edit', $adminLangId)));
+        }else{
+            $td = $tr->appendElement('td');
+        }
         switch ($key) {
             case 'select_all':
                 $td->appendElement('plaintext', array(), '<label class="checkbox"><input class="selectItem--js" type="checkbox" name="selprod_ids['.$selProdId.']" value='.$selProdId.'><i class="input-helper"></i></label>', true);
                 break;
             case 'product_name':
                 // last Param of getProductDisplayTitle function used to get title in html form.
-                $productName = SellerProduct::getProductDisplayTitle($selProdId, $adminLangId, true);
+                $productName = "<span class='js-prod-name'>".SellerProduct::getProductDisplayTitle($selProdId, $adminLangId, true).'</span><br>'.Labels::getLabel('LBL_Seller', $adminLangId).': <span class="js-seller-name">'.$relatedProds['credential_username'].'</span>';
                 $td->appendElement('plaintext', array(), $productName, true);
                 break;
             case 'related_products':
                 $ul = $td->appendElement("ul", array("class"=>"list-tags"));
+                unset($relatedProds['credential_username']);
                 foreach ($relatedProds as $relatedProd) {
                     $li = $ul->appendElement("li");
-                    $li->appendElement('plaintext', array(), '<span>'.$relatedProd['selprod_title'].' <i class="remove_buyTogether remove_param fal fa-times" onClick="deleteSelprodRelatedProduct('.$selProdId.', '.$relatedProd['selprod_id'].')"></i></span>', true);
+                    $li->appendElement('plaintext', array(), '<span>'.$relatedProd['selprod_title'].' <i class="remove_buyTogether remove_param fas fa-times" onClick="deleteSelprodRelatedProduct('.$selProdId.', '.$relatedProd['selprod_id'].')"></i></span>', true);
                     $li->appendElement('plaintext', array(), '<input type="hidden" name="product_related[]" value="'.$relatedProd['selprod_id'].'">', true);
                 }
                 break;

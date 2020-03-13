@@ -6,6 +6,9 @@ $arr_flds = array(
         'stpl_status' => Labels::getLabel('LBL_Status', $adminLangId),
         // 'action' => Labels::getLabel('LBL_Action', $adminLangId),
     );
+if (!$canEdit) {
+    unset($arr_flds['select_all']);
+}
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table-responsive'));
 
 $th = $tbl->appendElement('thead')->appendElement('tr');
@@ -77,7 +80,7 @@ if (count($arr_listing) == 0) {
 }
 
 $frm = new Form('frmSmsTempListing', array('id' => 'frmSmsTempListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('SmsTemplates', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');

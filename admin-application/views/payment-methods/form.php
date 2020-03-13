@@ -3,6 +3,7 @@ $frm->setFormTagAttribute('class', 'web_form form_horizontal');
 $frm->setFormTagAttribute('onsubmit', 'setupGateway(this); return(false);');
 $ratioFld = $frm->getField('ratio_type');
 $ratioFld->addFieldTagAttribute('class', 'prefRatio-js');
+$ratioFld->addOptionListTagAttribute('class', 'list-inline');
 $fld = $frm->getField('pmethod_icon');
 $fld->addFieldTagAttribute('onChange', 'popupImage(this)');
 $frm->developerTags['colClassPrefix'] = 'col-md-';

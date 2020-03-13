@@ -38,7 +38,7 @@ if (true == $primaryOrder) {
                         <?php if ($canCancelOrder) { ?>
                         <li>
                             <a href="<?php echo CommonHelper::generateUrl('Buyer', 'orderCancellationRequest', array($childOrderDetail['op_id'])); ?>" class="icn-highlighted" title="<?php echo Labels::getLabel('LBL_Cancel_Order', $siteLangId); ?>"><i
-                                    class="fa fa-close"></i></a>
+                                    class="fas fa-times"></i></a>
                         </li>
                         <?php }
                             if (FatApp::getConfig("CONF_ALLOW_REVIEWS", FatUtility::VAR_INT, 0) && $canReviewOrders && $canSubmitFeedback) {
@@ -50,7 +50,7 @@ if (true == $primaryOrder) {
                             if ($canReturnRefund) { ?>
                         <li>
                             <a href="<?php echo CommonHelper::generateUrl('Buyer', 'orderReturnRequest', array($childOrderDetail['op_id'])); ?>" class="icn-highlighted" title="<?php echo Labels::getLabel('LBL_Refund', $siteLangId); ?>"><i
-                                    class="fa fa-dollar"></i></a>
+                                    class="fas fa-dollar-sign"></i></a>
                         </li>
                         <?php } ?>
                     </ul>
@@ -362,7 +362,7 @@ if (true == $primaryOrder) {
                                     ?> <span class="gap"></span>
                     <div class="section--repeated">
                         <h5><?php echo Labels::getLabel('LBL_Payment_History', $siteLangId); ?></h5>
-                        <table class="table table--orders">
+                        <table class="table">
                             <tbody>
                                 <tr class="">
                                     <th><?php echo Labels::getLabel('LBL_Date_Added', $siteLangId); ?></th>

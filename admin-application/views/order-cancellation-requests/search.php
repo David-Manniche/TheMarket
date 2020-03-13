@@ -8,7 +8,7 @@ $arr_flds = array(
 	'amount'=>Labels::getLabel('LBL_Amount',$adminLangId),		
 	'ocrequest_date'=>Labels::getLabel('LBL_Date',$adminLangId),
 	'ocrequest_status'=>Labels::getLabel('LBL_Status',$adminLangId),
-	'action' => Labels::getLabel('LBL_Action',$adminLangId),
+	'action' => '',
 );
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
@@ -57,15 +57,7 @@ foreach ($arrListing as $sn=>$row){
 			break;
 			case 'action':
 				if( $canEdit && $row['ocrequest_status'] == OrderCancelRequest::CANCELLATION_REQUEST_STATUS_PENDING ){
-					$ul = $td->appendElement("ul",array("class"=>"actions actions--centered"));
-					
-					$li = $ul->appendElement("li",array('class'=>'droplink'));						
-    			    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit',$adminLangId)),'<i class="ion-android-more-horizontal icon"></i>', true);
-					$innerDiv=$li->appendElement('div',array('class'=>'dropwrap'));	
-					$innerUl=$innerDiv->appendElement('ul',array('class'=>'linksvertical'));
-              		
-					$innerLi=$innerUl->appendElement('li');
-					$innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"updateStatusForm(".$row['ocrequest_id'].")"),Labels::getLabel('LBL_Edit',$adminLangId), true);						
+					$td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"updateStatusForm(".$row['ocrequest_id'].")"),"<i class='far fa-edit icon'></i>", true);						
 				}
 			break;
 			default:

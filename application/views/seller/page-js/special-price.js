@@ -22,10 +22,16 @@ $(document).on('keyup', "input[name='product_name']", function(){
         	},
             select: function (event, ui) {
                 $("#"+parentForm+" input[name='splprice_selprod_id']").val(ui.item.id);
+                $("input[name='splprice_start_date']").removeAttr('disabled');
+                $("input[name='splprice_end_date']").removeAttr('disabled');
+                $("input[name='splprice_price']").removeAttr('disabled');
             }
         });
     }else{
         $("#"+parentForm+" input[name='splprice_selprod_id']").val('');
+        $("input[name='splprice_start_date']").attr('disabled', 'disabled').val('');
+        $("input[name='splprice_end_date']").attr('disabled', 'disabled').val('');
+        $("input[name='splprice_price']").attr('disabled', 'disabled').val('');
     }
 });
 
@@ -132,12 +138,13 @@ $(document).on('blur', ".js--splPriceCol:not(.date_js)", function(){
                     }
                     frm.reset();
                 }
-                document.getElementById('frmSplPriceListing').reset()
+                document.getElementById('frmSplPriceListing').reset();
                 $('table.splPriceList-js tbody').prepend(t.data);
                 $('.date_js').datepicker('option', {minDate: new Date()});
                 if (0 < $('.noResult--js').length) {
                     $('.noResult--js').remove();
                 }
+                searchSpecialPriceProducts(document.frmSearch);
             }
 			$(document).trigger('close.facebox');
             if (0 < frm.addMultiple.value) {

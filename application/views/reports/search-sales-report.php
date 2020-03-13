@@ -24,7 +24,7 @@ if(empty($orderDate)){
 	$arr_flds = array_merge($arrFlds2,$arr);
 }
 
-$tbl = new HtmlElement('table', array('class'=>'table table--orders'));
+$tbl = new HtmlElement('table', array('class'=>'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr',array('class' => ''));
 foreach ($arr_flds as $val) {
 	$e = $th->appendElement('th', array(), $val);
@@ -67,11 +67,11 @@ if( count($arrListing) == 0 ){
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
     $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
 } else {
-	echo '<div class="box__head"><div class="btn-group">';
 	if(!empty($orderDate)){
-		echo '<a href="'.CommonHelper::generateUrl('Reports','SalesReport').'" class="btn btn--primary btn--sm">'.Labels::getLabel('LBL_Back',$siteLangId).'</a>';
+		echo '<div class="box__head"><div class="btn-group">';
+		echo '<a href="'.CommonHelper::generateUrl('Reports','SalesReport').'" class="btn btn-outline-primary btn--sm">'.Labels::getLabel('LBL_Back',$siteLangId).'</a>';
+		echo '</div></div>';
 	}
-	echo '</div></div>';
     echo $tbl->getHtml();
 }
 $postedData['page'] = $page;

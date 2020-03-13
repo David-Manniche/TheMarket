@@ -185,12 +185,4 @@ $(document).ready(function(){
 			}
 		});
 	};
-
-	toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmNavListing input[name='status']").val(status);
-        $("#frmNavListing").submit();
-    };
 })()

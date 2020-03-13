@@ -379,7 +379,6 @@ $(document).ready(function() {
     };
 
     getCountryStates = function(countryId, stateId, dv) {
-        alert(stateId);
         fcom.displayProcessing();
         fcom.ajax(fcom.makeUrl('Users', 'getStates', [countryId, stateId]), '', function(res) {
             $(dv).empty();
@@ -413,14 +412,6 @@ $(document).ready(function() {
 
     deletedUser = function() {
         document.location.href = fcom.makeUrl('deletedUsers');
-    };
-
-	toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmUsersListing input[name='status']").val(status);
-        $("#frmUsersListing").submit();
     };
 
     deleteSelected = function(){

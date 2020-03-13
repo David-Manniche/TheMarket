@@ -15,3 +15,9 @@ $fldSubmit->developerTags['noCaptionTag'] = true;
 $fldSubmit->htmlAfterField = '<br/><small>' . Labels::getLabel('MSG_YOUR_PHONE_NUMBER_WILL_NOT_CHANGE_UNTIL_YOU_VERIFY_YOUR_NEW_NUMBER', $siteLangId) . '</small>';
 
 echo $frm->getFormHtml();
+
+if (isset($countryIso) && !empty($countryIso)) { ?>
+    <script>
+        langLbl.defaultCountryCode = '<?php echo $countryIso; ?>';
+    </script>
+<?php } ?>

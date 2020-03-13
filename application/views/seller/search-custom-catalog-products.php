@@ -7,7 +7,7 @@ $arr_flds = array(
     'preq_status' => Labels::getLabel('LBL_Status', $siteLangId),
     'action' => Labels::getLabel('LBL_Action', $siteLangId)
 );
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--orders'));
+$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);
@@ -46,7 +46,7 @@ foreach ($arr_listing as $sn => $row) {
                     );
 
                     $li = $ul->appendElement("li");
-                    $li->appendElement("a", array('title' => Labels::getLabel('LBL_Product_Images', $siteLangId), 'onclick' => 'customCatalogProductImages('.$row['preq_id'].')', 'href'=>'javascript:void(0)'), '<i class="fa fa-picture-o"></i>', true);
+                    $li->appendElement("a", array('title' => Labels::getLabel('LBL_Product_Images', $siteLangId), 'onclick' => 'customCatalogProductImages('.$row['preq_id'].')', 'href'=>'javascript:void(0)'), '<i class="far fa-image"></i>', true);
                 }
                 break;
             default:

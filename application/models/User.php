@@ -94,6 +94,7 @@ class User extends MyAppModel
     public const USER_INFO_ATTR = [
         'user_id',
         'user_name',
+        'user_dial_code',
         'user_phone',
         'credential_email',
         'user_registered_initially_for',
@@ -114,6 +115,7 @@ class User extends MyAppModel
 
     public const OTP_LENGTH = 4;
     public const OTP_AGE = 15; //IN MINUTES
+    public const OTP_INTERVAL = 30; //IN SECONDS
 
     public const AUTH_TYPE_GUEST = 1;
     public const AUTH_TYPE_REGISTERED = 2;
@@ -498,6 +500,7 @@ class User extends MyAppModel
                 array(
                 'u.' . static::DB_TBL_PREFIX . 'id',
                 'u.' . static::DB_TBL_PREFIX . 'name',
+                'u.' . static::DB_TBL_PREFIX . 'dial_code',
                 'u.' . static::DB_TBL_PREFIX . 'phone',
                 'u.' . static::DB_TBL_PREFIX . 'profile_info',
                 'u.' . static::DB_TBL_PREFIX . 'regdate',
@@ -574,9 +577,11 @@ class User extends MyAppModel
             array(
             'u.' . static::DB_TBL_PREFIX . 'id',
             'u.' . static::DB_TBL_PREFIX . 'name',
+            'u.' . static::DB_TBL_PREFIX . 'dial_code',
+            'u.' . static::DB_TBL_PREFIX . 'phone',
             'uc.' . static::DB_TBL_CRED_PREFIX . 'username',
             'uc.' . static::DB_TBL_CRED_PREFIX . 'email',
-                            )
+            )
         );
         return $srch;
     }
@@ -1086,9 +1091,11 @@ class User extends MyAppModel
             array(
             'u.' . static::DB_TBL_PREFIX . 'id',
             'u.' . static::DB_TBL_PREFIX . 'name',
+            'u.' . static::DB_TBL_PREFIX . 'dial_code',
+            'u.' . static::DB_TBL_PREFIX . 'phone',
             'uc.' . static::DB_TBL_CRED_PREFIX . 'username',
             'uc.' . static::DB_TBL_CRED_PREFIX . 'email',
-                            )
+            )
         );
         return $srch;
     }
@@ -1107,7 +1114,7 @@ class User extends MyAppModel
         $data = array(
             'reference_number' => $data['scatrequest_reference'],
             'request_title' => $data['scatrequest_title'],
-        'request_content' => $data['scatrequest_content'],
+            'request_content' => $data['scatrequest_content'],
         );
         $email = new EmailHandler();
 
@@ -1526,15 +1533,20 @@ class User extends MyAppModel
         }
     }
 
-    public function prepareUserPhoneOtp($newOtp = false, $phone = '')
+    public function prepareUserPhoneOtp($countryIso = '', $dialCode = '', $phone = 0)
     {
         if (($this->mainTableRecordId < 1)) {
-            $this->error = Labels::getLabel('ERR_INVALID_REQUEST.', $this->commonLangId);
+            $this->error = Labels::getLabel('MSG_INVALID_REQUEST.', $this->commonLangId);
             return false;
         }
-
-        if (true === $newOtp) {
-            $this->deletePhoneOtp($this->mainTableRecordId);
+        if ($row = $this->getOtpDetail()) {
+            $applicableUpto =  (strtotime($row[static::DB_TBL_UPV_PREFIX . 'expired_on']) + self::OTP_INTERVAL);
+            $now = strtotime("+" . self::OTP_AGE . " minutes", time());
+            if ($applicableUpto >= $now) {
+                $msg = Labels::getLabel('LBL_PLEASE_WAIT_{SECONDS}_SECONDS_TO_RESEND.', $this->commonLangId);
+                $this->error = CommonHelper::replaceStringData($msg, ['{SECONDS}' => ($applicableUpto - $now)]);
+                return false;
+            }
         }
 
         $min = pow(10, self::OTP_LENGTH - 1);
@@ -1544,6 +1556,8 @@ class User extends MyAppModel
         $data = [
             static::DB_TBL_UPV_PREFIX . 'user_id' => $this->mainTableRecordId,
             static::DB_TBL_UPV_PREFIX . 'otp' => $otp,
+            static::DB_TBL_UPV_PREFIX . 'country_iso' => trim($countryIso),
+            static::DB_TBL_UPV_PREFIX . 'dial_code' => trim($dialCode),
             static::DB_TBL_UPV_PREFIX . 'phone' => trim($phone),
             static::DB_TBL_UPV_PREFIX . 'expired_on' => date('Y-m-d H:i:s', strtotime("+" . self::OTP_AGE . " minutes", time())),
         ];
@@ -1552,7 +1566,7 @@ class User extends MyAppModel
 
         $tblRec->assignValues($data);
 
-        if (!$tblRec->addNew(array(), $data)) {
+        if (!$tblRec->addNew([], $data)) {
             $this->error = $tblRec->getError();
             return false;
         }
@@ -1588,7 +1602,34 @@ class User extends MyAppModel
         return false;
     }
 
-    public function verifyUserPhoneOtp($otp, $doLogin = false, $returnPhone = false)
+    public function getOtpDetail(int $otp = null)
+    {
+        if (($this->mainTableRecordId < 1)) {
+            $this->error = Labels::getLabel('ERR_INVALID_REQUEST.', $this->commonLangId);
+            return false;
+        }
+
+        $emvSrch = new SearchBase(static::DB_TBL_USER_PHONE_VER);
+        $emvSrch->addCondition(static::DB_TBL_UPV_PREFIX . 'user_id', '=', $this->mainTableRecordId);
+        
+        if (null != $otp) {
+            $emvSrch->addCondition(static::DB_TBL_UPV_PREFIX . 'otp', '=', $otp);
+        }
+
+        $attr = [
+            static::DB_TBL_UPV_PREFIX . 'user_id',
+            static::DB_TBL_UPV_PREFIX . 'country_iso',
+            static::DB_TBL_UPV_PREFIX . 'dial_code',
+            static::DB_TBL_UPV_PREFIX . 'phone',
+            static::DB_TBL_UPV_PREFIX . 'expired_on'
+        ];
+        $emvSrch->addMultipleFields($attr);
+
+        $rs = $emvSrch->getResultSet();
+        return FatApp::getDb()->fetch($rs);
+    }
+
+    public function verifyUserPhoneOtp($otp, $doLogin = false, $returnRow = false)
     {
         if (($this->mainTableRecordId < 1)) {
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST.', $this->commonLangId);
@@ -1600,14 +1641,7 @@ class User extends MyAppModel
             return false;
         }
 
-        $emvSrch = new SearchBase(static::DB_TBL_USER_PHONE_VER);
-        $emvSrch->addCondition(static::DB_TBL_UPV_PREFIX . 'user_id', '=', $this->mainTableRecordId);
-        $emvSrch->addCondition(static::DB_TBL_UPV_PREFIX . 'otp', '=', $otp);
-
-        $emvSrch->addMultipleFields(array(static::DB_TBL_UPV_PREFIX . 'user_id', static::DB_TBL_UPV_PREFIX . 'phone', static::DB_TBL_UPV_PREFIX . 'expired_on'));
-
-        $rs = $emvSrch->getResultSet();
-        if ($row = FatApp::getDb()->fetch($rs)) {
+        if ($row = $this->getOtpDetail($otp)) {
             if (strtotime($row[static::DB_TBL_UPV_PREFIX . 'expired_on']) < time()) {
                 $this->error = Labels::getLabel('MSG_OTP_EXPIRED.', $this->commonLangId);
                 return false;
@@ -1615,6 +1649,7 @@ class User extends MyAppModel
 
             $this->deletePhoneOtp($this->mainTableRecordId);
             $this->verifyAccount(applicationConstants::YES);
+            
             if (true === $doLogin) {
                 $attr = [
                     'credential_username',
@@ -1623,7 +1658,7 @@ class User extends MyAppModel
                 $userInfo = $this->getUserInfo($attr);
                 $this->doLogin($userInfo['credential_username'], $userInfo['credential_password']);
             }
-            return (true == $returnPhone && !empty($row['upv_phone']) ? $row['upv_phone'] : true);
+            return (true == $returnRow) ? $row : true;
         } else {
             $this->error = Labels::getLabel('MSG_INVALID_OTP.', $this->commonLangId);
             return false;
@@ -1639,18 +1674,7 @@ class User extends MyAppModel
         }
 
         $db = FatApp::getDb();
-        if (!$db->updateFromArray(
-            static::DB_TBL_CRED,
-            array(
-            static::DB_TBL_CRED_PREFIX . 'password' => $pwd
-            ),
-            array(
-            'smt' => static::DB_TBL_CRED_PREFIX . 'user_id = ?',
-            'vals' => array(
-                        $this->mainTableRecordId
-            )
-            )
-        )) {
+        if (!$db->updateFromArray(static::DB_TBL_CRED, [static::DB_TBL_CRED_PREFIX . 'password' => $pwd], ['smt' => static::DB_TBL_CRED_PREFIX . 'user_id = ?', 'vals' => [$this->mainTableRecordId]])) {
             $this->error = $db->getError();
             return false;
         }
@@ -1661,11 +1685,12 @@ class User extends MyAppModel
     public function notifyAdminRegistration($data, $langId)
     {
         $userType = isset($data['user_registered_initially_for']) ? $data['user_registered_initially_for'] : '';
+        $phone = !empty($data['user_phone']) ? $data['user_dial_code'] . $data['user_phone'] : '';
         $data = array(
                     'user_name' => $data['user_name'],
                     'user_username' => $data['user_username'],
                     'user_email' => isset($data['user_email']) ? $data['user_email'] : '',
-                    'user_phone' => isset($data['user_phone']) ? $data['user_phone'] : '',
+                    'user_phone' => $phone,
                     'user_type' => $userType,
                 );
         $email = new EmailHandler();
@@ -1696,14 +1721,17 @@ class User extends MyAppModel
     
     public function userPhoneVerification($data, $langId)
     {
-        $otp = $this->prepareUserPhoneOtp();
+        $countryIso = !empty($data['user_country_iso']) ? trim($data['user_country_iso']) : '';
+        $dialCode = !empty($data['user_dial_code']) ? trim($data['user_dial_code']) : '';
+        $phone = !empty($data['user_phone']) ? trim($data['user_phone']) : '';
+        $phoneWithDial = $dialCode . $phone;
+        $user_name = !empty($data['user_name']) ? $data['user_name'] : Labels::getLabel('LBL_USER', $langId);
+        
+        $otp = $this->prepareUserPhoneOtp($countryIso, $dialCode, $phone);
         if (false === $otp) {
             return false;
         }
-        $phone = isset($data['user_phone']) ? $data['user_phone'] : '';
-        $user_name = isset($data['user_name']) ? $data['user_name'] : Labels::getLabel('LBL_USER', $langId);
-        
-        return $this->sendOtp($phone, $user_name, $otp, $langId);
+        return $this->sendOtp($phoneWithDial, $user_name, $otp, $langId);
     }
 
     public function sendOtp($phone, $user_name, $otp, $langId)
@@ -1718,7 +1746,14 @@ class User extends MyAppModel
             '{OTP}' => $otp,
             '{USER_NAME}' => $user_name
         ];
-        return SmsArchive::send($phone, SmsTemplate::LOGIN, $langId, $replacements, $this->error);
+        $smsArchive = new SmsArchive();
+        $smsArchive->toPhone($phone);
+        $smsArchive->setTemplate($langId, SmsTemplate::LOGIN, $replacements);
+        if (!$smsArchive->send()) {
+            $this->error = $smsArchive->getError();
+            return false;
+        }
+        return true;
     }
 
     public function resendOtp()
@@ -1728,18 +1763,20 @@ class User extends MyAppModel
             return false;
         }
         
-        $attr = ['user_name', 'user_phone'];
+        $attr = ['user_name', 'user_dial_code', 'user_phone'];
         $userData = $this->getUserInfo($attr, false, false);
+        $userData['user_country_iso'] = self::getUserMeta($this->mainTableRecordId, 'user_country_iso');
         return $this->userPhoneVerification($userData, $this->commonLangId);
     }
 
     public function guestUserWelcomeEmail($data, $langId)
     {
         $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
-
+        $phone = !empty($data['user_phone']) ? $data['user_dial_code'] . $data['user_phone'] : '';
         $data = array(
             'user_name' => $data['user_name'],
             'user_email' => $data['user_email'],
+            'user_phone' => $phone,
             'link' => $link,
         );
 
@@ -1755,9 +1792,11 @@ class User extends MyAppModel
 
     public function userWelcomeEmailRegistration($data, $link, $langId)
     {
+        $phone = !empty($data['user_phone']) ? $data['user_dial_code'] . $data['user_phone'] : '';
         $data = array(
                     'user_name' => $data['user_name'],
                     'user_email' => $data['user_email'],
+                    'user_phone' => $phone,
                     'link' => $link,
                 );
                 
@@ -2644,6 +2683,10 @@ class User extends MyAppModel
 
         $userData['user_username'] = $username;
         $userData['user_email'] = $email;
+        
+        $uData = self::getAttributesById($userId, ['user_dial_code', 'user_phone']);
+        $userData = array_merge($userData, $uData);
+
         if (FatApp::getConfig('CONF_NOTIFY_ADMIN_REGISTRATION', FatUtility::VAR_INT, 1)) {
             if (!$this->notifyAdminRegistration($userData, $this->commonLangId)) {
                 $this->error = Labels::getLabel("MSG_NOTIFICATION_EMAIL_COULD_NOT_BE_SENT", $this->commonLangId);
@@ -2657,9 +2700,10 @@ class User extends MyAppModel
             $data['user_name'] = $username;
 
             //ToDO::Change login link to contact us link
-            $data['link'] = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
-            $userEmailObj = new User($userId);
-            if (!$this->userWelcomeEmailRegistration($userEmailObj, $data, $this->commonLangId)) {
+            $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
+            $data = array_merge($data, $uData);
+            
+            if (!$this->userWelcomeEmailRegistration($data, $link, $this->commonLangId)) {
                 $this->error = Labels::getLabel("MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT", $this->commonLangId);
                 $db->rollbackTransaction();
                 return false;

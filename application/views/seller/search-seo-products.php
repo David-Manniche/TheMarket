@@ -3,8 +3,10 @@ $arr_flds = array(
     'listserial' => '#',
     'product_name' => Labels::getLabel('LBL_Product', $siteLangId),
 );
-
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered volDiscountList-js'));
+if (1 > count($arrListing)) {
+    unset($arr_flds['select_all']);
+}
+$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table volDiscountList-js'));
 $thead = $tbl->appendElement('thead');
 $th = $thead->appendElement('tr', array('class' => ''));
 
@@ -53,8 +55,8 @@ foreach ($arrListing as $sn => $row) {
 }
 
 if (count($arrListing) == 0) {
-    $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
-    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
+    $message = Labels::getLabel('LBL_You_need_to_create_products_in_order_to_add_meta_tags', $siteLangId);
+    $this->includeTemplate('_partial/no-record-found-with-info.php', array('siteLangId'=>$siteLangId,'message'=>$message));
 } else {
     echo $tbl->getHtml();
 }

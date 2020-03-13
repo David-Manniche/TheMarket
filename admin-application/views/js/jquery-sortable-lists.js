@@ -4,10 +4,8 @@
  * @author Vladimír Čamaj
  * @license MIT
  */
-
 ( function( $ )
 {
-
 	/**
 	 * @desc jQuery plugin
 	 * @param options
@@ -167,7 +165,7 @@
 						close( li );
 					}
 					else
-					{ 
+					{   
 						open( li );
 					}
 				}
@@ -575,7 +573,7 @@
 				relY = e.pageY - oEl.offset().top;
 
 			if ( setting.insertZonePlus )
-			{
+			{   
 				if ( 14 > relY )  // Inserting on top
 				{
 					showOnTopPlus( e, oEl, 7 > relY );  // Last bool param express if hint insert outside/inside
@@ -646,7 +644,7 @@
 				}
 
 				if ( state.oEl )
-				{
+				{  
 					open( oEl ); // TODO:animation??? .children('ul,ol').css('display', 'block');
 				}
 
@@ -674,7 +672,7 @@
 
 			// Hint inside the oEl
 			if ( ! outside && e.pageX - oEl.offset().left > setting.insertZone )
-			{
+			{   
 				var children = oEl.children(),
 					list = oEl.children( setting.listSelector ).first();
 
@@ -696,12 +694,8 @@
 				}
 
 				if ( state.oEl )
-				{ 
-                    /* [ custom work by developer */
-                    var catId = $(oEl).attr('id');
-                    displaySubCategories(this, catId);
-                    /* ] */
-					open( oEl ); // TODO:animation??? .children('ul,ol').css('display', 'block');
+				{  
+					open( oEl ); // TODO:animation??? .children('ul,ol').css('display', 'block'); 
 				}
 			}
 			// Hint outside the oEl
@@ -765,14 +759,14 @@
 					children.last().append( hint );
 				}
 				else
-				{
+				{   
 					oEl.append( hint );
 					hint.wrap( hintWrapper );
 				}
 
 				if ( state.oEl )
-				{
-					open( oEl ); // TODO: animation???
+				{   
+					open( oEl); // TODO: animation???
 				}
 
 			}
@@ -793,13 +787,13 @@
 		function showOnBottomPlus( e, oEl, outside )
 		{
 			if ( $( '#sortableListsHintWrapper', state.rootEl.el ).length )
-			{
+			{   
 				hint.unwrap();  // If hint is wrapped by ul/ol sortableListsHintWrapper
 			}
 
 			// Hint inside the oEl
 			if ( ! outside && e.pageX - oEl.offset().left > setting.insertZone )
-			{
+			{   
 				var children = oEl.children(),
 					list = oEl.children( setting.listSelector ).last();  // ul/ol || empty jQuery obj
 
@@ -821,18 +815,14 @@
 				}
 
 				if ( state.oEl )
-				{     
-                    /* [ custom work by developer */
-                    var catId = $(oEl).attr('id');
-                    displaySubCategories(this, catId);
-                    /* ] */
-					open( oEl ); // TODO: animation???
+				{   
+					open( oEl ); // TODO: animation??? 
 				}
 
 			}
 			// Hint outside the oEl
 			else
-			{
+			{  
 				// Ensure display:none if hint will be next to the placeholder
 				if ( oEl.next( '#sortableListsPlaceholder' ).length )
 				{
@@ -845,8 +835,7 @@
 
 			hint.css( 'display', 'block' );
 			// Ensures posible formating of elements. Second call is in the endDrag method.
-			state.isAllowed = setting.isAllowed( state.cEl.el, hint, hint.parents( 'li' ).first() );
-
+			state.isAllowed = setting.isAllowed( state.cEl.el, hint, hint.parents( 'li' ).first() );     
 		}
 
 		//////// End of show hint handlers ////////////////////////////////////////////////////
@@ -858,14 +847,18 @@
 		 */
 		function open( li )
 		{ 
-            li.removeClass( 'sortableListsClosed' ).addClass( 'sortableListsOpen' );
-			li.children( setting.listSelector ).css( 'display', 'block' );
-
+            //li.removeClass( 'sortableListsClosed' ).addClass( 'sortableListsOpen' );            
+			li.children( setting.listSelector).css( 'display', 'block' );
 			var opener = li.children( 'div' ).children( '.sortableListsOpener' ).first();
-
-			if ( setting.opener.as == 'html' )
-			{          
+            
+            if(li.children( setting.listSelector+".append-ul").length){  
+                li.removeClass( 'sortableListsClosed' ).addClass( 'sortableListsOpen' ); 
                 opener.html( setting.opener.close );
+            }
+            
+			if ( setting.opener.as == 'html' )
+			{       
+                //opener.html( setting.opener.close );
 			}
 			else if ( setting.opener.as == 'class' )
 			{

@@ -10,7 +10,7 @@ $arr_flds = array(
 	/* 'amount'=>Labels::getLabel('LBL_Amount',$adminLangId),	 */	
 	'orrequest_date'=>Labels::getLabel('LBL_Date',$adminLangId),
 	'orrequest_status'=>Labels::getLabel('LBL_Status',$adminLangId),
-	'action' => Labels::getLabel('LBL_Action',$adminLangId),
+	'action' => '',
 );
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
@@ -94,26 +94,7 @@ foreach ($arrListing as $sn=>$row){
 				$td->appendElement('label', array('class'=>'label label--'.$requestTypeClassArr[$row[$key]].''), $requestStatusArr[$row[$key]]);
 			break;
 			case 'action':
-				$ul = $td->appendElement("ul",array("class"=>"actions actions--centered"));
-				
-				$li = $ul->appendElement("li",array('class'=>'droplink'));						
-				$li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_View',$adminLangId)),'<i class="ion-android-more-horizontal icon"></i>', true);
-				$innerDiv=$li->appendElement('div',array('class'=>'dropwrap'));	
-				$innerUl=$innerDiv->appendElement('ul',array('class'=>'linksvertical'));
-				
-				$innerLi=$innerUl->appendElement('li');
-				$innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('OrderReturnRequests','view',array($row['orrequest_id'])),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_View',$adminLangId)),Labels::getLabel('LBL_View',$adminLangId), true);					
-				
-				/* if(  $canEdit && ($row['orrequest_status'] == OrderReturnRequest::RETURN_REQUEST_STATUS_PENDING || $row['orrequest_status'] == OrderReturnRequest::RETURN_REQUEST_STATUS_ESCALATED ) ){ */
-					/* $li = $ul->appendElement("li");
-					$li->appendElement('a', array( 'onclick'=>'return confirm("Do you really want to approve the request?");' , 'href'=>CommonHelper::generateUrl('OrderReturnRequests','Approve',array($row['orrequest_id'])), 'class'=>'button small green','title'=>'Approve'),'<i class="ion-checkmark-circled icon"></i>', true);
-					
-					$li = $ul->appendElement("li");
-					$li->appendElement('a', array( 'onclick'=>'return confirm("Do you really want to decline the request?");' ,'href'=>CommonHelper::generateUrl('OrderReturnRequests','Cancel',array($row['orrequest_id'])), 'class'=>'button small green','title'=>'Decline'),'<i class="ion-close-circled icon"></i>', true); */
-				
-					/* $li = $ul->appendElement("li");
-					$li->appendElement('a', array('onClick'=>'updateStatusForm('.$row['orrequest_id'].')', 'class'=>'button small green','title'=>'Edit'),'<i class="ion-edit icon"></i>', true); */
-				/* } */
+				$td->appendElement('a', array('href'=>CommonHelper::generateUrl('OrderReturnRequests','view',array($row['orrequest_id'])),'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_View',$adminLangId)),"<i class='ion-eye'></i>", true);					
 			break;
 			default:
 				$td->appendElement('plaintext', array(), $row[$key], true);

@@ -10,7 +10,7 @@ $arr_flds = array(
 $arr_flds['product_active'] = Labels::getLabel('LBL_Status', $siteLangId);
 $arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId);
 
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--orders'));
+$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);
@@ -57,7 +57,7 @@ foreach ($arr_listing as $sn => $row) {
                     "a",
                     array('title' => Labels::getLabel('LBL_Product_Images', $siteLangId),
                 'onclick' => 'customProductImages('.$row['product_id'].')', 'href'=>'javascript:void(0)'),
-                    '<i class="fa fa-picture-o"></i>',
+                    '<i class="far fa-image"></i>',
                     true
                 );
 

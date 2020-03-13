@@ -2,11 +2,10 @@ $(document).ready(function(){
     searchSeoProducts(document.frmSearch);
 });
 
-$(document).on('keyup', "input[name='keyword']", function(){
-    // if ($(this).val().length < 3) return;
+/* $(document).on('keyup', "input[name='keyword']", function(){
     var parentForm = $(this).closest('form');
     parentForm.submit();
-});
+}); */
 
 
 (function() {

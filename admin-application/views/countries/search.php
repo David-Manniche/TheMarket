@@ -5,8 +5,11 @@ $arr_flds = array(
         'country_code'=> Labels::getLabel('LBL_Country_Code', $adminLangId),
         'country_name'=> Labels::getLabel('LBL_Country_Name', $adminLangId),
         'country_active'=> Labels::getLabel('LBL_Status', $adminLangId),
-        'action' =>  Labels::getLabel('LBL_Action', $adminLangId),
+        'action' =>  '',
     );
+    if (!$canEdit) {
+        unset($arr_flds['select_all'], $arr_flds['action']);
+    }
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 
@@ -34,15 +37,8 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
                 if ($canEdit) {
-                    $li = $ul->appendElement("li", array('class'=>'droplink'));
-                    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                    $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                    $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                    $innerLiEdit=$innerUl->appendElement('li');
-                    //$li = $ul->appendElement("li");
-                    $innerLiEdit->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"editCountryFormNew(".$row['country_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"editCountryFormNew(".$row['country_id'].")"), "<i class='far fa-edit icon'></i>", true);
                 }
                 break;
             case 'country_active':
@@ -67,7 +63,7 @@ if (count($arr_listing) == 0) {
     $tbl->appendElement('tr')->appendElement('td', array('colspan'=>count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
 }
 $frm = new Form('frmCountryListing', array('id'=>'frmCountryListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Countries', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');

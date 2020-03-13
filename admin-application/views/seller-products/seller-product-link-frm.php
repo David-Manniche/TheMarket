@@ -68,7 +68,7 @@
 				$('input[name=\'products_buy_together\']').val('');
 				$('#productBuyTogether' + ui.item.id).remove();
 				$('#buy-together-products ul').append('<li id="productBuyTogether' + ui.item.id +
-					'"><i class="remove_buyTogether remove_param ion-android-delete icon"></i> ' +
+					'"><i class="remove_buyTogether remove_param fa fa-trash  icon"></i> ' +
 					ui.item.label + '<input type="hidden" name="product_upsell[]" value="' + ui.item.id + '" /></li>');
                 return false;
 			}
@@ -111,7 +111,7 @@
 				$('input[name=\'products_related\']').val('');
 				$('#productRelated' + ui.item.id).remove();
 				$('#related-products ul').append('<li id="productRelated' + ui.item.id +
-					'"><i class="remove_related remove_param ion-android-delete icon"></i> ' +
+					'"><i class="remove_related remove_param fa fa-trash  icon"></i> ' +
 					ui.item.label + '<input type="hidden" name="product_related[]" value="' + ui.item.id + '" /></li>');
                 return false;
 			}
@@ -124,7 +124,7 @@
                     ?>
 
 		$('#buy-together-products ul').append(
-			"<li id=\"productBuyTogether<?php echo $val['selprod_id']; ?>\"><i class=\"remove_buyTogether remove_param ion-android-delete icon\"></i> <?php echo $val['product_name']; ?>[<?php echo $val['product_identifier']; ?>]<input type=\"hidden\" name=\"product_upsell[]\" value=\"<?php echo $val['selprod_id']; ?>\" /></li>"
+			"<li id=\"productBuyTogether<?php echo $val['selprod_id']; ?>\"><i class=\"remove_buyTogether remove_param fa fa-trash  icon\"></i> <?php echo $val['product_name']; ?>[<?php echo $val['product_identifier']; ?>]<input type=\"hidden\" name=\"product_upsell[]\" value=\"<?php echo $val['selprod_id']; ?>\" /></li>"
 			);
 		<?php
                 }
@@ -132,7 +132,7 @@
         ?>
 
 		$('#related-products ul').append(
-			"<li id=\"productRelated<?php echo $val['selprod_id']; ?>\"><i class=\"remove_related remove_param ion-android-delete icon\"></i> <?php echo $val['product_name']; ?>[<?php echo $val['product_identifier']; ?>]<input type=\"hidden\" name=\"product_related[]\" value=\"<?php echo $val['selprod_id']; ?>\" /></li>"
+			"<li id=\"productRelated<?php echo $val['selprod_id']; ?>\"><i class=\"remove_related remove_param fa fa-trash  icon\"></i> <?php echo $val['product_name']; ?>[<?php echo $val['product_identifier']; ?>]<input type=\"hidden\" name=\"product_related[]\" value=\"<?php echo $val['selprod_id']; ?>\" /></li>"
 			);
 		<?php
     } ?>

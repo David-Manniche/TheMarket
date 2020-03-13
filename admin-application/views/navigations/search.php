@@ -3,19 +3,12 @@
     <h4><?php echo Labels::getLabel('LBL_Navigations', $adminLangId); ?> </h4>
     <?php
     if ($canEdit) {
-        $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
-        $li = $ul->appendElement("li", array('class'=>'droplink'));
+        $data = [
+            'adminLangId' => $adminLangId,
+            'deleteButton' => false
+        ];
 
-        $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-        $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-        $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-
-        $innerLi=$innerUl->appendElement('li');
-        $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Activate', $adminLangId),"onclick"=>"toggleBulkStatues(1)"), Labels::getLabel('LBL_Activate', $adminLangId), true);
-
-        $innerLi=$innerUl->appendElement('li');
-        $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Deactivate', $adminLangId),"onclick"=>"toggleBulkStatues(0)"), Labels::getLabel('LBL_Deactivate', $adminLangId), true);
-        echo $ul->getHtml();
+        $this->includeTemplate('_partial/action-buttons.php', $data, false);
     }
     ?>
 </div>
@@ -26,8 +19,11 @@
             'listserial'=> Labels::getLabel('LBL_Sr._No', $adminLangId),
             'nav_identifier'=> Labels::getLabel('LBL_Title', $adminLangId),
             'nav_active'    =>    Labels::getLabel('LBL_Status', $adminLangId),
-            'action' => Labels::getLabel('LBL_Action', $adminLangId),
+            'action' => '',
             );
+            if (!$canEdit) {
+                unset($arr_flds['select_all'], $arr_flds['action']);
+            }
         $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered'));
         $th = $tbl->appendElement('thead')->appendElement('tr');
         foreach ($arr_flds as $key => $val) {
@@ -73,17 +69,10 @@
                         $td->appendElement('plaintext', array(), $str, true);
                         break;
                     case 'action':
-                        $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
-                        $li = $ul->appendElement("li", array('class'=>'droplink'));
-                        $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                          $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                          $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
                         if ($canEdit) {
-                            $innerLiEdit=$innerUl->appendElement('li');
-                            $innerLiEdit->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addFormNew(".$row['nav_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
+                            $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addFormNew(".$row['nav_id'].")"), "<i class='far fa-edit icon'></i>", true);
                         }
-                        $innerLiPages = $innerUl->appendElement("li");
-                        $innerLiPages->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Pages', $adminLangId),"onclick"=>"pages(".$row['nav_id'].")"), Labels::getLabel('LBL_Pages', $adminLangId), true);
+                        $td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Pages', $adminLangId),"onclick"=>"pages(".$row['nav_id'].")"), "<i class='ion-ios-paper icon'></i>", true);
                         break;
                     default:
                         $td->appendElement('plaintext', array(), $row[$key], true);
@@ -95,7 +84,7 @@
             $tbl->appendElement('tr')->appendElement('td', array('colspan'=>count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
         }
         $frm = new Form('frmNavListing', array('id'=>'frmNavListing'));
-        $frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+        $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
         $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
         $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Navigations', 'toggleBulkStatuses'));
         $frm->addHiddenField('', 'status');

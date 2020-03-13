@@ -4,10 +4,10 @@ $arr_flds = array(
 		'dragdrop'=>'',
 		'listserial'=> Labels::getLabel('LBL_Sr._No',$adminLangId),
 		'faq_identifier'=> Labels::getLabel('LBL_Faq_Title',$adminLangId),				
-		'action' => Labels::getLabel('LBL_Action',$adminLangId),
+		'action' => '',
 	);
 if(!$canEdit){
-	unset($arr_flds['dragdrop']);
+	unset($arr_flds['dragdrop'], $arr_flds['action']);
 }
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered','id'=>'faqs'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
@@ -58,26 +58,9 @@ foreach ($arr_listing as $sn=>$row){
 					$td->appendElement('plaintext', array(), $str, true);
 			break;
 			case 'action':
-				//$ul = $td->appendElement("ul",array("class"=>"actions"));
-				$ul = $td->appendElement("ul",array("class"=>"actions actions--centered"));
-				$li = $ul->appendElement("li",array('class'=>'droplink'));
-
-				$li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit',$adminLangId)),'<i class="ion-android-more-horizontal icon"></i>', true);
-              		$innerDiv=$li->appendElement('div',array('class'=>'dropwrap'));
-              		$innerUl=$innerDiv->appendElement('ul',array('class'=>'linksvertical'));
-              		//$innerLiEdit=$innerUl->appendElement('li');
-
-
 				if($canEdit){	
-              		$innerLiEdit=$innerUl->appendElement('li');
-
-					//$li = $ul->appendElement("li");
-					$innerLiEdit->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"addFaqForm(".$row['faq_faqcat_id'].",".$row['faq_id'].")"),Labels::getLabel('LBL_Edit',$adminLangId), true);
-              		
-
-              		$innerLiDelete=$innerUl->appendElement('li');
-					//$li = $ul->appendElement("li");
-					$innerLiEdit->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteRecord(".$row['faq_id'].")"),Labels::getLabel('LBL_Delete',$adminLangId), true);
+					$td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"addFaqForm(".$row['faq_faqcat_id'].",".$row['faq_id'].")"),"<i class='far fa-edit icon'></i>", true);
+					$td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteRecord(".$row['faq_id'].")"),"<i class='fa fa-trash  icon'></i>", true);
 				}				
 			break;
 			default:

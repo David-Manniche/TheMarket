@@ -544,15 +544,27 @@ function getCookie(cname) {
   return "";
 }
 
-function googleCaptcha(captchaSiteKey)
+var gReCaptcha = false;
+function googleCaptcha()
 {
     var inputObj = $("form input[name='g-recaptcha-response']");
+    var submitBtn = inputObj.parent("form").find('input[type="submit"]');
+    submitBtn.attr("disabled", "disabled");
+
+    var checkToken = setInterval(function(){
+        if (true === gReCaptcha) {
+            submitBtn.removeAttr("disabled");
+            clearInterval(checkToken);
+        }
+    }, 500);
+
     /*Google reCaptcha V3  */
     setTimeout(function(){
         if (0 < inputObj.length) {
             grecaptcha.ready(function() {
-                grecaptcha.execute(captchaSiteKey, {action: inputObj.data('action')}).then(function(token) {
+                grecaptcha.execute(langLbl.captchaSiteKey, {action: inputObj.data('action')}).then(function(token) {
                     inputObj.val(token);
+                    gReCaptcha = true;
                 });
             });
         }

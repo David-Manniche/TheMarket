@@ -107,14 +107,6 @@ $(document).ready(function() {
         });
     };
 
-	toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmOrderStatusListing input[name='status']").val(status);
-        $("#frmOrderStatusListing").submit();
-    };
-
     clearSearch = function() {
         document.frmSearch.reset();
         searchOrderStatus(document.frmSearch);

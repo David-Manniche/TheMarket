@@ -16,7 +16,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php');?>
             </div>
             <div class="col-auto">
                 <div class="btn-group">
-                    <a href="javascript:void(0)" onclick="window.history.back();" class="btn btn--primary btn--sm"><?php echo Labels::getLabel('LBL_BACK', $siteLangId);?></a>
+                    <a href="javascript:void(0)" onclick="window.history.back();" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_BACK', $siteLangId);?></a>
                 </div>
             </div>
         </div>
@@ -24,7 +24,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php');?>
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pb-0">
+                        <div class="cards-content">
                             <div id="bindProductForm"></div>
                         </div>
                     </div>

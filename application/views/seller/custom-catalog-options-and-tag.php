@@ -53,7 +53,7 @@
         </div>
     </div>
     <div class="row tabs_footer">
-        <div class="col-md-6 text-align">
+        <div class="col-6">
             <div class="field-set">
                 <div class="caption-wraper"><label class="field_label"></label></div>
                 <div class="field-wraper">
@@ -63,7 +63,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6 text-right">
+        <div class="col-6 text-right">
             <div class="field-set">
                 <div class="caption-wraper"><label class="field_label"></label></div>
                 <div class="field-wraper">

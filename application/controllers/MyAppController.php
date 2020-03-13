@@ -129,6 +129,10 @@ class MyAppController extends FatController
         'defaultCountryCode' => $defaultCountryCode,
         'scrollable' => Labels::getLabel('LBL_SCROLLABLE', $this->siteLangId),
         'quantityAdjusted' => Labels::getLabel('MSG_MAX_QUANTITY_THAT_CAN_BE_PURCHASED_IS_{QTY}._SO,_YOUR_REQUESTED_QUANTITY_IS_ADJUSTED_TO_{QTY}.', $this->siteLangId),
+        'withUsernameOrEmail' => Labels::getLabel('LBL_WITH_USERNAME_OR_EMAIL_?', $this->siteLangId),
+        'withPhoneNumber' => Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $this->siteLangId),
+        'otpInterval' => User::OTP_INTERVAL,
+        'captchaSiteKey' => FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, ''),
         );
 
         $languages = Language::getAllNames(false);
@@ -326,7 +330,9 @@ class MyAppController extends FatController
         $siteLangId = FatUtility::int($langId);
         $frm = new Form('frmGuestLogin');
         $frm->addTextBox(Labels::getLabel('LBL_Name', $siteLangId), 'user_name', '', array('placeholder' => Labels::getLabel('LBL_Name', $siteLangId)));
-        $fld = $frm->addRequiredField(Labels::getLabel('LBL_Email', $siteLangId), 'user_email', '', array('placeholder' => Labels::getLabel('LBL_EMAIL_ADDRESS', $siteLangId)));
+        $fld = $frm->addEmailField(Labels::getLabel('LBL_EMAIL', $siteLangId), 'user_email', '', array('placeholder' => Labels::getLabel('LBL_EMAIL_ADDRESS', $siteLangId)));
+        $fld->requirement->setRequired(true);
+
         $frm->addHtml('', 'space', '');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Guest_Sign_in', $siteLangId));
         return $frm;
@@ -342,7 +348,7 @@ class MyAppController extends FatController
             $userName = 'login@dummyid.com';
             $pass = 'kanwar@123';
         }
-        $fld = $frm->addRequiredField(Labels::getLabel('LBL_USERNAME_OR_EMAIL_OR_PHONE', $siteLangId), 'username', $userName, array('placeholder' => Labels::getLabel('LBL_USERNAME_OR_EMAIL_OR_PHONE', $siteLangId)));
+        $fld = $frm->addRequiredField(Labels::getLabel('LBL_USERNAME_OR_EMAIL', $siteLangId), 'username', $userName, array('placeholder' => Labels::getLabel('LBL_USERNAME_OR_EMAIL', $siteLangId), 'data-alt-placeholder' => Labels::getLabel('LBL_PHONE_NUMBER', $siteLangId)));
         $pwd = $frm->addPasswordField(Labels::getLabel('LBL_Password', $siteLangId), 'password', $pass, array('placeholder' => Labels::getLabel('LBL_Password', $siteLangId)));
         $pwd->requirements()->setRequired();
         $frm->addCheckbox(Labels::getLabel('LBL_Remember_Me', $siteLangId), 'remember_me', 1, array(), '', 0);
@@ -367,7 +373,7 @@ class MyAppController extends FatController
 
         if (0 < $signUpWithPhone) {
             $frm->addHiddenField('', 'signUpWithPhone', 1);
-            $frm->addRequiredField(Labels::getLabel('LBL_PHONE_NUMBER', $siteLangId), 'user_phone', '', array('placeholder' => Labels::getLabel('LBL_PHONE_NUMBER_(INCLUDING_COUNTRY_CODE)', $siteLangId)));
+            $frm->addRequiredField(Labels::getLabel('LBL_PHONE_NUMBER', $siteLangId), 'user_phone', '', array('placeholder' => Labels::getLabel('LBL_PHONE_NUMBER', $siteLangId)));
         } else {
             $fld = $frm->addEmailField(Labels::getLabel('LBL_EMAIL', $siteLangId), 'user_email', '', array('placeholder' => Labels::getLabel('LBL_EMAIL', $siteLangId)));
             if (false === MOBILE_APP_API_CALL) {
@@ -562,7 +568,7 @@ class MyAppController extends FatController
         } else {
             $attr = ['maxlength' => 1, 'size' => 1];
             for ($i = 0; $i < User::OTP_LENGTH; $i++) {
-                $frm->addRequiredField('', 'upv_otp[' . $i . ']', '', $attr);
+                $frm->addTextBox('', 'upv_otp[' . $i . ']', '', $attr);
             }
         }
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_VALIDATE', $this->siteLangId));
@@ -589,6 +595,7 @@ class MyAppController extends FatController
         if (!$configureEmail) {
             $dataArr = array(
             'user_name' => $data['user_name'],
+            'user_phone' => $data['user_phone'],
             'link' => $link,
             'user_new_email' => $data['user_new_email'],
             'user_email' => $data['user_email'],
@@ -688,15 +695,18 @@ class MyAppController extends FatController
     protected function getPhoneNumberForm()
     {
         $frm = new Form('phoneNumberFrm');
-        $frm->addRequiredField(Labels::getLabel('LBL_PHONE_NUMBER', $this->siteLangId), 'user_phone', '', array('placeholder' => Labels::getLabel('LBL_PHONE_NUMBER_(INCLUDING_COUNTRY_CODE)', $this->siteLangId)));
+        $frm->addRequiredField(Labels::getLabel('LBL_PHONE_NUMBER', $this->siteLangId), 'user_phone', '', array('placeholder' => Labels::getLabel('LBL_PHONE_NUMBER', $this->siteLangId)));
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_GET_OTP', $this->siteLangId));
         return $frm;
     }
 
-    public function validateOtpApi($updateToDb = 0)
+    public function validateOtpApi($updateToDb = 0, $doLogin = true)
     {
         $updateToDb = FatUtility::int($updateToDb);
+        $recoverPwd = FatApp::getPostedData('recoverPwd', FatUtility::VAR_INT, 0);
+        $doLogin = 0 < $recoverPwd ? false : $doLogin;
+
         $otpFrm = $this->getOtpForm();
         $post = $otpFrm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
@@ -718,17 +728,30 @@ class MyAppController extends FatController
         $userId = 1 > $userId ?  UserAuthentication::getLoggedUserId(true) : $userId;
 
         $obj = new User($userId);
-        $resp = $obj->verifyUserPhoneOtp($otp, (false === MOBILE_APP_API_CALL && !UserAuthentication::isUserLogged()), true);
+        $resp = $obj->verifyUserPhoneOtp($otp, ($doLogin && false === MOBILE_APP_API_CALL && !UserAuthentication::isUserLogged()), true);
         if (false == $resp) {
             LibHelper::dieJsonError($obj->getError());
         }
 
         $this->set('msg', Labels::getLabel('MSG_OTP_MATCHED.', $this->siteLangId));
 
+        if (0 < $recoverPwd && true === MOBILE_APP_API_CALL) {
+            $obj = new UserAuthentication();
+            $record = $obj->getUserResetPwdToken($userId);
+            $token = $record['uprr_token'];
+            $this->set('data', ['token' => $token]);
+            $this->_template->render();
+        }
+
         if (0 < $updateToDb) {
             $userObj = clone $obj;
-            $userObj->assignValues(['user_phone' => $resp]);
+            $userObj->assignValues(['user_dial_code' => $resp['upv_dial_code'], 'user_phone' => $resp['upv_phone']]);
             if (!$userObj->save()) {
+                LibHelper::dieJsonError($userObj->getError());
+            }
+
+            $userObj = clone $obj;
+            if (false === $userObj->updateUserMeta('user_country_iso', $resp['upv_country_iso'])) {
                 LibHelper::dieJsonError($userObj->getError());
             }
             $this->set('msg', Labels::getLabel('MSG_UPDATED_SUCCESSFULLY', $this->siteLangId));

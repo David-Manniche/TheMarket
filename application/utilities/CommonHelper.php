@@ -1972,7 +1972,7 @@ class CommonHelper extends FatUtility
         $recordId = isset($queryString[0]) ? $queryString[0] : 0;
         $extra = (object)[];
         switch ($controller . '/' . $action) {
-            case 'category/view' :
+            case 'category/view':
                 $urlType = applicationConstants::URL_TYPE_CATEGORY;
                 break;
             case 'brands/view':
@@ -1999,6 +1999,9 @@ class CommonHelper extends FatUtility
                 break;
             case 'custom/contact-us':
                 $urlType = applicationConstants::URL_TYPE_CONTACT_US;
+                break;
+            case 'blog/post-detail':
+                $urlType = applicationConstants::URL_TYPE_BLOG;
                 break;
             default:
                 $recordId = applicationConstants::NO;

@@ -23,7 +23,7 @@ foreach ($brandsArr as $brand) {
     }
     $charArr[$str] = strtoupper($str);
     $brandHtml .= ' <li class="brandList-js b-' . $str . '" data-caption=' . substr(strtolower($brand['brand_name']), 0, 1) .'>
-                <label class="checkbox" ><input name="brands" value="' . $brand['brand_id'] . '" data-id="brand_' . $brand['brand_id'] . '" data-title="' . $brand['brand_name'] . '" type="checkbox" ><i class="input-helper"></i>' . $brand['brand_name'] . ' </label>
+                <label class="checkbox brand" ><input name="brands" value="' . $brand['brand_id'] . '" data-id="brand_' . $brand['brand_id'] . '" data-title="' . $brand['brand_name'] . '" type="checkbox" ><i class="input-helper"></i><span class="lb-txt">' . $brand['brand_name'] . '</span></label>
             </li>';
 }
 ?>
@@ -47,10 +47,10 @@ foreach ($brandsArr as $brand) {
       <?php foreach ($mySelection as $brand) {
         //$totalProducts = array_key_exists('totalProducts', $brand) ? $brand['totalProducts'] : 0;
           echo ' <li>
-                <label class="checkbox" ><input name="brands" value="' . $brand['brand_id'] . '" data-id="brand_' . $brand['brand_id'] . '" type="checkbox" checked="true" data-title="' . $brand['brand_name'] . '"><i class="input-helper"></i>' . $brand['brand_name'] . '</label>
+                <label class="checkbox brand" ><input name="brands" value="' . $brand['brand_id'] . '" data-id="brand_' . $brand['brand_id'] . '" type="checkbox" checked="true" data-title="' . $brand['brand_name'] . '"><i class="input-helper"></i><span class="lb-txt">' . $brand['brand_name'] . '</span></label>
             </li>';
             /* echo ' <li>
-            <label class="checkbox" ><input name="brands" value="' . $brand['brand_id'] . '" data-id="brand_' . $brand['brand_id'] . '" type="checkbox" checked="true" data-title="' . $brand['brand_name'] . '"><i class="input-helper"></i>' . $brand['brand_name'] . ' <span class="filter-directory_count">(' . $totalProducts . ')</span> </label>
+            <label class="checkbox brand" ><input name="brands" value="' . $brand['brand_id'] . '" data-id="brand_' . $brand['brand_id'] . '" type="checkbox" checked="true" data-title="' . $brand['brand_name'] . '"><i class="input-helper"></i>' . $brand['brand_name'] . ' <span class="filter-directory_count">(' . $totalProducts . ')</span> </label>
         </li>'; */
       }?>
       <?php echo $brandHtml;?>

@@ -13,7 +13,9 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             <?php echo Labels::getLabel('LBL_Create_Shop', $siteLangId); ?>
                         </a>
                     <?php } ?>
+                    <?php if (User::canAddCustomProduct()) { ?>
                     <a href="<?php echo CommonHelper::generateUrl('seller', 'customProductForm');?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Add_new_catalog', $siteLangId);?></a>
+                    <?php } ?>
                     <a href="<?php echo CommonHelper::generateUrl('seller', 'catalog');?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_My_products', $siteLangId);?></a>
                     <a href="<?php echo CommonHelper::generateUrl('seller', 'products');?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_My_store_inventory', $siteLangId);?></a>
                 </div>
@@ -233,7 +235,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table table--orders js-scrollable ">
+                            <table class="table ">
                                 <tbody>
                                     <tr class="">
                                         <th colspan="2" width="60%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
@@ -292,7 +294,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                             <ul class="actions">
                                                 <li><a title="<?php echo Labels::getLabel('LBL_View_Order', $siteLangId); ?>" href="<?php echo $orderDetailUrl; ?>"><i class="fa fa-eye"></i></a></li>
                                                 <?php if (!in_array($row["op_status_id"], $notAllowedStatues)) { ?>
-                                                    <li><a href="<?php echo CommonHelper::generateUrl('seller', 'cancelOrder', array($row['op_id'])); ?>" title="<?php echo Labels::getLabel('LBL_Cancel_Order', $siteLangId); ?>"><i class="fa fa-close"></i></a></li>
+                                                    <li><a href="<?php echo CommonHelper::generateUrl('seller', 'cancelOrder', array($row['op_id'])); ?>" title="<?php echo Labels::getLabel('LBL_Cancel_Order', $siteLangId); ?>"><i class="fas fa-times"></i></a></li>
                                                 <?php } ?>
                                             </ul>
                                         </td>
@@ -303,11 +305,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                     </tr>
                                     <?php } ?>
                                 </tbody>
-                                <div class="scroll-hint-icon-wrap" data-target="scrollable-icon">
-                                    <span class="scroll-hint-icon">
-                                        <div class="scroll-hint-text"><?php echo Labels::getLabel('LBL_Scrollable', $siteLangId);?></div>
-                                    </span>
-                                </div>
+                                
                             </table>
                         </div>
                     </div>
@@ -325,7 +323,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table table--orders js-scrollable ">
+                            <table class="table ">
                                 <tbody>
                                     <tr class="">
                                         <th><?php echo Labels::getLabel('LBL_Txn._Id', $siteLangId);?></th>
@@ -389,7 +387,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table table--orders js-scrollable ">
+                            <table class="table ">
                                 <tbody>
                                     <tr class="">
                                         <th width="60%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
@@ -469,7 +467,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table table--orders js-scrollable ">
+                            <table class="table ">
                                 <tbody>
                                     <tr class="">
                                         <th width="40%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>

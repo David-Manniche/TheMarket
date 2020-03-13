@@ -21,6 +21,8 @@ class CustomProductsController extends AdminBaseController
         $this->objPrivilege->canViewCustomProductRequests();
         $frmSearch = $this->catalogCustomProductRequestSearchForm();
         $this->set('frmSearch', $frmSearch);
+        $this->_template->addJs(array('js/cropper.js', 'js/cropper-main.js'));
+        $this->_template->addCss('css/cropper.css');
         $this->_template->render();
     }
 
@@ -535,7 +537,7 @@ class CustomProductsController extends AdminBaseController
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = preq.preq_user_id', 'u');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'c.credential_user_id = u.user_id', 'c');
         $srch->addCondition('preq_id', '=', $preqId);
-        $srch->addMultipleFields(array('preq.*', 'user_name', 'credential_email'));
+        $srch->addMultipleFields(array('preq.*', 'user_name', 'credential_email', 'user_dial_code', 'user_phone'));
         $srch->setPageSize(1);
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
@@ -601,7 +603,7 @@ class CustomProductsController extends AdminBaseController
             
             $prodSepc = [
                 'ps_product_id' => $product_id,
-                'product_warranty' => $data['product_warranty']
+                'product_warranty' => isset($data['product_warranty']) ? $data['product_warranty'] : 0
             ];
 
             $productSpecificsObj = new ProductSpecifics($product_id);
@@ -892,7 +894,7 @@ class CustomProductsController extends AdminBaseController
             }
 
             if (!empty($prodSpecData)) {
-                foreach ($prodSpecData['prod_spec_name'][CommonHelper::getLangId()] as $specKey => $specval) {
+                /*foreach ($prodSpecData['prod_spec_name'][CommonHelper::getLangId()] as $specKey => $specval) {
                     $prodSpecObj = new ProdSpecification(0);
                     $languages = Language::getAllNames();
                     foreach ($languages as $langId => $langName) {
@@ -914,7 +916,19 @@ class CustomProductsController extends AdminBaseController
                             FatUtility::dieWithError(Message::getHtml());
                         }
                     }
-                }
+                } */
+                $languages = Language::getAllNames();
+                foreach ($languages as $langId => $langName) {
+                    if(!empty($prodSpecData['prod_spec_name'][$langId])){
+                        foreach ($prodSpecData['prod_spec_name'][$langId] as $specKey => $specval) {
+                            $prod = new Product($product_id);
+                            if (!$prod->saveProductSpecifications(0, $langId, $prodSpecData['prod_spec_name'][$langId][$specKey], $prodSpecData['prod_spec_value'][$langId][$specKey], $prodSpecData['prod_spec_group'][$langId][$specKey])) {
+                                Message::addErrorMessage($prod->getError());
+                                FatUtility::dieWithError(Message::getHtml());
+                            }  
+                        }  
+                    }
+                }                  
             }
             /*]*/
         }
@@ -1174,12 +1188,12 @@ class CustomProductsController extends AdminBaseController
         $option_id = FatUtility::int($post['option_id']);
         $lang_id = FatUtility::int($post['lang_id']);
 
-        if (!is_uploaded_file($_FILES['prod_image']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('LBL_Please_Select_A_File', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
         $fileHandlerObj = new AttachedFile();
-        if (!$res = $fileHandlerObj->saveImage($_FILES['prod_image']['tmp_name'], AttachedFile::FILETYPE_CUSTOM_PRODUCT_IMAGE, $preq_id, $option_id, $_FILES['prod_image']['name'], -1, $unique_record = false, $lang_id)
+        if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], AttachedFile::FILETYPE_CUSTOM_PRODUCT_IMAGE, $preq_id, $option_id, $_FILES['cropped_image']['name'], -1, $unique_record = false, $lang_id)
         ) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
@@ -1217,9 +1231,11 @@ class CustomProductsController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Image_File_Type', $this->adminLangId), 'option_id', $imgTypesArr, 0, array(), '');
         $languagesAssocArr = Language::getAllNames();
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', array( 0 => Labels::getLabel('LBL_All_Languages', $this->adminLangId) ) + $languagesAssocArr, '', array(), '');
-        $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_Photo(s):', $this->adminLangId), 'prod_image', array('id' => 'prod_image', 'multiple' => 'multiple'));
+        $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_Photo(s):', $this->adminLangId), 'prod_image', array('id' => 'prod_image'));
         $fldImg->htmlBeforeField = '<div class="filefield"><span class="filename"></span>';
-        $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->adminLangId) . '</label></div><br/><small>' . Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500._You_can_upload_multiple_photos_from_here.', $this->adminLangId) . '</small>';
+        $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->adminLangId) . '</label></div><br/><small>' . Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500', $this->adminLangId) . '</small>';
+        $frm->addHiddenField('', 'min_width', 500);
+        $frm->addHiddenField('', 'min_height', 500);
         $frm->addHiddenField('', 'preq_id', $preq_id);
         return $frm;
     }

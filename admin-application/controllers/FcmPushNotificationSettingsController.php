@@ -6,7 +6,7 @@ class FcmPushNotificationSettingsController extends PushNotificationSettingsCont
     {
         return [
                 'server_api_key' => [
-                    'type' => 'string',
+                    'type' => PluginSetting::TYPE_STRING,
                     'required' => true,
                     'label' => "FCM Server API Key",
                 ]

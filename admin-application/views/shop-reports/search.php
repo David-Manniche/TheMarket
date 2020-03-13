@@ -42,7 +42,7 @@ foreach ($arr_listing as $sn => $row) {
                 if($canEdit){
                     $li = $ul->appendElement("li");
                     $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green',
-                    'title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteRecord(".$row['sreport_id'].")"),'<i class="ion-android-delete icon"></i>',
+                    'title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteRecord(".$row['sreport_id'].")"),'<i class="fa fa-trash  icon"></i>',
                     true);
                 }
                 break; */

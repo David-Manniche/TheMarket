@@ -16,7 +16,7 @@ $arr_flds = [
     'notification_detail' => [
         'title' => Labels::getLabel('LBL_DETAIL', $adminLangId),
         'attributes' => [
-            'width' => '63%'
+            'width' => '53%'
         ]
     ],
     'pnotification_notified_on' => [
@@ -40,10 +40,15 @@ $arr_flds = [
     'action' => [
         'title' => Labels::getLabel('LBL_Action', $adminLangId),
         'attributes' => [
-            'width' => '5%'
+            'width' => '15%'
         ]
     ]
 ];
+
+if (!$canEdit) {
+    unset($arr_flds['action']);
+}
+        
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 
@@ -110,21 +115,13 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'action':
                 if ($canEdit) {
-                    $ul = $td->appendElement("ul", ["class" => "actions actions--centered"]);
-                    $li = $ul->appendElement("li", ['class' => 'droplink']);
-                    $li->appendElement('a', ['href' => 'javascript:void(0)', 'class' => 'button small green', 'title '=> Labels::getLabel('LBL_EDIT', $adminLangId)], '<i class="ion-android-more-horizontal icon"></i>', true);
-                    $innerDiv = $li->appendElement('div', ['class' => 'dropwrap']);
-                    $innerUl = $innerDiv->appendElement('ul', ['class' => 'linksvertical']);
-                    $innerLi = $innerUl->appendElement('li');
                     if (PushNotification::STATUS_PENDING == $row['pnotification_status']) {
-                        $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_EDIT', $adminLangId), "onclick" => "addNotificationForm(" . $row['pnotification_id'] . ")"), Labels::getLabel('LBL_EDIT', $adminLangId), true);
+                        $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_EDIT', $adminLangId), "onclick" => "addNotificationForm(" . $row['pnotification_id'] . ")"), "<i class='far fa-edit icon'></i>", true);
                     } elseif (PushNotification::STATUS_PENDING != $row['pnotification_status']) {
-                        $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_VIEW', $adminLangId), "onclick" => "addNotificationForm(" . $row['pnotification_id'] . ")"), Labels::getLabel('LBL_VIEW', $adminLangId), true);
+                        $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_VIEW', $adminLangId), "onclick" => "addNotificationForm(" . $row['pnotification_id'] . ")"), "<i class='far fa-eye icon'></i>", true);
                     }
-                    $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_CLONE', $adminLangId), "onclick" => "clone(" . $row['pnotification_id'] . ")"), Labels::getLabel('LBL_CLONE', $adminLangId), true);
-                } else {
-                    $td->appendElement('plaintext', array(), Labels::getLabel('LBL_N/A', $adminLangId), true);
-                }
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_CLONE', $adminLangId), "onclick" => "clone(" . $row['pnotification_id'] . ")"), "<i class='ion-ios-photos icon'></i>", true);
+                } 
                 break;
         }
     }

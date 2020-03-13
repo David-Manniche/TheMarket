@@ -11,15 +11,26 @@ $arr_flds['selprod_price'] = Labels::getLabel('LBL_Price', $adminLangId);
 $arr_flds['selprod_stock'] = Labels::getLabel('LBL_Quantity', $adminLangId);
 $arr_flds['selprod_available_from'] = Labels::getLabel('LBL_Available_From', $adminLangId);
 $arr_flds['selprod_active'] = Labels::getLabel('LBL_Status', $adminLangId);
-$arr_flds['action'] = Labels::getLabel('LBL_Action', $adminLangId);
+$arr_flds['action'] = '';
 
+if (!$canEdit) {
+    unset($arr_flds['select_all'], $arr_flds['action']);
+}
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => 'hide--mobile'));
 foreach ($arr_flds as $key => $val) {
     if ('select_all' == $key) {
-        $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input title="'.$val.'" type="checkbox" onclick="selectAll( $(this) )" class="selectAll-js"><i class="input-helper"></i></label>', true);
-    } else {
-        $e = $th->appendElement('th', array(), $val);
+        $th->appendElement('th', array('width'=>'3%'))->appendElement('plaintext', array(''), '<label class="checkbox"><input title="'.$val.'" type="checkbox" onclick="selectAll( $(this) )" class="selectAll-js"><i class="input-helper"></i></label>', true);
+    } else if('user' == $key || 'selprod_price' == $key || 'selprod_stock' == $key || 'selprod_available_from' == $key) {
+        $e = $th->appendElement('th', array('width'=>'10%'), $val);
+    }else if('selprod_active' == $key ) {
+        $e = $th->appendElement('th', array('width'=>'7%'), $val);
+    }else if('action' == $key ) {
+        $e = $th->appendElement('th', array('width'=>'15%'), $val);
+    }else if('listserial' == $key ) {
+        $e = $th->appendElement('th', array('width'=>'5%'), $val);
+    }else if('name' == $key ) {
+        $e = $th->appendElement('th', array('width'=>'30%'), $val);
     }
 }
 
@@ -79,68 +90,17 @@ foreach ($arrListing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $str, true);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"), '', true);
                 if ($canEdit) {
-                    $li = $ul->appendElement("li", array('class'=>'droplink'));
-
-                    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-
-                    $innerDiv = $li->appendElement('div', array('class'=>'dropwrap'));
-                    $innerUl = $innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                    $innerLiEdit = $innerUl->appendElement('li');
-
-                    $innerLiEdit->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'',
-                    'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addSellerProductForm(" . $row['selprod_product_id'] . ",".$row['selprod_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
-
-                    /* $innerLiSeo = $innerUl->appendElement("li");
-                    $innerLiSeo->appendElement(
-                        'a',
-                        array('href'=>'javascript:void(0)', 'class'=>'', 'title'=>Labels::getLabel('LBL_SEO_CONTENT', $adminLangId),"onclick"=>"getProductSeoGeneralForm(".$row['selprod_id'].")"),
-                        Labels::getLabel('LBL_SEO_CONTENT', $adminLangId),
-                        true
-                    );
-
-                    $innerLiSpecialPrice = $innerUl->appendElement("li");
-                    $innerLiSpecialPrice->appendElement(
-                        'a',
-                        array('href'=>'javascript:void(0)', 'class'=>'', 'title'=>Labels::getLabel('LBL_Special_Price', $adminLangId),"onclick"=>"addSellerProductSpecialPrices(".$row['selprod_id'].")"),
-                        Labels::getLabel('LBL_Special_Price', $adminLangId),
-                        true
-                    );
-
-                    $innerLiVolumeDis = $innerUl->appendElement("li");
-                    $innerLiVolumeDis->appendElement(
-                        'a',
-                        array('href'=>'javascript:void(0)', 'class'=>'', 'title'=>Labels::getLabel('LBL_Volume_Discount', $adminLangId),"onclick"=>"sellerProductVolumeDiscounts(".$row['selprod_id'].")"),
-                        Labels::getLabel('LBL_Volume_Discount', $adminLangId),
-                        true
-                    ); */
-
-                    $innerLiLinks = $innerUl->appendElement("li");
-                    $innerLiLinks->appendElement(
-                        'a',
-                        array('href'=>'javascript:void(0)', 'class'=>'', 'title'=>Labels::getLabel('LBL_Links', $adminLangId),"onclick"=>"sellerProductLinkFrm(".$row['selprod_id'].")"),
-                        Labels::getLabel('LBL_Links', $adminLangId),
-                        true
-                    );
-                    
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId), "onclick"=>"addSellerProductForm(" . $row['selprod_product_id'] . ",".$row['selprod_id'].")"), "<i class='far fa-edit icon'></i>", true);
                     if ($row['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
-                        $innerLiDownload = $innerUl->appendElement("li");
-                        $innerLiDownload->appendElement(
+                        $td->appendElement(
                             'a',
-                            array('href'=>'javascript:void(0)', 'class'=>'', 'title'=>Labels::getLabel('LBL_Downloads', $adminLangId),"onclick"=>"sellerProductDownloadFrm(".$row['selprod_id'].")"),
-                            Labels::getLabel('LBL_Downloads', $adminLangId),
+                            array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Downloads', $adminLangId),"onclick"=>"sellerProductDownloadFrm(".$row['selprod_id'].")"),
+                            "<i class='ion-archive'></i>",
                             true
                         );
                     }
-
-                    $innerLiDelete = $innerUl->appendElement("li");
-                    $innerLiDelete->appendElement(
-                        'a',
-                        array('href'=>'javascript:void(0)', 'class'=>'', 'title'=>Labels::getLabel('LBL_Delete_Product', $adminLangId),"onclick"=>"sellerProductDelete(".$row['selprod_id'].")"),
-                        Labels::getLabel('LBL_Delete_Product', $adminLangId),
-                        true
-                    );
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Delete_Product', $adminLangId), "onclick"=>"sellerProductDelete(".$row['selprod_id'].")"), "<i class='fa fa-trash  icon'></i>",true);
                 }
                 break;
             default:
@@ -158,7 +118,7 @@ if (count($arrListing) == 0) {
 }
 
 $frm = new Form('frmSelProdListing', array('id'=>'frmSelProdListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('SellerProducts', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');

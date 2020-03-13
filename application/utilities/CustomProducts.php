@@ -506,11 +506,11 @@ trait CustomProducts
         }
         /* ] */
 
-        if (!is_uploaded_file($_FILES['prod_image']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             FatUtility::dieJsonError(Labels::getLabel("MSG_Please_select_a_file", $this->siteLangId));
         }
         $fileHandlerObj = new AttachedFile();
-        if (!$res = $fileHandlerObj->saveImage($_FILES['prod_image']['tmp_name'], AttachedFile::FILETYPE_PRODUCT_IMAGE, $product_id, $option_id, $_FILES['prod_image']['name'], -1, $unique_record = false, $lang_id)
+        if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], AttachedFile::FILETYPE_PRODUCT_IMAGE, $product_id, $option_id, $_FILES['cropped_image']['name'], -1, $unique_record = false, $lang_id)
         ) {
             FatUtility::dieJsonError($fileHandlerObj->getError());
         }
@@ -1432,7 +1432,9 @@ trait CustomProducts
             Message::addErrorMessage(Labels::getLabel('MSG_Please_Select_A_File', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-
+        
+        $aspectRatio = FatApp::getPostedData('ratio_type', FatUtility::VAR_INT, 0);
+        
         $fileHandlerObj = new AttachedFile();
         $fileHandlerObj->deleteFile($fileHandlerObj::FILETYPE_BRAND_LOGO, $brand_id, 0, 0, $lang_id);
 
@@ -1444,7 +1446,9 @@ trait CustomProducts
             $_FILES['cropped_image']['name'],
             -1,
             $unique_record = false,
-            $lang_id
+            $lang_id,
+            0,
+            $aspectRatio
         )
         ) {
             Message::addErrorMessage($fileHandlerObj->getError());
@@ -1640,8 +1644,9 @@ trait CustomProducts
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->siteLangId), 'lang_id', array( 0 => Labels::getLabel('LBL_All_Languages', $this->siteLangId) ) + $languagesAssocArr, '', array('class' => 'language'), '');
         $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_Photo(s)', $this->siteLangId), 'prod_image', array('id' => 'prod_image'));
         $fldImg->htmlBeforeField = '<div class="filefield"><span class="filename"></span>';
-        $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->siteLangId) . '</label></div><small>' . Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500._You_can_upload_multiple_photos_from_here', $this->siteLangId) . '</small>';
-
+        $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->siteLangId) . '</label></div><small>' . Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500', $this->siteLangId) . '</small>';
+        $frm->addHiddenField('', 'min_width', 500);
+        $frm->addHiddenField('', 'min_height', 500);
         $frm->addHiddenField('', 'product_id', $product_id);
         return $frm;
     }
@@ -1668,7 +1673,7 @@ trait CustomProducts
         $frm = new Form('frmCustomProductImage');
         $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_Photo(s):', $this->siteLangId), 'prod_image', array('id' => 'prod_image'));
         $fldImg->htmlBeforeField = '<div class="filefield"><span class="filename"></span>';
-        $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->siteLangId) . '</label></div><br/><small class="text--small">' . Labels::getLabel('LBL_You_can_upload_multiple_photos_from_here', $this->siteLangId) . '</small>';
+        $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->siteLangId) . '</label></div><br/><small class="text--small">' . Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500', $this->siteLangId) . '</small>';
         $frm->addHiddenField('', 'product_id');
         return $frm;
     }
@@ -1754,9 +1759,7 @@ trait CustomProducts
         $productType = Product::getAttributesById($prodId, 'product_type');
         $this->set('productId', $prodId);
         $this->set('productType', $productType);
-        $this->_template->addJs('js/tagify.min.js');
-        $this->_template->addJs('js/tagify.polyfills.min.js');
-        $this->_template->addCss('css/tagify.css');
+        $this->_template->addJs(array('js/tagify.min.js', 'js/tagify.polyfills.min.js', 'js/cropper.js', 'js/cropper-main.js'));
         $this->set("includeEditor", true);
         $this->_template->render();
     }
@@ -1856,7 +1859,7 @@ trait CustomProducts
             FatUtility::dieWithError(Message::getHtml());
         }
         
-        if($post['product_brand_id'] < 1){
+        if($post['product_brand_id'] < 1 && FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)){
             Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Brand_From_List', $this->siteLangId)); 
             FatUtility::dieWithError(Message::getHtml());
         }

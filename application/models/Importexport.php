@@ -19,7 +19,7 @@ class Importexport extends ImportexportCommon
     public const TYPE_USERS = 11;
     public const TYPE_TAX_CATEGORY = 12;
     public const TYPE_LANGUAGE_LABELS = 13;
-    
+
 
     public const MAX_LIMIT = 1000;
 
@@ -145,10 +145,15 @@ class Importexport extends ImportexportCommon
     public function getCell($arr = array(), $index, $defaultValue = '')
     {
         if (array_key_exists($index, $arr) && trim($arr[$index]) != '') {
-            $str = str_replace("\xc2\xa0", '', trim($arr[$index]));
-            return str_replace("\xa0", '', $str);
+            return $str = str_replace("\xc2\xa0", '', trim($arr[$index]));
+            /*  return str_replace("\xa0", '', $str); */
         }
         return $defaultValue;
+    }
+
+    public function parseContentForExport($colValue)
+    {
+        return html_entity_decode($colValue, ENT_QUOTES, 'utf-8');
     }
 
     private function validateCSVHeaders($csvFilePointer, $coloumArr, $langId)
@@ -602,7 +607,7 @@ class Importexport extends ImportexportCommon
                 if ('prodcat_parent_identifier' == $columnKey) {
                     $colValue = array_key_exists($row['prodcat_parent'], $categoriesIdentifiers) ? $categoriesIdentifiers[$row['prodcat_parent']] : '';
                 }
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -640,7 +645,7 @@ class Importexport extends ImportexportCommon
                     $colValue = array_key_exists($row['afile_type'], $fileTypeArr) ? $fileTypeArr[ $row['afile_type'] ] : '';
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -954,7 +959,7 @@ class Importexport extends ImportexportCommon
                         break;
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -1106,7 +1111,7 @@ class Importexport extends ImportexportCommon
                         break;
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -1349,7 +1354,7 @@ class Importexport extends ImportexportCommon
                 if (in_array($columnKey, array( 'ps_free', 'product_cod_enabled', 'product_featured', 'product_approved', 'product_active', 'product_deleted' )) && !$this->settings['CONF_USE_O_OR_1']) {
                     $colValue = (FatUtility::int($colValue) == 1) ? 'YES' : 'NO';
                 }
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -1368,7 +1373,7 @@ class Importexport extends ImportexportCommon
         $taxCategoryArr = array();
         $countryArr = array();
         $userProdUploadLimit = $usersCrossedUploadLimit = array();
-        $userId = 0; 
+        $userId = 0;
         if (!$this->settings['CONF_USE_PRODUCT_TYPE_ID']) {
             $prodTypeIdentifierArr = Product::getProductTypes($langId);
             $prodTypeIdentifierArr = array_flip($prodTypeIdentifierArr);
@@ -1817,7 +1822,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -1963,7 +1968,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -2080,7 +2085,7 @@ class Importexport extends ImportexportCommon
         $srch = Product::getSearchObject();
         $srch->joinTable(Product::DB_PRODUCT_SPECIFICATION, 'INNER JOIN', Product::DB_TBL_PREFIX . 'id = ' . Product::DB_PRODUCT_SPECIFICATION_PREFIX . 'product_id');
         $srch->joinTable(Product::DB_PRODUCT_LANG_SPECIFICATION, 'LEFT OUTER JOIN', Product::DB_PRODUCT_SPECIFICATION_PREFIX . 'id = ' . Product::DB_PRODUCT_LANG_SPECIFICATION_PREFIX . 'prodspec_id');
-        $srch->addMultipleFields(array('prodspec_id', 'prodspeclang_lang_id', 'prodspec_name', 'prodspec_value', 'product_id', 'product_identifier'));
+        $srch->addMultipleFields(array('prodspec_id', 'prodspeclang_lang_id', 'prodspec_name', 'prodspec_value', 'prodspec_group', 'product_id', 'product_identifier'));
         $srch->joinTable(Language::DB_TBL, 'INNER JOIN', 'language_id = prodspeclang_lang_id');
         $srch->doNotCalculateRecords();
         if ($userId) {
@@ -2121,7 +2126,7 @@ class Importexport extends ImportexportCommon
                 if ('prodspeclang_lang_code' == $columnKey) {
                     $colValue = $languageCodes[ $row['prodspeclang_lang_id'] ];
                 }
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -2202,7 +2207,7 @@ class Importexport extends ImportexportCommon
                         $errMsg = str_replace('{column-name}', $columnTitle, Labels::getLabel("MSG_Invalid_{column-name}.", $langId));
                         CommonHelper::writeToCSVFile($this->CSVfileObj, array( $rowIndex, ($colIndex + 1), $errMsg ));
                     } else {
-                        if (in_array($columnKey, array( 'prodspeclang_lang_id', 'prodspec_name', 'prodspec_value' ))) {
+                        if (in_array($columnKey, array( 'prodspeclang_lang_id', 'prodspec_name', 'prodspec_value', 'prodspec_group' ))) {
                             $prodSpecLangArr[$columnKey] = $colValue;
                         } else {
                             $prodSpecArr[$columnKey] = $colValue;
@@ -2312,7 +2317,7 @@ class Importexport extends ImportexportCommon
                     $colValue = !empty($row['credential_username']) ? $row['credential_username'] : Labels::getLabel('LBL_Admin', $langId);
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -2550,7 +2555,7 @@ class Importexport extends ImportexportCommon
                     $colValue = $languageCodes[ $row['afile_lang_id'] ];
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -2821,7 +2826,7 @@ class Importexport extends ImportexportCommon
                     $colValue = $languageCodes[ $row['afile_lang_id'] ];
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -2883,7 +2888,7 @@ class Importexport extends ImportexportCommon
                     $colValue = (FatUtility::int($colValue) == 1) ? 'YES' : 'NO';
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3175,7 +3180,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3389,7 +3394,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3536,7 +3541,7 @@ class Importexport extends ImportexportCommon
                 if (in_array($columnKey, array( 'splprice_start_date', 'splprice_end_date' ))) {
                     $colValue = $this->displayDate($colValue);
                 }
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3663,7 +3668,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3782,7 +3787,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3930,7 +3935,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4045,7 +4050,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4194,7 +4199,7 @@ class Importexport extends ImportexportCommon
                     $colValue = (FatUtility::int($colValue) == 1) ? 'YES' : 'NO';
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4347,7 +4352,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4511,7 +4516,7 @@ class Importexport extends ImportexportCommon
                     $colValue = (!empty($colValue) ? $colValue : Labels::getLabel('LBL_Admin', $langId));
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4685,7 +4690,7 @@ class Importexport extends ImportexportCommon
                     }
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4851,7 +4856,7 @@ class Importexport extends ImportexportCommon
                 if ('state_active' == $columnKey && !$this->settings['CONF_USE_O_OR_1']) {
                     $colValue = (FatUtility::int($colValue) == 1) ? 'YES' : 'NO';
                 }
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -5017,7 +5022,7 @@ class Importexport extends ImportexportCommon
                         $colValue = isset($policyPointTypeArr[$row['ppoint_type']]) ? $policyPointTypeArr[$row['ppoint_type']] : '';
                         break;
                 }
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -5180,7 +5185,7 @@ class Importexport extends ImportexportCommon
                     $colValue = array_key_exists($row['prodcat_parent'], $categoriesIdentifiers) ? $categoriesIdentifiers[$row['prodcat_parent']] : '';
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -5220,7 +5225,7 @@ class Importexport extends ImportexportCommon
                     $colValue = $this->displayDateTime($colValue);
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }

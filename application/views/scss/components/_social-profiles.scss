@@ -21,7 +21,8 @@
         position: relative;
         -webkit-transition: all .3s ease;
         transition: all .3s ease;
-        flex: 1;
+        flex: 0 0 50%;
+        max-width: 50%;
 
         a {
             display: block;

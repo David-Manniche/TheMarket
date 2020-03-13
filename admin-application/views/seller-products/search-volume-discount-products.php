@@ -5,9 +5,11 @@ $arr_flds = array(
     'credential_username' => Labels::getLabel('LBL_Seller', $adminLangId),
     'voldiscount_min_qty' => Labels::getLabel('LBL_Minimum_Quantity', $adminLangId),
     'voldiscount_percentage' => Labels::getLabel('LBL_Discount', $adminLangId) . ' (%)',
-    'action' => Labels::getLabel('LBL_Action', $adminLangId),
+    'action' => '',
 );
-
+if (!$canEdit) {
+    unset($arr_flds['select_all'], $arr_flds['action']);
+}
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--orders table--hovered volDiscountList-js'));
 $thead = $tbl->appendElement('thead');
 $th = $thead->appendElement('tr', array('class' => ''));
@@ -46,20 +48,12 @@ foreach ($arrListing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $input, true);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class" => "actions actions--centered"));
-                $li = $ul->appendElement("li", array('class' => 'droplink'));
-
-                $li->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                  $innerDiv = $li->appendElement('div', array('class' => 'dropwrap'));
-                  $innerUl = $innerDiv->appendElement('ul', array('class' => 'linksvertical'));
-
                 if ($canEdit) {
-                    $innerLiEdit = $innerUl->appendElement("li");
-                    $innerLiEdit->appendElement(
+                    $td->appendElement(
                         'a',
-                        array('href' => 'javascript:void(0)', 'class' => '',
+                        array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon',
                         'title' => Labels::getLabel('LBL_Delete', $adminLangId), "onclick" => "deleteSellerProductVolumeDiscount(" . $volDiscountId . ")"),
-                        Labels::getLabel('LBL_Delete', $adminLangId),
+                        "<i class='fa fa-trash  icon'></i>",
                         true
                     );
                 }

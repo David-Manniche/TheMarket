@@ -89,6 +89,7 @@ Bugs:
     => 034475 - Pagination is not working  properly on Seller > Catalog list.
     => 034608 - when user adds item to cart and turns back from payment gateway then quantity get doubles.
     => 034661 - Unable to save buy together and related products.
+
 --------------------TV-9.1.3.20200219------------------------------
 Bugs:
 
@@ -101,7 +102,9 @@ Bugs:
     => 034638 - On product detail page> when user clicks on tabs then page is not scrolling to particular section
     => 034540 - Innova editor full width issue
     => 034472 - In products listing> count is displaying with text and on applying filter only count stays
+
 ------------TV-9.1.3.20200221------------------
+
 Bugs:
     => 034804 - Hide save search button if no record found after applying filters on shop page product search.
     => 034803 - Change no record found design for product search listing on shop or global search.
@@ -113,7 +116,86 @@ Bugs:
     => 034788 - Vol discount rows are not getting removed from frontend.
     => 034574 - Fixed shop collection page filters issue.
     => 034494 - Keyword search with special character.
-    
+
 -----------------------TV-9.1.3.20200223---------------
+Bugs:
     => 034787 - Special price list rows are not getting removed from frontend.
     => 034784 - Add minimum min qty of volume discount validation message while adding from frontend.
+
+------------------TV-9.1.3.20200225-------------------
+Bugs:
+    => 034783 - Seller inventory listing on clicking add volume discount and special price getting message printed in transparent strip.
+    => 034780 - When stock subtraction reaches the available quantity then in inventory listing there is info icon message is not displaying relevant message.
+
+-------------------------TV-9.1.3.20200226----------
+
+Bugs:
+    => 034738 - Product categories thumb image is displaying very small even smaller than remove button.
+
+-------------------------TV-9.1.3.20200228----------
+
+Bugs:
+    => 034897 - Getting error while applying category filters on shop product page - APP.
+    => 035097 - Configure Email/Phone page loaded in popup when user press "I Have A Coupon" button.
+    => 035093 - Getting multiple otp fields by clicking get otp button continuesly.
+
+===================TV-9.1.3.20200303==================
+Bug: 
+    => 034874 - first time discount coupon validation updates 
+    => 035172 - When search with %%% keyword and use filters.
+    => 035212 - Special character handling in export csv file.
+    => 034773 -  Restrict keyword search up to 80 character.
+    => 034493 - Price range slider added check to validate min/max price.
+    => 034259 - After applying filter> reset button is not listing until we refresh page manually.
+    => 035105 - Wrong import instructions heading
+    => 035105 - Wrong import instructions heading
+    => 035102 - Select row(checkbox) should not be displayed if readonly permission allowed to sub admin for any page in backend.
+    => 035033 - If product available date is of future then no need to display select option(checkbox) in wishlist.
+    => 035030 - If select all checkbox is pressed and all options are displaying, while visiting to next page all options are still displayed and select all checkbox still checked.
+    => 035029 - Favorite list pagination is not working.
+    => 035036 - If multiple items added to cart from wishlist or favorite list a long message is displayed on cart page with each item name.
+    => 034953 - Vol discount & Special Price, select all option shouldn't be there when there is no data.
+    => 035180 - User retain On guest affiliate page if logged in with buyer/seller account.
+    => 035131 - On guest advertiser registeration user phone validation added on first tab.
+    => 034947 - If product name contains "&" then under vol discount & special price it's displaying "&amp" when select through seller products page.
+    => 035118 - Invalid email address is accepting while guest login.
+    => 035206 - admin> settings> email template settings> cropper is not there
+    => 034808 - All action button should listed above all listings in admin.
+    => 035214 - Add review button should not be displayed on product detail page if that item is not bought by current logged in user.
+    => 035345 - If more than 1 page comments are posted on blog detail page then with load more button Login link is displaying with each result displayed after clicking it.
+    => 035334 - On product reviews page when filter applied "review for" for any non existing user review result displayed No result found then by clicking Clear search result not revert back to default lising.
+    => 035333 - Getting alert while editing user in admin.
+    => 035211 - Error message merged with iti html element while validating phone number field and message not diaplying properly.
+    => 035199 - when seller is not allowed to add products or request catalog then option shouldn't be there in seller account
+
+New Features:
+    => 71188 - Add setting for making brand field optional
+
+===================TV-9.1.3.20200306==================
+Bug : 
+    => 035273 - Display un-branded filter option when brand is not mandatory.
+    => 035315 - Brand mandatory for import/export based on settings.
+    => 035200 - Bulk media option shouldn't be there when seller is not allowed to add product or request catalog and Export Seller products media not required.
+===================TV-9.1.3.20200312==================
+
+Bug : 
+    => 035130 - Send request button text should be in center on Affiliate, Account credits page while withdrawal request through Bank Payout.
+    => 035283 - for non branded product- if return request is raised then getting blank for brand
+    => 035276 - if product is not binded with brand then in emails (order)> getting blank in front of brand 
+    => 035335 - admin> order detail page> back button is in toggle instead of direct button as in system
+    => 035329 - admin> options> toggle is still there instead of publish/unpublish button 
+    => 035294 - admin>special price> on selecting name and amount it adds product with default dates
+    => 035343 - Enable facebook and google from configuration settings options removed as they moved to plugin module.
+    => 035344 - Extra Social login keys which are not being used anymore are removed.
+    => 035355 - Country code and Phoner number are overlapping in phone number field having country code as dropdown.
+    => 035342 - admin> email settings> on updating email logo it's not reflecting instantly
+    => 035291 - admin> request catalog> shipped to country "rate" field displaying only character while amount is in two digits
+    => 035358 - seller> options> attribute> buttons are merging with each other on 1366x768 resolution
+===================TV-9.1.3.20200313==================
+
+Bug :
+    => 034810 - for special price and volume discount> on click of name (from list) it should get enabled in edit mode
+    => 035397 - while purchasing digital item> on shipping summary step> NA need not to be there
+    => 035290 - admin> request catalog> edit> shipping country field text is differing from shipped to font 
+    => 035288 - while adding catalog shipping> suggestion list should appear on click (as working earlier) instead of typing
+    => 035292 - on adding inventory for requested catalog> getting invalid request and inventory getting created

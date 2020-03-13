@@ -68,15 +68,18 @@ foreach ($arr_listing as $sn=>$row) {
                             Labels::getLabel('LBL_Edit', $adminLangId),
                             true
                         );
-                        $innerLiDelete=$innerUl->appendElement('li');
-                        //$li = $ul->appendElement("li");
-                        $innerLiDelete->appendElement(
-                            'a',
-                            array('href'=>'javascript:void(0)', 'class'=>'button small green',
-                        'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteTheme(".$row['theme_id'].")"),
-                            Labels::getLabel('LBL_Delete', $adminLangId),
-                            true
-                        );
+                        
+                        if(FatApp::getConfig("CONF_FRONT_THEME") != $row['theme_id']){
+                            $innerLiDelete=$innerUl->appendElement('li');
+                            //$li = $ul->appendElement("li");
+                            $innerLiDelete->appendElement(
+                                'a',
+                                array('href'=>'javascript:void(0)', 'class'=>'button small green',
+                            'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteTheme(".$row['theme_id'].")"),
+                                Labels::getLabel('LBL_Delete', $adminLangId),
+                                true
+                            );
+                        }
                     }
                     $innerLiClone=$innerUl->appendElement('li');
                     //$li = $ul->appendElement("li");

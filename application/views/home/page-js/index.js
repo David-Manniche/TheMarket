@@ -174,18 +174,13 @@ $(".tabs--flat-js li").click(function () {
 resendOtp = function (userId, getOtpOnly = 0){
     $.mbsmessage(langLbl.processing, false, 'alert--process');
     fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
-        try{
-            t = $.parseJSON(t);
-            if(typeof t.status != 'undefined' &&  1 > t.status){
-                $.mbsmessage(t.msg, false, 'alert--danger');
-            } else {
-                $.mbsmessage(t.msg, true, 'alert--success');
-            }
+        t = $.parseJSON(t);
+        if(1 > t.status){
+            $.mbsmessage(t.msg, false, 'alert--danger');
             return false;
         }
-        catch(exc){
-            $.mbsmessage.close();
-        }
+        $.mbsmessage(t.msg, true, 'alert--success');
+        startOtpInterval();
     });
     return false;
 };
@@ -198,5 +193,6 @@ validateOtp = function (frm){
             window.location.href = t.redirectUrl;
         }
     });	
+    invalidOtpField();
     return false;
 };

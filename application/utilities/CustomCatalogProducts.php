@@ -603,7 +603,7 @@ trait CustomCatalogProducts
         if ($productReqRow['preq_user_id'] != UserAuthentication::getLoggedUserId()) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
-        
+
         $preqContent = $productReqRow['preq_content'];
         $preqContentData = json_decode($preqContent, true);
         $imagesFrm = $this->getCustomProductImagesFrm($preqId, $this->siteLangId);
@@ -715,12 +715,12 @@ trait CustomCatalogProducts
         }
         /* ] */
 
-        if (!is_uploaded_file($_FILES['prod_image']['tmp_name'])) {
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel("MSG_Please_select_a_file", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
         $fileHandlerObj = new AttachedFile();
-        if (!$res = $fileHandlerObj->saveImage($_FILES['prod_image']['tmp_name'], AttachedFile::FILETYPE_CUSTOM_PRODUCT_IMAGE, $preq_id, $option_id, $_FILES['prod_image']['name'], -1, $unique_record = false, $lang_id)
+        if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], AttachedFile::FILETYPE_CUSTOM_PRODUCT_IMAGE, $preq_id, $option_id, $_FILES['cropped_image']['name'], -1, $unique_record = false, $lang_id)
         ) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
@@ -991,7 +991,9 @@ trait CustomCatalogProducts
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->siteLangId), 'lang_id', array(0 => Labels::getLabel('LBL_All_Languages', $this->siteLangId)) + $languagesAssocArr, '', array('class' => 'language'), '');
         $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_Photo(s)', $this->siteLangId), 'prod_image', array('id' => 'prod_image'));
         $fldImg->htmlBeforeField = '<div class="filefield"><span class="filename"></span>';
-        $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->siteLangId) . '</label></div><small>' . Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500._You_can_upload_multiple_photos_from_here', $this->siteLangId) . '</small>';
+        $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->siteLangId) . '</label></div><small>' . Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500', $this->siteLangId) . '</small>';
+        $frm->addHiddenField('', 'min_width', 500);
+        $frm->addHiddenField('', 'min_height', 500);
         $frm->addHiddenField('', 'preq_id', $preq_id);
         return $frm;
     }
@@ -1057,9 +1059,7 @@ trait CustomCatalogProducts
         $this->canAddCustomCatalogProduct(true);
         $preqId = FatUtility::int($preqId);
         $this->set('preqId', $preqId);
-        $this->_template->addJs('js/tagify.min.js');
-        $this->_template->addJs('js/tagify.polyfills.min.js');
-        $this->_template->addCss('css/tagify.css');
+        $this->_template->addJs(array('js/tagify.min.js', 'js/tagify.polyfills.min.js', 'js/cropper.js', 'js/cropper-main.js'));
         $this->set('includeEditor', true);
         $this->_template->render();
     }
@@ -1118,15 +1118,15 @@ trait CustomCatalogProducts
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
-        if($post['product_brand_id'] < 1){
-            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Brand_From_List', $this->siteLangId)); 
+        if($post['product_brand_id'] < 1 && FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)){
+            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Brand_From_List', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
         if($post['ptc_prodcat_id'] < 1){
-            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Category_From_List', $this->siteLangId)); 
+            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Category_From_List', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         $prodContent = array();
         if ($preqId > 0) {
             $productRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_status', 'preq_content'));
@@ -1180,7 +1180,7 @@ trait CustomCatalogProducts
             Message::addErrorMessage($prodReq->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         if (!$prodReq->saveProductRequestLangData($siteDefaultLangId, $autoUpdateOtherLangsData, $prodName, $prodDesc, $prodYouTubeUrl)) {
             Message::addErrorMessage($prod->getError());
@@ -1490,7 +1490,7 @@ trait CustomCatalogProducts
         }
 
         $prodContent = json_decode($prodReqData['preq_content'], true);
-        
+
         $separateImageOptionAdded = false;
         if(!empty($prodContent['product_option'])){
             foreach($prodContent['product_option'] as $option){
@@ -1505,8 +1505,8 @@ trait CustomCatalogProducts
         if($separateImageOptionAdded == true && $optionSeparateImage == 1){
             FatUtility::dieJsonError(Labels::getLabel('LBL_you_have_already_added_option_having_separate_image', $this->siteLangId));
         }
-        
-        
+
+
         $prodContent['product_option'][] = $optionId;
         $data['preq_content'] = FatUtility::convertToJson($prodContent);
         $prodReq = new ProductRequest($preqId);
@@ -1663,5 +1663,12 @@ trait CustomCatalogProducts
         }
         $this->set('msg', Labels::getLabel('LBL_ean/upc_code_added_successfully', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function productRequestApprovalButton($preqId)
+    {
+        $preqId = FatUtility::int($preqId);
+        $this->set('preqId', $preqId);
+        $this->_template->render(false, false);
     }
 }

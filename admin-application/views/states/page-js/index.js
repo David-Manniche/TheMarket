@@ -136,12 +136,4 @@ $(document).ready(function() {
         searchState(document.frmSearch);
     };
 
-    toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmStatesListing input[name='status']").val(status);
-        $("#frmStatesListing").submit();
-    };
-
 })();

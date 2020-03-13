@@ -749,7 +749,31 @@ function formAction(frm, callback) {
 
     fcom.updateWithAjax(frm.action, data, function(resp) {
         callback();
+        showActionsBtns();
     });
+}
+
+
+function toggleBulkStatues(status) {
+    var element = 'form.actionButtons-js';
+    if (1 > $(element).length) {
+        $.systemMessage(langLbl.actionButtonsClass, 'alert--danger');
+        return false;
+    }
+
+    if(!confirm(langLbl.confirmUpdateStatus)){
+        return false;
+    }
+    $(element + " input[name='status']").val(status);
+    $(element).submit();
+};
+
+function showActionsBtns() {
+    if (typeof $(".selectItem--js:checked").val() === 'undefined') {
+        $(".toolbar-btn-js").addClass('d-none');
+    } else {
+        $(".toolbar-btn-js").removeClass('d-none');
+    }
 }
 
 

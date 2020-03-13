@@ -105,7 +105,6 @@ class QuestionnaireController extends MyAppController
         }
         $this->set('questionnaire', $questionnaire);
         $this->set('frm', $frm);
-        $this->_template->addCss(array('css/star-rating.css'));
         $this->_template->addJs(array('js/jquery.barrating.min.js'));
         $this->_template->render(true, true, 'questionnaire/view.php');
     }

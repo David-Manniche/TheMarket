@@ -197,60 +197,74 @@ $(document).ready(function () {
         });
     };
 
-})();
+    popupImage = function(inputBtn){
+		if (inputBtn.files && inputBtn.files[0]) {
+	        fcom.ajax(fcom.makeUrl('Shops', 'imgCropper'), '', function(t) {
+				$('#cropperBox-js').html(t);
+				$("#mediaForm-js").css("display", "none");
+                var file = inputBtn.files[0];
+	            var minWidth = document.frmEtplSettingsForm.logo_min_width.value;
+	            var minHeight = document.frmEtplSettingsForm.logo_min_height.value;
+				if(minWidth == minHeight){
+					var aspectRatio = 1 / 1
+				} else {
+	                var aspectRatio = 16 / 9;
+	            }
+	    		var options = {
+	                aspectRatio: aspectRatio,
+	                data: {
+	                    width: minWidth,
+	                    height: minHeight,
+	                },
+	                minCropBoxWidth: minWidth,
+	                minCropBoxHeight: minHeight,
+	                toggleDragModeOnDblclick: false,
+		        };
+				$(inputBtn).val('');
+    	  		return cropImage(file, options, 'uploadShopImages', inputBtn);
+	    	});
+		}
+	};
 
-$(document).on('click', '.logoFile-Js', function() {
-    var node = this;
-    $('#form-upload').remove();
-    var formName = $(node).attr('data-frm');
+	uploadShopImages = function(formData){
+        var frmName = formData.get("frmName");
+        var langId = document.frmEtplSettingsForm.lang_id.value;
+        var fileType = document.frmEtplSettingsForm.file_type.value;
+        var ratio_type = $('.prefRatio-js:checked').val();;
 
-    var lang_id = document.frmEtplSettingsForm.lang_id.value;
-
-    var fileType = $(node).attr('data-file_type');
-
-    var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-    frm = frm.concat('<input type="file" name="file" />');
-    frm = frm.concat('<input type="hidden" name="file_type" value="' + fileType + '">');
-    frm = frm.concat('<input type="hidden" name="lang_id" value="' + lang_id + '">');
-    frm = frm.concat('</form>');
-    $('body').prepend(frm);
-    $('#form-upload input[name=\'file\']').trigger('click');
-    if (typeof timer != 'undefined') {
-        clearInterval(timer);
-    }
-    timer = setInterval(function() {
-        if ($('#form-upload input[name=\'file\']').val() != '') {
-            clearInterval(timer);
-            $val = $(node).val();
-            $.ajax({
-                url: fcom.makeUrl('EmailTemplates', 'uploadLogo'),
-                type: 'post',
-                dataType: 'json',
-                data: new FormData($('#form-upload')[0]),
-                cache: false,
-                contentType: false,
-                processData: false,
-                beforeSend: function() {
-                    $(node).val('Loading');
-                },
-                complete: function() {
-                    $(node).val($val);
-                },
-                success: function(ans) {
-                    if (!ans.status) {
-                        $.systemMessage(ans.msg, 'alert--danger');
-                        return;
-                    }
-                    $(".temp-hide").show();
-                    var dt = new Date();
-                    var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
-                    $(".uploaded--image").html('<img src="' + fcom.makeUrl('image', 'emailLogo', [ans.lang_id], SITE_ROOT_URL) + '?' + time + '">');
-                    $.systemMessage(ans.msg, 'alert--success');
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+        formData.append('lang_id', langId);
+        formData.append('file_type', fileType);
+        formData.append('ratio_type', ratio_type);
+        $.ajax({
+            url: fcom.makeUrl('EmailTemplates', 'uploadLogo'),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+            complete: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+			success: function(ans) {
+                if (!ans.status) {
+                    $.systemMessage(ans.msg, 'alert--danger');
+                    return;
                 }
-            });
-        }
-    }, 500);
-});
+                $(".temp-hide").show();
+                var dt = new Date();
+                var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+                $(".uploaded--image").html('<img src="' + fcom.makeUrl('image', 'emailLogo', [ans.lang_id], SITE_ROOT_URL) + '?' + time + '">');
+                $.systemMessage(ans.msg, 'alert--success');
+                settingsForm(ans.lang_id);
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+        });
+	}
+
+})();

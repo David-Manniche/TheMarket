@@ -627,7 +627,8 @@ class CollectionsController extends AdminBaseController
     public function updateCollectionBrands()
     {
         $this->objPrivilege->canEditCollections();
-        $post = FatApp::getPostedData();
+        $frm = $this->getCollectionBrandsForm();
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
@@ -651,22 +652,27 @@ class CollectionsController extends AdminBaseController
     public function updateCollectionBlogs()
     {
         $this->objPrivilege->canEditCollections();
-        $post = FatApp::getPostedData();
+        $frm = $this->getCollectionBlogsForm();
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieWithError(current($frm->getValidationErrors()));
         }
 
         $collectionId = FatUtility::int($post['collection_id']);
-        $blogPostId = FatUtility::int($post['post_id']);
+        $collectionBlogs = Collections::getBlogs($collectionId, $this->adminLangId);
+        if (!empty($collectionBlogs) && Collections::LIMIT_BLOG_LAYOUT1 <= count($collectionBlogs)) {
+            $message = Labels::getLabel('MSG_A_MAXIMUM_OF_{LIMIT}_BLOGS_CAN_BE_ADDED_TO_THE_COLLECTION.', $this->adminLangId);
+            $message = CommonHelper::replaceStringData($message, ['{LIMIT}' => Collections::LIMIT_BLOG_LAYOUT1]);
+            FatUtility::dieWithError($message);
+        }
+
+        $blogPostId = FatApp::getPostedData('post_id', FatUtility::VAR_INT, 0);
         if (!$collectionId || !$blogPostId) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
         }
         $collectionObj = new Collections($collectionId);
         if (!$collectionObj->addUpdateCollectionBlogs($collectionId, $blogPostId)) {
-            Message::addErrorMessage(Labels::getLabel($collectionObj->getError(), $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieWithError($collectionObj->getError());
         }
         $this->set('msg', Labels::getLabel('MSG_Record_Updated_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');

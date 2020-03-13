@@ -101,7 +101,7 @@
             #{$end-direction}: 15px;
             top: 15px;
             font-size: 0.8em;
-            text-align: right;
+            text-align: #{$end-direction};
             border-radius: 2px;
             z-index: 1;
 
@@ -421,23 +421,6 @@
             vertical-align: top;
         }
     }
-}
-
-.product-description .products-reviews {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    border: solid 1px #323232;
-    border-radius: 4px;
-    padding: 0.5rem;
-    min-width: 110px;
 }
 
 .products-reviews {

@@ -8,14 +8,14 @@ if($fbLoginUrl !=''){
 
 if(!empty($friendList)){ ?>
 	<div class="btn-group">
-		<a href="javascript:void(0);" onclick="shareAndEarn(<?php echo $selprod_id;?>);" class="btn btn--primary btn--sm"><?php echo Labels::getLabel("LBL_Share_and_Earn", $siteLangId)?></a>
+		<a href="javascript:void(0);" onclick="shareAndEarn(<?php echo $selprod_id;?>);" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel("LBL_Share_and_Earn", $siteLangId)?></a>
 	</div>
 <?php	$arr_flds = array(
 		'sn'=>Labels::getLabel('LBL_S.No',$siteLangId),
 		'name'=>Labels::getLabel('LBL_Name',$siteLangId),
 		'id'=>Labels::getLabel('LBL_Select',$siteLangId),
 	);
-	$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--orders'));
+	$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
 	$th = $tbl->appendElement('thead')->appendElement('tr');
 	foreach ($arr_flds as $val) {
 		$e = $th->appendElement('th', array(), $val);

@@ -30,19 +30,25 @@ if (!empty($category['banner'])) {
         $uploadedTime = AttachedFile::setTimeParam($slideScreen['afile_updated_at']);
         switch ($slideScreen['afile_screen']) {
             case applicationConstants::SCREEN_MOBILE:
-                $mobile_url = '<736:' .FatCache::getCachedUrl(CommonHelper::generateUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'MOBILE', applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
+                $mobile_url = FatCache::getCachedUrl(CommonHelper::generateUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'MOBILE', applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
                 break;
             case applicationConstants::SCREEN_IPAD:
-                $tablet_url = ' >768:' .FatCache::getCachedUrl(CommonHelper::generateUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'TABLET', applicationConstants::SCREEN_IPAD)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
+                $tablet_url = FatCache::getCachedUrl(CommonHelper::generateUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'TABLET', applicationConstants::SCREEN_IPAD)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
                 break;
             case applicationConstants::SCREEN_DESKTOP:
-                $desktop_url = ' >1025:' .FatCache::getCachedUrl(CommonHelper::generateUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'DESKTOP', applicationConstants::SCREEN_DESKTOP)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
+                $desktop_url = FatCache::getCachedUrl(CommonHelper::generateUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'DESKTOP', applicationConstants::SCREEN_DESKTOP)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
                 break;
             } ?>
     <?php } ?>
     <section class="bg-shop">
-        <div class="shop-banner"><img data-ratio="4:1" data-src-base="" data-src-base2x="" data-src="<?php echo $mobile_url . $tablet_url  . $desktop_url; ?>"
-                src="<?php echo CommonHelper::generateUrl('Category', 'Banner', array($category['prodcat_id'],$siteLangId,'DESKTOP',applicationConstants::SCREEN_DESKTOP)); ?>"></div>
+        <div class="shop-banner">
+			<picture>
+				<source data-aspect-ratio="4:3" srcset="<?php echo $mobile_url; ?>" media="(max-width: 767px)">
+				<source data-aspect-ratio="4:3" srcset="<?php echo $tablet_url; ?>" media="(max-width: 1024px)">
+				<source data-aspect-ratio="4:1" srcset="<?php echo $desktop_url; ?>">
+				<img data-aspect-ratio="4:1" srcset="<?php echo $desktop_url; ?>" alt="">
+			</picture>
+		</div>
         <?php /* if (!empty($category['prodcat_description']) && array_key_exists('prodcat_description', $category)) { ?>
         <div class="page-category__content">
             <p><?php  echo FatUtility::decodeHtmlEntities($category['prodcat_description']); ?></p>
@@ -103,7 +109,15 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
             <sidebar class="col flex-grow-0 collection-sidebar" id="collection-sidebar" data-close-on-click-outside="collection-sidebar">
                 <?php if (isset($shop)) { ?>
                 <div class="bg-gray rounded shop-information p-4">
-                    <div class="shop-logo"><img data-ratio="1:1 (150x150)" src="<?php echo CommonHelper::generateUrl('image', 'shopLogo', array($shop['shop_id'], $siteLangId, 'SMALL')); ?>" alt="<?php echo $shop['shop_name']; ?>"></div>
+
+                    <div class="shop-logo">
+                        <?php   
+                        $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_SHOP_LOGO, $shop['shop_id'], 0, 0, false);
+                        $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
+                        ?>
+                        <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo CommonHelper::generateUrl('image', 'shopLogo', array($shop['shop_id'], $siteLangId, 'SMALL')); ?>" alt="<?php echo $shop['shop_name']; ?>">
+                    </div>
+
                     <div class="shop-info">
                         <div class="shop-name">
                             <h5>
@@ -211,7 +225,11 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                 <?php if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                     ?> <div class="brands-block-wrapper">
                     <div class="brands-block">
-                        <img src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'brand', array($postedData['brand_id'] , $siteLangId, 'COLLECTION_PAGE')), CONF_IMG_CACHE_TIME, '.jpg'); ?>">
+                        <?php
+                        $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_BRAND_LOGO, $postedData['brand_id'], 0, 0, false);
+                        $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
+                        ?>
+                        <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'brand', array($postedData['brand_id'] , $siteLangId, 'COLLECTION_PAGE')), CONF_IMG_CACHE_TIME, '.jpg'); ?>">
                     </div>
                 </div> <?php
                 } ?>

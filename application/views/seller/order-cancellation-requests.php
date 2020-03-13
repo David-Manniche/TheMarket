@@ -53,7 +53,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
         </div>
         <div class="content-body">
             <div class="cards  mb-4">
-				<div class="cards-content pb-0">
+				<div class="cards-content">
 					<div class="replaced">
 						<?php
 						$submitFld = $frmOrderCancellationRequestsSrch->getField('btn_submit');

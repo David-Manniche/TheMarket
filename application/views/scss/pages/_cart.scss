@@ -198,7 +198,7 @@
         -webkit-box-direction: normal;
         -ms-flex-direction: column;
         flex-direction: column;
-        margin: 10px 0;
+        margin-top:0.5rem;
 
         .icn {
             margin: 0 auto;
@@ -230,10 +230,7 @@ table.cart-tbl-addons tr td:first-child {
     -moz-padding-start: 1.5rem;
     padding-#{$start-direction}: 1.5rem;
 }
-
-table.cart-tbl-addons .item__pic {
-    width: 50px;
-}
+ 
 
 table.cart-tbl-addons .item__title {
     font-weight: 300;
