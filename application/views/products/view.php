@@ -452,7 +452,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                     </div>
                 </div>
             </div>
-            <?php include(CONF_THEME_PATH.'_partial/product/shipping-rates.php');?>
+            <?php include(CONF_THEME_PATH . '_partial/product/shipping-rates.php');?>
             <?php $youtube_embed_code = CommonHelper::parseYoutubeUrl($product["product_youtube_video"]); ?>
         </div>
         <!-- Don't remove scrollUpTo-js span -->
@@ -460,10 +460,10 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
         <!-- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -->
         <div class="nav-detail nav-detail-js">
             <ul>
-                <?php if (count($productSpecifications)>0) {?>
+                <?php if (count($productSpecifications) > 0) {?>
                 <li><a class="nav-scroll-js is-active" href="#specifications"><?php echo Labels::getLabel('LBL_Specifications', $siteLangId); ?></a></li>
                 <?php }?>
-                <?php if ($product['product_description']!='') { ?>
+                <?php if ($product['product_description'] != '') { ?>
                 <li class=""><a class="nav-scroll-js" href="#description"><?php echo Labels::getLabel('LBL_Description', $siteLangId); ?> </a></li>
                 <?php }?>
                 <?php if ($youtube_embed_code) { ?>
