@@ -194,6 +194,10 @@ Bug :
 ===================TV-9.1.3.20200313==================
 
 Bug :
+    => 035392 - While updating inventory, error log added to cvs file and get downloaded after completion.
+    => 035399 - After moving from Subscription package to setting page of particular subscription back button is not working.
+    => 035398 - While editing shop from listing, moved to collections tab and select all and facebox close, all listing is getting checked and action button is displaying.
+    => 035395 - On collection tab of manage shop page getting error.
     => 034810 - for special price and volume discount> on click of name (from list) it should get enabled in edit mode
     => 035397 - while purchasing digital item> on shipping summary step> NA need not to be there
     => 035290 - admin> request catalog> edit> shipping country field text is differing from shipped to font 

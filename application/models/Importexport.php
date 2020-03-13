@@ -19,6 +19,7 @@ class Importexport extends ImportexportCommon
     public const TYPE_USERS = 11;
     public const TYPE_TAX_CATEGORY = 12;
     public const TYPE_LANGUAGE_LABELS = 13;
+    public const TYPE_INVENTORY_UPDATE = 14;
 
 
     public const MAX_LIMIT = 1000;
@@ -54,6 +55,7 @@ class Importexport extends ImportexportCommon
                 $arr[static::TYPE_CATEGORIES] = Labels::getLabel('LBL_Categories', $langId);
                 $arr[static::TYPE_PRODUCTS] = Labels::getLabel('LBL_Catalogs', $langId);
                 $arr[static::TYPE_SELLER_PRODUCTS] = Labels::getLabel('LBL_Seller_Products', $langId);
+                $arr[static::TYPE_INVENTORY_UPDATE] = Labels::getLabel('LBL_INVENTORY_UPDATE', $langId);
                 $arr[static::TYPE_BRANDS] = Labels::getLabel('LBL_Brands', $langId);
                 $arr[static::TYPE_OPTIONS] = Labels::getLabel('LBL_Options', $langId);
                 $arr[static::TYPE_OPTION_VALUES] = Labels::getLabel('LBL_Option_Values', $langId);
@@ -70,6 +72,7 @@ class Importexport extends ImportexportCommon
             case 'IMPORT':
                 $arr[static::TYPE_PRODUCTS] = Labels::getLabel('LBL_Catalogs', $langId);
                 $arr[static::TYPE_SELLER_PRODUCTS] = Labels::getLabel('LBL_Seller_Products', $langId);
+                $arr[static::TYPE_INVENTORY_UPDATE] = Labels::getLabel('LBL_INVENTORY_UPDATE', $langId);
                 if (!$sellerDashboard) {
                     $arr[static::TYPE_CATEGORIES] = Labels::getLabel('LBL_Categories', $langId);
                     $arr[static::TYPE_BRANDS] = Labels::getLabel('LBL_Brands', $langId);

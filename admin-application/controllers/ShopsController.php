@@ -1355,7 +1355,7 @@ class ShopsController extends AdminBaseController
     public function toggleBulkCollectionStatuses()
     {
         $this->objPrivilege->canEditShops();
-        $status = FatApp::getPostedData('collection_status', FatUtility::VAR_INT, -1);
+        $status = FatApp::getPostedData('status', FatUtility::VAR_INT, -1);
         $scollectionIdsArr = FatUtility::int(FatApp::getPostedData('scollection_ids'));
 
         if (empty($scollectionIdsArr) || -1 == $status) {
