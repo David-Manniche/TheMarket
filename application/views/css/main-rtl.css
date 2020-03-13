@@ -15708,6 +15708,9 @@ img.mfp-img {
   #mbsmessage .content,
   .system_message .content {
     min-width: inherit; } }
+.listing-tbl, #listingDiv, #listing {
+  overflow-x: auto; }
+
 .table {
   width: 100%;
   background-color: #fff;

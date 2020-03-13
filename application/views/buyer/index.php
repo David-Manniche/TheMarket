@@ -183,11 +183,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                         <td colspan="4"> <?php $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId), false); ?> </td>
                                     </tr> <?php } ?>
                                 </tbody>
-                                <div class="scroll-hint-icon-wrap" data-target="scrollable-icon">
-                                    <span class="scroll-hint-icon">
-                                        <div class="scroll-hint-text"><?php echo Labels::getLabel('LBL_Scrollable', $siteLangId);?></div>
-                                    </span>
-                                </div>
+                                
                             </table>
                         </div>
                     </div>

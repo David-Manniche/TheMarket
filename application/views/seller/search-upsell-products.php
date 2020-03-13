@@ -5,7 +5,7 @@ $arr_flds = array(
     'upsell_products' => Labels::getLabel('LBL_Buy_Together_Products', $siteLangId)
 );
 
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered volDiscountList-js'));
+$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table volDiscountList-js'));
 $thead = $tbl->appendElement('thead');
 $th = $thead->appendElement('tr', array('class' => ''));
 

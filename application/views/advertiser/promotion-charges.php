@@ -16,7 +16,7 @@
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Promotion_Charges', $siteLangId);?></h5>
                         </div> -->
                         <div class="cards-content">
-                            <div id="listing">
+                            <div class="listing-tbl" id="listing">
                                 <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>
                         </div>

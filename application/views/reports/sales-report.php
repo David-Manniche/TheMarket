@@ -51,7 +51,6 @@
                                         echo  $frmSrch->getFormHtml();
                                 } ?>
 
-
                         </div>
                     </div>
                 </div>
@@ -60,7 +59,7 @@
                 <div class="col-lg-12">
                     <div class="cards">
                         <div class="cards-content">
-                            <div id="listingDiv"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?> </div>
+                            <div class="listing-tbl" id="listingDiv"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?> </div>
                         </div>
                     </div>
                 </div>

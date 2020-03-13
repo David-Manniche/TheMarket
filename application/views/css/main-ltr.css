@@ -15708,6 +15708,9 @@ img.mfp-img {
   #mbsmessage .content,
   .system_message .content {
     min-width: inherit; } }
+.listing-tbl, #listingDiv, #listing {
+  overflow-x: auto; }
+
 .table {
   width: 100%;
   background-color: #fff;
@@ -27496,7 +27499,7 @@ a.ui-button:active,
 .iti--separate-dial-code input[type=tel],
 .iti--separate-dial-code input[type=text] {
   padding-right: 6px;
-  padding-left: 100px;
+  padding-left: 52px;
   margin-left: 0; }
 
 .iti--allow-dropdown .iti__flag-container,

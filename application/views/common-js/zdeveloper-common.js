@@ -1498,7 +1498,7 @@ $(document).ajaxComplete(function () {
 
     //Remove scrolling on table with hand icon
     if (0 < $('div.block--empty').length && 0 < $('div.scroll-hint-icon-wrap').length) {
-        $('div.block--empty').siblings('table.table.scroll-hint').children('div.scroll-hint-icon-wrap').remove();
+        $('div.block--empty').siblings('.table.scroll-hint').children('div.scroll-hint-icon-wrap').remove();
     }
 
     //Remove Scrolling When Facebox Popup opened
@@ -1512,6 +1512,12 @@ $(document).ajaxComplete(function () {
             $("html").removeClass('pop-on');
         });
     }
+	
+	$('body').click(function(){
+		if ($('html').hasClass('pop-on')) {
+			$('html').removeClass('pop-on');
+        }
+	});
 });
 
 $(document).ready(function () {
