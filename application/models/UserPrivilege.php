@@ -117,7 +117,6 @@ class UserPrivilege
             static::SECTION_INVENTORY_REPORT => Labels::getLabel('LBL_Inventory_Report', $langId),
             static::SECTION_UPLOAD_BULK_IMAGES => Labels::getLabel('LBL_Upload_Bulk_Images', $langId),
             static:: SECTION_PROMOTIONS => Labels::getLabel('LBL_Promotions', $langId),
-            static:: SECTION_PROMOTION_CHARGES => Labels::getLabel('LBL_Promotion_Charges', $langId),
             static:: SECTION_SUBSCRIPTION => Labels::getLabel('LBL_Subscription', $langId)
         );
         return $arr;
@@ -160,8 +159,7 @@ class UserPrivilege
                 ),
             static::MODULE_ADVERTISEMENT =>
                 array(
-                    static::SECTION_PROMOTIONS => Labels::getLabel('LBL_Promotions', $langId),
-                    static::SECTION_PROMOTION_CHARGES => Labels::getLabel('LBL_Promotion_Charges', $langId)
+                    static::SECTION_PROMOTIONS => Labels::getLabel('LBL_Promotions', $langId)
                 ),
             static::MODULE_ACCOUNT =>
                 array(
@@ -782,16 +780,6 @@ class UserPrivilege
     public function canEditPromotions($sellerId = 0, $returnResult = false)
     {
         return $this->checkPermission($sellerId, static::SECTION_PROMOTIONS, static::PRIVILEGE_WRITE, $returnResult);
-    }
-
-    public function canViewPromotionCharges($sellerId = 0, $returnResult = false)
-    {
-        return $this->checkPermission($sellerId, static::SECTION_PROMOTION_CHARGES, static::PRIVILEGE_READ, $returnResult);
-    }
-
-    public function canEditPromotionCharges($sellerId = 0, $returnResult = false)
-    {
-        return $this->checkPermission($sellerId, static::SECTION_PROMOTION_CHARGES, static::PRIVILEGE_WRITE, $returnResult);
     }
 
     public function canUploadBulkImages($sellerId = 0, $returnResult = false)

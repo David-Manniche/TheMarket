@@ -91,7 +91,7 @@ class Navigation
         } elseif (isset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'])) {
             $activeTab = $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'];
         }
-
+        $template->set('userPrivilege', UserPrivilege::getInstance());
         $template->set('activeTab', $activeTab);
         $template->set('shop_id', $shop_id);
         $template->set('isShopActive', Shop::isShopActive($userId));
@@ -103,7 +103,10 @@ class Navigation
         $siteLangId = CommonHelper::getLangId();
         $controller = str_replace('Controller', '', FatApp::getController());
         $action = FatApp::getAction();
-
+        $userData = User::getAttributesById(UserAuthentication::getLoggedUserId());
+        $userParentId = (0 < $userData['user_parent']) ? $userData['user_parent'] : UserAuthentication::getLoggedUserId();
+        $template->set('userParentId', $userParentId);
+        $template->set('userPrivilege', UserPrivilege::getInstance());
         $template->set('siteLangId', $siteLangId);
         $template->set('controller', $controller);
         $template->set('action', $action);

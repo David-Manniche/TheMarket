@@ -10,6 +10,7 @@
         </div>
         <div class="content-body">
             <div class="js-widget-scroll widget-scroll">
+                <?php if ($userParentId == UserAuthentication::getLoggedUserId()) { ?>
                 <div class="widget widget-stats">
                     <a href="<?php echo CommonHelper::generateUrl('Account', 'credits'); ?>">
                         <div class="cards">
@@ -39,6 +40,7 @@
                         </div>
                     </a>
                 </div>
+                <?php }?>
                 <div class="widget widget-stats">
                     <a href="javascript:void(0)" onClick="redirectToPromotions('<?php echo CommonHelper::generateUrl('advertiser', 'promotions');?>')">
                         <div class="cards">
@@ -175,6 +177,7 @@
                     </div>
                 </div>
             </div>
+            <?php if ($userParentId == UserAuthentication::getLoggedUserId()) { ?>
             <div class="row">
                 <div class="col-lg-12 col-md-12 mb-4">
                     <div class="cards">
@@ -256,6 +259,7 @@
                     </div>
                 </div>
             </div>
+            <?php }?>
         </div>
     </div>
 </main>
