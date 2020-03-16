@@ -1207,7 +1207,7 @@ class ConfigurationsController extends AdminBaseController
                 break;
 
             case Configurations::FORM_THIRD_PARTY_API:
-
+				$frm->addHtml('', 'GooglePushNotification', '<h3>' . Labels::getLabel("LBL_GOOGLE_PUSH_NOTIFICATION", $this->adminLangId) . '</h3>');
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Google_Push_Notification_API_KEY", $this->adminLangId), 'CONF_GOOGLE_PUSH_NOTIFICATION_API_KEY');
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_api_key_used_in_push_notifications.", $this->adminLangId) . "</small>";
 
@@ -1277,7 +1277,7 @@ class ConfigurationsController extends AdminBaseController
                     $fld = $frm->addHTML('', 'accessToken', 'Please configure your settings and then authenticate them', '', 'class="medium"');
                 }
 
-                $frm->addHtml('', 'Analytics', '<h3>' . Labels::getLabel("LBL_Google_Recaptcha", $this->adminLangId) . '</h3>');
+                $frm->addHtml('', 'GoogleReCaptcha', '<h3>' . Labels::getLabel("LBL_GOOGLE_RECAPTCHA_V3", $this->adminLangId) . '</h3>');
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Site_Key", $this->adminLangId), 'CONF_RECAPTCHA_SITEKEY');
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_application_Site_key_used_for_Google_Recaptcha.", $this->adminLangId) . "</small>";
 
