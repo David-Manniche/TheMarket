@@ -212,8 +212,11 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                             <p><strong><?php echo Labels::getLabel('LBL_Follow_Us', $siteLangId); ?></strong> </p>
                             <ul class="social-icons">
                                 <?php foreach ($socialPlatforms as $row) { ?>
-                                <li><a <?php if ($row['splatform_url']!='') { ?> target="_blank" <?php } ?>
-                                    href="<?php echo ($row['splatform_url']!='') ? $row['splatform_url']:'javascript:void(0)'; ?>"><i class="fa fa-<?php echo $row['splatform_icon_class']; ?>"></i></a></li>
+                                <li>
+								<a <?php if ($row['splatform_url']!='') { ?> target="_blank" <?php } ?>
+                                    href="<?php echo ($row['splatform_url']!='') ? $row['splatform_url']:'javascript:void(0)'; ?>"><i class="fab fa-<?php echo $row['splatform_icon_class']; ?>"></i>
+								</a>
+								</li>
                                 <?php } ?>
                             </ul>
                         </div>

@@ -1,10 +1,10 @@
-.listing-tbl, #listingDiv, #listing{ overflow-x: auto;}
+.listing-tbl{ overflow-x: auto;}
 
 .table {
-    width: 100%;
+    
     background-color: #fff;
     margin-bottom: 0;
-    color: $body-color;
+     
     
     @include media-breakpoint-down(lg) {
         & {
