@@ -6,6 +6,7 @@
         <?php if ($canEditImportExport) { ?>
             <li class="<?php echo !empty($action) && $action=='import'?'is-active' : '';?>"><a href="javascript:void(0)" onClick="loadForm('import')"><?php echo Labels::getLabel('LBL_Import', $siteLangId); ?></a></li>
             <li class="<?php echo !empty($action) && $action=='settings'?'is-active' : '';?>"><a href="javascript:void(0)" onClick="loadForm('settings')"><?php echo Labels::getLabel('LBL_Settings', $siteLangId); ?></a></li>
+            <li class="<?php echo !empty($action) && $action=='inventoryUpdate'?'is-active' : '';?>"><a href="javascript:void(0)" onClick="loadForm('inventoryUpdate')"><?php echo Labels::getLabel('LBL_Inventory_Update', $siteLangId); ?></a></li>
         <?php } ?>
         <?php if ($canUploadBulkImages) { ?>
             <li class="<?php echo !empty($action) && $action=='bulkMedia'?'is-active' : '';?>"><a href="javascript:void(0)" onClick="loadForm('bulk_media')"><?php echo Labels::getLabel('LBL_Upload_Bulk_Media', $siteLangId); ?></a></li>

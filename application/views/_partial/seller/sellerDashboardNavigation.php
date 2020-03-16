@@ -338,20 +338,14 @@ $action = strtolower($action); ?>
                 <li class="menu__item">
                     <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_Import_Export', $siteLangId);?></span></div>
                 </li>
-                <li class="menu__item <?php echo ($controller == 'seller' && ($action == 'inventoryupdate')) ? 'is-active' : ''; ?>">
-                    <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Inventory_Update', $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('seller', 'InventoryUpdate'); ?>"><i class="icn shop"><svg class="svg">
-                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-inventory-update" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-inventory-update"></use>
+                <?php if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0)) { ?>
+                    <li class="menu__item <?php echo ($controller == 'importexport' && ($action == 'index')) ? 'is-active' : ''; ?>">
+                    <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Import_Export', $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('ImportExport', 'index'); ?>"><i class="icn shop"><svg class="svg">
+                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-import-export" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-import-export"></use>
                                 </svg>
-                            </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Inventory_Update', $siteLangId); ?></span></a></div>
-                </li>
-                    <?php if (FatApp::getConfig('CONF_ENABLE_IMPORT_EXPORT', FatUtility::VAR_INT, 0)) { ?>
-                        <li class="menu__item <?php echo ($controller == 'importexport' && ($action == 'index')) ? 'is-active' : ''; ?>">
-                        <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Import_Export', $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('ImportExport', 'index'); ?>"><i class="icn shop"><svg class="svg">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-import-export" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-import-export"></use>
-                                    </svg>
-                                </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Import_Export', $siteLangId); ?></span></a></div>
-                        </li> <?php
-                    } ?>
+                            </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Import_Export', $siteLangId); ?></span></a></div>
+                    </li> <?php
+                } ?>
                 <?php } ?>
                 <?php $this->includeTemplate('_partial/dashboardLanguageArea.php'); ?>
             </ul>
