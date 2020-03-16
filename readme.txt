@@ -211,3 +211,5 @@ Bug :
     => 034102 - On Buyer dashboard when hamburger icon clicked to expand sidebar then widgets are crossing screen and scroll not working.
     => 034101 - On Buyer dashboard when hamburger icon clicked to close sidebar then on widgets extra spaces are not reduced.
     => 035404 - seller is not getting email when order is on COD
+    => 034492 - On devices> captcha comes over the elements in footer
+    => 034491 - On contact us page> captcha is getting hid behind the map

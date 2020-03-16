@@ -552,6 +552,7 @@ function getCookie(cname) {
 var gReCaptcha = false;
 function googleCaptcha()
 {
+    $("body").addClass("captcha");
     var inputObj = $("form input[name='g-recaptcha-response']");
     var submitBtn = inputObj.parent("form").find('input[type="submit"]');
     submitBtn.attr("disabled", "disabled");
