@@ -100,11 +100,15 @@ $(document).ready(function () {
 });
 
 /* for search form */
- $(document).on('click','.toggle--search-js',function() {
+$(document).on('click','.toggle--search-js',function() {
 	$(this).toggleClass("is--active");
 	$('html').toggleClass("is--form-visible");
-	/* $('.search--keyword--js').focus(); */
 });
+
+$(document).on('click','.toggle--search',function() {
+    setTimeout(function(){ $(".search--keyword--js").focus(); }, 500);
+});
+
 $("document").ready(function(){
 
  $('.parents--link').click(function() {
