@@ -106,6 +106,8 @@ class FilterHelper extends FatUtility
                 'brand_name' => Labels::getLabel('LBL_Unbranded', CommonHelper::getLangId()),
                 'priority' => 9999
             ));
+            $brands = array_map('array_filter', $brands);
+            $brands = array_values(array_filter($brands));
         }
         return $brands;
     }
