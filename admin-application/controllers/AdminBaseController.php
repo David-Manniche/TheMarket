@@ -144,6 +144,8 @@ class AdminBaseController extends FatController
         'clonedNotification' => Labels::getLabel('LBL_NOTIFICATION_CLONED_SUCCESSFULLY', $this->adminLangId),
         'confirmRemoveBlog' => Labels::getLabel('LBL_Do_you_want_to_remove_this_blog', $this->adminLangId),
         'actionButtonsClass' => Labels::getLabel('LBL_PLEASE_ADD_"actionButtons-js"_CLASS_TO_FORM_TO_PERFORM_ACTION', $this->adminLangId),
+        'allowedFileSize' => LibHelper::getMaximumFileUploadSize(),
+        'fileSizeExceeded' => Labels::getLabel("MSG_YOUR_UPLOADED_FILE_EXCEEDING_THE_ALLOWED_FILE_SIZE_LIMIT_{SIZE-LIMIT}", $this->adminLangId),
         );
 
         $languages = Language::getAllNames(false);
