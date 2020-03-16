@@ -213,4 +213,8 @@ Bug :
     => 035404 - seller is not getting email when order is on COD
     => 034492 - On devices> captcha comes over the elements in footer
     => 034491 - On contact us page> captcha is getting hid behind the map
+    
+===================TV-9.1.5.20200316======================
+
+Bug : 
     => 034264 - Getting error while uploading bulk media.
