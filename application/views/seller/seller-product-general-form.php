@@ -208,10 +208,11 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
                                 <td class="optionFld-js"><?php echo $frmSellerProduct->getFieldHtml('selprod_price'.$optionKey); ?></td>
                                 <td class="optionFld-js"><?php echo $frmSellerProduct->getFieldHtml('selprod_stock'.$optionKey); ?></td>
                                 <td class="optionFld-js fldSku"><?php echo $frmSellerProduct->getFieldHtml('selprod_sku'.$optionKey); ?></td>
-                                <td><button type="button" class="btn btn-secondary btn-elevate btn-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Copy to clipboard"><i class="fas fa-paste"></i></button>
-                                
-                                 
-                                   </td>
+                                <td>
+                                    <button disabled="disabled" onClick="copyRowData(this)" type="button" class="js-copy-btn btn btn-secondary btn-elevate btn-icon" title="<?php echo Labels::getLabel('LBL_Copy_to_clipboard', $siteLangId) ?>">
+                                        <i class="fas fa-paste"></i>
+                                    </button>
+                                </td>
                             </tr>
                             <?php } ?>
                             <?php } else { ?>
@@ -223,7 +224,6 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
                                 <td><?php echo $frmSellerProduct->getFieldHtml('selprod_price'); ?></td>
                                 <td><?php echo $frmSellerProduct->getFieldHtml('selprod_stock'); ?></td>
                                 <td><?php echo $frmSellerProduct->getFieldHtml('selprod_sku'); ?></td>
-
                             </tr>
                             <?php } ?>
                         </tbody>
@@ -363,6 +363,7 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
 
         $(document).on('keyup', ".optionFld-js input", function() {
             var currentObj = $(this);
+            var showCopyBtn = true;
             if (currentObj.val().length > 0) {
                 currentObj.parent().parent().find('input').each(function() {
                     if ($(this).parent().hasClass('fldSku') && CONF_PRODUCT_SKU_MANDATORY != 1) {
@@ -370,6 +371,7 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
                     }
                     if ($(this).val().length == 0 || $(this).val() == 0) {
                         $(this).attr('class', 'error');
+                        showCopyBtn = false;
                     }
                 });
                 currentObj.removeClass('error');
@@ -383,11 +385,55 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
                 if (allEmpty) {
                     currentObj.parent().parent().find('input').each(function() {
                         $(this).removeClass('error');
+                        showCopyBtn = false;
                     });
                 } else {
                     currentObj.attr('class', 'error');
+                    showCopyBtn = false;
                 }
             }
+            
+            if(showCopyBtn == true){
+                currentObj.parent().parent().find('button').removeAttr("disabled");;
+            }else{
+                currentObj.parent().parent().find('button').attr("disabled", "disabled");;
+            }
+                
         });
+        
+        copyRowData = function(btn){               
+            var copiedData = '';  
+            $(btn).parent().parent().find('input').each(function() { 
+                copiedData = copiedData + $(this).val()+ '\t';
+            });
+            
+            var copiedField = document.createElement('input');
+            copiedField.value = copiedData;
+            document.body.appendChild(copiedField)
+            copiedField.select();
+            document.execCommand("copy", false);
+            copiedField.remove();
+            
+            $(btn).attr('title', langLbl.copied);
+            $(btn).addClass('clicked');
+        }
+        
     });
+    
+    $(document).on('paste', '.optionFld-js input', function(e){        
+        e.preventDefault();
+        var pastedData = e.originalEvent.clipboardData.getData('text');       
+        var pastedDataArr = pastedData.split('\t');        
+        var count = 0; 
+        $(this).parent().parent().find('input').each(function() {
+            $(this).val('')
+            $(this).val(pastedDataArr[count])
+            count = parseInt(count)+ 1;
+        });
+        $(this).parent().parent().find('button').removeAttr("disabled");
+        $('.js-copy-btn').attr('title', langLbl.copyToClipboard);
+        $('.js-copy-btn').removeClass('clicked');
+        $(this).parent().parent().next().children().children().first().focus();
+    });
+    
 </script>
