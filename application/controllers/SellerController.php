@@ -17,6 +17,7 @@ class SellerController extends SellerBaseController
 
     public function index()
     {
+        $this->userPrivilege->canViewSellerDashboard(UserAuthentication::getLoggedUserId());
         $userId = $this->userParentId;
         $user = new User($userId);
         $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] = 'S';
@@ -140,7 +141,6 @@ class SellerController extends SellerBaseController
         $this->set('txnStatusArr', Transactions::getStatusArr($this->siteLangId));
         $this->set('OrderCancelRequestStatusArr', OrderCancelRequest::getRequestStatusArr($this->siteLangId));
         $this->set('txnsSummary', $txnsSummary);
-
         $this->set('notAllowedStatues', $notAllowedStatues);
         $this->set('orders', $orders);
         $this->set('ordersCount', $srch->recordCount());
@@ -148,6 +148,8 @@ class SellerController extends SellerBaseController
         $this->set('userBalance', User::getUserBalance($userId));
         $this->set('ordersStats', $ordersStats);
         $this->set('dashboardStats', Stats::getUserSales($userId));
+        $this->set('userParentId', $this->userParentId);
+        $this->set('userPrivilege', $this->userPrivilege);
         $this->_template->addJs(array('js/chartist.min.js'));
         $this->_template->addJs('js/slick.min.js');
         $this->_template->render(true, true);
@@ -263,6 +265,7 @@ class SellerController extends SellerBaseController
 
     public function orderSearchListing()
     {
+        $this->userPrivilege->canViewSubscription(UserAuthentication::getLoggedUserId());
         if (!FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) {
             Message::addErrorMessage(
                 Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId)
@@ -349,6 +352,7 @@ class SellerController extends SellerBaseController
         $this->set('pageCount', $srch->pages());
         $this->set('recordCount', $srch->recordCount());
         $this->set('postedData', $post);
+        $this->set('canEdit', $this->userPrivilege->canEditSubscription(UserAuthentication::getLoggedUserId(), true));
         $this->_template->render(false, false);
     }
 
@@ -3578,6 +3582,7 @@ class SellerController extends SellerBaseController
 
     public function packages()
     {
+        $this->userPrivilege->canViewSubscription(UserAuthentication::getLoggedUserId());
         if (!FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl());
@@ -3607,6 +3612,7 @@ class SellerController extends SellerBaseController
 
     public function subscriptions()
     {
+        $this->userPrivilege->canViewSubscription(UserAuthentication::getLoggedUserId());
         if (!FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) {
             Message::addErrorMessage(
                 Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId)
@@ -3618,7 +3624,7 @@ class SellerController extends SellerBaseController
         $frmOrderSrch = $this->getSubscriptionOrderSearchForm($this->siteLangId);
         $userId = $this->userParentId;
         $autoRenew = User::getAttributesById($userId, 'user_autorenew_subscription');
-
+        $this->set('canEdit', $this->userPrivilege->canEditSubscription(UserAuthentication::getLoggedUserId(), true));
         $this->set('currentActivePlan', $currentActivePlan);
         $this->set('frmOrderSrch', $frmOrderSrch);
         $this->set('autoRenew', $autoRenew);
@@ -4454,6 +4460,7 @@ class SellerController extends SellerBaseController
 
     public function sellerOffers()
     {
+        $this->userPrivilege->canViewSubscription(UserAuthentication::getLoggedUserId());
         $this->_template->render(true, true);
     }
 

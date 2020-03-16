@@ -27,6 +27,7 @@ class UserPrivilege
     public const SECTION_UPLOAD_BULK_IMAGES = 25;
     public const SECTION_PROMOTIONS = 26;
     public const SECTION_PROMOTION_CHARGES = 27;
+    public const SECTION_SUBSCRIPTION = 28;
 
     public const MODULE_SHOP = 1;
     public const MODULE_ORDERS = 2;
@@ -111,13 +112,13 @@ class UserPrivilege
             static::SECTION_PRODUCT_OPTIONS => Labels::getLabel('LBL_Product_Options', $langId),
             static::SECTION_SOCIAL_PLATFORMS => Labels::getLabel('LBL_Manage_Social_Platforms', $langId),
             static::SECTION_MESSAGES => Labels::getLabel('LBL_Messages', $langId),
-            static::SECTION_CREDITS => Labels::getLabel('LBL_Credits', $langId),
             static::SECTION_SALES_REPORT => Labels::getLabel('LBL_Sales_Report', $langId),
             static::SECTION_PERFORMANCE_REPORT => Labels::getLabel('LBL_Product_Performance_Report', $langId),
             static::SECTION_INVENTORY_REPORT => Labels::getLabel('LBL_Inventory_Report', $langId),
             static::SECTION_UPLOAD_BULK_IMAGES => Labels::getLabel('LBL_Upload_Bulk_Images', $langId),
             static:: SECTION_PROMOTIONS => Labels::getLabel('LBL_Promotions', $langId),
-            static:: SECTION_PROMOTION_CHARGES => Labels::getLabel('LBL_Promotion_Charges', $langId)
+            static:: SECTION_PROMOTION_CHARGES => Labels::getLabel('LBL_Promotion_Charges', $langId),
+            static:: SECTION_SUBSCRIPTION => Labels::getLabel('LBL_Subscription', $langId)
         );
         return $arr;
     }
@@ -157,15 +158,15 @@ class UserPrivilege
                     static::SECTION_PERFORMANCE_REPORT => Labels::getLabel('LBL_Product_Performance_Report', $langId),
                     static::SECTION_INVENTORY_REPORT => Labels::getLabel('LBL_Inventory_Report', $langId),
                 ),
-            static::MODULE_ACCOUNT =>
-                array(
-                    static::SECTION_MESSAGES => Labels::getLabel('LBL_Messages', $langId),
-                    static::SECTION_CREDITS => Labels::getLabel('LBL_Credits', $langId)
-                ),
             static::MODULE_ADVERTISEMENT =>
                 array(
                     static::SECTION_PROMOTIONS => Labels::getLabel('LBL_Promotions', $langId),
                     static::SECTION_PROMOTION_CHARGES => Labels::getLabel('LBL_Promotion_Charges', $langId)
+                ),
+            static::MODULE_ACCOUNT =>
+                array(
+                    static::SECTION_MESSAGES => Labels::getLabel('LBL_Messages', $langId),
+                    static::SECTION_SUBSCRIPTION => Labels::getLabel('LBL_Seller_Subscription', $langId),
                 ),
             static::MODULE_IMPORT_EXPORT =>
                 array(
@@ -701,6 +702,16 @@ class UserPrivilege
     public function canEditMessages($sellerId = 0, $returnResult = false)
     {
         return $this->checkPermission($sellerId, static::SECTION_MESSAGES, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    public function canViewSubscription($sellerId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($sellerId, static::SECTION_SUBSCRIPTION, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    public function canEditSubscription($sellerId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($sellerId, static::SECTION_SUBSCRIPTION, static::PRIVILEGE_WRITE, $returnResult);
     }
 
     public function canViewCredits($sellerId = 0, $returnResult = false)

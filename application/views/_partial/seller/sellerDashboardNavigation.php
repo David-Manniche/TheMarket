@@ -327,7 +327,7 @@ $action = strtolower($action); ?>
                             <?php } ?></span></a></div>
                 </li>
                 <?php }?>
-                <?php if ($userPrivilege->canViewCredits(UserAuthentication::getLoggedUserId(), true)) { ?>
+                <?php if ($userParentId == UserAuthentication::getLoggedUserId()) { ?>
                 <li class="menu__item <?php echo ($controller == 'account' && $action == 'credits') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_My_Credits', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Account', 'credits');?>">
                             <i class="icn shop"><svg class="svg">

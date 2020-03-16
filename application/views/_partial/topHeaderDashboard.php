@@ -2,6 +2,7 @@
 	$this->includeTemplate('restore-system/top-header.php');    
 } ?>
 <div class="wrapper">
+    <?php if ($controllerName != 'SubscriptionCheckout') {?>
     <header id="header-dashboard" class="header-dashboard no-print" role="header-dashboard">
         <?php if ((User::canViewSupplierTab() && User::canViewBuyerTab()) || (User::canViewSupplierTab() && User::canViewAdvertiserTab()) || (User::canViewBuyerTab() && User::canViewAdvertiserTab())) { ?>
         
@@ -58,6 +59,7 @@
             </div>
         </div>
     </header>
+    <?php } ?>
     <div class="display-in-print text-center">
         <img src="<?php echo CommonHelper::generateFullUrl('Image', 'invoiceLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId, FatUtility::VAR_STRING, '') ?>"
             title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId, FatUtility::VAR_STRING, '') ?>">
