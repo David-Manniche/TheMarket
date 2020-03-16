@@ -288,7 +288,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="item__price"><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($row, 'netamount', false, USER::USER_TYPE_SELLER)); ?></div>
+                                            <div class="item__price"><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($row, 'netamount', false, User::USER_TYPE_SELLER)); ?></div>
                                         </td>
                                         <td>
                                             <ul class="actions">
