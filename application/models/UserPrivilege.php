@@ -298,9 +298,13 @@ class UserPrivilege
         }
     }
 
-    public static function canSellerEditOption($optionId, $langId)
+    public static function canSellerEditOption($userId, $optionId, $langId)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = FatUtility::int($userId);
+        if (0 == $userId) {
+            $userId = UserAuthentication::getLoggedUserId();
+        }
+
         $option = new Option();
         if (!$row = $option->getOption($optionId, $userId)) {
             return false;
@@ -308,9 +312,12 @@ class UserPrivilege
         return true;
     }
 
-    public static function canSellerEditOptionValue($optionId, $optionValueId, $langId)
+    public static function canSellerEditOptionValue($userId, $optionValueId, $langId)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = FatUtility::int($userId);
+        if (0 == $userId) {
+            $userId = UserAuthentication::getLoggedUserId();
+        }
         $optionValue = new OptionValue($optionValueId);
         if (!$row = $optionValue->getOptionValue($optionId)) {
             return false;
@@ -327,23 +334,33 @@ class UserPrivilege
         return true;
     }
 
-    public static function canSellerEditCustomProduct($productId = -1)
+    public static function canSellerEditCustomProduct($userId, $productId = -1)
     {
+        $userId = FatUtility::int($userId);
+        if (0 == $userId) {
+            $userId = UserAuthentication::getLoggedUserId();
+        }
+
         if ($productId < 0) {
             return false;
         }
 
         /* Validate product belongs to current logged seller[ */
         $productRow = Product::getAttributesById($productId, array('product_seller_id'));
-        if (!$productRow || $productRow['product_seller_id'] != UserAuthentication::getLoggedUserId()) {
+        if (!$productRow || $productRow['product_seller_id'] != $userId) {
             return false;
         }
         return true;
         /* ] */
     }
 
-    public static function canEditSellerProduct($productId = -1)
+    public static function canEditSellerProduct($userId, $productId = -1)
     {
+        $userId = FatUtility::int($userId);
+        if (0 == $userId) {
+            $userId = UserAuthentication::getLoggedUserId();
+        }
+
         if ($productId < 0) {
             return false;
         }
@@ -351,7 +368,7 @@ class UserPrivilege
         /* Validate product belongs to current logged seller[ */
         $sellerProductRow = SellerProduct::getAttributesById($productId, array('selprod_user_id'));
 
-        if (!$sellerProductRow || $sellerProductRow['selprod_user_id'] != UserAuthentication::getLoggedUserId()) {
+        if (!$sellerProductRow || $sellerProductRow['selprod_user_id'] != $userId) {
             return false;
         }
         return true;
@@ -360,9 +377,9 @@ class UserPrivilege
 
     public static function canEditMetaTag($metaId = 0, $metaRecordId = 0)
     {
-        if ($metaId == 0 && !self::canEditSellerProduct($metaRecordId)) {
+        /* if ($metaId == 0 && !self::canEditSellerProduct($metaRecordId)) {
             return false;
-        }
+        } */
         if ($metaId > 0 && !$data = MetaTag::getAttributesById($metaId, array('meta_record_id'))) {
             return false;
         }
@@ -370,9 +387,12 @@ class UserPrivilege
         return true;
     }
 
-    public static function canSellerUpdateTag($tagId)
+    public static function canSellerUpdateTag($userId, $tagId)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = FatUtility::int($userId);
+        if (0 == $userId) {
+            $userId = UserAuthentication::getLoggedUserId();
+        }
 
         if (!$data = Tag::getAttributesById($tagId, array('tag_user_id'))) {
             return false;
@@ -384,9 +404,12 @@ class UserPrivilege
         return true;
     }
 
-    public static function canSellerUpdateBrandRequest($brandId)
+    public static function canSellerUpdateBrandRequest($userId, $brandId)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = FatUtility::int($userId);
+        if (0 == $userId) {
+            $userId = UserAuthentication::getLoggedUserId();
+        }
 
         if (!$data = Brand::getAttributesById($brandId, array('brand_seller_id'))) {
             return false;
@@ -398,9 +421,13 @@ class UserPrivilege
         return true;
     }
 
-    public static function canSellerAddNewProduct()
+    public static function canSellerAddNewProduct($userId)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = FatUtility::int($userId);
+        if (0 == $userId) {
+            $userId = UserAuthentication::getLoggedUserId();
+        }
+
         if (!self::isUserHasValidSubsription($userId)) {
             return false;
         }

@@ -4,9 +4,11 @@ $arr_flds = array(
     'listserial'=>'Sr.',
     'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
     'preq_added_on' => Labels::getLabel('LBL_Added_on', $siteLangId),
-    'preq_status' => Labels::getLabel('LBL_Status', $siteLangId),
-    'action' => Labels::getLabel('LBL_Action', $siteLangId)
+    'preq_status' => Labels::getLabel('LBL_Status', $siteLangId)
 );
+if ($canEdit) {
+    $arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId);
+}
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--orders'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
@@ -46,7 +48,7 @@ foreach ($arr_listing as $sn => $row) {
                     );
 
                     $li = $ul->appendElement("li");
-                    $li->appendElement("a", array('title' => Labels::getLabel('LBL_Product_Images', $siteLangId), 'onclick' => 'customCatalogProductImages('.$row['preq_id'].')', 'href'=>'javascript:void(0)'), '<i class="fa fa-picture-o"></i>', true);
+                    $li->appendElement("a", array('title' => Labels::getLabel('LBL_Product_Images', $siteLangId), 'onclick' => 'customCatalogProductImages('.$row['preq_id'].')', 'href'=>'javascript:void(0)'), '<i class="fas fa-images"></i>', true);
                 }
                 break;
             default:

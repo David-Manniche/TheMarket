@@ -15,6 +15,7 @@ trait SellerProducts
 
     public function products($product_id = 0)
     {
+        $this->userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId());
         $this->includeDateTimeFiles();
         if (!$this->isShopActive($this->userParentId, 0, true)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
@@ -29,6 +30,7 @@ trait SellerProducts
 
     public function sellerProducts($product_id = 0)
     {
+        $this->userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId());
         $product_id = FatUtility::int($product_id);
         if (0 < $product_id) {
             $row = Product::getAttributesById($product_id, array('product_id'));
@@ -72,7 +74,7 @@ trait SellerProducts
         $this->set("arrListing", $arrListing);
         $this->set('product_id', $product_id);
         $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->siteLangId));
-
+        $this->set('canEdit', $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId(), true));
         if (!$product_id) {
             $this->set('page', $page);
             $this->set('pageCount', $srch->pages());
@@ -85,6 +87,7 @@ trait SellerProducts
 
     public function sellerProductForm($product_id, $selprod_id = 0)
     {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
         if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addErrorMessage(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
@@ -343,6 +346,7 @@ trait SellerProducts
 
     public function setUpSellerProduct()
     {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
         $post = $this->validatePostedData(FatApp::getPostedData());
         $selprod_id = FatUtility::int($post['selprod_id']);
 
@@ -416,6 +420,7 @@ trait SellerProducts
 
     public function setUpMultipleSellerProducts()
     {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
         $post = $this->validatePostedData(FatApp::getPostedData());
 
         $productOptions = Product::getProductOptions($post['selprod_product_id'], $this->siteLangId, true);
@@ -643,6 +648,7 @@ trait SellerProducts
 
     public function setUpSellerProductLang()
     {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $selprod_id = Fatutility::int($post['selprod_id']);
         $lang_id = Fatutility::int($post['lang_id']);
@@ -799,6 +805,7 @@ trait SellerProducts
 
     public function setUpTaxCategory()
     {
+        $this->userPrivilege->canEditTaxCategory(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($post['selprod_id']);
         if (!$selprod_id) {
@@ -959,6 +966,7 @@ trait SellerProducts
 
     public function setUpSellerProductSpecialPrice()
     {
+        $this->userPrivilege->canEditSpecialPrice(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($post['splprice_selprod_id']);
         $splprice_id = FatUtility::int($post['splprice_id']);
@@ -1026,6 +1034,7 @@ trait SellerProducts
 
     public function deleteSellerProductSpecialPrice()
     {
+        $this->userPrivilege->canEditSpecialPrice(UserAuthentication::getLoggedUserId());
         $splPriceId = FatApp::getPostedData('splprice_id', FatUtility::VAR_INT, 0);
         if (1 > $splPriceId) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
@@ -1131,6 +1140,7 @@ trait SellerProducts
 
     public function setUpSellerProductVolumeDiscount()
     {
+        $this->userPrivilege->canEditVolumeDiscount(UserAuthentication::getLoggedUserId());
         $selprod_id = FatApp::getPostedData('voldiscount_selprod_id', FatUtility::VAR_INT, 0);
         if (!$selprod_id) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
@@ -1201,6 +1211,7 @@ trait SellerProducts
 
     public function deleteSellerProductVolumeDiscount()
     {
+        $this->userPrivilege->canEditVolumeDiscount(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $voldiscount_id = FatApp::getPostedData('voldiscount_id', FatUtility::VAR_INT, 0);
         if (!$voldiscount_id) {
@@ -1224,6 +1235,7 @@ trait SellerProducts
 
     public function deleteVolumeDiscountArr()
     {
+        $this->userPrivilege->canEditVolumeDiscount(UserAuthentication::getLoggedUserId());
         $splpriceIdArr = FatApp::getPostedData('selprod_ids');
         $splpriceIds = FatUtility::int($splpriceIdArr);
         foreach ($splpriceIds as $voldiscount_id => $selProdId) {
@@ -1525,7 +1537,7 @@ trait SellerProducts
             Message::addErrorMessage(Labels::getLabel("MSG_CUSTOM_URL_CAN'T_BE_EMPTY", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        if (!UserPrivilege::canEditSellerProduct($selprod_id)) {
+        if (!UserPrivilege::canEditSellerProduct($this->userParentId, $selprod_id)) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -1561,7 +1573,7 @@ trait SellerProducts
     {
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($selProd_id);
-        if (!UserPrivilege::canEditSellerProduct($selprod_id)) {
+        if (!UserPrivilege::canEditSellerProduct($this->userParentId, $selprod_id)) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -1670,6 +1682,10 @@ trait SellerProducts
 
     public function uploadDigitalFile()
     {
+        if (!$this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId(), true)) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Unauthorized_Access!', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
         $userId = $this->userParentId;
         $post = FatApp::getPostedData();
         $selprod_id = FatApp::getPostedData('selprod_id', FatUtility::VAR_INT, 0);
@@ -1728,6 +1744,7 @@ trait SellerProducts
 
     public function deleteDigitalFile($selprodId, $afileId = 0)
     {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
         $selprodId = FatUtility::int($selprodId);
         $afileId = FatUtility::int($afileId);
 
@@ -1860,9 +1877,10 @@ trait SellerProducts
 
     public function setupSellerProductLinks()
     {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($post['selprod_id']);
-        if (!UserPrivilege::canEditSellerProduct($selprod_id)) {
+        if (!UserPrivilege::canEditSellerProduct($this->userParentId, $selprod_id)) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -2007,6 +2025,7 @@ trait SellerProducts
 
     public function deleteBulkSellerProducts()
     {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
         $selprodId_arr = FatUtility::int(FatApp::getPostedData('selprod_ids'));
         if (empty($selprodId_arr)) {
             FatUtility::dieWithError(
@@ -2034,6 +2053,7 @@ trait SellerProducts
 
     private function deleteSellerProduct($selprod_id)
     {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
         $selprod_id = FatUtility::int($selprod_id);
         if (1 > $selprod_id) {
             Message::addErrorMessage(
@@ -2158,6 +2178,7 @@ trait SellerProducts
 
     public function setUpSellerProductClone()
     {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $useShopPolicy = FatApp::getPostedData('use_shop_policy', FatUtility::VAR_INT, 0);
         $selprod_id = Fatutility::int($post['selprod_id']);
@@ -2382,6 +2403,7 @@ trait SellerProducts
 
     public function changeProductStatus()
     {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
         $selprodId = FatApp::getPostedData('selprodId', FatUtility::VAR_INT, 0);
 
         $sellerProductData = SellerProduct::getAttributesById($selprodId, array('selprod_active'));
@@ -2705,7 +2727,7 @@ trait SellerProducts
         $this->userPrivilege->canEditRelatedProducts(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($post['selprod_id']);
-        if (!UserPrivilege::canEditSellerProduct($selprod_id)) {
+        if (!UserPrivilege::canEditSellerProduct($this->userParentId, $selprod_id)) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -2874,7 +2896,7 @@ trait SellerProducts
         $this->userPrivilege->canEditBuyTogetherProducts(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($post['selprod_id']);
-        if (!UserPrivilege::canEditSellerProduct($selprod_id)) {
+        if (!UserPrivilege::canEditSellerProduct($this->userParentId, $selprod_id)) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }

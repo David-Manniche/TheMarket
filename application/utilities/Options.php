@@ -70,7 +70,7 @@ trait Options
 
         $option_id = FatUtility::int($post['option_id']);
         if ($option_id > 0) {
-            UserPrivilege::canSellerEditOption($option_id, $this->siteLangId);
+            UserPrivilege::canSellerEditOption($this->userParentId, $option_id, $this->siteLangId);
         }
         unset($post['option_id']);
 
@@ -124,7 +124,7 @@ trait Options
     {
         $option_id = FatUtility::int($option_id);
         if ($option_id > 0) {
-            UserPrivilege::canSellerEditOption($option_id, $this->siteLangId);
+            UserPrivilege::canSellerEditOption($this->userParentId, $option_id, $this->siteLangId);
         }
         $hideListBox = false;
 
@@ -156,7 +156,7 @@ trait Options
         if (0 < $option_id) {
             $optionObj = new Option();
             if ($option_id > 0) {
-                UserPrivilege::canSellerEditOption($option_id, $this->siteLangId);
+                UserPrivilege::canSellerEditOption($this->userParentId, $option_id, $this->siteLangId);
             }
             $data = $optionObj->getOption($option_id);
 
@@ -184,7 +184,7 @@ trait Options
 
         $option_id = FatUtility::int($option_id);
         if ($option_id > 0) {
-            UserPrivilege::canSellerEditOption($option_id, $this->siteLangId);
+            UserPrivilege::canSellerEditOption($this->userParentId, $option_id, $this->siteLangId);
         }
 
         $optionObj = new Option();
@@ -293,7 +293,7 @@ trait Options
             FatUtility::dieJsonError(Message::getHtml());
         }
         if ($option_id > 0) {
-            UserPrivilege::canSellerEditOption($option_id, $this->siteLangId);
+            UserPrivilege::canSellerEditOption($this->userParentId, $option_id, $this->siteLangId);
         }
 
         $optionObj = new Option($option_id);

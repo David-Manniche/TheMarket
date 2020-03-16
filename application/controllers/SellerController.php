@@ -1124,6 +1124,7 @@ class SellerController extends SellerBaseController
 
     public function searchCatalogProduct()
     {
+        $this->userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId());
         $frmSearchCatalogProduct = $this->getCatalogProductSearchForm();
         $post = $frmSearchCatalogProduct->getFormDataFromArray(FatApp::getPostedData());
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : intval($post['page']);
@@ -1215,7 +1216,7 @@ class SellerController extends SellerBaseController
         $this->set('pageSize', $pagesize);
         $this->set('postedData', $post);
         $this->set('siteLangId', $this->siteLangId);
-
+        $this->set('canEdit', $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId(), true));
         unset($post['page']);
         $frmSearchCatalogProduct->fill($post);
         $this->set("frmSearchCatalogProduct", $frmSearchCatalogProduct);
