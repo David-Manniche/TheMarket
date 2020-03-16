@@ -2823,26 +2823,37 @@ class SellerController extends SellerBaseController
     public function socialPlatforms()
     {
         $userId = $this->userParentId;
+        $shopDetails = Shop::getAttributesByUserId($userId, null, false);
+
+        if (!false == $shopDetails && $shopDetails['shop_active'] != applicationConstants::ACTIVE) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Your_shop_deactivated_contact_admin', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        if (!false == $shopDetails) {
+            $shop_id = $shopDetails['shop_id'];
+            $stateId = $shopDetails['shop_state_id'];
+        }
+        $this->set('shop_id', $shop_id);
         $this->set('siteLangId', $this->siteLangId);
-        $this->_template->render(true, true);
+        $this->set('language', Language::getAllNames());
+        $this->_template->render(false, false);
     }
 
     public function socialPlatformSearch()
     {
-        $userId = $this->userParentId;
         $srch = SocialPlatform::getSearchObject($this->siteLangId);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addCondition('splatform_user_id', '=', $userId);
+        $srch->addCondition('splatform_user_id', '=', $this->userParentId);
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
+        $this->set('canEdit', $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId(), true));
         $this->set("arr_listing", $records);
         $this->_template->render(false, false, 'seller/social-platform-search.php');
     }
 
     public function socialPlatformForm($splatform_id = 0)
     {
-        $userId = $this->userParentId;
         $splatform_id = FatUtility::int($splatform_id);
         $frm = $this->getSocialPlatformForm($splatform_id);
 
