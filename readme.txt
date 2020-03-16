@@ -208,3 +208,5 @@ Bug :
 
 Bug : 
     => 034393 - Getting invalid request on saving data without selecting product in related products and buy together
+    => 034102 - On Buyer dashboard when hamburger icon clicked to expand sidebar then widgets are crossing screen and scroll not working.
+    => 034101 - On Buyer dashboard when hamburger icon clicked to close sidebar then on widgets extra spaces are not reduced.

@@ -13,12 +13,7 @@ $(document).ready(function () {
         showFormActionsBtns();
     });
     if (0 < $('.js-widget-scroll').length) {
-        $('.js-widget-scroll').slick(getSlickSliderSettings(3, 1, langLbl.layoutDirection, false, {
-            1199: 3,
-            1023: 2,
-            767: 1,
-            480: 1
-        }));
+        slickWidgetScroll();
     }
 
     /*$(document).on('change', 'input.phone-js', function(e) {
@@ -95,6 +90,19 @@ $(document).on('keyup', 'input.otpVal', function(e){
     }
     element.children("input.otpVal").eq(0).focus();
 });
+
+unlinkSlick = function () {
+    $('.js-widget-scroll').slick('unslick');
+}
+
+slickWidgetScroll = function () {
+    $('.js-widget-scroll').slick(getSlickSliderSettings(3, 1, langLbl.layoutDirection, false, {
+        1199: 3,
+        1023: 2,
+        767: 1,
+        480: 1
+    }));
+}
 
 invalidOtpField = function () {
     $("input.otpVal").val('').addClass('is-invalid').attr('onkeyup', 'checkEmpty($(this))');

@@ -5,12 +5,13 @@ if (getCookie("screenWidth") != screen.width) {
 }
 
 var Dashboard = function() {
-	var menuChangeActive = function menuChangeActive(el) {
+	var menuChangeActive = function(el) {
 		var hasSubmenu = $(el).hasClass("has-submenu");
 		$(global.menuClass + " .is-active").removeClass("is-active");
 		$(el).addClass("is-active");
 	};
-	var sidebarChangeWidth = function sidebarChangeWidth() {
+	var sidebarChangeWidth = function () {
+        
 		var $menuItemsTitle = $("li .menu-item__title");
 		if ($("body").hasClass('sidebar-is-reduced')) {
 			$("body").removeClass('sidebar-is-reduced').addClass('sidebar-is-expanded');
@@ -23,7 +24,11 @@ var Dashboard = function() {
 		}
 		$.ajax({url: fcom.makeUrl('Custom', 'setupSidebarVisibility', [visibility])});
 		// $("body").toggleClass("sidebar-is-reduced sidebar-is-expanded");
-		$(".hamburger-toggle").toggleClass("is-opened");
+        $(".hamburger-toggle").toggleClass("is-opened");
+        setTimeout(function(){
+            unlinkSlick();
+            slickWidgetScroll();
+        }, 500);
 	};
 	return {
 		init: function init() {
