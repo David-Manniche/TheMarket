@@ -220,3 +220,6 @@ Bug :
     => 034264 - Getting error while uploading bulk media.
     => 035273 - If a product without brand is listing in search result then under filters it listed as without name and on accessing that filter there is fatal error occurred.
     => 034297 - Currency symbol position is not fixed in RTL mode(with RTL language) on any page.
+    
+Updates :
+    => msg-1149612- Create functionality of copy to clipboard for option rows of seller inventory
