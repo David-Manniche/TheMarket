@@ -90,7 +90,7 @@ if (!$print) {
                         if($rewardPointDiscount != 0){?>
                                 <p><strong><?php echo Labels::getLabel('LBL_Reward_Point_Discount',$siteLangId);?>:</strong> <?php echo CommonHelper::displayMoneyFormat($rewardPointDiscount);?></p>
                                 <?php }  */?>
-                                <p><strong><?php echo Labels::getLabel('LBL_Order_Total', $siteLangId);?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'netamount', false, USER::USER_TYPE_SELLER));?>
+                                <p><strong><?php echo Labels::getLabel('LBL_Order_Total', $siteLangId);?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'netamount', false, User::USER_TYPE_SELLER));?>
                                 </p>
 
                             </div>
@@ -188,7 +188,7 @@ if (!$print) {
                                     </td>
                                 <?php }?>
 
-                                <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'netamount', false, USER::USER_TYPE_SELLER));?></td>
+                                <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'netamount', false, User::USER_TYPE_SELLER));?></td>
                             </tr>
                         </tbody>
                     </table>
