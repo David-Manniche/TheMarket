@@ -624,7 +624,7 @@ class ImportExportController extends SellerBaseController
     {
         $maxUploadFileSizeLimit = LibHelper::getMaximumFileUploadSize();
         if ($_FILES['bulk_images']['size'] > $maxUploadFileSizeLimit) {
-            $message = Labels::getLabel("MSG_YOUR_UPLOADED_FILE_EXCEEDING_THE_ALLOWED_FILE_SIZE_LIMIT_{SIZE-LIMIT}", $this->siteLangId);
+            $message = Labels::getLabel("MSG_FILE_SIZE_SHOULD_BE_LESSER_THAN_{SIZE-LIMIT}", $this->siteLangId);
             $message = CommonHelper::replaceStringData($message, ['{SIZE-LIMIT}' => LibHelper::bytesToSize($maxUploadFileSizeLimit)]);
             FatUtility::dieJsonError($message);
         }

@@ -134,7 +134,7 @@ class MyAppController extends FatController
         'otpInterval' => User::OTP_INTERVAL,
         'captchaSiteKey' => FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, ''),
         'allowedFileSize' => LibHelper::getMaximumFileUploadSize(),
-        'fileSizeExceeded' => Labels::getLabel("MSG_YOUR_UPLOADED_FILE_EXCEEDING_THE_ALLOWED_FILE_SIZE_LIMIT_{SIZE-LIMIT}", $this->siteLangId),
+        'fileSizeExceeded' => Labels::getLabel("MSG_FILE_SIZE_SHOULD_BE_LESSER_THAN_{SIZE-LIMIT}", $this->siteLangId),
         );
 
         $languages = Language::getAllNames(false);
