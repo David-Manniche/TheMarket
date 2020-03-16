@@ -31022,7 +31022,7 @@ max-height: 408px;*/ }
 .g-map {
   position: relative;
   height: 490px;
-  z-index: 1; }
+  /* z-index: 1;*/ }
 
 .g-map iframe {
   position: absolute;
