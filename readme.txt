@@ -222,6 +222,7 @@ Bug :
     => 034297 - Currency symbol position is not fixed in RTL mode(with RTL language) on any page.
     => 035335 - admin> order detail page> back button is in toggle instead of direct button as in system
     => 035499 - seller vol. discount> on adding vol discount> list is not displaying
+    => 035515 - publish/unpublish option are not listing on selection
     
 Updates :
     => msg-1149612- Create functionality of copy to clipboard for option rows of seller inventory
