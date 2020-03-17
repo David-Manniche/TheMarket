@@ -1133,3 +1133,4 @@ INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `et
 ALTER TABLE `tbl_users` ADD `user_parent` INT NOT NULL AFTER `user_is_supplier`;
 CREATE TABLE `tbl_user_permissions` ( `userperm_user_id` int(11) NOT NULL, `userperm_section_id` int(11) NOT NULL, `userperm_value` int(11) NOT NULL ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ALTER TABLE `tbl_user_permissions` ADD PRIMARY KEY (`userperm_user_id`,`userperm_section_id`);
+-- -----------TV-9.1.5.20200317-----------------------------------
