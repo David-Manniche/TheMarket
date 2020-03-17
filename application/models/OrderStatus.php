@@ -87,8 +87,5 @@ class orderStatus extends MyAppModel
         }
         return false;
     }
-
-    public static function currentNotPaidNewPaid(){
-        
-    }
+    
 }
