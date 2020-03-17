@@ -86,7 +86,7 @@
             <div class="col-lg-12">
                 <div class="cards">
                     <div class="cards-content">
-                        <div id="listing">
+                        <div class="listing-tbl" id="listing">
                             <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                         </div>
                     </div>

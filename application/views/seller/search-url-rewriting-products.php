@@ -50,7 +50,7 @@ foreach ($arrListing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $productName, true);
                 break;
             case 'original':
-                $td->appendElement('plaintext', array(), "<input type='text' disabled name='original_url' value='products/view/".$selProdId."' data-selprod_id='".$selProdId."'>", true);
+                $td->appendElement('plaintext', array(), "<input style='min-width:200px' type='text' disabled name='original_url' value='products/view/".$selProdId."' data-selprod_id='".$selProdId."'>", true);
                 break;
             case 'custom':
                 $post = "post";
