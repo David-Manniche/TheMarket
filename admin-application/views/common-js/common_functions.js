@@ -687,7 +687,7 @@ $(document).ready(function() {
             $("#" + parentForm + " .selectAll-js").prop("checked", true);
         }
         
-        var faceboxActionBtns = 0 < $("#facebox").length ? "#facebox " : '';
+        var faceboxActionBtns = (0 < $("#facebox").length && $("#facebox").is(":visible")) ? "#facebox " : '';
         if ($("#" + parentForm + " .selectItem--js:checked").length == 0) {
             $(faceboxActionBtns + " .toolbar-btn-js").addClass('d-none');
         }else{
@@ -735,7 +735,7 @@ function selectAll(obj) {
         }
     });
     
-    var faceboxActionBtns = 0 < $("#facebox").length ? "#facebox " : '';
+    var faceboxActionBtns = (0 < $("#facebox").length && $("#facebox").is(":visible")) ? "#facebox " : '';
 
     if ($(obj).prop("checked") == false) { 
         $(faceboxActionBtns + ".toolbar-btn-js").addClass('d-none');
