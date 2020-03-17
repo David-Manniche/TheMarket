@@ -234,3 +234,6 @@ Updates :
 
 New Features:
     => 71189 - Sub users for Seller
+    
+Bug :    
+    035536 - Buy together/related items> getting random data saved

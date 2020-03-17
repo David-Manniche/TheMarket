@@ -244,6 +244,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('SellerProducts', 'setupRelatedProduct'), data, function(t) {
             document.frmRelatedSellerProduct.reset();
+            $("input[name='selprod_id']").val(''); 
             $('#related-products').empty();
             $(".dvFocus-js").trigger('click');
             searchRelatedProducts(document.frmRelatedSellerProduct);

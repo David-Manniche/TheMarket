@@ -173,6 +173,7 @@ $(document).on('keyup', "input[name='products_upsell']", function(){
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupUpsellProduct'), data, function(t) {
             document.frmUpsellSellerProduct.reset();
+            $("input[name='selprod_id']").val(''); 
             $('#upsell-products').empty();
             $(".dvFocus-js").trigger('click');
             searchUpsellProducts(document.frmUpsellSellerProduct);

@@ -242,6 +242,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('SellerProducts', 'setupUpsellProduct'), data, function(t) {
             document.frmUpsellSellerProduct.reset();
+            $("input[name='selprod_id']").val(''); 
             $('#upsell-products').empty();
             $(".dvFocus-js").trigger('click');
             searchUpsellProducts(document.frmUpsellSellerProduct);
