@@ -4,10 +4,10 @@ $arr_flds = array(
         'listserial' => Labels::getLabel('LBL_Sr_no.', $adminLangId),
         'spackage_identifier' => Labels::getLabel('LBL_Package_Name', $adminLangId),
         'spackage_active' => Labels::getLabel('LBL_Status', $adminLangId),
-        'action' => Labels::getLabel('LBL_Action', $adminLangId),
+        'action' => '',
     );
     if (!$canEdit) {
-        unset($arr_flds['select_all']);
+        unset($arr_flds['select_all'], $arr_flds['action']);
     }
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--hovered table-responsive', 'id' => 'options'));
 
@@ -59,18 +59,10 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $str, true);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class" => "actions actions--centered"));
                 if ($canEdit) {
-                    $li = $ul->appendElement("li", array('class' => 'droplink'));
-                    $li->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                    $innerDiv = $li->appendElement('div', array('class' => 'dropwrap'));
-                    $innerUl = $innerDiv->appendElement('ul', array('class' => 'linksvertical'));
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "PackageForm(" . $row[SellerPackages::DB_TBL_PREFIX . 'id'] . ")"), '<i class="far fa-edit icon"></i>', true);
 
-                    $innerLi = $innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "PackageForm(" . $row[SellerPackages::DB_TBL_PREFIX . 'id'] . ")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
-
-                    $innerLi = $innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Settings', $adminLangId), "onclick" => "searchPlans(" . $row[SellerPackages::DB_TBL_PREFIX . 'id'] . ")"), Labels::getLabel('LBL_Settings', $adminLangId), true);
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Settings', $adminLangId), "onclick" => "searchPlans(" . $row[SellerPackages::DB_TBL_PREFIX . 'id'] . ")"), '<i class="fas fa-cog"></i>', true);
                 }
                 break;
             default:

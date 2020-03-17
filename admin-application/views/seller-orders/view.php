@@ -28,18 +28,30 @@ if ($order['order_reward_point_used'] > 0) {
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_Seller_Order_Details', $adminLangId); ?></h4>
                         <?php if (!$print) {
-                            $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
-                            $li = $ul->appendElement("li", array('class'=>'droplink'));
+                            $data = [
+                                'adminLangId' => $adminLangId,
+                                'statusButtons' => false,
+                                'deleteButton' => false,
+                                'otherButtons' => [
+                                    [
+                                        'attr' => [
+                                            'href' => CommonHelper::generateUrl('SellerOrders'),
+                                            'title' => Labels::getLabel('LBL_BACK', $adminLangId)
+                                        ],
+                                        'label' => '<i class="fas fa-arrow-left"></i>'
+                                    ],
+                                ]
+                            ];
+                            
+                             $data['otherButtons'][] = [
+                                'attr' => [
+                                    'href' => Fatutility::generateUrl('sellerOrders', 'view', $urlParts) . '/print',
+                                    'title' => Labels::getLabel('LBL_Print', $adminLangId)
+                                ],
+                                'label' => '<i class="fas fa-print"></i>'
+                            ];
 
-                            $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green no-print','title'=>Labels::getLabel('LBL_Back_to_Orders', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                            $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                            $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                            $innerLi=$innerUl->appendElement('li');
-
-                            $innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('SellerOrders'),'class'=>'button small green redirect--js no-print','title'=>Labels::getLabel('LBL_Back_to_Orders', $adminLangId)), Labels::getLabel('LBL_Back_to_Orders', $adminLangId), true);
-                            $innerLi->appendElement('a', array('href'=> Fatutility::generateUrl('sellerOrders', 'view', $urlParts) . '/print','class'=>'button small green redirect--js no-print','title'=>Labels::getLabel('LBL_Print', $adminLangId)), Labels::getLabel('LBL_Print', $adminLangId), true);
-
-                            echo $ul->getHtml();
+                            $this->includeTemplate('_partial/action-buttons.php', $data, false);
                         } ?>
                     </div>
                     <div class="sectionbody">
