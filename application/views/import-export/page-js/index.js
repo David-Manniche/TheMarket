@@ -240,8 +240,8 @@ $(document).ready(function() {
         location.href = fcom.makeUrl('ImportExport', 'downloadPathsFile', [path]);
     };
 
-    inventoryUpdateForm = function(){		
-		fcom.ajax(fcom.makeUrl('Seller', 'InventoryUpdateForm'), '', function(t) {			
+    inventoryUpdateForm = function(){
+		fcom.ajax(fcom.makeUrl('Seller', 'InventoryUpdateForm'), '', function(t) {
 			$(importDv).html(t);
 		});
 	};
@@ -265,20 +265,20 @@ $(document).on('click','.csvFile-Js',function(){
 	$('#form-upload').remove();
 	var lang_id = document.frmInventoryUpdate.lang_id.value;
 	var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-	frm = frm.concat('<input type="file" name="file" />'); 
-	frm = frm.concat('<input type="hidden" name="lang_id" value="'+lang_id+'">'); 
-	frm = frm.concat('</form>'); 
+	frm = frm.concat('<input type="file" name="file" />');
+	frm = frm.concat('<input type="hidden" name="lang_id" value="'+lang_id+'">');
+	frm = frm.concat('</form>');
 	$('body').prepend(frm);
 	$('#form-upload input[name=\'file\']').trigger('click');
 	if (typeof timer != 'undefined') {
 		clearInterval(timer);
-	}	
+	}
 	timer = setInterval(function() {
 		if ($('#form-upload input[name=\'file\']').val() != '') {
 		clearInterval(timer);
 		$val = $(node).val();
 		$.ajax({
-			url: fcom.makeUrl('Seller', 'updateInventory'),
+			url: fcom.makeUrl('ImportExport', 'updateInventory'),
 			type: 'post',
 			dataType: 'json',
 			data: new FormData($('#form-upload')[0]),
@@ -292,22 +292,22 @@ $(document).on('click','.csvFile-Js',function(){
 				$(node).val($val);
 			},
 			success: function(ans) {
-				//$('.text-danger').remove();	
+				//$('.text-danger').remove();
 				/* $.systemMessage.close();				 */
-				if(ans.status == true){
+                if(ans.status == true){
 					$.mbsmessage(ans.msg,true,'alert--success');
-					inventoryUpdateForm();
+					loadForm('inventoryUpdate');
 				} else {
-                    $.mbsmessage(ans.msg,true,'alert--danger');
-                }
-                if (typeof ans.CSVfileUrl !== 'undefined') {
+					$.mbsmessage(ans.msg,true,'alert--danger');
+				}
+                /*if (typeof ans.CSVfileUrl !== 'undefined') {
                     location.href = ans.CSVfileUrl;
-                }
+                }*/
 			},
 			error: function( xhr, ajaxOptions, thrownError ) {
 				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
 			}
-			});			
+			});
 		}
 	}, 500);
 });

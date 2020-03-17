@@ -39,10 +39,10 @@ foreach ($orders as $sn => $order) {
                 $txt .= '<div class="item__sub_title">'.$order['op_product_name'].'</div>';
 
                 $txt .= '<div class="item__brand">';
-                if( !empty($order['op_brand_name']) ){
-                   $txt .=  Labels::getLabel('LBL_Brand', $siteLangId).': '.$order['op_brand_name'];
+                if (!empty($order['op_brand_name'])) {
+                    $txt .=  Labels::getLabel('LBL_Brand', $siteLangId).': '.$order['op_brand_name'];
                 }
-                if( !empty($order['op_brand_name']) && !empty($order['op_selprod_options']) ){
+                if (!empty($order['op_brand_name']) && !empty($order['op_selprod_options'])) {
                     $txt .= ' | ' ;
                 }
                 if ($order['op_selprod_options'] != '') {
@@ -74,7 +74,7 @@ foreach ($orders as $sn => $order) {
                     true
                 );
 
-                if (in_array($order['orderstatus_id'], $processingStatuses)) {
+                if (in_array($order['orderstatus_id'], $processingStatuses) && $canEdit) {
                     $li = $ul->appendElement("li");
                     $li->appendElement(
                         'a',

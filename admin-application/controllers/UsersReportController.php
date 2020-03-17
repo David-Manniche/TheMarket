@@ -100,7 +100,7 @@ class UsersReportController extends AdminBaseController
         $srch->addMultipleFields(array("op_selprod_user_id as shop_owner", "COUNT(distinct op_order_id) as totVendorOrders", "SUM(op_qty - op_refund_qty) as totSoldQty", "SUM((op_unit_price*op_qty) - op_refund_amount - o.order_volume_discount_total) as totalVendorSales"));
         $qryVendorOrders = $srch->getQuery();
 
-        $srch = User::getSearchObject(true, false);
+        $srch = User::getSearchObject(true, 0, false);
         $srch->joinTable('(' . $qryOrderQty . ')', 'LEFT OUTER JOIN', 'u.user_id = tqoq.order_user_id', 'tqoq');
         $srch->joinTable('(' . $qryUserBalance . ')', 'LEFT OUTER JOIN', 'u.user_id = tqub.utxn_user_id', 'tqub');
         $srch->joinTable('(' . $qryVendorOrders . ')', 'LEFT OUTER JOIN', 'u.user_id = tqvo.shop_owner', 'tqvo');

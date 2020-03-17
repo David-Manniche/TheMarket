@@ -6,7 +6,7 @@ $arr_flds = array(
     'taxval_value' => Labels::getLabel('LBL_Value', $siteLangId),
 );
 
-if (FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER', FatUtility::VAR_INT, 0)) {
+if (FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER', FatUtility::VAR_INT, 0) && $canEdit) {
     $arr_flds['action']    = Labels::getLabel('LBL_Action', $siteLangId);
 }
 

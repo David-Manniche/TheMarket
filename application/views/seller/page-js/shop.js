@@ -339,6 +339,86 @@ $(document).on('change', '.collection-language-js', function() {
         });
     };
 
+    socialPlatforms = function(el) {
+        $(dv).html(fcom.getLoader());
+        // console.log($(el).parent());
+        fcom.ajax(fcom.makeUrl('Seller', 'socialPlatforms'), '', function(t) {
+            $(dv).html(t);
+            $(el).parent().siblings().removeClass('is-active');
+            $(el).parent().addClass('is-active');
+            searchSocialPlatforms();
+        });
+    };
+
+    searchSocialPlatforms = function (el){
+        $(dvt).html(fcom.getLoader());
+        fcom.ajax(fcom.makeUrl('Seller','socialPlatformSearch'),'',function(t){
+            $('.btn-back').addClass('d-none');
+            $(dvt).html(t);
+        });
+    };
+
+    addForm = function( id ) {
+        fcom.ajax(fcom.makeUrl('Seller', 'socialPlatformForm', [id]), '', function(t) {
+            $('.btn-back').removeClass('d-none');
+            $(dvt).html(t);
+        });
+    };
+
+    setup = function( frm ) {
+        if (!$(frm).validate()) return;
+        var data = fcom.frmData(frm);
+        fcom.updateWithAjax(fcom.makeUrl('Seller', 'socialPlatformSetup'), data, function(t) {
+            $.mbsmessage.close();
+            reloadSocialPlatformsList();
+            if ( t.langId > 0 ) {
+                addLangForm( t.splatformId, t.langId );
+                return ;
+            }
+
+        });
+    };
+
+    addLangForm = function( splatformId, langId, autoFillLangData = 0 ){
+        $(dvt).html(fcom.getLoader());
+        fcom.ajax(fcom.makeUrl('Seller', 'socialPlatformLangForm', [splatformId, langId, autoFillLangData]), '', function(t) {
+            $(dvt).html(t);
+        });
+    };
+
+    setupLang = function(frm){
+        if (!$(frm).validate()) return;
+        var data = fcom.frmData(frm);
+        fcom.updateWithAjax(fcom.makeUrl('Seller', 'socialPlatformLangSetup'), data, function(t) {
+            $.mbsmessage.close();
+            reloadSocialPlatformsList();
+            if ( t.langId > 0 ) {
+                addLangForm(t.splatformId, t.langId);
+                return ;
+            }
+        });
+    };
+
+    deleteRecord = function(id){
+        if(!confirm(langLbl.confirmDelete)){ return; }
+        data='splatformId='+id;
+        fcom.updateWithAjax(fcom.makeUrl('Seller', 'deleteSocialPlatform'),data,function(res){
+            reloadSocialPlatformsList();
+        });
+    };
+
+    reloadSocialPlatformsList = function() {
+		searchSocialPlatforms();
+	};
+
+
+
+
+
+
+
+
+
     resetDefaultCurrentTemplate = function() {
         var agree = confirm(langLbl.confirmReset);
         if (!agree) {
