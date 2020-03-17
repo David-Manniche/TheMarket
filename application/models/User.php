@@ -2706,7 +2706,7 @@ class User extends MyAppModel
 
         $userData['user_username'] = $username;
         $userData['user_email'] = $email;
-        
+
         $uData = self::getAttributesById($userId, ['user_dial_code', 'user_phone']);
         $userData = array_merge($userData, $uData);
 
@@ -2725,7 +2725,7 @@ class User extends MyAppModel
             //ToDO::Change login link to contact us link
             $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
             $data = array_merge($data, $uData);
-            
+
             if (!$this->userWelcomeEmailRegistration($data, $link, $this->commonLangId)) {
                 $this->error = Labels::getLabel("MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT", $this->commonLangId);
                 $db->rollbackTransaction();
@@ -2777,6 +2777,44 @@ class User extends MyAppModel
             $emailObj->sendRewardPointsNotification(CommonHelper::getLangId(), $urpId);
         } else {
             $this->error = $rewardsRecord->getError();
+        }
+    }
+
+    public static function getSubUsers($userId)
+    {
+        $srch = User::getSearchObject(true, $userId);
+        $srch->addMultipleFields(array('user_id', 'user_name', 'user_phone', 'user_dial_code', 'credential_email'));
+        $srch->addCondition('credential_active', '=', applicationConstants::ACTIVE);
+        $rs = $srch->getResultSet();
+        return FatApp::getDb()->fetchAll($rs);
+    }
+
+    public static function getSubUsersReceipents($userId, $privilegeFunction, $type = false)
+    {
+        $usersArr = static::getSubUsers($userId);
+        $userPrivilege = UserPrivilege::getInstance();
+        $phoneNumbers = array();
+        $bccEmails = array();
+        foreach ($usersArr as $user) {
+            if ($userPrivilege->$privilegeFunction($user['user_id'], true)) {
+                $phoneNumbers[] = !empty($user['user_phone']) ? $user['user_dial_code'] . $user['user_phone'] : '';
+                $bccEmails[$user['credential_email']] = $user['user_name'];
+            }
+        }
+
+        switch (strtolower($type)) {
+            case 'email':
+                return $bccEmails;
+            break;
+            case 'phone':
+                return $phoneNumbers;
+            break;
+            default:
+                return [
+                    'email' => $bccEmails,
+                    'phone' => $phoneNumbers
+                    ];
+            break;
         }
     }
 }
