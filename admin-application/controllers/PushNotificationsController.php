@@ -7,6 +7,11 @@ class PushNotificationsController extends AdminBaseController
         parent::__construct($action);
         $this->objPrivilege->canViewPushNotification();
         $this->admin_id = AdminAuthentication::getLoggedAdminId();
+        $active = (new Plugin())->getDefaultPluginData(Plugin::TYPE_PUSH_NOTIFICATION, 'plugin_active');
+        if (false == $active || empty($active)) {
+            Message::addErrorMessage(Labels::getlabel("MSG_NO_DEFAULT_PUSH_NOTIFICATION_PLUGIN__FOUND", $this->adminLangId));
+            FatApp::redirectUser(CommonHelper::generateUrl());
+        }
     }
 
     private function validateRequest($pNotificationId)

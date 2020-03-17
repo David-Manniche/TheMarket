@@ -220,10 +220,13 @@ Bug :
     => 034264 - Getting error while uploading bulk media.
     => 035273 - If a product without brand is listing in search result then under filters it listed as without name and on accessing that filter there is fatal error occurred.
     => 034297 - Currency symbol position is not fixed in RTL mode(with RTL language) on any page.
+    => 035457 - Decimal points are there but it's not allowing user to add fraction amount in filters
     => 035335 - admin> order detail page> back button is in toggle instead of direct button as in system
     => 035499 - seller vol. discount> on adding vol discount> list is not displaying
     => 035515 - publish/unpublish option are not listing on selection
     => 034768 - on devices> url rewriting> original url is not displaying completely
+    => 035446 - admin> shop> collection> links> on searching item> results are listing behind the popup
+    => 035517 - when push notification plugin is not active then push notification tab need not to be there in mobile apps
 
 Updates :
     => msg-1149612- Create functionality of copy to clipboard for option rows of seller inventory

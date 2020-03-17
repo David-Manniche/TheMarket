@@ -236,7 +236,9 @@
                 <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_MOBILE_APPS', $adminLangId);?></a>
                     <ul>
 
-                        <?php if ($objPrivilege->canViewPushNotification(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                        <?php 
+                        $active = (new Plugin())->getDefaultPluginData(Plugin::TYPE_PUSH_NOTIFICATION, 'plugin_active');
+                        if ($objPrivilege->canViewPushNotification(AdminAuthentication::getLoggedAdminId(), true) && false != $active && !empty($active)) {?>
                             <li>
                                 <a href="<?php echo CommonHelper::generateUrl('PushNotifications'); ?>">
                                     <?php echo Labels::getLabel('LBL_PUSH_NOTIFICATION', $adminLangId);?>

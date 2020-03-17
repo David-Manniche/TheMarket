@@ -8529,8 +8529,9 @@ a.text-dark:hover, .shop-nav ul li.is--active a.text-dark, a.text-dark:focus {
       display: inline-block; }
   .footer .bottom-footer {
     padding-top: 1rem; }
-    .captcha .footer .bottom-footer {
-      padding-bottom: 80px; }
+
+.captcha .wrapper {
+  padding-bottom: 80px; }
 
 .upperContent-footer {
   border-bottom: solid 1px #dee2e6;
@@ -8697,6 +8698,8 @@ a.text-dark:hover, .shop-nav ul li.is--active a.text-dark, a.text-dark:focus {
         width: 20px;
         height: 20px;
         max-width: 100%; }
+  .social a {
+    color: var(--primary-color); }
 
 .bottom-footer .fixed-container {
   padding: 0 15%; }
@@ -28897,6 +28900,12 @@ a.ui-button:active,
   top: 50%;
   right: 120%; }
 
+.noUi-tooltip {
+  display: none; }
+
+.noUi-active .noUi-tooltip {
+  display: block; }
+
 .offline-wrapper {
   max-width: 400px;
   margin: 100px auto;
@@ -30115,8 +30124,7 @@ svg #bg-line:nth-child(3) {
       left: 0;
       top: 30px; }
   .header-checkout .logo {
-    width: 150px;
-    max-height: 60px;
+    width: 120px;
     margin: 0px 0;
     margin-left: 2rem;
     display: -webkit-box;
@@ -30125,6 +30133,10 @@ svg #bg-line:nth-child(3) {
     -webkit-box-pack: center;
     -ms-flex-pack: center;
     justify-content: center; }
+    .header-checkout .logo img[data-ratio="16:9"] {
+      max-width: 120px; }
+    .header-checkout .logo img[data-ratio="1:1"] {
+      max-width: 60px; }
   .header-checkout .checkout-flow {
     margin: 0 auto;
     display: table; }
@@ -35129,6 +35141,10 @@ body {
   padding: 10px 0; }
   .header-supplier .logo-bar .logo, .header-advertiser .logo-bar .logo, .header-affiliate .logo-bar .logo {
     margin: 0; }
+    .header-supplier .logo-bar .logo img[data-ratio="16:9"], .header-advertiser .logo-bar .logo img[data-ratio="16:9"], .header-affiliate .logo-bar .logo img[data-ratio="16:9"] {
+      max-width: 120px; }
+    .header-supplier .logo-bar .logo img[data-ratio="1:1"], .header-advertiser .logo-bar .logo img[data-ratio="1:1"], .header-affiliate .logo-bar .logo img[data-ratio="1:1"] {
+      max-width: 60px; }
 .header-supplier .seller-login, .header-advertiser .seller-login, .header-affiliate .seller-login {
   display: flex;
   padding: 0.5rem 0; }
