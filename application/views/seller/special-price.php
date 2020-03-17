@@ -64,7 +64,9 @@ if (0 < $selProd_id) {
                                 <div class="col-auto"></div>
                                  <div class="col-auto">
                                     <div class="btn-group">
-                                        <a class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Delete_Special_Price', $siteLangId); ?>" onclick="deleteSpecialPriceRows()" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Delete_Special_Price', $siteLangId); ?></a>
+                                        <a class="btn btn--primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Delete_Special_Price', $siteLangId); ?>" onclick="deleteSpecialPriceRows()" href="javascript:void(0)">										
+										<i class="fa fa-trash"></i>
+										</a>
                                     </div>
                                 </div>
                             </div>

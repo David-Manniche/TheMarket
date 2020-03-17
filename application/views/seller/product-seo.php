@@ -56,7 +56,7 @@ $clearFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
                 </div>
                 <div class="col-md-6">
                     <div class="cards">
-                        <div class="cards-content">
+                        <div class="cards-content h-100">
                             <div id="dvForm"></div>
                             <div class="alert-aligned" id="dvAlert">
                                 <div class="cards-message" role="alert">
