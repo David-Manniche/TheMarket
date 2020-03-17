@@ -122,7 +122,8 @@ $(document).on('change','.language-js',function(){
 	};
 
 	customProductImages = function( productId ){
-		fcom.ajax(fcom.makeUrl('Seller', 'customProductImages', [productId]), '', function(t) {
+        var data = "hideButtons=1";
+		fcom.ajax(fcom.makeUrl('Seller', 'customProductImages', [productId]), data, function(t) {
 			productImages(productId);
 			$.facebox(t, 'faceboxWidth');
 			fcom.resetFaceboxHeight();

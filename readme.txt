@@ -228,6 +228,7 @@ Bug :
     => 035446 - admin> shop> collection> links> on searching item> results are listing behind the popup
     => 035517 - when push notification plugin is not active then push notification tab need not to be there in mobile apps
     => 035514 - If twillio plugin is disabled from admin then it's still woring on frontend login popup and there is no option to update phone number.
+    => 035537 - Back and finish button visible on popup of product media 
 
 Updates :
     => msg-1149612- Create functionality of copy to clipboard for option rows of seller inventory
