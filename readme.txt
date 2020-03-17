@@ -205,3 +205,23 @@ Bug :
     => 035292 - on adding inventory for requested catalog> getting invalid request and inventory getting created
     => 035295 - while adding vol discount> min qty allowed should be 2 
 ===================TV-9.1.4.20200313======================
+
+Bug : 
+    => 034393 - Getting invalid request on saving data without selecting product in related products and buy together
+    => 034102 - On Buyer dashboard when hamburger icon clicked to expand sidebar then widgets are crossing screen and scroll not working.
+    => 034101 - On Buyer dashboard when hamburger icon clicked to close sidebar then on widgets extra spaces are not reduced.
+    => 035404 - seller is not getting email when order is on COD
+    => 034492 - On devices> captcha comes over the elements in footer
+    => 034491 - On contact us page> captcha is getting hid behind the map
+    
+===================TV-9.1.5.20200316======================
+
+Bug : 
+    => 034264 - Getting error while uploading bulk media.
+    => 035273 - If a product without brand is listing in search result then under filters it listed as without name and on accessing that filter there is fatal error occurred.
+    => 034297 - Currency symbol position is not fixed in RTL mode(with RTL language) on any page.
+    => 035335 - admin> order detail page> back button is in toggle instead of direct button as in system
+    => 035499 - seller vol. discount> on adding vol discount> list is not displaying
+    
+Updates :
+    => msg-1149612- Create functionality of copy to clipboard for option rows of seller inventory

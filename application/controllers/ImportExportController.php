@@ -327,7 +327,7 @@ class ImportExportController extends SellerBaseController
     {
         $frm = new Form('uploadBulkImages', array('id' => 'uploadBulkImages'));
 
-        $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_File_to_be_uploaded:', $langId), 'bulk_images', array('id' => 'bulk_images', 'accept' => '.zip' ));
+        $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_File_to_be_uploaded:', $langId), 'bulk_images', array('id' => 'bulk_images', 'accept' => '.zip'));
         $fldImg->requirement->setRequired(true);
         $fldImg->setFieldTagAttribute('onChange', '$("#uploadFileName").html(this.value)');
         $fldImg->htmlBeforeField = '<div class="filefield">';
@@ -622,10 +622,16 @@ class ImportExportController extends SellerBaseController
 
     public function uploadBulkMedia()
     {
+        $maxUploadFileSizeLimit = LibHelper::getMaximumFileUploadSize();
+        if ($_FILES['bulk_images']['size'] > $maxUploadFileSizeLimit) {
+            $message = Labels::getLabel("MSG_FILE_SIZE_SHOULD_BE_LESSER_THAN_{SIZE-LIMIT}", $this->siteLangId);
+            $message = CommonHelper::replaceStringData($message, ['{SIZE-LIMIT}' => LibHelper::bytesToSize($maxUploadFileSizeLimit)]);
+            FatUtility::dieJsonError($message);
+        }
+
         if ($_FILES['bulk_images']['error'] !== UPLOAD_ERR_OK) {
             $message = AttachedFile::uploadErrorMessage($_FILES['bulk_images']['error'], $this->siteLangId);
-            Message::addErrorMessage($message);
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieJsonError($message);
         }
         
         $fileName = $_FILES['bulk_images']['name'];
@@ -634,8 +640,7 @@ class ImportExportController extends SellerBaseController
         $uploadBulkImgobj = new UploadBulkImages();
         $savedFile = $uploadBulkImgobj->upload($fileName, $tmpName, UserAuthentication::getLoggedUserId());
         if (false === $savedFile) {
-            Message::addErrorMessage($uploadBulkImgobj->getError());
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieJsonError($uploadBulkImgobj->getError());
         }
 
         $path = CONF_UPLOADS_PATH . AttachedFile::FILETYPE_BULK_IMAGES_PATH;

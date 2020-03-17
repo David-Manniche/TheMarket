@@ -133,6 +133,10 @@ class MyAppController extends FatController
         'withPhoneNumber' => Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $this->siteLangId),
         'otpInterval' => User::OTP_INTERVAL,
         'captchaSiteKey' => FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, ''),
+        'allowedFileSize' => LibHelper::getMaximumFileUploadSize(),
+        'fileSizeExceeded' => Labels::getLabel("MSG_FILE_SIZE_SHOULD_BE_LESSER_THAN_{SIZE-LIMIT}", $this->siteLangId),
+        'copyToClipboard' => Labels::getLabel('LBL_Copy_to_clipboard', $this->siteLangId),
+        'copied' => Labels::getLabel('LBL_Copied', $this->siteLangId),
         );
 
         $languages = Language::getAllNames(false);

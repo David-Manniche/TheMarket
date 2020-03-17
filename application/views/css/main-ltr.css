@@ -15711,14 +15711,12 @@ img.mfp-img {
   #mbsmessage .content,
   .system_message .content {
     min-width: inherit; } }
-.listing-tbl, #listingDiv, #listing {
+.listing-tbl {
   overflow-x: auto; }
 
 .table {
-  width: 100%;
   background-color: #fff;
-  margin-bottom: 0;
-  color: #212529; }
+  margin-bottom: 0; }
   @media (max-width: 1199.98px) {
     .table {
       white-space: nowrap;
@@ -16753,7 +16751,7 @@ a:hover, .shop-nav ul li.is--active a {
       padding-top: 0; }
   .cards .cards-content {
     padding: 1.5rem;
-    height: inherit; }
+    /*height: inherit;*/ }
 
 .toggle-switch {
   display: inline-block;
@@ -31022,7 +31020,7 @@ max-height: 408px;*/ }
 .g-map {
   position: relative;
   height: 490px;
-  z-index: 1; }
+  /* z-index: 1;*/ }
 
 .g-map iframe {
   position: absolute;
@@ -34522,6 +34520,13 @@ div.faqanswer {
   font-weight: 400; }
   .shop-slider .overlay-content h4 {
     font-size: 1rem; }
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+  .social-icons li {
+    margin: 0 5px; }
 
 .enter-page {
   min-height: 675px;
