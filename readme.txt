@@ -20,8 +20,8 @@ Bugs:
 
 
 Enhancements:
-    => 68474 - Library and code updated to handle 3-D secure payments through Omise Payment Gateway.
-    => Updated new labels for IOS APP.
+    => 68474 - Libr
+    
     => Enhancement of existing multilingual functionality. Added MSN language translator API to language fields.
     => Separate header footer for email templates.
     => 69147 - Enhanced social login with plugin.
@@ -237,9 +237,13 @@ Updates :
 
 New Features:
     => 71189 - Sub users for Seller
-    
-Bug :    
+===================TV-9.1.5.20200317======================
+Bug: 
+    => 035500 - Email template logo cache.
+    => 035354 - Email template content used social icon on footer.
     => 035536 - Buy together/related items> getting random data saved
     => 035534 - seller> buy together/ related products> on editing and removing associated item and saving> the deleted items are still displaying there
     => 035541 - admin seller order list> on listing> view and cancel button are merging with each other
     => 035540 - seller> catalog list> image> on uploading image there is no cropper 
+
+===================TV-9.1.6.20200317======================
