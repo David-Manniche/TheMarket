@@ -224,6 +224,7 @@ Bug :
     => 035499 - seller vol. discount> on adding vol discount> list is not displaying
     => 035515 - publish/unpublish option are not listing on selection
     => 034768 - on devices> url rewriting> original url is not displaying completely
+    => 035446 - admin> shop> collection> links> on searching item> results are listing behind the popup
     
 Updates :
     => msg-1149612- Create functionality of copy to clipboard for option rows of seller inventory
