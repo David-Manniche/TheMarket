@@ -230,7 +230,8 @@ Bug :
     => 035514 - If twillio plugin is disabled from admin then it's still woring on frontend login popup and there is no option to update phone number.
     => 035537 - Back and finish button visible on popup of product media 
     => 032856 - Reference message added after sucessfully requesting new email address.
-
+    => 035519 - on moving item from one wish list to another getting invalid request
+    
 Updates :
     => msg-1149612- Create functionality of copy to clipboard for option rows of seller inventory
 
