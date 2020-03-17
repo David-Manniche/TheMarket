@@ -1,11 +1,12 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
         'listserial'=>Labels::getLabel('LBL_Sr._no.', $siteLangId),
-        'option_identifier'=>Labels::getLabel('LBL_Option_Name', $siteLangId),
-        'action' => Labels::getLabel('LBL_Action', $siteLangId),
+        'option_identifier'=>Labels::getLabel('LBL_Option_Name', $siteLangId)
     );
-	
-if (count($arr_listing) > 0) {
+if ($canEdit) {
+    $arr_flds = array_merge($arr_flds, array('action'=>Labels::getLabel('LBL_Action', $siteLangId)));
+}
+if (count($arr_listing) > 0 && $canEdit) {
     $arr_flds = array_merge(array('select_all'=>Labels::getLabel('LBL_Select_all', $siteLangId)), $arr_flds);
 }
 
@@ -49,39 +50,36 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'action':
                 $ul = $td->appendElement("ul", array("class"=>"actions"));
-
-                    /* if(!in_array($row['option_type'],$ignoreOptionValues)){
-                        $li = $ul->appendElement("li");
-                        $li->appendElement('a',array(
-                        'href'=>CommonHelper::generateUrl('OptionValues',
-                        'index',array($row['option_id'])),
-                        'class'=>'button small green',
-                        'title'=>'Option Values'
-                        ),
-                        '<i class="ion-navicon-round icon"></i>', true);
-                    } */
-
+                /* if(!in_array($row['option_type'],$ignoreOptionValues)){
                     $li = $ul->appendElement("li");
-                    $li->appendElement(
-                        'a',
-                        array(
-                        'href'=>'javascript:void(0)',
-                        'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit', $siteLangId),
-                        "onclick"=>"optionForm(".$row['option_id'].")"),
-                        '<i class="fa fa-edit"></i>',
-                        true
-                    );
+                    $li->appendElement('a',array(
+                    'href'=>CommonHelper::generateUrl('OptionValues',
+                    'index',array($row['option_id'])),
+                    'class'=>'button small green',
+                    'title'=>'Option Values'
+                    ),
+                    '<i class="ion-navicon-round icon"></i>', true);
+                } */
+                $li = $ul->appendElement("li");
+                $li->appendElement(
+                    'a',
+                    array(
+                    'href'=>'javascript:void(0)',
+                    'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit', $siteLangId),
+                    "onclick"=>"optionForm(".$row['option_id'].")"),
+                    '<i class="fa fa-edit"></i>',
+                    true
+                );
 
-                    $li = $ul->appendElement("li");
-                    $li->appendElement(
-                        'a',
-                        array(
-                        'href'=>"javascript:void(0)", 'class'=>'button small green',
-                        'title'=>Labels::getLabel('LBL_Delete', $siteLangId),"onclick"=>"deleteOptionRecord(".$row['option_id'].")"),
-                        '<i class="fa fa-trash"></i>',
-                        true
-                    );
-
+                $li = $ul->appendElement("li");
+                $li->appendElement(
+                    'a',
+                    array(
+                    'href'=>"javascript:void(0)", 'class'=>'button small green',
+                    'title'=>Labels::getLabel('LBL_Delete', $siteLangId),"onclick"=>"deleteOptionRecord(".$row['option_id'].")"),
+                    '<i class="fa fa-trash"></i>',
+                    true
+                );
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);

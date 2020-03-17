@@ -64,41 +64,42 @@ foreach ($arr_listing as $sn => $row) {
                 }
                 $available = Product::availableForAddToStore($row['product_id'], UserAuthentication::getLoggedUserId());
                 $ul = $td->appendElement("ul", array('class' => 'actions'), '', true);
+                if ($canEdit) {
+                    if ($available) {
+                        $li = $ul->appendElement("li");
+                        $li->appendElement(
+                            'a',
+                            array('href' => 'javascript:void(0)', 'class' => ($canAddToStore) ? 'icn-highlighted' : 'icn-highlighted disabled', 'onClick' => 'checkIfAvailableForInventory(' . $row['product_id'] . ')', 'title' => Labels::getLabel('LBL_Add_To_Store', $siteLangId), true),
+                            '<i class="fa fa-plus-square"></i>',
+                            true
+                        );
+                    }
 
-                if ($available) {
-                    $li = $ul->appendElement("li");
-                    $li->appendElement(
-                        'a',
-                        array('href' => 'javascript:void(0)', 'class' => ($canAddToStore) ? 'icn-highlighted' : 'icn-highlighted disabled', 'onClick' => 'checkIfAvailableForInventory(' . $row['product_id'] . ')', 'title' => Labels::getLabel('LBL_Add_To_Store', $siteLangId), true),
-                        '<i class="fa fa-plus-square"></i>',
-                        true
-                    );
-                }
-                
-                if (0 != $row['product_seller_id']) {
-                    $li = $ul->appendElement("li");
-                    $li->appendElement('a', array( 'class' => '', 'title' => Labels::getLabel('LBL_Edit', $siteLangId), "href" => CommonHelper::generateUrl('seller', 'customProductForm', array($row['product_id']))), '<i class="fa fa-edit"></i>', true);
+                    if (0 != $row['product_seller_id']) {
+                        $li = $ul->appendElement("li");
+                        $li->appendElement('a', array( 'class' => '', 'title' => Labels::getLabel('LBL_Edit', $siteLangId), "href" => CommonHelper::generateUrl('seller', 'customProductForm', array($row['product_id']))), '<i class="fa fa-edit"></i>', true);
 
-                    $li = $ul->appendElement("li");
-                    $li->appendElement("a", array('title' => Labels::getLabel('LBL_Product_Images', $siteLangId), 'onclick' => 'customProductImages(' . $row['product_id'] . ')', 'href' => 'javascript:void(0)'), '<i class="fas fa-images"></i>', true);
+                        $li = $ul->appendElement("li");
+                        $li->appendElement("a", array('title' => Labels::getLabel('LBL_Product_Images', $siteLangId), 'onclick' => 'customProductImages(' . $row['product_id'] . ')', 'href' => 'javascript:void(0)'), '<i class="fas fa-images"></i>', true);
+                    }
+
+                    if ($row['product_added_by_admin_id'] && $row['psbs_user_id'] && $row['product_type'] == PRODUCT::PRODUCT_TYPE_PHYSICAL) {
+                        $li = $ul->appendElement("li");
+                        $li->appendElement("a", array('title' => Labels::getLabel('LBL_Edit_Shipping', $siteLangId), 'onclick' => 'sellerShippingForm(' . $row['product_id'] . ')', 'href' => 'javascript:void(0)'), '<i class="fa fa-truck"></i>', true);
+                    }
+
+                    $hasInventory = Product::hasInventory($row['product_id'], UserAuthentication::getLoggedUserId());
+                    if ($hasInventory) {
+                        $li = $ul->appendElement("li");
+                        $li->appendElement(
+                            'a',
+                            array('href' => 'javascript:void(0)', 'onclick' => 'sellerProducts(' . $row['product_id'] . ')', 'class' => '', 'title' => Labels::getLabel('LBL_View_Inventories', $siteLangId), true),
+                            '<i class="fas fa-clipboard-list"></i>',
+                            true
+                        );
+                    }
                 }
-                
-                if ($row['product_added_by_admin_id'] && $row['psbs_user_id'] && $row['product_type'] == PRODUCT::PRODUCT_TYPE_PHYSICAL) {
-                    $li = $ul->appendElement("li");
-                    $li->appendElement("a", array('title' => Labels::getLabel('LBL_Edit_Shipping', $siteLangId), 'onclick' => 'sellerShippingForm(' . $row['product_id'] . ')', 'href' => 'javascript:void(0)'), '<i class="fa fa-truck"></i>', true);
-                }
-                
-                $hasInventory = Product::hasInventory($row['product_id'], UserAuthentication::getLoggedUserId());
-                if ($hasInventory) {
-                    $li = $ul->appendElement("li");
-                    $li->appendElement(
-                        'a',
-                        array('href' => 'javascript:void(0)', 'onclick' => 'sellerProducts(' . $row['product_id'] . ')', 'class' => '', 'title' => Labels::getLabel('LBL_View_Inventories', $siteLangId), true),
-                        '<i class="fas fa-clipboard-list"></i>',
-                        true
-                    );
-                }
-                
+
                 $li = $ul->appendElement("li");
                 $li->appendElement(
                     'a',

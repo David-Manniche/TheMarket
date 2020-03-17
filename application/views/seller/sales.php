@@ -54,7 +54,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
         <div class="content-header row">
             <div class="col">
                 <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
-                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_My_Sales', $siteLangId); ?></h2>
+                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Orders', $siteLangId); ?></h2>
             </div>
         </div>
         <div class="content-body">

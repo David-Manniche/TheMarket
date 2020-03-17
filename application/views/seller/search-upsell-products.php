@@ -35,11 +35,15 @@ foreach ($arrListing as $selProdId => $upsellProds) {
                 $td->appendElement('plaintext', array(), $productName, true);
                 break;
             case 'upsell_products':
-				$div = $td->appendElement('div', array("class"=>"list-tag-wrapper", "data-scroll-height"=>"150", "data-simplebar" => ""));
+                $div = $td->appendElement('div', array("class"=>"list-tag-wrapper", "data-scroll-height"=>"150", "data-simplebar" => ""));
                 $ul = $div->appendElement("ul", array("class"=>"list-tags"));
                 foreach ($upsellProds as $upsellProd) {
                     $li = $ul->appendElement("li");
-                    $li->appendElement('plaintext', array(), '<span>'.$upsellProd['selprod_title'].' <i class="remove_buyTogether remove_param fa fa-times" onClick="deleteSelprodUpsellProduct('.$selProdId.', '.$upsellProd['selprod_id'].')"></i></span>', true);
+                    $removeIcon = '';
+                    if ($canEdit) {
+                        $removeIcon = '<i class="remove_buyTogether remove_param fa fa-times" onClick="deleteSelprodUpsellProduct('.$selProdId.', '.$upsellProd['selprod_id'].')"></i>';
+                    }
+                    $li->appendElement('plaintext', array(), '<span>'.$upsellProd['selprod_title'].' '.$removeIcon.'</span>', true);
                     $li->appendElement('plaintext', array(), '<input type="hidden" name="product_upsell[]" value="'.$upsellProd['selprod_id'].'">', true);
                 }
                 break;
