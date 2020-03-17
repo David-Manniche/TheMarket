@@ -16751,7 +16751,7 @@ a:hover, .shop-nav ul li.is--active a {
       padding-top: 0; }
   .cards .cards-content {
     padding: 1.5rem;
-    height: inherit; }
+    /*height: inherit;*/ }
 
 .toggle-switch {
   display: inline-block;
