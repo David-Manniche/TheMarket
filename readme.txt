@@ -241,3 +241,4 @@ New Features:
 Bug :    
     => 035536 - Buy together/related items> getting random data saved
     => 035534 - seller> buy together/ related products> on editing and removing associated item and saving> the deleted items are still displaying there
+    => 035541 - admin seller order list> on listing> view and cancel button are merging with each other
