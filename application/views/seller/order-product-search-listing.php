@@ -55,7 +55,7 @@ foreach ($orders as $sn => $order) {
             case 'total':
                 $txt = '';
                 // $txt .= CommonHelper::displayMoneyFormat($order['order_net_amount']);
-                $txt .= CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, USER::USER_TYPE_SELLER));
+                $txt .= CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, User::USER_TYPE_SELLER));
                 $td->appendElement('plaintext', array(), $txt, true);
                 break;
             case 'status':

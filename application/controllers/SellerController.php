@@ -2818,7 +2818,8 @@ class SellerController extends SellerBaseController
         if (0 < $splatform_id) {
             $data = SocialPlatform::getAttributesById($splatform_id);
             if ($data === false) {
-                FatUtility::dieWithError($this->str_invalid_request);
+                Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST_ID', $this->siteLangId));
+                FatUtility::dieWithError(Message::getHtml());
             }
             $frm->fill($data);
         }

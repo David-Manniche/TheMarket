@@ -38,7 +38,7 @@ class LoggedUserController extends MyAppController
             }
         }
 
-        if ((!UserAuthentication::isGuestUserLogged() && $userInfo['credential_verified'] != 1) && !($_SESSION[USER::ADMIN_SESSION_ELEMENT_NAME] && $_SESSION[USER::ADMIN_SESSION_ELEMENT_NAME] > 0)) {
+        if ((!UserAuthentication::isGuestUserLogged() && $userInfo['credential_verified'] != 1) && !($_SESSION[User::ADMIN_SESSION_ELEMENT_NAME] && $_SESSION[User::ADMIN_SESSION_ELEMENT_NAME] > 0)) {
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'logout'));
         }
 
