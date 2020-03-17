@@ -68,7 +68,8 @@ class Navigation
 
     public static function topHeaderDashboard($template)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userData = User::getAttributesById(UserAuthentication::getLoggedUserId());
+        $userId = (0 < $userData['user_parent']) ? $userData['user_parent'] : UserAuthentication::getLoggedUserId();
         /* Unread Message Count [*/
         $threadObj = new Thread();
         $todayUnreadMessageCount = $threadObj->getMessageCount($userId, Thread::MESSAGE_IS_UNREAD, date('Y-m-d'));
@@ -115,7 +116,8 @@ class Navigation
     public static function sellerDashboardNavigation($template)
     {
         $siteLangId = CommonHelper::getLangId();
-        $userId = UserAuthentication::getLoggedUserId();
+        $userData = User::getAttributesById(UserAuthentication::getLoggedUserId());
+        $userId = (0 < $userData['user_parent']) ? $userData['user_parent'] : UserAuthentication::getLoggedUserId();
         /* Unread Message Count [*/
         $threadObj = new Thread();
         $todayUnreadMessageCount = $threadObj->getMessageCount($userId, Thread::MESSAGE_IS_UNREAD, date('Y-m-d'));
@@ -129,9 +131,7 @@ class Navigation
         if (!false == $shopDetails) {
             $shop_id = $shopDetails['shop_id'];
         }
-        $userData = User::getAttributesById(UserAuthentication::getLoggedUserId());
-        $userParentId = (0 < $userData['user_parent']) ? $userData['user_parent'] : UserAuthentication::getLoggedUserId();
-        $template->set('userParentId', $userParentId);
+        $template->set('userParentId', $userId);
         $template->set('userPrivilege', UserPrivilege::getInstance());
         $template->set('shop_id', $shop_id);
         $template->set('isShopActive', Shop::isShopActive($userId));
