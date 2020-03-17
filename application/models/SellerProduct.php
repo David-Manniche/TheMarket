@@ -1083,6 +1083,7 @@ class SellerProduct extends MyAppModel
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addOrder('selprod_active', 'DESC');
         $srch->addOrder('selprod_added_on', 'DESC');
+        $srch->addOrder('selprod_id', 'DESC');
         $srch->addOrder('product_name');
         $srch->addCondition('selprod_user_id', '=', $userId);
         return $srch;

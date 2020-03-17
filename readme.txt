@@ -20,8 +20,8 @@ Bugs:
 
 
 Enhancements:
-    => 68474 - Library and code updated to handle 3-D secure payments through Omise Payment Gateway.
-    => Updated new labels for IOS APP.
+    => 68474 - Libr
+    
     => Enhancement of existing multilingual functionality. Added MSN language translator API to language fields.
     => Separate header footer for email templates.
     => 69147 - Enhanced social login with plugin.
@@ -229,7 +229,9 @@ Bug :
     => 035517 - when push notification plugin is not active then push notification tab need not to be there in mobile apps
     => 035514 - If twillio plugin is disabled from admin then it's still woring on frontend login popup and there is no option to update phone number.
     => 035537 - Back and finish button visible on popup of product media 
-
+    => 032856 - Reference message added after sucessfully requesting new email address.
+    => 035519 - on moving item from one wish list to another getting invalid request
+    => 035528 - Seller inventory list is getting shuffled on refereshing. 
 Updates :
     => msg-1149612- Create functionality of copy to clipboard for option rows of seller inventory
 
@@ -239,3 +241,9 @@ New Features:
 Bug: 
     => 035500 - Email template logo cache.
     => 035354 - Email template content used social icon on footer.
+    => 035536 - Buy together/related items> getting random data saved
+    => 035534 - seller> buy together/ related products> on editing and removing associated item and saving> the deleted items are still displaying there
+    => 035541 - admin seller order list> on listing> view and cancel button are merging with each other
+    => 035540 - seller> catalog list> image> on uploading image there is no cropper 
+
+===================TV-9.1.6.20200317======================
