@@ -236,3 +236,6 @@ Updates :
 New Features:
     => 71189 - Sub users for Seller
 ===================TV-9.1.5.20200317======================
+Bug: 
+    => 035500 - Email template logo cache.
+    => 035354 - Email template content used social icon on footer.

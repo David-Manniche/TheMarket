@@ -34,7 +34,7 @@ if (!empty($logoImage)) {
 $fld->htmlAfterField = $htmlAfterField;
 ?>
 <div id="editor_default_content" style="display:none;">
-    <?php $this->includeTemplate('_partial/emails/email-footer.php'); ?>
+    <?php $this->includeTemplate('_partial/emails/email-footer.php', array('langId' => $adminLangId , 'defaultContent' => true )); ?>
 </div>
 <div id="cropperBox-js"></div>
 <section class="section" id="mediaForm-js">
