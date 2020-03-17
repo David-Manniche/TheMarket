@@ -175,6 +175,7 @@ $(document).on('keyup', "input[name='products_related']", function(){
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupRelatedProduct'), data, function(t) {
             document.frmRelatedSellerProduct.reset();
+            $("input[name='selprod_id']").val(''); 
             $('#related-products').empty();
             $(".dvFocus-js").trigger('click');
             searchRelatedProducts(document.frmRelatedSellerProduct);
