@@ -226,6 +226,7 @@ Bug :
     => 035515 - publish/unpublish option are not listing on selection
     => 034768 - on devices> url rewriting> original url is not displaying completely
     => 035446 - admin> shop> collection> links> on searching item> results are listing behind the popup
+    => 035537 - Back and finish button visible on popup of product media 
 
 Updates :
     => msg-1149612- Create functionality of copy to clipboard for option rows of seller inventory
