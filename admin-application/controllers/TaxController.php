@@ -48,8 +48,7 @@ class TaxController extends AdminBaseController
         $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
-        $taxObj = new Tax();
-        $srch = $taxObj->getSearchObject($this->adminLangId, false);
+        $srch = Tax::getSearchObject($this->adminLangId, false);
         $srch->addCondition('taxcat_deleted', '=', 0);
         $srch->addFld('t.*');
 

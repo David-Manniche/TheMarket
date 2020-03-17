@@ -9,7 +9,8 @@ class AdvertiserController extends AdvertiserBaseController
 
     public function index()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $this->userPrivilege->canViewPromotions();
+        $userId = $this->userParentId;
         $user = new User($userId);
 
         $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] = 'Ad';
@@ -47,7 +48,8 @@ class AdvertiserController extends AdvertiserBaseController
         $txnObj = new Transactions();
         $txnsSummary = $txnObj->getTransactionSummary($userId, date('Y-m-d'));
         $this->set('txnsSummary', $txnsSummary);
-
+        $this->set('userParentId', $this->userParentId);
+        $this->set('userPrivilege', UserPrivilege::getInstance());
         $this->set('totChargedAmount', Promotion::getTotalChargedAmount($userId));
         $this->set('activePromotionChargedAmount', Promotion::getTotalChargedAmount($userId, true));
         $this->set('transactions', $transactions);
@@ -102,7 +104,8 @@ class AdvertiserController extends AdvertiserBaseController
 
     public function setupPromotion()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $this->userPrivilege->canEditPromotions();
+        $userId = $this->userParentId;
         $frm = $this->getPromotionForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
@@ -244,7 +247,7 @@ class AdvertiserController extends AdvertiserBaseController
 
         $record = new Promotion($promotionId);
         $data = array(
-            'promotion_user_id' => UserAuthentication::getLoggedUserId(),
+            'promotion_user_id' => $this->userParentId,
             'promotion_added_on' => date('Y-m-d H:i:s'),
             'promotion_active' => applicationConstants::ACTIVE,
             'promotion_record_id' => $promotion_record_id
@@ -348,7 +351,7 @@ class AdvertiserController extends AdvertiserBaseController
         $notificationData = array(
             'notification_record_type' => Notification::TYPE_PROMOTION,
             'notification_record_id' => $promotionId,
-            'notification_user_id' => UserAuthentication::getLoggedUserId(),
+            'notification_user_id' => $this->userParentId,
             'notification_label_key' => Notification::PROMOTION_APPROVAL_NOTIFICATION,
             'notification_added_on' => date('Y-m-d H:i:s')
         );
@@ -366,8 +369,9 @@ class AdvertiserController extends AdvertiserBaseController
 
     public function setupPromotionLang()
     {
+        $this->userPrivilege->canEditPromotions();
         $post = FatApp::getPostedData();
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         $promotionId = $post['promotion_id'];
         $langId = $post['lang_id'];
@@ -434,7 +438,8 @@ class AdvertiserController extends AdvertiserBaseController
 
     public function promotionUpload()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $this->userPrivilege->canEditPromotions();
+        $userId = $this->userParentId;
         $post = FatApp::getPostedData();
 
         $promotionId = FatUtility::int($post['promotion_id']);
@@ -514,7 +519,7 @@ class AdvertiserController extends AdvertiserBaseController
         $notificationData = array(
             'notification_record_type' => Notification::TYPE_PROMOTION,
             'notification_record_id' => $promotionId,
-            'notification_user_id' => UserAuthentication::getLoggedUserId(),
+            'notification_user_id' => $this->userParentId,
             'notification_label_key' => Notification::PROMOTION_APPROVAL_NOTIFICATION,
             'notification_added_on' => date('Y-m-d H:i:s')
         );
@@ -538,7 +543,8 @@ class AdvertiserController extends AdvertiserBaseController
 
     public function searchPromotions()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $this->userPrivilege->canViewPromotions();
+        $userId = $this->userParentId;
         $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
         $frmSearch = $this->getPromotionSearchForm($this->siteLangId);
 
@@ -585,6 +591,7 @@ class AdvertiserController extends AdvertiserBaseController
         $records = FatApp::getDb()->fetchAll($rs, 'promotion_id');
         $promotionBudgetDurationArr = Promotion::getPromotionBudgetDurationArr($this->siteLangId);
         /* CommonHelper::printArray($records); die; */
+        $this->set('canEdit', $this->userPrivilege->canEditPromotions(0, true));
         $this->set('promotionBudgetDurationArr', $promotionBudgetDurationArr);
         $this->set('arr_listing', $records);
         $this->set('pageCount', $srch->pages());
@@ -615,7 +622,7 @@ class AdvertiserController extends AdvertiserBaseController
             'promotion_active'
         ));
         $srch->addCondition('promotion_deleted', '=', applicationConstants::NO);
-        $srch->addCondition('promotion_user_id', '=', UserAuthentication::getLoggedUserId());
+        $srch->addCondition('promotion_user_id', '=', $this->userParentId);
         $srch->addOrder('promotion_id', 'DESC');
         return $srch;
     }
@@ -625,7 +632,7 @@ class AdvertiserController extends AdvertiserBaseController
         $promotionType = FatUtility::int($promotionType);
         $promotionId = FatUtility::int($promotionId);
 
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         if (1 > $promotionType) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request', $this->siteLangId));
@@ -686,12 +693,13 @@ class AdvertiserController extends AdvertiserBaseController
 
     public function promotions()
     {
+        $this->userPrivilege->canViewPromotions();
         $data = FatApp::getPostedData();
         $frmSearchPromotions = $this->getPromotionSearchForm($this->siteLangId);
         if ($data) {
             $frmSearchPromotions->fill($data);
         }
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $srch = new PromotionSearch($this->siteLangId);
         $srch->addMultipleFields(array(
             'promotion_id'
@@ -709,7 +717,7 @@ class AdvertiserController extends AdvertiserBaseController
 
         $this->_template->addJs('js/cropper.js');
         $this->_template->addJs('js/cropper-main.js');
-
+        $this->set('canEdit', $this->userPrivilege->canEditPromotions(0, true));
         $this->set("frmSearchPromotions", $frmSearchPromotions);
         $this->set("records", $records);
         $this->_template->render(true, true);
@@ -717,12 +725,14 @@ class AdvertiserController extends AdvertiserBaseController
 
     public function promotionCharges()
     {
+        $this->userPrivilege->canViewPromotions();
         $this->_template->render(true, true);
     }
 
     public function searchPromotionCharges()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $this->userPrivilege->canViewPromotions();
+        $userId = $this->userParentId;
         $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
         $data = FatApp::getPostedData();
         $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
@@ -755,7 +765,7 @@ class AdvertiserController extends AdvertiserBaseController
 
     public function promotionForm($promotionId = 0)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $promotionId = FatUtility::int($promotionId);
 
         $promotionDetails = array();
@@ -862,7 +872,7 @@ class AdvertiserController extends AdvertiserBaseController
 
     public function promotionMediaForm($promotionId = 0)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $promotionId = FatUtility::int($promotionId);
 
         if (1 > $promotionId) {
@@ -895,16 +905,16 @@ class AdvertiserController extends AdvertiserBaseController
         $attachedFileType = 0;
 
         switch ($promotionType) {
-        case Promotion::TYPE_BANNER:
-            $imgDetail = Banner::getAttributesById($promotionDetails['banner_id']);
-            $attachedFileType = AttachedFile::FILETYPE_BANNER;
-            $recordId = $promotionDetails['banner_id'];
-            break;
-        case Promotion::TYPE_SLIDES:
-            $imgDetail = Slides::getAttributesById($promotionDetails['slide_id']);
-            $attachedFileType = AttachedFile::FILETYPE_HOME_PAGE_BANNER;
-            $recordId = $promotionDetails['slide_id'];
-            break;
+            case Promotion::TYPE_BANNER:
+                $imgDetail = Banner::getAttributesById($promotionDetails['banner_id']);
+                $attachedFileType = AttachedFile::FILETYPE_BANNER;
+                $recordId = $promotionDetails['banner_id'];
+                break;
+            case Promotion::TYPE_SLIDES:
+                $imgDetail = Slides::getAttributesById($promotionDetails['slide_id']);
+                $attachedFileType = AttachedFile::FILETYPE_HOME_PAGE_BANNER;
+                $recordId = $promotionDetails['slide_id'];
+                break;
         }
 
         $mediaFrm = $this->getPromotionMediaForm($promotionId, $promotionType);
@@ -930,7 +940,8 @@ class AdvertiserController extends AdvertiserBaseController
 
     public function images($promotionId = 0, $langId = 0, $screen = 0)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $this->userPrivilege->canViewPromotions();
+        $userId = $this->userParentId;
         $promotionId = FatUtility::int($promotionId);
 
         if (1 > $promotionId) {
@@ -993,6 +1004,7 @@ class AdvertiserController extends AdvertiserBaseController
 
     public function removePromotionBanner()
     {
+        $this->userPrivilege->canEditPromotions();
         $promotionId = FatApp::getPostedData('promotionId', FatUtility::VAR_INT, 0);
         $bannerId = FatApp::getPostedData('bannerId', FatUtility::VAR_INT, 0);
         $langId = FatApp::getPostedData('langId', FatUtility::VAR_INT, 0);
@@ -1003,7 +1015,7 @@ class AdvertiserController extends AdvertiserBaseController
             'promotion_type',
             'promotion_user_id'
         ));
-        if (!$data || $data['promotion_user_id'] != UserAuthentication::getLoggedUserId()) {
+        if (!$data || $data['promotion_user_id'] != $this->userParentId) {
             Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST_ID', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -1043,7 +1055,7 @@ class AdvertiserController extends AdvertiserBaseController
     }
 
     $data = Promotion::getAttributesById($promotionId,array('promotion_id','promotion_user_id'));
-    if(!$data || $data['promotion_user_id']!= UserAuthentication::getLoggedUserId()){
+    if(!$data || $data['promotion_user_id']!= $this->userParentId){
     Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST_ID',$this->siteLangId));
     FatUtility::dieJsonError( Message::getHtml() );
     }
@@ -1060,7 +1072,7 @@ class AdvertiserController extends AdvertiserBaseController
 
     public function autoCompleteSelprods()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $db = FatApp::getDb();
 
         $srch = new ProductSearch($this->siteLangId);
@@ -1099,7 +1111,8 @@ class AdvertiserController extends AdvertiserBaseController
 
     public function analytics($promotionId = 0)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $this->userPrivilege->canViewPromotions();
+        $userId = $this->userParentId;
         $searchForm = $this->getPPCAnalyticsSearchForm($this->siteLangId);
         $searchForm->fill(array(
             'promotion_id' => $promotionId
@@ -1129,7 +1142,8 @@ class AdvertiserController extends AdvertiserBaseController
 
     public function searchAnalyticsData()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $this->userPrivilege->canViewPromotions();
+        $userId = $this->userParentId;
         $data = FatApp::getPostedData();
         $pageSize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
 
@@ -1202,7 +1216,7 @@ class AdvertiserController extends AdvertiserBaseController
 
         $linkTargetsArr = applicationConstants::getLinkTargetsArr($this->siteLangId);
 
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $shopSrch = Shop::getSearchObject(true, $this->siteLangId);
         $shopSrch->addCondition('shop_user_id', '=', $userId);
         $shopSrch->setPageSize(1);

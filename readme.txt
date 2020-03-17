@@ -140,8 +140,8 @@ Bugs:
     => 035093 - Getting multiple otp fields by clicking get otp button continuesly.
 
 ===================TV-9.1.3.20200303==================
-Bug: 
-    => 034874 - first time discount coupon validation updates 
+Bug:
+    => 034874 - first time discount coupon validation updates
     => 035172 - When search with %%% keyword and use filters.
     => 035212 - Special character handling in export csv file.
     => 034773 -  Restrict keyword search up to 80 character.
@@ -172,18 +172,18 @@ New Features:
     => 71188 - Add setting for making brand field optional
 
 ===================TV-9.1.3.20200306==================
-Bug : 
+Bug :
     => 035273 - Display un-branded filter option when brand is not mandatory.
     => 035315 - Brand mandatory for import/export based on settings.
     => 035200 - Bulk media option shouldn't be there when seller is not allowed to add product or request catalog and Export Seller products media not required.
 ===================TV-9.1.3.20200312==================
 
-Bug : 
+Bug :
     => 035130 - Send request button text should be in center on Affiliate, Account credits page while withdrawal request through Bank Payout.
     => 035283 - for non branded product- if return request is raised then getting blank for brand
-    => 035276 - if product is not binded with brand then in emails (order)> getting blank in front of brand 
+    => 035276 - if product is not binded with brand then in emails (order)> getting blank in front of brand
     => 035335 - admin> order detail page> back button is in toggle instead of direct button as in system
-    => 035329 - admin> options> toggle is still there instead of publish/unpublish button 
+    => 035329 - admin> options> toggle is still there instead of publish/unpublish button
     => 035294 - admin>special price> on selecting name and amount it adds product with default dates
     => 035343 - Enable facebook and google from configuration settings options removed as they moved to plugin module.
     => 035344 - Extra Social login keys which are not being used anymore are removed.
@@ -200,24 +200,34 @@ Bug :
     => 035395 - On collection tab of manage shop page getting error.
     => 034810 - for special price and volume discount> on click of name (from list) it should get enabled in edit mode
     => 035397 - while purchasing digital item> on shipping summary step> NA need not to be there
-    => 035290 - admin> request catalog> edit> shipping country field text is differing from shipped to font 
+    => 035290 - admin> request catalog> edit> shipping country field text is differing from shipped to font
     => 035288 - while adding catalog shipping> suggestion list should appear on click (as working earlier) instead of typing
     => 035292 - on adding inventory for requested catalog> getting invalid request and inventory getting created
-    => 035295 - while adding vol discount> min qty allowed should be 2 
+    => 035295 - while adding vol discount> min qty allowed should be 2
 ===================TV-9.1.4.20200313======================
 
-Bug : 
+Bug :
     => 034393 - Getting invalid request on saving data without selecting product in related products and buy together
     => 034102 - On Buyer dashboard when hamburger icon clicked to expand sidebar then widgets are crossing screen and scroll not working.
     => 034101 - On Buyer dashboard when hamburger icon clicked to close sidebar then on widgets extra spaces are not reduced.
     => 035404 - seller is not getting email when order is on COD
     => 034492 - On devices> captcha comes over the elements in footer
     => 034491 - On contact us page> captcha is getting hid behind the map
-    
+
 ===================TV-9.1.5.20200316======================
 
-Bug : 
+Bug :
     => 034264 - Getting error while uploading bulk media.
     => 035273 - If a product without brand is listing in search result then under filters it listed as without name and on accessing that filter there is fatal error occurred.
     => 034297 - Currency symbol position is not fixed in RTL mode(with RTL language) on any page.
     => 035457 - Decimal points are there but it's not allowing user to add fraction amount in filters
+    => 035335 - admin> order detail page> back button is in toggle instead of direct button as in system
+    => 035499 - seller vol. discount> on adding vol discount> list is not displaying
+    => 035515 - publish/unpublish option are not listing on selection
+    => 034768 - on devices> url rewriting> original url is not displaying completely
+
+Updates :
+    => msg-1149612- Create functionality of copy to clipboard for option rows of seller inventory
+
+New Features:
+    => 71189 - Sub users for Seller

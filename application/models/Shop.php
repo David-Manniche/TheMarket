@@ -204,9 +204,8 @@ class Shop extends MyAppModel
     }
     public static function getShopAddress($shop_id, $isActive = true, $langId = 0, $attr = array())
     {
-        if ($langId) {
-            $shop_id = FatUtility::int($shop_id);
-        }
+        $shop_id = FatUtility::int($shop_id);
+        $langId = FatUtility::int($langId);
         $db = FatApp::getDb();
         $srch = static::getSearchObject($isActive, $langId);
         $srch->addCondition(static::tblFld('id'), '=', $shop_id);

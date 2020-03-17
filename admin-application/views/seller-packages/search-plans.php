@@ -40,7 +40,7 @@
         $arr_flds = array(
             'listserial' => Labels::getLabel('LBL_Sr_no.', $adminLangId),
             SellerPackagePlans::DB_TBL_PREFIX . 'price' => Labels::getLabel('LBL_Plan_Price', $adminLangId),
-            'action' => Labels::getLabel('LBL_Action', $adminLangId),
+            'action' => '',
         );
 
         $tbl = new HtmlElement(
@@ -77,15 +77,8 @@
                         break;
 
                     case 'action':
-                        $ul = $td->appendElement("ul", array("class" => "actions actions--centered"));
                         if ($canEdit) {
-                            $li = $ul->appendElement("li", array('class' => 'droplink'));
-                            $li->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                            $innerDiv = $li->appendElement('div', array('class' => 'dropwrap'));
-                            $innerUl = $innerDiv->appendElement('ul', array('class' => 'linksvertical'));
-
-                            $innerLi = $innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "planForm(" . $row[SellerPackagePlans::DB_TBL_PREFIX . 'spackage_id'] . "," . $row[SellerPackagePlans::DB_TBL_PREFIX . 'id'] . ")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
+                            $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "planForm(" . $row[SellerPackagePlans::DB_TBL_PREFIX . 'spackage_id'] . "," . $row[SellerPackagePlans::DB_TBL_PREFIX . 'id'] . ")"), '<i class="far fa-edit icon"></i>', true);
                         }
                         break;
                     default:

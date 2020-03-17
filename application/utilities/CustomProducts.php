@@ -4,11 +4,11 @@ trait CustomProducts
 {
     public function customProduct()
     {
-        if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
+        if (!$this->isShopActive($this->userParentId, 0, true)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
         }
 
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
         }
@@ -33,7 +33,7 @@ trait CustomProducts
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : intval($post['page']);
         $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
         $srch = Product::getSearchObject($this->siteLangId);
-        $srch->addCondition('product_seller_id', '=', UserAuthentication::getLoggedUserId());
+        $srch->addCondition('product_seller_id', '=', $this->userParentId);
 
         $keyword = FatApp::getPostedData('keyword', null, '');
         if (!empty($keyword)) {
@@ -74,7 +74,7 @@ trait CustomProducts
         if (!User::canAddCustomProduct()) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             FatUtility::dieWithError(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
         }
         $product_id = FatUtility::int($product_id);
@@ -86,7 +86,7 @@ trait CustomProducts
         /* Validate product belongs to current logged seller[ */
         if ($product_id) {
             $productRow = Product::getAttributesById($product_id, array('product_seller_id'));
-            if ($productRow['product_seller_id'] != UserAuthentication::getLoggedUserId()) {
+            if ($productRow['product_seller_id'] != $this->userParentId) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             }
         }
@@ -133,10 +133,11 @@ trait CustomProducts
 
     public function setupCustomProductLang()
     {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
         if (!User::canAddCustomProduct()) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             FatUtility::dieWithError(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
         }
         $post = FatApp::getPostedData();
@@ -150,7 +151,7 @@ trait CustomProducts
         /* Validate product belongs to current logged seller[ */
         if ($product_id) {
             $productRow = Product::getAttributesById($product_id, array('product_seller_id'));
-            if ($productRow['product_seller_id'] != UserAuthentication::getLoggedUserId()) {
+            if ($productRow['product_seller_id'] != $this->userParentId) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             }
         }
@@ -204,7 +205,7 @@ trait CustomProducts
         if (!$product_id) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
         }
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             FatUtility::dieWithError(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
         }
 
@@ -235,7 +236,7 @@ trait CustomProducts
         }
 
         /* Validate product belongs to current logged seller[ */
-        if (!UserPrivilege::canSellerEditCustomProduct($productId)) {
+        if (!UserPrivilege::canSellerEditCustomProduct($this->userParentId, $productId)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -267,20 +268,20 @@ trait CustomProducts
         if (!$product_id || !$option_id) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
         }
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             FatUtility::dieJsonError(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
         }
 
-        if (!UserPrivilege::canSellerEditCustomProduct($product_id)) {
+        if (!UserPrivilege::canSellerEditCustomProduct($this->userParentId, $product_id)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
-        
+
         $productOptions = Product::getProductOptions($product_id, $this->siteLangId, false, 1);
         $optionSeparateImage = Option::getAttributesById($option_id, 'option_is_separate_images');
         if(count($productOptions) > 0 && $optionSeparateImage == 1){
             FatUtility::dieJsonError(Labels::getLabel('LBL_you_have_already_added_option_having_separate_image', $this->siteLangId));
         }
-        
+
         $prodObj = new Product();
         if (!$prodObj->addUpdateProductOption($product_id, $option_id)) {
             FatUtility::dieJsonError($prodObj->getError());
@@ -304,7 +305,7 @@ trait CustomProducts
         /* Validate product belongs to current logged seller[ */
         if ($productId) {
             $productRow = Product::getAttributesById($productId, array('product_seller_id'));
-            if ($productRow['product_seller_id'] != UserAuthentication::getLoggedUserId()) {
+            if ($productRow['product_seller_id'] != $this->userParentId) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             }
         }
@@ -344,7 +345,7 @@ trait CustomProducts
         /* Validate product belongs to current logged seller[ */
         if ($productId) {
             $productRow = Product::getAttributesById($productId, array('product_seller_id'));
-            if ($productRow['product_seller_id'] != UserAuthentication::getLoggedUserId()) {
+            if ($productRow['product_seller_id'] != $this->userParentId) {
                 FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             }
         }
@@ -378,7 +379,7 @@ trait CustomProducts
         if (!User::canAddCustomProduct()) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             FatUtility::dieWithError(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
         }
         $product_id = FatUtility::int($product_id);
@@ -391,16 +392,16 @@ trait CustomProducts
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
         }
 
-        if ($productRow['product_seller_id'] != UserAuthentication::getLoggedUserId()) {
+        if ($productRow['product_seller_id'] != $this->userParentId) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
 
         $imagesFrm = $this->getImagesFrm($product_id, $this->siteLangId);
 
         $imgTypesArr = $this->getSeparateImageOptions($product_id, $this->siteLangId);
-        
+
         $productType = Product::getAttributesById($product_id, 'product_type');
-        
+
         $this->set('product_id', $product_id);
         $this->set('imagesFrm', $imagesFrm);
         $this->set('productType', $productType);
@@ -412,7 +413,7 @@ trait CustomProducts
         if (!User::canAddCustomProduct()) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             FatUtility::dieWithError(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
         }
         $product_id = FatUtility::int($product_id);
@@ -425,7 +426,7 @@ trait CustomProducts
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
         }
 
-        if ($productRow['product_seller_id'] != UserAuthentication::getLoggedUserId()) {
+        if ($productRow['product_seller_id'] != $this->userParentId) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
 
@@ -441,10 +442,11 @@ trait CustomProducts
 
     public function setupCustomProductImages()
     {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
         if (!User::canAddCustomProduct()) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             FatUtility::dieJsonError(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
         }
 
@@ -461,7 +463,7 @@ trait CustomProducts
         /* Validate product belongs to current logged seller[ */
         if ($product_id) {
             $productRow = Product::getAttributesById($product_id, array('product_seller_id'));
-            if ($productRow['product_seller_id'] != UserAuthentication::getLoggedUserId()) {
+            if ($productRow['product_seller_id'] != $this->userParentId) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             }
         }
@@ -469,7 +471,7 @@ trait CustomProducts
 
         /* Check allowed images [ */
         $productImagesArr = array();
-        $sellerId = UserAuthentication::getLoggedUserId();
+        $sellerId = $this->userParentId;
 
         $subscription = false;
         $allowed_images = -1;
@@ -534,7 +536,7 @@ trait CustomProducts
 
         /* Validate product belongs to current logged seller[ */
         $productRow = Product::getAttributesById($product_id, array('product_seller_id'));
-        if ($productRow['product_seller_id'] != UserAuthentication::getLoggedUserId()) {
+        if ($productRow['product_seller_id'] != $this->userParentId) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
         /* ] */
@@ -559,7 +561,7 @@ trait CustomProducts
         $product_id = FatUtility :: int($post['product_id']);
         /* Validate product belongs to current logged seller[ */
         $productRow = Product::getAttributesById($product_id, array('product_seller_id'));
-        if ($productRow['product_seller_id'] != UserAuthentication::getLoggedUserId()) {
+        if ($productRow['product_seller_id'] != $this->userParentId) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
         /* ] */
@@ -605,7 +607,7 @@ trait CustomProducts
 
     public function productSpecifications($productId)
     {
-        if (!UserPrivilege::canSellerEditCustomProduct($productId)) {
+        if (!UserPrivilege::canSellerEditCustomProduct($this->userParentId, $productId)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -626,7 +628,7 @@ trait CustomProducts
         $post = FatApp::getPostedData();
 
         $prodspec_id = FatUtility::int($post['prodSpecId']);
-        if (!UserPrivilege::canSellerEditCustomProduct($productId)) {
+        if (!UserPrivilege::canSellerEditCustomProduct($this->userParentId, $productId)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -650,7 +652,7 @@ trait CustomProducts
     {
         $shipping_rates = array();
         $post = FatApp::getPostedData();
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $product_id = $post['product_id'];
         //$shipping_rates = Products::getProductShippingRates();
         $this->set('siteLangId', $this->siteLangId);
@@ -667,7 +669,7 @@ trait CustomProducts
     {
         $pagesize = 10;
         $post = FatApp::getPostedData();
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $srch = Countries::getSearchObject(true, $this->siteLangId);
         $srch->addOrder('country_name');
 
@@ -702,7 +704,7 @@ trait CustomProducts
     {
         $pagesize = 10;
         $post = FatApp::getPostedData();
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $srch = ShippingApi::getSearchObject(true, $this->siteLangId);
         $srch->addOrder('shippingapi_name');
 
@@ -734,7 +736,7 @@ trait CustomProducts
     {
         $pagesize = 10;
         $post = FatApp::getPostedData();
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $srch = ShippingCompanies::getSearchObject(true, $this->siteLangId);
         $srch->addOrder('scompany_name');
 
@@ -766,7 +768,7 @@ trait CustomProducts
     {
         $pagesize = 10;
         $post = FatApp::getPostedData();
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $srch = ShippingDurations::getSearchObject($this->siteLangId, true);
         $srch->addOrder('sduration_name');
 
@@ -796,7 +798,7 @@ trait CustomProducts
     /*  ---  Seller Product Links  --- - */
     public function customProductLinks($productId = 0)
     {
-        if (!UserPrivilege::canSellerEditCustomProduct($productId)) {
+        if (!UserPrivilege::canSellerEditCustomProduct($this->userParentId, $productId)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -844,8 +846,9 @@ trait CustomProducts
 
     public function setupProductLinks()
     {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
-        if (!UserPrivilege::canSellerEditCustomProduct($post['product_id'])) {
+        if (!UserPrivilege::canSellerEditCustomProduct($this->userParentId, $post['product_id'])) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -1090,6 +1093,7 @@ trait CustomProducts
 
     public function setupTag()
     {
+        $this->userPrivilege->canEditProductTags(UserAuthentication::getLoggedUserId());
         $frm = $this->getTagsForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
@@ -1100,13 +1104,13 @@ trait CustomProducts
 
         $tag_id = $post['tag_id'];
         if ($tag_id > 0) {
-            if (!UserPrivilege::canSellerUpdateTag($tag_id)) {
+            if (!UserPrivilege::canSellerUpdateTag($this->userParentId, $tag_id)) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
                 FatUtility::dieJsonError(Message::getHtml());
             }
         }
         unset($post['tag_id']);
-        $post['tag_user_id'] = UserAuthentication::getLoggedUserId();
+        $post['tag_user_id'] = $this->userParentId;
         $record = new Tag($tag_id);
         $record->assignValues($post);
 
@@ -1157,14 +1161,14 @@ trait CustomProducts
 
     private function addUpdateProductShippingRates($product_id, $data)
     {
-        $this->removeProductShippingRates($product_id, UserAuthentication::getLoggedUserId());
+        $this->removeProductShippingRates($product_id, $this->userParentId);
 
         if (!empty($data) && count($data) > 0) {
             foreach ($data as $key => $val):
                 if ((isset($val["country_id"]) && $val["country_id"] >= 0 || $val["country_id"] == -1) && $val["company_id"] > 0 && $val["processing_time_id"] > 0) {
                     $prodShipData = array(
                     'pship_prod_id' => $product_id,
-                    'pship_user_id' => UserAuthentication::getLoggedUserId(),
+                    'pship_user_id' => $this->userParentId,
                     'pship_country' => (isset($val["country_id"]) && FatUtility::int($val["country_id"])) ? FatUtility::int($val["country_id"]) : 0,
                     'pship_company' => (isset($val["company_id"]) && FatUtility::int($val["company_id"])) ? FatUtility::int($val["company_id"]) : 0,
                     'pship_duration' => (isset($val["processing_time_id"]) && FatUtility::int($val["processing_time_id"])) ? FatUtility::int($val["processing_time_id"]) : 0,
@@ -1188,7 +1192,7 @@ trait CustomProducts
     {
         $productSellerShiping = array();
         $productSellerShiping['ps_product_id'] = $product_id;
-        $productSellerShiping['ps_user_id'] = UserAuthentication::getLoggedUserId();
+        $productSellerShiping['ps_user_id'] = $this->userParentId;
         $productSellerShiping['ps_from_country_id'] = $data_to_be_save['ps_from_country_id'];
         $productSellerShiping['ps_free'] = $data_to_be_save['ps_free'];
         if (!FatApp::getDb()->insertFromArray(PRODUCT::DB_TBL_PRODUCT_SHIPPING, $productSellerShiping, false, array(), $productSellerShiping)) {
@@ -1228,7 +1232,7 @@ trait CustomProducts
 
         $brandReqId = $post['brand_id'];
         if ($brandReqId > 0) {
-            if (!UserPrivilege::canSellerUpdateBrandRequest($brandReqId)) {
+            if (!UserPrivilege::canSellerUpdateBrandRequest($this->userParentId, $brandReqId)) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
                 FatUtility::dieJsonError(Message::getHtml());
             }
@@ -1240,7 +1244,7 @@ trait CustomProducts
             $post['brand_status'] = applicationConstants::YES;
         }
 
-        $post['brand_seller_id'] = UserAuthentication::getLoggedUserId();
+        $post['brand_seller_id'] = $this->userParentId;
         $record = new Brand($brandReqId);
         $record->assignValues($post);
 
@@ -1307,7 +1311,7 @@ trait CustomProducts
 
         $brandDetails = Brand::getAttributesById($brandReqId);
 
-        if ($brandDetails['brand_seller_id'] != UserAuthentication::getLoggedUserId()) {
+        if ($brandDetails['brand_seller_id'] != $this->userParentId) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -1365,7 +1369,7 @@ trait CustomProducts
         }
         $brandDetails = Brand::getAttributesById($brandReqId);
 
-        if ($brandDetails['brand_seller_id'] != UserAuthentication::getLoggedUserId()) {
+        if ($brandDetails['brand_seller_id'] != $this->userParentId) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -1402,7 +1406,7 @@ trait CustomProducts
     {
         $brandDetails = Brand::getAttributesById($brand_id);
 
-        if ($brandDetails['brand_seller_id'] != UserAuthentication::getLoggedUserId()) {
+        if ($brandDetails['brand_seller_id'] != $this->userParentId) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -1490,7 +1494,7 @@ trait CustomProducts
 
         $brandDetails = Brand::getAttributesById($brand_id);
 
-        if ($brandDetails['brand_seller_id'] != UserAuthentication::getLoggedUserId()) {
+        if ($brandDetails['brand_seller_id'] != $this->userParentId) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -1581,7 +1585,7 @@ trait CustomProducts
 
     private function getLinksForm($product_id = 0)
     {
-        if (!UserPrivilege::canSellerEditCustomProduct($product_id)) {
+        if (!UserPrivilege::canSellerEditCustomProduct($this->userParentId, $product_id)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -1741,19 +1745,20 @@ trait CustomProducts
 
     public function customProductForm($prodId = 0)
     {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
         $prodId = FatUtility::int($prodId);
-        if (0 == $prodId && FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && Product::getActiveCount(UserAuthentication::getLoggedUserId()) >= SellerPackages::getAllowedLimit(UserAuthentication::getLoggedUserId(), $this->siteLangId, 'spackage_products_allowed')) {
+        if (0 == $prodId && FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && Product::getActiveCount($this->userParentId) >= SellerPackages::getAllowedLimit($this->userParentId, $this->siteLangId, 'spackage_products_allowed')) {
             Message::addErrorMessage(Labels::getLabel("MSG_You_have_crossed_your_package_limit.", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
         }
-        if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
+        if (!$this->isShopActive($this->userParentId, 0, true)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
         }
         if (!User::canAddCustomProduct()) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'customProduct'));
         }
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
         }
@@ -1769,7 +1774,7 @@ trait CustomProducts
     public function customProductGeneralForm($productId)
     {
         $productId = FatUtility::int($productId);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         if ($productId > 0) {
             $productRow = Product::getAttributesById($productId, ['product_seller_id']);
             if ($productRow['product_seller_id'] != $userId) {
@@ -1847,7 +1852,8 @@ trait CustomProducts
 
     public function setupCustomProduct()
     {
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             FatUtility::dieWithError(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
         }
         if (!User::canAddCustomProduct()) {
@@ -1860,26 +1866,26 @@ trait CustomProducts
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         if($post['product_brand_id'] < 1 && FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)){
-            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Brand_From_List', $this->siteLangId)); 
+            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Brand_From_List', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
         if($post['ptc_prodcat_id'] < 1){
-            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Category_From_List', $this->siteLangId)); 
+            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Category_From_List', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         if ($productId > 0) {
             $prodSellerId = Product::getAttributesById($productId, 'product_seller_id');
-            if ($prodSellerId != UserAuthentication::getLoggedUserId()) {
+            if ($prodSellerId != $this->userParentId) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             }
         }
 
         $data = $post;
         if ($productId == 0) {
-            $data['product_seller_id'] = UserAuthentication::getLoggedUserId();
+            $data['product_seller_id'] = $this->userParentId;
             $prodRequireAdminApproval = FatApp::getConfig("CONF_CUSTOM_PRODUCT_REQUIRE_ADMIN_APPROVAL", FatUtility::VAR_INT, 1);
             $data['product_approved'] = ($prodRequireAdminApproval == 1) ? 0 : 1;
         }
@@ -1900,7 +1906,7 @@ trait CustomProducts
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if (!$prod->saveProductTax($post['ptt_taxcat_id'], UserAuthentication::getLoggedUserId())) {
+        if (!$prod->saveProductTax($post['ptt_taxcat_id'], $this->userParentId)) {
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -1914,14 +1920,14 @@ trait CustomProducts
 
     public function productAttributeAndSpecificationsFrm($productId)
     {
-        if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
+        if (!$this->isShopActive($this->userParentId, 0, true)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
         }
         if (!User::canAddCustomProduct()) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'customProduct'));
         }
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
         }
@@ -1952,7 +1958,8 @@ trait CustomProducts
 
     public function setUpProductAttributes()
     {
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             FatUtility::dieWithError(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
         }
         if (!User::canAddCustomProduct()) {
@@ -1966,7 +1973,7 @@ trait CustomProducts
             FatUtility::dieWithError(Message::getHtml());
         }
         $prodData = Product::getAttributesById($productId, array('product_seller_id', 'product_type'));
-        if ($prodData['product_seller_id'] != UserAuthentication::getLoggedUserId()) {
+        if ($prodData['product_seller_id'] != $this->userParentId) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
 
@@ -2004,7 +2011,7 @@ trait CustomProducts
 
     public function prodSpecForm($productId)
     {
-        if (!UserPrivilege::canSellerEditCustomProduct($productId)) {
+        if (!UserPrivilege::canSellerEditCustomProduct($this->userParentId, $productId)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -2034,7 +2041,7 @@ trait CustomProducts
     {
         $productId = FatApp::getPostedData('product_id', FatUtility::VAR_INT, 0);
         $langId = FatApp::getPostedData('langId', FatUtility::VAR_INT, 0);
-        if (!UserPrivilege::canSellerEditCustomProduct($productId)) {
+        if (!UserPrivilege::canSellerEditCustomProduct($this->userParentId, $productId)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -2058,11 +2065,11 @@ trait CustomProducts
         $post = FatApp::getPostedData();
         $productId = FatApp::getPostedData('product_id', FatUtility::VAR_INT, 0);
         $prodSpecId = FatApp::getPostedData('prodSpecId', FatUtility::VAR_INT, 0);
-        if (!UserPrivilege::canSellerEditCustomProduct($productId)) {
+        if (!UserPrivilege::canSellerEditCustomProduct($this->userParentId, $productId)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             FatUtility::dieWithError(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
         }
         if ($prodSpecId > 0) {
@@ -2102,14 +2109,14 @@ trait CustomProducts
 
     public function productOptionsAndTag($productId)
     {
-        if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
+        if (!$this->isShopActive($this->userParentId, 0, true)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
         }
         if (!User::canAddCustomProduct()) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'customProduct'));
         }
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
         }
@@ -2131,7 +2138,7 @@ trait CustomProducts
     public function upcListing($productId)
     {
         $productId = FatUtility::int($productId);
-        if (!UserPrivilege::canSellerEditCustomProduct($productId)) {
+        if (!UserPrivilege::canSellerEditCustomProduct($this->userParentId, $productId)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -2148,10 +2155,11 @@ trait CustomProducts
 
     public function updateProductTag()
     {
+        $this->userPrivilege->canEditProductTags(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $productId = FatApp::getPostedData('product_id', FatUtility::VAR_INT, 0);
         $tagId = FatApp::getPostedData('tag_id', FatUtility::VAR_INT, 0);
-        if (!UserPrivilege::canSellerEditCustomProduct($productId)) {
+        if (!UserPrivilege::canSellerEditCustomProduct($this->userParentId, $productId)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -2173,10 +2181,11 @@ trait CustomProducts
 
     public function removeProductTag()
     {
+        $this->userPrivilege->canEditProductTags(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $productId = FatApp::getPostedData('product_id', FatUtility::VAR_INT, 0);
         $tagId = FatApp::getPostedData('tag_id', FatUtility::VAR_INT, 0);
-        if (!UserPrivilege::canSellerEditCustomProduct($productId)) {
+        if (!UserPrivilege::canSellerEditCustomProduct($this->userParentId, $productId)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -2199,14 +2208,14 @@ trait CustomProducts
 
     public function productShippingFrm($productId)
     {
-        if (!$this->isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
+        if (!$this->isShopActive($this->userParentId, 0, true)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
         }
         if (!User::canAddCustomProduct()) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'customProduct'));
         }
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
         }
@@ -2251,7 +2260,8 @@ trait CustomProducts
     }
     public function setUpProductShipping()
     {
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             FatUtility::dieWithError(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
         }
         if (!User::canAddCustomProduct()) {
@@ -2265,7 +2275,7 @@ trait CustomProducts
             FatUtility::dieWithError(Message::getHtml());
         }
         $prodSellerId = Product::getAttributesById($productId, 'product_seller_id');
-        if ($prodSellerId != UserAuthentication::getLoggedUserId()) {
+        if ($prodSellerId != $this->userParentId) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
 
