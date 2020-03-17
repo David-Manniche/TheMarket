@@ -13,7 +13,8 @@ $langFld->addFieldTagAttribute('class', 'language-js');
 $img_fld = $imagesFrm->getField('prod_image');
 $img_fld->addFieldTagAttribute('onChange', 'popupImage(this)');
 ?>
-<div class="tabs_data">
+<div id="cropperBox-js"></div>
+<div class="tabs_data" id="mediaForm-js">
      <div class="tabs_body">
         <?php echo $imagesFrm->getFormHtml(); ?>
         <div id="imageupload_div"></div>

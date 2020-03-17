@@ -740,6 +740,7 @@ class SellerController extends SellerBaseController
         $this->set('canRequestProduct', User::canRequestProduct());
         $this->set('canAddCustomProduct', User::canAddCustomProduct());
         $this->set('canAddCustomProductAvailableToAllSellers', User::canAddCustomProductAvailableToAllSellers());
+        $this->_template->addJs(array('js/cropper.js', 'js/cropper-main.js'));
         $this->_template->render(true, true);
     }
 
