@@ -238,4 +238,5 @@ New Features:
     => 71189 - Sub users for Seller
     
 Bug :    
-    035536 - Buy together/related items> getting random data saved
+    => 035536 - Buy together/related items> getting random data saved
+    => 035534 - seller> buy together/ related products> on editing and removing associated item and saving> the deleted items are still displaying there
