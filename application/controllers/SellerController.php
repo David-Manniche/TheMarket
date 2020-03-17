@@ -17,7 +17,7 @@ class SellerController extends SellerBaseController
 
     public function index()
     {
-        $this->userPrivilege->canViewSellerDashboard(UserAuthentication::getLoggedUserId());
+        // $this->userPrivilege->canViewSellerDashboard(UserAuthentication::getLoggedUserId());
         $userId = $this->userParentId;
         $user = new User($userId);
         $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] = 'S';

@@ -875,7 +875,7 @@ class AccountController extends LoggedUserController
 
         $userId = UserAuthentication::getLoggedUserId();
 
-        $data = User::getAttributesById($userId, array('user_preferred_dashboard', 'user_registered_initially_for'));
+        $data = User::getAttributesById($userId, array('user_preferred_dashboard', 'user_registered_initially_for', 'user_parent'));
         if ($data === false) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
@@ -887,6 +887,7 @@ class AccountController extends LoggedUserController
 
         $payoutPlugins = Plugin::getNamesWithCode(Plugin::TYPE_PAYOUTS, $this->siteLangId);
 
+        $this->set('userParentId', $data['user_parent']);
         $this->set('payouts', $payoutPlugins);
         $this->set('showSellerActivateButton', $showSellerActivateButton);
         $this->set('userPreferredDashboard', $data['user_preferred_dashboard']);

@@ -14,6 +14,10 @@ trait SellerUsers
 
     public function users()
     {
+        if ($this->userParentId != UserAuthentication::getLoggedUserId()) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Unauthorized_Access!', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
         $this->set('frmSearch', $this->getUserSearchForm());
         $this->_template->render(true, true);
     }
@@ -114,6 +118,10 @@ trait SellerUsers
 
     public function setupSubUser()
     {
+        if ($this->userParentId != UserAuthentication::getLoggedUserId()) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Unauthorized_Access!', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
         $post = FatApp::getPostedData();
 
         $userId = $post['user_id'];
@@ -181,6 +189,10 @@ trait SellerUsers
 
     public function changeUserStatus()
     {
+        if ($this->userParentId != UserAuthentication::getLoggedUserId()) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Unauthorized_Access!', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
         $userId = FatApp::getPostedData('userId', FatUtility::VAR_INT, 0);
         $status = FatApp::getPostedData('status', FatUtility::VAR_INT, 0);
         $userData = User::getAttributesById($userId);
@@ -197,6 +209,10 @@ trait SellerUsers
 
     public function toggleSellerUserStatus()
     {
+        if ($this->userParentId != UserAuthentication::getLoggedUserId()) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Unauthorized_Access!', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
         $status = FatApp::getPostedData('status', FatUtility::VAR_INT, -1);
         $userIdsArr = FatUtility::int(FatApp::getPostedData('user_ids'));
         if (empty($userIdsArr) || -1 == $status) {
@@ -218,6 +234,10 @@ trait SellerUsers
 
     private function updateUserStatus($userId, $status)
     {
+        if ($this->userParentId != UserAuthentication::getLoggedUserId()) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Unauthorized_Access!', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
         $status = FatUtility::int($status);
         $userId = FatUtility::int($userId);
         if (1 > $userId || -1 == $status) {
@@ -264,6 +284,10 @@ trait SellerUsers
 
     public function updateUserPassword()
     {
+        if ($this->userParentId != UserAuthentication::getLoggedUserId()) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Unauthorized_Access!', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
         $post = FatApp::getPostedData();
         $userId = $post['user_id'];
         $frm = $this->getChangePasswordForm($userId);
@@ -351,6 +375,10 @@ trait SellerUsers
 
     public function updatePermission($moduleId, $permission)
     {
+        if ($this->userParentId != UserAuthentication::getLoggedUserId()) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Unauthorized_Access!', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
         $moduleId = FatUtility::int($moduleId);
         $permission = FatUtility::int($permission);
 
