@@ -534,7 +534,8 @@ class CustomProductsController extends AdminBaseController
         }
         $preqId = $post['preq_id'];
         $status = $post['preq_status'];
-        $update_withselprod = $post['preq_update_withselprod'];
+        //$update_withselprod = $post['preq_update_withselprod'];
+        $update_withselprod = 0;
 
         $srch = ProductRequest::getSearchObject($this->adminLangId);
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = preq.preq_user_id', 'u');
@@ -545,7 +546,7 @@ class CustomProductsController extends AdminBaseController
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $data = $db->fetch($rs);
-
+        
         if ($data == false || $data['preq_deleted'] == applicationConstants::YES || $data['preq_status'] == ProductRequest::STATUS_APPROVED) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
@@ -924,7 +925,8 @@ class CustomProductsController extends AdminBaseController
                     if(!empty($prodSpecData['prod_spec_name'][$langId])){
                         foreach ($prodSpecData['prod_spec_name'][$langId] as $specKey => $specval) {
                             $prod = new Product($product_id);
-                            if (!$prod->saveProductSpecifications(0, $langId, $prodSpecData['prod_spec_name'][$langId][$specKey], $prodSpecData['prod_spec_value'][$langId][$specKey], $prodSpecData['prod_spec_group'][$langId][$specKey])) {
+                            $prodSpecGroup = !empty($prodSpecData['prod_spec_group'][$langId][$specKey]) ? $prodSpecData['prod_spec_group'][$langId][$specKey] : '';
+                            if (!$prod->saveProductSpecifications(0, $langId, $prodSpecData['prod_spec_name'][$langId][$specKey], $prodSpecData['prod_spec_value'][$langId][$specKey], $prodSpecGroup)) {
                                 Message::addErrorMessage($prod->getError());
                                 FatUtility::dieWithError(Message::getHtml());
                             }
@@ -945,7 +947,9 @@ class CustomProductsController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_Email_could_not_be_Sent', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        Product::updateMinPrices($product_id);
+        if ($status == ProductRequest::STATUS_APPROVED) {
+            Product::updateMinPrices($product_id);
+        }
         $db->commitTransaction();
         $this->set('msg', Labels::getLabel('MSG_Status_updated_successfully', $this->adminLangId));
         $this->set('preq_id', $preqId);
@@ -1283,8 +1287,8 @@ class CustomProductsController extends AdminBaseController
         $frm->addHiddenField('', 'preq_id', $preqId);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $langId, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Product_Name', $this->adminLangId), 'product_name');
-        $frm->addRequiredField(Labels::getLabel('LBL_Seller_Product_Title', $this->adminLangId), 'selprod_title');
-        $frm->addTextBox(Labels::getLabel('LBL_Any_extra_comment_for_buyer', $this->adminLangId), 'selprod_comments');
+        /* $frm->addRequiredField(Labels::getLabel('LBL_Seller_Product_Title', $this->adminLangId), 'selprod_title');
+        $frm->addTextBox(Labels::getLabel('LBL_Any_extra_comment_for_buyer', $this->adminLangId), 'selprod_comments'); */
         $frm->addHtmlEditor(Labels::getLabel('LBL_Description', $this->adminLangId), 'product_description');
         $frm->addTextBox(Labels::getLabel('LBL_YouTube_Video', $this->adminLangId), 'product_youtube_video');
 
@@ -1308,7 +1312,7 @@ class CustomProductsController extends AdminBaseController
         unset($statusArr[ProductRequest::STATUS_PENDING]);
         $frm->addSelectBox(Labels::getLabel('LBL_Select_Status', $this->adminLangId), 'preq_status', $statusArr, '', array(), 'Select')->requirements()->setRequired();
 
-        $frm->addCheckbox(Labels::getLabel('LBL_Move_seller_data_along_with_catalog_request_data', $this->adminLangId), 'preq_update_withselprod', 1, array(), true, 0);
+        /*$frm->addCheckbox(Labels::getLabel('LBL_Move_seller_data_along_with_catalog_request_data', $this->adminLangId), 'preq_update_withselprod', 1, array(), true, 0);*/
         $frm->addHiddenField('', 'preq_id');
         $frm->addTextArea('', 'preq_comment', '');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));

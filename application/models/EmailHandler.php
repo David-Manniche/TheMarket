@@ -623,7 +623,7 @@ class EmailHandler extends FatModel
         '{prod_title}' => isset($d['preq_content']) ? (json_decode($d['preq_content'], true))['product_identifier'] : '',
         );
 
-        $receipentsInfo = User::getSubUsersReceipents($d['user_id'], 'canViewProducts');
+        $receipentsInfo = User::getSubUsersReceipents($d['preq_user_id'], 'canViewProducts');
         $bccEmails = $receipentsInfo['email'];
         if (!self::sendMailTpl($d['credential_email'], $tpl, $langId, $vars, '', 0, array(), $bccEmails)) {
             return false;
