@@ -2844,7 +2844,7 @@ class SellerController extends SellerBaseController
     public function socialPlatformSearch()
     {
         $this->userPrivilege->canViewShop(UserAuthentication::getLoggedUserId());
-        $srch = SocialPlatform::getSearchObject($this->siteLangId);
+        $srch = SocialPlatform::getSearchObject($this->siteLangId, false);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addCondition('splatform_user_id', '=', $this->userParentId);
@@ -3013,7 +3013,7 @@ class SellerController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $srch = SocialPlatform::getSearchObject($this->siteLangId);
+        $srch = SocialPlatform::getSearchObject($this->siteLangId, false);
         $srch->addCondition('splatform_user_id', '=', $userId);
         $srch->addCondition('splatform_id', '=', $splatformId);
         $rs = $srch->getResultSet();
@@ -3031,6 +3031,38 @@ class SellerController extends SellerBaseController
         }
 
         FatUtility::dieJsonSuccess(Labels::getLabel("MSG_Social_Platform_deleted!", $this->siteLangId));
+    }
+
+    public function changeSocialPlatformStatus()
+    {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
+        $socialPlatformId = FatApp::getPostedData('socialPlatformId', FatUtility::VAR_INT, 0);
+
+        $data = SocialPlatform::getAttributesById($socialPlatformId, array('splatform_id', 'splatform_active'));
+
+        $status = ($data['splatform_active'] == applicationConstants::ACTIVE) ? applicationConstants::INACTIVE : applicationConstants::ACTIVE;
+
+        $this->updateSocialPlatformStatus($socialPlatformId, $status);
+
+        $this->set('msg', Labels::getLabel('MSG_Status_changed_Successfully', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    private function updateSocialPlatformStatus($socialPlatformId, $status)
+    {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
+        $socialPlatformId = FatUtility::int($socialPlatformId);
+        $status = FatUtility::int($status);
+        if (1 > $socialPlatformId || -1 == $status) {
+            FatUtility::dieWithError(
+                Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId)
+            );
+        }
+        $splatform = new SocialPlatform($socialPlatformId);
+        if (!$splatform->changeStatus($status)) {
+            Message::addErrorMessage($splatform->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
     }
 
     public function sellerProductsAutoComplete()

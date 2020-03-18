@@ -17,7 +17,8 @@
     <?php $arr_flds = array(
         'listserial'=>Labels::getLabel('LBL_Sr._no.', $siteLangId),
         'splatform_identifier'=>Labels::getLabel('LBL_Title', $siteLangId),
-        'splatform_url'    =>    Labels::getLabel('LBL_URL', $siteLangId)
+        'splatform_url'    =>    Labels::getLabel('LBL_URL', $siteLangId),
+        'splatform_active'    =>    Labels::getLabel('LBL_Status', $siteLangId)
     );
     if ($canEdit) {
         $arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId);
@@ -47,6 +48,17 @@
                         $td->appendElement('plaintext', array(), $row[$key], true);
                     }
                 break;
+                case 'splatform_active':
+                    /* $td->appendElement( 'plaintext', array(), $activeInactiveArr[$row[$key]],true ); */
+                    $active = "";
+                    if (applicationConstants::ACTIVE == $row['splatform_active']) {
+                        $active = 'checked';
+                    }
+                    $checked = (!$canEdit) ? 'disabled' : $active;
+                    $str = '<label class="toggle-switch" for="switch'.$row['splatform_id'].'"><input '.$checked.' type="checkbox" value="'.$row['splatform_id'].'" id="switch'.$row['splatform_id'].'" onclick="toggleSocialPlatformStatus(event,this)"/><div class="slider round"></div></label>';
+
+                    $td->appendElement('plaintext', array(), $str, true);
+                    break;
                 case 'action':
                     $ul = $td->appendElement("ul", array("class"=>"actions"));
                     $li = $ul->appendElement("li");

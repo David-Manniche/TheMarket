@@ -206,6 +206,7 @@ trait SellerCollections
 
     public function changeShopCollectionStatus()
     {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
         $scollectionId = FatApp::getPostedData('scollection_id', FatUtility::VAR_INT, 0);
         $shopId = $this->commonShopCollection();
         $shopcolDetails = ShopCollection::getCollectionGeneralDetail($shopId, $scollectionId);
@@ -219,6 +220,7 @@ trait SellerCollections
 
     public function toggleBulkCollectionStatuses()
     {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
         $this->commonShopCollection();
         $status = FatApp::getPostedData('collection_status', FatUtility::VAR_INT, -1);
         $scollectionIdsArr = FatUtility::int(FatApp::getPostedData('scollection_ids'));
@@ -241,6 +243,7 @@ trait SellerCollections
 
     private function updateShopCollectionStatus($scollectionId, $status)
     {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
         $scollectionId = FatUtility::int($scollectionId);
         $status = FatUtility::int($status);
         if (1 > $scollectionId || -1 == $status) {

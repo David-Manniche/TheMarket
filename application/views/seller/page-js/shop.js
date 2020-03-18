@@ -411,13 +411,25 @@ $(document).on('change', '.collection-language-js', function() {
 		searchSocialPlatforms();
 	};
 
-
-
-
-
-
-
-
+    toggleSocialPlatformStatus = function(e, obj) {
+        if (!confirm(langLbl.confirmUpdateStatus)) {
+            e.preventDefault();
+            return;
+        }
+        var socialPlatformId = parseInt(obj.value);
+        if (socialPlatformId < 1) {
+            return false;
+        }
+        data = 'socialPlatformId=' + socialPlatformId;
+        fcom.ajax(fcom.makeUrl('Seller', 'changeSocialPlatformStatus'), data, function(res) {
+            var ans = $.parseJSON(res);
+            if (ans.status == 1) {
+                $.mbsmessage(ans.msg, true, 'alert--success');
+            } else {
+                $.mbsmessage(ans.msg, true, 'alert--danger');
+            }
+        });
+    };
 
     resetDefaultCurrentTemplate = function() {
         var agree = confirm(langLbl.confirmReset);
