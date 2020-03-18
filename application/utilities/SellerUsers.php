@@ -57,7 +57,10 @@ trait SellerUsers
         $frm = new Form('frmSocialPlatform');
         $frm->addHiddenField('', 'user_id', $userId);
         $frm->addRequiredField(Labels::getLabel('LBL_Full_Name', $this->siteLangId), 'user_name');
-        $frm->addRequiredField(Labels::getLabel('LBL_Username', $this->siteLangId), 'user_username');
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_Username', $this->siteLangId), 'user_username');
+        $fld->setUnique('tbl_user_credentials', 'credential_username', 'credential_user_id', 'user_id', 'user_id');
+        $fld->requirements()->setRequired();
+        $fld->requirements()->setUsername();
         $fld = $frm->addEmailField(Labels::getLabel('LBL_User_Email', $this->siteLangId), 'user_email', '');
         $fld->setUnique('tbl_user_credentials', 'credential_email', 'credential_user_id', 'user_id', 'user_id');
         $frm->addRequiredField(Labels::getLabel('LBL_Phone', $this->siteLangId), 'user_phone');
