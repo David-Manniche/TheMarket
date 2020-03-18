@@ -7,10 +7,12 @@ $arr_flds = array(
     //'attrgrp_name' => Labels::getLabel('LBL_Attribute_Group', $siteLangId),
     'product_model' => Labels::getLabel('LBL_Model', $siteLangId),
     'product_active' => Labels::getLabel('LBL_Status', $siteLangId),
-    'product_approved' => Labels::getLabel('LBL_Admin_Approval', $siteLangId),
-    'product_shipped_by' => Labels::getLabel('LBL_Shipped_by_me', $siteLangId),
-    'action' => Labels::getLabel('LBL_Action', $siteLangId)
+    'product_approved' => Labels::getLabel('LBL_Admin_Approval', $siteLangId)
 );
+if ($canEdit) {
+    $arr_flds['product_shipped_by'] = Labels::getLabel('LBL_Shipped_by_me', $siteLangId);
+}
+$arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId);
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
