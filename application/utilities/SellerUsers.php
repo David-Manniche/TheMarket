@@ -154,12 +154,6 @@ trait SellerUsers
 
         $post['user_dial_code'] = $dialCode;
         $post['user_phone'] = isset($post['user_phone']) ? FatUtility::int(str_replace($post['user_dial_code'], "", $post['user_phone'])) : null;
-        $post['user_preferred_dashboard'] = User::USER_SELLER_DASHBOARD;
-        $post['user_registered_initially_for'] = User::USER_TYPE_SELLER;
-        $post['user_is_supplier'] = 1;
-        $post['user_is_advertiser'] = 1;
-        $post['user_active'] = 1;
-        $post['user_verify'] = 1;
         $post['user_parent'] = UserAuthentication::getLoggedUserId();
         $post['user_state_id'] = $user_state_id;
 
@@ -172,9 +166,19 @@ trait SellerUsers
             $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
             FatUtility::dieWithError($message);
         }
-
-        $password = (0 < $userId) ? null : $post['user_password'];
-        if (!$userObj->setLoginCredentials($post['user_username'], $post['user_email'], $password, $post['user_active'], $post['user_verify'])) {
+        if (0 < $userId) {
+            $post['user_password'] = null;
+            $post['user_verify'] = null;
+        } else {
+            $post['user_registered_initially_for'] = User::USER_TYPE_SELLER;
+            $post['user_preferred_dashboard'] = User::USER_SELLER_DASHBOARD;
+            $post['user_is_supplier'] = applicationConstants::YES;
+            $post['user_is_advertiser'] = applicationConstants::YES;
+            $post['user_verify'] = applicationConstants::YES;
+            $post['user_active'] = applicationConstants::ACTIVE;
+        }
+        
+        if (!$userObj->setLoginCredentials($post['user_username'], $post['user_email'], $post['user_password'], $post['user_active'], $post['user_verify'])) {
             $db->rollbackTransaction();
             $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
             FatUtility::dieWithError($message);
