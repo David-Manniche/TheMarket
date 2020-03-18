@@ -52,7 +52,7 @@ foreach ($vendorOrdersList as $sn=>$row){  /* CommonHelper::printArray($row); */
 			break;
 			case 'order_net_amount':
 				$amt = CommonHelper::orderProductAmount($row,'netamount',false,User::USER_TYPE_SELLER);
-				$td->appendElement('plaintext', array(), CommonHelper::displayMoneyFormat($amt, true, true) );
+				$td->appendElement('plaintext', array(), CommonHelper::displayMoneyFormat($amt, true, true), true );
 			break;
 			case 'op_status_id':
 				$td->appendElement('plaintext', array(), $row['orderstatus_name'], true);

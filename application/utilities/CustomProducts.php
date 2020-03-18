@@ -401,10 +401,13 @@ trait CustomProducts
         $imgTypesArr = $this->getSeparateImageOptions($product_id, $this->siteLangId);
 
         $productType = Product::getAttributesById($product_id, 'product_type');
-
+        
+        $hideButtons = FatApp::getPostedData('hideButtons', FatUtility::VAR_INT, 0);
+        
         $this->set('product_id', $product_id);
         $this->set('imagesFrm', $imagesFrm);
         $this->set('productType', $productType);
+        $this->set('hideButtons', $hideButtons);
         $this->_template->render(false, false);
     }
 

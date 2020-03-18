@@ -1327,6 +1327,11 @@ class Orders extends MyAppModel
             return false;
         }
         $commentId = $db->getInsertId();
+        
+        // If order status is in buyer order statuses then send update email
+        if (in_array($opStatusId, unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS"))) && $notify) {
+            $emailNotificationObj->orderStatusUpdateBuyer($commentId, $childOrderInfo['order_language_id'], $childOrderInfo['order_user_id']);
+        }
 
         // If current order status is not paid up but new status is paid then commence updating the product's weightage
         if (!in_array($childOrderInfo['op_status_id'], (array)FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS")) && in_array($opStatusId, (array)FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS")) && strtolower($childOrderInfo['pmethod_code']) != "cashondelivery") {
@@ -1743,10 +1748,7 @@ class Orders extends MyAppModel
             Cronjob::firstTimeBuyerDiscount($childOrderInfo['order_user_id'], $childOrderInfo['op_order_id']);
         }
 
-        // If order status is in buyer order statuses then send update email
-        if (in_array($opStatusId, unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS"))) && $notify) {
-            $emailNotificationObj->orderStatusUpdateBuyer($commentId, $childOrderInfo['order_language_id'], $childOrderInfo['order_user_id']);
-        }
+        
         return true;
     }
 

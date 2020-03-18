@@ -1078,7 +1078,7 @@ class AccountController extends LoggedUserController
             unset($post['user_id']);
         }
 
-        if (isset($post['user_phone'])) {
+        if (isset($post['user_phone']) && true == SmsArchive::canSendSms()) {
             unset($post['user_phone']);
         }
 
@@ -1086,7 +1086,7 @@ class AccountController extends LoggedUserController
             unset($post['user_dob']);
         }
 
-        unset($post['credential_username'], $post['credential_email'], $post['user_phone']);
+        unset($post['credential_username'], $post['credential_email']);
 
         /* saving user extras[ */
         if (User::isAffiliate()) {
@@ -1112,6 +1112,10 @@ class AccountController extends LoggedUserController
         }
         /* ] */
 
+        if (false == SmsArchive::canSendSms()) {
+            $post['user_dial_code'] = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
+            $countryIso = FatApp::getPostedData('user_country_iso', FatUtility::VAR_STRING, '');
+        }
 
         $userObj = new User($userId);
         $userObj->assignValues($post);
@@ -1119,6 +1123,14 @@ class AccountController extends LoggedUserController
             $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
             FatUtility::dieJsonError($message);
         }
+
+        if (false == SmsArchive::canSendSms()) {
+            $user = clone $userObj;
+            if (false === $user->updateUserMeta('user_country_iso', $countryIso)) {
+                LibHelper::dieJsonError($user->getError());
+            }
+        }
+
         $this->set('msg', Labels::getLabel('MSG_Updated_Successfully', $this->siteLangId));
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();

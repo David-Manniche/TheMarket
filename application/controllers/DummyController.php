@@ -333,6 +333,8 @@ class DummyController extends MyAppController
 
     public function index()
     {
+        $img = AttachedFile::getAttachment(AttachedFile::FILETYPE_SOCIAL_PLATFORM_IMAGE,12); 
+        var_dump($img);  exit;
     }
 
 

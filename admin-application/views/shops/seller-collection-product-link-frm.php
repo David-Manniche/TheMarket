@@ -32,6 +32,10 @@ if (isset($scollection_id) && $scollection_id >0) {
          $sellerCollectionproductLinkFrm->developerTags['colClassPrefix'] = 'col-md-';
         $sellerCollectionproductLinkFrm->developerTags['fld_default_col'] = 12;
         $sellerCollectionproductLinkFrm->addHiddenField('', 'shop_id', $shop_id);
+        
+        $fld = $sellerCollectionproductLinkFrm->getField('scp_selprod_id');
+        $fld->setWrapperAttribute('class', 'ui-front');
+                
         echo $sellerCollectionproductLinkFrm->getFormHtml(); ?>
     </div>
 </div>

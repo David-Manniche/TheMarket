@@ -13,11 +13,14 @@ $langFld->addFieldTagAttribute('class', 'language-js');
 $img_fld = $imagesFrm->getField('prod_image');
 $img_fld->addFieldTagAttribute('onChange', 'popupImage(this)');
 ?>
-<div class="tabs_data">
+<div id="cropperBox-js"></div>
+<div class="tabs_data" id="mediaForm-js">
      <div class="tabs_body">
         <?php echo $imagesFrm->getFormHtml(); ?>
         <div id="imageupload_div"></div>
     </div>
+    
+    <?php if($hideButtons == 0) { ?>
     <div class="row web_form tabs_footer">
         <div class="col-6">
             <div class="field-set">
@@ -45,4 +48,5 @@ $img_fld->addFieldTagAttribute('onChange', 'popupImage(this)');
             </div>
         </div>
     </div>
+    <?php } ?>
 </div>

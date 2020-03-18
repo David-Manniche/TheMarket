@@ -230,13 +230,14 @@
             <!--Mobile Application-->
             <?php if (
                 $objPrivilege->canViewPushNotification(AdminAuthentication::getLoggedAdminId(), true) ||
-                $objPrivilege->canViewAppThemeSettings(AdminAuthentication::getLoggedAdminId(), true) ||
-                $objPrivilege->canViewSmsTemplate(AdminAuthentication::getLoggedAdminId(), true)
+                $objPrivilege->canViewAppThemeSettings(AdminAuthentication::getLoggedAdminId(), true)
                 ) { ?>
                 <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_MOBILE_APPS', $adminLangId);?></a>
                     <ul>
 
-                        <?php if ($objPrivilege->canViewPushNotification(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                        <?php 
+                        $active = (new Plugin())->getDefaultPluginData(Plugin::TYPE_PUSH_NOTIFICATION, 'plugin_active');
+                        if ($objPrivilege->canViewPushNotification(AdminAuthentication::getLoggedAdminId(), true) && false != $active && !empty($active)) {?>
                             <li>
                                 <a href="<?php echo CommonHelper::generateUrl('PushNotifications'); ?>">
                                     <?php echo Labels::getLabel('LBL_PUSH_NOTIFICATION', $adminLangId);?>
@@ -249,14 +250,7 @@
                                     <?php echo Labels::getLabel('LBL_APP_THEME_SETTINGS', $adminLangId);?>
                                 </a>
                             </li>
-                        <?php } ?>
-                        <?php if ($objPrivilege->canViewSmsTemplate(AdminAuthentication::getLoggedAdminId(), true) && SmsArchive::canSendSms()) {?>
-                            <li>
-                                <a href="<?php echo CommonHelper::generateUrl('SmsTemplates'); ?>">
-                                    <?php echo Labels::getLabel('LBL_SMS_TEMPLATE_MANAGEMENT', $adminLangId);?>
-                                </a>
-                            </li>
-                        <?php } ?>
+                        <?php } ?>                        
                     </ul>
                 </li>
             <?php } ?>
@@ -339,7 +333,8 @@
                 $objPrivilege->canViewDiscountCoupons(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewSellerDiscountCoupons(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewImportInstructions(AdminAuthentication::getLoggedAdminId(), true) ||
-                $objPrivilege->canViewEmailTemplates(AdminAuthentication::getLoggedAdminId(), true) ||
+                $objPrivilege->canViewEmailTemplates(AdminAuthentication::getLoggedAdminId(), true) || 
+                $objPrivilege->canViewSmsTemplate(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewOrderStatus(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewFaqCategories(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewAbusiveWords(AdminAuthentication::getLoggedAdminId(), true)
@@ -369,7 +364,13 @@
                     <?php if ($objPrivilege->canViewEmailTemplates(AdminAuthentication::getLoggedAdminId(), true)) {?>
                         <li><a href="<?php echo CommonHelper::generateUrl('EmailTemplates'); ?>"><?php echo Labels::getLabel('LBL_Email_Templates_Management', $adminLangId);?></a></li>
                     <?php } ?>
-                            
+                    <?php if ($objPrivilege->canViewSmsTemplate(AdminAuthentication::getLoggedAdminId(), true) && SmsArchive::canSendSms()) {?>
+                        <li>
+                            <a href="<?php echo CommonHelper::generateUrl('SmsTemplates'); ?>">
+                                <?php echo Labels::getLabel('LBL_SMS_TEMPLATE_MANAGEMENT', $adminLangId);?>
+                            </a>
+                        </li>
+                    <?php } ?>       
                     <?php if ($objPrivilege->canViewContentPages(AdminAuthentication::getLoggedAdminId(), true)) {?>
                     <li><a href="<?php echo CommonHelper::generateUrl('ContentPages'); ?>"><?php echo Labels::getLabel('LBL_Content_Pages', $adminLangId);?></a></li>
                     <?php } ?>
@@ -611,7 +612,7 @@
                     <ul>
                         <li><a href="<?php echo CommonHelper::generateUrl('sitemap', 'generate'); ?>"><?php echo Labels::getLabel('LBL_Update_Sitemap', $adminLangId);?></a></li>
                         <li><a href="<?php echo CommonHelper::generateFullUrl('custom', 'sitemap', array(), CONF_WEBROOT_FRONT_URL); ?>" target="_blank"><?php echo Labels::getLabel('LBL_View_HTML', $adminLangId);?></a></li>
-                        <li><a href="<?php echo CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL).'/sitemap.xml'; ?>" target="_blank"><?php echo Labels::getLabel('LBL_View_XML', $adminLangId);?></a></li>
+                        <li><a href="<?php echo CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL).'sitemap.xml'; ?>" target="_blank"><?php echo Labels::getLabel('LBL_View_XML', $adminLangId);?></a></li>
                     </ul>
                 </li>
             <?php } ?>

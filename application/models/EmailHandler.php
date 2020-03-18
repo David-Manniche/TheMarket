@@ -139,7 +139,10 @@ class EmailHandler extends FatModel
         $etpl = new FatTemplate('', '');
         $etpl->set('langId', $langId);
         $header = $etpl->render(false, false, '_partial/emails/email-header.php', true);
-        $footer = FatApp::getConfig('CONF_EMAIL_TEMPLATE_FOOTER_HTML' . $langId, FatUtility::VAR_STRING, '');
+        /* */
+        $ftpl = new FatTemplate('', '');
+        $ftpl->set('langId', $langId);
+        $footer = $ftpl->render(false, false, '_partial/emails/email-footer.php', true);
         $subject = $row['etpl_subject'];
         $body = $header . $row['etpl_body'] . $footer;
 
@@ -2441,23 +2444,28 @@ class EmailHandler extends FatModel
         $social_media_icons = '';
         $imgSrc = '';
         foreach ($rows as $row) {
-            $img = AttachedFile::getAttachment(AttachedFile::FILETYPE_SOCIAL_PLATFORM_IMAGE, $row['splatform_id']);
+            $img = AttachedFile::getAttachment(AttachedFile::FILETYPE_SOCIAL_PLATFORM_IMAGE, $row['splatform_id']);            
             $title = ($row['splatform_title'] != '') ? $row['splatform_title'] : $row['splatform_identifier'];
             $target_blank = ($row['splatform_url'] != '') ? 'target="_blank"' : '';
             $url = $row['splatform_url'] != '' ? $row['splatform_url'] : 'javascript:void(0)';
 
-            if ($img) {
-                $imgSrc = CommonHelper::generateFullUrl('Image', 'SocialPlatform', array($row['splatform_id']), CONF_WEBROOT_FRONT_URL);
+            if (!empty($img)) {
+                $uploadedTime = AttachedFile::setTimeParam($img['afile_updated_at']);
+                $imgSrc = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'SocialPlatform', array($row['splatform_id']), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
             } elseif ($row['splatform_icon_class'] != '') {
                 $imgSrc = CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL) . 'images/' . $row['splatform_icon_class'] . '.png';
             }
             $social_media_icons .= '<a style="display:inline-block;vertical-align:top; width:26px;height:26px; margin:0 0 0 5px; background:rgba(255,255,255,0.2); border-radius:100%;padding:4px;" href="' . $url . '" ' . $target_blank . ' title="' . $title . '" ><img alt="' . $title . '" width="24" style="margin:1px auto 0; display:block;" src = "' . $imgSrc . '"/></a>';
         }
 
+
+        $fileRow = AttachedFile::getAttachment(AttachedFile::FILETYPE_EMAIL_LOGO, 0, 0, $langId);
+        $uploadedTime = AttachedFile::setTimeParam($fileRow['afile_updated_at']);
+
         return array(
         '{website_name}' => FatApp::getConfig('CONF_WEBSITE_NAME_' . $langId),
         '{website_url}' => CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL),
-        '{Company_Logo}' => '<img style="max-width:150px" src="' . CommonHelper::generateFullUrl('Image', 'emailLogo', array($langId), CONF_WEBROOT_FRONT_URL) . '" />',
+        '{Company_Logo}' => '<img style="max-width:150px" src="' . FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'emailLogo', array($langId), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg') . '" />',
         '{current_date}' => date('M d, Y'),
         '{social_media_icons}' => $social_media_icons,
         '{contact_us_url}' => CommonHelper::generateFullUrl('custom', 'contactUs', array(), CONF_WEBROOT_FRONT_URL),

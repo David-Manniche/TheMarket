@@ -587,7 +587,7 @@ class CommonHelper extends FatUtility
         return $val;
     }
 
-    public static function displayMoneyFormat($val, $numberFormat = true, $showInConfiguredDefaultCurrency = false, $displaySymbol = true, $stringFormat = false)
+    public static function displayMoneyFormat($val, $numberFormat = true, $showInConfiguredDefaultCurrency = false, $displaySymbol = true, $stringFormat = false, $withHtml = false)
     {
         $val = FatUtility::convertToType($val, FatUtility::VAR_FLOAT);
         $currencyValue = self::getCurrencyValue();
@@ -627,10 +627,10 @@ class CommonHelper extends FatUtility
         if ($displaySymbol) {
             $sign .= ' ';
             
-            if (true === MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL || false === $withHtml) {
                 return trim($sign . $currencySymbolLeft . $val . $currencySymbolRight);
             }
-
+            
             $currencySymbolLeft = !empty($currencySymbolLeft) ? "<span class='currency-symbol'>" . $currencySymbolLeft . "</span>" : $currencySymbolLeft;
             $currencySymbolRight = !empty($currencySymbolRight) ? "<span class='currency-symbol'>" . $currencySymbolRight . "</span>" : $currencySymbolRight;
             return "<span class='currency-value' dir='ltr'>" . trim($sign . $currencySymbolLeft . $val . $currencySymbolRight) . "</span>";

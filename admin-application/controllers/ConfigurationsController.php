@@ -1211,6 +1211,10 @@ class ConfigurationsController extends AdminBaseController
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Google_Push_Notification_API_KEY", $this->adminLangId), 'CONF_GOOGLE_PUSH_NOTIFICATION_API_KEY');
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_api_key_used_in_push_notifications.", $this->adminLangId) . "</small>";
 
+                $frm->addHtml('', 'FaceBookPixel', '<h3>' . Labels::getLabel("LBL_FACEBOOK_PIXEL", $this->adminLangId) . '</h3>');
+
+                $fld = $frm->addTextBox(Labels::getLabel("LBL_FACEBOOK_PIXEL_ID", $this->adminLangId), 'CONF_FACEBOOK_PIXEL_ID');
+                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_THIS_IS_THE_FACEBOOK_PIXEL_ID_USED_IN_TRACK_EVENTS.", $this->adminLangId) . "</small>";
 
                 $frm->addHtml('', 'Engagespot', '<h3>' . Labels::getLabel("LBL_Engagespot_Push_Notifications_(WEB)", $this->adminLangId) . '</h3>');
 
@@ -1576,9 +1580,6 @@ class ConfigurationsController extends AdminBaseController
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Facebook_App_Secret", $this->adminLangId), 'CONF_FACEBOOK_APP_SECRET');
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_Facebook_secret_key_used_for_authentication_and_other_Facebook_related_plugins_support.", $this->adminLangId) . "</small>";
 
-                $fld = $frm->addTextBox(Labels::getLabel("LBL_FACEBOOK_PIXEL_ID", $this->adminLangId), 'CONF_FACEBOOK_PIXEL_ID');
-                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_THIS_IS_THE_FACEBOOK_PIXEL_ID_USED_IN_TRACK_EVENTS.", $this->adminLangId) . "</small>";                
-				
                 $fld = $frm->addTextbox(Labels::getLabel("LBL_Facebook_Post_Title", $this->adminLangId), 'CONF_SOCIAL_FEED_FACEBOOK_POST_TITLE_' . $langId);
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_title_shared_on_facebook", $this->adminLangId) . "</small>";
                 $fld = $frm->addTextbox(Labels::getLabel("LBL_Facebook_Post_Caption", $this->adminLangId), 'CONF_SOCIAL_FEED_FACEBOOK_POST_CAPTION_' . $langId);
