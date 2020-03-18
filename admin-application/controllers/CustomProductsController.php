@@ -41,15 +41,17 @@ class CustomProductsController extends AdminBaseController
 
         $srch = ProductRequest::getSearchObject($this->adminLangId, false, true);
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'preq_user_id = u.user_id', 'u');
-        $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.credential_user_id = u.user_id', 'uc');
+        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', Shop::DB_TBL_PREFIX . 'user_id = u.user_id', 'shop');
+        $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $this->adminLangId, 's_l');
+        /*$srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.credential_user_id = u.user_id', 'uc');*/
         $srch->addOrder('preq_added_on', 'desc');
 
         if (!empty($post['keyword'])) {
             $cond = $srch->addCondition('preq.preq_content', 'like', '%' . $post['keyword'] . '%');
             $cond->attachCondition('preq_l.preq_lang_data', 'like', '%' . $post['keyword'] . '%', 'OR');
             $cond->attachCondition('u.user_name', 'like', '%' . $post['keyword'] . '%', 'OR');
-            $cond->attachCondition('uc.credential_email', 'like', '%' . $post['keyword'] . '%', 'OR');
-            $cond->attachCondition('uc.credential_username', 'like', '%' . $post['keyword'] . '%', 'OR');
+            /*$cond->attachCondition('uc.credential_email', 'like', '%' . $post['keyword'] . '%', 'OR');
+            $cond->attachCondition('uc.credential_username', 'like', '%' . $post['keyword'] . '%', 'OR');*/
         }
 
         if (!empty($post['date_from'])) {
@@ -84,8 +86,9 @@ class CustomProductsController extends AdminBaseController
             'preq_status' => $res['preq_status'],
             'user_id' => $res['user_id'],
             'user_name' => $res['user_name'],
-            'credential_username' => $res['credential_username'],
-            'credential_email' => $res['credential_email'],
+            'shop_name' => $res['shop_name'],
+        /*  'credential_username' => $res['credential_username'],
+            'credential_email' => $res['credential_email'],*/
             'product_identifier' => $res['product_identifier'],
             'product_name' => (!empty($res['product_name'])) ? $res['product_name'] : '',
             );
@@ -383,7 +386,7 @@ class CustomProductsController extends AdminBaseController
         }
 
         $customProductLangFrm = $this->getLangForm($preq_id, $lang_id);
-        
+
         $prodObj = new ProductRequest($preq_id);
 
         if (0 < $autoFillLangData) {
@@ -413,7 +416,7 @@ class CustomProductsController extends AdminBaseController
                 $customProductLangData = array_merge($customProductLangData, $productData);
             }
         }
-        
+
         $customProductLangFrm->fill($customProductLangData);
 
         $row_data = ProductRequest::getAttributesById($preq_id, array('preq_content'));
@@ -465,7 +468,7 @@ class CustomProductsController extends AdminBaseController
             Message::addErrorMessage($prodObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         /* $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
         if (0 < $autoUpdateOtherLangsData) {
             $updateLangDataobj = new TranslateLangData(ProductRequest::DB_TBL_LANG);
@@ -600,7 +603,7 @@ class CustomProductsController extends AdminBaseController
             }
 
             $product_id = $prodObj->getMainTableRecordId();
-            
+
             $prodSepc = [
                 'ps_product_id' => $product_id,
                 'product_warranty' => isset($data['product_warranty']) ? $data['product_warranty'] : 0
@@ -924,10 +927,10 @@ class CustomProductsController extends AdminBaseController
                             if (!$prod->saveProductSpecifications(0, $langId, $prodSpecData['prod_spec_name'][$langId][$specKey], $prodSpecData['prod_spec_value'][$langId][$specKey], $prodSpecData['prod_spec_group'][$langId][$specKey])) {
                                 Message::addErrorMessage($prod->getError());
                                 FatUtility::dieWithError(Message::getHtml());
-                            }  
-                        }  
+                            }
+                        }
                     }
-                }                  
+                }
             }
             /*]*/
         }
@@ -1284,7 +1287,7 @@ class CustomProductsController extends AdminBaseController
         $frm->addTextBox(Labels::getLabel('LBL_Any_extra_comment_for_buyer', $this->adminLangId), 'selprod_comments');
         $frm->addHtmlEditor(Labels::getLabel('LBL_Description', $this->adminLangId), 'product_description');
         $frm->addTextBox(Labels::getLabel('LBL_YouTube_Video', $this->adminLangId), 'product_youtube_video');
-        
+
 
         /* $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
@@ -1292,7 +1295,7 @@ class CustomProductsController extends AdminBaseController
         if (!empty($translatorSubscriptionKey) && $langId == $siteLangId) {
             $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         } */
-        
+
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
@@ -1327,7 +1330,7 @@ class CustomProductsController extends AdminBaseController
         return $frm;
     }
 
-    
+
     public function getTranslatedData()
     {
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
@@ -1336,7 +1339,7 @@ class CustomProductsController extends AdminBaseController
 
         if (!empty($prodSpecName) && !empty($prodSpecValue)) {
             $data = [];
-            
+
             $translatedText = $this->translateLangFields(ProductRequest::DB_TBL_LANG, $prodSpecName[$siteDefaultLangId]);
             foreach ($translatedText as $langId => $textArr) {
                 foreach ($textArr as $index => $value) {
@@ -1356,7 +1359,7 @@ class CustomProductsController extends AdminBaseController
                     $data[$langId]['prod_spec_value[' . $langId . '][' . $index . ']'] = $value;
                 }
             }
-            
+
             CommonHelper::jsonEncodeUnicode($data, true);
         }
         FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
