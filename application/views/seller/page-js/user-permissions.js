@@ -21,9 +21,9 @@ $(document).ready(function(){
 		});
 	};
 	
-	updatePermission = function(moduleId,permission){
+	updatePermission = function(moduleId, permission){
 		if(1 > moduleId) {
-			if(!(permission = $('input name=["permissionForAll"]').val()))
+			if(!(permission = $("select[name='permissionForAll']").val()))
 			{
 				return false;
 			}
