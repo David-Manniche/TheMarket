@@ -25,6 +25,7 @@
             </ul>
         </div>
     </div>
+    <?php if($canEdit) { ?>
     <div class="col-auto">
         <div class="btn-group">
             <?php if (User::canAddCustomProduct() && $action == 'catalog') { ?>
@@ -39,4 +40,5 @@
             <?php }?>
         </div>
     </div>
+    <?php } ?>
  

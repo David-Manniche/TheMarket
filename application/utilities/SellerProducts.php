@@ -22,7 +22,7 @@ trait SellerProducts
         }
 
         $product_id = FatUtility::int($product_id);
-
+        $this->set('canEdit', $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId(), true));
         $this->set('frmSearch', $this->getSellerProductSearchForm($product_id));
         $this->set('product_id', $product_id);
         $this->_template->render(true, true);

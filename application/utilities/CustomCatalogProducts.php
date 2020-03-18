@@ -20,7 +20,7 @@ trait CustomCatalogProducts
         }
 
         $frmSearchCustomCatalogProducts = $this->getCustomCatalogProductsSearchForm();
-
+        $this->set('canEdit', $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId(), true));
         $this->set("frmSearchCustomCatalogProducts", $frmSearchCustomCatalogProducts);
         $this->_template->render(true, true);
     }
