@@ -543,7 +543,7 @@ class EmailHandler extends FatModel
         $statusArr = User::getCatalogReqStatusArr($langId);
 
         $vars = array(
-        '{user_full_name}' => $d['user_name'],
+        '{shop_name}' => $d['shop_name'],
         '{reference_number}' => $d['scatrequest_reference'],
         '{new_request_status}' => $statusArr[$d['scatrequest_status']],
         '{request_comments}' => $catalogRequestComments,
@@ -570,11 +570,11 @@ class EmailHandler extends FatModel
             $brandRequestComments = nl2br($data['brand_comments']);
         }
         $userObj = new User($data['brand_seller_id']);
-        $userInfo = $userObj->getUserInfo(array('user_id', 'user_name', 'user_dial_code', 'user_phone', 'credential_email'));
+        $userInfo = $userObj->getSellerData($langId, array('user_id', 'ifnull(shop_name, shop_identifier) as shop_name', 'user_dial_code', 'user_phone', 'credential_email'));
         $statusArr = Brand::getBrandReqStatusArr($langId);
 
         $vars = array(
-        '{user_full_name}' => $userInfo['user_name'],
+        '{shop_name}' => $userInfo['shop_name'],
         '{new_request_status}' => $statusArr[$data['brand_status']],
         '{brand_name}' => $data['brand_name'],
         '{brand_request_comments}' => '',
@@ -617,7 +617,7 @@ class EmailHandler extends FatModel
         $statusArr = ProductRequest::getStatusArr($langId);
 
         $vars = array(
-        '{user_full_name}' => $d['user_name'],
+        '{shop_name}' => $d['shop_name'],
         '{request_comments}' => $catalogRequestComments,
         '{new_request_status}' => $statusArr[$d['preq_status']],
         '{prod_title}' => isset($d['preq_content']) ? (json_decode($d['preq_content'], true))['product_identifier'] : '',
@@ -921,6 +921,8 @@ class EmailHandler extends FatModel
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = sp.selprod_user_id', 'u');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'c.credential_user_id = u.user_id', 'c');
         $srch->addCondition('selprod_id', '= ', $selprod_id);
+        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', Shop::DB_TBL_PREFIX . 'user_id = u.user_id', 'shop');
+        $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $langId, 's_l');
 
         $srch->addMultipleFields(array('selprod_title', 'selprod_product_id', 'user_id', 'user_name', 'user_dial_code', 'user_phone', 'credential_email'));
         $srch->doNotCalculateRecords();
@@ -942,7 +944,7 @@ class EmailHandler extends FatModel
         $productAnchor = "<a href='" . $url . "'>" . Labels::getLabel('LBL_click_here', $langId) . "</a>";
 
         $arrReplacements = array(
-        '{user_name}' => $productInfo['user_name'],
+        '{shop_name}' => $productInfo['shop_name'],
         '{prod_title}' => $productInfo["selprod_title"],
         '{click_here}' => $productAnchor,
         );

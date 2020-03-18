@@ -1454,6 +1454,8 @@ class UsersController extends AdminBaseController
 
         $userObj = new User();
         $srch = $userObj->getUserCatalogRequestsObj($scatrequest_id);
+        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', Shop::DB_TBL_PREFIX . 'user_id = tucr.' . User::DB_TBL_USR_CATALOG_REQ_PREFIX . 'user_id', 'shop');
+        $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $this->adminLangId, 's_l');
         $srch->addFld('tucr.*');
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
