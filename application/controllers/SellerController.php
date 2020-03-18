@@ -2823,6 +2823,7 @@ class SellerController extends SellerBaseController
 
     public function socialPlatforms()
     {
+        $this->userPrivilege->canViewShop(UserAuthentication::getLoggedUserId());
         $userId = $this->userParentId;
         $shopDetails = Shop::getAttributesByUserId($userId, null, false);
 
@@ -2842,6 +2843,7 @@ class SellerController extends SellerBaseController
 
     public function socialPlatformSearch()
     {
+        $this->userPrivilege->canViewShop(UserAuthentication::getLoggedUserId());
         $srch = SocialPlatform::getSearchObject($this->siteLangId);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
@@ -2876,6 +2878,7 @@ class SellerController extends SellerBaseController
 
     public function socialPlatformSetup()
     {
+        $this->userPrivilege->canViewShop(UserAuthentication::getLoggedUserId());
         $frm = $this->getSocialPlatformForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
@@ -2950,6 +2953,7 @@ class SellerController extends SellerBaseController
 
     public function socialPlatformLangSetup()
     {
+        $this->userPrivilege->canViewShop(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $splatform_id = FatUtility::int($post['splatform_id']);
         $lang_id = $post['lang_id'];
@@ -3001,6 +3005,7 @@ class SellerController extends SellerBaseController
 
     public function deleteSocialPlatform()
     {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
         $userId = $this->userParentId;
         $splatformId = FatApp::getPostedData('splatformId', FatUtility::VAR_INT, 0);
         if ($splatformId < 1) {

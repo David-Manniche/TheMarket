@@ -17,10 +17,11 @@
     <?php $arr_flds = array(
         'listserial'=>Labels::getLabel('LBL_Sr._no.', $siteLangId),
         'splatform_identifier'=>Labels::getLabel('LBL_Title', $siteLangId),
-        'splatform_url'    =>    Labels::getLabel('LBL_URL', $siteLangId),
-        'action' => Labels::getLabel('LBL_Action', $siteLangId),
+        'splatform_url'    =>    Labels::getLabel('LBL_URL', $siteLangId)
     );
-
+    if ($canEdit) {
+        $arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId);
+    }
     $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
     $th = $tbl->appendElement('thead')->appendElement('tr');
     foreach ($arr_flds as $val) {
