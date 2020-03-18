@@ -376,9 +376,8 @@ class EmailHandler extends FatModel
     {
         $tpl = 'new_catalog_request_admin';
         $vars = array(
-        '{reference_number}' => $d['reference_number'],
         '{request_title}' => $d['request_title'],
-        '{request_content}' => $d['request_content']
+        '{brand_name}' => $d['brand_name']
         );
         if (!$this->sendMailToAdminAndAdditionalEmails($tpl, $vars, static::NO_ADDITIONAL_ALERT, static::NOT_ONLY_SUPER_ADMIN, $langId)) {
             return false;
@@ -2444,7 +2443,7 @@ class EmailHandler extends FatModel
         $social_media_icons = '';
         $imgSrc = '';
         foreach ($rows as $row) {
-            $img = AttachedFile::getAttachment(AttachedFile::FILETYPE_SOCIAL_PLATFORM_IMAGE, $row['splatform_id']);            
+            $img = AttachedFile::getAttachment(AttachedFile::FILETYPE_SOCIAL_PLATFORM_IMAGE, $row['splatform_id']);
             $title = ($row['splatform_title'] != '') ? $row['splatform_title'] : $row['splatform_identifier'];
             $target_blank = ($row['splatform_url'] != '') ? 'target="_blank"' : '';
             $url = $row['splatform_url'] != '' ? $row['splatform_url'] : 'javascript:void(0)';

@@ -1913,6 +1913,33 @@ trait CustomProducts
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
+        
+        if ($productId == 0 && FatApp::getConfig("CONF_CUSTOM_PRODUCT_REQUIRE_ADMIN_APPROVAL", FatUtility::VAR_INT, 1)) {
+            $mailData = array(
+                'request_title' => $post['product_identifier'],
+                'brand_name' => (!empty($post['brand_name'])) ? $post['brand_name'] : ''
+            );
+            $email = new EmailHandler();
+            if (!$email->sendNewCatalogNotification($this->siteLangId, $mailData)) {
+                Message::addErrorMessage(Labels::getLabel('MSG_Email_could_not_be_sent', $this->siteLangId));
+                FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'customProduct'));
+            }
+            
+            /* send notification to admin [ */
+            $notificationData = array(
+                'notification_record_type' => Notification::TYPE_CATALOG,
+                'notification_record_id' => $prod->getMainTableRecordId(),
+                'notification_user_id' => $this->userParentId,
+                'notification_label_key' => Notification::NEW_CATALOG_REQUEST_NOTIFICATION,
+                'notification_added_on' => date('Y-m-d H:i:s'),
+            );
+
+            if (!Notification::saveNotifications($notificationData)) {
+                Message::addErrorMessage(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->siteLangId));
+                FatUtility::dieJsonError(Message::getHtml());
+            }
+            /* ] */
+        }
 
         $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->siteLangId));
         $this->set('productId', $prod->getMainTableRecordId());
