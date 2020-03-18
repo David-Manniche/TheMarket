@@ -10,7 +10,7 @@ trait Options
         if (1 > $canRequest || 1 > $canRequestCustomProd) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller'));
         }
-
+        $this->set('canEdit', $this->userPrivilege->canEditProductOptions(UserAuthentication::getLoggedUserId(), true));
         $frmSearch = $this->getSearchForm();
         $this->set("frmSearch", $frmSearch);
         $this->_template->addJs('js/jscolor.js');
