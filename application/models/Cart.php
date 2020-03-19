@@ -355,7 +355,7 @@ class Cart extends FatModel
 
                     if ($is_cod_enabled && $isProductShippedBySeller) {
                         $walletBalance = User::getUserBalance($sellerProductRow['selprod_user_id']);
-                        if ($sellerProductRow['selprod_cod_enabled']) {
+                        if ($sellerProductRow['selprod_cod_enabled'] == 1 && $sellerProductRow['product_cod_enabled'] == 1) {
                             $codEnabled = true;
                         }
                         $codMinWalletBalance = -1;
