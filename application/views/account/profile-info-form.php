@@ -91,7 +91,7 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
 				    </div>
             </div>
             <div class="col-xl-12 col-lg-6 mb-4">
-                <?php if (User::canViewBuyerTab() && User::canViewSupplierTab()) { ?>
+                <?php if (User::isBuyer() && User::isSeller()) { ?>
                <div class=" bg-gray rounded p-4"> <div class="align-items-center">
                     <h5><?php echo Labels::getLabel('LBL_Preferred_Dashboard', $siteLangId);?> </h5>
                     <div class="switch-group">

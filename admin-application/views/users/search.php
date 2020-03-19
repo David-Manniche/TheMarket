@@ -96,6 +96,10 @@ foreach ($arr_listing as $sn => $row) {
                     $str = '<span class="label label-danger">Signing Up For: '. User::getUserTypesArr($adminLangId)[$row['user_registered_initially_for']] .'</span>';
                 }
 
+                if (0 < $row['user_parent']) {
+                    $str = Labels::getLabel('LBL_Sub_User', $adminLangId);
+                }
+
                 $td->appendElement('plaintext', array(), $str, true);
 
                 break;
