@@ -63,8 +63,9 @@ trait SellerUsers
         $fld->requirements()->setUsername();
         $fld = $frm->addEmailField(Labels::getLabel('LBL_User_Email', $this->siteLangId), 'user_email', '');
         $fld->setUnique('tbl_user_credentials', 'credential_email', 'credential_user_id', 'user_id', 'user_id');
-        $frm->addRequiredField(Labels::getLabel('LBL_Phone', $this->siteLangId), 'user_phone');
-
+        $phoneFld = $frm->addRequiredField(Labels::getLabel('LBL_Phone', $this->siteLangId), 'user_phone');
+        $phoneFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
+        $phoneFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
         if ($userId == 0) {
             $fld = $frm->addPasswordField(Labels::getLabel('LBL_PASSWORD', $this->siteLangId), 'user_password');
             $fld->requirements()->setRequired();
