@@ -156,16 +156,6 @@ trait SellerUsers
         $post['user_phone'] = isset($post['user_phone']) ? FatUtility::int(str_replace($post['user_dial_code'], "", $post['user_phone'])) : null;
         $post['user_parent'] = UserAuthentication::getLoggedUserId();
         $post['user_state_id'] = $user_state_id;
-
-        $db = FatApp::getDb();
-        $db->startTransaction();
-        $userObj = new User($userId);
-        $userObj->assignValues($post);
-        if (!$userObj->save()) {
-            $db->rollbackTransaction();
-            $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
-            FatUtility::dieWithError($message);
-        }
         if (0 < $userId) {
             $post['user_password'] = null;
             $post['user_verify'] = null;
@@ -177,7 +167,16 @@ trait SellerUsers
             $post['user_verify'] = applicationConstants::YES;
             $post['user_active'] = applicationConstants::ACTIVE;
         }
-        
+        $db = FatApp::getDb();
+        $db->startTransaction();
+        $userObj = new User($userId);
+        $userObj->assignValues($post);
+        if (!$userObj->save()) {
+            $db->rollbackTransaction();
+            $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
+            FatUtility::dieWithError($message);
+        }
+
         if (!$userObj->setLoginCredentials($post['user_username'], $post['user_email'], $post['user_password'], $post['user_active'], $post['user_verify'])) {
             $db->rollbackTransaction();
             $message = Labels::getLabel($userObj->getError(), $this->siteLangId);

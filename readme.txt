@@ -250,6 +250,10 @@ Bug:
 
 Bug: 
     => 035563 - when seller request catalog then on status change tab> check box ix not required
+
+===================TV-9.1.6.20200319======================
+
+Bug: 
     => 035562 - while requesting catalog> shipping details> country is getting saved with random data
     => 035627 - On buy together and related products >> if we enter wrong name of product and click on save button then message should be proper
     => 035631 - when we add social platforms then sometimes language data tab is not getting display after adding general data
