@@ -904,17 +904,17 @@ $(document).on('change', '.language-js', function () {
             $("#tabs_004").show();
             $("a[rel='tabs_004']").parent().addClass('is-active');
             $("#tabs_004").html(res);
-            addShippingTab(preqId);
+           /* addShippingTab(preqId);*/
             displaySubmitApprovalButton(preqId);
 		});
     }
 
-    addShippingTab = function(preqId){
+    /* addShippingTab = function(preqId){
         var ShipDiv = "#tab_shipping";
         fcom.ajax(fcom.makeUrl('seller','getCustomCatalogShippingTab'),'preq_id='+preqId,function(t){
             $(ShipDiv).html(t);
         });
-    };
+    }; */
 
     setUpProductShipping = function(frm){
         if (!$(frm).validate()) return;

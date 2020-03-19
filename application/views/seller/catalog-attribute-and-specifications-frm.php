@@ -7,9 +7,9 @@ $featuredFld = $productFrm->getField('product_featured');
 $featuredFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $featuredFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
-$freeShopFld = $productFrm->getField('ps_free');
+/* $freeShopFld = $productFrm->getField('ps_free');
 $freeShopFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
-$freeShopFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+$freeShopFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>'; */
 
 $codFld = $productFrm->getField('product_cod_enabled');
 $codFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
@@ -74,6 +74,7 @@ $btnBackFld->value = Labels::getLabel('LBL_Back', $siteLangId);
                 </div>
             </div>
                 <?php if ($productType == Product::PRODUCT_TYPE_PHYSICAL) { ?>
+                <?php /* 
                 <div class="col-md-4">
                     <div class="field-set">
                         <div class="caption-wraper"></div>
@@ -83,7 +84,7 @@ $btnBackFld->value = Labels::getLabel('LBL_Back', $siteLangId);
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */ ?>
                 <div class="col-md-4">
                     <div class="field-set">
                         <div class="caption-wraper"></div>
