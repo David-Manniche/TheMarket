@@ -258,6 +258,7 @@ Bug:
     => 035627 - On buy together and related products >> if we enter wrong name of product and click on save button then message should be proper
     => 035631 - when we add social platforms then sometimes language data tab is not getting display after adding general data
     => 035637 - after adding product in buy together/related products> name of product is not displaying
+    => 035649 - Steps> enable cod option at product and inventory end>> uncheck the checkbox at product level >> Cod should not be available for all inventories of that product
     
 Update 
     => msg-1152994- Admin profile image is not refreshing after image upload
