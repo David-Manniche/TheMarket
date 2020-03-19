@@ -250,3 +250,4 @@ Bug:
 
 Bug: 
     => 035563 - when seller request catalog then on status change tab> check box ix not required
+    => 035562 - while requesting catalog> shipping details> country is getting saved with random data

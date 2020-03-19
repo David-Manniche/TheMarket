@@ -1440,10 +1440,10 @@ trait CustomCatalogProducts
         unset($post['btn_submit']);
         $prodContent = json_decode($productReqData['preq_content'], true);
         $prodContent = array_merge($prodContent, $post);
-        $productShiping = FatApp::getPostedData('product_shipping');
+        /* $productShiping = FatApp::getPostedData('product_shipping');
         if (!empty($productShiping)) {
             $prodContent['product_shipping'] = $productShiping;
-        }
+        } */
         $data['preq_content'] = FatUtility::convertToJson($prodContent);
         $prodReq = new ProductRequest($preqId);
         $prodReq->assignValues($data);

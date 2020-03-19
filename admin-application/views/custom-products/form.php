@@ -40,11 +40,11 @@ $productCodEnabledFld->setWrapperAttribute('class', 'product_cod_enabled_fld');
 $productTypeFld = $customProductFrm->getField('product_type');
 $productTypeFld->setfieldTagAttribute('onchange', "showHideExtraFields();");
 
-$shippingCountryFld = $customProductFrm->getField('shipping_country');
+/* $shippingCountryFld = $customProductFrm->getField('shipping_country');
 $shippingCountryFld->setWrapperAttribute('class', 'not-digital-js ui-front');
 
 $shippFreeFld = $customProductFrm->getField('ps_free');
-$shippFreeFld->setWrapperAttribute('class', 'not-digital-js');
+$shippFreeFld->setWrapperAttribute('class', 'not-digital-js'); */
     
 /* $productEanUpcFld = $customProductFrm->getField('product_upc');
 $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.value)'); */
@@ -316,9 +316,8 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
 
     var productOptions = [];
     var dv = $("#listing");
-
+    /*
     $(document).ready(function() {
-        /* Shipping Information */
         $('input[name=\'shipping_country\']').autocomplete({
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
@@ -358,5 +357,5 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
             addShippingTab(productId, prodTypeDigital);
         });
         addShippingTab(productId, prodTypeDigital);
-    });
+    }); */
 </script>

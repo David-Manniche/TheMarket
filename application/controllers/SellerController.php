@@ -4794,7 +4794,10 @@ class SellerController extends SellerBaseController
             $productType = Product::getAttributesById($productId, 'product_type');
         }
         if ($productType == Product::PRODUCT_TYPE_PHYSICAL) {
-            $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Eligible_For_Free_Shipping?', $this->siteLangId), 'ps_free', 1, array(), false, 0);
+            if($preqId == 0){
+                $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Eligible_For_Free_Shipping?', $this->siteLangId), 'ps_free', 1, array(), false, 0);
+            }
+            
             $codFld = $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Available_for_Cash_on_Delivery_(COD)?', $this->siteLangId), 'product_cod_enabled', 1, array(), false, 0);
             $paymentMethod = new PaymentMethods();
             if (!$paymentMethod->cashOnDeliveryIsActive()) {
@@ -4847,8 +4850,10 @@ class SellerController extends SellerBaseController
             $weightFld->requirements()->setRange('0.01', '9999999999');
             /* ] */
         }
-        $frm->addTextBox(Labels::getLabel('LBL_Country_the_Product_is_being_shipped_from', $this->siteLangId), 'shipping_country');
-        $frm->addHtml('', '', '<div id="tab_shipping"></div>');
+        if ($preqId == 0) {
+            $frm->addTextBox(Labels::getLabel('LBL_Country_the_Product_is_being_shipped_from', $this->siteLangId), 'shipping_country');
+            $frm->addHtml('', '', '<div id="tab_shipping"></div>'); 
+        }
 
         $frm->addHiddenField('', 'ps_from_country_id');
         $frm->addHiddenField('', 'product_id', $productId);
