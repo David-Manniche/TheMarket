@@ -5,9 +5,9 @@ if (!empty($arr_listing) && is_array($arr_listing)) { ?>
             <?php
             foreach ($arr_listing as $sn => $row) {
                 $liClass = 'is-read';
-                $toName = $row['message_to_name'];
+                $toName = $row['message_from_name'];
 
-                $toUserId = $row['message_to_user_id'];
+                $toUserId = $row['message_from_user_id'];
                 if ($row['message_to'] == $loggedUserId) {
                     if ($row['message_is_unread'] == Thread::MESSAGE_IS_UNREAD) {
                         $liClass = '';

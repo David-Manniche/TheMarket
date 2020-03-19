@@ -2780,11 +2780,20 @@ class User extends MyAppModel
         }
     }
 
-    public static function getSubUsers($userId)
+    public static function getSubUsers($userId, $attr = null)
     {
         $srch = User::getSearchObject(true, $userId);
-        $srch->addMultipleFields(array('user_id', 'user_name', 'user_phone', 'user_dial_code', 'credential_email'));
         $srch->addCondition('credential_active', '=', applicationConstants::ACTIVE);
+        if (null != $attr) {
+            if (is_array($attr)) {
+                $srch->addMultipleFields($attr);
+            } elseif (is_string($attr)) {
+                $srch->addFld($attr);
+            }
+        } else {
+            $srch->addMultipleFields(array('user_id', 'user_name', 'user_phone', 'user_dial_code', 'credential_email'));
+        }
+
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetchAll($rs);
     }
