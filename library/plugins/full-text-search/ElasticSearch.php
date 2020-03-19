@@ -495,6 +495,10 @@ class ElasticSearch extends FullTextSearchBase
 
     public function deleteDocument($documentId)
     {
+        if (!$this->client->isDocumentExists($documentId)) {
+            return true;
+        }
+
         $params = [
             'index' => $this->indexName,
             'id'    => $documentId

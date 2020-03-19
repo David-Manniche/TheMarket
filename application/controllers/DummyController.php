@@ -260,8 +260,8 @@ class DummyController extends MyAppController
     }
 
     public function index()
-    {
-        FullTextSearch::setup();
+    {       
+        FullTextSearch::syncData();
     }
 
 
