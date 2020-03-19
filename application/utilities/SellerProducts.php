@@ -2728,19 +2728,25 @@ trait SellerProducts
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($post['selprod_id']);
         if (!UserPrivilege::canEditSellerProduct($this->userParentId, $selprod_id)) {
-            Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
+            Message::addErrorMessage(Labels::getLabel("MSG_Please_Select_A_Valid_Product", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
         if ($selprod_id <= 0) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
-            FatApp::redirectUser($_SESSION['referer_page_url']);
+            Message::addErrorMessage(Labels::getLabel('MSG_Please_Select_A_Valid_Product', $this->siteLangId));
+            //FatApp::redirectUser($_SESSION['referer_page_url']);
+            FatUtility::dieJsonError(Message::getHtml());
         }
         $relatedProducts = (isset($post['selected_products'])) ? $post['selected_products'] : array();
+        if( count($relatedProducts) < 1 ){
+            Message::addErrorMessage(Labels::getLabel("MSG_You_need_to_add_atleast_one_related_product", $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
         unset($post['selprod_id']);
         $sellerProdObj = new sellerProduct();
         if (!$sellerProdObj->addUpdateSellerRelatedProdcts($selprod_id, $relatedProducts)) {
             Message::addErrorMessage($sellerProdObj->getError());
-            FatApp::redirectUser($_SESSION['referer_page_url']);
+            //FatApp::redirectUser($_SESSION['referer_page_url']);
+            FatUtility::dieJsonError(Message::getHtml());
         }
 
         $this->set('msg', Labels::getLabel('LBL_Related_Product_Setup_Successful', $this->siteLangId));
@@ -2897,24 +2903,29 @@ trait SellerProducts
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($post['selprod_id']);
         if (!UserPrivilege::canEditSellerProduct($this->userParentId, $selprod_id)) {
-            Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
+            Message::addErrorMessage(Labels::getLabel("MSG_Please_Select_A_Valid_Product", $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        } 
+        if ($selprod_id <= 0) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Please_Select_A_Valid_Product', $this->siteLangId));
+            //FatApp::redirectUser($_SESSION['referer_page_url']);
             FatUtility::dieJsonError(Message::getHtml());
         }
-        if ($selprod_id <= 0) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
-            FatApp::redirectUser($_SESSION['referer_page_url']);
-        }
         $upsellProducts = (isset($post['selected_products'])) ? $post['selected_products'] : array();
-
+        if( count($upsellProducts) < 1 ){
+            Message::addErrorMessage(Labels::getLabel("MSG_You_need_to_add_atleast_one_buy_together_product", $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
         $sellerProdObj = new sellerProduct();
         /* saving of product Upsell Product[ */
         if (!$sellerProdObj->addUpdateSellerUpsellProducts($selprod_id, $upsellProducts)) {
             Message::addErrorMessage($sellerProdObj->getError());
-            FatApp::redirectUser($_SESSION['referer_page_url']);
+            //FatApp::redirectUser($_SESSION['referer_page_url']);
+            FatUtility::dieJsonError(Message::getHtml());
         }
         /* ] */
 
-        $this->set('msg', Labels::getLabel('LBL_Upsell_Product_Setup_Successful', $this->siteLangId));
+        $this->set('msg', Labels::getLabel('LBL_Buy_Together_Product_Setup_Successful', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 

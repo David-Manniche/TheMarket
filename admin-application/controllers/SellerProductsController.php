@@ -3142,7 +3142,7 @@ class SellerProductsController extends AdminBaseController
         }
         /* ] */
 
-        $this->set('msg', Labels::getLabel('LBL_Upsell_Product_Setup_Successful', $this->adminLangId));
+        $this->set('msg', Labels::getLabel('LBL_Buy_Together_Product_Setup_Successful', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
