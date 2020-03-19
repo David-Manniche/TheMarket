@@ -139,7 +139,10 @@ class EmailHandler extends FatModel
         $etpl = new FatTemplate('', '');
         $etpl->set('langId', $langId);
         $header = $etpl->render(false, false, '_partial/emails/email-header.php', true);
-        $footer = FatApp::getConfig('CONF_EMAIL_TEMPLATE_FOOTER_HTML' . $langId, FatUtility::VAR_STRING, '');
+        /* */
+        $ftpl = new FatTemplate('', '');
+        $ftpl->set('langId', $langId);
+        $footer = $ftpl->render(false, false, '_partial/emails/email-footer.php', true);
         $subject = $row['etpl_subject'];
         $body = $header . $row['etpl_body'] . $footer;
 
@@ -152,12 +155,12 @@ class EmailHandler extends FatModel
 
         if (FatApp::getConfig('CONF_SEND_SMTP_EMAIL')) {
             if (!$sendEmail = static::sendSmtpEmail($to, $subject, $body, $extra_headers, $tpl, $langId, '', $smtp_arr, $bcc)) {
-                return static::sendMail($to, $subject, $body, $extra_headers, $tpl, $langId);
+                return static::sendMail($to, $subject, $body, $extra_headers, $tpl, $langId, $bcc);
             } else {
                 return true;
             }
         } else {
-            return static::sendMail($to, $subject, $body, $extra_headers, $tpl, $langId);
+            return static::sendMail($to, $subject, $body, $extra_headers, $tpl, $langId, $bcc);
         }
     }
 
@@ -213,13 +216,19 @@ class EmailHandler extends FatModel
         $mail->Subject = '=?UTF-8?B?' . base64_encode($Subject) . '?=';
         $mail->MsgHTML($body);
 
+        if (!empty($bcc)) {
+            foreach ($bcc as $email => $name) {
+                $mail->AddBCC($email, $name);
+            }
+        }
+
         if (!$mail->send()) {
             return false;
         }
         return true;
     }
 
-    private static function sendMail($to, $subject, $body, $extra_headers = '', $tpl_name = '', $langId)
+    private static function sendMail($to, $subject, $body, $extra_headers = '', $tpl_name = '', $langId, $bcc)
     {
         $db = FatApp::getDb();
         $headers = 'MIME-Version: 1.0' . "\r\n";
@@ -232,6 +241,11 @@ class EmailHandler extends FatModel
         }
 
         $headers .= "\r\nReply-to: " . FatApp::getConfig("CONF_REPLY_TO_EMAIL");
+
+        if (!empty($bcc)) {
+            $bccEmails = implode(", ", array_keys($bcc));
+            $headers .= 'Cc: ' . $bccEmails;
+        }
 
         if (!$db->insertFromArray(
             'tbl_email_archives',
@@ -362,9 +376,8 @@ class EmailHandler extends FatModel
     {
         $tpl = 'new_catalog_request_admin';
         $vars = array(
-        '{reference_number}' => $d['reference_number'],
         '{request_title}' => $d['request_title'],
-        '{request_content}' => $d['request_content']
+        '{brand_name}' => $d['brand_name']
         );
         if (!$this->sendMailToAdminAndAdditionalEmails($tpl, $vars, static::NO_ADDITIONAL_ALERT, static::NOT_ONLY_SUPER_ADMIN, $langId)) {
             return false;
@@ -487,7 +500,7 @@ class EmailHandler extends FatModel
         if (!$this->sendMailToAdminAndAdditionalEmails($tpl, $vars, static::NO_ADDITIONAL_ALERT, static::NOT_ONLY_SUPER_ADMIN, $langId)) {
             return false;
         }
-        
+
         $this->sendSms($tpl, FatApp::getConfig('CONF_SITE_PHONE'), $vars, $langId);
         return true;
     }
@@ -530,17 +543,23 @@ class EmailHandler extends FatModel
         $statusArr = User::getCatalogReqStatusArr($langId);
 
         $vars = array(
-        '{user_full_name}' => $d['user_name'],
+        '{shop_name}' => $d['shop_name'],
         '{reference_number}' => $d['scatrequest_reference'],
         '{new_request_status}' => $statusArr[$d['scatrequest_status']],
         '{request_comments}' => $catalogRequestComments,
         );
 
-        if (!self::sendMailTpl($d['credential_email'], $tpl, $langId, $vars)) {
+        $receipentsInfo = User::getSubUsersReceipents($d['user_id'], 'canViewProducts');
+        $bccEmails = $receipentsInfo['email'];
+        if (!self::sendMailTpl($d['credential_email'], $tpl, $langId, $vars, '', 0, array(), $bccEmails)) {
             return false;
         }
-        $phone = !empty($d['user_phone']) ? $d['user_dial_code'] . $d['user_phone'] : '';
-        $this->sendSms($tpl, $phone, $vars, $langId);
+
+        $phoneNumbers = $receipentsInfo['phone'];
+        $phoneNumbers[] = !empty($d['user_phone']) ? $d['user_dial_code'] . $d['user_phone'] : '';
+        foreach ($phoneNumbers as $phone) {
+            $this->sendSms($tpl, $phone, $vars, $langId);
+        }
         return true;
     }
 
@@ -551,11 +570,11 @@ class EmailHandler extends FatModel
             $brandRequestComments = nl2br($data['brand_comments']);
         }
         $userObj = new User($data['brand_seller_id']);
-        $userInfo = $userObj->getUserInfo(array('user_name', 'user_dial_code', 'user_phone', 'credential_email'));
+        $userInfo = $userObj->getSellerData($langId, array('user_id', 'ifnull(shop_name, shop_identifier) as shop_name', 'user_dial_code', 'user_phone', 'credential_email'));
         $statusArr = Brand::getBrandReqStatusArr($langId);
 
         $vars = array(
-        '{user_full_name}' => $userInfo['user_name'],
+        '{shop_name}' => $userInfo['shop_name'],
         '{new_request_status}' => $statusArr[$data['brand_status']],
         '{brand_name}' => $data['brand_name'],
         '{brand_request_comments}' => '',
@@ -566,11 +585,21 @@ class EmailHandler extends FatModel
             $requestCommentTableFormatHtml = $tpl->render(false, false, '_partial/emails/brand-request-comment-email.php', true);
             $vars["{brand_request_comments}"] = $requestCommentTableFormatHtml;
         }
-        if (!self::sendMailTpl($userInfo['credential_email'], 'seller_brand_request_status_change', $langId, $vars)) {
+
+        $receipentsInfo = User::getSubUsersReceipents($userInfo['user_id'], 'canViewProducts');
+
+        $bccEmails = $receipentsInfo['email'];
+        $phoneNumbers = $receipentsInfo['phone'];
+
+        if (!self::sendMailTpl($userInfo['credential_email'], 'seller_brand_request_status_change', $langId, $vars, '', 0, array(), $bccEmails)) {
             return false;
         }
-        $phone = !empty($userInfo['user_phone']) ? $userInfo['user_dial_code'] . $userInfo['user_phone'] : '';
-        $this->sendSms('seller_brand_request_status_change', $phone, $vars, $langId);
+        $userPhone = !empty($userInfo['user_phone']) ? $userInfo['user_dial_code'] . $userInfo['user_phone'] : '';
+        $phoneNumbers[] = $userPhone;
+        foreach ($phoneNumbers as $phone) {
+            $this->sendSms('seller_brand_request_status_change', $phone, $vars, $langId);
+        }
+
         return true;
     }
 
@@ -588,17 +617,23 @@ class EmailHandler extends FatModel
         $statusArr = ProductRequest::getStatusArr($langId);
 
         $vars = array(
-        '{user_full_name}' => $d['user_name'],
+        '{shop_name}' => $d['shop_name'],
         '{request_comments}' => $catalogRequestComments,
         '{new_request_status}' => $statusArr[$d['preq_status']],
         '{prod_title}' => isset($d['preq_content']) ? (json_decode($d['preq_content'], true))['product_identifier'] : '',
         );
 
-        if (!self::sendMailTpl($d['credential_email'], $tpl, $langId, $vars)) {
+        $receipentsInfo = User::getSubUsersReceipents($d['preq_user_id'], 'canViewProducts');
+        $bccEmails = $receipentsInfo['email'];
+        if (!self::sendMailTpl($d['credential_email'], $tpl, $langId, $vars, '', 0, array(), $bccEmails)) {
             return false;
         }
-        $phone = !empty($d['user_phone']) ? $d['user_dial_code'] . $d['user_phone'] : '';
-        $this->sendSms($tpl, $phone, $vars, $langId);
+        $phoneNumbers = $receipentsInfo['phone'];
+        $userPhone = !empty($d['user_phone']) ? $d['user_dial_code'] . $d['user_phone'] : '';
+        $phoneNumbers[] = $userPhone;
+        foreach ($phoneNumbers as $phone) {
+            $this->sendSms($tpl, $phone, $vars, $langId);
+        }
         return true;
     }
 
@@ -886,8 +921,10 @@ class EmailHandler extends FatModel
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = sp.selprod_user_id', 'u');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'c.credential_user_id = u.user_id', 'c');
         $srch->addCondition('selprod_id', '= ', $selprod_id);
+        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', Shop::DB_TBL_PREFIX . 'user_id = u.user_id', 'shop');
+        $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $langId, 's_l');
 
-        $srch->addMultipleFields(array('selprod_title', 'selprod_product_id', 'user_name', 'user_dial_code', 'user_phone', 'credential_email'));
+        $srch->addMultipleFields(array('selprod_title', 'selprod_product_id', 'user_id', 'user_name', 'user_dial_code', 'user_phone', 'credential_email'));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
@@ -907,17 +944,25 @@ class EmailHandler extends FatModel
         $productAnchor = "<a href='" . $url . "'>" . Labels::getLabel('LBL_click_here', $langId) . "</a>";
 
         $arrReplacements = array(
-        '{user_name}' => $productInfo['user_name'],
+        '{shop_name}' => $productInfo['shop_name'],
         '{prod_title}' => $productInfo["selprod_title"],
         '{click_here}' => $productAnchor,
         );
-        self::sendMailTpl($productInfo["credential_email"], "threshold_notification_vendor", $langId, $arrReplacements);
-        $phone = !empty($productInfo['user_phone']) ? $productInfo['user_dial_code'] . $productInfo['user_phone'] : '';
-        $this->sendSms("threshold_notification_vendor", $phone, $arrReplacements, $langId);
+
+        $receipentsInfo = User::getSubUsersReceipents($productInfo['user_id'], 'canViewProducts');
+        $bccEmails = $receipentsInfo['email'];
+        self::sendMailTpl($productInfo["credential_email"], "threshold_notification_vendor", $langId, $arrReplacements, '', 0, array(), $bccEmails);
+
+        $phoneNumbers = $receipentsInfo['phone'];
+        $userPhone = !empty($productInfo['user_phone']) ? $productInfo['user_dial_code'] . $productInfo['user_phone'] : '';
+        $phoneNumbers[] = $userPhone;
+        foreach ($phoneNumbers as $phone) {
+            $this->sendSms("threshold_notification_vendor", $phone, $arrReplacements, $langId);
+        }
         return true;
     }
 
-    public function newOrderVendor($orderId, $langId = 0)
+    public function newOrderVendor($orderId, $langId = 0, $codOrder = 0)
     {
         $langId = FatApp::getConfig('conf_default_site_lang');
         $orderObj = new Orders();
@@ -965,16 +1010,26 @@ class EmailHandler extends FatModel
                             '{order_id}' => $orderId,
                             );
 
-                if ($val['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
-                    $tpl = "vendor_digital_order_email";
-                    self::sendMailTpl($val["op_shop_owner_email"], $tpl, $langId, $arrReplacements);
+                if ($codOrder == 1) {
+                    $tpl = "vendor_cod_order_email";
                 } else {
-                    $tpl = "vendor_order_email";
-                    self::sendMailTpl($val["op_shop_owner_email"], "vendor_order_email", $langId, $arrReplacements);
+                    if ($val['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
+                        $tpl = "vendor_digital_order_email";
+                    } else {
+                        $tpl = "vendor_order_email";
+                    }
                 }
 
-                $phone = !empty($userInfo['user_phone']) ? $userInfo['user_dial_code'] . $userInfo['user_phone'] : '';
-                $this->sendSms($tpl, $phone, $arrReplacements, $langId);
+                $receipentsInfo = User::getSubUsersReceipents($val['op_selprod_user_id'], 'canViewSales');
+                $bccEmails = $receipentsInfo['email'];
+                self::sendMailTpl($val["op_shop_owner_email"], $tpl, $langId, $arrReplacements, '', 0, array(), $bccEmails);
+
+                $phoneNumbers = $receipentsInfo['phone'];
+                $userPhone = !empty($userInfo['user_phone']) ? $userInfo['user_dial_code'] . $userInfo['user_phone'] : '';
+                $phoneNumbers[] = $userPhone;
+                foreach ($phoneNumbers as $phone) {
+                    $this->sendSms($tpl, $phone, $arrReplacements, $langId);
+                }
 
                 $notiArrReplacements = array(
                         '{PRODUCT}' => $val["op_product_name"],
@@ -1219,12 +1274,12 @@ class EmailHandler extends FatModel
 
         if ($adminOrUser == "A") {
             $this->sendMailToAdminAndAdditionalEmails("withdrawal_request_admin", $arrReplacements, static::ADD_ADDITIONAL_ALERTS, static::NOT_ONLY_SUPER_ADMIN, $langId);
-            
+
             $tpl = 'withdrawal_request_admin';
             $phone = FatApp::getConfig('CONF_SITE_PHONE');
         } else {
             self::sendMailTpl($withdrawalRequestData["user_email"], "withdrawal_request_approved_declined", $langId, $arrReplacements);
-            
+
             $tpl = 'withdrawal_request_approved_declined';
             $phone = !empty($withdrawalRequestData['user_phone']) ? $withdrawalRequestData['user_dial_code'] . $withdrawalRequestData['user_phone'] : '';
         }
@@ -1334,8 +1389,16 @@ class EmailHandler extends FatModel
         '{cancel_comments}' => nl2br($ocRequestRow['ocrequest_message']),
         );
         $tpl = "order_cancellation_notification";
-        self::sendMailTpl($ocRequestRow["op_shop_owner_email"], $tpl, $langId, $arrReplacements);
-        $this->sendSms($tpl, $ocRequestRow["op_shop_owner_phone"], $arrReplacements, $langId);
+
+        $receipentsInfo = User::getSubUsersReceipents($ocRequestRow["seller_id"], 'canViewCancellationRequests');
+        $bccEmails = $receipentsInfo['email'];
+        self::sendMailTpl($ocRequestRow["op_shop_owner_email"], $tpl, $langId, $arrReplacements, '', 0, array(), $bccEmails);
+
+        $phoneNumbers = $receipentsInfo['phone'];
+        $phoneNumbers[] = $ocRequestRow["op_shop_owner_phone"];
+        foreach ($phoneNumbers as $phone) {
+            $this->sendSms($tpl, $phone, $arrReplacements, $langId);
+        }
 
         $adminOrderDetailUrl = CommonHelper::generateFullUrl('SellerOrders', 'View', array($ocRequestRow["op_id"]), CONF_WEBROOT_BACKEND);
         $adminOrderAnchor = "<a href='" . $adminOrderDetailUrl . "'>" . $ocRequestRow["op_invoice_number"] . "</a>";
@@ -1430,8 +1493,16 @@ class EmailHandler extends FatModel
         '{return_reason}' => $msgDetail['orreason_title'],
         '{return_comments}' => nl2br($msgDetail['orrmsg_msg']),
         );
-        self::sendMailTpl($msgDetail["op_shop_owner_email"], "product_return", $langId, $arrReplacements);
-        $this->sendSms("product_return", $msgDetail["op_shop_owner_phone"], $arrReplacements, $langId);
+
+        $receipentsInfo = User::getSubUsersReceipents($msgDetail['op_selprod_user_id'], 'canViewReturnRequests');
+        $bccEmails = $receipentsInfo['email'];
+        self::sendMailTpl($msgDetail["op_shop_owner_email"], "product_return", $langId, $arrReplacements, '', 0, array(), $bccEmails);
+
+        $phoneNumbers = $receipentsInfo['phone'];
+        $phoneNumbers[] = $msgDetail["op_shop_owner_phone"];
+        foreach ($phoneNumbers as $phone) {
+            $this->sendSms("product_return", $phone, $arrReplacements, $langId);
+        }
         /**** Notification For Seller ***********/
 
         $notiArrReplacements = array(
@@ -1557,8 +1628,17 @@ class EmailHandler extends FatModel
             /* if ($return_request['refmsg_from_type']=="U"){
             $arr_replacements["{username}"] = $return_request["message_sent_by_username"];
             } */
-            self::sendMailTpl($msgDetail["op_shop_owner_email"], "return_request_message_user", $langId, $arrReplacements);
-            $this->sendSms("return_request_message_user", $msgDetail['op_shop_owner_phone'], $arrReplacements, $langId);
+
+            $receipentsInfo = User::getSubUsersReceipents($msgDetail["seller_id"], 'canViewReturnRequests');
+            $bccEmails = $receipentsInfo['email'];
+
+            self::sendMailTpl($msgDetail["buyer_email"], "return_request_message_user", $langId, $arrReplacements, '', 0, array(), $bccEmails);
+
+            $phoneNumbers = $receipentsInfo['phone'];
+            $phoneNumbers[] = $msgDetail['op_shop_owner_phone'];
+            foreach ($phoneNumbers as $phone) {
+                $this->sendSms("return_request_message_user", $phone, $arrReplacements, $langId);
+            }
             $notification_user_id = $msgDetail["seller_id"];
 
             $notiArrReplacements = array(
@@ -2370,18 +2450,23 @@ class EmailHandler extends FatModel
             $target_blank = ($row['splatform_url'] != '') ? 'target="_blank"' : '';
             $url = $row['splatform_url'] != '' ? $row['splatform_url'] : 'javascript:void(0)';
 
-            if ($img) {
-                $imgSrc = CommonHelper::generateFullUrl('Image', 'SocialPlatform', array($row['splatform_id']), CONF_WEBROOT_FRONT_URL);
+            if (!empty($img)) {
+                $uploadedTime = AttachedFile::setTimeParam($img['afile_updated_at']);
+                $imgSrc = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'SocialPlatform', array($row['splatform_id']), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
             } elseif ($row['splatform_icon_class'] != '') {
                 $imgSrc = CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL) . 'images/' . $row['splatform_icon_class'] . '.png';
             }
             $social_media_icons .= '<a style="display:inline-block;vertical-align:top; width:26px;height:26px; margin:0 0 0 5px; background:rgba(255,255,255,0.2); border-radius:100%;padding:4px;" href="' . $url . '" ' . $target_blank . ' title="' . $title . '" ><img alt="' . $title . '" width="24" style="margin:1px auto 0; display:block;" src = "' . $imgSrc . '"/></a>';
         }
 
+
+        $fileRow = AttachedFile::getAttachment(AttachedFile::FILETYPE_EMAIL_LOGO, 0, 0, $langId);
+        $uploadedTime = AttachedFile::setTimeParam($fileRow['afile_updated_at']);
+
         return array(
         '{website_name}' => FatApp::getConfig('CONF_WEBSITE_NAME_' . $langId),
         '{website_url}' => CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL),
-        '{Company_Logo}' => '<img style="max-width:150px" src="' . CommonHelper::generateFullUrl('Image', 'emailLogo', array($langId), CONF_WEBROOT_FRONT_URL) . '" />',
+        '{Company_Logo}' => '<img style="max-width:150px" src="' . FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'emailLogo', array($langId), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg') . '" />',
         '{current_date}' => date('M d, Y'),
         '{social_media_icons}' => $social_media_icons,
         '{contact_us_url}' => CommonHelper::generateFullUrl('custom', 'contactUs', array(), CONF_WEBROOT_FRONT_URL),

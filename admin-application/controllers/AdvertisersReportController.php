@@ -46,7 +46,7 @@ class AdvertisersReportController extends AdminBaseController
         $qryUserBalance = $srch->getQuery();
         /* ] */
 
-        $srch = User::getSearchObject(true, false);
+        $srch = User::getSearchObject(true, 0, false);
         $srch->joinTable('(' . $qryUserBalance . ')', 'LEFT OUTER JOIN', 'u.user_id = tqub.utxn_user_id', 'tqub');
         $srch->addMultipleFields(
             array('u.*', 'uc.credential_email', 'user_name',

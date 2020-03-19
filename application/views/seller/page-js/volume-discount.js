@@ -33,6 +33,20 @@ $(document).on('keyup', "input[name='product_name']", function(){
     }
 });
 
+$(document).on('blur', ".js-voldiscount_min_qty", function(){
+    var qty = $(this).val();
+    var selProdId = $("input[name='voldiscount_selprod_id']").val();
+    if(selProdId > 0){
+        var data = 'selProdId='+selProdId+"&qty="+qty;
+        fcom.ajax(fcom.makeUrl('Seller', 'compareWithInventoryMinPurchase'), data, function(t) {
+            var ans = $.parseJSON(t);
+            if( ans.status != 1 ){
+                $.systemMessage(ans.msg, 'alert--danger');
+            }
+        });
+    }
+});
+
 $(document).on('click', 'table.volDiscountList-js tr td .js--editCol', function(){
     $(this).hide();
     var input = $(this).siblings('input[type="text"]');

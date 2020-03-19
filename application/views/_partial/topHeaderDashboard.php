@@ -1,34 +1,33 @@
-<?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) { 
-	$this->includeTemplate('restore-system/top-header.php');    
+<?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) {
+    $this->includeTemplate('restore-system/top-header.php');
 } ?>
 <div class="wrapper">
+    <?php if ($controllerName != 'SubscriptionCheckout') {?>
     <header id="header-dashboard" class="header-dashboard no-print" role="header-dashboard">
         <?php if ((User::canViewSupplierTab() && User::canViewBuyerTab()) || (User::canViewSupplierTab() && User::canViewAdvertiserTab()) || (User::canViewBuyerTab() && User::canViewAdvertiserTab())) { ?>
-        
-		<div class="dropdown dashboard-user">
-		  <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dashboardDropdown" data-toggle="dropdown"  data-display="static"  aria-haspopup="true" aria-expanded="false" >
-			<?php echo ($activeTab == 'S') ? Labels::getLabel('Lbl_Seller', $siteLangId) : (($activeTab == 'B') ? Labels::getLabel('Lbl_Buyer', $siteLangId) : (($activeTab == 'Ad') ? Labels::getLabel('Lbl_Advertiser', $siteLangId) : '')) ?>
-		  </button>
-		  <div class="dropdown-menu dropdown-menu-fit dropdown-menu-anim" aria-labelledby="dashboardDropdown">
-		  <ul class="nav nav-block">
-				<?php if (User::canViewSupplierTab()) { ?>
-				<li class="nav__item <?php echo ($activeTab == 'S') ? 'is-active' : ''; ?>">
-					<a class="dropdown-item nav__link" href="<?php echo CommonHelper::generateUrl('Seller'); ?>"><?php echo Labels::getLabel('Lbl_Seller', $siteLangId);?></a></li>
-				<?php }?>
-				<?php if (User::canViewBuyerTab()) { ?>
-				<li class="nav__item <?php echo ($activeTab == 'B') ? 'is-active' : ''; ?>">
-					<a class="dropdown-item nav__link" href="<?php echo CommonHelper::generateUrl('Buyer'); ?>"><?php echo Labels::getLabel('Lbl_Buyer', $siteLangId);?></a></li>
-				<?php }?>
-				<?php if (User::canViewAdvertiserTab()) { ?>
-				<li class="nav__item <?php echo ($activeTab == 'Ad') ? 'is-active' : ''; ?>">
-					<a class="dropdown-item nav__link" href="<?php echo CommonHelper::generateUrl('Advertiser'); ?>"><?php echo Labels::getLabel('Lbl_Advertiser', $siteLangId);?></a></li>
-				<?php }?>
-			</ul>
 
-		  </div>
-		</div>
-		
-		 
+        <div class="dropdown dashboard-user">
+          <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dashboardDropdown" data-toggle="dropdown"  data-display="static"  aria-haspopup="true" aria-expanded="false" >
+            <?php echo ($activeTab == 'S') ? Labels::getLabel('Lbl_Seller', $siteLangId) : (($activeTab == 'B') ? Labels::getLabel('Lbl_Buyer', $siteLangId) : (($activeTab == 'Ad') ? Labels::getLabel('Lbl_Advertiser', $siteLangId) : '')) ?>
+          </button>
+          <div class="dropdown-menu dropdown-menu-fit dropdown-menu-anim" aria-labelledby="dashboardDropdown">
+          <ul class="nav nav-block">
+                <?php if (User::canViewSupplierTab()) { ?>
+                <li class="nav__item <?php echo ($activeTab == 'S') ? 'is-active' : ''; ?>">
+                    <a class="dropdown-item nav__link" href="<?php echo CommonHelper::generateUrl('Seller'); ?>"><?php echo Labels::getLabel('Lbl_Seller', $siteLangId);?></a></li>
+                <?php }?>
+                <?php if (User::canViewBuyerTab()) { ?>
+                <li class="nav__item <?php echo ($activeTab == 'B') ? 'is-active' : ''; ?>">
+                    <a class="dropdown-item nav__link" href="<?php echo CommonHelper::generateUrl('Buyer'); ?>"><?php echo Labels::getLabel('Lbl_Buyer', $siteLangId);?></a></li>
+                <?php }?>
+                <?php if (User::canViewAdvertiserTab() && $userPrivilege->canViewPromotions(0, true)) { ?>
+                <li class="nav__item <?php echo ($activeTab == 'Ad') ? 'is-active' : ''; ?>">
+                    <a class="dropdown-item nav__link" href="<?php echo CommonHelper::generateUrl('Advertiser'); ?>"><?php echo Labels::getLabel('Lbl_Advertiser', $siteLangId);?></a></li>
+                <?php }?>
+            </ul>
+          </div>
+        </div>
+
         <?php } ?>
         <div class="header-icons-group">
             <?php $getOrgUrl = (CONF_DEVELOPMENT_MODE) ? true : false; ?>
@@ -58,6 +57,7 @@
             </div>
         </div>
     </header>
+    <?php } ?>
     <div class="display-in-print text-center">
         <?php
         $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_INVOICE_LOGO, 0, 0, $siteLangId, false);

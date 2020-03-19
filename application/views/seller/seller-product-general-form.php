@@ -49,8 +49,7 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
             <div class="row">
                 <div class="col-md-6">
                     <div class="field-set">
-                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_title'.$siteDefaultLangId)->getCaption(); ?><span
-                                    class="spn_must_field">*</span></label></div>
+                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_title'.$siteDefaultLangId)->getCaption(); ?><span class="spn_must_field">*</span></label></div>
                         <div class="field-wraper">
                             <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_title'.$siteDefaultLangId); ?></div>
                         </div>
@@ -139,42 +138,42 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
                 </div>
             </div>
             <?php if ($product_type == Product::PRODUCT_TYPE_PHYSICAL) { ?>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="field-set">
-                            <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_condition')->getCaption(); ?><span class="spn_must_field">*</span></label></div>
-                            <div class="field-wraper">
-                                <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_condition'); ?></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="field-set">
-                            <div class="caption-wraper"><label class="field_label"></label></div>
-                            <div class="field-wraper">
-                                <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('use_shop_policy'); ?></div>
-                            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="field-set">
+                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_condition')->getCaption(); ?><span class="spn_must_field">*</span></label></div>
+                        <div class="field-wraper">
+                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_condition'); ?></div>
                         </div>
                     </div>
                 </div>
-                <div class="row use-shop-policy <?php echo $hidden; ?>">
-                    <div class="col-md-6">
-                        <div class="field-set">
-                            <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_return_age')->getCaption(); ?></label></div>
-                            <div class="field-wraper">
-                                <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_return_age'); ?></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="field-set">
-                            <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_cancellation_age')->getCaption(); ?></label></div>
-                            <div class="field-wraper">
-                                <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_cancellation_age'); ?></div>
-                            </div>
+                <div class="col-md-6">
+                    <div class="field-set">
+                        <div class="caption-wraper"><label class="field_label"></label></div>
+                        <div class="field-wraper">
+                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('use_shop_policy'); ?></div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="row use-shop-policy <?php echo $hidden; ?>">
+                <div class="col-md-6">
+                    <div class="field-set">
+                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_return_age')->getCaption(); ?></label></div>
+                        <div class="field-wraper">
+                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_return_age'); ?></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="field-set">
+                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_cancellation_age')->getCaption(); ?></label></div>
+                        <div class="field-wraper">
+                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_cancellation_age'); ?></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <?php } ?>
             <div class="row">
                 <div class="selprod_cod_enabled_fld col-md-6">
@@ -202,25 +201,30 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
                         </thead>
                         <tbody>
                             <?php if ($selprod_id == 0 && !empty($availableOptions)) { ?>
-                                <?php foreach ($availableOptions as $optionKey => $optionValue) { ?>
-                                <tr>
-                                    <td><?php echo str_replace("_", " | ", $optionValue); ?></td>
-                                    <td class="optionFld-js"><?php echo $frmSellerProduct->getFieldHtml('selprod_cost'.$optionKey); ?></td>
-                                    <td class="optionFld-js"><?php echo $frmSellerProduct->getFieldHtml('selprod_price'.$optionKey); ?></td>
-                                    <td class="optionFld-js"><?php echo $frmSellerProduct->getFieldHtml('selprod_stock'.$optionKey); ?></td>
-                                    <td class="optionFld-js fldSku"><?php echo $frmSellerProduct->getFieldHtml('selprod_sku'.$optionKey); ?></td>
-                                </tr>
-                                <?php } ?>
+                            <?php foreach ($availableOptions as $optionKey => $optionValue) { ?>
+                            <tr>
+                                <td><?php echo str_replace("_", " | ", $optionValue); ?></td>
+                                <td class="optionFld-js"><?php echo $frmSellerProduct->getFieldHtml('selprod_cost'.$optionKey); ?></td>
+                                <td class="optionFld-js"><?php echo $frmSellerProduct->getFieldHtml('selprod_price'.$optionKey); ?></td>
+                                <td class="optionFld-js"><?php echo $frmSellerProduct->getFieldHtml('selprod_stock'.$optionKey); ?></td>
+                                <td class="optionFld-js fldSku"><?php echo $frmSellerProduct->getFieldHtml('selprod_sku'.$optionKey); ?></td>
+                                <td>
+                                    <button disabled="disabled" onClick="copyRowData(this)" type="button" class="js-copy-btn btn btn-secondary btn-elevate btn-icon" title="<?php echo Labels::getLabel('LBL_Copy_to_clipboard', $siteLangId) ?>">
+                                        <i class="fas fa-paste"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <?php } ?>
                             <?php } else { ?>
-                                <tr>
-                                    <?php if (!empty($optionValues)) { ?>
-                                     <td><?php echo implode(' | ', $optionValues); ?></td>
-                                    <?php } ?>
-                                    <td><?php echo $frmSellerProduct->getFieldHtml('selprod_cost'); ?></td>
-                                    <td><?php echo $frmSellerProduct->getFieldHtml('selprod_price'); ?></td>
-                                    <td><?php echo $frmSellerProduct->getFieldHtml('selprod_stock'); ?></td>
-                                    <td><?php echo $frmSellerProduct->getFieldHtml('selprod_sku'); ?></td>
-                                </tr>
+                            <tr>
+                                <?php if (!empty($optionValues)) { ?>
+                                <td><?php echo implode(' | ', $optionValues); ?></td>
+                                <?php } ?>
+                                <td><?php echo $frmSellerProduct->getFieldHtml('selprod_cost'); ?></td>
+                                <td><?php echo $frmSellerProduct->getFieldHtml('selprod_price'); ?></td>
+                                <td><?php echo $frmSellerProduct->getFieldHtml('selprod_stock'); ?></td>
+                                <td><?php echo $frmSellerProduct->getFieldHtml('selprod_sku'); ?></td>
+                            </tr>
                             <?php } ?>
                         </tbody>
                     </table>
@@ -259,34 +263,34 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
                 <div class="col-md-12">
                     <?php foreach ($languages as $langId => $langName) {
                         $layout = Language::getLayoutDirection($langId); ?>
-                        <div class="accordion mt-4" id="specification-accordion">
-                            <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><span onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
-                                    <?php echo Labels::getLabel('LBL_Inventory_Data_for', $siteLangId) ?> <?php echo $langName;?>
-                                </span>
-                            </h6>
-                            <div id="collapseOne" class="collapse collapse-js-<?php echo $langId; ?>" aria-labelledby="headingOne" data-parent="#specification-accordion">
-                                <div class="p-4 mb-4 bg-gray rounded" dir="<?php echo $layout; ?>">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="field-set">
-                                                <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_title'.$langId)->getCaption(); ?></label></div>
-                                                <div class="field-wraper">
-                                                    <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_title'.$langId); ?></div>
-                                                </div>
+                    <div class="accordion mt-4" id="specification-accordion">
+                        <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><span onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
+                                <?php echo Labels::getLabel('LBL_Inventory_Data_for', $siteLangId) ?> <?php echo $langName;?>
+                            </span>
+                        </h6>
+                        <div id="collapseOne" class="collapse collapse-js-<?php echo $langId; ?>" aria-labelledby="headingOne" data-parent="#specification-accordion">
+                            <div class="p-4 mb-4 bg-gray rounded" dir="<?php echo $layout; ?>">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="field-set">
+                                            <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_title'.$langId)->getCaption(); ?></label></div>
+                                            <div class="field-wraper">
+                                                <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_title'.$langId); ?></div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12">
-                                            <div class="field-set">
-                                                <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_comments'.$langId)->getCaption(); ?></label></div>
-                                                <div class="field-wraper">
-                                                    <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_comments'.$langId); ?></div>
-                                                </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="field-set">
+                                            <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_comments'.$langId)->getCaption(); ?></label></div>
+                                            <div class="field-wraper">
+                                                <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_comments'.$langId); ?></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
                     <?php } ?>
                 </div>
             </div>
@@ -339,7 +343,7 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
         }
 
         $("input[name='selprod_track_inventory']").change(function() {
-            if( $(this).prop("checked") == false ){
+            if ($(this).prop("checked") == false) {
                 $("input[name='selprod_threshold_stock_level']").val(0);
                 $("input[name='selprod_threshold_stock_level']").attr("disabled", "disabled");
             } else {
@@ -357,33 +361,79 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
             }
         });
 
-        $(document).on('keyup', ".optionFld-js input", function(){
+        $(document).on('keyup', ".optionFld-js input", function() {
             var currentObj = $(this);
-            if(currentObj.val().length > 0){
-                currentObj.parent().parent().find('input').each(function(){
-                    if($(this).parent().hasClass('fldSku') && CONF_PRODUCT_SKU_MANDATORY != 1){
+            var showCopyBtn = true;
+            if (currentObj.val().length > 0) {
+                currentObj.parent().parent().find('input').each(function() {
+                    if ($(this).parent().hasClass('fldSku') && CONF_PRODUCT_SKU_MANDATORY != 1) {
                         return;
                     }
-                    if($(this).val().length == 0 || $(this).val() == 0){
+                    if ($(this).val().length == 0 || $(this).val() == 0) {
                         $(this).attr('class', 'error');
+                        showCopyBtn = false;
                     }
                 });
                 currentObj.removeClass('error');
             } else {
                 var allEmpty = true;
-                currentObj.parent().parent().find('input').each(function(){
-                    if($(this).val().length > 0){
+                currentObj.parent().parent().find('input').each(function() {
+                    if ($(this).val().length > 0) {
                         allEmpty = false;
                     }
                 });
-                if(allEmpty){
-                    currentObj.parent().parent().find('input').each(function(){
+                if (allEmpty) {
+                    currentObj.parent().parent().find('input').each(function() {
                         $(this).removeClass('error');
+                        showCopyBtn = false;
                     });
                 } else {
                     currentObj.attr('class', 'error');
+                    showCopyBtn = false;
                 }
             }
+            
+            if(showCopyBtn == true){
+                currentObj.parent().parent().find('button').removeAttr("disabled");;
+            }else{
+                currentObj.parent().parent().find('button').attr("disabled", "disabled");;
+            }
+                
         });
+        
+        copyRowData = function(btn){               
+            var copiedData = '';  
+            $(btn).parent().parent().find('input').each(function() { 
+                copiedData = copiedData + $(this).val()+ '\t';
+            });
+            
+            var copiedField = document.createElement('input');
+            copiedField.value = copiedData;
+            document.body.appendChild(copiedField)
+            copiedField.select();
+            document.execCommand("copy", false);
+            copiedField.remove();
+            
+            $(btn).attr('title', langLbl.copied);
+            $(btn).addClass('clicked');
+        }
+        
     });
+    
+    $(document).on('paste', '.optionFld-js input', function(e){        
+        e.preventDefault();
+        var pastedData = e.originalEvent.clipboardData.getData('text');       
+        var pastedDataArr = pastedData.split('\t');        
+        var count = 0; 
+        $(this).parent().parent().find('input').each(function() {
+            $(this).val('')
+            $(this).val(pastedDataArr[count])
+            count = parseInt(count)+ 1;
+        });
+        $(this).parent().parent().find('button').removeAttr("disabled");
+        $('.js-copy-btn').attr('title', langLbl.copyToClipboard);
+        $('.js-copy-btn').removeClass('clicked');
+        $(this).parent().parent().next().children().children().first().focus();
+    });
+    
 </script>

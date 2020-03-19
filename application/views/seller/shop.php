@@ -15,7 +15,7 @@
 </main>
 <script>
     $(document).ready(function() {
-        <?php if ($tab==USER::RETURN_ADDRESS_ACCOUNT_TAB && !$subTab) {?>
+        <?php if ($tab == User::RETURN_ADDRESS_ACCOUNT_TAB && !$subTab) {?>
         returnAddressForm();
         <?php } elseif ($subTab) {?>
         returnAddressLangForm(<?php echo $subTab;?>);

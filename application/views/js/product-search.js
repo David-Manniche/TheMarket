@@ -136,7 +136,6 @@ $(document).ready(function(){
 	});
 
 	$(document).on('keyup', 'input[name=priceFilterMinValue]', function(e) {
-		validatePriceFilter();
 		var code = e.which;
 		if( code == 13 ) {
 			e.preventDefault();
@@ -146,7 +145,6 @@ $(document).ready(function(){
 	});
 
 	$(document).on('keyup', 'input[name=priceFilterMaxValue]', function(e) {
-		validatePriceFilter();
 		var code = e.which;
 		if( code == 13 ) {
 			e.preventDefault();
@@ -339,9 +337,8 @@ function addPaginationInlink(page){
 }
 
 function validatePriceFilter(){
-	var max= parseInt( $("input[name=priceFilterMaxValue]").val());
+	var max = parseInt( $("input[name=priceFilterMaxValue]").val());
 	var min = parseInt($("input[name=priceFilterMinValue]").val());
-	
 	if(max <= min){ 
 		$("input[name=priceFilterMaxValue]").val(min + 1);
 	}
@@ -360,7 +357,7 @@ function removePageSideFromLink(){
 }
 
 function showSelectedFilters(){	
-	if(($( "#filters" ).find('a').length)>0){ 
+	if(($( "#filters a").length) > 0){ 
 		$('#resetAll').css('display','block');
 	}else{
 		$('#resetAll').css('display','none');
@@ -510,7 +507,7 @@ function addPricefilter(reloadPage){
 	if(reloadPage){
 		reloadProductListing(frm);
 	}
-	showSelectedFilters();
+    showSelectedFilters();
 	//searchProducts(frm,0,0,1,1);
 }
 function removePriceFilter(reloadPage){
@@ -536,8 +533,8 @@ function updatePriceFilter(minPrice,maxPrice,addPriceFilter){
 	}
 
 	if(typeof minPrice == 'undefined' || typeof maxPrice == 'undefined'){
-		minPrice = $("#filterDefaultMinValue").val();
-		maxPrice = $("#filterDefaultMaxValue").val();
+		minPrice = $("#priceFilterMinValue").data('defaultvalue');
+        maxPrice = $("#priceFilterMaxValue").data('defaultvalue');
 	}
 
 	$('input[name="priceFilterMinValue"]').val(minPrice);
@@ -546,14 +543,7 @@ function updatePriceFilter(minPrice,maxPrice,addPriceFilter){
 	if(addPriceFilter){
 		addPricefilter();
 	}
-
-	/*var frm = document.frmProductSearch;
-	var $range = $("#price_range");
-	range = $range.data("ionRangeSlider"); */
-	updateRange(minPrice,maxPrice);
-    /* if (typeof range !== 'undefined'){
-        range.reset();
-    } */
+    rangeSlider.noUiSlider.set([minPrice, maxPrice]);
 }
 
 (function() {
@@ -577,7 +567,6 @@ function updatePriceFilter(minPrice,maxPrice,addPriceFilter){
 		getSetSelectedOptionsUrl(frm);
 		var data = fcom.frmData(frm);		
 		var currUrl = getSearchQueryUrl(true);
-		console.log(currUrl);		
 		fcom.ajax(currUrl, data, function(res){
 			$('#productsList').html(res);			
             var frm = document.frmProductSearchPaging;
@@ -709,7 +698,11 @@ function updatePriceFilter(minPrice,maxPrice,addPriceFilter){
 			data = data+"&max_price_range="+$("input[name=priceFilterMaxValue]").val();
 		}
 
-		if ( ($("input[name=filterDefaultMinValue]").val() !=  $("input[name=priceFilterMinValue]").val()) || ($("input[name=filterDefaultMaxValue]").val() !=  $("input[name=priceFilterMaxValue]").val())){
+        var defaultMinPrice = parseInt($("input[name=priceFilterMinValue]").data('defaultvalue'));
+        var minPrice = parseInt($("input[name=priceFilterMinValue]").val());
+        var defaultMaxPrice = parseInt($("input[name=priceFilterMaxValue]").data('defaultvalue'));
+        var maxPrice = parseInt($("input[name=priceFilterMaxValue]").val());
+		if ((minPrice !=  defaultMinPrice) || (maxPrice !=  defaultMaxPrice)){
 			addPricefilter(false);
 		}
 
@@ -761,5 +754,31 @@ function updatePriceFilter(minPrice,maxPrice,addPriceFilter){
 		});
 	};
 
-
+    resendOtp = function (userId, getOtpOnly = 0){
+        $.mbsmessage(langLbl.processing, false, 'alert--process');
+        fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
+            t = $.parseJSON(t);
+            if(1 > t.status){
+                $.mbsmessage(t.msg, false, 'alert--danger');
+                return false;
+            }
+            $.mbsmessage(t.msg, true, 'alert--success');
+            startOtpInterval();
+        });
+        return false;
+    };
+    
+    validateOtp = function (frm){
+        if (!$(frm).validate()) return;	
+        var data = fcom.frmData(frm);
+        fcom.ajax(fcom.makeUrl('GuestUser', 'validateOtp'), data, function(t) {						
+            t = $.parseJSON(t);
+            if (1 == t.status) {
+                window.location.href = t.redirectUrl;
+            } else {
+                invalidOtpField();
+            }
+        });	
+        return false;
+    };
 })();

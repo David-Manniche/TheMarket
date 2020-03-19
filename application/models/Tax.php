@@ -12,7 +12,7 @@ class Tax extends MyAppModel
     public const DB_TBL_VALUES_PREFIX = 'taxval_';
 
     public const DB_TBL_PRODUCT_TO_TAX = 'tbl_product_to_tax';
-    public const DB_TBL_PRODUCT_TO_TAX_PREFIX = 'ptt__';
+    public const DB_TBL_PRODUCT_TO_TAX_PREFIX = 'ptt_';
 
     private $db;
 
@@ -242,7 +242,9 @@ class Tax extends MyAppModel
         $tax = 0;
         $res = $this->getTaxRates($productId, $sellerId, $langId);
         if (empty($res)) {
-            return $tax;
+            return $data = [
+                'tax' => $tax
+            ];
         }
 
         if ($res['taxval_is_percent'] == static::TYPE_PERCENTAGE) {

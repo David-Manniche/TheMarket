@@ -11,7 +11,7 @@ $thead = $tbl->appendElement('thead');
 $th = $thead->appendElement('tr', array('class' => ''));
 
 foreach ($arr_flds as $key => $val) {
-    if ('select_all' == $key) {
+    if ('select_all' == $key && $canEditMetaTag) {
         $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input title="'.$val.'" type="checkbox" onclick="selectAll($(this))" class="selectAll-js"><i class="input-helper"></i></label>', true);
     } else {
         $th->appendElement('th', array(), $val);
@@ -39,10 +39,11 @@ foreach ($arrListing as $sn => $row) {
             case 'product_name':
                 // last Param of getProductDisplayTitle function used to get title in html form.
                 $productName = SellerProduct::getProductDisplayTitle($selProdId, $siteLangId, false);
+                $editMetaTags = ($canEditMetaTag) ? "editProductMetaTagLangForm(".$selProdId.", ".$siteLangId.")" : "";
                 $td->appendElement(
                     'a',
                     array('href'=>'javascript:void(0)', 'class'=>'',
-                    'title'=>'Links',"onclick"=>"editProductMetaTagLangForm(".$selProdId.", ".$siteLangId.")"),
+                    'title'=>'Links',"onclick"=>$editMetaTags),
                     $productName,
                     true
                 );

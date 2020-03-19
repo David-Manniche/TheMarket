@@ -519,3 +519,24 @@ function isJson(str) {
     }
     return json;
 }
+
+$(document).on("change", "input[type='file']", fileSizeValidation);
+
+function fileSizeValidation() {
+    const fsize = this.files[0].size;
+    if (fsize > langLbl.allowedFileSize) {
+        var msg = langLbl.fileSizeExceeded;
+        var msg = msg.replace("{size-limit}", bytesToSize(langLbl.allowedFileSize));
+        $.mbsmessage(msg, true, 'alert--danger');
+        $(this).val("");
+        $("#uploadFileName").text("Select File To Upload");
+        return false;
+    }
+}
+
+function bytesToSize(bytes) {
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes == 0) return '0 Byte';
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+}

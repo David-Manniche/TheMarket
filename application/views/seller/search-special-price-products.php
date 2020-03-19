@@ -4,10 +4,12 @@ $arr_flds = array(
     'product_name' => Labels::getLabel('LBL_Name', $siteLangId),
     'splprice_start_date' => Labels::getLabel('LBL_Start_Date', $siteLangId),
     'splprice_end_date' => Labels::getLabel('LBL_End_Date', $siteLangId),
-    'splprice_price' => Labels::getLabel('LBL_Special_Price', $siteLangId),
-    'action' => Labels::getLabel('LBL_Action', $siteLangId),
+    'splprice_price' => Labels::getLabel('LBL_Special_Price', $siteLangId)
 );
-if (1 > count($arrListing)) {
+if ($canEdit) {
+    $arr_flds['action']    = Labels::getLabel('LBL_Action', $siteLangId);
+}
+if (!$canEdit || 1 > count($arrListing)) {
     unset($arr_flds['select_all']);
 }
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table splPriceList-js'));
@@ -81,7 +83,7 @@ foreach ($arrListing as $sn => $row) {
 $frm = new Form('frmSplPriceListing', array('id' => 'frmSplPriceListing'));
 $frm->setFormTagAttribute('class', 'form');
 
-echo $frm->getFormTag(); 
+echo $frm->getFormTag();
 echo $tbl->getHtml();
 ?>
 </form>

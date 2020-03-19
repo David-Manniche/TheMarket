@@ -140,14 +140,17 @@
     .bottom-footer {
         padding-top: 1rem;
 
-        .captcha & {
-            padding-bottom: 80px;
 
-        }
     }
 
 }
 
+.captcha {
+    .wrapper {
+        padding-bottom: 80px;
+
+    }
+}
 
 
 .upperContent-footer {
@@ -376,6 +379,10 @@
 
     }
 
+    a {
+        color: $primary-color;
+    }
+
 }
 
 
@@ -459,7 +466,7 @@
 .copyright {
     text-align: center;
     font-size: 0.875em;
-    padding:10px 10px;
+    padding: 10px 10px;
     color: #545454;
 }
 

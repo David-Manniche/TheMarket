@@ -53,7 +53,7 @@
                             <?php if ($cartSummary["cartWalletSelected"] && $userWalletBalance >= $cartSummary['orderNetAmount']) {
                                 echo '<strong>'.Labels::getLabel('LBL_Sufficient_balance_in_your_wallet', $siteLangId).'</strong>'; //';
                             } else {
-                                echo '<strong>'.Labels::getLabel('MSG_Use_My_Wallet_Credits', $siteLangId)?>: (<?php echo CommonHelper::displayMoneyFormat($userWalletBalance)?>)</strong>
+                                echo '<strong>'.Labels::getLabel('MSG_Use_My_Wallet_Credits', $siteLangId)?>: (<?php echo CommonHelper::displayMoneyFormat($userWalletBalance, true, false, true, false, true)?>)</strong>
                             <?php } ?>
                         </label>
 
@@ -63,20 +63,20 @@
                                     <li>
                                         <div class="boxwhite">
                                             <p><?php echo Labels::getLabel('LBL_Payment_to_be_made', $siteLangId); ?></p>
-                                            <h5><?php echo CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount']); ?></h5>
+                                            <h5><?php echo CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount'], true, false, true, false, true); ?></h5>
                                         </div>
                                     </li>
                                     <li>
                                         <div class="boxwhite">
                                             <p><?php echo Labels::getLabel('LBL_Amount_in_your_wallet', $siteLangId); ?></p>
-                                            <h5><?php echo CommonHelper::displayMoneyFormat($userWalletBalance); ?></h5>
+                                            <h5><?php echo CommonHelper::displayMoneyFormat($userWalletBalance, true, false, true, false, true); ?></h5>
                                         </div>
                                         <p class="note">
                                             <i>
                                                 <?php 
                                                 $remainingWalletBalance = ($userWalletBalance - $cartSummary['orderNetAmount']);
                                                 $remainingWalletBalance = ($remainingWalletBalance < 0) ? 0 : $remainingWalletBalance;
-                                                echo Labels::getLabel('LBL_Remaining_wallet_balance', $siteLangId) . ' ' . CommonHelper::displayMoneyFormat($remainingWalletBalance); ?>
+                                                echo Labels::getLabel('LBL_Remaining_wallet_balance', $siteLangId) . ' ' . CommonHelper::displayMoneyFormat($remainingWalletBalance, true, false, true, false, true); ?>
                                             </i>
                                         </p>
                                     </li>
@@ -181,7 +181,7 @@
                     <div class="payment-from">
                         <div class="you-pay">
                             <?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?> :
-                            <?php echo CommonHelper::displayMoneyFormat($cartSummary['orderPaymentGatewayCharges']); ?>
+                            <?php echo CommonHelper::displayMoneyFormat($cartSummary['orderPaymentGatewayCharges'], true, false, true, false, true); ?>
                             <?php if (CommonHelper::getCurrencyId() != FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1)) { ?>
                             <p><?php echo CommonHelper::currencyDisclaimer($siteLangId, $cartSummary['orderPaymentGatewayCharges']); ?></p>
                             <?php } ?>

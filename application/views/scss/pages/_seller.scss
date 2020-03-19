@@ -9,6 +9,16 @@
         .logo {
             margin: 0;
 
+            img {
+                &[data-ratio="16:9"] {
+                    max-width: 120px;
+                }
+
+                &[data-ratio="1:1"] {
+                    max-width: 60px;
+                }
+            }
+
         }
     }
 
@@ -56,7 +66,8 @@
         }
 
 
-        .forgot { display:inline-block;
+        .forgot {
+            display: inline-block;
             margin-top: 14px;
             margin-#{$start-direction}: 10px;
         }
@@ -304,9 +315,10 @@
 }
 
 .simple-price {
-    background: $secondary-color; color:$secondary-color-inverse;
+    background: $secondary-color;
+    color: $secondary-color-inverse;
     text-align: center;
-    
+
 }
 
 .pricing-structure {
@@ -410,7 +422,8 @@
                 &:after {
                     content: "";
                     bottom: 0;
-                    background: $brand-color; color:$brand-color-inverse;
+                    background: $brand-color;
+                    color: $brand-color-inverse;
                     height: 2px;
                     width: 0;
                     position: absolute;

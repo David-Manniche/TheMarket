@@ -34,9 +34,13 @@ $(document).ready(function() {
     };
 
     exportForm = function(actionType) {
-        fcom.ajax(fcom.makeUrl('ImportExport', 'exportForm', [actionType]), '', function(t) {
-            $(exportDv).html(t);
-        });
+        if (actionType == inventoryUpdate) {
+            location.href = fcom.makeUrl('seller', 'exportInventory');
+        } else {
+            fcom.ajax(fcom.makeUrl('ImportExport', 'exportForm', [actionType]), '', function(t) {
+                $(exportDv).html(t);
+            });
+        }
     };
 
     exportData = function(frm, actionType) {
@@ -58,15 +62,23 @@ $(document).ready(function() {
     };
 
     importForm = function(actionType) {
-        fcom.ajax(fcom.makeUrl('ImportExport', 'importForm', [actionType]), '', function(t) {
-            $(importDv).html(t);
-        });
+        if (actionType == inventoryUpdate) {
+            inventoryUpdateForm();
+        } else {
+            fcom.ajax(fcom.makeUrl('ImportExport', 'importForm', [actionType]), '', function(t) {
+                $(importDv).html(t);
+            });
+        }
     };
 
     getInstructions = function(actionType) {
-        fcom.ajax(fcom.makeUrl('ImportExport', 'importInstructions', [actionType]), '', function(t) {
-            $(importDv).html(t);
-        });
+        if (actionType == inventoryUpdate) {
+            importForm(actionType);
+        } else {
+            fcom.ajax(fcom.makeUrl('ImportExport', 'importInstructions', [actionType]), '', function(t) {
+                $(importDv).html(t);
+            });
+        }
     };
 
     importMediaForm = function(actionType) {
@@ -228,6 +240,12 @@ $(document).ready(function() {
         location.href = fcom.makeUrl('ImportExport', 'downloadPathsFile', [path]);
     };
 
+    inventoryUpdateForm = function(){
+		fcom.ajax(fcom.makeUrl('Seller', 'InventoryUpdateForm'), '', function(t) {
+			$(importDv).html(t);
+		});
+	};
+
 })();
 
 $(document).on('click', ".group__head-js", function() {
@@ -240,4 +258,56 @@ $(document).on('click', ".group__head-js", function() {
         $('.group__body-js').slideUp();
         $(this).siblings('.group__body-js').slideDown();
     }
+});
+
+$(document).on('click','.csvFile-Js',function(){
+	var node = this;
+	$('#form-upload').remove();
+	var lang_id = document.frmInventoryUpdate.lang_id.value;
+	var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
+	frm = frm.concat('<input type="file" name="file" />');
+	frm = frm.concat('<input type="hidden" name="lang_id" value="'+lang_id+'">');
+	frm = frm.concat('</form>');
+	$('body').prepend(frm);
+	$('#form-upload input[name=\'file\']').trigger('click');
+	if (typeof timer != 'undefined') {
+		clearInterval(timer);
+	}
+	timer = setInterval(function() {
+		if ($('#form-upload input[name=\'file\']').val() != '') {
+		clearInterval(timer);
+		$val = $(node).val();
+		$.ajax({
+			url: fcom.makeUrl('ImportExport', 'updateInventory'),
+			type: 'post',
+			dataType: 'json',
+			data: new FormData($('#form-upload')[0]),
+			cache: false,
+			contentType: false,
+			processData: false,
+			beforeSend: function() {
+				$(node).val('Loading');
+			},
+			complete: function() {
+				$(node).val($val);
+			},
+			success: function(ans) {
+				//$('.text-danger').remove();
+				/* $.systemMessage.close();				 */
+                if(ans.status == true){
+					$.mbsmessage(ans.msg,true,'alert--success');
+					loadForm('inventoryUpdate');
+				} else {
+					$.mbsmessage(ans.msg,true,'alert--danger');
+				}
+                /*if (typeof ans.CSVfileUrl !== 'undefined') {
+                    location.href = ans.CSVfileUrl;
+                }*/
+			},
+			error: function( xhr, ajaxOptions, thrownError ) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+			});
+		}
+	}, 500);
 });

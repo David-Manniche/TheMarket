@@ -33,5 +33,13 @@ $inactive = (0 == $shop_id) ? 'fat-inactive' : '';
                 <?php
         } ?>><?php echo Labels::getLabel('LBL_COLLECTIONS', $siteLangId); ?></a>
         </li>
+        <li
+            class="<?php echo !empty($action) && ($action == 'socialPlatforms') ? 'is-active' : ''; ?>">
+            <a href="javascript:void(0)" <?php if ($shop_id > 0) {
+            ?>
+                onClick="socialPlatforms(this)"
+                <?php
+        } ?>><?php echo Labels::getLabel('LBL_SOCIAL_PLATFORMS', $siteLangId); ?></a>
+        </li>
     </ul>
 </div>

@@ -8,7 +8,7 @@ $arr_flds = array(
     'user_regdate'=>Labels::getLabel('LBL_Reg._Date', $adminLangId),
     'credential_active'=>Labels::getLabel('LBL_Status', $adminLangId),
     'credential_verified'=>Labels::getLabel('LBL_verified', $adminLangId),
-    'action' => Labels::getLabel('LBL_Action', $adminLangId),
+    'action' => '',
 );
 if (!$canEdit) {
     unset($arr_flds['select_all']);

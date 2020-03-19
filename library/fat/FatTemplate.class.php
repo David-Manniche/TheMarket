@@ -55,8 +55,8 @@ class FatTemplate
         }
 
         /* Include CSS */
-        if ($includeCommon) {
-            $pth = CONF_THEME_PATH . 'common-css';
+        $pth = CONF_THEME_PATH . 'common-css';
+        if ($includeCommon && file_exists($pth)) {
             $last_updated = 0;
 
             $arrCommonfiles = scandir($pth, SCANDIR_SORT_ASCENDING);
@@ -110,9 +110,9 @@ class FatTemplate
                 'rewritingEnabled' => (CONF_URL_REWRITING_ENABLED ? '1' : '0'),
         )) . ';
 	    	</script>' . "\r\n";
-
-        if ($includeCommon) {
-            $pth = CONF_THEME_PATH . 'common-js';
+        
+        $pth = CONF_THEME_PATH . 'common-js';
+        if ($includeCommon  && file_exists($pth)) {
             // 			$dir = opendir($pth);
             $last_updated = 0;
 

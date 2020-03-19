@@ -16,8 +16,7 @@
                 <section class="section" id="packageDetail">
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_Seller_Packages_Listings', $adminLangId); ?> </h4>
-                        <?php
-                        if ($canEdit) {
+                        <?php if ($canEdit) {
                             $otherButtons = [
                                 [
                                     'attr' => [
@@ -29,9 +28,7 @@
                                 ]
                             ];
                             $this->includeTemplate('_partial/action-buttons.php', ['deleteButton' => false, 'otherButtons' => $otherButtons, 'adminLangId' => $adminLangId], false);
-                        }
-
-                        ?>
+                        } ?>
                     </div>
                     <div class="sectionbody">
                         <div class="tablewrap">

@@ -993,7 +993,7 @@ class SellerProduct extends MyAppModel
         $frm->addHiddenField('', 'voldiscount_selprod_id', 0);
         $frm->addHiddenField('', 'voldiscount_id', 0);
         $qtyFld = $frm->addIntegerField(Labels::getLabel("LBL_Minimum_Quantity", $langId), 'voldiscount_min_qty');
-        $qtyFld->requirements()->setRange(self::VOL_DISCOUNT_MIN_QTY, self::VOL_DISCOUNT_MAX_QTY);
+        //$qtyFld->requirements()->setRange(self::VOL_DISCOUNT_MIN_QTY, self::VOL_DISCOUNT_MAX_QTY);
         $discountFld = $frm->addFloatField(Labels::getLabel("LBL_Discount_in_(%)", $langId), "voldiscount_percentage");
         $discountFld->requirements()->setPositive();
         $fld1 = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
@@ -1092,6 +1092,7 @@ class SellerProduct extends MyAppModel
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addOrder('selprod_active', 'DESC');
         $srch->addOrder('selprod_added_on', 'DESC');
+        $srch->addOrder('selprod_id', 'DESC');
         $srch->addOrder('product_name');
         $srch->addCondition('selprod_user_id', '=', $userId);
         return $srch;

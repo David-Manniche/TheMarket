@@ -188,7 +188,8 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#heart" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#heart"></use>
                                     </svg></i></a>
                             <?php }?>
-                            <?php $showMoreButtons = true; if (UserAuthentication::isUserLogged() && UserAuthentication::getLoggedUserId(true) == $shop['shop_user_id']) {
+                            <?php $showMoreButtons = true;
+                            if (isset($userParentId) && $userParentId == $shop['shop_user_id']) {
                                 $showMoreButtons = false;
                             } ?>
                             <?php if ($showMoreButtons) { 
@@ -212,8 +213,11 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                             <p><strong><?php echo Labels::getLabel('LBL_Follow_Us', $siteLangId); ?></strong> </p>
                             <ul class="social-icons">
                                 <?php foreach ($socialPlatforms as $row) { ?>
-                                <li><a <?php if ($row['splatform_url']!='') { ?> target="_blank" <?php } ?>
-                                    href="<?php echo ($row['splatform_url']!='') ? $row['splatform_url']:'javascript:void(0)'; ?>"><i class="fa fa-<?php echo $row['splatform_icon_class']; ?>"></i></a></li>
+                                <li>
+								<a <?php if ($row['splatform_url']!='') { ?> target="_blank" <?php } ?>
+                                    href="<?php echo ($row['splatform_url']!='') ? $row['splatform_url']:'javascript:void(0)'; ?>"><i class="fab fa-<?php echo $row['splatform_icon_class']; ?>"></i>
+								</a>
+								</li>
                                 <?php } ?>
                             </ul>
                         </div>

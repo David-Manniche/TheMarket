@@ -49,7 +49,7 @@ $(document).on('keyup', "input[name='product_name']", function(){
                     $('#upsell-products').empty();
                     for (var key in ans.upsellProducts) {
                         $("#upsell-products").append(
-                            "<li id=productUpsell"+ans.upsellProducts[key]['selprod_id']+"><span>"+ans.upsellProducts[key]['selprod_title']+" ["+ans.upsellProducts[key]['product_identifier']+"]<i class=\"remove_upsell remove_param fas fa-times\"></i></span><input type=\"hidden\" name=\"selected_products[]\" value="+ans.upsellProducts[key]['selprod_id']+" /></li>"
+                            "<li id=productUpsell"+ans.upsellProducts[key]['selprod_id']+"><span>"+ans.upsellProducts[key]['selprod_title']+" ["+ans.upsellProducts[key]['product_identifier']+"]<i class=\"remove_upsell remove_param fas fa-times\"></i><input type=\"hidden\" name=\"selected_products[]\" value="+ans.upsellProducts[key]['selprod_id']+" /></span></li>"
                         );
                     }
                 });
@@ -104,7 +104,7 @@ $(document).on('keyup', "input[name='products_upsell']", function(){
                 }
                 $('input[name=\'products_upsell\']').val('');
                 $('#productUpsell' + ui.item.id).remove();
-                $('#upsell-products').append('<li id="productUpsell' + ui.item.id + '"><span> ' + ui.item.label + '<i class="remove_upsell remove_param fas fa-times"></i></span><input type="hidden" name="selected_products[]" value="' + ui.item.id + '" /></li>');
+                $('#upsell-products').append('<li id="productUpsell' + ui.item.id + '"><span> ' + ui.item.label + '<i class="remove_upsell remove_param fas fa-times"></i><input type="hidden" name="selected_products[]" value="' + ui.item.id + '" /></span></li>');
                 return false;
             }
         });
@@ -242,6 +242,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('SellerProducts', 'setupUpsellProduct'), data, function(t) {
             document.frmUpsellSellerProduct.reset();
+            $("input[name='selprod_id']").val(''); 
             $('#upsell-products').empty();
             $(".dvFocus-js").trigger('click');
             searchUpsellProducts(document.frmUpsellSellerProduct);
@@ -263,7 +264,7 @@ $(document).on('click', ".js-product-edit", function(){
         $('#upsell-products').empty();
         for (var key in ans.upsellProducts) {
             $("#upsell-products").append(
-                "<li id=productUpsell"+ans.upsellProducts[key]['selprod_id']+"><span>"+ans.upsellProducts[key]['selprod_title']+" ["+ans.upsellProducts[key]['product_identifier']+"]<i class=\"remove_upsell remove_param fas fa-times\"></i></span><input type=\"hidden\" name=\"selected_products[]\" value="+ans.upsellProducts[key]['selprod_id']+" /></li>"
+                "<li id=productUpsell"+ans.upsellProducts[key]['selprod_id']+"><span>"+ans.upsellProducts[key]['selprod_title']+" ["+ans.upsellProducts[key]['product_identifier']+"]<i class=\"remove_upsell remove_param fas fa-times\"></i><input type=\"hidden\" name=\"selected_products[]\" value="+ans.upsellProducts[key]['selprod_id']+" /></span></li>"
             );
         }
     });

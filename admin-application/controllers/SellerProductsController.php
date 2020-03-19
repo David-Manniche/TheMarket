@@ -2951,20 +2951,18 @@ class SellerProductsController extends AdminBaseController
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($post['selprod_id']);
         if ($selprod_id <= 0) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
-            FatApp::redirectUser($_SESSION['referer_page_url']);
+            FatUtility::dieJsonError(Labels::getLabel("MSG_Please_Select_A_Valid_Product", $this->adminLangId));
         }
 
         if (!isset($post['selected_products']) || !is_array($post['selected_products']) || 1 > count($post['selected_products'])) {
-            FatUtility::dieJsonError(Labels::getLabel("MSG_MUST_SELECT_ATLEAST_ONE_PRODUCT_TO_BUY_TOGETHER", $this->adminLangId));
+            FatUtility::dieJsonError(Labels::getLabel("MSG_MUST_SELECT_ATLEAST_ONE_PRODUCT_TO_RELATED_PRODUCTS", $this->adminLangId));
         }
 
         $relatedProducts = $post['selected_products'];
         unset($post['selprod_id']);
         $sellerProdObj = new SellerProduct();
         if (!$sellerProdObj->addUpdateSellerRelatedProdcts($selprod_id, $relatedProducts)) {
-            Message::addErrorMessage($sellerProdObj->getError());
-            FatApp::redirectUser($_SESSION['referer_page_url']);
+            FatUtility::dieJsonError($sellerProdObj->getError());
         }
 
         $this->set('msg', Labels::getLabel('LBL_Related_Product_Setup_Successful', $this->adminLangId));
@@ -3129,8 +3127,7 @@ class SellerProductsController extends AdminBaseController
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($post['selprod_id']);
         if ($selprod_id <= 0) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
-            FatApp::redirectUser($_SESSION['referer_page_url']);
+            FatUtility::dieJsonError(Labels::getLabel("MSG_Please_Select_A_Valid_Product", $this->adminLangId));
         }
         if (!isset($post['selected_products']) || !is_array($post['selected_products']) || 1 > count($post['selected_products'])) {
             FatUtility::dieJsonError(Labels::getLabel("MSG_MUST_SELECT_ATLEAST_ONE_PRODUCT_TO_BUY_TOGETHER", $this->adminLangId));
@@ -3141,8 +3138,7 @@ class SellerProductsController extends AdminBaseController
         $sellerProdObj = new SellerProduct();
         /* saving of product Upsell Product[ */
         if (!$sellerProdObj->addUpdateSellerUpsellProducts($selprod_id, $upsellProducts)) {
-            Message::addErrorMessage($sellerProdObj->getError());
-            FatApp::redirectUser($_SESSION['referer_page_url']);
+            FatUtility::dieJsonError($sellerProdObj->getError());
         }
         /* ] */
 

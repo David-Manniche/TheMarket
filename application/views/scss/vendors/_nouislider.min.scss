@@ -127,7 +127,7 @@
 }
 
 .noUi-connect {
-    background:$primary-color;
+    background: $primary-color;
 }
 
 .noUi-draggable {
@@ -311,4 +311,12 @@
     transform: translate(0, -50%);
     top: 50%;
     right: 120%
+}
+
+.noUi-tooltip {
+    display: none;
+}
+
+.noUi-active .noUi-tooltip {
+    display: block;
 }

@@ -76,7 +76,7 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'action':
                 $ul = $td->appendElement("ul", array("class"=>"actions"));
-
+                if ($canEdit) {
                     $li = $ul->appendElement("li");
                     $li->appendElement(
                         'a',
@@ -87,22 +87,23 @@ foreach ($arr_listing as $sn => $row) {
                         '<i class="fa fa-edit"></i>',
                         true
                     );
+                }
 
-                    $li = $ul->appendElement("li");
-                    $li->appendElement(
-                        'a',
-                        array(
-                        'href'=>CommonHelper::generateUrl('advertiser', 'analytics', array($row['promotion_id'])),
-                        'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Analytics', $siteLangId)),
-                        '<i class="far fa-file-alt"></i>',
-                        true
-                    );
+                $li = $ul->appendElement("li");
+                $li->appendElement(
+                    'a',
+                    array(
+                    'href'=>CommonHelper::generateUrl('advertiser', 'analytics', array($row['promotion_id'])),
+                    'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Analytics', $siteLangId)),
+                    '<i class="far fa-file-alt"></i>',
+                    true
+                );
 
-                    /* $li = $ul->appendElement("li");
-                    $li->appendElement('a', array(
-                        'href'=>"javascript:void(0)", 'class'=>'button small green',
-                        'title'=>Labels::getLabel('LBL_Delete',$siteLangId),"onclick"=>"deletepromotionRecord(".$row['promotion_id'].")"),
-                        '<i class="fa fa-trash"></i>', true); */
+                /* $li = $ul->appendElement("li");
+                $li->appendElement('a', array(
+                    'href'=>"javascript:void(0)", 'class'=>'button small green',
+                    'title'=>Labels::getLabel('LBL_Delete',$siteLangId),"onclick"=>"deletepromotionRecord(".$row['promotion_id'].")"),
+                    '<i class="fa fa-trash"></i>', true); */
 
                 break;
             default:

@@ -20,8 +20,8 @@ Bugs:
 
 
 Enhancements:
-    => 68474 - Library and code updated to handle 3-D secure payments through Omise Payment Gateway.
-    => Updated new labels for IOS APP.
+    => 68474 - Libr
+    
     => Enhancement of existing multilingual functionality. Added MSN language translator API to language fields.
     => Separate header footer for email templates.
     => 69147 - Enhanced social login with plugin.
@@ -140,8 +140,8 @@ Bugs:
     => 035093 - Getting multiple otp fields by clicking get otp button continuesly.
 
 ===================TV-9.1.3.20200303==================
-Bug: 
-    => 034874 - first time discount coupon validation updates 
+Bug:
+    => 034874 - first time discount coupon validation updates
     => 035172 - When search with %%% keyword and use filters.
     => 035212 - Special character handling in export csv file.
     => 034773 -  Restrict keyword search up to 80 character.
@@ -172,18 +172,18 @@ New Features:
     => 71188 - Add setting for making brand field optional
 
 ===================TV-9.1.3.20200306==================
-Bug : 
+Bug :
     => 035273 - Display un-branded filter option when brand is not mandatory.
     => 035315 - Brand mandatory for import/export based on settings.
     => 035200 - Bulk media option shouldn't be there when seller is not allowed to add product or request catalog and Export Seller products media not required.
 ===================TV-9.1.3.20200312==================
 
-Bug : 
+Bug :
     => 035130 - Send request button text should be in center on Affiliate, Account credits page while withdrawal request through Bank Payout.
     => 035283 - for non branded product- if return request is raised then getting blank for brand
-    => 035276 - if product is not binded with brand then in emails (order)> getting blank in front of brand 
+    => 035276 - if product is not binded with brand then in emails (order)> getting blank in front of brand
     => 035335 - admin> order detail page> back button is in toggle instead of direct button as in system
-    => 035329 - admin> options> toggle is still there instead of publish/unpublish button 
+    => 035329 - admin> options> toggle is still there instead of publish/unpublish button
     => 035294 - admin>special price> on selecting name and amount it adds product with default dates
     => 035343 - Enable facebook and google from configuration settings options removed as they moved to plugin module.
     => 035344 - Extra Social login keys which are not being used anymore are removed.
@@ -194,8 +194,61 @@ Bug :
 ===================TV-9.1.3.20200313==================
 
 Bug :
+    => 035392 - While updating inventory, error log added to cvs file and get downloaded after completion.
+    => 035399 - After moving from Subscription package to setting page of particular subscription back button is not working.
+    => 035398 - While editing shop from listing, moved to collections tab and select all and facebox close, all listing is getting checked and action button is displaying.
+    => 035395 - On collection tab of manage shop page getting error.
     => 034810 - for special price and volume discount> on click of name (from list) it should get enabled in edit mode
     => 035397 - while purchasing digital item> on shipping summary step> NA need not to be there
-    => 035290 - admin> request catalog> edit> shipping country field text is differing from shipped to font 
+    => 035290 - admin> request catalog> edit> shipping country field text is differing from shipped to font
     => 035288 - while adding catalog shipping> suggestion list should appear on click (as working earlier) instead of typing
     => 035292 - on adding inventory for requested catalog> getting invalid request and inventory getting created
+    => 035295 - while adding vol discount> min qty allowed should be 2
+===================TV-9.1.4.20200313======================
+
+Bug :
+    => 034393 - Getting invalid request on saving data without selecting product in related products and buy together
+    => 034102 - On Buyer dashboard when hamburger icon clicked to expand sidebar then widgets are crossing screen and scroll not working.
+    => 034101 - On Buyer dashboard when hamburger icon clicked to close sidebar then on widgets extra spaces are not reduced.
+    => 035404 - seller is not getting email when order is on COD
+    => 034492 - On devices> captcha comes over the elements in footer
+    => 034491 - On contact us page> captcha is getting hid behind the map
+
+===================TV-9.1.5.20200316======================
+
+Bug :
+    => 034264 - Getting error while uploading bulk media.
+    => 035273 - If a product without brand is listing in search result then under filters it listed as without name and on accessing that filter there is fatal error occurred.
+    => 034297 - Currency symbol position is not fixed in RTL mode(with RTL language) on any page.
+    => 035457 - Decimal points are there but it's not allowing user to add fraction amount in filters
+    => 035335 - admin> order detail page> back button is in toggle instead of direct button as in system
+    => 035499 - seller vol. discount> on adding vol discount> list is not displaying
+    => 035515 - publish/unpublish option are not listing on selection
+    => 034768 - on devices> url rewriting> original url is not displaying completely
+    => 035446 - admin> shop> collection> links> on searching item> results are listing behind the popup
+    => 035517 - when push notification plugin is not active then push notification tab need not to be there in mobile apps
+    => 035514 - If twillio plugin is disabled from admin then it's still woring on frontend login popup and there is no option to update phone number.
+    => 035537 - Back and finish button visible on popup of product media 
+    => 032856 - Reference message added after sucessfully requesting new email address.
+    => 035519 - on moving item from one wish list to another getting invalid request
+    => 035528 - Seller inventory list is getting shuffled on refereshing. 
+Updates :
+    => msg-1149612- Create functionality of copy to clipboard for option rows of seller inventory
+
+New Features:
+    => 71189 - Sub users for Seller
+===================TV-9.1.5.20200317======================
+Bug: 
+    => 035500 - Email template logo cache.
+    => 035354 - Email template content used social icon on footer.
+    => 035536 - Buy together/related items> getting random data saved
+    => 035534 - seller> buy together/ related products> on editing and removing associated item and saving> the deleted items are still displaying there
+    => 035541 - admin seller order list> on listing> view and cancel button are merging with each other
+    => 035540 - seller> catalog list> image> on uploading image there is no cropper 
+
+===================TV-9.1.6.20200317======================
+
+Bug: 
+    => 035563 - when seller request catalog then on status change tab> check box ix not required
+
+===================TV-9.1.6.20200319======================

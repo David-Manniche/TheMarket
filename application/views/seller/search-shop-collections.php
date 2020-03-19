@@ -4,6 +4,7 @@
         <div class="col">
             <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Collections', $siteLangId); ?></h5>
         </div>
+        <?php if ($canEdit) { ?>
         <div class="content-header-right col-auto">
             <div class="btn-group">
                 <a href="javascript:void(0)" onClick="toggleBulkCollectionStatues(1)" class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css"><?php echo Labels::getLabel('LBL_Activate', $siteLangId);?></a>
@@ -14,22 +15,23 @@
                 <?php }?>
             </div>
         </div>
+        <?php }?>
     </div>
 </div>
 <div class="col-lg-12 col-md-12">
     <?php
     $arr_flds = array(
-            'listserial'=>Labels::getLabel('LBL_Sr._no.', $siteLangId),
-            'scollection_identifier'=>Labels::getLabel('LBL_Collection_Name', $siteLangId),
-            'scollection_active'=>Labels::getLabel('LBL_Status', $siteLangId),
-            'action' => Labels::getLabel('LBL_Action', $siteLangId),
+        'listserial'=>Labels::getLabel('LBL_Sr._no.', $siteLangId),
+        'scollection_identifier'=>Labels::getLabel('LBL_Collection_Name', $siteLangId),
+        'scollection_active'=>Labels::getLabel('LBL_Status', $siteLangId),
+        'action' => Labels::getLabel('LBL_Action', $siteLangId),
+    );
+    if (count($arr_listing) > 0) {
+        $arr_flds = array_merge(
+            array('select_all'=>Labels::getLabel('LBL_Select_all', $siteLangId)),
+            $arr_flds
         );
-        if (count($arr_listing) > 0 && $canEdit) {
-            $arr_flds = array_merge(
-                array('select_all'=>Labels::getLabel('LBL_Select_all', $siteLangId)),
-                $arr_flds
-                );
-        }
+    }
     $tbl = new HtmlElement(
         'table',
         array('width'=>'100%', 'class'=>'table','id'=>'options')
@@ -37,7 +39,7 @@
 
     $th = $tbl->appendElement('thead')->appendElement('tr');
     foreach ($arr_flds as $key => $val) {
-        if ('select_all' == $key) {
+        if ('select_all' == $key && $canEdit) {
             $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input type="checkbox" onclick="selectAll( $(this) )" class="selectAll-js"><i class="input-helper"></i>'.$val.'</label>', true);
         } else {
             $th->appendElement('th', array(), $val);
@@ -68,14 +70,15 @@
                     if (applicationConstants::ACTIVE == $row['scollection_active']) {
                         $active = 'checked';
                     }
-
-                    $str = '<label class="toggle-switch" for="switch'.$row['scollection_id'].'"><input '.$active.' type="checkbox" value="'.$row['scollection_id'].'" id="switch'.$row['scollection_id'].'" onclick="toggleShopCollectionStatus(event,this)"/><div class="slider round"></div></label>';
+                    $checked = (!$canEdit) ? 'disabled' : $active;
+                    $str = '<label class="toggle-switch" for="switch'.$row['scollection_id'].'"><input '.$checked.' type="checkbox" value="'.$row['scollection_id'].'" id="switch'.$row['scollection_id'].'" onclick="toggleShopCollectionStatus(event,this)"/><div class="slider round"></div></label>';
 
                     $td->appendElement('plaintext', array(), $str, true);
                     break;
 
                 case 'action':
                     $ul = $td->appendElement("ul", array("class"=>"actions"));
+                    if ($canEdit) {
                         $li = $ul->appendElement("li");
                         $li->appendElement(
                             'a',
@@ -96,7 +99,7 @@
                             '<i class="fa fa-trash"></i>',
                             true
                         );
-
+                    }
                     break;
                 default:
                     $td->appendElement('plaintext', array(), $row[$key], true);

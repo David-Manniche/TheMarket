@@ -9,7 +9,9 @@
         </div>
         <div class="content-header-right col-auto">
             <div class="btn-group">
-                <a href="javascript:void(0)" onClick="promotionForm()" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Add_Promotion', $siteLangId);?></a>
+                <?php if ($canEdit) { ?>
+                    <a href="javascript:void(0)" onClick="promotionForm()" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Add_Promotion', $siteLangId);?></a>
+                <?php }?>
                 <a href="javascript:void(0)" onClick="reloadList()" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_My_promotions', $siteLangId);?></a>
             </div>
         </div>
@@ -82,9 +84,9 @@
         </div>
         <div class="row">
             <div class="col-lg-12">
-                <div class="cards">                    
+                <div class="cards">
                     <div class="cards-content">
-                        <div id="listing">
+                        <div class="listing-tbl" id="listing">
                             <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                         </div>
                     </div>

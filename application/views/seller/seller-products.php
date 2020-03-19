@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array();
-if (count($arrListing) > 0) {
+if (count($arrListing) > 0 && $canEdit) {
     $arr_flds['select_all'] = Labels::getLabel('LBL_Select_all', $siteLangId);
 }
 $arr_flds['listserial'] = Labels::getLabel('LBL_Sr', $siteLangId);
@@ -10,9 +10,11 @@ $arr_flds['name'] = Labels::getLabel('LBL_Name', $siteLangId);
 $arr_flds['selprod_price'] = Labels::getLabel('LBL_Price', $siteLangId);
 $arr_flds['selprod_stock'] = Labels::getLabel('LBL_Quantity', $siteLangId);
 $arr_flds['selprod_available_from'] = Labels::getLabel('LBL_Available_From', $siteLangId);
-$arr_flds['selprod_active'] = Labels::getLabel('LBL_Status', $siteLangId);
-$arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId);
 
+if ($canEdit) {
+    $arr_flds['selprod_active'] = Labels::getLabel('LBL_Status', $siteLangId);
+    $arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId);
+}
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $key => $val) {
@@ -71,7 +73,6 @@ foreach ($arrListing as $sn => $row) {
                 if (applicationConstants::ACTIVE == $row['selprod_active']) {
                     $active = 'checked';
                 }
-
                 $str = '<label class="toggle-switch" for="switch' . $row['selprod_id'] . '"><input ' . $active . ' type="checkbox" value="' . $row['selprod_id'] . '" id="switch' . $row['selprod_id'] . '" onclick="toggleSellerProductStatus(event,this)"/><div class="slider round"></div></label>';
 
                 $td->appendElement('plaintext', array(), $str, true);

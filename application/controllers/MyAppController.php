@@ -129,10 +129,14 @@ class MyAppController extends FatController
         'defaultCountryCode' => $defaultCountryCode,
         'scrollable' => Labels::getLabel('LBL_SCROLLABLE', $this->siteLangId),
         'quantityAdjusted' => Labels::getLabel('MSG_MAX_QUANTITY_THAT_CAN_BE_PURCHASED_IS_{QTY}._SO,_YOUR_REQUESTED_QUANTITY_IS_ADJUSTED_TO_{QTY}.', $this->siteLangId),
-        'withUsernameOrEmail' => Labels::getLabel('LBL_WITH_USERNAME_OR_EMAIL_?', $this->siteLangId),
+        'withUsernameOrEmail' => Labels::getLabel('LBL_USE_EMAIL_INSTEAD', $this->siteLangId),
         'withPhoneNumber' => Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $this->siteLangId),
         'otpInterval' => User::OTP_INTERVAL,
         'captchaSiteKey' => FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, ''),
+        'allowedFileSize' => LibHelper::getMaximumFileUploadSize(),
+        'fileSizeExceeded' => Labels::getLabel("MSG_FILE_SIZE_SHOULD_BE_LESSER_THAN_{SIZE-LIMIT}", $this->siteLangId),
+        'copyToClipboard' => Labels::getLabel('LBL_Copy_to_clipboard', $this->siteLangId),
+        'copied' => Labels::getLabel('LBL_Copied', $this->siteLangId),
         );
 
         $languages = Language::getAllNames(false);
@@ -590,6 +594,7 @@ class MyAppController extends FatController
         'user_name' => $data['user_name'],
         'link' => $link,
         'user_new_email' => $data['user_email'],
+        'user_phone' => $data['user_phone'],
         );
 
         if (!$configureEmail) {
