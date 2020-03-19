@@ -188,7 +188,8 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#heart" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#heart"></use>
                                     </svg></i></a>
                             <?php }?>
-                            <?php $showMoreButtons = true; if (UserAuthentication::isUserLogged() && UserAuthentication::getLoggedUserId(true) == $shop['shop_user_id']) {
+                            <?php $showMoreButtons = true;
+                            if (isset($userParentId) && $userParentId == $shop['shop_user_id']) {
                                 $showMoreButtons = false;
                             } ?>
                             <?php if ($showMoreButtons) { 

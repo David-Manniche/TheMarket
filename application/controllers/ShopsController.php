@@ -203,7 +203,7 @@ class ShopsController extends MyAppController
 
         $data = $this->getListingData($get, $includeShopData);
         if (false === MOBILE_APP_API_CALL) {
-            $frm = $this->getProductSearchForm(); 
+            $frm = $this->getProductSearchForm();
             $frm->fill($get);
 
             $arr = array(
@@ -214,6 +214,12 @@ class ShopsController extends MyAppController
                 'bannerListigUrl' => CommonHelper::generateFullUrl('Banner', 'categories'),
             );
             $data = array_merge($data, $arr);
+
+            if (UserAuthentication::isUserLogged()) {
+                $userData = User::getAttributesById(UserAuthentication::getLoggedUserId());
+                $userParentId = (0 < $userData['user_parent']) ? $userData['user_parent'] : UserAuthentication::getLoggedUserId();
+                $this->set('userParentId', $userParentId);
+            }
 
             if (FatUtility::isAjaxCall()) {
                 $this->set('products', $data['products']);
