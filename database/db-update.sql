@@ -1150,3 +1150,5 @@ UPDATE `tbl_email_templates` SET etpl_replacements = REPLACE(etpl_replacements, 
 UPDATE `tbl_email_templates` SET etpl_replacements = REPLACE(etpl_replacements, 'user_name', 'shop_name'), etpl_body = REPLACE(etpl_body, 'user_name', 'shop_name') where `etpl_code` = 'threshold_notification_vendor';
 
 UPDATE `tbl_email_templates` SET etpl_replacements = REPLACE(etpl_replacements, 'Name of the email receiver', 'Shop Name') where `etpl_code` = 'threshold_notification_vendor' or `etpl_code` = 'seller_brand_request_status_change' or `etpl_code` = 'seller_catalog_request_status_change' or `etpl_code` = 'seller_custom_catalog_request_status_change';
+
+-- --------------------------TV-9.1.6.20200319--------------------------

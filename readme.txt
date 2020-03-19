@@ -247,3 +247,8 @@ Bug:
     => 035540 - seller> catalog list> image> on uploading image there is no cropper 
 
 ===================TV-9.1.6.20200317======================
+
+Bug: 
+    => 035563 - when seller request catalog then on status change tab> check box ix not required
+
+===================TV-9.1.6.20200319======================
