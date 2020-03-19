@@ -2994,6 +2994,8 @@ class SellerProductsController extends AdminBaseController
         $selprod_id = FatUtility::int($selprod_id);
         $srch = SellerProduct::searchUpsellProducts($this->adminLangId);
         $srch->addCondition(SellerProduct::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'sellerproduct_id', '=', $selprod_id);
+        $srch->addGroupBy('selprod_id');
+        $srch->addGroupBy('upsell_sellerproduct_id'); 
         $srch->addOrder('selprod_id', 'DESC');
         $rs = $srch->getResultSet();
         $upsellProds = FatApp::getDb()->fetchAll($rs);
@@ -3096,6 +3098,8 @@ class SellerProductsController extends AdminBaseController
             $srch->addFld('if(upsell_sellerproduct_id = ' . $selProdId . ', 1 , 0) as priority');
             $srch->addOrder('priority', 'DESC');
             $srch->addCondition('upsell_sellerproduct_id', '=', $productId);
+            $srch->addGroupBy('selprod_id');
+            $srch->addGroupBy('upsell_sellerproduct_id'); 
             $srch->doNotCalculateRecords();
             $srch->doNotLimitRecords();
             $rs = $srch->getResultSet();

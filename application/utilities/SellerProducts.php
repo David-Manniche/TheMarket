@@ -2780,6 +2780,8 @@ trait SellerProducts
         $srch = SellerProduct::searchUpsellProducts($this->siteLangId);
         $srch->addCondition('selprod_user_id', '=', $this->userParentId);
         $srch->addCondition(SellerProduct::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'sellerproduct_id', '=', $selprod_id);
+        $srch->addGroupBy('selprod_id');
+        $srch->addGroupBy('upsell_sellerproduct_id'); 
         $srch->addOrder('selprod_id', 'DESC');
         $rs = $srch->getResultSet();
         $upsellProds = FatApp::getDb()->fetchAll($rs);
@@ -2866,8 +2868,10 @@ trait SellerProducts
         }
         $srch->addCondition('selprod_user_id', '=', $this->userParentId);
         $srch->addFld('if(upsell_sellerproduct_id = ' . $selProdId . ', 1 , 0) as priority');
+        $srch->addGroupBy('selprod_id');
+        $srch->addGroupBy('upsell_sellerproduct_id');   
         $srch->addOrder('priority', 'DESC');
-        $srch->setPageNumber($page);
+        $srch->setPageNumber($page);    
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $upsellProds = $db->fetchAll($rs);
