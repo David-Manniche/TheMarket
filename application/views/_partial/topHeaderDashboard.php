@@ -41,6 +41,7 @@
                 <svg class="svg"><use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#manage-shop" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#manage-shop"></use></svg></i></a></li>
                 <?php } ?>
             </ul>
+            <?php if($userPrivilege->canViewMessages(0, true)) { ?>
             <div class="c-header-icon bell">
                 <a data-org-url="<?php echo CommonHelper::generateUrl('Account', 'Messages', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo CommonHelper::generateUrl('Account', 'Messages'); ?>" title="<?php echo Labels::getLabel('LBL_Messages', $siteLangId);?>">
                 <i class="icn"><svg class="svg bell-shake-delay">
@@ -49,6 +50,7 @@
                 </i>
                 <span class="h-badge"><span class="heartbit"></span><?php echo CommonHelper::displayBadgeCount($todayUnreadMessageCount, 9); ?></span></a>
             </div>
+            <?php } ?>
             <div class="short-links">
                 <ul>
                     <?php /*$this->includeTemplate('_partial/headerLanguageArea.php');*/ ?>
