@@ -254,3 +254,4 @@ Bug:
 ===================TV-9.1.6.20200319======================
 Enhancements :
     => Performance enhancements used cache for js lang labels.
+    => Performance enhancements applied condition at route level to check static content.
