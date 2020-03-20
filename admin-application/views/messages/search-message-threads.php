@@ -37,8 +37,8 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'message_text':
                 $div = $td->appendElement('div', array('class'=>'listing__desc'));
-                $anchor = $div->appendElement('a', array('href'=>'#'));
-                $anchor->appendElement('plaintext', array(), $row['message_text']);
+                // $anchor = $div->appendElement('a', array('href'=>'#'));
+                $div->appendElement('plaintext', array(), $row['message_text']);
                 //$td->appendElement('plaintext', array(), FatDate::format($row['message_text'] , true));
                 break;
             case 'message_date':
