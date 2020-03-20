@@ -70,8 +70,8 @@ class MyAppController extends FatController
         $defultCountryId = FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 0);
         $defaultCountryCode = Countries::getAttributesById($defultCountryId, 'country_code');
         
-        $jsVariables = FatCache::get('jsVariablesCache' . $this->siteLangId, CONF_DEF_CACHE_TIME, '.txt');
-        if (!$jsVariables) {
+        $jsVariablesCache = FatCache::get('jsVariablesCache' . $this->siteLangId, CONF_DEF_CACHE_TIME, '.txt');
+        if (!$jsVariablesCache) {
             $jsVariables = array(
             'confirmRemove' => Labels::getLabel('LBL_Do_you_want_to_remove', $this->siteLangId),
             'confirmReset' => Labels::getLabel('LBL_Do_you_want_to_reset_settings', $this->siteLangId),
@@ -145,8 +145,9 @@ class MyAppController extends FatController
             foreach ($languages as $val) {
                 $jsVariables['language' . $val['language_id']] = $val['language_layout_direction'];
             }
-            FatCache::set('jsVariablesCache' . $this->siteLangId, $jsVariables, '.txt');
+            FatCache::set('jsVariablesCache' . $this->siteLangId, serialize($jsVariables), '.txt');
         }
+        $jsVariables =  unserialize($jsVariablesCache);
 
         $themeId = FatApp::getConfig('CONF_FRONT_THEME', FatUtility::VAR_INT, 1);
 
