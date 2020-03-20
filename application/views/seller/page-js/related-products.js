@@ -4,6 +4,7 @@ $(document).ready(function(){
     $('#related-products').delegate('.remove_related', 'click', function() {
         $(this).parents('li').remove();
     });
+    $("input[name='product_name']").trigger('click');
 });
 $(document).on('mouseover', "ul.list-tags li span i", function(){
     $(this).parents('li').addClass("hover");
@@ -20,15 +21,16 @@ $(document).on('click', ".dvFocus-js", function(){
     $('.dvFocus-js').hide();
     $(this).html('');
 });
-$(document).on('keyup', "input[name='product_name']", function(){
+$(document).on('click', "input[name='product_name']", function(){
     var currObj = $(this);
     var parentForm = currObj.closest('form').attr('id');
-    if('' != currObj.val()){
-        if(currObj.val().length < 2){
+    /*if('' != currObj.val()){
+         if(currObj.val().length < 2){
             return;
-        }
+        } */
         currObj.siblings('ul.dropdown-menu').remove();
         currObj.autocomplete({
+                minLength : 0,
                 'classes': {
                     "ui-autocomplete": "custom-ui-autocomplete"
                 },
@@ -59,14 +61,18 @@ $(document).on('keyup', "input[name='product_name']", function(){
                 });
                 $('.dvFocus-js').html(ui.item.label).show();
                 currObj.hide();
+                $("input[name='products_related']").trigger('click');
+                $("input[name='products_related']").focus();
         	}
+        }).focus(function() {
+            currObj.autocomplete("search", currObj.val());
         });
-    }else{
+    /*}else{
         $("#"+parentForm+" input[name='selprod_id']").val('');
-    }
+    }*/
 });
 
-$(document).on('keyup', "input[name='products_related']", function(){
+$(document).on('click', "input[name='products_related']", function(){
     var currObj = $(this);
     var parentForm = currObj.closest('form').attr('id');
     var selprod_id = $("#"+parentForm+" input[name='selprod_id']").val();
@@ -77,6 +83,7 @@ $(document).on('keyup', "input[name='products_related']", function(){
     if(selprod_id != 0) {
         currObj.siblings('ul.dropdown-menu').remove();
         currObj.autocomplete({
+            minLength : 0,
             autoFocus: true,
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
@@ -107,6 +114,8 @@ $(document).on('keyup', "input[name='products_related']", function(){
                 // currObj.focus();
                 return false;
             }
+        }).focus(function() {
+            currObj.autocomplete("search", currObj.val());
         });
     }
 });
