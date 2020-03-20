@@ -119,13 +119,14 @@ foreach ($arr_listing as $sn => $row) {
                     $innerLi=$innerUl->appendElement('li');
                     $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addUserForm(".$row['user_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
 
-                    $innerLi=$innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Rewards', $adminLangId),"onclick"=>"rewards(".$row['user_id'].")"), Labels::getLabel('LBL_Rewards', $adminLangId), true);
+                    if (0 == $row['user_parent']) {
+                        $innerLi=$innerUl->appendElement('li');
+                        $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Rewards', $adminLangId),"onclick"=>"rewards(".$row['user_id'].")"), Labels::getLabel('LBL_Rewards', $adminLangId), true);
 
-                    $innerLi=$innerUl->appendElement("li");
-                    $innerLi->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green',
-                    'title'=>Labels::getLabel('LBL_Transactions', $adminLangId),"onclick"=>"transactions(".$row['user_id'].")"), Labels::getLabel('LBL_Transactions', $adminLangId), true);
-
+                        $innerLi=$innerUl->appendElement("li");
+                        $innerLi->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green',
+                        'title'=>Labels::getLabel('LBL_Transactions', $adminLangId),"onclick"=>"transactions(".$row['user_id'].")"), Labels::getLabel('LBL_Transactions', $adminLangId), true);
+                    }
                     $innerLi=$innerUl->appendElement('li');
                     $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Change_Password', $adminLangId),"onclick"=>"changePasswordForm(".$row['user_id'].")"), Labels::getLabel('LBL_Change_Password', $adminLangId), true);
 

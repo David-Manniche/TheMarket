@@ -288,6 +288,13 @@ class UsersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
+        $userObj = new User($userId);
+        $user = $userObj->getUserInfo(array('user_parent'), false, false);
+        if (!$user || 0 < $user['user_parent']) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
         $obj = new UserRewards();
         $post['urp_date_added'] = date('Y-m-d H:i:s');
         if (!empty($post['validity']) && $validity = FatUtility::int($post['validity'])) {
@@ -397,6 +404,13 @@ class UsersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
+        $userObj = new User($userId);
+        $user = $userObj->getUserInfo(array('user_parent'), false, false);
+
+        if (!$user || 0 < $user['user_parent']) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
         $tObj = new Transactions();
         $data = array(
         'utxn_user_id' => $userId,
