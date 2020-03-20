@@ -4,6 +4,7 @@ $(document).ready(function(){
     $('#upsell-products').delegate('.remove_upsell', 'click', function() {
         $(this).parent().remove();
     });
+    $("input[name='product_name']").trigger('click');
 });
 $(document).on('mouseover', "ul.list-tags li span i", function(){
     $(this).parents('li').addClass("hover");
@@ -20,12 +21,13 @@ $(document).on('click', ".dvFocus-js", function(){
     $('.dvFocus-js').hide();
     $(this).html('');
 });
-$(document).on('keyup', "input[name='product_name']", function(){
+$(document).on('click', "input[name='product_name']", function(){   
     var currObj = $(this);
     var parentForm = currObj.closest('form').attr('id');
-    if('' != currObj.val()){
+    //if('' != currObj.val()){
         currObj.siblings('ul.dropdown-menu').remove();
         currObj.autocomplete({
+            minLength : 0, 
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
             },
@@ -56,14 +58,18 @@ $(document).on('keyup', "input[name='product_name']", function(){
                 });
                 $('.dvFocus-js').html(ui.item.label).show();
                 currObj.hide();
+                $("input[name='products_upsell']").trigger('click');
+                $("input[name='products_upsell']").focus();
         	}
+        }).focus(function() {
+            currObj.autocomplete("search", currObj.val());
         });
-    }else{
+    /*}else{
         $("#"+parentForm+" input[name='selprod_id']").val('');
-    }
+    } */
 });
 
-$(document).on('keyup', "input[name='products_upsell']", function(){
+$(document).on('click', "input[name='products_upsell']", function(){
     var currObj = $(this);
     var parentForm = currObj.closest('form').attr('id');
     var selprod_id = $("#"+parentForm+" input[name='selprod_id']").val();
@@ -74,6 +80,7 @@ $(document).on('keyup', "input[name='products_upsell']", function(){
     if(selprod_id != 0) {
         currObj.siblings('ul.dropdown-menu').remove();
         currObj.autocomplete({
+            minLength : 0, 
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
             },
@@ -104,6 +111,8 @@ $(document).on('keyup', "input[name='products_upsell']", function(){
                 $('#upsell-products').append('<li id="productUpsell' + ui.item.id + '"><span> ' + ui.item.label + '<i class="remove_upsell remove_param fas fa-times"></i><input type="hidden" name="selected_products[]" value="' + ui.item.id + '" /></span></li>');
                 return false;
             }
+        }).focus(function() {
+            currObj.autocomplete("search", currObj.val());
         });
     }
 });
