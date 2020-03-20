@@ -255,7 +255,7 @@ Bug:
 Enhancements :
     => Performance enhancements used cache for js lang labels.
     => Performance enhancements applied condition at route level to check static content.
-
+    => Theme management removed un-necessary options and optimized code.
 Bug: 
     => 035562 - while requesting catalog> shipping details> country is getting saved with random data
     => 035627 - On buy together and related products >> if we enter wrong name of product and click on save button then message should be proper

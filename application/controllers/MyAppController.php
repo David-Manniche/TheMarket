@@ -154,12 +154,9 @@ class MyAppController extends FatController
         if (CommonHelper::isThemePreview() && isset($_SESSION['preview_theme'])) {
             $themeId = $_SESSION['preview_theme'];
         }
-        $themeDetail = array();
-        $themeColors = ThemeColor::getThemeColorsById($themeId);
-        foreach ($themeColors as $tColor) {
-            $themeDetail[$tColor['tcolor_key']] = $tColor['tcolor_value'];
-        }
-        $this->themeDetail = $themeDetail;
+       
+        $this->themeDetail = ThemeColor::getById($themeId, $this->siteLangId, false, true);
+        
         $currencySymbolLeft = CommonHelper::getCurrencySymbolLeft();
         $currencySymbolRight = CommonHelper::getCurrencySymbolRight();
 

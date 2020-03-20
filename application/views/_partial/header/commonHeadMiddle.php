@@ -34,33 +34,32 @@ if ($canonicalUrl == '') {
 <link rel="canonical" href="<?php echo $canonicalUrl;?>" />
 <style>
     :root {
-        --brand-color:#<?php echo $themeDetail['tcolor_brand_color']; ?>;
-        --brand-color-inverse:#<?php echo $themeDetail['tcolor_brand_color_inverse']; ?>;
+        --brand-color:#<?php echo $themeDetail[ThemeColor::TYPE_BRAND]; ?>;
+        --brand-color-inverse:#<?php echo $themeDetail[ThemeColor::TYPE_BRAND_INVERSE]; ?>;
 
-        --primary-color: #<?php echo $themeDetail['tcolor_primary_color']; ?>;
-        --primary-color-inverse:#<?php echo $themeDetail['tcolor_primary_color_inverse']; ?>;
+        --primary-color: #<?php echo $themeDetail[ThemeColor::TYPE_PRIMARY]; ?>;
+        --primary-color-inverse:#<?php echo $themeDetail[ThemeColor::TYPE_PRIMARY_INVERSE]; ?>;
 
-        --secondary-color:#<?php echo $themeDetail['tcolor_secondary_color']; ?>;
-        --secondary-color-inverse:#<?php echo $themeDetail['tcolor_secondary_color_inverse']; ?>;
+        --secondary-color:#<?php echo $themeDetail[ThemeColor::TYPE_SECONDARY]; ?>;
+        --secondary-color-inverse:#<?php echo $themeDetail[ThemeColor::TYPE_SECONDARY_INVERSE]; ?>;
 
-        --third-color: #<?php echo $themeDetail['tcolor_third_color']; ?>;
-        --third-color-inverse:#<?php echo $themeDetail['tcolor_third_color_inverse']; ?>;
+        --third-color: #<?php echo $themeDetail[ThemeColor::TYPE_THIRD]; ?>;
+        --third-color-inverse:#<?php echo $themeDetail[ThemeColor::TYPE_THIRD_INVERSE]; ?>;
 
-        --body-color:#<?php echo $themeDetail['tcolor_body_color']; ?>;
+        --body-color:#<?php echo $themeDetail[ThemeColor::TYPE_BODY]; ?>;
 
         --dark-color: ;
         --light-color: ;
 
-        --gray-color:#<?php echo $themeDetail['tcolor_grey_color']; ?>;
-        --gray-light:#<?php echo $themeDetail['tcolor_grey_light_color']; ?>;
+        --gray-color:#<?php echo $themeDetail[ThemeColor::TYPE_GREY]; ?>;
+        --gray-light:#<?php echo $themeDetail[ThemeColor::TYPE_GREY_LIGHT]; ?>;
 
+        --border-color:#<?php echo $themeDetail[ThemeColor::TYPE_BORDER]; ?>;
+        --border-dark-color:#<?php echo $themeDetail[ThemeColor::TYPE_BORDER_DARK];?>;
+        --border-light-color:#<?php echo $themeDetail[ThemeColor::TYPE_BORDER_LIGHT];?>;
 
-        --border-color:#<?php echo $themeDetail['tcolor_border_color']; ?>;
-        --border-dark-color:#<?php echo $themeDetail['tcolor_border_dark_color'];?>;
-        --border-light-color:#<?php echo $themeDetail['tcolor_border_light_color'];?>;
-
-        --font-color:#<?php echo $themeDetail['tcolor_font_color']; ?>;
-        --font-color2:#<?php echo $themeDetail['tcolor_font_secondary_color']; ?>;
+        --font-color:#<?php echo $themeDetail[ThemeColor::TYPE_FONT]; ?>;
+        --font-color2:#<?php echo $themeDetail[ThemeColor::TYPE_FONT_SECONDARY]; ?>;
     }
 </style>
 <script type="text/javascript">

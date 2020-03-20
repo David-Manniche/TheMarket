@@ -1021,9 +1021,10 @@ class HomeController extends MyAppController
                 "lang" => $this->siteLangCode,
                 "start_url" => CONF_WEBROOT_URL,
                 "display" => "standalone",
-                "background_color" => isset($this->themeDetail['tcolor_first_color']) ? '#' . $this->themeDetail['tcolor_first_color'] : '',
-                "theme_color" => isset($this->themeDetail['tcolor_first_color']) ? '#' . $this->themeDetail['tcolor_first_color'] : '',
+                "background_color" => isset($this->themeDetail[ThemeColor::TYPE_BODY]) ? '#' . $this->themeDetail[ThemeColor::TYPE_BODY] : '',
+                "theme_color" => isset($this->themeDetail[ThemeColor::TYPE_BRAND]) ? '#' . $this->themeDetail[ThemeColor::TYPE_BRAND] : '',
             );
+            var_dump($arr); exit;
             foreach ($iconsArr as $key => $val) {
                 $iconUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'appleTouchIcon', array($this->siteLangId, $val . '-' . $val)), CONF_IMG_CACHE_TIME, '.png');
                 $icons = [

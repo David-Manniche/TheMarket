@@ -1152,3 +1152,22 @@ UPDATE `tbl_email_templates` SET etpl_replacements = REPLACE(etpl_replacements, 
 UPDATE `tbl_email_templates` SET etpl_replacements = REPLACE(etpl_replacements, 'Name of the email receiver', 'Shop Name') where `etpl_code` = 'threshold_notification_vendor' or `etpl_code` = 'seller_brand_request_status_change' or `etpl_code` = 'seller_catalog_request_status_change' or `etpl_code` = 'seller_custom_catalog_request_status_change';
 
 -- --------------------------TV-9.1.6.20200319--------------------------
+update `tbl_theme_colors` set tcolor_key = 1 where tcolor_key = 'tcolor_brand_color';
+update `tbl_theme_colors` set tcolor_key = 2 where tcolor_key = 'tcolor_brand_color_inverse';
+update `tbl_theme_colors` set tcolor_key = 3 where tcolor_key = 'tcolor_body_color';
+update `tbl_theme_colors` set tcolor_key = 4 where tcolor_key = 'tcolor_secondary_color';
+update `tbl_theme_colors` set tcolor_key = 5 where tcolor_key = 'tcolor_secondary_color_inverse';
+update `tbl_theme_colors` set tcolor_key = 6 where tcolor_key = 'tcolor_primary_color';
+update `tbl_theme_colors` set tcolor_key = 7 where tcolor_key = 'tcolor_primary_color_inverse';
+update `tbl_theme_colors` set tcolor_key = 8 where tcolor_key = 'tcolor_border_color';
+update `tbl_theme_colors` set tcolor_key = 9 where tcolor_key = 'tcolor_border_dark_color';
+update `tbl_theme_colors` set tcolor_key = 10 where tcolor_key = 'tcolor_border_light_color';
+update `tbl_theme_colors` set tcolor_key = 11 where tcolor_key = 'tcolor_font_color';
+update `tbl_theme_colors` set tcolor_key = 12 where tcolor_key = 'tcolor_font_secondary_color';
+update `tbl_theme_colors` set tcolor_key = 13 where tcolor_key = 'tcolor_grey_color';
+update `tbl_theme_colors` set tcolor_key = 14 where tcolor_key = 'tcolor_grey_light_color';
+update `tbl_theme_colors` set tcolor_key = 15 where tcolor_key = 'tcolor_third_color';
+update `tbl_theme_colors` set tcolor_key = 16 where tcolor_key = 'tcolor_third_color_inverse';
+update `tbl_theme_colors` set tcolor_display_order = tcolor_key;
+ALTER TABLE `tbl_theme_colors` ADD `tcolor_display_order` INT(11) NOT NULL AFTER `tcolor_value`;
+ALTER TABLE `tbl_theme_colors` CHANGE `tcolor_key` `tcolor_key` INT(11) NOT NULL;

@@ -22,12 +22,12 @@ $additionalAttributes = (CommonHelper::getLayoutDirection() == 'rtl') ? 'directi
 <meta name="robots" content="noindex" />
 <?php }?>
 <!-- favicon ================================================== -->
-<meta name="theme-color" content="#<?php echo $themeDetail['tcolor_primary_color']; ?>">
+<meta name="theme-color" content="#<?php echo $themeDetail[ThemeColor::TYPE_PRIMARY]; ?>">
 <meta name="msapplication-TileColor" content="#ffffff">
 <meta name="msapplication-TileImage" content="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '144-144')); ?>">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">    
-<meta name="msapplication-navbutton-color" content="#<?php echo $themeDetail['tcolor_primary_color']; ?>">
+<meta name="msapplication-navbutton-color" content="#<?php echo $themeDetail[ThemeColor::TYPE_PRIMARY]; ?>">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="msapplication-starturl" content="/">     
 <?php 
