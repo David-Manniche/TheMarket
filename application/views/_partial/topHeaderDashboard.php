@@ -4,8 +4,7 @@
 <div class="wrapper">
     <?php if ($controllerName != 'SubscriptionCheckout') {?>
     <header id="header-dashboard" class="header-dashboard no-print" role="header-dashboard">
-        <?php if ((User::canViewSupplierTab() && User::canViewBuyerTab()) || (User::canViewSupplierTab() && User::canViewAdvertiserTab()) || (User::canViewBuyerTab() && User::canViewAdvertiserTab())) { ?>
-
+        <?php if ((User::canViewSupplierTab() && User::canViewBuyerTab()) || (User::canViewSupplierTab() && User::canViewAdvertiserTab() && $userPrivilege->canViewPromotions(0, true)) || (User::canViewBuyerTab() && User::canViewAdvertiserTab())) { ?>
         <div class="dropdown dashboard-user">
           <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dashboardDropdown" data-toggle="dropdown"  data-display="static"  aria-haspopup="true" aria-expanded="false" >
             <?php echo ($activeTab == 'S') ? Labels::getLabel('Lbl_Seller', $siteLangId) : (($activeTab == 'B') ? Labels::getLabel('Lbl_Buyer', $siteLangId) : (($activeTab == 'Ad') ? Labels::getLabel('Lbl_Advertiser', $siteLangId) : '')) ?>
@@ -27,7 +26,6 @@
             </ul>
           </div>
         </div>
-
         <?php } ?>
         <div class="header-icons-group">
             <?php $getOrgUrl = (CONF_DEVELOPMENT_MODE) ? true : false; ?>
