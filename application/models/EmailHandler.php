@@ -319,7 +319,6 @@ class EmailHandler extends FatModel
     public function sendChangeEmailRequestNotification($langId, $d)
     {
         $tpl = 'user_change_email_request_notification';
-
         $vars = array(
         '{user_full_name}' => $d['user_name'],
         '{new_email}' => $d['user_new_email'],

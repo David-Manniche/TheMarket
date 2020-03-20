@@ -605,7 +605,7 @@ class MyAppController extends FatController
             'user_new_email' => $data['user_new_email'],
             'user_email' => $data['user_email'],
             );
-            if (!$email->sendChangeEmailRequestNotification($this->siteLangId, array('user_name' => $dataArr['user_name'], 'user_email' => $dataArr['user_email'], 'user_new_email' => $dataArr['user_new_email']))) {
+            if (!$email->sendChangeEmailRequestNotification($this->siteLangId, $dataArr)) {
                 return false;
             }
         }
