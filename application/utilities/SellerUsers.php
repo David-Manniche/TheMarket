@@ -63,8 +63,9 @@ trait SellerUsers
         $fld->requirements()->setUsername();
         $fld = $frm->addEmailField(Labels::getLabel('LBL_User_Email', $this->siteLangId), 'user_email', '');
         $fld->setUnique('tbl_user_credentials', 'credential_email', 'credential_user_id', 'user_id', 'user_id');
-        $frm->addRequiredField(Labels::getLabel('LBL_Phone', $this->siteLangId), 'user_phone');
-
+        $phoneFld = $frm->addRequiredField(Labels::getLabel('LBL_Phone', $this->siteLangId), 'user_phone');
+        $phoneFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
+        $phoneFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
         if ($userId == 0) {
             $fld = $frm->addPasswordField(Labels::getLabel('LBL_PASSWORD', $this->siteLangId), 'user_password');
             $fld->requirements()->setRequired();
@@ -156,16 +157,6 @@ trait SellerUsers
         $post['user_phone'] = isset($post['user_phone']) ? FatUtility::int(str_replace($post['user_dial_code'], "", $post['user_phone'])) : null;
         $post['user_parent'] = UserAuthentication::getLoggedUserId();
         $post['user_state_id'] = $user_state_id;
-
-        $db = FatApp::getDb();
-        $db->startTransaction();
-        $userObj = new User($userId);
-        $userObj->assignValues($post);
-        if (!$userObj->save()) {
-            $db->rollbackTransaction();
-            $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
-            FatUtility::dieWithError($message);
-        }
         if (0 < $userId) {
             $post['user_password'] = null;
             $post['user_verify'] = null;
@@ -177,7 +168,16 @@ trait SellerUsers
             $post['user_verify'] = applicationConstants::YES;
             $post['user_active'] = applicationConstants::ACTIVE;
         }
-        
+        $db = FatApp::getDb();
+        $db->startTransaction();
+        $userObj = new User($userId);
+        $userObj->assignValues($post);
+        if (!$userObj->save()) {
+            $db->rollbackTransaction();
+            $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
+            FatUtility::dieWithError($message);
+        }
+
         if (!$userObj->setLoginCredentials($post['user_username'], $post['user_email'], $post['user_password'], $post['user_active'], $post['user_verify'])) {
             $db->rollbackTransaction();
             $message = Labels::getLabel($userObj->getError(), $this->siteLangId);

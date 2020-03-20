@@ -68,8 +68,9 @@ class Navigation
 
     public static function topHeaderDashboard($template)
     {
-        $userData = User::getAttributesById(UserAuthentication::getLoggedUserId());
-        $userId = (0 < $userData['user_parent']) ? $userData['user_parent'] : UserAuthentication::getLoggedUserId();
+        /* $userData = User::getAttributesById(UserAuthentication::getLoggedUserId());
+        $userId = (0 < $userData['user_parent']) ? $userData['user_parent'] : UserAuthentication::getLoggedUserId(); */
+        $userId = UserAuthentication::getLoggedUserId();
         /* Unread Message Count [*/
         $threadObj = new Thread();
         $todayUnreadMessageCount = $threadObj->getMessageCount($userId, Thread::MESSAGE_IS_UNREAD, date('Y-m-d'));
@@ -120,7 +121,7 @@ class Navigation
         $userId = (0 < $userData['user_parent']) ? $userData['user_parent'] : UserAuthentication::getLoggedUserId();
         /* Unread Message Count [*/
         $threadObj = new Thread();
-        $todayUnreadMessageCount = $threadObj->getMessageCount($userId, Thread::MESSAGE_IS_UNREAD, date('Y-m-d'));
+        $todayUnreadMessageCount = $threadObj->getMessageCount(UserAuthentication::getLoggedUserId(), Thread::MESSAGE_IS_UNREAD, date('Y-m-d'));
         /*]*/
         $controller = str_replace('Controller', '', FatApp::getController());
         $action = FatApp::getAction();

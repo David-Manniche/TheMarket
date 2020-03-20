@@ -47,7 +47,7 @@ class UsersController extends AdminBaseController
 
         $userObj = new User();
         $srch = $userObj->getUserSearchObj(null, true);
-        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'user_id = shop.shop_user_id', 'shop');
+        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'user_id = shop.shop_user_id OR user_parent = shop.shop_user_id', 'shop');
         $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $this->adminLangId, 's_l');
         $srch->addOrder('u.user_id', 'DESC');
         $srch->addOrder('credential_active', 'DESC');
@@ -109,7 +109,7 @@ class UsersController extends AdminBaseController
 
         $srch->addFld(array('user_is_buyer', 'user_is_supplier', 'user_is_advertiser', 'user_is_affiliate', 'user_registered_initially_for'));
 
-        $srch->addMultipleFields(array('user_id', 'user_name', 'user_phone', 'user_profile_info', 'user_regdate', 'user_is_buyer', 'credential_username', 'credential_email', 'credential_active', 'credential_verified', 'shop_id', 'shop_user_id', 'IFNULL(shop_name, shop_identifier) as shop_name'));
+        $srch->addMultipleFields(array('user_id', 'user_name', 'user_phone', 'user_profile_info', 'user_regdate', 'user_is_buyer', 'user_parent', 'credential_username', 'credential_email', 'credential_active', 'credential_verified', 'shop_id', 'shop_user_id', 'IFNULL(shop_name, shop_identifier) as shop_name'));
 
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -133,7 +133,7 @@ class UsersController extends AdminBaseController
     {
         $this->objPrivilege->canEditUsers();
         $userObj = new User($userId);
-        $user = $userObj->getUserInfo(array('credential_username', 'credential_password', 'user_preferred_dashboard'), false, false);       
+        $user = $userObj->getUserInfo(array('credential_username', 'credential_password', 'user_preferred_dashboard'), false, false);
         if (!$user) {
             Message::addErrorMessage($this->str_invalid_request);
             FatApp::redirectUser(CommonHelper::generateUrl('Users'));
@@ -288,6 +288,13 @@ class UsersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
+        $userObj = new User($userId);
+        $user = $userObj->getUserInfo(array('user_parent'), false, false);
+        if (!$user || 0 < $user['user_parent']) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
         $obj = new UserRewards();
         $post['urp_date_added'] = date('Y-m-d H:i:s');
         if (!empty($post['validity']) && $validity = FatUtility::int($post['validity'])) {
@@ -397,6 +404,13 @@ class UsersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
+        $userObj = new User($userId);
+        $user = $userObj->getUserInfo(array('user_parent'), false, false);
+
+        if (!$user || 0 < $user['user_parent']) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
         $tObj = new Transactions();
         $data = array(
         'utxn_user_id' => $userId,

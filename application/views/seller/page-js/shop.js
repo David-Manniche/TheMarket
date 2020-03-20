@@ -370,7 +370,7 @@ $(document).on('change', '.collection-language-js', function() {
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('Seller', 'socialPlatformSetup'), data, function(t) {
             $.mbsmessage.close();
-            reloadSocialPlatformsList();
+            /*reloadSocialPlatformsList();*/
             if ( t.langId > 0 ) {
                 addLangForm( t.splatformId, t.langId );
                 return ;

@@ -374,7 +374,7 @@ $(document).on('change', '.language-js',function(){
 
 
 	/* Product shipping  */
-	addShippingTab = function(id,prodTypeDigital){
+	/* addShippingTab = function(id,prodTypeDigital){
 		var ShipDiv = "#tab_shipping";
 		var e = document.getElementById("product_type");
 		var type = e.options[e.selectedIndex].value;
@@ -393,7 +393,7 @@ $(document).on('change', '.language-js',function(){
 				$(ShipDiv).html(t);
 			}
 		});
-	}
+	} */
 
 	shippingautocomplete = function(shipping_row) {
 		$('input[name=\'product_shipping[' + shipping_row + '][country_name]\']').focusout(function() {

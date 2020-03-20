@@ -46,12 +46,15 @@ class MessagesController extends AdminBaseController
         $post = $searchForm->getFormDataFromArray($data);
 
         $srch = new MessageSearch();
-        $srch->joinThreadMessage();
+        $srch->joinThreadLastMessage();
         $srch->joinMessagePostedFromUser();
         $srch->joinMessagePostedToUser();
-        $srch->joinShops($this->adminLangId);
-        $srch->joinOrderProducts($this->adminLangId);
+        $srch->joinThreadStartedByUser();
+        /*$srch->joinShops($this->adminLangId);
+        $srch->joinOrderProducts($this->adminLangId);*/
         $srch->addMultipleFields(array('tth.*', 'ttm.*', 'tfr.user_id as message_sent_by', 'tfr.user_name as message_sent_by_username', 'tfto.user_id as message_sent_to', 'tfto.user_name as message_sent_to_name', 'tfto_c.credential_email as message_sent_to_email', 'tfto.user_name as message_sent_to_name'));
+        $srch->addOrder('message_id', 'DESC');
+        $srch->addGroupBy('ttm.message_thread_id');
         if (!empty($post['thread_id'])) {
             $srch->addCondition('tth.thread_id', '=', $post['thread_id']);
         }
