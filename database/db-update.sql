@@ -1168,6 +1168,6 @@ update `tbl_theme_colors` set tcolor_key = 13 where tcolor_key = 'tcolor_grey_co
 update `tbl_theme_colors` set tcolor_key = 14 where tcolor_key = 'tcolor_grey_light_color';
 update `tbl_theme_colors` set tcolor_key = 15 where tcolor_key = 'tcolor_third_color';
 update `tbl_theme_colors` set tcolor_key = 16 where tcolor_key = 'tcolor_third_color_inverse';
-update `tbl_theme_colors` set tcolor_display_order = tcolor_key;
+update `tbl_theme_colors` set `tcolor_display_order` = `tcolor_key`;
 ALTER TABLE `tbl_theme_colors` ADD `tcolor_display_order` INT(11) NOT NULL AFTER `tcolor_value`;
 ALTER TABLE `tbl_theme_colors` CHANGE `tcolor_key` `tcolor_key` INT(11) NOT NULL;
