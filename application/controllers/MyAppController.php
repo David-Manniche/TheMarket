@@ -146,8 +146,9 @@ class MyAppController extends FatController
                 $jsVariables['language' . $val['language_id']] = $val['language_layout_direction'];
             }
             FatCache::set('jsVariablesCache' . $this->siteLangId, serialize($jsVariables), '.txt');
-        }
-        $jsVariables =  unserialize($jsVariablesCache);
+        } else{
+            $jsVariables =  unserialize($jsVariablesCache);
+        }        
 
         $themeId = FatApp::getConfig('CONF_FRONT_THEME', FatUtility::VAR_INT, 1);
 
