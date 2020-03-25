@@ -266,3 +266,6 @@ Bug:
     
 Update 
     => msg-1152994- Admin profile image is not refreshing after image upload
+
+Features
+    => Full text Search (Elastic search) for products search.
