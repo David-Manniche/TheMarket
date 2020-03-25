@@ -467,6 +467,10 @@ class FullTextSearch extends FatModel
 
     public static function syncData()
     {
+        if (!FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_FULL_TEXT_SEARCH, FatUtility::VAR_INT, 0)) {
+            return false;
+        }
+    
         $fullTextSearch = new FullTextSearch();
         $fullTextSearch->createIndex();
         $fullTextSearch->execute();
