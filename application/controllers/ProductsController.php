@@ -1583,8 +1583,9 @@ class ProductsController extends MyAppController
             $page = ($page - 1) * $pageSize;
             $srch->setPageNumber($page);
             $srch->setPageSize($pageSize);
+			$srch->setFields(array('brand', 'categories', 'general'));
             $records = $srch->fetch();
-            $products = [];
+			$products = [];
             
             if (isset($records['hits']) && count($records['hits']) > 0) {
                 foreach ($records['hits'] as $record) {
@@ -1615,11 +1616,6 @@ class ProductsController extends MyAppController
                         if (!empty($wishListProd) && $wishListProd['uwlp_uwlist_id']) {
                             $arr = array('is_in_any_wishlist' => 1);
                         }
-                    }
-
-                    $arr['selprod_title'] = $record['_source']['general']['selprod_title'];
-                    if (empty($arr['selprod_title']) && isset($record['_source']['general']['product_name'])) {
-                        $arr['selprod_title'] = $record['_source']['general']['product_name'];
                     }
 
                     $products[] = array_merge($record['_source']['general'], $record['_source']['brand'], current($record['_source']['categories']), $arr);

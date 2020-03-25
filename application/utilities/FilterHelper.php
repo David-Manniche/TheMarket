@@ -185,9 +185,10 @@ class FilterHelper extends FatUtility
     {
         if (FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_FULL_TEXT_SEARCH, FatUtility::VAR_INT, 0)) {
             $srch = FullTextSearch::getListingObj($post, $langId);
+			$srch->setFields(array('aggregations'));
             $srch->setPageNumber(0);
             $srch->setPageSize(9999);
-            $result = $srch->fetch(true);
+            $result = $srch->fetch(true);			
             $priceArr = [];
 
             if (array_key_exists('aggregations', $result)) {
