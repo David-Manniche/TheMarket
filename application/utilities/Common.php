@@ -76,7 +76,7 @@ class Common
         $template->set('isUserLogged', $isUserLogged);
         if ($isUserLogged) {
             $userId = UserAuthentication::getLoggedUserId();
-            $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
+            $userImgUpdatedOn = User::getAttributesById($userId, 'user_updated_on');
             $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
             $profileImage = FatCache::getCachedUrl(CommonHelper::generateUrl('Account', 'userProfileImage', array($userId, 'croped', true)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
             $template->set('userName', ucfirst(CommonHelper::getUserFirstName(UserAuthentication::getLoggedUserAttribute('user_name'))));

@@ -950,24 +950,26 @@ class ProductCategory extends MyAppModel
         return $return;
     }
 
-    public function categoriesHaveProducts($siteLangId)
+    public function haveProducts()
     {
-        $prodSrchObj = new ProductSearch($siteLangId);
+        $prodSrchObj = new ProductSearch();
         $prodSrchObj->setDefinedCriteria();
         $prodSrchObj->joinProductToCategory();
         $prodSrchObj->doNotCalculateRecords();
-        $prodSrchObj->doNotLimitRecords();
-        $prodSrchObj->addGroupBy('prodcat_id');
-        $prodSrchObj->addMultipleFields(array('substr(prodcat_code,1,6) AS prodrootcat_code', 'count(selprod_id) as productCounts', 'prodcat_id', 'COALESCE(prodcat_name, prodcat_identifier) as prodcat_name', 'prodcat_parent'));
+        $prodSrchObj->setPageSize(1);
+       
+        //$prodSrchObj->addGroupBy('prodcat_id');
+        $prodSrchObj->addMultipleFields(array('substr(prodcat_code,1,6) AS prodrootcat_code','count(selprod_id) as productCounts', 'prodcat_id'));
         $rs = $prodSrchObj->getResultSet();
-        $productRows = FatApp::getDb()->fetchAll($rs);
-        /* die(CommonHelper::printArray($productRows)); */
-        $categoriesMainRootArr = array();
-        if ($productRows) {
-            $categoriesMainRootArr = array_unique(array_column($productRows, 'prodcat_id'));
-            array_flip($categoriesMainRootArr);
+        if (0 < $this->mainTableRecordId) {
+            $prodSrchObj->addHaving('prodrootcat_code', 'LIKE', '%' . str_pad($this->mainTableRecordId, 6, '0', STR_PAD_LEFT) . '%', 'AND', true);
         }
-        return $categoriesMainRootArr;
+        $prodSrchObj->addHaving('productCounts', '>', 0);
+        $productRows = FatApp::getDb()->fetch($rs);
+        if (!empty($productRows) && $productRows['productCounts'] > 0) {
+            return true;
+        }
+        return false;
     }
 
     public function rewriteUrl($keyword, $suffixWithId = true, $parentId = 0)

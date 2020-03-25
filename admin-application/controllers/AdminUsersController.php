@@ -281,7 +281,7 @@ class AdminUsersController extends AdminBaseController
     }
 
     private function updateAdminUserStatus($adminId, $status)
-    {
+    { 
         $status = FatUtility::int($status);
         $adminId = FatUtility::int($adminId);
         if (1 > $adminId || -1 == $status) {

@@ -13,12 +13,15 @@ class Plugin extends MyAppModel
     public const TYPE_PAYOUTS = 4;
     public const TYPE_ADVERTISEMENT_FEED = 5;
     public const TYPE_SMS_NOTIFICATION = 6;
+    public const TYPE_FULL_TEXT_SEARCH = 7;
 
+    /* Define here :  if system can not activate multiple plugins for a same feature*/
     public const HAVING_KINGPIN = [
         self::TYPE_CURRENCY,
         self::TYPE_PUSH_NOTIFICATION,
         self::TYPE_ADVERTISEMENT_FEED,
-        self::TYPE_SMS_NOTIFICATION
+        self::TYPE_SMS_NOTIFICATION,
+        self::TYPE_FULL_TEXT_SEARCH
     ];
 
     public const ATTRS = [
@@ -30,7 +33,7 @@ class Plugin extends MyAppModel
     ];
 
     private $db;
-    
+
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
@@ -78,7 +81,7 @@ class Plugin extends MyAppModel
     {
         $srch = new SearchBase(static::DB_TBL, 'plg');
         $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'code', '=', $code);
-        
+
         if (0 < $langId) {
             $srch->joinTable(self::DB_TBL_LANG, 'LEFT JOIN', self::DB_TBL_LANG_PREFIX . static::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_PREFIX . 'id and ' . self::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'plg_l');
         }
@@ -112,6 +115,7 @@ class Plugin extends MyAppModel
             static::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT', $langId),
             static::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
             static::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
+            static::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_Full_TEXT_SEARCH', $langId)
         ];
     }
 
@@ -145,7 +149,7 @@ class Plugin extends MyAppModel
         }
 
         $rs = $srch->getResultSet();
-        
+
         $db = FatApp::getDb();
         if (true == $assoc) {
             return $db->fetchAllAssoc($rs);
@@ -189,7 +193,7 @@ class Plugin extends MyAppModel
             ]
         );
         $rs = $srch->getResultSet();
-        
+
         return FatApp::getDb()->fetchAllAssoc($rs);
     }
 

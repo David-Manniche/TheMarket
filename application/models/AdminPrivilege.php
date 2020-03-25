@@ -110,6 +110,7 @@ class AdminPrivilege
     public const SECTION_PRODUCT_ADVERTISEMENT = 105;
     public const SECTION_IMPORT_EXPORT = 106;
     public const SECTION_APP_THEME_SETTINGS = 107;
+    public const SECTION_PATCH_UPDATE = 109;
     public const SECTION_SMS_TEMPLATE = 108;
 
     public const PRIVILEGE_NONE = 0;
@@ -1456,7 +1457,16 @@ class AdminPrivilege
     {
         return $this->checkPermission($adminId, static::SECTION_IMPORT_EXPORT, static::PRIVILEGE_WRITE, $returnResult);
     }
+
+    public function canViewPatch($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_PATCH_UPDATE, static::PRIVILEGE_READ, $returnResult);
+    }
     
+    public function canEditPatch($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_PATCH_UPDATE, static::PRIVILEGE_WRITE, $returnResult);
+    }
     public function canEditSmsTemplate($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_SMS_TEMPLATE, static::PRIVILEGE_WRITE, $returnResult);

@@ -22,7 +22,7 @@
                 </div>
 				<div class="products__body">
 				<?php $this->includeTemplate('_partial/collection-ui.php',array('product'=>$rProduct,'siteLangId'=>$siteLangId),false);?>
-                <?php $uploadedTime = AttachedFile::setTimeParam($product['product_image_updated_on']);?>
+                <?php $uploadedTime = AttachedFile::setTimeParam($product['product_updated_on']);?>
 					<div class="products__img">
 						<a title="<?php echo $rProduct['selprod_title'];?>" href="<?php echo !isset($rProduct['promotion_id'])?CommonHelper::generateUrl('Products','View',array($rProduct['selprod_id'])):CommonHelper::generateUrl('Products','track',array($rProduct['promotion_record_id']));?>"><img data-ratio="1:1 (500x500)" src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image','product', array($rProduct['product_id'], "CLAYOUT3", $rProduct['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $rProduct['prodcat_name'];?>"> </a>
 					</div>

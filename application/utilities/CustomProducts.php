@@ -275,16 +275,14 @@ trait CustomProducts
         if (!UserPrivilege::canSellerEditCustomProduct($this->userParentId, $product_id)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
-
         $productOptions = Product::getProductOptions($product_id, $this->siteLangId, false, 1);
         $optionSeparateImage = Option::getAttributesById($option_id, 'option_is_separate_images');
         if(count($productOptions) > 0 && $optionSeparateImage == 1){
             FatUtility::dieJsonError(Labels::getLabel('LBL_you_have_already_added_option_having_separate_image', $this->siteLangId));
         }
-
-        $prodObj = new Product();
-        if (!$prodObj->addUpdateProductOption($product_id, $option_id)) {
-            FatUtility::dieJsonError($prodObj->getError());
+        $prodObj = new Product($product_id);
+        if (!$prodObj->addUpdateProductOption($option_id)) {
+            FatUtility::dieJsonError(Labels::getLabel($prodObj->getError(), FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 1)));
         }
         Product::updateMinPrices($product_id);
         $this->set('msg', Labels::getLabel('LBL_Option_Updated_Successfully', $this->siteLangId));
@@ -365,8 +363,8 @@ trait CustomProducts
         }
         /* ] */
 
-        $prodObj = new Product();
-        if (!$prodObj->removeProductOption($productId, $optionId)) {
+        $prodObj = new Product($productId);
+        if (!$prodObj->removeProductOption($optionId)) {
             Message::addErrorMessage(Labels::getLabel($prodObj->getError(), FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 1)));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -520,7 +518,7 @@ trait CustomProducts
         ) {
             FatUtility::dieJsonError($fileHandlerObj->getError());
         }
-        FatApp::getDb()->updateFromArray('tbl_products', array('product_image_updated_on' => date('Y-m-d H:i:s')), array('smt' => 'product_id = ?', 'vals' => array($product_id)));
+        FatApp::getDb()->updateFromArray('tbl_products', array('product_updated_on' => date('Y-m-d H:i:s')), array('smt' => 'product_id = ?','vals' => array($product_id)));
 
         FatUtility::dieJsonSuccess(Labels::getLabel("MSG_Image_Uploaded_Successfully", $this->siteLangId));
     }
@@ -548,7 +546,7 @@ trait CustomProducts
         if (!$productObj->deleteProductImage($product_id, $image_id)) {
             FatUtility::dieJsonError($productObj->getError());
         }
-        FatApp::getDb()->updateFromArray('tbl_products', array('product_image_updated_on' => date('Y-m-d H:i:s')), array('smt' => 'product_id = ?', 'vals' => array($product_id)));
+        FatApp::getDb()->updateFromArray('tbl_products', array('product_updated_on' => date('Y-m-d H:i:s')), array('smt' => 'product_id = ?','vals' => array($product_id)));
 
         FatUtility::dieJsonSuccess(Labels::getLabel('LBL_Image_removed_successfully.', $this->siteLangId));
     }
@@ -892,8 +890,7 @@ trait CustomProducts
         /* saving of product Tag[ */
 
 
-        if (!$prodObj->addUpdateProductTags($product_id, $product_tags)) {
-            var_dump($prodObj->getError());
+        if (!$prodObj->addUpdateProductTags($product_tags)) {           
             Message::addErrorMessage($prodObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }

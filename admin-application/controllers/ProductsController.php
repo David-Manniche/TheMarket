@@ -18,7 +18,7 @@ class ProductsController extends AdminBaseController
             $srchFrm->fill($data);
         }
         $prodCatId = FatUtility::int($prodCatId);
-        if($prodCatId > 0){
+        if ($prodCatId > 0) {
             $srchFrm->fill(array('prodcat_id' => $prodCatId));
         }
 
@@ -168,7 +168,7 @@ class ProductsController extends AdminBaseController
 
         $productOptions = Product::getProductOptions($product_id, $this->adminLangId, false, 1);
         $optionSeparateImage = Option::getAttributesById($option_id, 'option_is_separate_images');
-        if(count($productOptions) > 0 && $optionSeparateImage == 1){
+        if (count($productOptions) > 0 && $optionSeparateImage == 1) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_you_have_already_added_option_having_separate_image', $this->adminLangId));
         }
 
@@ -969,12 +969,12 @@ class ProductsController extends AdminBaseController
         if (FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) {
             $brandFld->requirements()->setRequired();
         }
-        if($prodCatId > 0){
+        if ($prodCatId > 0) {
             $prodCat = new ProductCategory();
             $selectedCatName = $prodCat->getParentTreeStructure($prodCatId, 0, '', $this->adminLangId);
             $prodCatName = html_entity_decode($selectedCatName);
             $frm->addRequiredField(Labels::getLabel('LBL_Category', $this->adminLangId), 'category_name', $prodCatName);
-        }else{
+        } else {
             $frm->addRequiredField(Labels::getLabel('LBL_Category', $this->adminLangId), 'category_name');
         }
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
@@ -1025,11 +1025,11 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
-        if($post['product_brand_id'] < 1 && FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)){
+        if ($post['product_brand_id'] < 1 && FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Brand_From_List', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        if($post['ptc_prodcat_id'] < 1){
+        if ($post['ptc_prodcat_id'] < 1) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Category_From_List', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }

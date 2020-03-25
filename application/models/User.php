@@ -1482,7 +1482,7 @@ class User extends MyAppModel
             $this->error = $db->getError();
             return false;
         }
-
+        $this->logUpdatedRecord();
         return true;
     }
 
@@ -2362,8 +2362,8 @@ class User extends MyAppModel
     public static function setImageUpdatedOn($userId, $date = '')
     {
         $date = empty($date) ? date('Y-m-d  H:i:s') : $date;
-        $where = array('smt' => 'user_id = ?', 'vals' => array($userId));
-        FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_img_updated_on' => date('Y-m-d  H:i:s')), $where);
+        $where = array('smt'=>'user_id = ?', 'vals'=>array($userId));
+        FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_updated_on'=>date('Y-m-d  H:i:s')), $where);
     }
 
     public function saveUserData($postedData, $socialUser = false, $returnUserId = false)
@@ -2565,7 +2565,7 @@ class User extends MyAppModel
             $this->error = $rewardsRecord->getError();
         }
         $where = array('smt' => 'user_id = ?', 'vals' => array($userId));
-        FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_img_updated_on' => date('Y-m-d  H:i:s')), $where);
+        FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_updated_on' => date('Y-m-d  H:i:s')), $where);
     }
 
     public function validateUser($email, $username, $socialAccountId, $keyName, $userType)

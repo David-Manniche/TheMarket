@@ -3690,8 +3690,8 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
-        $prodObj = new Product();
-        if (!$prodObj->addUpdateProductCategory($product_id, $option_id)) {
+        $prodObj = new Product($product_id);
+        if (!$prodObj->addUpdateProductCategory($option_id)) {
             Message::addErrorMessage(Labels::getLabel($prodObj->getError(), FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1)));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -3712,8 +3712,8 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
-        $prodObj = new Product();
-        if (!$prodObj->removeProductCategory($product_id, $option_id)) {
+        $prodObj = new Product($product_id);
+        if (!$prodObj->removeProductCategory($option_id)) {
             Message::addErrorMessage(Labels::getLabel($prodObj->getError(), FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1)));
             FatUtility::dieWithError(Message::getHtml());
         }

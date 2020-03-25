@@ -126,4 +126,5 @@ class SearchItem extends MyAppModel
 
         return $arr_url_params;
     }
+    
 }

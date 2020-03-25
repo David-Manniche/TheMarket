@@ -15,7 +15,7 @@ if (!empty($arr_listing) && is_array($arr_listing)) { ?>
                     $toName = $row['message_from_name'];
                     $toUserId = $row['message_from_user_id'];
                 }
-                $userImgUpdatedOn = User::getAttributesById($toUserId, 'user_img_updated_on');
+                $userImgUpdatedOn = User::getAttributesById($toUserId, 'user_updated_on');
                 $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
                 $toImage = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'user', array($toUserId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 ?>

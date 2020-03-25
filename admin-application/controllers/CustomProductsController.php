@@ -646,7 +646,7 @@ class CustomProductsController extends AdminBaseController
             $optons = isset($data['product_option']) ? $data['product_option'] : array();
             if (!empty($optons)) {
                 foreach ($optons as $option_id) {
-                    if (!$prodObj->addUpdateProductOption($product_id, $option_id)) {
+                    if (!$prodObj->addUpdateProductOption($option_id)) {
                         Message::addErrorMessage(Labels::getLabel($prodObj->getError(), FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1)));
                         $db->rollbackTransaction();
                         FatUtility::dieWithError(Message::getHtml());
@@ -659,7 +659,7 @@ class CustomProductsController extends AdminBaseController
             $tags = isset($data['product_tags']) ? $data['product_tags'] : array();
             if (!empty($tags)) {
                 foreach ($tags as $tag_id) {
-                    if (!$prodObj->addUpdateProductTag($product_id, $tag_id)) {
+                    if (!$prodObj->addUpdateProductTag($tag_id)) {
                         Message::addErrorMessage(Labels::getLabel($prodObj->getError(), FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1)));
                         $db->rollbackTransaction();
                         FatUtility::dieWithError(Message::getHtml());
@@ -771,6 +771,7 @@ class CustomProductsController extends AdminBaseController
                         $db->rollbackTransaction();
                         FatUtility::dieWithError(Message::getHtml());
                     }
+                    
                 }
             }
 
