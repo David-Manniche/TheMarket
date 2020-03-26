@@ -182,7 +182,7 @@ class UsersController extends AdminBaseController
         $this->objPrivilege->canEditUsers();
         $user_id = FatUtility::int($user_id);
         $frmUser = $this->getForm($user_id);
-
+		$userParent = 0;
         $stateId = 0;
         if (0 < $user_id) {
             $userObj = new User($user_id);
@@ -205,8 +205,9 @@ class UsersController extends AdminBaseController
             } */
             $stateId = $data['user_state_id'];
             $frmUser->fill($data);
+			$userParent = $data['user_parent'];
         }
-
+		$this->set('userParent', $userParent);
         $this->set('user_id', $user_id);
         $this->set('stateId', $stateId);
         $this->set('frmUser', $frmUser);
@@ -488,7 +489,16 @@ class UsersController extends AdminBaseController
         }
 
         $userObj = new User($user_id);
-        if (!$userObj->updateBankInfo($post)) {
+        $srch = $userObj->getUserSearchObj(array('user_parent'));
+        $rs = $srch->getResultSet();
+		$data = FatApp::getDb()->fetch($rs, 'user_id');
+
+        if ($data === false || 0 < $data['user_parent']) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+		
+		if (!$userObj->updateBankInfo($post)) {
             Message::addErrorMessage($userObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -569,6 +579,16 @@ class UsersController extends AdminBaseController
         if (1 > $user_id) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
+        }
+		
+		$userObj = new User($user_id);
+		$srch = $userObj->getUserSearchObj(array('user_parent'));
+        $rs = $srch->getResultSet();
+		$data = FatApp::getDb()->fetch($rs, 'user_id');
+
+        if ($data === false || 0 < $data['user_parent']) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
         }
 
         $addressObj = new UserAddress($ua_id);
