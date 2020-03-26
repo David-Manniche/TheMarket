@@ -261,9 +261,7 @@ class DummyController extends MyAppController
 
     public function index()
     {       
-        $userObj = new User(22);
-        $userInfo = $userObj->getSellerData(1, array('user_id', 'ifnull(shop_name, shop_identifier) as shop_name', 'user_dial_code', 'user_phone', 'credential_email'));
-        CommonHelper::printArray($userInfo);
+        FullTextSearch::syncData();
     }
 
 
