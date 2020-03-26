@@ -1213,3 +1213,5 @@ ALTER TABLE `tbl_brands` ADD `brand_updated_on` DATETIME NOT NULL DEFAULT CURREN
 ALTER TABLE `tbl_users` CHANGE `user_img_updated_on` `user_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE `tbl_countries` ADD `country_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `country_language_id`;
 ALTER TABLE `tbl_states` ADD `state_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `state_active`;
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Escalate_to';
