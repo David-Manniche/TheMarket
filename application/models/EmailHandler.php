@@ -2783,6 +2783,27 @@ class EmailHandler extends FatModel
         $this->sendSms($tpl, $phone, $vars, $langId);
         return true;
     }
+	
+	public function sendEmailToUser($langId, $data)
+    {
+        $tpl = 'user_send_email';
+		
+		$replacements = array(
+            '{full_name}' => $data['user_name'],
+            '{admin_subject}' => $data['mail_subject'],
+            '{admin_message}' => $data["mail_message"]
+        );
+
+        if (!self::sendMailTpl($data['credential_email'], $tpl, $langId, $replacements)) {
+            return false;
+        }
+		
+		if (!empty($data['user_phone'])) {
+			$this->sendSms($tpl, $data['user_phone'], $replacements, $langId);
+		}
+        return true;
+    }
+	
     public static function getEmailTemplatePermissionsArr()
     {
         return array(
