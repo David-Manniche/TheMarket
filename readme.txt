@@ -266,7 +266,8 @@ Bug:
     => 035657 - captcha is not listing on screens
     => 035618 - On sign in page >> when we click on "use email instead" or "use mobile number instead " then previously entered data should be removed. 
     => 035608 - unable to add item to cart from wish list
-    
+    => 035606 - when user upload any image for push notification (>2 MB) then getting warning as well as cropper options are there
+	
 Update 
     => msg-1152994- Admin profile image is not refreshing after image upload
 
