@@ -335,15 +335,14 @@ if (isset($prodcat_code)) {
                 max = Math.floor(<?php echo $filterDefaultMaxValue; ?>),
                 from,
                 to;
-
-            var step = max/4;
-            const len = Math.floor((max - min) / step) + 1;
+				
+			const len = 4;
+            var step = (max - min) / (len - 1);
             var steps = Array(len).fill().map((_, idx) => min + (idx * step));
-            steps.push(max);
             var rangeSlider = document.getElementById('rangeSlider');
             noUiSlider.create(rangeSlider, {
                 start: [$from.val(), $to.val()],
-                step: 100,
+                step: Math.floor(step/len),
                 range: {
                     'min': [min],
                     'max': [max]
