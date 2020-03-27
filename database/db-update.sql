@@ -1215,3 +1215,4 @@ ALTER TABLE `tbl_countries` ADD `country_updated_on` DATETIME NOT NULL DEFAULT C
 ALTER TABLE `tbl_states` ADD `state_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `state_active`;
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Escalate_to';
+-- --------------------------TV-9.1.6.20200327--------------------------
