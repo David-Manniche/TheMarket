@@ -265,6 +265,7 @@ Bug:
     => 035647 - while adding product or related details> suggestion list is taking too much time to display results
     => 035657 - captcha is not listing on screens
     => 035618 - On sign in page >> when we click on "use email instead" or "use mobile number instead " then previously entered data should be removed. 
+    => 035608 - unable to add item to cart from wish list
     
 Update 
     => msg-1152994- Admin profile image is not refreshing after image upload
