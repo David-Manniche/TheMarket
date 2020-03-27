@@ -261,7 +261,7 @@ class DummyController extends MyAppController
 
     public function index()
     {       
-        User::getAuthenticUserIds(4);
+        
     }
 
 
