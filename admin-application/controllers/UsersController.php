@@ -1814,20 +1814,20 @@ class UsersController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
-        $replacements = array(
-            '{full_name}' => trim($user['user_name']),
-            '{admin_subject}' => trim($post['mail_subject']),
-            '{admin_message}' => nl2br($post["mail_message"])
+        $data = array(
+            'user_name' => trim($user['user_name']),
+            'mail_subject' => trim($post['mail_subject']),
+            'mail_message' => nl2br($post["mail_message"]),
+			'credential_email' => $user['credential_email'],
+			'user_phone' => $user['user_phone']
         );
-        EmailHandler::sendMailTpl(
-            $user['credential_email'],
-            'user_send_email',
-            $this->adminLangId,
-            $replacements
-        );
-        if (!empty($user['user_phone'])) {
-            $this->sendSms('user_send_email', $user['user_phone'], $replacements, $this->adminLangId);
-        }
+		
+		$email = new EmailHandler();
+		if(!$email->sendEmailToUser($this->adminLangId, $data)){
+			Message::addErrorMessage($email->getError());
+            FatUtility::dieWithError(Message::getHtml());
+		}
+        
         $this->set('msg', Labels::getLabel('LBL_Your_Message_Sent_To', $this->adminLangId) . ' - ' . $user["credential_email"]);
         $this->_template->render(false, false, 'json-success.php');
     }

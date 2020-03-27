@@ -372,10 +372,10 @@ DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_FONT_COLOR
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BUTTON_BACKGROUND_COLOR';
 DELETE FROM `tbl_configurations` WHERE `conf_name` = 'CONF_APP_BUTTON_BACKGROUND_COLOR';
 ALTER TABLE `tbl_meta_tags` DROP `meta_identifier`;
----------TV-9.1.2.20200131 -----------------------
+-- -------TV-9.1.2.20200131 -----------------------
 ALTER TABLE `tbl_product_specifications_lang` ADD `prodspec_group` VARCHAR(255) NOT NULL AFTER `prodspec_value`;
 
---------------TV-9.1.2.20200205------------
+-- ------------TV-9.1.2.20200205------------
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_TRUNCATE_REQUEST_APPROVAL_WILL_DELETE_ALL_YOUR_DATA._TRUNCATE_ANYWAY?';
 INSERT INTO `tbl_language_labels` (`label_id`, `label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES (NULL, 'LBL_TRUNCATE_REQUEST_APPROVAL_WILL_DELETE_ALL_YOUR_DATA._TRUNCATE_ANYWAY?', '1', 'Truncate Request Approval Will Delete All Your Data. Truncate Anyway?', '1'), (NULL, 'LBL_TRUNCATE_REQUEST_APPROVAL_WILL_DELETE_ALL_YOUR_DATA._TRUNCATE_ANYWAY?', '2', 'الموافقة على طلب الاقتطاع ستحذف جميع بياناتك. اقتطاع على أي حال؟', '1');
 
@@ -1166,9 +1166,9 @@ update `tbl_theme_colors` set tcolor_key = 13 where tcolor_key = 'tcolor_grey_co
 update `tbl_theme_colors` set tcolor_key = 14 where tcolor_key = 'tcolor_grey_light_color';
 update `tbl_theme_colors` set tcolor_key = 15 where tcolor_key = 'tcolor_third_color';
 update `tbl_theme_colors` set tcolor_key = 16 where tcolor_key = 'tcolor_third_color_inverse';
-update `tbl_theme_colors` set `tcolor_display_order` = `tcolor_key`;
 ALTER TABLE `tbl_theme_colors` ADD `tcolor_display_order` INT(11) NOT NULL AFTER `tcolor_value`;
 ALTER TABLE `tbl_theme_colors` CHANGE `tcolor_key` `tcolor_key` INT(11) NOT NULL;
+update `tbl_theme_colors` set `tcolor_display_order` = `tcolor_key`;
 --
 -- Table structure for table `tbl_updated_record_log`
 --
@@ -1206,10 +1206,12 @@ ALTER TABLE `tbl_updated_record_log`
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Full Text Search', '7', 'ElasticSearch', '0', '7');
 
 INSERT INTO `tbl_cron_schedules` (`cron_id`, `cron_name`, `cron_command`, `cron_duration`, `cron_active`) VALUES (NULL, 'Full text search', 'FullTextSearch/setup', '1440', '1');
-ALTER TABLE `tbl_products` CHANGE `product_image_updated_on` `product_updated_on` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE `tbl_products` ADD `product_updated_on` DATETIME NOT NULL AFTER `product_deleted`;
 ALTER TABLE `tbl_seller_products` ADD `selprod_updated_on` DATETIME NOT NULL AFTER `selprod_added_on`;
 ALTER TABLE `tbl_product_categories` CHANGE `prodcat_img_updated_on` `prodcat_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE `tbl_brands` ADD `brand_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `brand_comments`;
 ALTER TABLE `tbl_users` CHANGE `user_img_updated_on` `user_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE `tbl_countries` ADD `country_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `country_language_id`;
 ALTER TABLE `tbl_states` ADD `state_updated_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `state_active`;
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Escalate_to';

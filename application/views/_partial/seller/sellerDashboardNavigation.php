@@ -309,7 +309,7 @@ $action = strtolower($action);
                                 </i><span class="menu-item__title"><?php echo Labels::getLabel("LBL_My_Account", $siteLangId); ?></span></a></div>
                     </li>
                     <?php if($userParentId == UserAuthentication::getLoggedUserId()) { ?>
-                    <li class="menu__item <?php echo ($controller == 'seller' && $action == 'users') ? 'is-active' : ''; ?>">
+                    <li class="menu__item <?php echo ($controller == 'seller' && ($action == 'users' || $action == 'userpermissions')) ? 'is-active' : ''; ?>">
                         <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Sub_Users', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('Seller', 'Users'); ?>">
                                 <i class="icn shop"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-account" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-account"></use>

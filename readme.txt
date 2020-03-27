@@ -263,7 +263,11 @@ Bug:
     => 035637 - after adding product in buy together/related products> name of product is not displaying
     => 035649 - Steps> enable cod option at product and inventory end>> uncheck the checkbox at product level >> Cod should not be available for all inventories of that product
     => 035647 - while adding product or related details> suggestion list is taking too much time to display results
-    
+    => 035657 - captcha is not listing on screens
+    => 035618 - On sign in page >> when we click on "use email instead" or "use mobile number instead " then previously entered data should be removed. 
+    => 035608 - unable to add item to cart from wish list
+    => 035606 - when user upload any image for push notification (>2 MB) then getting warning as well as cropper options are there
+	
 Update 
     => msg-1152994- Admin profile image is not refreshing after image upload
 
