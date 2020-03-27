@@ -2848,4 +2848,27 @@ class User extends MyAppModel
         }
         return false;
     }
+
+    public static function getAuthenticUserIds($userId, $parentId = 0, $active = false){
+        
+        $userId = FatUtility::int($userId);
+        $parentId = FatUtility::int($parentId);
+        if ($userId == $parentId) {
+            return [$userId];
+        }
+        $srch = new SearchBase(User::DB_TBL, 'u');
+        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'shop_user_id = if(u.user_parent > 0, user_parent, u.user_id)', 'shop');
+        $srch->addDirectCondition('(user_id = '. $userId. ' or user_parent = ' . $userId . ')');
+        If (true == $active){
+            $srch->joinTable(static::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.' . static::DB_TBL_CRED_PREFIX . 'user_id = u.user_id', 'uc');
+            $srch->addCondition('uc.' . static::DB_TBL_CRED_PREFIX . 'active', '=', applicationConstants::ACTIVE);
+            $srch->addCondition('uc.' . static::DB_TBL_CRED_PREFIX . 'verified', '=', applicationConstants::YES);                
+        }
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->addMultipleFields(array('user_id', 'shop_id'));
+        $rs = $srch->getResultSet();
+        $record = FatApp::getDb()->fetchAllAssoc($rs);
+        return array_keys($record);
+    }
 }
