@@ -268,7 +268,8 @@ Bug:
     => 035608 - unable to add item to cart from wish list
     => 035606 - when user upload any image for push notification (>2 MB) then getting warning as well as cropper options are there
 	=> 035675 - filters> range slider> amounts are overlapping with each other
-	
+	=> 035722 - Show plugin setting icons on inactive plugin also
+    
 Update 
     => msg-1152994- Admin profile image is not refreshing after image upload
 
