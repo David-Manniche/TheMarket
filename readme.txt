@@ -268,7 +268,11 @@ Bug:
     => 035608 - unable to add item to cart from wish list
     => 035606 - when user upload any image for push notification (>2 MB) then getting warning as well as cropper options are there
 	=> 035675 - filters> range slider> amounts are overlapping with each other
-	
+	=> 035722 - Show plugin setting icons on inactive plugin also
+    => 035718 - if single item is added to cart from wish list then it's getting added to cart as well as it remains in list too
+    => 035728 - on login screen> when user clicks on login using phone number instead then on reclicking it changes the text
+    => 035741 - Admin dashboard> for unbranded products> either display N/A or unbranded
+
 Update 
     => msg-1152994- Admin profile image is not refreshing after image upload
 

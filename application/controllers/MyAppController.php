@@ -132,7 +132,7 @@ class MyAppController extends FatController
             'scrollable' => Labels::getLabel('LBL_SCROLLABLE', $this->siteLangId),
             'quantityAdjusted' => Labels::getLabel('MSG_MAX_QUANTITY_THAT_CAN_BE_PURCHASED_IS_{QTY}._SO,_YOUR_REQUESTED_QUANTITY_IS_ADJUSTED_TO_{QTY}.', $this->siteLangId),
             'withUsernameOrEmail' => Labels::getLabel('LBL_USE_EMAIL_INSTEAD', $this->siteLangId),
-            'withPhoneNumber' => Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $this->siteLangId),
+            'withPhoneNumber' => Labels::getLabel('LBL_USE_PHONE_NUMBER_INSTEAD', $this->siteLangId),
             'otpInterval' => User::OTP_INTERVAL,
             'captchaSiteKey' => FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, ''),
             'allowedFileSize' => LibHelper::getMaximumFileUploadSize(),
