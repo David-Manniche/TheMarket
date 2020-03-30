@@ -199,7 +199,7 @@ case 'sellerproducts': ?>
 			<tr>
 				<td><?php echo $counter; ?></td>
 				<td><?php echo $sp['product_name']; echo ( $sp['selprod_title'] != "" ) ? '<br/><small>'.$sp['selprod_title'].'</small>' : ''; ?></td>
-				<td><?php echo $sp['brand_name']; ?></td>
+				<td><?php echo isset($sp['brand_name']) && !empty($sp['brand_name']) ? $sp['brand_name'] : 'N/A'; ?></td>
 				<td><?php echo $sp['shop_name']; ?></td>
 				<td><?php echo $sp['selprod_stock']; ?></td>
 				<td><?php echo CommonHelper::displayMoneyFormat($sp['theprice']); ?></td>
