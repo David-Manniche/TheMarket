@@ -28,7 +28,7 @@ class AdminUsersController extends AdminBaseController
 
 				SET catid = id;
 				SET code = '';
-				WHILE catid > 0 DO
+				WHILE catid > 0  AND LENGTH(code) < 240 DO
 					SET code = CONCAT(RIGHT(CONCAT('000000', catid), 6), '_', code);
 					SELECT bpcategory_parent INTO catid FROM tbl_blog_post_categories WHERE bpcategory_id = catid;
 				END WHILE;
@@ -42,7 +42,7 @@ class AdminUsersController extends AdminBaseController
 
 				SET catid = id;
 				SET code = '';
-				WHILE catid > 0 DO
+				WHILE catid > 0 AND LENGTH(code) < 240 DO
 					SET code = CONCAT(RIGHT(CONCAT('000000', catid), 6), '_', code);
 					SELECT prodcat_parent INTO catid FROM tbl_product_categories WHERE prodcat_id = catid;
 				END WHILE;

@@ -171,6 +171,7 @@ class ProductCategoriesController extends AdminBaseController
         }
 
         $prodCatId = FatUtility::int($post['prodcat_id']);
+        
         $productCategory = new ProductCategory($prodCatId);
         if (!$productCategory->saveCategoryData($post)) {
             Message::addErrorMessage($productCategory->getError());

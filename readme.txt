@@ -274,4 +274,6 @@ Update
 
 Features
     => Full text Search (Elastic search) for products search.
-===================TV-9.1.6.20200327===================    
+===================TV-9.1.6.20200327===================
+Bug :
+    => 035748 Infine loop handling when category and category parent have same id.    
