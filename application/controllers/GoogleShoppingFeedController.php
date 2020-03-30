@@ -23,7 +23,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
     {
         $settings = $this->getSettings();
         if (!isset($settings['client_id']) || !isset($settings['client_secret']) || !isset($settings['developer_key'])) {
-            $message = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->siteLangId);
+            $message = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', $this->siteLangId);
             Message::addErrorMessage($message);
             $this->redirectBack();
         }
