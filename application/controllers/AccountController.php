@@ -1780,6 +1780,7 @@ class AccountController extends LoggedUserController
         $this->set('startRecord', $startRecord);
         $this->set('endRecord', $endRecord);
         $this->set('showActionBtns', true);
+        $this->set('isWishList', true);
 
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();

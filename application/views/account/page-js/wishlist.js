@@ -238,7 +238,7 @@ $("document").ready(function(){
 		});
 	};
 
-	addToCart = function( obj, event ){
+	addToCart = function( obj, event, isWishlist = 0){
 		event.stopPropagation();
 
 		$("#favListItems .selectItem--js").each(function(){
@@ -247,7 +247,7 @@ $("document").ready(function(){
 
 		obj.parent().siblings('li').find('.selectItem--js').prop("checked", true);
 
-		addSelectedToCart(event);
+		addSelectedToCart(event, isWishlist);
 	};
 
 	addSelectedToCart = function(event, isWishlist){
