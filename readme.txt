@@ -270,6 +270,7 @@ Bug:
 	=> 035675 - filters> range slider> amounts are overlapping with each other
 	=> 035722 - Show plugin setting icons on inactive plugin also
     => 035718 - if single item is added to cart from wish list then it's getting added to cart as well as it remains in list too
+    => 035728 - on login screen> when user clicks on login using phone number instead then on reclicking it changes the text
 Update 
     => msg-1152994- Admin profile image is not refreshing after image upload
 
