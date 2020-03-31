@@ -49,7 +49,7 @@ class PayPalPayoutController extends PayoutBaseController
     {
         $settings = $this->getSettings();
         if (!isset($settings['client_id']) || !isset($settings['client_secret'])) {
-            $message = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', CommonHelper::getLangId());
+            $message = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', CommonHelper::getLangId());
             LibHelper::dieJsonError($message);
         }
         $this->clientId = $settings['client_id'];

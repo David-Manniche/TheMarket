@@ -1231,12 +1231,12 @@ trait CustomProducts
         }
 
         $brandReqId = $post['brand_id'];
-        if ($brandReqId > 0) {
-            if (!UserPrivilege::canSellerUpdateBrandRequest($this->userParentId, $brandReqId)) {
-                Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-                FatUtility::dieJsonError(Message::getHtml());
-            }
+        
+        if ($brandReqId > 0 && !UserPrivilege::canSellerUpdateBrandRequest(UserAuthentication::getLoggedUserId(), $brandReqId)) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
         }
+        
         unset($post['brandReqId']);
 
         if (!FatApp::getConfig('CONF_BRAND_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) {
@@ -1244,7 +1244,7 @@ trait CustomProducts
             $post['brand_status'] = applicationConstants::YES;
         }
 
-        $post['brand_seller_id'] = $this->userParentId;
+        $post['brand_seller_id'] = UserAuthentication::getLoggedUserId();
         $record = new Brand($brandReqId);
         $record->assignValues($post);
 
@@ -1306,12 +1306,10 @@ trait CustomProducts
 
         if ($brandReqId == 0 || $lang_id == 0) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError(Message::getHtml());
         }
-
-        $brandDetails = Brand::getAttributesById($brandReqId);
-
-        if ($brandDetails['brand_seller_id'] != $this->userParentId) {
+        
+        if (!UserPrivilege::canSellerUpdateBrandRequest(UserAuthentication::getLoggedUserId(), $brandReqId)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -1338,7 +1336,7 @@ trait CustomProducts
             $updateLangDataobj = new TranslateLangData(Brand::DB_TBL_LANG);
             if (false === $updateLangDataobj->updateTranslatedData($brandReqId)) {
                 Message::addErrorMessage($updateLangDataobj->getError());
-                FatUtility::dieWithError(Message::getHtml());
+                FatUtility::dieJsonError(Message::getHtml());
             }
         }
 
@@ -1367,13 +1365,11 @@ trait CustomProducts
         if ($brandReqId == 0 || $lang_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
-        $brandDetails = Brand::getAttributesById($brandReqId);
-
-        if ($brandDetails['brand_seller_id'] != $this->userParentId) {
+        
+        if (!UserPrivilege::canSellerUpdateBrandRequest(UserAuthentication::getLoggedUserId(), $brandReqId)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieWithError(Message::getHtml());
         }
-
 
         $brandReqLangFrm = $this->getBrandReqLangForm($brandReqId, $lang_id);
 
@@ -1404,14 +1400,11 @@ trait CustomProducts
 
     public function brandMediaForm($brand_id = 0)
     {
-        $brandDetails = Brand::getAttributesById($brand_id);
-
-        if ($brandDetails['brand_seller_id'] != $this->userParentId) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-
         $brand_id = FatUtility::int($brand_id);
+        if (!UserPrivilege::canSellerUpdateBrandRequest(UserAuthentication::getLoggedUserId(), $brand_id)) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
 
         $brandMediaFrm = $this->getMediaForm($brand_id);
         $brandImages = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_BRAND_LOGO, $brand_id, 0, -1);
@@ -1430,6 +1423,11 @@ trait CustomProducts
         $brand_id = FatApp::getPostedData('brand_id', FatUtility::VAR_INT, 0);
         $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
         if (!$brand_id) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        if (!UserPrivilege::canSellerUpdateBrandRequest(UserAuthentication::getLoggedUserId(), $brand_id)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -1492,9 +1490,7 @@ trait CustomProducts
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $brandDetails = Brand::getAttributesById($brand_id);
-
-        if ($brandDetails['brand_seller_id'] != $this->userParentId) {
+        if (!UserPrivilege::canSellerUpdateBrandRequest(UserAuthentication::getLoggedUserId(), $brand_id)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }

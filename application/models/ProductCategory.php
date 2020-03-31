@@ -1023,6 +1023,11 @@ class ProductCategory extends MyAppModel
         if ($this->mainTableRecordId == 0) {
             $post['prodcat_display_order'] = $this->getMaxOrder($parentCatId);
         }
+        
+        if ($post['prodcat_parent'] == $this->mainTableRecordId) {
+            $post['prodcat_parent'] = 0;
+        }
+
         $this->assignValues($post);
         if ($this->save()) {
             $this->updateCatCode();

@@ -263,9 +263,24 @@ Bug:
     => 035637 - after adding product in buy together/related products> name of product is not displaying
     => 035649 - Steps> enable cod option at product and inventory end>> uncheck the checkbox at product level >> Cod should not be available for all inventories of that product
     => 035647 - while adding product or related details> suggestion list is taking too much time to display results
-    
+    => 035657 - captcha is not listing on screens
+    => 035618 - On sign in page >> when we click on "use email instead" or "use mobile number instead " then previously entered data should be removed. 
+    => 035608 - unable to add item to cart from wish list
+    => 035606 - when user upload any image for push notification (>2 MB) then getting warning as well as cropper options are there
+	=> 035675 - filters> range slider> amounts are overlapping with each other
+	=> 035722 - Show plugin setting icons on inactive plugin also
+    => 035718 - if single item is added to cart from wish list then it's getting added to cart as well as it remains in list too
+    => 035728 - on login screen> when user clicks on login using phone number instead then on reclicking it changes the text
+    => 035741 - Admin dashboard> for unbranded products> either display N/A or unbranded
+
 Update 
     => msg-1152994- Admin profile image is not refreshing after image upload
 
 Features
     => Full text Search (Elastic search) for products search.
+
+===================TV-9.1.6.20200327===================
+Bug :
+    => 035748 Infine loop handling when category and category parent have same id.    
+    => 035743 Sub seller is getting seller approval form if parent seller got inactive
+    => 035745 - In the subscription description amount is displayed $1k if greater than 1000 but below in plan listing it displayed simply $1000.00. Both amount string must be same in display.

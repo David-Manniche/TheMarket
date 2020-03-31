@@ -402,22 +402,31 @@ class UserPrivilege
         }
         return true;
     }
-
+    
     public static function canSellerUpdateBrandRequest($userId, $brandId)
     {
         $userId = FatUtility::int($userId);
-        if (0 == $userId) {
+        if (1 > $userId) {
             $userId = UserAuthentication::getLoggedUserId();
         }
 
         if (!$data = Brand::getAttributesById($brandId, array('brand_seller_id'))) {
             return false;
-        } else {
-            if ($data['brand_seller_id'] != $userId) {
-                return false;
-            }
         }
-        return true;
+
+        $parentId = User::getAttributesById($userId, 'user_parent');
+        $allowedUsers = [$userId];
+
+        if (1 > $parentId) {
+            $subusers = User::getSubUsers($userId, array('user_id'));
+            $allowedUsers = array_merge ($allowedUsers, array_column($subusers, 'user_id'));            
+        }
+        
+        if (in_array($data['brand_seller_id'], $allowedUsers))  {
+            return true;
+        }
+        
+        return false;
     }
 
     public static function canSellerAddNewProduct($userId)

@@ -23978,8 +23978,7 @@ ALTER TABLE `tbl_order_product_settings`
 -- Indexes for table `tbl_order_product_shipping`
 --
 ALTER TABLE `tbl_order_product_shipping`
-  ADD UNIQUE KEY `opshipping_op_id` (`opshipping_op_id`),
-  ADD KEY `opshipping_op_id_2` (`opshipping_op_id`);
+  ADD UNIQUE KEY `opshipping_op_id` (`opshipping_op_id`);
 
 --
 -- Indexes for table `tbl_order_product_to_shipping_users`
@@ -24104,13 +24103,8 @@ ALTER TABLE `tbl_polling_to_products`
 ALTER TABLE `tbl_products`
   ADD PRIMARY KEY (`product_id`),
   ADD UNIQUE KEY `product_identifier` (`product_identifier`),
-  ADD UNIQUE KEY `product_identifier_2` (`product_identifier`),
   ADD KEY `product_seller_id` (`product_seller_id`),
-  ADD KEY `product_brand_id` (`product_brand_id`),
-  ADD KEY `product_seller_id_2` (`product_seller_id`),
-  ADD KEY `product_brand_id_2` (`product_brand_id`),
-  ADD KEY `product_seller_id_3` (`product_seller_id`),
-  ADD KEY `product_brand_id_3` (`product_brand_id`);
+  ADD KEY `product_brand_id` (`product_brand_id`);
 
 --
 -- Indexes for table `tbl_products_browsing_history`
@@ -24156,9 +24150,7 @@ ALTER TABLE `tbl_product_categories`
   ADD PRIMARY KEY (`prodcat_id`),
   ADD UNIQUE KEY `prodcat_identifier` (`prodcat_identifier`),
   ADD KEY `prodcat_parent` (`prodcat_parent`),
-  ADD KEY `prodcat_code` (`prodcat_code`),
-  ADD KEY `prodcat_code_2` (`prodcat_code`),
-  ADD KEY `prodcat_code_3` (`prodcat_code`);
+  ADD KEY `prodcat_code` (`prodcat_code`);
 
 --
 -- Indexes for table `tbl_product_categories_lang`
@@ -24227,8 +24219,7 @@ ALTER TABLE `tbl_product_special_prices`
 --
 ALTER TABLE `tbl_product_specifications`
   ADD PRIMARY KEY (`prodspec_id`),
-  ADD KEY `prodspec_product_id` (`prodspec_product_id`),
-  ADD KEY `prodspec_product_id_2` (`prodspec_product_id`);
+  ADD KEY `prodspec_product_id` (`prodspec_product_id`);
 
 --
 -- Indexes for table `tbl_product_specifications_lang`

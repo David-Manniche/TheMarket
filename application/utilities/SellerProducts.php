@@ -2414,7 +2414,7 @@ trait SellerProducts
         }
 
         $status = ($sellerProductData['selprod_active'] == applicationConstants::ACTIVE) ? applicationConstants::INACTIVE : applicationConstants::ACTIVE;
-
+		
         $this->updateSellerProductStatus($selprodId, $status);
 
         $this->set('msg', Labels::getLabel('MSG_Status_changed_Successfully', $this->siteLangId));

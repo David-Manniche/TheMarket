@@ -41,11 +41,11 @@ class CustomProductsController extends AdminBaseController
 
         $srch = ProductRequest::getSearchObject($this->adminLangId, false, true);
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'preq_user_id = u.user_id', 'u');
-        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', Shop::DB_TBL_PREFIX . 'user_id = u.user_id', 'shop');
+        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', Shop::DB_TBL_PREFIX . 'user_id = if(u.user_parent > 0, u.user_parent, u.user_id)', 'shop');
         $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $this->adminLangId, 's_l');
         /*$srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.credential_user_id = u.user_id', 'uc');*/
         $srch->addOrder('preq_added_on', 'desc');
-        $srch->addMultipleFields(array('preq.*', 'user_id', 'user_name', 'ifnull(shop_name, shop_identifier) as shop_name'));
+        $srch->addMultipleFields(array('preq.*', 'user_id', 'user_name', 'user_parent', 'ifnull(shop_name, shop_identifier) as shop_name'));
         if (!empty($post['keyword'])) {
             $cond = $srch->addCondition('preq.preq_content', 'like', '%' . $post['keyword'] . '%');
             $cond->attachCondition('preq_l.preq_lang_data', 'like', '%' . $post['keyword'] . '%', 'OR');
@@ -86,6 +86,7 @@ class CustomProductsController extends AdminBaseController
             'preq_status' => $res['preq_status'],
             'user_id' => $res['user_id'],
             'user_name' => $res['user_name'],
+            'user_parent' => $res['user_parent'],
             'shop_name' => $res['shop_name'],
             /*'credential_username' => $res['credential_username'],
             'credential_email' => $res['credential_email'],*/

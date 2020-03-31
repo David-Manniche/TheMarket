@@ -132,13 +132,14 @@ class MyAppController extends FatController
             'scrollable' => Labels::getLabel('LBL_SCROLLABLE', $this->siteLangId),
             'quantityAdjusted' => Labels::getLabel('MSG_MAX_QUANTITY_THAT_CAN_BE_PURCHASED_IS_{QTY}._SO,_YOUR_REQUESTED_QUANTITY_IS_ADJUSTED_TO_{QTY}.', $this->siteLangId),
             'withUsernameOrEmail' => Labels::getLabel('LBL_USE_EMAIL_INSTEAD', $this->siteLangId),
-            'withPhoneNumber' => Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $this->siteLangId),
+            'withPhoneNumber' => Labels::getLabel('LBL_USE_PHONE_NUMBER_INSTEAD', $this->siteLangId),
             'otpInterval' => User::OTP_INTERVAL,
             'captchaSiteKey' => FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, ''),
             'allowedFileSize' => LibHelper::getMaximumFileUploadSize(),
             'fileSizeExceeded' => Labels::getLabel("MSG_FILE_SIZE_SHOULD_BE_LESSER_THAN_{SIZE-LIMIT}", $this->siteLangId),
             'copyToClipboard' => Labels::getLabel('LBL_Copy_to_clipboard', $this->siteLangId),
             'copied' => Labels::getLabel('LBL_Copied', $this->siteLangId),
+            'invalidGRecaptchaKeys' => Labels::getLabel('LBL_YOU_MIGHT_HAVE_INVALID_GOOGLE_RECAPTCHA_V3_KEYS._PLEASE_VERIFY.', $this->siteLangId),
             );
 
             $languages = Language::getAllNames(false);

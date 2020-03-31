@@ -1055,7 +1055,7 @@ $(document).ready(function () {
         var inputElement = $(formElement + " input[name='username']");
         var altPlaceHolder = inputElement.attr('data-alt-placeholder');
         var placeHolder = inputElement.attr('placeholder')
-        inputElement.attr({ 'placeholder': altPlaceHolder, 'data-alt-placeholder': placeHolder });
+        inputElement.val("").attr({ 'placeholder': altPlaceHolder, 'data-alt-placeholder': placeHolder });
         var objLbl = 0 < flag ? langLbl.withUsernameOrEmail : langLbl.withPhoneNumber;
         $(obj).attr('onclick', 'signInWithPhone(this, ' + (!flag) + ')').text(objLbl)
         stylePhoneNumberFld(formElement + " input[name='username']", (!flag));

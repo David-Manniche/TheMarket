@@ -31,8 +31,7 @@ class ElasticSearch extends FullTextSearchBase
         
         foreach ($reqKeys as $key) {
             if (!array_key_exists($key, $settings)) {
-                $this->error = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->langId);
-                return false;
+                trigger_error(Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', $this->langId), E_USER_ERROR);
             }
         }
        

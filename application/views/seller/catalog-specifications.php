@@ -6,7 +6,11 @@ if (count($productSpecifications) > 0) {
     foreach ($productSpecifications as $data) {
         $count = 0;
         foreach ($data as $value) {
-            $specificationData[$count] = array('prod_spec_name' => $productSpecifications['prod_spec_name'][$count], 'prod_spec_value' => $productSpecifications['prod_spec_value'][$count], 'prod_spec_group' => $productSpecifications['prod_spec_group'][$count]);
+            $specificationData[$count] = array(
+                'prod_spec_name' => $productSpecifications['prod_spec_name'][$count], 
+                'prod_spec_value' => $productSpecifications['prod_spec_value'][$count], 
+                'prod_spec_group' => isset($productSpecifications['prod_spec_group'][$count]) ? $productSpecifications['prod_spec_group'][$count] : ''
+            );
             $count++;
         }
     }

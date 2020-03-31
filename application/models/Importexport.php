@@ -733,6 +733,10 @@ class Importexport extends ImportexportCommon
                     unset($prodCatDataArr['prodcat_parent']);
                     unset($prodCatDataArr['prodcat_identifier']);
                     unset($prodCatDataArr['prodcat_display_order']);
+                } else {
+                    if ($categoryId == $prodCatDataArr['prodcat_parent']) {
+                        $prodCatDataArr['prodcat_parent'] = 0;
+                    }
                 }
 
                 if (!empty($categoryData) && $categoryData['prodcat_id']) {
