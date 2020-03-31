@@ -52,7 +52,11 @@ class SubscriptionCheckoutController extends LoggedUserController
 
     public function index()
     {
-        $this->userPrivilege->canEditSubscription(UserAuthentication::getLoggedUserId());
+        if (!$this->userPrivilege->canEditSubscription(UserAuthentication::getLoggedUserId(), true)) {
+            Message::addErrorMessage(Labels::getLabel('MSG_YOU_DO_NOT_HAVE_A_SUFFICIENT_PERMISSION_TO_CHANGE_PLAN', $this->siteLangId));
+            FatApp::redirectUser(CommonHelper::generateUrl('seller', 'packages'));
+        }
+
         $criteria = array('hasSubscription' => true);
         if (!$this->isEligibleForNextStep($criteria)) {
             FatApp::redirectUser(CommonHelper::generateUrl('seller', 'packages'));

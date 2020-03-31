@@ -7,8 +7,7 @@
         </div>
     </div>
 </div>
-<div class="cards-content">
-    <div class="form__subcontent">
+ 
         <?php
         $frm->setFormTagAttribute('onsubmit', 'setup(this); return(false);');
         $frm->setFormTagAttribute('class', 'form form--horizontal');
@@ -29,8 +28,7 @@
         }
         echo $frm->getFormHtml();
         ?>
-    </div>
-</div>
+ 
 <script language="javascript">
     $(document).ready(function() {
         getCountryStates($("#user_country_id").val(), <?php echo $stateId ;?>, '#user_state_id');

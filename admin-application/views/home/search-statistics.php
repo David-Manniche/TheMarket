@@ -258,6 +258,10 @@ case 'signups': ?>
 		if( $user['user_is_supplier'] ){
 			$userTypeStr .= $arr[User::USER_TYPE_SELLER].'<br/>';
 		}
+
+		if (0 < $user['user_parent']) {
+			$userTypeStr .= Labels::getLabel('LBL_Sub_User', $adminLangId);
+		}
 		?>
 		<tr>
 			<td><?php echo $counter; ?></td>
