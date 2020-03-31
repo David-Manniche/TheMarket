@@ -261,7 +261,8 @@ class DummyController extends MyAppController
 
     public function index()
     {       
-        
+        $allowedUserIds = User::getAuthenticUserIds(22, 4);
+        var_dump($allowedUserIds);exit;
     }
 
 
