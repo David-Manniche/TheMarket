@@ -10,14 +10,26 @@ class LoggedUserController extends MyAppController
         UserAuthentication::checkLogin();
 
         $userObj = new User(UserAuthentication::getLoggedUserId());
-
         $userInfo = $userObj->getUserInfo(array(), false, false);
+
         if (false == $userInfo || (!UserAuthentication::isGuestUserLogged() && $userInfo['credential_active'] != applicationConstants::ACTIVE)) {
             if (FatUtility::isAjaxCall()) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Session_seems_to_be_expired', CommonHelper::getLangId()));
                 FatUtility::dieWithError(Message::getHtml());
             }
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'logout'));
+        }
+
+        if (0 < $userInfo['user_parent']){
+            $parentUser = new User($userInfo['user_parent']);
+            $parentUserInfo = $parentUser->getUserInfo(array(), true, true);
+            if (false == $parentUserInfo || $parentUserInfo['credential_active'] != applicationConstants::ACTIVE) {
+                if (FatUtility::isAjaxCall()) {
+                    Message::addErrorMessage(Labels::getLabel('MSG_Session_seems_to_be_expired', CommonHelper::getLangId()));
+                    FatUtility::dieWithError(Message::getHtml());
+                }
+                FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'logout'));
+            }
         }
 
         if (!isset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'])) {
@@ -66,8 +78,8 @@ class LoggedUserController extends MyAppController
             Message::addErrorMessage($message);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'configureEmail'));
         }
-        $userData = User::getAttributesById(UserAuthentication::getLoggedUserId());
-        $this->userParentId = (0 < $userData['user_parent']) ? $userData['user_parent'] : UserAuthentication::getLoggedUserId();
+        
+        $this->userParentId = (0 < $userInfo['user_parent']) ? $userInfo['user_parent'] : UserAuthentication::getLoggedUserId();
 
         $this->initCommonValues();
     }

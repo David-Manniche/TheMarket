@@ -281,3 +281,4 @@ Features
 ===================TV-9.1.6.20200327===================
 Bug :
     => 035748 Infine loop handling when category and category parent have same id.    
+    => 035743 Sub seller is getting seller approval form if parent seller got inactive
