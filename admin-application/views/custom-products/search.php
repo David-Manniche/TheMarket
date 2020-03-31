@@ -29,10 +29,10 @@ foreach ($arr_listing as $sn => $row) {
             case 'listserial':
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
-            case 'product_identifier':
+            case 'shop_name':
                 $td->appendElement('plaintext', array(), $row[$key] . '<br>', true);
                 if($row['user_parent'] > 0 ){
-                    $td->appendElement('plaintext', array(), '('.$row['product_name'].')', true);    
+                    $td->appendElement('plaintext', array(), '('.$row['user_name'].')', true);    
                 }                
                 break;
             case 'preq_status':

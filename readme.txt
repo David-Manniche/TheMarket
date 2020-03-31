@@ -287,3 +287,4 @@ Bug :
     => 035742 - Removed sub sellers from advertiser listing.
     => 035740 - Displayed sub user in user type on admin home dashboard stats.
     => 035724 - Provided subuser option in filters for user listing.
+    => 035715 - Product request page displayed sub username with shop.
