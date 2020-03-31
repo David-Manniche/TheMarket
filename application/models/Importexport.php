@@ -634,6 +634,7 @@ class Importexport extends ImportexportCommon
 
         $languageCodes = Language::getAllCodesAssoc(true);
         $fileTypeArr = AttachedFile::getFileTypeArray($langId);
+        $displayArr = applicationConstants::getDisplaysArr($langId);
 
         while ($row = $this->db->fetch($rs)) {
             $sheetData = array();
@@ -646,6 +647,10 @@ class Importexport extends ImportexportCommon
 
                 if ('afile_type' == $columnKey) {
                     $colValue = array_key_exists($row['afile_type'], $fileTypeArr) ? $fileTypeArr[ $row['afile_type'] ] : '';
+                }
+
+                if ('afile_screen' == $columnKey) {
+                    $colValue = array_key_exists($row['afile_screen'], $displayArr) ? $displayArr[ $row['afile_screen'] ] : '';
                 }
 
                 $sheetData[] = $this->parseContentForExport($colValue); 
@@ -804,6 +809,9 @@ class Importexport extends ImportexportCommon
         $fileTypeArr = AttachedFile::getFileTypeArray($langId);
         $fileTypeIdArr = array_flip($fileTypeArr);
 
+        $displayArr = applicationConstants::getDisplaysArr($langId);
+        $displayIdArr = array_flip($displayArr);
+
         $languageCodes = Language::getAllCodesAssoc(true);
         $languageIds = array_flip($languageCodes);
 
@@ -820,6 +828,7 @@ class Importexport extends ImportexportCommon
 
         $errInSheet = false;
         while (($row = $this->getFileRow($csvFilePointer)) !== false) {
+            $screenInputRequired = false;
             $rowIndex++;
 
             $categoryMediaArr = array();
@@ -838,6 +847,20 @@ class Importexport extends ImportexportCommon
                 } else {
                     if ('afile_type' == $columnKey) {
                         $colValue = array_key_exists($colValue, $fileTypeIdArr) ? $fileTypeIdArr[$colValue] : 0;
+                        $screenIndex = isset($this->headingIndexArr[$coloumArr['afile_screen']]) ? $this->headingIndexArr[$coloumArr['afile_screen']] : '';
+                        $screen = !empty($screenIndex) ? $this->getCell($row, $screenIndex, '') : '';
+                        $screenInputRequired = AttachedFile::FILETYPE_CATEGORY_BANNER == $colValue ? true : false;
+                        if (AttachedFile::FILETYPE_CATEGORY_BANNER == $colValue && (empty($screen) || !in_array($screen, $displayArr))) {
+                            $errorInRow = true;
+                            $errMsg = Labels::getLabel('LBL_INVALID_SCREEN_VALUE', $langId);
+                            $err = array($rowIndex, ($screenIndex + 1), $errMsg);
+                            CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
+                            continue;
+                        }
+                    }
+
+                    if ('afile_screen' == $columnKey) {
+                        $colValue = array_key_exists($colValue, $displayIdArr) ? $displayIdArr[$colValue] : 0;
                     }
 
                     if ('prodcat_id' == $columnKey) {
@@ -852,8 +875,11 @@ class Importexport extends ImportexportCommon
                         $columnKey = 'afile_lang_id';
                         $colValue = array_key_exists($colValue, $languageIds) ? $languageIds[$colValue] : 0;
                     }
-
+                    
                     $categoryMediaArr[$columnKey] = $colValue;
+                    if (false === $screenInputRequired) {
+                        unset($categoryMediaArr['afile_screen']);
+                    }
                 }
             }
             if (false === $errorInRow && count($categoryMediaArr)) {
@@ -906,9 +932,6 @@ class Importexport extends ImportexportCommon
         }
         // Close File
         CommonHelper::writeToCSVFile($this->CSVfileObj, array(), true);
-
-        $success['status'] = 1;
-
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
             $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
@@ -1085,7 +1108,7 @@ class Importexport extends ImportexportCommon
         $srch->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'brand_id = afile_record_id');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('brand_id', 'brand_identifier', 'afile_record_id', 'afile_record_subid', 'afile_lang_id', 'afile_screen', 'afile_physical_path', 'afile_name', 'afile_display_order', 'afile_type'));
+        $srch->addMultipleFields(array('brand_id', 'brand_identifier', 'afile_record_id', 'afile_record_subid', 'afile_lang_id', 'afile_screen', 'afile_physical_path', 'afile_name', 'afile_display_order', 'afile_type', 'afile_aspect_ratio'));
         $srch->addCondition('brand_status', '=', applicationConstants::ACTIVE);
         $rs = $srch->getResultSet();
 
@@ -1094,8 +1117,10 @@ class Importexport extends ImportexportCommon
         $headingsArr = $this->getBrandMediaColoumArr($langId);
         CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
         /* ] */
-
+        
         $languageCodes = Language::getAllCodesAssoc(true);
+        $displayArr = applicationConstants::getDisplaysArr($langId);
+        $ratioArr = AttachedFile::getRatioTypeArray($langId);
 
         while ($row = $this->db->fetch($rs)) {
             $sheetData = array();
@@ -1116,6 +1141,16 @@ class Importexport extends ImportexportCommon
                             $colValue = 'image';
                         }
                         break;
+                    case 'afile_screen':
+                        $colValue = '';
+                        if ($row['afile_type'] == AttachedFile::FILETYPE_BRAND_IMAGE) {
+                            $colValue = array_key_exists($row['afile_screen'], $displayArr) ? $displayArr[ $row['afile_screen'] ] : '';
+                        }
+                        break;
+                    case 'afile_aspect_ratio':
+                        /* Space added before value because it convert this column to date field to restrict this space added. Handle this in import or wherever you need this exported file. */
+                        $colValue = array_key_exists($row['afile_aspect_ratio'], $ratioArr) ? ' '. $ratioArr[ $row['afile_aspect_ratio'] ] : '';
+                        break;
                 }
 
                 $sheetData[] = $this->parseContentForExport($colValue); 
@@ -1135,11 +1170,18 @@ class Importexport extends ImportexportCommon
         $brandIdentifiers = Brand::getAllIdentifierAssoc();
         $brandIds = array_flip($brandIdentifiers);
 
+        $displayArr = applicationConstants::getDisplaysArr($langId);
+        $displayIdArr = array_flip($displayArr);
+
+        $ratioArr = AttachedFile::getRatioTypeArray($langId);
+        $ratioIdArr = array_flip($ratioArr);
+
         $coloumArr = $this->getBrandMediaColoumArr($langId);
         $this->validateCSVHeaders($csvFilePointer, $coloumArr, $langId);
 
         $errInSheet = false;
         while (($row = $this->getFileRow($csvFilePointer)) !== false) {
+            $screenInputRequired = $ratioInputRequired = false;
             $rowIndex++;
 
             $brandsMediaArr = array();
@@ -1176,10 +1218,45 @@ class Importexport extends ImportexportCommon
                                 $fileType = AttachedFile::FILETYPE_BRAND_IMAGE;
                             }
                             $colValue = $fileType;
+
+                            $screenIndex = isset($this->headingIndexArr[$coloumArr['afile_screen']]) ? $this->headingIndexArr[$coloumArr['afile_screen']] : '';
+                            $screen = !empty($screenIndex) ? $this->getCell($row, $screenIndex, '') : '';
+                            $screenInputRequired = AttachedFile::FILETYPE_BRAND_IMAGE == $colValue ? true : false;
+                            if (AttachedFile::FILETYPE_BRAND_IMAGE == $colValue && (empty($screen) || !in_array($screen, $displayArr))) {
+                                $errorInRow = true;
+                                $errMsg = Labels::getLabel('LBL_INVALID_SCREEN_VALUE', $langId);
+                                $err = array($rowIndex, ($screenIndex + 1), $errMsg);
+                                CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
+                                continue 2;
+                            }
+
+                            $ratioIndex = isset($this->headingIndexArr[$coloumArr['afile_aspect_ratio']]) ? $this->headingIndexArr[$coloumArr['afile_aspect_ratio']] : '';
+                            $ratio = !empty($ratioIndex) ? $this->getCell($row, $ratioIndex, '') : '';
+                            $ratioInputRequired = AttachedFile::FILETYPE_BRAND_LOGO == $colValue ? true : false;
+                            if (AttachedFile::FILETYPE_BRAND_LOGO == $colValue && (empty($ratio) || !array_key_exists(trim($ratio), $ratioIdArr))) {
+                                $errorInRow = true;
+                                $errMsg = Labels::getLabel('LBL_INVALID_ASPECT_RATIO', $langId);
+                                $err = array($rowIndex, ($ratioIndex + 1), $errMsg);
+                                CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
+                                continue 2;
+                            }
+                            break;
+                        case 'afile_screen':
+                            $colValue = array_key_exists($colValue, $displayIdArr) ? $displayIdArr[$colValue] : 0;
+                            break;
+                        case 'afile_aspect_ratio':
+                            $colValue = array_key_exists(trim($colValue), $ratioIdArr) ? $ratioIdArr[trim($colValue)] : 0 ;
                             break;
                     }
 
                     $brandsMediaArr[$columnKey] = $colValue;
+                    if (false === $screenInputRequired) {
+                        unset($brandsMediaArr['afile_screen']);
+                    }
+
+                    if (false === $ratioInputRequired) {
+                        unset($brandsMediaArr['afile_aspect_ratio']);
+                    }
                 }
             }
 

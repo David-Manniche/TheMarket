@@ -284,3 +284,4 @@ Bug :
     => 035748 - Infine loop handling when category and category parent have same id.
     => 035745 - In the subscription description amount is displayed $1k if greater than 1000 but below in plan listing it displayed simply $1000.00. Both amount string must be same in display.
     => 035744 - if sub seller having only read permission for subscription then he can check for available plans and on proceeding further he gets unauthorized access
+    => 035755 - Category and brand banners are not displaying after importing through csv.
