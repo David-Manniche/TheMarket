@@ -10503,7 +10503,8 @@ input[type="file"] {
   font-family: inherit;
   font-size: 0.9em;
   font-weight: normal;
-  border-radius: 4px; }
+  border-radius: 4px;
+  text-align: inherit; }
 
 input[type="text"]:focus,
 input[type="email"]:focus,
@@ -15739,10 +15740,13 @@ img.mfp-img {
       min-height: 170px; } }
   .table tr:last-child td {
     border-bottom: none; }
-  .table tr td:first-child {
-    padding-left: 0; }
-  .table tr td:last-child {
-    padding-right: 0; }
+  .table tr td {
+    position: relative;
+    word-break: break-all; }
+    .table tr td:first-child {
+      padding-left: 0; }
+    .table tr td:last-child {
+      padding-right: 0; }
   .table th,
   .table td {
     font-weight: unset;
@@ -16004,9 +16008,6 @@ img.mfp-img {
 .table--justify tr td:last-child {
   padding-right: 0;
   text-align: right; }
-
-.table td {
-  position: relative; }
 
 .table .btn {
   margin: 2px; }
@@ -16698,6 +16699,8 @@ a:hover, .shop-nav ul li.is--active a {
 .docs-buttons {
   display: flex;
   justify-content: center; }
+  .docs-buttons .btn-group {
+    margin: 0 2px; }
 
 .custom-ui-autocomplete {
   max-height: 200px;
@@ -16763,7 +16766,7 @@ a:hover, .shop-nav ul li.is--active a {
     .cards .cards-header ~ .cards-content {
       padding-top: 0; }
   .cards .cards-content {
-    padding: 1.5rem;
+    padding: 1rem 1.5rem;
     /*height: inherit;*/ }
 
 .toggle-switch {
