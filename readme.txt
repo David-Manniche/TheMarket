@@ -286,3 +286,4 @@ Bug :
     => 035745 - In the subscription description amount is displayed $1k if greater than 1000 but below in plan listing it displayed simply $1000.00. Both amount string must be same in display.
     => 035742 - Removed sub sellers from advertiser listing.
     => 035740 - Displayed sub user in user type on admin home dashboard stats.
+    => 035724 - Provided subuser option in filters for user listing.

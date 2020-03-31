@@ -71,6 +71,7 @@ class User extends MyAppModel
     public const USER_TYPE_ADVERTISER = 4;
     public const USER_TYPE_SHIPPING_COMPANY = 5;
     public const USER_TYPE_BUYER_SELLER = 6;
+    public const USER_TYPE_SUB_USER = 7;
 
     public const CATALOG_REQUEST_PENDING = 0;
     public const CATALOG_REQUEST_APPROVED = 1;
