@@ -9877,7 +9877,7 @@ a.link {
     font-size: 16px;
     text-align: center;
     line-height: 16px;
-    border-left: 2px solid #fff;
+    border-right: 2px solid #fff;
     border-bottom: 2px solid #fff;
     -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
@@ -10503,7 +10503,8 @@ input[type="file"] {
   font-family: inherit;
   font-size: 0.9em;
   font-weight: normal;
-  border-radius: 4px; }
+  border-radius: 4px;
+  text-align: inherit; }
 
 input[type="text"]:focus,
 input[type="email"]:focus,
@@ -10704,6 +10705,9 @@ form.custom-form {
   align-items: center; }
   .icon-group .btn {
     margin-right: 5px; }
+
+.form-text {
+  font-size: 0.7rem; }
 
 .ftshops {
   color: #fff; }
@@ -15736,10 +15740,13 @@ img.mfp-img {
       min-height: 170px; } }
   .table tr:last-child td {
     border-bottom: none; }
-  .table tr td:first-child {
-    padding-left: 0; }
-  .table tr td:last-child {
-    padding-right: 0; }
+  .table tr td {
+    position: relative;
+    word-break: break-all; }
+    .table tr td:first-child {
+      padding-left: 0; }
+    .table tr td:last-child {
+      padding-right: 0; }
   .table th,
   .table td {
     font-weight: unset;
@@ -16001,9 +16008,6 @@ img.mfp-img {
 .table--justify tr td:last-child {
   padding-left: 0;
   text-align: left; }
-
-.table td {
-  position: relative; }
 
 .table .btn {
   margin: 2px; }
@@ -16695,6 +16699,8 @@ a:hover, .shop-nav ul li.is--active a {
 .docs-buttons {
   display: flex;
   justify-content: center; }
+  .docs-buttons .btn-group {
+    margin: 0 2px; }
 
 .custom-ui-autocomplete {
   max-height: 200px;
@@ -16760,7 +16766,7 @@ a:hover, .shop-nav ul li.is--active a {
     .cards .cards-header ~ .cards-content {
       padding-top: 0; }
   .cards .cards-content {
-    padding: 1.5rem;
+    padding: 1rem 1.5rem;
     /*height: inherit;*/ }
 
 .toggle-switch {
@@ -34947,24 +34953,24 @@ div.faqanswer {
 
 .packages-box .name span {
   color: #fff;
-  font-size: 0.8em;
+  font-size: 0.8rem;
   display: block;
   font-weight: normal;
   text-transform: none; }
 
 .packages-box .valid {
   color: #fff;
-  font-size: 1.1em;
+  font-size: 1.1rem;
   font-weight: 400;
   line-height: 1.5;
   font-family: "Poppins", sans-serif; }
 
 .packages-box .valid sup {
-  font-size: 3.2em; }
+  font-size: 3.2rem; }
 
-.packages-box .valid span {
-  font-size: 4em;
-  font-weight: 800;
+.packages-box .valid span.currency-value {
+  font-size: 3rem;
+  font-weight: 600;
   line-height: 1; }
 
 .packages-box .trial {
@@ -34972,12 +34978,12 @@ div.faqanswer {
   padding: 20px; }
 
 .packages-box .trial ul li {
-  font-size: 1em;
+  font-size: 1rem;
   margin: 5px 0;
   color: #fff; }
 
 .packages-box .trial ul li span {
-  font-size: 1em;
+  font-size: 1rem;
   font-weight: 600; }
 
 .packages-box .after-box {

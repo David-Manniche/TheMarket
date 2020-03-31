@@ -73,6 +73,7 @@ input[type="file"] {
     font-size: 0.9em;
     font-weight: normal;
     border-radius: 4px;
+    text-align: inherit;
 }
 
 input[type="text"]:focus,
@@ -361,4 +362,8 @@ form.custom-form {
     .btn {
         margin-#{$start-direction}: 5px;
     }
+}
+
+.form-text {
+    font-size: 0.7rem;
 }
