@@ -2357,6 +2357,8 @@ class AccountController extends LoggedUserController
             $srch->joinProducts($this->siteLangId);
         }
 
+        $parentAndThierChildIds = User::getParentAndTheirChildIds($this->userParentId);
+
         $srch->joinOrderProducts();
         $srch->joinOrderProductStatus();
         $srch->addMultipleFields(array('tth.*', 'top.op_invoice_number'));
@@ -2365,10 +2367,12 @@ class AccountController extends LoggedUserController
         if ($messageId) {
             $srch->addCondition('ttm.message_id', '=', $messageId);
         }
-        /*$cnd = $srch->addCondition('ttm.message_from', '=', $this->userParentId);
-        $cnd->attachCondition('ttm.message_to', '=', $this->userParentId, 'OR');*/
+        
+        $cnd = $srch->addCondition('ttm.message_from', 'IN', $parentAndThierChildIds);
+        $cnd->attachCondition('ttm.message_to', 'IN', $parentAndThierChildIds, 'OR');
         $rs = $srch->getResultSet();
         $threadDetails = FatApp::getDb()->fetch($rs);
+       
         if ($threadDetails == false) {
             $message = Labels::getLabel('MSG_INVALID_ACCESS', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
@@ -2386,7 +2390,7 @@ class AccountController extends LoggedUserController
         }
 
         $threadObj = new Thread($threadId);
-        if (!$threadObj->markUserMessageRead($threadId, $userId)) {
+        if (!$threadObj->markMessageReadFromUserArr($threadId, $parentAndThierChildIds)) {
             if (true === MOBILE_APP_API_CALL) {
                 Message::addErrorMessage(strip_tags(current($threadObj->getError())));
             }
@@ -2428,6 +2432,7 @@ class AccountController extends LoggedUserController
             }
         }
 
+        $allowedUserIds = User::getParentAndTheirChildIds($this->userParentId);
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : FatUtility::int($post['page']);
         $pagesize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
 
@@ -2439,8 +2444,8 @@ class AccountController extends LoggedUserController
         $srch->addMultipleFields(array('tth.*', 'ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread'));
         $srch->addCondition('ttm.message_deleted', '=', 0);
         $srch->addCondition('tth.thread_id', '=', $threadId);
-        /*$cnd = $srch->addCondition('ttm.message_from', '=', $userId);
-        $cnd->attachCondition('ttm.message_to', '=', $userId, 'OR');*/
+        $cnd = $srch->addCondition('ttm.message_from', 'in', $allowedUserIds);
+        $cnd->attachCondition('ttm.message_to', 'in', $allowedUserIds, 'OR');
         $srch->addOrder('message_id', 'DESC');
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -2502,11 +2507,7 @@ class AccountController extends LoggedUserController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        /*$subUsers = User::getSubUsers($this->userParentId, 'user_id');
-        foreach ($subUsers as $key => $value) {
-            $users[] = $value['user_id'];
-        }
-        $users[] = $this->userParentId;*/
+        $allowedUserIds = User::getParentAndTheirChildIds($this->userParentId);
 
         $srch = new MessageSearch();
         $srch->joinThreadMessage();
@@ -2517,8 +2518,8 @@ class AccountController extends LoggedUserController
         $srch->addCondition('ttm.message_deleted', '=', 0);
         $srch->addCondition('tth.thread_id', '=', $threadId);
         $srch->addCondition('ttm.message_id', '=', $messageId);
-        /*$cnd = $srch->addCondition('ttm.message_from', 'IN', $users);
-        $cnd->attachCondition('ttm.message_to', 'IN', $users, 'OR');*/
+        $cnd = $srch->addCondition('ttm.message_from', 'in', $allowedUserIds);
+        $cnd->attachCondition('ttm.message_to', 'in', $allowedUserIds, 'OR');
         $rs = $srch->getResultSet();
 
         $threadDetails = FatApp::getDb()->fetch($rs);
