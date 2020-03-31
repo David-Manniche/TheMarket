@@ -264,8 +264,8 @@ hr {}
 
 .docs-buttons {
     display: flex;
-
-    justify-content: center;
+    justify-content: center;    
+    .btn-group{ margin: 0 2px;}
 }
 
 .custom-ui-autocomplete {
@@ -315,3 +315,5 @@ hr {}
     display: flex;
     align-items: center;
 }
+
+

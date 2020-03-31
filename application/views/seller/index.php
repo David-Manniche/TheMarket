@@ -388,11 +388,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                     </tr>
                                     <?php } ?>
                                 </tbody>
-                                <div class="scroll-hint-icon-wrap" data-target="scrollable-icon">
-                                    <span class="scroll-hint-icon">
-                                        <div class="scroll-hint-text"><?php echo Labels::getLabel('LBL_Scrollable', $siteLangId);?></div>
-                                    </span>
-                                </div>
+                                 
                             </table>
                         </div>
                     </div>
@@ -469,11 +465,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                     </tr>
                                     <?php } ?>
                                 </tbody>
-                                <div class="scroll-hint-icon-wrap" data-target="scrollable-icon">
-                                    <span class="scroll-hint-icon">
-                                        <div class="scroll-hint-text"><?php echo Labels::getLabel('LBL_Scrollable', $siteLangId);?></div>
-                                    </span>
-                                </div>
+                                 
                             </table>
                         </div>
                     </div>
@@ -542,11 +534,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                     </tr>
                                     <?php } ?>
                                 </tbody>
-                                <div class="scroll-hint-icon-wrap" data-target="scrollable-icon">
-                                    <span class="scroll-hint-icon">
-                                        <div class="scroll-hint-text"><?php echo Labels::getLabel('LBL_Scrollable', $siteLangId);?></div>
-                                    </span>
-                                </div>
+                                
                             </table>
                         </div>
                     </div>
