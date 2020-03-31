@@ -278,6 +278,8 @@ Update
 
 Features
     => Full text Search (Elastic search) for products search.
+
 ===================TV-9.1.6.20200327===================
 Bug :
-    => 035748 Infine loop handling when category and category parent have same id.    
+    => 035748 - Infine loop handling when category and category parent have same id.
+    => 035745 - In the subscription description amount is displayed $1k if greater than 1000 but below in plan listing it displayed simply $1000.00. Both amount string must be same in display.

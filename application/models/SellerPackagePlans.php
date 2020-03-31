@@ -99,7 +99,7 @@ class SellerPackagePlans extends MyAppModel
     public static function getCheapPlanPriceWithPeriod($plan, $price)
     {
         $subcriptionPeriodArr = self::getSubscriptionPeriods(CommonHelper::getLangId());
-        return CommonHelper::displayMoneyFormat($price, false, false, true, true) . " <br/>" . " " . Labels::getLabel("LBL_Per", CommonHelper::getLangId()) . " " . (($plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] > 1) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] : '')
+        return CommonHelper::displayMoneyFormat($price) . " <br/>" . " " . Labels::getLabel("LBL_Per", CommonHelper::getLangId()) . " " . (($plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] > 1) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] : '')
         . "  " . $subcriptionPeriodArr[$plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency']];
     }
     public static function getPlanByPackageId($spackageId = 0)
