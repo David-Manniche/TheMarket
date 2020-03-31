@@ -85,9 +85,10 @@ class UsersController extends AdminBaseController
                 break;
             case User::USER_TYPE_ADVERTISER:
                 $srch->addCondition('u.user_is_advertiser', '=', applicationConstants::YES);
+                $srch->addCondition('u.user_parent', '=', 0);
                 break;
             case User::USER_TYPE_AFFILIATE:
-                $srch->addCondition('u.user_is_affiliate', '=', applicationConstants::YES);
+                $srch->addCondition('u.user_is_affiliate', '=', applicationConstants::YES);               
                 break;
             case User::USER_TYPE_BUYER_SELLER:
                 $srch->addCondition('u.user_is_supplier', '=', applicationConstants::YES);
