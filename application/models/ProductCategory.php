@@ -960,11 +960,12 @@ class ProductCategory extends MyAppModel
        
         //$prodSrchObj->addGroupBy('prodcat_id');
         $prodSrchObj->addMultipleFields(array('substr(prodcat_code,1,6) AS prodrootcat_code','count(selprod_id) as productCounts', 'prodcat_id'));
-        $rs = $prodSrchObj->getResultSet();
+        
         if (0 < $this->mainTableRecordId) {
             $prodSrchObj->addHaving('prodrootcat_code', 'LIKE', '%' . str_pad($this->mainTableRecordId, 6, '0', STR_PAD_LEFT) . '%', 'AND', true);
         }
         $prodSrchObj->addHaving('productCounts', '>', 0);
+        $rs = $prodSrchObj->getResultSet();
         $productRows = FatApp::getDb()->fetch($rs);
         if (!empty($productRows) && $productRows['productCounts'] > 0) {
             return true;

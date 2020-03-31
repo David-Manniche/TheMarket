@@ -288,3 +288,4 @@ Bug :
     => 035748 Infine loop handling when category and category parent have same id.    
     => 035743 Sub seller is getting seller approval form if parent seller got inactive
     => 035745 - In the subscription description amount is displayed $1k if greater than 1000 but below in plan listing it displayed simply $1000.00. Both amount string must be same in display.
+    => 035754 - newly added category is not getting deleted- while it's not binded with any product
