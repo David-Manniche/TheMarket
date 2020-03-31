@@ -6,6 +6,9 @@ $frm->developerTags['fld_default_col'] = 12;
 
 $userNameFld = $frm->getField('admin_username');
 $userNameFld->addFieldTagAttribute('id','admin_username');
+if($admin_id > 0){
+	$userNameFld->setFieldTagAttribute('disabled', 'disabled');
+}
 
 $emailFld = $frm->getField('admin_email');
 $emailFld->addFieldTagAttribute('id','admin_email');

@@ -23,6 +23,10 @@
         $countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,'.$stateId.',\'#user_state_id\')');
         $stateFld = $frm->getField('user_state_id');
         $stateFld->setFieldTagAttribute('id', 'user_state_id');
+		if ($userId > 0) {
+			$usernameFld = $frm->getField('user_username');
+            $usernameFld->setFieldTagAttribute('disabled', 'disabled');
+        }
         echo $frm->getFormHtml();
         ?>
     </div>

@@ -156,11 +156,19 @@ class AdminUsersController extends AdminBaseController
         }
         unset($post['admin_id']);
         $record = new AdminUsers($adminId);
-        if ($adminId == 0) {
-            $password = $post['password'];
+		
+		if (0 < $adminId) {
+            $data = AdminUsers::getAttributesById($adminId);
+            if ($data === false) {
+                FatUtility::dieWithError($this->str_invalid_request);
+            }
+			$post['admin_username'] = $data['admin_username'];
+        } else {
+			$password = $post['password'];
             $encryptedPassword = UserAuthentication::encryptPassword($password);
             $post['admin_password'] = $encryptedPassword;
-        }
+		}
+		
 
         $record->assignValues($post);
 
