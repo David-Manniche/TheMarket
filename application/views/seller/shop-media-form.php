@@ -47,7 +47,7 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
                 <div class="col-md-6">
                     <div class="preview">
                     <h5><?php echo Labels::getLabel('LBL_Logo_Setup', $siteLangId); ?></h5>
-                        <small class="form-text text-muted"><?php echo sprintf(Labels::getLabel('MSG_Upload_shop_logo_text', $siteLangId), '150*150')?></small>
+                        <small class="form-text text-muted logoPreferredDimensions-js"><?php echo sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $siteLangId), '150 x 150'); ?></small>
                         <div class="gap"></div>
                         <?php echo $shopLogoFrm->getFormHtml();?>
                            <div id="logo-image-listing" class="row" ></div>
@@ -101,9 +101,11 @@ $(document).on('change','.prefRatio-js',function(){
     {
         $('input[name=logo_min_width]').val(150);
         $('input[name=logo_min_height]').val(150);
+		$('.logoPreferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '150 x 150'));
     } else {
         $('input[name=logo_min_width]').val(150);
         $('input[name=logo_min_height]').val(85);
+		$('.logoPreferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '150 x 85'));
     }
 });
 </script>
