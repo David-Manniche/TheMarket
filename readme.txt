@@ -299,8 +299,11 @@ Bug :
     => 035768 Fixed undefined variable issue when tax type and values changed.
     => 035739 Displayed shop image and shop name when message from seller.
     => 035443 - Incorrect error message while entering wrong phone number or password while login.
-    => 035783 - disabled subseller login when parent in-active.
     => 035766 - Remove all "Action Butttons" and "Select All" table heading from listing pages.
+    => 035784 - if package having different plans then smaller one is getting listed as heading instead of first one
+    => 035783 - disabled subseller login when parent in-active.
+    => 035786 - admin> manage shop> social link> if url is long then name (title) is wrapping
+    => 035777 - advertiser> promotion detail page> getting horizontal scroll
     => 035760 - Removed top products link on shop page when review turned off.
     => 035781 - S.no issue with pagination for commission history listing page.
     => 035780 - Set validation for commmission setting in percaentage uop to 100 .

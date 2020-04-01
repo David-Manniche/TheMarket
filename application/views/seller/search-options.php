@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-        'listserial'=>Labels::getLabel('LBL_Sr._no.', $siteLangId),
+        'listserial'=>'#',
         'option_identifier'=>Labels::getLabel('LBL_Option_Name', $siteLangId)
     );
 if ($canEdit) {
