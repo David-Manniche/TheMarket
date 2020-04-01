@@ -6,18 +6,28 @@ if (!empty($arr_listing) && is_array($arr_listing)) { ?>
             foreach ($arr_listing as $sn => $row) {
                 $liClass = 'is-read';
                 $toName = $row['message_from_name'];
+                if ($row['message_from_shop_name'] != ''){
+                    $toName = $row['message_from_shop_name'] . ' (' . $row['message_from_name'] . ')';
+                }                 
 
                 $toUserId = $row['message_from_user_id'];
                 if ($row['message_to'] == $loggedUserId) {
                     if ($row['message_is_unread'] == Thread::MESSAGE_IS_UNREAD) {
                         $liClass = '';
                     }
-                    $toName = $row['message_from_name'];
                     $toUserId = $row['message_from_user_id'];
                 }
-                $userImgUpdatedOn = User::getAttributesById($toUserId, 'user_updated_on');
-                $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
-                $toImage = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'user', array($toUserId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                
+                if ($row['message_from_shop_name'] != '' && $row['message_from_shop_id'] > 0){
+                    $userImgUpdatedOn = Shop::getAttributesById($row['message_from_shop_id'], 'shop_updated_on');
+                    $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
+                    $toImage = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'shopLogo', array($row['message_from_shop_id'], $siteLangId, 'thumb')).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                } else {
+                    $userImgUpdatedOn = User::getAttributesById($toUserId, 'user_updated_on');
+                     $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
+                    $toImage = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'user', array($toUserId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                }    
+               
                 ?>
                 <li class="<?php echo $liClass; ?>">
                     <div class="msg_db"><img src="<?php echo $toImage; ?>" alt="<?php echo $toName; ?>"></div>

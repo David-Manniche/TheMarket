@@ -2270,10 +2270,14 @@ class AccountController extends LoggedUserController
 
         $srch = new MessageSearch();
         $srch->joinThreadLastMessage();
-        $srch->joinMessagePostedFromUser();
-        $srch->joinMessagePostedToUser();
+        $srch->joinMessagePostedFromUser(true, $this->siteLangId);
+        $srch->joinMessagePostedToUser(true, $this->siteLangId);
         $srch->joinThreadStartedByUser();
-        $srch->addMultipleFields(array('tth.*', 'ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread', 'ttm.message_to'));
+        $srch->addMultipleFields(array('tth.*',
+         'ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread', 
+         'ttm.message_to', 'IFNULL(tfrs_l.shop_name, tfrs.shop_identifier) as message_from_shop_name', 
+         'tfrs.shop_id as message_from_shop_id', 'tftos.shop_id as message_to_shop_id',
+         'IFNULL(tftos_l.shop_name, tftos.shop_identifier) as message_to_shop_name'));
         $srch->addCondition('ttm.message_deleted', '=', 0);
         $cnd = $srch->addCondition('ttm.message_from', 'IN', $users);
         $cnd->attachCondition('ttm.message_to', 'IN', $users, 'OR');
@@ -2438,10 +2442,13 @@ class AccountController extends LoggedUserController
 
         $srch = new MessageSearch();
         $srch->joinThreadMessage();
-        $srch->joinMessagePostedFromUser();
-        $srch->joinMessagePostedToUser();
+        $srch->joinMessagePostedFromUser(true, $this->siteLangId);
+        $srch->joinMessagePostedToUser(true, $this->siteLangId);
         $srch->joinThreadStartedByUser();
-        $srch->addMultipleFields(array('tth.*', 'ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread'));
+        $srch->addMultipleFields(array(
+            'tth.*','ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread' , 
+            'IFNULL(tfrs_l.shop_name, tfrs.shop_identifier) as message_from_shop_name' , 'tfrs.shop_id as message_from_shop_id',
+            'tftos.shop_id as message_to_shop_id', 'IFNULL(tftos_l.shop_name, tftos.shop_identifier) as message_to_shop_name'));
         $srch->addCondition('ttm.message_deleted', '=', 0);
         $srch->addCondition('tth.thread_id', '=', $threadId);
         $cnd = $srch->addCondition('ttm.message_from', 'in', $allowedUserIds);
@@ -2451,6 +2458,7 @@ class AccountController extends LoggedUserController
         $srch->setPageSize($pagesize);
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs, 'message_id');
+        
         ksort($records);
 
         $this->set("arrListing", $records);

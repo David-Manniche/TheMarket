@@ -1434,7 +1434,7 @@ class SellerController extends SellerBaseController
         $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
         $options = $taxStructure->getOptions($this->siteLangId);
         foreach ($options as $optionVal) {
-            $data[$optionVal['taxstro_id']] = $taxOptions[$optionVal['taxstro_id']];
+            $data[$optionVal['taxstro_id']] = isset($taxOptions[$optionVal['taxstro_id']]) ? $taxOptions[$optionVal['taxstro_id']] : '';
         }
         $frm->fill($data);
         // $frm->fill($taxValues+array('taxcat_id'=>$taxcat_id));
@@ -4411,7 +4411,7 @@ class SellerController extends SellerBaseController
             $srchFrm->addHiddenField('', 'selprod_id', $selProd_id);
             $srchFrm->fill(array('keyword' => $productsTitle[$selProd_id]));
         }
-
+		$this->set("canEdit", $this->userPrivilege->canEditSpecialPrice(UserAuthentication::getLoggedUserId(), true));
         $this->set("dataToEdit", $dataToEdit);
         $this->set("frmSearch", $srchFrm);
         $this->set("selProd_id", $selProd_id);
