@@ -299,3 +299,4 @@ Bug :
     => 035768 Fixed undefined variable issue when tax type and values changed.
     => 035739 Displayed shop image and shop name when message from seller.
     => 035443 - Incorrect error message while entering wrong phone number or password while login.
+    => 035783 - disabled subseller login when parent in-active.

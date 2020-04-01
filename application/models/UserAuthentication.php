@@ -387,9 +387,24 @@ class UserAuthentication extends FatModel
                 $this->error = Labels::getLabel('ERR_YOUR_ACCOUNT_HAS_BEEN_DEACTIVATED_OR_NOT_ACTIVE', $this->commonLangId);
                 return false;
             }
+
+            $rowUser = User::getAttributesById($row['credential_user_id']);
+            if (0 < $rowUser['user_parent']){ 
+                $parentUser = new User($rowUser['user_parent']);
+                $parentSrch = $parentUser->getUserSearchObj();
+                $parentSrch->addCondition('credential_active', '=', applicationConstants::ACTIVE);
+                $rs = $parentSrch->getResultSet();
+                $parentData = FatApp::getDb()->fetch($rs);                
+                if (false == $parentData || null == $parentData) {
+                    $this->error = Labels::getLabel('ERR_YOUR_ACCOUNT_HAS_BEEN_DEACTIVATED_OR_NOT_ACTIVE', $this->commonLangId);
+                    return false;
+                }
+            }
+        } else {
+            $rowUser = User::getAttributesById($row['credential_user_id']);            
         }
 
-        $rowUser = User::getAttributesById($row['credential_user_id']);
+        
 
         $rowUser['user_ip'] = $ip;
         $rowUser['user_email'] = $row['credential_email'];
