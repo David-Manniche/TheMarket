@@ -279,7 +279,7 @@ class UserAuthentication extends FatModel
         return true;
     }
 
-    public function login($username, $password, $ip, $encryptPassword = true, $isAdmin = false, $tempUserId = 0, $userType = 0)
+    public function login($username, $password, $ip, $encryptPassword = true, $isAdmin = false, $tempUserId = 0, $userType = 0, $withPhone = false)
     {
         $db = FatApp::getDb();
         if ($this->isBruteForceAttempt($ip, $username)) {
@@ -328,6 +328,9 @@ class UserAuthentication extends FatModel
         $rs = $srch->getResultSet();
         if (!$row = $db->fetch($rs)) {
             $this->error = Labels::getLabel('ERR_INVALID_USERNAME_OR_PASSWORD', $this->commonLangId);
+            if ($withPhone) {
+                $this->error = Labels::getLabel('ERR_INVALID_PHONE_NUMBER_OR_PASSWORD', $this->commonLangId);
+            }
             return false;
         }
 

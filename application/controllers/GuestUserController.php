@@ -83,11 +83,13 @@ class GuestUserController extends MyAppController
         }
         $userName = FatApp::getPostedData('username');
         $dialCode = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
+        $withPhone = false;
         if (!empty($dialCode)) {
             $userName = trim($dialCode) . trim($userName);
+            $withPhone = true;
         }
 
-        if (!$authentication->login($userName, FatApp::getPostedData('password'), $_SERVER['REMOTE_ADDR'], true, false, $this->app_user['temp_user_id'], $userType)) {
+        if (!$authentication->login($userName, FatApp::getPostedData('password'), $_SERVER['REMOTE_ADDR'], true, false, $this->app_user['temp_user_id'], $userType, $withPhone)) {
             $message = Labels::getLabel($authentication->getError(), $this->siteLangId);
             FatUtility::dieJsonError($message);
         }
