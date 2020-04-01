@@ -301,3 +301,4 @@ Bug :
     => 035443 - Incorrect error message while entering wrong phone number or password while login.
     => 035783 - disabled subseller login when parent in-active.
     => 035766 - Remove all "Action Butttons" and "Select All" table heading from listing pages.
+    => 035760 - Removed top products link on shop page when review turned off.
