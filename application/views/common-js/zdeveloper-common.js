@@ -96,7 +96,8 @@ unlinkSlick = function () {
 }
 
 slickWidgetScroll = function () {
-    $('.js-widget-scroll').slick(getSlickSliderSettings(3, 1, langLbl.layoutDirection, false, {
+	var slides = ($('.widget-stats').length > 2) ? 3 : 2 ;
+    $('.js-widget-scroll').slick(getSlickSliderSettings(slides, 1, langLbl.layoutDirection, false, {
         1199: 3,
         1023: 2,
         767: 1,

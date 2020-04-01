@@ -9,6 +9,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
             </div>
         </div>
         <div class="content-body">
+			<?php if($canEdit){ ?>
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
@@ -62,6 +63,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                     </div>
                 </div>
             </div>
+			<?php }?>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="cards">
