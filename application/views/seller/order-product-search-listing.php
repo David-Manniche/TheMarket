@@ -5,7 +5,7 @@ $arr_flds = array(
     'op_qty'    =>    Labels::getLabel('LBL_Qty', $siteLangId),
     'total'     =>    Labels::getLabel('LBL_Total', $siteLangId),
     'status'    =>    Labels::getLabel('LBL_Status', $siteLangId),
-    'action'    =>    Labels::getLabel('LBL_Action', $siteLangId),
+    'action'    =>    '',
 );
 
 $tbl = new HtmlElement('table', array('class'=>'table'));

@@ -5,7 +5,7 @@ $arr_flds = array(
     'ossubs_status_id' => Labels::getLabel('LBL_Status', $siteLangId),
     'total' => Labels::getLabel('LBL_Total', $siteLangId),
     'ossubs_till_date' => Labels::getLabel('LBL_Subscription_Valid_till', $siteLangId),
-    'action' => Labels::getLabel('LBL_Action', $siteLangId),
+    'action' => '',
 );
 
 $tbl = new HtmlElement('table', array('class'=>'table'));

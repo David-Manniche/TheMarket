@@ -13,7 +13,7 @@
         'promotion_budget' => Labels::getLabel('LBL_Budget', $siteLangId),
         'promotion_clicks' => Labels::getLabel('LBL_Clicks', $siteLangId),
         'promotion_duration' => Labels::getLabel('LBL_Duration', $siteLangId),
-        'action' => Labels::getLabel('LBL_Action', $siteLangId),
+        'action' => '',
     );
 
     $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));

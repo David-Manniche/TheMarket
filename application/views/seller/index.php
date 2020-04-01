@@ -261,7 +261,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                     <tr class="">
                                         <th colspan="2" width="60%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Amount', $siteLangId);?></th>
-                                        <th width="20%"><?php echo Labels::getLabel('LBL_Action', $siteLangId);?></th>
+                                        <th width="20%"></th>
                                     </tr>
                                     <?php if (count($orders) > 0) {
                                         foreach ($orders as $orderId => $row) {
@@ -414,7 +414,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                         <th width="60%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="10%"><?php echo Labels::getLabel('LBL_Qty', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Status', $siteLangId);?></th>
-                                        <th width="10%"><?php echo Labels::getLabel('LBL_Action', $siteLangId);?></th>
+                                        <th width="10%"></th>
                                     </tr>
                                     <?php if (count($returnRequests) > 0) {
                                         foreach ($returnRequests as $row) {

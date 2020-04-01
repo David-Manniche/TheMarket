@@ -7,7 +7,7 @@ $arr_flds = array(
 );
 
 if (FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER', FatUtility::VAR_INT, 0) && $canEdit) {
-    $arr_flds['action']    = Labels::getLabel('LBL_Action', $siteLangId);
+    $arr_flds['action']    = '';
 }
 
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));

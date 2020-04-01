@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array();
 if (count($arrListing) > 0 && $canEdit) {
-    $arr_flds['select_all'] = Labels::getLabel('LBL_Select_all', $siteLangId);
+    $arr_flds['select_all'] = '';
 }
 $arr_flds['listserial'] = Labels::getLabel('LBL_Sr', $siteLangId);
 /* if( count($arrListing) && is_array($arrListing) && is_array($arrListing[0]['options']) && count($arrListing[0]['options']) ){ */

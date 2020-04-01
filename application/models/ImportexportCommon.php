@@ -294,7 +294,6 @@ class ImportexportCommon extends FatModel
 
         $arr['afile_type'] = Labels::getLabel('LBL_File_Type', $langId);
         $arr['afile_screen'] = Labels::getLabel('LBL_DISPLAY_SCREEN', $langId);
-        $arr['afile_aspect_ratio'] = Labels::getLabel('LBL_ASPECT_RATIO', $langId);
         $arr['afile_physical_path'] = Labels::getLabel('LBL_File_Path', $langId);
         $arr['afile_name'] = Labels::getLabel('LBL_File_Name', $langId);
         $arr['afile_display_order'] = Labels::getLabel('LBL_Display_Order', $langId);
