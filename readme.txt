@@ -303,3 +303,4 @@ Bug :
     => 035784 - if package having different plans then smaller one is getting listed as heading instead of first one
     => 035783 - disabled subseller login when parent in-active.
     => 035786 - admin> manage shop> social link> if url is long then name (title) is wrapping
+    => 035777 - advertiser> promotion detail page> getting horizontal scroll
