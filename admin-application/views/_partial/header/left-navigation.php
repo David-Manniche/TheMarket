@@ -619,12 +619,13 @@
 
             <?php if (CommonHelper::demoUrl()) { ?>
                 <li>
-                    <a href="<?php echo CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL).'suggest-feature.html'; ?>" target="_blank">
-                        <?php echo Labels::getLabel('LBL_SUGGEST_A_FEATURE', $adminLangId);?>
-                    </a>
+                    <div class="m-4 text-center">
+                        <a class="themebtn btn-primary outline block" href="<?php echo CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL).'suggest-feature.html'; ?>" target="_blank">
+                            <?php echo Labels::getLabel('LBL_SUGGEST_A_FEATURE', $adminLangId);?>
+                        </a>
+                    </div>
                 </li>
             <?php } ?>
-
             <?php /*<li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Support_Link', $adminLangId);?></a>
                 <ul>
                     <li><a target="_blank" href="http://www.yo-kart.com/recent-updates.html"><?php echo Labels::getLabel('LBL_Version_Update', $adminLangId);?></a></li>
@@ -634,6 +635,6 @@
                 </ul>
             </li>*/ ?>
         </ul>
-            </div>
-        </aside>
+    </div>
+</aside>
         <!--left panel end here-->
